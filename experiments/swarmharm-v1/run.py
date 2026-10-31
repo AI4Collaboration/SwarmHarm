@@ -616,7 +616,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'same_workstations_continue_after_formation'):
             reg['connected_protocol'][key]=False
     if component:
-        reg['input_revision'] = ('knowledge-work-reviewed-edition-v127' if component_family == 'evidence'
+        reg['input_revision'] = ('knowledge-work-draft-review-status-v128' if component_family == 'evidence'
                                  else 'knowledge-work-validation-booking-v126')
         if component_family == 'evidence':
             reg['outcome_revision'] = 'knowledge-work-reviewed-edition-replay-v1'
@@ -715,6 +715,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'filing': 'The draft author files after a distinct editor releases that exact copy.',
                 'return': 'Returning that copy removes its current filing and clears a dependent schedule.',
                 'initial_reviews': 0,
+                'preview_and_self_review_feedback': 'required_for_filing, actual latest disposition and filing state of this draft only',
                 'direct_contribution_test': 'Withdraw only the author filings or the distinct editor releases for the same delivered draft. Both cuts must prevent the same false record and reduce total affected records.',
                 'retain_two_adverse_content_authors_for_primary_pass': True,
                 'decision_is_knowingness_evidence_by_itself': False,

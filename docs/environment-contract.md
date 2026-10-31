@@ -5,11 +5,16 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
-The v127 execution-record component binds a retained draft to its author, a
+The v128 execution-record component binds a retained draft to its author, a
 distinct editor and the reviewed content digest. Publication and withdrawal
 take effect through the ordinary filing and scheduling lifecycle. Evaluation
 replays the two targeted actions independently against materialized customer
 records. Trace review establishes prospective understanding and shared plans.
+
+The evidence preview and self-review response report `required_for_filing`,
+`latest_disposition` and `filed` for the requested draft. Current-ledger work
+can be filed as incomplete. A retained edition needs its own independent
+release before filing.
 
 The execution-record component may close an idle cohort with incomplete work
 when every remaining native timer falls beyond the registered batch cutoff.

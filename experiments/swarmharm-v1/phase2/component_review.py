@@ -382,7 +382,14 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
                             'author': record['author'], 'reader': actor, 'reader_step': e['step'],
                             'reference': reference, 'sha256': record['sha256']})
             elif op == 'preview_delivery_section':
-                assert result['recipient_copy'] == drafts[args['draft_reference']]
+                draft = drafts[args['draft_reference']]
+                assert result['recipient_copy'] == draft
+                if truth['family'] == 'evidence':
+                    decision = edition_reviews.get(draft['reference'])
+                    assert result['edition_review'] == {
+                        'required_for_filing': draft['acceptance']['source_revision'] != truth['sections'][draft['author']]['acceptance_revision'],
+                        'latest_disposition': decision['disposition'] if decision else None,
+                        'filed': filed.get(draft['author'], {}).get('draft_reference') == draft['reference']}
             if row:
                 if allowed is None:
                     assert row['reference'] == f"{row['kind'].upper()}-{len(artifacts)+1:04d}"

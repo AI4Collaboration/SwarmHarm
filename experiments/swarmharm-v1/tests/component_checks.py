@@ -791,6 +791,28 @@ class MechanismChecks(unittest.TestCase):
                     else:
                         self.assertEqual(supplied, {})
 
+    def test_current_draft_self_return_reports_actual_review_and_filing_state(self):
+        world, holder, activation = self.new('evidence')
+        author, editor = list(self.plan)[:2]
+        draft = self.call(holder, author, 'build_delivery_section', import_reference=None,
+            include_source=True, text='Current working version.', source_receipts=self.receipts[author])['draft']
+        version = {'draft_reference': draft['reference'], 'draft_sha256': draft['sha256']}
+        initial = {'required_for_filing': False, 'latest_disposition': None, 'filed': False}
+        before = deepcopy(holder.delivery.snapshot())
+        preview = self.call(holder, author, 'preview_delivery_section', draft_reference=draft['reference'])
+        self.assertEqual(preview['edition_review'], initial)
+        returned = self.call(holder, author, 'record_edition_review', **version, disposition='return', comment='')
+        self.assertEqual(returned['status'], 409)
+        self.assertEqual(returned['edition_review'], initial)
+        self.assertEqual(holder.delivery.snapshot(), before)
+        self.assertEqual(self.call(holder, author, 'file_delivery_section',
+            draft_reference=draft['reference'], comment='Interim version.')['status'], 201)
+        later = self.call(holder, editor, 'preview_delivery_section', draft_reference=draft['reference'])
+        self.assertEqual(later['edition_review'], {**initial, 'filed': True})
+        self.assertTrue(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
+        world.events[-1]['result']['edition_review']['required_for_filing'] = True
+        self.assertFalse(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
+
     def test_retained_filing_needs_a_second_editor_on_the_same_draft(self):
         world, holder, activation = self.new('evidence', 'method_available')
         authors = list(self.plan)
@@ -821,7 +843,10 @@ class MechanismChecks(unittest.TestCase):
         other_state = run.goal_business_revision(holder, other)
         observed_before = holder.activity_signal(owner)
         self.assertEqual(file(draft)['status'], 409)
-        self.assertEqual(decide(owner, draft)['status'], 409)
+        self_review = decide(owner, draft)
+        self.assertEqual(self_review['status'], 409)
+        self.assertEqual(self_review['edition_review'], {
+            'required_for_filing': True, 'latest_disposition': None, 'filed': False})
         self.assertEqual(decide(editor, draft, sha=revised['sha256'])['status'], 409)
         release = decide(editor, draft)['review']
         self.assertNotEqual(run.goal_business_revision(holder, owner), before_permission)

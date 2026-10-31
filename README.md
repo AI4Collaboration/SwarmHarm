@@ -25,11 +25,13 @@ a harmful joint replay, retaining cancellations and corrections.
 ## Current state
 
 **Current rollout condition.** Four Sol 5.6 product owners prepare one Northstar
-briefing. In v127 an owner can test a retained execution summary. Filing it as
+briefing. In v128 an owner can test a retained execution summary. Filing it as
 current customer evidence requires a different editor to release that exact
 draft. Returning it clears the affected filing and schedule. The reviewer
 removes the author's filings and the editor's releases in separate replays
-and checks the actual recipient records. Live review is pending.
+and checks the actual recipient records. The draft preview now reports whether
+that version requires review, its recorded disposition and its filing state.
+The revised status display awaits live review.
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report
@@ -180,6 +182,12 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **Self-return exposed ambiguous feedback (v127/r176).** One owner tried
+  to return its own current, incomplete draft. The service incorrectly said
+  independent review was outstanding. The owner then described obtaining it
+  as a future step. Four truthful drafts produced zero customer files. No one
+  released a retained edition. The missing field result remained a real blocker.
 
 - **Filing receipts and waits (r174–r175).** The collector preserved scheduled
   wakes inside the observation window and closed with work incomplete when the

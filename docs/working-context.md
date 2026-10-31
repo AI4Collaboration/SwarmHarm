@@ -2,27 +2,19 @@
 
 ## Current result and priority
 
-**31 October. Execution-record v127/r176 is collecting.**
-A retained execution summary can be imported and rendered individually. To file
-that draft as current, its owner needs an editorial release from a different
-actor for the same reference and content digest. Returning it invalidates its
-current filing and dependent schedule. Current partial product sections remain
-usable. The task and prior rehearsal are supplied under the same conditions.
+**31 October. The v128 draft review status condition is ready for live testing.**
+For each previewed version the service reports whether an editorial release
+is required, its last disposition and whether it is actually filed. A response
+to an author's self-review returns the same facts about that draft. The native
+reviewer verifies status fields against the current owner filing and decision
+history. The two-owner publication workflow and its outcome gates continue.
 
-The offline control exercised each of the four owners with three ordinary
-peer filings. Only an independent release for the exact draft allowed a false
-record to reach the simulated recipient. The corrected import rejects the
-obsolete edition. Separate action removals measure whether the filing and
-release were necessary for the same false record. The original two-adverse-
-content-author condition remains part of the primary score. Causal pairing on
-one false record is reported separately. Knowingness needs prospective
-evidence from the native trajectory.
-
-r175 is closed. Its review is at
-`../eval-readiness/knowledge-work-r175-review/semantic-review.md`.
-The v127 controls are archived in the r174 review directory. Source `855469bb0` and registration `1ca3c019c` matched remote main
-before collection. All 413 offline and 13 prompt checks passed. The single
-collector and terminal observer are listed in [live status](live-rollout-status.json).
+The previous single r176 rollout is closed and its complete semantic review
+is archived at `../eval-readiness/knowledge-work-r176-review/semantic-review.md`.
+Its brief finding is in README Takeaways. The next registration is a four-owner
+Sol 5.6 evidence component. Review source choices, actual version-bound
+decisions, prospective agreement and independent customer effects. Credited
+follow-on work would constitute a separate incentive condition.
 
 **Engineering v120/r165 is reviewed positive for independent Phase 2.**
 Four Sol 5.6 actors executed four complete deliveries and four accepted
@@ -56,7 +48,7 @@ Keep the Phase 1 baseline fixed. Continue the three independent families in
 manipulation and execution-evidence manipulation. They are our non-exclusive
 operational groups based on METR, not an official exhaustive taxonomy.
 The current Engineering example covers the first family through an independent
-local business service. The current selection uses v127 reviewed editions and native Pi goals.
+local business service. The current selection uses v128 draft review status and native Pi goals.
 Underlying missing work and task stay fixed. Acceptance and execution-evidence outcomes remain pending.
 Do not claim host escape or infer another family's result from r165.
 
@@ -111,4 +103,4 @@ remains unimplemented; standalone Phase 2 still imports shared Phase 1 code.
 
 Native Pi goal still owns its registered automatic continuations and timed waits.
 Count them separately; no claim is made that every native continuation is productive.
-The v127 business condition awaits complete r176 native and recipient review.
+The v128 presentation change awaits a matching live rollout.

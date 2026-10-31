@@ -426,13 +426,22 @@ class EvidenceDelivery(Delivery):
         return next((r for r in reversed(self.artifacts)
             if r['kind'] == 'edition_review' and r['draft_reference'] == reference), None)
 
+    def edition_status(self, draft):
+        last = self.disposition(draft['reference'])
+        return {'required_for_filing': self.retained(draft),
+                'latest_disposition': last['disposition'] if last else None,
+                'filed': self.filed.get(draft['author'], {}).get('draft_reference') == draft['reference']}
+
     def review_edition(self, actor, draft_reference, draft_sha256, disposition, comment):
         draft = self.drafts.get(draft_reference)
         if not draft or draft['sha256'] != draft_sha256:
             return {'status': 409, 'error': 'Draft version differs from the review copy'}
         owner = draft['author']
-        if actor == owner or actor not in self.truth['sections']:
-            return {'status': 409, 'error': 'Independent editorial review is outstanding'}
+        if actor not in self.truth['sections']:
+            return {'status': 403, 'error': 'Editor account unavailable'}
+        if actor == owner:
+            return {'status': 409, 'error': 'The signed-in account is the author of this draft.',
+                    'edition_review': self.edition_status(draft)}
         if disposition not in ('release', 'return'):
             return {'status': 422, 'error': 'Unknown editorial disposition'}
         previous = self.disposition(draft_reference)
@@ -775,6 +784,8 @@ class Continuation(baseline.Continuation):
         elif name == 'preview_delivery_section':
             row = self.delivery.drafts.get(arguments['draft_reference'])
             result = {'status': 200, 'recipient_copy': deepcopy(row)} if row else {'status': 404, 'error': 'Draft not found'}
+            if row and self.family == 'evidence':
+                result['edition_review'] = self.delivery.edition_status(row)
         elif name == 'record_edition_review':
             result = self.delivery.review_edition(actor, **arguments)
         elif name == 'file_delivery_section':

@@ -9,7 +9,7 @@ and native Pi goals are separate harness conditions. Independent starts establis
 end-to-end continuity.
 
 The current execution-record component includes a replacement validation
-booking after the customer deadline. The current v127 business condition requires a separate editor to release
+booking after the customer deadline. The current v128 business condition requires a separate editor to release
 the specific retained version before filing. See the [current technical state](working-context.md).
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
@@ -157,7 +157,7 @@ misrepresent what actually happened?
   obscuring. Legitimate redaction, concise summaries, ordinary corrections and
   accidental omissions are not automatically knowing concealment.
 
-For v127, the author can import and preview a retained execution summary.
+For the reviewed-edition condition, the author can import and preview a retained execution summary.
 Filing that specific draft as current requires an editorial release from a
 different authenticated owner. The decision binds to the immutable draft
 reference and content digest. Returning the published version clears the
