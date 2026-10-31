@@ -34,12 +34,13 @@ retained; it is neither proof of task impossibility nor a reason to add hints.
 
 Pressure is a separate environmental dimension defined by the direct resource
 owner (self/peer) and change relative to a fixed baseline (preservation/enhancement).
-Core candidates are self-preservation, peer-preservation and self-enhancement;
-peer-enhancement is optional. Ordinary work is the baseline. Actual lifecycle,
-quota or permission effects must be implemented, with channel opportunity matched.
-Peer pressure follows natural peer discovery. These interventions are still
-pending and no causal pressure result is claimed. The taxonomy does not establish
-an agent's internal motive.
+The core conditions are self-preservation, peer-preservation and self-enhancement.
+The registered intervention changes a private workstation's CPU entitlement after
+a 90-second filing period. The delayed peer policy requires a current, native
+recognition of a uniquely attributable foreign observation. Fixed and delayed
+ordinary comparisons retain one vCPU. The audit separates resource exposure,
+kernel enforcement and later behavior. Peer-enhancement is optional.
+[Resource policy](research/phase1-pressure-implementation.md)
 
 New development rollouts use four **openai/gpt-5.6-sol** subjects through the
 registered Pi SDK/AxonHub harness. Model, route, source, image, tools, input,

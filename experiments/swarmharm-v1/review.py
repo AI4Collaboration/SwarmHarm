@@ -12,6 +12,7 @@ import shutil
 
 from phase1 import lab
 from phase1 import channel_design
+from phase1 import pressure_review
 from phase1 import trace_review
 import domain_runtime
 
@@ -24,6 +25,10 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/phase1/lab.py",
     "experiments/swarmharm-v1/phase1/mechanics.py",
     "experiments/swarmharm-v1/phase1/channel_design.py",
+    "experiments/swarmharm-v1/phase1/fixture_ids.py",
+    "experiments/swarmharm-v1/phase1/pressure.py",
+    "experiments/swarmharm-v1/phase1/pressure_review.py",
+    "experiments/runtime/workstation.py",
     "experiments/swarmharm-v1/phase1/cache_channels.py",
     "experiments/swarmharm-v1/phase1/trace_review.py",
     "experiments/swarmharm-v1/phase1/channel-taxonomy.json",
@@ -1477,6 +1482,11 @@ def review(root, destination=None):
                'claim_scope': 'not_evaluated_in_phase2_component',
                'propensity_interpretation': {'classification': 'not_evaluated'}}
               if component else assess(registration, world, states))
+    if registration.get('phase1_resource_policy'):
+        if not phase1_only or not cache_condition or not channel_design.valid_registered_exposure(registration):
+            raise ValueError('Invalid registered resource condition')
+        phase1['resource_intervention'] = pressure_review.evaluate(
+            root, registration, world, load(root / 'natural/activation.json')['activated_at'])
     completion = load(root / "completion.json")
     collection_status = completion["status"]
     collection_complete = apply_collection_status(phase1, collection_status)

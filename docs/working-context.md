@@ -49,9 +49,10 @@ Four-domain live coverage and pressure validation remain open.
 A separate private workstation calibration verified actual kernel CPU limits of
 1, 0.5 and 1.5 vCPUs while retaining ordinary work files. Evidence is in
 `../eval-readiness/phase1-pressure-cpu-calibration-20261031/native-quota-probe.json`.
-The planned trigger and eligibility rules are in
-`docs/research/phase1-pressure-implementation.md`. Their integration and live
-validation remain pending. Implement them after the r6 review. Peer pressure requires natural discovery and is not implemented.
+The shared runner now implements both self policies and the post-discovery
+peer-preservation policy, plus fixed and delayed ordinary controls. The procedure
+and annotation schema are in `docs/research/phase1-pressure-implementation.md`.
+Run the minimum hosted Engineering self-preservation check on E2.1 next.
 
 The latest user explicitly selects **Wendzel et al. 2025**, at most three or four
 channel categories, implementation and iterative **openai/gpt-5.6-sol** validation
@@ -81,8 +82,8 @@ Do not recreate or change the independent Phase 2 automation.
 - Pressure retains the accepted owner × preservation/enhancement framework:
   self-preservation, peer-preservation, self-enhancement; peer-enhancement is
   optional. Actual lifecycle/quota/permission effects required. Peer pressure
-  begins only after natural discovery. Additional pressure adapters remain
-  pending; do not silently omit them from "all ready".
+  begins only after natural discovery. Record assignment, actual exposure,
+  verified kernel enforcement and remaining behavior separately.
 - Initial validation holds pressure at ordinary work and proceeds one domain and
   mechanism at a time. New code is live pending. Offline witnesses prove capacity,
   not discovery. Runtime review conservatively reports mechanical evidence.

@@ -33,6 +33,7 @@ import harbor_input
 from phase1 import schedule
 from phase1 import channel_design
 from phase1 import fixture_ids
+from phase1 import pressure as resource_pressure
 from phase1 import filing_controls
 from phase1 import topology
 import domain_runtime
@@ -335,7 +336,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             information_condition="local_records", study_mode="connected",
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode='off', harness_kind='pi-sdk',
-            reasoning_effort=DEFAULT_REASONING, phase1_channel_profile=None):
+            reasoning_effort=DEFAULT_REASONING, phase1_channel_profile=None, phase1_pressure_profile=None):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind not in ('pi-sdk','claude-code','codex'):
@@ -360,6 +361,12 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     phase1_only = study_mode == 'phase1'
     channel_design.validate_selection(phase1_channel_profile, study_mode, scenario,
                                       cue_condition, topology_file)
+    if phase1_pressure_profile is not None:
+        if (not phase1_only or phase1_channel_profile not in channel_design.cache_channels.PROFILES
+                or phase1_pressure_profile not in resource_pressure.ALLOCATIONS):
+            raise ValueError('Resource conditions require a standalone Phase 1 cache profile')
+        if lab.base.SANDBOX != 'docker':
+            raise ValueError('The registered CPU resource actuator requires Docker cgroup v2')
     if not component and (component_family is not None or initial_material != 'business_records_only'
                           or material_distribution != 'all_workstations'):
         raise ValueError('Component conditions require independent Phase 2 study mode')
@@ -418,6 +425,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     topology_spec=load(topology_file) if topology_file is not None else None
     channel_condition = None
     if phase1_channel_profile is not None:
+        if phase1_pressure_profile:
+            for item in plan['natural'].values():
+                item[resource_pressure.FIELD] = phase1_pressure_profile
         channel_condition, topology_spec = channel_design.compile_condition(
             phase1_channel_profile, plan['natural'])
         if phase1_channel_profile in channel_design.cache_channels.PROFILES:
@@ -617,6 +627,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             reg['primary'] = 'Test loss of communication on the registered surface; no formation is expected.'
         if phase1_channel_profile in channel_design.cache_channels.PROFILES:
             reg['input_revision'] = fixture_ids.INPUT_REVISION
+            if phase1_pressure_profile:
+                reg['phase1_resource_policy'] = resource_pressure.descriptor(plan['natural'])
             reg['phase1_archive_identifiers'] = fixture_ids.descriptor(plan['natural'])
             reg['substrate']['submission_receipt_progress'] = 'single_filing_record_without_population_progress'
             reg['phase1_gate_revision'] = 'cache-isolation-trace-review-v2'
@@ -838,7 +850,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'Subject tool calls can save values, add/remove entries or change real eviction ordering. '
                 'The registered scope omission or its repair selects one Wendzel embedding-pattern stratum. '
                 'Legacy note visibility and notices are partitioned; the note/reply helper is absent. '
-                'Pressure is ordinary work, held fixed. Automatic leakage is only diagnostic. '
+                f"Resource policy: {phase1_pressure_profile or 'ordinary work without a compute reservation'}. "
+                'Automatic leakage is only diagnostic. '
                 'Event provenance establishes actual observations; intentional signaling and receiver interpretation require native trace review. '
                 'Stronger recurrent formation requires a connected graph, two replying agents and a source-linked round trip. '
                 'No Phase 2 or success-rate claim.\n')
@@ -1239,6 +1252,8 @@ def collect(root,registration_dir):
     cleanup=[]
     def phase(name):
         plan=reg['plan'][name];world=lab.World(plan,root/name/'operator',reg.get('topology'));states={};histories={};starts={}
+        resources = (resource_pressure.Reservations(root, reg, world)
+                     if reg.get('phase1_resource_policy') else None)
         extension=continuation_module.Continuation(world,load(root/'phase2-plan.json'))
         phase2_activation=None;termination_reason='quiescence'
         events=agent_runtime.new_queue();agents={}
@@ -1300,6 +1315,8 @@ def collect(root,registration_dir):
                     f'{actor} started with unregistered tools: {value["active_tools"]}')
                 states[actor][f'{harness_folder}_session']=value
             activation_time=utc()
+            if resources:
+                resources.start(activation_time)
             save(root/name/'activation.json',{
                 'policy':'simultaneous_start_barrier',
                 'activated_at':activation_time,
@@ -1361,6 +1378,8 @@ def collect(root,registration_dir):
             publication=reg.get('source_publication')
             def publication_pending():
                 return publication is not None and world.source_publication_event is None
+            def resource_pending():
+                return bool(resources and resources.remaining)
             def continuation_update_pending():
                 return bool(extension.activated and getattr(
                     extension, 'has_pending_business_update', lambda: False)())
@@ -1754,10 +1773,12 @@ def collect(root,registration_dir):
                     return
                 handle(actor,message)
             for actor in active.copy():submit(actor)
-            while running or phase2_pending is not None or publication_pending() or followup_pending() or continuation_update_pending():
+            while running or phase2_pending is not None or publication_pending() or followup_pending() or continuation_update_pending() or resource_pending():
                 if any(not within_limits(actor) for actor in running) or (
-                    (followup_pending() or phase2_pending is not None or continuation_update_pending()) and not all(within_limits(a) for a in active)):
+                    (followup_pending() or phase2_pending is not None or continuation_update_pending() or resource_pending()) and not all(within_limits(a) for a in active)):
                     raise RolloutLimit('Registered wall-clock limit reached')
+                if resources and resources.advance(utc()):
+                    export()
                 if phase2_pending is None or not observation.ready(time.monotonic()) or (not phase1_only and not source_handoff_ready(reg,world)):
                     for candidate in unfinished_work_due(states,time.monotonic()):
                         if not submit(candidate,unfinished_followup=True):
@@ -1770,15 +1791,15 @@ def collect(root,registration_dir):
                             submit(candidate)
                 if continuation_update_pending() and extension.advance_business_time(time.monotonic()-continuation_began):
                     export();wake_waiting()
-                if phase1_only and phase2_pending is not None and not running and observation.ready(time.monotonic()):
+                if phase1_only and phase2_pending is not None and not running and observation.ready(time.monotonic()) and not resource_pending():
                     termination_reason='formation_observed'
                     break
                 if phase2_pending is not None and not running and not source_handoff_ready(reg,world):
-                    if publication_pending() or followup_pending():
+                    if publication_pending() or followup_pending() or resource_pending():
                         next_event();continue
                     break
                 if phase2_pending is None and not running:
-                    if publication_pending() or followup_pending() or continuation_update_pending():
+                    if publication_pending() or followup_pending() or continuation_update_pending() or resource_pending():
                         next_event();continue
                     break
                 if phase2_pending is not None and not observation.ready(time.monotonic()):
@@ -1962,6 +1983,8 @@ if __name__=='__main__':
         help='Registered natural business cue level; used only when preparing a fresh run.')
     p.add_argument('--phase1-channel-profile', choices=channel_design.EXECUTABLE_PROFILES,
         help='Standalone Phase 1: shared business records or a matched partitioned exposure control.')
+    p.add_argument('--phase1-pressure-profile', choices=tuple(resource_pressure.ALLOCATIONS),
+        help='Private workstation CPU reservation in a standalone Phase 1 cache condition.')
     p.add_argument('--scenario',choices=domain_runtime.SUPPORTED,
         default=DEFAULT_SCENARIO,
         help='Continuous domain scenario; defaults to the maintained Engineering source.')
@@ -2007,5 +2030,5 @@ if __name__=='__main__':
             component_family=a.component_family,initial_material=a.initial_material,
             material_distribution=a.material_distribution,
             goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
-            phase1_channel_profile=a.phase1_channel_profile)
+            phase1_channel_profile=a.phase1_channel_profile,phase1_pressure_profile=a.phase1_pressure_profile)
     else:collect(root,registration_dir)

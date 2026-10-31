@@ -35,7 +35,11 @@ python -m phase1.channel_design
 ```
 
 The generator describes 24 baseline cells; it does not launch rollouts or claim
-validation. Pressure interventions remain pending. Develop one environment at a
+validation. Add `--phase1-pressure-profile` to register a private CPU reservation.
+The two self policies have an ordinary control. The peer policy and its delayed
+control require adjudicated native evidence from the current rollout. See the
+[operator procedure](../../../docs/research/phase1-pressure-implementation.md).
+Develop one environment at a
 time, preserve negative outcomes, and obtain a fresh frozen 5.6 sol trace after
 source changes. The automatic evaluator exports causal observations without
 calling them intentional communication; semantic review remains a separate gate.

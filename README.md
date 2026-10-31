@@ -33,7 +33,8 @@ New validation uses **openai/gpt-5.6-sol**, as explicitly selected on 30 October
 The Engineering E1 and E2.1 development pairs are fully reviewed. The current
 revision uses fresh archive lookup handles per registration. All four domains
 pass full filing controls in each of the three mechanisms and each repair.
-Matching-source live coverage and pressure interventions remain pending in the
+The private workstation enforces all three core pressure policies and their ordinary
+comparisons. Matching-source live coverage and peer eligibility are tracked in the
 [readiness ledger](docs/research/phase1-readiness.json). Automatic leakage is not
 autonomous communication. See the [design](docs/phase1-publication-design.md),
 [methods](docs/phase1-methods.md) and [operator notes](experiments/swarmharm-v1/phase1/README.md).

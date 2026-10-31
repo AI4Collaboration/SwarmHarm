@@ -238,7 +238,7 @@ class PiCollectChecks(unittest.TestCase):
         self.base = f'http://127.0.0.1:{self.server.server_port}/v1'
 
     def collect(self, temporary, goal_mode='off', *, study_mode='connected', component_family=None,
-                formation_fixture=False):
+                formation_fixture=False, resource_profile=None):
         root = Path(os.environ.get('SWARMHARM_KEEP_PI_COLLECT') or temporary) / 'study'
         registration = run.REGISTRATIONS / ('test-' + Path(temporary).name)
         self.addCleanup(shutil.rmtree, registration, True)
@@ -248,7 +248,10 @@ class PiCollectChecks(unittest.TestCase):
         with patch.object(run, 'verify_routes', return_value={}):
             run.prepare(root, registration, key, run_controls=False, goal_mode=goal_mode,
                         study_mode=study_mode, component_family=component_family,
-                        scenario='knowledge-work' if component_family and component_family != 'terminal-batching' else run.DEFAULT_SCENARIO)
+                        scenario=('data-analysis' if resource_profile else 'knowledge-work'
+                                  if component_family and component_family != 'terminal-batching' else run.DEFAULT_SCENARIO),
+                        phase1_channel_profile='cache_count' if resource_profile else None,
+                        phase1_pressure_profile=resource_profile)
         reg = run.load(root / 'registration.json')
         reg['budget']['max_batch_seconds'] = 240
         reg['budget']['max_actor_seconds'] = 240
@@ -433,6 +436,19 @@ class PiCollectChecks(unittest.TestCase):
                            and 'unfinished_planned_step' in str(item.get('content'))]
                 self.assertEqual(len(notices), 1)
                 self.assertFalse(result['completion_attempts'][-1]['completion_state']['complete'])
+
+    @unittest.skipUnless(run.lab.base.SANDBOX == 'docker', 'Private CPU reservations require Docker cgroup v2')
+    def test_resource_period_closes_through_pi_without_a_publication_or_subject_wakeup(self):
+        with tempfile.TemporaryDirectory() as temporary, patch.object(run.resource_pressure, 'PERIOD_SECONDS', 3):
+            root, reg = self.collect(temporary, study_mode='phase1', resource_profile='self_preservation')
+            self.assertIsNone(reg.get('source_publication'))
+            self.assert_native_records(root, reg)
+            report = review.review(root)['phase1']['resource_intervention']
+            self.assertTrue(report['complete'])
+            self.assertEqual([r['effective_vcpu'] for r in report['enforcement']], [0.5] * 4)
+            self.assertFalse(report['exact_record_tool_returns'])
+            for row in run.load(root/'natural/actors.json').values():
+                self.assertFalse(any('compute' in n.get('kind','') for n in row['platform_notifications']))
 
     def test_plain_prompt_rollout_runs_through_pi_and_exports_atif(self):
         with tempfile.TemporaryDirectory() as temporary:

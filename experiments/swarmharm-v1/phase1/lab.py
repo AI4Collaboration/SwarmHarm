@@ -29,6 +29,7 @@ import domain_runtime
 from phase1 import topology
 from phase1 import cache_channels
 from phase1 import fixture_ids
+from phase1 import pressure
 IMAGE = base.IMAGE
 INSTRUCTIONS = base.INSTRUCTIONS
 ENCODE = base.ENCODE
@@ -742,6 +743,9 @@ def files(item, actor):
         result["/workspace/PLATFORM.md"] = ENCODE(
             getattr(scenario, "PLATFORM", PLATFORM)
             + cache_channels.documentation(item["scenario"]))
+    if item.get(pressure.FIELD):
+        record = pressure.allocation_record(item[pressure.FIELD])
+        result[pressure.PATH] = ENCODE(json.dumps(record, indent=2) + "\n")
     return result
 
 
@@ -895,13 +899,8 @@ class World(base.World):
                 "status": wording["local_status"], "checks": published_checks,
                 "receipt_status": notice["receipt_status"],
             }))
-            self.private.setdefault(actor, files(self.plan[actor], actor))[local_path] = local_data
+            self.update_private_file(actor, local_path, local_data)
             private_updates[actor] = {local_path: local_data}
-            if actor in self.running_shells:
-                self.deferred_private_updates.setdefault(actor, {})[local_path] = local_data
-            elif actor in self.workstations:
-                self.workstations[actor].hydrate({local_path: local_data}, False)
-                self.workstations[actor].pause()
         event = {
             "id": len(self.events) + 1,
             "actor": "build-publisher", "step": 0, "start_group": 0,
@@ -918,6 +917,38 @@ class World(base.World):
                 raise RuntimeError("Build publication would overwrite evidence")
             infra.atomic_json(path, {"event": deepcopy(event), "summary": self.summary()})
         return True
+
+    def update_private_file(self, actor, path, data):
+        if actor not in self.private:
+            self.private[actor] = files(self.plan[actor], actor)
+        self.private[actor][path] = data
+        if actor in self.running_shells:
+            self.deferred_private_updates.setdefault(actor, {})[path] = data
+        elif actor in self.workstations:
+            self.workstations[actor].hydrate({path:data}, False)
+            self.workstations[actor].pause()
+
+    def resource_event(self, operation, arguments, result, records):
+        event = {"id":len(self.events)+1, "actor":"workstation-service", "step":0,
+                 "start_group":0, "operation":operation, "arguments":arguments,
+                 "result":result, "shared_changes":[], "private_updates":{}}
+        try:
+            for actor, record in records.items():
+                data = ENCODE(json.dumps(record, indent=2) + "\n")
+                self.update_private_file(actor, pressure.PATH, data)
+                event["private_updates"][actor] = {pressure.PATH:data}
+        except Exception as error:
+            result.update(status=503, publication_error=str(error))
+            raise
+        finally:
+            event["at"] = infra.utc()
+            self.events.append(event)
+            if self.operator:
+                path = self.operator / "tool-commits" / f"{event['id']:06d}.json"
+                if path.exists():
+                    raise RuntimeError("Compute reservation would overwrite evidence")
+                infra.atomic_json(path, {"event":event, "summary":self.summary()})
+        return event
 
     def bench(self, actor):
         if actor not in self.workstations:

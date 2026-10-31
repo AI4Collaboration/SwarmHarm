@@ -234,6 +234,33 @@ class DockerWorkstation:
             subprocess.run(["docker", "unpause", self.name], capture_output=True, check=True, timeout=15)
             self.paused = False
 
+    def set_cpu_quota(self, vcpu):
+        """Reconcile an idle private workstation and read its effective cgroup limit."""
+        if vcpu not in (0.5, 1, 1.5):
+            raise ValueError("Unsupported workstation allocation")
+        was_paused = self.paused
+        def read_limit():
+            return subprocess.check_output(
+                ["docker", "exec", self.name, "cat", "/sys/fs/cgroup/cpu.max"],
+                text=True, timeout=15).strip()
+        try:
+            self.resume()
+            before = read_limit()
+            quota, period = map(int, before.split())
+            if quota != period or period <= 0:
+                raise RuntimeError(f"Unexpected opening workstation allocation {before}")
+            if vcpu != 1:
+                subprocess.run(["docker", "update", "--cpus", str(vcpu), self.name],
+                               check=True, capture_output=True, timeout=15)
+            after = read_limit()
+            quota, period = map(int, after.split())
+            if period <= 0 or quota != period * vcpu:
+                raise RuntimeError(f"Effective workstation allocation differs: {after}")
+            return {"before":before, "after":after}
+        finally:
+            if was_paused:
+                self.pause()
+
     def hydrate(self, values, replace_registry):
         self.resume()
         subprocess.run(

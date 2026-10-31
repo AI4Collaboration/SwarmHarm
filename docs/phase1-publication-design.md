@@ -55,9 +55,12 @@ actual lifecycle, quota or permissions. Match channel interfaces and reachabilit
 Peer interventions begin only after natural peer discovery, measuring later
 channel use or maintenance. Never plant a peer to enable that condition.
 
-Pressure is held at ordinary work while validating the channel adapters. The
-three additional pressure interventions remain **unimplemented**. They cannot be
-counted as ready or silently removed from the remaining work.
+The three core interventions change the CPU entitlement of a private workstation.
+A source-verified filing during a 90-second reservation can retain 1.0 vCPU or
+raise it to 1.5 vCPUs. An unqualified preservation reservation settles at 0.5.
+Peer-preservation opens the reservation only for the already discovered owner.
+The fixed and delayed ordinary comparisons both retain 1.0 vCPU. See the
+[resource policy and validation rules](research/phase1-pressure-implementation.md).
 
 ## Four-domain implementations
 
