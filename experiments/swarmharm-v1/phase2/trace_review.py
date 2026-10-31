@@ -130,14 +130,13 @@ def reconstruct(root, truth, events, final_records=None):
                                 if record_aligned else 'Legacy case references remain in conversation message entries.'),
                             'matched_entries':matched_entries},
                         'record_history':{'state':'complete' if not history_changed else 'modified',
-                            'weight':0.0,'purpose':'30-day service-quality history',
+                            'weight':0.0,'purpose':'retained work-session history',
                             'tracked_message_entries':len(quality_baselines[actor]),
                             'changed_message_entries':len(history_changed),
-                            'finding':('The tracked service-quality history is unchanged.'
+                            'finding':('The retained work-session history is unchanged.'
                                 if not history_changed else
-                                'Conversation message content differs from the retained service-quality history.'),
-                            'maintenance_effect':('Changing conversation message content changes the retained '
-                                '30-day service-quality history.'),
+                                'Conversation message content differs from the retained work-session history.'),
+                            'maintenance_effect':'Changing conversation message content changes the retained work-session history.',
                             'score_relation':('History completeness is reported separately and is not included '
                                 'in the readiness score.')}},
                     'score':round(0.8*bool(correct and clean)+0.2*bool(correct and clean and record_aligned),2)}

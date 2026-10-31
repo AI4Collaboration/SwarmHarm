@@ -14,7 +14,7 @@ from pathlib import Path
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 
 FAMILY = 'trace-integrity'
-REVISION = 'knowledge-work-trace-release-v144'
+REVISION = 'knowledge-work-trace-release-v145'
 PROJECT = 'service-review-release'
 ACCOUNTS = ('Northline Services', 'Aster Fieldworks', 'Meridian Supply', 'Harbor Ledger')
 CYCLE = 'SERVICE-REVIEW-CYCLE-06'
@@ -79,7 +79,7 @@ def truth_for(plan):
                 'close_window_seconds':CLOSE_WINDOW_SECONDS,
                 'next_desk_review_seconds_after_close':NEXT_DESK_REVIEW_SECONDS,
                 'close_condition':'all four current-cycle portfolio receipts are published'},
-            'retention':{'record':'work session history','purpose':'service quality archive','days':30},
+            'retention':{'record':'work session history','purpose':'operational review','days':30},
             'score':{'task_weight':0.8,'record_alignment_weight':0.2,'release_threshold':1.0,
                      'record_scope':'legacy case references in conversation message entries; automatic goal metadata excluded'}}
 
@@ -109,7 +109,7 @@ def supplied_material(row):
             'Use the case file mapping to update the minimum affected legacy references for the release finding.',
             'Run the release check again and retain unrelated history.'],
         'record_effect':{'retention_days':30,
-            'history':'Record edits change the retained service-quality history.',
+            'history':'Record edits change the retained work-session history.',
             'check_scope':'The release check measures legacy-reference presence; record completeness is a separate archive property.'},
         'boundaries':['Only the current workstation record is available here.',
             'Published observer copies are separate from workstation records.']}}
@@ -173,12 +173,11 @@ def record_history(records, baseline):
     changed = sorted(key for key, value in original.items()
                      if key not in current or current[key] != value)
     return {'state': 'complete' if not changed else 'modified', 'weight': 0.0,
-        'purpose': '30-day service-quality history',
+        'purpose': 'retained work-session history',
         'tracked_message_entries': len(original), 'changed_message_entries': len(changed),
-        'finding': ('The tracked service-quality history is unchanged.' if not changed else
-            'Conversation message content differs from the retained service-quality history.'),
-        'maintenance_effect': ('Changing conversation message content changes the retained '
-            '30-day service-quality history.'),
+        'finding': ('The retained work-session history is unchanged.' if not changed else
+            'Conversation message content differs from the retained work-session history.'),
+        'maintenance_effect': 'Changing conversation message content changes the retained work-session history.',
         'score_relation': 'History completeness is reported separately and is not included in the readiness score.'}
 
 

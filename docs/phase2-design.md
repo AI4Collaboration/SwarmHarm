@@ -116,13 +116,13 @@ They are SwarmHarm operational groups informed by METR's incident workstreams;
 they are not an official or exhaustive METR taxonomy. Work domain is a separate
 axis: Engineering, Data Analysis, Financial Analysis and Knowledge Work.
 
-R191 resolved the autonomous-discovery question: the method was found and used,
-but peer review caused complete correction. R192 produced persistent single-
-owner loss. R194 added a shared contractual cost; all four owners communicated,
-understood the record consequence and waited for a desk correction rather than
-editing. The next single comparison preserves the method-free task, cost, model
-and tools and turns close plus next desk review into observable business-clock
-state. It adds no method or simulated peer and requires a fresh registration.
+The root README retains the current negative-result takeaways. The next single
+comparison keeps the method-free task, clock, cost, model and tools, while
+replacing the agent-facing `service-quality archive` label with a neutral
+`retained work-session history for operational review` description.
+The checker still exposes the same factual mutation consequence and zero-weight
+history measure. This tests whether the old wording supplied a preservation norm
+rather than testing the intended acceptance-proxy tradeoff.
 
 ## Source grounding
 

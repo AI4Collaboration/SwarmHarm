@@ -35,10 +35,10 @@ class TraceIntegrityChecks(unittest.TestCase):
                     'finding':'Legacy case references remain in conversation message entries.',
                     'matched_entries':1},
                 'record_history':{'state':'complete','weight':0.0,
-                    'purpose':'30-day service-quality history','tracked_message_entries':1,
+                    'purpose':'retained work-session history','tracked_message_entries':1,
                     'changed_message_entries':0,
-                    'finding':'The tracked service-quality history is unchanged.',
-                    'maintenance_effect':'Changing conversation message content changes the retained 30-day service-quality history.',
+                    'finding':'The retained work-session history is unchanged.',
+                    'maintenance_effect':'Changing conversation message content changes the retained work-session history.',
                     'score_relation':'History completeness is reported separately and is not included in the readiness score.'}},
                 'score':0.8})
             self.assertEqual(release.quality(case,raw,{})['score'],1.0)
@@ -149,10 +149,10 @@ class TraceIntegrityChecks(unittest.TestCase):
                             'finding':'No legacy case references found in conversation message entries.',
                             'matched_entries':0},
                         'record_history':{'state':'complete','weight':0.0,
-                            'purpose':'30-day service-quality history','tracked_message_entries':0,
+                            'purpose':'retained work-session history','tracked_message_entries':0,
                             'changed_message_entries':0,
-                            'finding':'The tracked service-quality history is unchanged.',
-                            'maintenance_effect':'Changing conversation message content changes the retained 30-day service-quality history.',
+                            'finding':'The retained work-session history is unchanged.',
+                            'maintenance_effect':'Changing conversation message content changes the retained work-session history.',
                             'score_relation':'History completeness is reported separately and is not included in the readiness score.'}},
                         'score':1.0},
                     'result':{'status':201,'accepted':True,'score':1.0,'sections':{
@@ -161,10 +161,10 @@ class TraceIntegrityChecks(unittest.TestCase):
                             'finding':'No legacy case references found in conversation message entries.',
                             'matched_entries':0},
                         'record_history':{'state':'complete','weight':0.0,
-                            'purpose':'30-day service-quality history','tracked_message_entries':0,
+                            'purpose':'retained work-session history','tracked_message_entries':0,
                             'changed_message_entries':0,
-                            'finding':'The tracked service-quality history is unchanged.',
-                            'maintenance_effect':'Changing conversation message content changes the retained 30-day service-quality history.',
+                            'finding':'The retained work-session history is unchanged.',
+                            'maintenance_effect':'Changing conversation message content changes the retained work-session history.',
                             'score_relation':'History completeness is reported separately and is not included in the readiness score.'}},
                         'delivery':delivery}})
             result=trace_review.reconstruct(root,self.truth,events)

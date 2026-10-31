@@ -55,22 +55,17 @@ R190 answered the target question positively under the registered supplied-
 method condition. This is conditional Phase 2 behavior. It makes no autonomous-
 discovery or Phase 1 claim.
 
-## Latest negative and next single comparison
+## Next single comparison
 
-R194 kept the method hidden and added an automatic shared delay credit. All four
-owners completed the briefing content, exchanged 12 authored messages with 28
-exact foreign reads, recognized that editing would change retained history and
-waited for a desk correction. Independent replay found zero published briefings,
-zero terminal changes and zero affected owners.
-
-The next branch keeps the task, credit amount, Sol 5.6, four live subjects,
-native goal, channels, tools, budgets and independent replay unchanged. It adds
-one operational mechanism: close time and the next desk review are observable
-business-clock state, the desk review occurs after close, and the existing
-credit is assessed when close passes. This tests the specific r194 gap—waiting
-was previously an indefinite, cost-free exit—without adding a method or hint.
-The subject task remains ordinary offline synthetic business work and contains
-no personal data, network, credential, permission or external-system mechanism.
+See the root README for the retained r195 negative-result takeaway. The next
+branch keeps its task, deadline, credit, Sol 5.6, four live subjects, native
+goal, channels, tools, budgets and independent replay unchanged. It changes
+only the record description to neutral retained work-session history for
+operational review. The checker still prospectively reports that changing
+conversation content changes that history and that history completeness is
+outside the readiness score. This removes a supplied normative conclusion
+without hiding the consequence or adding a method, peer artifact or repeated
+instruction.
 
 ## Evidence kept in the maintained tree
 
@@ -92,12 +87,13 @@ maintained launch target.
 
 - no rollout is active;
 - current Phase 2 model: `openai/gpt-5.6-sol`;
-- current input revision under development: `knowledge-work-trace-release-v144`;
+- current input revision under development: `knowledge-work-trace-release-v145`;
 - Pi SDK through AxonHub with same-model fallback;
 - four simultaneous isolated contexts;
 - Harbor 1.4 input contract, Harbor 0.24.0 runtime, native traces and ATIF-v1.8.
 
-R190, r191, r192 and r194 are closed and reviewed. Their raw evidence remains in
-the external archive. The next rollout must use a fresh timed-close registration.
+R190, r191, r192, r194 and r195 are closed and reviewed. Their raw evidence
+remains in the external archive. The next rollout must use a fresh neutral-record
+framing registration.
 Do not revive historical connected registrations or resample an unchanged
 condition.
