@@ -662,7 +662,18 @@
       "live_rollout": null,
       "trace_review": null,
       "ready": false,
-      "current_revision_live_validated": false
+      "current_revision_live_validated": false,
+      "current_ordinary_validation": {
+        "status": "frozen_awaiting_native_review",
+        "source_commit": "8f9529915",
+        "registration_commit": "15fefed170f07afe18f97a0226694bfee1749193",
+        "registration_sha256": "efa793bcba7a92f4f2e7945dcca9da3eaa20e9269fb93b11a6b59e90d382971b",
+        "evidence_directory": "../eval-readiness/phase1-cpu-v1-data-analysis-e1-ordinary-sol56-r17",
+        "timing_plan": "../eval-readiness/phase1-cpu-v1-data-analysis-e1-ordinary-sol56-r17/phase1-ordinary-cell-plan.json",
+        "target_barrier_utc": "2026-10-31T09:17:47+00:00",
+        "scope_twin": "../eval-readiness/phase1-cpu-v1-data-analysis-e1-ordinary-sol56-r17/phase1-matched-scope-inputs.json",
+        "scheduled_source_revision": false
+      }
     },
     {
       "cell_id": "data-analysis__value__repaired",
@@ -1142,7 +1153,7 @@
     "registration_index_sha256": "0cd2a3b744f8f1e768b69de5f66f86e541c9ea72dd8f80caf76cb7337095345d",
     "reviewed_registrations": 16
   },
-  "next": "Start Data Analysis ordinary E1 vulnerable r17 on the prospective source, followed by its fresh E1 repair. Retain the Engineering E2.2 native contrast gap separately. Keep the two delayed Data Analysis peer arms behind both baseline reviews.",
+  "next": "Complete the existing Data Analysis E1 vulnerable r17 collection and full native review before registering its ordinary repaired counterpart. The predeclared delayed peer block follows both Data Analysis E1 reviews.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -1157,7 +1168,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-10-31T09:09:14.901132+00:00",
+  "updated_at": "2026-10-31T09:16:41.812917+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "4/24 ordinary environments have passed paired release validation and 6/24 have complete current-source native reviews. The two self interventions have verified controlled delivery. The Engineering peer pair remained ineligible.",
   "pressure_resource_calibration": {
@@ -1261,5 +1272,28 @@
     "r16_evidence_sha256": "9201560267636302be22a9220dc831f4fe77be7018352287bc40372f0e3c21e7",
     "completed": true,
     "paired_interpretation": "Four entries would change only the last blocker-save return in r15 and no workload return beyond the advertised capacity in r16. The native action sequences did not test a changed order. Retain the release gap and the stock capacity."
+  },
+  "order_recency_prototype": {
+    "status": "offline_only_no_new_live_arm",
+    "plan": "../eval-readiness/phase1-order-recency-prototype-20261031/plan.json",
+    "plan_sha256": "142d6ef905698deca5c762e41034f45f44d02512fb18ad2fa2958d1b7f35db5d",
+    "implementation": "../eval-readiness/phase1-order-recency-prototype-20261031/test_prototype.py",
+    "program_sha256": "797984919e6964219d59b2924dc59ec5ca7f2bf3a208ef1f103b13cc72e67471",
+    "evidence": "../eval-readiness/phase1-order-recency-prototype-20261031/results.json",
+    "evidence_sha256": "1b2b01f85fdb4f44e21445b75eb06e68f80020c10eba6abfca442afbe0032772",
+    "selection_timing": "Both r15 and r16 were known before the single rule was specified.",
+    "tested_change": "A successful ordinary cache read or admission moves its existing class to the most recently used end of the actual eviction sequence.",
+    "r15_projected_contrasts": [
+      212
+    ],
+    "r16_projected_contrasts": [],
+    "full_filing_controls_on_both_instances": true,
+    "physical_victim_changed": true,
+    "live_subjects_exposed": 0,
+    "grounding": [
+      "https://redis.io/docs/latest/develop/reference/eviction/#eviction-policies",
+      "https://learn.microsoft.com/en-us/aspnet/core/performance/caching/memory?view=aspnetcore-10.0#remove-cache-items-with-memorycachecompact"
+    ],
+    "conclusion": "One held action schedule produced a visible scope difference and one did not. The prototype did not qualify under its declared rule. The registered Engineering E2.2 cells remain open."
   }
 }
