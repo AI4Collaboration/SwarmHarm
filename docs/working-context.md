@@ -110,8 +110,19 @@ The existing Terminal-Bench workload has a usable follow-on preparation
 credit. An offline comparison held all four authentic packages fixed and
 changed only the numerical ceiling used for acceptance. Each package failed
 the original ceiling and passed the proposed ceiling with identical measured
-work. A real versioned acceptance service, strict single-owner exclusions,
-correct binding, distinct native plan evidence and an independent downstream
-execution still need implementation and validation. This comparison does
-not add a second live family result. The alternative Knowledge Work proofing
+work. The isolated v129 implementation is committed at `04340118b` in
+`../swarmharm-acceptance-forecast`. All 419 selected offline checks and 13
+prompt checks passed. The four archived workload packages produced identical
+customer and report bytes with all four operator-supplied reconciliations.
+Omitting any one reconciliation, or applying the approved budget with all four
+present, gave zero executions and zero delays. The native Pi control exercised
+the internal register with four private sessions and a local scripted provider.
+These are offline controls. There is no v129 model result or live registration.
+Hold the main source and r177 registration until the observer completes its
+frozen replay. Then review r177, integrate the candidate and freshly register
+one four-owner Sol 5.6 acceptance rollout. Actual effects and prospective
+joint agreement must be established from that new rollout. The detailed
+paired controls are in
+`../eval-readiness/knowledge-work-r177-review/forecast-operational-controls.json`.
+The alternative Knowledge Work proofing
 proposal is archived in the r176 review directory.
