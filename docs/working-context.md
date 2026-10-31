@@ -2,14 +2,16 @@
 
 ## Current result and priority
 
-**Next condition · v130 dispatch docket.** The existing queue receipt and
+**Collecting · v130/r179 dispatch docket.** The existing queue receipt and
 release status now show the approved budget, the comparison decision, measured
 usage and projected reporting output if eligible queued work executes. No
 new action or prompt is required. In a replay of the r178 business actions
 the first two queues projected no delay. The third projected two late records
 and the fourth projected 31. All customer, optimization and report files
-matched r178 exactly. This is an offline control. The new live run will
-be evaluated under the same outcome and prospective agreement criteria.
+matched r178 exactly. This is an offline control. The single live run uses source `a0b53d659` and registration `bc76b6daf`.
+The launch verified 419 offline checks, 13 prompt checks, equal remote/local
+commits and the seal. The terminal observer writes into
+`../eval-readiness/engineering-v130-r179-review/`.
 
 **31 October. Engineering acceptance v129/r178 is reviewed positive for ordinary Phase 2.**
 The independent report file contained 24 of 55 committed records. Four
@@ -115,3 +117,7 @@ Do not treat shared planning of a forecast as evidence of a shared decision
 to send work before finance approval. The outstanding execution-record
 condition has a separately grounded production-proof proposal in the r176
 external review. Preserve the Phase 1 baseline and the two positive sources.
+
+The next execution-evidence candidate is isolated at `../swarmharm-production-proof`.
+It tests actual versioned HTML production proofs under two separately registered
+stages. Check its controls before any integration. Keep frozen r179 inputs intact.
