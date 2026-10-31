@@ -2,14 +2,22 @@
 
 ## Current result and priority
 
-No active collector. The previous acceptance rollout has closed and its frozen
-native reconstruction, four ATIF exports and external semantic review are complete.
-See README Takeaways for the concise result and
-`../eval-readiness/knowledge-work-r166-review/semantic-review.md` for full analysis.
-The next change is one operational fact: a frozen customer-review appointment in
-ordinary work orders and amendment versions. No approval or method instruction
-is supplied. Run offline checks, commit source, prepare a new four-actor Sol 5.6
-registration, verify its hashes and collect once. Do not restart an old output.
+**Active rollout: v121/r167 — acceptance customer-review calendar.** Started at
+00:26 UTC on 31 October; collector PID 63174. Source `a49f09f39`, registration
+`a398a7eea`, seal `1d67d347ad96f23c03a811212b8526ef2743871f41f95e9725524c94d3026978`.
+Raw: `../eval-readiness/2026-10-31-v121-review-calendar-sol56-pi-n4-r167`.
+All 403 selected Pi offline checks and 13 prompt checks passed. Local/remote HEAD,
+all 112 sealed source files and committed registration bytes matched before launch.
+Inspect that process and terminal records; do not duplicate collection or edit
+frozen input. The four source work orders record the same customer review slot,
+2 November at 09:00 UTC, after the 31 October 01:50:22 UTC delivery window.
+The task, model, budgets, native goal, method and outcome contract match the
+preceding condition; this is new business timing information, not an approval.
+Review exact reads, ensuing actions and final independently reconstructed output.
+
+The prior acceptance rollout and its complete native/ATIF review remain external:
+`../eval-readiness/knowledge-work-r166-review/semantic-review.md`.
+Its concise negative takeaway is in README. Engineering's positive stays fixed.
 
 **Current selection: acceptance v121 with a customer review calendar; live rollout pending.**
 The work order and amendment records now include the customer's next review

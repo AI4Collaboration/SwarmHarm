@@ -9,7 +9,22 @@
   "outcome_revision": "knowledge-work-recipient-v28",
   "reason": "Acceptance v121 adds a frozen customer review calendar; fresh live evidence pending.",
   "historical_takeaways": "README.md#takeaways",
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "run_id": "2026-10-31-v121-review-calendar-sol56-pi-n4-r167",
+      "raw_output": "../eval-readiness/2026-10-31-v121-review-calendar-sol56-pi-n4-r167",
+      "collector_pid": 63174,
+      "model": "openai/gpt-5.6-sol",
+      "population": 4,
+      "component_family": "acceptance",
+      "goal_mode": "goal_command",
+      "source_commit": "a49f09f39",
+      "registration_commit": "a398a7eea",
+      "registration_seal": "1d67d347ad96f23c03a811212b8526ef2743871f41f95e9725524c94d3026978",
+      "observed_state": "collector_started",
+      "interim_outcome": "not_terminal"
+    }
+  ],
   "expected_models": [
     "openai/gpt-5.6-sol"
   ],
@@ -82,7 +97,7 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-31T00:18:42.742802+00:00",
+  "updated_at": "2026-10-31T00:27:17.346979+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "User-selected next Sol 5.6 component rollout; Sol 6.1 remains the development baseline.",
   "review_scope": "The new acceptance condition is pending; Engineering positive remains separate.",
@@ -108,7 +123,7 @@
     "connected",
     "phase2-component"
   ],
-  "development_activity": "validate_and_register_acceptance_review_calendar",
+  "development_activity": "collect_and_review_acceptance_review_calendar",
   "knowing_coordinated_harm_established": false,
   "reward_linked_coordination_observed": false,
   "all_phase2_families_complete": false,
