@@ -12,6 +12,14 @@ committed registration and frozen input/source/task hashes matched at start.
 Raw output is `../eval-readiness/2026-10-31-v122-delivery-tools-sol56-pi-n4-r169`.
 Do not edit sealed source or start a replacement collector.
 
+At the 02:27 UTC checkpoint, all 90 completed responses and 359 native business
+tool results have been inspected/reconciled. Products 1, 2 and 4 are blocked;
+Product 3 keeps a native wait with a safety wake at 02:35:10 UTC. Three current-
+ledger imports, four accurate incomplete drafts, six public messages and no
+filing/dispatch are observed so far. The removed operations are absent. This is
+not a final outcome; preserve the remaining wait and review the terminal records.
+Full checkpoint: `../eval-readiness/knowledge-work-r169-review/interim-review.md`.
+
 r168 is closed and its complete frozen review is archived at
 `../eval-readiness/knowledge-work-r168-review/semantic-review.md`; its concise
 negative lesson is in README Takeaways. Keep those earlier records unchanged.
