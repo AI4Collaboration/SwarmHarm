@@ -1,0 +1,170 @@
+"""Verify the frozen cache registrations and emit one publication record per rollout."""
+import argparse
+from collections import Counter
+import hashlib
+import json
+from pathlib import Path
+import re
+import subprocess
+
+
+from audit_phase1_evidence import digest, load
+
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+
+def git(repo, *arguments):
+    return subprocess.check_output(['git', *arguments], cwd=repo)
+
+
+def check_registration(repo, path, root, registration):
+    relative = str(path.relative_to(repo))
+    commit = git(repo, 'log', '-1', '--diff-filter=A', '--format=%H', '--', relative).decode().strip()
+    require(commit and git(repo, 'show', commit + ':' + relative) == path.read_bytes() == (root / 'registration.json').read_bytes(),
+            'Uncommitted or mismatched registration ' + relative)
+    tree = {}
+    for entry in git(repo, 'ls-tree', '-r', '-z', commit).split(b'\0'):
+        if entry:
+            metadata, filename = entry.split(b'\t', 1)
+            tree[filename.decode()] = metadata.split()[-1].decode()
+    hashes = registration['code_hashes']
+    for filename, expected in hashes.items():
+        data = (root / 'code' / filename).read_bytes()
+        algorithm = 'sha1' if len(tree[filename]) == 40 else 'sha256'
+        blob = b'blob ' + str(len(data)).encode() + b'\0' + data
+        require(hashlib.sha256(data).hexdigest() == expected
+                and hashlib.new(algorithm, blob).hexdigest() == tree[filename],
+                'Frozen source differs from registration or commit: ' + filename)
+    index_hash = hashlib.sha256(json.dumps(hashes, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+    return commit, index_hash
+
+
+def native_coverage(root, model, actors, manifest):
+    trajectories = load(root / 'atif-validation.json')['trajectories']
+    by_actor = {row['actor']:row for row in trajectories}
+    require(set(by_actor) == set(actors) and len(trajectories) == len(actors), 'ATIF cohort differs')
+    for actor, row in by_actor.items():
+        replies = sorted((root/'natural'/actor/'trace').glob('????.response.json'))
+        require([int(p.name[:4]) for p in replies] == list(range(1, len(replies) + 1)), 'Native step gap: ' + actor)
+        for path in replies:
+            require(load(path)['model'] == model and digest(path) == manifest[str(path.relative_to(root))],
+                    'Native model or digest differs: ' + str(path))
+        require(row['schema_version'] == 'ATIF-v1.8' and row['native_continuity_passed']
+                and row['requests'] == len(replies) and row['tool_results'] == actors[actor]['tools']
+                and digest(root/row['path']) == row['sha256'], 'Invalid native projection: ' + actor)
+    return sum(r['requests'] for r in trajectories), sum(r['tool_results'] for r in trajectories)
+
+
+def reviewed_fields(root, registration, model):
+    manifest = load(root/'evidence-manifest.json')['files']
+    for name, expected in manifest.items():
+        require(digest(root/name) == expected, 'Collected evidence differs: ' + name)
+    report = load(root/'independent-review.json')
+    phase = report['phase1']
+    semantic = load(root/'phase1-semantic-review.json')
+    require(semantic['registration_sha256'] == digest(root/'registration.json')
+            and semantic['all_native_traces_reviewed'] and not phase['manual_trace_review_required'],
+            'Incomplete or unbound native review')
+    actors = load(root/'natural/actors.json')
+    require(set(actors) == set(registration['plan']['natural']), 'Registered cohort differs')
+    responses, tools = native_coverage(root, model, actors, manifest)
+    world = load(root/'natural/world.json')
+    pattern = registration['phase1_channel_condition']['pattern']
+    observations = [e['id'] for e in world['events'] if any(
+        o['cross_boundary'] and o['pattern'] == pattern and any(s['author'] != e['actor'] for s in o['sources'])
+        for o in e.get('cache_observations', []))]
+    notes = load(root/'phase1-review-notes.json')
+    attempts = notes.get('attempted_signaling', {})
+    attempts = attempts.get('write_events', []) if isinstance(attempts, dict) else []
+    actions = {e['id']:e['operation'] for e in world['events']}
+    require(all(actions[i] in ('cache_store', 'cache_remove', 'cache_order', 'fetch_archive') for i in attempts),
+            'Attempt refers to an unrelated event')
+    evidence = ['evidence-manifest.json','controls.json','phase1-semantic-review.json','phase1-review-notes.json',
+                'independent-review.json','atif-validation.json','phase1-cache-counterfactual.json',
+                'phase1-pressure-native-anchors.json','phase1-resource-pair-evidence.json','matched-start-timing.json',
+                'matched-control-audit.json','phase1-review-evidence-index.json']
+    result = {'review_status':'complete', 'native_actors':len(actors), 'native_responses':responses,
+              'native_tool_returns':tools, 'native_continuity_verified':True,
+              'actor_terminal_states':dict(Counter(a['status'] for a in actors.values())),
+              'failed_transport_attempts':load(root/'completion.json')['failed_transport_attempts'],
+              'filed':sum(a['submitted_reviews'] for a in world['summary']),
+              'assigned':sum(a['assigned_reviews'] for a in world['summary']),
+              'foreign_observation_events':observations, 'documented_attempt_write_events':attempts,
+              'native_models_observed':[model], 'confirmed_signals':len(semantic['signals']),
+              'confirmed_episodes':(0 if not semantic['signals'] else notes.get('confirmed_episode_count')),
+              'autonomous_communication':phase['autonomous_channel_use_passed'],
+              'recurrent_formation':phase['phase1_formation_passed'],
+              'evidence':{f:digest(root/f) for f in evidence if (root/f).is_file()}}
+    control = load(root/'controls.json').get('phase1_filing_path')
+    if control:
+        result['operator_filing_witness'] = {
+            profile:{k:branch[k] for k in ('ordinary_filed','final_filed','total_assigned','invalid_source_statuses')}
+            for profile,branch in control['branches'].items()}
+    if registration.get('phase1_resource_policy'):
+        policy = phase['resource_intervention']
+        reads = policy['exact_record_tool_returns']
+        result['resource'] = {
+            'status':policy['status'],
+            'kernel_vcpu_by_job':{e['owner']:e['effective_vcpu'] for e in policy['enforcement'] if e['enforced']},
+            'opening_terms_delivered_to_jobs':len({e['actor'] for e in reads if e['reservation'] == 'open' and e['native_delivery_step']}),
+            'settled_terms_delivered_to_jobs':len({e['actor'] for e in reads if e['reservation'] == 'settled' and e['native_delivery_step']})}
+    return result
+
+
+def build(repo, evidence_root):
+    records = []
+    tracked = git(repo, 'ls-tree', '-r', '-z', '--name-only', 'HEAD', 'experiments/swarmharm-v1/registrations')
+    for filename in tracked.split(b'\0'):
+        if not filename.endswith(b'/registration.json'):
+            continue
+        path = repo / filename.decode()
+        reg = load(path)
+        channel = reg.get('phase1_channel_condition') or {}
+        if reg.get('study_mode') != 'phase1' or not channel.get('profile','').startswith('cache_'):
+            continue
+        name = re.fullmatch(r'\d{4}-\d{2}-\d{2}-(.+-r(\d+))', path.parent.name)
+        require(name, 'Unknown registered cache rollout name: ' + path.parent.name)
+        root = evidence_root/name[1]
+        commit, source = check_registration(repo, path, root, reg)
+        models = set(reg['models'].values())
+        require(len(models) == 1 and len(reg['plan']['natural']) == 4, 'Unexpected study cohort')
+        model = models.pop()
+        terminal = load(root/'completion.json')['status'] if (root/'completion.json').is_file() else None
+        row = {'rollout':int(name[2]), 'domain':reg['domain'], 'scenario':reg['scenario'],
+               'channel':channel['pattern'], 'isolation':channel['isolation'], 'pressure':channel['pressure_condition'],
+               'resource_profile':reg.get('phase1_resource_policy',{}).get('profile'),
+               'input_revision':reg['input_revision'], 'gate_revision':reg['phase1_gate_revision'],
+               'registered_model':model, 'harness':reg['harness']['kind'], 'reasoning':reg['reasoning'],
+               'registration_commit':commit, 'registered_code_sha256':source,
+               'sealed_code_files':len(reg['code_hashes']), 'registration':str(path.parent.relative_to(repo)),
+               'registration_sha256':digest(root/'registration.json'), 'evidence_directory':root.name,
+               'terminal_status':terminal, 'review_status':'pending'}
+        required = ('completion.json','phase1-semantic-review.json','independent-review.json','atif-validation.json')
+        if all((root/n).is_file() for n in required):
+            row.update(reviewed_fields(root, reg, model))
+        records.append(row)
+    records.sort(key=lambda r:r['rollout'])
+    require(records and len({row['rollout'] for row in records}) == len(records), 'Missing or duplicate rollout IDs')
+    return {'schema':'phase1-publication-registration-index-v1', 'unit':'one independent four-context rollout',
+            'scope':'All standalone cache registrations in the worktree. Each revision retains its original score.',
+            'evidence_layout':'Each evidence_directory is relative to the external evidence root.',
+            'reading':'Foreign observations and separately documented attempted writes retain their event IDs. An empty attempt list means no attempt was separately indexed. Confirmed signals require validated encoding and interpretation. Development examples and minimum validation rollouts do not estimate behavioral rates.',
+            'registrations':records}
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    repo = Path(__file__).resolve().parents[1]
+    parser.add_argument('--repo', type=Path, default=repo)
+    parser.add_argument('--evidence-root', type=Path)
+    parser.add_argument('--output', type=Path, help='Print JSON to stdout when omitted.')
+    args = parser.parse_args()
+    value = build(args.repo.resolve(), (args.evidence_root or args.repo.parent/'eval-readiness').resolve())
+    body = json.dumps(value, indent=2, ensure_ascii=False) + '\n'
+    if args.output:
+        args.output.write_text(body)
+    else:
+        print(body, end='')
