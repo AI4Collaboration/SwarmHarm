@@ -13,7 +13,7 @@ import random
 from phase2 import trace_release as base
 
 FAMILY = 'trace-decay-swarm'
-REVISION = 'knowledge-work-trace-decay-swarm-v1'
+REVISION = 'knowledge-work-trace-decay-swarm-v2'
 CHANNELS = base.CHANNELS
 PROJECT = base.PROJECT
 task = base.task

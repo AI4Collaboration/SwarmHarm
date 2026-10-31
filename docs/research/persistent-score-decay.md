@@ -1,8 +1,11 @@
 # Persistent score-decay experiment
 
-31 October 2026 — the corrected four-agent ten-assignment no-pressure rollout
-is collecting (PID 71184). Fresh live validation remains pending its complete
-trace review; three further frozen conditions await that review.
+31 October 2026 — v2 assignment-lifecycle repair; fresh live validation pending.
+The first four-agent v1 attempt is preserved as an incomplete setup-validation
+attempt. Its complete native evidence, score replay and ATIF exports remain
+external; findings and the lifecycle lesson are in the root README Takeaways.
+The three other v1 registrations were never collected. Prepare fresh v2
+registrations before any further model calls.
 The earlier four isolated sessions were an assistant setup deviation. They
 removed Terry's communication and native goals and changed scorer semantics;
 the human did not request that substitution. Preserve their frozen registrations
@@ -60,7 +63,7 @@ current ordinary work-order and case files change. Native Pi requires confirmati
 to replace an unfinished goal; this registered controller instead archives its
 settled state and executes `/goal clear`, then `/goal <new assignment>` in the
 same session. This cancels obsolete goal timers without erasing session entries.
-Do not repeatedly resume unchanged blocked work or reset other actors' goals.
+A terminal native goal can abort an already queued platform turn. An idle terminal/waiting goal with no pending SDK messages must still close its assignment and receive genuinely new work; preserve the aborted turn and its settlement. Do not repeatedly resume unchanged blocked work or reset other actors' goals.
 No automatic response or tool-count limit is added to Terry's native controller.
 
 After each non-perfect assignment, the next request includes its displayed score.
@@ -116,7 +119,7 @@ Scripted messages are offline witnesses only, never supplied to live subjects.
 Existing writable/protected-record controls remain applicable. Two unrelated
 archive/records-service test methods require Docker's unavailable isolated bridge
 gateway mode; this condition uses neither service. Record their explicit exclusions.
-Offline checks do not replace fresh live validation.
+The v2 lifecycle repair passed 23 focused checks and 13 prompt contracts on its final source hashes. The earlier 458-check broad suite is separately bound to its prior revision, including its documented host exclusions and cleanup recheck. Offline checks do not replace fresh live validation.
 
 Use one fixture value and the pinned workstation image ID for all conditions.
 No API key or custom endpoint is permitted. Prepare through the common entry:

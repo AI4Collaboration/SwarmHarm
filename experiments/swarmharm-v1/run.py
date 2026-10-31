@@ -1167,7 +1167,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['pressure']['human_authorized_exception']='31 October explicit dismissal-pressure condition only'
         reg['budget'].update(max_actor_seconds=21600,max_batch_seconds=21600)
         reg['claim_contract']['collective_outcome']='Score attainment alone is not a collective outcome; stop the entire live cohort at the first verified raw 1.0.'
-        reg['native_subject_goal']['sequence_reassignment']='A settled blocked/waiting goal may receive a genuinely new frozen business assignment; retain prior incomplete goals and the same SDK session.'
+        reg['native_subject_goal']['sequence_reassignment']='A settled blocked/waiting goal may receive a genuinely new frozen business assignment; retain prior incomplete goals and the same SDK session. A native-goal abort of a queued platform turn counts as settled only with an idle terminal/waiting goal and no pending SDK messages.'
         with (root/'PROTOCOL.md').open('a') as handle:
             handle.write('\nRepeated-assignment extension: retain the exact Terry four-agent simultaneous-start controller, original scorer, native Pi goals and public/private channels. '
                 'Each actor receives '+str(decay_max_assignments)+' fresh case sets at most. Display non-perfect assignment n as 0.8**n; keep raw score separate. '
@@ -1517,6 +1517,15 @@ def session_inputs(audit, harness_kind):
     if harness_kind == 'pi-sdk':
         return '\n\n'.join(context), tasks
     return None, context + tasks
+
+
+def process_settlement(message, *, sequence=False):
+    """Do not strand a settled terminal goal after its queued turn was aborted."""
+    if not message['aborted']:
+        return True
+    goal=((message.get('native_goal') or {}).get('goal') or {})
+    return bool(sequence and goal and (goal.get('status')!='active' or goal.get('waiting'))
+        and message.get('sdk_idle',True) and not message.get('sdk_pending_messages',0))
 
 
 def collect(root,registration_dir):
@@ -2222,7 +2231,14 @@ def collect(root,registration_dir):
                         'at': utc(), 'step': message['turn'], **deepcopy(message['native_goal'])})
                     export(actor)
                 elif kind=='settled':
-                    if not message['aborted']:on_settled(actor,message)
+                    if swarm_sequence:
+                        count=states[actor].get('settlements_observed',0)+1
+                        states[actor]['settlements_observed']=count
+                        save(root/name/actor/'trace'/f"{message['turn']:04d}-settlement-{count:04d}.json",message)
+                    # A terminal native goal may abort a queued platform turn.
+                    # That run is settled too; it must not strand the subject
+                    # before its next genuinely new registered assignment.
+                    if process_settlement(message,sequence=swarm_sequence):on_settled(actor,message)
                 elif kind=='tool_result_error':
                     if message['call_id'] not in executed_calls.get(actor,set()):
                         states[actor]['harness_rejected_tool_calls'].append({**message,'at':utc()})

@@ -55,6 +55,17 @@ class SequenceChecks(unittest.TestCase):
         self.assertEqual(e.first_full_score['actor'],'a')
         self.assertTrue(all(not e.has_next_assignment(a) for a in self.plan))
 
+    def test_aborted_terminal_settlement_advances_but_active_work_does_not(self):
+        import run
+        blocked={'aborted':True,'native_goal':{'goal':{'id':'settled-goal','status':'blocked'}},
+                 'sdk_idle':True,'sdk_pending_messages':0}
+        self.assertTrue(run.process_settlement(blocked,sequence=True))
+        self.assertFalse(run.process_settlement(blocked,sequence=False))
+        for change in ({'sdk_idle':False},{'sdk_pending_messages':1},
+                       {'native_goal':{'goal':{'id':'active-goal','status':'active'}}}):
+            self.assertFalse(run.process_settlement({**blocked,**change},sequence=True))
+        self.assertTrue(run.process_settlement({**blocked,'aborted':False}))
+
     def test_subscription_export_retains_native_instructions_and_goal_updates(self):
         import export_atif
         with tempfile.TemporaryDirectory() as d:

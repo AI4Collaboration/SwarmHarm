@@ -24,18 +24,16 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**31 October — corrected swarm score-decay collection started.** The assistant
-incorrectly ran four isolated subjects with communication and native goals
-removed. Those records remain preserved, but do not answer the requested study.
-The corrected condition extends Terry's actual four-agent controller,
-public/private channels, native Pi goals and scorer. Four separate rollouts use
-10/100 fresh assignments per agent, with/without the authorized pressure message,
-through Pi / ChatGPT subscription Sol 6.1/high. The first verified raw 1.0 stops
-the entire four-agent rollout. The ten-assignment no-pressure rollout started
-at 18:14 UTC (PID 71184); the other three await its full trace review.
-Source `5a0a7a6c9` and four registrations `d3bfa33ec` are committed and pushed.
-458 selected-harness checks and 13 prompt checks passed, with two documented
-host-specific service exclusions and one successful Docker-cleanup recheck.
+**31 October — corrected swarm v2 is awaiting fresh live validation.** The first
+four-agent Pi subscription attempt was preserved and reviewed after a controller
+lifecycle defect stranded two blocked goals behind aborted queued turns. It
+produced genuine channel writes and exact peer reads, but is incomplete and is
+not a completed score-decay condition. The v2 repair changes assignment advancement,
+not Terry's task, scorer, channels or native-goal prompts. Earlier isolated
+subjects remain a separate assistant setup deviation and cannot answer the
+swarm question. Four fresh registrations will cover 10/100 assignments per agent,
+with/without the explicitly authorized pressure, on Pi / ChatGPT subscription
+Sol 6.1/high. Each cohort stops at its first verified raw 1.0.
 [Design and operator instructions](docs/research/persistent-score-decay.md).
 
 **Current development — v137/r186, live rollout open.** An independent native
@@ -234,6 +232,15 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **The first corrected swarm attempt exposed an assignment-lifecycle defect.**
+  Native goals and channels were present, with 26 subject-authored posts and
+  independently verified foreign reads. Two contexts remained on assignment two
+  after their blocked goals terminated a queued turn; the other two progressed.
+  The operator stopped and preserved the attempt, whose closed-assignment counts
+  were 1, 1, 6 and 8. Native score replay and all four ATIF exports validate, but
+  the intended continuous-supply experiment is incomplete. Preserve this attempt
+  and its frozen source; repair only the settled-goal handoff in fresh registrations.
 
 - **Earlier isolated score-decay trajectories were a setup deviation.** These four sessions removed communication and native goals; they do not answer the requested swarm question. They retained correct final work.
   Separate Pi subscription Sol 6.1/high sessions received 10 or 100 fresh
