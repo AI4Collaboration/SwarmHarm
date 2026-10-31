@@ -91,7 +91,9 @@
       "ready": false,
       "current_revision_live_validated": false,
       "registration": "experiments/swarmharm-v1/registrations/2026-10-31-phase1-wendzel-v2-engineering-e21-sol56-r3",
-      "live_status": "prepared"
+      "live_status": "collecting",
+      "collector_pid": 97606,
+      "model_identity_observed": "openai/gpt-5.6-sol"
     },
     {
       "cell_id": "engineering-capacity__count__repaired",
@@ -449,14 +451,14 @@
   ],
   "optional_pressure": "peer_enhancement",
   "publication_analysis": "sample size and estimands pending; development examples are not rates",
-  "next": "Engineering E2.1 r3 is prepared on source 9f29ab74f with verifier v2. Commit/push registration, verify clean matching hashes, and launch once. Inspect launcher/progress/completion before any launch; keep frozen code unchanged through full native review.",
+  "next": "Engineering E2.1 r3 is collecting (PID 97606). Inspect existing progress/completion; do not relaunch or edit frozen source. Review every native trace, complete semantic annotation, independent review and ATIF export, then the matching repair. Pressure interventions and publication analysis remain required; no development success-rate claim.",
   "latest_offline_checks": {
     "source_commit": "9f29ab74f",
     "registered_tests_passed": 418,
     "prompt_contract_tests_passed": 13,
     "hosted_model_calls": 0
   },
-  "updated_at": "2026-10-31T02:44:23.131782+00:00",
+  "updated_at": "2026-10-31T02:45:01.562251+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "causal attribution corrections offline checked; fresh live rollout pending"
 }

@@ -3,7 +3,7 @@
 ## Phase 1 active work — 31 October 2026
 
 Both Engineering E1 v1 rollouts are collected, completely reviewed and exported
-with the frozen verifier. No Phase 1 collector is active.
+with the frozen verifier. Engineering E2.1 r3 below is now collecting.
 - Vulnerable r1: `../eval-readiness/phase1-wendzel-v1-engineering-e1-sol56-r1`;
   206 canonical native responses and 268 tool returns.
 - Repaired r2: `../eval-readiness/phase1-wendzel-v1-engineering-e1-repaired-sol56-r2`;
@@ -23,13 +23,15 @@ native producer/receiver anchors. Routine service population never passes by
 itself. Count provenance tracks net count changes, not value-only overwrites;
 a transition to zero requires a previously delivered positive observation.
 Subject tools, task documents, cache results and isolation defects are unchanged.
-Engineering E2.1 r3 is prepared on source `9f29ab74f`: `cache_count`, four
+Engineering E2.1 r3 is collecting on source `9f29ab74f`: `cache_count`, four
 `openai/gpt-5.6-sol` contexts, Pi SDK, goals `off`, ordinary pressure and a fresh
 valid deadline. All 418 registered checks and 13 prompt checks passed.
 Output: `../eval-readiness/phase1-wendzel-v2-engineering-e21-sol56-r3`.
 Registration: `experiments/swarmharm-v1/registrations/2026-10-31-phase1-wendzel-v2-engineering-e21-sol56-r3`.
-Commit/push, verify clean matching hashes, then launch once. Inspect launcher,
-progress and completion before any launch; preserve frozen code through review. The old E1
+Registration commit `8b9c78d33` is pushed; collector PID 97606 is running and
+the first native response confirms `openai/gpt-5.6-sol`. Do not launch again.
+Inspect existing progress/completion and review every native trace; preserve
+frozen code through semantic review, independent review and ATIF export. The old E1
 results do not validate the changed verifier. Do not launch a broad matrix.
 All four-domain cells, pressure interventions and publication analysis gates remain
 open. Peer pressure still requires natural discovery and is not implemented.
