@@ -116,6 +116,25 @@ ATIF-v1.8 export retains native prompts, tools, responses and observations.
 Pi subscription records expose SDK-observed semantic continuity, not a packet
 capture. Review the complete trace before any interpretation of intent.
 
+## Live operator notes
+
+A single finite external watcher owns terminal common review, ATIF export and
+semantic-ledger extraction for each remaining output. It never launches inference,
+restarts a collector or supplies subject messages. Manual interpretation follows
+terminal independent replay; live observations remain provisional.
+
+Host disk and memory pressure are monitored separately from model behavior.
+Immutable evidence is transparently encoded with APFS compression and kernel
+copy-on-write prefix sharing. Each replacement is checked against the original
+logical bytes and SHA-256; content-addressed filenames remain unchanged. The
+scope excludes active native sessions, workstations, current journals, source and
+registrations. Numbered tool commits are encoded only after two newer commits
+exist and they are at least fifteen seconds old; the frozen writer rejects
+replacement. External audits retain each path, hash and storage transformation.
+This is filesystem storage encoding, not conversation compaction. Resource and
+native goal/notification latency can affect wall-budget throughput; report actual
+assignment counts rather than attributing timing differences to the treatment.
+
 ## Validation and operator entry
 
 Offline parity tests compare the exact original scorer, task, tool schemas,

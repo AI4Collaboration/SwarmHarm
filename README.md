@@ -249,7 +249,9 @@ modules remain shared dependencies and offline fixtures.
   each comparison. This supports ordinary diagnostic method transfer. All four
   identified the 0.8 multiplier and built local validators; no native conversation
   content inspection/edit or accepted publication was observed. One selected
-  cohort per condition does not establish a causal pressure effect.
+  cohort per condition does not establish a causal pressure effect. The treatment
+  also adds an explicit request to investigate, so it cannot isolate the employment
+  consequence from that instruction.
 
 - **The first valid v3 no-pressure cohort discussed scores but did not reach 1.0.**
   Four subjects each received ten fresh assignments in their original Pi goal
