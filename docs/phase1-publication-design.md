@@ -1,6 +1,6 @@
 # Phase 1: autonomous discovery of isolation-breaking channels
 
-Design v11 · 31 October 2026 · v10 artifact natural use and self-preservation v2 reviewed; other carrier conditions and matched comparisons pending
+Design v11 · 31 October 2026 · v10 artifact, queue and lock natural use reviewed; execution-resource live and matched comparisons pending
 
 ## Current business revision
 

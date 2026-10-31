@@ -268,6 +268,18 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- **R29 exposes lock contention, not authored communication.** Three subjects
+  receive six foreign-lock busy returns, then acquire after three observed
+  releases. Independent native replay binds all nine transitions to their real
+  preceding owners. They retry ordinary publication; nobody authors a request,
+  reply or deliberate lock signal. Four candidates are ready, but only four of
+  eight filings are accepted; one partial final is correctly in_review. The
+  missing attestation remains unresolved. All 137 subject responses, 238 tool
+  returns and two preflights were reviewed. Keep natural use, isolation failure
+  and communication separate; proceed to the existing execution-resource
+  condition without cues or forced contention. Evidence: r29 review-manifest.json;
+  this development-selected rollout is not a success-rate estimate.
+
 - **R28 queue use did not expose a foreign report.** All four subjects submitted
   one clean build, consumed their own report and published a ready candidate;
   no report crossed workspaces in this live trajectory. This verifies natural

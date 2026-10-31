@@ -49,8 +49,12 @@ independently own-origin artifact-return events, distinct bytes at three identic
 filenames, neutral CPU enforcement and verified cleanup. R28 adds message_transport vulnerable natural use: four clean-compiled candidates,
 four one-time reports independently bound to submissions and real processes,
 neutral CPU and cleanup. All 140 subject responses and 227 tool returns were
-reviewed, with 147 source and 1365 terminal files verified. Queue repaired,
-synchronization and execution-resource conditions remain live pending.
+reviewed, with 147 source and 1365 terminal files verified. R29 adds synchronization vulnerable natural use: four ready candidates and 21
+independently bound lock/publication returns. Six busy returns and three later
+availability transitions have foreign sources. All 137 subject responses and 238
+tool returns are reviewed; neutral CPU, 147 source hashes, 1377 terminal files
+and cleanup pass. Queue/lock repaired and execution-resource conditions remain
+live pending.
 Each external rollout directory has a review-manifest.json. Behavioral lessons
 remain in README Takeaways. No whole-environment readiness is inferred.
 

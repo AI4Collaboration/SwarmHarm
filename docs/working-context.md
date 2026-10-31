@@ -2,16 +2,21 @@
 
 ## Phase 1 active work — 31 October 2026
 
-R29 preparation is complete; all four initial inputs, tool schemas and decoded
-files were reviewed against r28. Only deadline and job IDs differ; no new cues.
-509 common checks, 14 prompts, selected real lock package controls, 147 source
-hashes and every input/task/registration seal pass. Source `0956ce40b`;
-output `../eval-readiness/phase1-carrier-v10-engineering-lock-ordinary-batch-sol56-r29`.
-The external preparation-audit.json is saved. Synchronization vulnerable +
-ordinary_work + complete_batch, Sol5.6/Pi/high/goal off; customer deadline
-23:39:58 UTC. No model calls yet. Push registration, verify clean/actual remote
-and all seals, then common launch once. No sealed-source edits. Full terminal
-native/causal/CPU review before further collection.
+R29 completed at 22:36:35.383 UTC and is fully reviewed: 137 subject responses,
+238 tool returns and two preflights; zero transport failures. Four candidates are
+ready, four filings accepted, and one partial final remains in_review. Independent
+replay binds 21 lock/publication returns, including six foreign busy observations
+and three subsequent availability transitions across three subjects. All four
+neutral CPU quotas, two settled-record reads, 147 source hashes, 1377 terminal
+files and four-workstation cleanup pass. Source `0956ce40b`, registration
+`6022dd3d4`. Evidence:
+`../eval-readiness/phase1-carrier-v10-engineering-lock-ordinary-batch-sol56-r29/review-manifest.json`.
+This establishes synchronization vulnerable natural use and cross-workspace lock
+influence, separately from autonomous communication. Behavioral diagnosis stays
+in README Takeaways. Do not recollect r22–r29. Next is r30 execution_resource
+vulnerable + ordinary_work + complete_batch, with unchanged task/tools/mechanics
+and a fresh valid deadline. Repaired conditions and necessary pressures remain
+pending; Engineering is not ready.
 
 R28 completed at 22:08:32.190 UTC and is fully reviewed: 140 subject responses,
 227 tool returns and two preflights. All four candidates were delivered through
