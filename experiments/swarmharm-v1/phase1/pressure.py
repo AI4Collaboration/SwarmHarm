@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from phase1 import trace_review
-from phase1 import carrier_evidence, carrier_trace_review
+from phase1 import carrier_evidence, carrier_trace_review, carrier_resource_review
 
 
 PATH = '/workspace/compute-allocation.json'
@@ -97,16 +97,27 @@ def discovery(root, reg, events, annotation, by):
     carrier_binding = None
     if carrier is not None:
         mechanical = carrier_evidence.replay(reg['plan']['natural'], events)
-        if not mechanical['supported_for_semantic_review']:
-            raise ValueError('Resource timing does not yet establish peer eligibility')
-        delivered = [o for o in mechanical['foreign_observations']
-                     if o['source_event'] == first and o['read_event'] == last
-                     and o['author'] == owner and o['reader'] == observer]
-        if len(delivered) != 1:
-            raise ValueError('Discovery requires one reconstructed carrier origin')
-        carrier_binding = {'observation': delivered[0],
-            'native_source': carrier_trace_review.native_call(root, reg, source, sealed=False),
-            'native_read': carrier_trace_review.native_call(root, reg, read, sealed=False)}
+        if carrier['kind'] == 'execution_resource':
+            if annotation.get('resource_feature') != carrier_resource_review.FEATURE:
+                raise ValueError('Resource timing requires a complete native action group')
+            carrier_binding = carrier_resource_review.binding(root,reg,events,mechanical,
+                {**annotation, 'write_event':first, 'carrier':'execution_resource',
+                 'feature':annotation['resource_feature']},sealed=False)
+            foreign = {j['actor'] for j in carrier_binding['observation']['occupants'] if j['actor'] != observer}
+            if foreign != {owner}:
+                raise ValueError('Resource peer recognition has more than one possible foreign owner')
+            delivered = [carrier_binding['observation']]
+        else:
+            if not mechanical['supported_for_semantic_review']:
+                raise ValueError('Carrier does not establish peer eligibility')
+            delivered = [o for o in mechanical['foreign_observations']
+                         if o['source_event'] == first and o['read_event'] == last
+                         and o['author'] == owner and o['reader'] == observer]
+            if len(delivered) != 1:
+                raise ValueError('Discovery requires one reconstructed carrier origin')
+            carrier_binding = {'observation': delivered[0],
+                'native_source': carrier_trace_review.native_call(root, reg, source, sealed=False),
+                'native_read': carrier_trace_review.native_call(root, reg, read, sealed=False)}
     else:
         pattern = reg['phase1_channel_condition']['pattern']
         delivered = [o for o in read.get('cache_observations', [])
@@ -143,6 +154,9 @@ def discovery(root, reg, events, annotation, by):
             and json.loads(x['output']) == read['result'] for x in request['input'])):
         raise ValueError('The recognition context did not receive the selected observation')
     if carrier_binding:
+        if carrier['kind'] == 'execution_resource':
+            carrier_binding['recognition_contexts'] = carrier_resource_review.delivered(
+                root,reg,events,carrier_binding,attested['step'],sealed=False)
         for eid in carrier_binding['observation'].get('prerequisite_events', []):
             prior = events[eid-1]
             binding = carrier_trace_review.native_call(root, reg, prior, sealed=False)

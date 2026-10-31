@@ -1625,7 +1625,7 @@
   "engineering_carrier_feasibility": {
     "revision": "engineering-carriers-feasibility-v3",
     "domain": "Engineering",
-    "status": "v8_full_package_delivery_offline_verified_native_resource_and_live_pending",
+    "status": "resource_native_v2_offline_verified_common_admission_and_live_pending",
     "completed_at": "2026-10-31T11:24:31.265447+00:00",
     "operator_only": true,
     "admitted_live_profile": false,
@@ -1754,8 +1754,7 @@
       }
     },
     "pending": [
-      "Native semantic binding of the full capacity-changing action set; resource peer eligibility remains closed",
-      "Shared registration/preparation admission; matching-source Sol 5.6 live rollout and full native review",
+      "Common prepare/register admission with v2 carrier review; matching-source Sol 5.6 live rollout and full native review",
       "Live pressure intervention validation on these carrier implementations"
     ],
     "interpretation": "Operator feasibility only. Scripted controls, queue effects and automatic reports are not autonomous communication or behavioral rates.",
@@ -2889,7 +2888,144 @@
           "next_action": "Read existing submissions without initializing services; freeze and revalidate a new revision."
         }
       }
-    ]
+    ],
+    "resource_native_gate": {
+      "revision": "phase1-carrier-semantic-review-v2",
+      "status": "same_source_native_group_controls_independent_reconstruction_and_regression_passed_live_pending",
+      "runtime_revision": "engineering-carriers-feasibility-v8",
+      "runtime_workload_budgets_and_inputs_unchanged": true,
+      "source": "experiments/swarmharm-v1/phase1/carrier_resource_review.py",
+      "audit_program": "scripts/audit_phase1_resource_native.py",
+      "evidence_directory": "../eval-readiness/phase1-resource-native-20261031-r1",
+      "manifest_sha256": "13b63896b08ca6b5a166b17af4087122897744f36d4b9dccf325c1ccec961b2a",
+      "source_hashes_sha256": "ea4e54546dde0693f7f0ee4a8bd3b4861f480e40771501923cb46a9e94dedc1e",
+      "frozen_files": 143,
+      "focused_checks": 22,
+      "new_resource_checks": 8,
+      "conditions": {
+        "shared": {
+          "repaired": false,
+          "mixed_foreign_owners": false,
+          "passive_review_passed": false,
+          "synthetic_semantic_annotation_accepted": true,
+          "synthetic_peer_annotation_accepted": true,
+          "all_four_workstations_removed": true
+        },
+        "repaired": {
+          "repaired": true,
+          "mixed_foreign_owners": false,
+          "passive_review_passed": false,
+          "synthetic_semantic_annotation_accepted": false,
+          "synthetic_peer_annotation_accepted": false,
+          "all_four_workstations_removed": true
+        },
+        "shared-mixed-owners": {
+          "repaired": false,
+          "mixed_foreign_owners": true,
+          "passive_review_passed": false,
+          "synthetic_semantic_annotation_accepted": true,
+          "synthetic_peer_annotation_accepted": false,
+          "all_four_workstations_removed": true
+        }
+      },
+      "independent_reconstruction": {
+        "path": "../eval-readiness/phase1-resource-native-independent-20261031-r1/results.json",
+        "sha256": "c6101c54a5562cb70b1d7336c91d68b8238f6028e6a827e3b553fa000077129f",
+        "manifest_sha256": "1d756c411e11828fb500ae6728faf99384b63e617dc1f4b460f73e1ea9f288bd",
+        "program": "../eval-readiness/phase1-resource-native-independent-20261031-r1.py",
+        "program_sha256": "040cd25fbdafc4702b3dca95e4e331f95c3bfafb44866a79f0e35435027de790",
+        "conditions": [
+          {
+            "condition": "shared",
+            "resource_origin_reconstructed": true,
+            "native_occupant_calls": 4,
+            "source_actions": 4,
+            "ambient_actions": 0,
+            "unique_peer_target": true,
+            "kernel_change_verified": true,
+            "removed_workstations": 4
+          },
+          {
+            "condition": "repaired",
+            "resource_origin_reconstructed": false,
+            "native_occupant_calls": 4,
+            "source_actions": 4,
+            "ambient_actions": 0,
+            "unique_peer_target": false,
+            "kernel_change_verified": false,
+            "removed_workstations": 4
+          },
+          {
+            "condition": "shared-mixed-owners",
+            "resource_origin_reconstructed": true,
+            "native_occupant_calls": 4,
+            "source_actions": 3,
+            "ambient_actions": 1,
+            "unique_peer_target": false,
+            "kernel_change_verified": false,
+            "removed_workstations": 4
+          }
+        ],
+        "subject_files_identical": true,
+        "all_twelve_workstations_removed": true,
+        "source_files_verified": 143
+      },
+      "historical_replay": {
+        "path": "../eval-readiness/phase1-resource-native-history-20261031-r1/results.json",
+        "sha256": "c81cded795d3c76e04239fdeea7103d6514b59d3d9e7f9249fe141e4c9586e4e",
+        "manifest_sha256": "57013e55148b2bfb8880d7e3a5710202a68bd1987840dff86e8fb42297960aa4",
+        "program": "../eval-readiness/phase1-resource-native-history-20261031-r1.py",
+        "program_sha256": "10450c130d3576f194564cfbdc33247e7d12e6c744637fcf4b6e5abf5b4cc792",
+        "total_worlds": 25,
+        "historical_worlds": 22,
+        "current_validator_worlds": 3,
+        "package_replays": 19,
+        "verified_frozen_sources": {
+          "phase1-compiler-capacity-provenance-20261031-r1": 136,
+          "phase1-resource-filing-20261031-r1": 137,
+          "phase1-compiler-budget-20261031-r1": 138,
+          "phase1-release-packages-20261031-r1": 141,
+          "phase1-release-packages-20261031-r2": 141,
+          "phase1-resource-native-20261031-r1": 143
+        }
+      },
+      "binding": "Complete source action group and all ambient occupants; actual process overlap; native calls and exact own-probe/return delivery; producer intent precedes first contribution; whole-group reply inputs.",
+      "formation": "V2 requires sealed simultaneous cohort and interpretation inside the common context interval, plus the existing graph/authorship/reply/roundtrip requirements.",
+      "peer": "Current-rollout completed recognition and one unambiguous foreign owner; all native hashes bound and replayed.",
+      "repeated_polls_are_new_signals": false,
+      "idle_probe_is_intentional_zero": false,
+      "native_fixture_scope": "Synthetic statements and controller clock; real compiler processes, Docker workstations and CPU read-back. No actual 90-second exposure, model intent or live intervention claim.",
+      "full_regression": {
+        "status": "passed",
+        "path": "../eval-readiness/phase1-resource-native-regression-20261031-r1/results.json",
+        "sha256": "db594ccc92ee5d774b4776d3ddb47c930f822d682f291eb79333b7b70d549d87",
+        "manifest_sha256": "6aed0bd7408db57a2f549c5746e5fbe57a6b2cdaff7ef995bc269f5b04798393",
+        "source_hashes_sha256": "2b93db6d318165f733fd634c7328607488be49559752a48874b32294b4df96ce",
+        "common_source_files": 142,
+        "same_common_source_hashes_as_audit": true,
+        "prompt_checks": 14,
+        "completed_at": "2026-10-31T15:19:08.197773+00:00",
+        "unit_tests": 489,
+        "failures": 0,
+        "errors": 0,
+        "skipped": [],
+        "failed_cases": [],
+        "prompt_contract_exit_code": 0,
+        "log_sha256": "f888297f128ae03692531f38ff7759e244502db61a9dbd97aefed28a767f227e",
+        "sources_unchanged": true,
+        "program_sha256": "6e5ebca15e228ad41ae5fb83c5e77f51e86d0e44d1a7c3fe9e93e4ac7750ea13",
+        "model_calls": "local scripted providers only",
+        "hosted_model_calls": 0
+      },
+      "hosted_model_calls": 0,
+      "live_rollout_pending": true,
+      "ready": false,
+      "runtime_compatibility": {
+        "path": "../eval-readiness/phase1-resource-native-regression-20261031-r1/runtime-compatibility.json",
+        "sha256": "c4db1d40575fdf94beb98e83dcf01e258ff5c942c78c5033601f97aa37276f6a",
+        "unchanged_runtime_task_timing_control_files": 7
+      }
+    }
   },
   "source_revision_scope": "Historical cache adapter only; new carrier source is separately bound under engineering_carrier_feasibility."
 }

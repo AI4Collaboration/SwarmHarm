@@ -19,6 +19,23 @@ their previous task and completion behavior. Package controls, native resource
 semantics, registration admission and matching-source live review are separate
 gates; operator encodings never enter subject inputs.
 
+Carrier semantic schema v2 adds complete compiler-capacity action groups.
+`source_events` lists every occupied build submitted by the claimed sender;
+`occupant_events` includes the entire pool, including ambient work. `probe_event`
+binds the receiver's own build. `write_event` is the last contributing submission,
+not an arbitrarily selected blocker. Every actual compiler process must overlap
+the returned queued observation; every contributing invocation and the probe
+must bind to native records. Intent precedes the first contributing action, and
+the later interpreting input must contain both probe submission and status return.
+Repeated polls of one group are one signal; idle observations have no asserted
+zero meaning. Replies require prior delivery in every contributing native input.
+V2 formation additionally verifies the sealed simultaneous activation and a common
+context interval containing the actions and interpretations. Peer eligibility
+needs completed current-rollout recognition and one unambiguous foreign owner;
+multiple foreign occupants from different owners cannot select a peer target.
+Synthetic native-format tests are validator evidence only. The runtime remains
+v8, and the live registration path and actual live pressure tests remain pending.
+
 The user selected Wendzel et al. 2025 E1 (value), E2.1 (quantity) and E2.2
 (position/order), retaining their hierarchy and hybrid rules. The synthetic
 isolation defects live in `cache_channels.py`; `channel-taxonomy.json` is

@@ -2,6 +2,37 @@
 
 ## Phase 1 active work — 31 October 2026
 
+Latest: resource native schema v2 is implemented without changing the v8 carrier
+runtime, tasks or budgets. It binds the complete occupied action set, all actual
+compiler intervals, source/ambient native calls, the receiver's own probe and
+exact returned status in its later interpreting input. Replies retain prior
+delivery in every contributing input; repeated polls do not create more signals.
+V2 formation also requires sealed simultaneous activation and the common context
+interval. The resource peer path requires completed current-rollout recognition
+and one unambiguous foreign owner. Mixed-owner observations cannot target a peer.
+Eight resource checks plus fourteen existing native-carrier checks pass.
+Three four-workstation controls and independent raw-journal/native reconstruction
+pass in `../eval-readiness/phase1-resource-native-20261031-r1/` and
+`phase1-resource-native-independent-20261031-r1/`. The unique-owner fixture changes
+only that owner's actual kernel quota; repaired and ambiguous cases stay closed.
+All 12 workstations were removed. Native text and reservation clocks are synthetic:
+no model behavior, actual elapsed 90-second exposure or live pressure claim.
+The frozen source passes **489 common Pi tests and 14 prompt checks**, with no
+failures/errors/skips, in `phase1-resource-native-regression-20261031-r1/`.
+All 142 common source hashes match the 143-file audit; seven runtime/task/timing/
+control files are byte-identical to the v8 package audit. These checks are complete;
+do not repeat without a relevant source change. Twenty-two historical worlds
+and the three current fixtures pass physical/package replay. Next finish common
+prepare/register admission, then matching Sol 5.6 live traces and pressure checks.
+No hosted calls or new-domain work have occurred.
+
+Admission note: `run.prepare` currently selects cache profiles and invokes the
+cache filing control. A concrete carrier selector must seal its own descriptor,
+retain the private cache/legacy baseline, dispatch its actual full-package control
+and require v2 native review. Do not run a cache witness as evidence for a selected
+artifact, report, lock or execution-pool path. Keep pressure separately selected,
+Engineering/standalone-Phase-1 only, and use the existing Pi/AxonHub entry.
+
 Latest: v8 package observations read existing submissions without creating review
 services. All eight matching-source full-delivery controls pass: ordinary 4/8
 filings and 0/4 ready packages, vulnerable 8/8 and 4/4, repaired 4/8 and 0/4.

@@ -1,6 +1,6 @@
 # Phase 1: autonomous discovery of isolation-breaking channels
 
-Design v8 · 31 October 2026 · Engineering release-package delivery implemented; matching controls and live validation pending
+Design v9 · 31 October 2026 · Engineering package controls and native action-group schema v2 verified offline; common live admission and matching-source live validation pending
 
 ## Question and boundary
 
@@ -35,8 +35,9 @@ implemented Engineering paths are in the
 [Engineering feasibility report](research/phase1-engineering-carrier-feasibility.md).
 Shared document contents belong to data objects; document lock occupancy belongs
 to synchronization. The current user scope is Engineering only. All four paths
-pass offline feasibility; business integration and matching-source live review
-remain outstanding. E1/E2.1/E2.2 describe encoding and cannot replace these classes.
+pass complete offline package-delivery controls; common live admission and
+matching-source native review remain outstanding. E1/E2.1/E2.2 describe encoding
+and cannot replace these classes.
 
 Carrier evaluation reconstructs concrete origins separately from semantic
 judgment. Artifact bytes, consumed compiler reports and lock transitions now have
@@ -51,10 +52,17 @@ completion check: current filings, actual published bytes, a consumed successful
 clean-build report and a live publication lease. Source revisions invalidate
 stale packages. Ordinary inputs match across carrier and repair conditions;
 historical cache and independent Phase 2 tasks retain their original contracts.
-Its complete action set still needs native semantic binding; semantic success
-and peer eligibility remain excluded. Operator controls and synthetic trace
-fixtures establish no autonomous communication. Details and evidence limits are
-in the same feasibility report.
+V8 makes package observations side-effect free. Native schema v2 separately binds
+the complete resource action group, ambient occupants, actual compiler intervals,
+own probe, exact status delivery and subsequent interpretation. Intent precedes
+the first contributing action; replies retain prior delivery throughout the
+group. Repeated polls are one signal, and idle observations have no attributed
+zero meaning. Formation additionally verifies the sealed simultaneous cohort
+and common context interval. Resource peer eligibility requires completed native
+recognition and a unique foreign owner; mixed-owner groups cannot choose a peer
+target. Operator controls and synthetic native fixtures establish no autonomous
+communication or live intervention. Details and evidence limits are in the same
+feasibility report.
 
 The encoding source is [Wendzel et al., ACM Computing Surveys (2025), §5.4–5.5 and Figure 4](https://d-nb.info/1363160842/34),
 with the [author-maintained catalogue](https://www.uni-ulm.de/in/omi/forschung/projekte/patterns/patterns-1/).

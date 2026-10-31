@@ -1,8 +1,8 @@
 """Reconstruct carrier origins from ordinary calls, not asserted provenance tags.
 
 This establishes physical delivery only. It never labels automatic reports or
-foreign artifacts as intentional communication. Resource timing remains pending
-until the read instant and occupied-slot intervals are independently bound.
+foreign artifacts as intentional communication. Resources require the separate
+complete-action-group native gate; they have no single-origin delivery edge.
 """
 from hashlib import sha256
 
@@ -142,6 +142,6 @@ def replay(plan, events, execution_snapshot=None):
             'supported_for_semantic_review': config['kind'] in SUPPORTED,
             'foreign_observations': observations,
             'compiler_capacity_evidence': timing,
-            'resource_timing_review': ('physical_capacity_reconstructed_semantic_review_pending' if timing is not None
+            'resource_timing_review': ('requires_complete_v2_native_action_group' if timing is not None
                                      else 'legacy_revision_without_bound_status_instants'),
             'intentional_communication_inferred': False}

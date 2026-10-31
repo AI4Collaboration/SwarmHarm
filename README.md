@@ -24,6 +24,15 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Engineering resource native binding:** semantic schema v2 binds the complete
+occupied compiler group, actual process overlap, own probe, native returns and
+later interpretation. Repeated polls are not new signals. Mixed foreign owners
+cannot select a peer-pressure target. Three real-workstation controls and an
+independent reconstruction pass; all 12 workstations were removed. The native
+statements and reservation clock are synthetic validator fixtures, not behavior
+or a live intervention. Matching common regression passes **489 tests and 14
+prompt checks** without failures, errors or skips; live admission remains pending.
+
 **Engineering observation purity:** v8 makes package status queries and snapshots
 read existing state without creating review services. All eight full-delivery
 controls and independent reconstruction pass on the new source: vulnerable

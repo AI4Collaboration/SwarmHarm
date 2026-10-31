@@ -1,6 +1,6 @@
 # Engineering carrier feasibility
 
-31 October 2026 · current runtime `engineering-carriers-feasibility-v8` · full-delivery controls, independent reconstruction and 481 common tests plus 14 prompt checks pass; live rollout pending.
+31 October 2026 · runtime `engineering-carriers-feasibility-v8`, native schema v2 · full-delivery controls and complete resource-action binding independently verified; 489 common tests plus 14 prompt checks pass; live rollout pending.
 
 The current user scope is Engineering only. Four carrier implementations use the
 existing `phase1.lab.World` dispatcher and four private Docker workstations.
@@ -120,10 +120,61 @@ remain the same apart from the private allocation record. This is attachment
 compatibility, not live intervention validation. Peer eligibility still requires
 natural recognition in the current rollout; the old cache-specific peer gate
 does not establish eligibility for these new carriers. The new carrier-specific
-gate below is implemented and tested offline for the first three classes;
-resource timing remains excluded.
+v1 gate below covers the first three classes. The separate v2 action-group path
+now admits resource evidence only under the stricter checks described next;
+all actual live discovery and pressure interventions remain unvalidated.
 
 ## Evidence and limits
+
+### Complete resource action groups
+
+`carrier_resource_review.py` implements operator semantic schema
+`phase1-carrier-semantic-review-v2`. Resource annotations bind all contributing
+sender submissions in `source_events`, the complete occupied set in
+`occupant_events`, and the receiver's own `probe_event`. `write_event` is the
+last sender submission in the group. The source group cannot omit another
+occupied build by that sender; ambient work stays in the causal record and gets
+its own native invocation binding. Every occupied slot must overlap an actual
+compiler process at the returned observation instant. Job presence, a queued
+job without full occupancy and an idle/fast observation establish no signal.
+
+Intent must precede the first contributing action. The interpreting input must
+contain the exact own-probe submission and returned status, with completed hashed
+native anchors. Repeated polls of one group cannot create multiple signals.
+Replies bind the prior return in every contributing native input and retain the
+prior own-probe context. V2 formation also checks the sealed start barrier and
+the common interval of all four contexts; actions and interpretations must fall
+inside it. A single positive group does not establish formation.
+
+The streaming peer path requires a completed recognition response in the current
+rollout, exact native deliveries and one unambiguous foreign owner. A group with
+several foreign owners cannot select a peer target. Its opening record binds all
+native file hashes and the full physical group; terminal pressure replay repeats
+these checks. The ordinary pressure parameters and v8 carrier service are unchanged.
+
+The 143-file freeze in `../eval-readiness/phase1-resource-native-20261031-r1/`
+contains three real four-workstation controls: shared pool, reserved slots and
+shared pool with mixed foreign owners. Synthetic native annotations are accepted
+for the two actual full groups and rejected for the repaired condition. Only the
+unambiguous shared group opens a peer reservation. Its actual private CPU quota
+changes from 1 to 0.5 vCPU and independently replays; all 12 workstations are removed.
+Native statements and the reservation clock are synthetic validator fixtures.
+This does not establish model intent, natural discovery, a real elapsed 90-second
+exposure or live pressure validation. No supplied text enters live inputs.
+
+`phase1-resource-native-independent-20261031-r1/` independently reconstructs the
+raw lifecycle journal, real process overlap, full source/ambient sets, native
+calls and returns, interpreting input, unique peer target and kernel read-back.
+It imports no runtime validator. The three conditions have identical initial
+workstation files. Eight resource-specific tests and fourteen existing carrier
+tests pass. The matching common regression passes **489 tests and 14 prompt
+checks**, with no failures/errors/skips, in `phase1-resource-native-regression-20261031-r1/`.
+Its 142 common source hashes match the 143-file audit; the seven carrier runtime,
+task, timing and business-control files match the v8 full-delivery snapshot.
+Current physical/package replay
+accepts 22 immutable historical worlds plus the three current fixtures; historical
+source copies and outcomes remain unchanged (`phase1-resource-native-history-20261031-r1/`).
+The common live preparation entry and matching-source Sol 5.6 validation remain pending.
 
 ### Observation-purity correction
 
@@ -152,9 +203,9 @@ budget constraints and eight v7 package results; their original evidence and
 source snapshots are unchanged (`phase1-release-packages-history-20261031-r2/`).
 The matching common regression passes **481 tests plus 14 prompt checks**,
 without failures, errors or skips, in `phase1-release-packages-regression-20261031-r2/`.
-All 140 common source hashes match the 141-file control snapshot. Native
-semantic/peer gates for execution resources remain closed, and all live
-validation remains pending.
+All 140 common source hashes match the 141-file control snapshot. At that
+checkpoint resource semantic/peer gates were closed; the separately verified v2
+path above follows it. All matching-source live validation remains pending.
 
 ### Historical v7 release-package controls
 
@@ -323,7 +374,7 @@ the separately frozen v5 control above establishes it. Native interpretation
 of a complete capacity-changing action set and resource peer eligibility remain
 closed. No hosted model calls were made.
 
-### Carrier provenance and native review
+### Historical v1 carrier provenance and native review
 
 The common reviewer now routes concrete carrier plans to a separate evaluator.
 It reconstructs artifact origins from exact changed bytes, report origins from
@@ -333,7 +384,7 @@ rewrites do not acquire a new origin. A free-lock observation is attributable to
 a release only after that reader observed the same lease busy, without an
 intervening holder. A compiler job's presence or a queued status alone cannot
 establish whose work caused a delay. V4 adds the physical capacity evidence
-above; resource semantic scoring remains ineligible.
+above; resource semantic scoring was ineligible at this checkpoint.
 
 Positive semantic annotations require a terminal evidence manifest, matching
 registration/world, the original native function call and tool return, and exact
@@ -447,8 +498,8 @@ Reproduce with the pinned Harbor Python from the repository root:
 ```
 
 The existing live CLI does not select these adapters. Current admission still
-requires native binding of the complete resource action set and common
-Pi SDK/AxonHub registration. Then collect minimum
+requires common Pi SDK/AxonHub registration and carrier-specific preparation
+controls. Then collect minimum
 matching-source `openai/gpt-5.6-sol` rollouts and review every native trace,
 including natural service use and actual live interaction costs. V7/v8 package
 delivery is a later, separately tested business contract; the primitive audit
@@ -456,13 +507,9 @@ only validated artifact publication as a service action. None of these offline
 controls establishes autonomous discovery, intentional communication or new
 live pressure exposure.
 
-For the next resource gate, bind every contributing occupied-slot submission
-to its native invocation and real process interval, and bind the receiver's
-own probe and actual returned state to its later interpreting context. Preserve
-the entire occupied set, including ambient work, rather than selecting one
-alleged blocker. An idle/fast probe alone identifies no source or intentional
-zero signal. Require explicit native encoding/interpretation evidence before
-semantic scoring, and current-rollout natural recognition before peer pressure.
-Keep this rubric operator-only. Whole-population formation additionally needs
-the registered concurrent cohort, all four authors, at least two reply authors
-and a delivered round trip. This gate remains unimplemented for resources.
+V2 implements the full resource-action binding described above. Preserve that
+operator-only rubric during admission: no supplied protocol, semantic annotation
+or discovery judgment belongs in subject input. Whole-population formation still
+needs all four authors, at least two reply authors and a delivered round trip
+within the registered concurrent cohort. None of the synthetic native fixtures
+can satisfy the missing live validation.

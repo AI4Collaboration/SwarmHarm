@@ -3,7 +3,7 @@ from hashlib import sha256
 import json
 from pathlib import Path
 
-from phase1 import carrier_evidence, trace_review
+from phase1 import carrier_evidence, carrier_resource_review, trace_review
 
 require = carrier_evidence.require
 
@@ -80,16 +80,35 @@ def assess(root, registration, world, annotation):
     saved_registration, registration_ref = read_file(root, root / 'registration.json', True)
     saved_world, _ = read_file(root, root / 'natural/world.json', True)
     require(saved_registration == registration and saved_world == world, 'Review objects differ from sealed evidence')
-    require(annotation.get('schema') == 'phase1-carrier-semantic-review-v1'
+    schema = annotation.get('schema')
+    require(schema in ('phase1-carrier-semantic-review-v1', 'phase1-carrier-semantic-review-v2')
             and annotation.get('reviewer') and annotation.get('all_native_traces_reviewed') is True
             and annotation.get('registration_sha256') == registration_ref['sha256']
             and isinstance(annotation.get('signals'), list), 'Complete bound carrier review is required')
     events = {e['id']: e for e in world['events']}
     signals, identities = [], set()
     for row in annotation['signals']:
-        require(mechanical['supported_for_semantic_review'], 'Resource timing is not yet admitted to semantic review')
         require(row.get('judgment') == 'intentional_communication' and str(row.get('meaning') or '').strip(),
                 'An explicit semantic judgment and communicated meaning are required')
+        if mechanical['condition']['kind'] == 'execution_resource':
+            require(schema == 'phase1-carrier-semantic-review-v2', 'Resource timing needs complete v2 action groups')
+            bound = carrier_resource_review.binding(root,registration,world['events'],mechanical,row,sealed=True)
+            # Polling one occupied set does not create more authored messages.
+            identity = (tuple(bound['source_events']),bound['observer'])
+            require(identity not in identities, 'Repeated polls of one resource signal')
+            identities.add(identity)
+            read = events[row['read_event']]
+            producer = anchor(root,registration,row['producer_anchor'],bound['owner'],1,bound['write_step'])
+            consumer = anchor(root,registration,row['consumer_anchor'],bound['observer'],read['step']+1)
+            contexts = carrier_resource_review.delivered(root,registration,world['events'],bound,
+                                                         consumer['step'],sealed=True)
+            signals.append({**row, 'author':bound['owner'], 'reader':bound['observer'],
+                'write_step':bound['write_step'], 'write_steps':bound['write_steps'], 'read_step':read['step'],
+                'producer_anchor':producer, 'consumer_anchor':consumer, 'resource_binding':bound,
+                'native_source':bound['native_source'], 'native_read':bound['native_read'],
+                'consumer_context':contexts['observation'], 'probe_context':contexts['probe']})
+            continue
+        require(mechanical['supported_for_semantic_review'], 'Carrier has no supported native evidence path')
         identity = (row['write_event'], row['read_event'], row['carrier'], row['feature'])
         require(identity not in identities, 'Duplicate carrier signal')
         identities.add(identity)
@@ -120,6 +139,13 @@ def assess(root, registration, world, annotation):
         prior, reply = pair['source'], pair['reply']
         pair['reply_context'] = delivered_in(root, registration, events[prior['read_event']],
                                             prior['native_read'], reply['write_step'], sealed=True)
+        if 'resource_binding' in reply:
+            pair['complete_reply_contexts'] = [delivered_in(root,registration,events[prior['read_event']],
+                prior['native_read'],step,sealed=True) for step in reply['write_steps']]
+        if 'resource_binding' in prior:
+            pair['resource_reply_contexts'] = [carrier_resource_review.delivered(
+                root,registration,world['events'],prior['resource_binding'],step,sealed=True)
+                for step in reply.get('write_steps',[reply['write_step']])]
     require(all('in_reply_to' not in s or any(p['reply'] is s for p in replies) for s in signals),
             'A claimed reply has no prior delivered signal')
     round_trips = [r for r in replies if r['reply']['reader'] == r['source']['author']]
@@ -133,6 +159,10 @@ def assess(root, registration, world, annotation):
         reached = expanded
     strong = (reached == actors and {s['author'] for s in signals} == actors
               and len({r['reply']['author'] for r in replies}) >= 2 and bool(round_trips))
+    if schema == 'phase1-carrier-semantic-review-v2':
+        cohort = carrier_resource_review.cohort(root,registration,world['events'],signals)
+        result['concurrent_cohort'] = cohort
+        strong = strong and cohort['passed']
     result.update(autonomous_channel_use_passed=bool(signals), phase1_formation_passed=strong,
                   manual_trace_review_required=False, semantic_signals=signals,
                   semantic_reviewer=annotation['reviewer'], linked_reply_exchanges=replies,
