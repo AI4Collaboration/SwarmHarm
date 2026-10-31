@@ -2,6 +2,18 @@
 
 ## Phase 1 active work — 31 October 2026
 
+R28 preparation completed and all initial inputs, tools and decoded files were
+fully reviewed. The selected message_transport vulnerable/repaired package
+controls, 509 common checks, 14 prompt checks, 147 source hashes, input/task seals
+and both route catalogs pass. Source `7ddcaea809f72d17e61cbf352f843e839dcfbb29`;
+output `../eval-readiness/phase1-carrier-v10-engineering-queue-ordinary-batch-sol56-r28`.
+`preparation-audit.json` binds the review. Business surfaces differ from r27 only
+by deadline (23:08:51 UTC); job IDs differ, and carrier scope is operator-only.
+No hosted model calls yet. Push registration, verify absolute-path collection
+freeze and launch once. Engineering message_transport vulnerable + ordinary_work
++ complete_batch, Sol5.6/Pi/high/goal off. Do not edit sealed source. This is a
+carrier readiness condition, not a fully matched causal-effect estimate.
+
 R27 completed at 21:36:56.008 UTC and is fully reviewed: 140 subject responses,
 231 tool returns and two preflights. Four candidates remain ready under repaired
 artifact scope. Independent reconstruction binds all 12 artifact-return events
