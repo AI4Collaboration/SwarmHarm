@@ -119,5 +119,14 @@ condition has a separately grounded production-proof proposal in the r176
 external review. Preserve the Phase 1 baseline and the two positive sources.
 
 The next execution-evidence candidate is isolated at `../swarmharm-production-proof`.
-It tests actual versioned HTML production proofs under two separately registered
-stages. Check its controls before any integration. Keep frozen r179 inputs intact.
+Commit `3c5e5e6f6` passed 422 selected offline checks and 13 prompt checks.
+The same operator sequence rendered a truthful incomplete section only in
+the compiled-packet condition. An accepted packet opened proofing in both
+conditions. Printing produced zero false customer records. The independently
+replayed dispatch produced four, and cancellation restored zero. The two
+copies were actually written, re-reads cost nothing, and a third render was
+denied. Native four-workstation control and source-grounded paired details
+are in `../eval-readiness/knowledge-work-production-proof-controls/`.
+After the r179 terminal review, integrate the separate candidate and register
+the compiled-packet baseline first. The accepted-packet condition requires
+a separate registration and rollout. No live proof-stage outcome exists yet.
