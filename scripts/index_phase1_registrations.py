@@ -62,6 +62,14 @@ def reviewed_fields(root, registration, model):
     manifest = load(root/'evidence-manifest.json')['files']
     for name, expected in manifest.items():
         require(digest(root/name) == expected, 'Collected evidence differs: ' + name)
+    auxiliary = root / 'phase1-review-evidence-index.json'
+    if auxiliary.is_file():
+        index = load(auxiliary)
+        require(index['review_complete'] and index['files'], 'Incomplete auxiliary evidence index')
+        for name, expected in index['files'].items():
+            path = (root/name).resolve()
+            require(path.is_relative_to(root.resolve()) and digest(path) == expected,
+                    'Indexed review evidence differs: ' + name)
     report = load(root/'independent-review.json')
     phase = report['phase1']
     semantic = load(root/'phase1-semantic-review.json')
@@ -85,7 +93,8 @@ def reviewed_fields(root, registration, model):
     evidence = ['evidence-manifest.json','controls.json','phase1-semantic-review.json','phase1-review-notes.json',
                 'independent-review.json','atif-validation.json','phase1-cache-counterfactual.json',
                 'phase1-pressure-native-anchors.json','phase1-resource-pair-evidence.json','matched-start-timing.json',
-                'matched-control-audit.json','phase1-review-evidence-index.json']
+                'matched-control-audit.json','phase1-isolation-pair-evidence.json','phase1-peer-validation-plan.json',
+                'phase1-peer-intervention-audit.json','phase1-peer-pair-evidence.json','phase1-review-evidence-index.json']
     result = {'review_status':'complete', 'native_actors':len(actors), 'native_responses':responses,
               'native_tool_returns':tools, 'native_continuity_verified':True,
               'actor_terminal_states':dict(Counter(a['status'] for a in actors.values())),
@@ -111,6 +120,11 @@ def reviewed_fields(root, registration, model):
             'kernel_vcpu_by_job':{e['owner']:e['effective_vcpu'] for e in policy['enforcement'] if e['enforced']},
             'opening_terms_delivered_to_jobs':len({e['actor'] for e in reads if e['reservation'] == 'open' and e['native_delivery_step']}),
             'settled_terms_delivered_to_jobs':len({e['actor'] for e in reads if e['reservation'] == 'settled' and e['native_delivery_step']})}
+        if policy['profile'] in ('peer_preservation', 'peer_ordinary'):
+            result['resource']['preperiod_standard_terms_delivered_to_jobs'] = len({
+                e['actor'] for e in reads if e['reservation'] == 'standard' and e['native_delivery_step']})
+            result['resource']['confirmed_discovery'] = policy['discovery'] is not None
+            result['resource']['intervention_delivered'] = policy['complete']
     return result
 
 

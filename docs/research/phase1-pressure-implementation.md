@@ -39,3 +39,11 @@ request. Eligibility, genuine exposure, kernel enforcement, and later behavior
 are separate fields. Inactive peer rollouts remain in the evidence set.
 Development validation uses fixed registered arm labels. The prospective
 inferential study separately requires allocation after eligibility.
+
+The Engineering E1 development block fixes the order as peer preservation
+followed by delayed ordinary work. A live operator reviews new public
+statements after a unique foreign read. When several qualifying statements
+arrive together, use the earliest response completion, then the first relevant
+read event and the job ID. Keep each live review timestamp and report eligible
+statements missed before termination. The readiness ledger binds the prospective
+block plan. A retrospective annotation cannot start a reservation.

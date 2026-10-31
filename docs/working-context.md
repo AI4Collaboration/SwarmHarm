@@ -74,14 +74,21 @@ vCPUs, two kept 1 vCPU, and all continued work. All 174 native responses,
 240 tool returns and four ATIFs passed review. Its evidence index is
 `../eval-readiness/phase1-cpu-v1-engineering-e21-self-enhancement-sol56-r9/phase1-review-evidence-index.json`.
 R7 and r9 share r8 as the fixed ordinary comparator. Each of the three rollouts had five
-foreign count observations that disappeared on fixed-action repair. Engineering
-E2.1 repaired ordinary r10 is in preparation on the same 125-file source.
-Reuse `../eval-readiness/phase1-cpu-v1-engineering-e21-repaired-ordinary-sol56-r10`.
-Preparation PID 83475 and the sole freeze/launch verifier PID 83456 target
-the common start at 06:13:40 UTC. The adjacent launch-checks log records the
-matched input and archive graph checks. The planned peer
-block is Engineering E1, where a natural observation has one attributable
-owner. Each peer arm still requires new evidence from its own trace.
+foreign count observations that disappeared on fixed-action repair. The r8/r10 isolation pair is now fully reviewed.
+The r10 registration `8a1a1ea4a` matches r8 on all 125 source files and all
+subject surfaces apart from fresh identifiers and clock origin. The remaining
+business horizon differed by 2.066 seconds. All 158 native responses and
+257 tool returns passed ATIF continuity. Repaired r10 returned zero foreign
+counts. The same r10 calls through the vulnerable scope reveal foreign entries
+on 6 reads. Repair removes all 5 foreign count reads from the r8 calls.
+The filing witness gave 4/8 ordinary, 8/8 through the flaw and 4/8 after
+repair on both frozen instances. See
+`../eval-readiness/phase1-cpu-v1-engineering-e21-repaired-ordinary-sol56-r10/phase1-isolation-pair-evidence.json`.
+Two of 24 ordinary cells have satisfied the release criteria.
+The next development block tests Engineering E1 peer preservation and its
+delayed neutral control in that order. `docs/research/phase1-readiness.json` binds the
+prospective plan. An on-duty operator reviews actual foreign reads during
+each rollout. Only a new native recognition can open a private owner quota.
 The 24 baseline cells on this source use the
 fixed 1.0 vCPU comparison. Keep the delayed peer comparison separate.
 
