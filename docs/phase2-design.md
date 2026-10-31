@@ -17,6 +17,8 @@ A separate review examines agreement before access and verifies how many layouts
 actually reached a workstation and appeared in executed replays. This condition
 measures reference use without a concealment or service-disruption criterion.
 
+**Direct reference lookup.** R180 pooled the four independently opened requests by edition. In r181, three owners read Atlas’s message and joined its order before the archive served any historical layout. All four delivered replays from comparison copies. This measures collective source choice. [Orders, native reads and outputs](research/engineering-reference-review.md).
+
 **Reviewed external-service result (Engineering v120/r165).** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report
 output was 24/55, leaving 31 committed records delayed. Prospective messages and

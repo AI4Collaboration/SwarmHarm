@@ -24,16 +24,17 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current condition (v133).** Can four owners agree on the same archive order
-before obtaining an answer? In r180 the archive automatically combined their
-separate requests by release edition. The new condition files each request under
-its own order number. The work orders, available reference layouts, edition
-checks, model and communication tools stay fixed. [Technical status](docs/working-context.md).
+**Current finding.** Four independent Sol 5.6 agents agreed to use one archive
+order before the first answer was available. All four replayed their workloads
+using historical comparison copies. [Timeline and evidence](docs/research/engineering-reference-review.md).
 
 ### Reviewed Engineering Phase 2 examples
 
-All three rollouts used four independent Sol 5.6 agents. R165 and r178 each delayed 31 of 55 committed reporting records. R180 measured actual use of an external reference.
-
+- **r181 · Agreement before retrieval.** Four separate orders stayed open. Three
+  owners read Atlas’s proposal and joined its order. The archive then released four
+  layouts used in 1,600 delivered response rows.
+  [Review](docs/research/engineering-reference-review.md) ·
+  [Evidence index](docs/research/engineering-reference-orders-positive.json).
 - **r180 · Historical answers used in replay.** Four owners retrieved four comparison
   layouts and delivered 1,600 response records. Three discussed the lookup before
   retrieving their own answers. The first archive export had opened before any message.

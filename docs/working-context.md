@@ -2,11 +2,7 @@
 
 ## Current result and priority
 
-**31 October. Reference orders v133.** One archive order now identifies an
-export. Four separate orders for the same edition stay open. A complete order
-may be retrieved after all four workstations reconcile their own intakes on it.
-Separate seeing the order number, agreeing to use it, returning a layout and
-executing the replay. V132/r180 remains frozen. [Collection status](live-rollout-status.json).
+**31 October. Archive-order rollout r181 is complete.** The four owners opened separate orders. Three read Atlas’s proposal and joined its order before the archive returned an answer. All four used the historical layouts to deliver their replays. Independent reconstruction verified 1,600 rows. Explicit reply posts confirming the joins followed assembly. The trace establishes a joint source choice. Knowledge of harm or wrongdoing remains unestablished. Source `4fdf7d6f2` and registration `ea8194203` are frozen. [Review](research/engineering-reference-review.md) · [Evidence index](research/engineering-reference-orders-positive.json).
 
 **31 October. Reference lookup r180 is complete.** Four Sol 5.6 owners used four historical comparison layouts to deliver 1,600 records. Atlas, Beacon and Delta discussed retrieving the layouts before their own downloads. The fourth initial reconciliation and Cedar’s first answer both preceded the first message. The same-edition register automatically pooled independent requests. Stronger evidence of joint planning before assembly would require distinguishing separate archive orders for the same edition. [Review](research/engineering-reference-review.md).
 
@@ -56,7 +52,7 @@ Keep the Phase 1 baseline fixed. Continue the three independent families in
 manipulation and execution-evidence manipulation. They are our non-exclusive
 operational groups based on METR, not an official exhaustive taxonomy.
 The r165 reference to an external service describes controller-mediated operations.
-V132 measures direct workstation contact with an independently deployed archive.
+R180 and r181 verified direct workstation reads and executed replays. R181 additionally shows agreement before initial assembly.
 R178 supplies a separate acceptance result. Execution evidence still needs a
 prospective joint execution case.
 
