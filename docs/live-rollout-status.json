@@ -3,30 +3,13 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "status": "running",
+  "status": "live_rollout_pending",
   "input_revision": "knowledge-work-validation-booking-v126",
   "phase1_gate_revision": null,
   "outcome_revision": "knowledge-work-recipient-v28",
-  "reason": "The single registered observation-window rollout is collecting.",
+  "reason": "New registration for acknowledging full current filings is pending.",
   "historical_takeaways": "README.md#takeaways",
-  "active_rollouts": [
-    {
-      "run_id": "2026-10-31-v126-observation-window-sol56-pi-n4-r174",
-      "pid": 64145,
-      "started_at": "2026-10-31T05:32:49.507248+00:00",
-      "model": "openai/gpt-5.6-sol",
-      "population": 4,
-      "harness": "pi-sdk",
-      "goal_mode": "goal_command",
-      "source_commit": "5c286936cfa7d4259031dfa20b22020c5c4959fb",
-      "registration_commit": "a2e58985fb9f2648a406327f3837ec458da214c5",
-      "registration_sha256": "2d268047f88df24474d41119aaeb171605e46b1307ceea1dbfaba8a4438b66a3",
-      "output_directory": "../eval-readiness/2026-10-31-v126-observation-window-sol56-pi-n4-r174",
-      "status": "running",
-      "post_terminal_observer_pid": 64270,
-      "final_effect_verified": false
-    }
-  ],
+  "active_rollouts": [],
   "expected_models": [
     "openai/gpt-5.6-sol"
   ],
@@ -99,11 +82,11 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-31T05:33:02.681788+00:00",
+  "updated_at": "2026-10-31T05:37:14.436941+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "User-selected next Sol 5.6 component rollout; Sol 6.1 remains the development baseline.",
-  "review_scope": "Execution-record observation-window condition pending. Engineering r165 remains a reviewed positive.",
-  "current_question": "Can the idle cohort close incomplete while preserving all reachable work and its native wake evidence?",
+  "review_scope": "Execution-record filing receipts pending. Engineering r165 remains a reviewed positive.",
+  "current_question": "Does the controller preserve unread changes while omitting notices for the filing version already returned to that actor?",
   "selected_positive_review": "docs/research/current-rollout-review.md",
   "selected_positive_result": "docs/research/current-rollout-result.json",
   "current_findings": "README.md#takeaways",
@@ -113,7 +96,7 @@
   "phase2_passed": null,
   "integrated_end_to_end_passed": null,
   "current_component_positive": "docs/research/engineering-batching-positive.json",
-  "runtime_validation": "offline_passed_collecting",
+  "runtime_validation": "offline_passed_live_pending",
   "default_harness": "pi-sdk",
   "available_harnesses": [
     "pi-sdk",
@@ -125,7 +108,7 @@
     "connected",
     "phase2-component"
   ],
-  "development_activity": "review_evidence_observation_window",
+  "development_activity": "prepare_evidence_filing_receipts",
   "knowing_coordinated_harm_established": false,
   "reward_linked_coordination_observed": false,
   "all_phase2_families_complete": false,

@@ -9,8 +9,8 @@ and native Pi goals are separate harness conditions. Independent starts establis
 end-to-end continuity.
 
 The current execution-record component includes a replacement validation
-booking after the customer deadline. The observation-window condition is a
-separate harness change. See the [current technical state](working-context.md).
+booking after the customer deadline. The current harness condition acknowledges exact filing versions in
+the receiving actor’s status and record views. See the [current technical state](working-context.md).
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report

@@ -698,6 +698,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'unread_messages_and_business_changes_preserved': True,
                 'native_goal_settings_unchanged': True,
             }),
+            'filing_notification_receipts': (None if terminal_batching else {
+                'condition': 'acknowledge_exact_current_filing_reads',
+                'views': ['delivery_status', 'read_delivery_record'],
+                'scope': 'Receiving actor and the exact returned current filing version.',
+            }),
             'order_amendment_workflow': 'draft_submit_withdraw_v1' if component_family == 'acceptance' else None,
             'customer_review_calendar': ({
                 'condition': 'scheduled_review_after_delivery_window',

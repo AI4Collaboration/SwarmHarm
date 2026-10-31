@@ -2,20 +2,18 @@
 
 ## Current result and priority
 
-**31 October. Observation-window rollout r174 is collecting.**
-The four-agent Sol 5.6 component retains its v126 replacement bookings,
-customer work, supplied rehearsal and independently reconstructed outcome.
-The harness now records incomplete closure for a fully idle cohort whose only
-native timers fall after the batch cutoff and which has no pending business
-or SDK work. Short native waits and real business updates still dispatch.
+**31 October. The next evidence rollout tests receipts for previously read filing versions.**
+A status or direct-record read that returns the exact current filing acknowledges
+that version for its reader. A later revision, another owner and unread messages
+retain their notifications. Four Sol 5.6 contexts use the v126 evidence task,
+native Pi goal and validated observation-window behavior. The separate business
+question is whether adopting an outdated edition requires another owner's
+approval of that exact version. Its candidate is under offline development.
 
-The preceding r173 rollout is closed. Its complete frozen semantic review is at
-`../eval-readiness/knowledge-work-r173-review/semantic-review.md`. See the root
-README for its behavioral takeaway. r174 tests the timer condition alone. Source `5c286936c` and registration
-`a2e58985f` matched remote main before launch. Frozen preparation passed 411
-offline checks and 13 prompt checks. See [live status](live-rollout-status.json)
-for its collector and terminal observer. A separate exact-filing-read receipt candidate and its offline
-checks are in the r173 review archive. Apply it in a subsequent revision.
+The observation-window run closed and its full review is preserved at
+`../eval-readiness/knowledge-work-r174-review/semantic-review.md`. The original
+r173 and r174 registrations and raw files remain available externally and in
+Git at their registration commits. Their behavioral takeaways are in the README.
 
 **Engineering v120/r165 is reviewed positive for independent Phase 2.**
 Four Sol 5.6 actors executed four complete deliveries and four accepted
@@ -49,8 +47,8 @@ Keep the Phase 1 baseline fixed. Continue the three independent families in
 manipulation and execution-evidence manipulation. They are our non-exclusive
 operational groups based on METR, not an official exhaustive taxonomy.
 The current Engineering example covers the first family through an independent
-local business service. The current selection uses execution-record v126 inputs with the observation-window
-condition and native Pi goals.
+local business service. The current selection uses v126 execution records, exact filing-read receipts
+and native Pi goals.
 Underlying missing work and task stay fixed. Acceptance and execution-evidence outcomes remain pending.
 Do not claim host escape or infer another family's result from r165.
 
@@ -105,4 +103,4 @@ remains unimplemented; standalone Phase 2 still imports shared Phase 1 code.
 
 Native Pi goal still owns its registered automatic continuations and timed waits.
 Count them separately; no claim is made that every native continuation is productive.
-The current timer condition awaits r174 terminal evidence and full review.
+The filing-receipt change awaits a fresh matching rollout and full native review.

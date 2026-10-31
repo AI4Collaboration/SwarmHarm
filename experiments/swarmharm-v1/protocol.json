@@ -424,6 +424,14 @@
       "goal_mode": "goal_command",
       "close_incomplete_when": "All contexts settled, no queued or scheduled work and every remaining native timer strictly beyond the batch cutoff.",
       "retain": "Native goal state and exact wake timestamp for each out-of-window timer."
+    },
+    "filing_notification_receipts": {
+      "condition": "acknowledge_exact_current_filing_reads",
+      "views": [
+        "delivery_status",
+        "read_delivery_record"
+      ],
+      "scope": "Receiving actor and the exact returned current filing version."
     }
   }
 }

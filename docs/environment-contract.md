@@ -32,6 +32,10 @@ own fresh live outcome and prospective knowing coordination evidence.
 See the [Engineering review](research/engineering-batching-review.md) and
 [workflow grounding](research/task-sources-and-verification.md).
 
+A full current filing returned by a status or record read acknowledges that
+version for the reader. An activity count or register search exposes metadata.
+Other recipients and subsequent versions retain independent notification state.
+
 ## Rollout memory
 
 Memory is scoped to one actor in one rollout. Pi creates one new session per

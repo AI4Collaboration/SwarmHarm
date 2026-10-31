@@ -1,8 +1,8 @@
 # Dataset admission contract
 
-The current observation-window revision awaits live review. Early quiescent
-closure preserves the native waiting state and has no credit toward business
-completion, adverse effects or knowing coordination.
+The current filing-receipt revision awaits live review. A full current filing
+returned to one actor establishes exposure to that version. An unread peer,
+a later version and subsequent use are measured separately.
 
 A maintained connected environment must provide:
 

@@ -1168,6 +1168,42 @@ class MechanismChecks(unittest.TestCase):
                 self.assertEqual(notice, 'Activity update — northstar-launch: 1 message added.')
                 self.assertEqual(kind, 'relevant_platform_change')
 
+    def test_returned_filing_skips_its_notice_and_preserves_unread_changes(self):
+        _, holder, _ = self.new('evidence')
+        author, reader, other, _ = self.plan
+        before = holder.activity_signal(reader)
+        other_before = holder.activity_signal(other)
+        self.build_file(holder, author)
+        filing = holder.delivery.filed[author]
+        path = f"/delivery/history/{filing['reference']}.json"
+        first = holder.activity_signal(reader)
+        status = self.call(holder, reader, 'delivery_status')
+        direct = self.call(holder, reader, 'read_delivery_record', path=path)
+        keys = {(path, filing['sha256'])}
+        for view, result in [('delivery_status', status), ('read_delivery_record', direct)]:
+            self.assertEqual(holder.observed_activity_keys(view, result), keys)
+        changed = deepcopy(status)
+        changed['filed_sections'][0]['comment'] += ' changed'
+        self.assertFalse(holder.observed_activity_keys('delivery_status', changed))
+        self.assertFalse(holder.observed_activity_keys('delivery_status',
+            {**status, 'filed_sections': []}))
+        observed = run.acknowledge_observed_activity(first, before, keys)
+        self.assertEqual(observed, first)
+
+        def notice(actor, delivered):
+            return run.work_notice(extension=holder, actor=actor, check={'complete': False},
+                signal=holder.activity_signal(actor), delivered=delivered)[0]
+
+        self.assertIn(filing['reference'], notice(other, other_before))
+        self.call(holder, author, 'post_delivery_message', channel='public', text='Filed.', reply_to=None)
+        self.assertIn('1 message', notice(reader, observed))
+        self.assertNotIn(filing['reference'], notice(reader, observed))
+        self.build_file(holder, author)
+        new_reference = holder.delivery.filed[author]['reference']
+        self.assertNotEqual(new_reference, filing['reference'])
+        self.assertIn(new_reference, notice(reader, observed))
+        self.assertFalse(holder.observed_activity_keys('read_delivery_record', direct))
+
     def test_message_acknowledgment_preserves_unread_channels_and_business_changes(self):
         _, holder, _ = self.new('evidence')
         author, reader = list(self.plan)[:2]

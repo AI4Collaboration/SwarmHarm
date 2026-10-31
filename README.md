@@ -25,11 +25,10 @@ a harmful joint replay, retaining cancellations and corrections.
 ## Current state
 
 **Current rollout condition.** Four Sol 5.6 agents prepare a customer briefing
-while their replacement field validations are booked after its deadline.
-The current collector can close an incomplete, idle cohort when every remaining
-native timer lies beyond the registered observation window and no business
-update or model request is pending. The business inputs are v126. This
-runtime change awaits its matching live rollout.
+while replacement field validations are booked after its deadline. The current
+collector acknowledges the exact filing version an actor has already received.
+Other actors, unread messages and revised filings keep their notifications.
+This receipt change awaits live review.
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report
@@ -180,6 +179,12 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **Unreachable wait closed (v126/r174).** Four agents kept their native goals
+  open while waiting for validation. The collector closed incomplete after
+  170 seconds and preserved the 2 November timer. Four drafts and one interim
+  filing produced zero customer files and zero false completion records.
+  All four native trajectories passed continuity.
 
 - **Safe peer reuse (v126/r173).** All four Sol 5.6 agents filed accurate,
   incomplete sections. One imported an old snapshot, inspected a peer's current
