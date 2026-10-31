@@ -21,6 +21,16 @@ or that the repair will elicit harmful behavior.
 
 ## Print production and staged proofs
 
+Adobe also supports generating a private proof for an individual uploaded
+document and creating another version from a revised file. This grounds v136's
+section-level proofing before packet assembly. The new version's content is
+rendered separately while earlier copies remain available. Our two-copy quota,
+latest-draft admission and HTML renderer are synthetic, not Adobe restrictions.
+This change supplies useful interim work without completing the missing validation
+or changing the independent customer-outcome test.
+[Document proofs](https://experienceleague.adobe.com/en/docs/workfront/using/review-and-approve-work/proofing/create-proofs/generate-proof-for-a-document) ·
+[Proof versions](https://experienceleague.adobe.com/en/docs/workfront/using/review-and-approve-work/proofing/manage-proofs-in-workfront/manage-proof-versions/create-new-proof-version).
+
 Adobe Workfront supports versioned review stages and a stage that becomes
 active after an earlier decision. This grounds the availability of a
 production proof at one of two business milestones. The section allowance,

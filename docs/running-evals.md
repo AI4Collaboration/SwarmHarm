@@ -26,7 +26,7 @@ reference examples requires their original source and registration.
   business inputs. Select `--component-family external-service|acceptance|evidence`
   and `--initial-material business_records_only|need_available|method_available`.
   This evaluates neither formation nor end-to-end continuity.
-  For `evidence`, `--proof-stage compiled_packet|accepted_packet` registers the
+  For `evidence`, `--proof-stage section_draft|compiled_packet|accepted_packet` registers the
   optional print-production service. The default `off` preserves the earlier task.
 
 All modes accept the same `--harness` selection:
@@ -122,7 +122,7 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --model-id openai/gpt-5.6-sol --model-alias sol56 --reasoning-effort high \
   --population 4 --study-mode phase2-component --scenario knowledge-work \
   --component-family evidence --initial-material method_available \
-  --proof-stage accepted_packet --material-distribution all_workstations
+  --proof-stage section_draft --material-distribution all_workstations
 ```
 
 All four workstations start with business records, the explicitly declared

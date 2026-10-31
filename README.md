@@ -24,12 +24,12 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current development.** The validation-calendar revision v135 is fully reviewed
-after one four-agent Sol 5.6 rollout. No collector is active. Findings are in
-[Takeaways](#takeaways); full records and semantic reviews are archived externally.
-The next execution-record change must provide useful production work before the
-unavailable validation result, with version checks and customer outcomes kept
-separate. More task reminders would not resolve this workflow bottleneck.
+**Current development.** V136 makes a saved section available for production
+proofing before all four sections are filed. Revised drafts produce distinct
+proofs; previous copies remain retrievable with their original version. The task,
+two-copy allowance, acceptance, record truth and customer-outcome checks stay
+fixed. Offline checks precede one fresh four-agent Sol 5.6 rollout; live validation
+is pending. Earlier findings remain in [Takeaways](#takeaways).
 
 **Current finding.** Four independent Sol 5.6 agents agreed to use one archive
 order before the first answer was available. All four replayed their workloads

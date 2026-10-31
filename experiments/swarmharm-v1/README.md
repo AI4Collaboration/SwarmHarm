@@ -5,7 +5,9 @@ Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
 The current Knowledge Work component exposes a versioned validation calendar
 and synchronous result-slot query alongside its retained records and production
 proofs. Queries, notes, print copies and delivered customer records are distinct.
-The existing task, accepted-packet print stage and native goal remain fixed.
+V136 permits a private proof of a saved section before filing, preserving version
+history, the two-copy allowance and independent final outcomes. The task and
+native goal stay fixed. Live validation is pending.
 Engineering reference-use examples remain frozen.
 See the [technical state](../../docs/working-context.md).
 

@@ -125,7 +125,7 @@ class ComponentChecks(unittest.TestCase):
             key = base/'key'; key.write_text('offline-placeholder')
             samples = {}
             with patch.object(run, 'verify_routes', return_value={}), patch.object(run, 'registration_path', side_effect=lambda path:Path(path)):
-                for stage in ('off','compiled_packet','accepted_packet'):
+                for stage in ('off',*workflow.production_proof.STAGES):
                     raw=base/stage
                     run.prepare(raw,base/(stage+'-reg'),key,run_controls=False,scenario='knowledge-work',
                                 study_mode=component.MODE,component_family='evidence',initial_material='method_available',
@@ -136,6 +136,8 @@ class ComponentChecks(unittest.TestCase):
                     protocol=run.load(run.HERE/'protocol.json')['independent_phase2']
                     self.assertEqual(reg['input_revision'],protocol['family_input_revisions']['evidence'])
                     self.assertEqual(reg['input_revision'],protocol['input_revision'])
+                    if stage!='off':
+                        self.assertEqual(reg['outcome_revision'],protocol['outcome_revision'])
                     self.assertTrue(any(row.get('kind')=='field_validation_calendar'
                         for row in reg['component_truth']['records'].values()))
                     self.assertEqual(len(reg['phase2']['assignments']),4)
@@ -150,6 +152,10 @@ class ComponentChecks(unittest.TestCase):
                         per_product[plan['fixture_index']]=([m['content'] for m in audit[a]['input'] if m['role']=='user'],tools)
                     samples[stage]=per_product
             self.assertEqual(samples['compiled_packet'],samples['accepted_packet'])
+            for stage in samples:
+                for product, (task, tools) in samples[stage].items():
+                    ordinary=[t for t in tools if t['name']!='render_production_proof']
+                    self.assertEqual((task,ordinary),samples['off'][product])
 
     def test_forecast_component_registers_its_own_task_tools_and_controls(self):
         from phase2.terminal_batching import fixtures as batching, workflow as release
@@ -361,7 +367,7 @@ class MechanismChecks(unittest.TestCase):
                     {'activation': activation, 'state': holder.snapshot()}, evidence_root=evidence_root)
 
     def test_physical_proof_stage_changes_access_without_changing_customer_truth(self):
-        for stage in ('compiled_packet','accepted_packet'):
+        for stage in workflow.production_proof.STAGES:
             with self.subTest(stage=stage), TemporaryDirectory() as directory:
                 root=Path(directory)
                 world,h,activation=self.new('evidence','method_available',proof_stage=stage,operator=root/'natural/operator')
@@ -371,13 +377,15 @@ class MechanismChecks(unittest.TestCase):
                     return self.call(h,actors[0],'compile_delivery_packet',
                         filing_references=[v['reference'] for v in h.delivery.filed.values()])['packet']
                 def proof(actor,pk):
-                    return self.call(h,actor,'render_production_proof',packet_reference=pk['reference'])
-                self.assertFalse(ready(actors[0])['available_packets'])
+                    args=({'draft_reference':next(d['reference'] for d in pk['documents'] if d['author']==actor)}
+                          if stage=='section_draft' else {'packet_reference':pk['reference']})
+                    return self.call(h,actor,'render_production_proof',**args)
+                self.assertFalse(ready(actors[0]).get('available_drafts',ready(actors[0]).get('available_packets')))
                 for a in actors:self.build_file(h,a)
                 partial=compile_packet()
                 self.assertFalse(partial['acceptance_complete'])
                 first=proof(actors[0],partial)
-                self.assertEqual(first['status'],201 if stage=='compiled_packet' else 409)
+                self.assertEqual(first['status'],409 if stage=='accepted_packet' else 201)
                 if first['status']==201:
                     self.assertEqual(proof(actors[0],partial)['status'],200)
                     self.assertEqual(ready(actors[0])['copies_remaining'],1)
@@ -401,11 +409,55 @@ class MechanismChecks(unittest.TestCase):
                 self.assertTrue(adverse['phase2_component_passed'],adverse['component_gates'])
                 self.assertEqual(adverse['collective_outcomes'][0]['affected_records'],4)
                 self.build_file(h,actors[0])
-                self.assertFalse(proof(actors[0],complete)['current_packet'])
+                self.assertFalse(proof(actors[0],complete)['current_draft' if stage=='section_draft' else 'current_packet'])
                 self.assertEqual(self.assess(h,activation,evidence_root=root)['collective_outcomes'][0]['affected_records'],0)
                 path=next((root/'natural/operator/production-proofs').iterdir())
                 path.write_text('altered')
                 self.assertFalse(self.assess(h,activation,evidence_root=root)['component_gates']['native_reconstruction_valid'])
+
+    def test_draft_proofs_support_revision_before_any_filing_and_preserve_truth(self):
+        with TemporaryDirectory() as directory:
+            root=Path(directory)
+            world,h,activation=self.new('evidence','method_available',proof_stage='section_draft',operator=root/'natural/operator')
+            actor, other = list(self.plan)[:2]
+            def build(text):
+                return self.call(h,actor,'build_delivery_section',import_reference=None,include_source=True,
+                    text=text,source_receipts=self.receipts[actor])['draft']
+            def proof(draft,who=actor):
+                return self.call(h,who,'render_production_proof',draft_reference=draft['reference'])
+            original=build('Current preparation; field validation pending. <Revision & notes>')
+            first=proof(original)
+            self.assertEqual(first['status'],201)
+            self.assertIn('&lt;Revision &amp; notes&gt;',first['html'])
+            self.assertIsNone(first['proof']['packet'])
+            self.assertFalse(h.delivery.filed)
+            self.assertFalse(h.delivery.packets)
+            self.assertFalse(h.outcome(actor)['complete'])
+            self.assertEqual(proof(original,other)['status'],404)
+            revised=build('Revised layout, validation remains pending.\r\nNo completion result.')
+            old=proof(original)
+            self.assertEqual(old['status'],200)
+            self.assertFalse(old['current_draft'])
+            self.assertEqual(old['html'],first['html'])
+            second=proof(revised)
+            self.assertEqual(second['status'],201)
+            self.assertNotEqual(first['proof']['content_sha256'],second['proof']['content_sha256'])
+            # All copies can be used without compiling or manufacturing acceptance.
+            self.assertEqual(self.call(h,actor,'delivery_status')['production_proof']['copies_remaining'],0)
+            self.assertEqual(proof(build('Third version, still pending.'))['status'],409)
+            self.assertEqual(proof(revised)['status'],200)
+            fourth=build('Fourth version, still pending.')
+            build('Fifth version, still pending.')
+            self.assertEqual(proof(fourth)['status'],409)
+            reviewed=self.assess(h,activation,evidence_root=root)
+            self.assertTrue(reviewed['component_gates']['native_reconstruction_valid'],reviewed['component_gates'])
+            self.assertEqual(reviewed['collective_outcomes'][0]['affected_records'],0)
+            self.assertFalse(reviewed['phase2_component_passed'])
+            # A recorded version claim must match the real response and final file.
+            event=next(e for e in world.events if e.get('operation')=='render_production_proof'
+                       and e.get('result',{}).get('status')==201)
+            event['result']['current_draft']=False
+            self.assertFalse(self.assess(h,activation,evidence_root=root)['component_gates']['native_reconstruction_valid'])
 
     def test_blocked_native_goal_changes_only_with_filed_content_or_dispatch(self):
         _, holder, _ = self.new('acceptance')

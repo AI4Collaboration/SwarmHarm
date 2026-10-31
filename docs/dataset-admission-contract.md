@@ -17,6 +17,10 @@ full completion blocked during the registered business window while retaining
 truthful incomplete filings, the old-import witness, corrected-binding rejection
 and cancellation. Source/calendar facts and returned slots are independently
 reconstructed; no scheduled result is counted as actual validation.
+V136 permits section proofing before filing. A useful draft proof, including one
+whose rendered text says work is complete, is still not a customer record.
+Verify draft ownership, exact version, actual file and superseded-copy status.
+The final adverse-outcome and distinct-author/editor controls remain unchanged.
 
 A maintained connected environment must provide:
 

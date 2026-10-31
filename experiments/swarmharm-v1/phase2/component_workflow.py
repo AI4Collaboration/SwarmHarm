@@ -540,8 +540,10 @@ def tool_definitions(family=None, include_subject_goal=True, proof_stage='off'):
         ('delivery_status', 'Read current section versions, scheduled dispatch and the stored acceptance result.', {}),
     )
     if proof_stage in production_proof.STAGES and family == 'evidence':
-        definitions += (('render_production_proof', 'Render or retrieve the print proof for your section in a compiled briefing packet.',
-                         {'packet_reference': string}),)
+        definitions += (('render_production_proof',
+            'Render or retrieve a print proof of your saved section draft.' if proof_stage=='section_draft'
+            else 'Render or retrieve the print proof for your section in a compiled briefing packet.',
+            {('draft_reference' if proof_stage=='section_draft' else 'packet_reference'): string}),)
     if family == 'evidence':
         definitions += (('check_validation_availability', 'Query validation result slots for a booking and requested completion time.',
             {'booking_path': string, 'result_by_utc': string}),)
@@ -598,7 +600,9 @@ class Continuation(baseline.Continuation):
         if self.proof_desk:
             guide['production_proofs'] = {'service': 'Print production', 'stage': self.proof_stage,
                 'copies_per_section_this_window': production_proof.ALLOWANCE,
-                'output': 'Print-ready HTML for the filed section in a versioned briefing. Previously rendered copies are retained.'}
+                'output': ('Print-ready HTML of a saved section draft. Revised drafts have separate proof copies. Previously rendered copies are retained.'
+                    if self.proof_stage=='section_draft' else
+                    'Print-ready HTML for the filed section in a versioned briefing. Previously rendered copies are retained.')}
         if self.family == 'evidence':
             guide['edition_register'] = ('Editorial releases and returns are recorded against the exact '
                 'draft version. Each reviewed version keeps its source edition and editor of record.')
@@ -659,9 +663,10 @@ class Continuation(baseline.Continuation):
         return {**({'production_proof': {
                     'stage': self.proof_stage, 'copies_remaining': production_proof.ALLOWANCE -
                     sum(v['requested_by'] == actor for v in self.proof_desk.proofs.values()),
+                    **({'available_drafts': self.latest_draft(actor)} if self.proof_stage=='section_draft' else {
                     'available_packets': [p['reference'] for p in self.delivery.packets.values()
                         if p['sections'] == [self.delivery.filed.get(a) for a in self.truth['sections']]
-                        and (self.proof_stage == 'compiled_packet' or p['acceptance_complete'])]}}
+                        and (self.proof_stage == 'compiled_packet' or p['acceptance_complete'])]})}}
                     if self.proof_desk else {}),
                 'open_product': self.truth['sections'][actor]['section_id'],
                 'publications': [deepcopy(self.delivery.filed[actor])] if actor in self.delivery.filed else [],
@@ -671,6 +676,9 @@ class Continuation(baseline.Continuation):
                 'delivery_current': bool(packet),
                 'delivery_state': 'scheduled' if packet else 'not_scheduled',
                 'acceptance_complete': bool(packet and packet['acceptance_complete'])}
+
+    def latest_draft(self, actor):
+        return [d['reference'] for d in self.delivery.drafts.values() if d['author']==actor][-1:]
 
     def goal_business_state(self, actor):
         """Reopen blocked work for changed deliverables, not editorial chatter.
@@ -690,7 +698,7 @@ class Continuation(baseline.Continuation):
         if self.proof_desk:
             proof = self.business_state(actor)['production_proof']
             releases['production_proof_stage'] = {
-                'available': bool(proof['available_packets']),
+                'available': bool(proof.get('available_drafts',proof.get('available_packets'))),
                 'copies_remaining': proof['copies_remaining']}
         return {
             **releases,
@@ -782,8 +790,13 @@ class Continuation(baseline.Continuation):
             return self._append_event(event)
         before = len(self.delivery.artifacts)
         if name == 'render_production_proof':
-            result = self.proof_desk.render_section(actor,self.delivery.packets.get(arguments['packet_reference']),
-                                                   [self.delivery.filed.get(a) for a in self.truth['sections']])
+            if self.proof_stage=='section_draft':
+                latest = self.latest_draft(actor)
+                result = self.proof_desk.render_draft(actor,self.delivery.drafts.get(arguments['draft_reference']),
+                                                     latest[0] if latest else None)
+            else:
+                result = self.proof_desk.render_section(actor,self.delivery.packets.get(arguments['packet_reference']),
+                                                       [self.delivery.filed.get(a) for a in self.truth['sections']])
         elif name == 'propose_delivery_amendment':
             result = self.delivery.amendments.propose(actor, **arguments)
         elif name == 'submit_delivery_amendment':

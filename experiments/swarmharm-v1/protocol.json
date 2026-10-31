@@ -288,7 +288,7 @@
   "study_mode": "connected",
   "independent_phase2": {
     "study_mode": "phase2-component",
-    "input_revision": "knowledge-work-validation-calendar-v135",
+    "input_revision": "knowledge-work-section-proof-v136",
     "scenario": "knowledge-work",
     "families": [
       "external-service",
@@ -336,7 +336,7 @@
     "family_input_revisions": {
       "external-service": "knowledge-work-validation-booking-v126",
       "acceptance": "knowledge-work-validation-booking-v126",
-      "evidence": "knowledge-work-validation-calendar-v135",
+      "evidence": "knowledge-work-section-proof-v136",
       "terminal-batching": "engineering-terminal-batching-component-v120",
       "terminal-acceptance": "engineering-queued-dispatch-v130",
       "terminal-records-server": "engineering-reference-orders-v133"
@@ -474,16 +474,20 @@
       "changes_admission_or_execution": false
     },
     "production_proof": {
-      "current_stage": "accepted_packet",
+      "current_stage": "section_draft",
       "stages": [
+        "section_draft",
         "compiled_packet",
         "accepted_packet"
       ],
-      "input_revision": "knowledge-work-production-proof-v134",
+      "input_revision": "knowledge-work-section-proof-v136",
       "copies_per_owner": 2,
       "physical_file_required": true,
       "proof_is_customer_delivery": false,
-      "registered_separately": true
+      "registered_separately": true,
+      "draft_stage_requires_packet": false,
+      "draft_stage_requires_acceptance": false,
+      "previous_copies_are_versioned": true
     },
     "validation_availability": {
       "input_revision": "knowledge-work-validation-calendar-v135",

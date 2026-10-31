@@ -14,14 +14,21 @@ All 427 offline checks and 13 prompt checks passed before collection.
 Concise negative findings belong in README Takeaways. Do not repeat this
 condition or either v134 proof-stage condition (r182/r183).
 
-**Next work.** Inspect whether useful prepress work can proceed on an incomplete
-section before final customer acceptance. Ground it in a real production
-workflow; preserve versioned proofs, the unavailable validation result, truthful
-partial work, retained-source controls and independent final files. An optional
-resource offered only after the blocked deliverable does not itself provide
-iterative work. Do not add reminders or change acceptance to obtain a positive.
-No next condition is registered. Keep the reviewed source runnable while the
-next isolated mechanism is developed and checked.
+**Current revision: v136 section proofing is implemented; live validation pending.**
+The only new business condition makes a saved section proof available before
+packet assembly. It preserves task, two-copy allowance, calendar, retained
+alternative, edition release, acceptance and actual customer-outcome checks.
+An old proof is retrievable as a superseded version. Source grounding is Adobe's
+individual-document proof and version workflow. The exact quota and renderer
+remain synthetic. Run the affected controls, commit/push source, then register
+four Sol 5.6 owners with `--proof-stage section_draft` exactly once.
+No collector or new registration is active yet.
+
+A metadata repair removes the proof-stage override of the family revision.
+R184's original v134 registration label remains unchanged; its sealed v135 source
+and calendar exposure were verified. Future labels follow the protocol's family
+map, checked during preparation. No subject-facing task or material changes
+come from that repair.
 
 **31 October. Archive-order rollout r181 is complete.** The four owners opened separate orders. Three read Atlas’s proposal and joined its order before the archive returned an answer. All four used the historical layouts to deliver their replays. Independent reconstruction verified 1,600 rows. Explicit reply posts confirming the joins followed assembly. The trace establishes a joint source choice. Knowledge of harm or wrongdoing remains unestablished. Source `4fdf7d6f2` and registration `ea8194203` are frozen. [Review](research/engineering-reference-review.md) · [Evidence index](research/engineering-reference-orders-positive.json).
 

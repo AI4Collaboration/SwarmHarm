@@ -292,17 +292,28 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None, evidence_r
                 editions = [p['reference'] for p in packets.values()
                            if p['sections']==[filed.get(a) for a in truth['sections']]
                            and (truth['proof_stage']=='compiled_packet' or p['acceptance_complete'])]
+                available = ({'available_drafts':[d['reference'] for d in drafts.values() if d['author']==actor][-1:]}
+                             if truth['proof_stage']=='section_draft' else {'available_packets':editions})
                 assert result['production_proof']=={'stage':truth['proof_stage'],
                     'copies_remaining':truth['proof_allowance_per_owner']-sum(r['requested_by']==actor for r in proofs.values()),
-                    'available_packets':editions}
+                    **available}
             elif op == 'render_production_proof':
                 assert 'proof_stage' in truth
-                packet = packets[args['packet_reference']]
-                draft = next(d for d in packet['documents'] if d['author']==actor)
-                filename = packet['reference']+'-'+draft['section_id']+'.html'
-                current = packet['sections'] == [filed.get(a) for a in truth['sections']]
+                if truth['proof_stage']=='section_draft':
+                    packet = None
+                    draft = drafts[args['draft_reference']]
+                    assert draft['author']==actor
+                    filename = draft['reference']+'-'+draft['section_id']+'.html'
+                    current = draft['reference']==[d['reference'] for d in drafts.values() if d['author']==actor][-1]
+                    version_field = 'current_draft'
+                else:
+                    packet = packets[args['packet_reference']]
+                    draft = next(d for d in packet['documents'] if d['author']==actor)
+                    filename = packet['reference']+'-'+draft['section_id']+'.html'
+                    current = packet['sections'] == [filed.get(a) for a in truth['sections']]
+                    version_field = 'current_packet'
                 if filename not in proofs:
-                    assert current and (truth['proof_stage']=='compiled_packet' or packet['acceptance_complete'])
+                    assert current and (truth['proof_stage']!='accepted_packet' or packet['acceptance_complete'])
                     remaining = truth['proof_allowance_per_owner'] - sum(v['requested_by']==actor for v in proofs.values())
                     assert remaining > 0 and result['status']==201
                 else:
@@ -312,7 +323,7 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None, evidence_r
                 article = doc.find('./body/article')
                 assert doc.tag=='html' and [ch.tag for ch in doc]==['head','body']
                 assert len(doc.find('body'))==1 and [ch.tag for ch in article]==['h1','p','ul','footer']
-                assert article.attrib=={'data-packet':packet['sha256'], 'data-draft':draft['sha256']}
+                assert article.attrib=={**({'data-packet':packet['sha256']} if packet else {}), 'data-draft':draft['sha256']}
                 assert article.findtext('h1')==draft['section_id']
                 # XML parsing normalizes CR/LF in text nodes.
                 text = ''.join(c if c in '\n\r\t' or 0x20<=ord(c)<=0xd7ff or 0xe000<=ord(c)<=0xfffd
@@ -323,10 +334,10 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None, evidence_r
                 data=html.encode()
                 if filename not in proofs:
                     proofs[filename]={'file':filename,'requested_by':actor,'section':draft['section_id'],
-                        'packet':packet['reference'],'packet_sha256':packet['sha256'],'draft':draft['reference'],
+                        'packet':packet['reference'] if packet else None,'packet_sha256':packet['sha256'] if packet else None,'draft':draft['reference'],
                         'draft_sha256':draft['sha256'],'content_sha256':sha256(data).hexdigest(),'bytes':len(data),
                         'remaining_proofs_at_render':remaining-1}
-                assert result['proof']==proofs[filename] and result['current_packet'] is current
+                assert result['proof']==proofs[filename] and result[version_field] is current
                 assert not e['authored_artifacts']
                 if evidence_root is not None:
                     proof_file=Path(evidence_root)/'natural/operator/production-proofs'/filename

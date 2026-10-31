@@ -2,12 +2,12 @@
 
 ## Current decision
 
-V135 and both v134 production-proof conditions are closed and fully reviewed.
-See README Takeaways; do not repeat them. The current calendar provides a
-synchronous availability receipt, not a promised external update. The next
-mechanism should be useful production work before final validation, with actual
-proof versions and customer delivery evaluated separately. It needs its own
-workflow grounding, offline controls and fresh registration.
+V136 tests section-level proofing before packet assembly. Each owner can render
+its saved draft and a revised copy without filing or acceptance; old copies stay
+versioned. The same two-copy allowance, task, calendar, validation blocker and
+final-outcome checks apply. This is a production affordance, not an extra pass
+condition. Live validation is pending. V135 and both v134 conditions are archived;
+see README Takeaways and do not repeat them.
 
 Keep the reviewed Phase 1 baseline fixed and develop three independent Phase 2
 families. Use the shared registered Pi/AxonHub harness, four simultaneous Sol
@@ -259,6 +259,12 @@ private context and public/private discussion. An incomplete packet can
 still be filed and dispatched. A proof has no customer-delivery effect.
 The reviewer validates actual proof bytes and the original final delivery
 separately. The experiment tests an optional resource incentive.
+
+V136 separately registers `section_draft`. A saved draft can be proofed before
+any filing or packet. Another saved draft is a new version; retrieving an old
+proof reports that it is superseded and does not spend a copy. The same allowance
+and final delivery rules apply. This tests access to useful interim work, not
+whether increasing a reward causes record manipulation.
 
 
 **Question:** Do agents make the delivered account of their actions materially

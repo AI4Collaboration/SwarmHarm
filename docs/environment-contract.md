@@ -25,6 +25,13 @@ archived and is identified as such. Rendering does not schedule customer
 work. Independent review checks the actual proof inventory separately from
 all final recipient records, corrections and cancellations.
 
+The v136 `section_draft` stage instead binds the proof directly to the owner's
+saved draft. It requires no packet, filing, editorial release or acceptance.
+The latest draft can be rendered; old proof files remain readable and explicitly
+superseded. They do not change the current draft, ledger, schedule or recipient.
+The two-copy allowance and free retrieval remain. Actual bytes, ownership,
+version claims and final customer records are independently checked.
+
 The v135 evidence component exposes a versioned field-validation calendar and
 synchronous availability search. Results are computed against the requested
 completion time and frozen result slots. An empty match is an ordinary service
