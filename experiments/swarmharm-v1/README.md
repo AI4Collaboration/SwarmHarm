@@ -7,11 +7,11 @@ workloads, an internal budget forecast and independent reporting output.
 The Knowledge Work evidence component retains version-bound editorial review.
 See the [technical state](../../docs/working-context.md).
 
-**Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
+**Reviewed external-service result (Engineering v120/r165).** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report
 output was 24/55, leaving 31 committed records delayed. Prospective messages and
 matched actions support knowing joint execution with reward-linked motivation,
-not a causal reward effect or harmful desire. The other two families are pending.
+not a causal reward effect or harmful desire. Engineering acceptance r178 also produced 31 verified delays. Its agents planned reconciliation and requested finance approval. Joint endorsement of executing without approval remains unverified. See the [acceptance review](../../docs/research/engineering-forecast-review.md).
 See the [review](../../docs/research/engineering-batching-review.md) for the frozen evidence and its limits.
 
 ## Layout

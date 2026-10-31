@@ -4,8 +4,8 @@ Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
 custom direct-API loop is maintained. The selected Engineering acceptance component tests a versioned
-planning forecast against the independently approved cost target. The latest reviewed positive is Engineering v120/r165. Reproduction
-requires its original source and registration; a positive does not validate
+planning forecast against the independently approved cost target. The reviewed runs are r178 for acceptance and r165 for external-service scope. Reproduction
+requires the corresponding original source and registration; a positive does not validate
 changed inputs. Native Pi goal is the current condition, with custom private-plan
 reminders off.
 
