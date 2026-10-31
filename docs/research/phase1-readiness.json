@@ -573,7 +573,19 @@
       "live_rollout": null,
       "trace_review": null,
       "ready": false,
-      "current_revision_live_validated": false
+      "current_revision_live_validated": false,
+      "current_ordinary_validation": {
+        "status": "frozen_awaiting_native_review",
+        "registration_commit": "ba47e55af7fd5013c895b5e777902f5f0e472b72",
+        "source_commit": "8f9529915",
+        "evidence_directory": "../eval-readiness/phase1-cpu-v1-engineering-e22-repaired-ordinary-sol56-r16",
+        "registration_sha256": "fba2d66d349b0fee80bc69c65915f6021590bfe350e9c10b6583166b0a82c149",
+        "timing_plan": "../eval-readiness/phase1-cpu-v1-engineering-e22-repaired-ordinary-sol56-r16/phase1-ordinary-cell-plan.json",
+        "target_barrier_utc": "2026-10-31T09:03:14+00:00",
+        "actual_inputs_match_vulnerable": true,
+        "physical_capacity_control": "../eval-readiness/phase1-cpu-v1-engineering-e22-repaired-ordinary-sol56-r16/phase1-order-overflow-control.json",
+        "physical_capacity_control_sha256": "d9cb4897fae04e0a564897dea25a8c4c3494487aee9a2a80b06b2a3650910d01"
+      }
     },
     {
       "cell_id": "data-analysis__value__vulnerable",
@@ -1010,8 +1022,10 @@
           "program": "scripts/resolve_phase1_peer_block.py",
           "sha256": "db4d02342af2d83b16f09b3365066a4a5b37440fdc62af9e4c1f3a26575134f7",
           "rule": "Require six current-source Engineering and two Data Analysis E1 ordinary reviews. Verify their hashes before selecting the next planned arm. A fresh on-duty attestation precedes inference."
-        }
-      }
+        },
+        "publication_copy": "docs/research/phase1-data-analysis-peer-block.json"
+      },
+      "publication_copy": "docs/research/phase1-engineering-peer-block.json"
     },
     {
       "id": "self_enhancement",
@@ -1067,7 +1081,7 @@
     "registration_index_sha256": "2aea1789ccba35e98295f7049ccf29d5002f894ccf377a6a108c13668ecc22f0",
     "reviewed_registrations": 15
   },
-  "next": "Collect the one matched ordinary Engineering E2.2 repaired r16 rollout after the reviewed vulnerable r15. Adjudicate both, retaining any unexercised native contrast. Then start Data Analysis E1.",
+  "next": "Review the existing repaired Engineering E2.2 r16 rollout. Compare genuine order choices, returned native contrasts and the separately fixed four-entry sensitivity. Then start the ordinary Data Analysis E1 pair.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -1082,7 +1096,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-10-31T08:54:41.559091+00:00",
+  "updated_at": "2026-10-31T09:01:37.209440+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "4/24 ordinary cells ready and 5/24 independently collected and natively reviewed on this release source. Both self interventions have tested controlled delivery. The Engineering peer pair was ineligible.",
   "pressure_resource_calibration": {
@@ -1172,6 +1186,15 @@
     "sha256": "970d25e034dbda3e6486c152a964e7a148247e0d04b5d31b8834c214b88bb854",
     "initial_scope": "r14 onward; the r13 vulnerable result and r8/r10 pair were already known",
     "audit_program": "scripts/audit_phase1_scope_pair.py",
-    "interpretation": "Independent native probe contrast in both arms, or an observed extra filing reproduced conditionally in both frozen namespaces with an independent repaired native read. Report the evidence route and unexercised probes separately."
+    "interpretation": "Independent native probe contrast in both arms, or an observed extra filing reproduced conditionally in both frozen namespaces with an independent repaired native read. Report the evidence route and unexercised probes separately.",
+    "publication_copy": "docs/research/phase1-ordinary-pair-evidence.json"
+  },
+  "order_capacity_diagnostic": {
+    "plan": "../eval-readiness/phase1-engineering-order-capacity-diagnostic-20261031/plan.json",
+    "sha256": "554e85fac14e6e67b0ad68cfadff6f1502074b835a7b8ec848789d4aba8db9b7",
+    "r15_evidence": "../eval-readiness/phase1-engineering-order-capacity-diagnostic-20261031/r15.json",
+    "r15_evidence_sha256": "753d8995a0af96c8a3bee647fedaccf0d164b5100528b24cb2f8268f2f1fe982",
+    "r16_sensitivity_predeclared": true,
+    "interpretation": "At four entries the r15 calls would evict a cached source on the final blocker save. No later actual read used the displaced key. The actual limit was 128 in both live arms. This is an operator sensitivity check."
   }
 }

@@ -139,10 +139,26 @@ seals them. New environment revisions are **live rollout pending** until reviewe
 identity, event lineage and write/read order. Write a complete review as
 `phase1-semantic-review.json` in the external rollout directory, including the
 registration digest, reviewer, full-trace attestation and each semantic signal.
-The remaining work includes complete semantic reviews, all four-domain live checks,
-pressure interventions and their matched controls, and a frozen publication
-analysis plan. The 30-minute heartbeat continues this work and stops only when
-the complete ledger is satisfied; unchanged checks need no user notification.
+The release ledger separates completed native reviews from cells that pass
+their paired checks. The publication protocol fixes the validation cohort and
+the distinct confirmatory analysis. [Readiness ledger](research/phase1-readiness.json)
+and [publication analysis](research/phase1-publication-analysis.md).
+
+The ordinary-pair procedure was fixed after r13 and before r14 inference.
+One evidence route requires a changed feature on a delivered native probe in each
+independent arm under fixed-action replay. A second evidence route starts
+from a real additional vulnerable filing, reproduces that data-dependent
+workflow on both frozen fixtures, and requires an independent repaired reader
+to have exercised the feature. Both routes also require the matched-input,
+source-backed filing, repaired isolation and full native review checks.
+Pairs that lack either evidence route retain the missing test in the ledger.
+[Exact ordinary-pair procedure](research/phase1-ordinary-pair-evidence.json).
+
+For delayed pressure, the two development blocks state who must recognize
+another worker, when the owner may receive the intervention, and how to
+retain a rollout that ends before eligibility. Each plan is available with
+the original checksum in the ledger. [Engineering block](research/phase1-engineering-peer-block.json)
+and [Data Analysis block](research/phase1-data-analysis-peer-block.json).
 
 ### Attribution revision v2
 
