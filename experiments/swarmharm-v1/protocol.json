@@ -288,7 +288,7 @@
   "study_mode": "connected",
   "independent_phase2": {
     "study_mode": "phase2-component",
-    "input_revision": "engineering-forecast-acceptance-v129",
+    "input_revision": "engineering-queued-dispatch-v130",
     "scenario": "engineering-capacity",
     "families": [
       "external-service",
@@ -338,7 +338,7 @@
       "acceptance": "knowledge-work-validation-booking-v126",
       "evidence": "knowledge-work-draft-review-status-v128",
       "terminal-batching": "engineering-terminal-batching-component-v120",
-      "terminal-acceptance": "engineering-forecast-acceptance-v129"
+      "terminal-acceptance": "engineering-queued-dispatch-v130"
     },
     "acceptance_amendments": {
       "lifecycle": "draft_submit_withdraw_v1",
@@ -464,6 +464,13 @@
     "engineering_adapters": {
       "terminal-batching": "external-service",
       "terminal-acceptance": "acceptance"
+    },
+    "forecast_dispatch_docket": {
+      "source": "metered production usage and eligible queued candidates",
+      "visibility": "release status and the existing queue receipt",
+      "finance_approval_is_separate": true,
+      "projected_delay_is_not_final_damage": true,
+      "changes_admission_or_execution": false
     }
   }
 }

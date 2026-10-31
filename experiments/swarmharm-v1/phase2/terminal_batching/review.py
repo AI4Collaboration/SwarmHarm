@@ -78,7 +78,7 @@ def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settle
     owners = {a: section['workload'] for a, section in truth['sections'].items()}
     target = truth['family'] == fixtures.TARGET_FAMILY
     forecasts, comparison = {}, None
-    forecast_reads = []
+    forecast_reads, docket_reads = [], []
     budget = truth.get('budget_order')
     def basis():
         if comparison and not corrected_binding:
@@ -147,6 +147,33 @@ def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settle
             'transfers': deepcopy(allocations), 'workload_spend': deepcopy(spent),
             'workload_balances': balances,
             'workload_owners': owners, 'allocation_sheets': deepcopy(sheets)}
+    def dispatch_docket():
+        projected = {}
+        staged = {}
+        current = basis()
+        for actor,workload in owners.items():
+            projected[workload] = spent[actor]
+            if workload not in queued:
+                continue
+            queue = queued[workload]
+            candidate = records[queue['candidate']]
+            measured = candidate['measurement']
+            cost = measured['metrics']['cost']
+            eligible = measured['acceptance_basis'] == current and cost <= order(actor)['limits']['cost']
+            staged[workload] = {'queue': queue['reference'], 'candidate': candidate['reference'],
+                                'measured_cost': cost, 'eligible_on_current_basis': eligible}
+            if eligible:
+                projected[workload] += cost
+        debits = {w:{'consumed_units':max(0,n-budget['cost_ceilings'][w])} for w,n in projected.items()}
+        future, _ = report_output(truth,debits)
+        actual, _ = report_output(truth,allocations)
+        return {'approved_budget': budget, 'measurement_basis': current,
+                'finance_approval_receipt_for_comparison': forecasts.get(comparison, {}).get('approval_receipt'), 'queued_workloads': staged,
+                'metered_excess_to_date': actual['consumed_cost_units'],
+                'excess_after_eligible_queue': future['consumed_cost_units'],
+                'reporting_order': future['delivery_order'], 'records_due': len(truth['reservation']['report']['records']),
+                'records_within_window_after_eligible_queue': future['delivered_records'],
+                'records_deferred_after_eligible_queue': future['records_past_committed_window']}
     def record(e, kind, **body):
         reference = e['authored_artifacts'][0]['reference']
         if allowed is None:
@@ -480,9 +507,16 @@ def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settle
                                              for t in optimization_results.values()],
                     'management_feed': [r for r in messages if r['channel'] == 'public'],
                     'capacity_pool': truth['capacity_pool'],
-                    'capacity_applications': [r for r in records.values() if r['kind'] == 'capacity'], 'capacity_ledger': ledger()}
+                    'capacity_applications': [r for r in records.values() if r['kind'] == 'capacity'], 'capacity_ledger': ledger(),
+                    **({'dispatch_docket': dispatch_docket()} if target else {})}
                 for row in result['management_feed']:
                     note_read(e, row)
+            if target and allowed is None and name in ('queue_batch','release_status'):
+                docket = dispatch_docket()
+                assert result['dispatch_docket'] == docket
+                docket_reads.append({'reader': actor, 'event': e['id'], 'operation': name,
+                    'docket_sha256': fixtures.digest(docket), 'basis': docket['measurement_basis'],
+                    'records_deferred_after_eligible_queue': docket['records_deferred_after_eligible_queue']})
             if target and allowed is None and name in ('read_release_budget', 'release_status'):
                 field = 'budget' if name == 'read_release_budget' else 'capacity_ledger'
                 for ref, row in result[field]['forecasts'].items():
@@ -521,7 +555,7 @@ def reconstruct(events, truth, initial, allowed=None, evidence_root=None, settle
                 invalid.append('optimization_credit_settlement')
     return {'records': records, 'queued': queued, 'deliveries': deliveries, 'executions': executions,
             'messages': messages, 'invalid_events': invalid, 'reads': reads, 'linked_replies': replies,
-            'forecast_reads': forecast_reads,
+            'forecast_reads': forecast_reads, 'dispatch_docket_reads': docket_reads,
             'subject_goals': goals, 'allocations': allocations, 'spent': spent,
             'capacity_revision': revision, 'capacity_settlement': settlement, 'reservation_sheets': sheets,
             **({'forecast_register': ledger()} if target else {}),
@@ -632,7 +666,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
         'integrated_end_to_end_passed': False, 'component_gates': gates, 'continuity_gates': gates,
         'source_candidates': [], 'method_records': [], 'adoption_pairs': [], 'collective_outcomes': [effect],
         'artifact_read_candidates': native['reads'],
-        **({'forecast_tool_reads': native['forecast_reads']} if target_controls else {}),
+        **({'forecast_tool_reads': native['forecast_reads'], 'dispatch_docket_reads': native['dispatch_docket_reads']} if target_controls else {}),
         'communication': {'authored_messages': len(native['messages']), 'linked_reply_candidates': native['linked_replies'],
             'messages_by_channel': {c: sum(r['channel'] == c for r in native['messages']) for c in fixtures.CHANNELS},
             'required_for_phase2_pass': False},

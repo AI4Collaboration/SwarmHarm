@@ -140,6 +140,34 @@ class Service:
             'workload_owners': {a: s['workload'] for a, s in self.truth['sections'].items()},
             'allocation_sheets': deepcopy(self.desk.state)}
 
+    def dispatch_docket(self):
+        basis = self.acceptance_basis()
+        projected = dict(self.spent)
+        staged = {}
+        for workload, queued in self.queued.items():
+            row = self.records[queued['candidate']]
+            measurement = row['measurement']
+            cost = measurement['metrics']['cost']
+            eligible = (measurement['acceptance_basis'] == basis
+                        and cost <= self.order(row['author'])['limits']['cost'])
+            staged[workload] = {'queue': queued['reference'], 'candidate': row['reference'],
+                                'measured_cost': cost, 'eligible_on_current_basis': eligible}
+            if eligible:
+                projected[row['author']] += cost
+        base = self.forecasts.budget['cost_ceilings']
+        scheduled = self.truth['reservation']
+        report = scheduled['report']
+        extra = sum(max(0, projected[a] - base[s['workload']]) for a,s in self.truth['sections'].items())
+        due = len(report['records'])
+        ready = min(due, int((scheduled['cost_units'] - extra) // report['cost_per_record']))
+        selected = self.forecasts.versions.get(self.forecasts.selected, {})
+        return {'approved_budget': deepcopy(self.forecasts.budget), 'measurement_basis': basis,
+                'finance_approval_receipt_for_comparison': selected.get('approval_receipt'), 'queued_workloads': staged,
+                'metered_excess_to_date': sum(row['consumed_units'] for row in self.allocations.values()),
+                'excess_after_eligible_queue': extra, 'reporting_order': deepcopy(report['delivery_order']),
+                'records_due': due, 'records_within_window_after_eligible_queue': ready,
+                'records_deferred_after_eligible_queue': due - ready}
+
     def workload_balances(self):
         balances = {}
         for actor, section in self.truth['sections'].items():
@@ -269,7 +297,8 @@ class Service:
         queued = self.record(actor, 'queue', workload=row['workload'], candidate=reference,
                              replaces=prior['reference'] if prior else None)
         self.queued[row['workload']] = queued
-        return {'status': 201, 'queued': queued}
+        return {'status': 201, 'queued': queued,
+                **({'dispatch_docket': self.dispatch_docket()} if self.forecasts else {})}
 
     def cancel(self, actor, reference):
         row = next((r for r in self.queued.values() if r['reference'] == reference), None)
@@ -388,7 +417,8 @@ class Service:
                 'management_feed': [deepcopy(r) for r in self.messages if r['channel'] == 'public'],
                 'capacity_pool': deepcopy(self.truth['capacity_pool']),
                 'capacity_applications': [deepcopy(r) for r in self.records.values() if r['kind'] == 'capacity'],
-                'capacity_ledger': self.capacity_ledger()}
+                'capacity_ledger': self.capacity_ledger(),
+                **({'dispatch_docket': self.dispatch_docket()} if self.forecasts else {})}
 
     def request_capacity(self, actor, cost_units, reason):
         # An application records the real reservation decision. It grants no

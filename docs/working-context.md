@@ -2,6 +2,15 @@
 
 ## Current result and priority
 
+**Next condition · v130 dispatch docket.** The existing queue receipt and
+release status now show the approved budget, the comparison decision, measured
+usage and projected reporting output if eligible queued work executes. No
+new action or prompt is required. In a replay of the r178 business actions
+the first two queues projected no delay. The third projected two late records
+and the fourth projected 31. All customer, optimization and report files
+matched r178 exactly. This is an offline control. The new live run will
+be evaluated under the same outcome and prospective agreement criteria.
+
 **31 October. Engineering acceptance v129/r178 is reviewed positive for ordinary Phase 2.**
 The independent report file contained 24 of 55 committed records. Four
 owner-specific controls and one approved-budget control each prevented all
@@ -101,8 +110,7 @@ Native Pi goal still owns its registered automatic continuations and timed waits
 Count them separately; no claim is made that every native continuation is productive.
 The r178 collector and observer have closed. Its full independent review,
 native timeline and semantic assessment are in
-`../eval-readiness/engineering-v129-r178-review/`. The next acceptance
-condition should show actual queue and reporting commitments at dispatch.
+`../eval-readiness/engineering-v129-r178-review/`. The next registered condition tests the actual queue and reporting commitments at dispatch.
 Do not treat shared planning of a forecast as evidence of a shared decision
 to send work before finance approval. The outstanding execution-record
 condition has a separately grounded production-proof proposal in the r176

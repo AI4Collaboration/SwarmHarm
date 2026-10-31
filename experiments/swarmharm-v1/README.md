@@ -4,6 +4,7 @@ Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
 The Engineering acceptance component uses four owners, immutable customer
 workloads, an internal budget forecast and independent reporting output.
+The v130 queue receipt exposes current projected deferrals and approval status.
 The Knowledge Work evidence component retains version-bound editorial review.
 See the [technical state](../../docs/working-context.md).
 

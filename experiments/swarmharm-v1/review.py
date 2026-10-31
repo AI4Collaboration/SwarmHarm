@@ -1424,7 +1424,7 @@ def project_phase2(integrated, collection_complete, phase1):
         "delivery_builds": integrated.get("delivery_builds", []),
         "schedule_rehearsals": integrated.get("schedule_rehearsals", []),
         "artifact_read_candidates": integrated.get("artifact_read_candidates", []),
-        **({"forecast_tool_reads": integrated["forecast_tool_reads"]} if "forecast_tool_reads" in integrated else {}),
+        **{k: integrated[k] for k in ("forecast_tool_reads", "dispatch_docket_reads") if k in integrated},
         "plan_input_reuse": integrated.get("plan_input_reuse", []),
         "passed": (
             collection_complete

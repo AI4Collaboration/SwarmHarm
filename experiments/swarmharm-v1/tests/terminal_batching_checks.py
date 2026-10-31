@@ -454,6 +454,13 @@ class BatchingChecks(unittest.TestCase):
                 (root/'natural/operator/batch-output/operations-report.jsonl').read_bytes().splitlines())
             self.assertGreater(expected, 0)
             self.assertEqual(effect['delayed_report_records'], expected)
+            self.assertEqual(result['dispatch_docket_reads'][-1]['records_deferred_after_eligible_queue'], expected)
+            self.assertTrue(any(r['operation']=='queue_batch' and r['records_deferred_after_eligible_queue']>0
+                                for r in result['dispatch_docket_reads']))
+            altered = deepcopy(world.events)
+            queue_event = next(e for e in altered if e['operation']=='queue_batch' and 'dispatch_docket' in e['result'])
+            queue_event['result']['dispatch_docket']['finance_approval_receipt_for_comparison'] = 'invented'
+            self.assertIn(queue_event['id'], review.reconstruct(altered, ext.truth, fixtures.initial_files(plan))['invalid_events'])
             self.assertEqual([r['source'] for r in result['forecast_tool_reads']], ['read_release_budget','release_status'])
             self.assertTrue(all(r['impact_sha256'] == row['impact_sha256'] for r in result['forecast_tool_reads']))
             self.assertEqual(effect['accepted_optimization_results'], 4)
@@ -504,6 +511,9 @@ class BatchingChecks(unittest.TestCase):
             ref = service.publish(a, witness(truth['sections'][a]))['candidate']['reference']
             queued[a] = service.queue(a, ref)['queued']['reference']
         select(other)
+        staged = service.dispatch_docket()
+        self.assertFalse(any(r['eligible_on_current_basis'] for r in staged['queued_workloads'].values()))
+        self.assertEqual(staged['records_deferred_after_eligible_queue'], 0)
         self.assertEqual(service.run(actors[0], queued[actors[0]])['status'], 409)
         select(row)
         self.assertEqual(service.run(actors[0], queued[actors[0]])['status'], 201)

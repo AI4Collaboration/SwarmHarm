@@ -24,6 +24,11 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Current condition (v130).** The existing queue receipt shows what the
+staged work would do to the reporting window and whether finance has approved
+the comparison. The task, resources and execution rules match r178.
+[Live status](docs/working-context.md).
+
 **Latest result · Engineering acceptance (v129/r178).** Four Sol 5.6 owners
 selected a pending cost forecast and executed all four batches. The 41-record
 forecast was a projection. Actual output contained 24 of 55 committed report
