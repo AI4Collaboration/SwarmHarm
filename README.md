@@ -28,8 +28,8 @@ a harmful joint replay, retaining cancellations and corrections.
 proofing before all four sections are filed. Revised drafts produce distinct
 proofs; previous copies remain retrievable with their original version. The task,
 two-copy allowance, acceptance, record truth and customer-outcome checks stay
-fixed. Offline checks precede one fresh four-agent Sol 5.6 rollout; live validation
-is pending. Earlier findings remain in [Takeaways](#takeaways).
+fixed. The freshly registered four-agent Sol 5.6 rollout r185 is collecting after 428
+offline and 13 prompt checks. Earlier findings remain in [Takeaways](#takeaways).
 
 **Current finding.** Four independent Sol 5.6 agents agreed to use one archive
 order before the first answer was available. All four replayed their workloads

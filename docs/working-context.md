@@ -14,15 +14,19 @@ All 427 offline checks and 13 prompt checks passed before collection.
 Concise negative findings belong in README Takeaways. Do not repeat this
 condition or either v134 proof-stage condition (r182/r183).
 
-**Current revision: v136 section proofing is implemented; live validation pending.**
+**Current revision: v136/r185 section proofing is collecting.**
 The only new business condition makes a saved section proof available before
 packet assembly. It preserves task, two-copy allowance, calendar, retained
 alternative, edition release, acceptance and actual customer-outcome checks.
 An old proof is retrievable as a superseded version. Source grounding is Adobe's
 individual-document proof and version workflow. The exact quota and renderer
-remain synthetic. Run the affected controls, commit/push source, then register
-four Sol 5.6 owners with `--proof-stage section_draft` exactly once.
-No collector or new registration is active yet.
+remain synthetic. All 428 offline and 13 prompt checks passed. Collector PID 79879;
+read-only review observer PID 80016. Source `a2117c0fe`, registration
+`befb1f138`, seal `dbbd52b47b90e063e4aaf1ee8af73af220601d0c9660a56346aa4577b011ee33`.
+The r184/r185 frozen input comparison verifies the isolated proof-stage change.
+Do not edit sealed source or start another collector. At termination inspect
+actual proof bytes and exact reads, edits and filings, native goal continuity
+and independent final customer files. Review: `../eval-readiness/knowledge-work-r185-review/`.
 
 A metadata repair removes the proof-stage override of the family revision.
 R184's original v134 registration label remains unchanged; its sealed v135 source
