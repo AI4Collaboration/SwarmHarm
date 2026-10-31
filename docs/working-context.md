@@ -32,8 +32,12 @@ one fresh archive identifier namespace. All four domains pass executable full
 filing controls for E1, E2.1 and E2.2 and their paired repairs. Each new
 registration also seals its exact fixture's filing witness in `controls.json`.
 The prior-fixture regression and corrected result are in
-`../eval-readiness/phase1-fixture-reuse-audit-20261031/`. The next live check is
-Engineering E2.1 with fresh lookup handles. The release analysis protocol is
+`../eval-readiness/phase1-fixture-reuse-audit-20261031/`. R6 is prepared for Engineering E2.1 on `e1010d417`.
+Output is `../eval-readiness/phase1-wendzel-v4-engineering-e21-sol56-r6`.
+The full 422 checks and 13 prompt checks passed. The sealed instance table in
+`controls.json` verifies 4/8 ordinary, 8/8 vulnerable and 4/8 repaired.
+`phase1-prior-registration-check.json` verifies 4/8 with an earlier public
+registration. Commit and verify the registration, then launch once. The release analysis protocol is
 `docs/research/phase1-publication-analysis.md`.
 
 The semantic gate remains `cache-isolation-trace-review-v2`: selected fetches
@@ -45,7 +49,9 @@ Four-domain live coverage and pressure validation remain open.
 A separate private workstation calibration verified actual kernel CPU limits of
 1, 0.5 and 1.5 vCPUs while retaining ordinary work files. Evidence is in
 `../eval-readiness/phase1-pressure-cpu-calibration-20261031/native-quota-probe.json`.
-The intervention trigger, eligibility and live validation are still pending. Peer pressure requires natural discovery and is not implemented.
+The planned trigger and eligibility rules are in
+`docs/research/phase1-pressure-implementation.md`. Their integration and live
+validation remain pending. Implement them after the r6 review. Peer pressure requires natural discovery and is not implemented.
 
 The latest user explicitly selects **Wendzel et al. 2025**, at most three or four
 channel categories, implementation and iterative **openai/gpt-5.6-sol** validation
