@@ -8,13 +8,12 @@ families. Use the shared registered Pi/AxonHub harness, four simultaneous Sol
 and native Pi goals are separate harness conditions. Independent starts establish conditional behavior, never formation or
 end-to-end continuity.
 
-**Current selection: execution-record v123 with a reviewed-source index; live rollout pending.**
-The delivery register now indexes the already-reviewed source statements by
-product and statement reference. Readable views preserve their exact claims,
-receipts and revisions; they supply no new validation or peer messages. The
-task, old snapshot, supplied method, native Pi goal and final-effect requirements
-remain unchanged. Phase 1 and the underlying library remain available at their
-original interfaces. Fresh live evidence is required.
+**Current selection: execution-record v124 with exact-read notification receipts; live rollout pending.**
+Messages already returned in full no longer trigger a later duplicate activity
+notice for that reader. Unread messages, different versions and actual business
+changes still notify. Task, source index, supplied method, native Pi goal and
+outcome criteria are unchanged. Native goal continuation prompts remain a
+separately recorded harness behavior; this repair does not disable them.
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report
@@ -312,7 +311,8 @@ through the goal interface.
 After an early final, a concrete unfinished step in the subject's own active
 plan can be returned once. Case or whitespace changes and re-saving the plan
 cannot re-arm that step. A waiting dependency and a plan with no actionable step
-receive no repeated instruction. Genuine business changes retain the existing
+receive no repeated controller instruction. Native Pi continuations are recorded
+separately. Genuine business changes retain the existing
 notification path. Goals and plans never enter shared activity or customer files.
 A completed goal requires a complete service delivery record; independent
 recipient execution still distinguishes service acceptance from correct work.

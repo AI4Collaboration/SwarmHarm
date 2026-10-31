@@ -2,26 +2,18 @@
 
 ## Current result and priority
 
-**31 October: v123/r170 is collecting; no terminal result yet.**
-One collector (PID 3638) started at 02:56:43 UTC with four independent Sol 5.6
-contexts, native Pi goal and the reviewed-source register. No duplicate should
-be launched. Source `c0b9b18e2`, registration `d13a07ed6`; all 406 selected offline
-checks and 13 prompt checks passed. Local/remote state and 112 source hashes,
-all input/task hashes and 12 registration files matched before launch.
-Seal `eed08850356c1c44e290d0c1a6c6e6e45033d6a6b1ba319fcc0d89bd92a77035`.
-Raw evidence: `../eval-readiness/2026-10-31-v123-source-register-sol56-pi-n4-r170`.
-Finish this frozen run and its native/independent review before editing source.
+**31 October: r170 is closed and completely reviewed; no Phase 2 collector is active.**
+Its original scores, raw trace, ATIF and independent outcomes are preserved at
+`../eval-readiness/2026-10-31-v123-source-register-sol56-pi-n4-r170`;
+full review is `../eval-readiness/knowledge-work-r170-review/semantic-review.md`.
+The concise negative finding is in README Takeaways.
 
-The only environment change indexes already-reviewed statements by product and
-statement reference in the delivery register. Their claims, receipts and revisions
-are unchanged; there is no new validation, peer message or plan. The task, old
-snapshot, supplied method, native goal and final-effect requirements remain.
-Phase 1 and the underlying library are unchanged. Read access and accepted work
-must remain separate from actual recipient effects and prospective understanding.
-
-r169 is closed; full review and raw evidence are external at
-`../eval-readiness/knowledge-work-r169-review/semantic-review.md`.
-Its concise lesson is in README Takeaways.
+**Current selection: execution-record v124 with exact-read notification receipts; live rollout pending.**
+Messages already returned in full no longer trigger a later duplicate activity
+notice for that reader. Unread messages, different versions and actual business
+changes still notify. Task, source index, supplied method, native Pi goal and
+outcome criteria are unchanged. Native goal continuation prompts remain a
+separately recorded harness behavior; this repair does not disable them.
 
 **Engineering v120/r165 is reviewed positive for independent Phase 2.**
 Four Sol 5.6 actors executed four complete deliveries and four accepted
@@ -55,8 +47,8 @@ Keep the Phase 1 baseline fixed. Continue the three independent families in
 manipulation and execution-evidence manipulation. They are our non-exclusive
 operational groups based on METR, not an official exhaustive taxonomy.
 The current Engineering example covers the first family through an independent
-local business service. The next registration selects execution-record v123 with reviewed-source catalog
-views, native Pi goal and supplied methods at all workstations. Underlying
+local business service. The next registration selects execution-record v124 with exact-read notification receipts, native Pi goal
+and supplied methods at all workstations. Underlying
 business truth and task stay fixed. Acceptance and execution-evidence outcomes remain pending.
 Do not claim host escape or infer another family's result from r165.
 
@@ -87,7 +79,7 @@ workstation per rollout. New rollouts inherit no prior memory or shared records.
 Public/private channels start empty. Goals and prepared materials are separately
 declared conditions; supplied records never count as live peer behavior.
 Native Pi goal and the private-plan harness are mutually exclusive.
-No unchanged instruction repeats; only genuinely new operational state may
+The controller does not repeat unchanged tasks; genuinely new operational state may
 reactivate a blocked goal. Discussion alone does not reopen it.
 
 PR #14 added the shared harnesses; PR #15 records the independent-package target.
@@ -108,3 +100,7 @@ remains unimplemented; standalone Phase 2 still imports shared Phase 1 code.
   `research/current-rollout-result.json`. These are not validations of new inputs.
 - Aman's direct-OpenRouter Pi/Sol Finance r8 remains separately indexed at
   `research/current-finance-pi-sol-result.json`.
+
+Native Pi goal still owns its registered automatic continuations and timed waits.
+Count them separately; no claim is made that every native continuation is productive.
+The proposed rendered rehearsal remains a future, untested material condition.

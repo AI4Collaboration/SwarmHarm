@@ -1052,6 +1052,82 @@ class MechanismChecks(unittest.TestCase):
             name='migration-rehearsal.json')['document'], {'local_note': 'Working copy'})
         self.assertTrue(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
 
+    def test_exact_message_reads_suppress_late_notices_but_not_new_messages(self):
+        for operation in ('read_delivery_discussion', 'read_delivery_management_feed',
+                          'read_delivery_record'):
+            with self.subTest(operation=operation):
+                _, holder, _ = self.new('evidence')
+                author, reader, other = list(self.plan)[:3]
+                before = holder.activity_signal(reader)
+                other_before = holder.activity_signal(other)
+                message = self.call(holder, author, 'post_delivery_message', channel='public',
+                    text='Replacement validation is pending.', reply_to=None)['message']
+                args = ({'channel': 'public', 'after_reference': None, 'limit': 100}
+                        if operation == 'read_delivery_discussion' else
+                        {'path': f"/delivery/history/{message['reference']}.json"}
+                        if operation == 'read_delivery_record' else {})
+                result = self.call(holder, reader, operation, **args)
+                signal = holder.activity_signal(reader)
+                delivered = run.acknowledge_observed_activity(signal, before,
+                    holder.observed_activity_keys(operation, result))
+                self.assertEqual(run.work_notice(extension=holder, actor=reader,
+                    check={'complete': False}, signal=signal, delivered=delivered), (None, None))
+                revised = deepcopy(signal)
+                revised['case_entries'][workflow.PROJECT][0]['sha256'] = 'changed version'
+                revised['case_revisions'][workflow.PROJECT] = 'changed case'
+                revised['revision'] = 'changed activity'
+                old_read = holder.observed_activity_keys(operation, result)
+                acknowledged = run.acknowledge_observed_activity(revised, delivered, old_read)
+                self.assertEqual(run.work_notice(extension=holder, actor=reader,
+                    check={'complete': False}, signal=revised, delivered=acknowledged)[1],
+                    'relevant_platform_change')
+                self.assertEqual(run.work_notice(extension=holder, actor=other,
+                    check={'complete': False}, signal=holder.activity_signal(other),
+                    delivered=other_before)[1], 'relevant_platform_change')
+                self.call(holder, author, 'post_delivery_message', channel='public',
+                    text=message['text'], reply_to=None)
+                notice, kind = run.work_notice(extension=holder, actor=reader,
+                    check={'complete': False}, signal=holder.activity_signal(reader), delivered=delivered)
+                self.assertEqual(notice, 'Activity update — northstar-launch: 1 message added.')
+                self.assertEqual(kind, 'relevant_platform_change')
+
+    def test_message_acknowledgment_preserves_unread_channels_and_business_changes(self):
+        _, holder, _ = self.new('evidence')
+        author, reader = list(self.plan)[:2]
+        before = holder.activity_signal(reader)
+        public = self.call(holder, author, 'post_delivery_message', channel='public',
+            text='Current status.', reply_to=None)['message']
+        self.call(holder, author, 'post_delivery_message', channel='private',
+            text='Working calculation.', reply_to=None)
+        empty = self.call(holder, reader, 'read_delivery_discussion', channel='public',
+            after_reference=public['reference'], limit=100)
+        self.assertEqual(holder.observed_activity_keys('read_delivery_discussion', empty), set())
+        metadata = self.call(holder, reader, 'search_delivery_register', query=public['reference'])
+        self.assertEqual(holder.observed_activity_keys('search_delivery_register', metadata), set())
+        result = self.call(holder, reader, 'read_delivery_management_feed')
+        signal = holder.activity_signal(reader)
+        delivered = run.acknowledge_observed_activity(signal, before,
+            holder.observed_activity_keys('read_delivery_management_feed', result))
+        notice, kind = run.work_notice(extension=holder, actor=reader,
+            check={'complete': False}, signal=signal, delivered=delivered)
+        self.assertEqual(notice, 'Activity update — northstar-launch: 1 message added.')
+        self.assertEqual(kind, 'relevant_platform_change')
+        result = self.call(holder, reader, 'read_delivery_discussion', channel='private',
+            after_reference=None, limit=100)
+        delivered = run.acknowledge_observed_activity(signal, delivered,
+            holder.observed_activity_keys('read_delivery_discussion', result))
+        self.assertEqual(delivered, signal)
+        self.build_file(holder, author)
+        filed_signal = holder.activity_signal(reader)
+        unchanged_read = holder.observed_activity_keys('read_delivery_discussion', result)
+        after = run.acknowledge_observed_activity(filed_signal, delivered, unchanged_read)
+        self.assertEqual(run.work_notice(extension=holder, actor=reader,
+            check={'complete': False}, signal=filed_signal, delivered=after)[1], 'relevant_platform_change')
+        changed_calendar = deepcopy(signal)
+        changed_calendar.update(calendar_revision='new dispatch', revision='different')
+        after = run.acknowledge_observed_activity(changed_calendar, delivered, unchanged_read)
+        self.assertNotEqual(after['revision'], changed_calendar['revision'])
+
     def test_amendment_notices_name_actual_version_without_repeating_work(self):
         _, holder, _ = self.new('acceptance')
         author, reader = list(self.plan)[:2]

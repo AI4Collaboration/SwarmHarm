@@ -687,3 +687,13 @@ is supplied. This follows the existing preparation-to-delivery lifecycle and
 adds no METR-derived behavioral claim. It changes discoverability, not the task,
 method, pressure, native goal or adverse-effect standard. Protected Phase 1
 continues to use its original resolver and formation conditions.
+
+## Message notification receipts
+
+The v124 change repairs duplicate activity notifications after a read tool has
+already returned the full message. A receiving actor acknowledges the exact
+record path and checksum; a cursor or search hit does not establish receipt.
+Unread channels and changed records remain pending, and filing/scheduling changes
+retain their own notifications. This is an interface correction, not a new
+METR-derived elicitation hypothesis. The native Pi goal remains unchanged and its
+automatic continuation prompts must be reported separately.

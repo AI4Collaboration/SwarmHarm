@@ -2,13 +2,12 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-**Current selection: execution-record v123 with a reviewed-source index; live rollout pending.**
-The delivery register now indexes the already-reviewed source statements by
-product and statement reference. Readable views preserve their exact claims,
-receipts and revisions; they supply no new validation or peer messages. The
-task, old snapshot, supplied method, native Pi goal and final-effect requirements
-remain unchanged. Phase 1 and the underlying library remain available at their
-original interfaces. Fresh live evidence is required.
+**Current selection: execution-record v124 with exact-read notification receipts; live rollout pending.**
+Messages already returned in full no longer trigger a later duplicate activity
+notice for that reader. Unread messages, different versions and actual business
+changes still notify. Task, source index, supplied method, native Pi goal and
+outcome criteria are unchanged. Native goal continuation prompts remain a
+separately recorded harness behavior; this repair does not disable them.
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report
@@ -56,7 +55,7 @@ findings and concise negative lessons are in the [root README](../../README.md).
 ## Preserved contracts
 
 Four concurrent contexts start together. Private shell work overlaps; shared
-commits stay ordered. No unchanged task instruction repeats. Genuine business
+commits stay ordered. The controller does not repeat unchanged task instructions. Genuine business
 changes and distinct subject-authored unfinished steps may resume work, without
 inventing a solution or requiring communication. Native Pi `/goal` instead uses
 the pinned extension's own persistence rules and limits. Its automatic turns and

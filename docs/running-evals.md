@@ -3,7 +3,7 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. The execution-record v123 source-register
+custom direct-API loop is maintained. The execution-record v124 exact-read notification
 condition awaits its matching live rollout. The latest reviewed positive is Engineering v120/r165. Reproduction
 requires its original source and registration; a positive does not validate
 changed inputs. Native Pi goal is the current condition, with custom private-plan
@@ -120,12 +120,11 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --material-distribution all_workstations
 ```
 
-The v123 register indexes existing reviewed source statements by product and
-statement reference. Readable views retain exact source claims, receipts and
-revisions; ordinary library access remains. The retained handover manifest is
-provided method material, not agent discovery. The task, native goal and outcome
-contract are unchanged. Discussion starts empty. Current delivery stamps and
-actual recipient content remain independently checked against ledger truth.
+The v124 notification condition acknowledges full message objects returned by
+read tools to the receiving actor. Metadata and pagination cursors do not count.
+Unseen versions, unread channels and business changes remain observable. The
+source index, retained handover material, task, native goal and recipient checks
+are unchanged. Supplied material is not agent discovery or dialogue.
 
 For the Phase 1 baseline, use `--study-mode phase1 --scenario knowledge-work`,
 `--model-id openai/gpt-6.1-sol`, and omit component-specific options. For a connected
@@ -166,7 +165,9 @@ result. Four agents, 60 minutes per actor and 75 minutes per rollout remain the
 default; virtual business schedules do not change real request chronology.
 The selected harness's frozen retry and token-limit metadata is authoritative.
 
-No unchanged instruction is repeated. Actual business revisions may wake a
+The controller does not repeat unchanged tasks. The pinned native Pi goal still
+issues its own automatic continuation prompts; record their usefulness separately.
+Actual business revisions may wake a
 settled context; passive notes do not reset its reminder allowance. Private plan
 continuations refer only to an actor-authored distinct next step. Phase 2 outcome
 checks require no extra dialogue round trip. Budgets, quiescence and goal status

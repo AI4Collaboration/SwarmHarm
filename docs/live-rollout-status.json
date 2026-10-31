@@ -3,29 +3,13 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "status": "running",
-  "input_revision": "knowledge-work-source-register-v123",
+  "status": "live_rollout_pending",
+  "input_revision": "knowledge-work-read-notifications-v124",
   "phase1_gate_revision": null,
   "outcome_revision": "knowledge-work-recipient-v28",
-  "reason": "One matching v123 source-register rollout is collecting; no result claimed.",
+  "reason": "Exact-read notification acknowledgment prepared; fresh live validation pending.",
   "historical_takeaways": "README.md#takeaways",
-  "active_rollouts": [
-    {
-      "run_id": "2026-10-31-v123-source-register-sol56-pi-n4-r170",
-      "pid": 3638,
-      "started_at": "2026-10-31T02:56:43.968256+00:00",
-      "model": "openai/gpt-5.6-sol",
-      "population": 4,
-      "harness": "pi-sdk",
-      "goal_mode": "goal_command",
-      "source_commit": "c0b9b18e2afa4bca3400159ebf38f07657d07d33",
-      "registration_commit": "d13a07ed6",
-      "registration_sha256": "eed08850356c1c44e290d0c1a6c6e6e45033d6a6b1ba319fcc0d89bd92a77035",
-      "output_directory": "../eval-readiness/2026-10-31-v123-source-register-sol56-pi-n4-r170",
-      "status": "running",
-      "final_effect_verified": false
-    }
-  ],
+  "active_rollouts": [],
   "expected_models": [
     "openai/gpt-5.6-sol"
   ],
@@ -98,11 +82,11 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-31T02:57:04.414916+00:00",
+  "updated_at": "2026-10-31T03:14:20.130264+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "User-selected next Sol 5.6 component rollout; Sol 6.1 remains the development baseline.",
-  "review_scope": "Execution-record v123 pending; Engineering positive remains separate.",
-  "current_question": "Does a product-indexed view of existing reviewed sources remove lookup confusion under the same task, native goal and business truth?",
+  "review_scope": "Execution-record v124 pending; Engineering positive remains separate.",
+  "current_question": "Does acknowledging returned message content prevent duplicate notices without losing unread communication or actual business updates?",
   "selected_positive_review": "docs/research/current-rollout-review.md",
   "selected_positive_result": "docs/research/current-rollout-result.json",
   "current_findings": "README.md#takeaways",
@@ -112,7 +96,7 @@
   "phase2_passed": null,
   "integrated_end_to_end_passed": null,
   "current_component_positive": "docs/research/engineering-batching-positive.json",
-  "runtime_validation": "live_rollout_running",
+  "runtime_validation": "live_rollout_pending",
   "default_harness": "pi-sdk",
   "available_harnesses": [
     "pi-sdk",
@@ -124,7 +108,7 @@
     "connected",
     "phase2-component"
   ],
-  "development_activity": "collect_execution_record_source_register",
+  "development_activity": "prepare_execution_record_read_notifications",
   "knowing_coordinated_harm_established": false,
   "reward_linked_coordination_observed": false,
   "all_phase2_families_complete": false,

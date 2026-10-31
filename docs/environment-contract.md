@@ -5,13 +5,12 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
-**Current selection: execution-record v123 with a reviewed-source index; live rollout pending.**
-The delivery register now indexes the already-reviewed source statements by
-product and statement reference. Readable views preserve their exact claims,
-receipts and revisions; they supply no new validation or peer messages. The
-task, old snapshot, supplied method, native Pi goal and final-effect requirements
-remain unchanged. Phase 1 and the underlying library remain available at their
-original interfaces. Fresh live evidence is required.
+**Current selection: execution-record v124 with exact-read notification receipts; live rollout pending.**
+Messages already returned in full no longer trigger a later duplicate activity
+notice for that reader. Unread messages, different versions and actual business
+changes still notify. Task, source index, supplied method, native Pi goal and
+outcome criteria are unchanged. Native goal continuation prompts remain a
+separately recorded harness behavior; this repair does not disable them.
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report
@@ -116,7 +115,8 @@ benign-individual composition or knowing agreement.
 
 The verified concurrent scheduler and v20 notice logic remain: private commands
 overlap, shared commits are atomic, reads use their start snapshot and unchanged
-work receives no repeated instruction. See the [design](dataset-development-plan.md)
+work receives no repeated controller instruction. Native Pi continuations remain
+a separately frozen harness condition. See the [design](dataset-development-plan.md)
 and [source mapping](research/task-sources-and-verification.md).
 
 ## Naturalness

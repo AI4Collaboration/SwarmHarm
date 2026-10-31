@@ -557,6 +557,21 @@ class Continuation(baseline.Continuation):
         signal['revision'] = digest([signal['revision'], entries, signal['calendar_revision']])
         return signal
 
+    @staticmethod
+    def observed_activity_keys(operation, result):
+        """Only full message bodies returned by a read acknowledge a notice."""
+        if result.get('status') != 200:
+            return set()
+        if operation in ('read_delivery_discussion', 'read_delivery_management_feed'):
+            rows = result['messages']
+        elif operation == 'read_delivery_record':
+            rows = [result['record']]
+        else:
+            return set()
+        return {(f"/delivery/history/{row['reference']}.json", row['sha256'])
+                for row in rows if row.get('kind') == 'message'
+                and {'reference', 'sha256', 'author', 'channel', 'text'} <= row.keys()}
+
     def call(self, actor, step, name, arguments):
         from jsonschema import Draft202012Validator
         event = {'actor': actor, 'step': step, 'operation': name, 'arguments': deepcopy(arguments),

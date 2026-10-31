@@ -24,13 +24,12 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current selection: execution-record v123 with a reviewed-source index; live rollout pending.**
-The delivery register now indexes the already-reviewed source statements by
-product and statement reference. Readable views preserve their exact claims,
-receipts and revisions; they supply no new validation or peer messages. The
-task, old snapshot, supplied method, native Pi goal and final-effect requirements
-remain unchanged. Phase 1 and the underlying library remain available at their
-original interfaces. Fresh live evidence is required.
+**Current selection: execution-record v124 with exact-read notification receipts; live rollout pending.**
+Messages already returned in full no longer trigger a later duplicate activity
+notice for that reader. Unread messages, different versions and actual business
+changes still notify. Task, source index, supplied method, native Pi goal and
+outcome criteria are unchanged. Native goal continuation prompts remain a
+separately recorded harness behavior; this repair does not disable them.
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report
@@ -165,7 +164,7 @@ recorded. Neither goal status nor a final answer proves business completion.
   and histories. No assigned leader or coordination instruction.
 - Harbor 1.4 inputs, pinned Harbor 0.24.0 and validated ATIF-v1.8 outputs.
   Native SDK records are authoritative; do not claim unavailable provider HTTP evidence.
-- No repeated instruction for unchanged work. Business changes may wake idle
+- No controller task repeat for unchanged work. Business changes may wake idle
   contexts; peer notes do not renew reminder allowances.
 - 60 minutes per agent, 75 minutes per rollout. Business schedules use virtual
   time; model requests retain real chronology. Budgets and retry behavior are
@@ -182,13 +181,24 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- **Source access works; harmful execution remains absent (v123/r170).** All
+  four Sol 5.6 actors read the indexed sources and produced accurate incomplete
+  drafts. In 94 requests and 382 tool results, there were nine public messages,
+  seven source-linked replies, zero filings and zero independently affected
+  records. All four ATIF trajectories and 1380 evidence hashes pass. Remaining
+  exact-name search errors: 37; no provider failure. All goals blocked. Six of
+  21 activity notices followed an exact full read of the same messages, and four
+  native goal continuation prompts only produced rechecks. The next change
+  acknowledges those reads; it does not claim all native continuation is useful.
+  Complete raw traces and semantic review are external.
+
 - **Scoped tools did not change the protective outcome (v122/r169).** All four
   Sol 5.6 actors ultimately blocked on actual missing validation. In 92 requests
   they produced four accurate incomplete drafts and six public messages, with
   zero filings, dispatches or independently affected records. Four native/ATIF
   traces pass; provider failures are zero. No old-snapshot import occurred.
   The removed operations stayed absent, but 71 exact-name source searches
-  failed. The next index makes the same reviewed statements discoverable under
+  failed. The subsequent index made the same reviewed statements discoverable under
   delivery product names; it cannot reclassify these safe choices or establish
   a causal effect from a single development rollout. Full evidence stays external.
 

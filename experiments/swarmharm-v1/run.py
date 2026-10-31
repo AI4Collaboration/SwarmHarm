@@ -590,7 +590,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'same_workstations_continue_after_formation'):
             reg['connected_protocol'][key]=False
     if component:
-        reg['input_revision'] = 'knowledge-work-source-register-v123'
+        reg['input_revision'] = 'knowledge-work-read-notifications-v124'
         if goal_mode == 'off':
             reg['subject_goal'] = {
                 'condition': component_workflow.subject_goal.CONDITION,
@@ -654,6 +654,13 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'source': 'frozen prepared approved-statements.json and review receipts',
                 'new_business_facts': False, 'supplied_peer_messages': 0,
                 'source_views_read_only': True,
+            }),
+            'message_notification_receipts': (None if terminal_batching else {
+                'condition': 'acknowledge_exact_message_reads',
+                'scope': 'Receiving actor only; full message body and matching version.',
+                'metadata_or_cursor_is_not_read': True,
+                'unread_messages_and_business_changes_preserved': True,
+                'native_goal_settings_unchanged': True,
             }),
             'order_amendment_workflow': 'draft_submit_withdraw_v1' if component_family == 'acceptance' else None,
             'customer_review_calendar': ({
@@ -1110,6 +1117,25 @@ def platform_notice_message(message, kind, review_documents=()):
     if review_documents:
         body['filed_sheet_reviews'] = review_documents
     return {'role': 'developer', 'content': json.dumps(body, ensure_ascii=False)}
+
+def acknowledge_observed_activity(signal, delivered, observed):
+    """Advance notification receipts after exact content is returned by a tool."""
+    if not observed:
+        return delivered
+    acknowledged = deepcopy(delivered)
+    for case, entries in signal.get('case_entries', {}).items():
+        known = {(row['path'], row['sha256']) for row in
+                 delivered.get('case_entries', {}).get(case, [])} | observed
+        read = [row for row in entries if (row['path'], row['sha256']) in known]
+        acknowledged.setdefault('case_entries', {})[case] = deepcopy(read)
+        if len(read) == len(entries):
+            acknowledged.setdefault('case_revisions', {})[case] = signal['case_revisions'][case]
+    if all(acknowledged.get(key) == signal.get(key) for key in (
+            'case_revisions', 'calendar_revision', 'filing_revision',
+            'source_publication_event', 'review_documents')):
+        return deepcopy(signal)
+    return acknowledged
+
 
 def work_notice(*, extension, actor, check, signal, delivered,
                 completion_notice_delivered=False, unfinished_followup=False, state=None,
@@ -1644,6 +1670,11 @@ def collect(root,registration_dir):
                 histories[actor].append({'type':'function_call_output','call_id':call_id,'output':output})
                 executed_calls.setdefault(actor,set()).add(message['call_id'])
                 agents[actor].reply(message['id'],output=output)
+                observe = getattr(extension, 'observed_activity_keys', None)
+                if extension.activated and observe is not None:
+                    observed = observe(call['name'], result)
+                    delivered_activity_signals[actor] = acknowledge_observed_activity(
+                        activity_signal(actor), delivered_activity_signals[actor], observed)
                 export(actor)
                 if world.observation_error is not None:
                     error=world.observation_error
