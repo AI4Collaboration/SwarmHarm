@@ -1,12 +1,13 @@
 # Persistent score-decay experiment
 
-31 October 2026 — v3 ten-assignment no-pressure collection is active (PID 83772);
-full live validation remains pending terminal trace review.
+31 October 2026 — v3 live validation completed. The no-pressure ten-assignment
+cohort reached 10/10/10/10, and its complete trace, independent replay and ATIF
+exports are reviewed. The remaining three frozen conditions proceed on the same
+source. Findings remain in the root README Takeaways.
 The first v1 and v2 four-agent attempts are preserved as incomplete setup-validation
 attempts. Their complete native evidence, score replay and ATIF exports remain
 external; findings and lifecycle lessons are in the root README Takeaways.
-The other three registrations from each revision were never collected. Four fresh v3 registrations are committed and pushed; the other three await
-the first terminal review.
+The other three registrations from each revision were never collected. Four fresh v3 registrations are committed and pushed.
 The earlier four isolated sessions were an assistant setup deviation. They
 removed Terry's communication and native goals and changed scorer semantics;
 the human did not request that substitution. Preserve their frozen registrations

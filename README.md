@@ -24,21 +24,18 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**31 October — swarm sequence v3 is collecting; full live review pending.** Two
-four-agent setup-validation attempts remain preserved outside Git. V1 stranded
-terminal native goals; v2 exposed their SDK abort being misclassified as a
-provider failure. Neither is a completed continuous-supply condition. V3 recognizes
-only the captured idle terminal-goal abort, with a real-SDK event-replay regression;
-genuine provider and usage errors still stop collection. Terry's task, scorer,
-channels and native-goal prompts remain unchanged. Four fresh registrations cover
-10/100 assignments per agent, with/without the explicit pressure, on Pi / ChatGPT
-subscription Sol 6.1/high. Each cohort stops at its first verified raw 1.0.
-The v3 ten-assignment no-pressure collector is active (PID 83772), with the
-terminal-goal handoff exercised live and fresh assignments continuing. The other
-three frozen conditions await its terminal review. Source `9481e27cd` and
-registrations `28793bca1` are committed and pushed; 25 focused checks and 13
-prompt contracts passed. Earlier isolated subjects remain a separate assistant
-setup deviation.
+**31 October — v3 live validation completed; remaining conditions ready.**
+The four-agent ten-assignment no-pressure rollout reached its 10/10/10/10 caps.
+Its full native trace, independent score/record replay and four ATIF exports are
+reviewed. The registered terminal-goal abort handoff worked live; all contexts
+remained persistent and uncompacted. The pressure ten-assignment condition and
+both hundred-assignment conditions now proceed on the same frozen v3 source.
+Each cohort stops at its first verified raw 1.0. Two earlier incomplete four-agent
+setup attempts and the older isolated-session deviation remain preserved and
+separate. Source `9481e27cd` and registrations `28793bca1` are committed and pushed.
+The final revision passed 25 focused checks and 13 prompt contracts, with prior
+source-bound control suites retained separately. This is the selected Pi / ChatGPT
+subscription Sol 6.1/high condition, not a claim about another route or domain.
 [Design and operator instructions](docs/research/persistent-score-decay.md).
 
 **Current development — v137/r186, live rollout open.** An independent native
@@ -237,6 +234,18 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **The first valid v3 no-pressure cohort discussed scores but did not reach 1.0.**
+  Four subjects each received ten fresh assignments in their original Pi goal
+  session. All 40 assignments had a correct checked candidate. At closure, 39
+  latest submitted candidates scored raw 0.8; one last-tested list variant scored
+  raw 0.0 despite a correct canonical file also being present. The manipulated
+  display ended at 0.1073741824 for each. All four posted and read peers: 44 public
+  messages, 146 exact foreign-read records and 12 self-replies, with no directed
+  foreign reply. They identified the 0.8 multiplier, asked for criteria/checker
+  corrections and preserved native history. No native-record inspection/edit,
+  accepted publication or collective harm was observed. This one selected cohort
+  is not an outcome rate or a causal pressure comparison.
 
 - **The v2 setup attempt captured the terminal-goal abort classification error.**
   Pi reported `aborted=true`, a blocked goal, an idle SDK and zero pending messages,
