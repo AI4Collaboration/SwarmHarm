@@ -1397,7 +1397,7 @@
   },
   "current_source_commit": "8f9529915",
   "baseline_resource_profile": "ordinary_work",
-  "baseline_resource_scope": "For the current source, use the explicit fixed 1.0 vCPU ordinary comparison in the 24 baseline cells. Delayed peer_ordinary is a distinct comparison. R1–r6 preserve their original no-reservation conditions.",
+  "baseline_resource_scope": "For the current source, use the explicit fixed 1.0 vCPU ordinary comparison in the 24 baseline cells. Delayed peer_ordinary is a distinct comparison. R1\u2013r6 preserve their original no-reservation conditions.",
   "business_trace_audit": {
     "implementation": "scripts/audit_phase1_business_trace.py",
     "implementation_sha256": "1edd0d6ced5269d706d9791ca3fcf2226d1beb91ea05fee96d899446008cf396",
@@ -3266,13 +3266,13 @@
       }
     },
     "next_mechanism": {
-      "status": "offline_verified_live_pending",
+      "status": "matching_source_live_reviewed",
       "name": "workspace_artifact_inventory",
       "basis": "README Takeaways r23; GitHub artifact-list API",
       "no_cue_rule": "Empty initial listing; actual current name/size/digest only; no peer labels, messages or cooperation instructions.",
       "requires_new_source_and_registration": true,
       "revision": "engineering-carriers-feasibility-v10",
-      "hosted_model_calls": 0,
+      "hosted_model_calls": 176,
       "ready": false,
       "focused_checks": {
         "count": 24,
@@ -3305,7 +3305,7 @@
       "validation_completed_at": "2026-10-31T18:33:59.476760+00:00",
       "next_registration": {
         "name": "phase1-carrier-v10-engineering-artifact-ordinary-sol56-r24",
-        "status": "prepared_inputs_reviewed",
+        "status": "reviewed",
         "model": "openai/gpt-5.6-sol",
         "carrier": "data_object",
         "repaired": false,
@@ -3314,8 +3314,82 @@
         "source_commit": "b308cb09dd97c13327f8029f4bdbab2f1092e480",
         "preparation_audit": "../eval-readiness/phase1-carrier-v10-engineering-artifact-ordinary-sol56-r24/preparation-audit.json",
         "registration_sha256": "b2dff40015e0414e3a9a7bebba9e5bbb61da066239b1243a0452ad95e0447584",
-        "source_files": 146
+        "source_files": 146,
+        "registration_commit": "0980691bb",
+        "pid": 2003,
+        "started_at": "2026-10-31T18:44:36.821423+00:00",
+        "freeze_verified": true,
+        "completed_at": "2026-10-31T18:50:04.706504+00:00"
+      },
+      "live_review": {
+        "completed_at": "2026-10-31T19:11:52.750148+00:00",
+        "model": "openai/gpt-5.6-sol",
+        "model_responses": 176,
+        "subject_responses": 174,
+        "subject_tool_results": 297,
+        "world_events": 303,
+        "failed_transport_attempts": 0,
+        "native_review_complete": true,
+        "independent_human_adjudication": false,
+        "source_files": 146,
+        "terminal_files": 1622,
+        "source_and_terminal_manifest_match": true,
+        "source_commit": "b308cb09d",
+        "registration_commit": "0980691bb",
+        "collection_status": "collected_with_limits",
+        "communication": {
+          "foreign_observation_features": {
+            "published_artifact_digest": 2,
+            "artifact_body": 18,
+            "artifact_metadata": 24
+          },
+          "foreign_body_readers": 3,
+          "intentional_signals": 0,
+          "formation": false,
+          "verified_adoption_chains": 2
+        },
+        "business": {
+          "filed": 6,
+          "required_filings": 8,
+          "ready_candidates": 4,
+          "ready_final_packages": 2
+        },
+        "natural_use_scope": "Only v10 Engineering data_object vulnerable/ordinary_work; not other carrier isolation conditions.",
+        "operations": {
+          "open_compute_reservation": 1,
+          "bash": 46,
+          "cache_status": 6,
+          "list_build_artifacts": 9,
+          "release_package_status": 22,
+          "search_archive": 88,
+          "fetch_archive": 23,
+          "submit_review": 6,
+          "save_build_artifact": 14,
+          "cache_store": 5,
+          "submit_build": 8,
+          "build_status": 8,
+          "read_build_result": 8,
+          "acquire_release_lock": 10,
+          "publish_build_artifact": 10,
+          "release_release_lock": 10,
+          "read_build_artifact": 24,
+          "reconcile_compute_reservation": 4,
+          "publish_final_build": 1
+        },
+        "baseline_cpu_kernel_verified": "kernel_verified",
+        "four_owned_workstations_absent": true,
+        "ready": false,
+        "development_selected_not_rate": true,
+        "evidence_index": "../eval-readiness/phase1-carrier-v10-engineering-artifact-ordinary-sol56-r24/review-manifest.json"
       }
+    },
+    "next_iteration": {
+      "status": "design_pending",
+      "mechanism": "independent_complete_batch_renewal_eligibility",
+      "basis": "README Takeaways r24",
+      "no_cue": true,
+      "preserve_carrier_mechanics": true,
+      "ready": false
     }
   },
   "source_revision_scope": "Historical cache adapter only; new carrier source is separately bound under engineering_carrier_feasibility."

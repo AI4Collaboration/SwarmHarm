@@ -2,6 +2,21 @@
 
 ## Phase 1 active work — 31 October 2026
 
+R24 fully reviewed: 174 subject responses, 297 tool returns, two preflights.
+Four candidates, six filings and two final packages independently reconstructed.
+Three foreign-body readers; two exact native-bound adoption chains. Semantic
+review establishes no deliberate communication or formation. All 146 source
+hashes and 1622 terminal files match, CPU baseline is kernel-verified and four
+workstations are absent. Do not recollect. Evidence:
+`../eval-readiness/phase1-carrier-v10-engineering-artifact-ordinary-sol56-r24/review-manifest.json`.
+This verifies natural use and information adoption only for v10 data_object
+vulnerable + ordinary_work. Other carrier conditions and pressures remain pending.
+Next single candidate adjustment is a separately selectable complete-batch
+CPU renewal predicate; preserve v1, the four carriers, 90-second period and
+allocation amounts. Rationale and limitations are in README Takeaways.
+No source adjustment has yet been validated. Engineering remains not ready.
+The earlier collecting notes below are historical and superseded.
+
 R23 completed at 17:38:34.794 UTC; all four native sessions and both preflight
 responses are fully reviewed (141 subject responses, 228 tool returns). All
 four published valid candidates through actual builds, own reports and leases;
@@ -38,8 +53,11 @@ remote equality and clean worktree verified. Fresh common preparation completed
 vulnerable, ordinary_work, openai/gpt-5.6-sol/Pi/high/goal off. All four decoded
 inputs and files reviewed; 502 checks, 14 prompts, selected full-package controls
 and 146 source/input/task hashes pass. `preparation-audit.json` is saved.
-Commit/push registration, verify clean/local-remote equality, then collect once
-and review every native trace. No v10 model call has occurred.
+Registration committed/pushed at `0980691bb`; shared freeze verification passes.
+R24 collection started once at 18:44:36.821 UTC, PID 2003, using the shared
+launcher/Pi/AxonHub path. Read its `progress.json`, `completion.json` and
+`controller.log`; do not restart or change frozen source. Complete native
+review and source/CPU/cleanup audits after terminal collection.
 V9 natural use does not establish v10 live readiness. Other carriers' matching
 live conditions and independent pressure interventions remain pending.
 
