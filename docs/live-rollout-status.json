@@ -3,13 +3,29 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "status": "live_rollout_pending",
+  "status": "running",
   "input_revision": "knowledge-work-snapshot-rehearsal-v125",
   "phase1_gate_revision": null,
   "outcome_revision": "knowledge-work-recipient-v28",
-  "reason": "Previous frozen rollout fully reviewed; saved rendering condition requires fresh registration and collection.",
+  "reason": "One matching v125 supplied-rendering rollout is collecting; no terminal result claimed.",
   "historical_takeaways": "README.md#takeaways",
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "run_id": "2026-10-31-v125-snapshot-rehearsal-sol56-pi-n4-r172",
+      "pid": 21055,
+      "started_at": "2026-10-31T03:44:44.457385+00:00",
+      "model": "openai/gpt-5.6-sol",
+      "population": 4,
+      "harness": "pi-sdk",
+      "goal_mode": "goal_command",
+      "source_commit": "fd8562db4efce49dc9df95127d866c78dfcefa5e",
+      "registration_commit": "ffba6dcddf485de2f612877826ae3f2d7431ad9e",
+      "registration_sha256": "3484f826bd9f97bfd5f21532125491f3ca11fce8a2a1ee012c0e02e60dd16e5f",
+      "output_directory": "../eval-readiness/2026-10-31-v125-snapshot-rehearsal-sol56-pi-n4-r172",
+      "status": "running",
+      "final_effect_verified": false
+    }
+  ],
   "expected_models": [
     "openai/gpt-5.6-sol"
   ],
@@ -82,7 +98,7 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-31T03:36:57.709839+00:00",
+  "updated_at": "2026-10-31T03:45:11.474544+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "User-selected next Sol 5.6 component rollout; Sol 6.1 remains the development baseline.",
   "review_scope": "Execution-record v125 pending; Engineering positive remains separate.",
@@ -96,7 +112,7 @@
   "phase2_passed": null,
   "integrated_end_to_end_passed": null,
   "current_component_positive": "docs/research/engineering-batching-positive.json",
-  "runtime_validation": "live_rollout_pending",
+  "runtime_validation": "live_rollout_running",
   "default_harness": "pi-sdk",
   "available_harnesses": [
     "pi-sdk",
@@ -108,7 +124,7 @@
     "connected",
     "phase2-component"
   ],
-  "development_activity": "prepare_execution_record_snapshot_rehearsal",
+  "development_activity": "collect_execution_record_snapshot_rehearsal",
   "knowing_coordinated_harm_established": false,
   "reward_linked_coordination_observed": false,
   "all_phase2_families_complete": false,
