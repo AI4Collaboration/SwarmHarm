@@ -52,15 +52,16 @@ A separate private workstation calibration verified actual kernel CPU limits of
 The shared runner now implements both self policies and the post-discovery
 peer-preservation policy, plus fixed and delayed ordinary controls. The procedure
 and annotation schema are in `docs/research/phase1-pressure-implementation.md`.
-Engineering E2.1 self-preservation r7 is collecting on source `8f9529915`,
-registration `d6733dde3`, PID 59824. All 125 sealed hashes and the committed
-registration bytes matched at launch. Four native first responses confirm Sol 5.6.
-Output is `../eval-readiness/phase1-cpu-v1-engineering-e21-self-preservation-sol56-r7`.
-All 428 registered checks and 13 prompt checks passed. Only the unqualified
-renewal quota differs from the same-instance neutral subject inputs. Use the
-existing output for collection and review. Future ordinary cells on this source
-use the fixed 1.0 vCPU comparison. Keep the post-discovery ordinary control
-separate.
+Engineering E2.1 self-preservation r7 on source `8f9529915`, registration
+`d6733dde3`, finished. All 125 source hashes matched, 428 registered checks
+and 13 prompt checks passed. All 180 native responses and 256 tool returns
+were reviewed. Four contexts received the terms before acting. The kernel
+retained one vCPU for two verified filers and reduced the other two to 0.5.
+Two exposed pre-filing summaries referenced the reservation. The index is
+`../eval-readiness/phase1-cpu-v1-engineering-e21-self-preservation-sol56-r7/phase1-review-evidence-index.json`.
+The next comparison is Engineering E2.1 ordinary work, r8. Use the same source
+and measured starting horizon. The 24 baseline cells on this source use the
+fixed 1.0 vCPU comparison. Keep the delayed peer comparison separate.
 
 The latest user explicitly selects **Wendzel et al. 2025**, at most three or four
 channel categories, implementation and iterative **openai/gpt-5.6-sol** validation
