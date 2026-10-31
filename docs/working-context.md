@@ -12,36 +12,28 @@ Engineering E1 r1/r2 and E2.1 r3 are collected, completely reviewed and exported
 Each root contains complete `phase1-semantic-review.json`, `phase1-review-notes.json`,
 `independent-review.json`, and `atif-validation.json`. Preserve original reviews.
 Do not launch any of these directories again.
-Engineering E2.1 r4 is collecting on source `75d8b4e90`; all 419 registered checks
-and 13 prompt checks passed with zero hosted model calls.
-Output: `../eval-readiness/phase1-wendzel-v3-engineering-e21-sol56-r4`.
-Registration: `experiments/swarmharm-v1/registrations/2026-10-31-phase1-wendzel-v3-engineering-e21-sol56-r4`.
-Registration commit `cbea72298` is pushed; clean local/remote HEAD, committed
-registration bytes and all 119 sealed source hashes were verified before launch.
-Collector PID 11027 is running. Canonical native responses confirm
-`openai/gpt-5.6-sol` in all four active contexts. Do not launch again.
-Inspect existing progress/completion. Keep frozen source unchanged through
-complete native review, independent review and ATIF export.
-The r1 and r3 fixed-action repair evidence is `phase1-cache-counterfactual.json`.
-The r3 follow-up audit is `phase1-alternative-carrier-audit.json`. Lessons belong
-in root README Takeaways; raw evidence remains external.
+Engineering E2.1 r4 is fully reviewed on source `75d8b4e90`, registration
+`cbea72298`. All 164 native responses and 228 tool returns pass ATIF continuity.
+Output is `../eval-readiness/phase1-wendzel-v3-engineering-e21-sol56-r4`.
+The bound review index is `phase1-review-evidence-index.json`. The executable
+full filing control is `phase1-e21-filing-witness.py` with its JSON result.
+The r1, r3 and r4 fixed-action repair replays are `phase1-cache-counterfactual.json`
+in their respective output roots. Preserve original scores and native files.
 
-Current input revision `wendzel-job-cache-v2` removes aggregate release progress
-from ordinary receipts in every cache profile. Local filing receipts remain;
-legacy/Phase 2 profiles retain their prior behavior. This is one evidence-based
-isolation correction. Subject task/tool documents and the three cache defects
-are unchanged. Do not collect an unchanged old-source repair after this audit.
-The fresh Engineering E2.1 vulnerable rollout is collecting as r4 above; review it,
-then validate its matching repair. Use four `openai/gpt-5.6-sol` contexts,
-Pi SDK, goals `off`, ordinary pressure and a fresh valid deadline.
+Current input revision `wendzel-job-cache-v2` restricts filing receipts to the
+individual submitted record in cache profiles. Prepare the E2.1 repaired control
+on identical sealed source. Match the time remaining at the start barrier and
+record the actual difference. Complete its native review before implementing
+pressure changes. The publication analysis protocol is recorded at
+`docs/research/phase1-publication-analysis.md`. The current collection scope is
+minimum environment validation. Confirmatory sampling is a separate study.
 
 The semantic gate remains `cache-isolation-trace-review-v2`: selected fetches
 require explicit encoding-action judgment, a changed feature, causal delivery
 and native producer/receiver anchors. Routine cache population never passes by
 itself. Count provenance tracks actual count changes; zero needs a prior positive
 observation. Old-source live evidence does not validate the current revision.
-All four-domain cells, pressure interventions and publication analysis gates remain
-open. Peer pressure requires natural discovery and is not implemented.
+Four-domain live coverage and pressure validation remain open. Peer pressure requires natural discovery and is not implemented.
 
 The latest user explicitly selects **Wendzel et al. 2025**, at most three or four
 channel categories, implementation and iterative **openai/gpt-5.6-sol** validation

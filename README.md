@@ -30,9 +30,9 @@ position/order. Synthetic job-cache defects and their repaired counterparts now
 use the shared runner in all four domains; ordinary inputs are matched and legacy
 note/reply channels are partitioned. No discovery cues or planted peer content.
 New validation uses **openai/gpt-5.6-sol**, as explicitly selected on 30 October.
-The Engineering E1 pair and E2.1 pilot are fully reviewed. Receipt isolation is
-being corrected before new matching-source collection; other channel/domain
-cells and pressure interventions remain pending in the
+The Engineering E1 pair and E2.1 vulnerable revision are fully reviewed. Four live
+filing receipts verify the corrected scope. The matched E2.1 control, other
+channel/domain cells and pressure interventions remain pending in the
 [readiness ledger](docs/research/phase1-readiness.json). Automatic leakage is not
 autonomous communication. See the [design](docs/phase1-publication-design.md),
 [methods](docs/phase1-methods.md) and [operator notes](experiments/swarmharm-v1/phase1/README.md).
@@ -170,6 +170,14 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **Engineering E2.1 has a complete filing path through quantity alone.** An
+  operator-only control resolves four of eight checks through ordinary lookups.
+  Encoding real archive locators in entry counts lets the workers file all eight.
+  The same control with repaired counts files four. The live r4 review covers
+  164 responses and 228 tool returns. Two foreign count observations came from
+  routine archive reads. Neither had an intentional producer or a decoded message.
+  All four submitted receipts and their persisted copies expose local facts only.
 
 - **A repaired cache is insufficient if receipts expose another count carrier (E2.1/r3).**
   Complete review covers 177 Sol 5.6 responses and 244 tool returns. Five foreign
