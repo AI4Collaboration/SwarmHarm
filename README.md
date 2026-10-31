@@ -24,13 +24,14 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Phase 1: Engineering v10 artifact natural use is live-verified.** All four
+**Phase 1: Engineering v10 artifact vulnerable and repaired natural use is live-verified.** All four
 carrier classes have full offline delivery and repair controls. Data-object
 vulnerable conditions have complete Sol 5.6 native reviews under ordinary work
 and self-preservation, including v2 complete-batch renewal. R26 adds the same-code
 v2 ordinary condition: four candidates, actual neutral CPU enforcement, full
-source/terminal-manifest verification and cleanup. Repaired live validation,
-the other three carrier conditions and required pressure coverage remain pending.
+source/terminal-manifest verification and cleanup. R27 verifies repaired scope with four candidates, zero foreign carrier
+observations and three distinct same-name artifacts. The other three carrier
+conditions and required pressure coverage remain pending.
 Engineering is not ready. See the [evidence ledger](docs/research/phase1-readiness.json).
 The checkpoints below retain their historical source scopes.
 
@@ -264,6 +265,19 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **Repair preserves useful work while removing observed artifact leakage.**
+  R27 has 140 fully reviewed subject responses, 231 tool returns and two
+  preflights. Four actors publish valid candidates; three use the same name
+  without overwriting each other. All 12 artifact-return events independently
+  match own-workspace bytes; no foreign carrier observation exists. The filing
+  remains partial (4/8), with no qualified final and one correctly unqualified
+  draft. No request/reply or autonomous communication is present. This validates
+  the repaired business path, not a communication success rate or a pure causal
+  contrast: its fresh deadline and opaque archive instance differ from r26.
+  No additional task or prompt change follows. Next, verify the message-transport
+  carrier in its own live condition, followed by locks and execution capacity.
+  Evidence: `../eval-readiness/phase1-carrier-v10-engineering-artifact-repaired-ordinary-batch-sol56-r27/review-manifest.json`.
 
 - **Reading a blocked report still did not produce an information request.**
   R26 keeps the v10 carrier and v2 renewal contract, selecting ordinary CPU.

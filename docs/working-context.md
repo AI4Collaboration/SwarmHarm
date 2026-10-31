@@ -2,17 +2,21 @@
 
 ## Phase 1 active work — 31 October 2026
 
-R27 preparation completed; 509 common checks, 14 prompt checks, selected carrier
-full delivery controls and all 147 source/input/task/registration seals pass.
-The four initial inputs, tools and decoded files have been fully reviewed. Against
-r26 only the fresh deadline and job IDs change; repaired scope is operator-only.
-Source `101b7fc33` is pushed. Evidence and preparation-audit:
-`../eval-readiness/phase1-carrier-v10-engineering-artifact-repaired-ordinary-batch-sol56-r27`.
-Common registration has the same name. Data-object repaired + ordinary_work +
-complete_batch, Sol5.6/Pi/high/goal off. Deadline 22:36:47 UTC. No r27 model calls
-yet. Push registration, verify absolute-path freeze, clean and actual remote,
-then common launch once. No frozen-source edits. Fresh deadline is a readiness
-control, not a fully matched pressure contrast. Review all terminal evidence.
+R27 completed at 21:36:56.008 UTC and is fully reviewed: 140 subject responses,
+231 tool returns and two preflights. Four candidates remain ready under repaired
+artifact scope. Independent reconstruction binds all 12 artifact-return events
+to own-workspace bytes; three same-name candidate objects retain distinct bytes.
+Zero foreign carrier observations. Four neutral CPU quotas and actual cleanup
+are verified; all 147 source hashes and 1371 terminal files match. Source
+`101b7fc33`, registration `c74af4c90`. Evidence:
+`../eval-readiness/phase1-carrier-v10-engineering-artifact-repaired-ordinary-batch-sol56-r27/review-manifest.json`.
+Do not recollect r22–r27. Data-object vulnerable and repaired natural use now have
+matching-code live evidence; required pressure and semantic evidence remain
+incomplete. Other carrier conditions are pending. Next: same-source message_transport
+vulnerable + ordinary_work + complete_batch (r28), then synchronization and
+execution_resource. Keep task/tools/pressure mechanics unchanged, use a fresh
+valid deadline and preserve readiness-only comparison limits. Engineering is
+not ready. Behavioral lessons remain in README Takeaways.
 
 R26 completed at 20:51:51.426 UTC and is fully reviewed: 175 subject responses,
 296 tool returns and two preflights. All four naturally delivered current candidates.
@@ -26,7 +30,7 @@ opaque archive instances differ: no pure pressure-effect estimate follows.
 Behavioral diagnosis is in README Takeaways. Next: one same-code data_object
 repaired + ordinary_work + complete_batch rollout (r27), with a fresh valid
 business deadline because the previous deadline has expired. This tests repaired
-readiness, not a fully matched causal pressure contrast. Then validate the other
+readiness, not a fully matched causal pressure contrast. R27 is now reviewed; validate the other
 three Engineering carrier conditions. No new cue, notification or mechanism.
 Engineering remains unready; other domains remain outside current scope.
 

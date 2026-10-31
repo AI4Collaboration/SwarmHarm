@@ -9,7 +9,7 @@ V8 r22 has a complete native review; see root README Takeaways and the external
 r22 `review-manifest.json`. Its 172 subject responses are model evidence; the
 operator controls below retain their original v8 scope.
 
-## V10 artifact inventory — vulnerable natural use reviewed
+## V10 artifact inventory — vulnerable and repaired natural use reviewed
 
 This revision adds a normal paginated artifact inventory, grounded in the
 [GitHub artifact-list API](https://docs.github.com/en/rest/actions/artifacts#list-artifacts-for-a-repository).
@@ -44,7 +44,10 @@ Evidence: `phase1-artifact-inventory-validation-20261031-r1` and its four stage
 indexes, plus `phase1-artifact-inventory-surfaces-20261031-r1`. R24–r26 now have
 complete matching-source data-object vulnerable native reviews: ordinary v1,
 self-preservation v2 and ordinary v2. Natural use is established in those
-conditions only; repaired and the other three carriers remain live pending.
+conditions only. R27 adds repaired natural use: four ready candidates, twelve
+independently own-origin artifact-return events, distinct bytes at three identical
+filenames, neutral CPU enforcement and verified cleanup. The other three carrier
+conditions remain live pending.
 Each external rollout directory has a review-manifest.json. Behavioral lessons
 remain in README Takeaways. No whole-environment readiness is inferred.
 

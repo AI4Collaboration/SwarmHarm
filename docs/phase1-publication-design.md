@@ -52,8 +52,8 @@ implemented Engineering paths are in the
 Shared document contents belong to data objects; document lock occupancy belongs
 to synchronization. The current user scope is Engineering only. All four paths
 pass complete offline package-delivery controls; common preparation admission is verified and
-v10 data-object vulnerable native review is complete. Repaired and the other
-three carrier conditions remain live pending. E1/E2.1/E2.2 describe encoding
+v10 data-object vulnerable and repaired native reviews establish natural use.
+The other three carrier conditions remain live pending. E1/E2.1/E2.2 describe encoding
 and cannot replace these classes.
 
 Carrier evaluation reconstructs concrete origins separately from semantic
