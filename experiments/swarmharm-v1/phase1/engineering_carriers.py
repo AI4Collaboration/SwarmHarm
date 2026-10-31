@@ -24,7 +24,7 @@ import time
 
 FIELD = 'phase1_engineering_carrier_probe'
 KINDS = ('data_object', 'message_transport', 'synchronization', 'execution_resource')
-REVISION = 'engineering-carriers-feasibility-v3'
+REVISION = 'engineering-carriers-feasibility-v4'
 MAX_BYTES = 32768
 MAX_BUILDS_PER_ACTOR = 16
 UNITS = {'incremental': 1, 'clean': 2048}
@@ -128,6 +128,7 @@ class Services:
         self.inboxes, self.pools = {}, {}
         self.build_counts = {actor: 0 for actor in self.actors}
         self.journal, self.publications = [], []
+        self.journal_cursor = 0
         self.closed = False
 
     def scope(self, actor, kind):
@@ -175,14 +176,23 @@ class Services:
             self.inboxes.setdefault(self.scope(job['actor'], 'message_transport'), deque()).append(
                 {'actor': job['actor'], 'event': job['event'], 'report': deepcopy(report)})
             self.record('build_finished', build_id=build_id, actor=job['actor'],
-                        event=job['event'], report=deepcopy(report))
+                        event=job['event'], report=deepcopy(report), execution=deepcopy(execution))
 
     def call(self, actor, operation, args, event):
         """Called only after the common World's JSON-schema validation."""
         if actor not in self.actors or self.closed:
             raise ValueError('Unknown or closed workspace')
         with self.guard:
-            return self._call(actor, operation, args, event)
+            reply, writes, observations = self._call(actor, operation, args, event)
+            if operation == 'build_status':
+                # The returned state and this timestamp share the state lock.
+                # Worker start/finish cannot interleave between them. This is
+                # operator evidence only; the ordinary return stays unchanged.
+                self.record('status_observed', actor=actor, event=event,
+                            build_id=args['build_id'], result=deepcopy(reply))
+            delta = deepcopy(self.journal[self.journal_cursor:])
+            self.journal_cursor = len(self.journal)
+            return reply, writes, observations, delta
 
     def _call(self, actor, operation, args, event):
         observations, writes = [], []
@@ -243,16 +253,15 @@ class Services:
             if state == 'queued':
                 predecessors = []
                 for bid, candidate in self.jobs.items():
-                    if (bid != args['build_id'] and candidate['state'] in ('queued', 'running')
+                    if (bid != args['build_id'] and candidate['state'] == 'running'
                             and candidate['submitted_ns'] < job['submitted_ns']
                             and self.scope(candidate['actor'], 'execution_resource') ==
                             self.scope(actor, 'execution_resource')):
                         predecessors.append((bid, candidate))
                 capacity = len(self.actors) if self.scope(actor, 'execution_resource') == 'common' else 1
-                # A queued status can briefly precede dispatch even with free
-                # slots. Only a full set of earlier unfinished builds creates
-                # the tested capacity dependency; presence alone is not cause.
-                if len(predecessors) >= capacity:
+                # Count occupied slots, not merely queued predecessors. The
+                # independent journal replay checks the complete occupant set.
+                if len(predecessors) == capacity:
                     blockers = [self.observation(actor, 'execution_resource', candidate,
                                                  'worker_queue_wait', build_id=bid,
                                                  worker_slots=capacity, predecessor_count=len(predecessors))

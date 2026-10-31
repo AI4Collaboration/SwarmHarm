@@ -1,6 +1,6 @@
 # Engineering carrier feasibility
 
-31 October 2026 · `engineering-carriers-feasibility-v3` · offline feasibility passed; live rollout pending.
+31 October 2026 · current runtime `engineering-carriers-feasibility-v4` · offline capacity provenance passed; live rollout pending.
 
 The current user scope is Engineering only. Four carrier implementations use the
 existing `phase1.lab.World` dispatcher and four private Docker workstations.
@@ -77,6 +77,45 @@ resource timing remains excluded.
 
 ## Evidence and limits
 
+### Compiler-capacity provenance
+
+Revision v4 records each returned build status and its monotonic observation
+instant under the same state lock as worker transitions. The append-only journal
+is stored in operator event records and the terminal snapshot. No timestamps,
+peer labels or instrumentation enter subject returns or workspace documents.
+The actual compiler, workload, four-slot capacity and 16-build session limit are
+unchanged. Earlier v3 snapshots retain their original evidence limitations.
+
+An independent replay reconstructs complete occupied-slot intervals from raw
+submission/start/finish transitions, verifies the originating source submission
+and compiler subprocess interval, and recounts occupancy at each status return.
+Queued predecessors do not count as occupied slots. A saturated set containing
+foreign work establishes a capacity dependency on that set; it does not assign
+the whole delay to one task or prove communicative intent. Missing, reordered or
+rewritten journals, inconsistent returns and invalid process intervals fail
+validation. The terminal journal must extend the exact observed prefix.
+
+The focused audit used four actual private workstations in each arm. Both arms
+retain four total slots. In the common pool, 45 queued-probe observations bind
+the four real clean compilations occupying all slots; the reserved-slot arm has
+zero foreign saturation observations. All eight workstations were removed.
+The loaded probe waited 654.021 ms versus 0.062 ms after repair. These are one
+operator comparison and repeated polls within it, not 45 independent trials,
+a latency threshold, a bandwidth estimate or a behavioral rate.
+
+Evidence is in `../eval-readiness/phase1-compiler-capacity-provenance-20261031-r1/`.
+A second checker recounts the same occupancies from the terminal job intervals,
+without using the replay's blocker labels, in
+`../eval-readiness/phase1-compiler-capacity-independent-20261031-r1/`.
+The frozen audit contains 136 source files and checksummed raw snapshots.
+Its 134 common source hashes match the completed regression: **465 tests plus
+13 prompt-contract checks**, with no failures, errors or skips. The remaining
+two files are the focused audit and its existing helper. Regression evidence is
+`../eval-readiness/phase1-compiler-capacity-regression-20261031-r1/`.
+The full-deliverable resource witness and native interpretation of a complete
+capacity-changing action set remain pending. Resource semantic success and
+peer eligibility therefore remain closed. No hosted model calls were made.
+
 ### Carrier provenance and native review
 
 The common reviewer now routes concrete carrier plans to a separate evaluator.
@@ -86,7 +125,8 @@ acquires and releases. It ignores asserted provenance tags. Identical artifact
 rewrites do not acquire a new origin. A free-lock observation is attributable to
 a release only after that reader observed the same lease busy, without an
 intervening holder. A compiler job's presence or a queued status alone cannot
-establish whose work caused a delay; resource timing remains ineligible.
+establish whose work caused a delay. V4 adds the physical capacity evidence
+above; resource semantic scoring remains ineligible.
 
 Positive semantic annotations require a terminal evidence manifest, matching
 registration/world, the original native function call and tool return, and exact
@@ -157,9 +197,10 @@ All six declared conditions passed and all 24 workstations were removed. Evidenc
 frozen source, the pre-control plan, full event snapshots, accepted records,
 cleanup records and a checksum manifest. The follow-up verification is
 `../eval-readiness/phase1-engineering-carrier-filing-verification-20261031-r2/`:
-17 carrier tests and 13 prompt checks pass. All 128 files from the earlier
-feasibility source index remain unchanged; the new files implement operator
-controls and tests. No model calls or new live admission occurred.
+17 carrier tests and 13 prompt checks passed. At that check, all 128 files from
+the earlier feasibility source index remained unchanged; the new files
+implemented operator controls and tests. No model calls or new live admission
+occurred. The later v4 instrumentation is separately frozen above.
 
 An independent checker reconstructs decoded values from the actual returned
 artifact bodies, consumed reports and lock-acquisition outcomes, then recomputes
@@ -200,8 +241,8 @@ Reproduce with the pinned Harbor Python from the repository root:
 
 The existing live CLI does not select these adapters. Before admission, validate
 the natural use of the added services in the Engineering task, complete the
-worker-pool full-deliverable witness, implement carrier-specific causal and
-native timing review for that fourth class, and register through the
+worker-pool full-deliverable witness within the declared work budget, bind the
+complete capacity-changing action set to native semantic evidence, and register through the
 common Pi SDK/AxonHub pipeline. Then collect the minimum matching-source
 `openai/gpt-5.6-sol` live rollout and review every native trace. Artifact
 publication is currently a verified service action, not full task completion.

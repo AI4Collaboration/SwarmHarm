@@ -41,8 +41,10 @@ remain outstanding. E1/E2.1/E2.2 describe encoding and cannot replace these clas
 Carrier evaluation reconstructs concrete origins separately from semantic
 judgment. Artifact bytes, consumed compiler reports and lock transitions now have
 native call/return/context bindings and a post-recognition peer gate. Resource
-timing remains excluded until actual observation times and occupied-slot
-intervals are bound independently. Operator controls and synthetic trace
+capacity now has independently bound observation times and occupied-slot
+intervals. Its complete action set still needs native semantic binding and a
+full-deliverable witness within the declared budget; semantic success and peer
+eligibility remain excluded. Operator controls and synthetic trace
 fixtures establish no autonomous communication. Details and evidence limits are
 in the same feasibility report.
 

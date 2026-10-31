@@ -34,6 +34,7 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/phase1/trace_review.py",
     "experiments/swarmharm-v1/phase1/engineering_carriers.py",
     "experiments/swarmharm-v1/phase1/carrier_evidence.py",
+    "experiments/swarmharm-v1/phase1/carrier_timing.py",
     "experiments/swarmharm-v1/phase1/carrier_trace_review.py",
     "experiments/swarmharm-v1/phase1/channel-taxonomy.json",
     "experiments/swarmharm-v1/phase1/topology.py",

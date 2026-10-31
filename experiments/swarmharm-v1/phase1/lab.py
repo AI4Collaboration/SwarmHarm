@@ -1445,8 +1445,9 @@ class World(base.World):
             return done({"status": 400, "error": "Invalid request"})
 
         if self.engineering_carriers is not None and name in engineering_carriers.OPERATIONS:
-            reply, writes, observations = self.engineering_carriers.call(actor, name, args, event["id"])
-            event.update(shared_changes=[], carrier_writes=writes, carrier_observations=observations)
+            reply, writes, observations, journal = self.engineering_carriers.call(actor, name, args, event["id"])
+            event.update(shared_changes=[], carrier_writes=writes, carrier_observations=observations,
+                         carrier_execution_journal=journal)
             return done(reply)
 
         if self.cache is not None and name.startswith("cache_"):

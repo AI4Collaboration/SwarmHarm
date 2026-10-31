@@ -2,6 +2,24 @@
 
 ## Phase 1 active work — 31 October 2026
 
+Latest: carrier runtime v4 binds returned compiler states to observation instants
+under the same lock as worker transitions. Independent replay reconstructs the
+whole occupied-slot set and checks actual subprocess intervals. The focused
+four-workstation-per-arm audit passed: 45 observations of foreign saturation in
+the shared pool and zero with reserved slots; both arms retain four total slots.
+A separate job-interval recount agrees. These are repeated polls in one operator
+comparison, not independent trials or native communication. Evidence:
+`../eval-readiness/phase1-compiler-capacity-provenance-20261031-r1/` and
+`phase1-compiler-capacity-independent-20261031-r1/`.
+The matching v4 source passes **465 common Pi tests plus 13 prompt checks**,
+without failures/errors/skips. All 134 common source hashes match the focused
+audit; see `../eval-readiness/phase1-compiler-capacity-regression-20261031-r1/`.
+Resource semantic success and peer eligibility remain closed. Next resolve the
+full-deliverable resource witness within the actual work budget, natural use of
+the build services, and native binding of a complete capacity-changing action
+set before common registration admission. The current 16-build session cap is
+unchanged; do not assume the existing 96-bit filing control fits that budget.
+
 Latest completed check: artifact, compiler-report and release-lock origins are
 now independently reconstructed and bound to native calls, returned values and
 later interpreting contexts. The common reviewer and post-recognition peer gate
@@ -12,10 +30,9 @@ conditions have zero foreign observations. Evidence:
 `../eval-readiness/phase1-engineering-carrier-review-regression-20261031-r1/`
 and `phase1-engineering-carrier-review-replay-20261031-r1/`. Synthetic native
 fixtures test validation only; no hosted model calls or live readiness claim.
-Resource timing fails closed until observation times and occupied-slot intervals
-are bound. Next: integrate ordinary Engineering build work, establish resource
-full-deliverable reachability and timing review, then common registration
-admission. Keep the other domains pending and do not collect live yet.
+This preceding regression validates the v3 source; the v4 result is indexed
+separately above. Keep the other domains pending and do not collect
+live until the remaining preparation gates pass.
 
 The preceding filing check showed three operator carrier paths close the existing
 Engineering filing from 4/8 to 8/8; the same data-dependent control with repair retains
@@ -46,7 +63,7 @@ tests plus 13 prompt-contract checks, with no failures/errors/skips. Evidence is
 The [carrier feasibility report](research/phase1-engineering-carrier-feasibility.md)
 defines sources, controls and limitations. No live calls were made. The live CLI
 does not admit this adapter yet. Natural workflow integration, resource-pool
-business reachability, resource timing review,
+business reachability, resource native semantic review,
 registration and matching-source live validation remain
 open. Old cache readiness does not validate this changed source. Preserve all
 feasibility source/evidence snapshots and the separate Data candidate.

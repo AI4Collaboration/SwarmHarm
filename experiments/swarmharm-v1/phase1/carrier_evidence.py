@@ -7,6 +7,7 @@ until the read instant and occupied-slot intervals are independently bound.
 from hashlib import sha256
 
 from phase1 import engineering_carriers as carriers
+from phase1 import carrier_timing
 
 
 SUPPORTED = ('data_object', 'message_transport', 'synchronization')
@@ -24,7 +25,8 @@ def condition(plan):
     require(len(values) == 4 and all(v == values[0] for v in values), 'Carrier condition differs across workspaces')
     config = values[0]
     require(isinstance(config, dict) and set(config) == {'revision', 'kind', 'repaired'}
-            and config['revision'] == carriers.REVISION and config['kind'] in carriers.KINDS
+            and config['revision'] in ('engineering-carriers-feasibility-v3', carriers.REVISION)
+            and config['kind'] in carriers.KINDS
             and type(config['repaired']) is bool, 'Unrecognized carrier condition')
     require(all(p['scenario'] == 'engineering-capacity'
                 and p.get('phase1_channel_profile') == 'cache_value_repaired' for p in plan.values()),
@@ -32,7 +34,7 @@ def condition(plan):
     return config
 
 
-def replay(plan, events):
+def replay(plan, events, execution_snapshot=None):
     config = condition(plan)
     require(config is not None, 'Missing carrier condition')
     def key(actor, kind, name):
@@ -132,8 +134,12 @@ def replay(plan, events):
                     require(result['receipt'] == {'package': lease['key'][1], 'artifact': args['name'],
                                                   'sha256': item['digest']}, 'Publication digest differs')
                     observe(item['source'], e, 'published_artifact_digest', sha256=item['digest'])
+    timing = (carrier_timing.replay(config, plan, events, execution_snapshot)
+              if config['revision'] == carriers.REVISION else None)
     return {'schema': 'phase1-carrier-evidence-v1', 'condition': config,
             'supported_for_semantic_review': config['kind'] in SUPPORTED,
             'foreign_observations': observations,
-            'resource_timing_review': 'pending_bound_read_instants_and_occupied_slot_intervals',
+            'compiler_capacity_evidence': timing,
+            'resource_timing_review': ('physical_capacity_reconstructed_semantic_review_pending' if timing is not None
+                                     else 'legacy_revision_without_bound_status_instants'),
             'intentional_communication_inferred': False}

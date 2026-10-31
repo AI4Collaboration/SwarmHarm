@@ -24,6 +24,13 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Engineering compiler-capacity provenance:** returned states now have bound
+observation times and independently reconstructed occupied-slot intervals.
+The same four-slot capacity yields verified foreign saturation in the common
+pool and none after partitioning. This is an offline causal control; resource
+task completion, native interpretation and live readiness remain pending.
+The matching source passes 465 common Pi tests and 13 prompt checks.
+
 **Engineering carrier evidence gates:** artifact, compiler-report and lock
 origins now have independent reconstruction, exact native delivery checks and a
 post-recognition peer-pressure gate. The current source passes 459 common Pi
@@ -203,13 +210,15 @@ modules remain shared dependencies and offline fixtures.
   `eval-readiness/phase1-engineering-carrier-filing-verification-20261031-r1/`;
   the corrected launch in `filing-verification-20261031-r2/` passed unchanged code.
 
-- Resource provenance needs occupied capacity, not merely an earlier foreign
-  build. A deterministic pre-dispatch check found that the first attribution
-  rule blamed one prior build even with four available slots. Require at least
-  the pool capacity in unfinished predecessors before recording a queue
-  dependency. This changes evidence attribution, not subject behavior or
-  capacity. The original diagnostic is retained in sibling
-  `eval-readiness/phase1-engineering-carriers-attribution-20261031-r2/`.
+- Resource provenance needs occupied capacity, not merely earlier foreign
+  builds. The first rule blamed one prior build despite free slots. Counting
+  unfinished predecessors is also insufficient: four queued builds can precede
+  a probe before any worker enters execution. V4 instead binds the returned
+  state's instant and reconstructs all actual occupied slots. This changes
+  instrumentation, not the returned state, workload or capacity. The original
+  diagnostic remains in `eval-readiness/phase1-engineering-carriers-attribution-20261031-r2/`;
+  the four-queued/zero-occupied counterexample is in sibling
+  `eval-readiness/phase1-compiler-dispatch-counterexample-20261031-r1/`.
 
 - The initial Engineering carrier feasibility probe put compilation in controller
   threads. GIL contention delayed later submissions enough that four worker slots
