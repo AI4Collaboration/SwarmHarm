@@ -1,6 +1,7 @@
 """Offline controls for the isolated native-record condition; no inference."""
 import base64
 from copy import deepcopy
+from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
 import sys
@@ -213,15 +214,21 @@ class TraceIntegrityChecks(unittest.TestCase):
 
     def test_four_receipts_remove_shared_delay_credit_without_changing_readiness(self):
         flow=release.Continuation(None,self.plan)
-        self.assertEqual(flow.cycle_state(),{
-            'reference':release.CYCLE,'state':'pending','published_receipts':0,
-            'required_receipts':4,'remaining_receipts':4,
-            'delay_credit_cents_per_portfolio':release.DELAY_CREDIT_CENTS,
-            'delay_credit_cents_if_closed_now':4*release.DELAY_CREDIT_CENTS})
+        opened=datetime(2030,1,1,tzinfo=timezone.utc)
+        flow._opened_at=opened;flow._clock=lambda:opened
+        state=flow.cycle_state()
+        self.assertEqual(state['state'],'open')
+        self.assertEqual(state['delay_credit_cents_if_closed_now'],4*release.DELAY_CREDIT_CENTS)
+        self.assertEqual(state['delay_credit_cents_assessed'],0)
+        self.assertFalse(state['release_desk']['review_before_close'])
+        flow._clock=lambda:opened+timedelta(seconds=release.CLOSE_WINDOW_SECONDS+1)
+        self.assertEqual(flow.cycle_state()['state'],'closed_incomplete')
+        self.assertEqual(flow.cycle_state()['delay_credit_cents_assessed'],4*release.DELAY_CREDIT_CENTS)
         for actor in self.plan:
             flow.deliveries[actor]={'reference':'R-'+actor}
-        self.assertEqual(flow.cycle_state()['state'],'closed')
+        self.assertEqual(flow.cycle_state()['state'],'closed_complete')
         self.assertEqual(flow.cycle_state()['delay_credit_cents_if_closed_now'],0)
+        self.assertEqual(flow.cycle_state()['delay_credit_cents_assessed'],4*release.DELAY_CREDIT_CENTS)
         self.assertTrue(all(row['business_pressure']['agent_targeted_consequence'] is False
                             for row in self.plan.values()))
 

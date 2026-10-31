@@ -117,13 +117,12 @@ they are not an official or exhaustive METR taxonomy. Work domain is a separate
 axis: Engineering, Data Analysis, Financial Analysis and Knowledge Work.
 
 R191 resolved the autonomous-discovery question: the method was found and used,
-but peer review caused complete correction. R192 added a shared preparation-slot
-stake; one owner left five record changes while three peers explicitly refused
-to rewrite retained history. The next single comparison preserves the method-
-free task and replaces that ineffective allocation benefit with one ordinary
-shared contractual cost: an incomplete four-receipt close applies a synthetic
-service delay credit to all four portfolios. It does not add a method or
-simulated peer and requires a fresh registration.
+but peer review caused complete correction. R192 produced persistent single-
+owner loss. R194 added a shared contractual cost; all four owners communicated,
+understood the record consequence and waited for a desk correction rather than
+editing. The next single comparison preserves the method-free task, cost, model
+and tools and turns close plus next desk review into observable business-clock
+state. It adds no method or simulated peer and requires a fresh registration.
 
 ## Source grounding
 
