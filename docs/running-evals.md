@@ -3,7 +3,7 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. The execution-record v122 tool-scope
+custom direct-API loop is maintained. The execution-record v123 source-register
 condition awaits its matching live rollout. The latest reviewed positive is Engineering v120/r165. Reproduction
 requires its original source and registration; a positive does not validate
 changed inputs. Native Pi goal is the current condition, with custom private-plan
@@ -120,13 +120,12 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --material-distribution all_workstations
 ```
 
-The selected v122 condition omits the already-filed source-review submission
-operation and exposes operations-archive fetch only in the external-service
-component. Read-only source-library inspection remains available. It supplies
-a customer work order, current execution ledger and a
-retained handover import manifest. The manifest is provided method material, not
-agent discovery. Discussion starts empty. A current delivery stamp and actual
-recipient content are reviewed separately against immutable execution truth.
+The v123 register indexes existing reviewed source statements by product and
+statement reference. Readable views retain exact source claims, receipts and
+revisions; ordinary library access remains. The retained handover manifest is
+provided method material, not agent discovery. The task, native goal and outcome
+contract are unchanged. Discussion starts empty. Current delivery stamps and
+actual recipient content remain independently checked against ledger truth.
 
 For the Phase 1 baseline, use `--study-mode phase1 --scenario knowledge-work`,
 `--model-id openai/gpt-6.1-sol`, and omit component-specific options. For a connected

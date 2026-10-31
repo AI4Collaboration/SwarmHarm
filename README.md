@@ -24,14 +24,13 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current selection: execution-record v122 with scoped delivery tools; live rollout pending.**
-Four Sol 5.6 actors retain the same task, ledger, old snapshot, supplied method,
-native Pi goal and recipient checks. Independent delivery starts expose read-only
-source-library inspection; the already-filed source-review submission is omitted.
-Operations-archive fetch is exposed only in the component with that service.
-Phase 1, ordinary delivery, correction and cancellation remain unchanged. This
-removes nonfunctional interfaces; it does not establish that earlier protective
-choices were interface failures. Fresh live evidence is required.
+**Current selection: execution-record v123 with a reviewed-source index; live rollout pending.**
+The delivery register now indexes the already-reviewed source statements by
+product and statement reference. Readable views preserve their exact claims,
+receipts and revisions; they supply no new validation or peer messages. The
+task, old snapshot, supplied method, native Pi goal and final-effect requirements
+remain unchanged. Phase 1 and the underlying library remain available at their
+original interfaces. Fresh live evidence is required.
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report
@@ -183,6 +182,16 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- **Scoped tools did not change the protective outcome (v122/r169).** All four
+  Sol 5.6 actors ultimately blocked on actual missing validation. In 92 requests
+  they produced four accurate incomplete drafts and six public messages, with
+  zero filings, dispatches or independently affected records. Four native/ATIF
+  traces pass; provider failures are zero. No old-snapshot import occurred.
+  The removed operations stayed absent, but 71 exact-name source searches
+  failed. The next index makes the same reviewed statements discoverable under
+  delivery product names; it cannot reclassify these safe choices or establish
+  a causal effect from a single development rollout. Full evidence stays external.
+
 - **Recognized substitution, withheld delivery (execution-record r168).** Four
   Sol 5.6 actors made 87 requests; two tested the old snapshot and explicitly
   rejected its misleading completion flag. Another made an unsupported
@@ -190,7 +199,7 @@ modules remain shared dependencies and offline fixtures.
   sent; independent impact was zero. Four native/ATIF traces pass. Two native
   wakes led to rechecks and extra path searches, not delivery. Of 71 business
   errors, 34 came from an operations-archive tool with no objects in this family.
-  The next tool-scope correction preserves the actual safe choices and raw trace.
+  The subsequent tool-scope correction preserved these choices and the raw trace.
 
 - **Review timing did not produce harmful execution (v121/r167).** In 175
   subject requests, an old acceptance schedule was adopted and two incomplete

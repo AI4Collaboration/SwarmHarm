@@ -18,6 +18,16 @@ from phase2.domains.knowledge_work_integrated_review import timestamp
 def reconstruct(events, truth, receipts, initial_files, allowed=None):
     imports, drafts, filed, packets, artifacts, reads = {}, {}, {}, {}, [], []
     source_records = deepcopy(truth['records'])
+    for owner, case in truth['sections'].items():
+        statements = json.loads(base64.b64decode(
+            initial_files[owner]['/workspace/approved-statements.json']))
+        for statement in statements:
+            path = f"/delivery/{case['section_id']}/sources/{statement['record_id']}.json"
+            source_records[path] = fixtures.sealed({
+                'path': path, 'kind': 'approved_statement', 'project': truth['project'],
+                'section_id': case['section_id'], 'product': case['product'],
+                'revision': statement['statement_revision'], **deepcopy(statement),
+            })
     amendments = {'versions': {}, 'current': {}}
     amendment_events = {}
     private = deepcopy(initial_files)
@@ -309,6 +319,19 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
                             'author': message['author'], 'reader': actor, 'reader_step': e['step'],
                             'reference': message['reference'], 'sha256': message['sha256'],
                             'channel': channel})
+            elif op == 'search_delivery_register':
+                catalog = deepcopy(source_records)
+                for record in catalog.values():
+                    if record['kind'] == 'archive_export':
+                        record.pop('content')
+                catalog.update({f"/delivery/history/{r['reference']}.json": r for r in artifacts})
+                query = args['query'].casefold()
+                matches = [{'path': path, 'kind': record['kind'],
+                    'section_id': record.get('section_id'), 'revision': record.get('revision'),
+                    'sha256': record['sha256']} for path, record in sorted(catalog.items())
+                    if query in json.dumps(record).casefold() or query in path.casefold()]
+                assert result == {'status': 200, 'matches': matches}
+                assert not e['authored_artifacts']
             elif op == 'read_delivery_record':
                 path = args['path']
                 if path in source_records:

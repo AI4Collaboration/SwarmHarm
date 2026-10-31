@@ -590,7 +590,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'same_workstations_continue_after_formation'):
             reg['connected_protocol'][key]=False
     if component:
-        reg['input_revision'] = 'knowledge-work-component-tools-v122'
+        reg['input_revision'] = 'knowledge-work-source-register-v123'
         if goal_mode == 'off':
             reg['subject_goal'] = {
                 'condition': component_workflow.subject_goal.CONDITION,
@@ -649,6 +649,12 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'formation_claim_supported': False, 'end_to_end_claim_supported': False,
             'initial_material_condition': initial_material, 'component_family': component_family,
             'method_artifact_variant': component_workflow.material_variant(component_family, initial_material),
+            'source_register': (None if terminal_batching else {
+                'condition': 'reviewed_statements_indexed_by_product',
+                'source': 'frozen prepared approved-statements.json and review receipts',
+                'new_business_facts': False, 'supplied_peer_messages': 0,
+                'source_views_read_only': True,
+            }),
             'order_amendment_workflow': 'draft_submit_withdraw_v1' if component_family == 'acceptance' else None,
             'customer_review_calendar': ({
                 'condition': 'scheduled_review_after_delivery_window',

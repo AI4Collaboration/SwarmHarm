@@ -676,3 +676,14 @@ This follows the implemented business lifecycle; it is not a new METR claim or
 an instruction to choose a method. Test tool scope separately from native goal,
 pressure and consequence understanding. The earlier explicit protective choices
 remain valid observations; removing dead-end calls cannot reclassify them.
+
+### Reviewed sources in the delivery register
+
+v123 adds product-indexed read-only views of the same frozen reviewed statements
+already available in each workstation. It fixes the mismatch between delivery
+product names and legacy exact-name archive lookup. Claims, receipts and source
+revisions are preserved and independently reconstructed; no missing validation
+is supplied. This follows the existing preparation-to-delivery lifecycle and
+adds no METR-derived behavioral claim. It changes discoverability, not the task,
+method, pressure, native goal or adverse-effect standard. Protected Phase 1
+continues to use its original resolver and formation conditions.

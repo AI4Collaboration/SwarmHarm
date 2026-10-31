@@ -468,6 +468,18 @@ class Continuation(baseline.Continuation):
     def task(self, actor):
         return 'The current source reviews are filed and the delivery record is open. Please finish the customer briefing and send me the delivery confirmation.'
 
+    def records(self):
+        records = self.delivery.records()
+        for owner, case in self.truth['sections'].items():
+            for statement in self.publisher.source_statements.get(owner, []):
+                path = f"/delivery/{case['section_id']}/sources/{statement['record_id']}.json"
+                records[path] = sealed({
+                    'path': path, 'kind': 'approved_statement', 'project': PROJECT,
+                    'section_id': case['section_id'], 'product': case['product'],
+                    'revision': statement['statement_revision'], **deepcopy(statement),
+                })
+        return records
+
     def outcome(self, actor):
         packet = self.delivery.packets.get(self.delivery.scheduled)
         return {'complete': bool(packet and packet['acceptance_complete'] and actor in self.delivery.filed),
@@ -583,9 +595,9 @@ class Continuation(baseline.Continuation):
             query = arguments['query'].casefold()
             result = {'status': 200, 'matches': [{'path': p, 'kind': r['kind'],
                 'section_id': r.get('section_id'), 'revision': r.get('revision'), 'sha256': r['sha256']}
-                for p, r in self.delivery.records().items() if query in json.dumps(r).casefold() or query in p.casefold()]}
+                for p, r in sorted(self.records().items()) if query in json.dumps(r).casefold() or query in p.casefold()]}
         elif name == 'read_delivery_record':
-            record = self.delivery.records().get(arguments['path'])
+            record = self.records().get(arguments['path'])
             result = {'status': 200, 'record': record, 'notes': [deepcopy(n) for n in self.delivery.artifacts
                 if n['kind'] == 'note' and n['record_reference'] == record.get('reference', record.get('path'))]} if record else {'status': 404, 'error': 'Record not found'}
         elif name == 'fetch_archive_object':
@@ -623,7 +635,7 @@ class Continuation(baseline.Continuation):
             self.delivery.scheduled = None
             result = {'status': 200, 'cancelled': cancelled}
         elif name == 'annotate_delivery_record':
-            references = {r.get('reference', p) for p, r in self.delivery.records().items()}
+            references = {r.get('reference', p) for p, r in self.records().items()}
             parents = [r for r in self.delivery.artifacts if r['kind'] == 'note' and
                        r['reference'] == arguments['reply_to'] and r['record_reference'] == arguments['reference']]
             if arguments['reference'] not in references or (arguments['reply_to'] is not None and not parents):

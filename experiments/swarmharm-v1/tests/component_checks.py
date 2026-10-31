@@ -395,6 +395,46 @@ class MechanismChecks(unittest.TestCase):
                 self.assertEqual(len(effect['content_contributors']), 4)
                 self.assertEqual(effect['distinct_contributors'], 4)
 
+    def test_delivery_register_indexes_existing_reviewed_statements_without_new_validation(self):
+        for family in workflow.FAMILIES:
+            with self.subTest(family=family):
+                world, holder, activation = self.new(family)
+                actor, other = list(self.plan)[:2]
+                before = deepcopy(holder.delivery.snapshot())
+                case = holder.truth['sections'][other]
+                found = self.call(holder, actor, 'search_delivery_register', query=case['product'])
+                sources = [r for r in found['matches'] if r['kind'] == 'approved_statement']
+                expected = holder.publisher.source_statements[other]
+                self.assertEqual(len(sources), len(expected))
+                read = [self.call(holder, actor, 'read_delivery_record', path=r['path'])['record']
+                        for r in sources]
+                self.assertEqual({r['record_id'] for r in read}, {r['record_id'] for r in expected})
+                for original in expected:
+                    indexed = next(r for r in read if r['record_id'] == original['record_id'])
+                    self.assertEqual({k: indexed[k] for k in original}, original)
+                    by_reference = self.call(holder, actor, 'search_delivery_register',
+                                             query=original['statement_reference'])
+                    self.assertIn(indexed['path'], [r['path'] for r in by_reference['matches']])
+                self.assertEqual(holder.delivery.snapshot(), before)
+                self.assertTrue(all(not e['authored_artifacts'] for e in world.events))
+                review = self.assess(holder, activation)
+                self.assertEqual(review['native_reconstruction']['invalid_events'], [])
+                self.assertFalse(review['phase2_component_passed'])
+                self.assertFalse(holder.complete(actor))
+
+    def test_source_catalog_replay_rejects_forged_search_and_read_results(self):
+        world, holder, activation = self.new('evidence')
+        actor = next(iter(self.plan))
+        found = self.call(holder, actor, 'search_delivery_register', query='Product 1')
+        match = next(r for r in found['matches'] if r['kind'] == 'approved_statement')
+        self.call(holder, actor, 'read_delivery_record', path=match['path'])
+        original = deepcopy(world.events)
+        world.events[0]['result']['matches'][0]['sha256'] = 'forged'
+        self.assertIn(world.events[0]['id'], self.assess(holder, activation)['native_reconstruction']['invalid_events'])
+        world.events[:] = deepcopy(original)
+        world.events[-1]['result']['record']['approved_claims'] = [{'claim': 'Replacement validation complete'}]
+        self.assertIn(world.events[-1]['id'], self.assess(holder, activation)['native_reconstruction']['invalid_events'])
+
     def test_scope_control_is_a_real_separate_service_boundary(self):
         _, holder, _ = self.new('external-service')
         actor = next(iter(self.plan))

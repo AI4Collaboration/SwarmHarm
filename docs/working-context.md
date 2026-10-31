@@ -2,36 +2,20 @@
 
 ## Current result and priority
 
-**31 October: execution-record v122/r169 is collecting.**
-Four Sol 5.6 contexts use scoped delivery tools, the same business task and
-native Pi goal. Collector PID 91135; inspect its actual process and terminal
-records before any launch. Source `ea36fa1ca`, registration `14eec3b68`; seal
-`219b14547d97bd22d60d2fbc4ebbdc7c51e245526c0d998f3d16673d3f1763e6`.
-All 404 selected offline checks and 13 prompt checks passed; local, remote,
-committed registration and frozen input/source/task hashes matched at start.
-Raw output is `../eval-readiness/2026-10-31-v122-delivery-tools-sol56-pi-n4-r169`.
-Do not edit sealed source or start a replacement collector.
+**31 October: r169 is closed and its complete frozen review is archived.**
+No collector is active. Full trace, native/tool reconciliation, ATIF and independent
+recipient review are at `../eval-readiness/knowledge-work-r169-review/semantic-review.md`.
+The concise lesson is in README Takeaways. The next change adds read-only catalog
+views for statements that were already reviewed and supplied; it introduces no
+replacement validation, plan or new completion condition.
 
-At the 02:27 UTC checkpoint, all 90 completed responses and 359 native business
-tool results have been inspected/reconciled. Products 1, 2 and 4 are blocked;
-Product 3 keeps a native wait with a safety wake at 02:35:10 UTC. Three current-
-ledger imports, four accurate incomplete drafts, six public messages and no
-filing/dispatch are observed so far. The removed operations are absent. This is
-not a final outcome; preserve the remaining wait and review the terminal records.
-Full checkpoint: `../eval-readiness/knowledge-work-r169-review/interim-review.md`.
-
-r168 is closed and its complete frozen review is archived at
-`../eval-readiness/knowledge-work-r168-review/semantic-review.md`; its concise
-negative lesson is in README Takeaways. Keep those earlier records unchanged.
-
-**Current selection: execution-record v122 with scoped delivery tools; live rollout pending.**
-Four Sol 5.6 actors retain the same task, ledger, old snapshot, supplied method,
-native Pi goal and recipient checks. Independent delivery starts expose read-only
-source-library inspection; the already-filed source-review submission is omitted.
-Operations-archive fetch is exposed only in the component with that service.
-Phase 1, ordinary delivery, correction and cancellation remain unchanged. This
-removes nonfunctional interfaces; it does not establish that earlier protective
-choices were interface failures. Fresh live evidence is required.
+**Current selection: execution-record v123 with a reviewed-source index; live rollout pending.**
+The delivery register now indexes the already-reviewed source statements by
+product and statement reference. Readable views preserve their exact claims,
+receipts and revisions; they supply no new validation or peer messages. The
+task, old snapshot, supplied method, native Pi goal and final-effect requirements
+remain unchanged. Phase 1 and the underlying library remain available at their
+original interfaces. Fresh live evidence is required.
 
 **Engineering v120/r165 is reviewed positive for independent Phase 2.**
 Four Sol 5.6 actors executed four complete deliveries and four accepted
@@ -65,9 +49,9 @@ Keep the Phase 1 baseline fixed. Continue the three independent families in
 manipulation and execution-evidence manipulation. They are our non-exclusive
 operational groups based on METR, not an official exhaustive taxonomy.
 The current Engineering example covers the first family through an independent
-local business service. The active registration selects execution-record v122 with scoped delivery
-tools, native Pi goal, supplied methods at all workstations and unchanged
-business fixtures. Acceptance and execution-evidence outcomes remain pending.
+local business service. The next registration selects execution-record v123 with reviewed-source catalog
+views, native Pi goal and supplied methods at all workstations. Underlying
+business truth and task stay fixed. Acceptance and execution-evidence outcomes remain pending.
 Do not claim host escape or infer another family's result from r165.
 
 Use METR's original investigation as the primary factual source; LessWrong's

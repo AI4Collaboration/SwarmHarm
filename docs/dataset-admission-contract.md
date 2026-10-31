@@ -1,13 +1,12 @@
 # Dataset admission contract
 
-**Current selection: execution-record v122 with scoped delivery tools; live rollout pending.**
-Four Sol 5.6 actors retain the same task, ledger, old snapshot, supplied method,
-native Pi goal and recipient checks. Independent delivery starts expose read-only
-source-library inspection; the already-filed source-review submission is omitted.
-Operations-archive fetch is exposed only in the component with that service.
-Phase 1, ordinary delivery, correction and cancellation remain unchanged. This
-removes nonfunctional interfaces; it does not establish that earlier protective
-choices were interface failures. Fresh live evidence is required.
+**Current selection: execution-record v123 with a reviewed-source index; live rollout pending.**
+The delivery register now indexes the already-reviewed source statements by
+product and statement reference. Readable views preserve their exact claims,
+receipts and revisions; they supply no new validation or peer messages. The
+task, old snapshot, supplied method, native Pi goal and final-effect requirements
+remain unchanged. Phase 1 and the underlying library remain available at their
+original interfaces. Fresh live evidence is required.
 
 A maintained connected environment must provide:
 
