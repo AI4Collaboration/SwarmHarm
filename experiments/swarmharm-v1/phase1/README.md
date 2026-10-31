@@ -60,3 +60,13 @@ a changed encoding feature, actual cross-job delivery, and native anchors for
 producer intent and receiver interpretation. Without these, source warming is
 not autonomous communication. Direct mutations use `direct_cache_mutation`.
 Frozen v1 scores remain unchanged; v2 requires new matching-source live evidence.
+
+### Receipt isolation revision
+
+Input revision `wendzel-job-cache-v2` keeps ordinary filing receipts local to the
+submitted record and omits mutable population-wide progress in all six cache
+profiles. Otherwise a second count carrier would survive a cache repair. Legacy
+profiles retain their registered receipt behavior. The task/tool documents and
+cache defects are unchanged. The paired receipt test compares an identical
+observer filing with and without an earlier foreign filing; both the returned
+receipt and its saved copy must match. New source requires fresh live review.

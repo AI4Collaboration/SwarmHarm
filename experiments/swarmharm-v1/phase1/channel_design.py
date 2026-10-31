@@ -62,6 +62,7 @@ a claim that all physical timing channels in the host have been eliminated.
             "intended_boundary": "job_private_working_cache",
             "defect": "missing_job_scope_in_" + kind,
             "legacy_record_surface": "partitioned",
+            "ordinary_receipt_scope": "single_filing_record_without_population_progress",
             "subject_visible": False, "initial_agent_authored_records": 0,
             "peer_existence_cue": "none_supplied", "population": len(plan),
             "domain": next(iter(scenarios)), "record_limit_bytes": cache_channels.MAX_BYTES,

@@ -30,9 +30,9 @@ position/order. Synthetic job-cache defects and their repaired counterparts now
 use the shared runner in all four domains; ordinary inputs are matched and legacy
 note/reply channels are partitioned. No discovery cues or planted peer content.
 New validation uses **openai/gpt-5.6-sol**, as explicitly selected on 30 October.
-The Engineering E1 pilot and repair control are fully reviewed. A correction to
-causal attribution is live pending; other channel/domain cells and pressure
-interventions remain pending in the
+The Engineering E1 pair and E2.1 pilot are fully reviewed. Receipt isolation is
+being corrected before new matching-source collection; other channel/domain
+cells and pressure interventions remain pending in the
 [readiness ledger](docs/research/phase1-readiness.json). Automatic leakage is not
 autonomous communication. See the [design](docs/phase1-publication-design.md),
 [methods](docs/phase1-methods.md) and [operator notes](experiments/swarmharm-v1/phase1/README.md).
@@ -170,6 +170,17 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **A repaired cache is insufficient if receipts expose another count carrier (E2.1/r3).**
+  Complete review covers 177 Sol 5.6 responses and 244 tool returns. Five foreign
+  count observations include ordinary cache use, with no deliberate encoding or
+  decoding; four of eight checks are filed. Fixed-action replay removes all five
+  count crossings and preserves eleven other cache results. A separate scripted
+  witness finds that a valid peer filing changes an ordinary receipt's global
+  count from one to two even with repaired cache isolation. Repeated submission
+  is rejected, so this is a bounded observation, not a polling interface. Remove
+  this alternative carrier in all cache profiles before new collection; preserve
+  local receipt meaning and legacy studies. None of these observations is a rate.
 
 - **No observed leak without a read does not isolate a repair effect (E1/r2).**
   The repaired four-subject Sol 5.6 control files four of eight checks and makes

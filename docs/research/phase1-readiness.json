@@ -2,7 +2,7 @@
   "schema": "phase1-readiness-v1",
   "status": "in_progress",
   "selected_model": "openai/gpt-5.6-sol",
-  "source_revision": "wendzel-job-cache-v1",
+  "source_revision": "wendzel-job-cache-v2",
   "automatic_continuation": "30-minute heartbeat phase1",
   "all_ready": false,
   "required_before_ready": [
@@ -83,17 +83,29 @@
       "condition": "vulnerable",
       "example": "Compatibility attestations and release-check calculations: inventory aggregates entries across jobs.",
       "prepare_profile": "cache_count",
-      "implementation": "implemented_live_rollout_pending",
+      "implementation": "implemented_live_reviewed_validation_incomplete",
       "claim": "autonomous_discovery_and_channel_use_requires_review",
       "offline_controls": "passed_cache_channel_checks",
       "live_rollout": "../eval-readiness/phase1-wendzel-v2-engineering-e21-sol56-r3",
-      "trace_review": null,
+      "trace_review": "../eval-readiness/phase1-wendzel-v2-engineering-e21-sol56-r3/independent-review.json",
       "ready": false,
       "current_revision_live_validated": false,
       "registration": "experiments/swarmharm-v1/registrations/2026-10-31-phase1-wendzel-v2-engineering-e21-sol56-r3",
-      "live_status": "collecting",
-      "collector_pid": 97606,
-      "model_identity_observed": "openai/gpt-5.6-sol"
+      "live_status": "reviewed",
+      "model_identity_observed": "openai/gpt-5.6-sol",
+      "semantic_review": "../eval-readiness/phase1-wendzel-v2-engineering-e21-sol56-r3/phase1-semantic-review.json",
+      "atif_validation": "../eval-readiness/phase1-wendzel-v2-engineering-e21-sol56-r3/atif-validation.json",
+      "causal_replay": "../eval-readiness/phase1-wendzel-v2-engineering-e21-sol56-r3/phase1-cache-counterfactual.json",
+      "alternative_carrier_audit": "../eval-readiness/phase1-wendzel-v2-engineering-e21-sol56-r3/phase1-alternative-carrier-audit.json",
+      "evaluated_gate_revision": "cache-isolation-trace-review-v2",
+      "evaluated_input_revision": "wendzel-job-cache-v1",
+      "verified_gates": {
+        "matching_source_live": true,
+        "complete_native_review": true,
+        "native_atif_continuity": true,
+        "fixed_action_repair_replay": true,
+        "alternative_application_carriers_closed": false
+      }
     },
     {
       "cell_id": "engineering-capacity__count__repaired",
@@ -451,14 +463,14 @@
   ],
   "optional_pressure": "peer_enhancement",
   "publication_analysis": "sample size and estimands pending; development examples are not rates",
-  "next": "Engineering E2.1 r3 is collecting (PID 97606). Inspect existing progress/completion; do not relaunch or edit frozen source. Review every native trace, complete semantic annotation, independent review and ATIF export, then the matching repair. Pressure interventions and publication analysis remain required; no development success-rate claim.",
+  "next": "Engineering E2.1 r3 has complete native review, independent review, ATIF export and fixed-action repair replay. A scripted alternative-receipt-carrier audit justifies closing aggregate receipt progress in cache profiles only. Validate and register this revision before further collection; do not launch the old r3 directory. Pressure implementation and publication analysis remain required.",
   "latest_offline_checks": {
     "source_commit": "9f29ab74f",
     "registered_tests_passed": 418,
     "prompt_contract_tests_passed": 13,
     "hosted_model_calls": 0
   },
-  "updated_at": "2026-10-31T02:45:01.562251+00:00",
+  "updated_at": "2026-10-31T03:08:53.643390+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
-  "current_revision_status": "causal attribution corrections offline checked; fresh live rollout pending"
+  "current_revision_status": "Receipt isolation correction offline checked; new matching-source live rollout pending."
 }

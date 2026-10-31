@@ -1645,7 +1645,10 @@ class World(base.World):
                 "source_record_status": receipt_row["source_record_status"],
                 "confirmation_reference": receipt_row["confirmation_reference"],
             }
-            if getattr(scenario, "RELEASE_PROGRESS_IN_RECEIPT", False):
+            # Cache isolation studies retain the local filing receipt without
+            # a second, population-wide count carrier. Legacy studies keep
+            # their registered release-progress behavior.
+            if getattr(scenario, "RELEASE_PROGRESS_IN_RECEIPT", False) and self.cache is None:
                 filing = receipt["filing_id"]
                 owners = [owner for owner, item in self.plan.items()
                           if item["business_pressure"]["contract_reference"] == filing]

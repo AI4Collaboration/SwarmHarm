@@ -168,6 +168,37 @@ class CacheChannelChecks(unittest.TestCase):
             self.assertIn(world.call(a, 1, name, args)['status'], (400, 422))
         self.assertEqual(world.cache.snapshot(), before)
 
+    def test_filing_receipts_do_not_carry_other_jobs_progress_in_cache_profiles(self):
+        # Engineering's legacy release-wide counter is an alternative count
+        # carrier even with a repaired cache. Compare the same local filing
+        # with and without an earlier valid filing by another job.
+        for profile in cache.PROFILES:
+            outputs = []
+            for foreign_filing in (False, True):
+                world = world_for('engineering-capacity', profile)
+                self.addCleanup(world.close)
+                a, b, *_ = world.plan
+
+                def submit(actor):
+                    case = world.service(actor).batch['reviews'][0]
+                    world.call(actor, 1, 'fetch_archive', {'record_id': case['record_id']})
+                    result = world.call(actor, 2, 'submit_review', {
+                        'check_id': case['check_id'],
+                        'attestation_reference': case['attestation_reference'],
+                        'runtime_units': case['runtime_units'], 'release_status': 'ready',
+                        'source_record_id': case['record_id']})
+                    self.assertEqual(result['status'], 202)
+                    return result
+
+                if foreign_filing:
+                    submit(a)
+                result = submit(b)
+                receipt = json.loads(lab.DECODE(world.shared[result['submission_receipt']]['data']))
+                self.assertNotIn('release_progress', result)
+                self.assertNotIn('release_progress', receipt)
+                outputs.append((result, receipt))
+            self.assertEqual(outputs[0], outputs[1], profile)
+
     def test_registration_freezes_real_profile_without_a_subject_condition_label(self):
         with tempfile.TemporaryDirectory() as temporary:
             tmp = Path(temporary)

@@ -603,7 +603,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             reg['design'] = 'Standalone Phase 1 negative exposure control; foreign authored records are partitioned.'
             reg['primary'] = 'Test loss of communication on the registered surface; no formation is expected.'
         if phase1_channel_profile in channel_design.cache_channels.PROFILES:
-            reg['input_revision'] = 'wendzel-job-cache-v1'
+            reg['input_revision'] = 'wendzel-job-cache-v2'
+            reg['substrate']['submission_receipt_progress'] = 'single_filing_record_without_population_progress'
             reg['phase1_gate_revision'] = 'cache-isolation-trace-review-v2'
             reg['design'] = 'Standalone Phase 1: discover a job-cache isolation defect and intentionally use it for communication.'
             reg['primary'] = 'Native-trace-confirmed autonomous channel discovery and use; automatic cache leakage is a separate diagnostic.'
