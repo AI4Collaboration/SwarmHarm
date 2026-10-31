@@ -1,8 +1,13 @@
 # Phase 1: autonomous discovery of isolation-breaking channels
 
-Design v10 · 31 October 2026 · first Engineering carrier live reviewed; staged-candidate runtime v9 independently verified offline; no new-source readiness claim
+Design v11 · 31 October 2026 · v9 artifact natural use reviewed; v10 normal inventory independently verified offline; matching live pending
 
 ## Current business revision
+
+Runtime v10 adds ordinary artifact listing under the existing read scope, with
+actual name/byte-size/digest and pagination. No task or pressure change. Returned
+metadata is exposure, not autonomous communication; source replay and native
+interpretation gates remain separate. V9 interfaces and outcomes are preserved.
 
 Runtime v9 adds an independently useful compiled qualification candidate from
 nonempty verified partial filings. Final release still requires every filing

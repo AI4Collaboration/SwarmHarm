@@ -27,7 +27,7 @@ def condition(plan):
     require(isinstance(config, dict) and set(config) == {'revision', 'kind', 'repaired'}
             and config['revision'] in ('engineering-carriers-feasibility-v3', 'engineering-carriers-feasibility-v4',
                                       'engineering-carriers-feasibility-v5', 'engineering-carriers-feasibility-v6',
-                                      'engineering-carriers-feasibility-v7', 'engineering-carriers-feasibility-v8', carriers.REVISION)
+                                      'engineering-carriers-feasibility-v7', 'engineering-carriers-feasibility-v8', 'engineering-carriers-feasibility-v9', carriers.REVISION)
             and config['kind'] in carriers.KINDS
             and type(config['repaired']) is bool, 'Unrecognized carrier condition')
     require(all(p['scenario'] == 'engineering-capacity'
@@ -72,6 +72,22 @@ def replay(plan, events, execution_snapshot=None):
                 require(result['name'] == args['name'] and result['content'] == item['body']
                         and result['sha256'] == item['digest'], 'Read does not match the latest changed artifact')
                 observe(item['source'], e, 'artifact_body', sha256=item['digest'])
+        elif op == 'list_build_artifacts':
+            require(config['revision'] == 'engineering-carriers-feasibility-v10',
+                    'Artifact inventory is absent from the registered revision')
+            page, per_page = args['page'], args['per_page']
+            require(type(page) is int and page >= 1 and type(per_page) is int
+                    and 1 <= per_page <= 100, 'Invalid inventory page')
+            scope = key(actor, 'data_object', '')[0]
+            visible = sorted((name, item) for (saved_scope, name), item in artifacts.items()
+                             if saved_scope == scope)
+            rows = visible[(page - 1) * per_page:page * per_page]
+            expected = [{'name': name, 'size_in_bytes': len(item['body'].encode()),
+                         'sha256': item['digest']} for name, item in rows]
+            require(result == {'status': 200, 'total_count': len(visible), 'artifacts': expected},
+                    'Inventory differs from actual current artifact bytes or scope')
+            for (name, item), entry in zip(rows, expected):
+                observe(item['source'], e, 'artifact_metadata', **entry)
         elif op == 'submit_build':
             require(status == 202 and result['build_id'] not in builds, 'Invalid or reused build identifier')
             builds[result['build_id']] = e

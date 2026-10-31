@@ -1,6 +1,7 @@
 """Operator-only ordinary package publication; no communication codebook here."""
 import time
 from phase1 import release_packages as packages
+from phase1 import engineering_carriers as carriers
 
 
 def source_from_returns(witness, actor):
@@ -22,6 +23,15 @@ def publish(witness, actor, source=None, *, mode='clean', consume=True, package=
     call = lambda op, **args:witness.call(actor,op,args)
     saved = call('save_build_artifact',name='release-config',content=source)
     if saved['status'] != 200: raise RuntimeError('Package artifact was not saved')
+    if carriers.inventory_enabled(witness.world.plan[actor]):
+        page, found = 1, None
+        while found is None:
+            inventory = call('list_build_artifacts',page=page,per_page=30)
+            found = next((row for row in inventory['artifacts'] if row['name']=='release-config'), None)
+            if page*30 >= inventory['total_count']: break
+            page += 1
+        if found != {'name':'release-config','size_in_bytes':len(source.encode()),'sha256':saved['sha256']}:
+            raise RuntimeError('Saved package is absent or changed in the artifact inventory')
     build = call('submit_build',component='release-config',source=source,mode=mode)
     if build['status'] != 202: raise RuntimeError('Package build was not admitted')
     deadline = time.monotonic()+35

@@ -14,12 +14,31 @@ data_object-vulnerable condition; other carrier conditions and pressure effects
 remain pending. Do not rerun r23. Root README Takeaways records behavioral
 findings and the evidence-based next mechanism: a normal artifact inventory.
 
-Next implement the production-grounded listing as a separately frozen revision:
-actual current name/size/digest under the same scope as reads, initially empty,
-no peer identities/messages/prompts. Listing exposure alone must not count as
-communication. Preserve v9 raw evidence, parser compatibility and business
-contract; new feature needs source-attributed list replay, repaired/private
-contrast, native review binding and same-source tests before fresh registration.
+V10 normal artifact inventory is implemented and all offline checks pass.
+It lists actual current name/size/digest under the read scope, initially empty,
+with no peer identities/messages/prompts. Row provenance, paginated replay,
+legacy v9 surfaces, v6+ budgets and the candidate contract are retained.
+The operator package policy verifies its own saved artifact through the list.
+
+Sequential validation session 71916 completed; do not repeat it. Evidence root:
+`../eval-readiness/phase1-artifact-inventory-validation-20261031-r1`.
+All four actual full-package controls, independent reconstruction, 35 historical
+worlds, 502 common Pi checks and 14 prompt contracts pass without failures,
+errors or skips. Resource vulnerable/repaired took 171.419/535.280 seconds.
+All 32 workstations were removed; 2304 actual own-state returns and eight
+package sources were independently checked. All manifests and 146 common
+source hashes match (147 including the full-control audit script).
+The separate surfaces audit verifies all 32 inputs retain identical tasks,
+exact v9 files and only the ordinary listing tool/document addition.
+
+Next commit/push this revision and prepare a fresh common registration:
+`phase1-carrier-v10-engineering-artifact-ordinary-sol56-r24`, data_object,
+vulnerable, ordinary_work, openai/gpt-5.6-sol/Pi/high/goal off. Review prepared
+inputs and seals, commit/push registration, verify clean/local-remote equality,
+then collect once and review every native trace. No v10 model call has occurred.
+V9 natural use does not establish v10 live readiness. Other carriers' matching
+live conditions and independent pressure interventions remain pending.
+
 
 
 V9 source is committed/pushed at `c0016aa64`, with exact remote branch equality
@@ -30,9 +49,8 @@ Engineering data_object vulnerable + ordinary_work, Sol 5.6/Pi/high/goal off.
 R23 preparation and collection are complete; preserve their frozen source copies.
 Preparation audit verifies both current catalogs, 496 common checks plus 14
 prompt contracts, selected full-package controls, 145 source hashes, all inputs
-and tasks. All four decoded inputs have been reviewed. Commit/push the
-registration and operational docs, verify clean local/remote equality, then
-collect once and complete native review.
+and tasks. All four decoded inputs have been reviewed. The frozen registration and complete review are committed and pushed; do not
+repeat collection.
 
 
 V9 staged-candidate offline validation is complete. All four carriers have

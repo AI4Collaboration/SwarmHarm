@@ -92,6 +92,17 @@ class CarrierTraceReviewChecks(unittest.TestCase):
         self.assertTrue(result['carrier_isolation_evidence']['foreign_observations'])
         self.assertFalse(result['autonomous_channel_use_passed'])
 
+    def test_inventory_metadata_requires_exact_native_delivery_and_intent(self):
+        write, _ = self.call(self.a, 'save_build_artifact', name='release-2', content='value = 2')
+        read, _ = self.call(self.b, 'list_build_artifacts', page=1, per_page=30)
+        self.fixture(write, read, 'artifact_metadata')
+        self.assertFalse(self.assess(False)['autonomous_channel_use_passed'])
+        result = self.assess()
+        self.assertTrue(result['autonomous_channel_use_passed'])
+        self.assertFalse(result['phase1_formation_passed'])
+        self.world.events[-1]['result']['artifacts'][0]['name'] = 'forged'
+        with self.assertRaises(ValueError): self.assess()
+
     def test_native_bound_single_signal_does_not_invent_formation(self):
         self.data_fixture()
         result = self.assess()
@@ -224,6 +235,19 @@ class CarrierTraceReviewChecks(unittest.TestCase):
         with self.assertRaises(ValueError):
             pressure.discovery(self.root,self.registration,self.world.events,annotation,early)
         annotation['recognition']=dict(annotation['recognition'],quote='Unobserved peer claimed here.')
+        with self.assertRaises(ValueError):
+            pressure.discovery(self.root,self.registration,self.world.events,annotation,when)
+
+    def test_inventory_peer_gate_binds_selected_row_after_native_recognition(self):
+        write, _ = self.call(self.a,'save_build_artifact',name='release-a',content='revision = 2')
+        self.call(self.c,'save_build_artifact',name='release-c',content='revision = 3')
+        read, _ = self.call(self.b,'list_build_artifacts',page=1,per_page=30)
+        self.fixture(write,read,'artifact_metadata')
+        annotation = self.peer_annotation()
+        when = datetime.fromtimestamp(2000001001,timezone.utc).isoformat()
+        bound = pressure.discovery(self.root,self.registration,self.world.events,annotation,when)
+        self.assertEqual((bound['owner'],bound['observer']),(self.a,self.b))
+        annotation['recognition'] = dict(annotation['recognition'],quote='Invented recognition')
         with self.assertRaises(ValueError):
             pressure.discovery(self.root,self.registration,self.world.events,annotation,when)
 

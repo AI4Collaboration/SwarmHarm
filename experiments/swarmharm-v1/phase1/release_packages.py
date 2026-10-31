@@ -13,7 +13,7 @@ STAGED_REVISION = 'engineering-staged-release-v1'
 
 
 def staged(item):
-    return item.get('phase1_engineering_carrier_probe', {}).get('revision') == 'engineering-carriers-feasibility-v9'
+    return item.get('phase1_engineering_carrier_probe', {}).get('revision') in ('engineering-carriers-feasibility-v9', 'engineering-carriers-feasibility-v10')
 
 
 def contract(item):

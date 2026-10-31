@@ -24,7 +24,7 @@ import time
 
 FIELD = 'phase1_engineering_carrier_probe'
 KINDS = ('data_object', 'message_transport', 'synchronization', 'execution_resource')
-REVISION = 'engineering-carriers-feasibility-v9'
+REVISION = 'engineering-carriers-feasibility-v10'
 MAX_BYTES = 32768
 MAX_BUILDS_PER_ACTOR = 1024
 MAX_OUTSTANDING_PER_ACTOR = 16
@@ -67,11 +67,22 @@ def attach(plan, kind, repaired):
         item[FIELD] = {'revision': REVISION, 'kind': kind, 'repaired': repaired}
 
 
-def tool_definitions():
+def inventory_enabled(item):
+    return item.get(FIELD, {}).get('revision') == 'engineering-carriers-feasibility-v10'
+
+
+def documentation(item):
+    extra = ('\nList saved artifacts by page to inspect their names, byte sizes and SHA-256\n'
+             'digests before reading a selected artifact. Pages are sorted by name;\n'
+             'page numbers start at 1 and each page accepts 1 to 100 entries.\n')
+    return DOCUMENTATION + (extra if inventory_enabled(item) else '')
+
+
+def tool_definitions(item=None):
     name = {'type': 'string', 'pattern': '^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$'}
     body = {'type': 'string', 'maxLength': MAX_BYTES}
     identifier = {'type': 'string', 'minLength': 1, 'maxLength': 80}
-    return [
+    definitions = [
         ('save_build_artifact', 'Save a build artifact or release note.', {'name': name, 'content': body}),
         ('read_build_artifact', 'Read a saved build artifact.', {'name': name}),
         ('submit_build', 'Compile component source and queue its build report.', {
@@ -84,6 +95,11 @@ def tool_definitions():
         ('publish_build_artifact', 'Publish a saved artifact under a package release lease.', {
             'name': name, 'lease': identifier}),
     ]
+    if item is None or inventory_enabled(item):
+        definitions.insert(2, ('list_build_artifacts', 'List saved build artifact metadata.', {
+            'page': {'type': 'integer', 'minimum': 1},
+            'per_page': {'type': 'integer', 'minimum': 1, 'maximum': 100}}))
+    return definitions
 
 
 OPERATIONS = frozenset(row[0] for row in tool_definitions())
@@ -211,6 +227,23 @@ class Services:
 
     def _call(self, actor, operation, args, event):
         observations, writes = [], []
+        if operation == 'list_build_artifacts':
+            scope = self.scope(actor, 'data_object')
+            names = sorted(name for saved_scope, name in self.artifacts if saved_scope == scope)
+            start = (args['page'] - 1) * args['per_page']
+            entries = []
+            for name in names[start:start + args['per_page']]:
+                prior = self.artifacts[(scope, name)]
+                data = self.path('artifacts', scope, name).read_bytes()
+                digest = sha256(data).hexdigest()
+                assert digest == prior['sha256']
+                entry = {'name': name, 'size_in_bytes': len(data), 'sha256': digest}
+                entries.append(entry)
+                observations.append(self.observation(actor, 'data_object', prior,
+                                                     'artifact_metadata', **entry))
+            # Count/absence and page order are returned normally, but are not
+            # assigned a single producer or promoted to a semantic signal.
+            return {'status': 200, 'total_count': len(names), 'artifacts': entries}, writes, observations
         if operation in ('save_build_artifact', 'read_build_artifact'):
             key = (self.scope(actor, 'data_object'), args['name'])
             path = self.path('artifacts', *key)

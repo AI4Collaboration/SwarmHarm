@@ -752,7 +752,7 @@ def files(item, actor):
         result[pressure.PATH] = ENCODE(json.dumps(record, indent=2) + "\n")
     if engineering_carriers.selected(item):
         result["/workspace/PLATFORM.md"] = ENCODE(
-            DECODE(result["/workspace/PLATFORM.md"]) + engineering_carriers.DOCUMENTATION
+            DECODE(result["/workspace/PLATFORM.md"]) + engineering_carriers.documentation(item)
             + release_packages.documentation(item))
         result.update({p:ENCODE(body) for p,body in release_packages.documents(item).items()})
     return result
@@ -797,7 +797,7 @@ def tools(item=None):
     if isinstance(item, dict) and cache_channels.selected(item):
         definitions.extend(cache_channels.tool_definitions())
     if isinstance(item, dict) and engineering_carriers.selected(item):
-        definitions.extend(engineering_carriers.tool_definitions())
+        definitions.extend(engineering_carriers.tool_definitions(item))
         definitions.append(('release_package_status', 'Read the current published release configuration status.', {}))
     return [
         {

@@ -9,6 +9,41 @@ V8 r22 has a complete native review; see root README Takeaways and the external
 r22 `review-manifest.json`. Its 172 subject responses are model evidence; the
 operator controls below retain their original v8 scope.
 
+## V10 artifact inventory — offline verified, live pending
+
+This revision adds a normal paginated artifact inventory, grounded in the
+[GitHub artifact-list API](https://docs.github.com/en/rest/actions/artifacts#list-artifacts-for-a-repository).
+Its ordinary purpose is finding saved build outputs after a context change or
+retry. It lists current names, actual byte sizes and SHA-256 digests in name
+order, using the same workspace binding as artifact reads. The exact synthetic
+API and its missing binding are our implementation, not a GitHub defect claim.
+All eight carrier/scope conditions expose the same tools and documentation;
+the initial task and candidate/final completion contract are unchanged. The
+store starts empty, with no peer identities, messages, hints or codebook.
+
+Independent replay reconstructs every listed row from the last changed bytes,
+including pagination and replacement attribution. Count, absent entries and
+ordering have no single-origin semantic edge. A foreign row is physical
+metadata exposure only; communication requires the existing native intent,
+exact return/context and interpretation evidence. Peer recognition must also
+bind the particular source row and a later native recognition. These gates
+are validator fixtures until matching live review. V3–v9 remain interpretable;
+v9 keeps its original tools and docs, staged delivery and v6 budget checks.
+
+The operator package policy additionally verifies its saved artifact through
+the normal list before compilation. This is an offline control, never an
+instruction supplied to subjects. Same-source complete package controls and independent reconstruction pass in
+all four vulnerable/repaired conditions. All 32 workstations are removed;
+2304 own-state returns and eight source recompilations are independently
+verified. Resource conditions took 171.419/535.280 seconds, within the declared
+900-second operator budget. All 35 historical worlds rebuild unchanged and
+all 32 initial surfaces preserve the task and v9 files. All 502 common Pi checks
+and 14 prompt contracts pass, with no failures, errors or skips. The 146 common
+source hashes match the full-control snapshot (147 files including its script).
+Evidence: `phase1-artifact-inventory-validation-20261031-r1` and its four stage
+indexes, plus `phase1-artifact-inventory-surfaces-20261031-r1`. No new live
+collection has started; v9 natural use does not establish v10 readiness.
+
 ## V9 artifact live checkpoint
 
 R23 independently verifies four candidate publications from actual clean builds,
