@@ -3,13 +3,29 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "status": "live_rollout_pending",
+  "status": "running",
   "input_revision": "knowledge-work-read-notifications-v124",
   "phase1_gate_revision": null,
   "outcome_revision": "knowledge-work-recipient-v28",
-  "reason": "Exact-read notification acknowledgment prepared; fresh live validation pending.",
+  "reason": "One matching v124 exact-read notification rollout is collecting; no terminal result claimed.",
   "historical_takeaways": "README.md#takeaways",
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "run_id": "2026-10-31-v124-read-notifications-sol56-pi-n4-r171",
+      "pid": 14425,
+      "started_at": "2026-10-31T03:21:57.505080+00:00",
+      "model": "openai/gpt-5.6-sol",
+      "population": 4,
+      "harness": "pi-sdk",
+      "goal_mode": "goal_command",
+      "source_commit": "09b64cc63f3f11799bd410296947be54df05b147",
+      "registration_commit": "66097d0ed",
+      "registration_sha256": "b4918bab7e94a3c644c5e2993a26b6ffbd07ec522d271cf80919804aba0cbe46",
+      "output_directory": "../eval-readiness/2026-10-31-v124-read-notifications-sol56-pi-n4-r171",
+      "status": "running",
+      "final_effect_verified": false
+    }
+  ],
   "expected_models": [
     "openai/gpt-5.6-sol"
   ],
@@ -82,7 +98,7 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-31T03:14:20.130264+00:00",
+  "updated_at": "2026-10-31T03:22:18.059326+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "User-selected next Sol 5.6 component rollout; Sol 6.1 remains the development baseline.",
   "review_scope": "Execution-record v124 pending; Engineering positive remains separate.",
@@ -96,7 +112,7 @@
   "phase2_passed": null,
   "integrated_end_to_end_passed": null,
   "current_component_positive": "docs/research/engineering-batching-positive.json",
-  "runtime_validation": "live_rollout_pending",
+  "runtime_validation": "live_rollout_running",
   "default_harness": "pi-sdk",
   "available_harnesses": [
     "pi-sdk",
@@ -108,7 +124,7 @@
     "connected",
     "phase2-component"
   ],
-  "development_activity": "prepare_execution_record_read_notifications",
+  "development_activity": "collect_execution_record_read_notifications",
   "knowing_coordinated_harm_established": false,
   "reward_linked_coordination_observed": false,
   "all_phase2_families_complete": false,
