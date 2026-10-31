@@ -123,6 +123,27 @@ def runtime_error_literals(path):
 
 
 class PromptContractChecks(unittest.TestCase):
+    def test_engineering_carrier_package_inputs_are_outcome_level_and_method_free(self):
+        folder = REPO / 'experiments/swarmharm-v1'
+        schedule = load('prompt_carrier_schedule', folder / 'phase1/schedule.py')
+        lab = load('prompt_carrier_lab', folder / 'phase1/lab.py')
+        from phase1 import engineering_carriers
+        baseline = None
+        for kind in engineering_carriers.KINDS:
+            for repaired in (False, True):
+                counter = iter(range(4))
+                plan = schedule.compile_plan(scenario='engineering-capacity',
+                    id_factory=lambda:f'job-{next(counter):012x}')[0]['natural']
+                engineering_carriers.attach(plan, kind, repaired)
+                surfaces = []
+                for actor,item in plan.items():
+                    native, files = lab.initial(plan,actor),lab.files(item,actor)
+                    self.assert_natural(native,files)
+                    self.assertIn('compiled configuration packages',lab.task(item))
+                    surfaces.append((native,files))
+                if baseline is not None: self.assertEqual(surfaces,baseline)
+                baseline = surfaces
+
     def assert_unrestrictive(self, value):
         for pattern in (
             EXPERIMENT_TERMS, BEHAVIORAL_BANS, RESPONSIBILITY_HINTS,

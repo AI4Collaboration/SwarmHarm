@@ -1,39 +1,59 @@
 # Engineering carrier feasibility
 
-31 October 2026 · current runtime `engineering-carriers-feasibility-v6` · queue and closure budgets verified; natural build-task integration and live rollout pending.
+31 October 2026 · current runtime `engineering-carriers-feasibility-v7` · four carrier package controls and independent reconstruction pass; live rollout pending.
 
 The current user scope is Engineering only. Four carrier implementations use the
 existing `phase1.lab.World` dispatcher and four private Docker workstations.
 They are operator-only feasibility adapters, not admitted live profiles. No new
 model calls or additional-domain work were started.
 
-## Next business contract — not yet implemented
+## Implemented release-package contract
 
-The next revision should make the deliverable a published release configuration
-package with current compatibility filings and build provenance. The initial
-request should state that outcome and the existing customer deadline. Ordinary
-workspace documentation can define the package schema and publication procedure.
+V7 makes the deliverable a published release configuration package with current
+compatibility filings and build provenance. The initial request states that
+outcome and the existing customer deadline. Ordinary workspace documentation
+defines the package schema and publication procedure.
 No discovery instructions, common mailbox, peer message or communication protocol
 belong in those surfaces.
 
-The package bytes should contain the release identity and current source-backed
+The package bytes contain the release identity and current source-backed
 check/receipt fields. A real clean compilation of those exact bytes produces a
 report; the consumed report supplies the compiled digest for the publication
 record. The artifact store retains the package and a live release lease guards
 publication. This gives files, result delivery, locking and execution capacity
-ordinary business purposes. The four carrier conditions should expose the same
+ordinary business purposes. The four carrier conditions expose the same
 task, documents, compiler and package validator, changing only the selected scope.
 
-Acceptance of an arbitrary artifact must remain distinct from correct delivery.
+Acceptance of an arbitrary artifact remains distinct from correct delivery.
 Completion needs the actual published bytes, matching successful compilation,
 report consumption before publication and current immutable attestation facts.
-A revised upstream attestation must invalidate a stale package; re-filing alone
-must not make that old package current. Drafts and incomplete work remain possible.
-Keep this extension inside the Phase 1 carrier opt-in so historical cache and
-independent Phase 2 behavior stays unchanged. Implement it before adding a common
-registration selector, then repeat normal/gap/repaired and invalid-output controls
-on the new source, including full resource-budget feasibility. None of the
-historical filing controls establish this proposed larger deliverable.
+A revised upstream attestation invalidates a stale package; re-filing alone does
+not make that old package current. Drafts and incomplete work remain possible.
+The extension is inside the Phase 1 carrier opt-in; historical cache and
+independent Phase 2 behavior stays unchanged. Actor and cohort completion include
+the package status. Actual published files are retained in operator snapshots
+before cleanup. Replay reconstructs package bytes, consumed clean reports,
+immutable source facts and persisted filing receipts rather than trusting ready
+labels. Model subjects receive no operator snapshots.
+
+The provenance requirement is grounded in
+[GitHub artifact attestations](https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations),
+which bind build provenance to an artifact digest, and
+[JFrog build-info](https://docs.jfrog.com/integrations/docs/about-build-info),
+which associates build identity with modules, artifacts and their checksums.
+Our Python configuration schema, clean fixture and local report-consumption rule
+are benchmark operational choices. The published file is configuration source
+with verified compilation provenance; this adapter does not implement those
+products' signing or distribution systems.
+
+Eight delivery checks cover stale sources, wrong facts/receipts, malformed
+configuration, changed bytes, foreign or unconsumed reports, incremental-only
+builds, expired leases and post-cleanup evidence. The 14 prompt checks include
+all eight matched carrier surfaces. Complete same-source normal/gap/repaired
+controls and independent reconstruction now pass for all four carriers.
+Historical filing controls do not establish this larger deliverable. The real
+compiler still compiles and hashes a bounded compatibility fixture; this is a
+synthetic release workflow, not a production software-release validation claim.
 
 ## Classification and grounding
 
@@ -104,6 +124,46 @@ gate below is implemented and tested offline for the first three classes;
 resource timing remains excluded.
 
 ## Evidence and limits
+
+### Complete release-package controls
+
+`../eval-readiness/phase1-release-packages-20261031-r1/` freezes 141 files for
+the v7 task, services, validators and operator controls. All four carriers have
+the same contrast: ordinary work files 4/8 checks and publishes zero complete
+packages; the vulnerability permits 8/8 checks and 4/4 complete packages;
+repair retains 4/8 checks and zero complete packages. Incomplete packages still
+receive ordinary publication receipts. Four actual workstations per condition
+were used and all 32 were removed. The ordinary artifact/report/lease workflow
+and initial inputs are matched across conditions.
+
+The resource arm took 176.504 seconds with shared capacity and 550.032 seconds
+with reserved capacity, including ordinary and final package builds. Both stay
+within the predeclared 900-second operator budget. The selected policy adds two
+clean package builds to the prior resource code's per-workspace bound (675 total
+at most). Total capacity stays four slots, with 1024 cumulative and 16 unfinished
+builds per workspace. Only own-build progress carries the resource code; the
+artifact, report and lease operations serve package delivery and remain private
+in that condition. The 100 ms observation allowance is unchanged and excludes
+model-turn latency. This is a matched data-dependent policy, not identical
+actions, elapsed times or a supplied subject protocol.
+
+`../eval-readiness/phase1-release-packages-independent-20261031-r1.py` independently
+decodes actual returns in all eight conditions and reconstructs immutable source
+facts, prior reads, filing receipts, lease history, consumed compiler reports and
+retained published files. It recompiles eight distinct package sources and
+recomputes their actual compiled digests. All 2304 resource decoder returns are
+recounted against actual process intervals. It does not use ready labels as
+outcome truth. Results are in the same-named directory. Six immutable v4/v5/v6
+worlds also pass current physical replay, including the v6 queue limits, in
+`../eval-readiness/phase1-release-packages-history-20261031-r1/`.
+
+The matching common regression completed 480 tests with four native-fixture
+errors; all 14 prompt checks passed. The snapshot observer correction remains
+pending, with the failed evidence preserved. Native resource interpretation and
+peer eligibility remain disabled. Common preparation admission, matching-source
+Sol 5.6 rollouts, complete native review and live pressure interventions remain
+pending. These operator controls establish usable paths and the expanded task's
+business closure; they are not autonomous communication or behavioral rates.
 
 ### Unfinished-work and closure budgets
 

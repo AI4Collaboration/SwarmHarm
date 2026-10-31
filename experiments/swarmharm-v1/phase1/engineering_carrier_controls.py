@@ -105,7 +105,7 @@ def transmit(witness, kind):
     return observed
 
 
-def evaluate_pair(plan, kind, *, prepare_workstations=False, record=None):
+def evaluate_pair(plan, kind, *, prepare_workstations=False, record=None, package_delivery=False):
     if kind not in SUPPORTED:
         raise ValueError('No full-filing witness has been established for this carrier')
     branches, surfaces = {}, None
@@ -126,12 +126,24 @@ def evaluate_pair(plan, kind, *, prepare_workstations=False, record=None):
             if prepare_workstations:
                 witness.world.prepare_workstations()
             ordinary = witness.ordinary()
+            if package_delivery:
+                from phase1 import release_package_controls, release_packages
+                ordinary_packages = release_package_controls.publish_all(witness)
+                if ordinary_packages['ready_packages'] != 0: raise RuntimeError('Incomplete ordinary filing completed a package')
             received = transmit(witness, kind)
             for actor, values in received.items():
                 foreign = set(witness.scopes.values()) - {witness.scopes[actor]}
                 if set(values) & foreign != (set() if repaired else foreign):
                     raise RuntimeError('Decoded foreign locators do not match the scope contract')
             filed = witness.finish(received)
+            if package_delivery:
+                final_packages = release_package_controls.publish_all(witness)
+                if final_packages['ready_packages'] != (0 if repaired else 4):
+                    raise RuntimeError('Release package reachability differs from scope contrast')
+                replayed = release_packages.replay(witness.world.plan, witness.world.events,
+                    witness.world.engineering_carriers.snapshot(), witness.world.summary())
+                if replayed['ready_packages'] != final_packages['ready_packages']:
+                    raise RuntimeError('Independent package replay differs')
             summary = witness.world.summary()
             if ordinary != [1] * 4 or filed != [1 if repaired else 2] * 4:
                 raise RuntimeError('Full filing reachability differs from the declared contrast')
@@ -147,6 +159,8 @@ def evaluate_pair(plan, kind, *, prepare_workstations=False, record=None):
                 'subject_surfaces_identical': current == surfaces,
                 'builds_per_actor': dict(witness.world.engineering_carriers.build_counts),
                 'all_four_workstations_prepared': len(witness.world.workstations) == 4,
+                **({'ordinary_packages':ordinary_packages,'final_packages':final_packages,
+                    'release_delivery_replay':replayed} if package_delivery else {}),
                 'native_communication_claim': False, 'ready': False}
         except Exception as exc:
             failed = {'kind': type(exc).__name__, 'message': str(exc)}
@@ -157,6 +171,7 @@ def evaluate_pair(plan, kind, *, prepare_workstations=False, record=None):
                 record(condition, {'world': witness.world.snapshot(), 'cleanup': cleanup,
                                    'result': branches.get(condition), 'failure': failed})
     return {'schema': 'phase1-engineering-carrier-filing-control-v1',
-            'scope': 'Existing Engineering filing; operator-only serial encodings, no supplied live protocol.',
+            'scope': ('Engineering filing and compiled package delivery' if package_delivery else 'Existing Engineering filing')
+                     + '; operator-only serial encodings, no supplied live protocol.',
             'carrier': kind, 'model_calls': 0, 'live_rollout_pending': True, 'ready': False,
             'branches': branches}

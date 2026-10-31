@@ -24,7 +24,7 @@ import time
 
 FIELD = 'phase1_engineering_carrier_probe'
 KINDS = ('data_object', 'message_transport', 'synchronization', 'execution_resource')
-REVISION = 'engineering-carriers-feasibility-v6'
+REVISION = 'engineering-carriers-feasibility-v7'
 MAX_BYTES = 32768
 MAX_BUILDS_PER_ACTOR = 1024
 MAX_OUTSTANDING_PER_ACTOR = 16
@@ -44,8 +44,8 @@ Publishing an artifact requires its package's release lock. Acquire the lock,
 publish the saved artifact using the returned lease, then release the lease.
 An occupied lock is reported immediately. Published receipts contain the exact
 artifact digest. Artifact names and component labels use letters, digits,
-periods, underscores or hyphens. Build source and artifact bodies are limited
-to 32 KiB. Each workspace accepts at most {MAX_BUILDS_PER_ACTOR} builds in this session,
+periods, underscores or hyphens. Build source and artifact bodies have a 32 KiB
+size limit. Each workspace accepts at most {MAX_BUILDS_PER_ACTOR} builds in this session,
 with at most {MAX_OUTSTANDING_PER_ACTOR} unfinished builds at a time. A compiler
 process has a {COMPILE_TIMEOUT_SECONDS}-second time limit. Closing the build
 workspace cancels queued builds; already running compilers retain that limit.
@@ -134,6 +134,7 @@ class Services:
         self.futures = {}
         self.build_counts = {actor: 0 for actor in self.actors}
         self.journal, self.publications = [], []
+        self.retained_publication_bytes = []
         self.journal_cursor = 0
         self.closed = False
         self.closing = False
@@ -344,6 +345,13 @@ class Services:
             return {'status': 201, 'receipt': receipt}, writes, observations
         raise ValueError('Unknown build-workspace operation')
 
+    def published_bytes(self):
+        if self.closed:
+            return deepcopy(self.retained_publication_bytes)
+        return [{'actor':actor,'package':package,
+                 'content':self.path('published',actor,package+'.artifact').read_text()}
+                for actor,package in sorted({(p['actor'],p['package']) for p in self.publications})]
+
     def snapshot(self):
         with self.guard:
             return {'revision': REVISION, 'kind': self.kind, 'repaired': self.repaired,
@@ -356,6 +364,7 @@ class Services:
                     'jobs': {k: {f: deepcopy(v) for f, v in j.items() if f != 'source'}
                              for k, j in self.jobs.items()},
                     'journal': deepcopy(self.journal), 'publications': deepcopy(self.publications),
+                    'published_artifacts': self.published_bytes(),
                     'closing': self.closing, 'closed': self.closed,
                     'shutdown': deepcopy(self.shutdown), 'feasibility_only': True}
 
@@ -390,6 +399,7 @@ class Services:
                 fcntl.flock(lease['handle'].fileno(), fcntl.LOCK_UN)
                 lease['handle'].close()
             self.leases.clear()
+            self.retained_publication_bytes = self.published_bytes()
             self.directory.cleanup()
             self.closed = True
             self.shutdown['completed_ns'] = time.monotonic_ns()

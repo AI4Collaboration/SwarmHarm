@@ -17,9 +17,9 @@ def require(value, message):
 
 def replay(config, plan, events, terminal=None):
     require(config['revision'] in ('engineering-carriers-feasibility-v4',
-                                  'engineering-carriers-feasibility-v5', carriers.REVISION),
-            'Timing journal requires carrier v4, v5 or v6')
-    bounded = config['revision'] == carriers.REVISION
+                                  'engineering-carriers-feasibility-v5', 'engineering-carriers-feasibility-v6', carriers.REVISION),
+            'Timing journal requires carrier v4 through v7')
+    bounded = config['revision'] in ('engineering-carriers-feasibility-v6', carriers.REVISION)
     indexed = {e['id']: e for e in events}
     require(list(indexed) == list(range(1, len(events) + 1)), 'Noncanonical timing events')
     def scope(actor):
@@ -36,7 +36,7 @@ def replay(config, plan, events, terminal=None):
                 require(row['event'] == e['id'], 'Status instant was not captured with its return')
         journal.extend(delta)
     if terminal is not None:
-        if config['revision'] in ('engineering-carriers-feasibility-v5', carriers.REVISION):
+        if config['revision'] in ('engineering-carriers-feasibility-v5', 'engineering-carriers-feasibility-v6', carriers.REVISION):
             require(terminal.get('build_limit_per_actor') == carriers.MAX_BUILDS_PER_ACTOR,
                     'Compiler build quota differs from the runtime revision')
         if bounded:

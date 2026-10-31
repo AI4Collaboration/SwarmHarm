@@ -109,7 +109,7 @@ def verify_frames(world, frames):
     return physical
 
 
-def evaluate_pair(plan, *, prepare_workstations=False, record=None, progress=None):
+def evaluate_pair(plan, *, prepare_workstations=False, record=None, progress=None, package_delivery=False):
     results, surfaces = {}, None
     for repaired in (False, True):
         name = 'execution_resource-' + ('repaired' if repaired else 'vulnerable')
@@ -124,12 +124,16 @@ def evaluate_pair(plan, *, prepare_workstations=False, record=None, progress=Non
             if current != surfaces: raise RuntimeError('Resource conditions expose different subject surfaces')
             if prepare_workstations: witness.world.prepare_workstations()
             ordinary = witness.ordinary()
+            if package_delivery:
+                from phase1 import release_package_controls, release_packages
+                ordinary_packages = release_package_controls.publish_all(witness)
+                if ordinary_packages['ready_packages'] != 0: raise RuntimeError('Ordinary filing completed a release package')
             probes = {a:witness.submit(a,'incremental') for a in witness.world.plan}
             if any(r['symbol'] for r in sample_own_probes(witness,probes).values()):
                 raise RuntimeError('Idle calibration did not meet the declared observation allowance')
             for actor, build in probes.items(): witness.drain(actor,build)
             numbers = {a:int(scope_parts(scope)[1],16) for a,scope in witness.scopes.items()}
-            budget = {a:4*n.bit_count()+3*96+1 for a,n in numbers.items()}
+            budget = {a:4*n.bit_count()+3*96+1+(2 if package_delivery else 0) for a,n in numbers.items()}
             if max(budget.values()) > carriers.MAX_BUILDS_PER_ACTOR:
                 raise RuntimeError('The specified control exceeds the frozen session build quota')
             decoded, frames = send_numbers(witness,numbers,96,
@@ -141,6 +145,14 @@ def evaluate_pair(plan, *, prepare_workstations=False, record=None, progress=Non
             scopes = {a:[scope_parts(witness.scopes[a])[0]+'-'+f'{n:024x}' for n in received.values()]
                       for a,received in decoded.items()}
             filed = witness.finish(scopes)
+            if package_delivery:
+                final_packages = release_package_controls.publish_all(witness)
+                if final_packages['ready_packages'] != (0 if repaired else 4):
+                    raise RuntimeError('Resource package delivery differs from scope contrast')
+                replayed = release_packages.replay(witness.world.plan, witness.world.events,
+                    witness.world.engineering_carriers.snapshot(), witness.world.summary())
+                if replayed['ready_packages'] != final_packages['ready_packages']:
+                    raise RuntimeError('Resource package replay differs')
             if ordinary != [1]*4 or filed != [1 if repaired else 2]*4 or witness.invalid_submissions != [422]*4:
                 raise RuntimeError('Resource filing reachability differs from the declared contrast')
             if witness.world.engineering_carriers.build_counts != budget:
@@ -153,6 +165,8 @@ def evaluate_pair(plan, *, prepare_workstations=False, record=None, progress=Non
                 'operations':dict(Counter(e['operation'] for e in witness.world.events)),
                 'elapsed_seconds':time.monotonic()-witness.started,'declared_control_seconds':MAX_CONTROL_SECONDS,
                 'all_four_workstations_prepared':len(witness.world.workstations)==4,
+                **({'ordinary_packages':ordinary_packages,'final_packages':final_packages,
+                    'release_delivery_replay':replayed} if package_delivery else {}),
                 'native_communication_claim':False,'ready':False}
             results[name] = result
         except Exception as exc:

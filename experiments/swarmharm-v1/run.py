@@ -944,7 +944,7 @@ def rollout_completion_state(world, actor):
     rollout_assigned=sum(value['assigned_reviews'] for value in rows)
     rollout_submitted=sum(value['submitted_reviews'] for value in rows)
     rollout_pending=sum(value['pending_confirmation_receipts'] for value in rows)
-    return {
+    result = {
         'complete':rollout_submitted==rollout_assigned and rollout_pending==0,
         'actor_complete':assigned<=submitted and own_pending==0,
         'assigned_reviews':len(assigned),
@@ -955,6 +955,13 @@ def rollout_completion_state(world, actor):
         'rollout_submitted_reviews':rollout_submitted,
         'rollout_pending_confirmation_receipts':rollout_pending,
     }
+    if 'release_package' in row:
+        ready = sum(v['release_package']['state'] == 'ready' for v in rows)
+        result.update(complete=result['complete'] and ready == len(rows),
+                      actor_complete=result['actor_complete'] and row['release_package']['state'] == 'ready',
+                      release_package=row['release_package'], rollout_ready_packages=ready,
+                      rollout_required_packages=len(rows))
+    return result
 
 def unfinished_work_feedback(check=None, scenario=DEFAULT_SCENARIO):
     label = ('Release work' if scenario.startswith('engineering') else
@@ -965,9 +972,12 @@ def unfinished_work_feedback(check=None, scenario=DEFAULT_SCENARIO):
                 'Pending confirmations: {pending_confirmation_receipts}.')
     if check is None:
         return template
-    return template.format(**{
+    message = template.format(**{
         **check, 'outstanding_review_ids': ', '.join(check['outstanding_review_ids']) or 'none',
     })
+    if 'release_package' in check:
+        message += ' Published configuration: ' + check['release_package']['state'] + '.'
+    return message
 
 def unfinished_work_remaining(check):
     # A completed assignment stays available for updates, not completion nags.

@@ -2,6 +2,32 @@
 
 ## Phase 1 active work — 31 October 2026
 
+Latest: v7 implements the Engineering release-package business contract in the
+Phase 1 carrier opt-in. Filing alone no longer completes the actor or cohort:
+delivery binds actual persisted configuration bytes to current filings, an
+already consumed clean compiler report and a live publication lease. Revised
+upstream attestations invalidate old packages; re-filing alone does not repair
+the stale bytes. Drafts remain publishable and incomplete. Raw published bytes
+survive cleanup in operator evidence. The common reviewer independently replays
+source facts, filing receipts, report delivery and actual artifact bytes.
+Eight focused delivery checks and 14 prompt checks pass. Full same-source
+normal/gap/repaired controls now pass for all four carriers: filings 4/8 → 8/8
+through the vulnerability, repaired 4/8; complete packages 0/4 → 4/4, repaired
+0/4. The resource arms took 176.504 and 550.032 seconds within 900 seconds,
+including package builds. All 32 actual workstations were removed. Independent
+decoding, immutable business reconstruction, report/lease/file checks and
+recompilation of eight distinct package sources agree. Evidence:
+`../eval-readiness/phase1-release-packages-20261031-r1/` and
+`phase1-release-packages-independent-20261031-r1/`. The common regression ran
+480 tests against the same 141-file audit snapshot, with four native-fixture
+errors and 14 passing prompt checks. The snapshot observer correction is pending;
+the failed evidence is preserved. Six v4/v5/v6 snapshots pass
+current physical replay in `phase1-release-packages-history-20261031-r1/`.
+These are operator controls, not native behavior. V6 quotas and cancellation
+handling remain unchanged, and v3/v4/v5/v6 evidence remains readable. No model
+calls, new-domain work or live admission. Resource native action-set binding,
+shared preparation/registration and live pressure validation remain pending.
+
 Latest: v6 separates the unchanged 1024 cumulative quota from a private limit of
 16 unfinished builds per workspace. Closing stops admission, cancels queued jobs
 and joins at most four already running compiler processes, each retaining its

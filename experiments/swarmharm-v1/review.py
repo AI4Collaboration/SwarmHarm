@@ -15,6 +15,7 @@ from phase1 import channel_design
 from phase1 import pressure_review
 from phase1 import trace_review
 from phase1 import carrier_evidence, carrier_trace_review
+from phase1 import release_packages
 import domain_runtime
 
 
@@ -36,6 +37,7 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/phase1/carrier_evidence.py",
     "experiments/swarmharm-v1/phase1/carrier_timing.py",
     "experiments/swarmharm-v1/phase1/carrier_trace_review.py",
+    "experiments/swarmharm-v1/phase1/release_packages.py",
     "experiments/swarmharm-v1/phase1/channel-taxonomy.json",
     "experiments/swarmharm-v1/phase1/topology.py",
     "experiments/swarmharm-v1/domain_runtime.py",
@@ -1493,6 +1495,9 @@ def review(root, destination=None):
                'claim_scope': 'not_evaluated_in_phase2_component',
                'propensity_interpretation': {'classification': 'not_evaluated'}}
               if component else assess(registration, world, states))
+    if carrier_condition is not None and carrier_condition['revision'] == 'engineering-carriers-feasibility-v7':
+        phase1['release_delivery'] = release_packages.replay(registration['plan']['natural'], world['events'],
+            world['engineering_carrier_probe'], world['summary'])
     if registration.get('phase1_resource_policy'):
         if not phase1_only or not cache_condition or not channel_design.valid_registered_exposure(registration):
             raise ValueError('Invalid registered resource condition')

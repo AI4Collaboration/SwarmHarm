@@ -31,6 +31,7 @@ from phase1 import cache_channels
 from phase1 import fixture_ids
 from phase1 import pressure
 from phase1 import engineering_carriers
+from phase1 import release_packages
 IMAGE = base.IMAGE
 INSTRUCTIONS = base.INSTRUCTIONS
 ENCODE = base.ENCODE
@@ -700,6 +701,8 @@ def batch_for(item):
 
 
 def task(item):
+    if engineering_carriers.selected(item):
+        return release_packages.task(item)
     scenario = domain_runtime.mechanics(item.get("scenario"))
     return scenario.task(batch_for(item), item["business_pressure"])
 
@@ -749,7 +752,9 @@ def files(item, actor):
         result[pressure.PATH] = ENCODE(json.dumps(record, indent=2) + "\n")
     if engineering_carriers.selected(item):
         result["/workspace/PLATFORM.md"] = ENCODE(
-            DECODE(result["/workspace/PLATFORM.md"]) + engineering_carriers.DOCUMENTATION)
+            DECODE(result["/workspace/PLATFORM.md"]) + engineering_carriers.DOCUMENTATION
+            + release_packages.DOCUMENTATION)
+        result.update({p:ENCODE(body) for p,body in release_packages.documents(item).items()})
     return result
 
 
@@ -793,6 +798,7 @@ def tools(item=None):
         definitions.extend(cache_channels.tool_definitions())
     if isinstance(item, dict) and engineering_carriers.selected(item):
         definitions.extend(engineering_carriers.tool_definitions())
+        definitions.append(('release_package_status', 'Read the current published release configuration status.', {}))
     return [
         {
             "type": "function",
@@ -859,6 +865,7 @@ class World(base.World):
             fixture_ids.descriptor(plan)
         self.engineering_carriers = (engineering_carriers.Services(plan)
             if any(engineering_carriers.selected(item) for item in plan.values()) else None)
+        self.release_packages = release_packages.Packages(self) if self.engineering_carriers else None
 
     def close(self):
         try:
@@ -1444,10 +1451,15 @@ class World(base.World):
             event["shared_changes"] = released
             return done({"status": 400, "error": "Invalid request"})
 
+        if self.release_packages is not None and name == 'release_package_status':
+            event['shared_changes'] = []
+            return done({'status':200, 'package':self.release_packages.status(actor)})
+
         if self.engineering_carriers is not None and name in engineering_carriers.OPERATIONS:
             reply, writes, observations, journal = self.engineering_carriers.call(actor, name, args, event["id"])
             event.update(shared_changes=[], carrier_writes=writes, carrier_observations=observations,
                          carrier_execution_journal=journal)
+            reply = self.release_packages.observe(actor, name, reply, event['id'])
             return done(reply)
 
         if self.cache is not None and name.startswith("cache_"):
@@ -1745,6 +1757,7 @@ class World(base.World):
                 "start_group": item["start_group"],
                 "pending_confirmation_receipts": len(self.pending_confirmations[actor]),
                 **result,
+                **({'release_package': self.release_packages.status(actor)} if self.release_packages else {}),
             })
         return rows
 
@@ -1765,4 +1778,5 @@ class World(base.World):
                 "channel_evidence": cache_channels.evidence(self.events)} if self.cache else {}),
             **({"engineering_carrier_probe": self.engineering_carriers.snapshot()}
                if self.engineering_carriers else {}),
+            **({'release_packages': self.release_packages.snapshot()} if self.release_packages else {}),
         }

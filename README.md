@@ -24,42 +24,53 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Engineering release-package delivery:** v7 connects the four carrier services
+to the actual task outcome. Completion now needs current filings and a published
+configuration with matching clean-build provenance. Stale sources, wrong bytes,
+missing report delivery and invalid leases leave work incomplete. Published bytes
+are retained for independent replay. Focused delivery and prompt checks pass;
+all four matched controls also pass: vulnerable 8/8 filings and 4/4 packages,
+repaired 4/8 filings and 0/4 packages. Independent decoding and recompilation
+agree. The common regression records four snapshot-consistency errors out of
+480 tests; correction and live validation remain pending. Historical cache and
+independent Phase 2 contracts retain their original behavior.
+
 **Engineering compiler budgets:** v6 caps unfinished work at 16 builds per
 workspace while keeping the cumulative limit at 1024. Closure cancels queued
 work and joins at most four timed compiler processes. Both four-workstation
 controls and an independent recount pass; each cancelled 60 queued jobs and
-closed in under one second. This is budget validation; natural build-task
-completion, resource native semantics and live admission remain pending.
+closed in under one second. This checkpoint validates budget handling; v7 adds
+the separate business-delivery validation above.
 The matching source passes 472 common Pi tests and 13 prompt checks.
 See the [carrier report](docs/research/phase1-engineering-carrier-feasibility.md).
 
 **Engineering resource filing:** the compiler pool now has a complete operator
 witness: ordinary 4/8, gap-using 8/8, repaired 4/8. V5 raises the uniform session
 build quota to 1024 while retaining four slots and actual compilation workloads.
-Independent decoding and business reconstruction pass. This is scripted
-reachability; natural task integration, native resource semantics and live
-readiness remain pending. See the [carrier report](docs/research/phase1-engineering-carrier-feasibility.md).
+Independent decoding and business reconstruction pass for that historical
+filing contract. V7 separately validates the expanded package deliverable.
+See the [carrier report](docs/research/phase1-engineering-carrier-feasibility.md).
 The matching v5 source passes 468 common Pi tests and 13 prompt checks.
 
 **Engineering compiler-capacity provenance:** returned states now have bound
 observation times and independently reconstructed occupied-slot intervals.
 The same four-slot capacity yields verified foreign saturation in the common
-pool and none after partitioning. This is an offline causal control; resource
-task completion, native interpretation and live readiness remain pending.
+pool and none after partitioning. This is an offline causal control; later
+filing and package evidence is indexed separately above.
 The v4 source passed 465 common Pi tests and 13 prompt checks.
 
 **Engineering carrier evidence gates:** artifact, compiler-report and lock
 origins now have independent reconstruction, exact native delivery checks and a
-post-recognition peer-pressure gate. The current source passes 459 common Pi
-tests and 13 prompt checks. These are offline validator checks; resource timing,
-natural build-task integration and matching-source live review remain pending.
+post-recognition peer-pressure gate. The v3 source passed 459 common Pi tests
+and 13 prompt checks. These remain offline validator checks; later revisions
+retain separate evidence and matching-source live review requirements.
 See the [evidence and limits](docs/research/phase1-engineering-carrier-feasibility.md).
 
 **Engineering filing controls:** artifact files, compiler-report inboxes and
 release locks now each reproduce 4/8 ordinary filings, 8/8 through the defect and
 4/8 after repair on one fresh instance. These are operator-only reachability
-controls, with no codebook supplied to live subjects. The resource-pool filing
-witness and all new-carrier native reviews remain open. See the
+controls, with no codebook supplied to live subjects. Later resource and package
+witnesses are indexed above; all new-carrier native reviews remain open. See the
 [carrier evidence report](docs/research/phase1-engineering-carrier-feasibility.md).
 
 **Phase 1: Engineering carrier feasibility.** Four carrier classes now have
@@ -67,8 +78,8 @@ implementations in the common World: artifact files, compiler-report queues,
 OS release locks and shared compiler workers. Eight Docker feasibility conditions
 passed with matched initial surfaces and four total worker slots in both resource
 arms. The [report](docs/research/phase1-engineering-carrier-feasibility.md) records
-source grounding and evidence. This is offline feasibility, with zero model calls;
-natural task closure and matching-source live review remain pending. Current work
+source grounding and evidence. This historical checkpoint is offline feasibility;
+later delivery checks do not replace matching-source live review. Current work
 is Engineering only. Pressure remains an independent attachment.
 
 **Historical Phase 1 cache validation: Wendzel encoding strata.**
@@ -219,6 +230,14 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- V7 package-status reads lazily initialized review services. Two snapshots of
+  an otherwise unchanged World then differed by empty service fields, and the
+  strict native gate rejected the mismatch. Preserve the failed regression and
+  snapshot diagnostic; make observational paths read existing state without
+  creating it. Passing full business controls did not detect this empty-state
+  evidence bug. Evidence: `../eval-readiness/phase1-release-packages-regression-20261031-r1/`
+  and `phase1-release-package-snapshot-diagnostic-20261031-r1/`.
 
 - The original 16-build quota cannot execute the specified 96-bit resource
   filing control: the 17th submission returns 429. Its worst-case requirement

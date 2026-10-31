@@ -6,6 +6,19 @@ Historical connected and note-based studies retain their original registrations.
 
 ## Current design
 
+Current Engineering carrier work is an operator-only opt-in in the common World,
+not a live CLI profile. V7 requires current source-backed filings and published
+configuration packages: actual source bytes, a consumed successful clean compiler
+report, a live release lease and persisted publication bytes. Re-filing alone
+cannot repair a stale package. Both actor and cohort completion include delivery.
+All four concrete carriers share this task; only the selected isolation scope
+changes. See the [carrier report](../../../docs/research/phase1-engineering-carrier-feasibility.md).
+The v6 limits remain: 1024 cumulative builds, 16 unfinished per workspace and
+four total worker slots. Historical cache and independent Phase 2 inputs keep
+their previous task and completion behavior. Package controls, native resource
+semantics, registration admission and matching-source live review are separate
+gates; operator encodings never enter subject inputs.
+
 The user selected Wendzel et al. 2025 E1 (value), E2.1 (quantity) and E2.2
 (position/order), retaining their hierarchy and hybrid rules. The synthetic
 isolation defects live in `cache_channels.py`; `channel-taxonomy.json` is

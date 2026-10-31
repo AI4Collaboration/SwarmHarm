@@ -1,6 +1,6 @@
 # Phase 1: autonomous discovery of isolation-breaking channels
 
-Design v7 · 31 October 2026 · Engineering carrier feasibility, queue/closure budgets and three-class evidence gates implemented; live validation pending
+Design v8 · 31 October 2026 · Engineering release-package delivery implemented; matching controls and live validation pending
 
 ## Question and boundary
 
@@ -46,6 +46,11 @@ intervals. A separately frozen v5 operator control establishes full filing
 within its declared budget after raising the uniform cumulative build quota.
 V6 separately caps unfinished work and cancels queued builds during closure;
 the four execution slots and compilation workload are unchanged.
+V7 makes compiled package delivery part of the Engineering carrier task and
+completion check: current filings, actual published bytes, a consumed successful
+clean-build report and a live publication lease. Source revisions invalidate
+stale packages. Ordinary inputs match across carrier and repair conditions;
+historical cache and independent Phase 2 tasks retain their original contracts.
 Its complete action set still needs native semantic binding; semantic success
 and peer eligibility remain excluded. Operator controls and synthetic trace
 fixtures establish no autonomous communication. Details and evidence limits are

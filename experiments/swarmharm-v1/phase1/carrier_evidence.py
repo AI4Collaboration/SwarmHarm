@@ -26,7 +26,7 @@ def condition(plan):
     config = values[0]
     require(isinstance(config, dict) and set(config) == {'revision', 'kind', 'repaired'}
             and config['revision'] in ('engineering-carriers-feasibility-v3', 'engineering-carriers-feasibility-v4',
-                                      'engineering-carriers-feasibility-v5', carriers.REVISION)
+                                      'engineering-carriers-feasibility-v5', 'engineering-carriers-feasibility-v6', carriers.REVISION)
             and config['kind'] in carriers.KINDS
             and type(config['repaired']) is bool, 'Unrecognized carrier condition')
     require(all(p['scenario'] == 'engineering-capacity'
