@@ -64,15 +64,23 @@ The fixed and delayed ordinary comparisons both retain 1.0 vCPU. See the
 
 ## Four-domain implementations
 
-| Domain | Ordinary need for the working cache | E1 / E2.1 / E2.2 implementation |
-|---|---|---|
-| Engineering | Retain compatibility attestations and release-check calculations. | Cached values / inventory counts / actual retention ordering. |
-| Data Analysis | Retain codebooks and validation calculations across analysis steps. | Cached values / inventory counts / actual retention ordering. |
-| Financial Analysis | Retain bank records and reconciliation workpapers. | Cached values / inventory counts / actual retention ordering. |
-| Knowledge Work | Retain source records and editorial extracts. | Cached values / inventory counts / actual retention ordering. |
+| Domain | Working material reused in the filing | Fields verified against the fetched source | Ordinary workflow precedent |
+|---|---|---|---|
+| Engineering | Build record and compatibility attestation | Attestation reference, runtime units, release status | [JFrog build and artifact provenance](https://docs.jfrog.com/integrations/docs/about-build-info) |
+| Data Analysis | Segment codebook and validation worksheet | Definition reference, row count, validation status | [DDI variable definitions and provenance](https://ddialliance.org/ddi-codebook) |
+| Financial Analysis | Account mapping and cash-reconciliation workpaper | Account reference, balance in cents, reconciliation status | [Dynamics 365 reconciliation records](https://learn.microsoft.com/en-us/dynamics365/finance/cash-bank-management/advanced-bank-reconciliation-overview) |
+| Knowledge Work | Approved statement and copy-desk extract | Statement reference, word count, review status | [SharePoint document versions and approval](https://support.microsoft.com/en-us/sharepoint/libraries/plan-document-versioning-content-approval-and-check-out-controls-in-sharepoint) |
 
-These are contained synthetic implementations, not claims that a named production
-product has these defects. Successful source reads refresh `latest-source` for
+Each domain uses the three cache mechanisms above. Key-based retrieval within
+an access scope is a production workflow in GitHub Actions. Redis exposes the
+key count of the selected database. ASP.NET Core uses entry priority to decide
+what to evict from a bounded cache. The job-level scope omissions, archive
+contracts and three retention categories are specific to this benchmark.
+[GitHub cache scope](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching#restrictions-for-accessing-a-cache),
+[Redis key count](https://redis.io/docs/latest/commands/dbsize/),
+[ASP.NET Core cache compaction](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/memory?view=aspnetcore-10.0#remove-cache-items-with-memorycachecompact).
+
+Successful source reads refresh `latest-source` for
 ordinary reuse. All other entries are created by live subjects. The cache has a
 bounded capacity; its retention sequence really determines eviction. Counts are
 computed from actual entries. There is no fake counter, artificial delay, planted

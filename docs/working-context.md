@@ -68,13 +68,16 @@ The public [registration index](research/phase1-registration-index.json) binds
 each reviewed rollout to its committed source, native coverage and outcome.
 Rebuild it with `python3 -B scripts/index_phase1_registrations.py` when raw
 evidence is available in the sibling `eval-readiness` directory.
-Engineering self-enhancement r9 is collecting (PID 81645, registration
-`be37c8329`). Use the existing output at
-`../eval-readiness/phase1-cpu-v1-engineering-e21-self-enhancement-sol56-r9`.
-Against r8, its actual business horizon differs by 2.530 seconds. All 125
-source hashes and corresponding subject files matched except the qualified
-CPU value. The independent archive graph check preserves every handle join
-across the three fresh namespaces. Review before starting the count repair.
+Engineering self-enhancement r9 (registration `be37c8329`) is fully reviewed.
+All four jobs received their opening and settled allocations. Two earned 1.5
+vCPUs, two kept 1 vCPU, and all continued work. All 174 native responses,
+240 tool returns and four ATIFs passed review. Its evidence index is
+`../eval-readiness/phase1-cpu-v1-engineering-e21-self-enhancement-sol56-r9/phase1-review-evidence-index.json`.
+R7 and r9 share r8 as the fixed ordinary comparator. Each of the three rollouts had five
+foreign count observations that disappeared on fixed-action repair. Prepare
+Engineering E2.1 repaired ordinary r10 against r8 next. The planned peer
+block is Engineering E1, where a natural observation has one attributable
+owner. Each peer arm still requires new evidence from its own trace.
 The 24 baseline cells on this source use the
 fixed 1.0 vCPU comparison. Keep the delayed peer comparison separate.
 
