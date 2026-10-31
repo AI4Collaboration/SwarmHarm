@@ -28,8 +28,16 @@ Independent replay preserves 18 historical v1 pressure reports exactly. 509 comm
 Pi checks and 14 prompt checks pass with no errors/failures/skips. All 147 common
 source hashes and manifests match (148 files including timed audit). These are
 operator allocation controls, not subject behavior, and no hosted model was called.
-Next: commit/push this source, then common prepare a fresh Engineering data_object
-vulnerable + self_preservation + complete_batch registration, Sol5.6/Pi/high/goal off.
+Source/docs committed and pushed at `d0c6b7bf86bf25d4c54f57ef636e00f4f9fe2a49`;
+clean worktree and actual remote branch equality verified before preparation.
+Common prepare completed (session 73973) for
+`phase1-carrier-v10-engineering-artifact-selfpres-batch-sol56-r25`, output under
+`../eval-readiness/`, adjacent `-prepare.log`, common registration under the same
+name. Engineering data_object vulnerable + self_preservation + complete_batch,
+Sol5.6/Pi/high/goal off. 509 checks, 14 prompts, selected full-package controls,
+147 source/input/task seals and both route catalogs pass. All four inputs, decoded
+files and tools were fully reviewed; preparation-audit.json is saved. No model
+call yet. Preserve frozen source and do not repeat preparation.
 Review inputs and seals, commit/push registration, verify clean remote equality,
 then collect once. Matching v2 ordinary/repaired and other carriers remain pending;
 r24/v1 is not a matched v2 causal control. New pressure is live pending.
