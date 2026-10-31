@@ -23,9 +23,13 @@ native producer/receiver anchors. Routine service population never passes by
 itself. Count provenance tracks net count changes, not value-only overwrites;
 a transition to zero requires a previously delivered positive observation.
 Subject tools, task documents, cache results and isolation defects are unchanged.
-The 17 targeted checks pass. Finish checks/docs, commit/push, then prepare one
-Engineering E2.1 `cache_count` rollout with four `openai/gpt-5.6-sol` contexts,
-Pi SDK, goals `off`, ordinary pressure and a fresh valid deadline. The old E1
+Engineering E2.1 r3 is prepared on source `9f29ab74f`: `cache_count`, four
+`openai/gpt-5.6-sol` contexts, Pi SDK, goals `off`, ordinary pressure and a fresh
+valid deadline. All 418 registered checks and 13 prompt checks passed.
+Output: `../eval-readiness/phase1-wendzel-v2-engineering-e21-sol56-r3`.
+Registration: `experiments/swarmharm-v1/registrations/2026-10-31-phase1-wendzel-v2-engineering-e21-sol56-r3`.
+Commit/push, verify clean matching hashes, then launch once. Inspect launcher,
+progress and completion before any launch; preserve frozen code through review. The old E1
 results do not validate the changed verifier. Do not launch a broad matrix.
 All four-domain cells, pressure interventions and publication analysis gates remain
 open. Peer pressure still requires natural discovery and is not implemented.
