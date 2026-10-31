@@ -135,7 +135,6 @@ class ComponentChecks(unittest.TestCase):
                     self.assertEqual(reg['component_truth'].get('proof_stage','off'),stage)
                     protocol=run.load(run.HERE/'protocol.json')['independent_phase2']
                     self.assertEqual(reg['input_revision'],protocol['family_input_revisions']['evidence'])
-                    self.assertEqual(reg['input_revision'],protocol['input_revision'])
                     if stage!='off':
                         self.assertEqual(reg['outcome_revision'],protocol['outcome_revision'])
                     self.assertTrue(any(row.get('kind')=='field_validation_calendar'

@@ -178,6 +178,14 @@ def beyond_window_timers(states, running, cutoff_ms):
         if actor not in running:
             if state['status'] != 'waiting_for_platform_change':
                 return {}
+            native = state.get('native_goal') or {}
+            goal = native.get('goal') or {}
+            waiting = goal.get('waiting')
+            due = (waiting or {}).get('resumeAt')
+            if (goal.get('status') != 'active' or not isinstance(waiting, dict)
+                    or due is not None):
+                return {}
+            timers[actor] = None
             continue
         if state['status'] != 'waiting_for_native_goal':
             return {}
@@ -189,7 +197,7 @@ def beyond_window_timers(states, running, cutoff_ms):
         if (last.get('sdk_idle') is not True or last.get('sdk_pending_messages') != 0
                 or last.get('step') != state.get('last_requested_turn')
                 or last.get('native_goal') != native or goal.get('status') != 'active'
-                or type(due) is not int or due <= cutoff_ms):
+                or (due is not None and (type(due) is not int or due <= cutoff_ms))):
             return {}
         timers[actor] = due
     return timers
@@ -2037,6 +2045,8 @@ def collect(root,registration_dir):
                     waiting = goal.get('waiting')
                     # Pi queues continuation after its settled handlers. An active
                     # objective or registered timer is still work owned by the SDK.
+                    # An indefinite wait settles without auto-resume; the
+                    # observation-window guard recognizes that quiescent state.
                     native_pending = goal.get('status') == 'active' and (
                         not waiting or waiting.get('resumeAt') is not None)
                     if native_pending or not message.get('sdk_idle', True) or message.get('sdk_pending_messages', 0):
@@ -2048,6 +2058,17 @@ def collect(root,registration_dir):
                             'sdk_idle': message.get('sdk_idle'),
                             'sdk_pending_messages': message.get('sdk_pending_messages')})
                         export(actor)
+                        wake_waiting()
+                        return
+                    if (goal.get('status') == 'active' and isinstance(waiting, dict)
+                            and waiting.get('resumeAt') is None):
+                        state['last_settled_turn'] = message['turn']
+                        state.setdefault('native_goal_settlements', []).append({
+                            'at': utc(), 'step': message['turn'],
+                            'native_goal': deepcopy(message['native_goal']),
+                            'sdk_idle': message.get('sdk_idle'),
+                            'sdk_pending_messages': message.get('sdk_pending_messages')})
+                        wait(actor)
                         wake_waiting()
                         return
                 if message['turn'] in (0,state.get('last_settled_turn')):
@@ -2161,15 +2182,16 @@ def collect(root,registration_dir):
                     (followup_pending() or phase2_pending is not None or continuation_update_pending()) and not all(within_limits(a) for a in active)):
                     raise RolloutLimit('Registered wall-clock limit reached')
                 if (reg.get('native_subject_goal', {}).get('outside_window_quiescence')
-                        and running and not (phase2_pending or publication_pending() or followup_pending()
+                        and active and not (phase2_pending or publication_pending() or followup_pending()
                         or continuation_update_pending() or shell_tasks or progress['inflight_requests'])
-                        and events.empty() and not extension.all_complete()):
+                        and events.empty()):
                     remaining = deadline - time.monotonic()
                     cutoff_ms = (time.time() + remaining) * 1000
                     timers = beyond_window_timers(states, running, cutoff_ms)
                     if timers:
                         termination_reason = 'no_reachable_wake'
                         for actor, due in timers.items():
+                            states[actor]['termination_reason'] = termination_reason
                             states[actor]['unreachable_wake'] = {
                                 'resume_at_ms': due, 'batch_cutoff_ms': cutoff_ms}
                             wait(actor)
@@ -2235,6 +2257,17 @@ def collect(root,registration_dir):
                         require(submit(candidate),'Phase 2 assignment was not delivered')
                     continue
                 next_event()
+            if (termination_reason == 'quiescence'
+                    and reg.get('native_subject_goal', {}).get('outside_window_quiescence')):
+                remaining = deadline - time.monotonic()
+                cutoff_ms = (time.time() + remaining) * 1000
+                timers = beyond_window_timers(states, running, cutoff_ms)
+                if timers:
+                    termination_reason = 'no_reachable_wake'
+                    for actor, due in timers.items():
+                        states[actor]['termination_reason'] = termination_reason
+                        states[actor]['unreachable_wake'] = {
+                            'resume_at_ms': due, 'batch_cutoff_ms': cutoff_ms}
             complete_together=cohort_completion.ready(
                 extension.activated and extension.all_complete(),len(running),
                 {actor:activity_signal(actor)['revision'] for actor in active})

@@ -822,7 +822,7 @@ class PiCollectChecks(unittest.TestCase):
                 self.assertIsNone(states[-1]['data']['goal'])
 
     def test_evidence_goals_respect_the_observation_window(self):
-        for action in ('outside_window_wait', 'timed_wait'):
+        for action in ('outside_window_wait', 'indefinite_wait', 'timed_wait'):
             with self.subTest(action=action), tempfile.TemporaryDirectory() as temporary, \
                     patch.object(run, 'work_notice', return_value=(None, None)):
                 ScriptedResponses.requests = []
@@ -846,8 +846,11 @@ class PiCollectChecks(unittest.TestCase):
                     recorded = state['unreachable_wake']
                     goal = self.native_goal_entries(root, actor)[-1]['data']['goal']
                     self.assertEqual(state['native_goal']['goal'], goal)
-                    self.assertEqual(goal['waiting']['resumeAt'], recorded['resume_at_ms'])
-                    self.assertGreater(recorded['resume_at_ms'], recorded['batch_cutoff_ms'])
+                    self.assertEqual(goal['waiting'].get('resumeAt'), recorded['resume_at_ms'])
+                    if action == 'outside_window_wait':
+                        self.assertGreater(recorded['resume_at_ms'], recorded['batch_cutoff_ms'])
+                    else:
+                        self.assertIsNone(recorded['resume_at_ms'])
                     self.assertEqual(goal['status'], 'active')
                     self.assertEqual(len(list((root/'natural'/actor/'trace').glob('*.request.json'))), 2)
 
@@ -859,10 +862,14 @@ class PiCollectChecks(unittest.TestCase):
                 ScriptedResponses.goal_action = action
                 root, reg = self.collect(temporary, 'goal_command')
                 self.assert_native_records(root, reg)
-                self.assert_goal_request_accounting(root, reg)
+                if action != 'indefinite_wait':
+                    self.assert_goal_request_accounting(root, reg)
                 for actor in reg['plan']['natural']:
                     requests = list((root / 'natural' / actor / 'trace').glob('*.request.json'))
                     self.assertEqual(len(requests), 2)
+                    if action == 'indefinite_wait':
+                        state = run.load(root / 'natural' / actor / 'result.json')
+                        self.assertFalse(state['completion_attempts'])
                     last = self.native_goal_entries(root, actor)[-1]['data']['goal']
                     if action == 'complete':
                         self.assertIsNone(last)
