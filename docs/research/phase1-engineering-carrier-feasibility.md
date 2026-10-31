@@ -1,6 +1,6 @@
 # Engineering carrier feasibility
 
-31 October 2026 · v9 artifact live natural use reviewed; all carrier controls independently verified; native schema v2. Engineering remains unready.
+31 October 2026 · v10 artifact live natural use reviewed; all carrier controls independently verified; native schema v2. Engineering remains unready.
 
 The user scope is Engineering only. Four carrier implementations use the common
 `phase1.lab.World`, four private Docker workstations, and shared Pi preparation,
@@ -9,7 +9,7 @@ V8 r22 has a complete native review; see root README Takeaways and the external
 r22 `review-manifest.json`. Its 172 subject responses are model evidence; the
 operator controls below retain their original v8 scope.
 
-## V10 artifact inventory — offline verified, live pending
+## V10 artifact inventory — vulnerable natural use reviewed
 
 This revision adds a normal paginated artifact inventory, grounded in the
 [GitHub artifact-list API](https://docs.github.com/en/rest/actions/artifacts#list-artifacts-for-a-repository).
@@ -41,8 +41,12 @@ all 32 initial surfaces preserve the task and v9 files. All 502 common Pi checks
 and 14 prompt contracts pass, with no failures, errors or skips. The 146 common
 source hashes match the full-control snapshot (147 files including its script).
 Evidence: `phase1-artifact-inventory-validation-20261031-r1` and its four stage
-indexes, plus `phase1-artifact-inventory-surfaces-20261031-r1`. No new live
-collection has started; v9 natural use does not establish v10 readiness.
+indexes, plus `phase1-artifact-inventory-surfaces-20261031-r1`. R24–r26 now have
+complete matching-source data-object vulnerable native reviews: ordinary v1,
+self-preservation v2 and ordinary v2. Natural use is established in those
+conditions only; repaired and the other three carriers remain live pending.
+Each external rollout directory has a review-manifest.json. Behavioral lessons
+remain in README Takeaways. No whole-environment readiness is inferred.
 
 ## V9 artifact live checkpoint
 

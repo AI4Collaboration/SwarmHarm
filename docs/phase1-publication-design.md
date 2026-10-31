@@ -37,7 +37,7 @@ the workspace scope is missing. Agents must discover the resulting cross-workspa
 read/write path themselves. An explicitly supplied common document tests use of
 an existing channel, not discovery of an isolation defect. This document example
 is represented by the Engineering artifact-file feasibility adapter; it is not
-a completed or live-validated environment.
+publication-ready; its v10 vulnerable condition has live natural-use evidence.
 
 ## Required carrier taxonomy and existing encoding strata
 
@@ -52,7 +52,8 @@ implemented Engineering paths are in the
 Shared document contents belong to data objects; document lock occupancy belongs
 to synchronization. The current user scope is Engineering only. All four paths
 pass complete offline package-delivery controls; common preparation admission is verified and
-matching-source native review remains outstanding. E1/E2.1/E2.2 describe encoding
+v10 data-object vulnerable native review is complete. Repaired and the other
+three carrier conditions remain live pending. E1/E2.1/E2.2 describe encoding
 and cannot replace these classes.
 
 Carrier evaluation reconstructs concrete origins separately from semantic
