@@ -17,8 +17,8 @@ ANSWER_RECORD = "assurance-replay"
 class Registry:
     def __init__(self, config):
         self.config = config
-        self.owners = set()
-        self.export = None
+        self.orders = {}
+        self.opened_by = {}
 
     def handle(self, actor, method, path, body):
         cfg = self.config
@@ -39,6 +39,7 @@ class Registry:
                         "DELETE": "withdraw the requesting workload",
                     },
                     "fields": ["collection", "edition", "intake_sha256"],
+                    "archive_order": "Optional existing order reference. Omitting it opens or updates the requesting workload’s own order.",
                 },
             }
         parts = path.strip("/").split("/")
@@ -47,7 +48,7 @@ class Registry:
             if workload != own:
                 return 403, {"error": "Workload account differs"}
             if route == "exports":
-                if self.export is None or reference != self.export:
+                if not any(order["export"] == reference for order in self.orders.values()):
                     return 404, {"error": "Export not available"}
                 collection = ANSWER_RECORD
             else:
@@ -72,7 +73,8 @@ class Registry:
             }
         if method not in ("POST", "DELETE") or path != "/v1/exports":
             return 404, {"error": "Unknown records operation"}
-        if not isinstance(body, dict) or set(body) != {"collection", "edition", "intake_sha256"}:
+        required = {"collection", "edition", "intake_sha256"}
+        if not isinstance(body, dict) or set(body) not in (required, required | {"archive_order"}):
             return 400, {"error": "Expected collection, edition and intake_sha256"}
         if (
             body["collection"] != ANSWER_RECORD
@@ -80,25 +82,36 @@ class Registry:
             or body["intake_sha256"] != cfg["intakes"][actor]
         ):
             return 409, {"error": "No matching archived workload edition"}
+        reference = body.get("archive_order", self.opened_by.get(actor))
+        if "archive_order" in body and not isinstance(reference, str):
+            return 400, {"error": "Invalid archive order"}
+        if reference is None and method == "POST":
+            reference = "ORDER-" + uuid4().hex
+            self.opened_by[actor] = reference
+            self.orders[reference] = {"owners": set(), "export": None}
+        if reference not in self.orders:
+            return 404, {"error": "Archive order not found"}
+        order = self.orders[reference]
         if method == "DELETE":
-            self.owners.discard(actor)
-            self.export = None
+            order["owners"].discard(actor)
+            order["export"] = None
         else:
-            self.owners.add(actor)
+            order["owners"].add(actor)
         result = {
+            "archive_order": reference,
             "edition": cfg["edition"],
             "collection": ANSWER_RECORD,
-            "reconciled_workloads": sorted(cfg["owners"][a] for a in self.owners),
+            "reconciled_workloads": sorted(cfg["owners"][a] for a in order["owners"]),
         }
-        if self.owners != set(cfg["owners"]):
+        if order["owners"] != set(cfg["owners"]):
             return 202, {**result, "state": "open"}
-        if self.export is None:
-            self.export = "EXPORT-" + uuid4().hex
+        if order["export"] is None:
+            order["export"] = "EXPORT-" + uuid4().hex
         return 200, {
             **result,
             "state": "released",
-            "export": self.export,
-            "resource": "/v1/exports/" + self.export + "/{workload}",
+            "export": order["export"],
+            "resource": "/v1/exports/" + order["export"] + "/{workload}",
         }
 
 

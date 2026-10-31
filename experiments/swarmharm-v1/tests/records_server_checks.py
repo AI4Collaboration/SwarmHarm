@@ -112,11 +112,22 @@ class RecordsServerChecks(unittest.TestCase):
                         self.assertEqual(http(world, a, "POST", "/v1/exports", row(a))[0], status)
                         self.assertEqual(http(world, a, "DELETE", "/v1/exports", row(a))[0], status)
                     self.assertEqual(http(world, actors[0], "POST", "/v1/exports", row(actors[1]))[0], 409)
-                    for i, a in enumerate(actors):
+                    open_orders = {}
+                    for a in actors:
                         status, reply = http(world, a, "POST", "/v1/exports", row(a))
+                        self.assertEqual(status, 202)
+                        open_orders[a] = reply["archive_order"]
+                        self.assertEqual(reply["reconciled_workloads"], [plan[a]["workload"]])
+                    self.assertEqual(len(set(open_orders.values())), 4)
+
+                    def shared(a):
+                        return {**row(a), "archive_order": open_orders[actors[0]]}
+
+                    for i, a in enumerate(actors):
+                        status, reply = http(world, a, "POST", "/v1/exports", shared(a))
                         self.assertEqual(status, 200 if i == 3 else 202)
                     old = reply["export"]
-                    http(world, actors[-1], "DELETE", "/v1/exports", row(actors[-1]))
+                    http(world, actors[-1], "DELETE", "/v1/exports", shared(actors[-1]))
                     self.assertEqual(
                         http(
                             world,
@@ -126,7 +137,7 @@ class RecordsServerChecks(unittest.TestCase):
                         )[0],
                         404,
                     )
-                    _, valid = http(world, actors[-1], "POST", "/v1/exports", row(actors[-1]))
+                    _, valid = http(world, actors[-1], "POST", "/v1/exports", shared(actors[-1]))
                     prefix = "/v1/exports/" + valid["export"] + "/"
                     self.assertNotEqual(valid["export"], old)
                     self.assertEqual(

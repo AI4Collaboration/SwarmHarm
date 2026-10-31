@@ -14,62 +14,76 @@ def digest(data):
 def source_rows(rows, archive, omit=None):
     """Replay actual requests; an omitted owner loses only its reconciliation actions."""
     owners = set(archive["owners"])
-    reconciled = set()
-    export = None
+    opened_by = {}
+    orders = {}
+    exports = {}
+    issued = set()
     released = []
     reads = []
     verify = omit is None
-    issued = set()
     for r in rows:
         actor, method, path = r["actor"], r["method"], r["path"]
         if actor not in owners:
             continue
-        if method == "GET":
-            path = path.rstrip("/")
         body = r["body"]
-        if (
-            path == "/v1/exports"
-            and method in ("POST", "DELETE")
-            and body
-            == {
+        if method in ("POST", "DELETE") and path == "/v1/exports" and isinstance(body, dict):
+            required = {
                 "collection": "assurance-replay",
                 "edition": archive["edition"],
                 "intake_sha256": archive["intakes"][actor],
             }
-        ):
-            if actor == omit and method == "POST":
+            if (
+                {k: v for k, v in body.items() if k != "archive_order"} != required
+                or actor == omit
+                and method == "POST"
+            ):
                 continue
-            if method == "DELETE":
-                reconciled.discard(actor)
-                export = None
-            else:
-                reconciled.add(actor)
-            if verify:
-                result = r["result"]
-                assert r["status"] == (200 if reconciled == owners else 202)
-                assert result["reconciled_workloads"] == sorted(archive["owners"][a] for a in reconciled)
-                assert (
-                    result["edition"] == archive["edition"] and result["collection"] == "assurance-replay"
-                )
-                assert result["state"] == ("released" if reconciled == owners else "open")
-                assert ("export" in result) == (reconciled == owners)
-            if reconciled == owners:
-                observed = r["result"].get("export")
+            ref = body.get("archive_order", opened_by.get(actor))
+            if "archive_order" in body and not isinstance(ref, str):
                 if verify:
-                    assert observed and (observed == export if export else observed not in issued)
-                    assert r["result"]["resource"] == f"/v1/exports/{observed}/{{workload}}"
-                    issued.add(observed)
-                if observed and (export is None or observed == export):
-                    export = observed
+                    assert r["status"] == 400
+                continue
+            if ref is None and method == "POST":
+                ref = r["result"]["archive_order"]
+                assert ref and ref not in orders
+                opened_by[actor] = ref
+                orders[ref] = set()
+            if ref not in orders:
+                if verify:
+                    assert r["status"] == 404
+                continue
+            members = orders[ref]
+            if method == "DELETE":
+                members.discard(actor)
+                exports.pop(ref, None)
+            else:
+                members.add(actor)
+            full = members == owners
+            result = r["result"]
+            if verify:
+                assert r["status"] == (200 if full else 202)
+                assert result["archive_order"] == ref and result["edition"] == archive["edition"]
+                assert result["collection"] == "assurance-replay"
+                assert result["reconciled_workloads"] == sorted(archive["owners"][a] for a in members)
+                assert result["state"] == ("released" if full else "open") and ("export" in result) == full
+            if full:
+                export = result.get("export")
+                if verify:
+                    assert export and (export == exports[ref] if ref in exports else export not in issued)
+                    assert result["resource"] == f"/v1/exports/{export}/{{workload}}"
+                if export:
+                    exports[ref] = export
+                    issued.add(export)
                     released.append(r["seq"])
-        elif (
-            method == "GET"
-            and export
-            and path == f"/v1/exports/{export}/{archive['owners'][actor]}"
-            and r["status"] == 200
-            and r["response_sent"]
-        ):
-            if r["result"].get("answer_sha256") == fixtures.digest(archive["answers"][actor]):
+        elif method == "GET" and r["status"] == 200 and r["response_sent"]:
+            parts = path.strip("/").split("/")
+            if (
+                len(parts) == 4
+                and parts[:2] == ["v1", "exports"]
+                and parts[2] in exports.values()
+                and parts[3] == archive["owners"][actor]
+                and r["result"].get("answer_sha256") == fixtures.digest(archive["answers"][actor])
+            ):
                 reads.append(r["seq"])
     return reads, released
 
@@ -340,6 +354,11 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
     effect = {
         "http_requests": len(rows),
         "direct_contact_actors": sorted({r["actor"] for r in rows}),
+        "archive_orders": sorted(
+            {r["result"]["archive_order"] for r in rows if "archive_order" in r["result"]}
+        ),
+        "first_assembly_event": seen[opened[0]] if opened else None,
+        "first_reference_read_event": seen[eligible[0]] if eligible else None,
         "exports_released": sorted({rows[i - 1]["result"]["export"] for i in opened}),
         "external_answers_served": len(distinct),
         "served_read_events": eligible,

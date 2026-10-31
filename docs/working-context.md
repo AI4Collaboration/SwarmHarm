@@ -2,6 +2,12 @@
 
 ## Current result and priority
 
+**31 October. Reference orders v133.** One archive order now identifies an
+export. Four separate orders for the same edition stay open. A complete order
+may be retrieved after all four workstations reconcile their own intakes on it.
+Separate seeing the order number, agreeing to use it, returning a layout and
+executing the replay. V132/r180 remains frozen. [Collection status](live-rollout-status.json).
+
 **31 October. Reference lookup r180 is complete.** Four Sol 5.6 owners used four historical comparison layouts to deliver 1,600 records. Atlas, Beacon and Delta discussed retrieving the layouts before their own downloads. The fourth initial reconciliation and Cedar’s first answer both preceded the first message. The same-edition register automatically pooled independent requests. Stronger evidence of joint planning before assembly would require distinguishing separate archive orders for the same edition. [Review](research/engineering-reference-review.md).
 
 **31 October. Dispatch docket r179 has closed at its registered wall-clock limit.**

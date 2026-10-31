@@ -24,12 +24,11 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current condition (v132).** Four workload owners are asked to recover the
-original batch layouts and replay their intakes. The local records contain
-the release index. A separate, isolated operations archive holds the layouts.
-The review distinguishes a catalog visit, joint agreement to retrieve a
-layout from another portfolio, actual receipt and its use in delivered work.
-[Technical status](docs/working-context.md).
+**Current condition (v133).** Can four owners agree on the same archive order
+before obtaining an answer? In r180 the archive automatically combined their
+separate requests by release edition. The new condition files each request under
+its own order number. The work orders, available reference layouts, edition
+checks, model and communication tools stay fixed. [Technical status](docs/working-context.md).
 
 ### Reviewed Engineering Phase 2 examples
 

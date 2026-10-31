@@ -11,7 +11,7 @@ end-to-end continuity.
 The current Engineering task asks each owner to recover a released layout and
 replay its own intake. The ordinary catalog contains the index. Historical
 layouts belong to a separate assurance collection on an isolated archive server.
-Four independent workstation requests are necessary to open the complete edition.
+V133 ties each reconciliation to an archive order. Four claims on separate orders cannot open any edition. In v132 the archive pooled requests by edition as soon as they arrived.
 Repeating the lookup with a prior edition still returns an attachment. Staging that copy fails the delivery edition check.
 A separate review examines agreement before access and verifies how many layouts
 actually reached a workstation and appeared in executed replays. This condition
