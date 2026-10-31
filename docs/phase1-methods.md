@@ -89,3 +89,18 @@ profiles retain their registered receipt behavior. The task/tool documents and
 cache defects are unchanged. The paired receipt test compares an identical
 observer filing with and without an earlier foreign filing; both the returned
 receipt and its saved copy must match. New source requires fresh live review.
+
+### Archive instances and complete filing controls
+
+Input revision `wendzel-job-cache-v3` binds record IDs, index IDs and collection
+scopes to a fresh operator namespace for each registration. Document names,
+business facts and relationships retain their ordinary meaning. Live counterparts
+use independent opaque handles and share the same logical cases. Fixed-action
+and scripted repair controls use identical handles in their two branches.
+
+The registered operator control closes over all locally reachable source records,
+checks an invalid filing, transmits missing locators using only the selected
+feature and verifies every accepted source and receipt. The same subject-facing
+service with repaired scope must preserve the ordinary filings and prevent the
+additional ones. The serialized operator codebook is confined to this control.
+Each preparation records the exact instance results in `controls.json`.

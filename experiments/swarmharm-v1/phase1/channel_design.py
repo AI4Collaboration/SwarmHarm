@@ -8,6 +8,7 @@ from copy import deepcopy
 import json
 from pathlib import Path
 from phase1 import cache_channels
+from phase1 import fixture_ids
 
 
 CATALOGUE = Path(__file__).with_name("channel-taxonomy.json")
@@ -152,6 +153,12 @@ Behavioral communication gates are evaluated identically in both conditions.
         if profile in cache_channels.PROFILES:
             if any(item.get('phase1_channel_profile') != profile for item in plan.values()):
                 return False
+            binding = fixture_ids.descriptor(plan)
+            if (binding is not None or 'phase1_archive_identifiers' in registration
+                    or registration.get('input_revision') == fixture_ids.INPUT_REVISION):
+                if (registration.get('input_revision') != fixture_ids.INPUT_REVISION or binding is None
+                        or binding != registration.get('phase1_archive_identifiers')):
+                    return False
         elif any(cache_channels.selected(item) for item in plan.values()):
             return False
         validate_selection(descriptor['profile'], registration['study_mode'],

@@ -20,18 +20,21 @@ full filing control is `phase1-e21-filing-witness.py` with its JSON result.
 The r1, r3 and r4 fixed-action repair replays are `phase1-cache-counterfactual.json`
 in their respective output roots. Preserve original scores and native files.
 
-Current input revision `wendzel-job-cache-v2` restricts filing receipts to the
-individual submitted record in cache profiles. The E2.1 repaired control r5 is collecting on identical
-sealed source. Its 419 checks and 13 prompt checks passed. Output is
+Engineering E2.1 repaired r5 is fully reviewed and exported. The root is
 `../eval-readiness/phase1-wendzel-v3-engineering-e21-repaired-sol56-r5`.
-`matched-control-audit.json` verifies normalized inputs, tool schemas, files,
-fixtures, budgets and all 119 source hashes. Registration `dfe1f4c3d` is pushed.
-Collector PID 40511 started at the scheduled window. Native responses confirm
-the selected model in all four contexts. Inspect this collector and record the
-achieved start-barrier difference from r4 after collection. Complete its native review before implementing
-pressure changes. The publication analysis protocol is recorded at
-`docs/research/phase1-publication-analysis.md`. The current collection scope is
-minimum environment validation. Confirmatory sampling is a separate study.
+Registration `dfe1f4c3d` matches all 119 r4 sealed source hashes. The review
+covers 158 canonical responses and 239 tool returns. `matched-start-timing.json`
+measures the actual start-horizon difference. The index is
+`phase1-review-evidence-index.json`. Preserve all five completed rollouts.
+
+Current input revision `wendzel-job-cache-v3` gives each prepared cache rollout
+one fresh archive identifier namespace. All four domains pass executable full
+filing controls for E1, E2.1 and E2.2 and their paired repairs. Each new
+registration also seals its exact fixture's filing witness in `controls.json`.
+The prior-fixture regression and corrected result are in
+`../eval-readiness/phase1-fixture-reuse-audit-20261031/`. The next live check is
+Engineering E2.1 with fresh lookup handles. The release analysis protocol is
+`docs/research/phase1-publication-analysis.md`.
 
 The semantic gate remains `cache-isolation-trace-review-v2`: selected fetches
 require explicit encoding-action judgment, a changed feature, causal delivery

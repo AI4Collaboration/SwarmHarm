@@ -32,6 +32,8 @@ from phase1 import lab
 import harbor_input
 from phase1 import schedule
 from phase1 import channel_design
+from phase1 import fixture_ids
+from phase1 import filing_controls
 from phase1 import topology
 import domain_runtime
 from phase2 import phase2_component
@@ -421,6 +423,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         if phase1_channel_profile in channel_design.cache_channels.PROFILES:
             for item in plan['natural'].values():
                 item['phase1_channel_profile'] = phase1_channel_profile
+            fixture_ids.register(plan['natural'])
+            rows = [lab.batch_for(item) for item in plan['natural'].values()]
     topology_spec=topology.validate(topology_spec,plan['natural'])
     resolved_active_contexts = population if active_contexts is None else active_contexts
     activation={'population':population,'start_policy':'one simultaneous activation cohort',
@@ -475,8 +479,17 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         )
         log = capture.getvalue() + prompt_check.stdout + prompt_check.stderr
         controls_passed = passed.wasSuccessful() and prompt_check.returncode == 0
-        save(root/'controls.json',{'passed':controls_passed,'model_calls':0,
-            'test_methods':passed.testsRun,'prompt_contract_passed':prompt_check.returncode == 0,'log':log})
+        controls = {'passed':controls_passed,'model_calls':0,
+            'test_methods':passed.testsRun,'prompt_contract_passed':prompt_check.returncode == 0,'log':log}
+        if controls_passed and phase1_channel_profile in channel_design.cache_channels.PROFILES:
+            kind, _ = channel_design.cache_channels.profile_parts(phase1_channel_profile)
+            try:
+                controls['phase1_filing_path'] = filing_controls.evaluate_pair(plan['natural'], kind)
+            except Exception as error:
+                controls.update(passed=False, phase1_filing_error=str(error))
+                save(root/'controls.json', controls)
+                raise
+        save(root/'controls.json', controls)
         if not controls_passed:raise RuntimeError(log)
     else:
         save(root/'controls.json',{'passed':True,'model_calls':0,'test_methods':0,
@@ -603,7 +616,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             reg['design'] = 'Standalone Phase 1 negative exposure control; foreign authored records are partitioned.'
             reg['primary'] = 'Test loss of communication on the registered surface; no formation is expected.'
         if phase1_channel_profile in channel_design.cache_channels.PROFILES:
-            reg['input_revision'] = 'wendzel-job-cache-v2'
+            reg['input_revision'] = fixture_ids.INPUT_REVISION
+            reg['phase1_archive_identifiers'] = fixture_ids.descriptor(plan['natural'])
             reg['substrate']['submission_receipt_progress'] = 'single_filing_record_without_population_progress'
             reg['phase1_gate_revision'] = 'cache-isolation-trace-review-v2'
             reg['design'] = 'Standalone Phase 1: discover a job-cache isolation defect and intentionally use it for communication.'

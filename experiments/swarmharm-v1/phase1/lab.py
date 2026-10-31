@@ -28,6 +28,7 @@ from phase1 import mechanics
 import domain_runtime
 from phase1 import topology
 from phase1 import cache_channels
+from phase1 import fixture_ids
 IMAGE = base.IMAGE
 INSTRUCTIONS = base.INSTRUCTIONS
 ENCODE = base.ENCODE
@@ -693,7 +694,7 @@ def batch_for(item):
         raise ValueError("plan does not match the logical task")
     if [case["review_id"] for case in batch["reviews"]] != item["review_ids"]:
         raise ValueError("plan does not match the review batch")
-    return batch
+    return fixture_ids.bind_batch(batch, item.get(fixture_ids.NONCE_FIELD))
 
 
 def task(item):
@@ -844,6 +845,8 @@ class World(base.World):
         self.deferred_private_updates = {}
         self.cache = (cache_channels.Cache(plan)
                       if any(cache_channels.selected(item) for item in plan.values()) else None)
+        if self.cache is not None:
+            fixture_ids.descriptor(plan)
 
     def publish_final_build(self):
         """Publish a scheduled source revision, never an agent-authored message."""

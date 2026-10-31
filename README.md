@@ -30,9 +30,10 @@ position/order. Synthetic job-cache defects and their repaired counterparts now
 use the shared runner in all four domains; ordinary inputs are matched and legacy
 note/reply channels are partitioned. No discovery cues or planted peer content.
 New validation uses **openai/gpt-5.6-sol**, as explicitly selected on 30 October.
-The Engineering E1 pair and E2.1 vulnerable revision are fully reviewed. Four live
-filing receipts verify the corrected scope. The matched E2.1 control, other
-channel/domain cells and pressure interventions remain pending in the
+The Engineering E1 and E2.1 development pairs are fully reviewed. The current
+revision uses fresh archive lookup handles per registration. All four domains
+pass full filing controls in each of the three mechanisms and each repair.
+Matching-source live coverage and pressure interventions remain pending in the
 [readiness ledger](docs/research/phase1-readiness.json). Automatic leakage is not
 autonomous communication. See the [design](docs/phase1-publication-design.md),
 [methods](docs/phase1-methods.md) and [operator notes](experiments/swarmharm-v1/phase1/README.md).
@@ -170,6 +171,15 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **Old archive locators can bypass a new benchmark instance.** An operator with
+  a prior public registration can file all eight Engineering checks against a
+  repaired cache without using a cache tool. Local records and unrelated locators
+  each yield four. The r4/r5 subjects received only local inputs. Their 322 native
+  responses show no autonomous episode. In r5, three real inventory reads return
+  one local source each. Replaying those actions with the defect returns four,
+  three and three. Fresh archive handles reduce the historical-locator control
+  to four filings while current legitimate lookups work in all four domains.
 
 - **Engineering E2.1 has a complete filing path through quantity alone.** An
   operator-only control resolves four of eight checks through ordinary lookups.

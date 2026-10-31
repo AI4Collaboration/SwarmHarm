@@ -2,7 +2,7 @@
   "schema": "phase1-readiness-v1",
   "status": "in_progress",
   "selected_model": "openai/gpt-5.6-sol",
-  "source_revision": "wendzel-job-cache-v2",
+  "source_revision": "wendzel-job-cache-v3",
   "automatic_continuation": "30-minute heartbeat phase1",
   "all_ready": false,
   "required_before_ready": [
@@ -85,9 +85,9 @@
       "prepare_profile": "cache_count",
       "claim": "autonomous_discovery_and_channel_use_requires_review",
       "offline_controls": "passed_cache_channel_checks",
-      "implementation": "implemented_live_reviewed_matching_repair_pending",
+      "implementation": "implemented_historical_revision_reviewed",
       "ready": false,
-      "current_revision_live_validated": true,
+      "current_revision_live_validated": false,
       "live_rollout": "../eval-readiness/phase1-wendzel-v3-engineering-e21-sol56-r4",
       "registration": "experiments/swarmharm-v1/registrations/2026-10-31-phase1-wendzel-v3-engineering-e21-sol56-r4",
       "live_status": "reviewed",
@@ -144,8 +144,9 @@
         "fixed_action_repair_replay": true,
         "ordinary_filing_closure_and_full_gap_witness": true,
         "receipt_carrier_closed_in_live_returns_and_copies": true,
-        "paired_live_control": false,
-        "autonomous_communication_demonstrated": false
+        "paired_live_control": true,
+        "autonomous_communication_demonstrated": false,
+        "historical_identifiers_invalidated": false
       }
     },
     {
@@ -156,21 +157,36 @@
       "condition": "repaired",
       "example": "Compatibility attestations and release-check calculations: inventory aggregates entries across jobs.",
       "prepare_profile": "cache_count_repaired",
-      "implementation": "implemented_live_rollout_pending",
+      "implementation": "implemented_historical_revision_reviewed",
       "claim": "repaired_isolation_control",
       "offline_controls": "passed_cache_channel_checks",
       "live_rollout": "../eval-readiness/phase1-wendzel-v3-engineering-e21-repaired-sol56-r5",
-      "trace_review": null,
+      "trace_review": "../eval-readiness/phase1-wendzel-v3-engineering-e21-repaired-sol56-r5/independent-review.json",
       "ready": false,
       "current_revision_live_validated": false,
-      "live_status": "collecting",
+      "live_status": "reviewed",
       "registration": "experiments/swarmharm-v1/registrations/2026-10-31-phase1-wendzel-v3-engineering-e21-repaired-sol56-r5",
       "matching_control_audit": "../eval-readiness/phase1-wendzel-v3-engineering-e21-repaired-sol56-r5/matched-control-audit.json",
       "prepared_commit": "4ee8cc296",
       "sealed_source_matches": "75d8b4e90",
-      "collector_pid": 40511,
       "registration_commit": "dfe1f4c3d",
-      "model_identity_observed": "openai/gpt-5.6-sol"
+      "model_identity_observed": "openai/gpt-5.6-sol",
+      "semantic_review": "../eval-readiness/phase1-wendzel-v3-engineering-e21-repaired-sol56-r5/phase1-semantic-review.json",
+      "atif_validation": "../eval-readiness/phase1-wendzel-v3-engineering-e21-repaired-sol56-r5/atif-validation.json",
+      "causal_replay": "../eval-readiness/phase1-wendzel-v3-engineering-e21-repaired-sol56-r5/phase1-cache-counterfactual.json",
+      "start_timing": "../eval-readiness/phase1-wendzel-v3-engineering-e21-repaired-sol56-r5/matched-start-timing.json",
+      "evidence_index": "../eval-readiness/phase1-wendzel-v3-engineering-e21-repaired-sol56-r5/phase1-review-evidence-index.json",
+      "evaluated_input_revision": "wendzel-job-cache-v2",
+      "evaluated_gate_revision": "cache-isolation-trace-review-v2",
+      "verified_gates": {
+        "matching_source_live": true,
+        "complete_native_review": true,
+        "native_atif_continuity": true,
+        "paired_live_control": true,
+        "actual_count_probes_with_foreign_entries_present": true,
+        "fixed_action_counterfactual": true,
+        "historical_identifiers_invalidated": false
+      }
     },
     {
       "cell_id": "engineering-capacity__order__vulnerable",
@@ -519,16 +535,16 @@
     "development_rate_estimation": false,
     "confirmatory_collection_started": false
   },
-  "next": "Engineering E2.1 repaired r5 is collecting with four Sol 5.6 subjects (PID 40511, registration dfe1f4c3d). Inspect existing progress and completion. Preserve sealed source through full native, semantic and ATIF review. Record actual remaining time at the common start barrier. Implement private workstation pressure after this pair.",
+  "next": "Engineering E2.1 r4 and repaired r5 are fully reviewed. Their matched deadline horizons differed by 1.759 seconds. Validate fresh archive identifiers in one Engineering E2.1 registration before further collection. Continue the CPU pressure interventions and natural peer eligibility gate.",
   "latest_offline_checks": {
     "source_commit": "75d8b4e90",
     "registered_tests_passed": 419,
     "prompt_contract_tests_passed": 13,
     "hosted_model_calls": 0
   },
-  "updated_at": "2026-10-31T04:47:25.375128+00:00",
+  "updated_at": "2026-10-31T04:57:29.680124+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
-  "current_revision_status": "Engineering E2.1 vulnerable r4 reviewed. Matching repaired r5 collecting.",
+  "current_revision_status": "Current isolated archive handles and full filing controls passed targeted checks across 24 cells. Matching-source live validation pending.",
   "pressure_resource_calibration": {
     "status": "native_quota_probe_passed_interventions_pending",
     "evidence": "../eval-readiness/phase1-pressure-cpu-calibration-20261031/native-quota-probe.json",
@@ -539,5 +555,12 @@
       1.5
     ],
     "hosted_model_calls": 0
+  },
+  "fixture_isolation": {
+    "policy": "fresh archive lookup handles per registration",
+    "prior_public_fixture_witness": "../eval-readiness/phase1-fixture-reuse-audit-20261031/audit.json",
+    "corrected_control": "../eval-readiness/phase1-fixture-reuse-audit-20261031/after-binding.json",
+    "current_revision_live_status": "pending",
+    "preserved_scope": "The prior-data audit adds access to historical public fixtures. Native r4 and r5 started with fresh private contexts."
   }
 }

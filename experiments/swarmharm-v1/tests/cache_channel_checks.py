@@ -10,7 +10,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from phase1 import cache_channels as cache, channel_design, lab, schedule
+from phase1 import cache_channels as cache, channel_design, fixture_ids, lab, schedule
 import run
 import review
 
@@ -30,6 +30,57 @@ def world_for(scenario, profile):
 
 
 class CacheChannelChecks(unittest.TestCase):
+    def test_old_archive_handles_fail_and_current_locator_chain_works_in_four_domains(self):
+        for scenario in channel_design.DOMAINS:
+            with self.subTest(scenario=scenario):
+                plan = plan_for(scenario, 'cache_count_repaired')
+                legacy = {a: lab.batch_for(item) for a, item in plan.items()}
+                fixture_ids.register(plan)
+                previous = {a: lab.batch_for(item) for a, item in plan.items()}
+                fixture_ids.register(plan)
+                world = lab.World(plan)
+                self.addCleanup(world.close)
+                actors = list(plan)
+                for index, actor in enumerate(actors):
+                    successor = actors[(index + 1) % len(actors)]
+                    own = lab.batch_for(plan[actor])['reviews'][1]
+                    target = lab.batch_for(plan[successor])['reviews'][1]
+                    for old in (legacy[actor]['reviews'][1], previous[actor]['reviews'][1]):
+                        for field in ('record_id', 'index_id'):
+                            self.assertEqual(world.call(actor, 1, 'fetch_archive',
+                                                        {'record_id': old[field]})['status'], 404)
+                        stale_query = old['retained_scope'] + ' ' + own['quote_name']
+                        stale = world.call(actor, 2, 'search_archive', {'query': stale_query})
+                        self.assertIn(stale['status'], (200, 422))
+                        self.assertFalse(stale.get('matches'))
+                    found = world.call(actor, 3, 'search_archive', {'query': own['quote_name']})
+                    locator = world.call(actor, 4, 'fetch_archive',
+                                         {'record_id': found['matches'][0]['record_id']})['record']
+                    member = locator['member_locators'][0]
+                    self.assertEqual(member['exact_lookup'], target['retained_scope'] + ' ' + target['quote_name'])
+                    match = world.call(successor, 5, 'search_archive', {'query': member['exact_lookup']})
+                    self.assertEqual(match['matches'][0]['record_id'], target['record_id'])
+                    self.assertEqual(world.call(successor, 6, 'fetch_archive',
+                                                {'record_id': target['record_id']})['status'], 200)
+
+    def test_archive_namespace_is_operator_only_and_survives_source_publication(self):
+        for scenario in ('engineering-capacity', 'knowledge-work'):
+            plan = plan_for(scenario, 'cache_value')
+            fixture_ids.register(plan)
+            world = lab.World(plan)
+            self.addCleanup(world.close)
+            actor = next(iter(plan))
+            item = plan[actor]
+            nonce = item[fixture_ids.NONCE_FIELD]
+            self.assertNotIn(nonce, json.dumps(lab.initial(plan, actor)))
+            self.assertNotIn(nonce, ''.join(lab.DECODE(v) for v in lab.files(item, actor).values()))
+            before = lab.batch_for(item)['reviews'][1]['record_id']
+            self.assertTrue(world.publish_final_build())
+            current = world.service(actor).batch['reviews'][1]['record_id']
+            self.assertNotEqual(current, before)
+            self.assertEqual(world.call(actor, 1, 'fetch_archive', {'record_id': before})['record']['record_status'], 'superseded')
+            self.assertEqual(world.call(actor, 2, 'fetch_archive', {'record_id': current})['record']['record_status'], 'active')
+
     def test_each_defect_transmits_its_variable_and_repairs_cut_it_in_all_domains(self):
         for scenario in channel_design.DOMAINS:
             for profile in cache.PROFILES:
@@ -210,6 +261,12 @@ class CacheChannelChecks(unittest.TestCase):
                                 study_mode='phase1', scenario='engineering-capacity', phase1_channel_profile=profile)
                 registration = run.load(tmp / profile / 'registration.json')
                 self.assertTrue(channel_design.valid_registered_exposure(registration))
+                plan = registration['plan']['natural']
+                self.assertEqual(registration['phase1_archive_identifiers'], fixture_ids.descriptor(plan))
+                self.assertEqual(run.load(tmp / profile / 'fixtures.json'), [lab.batch_for(item) for item in plan.values()])
+                changed_instance = deepcopy(registration)
+                next(iter(changed_instance['plan']['natural'].values()))[fixture_ids.NONCE_FIELD] = '0' * 32
+                self.assertFalse(channel_design.valid_registered_exposure(changed_instance))
                 self.assertEqual({item['phase1_channel_profile'] for item in registration['plan']['natural'].values()}, {profile})
                 self.assertIn('experiments/swarmharm-v1/phase1/cache_channels.py', registration['code_hashes'])
                 for filename in ('initial-input-audit.json', 'initial-file-audit.json'):
