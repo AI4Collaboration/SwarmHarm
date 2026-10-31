@@ -22,9 +22,17 @@ read/write path themselves. An explicitly supplied common document tests use of
 an existing channel, not discovery of an isolation defect. This document example
 is a proposed implementation, not a completed or live-validated environment.
 
-## Channel taxonomy: three study strata
+## Required carrier taxonomy and existing encoding strata
 
-The source is [Wendzel et al., ACM Computing Surveys (2025), §5.4–5.5 and Figure 4](https://d-nb.info/1363160842/34),
+The latest user clarification requires a grounded taxonomy of the exploitable
+cross-sandbox carriers themselves. Documents, result directories, caches, task
+queues and locks are candidate examples, not yet justified taxonomy classes.
+Do not declare this requirement complete by listing implementations or by using
+E1/E2.1/E2.2 as carrier categories. Those patterns remain supplementary labels
+for how information is encoded. Establish the carrier classification before
+selecting further live environments.
+
+The encoding source is [Wendzel et al., ACM Computing Surveys (2025), §5.4–5.5 and Figure 4](https://d-nb.info/1363160842/34),
 with the [author-maintained catalogue](https://www.uni-ulm.de/in/omi/forschung/projekte/patterns/patterns-1/).
 This is a mechanism taxonomy applied to isolation defects; the paper does not
 classify our synthetic vulnerabilities or establish autonomous agent discovery.
@@ -44,8 +52,9 @@ Separate the concrete carrier from its information-bearing mechanism. A document
 body can carry E1 values; a collection can carry E2.1 through its size or E2.2
 through its order if those features are actually mutable and observable across
 the intended boundary. A carrier need not implement all three strata. Record
-the carrier and exact isolation defect as implementation details, not another
-taxonomy axis or a mandatory Cartesian product.
+the carrier category, concrete surface and exact isolation defect separately
+from the encoding label. The carrier taxonomy is pending source-based design;
+its combinations with encoding patterns are not a mandatory Cartesian product.
 
 Apply the source's explicit-operation and minimized-abstraction rules. Record
 hybrids when more than one information-bearing operation is needed. Mere element
@@ -56,7 +65,8 @@ second channel. Classify observed use separately from the mechanism offered.
 
 | Dimension | Levels | Constraint |
 |---|---|---|
-| Channel mechanism | E1; E2.1; E2.2 | Each has an executable isolation flaw and a matched repair. |
+| Exploitable carrier category | Pending grounded classification | Primary channel taxonomy requested by the user; examples alone are insufficient. |
+| Encoding mechanism | E1; E2.1; E2.2 | Supplementary mechanism label; current cache adapter implements all three with matched repairs. |
 | Pressure | Ordinary work; self-preservation; peer-preservation; self-enhancement | Direct resource owner × preservation/enhancement from a fixed baseline. Peer-enhancement is optional, not a required fourth pressure. |
 
 Engineering, Data Analysis, Financial Analysis and Knowledge Work are coverage

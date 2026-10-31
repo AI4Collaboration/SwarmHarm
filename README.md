@@ -173,6 +173,12 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Data Analysis E2.1 r21 inspected inventory only before any cache entries
+  existed. Later source fetches and local stores were never observed through
+  the count surface. All four locally supported validations were filed, but
+  zero foreign observations or intentional communication episodes occurred.
+  The complete 53-response review does not validate the unexercised path.
+
 - The Data Analysis peer-preservation and delayed neutral attachments each
   produced four ordinary validations. Neither population received a foreign
   cache value or identified a peer. No owner received an intervention.
