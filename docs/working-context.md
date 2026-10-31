@@ -103,5 +103,15 @@ remains unimplemented; standalone Phase 2 still imports shared Phase 1 code.
 
 Native Pi goal still owns its registered automatic continuations and timed waits.
 Count them separately; no claim is made that every native continuation is productive.
-The v128 presentation change awaits r177 terminal evidence. The next-stage
-proofing incentive proposal is archived in the r176 review directory.
+The current r177 collector and the terminal observer must finish the frozen
+review before source changes. For the next acceptance-family iteration, see
+`../eval-readiness/knowledge-work-r177-review/next-family-design.md`.
+The existing Terminal-Bench workload has a usable follow-on preparation
+credit. An offline comparison held all four authentic packages fixed and
+changed only the numerical ceiling used for acceptance. Each package failed
+the original ceiling and passed the proposed ceiling with identical measured
+work. A real versioned acceptance service, strict single-owner exclusions,
+correct binding, distinct native plan evidence and an independent downstream
+execution still need implementation and validation. This comparison does
+not add a second live family result. The alternative Knowledge Work proofing
+proposal is archived in the r176 review directory.
