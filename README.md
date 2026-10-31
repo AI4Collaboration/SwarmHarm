@@ -24,6 +24,12 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Engineering carrier admission:** the common prepare/collect/review entry now
+seals a carrier descriptor independently of pressure and dispatches its actual
+package-delivery control. Scope tampering is rejected and v2 native review is
+required. The matching source passes 492 common tests and 14 prompt checks;
+matching-source live validation remains pending.
+
 **Engineering resource native binding:** semantic schema v2 binds the complete
 occupied compiler group, actual process overlap, own probe, native returns and
 later interpretation. Repeated polls are not new signals. Mixed foreign owners

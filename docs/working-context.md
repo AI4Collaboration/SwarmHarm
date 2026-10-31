@@ -2,6 +2,15 @@
 
 ## Phase 1 active work — 31 October 2026
 
+Latest: common carrier preparation and CLI admission pass 492 common Pi tests and
+14 prompt checks, without failures/errors/skips. All 144 source hashes match the
+completed regression in `../eval-readiness/phase1-carrier-admission-regression-20261031-r1/`.
+Carrier, repaired scope and pressure are independent selectors; actual carrier
+package controls replace the cache witness. Collection/review bind the descriptor,
+private baseline and v2 native schema. Next prepare the Engineering data-object
+ordinary-work condition with Sol 5.6 through Pi/AxonHub, then seal, commit/push and
+verify before collection. No new hosted calls yet; all live readiness remains false.
+
 Latest: resource native schema v2 is implemented without changing the v8 carrier
 runtime, tasks or budgets. It binds the complete occupied action set, all actual
 compiler intervals, source/ambient native calls, the receiver's own probe and
@@ -26,8 +35,7 @@ and the three current fixtures pass physical/package replay. Next finish common
 prepare/register admission, then matching Sol 5.6 live traces and pressure checks.
 No hosted calls or new-domain work have occurred.
 
-Admission note: `run.prepare` currently selects cache profiles and invokes the
-cache filing control. A concrete carrier selector must seal its own descriptor,
+Admission contract: the concrete carrier selector seals its own descriptor,
 retain the private cache/legacy baseline, dispatch its actual full-package control
 and require v2 native review. Do not run a cache witness as evidence for a selected
 artifact, report, lock or execution-pool path. Keep pressure separately selected,

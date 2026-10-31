@@ -15,7 +15,7 @@ from phase1 import channel_design
 from phase1 import pressure_review
 from phase1 import trace_review
 from phase1 import carrier_evidence, carrier_trace_review
-from phase1 import release_packages
+from phase1 import release_packages, carrier_registration
 import domain_runtime
 
 
@@ -39,6 +39,7 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/phase1/carrier_trace_review.py",
     "experiments/swarmharm-v1/phase1/carrier_resource_review.py",
     "experiments/swarmharm-v1/phase1/release_packages.py",
+    "experiments/swarmharm-v1/phase1/carrier_registration.py",
     "experiments/swarmharm-v1/phase1/channel-taxonomy.json",
     "experiments/swarmharm-v1/phase1/topology.py",
     "experiments/swarmharm-v1/domain_runtime.py",
@@ -1485,6 +1486,8 @@ def review(root, destination=None):
     carrier_condition = carrier_evidence.condition(registration['plan']['natural'])
     if carrier_condition is not None and not phase1_only:
         raise ValueError('Concrete carrier review currently requires standalone Phase 1')
+    if carrier_condition is not None and not channel_design.valid_registered_exposure(registration):
+        raise ValueError('Carrier registration differs from its scope or baseline')
     annotation_path = root / 'phase1-semantic-review.json'
     phase1 = (carrier_trace_review.assess(root, registration, world,
                                         load(annotation_path) if annotation_path.exists() else None)

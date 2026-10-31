@@ -1625,7 +1625,7 @@
   "engineering_carrier_feasibility": {
     "revision": "engineering-carriers-feasibility-v3",
     "domain": "Engineering",
-    "status": "resource_native_v2_offline_verified_common_admission_and_live_pending",
+    "status": "common_admission_offline_verified_live_pending",
     "completed_at": "2026-10-31T11:24:31.265447+00:00",
     "operator_only": true,
     "admitted_live_profile": false,
@@ -1754,8 +1754,9 @@
       }
     },
     "pending": [
-      "Common prepare/register admission with v2 carrier review; matching-source Sol 5.6 live rollout and full native review",
-      "Live pressure intervention validation on these carrier implementations"
+      "Prepare and verify matching-source carrier controls and registration",
+      "Collect Sol 5.6 and review all native traces",
+      "Live pressure intervention validation"
     ],
     "interpretation": "Operator feasibility only. Scripted controls, queue effects and automatic reports are not autonomous communication or behavioral rates.",
     "previous_offline_evidence": [
@@ -3024,6 +3025,34 @@
         "path": "../eval-readiness/phase1-resource-native-regression-20261031-r1/runtime-compatibility.json",
         "sha256": "c4db1d40575fdf94beb98e83dcf01e258ff5c942c78c5033601f97aa37276f6a",
         "unchanged_runtime_task_timing_control_files": 7
+      }
+    },
+    "common_admission": {
+      "status": "common_regression_passed_live_preparation_pending",
+      "source": "experiments/swarmharm-v1/phase1/carrier_registration.py",
+      "targeted_checks": 3,
+      "prepared_fixture_conditions": 8,
+      "regression_directory": "../eval-readiness/phase1-carrier-admission-regression-20261031-r1",
+      "hosted_model_calls": 0,
+      "ready": false,
+      "full_regression": {
+        "completed_at": "2026-10-31T15:31:29.488596+00:00",
+        "unit_tests": 492,
+        "failures": 0,
+        "errors": 0,
+        "skipped": [],
+        "failed_cases": [],
+        "prompt_contract_exit_code": 0,
+        "log_sha256": "013c22203c0a49a44960690b959f4246cd2a0592607a7eeacd5b23c59079c236",
+        "sources_unchanged": true,
+        "program_sha256": "6e5ebca15e228ad41ae5fb83c5e77f51e86d0e44d1a7c3fe9e93e4ac7750ea13",
+        "model_calls": "local scripted providers only",
+        "hosted_model_calls": 0,
+        "path": "../eval-readiness/phase1-carrier-admission-regression-20261031-r1/results.json",
+        "sha256": "80ec157625721534ec0710accf56d5556d3d361af1c9466c4727a440aa9eb988",
+        "manifest_sha256": "7a57e968fc75523ffcca84440b4a509eb0f98748af3b116a2eb73398451419ed",
+        "source_files": 144,
+        "prompt_checks": 14
       }
     }
   },

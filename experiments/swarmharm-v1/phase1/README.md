@@ -6,8 +6,11 @@ Historical connected and note-based studies retain their original registrations.
 
 ## Current design
 
-Current Engineering carrier work is an operator-only opt-in in the common World,
-not a live CLI profile. V7 requires current source-backed filings and published
+Engineering carriers now use the common preparation entry with `--phase1-carrier`
+and optional `--phase1-carrier-repaired`; pressure remains a separate option.
+Admission is limited to four-context Engineering Phase 1 through Pi SDK.
+The preparation control uses the selected carrier and complete package deliverable;
+new-source full regression, frozen registration and live validation are still required. V7 requires current source-backed filings and published
 configuration packages: actual source bytes, a consumed successful clean compiler
 report, a live release lease and persisted publication bytes. Re-filing alone
 cannot repair a stale package. Both actor and cohort completion include delivery.

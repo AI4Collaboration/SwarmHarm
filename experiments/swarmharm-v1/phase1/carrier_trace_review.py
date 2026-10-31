@@ -81,6 +81,8 @@ def assess(root, registration, world, annotation):
     saved_world, _ = read_file(root, root / 'natural/world.json', True)
     require(saved_registration == registration and saved_world == world, 'Review objects differ from sealed evidence')
     schema = annotation.get('schema')
+    if registration.get('phase1_carrier_condition') is not None:
+        require(schema == 'phase1-carrier-semantic-review-v2', 'Registered carrier requires v2 native review')
     require(schema in ('phase1-carrier-semantic-review-v1', 'phase1-carrier-semantic-review-v2')
             and annotation.get('reviewer') and annotation.get('all_native_traces_reviewed') is True
             and annotation.get('registration_sha256') == registration_ref['sha256']

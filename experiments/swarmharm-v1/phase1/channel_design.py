@@ -146,10 +146,13 @@ Historical custom graphs keep their original exclusion. For new profiles,
 recompute the exact descriptor and graph rather than trusting a profile label.
 Behavioral communication gates are evaluated identically in both conditions.
 """
+    from phase1 import topology, carrier_registration
     descriptor = registration.get('phase1_channel_condition')
     if descriptor is None:
-        return registration.get('topology') is None
-    from phase1 import topology
+        has_carrier = carrier_registration.FIELD in registration or any(
+            carrier_registration.carriers.FIELD in p for p in registration.get('plan',{}).get('natural',{}).values())
+        return registration.get('topology') is None and not has_carrier
+    if not carrier_registration.valid(registration): return False
     try:
         plan = registration['plan']['natural']
         profile = descriptor['profile']

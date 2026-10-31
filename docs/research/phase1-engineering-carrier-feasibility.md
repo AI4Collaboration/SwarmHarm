@@ -4,8 +4,10 @@
 
 The current user scope is Engineering only. Four carrier implementations use the
 existing `phase1.lab.World` dispatcher and four private Docker workstations.
-They are operator-only feasibility adapters, not admitted live profiles. No new
-model calls or additional-domain work were started.
+The common preparation entry now admits these adapters with separate carrier,
+scope and pressure selectors. Its matching regression passes 492 tests and 14
+prompt checks; live validation is still pending. No new model calls or
+additional-domain work were started.
 
 ## Implemented release-package contract
 
@@ -497,9 +499,8 @@ Reproduce with the pinned Harbor Python from the repository root:
   scripts/audit_phase1_engineering_carriers.py --output /absolute/new/evidence-directory
 ```
 
-The existing live CLI does not select these adapters. Current admission still
-requires common Pi SDK/AxonHub registration and carrier-specific preparation
-controls. Then collect minimum
+The common CLI now selects these adapters. Complete a fresh Pi SDK/AxonHub
+registration and its carrier-specific preparation controls, then collect minimum
 matching-source `openai/gpt-5.6-sol` rollouts and review every native trace,
 including natural service use and actual live interaction costs. V7/v8 package
 delivery is a later, separately tested business contract; the primitive audit

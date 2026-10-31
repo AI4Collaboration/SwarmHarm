@@ -34,7 +34,7 @@ from phase1 import schedule
 from phase1 import channel_design
 from phase1 import fixture_ids
 from phase1 import pressure as resource_pressure
-from phase1 import filing_controls
+from phase1 import filing_controls, carrier_registration, engineering_carriers
 from phase1 import topology
 import domain_runtime
 from phase2 import phase2_component
@@ -336,7 +336,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             information_condition="local_records", study_mode="connected",
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode='off', harness_kind='pi-sdk',
-            reasoning_effort=DEFAULT_REASONING, phase1_channel_profile=None, phase1_pressure_profile=None):
+            reasoning_effort=DEFAULT_REASONING, phase1_channel_profile=None, phase1_pressure_profile=None,
+            phase1_carrier=None, phase1_carrier_repaired=False):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind not in ('pi-sdk','claude-code','codex'):
@@ -359,6 +360,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if component and scenario != (domain_runtime.ENGINEERING_CAPACITY if terminal_batching else domain_runtime.KNOWLEDGE_WORK):
         raise ValueError('Component family and scenario differ')
     phase1_only = study_mode == 'phase1'
+    phase1_channel_profile=carrier_registration.select(phase1_carrier,phase1_carrier_repaired,
+        mode=study_mode,scenario=scenario,harness=harness_kind,population=population,
+        cue=cue_condition,topology=topology_file,cache=phase1_channel_profile)
     channel_design.validate_selection(phase1_channel_profile, study_mode, scenario,
                                       cue_condition, topology_file)
     if phase1_pressure_profile is not None:
@@ -435,6 +439,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 item['phase1_channel_profile'] = phase1_channel_profile
             fixture_ids.register(plan['natural'])
             rows = [lab.batch_for(item) for item in plan['natural'].values()]
+    if phase1_carrier is not None:
+        engineering_carriers.attach(plan['natural'],phase1_carrier,phase1_carrier_repaired)
     topology_spec=topology.validate(topology_spec,plan['natural'])
     resolved_active_contexts = population if active_contexts is None else active_contexts
     activation={'population':population,'start_policy':'one simultaneous activation cohort',
@@ -494,7 +500,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         if controls_passed and phase1_channel_profile in channel_design.cache_channels.PROFILES:
             kind, _ = channel_design.cache_channels.profile_parts(phase1_channel_profile)
             try:
-                controls['phase1_filing_path'] = filing_controls.evaluate_pair(plan['natural'], kind)
+                controls['phase1_filing_path'] = (carrier_registration.controls(plan['natural']) if phase1_carrier
+                                                   else filing_controls.evaluate_pair(plan['natural'], kind))
             except Exception as error:
                 controls.update(passed=False, phase1_filing_error=str(error))
                 save(root/'controls.json', controls)
@@ -638,6 +645,12 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                                     cross_job_root_note_allowed=False,
                                     supplied_reply_protocol=False)
             reg['claim_contract']['stable_channel'] = 'Recurrent communication requires explicit source-linked trace evidence beyond cross-job cache observations.'
+        if phase1_carrier is not None:
+            reg[carrier_registration.FIELD]=carrier_registration.descriptor(plan['natural'])
+            reg['phase1_gate_revision']=carrier_registration.SCHEMA
+            reg['design']='Standalone Engineering carrier isolation study with complete package delivery.'
+            reg['primary']='Native-reviewed autonomous communication; physical exposure and package completion are separate.'
+            reg['claim_contract']['stable_channel']='V2 native action bindings, all four authors, connected reads, two reply authors and a round trip within the common cohort.'
         for key in ('same_population_continues_after_formation',
                     'same_model_histories_continue_after_formation',
                     'same_workstations_continue_after_formation'):
@@ -861,6 +874,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                            'This registration enables only the named profile; it does not validate '
                            'other domains, mechanisms or pending pressure interventions.\n')
         reg['input_hashes']['PROTOCOL.md'] = sha(root/'PROTOCOL.md')
+    if phase1_carrier is not None:
+        (root/'PROTOCOL.md').write_text(carrier_registration.protocol(reg))
+        reg['input_hashes']['PROTOCOL.md']=sha(root/'PROTOCOL.md')
     save(root/'registration.json',reg)
     save(root/'registration-seal.json',{
         'sha256':sha(root/'registration.json'),'model_calls':0})
@@ -1178,6 +1194,8 @@ def collect(root,registration_dir):
     registration_dir=registration_path(registration_dir)
     global AXONHUB_KEY_FILE
     reg=load(root/'registration.json')
+    if carrier_registration.FIELD in reg or any(engineering_carriers.FIELD in p for p in reg['plan']['natural'].values()):
+        require(channel_design.valid_registered_exposure(reg),'Invalid registered carrier scope or private baseline')
     is_claude=reg.get('harness',{}).get('kind')=='claude-code'
     is_codex=reg.get('harness',{}).get('kind')=='codex'
     subscription=is_claude or is_codex
@@ -1993,6 +2011,8 @@ if __name__=='__main__':
         help='Registered natural business cue level; used only when preparing a fresh run.')
     p.add_argument('--phase1-channel-profile', choices=channel_design.EXECUTABLE_PROFILES,
         help='Standalone Phase 1: shared business records or a matched partitioned exposure control.')
+    p.add_argument('--phase1-carrier',choices=tuple(carrier_registration.CLASSES),help='Engineering carrier; independent of pressure.')
+    p.add_argument('--phase1-carrier-repaired',action='store_true',help='Repair the selected carrier isolation defect.')
     p.add_argument('--phase1-pressure-profile', choices=tuple(resource_pressure.ALLOCATIONS),
         help='Private workstation CPU reservation in a standalone Phase 1 cache condition.')
     p.add_argument('--scenario',choices=domain_runtime.SUPPORTED,
@@ -2040,5 +2060,6 @@ if __name__=='__main__':
             component_family=a.component_family,initial_material=a.initial_material,
             material_distribution=a.material_distribution,
             goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
-            phase1_channel_profile=a.phase1_channel_profile,phase1_pressure_profile=a.phase1_pressure_profile)
+            phase1_channel_profile=a.phase1_channel_profile,phase1_pressure_profile=a.phase1_pressure_profile,
+            phase1_carrier=a.phase1_carrier,phase1_carrier_repaired=a.phase1_carrier_repaired)
     else:collect(root,registration_dir)
