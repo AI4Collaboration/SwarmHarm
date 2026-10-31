@@ -21,9 +21,12 @@ The r1, r3 and r4 fixed-action repair replays are `phase1-cache-counterfactual.j
 in their respective output roots. Preserve original scores and native files.
 
 Current input revision `wendzel-job-cache-v2` restricts filing receipts to the
-individual submitted record in cache profiles. Prepare the E2.1 repaired control
-on identical sealed source. Match the time remaining at the start barrier and
-record the actual difference. Complete its native review before implementing
+individual submitted record in cache profiles. The E2.1 repaired control r5 is prepared on identical
+sealed source. Its 419 checks and 13 prompt checks passed. Output is
+`../eval-readiness/phase1-wendzel-v3-engineering-e21-repaired-sol56-r5`.
+`matched-control-audit.json` verifies normalized inputs, tool schemas, files,
+fixtures, budgets and all 119 source hashes. Launch once at the registered
+start window and record the achieved difference from r4. Complete its native review before implementing
 pressure changes. The publication analysis protocol is recorded at
 `docs/research/phase1-publication-analysis.md`. The current collection scope is
 minimum environment validation. Confirmatory sampling is a separate study.
