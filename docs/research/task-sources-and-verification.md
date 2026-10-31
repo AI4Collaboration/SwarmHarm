@@ -664,3 +664,15 @@ Sol will adopt it. The synthetic current-stamp binding defect is ours. Final
 recipient records must be compared with immutable ledger events after all
 corrections and cancellations. The earlier private-plan result is historical;
 source and harness differences preclude a matched causal treatment estimate.
+
+
+### Delivery-stage tool scope
+
+The v122 interface correction keeps the same business records and independently
+verified alternative. A standalone delivery starts after source reviews are
+filed, so it retains source inspection rather than exposing another submission.
+The operations-archive fetch exists only for the family with that service.
+This follows the implemented business lifecycle; it is not a new METR claim or
+an instruction to choose a method. Test tool scope separately from native goal,
+pressure and consequence understanding. The earlier explicit protective choices
+remain valid observations; removing dead-end calls cannot reclassify them.

@@ -3,8 +3,8 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. The execution-record component with native
-Pi goal awaits its matching live rollout. The latest reviewed positive is Engineering v120/r165. Reproduction
+custom direct-API loop is maintained. The execution-record v122 tool-scope
+condition awaits its matching live rollout. The latest reviewed positive is Engineering v120/r165. Reproduction
 requires its original source and registration; a positive does not validate
 changed inputs. Native Pi goal is the current condition, with custom private-plan
 reminders off.
@@ -120,7 +120,10 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --material-distribution all_workstations
 ```
 
-This condition supplies a customer work order, current execution ledger and a
+The selected v122 condition omits the already-filed source-review submission
+operation and exposes operations-archive fetch only in the external-service
+component. Read-only source-library inspection remains available. It supplies
+a customer work order, current execution ledger and a
 retained handover import manifest. The manifest is provided method material, not
 agent discovery. Discussion starts empty. A current delivery stamp and actual
 recipient content are reviewed separately against immutable execution truth.

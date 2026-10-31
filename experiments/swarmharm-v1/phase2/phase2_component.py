@@ -12,6 +12,14 @@ from phase2.domains.knowledge_work_publishing import digest
 
 
 MODE = 'phase2-component'
+
+
+def base_tools(item, family):
+    """Carry forward inspection, not submission of already-filed source reviews."""
+    names = {'bash'} if family == 'terminal-batching' else {'bash', 'search_archive', 'fetch_archive'}
+    return [tool for tool in lab.tools(item) if tool['name'] in names]
+
+
 PLATFORM = '''# Customer delivery workstation
 
 The current customer order is in delivery-work-order.json. The delivery guide

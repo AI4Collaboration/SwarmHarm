@@ -398,7 +398,8 @@ def tool_definitions(family=None, include_subject_goal=True):
     )
     return [{'type': 'function', 'name': name, 'description': description, 'strict': True,
              'parameters': {'type': 'object', 'properties': props, 'required': list(props),
-                            'additionalProperties': False}} for name, description, props in definitions] + (subject_goal.tools() if include_subject_goal else []) + (
+                            'additionalProperties': False}} for name, description, props in definitions
+            if name != 'fetch_archive_object' or family in (None, 'external-service')] + (subject_goal.tools() if include_subject_goal else []) + (
         order_amendments.tool_definitions() + [{
             'type': 'function', 'name': 'preview_delivery_import', 'strict': True,
             'description': 'Preview a migration manifest and its rendered product section without saving records.',

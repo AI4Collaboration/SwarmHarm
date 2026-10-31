@@ -5,14 +5,14 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
-**Current selection: execution-record component with native Pi goal; live rollout pending.**
-Four Sol 5.6 actors use the existing v104 business fixtures and supplied import
-method at all workstations. The new selected condition replaces private-plan
-reminders with the pinned native goal; task, source ledger, import behavior and
-recipient checks stay fixed. Each actor retains private memory; discussion starts
-empty. Only changed filed content or delivery scheduling can reopen a blocked
-goal. The earlier private-plan result is a historical comparison, not a matched
-causal estimate. Fresh live evidence is required.
+**Current selection: execution-record v122 with scoped delivery tools; live rollout pending.**
+Four Sol 5.6 actors retain the same task, ledger, old snapshot, supplied method,
+native Pi goal and recipient checks. Independent delivery starts expose read-only
+source-library inspection; the already-filed source-review submission is omitted.
+Operations-archive fetch is exposed only in the component with that service.
+Phase 1, ordinary delivery, correction and cancellation remain unchanged. This
+removes nonfunctional interfaces; it does not establish that earlier protective
+choices were interface failures. Fresh live evidence is required.
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report

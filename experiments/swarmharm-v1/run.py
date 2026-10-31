@@ -480,8 +480,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if component:
         audit = load(root/'initial-input-audit.json')
         for actor in plan['natural']:
+            audit['natural'][actor]['tools'] = phase2_component.base_tools(
+                plan['natural'][actor], component_family)
             if terminal_batching:
-                audit['natural'][actor]['tools'] = [t for t in lab.tools(plan['natural'][actor]) if t['name'] == 'bash']
                 audit['natural'][actor]['input'][0]['content'] = json.dumps({
                     'job_id': actor, 'workload': phase2_plan[actor]['workload'],
                     'workspace': '/workspace', 'platform_document': '/workspace/PLATFORM.md'})
@@ -589,8 +590,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'same_workstations_continue_after_formation'):
             reg['connected_protocol'][key]=False
     if component:
-        reg['input_revision'] = ('knowledge-work-customer-review-calendar-component-v121' if component_family == 'acceptance'
-                                 else 'knowledge-work-material-distribution-component-v104')
+        reg['input_revision'] = 'knowledge-work-component-tools-v122'
         if goal_mode == 'off':
             reg['subject_goal'] = {
                 'condition': component_workflow.subject_goal.CONDITION,
@@ -1329,7 +1329,7 @@ def collect(root,registration_dir):
                     max_output_tokens=budget['max_output_tokens_per_response'],
                     context_window=harness['context_window'],
                     request_timeout_ms=budget['request_timeout_seconds']*1000,
-                    tools=([t for t in lab.tools(item) if t['name'] == 'bash'] if terminal_batching else lab.tools(item))
+                    tools=(phase2_component.base_tools(item, reg['phase2']['component_family']) if component else lab.tools(item))
                         +(phase2_definitions if not phase1_only else []),
                     active_tools=[tool['name'] for tool in initial[name][actor]['tools']],
                     job_context=session_inputs(initial[name][actor], harness['kind'])[0],

@@ -157,9 +157,22 @@ class ComponentChecks(unittest.TestCase):
                 self.assertNotIn('agent_targeted_consequence', lab.DECODE(material['/workspace/delivery-work-order.json']))
             for initial in run.load(root/'initial-input-audit.json')['natural'].values():
                 self.assertIn('send_delivery_packet', {t['name'] for t in initial['tools']})
+                self.assertNotIn('submit_review', {t['name'] for t in initial['tools']})
                 self.assertEqual(initial['input'][1], {
                     'role': 'developer', 'content': workflow.subject_goal.INSTRUCTION})
                 self.assertNotIn('phase', initial['input'][-1]['content'].lower())
+
+    def test_component_tools_keep_source_inspection_and_match_available_services(self):
+        item = next(iter(self.plan.values()))
+        self.assertIn('submit_review', {t['name'] for t in lab.tools(item)})
+        for family in workflow.FAMILIES:
+            base = {t['name'] for t in component.base_tools(item, family)}
+            self.assertEqual(base, {'bash', 'search_archive', 'fetch_archive'})
+            tools = {t['name'] for t in workflow.tool_definitions(family)}
+            self.assertEqual('fetch_archive_object' in tools, family == 'external-service')
+            self.assertTrue({'import_delivery_source', 'read_delivery_record',
+                'file_delivery_section', 'cancel_delivery_packet'} <= tools)
+        self.assertEqual([t['name'] for t in component.base_tools(item, 'terminal-batching')], ['bash'])
 
     def test_standalone_start_uses_exact_prepared_files_without_reopening_source_work(self):
         assignments = workflow.plan_for(self.plan, family='acceptance', initial_material='method_available')

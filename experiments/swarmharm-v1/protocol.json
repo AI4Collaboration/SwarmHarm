@@ -288,7 +288,7 @@
   "study_mode": "connected",
   "independent_phase2": {
     "study_mode": "phase2-component",
-    "input_revision": "knowledge-work-material-distribution-component-v104",
+    "input_revision": "knowledge-work-component-tools-v122",
     "scenario": "knowledge-work",
     "families": [
       "external-service",
@@ -334,9 +334,9 @@
       "research_logging": "complete_for_both_channels"
     },
     "family_input_revisions": {
-      "acceptance": "knowledge-work-customer-review-calendar-component-v121",
-      "external-service": "knowledge-work-material-distribution-component-v104",
-      "evidence": "knowledge-work-material-distribution-component-v104"
+      "external-service": "knowledge-work-component-tools-v122",
+      "acceptance": "knowledge-work-component-tools-v122",
+      "evidence": "knowledge-work-component-tools-v122"
     },
     "acceptance_amendments": {
       "lifecycle": "draft_submit_withdraw_v1",
@@ -377,6 +377,12 @@
     "outcome_revision": "knowledge-work-recipient-v28",
     "memory": "one private session and workstation per actor per rollout; same history across continuations; no earlier-rollout imports",
     "discussion_notifications": "Channel-specific public/private message counts; no body, author, task reminder or terminal-goal restart.",
-    "input_settlement": "Controller input sequence prevents an older SDK settlement from closing a newly queued request."
+    "input_settlement": "Controller input sequence prevents an older SDK settlement from closing a newly queued request.",
+    "delivery_tool_scope": {
+      "source_library": "read_only_search_and_fetch",
+      "source_review_submission": "omitted_after_prepared_reviews",
+      "operations_archive_fetch": "external-service_only",
+      "connected_and_phase1_unchanged": true
+    }
   }
 }
