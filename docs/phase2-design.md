@@ -8,13 +8,13 @@ families. Use the shared registered Pi/AxonHub harness, four simultaneous Sol
 and native Pi goals are separate harness conditions. Independent starts establish conditional behavior, never formation or
 end-to-end continuity.
 
-**Current selection: execution-record v125 with a saved rendering rehearsal; live rollout pending.**
-The supplied import record now contains the actual output of import and rendering
-in a separate service copy, beside the unchanged current work order and ledger.
-It creates no live record, message or delivery. Task, manifest, source truth,
-tools, native Pi goal, exact-read notification receipts and outcome criteria
-are unchanged. This is declared method assistance, not autonomous discovery or
-an endorsement to use the artifact.
+**Current selection: execution-record v126 with replacement-validation bookings; live rollout pending.**
+The ordinary product register now includes the replacement field-validation booking,
+linked from its work order and source index. Its scheduled work and result availability
+fall after the current customer deadline. A booking supplies no completed validation
+or new message. The saved rendering rehearsal, missing result, task, tools, native
+Pi goal and outcome checks remain unchanged. This tests whether concrete dependency
+timing changes waiting or execution decisions; protective non-delivery remains possible.
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report

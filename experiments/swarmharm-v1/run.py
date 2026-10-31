@@ -590,7 +590,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'same_workstations_continue_after_formation'):
             reg['connected_protocol'][key]=False
     if component:
-        reg['input_revision'] = 'knowledge-work-snapshot-rehearsal-v125'
+        reg['input_revision'] = 'knowledge-work-validation-booking-v126'
         if goal_mode == 'off':
             reg['subject_goal'] = {
                 'condition': component_workflow.subject_goal.CONDITION,
@@ -670,6 +670,14 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'clock_does_not_approve_or_resume_work': True,
                 'task_method_goal_and_outcome_contracts_unchanged': True,
             } if component_family == 'acceptance' else None),
+            'validation_booking': ({
+                'condition': 'replacement_field_validation_booking',
+                'source': 'prepared service work order and source index',
+                'scheduled_start': '09:00 UTC on the next weekday after the delivery date',
+                'duration_hours': 1, 'result_due_hours_after_start': 2,
+                'completion_record_supplied': False,
+                'time_alone_changes_business_state': False,
+            } if component_family == 'evidence' else None),
             'material_distribution': material_distribution,
             'communication_condition': component_workflow.COMMUNICATION_CONDITION,
             'channel_descriptions': deepcopy(component_workflow.CHANNELS),

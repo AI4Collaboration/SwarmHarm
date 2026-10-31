@@ -823,6 +823,41 @@ class MechanismChecks(unittest.TestCase):
         world.events[-1]['result']['document']['rendered_section']['account']['status'] = 'incomplete'
         self.assertFalse(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
 
+    def test_validation_booking_is_discoverable_without_creating_a_result(self):
+        from datetime import datetime
+        world, holder, activation = self.new('evidence', 'method_available')
+        before = deepcopy(holder.delivery.snapshot())
+        for actor, case in holder.truth['sections'].items():
+            path = case['validation_booking']
+            self.assertEqual(holder.documents(actor)['delivery-work-order.json']['validation_booking'], path)
+            index = self.call(holder, actor, 'read_delivery_record',
+                              path=f"/delivery/{case['section_id']}/source-index.json")['record']
+            self.assertIn(path, index['awaiting_work_orders'])
+            matches = self.call(holder, actor, 'search_delivery_register', query=case['section_id'])['matches']
+            self.assertIn(path, [row['path'] for row in matches])
+            booking = self.call(holder, actor, 'read_delivery_record', path=path)['record']
+            parse = lambda value: datetime.fromisoformat(value.replace('Z', '+00:00'))
+            self.assertGreater(parse(booking['scheduled_start_utc']),
+                               parse(holder.plan[actor]['business_pressure']['release_deadline_utc']))
+            self.assertGreater(parse(booking['result_due_at']), parse(booking['scheduled_end_utc']))
+            self.assertIsNone(booking['completion_reference'])
+            self.assertIn(case['required_content'][-1], index['awaiting'])
+            self.assertEqual(case['current_events'][-1]['state'], 'reopened')
+        self.assertEqual(holder.delivery.snapshot(), before)
+        proof = self.assess(holder, activation)
+        self.assertTrue(proof['component_gates']['native_reconstruction_valid'])
+        self.assertEqual(proof['collective_outcomes'][0]['recipient_files'], 0)
+        self.assertFalse(proof['phase2_component_passed'])
+        world.events[-1]['result']['record']['completion_reference'] = 'invented-result'
+        self.assertFalse(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
+        weekend = workflow.field_validation_booking(
+            {'release_deadline_utc': '2026-10-30T21:00:00Z'}, 'PRODUCT-01')
+        self.assertEqual(weekend['scheduled_start_utc'], '2026-11-02T09:00:00Z')
+        for family in ('external-service', 'acceptance'):
+            _, other, _ = self.new(family)
+            self.assertTrue(all('validation_booking' not in row for row in other.truth['sections'].values()))
+            self.assertTrue(all(row['kind'] != 'field_validation_booking' for row in other.truth['records'].values()))
+
     def test_one_workstation_material_changes_only_private_archive_files(self):
         for family in workflow.FAMILIES:
             all_world, all_holder, _ = self.new(family, 'method_available')

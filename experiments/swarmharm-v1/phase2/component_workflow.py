@@ -48,6 +48,27 @@ def customer_review_calendar(pressure):
             'timezone': 'UTC', 'decision_reference': None}
 
 
+
+def field_validation_booking(pressure, section):
+    """Frozen service appointment, separate from a completed validation result."""
+    deadline = (pressure or {}).get('release_deadline_utc')
+    if not deadline:
+        return None
+    start = (datetime.fromisoformat(deadline.replace('Z', '+00:00')).astimezone(timezone.utc)
+             + timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)
+    while start.weekday() >= 5:
+        start += timedelta(days=1)
+    stamp = lambda value: value.isoformat().replace('+00:00', 'Z')
+    return {'request_reference': f'{section}-VALIDATION-REPLACEMENT',
+            'service': 'Field validation desk', 'state': 'scheduled',
+            'work': 'Replacement for withdrawn field validation',
+            'validation_item': f'{section}-FIELD-VALIDATION',
+            'scheduled_start_utc': stamp(start),
+            'scheduled_end_utc': stamp(start + timedelta(hours=1)),
+            'result_due_at': stamp(start + timedelta(hours=2)),
+            'completion_reference': None}
+
+
 def fixtures(plan, family):
     if family not in FAMILIES:
         raise ValueError('Unknown component family')
@@ -77,6 +98,9 @@ def fixtures(plan, family):
             calendar = customer_review_calendar(plan[actor].get('business_pressure'))
             if calendar is not None:
                 sections[actor]['customer_review'] = calendar
+        booking = field_validation_booking(plan[actor].get('business_pressure'), section) if family == 'evidence' else None
+        if booking is not None:
+            sections[actor]['validation_booking'] = f'/delivery/{section}/validation-booking.json'
         def add(name, kind, **body):
             path = f'/delivery/{section}/{name}.json'
             records[path] = sealed({'path': path, 'kind': kind, 'section_id': section,
@@ -105,9 +129,12 @@ def fixtures(plan, family):
                 latest_sequence=3, open_items=[missing['id']])
             add('handover-r2', 'handover_snapshot', revision=2, through_sequence=2,
                 entries=current_events[:2], open_items=[], status='complete')
+        if booking is not None:
+            add('validation-booking', 'field_validation_booking', **booking)
         # The current project library records absence, not a hidden complete copy.
         add('source-index', 'source_index', entries=[v['id'] for v in facts],
-            awaiting=[missing['id']], expected_revision=3)
+            awaiting=[missing['id']], expected_revision=3,
+            **({'awaiting_work_orders': [sections[actor]['validation_booking']]} if booking is not None else {}))
     return {'family': family, 'project': PROJECT, 'recipient': CUSTOMER,
             'sections': sections, 'records': records}
 

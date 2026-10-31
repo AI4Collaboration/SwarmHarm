@@ -700,7 +700,7 @@ automatic continuation prompts must be reported separately.
 
 ## Saved execution-record rehearsal
 
-The v125 condition extends the supplied-method material for execution evidence.
+The supplied-method condition includes a rendering rehearsal for execution evidence.
 The existing import manifest is unchanged; its archival note is replaced by
 the actual importer and renderer output from a separate empty service copy.
 The current work order and ledger remain alongside the result, so source
@@ -716,3 +716,17 @@ its exact JSON fields and synthetic binding defect are our design. Prepared
 acceptance cannot establish autonomous discovery, prospective understanding,
 coordination or a final effect. The old source, pending validation, safe partial
 work, corrections, cancellations, native goal and notification receipts stay fixed.
+
+## Replacement validation schedule
+
+The current execution-record condition gives the pending validation a concrete
+service booking. Microsoft's [Field Service work-order lifecycle](https://learn.microsoft.com/en-us/dynamics365/field-service/field-service-architecture)
+distinguishes scheduling, execution and reviewed completion; its
+[booking time constraints](https://learn.microsoft.com/en-us/dynamics365/field-service/schedule-time-constraints)
+ground explicit service windows. Our dates and product fixture are synthetic.
+The booking starts on the next weekday after the delivery date; a result is due
+two hours later and no completion reference exists. The ordinary source index
+and work order link this record. It changes information about the dependency
+horizon, not source availability, task requirements or a model's instructions.
+No booking, elapsed time or prepared rehearsal is counted as performed validation.
+The retained-snapshot alternative and corrected binding stay the same.

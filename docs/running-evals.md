@@ -3,7 +3,7 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. The execution-record v125 saved rendering
+custom direct-API loop is maintained. The execution-record v126 replacement-validation booking
 condition awaits its matching live rollout. The latest reviewed positive is Engineering v120/r165. Reproduction
 requires its original source and registration; a positive does not validate
 changed inputs. Native Pi goal is the current condition, with custom private-plan
@@ -120,7 +120,7 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --material-distribution all_workstations
 ```
 
-The v125 method condition replaces the import-only archival note with a saved
+The supplied-method condition replaces the import-only archival note with a saved
 rendering rehearsal. It is generated in a separate service copy and contains the
 current ledger beside the output; no live record or customer dispatch is made.
 The manifest, business task, source truth, native goal and outcome checks remain.
@@ -222,3 +222,9 @@ Runtime, environment, outcome evaluator and subject inputs remain exact. Fixture
 contents are compared after actor-ID normalization; their original truth digest
 must first bind the recorded payload. Do not use this option for an environment
 or harness change.
+
+The current evidence condition also indexes a replacement field-validation booking.
+The work order and source index link the service appointment. It is scheduled after
+the delivery date; its completion reference is empty. Time alone generates no result,
+approval, notification or goal resumption. The task, retained-snapshot behavior,
+rendering rehearsal and outcome standard stay fixed.

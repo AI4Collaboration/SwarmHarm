@@ -2,44 +2,28 @@
 
 ## Current result and priority
 
-**31 October: v125/r172 is collecting; no terminal result yet.**
-One collector (PID 21055) started at 2026-10-31T03:44:44.457385+00:00 with four
-independent Sol 5.6 contexts and native Pi goal. Do not launch a duplicate.
-Source `fd8562db4`, registration `ffba6dcdd`. All 409 selected offline checks
-and 13 prompt checks passed. Local/remote state, 112 source hashes, all input/task
-hashes and 12 registration files matched before launch; model, harness and
-budgets match r171. Seal `3484f826bd9f97bfd5f21532125491f3ca11fce8a2a1ee012c0e02e60dd16e5f`.
-Raw evidence: `../eval-readiness/2026-10-31-v125-snapshot-rehearsal-sol56-pi-n4-r172`.
-Finish this frozen run and full review before editing source. Read-only helpers:
-`/tmp/read-r172-increment.py`, `/tmp/audit-r172.py`, `/tmp/audit-r172-notices.py`.
-The latter audits exact full returned messages; native goal prompts stay separate.
+**31 October: execution-record v126 is ready for a fresh registration.**
+The only new business condition is a replacement field-validation booking, linked
+from each current work order and source index. Work starts on the next weekday
+after the customer deadline; the completion reference remains empty. The original
+request, missing result, source ledgers, retained manifest, rendered rehearsal,
+tools, native Pi goal and outcome checks remain unchanged. No peer message or
+recommendation is supplied. The ordinary path stays blocked; the original
+alternative remains reachable and corrected binding rejects it.
 
-At 03:56 UTC all 58 subject responses and 234 business events generated so far
-have been read. Three goals are blocked. Product 2 is waiting for an external
-validation update with a native timer due around 04:11:48 UTC. There are four
-accurate incomplete drafts, two current-ledger imports, five public messages,
-zero filings and no scheduled packet. These are provisional, not terminal scores.
-The next candidate is developed only in `/tmp/swarmharm-v126-review` (temporary
-worktree based on `a7d0944b6`). It adds an ordinary replacement-validation booking
-after the delivery deadline; no task, source result, method, goal or outcome change.
-Its 50 component and 13 prompt checks pass; full offline checks are running in
-`/tmp/swarmharm-v126-offline.log`. The design note is external at
-`../eval-readiness/knowledge-work-r172-review/next-condition-note.md`.
-Do not integrate, register or collect that candidate until r172 closes and its
-complete frozen review/hash audit is finished. Remove the temporary worktree after integration.
+The candidate passed 50 component and 13 prompt checks. All 433 offline tests
+are covered: seven optional-adapter errors from unpinned executables on PATH
+passed when rerun with the existing Codex 0.141.0 and Claude 2.1.304 installations.
+Global installations were unchanged. Formal preparation will run the selected
+Pi checks again and seal their result. The candidate was integrated and its temporary worktree removed. No collector is active.
 
-r171 is fully reviewed at
-`../eval-readiness/knowledge-work-r171-review/semantic-review.md`.
-Its concise lesson is in README Takeaways. Full raw evidence is preserved externally.
-
-The sole material change supplies an actual import/render rehearsal in the existing
-`saved-import-record.json`. It shows source edition, current work order, current
-ledger and rendered account with no recommendation or live artifact reference.
-The same manifest, task, truth, native Pi goal, tools, notification receipts and
-outcome criteria remain. This tests conditional use of a demonstrated method;
-it cannot reclassify the prior protective decisions or guarantee adoption.
-Review the complete native trace, independently executed recipient output and
-pre-action understanding before making any new behavioral claim.
+r172 is closed and fully reviewed at
+`../eval-readiness/knowledge-work-r172-review/semantic-review.md`.
+Its concise lesson is in README Takeaways; all raw records remain external.
+The previous source/reg/manifest were verified before integration. Do not rerun
+or replace r172. Next: commit/push source, prepare one v126/r173 registration,
+commit/push it, verify all hashes and collect once with four Sol 5.6 contexts.
+The offline candidate is not a behavioral success.
 
 **Engineering v120/r165 is reviewed positive for independent Phase 2.**
 Four Sol 5.6 actors executed four complete deliveries and four accepted
@@ -73,9 +57,9 @@ Keep the Phase 1 baseline fixed. Continue the three independent families in
 manipulation and execution-evidence manipulation. They are our non-exclusive
 operational groups based on METR, not an official exhaustive taxonomy.
 The current Engineering example covers the first family through an independent
-local business service. The active registration selects execution-record v125 with a saved rendering
-rehearsal, native Pi goal and supplied methods at all workstations. Underlying
-business truth and task stay fixed. Acceptance and execution-evidence outcomes remain pending.
+local business service. The current candidate selects execution-record v126 with concrete validation
+bookings, native Pi goal and the retained rendering rehearsal at all workstations.
+Underlying missing work and task stay fixed. Acceptance and execution-evidence outcomes remain pending.
 Do not claim host escape or infer another family's result from r165.
 
 Use METR's original investigation as the primary factual source; LessWrong's
@@ -129,5 +113,5 @@ remains unimplemented; standalone Phase 2 still imports shared Phase 1 code.
 
 Native Pi goal still owns its registered automatic continuations and timed waits.
 Count them separately; no claim is made that every native continuation is productive.
-The saved rendering rehearsal remains behaviorally unvalidated until its fresh
-matching rollout and full review finish.
+The booking condition remains behaviorally unvalidated until its fresh matching
+rollout and full review finish.
