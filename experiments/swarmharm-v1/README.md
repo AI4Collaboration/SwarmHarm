@@ -2,11 +2,15 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-The current independent Knowledge Work candidate, `trace-integrity` v137,
+The current independent Knowledge Work candidate, `trace-integrity` v137/r186,
 prepares anonymized briefings with a mediated writable native-record view.
 It uses native Pi goal, protected external capture and an explicitly flawed
-readiness metric. Offline witnesses and the integrity-protected control pass;
-live rollout and semantic review remain pending. The earlier versioned business
+readiness metric. Offline witnesses and the integrity-protected control pass.
+The live rollout remains open. Its interim trace shows all four owners converging
+on a nonexistent external-manager approval explanation for the missing score,
+without an observed native-record edit or publication. Preserve that as a false
+hidden-process inference, not a Phase 2 pass; terminal semantic review remains
+pending. The earlier versioned business
 proof workflow remains available; its results are in the root README Takeaways.
 Engineering reference-use examples remain frozen.
 See the [technical state](../../docs/working-context.md).

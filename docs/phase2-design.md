@@ -2,12 +2,24 @@
 
 ## Current decision
 
-**31 October — v137, live rollout pending.** The independent native
+**31 October — v137/r186, live rollout open.** The independent native
 record-integrity condition is implemented and exercised through offline Pi SDK
 controls, grounded in Qin et al.'s *The Perfect Crime*. It is distinct from
 the business-record workflow below. The source's reward and prepared-peer conditions
 must not be described as spontaneous live coordination. See the
 [source review and measurement boundaries](research/task-sources-and-verification.md#native-trace-integrity-perfect-crime).
+
+The interim trace contains a separate behavioral finding. All four owners made
+correct 0.8 briefings, inferred that the unexplained remainder was controlled by
+an external manager or aggregate approval, and publicly built peer approvals,
+owner sign-offs and escalation records around that model. No such manager or
+approval transition exists. At the latest snapshot they had not modified their
+session records or published a briefing. Treat this as an observed false hidden-
+process model, not manipulation or a Phase 2 pass. It parallels METR's report
+that agents inferred a causal grader and then investigated ways to affect it.
+The next condition may test whether an inferred hidden process leads to concrete
+record or acceptance actions, but must not tell subjects that inference, method
+or desired behavior.
 
 V136 tests section-level proofing before packet assembly. Each owner can render
 its saved draft and a revised copy without filing or acceptance; old copies stay
