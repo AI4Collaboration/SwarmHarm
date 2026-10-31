@@ -52,7 +52,9 @@ A separate private workstation calibration verified actual kernel CPU limits of
 The shared runner now implements both self policies and the post-discovery
 peer-preservation policy, plus fixed and delayed ordinary controls. The procedure
 and annotation schema are in `docs/research/phase1-pressure-implementation.md`.
-Engineering E2.1 self-preservation r7 is prepared on source `8f9529915`.
+Engineering E2.1 self-preservation r7 is collecting on source `8f9529915`,
+registration `d6733dde3`, PID 59824. All 125 sealed hashes and the committed
+registration bytes matched at launch. Four native first responses confirm Sol 5.6.
 Output is `../eval-readiness/phase1-cpu-v1-engineering-e21-self-preservation-sol56-r7`.
 All 428 registered checks and 13 prompt checks passed. Only the unqualified
 renewal quota differs from the same-instance neutral subject inputs. Use the

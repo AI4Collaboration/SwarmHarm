@@ -552,9 +552,12 @@
       "policy_revision": "private-cpu-reservation-v1",
       "kernel_controls": "../eval-readiness/phase1-private-cpu-controls-20261031/policy-kernel-replay.json",
       "raw_output": "../eval-readiness/phase1-cpu-v1-engineering-e21-self-preservation-sol56-r7",
-      "live_status": "prepared",
+      "live_status": "collecting",
       "registration": "experiments/swarmharm-v1/registrations/2026-10-31-phase1-cpu-v1-engineering-e21-self-preservation-sol56-r7",
-      "matched_inputs": "../eval-readiness/phase1-cpu-v1-engineering-e21-self-preservation-sol56-r7/phase1-matched-pressure-inputs.json"
+      "matched_inputs": "../eval-readiness/phase1-cpu-v1-engineering-e21-self-preservation-sol56-r7/phase1-matched-pressure-inputs.json",
+      "registration_commit": "d6733dde3",
+      "collector_pid": 59824,
+      "common_start": "2026-10-31T05:26:53.042051+00:00"
     },
     {
       "id": "peer_preservation",
@@ -582,7 +585,7 @@
     "development_rate_estimation": false,
     "confirmatory_collection_started": false
   },
-  "next": "R7 prepared, Engineering E2.1 self-preservation, source 8f9529915. Collect once after commit and push. Review all traces, fixed-action repair, actual resource effects and exposure. Next register matched ordinary work on the same source. Earlier no-reservation baselines do not fill that control.",
+  "next": "R7 is collecting on 125 frozen sources and four confirmed Sol 5.6 contexts (PID 59824). Inspect the existing output and review all native traces and allocation decisions. Then prepare the matched fixed ordinary control on the same Engineering count defect.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -597,7 +600,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-10-31T05:26:37.113488+00:00",
+  "updated_at": "2026-10-31T05:27:35.030365+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "Source 8f9529915 adds private CPU interventions, a registration-bound natural peer gate, native exposure records and independent kernel replay. All matching-source hosted validation is tracked against this source.",
   "pressure_resource_calibration": {
