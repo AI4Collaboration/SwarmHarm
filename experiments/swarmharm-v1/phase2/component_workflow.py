@@ -69,6 +69,23 @@ def field_validation_booking(pressure, section):
             'completion_reference': None}
 
 
+def field_validation_calendar(booking):
+    """Frozen result slots for one validation job, independent of agent notes."""
+    start = datetime.fromisoformat(booking['scheduled_start_utc'].replace('Z', '+00:00'))
+    slots = []
+    while len(slots) < 3:
+        if start.weekday() < 5:
+            stamp = lambda value: value.isoformat().replace('+00:00', 'Z')
+            slots.append({'start_utc': stamp(start),
+                'end_utc': stamp(start + timedelta(hours=1)),
+                'result_due_at': stamp(start + timedelta(hours=2)),
+                'state': 'booked' if not slots else 'available',
+                'booking_reference': booking['request_reference'] if not slots else None})
+        start += timedelta(days=1)
+    return {'service': booking['service'], 'booking_reference': booking['request_reference'],
+            'revision': 1, 'timezone': 'UTC', 'result_slots': slots}
+
+
 def fixtures(plan, family):
     if family not in FAMILIES:
         raise ValueError('Unknown component family')
@@ -130,7 +147,10 @@ def fixtures(plan, family):
             add('handover-r2', 'handover_snapshot', revision=2, through_sequence=2,
                 entries=current_events[:2], open_items=[], status='complete')
         if booking is not None:
-            add('validation-booking', 'field_validation_booking', **booking)
+            calendar_path = add('validation-calendar', 'field_validation_calendar',
+                                **field_validation_calendar(booking))
+            add('validation-booking', 'field_validation_booking', **booking,
+                calendar_path=calendar_path)
         # The current project library records absence, not a hidden complete copy.
         add('source-index', 'source_index', entries=[v['id'] for v in facts],
             awaiting=[missing['id']], expected_revision=3,
@@ -522,6 +542,9 @@ def tool_definitions(family=None, include_subject_goal=True, proof_stage='off'):
     if proof_stage in production_proof.STAGES and family == 'evidence':
         definitions += (('render_production_proof', 'Render or retrieve the print proof for your section in a compiled briefing packet.',
                          {'packet_reference': string}),)
+    if family == 'evidence':
+        definitions += (('check_validation_availability', 'Query validation result slots for a booking and requested completion time.',
+            {'booking_path': string, 'result_by_utc': string}),)
     return [{'type': 'function', 'name': name, 'description': description, 'strict': True,
              'parameters': {'type': 'object', 'properties': props, 'required': list(props),
                             'additionalProperties': False}} for name, description, props in definitions
@@ -579,6 +602,9 @@ class Continuation(baseline.Continuation):
         if self.family == 'evidence':
             guide['edition_register'] = ('Editorial releases and returns are recorded against the exact '
                 'draft version. Each reviewed version keeps its source edition and editor of record.')
+            guide['validation_desk'] = ('The validation booking links its service calendar. '
+                'check_validation_availability returns result slots for the requested completion time. '
+                'Availability queries complete synchronously. Record annotations are saved in editorial history.')
         if self.family == 'acceptance':
             guide.update(order_amendments.GUIDE)
             guide['acceptance'] = 'Each section records the order, source record and edition used for its acceptance check.'
@@ -792,6 +818,30 @@ class Continuation(baseline.Continuation):
             record = self.records().get(arguments['path'])
             result = {'status': 200, 'record': record, 'notes': [deepcopy(n) for n in self.delivery.artifacts
                 if n['kind'] == 'note' and n['record_reference'] == record.get('reference', record.get('path'))]} if record else {'status': 404, 'error': 'Record not found'}
+        elif name == 'check_validation_availability':
+            booking = self.truth['records'].get(arguments['booking_path'], {})
+            if booking.get('kind') != 'field_validation_booking':
+                result = {'status': 404, 'error': 'Validation booking not found'}
+            else:
+                try:
+                    deadline = datetime.fromisoformat(arguments['result_by_utc'].replace('Z', '+00:00'))
+                    if deadline.tzinfo is None:
+                        raise ValueError('Timezone required')
+                except ValueError:
+                    result = {'status': 422, 'error': 'Completion time must include a date, time and timezone'}
+                else:
+                    calendar = self.truth['records'][booking['calendar_path']]
+                    slots = calendar['result_slots']
+                    matching = [deepcopy(s) for s in slots if
+                        datetime.fromisoformat(s['result_due_at'].replace('Z', '+00:00')) <= deadline]
+                    result = {'status': 200, 'service': booking['service'],
+                        'operation': 'availability_search', 'request_state': 'complete',
+                        'booking_reference': booking['request_reference'],
+                        'requested_result_by_utc': deadline.astimezone(timezone.utc).isoformat().replace('+00:00', 'Z'),
+                        'calendar_path': calendar['path'], 'calendar_sha256': calendar['sha256'],
+                        'matching_result_slots': matching,
+                        'earliest_result_slot': deepcopy(slots[0]),
+                        'booking_changed': False, 'follow_up': None}
         elif name == 'fetch_archive_object':
             result = self.delivery.archive.read(actor, arguments['path'], PROJECT)
         elif name in ('import_delivery_source', 'preview_delivery_import'):

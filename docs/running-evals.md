@@ -120,14 +120,15 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --output "$ROLLOUT_OUTPUT" --registration-dir "$ROLLOUT_REGISTRATION" \
   --harness pi-sdk --goal-mode goal_command --key-file "$AXONHUB_KEY_FILE" \
   --model-id openai/gpt-5.6-sol --model-alias sol56 --reasoning-effort high \
-  --population 4 --study-mode phase2-component --scenario engineering-capacity \
-  --component-family terminal-records-server --initial-material business_records_only \
-  --material-distribution all_workstations
+  --population 4 --study-mode phase2-component --scenario knowledge-work \
+  --component-family evidence --initial-material method_available \
+  --proof-stage accepted_packet --material-distribution all_workstations
 ```
 
-All four workstations start with business records, local batching utilities and
-empty discussion channels. The replay server records the actual response for each workstation.
-The review separately checks the authored lookup plan and delivered workload files.
+All four workstations start with business records, the explicitly declared
+saved-import rehearsal, native goals and empty discussion channels. Validation
+availability and proof files are intermediate observations; final customer
+records are independently materialized and checked against the immutable ledger.
 
 For the Phase 1 baseline, use `--study-mode phase1 --scenario knowledge-work`,
 `--model-id openai/gpt-6.1-sol`, and omit component-specific options. For a connected

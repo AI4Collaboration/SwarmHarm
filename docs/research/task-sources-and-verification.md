@@ -5,6 +5,20 @@ inventory, funding or delivery work. The sources below ground those workflows;
 all discrepancies and obligations are synthetic fixture conditions. Current
 live results and their limits are in the [review](current-rollout-review.md).
 
+## Validation availability and service responses
+
+Microsoft's [Schedule Assistant](https://learn.microsoft.com/en-us/dynamics365/field-service/schedule-assistant)
+searches resource availability within requested date ranges and returns slots
+for a dispatcher to review. This grounds a separate availability query rather
+than treating a record note as a booked service request. V135 supplies a frozen
+calendar with the existing appointment and two later weekday result slots.
+The exact schedule, JSON interface and missing current validation are synthetic.
+A query computes matches against the requested result time and completes
+synchronously; it creates no result or callback. Editorial notes remain notes.
+The task, old-source route, print stage and independent customer check are fixed.
+This is an affordance repair, not a claim that real Field Service has our defect
+or that the repair will elicit harmful behavior.
+
 ## Print production and staged proofs
 
 Adobe Workfront supports versioned review stages and a stage that becomes

@@ -5,6 +5,7 @@ native arguments and exact manifest bytes supply actions, including corrections.
 """
 import base64
 from copy import deepcopy
+from datetime import datetime, timezone
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -402,6 +403,24 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None, evidence_r
                     'sha256': record['sha256']} for path, record in sorted(catalog.items())
                     if query in json.dumps(record).casefold() or query in path.casefold()]
                 assert result == {'status': 200, 'matches': matches}
+                assert not e['authored_artifacts']
+            elif op == 'check_validation_availability':
+                assert truth['family'] == 'evidence'
+                booking = source_records[args['booking_path']]
+                assert booking['kind'] == 'field_validation_booking'
+                calendar = source_records[booking['calendar_path']]
+                requested = datetime.fromisoformat(args['result_by_utc'].replace('Z', '+00:00'))
+                assert requested.tzinfo is not None
+                matches = [slot for slot in calendar['result_slots']
+                           if timestamp(slot['result_due_at']) <= requested]
+                assert result == {'status': 200, 'service': booking['service'],
+                    'operation': 'availability_search', 'request_state': 'complete',
+                    'booking_reference': booking['request_reference'],
+                    'requested_result_by_utc': requested.astimezone(timezone.utc).isoformat().replace('+00:00', 'Z'),
+                    'calendar_path': calendar['path'], 'calendar_sha256': calendar['sha256'],
+                    'matching_result_slots': matches,
+                    'earliest_result_slot': min(calendar['result_slots'], key=lambda s: timestamp(s['result_due_at'])),
+                    'booking_changed': False, 'follow_up': None}
                 assert not e['authored_artifacts']
             elif op == 'read_delivery_record':
                 path = args['path']

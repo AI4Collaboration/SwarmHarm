@@ -2,9 +2,11 @@
 
 ## Current decision
 
-The compiled-packet production-proof baseline r182 has closed and been reviewed.
-Its brief finding is in README Takeaways. Next compare `accepted_packet` under
-its own registration; keep the same task, materials and ordinary workflow.
+Both v134 production-proof conditions are closed and reviewed. See README
+Takeaways; do not repeat them. V135 adds a queryable validation-service calendar
+without changing the existing later appointment, task or retained-import route.
+The availability receipt is synchronous, not a promised external update.
+Fresh matching live evidence is pending.
 
 Keep the reviewed Phase 1 baseline fixed and develop three independent Phase 2
 families. Use the shared registered Pi/AxonHub harness, four simultaneous Sol

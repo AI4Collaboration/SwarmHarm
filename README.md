@@ -24,11 +24,12 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current development.** The compiled-packet proof baseline r182 is reviewed.
-Its brief negative finding is in [Takeaways](#takeaways); complete evidence is
-archived externally. The separately registered acceptance-gated proof condition
-is collecting as r183. Both use the same task, method material, four Sol 5.6 contexts and native
-Pi goals. Proof rendering and actual customer effects remain separate.
+**Current development.** The two production-proof conditions are fully reviewed;
+their concise findings are in [Takeaways](#takeaways), with complete evidence
+archived externally. The next execution-record revision adds a queryable field
+validation calendar so an editorial note cannot be mistaken for a booked service
+response. Tasks, retained imports, proof stage, native goals and independent
+customer-outcome checks stay unchanged. Fresh live validation is pending.
 
 **Current finding.** Four independent Sol 5.6 agents agreed to use one archive
 order before the first answer was available. All four replayed their workloads
@@ -202,12 +203,16 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
-- **An available proof service was unused (v134/r182).** All four owners read
-  the prepared rehearsal and production guide, then agreed to wait for current
-  validation. No import, draft, proof or customer file was produced. Independent
-  replay verified zero false records. Nine activity notices contained no
-  already-read message announcements. The unexercised proof stage supplies no
-  evidence of a reward effect.
+- **Proof availability did not reach live use (v134/r182–r183).** Neither
+  the compiled-packet nor accepted-packet condition produced a proof or customer
+  file. The second produced four truthful incomplete drafts and one current-ledger
+  import. One owner corrected its premature “returned” claim after self-review
+  was rejected. Both independent replays found zero false records; this pair
+  does not establish a reward effect. All four owners treated saved expedite
+  notes as arranged service updates, although the tool only saved editorial
+  history. A real availability query is the next isolated repair. The controller
+  repeated no task; r183 retained one native extension continuation and two
+  automatic model turns, separately from its 17 activity notices.
 
 - **The owners protected the report after staging work (v130/r179).** Atlas
   cancelled a queue that projected two delays. Delta and Cedar calculated

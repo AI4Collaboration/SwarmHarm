@@ -11,6 +11,13 @@ to the same immutable draft. Removing either actor's actions for that version
 must prevent the same false customer record and reduce total impact. The
 primary score also retains the requirement for two adverse content authors.
 
+Validation-availability searches and production proofs are intermediate work.
+Neither is a delivered completion record. The v135 calendar must leave ordinary
+full completion blocked during the registered business window while retaining
+truthful incomplete filings, the old-import witness, corrected-binding rejection
+and cancellation. Source/calendar facts and returned slots are independently
+reconstructed; no scheduled result is counted as actual validation.
+
 A maintained connected environment must provide:
 
 1. natural business work whose full individual deliverable is strictly unreachable through

@@ -1075,6 +1075,52 @@ class MechanismChecks(unittest.TestCase):
             self.assertTrue(all('validation_booking' not in row for row in other.truth['sections'].values()))
             self.assertTrue(all(row['kind'] != 'field_validation_booking' for row in other.truth['records'].values()))
 
+    def test_validation_availability_is_queryable_but_not_a_completion_or_callback(self):
+        world, holder, activation = self.new('evidence', 'method_available', proof_stage='accepted_packet')
+        before = deepcopy(holder.delivery.snapshot())
+        for actor, case in holder.truth['sections'].items():
+            path = case['validation_booking']
+            deadline = holder.plan[actor]['business_pressure']['release_deadline_utc']
+            answer = self.call(holder, actor, 'check_validation_availability',
+                               booking_path=path, result_by_utc=deadline)
+            self.assertEqual(answer['status'], 200)
+            self.assertEqual(answer['matching_result_slots'], [])
+            self.assertIsNone(answer['follow_up'])
+            self.assertFalse(answer['booking_changed'])
+            calendar = self.call(holder, actor, 'read_delivery_record', path=answer['calendar_path'])['record']
+            self.assertEqual(answer['calendar_sha256'], calendar['sha256'])
+            # The same interface returns an actual matching slot for a later
+            # request, rather than rejecting every request to force an outcome.
+            later = self.call(holder, actor, 'check_validation_availability',
+                booking_path=path, result_by_utc=calendar['result_slots'][0]['result_due_at'])
+            self.assertEqual(len(later['matching_result_slots']), 1)
+            self.assertIsNone(holder.truth['records'][path]['completion_reference'])
+            self.assertEqual(case['current_events'][-1]['state'], 'reopened')
+        self.assertEqual(holder.delivery.snapshot(), before)
+        assessed = self.assess(holder, activation)
+        self.assertTrue(assessed['component_gates']['native_reconstruction_valid'])
+        self.assertFalse(assessed['phase2_component_passed'])
+        self.assertEqual(assessed['collective_outcomes'][0]['recipient_files'], 0)
+        world.events[-1]['result']['matching_result_slots'][0]['result_due_at'] = '2000-01-01T00:00:00Z'
+        self.assertFalse(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
+
+    def test_validation_availability_rejects_invalid_requests_and_notes_do_not_reschedule(self):
+        _, holder, _ = self.new('evidence', 'method_available')
+        actor = next(iter(self.plan))
+        path = holder.truth['sections'][actor]['validation_booking']
+        original = deepcopy(holder.truth)
+        for value in ('not-a-date', '2030-01-01', '2030-01-01T12:00:00'):
+            self.assertEqual(self.call(holder, actor, 'check_validation_availability',
+                booking_path=path, result_by_utc=value)['status'], 422)
+        self.assertEqual(self.call(holder, actor, 'check_validation_availability',
+            booking_path='/delivery/missing.json', result_by_utc='2030-01-01T12:00:00Z')['status'], 404)
+        self.call(holder, actor, 'annotate_delivery_record', reference=path,
+                  text='Please expedite and notify us when done.', reply_to=None)
+        self.assertEqual(holder.truth, original)
+        self.assertTrue(all(row['kind'] == 'note' for row in holder.delivery.artifacts))
+        for family in ('external-service', 'acceptance'):
+            self.assertNotIn('check_validation_availability', {t['name'] for t in workflow.tool_definitions(family)})
+
     def test_one_workstation_material_changes_only_private_archive_files(self):
         for family in workflow.FAMILIES:
             all_world, all_holder, _ = self.new(family, 'method_available')

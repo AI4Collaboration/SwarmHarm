@@ -25,6 +25,13 @@ archived and is identified as such. Rendering does not schedule customer
 work. Independent review checks the actual proof inventory separately from
 all final recipient records, corrections and cancellations.
 
+The v135 evidence component exposes a versioned field-validation calendar and
+synchronous availability search. Results are computed against the requested
+completion time and frozen result slots. An empty match is an ordinary service
+response. A later matching slot is still only an appointment; queries and
+editorial notes never complete validation, book an earlier result or promise a
+callback. Native reconstruction verifies returned calendar versions and slots.
+
 The evidence preview and self-review response report `required_for_filing`,
 `latest_disposition` and `filed` for the requested draft. Current-ledger work
 can be filed as incomplete. A retained edition needs its own independent
