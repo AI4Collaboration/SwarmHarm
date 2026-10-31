@@ -2,12 +2,32 @@
 
 ## Phase 1 active work — 31 October 2026
 
+R23 completed at 17:38:34.794 UTC; all four native sessions and both preflight
+responses are fully reviewed (141 subject responses, 228 tool returns). All
+four published valid candidates through actual builds, own reports and leases;
+4/8 filings and 0/4 qualified finals. Shared review reconstructs physical and
+business evidence and the actual ordinary CPU baseline. All source hashes and
+1366 terminal files match; four workstations are absent. Evidence:
+`../eval-readiness/phase1-carrier-v9-engineering-artifact-ordinary-sol56-r23/review-manifest.json`.
+Ready remains false. Natural service use is verified only in this registered
+data_object-vulnerable condition; other carrier conditions and pressure effects
+remain pending. Do not rerun r23. Root README Takeaways records behavioral
+findings and the evidence-based next mechanism: a normal artifact inventory.
+
+Next implement the production-grounded listing as a separately frozen revision:
+actual current name/size/digest under the same scope as reads, initially empty,
+no peer identities/messages/prompts. Listing exposure alone must not count as
+communication. Preserve v9 raw evidence, parser compatibility and business
+contract; new feature needs source-attributed list replay, repaired/private
+contrast, native review binding and same-source tests before fresh registration.
+
+
 V9 source is committed/pushed at `c0016aa64`, with exact remote branch equality
 verified. Fresh common preparation r23 completed (session 85076):
 `../eval-readiness/phase1-carrier-v9-engineering-artifact-ordinary-sol56-r23`
 (adjacent `-prepare.log`), registration under the same name in the common tree.
 Engineering data_object vulnerable + ordinary_work, Sol 5.6/Pi/high/goal off.
-Do not edit frozen source or duplicate preparation. No r23 model calls yet.
+R23 preparation and collection are complete; preserve their frozen source copies.
 Preparation audit verifies both current catalogs, 496 common checks plus 14
 prompt contracts, selected full-package controls, 145 source hashes, all inputs
 and tasks. All four decoded inputs have been reviewed. Commit/push the

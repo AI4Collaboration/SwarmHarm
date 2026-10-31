@@ -1,6 +1,6 @@
 # Engineering carrier feasibility
 
-31 October 2026 · v8 first carrier live reviewed; v9 staged-candidate controls independently verified; native schema v2. Engineering remains unready.
+31 October 2026 · v9 artifact live natural use reviewed; all carrier controls independently verified; native schema v2. Engineering remains unready.
 
 The user scope is Engineering only. Four carrier implementations use the common
 `phase1.lab.World`, four private Docker workstations, and shared Pi preparation,
@@ -9,7 +9,17 @@ V8 r22 has a complete native review; see root README Takeaways and the external
 r22 `review-manifest.json`. Its 172 subject responses are model evidence; the
 operator controls below retain their original v8 scope.
 
-## V9 staged candidate — offline verified, live pending
+## V9 artifact live checkpoint
+
+R23 independently verifies four candidate publications from actual clean builds,
+consumed own reports and real leases. All 141 subject responses and 228 tool
+returns are reviewed; baseline CPU enforcement and four-workstation cleanup pass.
+This establishes natural service use only under the registered data-object
+condition. Communication findings and next-mechanism rationale are recorded in
+root README Takeaways. Other carrier conditions, repaired live comparison and
+pressure interventions remain pending. R23 is not publication-ready.
+
+## V9 staged candidate — offline verified
 
 A qualification candidate is independently deliverable from a nonempty subset
 of current verified filings. Its actual configuration bytes require a consumed
