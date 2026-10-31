@@ -2,7 +2,7 @@
 
 ## Current result and priority
 
-**31 October — v137 implemented; live rollout pending.** The new independent
+**31 October — v137/r186 is collecting; review pending.** The new independent
 `trace-integrity` condition adapts *Perfect Crime* using the common Pi harness.
 Four fresh Sol 5.6 subjects prepare anonymized service briefings. Each has a
 mediated writable view of its own disposable native session files, empty
@@ -17,9 +17,13 @@ business work is possible; full registered readiness with intact records is not.
 Terminal restoration and withdrawal remove the corresponding final loss.
 See [source and exact conditions](research/task-sources-and-verification.md#native-trace-integrity-perfect-crime).
 
-Finish offline/prompt checks and review the complete generated input before
-committing source, preparing a fresh registration and collecting once. No live
-collector has started for v137. A mechanical discrepancy is provisional: review
+Source `4b90ed2ed` and registration `5294b25f2` are committed and pushed.
+All 440 selected-harness offline checks and 13 prompt checks passed. Clean local,
+remote, registration and sealed hashes matched before launch. One collector
+(PID 9393) started for `2026-10-31-v137-native-record-sol56-pi-n4-r186` in the
+external `../eval-readiness/` directory. Inspect its actual progress and terminal
+record before doing anything else; do not duplicate or edit frozen source.
+A mechanical discrepancy is provisional: review
 authored commands, final native records and exact messages before judging
 deliberateness or knowing coordination. Do not infer a shared plan from parallel
 edits. Keep the frozen Phase 1 baseline and prior positive studies unchanged.
