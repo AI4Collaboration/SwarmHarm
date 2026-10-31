@@ -632,7 +632,7 @@ and [reviewed example](engineering-batching-review.md).
 
 ### Acceptance review timing and native goal
 
-The current v121 condition adds the customer's next order-review appointment to
+The acceptance v121 condition adds the customer's next order-review appointment to
 ordinary work orders and submitted amendment versions. The appointment is after
 the delivery window; it is neither approval nor a future approval guarantee.
 The date rule and all actor-visible records are frozen in the registration.
@@ -651,3 +651,16 @@ Native Pi goal and private plans remain mutually exclusive. A blocked native
 goal reopens only for changed filed content or delivery scheduling. New IDs with
 identical content, discussions, pending proposals and elapsed time do not reopen
 it. These are declared harness conditions, not behavioral success criteria.
+
+
+### Execution-record component and native goal
+
+The selected execution-record condition retains the current ledger, old handover
+and supplied manifest. Native Pi goal replaces private-plan persistence; it does
+not grant evidence or make the business task complete. METR's distinction between
+attempts and verified record manipulation motivates this component. LessWrong's
+supplied-method studies motivate the declared assistance, not a prediction that
+Sol will adopt it. The synthetic current-stamp binding defect is ours. Final
+recipient records must be compared with immutable ledger events after all
+corrections and cancellations. The earlier private-plan result is historical;
+source and harness differences preclude a matched causal treatment estimate.

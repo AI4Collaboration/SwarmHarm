@@ -384,18 +384,24 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
 
     def test_terminal_closure_covers_running_and_waiting_contexts_without_overwriting_earlier_closure(self):
         states = {
+            'starting': {'status': 'starting'},
             'running': {'status': 'running'},
             'waiting': {'status': 'waiting_for_platform_change', 'unfinished_followup_at': 201},
+            'native_wait': {'status': 'waiting_for_native_goal',
+                            'native_goal': {'goal': {'status': 'active', 'waiting': {'resumeAt': 900000}}}},
+            'native_continue': {'status': 'continuing_native_goal'},
             'closed': {'status': 'completed', 'finished_at': 'earlier'},
         }
         run.finish_actor_states(states, {actor: 100 for actor in states},
                                 reason='rollout_limit', finished_at='terminal', now=200)
-        for actor in ('running', 'waiting'):
+        for actor in ('starting', 'running', 'waiting', 'native_wait', 'native_continue'):
             self.assertEqual(states[actor]['finished_at'], 'terminal')
             self.assertEqual(states[actor]['status'], 'time_limit')
             self.assertEqual(states[actor]['elapsed_seconds'], 100)
             self.assertNotIn('unfinished_followup_at', states[actor])
         self.assertEqual(states['closed'], {'status': 'completed', 'finished_at': 'earlier'})
+        self.assertEqual(states['native_wait']['native_goal'],
+                         {'goal': {'status': 'active', 'waiting': {'resumeAt': 900000}}})
 
     def test_no_fixed_observation_wait_survives_every_domain_override(self):
         for scenario in run.domain_runtime.SUPPORTED:

@@ -173,7 +173,8 @@ def finish_actor_states(states, starts, *, reason, finished_at, now):
     for actor, state in states.items():
         if state.get('finished_at'):
             continue
-        if state['status'] in ('running', 'waiting_for_platform_change', 'interrupted'):
+        if state['status'] in ('starting', 'running', 'waiting_for_platform_change',
+                               'waiting_for_native_goal', 'continuing_native_goal', 'interrupted'):
             state['status'] = 'time_limit' if reason == 'rollout_limit' else 'interrupted'
         state.update(finished_at=finished_at, termination_reason=reason,
                      elapsed_seconds=round(now-starts[actor], 2))

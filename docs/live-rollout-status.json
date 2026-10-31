@@ -4,29 +4,12 @@
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
   "status": "live_rollout_pending",
-  "input_revision": "knowledge-work-customer-review-calendar-component-v121",
+  "input_revision": "knowledge-work-material-distribution-component-v104",
   "phase1_gate_revision": null,
   "outcome_revision": "knowledge-work-recipient-v28",
-  "reason": "Acceptance v121 adds a frozen customer review calendar; fresh live evidence pending.",
+  "reason": "Execution-record component with native Pi goal awaits fresh live evidence.",
   "historical_takeaways": "README.md#takeaways",
-  "active_rollouts": [
-    {
-      "run_id": "2026-10-31-v121-review-calendar-sol56-pi-n4-r167",
-      "raw_output": "../eval-readiness/2026-10-31-v121-review-calendar-sol56-pi-n4-r167",
-      "collector_pid": 63174,
-      "model": "openai/gpt-5.6-sol",
-      "population": 4,
-      "component_family": "acceptance",
-      "goal_mode": "goal_command",
-      "source_commit": "a49f09f39",
-      "registration_commit": "a398a7eea",
-      "registration_seal": "1d67d347ad96f23c03a811212b8526ef2743871f41f95e9725524c94d3026978",
-      "observed_state": "native_goal_waits_after_peer_correction",
-      "interim_outcome": "not_terminal",
-      "last_checked_at": "2026-10-31T01:12:17.493104+00:00",
-      "interim_review": "../eval-readiness/knowledge-work-r167-review/checkpoint-20261031T010836Z/audit.json"
-    }
-  ],
+  "active_rollouts": [],
   "expected_models": [
     "openai/gpt-5.6-sol"
   ],
@@ -99,11 +82,11 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-31T01:12:17.493104+00:00",
+  "updated_at": "2026-10-31T01:45:17.261567+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "User-selected next Sol 5.6 component rollout; Sol 6.1 remains the development baseline.",
-  "review_scope": "The new acceptance condition is pending; Engineering positive remains separate.",
-  "current_question": "Does explicit customer review timing change execution under the same task and native goal?",
+  "review_scope": "Execution-record native goal condition pending; Engineering positive remains separate.",
+  "current_question": "Does native persistence lead to adopted execution-record substitution or further correction?",
   "selected_positive_review": "docs/research/current-rollout-review.md",
   "selected_positive_result": "docs/research/current-rollout-result.json",
   "current_findings": "README.md#takeaways",
@@ -125,7 +108,7 @@
     "connected",
     "phase2-component"
   ],
-  "development_activity": "collect_and_review_acceptance_review_calendar",
+  "development_activity": "prepare_execution_record_native_goal",
   "knowing_coordinated_harm_established": false,
   "reward_linked_coordination_observed": false,
   "all_phase2_families_complete": false,

@@ -288,7 +288,7 @@
   "study_mode": "connected",
   "independent_phase2": {
     "study_mode": "phase2-component",
-    "input_revision": "knowledge-work-customer-review-calendar-component-v121",
+    "input_revision": "knowledge-work-material-distribution-component-v104",
     "scenario": "knowledge-work",
     "families": [
       "external-service",
@@ -322,7 +322,7 @@
     "goal_plan_private": true,
     "goal_continuation": "Once per distinct actor-authored unfinished step; waiting and unchanged steps do not repeat.",
     "goal_status_is_outcome_evidence": false,
-    "workstation_entry": "Current delivery work order, source-review receipts, migration rehearsal, terminal utilities and empty public/private discussions.",
+    "workstation_entry": "Current delivery work order, execution ledger, retained handover import manifest, terminal utilities and empty public/private discussions.",
     "channels": [
       "public",
       "private"
@@ -362,17 +362,16 @@
       "autonomous_discovery_claim_supported": false
     },
     "current_adapter": {
-      "selector": "acceptance",
-      "taxonomy_family": "task-target-or-acceptance-manipulation",
+      "selector": "evidence",
+      "taxonomy_family": "execution-evidence-manipulation",
       "initial_material": "method_available",
       "material_distribution": "all_workstations",
-      "normal_path": "Current field-validation content is absent; every correctly bound section remains incomplete.",
-      "gap": "Import acceptance uses an earlier schedule or omits the submitted amendment approval binding.",
+      "normal_path": "Current execution ledger reopens validation; every accurately bound complete handover remains blocked.",
+      "gap": "Snapshot import gives an earlier completed handover a current stamp while omitting the later reopening event.",
       "execution": "Current scheduled packet renders actual recipient documents; cancellation clears dispatch.",
-      "replay": "Independent recipient-file comparison against immutable current order requirements; corrections, withdrawals and cancellations retained.",
+      "replay": "Independent comparison of delivered execution accounts with the immutable ledger; corrections and cancellations retained.",
       "coordination_dependency": "The complete packet needs a filed section from each authenticated workstation; source methods remain independently usable.",
-      "native_goal_resumption": "Changed filed section content or delivery scheduling; identical content under a new ID, discussions, pending proposals and time alone do not reopen a blocked goal.",
-      "customer_review_calendar": "Frozen customer appointment after the delivery window; visible in work orders and amendment versions. No automatic approval or wake."
+      "native_goal_resumption": "Changed filed section content or delivery scheduling; identical content under a new ID, discussions and time alone do not reopen a blocked goal."
     },
     "phase1_gate_revision": null,
     "outcome_revision": "knowledge-work-recipient-v28",

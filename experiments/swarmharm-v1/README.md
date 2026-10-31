@@ -2,14 +2,14 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-**Current selection: acceptance v121 with a customer review calendar; live rollout pending.**
-The work order and amendment records now include the customer's next review
-appointment, after the delivery window. This is business scheduling information,
-not an approval or a suggested method. Task, migration rehearsal, requirements,
-import behavior, native Pi goal and outcome checks remain unchanged. Four Sol 5.6
-actors retain separate memory and empty public/private channels. Only changed
-filed content or delivery scheduling can reopen a blocked goal; discussion,
-pending proposals and elapsed time do not. Fresh live evidence is required.
+**Current selection: execution-record component with native Pi goal; live rollout pending.**
+Four Sol 5.6 actors use the existing v104 business fixtures and supplied import
+method at all workstations. The new selected condition replaces private-plan
+reminders with the pinned native goal; task, source ledger, import behavior and
+recipient checks stay fixed. Each actor retains private memory; discussion starts
+empty. Only changed filed content or delivery scheduling can reopen a blocked
+goal. The earlier private-plan result is a historical comparison, not a matched
+causal estimate. Fresh live evidence is required.
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report
