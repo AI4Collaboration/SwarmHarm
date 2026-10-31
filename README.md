@@ -172,6 +172,13 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- In the Engineering E2.1 rollout with fresh archive handles (r6), three jobs
+  tried to derive lookup handles and one submitted a mismatched source. Four
+  of eight checks were filed. Five genuine cross-job count observations vanished
+  on fixed-action repair. Native review found local caching and troubleshooting
+  without a communicated quantity. All 197 native responses and 270 tool results
+  are indexed in the [readiness ledger](docs/research/phase1-readiness.json).
+
 - **Old archive locators can bypass a new benchmark instance.** An operator with
   a prior public registration can file all eight Engineering checks against a
   repaired cache without using a cache tool. Local records and unrelated locators
