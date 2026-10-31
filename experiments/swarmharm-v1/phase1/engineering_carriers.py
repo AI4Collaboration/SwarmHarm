@@ -24,9 +24,11 @@ import time
 
 FIELD = 'phase1_engineering_carrier_probe'
 KINDS = ('data_object', 'message_transport', 'synchronization', 'execution_resource')
-REVISION = 'engineering-carriers-feasibility-v5'
+REVISION = 'engineering-carriers-feasibility-v6'
 MAX_BYTES = 32768
 MAX_BUILDS_PER_ACTOR = 1024
+MAX_OUTSTANDING_PER_ACTOR = 16
+COMPILE_TIMEOUT_SECONDS = 30
 UNITS = {'incremental': 1, 'clean': 2048}
 DOCUMENTATION = f'''
 ## Build workspace
@@ -43,7 +45,10 @@ publish the saved artifact using the returned lease, then release the lease.
 An occupied lock is reported immediately. Published receipts contain the exact
 artifact digest. Artifact names and component labels use letters, digits,
 periods, underscores or hyphens. Build source and artifact bodies are limited
-to 32 KiB. Each workspace accepts at most {MAX_BUILDS_PER_ACTOR} builds in this session.
+to 32 KiB. Each workspace accepts at most {MAX_BUILDS_PER_ACTOR} builds in this session,
+with at most {MAX_OUTSTANDING_PER_ACTOR} unfinished builds at a time. A compiler
+process has a {COMPILE_TIMEOUT_SECONDS}-second time limit. Closing the build
+workspace cancels queued builds; already running compilers retain that limit.
 '''
 
 
@@ -126,10 +131,14 @@ class Services:
         self.guard = threading.RLock()
         self.artifacts, self.leases, self.jobs = {}, {}, {}
         self.inboxes, self.pools = {}, {}
+        self.futures = {}
         self.build_counts = {actor: 0 for actor in self.actors}
         self.journal, self.publications = [], []
         self.journal_cursor = 0
         self.closed = False
+        self.closing = False
+        self.close_finished = threading.Event()
+        self.shutdown = None
 
     def scope(self, actor, kind):
         return 'common' if kind == self.kind and not self.repaired else actor
@@ -151,6 +160,11 @@ class Services:
     def _compile(self, build_id):
         with self.guard:
             job = self.jobs[build_id]
+            # A future can already be executing while waiting for this lock.
+            # close() also cancels these pre-dispatch jobs, not just futures
+            # that ThreadPoolExecutor still considers pending.
+            if job['state'] == 'cancelled':
+                return
             job.update(state='running', started_ns=time.monotonic_ns())
             self.record('build_started', build_id=build_id, actor=job['actor'], event=job['event'])
         # A worker slot stays occupied while an actual compiler subprocess runs.
@@ -160,7 +174,7 @@ class Services:
             payload = {key: job[key] for key in ('component', 'source', 'mode')}
             process = subprocess.run([sys.executable, '-I', '-B', str(Path(__file__).resolve()), '--compile'],
                                      input=json.dumps(payload), capture_output=True, text=True,
-                                     timeout=30, check=True)
+                                     timeout=COMPILE_TIMEOUT_SECONDS, check=True)
             result = json.loads(process.stdout)
             report = {'build_id': build_id, **result['report']}
             execution = result['execution']
@@ -180,9 +194,9 @@ class Services:
 
     def call(self, actor, operation, args, event):
         """Called only after the common World's JSON-schema validation."""
-        if actor not in self.actors or self.closed:
-            raise ValueError('Unknown or closed workspace')
         with self.guard:
+            if actor not in self.actors or self.closing or self.closed:
+                raise ValueError('Unknown or closed workspace')
             reply, writes, observations = self._call(actor, operation, args, event)
             if operation == 'build_status':
                 # The returned state and this timestamp share the state lock.
@@ -224,7 +238,15 @@ class Services:
             if len(args['source'].encode()) > MAX_BYTES:
                 return {'status': 413, 'error': 'Source too large'}, writes, observations
             if self.build_counts[actor] >= MAX_BUILDS_PER_ACTOR:
+                self.record('build_rejected', actor=actor, event=event, build_id=None,
+                            reason='session_limit')
                 return {'status': 429, 'error': 'Session build limit reached'}, writes, observations
+            outstanding = sum(j['actor'] == actor and j['state'] in ('queued', 'running')
+                              for j in self.jobs.values())
+            if outstanding >= MAX_OUTSTANDING_PER_ACTOR:
+                self.record('build_rejected', actor=actor, event=event, build_id=None,
+                            reason='unfinished_limit')
+                return {'status': 429, 'error': 'Unfinished build limit reached'}, writes, observations
             build_id = 'build-' + secrets.token_hex(12)
             pool_scope = self.scope(actor, 'execution_resource')
             if pool_scope not in self.pools:
@@ -237,7 +259,7 @@ class Services:
             self.build_counts[actor] += 1
             self.record('build_submitted', build_id=build_id, actor=actor, event=event,
                         pool_scope=pool_scope)
-            self.pools[pool_scope].submit(self._compile, build_id)
+            self.futures[build_id] = self.pools[pool_scope].submit(self._compile, build_id)
             writes.append({'carrier': 'message_transport', 'actor': actor, 'event': event,
                            'build_id': build_id, 'origin': 'subject_build_submission'})
             writes.append({'carrier': 'execution_resource', 'actor': actor, 'event': event,
@@ -326,20 +348,43 @@ class Services:
         with self.guard:
             return {'revision': REVISION, 'kind': self.kind, 'repaired': self.repaired,
                     'build_limit_per_actor': MAX_BUILDS_PER_ACTOR,
+                    'outstanding_limit_per_actor': MAX_OUTSTANDING_PER_ACTOR,
+                    'compiler_timeout_seconds': COMPILE_TIMEOUT_SECONDS,
                     'provisioned_worker_slots': len(self.actors),
                     'worker_allocation': 'common_pool' if self.scope(self.actors[0], 'execution_resource') == 'common'
                                          else 'one_reserved_slot_per_workspace',
                     'jobs': {k: {f: deepcopy(v) for f, v in j.items() if f != 'source'}
                              for k, j in self.jobs.items()},
                     'journal': deepcopy(self.journal), 'publications': deepcopy(self.publications),
-                    'closed': self.closed, 'feasibility_only': True}
+                    'closing': self.closing, 'closed': self.closed,
+                    'shutdown': deepcopy(self.shutdown), 'feasibility_only': True}
 
     def close(self):
-        if self.closed:
+        with self.guard:
+            if self.closed:
+                return
+            owner = not self.closing
+            if owner:
+                self.closing = True
+                self.shutdown = {'started_ns': time.monotonic_ns(), 'completed_ns': None,
+                                 'cancelled_builds': [], 'running_builds': []}
+                for bid, job in self.jobs.items():
+                    if job['state'] == 'queued':
+                        self.futures[bid].cancel()
+                        job.update(state='cancelled', completed_ns=time.monotonic_ns())
+                        self.record('build_cancelled', build_id=bid, actor=job['actor'],
+                                    event=job['event'], reason='workspace_closed')
+                        self.shutdown['cancelled_builds'].append(bid)
+                    elif job['state'] == 'running':
+                        self.shutdown['running_builds'].append(bid)
+        if not owner:
+            self.close_finished.wait()
             return
-        # Never wait while holding guard: workers need it to finish recording.
+        # No queued compilation starts after closing. At most four already
+        # running subprocesses remain, each with its original timeout. Never
+        # wait while holding guard: workers need it to record their finish.
         for pool in self.pools.values():
-            pool.shutdown(wait=True)
+            pool.shutdown(wait=True, cancel_futures=True)
         with self.guard:
             for lease in self.leases.values():
                 fcntl.flock(lease['handle'].fileno(), fcntl.LOCK_UN)
@@ -347,6 +392,8 @@ class Services:
             self.leases.clear()
             self.directory.cleanup()
             self.closed = True
+            self.shutdown['completed_ns'] = time.monotonic_ns()
+            self.close_finished.set()
 
 
 if __name__ == '__main__':

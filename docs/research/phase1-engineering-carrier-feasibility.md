@@ -1,11 +1,39 @@
 # Engineering carrier feasibility
 
-31 October 2026 · current runtime `engineering-carriers-feasibility-v5` · four carrier paths have operator filing witnesses; live rollout pending.
+31 October 2026 · current runtime `engineering-carriers-feasibility-v6` · queue and closure budgets verified; natural build-task integration and live rollout pending.
 
 The current user scope is Engineering only. Four carrier implementations use the
 existing `phase1.lab.World` dispatcher and four private Docker workstations.
 They are operator-only feasibility adapters, not admitted live profiles. No new
 model calls or additional-domain work were started.
+
+## Next business contract — not yet implemented
+
+The next revision should make the deliverable a published release configuration
+package with current compatibility filings and build provenance. The initial
+request should state that outcome and the existing customer deadline. Ordinary
+workspace documentation can define the package schema and publication procedure.
+No discovery instructions, common mailbox, peer message or communication protocol
+belong in those surfaces.
+
+The package bytes should contain the release identity and current source-backed
+check/receipt fields. A real clean compilation of those exact bytes produces a
+report; the consumed report supplies the compiled digest for the publication
+record. The artifact store retains the package and a live release lease guards
+publication. This gives files, result delivery, locking and execution capacity
+ordinary business purposes. The four carrier conditions should expose the same
+task, documents, compiler and package validator, changing only the selected scope.
+
+Acceptance of an arbitrary artifact must remain distinct from correct delivery.
+Completion needs the actual published bytes, matching successful compilation,
+report consumption before publication and current immutable attestation facts.
+A revised upstream attestation must invalidate a stale package; re-filing alone
+must not make that old package current. Drafts and incomplete work remain possible.
+Keep this extension inside the Phase 1 carrier opt-in so historical cache and
+independent Phase 2 behavior stays unchanged. Implement it before adding a common
+registration selector, then repeat normal/gap/repaired and invalid-output controls
+on the new source, including full resource-budget feasibility. None of the
+historical filing controls establish this proposed larger deliverable.
 
 ## Classification and grounding
 
@@ -77,6 +105,46 @@ resource timing remains excluded.
 
 ## Evidence and limits
 
+### Unfinished-work and closure budgets
+
+V6 retains the 1024 cumulative builds per workspace, four total execution slots
+and actual compilation workloads. It adds a separate private limit of 16 queued
+or running builds. Completion restores admission; another workspace's queue
+cannot consume this private entitlement. Rejected submissions consume no quota.
+Both scope conditions expose the same limits and ordinary documentation.
+
+Closing blocks new calls and cancels all jobs that have not occupied a worker
+slot, including futures already waiting for the service lock. Cancelled jobs
+never compile or emit reports. At most four running compiler processes remain;
+each retains its original 30-second subprocess timeout. Closure joins them,
+reaps their processes and releases file locks. Concurrent closure is idempotent.
+The lifecycle journal records cancellations and quota rejections. Independent
+replay checks admission against reconstructed unfinished work, rejects starts
+after closure and checks the complete cancellation/running cohorts.
+
+`../eval-readiness/phase1-compiler-budget-20261031-r1/` freezes 138 files and audits
+four real workstations in each resource condition. Every workspace accepts 16
+unfinished builds, rejects the next and resumes admission after completion.
+Each arm cancels 60 queued builds and joins four actual running compilations;
+measured closure is 0.643 and 0.668 seconds, below the predeclared 35-second audit
+grace. All eight workstations, compiler processes and file locks are cleaned up.
+The independent program in
+`../eval-readiness/phase1-compiler-budget-independent-20261031-r1.py` recounts raw
+lifecycle transitions, exact returned states, quota rejections and subprocess
+intervals without importing the runtime or its verifier. It confirms both arms.
+A separate real-process timeout fixture verifies kill/reap and queued cancellation.
+The grace is an empirical check, not a hard real-time OS scheduling guarantee.
+
+This is one budget-hardening revision. Historical v3/v4/v5 evidence stays intact.
+The matching common regression passes **472 tests plus 13 prompt checks** with
+no failures/errors/skips. Its 137 common source hashes match the 138-file audit;
+see `../eval-readiness/phase1-compiler-budget-regression-20261031-r1/`.
+Four immutable v4/v5 worlds pass the new physical replay in
+`../eval-readiness/phase1-compiler-budget-history-20261031-r1/`.
+The v5 full-filing result below is
+not promoted to v6 validation; natural workflow integration, native semantics
+and live admission remain outstanding. No hosted model calls were made.
+
 ### Bounded resource filing control
 
 V5 changes the uniform session build quota from 16 to 1024. It retains the same
@@ -120,7 +188,7 @@ with no failures, errors or skips. Its 136 common source hashes match the
 `../eval-readiness/phase1-resource-filing-regression-20261031-r1/`.
 The full-deliverable operator path is established for this instance; natural
 service use, native interpretation, pressure validation and live admission remain
-pending. Before admission, also bound outstanding work and shutdown time under
+pending. V6 separately verifies outstanding-work and closure handling under
 the enlarged cumulative build quota. Resource semantic success and peer
 eligibility remain closed.
 

@@ -24,6 +24,15 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Engineering compiler budgets:** v6 caps unfinished work at 16 builds per
+workspace while keeping the cumulative limit at 1024. Closure cancels queued
+work and joins at most four timed compiler processes. Both four-workstation
+controls and an independent recount pass; each cancelled 60 queued jobs and
+closed in under one second. This is budget validation; natural build-task
+completion, resource native semantics and live admission remain pending.
+The matching source passes 472 common Pi tests and 13 prompt checks.
+See the [carrier report](docs/research/phase1-engineering-carrier-feasibility.md).
+
 **Engineering resource filing:** the compiler pool now has a complete operator
 witness: ordinary 4/8, gap-using 8/8, repaired 4/8. V5 raises the uniform session
 build quota to 1024 while retaining four slots and actual compilation workloads.

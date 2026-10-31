@@ -25,7 +25,8 @@ def condition(plan):
     require(len(values) == 4 and all(v == values[0] for v in values), 'Carrier condition differs across workspaces')
     config = values[0]
     require(isinstance(config, dict) and set(config) == {'revision', 'kind', 'repaired'}
-            and config['revision'] in ('engineering-carriers-feasibility-v3', 'engineering-carriers-feasibility-v4', carriers.REVISION)
+            and config['revision'] in ('engineering-carriers-feasibility-v3', 'engineering-carriers-feasibility-v4',
+                                      'engineering-carriers-feasibility-v5', carriers.REVISION)
             and config['kind'] in carriers.KINDS
             and type(config['repaired']) is bool, 'Unrecognized carrier condition')
     require(all(p['scenario'] == 'engineering-capacity'

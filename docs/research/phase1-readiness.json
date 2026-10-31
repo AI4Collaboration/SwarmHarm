@@ -1607,7 +1607,7 @@
   "engineering_carrier_feasibility": {
     "revision": "engineering-carriers-feasibility-v3",
     "domain": "Engineering",
-    "status": "four_carriers_operator_reachability_passed_live_pending",
+    "status": "v6_queue_and_closure_controls_passed_natural_build_workflow_pending",
     "completed_at": "2026-10-31T11:24:31.265447+00:00",
     "operator_only": true,
     "admitted_live_profile": false,
@@ -1737,7 +1737,6 @@
     },
     "pending": [
       "Natural use and verified completion of the added Engineering build services",
-      "Outstanding-work and shutdown bounds under the enlarged cumulative session build quota",
       "Native semantic binding of the full capacity-changing action set; resource peer eligibility remains closed",
       "Shared registration/preparation admission; matching-source Sol 5.6 live rollout and full native review",
       "Live pressure intervention validation on these carrier implementations"
@@ -1966,7 +1965,7 @@
       "live_rollout_pending": true,
       "ready": false
     },
-    "current_runtime_revision": "engineering-carriers-feasibility-v5",
+    "current_runtime_revision": "engineering-carriers-feasibility-v6",
     "execution_capacity_provenance": {
       "revision": "engineering-carriers-feasibility-v4",
       "status": "physical_capacity_verified_resource_semantics_and_business_closure_pending",
@@ -2407,6 +2406,74 @@
       "resource_peer_eligibility_enabled": false,
       "hosted_model_calls": 0,
       "ready": false
+    },
+    "compiler_budget_hardening": {
+      "revision": "engineering-carriers-feasibility-v6",
+      "scope": "Private unfinished-work quota and queue cancellation only; no current-source full-filing, native or live claim.",
+      "evidence_directory": "../eval-readiness/phase1-compiler-budget-20261031-r1",
+      "audit_program": "scripts/audit_phase1_compiler_budget.py",
+      "manifest_sha256": "61577fdcf0104f807d4134f2136bf12b2058850a69447b845c52fc6c3e361a7d",
+      "source_hashes_sha256": "144d0015f1a9e5eccf91164744e6ff462aae116459063a6782bccc5a70ca3195",
+      "frozen_files": 138,
+      "same_total_worker_slots": 4,
+      "cumulative_builds_per_actor": 1024,
+      "unfinished_builds_per_actor": 16,
+      "compiler_process_timeout_seconds": 30,
+      "measured_shutdown_grace_seconds": 35,
+      "grace_is_hard_realtime_guarantee": false,
+      "conditions": {
+        "vulnerable": {
+          "cancelled_queued_builds": 60,
+          "running_builds_at_close": 4,
+          "shutdown_seconds": 0.6432288750074804
+        },
+        "repaired": {
+          "cancelled_queued_builds": 60,
+          "running_builds_at_close": 4,
+          "shutdown_seconds": 0.6682257499778643
+        }
+      },
+      "independent_reconstruction": {
+        "path": "../eval-readiness/phase1-compiler-budget-independent-20261031-r1/results.json",
+        "sha256": "1ac9e7e36d7c5560f2cdb4f7315723058a6bb8ad8a42af658642fd50dfa32834",
+        "program": "../eval-readiness/phase1-compiler-budget-independent-20261031-r1.py",
+        "program_sha256": "fa2b4e5a603696e9f2e8144d94219fa2648cab3f7a7cb3426cabed98be93a2dd",
+        "scope": "Recount actual submissions, unfinished jobs, exact status returns, rejections, compiler process intervals and shutdown cohorts; no runtime/verifier imports."
+      },
+      "timeout_fault_fixture": "tests.compiler_budget_checks.CompilerBudgetChecks.test_process_timeout_kills_real_process_and_does_not_drain_pending_compiles",
+      "all_eight_workstations_removed": true,
+      "initial_surfaces_identical": true,
+      "full_regression": {
+        "status": "passed",
+        "path": "../eval-readiness/phase1-compiler-budget-regression-20261031-r1/results.json",
+        "sha256": "e579bba75586bf85e1fef9c9838bd38fbf20fd64b275c69e8ad4f5496133ac46",
+        "source_hashes_sha256": "2ee5041345ac2a2e45a9d90ec689d36f58ea317bd73029856607b2b056e43a53",
+        "manifest_sha256": "f83cb2019f5308f4bf8e97ad8bcdf0d276619ddf97c657ac931a82c44ad2c3cc",
+        "same_common_source_hashes_as_audit": true,
+        "common_source_files": 137,
+        "completed_at": "2026-10-31T13:48:42.043036+00:00",
+        "unit_tests": 472,
+        "failures": 0,
+        "errors": 0,
+        "skipped": [],
+        "failed_cases": [],
+        "prompt_contract_exit_code": 0,
+        "log_sha256": "589a95a4168028a2a9a30d18b0ebc08aaa9a507fd3fb8bd8c7c858f62df193c9",
+        "sources_unchanged": true,
+        "program_sha256": "6e5ebca15e228ad41ae5fb83c5e77f51e86d0e44d1a7c3fe9e93e4ac7750ea13",
+        "model_calls": "local scripted providers only",
+        "hosted_model_calls": 0
+      },
+      "resource_semantic_success_enabled": false,
+      "resource_peer_eligibility_enabled": false,
+      "hosted_model_calls": 0,
+      "ready": false,
+      "historical_replay": {
+        "path": "../eval-readiness/phase1-compiler-budget-history-20261031-r1/results.json",
+        "sha256": "6a0c3c4ed6f6618a921ac4f5203a8e08218888285562c295b440c08877879dfd",
+        "worlds": 4,
+        "scope": "v4/v5 snapshots pass v6 physical replay; original results unchanged."
+      }
     }
   },
   "source_revision_scope": "Historical cache adapter only; new carrier source is separately bound under engineering_carrier_feasibility."

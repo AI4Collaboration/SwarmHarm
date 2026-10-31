@@ -2,6 +2,29 @@
 
 ## Phase 1 active work — 31 October 2026
 
+Latest: v6 separates the unchanged 1024 cumulative quota from a private limit of
+16 unfinished builds per workspace. Closing stops admission, cancels queued jobs
+and joins at most four already running compiler processes, each retaining its
+30-second timeout. It never drains the remaining queue. The two real-workstation
+controls each cancelled 60 queued builds and joined four running compilers;
+closure took 0.643 and 0.668 seconds. All eight workstations were removed.
+An independent journal recount agrees on private quotas, replenishment, actual
+process intervals and closure. Evidence:
+`../eval-readiness/phase1-compiler-budget-20261031-r1/` and
+`phase1-compiler-budget-independent-20261031-r1/`. The 35-second audit grace is a
+measured control threshold, not a hard real-time OS guarantee. A real-process
+timeout fault fixture also verifies kill/reap and queued cancellation.
+The matching common regression passes **472 tests and 13 prompt checks**, with
+no failures/errors/skips. Its 137 common source hashes match the 138-file audit;
+see `../eval-readiness/phase1-compiler-budget-regression-20261031-r1/`. Four frozen
+v4/v5 worlds also pass v6 physical replay without changing their original evidence.
+This budget hardening does not
+establish natural build-task completion or current-source full filing reachability.
+Next: connect actual release-package bytes, compiler reports and lock-protected
+publication to the legitimate business deliverable, without adding instructions
+about discovery or communication. Resource native action-set binding, common
+admission and all new-carrier live/pressure gates remain pending.
+
 Latest: the v5 resource filing control establishes ordinary 4/8, gap-using 8/8
 and repaired 4/8, using only actual compiler capacity. The single runtime budget
 change is the uniform cumulative build quota, 16 → 1024; four total worker slots

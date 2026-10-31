@@ -16,8 +16,10 @@ def require(value, message):
 
 
 def replay(config, plan, events, terminal=None):
-    require(config['revision'] in ('engineering-carriers-feasibility-v4', carriers.REVISION),
-            'Timing journal requires carrier v4 or v5')
+    require(config['revision'] in ('engineering-carriers-feasibility-v4',
+                                  'engineering-carriers-feasibility-v5', carriers.REVISION),
+            'Timing journal requires carrier v4, v5 or v6')
+    bounded = config['revision'] == carriers.REVISION
     indexed = {e['id']: e for e in events}
     require(list(indexed) == list(range(1, len(events) + 1)), 'Noncanonical timing events')
     def scope(actor):
@@ -34,19 +36,24 @@ def replay(config, plan, events, terminal=None):
                 require(row['event'] == e['id'], 'Status instant was not captured with its return')
         journal.extend(delta)
     if terminal is not None:
-        if config['revision'] == carriers.REVISION:
+        if config['revision'] in ('engineering-carriers-feasibility-v5', carriers.REVISION):
             require(terminal.get('build_limit_per_actor') == carriers.MAX_BUILDS_PER_ACTOR,
                     'Compiler build quota differs from the runtime revision')
+        if bounded:
+            require(terminal.get('outstanding_limit_per_actor') == carriers.MAX_OUTSTANDING_PER_ACTOR
+                    and terminal.get('compiler_timeout_seconds') == carriers.COMPILE_TIMEOUT_SECONDS,
+                    'Compiler unfinished-work or process budget differs')
         require(all(terminal.get(k) == config[k] for k in ('revision', 'kind', 'repaired'))
                 and terminal['provisioned_worker_slots'] == len(plan), 'Timing snapshot condition differs')
         expected = 'common_pool' if scope(next(iter(plan))) == 'common' else 'one_reserved_slot_per_workspace'
         require(terminal['worker_allocation'] == expected, 'Compiler allocation differs')
         full = terminal['journal']
         require(full[:len(journal)] == journal, 'Terminal journal rewrites an observed prefix')
-        require(all(row['action'] in ('build_started', 'build_finished') for row in full[len(journal):]),
+        require(all(row['action'] in ('build_started', 'build_finished', 'build_cancelled')
+                    for row in full[len(journal):]),
                 'An invocation is absent from its event journal')
         journal = full
-    jobs, observations, seen_status = {}, [], set()
+    jobs, observations, seen_status, seen_rejected = {}, [], set(), set()
     last_time = 0
     for sequence, row in enumerate(journal, 1):
         instant = row['monotonic_ns']
@@ -59,18 +66,49 @@ def replay(config, plan, events, terminal=None):
         if action == 'build_submitted':
             require(e['operation'] == 'submit_build' and e['result'] == {'status': 202, 'build_id': bid}
                     and bid not in jobs and row['pool_scope'] == scope(e['actor']), 'Unbound compiler submission')
+            if bounded:
+                own = [j for j in jobs.values() if j['actor'] == e['actor']]
+                require(len(own) < carriers.MAX_BUILDS_PER_ACTOR
+                        and sum(j['state'] in ('queued', 'running') for j in own)
+                        < carriers.MAX_OUTSTANDING_PER_ACTOR, 'Accepted compiler submission exceeds budget')
+                if terminal is not None and terminal.get('shutdown'):
+                    require(instant <= terminal['shutdown']['started_ns'], 'Submission accepted after closure')
             jobs[bid] = {'actor': e['actor'], 'source_event': e['id'], 'pool': scope(e['actor']),
                          'submitted_ns': instant, 'started_ns': None, 'completed_ns': None,
                          'state': 'queued', 'execution': None, 'report': None}
-        elif action in ('build_started', 'build_finished'):
+        elif action == 'build_rejected':
+            require(bounded and bid is None and e['operation'] == 'submit_build'
+                    and e['id'] not in seen_rejected, 'Unbound rejected compiler submission')
+            own = [j for j in jobs.values() if j['actor'] == e['actor']]
+            cumulative = len(own) >= carriers.MAX_BUILDS_PER_ACTOR
+            unfinished = sum(j['state'] in ('queued', 'running') for j in own)
+            require((cumulative and row['reason'] == 'session_limit'
+                     and e['result'] == {'status': 429, 'error': 'Session build limit reached'})
+                    or (not cumulative and unfinished >= carriers.MAX_OUTSTANDING_PER_ACTOR
+                        and row['reason'] == 'unfinished_limit'
+                        and e['result'] == {'status': 429, 'error': 'Unfinished build limit reached'}),
+                    'Compiler quota rejection contradicts reconstructed work')
+            seen_rejected.add(e['id'])
+        elif action in ('build_started', 'build_finished', 'build_cancelled'):
             job = jobs.get(bid)
             require(job is not None and job['source_event'] == e['id']
                     and e['operation'] == 'submit_build', 'Unbound compiler lifecycle transition')
             if action == 'build_started':
+                if bounded and terminal is not None and terminal.get('shutdown'):
+                    require(instant <= terminal['shutdown']['started_ns'], 'Compiler started after closure')
                 active = [j for j in jobs.values() if j['pool'] == job['pool'] and j['state'] == 'running']
                 require(job['state'] == 'queued' and len(active) < capacity(job['pool']),
                         'Compiler start exceeds capacity or repeats')
                 job.update(state='running', started_ns=instant)
+            elif action == 'build_cancelled':
+                require(bounded and job['state'] == 'queued' and row['reason'] == 'workspace_closed',
+                        'Cancellation has no queued build or closure reason')
+                if terminal is not None:
+                    shutdown = terminal.get('shutdown')
+                    require(shutdown is not None and shutdown['started_ns'] <= instant
+                            and (shutdown['completed_ns'] is None or instant <= shutdown['completed_ns']),
+                            'Cancellation is outside workspace closure')
+                job.update(state='cancelled', completed_ns=instant)
             else:
                 require(job['state'] == 'running', 'Compiler finish has no occupied slot')
                 report, execution = row['report'], row['execution']
@@ -119,6 +157,9 @@ def replay(config, plan, events, terminal=None):
     expected_submits = {e['id'] for e in events if e['operation'] == 'submit_build' and e['result']['status'] == 202}
     require(seen_status == expected_status and {j['source_event'] for j in jobs.values()} == expected_submits,
             'Missing status observation or accepted compiler submission')
+    if bounded:
+        require(seen_rejected == {e['id'] for e in events if e['operation'] == 'submit_build'
+                                 and e['result']['status'] == 429}, 'Missing compiler quota rejection')
     if terminal is not None:
         require(set(terminal['jobs']) == set(jobs), 'Terminal compiler cohort differs')
         for bid, job in jobs.items():
@@ -130,6 +171,20 @@ def replay(config, plan, events, terminal=None):
             for field in ('started_ns', 'completed_ns'):
                 if job[field] is not None:
                     require(saved[field] <= job[field], 'Transition timestamp follows its journal entry')
+        if bounded and terminal.get('shutdown'):
+            shutdown = terminal['shutdown']
+            require(set(shutdown['cancelled_builds']) == {bid for bid,j in jobs.items() if j['state'] == 'cancelled'},
+                    'Shutdown cancellation cohort differs')
+            running = {bid for bid,j in jobs.items() if j['started_ns'] is not None
+                       and j['started_ns'] <= shutdown['started_ns']
+                       and (j['completed_ns'] is None or j['completed_ns'] >= shutdown['started_ns'])}
+            require(set(shutdown['running_builds']) == running and len(running) <= len(plan),
+                    'Shutdown running cohort exceeds capacity or differs')
+            if terminal['closed']:
+                require(shutdown['completed_ns'] is not None
+                        and shutdown['completed_ns'] >= shutdown['started_ns']
+                        and all(j['state'] not in ('queued', 'running') for j in jobs.values()),
+                        'Closed compiler workspace retains unfinished work')
     for observation in observations:
         occupants = [{'build_id': bid, **deepcopy(jobs[bid])} for bid in observation['occupant_builds']]
         require(all(j['started_ns'] <= observation['observed_ns']

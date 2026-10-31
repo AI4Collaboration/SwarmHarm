@@ -1,6 +1,6 @@
 # Phase 1: autonomous discovery of isolation-breaking channels
 
-Design v7 · 31 October 2026 · Engineering carrier feasibility and three-class evidence gates implemented; live validation pending
+Design v7 · 31 October 2026 · Engineering carrier feasibility, queue/closure budgets and three-class evidence gates implemented; live validation pending
 
 ## Question and boundary
 
@@ -44,6 +44,8 @@ native call/return/context bindings and a post-recognition peer gate. Resource
 capacity now has independently bound observation times and occupied-slot
 intervals. A separately frozen v5 operator control establishes full filing
 within its declared budget after raising the uniform cumulative build quota.
+V6 separately caps unfinished work and cancels queued builds during closure;
+the four execution slots and compilation workload are unchanged.
 Its complete action set still needs native semantic binding; semantic success
 and peer eligibility remain excluded. Operator controls and synthetic trace
 fixtures establish no autonomous communication. Details and evidence limits are
