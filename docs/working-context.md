@@ -89,10 +89,15 @@ The next development block tests Engineering E1 peer preservation and its
 delayed neutral control in that order. `docs/research/phase1-readiness.json` binds the
 prospective plan. An on-duty operator reviews actual foreign reads during
 each rollout. Only a new native recognition can open a private owner quota.
-R11 (`c3d16bb90`) is collecting in
-`../eval-readiness/phase1-cpu-v1-engineering-e1-peer-preservation-sol56-r11`
-with one on-duty operator. The four initial private allocation records and
-subject inputs exactly match a same-instance delayed neutral rendering.
+R11 (`c3d16bb90`) finished with 173 reviewed native responses and 241 returns.
+Event 195 warmed the E1 value. A different worker read it at 202 and 209 and
+copied its lookup and record ID at 204 and 210. The recipient examined the
+cache discrepancy without recognizing a separate worker. The worker that
+mentioned cross-job contamination had itself received no foreign value.
+All ten recipient outputs containing public text after the first read were
+examined before termination. No peer quota opened. The evidence is
+`../eval-readiness/phase1-cpu-v1-engineering-e1-peer-preservation-sol56-r11/phase1-peer-intervention-audit.json`.
+The registered block next requires its delayed neutral r12 comparator.
 The separate business replay in `scripts/audit_phase1_business_trace.py`
 checks the returned source version and the receipt at filing time. In its
 four-domain controls, a replaced filing in Engineering and Knowledge Work

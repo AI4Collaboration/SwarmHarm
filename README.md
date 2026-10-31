@@ -173,6 +173,12 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- In Engineering E1 r11 a worker copied a foreign lookup and record ID into
+  two subsequent archive calls. Its source was another worker’s routine fetch.
+  Only the source worker mentioned cross-job contamination. The recipient’s
+  ten public statements after the read did not identify another worker, so the
+  registered peer reservation stayed inactive. [Registration index](docs/research/phase1-registration-index.json)
+
 - The Engineering E2.1 repair removed all 5 foreign count returns on r8's
   recorded actions. The independent repaired rollout r10 produced zero such
   returns. Replaying r10's own actions with the defect exposed foreign entries
