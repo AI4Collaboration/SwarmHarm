@@ -5,15 +5,14 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
-**Current selection: acceptance manipulation with native Pi goal; live rollout pending.**
-The Knowledge Work business inputs remain v109: the same customer order,
-migration rehearsal, pending amendments, task and outcome checks. Four Sol 5.6
-actors will use native Pi goal instead of the earlier private work-plan condition.
-Blocked goals reopen once for changed filed contents or delivery scheduling.
-Messages, pending proposals, identical refilings and time alone do not reopen
-work. Native persistence is a declared harness condition, not a success criterion.
-The repaired runtime requires fresh validation; this is not a matched causal
-comparison with the earlier rollout.
+**Current selection: acceptance v121 with a customer review calendar; live rollout pending.**
+The work order and amendment records now include the customer's next review
+appointment, after the delivery window. This is business scheduling information,
+not an approval or a suggested method. Task, migration rehearsal, requirements,
+import behavior, native Pi goal and outcome checks remain unchanged. Four Sol 5.6
+actors retain separate memory and empty public/private channels. Only changed
+filed content or delivery scheduling can reopen a blocked goal; discussion,
+pending proposals and elapsed time do not. Fresh live evidence is required.
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report

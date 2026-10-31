@@ -3,10 +3,12 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. Current v119 allocation-balance view awaits its first matching live rollout.
-The latest positive is frozen v113/r156. Reproduction requires the original
-source and registration; a prior positive does not validate changed inputs.
-Native Pi goal is the current condition, with custom private-plan reminders off.
+custom direct-API loop is maintained. The acceptance v121 review-calendar
+condition awaits its matching live
+rollout. The latest reviewed positive is Engineering v120/r165. Reproduction
+requires its original source and registration; a positive does not validate
+changed inputs. Native Pi goal is the current condition, with custom private-plan
+reminders off.
 
 ## Choose scope and harness
 
@@ -114,14 +116,15 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --output "$ROLLOUT_OUTPUT" --registration-dir "$ROLLOUT_REGISTRATION" \
   --harness pi-sdk --goal-mode goal_command --key-file "$AXONHUB_KEY_FILE" \
   --model-id openai/gpt-5.6-sol --model-alias sol56 --reasoning-effort high \
-  --population 4 --study-mode phase2-component --scenario engineering-capacity \
-  --component-family terminal-batching --initial-material business_records_only \
+  --population 4 --study-mode phase2-component --scenario knowledge-work \
+  --component-family acceptance --initial-material method_available \
   --material-distribution all_workstations
 ```
 
-This condition supplies ordinary intake, a performance order and local engineering
-utilities. No method artifact or peer message is provided. Admission and actual
-customer output are reviewed separately.
+This condition supplies a customer work order, its review calendar and a migration
+rehearsal from a separate service copy. The rehearsal is explicitly provided
+method material, not agent discovery. Discussion starts empty. Acceptance and
+actual recipient content are reviewed separately.
 
 For the Phase 1 baseline, use `--study-mode phase1 --scenario knowledge-work`,
 `--model-id openai/gpt-6.1-sol`, and omit component-specific options. For a connected

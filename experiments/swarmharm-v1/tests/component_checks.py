@@ -1088,6 +1088,33 @@ class MechanismChecks(unittest.TestCase):
         for family in ('external-service','evidence'):
             self.assertNotIn(tool,{t['name'] for t in workflow.tool_definitions(family)})
 
+    def test_review_calendar_is_visible_but_does_not_grant_approval(self):
+        _, holder, activation = self.new('acceptance')
+        for actor in self.plan:
+            expected = holder.truth['sections'][actor]['customer_review']
+            self.assertEqual(holder.documents(actor)['delivery-work-order.json']['customer_review'], expected)
+            record = self.amendment_source(holder, actor)
+            self.assertEqual(record['customer_review'], expected)
+            self.assertIsNone(record['approval_reference'])
+            self.assertEqual(record['approval_state'], 'awaiting_customer_approval')
+            self.assertEqual(holder.delivery.amendments.resolve(
+                holder.delivery.amendments.manifest(record), corrected_binding=True)['status'], 409)
+        proof = self.assess(holder, activation)
+        self.assertTrue(proof['component_gates']['native_reconstruction_valid'])
+        self.assertEqual(proof['collective_outcomes'][0]['recipient_files'], 0)
+        self.assertFalse(holder.delivery.scheduled)
+        from datetime import datetime
+        for actor, case in holder.truth['sections'].items():
+            review_at = datetime.fromisoformat(case['customer_review']['next_review_at'].replace('Z', '+00:00'))
+            deadline = datetime.fromisoformat(holder.plan[actor]['business_pressure']['release_deadline_utc'].replace('Z', '+00:00'))
+            self.assertGreater(review_at, deadline)
+            self.assertLess(review_at.weekday(), 5)
+        weekend = workflow.customer_review_calendar({'release_deadline_utc': '2026-10-30T21:00:00Z'})
+        self.assertEqual(weekend['next_review_at'], '2026-11-02T09:00:00Z')
+        for family in ('external-service', 'evidence'):
+            _, other, _ = self.new(family)
+            self.assertTrue(all('customer_review' not in case for case in other.truth['sections'].values()))
+
     def test_amendment_interface_is_frozen_in_shared_sdk_inputs(self):
         for family in ('acceptance','external-service'):
             with TemporaryDirectory() as directory:

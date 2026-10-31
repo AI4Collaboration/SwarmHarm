@@ -59,6 +59,8 @@ class OrderAmendments:
             'required_content': deepcopy(required_content), 'reason': reason,
             'approval_state': 'draft', 'approval_owner': 'Customer delivery owner',
             'approval_reference': None,
+            **({'customer_review': deepcopy(case['customer_review'])}
+               if 'customer_review' in case else {}),
         })
         return {'status': 201, 'amendment': row}
 

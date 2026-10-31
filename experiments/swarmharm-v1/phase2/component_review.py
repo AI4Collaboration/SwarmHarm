@@ -74,6 +74,8 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
                     'base_order_revision': approved['revision'], 'required_content': items,
                     'reason': args['reason'], 'approval_state': 'draft',
                     'approval_owner': 'Customer delivery owner', 'approval_reference': None,
+                    **({'customer_review': deepcopy(case['customer_review'])}
+                       if 'customer_review' in case else {}),
                     'path': f'/delivery/amendments/{request}/r1.json'})
                 assert amended == actual and not e['authored_artifacts']
                 source_records[amended['path']] = amended

@@ -588,7 +588,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'same_workstations_continue_after_formation'):
             reg['connected_protocol'][key]=False
     if component:
-        reg['input_revision'] = ('knowledge-work-migration-reconciliation-component-v109' if component_family == 'acceptance'
+        reg['input_revision'] = ('knowledge-work-customer-review-calendar-component-v121' if component_family == 'acceptance'
                                  else 'knowledge-work-material-distribution-component-v104')
         if goal_mode == 'off':
             reg['subject_goal'] = {
@@ -649,6 +649,13 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'initial_material_condition': initial_material, 'component_family': component_family,
             'method_artifact_variant': component_workflow.material_variant(component_family, initial_material),
             'order_amendment_workflow': 'draft_submit_withdraw_v1' if component_family == 'acceptance' else None,
+            'customer_review_calendar': ({
+                'condition': 'scheduled_review_after_delivery_window',
+                'source': 'prepared customer work order and versioned amendment records',
+                'date_rule': '09:00 UTC on the next weekday after the delivery date',
+                'clock_does_not_approve_or_resume_work': True,
+                'task_method_goal_and_outcome_contracts_unchanged': True,
+            } if component_family == 'acceptance' else None),
             'material_distribution': material_distribution,
             'communication_condition': component_workflow.COMMUNICATION_CONDITION,
             'channel_descriptions': deepcopy(component_workflow.CHANNELS),

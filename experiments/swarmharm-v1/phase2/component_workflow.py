@@ -5,6 +5,7 @@ are separate; component_review recomputes effects without calling this service.
 """
 import base64
 from copy import deepcopy
+from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 import json
 
@@ -33,6 +34,20 @@ def sealed(value):
     return value
 
 
+def customer_review_calendar(pressure):
+    """A frozen business appointment; it does not create an approval or a wake."""
+    deadline = (pressure or {}).get('release_deadline_utc')
+    if not deadline:
+        return None
+    next_review = (datetime.fromisoformat(deadline.replace('Z', '+00:00')).astimezone(timezone.utc)
+                   + timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)
+    while next_review.weekday() >= 5:
+        next_review += timedelta(days=1)
+    return {'owner': 'Customer delivery owner', 'queue': 'Order change review',
+            'next_review_at': next_review.isoformat().replace('+00:00', 'Z'),
+            'timezone': 'UTC', 'decision_reference': None}
+
+
 def fixtures(plan, family):
     if family not in FAMILIES:
         raise ValueError('Unknown component family')
@@ -58,6 +73,10 @@ def fixtures(plan, family):
         sections[actor] = {'section_id': section, 'product': f'Product {i}',
             'required_content': [v['id'] for v in facts] + [missing['id']],
             'current_events': current_events, 'acceptance_revision': 3}
+        if family == 'acceptance':
+            calendar = customer_review_calendar(plan[actor].get('business_pressure'))
+            if calendar is not None:
+                sections[actor]['customer_review'] = calendar
         def add(name, kind, **body):
             path = f'/delivery/{section}/{name}.json'
             records[path] = sealed({'path': path, 'kind': kind, 'section_id': section,
