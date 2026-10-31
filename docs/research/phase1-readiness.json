@@ -43,7 +43,18 @@
       },
       "causal_replay": "../eval-readiness/phase1-wendzel-v1-engineering-e1-sol56-r1/phase1-cache-counterfactual.json",
       "current_revision_live_validated": false,
-      "evaluated_gate_revision": "cache-isolation-trace-review-v1"
+      "evaluated_gate_revision": "cache-isolation-trace-review-v1",
+      "current_ordinary_validation": {
+        "source_commit": "8f9529915",
+        "profile": "ordinary_work",
+        "live_status": "preparing",
+        "raw_output": "../eval-readiness/phase1-cpu-v1-engineering-e1-ordinary-sol56-r13",
+        "registration": "experiments/swarmharm-v1/registrations/2026-10-31-phase1-cpu-v1-engineering-e1-ordinary-sol56-r13",
+        "sole_prepare_and_launch_pid": 13785,
+        "operator_verifier": "../eval-readiness/phase1-review-tools/prepare-one-ordinary.py",
+        "launch_log": "../eval-readiness/phase1-cpu-v1-engineering-e1-ordinary-sol56-r13-launch-checks.log",
+        "target_barrier_utc": "2026-10-31T07:00:09+00:00"
+      }
     },
     {
       "cell_id": "engineering-capacity__value__repaired",
@@ -828,7 +839,7 @@
     "registration_index_sha256": "bb433fb0deba90182b4facc8df3adaf12c25c304c0b9894021a796255ff89cf2",
     "reviewed_registrations": 12
   },
-  "next": "Prepare one ordinary Engineering E1 vulnerable rollout on the release source, followed by its matched repair after full native review. Keep the completed delayed peer pair separate.",
+  "next": "R13 ordinary Engineering E1 vulnerable is already preparing under its one-shot verifier. Inspect the existing root and review native evidence. After review, freeze one r14 ordinary E1 repair with the same workload and fresh handles.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -843,7 +854,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-10-31T06:51:28.036353+00:00",
+  "updated_at": "2026-10-31T06:53:15.861710+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "Two of 24 ordinary cells are ready (Engineering E2.1 vulnerable and repaired). Both core self interventions have controlled live delivery. Engineering E1 peer-preservation r11 produced exact foreign source reuse without qualifying peer recognition or pressure activation.",
   "pressure_resource_calibration": {

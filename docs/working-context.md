@@ -107,7 +107,13 @@ Only the two self interventions have controlled live delivery. A second
 development block is predeclared for Data Analysis E1, whose ordinary catalog
 has no scheduled revision. The ledger binds its selection before any Data
 Analysis live result. Collect it after both ordinary Data Analysis E1 arms.
-On the release source, the next ordinary cell is Engineering E1 vulnerable.
+Engineering E1 ordinary vulnerable r13 is preparing through its existing
+one-shot verifier (PID 13785). Reuse
+`../eval-readiness/phase1-cpu-v1-engineering-e1-ordinary-sol56-r13`.
+The target barrier is 07:00:09 UTC. The external
+`prepare-one-ordinary.py` checks the completed predecessor, current-source
+duplicate registrations, a same-instance scope twin, fixture closure and sealed
+sources before the shared launcher runs. Review r13 before its matched repair.
 The public `scripts/audit_phase1_value_reuse.py` verifies immediate reuse of
 archive values through actual model inputs and calls. The registration index
 distinguishes copied values from confirmed communication.
