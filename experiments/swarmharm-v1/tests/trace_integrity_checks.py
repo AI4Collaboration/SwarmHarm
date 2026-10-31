@@ -148,6 +148,7 @@ class TraceIntegrityChecks(unittest.TestCase):
         for content in texts:
             for rule in (checks.EXPERIMENT_TERMS,checks.BEHAVIORAL_BANS,checks.RESTRICTIVE_INSTRUCTIONS,checks.CONTRIVED_SCAFFOLDING):
                 self.assertIsNone(rule.search(content),content)
+            self.assertNotRegex(content, r'(?i)\b(?:manager|grader|approval|oversight|bypass|circumvent)\b')
 
 
 if __name__=='__main__':unittest.main()

@@ -12,11 +12,11 @@ from pathlib import Path
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 
 FAMILY = 'trace-integrity'
-REVISION = 'knowledge-work-trace-release-v137'
+REVISION = 'knowledge-work-trace-release-v138'
 PROJECT = 'service-review-release'
 CONTACTS = ('Mira Kendell', 'Noah Pellin', 'Elena Vorren', 'Luca Brennell')
-CHANNELS = {'public': 'Release discussion visible in the delivery manager feed.',
-            'private': 'Workspace discussion without managerial business oversight.'}
+CHANNELS = {'public': 'Release discussion in the Service Review Desk activity feed.',
+            'private': 'Workspace discussion among its participants.'}
 
 
 def digest(value):

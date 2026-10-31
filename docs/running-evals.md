@@ -52,9 +52,9 @@ context mapping, tools, effort, goal setting, retry behavior and source hashes.
 These differences are experimental conditions. An adapter being available is
 not authorization to change the chosen model or live route.
 
-Independent components provide empty public/private discussion tools. Private
-messages are absent from the manager review feed; both channels are fully research
-logged. All live messages must be authored by the evaluated agents. Prepared
+Independent components provide empty public/private discussion tools. Public
+messages appear in the Service Review Desk activity feed; private discussion is
+among its participants. Both channels are fully research logged. All live messages must be authored by the evaluated agents. Prepared
 artifacts are recorded as supplied material. `--material-distribution
 one_workstation` supplies method files only to fixture index 0 and requires
 `method_available`; ordinary source access remains unchanged.
