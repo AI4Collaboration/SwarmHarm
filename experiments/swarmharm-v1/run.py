@@ -298,7 +298,8 @@ def code_paths():
         +[REPO/'experiments'/name for name in (
             'runtime/atomic.py','runtime/guardrails.py','runtime/workstation.py',
             'runtime/response_monitor.py','runtime/record_surface.py',
-            'runtime/pi_agent.py','runtime/pi/agent.mjs','runtime/pi/package.json',
+            'runtime/pi_agent.py','runtime/pi_subscription.py','runtime/pi/agent.mjs',
+            'runtime/pi/subscription-auth.mjs','runtime/pi/package.json',
             'runtime/pi/package-lock.json','prompt-contract/checks.py')]
         +[REPO/'experiments'/name for name in (
             'runtime/claude_agent.py','runtime/claude/agent.mjs','runtime/claude/bridge.mjs',
@@ -363,7 +364,15 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             information_condition="local_records", study_mode="connected",
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode='off', harness_kind='pi-sdk',
-            reasoning_effort=DEFAULT_REASONING, proof_stage='off'):
+            reasoning_effort=DEFAULT_REASONING, proof_stage='off', decay_max_assignments=10,
+            decay_pressure='none', fixture_seed=0):
+    if component_family == 'trace-decay':
+        from phase2 import score_decay
+        return score_decay.prepare(root, registration_dir, runner=sys.modules[__name__],
+            maximum=decay_max_assignments, pressure=decay_pressure, fixture_seed=fixture_seed,
+            model=next(iter(MODELS.values())), reasoning=reasoning_effort,
+            population=population, study_mode=study_mode, scenario=scenario,
+            harness=harness_kind, goal_mode=goal_mode, key_file=key_file)
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind not in ('pi-sdk','claude-code','codex'):
@@ -1479,6 +1488,9 @@ def session_inputs(audit, harness_kind):
 
 
 def collect(root,registration_dir):
+    if load(Path(root)/'registration.json').get('phase2',{}).get('component_family') == 'trace-decay':
+        from phase2 import score_decay
+        return score_decay.collect(root, registration_dir, runner=sys.modules[__name__])
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     global AXONHUB_KEY_FILE
@@ -2400,8 +2412,12 @@ if __name__=='__main__':
         help='Independent Phase 2 uses prepared business inputs and makes no formation claim.')
     p.add_argument('--proof-stage',choices=('off', *component_workflow.production_proof.STAGES),default='off',
         help='Print production prerequisite for the independent execution-record study.')
-    p.add_argument('--component-family', choices=(*component_workflow.FAMILIES, *batching.FAMILIES, trace_release.FAMILY),
+    p.add_argument('--component-family', choices=(*component_workflow.FAMILIES, *batching.FAMILIES, trace_release.FAMILY, 'trace-decay'),
         help='Incident-grounded mechanism for an independent Phase 2 study.')
+    p.add_argument('--decay-max-assignments',type=int,choices=(10,100),default=10)
+    p.add_argument('--decay-pressure',choices=('none','employment'),default='none')
+    p.add_argument('--fixture-seed',type=int,default=0,
+        help='Synthetic record generator only; never an inference seed.')
     p.add_argument('--initial-material', choices=component_workflow.CONDITIONS, default='business_records_only',
         help='Frozen initial artifacts for an independent Phase 2 study.')
     p.add_argument('--material-distribution', choices=component_workflow.MATERIAL_DISTRIBUTIONS,
@@ -2431,5 +2447,6 @@ if __name__=='__main__':
             information_condition=a.information_condition,study_mode=a.study_mode,
             component_family=a.component_family,initial_material=a.initial_material,
             material_distribution=a.material_distribution,
-            goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,proof_stage=a.proof_stage)
+            goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,proof_stage=a.proof_stage,
+            decay_max_assignments=a.decay_max_assignments,decay_pressure=a.decay_pressure,fixture_seed=a.fixture_seed)
     else:collect(root,registration_dir)

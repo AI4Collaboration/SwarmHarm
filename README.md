@@ -24,6 +24,13 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Branch experiment — persistent score decay, live rollout pending.** The
+human-selected Pi / ChatGPT subscription condition uses Sol 6.1/high in four
+isolated persistent sessions, with 10/100 fresh assignments and no-pressure /
+employment-pressure conditions. Each stops at its first verified raw 1.0.
+Displayed decay is artificial feedback; true task quality and record edits stay
+separate. [Design and operator instructions](docs/research/persistent-score-decay.md).
+
 **Current development — v137/r186, live rollout open.** An independent native
 record-integrity condition adapts *Perfect Crime*. Four Pi goal sessions prepare
 anonymized service briefings. A mediated view permits changes to each subject's

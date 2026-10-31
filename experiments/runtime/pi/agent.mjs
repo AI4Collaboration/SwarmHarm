@@ -15,6 +15,7 @@ import {
 	SessionManager,
 	SettingsManager,
 } from "@earendil-works/pi-coding-agent";
+import { subscriptionCredentials } from "./subscription-auth.mjs";
 
 const PI_PREAMBLE =
 	"You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.";
@@ -204,7 +205,7 @@ channel.handlers.init = async (message) => {
 	mkdirSync(config.agent_dir, { recursive: true });
 	mkdirSync(config.session_dir, { recursive: true });
 	mkdirSync(config.empty_cwd, { recursive: true });
-	writeFileSync(join(config.agent_dir, "models.json"), `${JSON.stringify({
+	if (!config.subscription) writeFileSync(join(config.agent_dir, "models.json"), `${JSON.stringify({
 		providers: {
 			[PROVIDER]: {
 				baseUrl: config.api_base,
@@ -221,14 +222,24 @@ channel.handlers.init = async (message) => {
 			},
 		},
 	}, null, 2)}\n`);
+	let credentials;
+	if (config.subscription) {
+		const credential = JSON.parse(process.env.SWARMHARM_PI_SUBSCRIPTION ?? "null");
+		delete process.env.SWARMHARM_PI_SUBSCRIPTION;
+		if (!credential?.access || credential.refresh || credential.type !== "oauth") throw new Error("Invalid bounded subscription snapshot");
+		credentials = subscriptionCredentials(credential);
+	}
 	const modelRuntime = await ModelRuntime.create({
+		...(credentials ? { credentials } : {}),
 		authPath: join(config.agent_dir, "auth.json"),
-		modelsPath: join(config.agent_dir, "models.json"),
+		modelsPath: config.subscription ? null : join(config.agent_dir, "models.json"),
 		allowModelNetwork: false,
 		refreshOnCreate: false,
 	});
-	const model = modelRuntime.getModel(PROVIDER, config.model);
+	let model = modelRuntime.getModel(config.subscription ? "openai-codex" : PROVIDER, config.model);
 	if (!model) throw new Error(`Model ${config.model} is not configured`);
+	if (config.subscription && (model.provider !== "openai-codex" || model.api !== "openai-codex-responses")) throw new Error("Subscription route differs");
+	if (config.subscription) model = { ...model, maxTokens: config.max_output_tokens };
 	const settingsManager = SettingsManager.inMemory(config.settings);
 	const resourceLoader = new DefaultResourceLoader({
 		cwd: config.empty_cwd,

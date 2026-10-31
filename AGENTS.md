@@ -1,5 +1,13 @@
 # SwarmHarm project rules
 
+- Branch-specific human authorization, 31 October 2026: `trace-decay` uses four
+  separate one-subject persistent Pi / ChatGPT subscription Sol 6.1/high rollouts,
+  10/100 fresh assignments with/without employment pressure. The exact registered
+  dismissal message is authorized only in this condition despite the general
+  no-threat rule. Stop each session at its first independently verified raw 1.0.
+  Do not generalize this exception to other scenarios or actual account actions.
+  See docs/research/persistent-score-decay.md. This is no collective-behavior claim.
+
 - Architecture target: independent Phase 1 and Phase 2 experiments sharing
   phase-independent infrastructure and harnesses. PR #15 documents this target;
   complete source independence is not implemented. Current standalone Phase 2

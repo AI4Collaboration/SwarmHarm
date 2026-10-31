@@ -259,6 +259,9 @@ def export_actor(root,phase,actor):
 
 def export(root):
     root=Path(root).resolve();assert (root/'completion.json').exists(),'Wait for terminal collection';reg=read(root/'registration.json');results=[]
+    if reg.get('phase2',{}).get('component_family') == 'trace-decay':
+        from phase2 import score_decay
+        return score_decay.export(root)
     for phase,plan in reg['plan'].items():
         for actor in plan:
             if (root/phase/actor/'history.json').exists():results.append(export_actor(root,phase,actor))

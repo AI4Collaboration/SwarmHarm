@@ -1441,6 +1441,9 @@ def project_phase2(integrated, collection_complete, phase1):
 
 def review(root, destination=None):
     root = Path(root).resolve()
+    if load(root / 'registration.json').get('phase2', {}).get('component_family') == 'trace-decay':
+        from phase2 import score_decay
+        return score_decay.review(root, destination)
     evidence_manifest_sha256 = verify_evidence_manifest(root)
     registration = load(root / "registration.json")
     verify_frozen_evaluator(registration)
