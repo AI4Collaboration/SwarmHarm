@@ -24,6 +24,17 @@ from phase1 import lab
 import run
 from phase1 import schedule
 class CollectorChecks(unittest.TestCase):
+    def test_study_mode_is_prepare_only_cli_input(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base=[sys.executable,str(run.HERE/'run.py'),'--output',str(Path(temporary)/'study'),
+                '--registration-dir','experiments/swarmharm-v1/registrations/missing-test-registration']
+            prepared=subprocess.run([*base,'--phase','prepare'],cwd=run.REPO,capture_output=True,text=True)
+            self.assertNotEqual(prepared.returncode,0)
+            self.assertIn('--study-mode is required during preparation',prepared.stderr)
+            collected=subprocess.run([*base,'--phase','collect'],cwd=run.REPO,capture_output=True,text=True)
+            self.assertNotEqual(collected.returncode,0)
+            self.assertNotIn('arguments are required: --study-mode',collected.stderr)
+
     def test_incomplete_content_filter_is_separate_from_provider_errors(self):
         from response_monitor import classify
         filtered = {'status':'incomplete', 'incomplete_details':{'reason':'content_filter'}}

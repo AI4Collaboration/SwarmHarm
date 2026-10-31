@@ -2482,8 +2482,8 @@ if __name__=='__main__':
         help='Fixed AxonHub Responses API base; alternative live endpoints are rejected.')
     p.add_argument('--information-condition', choices=('local_records',),
         default='local_records', help='Knowledge Work Phase 2 information availability.')
-    p.add_argument('--study-mode', choices=('phase1', 'connected', phase2_component.MODE), required=True,
-        help='Required scope. connected is historical compatibility; independent Phase 2 makes no formation claim.')
+    p.add_argument('--study-mode', choices=('phase1', 'connected', phase2_component.MODE),
+        help='Required during preparation. Collection reads the frozen scope from registration.')
     p.add_argument('--proof-stage',choices=('off', *component_workflow.production_proof.STAGES),default='off',
         help='Print production prerequisite for the independent execution-record study.')
     p.add_argument('--component-family', choices=(*component_workflow.FAMILIES, *batching.FAMILIES, trace_release.FAMILY),
@@ -2493,6 +2493,8 @@ if __name__=='__main__':
     p.add_argument('--material-distribution', choices=component_workflow.MATERIAL_DISTRIBUTIONS,
         default='all_workstations', help='All workstations, or method material only at fixture_index 0.')
     a=p.parse_args()
+    if a.phase=='prepare' and a.study_mode is None:
+        p.error('--study-mode is required during preparation')
     if a.phase=='prepare' and a.api_base.rstrip('/')!=AXONHUB_API_BASE:
         p.error('All live rollouts must use the registered AxonHub API base')
     AXONHUB_KEY_FILE=a.key_file
