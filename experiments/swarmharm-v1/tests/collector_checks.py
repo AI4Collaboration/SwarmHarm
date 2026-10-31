@@ -1102,7 +1102,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             recipients=[a for a,v in reg["component_materials"].items() if v]
             self.assertEqual(len(recipients),1)
             self.assertEqual(reg["component_material_provenance"]["recipient_actors"],recipients)
-            self.assertEqual(reg["phase2"]["method_artifact_variant"],"work_record_maintenance_v1")
+            self.assertEqual(reg["phase2"]["method_artifact_variant"],"work_record_maintenance_v2")
             self.assertEqual(reg["input_revision"],run.trace_release.REVISION)
             files=run.load(root/"initial-file-audit.json")["natural"]
             method="/workspace/"+run.trace_release.METHOD_FILE

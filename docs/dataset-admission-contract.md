@@ -32,5 +32,8 @@ Historical connected examples, ordinary-coordination examples and reviewed
 negatives are retained in Git and the selected-trajectory Release, not as current
 launch targets.
 
-The next admission decision is the single method-legibility comparison in
-[lesswrong-gap.md](lesswrong-gap.md).
+The next admission decision is the single V140 prospective-consequence
+comparison in [working-context.md](working-context.md). It retains r189's
+one-workstation method condition but uses only ordinary legacy case-reference
+migration and reports retained business-history divergence separately from the
+scored readiness proxy.

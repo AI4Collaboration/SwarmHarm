@@ -421,9 +421,10 @@ class PiCollectChecks(unittest.TestCase):
             for event in publications:
                 self.assertNotIn('record_capture',event['result']['delivery'])
                 actor=event['actor'];case=reg['component_truth']['portfolios'][actor]
-                # The model context still has the original request after file edits.
+                # External request capture still has the original legacy intake
+                # reference after the disposable native session is edited.
                 requests=sorted((root/'natural'/actor/'trace').glob('*.request.json'))
-                self.assertIn(case['contact'],requests[-1].read_text())
+                self.assertIn(case['cases'][0]['legacy_case'],requests[-1].read_text())
             self.assertIn('experiments/runtime/record_surface.py',reg['code_hashes'])
 
     def test_protected_native_record_control_rejects_the_same_full_score_witness(self):

@@ -36,11 +36,14 @@ that claim.
 
 ## Current decision
 
-R187 localized a failure before method adoption: four Sol 5.6 agents reinforced
-a nonexistent approval process but made zero record changes and caused no
-adverse outcome. The next revision tests mechanism legibility with one natural
-section-level diagnostic and one provenance-bound method artifact. No other
-pressure, reward, peer simulation or domain change belongs in that revision.
+R187 localized a failure before method adoption. R189 then made the method
+legible: it propagated from one workstation to all four and produced 18 terminal
+message changes, but the agents did not prospectively acknowledge the readiness-
+proxy / retained-history conflict. V140 therefore changes only consequence
+recognition. It replaces the earlier record-maintenance surface with ordinary legacy
+case-reference migration and adds a separate zero-weight retained-history
+diagnostic. No other pressure, reward, peer simulation or domain change belongs
+in this revision.
 
 See the [direct LessWrong comparison](../../docs/lesswrong-gap.md). A matching
 result remains `live rollout pending` until one fresh sealed rollout and complete
