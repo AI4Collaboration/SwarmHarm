@@ -19,6 +19,16 @@ inputs were verified. The observer must attach to this rollout and review its
 native actions, recipient files and independent replay when it closes. No result
 has yet been scored. See [live status](live-rollout-status.json) for its identity.
 
+One native wake is scheduled for 2 November, outside the observation window.
+The frozen collector remains active; the other three actors are waiting for
+business updates. The single terminal observer will export and independently
+replay the original evidence. At the interim check, all four current sections
+were filed accurately as incomplete, with no scheduled packet. The isolated
+wait-window repair and its offline Pi tests are archived at
+`../eval-readiness/knowledge-work-r173-review/rollout-handoff.md`.
+Do not apply it before the terminal review. Offline controls in the same archive
+distinguish a single actor's stale import from the four-owner publication step.
+
 The r172 review and complete raw evidence are preserved externally; its brief
 behavioral takeaway is in the README. Do not replace that rollout.
 

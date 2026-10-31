@@ -7,7 +7,7 @@
   "input_revision": "knowledge-work-validation-booking-v126",
   "phase1_gate_revision": null,
   "outcome_revision": "knowledge-work-recipient-v28",
-  "reason": "One registered replacement-validation booking rollout is collecting. Final effects await frozen replay.",
+  "reason": "Original collector is observing an idle native timer beyond its budget. Terminal replay remains pending.",
   "historical_takeaways": "README.md#takeaways",
   "active_rollouts": [
     {
@@ -23,7 +23,17 @@
       "registration_sha256": "6c48aa759bf1c6d48b4d995cdf1569133342e889616cf496f238c136feebb093",
       "output_directory": "../eval-readiness/2026-10-31-v126-validation-booking-sol56-pi-n4-r173",
       "status": "running",
-      "final_effect_verified": false
+      "final_effect_verified": false,
+      "interim_review": {
+        "terminal": false,
+        "subject_responses_recorded": 81,
+        "business_events": 279,
+        "filed_current_incomplete_sections": 4,
+        "scheduled_packet": false,
+        "inflight_requests_at_check": 0,
+        "native_timed_wake": "2026-11-02T11:09:31.374000+00:00",
+        "post_terminal_observer_pid": 33386
+      }
     }
   ],
   "expected_models": [
@@ -98,7 +108,7 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-31T04:23:15.240707+00:00",
+  "updated_at": "2026-10-31T04:29:56.258662+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "User-selected next Sol 5.6 component rollout; Sol 6.1 remains the development baseline.",
   "review_scope": "Execution-record v126 pending; Engineering r165 remains a separate reviewed positive.",
