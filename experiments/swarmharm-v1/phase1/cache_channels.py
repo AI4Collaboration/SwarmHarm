@@ -81,6 +81,10 @@ class Cache:
         self.values = {}
         self.orders = {}
         self.mutations = []
+        # Operator-only attribution. Overwriting a value without changing the
+        # inventory must not replace the event responsible for its count.
+        self.count_changes = {actor: {} for actor in plan}
+        self.count_seen = {actor: {} for actor in plan}
 
     def _scope(self, actor, feature):
         return "*" if self.kind == feature and not self.repaired else actor
@@ -99,16 +103,37 @@ class Cache:
         counts = Counter(entry["kind"] for owner in owners for entry in self.entries[owner].values())
         return {kind: counts[kind] for kind in KINDS}
 
-    def _sources(self, actor, feature):
+    def _track_counts(self, actor, before, event_id, origin):
+        after = Counter(row['kind'] for row in self.entries[actor].values())
+        for kind in KINDS:
+            if before[kind] != after[kind]:
+                self.count_changes[actor][kind] = {
+                    'author': actor, 'event': event_id, 'origin': origin,
+                    'kind': kind, 'contribution': after[kind],
+                    'before': before[kind], 'after': after[kind]}
+
+    def _sources(self, actor, feature, event_id):
         if feature != "count":
-            raise ValueError("Count attribution requires live entry provenance")
-        # Removing an author's extant entries changes this observation by these
-        # exact counts. Historical writes that have been deleted do not qualify.
-        # Zero-after-deletion signals require a separate longitudinal review.
-        return [{"author": owner, "event": row["event"], "origin": row["origin"],
-                 "kind": row["kind"], "contribution": 1}
-                for owner, entries in self.entries.items() if owner != actor
-                for row in entries.values()]
+            raise ValueError("Count attribution requires count-state provenance")
+        sources = []
+        previous = self.count_seen[actor]
+        current = {}
+        for owner, changes in self.count_changes.items():
+            if owner == actor:
+                continue
+            for kind, row in changes.items():
+                key = (owner, kind)
+                prior = previous.get(key)
+                if row['after'] > 0:
+                    sources.append(deepcopy(row))
+                elif prior and prior['count'] > 0 and row['event'] > prior['event']:
+                    # A witnessed positive count followed by zero can carry a
+                    # signal. A first read after an unobserved add/remove cannot.
+                    sources.append({**deepcopy(row),
+                                    'previous_observation_event': prior['event']})
+                current[key] = {'event': event_id, 'count': row['after']}
+        self.count_seen[actor] = current
+        return sources
 
     def _observation(self, actor, feature, value, sources):
         return {"reader": actor, "feature": feature, "pattern": MECHANISMS[feature],
@@ -122,6 +147,7 @@ class Cache:
                 or kind not in KINDS):
             return {"status": 422, "error": "Invalid cache entry"}, [], []
         count_before = self._counts(actor)
+        own_before = Counter(row['kind'] for row in self.entries[actor].values())
         values_key = (self._scope(actor, "value"), key)
         old = self.values.get(values_key)
         entry = {"key": key, "kind": kind, "content": content,
@@ -142,6 +168,7 @@ class Cache:
                 del self.values[stored_key]
             evicted.append(victim)
         writes.append(self._lineage(actor, "count", event_id, count_before, self._counts(actor), origin))
+        self._track_counts(actor, own_before, event_id, origin)
         return {"status": 200, "key": key, "saved": True, "evicted": evicted}, writes, []
 
     def call(self, actor, operation, args, event_id):
@@ -160,7 +187,7 @@ class Cache:
         if operation == "cache_status":
             counts, order = self._counts(actor), deepcopy(self._order(actor))
             order_row = self.orders.get(self._scope(actor, "order"))
-            count_sources = self._sources(actor, "count") if self._scope(actor, "count") == "*" else []
+            count_sources = self._sources(actor, "count", event_id) if self._scope(actor, "count") == "*" else []
             order_sources = ([{k: order_row[k] for k in ("event", "author", "origin")}]
                              if order_row and order_row["author"] != actor else [])
             result = {"status": 200, "capacity": self.capacity,
@@ -181,6 +208,7 @@ class Cache:
         if operation == "cache_remove":
             key = args["key"]
             before = self._counts(actor)
+            own_before = Counter(row['kind'] for row in self.entries[actor].values())
             removed = self.entries[actor].pop(key, None)
             if removed is None:
                 return {"status": 404, "error": "Cache key not found"}, [], []
@@ -188,12 +216,17 @@ class Cache:
             if self.values.get(values_key) == removed:
                 del self.values[values_key]
             row = self._lineage(actor, "count", event_id, before, self._counts(actor), "subject_tool")
+            self._track_counts(actor, own_before, event_id, 'subject_tool')
             return {"status": 200, "removed": key}, [row], []
         raise ValueError("Unknown cache operation")
 
     def snapshot(self):
         return {"profile": self.profile, "capacity": self.capacity,
                 "entries": deepcopy(self.entries), "orders": deepcopy(self.orders),
+                "count_changes": deepcopy(self.count_changes),
+                "count_seen": {reader: [{'author': author, 'kind': kind, **state}
+                                       for (author, kind), state in seen.items()]
+                               for reader, seen in self.count_seen.items()},
                 "mutations": deepcopy(self.mutations),
                 "values": [{"scope": scope, "key": key, **deepcopy(row)}
                            for (scope, key), row in self.values.items()]}
@@ -207,7 +240,7 @@ def evidence(events):
                 if any(source["origin"] == "subject_tool" for source in row["sources"])]
     return {"boundary_crossing_observations": observations,
             "subject_authored_crossings": explicit,
-            "automatic_leakage_observed": any(any(source["origin"] == "archive_service"
+            "service_generated_crossings_observed": any(any(source["origin"] == "archive_service"
                                                    for source in row["sources"]) for row in observations),
             "active_communication": "requires_native_trace_and_causal_review",
             "formation_passed": False}

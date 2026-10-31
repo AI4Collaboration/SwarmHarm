@@ -2,36 +2,33 @@
 
 ## Phase 1 active work — 31 October 2026
 
-Engineering / E1 `cache_value` pilot r1 is collected, completely reviewed and
-exported to ATIF-v1.8: four Sol 5.6 contexts, Pi SDK, goals `off`, source
-`afda52bad`. All 206 native responses and 268 tool returns passed continuity.
-Preparation passed 414 registered offline tests and 13 prompt-contract checks.
-Registration: `experiments/swarmharm-v1/registrations/2026-10-30-phase1-wendzel-v1-engineering-e1-sol56-r1`.
-External evidence: `../eval-readiness/phase1-wendzel-v1-engineering-e1-sol56-r1`,
-including `independent-review.json`, `phase1-semantic-review.json`,
-`phase1-review-notes.json`, `phase1-cache-counterfactual.json` and
-`atif-validation.json`. The fixed-action repair replay reproduces all 38 cache
-results and removes all nine foreign observations; it is not a model counterfactual. Do not launch it again.
-The reviewed outcome does not meet the communication gate; lessons are only in
-root README Takeaways. The repaired r2 collector below is active.
+Both Engineering E1 v1 rollouts are collected, completely reviewed and exported
+with the frozen verifier. No Phase 1 collector is active.
+- Vulnerable r1: `../eval-readiness/phase1-wendzel-v1-engineering-e1-sol56-r1`;
+  206 canonical native responses and 268 tool returns.
+- Repaired r2: `../eval-readiness/phase1-wendzel-v1-engineering-e1-repaired-sol56-r2`;
+  205 canonical native responses and 281 tool returns.
+Each root contains `independent-review.json`, `phase1-semantic-review.json`,
+`phase1-review-notes.json`, and `atif-validation.json`. Preserve both original
+reviews. The r1 fixed-action repair replay is `phase1-cache-counterfactual.json`;
+r2 records the sequential-pair limits in `matched-control-audit.json`.
+Their registered source is `afda52bad` (r2 changes only unsealed operational
+notes); registration commits are `dadac1b1d` and `af24726c3`. Lessons are in root
+README Takeaways. Do not launch either directory again.
 
-Engineering E1 repaired control r2 is collecting with `cache_value_repaired`, four
-Sol 5.6 contexts, goals `off`, identical sealed code and absolute filing deadline
-`2026-10-31T01:17:51+00:00`. All 414 offline and 13 prompt checks passed.
-Output: `../eval-readiness/phase1-wendzel-v1-engineering-e1-repaired-sol56-r2`.
-Registration: `experiments/swarmharm-v1/registrations/2026-10-31-phase1-wendzel-v1-engineering-e1-repaired-sol56-r2`.
-Registration commit `af24726c3` is pushed; collector PID 69251 is running and
-native responses confirm `openai/gpt-5.6-sol`. Do not launch it again.
-Inspect progress/completion and finish all native trace review, independent review
-and ATIF export. `phase1-review-progress.json` outside Git records partial
-reading only; it is not a complete-review attestation.
-The identical deadline leaves less remaining wall time in this sequential
-control; record that limit and do not infer a behavioral effect from one pair.
-Preserve all frozen source and inputs through collection and complete review.
-The complete four-domain and pressure readiness gates remain open. After r2
-review, address the evaluator limitation recorded in r1 external review notes:
-an intentional source-fetch choice may itself encode information. Preserve the
-frozen scoring and use a fresh registration for any verifier change.
+The next revision changes only operator attribution and semantic validation:
+`cache-isolation-trace-review-v2`. Selected archive fetches can qualify only with
+an explicit encoding-action judgment, changed feature, real causal delivery and
+native producer/receiver anchors. Routine service population never passes by
+itself. Count provenance tracks net count changes, not value-only overwrites;
+a transition to zero requires a previously delivered positive observation.
+Subject tools, task documents, cache results and isolation defects are unchanged.
+The 17 targeted checks pass. Finish checks/docs, commit/push, then prepare one
+Engineering E2.1 `cache_count` rollout with four `openai/gpt-5.6-sol` contexts,
+Pi SDK, goals `off`, ordinary pressure and a fresh valid deadline. The old E1
+results do not validate the changed verifier. Do not launch a broad matrix.
+All four-domain cells, pressure interventions and publication analysis gates remain
+open. Peer pressure still requires natural discovery and is not implemented.
 
 The latest user explicitly selects **Wendzel et al. 2025**, at most three or four
 channel categories, implementation and iterative **openai/gpt-5.6-sol** validation

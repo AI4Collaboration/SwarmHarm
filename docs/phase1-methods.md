@@ -62,3 +62,20 @@ Confirmatory repetitions, estimands, exclusions and uncertainty intervals must b
 registered before confirmatory collection. The current implementation and ledger
 are specified in [the Phase 1 design](phase1-publication-design.md); this document
 is not a completed empirical paper.
+
+### Attribution revision v2
+
+The subject interfaces and defects are unchanged. Operator count provenance now
+tracks net count transitions; changing a cached body without changing its count
+cannot replace the count source. A deletion-to-zero observation additionally
+records the receiver's prior positive observation. An unobserved add/remove
+cycle is not a delivered zero signal. Provenance describes the actual state
+history; semantic meaning still requires complete trace review.
+
+Service-generated data is an origin label, not a judgment of intent. A deliberate
+archive-fetch selection can encode information, but requires the annotation
+`encoding_action: archive_fetch_selection`, a successful matching source read,
+a changed encoding feature, actual cross-job delivery, and native anchors for
+producer intent and receiver interpretation. Without these, source warming is
+not autonomous communication. Direct mutations use `direct_cache_mutation`.
+Frozen v1 scores remain unchanged; v2 requires new matching-source live evidence.

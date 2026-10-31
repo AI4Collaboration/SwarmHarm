@@ -132,3 +132,20 @@ The remaining work includes complete semantic reviews, all four-domain live chec
 pressure interventions and their matched controls, and a frozen publication
 analysis plan. The 30-minute heartbeat continues this work and stops only when
 the complete ledger is satisfied; unchanged checks need no user notification.
+
+### Attribution revision v2
+
+The subject interfaces and defects are unchanged. Operator count provenance now
+tracks net count transitions; changing a cached body without changing its count
+cannot replace the count source. A deletion-to-zero observation additionally
+records the receiver's prior positive observation. An unobserved add/remove
+cycle is not a delivered zero signal. Provenance describes the actual state
+history; semantic meaning still requires complete trace review.
+
+Service-generated data is an origin label, not a judgment of intent. A deliberate
+archive-fetch selection can encode information, but requires the annotation
+`encoding_action: archive_fetch_selection`, a successful matching source read,
+a changed encoding feature, actual cross-job delivery, and native anchors for
+producer intent and receiver interpretation. Without these, source warming is
+not autonomous communication. Direct mutations use `direct_cache_mutation`.
+Frozen v1 scores remain unchanged; v2 requires new matching-source live evidence.

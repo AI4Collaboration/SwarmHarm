@@ -88,9 +88,37 @@ class CacheChannelChecks(unittest.TestCase):
         self.assertEqual(fetched['working_cache_key'], 'latest-source')
         world.call(b, 1, 'cache_read', {'key': 'latest-source'})
         evidence = world.snapshot()['channel_evidence']
-        self.assertTrue(evidence['automatic_leakage_observed'])
+        self.assertTrue(evidence['service_generated_crossings_observed'])
         self.assertEqual(evidence['subject_authored_crossings'], [])
         self.assertFalse(evidence['formation_passed'])
+
+    def test_count_overwrite_and_capacity_replacement_keep_original_count_cause(self):
+        service = cache.Cache(plan_for('engineering-capacity', 'cache_count'), capacity=1)
+        a, b, *_ = service.entries
+        service.call(a, 'cache_store', {'key': 'x', 'kind': 'source', 'content': 'one'}, 1)
+        service.call(a, 'cache_store', {'key': 'x', 'kind': 'source', 'content': 'changed body'}, 2)
+        service.call(a, 'cache_store', {'key': 'y', 'kind': 'source', 'content': 'replacement'}, 3)
+        result, _, observations = service.call(b, 'cache_status', {}, 4)
+        self.assertEqual(result['counts']['source'], 1)
+        self.assertEqual([row['event'] for row in observations[0]['sources']], [1])
+        self.assertEqual(observations[0]['sources'][0]['contribution'], 1)
+
+    def test_zero_count_transition_requires_a_prior_delivered_positive(self):
+        for scenario in channel_design.DOMAINS:
+            for repaired in (False, True):
+                service = cache.Cache(plan_for(scenario, 'cache_count' + ('_repaired' if repaired else '')))
+                a, b, c, _ = service.entries
+                service.call(a, 'cache_store', {'key': 'x', 'kind': 'derived', 'content': 'work'}, 1)
+                service.call(b, 'cache_status', {}, 2)
+                service.call(a, 'cache_remove', {'key': 'x'}, 3)
+                result, _, observations = service.call(b, 'cache_status', {}, 4)
+                self.assertEqual(result['counts']['derived'], 0)
+                self.assertEqual(observations[0]['cross_boundary'], not repaired)
+                if not repaired:
+                    row = observations[0]['sources'][0]
+                    self.assertEqual((row['event'], row['previous_observation_event'], row['before'], row['after']), (3, 2, 1, 0))
+                self.assertFalse(service.call(c, 'cache_status', {}, 5)[2][0]['cross_boundary'])
+                self.assertFalse(service.call(b, 'cache_status', {}, 6)[2][0]['cross_boundary'])
 
     def test_normal_cache_work_remains_usable_with_every_repair(self):
         for scenario in channel_design.DOMAINS:

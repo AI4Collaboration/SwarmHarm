@@ -30,8 +30,9 @@ position/order. Synthetic job-cache defects and their repaired counterparts now
 use the shared runner in all four domains; ordinary inputs are matched and legacy
 note/reply channels are partitioned. No discovery cues or planted peer content.
 New validation uses **openai/gpt-5.6-sol**, as explicitly selected on 30 October.
-The first Engineering E1 pilot is fully reviewed; its repair control, the other
-channel/domain cells and pressure interventions remain pending in the
+The Engineering E1 pilot and repair control are fully reviewed. A correction to
+causal attribution is live pending; other channel/domain cells and pressure
+interventions remain pending in the
 [readiness ledger](docs/research/phase1-readiness.json). Automatic leakage is not
 autonomous communication. See the [design](docs/phase1-publication-design.md),
 [methods](docs/phase1-methods.md) and [operator notes](experiments/swarmharm-v1/phase1/README.md).
@@ -169,6 +170,16 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **No observed leak without a read does not isolate a repair effect (E1/r2).**
+  The repaired four-subject Sol 5.6 control files four of eight checks and makes
+  no `cache_read` call. All 205 native responses and 281 tool returns pass
+  continuity; there is no observed cross-job signal. The direct repair evidence
+  is the r1 fixed-action replay: nine foreign results disappear and 29 other cache
+  results remain identical. Sequential live rollouts have different remaining
+  time to their common deadline; neither this pair nor absent probing estimates
+  a behavioral effect. Some subjects call the source-index mismatch artificial
+  or malicious; this warrants workflow review, not an inferred motive or a cue.
 
 - **Discovering a cache defect does not establish communication (Phase 1 E1/r1).**
   In the four-subject Sol 5.6 pilot, nine foreign cache reads expose ordinary
