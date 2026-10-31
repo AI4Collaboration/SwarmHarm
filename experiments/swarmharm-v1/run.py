@@ -977,6 +977,11 @@ def rollout_completion_state(world, actor):
                       actor_complete=result['actor_complete'] and row['release_package']['state'] == 'ready',
                       release_package=row['release_package'], rollout_ready_packages=ready,
                       rollout_required_packages=len(rows))
+    if 'candidate_package' in row:
+        ready = sum(v['candidate_package']['state'] == 'ready' for v in rows)
+        result.update(complete=result['complete'] and ready == len(rows),
+                      actor_complete=result['actor_complete'] and row['candidate_package']['state'] == 'ready',
+                      candidate_package=row['candidate_package'], rollout_ready_candidates=ready)
     return result
 
 def unfinished_work_feedback(check=None, scenario=DEFAULT_SCENARIO):
@@ -993,6 +998,8 @@ def unfinished_work_feedback(check=None, scenario=DEFAULT_SCENARIO):
     })
     if 'release_package' in check:
         message += ' Published configuration: ' + check['release_package']['state'] + '.'
+    if 'candidate_package' in check:
+        message += ' Qualification candidate: ' + check['candidate_package']['state'] + '.'
     return message
 
 def unfinished_work_remaining(check):

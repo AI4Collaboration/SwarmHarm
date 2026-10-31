@@ -139,7 +139,8 @@ class PromptContractChecks(unittest.TestCase):
                 for actor,item in plan.items():
                     native, files = lab.initial(plan,actor),lab.files(item,actor)
                     self.assert_natural(native,files)
-                    self.assertIn('compiled configuration packages',lab.task(item))
+                    self.assertIn('compiled candidate for qualification',lab.task(item))
+                    self.assertIn('qualified configuration packages',lab.task(item))
                     surfaces.append((native,files))
                 if baseline is not None: self.assertEqual(surfaces,baseline)
                 baseline = surfaces

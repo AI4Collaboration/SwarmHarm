@@ -1625,7 +1625,7 @@
   "engineering_carrier_feasibility": {
     "revision": "engineering-carriers-feasibility-v3",
     "domain": "Engineering",
-    "status": "carrier_live_reviewed_business_iteration_pending",
+    "status": "v9_offline_verified_matching_live_pending",
     "completed_at": "2026-10-31T11:24:31.265447+00:00",
     "operator_only": true,
     "admitted_live_profile": false,
@@ -1982,7 +1982,7 @@
       "live_rollout_pending": true,
       "ready": false
     },
-    "current_runtime_revision": "engineering-carriers-feasibility-v8",
+    "current_runtime_revision": "engineering-carriers-feasibility-v9",
     "execution_capacity_provenance": {
       "revision": "engineering-carriers-feasibility-v4",
       "status": "physical_capacity_verified_resource_semantics_and_business_closure_pending",
@@ -3088,6 +3088,104 @@
         "transport_failures": 0,
         "autonomous_communication": false,
         "evidence_index": "../eval-readiness/phase1-carrier-v8-engineering-artifact-ordinary-sol56-r22/review-manifest.json"
+      }
+    },
+    "staged_candidate_revision": {
+      "revision": "engineering-staged-release-v1",
+      "source_status": "offline_verified_ready_to_commit",
+      "based_on_live_evidence": "phase1-carrier-v8-engineering-artifact-ordinary-sol56-r22/review-manifest.json",
+      "change": "Independently useful nonempty verified partial compiled candidate; final completion still requires all filings and current candidate plus qualified final. Physical carriers and budgets unchanged.",
+      "focused_tests": {
+        "passed": 16,
+        "log": "../eval-readiness/phase1-candidate-focused-20261031-r3.log"
+      },
+      "prompt_checks": {
+        "passed": 14,
+        "log": "../eval-readiness/phase1-candidate-prompt-20261031-r3.log"
+      },
+      "full_control": {
+        "status": "completed",
+        "session": 13964,
+        "output": "../eval-readiness/phase1-release-candidates-20261031-r2",
+        "completed_carriers": [
+          "data_object",
+          "message_transport",
+          "synchronization",
+          "execution_resource"
+        ],
+        "resource_vulnerable": {
+          "elapsed_seconds": 167.5566802910762,
+          "builds_per_workspace": [
+            465,
+            481,
+            473,
+            477
+          ],
+          "final_filed": 8,
+          "ready_candidates": 4,
+          "ready_packages": 4
+        },
+        "resource_repaired": {
+          "elapsed_seconds": 503.45945729198866,
+          "builds_per_workspace": [
+            465,
+            481,
+            473,
+            477
+          ],
+          "final_filed": 4,
+          "ready_candidates": 4,
+          "ready_packages": 0
+        }
+      },
+      "independent_script": "../eval-readiness/phase1-release-candidates-independent-20261031-r2.py",
+      "common_regression": {
+        "passed": 496,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "prompt_checks": 14,
+        "source_files": 145
+      },
+      "matching_source_live": "pending",
+      "ready": false,
+      "sequential_validation": {
+        "session": 98045,
+        "program": "../eval-readiness/phase1-candidate-validation-followthrough-20261031-r2.py",
+        "status_file": "../eval-readiness/phase1-candidate-validation-followthrough-20261031-r2/status.json",
+        "behavior": "Wait for existing control seal; verify success; run independent reconstruction, historical replay and common Pi regression sequentially. Stops on first failure. No model calls.",
+        "status": "completed"
+      },
+      "independent_reconstruction": {
+        "conditions": 8,
+        "actual_workstations_removed_and_absent": 32,
+        "source_files": 146,
+        "resource_own_status_returns": 2304,
+        "recompiled_sources": 8,
+        "historical_worlds": 26,
+        "hosted_model_calls": 0
+      },
+      "evidence": {
+        "phase1-release-candidates-20261031-r2": {
+          "directory": "../eval-readiness/phase1-release-candidates-20261031-r2",
+          "manifest_sha256": "54fcdf6a9e679ff43988ae4a4fb318e2e7a963f725a1690503020959cc685b6f"
+        },
+        "phase1-release-candidates-independent-20261031-r2": {
+          "directory": "../eval-readiness/phase1-release-candidates-independent-20261031-r2",
+          "manifest_sha256": "0f2cec0fac6429fb0d0fd85f699fb335287f5c276079a093c03bfaea68e0ae4a"
+        },
+        "phase1-release-candidates-history-20261031-r2": {
+          "directory": "../eval-readiness/phase1-release-candidates-history-20261031-r2",
+          "manifest_sha256": "fe82c264c8d4e5d059b972a385559da6661408187ca885b470445bc234bf0b8c"
+        },
+        "phase1-release-candidates-regression-20261031-r2": {
+          "directory": "../eval-readiness/phase1-release-candidates-regression-20261031-r2",
+          "manifest_sha256": "7f0b8e665992da4a2be3180c0fd810c5de9bd237688b26cec2da4ac2c2babf77"
+        },
+        "phase1-candidate-validation-followthrough-20261031-r2": {
+          "directory": "../eval-readiness/phase1-candidate-validation-followthrough-20261031-r2",
+          "manifest_sha256": "d598b4f009afd191dc357751abb3e2b845f77c9bfd4cd9b36708b189e047a500"
+        }
       }
     }
   },

@@ -24,6 +24,15 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Phase 1: compiled candidates before final qualification (v9).** All four
+Engineering carriers pass complete operator controls and independent reconstruction.
+Ordinary/repaired work delivers current candidates (4/4) but no qualified finals;
+vulnerable controls deliver both (4/4). All 32 workstations were cleaned up.
+The common Pi suite passes 496 checks and 14 prompt contracts; 26 historical
+worlds retain their original outcomes. See the [evidence ledger](docs/research/phase1-readiness.json).
+The next gate is a fresh matching-source Sol 5.6 rollout. These are offline
+witnesses, not natural model use, autonomous communication or success rates.
+
 **Engineering carrier admission:** the common prepare/collect/review entry now
 seals a carrier descriptor independently of pressure and dispatches its actual
 package-delivery control. Scope tampering is rejected and v2 native review is
@@ -264,7 +273,7 @@ modules remain shared dependencies and offline fixtures.
   no intentional communication. One mismatched filing was rejected. This is a
   development observation, not a rate or proof that discovery is impossible.
   Physical controls remain valid, but natural carrier use is unvalidated.
-  Next examine a separate compiled candidate deliverable that can be completed
+  V9 now implements a separate compiled candidate deliverable that can be completed
   with verified partial filings before final release qualification. Candidate
   staging must have its own real byte/report/lease checks; it must not relax final
   release completeness or supply peers, channels, messages or a codebook. This
@@ -272,7 +281,8 @@ modules remain shared dependencies and offline fixtures.
   which separates development/staging/release maturity, and
   [GitHub workflow artifacts](https://docs.github.com/en/actions/concepts/workflows-and-actions/workflow-artifacts),
   which preserve build and test outputs before later workflow use. The proposed
-  local contract is our operational design and is not implemented yet.
+  local contract is our operational design. Its offline controls pass; live
+  natural use and autonomous communication still require fresh evidence.
   Evidence: `../eval-readiness/phase1-carrier-v8-engineering-artifact-ordinary-sol56-r22/review-manifest.json`.
 
 - V7 package-status reads lazily initialized review services. Two snapshots of

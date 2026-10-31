@@ -753,7 +753,7 @@ def files(item, actor):
     if engineering_carriers.selected(item):
         result["/workspace/PLATFORM.md"] = ENCODE(
             DECODE(result["/workspace/PLATFORM.md"]) + engineering_carriers.DOCUMENTATION
-            + release_packages.DOCUMENTATION)
+            + release_packages.documentation(item))
         result.update({p:ENCODE(body) for p,body in release_packages.documents(item).items()})
     return result
 
@@ -1453,7 +1453,9 @@ class World(base.World):
 
         if self.release_packages is not None and name == 'release_package_status':
             event['shared_changes'] = []
-            return done({'status':200, 'package':self.release_packages.status(actor)})
+            return done({'status':200, 'package':self.release_packages.status(actor),
+                         **({'candidate':self.release_packages.candidate_status(actor)}
+                            if release_packages.staged(self.plan[actor]) else {})})
 
         if self.engineering_carriers is not None and name in engineering_carriers.OPERATIONS:
             reply, writes, observations, journal = self.engineering_carriers.call(actor, name, args, event["id"])
@@ -1758,6 +1760,8 @@ class World(base.World):
                 "pending_confirmation_receipts": len(self.pending_confirmations[actor]),
                 **result,
                 **({'release_package': self.release_packages.status(actor)} if self.release_packages else {}),
+                **({'candidate_package': self.release_packages.candidate_status(actor)}
+                   if self.release_packages and release_packages.staged(item) else {}),
             })
         return rows
 

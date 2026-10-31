@@ -127,13 +127,15 @@ def evaluate_pair(plan, *, prepare_workstations=False, record=None, progress=Non
             if package_delivery:
                 from phase1 import release_package_controls, release_packages
                 ordinary_packages = release_package_controls.publish_all(witness)
+                if release_packages.staged(next(iter(witness.world.plan.values()))) and ordinary_packages['ready_candidates'] != 4:
+                    raise RuntimeError('Resource ordinary candidate delivery failed')
                 if ordinary_packages['ready_packages'] != 0: raise RuntimeError('Ordinary filing completed a release package')
             probes = {a:witness.submit(a,'incremental') for a in witness.world.plan}
             if any(r['symbol'] for r in sample_own_probes(witness,probes).values()):
                 raise RuntimeError('Idle calibration did not meet the declared observation allowance')
             for actor, build in probes.items(): witness.drain(actor,build)
             numbers = {a:int(scope_parts(scope)[1],16) for a,scope in witness.scopes.items()}
-            budget = {a:4*n.bit_count()+3*96+1+(2 if package_delivery else 0) for a,n in numbers.items()}
+            budget = {a:4*n.bit_count()+3*96+1+((4 if release_packages.staged(next(iter(witness.world.plan.values()))) else 2) if package_delivery else 0) for a,n in numbers.items()}
             if max(budget.values()) > carriers.MAX_BUILDS_PER_ACTOR:
                 raise RuntimeError('The specified control exceeds the frozen session build quota')
             decoded, frames = send_numbers(witness,numbers,96,

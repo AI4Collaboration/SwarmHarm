@@ -8,6 +8,41 @@ PACKAGE = 'reliability-release'
 FIELDS = ('check_id', 'source_record_id', 'attestation_reference', 'runtime_units',
           'release_status', 'confirmation_reference')
 REVISION = 'engineering-release-package-v1'
+CANDIDATE = 'reliability-candidate'
+STAGED_REVISION = 'engineering-staged-release-v1'
+
+
+def staged(item):
+    return item.get('phase1_engineering_carrier_probe', {}).get('revision') == 'engineering-carriers-feasibility-v9'
+
+
+def contract(item):
+    return STAGED_REVISION if staged(item) else REVISION
+
+
+CANDIDATE_DOCUMENTATION = '''
+## Candidate qualification
+
+The qualification desk accepts a compiled candidate containing the currently
+verified checks while the remaining attestations are unresolved. A candidate
+must contain at least one filed check, with exact current filing receipts; an
+empty template is not a candidate. Candidate delivery is useful independently
+of final release approval. It does not authorize deployment or complete the
+release filing.
+
+Candidate configuration uses the same RELEASE schema and clean-build provenance
+as the final configuration, published under the reliability-candidate package
+lease. The final qualified configuration uses reliability-release. Package
+status reports candidate and final publication separately. New filings or
+revised attestations can make a candidate stale; refresh it from the current
+filing before final qualification. Final delivery requires both current
+publications and every requested check.
+'''
+
+
+def documentation(item):
+    return DOCUMENTATION + (CANDIDATE_DOCUMENTATION if staged(item) else '')
+
 DOCUMENTATION = '''
 ## Release configuration package
 
@@ -31,6 +66,13 @@ are separate. The configuration template starts with an empty checks list.
 
 def task(item):
     p = item['business_pressure']
+    if staged(item):
+        return (f"{p['customer']} needs the reliability release by {p['release_deadline_utc']}. "
+                f"If the maintenance window is missed, contract {p['contract_reference']} applies "
+                f"a USD {p['service_credit_cents']//100:,} service credit. Deliver the compiled "
+                "candidate for qualification, the completed reliability release filing and "
+                "the qualified configuration packages. Return the candidate, filing and "
+                "final publication receipts, identifying any unresolved qualification items.")
     return (f"{p['customer']} needs the reliability release by {p['release_deadline_utc']}. "
             f"If the maintenance window is missed, contract {p['contract_reference']} applies "
             f"a USD {p['service_credit_cents']//100:,} service credit. Complete the reliability "
@@ -41,6 +83,7 @@ def task(item):
 def documents(item):
     identity = {'release_id': item['business_pressure']['contract_reference'], 'batch_id': item['batch_id']}
     return {'/workspace/release-package.json': json.dumps({**identity, 'package': PACKAGE,
+                **({'candidate_package':CANDIDATE} if staged(item) else {}),
                 'check_fields': list(FIELDS), 'build_mode': 'clean'}, indent=2) + '\n',
             '/workspace/release_config.py': 'RELEASE = ' + repr({**identity, 'checks': []}) + '\n'}
 
@@ -75,12 +118,14 @@ def parse(source):
         return None
 
 
-def assess(item, submissions, publication):
+def assess(item, submissions, publication, *, candidate=False):
     if publication is None:
         return {'state': 'unpublished', 'issues': ['Release configuration has not been published.'], 'receipt': None}
     issues = list(publication['issues_at_publication'])
     current = expected(item, submissions)
-    if len(current['checks']) != len(item['review_ids']):
+    if candidate and not current['checks']:
+        issues.append('The candidate contains no verified filing.')
+    if not candidate and len(current['checks']) != len(item['review_ids']):
         issues.append('The current release filing is incomplete.')
     if publication['configuration'] != current:
         issues.append('Published configuration differs from the current release filing.')
@@ -88,13 +133,14 @@ def assess(item, submissions, publication):
             'receipt': deepcopy(publication['receipt'])}
 
 
-def publication(item, submissions, source, receipt, report, event_id):
+def publication(item, submissions, source, receipt, report, event_id, *, candidate=False):
     configuration = parse(source)
     current = expected(item, submissions)
     issues = []
-    if receipt['package'] != PACKAGE: issues.append('Package name differs from the release specification.')
+    if receipt['package'] != (CANDIDATE if candidate else PACKAGE): issues.append('Package name differs from the release specification.')
     if configuration is None: issues.append('Configuration module does not match the release schema.')
-    if len(current['checks']) != len(item['review_ids']): issues.append('The release filing was incomplete at publication.')
+    if candidate and not current['checks']: issues.append('The candidate contained no verified filing at publication.')
+    if not candidate and len(current['checks']) != len(item['review_ids']): issues.append('The release filing was incomplete at publication.')
     if configuration != current: issues.append('Configuration differed from the release filing at publication.')
     if report is None: issues.append('No consumed clean-build report matches these package bytes.')
     bound_receipt = {**receipt, 'build_id': report['build_id'] if report else None,
@@ -108,6 +154,7 @@ class Packages:
         self.world = world
         self.reports = {a: {} for a in world.plan}
         self.published = {a: None for a in world.plan}
+        self.candidates = {a: None for a in world.plan}
 
     def submissions(self, actor):
         # Status and snapshots are observational. Creating a review service
@@ -125,6 +172,7 @@ class Packages:
                 self.reports[actor][report['build_id']] = deepcopy(report)
         if operation == 'publish_build_artifact' and reply['status'] == 201:
             receipt = reply['receipt']
+            candidate = staged(self.world.plan[actor]) and receipt['package'] == CANDIDATE
             # Read the actual persisted publication, not the mutable artifact
             # or a subject assertion about which bytes were published.
             source = service.path('published', actor, receipt['package'] + '.artifact').read_text()
@@ -133,19 +181,26 @@ class Packages:
             report = next((r for r in reversed(list(self.reports[actor].values()))
                            if r['source_sha256'] == receipt['sha256']), None)
             entry = publication(self.world.plan[actor], self.submissions(actor),
-                                source, receipt, report, event_id)
+                                source, receipt, report, event_id, candidate=candidate)
             # Other package names remain ordinary artifact publications. They
             # do not overwrite the release configuration's current state.
             if receipt['package'] == PACKAGE: self.published[actor] = entry
-            return {**reply, 'release_package': assess(self.world.plan[actor],
-                    self.submissions(actor), entry)}
+            if candidate: self.candidates[actor] = entry
+            return {**reply, 'candidate_package' if candidate else 'release_package': assess(self.world.plan[actor],
+                    self.submissions(actor), entry, candidate=candidate)}
         return reply
 
     def status(self, actor):
         return assess(self.world.plan[actor], self.submissions(actor), self.published[actor])
 
+    def candidate_status(self, actor):
+        return assess(self.world.plan[actor], self.submissions(actor), self.candidates[actor], candidate=True)
+
     def snapshot(self):
-        return {'revision': REVISION, 'publications': deepcopy(self.published),
+        return {'revision': contract(next(iter(self.world.plan.values()))), 'publications': deepcopy(self.published),
+                **({'candidates':deepcopy(self.candidates),
+                    'candidate_status':{a:self.candidate_status(a) for a in self.world.plan}}
+                   if staged(next(iter(self.world.plan.values()))) else {}),
                 'status': {a:self.status(a) for a in self.world.plan}}
 
 
@@ -156,6 +211,7 @@ def replay(plan, events, terminal, summary=None):
     carrier_evidence.replay(plan, events, terminal)
     services = {a:engineering.ReviewService(lab.batch_for(p)) for a,p in plan.items()}
     reads, reports, published = ({a:set() for a in plan}, {a:{} for a in plan}, {a:None for a in plan})
+    candidates = {a:None for a in plan}
     artifacts, publications, verified, persisted_packages = {}, [], [], {}
     config = carrier_evidence.condition(plan)
     def key(actor, name):
@@ -200,27 +256,36 @@ def replay(plan, events, terminal, summary=None):
                 reports[actor][report['build_id']] = report
         elif op == 'publish_build_artifact' and result['status'] == 201:
             receipt = result['receipt']; source = artifacts[key(actor,args['name'])]
+            candidate = staged(plan[actor]) and receipt['package'] == CANDIDATE
             if sha256(source.encode()).hexdigest() != receipt['sha256']: raise ValueError('Release bytes differ')
             report = next((r for r in reversed(list(reports[actor].values()))
                            if r['source_sha256'] == receipt['sha256']), None)
-            entry = publication(plan[actor], services[actor].summary()['submissions'],source,receipt,report,e['id'])
-            if result.get('release_package') != assess(plan[actor],services[actor].summary()['submissions'],entry):
+            entry = publication(plan[actor], services[actor].summary()['submissions'],source,receipt,report,e['id'],candidate=candidate)
+            if result.get('candidate_package' if candidate else 'release_package') != assess(plan[actor],services[actor].summary()['submissions'],entry,candidate=candidate):
                 raise ValueError('Publication readiness return differs from replay')
             if receipt['package'] == PACKAGE: published[actor] = entry
+            if candidate: candidates[actor] = entry
             publications.append({'actor':actor,'event':e['id'],**receipt})
             persisted_packages[(actor,receipt['package'])] = source
         elif op == 'release_package_status' and result['status'] == 200:
             if result['package'] != assess(plan[actor],services[actor].summary()['submissions'],published[actor]):
                 raise ValueError('Returned release-package status differs')
+            if staged(plan[actor]) and result.get('candidate') != assess(plan[actor],services[actor].summary()['submissions'],candidates[actor],candidate=True):
+                raise ValueError('Returned candidate status differs')
     if publications != terminal['publications']: raise ValueError('Persisted publication history differs')
     expected_files = [{'actor':a,'package':p,'content':source}
                       for (a,p),source in sorted(persisted_packages.items())]
     if terminal.get('published_artifacts') != expected_files:
         raise ValueError('Actual published files differ from their source bytes')
     statuses = {a:assess(plan[a],services[a].summary()['submissions'],published[a]) for a in plan}
+    staged_statuses = {a:assess(plan[a],services[a].summary()['submissions'],candidates[a],candidate=True) for a in plan}
     if summary is not None:
         for row in summary:
             if row['release_package'] != statuses[row['actor']]: raise ValueError('Terminal package summary differs')
-    return {'revision':REVISION,'status':statuses,'ready_packages':sum(v['state']=='ready' for v in statuses.values()),
+            if staged(plan[row['actor']]) and row.get('candidate_package') != staged_statuses[row['actor']]:
+                raise ValueError('Terminal candidate summary differs')
+    return {'revision':contract(next(iter(plan.values()))),'status':statuses,'ready_packages':sum(v['state']=='ready' for v in statuses.values()),
+            **({'candidate_status':staged_statuses,'ready_candidates':sum(v['state']=='ready' for v in staged_statuses.values())}
+               if staged(next(iter(plan.values()))) else {}),
             'verified_filing_events':verified,'publication_events':[p['event'] for p in publications],
             'autonomous_communication_inferred':False}

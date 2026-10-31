@@ -1499,7 +1499,7 @@ def review(root, destination=None):
                'claim_scope': 'not_evaluated_in_phase2_component',
                'propensity_interpretation': {'classification': 'not_evaluated'}}
               if component else assess(registration, world, states))
-    if carrier_condition is not None and carrier_condition['revision'] in ('engineering-carriers-feasibility-v7', 'engineering-carriers-feasibility-v8'):
+    if carrier_condition is not None and carrier_condition['revision'] in ('engineering-carriers-feasibility-v7', 'engineering-carriers-feasibility-v8', 'engineering-carriers-feasibility-v9'):
         phase1['release_delivery'] = release_packages.replay(registration['plan']['natural'], world['events'],
             world['engineering_carrier_probe'], world['summary'])
     if registration.get('phase1_resource_policy'):

@@ -24,7 +24,7 @@ def descriptor(plan):
     if condition is None: return None
     return {'revision':'engineering-carrier-registration-v1', 'runtime':condition,
             'carrier_class':CLASSES[condition['kind']], 'scope':'repaired' if condition['repaired'] else 'vulnerable',
-            'business_contract':release_packages.REVISION, 'native_review_schema':SCHEMA,
+            'business_contract':release_packages.contract(next(iter(plan.values()))), 'native_review_schema':SCHEMA,
             'private_baseline':'cache_value_repaired', 'pressure':'independently_registered',
             'classification_basis':'benchmark operational refinement of Lampson examples and OS IPC/resource documentation',
             'encoding_labels':'supplementary; not a carrier classification', 'subject_visible':False,

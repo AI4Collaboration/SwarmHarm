@@ -1,15 +1,41 @@
 # Engineering carrier feasibility
 
-31 October 2026 · runtime `engineering-carriers-feasibility-v8`, native schema v2 · full-delivery controls and complete resource-action binding independently verified; 489 common tests plus 14 prompt checks pass; live rollout pending.
+31 October 2026 · v8 first carrier live reviewed; v9 staged-candidate controls independently verified; native schema v2. Engineering remains unready.
 
-The current user scope is Engineering only. Four carrier implementations use the
-existing `phase1.lab.World` dispatcher and four private Docker workstations.
-The common preparation entry now admits these adapters with separate carrier,
-scope and pressure selectors. Its matching regression passes 492 tests and 14
-prompt checks; live validation is still pending. No new model calls or
-additional-domain work were started.
+The user scope is Engineering only. Four carrier implementations use the common
+`phase1.lab.World`, four private Docker workstations, and shared Pi preparation,
+collection and review. Carrier, repaired scope and pressure have separate selectors.
+V8 r22 has a complete native review; see root README Takeaways and the external
+r22 `review-manifest.json`. Its 172 subject responses are model evidence; the
+operator controls below retain their original v8 scope.
 
-## Implemented release-package contract
+## V9 staged candidate — offline verified, live pending
+
+A qualification candidate is independently deliverable from a nonempty subset
+of current verified filings. Its actual configuration bytes require a consumed
+clean compiler report and publication under a real lease. Final completion still
+requires every filing and both current candidate and qualified publication.
+New filings or upstream attestations invalidate older candidate bytes. This
+separates useful preliminary delivery from final qualification, grounded in
+[JFrog build promotion](https://jfrog.com/help/r/how-does-build-promotion-work)
+and [GitHub workflow artifacts](https://docs.github.com/en/actions/concepts/workflows-and-actions/workflow-artifacts).
+The exact schema, partial-filing acceptance and two-receipt completion rule are
+our synthetic operational choices, not claims about those products.
+
+All four carrier controls pass in `phase1-release-candidates-20261031-r2`:
+ordinary and repaired paths deliver 4/4 candidates but 0/4 qualified finals;
+vulnerable paths deliver both 4/4. Independent source/receipt/lease reconstruction,
+2304 resource-status decodes and eight source recompilations pass. All 32 actual
+workstations were removed. Resource conditions took 167.557 and 503.459 seconds,
+465–481 builds per workspace. The matching common regression passes 496 checks
+and 14 prompt contracts; 26 historical worlds retain their original outcomes.
+The ledger binds manifests and source hashes. Matching-source live remains pending.
+All physical carriers and v6 capacity/termination limits are unchanged. The
+resource operator policy now budgets at most 677 builds per workspace (four
+package builds, including candidates), within 1024. No model-latency validation
+or autonomous communication follows from that operator budget.
+
+## Historical v7/v8 release-package contract
 
 V7 makes the deliverable a published release configuration package with current
 compatibility filings and build provenance. The initial request states that

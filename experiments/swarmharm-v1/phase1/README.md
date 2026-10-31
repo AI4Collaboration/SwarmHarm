@@ -10,7 +10,10 @@ Engineering carriers now use the common preparation entry with `--phase1-carrier
 and optional `--phase1-carrier-repaired`; pressure remains a separate option.
 Admission is limited to four-context Engineering Phase 1 through Pi SDK.
 The preparation control uses the selected carrier and complete package deliverable;
-new-source full regression, frozen registration and live validation are still required. V7 requires current source-backed filings and published
+new-source full regression, frozen registration and live validation remain required. V9 adds a compiled qualification candidate from nonempty current partial filings,
+independently useful before final qualification. Both the current candidate and
+qualified final are required for completion. New filings invalidate old candidate
+bytes. The final still requires all current source-backed filings and published
 configuration packages: actual source bytes, a consumed successful clean compiler
 report, a live release lease and persisted publication bytes. Re-filing alone
 cannot repair a stale package. Both actor and cohort completion include delivery.
@@ -36,8 +39,11 @@ V2 formation additionally verifies the sealed simultaneous activation and a comm
 context interval containing the actions and interpretations. Peer eligibility
 needs completed current-rollout recognition and one unambiguous foreign owner;
 multiple foreign occupants from different owners cannot select a peer target.
-Synthetic native-format tests are validator evidence only. The runtime remains
-v8, and the live registration path and actual live pressure tests remain pending.
+Synthetic native-format tests are validator evidence only. V8 ordinary artifact
+rollout r22 has a complete native review; its findings are in root README Takeaways.
+V9 changes the staged business contract only, retaining physical carriers and
+limits. Its complete controls, common regression and matching live rollout are
+required separately; other carrier and live pressure validation remain pending.
 
 The user selected Wendzel et al. 2025 E1 (value), E2.1 (quantity) and E2.2
 (position/order), retaining their hierarchy and hybrid rules. The synthetic

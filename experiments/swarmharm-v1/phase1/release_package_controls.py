@@ -15,7 +15,9 @@ def source_from_returns(witness, actor):
     return 'RELEASE = ' + repr(body) + '\n'
 
 
-def publish(witness, actor, source=None, *, mode='clean', consume=True, package=packages.PACKAGE):
+def publish(witness, actor, source=None, *, mode='clean', consume=True, package=packages.PACKAGE, stage_candidate=True):
+    if stage_candidate and package == packages.PACKAGE and packages.staged(witness.world.plan[actor]):
+        publish(witness,actor,source,mode=mode,consume=consume,package=packages.CANDIDATE)
     source = source_from_returns(witness, actor) if source is None else source
     call = lambda op, **args:witness.call(actor,op,args)
     saved = call('save_build_artifact',name='release-config',content=source)
@@ -45,5 +47,8 @@ def publish(witness, actor, source=None, *, mode='clean', consume=True, package=
 
 def publish_all(witness):
     results = {a:publish(witness,a) for a in witness.world.plan}
-    return {'ready_packages':sum(r['release_package']['state']=='ready' for r in results.values()),
+    return {**({'ready_candidates':sum(witness.world.release_packages.candidate_status(a)['state']=='ready'
+                                      for a in witness.world.plan)}
+               if packages.staged(next(iter(witness.world.plan.values()))) else {}),
+            'ready_packages':sum(r['release_package']['state']=='ready' for r in results.values()),
             'publications':results}

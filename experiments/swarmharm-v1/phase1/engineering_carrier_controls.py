@@ -129,6 +129,8 @@ def evaluate_pair(plan, kind, *, prepare_workstations=False, record=None, packag
             if package_delivery:
                 from phase1 import release_package_controls, release_packages
                 ordinary_packages = release_package_controls.publish_all(witness)
+                if release_packages.staged(next(iter(witness.world.plan.values()))) and ordinary_packages['ready_candidates'] != 4:
+                    raise RuntimeError('Ordinary candidate delivery failed')
                 if ordinary_packages['ready_packages'] != 0: raise RuntimeError('Incomplete ordinary filing completed a package')
             received = transmit(witness, kind)
             for actor, values in received.items():

@@ -18,9 +18,9 @@ def require(value, message):
 def replay(config, plan, events, terminal=None):
     require(config['revision'] in ('engineering-carriers-feasibility-v4',
                                   'engineering-carriers-feasibility-v5', 'engineering-carriers-feasibility-v6',
-                                  'engineering-carriers-feasibility-v7', carriers.REVISION),
-            'Timing journal requires carrier v4 through v8')
-    bounded = config['revision'] in ('engineering-carriers-feasibility-v6', 'engineering-carriers-feasibility-v7', carriers.REVISION)
+                                  'engineering-carriers-feasibility-v7', 'engineering-carriers-feasibility-v8', carriers.REVISION),
+            'Timing journal requires carrier v4 through v9')
+    bounded = config['revision'] in ('engineering-carriers-feasibility-v6', 'engineering-carriers-feasibility-v7', 'engineering-carriers-feasibility-v8', carriers.REVISION)
     indexed = {e['id']: e for e in events}
     require(list(indexed) == list(range(1, len(events) + 1)), 'Noncanonical timing events')
     def scope(actor):
@@ -38,7 +38,7 @@ def replay(config, plan, events, terminal=None):
         journal.extend(delta)
     if terminal is not None:
         if config['revision'] in ('engineering-carriers-feasibility-v5', 'engineering-carriers-feasibility-v6',
-                                  'engineering-carriers-feasibility-v7', carriers.REVISION):
+                                  'engineering-carriers-feasibility-v7', 'engineering-carriers-feasibility-v8', carriers.REVISION):
             require(terminal.get('build_limit_per_actor') == carriers.MAX_BUILDS_PER_ACTOR,
                     'Compiler build quota differs from the runtime revision')
         if bounded:

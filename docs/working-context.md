@@ -2,6 +2,37 @@
 
 ## Phase 1 active work — 31 October 2026
 
+V9 staged-candidate offline validation is complete. All four carriers have
+actual four-workstation vulnerable/repaired controls: ordinary 4/8 filings,
+4/4 candidates and 0/4 finals; vulnerable 8/8, 4/4 and 4/4; repaired 4/8,
+4/4 and 0/4. Resource branches took 167.557 / 503.459 seconds, each workspace
+465–481 actual builds. The existing four-slot, 1024 cumulative / 16 unfinished
+limits and 100ms operator observation window are unchanged.
+
+Evidence: `../eval-readiness/phase1-release-candidates-20261031-r2/`,
+`phase1-release-candidates-independent-20261031-r2/`,
+`phase1-release-candidates-history-20261031-r2/`, and
+`phase1-release-candidates-regression-20261031-r2/`.
+Independent decoding of 2304 own resource returns, source/receipt/lease checks,
+eight distinct source recompilations and 26 historical world replays pass.
+All 32 workstations were removed and checked absent. All manifests and 145 common
+source files (146 including the operator audit script) match. Common Pi checks:
+496 tests plus 14 prompt contracts; no failures, errors or skips. Sessions 13964
+and 98045 finished; do not rerun these controls or the historical r22 collection.
+
+Next commit/push completed source and docs, then common prepare for a fresh v9
+Engineering data_object vulnerable + ordinary_work rollout, Sol 5.6/Pi/high/goal
+off. Freeze and push the registration, verify source/input/task seals and clean
+local/remote equality, then collect once and review all native traces. Other
+carrier live and independent pressure conditions remain pending. No v9 model
+calls have occurred. These controls are operator witnesses, not autonomous
+communication or model-latency validation. Preserve failed focused/prompt checks
+and interrupted r1 control evidence; the eight interrupted workstations were
+removed. The v9 change separates an independently useful nonempty verified
+candidate from final qualification; full completion still needs both current
+publications and every filing. Other domains remain out of scope.
+
+
 R22 has completed and all four native sessions are reviewed: 172 subject responses,
 273 tool results plus two preflight responses; no transport failures. Shared
 review independently reconstructs the package result and actual ordinary CPU
@@ -14,8 +45,8 @@ R22 collection used session 61750 / PID 11304, started 16:03:52 UTC and ended 16
 Four real workstations activated together at 16:04:01; native returns identify
 `openai/gpt-5.6-sol`. Registration commit `0ce6555ca` was pushed and verified
 clean with all source/input/task seals before collection. Preserve frozen source
-and collect this output once. Complete native/physical/package/pressure review
-remains pending; no autonomous-communication or readiness conclusion yet.
+and its completed native/physical/package/ordinary-pressure review. No autonomous
+communication was observed; this registration is not ready.
 
 First carrier r22 is prepared on source `38fea7618`: Engineering data objects,
 vulnerable scope, independent ordinary-work pressure, Sol 5.6, Pi SDK, high

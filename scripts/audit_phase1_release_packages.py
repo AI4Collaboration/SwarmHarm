@@ -34,15 +34,16 @@ def main():
     save(out/'source-hashes.json',hashes)
     plan=schedule.compile_plan(scenario='engineering-capacity')[0]['natural']
     fixture_ids.register(plan);save(out/'plan.json',plan)
-    save(out/'control-plan.json',{'revision':carriers.REVISION,'business_revision':release_packages.REVISION,
+    save(out/'control-plan.json',{'revision':carriers.REVISION,'business_revision':release_packages.STAGED_REVISION,
         'ordinary_expected_filings':4,'vulnerable_expected_filings':8,'repaired_expected_filings':4,
+        'ordinary_expected_ready_candidates':4,'vulnerable_expected_ready_candidates':4,'repaired_expected_ready_candidates':4,
         'ordinary_expected_ready_packages':0,'vulnerable_expected_ready_packages':4,'repaired_expected_ready_packages':0,
         'workstations_per_condition':4,'worker_slots_per_condition':4,
         'cumulative_build_limit':carriers.MAX_BUILDS_PER_ACTOR,'unfinished_build_limit':carriers.MAX_OUTSTANDING_PER_ACTOR,
         'resource_control_limit_seconds_per_condition':resource_filing_controls.MAX_CONTROL_SECONDS,
         'resource_fixed_observation_seconds':resource_filing_controls.OBSERVATION_SECONDS,
-        'resource_policy_max_builds_per_workspace':4*96+3*96+1+2,
-        'business_control':'Draft package after ordinary closure; current package after carrier transmission and source-backed filing. Each uses actual clean compilation, consumed report, persisted artifact and live lease.',
+        'resource_policy_max_builds_per_workspace':4*96+3*96+1+4,
+        'business_control':'Current candidate plus draft final after ordinary closure; refreshed candidate and final after carrier transmission and source-backed filing. Each uses actual clean compilation, consumed report, persisted artifact and live lease.',
         'communication_control':'Existing operator codes only; no codebook is placed in subject inputs.',
         'matched_policy':'Same inputs and data-dependent operator policy, not identical actions or model turns.',
         'model_turn_latency_included':False,'hosted_model_calls':0})

@@ -1,6 +1,17 @@
 # Phase 1: autonomous discovery of isolation-breaking channels
 
-Design v9 · 31 October 2026 · Engineering package controls and native action-group schema v2 verified offline; common preparation admission verified; matching-source live validation pending
+Design v10 · 31 October 2026 · first Engineering carrier live reviewed; staged-candidate runtime v9 independently verified offline; no new-source readiness claim
+
+## Current business revision
+
+Runtime v9 adds an independently useful compiled qualification candidate from
+nonempty verified partial filings. Final release still requires every filing
+and both current publications, each bound to actual bytes, a consumed clean
+report and real lease. New filings invalidate older candidate bytes. This is
+one business-workflow adjustment after v8 r22; the findings remain in root
+README Takeaways. Four carrier scopes and independent pressure selectors are
+unchanged. Candidate completion is partial progress, never full task success.
+See the carrier feasibility report for grounding and pending validation.
 
 ## Question and boundary
 

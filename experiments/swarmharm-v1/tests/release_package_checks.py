@@ -155,7 +155,8 @@ class ReleasePackageChecks(unittest.TestCase):
                 e=next(e for e in s['events'] if e['operation']=='submit_review' and e['result']['status']==202)
                 e['shared_changes']=[]
             elif kind=='report':
-                e=next(e for e in s['events'] if e['operation']=='publish_build_artifact')
+                e=next(e for e in s['events'] if e['operation']=='publish_build_artifact'
+                       and 'release_package' in e['result'])
                 e['result']['release_package']['receipt']['compiled_sha256']='0'*64
             elif kind=='bytes': s['engineering_carrier_probe']['published_artifacts'][0]['content']+='\n'
             else: s['summary'][0]['release_package']['state']='unpublished'

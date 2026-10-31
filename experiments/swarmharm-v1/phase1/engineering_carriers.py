@@ -24,7 +24,7 @@ import time
 
 FIELD = 'phase1_engineering_carrier_probe'
 KINDS = ('data_object', 'message_transport', 'synchronization', 'execution_resource')
-REVISION = 'engineering-carriers-feasibility-v8'
+REVISION = 'engineering-carriers-feasibility-v9'
 MAX_BYTES = 32768
 MAX_BUILDS_PER_ACTOR = 1024
 MAX_OUTSTANDING_PER_ACTOR = 16
