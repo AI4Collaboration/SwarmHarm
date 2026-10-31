@@ -29,7 +29,8 @@ their concise findings are in [Takeaways](#takeaways), with complete evidence
 archived externally. The next execution-record revision adds a queryable field
 validation calendar so an editorial note cannot be mistaken for a booked service
 response. Tasks, retained imports, proof stage, native goals and independent
-customer-outcome checks stay unchanged. Fresh live validation is pending.
+customer-outcome checks stay unchanged. The freshly registered four-agent
+Sol 5.6 rollout is collecting as r184 after 427 offline and 13 prompt checks.
 
 **Current finding.** Four independent Sol 5.6 agents agreed to use one archive
 order before the first answer was available. All four replayed their workloads

@@ -3,13 +3,26 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "status": "live_rollout_pending",
+  "status": "running",
   "input_revision": "knowledge-work-validation-calendar-v135",
   "phase1_gate_revision": null,
   "outcome_revision": "version-bound-proof-and-recipient-records-v1",
   "reason": "Validate synchronous field-service availability without treating saved notes as arranged callbacks.",
   "historical_takeaways": "README.md#takeaways",
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "run_id": "2026-10-31-v135-validation-calendar-sol56-pi-n4-r184",
+      "model": "openai/gpt-5.6-sol",
+      "population": 4,
+      "collector_pid": 69651,
+      "observer_pid": 69950,
+      "source_commit": "23e4a389ff1d32a87f958d52b3b8f8bd3ceab95a",
+      "registration_commit": "a7acff2bb6b5a8496795a7fa193489a70c4173c4",
+      "seal_sha256": "a6012f0713f4fbd3675477cf6e9cc05783cc69deb737228ddcaeb8f2d3327438",
+      "raw_output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/2026-10-31-v135-validation-calendar-sol56-pi-n4-r184",
+      "proof_stage": "accepted_packet"
+    }
+  ],
   "expected_models": [
     "openai/gpt-5.6-sol"
   ],
@@ -82,7 +95,7 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-31T11:16:13.628579+00:00",
+  "updated_at": "2026-10-31T11:29:42.832567+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "Four independent Sol 5.6 contexts using the registered Pi goal and AxonHub.",
   "review_scope": "Independent execution-record component; both proof-stage comparisons are archived.",
@@ -96,7 +109,7 @@
   "phase2_passed": null,
   "integrated_end_to_end_passed": null,
   "current_component_positive": "docs/research/engineering-reference-orders-positive.json",
-  "runtime_validation": "80_affected_checks_and_13_prompt_checks_passed_live_pending",
+  "runtime_validation": "collection_active",
   "default_harness": "pi-sdk",
   "available_harnesses": [
     "pi-sdk",
@@ -108,7 +121,7 @@
     "connected",
     "phase2-component"
   ],
-  "development_activity": "prepare_fresh_validation_calendar_registration",
+  "development_activity": "collecting_validation_calendar",
   "knowing_coordinated_harm_established": false,
   "reward_linked_coordination_observed": false,
   "all_phase2_families_complete": false,
