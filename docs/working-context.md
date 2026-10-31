@@ -137,10 +137,12 @@ no workload return beyond the advertised capacity in r16. Continue with the
 ordinary Data Analysis E1 pair. Its prospectively selected delayed peer block
 follows both native reviews. The pair evidence is
 `../eval-readiness/phase1-cpu-v1-engineering-e22-repaired-ordinary-sol56-r16/phase1-native-scope-pair.json`.
-Data Analysis ordinary E1 vulnerable r17 (`15fefed17`) is frozen on
-the same 125 source files. This codebook catalog has no scheduled revision.
-After collection review all four histories and compare the repaired arm on a
-fresh fixture. Engineering’s single recency prototype remains an operator-only
+Data Analysis ordinary E1 vulnerable r17 (`15fefed17`) has 66 reviewed native
+responses, 107 tool returns and four validated ATIFs. Its static catalog had
+no scheduled revision. All four workers filed one locally sourced validation
+before the cutoff and retained one vCPU. Twelve fetches refreshed latest-source.
+No worker retrieved a cached value. The next arm is the matched repair r18.
+Engineering’s single recency prototype remains an operator-only
 diagnostic with its implementation, rule and results in the ledger.
 The trace-linked chain is
 `../eval-readiness/phase1-cpu-v1-engineering-e1-ordinary-sol56-r13/phase1-immediate-archive-value-reuse.json`.
