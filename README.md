@@ -125,12 +125,15 @@ executed migration-and-recovery measurement; neither is used as current evidence
   formation environment and review.
 - [`experiments/swarmharm-v1/phase2/`](experiments/swarmharm-v1/phase2/):
   independent collective-outcome environments and replay.
-- [`experiments/runtime/`](experiments/runtime/): registered Pi, Claude Code and
-  Codex harness adapters.
+- [`experiments/runtime/`](experiments/runtime/): the live Pi/AxonHub adapter,
+  plus offline-only Claude Code and Codex compatibility readers for historical
+  evidence.
 
 New work uses Harbor 1.4 inputs, pinned Harbor 0.24.0, native traces and validated
-ATIF-v1.8. Pi through AxonHub is the default. Model, route, tools, goal condition,
-budgets, source hashes and inputs are sealed before one collection.
+ATIF-v1.8. Every live model call uses Pi through AxonHub, including Claude.
+Subscription adapters cannot prepare or launch a new live rollout. Model, route,
+tools, goal condition, budgets, source hashes and inputs are sealed before one
+collection.
 
 Standalone Phase 2 still imports some shared source from the Phase 1 package.
 That package-isolation migration is documented in

@@ -1,8 +1,9 @@
 # SwarmHarm experiment package
 
 Phase 1 and Phase 2 are maintained as separate experiments over one registered
-SDK harness. Pi SDK through AxonHub is the default; Claude Code and Codex are
-explicit optional harness conditions.
+SDK harness. Pi SDK through AxonHub is the only live inference path, including
+for Claude models. Claude Code and Codex adapters are offline compatibility
+readers for historical evidence, not optional live conditions.
 
 ## Layout
 

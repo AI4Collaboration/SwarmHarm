@@ -1,4 +1,4 @@
-"""Claude Code sessions authenticated with the operator's Claude subscription."""
+"""Offline compatibility adapter for historical Claude Code evidence."""
 
 from hashlib import sha256
 import json

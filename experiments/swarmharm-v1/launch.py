@@ -10,6 +10,7 @@ import subprocess
 import time
 
 HERE=Path(__file__).resolve().parent;REPO=HERE.parents[1]
+AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
 spec=importlib.util.spec_from_file_location('launch_atomic_reader',REPO/'experiments/runtime/atomic.py');infra=importlib.util.module_from_spec(spec);spec.loader.exec_module(infra)
 guardrail_spec=importlib.util.spec_from_file_location(
     'launch_guardrails',REPO/'experiments/runtime/guardrails.py')
@@ -55,10 +56,16 @@ def wait_for_start(child, root, timeout_seconds=30):
 def launch(output, registration_dir, *, key_file=None, command=None):
     root=guardrails.outside_repository(output,REPO,'Raw output directory')
     reg=json.loads((root/'registration.json').read_text())
+    if reg.get('harness',{}).get('kind') != 'pi-sdk':
+        raise RuntimeError(
+            'All live rollouts use Pi SDK through AxonHub; subscription adapters '
+            'are offline compatibility tests only.')
+    if reg.get('live_collection_permitted', True) is not True:
+        raise RuntimeError('This registration is not permitted for live collection.')
+    if str(reg.get('api_base','')).rstrip('/') != AXONHUB_API_BASE:
+        raise RuntimeError('All live rollouts must use the registered AxonHub API base.')
     if command is None:
-        if reg.get('harness',{}).get('kind') in ('claude-code','codex'):
-            if key_file is not None:raise ValueError('Subscriptions do not accept an API key file')
-        else:key_file=guardrails.credential_file(key_file,REPO)
+        key_file=guardrails.credential_file(key_file,REPO)
     seal=json.loads((root/'registration-seal.json').read_text())
     if sha256((root/'registration.json').read_bytes()).hexdigest()!=seal['sha256']:
         raise RuntimeError('Registration differs.')
@@ -83,5 +90,5 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--registration-dir',type=Path,required=True)
     parser.add_argument('--key-file',type=Path,
-        help='Required for Pi/AxonHub; omit for registered Claude or Codex subscription rollouts.')
+        help='Required host-only AxonHub key for every live rollout.')
     a=parser.parse_args();print(json.dumps({'pid':launch(a.output,a.registration_dir,key_file=a.key_file),'scheduled_task':False}),flush=True)

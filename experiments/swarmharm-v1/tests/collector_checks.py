@@ -161,6 +161,51 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             self.assertIn('`medium` reasoning',(root/'PROTOCOL.md').read_text())
             self.assertEqual(run.DEFAULT_REASONING,'high')
 
+    def test_live_preparation_rejects_subscription_harnesses(self):
+        for harness in ('claude-code', 'codex'):
+            with self.subTest(harness=harness), self.assertRaisesRegex(
+                    ValueError, 'All live rollouts use Pi SDK through AxonHub'):
+                run.validate_harness_policy(harness)
+
+    def test_claude_model_still_uses_the_pi_axonhub_harness(self):
+        with tempfile.TemporaryDirectory() as temporary, \
+             patch.object(run,'MODELS',{'claude':'anthropic/claude-example'}), \
+             patch.object(run,'UPSTREAM_MODELS',{'claude':'anthropic/claude-example'}), \
+             patch.object(run,'verify_routes',return_value={}) as verify:
+            root=Path(temporary)/'study';registration=self.registration_path(temporary)
+            key=self.key_file(temporary)
+            run.prepare(root,registration,key,run_controls=False)
+            prepared=run.load(root/'registration.json')
+            self.assertEqual(prepared['models'],{'claude':'anthropic/claude-example'})
+            self.assertEqual(prepared['harness']['kind'],'pi-sdk')
+            self.assertEqual(prepared['api_base'],run.AXONHUB_API_BASE)
+            self.assertTrue(prepared['live_collection_permitted'])
+            self.assertFalse(prepared['offline_adapter_test'])
+            verify.assert_called_once_with(key.resolve(),reasoning_effort='high')
+
+    def test_launcher_rejects_an_offline_subscription_registration(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)/'study';root.mkdir()
+            run.save(root/'registration.json',{
+                'harness':{'kind':'claude-code'},
+                'live_collection_permitted':False,
+                'offline_adapter_test':True,
+            })
+            with self.assertRaisesRegex(
+                    RuntimeError, 'All live rollouts use Pi SDK through AxonHub'):
+                launch.launch(root, Path(temporary)/'registration', command=['true'])
+
+    def test_launcher_rejects_a_non_axonhub_pi_endpoint(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)/'study';root.mkdir()
+            run.save(root/'registration.json',{
+                'harness':{'kind':'pi-sdk'},
+                'api_base':'https://example.invalid/v1',
+                'live_collection_permitted':True,
+            })
+            with self.assertRaisesRegex(RuntimeError, 'registered AxonHub API base'):
+                launch.launch(root, Path(temporary)/'registration', command=['true'])
+
     def test_collection_rejects_a_different_image_before_inference(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary)/'study';registration=self.registration_path(temporary)

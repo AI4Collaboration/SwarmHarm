@@ -365,7 +365,7 @@ class PiCollectChecks(unittest.TestCase):
                     value.update(passed=True, formation_event=world['events'][-1]['id'])
                     return value
                 patches.enter_context(patch.object(review, 'runtime_formation_evidence', side_effect=gate))
-            run.collect(root, registration)
+            run.collect(root, registration, offline_transport_test=True)
         return root, reg
 
     def assert_native_records(self, root, reg):

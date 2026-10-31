@@ -108,6 +108,7 @@ class SubscriptionChecks(unittest.TestCase):
                 registration=run.REGISTRATIONS/f'test-goal-{Path(temporary).name}-{mode}'
                 self.addCleanup(shutil.rmtree,registration,True)
                 run.prepare(root,registration,None,run_controls=False,harness_kind='claude-code',
+                    offline_adapter_test=True,
                     scenario='financial-analysis',reasoning_effort='medium',goal_mode=mode,
                     filing_deadline_utc='2030-01-01T00:00:00+00:00')
             self.assertEqual(checker.check(*roots),[])
@@ -273,7 +274,7 @@ class ClaudeCollectChecks(unittest.TestCase):
             patches.enter_context(patch.object(run, 'UPSTREAM_MODELS', {'claude': MODEL}))
             routes = patches.enter_context(patch.object(run, 'verify_routes', side_effect=AssertionError('AxonHub must not be called')))
             run.prepare(root, registration, None, run_controls=False, harness_kind='claude-code',
-                        reasoning_effort='medium')
+                        reasoning_effort='medium', offline_adapter_test=True)
             reg = run.load(root / 'registration.json')
             self.assertEqual(reg['reasoning'],'medium')
             self.assertIn('`medium` reasoning',(root/'PROTOCOL.md').read_text())
@@ -285,7 +286,7 @@ class ClaudeCollectChecks(unittest.TestCase):
             run.save(root / 'registration-seal.json', {'sha256': run.sha(root / 'registration.json')})
             patches.enter_context(patch.object(run, 'verify_collection_freeze'))
             patches.enter_context(patch.object(run, 'AXONHUB_KEY_FILE', None))
-            run.collect(root, registration)
+            run.collect(root, registration, offline_adapter_test=True)
             routes.assert_not_called()
             completion = run.load(root / 'completion.json')
             self.assertIn(completion['status'], {'collected', 'collected_with_limits'}, completion)

@@ -58,6 +58,9 @@ UPSTREAM_MODELS={'sol':'openai/gpt-6.1-sol'}
 DEFAULT_REASONING='high'
 REASONING_EFFORTS=('low','medium','high','xhigh','max')
 DEFAULT_SCENARIO=domain_runtime.ENGINEERING_CAPACITY
+LIVE_HARNESS='pi-sdk'
+OFFLINE_COMPATIBILITY_HARNESSES=('claude-code','codex')
+HARNESS_KINDS=(LIVE_HARNESS,*OFFLINE_COMPATIBILITY_HARNESSES)
 AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
 AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
 OPENROUTER_CATALOG='https://openrouter.ai/api/v1/models'
@@ -364,6 +367,17 @@ def normalized_filing_deadline(value=None):
         raise ValueError('filing deadline must be in the future at preparation time')
     return normalized
 
+def validate_harness_policy(harness_kind, offline_adapter_test=False):
+    if harness_kind not in HARNESS_KINDS:
+        raise ValueError('Unknown agent harness')
+    if harness_kind == LIVE_HARNESS and offline_adapter_test:
+        raise ValueError('Pi SDK is the live AxonHub harness, not an offline adapter test.')
+    if harness_kind != LIVE_HARNESS and not offline_adapter_test:
+        raise ValueError(
+            'All live rollouts use Pi SDK through AxonHub. Claude Code and Codex '
+            'subscription adapters are offline compatibility tests only.'
+        )
+
 def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             provider_concurrency=None,topology_file=None,run_controls=True,
             cue_condition=schedule.DEFAULT_CUE_CONDITION,
@@ -371,14 +385,15 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             information_condition="local_records", study_mode="connected",
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode='off', harness_kind='pi-sdk',
-            reasoning_effort=DEFAULT_REASONING, proof_stage='off'):
+            reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
-    if harness_kind not in ('pi-sdk','claude-code','codex'):
-        raise ValueError('Unknown agent harness')
+    validate_harness_policy(harness_kind, offline_adapter_test)
     if reasoning_effort not in REASONING_EFFORTS:
         raise ValueError('Unsupported reasoning effort')
     if harness_kind=='pi-sdk':
+        if AXONHUB_API_BASE != 'https://lmportal.iefbr14.xyz/v1':
+            raise ValueError('All live rollouts must use the registered AxonHub API base')
         key_file=guardrails.credential_file(key_file,REPO)
     elif key_file is not None:
         raise ValueError('Subscription harnesses do not accept an API key file')
@@ -580,6 +595,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             if AXONHUB_API_BASE=='https://lmportal.iefbr14.xyz/v1'
             else f'Existing host-only key for {AXONHUB_API_BASE}; never supplied to subjects.'),
         'runtime':{'harbor_version':HARBOR_VERSION,'python':sys.version.split()[0]},
+        'live_collection_permitted':harness_kind == LIVE_HARNESS,
+        'offline_adapter_test':bool(offline_adapter_test),
         'continuous_rollout':True,
         'cue_condition':cue_condition,
         'cue_conditions_supported':list(schedule.CUE_CONDITIONS),
@@ -1488,13 +1505,33 @@ def session_inputs(audit, harness_kind):
     return None, context + tasks
 
 
-def collect(root,registration_dir):
+def collect(root,registration_dir,offline_adapter_test=False,offline_transport_test=False):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     global AXONHUB_KEY_FILE
     reg=load(root/'registration.json')
-    is_claude=reg.get('harness',{}).get('kind')=='claude-code'
-    is_codex=reg.get('harness',{}).get('kind')=='codex'
+    harness_kind=reg.get('harness',{}).get('kind')
+    if offline_adapter_test and offline_transport_test:
+        raise ValueError('Choose one offline compatibility test mode')
+    if harness_kind != LIVE_HARNESS:
+        require(
+            offline_adapter_test and reg.get('offline_adapter_test') is True
+            and reg.get('live_collection_permitted') is False,
+            'All live rollouts use Pi SDK through AxonHub; subscription adapters '
+            'are offline compatibility tests only.',
+        )
+    else:
+        require(reg.get('live_collection_permitted', True) is True,
+            'This registration is not permitted for live collection.')
+        registered_base=registration_api_base(reg)
+        if offline_transport_test:
+            require(registered_base.startswith(('http://127.0.0.1:', 'http://localhost:')),
+                'Offline transport tests must use a loopback fixture.')
+        else:
+            require(registered_base == AXONHUB_API_BASE,
+                'All live rollouts must use the registered AxonHub API base.')
+    is_claude=harness_kind=='claude-code'
+    is_codex=harness_kind=='codex'
     subscription=is_claude or is_codex
     if subscription and AXONHUB_KEY_FILE is not None:
         raise ValueError('The registered subscription harness does not accept an API key file')
@@ -1534,7 +1571,7 @@ def collect(root,registration_dir):
     fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     monitor=module('swarmharm_v1_response_monitor',REPO/'experiments/runtime/response_monitor.py')
     harness=reg['harness']
-    require(harness['kind'] in ('pi-sdk','claude-code','codex'),'Unknown registered agent harness.')
+    require(harness['kind'] in HARNESS_KINDS,'Unknown registered agent harness.')
     agent_runtime=codex_agent if is_codex else claude_agent if is_claude else pi_agent
     agent_class=codex_agent.CodexAgent if is_codex else claude_agent.ClaudeAgent if is_claude else pi_agent.PiAgent
     harness_folder='codex' if is_codex else 'claude' if is_claude else 'pi'
@@ -2403,10 +2440,10 @@ if __name__=='__main__':
     signal.signal(signal.SIGTERM,stop_operator)
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path)
-    p.add_argument('--harness',choices=('pi-sdk','claude-code','codex'),default='pi-sdk',
-        help='Claude Code and Codex use operator subscriptions, without an API key.')
+    p.add_argument('--harness',choices=(LIVE_HARNESS,),default=LIVE_HARNESS,
+        help='All live inference uses Pi SDK through AxonHub, including Claude models.')
     p.add_argument('--model-id',
-        help='AxonHub model ID (default openai/gpt-6.1-sol), or required native subscription model ID.')
+        help='AxonHub model ID, including Claude models (default openai/gpt-6.1-sol).')
     p.add_argument('--reasoning-effort',choices=REASONING_EFFORTS,default=DEFAULT_REASONING,
         help='Effort frozen at preparation; collection uses the registered value.')
     p.add_argument('--upstream-model-id',
@@ -2425,10 +2462,10 @@ if __name__=='__main__':
         help='Business scenario; defaults to the maintained Engineering source.')
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched rollouts.')
-    p.add_argument('--goal-mode',choices=tuple(dict.fromkeys(pi_agent.GOAL_MODES+claude_agent.GOAL_MODES)),default='off',
-        help='off uses plain prompts; goal_command uses pi-goal; claude_goal uses Claude Code native /goal.')
+    p.add_argument('--goal-mode',choices=pi_agent.GOAL_MODES,default='off',
+        help='off uses plain prompts; goal_command uses the registered Pi goal extension.')
     p.add_argument('--api-base',default=AXONHUB_API_BASE,
-        help='Responses API base frozen at preparation; defaults to AxonHub. Collection uses the registered base.')
+        help='Fixed AxonHub Responses API base; alternative live endpoints are rejected.')
     p.add_argument('--information-condition', choices=('local_records',),
         default='local_records', help='Knowledge Work Phase 2 information availability.')
     p.add_argument('--study-mode', choices=('phase1', 'connected', phase2_component.MODE), required=True,
@@ -2442,20 +2479,14 @@ if __name__=='__main__':
     p.add_argument('--material-distribution', choices=component_workflow.MATERIAL_DISTRIBUTIONS,
         default='all_workstations', help='All workstations, or method material only at fixture_index 0.')
     a=p.parse_args()
-    if a.phase=='prepare' and a.harness=='pi-sdk' and a.api_base.rstrip('/')!=AXONHUB_API_BASE:
-        AXONHUB_API_BASE=a.api_base.rstrip('/')
-        AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
-        AXONHUB_CATALOG=f'{AXONHUB_API_BASE}/models'
+    if a.phase=='prepare' and a.api_base.rstrip('/')!=AXONHUB_API_BASE:
+        p.error('All live rollouts must use the registered AxonHub API base')
     AXONHUB_KEY_FILE=a.key_file
     root=guardrails.outside_repository(a.output,REPO,'Raw output directory')
     registration_dir=registration_path(a.registration_dir)
     if a.phase=='prepare':
         if not a.model_alias or not all(c.isalnum() or c in '_-' for c in a.model_alias):
             raise ValueError('Invalid model alias.')
-        if a.harness in ('claude-code','codex'):
-            if not a.model_id:p.error('--model-id is required for subscription harnesses')
-            if a.key_file or a.api_base!=AXONHUB_API_BASE or a.upstream_model_id:
-                p.error('Subscriptions do not accept --key-file, --api-base or --upstream-model-id')
         model_id=a.model_id or 'openai/gpt-6.1-sol'
         MODELS={a.model_alias:model_id}
         UPSTREAM_MODELS={a.model_alias:a.upstream_model_id or model_id}

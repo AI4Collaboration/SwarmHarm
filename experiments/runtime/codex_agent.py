@@ -1,4 +1,4 @@
-"""Codex app-server authentication and runtime identity for subscription rollouts."""
+"""Offline compatibility adapter for historical Codex app-server evidence."""
 
 from contextlib import contextmanager
 import base64

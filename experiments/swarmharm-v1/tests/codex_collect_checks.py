@@ -439,7 +439,8 @@ class NativeCodex(unittest.TestCase):
             patches.enter_context(patch.object(C, 'subscription_catalog', return_value={
                 'authentication': 'offline-fixture', 'model': MODEL, 'effort': 'high', 'inference_calls': 0}))
             routes = patches.enter_context(patch.object(run, 'verify_routes', side_effect=AssertionError('No API route')))
-            run.prepare(root, registration, None, run_controls=False, harness_kind='codex')
+            run.prepare(root, registration, None, run_controls=False, harness_kind='codex',
+                        offline_adapter_test=True)
             reg = run.load(root / 'registration.json')
             self.assertIsNone(reg['api_base'])
             self.assertEqual(reg['harness']['authentication'], 'chatgpt-subscription')
@@ -451,7 +452,7 @@ class NativeCodex(unittest.TestCase):
             run.save(root / 'registration-seal.json', {'sha256': run.sha(root / 'registration.json')})
             patches.enter_context(patch.object(run, 'verify_collection_freeze'))
             patches.enter_context(patch.object(run, 'AXONHUB_KEY_FILE', None))
-            run.collect(root, registration)
+            run.collect(root, registration, offline_adapter_test=True)
             routes.assert_not_called()
             self.assertIn(run.load(root / 'completion.json')['status'], {'collected', 'collected_with_limits'})
             self.assertEqual(len(export_atif.export(root)), 4)

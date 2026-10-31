@@ -31,9 +31,11 @@
   and one common prepare/collect/review/export entry. Do not restore a parallel
   custom direct-API loop. Register harness version, preset/context mapping,
   tools, goals, model, route and budgets; preserve actual native evidence limits.
-  Pi SDK through AxonHub is the current default. Claude Code and Codex subscription
-  adapters need explicit live model/harness selection; their availability alone
-  does not authorize a new route. A changed harness needs fresh live validation.
+  Pi SDK through AxonHub is the only live inference path, regardless of model
+  provider; this includes Claude models. Claude Code and Codex subscription
+  adapters are retained only for offline compatibility tests and historical
+  evidence reading. They are not live rollout routes. A changed AxonHub model
+  or harness setting needs fresh live validation.
 - Maintain only `experiments/swarmharm-v1`. The active Phase 2 question is the
   single mechanism-legibility comparison in `docs/lesswrong-gap.md`; do not
   reopen a broad family, domain or pressure matrix before that result is
@@ -174,8 +176,10 @@
 - Keep channel writes, exact reads, replies, relays, adoption and business effects as
   separate evidence. Similar answers, shared access and self-reports prove none
   of the later links.
-- Current live Pi inference uses AxonHub; optional subscription harnesses require
-  explicit selection and preserve their distinct authentication and evidence scope. Verify the exact route in upstream and
+- Every live model inference uses Pi SDK through AxonHub, including Claude.
+  Direct Claude Code, Codex and other subscription routes are forbidden for new
+  live rollouts. Preserve their adapters only for offline compatibility and
+  historical evidence. Verify the exact requested model in upstream and
   authenticated AxonHub catalogs before preparation.
   All existing OpenRouter channels use unfiltered automatic model synchronization
   and automatic fallback. Keep the requested model fixed across channels; this

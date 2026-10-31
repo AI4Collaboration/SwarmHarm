@@ -1,14 +1,15 @@
 # Model routing
 
-Current live Pi/Sol inference uses the AxonHub Responses endpoint:
+Every live model inference uses Pi SDK and the AxonHub Responses endpoint:
 
 `https://lmportal.iefbr14.xyz/v1/responses`
 
 The host reads a scoped key from a `0600` file outside the repository. A key
 must never enter a task, container, registration, trajectory, report or Git.
-Claude Code and Codex subscription adapters are available only as explicitly
-selected conditions with their own authentication. Their availability does not
-change the current Pi/AxonHub route. Historical direct-OpenRouter examples keep
+Claude is selected by its AxonHub model ID and uses this same path. Direct
+Claude Code, Codex and other subscription authentication cannot be selected for
+a new live rollout. Those adapters remain only for offline compatibility tests
+and historical evidence decoding. Historical direct-OpenRouter examples keep
 their frozen provenance.
 
 ## Current routing policy
@@ -36,6 +37,9 @@ their frozen provenance.
 - Catalog membership does not prove which channel executed a request. Review the
   AxonHub execution record and keep routing interventions separate from behavioral
   evidence.
+- Model provider does not change the harness: OpenAI, Anthropic and every other
+  selected live model still run through Pi SDK and AxonHub. AxonHub may fall
+  back only among eligible channels serving the same registered model.
 
 The development default is **`openai/gpt-6.1-sol`**. The user also selected
 **`openai/gpt-6.1-terra`** and **`openai/gpt-6-luna`** for the completed matched

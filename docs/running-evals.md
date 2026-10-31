@@ -7,7 +7,7 @@ custom direct-API loop is maintained. The current Knowledge Work candidate uses
 `trace-integrity`, `business_records_only` and native Pi goal. Reproducing the frozen Engineering
 reference examples requires their original source and registration.
 
-## Choose scope and harness
+## Choose scope and model
 
 - `--study-mode phase1`: autonomous discovery and live formation only. No Phase 2
   assignment or tools are exposed, and review makes no Phase 2 claim.
@@ -33,24 +33,17 @@ reference examples requires their original source and registration.
   Requires `--goal-mode goal_command --initial-material business_records_only`.
   No peer log or method material is supplied. This condition currently uses Docker.
 
-All modes accept the same `--harness` selection:
+All live modes use **`pi-sdk` through AxonHub**. Select the registered model with
+`--model-id`; this includes Claude models exposed by the authenticated AxonHub
+catalog. The model provider never changes the harness or credential path. Sol
+6.1 is the development baseline, and Sol 5.6 is authorized for current component
+work.
 
-- **`pi-sdk` (default):** Pi 1.4.0 and its registered prompt, with contextual
-  work instructions appended. The initial business request remains user input.
-  Use AxonHub and the existing host-only key; Sol 6.1 is the development baseline,
-  and Sol 5.6 is authorized for current component work.
-- **`claude-code`:** Claude Agent SDK 0.3.312 and Claude Code >= 2.1.304 with an
-  explicitly selected native model. Uses subscription auth and the stock Claude
-  Code preset. Declared work context is ordinary user input, not a native
-  developer-role message.
-- **`codex`:** Codex CLI 0.141.0 app-server, an explicitly selected native model
-  and ChatGPT subscription auth. The stock instructions remain unchanged; work
-  context is ordinary user input. The same private thread survives tool reload.
-
-Registering a harness records its installed version, native prompt/preset,
-context mapping, tools, effort, goal setting, retry behavior and source hashes.
-These differences are experimental conditions. An adapter being available is
-not authorization to change the chosen model or live route.
+Preparation records the Pi version, prompt, context mapping, tools, effort, goal
+setting, retry behavior, AxonHub route and source hashes. Claude Code and Codex
+subscription adapters remain in `experiments/runtime/` only to validate historical
+native evidence and offline protocol compatibility. They cannot be selected by
+the live CLI, preparation policy, launcher or collector.
 
 Independent components provide empty public/private discussion tools. Public
 messages appear in the Service Review Desk activity feed; private discussion is
@@ -67,7 +60,6 @@ registered condition, with private-plan tools and reminders removed. Pi-goal
 no-progress-turn limits. Its no-progress measure is repeated tool-free text,
 not business progress. Active goals and timed waits remain live until native
 termination or the registered time limit; goal status never proves completion.
-Claude `--goal-mode claude_goal` is available for other study modes, not components.
 Use `scripts/check_goal_mode_pair.py` before claiming a matched goal comparison;
 it preserves exact business prompts, tools, materials, source and deadline.
 
@@ -76,34 +68,27 @@ it preserves exact business prompts, tools, materials, source and deadline.
 Use the pinned Harbor 0.24.0 Python and Node >= 22.19. The default Python environment is `../eval-readiness/harbor-0.24.0`. Set
 `SWARMHARM_HARBOR_ENV` to use a different environment directory; the launcher,
 Harbor wrapper and format checker all honor it and still require Harbor 0.24.0.
-Install the selected adapter from its lockfile:
+Install the live adapter from its lockfile:
 
 ```sh
 npm ci --prefix experiments/runtime/pi
-# Only when testing or selecting the Claude adapter:
-npm ci --prefix experiments/runtime/claude
 ```
 
-Subscription adapters require their own installed CLI and existing subscription
-login. `SWARMHARM_CLAUDE` and `SWARMHARM_CODEX` may point to dedicated pinned
-binaries; do not replace a user's global installation. Claude requires
-`claude auth login`; Codex requires `codex login`. Never pass an API key or
-custom endpoint to either subscription adapter. Native model IDs must be found
-in the authenticated catalog; do not substitute an unrequested model.
-
-For Codex, the adapter first looks for the versioned command
+Offline compatibility checks for historical Claude Code or Codex evidence may
+install their pinned dependencies and binaries, but these tools are never a live
+route. For Codex compatibility, the adapter first looks for the versioned command
 `codex-0.141.0`, then falls back to the generic `codex` command. This permits the
 registered CLI to coexist with a newer desktop-bundled CLI. The selected binary
-and its SHA-256 digest are sealed in every registration; changing either still
-requires a fresh registration.
+and its SHA-256 digest remain part of the historical/offline test record.
 
 Workstations use the pinned Docker image; inspect `experiments/runtime/workstation.py`
 for its immutable default. `scripts/build-workstation-image` and
 `scripts/alliance/` support explicitly configured build/cluster setups. A changed
 image or backend is a fresh registered condition, not reproduction of the old one.
 
-To check all adapters, install their pinned dependencies and point the CLI
-variables to the matching binaries, then run from the repository root:
+To check the live adapter plus offline historical compatibility readers, install
+their pinned test dependencies and point any compatibility CLI variables to the
+matching binaries, then run from the repository root:
 
 ```sh
 EVAL_PY="${SWARMHARM_HARBOR_ENV:-../eval-readiness/harbor-0.24.0}/bin/python"
@@ -113,10 +98,10 @@ $EVAL_PY -B experiments/prompt-contract/checks.py
 $EVAL_PY scripts/check_dataset_admission_contract.py
 ```
 
-Native adapter checks use local scripted provider endpoints, not hosted model
-inference. They test delivery, ordering, continuation and export; they do not
-show model behavior. Preparation runs the common contracts and the selected
-adapter's native checks, so unused adapters need not be installed.
+Native compatibility checks use local scripted provider endpoints, not hosted
+model inference. They test delivery, ordering, continuation and export; they do
+not show model behavior or authorize a subscription rollout. Live preparation
+runs the common contracts and Pi checks.
 
 ## Prepare a fresh rollout
 
@@ -169,10 +154,11 @@ $EVAL_PY experiments/swarmharm-v1/launch.py \
   --key-file "$AXONHUB_KEY_FILE"
 ```
 
-Subscription launches omit the key file. Launch reads the frozen harness rather
-than accepting a new one. A per-output lock and existing-start check prevent
-replacement collectors. Preflight performs one service/tool round trip through
-that harness before subjects start; it does not execute scenario work.
+Every launch requires the host-only AxonHub key. Launch rejects any registration
+whose harness is not Pi SDK or whose live-collection flag is false. It reads the
+frozen harness rather than accepting a new one. A per-output lock and existing-start
+check prevent replacement collectors. Preflight performs one service/tool round
+trip through that harness before subjects start; it does not execute scenario work.
 
 All contexts cross one start barrier. Private shell execution overlaps while
 shared state commits remain ordered. Each native tool receives its committed
@@ -207,12 +193,13 @@ reads, complete action sequences, corrections/cancellations and independent
 final effects. ATIF-v1.8 validates with Harbor 0.24.0. A preview, accepted import
 or claimed completion is not final outcome evidence.
 
-Pi records the adapter's request/response payloads and session history. Claude
-records the SDK message stream and session files; Codex records app-server
-messages and native thread/session evidence. Their controller projections are
-not provider HTTP captures. Unexposed internal prompts, auxiliary calls or token
-limits must not be invented. Export reconciles native echoes and result order,
-including rejected calls and interrupted delivery.
+Pi records the live adapter's request/response payloads and session history for
+every AxonHub model, including Claude. Historical Claude Code and Codex bundles
+retain their original native streams and are decoded by offline compatibility
+readers; they are not provider HTTP captures and cannot be relaunched. Unexposed
+internal prompts, auxiliary calls or token limits must not be invented. Export
+reconciles native echoes and result order, including rejected calls and interrupted
+delivery.
 
 ## Frozen examples
 
