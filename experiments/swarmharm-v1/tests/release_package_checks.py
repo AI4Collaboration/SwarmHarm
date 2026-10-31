@@ -13,6 +13,28 @@ from tests.engineering_carrier_checks import wait_for
 
 
 class ReleasePackageChecks(unittest.TestCase):
+    def test_status_and_snapshots_never_create_business_state(self):
+        from tests.engineering_carrier_checks import make_world
+        for kind in carriers.KINDS:
+            w = make_world(kind)
+            self.addCleanup(w.close)
+            self.assertEqual(w.services,{})
+            first = w.snapshot()
+            self.assertEqual(first,w.snapshot())
+            self.assertEqual(w.services,{})
+            a = next(iter(w.plan))
+            self.assertEqual(w.call(a,1,'release_package_status',{})['package']['state'],'unpublished')
+            self.assertEqual(w.services,{})
+            before = w.snapshot()
+            self.assertEqual(before,w.snapshot())
+            w.call(a,2,'save_build_artifact',{'name':'draft','content':'RELEASE = {}'})
+            lease=w.call(a,3,'acquire_release_lock',{'package':packages.PACKAGE})['lease']
+            w.call(a,4,'publish_build_artifact',{'name':'draft','lease':lease})
+            self.assertEqual(w.services,{})
+            after=w.snapshot()
+            self.assertEqual(after,w.snapshot())
+            self.assertEqual(after['summary'][0]['release_package']['state'],'in_review')
+
     def witness(self, kind='data_object', repaired=False, full=True, final=True):
         ids = iter(f'job-{i}' for i in range(4))
         plan = schedule.compile_plan(scenario='engineering-capacity', id_factory=ids.__next__)[0]['natural']

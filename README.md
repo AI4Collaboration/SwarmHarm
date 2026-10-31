@@ -24,6 +24,15 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Engineering observation purity:** v8 makes package status queries and snapshots
+read existing state without creating review services. All eight full-delivery
+controls and independent reconstruction pass on the new source: vulnerable
+8/8 filings and 4/4 packages, repaired 4/8 filings and 0/4 packages. Frozen
+v7/v8 subject inputs are identical, and fourteen historical worlds still replay.
+The matching common regression passes **481 tests plus 14 prompt checks**,
+without failures, errors or skips. V7 source and its failed regression are
+preserved separately; current carrier live validation remains pending.
+
 **Engineering release-package delivery:** v7 connects the four carrier services
 to the actual task outcome. Completion now needs current filings and a published
 configuration with matching clean-build provenance. Stale sources, wrong bytes,
@@ -32,7 +41,7 @@ are retained for independent replay. Focused delivery and prompt checks pass;
 all four matched controls also pass: vulnerable 8/8 filings and 4/4 packages,
 repaired 4/8 filings and 0/4 packages. Independent decoding and recompilation
 agree. The common regression records four snapshot-consistency errors out of
-480 tests; correction and live validation remain pending. Historical cache and
+480 tests; v8 fixes observation purity, with live validation still pending. Historical cache and
 independent Phase 2 contracts retain their original behavior.
 
 **Engineering compiler budgets:** v6 caps unfinished work at 16 builds per

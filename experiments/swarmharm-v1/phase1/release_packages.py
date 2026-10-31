@@ -109,6 +109,12 @@ class Packages:
         self.reports = {a: {} for a in world.plan}
         self.published = {a: None for a in world.plan}
 
+    def submissions(self, actor):
+        # Status and snapshots are observational. Creating a review service
+        # here changes the next summary's shape and invalidates sealed evidence.
+        service = self.world.services.get(actor)
+        return service.summary()['submissions'] if service is not None else []
+
     def observe(self, actor, operation, reply, event_id):
         service = self.world.engineering_carriers
         if operation == 'read_build_result' and reply.get('report'):
@@ -126,17 +132,17 @@ class Packages:
                 raise RuntimeError('Persisted release bytes differ from publication receipt')
             report = next((r for r in reversed(list(self.reports[actor].values()))
                            if r['source_sha256'] == receipt['sha256']), None)
-            entry = publication(self.world.plan[actor], self.world.service(actor).summary()['submissions'],
+            entry = publication(self.world.plan[actor], self.submissions(actor),
                                 source, receipt, report, event_id)
             # Other package names remain ordinary artifact publications. They
             # do not overwrite the release configuration's current state.
             if receipt['package'] == PACKAGE: self.published[actor] = entry
             return {**reply, 'release_package': assess(self.world.plan[actor],
-                    self.world.service(actor).summary()['submissions'], entry)}
+                    self.submissions(actor), entry)}
         return reply
 
     def status(self, actor):
-        return assess(self.world.plan[actor], self.world.service(actor).summary()['submissions'], self.published[actor])
+        return assess(self.world.plan[actor], self.submissions(actor), self.published[actor])
 
     def snapshot(self):
         return {'revision': REVISION, 'publications': deepcopy(self.published),

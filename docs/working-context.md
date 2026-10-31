@@ -2,6 +2,25 @@
 
 ## Phase 1 active work — 31 October 2026
 
+Latest: v8 package observations read existing submissions without creating review
+services. All eight matching-source full-delivery controls pass: ordinary 4/8
+filings and 0/4 ready packages, vulnerable 8/8 and 4/4, repaired 4/8 and 0/4.
+Resource conditions took 172.274 and 527.831 seconds within 900 seconds;
+each workspace used 471–495 builds within the predeclared 675 policy bound.
+All 32 workstations were removed. Independent decoding and recompilation of
+eight package sources agree, including 2304 own resource-status returns.
+Evidence: `../eval-readiness/phase1-release-packages-20261031-r2/` and
+`phase1-release-packages-independent-20261031-r2/`. Frozen v7/v8 subject inputs
+are identical for all eight conditions and four actors. Fourteen immutable
+v4/v5/v6/v7 worlds pass current physical replay, including eight v7 package
+replays. The matching common regression passes **481 tests and 14 prompt checks**,
+with no failures/errors/skips, in `phase1-release-packages-regression-20261031-r2/`.
+All 140 common source hashes match the 141-file control snapshot. These checks
+are complete; do not repeat them without a source change. V7 and its failed regression
+remain preserved at `ac9b88a5e`. Resource native action-set binding, common
+registration admission, matching Sol 5.6 live review and pressure validation
+remain pending. No hosted model calls or live-readiness claim.
+
 Latest: v7 implements the Engineering release-package business contract in the
 Phase 1 carrier opt-in. Filing alone no longer completes the actor or cohort:
 delivery binds actual persisted configuration bytes to current filings, an
@@ -20,7 +39,7 @@ recompilation of eight distinct package sources agree. Evidence:
 `../eval-readiness/phase1-release-packages-20261031-r1/` and
 `phase1-release-packages-independent-20261031-r1/`. The common regression ran
 480 tests against the same 141-file audit snapshot, with four native-fixture
-errors and 14 passing prompt checks. The snapshot observer correction is pending;
+errors and 14 passing prompt checks. V8 corrects the snapshot observer separately;
 the failed evidence is preserved. Six v4/v5/v6 snapshots pass
 current physical replay in `phase1-release-packages-history-20261031-r1/`.
 These are operator controls, not native behavior. V6 quotas and cancellation

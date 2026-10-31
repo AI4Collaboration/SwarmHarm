@@ -1625,7 +1625,7 @@
   "engineering_carrier_feasibility": {
     "revision": "engineering-carriers-feasibility-v3",
     "domain": "Engineering",
-    "status": "v7_package_controls_passed_snapshot_observer_fix_required",
+    "status": "v8_full_package_delivery_offline_verified_native_resource_and_live_pending",
     "completed_at": "2026-10-31T11:24:31.265447+00:00",
     "operator_only": true,
     "admitted_live_profile": false,
@@ -1754,7 +1754,6 @@
       }
     },
     "pending": [
-      "Matching-source common regression completion for v7 compiled-package delivery",
       "Native semantic binding of the full capacity-changing action set; resource peer eligibility remains closed",
       "Shared registration/preparation admission; matching-source Sol 5.6 live rollout and full native review",
       "Live pressure intervention validation on these carrier implementations"
@@ -1983,7 +1982,7 @@
       "live_rollout_pending": true,
       "ready": false
     },
-    "current_runtime_revision": "engineering-carriers-feasibility-v7",
+    "current_runtime_revision": "engineering-carriers-feasibility-v8",
     "execution_capacity_provenance": {
       "revision": "engineering-carriers-feasibility-v4",
       "status": "physical_capacity_verified_resource_semantics_and_business_closure_pending",
@@ -2495,23 +2494,25 @@
     },
     "release_package_delivery": {
       "revision": "engineering-release-package-v1",
-      "runtime_revision": "engineering-carriers-feasibility-v7",
+      "runtime_revision": "engineering-carriers-feasibility-v8",
       "implementation": "experiments/swarmharm-v1/phase1/release_packages.py",
       "audit_program": "scripts/audit_phase1_release_packages.py",
-      "evidence_directory": "../eval-readiness/phase1-release-packages-20261031-r1",
-      "status": "all_eight_conditions_and_independent_reconstruction_passed",
-      "ordinary_expected_ready_packages": 0,
-      "vulnerable_expected_ready_packages": 4,
-      "repaired_expected_ready_packages": 0,
+      "evidence_directory": "../eval-readiness/phase1-release-packages-20261031-r2",
+      "status": "same_source_full_package_controls_and_regression_passed_live_pending",
+      "single_change": "Package observations read existing submissions without lazily creating services.",
+      "task_and_subject_surfaces_unchanged_from_v7": true,
+      "compiler_workload_and_quotas_unchanged": true,
+      "focused_checks": 23,
+      "previous_source_commit": "ac9b88a5e",
       "operator_only": true,
       "matched_live_rollout_pending": true,
       "hosted_model_calls": 0,
       "ready": false,
-      "source_hashes_sha256": "d3b50573b17595bceb4ffbb41fcc52e5553ebc076dfb8c4e73b4cbda65e19701",
-      "manifest_sha256": "fc23d72e38ae786f61c4e8c063e5bacda0d9943349237ee023ac33168244ee92",
+      "source_hashes_sha256": "93b42e52b1331c3968f2228e2947793373e4e3863a1936835c9cdcbd05b9ecd2",
+      "manifest_sha256": "4ca99f0b05bd0778b7b920796b5253147be864d30bdf0c0c78fc9c7dbf30da84",
       "frozen_files": 141,
-      "normal_filed": 4,
-      "normal_ready_packages": 0,
+      "ordinary_filed": 4,
+      "ordinary_ready_packages": 0,
       "vulnerable_filed": 8,
       "vulnerable_ready_packages": 4,
       "repaired_filed": 4,
@@ -2522,160 +2523,373 @@
       "model_turn_latency_validated": false,
       "resource_operator_limit_seconds": 900,
       "resource_policy_build_bound_per_actor": 675,
-      "independent_reconstruction": {
-        "path": "../eval-readiness/phase1-release-packages-independent-20261031-r1/results.json",
-        "sha256": "fde122cd9fe9ba99961dc4d9fdaddacc5f3e10b9b4eae505caa567c1c27da7c4",
-        "program": "../eval-readiness/phase1-release-packages-independent-20261031-r1.py",
-        "program_sha256": "7d0dd2f0ea3652f046a565864b1aceccf31924a3080e6b06b9da667a4c9db407",
-        "independently_recompiled_package_sources": 8,
-        "decoded_resource_own_status_returns": 2304,
-        "all_conditions": 8
-      },
-      "historical_replay": {
-        "path": "../eval-readiness/phase1-release-packages-history-20261031-r1/results.json",
-        "sha256": "ce6f4d6206c838d6a4230649db474b9cd6fc771610e47556143768297057a9e2",
-        "unchanged_worlds": 6,
-        "revisions": [
-          "v4",
-          "v5",
-          "v6"
-        ]
-      },
-      "full_regression": {
-        "status": "failed_preserved",
-        "path": "../eval-readiness/phase1-release-packages-regression-20261031-r1/results.json",
-        "sha256": "9821051067ce82c8ff0a91d3288d54f0fa1cc8bb24d79e4047f9b525f4d0ea85",
-        "manifest_sha256": "3941914bb094a39c80ece783e73bc95dca7fc3556ffe463972b912894eb193de",
-        "source_hashes_sha256": "38fef7b1c6c0a76b65964b7f79147960207fe61a8409e123d73bbf08c8de0023",
-        "same_common_source_hashes_as_audit": true,
-        "common_source_files": 140,
-        "completed_at": "2026-10-31T14:33:34.772019+00:00",
-        "unit_tests": 480,
-        "failures": 0,
-        "errors": 4,
-        "skipped": [],
-        "failed_cases": [
-          "swarmharm_v1_tests_carrier_trace_review_checks_py.CarrierTraceReviewChecks.test_compiler_report_binds_actual_submission_and_single_consumption",
-          "swarmharm_v1_tests_carrier_trace_review_checks_py.CarrierTraceReviewChecks.test_empty_review_and_resource_timing_remain_nonpositive",
-          "swarmharm_v1_tests_carrier_trace_review_checks_py.CarrierTraceReviewChecks.test_lock_release_zero_requires_prior_busy_observation_and_native_delivery",
-          "swarmharm_v1_tests_carrier_trace_review_checks_py.CarrierTraceReviewChecks.test_native_bound_single_signal_does_not_invent_formation"
-        ],
-        "prompt_contract_exit_code": 0,
-        "log_sha256": "f1aa33d12d4642da1366d4b3f21aaa3dd4be68eb219b69b3b875a104a4063507",
-        "sources_unchanged": true,
-        "program_sha256": "6e5ebca15e228ad41ae5fb83c5e77f51e86d0e44d1a7c3fe9e93e4ac7750ea13",
-        "model_calls": "local scripted providers only",
-        "hosted_model_calls": 0
-      },
       "conditions": {
         "data_object-vulnerable": {
           "ordinary_filed": 4,
           "final_filed": 8,
+          "builds_per_actor": {
+            "job-aaa45f98f114": 2,
+            "job-c896d771ed48": 2,
+            "job-27f0f93e0509": 2,
+            "job-705f94635ba3": 2
+          },
+          "subject_surfaces_identical": true,
           "ordinary_ready_packages": 0,
           "final_ready_packages": 4,
-          "builds_per_actor": {
-            "job-401c71e4def2": 2,
-            "job-69ca851ba8b3": 2,
-            "job-9a4c371eea44": 2,
-            "job-a9fd94a8b648": 2
-          }
+          "ready": false
         },
         "data_object-repaired": {
           "ordinary_filed": 4,
           "final_filed": 4,
+          "builds_per_actor": {
+            "job-aaa45f98f114": 2,
+            "job-c896d771ed48": 2,
+            "job-27f0f93e0509": 2,
+            "job-705f94635ba3": 2
+          },
+          "subject_surfaces_identical": true,
           "ordinary_ready_packages": 0,
           "final_ready_packages": 0,
-          "builds_per_actor": {
-            "job-401c71e4def2": 2,
-            "job-69ca851ba8b3": 2,
-            "job-9a4c371eea44": 2,
-            "job-a9fd94a8b648": 2
-          }
+          "ready": false
         },
         "message_transport-vulnerable": {
           "ordinary_filed": 4,
           "final_filed": 8,
+          "builds_per_actor": {
+            "job-aaa45f98f114": 5,
+            "job-c896d771ed48": 5,
+            "job-27f0f93e0509": 5,
+            "job-705f94635ba3": 5
+          },
+          "subject_surfaces_identical": true,
           "ordinary_ready_packages": 0,
           "final_ready_packages": 4,
-          "builds_per_actor": {
-            "job-401c71e4def2": 5,
-            "job-69ca851ba8b3": 5,
-            "job-9a4c371eea44": 5,
-            "job-a9fd94a8b648": 5
-          }
+          "ready": false
         },
         "message_transport-repaired": {
           "ordinary_filed": 4,
           "final_filed": 4,
+          "builds_per_actor": {
+            "job-aaa45f98f114": 5,
+            "job-c896d771ed48": 5,
+            "job-27f0f93e0509": 5,
+            "job-705f94635ba3": 5
+          },
+          "subject_surfaces_identical": true,
           "ordinary_ready_packages": 0,
           "final_ready_packages": 0,
-          "builds_per_actor": {
-            "job-401c71e4def2": 5,
-            "job-69ca851ba8b3": 5,
-            "job-9a4c371eea44": 5,
-            "job-a9fd94a8b648": 5
-          }
+          "ready": false
         },
         "synchronization-vulnerable": {
           "ordinary_filed": 4,
           "final_filed": 8,
+          "builds_per_actor": {
+            "job-aaa45f98f114": 2,
+            "job-c896d771ed48": 2,
+            "job-27f0f93e0509": 2,
+            "job-705f94635ba3": 2
+          },
+          "subject_surfaces_identical": true,
           "ordinary_ready_packages": 0,
           "final_ready_packages": 4,
-          "builds_per_actor": {
-            "job-401c71e4def2": 2,
-            "job-69ca851ba8b3": 2,
-            "job-9a4c371eea44": 2,
-            "job-a9fd94a8b648": 2
-          }
+          "ready": false
         },
         "synchronization-repaired": {
           "ordinary_filed": 4,
           "final_filed": 4,
+          "builds_per_actor": {
+            "job-aaa45f98f114": 2,
+            "job-c896d771ed48": 2,
+            "job-27f0f93e0509": 2,
+            "job-705f94635ba3": 2
+          },
+          "subject_surfaces_identical": true,
           "ordinary_ready_packages": 0,
           "final_ready_packages": 0,
-          "builds_per_actor": {
-            "job-401c71e4def2": 2,
-            "job-69ca851ba8b3": 2,
-            "job-9a4c371eea44": 2,
-            "job-a9fd94a8b648": 2
-          }
+          "ready": false
         },
         "execution_resource-vulnerable": {
           "ordinary_filed": 4,
           "final_filed": 8,
+          "builds_per_actor": {
+            "job-aaa45f98f114": 491,
+            "job-c896d771ed48": 471,
+            "job-27f0f93e0509": 495,
+            "job-705f94635ba3": 495
+          },
+          "subject_surfaces_identical": true,
           "ordinary_ready_packages": 0,
           "final_ready_packages": 4,
-          "builds_per_actor": {
-            "job-401c71e4def2": 463,
-            "job-69ca851ba8b3": 523,
-            "job-9a4c371eea44": 463,
-            "job-a9fd94a8b648": 519
-          },
-          "elapsed_seconds": 176.50430399994366
+          "ready": false,
+          "elapsed_seconds": 172.2742487079231
         },
         "execution_resource-repaired": {
           "ordinary_filed": 4,
           "final_filed": 4,
+          "builds_per_actor": {
+            "job-aaa45f98f114": 491,
+            "job-c896d771ed48": 471,
+            "job-27f0f93e0509": 495,
+            "job-705f94635ba3": 495
+          },
+          "subject_surfaces_identical": true,
           "ordinary_ready_packages": 0,
           "final_ready_packages": 0,
-          "builds_per_actor": {
-            "job-401c71e4def2": 463,
-            "job-69ca851ba8b3": 523,
-            "job-9a4c371eea44": 463,
-            "job-a9fd94a8b648": 519
-          },
-          "elapsed_seconds": 550.0324853339698
+          "ready": false,
+          "elapsed_seconds": 527.8312914590351
         }
       },
-      "snapshot_diagnostic": {
-        "path": "../eval-readiness/phase1-release-package-snapshot-diagnostic-20261031-r1/results.json",
-        "sha256": "9dc4a14360ce0455c533f9996b8e49d5feadd5f23539085f72cd2de1fe06a463",
-        "source_revision": "engineering-carriers-feasibility-v7",
-        "snapshots_equal": false,
-        "services_created_by_first_snapshot": 4,
-        "next_action": "Read existing submissions without initializing services; freeze and revalidate a new revision."
+      "independent_reconstruction": {
+        "path": "../eval-readiness/phase1-release-packages-independent-20261031-r2/results.json",
+        "sha256": "141bea85493e2d2823118761a6b611d2d846b7d8bed48a828496136bd58f156c",
+        "program": "../eval-readiness/phase1-release-packages-independent-20261031-r2.py",
+        "program_sha256": "492c3316f82a9115024c0f81d2358146f5878db764e39f50c613160dc7b7d540",
+        "manifest_sha256": "50479c0fa3301104eafac61fa0e18f2057daac1a41977b63b39335960701243a",
+        "independently_recompiled_package_sources": 8,
+        "decoded_resource_own_status_returns": 2304,
+        "all_32_workstations_removed": true,
+        "conditions": 8
+      },
+      "historical_replay": {
+        "path": "../eval-readiness/phase1-release-packages-history-20261031-r2/results.json",
+        "sha256": "b27c96c5cc945449be9afb379eefe842747e69a128582c3ff302678e1349f77d",
+        "program": "../eval-readiness/phase1-release-packages-history-20261031-r2.py",
+        "program_sha256": "7b908e0762155a87930d541bb9c37f7cbfcd70676d89f253c7606dc6152ee9b9",
+        "manifest_sha256": "120123e574e1a567f19c8e56fd15d28f187c4382195a7c56136ce9b9ee9130e0",
+        "unchanged_worlds": 14,
+        "package_replays": 8,
+        "verified_frozen_sources": {
+          "phase1-compiler-capacity-provenance-20261031-r1": 136,
+          "phase1-resource-filing-20261031-r1": 137,
+          "phase1-compiler-budget-20261031-r1": 138,
+          "phase1-release-packages-20261031-r1": 141
+        },
+        "revisions": [
+          "v4",
+          "v5",
+          "v6",
+          "v7"
+        ]
+      },
+      "subject_surface_equivalence": {
+        "path": "../eval-readiness/phase1-release-package-surface-pair-20261031-r1/results.json",
+        "sha256": "30b0541986379712a2f0771a047b38ef32e19bcc1fa85a760dfd7f71788f59d6",
+        "program": "../eval-readiness/phase1-release-package-surface-pair-20261031-r1.py",
+        "program_sha256": "a5398f01c27efa3e646502566c356b472b0a2cc540913f696569c63338945c6f",
+        "manifest_sha256": "2cfad49504c738d7b41a6d8426150bdee14d5c42a49df627148e3118561b67ea",
+        "v7_v8_subject_surfaces_identical": true,
+        "conditions": 8,
+        "actors_per_condition": 4,
+        "same_input_plan_sha256": "5905947d79f652e292d86820ceeff624312f2eb11a46af43a6d8eba9631f56c1"
+      },
+      "full_regression": {
+        "status": "passed",
+        "path": "../eval-readiness/phase1-release-packages-regression-20261031-r2/results.json",
+        "sha256": "10989ca0c10a17d3b3cb55cbd0211ecf6354f50a3fc6f18419ac50d0eaaf8cc4",
+        "manifest_sha256": "df0b93907df599c9b6b57c855e5675282af52d1248ea1623c771ab77f8e87e38",
+        "source_hashes_sha256": "53b891b5017c87db87660a3ba17aac17ba57fef462752523b994381cad5cc491",
+        "same_common_source_hashes_as_audit": true,
+        "common_source_files": 140,
+        "prompt_checks": 14,
+        "completed_at": "2026-10-31T14:55:24.182114+00:00",
+        "unit_tests": 481,
+        "failures": 0,
+        "errors": 0,
+        "skipped": [],
+        "failed_cases": [],
+        "prompt_contract_exit_code": 0,
+        "log_sha256": "b917ff451c4ba8b7508ce9575ae85be1d788ddbb0c1f6bd7943f37896c76ed3e",
+        "sources_unchanged": true,
+        "program_sha256": "6e5ebca15e228ad41ae5fb83c5e77f51e86d0e44d1a7c3fe9e93e4ac7750ea13",
+        "model_calls": "local scripted providers only",
+        "hosted_model_calls": 0
       }
-    }
+    },
+    "previous_release_package_delivery": [
+      {
+        "revision": "engineering-release-package-v1",
+        "runtime_revision": "engineering-carriers-feasibility-v7",
+        "implementation": "experiments/swarmharm-v1/phase1/release_packages.py",
+        "audit_program": "scripts/audit_phase1_release_packages.py",
+        "evidence_directory": "../eval-readiness/phase1-release-packages-20261031-r1",
+        "status": "all_eight_conditions_and_independent_reconstruction_passed",
+        "ordinary_expected_ready_packages": 0,
+        "vulnerable_expected_ready_packages": 4,
+        "repaired_expected_ready_packages": 0,
+        "operator_only": true,
+        "matched_live_rollout_pending": true,
+        "hosted_model_calls": 0,
+        "ready": false,
+        "source_hashes_sha256": "d3b50573b17595bceb4ffbb41fcc52e5553ebc076dfb8c4e73b4cbda65e19701",
+        "manifest_sha256": "fc23d72e38ae786f61c4e8c063e5bacda0d9943349237ee023ac33168244ee92",
+        "frozen_files": 141,
+        "normal_filed": 4,
+        "normal_ready_packages": 0,
+        "vulnerable_filed": 8,
+        "vulnerable_ready_packages": 4,
+        "repaired_filed": 4,
+        "repaired_ready_packages": 0,
+        "required_filings": 8,
+        "required_packages": 4,
+        "all_32_workstations_removed": true,
+        "model_turn_latency_validated": false,
+        "resource_operator_limit_seconds": 900,
+        "resource_policy_build_bound_per_actor": 675,
+        "independent_reconstruction": {
+          "path": "../eval-readiness/phase1-release-packages-independent-20261031-r1/results.json",
+          "sha256": "fde122cd9fe9ba99961dc4d9fdaddacc5f3e10b9b4eae505caa567c1c27da7c4",
+          "program": "../eval-readiness/phase1-release-packages-independent-20261031-r1.py",
+          "program_sha256": "7d0dd2f0ea3652f046a565864b1aceccf31924a3080e6b06b9da667a4c9db407",
+          "independently_recompiled_package_sources": 8,
+          "decoded_resource_own_status_returns": 2304,
+          "all_conditions": 8
+        },
+        "historical_replay": {
+          "path": "../eval-readiness/phase1-release-packages-history-20261031-r1/results.json",
+          "sha256": "ce6f4d6206c838d6a4230649db474b9cd6fc771610e47556143768297057a9e2",
+          "unchanged_worlds": 6,
+          "revisions": [
+            "v4",
+            "v5",
+            "v6"
+          ]
+        },
+        "full_regression": {
+          "status": "failed_preserved",
+          "path": "../eval-readiness/phase1-release-packages-regression-20261031-r1/results.json",
+          "sha256": "9821051067ce82c8ff0a91d3288d54f0fa1cc8bb24d79e4047f9b525f4d0ea85",
+          "manifest_sha256": "3941914bb094a39c80ece783e73bc95dca7fc3556ffe463972b912894eb193de",
+          "source_hashes_sha256": "38fef7b1c6c0a76b65964b7f79147960207fe61a8409e123d73bbf08c8de0023",
+          "same_common_source_hashes_as_audit": true,
+          "common_source_files": 140,
+          "completed_at": "2026-10-31T14:33:34.772019+00:00",
+          "unit_tests": 480,
+          "failures": 0,
+          "errors": 4,
+          "skipped": [],
+          "failed_cases": [
+            "swarmharm_v1_tests_carrier_trace_review_checks_py.CarrierTraceReviewChecks.test_compiler_report_binds_actual_submission_and_single_consumption",
+            "swarmharm_v1_tests_carrier_trace_review_checks_py.CarrierTraceReviewChecks.test_empty_review_and_resource_timing_remain_nonpositive",
+            "swarmharm_v1_tests_carrier_trace_review_checks_py.CarrierTraceReviewChecks.test_lock_release_zero_requires_prior_busy_observation_and_native_delivery",
+            "swarmharm_v1_tests_carrier_trace_review_checks_py.CarrierTraceReviewChecks.test_native_bound_single_signal_does_not_invent_formation"
+          ],
+          "prompt_contract_exit_code": 0,
+          "log_sha256": "f1aa33d12d4642da1366d4b3f21aaa3dd4be68eb219b69b3b875a104a4063507",
+          "sources_unchanged": true,
+          "program_sha256": "6e5ebca15e228ad41ae5fb83c5e77f51e86d0e44d1a7c3fe9e93e4ac7750ea13",
+          "model_calls": "local scripted providers only",
+          "hosted_model_calls": 0
+        },
+        "conditions": {
+          "data_object-vulnerable": {
+            "ordinary_filed": 4,
+            "final_filed": 8,
+            "ordinary_ready_packages": 0,
+            "final_ready_packages": 4,
+            "builds_per_actor": {
+              "job-401c71e4def2": 2,
+              "job-69ca851ba8b3": 2,
+              "job-9a4c371eea44": 2,
+              "job-a9fd94a8b648": 2
+            }
+          },
+          "data_object-repaired": {
+            "ordinary_filed": 4,
+            "final_filed": 4,
+            "ordinary_ready_packages": 0,
+            "final_ready_packages": 0,
+            "builds_per_actor": {
+              "job-401c71e4def2": 2,
+              "job-69ca851ba8b3": 2,
+              "job-9a4c371eea44": 2,
+              "job-a9fd94a8b648": 2
+            }
+          },
+          "message_transport-vulnerable": {
+            "ordinary_filed": 4,
+            "final_filed": 8,
+            "ordinary_ready_packages": 0,
+            "final_ready_packages": 4,
+            "builds_per_actor": {
+              "job-401c71e4def2": 5,
+              "job-69ca851ba8b3": 5,
+              "job-9a4c371eea44": 5,
+              "job-a9fd94a8b648": 5
+            }
+          },
+          "message_transport-repaired": {
+            "ordinary_filed": 4,
+            "final_filed": 4,
+            "ordinary_ready_packages": 0,
+            "final_ready_packages": 0,
+            "builds_per_actor": {
+              "job-401c71e4def2": 5,
+              "job-69ca851ba8b3": 5,
+              "job-9a4c371eea44": 5,
+              "job-a9fd94a8b648": 5
+            }
+          },
+          "synchronization-vulnerable": {
+            "ordinary_filed": 4,
+            "final_filed": 8,
+            "ordinary_ready_packages": 0,
+            "final_ready_packages": 4,
+            "builds_per_actor": {
+              "job-401c71e4def2": 2,
+              "job-69ca851ba8b3": 2,
+              "job-9a4c371eea44": 2,
+              "job-a9fd94a8b648": 2
+            }
+          },
+          "synchronization-repaired": {
+            "ordinary_filed": 4,
+            "final_filed": 4,
+            "ordinary_ready_packages": 0,
+            "final_ready_packages": 0,
+            "builds_per_actor": {
+              "job-401c71e4def2": 2,
+              "job-69ca851ba8b3": 2,
+              "job-9a4c371eea44": 2,
+              "job-a9fd94a8b648": 2
+            }
+          },
+          "execution_resource-vulnerable": {
+            "ordinary_filed": 4,
+            "final_filed": 8,
+            "ordinary_ready_packages": 0,
+            "final_ready_packages": 4,
+            "builds_per_actor": {
+              "job-401c71e4def2": 463,
+              "job-69ca851ba8b3": 523,
+              "job-9a4c371eea44": 463,
+              "job-a9fd94a8b648": 519
+            },
+            "elapsed_seconds": 176.50430399994366
+          },
+          "execution_resource-repaired": {
+            "ordinary_filed": 4,
+            "final_filed": 4,
+            "ordinary_ready_packages": 0,
+            "final_ready_packages": 0,
+            "builds_per_actor": {
+              "job-401c71e4def2": 463,
+              "job-69ca851ba8b3": 523,
+              "job-9a4c371eea44": 463,
+              "job-a9fd94a8b648": 519
+            },
+            "elapsed_seconds": 550.0324853339698
+          }
+        },
+        "snapshot_diagnostic": {
+          "path": "../eval-readiness/phase1-release-package-snapshot-diagnostic-20261031-r1/results.json",
+          "sha256": "9dc4a14360ce0455c533f9996b8e49d5feadd5f23539085f72cd2de1fe06a463",
+          "source_revision": "engineering-carriers-feasibility-v7",
+          "snapshots_equal": false,
+          "services_created_by_first_snapshot": 4,
+          "next_action": "Read existing submissions without initializing services; freeze and revalidate a new revision."
+        }
+      }
+    ]
   },
   "source_revision_scope": "Historical cache adapter only; new carrier source is separately bound under engineering_carrier_feasibility."
 }
