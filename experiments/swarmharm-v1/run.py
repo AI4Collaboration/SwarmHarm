@@ -56,6 +56,7 @@ if HARBOR_VERSION!='0.24.0':
 MODELS={'sol':'openai/gpt-6.1-sol'}
 UPSTREAM_MODELS={'sol':'openai/gpt-6.1-sol'}
 DEFAULT_REASONING='high'
+NATIVE_GOAL_ABORT_ERRORS=('This operation was aborted','Operation aborted','aborted')
 REASONING_EFFORTS=('low','medium','high','xhigh','max')
 DEFAULT_SCENARIO=domain_runtime.ENGINEERING_CAPACITY
 AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
@@ -1160,7 +1161,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['input_hashes']['PROTOCOL.md']=sha(root/'PROTOCOL.md')
     if swarm_sequence:
         reg['sequence']=deepcopy(next(iter(phase2_plan.values()))['sequence'])
-        reg['sequence'].update(preserve_terry_tools=True,preserve_terry_scorer=True,
+        reg['sequence'].update(terminal_goal_abort_handling={'required':'native aborted flag, idle terminal or waiting goal, zero pending SDK messages','expected_errors':list(NATIVE_GOAL_ABORT_ERRORS),'provider_errors':'hold unless this exact native lifecycle exception applies'},preserve_terry_tools=True,preserve_terry_scorer=True,
             native_goal_mode='goal_command',population=4,communication_required=False,
             pressure_message=trace_sequence.PRESSURE if decay_pressure=='employment' else None)
         reg['pressure']['agent_targeted_consequence']=decay_pressure=='employment'
@@ -1526,6 +1527,15 @@ def process_settlement(message, *, sequence=False):
     goal=((message.get('native_goal') or {}).get('goal') or {})
     return bool(sequence and goal and (goal.get('status')!='active' or goal.get('waiting'))
         and message.get('sdk_idle',True) and not message.get('sdk_pending_messages',0))
+
+
+def settlement_error(message, *, sequence=False):
+    """Separate a confirmed native terminal-goal abort from provider failure."""
+    error=message.get('error_message')
+    if (message.get('aborted') and process_settlement(message,sequence=sequence)
+            and error in NATIVE_GOAL_ABORT_ERRORS):
+        return None
+    return error
 
 
 def collect(root,registration_dir):
@@ -2027,7 +2037,8 @@ def collect(root,registration_dir):
                 if message['stop_reason']=='aborted':
                     save(folder/f'{label}.collector-error.json',{'type':'aborted',
                         'message':(message['error_message'] or '')[:500],'transport_attempts':len(attempts)})
-                    raise Hold(message['error_message'] or 'aborted')
+                    if not swarm_sequence:raise Hold(message['error_message'] or 'aborted')
+                    return  # The native settlement classifies this sequence interruption.
                 if not message['tool_calls']:
                     # The run ends here; completion handling follows its settlement.
                     return
@@ -2069,14 +2080,17 @@ def collect(root,registration_dir):
                 export(actor)
             def on_settled(actor,message):
                 state=states[actor]
-                if message.get('error_message'):
+                error=settlement_error(message,sequence=swarm_sequence)
+                if error:
                     label=f"{message['turn']:04d}";folder=root/name/actor/'trace'
                     save(folder/f'{label}.collector-error.json',{'type':'error',
                         'message':message['error_message'][:500],
                         'transport_attempts':len(turn_records.get((actor,message['turn']),{}).get('attempts',{}))})
                     record_review({'path':str(folder.relative_to(root)),'label':label,
                         'status':'provider_error','detail':message['error_message']})
-                    raise Hold(message['error_message'])
+                    raise Hold(error)
+                if message.get('error_message') and not error:
+                    state.setdefault('native_goal_lifecycle_aborts',[]).append(deepcopy(message))
                 if (message.get('control_epoch',0)<state.get('controller_epoch',0)
                         or state.get('controller_prompt_pending')
                         or message['turn']<state.get('last_requested_turn',0)):
@@ -2239,6 +2253,9 @@ def collect(root,registration_dir):
                     # That run is settled too; it must not strand the subject
                     # before its next genuinely new registered assignment.
                     if process_settlement(message,sequence=swarm_sequence):on_settled(actor,message)
+                    elif (swarm_sequence and message['aborted'] and message.get('sdk_idle')
+                            and not message.get('sdk_pending_messages',0)):
+                        raise Hold(message.get('error_message') or 'Unexpected native abort without a settled terminal goal')
                 elif kind=='tool_result_error':
                     if message['call_id'] not in executed_calls.get(actor,set()):
                         states[actor]['harness_rejected_tool_calls'].append({**message,'at':utc()})

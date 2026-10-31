@@ -24,20 +24,16 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**31 October — corrected swarm v2 is collecting; live validation pending.** The first
-four-agent Pi subscription attempt was preserved and reviewed after a controller
-lifecycle defect stranded two blocked goals behind aborted queued turns. It
-produced genuine channel writes and exact peer reads, but is incomplete and is
-not a completed score-decay condition. The v2 repair changes assignment advancement,
-not Terry's task, scorer, channels or native-goal prompts. Earlier isolated
-subjects remain a separate assistant setup deviation and cannot answer the
-swarm question. Four fresh registrations cover 10/100 assignments per agent,
-with/without the explicitly authorized pressure, on Pi / ChatGPT subscription
-Sol 6.1/high. Each cohort stops at its first verified raw 1.0.
-The v2 ten-assignment no-pressure collector is active (PID 79702); the other
-three await its complete trace review. Source `452d69efd` and registrations
-`96ad79d25` are committed and pushed. The repair passed 23 focused checks and
-13 prompt contracts, with the prior broad 458-check suite preserved separately.
+**31 October — swarm sequence v3 is awaiting fresh live validation.** Two
+four-agent setup-validation attempts remain preserved outside Git. V1 stranded
+terminal native goals; v2 exposed their SDK abort being misclassified as a
+provider failure. Neither is a completed continuous-supply condition. V3 recognizes
+only the captured idle terminal-goal abort, with a real-SDK event-replay regression;
+genuine provider and usage errors still stop collection. Terry's task, scorer,
+channels and native-goal prompts remain unchanged. Four fresh registrations cover
+10/100 assignments per agent, with/without the explicit pressure, on Pi / ChatGPT
+subscription Sol 6.1/high. Each cohort stops at its first verified raw 1.0.
+Earlier isolated subjects remain a separate assistant setup deviation.
 [Design and operator instructions](docs/research/persistent-score-decay.md).
 
 **Current development — v137/r186, live rollout open.** An independent native
@@ -236,6 +232,14 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **The v2 setup attempt captured the terminal-goal abort classification error.**
+  Pi reported `aborted=true`, a blocked goal, an idle SDK and zero pending messages,
+  with `This operation was aborted`. The collector incorrectly held this as a
+  provider error. Preserve that frozen classification and its complete trace;
+  the later lifecycle interpretation does not rewrite it. Closed assignments
+  were 2, 3, 0 and 2, with no raw 1.0. Independent replay and four ATIF exports
+  validate; this is an incomplete setup attempt, not a study outcome.
 
 - **The first corrected swarm attempt exposed an assignment-lifecycle defect.**
   Native goals and channels were present, with 26 subject-authored posts and

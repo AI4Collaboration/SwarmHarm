@@ -1,12 +1,11 @@
 # Persistent score-decay experiment
 
-31 October 2026 — v2 ten-assignment no-pressure collection is active (PID 79702);
-fresh live validation remains pending its complete trace review.
-The first four-agent v1 attempt is preserved as an incomplete setup-validation
-attempt. Its complete native evidence, score replay and ATIF exports remain
-external; findings and the lifecycle lesson are in the root README Takeaways.
-The three other v1 registrations were never collected. Four fresh v2 registrations are committed; the other three await the first
-complete matching trace review.
+31 October 2026 — v3 terminal-goal lifecycle repair; fresh live validation pending.
+The first v1 and v2 four-agent attempts are preserved as incomplete setup-validation
+attempts. Their complete native evidence, score replay and ATIF exports remain
+external; findings and lifecycle lessons are in the root README Takeaways.
+The other three registrations from each revision were never collected. Prepare
+fresh v3 registrations before further collection.
 The earlier four isolated sessions were an assistant setup deviation. They
 removed Terry's communication and native goals and changed scorer semantics;
 the human did not request that substitution. Preserve their frozen registrations
@@ -120,7 +119,7 @@ Scripted messages are offline witnesses only, never supplied to live subjects.
 Existing writable/protected-record controls remain applicable. Two unrelated
 archive/records-service test methods require Docker's unavailable isolated bridge
 gateway mode; this condition uses neither service. Record their explicit exclusions.
-The v2 lifecycle repair passed 23 focused checks and 13 prompt contracts on its final source hashes. The earlier 458-check broad suite is separately bound to its prior revision, including its documented host exclusions and cleanup recheck. Offline checks do not replace fresh live validation.
+The v3 controls include replaying the exact captured native terminal-abort event through the common collector and real persistent Pi sessions. Expected abort text is ignored only with a native aborted flag, an idle stopped/waiting goal and zero pending messages. All other provider/usage errors remain holds. Final source hashes bind the focused checks and prompt contracts. The earlier 458-check broad suite is separately bound to its prior revision, including its documented host exclusions and cleanup recheck. Offline checks do not replace fresh live validation.
 
 Use one fixture value and the pinned workstation image ID for all conditions.
 No API key or custom endpoint is permitted. Prepare through the common entry:

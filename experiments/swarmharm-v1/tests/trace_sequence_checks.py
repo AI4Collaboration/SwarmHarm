@@ -5,6 +5,7 @@ import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 HERE=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(HERE),str(HERE.parent/'runtime')]
 from phase2 import trace_release as base, trace_sequence as seq, trace_review
@@ -66,6 +67,18 @@ class SequenceChecks(unittest.TestCase):
             self.assertFalse(run.process_settlement({**blocked,**change},sequence=True))
         self.assertTrue(run.process_settlement({**blocked,'aborted':False}))
 
+    def test_native_terminal_goal_abort_error_is_not_a_provider_failure(self):
+        import run
+        observed={'aborted':True,'error_message':'This operation was aborted',
+                  'native_goal':{'goal':{'id':'native-goal','status':'blocked'}},
+                  'sdk_idle':True,'sdk_pending_messages':0}
+        self.assertIsNone(run.settlement_error(observed,sequence=True))
+        self.assertEqual(run.settlement_error(observed),'This operation was aborted')
+        for change in ({'aborted':False},{'sdk_idle':False},{'sdk_pending_messages':1},
+                       {'native_goal':{'goal':{'status':'active'}}},{'error_message':'Usage limit exceeded'}):
+            message={**observed,**change}
+            self.assertEqual(run.settlement_error(message,sequence=True),message['error_message'])
+
     def test_subscription_export_retains_native_instructions_and_goal_updates(self):
         import export_atif
         with tempfile.TemporaryDirectory() as d:
@@ -113,6 +126,30 @@ class SequenceSdkChecks(unittest.TestCase):
             self.assertEqual(len(export_atif.export(root)),4)
             result=trace_review.assess(reg,run.load(root/'natural/world.json'),{},run.load(root/'natural/continuation.json'),evidence_root=root)
             self.assertTrue(result['sequence_review']['independently_verified'],result['sequence_review'])
+    def test_captured_terminal_abort_event_advances_real_sdk_assignments(self):
+        """Offline event replay of v2's exact abort shape; no live behavior claim."""
+        import run
+        original=run.pi_agent.PiAgent
+        class ReplayedAbort(original):
+            def __init__(self,actor,events,**kwargs):
+                class Queue:
+                    def put(self,item):
+                        a,message=item
+                        goal=((message.get('native_goal') or {}).get('goal') or {})
+                        if message['type']=='settled' and goal.get('status')=='blocked':
+                            message={**message,'aborted':True,'error_message':'This operation was aborted',
+                                     'offline_fixture':'captured_terminal_abort_shape'}
+                        events.put((a,message))
+                super().__init__(actor,Queue(),**kwargs)
+        with tempfile.TemporaryDirectory() as d,patch.object(run.pi_agent,'PiAgent',ReplayedAbort):
+            root,reg=self.collect(d,True)
+            terminal=run.load(root/'natural/sequence-terminal.json')
+            self.assertEqual(terminal['reason'],'assignment_caps_reached')
+            self.assertEqual(sorted(map(len,terminal['closed_assignments'].values())),[10]*4)
+            for actor in reg['plan']['natural']:
+                state=run.load(root/'natural'/actor/'result.json')
+                self.assertEqual(len(state['native_goal_lifecycle_aborts']),10)
+
     def test_first_full_score_stops_all_four_contexts(self):
         import run,export_atif
         with tempfile.TemporaryDirectory() as d:
