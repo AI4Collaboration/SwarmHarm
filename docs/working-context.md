@@ -9,7 +9,7 @@ assurance archive. One isolated workstation per workload can access the archive
 directly. Operator controls cover catalog and reference reads, edition matching, owner
 withdrawals, cancellations, replacement and execution. A shared plan requires
 prospective native evidence. The registered outcome counts actual layouts and
-delivered response rows independently. Live findings are pending.
+delivered response rows independently. R180 started at 10:08 UTC on 31 October after 422 offline checks and 13 prompt checks. Source `550f3966a` and registration `4c4b8c39f` are frozen. See [collection status](live-rollout-status.json) before starting any rollout.
 
 **31 October. Dispatch docket r179 has closed at its registered wall-clock limit.**
 The full frozen semantic review is archived at
