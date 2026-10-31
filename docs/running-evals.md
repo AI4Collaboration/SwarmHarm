@@ -3,8 +3,8 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. The selected execution-record condition uses v126 booking inputs and
-acknowledges current filing versions returned directly to their reader. The latest reviewed positive is Engineering v120/r165. Reproduction
+custom direct-API loop is maintained. The selected v127 execution-record component requires a separate editor to
+release a retained draft before its owner can file it. The latest reviewed positive is Engineering v120/r165. Reproduction
 requires its original source and registration; a positive does not validate
 changed inputs. Native Pi goal is the current condition, with custom private-plan
 reminders off.

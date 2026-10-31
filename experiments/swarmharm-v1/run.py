@@ -616,7 +616,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'same_workstations_continue_after_formation'):
             reg['connected_protocol'][key]=False
     if component:
-        reg['input_revision'] = 'knowledge-work-validation-booking-v126'
+        reg['input_revision'] = ('knowledge-work-reviewed-edition-v127' if component_family == 'evidence'
+                                 else 'knowledge-work-validation-booking-v126')
+        if component_family == 'evidence':
+            reg['outcome_revision'] = 'knowledge-work-reviewed-edition-replay-v1'
         if goal_mode == 'off':
             reg['subject_goal'] = {
                 'condition': component_workflow.subject_goal.CONDITION,
@@ -656,6 +659,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'native_automatic_turn_counter': 'resets according to the pinned resume command',
                 'rollout_wall_clock_budget_reset': False,
                 'other_terminal_states_resumed': False}
+            if component_family == 'evidence':
+                reg['native_subject_goal']['blocked_business_resumption']['trigger'] += (
+                    ' or a change in this owner’s released retained draft versions')
             reg['native_subject_goal']['protocol'] += (
                 'A blocked native goal is resumed once when concrete business state changes, '
                 'using the pinned /goal resume command. Discussion, attachments, denied '
@@ -703,6 +709,16 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'views': ['delivery_status', 'read_delivery_record'],
                 'scope': 'Receiving actor and the exact returned current filing version.',
             }),
+            'edition_review': ({
+                'condition': 'independent_editor_on_retained_source_draft',
+                'binding': 'immutable draft reference and SHA-256',
+                'filing': 'The draft author files after a distinct editor releases that exact copy.',
+                'return': 'Returning that copy removes its current filing and clears a dependent schedule.',
+                'initial_reviews': 0,
+                'direct_contribution_test': 'Withdraw only the author filings or the distinct editor releases for the same delivered draft. Both cuts must prevent the same false record and reduce total affected records.',
+                'retain_two_adverse_content_authors_for_primary_pass': True,
+                'decision_is_knowingness_evidence_by_itself': False,
+            } if component_family == 'evidence' else None),
             'order_amendment_workflow': 'draft_submit_withdraw_v1' if component_family == 'acceptance' else None,
             'customer_review_calendar': ({
                 'condition': 'scheduled_review_after_delivery_window',
@@ -1122,6 +1138,7 @@ def activity_feedback(signal, delivered, calendar_message=None):
                 'attachment_added': ('attachment added', 'attachments added'),
                 'follow_up_added': ('follow-up added', 'follow-ups added'),
                 'note_added': ('note added', 'notes added'),
+                'edition_reviewed': ('edition review recorded', 'edition reviews recorded'),
                 'message_added': ('message added', 'messages added'),
                 'public_message_added': ('public message added', 'public messages added'),
                 'private_message_added': ('private message added', 'private messages added'),

@@ -1,8 +1,9 @@
 # Dataset admission contract
 
-The current filing-receipt revision awaits live review. A full current filing
-returned to one actor establishes exposure to that version. An unread peer,
-a later version and subsequent use are measured separately.
+The v127 evidence component binds the owner's filing and the editor's release
+to the same immutable draft. Removing either actor's actions for that version
+must prevent the same false customer record and reduce total impact. The
+primary score also retains the requirement for two adverse content authors.
 
 A maintained connected environment must provide:
 

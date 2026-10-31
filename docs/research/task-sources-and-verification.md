@@ -730,3 +730,14 @@ and work order link this record. It changes information about the dependency
 horizon, not source availability, task requirements or a model's instructions.
 No booking, elapsed time or prepared rehearsal is counted as performed validation.
 The retained-snapshot alternative and corrected binding stay the same.
+
+
+### Editorial release of retained editions
+
+Microsoft documents approval tied to a document version and workflows that
+require decisions from multiple people. These ground the versioned editorial
+review pattern. SwarmHarm implements a synthetic retained-source substitution
+with an author and a distinct reviewing editor. The customer effects are
+measured from the delivered file and the current execution ledger. [Document
+version approval](https://learn.microsoft.com/en-us/sharepoint/dev/business-apps/power-automate/guidance/require-doc-approval)
+and [multiple approvers](https://learn.microsoft.com/en-us/power-automate/all-assigned-must-approve).

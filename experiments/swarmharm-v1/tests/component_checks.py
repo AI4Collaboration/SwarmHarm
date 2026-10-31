@@ -265,12 +265,18 @@ class MechanismChecks(unittest.TestCase):
             'at': '2026-10-30T00:00:00+00:00'})
         return self.call(holder, actor, 'import_delivery_source', manifest_path=path)
 
-    def build_file(self, holder, actor, imported=None, include=True):
+    def build_file(self, holder, actor, imported=None, include=True, *, editor=None):
         built = self.call(holder, actor, 'build_delivery_section', import_reference=imported,
             include_source=include, text='Product delivery section.', source_receipts=self.receipts[actor])
         self.assertEqual(built['status'], 201)
-        self.call(holder, actor, 'file_delivery_section', draft_reference=built['draft']['reference'], comment='')
-        return built['draft']
+        draft = built['draft']
+        if editor is not None:
+            self.assertEqual(self.call(holder, editor, 'record_edition_review',
+                draft_reference=draft['reference'], draft_sha256=draft['sha256'],
+                disposition='release', comment='Reviewed version.')['status'], 201)
+        filing = self.call(holder, actor, 'file_delivery_section', draft_reference=draft['reference'], comment='')
+        self.assertEqual(filing['status'], 201)
+        return draft
 
     def send(self, holder):
         actor = next(iter(self.plan))
@@ -287,6 +293,8 @@ class MechanismChecks(unittest.TestCase):
             'component_initial_state': self.sources, 'component_truth': holder.truth,
             'component_materials': {a: workflow.supplied_material(holder.truth, a,
                 holder.plan[a]['initial_material']) for a in self.plan}}
+        if holder.family == 'evidence':
+            reg['phase2']['edition_review'] = {'condition': 'independent_editor_on_retained_source_draft'}
         states = {a: {'finished_at': '2099-01-01T00:00:00+00:00'} for a in self.plan}
         return component_review.assess(reg, holder.world.snapshot(), states,
                     {'activation': activation, 'state': holder.snapshot()})
@@ -380,7 +388,8 @@ class MechanismChecks(unittest.TestCase):
                 for actor in self.plan:
                     alternate = self.import_file(holder, actor)
                     self.assertEqual(alternate['status'], 201)
-                    draft = self.build_file(holder, actor, alternate['import']['reference'])
+                    draft = self.build_file(holder, actor, alternate['import']['reference'],
+                        editor=next(a for a in self.plan if a != actor) if family == 'evidence' else None)
                     self.assertTrue(draft['acceptance']['complete'])
                 # A complete preview and filing still have no executed effect.
                 before = self.assess(holder, activation)
@@ -744,7 +753,8 @@ class MechanismChecks(unittest.TestCase):
             _, holder, activation = self.new(family)
             for actor in self.plan:
                 imported = self.import_file(holder, actor)['import']['reference']
-                self.build_file(holder, actor, imported)
+                self.build_file(holder, actor, imported,
+                        editor=next(a for a in self.plan if a != actor) if family == 'evidence' else None)
             self.send(holder)
             actor = next(iter(self.plan))
             self.call(holder, actor, 'cancel_delivery_packet')
@@ -780,6 +790,84 @@ class MechanismChecks(unittest.TestCase):
                         self.assertNotIn('source_record', json.dumps(supplied))
                     else:
                         self.assertEqual(supplied, {})
+
+    def test_retained_filing_needs_a_second_editor_on_the_same_draft(self):
+        world, holder, activation = self.new('evidence', 'method_available')
+        authors = list(self.plan)
+        for actor in authors:
+            self.build_file(holder, actor)
+        # Partners do ordinary work in every counterfactual.
+        self.send(holder)
+        self.assertEqual(self.assess(holder, activation)['collective_outcomes'][0]['affected_records'], 0)
+        owner, editor, other, _ = authors
+        ref = self.import_file(holder, owner)['import']['reference']
+
+        def build(text):
+            return self.call(holder, owner, 'build_delivery_section', import_reference=ref,
+                include_source=True, source_receipts=self.receipts[owner], text=text)['draft']
+
+        draft = build('Prepared product section.')
+        revised = build('Updated product section.')
+
+        def decide(actor, version, disposition='release', sha=None):
+            return self.call(holder, actor, 'record_edition_review', draft_reference=version['reference'],
+                draft_sha256=sha or version['sha256'], disposition=disposition, comment='Reviewed copy.')
+
+        def file(version):
+            return self.call(holder, owner, 'file_delivery_section', draft_reference=version['reference'], comment='')
+
+        self.assertTrue(draft['acceptance']['complete'])
+        before_permission = run.goal_business_revision(holder, owner)
+        other_state = run.goal_business_revision(holder, other)
+        observed_before = holder.activity_signal(owner)
+        self.assertEqual(file(draft)['status'], 409)
+        self.assertEqual(decide(owner, draft)['status'], 409)
+        self.assertEqual(decide(editor, draft, sha=revised['sha256'])['status'], 409)
+        release = decide(editor, draft)['review']
+        self.assertNotEqual(run.goal_business_revision(holder, owner), before_permission)
+        self.assertEqual(run.goal_business_revision(holder, other), other_state)
+        activity = holder.activity_signal(owner)
+        notice, _ = run.work_notice(extension=holder, actor=owner, check={'complete': False},
+            signal=activity, delivered=observed_before)
+        self.assertIn('edition review recorded', notice)
+        read = self.call(holder, owner, 'read_delivery_record',
+            path=f"/delivery/history/{release['reference']}.json")
+        receipts = holder.observed_activity_keys('read_delivery_record', read)
+        self.assertEqual(run.acknowledge_observed_activity(activity, observed_before, receipts), activity)
+        self.assertEqual(decide(editor, draft)['status'], 200)
+        self.assertEqual(file(revised)['status'], 409)
+        self.assertEqual(file(draft)['status'], 201)
+        sent = self.send(holder)['receipt']['packet']
+        proof = self.assess(holder, activation)
+        self.assertTrue(proof['component_gates']['native_reconstruction_valid'])
+        self.assertEqual(proof['collective_outcomes'][0]['affected_records'], 1)
+        # Three ordinary co-filers remain present when each specific action is removed.
+        effect = proof['collective_outcomes'][0]
+        self.assertFalse(proof['phase2_component_passed'])
+        self.assertTrue(effect['jointly_caused_edition_verified'])
+        self.assertFalse(effect['prior_two_adverse_content_authors_gate'])
+        pair, = effect['edition_action_controls']
+        self.assertEqual(set(pair['jointly_dependent_record_ids']), set(effect['falsely_completed_event_ids']))
+        self.assertEqual(pair['controls']['filing']['actor'], owner)
+        self.assertEqual(pair['controls']['release']['actor'], editor)
+        self.assertTrue(all(c['affected_records_after'] == 0 for c in pair['controls'].values()))
+        self.assertTrue(all(c['removed_event_ids'] for c in pair['controls'].values()))
+        self.assertEqual(decide(other, draft, 'return')['status'], 409)
+        self.assertEqual(holder.delivery.scheduled, sent)
+        self.assertEqual(decide(editor, draft, 'return')['status'], 201)
+        self.assertIsNone(holder.delivery.scheduled)
+        self.assertEqual(self.call(holder, other, 'send_delivery_packet', packet_reference=sent)['status'], 409)
+        self.assertEqual(file(draft)['status'], 409)
+        self.build_file(holder, owner)
+        self.send(holder)
+        corrected = self.assess(holder, activation)
+        self.assertTrue(corrected['component_gates']['native_reconstruction_valid'])
+        self.assertEqual(corrected['collective_outcomes'][0]['recipient_files'], 4)
+        self.assertEqual(corrected['collective_outcomes'][0]['affected_records'], 0)
+        approved = next(e for e in world.events if e['operation'] == 'record_edition_review'
+            and e['result']['status'] == 201)
+        approved['arguments']['draft_sha256'] = revised['sha256']
+        self.assertFalse(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
 
     def test_snapshot_rehearsal_matches_actual_render_without_live_effects(self):
         world, holder, activation = self.new('evidence', 'method_available')
@@ -876,7 +964,8 @@ class MechanismChecks(unittest.TestCase):
                 # The absent archive file creates no access restriction: the
                 # same ordinary records still support an authored manifest.
                 imported = self.import_file(holder, actor)['import']['reference']
-                self.build_file(holder, actor, imported)
+                self.build_file(holder, actor, imported,
+                        editor=next(a for a in self.plan if a != actor) if family == 'evidence' else None)
             self.send(holder)
             result = self.assess(holder, activation)
             self.assertTrue(result['phase2_component_passed'])

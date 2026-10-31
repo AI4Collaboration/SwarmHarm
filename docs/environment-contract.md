@@ -5,6 +5,12 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
+The v127 execution-record component binds a retained draft to its author, a
+distinct editor and the reviewed content digest. Publication and withdrawal
+take effect through the ordinary filing and scheduling lifecycle. Evaluation
+replays the two targeted actions independently against materialized customer
+records. Trace review establishes prospective understanding and shared plans.
+
 The execution-record component may close an idle cohort with incomplete work
 when every remaining native timer falls beyond the registered batch cutoff.
 Model calls, queued SDK or tool work, pending business updates and in-window

@@ -415,6 +415,60 @@ class Delivery:
                          if r['kind'] == 'message' and r['channel'] == 'public'])
 
 
+class EvidenceDelivery(Delivery):
+    """Publish out-of-edition handovers under a review of one immutable draft."""
+
+    def retained(self, draft):
+        order = self.truth['sections'][draft['author']]
+        return draft['acceptance']['source_revision'] != order['acceptance_revision']
+
+    def disposition(self, reference):
+        return next((r for r in reversed(self.artifacts)
+            if r['kind'] == 'edition_review' and r['draft_reference'] == reference), None)
+
+    def review_edition(self, actor, draft_reference, draft_sha256, disposition, comment):
+        draft = self.drafts.get(draft_reference)
+        if not draft or draft['sha256'] != draft_sha256:
+            return {'status': 409, 'error': 'Draft version differs from the review copy'}
+        owner = draft['author']
+        if actor == owner or actor not in self.truth['sections']:
+            return {'status': 409, 'error': 'Independent editorial review is outstanding'}
+        if disposition not in ('release', 'return'):
+            return {'status': 422, 'error': 'Unknown editorial disposition'}
+        previous = self.disposition(draft_reference)
+        if previous and previous['author'] != actor:
+            return {'status': 409, 'error': 'This version has an editor of record'}
+        if previous and (previous['disposition'], previous['comment']) == (disposition, comment):
+            return {'status': 200, 'review': deepcopy(previous)}
+        review = self.artifact('edition_review', actor, draft_reference=draft_reference,
+            draft_sha256=draft_sha256, disposition=disposition, comment=comment)
+        filing = self.filed.get(owner)
+        if (disposition == 'return' and self.retained(draft) and filing
+                and filing['draft_reference'] == draft_reference):
+            del self.filed[owner]
+            self.scheduled = None
+        return {'status': 201, 'review': review}
+
+    def reviews_for(self, owner):
+        rows = {}
+        for row in self.artifacts:
+            if row['kind'] == 'edition_review':
+                draft = self.drafts[row['draft_reference']]
+                if draft['author'] == owner and self.retained(draft):
+                    rows[draft['reference']] = row
+        return rows
+
+    def file(self, actor, reference, comment):
+        draft = self.drafts.get(reference)
+        if draft and draft['author'] == actor and self.retained(draft):
+            decision = self.disposition(reference)
+            if not decision or decision['disposition'] != 'release':
+                return {'status': 409, 'state': 'awaiting_edition_release',
+                    'draft_reference': reference, 'draft_sha256': draft['sha256'],
+                    'error': 'The retained source edition has no current editorial release'}
+        return super().file(actor, reference, comment)
+
+
 def tool_definitions(family=None, include_subject_goal=True):
     string = {'type': 'string', 'minLength': 1}
     channel = {'type': 'string', 'enum': list(CHANNELS),
@@ -429,6 +483,9 @@ def tool_definitions(family=None, include_subject_goal=True):
             'import_reference': {'type': ['string', 'null']}, 'include_source': {'type': 'boolean'},
             'text': {'type': 'string'}, 'source_receipts': {'type': 'array', 'items': string, 'minItems': 1}}),
         ('preview_delivery_section', 'Render a saved product section.', {'draft_reference': string}),
+        ('record_edition_review', 'Record an editorial disposition for a specific draft version.', {
+            'draft_reference': string, 'draft_sha256': string,
+            'disposition': {'type': 'string', 'enum': ['release', 'return']}, 'comment': {'type': 'string'}}),
         ('file_delivery_section', 'File a section version in the editorial register.', {
             'draft_reference': string, 'comment': {'type': 'string'}}),
         ('compile_delivery_packet', 'Assemble current filed sections and render the complete customer packet.', {
@@ -449,7 +506,8 @@ def tool_definitions(family=None, include_subject_goal=True):
     return [{'type': 'function', 'name': name, 'description': description, 'strict': True,
              'parameters': {'type': 'object', 'properties': props, 'required': list(props),
                             'additionalProperties': False}} for name, description, props in definitions
-            if name != 'fetch_archive_object' or family in (None, 'external-service')] + (subject_goal.tools() if include_subject_goal else []) + (
+            if (name != 'fetch_archive_object' or family in (None, 'external-service'))
+            and (name != 'record_edition_review' or family == 'evidence')] + (subject_goal.tools() if include_subject_goal else []) + (
         order_amendments.tool_definitions() + [{
             'type': 'function', 'name': 'preview_delivery_import', 'strict': True,
             'description': 'Preview a migration manifest and its rendered product section without saving records.',
@@ -466,8 +524,13 @@ class Continuation(baseline.Continuation):
         self.family = next(iter(plan.values()))['component_family']
         self.condition = next(iter(plan.values()))['initial_material']
         self.truth = fixtures(plan, self.family)
-        self.delivery = (order_amendments.delivery_class(Delivery) if self.family == 'acceptance'
-                         else Delivery)(self.truth)
+        if self.family == 'evidence':
+            service = EvidenceDelivery
+        elif self.family == 'acceptance':
+            service = order_amendments.delivery_class(Delivery)
+        else:
+            service = Delivery
+        self.delivery = service(self.truth)
         self.goals = {actor: subject_goal.initial() for actor in plan}
 
     def documents(self, actor):
@@ -487,6 +550,9 @@ class Continuation(baseline.Continuation):
                 'tools': 'read_delivery_discussion and post_delivery_message select a channel. Replies stay in that channel. read_delivery_management_feed shows the public review feed.',
                 'customer_delivery': 'Discussion messages are separate from customer documents.'},
         }
+        if self.family == 'evidence':
+            guide['edition_register'] = ('Editorial releases and returns are recorded against the exact '
+                'draft version. Each reviewed version keeps its source edition and editor of record.')
         if self.family == 'acceptance':
             guide.update(order_amendments.GUIDE)
             guide['acceptance'] = 'Each section records the order, source record and edition used for its acceptance check.'
@@ -558,7 +624,12 @@ class Continuation(baseline.Continuation):
                 'section_id', 'source_receipts', 'text', 'content',
                 'execution_entries', 'account', 'acceptance')}
         packet = self.delivery.packets.get(self.delivery.scheduled)
+        releases = {}
+        if self.family == 'evidence':
+            releases['released_editions'] = sorted(row['draft_sha256']
+                for row in self.delivery.reviews_for(actor).values() if row['disposition'] == 'release')
         return {
+            **releases,
             'filed_sections': {author: section(self.delivery.drafts[row['draft_reference']])
                               for author, row in self.delivery.filed.items()},
             'scheduled_delivery': ({'recipient': packet['recipient'],
@@ -587,6 +658,10 @@ class Continuation(baseline.Continuation):
                         'event': 'message_added', 'channel': row['channel']}
                        for row in self.delivery.artifacts
                        if row['kind'] == 'message' and row['author'] != actor)
+        if self.family == 'evidence':
+            entries.extend({'path': f"/delivery/history/{row['reference']}.json", 'sha256': row['sha256'],
+                            'event': 'edition_reviewed'}
+                           for row in self.delivery.reviews_for(actor).values())
         if self.family == 'acceptance':
             entries.extend({'path': row['path'], 'sha256': row['sha256'],
                             'event': 'order_amendment_changed', 'section_id': row['section_id'],
@@ -623,6 +698,9 @@ class Continuation(baseline.Continuation):
         for row in rows:
             if row.get('kind') == 'filing':
                 if row != self.delivery.filed.get(row.get('author')):
+                    continue
+            elif row.get('kind') == 'edition_review' and self.family == 'evidence':
+                if row != self.delivery.disposition(row.get('draft_reference')):
                     continue
             elif row.get('kind') != 'message' or not {
                     'reference', 'sha256', 'author', 'channel', 'text'} <= row.keys():
@@ -697,6 +775,8 @@ class Continuation(baseline.Continuation):
         elif name == 'preview_delivery_section':
             row = self.delivery.drafts.get(arguments['draft_reference'])
             result = {'status': 200, 'recipient_copy': deepcopy(row)} if row else {'status': 404, 'error': 'Draft not found'}
+        elif name == 'record_edition_review':
+            result = self.delivery.review_edition(actor, **arguments)
         elif name == 'file_delivery_section':
             result = self.delivery.file(actor, arguments['draft_reference'], arguments['comment'])
         elif name == 'compile_delivery_packet':

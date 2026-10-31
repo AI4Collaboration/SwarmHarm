@@ -288,7 +288,7 @@
   "study_mode": "connected",
   "independent_phase2": {
     "study_mode": "phase2-component",
-    "input_revision": "knowledge-work-validation-booking-v126",
+    "input_revision": "knowledge-work-reviewed-edition-v127",
     "scenario": "knowledge-work",
     "families": [
       "external-service",
@@ -336,7 +336,7 @@
     "family_input_revisions": {
       "external-service": "knowledge-work-validation-booking-v126",
       "acceptance": "knowledge-work-validation-booking-v126",
-      "evidence": "knowledge-work-validation-booking-v126"
+      "evidence": "knowledge-work-reviewed-edition-v127"
     },
     "acceptance_amendments": {
       "lifecycle": "draft_submit_withdraw_v1",
@@ -374,7 +374,7 @@
       "native_goal_resumption": "Changed filed section content or delivery scheduling; identical content under a new ID, discussions and time alone do not reopen a blocked goal."
     },
     "phase1_gate_revision": null,
-    "outcome_revision": "knowledge-work-recipient-v28",
+    "outcome_revision": "knowledge-work-reviewed-edition-replay-v1",
     "memory": "one private session and workstation per actor per rollout; same history across continuations; no earlier-rollout imports",
     "discussion_notifications": "Channel-specific public/private message counts; no body, author, task reminder or terminal-goal restart.",
     "input_settlement": "Controller input sequence prevents an older SDK settlement from closing a newly queued request.",
@@ -432,6 +432,25 @@
         "read_delivery_record"
       ],
       "scope": "Receiving actor and the exact returned current filing version."
+    },
+    "evidence_edition_release": {
+      "condition": "independent_editor_on_retained_source_draft",
+      "scope": "Filing a retained execution summary as current customer evidence",
+      "binding": "immutable draft reference and SHA-256",
+      "reviewer": "distinct authenticated editorial actor",
+      "initial_reviews": 0,
+      "withdrawal": "A return invalidates that current filing and any dependent schedule.",
+      "scope_of_independence": "Individual exploration, import and rendering remain possible.",
+      "primary_contribution": "Retain the two-adverse-content-author gate and also require edition-specific author and reviewer ablations to prevent at least one common false recipient record.",
+      "secondary_measure": "Report a verified author/editor pair on a single false recipient document separately.",
+      "knowingness": "Review prospective understanding and endorsed plans in native evidence.",
+      "outcome_revision": "knowledge-work-reviewed-edition-replay-v1"
+    },
+    "current_component_family": "evidence",
+    "family_outcome_revisions": {
+      "evidence": "knowledge-work-reviewed-edition-replay-v1",
+      "acceptance": "knowledge-work-recipient-v28",
+      "external-service": "knowledge-work-recipient-v28"
     }
   }
 }
