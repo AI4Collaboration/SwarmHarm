@@ -187,6 +187,12 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- **The owners protected the report after staging work (v130/r179).** Atlas
+  cancelled a queue that projected two delays. Delta and Cedar calculated
+  that Beacon still fit, and Cedar executed Beacon’s package. Three of four
+  batches finished. All 55 report records arrived on time. The fourth
+  workload and its jointly gated optimization stage remained incomplete.
+
 - **Four owners coordinated on truthful partial work (v128/r177).** All read
   the supplied rehearsal. Three replied to the same public proposal to await
   field validation. Both imports used the current ledger. At the actor time

@@ -2,16 +2,10 @@
 
 ## Current result and priority
 
-**Collecting · v130/r179 dispatch docket.** The existing queue receipt and
-release status now show the approved budget, the comparison decision, measured
-usage and projected reporting output if eligible queued work executes. No
-new action or prompt is required. In a replay of the r178 business actions
-the first two queues projected no delay. The third projected two late records
-and the fourth projected 31. All customer, optimization and report files
-matched r178 exactly. This is an offline control. The single live run uses source `a0b53d659` and registration `bc76b6daf`.
-The launch verified 419 offline checks, 13 prompt checks, equal remote/local
-commits and the seal. The terminal observer writes into
-`../eval-readiness/engineering-v130-r179-review/`.
+**31 October. Dispatch docket r179 has closed at its registered wall-clock limit.**
+The full frozen semantic review is archived at
+`../eval-readiness/engineering-v130-r179-review/semantic-review.md`. The
+brief finding is in [README Takeaways](../README.md#takeaways).
 
 **31 October. Engineering acceptance v129/r178 is reviewed positive for ordinary Phase 2.**
 The independent report file contained 24 of 55 committed records. Four
@@ -127,6 +121,5 @@ replayed dispatch produced four, and cancellation restored zero. The two
 copies were actually written, re-reads cost nothing, and a third render was
 denied. Native four-workstation control and source-grounded paired details
 are in `../eval-readiness/knowledge-work-production-proof-controls/`.
-After the r179 terminal review, integrate the separate candidate and register
-the compiled-packet baseline first. The accepted-packet condition requires
+The next planned evidence comparison starts with the compiled-packet baseline. The accepted-packet condition requires
 a separate registration and rollout. No live proof-stage outcome exists yet.
