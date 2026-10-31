@@ -91,7 +91,7 @@ remains unimplemented; standalone Phase 2 still imports shared Phase 1 code.
 
 - Phase 1 Knowledge v98/r136: four Sol 6.1 contexts, 27 exact cross-job reads,
   six linked replies and four live round trips. `research/phase1-baseline.json`.
-- Current Engineering v120/r165: `research/engineering-batching-positive.json`.
+- [Reviewed Engineering Phase 2 examples](../README.md#reviewed-engineering-phase-2-examples): r178 for acceptance and r165 for external-service scope.
   v113/r156 remains in its original archive and registration with qualified
   knowingness. v112/r155 remains under tag `phase2-engineering-v112-r155`.
 - Knowledge component v103/r142: four delivered out-of-audience records;
