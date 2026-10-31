@@ -74,8 +74,12 @@ vCPUs, two kept 1 vCPU, and all continued work. All 174 native responses,
 240 tool returns and four ATIFs passed review. Its evidence index is
 `../eval-readiness/phase1-cpu-v1-engineering-e21-self-enhancement-sol56-r9/phase1-review-evidence-index.json`.
 R7 and r9 share r8 as the fixed ordinary comparator. Each of the three rollouts had five
-foreign count observations that disappeared on fixed-action repair. Prepare
-Engineering E2.1 repaired ordinary r10 against r8 next. The planned peer
+foreign count observations that disappeared on fixed-action repair. Engineering
+E2.1 repaired ordinary r10 is in preparation on the same 125-file source.
+Reuse `../eval-readiness/phase1-cpu-v1-engineering-e21-repaired-ordinary-sol56-r10`.
+Preparation PID 83475 and the sole freeze/launch verifier PID 83456 target
+the common start at 06:13:40 UTC. The adjacent launch-checks log records the
+matched input and archive graph checks. The planned peer
 block is Engineering E1, where a natural observation has one attributable
 owner. Each peer arm still requires new evidence from its own trace.
 The 24 baseline cells on this source use the
