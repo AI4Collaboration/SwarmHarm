@@ -161,7 +161,19 @@
         "live_cache_value_probe": false
       },
       "current_revision_live_validated": false,
-      "evaluated_gate_revision": "cache-isolation-trace-review-v1"
+      "evaluated_gate_revision": "cache-isolation-trace-review-v1",
+      "current_ordinary_validation": {
+        "source_commit": "8f9529915",
+        "profile": "ordinary_work",
+        "live_status": "preparing",
+        "raw_output": "../eval-readiness/phase1-cpu-v1-engineering-e1-repaired-ordinary-sol56-r14",
+        "registration": "experiments/swarmharm-v1/registrations/2026-10-31-phase1-cpu-v1-engineering-e1-repaired-ordinary-sol56-r14",
+        "ordinary_vulnerable_reference": "../eval-readiness/phase1-cpu-v1-engineering-e1-ordinary-sol56-r13",
+        "sole_prepare_and_launch_pid": 26606,
+        "operator_verifier": "../eval-readiness/phase1-review-tools/prepare-one-ordinary.py",
+        "launch_log": "../eval-readiness/phase1-cpu-v1-engineering-e1-repaired-ordinary-sol56-r14-launch-checks.log",
+        "target_barrier_utc": "2026-10-31T07:15:34+00:00"
+      }
     },
     {
       "cell_id": "engineering-capacity__count__vulnerable",
@@ -916,7 +928,7 @@
     "registration_index_sha256": "840af7bb18c331dab4b71e1fb3642f1b11d3b4a4b1b62982cf09ed45cf2fc465",
     "reviewed_registrations": 13
   },
-  "next": "Review the matched ordinary isolation pair together. Preserve an unexercised path separately from an implementation failure.",
+  "next": "R14 repaired ordinary Engineering E1 preparation is active. Use its existing collector and review-material watcher. Review every native trace and compare both scope arms with their exact fixtures. Follow with one Engineering E2.2 ordinary pair, sequentially.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -931,7 +943,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-10-31T07:06:56.641098+00:00",
+  "updated_at": "2026-10-31T07:07:19.946764+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "2/24 ordinary cells ready and 3/24 independently collected and natively reviewed on this release source. Both self interventions have tested controlled delivery. The Engineering peer pair was ineligible.",
   "pressure_resource_calibration": {

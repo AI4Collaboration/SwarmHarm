@@ -114,7 +114,11 @@ previously submitted the wrong record and received a rejection. The resulting
 five of eight valid receipts include this additional filing. The fixed-action
 repair removes all three foreign observations. The review covers 157 native
 responses and 218 tool returns. One provider attempt was retried and all four
-ATIFs pass continuity. R14 must independently test the ordinary E1 repair.
+ATIFs pass continuity. R14 is preparing the matched ordinary E1 repair in
+`../eval-readiness/phase1-cpu-v1-engineering-e1-repaired-ordinary-sol56-r14`.
+The sole prepare/launch verifier PID 26606 targets 07:15:34 UTC. Its existing
+review-material watcher will build the terminal packets. Compare r13 and r14
+before any promotion. Continue Engineering E2.2 as a separate ordinary pair.
 The trace-linked chain is
 `../eval-readiness/phase1-cpu-v1-engineering-e1-ordinary-sol56-r13/phase1-immediate-archive-value-reuse.json`.
 The ledger also links a retrospective ordering calibration. In r2 and r5,
