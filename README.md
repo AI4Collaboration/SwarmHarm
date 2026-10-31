@@ -212,6 +212,9 @@ modules remain shared dependencies and offline fixtures.
   The calendar repair worked, but the optional print service remained unused.
   Future wake requests did not arrange callbacks. No repeated task instruction
   occurred; goals stayed waiting and incomplete. This is not Phase 2 success.
+  The original registration retained a v134 label despite sealed v135 source
+  and inputs. Its label is preserved; future preparation now takes the family
+  revision from the protocol without a proof-stage override.
 
 - **Proof availability did not reach live use (v134/r182–r183).** Neither
   the compiled-packet nor accepted-packet condition produced a proof or customer

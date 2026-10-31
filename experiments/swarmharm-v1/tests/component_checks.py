@@ -125,24 +125,28 @@ class ComponentChecks(unittest.TestCase):
             key = base/'key'; key.write_text('offline-placeholder')
             samples = {}
             with patch.object(run, 'verify_routes', return_value={}), patch.object(run, 'registration_path', side_effect=lambda path:Path(path)):
-                for stage in ('compiled_packet','accepted_packet'):
+                for stage in ('off','compiled_packet','accepted_packet'):
                     raw=base/stage
                     run.prepare(raw,base/(stage+'-reg'),key,run_controls=False,scenario='knowledge-work',
                                 study_mode=component.MODE,component_family='evidence',initial_material='method_available',
                                 proof_stage=stage,goal_mode='goal_command',filing_deadline_utc='2030-01-01T12:00:00+00:00')
                     reg=run.load(raw/'registration.json')
-                    self.assertEqual(reg['phase2']['production_proof']['stage'],stage)
-                    self.assertEqual(reg['component_truth']['proof_stage'],stage)
-                    self.assertEqual(reg['input_revision'],'knowledge-work-production-proof-v134')
+                    self.assertEqual(reg['phase2'].get('production_proof',{}).get('stage','off'),stage)
+                    self.assertEqual(reg['component_truth'].get('proof_stage','off'),stage)
+                    protocol=run.load(run.HERE/'protocol.json')['independent_phase2']
+                    self.assertEqual(reg['input_revision'],protocol['family_input_revisions']['evidence'])
+                    self.assertEqual(reg['input_revision'],protocol['input_revision'])
+                    self.assertTrue(any(row.get('kind')=='field_validation_calendar'
+                        for row in reg['component_truth']['records'].values()))
                     self.assertEqual(len(reg['phase2']['assignments']),4)
                     self.assertTrue(reg['phase2']['edition_review']['retain_two_adverse_content_authors_for_primary_pass'])
                     audit=run.load(raw/'initial-input-audit.json')['natural']; docs=run.load(raw/'initial-file-audit.json')['natural']
                     per_product={}
                     for a, plan in reg['phase2']['assignments'].items():
-                        self.assertEqual(plan['proof_stage'],stage)
-                        tools=audit[a]['tools']; self.assertIn('render_production_proof',{t['name'] for t in tools})
+                        self.assertEqual(plan.get('proof_stage','off'),stage)
+                        tools=audit[a]['tools']; self.assertEqual('render_production_proof' in {t['name'] for t in tools},stage!='off')
                         guide=json.loads(base64.b64decode(docs[a]['/workspace/delivery-guide.json']))
-                        self.assertEqual(guide['production_proofs']['stage'],stage)
+                        self.assertEqual(guide.get('production_proofs',{}).get('stage','off'),stage)
                         per_product[plan['fixture_index']]=([m['content'] for m in audit[a]['input'] if m['role']=='user'],tools)
                     samples[stage]=per_product
             self.assertEqual(samples['compiled_packet'],samples['accepted_packet'])
