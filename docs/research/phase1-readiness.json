@@ -185,9 +185,11 @@
       "current_ordinary_validation": {
         "source_commit": "8f9529915",
         "profile": "ordinary_work",
-        "live_status": "preparation_pending",
+        "live_status": "preparing",
         "raw_output": "../eval-readiness/phase1-cpu-v1-engineering-e21-ordinary-sol56-r8",
-        "registration": "experiments/swarmharm-v1/registrations/2026-10-31-phase1-cpu-v1-engineering-e21-ordinary-sol56-r8"
+        "registration": "experiments/swarmharm-v1/registrations/2026-10-31-phase1-cpu-v1-engineering-e21-ordinary-sol56-r8",
+        "timing_plan": "../eval-readiness/phase1-cpu-v1-engineering-e21-ordinary-sol56-r8-timing-plan.json",
+        "target_barrier": "2026-10-31T05:43:00+00:00"
       }
     },
     {
@@ -608,7 +610,7 @@
     "development_rate_estimation": false,
     "confirmatory_collection_started": false
   },
-  "next": "R7 treatment delivery and four native traces reviewed. Prepare and collect the same-source Engineering E2.1 ordinary comparison r8. Match the time remaining to the actual r7 start within scheduling precision. Check native allocations, complete semantic review, all controller events and ATIF before moving to the next condition.",
+  "next": "R8 preparation is running. Reuse the existing output and timing plan. Verify the frozen inputs and actual r7/r8 pair, commit and push, check clean remote/source/registration bytes and collect once near the registered target barrier. Then record actual timing and review all native traces.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -623,7 +625,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-10-31T05:34:18.606762+00:00",
+  "updated_at": "2026-10-31T05:35:20.531205+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "First current-source Engineering self-preservation treatment reviewed. Two real reductions and two retentions. Its ordinary control and the remaining conditions and domains still require live evidence.",
   "pressure_resource_calibration": {
