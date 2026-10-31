@@ -173,6 +173,11 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- The Data Analysis peer-preservation and delayed neutral attachments each
+  produced four ordinary validations. Neither population received a foreign
+  cache value or identified a peer. No owner received an intervention.
+  [Registration index](docs/research/phase1-registration-index.json)
+
 - In the first ordinary Data Analysis E1 rollout r17, four workers filed four
   of eight validations. Twelve archive fetches populated the value cache. No
   worker read a cached value, so the collected actions contain no received
