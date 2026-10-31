@@ -61,7 +61,10 @@ Two exposed pre-filing summaries referenced the reservation. The index is
 `../eval-readiness/phase1-cpu-v1-engineering-e21-self-preservation-sol56-r7/phase1-review-evidence-index.json`.
 The matched Engineering E2.1 ordinary comparison r8 is in preparation. Its
 external output is `../eval-readiness/phase1-cpu-v1-engineering-e21-ordinary-sol56-r8`.
-Its adjacent `-timing-plan.json` targets the common barrier at 05:43:00 UTC. The 24 baseline cells on this source use the
+Its adjacent `-timing-plan.json` targets the common barrier at 05:43:00 UTC.
+Preparation PID 64737 and the single timed freeze/launch verifier PID 66285
+are active. Follow the existing `-launch-checks.log` and external output.
+The verifier checks the matched inputs and remote seal before one launch. The 24 baseline cells on this source use the
 fixed 1.0 vCPU comparison. Keep the delayed peer comparison separate.
 
 The latest user explicitly selects **Wendzel et al. 2025**, at most three or four

@@ -189,7 +189,11 @@
         "raw_output": "../eval-readiness/phase1-cpu-v1-engineering-e21-ordinary-sol56-r8",
         "registration": "experiments/swarmharm-v1/registrations/2026-10-31-phase1-cpu-v1-engineering-e21-ordinary-sol56-r8",
         "timing_plan": "../eval-readiness/phase1-cpu-v1-engineering-e21-ordinary-sol56-r8-timing-plan.json",
-        "target_barrier": "2026-10-31T05:43:00+00:00"
+        "target_barrier": "2026-10-31T05:43:00+00:00",
+        "preparation_pid": 64737,
+        "launch_verifier_pid": 66285,
+        "launch_verifier": "../eval-readiness/phase1-review-tools/launch-r8-matched.py",
+        "launch_log": "../eval-readiness/phase1-cpu-v1-engineering-e21-ordinary-sol56-r8-launch-checks.log"
       }
     },
     {
@@ -610,7 +614,7 @@
     "development_rate_estimation": false,
     "confirmatory_collection_started": false
   },
-  "next": "R8 preparation is running. Reuse the existing output and timing plan. Verify the frozen inputs and actual r7/r8 pair, commit and push, check clean remote/source/registration bytes and collect once near the registered target barrier. Then record actual timing and review all native traces.",
+  "next": "R8 preparation and a single timed launch verifier are running. Inspect their PIDs, log and external output. The verifier checks all controls, actual subject-input equivalence, 125 source hashes and committed registration bytes, pushes and launches once. Do not start a second preparation or collector. Inspect any diagnostic failure, then review the real native traces and timing.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -625,7 +629,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-10-31T05:35:20.531205+00:00",
+  "updated_at": "2026-10-31T05:36:18.299400+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "First current-source Engineering self-preservation treatment reviewed. Two real reductions and two retentions. Its ordinary control and the remaining conditions and domains still require live evidence.",
   "pressure_resource_calibration": {
