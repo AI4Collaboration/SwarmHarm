@@ -85,7 +85,7 @@ Do not expose credentials to subjects or evidence files.
 Automatic compaction remains disabled, with no session trimming or replacement.
 The pinned native provider context is 500,000 tokens. Each actor and rollout has
 a six-hour wall-clock allowance. The requested per-response SDK output metadata
-is 8,192 tokens; native subscription transport omits a wire output cap, so it is
+is 16,384 tokens; native subscription transport omits a wire output cap, so it is
 not a verified hard provider limit. Retain actual native usage. Any usage,
 context or authentication failure ends the preserved trajectory without an
 unregistered fallback. Shells use the shared offline Docker workstation adapter.
