@@ -91,6 +91,12 @@ binaries; do not replace a user's global installation. Claude requires
 custom endpoint to either subscription adapter. Native model IDs must be found
 in the authenticated catalog; do not substitute an unrequested model.
 
+For Codex, the adapter first looks for the versioned command
+`codex-0.141.0`, then falls back to the generic `codex` command. This permits the
+registered CLI to coexist with a newer desktop-bundled CLI. The selected binary
+and its SHA-256 digest are sealed in every registration; changing either still
+requires a fresh registration.
+
 Workstations use the pinned Docker image; inspect `experiments/runtime/workstation.py`
 for its immutable default. `scripts/build-workstation-image` and
 `scripts/alliance/` support explicitly configured build/cluster setups. A changed

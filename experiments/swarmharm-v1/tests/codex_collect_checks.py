@@ -29,6 +29,24 @@ MODEL = 'gpt-5.5'  # Recognized fixture metadata only; no hosted inference.
 
 
 class CodexGuards(unittest.TestCase):
+    def test_versioned_cli_is_preferred_without_replacing_global_codex(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            pinned = root / f'codex-{C.CLI_VERSION}'
+            generic = root / 'codex'
+            pinned.write_text('pinned fixture')
+            generic.write_text('generic fixture')
+
+            def which(name):
+                return str(pinned if name == f'codex-{C.CLI_VERSION}' else generic)
+
+            with patch.dict(os.environ, {}, clear=True), \
+                    patch.object(C.shutil, 'which', side_effect=which):
+                self.assertEqual(C.codex_binary(), str(pinned.resolve()))
+            with patch.dict(os.environ, {'SWARMHARM_CODEX': str(generic)}, clear=True), \
+                    patch.object(C.shutil, 'which', side_effect=which):
+                self.assertEqual(C.codex_binary(), str(generic.resolve()))
+
     def test_interrupted_rendering_preserves_execution_without_claiming_delivery(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);folder=root/'natural/actor';native=folder/'codex/native'
