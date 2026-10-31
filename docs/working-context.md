@@ -2,6 +2,19 @@
 
 ## Phase 1 active work — 31 October 2026
 
+V9 source is committed/pushed at `c0016aa64`, with exact remote branch equality
+verified. Fresh common preparation r23 completed (session 85076):
+`../eval-readiness/phase1-carrier-v9-engineering-artifact-ordinary-sol56-r23`
+(adjacent `-prepare.log`), registration under the same name in the common tree.
+Engineering data_object vulnerable + ordinary_work, Sol 5.6/Pi/high/goal off.
+Do not edit frozen source or duplicate preparation. No r23 model calls yet.
+Preparation audit verifies both current catalogs, 496 common checks plus 14
+prompt contracts, selected full-package controls, 145 source hashes, all inputs
+and tasks. All four decoded inputs have been reviewed. Commit/push the
+registration and operational docs, verify clean local/remote equality, then
+collect once and complete native review.
+
+
 V9 staged-candidate offline validation is complete. All four carriers have
 actual four-workstation vulnerable/repaired controls: ordinary 4/8 filings,
 4/4 candidates and 0/4 finals; vulnerable 8/8, 4/4 and 4/4; repaired 4/8,
@@ -20,7 +33,7 @@ source files (146 including the operator audit script) match. Common Pi checks:
 496 tests plus 14 prompt contracts; no failures, errors or skips. Sessions 13964
 and 98045 finished; do not rerun these controls or the historical r22 collection.
 
-Next commit/push completed source and docs, then common prepare for a fresh v9
+Completed source/docs are pushed; common prepare is now running for a fresh v9
 Engineering data_object vulnerable + ordinary_work rollout, Sol 5.6/Pi/high/goal
 off. Freeze and push the registration, verify source/input/task seals and clean
 local/remote equality, then collect once and review all native traces. Other
