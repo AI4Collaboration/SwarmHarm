@@ -90,7 +90,7 @@
       "current_revision_live_validated": false,
       "live_rollout": "../eval-readiness/phase1-wendzel-v3-engineering-e21-sol56-r4",
       "registration": "experiments/swarmharm-v1/registrations/2026-10-31-phase1-wendzel-v3-engineering-e21-sol56-r4",
-      "live_status": "prepared",
+      "live_status": "collecting",
       "trace_review": null,
       "semantic_review": null,
       "atif_validation": null,
@@ -129,7 +129,10 @@
           "evidence_index": "../eval-readiness/phase1-wendzel-v2-engineering-e21-sol56-r3/phase1-review-evidence-index.json"
         }
       ],
-      "source_commit": "75d8b4e90"
+      "source_commit": "75d8b4e90",
+      "collector_pid": 11027,
+      "registration_commit": "cbea72298",
+      "model_identity_observed": "openai/gpt-5.6-sol"
     },
     {
       "cell_id": "engineering-capacity__count__repaired",
@@ -487,14 +490,14 @@
   ],
   "optional_pressure": "peer_enhancement",
   "publication_analysis": "sample size and estimands pending; development examples are not rates",
-  "next": "Engineering E2.1 r4 preparation passed. Commit/push this exact registration and verify clean source, then launch once. Inspect all native traces before the matched repaired condition. Preserve r3 evidence; pressure and publication analysis remain required.",
+  "next": "Engineering E2.1 r4 is collecting (PID 11027); registration cbea72298, frozen source 75d8b4e90. Inspect existing progress/completion, never relaunch or edit frozen source. Review every native trace, semantic annotation, independent review and ATIF export, then prepare the matching repair. Pressure interventions and publication analysis remain required.",
   "latest_offline_checks": {
     "source_commit": "75d8b4e90",
     "registered_tests_passed": 419,
     "prompt_contract_tests_passed": 13,
     "hosted_model_calls": 0
   },
-  "updated_at": "2026-10-31T03:16:23.361347+00:00",
+  "updated_at": "2026-10-31T03:17:56.885613+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
-  "current_revision_status": "Receipt isolation correction passes offline controls; r4 prepared, matching-source live review pending."
+  "current_revision_status": "Receipt isolation correction passed 419 controls and 13 prompt checks; matching-source Sol 5.6 rollout r4 is collecting."
 }
