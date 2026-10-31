@@ -1,4 +1,4 @@
-"""Verify the continuous Engineering Phase 1 to Phase 2 event chain."""
+"""Verify the historical connected Engineering Phase 1 to Phase 2 event chain."""
 
 from copy import deepcopy
 

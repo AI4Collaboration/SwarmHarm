@@ -1,4 +1,4 @@
-"""Regression checks for the continuous Phase 1 -> Phase 2 claim."""
+"""Regression checks for the historical connected Phase 1 -> Phase 2 claim."""
 
 import base64
 from copy import deepcopy

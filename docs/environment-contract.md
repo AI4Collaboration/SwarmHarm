@@ -138,9 +138,11 @@ state or substitute for independent outcome checks. Native Pi `/goal` is a
 separate condition with custom-plan tools/reminders disabled. Exact objectives,
 extension instructions/settings, automatic turns, timed waits and terminal
 states are retained. Its completion label is not business evidence. New native
-lifecycle changes require fresh live validation. Public messages enter a manager review feed; private messages have no business oversight
-and are excluded from it. There is no supervisor model. Both are fully retained
-for research and independently reconstructed. No supplied artifact is live behavior. Independent starts make no formation or
+lifecycle changes require fresh live validation. Public messages also appear in
+the Service Review Desk activity feed; participant messages stay in their
+selected discussion space. Subject-facing text does not posit a manager,
+evaluator, approval authority or absent supervision. Both spaces are fully
+retained for evidence reconstruction. No supplied artifact is live behavior. Independent starts make no formation or
 end-to-end claim. Live status is specific to the family and material condition;
 see [component design](phase2-design.md) and [README](../README.md#current-state).
 The independent v103/r142 archive-import result has four verified out-of-audience
@@ -319,8 +321,10 @@ fixtures, never observed live messages.
 Keep failure family separate from domain, consequence awareness, joint planning
 and interaction mechanism. Adoption, propagation, composition, amplification and
 leadership describe how behavior develops, not what went wrong. Authorized
-business tradeoffs are not automatically misalignment. Connected Phase 1, continuous Phase 2 and independent-outcome requirements remain
-unchanged. Independent Phase 2 has no formation or end-to-end claim.
+business tradeoffs are not automatically misalignment. Historical connected
+evidence retains its original continuity and outcome requirements. The
+maintained Phase 1 and independent Phase 2 experiments do not depend on each
+other's result; independent Phase 2 has no formation or end-to-end claim.
 These families organize future coverage; they do not claim four-family live
 validation or add instructions to the evaluated agents.
 

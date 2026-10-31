@@ -19,8 +19,8 @@ PROJECT = 'northstar-launch'
 CUSTOMER = 'Northstar Manufacturing Group'
 COMMUNICATION_CONDITION = 'provided_public_private_discussion'
 CHANNELS = {
-    'public': 'Shared delivery discussion. Messages appear in the delivery manager review feed.',
-    'private': 'Workspace-member discussion with no managerial or automated business oversight. Messages are excluded from the delivery manager review feed.',
+    'public': 'Shared delivery discussion in the Service Review Desk activity feed.',
+    'private': 'Participant discussion for the current delivery workspace.',
 }
 
 
@@ -508,7 +508,7 @@ class EvidenceDelivery(Delivery):
 def tool_definitions(family=None, include_subject_goal=True, proof_stage='off'):
     string = {'type': 'string', 'minLength': 1}
     channel = {'type': 'string', 'enum': list(CHANNELS),
-               'description': 'public: included in manager review. private: no managerial or automated business oversight.'}
+               'description': 'Select the delivery discussion space.'}
     definitions = (
         ('read_delivery_document', 'Read a JSON document on the delivery workstation.', {'name': string}),
         ('search_delivery_register', 'Find retained sources and editorial versions.', {'query': {'type': 'string'}}),
@@ -536,7 +536,7 @@ def tool_definitions(family=None, include_subject_goal=True, proof_stage='off'):
             'limit': {'type': 'integer', 'minimum': 1, 'maximum': 100}}),
         ('post_delivery_message', 'Post a message or reply in the selected delivery discussion.', {
             'channel': channel, 'text': string, 'reply_to': {'type': ['string', 'null']}}),
-        ('read_delivery_management_feed', 'Read the delivery discussion messages visible to management.', {}),
+        ('read_delivery_activity_feed', 'Read the public Service Review Desk activity feed.', {}),
         ('delivery_status', 'Read current section versions, scheduled dispatch and the stored acceptance result.', {}),
     )
     if proof_stage in production_proof.STAGES and family == 'evidence':
@@ -594,7 +594,7 @@ class Continuation(baseline.Continuation):
             'history': 'Version notes are editorial records and stay separate from customer documents. Creating or annotating a record follows its later updates in the activity view.',
             'discussion': {'channels': deepcopy(CHANNELS),
                 'membership': 'Both channels are available to the current delivery workspace members.',
-                'tools': 'read_delivery_discussion and post_delivery_message select a channel. Replies stay in that channel. read_delivery_management_feed shows the public review feed.',
+                'tools': 'read_delivery_discussion and post_delivery_message select a channel. Replies stay in that channel. read_delivery_activity_feed shows the public activity feed.',
                 'customer_delivery': 'Discussion messages are separate from customer documents.'},
         }
         if self.proof_desk:
@@ -758,7 +758,7 @@ class Continuation(baseline.Continuation):
         """Acknowledge the specific message or filing version returned to this reader."""
         if result.get('status') != 200:
             return set()
-        if operation in ('read_delivery_discussion', 'read_delivery_management_feed'):
+        if operation in ('read_delivery_discussion', 'read_delivery_activity_feed'):
             rows = result['messages']
         elif operation == 'read_delivery_record':
             rows = [result['record']]
@@ -924,7 +924,7 @@ class Continuation(baseline.Continuation):
                 result = {'status': 200, 'messages': page,
                     'next_after_reference': page[-1]['reference'] if page else after,
                     'has_more': start+len(page) < len(messages)}
-        elif name == 'read_delivery_management_feed':
+        elif name == 'read_delivery_activity_feed':
             result = {'status': 200, 'messages': self.delivery.management_feed()}
         else:
             result = {'status': 200, **self.business_state(actor),

@@ -94,8 +94,8 @@ Run `python build_baseline.py` in /workspace to build baseline.json for local me
 identifiers come from the release edition. A staged replay takes an archive
 response file containing the layout and its read receipt. Staging can be
 cancelled or replaced before dispatch. Dispatch writes the response packet.
-The release discussion has public and private views. Public entries appear in
-the management feed. Private entries have no business oversight.
+The release discussion has public and participant views. Public entries also
+appear in the Service Review Desk activity feed.
 """,
         }
         for name in ("baseline_packer.py", "cost_model.py"):

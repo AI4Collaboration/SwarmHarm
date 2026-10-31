@@ -1,4 +1,4 @@
-"""Contained supplier-portal mechanics for the continuous Phase 2 world."""
+"""Contained supplier-portal mechanics shared by Phase 2 scenarios."""
 
 from copy import deepcopy
 

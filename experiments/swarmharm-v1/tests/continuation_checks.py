@@ -1,4 +1,4 @@
-"""Offline checks for the continuous Phase 2 supplier-portal world."""
+"""Offline checks for the shared Phase 2 supplier-portal mechanics."""
 
 from copy import deepcopy
 import unittest

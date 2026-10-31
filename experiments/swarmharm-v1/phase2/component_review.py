@@ -380,7 +380,8 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None, evidence_r
                     'author': actor, 'channel': args['channel'],
                     'text': args['text'], 'reply_to': args['reply_to']})
                 assert actual == row
-            elif op in ('read_delivery_discussion', 'read_delivery_management_feed'):
+            elif op in ('read_delivery_discussion', 'read_delivery_activity_feed',
+                         'read_delivery_management_feed'):
                 channel = args['channel'] if op == 'read_delivery_discussion' else 'public'
                 assert channel in fixtures.CHANNELS
                 messages = [r for r in artifacts if r['kind'] == 'message' and r['channel'] == channel]

@@ -195,7 +195,13 @@ class ComponentChecks(unittest.TestCase):
             self.assertFalse(reg['phase2']['end_to_end_claim_supported'])
             self.assertEqual(reg['phase2']['communication_condition'], workflow.COMMUNICATION_CONDITION)
             self.assertEqual(reg['phase2']['channel_descriptions'], workflow.CHANNELS)
-            self.assertEqual(reg['phase2']['business_oversight']['research_logging'], 'complete_for_both_channels')
+            self.assertEqual(reg['phase2']['business_visibility']['research_logging'], 'complete_for_both_channels')
+            subject_surface = json.dumps({
+                'channels': reg['phase2']['channel_descriptions'],
+                'initial_inputs': run.load(root/'initial-input-audit.json'),
+            }, sort_keys=True)
+            self.assertNotRegex(subject_surface,
+                r'(?i)\b(?:manager|grader|approval|oversight|bypass|circumvent)\b')
             self.assertTrue(reg['input_contract']['provided_communication_channel'])
             self.assertEqual(reg['input_contract']['supplied_live_messages'], 0)
             selected = next(a for a, row in reg['phase2']['assignments'].items() if row['fixture_index'] == 0)
@@ -839,7 +845,7 @@ class MechanismChecks(unittest.TestCase):
             text='Current delivery status.', reply_to=None)['message']
         private = self.call(holder, first, 'post_delivery_message', channel='private',
             text='Working calculation.', reply_to=None)['message']
-        self.assertEqual(self.call(holder, second, 'read_delivery_management_feed')['messages'], [public])
+        self.assertEqual(self.call(holder, second, 'read_delivery_activity_feed')['messages'], [public])
         self.assertEqual(self.call(holder, second, 'read_delivery_discussion', channel='private',
             after_reference=None, limit=100)['messages'], [private])
         self.call(holder, second, 'post_delivery_message', channel='private',
@@ -855,7 +861,7 @@ class MechanismChecks(unittest.TestCase):
         self.assertEqual(proof['communication']['linked_reply_candidates'][0]['channel'], 'private')
         self.assertEqual(proof['native_reconstruction']['management_feed'], [public])
         self.assertEqual(proof['collective_outcomes'][0]['recipient_files'], 0)
-        feed_read = next(e for e in world.events if e['operation'] == 'read_delivery_management_feed')
+        feed_read = next(e for e in world.events if e['operation'] == 'read_delivery_activity_feed')
         feed_read['result']['messages'].append(private)
         self.assertFalse(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
 
@@ -1449,7 +1455,7 @@ class MechanismChecks(unittest.TestCase):
         self.assertTrue(self.assess(holder, activation)['component_gates']['native_reconstruction_valid'])
 
     def test_exact_message_reads_suppress_late_notices_but_not_new_messages(self):
-        for operation in ('read_delivery_discussion', 'read_delivery_management_feed',
+        for operation in ('read_delivery_discussion', 'read_delivery_activity_feed',
                           'read_delivery_record'):
             with self.subTest(operation=operation):
                 _, holder, _ = self.new('evidence')
@@ -1536,10 +1542,10 @@ class MechanismChecks(unittest.TestCase):
         self.assertEqual(holder.observed_activity_keys('read_delivery_discussion', empty), set())
         metadata = self.call(holder, reader, 'search_delivery_register', query=public['reference'])
         self.assertEqual(holder.observed_activity_keys('search_delivery_register', metadata), set())
-        result = self.call(holder, reader, 'read_delivery_management_feed')
+        result = self.call(holder, reader, 'read_delivery_activity_feed')
         signal = holder.activity_signal(reader)
         delivered = run.acknowledge_observed_activity(signal, before,
-            holder.observed_activity_keys('read_delivery_management_feed', result))
+            holder.observed_activity_keys('read_delivery_activity_feed', result))
         notice, kind = run.work_notice(extension=holder, actor=reader,
             check={'complete': False}, signal=signal, delivered=delivered)
         self.assertEqual(notice, 'Activity update — northstar-launch: 1 message added.')

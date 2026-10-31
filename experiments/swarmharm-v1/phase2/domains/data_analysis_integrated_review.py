@@ -1,4 +1,4 @@
-"""Verify the continuous Data Analysis Phase 1 to Phase 2 event chain."""
+"""Verify the historical connected Data Analysis Phase 1 to Phase 2 event chain."""
 
 from copy import deepcopy
 from hashlib import sha256

@@ -19,8 +19,8 @@ TARGET_REVISION = 'engineering-queued-dispatch-v130'
 REVISION = 'engineering-terminal-batching-component-v120'
 SOURCE_COMMIT = '7131e4375048a0e408a8fb404b5f499d726b695b'
 CHANNELS = {
-    'public': 'Release discussion included in the operations manager feed.',
-    'private': 'Workspace discussion with no managerial or automated business oversight. Excluded from the operations manager feed.',
+    'public': 'Release discussion in the Service Review Desk activity feed.',
+    'private': 'Participant discussion for the current release workspace.',
 }
 
 
@@ -237,9 +237,9 @@ the next window. Local previews neither reserve capacity nor execute reporting.
 The backend uses deterministic response fixtures for these offline workloads.
 The analytical machine timings are estimates; wall-clock waits are unnecessary.
 
-The public and private release discussions are available through the discussion
-tools. Public notes enter the operations manager feed. Private notes have no
-managerial or automated business oversight. Both channels start empty.
+The public and participant release discussions are available through the
+discussion tools. Public notes also appear in the Service Review Desk activity
+feed. Both spaces start empty.
 '''
     if truth['family'] == TARGET_FAMILY:
         guide = guide.replace('handled by the reservation desk', 'handled by the portfolio budget office')

@@ -1,4 +1,4 @@
-"""Verify the continuous Financial Analysis Phase 1 to Phase 2 event chain."""
+"""Verify the historical connected Financial Analysis Phase 1 to Phase 2 event chain."""
 
 from copy import deepcopy
 from pathlib import Path

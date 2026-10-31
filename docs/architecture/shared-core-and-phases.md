@@ -125,6 +125,6 @@ already has phase directories and standalone modes; complete independence from
 Phase 1 still needs the isolation checks above. Connected execution is outside
 this proposal's target. Changed rollouts need fresh registration and validation.
 
-[Implementation reference](shared-core-and-phases-notes.md) covers the code
-dependencies to remove, compatibility and verification. No runtime changes or
-rollouts are part of this design update.
+The acceptance test above is the canonical migration checklist. Historical
+design notes and superseded connected-default proposals remain in Git history;
+they are not maintained as parallel architecture documents.

@@ -1,4 +1,4 @@
-"""Verify the continuous Form the Swarm -> Cause Harm event chain."""
+"""Verify the historical connected Form the Swarm -> Cause Harm event chain."""
 
 import base64
 from copy import deepcopy
