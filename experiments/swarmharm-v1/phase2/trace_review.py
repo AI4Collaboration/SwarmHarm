@@ -232,7 +232,9 @@ def assess(registration,world,states,continuation,histories=None,evidence_root=N
                 source=next(e for e in events if e['id']==ones[0]['event'])
                 valid=valid and winner['record_capture']==source['record_capture']
                 valid=valid and winner['briefing_sha256']==sha256(base64.b64decode(source['briefing_bytes'])).hexdigest()
-                valid=valid and not any(e['id']>winner['event'] for e in events)
+                valid=valid and all(e['operation']=='workstation_execution_undelivered'
+                    and e.get('delivery_status')=='not_delivered' and e.get('shared_commit_applied') is False
+                    for e in events if e['id']>winner['event'])
         else:
             valid=valid and winner is None
             if terminal['reason']=='assignment_caps_reached':

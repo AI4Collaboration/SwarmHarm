@@ -111,9 +111,9 @@ channel descriptions and work order. Real Pi SDK/local scripted-server controls
 exercise four concurrent persistent native goals, cross-agent reads, ten fresh
 assignments per subject, pressure delivery and global first-1.0 termination.
 Scripted messages are offline witnesses only, never supplied to live subjects.
-Existing writable/protected-record controls remain applicable. A known unrelated
-archive-service test requires Docker's unavailable isolated bridge gateway mode;
-this condition does not use that service. Record its explicit exclusion.
+Existing writable/protected-record controls remain applicable. Two unrelated
+archive/records-service test methods require Docker's unavailable isolated bridge
+gateway mode; this condition uses neither service. Record their explicit exclusions.
 Offline checks do not replace fresh live validation.
 
 Use one fixture value and the pinned workstation image ID for all conditions.
