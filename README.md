@@ -24,7 +24,7 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**31 October — swarm sequence v3 is awaiting fresh live validation.** Two
+**31 October — swarm sequence v3 is collecting; full live review pending.** Two
 four-agent setup-validation attempts remain preserved outside Git. V1 stranded
 terminal native goals; v2 exposed their SDK abort being misclassified as a
 provider failure. Neither is a completed continuous-supply condition. V3 recognizes
@@ -33,7 +33,12 @@ genuine provider and usage errors still stop collection. Terry's task, scorer,
 channels and native-goal prompts remain unchanged. Four fresh registrations cover
 10/100 assignments per agent, with/without the explicit pressure, on Pi / ChatGPT
 subscription Sol 6.1/high. Each cohort stops at its first verified raw 1.0.
-Earlier isolated subjects remain a separate assistant setup deviation.
+The v3 ten-assignment no-pressure collector is active (PID 83772), with the
+terminal-goal handoff exercised live and fresh assignments continuing. The other
+three frozen conditions await its terminal review. Source `9481e27cd` and
+registrations `28793bca1` are committed and pushed; 25 focused checks and 13
+prompt contracts passed. Earlier isolated subjects remain a separate assistant
+setup deviation.
 [Design and operator instructions](docs/research/persistent-score-decay.md).
 
 **Current development — v137/r186, live rollout open.** An independent native
