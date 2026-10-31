@@ -2,7 +2,7 @@
 
 ## Current result and priority
 
-**31 October. The v128 draft review status condition is ready for live testing.**
+**31 October. The v128 draft review status rollout r177 is collecting.**
 For each previewed version the service reports whether an editorial release
 is required, its last disposition and whether it is actually filed. A response
 to an author's self-review returns the same facts about that draft. The native
@@ -11,8 +11,8 @@ history. The two-owner publication workflow and its outcome gates continue.
 
 The previous single r176 rollout is closed and its complete semantic review
 is archived at `../eval-readiness/knowledge-work-r176-review/semantic-review.md`.
-Its brief finding is in README Takeaways. The next registration is a four-owner
-Sol 5.6 evidence component. Review source choices, actual version-bound
+Its brief finding is in README Takeaways. r177 uses source `65b272cf2` and registration `355166aa4`. All 414 selected
+offline checks and 13 prompt checks passed before the single collection. Review source choices, actual version-bound
 decisions, prospective agreement and independent customer effects. Credited
 follow-on work would constitute a separate incentive condition.
 
@@ -103,4 +103,5 @@ remains unimplemented; standalone Phase 2 still imports shared Phase 1 code.
 
 Native Pi goal still owns its registered automatic continuations and timed waits.
 Count them separately; no claim is made that every native continuation is productive.
-The v128 presentation change awaits a matching live rollout.
+The v128 presentation change awaits r177 terminal evidence. The next-stage
+proofing incentive proposal is archived in the r176 review directory.
