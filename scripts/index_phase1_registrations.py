@@ -96,7 +96,8 @@ def reviewed_fields(root, registration, model):
                 'matched-control-audit.json','phase1-isolation-pair-evidence.json','phase1-peer-validation-plan.json',
                 'phase1-peer-intervention-audit.json','phase1-peer-pair-evidence.json',
                 'phase1-business-trace-replay.json','phase1-immediate-archive-value-reuse.json',
-                'phase1-exact-source-reuse.json','phase1-review-evidence-index.json']
+                'phase1-exact-source-reuse.json','phase1-native-scope-pair.json','phase1-order-overflow-control.json',
+                'phase1-contingent-filing-original.json','phase1-contingent-filing-fresh.json','phase1-review-evidence-index.json']
     result = {'review_status':'complete', 'native_actors':len(actors), 'native_responses':responses,
               'native_tool_returns':tools, 'native_continuity_verified':True,
               'actor_terminal_states':dict(Counter(a['status'] for a in actors.values())),
@@ -109,6 +110,45 @@ def reviewed_fields(root, registration, model):
               'autonomous_communication':phase['autonomous_channel_use_passed'],
               'recurrent_formation':phase['phase1_formation_passed'],
               'evidence':{f:digest(root/f) for f in evidence if (root/f).is_file()}}
+    pair_path = root/'phase1-native-scope-pair.json'
+    if pair_path.is_file():
+        pair = load(pair_path)
+        require(pair['reviewer_program_sha256'] == digest(root/'phase1-native-scope-pair.py')
+                and pair['registration_pair_sha256'] == digest(root/'phase1-isolation-pair-evidence.json')
+                and pair['matched_inputs_sha256'] == digest(root/'matched-control-audit.json'), 'Unbound ordinary scope pair')
+        require(len(pair['arms']) == 2 and pair['arms'][1]['registration_sha256'] == digest(root/'registration.json')
+                and pair['arms'][1]['world_sha256'] == manifest['natural/world.json'], 'Scope pair differs from its registration')
+        result['ordinary_scope_pair'] = {
+            'native_contrast_coverage':pair['native_contrast_coverage'],
+            'arms':[{k:a[k] for k in ('scope','registration_sha256','native_responses','native_returns','final_active_filings',
+                'delivered_primary_probe_events','delivered_feature_contrasts','equal_feature_despite_foreign_provenance',
+                'confirmed_communication')} for a in pair['arms']]}
+        reproduced = []
+        for label in ('original','fresh'):
+            path = root/('phase1-contingent-filing-' + label + '.json')
+            if path.is_file():
+                control = load(path)
+                require(control['program_sha256'] == digest(root/'phase1-contingent-filing-reproduction.py') and
+                        control['target_registration_sha256'] == pair['arms'][int(label == 'fresh')]['registration_sha256']
+                        and control['source_registration_sha256'] == pair['arms'][0]['registration_sha256']
+                        and control['hosted_model_calls'] == 0, 'Unbound conditional filing control')
+                reproduced.append({'instance':label,'cases':[{'check':c['assigned_check'],
+                    'native_event_chain':c['native_source_events'],'ordinary_filed':c['controls'][0]['normal_filings'],
+                    'vulnerable_filed':c['controls'][0]['final_filings'],'repaired_filed':c['controls'][1]['final_filings']}
+                    for c in control['cases']]})
+        require(len(reproduced) in (0, 2), 'Incomplete conditional filing reproductions')
+        if reproduced:
+            result['ordinary_scope_pair']['operator_contingent_filings'] = reproduced
+    overflow_path = root/'phase1-order-overflow-control.json'
+    if overflow_path.is_file():
+        overflow = load(overflow_path)
+        require(overflow['registration_sha256'] == digest(root/'registration.json') and
+                overflow['control_program_sha256'] == digest(root/'phase1-order-overflow-control.py') and
+                overflow['cache_source_sha256'] == registration['code_hashes']['experiments/swarmharm-v1/phase1/cache_channels.py']
+                and overflow['hosted_model_calls'] == 0, 'Unbound capacity control')
+        result['order_capacity_control'] = [{k:branch[k] for k in ('profile','order_set_by_reader','capacity',
+            'observed_order','cross_boundary_order','overflow_victim','authoritative_source_still_fetchable')}
+            for branch in overflow['branches']]
     reuse_audit = root/'phase1-immediate-archive-value-reuse.json'
     manual_reuse = root/'phase1-exact-source-reuse.json'
     if reuse_audit.is_file():

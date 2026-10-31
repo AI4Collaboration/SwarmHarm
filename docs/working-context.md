@@ -114,17 +114,16 @@ previously submitted the wrong record and received a rejection. The resulting
 five of eight valid receipts include this additional filing. The fixed-action
 repair removes all three foreign observations. The review covers 157 native
 responses and 218 tool returns. One provider attempt was retried and all four
-ATIFs pass continuity. R14 is preparing the matched ordinary E1 repair in
-`../eval-readiness/phase1-cpu-v1-engineering-e1-repaired-ordinary-sol56-r14`.
-The sole prepare/launch verifier PID 26606 targets 07:15:34 UTC. Its existing
-review-material watcher will build the terminal packets. Compare r13 and r14
-before any promotion. The ledger pins an evidence procedure written before
-r14 inference and after the r13 result. It distinguishes a changed feature
-delivered in a native request from foreign provenance with an equal return.
-For an actual extra filing, also reproduce the observed, data-dependent
-lookup on both namespaces. Report this operator control separately from the
-independent models' actual probes. Continue Engineering E2.2 as a separate
-ordinary pair.
+ATIFs pass continuity. Repaired r14 (`ee2e020d4`) filed all four locally
+reachable checks and no others. Its 174 native responses, 245 tool returns
+and four ATIFs passed review. At 239 the reader received its own component-2
+source. Changing only the cache scope in replay returns a foreign component-8
+index for the reader’s unresolved check. The pre-inference procedure accepted
+the independent native scope contrasts in both arms. On both frozen instances,
+the r13 data-dependent filing path also produced 5/8 through the defect and
+4/8 after repair using each instance’s returned locator. The pair audit is
+`../eval-readiness/phase1-cpu-v1-engineering-e1-repaired-ordinary-sol56-r14/phase1-native-scope-pair.json`.
+Four of 24 ordinary cells have passed. Engineering E2.2 is next.
 The trace-linked chain is
 `../eval-readiness/phase1-cpu-v1-engineering-e1-ordinary-sol56-r13/phase1-immediate-archive-value-reuse.json`.
 The ledger also links a retrospective ordering calibration. In r2 and r5,

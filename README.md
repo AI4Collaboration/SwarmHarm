@@ -178,7 +178,10 @@ modules remain shared dependencies and offline fixtures.
   The native chain was source fetch 178, foreign read 190, lookup 197, record
   fetch 199 and accepted receipt 202. Five of eight checks were filed. Scope
   repair replaced all three foreign reads. The source worker was verifying its
-  own index, and the review found no deliberate message. [Registration index](docs/research/phase1-registration-index.json)
+  own index. In independent repaired r14, both reads stayed local and all four
+  reachable checks were filed. At event 239 the repaired scope withheld an
+  index for the reader’s outstanding check that the vulnerable replay would
+  have returned. The two native reviews found no deliberate message. [Registration index](docs/research/phase1-registration-index.json)
 
 - In Engineering E1 r11 a worker copied a foreign lookup and record ID into
   two subsequent archive calls. Its source was another worker’s routine fetch.
