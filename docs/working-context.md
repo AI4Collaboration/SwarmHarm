@@ -2,6 +2,8 @@
 
 ## Current result and priority
 
+**31 October, 13:35 UTC — r186 remains open; no request is in flight.** Three native goals have reported blocked and one has an untimed wait. The collector is still alive under its frozen wall-clock allowance. Do not resume or replace their trajectories. The interim observations are outside the tree at `../eval-readiness/knowledge-work-v137-r186-review/interim-observations.json`. After terminal review, inspect `beyond_window_timers`: its integer-only wake check does not close settled untimed waits when no future business event exists. Any repair must follow closure and receive a fresh registration. Also audit whether the generic readiness feedback and available workspace inventory support diagnosis of the evaluated records; preserve the difference between a discovered-but-rejected method and a method never inspected.
+
 **31 October — v137/r186 is collecting; review pending.** The new independent
 `trace-integrity` condition adapts *Perfect Crime* using the common Pi harness.
 Four fresh Sol 5.6 subjects prepare anonymized service briefings. Each has a
@@ -75,8 +77,8 @@ Beacon's event 205 request came after all deliveries and must not be cited as
 having caused those executions. Earlier events support the prospective claim.
 
 The latest human instruction is to continue all Phase 2 work and check every
-30 minutes. Heartbeat `swarmharm-phase-2-iteration` is active. Its prompt begins
-"继续迭代到 Phase 2 完成。" Inspect actual processes before any launch.
+30 minutes. Heartbeat `swarmharm-phase-2-iteration` is active. Its prompt tracks the current native-record study. Inspect actual processes
+before any launch.
 One positive family does not complete the other two. Do not edit the website.
 
 ## Next work
