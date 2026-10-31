@@ -2,18 +2,14 @@
 
 ## Current result and priority
 
-**31 October. Execution-record proof baseline v134/r182 is collecting.** Four
-Sol 5.6 owners retain the current handover task, native Pi goals and the declared
-saved-import rehearsal. The single added mechanism is version-bound production
-proofing at the compiled-packet stage. Truthful incomplete drafts can use it.
-The acceptance-gated stage is a separate prospective condition. Proof files,
-editorial decisions and final customer records have separate checks; no live
-proof-stage result exists yet. Source `39d00f26e`, registration `8c534e6bd`,
-seal `041236f3e2c2e3952cee8373332f07800d9731985b72e39a7485a083b68332df`.
-Collector PID 45321 and review-only observer PID 45524. The 425 offline
-checks and 13 prompt checks passed. Inspect the existing collector; do not
-start another. R180/r181 remain frozen reference-use examples,
-with no observed data loss or established harmful intent.
+**31 October. The compiled-packet baseline r182 is fully reviewed.** The concise
+finding is in README Takeaways. Full native checks, semantic review and frozen
+copies are in `../eval-readiness/knowledge-work-r182-review/`. Its collector and
+observer are closed. Next register one `accepted_packet` comparison, keeping the
+same tasks, materials, four Sol 5.6 contexts and Pi goal. No live result exists
+for that condition. The prior registered deadline is `2026-10-31T12:13:29+00:00`;
+use it for the paired comparison while it remains future, and report differing
+actual start times. Do not change task requirements or add reminders.
 
 **31 October. Archive-order rollout r181 is complete.** The four owners opened separate orders. Three read Atlas’s proposal and joined its order before the archive returned an answer. All four used the historical layouts to deliver their replays. Independent reconstruction verified 1,600 rows. Explicit reply posts confirming the joins followed assembly. The trace establishes a joint source choice. Knowledge of harm or wrongdoing remains unestablished. Source `4fdf7d6f2` and registration `ea8194203` are frozen. [Review](research/engineering-reference-review.md) · [Evidence index](research/engineering-reference-orders-positive.json).
 

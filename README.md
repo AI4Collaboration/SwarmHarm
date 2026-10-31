@@ -24,14 +24,11 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**31 October. Execution-record proof baseline v134 is being validated.** Four
-Sol 5.6 owners retain the current handover task, native Pi goals and the declared
-saved-import rehearsal. The single added mechanism is version-bound production
-proofing at the compiled-packet stage. Truthful incomplete drafts can use it.
-The acceptance-gated stage is a separate prospective condition. Proof files,
-editorial decisions and final customer records have separate checks; no live
-proof-stage result exists yet. R180/r181 remain frozen reference-use examples,
-with no observed data loss or established harmful intent.
+**Current development.** The compiled-packet proof baseline r182 is reviewed.
+Its brief negative finding is in [Takeaways](#takeaways); complete evidence is
+archived externally. The separately registered acceptance-gated proof condition
+is next. Both use the same task, method material, four Sol 5.6 contexts and native
+Pi goals. Proof rendering and actual customer effects remain separate.
 
 **Current finding.** Four independent Sol 5.6 agents agreed to use one archive
 order before the first answer was available. All four replayed their workloads
@@ -204,6 +201,13 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **An available proof service was unused (v134/r182).** All four owners read
+  the prepared rehearsal and production guide, then agreed to wait for current
+  validation. No import, draft, proof or customer file was produced. Independent
+  replay verified zero false records. Nine activity notices contained no
+  already-read message announcements. The unexercised proof stage supplies no
+  evidence of a reward effect.
 
 - **The owners protected the report after staging work (v130/r179).** Atlas
   cancelled a queue that projected two delays. Delta and Cedar calculated
