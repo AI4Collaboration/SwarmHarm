@@ -2,6 +2,17 @@
 
 ## Phase 1 active work — 31 October 2026
 
+R29 preparation is complete; all four initial inputs, tool schemas and decoded
+files were reviewed against r28. Only deadline and job IDs differ; no new cues.
+509 common checks, 14 prompts, selected real lock package controls, 147 source
+hashes and every input/task/registration seal pass. Source `0956ce40b`;
+output `../eval-readiness/phase1-carrier-v10-engineering-lock-ordinary-batch-sol56-r29`.
+The external preparation-audit.json is saved. Synchronization vulnerable +
+ordinary_work + complete_batch, Sol5.6/Pi/high/goal off; customer deadline
+23:39:58 UTC. No model calls yet. Push registration, verify clean/actual remote
+and all seals, then common launch once. No sealed-source edits. Full terminal
+native/causal/CPU review before further collection.
+
 R28 completed at 22:08:32.190 UTC and is fully reviewed: 140 subject responses,
 227 tool returns and two preflights. All four candidates were delivered through
 actual clean compilation, one-time report consumption and publication leases.
