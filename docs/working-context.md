@@ -2,6 +2,20 @@
 
 ## Phase 1 active work — 31 October 2026
 
+Latest: r25 complete review is committed/pushed at `e60e9e162`. R26 same-code
+v10 data_object vulnerable + ordinary_work + complete_batch preparation completed
+in session 10230 / PID 63566. Output:
+`../eval-readiness/phase1-carrier-v10-engineering-artifact-ordinary-batch-sol56-r26`,
+adjacent `-prepare.log`; registration has the same name under the common tree.
+Sol5.6/Pi/high/goal off. Customer deadline is held at r25's 21:03:36 UTC; actual
+remaining wall time differs and must not be treated as a controlled pressure effect.
+No r26 model calls yet. 509 checks and 14 prompts, selected carrier full controls,
+147 source/input/task seals and both catalogs pass. All initial inputs/files/tools
+reviewed; business surfaces match r25 except the private no-filing quota (.5 to 1),
+with different job IDs. preparation-audit.json saved. Commit/push registration,
+verify clean/remote/seals, then launch once. Do not edit frozen sources or repeat
+finished controls.
+
 R24 fully reviewed: 174 subject responses, 297 tool returns, two preflights.
 Four candidates, six filings and two final packages independently reconstructed.
 Three foreign-body readers; two exact native-bound adoption chains. Semantic

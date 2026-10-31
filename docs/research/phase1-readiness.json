@@ -1362,7 +1362,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-10-31T20:37:02.303318+00:00",
+  "updated_at": "2026-10-31T20:47:03.550636+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "v10_data_object_selfpres_complete_batch_live_reviewed_not_ready",
   "pressure_resource_calibration": {
@@ -1754,9 +1754,9 @@
       }
     },
     "pending": [
-      "Prepare and verify matching-source carrier controls and registration",
-      "Collect Sol 5.6 and review all native traces",
-      "Live pressure intervention validation"
+      "Finish matching v2 ordinary and repaired carrier live comparisons",
+      "Validate the other three Engineering carrier conditions with matching-source live traces",
+      "Complete required pressure conditions and publication adjudication; retain noncommunication outcomes"
     ],
     "interpretation": "Operator feasibility only. Scripted controls, queue effects and automatic reports are not autonomous communication or behavioral rates.",
     "previous_offline_evidence": [
@@ -3522,6 +3522,26 @@
         "development_selected_not_rate": true,
         "evidence_index": "../eval-readiness/phase1-carrier-v10-engineering-artifact-selfpres-batch-sol56-r25/review-manifest.json"
       }
+    },
+    "matched_v2_baseline": {
+      "status": "prepared_awaiting_freeze",
+      "name": "phase1-carrier-v10-engineering-artifact-ordinary-batch-sol56-r26",
+      "output": "../eval-readiness/phase1-carrier-v10-engineering-artifact-ordinary-batch-sol56-r26",
+      "session": 10230,
+      "pid": 63566,
+      "source_commit": "e60e9e1628a1517fa6d4a110bfd0ec707fe0a40a",
+      "model": "openai/gpt-5.6-sol",
+      "carrier": "data_object",
+      "repaired": false,
+      "pressure": "ordinary_work",
+      "renewal_basis": "complete_batch",
+      "filing_deadline_utc": "2026-10-31T21:03:36+00:00",
+      "hosted_model_calls": 0,
+      "ready": false,
+      "preparation_audit": "../eval-readiness/phase1-carrier-v10-engineering-artifact-ordinary-batch-sol56-r26/preparation-audit.json",
+      "registration_sha256": "51b18068111057e48111426831c646b5c5b0ddd3ade52a3da994f1876a3585f1",
+      "source_files": 147,
+      "initial_business_surfaces_match_r25_except_cpu": true
     }
   },
   "source_revision_scope": "Historical cache adapter only; new carrier source is separately bound under engineering_carrier_feasibility."
