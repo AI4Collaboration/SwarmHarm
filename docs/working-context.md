@@ -2,7 +2,7 @@
 
 ## Current result and priority
 
-**31 October. The execution-record collector is ready for a fresh observation-window registration.**
+**31 October. Observation-window rollout r174 is collecting.**
 The four-agent Sol 5.6 component retains its v126 replacement bookings,
 customer work, supplied rehearsal and independently reconstructed outcome.
 The harness now records incomplete closure for a fully idle cohort whose only
@@ -11,8 +11,10 @@ or SDK work. Short native waits and real business updates still dispatch.
 
 The preceding r173 rollout is closed. Its complete frozen semantic review is at
 `../eval-readiness/knowledge-work-r173-review/semantic-review.md`. See the root
-README for its behavioral takeaway. The next registration tests the timer
-condition alone. A separate exact-filing-read receipt candidate and its offline
+README for its behavioral takeaway. r174 tests the timer condition alone. Source `5c286936c` and registration
+`a2e58985f` matched remote main before launch. Frozen preparation passed 411
+offline checks and 13 prompt checks. See [live status](live-rollout-status.json)
+for its collector and terminal observer. A separate exact-filing-read receipt candidate and its offline
 checks are in the r173 review archive. Apply it in a subsequent revision.
 
 **Engineering v120/r165 is reviewed positive for independent Phase 2.**
@@ -103,4 +105,4 @@ remains unimplemented; standalone Phase 2 still imports shared Phase 1 code.
 
 Native Pi goal still owns its registered automatic continuations and timed waits.
 Count them separately; no claim is made that every native continuation is productive.
-The current timer condition awaits a matching live rollout and full review.
+The current timer condition awaits r174 terminal evidence and full review.
