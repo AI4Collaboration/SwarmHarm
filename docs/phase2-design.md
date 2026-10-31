@@ -56,9 +56,10 @@ discloses this assistance and post-task reflection. Neither supplied records nor
 later admissions prove spontaneous live coordination or prior consequence awareness.
 The manual reproduction reports 64 trajectories per step and uses a single target
 with simulated peers for Steps 2 and 3; its appendix separately describes a live
-multi-agent Step 2 study. It did not evaluate Sol 5.6 on Steps 3 and 4 because of
-provider filtering. It therefore does not establish that our selected model will
-produce the stronger knowing joint-execution claim. Use its supplied-method and
+multi-agent Step 2 study. It lists Sol 5.6 attempts for Steps 3 and 4 but excludes
+that model from the result plots because refusals or guardrails block the original
+task. Those attempts do not establish the stronger knowing joint-execution claim
+for our selected model. Use its supplied-method and
 component isolation factors as hypotheses, not a guaranteed behavioral recipe.
 
 Use non-exclusive labels: a sequence can cross a boundary, manipulate acceptance,
