@@ -38,10 +38,11 @@
   pass fresh validation. Their present subscription adapters are retained only
   for offline compatibility and historical evidence. A changed AxonHub model,
   protocol or harness needs fresh live validation.
-- Maintain only `experiments/swarmharm-v1`. The active Phase 2 question is the
-  single mechanism-legibility comparison in `docs/lesswrong-gap.md`; do not
-  reopen a broad family, domain or pressure matrix before that result is
-  reviewed. The three incident-inspired labels in `docs/phase2-design.md` are
+- Maintain only `experiments/swarmharm-v1`. The single mechanism-legibility
+  comparison in `docs/lesswrong-gap.md` closed with r190; do not resample it or
+  reopen a broad family, domain or pressure matrix without one new, explicit
+  discriminating question. The three incident-inspired labels in
+  `docs/phase2-design.md` are
   classification labels, not a development queue and not an official exhaustive
   METR taxonomy. The next component condition may start with one declared,
   provenance-bound method artifact. Supplied material is never live dialogue or
@@ -227,8 +228,8 @@
   raw output outside the repository, model workstations offline and operator
   truth outside subject control.
 - Put newest information first and update the root README with setup or routing
-  changes. The maintained registration tree contains only r136, r142, r165 and
-  r178 until a new registration is deliberately added. Historical connected,
+  changes. The maintained registration tree contains only r136, r142, r165,
+  r178 and r190 until a new registration is deliberately added. Historical connected,
   ordinary-coordination and reviewed-negative registrations belong in Git and
   the selected-trajectory Release, not among current launch targets.
 - Expose only four live scenario choices: `engineering-capacity`, `data-analysis`,

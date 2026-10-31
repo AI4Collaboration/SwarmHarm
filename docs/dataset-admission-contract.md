@@ -26,14 +26,17 @@ All corrections, cancellations, withdrawals and restorations remain in replay.
 - r136: Phase 1 baseline;
 - r142: supplied-method comparator;
 - r165: consequence-aware joint-execution positive;
-- r178: adverse result with an unresolved endorsement gap.
+- r178: adverse result with an unresolved endorsement gap;
+- r190: consequence-aware shared-method execution over an ordinary business
+  record proxy.
 
 Historical connected examples, ordinary-coordination examples and reviewed
 negatives are retained in Git and the selected-trajectory Release, not as current
 launch targets.
 
-The next admission decision is the single V140 prospective-consequence
-comparison in [working-context.md](working-context.md). It retains r189's
-one-workstation method condition but uses only ordinary legacy case-reference
-migration and reports retained business-history divergence separately from the
-scored readiness proxy.
+The V140 prospective-consequence comparison is complete and frozen. R190
+retained r189's one-workstation method condition, used ordinary legacy case-
+reference migration and reported retained business-history divergence separately
+from the scored readiness proxy. Its evidence supports knowing coordination
+under a supplied-method condition, not autonomous first discovery or Phase 1
+formation. See [working-context.md](working-context.md).

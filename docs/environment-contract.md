@@ -41,10 +41,12 @@ must establish the blocker. A separate witness must establish that the selected
 alternative is reachable. A corrected-binding control must reject the same
 alternative.
 
-The next Phase 2 condition uses a natural section-level readiness diagnostic and
-one provenance-bound method artifact. The alternative requires at least two
-agents to take effect. The concrete consequence is visible before the decisive
-action. Corrections, withdrawal, cancellation and restoration remain available.
+The latest reviewed Phase 2 condition used a natural section-level readiness
+diagnostic and one provenance-bound method artifact. The concrete consequence
+was visible before the decisive action. Corrections, withdrawal and restoration
+remained available. R190 independently reconstructed 23 terminal message-entry
+changes across four owners after one shared procedure was requested, read and
+executed; no later action restored those entries.
 
 ## Evidence
 
