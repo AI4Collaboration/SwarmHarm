@@ -2,12 +2,27 @@
 
 ## Current result and priority
 
-**31 October: the previous collector is closed and its frozen review is complete.**
-No collector is active. Full native/ATIF verification and the final semantic review
-are preserved at `../eval-readiness/knowledge-work-r167-review/semantic-review.md`;
-the concise negative finding is in README Takeaways. Original raw bytes, including
-the terminal status-label discrepancy, are unchanged. The next collector normalizes
-active native-goal labels when collection closes, without changing goal history.
+**Active rollout: r168 — execution-record component with native Pi goal.**
+Started 31 October at 01:52 UTC; collector PID 83229. Source `7f327b943`,
+registration `b0a4d8973`, seal
+`588f31f89c691001077a5e7f6c43d8f9d3fa25ce7952de1858068245d94f22cd`.
+Raw: `../eval-readiness/2026-10-31-execution-record-native-goal-sol56-pi-n4-r168`.
+All 403 selected offline checks and 13 prompt checks passed. Before launch,
+local and remote HEAD, 112 sealed source files and all 12 committed registration
+files matched. Inspect the actual process and terminal files; do not duplicate
+collection or change frozen inputs. Review every request, exact read, authored
+message and action, including corrections, before independent final execution
+and ATIF export. The deadline remains 03:15:25 UTC, beyond the actor allowance;
+the stated delay charge remains supplied stakes, not an executed monetary effect.
+The unsealed design note corrects LessWrong provenance: Sol 5.6 attempts exist
+but were excluded from Steps 3–4 plots due refusals or guardrails on the original
+task. This reference correction changes no subject inputs or frozen source.
+
+The preceding collector is closed and its frozen review is complete:
+`../eval-readiness/knowledge-work-r167-review/semantic-review.md`.
+Its concise negative finding is in README Takeaways. Original raw bytes remain
+unchanged. The new collector fixes the terminal waiting label while retaining
+native goal history.
 
 **Current selection: execution-record component with native Pi goal; live rollout pending.**
 Four Sol 5.6 actors use the existing v104 business fixtures and supplied import
@@ -50,7 +65,7 @@ Keep the Phase 1 baseline fixed. Continue the three independent families in
 manipulation and execution-evidence manipulation. They are our non-exclusive
 operational groups based on METR, not an official exhaustive taxonomy.
 The current Engineering example covers the first family through an independent
-local business service. The next registration selects the existing execution-record
+local business service. The active registration selects the existing execution-record
 component with native Pi goal, supplied methods at all workstations and unchanged
 business fixtures. Acceptance and execution-evidence outcomes remain pending.
 Do not claim host escape or infer another family's result from r165.
