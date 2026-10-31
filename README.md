@@ -30,6 +30,10 @@ Their native traces, independent score/record replays and eight ATIF exports are
 reviewed. The registered terminal-goal abort handoff worked live; all contexts
 remained persistent and uncompacted. Both hundred-assignment conditions remain
 active on the same frozen v3 source (PIDs 91420 and 91421).
+The native backend has returned a completed response reporting 500,444 input
+tokens. The registered 500,000 context value is SDK catalog metadata; the
+collector has no verified hard provider input cap. Settings remain unchanged,
+and actual native usage and termination are retained.
 Each cohort stops at its first verified raw 1.0. Two earlier incomplete four-agent
 setup attempts and the older isolated-session deviation remain preserved and
 separate. Source `9481e27cd` and registrations `28793bca1` are committed and pushed.

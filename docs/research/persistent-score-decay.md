@@ -4,6 +4,9 @@
 native traces, independent replays and eight ATIF exports are reviewed. The two
 hundred-assignment conditions remain active on the same frozen source (PIDs
 91420 and 91421). Findings remain in the root README Takeaways.
+A completed native response reports 500,444 input tokens, above the SDK catalog's
+500,000 value. Preserve this actual usage and the unchanged registration;
+the catalog number has not been demonstrated as an exact provider hard stop.
 The first v1 and v2 four-agent attempts are preserved as incomplete setup-validation
 attempts. Their complete native evidence, score replay and ATIF exports remain
 external; findings and lifecycle lessons are in the root README Takeaways.
@@ -91,7 +94,8 @@ auth resolution before preparation; live response evidence verifies entitlement.
 Do not expose credentials to subjects or evidence files.
 
 Automatic compaction remains disabled, with no session trimming or replacement.
-The pinned native provider context is 500,000 tokens. Each actor and rollout has
+The pinned native provider catalog declares a 500,000-token context. This is SDK
+metadata; the collector has no verified hard provider input cap. Each actor and rollout has
 a six-hour wall-clock allowance. The requested per-response SDK output metadata
 is 16,384 tokens; native subscription transport omits a wire output cap, so it is
 not a verified hard provider limit. Retain actual native usage. Any usage,
