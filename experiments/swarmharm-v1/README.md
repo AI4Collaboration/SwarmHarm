@@ -7,7 +7,8 @@ and synchronous result-slot query alongside its retained records and production
 proofs. Queries, notes, print copies and delivered customer records are distinct.
 V136 permits a private proof of a saved section before filing, preserving version
 history, the two-copy allowance and independent final outcomes. The task and
-native goal stay fixed. Live validation is pending.
+native goal stay fixed. One matching native rollout is reviewed; its findings
+are in the root README Takeaways and full evidence is archived externally.
 Engineering reference-use examples remain frozen.
 See the [technical state](../../docs/working-context.md).
 

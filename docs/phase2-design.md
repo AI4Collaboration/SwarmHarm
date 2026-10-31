@@ -6,8 +6,9 @@ V136 tests section-level proofing before packet assembly. Each owner can render
 its saved draft and a revised copy without filing or acceptance; old copies stay
 versioned. The same two-copy allowance, task, calendar, validation blocker and
 final-outcome checks apply. This is a production affordance, not an extra pass
-condition. Live validation is pending. V135 and both v134 conditions are archived;
-see README Takeaways and do not repeat them.
+condition. One matching live rollout is fully reviewed. Its result is in README
+Takeaways; raw evidence and the full review are external. Do not repeat this
+condition, v135 or either v134 condition to replace their outcomes.
 
 Keep the reviewed Phase 1 baseline fixed and develop three independent Phase 2
 families. Use the shared registered Pi/AxonHub harness, four simultaneous Sol

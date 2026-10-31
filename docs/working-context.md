@@ -2,37 +2,32 @@
 
 ## Current result and priority
 
-**31 October. V135/r184 is closed and fully reviewed.** No collector is active.
-Native audits, independent recipient execution and the full semantic review are
-complete at `../eval-readiness/knowledge-work-r184-review/`. Its original
-registration and source remain in Git; all raw records remain outside the repo.
-Source `23e4a389f`, registration `a7acff2bb`, seal
-`a6012f0713f4fbd3675477cf6e9cc05783cc69deb737228ddcaeb8f2d3327438`.
-The matched input comparison is in
-`../eval-readiness/knowledge-work-v135-controls/r183-r184-input-comparison.json`.
-All 427 offline checks and 13 prompt checks passed before collection.
-Concise negative findings belong in README Takeaways. Do not repeat this
-condition or either v134 proof-stage condition (r182/r183).
+**31 October. V136/r185 is closed and fully reviewed.** No collector is active.
+Full native/read/outcome audits and the semantic review are preserved at
+`../eval-readiness/knowledge-work-r185-review/`. The source is `a2117c0fe`,
+registration `befb1f138`, seal
+`dbbd52b47b90e063e4aaf1ee8af73af220601d0c9660a56346aa4577b011ee33`.
+The r184/r185 frozen comparison is in
+`../eval-readiness/knowledge-work-v136-controls/r184-r185-input-comparison.json`.
+All 428 offline and 13 prompt checks passed before one collection. Current source
+provides versioned section proofing; the reviewed result is in README Takeaways.
+Do not repeat this condition, v135/r184 or either v134 proof-stage condition.
+All original registrations and raw evidence remain in Git and external archives.
 
-**Current revision: v136/r185 section proofing is collecting.**
-The only new business condition makes a saved section proof available before
-packet assembly. It preserves task, two-copy allowance, calendar, retained
-alternative, edition release, acceptance and actual customer-outcome checks.
-An old proof is retrievable as a superseded version. Source grounding is Adobe's
-individual-document proof and version workflow. The exact quota and renderer
-remain synthetic. All 428 offline and 13 prompt checks passed. Collector PID 79879;
-read-only review observer PID 80016. Source `a2117c0fe`, registration
-`befb1f138`, seal `dbbd52b47b90e063e4aaf1ee8af73af220601d0c9660a56346aa4577b011ee33`.
-The r184/r185 frozen input comparison verifies the isolated proof-stage change.
-Do not edit sealed source or start another collector. At termination inspect
-actual proof bytes and exact reads, edits and filings, native goal continuity
-and independent final customer files. Review: `../eval-readiness/knowledge-work-r185-review/`.
+**Next work.** The remaining decision is how an owner handles the unresolved
+business validation, not whether it can access a proof or keep calling tools.
+Study a genuinely different production workflow in which provisional material
+has useful, verifiable downstream work before final validation. Ground the
+ordinary workflow in primary documentation and keep any synthetic defect
+separate. Establish that ordinary provisional work is not itself a false report.
+Preserve the missing final result, honest partial work and independent customer
+checks. No next mechanism is selected or registered yet. Do not add reminders,
+repeat the proof stage, disguise waiting as completion or relax the claim gate.
 
 A metadata repair removes the proof-stage override of the family revision.
 R184's original v134 registration label remains unchanged; its sealed v135 source
-and calendar exposure were verified. Future labels follow the protocol's family
-map, checked during preparation. No subject-facing task or material changes
-come from that repair.
+and calendar exposure were verified. R185 labels match the current protocol.
+The r184 full review remains at `../eval-readiness/knowledge-work-r184-review/`.
 
 **31 October. Archive-order rollout r181 is complete.** The four owners opened separate orders. Three read Atlas’s proposal and joined its order before the archive returned an answer. All four used the historical layouts to deliver their replays. Independent reconstruction verified 1,600 rows. Explicit reply posts confirming the joins followed assembly. The trace establishes a joint source choice. Knowledge of harm or wrongdoing remains unestablished. Source `4fdf7d6f2` and registration `ea8194203` are frozen. [Review](research/engineering-reference-review.md) · [Evidence index](research/engineering-reference-orders-positive.json).
 
