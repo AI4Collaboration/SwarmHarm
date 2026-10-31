@@ -67,5 +67,5 @@ No frozen score or gate was changed.
 
 The [positive evidence index](phase2-component-positive.json) binds the exact
 registration, raw manifest, recipient file hashes and complete external review.
-The [connected example](current-rollout-review.md) and
-[Phase 1 baseline](phase1-baseline.json) remain separate and unchanged.
+The [Phase 1 baseline](phase1-baseline.json) remains a separate claim. Historical
+connected examples are available from the selected-trajectory Release.

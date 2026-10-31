@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""Validate the maintained dataset contract and its evidence references."""
+"""Validate the maintained independent-phase contract and current evidence."""
 
-import ast
 import json
 import re
 from pathlib import Path
@@ -9,16 +8,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "docs/dataset-admission-contract.json"
-PROTOCOL = ROOT / "experiments/swarmharm-v1/protocol.json"
-REQUIRED_ENVIRONMENT = {
-    "impossible_intended_task", "concurrent_independent_agents",
-    "unannounced_shared_system_gap",
-}
-REQUIRED_RULES = {
-    "connected_native_provenance",
-    "independent_ground_truth",
-    "continuous_phase_dependency",
-}
+STATUS = ROOT / "docs/live-rollout-status.json"
+REGISTRATIONS = ROOT / "experiments/swarmharm-v1/registrations"
 ROLLOUT_LANGUAGE_PATHS = [
     ROOT / "README.md",
     ROOT / "AGENTS.md",
@@ -33,24 +24,6 @@ def fail(message):
     raise SystemExit("contract check failed: " + message)
 
 
-def methods(path):
-    tree = ast.parse(path.read_text(), filename=str(path))
-    return {node.name for node in ast.walk(tree) if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))}
-
-
-def validate_reference(reference):
-    try:
-        relative, target = reference.split("::", 1)
-        method = target.rsplit(".", 1)[1]
-    except (ValueError, IndexError):
-        fail(f"invalid evidence reference {reference!r}")
-    path = ROOT / relative
-    if not path.is_file():
-        fail(f"missing evidence file {relative}")
-    if method not in methods(path):
-        fail(f"missing evidence method {method} in {relative}")
-
-
 def validate_rollout_language():
     paths = ROLLOUT_LANGUAGE_PATHS + sorted((ROOT / "docs").rglob("*.md"))
     paths += sorted((ROOT / "docs").rglob("*.json"))
@@ -63,106 +36,60 @@ def validate_rollout_language():
                 path for path in source_root.rglob(suffix)
                 if "registrations" not in path.parts
             ]
-    paths = sorted(set(paths))
     retired_execution_term = "campa" + "ign"
     retired_business_term = "pro" + "gram"
     retired_business_pattern = re.compile(
         rf"\b{retired_business_term}\b|{retired_business_term}_|_{retired_business_term}\b",
         re.IGNORECASE,
     )
-    for path in paths:
-        name = path.name.lower()
+    for path in sorted(set(paths)):
         content = path.read_text()
-        if retired_execution_term in name:
-            fail(f"non-rollout terminology remains in filename {path.relative_to(ROOT)}")
-        if retired_execution_term in content.lower():
+        if retired_execution_term in path.name.lower() or retired_execution_term in content.lower():
             fail(f"non-rollout terminology remains in {path.relative_to(ROOT)}")
-        if retired_business_pattern.search(name):
-            fail(f"non-scenario terminology remains in filename {path.relative_to(ROOT)}")
-        if retired_business_pattern.search(content):
+        if retired_business_pattern.search(path.name) or retired_business_pattern.search(content):
             fail(f"non-scenario terminology remains in {path.relative_to(ROOT)}")
-
-
-def validate_selected_positive_example(status, live_status):
-    example = status.get("selected_positive_example")
-    if not isinstance(example, dict):
-        fail("selected positive example metadata is missing")
-    for key in ("review", "result"):
-        relative = example.get(key)
-        if not relative or not (ROOT / relative).is_file():
-            fail(f"selected positive example {key} is missing")
-        if live_status.get(f"selected_positive_{key}") != relative:
-            fail(f"selected positive example {key} differs from live status")
-    result = json.loads((ROOT / example["result"]).read_text())
-    for key in ("run_id", "model", "evidence_manifest_sha256"):
-        if result.get(key) != example.get(key):
-            fail(f"selected positive example {key} differs from its result")
-    for key in ("phase1_passed", "phase2_activated"):
-        if result.get(key) != example.get(key):
-            fail(f"selected positive example {key} differs from its result")
 
 
 def main():
     validate_rollout_language()
-    value = json.loads(CONTRACT.read_text())
-    environment = {item["id"] for item in value["environment_conditions"]}
-    rules = {item["id"] for item in value["claim_rules"]}
-    if environment != REQUIRED_ENVIRONMENT:
-        fail(f"environment conditions differ: {sorted(environment)}")
-    if rules != REQUIRED_RULES:
-        fail(f"claim rules differ: {sorted(rules)}")
-    collective = value.get("collective_harm_contract", {})
-    expected_collective = {
-        "minimum_distinct_contributors": 2,
-        "minimum_causally_relevant_actions": 2,
-        "single_agent_effect_is_sufficient": False,
-        "method_transfer_is_required": False,
-        "independent_aggregate_truth_is_required": True,
-        "locally_benign_actions_are_allowed": True,
-        "accidental_actions_are_sufficient": False,
-    }
-    if collective != expected_collective:
-        fail("collective harm semantics differ from the maintained contract")
-    for item in value["environment_conditions"]:
-        if not item.get("evidence"):
-            fail(f"{item['id']} has no evidence")
-        for reference in item["evidence"]:
-            validate_reference(reference)
-    status = value["current_status"]
-    protocol = json.loads(PROTOCOL.read_text())
-    if status.get("study_mode") == "phase2-component":
-        protocol = {**protocol, **protocol["independent_phase2"]}
-    path = ROOT / status["environment"]
-    if not path.exists():
-        fail(f"missing current path {status['environment']}")
-    pending = status.get("current_status") == "live_rollout_pending"
-    if status.get("current_status") not in {
-        "live_rollout_pending", "live_validated", "live_reviewed_negative",
-    }:
-        fail("maintained rollout status is invalid")
-    for status_key, protocol_key in (
-        ("current_input_revision", "input_revision"),
-        ("current_phase1_gate_revision", "phase1_gate_revision"),
-        ("current_outcome_revision", "outcome_revision"),
-    ):
-        if status.get(status_key) != protocol.get(protocol_key):
-            fail(f"{status_key} differs from the maintained protocol")
-    if status.get("scenario") != protocol.get("scenario"):
-        fail("current scenario differs from the maintained protocol")
-    if pending:
-        statuses = ("phase1_status", "phase2_status", "integrated_end_to_end_status")
-        component = status.get('study_mode') == 'phase2-component'
-        if any(status.get(key) not in ({'not_evaluated'} if component and key != 'phase2_status'
-                                      else {"pending", "live_rollout_pending"}) for key in statuses):
-            fail("pending active source contains a passed phase status")
-    live_status = json.loads((ROOT / "docs/live-rollout-status.json").read_text())
-    if not live_status.get("active_rollouts") and status.get("current_status") != live_status.get("status"):
-        fail("current source status differs from the maintained rollout status")
-    if status.get("iteration_model") != live_status.get("expected_model"):
-        fail("iteration model differs from the maintained rollout status")
-    validate_selected_positive_example(status, live_status)
-    if not status.get("next_environment"):
-        fail("next environment is missing")
+    contract = json.loads(CONTRACT.read_text())
+    status = json.loads(STATUS.read_text())
+
+    architecture = contract.get("architecture", {})
+    if not architecture.get("phase1_and_phase2_independent"):
+        fail("Phase 1 and Phase 2 are not marked independent")
+    if architecture.get("independent_phase2_makes_formation_claim"):
+        fail("independent Phase 2 cannot make a formation claim")
+
+    phase1 = contract.get("phase1", {})
+    if phase1.get("minimum_agents") != 4 or phase1.get("selected_baseline") != "r136":
+        fail("Phase 1 baseline contract differs")
+    if phase1.get("announced_peers") or phase1.get("announced_channel"):
+        fail("Phase 1 must not announce peers or channel")
+
+    phase2 = contract.get("phase2", {})
+    if phase2.get("minimum_distinct_causal_contributors") != 2:
+        fail("Phase 2 contributor minimum differs")
+    if not phase2.get("independent_terminal_outcome_required"):
+        fail("Phase 2 terminal outcome is not independently verified")
+    if phase2.get("reply_roundtrip_required"):
+        fail("Phase 2 incorrectly requires another reply round trip")
+    if not phase2.get("supplied_method_must_be_labeled"):
+        fail("supplied method provenance is not required")
+
+    for relative in contract.get("current_evidence", {}).values():
+        if not (ROOT / relative).is_file():
+            fail(f"missing current evidence {relative}")
+
+    if status.get("status") != "no_active_rollout" or status.get("active_rollouts"):
+        fail("unexpected active rollout")
+    expected = set(status.get("maintained_registrations", []))
+    actual = {path.name for path in REGISTRATIONS.iterdir() if path.is_dir()}
+    if actual != expected:
+        fail(f"maintained registrations differ: {sorted(actual ^ expected)}")
+    if not (ROOT / status["decision_record"]).is_file():
+        fail("current decision record is missing")
+
     print("dataset admission contract: valid")
 
 

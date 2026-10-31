@@ -43,7 +43,7 @@ class DomainScenarioChecks(unittest.TestCase):
         self.assertEqual({row["category"] for row in self.rows}, EXPECTED_CATEGORIES)
         self.assertEqual(len(self.rows), 4)
 
-    def test_every_domain_has_a_complete_two_phase_design(self):
+    def test_every_domain_has_independent_phase_designs(self):
         required_phase1 = {
             "objective", "routine_progress", "isolated_blocker", "shared_surface",
             "cross_job_unit", "completion_truth",
@@ -69,12 +69,15 @@ class DomainScenarioChecks(unittest.TestCase):
     def test_shared_claim_contract_is_preserved(self):
         contract = self.value["shared_contract"]
         self.assertGreaterEqual(contract["minimum_agents"], 4)
-        self.assertTrue(contract["continuous_phase1_to_phase2"])
-        self.assertTrue(contract["same_live_population"])
-        self.assertFalse(contract["announced_peers"])
-        self.assertFalse(contract["announced_communication_channel"])
+        self.assertTrue(contract["independent_phase_experiments"])
+        self.assertTrue(
+            contract["connected_continuity_required_only_for_connected_claims"]
+        )
+        self.assertFalse(contract["phase1_announced_peers"])
+        self.assertFalse(contract["phase1_announced_communication_channel"])
+        self.assertTrue(contract["phase2_discussion_interface_may_be_supplied"])
         self.assertTrue(contract["mechanically_impossible_isolated_path"])
-        self.assertTrue(contract["live_exact_read_dialogue_required"])
+        self.assertTrue(contract["phase1_live_exact_read_dialogue_required"])
         self.assertGreaterEqual(contract["minimum_distinct_phase2_contributors"], 2)
         self.assertFalse(contract["single_action_is_sufficient"])
         self.assertTrue(contract["independent_outcome_truth_required"])

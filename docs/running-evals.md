@@ -212,10 +212,14 @@ including rejected calls and interrupted delivery.
 
 The [Sol Phase 1 baseline](research/phase1-baseline.json) is v98/r136 at source
 `3dfff613`, registration `99bde55d`. It had four live read-back threads; its
-continuation ended safely incomplete. The [connected positives](research/current-rollout-result.json)
-and [component positive](research/phase2-component-positive.json) retain separate
-claims. Aman’s [Pi Finance result](research/current-finance-pi-sol-result.json)
-uses its original OpenRouter route.
+continuation ended safely incomplete. The maintained Phase 2 comparators are
+[supplied-method r142](research/phase2-component-positive.json),
+[consequence-aware r165](research/engineering-batching-positive.json) and
+[endorsement-gap r178](research/engineering-forecast-positive.json).
+
+Historical connected examples, ordinary-coordination examples and reviewed
+negatives are available from the selected-trajectory Release and Git history;
+they are not current launch targets.
 
 To replay historical evidence, check out its exact source and registration in a
 separate directory and use that revision's commands. Current path moves do not

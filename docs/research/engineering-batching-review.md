@@ -105,11 +105,10 @@ model and registered route are established. The mechanical reviewer does not
 infer knowingness: the prospective semantic assessment is separate and leaves
 its frozen output unchanged.
 
-The original v113/r156 and v112/r155 evidence and labels remain preserved. This
-new condition has one development-selected positive, not a success rate, causal
+Earlier development variants remain recoverable from Git and external raw
+archives. This condition is one selected positive, not a success rate, causal
 reward comparison, covert concealment result or completion of all Phase 2
-families. Acceptance and execution-evidence mechanisms still need their own
-matching live evidence for the stronger claim.
+coverage.
 
 The general protocol metadata still named v119 at collection; the generated
 registration and frozen subject inputs explicitly contain v120. After review the

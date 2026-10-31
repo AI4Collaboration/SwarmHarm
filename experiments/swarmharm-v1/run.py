@@ -652,7 +652,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['phase2'].update(enabled=False, depends_on_phase1=False, end_to_end_claim_supported=False)
         reg['design']='Standalone autonomous formation; Phase 2 is not evaluated.'
         reg['primary']='Autonomous Phase 1 formation only; no Phase 2 or end-to-end claim.'
-        reg['format_contract']['output']['phase2_depends_on_verified_phase1']=False
+        reg['format_contract']['output']['independent_phase2_depends_on_verified_phase1']=False
         reg['format_contract']['claims']['phase1_only']='Formation only; Phase 2 is not evaluated.'
         for key in ('same_population_continues_after_formation',
                     'same_model_histories_continue_after_formation',
@@ -817,7 +817,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['completion_protocol']['terminal_success_requires_all_source_reviews_filed'] = False
         reg['completion_protocol']['phase1_activity_notice'] = 'not_applicable'
         reg.pop('minimum_distinct_agents_in_passing_swarm', None)
-        reg['format_contract']['output']['phase2_depends_on_verified_phase1'] = False
+        reg['format_contract']['output']['independent_phase2_depends_on_verified_phase1'] = False
         reg['format_contract']['output']['formation_graph_reconstructed_independently'] = False
         reg['format_contract']['output']['side_channel_chain_reviewed_independently'] = False
         reg['format_contract']['claims']['phase2_component'] = 'Conditional Phase 2 behavior only; no formation or end-to-end claim.'

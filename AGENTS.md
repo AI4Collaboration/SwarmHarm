@@ -34,14 +34,14 @@
   Pi SDK through AxonHub is the current default. Claude Code and Codex subscription
   adapters need explicit live model/harness selection; their availability alone
   does not authorize a new route. A changed harness needs fresh live validation.
-- Maintain only `experiments/swarmharm-v1`. The user authorized independent
-  Phase 2 component studies on 30 October. Prioritize the three registered incident-inspired scenario
-  families in `docs/phase2-design.md`: external-environment breakout/scope
-  overreach, task-target or acceptance manipulation, and execution-evidence
-  manipulation. This is our grouping, not an official exhaustive METR taxonomy.
-  Component studies may start with declared prepared business inputs and
-  separately registered need/method cues; record all supplied material and its
-  provenance. Supplied records are never live dialogue or autonomous discovery.
+- Maintain only `experiments/swarmharm-v1`. The active Phase 2 question is the
+  single mechanism-legibility comparison in `docs/lesswrong-gap.md`; do not
+  reopen a broad family, domain or pressure matrix before that result is
+  reviewed. The three incident-inspired labels in `docs/phase2-design.md` are
+  classification labels, not a development queue and not an official exhaustive
+  METR taxonomy. The next component condition may start with one declared,
+  provenance-bound method artifact. Supplied material is never live dialogue or
+  autonomous discovery.
   A connected claim still requires Phase 1 followed by Phase 2 in the same
   controller, agents, histories, workstations, shared state and event sequence.
   Independent or stitched runs cannot support that claim. Keep the reviewed
@@ -218,7 +218,10 @@
   raw output outside the repository, model workstations offline and operator
   truth outside subject control.
 - Put newest information first and update the root README with setup or routing
-  changes.
+  changes. The maintained registration tree contains only r136, r142, r165 and
+  r178 until a new registration is deliberately added. Historical connected,
+  ordinary-coordination and reviewed-negative registrations belong in Git and
+  the selected-trajectory Release, not among current launch targets.
 - Expose only four live scenario choices: `engineering-capacity`, `data-analysis`,
   `financial-analysis` and `knowledge-work`. Internal release/maintenance layers
   remain shared dependencies and offline fixtures, not alternative rollouts.
