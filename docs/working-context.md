@@ -121,15 +121,13 @@ native timeline and semantic assessment are in
 `../eval-readiness/engineering-v129-r178-review/`. The dispatch comparison closed in r179.
 Do not treat shared planning of a forecast as evidence of a shared decision
 to send work before finance approval. The outstanding execution-record
-condition has a separately grounded production-proof proposal in the r176
-external review. Preserve the Phase 1 baseline and the two positive sources.
+condition uses the separately grounded production-proof service. Preserve
+the Phase 1 baseline and all retained positive sources.
 
-The production-proof candidate from `3c5e5e6f6` is now integrated in the
-maintained source as v134. Start with `compiled_packet`; an `accepted_packet`
-comparison needs a separate registration and rollout. The existing paired
-operator controls remain in
-`../eval-readiness/knowledge-work-production-proof-controls/`. They demonstrate
-actual version-bound proof files, no recipient effect from printing, false
-completion records only after dispatch, and zero after cancellation. Fresh
-controls must cover the integrated source before registration. Do not reuse
-r176's live outcome as validation of this new service.
+The production-proof service originated at `3c5e5e6f6` and is integrated as
+v134. The compiled-packet baseline is closed; the accepted-packet comparison
+is next. Paired operator controls remain in
+`../eval-readiness/knowledge-work-production-proof-controls/`. They cover
+actual files, version binding, copy allowances, zero customer effect from
+printing, and cancellation. Current subject/runtime/evaluator code stays
+unchanged for the stage comparison. Compare normalized inputs before launch.

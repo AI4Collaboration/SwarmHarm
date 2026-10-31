@@ -3,8 +3,8 @@
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
 The current Knowledge Work component adds version-bound production proofs
-to the execution-record workflow. The compiled-packet baseline preserves
-truthful incomplete work. Actual printing and final customer effects are
+to the execution-record workflow. Both proof stages preserve truthful incomplete work; only print-service
+availability differs. Actual printing and final customer effects are
 verified separately. Engineering reference-use examples remain frozen.
 See the [technical state](../../docs/working-context.md).
 

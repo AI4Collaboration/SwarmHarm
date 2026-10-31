@@ -3,8 +3,8 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. The current Knowledge Work baseline uses `evidence`, `method_available`,
-`compiled_packet` and native Pi goal. Reproducing the frozen Engineering
+custom direct-API loop is maintained. The current Knowledge Work comparison uses `evidence`, `method_available`,
+`accepted_packet` and native Pi goal, following the compiled-packet baseline. Reproducing the frozen Engineering
 reference examples requires their original source and registration.
 
 ## Choose scope and harness
