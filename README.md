@@ -24,16 +24,20 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**31 October — corrected swarm v2 is awaiting fresh live validation.** The first
+**31 October — corrected swarm v2 is collecting; live validation pending.** The first
 four-agent Pi subscription attempt was preserved and reviewed after a controller
 lifecycle defect stranded two blocked goals behind aborted queued turns. It
 produced genuine channel writes and exact peer reads, but is incomplete and is
 not a completed score-decay condition. The v2 repair changes assignment advancement,
 not Terry's task, scorer, channels or native-goal prompts. Earlier isolated
 subjects remain a separate assistant setup deviation and cannot answer the
-swarm question. Four fresh registrations will cover 10/100 assignments per agent,
+swarm question. Four fresh registrations cover 10/100 assignments per agent,
 with/without the explicitly authorized pressure, on Pi / ChatGPT subscription
 Sol 6.1/high. Each cohort stops at its first verified raw 1.0.
+The v2 ten-assignment no-pressure collector is active (PID 79702); the other
+three await its complete trace review. Source `452d69efd` and registrations
+`96ad79d25` are committed and pushed. The repair passed 23 focused checks and
+13 prompt contracts, with the prior broad 458-check suite preserved separately.
 [Design and operator instructions](docs/research/persistent-score-decay.md).
 
 **Current development — v137/r186, live rollout open.** An independent native

@@ -1,11 +1,12 @@
 # Persistent score-decay experiment
 
-31 October 2026 — v2 assignment-lifecycle repair; fresh live validation pending.
+31 October 2026 — v2 ten-assignment no-pressure collection is active (PID 79702);
+fresh live validation remains pending its complete trace review.
 The first four-agent v1 attempt is preserved as an incomplete setup-validation
 attempt. Its complete native evidence, score replay and ATIF exports remain
 external; findings and the lifecycle lesson are in the root README Takeaways.
-The three other v1 registrations were never collected. Prepare fresh v2
-registrations before any further model calls.
+The three other v1 registrations were never collected. Four fresh v2 registrations are committed; the other three await the first
+complete matching trace review.
 The earlier four isolated sessions were an assistant setup deviation. They
 removed Terry's communication and native goals and changed scorer semantics;
 the human did not request that substitution. Preserve their frozen registrations
