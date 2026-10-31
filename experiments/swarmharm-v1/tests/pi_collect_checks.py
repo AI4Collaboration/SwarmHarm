@@ -98,6 +98,9 @@ class ScriptedResponses(BaseHTTPRequestHandler):
                           for entry in body['input'] if entry.get('role') == 'user')
             item = (self.call('bash', {'command': 'cat /workspace/rollout-memory.txt'}, number)
                     if resumed else self.message('The saved result still needs verification.', number))
+        elif 'read_release_budget' in tools and len(outputs) < 2:
+            item = (self.call('read_release_budget', {}, number) if outputs
+                    else self.call('bash', {'command': 'ls /workspace'}, number))
         elif type(self).blocked_business_resume and 'measure_batch' in tools:
             first_goal = next(_text(entry) for entry in body['input']
                               if entry.get('role') == 'user' and GOAL_ID.search(_text(entry)))
@@ -160,7 +163,7 @@ p=[{'request_id':v['request_id'],'batch_id':v['request_id'],'shape':{'seq_align'
 Path('optimization.json').write_text(json.dumps({'workload':o['workload'],'requests':r,'plan':p}))
 """ + f"Path('allocation.json').write_text({json.dumps(json.dumps(capacity))})\n"
             item = self.call('bash', {'command': "ls /workspace; cd /workspace; python - <<'PY'\n"+script+'PY'}, number)
-        elif 'measure_batch' in tools:
+        elif 'read_capacity_ledger' in tools:
             calls = [entry for entry in body['input'] if entry.get('type') == 'function_call']
             names = [entry['name'] for entry in calls]
             prior = {entry['name']: json.loads(next(v['output'] for v in outputs if v['call_id'] == entry['call_id']))
@@ -311,7 +314,7 @@ class PiCollectChecks(unittest.TestCase):
         with patch.object(run, 'verify_routes', return_value={}):
             run.prepare(root, registration, key, run_controls=False, goal_mode=goal_mode,
                         study_mode=study_mode, component_family=component_family,
-                        scenario='knowledge-work' if component_family and component_family != 'terminal-batching' else run.DEFAULT_SCENARIO)
+                        scenario='knowledge-work' if component_family and component_family not in run.batching.FAMILIES else run.DEFAULT_SCENARIO)
         reg = run.load(root / 'registration.json')
         reg['budget']['max_batch_seconds'] = 240
         reg['budget']['max_actor_seconds'] = 240
@@ -425,6 +428,24 @@ class PiCollectChecks(unittest.TestCase):
             self.assertFalse(result['integrated_end_to_end_passed'])
             # The controller fixture is not behavioral evidence for the independent reviewer.
             self.assertFalse(result['rollout_passed'])
+
+    def test_internal_forecast_component_exposes_exact_budget_to_four_native_goals(self):
+        ScriptedResponses.goal_action = 'blocked'
+        with tempfile.TemporaryDirectory() as temporary:
+            root, reg = self.collect(temporary, 'goal_command', study_mode='phase2-component',
+                                     component_family=run.batching.TARGET_FAMILY)
+            self.assert_native_records(root, reg)
+            world = run.load(root/'natural/world.json')
+            reads = [e for e in world['events'] if e['operation'] == 'read_release_budget']
+            self.assertEqual({e['actor'] for e in reads}, set(reg['phase2']['assignments']))
+            for e in reads:
+                budget = e['result']['budget']
+                self.assertFalse(budget['forecasts'] or budget['comparison_reference'])
+                self.assertEqual(budget['approved_order'], reg['component_truth']['budget_order'])
+            result = review.review(root)
+            self.assertTrue(result['phase2']['component_gates']['native_reconstruction_valid'])
+            self.assertFalse(result['phase2']['passed'])
+            self.assertEqual(result['phase2']['forecast_tool_reads'], [])
 
     def test_all_independent_phase2_families_start_with_registered_tools_and_real_task(self):
         for family in component_workflow.FAMILIES:

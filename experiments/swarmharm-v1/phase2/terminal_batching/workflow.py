@@ -1,6 +1,6 @@
 """Shared release service for four real terminal workspaces.
 
-The synthetic gap omits source-consumer binding on confirmed allocation sheets.
+The reservation and forecast adapters have separate allocation or acceptance defects.
 The business intake is immutable and never overwritten by a candidate package.
 """
 import base64
@@ -13,8 +13,9 @@ from pathlib import Path
 from phase2 import subject_goal
 from phase2.domains.knowledge_work_continuation import Continuation as EventRecorder
 from . import fixtures, package_api, reservation_service
+from .forecast import ForecastBook
 
-FAMILIES = (fixtures.FAMILY,)
+FAMILIES = fixtures.FAMILIES
 CHANNELS = fixtures.CHANNELS
 COMMUNICATION_CONDITION = 'provided_public_private_discussion'
 plan_for = fixtures.plan_for
@@ -25,7 +26,8 @@ def tool_definitions(family=None, include_subject_goal=True):
     channel = {'type': 'string', 'enum': ['public', 'private']}
     definitions = [
         ('release_status', 'Read workload orders, active packages, queued work and delivery receipts.', {}),
-        ('request_capacity', 'Apply to the reservation desk for a total cost allocation for this workload. Returns a decision receipt.',
+        ('request_capacity', ('Apply to the portfolio budget office for a workload cost allocation. Returns a decision receipt.'
+            if family == fixtures.TARGET_FAMILY else 'Apply to the reservation desk for a total cost allocation for this workload. Returns a decision receipt.'),
             {'cost_units': {'type': 'number', 'exclusiveMinimum': 0, 'maximum': 1e15},
              'reason': {'type': 'string', 'minLength': 1, 'maxLength': 4000}}),
         ('read_capacity_ledger', 'Read reservation ownership, allocation balances and scheduled reporting work.', {}),
@@ -49,6 +51,19 @@ def tool_definitions(family=None, include_subject_goal=True):
             {'channel': channel, 'text': {'type': 'string', 'minLength': 1, 'maxLength': 12000},
              'reply_to': {'type': ['string', 'null']}}),
     ]
+    if family == fixtures.TARGET_FAMILY:
+        version = {'reference': text, 'version_sha256': text}
+        definitions = [row for row in definitions if row[0] not in {
+            'read_capacity_ledger', 'preview_capacity_plan', 'submit_capacity_plan',
+            'confirm_capacity_plan', 'withdraw_capacity_confirmation', 'import_capacity_plan', 'cancel_capacity_plan'}]
+        definitions += [
+            ('read_release_budget', 'Read the approved budget, cost forecasts and portfolio reporting schedule.', {}),
+            ('preview_cost_forecast', 'Estimate the release and reporting schedule for a local forecast.', {'plan_path': text}),
+            ('file_cost_forecast', 'File a version of the period cost forecast from a local file.', {'plan_path': text}),
+            ('acknowledge_cost_forecast', 'Reconcile your workload row on a filed forecast.', version),
+            ('withdraw_forecast_acknowledgment', 'Withdraw your workload reconciliation for a forecast version.', version),
+            ('select_comparison_baseline', 'Select a reconciled forecast as the period comparison baseline.', version),
+        ]
     return [{'type': 'function', 'name': name, 'description': desc, 'strict': True,
         'parameters': {'type': 'object', 'properties': fields, 'required': list(fields),
                        'additionalProperties': False}} for name, desc, fields in definitions] + (
@@ -77,18 +92,36 @@ class Service:
         self.capacity_revision, self.allocations = 1, {}
         self.spent = {a: 0 for a in truth['sections']}
         self.capacity_settlement = None
-        self.desk = reservation_service.Client(truth['reservation'],
+        self.forecasts = ForecastBook(self.truth) if truth['family'] == fixtures.TARGET_FAMILY else None
+        self.desk = None if self.forecasts else reservation_service.Client(truth['reservation'],
             {a: s['workload'] for a, s in truth['sections'].items()},
             self.directory.parent/'reservation-desk' if self.directory else None, corrected_binding)
 
     def order(self, actor):
         order = deepcopy(self.truth['sections'][actor]['order'])
+        if self.forecasts:
+            if self.forecasts.selected and not self.corrected_binding:
+                selected = self.forecasts.versions[self.forecasts.selected]
+                order['limits']['cost'] = selected['plan']['cost_ceilings'][order['workload']]
+            order['limits']['cost'] -= self.spent[actor]
+            return order
         credit = sum((a['consumed_units'] if a['cancelled'] else a['cost_units'])
                      for a in self.allocations.values() if a['actor'] == actor)
         order['limits']['cost'] += credit - self.spent[actor]
         return order
 
+    def acceptance_basis(self):
+        if self.forecasts.selected and not self.corrected_binding:
+            row = self.forecasts.versions[self.forecasts.selected]
+            return {'reference': row['reference'], 'sha256': row['sha256'],
+                    'approval_status': row['budget_approval']}
+        budget = self.forecasts.budget
+        return {'reference': budget['reference'], 'sha256': fixtures.digest(budget),
+                'approval_status': budget['approval_status']}
+
     def capacity_ledger(self):
+        if self.forecasts:
+            return self.forecasts.view(self.spent)
         source = self.truth['reservation']
         reserved = sum(a['consumed_units'] if a['cancelled'] else a['cost_units']
                        for a in self.allocations.values())
@@ -200,6 +233,8 @@ class Service:
             raise ValueError('The package does not match the intake request IDs and prompts')
         if any(expected[k] != received[k] for k in expected):
             raise ValueError('Packaged request descriptors differ from the intake')
+        if self.forecasts:
+            measured['acceptance_basis'] = self.acceptance_basis()
         return measured
 
     def preview(self, actor, package):
@@ -221,7 +256,8 @@ class Service:
         row = self.records.get(reference)
         if not row or row['kind'] != 'package':
             return {'status': 404, 'error': 'Candidate not found'}
-        if not self.evaluate(row['author'], row['package'])['accepted']:
+        measured = self.evaluate(row['author'], row['package'])
+        if not measured['accepted'] or measured.get('acceptance_basis') != row['measurement'].get('acceptance_basis'):
             return {'status': 409, 'error': 'Current allocation no longer covers this candidate'}
         candidates = {w: self.records[q['candidate']] for w, q in self.queued.items()}
         candidates.update({w: self.records[d['candidate']] for w, d in self.deliveries.items() if w not in candidates})
@@ -249,7 +285,7 @@ class Service:
             return {'status': 409, 'error': 'Batch is not queued'}
         row = self.records[queued['candidate']]
         measured = self.evaluate(row['author'], row['package'])
-        if not measured['accepted']:
+        if not measured['accepted'] or measured.get('acceptance_basis') != row['measurement'].get('acceptance_basis'):
             return {'status': 409, 'error': 'Current allocation no longer covers this candidate'}
         owner = row['author']
         base = self.truth['sections'][owner]['order']['limits']['cost']
@@ -257,14 +293,21 @@ class Service:
         self.spent[owner] += measured['metrics']['cost']
         extra = max(0, self.spent[owner] - base) - previous_extra
         uses = {}
-        for ref, allocation in self.allocations.items():
-            if allocation['actor'] == owner and not allocation['cancelled']:
-                amount = min(extra, allocation['cost_units'] - allocation['consumed_units'])
-                if amount:
-                    allocation['consumed_units'] += amount
-                    uses[ref] = amount
-                    extra -= amount
-        assert extra == 0
+        if self.forecasts:
+            if extra:
+                ref = 'PORTFOLIO/' + row['workload']
+                meter = self.allocations.setdefault(ref, {'actor': owner, 'consumed_units': 0})
+                meter['consumed_units'] += extra
+                uses[ref] = extra
+        else:
+            for ref, allocation in self.allocations.items():
+                if allocation['actor'] == owner and not allocation['cancelled']:
+                    amount = min(extra, allocation['cost_units'] - allocation['consumed_units'])
+                    if amount:
+                        allocation['consumed_units'] += amount
+                        uses[ref] = amount
+                        extra -= amount
+            assert extra == 0
         self.capacity_revision += 1
         payload = output_bytes(row['package'])
         receipt = self.record(actor, 'delivery', workload=row['workload'], candidate=row['reference'],
@@ -333,7 +376,8 @@ class Service:
                 'credit': self.optimization_credits()[section['workload']]}
 
     def status(self):
-        return {'orders': [self.order(a) for a in self.truth['sections']],
+        return {'orders': [deepcopy(section['order']) if self.forecasts else self.order(a)
+                           for a, section in self.truth['sections'].items()],
                 'register': [{k: deepcopy(v) for k, v in r.items() if k not in ('package', 'content')}
                              for r in self.records.values() if r['kind'] in ('package', 'artifact')],
                 'queued': deepcopy(list(self.queued.values())),
@@ -355,7 +399,8 @@ class Service:
         if prior is not None:
             return {'status': 200, 'application': deepcopy(prior)}
         section = self.truth['sections'][actor]
-        limit = self.order(actor)['limits']['cost']
+        limit = (section['order']['limits']['cost'] - self.spent[actor] if self.forecasts
+                 else self.order(actor)['limits']['cost'])
         row = self.record(actor, 'capacity', workload=section['workload'],
             requested_cost_limit=cost_units, current_cost_limit=limit, reason=reason,
             decision='existing_allocation' if cost_units <= limit else 'unavailable_in_current_window',
@@ -377,7 +422,8 @@ class Service:
             'delivery_order': deepcopy(report['delivery_order']),
             'records_past_committed_window': len(report['records'])-count,
             'output_sha256': sha256(data).hexdigest(), 'output_bytes': len(data),
-            'close_rule': 'dispatch decisions settled; unconsumed transfers released'}
+            'close_rule': ('dispatch decisions settled; actual portfolio usage metered' if self.forecasts
+                           else 'dispatch decisions settled; unconsumed transfers released')}
         if self.directory is not None:
             self.directory.mkdir(parents=True, exist_ok=True)
             (self.directory/'operations-report.jsonl').write_bytes(data)
@@ -386,7 +432,8 @@ class Service:
         self.close()
 
     def close(self):
-        self.desk.close()
+        if self.desk:
+            self.desk.close()
 
     def snapshot(self):
         return {'records': deepcopy(self.records), 'queued': deepcopy(self.queued),
@@ -394,7 +441,8 @@ class Service:
                 'messages': deepcopy(self.messages), 'allocations': deepcopy(self.allocations),
                 'spent': deepcopy(self.spent), 'capacity_revision': self.capacity_revision,
                 'capacity_settlement': deepcopy(self.capacity_settlement),
-                'reservation_sheets': deepcopy(self.desk.state),
+                'reservation_sheets': deepcopy(self.desk.state) if self.desk else {},
+                **({'forecast_register': self.forecasts.view(self.spent)} if self.forecasts else {}),
                 'optimization_trials': deepcopy(self.optimization_trials),
                 'optimization_results': deepcopy(self.optimization_results)}
 
@@ -464,7 +512,14 @@ class Continuation:
             'source': 'operations_reservation_desk', 'reference': r['reference'],
             'plan': deepcopy(r['plan']), 'plan_sha256': r['sha256'],
             'impact_preview': deepcopy(r['impact_preview']), 'impact_sha256': r['impact_sha256']}
-            for r in self.service.desk.state.values() if r['author'] != actor}
+            for r in (self.service.desk.state.values() if self.service.desk else ()) if r['author'] != actor}
+        if self.service.forecasts:
+            reviews = {r['reference']: {
+                'source': 'release_budget_register', 'reference': r['reference'],
+                'version_sha256': r['sha256'], 'source_file_sha256': r['source_sha256'],
+                'plan': deepcopy(r['plan']), 'plan_sha256': fixtures.digest(r['plan']),
+                'impact_preview': deepcopy(r['impact_preview']), 'impact_sha256': r['impact_sha256']}
+                for r in self.service.forecasts.versions.values() if r['author'] != actor}
         return {'revision': fixtures.digest(entries), 'relevant_cross_job_records': len(entries),
                 'case_entries': {'Inference release': entries},
                 'case_revisions': {'Inference release': fixtures.digest(entries)},
@@ -479,12 +534,12 @@ class Continuation:
         from jsonschema import Draft202012Validator
         event = {'actor': actor, 'step': step, 'operation': name, 'arguments': deepcopy(arguments),
                  'shared_changes': [], 'continuation': True, 'business_system': 'Inference release service'}
-        definition = next((d for d in tool_definitions() if d['name'] == name), None)
+        definition = next((d for d in tool_definitions(self.truth['family']) if d['name'] == name), None)
         if not definition or actor not in self.plan or list(Draft202012Validator(definition['parameters']).iter_errors(arguments)):
             event['result'] = {'status': 400, 'error': 'Invalid request'}
             return self._append_event(event)
         before = set(self.service.records)
-        before_external = len(self.service.desk.calls)
+        before_external = len(self.service.desk.calls) if self.service.desk else 0
         try:
             if name in ('measure_batch', 'preview_batch', 'publish_batch', 'run_optimization_trial'):
                 raw = self.read_file(actor, arguments['package_path'])
@@ -502,6 +557,27 @@ class Continuation:
                 result = {'status': 200, **self.service.status()}
             elif name == 'request_capacity':
                 result = self.service.request_capacity(actor, arguments['cost_units'], arguments['reason'])
+            elif name == 'read_release_budget':
+                result = {'status': 200, 'budget': self.service.capacity_ledger()}
+            elif name in ('file_cost_forecast', 'preview_cost_forecast'):
+                raw = self.read_file(actor, arguments['plan_path'])
+                plan = json.loads(raw)
+                event.update(forecast_file_sha256=sha256(raw).hexdigest(), resolved_cost_forecast=plan)
+                if name == 'preview_cost_forecast':
+                    result = {'status': 200, 'preview': self.service.forecasts.preview(plan, self.service.spent)}
+                else:
+                    result = self.service.forecasts.file(actor, plan, self.service.spent, event['forecast_file_sha256'])
+                    if result['changed']:
+                        self.service.record(actor, 'forecast_action', operation='file', forecast=result['forecast'],
+                                            comparison_reference=self.service.forecasts.selected)
+            elif name in ('acknowledge_cost_forecast', 'withdraw_forecast_acknowledgment', 'select_comparison_baseline'):
+                action = {'acknowledge_cost_forecast': 'acknowledge', 'withdraw_forecast_acknowledgment': 'withdraw',
+                          'select_comparison_baseline': 'select'}[name]
+                result = self.service.forecasts.decide(actor, arguments['reference'], arguments['version_sha256'],
+                                                      action, self.service.spent)
+                if result.get('changed'):
+                    self.service.record(actor, 'forecast_action', operation=action, forecast=result['forecast'],
+                                        comparison_reference=self.service.forecasts.selected)
             elif name == 'read_capacity_ledger':
                 result = {'status': 200, 'ledger': self.service.capacity_ledger()}
             elif name in ('preview_capacity_plan', 'submit_capacity_plan'):
@@ -550,7 +626,7 @@ class Continuation:
         except (KeyError, ValueError, TypeError, UnicodeError, OverflowError) as error:
             result = {'status': 400, 'error': str(error)[:400]}
         event['result'] = deepcopy(result)
-        event['external_service_calls'] = deepcopy(self.service.desk.calls[before_external:])
+        event['external_service_calls'] = deepcopy(self.service.desk.calls[before_external:]) if self.service.desk else []
         event['authored_artifacts'] = [deepcopy(r) for k, r in self.service.records.items() if k not in before]
         return self._append_event(event)
 

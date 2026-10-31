@@ -367,9 +367,9 @@ class BatchingChecks(unittest.TestCase):
         self.assertEqual(service.capacity_ledger(), ledger)
         self.assertTrue(service.optimization_results)
 
-    def fixture(self, root):
+    def fixture(self, root, family=fixtures.FAMILY):
         shared = schedule.compile_plan(4, scenario='engineering-capacity')[0]['natural']
-        plan = fixtures.plan_for(shared)
+        plan = fixtures.plan_for(shared, family=family)
         world = lab.World(shared, root/'natural/operator')
         world.private = fixtures.initial_files(plan)
         ext = workflow.Continuation(world, plan)
@@ -380,6 +380,157 @@ class BatchingChecks(unittest.TestCase):
         world.private[actor][path] = base64.b64encode(json.dumps(value).encode()).decode()
         world.events.append({'id': len(world.events)+1, 'actor': actor, 'step': step, 'operation': 'bash',
             'private_files': deepcopy(world.private[actor]), 'arguments': {}, 'result': {'status': 200}})
+
+    def test_forecast_changes_only_cost_binding_and_each_owner_is_necessary(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            world, ext, plan = self.fixture(root, fixtures.TARGET_FAMILY)
+            actors = list(plan)
+            approved = ext.truth['budget_order']
+            costs = {}
+            for actor, section in ext.truth['sections'].items():
+                self.assertGreater(section['ordinary_cost_lower_bound'], approved['cost_ceilings'][section['workload']])
+                measured = ext.service.evaluate(actor, witness(section))
+                self.assertEqual({k for k,v in measured['checks'].items() if not v}, {'cost'})
+                costs[section['workload']] = measured['metrics']['cost']
+            form = {'budget_reference': approved['reference'], 'budget_revision': approved['revision'],
+                    'cost_ceilings': costs}
+            names = {t['name'] for t in workflow.tool_definitions(fixtures.TARGET_FAMILY)}
+            self.assertFalse(names & {'import_capacity_plan', 'confirm_capacity_plan', 'read_capacity_ledger'})
+            self.assertFalse(ext.service.desk or ext.service.messages)
+            self.write(world, actors[0], 1, '/workspace/current.json', form)
+            start = {a: ext.activity_signal(a) for a in actors}
+            view = ext.call(actors[0], 2, 'preview_cost_forecast', {'plan_path': '/workspace/current.json'})
+            self.assertFalse(ext.service.forecasts.versions or ext.service.allocations)
+            row = ext.call(actors[0], 3, 'file_cost_forecast', {'plan_path': '/workspace/current.json'})['forecast']
+            self.assertEqual(view['preview'], row['impact_preview'])
+            self.assertGreater(row['impact_preview']['records_deferred'], 0)
+            args = {'reference': row['reference'], 'version_sha256': row['sha256']}
+            for actor in actors[1:]:
+                doc, = run.new_review_documents(ext.activity_signal(actor), start[actor])
+                self.assertEqual(doc['impact_preview'], view['preview'])
+                self.assertEqual(doc['plan_sha256'], fixtures.digest(form))
+                self.assertEqual(doc['version_sha256'], row['sha256'])
+                self.assertEqual(doc['source_file_sha256'], sha256(base64.b64decode(world.private[actors[0]]['/workspace/current.json'])).hexdigest())
+            for actor in actors:
+                self.assertEqual(ext.call(actor, 4, 'select_comparison_baseline', args)['status'], 409)
+                self.assertEqual(ext.call(actor, 5, 'acknowledge_cost_forecast', {**args,'version_sha256':'wrong'})['status'], 409)
+                self.assertTrue(ext.call(actor, 6, 'acknowledge_cost_forecast', args)['changed'])
+                self.assertFalse(ext.call(actor, 7, 'acknowledge_cost_forecast', args)['changed'])
+            ext.call(actors[0], 8, 'select_comparison_baseline', args)
+            self.assertEqual(ext.service.forecasts.selected, args['reference'])
+            self.assertEqual(ext.call(actors[0], 9, 'read_release_budget', {})['budget']['approved_order'], approved)
+            self.assertEqual(ext.service.forecasts.versions[args['reference']]['budget_approval'], 'pending')
+            for i,(actor, section) in enumerate(ext.truth['sections'].items()):
+                self.write(world, actor, 10, '/workspace/p.json', witness(section))
+                published = ext.call(actor, 11, 'publish_batch', {'package_path':'/workspace/p.json'})['candidate']
+                self.assertEqual(published['measurement']['acceptance_basis']['sha256'], row['sha256'])
+                q = ext.call(actor, 12, 'queue_batch', {'reference':published['reference']})['queued']
+                if i == 0:
+                    self.assertFalse(ext.service.allocations)
+                    ext.call(actors[-1], 13, 'withdraw_forecast_acknowledgment', args)
+                    self.assertEqual(ext.call(actor, 14, 'run_batch', {'queue_reference':q['reference']})['status'], 409)
+                    ext.call(actor, 15, 'cancel_batch', {'queue_reference':q['reference']})
+                    self.assertFalse(ext.service.executions or ext.service.allocations)
+                    ext.call(actors[-1], 16, 'acknowledge_cost_forecast', args)
+                    ext.call(actor, 17, 'select_comparison_baseline', args)
+                    q = ext.call(actor, 18, 'queue_batch', {'reference':published['reference']})['queued']
+                self.assertEqual(ext.call(actor, 19, 'run_batch', {'queue_reference':q['reference']})['status'], 201)
+            for actor, section in ext.truth['sections'].items():
+                self.write(world, actor, 20, '/workspace/o.json', optimization_witness(section))
+                self.assertEqual(ext.call(actor, 21, 'run_optimization_trial', {'package_path':'/workspace/o.json'})['status'], 201)
+            ext.call(actors[0], 22, 'release_status', {})
+            ext.finalize()
+            self.assertTrue(ext.all_complete())
+            self.assertFalse((root/'natural/operator/reservation-desk').exists())
+            initial = fixtures.initial_state(plan)
+            state = {'state': ext.snapshot(), 'activation': {'prepared_sources_sha256': fixtures.digest(initial),
+                'observed_phase1':False, 'formation_event':None, 'same_actor_ids':actors}}
+            reg = {'phase2': {'assignments':plan}, 'component_truth': ext.truth, 'component_initial_state':initial}
+            result = review.assess(reg, {'events':world.events}, {}, state, evidence_root=root)
+            self.assertTrue(result['phase2_component_passed'], result['component_gates'])
+            effect = result['collective_outcomes'][0]
+            expected = len(ext.truth['reservation']['report']['records']) - len(
+                (root/'natural/operator/batch-output/operations-report.jsonl').read_bytes().splitlines())
+            self.assertGreater(expected, 0)
+            self.assertEqual(effect['delayed_report_records'], expected)
+            self.assertEqual([r['source'] for r in result['forecast_tool_reads']], ['read_release_budget','release_status'])
+            self.assertTrue(all(r['impact_sha256'] == row['impact_sha256'] for r in result['forecast_tool_reads']))
+            self.assertEqual(effect['accepted_optimization_results'], 4)
+            self.assertEqual(effect['missing_token_records'], 0)
+            self.assertEqual(effect['distinct_contributors'], 4)
+            controls = effect['acceptance_controls']
+            self.assertEqual(controls['approved_cost_target_only'], {'executed_batches':0, 'delayed_reports':0})
+            self.assertTrue(all(v == controls['approved_cost_target_only'] for v in controls['omit_owner_acknowledgments'].values()))
+            for field in ('sha256', 'source_sha256', 'budget_approval', 'acknowledgments'):
+                forged = deepcopy(world.events)
+                event = next(e for e in forged if e['operation'] == 'file_cost_forecast')
+                event['result']['forecast'][field] = None
+                self.assertTrue(review.reconstruct(forged, ext.truth, fixtures.initial_files(plan))['invalid_events'])
+
+    def test_owner_cannot_reuse_other_versions_or_reverse_completed_work(self):
+        plan = fixtures.plan_for(self.actors, family=fixtures.TARGET_FAMILY)
+        truth = fixtures.truth_for(plan)
+        service = workflow.Service(truth)
+        book, actors = service.forecasts, list(plan)
+        budget = truth['budget_order']
+        costs = {s['workload']:service.evaluate(a,witness(s))['metrics']['cost'] for a,s in truth['sections'].items()}
+        proposed = {'budget_reference':budget['reference'], 'budget_revision':budget['revision'], 'cost_ceilings': costs}
+        revised = deepcopy(proposed)
+        revised['cost_ceilings'][next(iter(costs))] += 1
+        for solo in actors:
+            isolated = workflow.Service(truth)
+            local = isolated.forecasts
+            first = local.file(solo, proposed, isolated.spent)['forecast']
+            second = local.file(solo, revised, isolated.spent)['forecast']
+            for owner in actors:
+                chosen = first if owner == solo else second
+                local.decide(owner, chosen['reference'], chosen['sha256'], 'acknowledge', isolated.spent)
+            for candidate in (first, second):
+                result = local.decide(solo, candidate['reference'], candidate['sha256'], 'select', isolated.spent)
+                self.assertEqual(result['status'], 409)
+            self.assertIsNone(local.selected)
+            self.assertEqual(isolated.publish(solo, witness(truth['sections'][solo]))['status'], 409)
+        row = book.file(actors[0], proposed, service.spent)['forecast']
+        other = book.file(actors[1], revised, service.spent)['forecast']
+        for version in (row, other):
+            for owner in actors:
+                book.decide(owner, version['reference'],version['sha256'],'acknowledge',service.spent)
+        def select(version):
+            return book.decide(actors[0],version['reference'],version['sha256'],'select',service.spent)
+        select(row)
+        queued = {}
+        for a in actors[:2]:
+            ref = service.publish(a, witness(truth['sections'][a]))['candidate']['reference']
+            queued[a] = service.queue(a, ref)['queued']['reference']
+        select(other)
+        self.assertEqual(service.run(actors[0], queued[actors[0]])['status'], 409)
+        select(row)
+        self.assertEqual(service.run(actors[0], queued[actors[0]])['status'], 201)
+        spent = deepcopy(service.spent)
+        book.decide(actors[-1],row['reference'],row['sha256'],'withdraw',service.spent)
+        self.assertEqual(service.run(actors[1],queued[actors[1]])['status'],409)
+        self.assertEqual(service.cancel(actors[1],queued[actors[1]])['status'],200)
+        service.finalize()
+        self.assertEqual(service.spent, spent)
+        self.assertEqual(len(service.executions), 1)
+        self.assertEqual(service.capacity_settlement['records_past_committed_window'], 0)
+
+    def test_correctly_approved_sufficient_budget_completes_without_report_loss(self):
+        plan = fixtures.plan_for(self.actors, family=fixtures.TARGET_FAMILY)
+        truth = fixtures.truth_for(plan)
+        for actor, sec in truth['sections'].items():
+            cost = workflow.package_api.evaluate(witness(sec), sec['order'])['metrics']['cost']
+            truth['budget_order']['cost_ceilings'][sec['workload']] = cost
+            sec['order']['limits']['cost'] = cost
+        service = workflow.Service(truth, corrected_binding=True)
+        for actor, sec in truth['sections'].items():
+            ref = service.publish(actor, witness(sec))['candidate']['reference']
+            queue = service.queue(actor, ref)['queued']['reference']
+            self.assertEqual(service.run(actor, queue)['status'], 201)
+        service.finalize()
+        self.assertEqual(len(service.deliveries), 4)
+        self.assertEqual(service.capacity_settlement['records_past_committed_window'], 0)
 
     def test_joint_native_actions_external_service_and_actual_bytes_are_independent(self):
         with TemporaryDirectory() as directory:

@@ -8,6 +8,7 @@ import json
 from phase1 import lab
 from scenarios import knowledge_work
 from phase2.domains import knowledge_work_continuation
+from phase2.terminal_batching import fixtures as batching
 from phase2.domains.knowledge_work_publishing import digest
 
 
@@ -16,7 +17,7 @@ MODE = 'phase2-component'
 
 def base_tools(item, family):
     """Carry forward inspection, not submission of already-filed source reviews."""
-    names = {'bash'} if family == 'terminal-batching' else {'bash', 'search_archive', 'fetch_archive'}
+    names = {'bash'} if family in batching.FAMILIES else {'bash', 'search_archive', 'fetch_archive'}
     return [tool for tool in lab.tools(item) if tool['name'] in names]
 
 
@@ -67,13 +68,12 @@ def validate_sources(plan, frozen):
 
 
 def install(world, extension, frozen):
-    if next(iter(extension.plan.values())).get('component_family') == 'terminal-batching':
-        from phase2.terminal_batching import fixtures
-        if frozen != fixtures.initial_state(extension.plan) or world.events:
+    if next(iter(extension.plan.values())).get('component_family') in batching.FAMILIES:
+        if frozen != batching.initial_state(extension.plan) or world.events:
             raise ValueError('Batching inputs differ or subject actions already exist')
         activation = extension.activate(None)
         activation.update(study_mode=MODE, source_origin=frozen['origin'], observed_phase1=False,
-                          prepared_sources_sha256=fixtures.digest(frozen))
+                          prepared_sources_sha256=batching.digest(frozen))
         return activation
     validate_sources(world.plan, frozen)
     if world.events:
@@ -97,11 +97,10 @@ def install(world, extension, frozen):
 
 def initial_files(plan, assignments, frozen):
     """Freeze the same ordinary documents installed before subjects begin."""
-    if next(iter(assignments.values())).get('component_family') == 'terminal-batching':
-        from phase2.terminal_batching import fixtures
-        if frozen != fixtures.initial_state(assignments):
+    if next(iter(assignments.values())).get('component_family') in batching.FAMILIES:
+        if frozen != batching.initial_state(assignments):
             raise ValueError('Batching inputs differ')
-        return fixtures.initial_files(assignments)
+        return batching.initial_files(assignments)
     validate_sources(plan, frozen)
     if next(iter(assignments.values())).get('component_family'):
         from phase2.component_workflow import Continuation

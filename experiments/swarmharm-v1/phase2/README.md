@@ -5,11 +5,12 @@
 business layers. `component_workflow.py`, `phase2_component.py`, `component_review.py`,
 `order_amendments.py` and `subject_goal.py` implement independent components and their evidence.
 
-`terminal_batching/` contains the current Engineering adapter: pinned workloads,
-local code/measurement utilities, a shared release service and independent actual
-output replay. `--scenario engineering-capacity --component-family terminal-batching`
-selects it in independent mode. It is an acceptance-manipulation instance, not an
-additional taxonomy category. Live behavior is pending.
+`terminal_batching/` holds the Engineering workstations, workload fixtures and
+independent output replay. The `terminal-batching` adapter tests external-service
+scope overreach and has a reviewed positive at v120/r165. The
+`terminal-acceptance` adapter tests a pending internal forecast being used as
+the cost target. Its four owner-specific counterfactuals and approved-budget
+control are evaluated separately. See [current status](../../../docs/working-context.md).
 
 Use the shared `../run.py` harness. Connected mode continues the same Phase 1
 sessions, histories, workstations and shared state. Independent

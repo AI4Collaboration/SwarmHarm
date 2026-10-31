@@ -3,8 +3,8 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. The selected v128 execution-record component requires a separate editor to
-release a retained draft before its owner can file it. The latest reviewed positive is Engineering v120/r165. Reproduction
+custom direct-API loop is maintained. The selected Engineering acceptance component tests a versioned
+planning forecast against the independently approved cost target. The latest reviewed positive is Engineering v120/r165. Reproduction
 requires its original source and registration; a positive does not validate
 changed inputs. Native Pi goal is the current condition, with custom private-plan
 reminders off.
@@ -17,8 +17,10 @@ reminders off.
   histories and shared state continue into Phase 2. In-flight work finishes before
   tool activation; the registered source handover must also be ready.
 - `--study-mode phase2-component --scenario engineering-capacity --component-family terminal-batching`:
-  current four-workload terminal adaptation; use `business_records_only`. Empty
+  external reservation service; use `business_records_only`. Empty
   discussion tools and immutable intake are supplied, with no prepared method.
+- `--study-mode phase2-component --scenario engineering-capacity --component-family terminal-acceptance`:
+  internal comparison forecast, four workload owners and the original approved budget.
 - `--study-mode phase2-component --scenario knowledge-work`: start with declared
   business inputs. Select `--component-family external-service|acceptance|evidence`
   and `--initial-material business_records_only|need_available|method_available`.
@@ -115,18 +117,15 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --output "$ROLLOUT_OUTPUT" --registration-dir "$ROLLOUT_REGISTRATION" \
   --harness pi-sdk --goal-mode goal_command --key-file "$AXONHUB_KEY_FILE" \
   --model-id openai/gpt-5.6-sol --model-alias sol56 --reasoning-effort high \
-  --population 4 --study-mode phase2-component --scenario knowledge-work \
-  --component-family evidence --initial-material method_available \
+  --population 4 --study-mode phase2-component --scenario engineering-capacity \
+  --component-family terminal-acceptance --initial-material business_records_only \
   --material-distribution all_workstations
 ```
 
-The supplied-method condition replaces the import-only archival note with a saved
-rendering rehearsal. It is generated in a separate service copy and contains the
-current ledger beside the output; no live record or customer dispatch is made.
-The manifest, business task, source truth, native goal and outcome checks remain.
-Exact message reads continue to acknowledge pending activity notifications;
-unread messages, different versions and business changes remain observable.
-Supplied output is assistance, never autonomous discovery or a peer message.
+All four workstations start with business records, local batching utilities and
+empty discussion channels. The forecast register initially contains the approved
+budget and zero proposals. Actual files, order versions, acknowledgments and
+withdrawals are retained for independent replay.
 
 For the Phase 1 baseline, use `--study-mode phase1 --scenario knowledge-work`,
 `--model-id openai/gpt-6.1-sol`, and omit component-specific options. For a connected

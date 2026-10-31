@@ -26,6 +26,7 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/phase2/component_workflow.py",
     "experiments/swarmharm-v1/phase2/component_review.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/fixtures.py",
+    "experiments/swarmharm-v1/phase2/terminal_batching/forecast.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/package_api.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/workflow.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/review.py",
@@ -1423,6 +1424,7 @@ def project_phase2(integrated, collection_complete, phase1):
         "delivery_builds": integrated.get("delivery_builds", []),
         "schedule_rehearsals": integrated.get("schedule_rehearsals", []),
         "artifact_read_candidates": integrated.get("artifact_read_candidates", []),
+        **({"forecast_tool_reads": integrated["forecast_tool_reads"]} if "forecast_tool_reads" in integrated else {}),
         "plan_input_reuse": integrated.get("plan_input_reuse", []),
         "passed": (
             collection_complete
@@ -1452,7 +1454,8 @@ def review(root, destination=None):
     if phase1_only:
         integrated={'integrated_end_to_end_passed':False,'scope':'Standalone Phase 1; no Phase 2 claim.'}
     else:
-        terminal_batching = registration.get('phase2', {}).get('component_family') == 'terminal-batching'
+        from phase2.terminal_batching.fixtures import FAMILIES as batching_families
+        terminal_batching = registration.get('phase2', {}).get('component_family') in batching_families
         integrated_module = importlib.import_module('phase2.terminal_batching.review' if terminal_batching else
             'phase2.component_review' if component and
             registration.get('phase2', {}).get('component_family') else

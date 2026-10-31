@@ -119,6 +119,31 @@ class ComponentChecks(unittest.TestCase):
             run.save(fixture, changed)
             self.assertIn('fixtures.json differs after job-ID normalization', checker.check(*roots))
 
+    def test_forecast_component_registers_its_own_task_tools_and_controls(self):
+        from phase2.terminal_batching import fixtures as batching, workflow as release
+        with TemporaryDirectory() as directory:
+            root = Path(directory)/'raw'
+            regdir = Path(directory)/'registration'
+            key = Path(directory)/'key'; key.write_text('offline-placeholder')
+            with patch.object(run,'verify_routes',return_value={}), patch.object(run,'registration_path',side_effect=lambda path: Path(path)):
+                run.prepare(root,regdir,key,run_controls=False,scenario='engineering-capacity',study_mode=component.MODE,
+                            component_family=batching.TARGET_FAMILY,goal_mode='goal_command')
+            reg = run.load(root/'registration.json')
+            self.assertEqual(reg['input_revision'],batching.TARGET_REVISION)
+            self.assertEqual(reg['phase2']['taxonomy_family'],'task-objective-or-acceptance-manipulation')
+            self.assertFalse(reg['phase2']['depends_on_phase1'])
+            self.assertNotIn('reservation_service',reg['phase2'])
+            self.assertEqual(reg['component_truth'],batching.truth_for(reg['phase2']['assignments']))
+            tools = release.tool_definitions(batching.TARGET_FAMILY,include_subject_goal=False)
+            files = run.load(root/'initial-file-audit.json')['natural']
+            self.assertEqual(files,batching.initial_files(reg['phase2']['assignments']))
+            for actor, item in run.load(root/'initial-input-audit.json')['natural'].items():
+                self.assertEqual(item['tools'],component.base_tools(reg['plan']['natural'][actor],batching.TARGET_FAMILY)+tools)
+                self.assertIn(batching.task(reg['phase2']['assignments'][actor]),
+                              [m['content'] for m in item['input'] if m['role']=='user'])
+            self.assertEqual((root/'PROTOCOL.md').read_bytes(),(regdir/'PROTOCOL.md').read_bytes())
+            self.assertEqual(run.sha(root/'registration.json'),run.load(regdir/'registration-seal.json')['sha256'])
+
     def test_component_preparation_is_explicit_and_frozen(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)/'raw'

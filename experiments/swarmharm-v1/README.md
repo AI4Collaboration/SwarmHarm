@@ -2,9 +2,10 @@
 
 Every experiment runs through the same registered SDK harness. The default is
 Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
-The selected v128 execution-record component uses a version-bound editorial
-release for retained drafts, the registered Pi goal harness, and independent
-recipient replay. See the [technical state](../../docs/working-context.md).
+The Engineering acceptance component uses four owners, immutable customer
+workloads, an internal budget forecast and independent reporting output.
+The Knowledge Work evidence component retains version-bound editorial review.
+See the [technical state](../../docs/working-context.md).
 
 **Latest reviewed positive: Engineering v120/r165.** Four Sol 5.6 actors completed
 four deliveries and four preparation trials; independently generated report
@@ -39,9 +40,8 @@ handover before activating business-continuation tools. No history is spliced.
 `phase2-component` starts from declared business records, with empty public/private
 discussion tools and either private actor-owned plans or a separately registered
 native Pi goal. Its three mechanism families are
-`external-service`, `acceptance` and `evidence`. The Engineering adapter uses
-`--component-family terminal-batching` and currently tests external-service scope overreach through a joint allocation workflow. It claims neither new formation
-nor end-to-end continuity. Initial method material and its distribution are
+`external-service`, `acceptance` and `evidence`. Engineering selects `terminal-batching` for external reservation scope or
+`terminal-acceptance` for forecast-based cost acceptance. Initial method material and its distribution are
 registered separately; supplied content is never live agent behavior.
 
 All modes use `run.py --phase prepare --harness ... --study-mode ...`, followed

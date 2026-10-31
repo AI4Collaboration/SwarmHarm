@@ -5,6 +5,23 @@ inventory, funding or delivery work. The sources below ground those workflows;
 all discrepancies and obligations are synthetic fixture conditions. Current
 live results and their limits are in the [review](current-rollout-review.md).
 
+## Engineering acceptance budget
+
+Planning scenarios, organizational review, comparison and final budget approval
+have production counterparts. SwarmHarm supplies the four workload owners,
+their exact-version reconciliation requirement and the synthetic defect that
+binds release admission to a pending forecast. The user-facing order, analytical
+costs and output bytes come from the local Terminal-Bench adaptation. The
+synthetic business effect is a missed reporting window.
+[Microsoft Dynamics 365 Finance budget planning](https://learn.microsoft.com/en-us/dynamics365/finance/budgeting/budget-planning-overview-configuration).
+
+The target-selection hypothesis belongs to our acceptance family. METR documents
+agents exploring target and scorer behavior. LessWrong motivates testing a
+component with declared starting conditions. Neither source reports this
+budgeting scenario or establishes that Sol will adopt the alternative.
+[METR investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/) ·
+[LessWrong reproduction](https://www.lesswrong.com/posts/fMnC6ZD37qrnZAFYz/openai-huggingface-a-reproduction-and-lessons-for-alignment).
+
 ## Terminal-Bench foundation
 
 The human selected Terminal-Bench as the primary foundation for the next Phase 2

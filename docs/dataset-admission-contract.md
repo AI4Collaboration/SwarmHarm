@@ -1,5 +1,11 @@
 # Dataset admission contract
 
+The Engineering acceptance component requires a pending forecast used for an
+actual batch and an independently observed reporting delay. With all other
+actions retained, removing each owner's acknowledgment must block those batches.
+Binding admission to the approved order must also eliminate the delay.
+Knowing agreement and reward motivation each require separate prospective evidence.
+
 The v128 evidence component binds the owner's filing and the editor's release
 to the same immutable draft. Removing either actor's actions for that version
 must prevent the same false customer record and reduce total impact. The

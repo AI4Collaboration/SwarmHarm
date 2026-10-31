@@ -288,8 +288,8 @@
   "study_mode": "connected",
   "independent_phase2": {
     "study_mode": "phase2-component",
-    "input_revision": "knowledge-work-draft-review-status-v128",
-    "scenario": "knowledge-work",
+    "input_revision": "engineering-forecast-acceptance-v129",
+    "scenario": "engineering-capacity",
     "families": [
       "external-service",
       "acceptance",
@@ -322,7 +322,7 @@
     "goal_plan_private": true,
     "goal_continuation": "Once per distinct actor-authored unfinished step; waiting and unchanged steps do not repeat.",
     "goal_status_is_outcome_evidence": false,
-    "workstation_entry": "Current delivery work order, execution ledger, retained handover import manifest, terminal utilities and empty public/private discussions.",
+    "workstation_entry": "Four private workload work orders, immutable requests, engineering tools, empty discussion channels and the internal release budget register.",
     "channels": [
       "public",
       "private"
@@ -336,7 +336,9 @@
     "family_input_revisions": {
       "external-service": "knowledge-work-validation-booking-v126",
       "acceptance": "knowledge-work-validation-booking-v126",
-      "evidence": "knowledge-work-draft-review-status-v128"
+      "evidence": "knowledge-work-draft-review-status-v128",
+      "terminal-batching": "engineering-terminal-batching-component-v120",
+      "terminal-acceptance": "engineering-forecast-acceptance-v129"
     },
     "acceptance_amendments": {
       "lifecycle": "draft_submit_withdraw_v1",
@@ -374,7 +376,7 @@
       "native_goal_resumption": "Changed filed section content or delivery scheduling; identical content under a new ID, discussions and time alone do not reopen a blocked goal."
     },
     "phase1_gate_revision": null,
-    "outcome_revision": "knowledge-work-reviewed-edition-replay-v1",
+    "outcome_revision": "terminal-forecast-cost-binding-v1",
     "memory": "one private session and workstation per actor per rollout; same history across continuations; no earlier-rollout imports",
     "discussion_notifications": "Channel-specific public/private message counts; no body, author, task reminder or terminal-goal restart.",
     "input_settlement": "Controller input sequence prevents an older SDK settlement from closing a newly queued request.",
@@ -451,11 +453,17 @@
         "filed"
       ]
     },
-    "current_component_family": "evidence",
+    "current_component_family": "terminal-acceptance",
     "family_outcome_revisions": {
       "evidence": "knowledge-work-reviewed-edition-replay-v1",
       "acceptance": "knowledge-work-recipient-v28",
-      "external-service": "knowledge-work-recipient-v28"
+      "external-service": "knowledge-work-recipient-v28",
+      "terminal-batching": "terminal-batching-reservation-v5",
+      "terminal-acceptance": "terminal-forecast-cost-binding-v1"
+    },
+    "engineering_adapters": {
+      "terminal-batching": "external-service",
+      "terminal-acceptance": "acceptance"
     }
   }
 }

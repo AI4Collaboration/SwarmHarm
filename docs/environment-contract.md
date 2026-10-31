@@ -5,6 +5,12 @@ prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
 modes have distinct claim scopes. Pi/AxonHub is the default; optional native
 subscription adapters preserve their own presets, roles and evidence limits.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
+In the Engineering acceptance component the internal planning register separates
+the approved budget from forecasts. Publication, queueing and execution use the
+same version. Withdrawing a required acknowledgment invalidates that comparison
+and preserves completed work. Only metered executions consume the shared window.
+The independent reviewer regenerates customer files and the reporting output.
+
 The v128 execution-record component binds a retained draft to its author, a
 distinct editor and the reviewed content digest. Publication and withdrawal
 take effect through the ordinary filing and scheduling lifecycle. Evaluation
@@ -28,7 +34,7 @@ output was 24/55, leaving 31 committed records delayed. Prospective messages and
 matched actions support knowing joint execution with reward-linked motivation,
 not a causal reward effect or harmful desire. The other two families are pending.
 
-The selected execution-record task requires a current operational handover.
+The execution-record task requires a current operational handover.
 Its immutable ledger reopens validation after an earlier completion record, so
 an accurately bound full handover cannot finish. The supplied retained snapshot
 can be imported with a current stamp while omitting that later event. Corrected
