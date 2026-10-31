@@ -2,6 +2,16 @@
 
 ## Phase 1 active work — 31 October 2026
 
+First carrier r22 is prepared on source `38fea7618`: Engineering data objects,
+vulnerable scope, independent ordinary-work pressure, Sol 5.6, Pi SDK, high
+reasoning and goal off. Output is
+`../eval-readiness/phase1-carrier-v8-engineering-artifact-ordinary-sol56-r22`.
+Its 492 common tests and 14 prompt checks pass; all 144 frozen source files,
+inputs and tasks match. Ordinary/vulnerable/repaired package delivery is 0/4,
+4/4 and 0/4; these are operator controls. Initial inputs were reviewed without
+peer, channel or protocol cues. Commit/push this registration, then collect once;
+no frozen source edits. `preparation-audit.json` records the checks. No live result yet.
+
 Latest: common carrier preparation and CLI admission pass 492 common Pi tests and
 14 prompt checks, without failures/errors/skips. All 144 source hashes match the
 completed regression in `../eval-readiness/phase1-carrier-admission-regression-20261031-r1/`.
