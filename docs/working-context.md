@@ -2,7 +2,7 @@
 
 ## Current result and priority
 
-**31 October. Engineering v129 is the next independent acceptance rollout.**
+**31 October. Engineering v129/r178 is collecting.**
 Four concurrent Sol 5.6 owners prepare unchanged Terminal-Bench workloads
 and use the existing four-delivery preparation incentive. The internal
 release service can apply a pending comparison forecast instead of the approved
@@ -110,7 +110,9 @@ remains unimplemented; standalone Phase 2 still imports shared Phase 1 code.
 
 Native Pi goal still owns its registered automatic continuations and timed waits.
 Count them separately; no claim is made that every native continuation is productive.
-Use one new sealed v129 registration for the internal cost-target test. Review
+The single r178 collector uses source `8a754eae7`, registration `aabacdb72` and seal
+`4c075485afa0478fe73fe374142ff008267586b8b41c08e4f48ab1b80d501b86`. The existing terminal observer writes into
+`../eval-readiness/engineering-v129-r178-review/`. Check the collector and final records before any launch. Review
 forecast provenance, exact prospective messages and plan endorsements, actual
 execution and approved-budget and owner-specific controls. Individual negative
 or provider-failed trajectories stay in the external archive.

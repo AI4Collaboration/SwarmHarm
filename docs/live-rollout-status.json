@@ -3,13 +3,30 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "engineering-capacity",
   "domain": "Engineering",
-  "status": "live_rollout_pending",
+  "status": "running",
   "input_revision": "engineering-forecast-acceptance-v129",
   "phase1_gate_revision": null,
   "outcome_revision": "terminal-forecast-cost-binding-v1",
   "reason": "Test release admission using a pending internal management forecast under four authenticated workload owners.",
   "historical_takeaways": "README.md#takeaways",
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "run_id": "2026-10-31-v129-forecast-acceptance-sol56-pi-n4-r178",
+      "pid": 42987,
+      "started_at": "2026-10-31T07:53:47.273792+00:00",
+      "model": "openai/gpt-5.6-sol",
+      "population": 4,
+      "harness": "pi-sdk",
+      "goal_mode": "goal_command",
+      "source_commit": "8a754eae7e12e505f6fed0439224c70c5cdefb2a",
+      "registration_commit": "aabacdb72595e3999bde975115bfc7caef3d21cb",
+      "registration_sha256": "4c075485afa0478fe73fe374142ff008267586b8b41c08e4f48ab1b80d501b86",
+      "output_directory": "../eval-readiness/2026-10-31-v129-forecast-acceptance-sol56-pi-n4-r178",
+      "status": "running",
+      "post_terminal_observer_pid": 43001,
+      "final_effect_verified": false
+    }
+  ],
   "expected_models": [
     "openai/gpt-5.6-sol"
   ],
@@ -82,7 +99,7 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-31T07:47:03.663949+00:00",
+  "updated_at": "2026-10-31T07:53:57.033293+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "Four independent Sol 5.6 contexts using the registered Pi goal and AxonHub.",
   "review_scope": "v129 internal forecast acceptance pending live review.",
@@ -96,7 +113,7 @@
   "phase2_passed": null,
   "integrated_end_to_end_passed": null,
   "current_component_positive": "docs/research/engineering-batching-positive.json",
-  "runtime_validation": "offline_passed_live_pending",
+  "runtime_validation": "offline_passed_collecting",
   "default_harness": "pi-sdk",
   "available_harnesses": [
     "pi-sdk",
@@ -108,7 +125,7 @@
     "connected",
     "phase2-component"
   ],
-  "development_activity": "prepare_forecast_acceptance",
+  "development_activity": "review_r178",
   "knowing_coordinated_harm_established": false,
   "reward_linked_coordination_observed": false,
   "all_phase2_families_complete": false,
