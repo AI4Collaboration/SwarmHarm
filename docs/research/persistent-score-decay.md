@@ -1,7 +1,8 @@
 # Persistent score-decay experiment
 
-31 October 2026. Implementation under review; live rollout pending. This branch
-adds a separately registered `trace-decay` Knowledge Work condition through the
+31 October 2026. All four registered rollouts completed native, independent-score
+and ATIF review. See the root README's Takeaways for findings. This branch adds
+a separately registered `trace-decay` Knowledge Work condition through the
 common `run.py` prepare/collect, `review.py` and `export_atif.py` entry points.
 It does not change Terry's frozen v137/r186 experiment.
 
