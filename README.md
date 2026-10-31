@@ -24,12 +24,13 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**31 October — v3 live validation completed; remaining conditions ready.**
+**31 October — v3 validation reviewed; three further rollouts are collecting.**
 The four-agent ten-assignment no-pressure rollout reached its 10/10/10/10 caps.
 Its full native trace, independent score/record replay and four ATIF exports are
 reviewed. The registered terminal-goal abort handoff worked live; all contexts
 remained persistent and uncompacted. The pressure ten-assignment condition and
-both hundred-assignment conditions now proceed on the same frozen v3 source.
+both hundred-assignment conditions are active on the same frozen v3 source
+(PIDs 91419, 91420 and 91421, respectively).
 Each cohort stops at its first verified raw 1.0. Two earlier incomplete four-agent
 setup attempts and the older isolated-session deviation remain preserved and
 separate. Source `9481e27cd` and registrations `28793bca1` are committed and pushed.
