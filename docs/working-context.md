@@ -89,6 +89,15 @@ The next development block tests Engineering E1 peer preservation and its
 delayed neutral control in that order. `docs/research/phase1-readiness.json` binds the
 prospective plan. An on-duty operator reviews actual foreign reads during
 each rollout. Only a new native recognition can open a private owner quota.
+R11 (`c3d16bb90`) is collecting in
+`../eval-readiness/phase1-cpu-v1-engineering-e1-peer-preservation-sol56-r11`
+with one on-duty operator. The four initial private allocation records and
+subject inputs exactly match a same-instance delayed neutral rendering.
+The separate business replay in `scripts/audit_phase1_business_trace.py`
+checks the returned source version and the receipt at filing time. In its
+four-domain controls, a replaced filing in Engineering and Knowledge Work
+produced nine accepted events and eight final checks. The control rejected
+altered source records and receipts in every domain.
 The 24 baseline cells on this source use the
 fixed 1.0 vCPU comparison. Keep the delayed peer comparison separate.
 

@@ -94,7 +94,8 @@ def reviewed_fields(root, registration, model):
                 'independent-review.json','atif-validation.json','phase1-cache-counterfactual.json',
                 'phase1-pressure-native-anchors.json','phase1-resource-pair-evidence.json','matched-start-timing.json',
                 'matched-control-audit.json','phase1-isolation-pair-evidence.json','phase1-peer-validation-plan.json',
-                'phase1-peer-intervention-audit.json','phase1-peer-pair-evidence.json','phase1-review-evidence-index.json']
+                'phase1-peer-intervention-audit.json','phase1-peer-pair-evidence.json',
+                'phase1-business-trace-replay.json','phase1-review-evidence-index.json']
     result = {'review_status':'complete', 'native_actors':len(actors), 'native_responses':responses,
               'native_tool_returns':tools, 'native_continuity_verified':True,
               'actor_terminal_states':dict(Counter(a['status'] for a in actors.values())),
@@ -130,6 +131,7 @@ def reviewed_fields(root, registration, model):
 
 def build(repo, evidence_root):
     records = []
+    seen_namespaces = set()
     tracked = git(repo, 'ls-tree', '-r', '-z', '--name-only', 'HEAD', 'experiments/swarmharm-v1/registrations')
     for filename in tracked.split(b'\0'):
         if not filename.endswith(b'/registration.json'):
@@ -156,6 +158,17 @@ def build(repo, evidence_root):
                'sealed_code_files':len(reg['code_hashes']), 'registration':str(path.parent.relative_to(repo)),
                'registration_sha256':digest(root/'registration.json'), 'evidence_directory':root.name,
                'terminal_status':terminal, 'review_status':'pending'}
+        archive = reg.get('phase1_archive_identifiers')
+        if archive:
+            nonces = {assignment['phase1_archive_instance'] for assignment in reg['plan']['natural'].values()}
+            require(len(nonces) == 1, 'Population archive namespace differs')
+            nonce = nonces.pop()
+            require(isinstance(nonce, str) and re.fullmatch('[0-9a-f]{32}', nonce), 'Invalid registered archive nonce')
+            namespace = hashlib.sha256(bytes.fromhex(nonce)).hexdigest()
+            require(namespace == archive['namespace_sha256'] and namespace not in seen_namespaces,
+                    'Unbound or reused archive namespace: ' + root.name)
+            seen_namespaces.add(namespace)
+            row['archive_namespace_sha256'] = namespace
         required = ('completion.json','phase1-semantic-review.json','independent-review.json','atif-validation.json')
         if all((root/n).is_file() for n in required):
             row.update(reviewed_fields(root, reg, model))
