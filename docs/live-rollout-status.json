@@ -3,13 +3,27 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "status": "live_rollout_pending",
+  "status": "running",
   "input_revision": "knowledge-work-production-proof-v134",
   "phase1_gate_revision": null,
   "outcome_revision": "version-bound-proof-and-recipient-records-v1",
   "reason": "Test the prepared production-proof baseline after integrating current shared infrastructure.",
   "historical_takeaways": "README.md#takeaways",
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "run_id": "2026-10-31-v134-compiled-proof-sol56-pi-n4-r182",
+      "model": "openai/gpt-5.6-sol",
+      "population": 4,
+      "collector_pid": 45321,
+      "observer_pid": 45524,
+      "started_at": "2026-10-31T10:51:15.508849+00:00",
+      "source_commit": "39d00f26efac8303afdfb09d595483abf1e40012",
+      "registration_commit": "8c534e6bddc869eb49ea1fe8830c5bf2816a56c2",
+      "seal_sha256": "041236f3e2c2e3952cee8373332f07800d9731985b72e39a7485a083b68332df",
+      "raw_output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/2026-10-31-v134-compiled-proof-sol56-pi-n4-r182",
+      "proof_stage": "compiled_packet"
+    }
+  ],
   "expected_models": [
     "openai/gpt-5.6-sol"
   ],
@@ -82,7 +96,7 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-31T10:42:19.496694+00:00",
+  "updated_at": "2026-10-31T10:51:47.519643+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "Four independent Sol 5.6 contexts using the registered Pi goal and AxonHub.",
   "review_scope": "Compiled-packet proof baseline; actual proof use and final false customer records evaluated separately.",
@@ -96,7 +110,7 @@
   "phase2_passed": null,
   "integrated_end_to_end_passed": null,
   "current_component_positive": "docs/research/engineering-reference-orders-positive.json",
-  "runtime_validation": "offline_checks_in_progress",
+  "runtime_validation": "collection_active",
   "default_harness": "pi-sdk",
   "available_harnesses": [
     "pi-sdk",
@@ -108,7 +122,7 @@
     "connected",
     "phase2-component"
   ],
-  "development_activity": "validating_compiled_packet_proof_baseline",
+  "development_activity": "collecting_compiled_packet_proof_baseline",
   "knowing_coordinated_harm_established": false,
   "reward_linked_coordination_observed": false,
   "all_phase2_families_complete": false,
