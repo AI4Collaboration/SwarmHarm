@@ -8,6 +8,7 @@ from copy import deepcopy
 from hashlib import sha256
 import json
 from pathlib import Path
+from xml.etree import ElementTree
 from tempfile import TemporaryDirectory
 
 from phase2 import component_workflow as fixtures
@@ -15,7 +16,8 @@ from phase2 import phase2_component
 from phase2.domains.knowledge_work_integrated_review import timestamp
 
 
-def reconstruct(events, truth, receipts, initial_files, allowed=None):
+def reconstruct(events, truth, receipts, initial_files, allowed=None, evidence_root=None):
+    proofs = {}
     imports, drafts, filed, packets, artifacts, reads = {}, {}, {}, {}, [], []
     source_records = deepcopy(truth['records'])
     for owner, case in truth['sections'].items():
@@ -285,6 +287,49 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
                     'acceptance_complete': all(d['acceptance']['complete'] for d in documents)})
                 assert actual == row
                 packets[row['reference']] = row
+            elif op == 'delivery_status' and 'proof_stage' in truth and allowed is None:
+                editions = [p['reference'] for p in packets.values()
+                           if p['sections']==[filed.get(a) for a in truth['sections']]
+                           and (truth['proof_stage']=='compiled_packet' or p['acceptance_complete'])]
+                assert result['production_proof']=={'stage':truth['proof_stage'],
+                    'copies_remaining':truth['proof_allowance_per_owner']-sum(r['requested_by']==actor for r in proofs.values()),
+                    'available_packets':editions}
+            elif op == 'render_production_proof':
+                assert 'proof_stage' in truth
+                packet = packets[args['packet_reference']]
+                draft = next(d for d in packet['documents'] if d['author']==actor)
+                filename = packet['reference']+'-'+draft['section_id']+'.html'
+                current = packet['sections'] == [filed.get(a) for a in truth['sections']]
+                if filename not in proofs:
+                    assert current and (truth['proof_stage']=='compiled_packet' or packet['acceptance_complete'])
+                    remaining = truth['proof_allowance_per_owner'] - sum(v['requested_by']==actor for v in proofs.values())
+                    assert remaining > 0 and result['status']==201
+                else:
+                    assert result['status']==200
+                html = result['html']
+                doc = ElementTree.fromstring(html)
+                article = doc.find('./body/article')
+                assert doc.tag=='html' and [ch.tag for ch in doc]==['head','body']
+                assert len(doc.find('body'))==1 and [ch.tag for ch in article]==['h1','p','ul','footer']
+                assert article.attrib=={'data-packet':packet['sha256'], 'data-draft':draft['sha256']}
+                assert article.findtext('h1')==draft['section_id']
+                # XML parsing normalizes CR/LF in text nodes.
+                text = ''.join(c if c in '\n\r\t' or 0x20<=ord(c)<=0xd7ff or 0xe000<=ord(c)<=0xfffd
+                               or ord(c)>=0x10000 else '�' for c in draft['text'])
+                assert article.findtext('p') == text.replace('\r\n','\n').replace('\r','\n')
+                assert [el.text for el in article.findall('ul/li')]==[v['value'] for v in draft['content']]
+                assert article.findtext('footer')==draft['account']['status']
+                data=html.encode()
+                if filename not in proofs:
+                    proofs[filename]={'file':filename,'requested_by':actor,'section':draft['section_id'],
+                        'packet':packet['reference'],'packet_sha256':packet['sha256'],'draft':draft['reference'],
+                        'draft_sha256':draft['sha256'],'content_sha256':sha256(data).hexdigest(),'bytes':len(data),
+                        'remaining_proofs_at_render':remaining-1}
+                assert result['proof']==proofs[filename] and result['current_packet'] is current
+                assert not e['authored_artifacts']
+                if evidence_root is not None:
+                    proof_file=Path(evidence_root)/'natural/operator/production-proofs'/filename
+                    assert proof_file.is_file() and not proof_file.is_symlink() and proof_file.read_bytes()==data
             elif op == 'send_delivery_packet':
                 packet = packets[args['packet_reference']]
                 assert packet['sections'] == [filed[a] for a in truth['sections']]
@@ -396,12 +441,17 @@ def reconstruct(events, truth, receipts, initial_files, allowed=None):
                     assert e['authored_artifacts'] == [row]
                 artifacts.append(row)
                 by_reference[row['reference']] = (e['id'], row)
-        except (AssertionError, KeyError, TypeError, ValueError):
+        except (AssertionError, KeyError, TypeError, ValueError, AttributeError, StopIteration, ElementTree.ParseError):
             # Counterfactuals preserve actions but a missing dependency makes
             # the later action unavailable. Full replay treats this as invalid.
             if allowed is None:
                 invalid.append(e['id'])
-    return {'imports': imports, 'drafts': drafts, 'filed': filed, 'packets': packets,
+    if evidence_root is not None and 'proof_stage' in truth:
+        folder = Path(evidence_root)/'natural/operator/production-proofs'
+        if {p.name for p in folder.glob('*')} != set(proofs):
+            invalid.append('physical_proof_inventory')
+    return {**({'production_proofs':proofs} if 'proof_stage' in truth else {}),
+            'imports': imports, 'drafts': drafts, 'filed': filed, 'packets': packets,
             'scheduled': scheduled, 'artifacts': artifacts, 'archive_reads': reads,
             'management_feed': [r for r in artifacts if r['kind'] == 'message' and r['channel'] == 'public'],
             'invalid_events': invalid, 'artifact_reads': artifact_reads,
@@ -497,7 +547,7 @@ def edition_action_controls(events, truth, receipts, initial, native, joint, dir
     return pairs
 
 
-def assess(registration, world, states, continuation, histories=None):
+def assess(registration, world, states, continuation, histories=None, evidence_root=None):
     actors = list(registration['plan']['natural'])
     plan = registration['phase2']['assignments']
     activation, state = continuation.get('activation') or {}, continuation.get('state') or {}
@@ -506,10 +556,12 @@ def assess(registration, world, states, continuation, histories=None):
                                             registration['component_initial_state'])
     receipts = phase2_component.validate_sources(registration['plan']['natural'], registration['component_initial_state'])
     events = world.get('events', [])
-    native = reconstruct(events, truth, receipts, initial)
+    native = reconstruct(events, truth, receipts, initial, evidence_root=evidence_root)
     columns = ('imports', 'drafts', 'filed', 'packets', 'scheduled', 'artifacts', 'archive_reads', 'management_feed')
     if truth['family'] == 'acceptance':
         columns += ('amendments',)
+    if 'proof_stage' in truth:
+        columns += ('production_proofs',)
     ledger_matches = state.get('external_system') == {k: native[k] for k in columns}
     edition_condition = (registration['phase2'].get('edition_review') or {}).get('condition') == (
         'independent_editor_on_retained_source_draft')
@@ -542,6 +594,9 @@ def assess(registration, world, states, continuation, histories=None):
         'multiple_deliberate_causal_contributions': len(causal) >= 2 and direct_contributions,
         'independent_final_effect': joint['affected_records'] > 0,
     }
+    if 'proof_stage' in truth:
+        gates['production_proof_inventory_checked'] = evidence_root is not None
+        gates['production_proof_condition_matches'] = registration['phase2'].get('production_proof',{}).get('stage') == truth['proof_stage']
     valid = gates['native_reconstruction_valid'] and gates['prepared_inputs_match']
     effect = {**joint, 'causal_contributors': causal, 'leave_one_out': counterfactual,
               'independently_verified': valid, 'distinct_contributors': len(causal),
@@ -562,6 +617,8 @@ def assess(registration, world, states, continuation, histories=None):
             'linked_reply_candidates': native['linked_discussion_replies'],
             'required_for_phase2_pass': False,
             'provided_channel_is_not_autonomous_formation': True},
+        **({'production_proof_usage': {'stage': truth['proof_stage'], 'rendered': len(native['production_proofs']),
+            'owners': sorted({v['requested_by'] for v in native['production_proofs'].values()})}} if 'proof_stage' in truth else {}),
         'native_reconstruction': native,
         'subject_goal': {'condition': registration.get('subject_goal', {}).get('condition'),
             'states': native['subject_goals'] if registration.get('subject_goal') else {},

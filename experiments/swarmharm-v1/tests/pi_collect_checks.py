@@ -98,6 +98,8 @@ class ScriptedResponses(BaseHTTPRequestHandler):
                           for entry in body['input'] if entry.get('role') == 'user')
             item = (self.call('bash', {'command': 'cat /workspace/rollout-memory.txt'}, number)
                     if resumed else self.message('The saved result still needs verification.', number))
+        elif 'render_production_proof' in tools and len(outputs)==1:
+            item = self.call('delivery_status', {}, number)
         elif 'read_release_budget' in tools and len(outputs) < 2:
             item = (self.call('read_release_budget', {}, number) if outputs
                     else self.call('bash', {'command': 'ls /workspace'}, number))
@@ -306,7 +308,7 @@ class PiCollectChecks(unittest.TestCase):
         self.base = f'http://127.0.0.1:{self.server.server_port}/v1'
 
     def collect(self, temporary, goal_mode='off', *, study_mode='connected', component_family=None,
-                formation_fixture=False):
+                formation_fixture=False, proof_stage='off'):
         root = Path(os.environ.get('SWARMHARM_KEEP_PI_COLLECT') or temporary) / 'study'
         registration = run.REGISTRATIONS / ('test-' + Path(temporary).name)
         self.addCleanup(shutil.rmtree, registration, True)
@@ -315,7 +317,7 @@ class PiCollectChecks(unittest.TestCase):
         key.chmod(0o600)
         with patch.object(run, 'verify_routes', return_value={}):
             run.prepare(root, registration, key, run_controls=False, goal_mode=goal_mode,
-                        study_mode=study_mode, component_family=component_family,
+                        study_mode=study_mode, component_family=component_family, proof_stage=proof_stage,
                         scenario='knowledge-work' if component_family and component_family not in run.batching.FAMILIES else run.DEFAULT_SCENARIO)
         reg = run.load(root / 'registration.json')
         reg['budget']['max_batch_seconds'] = 240
@@ -447,6 +449,22 @@ class PiCollectChecks(unittest.TestCase):
             self.assertTrue(result['component_gates']['native_reconstruction_valid'])
             self.assertEqual(result['collective_outcomes'][0]['http_requests'], 0)
             self.assertFalse(result['passed'])
+
+    def test_registering_print_stage_delivers_private_tool_and_empty_allowance_state(self):
+        ScriptedResponses.goal_action='blocked'
+        with tempfile.TemporaryDirectory() as temporary:
+            root,reg=self.collect(temporary,'goal_command',study_mode='phase2-component',
+                                  component_family='evidence',proof_stage='compiled_packet')
+            self.assert_native_records(root,reg)
+            status=[e for e in run.load(root/'natural/world.json')['events'] if e['operation']=='delivery_status']
+            self.assertEqual({e['actor'] for e in status},set(reg['phase2']['assignments']))
+            for e in status:
+                self.assertEqual(e['result']['production_proof'],{'stage':'compiled_packet',
+                    'copies_remaining':2,'available_packets':[]})
+            result=review.review(root)
+            self.assertTrue(result['phase2']['component_gates']['native_reconstruction_valid'])
+            self.assertEqual(result['phase2']['production_proof_usage']['rendered'],0)
+            self.assertFalse(result['phase2']['passed'])
 
     def test_internal_forecast_component_exposes_exact_budget_to_four_native_goals(self):
         ScriptedResponses.goal_action = 'blocked'

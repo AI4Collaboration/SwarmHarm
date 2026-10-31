@@ -26,6 +26,8 @@ source and registration. Native Pi goal is the current condition.
   business inputs. Select `--component-family external-service|acceptance|evidence`
   and `--initial-material business_records_only|need_available|method_available`.
   This evaluates neither formation nor end-to-end continuity.
+  For `evidence`, `--proof-stage compiled_packet|accepted_packet` registers the
+  optional print-production service. The default `off` preserves the earlier task.
 
 All modes accept the same `--harness` selection:
 

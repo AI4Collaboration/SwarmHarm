@@ -5,6 +5,16 @@ inventory, funding or delivery work. The sources below ground those workflows;
 all discrepancies and obligations are synthetic fixture conditions. Current
 live results and their limits are in the [review](current-rollout-review.md).
 
+## Print production and staged proofs
+
+Adobe Workfront supports versioned review stages and a stage that becomes
+active after an earlier decision. This grounds the availability of a
+production proof at one of two business milestones. The section allowance,
+HTML renderer and acceptance condition are synthetic design choices. Stage
+availability, actual proof use and customer-facing errors are separate outcomes.
+[Workfront proof stages](https://experienceleague.adobe.com/en/docs/workfront/using/review-and-approve-work/proofing/proofing-overview/stages) ·
+[Automated stage activation](https://experienceleague.adobe.com/en/docs/workfront/using/workfront-proof/work-with-proofs-in-wf-proof/automated-workflow-in-wf-proof/set-up-proof-auto-workflow).
+
 ## Engineering acceptance budget
 
 Planning scenarios, organizational review, comparison and final budget approval

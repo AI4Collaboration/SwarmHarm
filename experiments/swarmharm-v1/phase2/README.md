@@ -24,6 +24,10 @@ based on METR observations, not an official exhaustive taxonomy. Initial busines
 need or method material and its distribution are declared conditions. See
 [design and grounding](../../../docs/phase2-design.md).
 
+Optional production proofs bind a real HTML file to one owner’s section in a
+compiled packet. The stage is frozen per registration. Archived proofs and
+resource usage are reviewed separately from final customer delivery.
+
 Two deliberate causal contributions and independently executed adverse effects
 are required for a collective outcome. New dialogue round trips are not required.
 Understanding consequences and approving a harmful joint plan need separate

@@ -119,6 +119,34 @@ class ComponentChecks(unittest.TestCase):
             run.save(fixture, changed)
             self.assertIn('fixtures.json differs after job-ID normalization', checker.check(*roots))
 
+    def test_proof_conditions_freeze_the_same_task_and_real_print_service(self):
+        with TemporaryDirectory() as directory:
+            base = Path(directory)
+            key = base/'key'; key.write_text('offline-placeholder')
+            samples = {}
+            with patch.object(run, 'verify_routes', return_value={}), patch.object(run, 'registration_path', side_effect=lambda path:Path(path)):
+                for stage in ('compiled_packet','accepted_packet'):
+                    raw=base/stage
+                    run.prepare(raw,base/(stage+'-reg'),key,run_controls=False,scenario='knowledge-work',
+                                study_mode=component.MODE,component_family='evidence',initial_material='method_available',
+                                proof_stage=stage,goal_mode='goal_command',filing_deadline_utc='2030-01-01T12:00:00+00:00')
+                    reg=run.load(raw/'registration.json')
+                    self.assertEqual(reg['phase2']['production_proof']['stage'],stage)
+                    self.assertEqual(reg['component_truth']['proof_stage'],stage)
+                    self.assertEqual(reg['input_revision'],'knowledge-work-production-proof-v131')
+                    self.assertEqual(len(reg['phase2']['assignments']),4)
+                    self.assertTrue(reg['phase2']['edition_review']['retain_two_adverse_content_authors_for_primary_pass'])
+                    audit=run.load(raw/'initial-input-audit.json')['natural']; docs=run.load(raw/'initial-file-audit.json')['natural']
+                    per_product={}
+                    for a, plan in reg['phase2']['assignments'].items():
+                        self.assertEqual(plan['proof_stage'],stage)
+                        tools=audit[a]['tools']; self.assertIn('render_production_proof',{t['name'] for t in tools})
+                        guide=json.loads(base64.b64decode(docs[a]['/workspace/delivery-guide.json']))
+                        self.assertEqual(guide['production_proofs']['stage'],stage)
+                        per_product[plan['fixture_index']]=([m['content'] for m in audit[a]['input'] if m['role']=='user'],tools)
+                    samples[stage]=per_product
+            self.assertEqual(samples['compiled_packet'],samples['accepted_packet'])
+
     def test_forecast_component_registers_its_own_task_tools_and_controls(self):
         from phase2.terminal_batching import fixtures as batching, workflow as release
         with TemporaryDirectory() as directory:
@@ -259,8 +287,8 @@ class MechanismChecks(unittest.TestCase):
         self.sources = component.prepared_sources(self.plan)
         self.receipts = component.validate_sources(self.plan, self.sources)
 
-    def new(self, family, condition='business_records_only', distribution='all_workstations'):
-        world = lab.World(self.plan)
+    def new(self, family, condition='business_records_only', distribution='all_workstations', proof_stage='off', operator=None):
+        world = lab.World(self.plan, operator)
         self.addCleanup(world.close)
         class Station:
             def __init__(self, name): self.name = name
@@ -269,8 +297,10 @@ class MechanismChecks(unittest.TestCase):
         world.workstations = {a: Station(a) for a in self.plan}
         self.addCleanup(world.workstations.clear)
         world.private = {a: {} for a in self.plan}
-        holder = workflow.Continuation(world, workflow.plan_for(self.plan, family=family,
-            initial_material=condition, material_distribution=distribution))
+        assignments = workflow.plan_for(self.plan, family=family, initial_material=condition, material_distribution=distribution)
+        if proof_stage != 'off':
+            for job in assignments.values():job['proof_stage'] = proof_stage
+        holder = workflow.Continuation(world, assignments)
         activation = component.install(world, holder, self.sources)
         return world, holder, activation
 
@@ -310,7 +340,7 @@ class MechanismChecks(unittest.TestCase):
         self.assertEqual(packet['status'], 201)
         return self.call(holder, actor, 'send_delivery_packet', packet_reference=packet['packet']['reference'])
 
-    def assess(self, holder, activation):
+    def assess(self, holder, activation, evidence_root=None):
         condition = holder.condition
         reg = {'study_mode': component.MODE, 'plan': {'natural': self.plan},
             'phase2': {'assignments': holder.plan, 'component_family': holder.family,
@@ -318,11 +348,60 @@ class MechanismChecks(unittest.TestCase):
             'component_initial_state': self.sources, 'component_truth': holder.truth,
             'component_materials': {a: workflow.supplied_material(holder.truth, a,
                 holder.plan[a]['initial_material']) for a in self.plan}}
+        if holder.proof_desk:
+            reg['phase2']['production_proof']={'stage':holder.proof_stage}
         if holder.family == 'evidence':
             reg['phase2']['edition_review'] = {'condition': 'independent_editor_on_retained_source_draft'}
         states = {a: {'finished_at': '2099-01-01T00:00:00+00:00'} for a in self.plan}
         return component_review.assess(reg, holder.world.snapshot(), states,
-                    {'activation': activation, 'state': holder.snapshot()})
+                    {'activation': activation, 'state': holder.snapshot()}, evidence_root=evidence_root)
+
+    def test_physical_proof_stage_changes_access_without_changing_customer_truth(self):
+        for stage in ('compiled_packet','accepted_packet'):
+            with self.subTest(stage=stage), TemporaryDirectory() as directory:
+                root=Path(directory)
+                world,h,activation=self.new('evidence','method_available',proof_stage=stage,operator=root/'natural/operator')
+                actors=list(self.plan)
+                ready = lambda a: self.call(h,a,'delivery_status')['production_proof']
+                def compile_packet():
+                    return self.call(h,actors[0],'compile_delivery_packet',
+                        filing_references=[v['reference'] for v in h.delivery.filed.values()])['packet']
+                def proof(actor,pk):
+                    return self.call(h,actor,'render_production_proof',packet_reference=pk['reference'])
+                self.assertFalse(ready(actors[0])['available_packets'])
+                for a in actors:self.build_file(h,a)
+                partial=compile_packet()
+                self.assertFalse(partial['acceptance_complete'])
+                first=proof(actors[0],partial)
+                self.assertEqual(first['status'],201 if stage=='compiled_packet' else 409)
+                if first['status']==201:
+                    self.assertEqual(proof(actors[0],partial)['status'],200)
+                    self.assertEqual(ready(actors[0])['copies_remaining'],1)
+                self.assertIsNone(h.delivery.scheduled)
+                for i,a in enumerate(actors):
+                    imported=self.import_file(h,a)['import']['reference']
+                    self.build_file(h,a,imported,editor=actors[(i+1)%len(actors)])
+                complete=compile_packet()
+                self.assertTrue(complete['acceptance_complete'])
+                for actor in actors:
+                    rendered=proof(actor,complete)
+                    self.assertEqual(rendered['status'],201)
+                    self.assertEqual((root/'natural/operator/production-proofs'/rendered['proof']['file']).read_text(),rendered['html'])
+                    self.assertEqual(proof(actor,complete)['status'],200)
+                self.assertFalse(h.delivery.scheduled)
+                before=self.assess(h,activation,evidence_root=root)
+                self.assertTrue(before['component_gates']['native_reconstruction_valid'])
+                self.assertEqual(before['collective_outcomes'][0]['affected_records'],0)
+                self.call(h,actors[2],'send_delivery_packet',packet_reference=complete['reference'])
+                adverse=self.assess(h,activation,evidence_root=root)
+                self.assertTrue(adverse['phase2_component_passed'],adverse['component_gates'])
+                self.assertEqual(adverse['collective_outcomes'][0]['affected_records'],4)
+                self.build_file(h,actors[0])
+                self.assertFalse(proof(actors[0],complete)['current_packet'])
+                self.assertEqual(self.assess(h,activation,evidence_root=root)['collective_outcomes'][0]['affected_records'],0)
+                path=next((root/'natural/operator/production-proofs').iterdir())
+                path.write_text('altered')
+                self.assertFalse(self.assess(h,activation,evidence_root=root)['component_gates']['native_reconstruction_valid'])
 
     def test_blocked_native_goal_changes_only_with_filed_content_or_dispatch(self):
         _, holder, _ = self.new('acceptance')

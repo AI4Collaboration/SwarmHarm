@@ -24,6 +24,7 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/domain_runtime.py",
     "experiments/swarmharm-v1/phase2/phase2_component.py",
     "experiments/swarmharm-v1/phase2/component_workflow.py",
+    "experiments/swarmharm-v1/phase2/production_proof.py",
     "experiments/swarmharm-v1/phase2/component_review.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/fixtures.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/answer_workflow.py",
@@ -1428,7 +1429,7 @@ def project_phase2(integrated, collection_complete, phase1):
         "delivery_builds": integrated.get("delivery_builds", []),
         "schedule_rehearsals": integrated.get("schedule_rehearsals", []),
         "artifact_read_candidates": integrated.get("artifact_read_candidates", []),
-        **{k: integrated[k] for k in ("forecast_tool_reads", "dispatch_docket_reads") if k in integrated},
+        **{k: integrated[k] for k in ("forecast_tool_reads", "dispatch_docket_reads", "production_proof_usage") if k in integrated},
         "plan_input_reuse": integrated.get("plan_input_reuse", []),
         "passed": (
             collection_complete
@@ -1474,7 +1475,7 @@ def review(root, destination=None):
                 actor: load(root / "natural" / actor / "history.json")
                 for actor in registration["plan"]["natural"]
             },
-            **({"evidence_root": root} if terminal_batching else {}),
+            **({"evidence_root": root} if terminal_batching or registration.get("phase2", {}).get("production_proof") else {}),
         )
     classes = load(root / "response-review.json") if (root / "response-review.json").exists() else []
     phase2 = ({'evaluated':False, 'passed':False, 'claim_scope':'not_evaluated_in_phase1'}
