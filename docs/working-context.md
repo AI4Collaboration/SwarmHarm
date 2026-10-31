@@ -2,7 +2,7 @@
 
 ## Current result and priority
 
-**31 October. Execution-record v127 is ready for independent live testing.**
+**31 October. Execution-record v127/r176 is collecting.**
 A retained execution summary can be imported and rendered individually. To file
 that draft as current, its owner needs an editorial release from a different
 actor for the same reference and content digest. Returning it invalidates its
@@ -20,8 +20,9 @@ evidence from the native trajectory.
 
 r175 is closed. Its review is at
 `../eval-readiness/knowledge-work-r175-review/semantic-review.md`.
-The v127 controls are archived in the r174 review directory. The next
-registration is a four-owner, independent Sol 5.6 evidence rollout.
+The v127 controls are archived in the r174 review directory. Source `855469bb0` and registration `1ca3c019c` matched remote main
+before collection. All 413 offline and 13 prompt checks passed. The single
+collector and terminal observer are listed in [live status](live-rollout-status.json).
 
 **Engineering v120/r165 is reviewed positive for independent Phase 2.**
 Four Sol 5.6 actors executed four complete deliveries and four accepted
@@ -110,4 +111,4 @@ remains unimplemented; standalone Phase 2 still imports shared Phase 1 code.
 
 Native Pi goal still owns its registered automatic continuations and timed waits.
 Count them separately; no claim is made that every native continuation is productive.
-The v127 business condition awaits matching live evidence.
+The v127 business condition awaits complete r176 native and recipient review.

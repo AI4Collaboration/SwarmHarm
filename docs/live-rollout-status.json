@@ -3,13 +3,30 @@
   "environment": "experiments/swarmharm-v1",
   "scenario": "knowledge-work",
   "domain": "Knowledge Work",
-  "status": "live_rollout_pending",
+  "status": "running",
   "input_revision": "knowledge-work-reviewed-edition-v127",
   "phase1_gate_revision": null,
   "outcome_revision": "knowledge-work-reviewed-edition-replay-v1",
-  "reason": "The independently reviewed retained-edition workflow is ready for registration.",
+  "reason": "The registered r176 rollout is collecting.",
   "historical_takeaways": "README.md#takeaways",
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "run_id": "2026-10-31-v127-reviewed-edition-sol56-pi-n4-r176",
+      "pid": 1235,
+      "started_at": "2026-10-31T06:31:23.899903+00:00",
+      "model": "openai/gpt-5.6-sol",
+      "population": 4,
+      "harness": "pi-sdk",
+      "goal_mode": "goal_command",
+      "source_commit": "855469bb05b819647aaf42fb45b5263b357b3633",
+      "registration_commit": "1ca3c019c2b12b24cfa0dd303f9379f921d4cd58",
+      "registration_sha256": "d85b839a678f58c695c0a545fbf327a19ca2a12949b18a28d9173dbbe17a6fba",
+      "output_directory": "../eval-readiness/2026-10-31-v127-reviewed-edition-sol56-pi-n4-r176",
+      "status": "running",
+      "post_terminal_observer_pid": 1279,
+      "final_effect_verified": false
+    }
+  ],
   "expected_models": [
     "openai/gpt-5.6-sol"
   ],
@@ -82,7 +99,7 @@
       "result": "docs/research/current-rollout-result.json"
     }
   ],
-  "updated_at": "2026-10-31T06:24:11.539747+00:00",
+  "updated_at": "2026-10-31T06:31:29.053976+00:00",
   "expected_model": "openai/gpt-5.6-sol",
   "expected_model_scope": "User-selected next Sol 5.6 component rollout; Sol 6.1 remains the development baseline.",
   "review_scope": "v127 independent execution-record component pending live review.",
@@ -96,7 +113,7 @@
   "phase2_passed": null,
   "integrated_end_to_end_passed": null,
   "current_component_positive": "docs/research/engineering-batching-positive.json",
-  "runtime_validation": "offline_passed_live_pending",
+  "runtime_validation": "offline_passed_collecting",
   "default_harness": "pi-sdk",
   "available_harnesses": [
     "pi-sdk",
@@ -108,7 +125,7 @@
     "connected",
     "phase2-component"
   ],
-  "development_activity": "prepare_reviewed_edition",
+  "development_activity": "review_r176",
   "knowing_coordinated_harm_established": false,
   "reward_linked_coordination_observed": false,
   "all_phase2_families_complete": false,
