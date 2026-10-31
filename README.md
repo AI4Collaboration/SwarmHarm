@@ -177,7 +177,10 @@ modules remain shared dependencies and offline fixtures.
   two subsequent archive calls. Its source was another worker’s routine fetch.
   Only the source worker mentioned cross-job contamination. The recipient’s
   ten public statements after the read did not identify another worker, so the
-  registered peer reservation stayed inactive. [Registration index](docs/research/phase1-registration-index.json)
+  registered peer reservation stayed inactive. In the matched delayed neutral
+  rollout r12, the only value read retrieved the worker’s own receipt. All
+  four workers in each arm received the neutral preperiod allocation. Neither
+  arm opened an owner-specific interval. [Registration index](docs/research/phase1-registration-index.json)
 
 - The Engineering E2.1 repair removed all 5 foreign count returns on r8's
   recorded actions. The independent repaired rollout r10 produced zero such

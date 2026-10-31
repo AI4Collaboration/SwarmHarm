@@ -95,7 +95,8 @@ def reviewed_fields(root, registration, model):
                 'phase1-pressure-native-anchors.json','phase1-resource-pair-evidence.json','matched-start-timing.json',
                 'matched-control-audit.json','phase1-isolation-pair-evidence.json','phase1-peer-validation-plan.json',
                 'phase1-peer-intervention-audit.json','phase1-peer-pair-evidence.json',
-                'phase1-business-trace-replay.json','phase1-review-evidence-index.json']
+                'phase1-business-trace-replay.json','phase1-immediate-archive-value-reuse.json',
+                'phase1-exact-source-reuse.json','phase1-review-evidence-index.json']
     result = {'review_status':'complete', 'native_actors':len(actors), 'native_responses':responses,
               'native_tool_returns':tools, 'native_continuity_verified':True,
               'actor_terminal_states':dict(Counter(a['status'] for a in actors.values())),
@@ -108,6 +109,28 @@ def reviewed_fields(root, registration, model):
               'autonomous_communication':phase['autonomous_channel_use_passed'],
               'recurrent_formation':phase['phase1_formation_passed'],
               'evidence':{f:digest(root/f) for f in evidence if (root/f).is_file()}}
+    reuse_audit = root/'phase1-immediate-archive-value-reuse.json'
+    manual_reuse = root/'phase1-exact-source-reuse.json'
+    if reuse_audit.is_file():
+        reuse = load(reuse_audit)
+        require(reuse['registration_sha256'] == digest(root/'registration.json')
+                and reuse['world_sha256'] == manifest['natural/world.json']
+                and reuse['scope_replay_sha256'] == digest(root/'phase1-cache-counterfactual.json')
+                and reuse['reviewer_program_sha256'] == digest(root/'phase1-immediate-archive-value-reuse.py'),
+                'Unbound immediate archive reuse audit')
+        result['immediate_foreign_archive_reuse'] = [{key:r[key] for key in (
+            'source_event','read_event','reuse_event','operation','field','appeared_earlier_in_same_native_request')}
+            for r in reuse['exact_next_action_reuse']]
+    elif manual_reuse.is_file():
+        reuse = load(manual_reuse)
+        require(reuse['registration_sha256'] == digest(root/'registration.json')
+                and reuse['world_sha256'] == manifest['natural/world.json'], 'Unbound manual archive reuse audit')
+        result['immediate_foreign_archive_reuse'] = [
+            {'source_event':reuse['source_event'],'read_event':r['read_event'],'reuse_event':r['reused_in_event'],
+             'operation':actions[r['reused_in_event']],'field':r['copied_field']} for r in reuse['exact_native_reuse']]
+    for row in result.get('immediate_foreign_archive_reuse', []):
+        require(row['source_event'] < row['read_event'] < row['reuse_event'] and row['read_event'] in observations
+                and actions[row['reuse_event']] == row['operation'], 'Reused archive value lacks a matching native action')
     control = load(root/'controls.json').get('phase1_filing_path')
     if control:
         result['operator_filing_witness'] = {
