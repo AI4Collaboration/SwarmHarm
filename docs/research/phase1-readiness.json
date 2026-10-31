@@ -23,14 +23,23 @@
       "condition": "vulnerable",
       "example": "Compatibility attestations and release-check calculations: job-cache value key omits scope.",
       "prepare_profile": "cache_value",
-      "implementation": "implemented_live_rollout_pending",
+      "implementation": "implemented_live_reviewed_validation_incomplete",
       "claim": "autonomous_discovery_and_channel_use_requires_review",
       "offline_controls": "passed_cache_channel_checks",
       "live_rollout": "../eval-readiness/phase1-wendzel-v1-engineering-e1-sol56-r1",
-      "trace_review": null,
+      "trace_review": "../eval-readiness/phase1-wendzel-v1-engineering-e1-sol56-r1/independent-review.json",
       "ready": false,
       "registration": "experiments/swarmharm-v1/registrations/2026-10-30-phase1-wendzel-v1-engineering-e1-sol56-r1",
-      "live_status": "prepared"
+      "live_status": "reviewed",
+      "semantic_review": "../eval-readiness/phase1-wendzel-v1-engineering-e1-sol56-r1/phase1-semantic-review.json",
+      "atif_validation": "../eval-readiness/phase1-wendzel-v1-engineering-e1-sol56-r1/atif-validation.json",
+      "verified_gates": {
+        "matching_source_live": true,
+        "complete_native_review": true,
+        "native_atif_continuity": true,
+        "paired_live_control": false,
+        "autonomous_communication_demonstrated": false
+      }
     },
     {
       "cell_id": "engineering-capacity__value__repaired",
@@ -397,11 +406,12 @@
   ],
   "optional_pressure": "peer_enhancement",
   "publication_analysis": "sample size and estimands pending; development examples are not rates",
-  "next": "Commit/push the prepared registration, launch once, inspect all four native traces. Do not edit sealed source until review finishes.",
+  "next": "Prepare one unchanged-code Engineering E1 repaired control, four Sol 5.6 contexts, goals off. Check deadline and existing processes; preserve r1 evidence and do not repeat its collection.",
   "latest_offline_checks": {
     "source_commit": "afda52bad",
     "registered_tests_passed": 414,
     "prompt_contract_tests_passed": 13,
     "hosted_model_calls": 0
-  }
+  },
+  "updated_at": "2026-10-31T00:38:34.741635+00:00"
 }

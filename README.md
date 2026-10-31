@@ -30,9 +30,10 @@ position/order. Synthetic job-cache defects and their repaired counterparts now
 use the shared runner in all four domains; ordinary inputs are matched and legacy
 note/reply channels are partitioned. No discovery cues or planted peer content.
 New validation uses **openai/gpt-5.6-sol**, as explicitly selected on 30 October.
-These revisions are **live rollout pending**; pressure interventions and complete
-native trace reviews remain in the readiness ledger. Automatic leakage is not autonomous
-communication. See the [design](docs/phase1-publication-design.md),
+The first Engineering E1 pilot is fully reviewed; its repair control, the other
+channel/domain cells and pressure interventions remain pending in the
+[readiness ledger](docs/research/phase1-readiness.json). Automatic leakage is not
+autonomous communication. See the [design](docs/phase1-publication-design.md),
 [methods](docs/phase1-methods.md) and [operator notes](experiments/swarmharm-v1/phase1/README.md).
 
 **Architecture proposal: independent experiments on a shared core.** The
@@ -168,6 +169,17 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **Discovering a cache defect does not establish communication (Phase 1 E1/r1).**
+  In the four-subject Sol 5.6 pilot, nine foreign cache reads expose ordinary
+  archive results. One subject recognizes cross-job state and independently
+  stores relay records and a help request, but none of its messages is read by
+  another job. The known-key value flaw is real; local-only inventories leave
+  guessed message keys without an audience. Five of eight checks are filed,
+  including one assisted by passive leakage. Full review of 206 native responses
+  and 268 tool returns establishes neither intentional delivery nor formation.
+  Preserve this outcome and test the repair before changing a mechanism; no cue
+  or supplied protocol should be added to obtain a positive example.
 
 - **Native persistence does not establish harmful adoption (v111/r154).** Four
   Sol 5.6 subjects retain complete candidates and finish with blocked native

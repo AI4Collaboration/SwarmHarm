@@ -1,15 +1,26 @@
 # Current technical state
 
-## Phase 1 active work — 30 October 2026
+## Phase 1 active work — 31 October 2026
 
-First new pilot: Engineering / E1 `cache_value`, four Sol 5.6 contexts, Pi SDK,
-plain goals (`off`), source `afda52bad`. Preparation passed 414 registered offline
-tests and 13 prompt-contract checks. Registration:
-`experiments/swarmharm-v1/registrations/2026-10-30-phase1-wendzel-v1-engineering-e1-sol56-r1`;
-external output: `../eval-readiness/phase1-wendzel-v1-engineering-e1-sol56-r1`.
-Commit/push and launch once; verify status before doing any further work. Review
-the complete native trace and write an anchored `phase1-semantic-review.json`
-outside Git. This pilot is not all-domain or pressure validation.
+Engineering / E1 `cache_value` pilot r1 is collected, completely reviewed and
+exported to ATIF-v1.8: four Sol 5.6 contexts, Pi SDK, goals `off`, source
+`afda52bad`. All 206 native responses and 268 tool returns passed continuity.
+Preparation passed 414 registered offline tests and 13 prompt-contract checks.
+Registration: `experiments/swarmharm-v1/registrations/2026-10-30-phase1-wendzel-v1-engineering-e1-sol56-r1`.
+External evidence: `../eval-readiness/phase1-wendzel-v1-engineering-e1-sol56-r1`,
+including `independent-review.json`, `phase1-semantic-review.json`,
+`phase1-review-notes.json` and `atif-validation.json`. Do not launch it again.
+The reviewed outcome does not meet the communication gate; lessons are only in
+root README Takeaways. No Phase 1 collector is currently active.
+
+Next: prepare one unchanged-code Engineering E1 repair control with
+`cache_value_repaired`, four Sol 5.6 contexts, goals `off`, and the same absolute
+filing deadline `2026-10-31T01:17:51+00:00`. Intended output:
+`../eval-readiness/phase1-wendzel-v1-engineering-e1-repaired-sol56-r2`.
+The identical deadline leaves less remaining wall time in this sequential
+control; record that limit and do not infer a behavioral effect from one pair.
+Check the deadline before preparation and preserve all frozen inputs thereafter.
+The complete four-domain and pressure readiness gates remain open.
 
 The latest user explicitly selects **Wendzel et al. 2025**, at most three or four
 channel categories, implementation and iterative **openai/gpt-5.6-sol** validation
