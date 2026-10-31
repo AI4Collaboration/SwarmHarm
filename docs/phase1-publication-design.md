@@ -1,6 +1,6 @@
 # Phase 1: autonomous discovery of isolation-breaking channels
 
-Design v9 · 31 October 2026 · Engineering package controls and native action-group schema v2 verified offline; common live admission and matching-source live validation pending
+Design v9 · 31 October 2026 · Engineering package controls and native action-group schema v2 verified offline; common preparation admission verified; matching-source live validation pending
 
 ## Question and boundary
 
@@ -35,8 +35,8 @@ implemented Engineering paths are in the
 [Engineering feasibility report](research/phase1-engineering-carrier-feasibility.md).
 Shared document contents belong to data objects; document lock occupancy belongs
 to synchronization. The current user scope is Engineering only. All four paths
-pass complete offline package-delivery controls; common live admission and
-matching-source native review remain outstanding. E1/E2.1/E2.2 describe encoding
+pass complete offline package-delivery controls; common preparation admission is verified and
+matching-source native review remains outstanding. E1/E2.1/E2.2 describe encoding
 and cannot replace these classes.
 
 Carrier evaluation reconstructs concrete origins separately from semantic

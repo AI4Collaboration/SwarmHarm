@@ -36,8 +36,8 @@ prepare/register admission, then matching Sol 5.6 live traces and pressure check
 No hosted calls or new-domain work have occurred.
 
 Admission contract: the concrete carrier selector seals its own descriptor,
-retain the private cache/legacy baseline, dispatch its actual full-package control
-and require v2 native review. Do not run a cache witness as evidence for a selected
+retains the private cache/legacy baseline, dispatches its actual full-package control
+and requires v2 native review. Do not run a cache witness as evidence for a selected
 artifact, report, lock or execution-pool path. Keep pressure separately selected,
 Engineering/standalone-Phase-1 only, and use the existing Pi/AxonHub entry.
 
