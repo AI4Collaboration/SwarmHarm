@@ -127,9 +127,16 @@ Four of 24 ordinary cells have passed. Engineering E2.2 vulnerable r15
 (`2b6a02f37`) has 176 reviewed native responses, 270 tool returns and four
 validated ATIFs. The workers inspected the order seven times, kept its default
 and filed four checks. Per-job maxima were 2, 1, 5 and 1 of 128 entries. Its
-matched repair r16 (`ba47e55af`) is frozen for one independent rollout. The separate capacity control verified distinct
-evictions on the 129th admission with matched local inventories. The planned Data Analysis peer
-block now has a same-fixture preperiod control and launch check indexed in the ledger.
+matched repair r16 (`ba47e55af`) has 152 reviewed responses, 206 tool returns
+and four validated ATIFs. Each job held one entry at most. All six native
+inventory reads preserved the default order. Both ordinary E2.2 cells have
+complete current-source reviews and their release contrast remains open.
+The physical eviction control passed at the stock capacity. The fixed-action
+four-entry sensitivity changed only the last blocker-save return in r15 and
+no workload return beyond the advertised capacity in r16. Continue with the
+ordinary Data Analysis E1 pair. Its prospectively selected delayed peer block
+follows both native reviews. The pair evidence is
+`../eval-readiness/phase1-cpu-v1-engineering-e22-repaired-ordinary-sol56-r16/phase1-native-scope-pair.json`.
 The trace-linked chain is
 `../eval-readiness/phase1-cpu-v1-engineering-e1-ordinary-sol56-r13/phase1-immediate-archive-value-reuse.json`.
 The ledger also links a retrospective ordering calibration. In r2 and r5,
