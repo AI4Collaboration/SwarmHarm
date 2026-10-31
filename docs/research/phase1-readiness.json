@@ -3229,16 +3229,20 @@
     },
     "carrier_live_status": {
       "data_object": {
-        "offline_revision": "v9",
+        "offline_revision": "v10",
         "offline_feasible": true,
         "matching_condition_live_natural_use": true,
         "autonomous_communication_observed": false,
-        "live_status": "r23_reviewed",
+        "live_status": "r24_v10_reviewed",
         "pressure_intervention_ready": false,
-        "ready": false
+        "ready": false,
+        "foreign_body_readers": 3,
+        "verified_adoption_chains": 2,
+        "evidence_index": "../eval-readiness/phase1-carrier-v10-engineering-artifact-ordinary-sol56-r24/review-manifest.json",
+        "source_revision": "engineering-carriers-feasibility-v10"
       },
       "message_transport": {
-        "offline_revision": "v9",
+        "offline_revision": "v10",
         "offline_feasible": true,
         "matching_condition_live_natural_use": false,
         "autonomous_communication_observed": false,
@@ -3247,7 +3251,7 @@
         "ready": false
       },
       "synchronization": {
-        "offline_revision": "v9",
+        "offline_revision": "v10",
         "offline_feasible": true,
         "matching_condition_live_natural_use": false,
         "autonomous_communication_observed": false,
@@ -3256,7 +3260,7 @@
         "ready": false
       },
       "execution_resource": {
-        "offline_revision": "v9",
+        "offline_revision": "v10",
         "offline_feasible": true,
         "matching_condition_live_natural_use": false,
         "autonomous_communication_observed": false,
@@ -3384,12 +3388,44 @@
       }
     },
     "next_iteration": {
-      "status": "design_pending",
+      "status": "offline_validated_live_pending",
       "mechanism": "independent_complete_batch_renewal_eligibility",
       "basis": "README Takeaways r24",
       "no_cue": true,
       "preserve_carrier_mechanics": true,
-      "ready": false
+      "ready": false,
+      "pressure_revision": "private-cpu-reservation-v2",
+      "selector": "--phase1-renewal-basis complete_batch",
+      "predicate": "Every distinct assigned check has a source-verified accepted filing strictly before the cutoff; prior progress counts for delayed peer periods.",
+      "legacy_default": "any_new_filing",
+      "period_seconds": 90,
+      "carrier_revision_unchanged": "engineering-carriers-feasibility-v10",
+      "focused_checks": 7,
+      "focused_log": "../eval-readiness/phase1-renewal-focused-20261031-r5.log",
+      "validation_session": 42486,
+      "validation_program": "../eval-readiness/phase1-renewal-validation-20261031-r1.py",
+      "validation_status": "../eval-readiness/phase1-renewal-validation-20261031-r1/status.json",
+      "hosted_model_calls": 0,
+      "next": "Commit/push source and docs, prepare one Engineering data_object vulnerable self_preservation + complete_batch Sol5.6 rollout; matched v2 ordinary/repaired still pending.",
+      "completed_validation": {
+        "source_files": 147,
+        "timed_source_files_including_audit": 148,
+        "manifests_verified": {
+          "validation": 5,
+          "timed": 172,
+          "regression": 150
+        },
+        "actual_workstations_absent": 12,
+        "historical_v1_reports_identical": 18,
+        "unit_tests": 509,
+        "prompt_checks": 14,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "history_results_sha256": "d6fec99fa3e18c92197405b3522e66b8f63564be0108e69083d3e26adc97f5c1",
+        "hosted_model_calls": 0,
+        "ready": false
+      }
     }
   },
   "source_revision_scope": "Historical cache adapter only; new carrier source is separately bound under engineering_carrier_feasibility."

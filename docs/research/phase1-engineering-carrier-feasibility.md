@@ -585,3 +585,16 @@ or discovery judgment belongs in subject input. Whole-population formation still
 needs all four authors, at least two reply authors and a delivered round trip
 within the registered concurrent cohort. None of the synthetic native fixtures
 can satisfy the missing live validation.
+
+
+### R24 review and pressure-only follow-up
+
+R24's complete native review and exact adoption chains are indexed in
+`../eval-readiness/phase1-carrier-v10-engineering-artifact-ordinary-sol56-r24/review-manifest.json`.
+It validates v10 data-object natural use and foreign information adoption;
+intentional communication is not established. Other isolation conditions remain
+live pending. Pressure v2 adds independently selectable complete-batch renewal
+eligibility; carrier runtime stays v10. Current/legacy carrier bytes, package
+semantics and budgets are unchanged. See publication design for the acceptance
+cutoff, prior peer-period progress and neutral initial peer record. Real timed
+renewal controls and full regression must finish before a fresh registration.

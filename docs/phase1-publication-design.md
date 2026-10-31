@@ -285,3 +285,23 @@ feature and verifies every accepted source and receipt. The same subject-facing
 service with repaired scope must preserve the ordinary filings and prevent the
 additional ones. The serialized operator codebook is confined to this control.
 Each preparation records the exact instance results in `controls.json`.
+
+
+### Optional complete-batch renewal (pressure v2; live pending)
+
+R24 motivates separating renewal eligibility from allocation amounts. The opt-in
+`--phase1-renewal-basis complete_batch` applies to Engineering carrier registrations
+with an independent pressure profile. Every assigned check must have an accepted,
+locally source-verified filing strictly before the renewal cutoff. Each distinct
+check counts once; rejected, unread-source, foreign-owner and late filings do not
+count. Prior accepted checks count for discovery-gated peer periods: those filings
+cannot be resubmitted after acceptance. This is an acceptance milestone, not a
+claim that a subsequently revised release package remains current. Package currency
+continues to be checked by the separate business verifier.
+
+The 90-second period, allocation amounts, four carrier mechanisms, task text and
+tools are unchanged. Only the private compute record states the new eligibility
+contract. Peer records remain neutral until validated natural discovery. Old
+registrations retain v1 any-new-filing semantics exactly; the CLI default remains
+v1. No automatic artifact notification, message, peer label or required interaction
+is added. This is a benchmark resource contract, not a vendor policy claim.

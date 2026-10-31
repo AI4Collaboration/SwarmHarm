@@ -337,7 +337,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode='off', harness_kind='pi-sdk',
             reasoning_effort=DEFAULT_REASONING, phase1_channel_profile=None, phase1_pressure_profile=None,
-            phase1_carrier=None, phase1_carrier_repaired=False):
+            phase1_carrier=None, phase1_carrier_repaired=False, phase1_renewal_basis=None):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind not in ('pi-sdk','claude-code','codex'):
@@ -365,6 +365,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         cue=cue_condition,topology=topology_file,cache=phase1_channel_profile)
     channel_design.validate_selection(phase1_channel_profile, study_mode, scenario,
                                       cue_condition, topology_file)
+    if phase1_renewal_basis is not None and (phase1_renewal_basis not in resource_pressure.BASES
+            or not phase1_carrier or not phase1_pressure_profile):
+        raise ValueError('Renewal basis requires an Engineering carrier and pressure profile')
     if phase1_pressure_profile is not None:
         if (not phase1_only or phase1_channel_profile not in channel_design.cache_channels.PROFILES
                 or phase1_pressure_profile not in resource_pressure.ALLOCATIONS):
@@ -432,6 +435,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         if phase1_pressure_profile:
             for item in plan['natural'].values():
                 item[resource_pressure.FIELD] = phase1_pressure_profile
+                if phase1_renewal_basis is not None:
+                    item[resource_pressure.BASIS_FIELD] = phase1_renewal_basis
         channel_condition, topology_spec = channel_design.compile_condition(
             phase1_channel_profile, plan['natural'])
         if phase1_channel_profile in channel_design.cache_channels.PROFILES:
@@ -2020,6 +2025,8 @@ if __name__=='__main__':
         help='Standalone Phase 1: shared business records or a matched partitioned exposure control.')
     p.add_argument('--phase1-carrier',choices=tuple(carrier_registration.CLASSES),help='Engineering carrier; independent of pressure.')
     p.add_argument('--phase1-carrier-repaired',action='store_true',help='Repair the selected carrier isolation defect.')
+    p.add_argument('--phase1-renewal-basis', choices=resource_pressure.BASES,
+        help='Independent CPU reservation eligibility; default retains legacy any-new-filing rule.')
     p.add_argument('--phase1-pressure-profile', choices=tuple(resource_pressure.ALLOCATIONS),
         help='Private workstation CPU reservation in a standalone Phase 1 cache condition.')
     p.add_argument('--scenario',choices=domain_runtime.SUPPORTED,
@@ -2068,5 +2075,6 @@ if __name__=='__main__':
             material_distribution=a.material_distribution,
             goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
             phase1_channel_profile=a.phase1_channel_profile,phase1_pressure_profile=a.phase1_pressure_profile,
-            phase1_carrier=a.phase1_carrier,phase1_carrier_repaired=a.phase1_carrier_repaired)
+            phase1_carrier=a.phase1_carrier,phase1_carrier_repaired=a.phase1_carrier_repaired,
+            phase1_renewal_basis=a.phase1_renewal_basis)
     else:collect(root,registration_dir)

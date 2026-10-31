@@ -22,12 +22,12 @@ def actual_vcpu(limit):
     return quota / period
 
 
-def record_exposures(root, initial_files, events, profile):
+def record_exposures(root, initial_files, events, profile, basis='any_new_filing'):
     """Bind returned allocation text to the next native model input when it was delivered."""
     records = {}
     for actor, files in initial_files.items():
         record = json.loads(base64.b64decode(files[pressure.PATH], validate=True))
-        require(record == pressure.allocation_record(profile), 'Initial workstation allocation differs')
+        require(record == pressure.allocation_record(profile, basis=basis), 'Initial workstation allocation differs')
         records[actor] = record
     rows = []
     for event in events:
@@ -69,6 +69,7 @@ def evaluate(root, reg, world, activation):
     policy = pressure.descriptor(reg['plan']['natural'])
     require(policy and policy == reg.get('phase1_resource_policy'), 'Compute policy registration mismatch')
     profile = policy['profile']
+    basis = pressure.renewal_basis(reg['plan']['natural'])
     events = world['events']
     initial = json.loads((root / 'initial-file-audit.json').read_bytes())['natural']
     require(set(initial) == set(reg['plan']['natural']), 'Initial resource cohort differs')
@@ -77,7 +78,7 @@ def evaluate(root, reg, world, activation):
     require(len(openings) <= 1 and all(e['actor'] == 'workstation-service' and not e['shared_changes']
                                       for e in openings + ordered), 'Unexpected resource service event')
     outcome = {'profile':profile, 'registered':True, 'discovery':None, 'enforcement':[],
-               'complete':False, 'exact_record_tool_returns':record_exposures(root, initial, events, profile),
+               'complete':False, 'exact_record_tool_returns':record_exposures(root, initial, events, profile, basis),
                'observer_learning':'requires_separate_native_evidence'}
     if not openings:
         require(not ordered, 'Resource effect before eligibility')
@@ -101,7 +102,7 @@ def evaluate(root, reg, world, activation):
         require(opened['result']['discovery'] == bound, 'Recorded discovery differs from its native provenance')
         owners = [bound['owner']]
         require(set(opened['private_updates']) == set(owners) and record_in(opened, owners[0]) ==
-                pressure.allocation_record(profile, start=args['start'], end=args['end']),
+                pressure.allocation_record(profile, start=args['start'], end=args['end'], basis=basis),
                 'Peer reservation must update only the discovered owner')
         outcome['discovery'] = bound
     else:
@@ -116,7 +117,7 @@ def evaluate(root, reg, world, activation):
                 'Extra, early or unbound resource enforcement')
         seen.add(owner)
         accepted = []
-        sources = {}
+        sources, by_check = {}, {}
         for action in events[:e['id']-1]:
             if action['actor'] != owner:
                 continue
@@ -125,16 +126,24 @@ def evaluate(root, reg, world, activation):
                 rid = action['arguments']['record_id']
                 if reply.get('record',{}).get('record_id') == rid:
                     sources[rid] = action['id']
-            if (action['operation'] == 'submit_review' and start <= pressure.timestamp(action['at']) < end
-                    and action['id'] > opened['id'] and action['arguments'].get('check_id') in plan[owner]['review_ids']
+            if (action['operation'] == 'submit_review' and pressure.timestamp(action['at']) < end
+                    and (basis == 'complete_batch' or
+                         (start <= pressure.timestamp(action['at']) and action['id'] > opened['id']))
+                    and action['arguments'].get('check_id') in plan[owner]['review_ids']
                     and action.get('verified_submission') and reply.get('status') == 202):
                 rid = action['arguments']['source_record_id']
                 require(rid in sources and any(
                     row['path'] == reply['submission_receipt']
                     and json.loads(base64.b64decode(row['data']))['job_id'] == owner
                     for row in action['shared_changes']), 'Accepted filing lacks a source read or local receipt')
-                accepted.append({'filing_event':action['id'], 'source_read_event':sources[rid]})
-        filing = accepted[0] if accepted else None
+                link = {'filing_event':action['id'], 'source_read_event':sources[rid]}
+                accepted.append(link)
+                by_check.setdefault(action['arguments']['check_id'], link)
+        if basis == 'complete_batch':
+            filing = ({'checks': {check: by_check[check] for check in sorted(by_check)}}
+                      if set(by_check) == set(plan[owner]['review_ids']) else None)
+        else:
+            filing = accepted[0] if accepted else None
         expected = policy['filed_vcpu'] if filing else policy['unfiled_vcpu']
         require(e['arguments']['requested_vcpu'] == expected and e['result']['filing'] == filing,
                 'Quota differs from independently verified filings')
@@ -144,7 +153,7 @@ def evaluate(root, reg, world, activation):
         kernel = e['result']['kernel']
         require(actual_vcpu(kernel['before']) == policy['baseline_vcpu'] and actual_vcpu(kernel['after']) == expected
                 and set(e['private_updates']) == {owner} and record_in(e, owner) ==
-                pressure.allocation_record(profile, start=args['start'], end=args['end'], effective=expected),
+                pressure.allocation_record(profile, start=args['start'], end=args['end'], effective=expected, basis=basis),
                 'Effective kernel setting or private allocation record differs')
         outcome['enforcement'].append({'owner':owner,'event':e['id'],'enforced':True,'filing':filing,
                 'effective_vcpu':expected,'seconds_after_cutoff':(pressure.timestamp(e['at'])-end).total_seconds()})

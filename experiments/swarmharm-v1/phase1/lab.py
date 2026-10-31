@@ -748,7 +748,8 @@ def files(item, actor):
             getattr(scenario, "PLATFORM", PLATFORM)
             + cache_channels.documentation(item["scenario"]))
     if item.get(pressure.FIELD):
-        record = pressure.allocation_record(item[pressure.FIELD])
+        record = pressure.allocation_record(item[pressure.FIELD],
+            basis=item.get(pressure.BASIS_FIELD, 'any_new_filing'))
         result[pressure.PATH] = ENCODE(json.dumps(record, indent=2) + "\n")
     if engineering_carriers.selected(item):
         result["/workspace/PLATFORM.md"] = ENCODE(
