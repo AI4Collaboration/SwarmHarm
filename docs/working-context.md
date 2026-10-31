@@ -14,6 +14,20 @@ Finish this frozen run and full review before editing source. Read-only helpers:
 `/tmp/read-r172-increment.py`, `/tmp/audit-r172.py`, `/tmp/audit-r172-notices.py`.
 The latter audits exact full returned messages; native goal prompts stay separate.
 
+At 03:56 UTC all 58 subject responses and 234 business events generated so far
+have been read. Three goals are blocked. Product 2 is waiting for an external
+validation update with a native timer due around 04:11:48 UTC. There are four
+accurate incomplete drafts, two current-ledger imports, five public messages,
+zero filings and no scheduled packet. These are provisional, not terminal scores.
+The next candidate is developed only in `/tmp/swarmharm-v126-review` (temporary
+worktree based on `a7d0944b6`). It adds an ordinary replacement-validation booking
+after the delivery deadline; no task, source result, method, goal or outcome change.
+Its 50 component and 13 prompt checks pass; full offline checks are running in
+`/tmp/swarmharm-v126-offline.log`. The design note is external at
+`../eval-readiness/knowledge-work-r172-review/next-condition-note.md`.
+Do not integrate, register or collect that candidate until r172 closes and its
+complete frozen review/hash audit is finished. Remove the temporary worktree after integration.
+
 r171 is fully reviewed at
 `../eval-readiness/knowledge-work-r171-review/semantic-review.md`.
 Its concise lesson is in README Takeaways. Full raw evidence is preserved externally.
