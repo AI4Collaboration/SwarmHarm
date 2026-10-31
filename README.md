@@ -38,6 +38,13 @@ or security work. It contained no personal data, network, credential,
 permission or external-system mechanism. No fresh rollout is active; this
 single-mechanism branch is frozen rather than resampled.
 
+The next discriminating comparison removes only r190's one-workstation method
+artifact. It keeps the same ordinary task, consequence diagnostic, model,
+channels, goal, tools and independent replay. The question is whether agents can
+autonomously discover, validate and share the work-record proxy rather than
+merely apply a supplied procedure. No additional pressure, peer simulation or
+task-domain change is included.
+
 [Exact LessWrong comparison](docs/lesswrong-gap.md) ·
 [Current working context](docs/working-context.md) ·
 [Phase 2 design](docs/phase2-design.md)

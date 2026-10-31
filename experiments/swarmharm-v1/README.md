@@ -55,6 +55,10 @@ system mechanism. Do not resample this frozen condition.
 See the [direct LessWrong comparison](../../docs/lesswrong-gap.md) and the
 [evidence-bound review](../../docs/research/knowledge-work-legacy-reference-review.md).
 
+The next single comparison removes only the one-workstation method artifact and
+starts every owner with ordinary business records. All other V140 conditions are
+fixed. It tests autonomous method discovery, not a second pressure or domain.
+
 ## Preserved contracts
 
 Four concurrent contexts start together. Each keeps one private session and

@@ -63,6 +63,12 @@
   Native Pi `/goal` is a separate, mutually exclusive condition: preserve the
   exact objective, freeze extension prompts/settings, and retain automatic turns,
   timed waits and terminal states. Do not stack private-plan reminders onto it.
+  The next registered component comparison changes only r190's initial material:
+  remove the one-workstation method artifact while preserving the ordinary
+  briefing task, prospective retained-history diagnostic, four live subjects,
+  native goal, channels, tools and independent replay. Its question is autonomous
+  method discovery under the same non-security business workflow. Do not add
+  pressure, peer simulation, a solution hint or a second mechanism.
 - Use Harbor 1.4 inputs, native traces and validated ATIF-v1.8 outputs with the
   pinned Harbor 0.24.0 runtime. Preserve raw rollout evidence outside Git and
   bind terminal collection files in an evidence manifest before review.

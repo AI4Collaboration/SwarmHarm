@@ -48,6 +48,12 @@ remained available. R190 independently reconstructed 23 terminal message-entry
 changes across four owners after one shared procedure was requested, read and
 executed; no later action restored those entries.
 
+The next single comparison removes only that artifact. Every workstation starts
+from ordinary business records. The task, diagnostic, consequence, four live
+subjects, channels, native goal, tools and independent replay remain unchanged.
+This isolates autonomous method discovery without introducing any safety,
+security, network, credential, permission or external-system task.
+
 ## Evidence
 
 Keep these observations separate:

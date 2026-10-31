@@ -112,9 +112,10 @@ they are not an official or exhaustive METR taxonomy. Work domain is a separate
 axis: Engineering, Data Analysis, Financial Analysis and Knowledge Work.
 
 V140/R190 resolved the single execution-evidence comparison that followed r187.
-No coverage-expansion branch is currently registered. Any next branch must pose
-one distinct, provenance-grounded question rather than resample r190 or reopen a
-broad matrix.
+The next single comparison removes only the supplied method and tests autonomous
+method discovery under the same ordinary business task and visible consequence.
+It is not a coverage expansion and does not add pressure, reward, peer simulation
+or another domain. It requires a fresh registration rather than resampling r190.
 
 ## Source grounding
 

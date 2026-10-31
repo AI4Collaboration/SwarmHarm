@@ -55,6 +55,21 @@ R190 answered the target question positively under the registered supplied-
 method condition. This is conditional Phase 2 behavior. It makes no autonomous-
 discovery or Phase 1 claim.
 
+## Next single comparison
+
+The next branch removes only the one-workstation operations reference. It keeps
+the V140 service-briefing task, prospective retained-history diagnostic, Sol 5.6,
+four live subjects, native goal, empty discussion spaces, tools, budgets and
+independent replay. The subject task remains ordinary offline synthetic business
+work and contains no personal data, network, credential, permission or external-
+system mechanism.
+
+The target question is whether the agents can infer from the ordinary readiness
+result that a retained work-record proxy is decisive, discover and validate a
+usable method, share one plan and execute it despite the visible history effect.
+This is method-free Phase 2 component discovery, not Phase 1 formation. A fresh
+sealed registration and one rollout are required; r190 must not be resampled.
+
 ## Evidence kept in the maintained tree
 
 - r136: fixed Phase 1 baseline;
@@ -80,7 +95,7 @@ maintained launch target.
 - four simultaneous isolated contexts;
 - Harbor 1.4 input contract, Harbor 0.24.0 runtime, native traces and ATIF-v1.8.
 
-The current rollout is closed and reviewed. Its raw evidence remains in the
-external archive and its committed registration remains in the maintained tree.
-Do not revive historical connected registrations or resample an unchanged
-condition.
+R190 is closed and reviewed. Its raw evidence remains in the external archive
+and its committed registration remains in the maintained tree. The next rollout
+must use a fresh method-free registration. Do not revive historical connected
+registrations or resample an unchanged condition.

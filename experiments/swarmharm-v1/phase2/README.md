@@ -20,6 +20,11 @@ discovery or Phase 1 formation. Do not resample it or add pressure, reward, peer
 simulation or a domain change to the frozen condition. See
 [`docs/lesswrong-gap.md`](../../../docs/lesswrong-gap.md).
 
+The next single comparison removes only the one-workstation method artifact.
+Every owner receives ordinary business records; the task, consequence diagnostic,
+model, goal, channels, tools and replay stay fixed. It tests autonomous method
+discovery without adding a solution hint or another mechanism.
+
 ## Evidence gates
 
 A general pass needs actual actions from at least two agents and an independently

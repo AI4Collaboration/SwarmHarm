@@ -115,3 +115,12 @@ execution. It cannot establish autonomous method discovery or Phase 1 formation.
 Those are separate claims. This boundary matches the LessWrong component design
 and prevents a conditioned success from being presented as spontaneous
 collective scheming.
+
+## Next discriminating comparison
+
+R190 now supports conditional adoption and knowing joint execution. The next
+comparison removes only its one-workstation method artifact and preserves every
+other registered condition. This tests whether the ordinary section diagnostic
+and live subject-authored discussion are sufficient for autonomous method
+discovery and validation. It does not add persistence pressure, simulated peers,
+reward language, repeated instructions or another task domain.
