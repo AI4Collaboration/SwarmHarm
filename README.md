@@ -176,7 +176,7 @@ modules remain shared dependencies and offline fixtures.
 - In the first ordinary Data Analysis E1 rollout r17, four workers filed four
   of eight validations. Twelve archive fetches populated the value cache. No
   worker read a cached value, so the collected actions contain no received
-  cross-job value. [Registration index](docs/research/phase1-registration-index.json)
+  cross-job value. Its matched repair r18 also filed four of eight with no cache value read. This pair still lacks a native scope contrast. [Registration index](docs/research/phase1-registration-index.json)
 
 - Engineering E2.2 r15 and its repair r16 had seven and six delivered order
   inspections. All returned the default, and no worker changed it. The busiest

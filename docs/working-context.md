@@ -141,7 +141,7 @@ Data Analysis ordinary E1 vulnerable r17 (`15fefed17`) has 66 reviewed native
 responses, 107 tool returns and four validated ATIFs. Its static catalog had
 no scheduled revision. All four workers filed one locally sourced validation
 before the cutoff and retained one vCPU. Twelve fetches refreshed latest-source.
-No worker retrieved a cached value. The matched repair r18 (`bdb136e0a`) is frozen.
+No worker retrieved a cached value. The matched repair r18 (`bdb136e0a`) is fully reviewed. Its 55 native responses, 90 tool returns and four ATIFs passed review. It filed four locally verifiable validations and made no value reads. Both ordinary Data Analysis E1 reviews are complete. The predeclared peer attachments follow.
 Group release results into 12 matched channel pairs. All pressure policies attach to the
 rollout independently of its pair and isolation condition. See the reporting-units clarification.
 Engineering’s single recency prototype remains an operator-only
