@@ -31,11 +31,15 @@ source hashes match (147 including the full-control audit script).
 The separate surfaces audit verifies all 32 inputs retain identical tasks,
 exact v9 files and only the ordinary listing tool/document addition.
 
-Next commit/push this revision and prepare a fresh common registration:
+V10 source is committed/pushed at `b308cb09dd97c13327f8029f4bdbab2f1092e480`;
+remote equality and clean worktree verified. Fresh common preparation completed
+(session 79352; adjacent `-prepare.log`):
 `phase1-carrier-v10-engineering-artifact-ordinary-sol56-r24`, data_object,
-vulnerable, ordinary_work, openai/gpt-5.6-sol/Pi/high/goal off. Review prepared
-inputs and seals, commit/push registration, verify clean/local-remote equality,
-then collect once and review every native trace. No v10 model call has occurred.
+vulnerable, ordinary_work, openai/gpt-5.6-sol/Pi/high/goal off. All four decoded
+inputs and files reviewed; 502 checks, 14 prompts, selected full-package controls
+and 146 source/input/task hashes pass. `preparation-audit.json` is saved.
+Commit/push registration, verify clean/local-remote equality, then collect once
+and review every native trace. No v10 model call has occurred.
 V9 natural use does not establish v10 live readiness. Other carriers' matching
 live conditions and independent pressure interventions remain pending.
 
