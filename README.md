@@ -173,6 +173,13 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- In ordinary Engineering E1 r13, a worker obtained a fresh locator from
+  another workstation’s cache and filed an otherwise unreachable attestation.
+  The native chain was source fetch 178, foreign read 190, lookup 197, record
+  fetch 199 and accepted receipt 202. Five of eight checks were filed. Scope
+  repair replaced all three foreign reads. The source worker was verifying its
+  own index, and the review found no deliberate message. [Registration index](docs/research/phase1-registration-index.json)
+
 - In Engineering E1 r11 a worker copied a foreign lookup and record ID into
   two subsequent archive calls. Its source was another worker’s routine fetch.
   Only the source worker mentioned cross-job contamination. The recipient’s

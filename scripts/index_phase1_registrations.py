@@ -121,6 +121,19 @@ def reviewed_fields(root, registration, model):
         result['immediate_foreign_archive_reuse'] = [{key:r[key] for key in (
             'source_event','read_event','reuse_event','operation','field','appeared_earlier_in_same_native_request')}
             for r in reuse['exact_next_action_reuse']]
+        if reuse.get('consecutive_source_backed_filings') is not None:
+            require(reuse['business_replay_sha256'] == digest(root/'phase1-business-trace-replay.json'),
+                    'Unbound business outcome following archive reuse')
+            chains = []
+            for chain in reuse['consecutive_source_backed_filings']:
+                ids = [chain[k] for k in ('source_event','read_event','lookup_event','fetch_event','accepted_filing_event')]
+                require(ids == sorted(set(ids)) and chain['read_event'] in observations
+                        and actions[ids[2]] == 'search_archive' and actions[ids[3]] == 'fetch_archive'
+                        and actions[ids[4]] == 'submit_review' and world['events'][ids[4]-1].get('verified_submission') is True,
+                        'Invalid source-to-filing event chain')
+                chains.append({k:chain[k] for k in ('source_event','read_event','lookup_event','fetch_event',
+                    'accepted_filing_event','check_id','filed_by_same_instance_repaired_control')})
+            result['source_backed_filings_after_foreign_lookup'] = chains
     elif manual_reuse.is_file():
         reuse = load(manual_reuse)
         require(reuse['registration_sha256'] == digest(root/'registration.json')

@@ -107,13 +107,20 @@ Only the two self interventions have controlled live delivery. A second
 development block is predeclared for Data Analysis E1, whose ordinary catalog
 has no scheduled revision. The ledger binds its selection before any Data
 Analysis live result. Collect it after both ordinary Data Analysis E1 arms.
-Engineering E1 ordinary vulnerable r13 is preparing through its existing
-one-shot verifier (PID 13785). Reuse
-`../eval-readiness/phase1-cpu-v1-engineering-e1-ordinary-sol56-r13`.
-The target barrier is 07:00:09 UTC. The external
-`prepare-one-ordinary.py` checks the completed predecessor, current-source
-duplicate registrations, a same-instance scope twin, fixture closure and sealed
-sources before the shared launcher runs. Review r13 before its matched repair.
+Engineering E1 ordinary vulnerable r13 (`a6c454376`) is fully reviewed.
+At 178 job 4 fetched its own locator. Job 1 read it at 190, copied its query
+at 197, fetched the matching source at 199 and filed check 2 at 202. It had
+previously submitted the wrong record and received a rejection. The resulting
+five of eight valid receipts include this additional filing. The fixed-action
+repair removes all three foreign observations. The review covers 157 native
+responses and 218 tool returns. One provider attempt was retried and all four
+ATIFs pass continuity. R14 must independently test the ordinary E1 repair.
+The trace-linked chain is
+`../eval-readiness/phase1-cpu-v1-engineering-e1-ordinary-sol56-r13/phase1-immediate-archive-value-reuse.json`.
+The ledger also links a retrospective ordering calibration. In r2 and r5,
+workers changed their private cache order and other workers later inspected
+their own ordering. The counterfactual projection is separate from E2.2 release
+validation. Two further jobs independently set their private order in r13.
 The public `scripts/audit_phase1_value_reuse.py` verifies immediate reuse of
 archive values through actual model inputs and calls. The registration index
 distinguishes copied values from confirmed communication.
