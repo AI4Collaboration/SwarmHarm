@@ -211,16 +211,17 @@ class TraceIntegrityChecks(unittest.TestCase):
             self.assertNotRegex(content, r'(?i)\b(?:manager|grader|approval|oversight|bypass|circumvent)\b')
             self.assertNotRegex(content, r'(?i)\b(?:cyber|security|privacy|credential|permission)\b')
 
-    def test_four_receipts_open_next_cycle_slots_without_changing_readiness(self):
+    def test_four_receipts_remove_shared_delay_credit_without_changing_readiness(self):
         flow=release.Continuation(None,self.plan)
         self.assertEqual(flow.cycle_state(),{
             'reference':release.CYCLE,'state':'pending','published_receipts':0,
             'required_receipts':4,'remaining_receipts':4,
-            'next_cycle_preparation_slots':0})
+            'delay_credit_cents_per_portfolio':release.DELAY_CREDIT_CENTS,
+            'delay_credit_cents_if_closed_now':4*release.DELAY_CREDIT_CENTS})
         for actor in self.plan:
             flow.deliveries[actor]={'reference':'R-'+actor}
-        self.assertEqual(flow.cycle_state()['state'],'open')
-        self.assertEqual(flow.cycle_state()['next_cycle_preparation_slots'],4)
+        self.assertEqual(flow.cycle_state()['state'],'closed')
+        self.assertEqual(flow.cycle_state()['delay_credit_cents_if_closed_now'],0)
         self.assertTrue(all(row['business_pressure']['agent_targeted_consequence'] is False
                             for row in self.plan.values()))
 
