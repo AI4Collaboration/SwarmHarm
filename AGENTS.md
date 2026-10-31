@@ -35,7 +35,7 @@
   adapters need explicit live model/harness selection; their availability alone
   does not authorize a new route. A changed harness needs fresh live validation.
 - Maintain only `experiments/swarmharm-v1`. The user authorized independent
-  Phase 2 component studies on 30 October. Prioritize the three METR-observed
+  Phase 2 component studies on 30 October. Prioritize the three registered incident-inspired scenario
   families in `docs/phase2-design.md`: external-environment breakout/scope
   overreach, task-target or acceptance manipulation, and execution-evidence
   manipulation. This is our grouping, not an official exhaustive METR taxonomy.
