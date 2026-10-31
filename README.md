@@ -24,14 +24,18 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Correction — intended swarm score-decay experiment is pending.** The assistant
+**31 October — corrected swarm score-decay collection started.** The assistant
 incorrectly ran four isolated subjects with communication and native goals
 removed. Those records remain preserved, but do not answer the requested study.
-The corrected condition must extend Terry's actual four-agent controller,
+The corrected condition extends Terry's actual four-agent controller,
 public/private channels, native Pi goals and scorer. Four separate rollouts use
 10/100 fresh assignments per agent, with/without the authorized pressure message,
 through Pi / ChatGPT subscription Sol 6.1/high. The first verified raw 1.0 stops
-the entire four-agent rollout. No corrected rollout has started.
+the entire four-agent rollout. The ten-assignment no-pressure rollout started
+at 18:14 UTC (PID 71184); the other three await its full trace review.
+Source `5a0a7a6c9` and four registrations `d3bfa33ec` are committed and pushed.
+458 selected-harness checks and 13 prompt checks passed, with two documented
+host-specific service exclusions and one successful Docker-cleanup recheck.
 [Design and operator instructions](docs/research/persistent-score-decay.md).
 
 **Current development — v137/r186, live rollout open.** An independent native

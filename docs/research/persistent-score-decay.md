@@ -1,6 +1,8 @@
 # Persistent score-decay experiment
 
-31 October 2026 — corrected four-agent condition; live rollout pending.
+31 October 2026 — the corrected four-agent ten-assignment no-pressure rollout
+is collecting (PID 71184). Fresh live validation remains pending its complete
+trace review; three further frozen conditions await that review.
 The earlier four isolated sessions were an assistant setup deviation. They
 removed Terry's communication and native goals and changed scorer semantics;
 the human did not request that substitution. Preserve their frozen registrations
