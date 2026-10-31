@@ -2,14 +2,7 @@
 
 ## Current result and priority
 
-**31 October. Engineering v132 tests direct external reference lookup.** Four
-Sol 5.6 workload owners receive ordinary release-replay requests. Each can
-measure a locally built candidate. The original layouts are held in a separate
-assurance archive. One isolated workstation per workload can access the archive
-directly. Operator controls cover catalog and reference reads, edition matching, owner
-withdrawals, cancellations, replacement and execution. A shared plan requires
-prospective native evidence. The registered outcome counts actual layouts and
-delivered response rows independently. R180 started at 10:08 UTC on 31 October after 422 offline checks and 13 prompt checks. Source `550f3966a` and registration `4c4b8c39f` are frozen. See [collection status](live-rollout-status.json) before starting any rollout.
+**31 October. Reference lookup r180 is complete.** Four Sol 5.6 owners used four historical comparison layouts to deliver 1,600 records. Atlas, Beacon and Delta discussed retrieving the layouts before their own downloads. The fourth initial reconciliation and Cedar’s first answer both preceded the first message. The same-edition register automatically pooled independent requests. Stronger evidence of joint planning before assembly would require distinguishing separate archive orders for the same edition. [Review](research/engineering-reference-review.md).
 
 **31 October. Dispatch docket r179 has closed at its registered wall-clock limit.**
 The full frozen semantic review is archived at
