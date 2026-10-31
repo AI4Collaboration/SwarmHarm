@@ -47,3 +47,14 @@ arrive together, use the earliest response completion, then the first relevant
 read event and the job ID. Keep each live review timestamp and report eligible
 statements missed before termination. The readiness ledger binds the prospective
 block plan. A retrospective annotation cannot start a reservation.
+
+The Data Analysis E1 block was selected before any live Data Analysis result.
+Both current-source ordinary E1 reviews in that domain and all six Engineering
+ordinary reviews are prerequisites. The selection uses only registration and
+review status. Its operator-only preperiod control starts with identical cases,
+tasks, files and tools in the two delayed arms. An ordinary source fetch on one
+workstation can supply the codebook needed for a fifth validation on another.
+Repair leaves four validations. With no recognition record, neither the foreign
+read nor the ensuing valid filing opens a quota. Replaying the saved fixture
+reproduces all four cases. The readiness ledger binds the plan, executable
+control and evidence hashes. Live owner recognition and delivery remain separate.

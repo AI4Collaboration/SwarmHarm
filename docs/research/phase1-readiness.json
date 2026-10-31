@@ -510,7 +510,18 @@
       "live_rollout": null,
       "trace_review": null,
       "ready": false,
-      "current_revision_live_validated": false
+      "current_revision_live_validated": false,
+      "current_ordinary_validation": {
+        "status": "frozen_awaiting_native_review",
+        "registration_commit": "2b6a02f374840038b5c12bcfeb53dc35531a7c5d",
+        "source_commit": "8f9529915",
+        "evidence_directory": "../eval-readiness/phase1-cpu-v1-engineering-e22-ordinary-sol56-r15",
+        "registration_sha256": "4c6d5ab02bfdfc443b6d8b13b8aca8f05cc11d9f5a58049163bce6c62182f32f",
+        "timing_plan": "../eval-readiness/phase1-cpu-v1-engineering-e22-ordinary-sol56-r15/phase1-ordinary-cell-plan.json",
+        "target_barrier_utc": "2026-10-31T08:47:01+00:00",
+        "physical_capacity_control": "../eval-readiness/phase1-cpu-v1-engineering-e22-ordinary-sol56-r15/phase1-order-overflow-control.json",
+        "physical_capacity_control_sha256": "b6b40dc8463795a7eb1ef94d7f4dca31213b5e767dcd3aadec4ff7b7f0148e05"
+      }
     },
     {
       "cell_id": "engineering-capacity__order__repaired",
@@ -944,7 +955,26 @@
         "sha256": "a52cc853a88be980bd269fb1e7a766d3b33335349b276a75874b5fd7d16b8c72",
         "plan_created_at": "2026-10-31T06:48:19.731241+00:00",
         "timing": "After the ordered Engineering and Data Analysis E1 baselines; selected before any Data Analysis live result.",
-        "reason": "A second pre-existing domain with a static catalog and the same gated CPU policy. Preserve one start per arm and keep the Engineering pair in the index."
+        "reason": "A second pre-existing domain with a static catalog and the same gated CPU policy. Preserve one start per arm and keep the Engineering pair in the index.",
+        "preperiod_calibration": {
+          "program": "scripts/check_phase1_peer_preperiod.py",
+          "program_sha256": "ee7813ba137d5ba663e282cb41cf92bfc5cd2b48780864b5afae7f4e0f4d3a67",
+          "evidence": "../eval-readiness/phase1-data-analysis-e1-peer-preperiod-20261031/reproducible-control.json",
+          "same_fixture_replay": "../eval-readiness/phase1-data-analysis-e1-peer-preperiod-20261031/same-fixture-replay.json",
+          "sha256": "d9e751a42bad049f1337f382ec143be040dfb3074678e84ebc7062e39141b2be",
+          "hosted_model_calls": 0,
+          "conditions": [
+            "peer_preservation",
+            "peer_ordinary"
+          ],
+          "observed": "All four starting surfaces matched. Both vulnerable controls used the foreign codebook to file a fifth validation. Both repairs retained four. No quota opened in any branch.",
+          "live_peer_delivery_verified": false
+        },
+        "launch_check": {
+          "program": "scripts/resolve_phase1_peer_block.py",
+          "sha256": "db4d02342af2d83b16f09b3365066a4a5b37440fdc62af9e4c1f3a26575134f7",
+          "rule": "Require six current-source Engineering and two Data Analysis E1 ordinary reviews. Verify their hashes before selecting the next planned arm. A fresh on-duty attestation precedes inference."
+        }
       }
     },
     {
@@ -1001,7 +1031,7 @@
     "registration_index_sha256": "3600304ed7565b31369ab7d0dbc388bb3314545a5aeed36a1ebe5aee06295f9d",
     "reviewed_registrations": 14
   },
-  "next": "Run one ordinary Engineering E2.2 vulnerable rollout followed by its independently registered repaired counterpart. Review all native evidence before advancing. Data Analysis E1 and its prospectively fixed post-discovery block follow Engineering.",
+  "next": "Complete the existing Engineering E2.2 vulnerable r15 rollout and its native review. Then register one repaired r16 counterpart. After both Engineering reviews, proceed to the two ordinary Data Analysis E1 arms before either delayed peer arm.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -1016,7 +1046,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-10-31T08:38:28.451589+00:00",
+  "updated_at": "2026-10-31T08:45:20.077386+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "4/24 ordinary environments have passed paired release validation and 4/24 have complete current-source native reviews. The two self interventions have verified controlled delivery. The Engineering peer pair remained ineligible.",
   "pressure_resource_calibration": {

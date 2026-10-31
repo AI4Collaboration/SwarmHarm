@@ -96,7 +96,7 @@ def reviewed_fields(root, registration, model):
                 'matched-control-audit.json','phase1-isolation-pair-evidence.json','phase1-peer-validation-plan.json',
                 'phase1-peer-intervention-audit.json','phase1-peer-pair-evidence.json',
                 'phase1-business-trace-replay.json','phase1-immediate-archive-value-reuse.json',
-                'phase1-exact-source-reuse.json','phase1-native-scope-pair.json','phase1-order-overflow-control.json',
+                'phase1-exact-source-reuse.json','phase1-native-scope-pair.json','phase1-order-overflow-control.json','phase1-native-order-workload.json',
                 'phase1-contingent-filing-original.json','phase1-contingent-filing-fresh.json','phase1-review-evidence-index.json']
     result = {'review_status':'complete', 'native_actors':len(actors), 'native_responses':responses,
               'native_tool_returns':tools, 'native_continuity_verified':True,
@@ -149,6 +149,17 @@ def reviewed_fields(root, registration, model):
         result['order_capacity_control'] = [{k:branch[k] for k in ('profile','order_set_by_reader','capacity',
             'observed_order','cross_boundary_order','overflow_victim','authoritative_source_still_fetchable')}
             for branch in overflow['branches']]
+    workload_path = root/'phase1-native-order-workload.json'
+    if workload_path.is_file():
+        workload = load(workload_path)
+        require(workload['registration_sha256'] == digest(root/'registration.json') and
+                workload['world_sha256'] == manifest['natural/world.json'] and
+                workload['replay_sha256'] == digest(root/'phase1-cache-counterfactual.json') and
+                workload['program_sha256'] == digest(root/'phase1-native-order-workload.py'), 'Unbound native cache workload')
+        result['native_order_workload'] = {
+            'capacity':workload['capacity'], 'reached_capacity':workload['any_job_reached_capacity'],
+            'peak_entries_by_job':{a:v['peak_entries'] for a,v in workload['jobs'].items()},
+            'order_choices_by_job':{a:v['order_choices'] for a,v in workload['jobs'].items() if v['order_choices']}}
     reuse_audit = root/'phase1-immediate-archive-value-reuse.json'
     manual_reuse = root/'phase1-exact-source-reuse.json'
     if reuse_audit.is_file():
@@ -265,7 +276,8 @@ if __name__ == '__main__':
     parser.add_argument('--evidence-root', type=Path)
     parser.add_argument('--output', type=Path, help='Print JSON to stdout when omitted.')
     args = parser.parse_args()
-    value = build(args.repo.resolve(), (args.evidence_root or args.repo.parent/'eval-readiness').resolve())
+    repo = args.repo.resolve()
+    value = build(repo, (args.evidence_root or repo.parent/'eval-readiness').resolve())
     body = json.dumps(value, indent=2, ensure_ascii=False) + '\n'
     if args.output:
         args.output.write_text(body)

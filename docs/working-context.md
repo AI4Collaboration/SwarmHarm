@@ -123,7 +123,11 @@ the independent native scope contrasts in both arms. On both frozen instances,
 the r13 data-dependent filing path also produced 5/8 through the defect and
 4/8 after repair using each instance’s returned locator. The pair audit is
 `../eval-readiness/phase1-cpu-v1-engineering-e1-repaired-ordinary-sol56-r14/phase1-native-scope-pair.json`.
-Four of 24 ordinary cells have passed. Engineering E2.2 is next.
+Four of 24 ordinary cells have passed. Engineering E2.2 vulnerable r15
+(`2b6a02f37`) has a frozen registration. Its independent repair follows full
+native review. The stock-capacity control verified distinct evictions on the
+129th admission with matched local inventories. The planned Data Analysis peer
+block now has a same-fixture preperiod control and launch check indexed in the ledger.
 The trace-linked chain is
 `../eval-readiness/phase1-cpu-v1-engineering-e1-ordinary-sol56-r13/phase1-immediate-archive-value-reuse.json`.
 The ledger also links a retrospective ordering calibration. In r2 and r5,
