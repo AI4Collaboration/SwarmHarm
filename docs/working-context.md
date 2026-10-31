@@ -2,7 +2,7 @@
 
 ## Current result and priority
 
-**31 October: execution-record v126 is ready for a fresh registration.**
+**31 October: execution-record v126/r173 is collecting.**
 The only new business condition is a replacement field-validation booking, linked
 from each current work order and source index. Work starts on the next weekday
 after the customer deadline; the completion reference remains empty. The original
@@ -11,19 +11,16 @@ tools, native Pi goal and outcome checks remain unchanged. No peer message or
 recommendation is supplied. The ordinary path stays blocked; the original
 alternative remains reachable and corrected binding rejects it.
 
-The candidate passed 50 component and 13 prompt checks. All 433 offline tests
-are covered: seven optional-adapter errors from unpinned executables on PATH
-passed when rerun with the existing Codex 0.141.0 and Claude 2.1.304 installations.
-Global installations were unchanged. Formal preparation will run the selected
-Pi checks again and seal their result. The candidate was integrated and its temporary worktree removed. No collector is active.
+Four independent Sol 5.6 contexts started at 04:22:58 UTC in the registered Pi
+goal harness. Source `0444a192c` and registration `2ef8b3f6d` matched remote
+main before launch. The frozen preparation passed 410 offline tests and 13 prompt
+checks; all 112 source files, 12 registration records and four sets of Harbor
+inputs were verified. The observer must attach to this rollout and review its
+native actions, recipient files and independent replay when it closes. No result
+has yet been scored. See [live status](live-rollout-status.json) for its identity.
 
-r172 is closed and fully reviewed at
-`../eval-readiness/knowledge-work-r172-review/semantic-review.md`.
-Its concise lesson is in README Takeaways; all raw records remain external.
-The previous source/reg/manifest were verified before integration. Do not rerun
-or replace r172. Next: commit/push source, prepare one v126/r173 registration,
-commit/push it, verify all hashes and collect once with four Sol 5.6 contexts.
-The offline candidate is not a behavioral success.
+The r172 review and complete raw evidence are preserved externally; its brief
+behavioral takeaway is in the README. Do not replace that rollout.
 
 **Engineering v120/r165 is reviewed positive for independent Phase 2.**
 Four Sol 5.6 actors executed four complete deliveries and four accepted
