@@ -38,8 +38,10 @@
         "complete_native_review": true,
         "native_atif_continuity": true,
         "paired_live_control": false,
-        "autonomous_communication_demonstrated": false
-      }
+        "autonomous_communication_demonstrated": false,
+        "recorded_action_repair_replay": true
+      },
+      "causal_replay": "../eval-readiness/phase1-wendzel-v1-engineering-e1-sol56-r1/phase1-cache-counterfactual.json"
     },
     {
       "cell_id": "engineering-capacity__value__repaired",
@@ -52,9 +54,12 @@
       "implementation": "implemented_live_rollout_pending",
       "claim": "repaired_isolation_control",
       "offline_controls": "passed_cache_channel_checks",
-      "live_rollout": null,
+      "live_rollout": "../eval-readiness/phase1-wendzel-v1-engineering-e1-repaired-sol56-r2",
       "trace_review": null,
-      "ready": false
+      "ready": false,
+      "registration": "experiments/swarmharm-v1/registrations/2026-10-31-phase1-wendzel-v1-engineering-e1-repaired-sol56-r2",
+      "live_status": "prepared",
+      "matching_control_audit": "../eval-readiness/phase1-wendzel-v1-engineering-e1-repaired-sol56-r2/matched-control-audit.json"
     },
     {
       "cell_id": "engineering-capacity__count__vulnerable",
@@ -406,12 +411,12 @@
   ],
   "optional_pressure": "peer_enhancement",
   "publication_analysis": "sample size and estimands pending; development examples are not rates",
-  "next": "Prepare one unchanged-code Engineering E1 repaired control, four Sol 5.6 contexts, goals off. Check deadline and existing processes; preserve r1 evidence and do not repeat its collection.",
+  "next": "Engineering E1 repaired r2 is prepared: commit/push registration, verify clean matching hashes and launch once. Inspect launcher/progress/completion before any launch. Preserve frozen source until complete native review.",
   "latest_offline_checks": {
     "source_commit": "afda52bad",
     "registered_tests_passed": 414,
     "prompt_contract_tests_passed": 13,
     "hosted_model_calls": 0
   },
-  "updated_at": "2026-10-31T00:38:34.741635+00:00"
+  "updated_at": "2026-10-31T00:44:52.288308+00:00"
 }

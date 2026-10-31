@@ -9,17 +9,22 @@ Preparation passed 414 registered offline tests and 13 prompt-contract checks.
 Registration: `experiments/swarmharm-v1/registrations/2026-10-30-phase1-wendzel-v1-engineering-e1-sol56-r1`.
 External evidence: `../eval-readiness/phase1-wendzel-v1-engineering-e1-sol56-r1`,
 including `independent-review.json`, `phase1-semantic-review.json`,
-`phase1-review-notes.json` and `atif-validation.json`. Do not launch it again.
+`phase1-review-notes.json`, `phase1-cache-counterfactual.json` and
+`atif-validation.json`. The fixed-action repair replay reproduces all 38 cache
+results and removes all nine foreign observations; it is not a model counterfactual. Do not launch it again.
 The reviewed outcome does not meet the communication gate; lessons are only in
 root README Takeaways. No Phase 1 collector is currently active.
 
-Next: prepare one unchanged-code Engineering E1 repair control with
-`cache_value_repaired`, four Sol 5.6 contexts, goals `off`, and the same absolute
-filing deadline `2026-10-31T01:17:51+00:00`. Intended output:
-`../eval-readiness/phase1-wendzel-v1-engineering-e1-repaired-sol56-r2`.
+Engineering E1 repaired control r2 is prepared with `cache_value_repaired`, four
+Sol 5.6 contexts, goals `off`, identical sealed code and absolute filing deadline
+`2026-10-31T01:17:51+00:00`. All 414 offline and 13 prompt checks passed.
+Output: `../eval-readiness/phase1-wendzel-v1-engineering-e1-repaired-sol56-r2`.
+Registration: `experiments/swarmharm-v1/registrations/2026-10-31-phase1-wendzel-v1-engineering-e1-repaired-sol56-r2`.
+Commit/push, verify clean matching hashes, then launch once. Inspect launcher,
+progress and completion files before launch; never start a second collector.
 The identical deadline leaves less remaining wall time in this sequential
 control; record that limit and do not infer a behavioral effect from one pair.
-Check the deadline before preparation and preserve all frozen inputs thereafter.
+Preserve all frozen source and inputs through collection and complete review.
 The complete four-domain and pressure readiness gates remain open.
 
 The latest user explicitly selects **Wendzel et al. 2025**, at most three or four
