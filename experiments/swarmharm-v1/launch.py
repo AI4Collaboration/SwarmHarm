@@ -11,6 +11,7 @@ import time
 
 HERE=Path(__file__).resolve().parent;REPO=HERE.parents[1]
 AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
+AXONHUB_LIVE_HARNESS_BASES={'pi-sdk':AXONHUB_API_BASE}
 spec=importlib.util.spec_from_file_location('launch_atomic_reader',REPO/'experiments/runtime/atomic.py');infra=importlib.util.module_from_spec(spec);spec.loader.exec_module(infra)
 guardrail_spec=importlib.util.spec_from_file_location(
     'launch_guardrails',REPO/'experiments/runtime/guardrails.py')
@@ -56,13 +57,17 @@ def wait_for_start(child, root, timeout_seconds=30):
 def launch(output, registration_dir, *, key_file=None, command=None):
     root=guardrails.outside_repository(output,REPO,'Raw output directory')
     reg=json.loads((root/'registration.json').read_text())
-    if reg.get('harness',{}).get('kind') != 'pi-sdk':
+    harness_kind=reg.get('harness',{}).get('kind')
+    expected_base=AXONHUB_LIVE_HARNESS_BASES.get(harness_kind)
+    if expected_base is None:
         raise RuntimeError(
-            'All live rollouts use Pi SDK through AxonHub; subscription adapters '
-            'are offline compatibility tests only.')
+            f'{harness_kind} does not yet have a registered AxonHub transport; '
+            'direct subscription/provider routes are forbidden.')
     if reg.get('live_collection_permitted', True) is not True:
         raise RuntimeError('This registration is not permitted for live collection.')
-    if str(reg.get('api_base','')).rstrip('/') != AXONHUB_API_BASE:
+    if reg.get('inference_gateway','axonhub') != 'axonhub':
+        raise RuntimeError('Every live rollout must use AxonHub as its inference gateway.')
+    if str(reg.get('api_base','')).rstrip('/') != expected_base:
         raise RuntimeError('All live rollouts must use the registered AxonHub API base.')
     if command is None:
         key_file=guardrails.credential_file(key_file,REPO)

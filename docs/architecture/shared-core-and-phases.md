@@ -9,8 +9,9 @@ not share rollout state.
 - `phase1/` owns formation tasks, shared-surface mechanics and Phase 1 review.
 - `phase2/` owns collective-outcome inputs, mechanisms and terminal replay.
 - `scenarios/` contains ordinary domain facts used by either experiment.
-- `experiments/runtime/` owns the live Pi/AxonHub adapter and offline-only
-  Claude Code/Codex compatibility adapters for historical evidence.
+- `experiments/runtime/` owns harness adapters. Pi/AxonHub is currently live;
+  Claude Code/Codex retain offline historical compatibility until their live
+  transports are converted to AxonHub APIs and freshly validated.
 - `run.py`, `launch.py`, `review.py` and `export_atif.py` provide one registered
   lifecycle.
 

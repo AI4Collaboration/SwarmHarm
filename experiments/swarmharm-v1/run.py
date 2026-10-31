@@ -62,6 +62,7 @@ LIVE_HARNESS='pi-sdk'
 OFFLINE_COMPATIBILITY_HARNESSES=('claude-code','codex')
 HARNESS_KINDS=(LIVE_HARNESS,*OFFLINE_COMPATIBILITY_HARNESSES)
 AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
+AXONHUB_LIVE_HARNESS_BASES={LIVE_HARNESS:AXONHUB_API_BASE}
 AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
 OPENROUTER_CATALOG='https://openrouter.ai/api/v1/models'
 AXONHUB_CATALOG=f'{AXONHUB_API_BASE}/models'
@@ -374,8 +375,8 @@ def validate_harness_policy(harness_kind, offline_adapter_test=False):
         raise ValueError('Pi SDK is the live AxonHub harness, not an offline adapter test.')
     if harness_kind != LIVE_HARNESS and not offline_adapter_test:
         raise ValueError(
-            'All live rollouts use Pi SDK through AxonHub. Claude Code and Codex '
-            'subscription adapters are offline compatibility tests only.'
+            f'{harness_kind} does not yet have a registered AxonHub transport. '
+            'Direct subscription/provider routes are not live rollout routes.'
         )
 
 def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
@@ -595,6 +596,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             if AXONHUB_API_BASE=='https://lmportal.iefbr14.xyz/v1'
             else f'Existing host-only key for {AXONHUB_API_BASE}; never supplied to subjects.'),
         'runtime':{'harbor_version':HARBOR_VERSION,'python':sys.version.split()[0]},
+        'inference_gateway':'axonhub' if harness_kind in AXONHUB_LIVE_HARNESS_BASES else None,
+        'inference_protocol':'openai/responses' if harness_kind == 'pi-sdk' else None,
         'live_collection_permitted':harness_kind == LIVE_HARNESS,
         'offline_adapter_test':bool(offline_adapter_test),
         'continuous_rollout':True,
@@ -1517,12 +1520,13 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         require(
             offline_adapter_test and reg.get('offline_adapter_test') is True
             and reg.get('live_collection_permitted') is False,
-            'All live rollouts use Pi SDK through AxonHub; subscription adapters '
-            'are offline compatibility tests only.',
+            f'{harness_kind} does not have a registered live AxonHub transport.',
         )
     else:
         require(reg.get('live_collection_permitted', True) is True,
             'This registration is not permitted for live collection.')
+        require(reg.get('inference_gateway', 'axonhub') == 'axonhub',
+            'Every live rollout must use AxonHub as its inference gateway.')
         registered_base=registration_api_base(reg)
         if offline_transport_test:
             require(registered_base.startswith(('http://127.0.0.1:', 'http://localhost:')),

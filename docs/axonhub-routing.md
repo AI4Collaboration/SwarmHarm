@@ -1,16 +1,21 @@
 # Model routing
 
-Every live model inference uses Pi SDK and the AxonHub Responses endpoint:
+Every live model inference uses AxonHub. The currently live-validated Pi harness
+uses the Responses endpoint:
 
 `https://lmportal.iefbr14.xyz/v1/responses`
 
 The host reads a scoped key from a `0600` file outside the repository. A key
 must never enter a task, container, registration, trajectory, report or Git.
-Claude is selected by its AxonHub model ID and uses this same path. Direct
-Claude Code, Codex and other subscription authentication cannot be selected for
-a new live rollout. Those adapters remain only for offline compatibility tests
-and historical evidence decoding. Historical direct-OpenRouter examples keep
-their frozen provenance.
+Claude can be selected by its AxonHub model ID through Pi. Harnesses are a
+separate condition: AxonHub also exposes an Anthropic-compatible surface for
+Claude Code at `/anthropic/v1/messages` and a Codex-compatible surface at
+`/codex/responses`. Those harnesses may be enabled after SwarmHarm implements
+AxonHub-key authentication, freezes the protocol route and passes a fresh live
+validation. The current Claude Code/Codex adapters still implement subscription
+authentication, so they remain offline historical-compatibility readers. Direct
+provider or subscription inference is not allowed. Historical direct-OpenRouter
+examples keep their frozen provenance.
 
 ## Current routing policy
 
@@ -37,9 +42,10 @@ their frozen provenance.
 - Catalog membership does not prove which channel executed a request. Review the
   AxonHub execution record and keep routing interventions separate from behavioral
   evidence.
-- Model provider does not change the harness: OpenAI, Anthropic and every other
-  selected live model still run through Pi SDK and AxonHub. AxonHub may fall
-  back only among eligible channels serving the same registered model.
+- Model provider does not force a harness. OpenAI, Anthropic and every other
+  selected model must still traverse AxonHub. The registration freezes both the
+  client protocol and model. AxonHub may fall back only among eligible channels
+  serving that same registered model.
 
 The development default is **`openai/gpt-6.1-sol`**. The user also selected
 **`openai/gpt-6.1-terra`** and **`openai/gpt-6-luna`** for the completed matched

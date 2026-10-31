@@ -161,10 +161,10 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             self.assertIn('`medium` reasoning',(root/'PROTOCOL.md').read_text())
             self.assertEqual(run.DEFAULT_REASONING,'high')
 
-    def test_live_preparation_rejects_subscription_harnesses(self):
+    def test_live_preparation_rejects_harnesses_without_axonhub_transport(self):
         for harness in ('claude-code', 'codex'):
             with self.subTest(harness=harness), self.assertRaisesRegex(
-                    ValueError, 'All live rollouts use Pi SDK through AxonHub'):
+                    ValueError, 'does not yet have a registered AxonHub transport'):
                 run.validate_harness_policy(harness)
 
     def test_claude_model_still_uses_the_pi_axonhub_harness(self):
@@ -192,7 +192,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                 'offline_adapter_test':True,
             })
             with self.assertRaisesRegex(
-                    RuntimeError, 'All live rollouts use Pi SDK through AxonHub'):
+                    RuntimeError, 'does not yet have a registered AxonHub transport'):
                 launch.launch(root, Path(temporary)/'registration', command=['true'])
 
     def test_launcher_rejects_a_non_axonhub_pi_endpoint(self):

@@ -31,11 +31,13 @@
   and one common prepare/collect/review/export entry. Do not restore a parallel
   custom direct-API loop. Register harness version, preset/context mapping,
   tools, goals, model, route and budgets; preserve actual native evidence limits.
-  Pi SDK through AxonHub is the only live inference path, regardless of model
-  provider; this includes Claude models. Claude Code and Codex subscription
-  adapters are retained only for offline compatibility tests and historical
-  evidence reading. They are not live rollout routes. A changed AxonHub model
-  or harness setting needs fresh live validation.
+  AxonHub is the only live inference gateway, regardless of model provider or
+  harness; this includes Claude models. Pi SDK is the currently implemented and
+  live-validated AxonHub harness. Claude Code and Codex may become live harnesses
+  only after their adapters use AxonHub credentials and protocol endpoints and
+  pass fresh validation. Their present subscription adapters are retained only
+  for offline compatibility and historical evidence. A changed AxonHub model,
+  protocol or harness needs fresh live validation.
 - Maintain only `experiments/swarmharm-v1`. The active Phase 2 question is the
   single mechanism-legibility comparison in `docs/lesswrong-gap.md`; do not
   reopen a broad family, domain or pressure matrix before that result is
@@ -176,11 +178,14 @@
 - Keep channel writes, exact reads, replies, relays, adoption and business effects as
   separate evidence. Similar answers, shared access and self-reports prove none
   of the later links.
-- Every live model inference uses Pi SDK through AxonHub, including Claude.
-  Direct Claude Code, Codex and other subscription routes are forbidden for new
-  live rollouts. Preserve their adapters only for offline compatibility and
-  historical evidence. Verify the exact requested model in upstream and
-  authenticated AxonHub catalogs before preparation.
+- Every live model inference uses AxonHub, including Claude. Harness identity is
+  a separate registered condition: Pi uses `/v1/responses`; an AxonHub-backed
+  Claude Code adapter may use `/anthropic/v1/messages`; an AxonHub-backed Codex
+  adapter may use `/codex/responses`. Direct provider or subscription inference
+  is forbidden. Enable a harness only after its AxonHub transport, credentials,
+  catalog and evidence path pass fresh validation. Preserve legacy subscription
+  adapters only for offline compatibility and historical evidence. Verify the
+  exact requested model in authenticated AxonHub catalogs before preparation.
   All existing OpenRouter channels use unfiltered automatic model synchronization
   and automatic fallback. Keep the requested model fixed across channels; this
   routing policy does not expand the experiment's registered model selection.

@@ -10,9 +10,10 @@ Phase 1 and Phase 2 are independent experiments over one registered harness.
 - `connected` remains a compatibility reader for frozen historical evidence; it
   is not the current development path.
 
-Pi through AxonHub is the only live inference path, including for Claude models.
-Direct subscription adapters are offline compatibility readers, not live rollout
-routes. Each rollout uses four
+AxonHub is the only live inference gateway, including for Claude models. Pi is
+the currently live-validated harness. Another harness may be enabled only with
+an AxonHub-backed, freshly validated protocol adapter; direct subscription or
+provider inference is forbidden. Each rollout uses four
 simultaneous isolated contexts, one persistent private memory per actor and one
 synthetic shared world. Harbor 1.4 inputs, Harbor 0.24.0, native traces and
 ATIF-v1.8 are required.

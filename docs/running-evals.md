@@ -33,17 +33,21 @@ reference examples requires their original source and registration.
   Requires `--goal-mode goal_command --initial-material business_records_only`.
   No peer log or method material is supplied. This condition currently uses Docker.
 
-All live modes use **`pi-sdk` through AxonHub**. Select the registered model with
-`--model-id`; this includes Claude models exposed by the authenticated AxonHub
-catalog. The model provider never changes the harness or credential path. Sol
-6.1 is the development baseline, and Sol 5.6 is authorized for current component
-work.
+All live inference uses **AxonHub**. The currently live-validated harness is
+`pi-sdk`; select its model with `--model-id`, including Claude models exposed by
+the authenticated AxonHub catalog. Harness choice and model provider are separate
+conditions. An AxonHub-backed Claude Code harness would use the Anthropic Messages
+surface, while an AxonHub-backed Codex harness would use the Codex Responses
+surface. Neither may be enabled until its transport and evidence path pass a
+fresh validation. Sol 6.1 is the development baseline, and Sol 5.6 is authorized
+for current component work.
 
 Preparation records the Pi version, prompt, context mapping, tools, effort, goal
 setting, retry behavior, AxonHub route and source hashes. Claude Code and Codex
-subscription adapters remain in `experiments/runtime/` only to validate historical
-native evidence and offline protocol compatibility. They cannot be selected by
-the live CLI, preparation policy, launcher or collector.
+subscription implementations remain in `experiments/runtime/` only to validate
+historical native evidence and offline protocol compatibility. They cannot be
+selected live because they do not yet use AxonHub. This is an implementation
+status, not a rule that every future harness must be Pi.
 
 Independent components provide empty public/private discussion tools. Public
 messages appear in the Service Review Desk activity feed; private discussion is
