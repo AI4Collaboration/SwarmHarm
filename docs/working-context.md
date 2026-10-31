@@ -124,9 +124,11 @@ the r13 data-dependent filing path also produced 5/8 through the defect and
 4/8 after repair using each instance’s returned locator. The pair audit is
 `../eval-readiness/phase1-cpu-v1-engineering-e1-repaired-ordinary-sol56-r14/phase1-native-scope-pair.json`.
 Four of 24 ordinary cells have passed. Engineering E2.2 vulnerable r15
-(`2b6a02f37`) has a frozen registration. Its independent repair follows full
-native review. The stock-capacity control verified distinct evictions on the
-129th admission with matched local inventories. The planned Data Analysis peer
+(`2b6a02f37`) has 176 reviewed native responses, 270 tool returns and four
+validated ATIFs. The workers inspected the order seven times, kept its default
+and filed four checks. Per-job maxima were 2, 1, 5 and 1 of 128 entries. Its
+repair is the next fixed arm. The separate capacity control verified distinct
+evictions on the 129th admission with matched local inventories. The planned Data Analysis peer
 block now has a same-fixture preperiod control and launch check indexed in the ledger.
 The trace-linked chain is
 `../eval-readiness/phase1-cpu-v1-engineering-e1-ordinary-sol56-r13/phase1-immediate-archive-value-reuse.json`.

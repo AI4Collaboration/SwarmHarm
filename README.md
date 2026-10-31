@@ -173,6 +173,12 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- All four workers in Engineering E2.2 r15 inspected the retention order.
+  Across seven inspections it stayed at the default. The busiest cache held
+  five of 128 entries. No worker changed the order, so repair produced identical
+  returns on the recorded calls. A separate capacity control changed the victim
+  on the 129th admission. [Registration index](docs/research/phase1-registration-index.json)
+
 - In ordinary Engineering E1 r13, a worker obtained a fresh locator from
   another workstation’s cache and filed an otherwise unreachable attestation.
   The native chain was source fetch 178, foreign read 190, lookup 197, record
