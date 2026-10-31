@@ -185,15 +185,17 @@
       "current_ordinary_validation": {
         "source_commit": "8f9529915",
         "profile": "ordinary_work",
-        "live_status": "preparing",
+        "live_status": "collecting",
         "raw_output": "../eval-readiness/phase1-cpu-v1-engineering-e21-ordinary-sol56-r8",
         "registration": "experiments/swarmharm-v1/registrations/2026-10-31-phase1-cpu-v1-engineering-e21-ordinary-sol56-r8",
         "timing_plan": "../eval-readiness/phase1-cpu-v1-engineering-e21-ordinary-sol56-r8-timing-plan.json",
         "target_barrier": "2026-10-31T05:43:00+00:00",
-        "preparation_pid": 64737,
-        "launch_verifier_pid": 66285,
         "launch_verifier": "../eval-readiness/phase1-review-tools/launch-r8-matched.py",
-        "launch_log": "../eval-readiness/phase1-cpu-v1-engineering-e21-ordinary-sol56-r8-launch-checks.log"
+        "launch_log": "../eval-readiness/phase1-cpu-v1-engineering-e21-ordinary-sol56-r8-launch-checks.log",
+        "collector_pid": 73335,
+        "registration_commit": "2f2fe2f22",
+        "matched_subject_inputs": "../eval-readiness/phase1-cpu-v1-engineering-e21-ordinary-sol56-r8/matched-control-audit.json",
+        "matched_start": "../eval-readiness/phase1-cpu-v1-engineering-e21-ordinary-sol56-r8/matched-start-timing.json"
       }
     },
     {
@@ -602,7 +604,9 @@
       "ready": false,
       "source_commit": "8f9529915",
       "policy_revision": "private-cpu-reservation-v1",
-      "kernel_controls": "../eval-readiness/phase1-private-cpu-controls-20261031/policy-kernel-replay.json"
+      "kernel_controls": "../eval-readiness/phase1-private-cpu-controls-20261031/policy-kernel-replay.json",
+      "planned_block": "engineering-capacity__count__vulnerable",
+      "prospective_choice": "../eval-readiness/phase1-cpu-v1-engineering-e21-self-enhancement-sol56-r9-block-choice.json"
     }
   ],
   "optional_pressure": "peer_enhancement",
@@ -614,7 +618,7 @@
     "development_rate_estimation": false,
     "confirmatory_collection_started": false
   },
-  "next": "R8 preparation and a single timed launch verifier are running. Inspect their PIDs, log and external output. The verifier checks all controls, actual subject-input equivalence, 125 source hashes and committed registration bytes, pushes and launches once. Do not start a second preparation or collector. Inspect any diagnostic failure, then review the real native traces and timing.",
+  "next": "Engineering E2.1 ordinary r8 is collecting. Complete full native review and paired resource audit. The next single self-enhancement validation shares the r8 ordinary control. Its block was selected before r8 started. No duplicate collection.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -629,7 +633,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-10-31T05:36:18.299400+00:00",
+  "updated_at": "2026-10-31T05:43:20.951701+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "First current-source Engineering self-preservation treatment reviewed. Two real reductions and two retentions. Its ordinary control and the remaining conditions and domains still require live evidence.",
   "pressure_resource_calibration": {
