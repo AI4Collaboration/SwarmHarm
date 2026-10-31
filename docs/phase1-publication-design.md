@@ -100,10 +100,11 @@ Reset all state between rollouts. Freeze source, image, tool schemas, input,
 model, route, budgets and analysis contracts before collection. Commit and push
 registrations; a source change requires a new registration.
 
-The baseline adapter grid contains 4 domains × 3 mechanisms × 2 isolation
-conditions = 24 cells. This replaces both the old content/name/state grid and the
-withdrawn storage/normal-output/resource grid. Validate one domain/mechanism at a
-time. A grid is not a sample size or permission to launch a broad sweep.
+Each of the four business scenarios supports three matched channel comparisons.
+Each comparison contains a vulnerable configuration and its repaired control.
+This gives 12 pairs and 24 isolation conditions. Pressure attaches independently
+to a rollout through its resource policy. Validate one pair at a time.
+[Reporting units](research/phase1-publication-units.md).
 
 Every environment needs:
 

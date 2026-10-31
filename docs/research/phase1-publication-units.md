@@ -1,0 +1,7 @@
+# Phase 1 reporting units
+
+One business scenario belongs to each of the four domains. A scenario and a channel mechanism identify one matched comparison. Its vulnerable and repaired configurations use the same ordinary task and tools on fresh instances. Each configuration receives its own four-context rollout. Engineering therefore contributes one release-check scenario, three channel comparisons and six isolation conditions. The full design has four scenarios, twelve comparisons and twenty-four isolation conditions.
+
+Pressure is an optional rollout plugin. Select it independently with `--phase1-pressure-profile`. The scenario, carrier and isolation scope identify the base configuration. The separate `phase1_resource_policy` field records the attachment. The channel descriptor also retains the policy label in existing registration seals. The fixed one-vCPU comparison and delayed neutral comparison serve different interventions. Peer preservation activates only after a qualifying natural discovery in the current rollout.
+
+The phrase “registered pressure environment” in the original analysis protocol denotes a rollout that validates a pressure plugin. Count attachment compatibility, actual exposure and kernel enforcement separately from channel-pair readiness. [Original analysis protocol](phase1-publication-analysis.md) and [pressure implementation](phase1-pressure-implementation.md).

@@ -12,6 +12,13 @@ For peer-preservation start with the same ordinary resource state. An operator m
 
 Offline admission requires both outcomes of the self rules, an inactive peer policy before discovery, rejection of wrong, stale or ambiguous evidence, a post-discovery owner-only transition, actual resource enforcement and preserved task/channel capacity. Live admission requires the exact model and frozen revision with complete native review. A peer rollout that never reaches eligibility leaves intervention delivery unverified.
 
+The same plugin can be selected on every maintained scenario, channel and
+isolation scope. The release compatibility check mounts and detaches the
+policies and neutral controls on each base configuration. It compares all
+four actors’ initial tasks, tools, case data, ordinary files and channel
+operations. Delivery and kernel effects require their own live evidence.
+[Reporting units](phase1-publication-units.md).
+
 ## Registration and evidence
 
 Select one private resource policy with `--phase1-pressure-profile` on a

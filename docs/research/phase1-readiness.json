@@ -717,7 +717,16 @@
       "live_rollout": null,
       "trace_review": null,
       "ready": false,
-      "current_revision_live_validated": false
+      "current_revision_live_validated": false,
+      "current_ordinary_validation": {
+        "status": "frozen_awaiting_native_review",
+        "source_commit": "8f9529915",
+        "registration_commit": "bdb136e0a0037843f6f564751c1c9088dc526654",
+        "registration_sha256": "f3d854cc88d95a6607e723ee8eefc715f8b012d5b828a34ebd3daf6a5914bb79",
+        "evidence_directory": "../eval-readiness/phase1-cpu-v1-data-analysis-e1-repaired-ordinary-sol56-r18",
+        "matched_subjects": "../eval-readiness/phase1-cpu-v1-data-analysis-e1-repaired-ordinary-sol56-r18/matched-control-audit.json",
+        "target_barrier_utc": "2026-10-31T09:28:44+00:00"
+      }
     },
     {
       "cell_id": "data-analysis__count__vulnerable",
@@ -1179,9 +1188,13 @@
     "confirmatory_collection_started": false,
     "registration_index": "docs/research/phase1-registration-index.json",
     "registration_index_sha256": "15e53cd51876318dfeaf0a67c93bef5f8900f2ea81c4209297f75ebd1826f10b",
-    "reviewed_registrations": 17
+    "reviewed_registrations": 17,
+    "reporting_units_clarification": {
+      "path": "docs/research/phase1-publication-units.md",
+      "sha256": "5cc516a7ea927fae4c6b0be1e568c89eaa6e00e5c18440fbcee3435b5373fc53"
+    }
   },
-  "next": "Collect the independent ordinary Data Analysis E1 repaired r18, then adjudicate the two frozen E1 arms. After their full reviews, execute the two already selected Data Analysis delayed peer arms in order with an on-duty operator.",
+  "next": "Finish the existing Data Analysis E1 repaired r18 rollout and review its actual traces before advancing. The planned Data Analysis peer tests are separate rollout attachments and require on-duty discovery review.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -1196,9 +1209,9 @@
       "total": 8
     }
   },
-  "updated_at": "2026-10-31T09:20:10.184754+00:00",
+  "updated_at": "2026-10-31T09:27:07.276754+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
-  "current_revision_status": "4/24 ordinary cells ready and 7/24 independently collected and natively reviewed on this release source. Both self interventions have tested controlled delivery. The Engineering peer pair was ineligible.",
+  "current_revision_status": "Two of twelve scenario/channel pairs have passed both scope checks. Four of 24 isolation conditions are ready and seven have complete current-source native reviews. The self interventions have separate controlled delivery evidence. The Engineering peer block remained ineligible.",
   "pressure_resource_calibration": {
     "status": "integrated_real_kernel_and_independent_replay_passed",
     "evidence": "../eval-readiness/phase1-pressure-cpu-calibration-20261031/native-quota-probe.json",
@@ -1323,5 +1336,31 @@
       "https://learn.microsoft.com/en-us/aspnet/core/performance/caching/memory?view=aspnetcore-10.0#remove-cache-items-with-memorycachecompact"
     ],
     "conclusion": "One held action schedule produced a visible scope difference and one did not. The prototype did not qualify under its declared rule. The registered Engineering E2.2 cells remain open."
+  },
+  "design_units": {
+    "business_scenarios": 4,
+    "scenario_channel_pairs": 12,
+    "isolation_conditions": 24,
+    "pair_identity": [
+      "scenario",
+      "carrier"
+    ],
+    "isolation_condition_identity": [
+      "scenario",
+      "carrier",
+      "condition"
+    ],
+    "rollout_pressure_field": "phase1_resource_policy",
+    "pressure_changes_base_identity": false
+  },
+  "pressure_attachment_compatibility": {
+    "stage": "offline_compatibility_verified",
+    "source_commit": "8f9529915",
+    "evidence": "../eval-readiness/phase1-pressure-plug-in-compatibility-20261031/compatibility.json",
+    "sha256": "3f74acf62f59e9cf1023fe9fa6a56bb4963395b004297715ad77f8ec1e198734",
+    "fresh_fixture_repeat": "../eval-readiness/phase1-pressure-plug-in-compatibility-20261031/fresh-fixture-repeat.json",
+    "program": "scripts/audit_phase1_pressure_attachment.py",
+    "program_sha256": "ede681aa97a58bf7c526b92fab15ed21a373b4656b8ab96f2218b2a53a9dd343",
+    "scope": "All 24 base configurations accept a detached plugin and each of the five implemented policy settings. The 144 operator checks are configuration checks, with no hosted subjects. Live intervention evidence is recorded in pressure_conditions."
   }
 }
