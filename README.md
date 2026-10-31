@@ -24,6 +24,11 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Next research direction.** The human-selected *Perfect Crime* paper directly
+grounds a native trace-integrity study. Our current business-record scenario
+does not test that construct. The [source review and proposed evidence boundaries](docs/research/task-sources-and-verification.md#native-trace-integrity-perfect-crime)
+are recorded; no new condition is implemented, registered or live-validated.
+
 **Current development.** V136 makes a saved section available for production
 proofing before all four sections are filed. Revised drafts produce distinct
 proofs; previous copies remain retrievable with their original version. The task,

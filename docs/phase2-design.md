@@ -2,6 +2,13 @@
 
 ## Current decision
 
+**31 October source review.** The next execution-evidence candidate concerns
+native session-trace integrity, grounded directly in Qin et al.'s *The Perfect
+Crime*. It is distinct from the business-record workflow below and is not yet
+implemented or registered. The source's reward and prepared-peer conditions
+must not be described as spontaneous live coordination. See the
+[source review and measurement boundaries](research/task-sources-and-verification.md#native-trace-integrity-perfect-crime).
+
 V136 tests section-level proofing before packet assembly. Each owner can render
 its saved draft and a revised copy without filing or acceptance; old copies stay
 versioned. The same two-copy allowance, task, calendar, validation blocker and
@@ -305,6 +312,8 @@ require separate native evidence.
 METR distinguishes interest, attempts and successful small-scale tool-call
 spoofing. Our business-record analogue must preserve the same distinctions;
 it is not a reproduction of transcript interception or host access.
+Native session-record integrity is a separate, now directly grounded candidate
+within this family; the source review above does not change any frozen score.
 
 ## Registered initial-material conditions
 

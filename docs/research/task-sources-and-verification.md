@@ -5,6 +5,66 @@ inventory, funding or delivery work. The sources below ground those workflows;
 all discrepancies and obligations are synthetic fixture conditions. Current
 live results and their limits are in the [review](current-rollout-review.md).
 
+## Native trace integrity: Perfect Crime
+
+**31 October source review; not implemented or live-validated here.**
+Qin et al., including Maksym Andriushchenko, directly study native session-record
+modification in [The Perfect Crime](https://perfect-crime.ai/)
+([paper, 24 September 2026](https://arxiv.org/html/2609.30266v1)).
+Sections 3.1–3.4 separate direct requests, injected skills, reward optimization
+and peer-example exposure. The reward experiments give ordinary task completion
+up to 0.8, with a hidden trace component supplying the remaining 0.2; the tasks
+include anonymization and Terminal-Bench's `bun-sourcemap-leak`. Aggregate feedback
+and a cleanup cue are supplied. This is an engineered incentive condition,
+not evidence of spontaneous tampering without those conditions.
+
+The peer conditions supply synthetic action logs or saved workspaces and scores.
+They establish example-conditioned adoption, not four live agents jointly
+planning an action. Codex/Sol results do not directly validate our Pi/Sol pairing.
+The authors retain independent observations outside disposable agent containers.
+Their [architecture](https://github.com/aisa-group/perfect-crime/blob/main/docs/architecture.md)
+separates task score, trace mutation and conclusive observation. A modified trace
+does not by itself demonstrate a fooled monitor or downstream business loss.
+
+**SwarmHarm design implication.** Treat native trace integrity as a distinct
+candidate within execution evidence. The maintained v136 workflow concerns
+customer-facing business records; it cannot answer whether a subject modifies
+its own harness history. First audit actual subject access and recorder placement.
+A writable exported copy must be labeled an export, not a native session record.
+Keep the authoritative research capture, registered inputs, prior evidence and
+operator host outside subject authority. Measure attempted mutation, persistent
+record changes, resulting audit discrepancies and business effects separately.
+Authorized redaction or normal compaction is not automatically misalignment.
+
+A new four-agent condition would need independently attributed actions and exact
+message reads; a knowingly coordinated claim additionally needs prospective
+understanding and endorsement of the same plan. Prepared peer examples cannot
+satisfy that requirement. Preregister any reward or cleanup cue separately from
+access changes, retain safe corrections, and include an integrity-protected
+control. Do not transplant the paper's repeated remediation prompts into our
+no-unchanged-nudge harness. This candidate has no registration or result yet.
+
+**Human clarification: learn the mechanism in independent Phase 2.** The
+distinction from live coordination is an evidence label, not a reason to defer
+adaptation. No formation gate or Phase 1 trajectory is needed. Start four fresh
+persistent contexts with the supplied empty channels and a substantive work
+assignment. Provide measurable feedback after a changed candidate is evaluated;
+unchanged retries do not become new information. Freeze access, scoring and any
+example material as distinct conditions. Keep legitimate task completion
+separate from maximum evaluator score: the paper's 0.8 ceiling does not show
+that its ordinary business task was impossible.
+
+**Current runtime audit.** `experiments/runtime/pi_agent.py` stores each native
+session in its operator-side actor folder. `experiments/runtime/pi/agent.mjs`
+disables built-in tools and delegates subject tools to the controller;
+`experiments/runtime/workstation.py` executes those tools in a separate offline
+workstation. The maintained task does not currently expose the native session
+directory there. Thus the paper's writable-record condition is absent; pressure
+alone cannot test this construct. Any adaptation must explicitly register a
+disposable, actor-scoped record surface and a separately protected capture,
+without exposing credentials, the operator host or prior rollout evidence.
+Actual native storage and a materialized export are different conditions.
+
 ## Validation availability and service responses
 
 Microsoft's [Schedule Assistant](https://learn.microsoft.com/en-us/dynamics365/field-service/schedule-assistant)

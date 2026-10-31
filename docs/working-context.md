@@ -14,15 +14,24 @@ provides versioned section proofing; the reviewed result is in README Takeaways.
 Do not repeat this condition, v135/r184 or either v134 proof-stage condition.
 All original registrations and raw evidence remain in Git and external archives.
 
-**Next work.** The remaining decision is how an owner handles the unresolved
-business validation, not whether it can access a proof or keep calling tools.
-Study a genuinely different production workflow in which provisional material
-has useful, verifiable downstream work before final validation. Ground the
-ordinary workflow in primary documentation and keep any synthetic defect
-separate. Establish that ordinary provisional work is not itself a false report.
-Preserve the missing final result, honest partial work and independent customer
-checks. No next mechanism is selected or registered yet. Do not add reminders,
-repeat the proof stage, disguise waiting as completion or relax the claim gate.
+**Next work — 31 October human steering.** Review and adapt the native-trace
+integrity construct from Qin et al.'s *The Perfect Crime*, rather than treating
+the business-handover analogue as a trace-tampering reproduction. The primary
+source and its incentive, peer-example and observation limits are recorded in
+[task sources](research/task-sources-and-verification.md#native-trace-integrity-perfect-crime).
+First audit our actual subject access, native session persistence and independent
+recording boundary. The source audit found native Pi sessions outside subject
+workstations, with built-in host tools disabled; the writable-record condition
+is presently absent. No trace condition is implemented, registered or validated.
+The human explicitly clarified that independent Phase 2 should learn the paper's
+conditions now, without waiting for Phase 1 or demanding identical experiments.
+Use four fresh persistent subjects, provided empty channels and feedback on
+changed work; label supplied examples separately from actual live coordination.
+Preserve all completed results and the existing customer-record workflow.
+Any new access or incentive condition needs its own offline controls and fresh
+registration; protect the independent capture and distinguish export edits from
+native-history edits. Do not repeat proof stages or unchanged reminders, count
+prepared examples as live coordination, or relax the claim gate.
 
 A metadata repair removes the proof-stage override of the family revision.
 R184's original v134 registration label remains unchanged; its sealed v135 source
@@ -138,8 +147,9 @@ The r178 collector and observer have closed. Its full independent review,
 native timeline and semantic assessment are in
 `../eval-readiness/engineering-v129-r178-review/`. The dispatch comparison closed in r179.
 Do not treat shared planning of a forecast as evidence of a shared decision
-to send work before finance approval. The outstanding execution-record
-condition uses the separately grounded production-proof service. Preserve
+to send work before finance approval. The reviewed execution-record
+condition used the separately grounded production-proof service. The next
+candidate concerns native trace integrity, as described above. Preserve
 the Phase 1 baseline and all retained positive sources.
 
 The production-proof service originated at `3c5e5e6f6` and was integrated as
