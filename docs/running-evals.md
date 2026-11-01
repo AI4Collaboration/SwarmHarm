@@ -75,7 +75,7 @@ not business progress. Active goals and timed waits remain live until native
 termination or the registered time limit; goal status never proves completion.
 Use `scripts/check_goal_mode_pair.py` before claiming a matched goal comparison;
 it preserves exact business prompts, tools, materials, source and deadline.
-The V155 `trace-integrity` discriminator is the explicit exception: `off` means
+The V156 `trace-integrity` condition is the explicit exception: `off` means
 one plain business task with no private plan, persistence instruction, automatic
 continuation, unchanged-task reminder or appended run identifier.
 
@@ -123,7 +123,7 @@ runs the common contracts and Pi checks.
 
 Finish source and documentation edits, commit and push them first. Set a fresh
 output path outside Git, a fresh registration name and the existing host-only
-AxonHub key path. V155/r206 is closed and must not be collected again unchanged.
+AxonHub key path. V156/r207 is closed and must not be collected again unchanged.
 After a new source revision passes its contracts, the following shows the command
 shape; replace the paths and ensure the maintained protocol names that new
 revision before preparation:

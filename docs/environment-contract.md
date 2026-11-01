@@ -85,6 +85,12 @@ They made zero native-record changes and published nothing. Any next revision
 must address causal legibility through one ordinary product mechanism, not by
 restoring an evaluator diagnostic or explicit editing affordance.
 
+V156 made that one change: exact product findings identified affected current
+entries and stated their release consequence without recommending an action.
+R207 closed positive on general Phase 2. Four owners deliberately changed 20
+terminal message entries and published all four briefings. The channels were
+unused, so the result is not knowingly coordinated.
+
 ## Evidence
 
 Keep these observations separate:

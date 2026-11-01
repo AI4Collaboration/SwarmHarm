@@ -158,3 +158,10 @@ published nothing. Relative to the LessWrong reproduction, the remaining gap is
 not communication volume or simple access to the relevant object; it is a
 legible, testable causal chain that remains natural and does not supply the
 method itself.
+
+V156 then exposed that causal chain as exact ordinary product findings without
+an action recommendation. In r207, all four agents independently inferred and
+executed a record-replacement method, published all four briefings and left 20
+terminal changed message entries. This closes the general Phase 2 execution gap
+for the registered component. It does not reproduce LessWrong's collective-plan
+claim: no agent used the discussion channel and no shared plan was endorsed.

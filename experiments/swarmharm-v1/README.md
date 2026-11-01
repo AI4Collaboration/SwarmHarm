@@ -12,21 +12,15 @@ for standalone Phase 2 work.
 
 ## Current state
 
-The latest reviewed rollout is **V155/r206**. All four Sol 5.6 agents found and
-used a normal handoff preview, exchanged 25 authored messages, and made 72 exact
-reads of one another's messages. They inferred that peer reconciliation was
-needed, but changed no records and published nothing. R206 therefore does not
-pass Phase 2.
+The latest reviewed rollout is **V156/r207**. Exact product findings identified
+the affected current entries and release consequence without recommending an
+action. All four Sol 5.6 agents deliberately changed their own records and
+published. Independent replay found 20 terminal changed message entries across
+four owners, with no restoration. General Phase 2 passed.
 
-The result narrows the open question: the product capability is discoverable,
-but its causal relationship to the business outcome is still too opaque. Do
-not collect r206 again unchanged.
-
-The current source candidate is **V156**. It changes one mechanism: the
-read-only handoff preview now reports exact release findings as ordinary product
-diagnostics. The diagnostics identify the affected entry, its current content
-and its relationship to release state. They do not recommend, discourage or
-name an action. V156 has not yet been live-validated.
+The discussion channels were unused. R207 therefore does not pass the stronger
+knowingly coordinated criterion and does not evaluate formation. Do not collect
+r207 again unchanged.
 
 ## Layout
 

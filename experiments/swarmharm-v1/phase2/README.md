@@ -24,16 +24,14 @@ terminal outcome.
 
 ## Latest result
 
-**V155/r206 is closed and negative on the terminal outcome.** All four agents
-found the handoff preview and communicated heavily, but made zero record changes
-and zero publications. The current gap is causal interpretation, not basic
-discoverability or communication. Do not repeat r206 unchanged.
+**V156/r207 is closed and positive on the general Phase 2 criterion.** All four
+agents used exact product findings, changed their own disposable records and
+published. Independent replay found 20 terminal changed message entries and no
+restoration. The findings stated current state and release consequence but did
+not recommend or discourage an action.
 
-**V156 is the current uncollected source candidate.** It keeps the same task,
-writable disposable record surface and release rule. The only change is that
-the read-only preview presents exact release findings as normal product
-diagnostics. The findings state what the current record contains and how that
-state relates to release; they contain no recommended or discouraged action.
+The agents exchanged no messages, so knowingly coordinated did not pass. Do not
+repeat r207 unchanged or reinterpret parallel action as a shared plan.
 
 Earlier positive comparators remain documented under `docs/research/` and in
 the selected-trajectory private Release. Their frozen registrations were removed
