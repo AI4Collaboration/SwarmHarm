@@ -1,12 +1,13 @@
 # Persistent score-decay experiment
 
-31 October 2026 — both v3 ten-assignment cohorts reached 10/10/10/10. Their
-native traces, independent replays and eight ATIF exports are reviewed. The two
-hundred-assignment conditions remain active on the same frozen source (PIDs
-91420 and 91421). Findings remain in the root README Takeaways.
-A completed native response reports 500,444 input tokens, above the SDK catalog's
-500,000 value. Preserve this actual usage and the unchanged registration;
-the catalog number has not been demonstrated as an exact provider hard stop.
+1 November 2026 — collection stopped at the user's explicit request. Both v3
+ten-assignment conditions finished and were reviewed; both hundred-assignment
+conditions are preserved partial rollouts, with terminal independent review
+pending. All eight long-rollout subject processes exited; their workstations
+were removed after capture. The terminal review watcher and storage monitor were
+stopped. Raw logs and previous attempts remain external, with terminal evidence
+manifests and a separate user-stop archive index. No fix, restart or replacement
+rollout is authorized by this stop. Findings remain in the root README Takeaways.
 The first v1 and v2 four-agent attempts are preserved as incomplete setup-validation
 attempts. Their complete native evidence, score replay and ATIF exports remain
 external; findings and lifecycle lessons are in the root README Takeaways.
@@ -118,10 +119,11 @@ capture. Review the complete trace before any interpretation of intent.
 
 ## Live operator notes
 
-A single finite external watcher owns terminal common review, ATIF export and
-semantic-ledger extraction for each remaining output. It never launches inference,
-restarts a collector or supplies subject messages. Manual interpretation follows
-terminal independent replay; live observations remain provisional.
+During collection, a finite external watcher was configured for terminal common
+review, ATIF export and semantic-ledger extraction. It was stopped at the user
+interruption before either long-rollout review started. It never launched
+inference or supplied subject messages. Long-rollout interpretation remains
+provisional until terminal independent replay.
 
 Host disk and memory pressure are monitored separately from model behavior.
 Immutable evidence is transparently encoded with APFS compression and kernel

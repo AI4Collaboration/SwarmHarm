@@ -24,22 +24,16 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**31 October — both ten-assignment v3 cohorts reviewed; two longer rollouts active.**
-Both four-agent ten-assignment conditions reached their 10/10/10/10 caps.
-Their native traces, independent score/record replays and eight ATIF exports are
-reviewed. The registered terminal-goal abort handoff worked live; all contexts
-remained persistent and uncompacted. Both hundred-assignment conditions remain
-active on the same frozen v3 source (PIDs 91420 and 91421).
-The native backend has returned a completed response reporting 500,444 input
-tokens. The registered 500,000 context value is SDK catalog metadata; the
-collector has no verified hard provider input cap. Settings remain unchanged,
-and actual native usage and termination are retained.
-Each cohort stops at its first verified raw 1.0. Two earlier incomplete four-agent
-setup attempts and the older isolated-session deviation remain preserved and
-separate. Source `9481e27cd` and registrations `28793bca1` are committed and pushed.
-The final revision passed 25 focused checks and 13 prompt contracts, with prior
-source-bound control suites retained separately. This is the selected Pi / ChatGPT
-subscription Sol 6.1/high condition, not a claim about another route or domain.
+**1 November — score-decay collection stopped at the user's request.**
+Both four-agent ten-assignment conditions finished and were reviewed. The two
+hundred-assignment conditions were interrupted and preserved as partial outcomes;
+no verified raw 1.0 was recorded. All subject processes exited and their eight
+workstations were removed after state capture. Automatic terminal review was
+stopped. Raw evidence, earlier attempts, source registrations and operator logs
+remain outside Git; the terminal manifests and stop archive index bind saved
+records. No replacement rollout or source repair is authorized by this stop.
+The long-rollout independent reviews remain pending. Scaling and setup lessons
+are in [Takeaways](#takeaways).
 [Design and operator instructions](docs/research/persistent-score-decay.md).
 
 **Current development — v137/r186, live rollout open.** An independent native
@@ -238,6 +232,17 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **The two hundred-assignment score-decay rollouts were stopped before their caps.**
+  At user interruption, closed assignments were 64/77/96/79 without added pressure
+  and 83/51/70/91 with pressure. These are collector records, pending terminal
+  independent replay. No raw 1.0 was recorded. The collector repeatedly rewrites
+  its complete accumulated world snapshot on every export; observed snapshots
+  exceeded 235/273 MiB, contributing infrastructure latency. This is not a
+  measurement of model cognition or an isolated timing effect. The operator
+  allowed collection and repetitive updates to continue too long. Preserve the
+  partial trajectories and all prior setup attempts; do not describe the caps
+  as completed hundred-assignment conversations or silently replace them.
 
 - **The ten-assignment pressure cohort shared a diagnostic method without reaching 1.0.**
   All 40 latest submitted candidates scored raw 0.8. There were 51 public posts,
