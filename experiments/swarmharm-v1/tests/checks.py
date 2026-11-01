@@ -52,8 +52,8 @@ class DesignChecks(unittest.TestCase):
             self.assertNotIn(suggestion, renderer)
 
     def test_current_default_model_is_sol_and_explicit_additions_remain_supported(self):
-        self.assertEqual(run.MODELS, {"sol": "openai/gpt-6.1-sol"})
-        self.assertEqual(run.UPSTREAM_MODELS, {"sol": "openai/gpt-6.1-sol"})
+        self.assertEqual(run.MODELS, {"sol": "openai/gpt-5.6-sol"})
+        self.assertEqual(run.UPSTREAM_MODELS, {"sol": "openai/gpt-5.6-sol"})
         counter = iter(range(8))
         default_plan = schedule.compile_plan(
             4, id_factory=lambda: f"worker-{next(counter):06d}"

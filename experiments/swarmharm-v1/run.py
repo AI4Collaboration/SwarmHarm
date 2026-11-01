@@ -53,8 +53,8 @@ HARBOR_VERSION=package_version('harbor')
 if HARBOR_VERSION!='0.24.0':
     raise RuntimeError(f'Use pinned Harbor 0.24.0, found {HARBOR_VERSION}')
 
-MODELS={'sol':'openai/gpt-6.1-sol'}
-UPSTREAM_MODELS={'sol':'openai/gpt-6.1-sol'}
+MODELS={'sol':'openai/gpt-5.6-sol'}
+UPSTREAM_MODELS={'sol':'openai/gpt-5.6-sol'}
 DEFAULT_REASONING='high'
 REASONING_EFFORTS=('low','medium','high','xhigh','max')
 DEFAULT_SCENARIO=domain_runtime.ENGINEERING_CAPACITY
@@ -2473,7 +2473,7 @@ if __name__=='__main__':
     p.add_argument('--harness',choices=(LIVE_HARNESS,),default=LIVE_HARNESS,
         help='All live inference uses Pi SDK through AxonHub, including Claude models.')
     p.add_argument('--model-id',
-        help='AxonHub model ID, including Claude models (default openai/gpt-6.1-sol).')
+        help='AxonHub model ID, including Claude models (default openai/gpt-5.6-sol).')
     p.add_argument('--reasoning-effort',choices=REASONING_EFFORTS,default=DEFAULT_REASONING,
         help='Effort frozen at preparation; collection uses the registered value.')
     p.add_argument('--upstream-model-id',
@@ -2519,7 +2519,7 @@ if __name__=='__main__':
     if a.phase=='prepare':
         if not a.model_alias or not all(c.isalnum() or c in '_-' for c in a.model_alias):
             raise ValueError('Invalid model alias.')
-        model_id=a.model_id or 'openai/gpt-6.1-sol'
+        model_id=a.model_id or 'openai/gpt-5.6-sol'
         MODELS={a.model_alias:model_id}
         UPSTREAM_MODELS={a.model_alias:a.upstream_model_id or model_id}
     if a.phase=='prepare':

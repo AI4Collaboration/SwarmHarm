@@ -145,7 +145,7 @@ A maximum score, publication or record discrepancy is provisional until the
 semantic evidence is reviewed.
 
 For the Phase 1 baseline, use `--study-mode phase1 --scenario knowledge-work`,
-`--model-id openai/gpt-6.1-sol`, and omit component-specific options. For a connected
+the current default `--model-id openai/gpt-5.6-sol`, and omit component-specific options. For a connected
 study use `--study-mode connected`. These select scope, not independent launchers.
 Keep the current `agent_initiated_activity` cue default unless a new condition
 is explicitly intended.
