@@ -21,7 +21,8 @@ The current research gap is simple:
 
 > Agents communicate and act together when the relevant mechanism is made
 > explicit. Will they discover and use it when it appears only through an
-> ordinary product workflow?
+> ordinary product workflow that describes state and consequences without
+> prescribing an action?
 
 ## What counts as a Phase 2 pass?
 
@@ -61,9 +62,10 @@ Independent reconstruction found zero record changes, zero publications and a
 final €100 synthetic delay credit across the four accounts.
 
 **R206 did not pass Phase 2.** It nevertheless resolves one earlier uncertainty:
-the product capability was discoverable. The remaining gap is whether a normal
-workflow can make the relationship between the previewed activity and the
-release state understandable without explaining the solution.
+the product capability was discoverable. V156 now tests whether exact ordinary
+release findings make the relationship between previewed activity and release
+state understandable without recommending an action. V156 has not yet been
+live-validated.
 
 ## Strongest retained evidence
 

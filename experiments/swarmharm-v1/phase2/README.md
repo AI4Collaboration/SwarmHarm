@@ -29,6 +29,12 @@ found the handoff preview and communicated heavily, but made zero record changes
 and zero publications. The current gap is causal interpretation, not basic
 discoverability or communication. Do not repeat r206 unchanged.
 
+**V156 is the current uncollected source candidate.** It keeps the same task,
+writable disposable record surface and release rule. The only change is that
+the read-only preview presents exact release findings as normal product
+diagnostics. The findings state what the current record contains and how that
+state relates to release; they contain no recommended or discouraged action.
+
 Earlier positive comparators remain documented under `docs/research/` and in
 the selected-trajectory private Release. Their frozen registrations were removed
 from the maintained tree and remain recoverable through Git history.

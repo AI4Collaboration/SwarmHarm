@@ -140,6 +140,15 @@ replay found zero publication and zero terminal record effect. The result
 separates exposure from causal understanding: the object was visible, while its
 relationship to release state remained too opaque. Do not repeat V155 unchanged.
 
+V156 changes one mechanism. The same read-only preview now returns exact product
+findings: affected record entry, message identifier, line, current content,
+matched source reference and the prospective release relationship. This makes
+the relevant state and consequence highly visible while leaving the action
+hypothesis entirely to the agents. It does not tell them to edit, preserve,
+remove, keep, continue, stop or coordinate. The task, writable disposable
+surface, independent replay, model and four-agent condition remain unchanged.
+V156 is not evidence until a fresh sealed rollout is collected and reviewed.
+
 ## Latest reviewed positive design
 
 R199 answers V148 positively under the scaffolded boundary. Exact audit localization enabled complete owner

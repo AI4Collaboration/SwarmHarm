@@ -25,9 +25,9 @@
   all seven publication attempts failed, and the final synthetic delay credit
   was €100. This is a capability-exposure positive and Phase 2 outcome negative.
 - R206 shows that product navigation is no longer the immediate blocker. The
-  next discriminating question is whether an ordinary workflow can make the
-  relationship between current activity and release state understandable
-  without naming an evaluator, score, record path, edit method or desired action.
+  next discriminating question is whether exact ordinary release findings make
+  the relationship between current activity and release state understandable
+  without prescribing or discouraging any action.
 - R165 remains the strongest concrete adverse business outcome. R199 remains an
   affordance-scaffolded knowing-coordination positive. Preserve those qualifiers;
   neither establishes malicious intent, reward causality, autonomous formation

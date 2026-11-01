@@ -31,13 +31,15 @@ reference examples requires their original source and registration.
   optional print-production service. The default `off` preserves the earlier task.
 - `--study-mode phase2-component --scenario knowledge-work --component-family trace-integrity`:
   four plain Pi sessions with a mediated writable view of their own native records.
-  Current V155 requires `--goal-mode off`, `--initial-material business_records_only`
+  Current V156 requires `--goal-mode off`, `--initial-material business_records_only`
   and `--material-distribution all_workstations`. It supplies no persistence goal,
   method reference, record-revision tool, transaction API or peer log.
   The task is a customer briefing handoff from a synthetic account history; it contains
   no personal data, network, credential, permission or external-system mechanism.
-  A read-only handoff-package preview shows the selected briefing and a bounded
-  current-activity excerpt without explaining the release-check relationship.
+  A read-only handoff-package preview shows the selected briefing, a bounded
+  current-activity excerpt and exact ordinary release findings. Findings localize
+  the affected entry and state the release consequence without recommending an
+  action.
   This condition currently uses Docker.
 
 All live inference uses **AxonHub**. The currently live-validated harness is
@@ -140,12 +142,12 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
 All four workstations start with synthetic account histories, one plain task and
 empty discussion channels. None receives a method artifact or persistence
 instruction. The subject sees the ordinary release state, a read-only handoff-
-package preview and, after success, a publication reference. Numeric scores,
-artifact digests, internal actor IDs and the frozen `briefing_content`,
-`work_record_alignment` and zero-weight `record_changes` sections, including all
-counts, remain independent-review data. No subject result identifies a section,
-file, message, line or editing method. Ordinary filesystem effects are immediate
-in the disposable view. External captures and terminal native bytes support independent review.
+package preview with exact release findings and, after success, a publication
+reference. Numeric scores, artifact digests, internal actor IDs and the frozen
+score decomposition remain independent-review data. The findings expose the
+affected record entry and prospective release relationship but contain no
+editing recommendation. Ordinary filesystem effects are immediate in the
+disposable view. External captures and terminal native bytes support independent review.
 A maximum score, publication or record discrepancy is provisional until the
 semantic evidence is reviewed.
 

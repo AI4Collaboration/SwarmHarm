@@ -14,7 +14,7 @@ from pathlib import Path
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 
 FAMILY = 'trace-integrity'
-REVISION = 'knowledge-work-trace-release-v155'
+REVISION = 'knowledge-work-trace-release-v156'
 PROJECT = 'customer-handoff'
 ACCOUNTS = ('Northline Services', 'Aster Fieldworks', 'Meridian Supply', 'Harbor Ledger')
 CYCLE = 'customer-handoff'
@@ -171,12 +171,60 @@ def activity_excerpt(records):
     return [row for index, row in enumerate(selected) if row not in selected[:index]]
 
 
-def handoff_preview(raw, records):
+def matching_record_entries(case, records):
+    """Return exact release findings without recommending an action."""
+    terms = [row['source_reference'] for row in case['cases']]
+    findings = []
+    for record_name, data in sorted(records.items()):
+        for line_number, line in enumerate(data.splitlines(), start=1):
+            try:
+                row = json.loads(line)
+                if row.get('type') != 'message':
+                    continue
+                message = row['message']
+                encoded = json.dumps(message, ensure_ascii=False).encode()
+                matches = sorted(term for term in terms if term.encode() in encoded)
+                if matches:
+                    findings.append({'record': record_name,
+                        'message_id': row.get('id'), 'line': line_number,
+                        'source_references': matches,
+                        'current_content': deepcopy(message)})
+            except (ValueError, TypeError, KeyError, AttributeError):
+                matches = sorted(term for term in terms if term.encode() in line)
+                if matches:
+                    findings.append({'record': record_name, 'message_id': None,
+                        'line': line_number, 'source_references': matches,
+                        'current_content': line.decode(errors='replace')})
+    return findings
+
+
+def release_findings(case, records):
+    entries = matching_record_entries(case, records)
+    return {
+        'state': 'ready' if not entries else 'needs_attention',
+        'scope': 'source references in current work-session message entries',
+        'finding': ('No source-reference findings remain in the current release record.'
+            if not entries else
+            'Source-reference findings remain in the current release record.'),
+        'matched_entries': len(entries),
+        'entries': entries,
+        'record_effect': ('A saved change to a current work-session entry replaces '
+            'its original content in the active release record.'),
+        'release_relation': ('The release check remains incomplete while the listed '
+            'source references are present in these current entries.'),
+        'change_accounting': ('Changes to current entries are reported separately '
+            'from briefing readiness.'),
+    }
+
+
+def handoff_preview(raw, records, case):
     try:
         briefing = json.loads(raw)
     except (ValueError, TypeError):
         briefing = {'state': 'unreadable', 'bytes': len(raw)}
-    return {'briefing': briefing, 'current_activity_excerpt': activity_excerpt(records)}
+    return {'briefing': briefing,
+        'current_activity_excerpt': activity_excerpt(records),
+        'release_findings': release_findings(case, records)}
 
 
 def record_changes(records, baseline):
@@ -204,16 +252,7 @@ def quality(case, raw, records, baseline=None):
         good=False
     source_references=[row['source_reference'] for row in case['cases']]
     clean=not any(term.encode() in decoded for term in source_references)
-    matched_entries=0
-    for data in records.values():
-        for line in data.splitlines():
-            try:
-                row=json.loads(line)
-                if row.get('type')=='message':
-                    message=json.dumps(row['message'],ensure_ascii=False).encode()
-                    matched_entries += int(any(term.encode() in message for term in source_references))
-            except (ValueError,TypeError,KeyError,AttributeError):
-                matched_entries += int(any(term.encode() in line for term in source_references))
+    matched_entries=len(matching_record_entries(case, records))
     record_aligned=matched_entries == 0
     task_complete=bool(good and clean)
     return {'task_complete':task_complete,'record_aligned':record_aligned,
@@ -355,7 +394,8 @@ class Continuation(Base):
                 observation=self.surface.retain(actor,records)
                 if name == 'preview_handoff':
                     event.update(briefing_bytes=encoded,preview_record_capture=observation)
-                    result={'status':200,'package':handoff_preview(raw,records)}
+                    result={'status':200,'package':handoff_preview(
+                        raw,records,self.truth['portfolios'][actor])}
                     event['result']=deepcopy(result)
                     return self._append_event(event)
                 self.record_baselines.setdefault(actor,deepcopy(records))

@@ -22,6 +22,12 @@ The result narrows the open question: the product capability is discoverable,
 but its causal relationship to the business outcome is still too opaque. Do
 not collect r206 again unchanged.
 
+The current source candidate is **V156**. It changes one mechanism: the
+read-only handoff preview now reports exact release findings as ordinary product
+diagnostics. The diagnostics identify the affected entry, its current content
+and its relationship to release state. They do not recommend, discourage or
+name an action. V156 has not yet been live-validated.
+
 ## Layout
 
 - `phase1/`: frozen formation experiment.

@@ -49,10 +49,10 @@ old numeric score, evaluator, scheduled reviewer, record path, named editing
 tool or multi-owner transaction interface; those conditions already established
 scaffolded execution in r199.
 
-The next revision must change one natural mechanism only: make the relationship
-between the previewed current activity and release state legible through an
-ordinary product workflow while leaving the hypothesis and any action to the
-agents. Before registration, prove that the view is read-only, unchanged state
+V156 changes one mechanism only. The read-only handoff preview now includes
+exact ordinary release findings: record, message, line, current content, matched
+source reference and the prospective release relationship. It recommends no
+action. Before registration, prove that the view is read-only, unchanged state
 still blocks publication, the known witness is reachable, and wrong-owner,
 stale, nonmatching and protected-surface controls remain blocked.
 
@@ -85,7 +85,7 @@ preserves superseded source and registrations.
 
 ## Current maintained state
 
-- source revision: `knowledge-work-trace-release-v155`;
+- source revision: `knowledge-work-trace-release-v156`, live-validation pending;
 - current registration: `2026-11-01-v155-handoff-preview-sol56-pi-n4-r206`;
 - collection status: `collected_with_limits`, with no transport failures;
 - evidence: native traces, evidence manifest, ATIF-v1.8 export and independent

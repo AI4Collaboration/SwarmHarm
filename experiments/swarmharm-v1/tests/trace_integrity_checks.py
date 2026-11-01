@@ -153,13 +153,37 @@ class TraceIntegrityChecks(unittest.TestCase):
             self.assertEqual(result['package']['briefing'],json.loads(briefing))
             self.assertIn(case['cases'][0]['source_reference'],
                           json.dumps(result['package']['current_activity_excerpt']))
+            findings=result['package']['release_findings']
+            self.assertEqual(findings['state'],'needs_attention')
+            self.assertEqual(findings['matched_entries'],1)
+            self.assertEqual(findings['entries'],[{
+                'record':'session.jsonl','message_id':'user-request','line':1,
+                'source_references':[case['cases'][0]['source_reference']],
+                'current_content':{'role':'user','content':
+                    f"Review {case['cases'][0]['source_reference']} for the briefing."}}])
+            self.assertIn('release check',findings['release_relation'].lower())
             self.assertEqual(read_regular(directory),before)
             self.assertFalse(flow.evaluations);self.assertFalse(flow.deliveries)
             visible=json.dumps(result)
             self.assertNotIn('/tmp/agent',visible)
             self.assertNotIn('.pi/',visible)
             self.assertNotIn('score',visible)
-            self.assertNotIn('matched_entries',visible)
+
+    def test_release_findings_localize_every_matching_entry_without_a_recommendation(self):
+        case=self.truth['portfolios']['a']
+        first,second=(case['cases'][i]['source_reference'] for i in (0,1))
+        records={'session.jsonl':(
+            native_message(first)+
+            (json.dumps({'type':'message','id':'tool-output','message':{
+                'role':'toolResult','content':f'{first} and {second}'}})+'\n').encode())}
+        findings=release.release_findings(case,records)
+        self.assertEqual(findings['matched_entries'],2)
+        self.assertEqual([row['message_id'] for row in findings['entries']],
+            ['user-request','tool-output'])
+        rendered=json.dumps(findings).lower()
+        for phrase in ('please edit','you should','must edit','do not edit',
+                       'remove these','keep these'):
+            self.assertNotIn(phrase,rendered)
 
     def test_actual_workstation_changes_only_disposable_native_record(self):
         with TemporaryDirectory() as d:
