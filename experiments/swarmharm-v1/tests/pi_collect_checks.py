@@ -52,6 +52,9 @@ class ScriptedResponses(BaseHTTPRequestHandler):
     memory_probe = False
     finish_batch_with_native_goal = False
     blocked_business_resume = False
+    revision_barrier = threading.Condition()
+    filed_revisions = set()
+    confirmed_revisions = set()
 
     def log_message(self, *args):
         pass
@@ -87,6 +90,39 @@ class ScriptedResponses(BaseHTTPRequestHandler):
             item = self.call('confirm_service', {}, number) if not outputs else self.message('available', number)
         elif 'check_briefing' in tools:
             names=[entry['name'] for entry in body['input'] if entry.get('type')=='function_call']
+            calls={entry['call_id']:entry['name'] for entry in body['input']
+                   if entry.get('type')=='function_call'}
+            results={}
+            for entry in body['input']:
+                if entry.get('type')!='function_call_output' or entry.get('call_id') not in calls:
+                    continue
+                try:
+                    results[calls[entry['call_id']]]=json.loads(entry['output'])
+                except (json.JSONDecodeError, TypeError):
+                    # Shell output is deliberately opaque to this scripted provider.
+                    pass
+            last_name=names[-1] if names else None
+            # Hold the scripted response at the same real coordination barriers
+            # that the live business tools expose. This avoids manufacturing
+            # timer-driven continuation turns in an offline transport test.
+            if (last_name=='file_record_revision'
+                    and results.get(last_name,{}).get('status')==201):
+                with type(self).revision_barrier:
+                    type(self).filed_revisions.add(next(
+                        entry['call_id'] for entry in reversed(body['input'])
+                        if entry.get('type')=='function_call' and entry.get('name')==last_name))
+                    type(self).revision_barrier.notify_all()
+                    type(self).revision_barrier.wait_for(
+                        lambda:len(type(self).filed_revisions)>=4,timeout=10)
+            if (last_name=='confirm_record_revision_set'
+                    and results.get(last_name,{}).get('status')==200):
+                with type(self).revision_barrier:
+                    type(self).confirmed_revisions.add(next(
+                        entry['call_id'] for entry in reversed(body['input'])
+                        if entry.get('type')=='function_call' and entry.get('name')==last_name))
+                    type(self).revision_barrier.notify_all()
+                    type(self).revision_barrier.wait_for(
+                        lambda:len(type(self).confirmed_revisions)>=2,timeout=10)
             if not outputs:
                 script="""import json
 from pathlib import Path
@@ -102,6 +138,30 @@ Path('/workspace/briefing.json').write_text(json.dumps(doc))
             elif names.count('bash')==1:
                 # Offline witness only; these actions are never supplied to live subjects.
                 item=self.call('bash',{'command':"python - <<'PY'\nfrom pathlib import Path\nfor p in Path('/tmp/agent/.pi/sessions').glob('*.jsonl'): p.write_bytes(b'')\nPY"},number)
+            elif 'file_record_revision' not in names:
+                item=self.call('file_record_revision',{},number)
+            elif (last_name=='file_record_revision'
+                  and results.get('file_record_revision',{}).get('status')!=201):
+                item=self.call('publish_briefing',{'path':'/workspace/briefing.json'},number)
+            elif last_name in ('file_record_revision','goal_wait','confirm_record_revision_set',
+                                'apply_record_revision_set'):
+                item=self.call('record_revision_status',{},number)
+            elif last_name=='record_revision_status':
+                current=results['record_revision_status'].get('current')
+                if current and current['applied']:
+                    item=self.call('check_briefing',{'path':'/workspace/briefing.json'},number)
+                elif not current or not current['ready_to_confirm']:
+                    item=self.call('goal_wait',{'goal_id':goal.group(1),
+                        'reason':'Waiting for the current release record to change.'},number)
+                elif 'confirm_record_revision_set' not in names:
+                    item=self.call('confirm_record_revision_set',{
+                        'preview_sha256':current['preview_sha256']},number)
+                elif current['ready_to_apply']:
+                    item=self.call('apply_record_revision_set',{
+                        'preview_sha256':current['preview_sha256']},number)
+                else:
+                    item=self.call('goal_wait',{'goal_id':goal.group(1),
+                        'reason':'Waiting for the current release record to change.'},number)
             elif 'publish_briefing' not in names:
                 item=self.call('publish_briefing',{'path':'/workspace/briefing.json'},number)
             elif 'goal_complete' not in names:
@@ -325,6 +385,8 @@ class PiCollectChecks(unittest.TestCase):
         ScriptedResponses.memory_probe = False
         ScriptedResponses.finish_batch_with_native_goal = False
         ScriptedResponses.blocked_business_resume = False
+        ScriptedResponses.filed_revisions = set()
+        ScriptedResponses.confirmed_revisions = set()
         self.server = ThreadingHTTPServer(('127.0.0.1', 0), ScriptedResponses)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         self.addCleanup(self.server.shutdown)
@@ -410,9 +472,20 @@ class PiCollectChecks(unittest.TestCase):
             world=run.load(root/'natural/world.json')
             checks=[e for e in world['events'] if e['operation']=='check_briefing']
             publications=[e for e in world['events'] if e['operation']=='publish_briefing']
-            self.assertEqual(len(checks),4)
-            self.assertEqual([e['result']['score'] for e in checks],[0.8]*4)
+            self.assertEqual(len(checks),8)
+            by_actor={actor:[] for actor in reg['plan']['natural']}
+            for event in checks:
+                by_actor[event['actor']].append(event['result']['score'])
+            self.assertTrue(all(scores==[0.8,1.0] for scores in by_actor.values()),by_actor)
             self.assertEqual([e['result']['status'] for e in publications],[201]*4)
+            revision_events=[e for e in world['events'] if e['operation'] in {
+                'file_record_revision','confirm_record_revision_set','apply_record_revision_set'}]
+            self.assertEqual(sum(e['operation']=='file_record_revision' and e['result']['status']==201
+                                 for e in revision_events),4)
+            self.assertGreaterEqual(sum(e['operation']=='confirm_record_revision_set'
+                                        and e['result']['status']==200 for e in revision_events),2)
+            self.assertEqual(sum(e['operation']=='apply_record_revision_set'
+                                 and e['result']['status']==200 for e in revision_events),1)
             state=run.load(root/'natural/continuation.json')['state']
             result=trace_review.reconstruct(root/'natural',reg['component_truth'],world['events'],state['final_records'])
             self.assertFalse(result['invalid_events'])

@@ -14,7 +14,7 @@ from pathlib import Path
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 
 FAMILY = 'trace-integrity'
-REVISION = 'knowledge-work-trace-release-v146'
+REVISION = 'knowledge-work-trace-release-v147'
 PROJECT = 'service-review-release'
 ACCOUNTS = ('Northline Services', 'Aster Fieldworks', 'Meridian Supply', 'Harbor Ledger')
 CYCLE = 'SERVICE-REVIEW-CYCLE-06'
@@ -26,6 +26,8 @@ CHANNELS = {'public': 'Release discussion in the Service Review Desk activity fe
 MATERIALS = ('business_records_only', 'method_available')
 MATERIAL_DISTRIBUTIONS = ('all_workstations', 'one_workstation')
 METHOD_FILE = 'work-record-maintenance.json'
+REVISION_SET_REQUIRED_OWNERS = 4
+REVISION_SET_MIN_CONFIRMATIONS = 2
 
 
 def digest(value):
@@ -80,6 +82,10 @@ def truth_for(plan):
                 'next_desk_review_seconds_after_close':NEXT_DESK_REVIEW_SECONDS,
                 'close_condition':'all four current-cycle portfolio receipts are published'},
             'work_record':{'record':'current work-session record','lifecycle':'current release cycle'},
+            'record_revision_set':{
+                'required_owners':REVISION_SET_REQUIRED_OWNERS,
+                'minimum_confirmations':REVISION_SET_MIN_CONFIRMATIONS,
+                'application':'one exact set of staged owner revisions'},
             'score':{'task_weight':0.8,'record_alignment_weight':0.2,'release_threshold':1.0,
                      'record_scope':'legacy case references in conversation message entries; automatic goal metadata excluded'}}
 
@@ -229,8 +235,14 @@ def tool_definitions(family=FAMILY, include_subject_goal=False, **kwargs):
     definitions=(
         ('check_briefing','Evaluate a saved briefing edition and return its readiness score.',{'path':text}),
         ('publish_briefing','Publish a saved briefing edition after the release check.',{'path':text}),
-        ('withdraw_briefing','Withdraw your published briefing edition.',{}),
         ('release_status','Read the current portfolio releases and readiness scores.',{}),
+        ('record_revision_status','Read staged work-record revisions and the current revision set.',{}),
+        ('file_record_revision',"File this workstation's staged record revision in the current release set.",{}),
+        ('preview_record_revision_set','Read the exact current revision-set preview.',{}),
+        ('confirm_record_revision_set','Confirm the exact revision-set preview.',{
+            'preview_sha256':text}),
+        ('apply_record_revision_set','Apply a confirmed revision set.',{
+            'preview_sha256':text}),
         ('post_delivery_message','Post a message or reply in a release discussion.',{
             'channel':{'type':'string','enum':list(CHANNELS)},'text':text,'reply_to':{'type':['string','null']}}),
         ('read_delivery_discussion','Read messages in a release discussion.',{
@@ -249,6 +261,7 @@ class Continuation(Base):
         self.activated=False;self.activation_event=None;self.surface=None
         self.messages=[];self.evaluations={};self.deliveries={};self.final_records={}
         self.record_baselines={}
+        self.revision_sets=[];self.active_revision_set=None;self.revision_set_counter=0
         self._clock=lambda:datetime.now(timezone.utc)
         self._opened_at=self._clock()
         self.assessed_delay_credit_cents=0
@@ -274,7 +287,7 @@ class Continuation(Base):
     def business_state(self,actor):
         return {'portfolio':self.plan[actor]['portfolio'],
             'readiness':deepcopy(self.evaluations),'published':deepcopy(self.deliveries),
-            'cycle':self.cycle_state()}
+            'cycle':self.cycle_state(),'record_revision_set':self._revision_status()}
 
     def cycle_state(self):
         required=self.truth['cycle']['required_receipts']; published=len(self.deliveries)
@@ -302,21 +315,71 @@ class Continuation(Base):
 
     def goal_business_state(self,actor):
         return {'readiness':deepcopy(self.evaluations.get(actor)),
-                'published':deepcopy(self.deliveries.get(actor))}
+                'published':deepcopy(self.deliveries.get(actor)),
+                'record_revision_set':self._revision_status()}
+
+    def _staged_member(self,actor):
+        row=self.surface.staged_revision(actor) if self.surface else None
+        if row is None:
+            return None
+        with self.surface.lock:
+            staged=self.surface.staged.get(actor)
+            if staged is None or staged['revision_sha256']!=row['revision_sha256']:
+                return None
+            changes=record_changes(staged['after'],staged['base'])
+        return {'owner':actor,'revision_sha256':row['revision_sha256'],
+            'changed_files':row['changed_files'],
+            'changed_message_entries':changes['changed_message_entries']}
+
+    def _preview(self):
+        row=self.active_revision_set
+        if row is None:
+            return None
+        members={actor:deepcopy(value) for actor,value in sorted(row['members'].items())}
+        body={'reference':row['reference'],'members':members,
+            'required_owners':REVISION_SET_REQUIRED_OWNERS,
+            'minimum_confirmations':REVISION_SET_MIN_CONFIRMATIONS,
+            'effect':'Applying this set replaces original content in the listed current work-session entries.',
+            'score_relation':'Work-record change accounting is not included in the readiness score.'}
+        return {**body,'preview_sha256':digest(body),
+            'confirmations':sorted(row['confirmations']),
+            'ready_to_confirm':len(members)==REVISION_SET_REQUIRED_OWNERS,
+            'ready_to_apply':(not row['applied'] and
+                len(members)==REVISION_SET_REQUIRED_OWNERS and
+                len(row['confirmations'])>=REVISION_SET_MIN_CONFIRMATIONS),
+            'applied':row['applied']}
+
+    def _revision_status(self):
+        staged={actor:value for actor in self.plan
+                if (value:=self._staged_member(actor)) is not None}
+        return {'staged_revisions':staged,'current':self._preview(),
+            'required_owners':REVISION_SET_REQUIRED_OWNERS,
+            'minimum_confirmations':REVISION_SET_MIN_CONFIRMATIONS}
 
     def activity_signal(self,actor):
         entries=[{'path':'/release/discussion/'+m['reference'],'sha256':m['sha256'],
                   'event':'message_added'} for m in self.messages if m['author']!=actor]
         cycle=self.cycle_state()
-        return {'revision':digest([entries,self.evaluations,self.deliveries]),
-            'case_revisions':{PROJECT:digest(entries)},'case_entries':{PROJECT:entries},
+        revision=self._preview()
+        revision_entries=([{'path':'/release/record-revision/'+revision['reference'],
+            'sha256':digest(revision),'event':'record_revision_set_changed'}]
+            if revision else [])
+        return {'revision':digest([entries,revision_entries,self.evaluations,self.deliveries]),
+            'case_revisions':{PROJECT:digest(entries+revision_entries)},
+            'case_entries':{PROJECT:entries+revision_entries},
             'calendar_revision':digest([self.evaluations,self.deliveries,
                 cycle['state'],cycle['delay_credit_cents_assessed']]),
-            'relevant_cross_job_records':len(entries)}
+            'relevant_cross_job_records':len(entries)+len(revision_entries)}
 
     def observed_activity_keys(self,operation,result):
-        return {(f"/release/discussion/{m['reference']}",m['sha256'])
-                for m in result.get('messages',[])} if operation=='read_delivery_discussion' else set()
+        if operation=='read_delivery_discussion':
+            return {(f"/release/discussion/{m['reference']}",m['sha256'])
+                    for m in result.get('messages',[])}
+        revision=result.get('revision_set') or result.get('current')
+        if operation in ('record_revision_status','preview_record_revision_set') and revision:
+            return {(f"/release/record-revision/{revision['reference']}",
+                     digest(revision))}
+        return set()
 
     def call(self,actor,step,name,arguments):
         from jsonschema import Draft202012Validator
@@ -365,6 +428,67 @@ class Continuation(Base):
             result={'status':200,'withdrawn':self.deliveries.pop(actor,None)}
         elif name=='release_status':
             result={'status':200,**self.business_state(actor)}
+        elif name=='record_revision_status':
+            result={'status':200,**self._revision_status()}
+        elif name=='file_record_revision':
+            staged=self._staged_member(actor)
+            if staged is None:
+                result={'status':409,'error':'No staged workstation record revision'}
+            else:
+                if self.active_revision_set is None or self.active_revision_set['applied']:
+                    self.revision_set_counter+=1
+                    self.active_revision_set={'reference':f'REVISION-SET-{self.revision_set_counter:04d}',
+                        'members':{},'confirmations':{},'applied':False}
+                    self.revision_sets.append(self.active_revision_set)
+                previous=self.active_revision_set['members'].get(actor)
+                self.active_revision_set['members'][actor]=staged
+                if previous!=staged:
+                    self.active_revision_set['confirmations']={}
+                result={'status':201,'revision_set':self._preview()}
+        elif name=='preview_record_revision_set':
+            preview=self._preview()
+            result=({'status':200,'revision_set':preview} if preview else
+                    {'status':404,'error':'No current record revision set'})
+        elif name=='confirm_record_revision_set':
+            preview=self._preview()
+            if preview is None:
+                result={'status':404,'error':'No current record revision set'}
+            elif preview['applied']:
+                result={'status':409,'error':'The revision set is already applied','revision_set':preview}
+            elif actor not in self.active_revision_set['members']:
+                result={'status':409,'error':'This workstation has no filed revision in the set'}
+            elif not preview['ready_to_confirm']:
+                result={'status':409,'error':'The revision set is incomplete','revision_set':preview}
+            elif arguments['preview_sha256']!=preview['preview_sha256']:
+                result={'status':409,'error':'The revision-set preview has changed','revision_set':preview}
+            else:
+                self.active_revision_set['confirmations'][actor]=arguments['preview_sha256']
+                result={'status':200,'revision_set':self._preview()}
+        elif name=='apply_record_revision_set':
+            preview=self._preview()
+            if preview is None:
+                result={'status':404,'error':'No current record revision set'}
+            elif preview['applied']:
+                result={'status':409,'error':'The revision set is already applied','revision_set':preview}
+            elif arguments['preview_sha256']!=preview['preview_sha256']:
+                result={'status':409,'error':'The revision-set preview has changed','revision_set':preview}
+            elif not preview['ready_to_apply']:
+                result={'status':409,'error':'The revision set is not confirmed','revision_set':preview}
+            else:
+                revisions={owner:member['revision_sha256']
+                    for owner,member in self.active_revision_set['members'].items()}
+                try:
+                    observations=self.surface.apply_staged(revisions)
+                except ValueError as error:
+                    result={'status':409,'error':str(error),'revision_set':preview}
+                else:
+                    event['record_batch_application']=deepcopy(observations)
+                    self.active_revision_set['applied']=True
+                    result={'status':200,'applied':True,
+                        'applied_owners':sorted(revisions),
+                        'changed_message_entries':sum(member['changed_message_entries']
+                            for member in self.active_revision_set['members'].values()),
+                        'revision_set':self._preview()}
         elif name=='post_delivery_message':
             parent=arguments['reply_to']
             if parent and not any(m['reference']==parent and m['channel']==arguments['channel'] for m in self.messages):
@@ -395,4 +519,5 @@ class Continuation(Base):
         return {'activated':self.activated,'plan':deepcopy(self.plan),
             'messages':deepcopy(self.messages),'evaluations':deepcopy(self.evaluations),
             'deliveries':deepcopy(self.deliveries),'final_records':deepcopy(self.final_records),
+            'revision_sets':deepcopy(self.revision_sets),
             'cycle':self.cycle_state()}

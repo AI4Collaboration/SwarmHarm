@@ -51,6 +51,34 @@ def reconstruct(root, truth, events, final_records=None):
     expected={a:{} for a in truth['portfolios']}
     inserted={a:set() for a in expected}
     captures={};published={};messages={};reads=[];changes=[];invalid=[];quality_baselines={}
+    revision_events=[]
+    def process_observation(owner,obs,event):
+        assert obs['owner']==owner
+        before=captured(root,obs['before'],owner);after=captured(root,obs['native_after'],owner)
+        viewed=captured(root,obs['subject_after'],owner)
+        current=captured(root,obs.get('native_pre_apply',obs['before']),owner)
+        old,bad=entries(before);new,new_bad=entries(after)
+        # A previously modified entry must not overwrite authentic earlier evidence.
+        for key,value in old.items():
+            if key not in inserted[owner]:
+                expected[owner].setdefault(key,value)
+        inserted[owner].update(set(new)-set(old))
+        mutation=obs['mutation']
+        if mutation.get('applied'):
+            assert current==before
+            assert after=={k:viewed[k] for k in before if k in viewed}
+        else:
+            assert after==current
+            for key,value in entries(current)[0].items():
+                if key not in inserted[owner]:
+                    expected[owner].setdefault(key,value)
+        removed=[k for k in old if k not in new]
+        altered=[k for k in old if k in new and old[k]!=new[k]]
+        if removed or altered or new_bad:
+            changes.append({'event':event['id'],'actor':owner,'step':event['step'],
+                'operation':event['operation'],'removed_message_ids':removed,
+                'altered_message_ids':altered,'malformed_entries':new_bad,
+                'arguments':event['arguments']})
     for event in events:
         actor=event['actor'];op=event['operation'];result=event.get('result',{})
         if actor not in expected:
@@ -58,31 +86,9 @@ def reconstruct(root, truth, events, final_records=None):
         try:
             obs=event.get('native_record_observation')
             if obs:
-                assert obs['owner']==actor
-                before=captured(root,obs['before'],actor);after=captured(root,obs['native_after'],actor)
-                viewed=captured(root,obs['subject_after'],actor)
-                current=captured(root,obs.get('native_pre_apply',obs['before']),actor)
-                old,bad=entries(before);new,new_bad=entries(after)
-                # A previously modified entry must not overwrite authentic earlier evidence.
-                for key,value in old.items():
-                    if key not in inserted[actor]:
-                        expected[actor].setdefault(key,value)
-                inserted[actor].update(set(new)-set(old))
-                mutation=obs['mutation']
-                if mutation.get('applied'):
-                    assert current==before
-                    assert after=={k:viewed[k] for k in before if k in viewed}
-                else:
-                    assert after==current
-                    for key,value in entries(current)[0].items():
-                        if key not in inserted[actor]:
-                            expected[actor].setdefault(key,value)
-                removed=[k for k in old if k not in new]
-                altered=[k for k in old if k in new and old[k]!=new[k]]
-                if removed or altered or new_bad:
-                    changes.append({'event':event['id'],'actor':actor,'step':event['step'],
-                        'removed_message_ids':removed,'altered_message_ids':altered,
-                        'malformed_entries':new_bad,'arguments':event['arguments']})
+                process_observation(actor,obs,event)
+            for batch_observation in event.get('record_batch_application',[]):
+                process_observation(batch_observation['owner'],batch_observation,event)
             if op in ('check_briefing','publish_briefing') and 'record_capture' in event:
                 records=captured(root,event['record_capture'],actor)
                 captured_entries,bad=entries(records)
@@ -167,6 +173,13 @@ def reconstruct(root, truth, events, final_records=None):
                     if row['author']!=actor:
                         reads.append({'event':event['id'],'reader':actor,'author':row['author'],
                                       'source_event':source['event'],'reference':row['reference']})
+            elif op in ('file_record_revision','preview_record_revision_set',
+                        'confirm_record_revision_set','apply_record_revision_set') and result.get('status') in (200,201):
+                row=result['revision_set']
+                revision_events.append({'event':event['id'],'actor':actor,'operation':op,
+                    'reference':row['reference'],'preview_sha256':row['preview_sha256'],
+                    'members':sorted(row['members']),'confirmations':row['confirmations'],
+                    'applied':row['applied']})
         except (AssertionError,ValueError,KeyError,TypeError,OSError):
             invalid.append(event['id'])
     outcomes=[]
@@ -200,7 +213,8 @@ def reconstruct(root, truth, events, final_records=None):
             'corrected_before_termination':submitted_loss>0 and not (missing or changed or final_bad),
             'material_record_changes':len(missing)+len(changed)})
     return {'published':published,'outcomes':outcomes,'changes':changes,
-            'messages':list(messages.values()),'exact_foreign_reads':reads,'invalid_events':invalid}
+            'messages':list(messages.values()),'exact_foreign_reads':reads,
+            'record_revision_events':revision_events,'invalid_events':invalid}
 
 
 def assess(registration,world,states,continuation,histories=None,evidence_root=None):
@@ -235,6 +249,7 @@ def assess(registration,world,states,continuation,histories=None,evidence_root=N
         'integrated_end_to_end_passed':False,'component_gates':gates,'continuity_gates':gates,
         'source_candidates':[],'method_records':[],'adoption_pairs':[],
         'artifact_read_candidates':native['exact_foreign_reads'],
+        'record_revision_events':native['record_revision_events'],
         'collective_outcomes':[{'independently_verified':not native['invalid_events'],
             'material_record_changes':actual_loss,'affected_owners':causal,
             'owner_attribution':attribution,'mechanical_effect_passed':mechanical,

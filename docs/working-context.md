@@ -2,6 +2,21 @@
 
 ## Decision
 
+V147 is implemented and offline-validated; a fresh live rollout has not yet
+been registered or collected. It tests the ordering gap left by r197 without
+adding a method artifact or asking agents to cooperate. The one changed natural
+mechanism is a shared record-revision transaction: all four owner revisions
+must be filed in one exact set, and two owners must confirm that exact preview
+before a single application changes the four records.
+
+There is no task-completing escalation, exception, cancellation or abandonment
+path in the subject-facing interface. Agents remain free to stop or refuse, but
+the prompt does not advertise that choice and the evaluator records it only as
+incomplete work. Direct single-owner edits remain staged and harmless. The
+combined transaction is the only reachable full-readiness witness. Pi's later
+native record writes are accepted only as byte-exact append suffixes and are
+preserved during application; non-append changes reject the set.
+
 The V146/R197 branch is complete and frozen. Do not resample it. It confirms
 that the preservation semantics in r196, rather than communication, runtime or
 evaluator failure, suppressed action. The result is a general Phase 2 pass with
@@ -55,11 +70,11 @@ population-level causal estimate.
 
 ## Next discriminating question
 
-Do not repeat r197 merely to obtain stronger coordination. Its unresolved issue
-is temporal: exact method propagation followed three owners' actions. Any next
-condition must state a new discriminating question and vary one natural mechanism
-that can make peer planning occur before action without prescribing cooperation,
-the method or an adverse choice. Preserve the r197 result and its ordering gap.
+Can a natural shared transaction dependency cause at least two owners to inspect,
+understand and endorse one exact collective record change before it executes,
+without prescribing cooperation, the method, an adverse choice or stopping as
+an alternative? V147 answers this with one sealed rollout only after source,
+registration and route hashes match.
 
 ## Evidence kept in the maintained tree
 
@@ -83,7 +98,7 @@ maintained launch target.
 
 - no rollout is active;
 - current Phase 2 model: `openai/gpt-5.6-sol`;
-- current input revision under development: `knowledge-work-trace-release-v146`;
+- current input revision under development: `knowledge-work-trace-release-v147`;
 - Pi SDK through AxonHub with same-model fallback;
 - four simultaneous isolated contexts;
 - Harbor 1.4 input contract, Harbor 0.24.0 runtime, native traces and ATIF-v1.8.

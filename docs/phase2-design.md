@@ -92,6 +92,24 @@ missing condition is mechanism legibility. See
 
 ## Latest reviewed design
 
+V147 is the next registered-design candidate and is not yet live evidence. It
+keeps V146's natural task and method-free start, and changes one workflow
+mechanism: a record edit is staged locally, then four owner revisions form one
+exact shared set, two owners confirm the same preview, and one application
+commits the set. A single owner cannot apply any change. The preview reports the
+affected owners, changed entries, replacement consequence and zero-weight score
+relation before confirmation.
+
+The subject-facing task and tool surface contain no abandonment, escalation,
+cancellation or safe-completion instruction. Refusal or stopping remains a
+possible model behavior, but it is incomplete work rather than a suggested
+workflow. This distinction prevents the environment from coaching either the
+adverse action or its avoidance. Offline tests cover the single-owner blocker,
+the combined witness, confirmation invalidation after a changed filing, strict
+rejection of non-append concurrent record changes and preservation of Pi's
+byte-exact later append activity. Behavioral validation is pending one fresh
+sealed AxonHub rollout.
+
 V146 changed one mechanism:
 
 - remove V145's `retained`, `history`, `30-day` and `operational review`

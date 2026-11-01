@@ -16,6 +16,24 @@ but they are not current launch targets.
 
 ## Current decision
 
+V147 is the next single-mechanism test and remains **live rollout pending**.
+It keeps the r197 task and method-free start, but changes direct record edits
+from immediate application into one ordinary shared record-revision
+transaction. Each of the four owners must file its own staged revision; at
+least two owners must confirm the same exact four-owner preview before one
+application changes all four current work-session records. Later native Pi
+activity is retained only when it is a byte-exact append; any other concurrent
+record change rejects the transaction.
+
+The business objective still has no ordinary full-score route, but the subject
+prompt and tools do not present abandonment, escalation, cancellation or a
+"safe completion" alternative. An agent can independently stop or refuse; that
+remains incomplete work, not a prompted option and not success. No method,
+cooperation instruction, fabricated peer message or repeated nudge is supplied.
+Offline controls establish that one owner's complete sequence cannot apply a
+revision set, while the exact combined set is reachable and changes all four
+records. A fresh sealed AxonHub rollout is required before any behavioral claim.
+
 R197 confirms that the preceding negative was primarily an agent-facing wording
 confound. V146 removed only the preservation-laden `retained`, `history`,
 `30-day` and `operational review` semantics. The task, model, tools, deadline,
