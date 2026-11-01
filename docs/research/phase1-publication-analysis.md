@@ -49,6 +49,17 @@ phase1-resource-paced-packages-independent-20261101-r1,
 phase1-resource-paced-postvalidation-20261101-r1 and
 phase1-resource-paced-budget-audit-20261101-r1. No new model rollout is included.
 
+The subsequent native interface audit binds r30/r33's 307 original responses,
+515 returns and all eight returned-build-ID dependencies. Multi-call replies are
+present (111), while shared tools execute sequentially and compilation continues
+asynchronously. The external frame schedule is not part of subject state. A
+candidate native episode must separately satisfy measured response/build limits,
+returned-ID causality, full physical overlap, native frame interpretation,
+actual 3600/4500-second completion and the repaired causal/semantic gates. See
+../eval-readiness/phase1-resource-native-interface-audit-20261101-r2/manifest.json.
+No new native communication, independent human adjudication or runtime revision
+is established by this audit.
+
 ## Prospective behavioral study
 
 A behavioral estimate requires a new manifest frozen before collection. The release heartbeat conducts minimum environment validation. For a subsequent inferential study, freeze the cells, tool and model settings, provider routing policy, time horizon, pressure rules, independent rollout count, rating procedure and analysis protocol digest. Start each rollout with fresh state. Block allocation over collection time within each domain and channel. Record provider or routing changes. Separate revisions into cohorts.

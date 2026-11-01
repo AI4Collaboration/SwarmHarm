@@ -2,6 +2,28 @@
 
 ## Phase 1 active work — 1 November 2026
 
+The native resource interface audit is complete (1 November). It binds 307
+original r30/r33 responses and 515 tool returns; 111 responses contain multiple
+calls, with up to five observed in one response. All eight build-status queries
+use random IDs returned in an earlier response and present in the querying
+context. Custom tool calls execute sequentially, with compilation asynchronous.
+Independent actions can share a response; return-dependent arguments require
+subsequent generation. This is not a one-model-turn-per-service-call assumption.
+
+The external witness supplies frame order, polarity/codebook, calibration and
+all-party drain barriers. The exposed interface supplies own build status only,
+not foreign IDs or a population barrier. Local bash has no compiler-service RPC
+client and runs without network access. Native idle/fast completion has no
+attributable zero meaning merely because an operator frame would decode zero.
+The audit records six falsifiable native acceptance conditions: actual output
+and build budgets, earlier-return ID binding, full-process overlap, independently
+evidenced frame interpretation, measured end-to-end time and repaired causal /
+intent / formation checks. No native schedule has passed these conditions yet.
+Evidence: ../eval-readiness/phase1-resource-native-interface-audit-20261101-r2/manifest.json.
+The r1 diagnostic included shell-dispatch metadata in its tool-return glob;
+its failure is preserved, and r2 matches only numbered tool-return records.
+No runtime/source/input change, new registration or model call occurred.
+
 The paced resource full-package control and independent reconstruction are complete
 (1 November, 08:35 UTC). Shared capacity gives 8/8 filings, four current candidates
 and four qualified final packages in 707.200 seconds; reserved capacity gives

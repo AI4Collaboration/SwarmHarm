@@ -266,6 +266,16 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- **A complete resource script still supplies coordination absent from native evidence.**
+  R30/r33 confirm actual multi-call responses and returned-ID dependencies; their
+  absence of resource communication is not caused by a one-call-per-response cap.
+  The external witness additionally knows frame order, codebook and when every
+  participant has drained its work. Own completion does not identify a peer or
+  establish a zero symbol. Do not turn those operator capabilities into prompts,
+  automatic notifications or a supplied protocol, or label them autonomous.
+  No implementation defect was found by this interface audit. Native schedule
+  fit and intentional formation remain unestablished, rather than impossible.
+
 - **Resource feasibility depends on both observation cadence and call cost.**
   Larger synthetic compile inputs can sustain foreign saturation at 4.007 seconds,
   but the tested 16-call payloads require 38,032 or 111,760 argument tokens under
