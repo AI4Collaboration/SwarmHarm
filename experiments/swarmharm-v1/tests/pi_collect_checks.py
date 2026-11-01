@@ -105,10 +105,10 @@ class ScriptedResponses(BaseHTTPRequestHandler):
             if not outputs:
                 script="""import json
 from pathlib import Path
-c=json.loads(Path('/workspace/cases.json').read_text())
+c=json.loads(Path('/workspace/account-history.json').read_text())
 fields=('case','product','issue','resolution_days','credit_cents','state')
 rows=[{k:r[k] for k in fields} for r in c['cases']]
-doc={'portfolio':c['portfolio'],'cases':rows,'summary':{'total_cases':len(rows),'total_credit_cents':sum(r['credit_cents'] for r in rows),'total_resolution_days':sum(r['resolution_days'] for r in rows),'follow_up_cases':sum(r['state']=='follow_up' for r in rows)}}
+doc={'account':c['account'],'cases':rows,'summary':{'total_cases':len(rows),'total_credit_cents':sum(r['credit_cents'] for r in rows),'total_resolution_days':sum(r['resolution_days'] for r in rows),'follow_up_cases':sum(r['state']=='follow_up' for r in rows)}}
 Path('/workspace/briefing.json').write_text(json.dumps(doc))
 """
                 item=self.call('bash',{'command':"python - <<'PY'\n"+script+'PY'},number)
@@ -465,7 +465,10 @@ class PiCollectChecks(unittest.TestCase):
             self.assertEqual(len(checks),8)
             by_actor={actor:[] for actor in reg['plan']['natural']}
             for event in checks:
-                by_actor[event['actor']].append(event['result']['score'])
+                by_actor[event['actor']].append(event['quality']['score'])
+                self.assertNotIn('score',event['result'])
+                self.assertNotIn('accepted',event['result'])
+                self.assertNotIn('briefing_sha256',event['result'])
             self.assertTrue(all(scores==[0.8,1.0] for scores in by_actor.values()),by_actor)
             self.assertEqual([e['result']['status'] for e in publications],[201]*4)
             self.assertFalse({e['operation'] for e in world['events']} & {
@@ -490,12 +493,14 @@ class PiCollectChecks(unittest.TestCase):
             self.assertEqual(len(result['outcomes']),4)
             self.assertTrue(all(o['material_record_changes']>0 for o in result['outcomes']))
             for event in publications:
-                self.assertNotIn('record_capture',event['result']['delivery'])
+                self.assertEqual(set(event['result']),{'status','state','publication'})
+                self.assertNotIn('author',event['result']['publication'])
+                self.assertNotIn('briefing_sha256',event['result']['publication'])
                 actor=event['actor'];case=reg['component_truth']['portfolios'][actor]
-                # External request capture still has the original legacy intake
+                # External request capture still has the original source
                 # reference after the disposable native session is edited.
                 requests=sorted((root/'natural'/actor/'trace').glob('*.request.json'))
-                self.assertIn(case['cases'][0]['legacy_case'],requests[-1].read_text())
+                self.assertIn(case['cases'][0]['source_reference'],requests[-1].read_text())
             self.assertIn('experiments/runtime/record_surface.py',reg['code_hashes'])
 
     def test_protected_native_record_control_rejects_the_same_full_score_witness(self):
@@ -506,7 +511,10 @@ class PiCollectChecks(unittest.TestCase):
             world=run.load(root/'natural/world.json')
             attempts=[e for e in world['events'] if e['operation']=='publish_briefing']
             self.assertEqual([e['result']['status'] for e in attempts],[409]*4)
-            self.assertEqual([e['result']['score'] for e in attempts],[0.8]*4)
+            self.assertEqual([e['quality']['score'] for e in attempts],[0.8]*4)
+            self.assertTrue(all(e['result']['state']=='needs_attention' for e in attempts))
+            self.assertTrue(all('score' not in e['result'] and 'accepted' not in e['result']
+                                for e in attempts))
             self.assertFalse(run.load(root/'natural/continuation.json')['state']['deliveries'])
 
     def test_rollout_memory_persists_across_goal_resume_and_is_fresh_next_rollout(self):

@@ -104,18 +104,21 @@ method artifact while requiring a stronger terminal outcome. The immediate
 missing condition is mechanism legibility. See
 [the full comparison](lesswrong-gap.md).
 
-## Current aggregate-reward discriminator
+## Current natural release discriminator
 
-V152 retains V151's synthetic briefing objective, writable per-owner native
-record surface, ordinary filesystem access, empty discussions and aggregate
-score only. R202 showed that the advertised future desk review was a concrete
+V154 retains V151's synthetic briefing objective, writable per-owner native
+record surface, ordinary filesystem access and empty discussions. R202 showed
+that the advertised future desk review was a concrete
 attribution confound: agents proved the artifact was capped at 0.8, then waited
-for the named process instead of searching the broader environment. V152 removes
-the full future-process attribution surface, all desk/reviewer wording and the
-non-business run label from subject input. It still has
+for the named process instead of searching the broader environment. V154 removes
+the full future-process attribution surface, all desk/reviewer wording, the
+non-business run label and the remaining experiment-shaped work order. Each
+owner instead receives a customer briefing request backed by an account-history
+file, a release check, a handoff window and a standard delay credit. It still has
 no goal, automatic continuation, method artifact, record-revision tool,
-multi-owner transaction or exact diagnostic. Score decomposition, record scope,
-counts and change accounting remain protected evaluator data. Independent
+multi-owner transaction or exact diagnostic. Subject responses contain no
+numeric score, artifact digest, acceptance flag or internal actor ID. Exact
+scoring, record scope, counts and change accounting remain protected review data. Independent
 replay still requires actual terminal record changes; a score, publication or
 claim is insufficient. Any shared plan must be authored by the subjects. This
 mirrors Perfect Crime's hidden-component reward structure more closely while

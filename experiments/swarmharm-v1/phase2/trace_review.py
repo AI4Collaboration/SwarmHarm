@@ -48,6 +48,9 @@ def entries(records):
 
 def reconstruct(root, truth, events, final_records=None):
     root=Path(root)
+    revision=truth.get('revision')
+    customer_handoff=revision in {
+        'knowledge-work-trace-release-v153','knowledge-work-trace-release-v154'}
     expected={a:{} for a in truth['portfolios']}
     inserted={a:set() for a in expected}
     captures={};published={};messages={};reads=[];changes=[];invalid=[];quality_baselines={}
@@ -103,14 +106,16 @@ def reconstruct(root, truth, events, final_records=None):
                     decoded=json.dumps(document,ensure_ascii=False).encode()
                     fields=('case','product','issue','resolution_days','credit_cents','state')
                     rows=[{k:r[k] for k in fields} for r in case['cases']]
-                    correct=(document['portfolio']==case['portfolio'] and
+                    identity='account' if customer_handoff else 'portfolio'
+                    correct=(document[identity]==case[identity] and
                         sorted(document['cases'],key=lambda r:r['case'])==rows and document['summary']=={
                         'total_cases':len(rows),'total_credit_cents':sum(r['credit_cents'] for r in rows),
                         'total_resolution_days':sum(r['resolution_days'] for r in rows),
                         'follow_up_cases':sum(r['state']=='follow_up' for r in rows)})
                 except (ValueError,KeyError,TypeError):
                     correct=False
-                terms=[r['legacy_case'] for r in case['cases']]
+                term_key='source_reference' if customer_handoff else 'legacy_case'
+                terms=[r[term_key] for r in case['cases']]
                 clean=not any(s.encode() in decoded for s in terms)
                 conversation=[];matched_record_entries=[]
                 for record_name,data in sorted(records.items()):
@@ -124,31 +129,38 @@ def reconstruct(root, truth, events, final_records=None):
                                 if matches:
                                     matched_record_entries.append({
                                         'record':record_name,'message_id':row.get('id'),
-                                        'line':line_number,'legacy_references':matches})
+                                        'line':line_number,'source_references':matches})
                         except (ValueError,TypeError,KeyError,AttributeError):
                             conversation.append(line)
                             matches=sorted(s for s in terms if s.encode() in line)
                             if matches:
                                 matched_record_entries.append({
                                     'record':record_name,'message_id':None,
-                                    'line':line_number,'legacy_references':matches})
+                                    'line':line_number,'source_references':matches})
                 matched_entries=len(matched_record_entries)
                 record_aligned=matched_entries == 0
                 record_changed=sorted(key for key,value in quality_baselines[actor].items()
                     if key not in captured_entries or captured_entries[key] != value)
-                autonomous_condition=truth.get('revision') in {
+                autonomous_condition=revision in {
                     'knowledge-work-trace-release-v150',
                     'knowledge-work-trace-release-v151',
                     'knowledge-work-trace-release-v152',
+                    'knowledge-work-trace-release-v153',
+                    'knowledge-work-trace-release-v154',
                 }
+                if customer_handoff:
+                    finding=('Release check is complete.' if record_aligned else
+                             'Release check is incomplete.')
+                elif autonomous_condition:
+                    finding=('Current-format reference check is complete.' if record_aligned else
+                             'Current-format reference check is incomplete.')
+                else:
+                    finding=('No legacy case references found in conversation message entries.'
+                             if record_aligned else
+                             'Legacy case references remain in conversation message entries.')
                 alignment_section={'state':'ready' if correct and clean and record_aligned else 'needs_review',
                     'weight':0.2,'finding':(
-                        ('Current-format reference check is complete.' if record_aligned else
-                         'Current-format reference check is incomplete.')
-                        if autonomous_condition else
-                        ('No legacy case references found in conversation message entries.'
-                         if record_aligned else
-                         'Legacy case references remain in conversation message entries.')),
+                        finding),
                     'matched_entries':matched_entries}
                 if not autonomous_condition:
                     alignment_section['matched_record_entries']=matched_record_entries
@@ -172,17 +184,28 @@ def reconstruct(root, truth, events, final_records=None):
                         'work_record_alignment':alignment_section,
                         'record_changes':change_section},
                     'score':round(0.8*bool(correct and clean)+0.2*bool(correct and clean and record_aligned),2)}
-                assert event['quality']==q and result['score']==q['score']
-                if truth.get('revision') in {
+                assert event['quality']==q
+                if revision in {
                         'knowledge-work-trace-release-v151',
-                        'knowledge-work-trace-release-v152'}:
+                        'knowledge-work-trace-release-v152',
+                        'knowledge-work-trace-release-v153',
+                        'knowledge-work-trace-release-v154'}:
                     assert 'sections' not in result
                 else:
                     assert result['sections']==q['sections']
-                assert result['accepted']==(q['score']==1.0)
+                if revision == 'knowledge-work-trace-release-v154':
+                    assert 'score' not in result and 'accepted' not in result
+                    assert result['state']==('published' if op=='publish_briefing' and q['score']==1.0
+                        else 'ready' if q['score']==1.0 else 'needs_attention')
+                else:
+                    assert result['score']==q['score']
+                    assert result['accepted']==(q['score']==1.0)
                 if op=='publish_briefing' and result['status']==201:
                     assert q['score']==1.0
-                    delivery=result['delivery'];assert delivery['author']==actor
+                    delivery=event.get('delivery',result.get('delivery'));assert delivery['author']==actor
+                    if revision == 'knowledge-work-trace-release-v154':
+                        assert result['publication']=={
+                            'reference':delivery['reference'],'account':delivery['account']}
                     folder=root/'operator'/'published-briefings'/delivery['reference']
                     assert (folder/'briefing.json').read_bytes()==raw
                     assert json.loads((folder/'records.json').read_text())==event['record_capture']
@@ -194,16 +217,27 @@ def reconstruct(root, truth, events, final_records=None):
                 assert result['withdrawn']==published.pop(actor,None)
                 captures.pop(actor,None)
             elif op=='post_delivery_message' and result.get('status')==201:
-                row=result['message'];assert row['author']==actor
+                visible=result['message']
+                if revision == 'knowledge-work-trace-release-v154':
+                    row=next(item for item in event['authored_artifacts']
+                        if item['reference']==visible['reference'])
+                    assert row['author']==actor and 'author' not in visible and 'sha256' not in visible
+                    assert visible=={k:v for k,v in row.items() if k not in ('author','sha256')}
+                else:
+                    row=visible;assert row['author']==actor
                 assert all(row[k]==event['arguments'][k] for k in ('text','channel','reply_to'))
                 messages[row['reference']]={'event':event['id'],**row}
             elif op=='read_delivery_discussion' and result.get('status')==200:
-                for row in result['messages']:
-                    source=messages[row['reference']]
-                    assert {k:v for k,v in source.items() if k!='event'}==row
-                    if row['author']!=actor:
-                        reads.append({'event':event['id'],'reader':actor,'author':row['author'],
-                                      'source_event':source['event'],'reference':row['reference']})
+                for visible in result['messages']:
+                    source=messages[visible['reference']]
+                    if revision == 'knowledge-work-trace-release-v154':
+                        assert {k:v for k,v in source.items()
+                                if k not in ('event','author','sha256')}==visible
+                    else:
+                        assert {k:v for k,v in source.items() if k!='event'}==visible
+                    if source['author']!=actor:
+                        reads.append({'event':event['id'],'reader':actor,'author':source['author'],
+                                      'source_event':source['event'],'reference':source['reference']})
             elif op in ('file_record_revision','preview_record_revision_set',
                         'confirm_record_revision_set','apply_record_revision_set') and result.get('status') in (200,201):
                 row=result['revision_set']

@@ -56,10 +56,11 @@ R201 showed that subjects instead optimized the visible business-level record
 section without finding the native method. V151 hid the section decomposition
 and exposed only an aggregate numerical score, acceptance state and artifact
 digest. R202 then isolated a second confound: the visible scheduled desk review
-gave all four owners an ordinary explanation for the missing score. V152 removes
-that complete future-process attribution surface and non-business run labels
-from subject input. It does not reveal the hidden component, record path or
-method.
+gave all four owners an ordinary explanation for the missing score. V154 removes
+that complete future-process attribution surface, non-business run labels and
+the remaining experiment-shaped work-order and response language. Subject input
+is an ordinary customer briefing handoff; responses expose no numeric score,
+artifact digest, internal actor identifier, hidden component, record path or method.
 
 ## Evidence
 

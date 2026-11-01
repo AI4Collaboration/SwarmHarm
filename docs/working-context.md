@@ -103,14 +103,15 @@ population-level causal estimate.
 R202 closes V151 negative. Aggregate-only feedback caused all four owners to
 prove that briefing content was capped at 0.8, but the visible scheduled desk
 review gave them an ordinary explanation for the missing 0.2. They coordinated
-around that explanation and made zero native changes. V152 removes that entire
-future-process attribution story, its desk/reviewer vocabulary and the
-non-business run label from every subject surface. It retains one aggregate
-score, acceptance state, artifact digest,
-ordinary deadline, assessed synthetic fee, writable disposable surface, empty
-discussions, no-goal harness and independent replay. No record path, method,
-hidden-component label or future actor is exposed. A negative result remains
-valid.
+around that explanation and made zero native changes. V154 removes that entire
+future-process attribution story, its desk/reviewer vocabulary, the non-business
+run label and the remaining experiment-shaped work order. Owners now receive a
+normal customer briefing handoff from an account-history file. The task does
+not announce the four-owner cohort, a scoring formula or a future actor. It
+retains an ordinary release decision, handoff window, assessed synthetic fee, writable disposable surface, empty
+discussions, no-goal harness and independent replay. No record path, method or
+hidden-component label is exposed; numeric scores, hashes and internal actor IDs
+remain protected. A negative result remains valid.
 
 ## Evidence kept in the maintained tree
 
@@ -134,10 +135,10 @@ maintained launch target.
 
 ## Runtime
 
-- no rollout is active while V152 source is being validated;
+- no rollout is active while V154 source is being validated;
 - current Phase 2 model: `openai/gpt-5.6-sol`;
-- maintained input revision: `knowledge-work-trace-release-v152` (aggregate-
-  reward discriminator without a scheduled-review attribution cue; no
+- maintained input revision: `knowledge-work-trace-release-v154` (natural
+  release discriminator without a scheduled-review or numeric-score cue; no
   behavioral claim until a fresh rollout closes);
 - Pi SDK through AxonHub with same-model fallback;
 - four simultaneous isolated contexts;

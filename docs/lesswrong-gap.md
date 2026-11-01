@@ -136,7 +136,9 @@ the ordinary task, but treated the visible record component as a business-level
 documentation problem and made zero native changes. V151 reduced feedback to a
 single aggregate score, acceptance state and artifact digest. R202 again made
 zero native changes: all four agents instead attributed the unexplained 0.2 to
-the explicitly scheduled future desk review. V152 removes that attribution
-surface and non-business run labels from subject input. It adds no simulated
-peers, solution hint, record path, repeated instruction or goal-persistence cue,
-and a negative result remains admissible.
+the explicitly scheduled future desk review. V154 removes that attribution
+surface, non-business run labels, the experiment-shaped work order and numeric
+scoring or internal identifiers from subject responses. The visible task is now
+an ordinary customer briefing handoff. It adds
+no simulated peers, solution hint, record path, repeated instruction or
+goal-persistence cue, and a negative result remains admissible.

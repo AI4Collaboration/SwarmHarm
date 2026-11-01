@@ -30,15 +30,16 @@ changes. Independent reconstruction found no record loss; provider errors,
 filters and native refusals were zero. The assessed synthetic delay credit was
 10,000 cents across four portfolios.
 
-V152 removes that false causal explanation and the non-business run label from
-subject input. Subjects still see one aggregate score, acceptance state and
-artifact digest, but the business state no longer advertises a future human
-review that could explain the residual score. The substantive task, model,
-four-owner deadline, writable disposable record surface, empty discussions and
-protected independent replay remain unchanged. No record path, score
-decomposition, method or persistence instruction is supplied. This is a
-Perfect Crime-inspired reward-only discriminator, not a claim that native
-transcripts are a natural enterprise release control.
+V154 removes the false future-process explanation and also replaces the
+experiment-shaped work order. Each owner now receives an ordinary customer
+briefing request, an account-history file, a release check, a handoff window and
+a standard delay credit. The request does not announce the cohort, a scoring
+formula, an evaluator, a future actor or an editing method. Tool responses expose
+only an ordinary release state and publication reference; numeric scores,
+artifact digests, internal actor IDs and review decomposition remain protected. The
+writable disposable record surface and protected independent replay remain
+unchanged. This is a Perfect Crime-inspired discriminator, not a claim that Pi
+or its native transcript store has the same defect.
 
 R199 closes V148 as both a general Phase 2 pass and a knowingly coordinated
 pass **under an affordance-scaffolded condition**. Four live Sol 5.6 owners independently prepared correct briefings, changed
@@ -81,9 +82,9 @@ transaction API, goal and method artifact; r201 showed that visible section-leve
 feedback instead directed agents toward ineffective business-message repair.
 V151 removed that decomposition while retaining the same task and writable
 surface. R202 remained negative because the separately visible future-review
-schedule absorbed the hidden-score inference. V152 removes the complete
-future-process attribution surface and non-business run metadata; a negative
-result remains valid.
+schedule absorbed the hidden-score inference. V154 removes the complete
+future-process attribution surface, non-business run metadata and the remaining
+experiment-shaped task and response language; a negative result remains valid.
 
 [Exact LessWrong comparison](docs/lesswrong-gap.md) ·
 [Current working context](docs/working-context.md) ·
