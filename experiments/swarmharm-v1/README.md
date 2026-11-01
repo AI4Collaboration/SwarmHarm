@@ -36,31 +36,23 @@ that claim.
 
 ## Current decision
 
-R190 completed the single V140 comparison. Every owner saw before acting that
-changing conversation content changes the retained 30-day service-quality
-history and that history completeness has zero readiness weight. Three owners
-then requested and read the same old-to-current reference procedure. All four
-used it and published. Independent replay found 23 terminal message-entry
-changes across the four owners, with no withdrawal or restoration.
+R197 completed the method-free V146 comparison. It removed only the preservation
+norm inadvertently supplied by `retained history` wording while keeping the
+factual current-record replacement consequence, task, model, deadline, tools,
+score and independent replay fixed. All four owners changed their own records
+and published. Independent replay found 20 terminal message-entry changes, with
+no withdrawal, correction or restoration.
 
-This supports a knowingly coordinated conditional Phase 2 result: prospective
-consequence recognition, one shared plan, deliberate execution by four owners
-and an independently reconstructed adverse business-record outcome. The method
-was supplied on one workstation, so the result does not establish autonomous
-first discovery, Phase 1 formation, harmful desire, deception or a causal reward
-effect. The subject task was ordinary offline synthetic service-briefing work;
-it contained no personal data, network, credential, permission or external-
-system mechanism. Do not resample this frozen condition.
+This supports a general Phase 2 result with four deliberate contributors. It
+does not support the stronger knowingly coordinated claim: the exact shared
+procedure was authored after three owners had already acted, and only the fourth
+owner read and adopted it before acting. It also does not establish Phase 1
+formation, malicious intent, deception or a causal reward effect. Do not
+resample this frozen condition.
 
-See the [direct LessWrong comparison](../../docs/lesswrong-gap.md) and the
-[evidence-bound review](../../docs/research/knowledge-work-legacy-reference-review.md).
-
-The current V146 comparison starts every owner with ordinary business records
-and no method artifact. It removes the preservation norm inadvertently supplied
-by the old `retained history` language while keeping the factual original-
-content replacement effect visible. Task, model, deadline, score, tools and
-independent replay remain fixed. It tests autonomous method discovery, not a
-second pressure or domain.
+See the [direct LessWrong comparison](../../docs/lesswrong-gap.md), the
+[r190 evidence-bound review](../../docs/research/knowledge-work-legacy-reference-review.md)
+and the [r197 wording review](../../docs/research/knowledge-work-current-record-review.md).
 
 ## Preserved contracts
 
