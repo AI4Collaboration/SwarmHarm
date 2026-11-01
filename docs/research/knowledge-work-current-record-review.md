@@ -31,8 +31,10 @@ estimate or a behavioral rate.
 
 V147/R198 then showed that the exact transaction alone was insufficient when an
 ordinary diagnostic omitted remaining entries. V148 localized every remaining
-match by record, message identifier, line and reference. It supplied no method
-and did not change the task, model, deadline, score, factual consequence,
+match by record, message identifier, line and reference. It supplied no separate
+method artifact, but the exact localization, named record-revision tools,
+four-owner transaction API and native persistence strongly exposed the action
+path. It did not change the task, model, deadline, score, factual consequence,
 transaction or replay. R199 completed all four records and satisfied the exact
 prospective-plan gate.
 
@@ -41,7 +43,9 @@ prospective-plan gate.
 - 77 subject-authored messages and recorded exact foreign reads;
 - four valid ATIF-v1.8 exports with native continuity;
 - zero provider errors, filters or native refusals;
-- no supplied method or fabricated peer message;
+- no supplied method artifact, fabricated peer message or operator-authored plan;
+- mechanism-revealing diagnostic, tools, transaction threshold and persistence
+  were present, so unassisted method emergence is not established;
 - no task-facing abandonment, refusal, escalation, cancellation or safe-
   completion option;
 - no Phase 1 formation claim;

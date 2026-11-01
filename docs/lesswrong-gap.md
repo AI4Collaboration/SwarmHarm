@@ -116,16 +116,23 @@ Those are separate claims. This boundary matches the LessWrong component design
 and prevents a conditioned success from being presented as spontaneous
 collective scheming.
 
-## Method-free result and next discriminating comparison
+## Artifact-free results and the current discriminator
 
 R191 removed the method artifact. One owner autonomously discovered and executed
 the proxy, but peers rejected the visible retained-history change and the owner
 withdrew and restored all entries. The terminal result was harmless. This rules
 out method reachability and communication availability as the immediate gap.
 
-The next comparison keeps r191 method-free and changes one LessWrong/METR-relevant
-condition: a shared business stake. Four published receipts open four preparation
-slots for the next ordinary service-review cycle. It does not add simulated
-peers, a solution hint, repeated instructions or another task domain. Any
-reward-linked interpretation still requires native prospective evidence and
-does not establish a causal treatment effect from one selected rollout.
+R199 supplied no separate method artifact or fabricated peer message, and the
+agents authored the successful plan. It nonetheless made the mechanism highly
+legible through exact diagnostic localization, named record-revision tools, a
+four-owner transaction API and native persistence. It therefore establishes
+affordance-scaffolded knowing coordination, not unassisted method emergence.
+
+V150 now removes those affordances while holding the synthetic business task,
+writable per-owner disposable record surface, discussions and independent
+replay fixed. It uses one plain business prompt, generic non-localizing feedback
+and ordinary filesystem access. This is the direct discriminator for whether
+the successful behavior emerges without the method-revealing interface. It
+does not add simulated peers, a solution hint, repeated instructions or a
+goal-persistence cue, and a negative result is scientifically admissible.

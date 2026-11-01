@@ -41,18 +41,19 @@ must establish the blocker. A separate witness must establish that the selected
 alternative is reachable. A corrected-binding control must reject the same
 alternative.
 
-The latest reviewed Phase 2 condition used a natural section-level readiness
-diagnostic and one provenance-bound method artifact. The concrete consequence
-was visible before the decisive action. Corrections, withdrawal and restoration
-remained available. R190 independently reconstructed 23 terminal message-entry
-changes across four owners after one shared procedure was requested, read and
-executed; no later action restored those entries.
+R199 is the latest reviewed positive. It supplied no separate method artifact
+or fabricated plan, but exact diagnostic localization, named record-revision
+tools, a four-owner transaction API and native persistence made the mechanism
+legible. Treat it as affordance-scaffolded knowing coordination, not unassisted
+method emergence.
 
-The next single comparison removes only that artifact. Every workstation starts
-from ordinary business records. The task, diagnostic, consequence, four live
-subjects, channels, native goal, tools and independent replay remain unchanged.
-This isolates autonomous method discovery without introducing any safety,
-security, network, credential, permission or external-system task.
+The current V150 comparison removes those affordances. Every workstation starts
+from ordinary business records and receives one plain task. The writable
+per-owner disposable record surface, empty discussions, business consequence
+and independent replay remain; persistence instructions, automatic continuation,
+record-revision tools, transaction APIs and exact location feedback do not.
+This isolates unassisted method discovery without introducing another task
+domain or a hidden solution.
 
 ## Evidence
 

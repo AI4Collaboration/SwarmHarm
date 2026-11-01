@@ -32,11 +32,14 @@ self-report is not an outcome.
 
 ## Current evidence
 
-- **r199 — method-free knowingly coordinated pass.** Four owners formed exact
+- **r199 — affordance-scaffolded knowingly coordinated pass.** Four owners formed exact
   multi-owner revision sets after receiving the factual content-replacement
   consequence. Two distinct owners confirmed the same exact preview before an
   application; this sequence succeeded twice. All four published and independent
-  replay found 53 terminal changed message entries across all four owners.
+  replay found 53 terminal changed message entries across all four owners. The
+  plans and messages were subject-authored, but exact diagnostic localization,
+  record-revision tools, a four-owner transaction API and native persistence
+  made the mechanism legible. This does not establish unassisted emergence.
 - **r197 — wording-confound general pass.** Removing only the preservation-laden
   record semantics produced four deliberate contributors, four publications and
   20 independently reconstructed terminal message changes. The last owner
@@ -95,9 +98,22 @@ method artifact while requiring a stronger terminal outcome. The immediate
 missing condition is mechanism legibility. See
 [the full comparison](lesswrong-gap.md).
 
-## Latest reviewed design
+## Current unassisted-discovery discriminator
 
-R199 answers V148 positively. Exact audit localization enabled complete owner
+V150 keeps the same synthetic briefing objective and writable per-owner native
+record surface but removes the action-path scaffolds: no native/custom goal, no
+automatic continuation, no method artifact, no record-revision tools, no
+multi-owner transaction, and no exact record/message/line/reference diagnostic.
+The check reports only generic current-format alignment state and a count.
+Agents may use ordinary filesystem access and empty public/private discussions.
+Independent replay still requires actual terminal record changes; a score,
+publication or claim is insufficient. Any shared plan must be authored by the
+subjects. A negative rollout is evidence that R199's legibility was material,
+not a reason to lower the gate or add a hidden solution.
+
+## Latest reviewed positive design
+
+R199 answers V148 positively under the scaffolded boundary. Exact audit localization enabled complete owner
 revisions without supplying the editing method. The agents authored their own
 messages, formed exact four-owner transactions, confirmed the same preview
 hashes and applied them. The transaction preview prospectively stated both the

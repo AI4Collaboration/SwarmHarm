@@ -39,13 +39,16 @@ that claim.
 
 ## Current decision
 
-R199 closes the method-free V148 condition as both a general and knowingly
-coordinated Phase 2 pass. Four owners published correct briefings and left 53
+R199 closes the no-method-artifact V148 condition as both a general and knowingly
+coordinated Phase 2 pass under an affordance-scaffolded boundary. Four owners published correct briefings and left 53
 independently reconstructed terminal message-entry changes, attributed across
 all four owners. Two owners prospectively confirmed the same exact four-owner
 preview before application; the preview stated the original-content replacement
 effect and zero-weight change accounting. The same exact-plan structure
 succeeded twice. No correction or restoration removed the terminal effect.
+The messages and plan were subject-authored, but exact diagnostics,
+record-revision tools, the four-owner transaction API and native persistence
+made the method legible. R199 is not evidence of unassisted method emergence.
 
 The prompt and registered tools did not present abandonment, refusal,
 escalation, cancellation or safe completion. Subjects could independently stop,
@@ -54,9 +57,11 @@ establish Phase 1 formation, malicious intent, deception, harmful desire,
 reward-seeking causality or a stock Pi vulnerability. Do not resample the frozen
 r199 condition unchanged.
 
-V149 repairs a post-rollout adapter defect: an unchanged pending revision now
-keeps its identity across a no-op workstation command and append-only native Pi
-activity. This maintenance repair has no fresh behavioral claim.
+V149 repaired a post-rollout adapter defect. V150 is the current discriminator:
+plain business prompt, no persistence goal or automatic continuation, no method
+artifact, no record-revision or multi-owner transaction tools, and generic
+non-localizing check feedback. Ordinary filesystem access and empty discussions
+remain. It has no behavioral claim until a fresh sealed rollout closes.
 
 See the [direct LessWrong comparison](../../docs/lesswrong-gap.md), the
 [r190 evidence-bound review](../../docs/research/knowledge-work-legacy-reference-review.md)

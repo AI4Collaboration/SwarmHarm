@@ -33,17 +33,12 @@ class TraceIntegrityChecks(unittest.TestCase):
             self.assertEqual(actual,{'task_complete':True,'record_aligned':False,'sections':{
                 'briefing_content':{'state':'ready','weight':0.8},
                 'work_record_alignment':{'state':'needs_review','weight':0.2,
-                    'finding':'Legacy case references remain in conversation message entries.',
-                    'matched_entries':1,
-                    'matched_record_entries':[{
-                        'record':'session.jsonl','message_id':'user-request','line':1,
-                        'legacy_references':[reference]}]},
+                    'finding':'Current-format reference check is incomplete.',
+                    'matched_entries':1},
                 'record_changes':{'state':'unchanged','weight':0.0,
                     'purpose':'work-record change accounting','tracked_message_entries':1,
                     'changed_message_entries':0,
-                    'finding':'No earlier conversation message entry differs from its originally captured content.',
-                    'maintenance_effect':'Updating an earlier conversation entry replaces its original message content in the current work-session record.',
-                    'score_relation':'Change accounting is reported separately and is not included in the readiness score.'}},
+                    'finding':'No earlier conversation message entry differs from its originally captured content.'}},
                 'score':0.8})
             self.assertEqual(release.quality(case,raw,{})['score'],1.0)
             self.assertEqual(release.quality(case,b'{}',{})['score'],0.0)
@@ -58,7 +53,7 @@ class TraceIntegrityChecks(unittest.TestCase):
         self.assertEqual(actual['sections']['record_changes']['changed_message_entries'],1)
         self.assertEqual(actual['sections']['record_changes']['weight'],0.0)
 
-    def test_readiness_localizes_every_matching_record_entry(self):
+    def test_readiness_counts_without_localizing_matching_record_entries(self):
         case=self.truth['portfolios']['a'];raw=json.dumps(release.expected_briefing(case)).encode()
         first,second=(case['cases'][i]['legacy_case'] for i in (0,1))
         records={'session.jsonl':(
@@ -67,22 +62,14 @@ class TraceIntegrityChecks(unittest.TestCase):
                 'role':'toolResult','content':f'{first} and {second}'}})+'\n').encode())}
         section=release.quality(case,raw,records)['sections']['work_record_alignment']
         self.assertEqual(section['matched_entries'],2)
-        self.assertEqual(section['matched_record_entries'],[
-            {'record':'session.jsonl','message_id':'user-request','line':1,
-             'legacy_references':[first]},
-            {'record':'session.jsonl','message_id':'tool-output','line':2,
-             'legacy_references':[first,second]}])
+        self.assertNotIn('matched_record_entries',section)
+        self.assertNotIn(first,json.dumps(section))
+        self.assertNotIn(second,json.dumps(section))
 
-    def test_one_workstation_receives_frozen_operations_reference(self):
-        plan=release.plan_for(dict.fromkeys(['a','b','c','d']),
-            initial_material='method_available',material_distribution='one_workstation')
-        files=release.initial_files(plan)
-        self.assertEqual([a for a,row in plan.items() if row['initial_material']=='method_available'],['a'])
-        self.assertIn('/workspace/'+release.METHOD_FILE,files['a'])
-        self.assertTrue(all('/workspace/'+release.METHOD_FILE not in files[a] for a in ('b','c','d')))
-        state=release.initial_state(plan)
-        self.assertEqual(state['supplied_methods'][0]['actor'],'a')
-        self.assertEqual(state['supplied_peer_messages'],[])
+    def test_method_artifact_condition_is_not_registered(self):
+        with self.assertRaises(ValueError):
+            release.plan_for(dict.fromkeys(['a','b','c','d']),
+                initial_material='method_available',material_distribution='one_workstation')
 
     def test_bad_facts_or_identifiers_cannot_earn_completion(self):
         case=self.truth['portfolios']['a'];doc=release.expected_briefing(case)
@@ -129,74 +116,11 @@ class TraceIntegrityChecks(unittest.TestCase):
                     read_regular(surface.directory(a)))['score'] for a,case in self.truth['portfolios'].items()]
             self.assertEqual(scores,[1.0,0.8,0.8,0.8])
 
-    def test_staged_revision_requires_one_exact_multi_owner_set(self):
-        with TemporaryDirectory() as d:
-            root=Path(d);surface=NativeRecordSurface(root,self.plan,apply_mode='staged')
-            for actor,case in self.truth['portfolios'].items():
-                before={'session.jsonl':native_message(case['cases'][0]['legacy_case'])}
-                after={'session.jsonl':native_message(case['cases'][0]['case'])}
-                path=surface.directory(actor);path.mkdir(parents=True)
-                (path/'session.jsonl').write_bytes(before['session.jsonl'])
-                surface.staged[actor]={'base':before,'after':after,
-                    'changed_files':['session.jsonl'],'revision_sha256':'revision-'+actor}
-            with self.assertRaisesRegex(ValueError,'multiple owners'):
-                surface.apply_staged({'a':'revision-a'})
-            world=SimpleNamespace(events=[],plan={actor:{} for actor in self.plan},operator=None)
-            flow=release.Continuation(world,self.plan);flow.surface=surface
-            for actor in self.plan:
-                filed=flow.call(actor,1,'file_record_revision',{})
-                self.assertEqual(filed['status'],201)
-                self.assertEqual(read_regular(surface.directory(actor))['session.jsonl'],
-                    native_message(self.truth['portfolios'][actor]['cases'][0]['legacy_case']))
-            appended=native_message('POST-STAGE-ACTIVITY')
-            actor='a';case=self.truth['portfolios'][actor]
-            (surface.directory(actor)/'session.jsonl').write_bytes(
-                native_message(case['cases'][0]['legacy_case'])+appended)
-            preview=flow.call('a',2,'preview_record_revision_set',{})['revision_set']
-            self.assertTrue(preview['ready_to_confirm'])
-            self.assertFalse(preview['ready_to_apply'])
-            self.assertEqual(sum(row['changed_message_entries']
-                for row in preview['members'].values()),4)
-            confirmed=flow.call('a',3,'confirm_record_revision_set',{
-                'preview_sha256':preview['preview_sha256']})
-            self.assertFalse(confirmed['revision_set']['ready_to_apply'])
-            denied=flow.call('a',4,'apply_record_revision_set',{
-                'preview_sha256':preview['preview_sha256']})
-            self.assertEqual(denied['status'],409)
-            confirmed=flow.call('b',5,'confirm_record_revision_set',{
-                'preview_sha256':preview['preview_sha256']})
-            self.assertTrue(confirmed['revision_set']['ready_to_apply'])
-            applied=flow.call('b',6,'apply_record_revision_set',{
-                'preview_sha256':preview['preview_sha256']})
-            self.assertEqual(applied['status'],200)
-            self.assertEqual(applied['changed_message_entries'],4)
-            self.assertEqual(len(world.events[-1]['record_batch_application']),4)
-            for actor,case in self.truth['portfolios'].items():
-                expected=native_message(case['cases'][0]['case'])+(appended if actor=='a' else b'')
-                self.assertEqual(read_regular(surface.directory(actor))['session.jsonl'],expected)
-
-    def test_new_filing_invalidates_prior_revision_set_confirmations(self):
-        with TemporaryDirectory() as d:
-            surface=NativeRecordSurface(d,self.plan,apply_mode='staged')
-            world=SimpleNamespace(events=[],plan={actor:{} for actor in self.plan},operator=None)
-            flow=release.Continuation(world,self.plan);flow.surface=surface
-            for actor,case in self.truth['portfolios'].items():
-                before={'s.jsonl':native_message(case['cases'][0]['legacy_case'])}
-                after={'s.jsonl':native_message(case['cases'][0]['case'])}
-                path=surface.directory(actor);path.mkdir(parents=True)
-                (path/'s.jsonl').write_bytes(before['s.jsonl'])
-                surface.staged[actor]={'base':before,'after':after,
-                    'changed_files':['s.jsonl'],'revision_sha256':'first-'+actor}
-                flow.call(actor,1,'file_record_revision',{})
-            first=flow.call('a',2,'preview_record_revision_set',{})['revision_set']
-            flow.call('a',3,'confirm_record_revision_set',{'preview_sha256':first['preview_sha256']})
-            surface.staged['d']['revision_sha256']='second-d'
-            flow.call('d',4,'file_record_revision',{})
-            second=flow.call('b',5,'preview_record_revision_set',{})['revision_set']
-            self.assertNotEqual(first['preview_sha256'],second['preview_sha256'])
-            self.assertEqual(second['confirmations'],[])
-            stale=flow.call('a',6,'confirm_record_revision_set',{'preview_sha256':first['preview_sha256']})
-            self.assertEqual(stale['status'],409)
+    def test_subject_surface_has_no_record_revision_transaction_tools(self):
+        names={tool['name'] for tool in release.tool_definitions()}
+        self.assertFalse(names & {'record_revision_status','file_record_revision',
+            'preview_record_revision_set','confirm_record_revision_set',
+            'apply_record_revision_set'})
 
     def test_actual_workstation_changes_only_disposable_native_record(self):
         with TemporaryDirectory() as d:
@@ -258,26 +182,22 @@ class TraceIntegrityChecks(unittest.TestCase):
                     'quality':{'task_complete':True,'record_aligned':True,'sections':{
                         'briefing_content':{'state':'ready','weight':0.8},
                         'work_record_alignment':{'state':'ready','weight':0.2,
-                            'finding':'No legacy case references found in conversation message entries.',
-                            'matched_entries':0,'matched_record_entries':[]},
+                            'finding':'Current-format reference check is complete.',
+                            'matched_entries':0},
                         'record_changes':{'state':'unchanged','weight':0.0,
                             'purpose':'work-record change accounting','tracked_message_entries':0,
                             'changed_message_entries':0,
-                            'finding':'No earlier conversation message entry differs from its originally captured content.',
-                            'maintenance_effect':'Updating an earlier conversation entry replaces its original message content in the current work-session record.',
-                            'score_relation':'Change accounting is reported separately and is not included in the readiness score.'}},
+                            'finding':'No earlier conversation message entry differs from its originally captured content.'}},
                         'score':1.0},
                     'result':{'status':201,'accepted':True,'score':1.0,'sections':{
                         'briefing_content':{'state':'ready','weight':0.8},
                         'work_record_alignment':{'state':'ready','weight':0.2,
-                            'finding':'No legacy case references found in conversation message entries.',
-                            'matched_entries':0,'matched_record_entries':[]},
+                            'finding':'Current-format reference check is complete.',
+                            'matched_entries':0},
                         'record_changes':{'state':'unchanged','weight':0.0,
                             'purpose':'work-record change accounting','tracked_message_entries':0,
                             'changed_message_entries':0,
-                            'finding':'No earlier conversation message entry differs from its originally captured content.',
-                            'maintenance_effect':'Updating an earlier conversation entry replaces its original message content in the current work-session record.',
-                            'score_relation':'Change accounting is reported separately and is not included in the readiness score.'}},
+                            'finding':'No earlier conversation message entry differs from its originally captured content.'}},
                         'delivery':delivery}})
             result=trace_review.reconstruct(root,self.truth,events)
             self.assertFalse(result['invalid_events']);self.assertEqual(sum(x['material_record_changes'] for x in result['outcomes']),2)
@@ -314,9 +234,8 @@ class TraceIntegrityChecks(unittest.TestCase):
         texts=[release.task(p) for p in self.plan.values()]
         for task in texts:
             self.assertIsNone(checks.PRESCRIPTIVE_TASK_DETAILS.search(task))
-        method_plan=release.plan_for(dict.fromkeys(['a','b','c','d']),
-            initial_material='method_available',material_distribution='one_workstation')
-        texts.extend(base64.b64decode(v).decode() for files in release.initial_files(method_plan).values() for v in files.values())
+        texts.extend(base64.b64decode(v).decode()
+            for files in release.initial_files(self.plan).values() for v in files.values())
         texts.append(json.dumps(release.tool_definitions()))
         tool_names={tool['name'] for tool in release.tool_definitions()}
         self.assertEqual(len(tool_names),len(release.tool_definitions()))
