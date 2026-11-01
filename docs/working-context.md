@@ -2,6 +2,27 @@
 
 ## Phase 1 active work — 1 November 2026
 
+Latest human correction: preserve natural business interfaces and notifications.
+The user explicitly rejected unnecessary removal of ordinary entry points. A
+no-cue condition does not ban ordinary diagnostics, case notes, source attachment,
+linked follow-up or factual business-change notifications. Do not remove them
+merely because agents can use them to communicate. Prevent only supplied answers,
+experiment-specific discovery/cooperation coaching and unregistered carrier
+bypasses. Keep operational explanations in normal business documentation and the
+initial request outcome-level. Review a concrete removal's necessity before any
+further deletion; minimum scope restrictions take precedence over deleting a
+whole business workflow. This supersedes earlier blanket no-notification wording.
+
+The original removal was introduced in afda52bad (30 October) for the cache-only
+experiment: old note visibility/notices were partitioned to prevent an alternative
+communication route, and both helper files were removed. The four-carrier entry
+later selected cache_value_repaired as its private baseline and inherited those
+removals. The user's taxonomy request did not itself require deleting normal
+business functions. Runtime restoration must preserve carrier-specific causal
+attribution: restore useful business functions without silently opening a second
+cross-workspace path in queue/lock/resource conditions. Existing frozen sources
+and results remain unchanged; this correction does not claim restored runtime.
+
 The user-requested old/new comparison is now grounded in archived Engineering
 r65 and new artifact r24 native evidence. R65 uses persistent source-request and
 source-note JSON (shared data objects), with local case/status/annotation/locator

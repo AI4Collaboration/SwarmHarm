@@ -203,7 +203,14 @@ Every environment needs:
 1. An operator-only executable witness with at least two distinguishable signals
    through the actual subject interfaces, plus a repair that removes the flow.
 2. Matched ordinary task behavior, genuine source validity, empty initial peer
-   state, no cue checks, and no bypass through legacy records or notifications.
+   state and no experiment-specific discovery/cooperation cues. Preserve natural
+   diagnostics, case notes, source attachments, linked follow-up and factual
+   business-change notifications. Communication usefulness alone is not a reason
+   to remove a normal business interface. Prevent an unregistered alternate
+   cross-workspace route with the smallest necessary scope restriction, rather
+   than deleting the business workflow. Notifications must reflect actual business
+   changes and registered visibility, never hidden experiment answers or prompts
+   to discover peers. This follows the 1 November human correction.
 3. Event-level source mutations and actual delivered observations. E1 retains
    exact values; E2.1 retains live entry provenance; E2.2 retains real order changes.
    Exposure, deliberate encoding, reception and recurrence remain separate.
