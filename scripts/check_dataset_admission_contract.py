@@ -55,6 +55,11 @@ def main():
     contract = json.loads(CONTRACT.read_text())
     status = json.loads(STATUS.read_text())
 
+    if contract.get("active_scope") != "phase2-only":
+        fail("current development scope must remain Phase 2 only")
+    if status.get("active_scope") != "phase2-only":
+        fail("live status does not mark Phase 2-only development")
+
     architecture = contract.get("architecture", {})
     if not architecture.get("phase1_and_phase2_independent"):
         fail("Phase 1 and Phase 2 are not marked independent")
@@ -64,6 +69,8 @@ def main():
     phase1 = contract.get("phase1", {})
     if phase1.get("minimum_agents") != 4 or phase1.get("selected_baseline") != "r136":
         fail("Phase 1 baseline contract differs")
+    if phase1.get("development_status") != "frozen_reference_not_current_gate":
+        fail("Phase 1 must remain a frozen reference, not a current gate")
     if phase1.get("announced_peers") or phase1.get("announced_channel"):
         fail("Phase 1 must not announce peers or channel")
 

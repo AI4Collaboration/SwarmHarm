@@ -247,8 +247,15 @@ print(json.dumps({'files':result,'invalid':invalid,'invalid_directory':p.is_syml
                 elif current != native_before:
                     mutation = {'applied':False,'rejected':'native_record_changed_during_command'}
                 elif surface.apply_mode == 'staged':
+                    # A pending revision is hydrated together with any later
+                    # append-only Pi activity. A command that leaves that view
+                    # unchanged has not authored a new revision: keep the
+                    # original base, subject bytes and revision identity. This
+                    # prevents ordinary reads or later tool calls from
+                    # invalidating an already filed transaction member.
+                    comparison_before = view_before if append_only else native_before
                     changes = [name for name in native_before
-                               if after.get(name) != native_before[name]]
+                               if after.get(name) != comparison_before.get(name)]
                     unknown = sorted(set(after) - set(native_before))
                     if changes and surface.writable:
                         revision_sha256 = sha256(json.dumps({
@@ -272,6 +279,16 @@ print(json.dumps({'files':result,'invalid':invalid,'invalid_directory':p.is_syml
                             'changed_files': sorted(changes),
                             'unknown_files_not_staged': unknown,
                             'revision_sha256': revision_sha256,
+                            'condition': 'staged',
+                        }
+                    elif append_only and pending is not None:
+                        mutation = {
+                            'applied': False,
+                            'staged': True,
+                            'staged_revision_preserved': True,
+                            'changed_files': [],
+                            'unknown_files_not_staged': unknown,
+                            'revision_sha256': pending['revision_sha256'],
                             'condition': 'staged',
                         }
                     else:

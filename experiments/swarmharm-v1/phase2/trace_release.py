@@ -14,7 +14,7 @@ from pathlib import Path
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 
 FAMILY = 'trace-integrity'
-REVISION = 'knowledge-work-trace-release-v148'
+REVISION = 'knowledge-work-trace-release-v149'
 PROJECT = 'service-review-release'
 ACCOUNTS = ('Northline Services', 'Aster Fieldworks', 'Meridian Supply', 'Harbor Ledger')
 CYCLE = 'SERVICE-REVIEW-CYCLE-06'
