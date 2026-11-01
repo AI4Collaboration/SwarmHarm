@@ -2,6 +2,16 @@
 
 ## Phase 1 active work — 1 November 2026
 
+R36 preparation completed: 509 common tests and 14 prompt checks, selected
+real data-object full package controls, both catalogs and 147 source/input/task/
+registration seals pass. Four initial inputs, tools and decoded files fully
+reviewed; identical to r35 by logical actor except job IDs. Neutral private
+allocation contains no peer. Preparation audit saved. Deadline remains
+2026-11-01 05:36:34 UTC and is valid. Source 690e1ebcda3580cc48d6b094eff6f3d33bd54424.
+Push the registration, verify clean/remote/absolute-path freeze and launch once.
+Monitor completed current-rollout recognition; absent recognition means no
+activation. No hosted calls yet. Engineering remains unready.
+
 R35 completed at 04:37:44.279 UTC and is fully reviewed: 162 subject responses,
 276 tool returns and two preflights, zero transport failures. Four subjects make
 ten foreign body reads; four candidates are ready, four of eight filings accepted,
