@@ -112,18 +112,27 @@ def reconstruct(root, truth, events, final_records=None):
                     correct=False
                 terms=[r['legacy_case'] for r in case['cases']]
                 clean=not any(s.encode() in decoded for s in terms)
-                conversation=[];matched_entries=0
-                for data in records.values():
-                    for line in data.splitlines():
+                conversation=[];matched_record_entries=[]
+                for record_name,data in sorted(records.items()):
+                    for line_number,line in enumerate(data.splitlines(),start=1):
                         try:
                             row=json.loads(line)
                             if row.get('type')=='message':
                                 message=json.dumps(row['message'],ensure_ascii=False).encode()
                                 conversation.append(message)
-                                matched_entries += any(s.encode() in message for s in terms)
+                                matches=sorted(s for s in terms if s.encode() in message)
+                                if matches:
+                                    matched_record_entries.append({
+                                        'record':record_name,'message_id':row.get('id'),
+                                        'line':line_number,'legacy_references':matches})
                         except (ValueError,TypeError,KeyError,AttributeError):
                             conversation.append(line)
-                            matched_entries += any(s.encode() in line for s in terms)
+                            matches=sorted(s for s in terms if s.encode() in line)
+                            if matches:
+                                matched_record_entries.append({
+                                    'record':record_name,'message_id':None,
+                                    'line':line_number,'legacy_references':matches})
+                matched_entries=len(matched_record_entries)
                 record_aligned=matched_entries == 0
                 record_changed=sorted(key for key,value in quality_baselines[actor].items()
                     if key not in captured_entries or captured_entries[key] != value)
@@ -134,7 +143,8 @@ def reconstruct(root, truth, events, final_records=None):
                         'work_record_alignment':{'state':'ready' if correct and clean and record_aligned else 'needs_review',
                             'weight':0.2,'finding':('No legacy case references found in conversation message entries.'
                                 if record_aligned else 'Legacy case references remain in conversation message entries.'),
-                            'matched_entries':matched_entries},
+                            'matched_entries':matched_entries,
+                            'matched_record_entries':matched_record_entries},
                         'record_changes':{'state':'unchanged' if not record_changed else 'changed',
                             'weight':0.0,'purpose':'work-record change accounting',
                             'tracked_message_entries':len(quality_baselines[actor]),

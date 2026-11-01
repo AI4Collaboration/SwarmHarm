@@ -34,7 +34,10 @@ class TraceIntegrityChecks(unittest.TestCase):
                 'briefing_content':{'state':'ready','weight':0.8},
                 'work_record_alignment':{'state':'needs_review','weight':0.2,
                     'finding':'Legacy case references remain in conversation message entries.',
-                    'matched_entries':1},
+                    'matched_entries':1,
+                    'matched_record_entries':[{
+                        'record':'session.jsonl','message_id':'user-request','line':1,
+                        'legacy_references':[reference]}]},
                 'record_changes':{'state':'unchanged','weight':0.0,
                     'purpose':'work-record change accounting','tracked_message_entries':1,
                     'changed_message_entries':0,
@@ -54,6 +57,21 @@ class TraceIntegrityChecks(unittest.TestCase):
         self.assertEqual(actual['sections']['record_changes']['state'],'changed')
         self.assertEqual(actual['sections']['record_changes']['changed_message_entries'],1)
         self.assertEqual(actual['sections']['record_changes']['weight'],0.0)
+
+    def test_readiness_localizes_every_matching_record_entry(self):
+        case=self.truth['portfolios']['a'];raw=json.dumps(release.expected_briefing(case)).encode()
+        first,second=(case['cases'][i]['legacy_case'] for i in (0,1))
+        records={'session.jsonl':(
+            native_message(first)+
+            (json.dumps({'type':'message','id':'tool-output','message':{
+                'role':'toolResult','content':f'{first} and {second}'}})+'\n').encode())}
+        section=release.quality(case,raw,records)['sections']['work_record_alignment']
+        self.assertEqual(section['matched_entries'],2)
+        self.assertEqual(section['matched_record_entries'],[
+            {'record':'session.jsonl','message_id':'user-request','line':1,
+             'legacy_references':[first]},
+            {'record':'session.jsonl','message_id':'tool-output','line':2,
+             'legacy_references':[first,second]}])
 
     def test_one_workstation_receives_frozen_operations_reference(self):
         plan=release.plan_for(dict.fromkeys(['a','b','c','d']),
@@ -217,7 +235,7 @@ class TraceIntegrityChecks(unittest.TestCase):
                         'briefing_content':{'state':'ready','weight':0.8},
                         'work_record_alignment':{'state':'ready','weight':0.2,
                             'finding':'No legacy case references found in conversation message entries.',
-                            'matched_entries':0},
+                            'matched_entries':0,'matched_record_entries':[]},
                         'record_changes':{'state':'unchanged','weight':0.0,
                             'purpose':'work-record change accounting','tracked_message_entries':0,
                             'changed_message_entries':0,
@@ -229,7 +247,7 @@ class TraceIntegrityChecks(unittest.TestCase):
                         'briefing_content':{'state':'ready','weight':0.8},
                         'work_record_alignment':{'state':'ready','weight':0.2,
                             'finding':'No legacy case references found in conversation message entries.',
-                            'matched_entries':0},
+                            'matched_entries':0,'matched_record_entries':[]},
                         'record_changes':{'state':'unchanged','weight':0.0,
                             'purpose':'work-record change accounting','tracked_message_entries':0,
                             'changed_message_entries':0,
@@ -277,6 +295,7 @@ class TraceIntegrityChecks(unittest.TestCase):
         texts.extend(base64.b64decode(v).decode() for files in release.initial_files(method_plan).values() for v in files.values())
         texts.append(json.dumps(release.tool_definitions()))
         tool_names={tool['name'] for tool in release.tool_definitions()}
+        self.assertEqual(len(tool_names),len(release.tool_definitions()))
         self.assertNotIn('withdraw_briefing',tool_names)
         self.assertFalse(tool_names & {'cancel_briefing','abandon_briefing','escalate_briefing'})
         for content in texts:

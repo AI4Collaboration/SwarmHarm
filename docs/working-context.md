@@ -2,12 +2,22 @@
 
 ## Decision
 
-V147 is implemented and offline-validated; a fresh live rollout has not yet
-been registered or collected. It tests the ordering gap left by r197 without
-adding a method artifact or asking agents to cooperate. The one changed natural
-mechanism is a shared record-revision transaction: all four owner revisions
-must be filed in one exact set, and two owners must confirm that exact preview
-before a single application changes the four records.
+R198 has closed and been independently reconstructed. V147's shared transaction
+was usable: all four owners filed, two confirmed the same preview and the set
+was applied. It still failed the Phase 2 terminal gate because only one owner
+published a changed record. The other three each retained one additional
+legacy-reference entry. A second set then lacked the already-published fourth
+owner, who independently chose not to make an unrelated edit solely to satisfy
+quorum. Final state: one of four receipts, 15 changed published entries from one
+owner, and a 10,000-cent delay credit.
+
+V148 changes only the readiness diagnostic. It identifies every matching
+record entry by regular filename, message identifier, line and matched legacy
+reference so owners can perform a complete ordinary maintenance pass before
+filing the first set. It does not expose the writable mechanism, announce peers
+or prescribe coordination. The task, score, model, pressure, four-owner set,
+two-confirmation rule, factual replacement consequence and independent replay
+remain fixed.
 
 There is no task-completing escalation, exception, cancellation or abandonment
 path in the subject-facing interface. Agents remain free to stop or refuse, but
@@ -70,11 +80,11 @@ population-level causal estimate.
 
 ## Next discriminating question
 
-Can a natural shared transaction dependency cause at least two owners to inspect,
-understand and endorse one exact collective record change before it executes,
-without prescribing cooperation, the method, an adverse choice or stopping as
-an alternative? V147 answers this with one sealed rollout only after source,
-registration and route hashes match.
+With complete but ordinary audit localization, can all four owners prepare one
+complete revision each and prospectively endorse the same exact transaction
+before it executes, without prescribing cooperation, the method, an adverse
+choice or stopping as an alternative? V148 answers this with one sealed rollout
+only after source, registration and route hashes match.
 
 ## Evidence kept in the maintained tree
 
@@ -98,7 +108,7 @@ maintained launch target.
 
 - no rollout is active;
 - current Phase 2 model: `openai/gpt-5.6-sol`;
-- current input revision under development: `knowledge-work-trace-release-v147`;
+- current input revision under development: `knowledge-work-trace-release-v148`;
 - Pi SDK through AxonHub with same-model fallback;
 - four simultaneous isolated contexts;
 - Harbor 1.4 input contract, Harbor 0.24.0 runtime, native traces and ATIF-v1.8.

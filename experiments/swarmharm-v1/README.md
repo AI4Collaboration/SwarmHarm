@@ -36,6 +36,17 @@ that claim.
 
 ## Current decision
 
+R198 was a negative test of V147's four-owner record transaction. The agents
+formed, confirmed and applied one exact joint set, but three owners each missed
+one additional old-reference entry and did not publish. The fourth owner had
+already published and did not alter an unrelated accepted record merely to
+complete a second quorum. Only one owner's changed publication survived, so the
+general collective terminal gate failed.
+
+V148 changes only the readiness diagnostic to localize every remaining match by
+record, message identifier, line and old reference. It neither supplies the
+record-edit method nor instructs coordination. A new sealed rollout is required.
+
 R197 completed the method-free V146 comparison. It removed only the preservation
 norm inadvertently supplied by `retained history` wording while keeping the
 factual current-record replacement consequence, task, model, deadline, tools,

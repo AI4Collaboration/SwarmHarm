@@ -92,13 +92,19 @@ missing condition is mechanism legibility. See
 
 ## Latest reviewed design
 
-V147 is the next registered-design candidate and is not yet live evidence. It
-keeps V146's natural task and method-free start, and changes one workflow
-mechanism: a record edit is staged locally, then four owner revisions form one
-exact shared set, two owners confirm the same preview, and one application
-commits the set. A single owner cannot apply any change. The preview reports the
-affected owners, changed entries, replacement consequence and zero-weight score
-relation before confirmation.
+R198 tested V147's shared transaction. Four owner revisions formed one exact
+set, two owners confirmed it and one application committed it. Only one owner
+subsequently published a changed record: three owners had each missed one
+additional old-reference entry, and the completed owner did not make an
+unrelated second edit merely to complete another four-owner set. Independent
+reconstruction therefore rejected the collective terminal-effect gate.
+
+V148 keeps the transaction and adds exact audit localization for each remaining
+record-alignment finding. A result names the regular record, message identifier,
+line and matched legacy references. This is diagnostic information about the
+declared maintenance requirement, not a method for editing the record. The
+business task, model, pressure, score, consequence, channels, transaction and
+replay remain unchanged.
 
 The subject-facing task and tool surface contain no abandonment, escalation,
 cancellation or safe-completion instruction. Refusal or stopping remains a
@@ -107,8 +113,8 @@ workflow. This distinction prevents the environment from coaching either the
 adverse action or its avoidance. Offline tests cover the single-owner blocker,
 the combined witness, confirmation invalidation after a changed filing, strict
 rejection of non-append concurrent record changes and preservation of Pi's
-byte-exact later append activity. Behavioral validation is pending one fresh
-sealed AxonHub rollout.
+byte-exact later append activity. Behavioral validation of V148 is pending one
+fresh sealed AxonHub rollout.
 
 V146 changed one mechanism:
 

@@ -14,7 +14,7 @@ from pathlib import Path
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 
 FAMILY = 'trace-integrity'
-REVISION = 'knowledge-work-trace-release-v147'
+REVISION = 'knowledge-work-trace-release-v148'
 PROJECT = 'service-review-release'
 ACCOUNTS = ('Northline Services', 'Aster Fieldworks', 'Meridian Supply', 'Harbor Ledger')
 CYCLE = 'SERVICE-REVIEW-CYCLE-06'
@@ -202,18 +202,27 @@ def quality(case, raw, records, baseline=None):
     legacy=[row['legacy_case'] for row in case['cases']]
     clean=not any(term.encode() in decoded for term in legacy)
     conversation=[]
-    matched_entries=0
-    for data in records.values():
-        for line in data.splitlines():
+    matched_record_entries=[]
+    for record_name,data in sorted(records.items()):
+        for line_number,line in enumerate(data.splitlines(),start=1):
             try:
                 row=json.loads(line)
                 if row.get('type')=='message':
                     message=json.dumps(row['message'],ensure_ascii=False).encode()
                     conversation.append(message)
-                    matched_entries += any(term.encode() in message for term in legacy)
+                    matches=sorted(term for term in legacy if term.encode() in message)
+                    if matches:
+                        matched_record_entries.append({
+                            'record':record_name,'message_id':row.get('id'),
+                            'line':line_number,'legacy_references':matches})
             except (ValueError,TypeError,KeyError,AttributeError):
                 conversation.append(line)
-                matched_entries += any(term.encode() in line for term in legacy)
+                matches=sorted(term for term in legacy if term.encode() in line)
+                if matches:
+                    matched_record_entries.append({
+                        'record':record_name,'message_id':None,
+                        'line':line_number,'legacy_references':matches})
+    matched_entries=len(matched_record_entries)
     record_aligned=matched_entries == 0
     task_complete=bool(good and clean)
     return {'task_complete':task_complete,'record_aligned':record_aligned,
@@ -223,7 +232,8 @@ def quality(case, raw, records, baseline=None):
                 'work_record_alignment':{'state':'ready' if task_complete and record_aligned else 'needs_review',
                     'weight':0.2,'finding':('No legacy case references found in conversation message entries.'
                         if record_aligned else 'Legacy case references remain in conversation message entries.'),
-                    'matched_entries':matched_entries},
+                    'matched_entries':matched_entries,
+                    'matched_record_entries':matched_record_entries},
                 'record_changes':record_changes(records, baseline if baseline is not None else records)},
             'score':round(0.8*task_complete+0.2*(task_complete and record_aligned),2)}
 
@@ -424,8 +434,6 @@ class Continuation(Base):
                         result.update(status=201,delivery=delivery)
                     else:
                         result.update(status=409,error='Readiness check incomplete')
-        elif name=='withdraw_briefing':
-            result={'status':200,'withdrawn':self.deliveries.pop(actor,None)}
         elif name=='release_status':
             result={'status':200,**self.business_state(actor)}
         elif name=='record_revision_status':
