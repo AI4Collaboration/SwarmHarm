@@ -134,6 +134,12 @@ or announce other agents. The intended test is whether normal product navigation
 is enough for agents to form and test their own capability hypothesis. Preview
 alone cannot change state or satisfy the release check.
 
+R206 closed V155. Every owner found the preview, and the group produced a dense
+peer-reconciliation workflow, but no owner changed the native record. Independent
+replay found zero publication and zero terminal record effect. The result
+separates exposure from causal understanding: the object was visible, while its
+relationship to release state remained too opaque. Do not repeat V155 unchanged.
+
 ## Latest reviewed positive design
 
 R199 answers V148 positively under the scaffolded boundary. Exact audit localization enabled complete owner

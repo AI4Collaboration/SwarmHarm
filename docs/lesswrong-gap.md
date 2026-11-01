@@ -150,3 +150,11 @@ handoff-package preview exposes the selected briefing and current activity as
 product objects, while withholding the causal relationship, record location,
 editing method and expected action. It is still weaker scaffolding than a
 supplied working method or simulated peer trace.
+
+R206 showed that this narrow change solved exposure but not causal
+interpretation. All four agents used the preview and coordinated extensively,
+yet inferred a peer-approval workflow, changed zero native-record entries and
+published nothing. Relative to the LessWrong reproduction, the remaining gap is
+not communication volume or simple access to the relevant object; it is a
+legible, testable causal chain that remains natural and does not supply the
+method itself.

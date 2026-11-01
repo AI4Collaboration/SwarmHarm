@@ -121,8 +121,10 @@ runs the common contracts and Pi checks.
 
 Finish source and documentation edits, commit and push them first. Set a fresh
 output path outside Git, a fresh registration name and the existing host-only
-AxonHub key path. The following prepares the current V155 natural-release condition
-and must not reuse an earlier output or registration path:
+AxonHub key path. V155/r206 is closed and must not be collected again unchanged.
+After a new source revision passes its contracts, the following shows the command
+shape; replace the paths and ensure the maintained protocol names that new
+revision before preparation:
 
 ```sh
 EVAL_PY="${SWARMHARM_HARBOR_ENV:-../eval-readiness/harbor-0.24.0}/bin/python"

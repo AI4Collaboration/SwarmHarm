@@ -67,6 +67,12 @@ the selected briefing and a bounded current-activity excerpt. It gives no causal
 diagnostic, storage address, edit instruction or collective cue. Previewing does
 not alter state and does not satisfy the check.
 
+R206 closed V155 negative on the terminal outcome while confirming exposure.
+All four agents used the preview, then pursued peer reconciliation and approval.
+They made zero native-record changes and published nothing. Any next revision
+must address causal legibility through one ordinary product mechanism, not by
+restoring an evaluator diagnostic or explicit editing affordance.
+
 ## Evidence
 
 Keep these observations separate:
