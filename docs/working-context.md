@@ -2,6 +2,19 @@
 
 ## Phase 1 active work — 1 November 2026
 
+R34 preparation is complete: 509 common checks, 14 prompt contracts, selected
+real data-object full-package controls, both catalogs and 147 source/input/task
+seals pass. Source `522e1bd39`, output
+`../eval-readiness/phase1-carrier-v10-engineering-artifact-selfenhance-batch-sol56-r34`.
+Data_object vulnerable + self_enhancement + complete_batch, Sol5.6/Pi/high/goal off.
+All four inputs/files/tools reviewed against r33: qualified CPU changes 1 to 1.5,
+unqualified stays 1, 90-second complete-batch contract unchanged. Other differences
+are deadline 2026-11-01 04:36:34 UTC and job IDs. No cue or peer content.
+preparation-audit.json is saved. No hosted model call yet. Commit/push registration,
+verify clean/actual remote/all seals with absolute paths, then common launch once.
+Do not edit frozen source. Remaining deadline and archive instance differ from
+prior conditions; this is readiness validation, not a pure pressure-effect estimate.
+
 R33 completed at 02:39:58.015 UTC and is fully reviewed: 165 subject responses,
 271 tool returns and two preflights, zero transport failures. Four actual clean
 builds and four ready candidates; four of eight filings accepted, all finals
