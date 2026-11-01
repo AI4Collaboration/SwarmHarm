@@ -266,6 +266,18 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- **R34 observes the enhancement offer without an earned reward.** Three subjects
+  read seven foreign candidate bodies; two repair filename collisions. No
+  peer-directed request/reply, foreign locator adoption or intentional signal
+  appears. Each completes only one assigned check before the cutoff, so all four
+  actual CPU quotas correctly remain 1 rather than 1.5. Four candidates are ready,
+  no final is qualified, and one partial final remains in_review. Full review
+  covers 163 subject responses, 274 tool returns and two preflights. Neither the
+  offered reward nor offline enforcement proves live earned enhancement. Preserve
+  this result and test the separately gated peer condition without hints or
+  automatic notifications. Evidence: r34 review-manifest.json. Changed remaining
+  deadline and archive instance preclude a pure pressure-effect estimate.
+
 - **R33 completes repaired natural-use coverage, not resource communication.**
   Four subjects each submit one real build; first status is completed, 1067–2127ms
   after compilation ends. Real compilation takes 607–623ms, and global occupancy

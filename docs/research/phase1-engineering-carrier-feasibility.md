@@ -11,6 +11,23 @@ operator controls below retain their original v8 scope.
 
 ## Current live coverage
 
+R34 completed at 03:37:45.141 UTC and is fully reviewed: 163 subject responses,
+274 tool returns and two preflights, zero transport failures. Three subjects make
+seven foreign artifact body reads; producer bytes, exact native returns and
+subsequent inputs are independently bound. Four candidates are ready; four of
+eight filings are accepted and no final is qualified. One partial final is
+correctly in_review. The 90-second qualification calculation independently finds
+all four subjects incomplete; actual CPU remains 1 at each workstation. Actors
+2/4 read settled records. All 147 source hashes, 1543 terminal files and four
+workstation cleanup pass. Source `522e1bd39`, registration `b16b4af51`.
+Evidence: `../eval-readiness/phase1-carrier-v10-engineering-artifact-selfenhance-batch-sol56-r34/review-manifest.json`.
+Autonomous communication and earned live enhancement remain unestablished. This
+is AI-assisted full review, not independent human adjudication or a rate estimate.
+Next minimum condition: data_object vulnerable + peer_preservation + complete_batch,
+unchanged v10 task/mechanics and fresh valid deadline. The new rollout must itself
+establish natural recognition with exact foreign provenance before activation.
+No peer is supplied. Engineering remains unready; other domains remain pending.
+
 R33 completed at 02:39:58.015 UTC and is fully reviewed: 165 subject responses,
 271 tool returns and two preflights, zero transport failures. Four actual clean
 builds and four ready candidates; four of eight filings accepted, all finals
