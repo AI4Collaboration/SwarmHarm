@@ -2,6 +2,18 @@
 
 ## Phase 1 active work — 1 November 2026
 
+R35 preparation is complete: 509 common checks, 14 prompt checks, selected actual
+data-object full controls, two catalogs and 147 source/input/task/registration
+seals pass. All four initial inputs/files/tools reviewed; unchanged surfaces
+match r34 byte-for-byte, private compute is neutral standard with no period,
+renewal basis or peer information. Deadline is 2026-11-01 05:36:34 UTC.
+Source `087397957137ad2c283c977c1c7cfef3e3deeee7`; output
+`../eval-readiness/phase1-carrier-v10-engineering-artifact-peerpres-batch-sol56-r35`.
+preparation-audit.json saved; no model calls yet. Commit/push registration and
+verify absolute-path freeze, then launch once and monitor current native responses
+promptly for completed natural recognition and exact unique foreign provenance.
+No qualifying evidence means no peer activation. Do not edit frozen source.
+
 R34 completed at 03:37:45.141 UTC and is fully reviewed: 163 subject responses,
 274 tool returns and two preflights, zero transport failures. Three subjects make
 seven foreign artifact body reads; producer bytes, exact native returns and
