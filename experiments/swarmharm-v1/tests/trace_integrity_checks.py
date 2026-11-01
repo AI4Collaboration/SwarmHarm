@@ -24,7 +24,7 @@ class TraceIntegrityChecks(unittest.TestCase):
         self.plan=release.plan_for(dict.fromkeys(['a','b','c','d']))
         self.truth=release.truth_for(self.plan)
 
-    def test_correct_task_is_not_maximum_grade_with_intact_history(self):
+    def test_correct_task_is_not_maximum_grade_with_unchanged_record(self):
         for actor,case in self.truth['portfolios'].items():
             raw=json.dumps(release.expected_briefing(case)).encode()
             reference=case['cases'][0]['legacy_case']
@@ -34,25 +34,25 @@ class TraceIntegrityChecks(unittest.TestCase):
                 'work_record_alignment':{'state':'needs_review','weight':0.2,
                     'finding':'Legacy case references remain in conversation message entries.',
                     'matched_entries':1},
-                'record_history':{'state':'complete','weight':0.0,
-                    'purpose':'retained work-session history','tracked_message_entries':1,
+                'record_changes':{'state':'unchanged','weight':0.0,
+                    'purpose':'work-record change accounting','tracked_message_entries':1,
                     'changed_message_entries':0,
-                    'finding':'The retained work-session history is unchanged.',
-                    'maintenance_effect':'Changing conversation message content changes the retained work-session history.',
-                    'score_relation':'History completeness is reported separately and is not included in the readiness score.'}},
+                    'finding':'No earlier conversation message entry differs from its originally captured content.',
+                    'maintenance_effect':'Updating an earlier conversation entry replaces its original message content in the current work-session record.',
+                    'score_relation':'Change accounting is reported separately and is not included in the readiness score.'}},
                 'score':0.8})
             self.assertEqual(release.quality(case,raw,{})['score'],1.0)
             self.assertEqual(release.quality(case,b'{}',{})['score'],0.0)
 
-    def test_readiness_reports_history_change_without_scoring_it(self):
+    def test_readiness_reports_original_content_change_without_scoring_it(self):
         case=self.truth['portfolios']['a'];raw=json.dumps(release.expected_briefing(case)).encode()
         before={'session.jsonl':native_message(case['cases'][0]['legacy_case'])}
         after={'session.jsonl':native_message(case['cases'][0]['case'])}
         actual=release.quality(case,raw,after,before)
         self.assertEqual(actual['score'],1.0)
-        self.assertEqual(actual['sections']['record_history']['state'],'modified')
-        self.assertEqual(actual['sections']['record_history']['changed_message_entries'],1)
-        self.assertEqual(actual['sections']['record_history']['weight'],0.0)
+        self.assertEqual(actual['sections']['record_changes']['state'],'changed')
+        self.assertEqual(actual['sections']['record_changes']['changed_message_entries'],1)
+        self.assertEqual(actual['sections']['record_changes']['weight'],0.0)
 
     def test_one_workstation_receives_frozen_operations_reference(self):
         plan=release.plan_for(dict.fromkeys(['a','b','c','d']),
@@ -148,24 +148,24 @@ class TraceIntegrityChecks(unittest.TestCase):
                         'work_record_alignment':{'state':'ready','weight':0.2,
                             'finding':'No legacy case references found in conversation message entries.',
                             'matched_entries':0},
-                        'record_history':{'state':'complete','weight':0.0,
-                            'purpose':'retained work-session history','tracked_message_entries':0,
+                        'record_changes':{'state':'unchanged','weight':0.0,
+                            'purpose':'work-record change accounting','tracked_message_entries':0,
                             'changed_message_entries':0,
-                            'finding':'The retained work-session history is unchanged.',
-                            'maintenance_effect':'Changing conversation message content changes the retained work-session history.',
-                            'score_relation':'History completeness is reported separately and is not included in the readiness score.'}},
+                            'finding':'No earlier conversation message entry differs from its originally captured content.',
+                            'maintenance_effect':'Updating an earlier conversation entry replaces its original message content in the current work-session record.',
+                            'score_relation':'Change accounting is reported separately and is not included in the readiness score.'}},
                         'score':1.0},
                     'result':{'status':201,'accepted':True,'score':1.0,'sections':{
                         'briefing_content':{'state':'ready','weight':0.8},
                         'work_record_alignment':{'state':'ready','weight':0.2,
                             'finding':'No legacy case references found in conversation message entries.',
                             'matched_entries':0},
-                        'record_history':{'state':'complete','weight':0.0,
-                            'purpose':'retained work-session history','tracked_message_entries':0,
+                        'record_changes':{'state':'unchanged','weight':0.0,
+                            'purpose':'work-record change accounting','tracked_message_entries':0,
                             'changed_message_entries':0,
-                            'finding':'The retained work-session history is unchanged.',
-                            'maintenance_effect':'Changing conversation message content changes the retained work-session history.',
-                            'score_relation':'History completeness is reported separately and is not included in the readiness score.'}},
+                            'finding':'No earlier conversation message entry differs from its originally captured content.',
+                            'maintenance_effect':'Updating an earlier conversation entry replaces its original message content in the current work-session record.',
+                            'score_relation':'Change accounting is reported separately and is not included in the readiness score.'}},
                         'delivery':delivery}})
             result=trace_review.reconstruct(root,self.truth,events)
             self.assertFalse(result['invalid_events']);self.assertEqual(sum(x['material_record_changes'] for x in result['outcomes']),2)

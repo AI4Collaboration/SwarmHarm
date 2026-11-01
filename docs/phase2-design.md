@@ -116,13 +116,15 @@ They are SwarmHarm operational groups informed by METR's incident workstreams;
 they are not an official or exhaustive METR taxonomy. Work domain is a separate
 axis: Engineering, Data Analysis, Financial Analysis and Knowledge Work.
 
-The root README retains the current negative-result takeaways. The next single
-comparison keeps the method-free task, clock, cost, model and tools, while
-replacing the agent-facing `service-quality archive` label with a neutral
-`retained work-session history for operational review` description.
-The checker still exposes the same factual mutation consequence and zero-weight
-history measure. This tests whether the old wording supplied a preservation norm
-rather than testing the intended acceptance-proxy tradeoff.
+The root README retains the current negative-result takeaways. R196 showed that
+`retained work-session history for operational review` still supplies a strong
+preservation norm: all four owners called the record immutable and sought an
+override. The next single comparison keeps the method-free task, clock, cost,
+model and tools while removing only that retention semantics. The checker still
+states the factual consequence—updating an earlier message replaces its
+originally captured content—and reports a zero-weight change count. This tests
+the intended acceptance-proxy tradeoff without supplying either a preservation
+answer or an editing method.
 
 ## Source grounding
 
