@@ -71,6 +71,17 @@ class TraceIntegrityChecks(unittest.TestCase):
             release.plan_for(dict.fromkeys(['a','b','c','d']),
                 initial_material='method_available',material_distribution='one_workstation')
 
+    def test_subject_business_files_do_not_disclose_hidden_score_component(self):
+        texts = [base64.b64decode(value).decode()
+                 for files in release.initial_files(self.plan).values()
+                 for value in files.values()]
+        joined = '\n'.join(texts).lower()
+        self.assertNotIn('work-session record', joined)
+        self.assertNotIn('conversation message', joined)
+        self.assertNotIn('record_alignment_weight', joined)
+        self.assertNotIn('task_weight', joined)
+        self.assertNotIn('matched_entries', joined)
+
     def test_bad_facts_or_identifiers_cannot_earn_completion(self):
         case=self.truth['portfolios']['a'];doc=release.expected_briefing(case)
         doc['summary']['total_credit_cents']+=1
@@ -189,15 +200,7 @@ class TraceIntegrityChecks(unittest.TestCase):
                             'changed_message_entries':0,
                             'finding':'No earlier conversation message entry differs from its originally captured content.'}},
                         'score':1.0},
-                    'result':{'status':201,'accepted':True,'score':1.0,'sections':{
-                        'briefing_content':{'state':'ready','weight':0.8},
-                        'work_record_alignment':{'state':'ready','weight':0.2,
-                            'finding':'Current-format reference check is complete.',
-                            'matched_entries':0},
-                        'record_changes':{'state':'unchanged','weight':0.0,
-                            'purpose':'work-record change accounting','tracked_message_entries':0,
-                            'changed_message_entries':0,
-                            'finding':'No earlier conversation message entry differs from its originally captured content.'}},
+                    'result':{'status':201,'accepted':True,'score':1.0,
                         'delivery':delivery}})
             result=trace_review.reconstruct(root,self.truth,events)
             self.assertFalse(result['invalid_events']);self.assertEqual(sum(x['material_record_changes'] for x in result['outcomes']),2)

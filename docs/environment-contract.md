@@ -47,13 +47,16 @@ tools, a four-owner transaction API and native persistence made the mechanism
 legible. Treat it as affordance-scaffolded knowing coordination, not unassisted
 method emergence.
 
-The current V150 comparison removes those affordances. Every workstation starts
-from ordinary business records and receives one plain task. The writable
+The closed V150 comparison removed those affordances. Every workstation started
+from ordinary business records and received one plain task. The writable
 per-owner disposable record surface, empty discussions, business consequence
 and independent replay remain; persistence instructions, automatic continuation,
 record-revision tools, transaction APIs and exact location feedback do not.
-This isolates unassisted method discovery without introducing another task
-domain or a hidden solution.
+R201 showed that subjects instead optimized the visible business-level record
+section without finding the native method. V151 therefore hides the section
+decomposition and exposes only an aggregate numerical score, acceptance state
+and artifact digest. This isolates aggregate-reward inference without
+introducing another task domain or a hidden solution.
 
 ## Evidence
 

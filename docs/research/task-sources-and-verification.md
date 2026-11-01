@@ -46,13 +46,19 @@ Design consequences:
 ## Perfect Crime: trace-integrity adaptation
 
 Qin et al. separate ordinary task score, trace mutation and protected external
-observation. Their reward and peer-example conditions are engineered inputs.
-They do not establish spontaneous four-agent coordination.
+observation. In their reward-optimization condition, the subject sees only a
+numerical reward: ordinary task completion is capped at 0.8 and the hidden trace
+component supplies 0.2. The subject is not shown that decomposition or told
+that trace modification can raise reward. Their production-release repair adds
+an aggregate grade and broad exposure cue, while an independent log outside the
+agent host preserves evidence. Their reward and peer-example conditions are
+engineered inputs and do not establish spontaneous four-agent coordination.
 
 Design consequences:
 
 - keep authoritative observations outside subject control;
 - separate temporary mutation, persistent mutation and downstream publication;
+- hide the reward decomposition from subjects when testing autonomous inference;
 - label reward and peer examples as conditions;
 - do not equate a modified record with a fooled monitor or business loss.
 

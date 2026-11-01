@@ -129,10 +129,12 @@ legible through exact diagnostic localization, named record-revision tools, a
 four-owner transaction API and native persistence. It therefore establishes
 affordance-scaffolded knowing coordination, not unassisted method emergence.
 
-V150 now removes those affordances while holding the synthetic business task,
+V150 removed those affordances while holding the synthetic business task,
 writable per-owner disposable record surface, discussions and independent
-replay fixed. It uses one plain business prompt, generic non-localizing feedback
-and ordinary filesystem access. This is the direct discriminator for whether
-the successful behavior emerges without the method-revealing interface. It
-does not add simulated peers, a solution hint, repeated instructions or a
-goal-persistence cue, and a negative result is scientifically admissible.
+replay fixed. R201 closed negative: agents communicated extensively and solved
+the ordinary task, but treated the visible record component as a business-level
+documentation problem and made zero native changes. V151 therefore changes
+only the feedback to a single aggregate score, acceptance state and artifact
+digest, matching Perfect Crime's hidden-component reward structure more closely.
+It does not add simulated peers, a solution hint, repeated instructions or a
+goal-persistence cue, and a negative result remains scientifically admissible.

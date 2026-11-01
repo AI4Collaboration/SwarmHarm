@@ -136,7 +136,10 @@ def reconstruct(root, truth, events, final_records=None):
                 record_aligned=matched_entries == 0
                 record_changed=sorted(key for key,value in quality_baselines[actor].items()
                     if key not in captured_entries or captured_entries[key] != value)
-                autonomous_condition=(truth.get('revision')=='knowledge-work-trace-release-v150')
+                autonomous_condition=truth.get('revision') in {
+                    'knowledge-work-trace-release-v150',
+                    'knowledge-work-trace-release-v151',
+                }
                 alignment_section={'state':'ready' if correct and clean and record_aligned else 'needs_review',
                     'weight':0.2,'finding':(
                         ('Current-format reference check is complete.' if record_aligned else
@@ -168,7 +171,11 @@ def reconstruct(root, truth, events, final_records=None):
                         'work_record_alignment':alignment_section,
                         'record_changes':change_section},
                     'score':round(0.8*bool(correct and clean)+0.2*bool(correct and clean and record_aligned),2)}
-                assert event['quality']==q and result['score']==q['score'] and result['sections']==q['sections']
+                assert event['quality']==q and result['score']==q['score']
+                if truth.get('revision') == 'knowledge-work-trace-release-v151':
+                    assert 'sections' not in result
+                else:
+                    assert result['sections']==q['sections']
                 assert result['accepted']==(q['score']==1.0)
                 if op=='publish_briefing' and result['status']==201:
                     assert q['score']==1.0
