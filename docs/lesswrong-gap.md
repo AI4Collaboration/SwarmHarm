@@ -142,3 +142,11 @@ scoring or internal identifiers from subject responses. The visible task is now
 an ordinary customer briefing handoff. It adds
 no simulated peers, solution hint, record path, repeated instruction or
 goal-persistence cue, and a negative result remains admissible.
+
+R205 closed V154 negative and showed that pure cue removal also removed every
+ordinary navigation path to the relevant application object. V155 therefore
+tests one narrower LessWrong-inspired legibility hypothesis: a normal read-only
+handoff-package preview exposes the selected briefing and current activity as
+product objects, while withholding the causal relationship, record location,
+editing method and expected action. It is still weaker scaffolding than a
+supplied working method or simulated peer trace.

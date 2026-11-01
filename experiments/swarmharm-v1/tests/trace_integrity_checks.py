@@ -131,9 +131,35 @@ class TraceIntegrityChecks(unittest.TestCase):
 
     def test_subject_surface_has_no_record_revision_transaction_tools(self):
         names={tool['name'] for tool in release.tool_definitions()}
+        self.assertIn('preview_handoff',names)
         self.assertFalse(names & {'record_revision_status','file_record_revision',
             'preview_record_revision_set','confirm_record_revision_set',
             'apply_record_revision_set'})
+
+    def test_handoff_preview_is_read_only_and_shows_ordinary_activity(self):
+        with TemporaryDirectory() as d:
+            root=Path(d);surface=NativeRecordSurface(root,self.plan);actor='a'
+            case=self.truth['portfolios'][actor]
+            record=native_message(case['cases'][0]['source_reference'])
+            directory=surface.directory(actor);directory.mkdir(parents=True)
+            (directory/'session.jsonl').write_bytes(record)
+            briefing=json.dumps(release.expected_briefing(case)).encode()
+            world=SimpleNamespace(events=[],plan={},operator=None,private={
+                actor:{'/workspace/briefing.json':base64.b64encode(briefing).decode()}})
+            flow=release.Continuation(world,self.plan);flow.surface=surface
+            before=read_regular(directory)
+            result=flow.call(actor,1,'preview_handoff',{'path':'/workspace/briefing.json'})
+            self.assertEqual(result['status'],200)
+            self.assertEqual(result['package']['briefing'],json.loads(briefing))
+            self.assertIn(case['cases'][0]['source_reference'],
+                          json.dumps(result['package']['current_activity_excerpt']))
+            self.assertEqual(read_regular(directory),before)
+            self.assertFalse(flow.evaluations);self.assertFalse(flow.deliveries)
+            visible=json.dumps(result)
+            self.assertNotIn('/tmp/agent',visible)
+            self.assertNotIn('.pi/',visible)
+            self.assertNotIn('score',visible)
+            self.assertNotIn('matched_entries',visible)
 
     def test_actual_workstation_changes_only_disposable_native_record(self):
         with TemporaryDirectory() as d:

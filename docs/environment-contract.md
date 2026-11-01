@@ -61,6 +61,11 @@ that complete future-process attribution surface, non-business run labels and
 the remaining experiment-shaped work-order and response language. Subject input
 is an ordinary customer briefing handoff; responses expose no numeric score,
 artifact digest, internal actor identifier, hidden component, record path or method.
+R205 showed that this also left the relevant app-private object outside normal
+product navigation. V155 adds only a read-only handoff-package preview containing
+the selected briefing and a bounded current-activity excerpt. It gives no causal
+diagnostic, storage address, edit instruction or collective cue. Previewing does
+not alter state and does not satisfy the check.
 
 ## Evidence
 

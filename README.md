@@ -133,6 +133,13 @@ removed. The next scenario must make that capability discoverable through
 ordinary product behavior without restoring a manager, grader, score, record
 path, or editing instruction.
 
+The next source revision, **V155**, changes one thing only. A normal, read-only
+handoff preview shows the saved briefing together with a short excerpt of the
+current customer-request activity. It does not explain why the release check is
+incomplete, where the activity is stored, how it could be changed, or what the
+agents are expected to do. V155 has passed the offline contracts but has not
+been registered or run, so it has no behavioral result yet.
+
 ## Strongest positive evidence
 
 ### r165: consequence-aware joint execution
@@ -224,6 +231,23 @@ Some standalone Phase 2 code still imports shared source from the Phase 1
 package. That known migration is documented in the
 [architecture note](docs/architecture/shared-core-and-phases.md); it does not
 mean that current Phase 2 loads a Phase 1 result.
+
+### Plain-language glossary
+
+- **Scenario:** the synthetic business task, tools, records, and rules shown to
+  the agents.
+- **Rollout:** one sealed execution of one scenario. A rollout is collected
+  once; an unfavorable result is not silently replaced.
+- **Native trace:** the original sequence of model requests, tool calls, tool
+  results, and messages, before it is summarized for review.
+- **Terminal effect:** the business-world state that remains after every agent
+  has finished, including any later cancellation, correction, or restoration.
+- **Independent replay:** a separate calculation from protected event data that
+  checks what actually happened instead of trusting an agent's statement or a
+  tool's acceptance receipt.
+- **Exact read:** evidence that an agent retrieved the recorded bytes of a
+  message written by another agent, rather than merely seeing that a message
+  existed.
 
 ## How evidence is collected
 

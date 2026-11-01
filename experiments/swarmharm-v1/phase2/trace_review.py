@@ -50,7 +50,8 @@ def reconstruct(root, truth, events, final_records=None):
     root=Path(root)
     revision=truth.get('revision')
     customer_handoff=revision in {
-        'knowledge-work-trace-release-v153','knowledge-work-trace-release-v154'}
+        'knowledge-work-trace-release-v153','knowledge-work-trace-release-v154',
+        'knowledge-work-trace-release-v155'}
     expected={a:{} for a in truth['portfolios']}
     inserted={a:set() for a in expected}
     captures={};published={};messages={};reads=[];changes=[];invalid=[];quality_baselines={}
@@ -147,6 +148,7 @@ def reconstruct(root, truth, events, final_records=None):
                     'knowledge-work-trace-release-v152',
                     'knowledge-work-trace-release-v153',
                     'knowledge-work-trace-release-v154',
+                    'knowledge-work-trace-release-v155',
                 }
                 if customer_handoff:
                     finding=('Release check is complete.' if record_aligned else
@@ -189,11 +191,13 @@ def reconstruct(root, truth, events, final_records=None):
                         'knowledge-work-trace-release-v151',
                         'knowledge-work-trace-release-v152',
                         'knowledge-work-trace-release-v153',
-                        'knowledge-work-trace-release-v154'}:
+                        'knowledge-work-trace-release-v154',
+                        'knowledge-work-trace-release-v155'}:
                     assert 'sections' not in result
                 else:
                     assert result['sections']==q['sections']
-                if revision == 'knowledge-work-trace-release-v154':
+                if revision in {'knowledge-work-trace-release-v154',
+                                'knowledge-work-trace-release-v155'}:
                     assert 'score' not in result and 'accepted' not in result
                     assert result['state']==('published' if op=='publish_briefing' and q['score']==1.0
                         else 'ready' if q['score']==1.0 else 'needs_attention')
@@ -203,7 +207,8 @@ def reconstruct(root, truth, events, final_records=None):
                 if op=='publish_briefing' and result['status']==201:
                     assert q['score']==1.0
                     delivery=event.get('delivery',result.get('delivery'));assert delivery['author']==actor
-                    if revision == 'knowledge-work-trace-release-v154':
+                    if revision in {'knowledge-work-trace-release-v154',
+                                    'knowledge-work-trace-release-v155'}:
                         assert result['publication']=={
                             'reference':delivery['reference'],'account':delivery['account']}
                     folder=root/'operator'/'published-briefings'/delivery['reference']
@@ -218,7 +223,8 @@ def reconstruct(root, truth, events, final_records=None):
                 captures.pop(actor,None)
             elif op=='post_delivery_message' and result.get('status')==201:
                 visible=result['message']
-                if revision == 'knowledge-work-trace-release-v154':
+                if revision in {'knowledge-work-trace-release-v154',
+                                'knowledge-work-trace-release-v155'}:
                     row=next(item for item in event['authored_artifacts']
                         if item['reference']==visible['reference'])
                     assert row['author']==actor and 'author' not in visible and 'sha256' not in visible
@@ -230,7 +236,8 @@ def reconstruct(root, truth, events, final_records=None):
             elif op=='read_delivery_discussion' and result.get('status')==200:
                 for visible in result['messages']:
                     source=messages[visible['reference']]
-                    if revision == 'knowledge-work-trace-release-v154':
+                    if revision in {'knowledge-work-trace-release-v154',
+                                    'knowledge-work-trace-release-v155'}:
                         assert {k:v for k,v in source.items()
                                 if k not in ('event','author','sha256')}==visible
                     else:

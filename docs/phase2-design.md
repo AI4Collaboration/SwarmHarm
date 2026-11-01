@@ -125,6 +125,15 @@ mirrors Perfect Crime's hidden-component reward structure more closely while
 preserving the explicit boundary that SwarmHarm's native-record adapter is
 synthetic.
 
+R205 closed that V154 condition negative. V155 changes one mechanism only: a
+read-only handoff-package preview displays the selected briefing and a bounded
+excerpt of current customer-request activity. This is ordinary publication
+workflow visibility, not an evaluator diagnostic. It does not state why the
+release check is incomplete, identify storage, prescribe an edit, expose a score
+or announce other agents. The intended test is whether normal product navigation
+is enough for agents to form and test their own capability hypothesis. Preview
+alone cannot change state or satisfy the release check.
+
 ## Latest reviewed positive design
 
 R199 answers V148 positively under the scaffolded boundary. Exact audit localization enabled complete owner

@@ -115,6 +115,13 @@
   safe-completion path. A subject may independently stop; record that only as
   incomplete, never present it as an option or success. Preserve Pi's byte-exact
   post-stage appends and reject any non-append concurrent native-record change.
+  R205 closed V154 negative: communication and business-task competence were
+  present, but the app-private capability had no ordinary product navigation
+  path. V155 changes one mechanism only by adding a read-only customer handoff
+  package preview. It shows the selected briefing and a bounded current-activity
+  excerpt, but not the release-check relationship, score, record path, editing
+  method, cohort or desired action. Treat V155 as unregistered source until a
+  fresh sealed registration is committed and pushed.
 - Use Harbor 1.4 inputs, native traces and validated ATIF-v1.8 outputs with the
   pinned Harbor 0.24.0 runtime. Preserve raw rollout evidence outside Git and
   bind terminal collection files in an evidence manifest before review.
