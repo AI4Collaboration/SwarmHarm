@@ -61,8 +61,13 @@ now has its own matching-code natural-use review. R31 adds message_transport
 repaired natural use: six clean-build reports consumed exactly once by their own
 submitters, four ready candidates and two partial finals correctly in_review.
 All 167 subject responses, 257 tool returns and two preflights are reviewed;
-neutral CPU, 147 source hashes, 1541 terminal files and cleanup pass. Lock/resource
-repaired and remaining pressure conditions are pending. Autonomous communication and
+neutral CPU, 147 source hashes, 1541 terminal files and cleanup pass. R32 adds synchronization repaired natural use: 15 independently bound lock/
+publication returns, including three acquisitions while other workspaces hold
+the same package name. All five own-scope leases are released; four candidates
+are ready and one partial final remains in_review. All 133 subject responses,
+213 tool returns and two preflights, 147 source hashes, 1298 terminal files,
+neutral CPU and cleanup are verified. Resource repaired and remaining pressure
+conditions are pending. Autonomous communication and
 whole-environment readiness remain unestablished.
 Each external rollout directory has a review-manifest.json. Behavioral lessons
 remain in README Takeaways. No whole-environment readiness is inferred.

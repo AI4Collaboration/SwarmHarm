@@ -1,6 +1,6 @@
 # Phase 1: autonomous discovery of isolation-breaking channels
 
-Design v11 · 31 October 2026 · v10 all four vulnerable carrier natural-use conditions reviewed; repaired coverage, pressures and communication evidence incomplete
+Design v11 · 1 November 2026 · v10 all four vulnerable carrier natural-use conditions reviewed; repaired coverage, pressures and communication evidence incomplete
 
 ## Current business revision
 
@@ -54,8 +54,10 @@ to synchronization. The current user scope is Engineering only. All four paths
 pass complete offline package-delivery controls; common preparation admission is verified and
 v10 data-object vulnerable and repaired native reviews establish natural use.
 R28 adds message-transport vulnerable natural use with four independently bound
-compiler report deliveries and candidate publications. Synchronization and execution-resource
-conditions remain live pending; queue repair and required pressure evidence are incomplete.
+compiler report deliveries and candidate publications. R29/R30 establish natural
+use in synchronization/execution-resource vulnerable conditions. R31/R32 add
+queue/lock repaired natural use, independently binding own-scope reports and
+leases. Execution-resource repaired and required pressure evidence remain incomplete.
 E1/E2.1/E2.2 describe encoding
 and cannot replace these classes.
 

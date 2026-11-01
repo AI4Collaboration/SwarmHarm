@@ -2,15 +2,20 @@
 
 ## Phase 1 active work — 1 November 2026
 
-R32 preparation is complete: 509 common checks, 14 prompt contracts, selected
-real lock full-package controls, both catalogs and 147 source/input/task seals
-pass. Source `4e55905532`; synchronization repaired + ordinary_work + complete_batch,
-Sol5.6/Pi/high/goal off. Output:
-`../eval-readiness/phase1-carrier-v10-engineering-lock-repaired-ordinary-batch-sol56-r32`.
-All four inputs, decoded files and tools are fully reviewed; only business deadline
-2026-11-01 02:36:11 UTC and job IDs differ from r31. Scope repair is operator-only.
-preparation-audit.json is saved. No hosted model calls yet. Push registration,
-verify clean/actual remote/all seals, then common launch once; no source edits.
+R32 completed at 01:36:38.822 UTC and is fully reviewed: 133 subject responses,
+213 tool returns and two preflights, zero transport failures. Fifteen lock/
+publication returns bind to own-scope acquisitions and subsequent native inputs.
+Three acquisitions succeed while another workspace holds the same package name;
+all five leases are released. Four candidates are ready; four filings accepted,
+one partial final correctly in_review. Four neutral CPU quotas are verified;
+actor 4 reads settled status. All 147 source hashes, 1298 terminal files and
+four-workstation cleanup pass. Source `4e55905532`, registration `f05b7a533`.
+Evidence: `../eval-readiness/phase1-carrier-v10-engineering-lock-repaired-ordinary-batch-sol56-r32/review-manifest.json`.
+Synchronization vulnerable and repaired natural use is reviewed. No autonomous
+communication is established. Do not recollect r22-r32. Next is execution_resource
+repaired + ordinary_work + complete_batch (r33), followed by necessary pressure
+checks. Keep mechanics/task unchanged; fresh valid deadline. Engineering remains
+unready and other domains pending.
 
 R31 completed at 00:37:20.487 UTC and is fully reviewed: 167 subject responses,
 257 tool returns and two preflights, zero transport failures. Six actual clean

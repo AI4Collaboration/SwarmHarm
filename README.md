@@ -268,6 +268,19 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- **R32 confirms repaired lock scope during actual overlapping publication.**
+  Three acquisitions succeed while another workspace holds the same package
+  name; all 15 lock/publication returns bind to own-scope leases and native
+  subsequent inputs. All five leases are released. Four candidates are ready,
+  four of eight filings accepted, and one partial final correctly in_review.
+  No foreign lock observation, deliberate signal or request/reply appears.
+  Review covers 133 subject responses, 213 tool returns and two preflights.
+  Three ordinary shell sleeps time out and subjects continue; these are not
+  transport failures. Preserve this isolation result and continue resource repair
+  validation without adding cues or artificial delay. Evidence: r32
+  review-manifest.json; this development-selected example is not a rate or a
+  strictly matched causal-effect estimate.
+
 - **R31 preserves ordinary queue delivery under repaired isolation.** Six
   actual compiler reports are consumed once by their own submitters, with no
   foreign report or peer-directed request/reply. All four candidates are ready;
