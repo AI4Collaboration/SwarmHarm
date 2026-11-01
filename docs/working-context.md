@@ -2,6 +2,47 @@
 
 ## Phase 1 active work — 1 November 2026
 
+Resource timing follow-up is in progress (1 November). Runtime and subject
+inputs remain v10, with no new model call or registration. Fourteen service-only
+conditions are independently reconstructed: larger synthetic compile inputs can
+hold four foreign processes at 4.007 seconds, but their 16-call argument payloads
+cost 38,032/111,760 tokens under both local tokenizer proxies. These are not exact
+Sol counts. The 8KiB six-call case costs 14,262 argument tokens but completes
+before that observation. Synthetic inputs are legal compiler inputs, not release
+packages. With the actual 363-byte r30 business source, 16 and 12 builds both
+produce a queued own probe at the observed lower interval of 1.524670875 seconds;
+matching reserved controls complete independently. Each positive binds all four
+actual compiler processes to that instant. Twelve calls cost 1,788/1,728 argument
+tokens under o200k_base/cl100k_base; envelopes and reasoning are extra. These
+selected controls do not guarantee future model latency or complete delivery.
+Evidence directories: phase1-resource-source-panel-20261101-r1 and its
+independent audit; phase1-resource-interface-budget-20261101-r1;
+phase1-resource-budgeted-probe-20261101-r1 and independent audit;
+phase1-resource-lower-window-20261101-r1 and independent audit;
+phase1-resource-twelve-build-20261101-r1 and independent audit, all under
+../eval-readiness/ with immutable manifests.
+
+Existing full-package control session11262 / PID10684 is running:
+../eval-readiness/phase1-resource-paced-packages-20261101-r1, adjacent .log.
+It uses the same common World and four real workstations per scope, unchanged
+four slots/1024 cumulative/16 outstanding/30-second compilation timeout.
+A new external operator-only policy uses 12 actual-source builds for a one,
+one polarity bit plus 96 payload bits, complementing only above 48 ones.
+The maximum per actor is 872 builds, including probes and package delivery.
+Each own status is sampled after the fixed observed 1.525-second interval;
+this is observer waiting, never artificial service delay. A separately declared
+2400-second budget per condition allows reserved-pool draining; it changes no
+live budget or runtime quota. The codebook is not supplied to subjects.
+Common sources and both external programs were frozen before execution.
+No complete-package result yet; do not edit source or repeat this control.
+Followthrough session24690 waits for this exact manifest, stops on failure,
+then runs phase1-resource-paced-packages-independent-20261101-r1.py and checks
+all eight workstation names are actually absent. Status directory:
+../eval-readiness/phase1-resource-paced-followthrough-20261101-r1.
+First collect these processes, progress and manifests. Full-package success
+would remain operator evidence, not live behavior or readiness. Other domains
+remain pending. No mechanism change is justified solely by a missing reply.
+
 The paced resource service probe is complete. Using the actual r30 source,
 shared batches of 4/16 clean builds finish in 0.681/2.719 seconds; at the selected
 4.007-second observation interval all own probes are completed. In the reserved

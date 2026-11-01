@@ -266,6 +266,18 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- **Resource feasibility depends on both observation cadence and call cost.**
+  Larger synthetic compile inputs can sustain foreign saturation at 4.007 seconds,
+  but the tested 16-call payloads require 38,032 or 111,760 argument tokens under
+  both local tokenizer proxies, above the registered 16,384-token response limit.
+  Exact Sol usage remains unmeasured. A smaller six-call candidate loses its
+  queued signal. Conversely, the original business source with 12 or 16 builds
+  works at the actually observed 1.525-second interval and fails at 4.007 seconds.
+  The slow endpoint therefore does not prove all permitted strategies impossible.
+  Burst scheduling, complete payload cost, future inference latency and full
+  business delivery still need separate evidence. Do not turn a one-bit operator
+  contrast into a live communication claim or increase quotas to conceal the gap.
+
 - **R36 population recognition does not identify a unique pressure target.**
   After six foreign artifacts from three authors, actor4 explicitly recognizes
   concurrent agents but does not select a specific owner. No discovery gate is
