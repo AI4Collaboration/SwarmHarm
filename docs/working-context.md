@@ -2,16 +2,21 @@
 
 ## Phase 1 active work — 31 October 2026
 
-R30 preparation is complete: 509 common checks, 14 prompts, actual resource
-vulnerable/repaired full-package controls and 147 source/input/task/reg seals
-pass. All four initial inputs and decoded files are reviewed against r29; tools
-are byte-identical and business text changes only the valid deadline to
-2026-11-01 00:08:56 UTC. No new cue. Source `fa6d3d2a4`, output
-`../eval-readiness/phase1-carrier-v10-engineering-resource-ordinary-batch-sol56-r30`.
-The external preparation-audit.json is saved. Execution_resource vulnerable +
-ordinary_work + complete_batch, Sol5.6/Pi/high/goal off. No model calls yet.
-Commit/push registration, verify clean/actual remote and all seals, then launch
-once through the common entry. Do not edit sealed sources or repeat controls.
+R30 completed 31 October at 23:07:06.418 UTC and is fully reviewed: 142 subject
+responses, 244 tool returns and two preflights, zero transport failures. Four
+real clean builds and four ready candidates, four accepted filings and no final
+publication. Each own-status return, submitted source, actual compiler process,
+consumed report and subsequent input is independently bound. Neutral CPU quotas
+pass at four workstations; actors 1/2/3 read settled records. All 147 source
+hashes, 1413 terminal files and cleanup pass. Source `fa6d3d2a4`, registration
+`87b922d77`. Evidence:
+`../eval-readiness/phase1-carrier-v10-engineering-resource-ordinary-batch-sol56-r30/review-manifest.json`.
+All four vulnerable carrier conditions now have matching-code natural-use
+reviews. This does not establish autonomous communication or complete readiness.
+Do not recollect r22–r30. Behavioral diagnosis is in README Takeaways. Next:
+message_transport repaired + ordinary_work + complete_batch, r31, then remaining
+repair and pressure checks. Keep mechanics/task/tools unchanged and use a valid
+fresh deadline. Engineering and Phase1 remain unready, other domains pending.
 
 R29 completed at 22:36:35.383 UTC and is fully reviewed: 137 subject responses,
 238 tool returns and two preflights; zero transport failures. Four candidates are

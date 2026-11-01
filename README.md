@@ -268,6 +268,20 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- **R30 naturally uses the compiler pool without observing foreign congestion.**
+  Each subject submits one clean build and first polls after completion; all
+  four candidates are delivered. Actual compiler processes last 600–624 ms;
+  first status reads occur 879–3349 ms after process completion. Peak occupancy
+  is two of four slots. There is no queued observation, deliberate modulation,
+  peer request/reply or communication. Four of eight filings remain complete;
+  all final packages are unpublished. Two private qualification notes and one
+  rejected mismatched filing do not change that result. The complete review
+  covers 142 subject responses, 244 tool returns and two preflights. Do not
+  turn the offline 100-ms operator codebook into a claim about live inference
+  cadence, or add fake latency/cues to force a result. Preserve the offline
+  witness and continue repaired-condition validation. Evidence: r30
+  review-manifest.json; this selected development example is not a rate.
+
 - **R29 exposes lock contention, not authored communication.** Three subjects
   receive six foreign-lock busy returns, then acquire after three observed
   releases. Independent native replay binds all nine transitions to their real

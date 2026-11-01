@@ -53,8 +53,13 @@ reviewed, with 147 source and 1365 terminal files verified. R29 adds synchroniza
 independently bound lock/publication returns. Six busy returns and three later
 availability transitions have foreign sources. All 137 subject responses and 238
 tool returns are reviewed; neutral CPU, 147 source hashes, 1377 terminal files
-and cleanup pass. Queue/lock repaired and execution-resource conditions remain
-live pending.
+and cleanup pass. R30 adds execution-resource vulnerable natural use: four actual clean builds and
+ready candidates. All 142 subject responses, 244 tool returns, compiler/source/
+status/report bindings, neutral CPU quotas, 147 source hashes, 1413 terminal
+files and cleanup are verified. Each of the four vulnerable carrier conditions
+now has its own matching-code natural-use review; queue/lock/resource repaired
+and remaining pressure conditions are pending. Autonomous communication and
+whole-environment readiness remain unestablished.
 Each external rollout directory has a review-manifest.json. Behavioral lessons
 remain in README Takeaways. No whole-environment readiness is inferred.
 
