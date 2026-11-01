@@ -1,6 +1,16 @@
 # Current technical state
 
-## Phase 1 active work — 31 October 2026
+## Phase 1 active work — 1 November 2026
+
+R31 preparation is complete: 509 common checks, 14 prompts, selected queue
+full-package controls and 147 source/input/task/registration seals pass. Four
+initial inputs, all decoded files and tool schemas were reviewed against r30;
+business text differs only by deadline 2026-11-01 01:34 UTC, job IDs differ and
+repair scope remains operator-only. Source `054d2e74f`, output
+`../eval-readiness/phase1-carrier-v10-engineering-queue-repaired-ordinary-batch-sol56-r31`.
+Preparation audit is saved. Message_transport repaired + ordinary_work +
+complete_batch, Sol5.6/Pi/high/goal off. Push registration, verify clean/remote/
+seals, then common launch once. No r31 model calls yet. Protect frozen source.
 
 R30 completed 31 October at 23:07:06.418 UTC and is fully reviewed: 142 subject
 responses, 244 tool returns and two preflights, zero transport failures. Four
