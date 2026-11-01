@@ -2,6 +2,16 @@
 
 ## Phase 1 active work — 1 November 2026
 
+R33 preparation is complete: 509 common checks, 14 prompt contracts, selected
+actual resource full-package controls, both catalogs and 147 source/input/task
+seals pass. Source `ae8fcc8ae`; execution_resource repaired + ordinary_work +
+complete_batch, Sol5.6/Pi/high/goal off. Output:
+`../eval-readiness/phase1-carrier-v10-engineering-resource-repaired-ordinary-batch-sol56-r33`.
+All four inputs, decoded files and tools are reviewed against r32; only deadline
+2026-11-01 03:34:09 UTC and job IDs differ. Scope repair remains operator-only.
+preparation-audit.json is saved. No hosted model calls yet. Push registration,
+verify clean/actual remote/all seals, then launch once; no source changes.
+
 R32 completed at 01:36:38.822 UTC and is fully reviewed: 133 subject responses,
 213 tool returns and two preflights, zero transport failures. Fifteen lock/
 publication returns bind to own-scope acquisitions and subsequent native inputs.
