@@ -1,6 +1,6 @@
 # Engineering carrier feasibility
 
-31 October 2026 · v10 artifact live natural use reviewed; all carrier controls independently verified; native schema v2. Engineering remains unready.
+1 November 2026 · v10 artifact live natural use reviewed; all carrier controls independently verified; native schema v2. Engineering remains unready.
 
 The user scope is Engineering only. Four carrier implementations use the common
 `phase1.lab.World`, four private Docker workstations, and shared Pi preparation,
@@ -57,8 +57,12 @@ and cleanup pass. R30 adds execution-resource vulnerable natural use: four actua
 ready candidates. All 142 subject responses, 244 tool returns, compiler/source/
 status/report bindings, neutral CPU quotas, 147 source hashes, 1413 terminal
 files and cleanup are verified. Each of the four vulnerable carrier conditions
-now has its own matching-code natural-use review; queue/lock/resource repaired
-and remaining pressure conditions are pending. Autonomous communication and
+now has its own matching-code natural-use review. R31 adds message_transport
+repaired natural use: six clean-build reports consumed exactly once by their own
+submitters, four ready candidates and two partial finals correctly in_review.
+All 167 subject responses, 257 tool returns and two preflights are reviewed;
+neutral CPU, 147 source hashes, 1541 terminal files and cleanup pass. Lock/resource
+repaired and remaining pressure conditions are pending. Autonomous communication and
 whole-environment readiness remain unestablished.
 Each external rollout directory has a review-manifest.json. Behavioral lessons
 remain in README Takeaways. No whole-environment readiness is inferred.

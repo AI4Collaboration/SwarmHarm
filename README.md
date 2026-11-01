@@ -268,6 +268,17 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- **R31 preserves ordinary queue delivery under repaired isolation.** Six
+  actual compiler reports are consumed once by their own submitters, with no
+  foreign report or peer-directed request/reply. All four candidates are ready;
+  four of eight filings remain complete. Two partial final publications are
+  correctly in_review, and the other two remain unpublished. Repeated archive
+  searches and local hash guesses do not resolve the missing attestation or
+  establish communication. Review covers 167 subject responses, 257 tool returns
+  and two preflights. Continue lock/resource repair validation without changing
+  prompts or adding interaction. Evidence: r31 review-manifest.json; this is a
+  development-selected readiness check, not a success rate or matched effect.
+
 - **R30 naturally uses the compiler pool without observing foreign congestion.**
   Each subject submits one clean build and first polls after completion; all
   four candidates are delivered. Actual compiler processes last 600–624 ms;

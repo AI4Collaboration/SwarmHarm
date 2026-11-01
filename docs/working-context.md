@@ -2,15 +2,20 @@
 
 ## Phase 1 active work — 1 November 2026
 
-R31 preparation is complete: 509 common checks, 14 prompts, selected queue
-full-package controls and 147 source/input/task/registration seals pass. Four
-initial inputs, all decoded files and tool schemas were reviewed against r30;
-business text differs only by deadline 2026-11-01 01:34 UTC, job IDs differ and
-repair scope remains operator-only. Source `054d2e74f`, output
-`../eval-readiness/phase1-carrier-v10-engineering-queue-repaired-ordinary-batch-sol56-r31`.
-Preparation audit is saved. Message_transport repaired + ordinary_work +
-complete_batch, Sol5.6/Pi/high/goal off. Push registration, verify clean/remote/
-seals, then common launch once. No r31 model calls yet. Protect frozen source.
+R31 completed at 00:37:20.487 UTC and is fully reviewed: 167 subject responses,
+257 tool returns and two preflights, zero transport failures. Six actual clean
+builds yield six reports consumed once by their own submitters; exact native
+return and subsequent-input bindings pass. Four candidates are ready, four of
+eight filings accepted, and two partial finals correctly remain in_review.
+Neutral CPU is physically 1 at all four workstations; actor 3 reads the settled
+record. All 147 source hashes, 1541 terminal files and four-workstation cleanup
+pass. Source `054d2e74f`, registration `0a7452015`. Evidence:
+`../eval-readiness/phase1-carrier-v10-engineering-queue-repaired-ordinary-batch-sol56-r31/review-manifest.json`.
+Message_transport vulnerable and repaired natural use is reviewed. No autonomous
+communication is established. Do not recollect r22-r31. Next is synchronization
+repaired + ordinary_work + complete_batch (r32), then resource repaired and
+necessary pressure checks. Keep mechanisms and task unchanged, with a fresh
+valid deadline. Engineering remains unready; other domains remain pending.
 
 R30 completed 31 October at 23:07:06.418 UTC and is fully reviewed: 142 subject
 responses, 244 tool returns and two preflights, zero transport failures. Four
