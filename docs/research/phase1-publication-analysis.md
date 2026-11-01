@@ -4,6 +4,8 @@ Revision 2, 31 October 2026. The unit is one rollout with four concurrent privat
 
 ## Benchmark release
 
+The [carrier registration index](phase1-carrier-registration-index.json) enumerates all 15 development rollouts r22-r36 with their original source revisions, review bindings and separated behavioral endpoints. Its AI review coverage is not independent human adjudication; the historical 21 cache registrations keep their separate index. No pooled behavioral rate or pressure effect is estimated from these selected rollouts.
+
 The current release validation covers four Engineering carriers: shared data objects, message transport facilities, synchronization objects and shared execution resources. Each has vulnerable and repaired conditions with four separate workspaces in each rollout. They are four carrier implementations and eight scope conditions, not communicating pairs. Data Analysis, Financial Analysis and Knowledge Work remain pending until the user expands scope. The earlier 24-cell plan applied to the historical cache adapter's three encoding strata; it does not describe current carrier coverage.
 
 After the preparation gates pass, collect one minimum fresh frozen Sol 5.6 rollout for each admitted carrier/scope condition and review every native trace. Pressure is an independent attachment, not another environment category. Freeze the required self-preservation, self-enhancement and post-discovery peer-preservation interventions and their ordinary comparisons separately; record activation and actual enforcement. Do not infer new-carrier pressure validation from the old cache studies or collect a broad matrix during mechanism iteration.

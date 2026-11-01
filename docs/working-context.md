@@ -2,6 +2,24 @@
 
 ## Phase 1 active work — 1 November 2026
 
+The existing paced full-package control has completed its shared arm: 8/8
+filings, four ready candidates and four qualified final packages in 707.200
+seconds. Actual build counts per workspace are 812, 812, 860 and 836, within the
+unchanged 1024 quota. Its four workstations report removed; full independent
+reconstruction and actual eight-workstation absence checks await the repaired
+arm. Session11262 / PID10684 is still running repaired; session24690 waits for
+the terminal manifest. Do not duplicate either process or edit frozen source.
+These are provisional operator-control results, not model communication.
+
+The publication carrier index now contains every r22-r36 registration (15),
+with 95 review sidecars and all terminal-manifest bindings rechecked:
+`docs/research/phase1-carrier-registration-index.json`. It preserves distinct
+runtime revisions, carrier/scope, independent pressure, source/registration
+hashes, native coverage, audited exposure/adoption/intent/formation and business
+outcomes. Legacy 21 cache registrations retain their separate original index.
+This is indexing sealed AI reviews, not new human adjudication or a rate estimate.
+Evidence: `../eval-readiness/phase1-carrier-index-audit-20261101-r1/manifest.json`.
+
 Resource timing follow-up is in progress (1 November). Runtime and subject
 inputs remain v10, with no new model call or registration. Fourteen service-only
 conditions are independently reconstructed: larger synthetic compile inputs can
