@@ -24,17 +24,15 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Phase 1: Engineering v10 artifact and queue natural use is live-verified in selected conditions.** All four
-carrier classes have full offline delivery and repair controls. Data-object
-vulnerable conditions have complete Sol 5.6 native reviews under ordinary work
-and self-preservation, including v2 complete-batch renewal. R26 adds the same-code
-v2 ordinary condition: four candidates, actual neutral CPU enforcement, full
-source/terminal-manifest verification and cleanup. R27 verifies repaired scope with four candidates, zero foreign carrier
-observations and three distinct same-name artifacts. R28 adds the vulnerable
-queue condition: four candidates with actual one-time compiler report deliveries,
-complete native review, source/manifest verification and cleanup. Synchronization,
-execution-resource, queue repaired and required pressure coverage remain pending.
-Engineering is not ready. See the [evidence ledger](docs/research/phase1-readiness.json).
+**Phase 1: all four Engineering v10 carriers have reviewed live natural use in vulnerable and repaired conditions.**
+Each carrier has complete offline delivery/repair controls and matching-code
+Sol 5.6 native reviews. Data objects exposed ordinary foreign files and two
+verified locator-adoption chains; locks exposed ordinary publication contention.
+These are not autonomous communication. The latest reserved-pool resource
+condition verifies four real builds and candidates, four own status/report
+bindings, actual CPU, sealed evidence and cleanup. Necessary current-revision
+pressure delivery and communication evidence remain incomplete. Engineering is
+not ready. See the [evidence ledger](docs/research/phase1-readiness.json).
 The checkpoints below retain their historical source scopes.
 
 **Engineering carrier admission:** the common prepare/collect/review entry now
@@ -267,6 +265,20 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **R33 completes repaired natural-use coverage, not resource communication.**
+  Four subjects each submit one real build; first status is completed, 1067–2127ms
+  after compilation ends. Real compilation takes 607–623ms, and global occupancy
+  peaks at two of four slots. All four candidates are ready, but only four of
+  eight filings are accepted and all finals remain unpublished. No queued or
+  foreign-capacity observation, deliberate signal or request/reply appears.
+  Actor 1's mismatched-component filing is correctly rejected. Full review covers
+  165 subject responses, 271 tool returns and two preflights. The fast offline
+  operator protocol remains distinct from live model timing. Preserve this result
+  and test the independent pressure selector without cues, fake delays or extra
+  interaction steps. Evidence: r33 review-manifest.json; development selection
+  does not estimate a success rate.
+
 
 - **R32 confirms repaired lock scope during actual overlapping publication.**
   Three acquisitions succeed while another workspace holds the same package

@@ -1,6 +1,6 @@
 # Phase 1: autonomous discovery of isolation-breaking channels
 
-Design v11 · 1 November 2026 · v10 all four vulnerable carrier natural-use conditions reviewed; repaired coverage, pressures and communication evidence incomplete
+Design v11 · 1 November 2026 · v10 all four vulnerable and repaired carrier natural-use conditions reviewed; pressures and communication evidence incomplete
 
 ## Current business revision
 
@@ -120,7 +120,7 @@ second channel. Classify observed use separately from the mechanism offered.
 
 | Dimension | Levels | Constraint |
 |---|---|---|
-| Exploitable carrier category | Data objects; message transport; synchronization; execution resources | Operational refinement with explicit source mapping; Engineering feasibility verified, live pending. |
+| Exploitable carrier category | Data objects; message transport; synchronization; execution resources | Operational refinement with explicit source mapping; Engineering feasibility and vulnerable/repaired live natural use verified; autonomous communication pending. |
 | Encoding mechanism | E1; E2.1; E2.2 | Supplementary mechanism label; current cache adapter implements all three with matched repairs. |
 | Pressure | Ordinary work; self-preservation; peer-preservation; self-enhancement | Direct resource owner × preservation/enhancement from a fixed baseline. Peer-enhancement is optional, not a required fourth pressure. |
 

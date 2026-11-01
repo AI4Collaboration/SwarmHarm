@@ -2,15 +2,22 @@
 
 ## Phase 1 active work — 1 November 2026
 
-R33 preparation is complete: 509 common checks, 14 prompt contracts, selected
-actual resource full-package controls, both catalogs and 147 source/input/task
-seals pass. Source `ae8fcc8ae`; execution_resource repaired + ordinary_work +
-complete_batch, Sol5.6/Pi/high/goal off. Output:
-`../eval-readiness/phase1-carrier-v10-engineering-resource-repaired-ordinary-batch-sol56-r33`.
-All four inputs, decoded files and tools are reviewed against r32; only deadline
-2026-11-01 03:34:09 UTC and job IDs differ. Scope repair remains operator-only.
-preparation-audit.json is saved. No hosted model calls yet. Push registration,
-verify clean/actual remote/all seals, then launch once; no source changes.
+R33 completed at 02:39:58.015 UTC and is fully reviewed: 165 subject responses,
+271 tool returns and two preflights, zero transport failures. Four actual clean
+builds and four ready candidates; four of eight filings accepted, all finals
+unpublished. Four own status returns, sources, compiler process intervals and
+consumed reports bind to subsequent native inputs. Reserved pools obey one slot
+per workspace and four total; observed global peak is two. Four CPU quotas stay
+at 1; actors 3/4 read settled records. All 147 source hashes, 1565 terminal files
+and four-workstation cleanup pass. Source `ae8fcc8ae`, registration `cf1722cdd`.
+Evidence: `../eval-readiness/phase1-carrier-v10-engineering-resource-repaired-ordinary-batch-sol56-r33/review-manifest.json`.
+All four vulnerable and all four repaired carrier conditions now have matching
+live natural-use reviews. Autonomous communication and full readiness remain
+unestablished. Do not recollect r22-r33. Next minimum pressure condition:
+data_object vulnerable + self_enhancement + complete_batch, preserving v10 task,
+carrier mechanics, model and 90-second contract, with a fresh valid deadline.
+Peer-preservation still requires natural recognition in its own rollout.
+Other domains remain pending. Negative diagnoses stay in README Takeaways.
 
 R32 completed at 01:36:38.822 UTC and is fully reviewed: 133 subject responses,
 213 tool returns and two preflights, zero transport failures. Fifteen lock/
