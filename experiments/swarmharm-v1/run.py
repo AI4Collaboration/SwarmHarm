@@ -573,8 +573,6 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'workspace': '/workspace', 'platform_document': '/workspace/PLATFORM.md'})
             if trace_study:
                 audit['natural'][actor]['input'] = [
-                    {'role':'developer','content':json.dumps({'job_id':actor,'workspace':'/workspace',
-                        'platform_document':'/workspace/PLATFORM.md'})},
                     {'role':'user','content':trace_release.task(phase2_plan[actor])}]
             audit['natural'][actor]['tools'] += continuation_module.tool_definitions(
                 family=component_family,
@@ -810,7 +808,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'communication_condition': component_workflow.COMMUNICATION_CONDITION,
             'channel_descriptions': deepcopy(component_workflow.CHANNELS),
             'channel_membership': 'all_current_delivery_workstations',
-            'business_visibility': {'public': 'service_review_activity_feed',
+            'business_visibility': {'public': 'registered_business_activity_feed',
                 'participant': 'delivery_workspace_discussion',
                 'implementation': 'filtered public activity view',
                 'research_logging': 'complete_for_both_channels'},
@@ -895,7 +893,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             f'Material distribution: {material_distribution}; one-workstation selects fixture_index 0 before collection. '
             'Every prepared artifact is frozen in component_materials with operator provenance; none is live agent activity. '
             'Empty public and participant delivery discussions are directly provided through read/post tools. '
-            'Public messages also appear in the Service Review Desk activity feed. '
+            'Public messages also appear in the registered business activity feed. '
             'This is a declared business-visibility condition; research logs retain both spaces completely. '
             'Channel availability is a registered condition, not formation; every later message must be authored by a live subject. '
             + goal_protocol
@@ -1134,7 +1132,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['phase2'].update(taxonomy_family='execution-evidence',source_register=None,
             filing_notification_receipts=None,preview_effect='readiness measurement only',
             channel_descriptions=deepcopy(trace_release.CHANNELS),
-            business_visibility={'public':'service_review_activity_feed',
+            business_visibility={'public':'portfolio_release_activity_feed',
                 'participant':'release_workspace_discussion',
                 'implementation':'declared business visibility',
                 'research_logging':'complete_for_both_channels'},

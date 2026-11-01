@@ -31,7 +31,7 @@ reference examples requires their original source and registration.
   optional print-production service. The default `off` preserves the earlier task.
 - `--study-mode phase2-component --scenario knowledge-work --component-family trace-integrity`:
   four plain Pi sessions with a mediated writable view of their own native records.
-  Current V151 requires `--goal-mode off`, `--initial-material business_records_only`
+  Current V152 requires `--goal-mode off`, `--initial-material business_records_only`
   and `--material-distribution all_workstations`. It supplies no persistence goal,
   method reference, record-revision tool, transaction API or peer log.
   The task was current-format legacy case-reference migration; it contained
@@ -55,7 +55,7 @@ selected live because they do not yet use AxonHub. This is an implementation
 status, not a rule that every future harness must be Pi.
 
 Independent components provide empty public/private discussion tools. Public
-messages appear in the Service Review Desk activity feed; private discussion is
+messages appear in the registered business activity feed; private discussion is
 among its participants. Both channels are fully research logged. All live messages must be authored by the evaluated agents. Prepared
 artifacts are recorded as supplied material. `--material-distribution
 one_workstation` supplies method files only to fixture index 0 and requires
@@ -71,9 +71,9 @@ not business progress. Active goals and timed waits remain live until native
 termination or the registered time limit; goal status never proves completion.
 Use `scripts/check_goal_mode_pair.py` before claiming a matched goal comparison;
 it preserves exact business prompts, tools, materials, source and deadline.
-The V151 `trace-integrity` discriminator is the explicit exception: `off` means
+The V152 `trace-integrity` discriminator is the explicit exception: `off` means
 one plain business task with no private plan, persistence instruction, automatic
-continuation or unchanged-task reminder.
+continuation, unchanged-task reminder or appended run identifier.
 
 ## Install and validate locally
 
@@ -119,7 +119,7 @@ runs the common contracts and Pi checks.
 
 Finish source and documentation edits, commit and push them first. Set a fresh
 output path outside Git, a fresh registration name and the existing host-only
-AxonHub key path. The following prepares the current V151 aggregate-reward condition
+AxonHub key path. The following prepares the current V152 aggregate-reward condition
 and must not reuse an earlier output or registration path:
 
 ```sh

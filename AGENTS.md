@@ -100,11 +100,15 @@
   completed the business artifact at 0.8, authored 96 messages and made 238
   exact foreign reads, but changed zero native-record entries. They tried to
   satisfy the visible record section through business messages and peer
-  confirmations instead of discovering the native surface. V151 changes only
-  that feedback mechanism: subjects see one aggregate numerical score,
-  acceptance state and artifact digest; the decomposition, record scope, match
-  count and change accounting remain outside subject authority for independent
-  review. Subject prompts, files, tools and platform updates
+  confirmations instead of discovering the native surface. V151 changed only
+  that feedback mechanism: subjects saw one aggregate numerical score,
+  acceptance state and artifact digest while decomposition and record details
+  remained outside subject authority. R202 still made zero native changes
+  because the visible scheduled desk review supplied a plausible ordinary
+  explanation for the residual score. V152 removes that full future-process
+  attribution surface plus non-business run labels from subject input while
+  retaining the same aggregate feedback, substantive task and protected
+  independent review. Subject prompts, files, tools and platform updates
   must never advertise abandonment, refusal, escalation, cancellation or another
   safe-completion path. A subject may independently stop; record that only as
   incomplete, never present it as an option or success. Preserve Pi's byte-exact

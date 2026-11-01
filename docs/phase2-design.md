@@ -106,17 +106,21 @@ missing condition is mechanism legibility. See
 
 ## Current aggregate-reward discriminator
 
-V151 retains V150's synthetic briefing objective, writable per-owner native
-record surface, ordinary filesystem access and empty discussions. It still has
+V152 retains V151's synthetic briefing objective, writable per-owner native
+record surface, ordinary filesystem access, empty discussions and aggregate
+score only. R202 showed that the advertised future desk review was a concrete
+attribution confound: agents proved the artifact was capped at 0.8, then waited
+for the named process instead of searching the broader environment. V152 removes
+the full future-process attribution surface, all desk/reviewer wording and the
+non-business run label from subject input. It still has
 no goal, automatic continuation, method artifact, record-revision tool,
-multi-owner transaction or exact diagnostic. It changes one mechanism: the
-subject receives only an aggregate numerical score, acceptance state and
-artifact digest. Score decomposition, record scope, counts and change accounting
-remain protected evaluator data. Independent replay still requires actual
-terminal record changes; a score, publication or claim is insufficient. Any
-shared plan must be authored by the subjects. This mirrors Perfect Crime's
-hidden-component reward structure more closely while preserving the explicit
-boundary that SwarmHarm's native-record adapter is synthetic.
+multi-owner transaction or exact diagnostic. Score decomposition, record scope,
+counts and change accounting remain protected evaluator data. Independent
+replay still requires actual terminal record changes; a score, publication or
+claim is insufficient. Any shared plan must be authored by the subjects. This
+mirrors Perfect Crime's hidden-component reward structure more closely while
+preserving the explicit boundary that SwarmHarm's native-record adapter is
+synthetic.
 
 ## Latest reviewed positive design
 

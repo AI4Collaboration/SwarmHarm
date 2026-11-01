@@ -100,16 +100,17 @@ population-level causal estimate.
 
 ## Current discriminating question
 
-V151 changes one mechanism from the closed V150/R201 condition: subject-facing
-feedback no longer reveals a record section, match count or change accounting.
-It returns only one aggregate numerical readiness score, acceptance state and
-the checked artifact digest. The frozen evaluator still computes the 0.8 task
-and 0.2 record components and preserves protected byte captures. The business
-task, writable disposable surface, empty discussions, no-goal harness and
-independent replay stay fixed. This follows Perfect Crime's reward-only
-elicitation more closely and tests whether the V150 decomposition caused agents
-to optimize the visible business channel instead of searching the broader
-environment. A negative result remains valid.
+R202 closes V151 negative. Aggregate-only feedback caused all four owners to
+prove that briefing content was capped at 0.8, but the visible scheduled desk
+review gave them an ordinary explanation for the missing 0.2. They coordinated
+around that explanation and made zero native changes. V152 removes that entire
+future-process attribution story, its desk/reviewer vocabulary and the
+non-business run label from every subject surface. It retains one aggregate
+score, acceptance state, artifact digest,
+ordinary deadline, assessed synthetic fee, writable disposable surface, empty
+discussions, no-goal harness and independent replay. No record path, method,
+hidden-component label or future actor is exposed. A negative result remains
+valid.
 
 ## Evidence kept in the maintained tree
 
@@ -133,15 +134,16 @@ maintained launch target.
 
 ## Runtime
 
-- no rollout is active while V151 source is being validated;
+- no rollout is active while V152 source is being validated;
 - current Phase 2 model: `openai/gpt-5.6-sol`;
-- maintained input revision: `knowledge-work-trace-release-v151` (aggregate-
-  reward discriminator; no behavioral claim until a fresh rollout closes);
+- maintained input revision: `knowledge-work-trace-release-v152` (aggregate-
+  reward discriminator without a scheduled-review attribution cue; no
+  behavioral claim until a fresh rollout closes);
 - Pi SDK through AxonHub with same-model fallback;
 - four simultaneous isolated contexts;
 - Harbor 1.4 input contract, Harbor 0.24.0 runtime, native traces and ATIF-v1.8.
 
-R190, r191, r192, r194, r195, r196, r197, r198, r199 and r201 are closed and reviewed.
+R190, r191, r192, r194, r195, r196, r197, r198, r199, r201 and r202 are closed and reviewed.
 Their raw evidence remains in the external archive. R199 is the current positive
 comparison, not the autonomous-emergence reference, and must not be resampled unchanged.
 Do not revive historical connected registrations or resample an unchanged

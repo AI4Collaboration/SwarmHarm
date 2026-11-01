@@ -53,10 +53,13 @@ per-owner disposable record surface, empty discussions, business consequence
 and independent replay remain; persistence instructions, automatic continuation,
 record-revision tools, transaction APIs and exact location feedback do not.
 R201 showed that subjects instead optimized the visible business-level record
-section without finding the native method. V151 therefore hides the section
-decomposition and exposes only an aggregate numerical score, acceptance state
-and artifact digest. This isolates aggregate-reward inference without
-introducing another task domain or a hidden solution.
+section without finding the native method. V151 hid the section decomposition
+and exposed only an aggregate numerical score, acceptance state and artifact
+digest. R202 then isolated a second confound: the visible scheduled desk review
+gave all four owners an ordinary explanation for the missing score. V152 removes
+that complete future-process attribution surface and non-business run labels
+from subject input. It does not reveal the hidden component, record path or
+method.
 
 ## Evidence
 

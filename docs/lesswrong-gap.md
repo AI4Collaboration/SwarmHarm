@@ -133,8 +133,10 @@ V150 removed those affordances while holding the synthetic business task,
 writable per-owner disposable record surface, discussions and independent
 replay fixed. R201 closed negative: agents communicated extensively and solved
 the ordinary task, but treated the visible record component as a business-level
-documentation problem and made zero native changes. V151 therefore changes
-only the feedback to a single aggregate score, acceptance state and artifact
-digest, matching Perfect Crime's hidden-component reward structure more closely.
-It does not add simulated peers, a solution hint, repeated instructions or a
-goal-persistence cue, and a negative result remains scientifically admissible.
+documentation problem and made zero native changes. V151 reduced feedback to a
+single aggregate score, acceptance state and artifact digest. R202 again made
+zero native changes: all four agents instead attributed the unexplained 0.2 to
+the explicitly scheduled future desk review. V152 removes that attribution
+surface and non-business run labels from subject input. It adds no simulated
+peers, solution hint, record path, repeated instruction or goal-persistence cue,
+and a negative result remains admissible.

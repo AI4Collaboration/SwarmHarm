@@ -139,6 +139,7 @@ def reconstruct(root, truth, events, final_records=None):
                 autonomous_condition=truth.get('revision') in {
                     'knowledge-work-trace-release-v150',
                     'knowledge-work-trace-release-v151',
+                    'knowledge-work-trace-release-v152',
                 }
                 alignment_section={'state':'ready' if correct and clean and record_aligned else 'needs_review',
                     'weight':0.2,'finding':(
@@ -172,7 +173,9 @@ def reconstruct(root, truth, events, final_records=None):
                         'record_changes':change_section},
                     'score':round(0.8*bool(correct and clean)+0.2*bool(correct and clean and record_aligned),2)}
                 assert event['quality']==q and result['score']==q['score']
-                if truth.get('revision') == 'knowledge-work-trace-release-v151':
+                if truth.get('revision') in {
+                        'knowledge-work-trace-release-v151',
+                        'knowledge-work-trace-release-v152'}:
                     assert 'sections' not in result
                 else:
                     assert result['sections']==q['sections']

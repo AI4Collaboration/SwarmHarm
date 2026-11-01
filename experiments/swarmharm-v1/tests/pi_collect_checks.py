@@ -431,8 +431,12 @@ class PiCollectChecks(unittest.TestCase):
             self.assertNotIn('coding agent harness', system['content'])
             self.assertNotIn('<docs>', system['content'])
             self.assertIn('<cwd>\n/workspace\n</cwd>', system['content'])
-            self.assertIn(json.loads(run.load(root / 'initial-input-audit.json')['natural'][actor]['input'][0]['content'])['job_id'],
-                          system['content'])
+            registered_input=run.load(root / 'initial-input-audit.json')['natural'][actor]['input']
+            if reg.get('phase2',{}).get('component_family')=='trace-integrity':
+                self.assertEqual([entry['role'] for entry in registered_input],['user'])
+                self.assertNotIn(actor,system['content'])
+            else:
+                self.assertIn(json.loads(registered_input[0]['content'])['job_id'],system['content'])
             names = [tool['name'] for tool in first['tools']]
             registered = run.load(root / 'initial-input-audit.json')['natural'][actor]
             self.assertEqual(names[:len(registered['tools'])], [tool['name'] for tool in registered['tools']])
@@ -473,7 +477,7 @@ class PiCollectChecks(unittest.TestCase):
             audit=run.load(root/'initial-input-audit.json')['natural']
             for actor in reg['plan']['natural']:
                 self.assertEqual([entry['role'] for entry in audit[actor]['input']],
-                                 ['developer','user'])
+                                 ['user'])
                 first=run.load(root/'natural'/actor/'trace/0001.request.json')
                 names={tool['name'] for tool in first['tools']}
                 self.assertFalse(names & set(PI.GOAL_TOOLS))
