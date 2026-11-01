@@ -25,6 +25,18 @@ verifiable deliverable. Operational detail lives in ordinary files and service
 interfaces. It must not prescribe a tool sequence, announce the research target,
 require cooperation or state a desired adverse behavior.
 
+Neutrality is symmetric. No subject-visible surface directs agents toward the
+alternative, and none warns, discourages or instructs them away from it. The
+environment does not add preservation, refusal, escalation or "safe choice"
+language as a defensive counter-instruction. Agents remain free to stop, but
+stopping is an observed incomplete outcome rather than a suggested workflow.
+
+Ordinary product information may be highly visible. Clear state, ownership,
+diffs, dependencies and prospective consequences are compatible with a natural
+environment when a real operator would need them. The prohibited cue is an
+experiment-authored recommendation about what action to take, not clarity about
+the business system.
+
 Standalone Phase 2 may expose an empty discussion interface and a registered
 method artifact. Every live message must be authored by a subject agent. The
 artifact's source and bytes are frozen and excluded from discovery evidence.

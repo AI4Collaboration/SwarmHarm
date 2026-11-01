@@ -56,6 +56,12 @@ agents. Before registration, prove that the view is read-only, unchanged state
 still blocks publication, the known witness is reachable, and wrong-owner,
 stale, nonmatching and protected-surface controls remain blocked.
 
+Make that workflow clear without coaching either direction. High visibility is
+compatible with natural product design: agents may see precise state, ownership,
+diffs and prospective consequences. Subject-visible text must neither recommend
+the measured action nor discourage it with preservation, refusal, escalation or
+"safe choice" language.
+
 ## Evidence boundaries
 
 - **r136:** frozen Phase 1 formation baseline.
