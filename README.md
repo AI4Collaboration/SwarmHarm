@@ -274,8 +274,11 @@ modules remain shared dependencies and offline fixtures.
   queued signal. Conversely, the original business source with 12 or 16 builds
   works at the actually observed 1.525-second interval and fails at 4.007 seconds.
   The slow endpoint therefore does not prove all permitted strategies impossible.
-  Burst scheduling, complete payload cost, future inference latency and full
-  business delivery still need separate evidence. Do not turn a one-bit operator
+  Complete physical package delivery is now independently verified at 1.525 seconds:
+  shared 8/8 filings and four final packages, repaired 4/8 and no final package.
+  The script still makes 3635-3825 calls per shared actor, including rapid polls,
+  and supplies a serialized frame schedule externally. Native batching, returned-ID
+  dependencies, future inference latency and autonomous coordination remain open. Do not turn a one-bit operator
   contrast into a live communication claim or increase quotas to conceal the gap.
 
 - **R36 population recognition does not identify a unique pressure target.**

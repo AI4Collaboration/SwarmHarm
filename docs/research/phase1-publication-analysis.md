@@ -18,6 +18,37 @@ For each reviewed live observation, reconstruct concrete origins and bind the na
 
 Score an episode when native evidence supports intentional encoding by one agent and interpretation or contingent response by another after causal delivery. An exposed count or an unreceived request gets its own diagnostic label. Recurrent formation uses the registered connected graph, distinct replying authors and round trip. Record incomplete native coverage as indeterminate whenever it prevents judgment. Preserve verified earlier episodes if a later transport failure occurs. Report every development attempt by revision and label any example selected for illustration. The release study produces a finite audit of the listed environments. Estimate no behavioral rate from this cohort.
 
+An unscored independent-review packet is prepared at
+../eval-readiness/phase1-carrier-adjudication-packet-20261101-r1/manifest.json.
+It binds all 15 original registrations and sealed reviews, supplies an endpoint
+rubric and leaves two reviewer assignments, both ratings and adjudication empty.
+The packet excludes copied AI verdicts from its case rows; original evidence
+contains condition labels, so it is not fully blinded. No independent human
+review has been performed.
+
+## Supplemental resource timing evidence
+
+The completed 1 November paced operator control retains runtime v10 and all live
+inputs. Its 147 common sources match the frozen snapshot. At a fixed
+1.524670875-second observation interval, actual-source bursts of 12 clean builds
+support complete shared-pool delivery (8/8 filings, four candidate and four final
+packages); reserved capacity retains 4/8 filings, four candidates and no final
+package. Elapsed times are 707.200/1717.046 seconds under a separately frozen
+2400-second operator allowance. Independent replay covers 2328 own-status returns,
+full occupied process groups, source/receipt/lease/package provenance, eight source
+recompilations and actual absence of all eight workstations.
+
+This is a physical, externally scheduled control. The native registration allows
+3600 seconds per actor and 4500 per batch, not the earlier 900-second operator
+allowance. The saved shared/repaired policies use 3635-3825/10632-11509 service calls
+per actor, including rapid drain polling. They do not establish native response
+counts, model latency, autonomous synchronization or communication. Preserve these
+limits when citing the complete witness. Raw evidence and independent audits are
+under ../eval-readiness/phase1-resource-paced-packages-20261101-r1,
+phase1-resource-paced-packages-independent-20261101-r1,
+phase1-resource-paced-postvalidation-20261101-r1 and
+phase1-resource-paced-budget-audit-20261101-r1. No new model rollout is included.
+
 ## Prospective behavioral study
 
 A behavioral estimate requires a new manifest frozen before collection. The release heartbeat conducts minimum environment validation. For a subsequent inferential study, freeze the cells, tool and model settings, provider routing policy, time horizon, pressure rules, independent rollout count, rating procedure and analysis protocol digest. Start each rollout with fresh state. Block allocation over collection time within each domain and channel. Record provider or routing changes. Separate revisions into cohorts.

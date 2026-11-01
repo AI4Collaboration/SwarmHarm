@@ -1317,7 +1317,7 @@
   "publication_analysis": {
     "status": "protocol_defined",
     "path": "docs/research/phase1-publication-analysis.md",
-    "sha256": "53f77d7812f8ea44599022995aa538bed6ba16e95078259b9fd60617f27e04ba",
+    "sha256": "e327588acb65b67165164b6833a48d02b437fb1bc6c8a086b48a5e8696ad5a3a",
     "release_collection": "Engineering only: four concrete carrier implementations with eight vulnerable/repaired scope conditions, after preparation. Pressure is an independent attachment; other domains remain pending.",
     "development_rate_estimation": false,
     "confirmatory_collection_started": false,
@@ -1354,9 +1354,16 @@
       "audit": "../eval-readiness/phase1-carrier-index-audit-20261101-r1/manifest.json",
       "new_human_adjudication": false,
       "behavioral_rate_estimation": false
+    },
+    "carrier_adjudication_packet": {
+      "path": "../eval-readiness/phase1-carrier-adjudication-packet-20261101-r1/manifest.json",
+      "cases": 15,
+      "reviewers_assigned": 0,
+      "ratings_completed": 0,
+      "independent_human_adjudication_complete": false
     }
   },
-  "next": "Collect existing paced complete-delivery control session11262 and followthrough24690; do not edit frozen common sources or repeat controls. If successful inspect full independent decoding, actual package bytes/recompilation, all quotas and eight-workstation absence; retain operator/live distinction. If failure preserve evidence and diagnose one demonstrated cause. No new live registration yet.",
+  "next": "Paced complete physical delivery and cleanup are independently verified; no active Phase1 process remains. Preserve completed controls and r22-r36. Assess native batching, returned-ID/frame-synchronization dependencies and latency against the sealed 3600-second actor/4500-second batch budgets without supplying a protocol or adding cues. Complete publication adjudication preparation; independent human adjudication, autonomous communication and unobserved pressure outcomes remain open. No new runtime revision or live registration is justified solely by absent communication.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -1371,7 +1378,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-11-01T08:05:12.124806+00:00",
+  "updated_at": "2026-11-01T08:39:38.077376+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "v10_four_carriers_natural_use_reviewed_pressure_partial_resource_live_budget_unverified",
   "pressure_resource_calibration": {
@@ -5127,9 +5134,7 @@
       "interpretation": "A legal current-source burst is physically observable at the lower recorded action interval. Larger-source high-window positives do not establish response-budget fit. All are service-only operator controls."
     },
     "resource_paced_complete_delivery": {
-      "status": "running",
-      "session": 11262,
-      "pid": 10684,
+      "status": "complete_independently_verified_operator_only",
       "output": "../eval-readiness/phase1-resource-paced-packages-20261101-r1",
       "source_commit": "e6c15cfbd9dcaeef49c673ba448af5e14a41dd7f",
       "operator_policy": "12 builds; 97-bit polarity code; <=872 builds per actor",
@@ -5139,28 +5144,52 @@
       "runtime_changed": false,
       "model_calls": 0,
       "ready": false,
-      "followthrough_session": 24690,
       "followthrough": "../eval-readiness/phase1-resource-paced-followthrough-20261101-r1/status.json",
-      "progress": {
-        "condition": "execution_resource-repaired",
-        "frames_completed": 219,
-        "frames_total": 388,
-        "at": "2026-11-01T08:05:12.073633+00:00"
-      },
-      "shared_arm_provisional": {
-        "elapsed_seconds": 707.1998245409923,
-        "filed": 8,
-        "candidates": 4,
-        "final_packages": 4,
-        "builds_per_actor": {
-          "job-7efdc8b4c2e9": 812,
-          "job-5791801d67e1": 812,
-          "job-ded51b829116": 860,
-          "job-dd0c5b0b082b": 836
+      "completed_at": "2026-11-01T08:35:32.133249+00:00",
+      "branches": [
+        {
+          "condition": "execution_resource-repaired",
+          "ordinary_filings": 4,
+          "final_filings": 4,
+          "candidate_packages": 4,
+          "qualified_final_packages": 0,
+          "elapsed_seconds": 1717.0464343749918,
+          "builds_per_actor": {
+            "job-7efdc8b4c2e9": 812,
+            "job-5791801d67e1": 812,
+            "job-ded51b829116": 860,
+            "job-dd0c5b0b082b": 836
+          }
         },
-        "result_sha256": "9349803d61aef4f56abac512feca488f2a098ab1cab0ae8613b76057ededf4c5",
-        "independent_review_pending": true
-      }
+        {
+          "condition": "execution_resource-vulnerable",
+          "ordinary_filings": 4,
+          "final_filings": 8,
+          "candidate_packages": 4,
+          "qualified_final_packages": 4,
+          "elapsed_seconds": 707.1998245409923,
+          "builds_per_actor": {
+            "job-7efdc8b4c2e9": 812,
+            "job-5791801d67e1": 812,
+            "job-ded51b829116": 860,
+            "job-dd0c5b0b082b": 836
+          }
+        }
+      ],
+      "source_files": 147,
+      "actual_returns_decoded": 2328,
+      "independently_recompiled_sources": 8,
+      "actual_workstations_absent": 8,
+      "independent_evidence": "../eval-readiness/phase1-resource-paced-packages-independent-20261101-r1/evidence-manifest.json",
+      "postvalidation_evidence": "../eval-readiness/phase1-resource-paced-postvalidation-20261101-r1/manifest.json",
+      "budget_audit": "../eval-readiness/phase1-resource-paced-budget-audit-20261101-r1/manifest.json",
+      "followthrough_terminal": "independent reconstruction passed; cleanup text-case assertion failed; original evidence retained and separate postvalidation passed",
+      "registered_live_budget": {
+        "max_actor_seconds": 3600,
+        "max_batch_seconds": 4500
+      },
+      "native_budget_fit_verified": false,
+      "autonomous_communication_verified": false
     }
   },
   "source_revision_scope": "Historical cache adapter only; new carrier source is separately bound under engineering_carrier_feasibility."

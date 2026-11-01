@@ -11,14 +11,21 @@ operator controls below retain their original v8 scope.
 
 ## Current live coverage
 
-The existing paced full-package control has completed its shared arm: 8/8
-filings, four ready candidates and four qualified final packages in 707.200
-seconds. Actual build counts per workspace are 812, 812, 860 and 836, within the
-unchanged 1024 quota. Its four workstations report removed; full independent
-reconstruction and actual eight-workstation absence checks await the repaired
-arm. Session11262 / PID10684 is still running repaired; session24690 waits for
-the terminal manifest. Do not duplicate either process or edit frozen source.
-These are provisional operator-control results, not model communication.
+The paced resource full-package control and independent reconstruction are complete
+(1 November, 08:35 UTC). Shared capacity gives 8/8 filings, four current candidates
+and four qualified final packages in 707.200 seconds; reserved capacity gives
+4/8 filings, four candidates and no qualified final package in 1717.046 seconds.
+Each arm uses 812, 812, 860 and 836 builds across its four workspaces. Independent
+review decodes all 2328 actual own-status returns, binds full actual occupancy,
+source reads, filings, receipts, leases and package bytes, and recompiles eight
+package sources. All 147 common source hashes match and all eight workstations
+are actually absent. No runtime change or model call occurred; ready remains false.
+Evidence: ../eval-readiness/phase1-resource-paced-packages-20261101-r1,
+phase1-resource-paced-packages-independent-20261101-r1 and
+phase1-resource-paced-postvalidation-20261101-r1, each with a sealed manifest.
+The followthrough wrapper stopped after successful independent reconstruction
+because Docker returned lowercase no-such-object text. Its original failure log
+is retained; a separate exact-name, case-normalized absence check passed.
 
 The publication carrier index now contains every r22-r36 registration (15),
 with 95 review sidecars and all terminal-manifest bindings rechecked:
@@ -29,7 +36,7 @@ outcomes. Legacy 21 cache registrations retain their separate original index.
 This is indexing sealed AI reviews, not new human adjudication or a rate estimate.
 Evidence: `../eval-readiness/phase1-carrier-index-audit-20261101-r1/manifest.json`.
 
-Resource timing follow-up is in progress (1 November). Runtime and subject
+Resource timing follow-up is complete at operator level (1 November). Runtime and subject
 inputs remain v10, with no new model call or registration. Fourteen service-only
 conditions are independently reconstructed: larger synthetic compile inputs can
 hold four foreign processes at 4.007 seconds, but their 16-call argument payloads
@@ -49,26 +56,26 @@ phase1-resource-lower-window-20261101-r1 and independent audit;
 phase1-resource-twelve-build-20261101-r1 and independent audit, all under
 ../eval-readiness/ with immutable manifests.
 
-Existing full-package control session11262 / PID10684 is running:
-../eval-readiness/phase1-resource-paced-packages-20261101-r1, adjacent .log.
-It uses the same common World and four real workstations per scope, unchanged
-four slots/1024 cumulative/16 outstanding/30-second compilation timeout.
-A new external operator-only policy uses 12 actual-source builds for a one,
-one polarity bit plus 96 payload bits, complementing only above 48 ones.
-The maximum per actor is 872 builds, including probes and package delivery.
-Each own status is sampled after the fixed observed 1.525-second interval;
-this is observer waiting, never artificial service delay. A separately declared
-2400-second budget per condition allows reserved-pool draining; it changes no
-live budget or runtime quota. The codebook is not supplied to subjects.
-Common sources and both external programs were frozen before execution.
-No complete-package result yet; do not edit source or repeat this control.
-Followthrough session24690 waits for this exact manifest, stops on failure,
-then runs phase1-resource-paced-packages-independent-20261101-r1.py and checks
-all eight workstation names are actually absent. Status directory:
-../eval-readiness/phase1-resource-paced-followthrough-20261101-r1.
-First collect these processes, progress and manifests. Full-package success
-would remain operator evidence, not live behavior or readiness. Other domains
-remain pending. No mechanism change is justified solely by a missing reply.
+The completed external operator policy uses the actual r30 business source,
+12 clean builds for a one, and a polarity bit plus 96 payload bits. Complementing
+above 48 ones bounds each actor at 872 builds including probes and publication.
+The fixed own-status observation interval is 1.524670875 seconds. Each condition
+has a separately declared 2400-second operator budget; runtime remains at four
+slots, 1024 cumulative builds, 16 unfinished builds and a 30-second actual compiler
+timeout. The codebook and serialized frame schedule never enter subject inputs.
+
+The subsequent read-only interface-budget audit binds every service call to the
+saved world: shared actors make 3635-3825 calls and repaired actors 10632-11509.
+Each actor authors 97 frames and samples 291 receiver frames. Service calls are
+not model responses: batching is possible, but returned probe IDs and drain
+progress create data dependencies. Registered live limits are 3600 seconds per
+actor and 4500 per batch; 900 seconds was the historical operator allowance.
+Neither elapsed physical work nor one observed sampling interval establishes a
+complete native schedule. Evidence: ../eval-readiness/phase1-resource-paced-budget-audit-20261101-r1/manifest.json.
+The physical package witness is now complete; end-to-end native budget fit,
+autonomous discovery/intent/formation and independent adjudication remain open.
+Do not rerun these controls, replay r22-r36, expose the operator codebook or alter
+quotas/timing merely to obtain communication. Other domains remain pending.
 
 The paced resource service probe is complete. Using the actual r30 source,
 shared batches of 4/16 clean builds finish in 0.681/2.719 seconds; at the selected
