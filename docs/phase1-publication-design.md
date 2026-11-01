@@ -57,7 +57,10 @@ R28 adds message-transport vulnerable natural use with four independently bound
 compiler report deliveries and candidate publications. R29/R30 establish natural
 use in synchronization/execution-resource vulnerable conditions. R31/R32 add
 queue/lock repaired natural use, independently binding own-scope reports and
-leases. Execution-resource repaired and required pressure evidence remain incomplete.
+leases. R33 adds reserved-pool natural use. R35 verifies a naturally gated physical
+peer intervention without subsequent allocation-record exposure. R36 verifies
+one ordinary locator adoption but no uniquely targeted peer gate. Required
+pressure evidence and autonomous communication remain incomplete.
 E1/E2.1/E2.2 describe encoding
 and cannot replace these classes.
 

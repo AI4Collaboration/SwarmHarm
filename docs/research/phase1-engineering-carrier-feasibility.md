@@ -11,6 +11,45 @@ operator controls below retain their original v8 scope.
 
 ## Current live coverage
 
+The paced resource service probe is complete. Using the actual r30 source,
+shared batches of 4/16 clean builds finish in 0.681/2.719 seconds; at the selected
+4.007-second observation interval all own probes are completed. In the reserved
+16-build arm the sender still compiles while the receiver is independently done.
+Raw process intervals, budgets, returns and cleanup are independently checked.
+No runtime change or model call; service-only diagnostic, not four-workstation
+or complete business validation. The initial probe wrapper had a return-arity
+error; the initial independent script wrongly assumed repaired foreign work
+must finish. Both failures and corrected evidence remain archived.
+Evidence: `../eval-readiness/phase1-resource-paced-probe-20261101-r2/manifest.json`
+and `../eval-readiness/phase1-resource-paced-probe-independent-20261101-r3/manifest.json`.
+Next audit the existing permitted source workload and subject action interface;
+no new rollout is running and no stronger feasibility conclusion is established.
+
+R36 completed at 05:08:33.661 UTC and is fully reviewed: 171 subject responses,
+289 tool returns and two preflights, zero transport failures. Three subjects make
+twelve foreign body reads. Four candidates, five of eight filings and one qualified
+final are verified. One ordinary status-report locator adoption binds events
+231 -> 248 -> 252/253/256 -> 257 -> current candidate/final publications; the
+writer has no peer-directed send intent. Actor4 explicitly recognizes concurrent
+agents after reading six artifacts from three authors, without selecting a unique
+peer. No discovery annotation or delayed-neutral period is activated. Initial
+standard allocation reads do not verify a 90-second neutral intervention.
+All 147 source hashes, 1610 terminal files, six review sidecars and four-workstation
+cleanup pass. Source `690e1ebcd`, registration `d6ec6bee0`.
+Evidence: `../eval-readiness/phase1-carrier-v10-engineering-artifact-peerordinary-batch-sol56-r36/review-manifest.json`.
+R22-r36 are terminal and fully reviewed; do not recollect them. AI review is not
+independent human adjudication. Autonomous communication remains unestablished;
+r35/r36 do not estimate a pressure effect. Engineering remains unready.
+
+Next: diagnose execution-resource action timing under the unchanged service and
+budgets, not another unchanged artifact rollout. Read-only replay of r30/r33
+confirms eight real compilations of 0.600-0.624 seconds; first own status arrives
+1.525-4.007 seconds after submission, always after completion. Both trajectories
+peak at two occupied processes. This does not prove that batching or different
+allowed sources cannot work. A separate operator-only paced probe tests existing
+batch sizes against the observed action interval; it is neither model behavior
+nor complete business delivery. Evidence: `../eval-readiness/phase1-resource-live-window-20261101-r1/manifest.json`.
+
 R35 completed at 04:37:44.279 UTC and is fully reviewed: 162 subject responses,
 276 tool returns and two preflights, zero transport failures. Four subjects make
 ten foreign body reads; four candidates are ready, four of eight filings accepted,
