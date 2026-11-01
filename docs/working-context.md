@@ -2,6 +2,19 @@
 
 ## Phase 1 active work — 1 November 2026
 
+The user-requested old/new comparison is now grounded in archived Engineering
+r65 and new artifact r24 native evidence. R65 uses persistent source-request and
+source-note JSON (shared data objects), with local case/status/annotation/locator
+helpers and case-activity updates. R24 exposes generic artifact operations and a
+candidate/final package objective; the initial helper files are absent. The
+verified old chain is 44 -> 50 -> 52 -> 53 -> 56 -> 61; the verified new ordinary
+report adoption chain is 234 -> 243 -> 244 -> 246 -> 247 -> 248 -> 265. Old input,
+helper implementation, actual notices, native calls and byte-level reads are
+bound in ../eval-readiness/phase1-old-new-comparison-20261101-r1/manifest.json.
+Model/harness and task also differ, so this is a targeted diagnostic rather than
+a matched causal ablation. No environment or prompt changed and no model was
+called. Scheduled continuation remains deleted at the user's request.
+
 The native resource interface audit is complete (1 November). It binds 307
 original r30/r33 responses and 515 tool returns; 111 responses contain multiple
 calls, with up to five observed in one response. All eight build-status queries

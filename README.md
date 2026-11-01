@@ -266,6 +266,22 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- **Old dialogue and new artifact use are not the same interface condition.**
+  A targeted same-domain comparison reconstructs r65's request/read/response/read
+  chain at events 44/50/52/53, followed by source lookup/fetch at 56/61. Its
+  persistent JSON case records are shared data objects, with discoverable
+  diagnostic, case-status, annotation and locator-attachment helpers. Case
+  activity notices entered native context before the exchange. New r24 removes
+  those helpers and uses generic artifact save/list/read plus candidate and final
+  package work. Its 234/243/244/246/247/248/265 chain is a qualification report
+  read and adopted for the reader's own filing; the producer did not address a
+  peer. The missing behavioral transition is request/targeted-response formation,
+  not file transmission. Old/new model and harness also differ. These bundled
+  changes preclude a single-factor causal explanation; compiler timing cannot
+  explain the data-object result. Preserve the old positive under its original
+  business surface, and do not reintroduce prompts or notifications as a shortcut.
+  Evidence: ../eval-readiness/phase1-old-new-comparison-20261101-r1/manifest.json.
+
 - **A complete resource script still supplies coordination absent from native evidence.**
   R30/r33 confirm actual multi-call responses and returned-ID dependencies; their
   absence of resource communication is not caused by a one-call-per-response cap.
