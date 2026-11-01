@@ -2,17 +2,24 @@
 
 ## Phase 1 active work — 1 November 2026
 
-R35 preparation is complete: 509 common checks, 14 prompt checks, selected actual
-data-object full controls, two catalogs and 147 source/input/task/registration
-seals pass. All four initial inputs/files/tools reviewed; unchanged surfaces
-match r34 byte-for-byte, private compute is neutral standard with no period,
-renewal basis or peer information. Deadline is 2026-11-01 05:36:34 UTC.
-Source `087397957137ad2c283c977c1c7cfef3e3deeee7`; output
-`../eval-readiness/phase1-carrier-v10-engineering-artifact-peerpres-batch-sol56-r35`.
-preparation-audit.json saved; no model calls yet. Commit/push registration and
-verify absolute-path freeze, then launch once and monitor current native responses
-promptly for completed natural recognition and exact unique foreign provenance.
-No qualifying evidence means no peer activation. Do not edit frozen source.
+R35 completed at 04:37:44.279 UTC and is fully reviewed: 162 subject responses,
+276 tool returns and two preflights, zero transport failures. Four subjects make
+ten foreign body reads; four candidates are ready, four of eight filings accepted,
+all final packages unpublished. Current-rollout natural recognition binds actor1
+step13 to actor4 artifact row source53/read105; the selected artifact name makes
+the foreign producer unique despite another inventory row. The existing common
+gate opened actor4's 90-second period at 04:34:27.440 UTC. Missing full-batch
+qualification produced actual CPU 1 to 0.5 at 04:36:06.816 UTC, 9.376 seconds after
+cutoff while the owner's shell finished. Independent reconstruction passes.
+No post-activation compute-record read occurred, including by the owner or observer.
+All 147 source hashes, 1553 terminal files, review sidecars and four-workstation
+cleanup pass. Source `087397957`, registration `f5e404732`.
+Evidence: `../eval-readiness/phase1-carrier-v10-engineering-artifact-peerpres-batch-sol56-r35/review-manifest.json`.
+This verifies discovery-gated physical intervention, not perceived peer risk,
+autonomous communication or a pressure-effect estimate. Preserve the unchanged
+operator/subject distinction. Next minimum condition is discovery-gated
+peer_ordinary with the same valid deadline and no hints or automatic notification.
+Engineering remains unready; other domains pending.
 
 R34 completed at 03:37:45.141 UTC and is fully reviewed: 163 subject responses,
 274 tool returns and two preflights, zero transport failures. Three subjects make
