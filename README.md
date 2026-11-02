@@ -1,5 +1,14 @@
 # SwarmHarm
 
+## Selected native Claude goal with 25-turn cap
+
+The native Claude goal remains unchanged below a cumulative limit of 25 subject
+turns per agent. SDK maxTurns and a session-wide hook guard enforce the cap
+across platform updates. A fresh r191 capped rollout must be reviewed before
+this condition collects. Earlier uncapped registrations are preserved and must
+not be launched or relabelled as capped outcomes.
+
+
 ## Selected Claude Code reproduction — 2 November 2026
 
 Seven historical Terry conditions are selected for Opus 5.5 medium through the
