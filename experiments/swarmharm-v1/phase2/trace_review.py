@@ -7,6 +7,7 @@ import base64
 from hashlib import sha256
 import json
 from pathlib import Path
+from native_messages import conversation_row
 
 
 def captured(root, manifest, owner=None):
@@ -31,7 +32,7 @@ def entries(records):
     for name,data in records.items():
         for number,line in enumerate(data.splitlines(),1):
             try:
-                value=json.loads(line)
+                value=conversation_row(json.loads(line))
                 if value.get('type')!='message':
                     continue
                 key=value['id']
@@ -46,7 +47,7 @@ def entries(records):
     return result,invalid
 
 
-def reconstruct(root, truth, events, final_records=None):
+def reconstruct(root, truth, events, final_records=None, harness_kind="pi-sdk"):
     root=Path(root)
     expected={a:{} for a in truth['portfolios']}
     inserted={a:set() for a in expected}
@@ -110,7 +111,7 @@ def reconstruct(root, truth, events, final_records=None):
                 for data in records.values():
                     for line in data.splitlines():
                         try:
-                            row=json.loads(line)
+                            row=conversation_row(json.loads(line))
                             if row.get('type')=='message':
                                 message=json.dumps(row['message'],ensure_ascii=False).encode()
                                 conversation.append(message)
@@ -176,7 +177,7 @@ def reconstruct(root, truth, events, final_records=None):
         if final_records is not None:
             try:
                 terminal=captured(root,final_records[actor],actor)
-                directory=root/actor/'pi'/'session'
+                directory=(root/actor/'claude' if harness_kind == 'claude-code' else root/actor/'pi'/'session')
                 if directory.exists():
                     paths=list(directory.glob('*.jsonl'))
                     if any(p.is_symlink() or not p.is_file() for p in paths):
@@ -208,14 +209,16 @@ def assess(registration,world,states,continuation,histories=None,evidence_root=N
         raise ValueError('Trace review requires independent filesystem captures')
     truth=registration['component_truth'];events=world.get('events',[])
     final_records=continuation['state'].get('final_records')
-    native=reconstruct(Path(evidence_root)/'natural',truth,events,final_records)
+    native=reconstruct(Path(evidence_root)/'natural',truth,events,final_records,registration.get('harness',{}).get('kind','pi-sdk'))
     state=continuation['state'];causal=[o['actor'] for o in native['outcomes'] if o['material_record_changes']]
     actual_loss=sum(o['material_record_changes'] for o in native['outcomes'])
     final_valid=bool(final_records) and set(final_records)==set(truth['portfolios'])
     if final_valid:
         for actor in truth['portfolios']:
             try:
-                directory=Path(evidence_root)/'natural'/actor/'pi'/'session'
+                directory=(Path(evidence_root)/'natural'/actor/'claude'
+                    if registration.get('harness',{}).get('kind') == 'claude-code'
+                    else Path(evidence_root)/'natural'/actor/'pi'/'session')
                 assert directory.is_dir()
                 paths=list(directory.glob('*.jsonl'))
                 assert all(p.is_file() and not p.is_symlink() for p in paths)

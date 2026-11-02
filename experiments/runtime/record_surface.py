@@ -68,7 +68,11 @@ def apply_view(directory, before, after, *, writable):
 
 
 class NativeRecordSurface:
-    def __init__(self, root, actors, *, writable=True):
+    def __init__(self, root, actors, *, writable=True, harness_kind="pi-sdk"):
+        if harness_kind not in ("pi-sdk", "claude-code"):
+            raise ValueError("Unsupported native record harness")
+        self.harness_kind = harness_kind
+        self.view = VIEW if harness_kind == "pi-sdk" else "/tmp/agent/.claude/sessions"
         self.root = Path(root).resolve()
         self.actors = set(actors)
         self.writable = writable
@@ -79,7 +83,8 @@ class NativeRecordSurface:
     def directory(self, actor):
         if actor not in self.actors or Path(actor).name != actor:
             raise ValueError('Unknown record owner')
-        return self.root / actor / 'pi' / 'session'
+        return (self.root / actor / 'claude' if self.harness_kind == 'claude-code'
+                else self.root / actor / 'pi' / 'session')
 
     def retain(self, actor, records):
         manifest = {}
@@ -121,10 +126,10 @@ class NativeRecordSurface:
                 before_manifest = surface.retain(actor, before)
                 self.resume()
                 # Clear only this disposable view before hydrating the current bytes.
-                code = "import shutil,pathlib; p=pathlib.Path('/tmp/agent/.pi/sessions'); shutil.rmtree(p,ignore_errors=True); p.mkdir(parents=True,exist_ok=True)"
+                code = f"import shutil,pathlib; p=pathlib.Path({surface.view!r}); shutil.rmtree(p,ignore_errors=True); p.mkdir(parents=True,exist_ok=True)"
                 subprocess.run(['docker','exec',self.name,'python','-I','-c',code],
                                check=True, capture_output=True, timeout=15)
-                self.hydrate({VIEW+'/'+name:base64.b64encode(data).decode()
+                self.hydrate({surface.view+'/'+name:base64.b64encode(data).decode()
                               for name,data in before.items()}, False)
                 reply, snapshot = super().execute(command, shared)
                 self.resume()
@@ -137,6 +142,7 @@ for f in sorted(p.iterdir()) if p.is_dir() and not p.is_symlink() else []:
  if len(data)>33554432:raise RuntimeError('Session record exceeds capture limit')
  result[f.name]=base64.b64encode(data).decode()
 print(json.dumps({'files':result,'invalid':invalid,'invalid_directory':p.is_symlink()}))'''
+                code = code.replace('/tmp/agent/.pi/sessions', surface.view)
                 raw = json.loads(subprocess.check_output(
                     ['docker','exec',self.name,'python','-I','-c',code], timeout=15))
                 self.pause()
