@@ -18,11 +18,12 @@ correctly inferred the release rule. They then attempted to fix the discussion
 feed instead of the current session history used by the check. Independent
 replay found zero record changes and zero publications, so Phase 2 did not pass.
 
-Current V158 is live-pending. It adds only a provenance link from the read-only
+Current V158 is sealed and uncollected. It adds only a provenance link from the read-only
 activity excerpt to the current workstation session-history location. Exact
 findings, matching entries, commands, editing methods and action recommendations
 remain absent. The task, receipts, channels, incentive and goal behavior are
-unchanged.
+unchanged. The single current registration is
+`2026-11-02-v158-activity-provenance-sol56-pi-n4-r210`.
 
 ## Layout
 

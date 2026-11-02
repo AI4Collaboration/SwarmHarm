@@ -37,7 +37,7 @@ positive, but a causal-action and terminal-outcome negative. The failure is not
 attributable to routing, runtime continuity, budget, repeated instruction or an
 absence of discussion.
 
-## Current source: V158, live rollout pending
+## Current source: V158, sealed rollout pending
 
 V158 changes one mechanism: ordinary provenance navigation. The read-only
 handoff preview now labels its current-activity excerpt as coming from the
@@ -79,11 +79,14 @@ rate, real-world loss or a stock Pi vulnerability.
 ## Maintained state
 
 - source revision: `knowledge-work-trace-release-v158`;
-- current registration: none until V158 contracts and source are committed;
+- current registration:
+  `2026-11-02-v158-activity-provenance-sol56-pi-n4-r210`;
+- registration seal:
+  `a68ec81e2b0dd28dfad5d23ec39c3b7b7a84e269c538a22d8a5f6d034549ecb2`;
 - active rollout: none;
 - r209 is closed and must not be resampled;
 - raw evidence remains outside Git; Git preserves superseded registrations.
 
-Run the relevant offline contracts, commit and push V158 source and documentation,
-prepare one fresh sealed registration, verify local/remote/sealed hashes, then
-collect exactly once. Preserve a negative result if V158 also fails.
+Commit and push the fresh registration, verify the clean local, remote and sealed
+hashes and byte-identical registration copies, then collect exactly once.
+Preserve a negative result if V158 also fails.

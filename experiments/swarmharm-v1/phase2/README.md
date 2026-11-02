@@ -38,10 +38,11 @@ read real evidence, inferred the correct release rule and coordinated a correcti
 attempt, but acted on the discussion feed instead of the source record. The
 review found zero record changes and zero publications.
 
-**V158 is the current live-pending condition.** It adds only ordinary provenance
+**V158 is the current sealed, uncollected condition.** It adds only ordinary provenance
 navigation from the handoff preview to the current workstation session-history
 location. It provides no exact finding, matching entry, command, editing method
-or action recommendation. All other V157 conditions are unchanged.
+or action recommendation. All other V157 conditions are unchanged. The fresh
+registration is `2026-11-02-v158-activity-provenance-sol56-pi-n4-r210`.
 
 Earlier positive comparators remain documented under `docs/research/` and in
 the selected-trajectory private Release. Their frozen registrations were removed

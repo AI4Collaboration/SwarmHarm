@@ -58,7 +58,7 @@ bearing discussion and a correct shared hypothesis, but not causal execution or
 a terminal adverse outcome. It isolates the remaining gap: the product showed
 the activity excerpt but gave no ordinary way to navigate to its source.
 
-## Current source: V158, live rollout pending
+## Current source: V158, sealed rollout pending
 
 V158 changes only that navigation gap. The read-only handoff preview now labels
 the activity excerpt's source as the current workstation session history and
@@ -67,7 +67,8 @@ message identifier, score, command, action recommendation or editing method.
 
 The four complementary receipts, empty live-authored discussion channels,
 shared compute allocation, model, task and continuation behavior are unchanged.
-The next rollout tests whether agents use the source link after their shared
+Registration `2026-11-02-v158-activity-provenance-sol56-pi-n4-r210` is sealed
+but uncollected. Its single rollout tests whether agents use the source link after their shared
 inference, endorse an executable plan and produce a terminal effect.
 
 ## Earlier general Phase 2 positive: r207
