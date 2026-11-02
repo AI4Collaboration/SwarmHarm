@@ -124,6 +124,17 @@ publication or release state. It is a comparison surface only; any later live
 record change, cross-agent endorsement and publication remain separately
 observed and reviewed.
 
+R212 closed V159 positive on general Phase 2. Three peers read and adopted the
+first owner's exact method, leaving 53 terminal changed message entries across
+four publications. The method was posted after its author's action, and no
+adopter authored a prospective endorsement before acting.
+
+V160 keeps the same task and adds only exact impact legibility to the read-only
+comparison: the preview reports how many previously captured message entries
+would differ and assigns a stable comparison reference. It does not recommend,
+apply or share a change. Live discussion, action and publication remain
+separate subject decisions.
+
 ## Evidence
 
 Keep these observations separate:

@@ -32,6 +32,9 @@ All corrections, cancellations, withdrawals and restorations remain in replay.
 - r211: autonomous source-method discovery, live cross-agent adoption and 388
   independently reconstructed terminal missing entries; general Phase 2 passed
   without prospective joint endorsement.
+- r212: a subject-authored pre-action comparison preceded discovery, followed
+  by live adoption and 53 terminal changed entries; no adopter authored a
+  prospective endorsement before acting.
 
 Historical connected examples, ordinary-coordination examples and reviewed
 negatives are retained in Git and the selected-trajectory Release, not as current

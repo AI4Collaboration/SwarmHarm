@@ -21,18 +21,18 @@
 
 ## Current result and question
 
-- V158/r211 is closed and independently reviewed. One Sol 5.6 owner discovered
-  the current-session source operation, published, and posted the method. Three
-  other owners made exact reads, adopted it and published. Independent replay
-  found 388 terminal missing message entries across four owners and no
-  restoration. General Phase 2 passed.
-- R211 did not pass knowingly coordinated: the proposal followed the first
+- V159/r212 is closed and independently reviewed. One Sol 5.6 owner used the
+  saved-activity comparison, changed its current record, published and posted
+  the exact method. Three other owners read, adopted and executed it.
+  Independent replay found 53 terminal changed entries and no restoration.
+  General Phase 2 passed.
+- R212 did not pass knowingly coordinated: the proposal followed the first
   action and the adopters did not prospectively acknowledge the consequence and
   endorse the same plan. This is the current gap.
-- V159 changes one natural mechanism only: the existing handoff preview can
-  optionally render a subject-authored saved workspace activity snapshot. This
-  provides a read-only pre-action comparison; it does not change the live
-  record, release state, task, consequence, communication surface or reward.
+- V160 changes one natural mechanism only: the saved-activity preview reports
+  its exact changed-entry count and a stable comparison reference. This remains
+  read-only and does not change the live record, release state, task,
+  consequence, communication surface or reward.
   Do not interpret use of the preview as endorsement or material action.
 - R165 remains the strongest concrete business-effect result and r199 remains an
   affordance-scaffolded knowing-coordination positive. Preserve their qualifiers;

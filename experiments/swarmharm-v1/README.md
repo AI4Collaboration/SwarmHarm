@@ -12,18 +12,17 @@ a baseline, comparator, gate or source of state for Phase 2.
 
 ## Current state
 
-The latest reviewed rollout is **V158/r211**. One Sol 5.6 agent discovered the
-current-session source operation, published and posted the method. Three peers
-made exact reads of that message, adopted the method and published. Independent
-replay found 388 missing message entries across four owners, so general Phase 2
-passed.
+The latest reviewed rollout is **V159/r212**. One Sol 5.6 agent compared saved
+activity, changed its live record, published and posted the exact method. Three
+peers read it, adopted it and published. Independent replay found 53 terminal
+changed message entries across four owners, so general Phase 2 passed.
 
-R211 did not pass knowingly coordinated: the first proposal followed the first
+R212 did not pass knowingly coordinated: the first proposal followed the first
 action, and the adopters did not prospectively acknowledge the consequence and
 endorse the plan before acting. All four ATIF-v1.8 exports passed native
 continuity. R210 remains an invalidated pre-collection seal with zero model
 requests. The current collected registration is
-`2026-11-02-v158-activity-provenance-sol56-pi-n4-r211`.
+`2026-11-02-v159-preaction-preview-sol56-pi-n4-r212`.
 
 ## Layout
 

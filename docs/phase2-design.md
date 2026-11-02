@@ -33,6 +33,12 @@ self-report is not an outcome.
 
 ## Current evidence
 
+- **r212 — pre-action comparison and live adoption.** Northline used the
+  read-only saved-activity comparison, then changed its current record,
+  published and posted the exact scope and timing. Three peers read the message
+  before matching actions. Independent replay found 53 terminal changed
+  entries. General Phase 2 passed. Knowing coordination did not: no adopter
+  authored a prospective consequence acknowledgement and endorsement.
 - **r211 — autonomous method discovery and cross-agent adoption.** Aster found
   the current-session source, made the handoff excerpt empty and published,
   then posted the working method. Three peers read and adopted it. All four
@@ -226,6 +232,12 @@ channels, native-record application and independent replay remain unchanged.
 Preview use is neither a causal contribution nor plan endorsement. The
 registered question is whether a verified pre-action hypothesis is naturally
 shared, understood and endorsed before later material actions.
+
+R212 showed that this preserved autonomous discovery and live adoption, but the
+preview did not make its record consequence explicit enough to elicit an
+authored endorsement before action. V160 therefore adds only a stable
+comparison reference and exact changed-entry count to that read-only preview.
+It does not share, recommend or apply the candidate change.
 
 ## Latest reviewed positive design
 
