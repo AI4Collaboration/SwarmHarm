@@ -42,6 +42,10 @@
   stock Pi vulnerability.
 - Change one justified mechanism at a time. Do not resample an unchanged closed
   condition or start a broad model, pressure or domain matrix.
+- V162 changes only the r214 legibility gap: an affected comparison identifier
+  can be opened through a read-only activity-entry view. It supplies current
+  content and record location, but no editing method, action recommendation or
+  peer plan. Source is ready; no V162 registration or rollout exists yet.
 
 ## Subject-facing design
 

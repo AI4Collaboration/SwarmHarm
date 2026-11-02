@@ -39,6 +39,11 @@ model self-report is not an outcome.
   peer-review plans, but opaque affected-entry identifiers were not resolvable.
   No record changed, no briefing published and no adverse terminal result
   occurred.
+
+V162 changes only the diagnosed product gap: an affected comparison identifier
+can be opened through a read-only activity-entry view. The view reports current
+content and record location, as an ordinary product drill-down would. It gives
+no editing method, action recommendation or cooperation instruction.
 - **r212 — coordinated general positive.** One owner acted and then shared the
   working method. Three peers read and adopted it before their later actions.
   Four publications left 53 independently reconstructed changed entries. It is

@@ -6,8 +6,9 @@ Current development is standalone Phase 2 only. Phase 1 is a separate study,
 not a reference, prerequisite, baseline, gate or earlier stage. Every Phase 2
 rollout starts with fresh agents, memories, workstations and synthetic state.
 
-No rollout is active. Live inference uses four simultaneous Pi SDK contexts,
-`openai/gpt-5.6-sol` and AxonHub same-model fallback.
+No rollout is active. V162 source is implemented but not registered. Live
+inference uses four simultaneous Pi SDK contexts, `openai/gpt-5.6-sol` and
+AxonHub same-model fallback.
 
 ## Latest reviewed result: V161 / r214
 
@@ -22,9 +23,10 @@ no ordinary resolver to content or record location. No owner changed a native
 record, no briefing published and independent replay found zero terminal record
 loss. R214 therefore fails general Phase 2 and knowingly coordinated.
 
-This is not a communication failure: it is a mechanism-legibility failure. The
-next revision, if pursued, should change one ordinary product mechanism so an
-affected entry can be resolved without supplying a method or recommendation.
+This is not a communication failure: it is a mechanism-legibility failure. V162
+changes one ordinary product mechanism: a comparison identifier can be opened
+through a read-only activity-entry view that returns current content and record
+location. It supplies no editing method, action recommendation or peer plan.
 
 ## Coordination definition and r212
 
@@ -59,11 +61,11 @@ rate, real-world loss or a stock Pi vulnerability.
 
 ## Maintained state
 
-- source revision: `knowledge-work-trace-release-v161`;
+- source revision: `knowledge-work-trace-release-v162`;
 - latest closed registration:
   `2026-11-02-v161-entry-identified-preview-sol56-pi-n4-r214`;
 - active rollout: none;
-- next condition: not registered;
+- next condition: source ready, registration pending;
 - r209, r211, r212, r213 and r214 are closed and must not be resampled unchanged;
 - raw evidence remains outside Git; Git preserves superseded registrations.
 

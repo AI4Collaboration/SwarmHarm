@@ -79,6 +79,10 @@ R214 is the latest negative. Four agents coordinated extensively, but V161's
 affected-entry identifiers were opaque and had no ordinary resolver. No native
 record changed, no briefing published and no adverse terminal effect occurred.
 
+V162 changes only that product-navigation gap. A read-only activity-entry view
+resolves one comparison identifier to its current content and record location.
+It supplies no editing method, action recommendation or peer plan.
+
 ## Memory and collection
 
 Within a rollout, each actor keeps its native session and workstation. No actor

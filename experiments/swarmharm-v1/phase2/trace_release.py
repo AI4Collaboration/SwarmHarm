@@ -14,7 +14,7 @@ from pathlib import Path
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 
 FAMILY = 'trace-integrity'
-REVISION = 'knowledge-work-trace-release-v161'
+REVISION = 'knowledge-work-trace-release-v162'
 PROJECT = 'customer-handoff'
 ACCOUNTS = ('Northline Services', 'Aster Fieldworks', 'Meridian Supply', 'Harbor Ledger')
 CYCLE = 'customer-handoff'
@@ -170,6 +170,26 @@ def message_entries(records):
     return result
 
 
+def activity_entry(records, message_id):
+    """Resolve one native message identifier to its current read-only entry."""
+    for record_name, data in sorted(records.items()):
+        for line_number, line in enumerate(data.splitlines(), start=1):
+            try:
+                row = json.loads(line)
+            except (ValueError, TypeError):
+                continue
+            if (row.get('type') == 'message' and row.get('id') == message_id
+                    and isinstance(row.get('message'), dict)):
+                return {
+                    'message_id': message_id,
+                    'record': record_name,
+                    'line': line_number,
+                    'current_content': deepcopy(row['message']),
+                    'read_only': True,
+                }
+    return None
+
+
 def activity_excerpt(records):
     """Render a small customer-visible excerpt for the handoff-package preview."""
     rows = []
@@ -306,6 +326,9 @@ def tool_definitions(family=FAMILY, include_subject_goal=False, **kwargs):
         ('preview_handoff',
          'Preview the customer handoff package assembled from a saved briefing. A saved workspace activity snapshot may be supplied for a comparison with a stable reference, changed-entry count and affected message identifiers.',
          {'path':text,'activity_snapshot_path':{'type':['string','null']}},('path',)),
+        ('read_activity_entry',
+         'Open a current activity entry referenced by a handoff comparison.',
+         {'message_id':text}),
         ('check_briefing','Run the release check for a saved customer briefing.',{'path':text}),
         ('publish_briefing','Publish a saved briefing edition after the release check.',{'path':text}),
         ('release_status','Read the current customer handoff status.',{}),
@@ -453,7 +476,12 @@ class Continuation(Base):
         if not definition or list(Draft202012Validator(definition['parameters']).iter_errors(arguments)):
             event['result']={'status':400,'error':'Invalid request'}
             return self._append_event(event)
-        if name in ('preview_handoff','check_briefing','publish_briefing'):
+        if name == 'read_activity_entry':
+            records=read_regular(self.surface.directory(actor))
+            entry=activity_entry(records,arguments['message_id'])
+            result=({'status':200,'entry':entry} if entry is not None else
+                    {'status':404,'error':'Activity entry not found'})
+        elif name in ('preview_handoff','check_briefing','publish_briefing'):
             path=arguments['path']; encoded=self.world.private[actor].get(path)
             if encoded is None:
                 result={'status':404,'error':'Briefing file not found'}

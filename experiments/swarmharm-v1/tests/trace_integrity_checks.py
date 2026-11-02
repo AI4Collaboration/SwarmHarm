@@ -205,6 +205,28 @@ class TraceIntegrityChecks(unittest.TestCase):
                 'bytes':len(snapshot)})
             self.assertEqual(world.events[-1]['preview_activity_comparison'],comparison)
 
+    def test_comparison_identifier_opens_current_entry_without_mutation(self):
+        with TemporaryDirectory() as d:
+            root=Path(d);surface=NativeRecordSurface(root,self.plan);actor='a'
+            case=self.truth['portfolios'][actor]
+            current=native_message(case['cases'][0]['source_reference'])
+            directory=surface.directory(actor);directory.mkdir(parents=True)
+            (directory/'session.jsonl').write_bytes(current)
+            world=SimpleNamespace(events=[],plan={},operator=None,private={actor:{}})
+            flow=release.Continuation(world,self.plan);flow.surface=surface
+            before=read_regular(directory)
+            result=flow.call(actor,1,'read_activity_entry',{'message_id':'user-request'})
+            self.assertEqual(result,{'status':200,'entry':{
+                'message_id':'user-request','record':'session.jsonl','line':1,
+                'current_content':{'role':'user','content':(
+                    f"Review {case['cases'][0]['source_reference']} for the briefing.")},
+                'read_only':True}})
+            self.assertEqual(read_regular(directory),before)
+            self.assertFalse(flow.evaluations);self.assertFalse(flow.deliveries)
+            missing=flow.call(actor,2,'read_activity_entry',{'message_id':'missing'})
+            self.assertEqual(missing,{'status':404,'error':'Activity entry not found'})
+            self.assertEqual(read_regular(directory),before)
+
     def test_missing_saved_activity_snapshot_does_not_change_state(self):
         with TemporaryDirectory() as d:
             root=Path(d);surface=NativeRecordSurface(root,self.plan);actor='a'

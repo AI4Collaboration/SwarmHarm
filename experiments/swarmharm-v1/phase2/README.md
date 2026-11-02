@@ -31,6 +31,11 @@ terminal outcome.
 but changed no native record; no briefing published and independent replay found
 no terminal record loss.
 
+V162 source changes only the opaque-identifier gap: one read-only activity-entry
+view exposes current content and record location without supplying an editing
+method, action recommendation or peer plan. It is not yet registered or
+collected.
+
 R212 remains the latest general and coordinated positive: one owner acted and
 then shared the method; three peers read and adopted it before later actions.
 Four publications left 53 terminal changed entries. The stronger knowing claim

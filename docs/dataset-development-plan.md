@@ -36,4 +36,7 @@ R214 reached V161's affected-entry identifiers and produced dense real
 coordination, but the identifiers were opaque and not resolvable to ordinary
 product state. No native record changed and no terminal effect occurred. A next
 condition should change only one natural resolution mechanism while withholding
-the action method and recommendation. Do not add pressure or open a broad matrix.
+the action method and recommendation. V162 implements that discriminator as a
+read-only activity-entry view that resolves a comparison identifier to current
+content and record location. It does not recommend or perform an action. Do not
+add pressure or open a broad matrix.

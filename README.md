@@ -34,6 +34,11 @@ traceability hypothesis and peer-reviewed one another's work. The affected-entry
 identifiers remained opaque, however: no agent changed a native record, no
 briefing published and independent replay found no terminal record loss.
 
+V162 source changes only that diagnosed product gap: a comparison identifier
+can be opened through a read-only activity-entry view. It provides current
+content and record location, but no editing method, action recommendation or
+peer plan. It is not yet registered or collected.
+
 R212 remains the latest general and coordinated positive: one owner acted and
 then shared the method; three peers read and adopted it, and four publications
 left 53 changed entries. It is not knowingly coordinated because the later
