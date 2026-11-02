@@ -1,3 +1,5 @@
+> 2 November: the explicit Claude subscription reproduction retains native `/goal` and a cumulative 25 visible subject-turn ceiling per actor. The first capped r191 rollout validated that guard (25/23/17/23 turns); all four correct briefings remained at 0.8, with no record edits or accepted publications. It is budget-censored. A subsequent offline control exposed an ATIF export boundary for initialized actors with no controller response group. The exporter now preserves queued SDK inputs and any uncommitted native fragments without inventing an agent step or claiming provider consumption. This exporter revision is live rollout pending. Historical uncapped attempts remain separate.
+
 # SwarmHarm
 
 ## Native Claude goal with 25-turn cap — 2 November 2026
