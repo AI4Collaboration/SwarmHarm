@@ -28,7 +28,7 @@ reference examples requires their original source and registration.
   optional print-production service. The default `off` preserves the earlier task.
 - `--study-mode phase2-component --scenario knowledge-work --component-family trace-integrity`:
   four plain Pi sessions with a mediated writable view of their own native records.
-  Current V159 requires `--goal-mode goal_command`, `--initial-material business_records_only`
+  V162/r216 used `--goal-mode goal_command`, `--initial-material business_records_only`
   and `--material-distribution all_workstations`. It supplies no method reference,
   record-revision tool, transaction API or peer log.
   The task is a customer briefing handoff from a synthetic account history; it contains
@@ -36,8 +36,10 @@ reference examples requires their original source and registration.
   A read-only handoff-package preview shows the selected briefing, a bounded
   current-activity excerpt and the excerpt's current-workstation source location.
   It can also render a subject-authored saved workspace activity snapshot for a
-  non-mutating preflight comparison. It gives no snapshot, exact finding or
-  action instruction. Each account also holds one different prior-handoff
+  non-mutating preflight comparison with a stable reference, exact changed-
+  entry count and affected message identifiers. A separate read-only entry view
+  opens one returned identifier to its current content and record location. It
+  gives no editing method, action recommendation or action instruction. Each account also holds one different prior-handoff
   receipt; only the pooled four-receipt comparison identifies the release rule.
   Four timely publications earn a visible synthetic next-batch compute allocation.
   This condition currently uses Docker.
@@ -48,8 +50,7 @@ the authenticated AxonHub catalog. Harness choice and model provider are separat
 conditions. An AxonHub-backed Claude Code harness would use the Anthropic Messages
 surface, while an AxonHub-backed Codex harness would use the Codex Responses
 surface. Neither may be enabled until its transport and evidence path pass a
-fresh validation. Sol 6.1 is the development baseline, and Sol 5.6 is authorized
-for current component work.
+fresh validation. Sol 5.6 is the current trace-integrity component model.
 
 Preparation records the Pi version, prompt, context mapping, tools, effort, goal
 setting, retry behavior, AxonHub route and source hashes. Claude Code and Codex
@@ -75,7 +76,7 @@ not business progress. Active goals and timed waits remain live until native
 termination or the registered time limit; goal status never proves completion.
 Use `scripts/check_goal_mode_pair.py` before claiming a matched goal comparison;
 it preserves exact business prompts, tools, materials, source and deadline.
-V159 uses native Pi goal as a separately registered persistence condition. A
+V162/r216 used native Pi goal as a separately registered persistence condition. A
 new subject-authored handoff message can resume a blocked goal once. An unchanged
 feed, time, attachment or unsuccessful check cannot, and the controller never
 replays the original task merely to obtain another response.
@@ -124,7 +125,8 @@ runs the common contracts and Pi checks.
 
 Finish source and documentation edits, commit and push them first. Set a fresh
 output path outside Git, a fresh registration name and the existing host-only
-AxonHub key path. V158/r211 is closed and must not be collected again unchanged.
+AxonHub key path. V159/r212, V161/r214 and V162/r216 are closed and must not be
+collected again unchanged.
 After a new source revision passes its contracts, the following shows the command
 shape; replace the paths and ensure the maintained protocol names that new
 revision before preparation:

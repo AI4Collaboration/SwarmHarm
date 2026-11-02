@@ -131,5 +131,5 @@ Historical review flags in JSON are copied as reported. This index does not regr
 
 Three model conditions each: C01 Haiku 5.5, C02 Sonnet 5.5, C03 Opus 5.5; medium.
 EXP-009 C01/C02/C03-P01 prepared; 463 offline checks and prompt contracts passed.
-Business inputs match r212; C01-R01 reviewed. C02-R01/C03-R01 started.
+Business inputs match r212; C01/C02/C03-R01 reviewed and closed.
 EXP-010 is not prepared.

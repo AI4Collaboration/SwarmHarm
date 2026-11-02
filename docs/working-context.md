@@ -5,7 +5,11 @@ through Claude Code subscriptions, same branch and PR #16. Six new rollouts, fou
 persistent agents each, native goals, first-actor 25-response limit. Restore r212
 from a5f53b83a, finish its three reviewed outcomes, then r217 from fd0b7ab68.
 Preserve historical business logic and feedback; declare native schema/view mapping.
-No collection started. Existing EXP-008 outcomes and raw evidence remain intact.
+EXP-009 C01/C02/C03-R01 are terminal and reviewed; no native-record writes or
+publication attempts. C01 quiescent; C02/C03 response-capped, with 5/8 peer posts.
+EXP-010 now restores original v163 tools and prospective record-impact preview.
+Existing EXP-008 outcomes and raw evidence remain intact. The post-collection
+empty-context export guard repair is now incorporated for future preparations.
 
 ---
 

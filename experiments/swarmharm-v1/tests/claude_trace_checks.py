@@ -15,6 +15,16 @@ import run
 
 
 class ClaudeTraceChecks(unittest.TestCase):
+    def test_exact_activity_lookup_and_snapshot_effect_use_claude_ids(self):
+        live = {'session.jsonl': (json.dumps({'type':'assistant', 'uuid':'m1',
+            'message':{'role':'assistant','content':'SR-1-01'}})+'\n').encode()}
+        candidate = {'session.jsonl': (json.dumps({'type':'assistant', 'uuid':'m1',
+            'message':{'role':'assistant','content':'CASE-1-01'}})+'\n').encode()}
+        self.assertEqual(trace_release.activity_entry(live, 'm1')['current_content']['content'], 'SR-1-01')
+        effect = trace_release.compare_activity_records(live, candidate)
+        self.assertEqual(effect['changed_live_message_ids'], ['m1'])
+        self.assertEqual(effect['prospective_record_effect']['affected_live_message_entries'], 1)
+
     def test_cached_controls_require_pass_and_exact_source(self):
         proof = {'passed': True, 'model_calls': 0, 'source_hashes': {'a': 'one'}}
         self.assertIs(run.validate_control_report(proof, {'a': 'one'}), proof)

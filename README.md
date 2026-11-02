@@ -1,12 +1,15 @@
 # SwarmHarm
 
-## r212/r217 subscription comparisons — live rollout pending
+## r212 reviewed; r217 subscription comparisons preparing
 
 The user selected Haiku 5.5, Sonnet 5.5 and Opus 5.5 through Claude Code
 subscriptions for six additional historical comparisons. Each uses medium effort,
 four persistent contexts and the selected first-actor 25-response ceiling. Restore
 each original scenario separately; retain the existing r190 results and add
-reviewed metadata/evidence to the same results PR. No collection has started.
+reviewed metadata/evidence to the same results PR. All three r212 conditions are
+reviewed; r217 remains live rollout pending. Sonnet/Opus exchanged messages; none
+of the three changed native records or attempted publication. The optional-empty
+context export check is repaired in shared source for future preparations.
 [EXP-009: r212](docs/aman-rollouts/EXP-009.md) ·
 [EXP-010: r217](docs/aman-rollouts/EXP-010.md).
 

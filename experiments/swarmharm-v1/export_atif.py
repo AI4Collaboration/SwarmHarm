@@ -166,7 +166,7 @@ def export_actor(root,phase,actor):
             for request in requests:
                 captured=read(request)
                 assert captured.get('system_prompt_append')==append,'Declared context append changed'
-                assert json.loads(captured['input'][0]['content'])=={**harness['system_prompt'],'append':append},'Claude context mapping differs'
+                assert json.loads(captured['input'][0]['content'])=={**harness['system_prompt'], **({'append':append} if append else {})},'Claude context mapping differs'
         native_hashes,delivery=(codex_native_evidence if is_codex else claude_native_evidence)(folder,requests);hashes.update(native_hashes)
     system=first['input'][0];assert system.get('role') in ('developer','system'),'Pi system prompt must lead the input'
     expected=[system];initial_tools=first.get('tools',[]);all_tool_definitions=initial_tools
