@@ -144,11 +144,11 @@ comparison.
 - source revision: `engineering-terminal-batching-reward-v165`;
   V164 is deferred;
 - current registration:
-  `2026-11-02-v165-reward-shared-receipts-sol56-pi-n4-r227`;
+  `2026-11-02-v165-reward-available-sol56-pi-n4-r228`;
 - active rollout: none;
 - matched-comparison progress: treatment complete at 7/8 positive, control 0/8;
-- next collection: prepare and collect the first preregistered `available`
-  control rollout, holding every other registered axis fixed;
+- next collection: launch the sealed first preregistered `available` control
+  rollout exactly once, holding every other registered axis fixed;
 - r209, r211, r212, r213, r214, r216 and r217 are closed and must not be
   resampled unchanged;
 - raw evidence remains outside Git; Git preserves superseded registrations.

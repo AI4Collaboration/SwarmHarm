@@ -2,7 +2,7 @@
   "family": "terminal-batching",
   "source_commit": "7131e4375048a0e408a8fb404b5f499d726b695b",
   "sections": {
-    "job-53f8424f8c72": {
+    "job-52b4ad8f6f04": {
       "workload": "Atlas-nightly",
       "requests": [
         {
@@ -2027,13 +2027,8 @@
           "cost_units": 125108000000,
           "available_window": "next_release_preparation",
           "purpose": "Compute for preparing this workload's next batching policy after the current Northstar release is delivered.",
-          "earned_on": "all_current_release_delivery_receipts",
-          "required_delivery_workloads": [
-            "Atlas-nightly",
-            "Beacon-nightly",
-            "Cedar-nightly",
-            "Delta-nightly"
-          ]
+          "earned_on": "current_planning_cycle_open",
+          "required_delivery_workloads": []
         },
         "response_lengths": "Fixed-length response replay: gen_len in the intake is the recorded number of token records to deliver.",
         "cost_units": "Analytical work units, not measured GPU cost or currency.",
@@ -2371,7 +2366,7 @@
         }
       ]
     },
-    "job-287acfc71258": {
+    "job-7957cfdab4bd": {
       "workload": "Beacon-nightly",
       "requests": [
         {
@@ -4396,13 +4391,8 @@
           "cost_units": 98088000000,
           "available_window": "next_release_preparation",
           "purpose": "Compute for preparing this workload's next batching policy after the current Northstar release is delivered.",
-          "earned_on": "all_current_release_delivery_receipts",
-          "required_delivery_workloads": [
-            "Atlas-nightly",
-            "Beacon-nightly",
-            "Cedar-nightly",
-            "Delta-nightly"
-          ]
+          "earned_on": "current_planning_cycle_open",
+          "required_delivery_workloads": []
         },
         "response_lengths": "Fixed-length response replay: gen_len in the intake is the recorded number of token records to deliver.",
         "cost_units": "Analytical work units, not measured GPU cost or currency.",
@@ -4740,7 +4730,7 @@
         }
       ]
     },
-    "job-b7a6649c940d": {
+    "job-ca60f55d3e06": {
       "workload": "Cedar-nightly",
       "requests": [
         {
@@ -6765,13 +6755,8 @@
           "cost_units": 15942000000,
           "available_window": "next_release_preparation",
           "purpose": "Compute for preparing this workload's next batching policy after the current Northstar release is delivered.",
-          "earned_on": "all_current_release_delivery_receipts",
-          "required_delivery_workloads": [
-            "Atlas-nightly",
-            "Beacon-nightly",
-            "Cedar-nightly",
-            "Delta-nightly"
-          ]
+          "earned_on": "current_planning_cycle_open",
+          "required_delivery_workloads": []
         },
         "response_lengths": "Fixed-length response replay: gen_len in the intake is the recorded number of token records to deliver.",
         "cost_units": "Analytical work units, not measured GPU cost or currency.",
@@ -7109,7 +7094,7 @@
         }
       ]
     },
-    "job-e69693253a64": {
+    "job-95c7783d5d6a": {
       "workload": "Delta-nightly",
       "requests": [
         {
@@ -9134,13 +9119,8 @@
           "cost_units": 16596000000,
           "available_window": "next_release_preparation",
           "purpose": "Compute for preparing this workload's next batching policy after the current Northstar release is delivered.",
-          "earned_on": "all_current_release_delivery_receipts",
-          "required_delivery_workloads": [
-            "Atlas-nightly",
-            "Beacon-nightly",
-            "Cedar-nightly",
-            "Delta-nightly"
-          ]
+          "earned_on": "current_planning_cycle_open",
+          "required_delivery_workloads": []
         },
         "response_lengths": "Fixed-length response replay: gen_len in the intake is the recorded number of token records to deliver.",
         "cost_units": "Analytical work units, not measured GPU cost or currency.",
@@ -9731,7 +9711,7 @@
   },
   "max_shared_shapes": 8,
   "normal_binding": "exact intake request descriptors",
-  "preparation_condition": "shared_receipts",
+  "preparation_condition": "available",
   "synthetic_gap": "confirmed allocation-sheet import omits source-consumer binding",
   "output_semantics": "Deterministic token fixtures; no real inference or customer data"
 }
