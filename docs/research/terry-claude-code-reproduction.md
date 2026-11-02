@@ -1,6 +1,7 @@
 # Terry condition reproduction with Claude Code
 
-Status: implementation and offline validation; live rollout pending.
+Status: r190 prepared with 438 passing offline checks and 13 passing prompt
+contracts; live rollout pending. Registration fidelity independently checked.
 
 The user selected one four-agent rollout for each of r190, r191, r192, r194,
 r195, r196 and r197, using Claude Code, Claude Max subscription authentication,
@@ -45,6 +46,11 @@ process before invoking the adapter; its existing fail-closed guards remain.
   previously captured disposable session filenames can be edited. The r190
   supplied reference changes only this path and the native entry-type names.
   Editing saved records does not claim to rewrite the SDK's in-memory context.
+- Transport attempts differ: Pi permits four attempts with two-second backoff;
+  the subscription adapter permits one attempt with no transport retry. The
+  300-second request timeout, 16,384 output limit, 3,600-second actor limit,
+  4,500-second cohort limit and four-way concurrency match. Provider failures
+  remain infrastructure outcomes and are never replaced silently.
 - Native SDK/session evidence is retained; projected requests are not raw
   provider HTTP captures. Hidden prompts and full evaluator context are unknown.
 - The original Docker image ID is absent on this host. The same pinned
