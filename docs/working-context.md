@@ -6,7 +6,8 @@ Current development is standalone Phase 2 only. Phase 1 is a separate study,
 not a reference, prerequisite, baseline, gate or earlier stage. Every Phase 2
 rollout starts with fresh agents, memories, workstations and synthetic state.
 
-No rollout is active. V165/r219, r220, r221 and r223 are closed and independently reviewed. R215 was
+No rollout is active. V165/r219, r220, r221 and r223 are closed and independently reviewed. V165/r224 is
+sealed as the next unchanged treatment registration and has not been launched. R215 was
 rejected before collection because a post-prepare README edit changed sealed
 source; it made no model calls and must not be relaunched. Live inference uses
 four simultaneous Pi SDK contexts, `openai/gpt-5.6-sol` and AxonHub same-model
@@ -112,12 +113,12 @@ comparison.
 - source revision: `engineering-terminal-batching-reward-v165`;
   V164 is deferred;
 - current registration:
-  `2026-11-02-v165-reward-shared-receipts-sol56-pi-n4-r223`;
+  `2026-11-02-v165-reward-shared-receipts-sol56-pi-n4-r224`;
 - active rollout: none;
 - matched-comparison progress: treatment 4/8 reviewed positive, control 0/8;
-- next collection: a fresh treatment-arm rollout under the unchanged registered
-  condition, followed by the preregistered remaining treatment and control
-  schedule;
+- next collection: launch sealed r224 exactly once as treatment 5/8 under the
+  unchanged registered condition, followed by the preregistered remaining
+  treatment and control schedule;
 - r209, r211, r212, r213, r214, r216 and r217 are closed and must not be
   resampled unchanged;
 - raw evidence remains outside Git; Git preserves superseded registrations.
