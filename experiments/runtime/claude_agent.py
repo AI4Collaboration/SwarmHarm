@@ -27,6 +27,7 @@ CONFLICTING_ENV = {
 SETTINGS = {
     'tools': [], 'settingSources': [], 'strictMcpConfig': True,
     'permissionMode': 'default', 'persistSession': True,
+    'maxTurns': 25,
 }
 RUNTIME_ENV = {
     'DISABLE_AUTOUPDATER': '1',
@@ -165,6 +166,16 @@ def harness_registration(goal_mode='off', model=None):
         'context_window': CONTEXT_WINDOW,
         'tool_execution': 'controller; sequential; SDK MCP tools only',
         'evidence_limit': EVIDENCE_LIMIT, 'live_validation': 'live rollout pending',
+        'turn_budget': {
+            'max_subject_turns_per_actor': SETTINGS['maxTurns'],
+            'scope': 'cumulative within one persistent actor session, across controller inputs',
+            'count': 'one streamed subject model response group; multiple tools in it count once',
+            'sdk_max_turns_scope': 'one streamed input; may reset on subsequent input',
+            'enforcement': 'SDK maxTurns plus cumulative Stop/PostToolBatch/UserPromptSubmit hook guard',
+            'hidden_goal_evaluator_calls_counted': False,
+            'goal_control_below_limit': 'unchanged native Claude Code /goal',
+            'cohort_terminal': 'first actor reaches its turn limit; retain all four contexts until global shutdown',
+        },
     }
 
 
