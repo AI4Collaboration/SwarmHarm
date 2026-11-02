@@ -40,6 +40,11 @@ single natural case combining the two positive cases' strengths. The next
 discriminator is natural action-affordance discovery, not more consequence text
 or pressure.
 
+V164 implements one live-pending discriminator: an ordinary, neutral lifecycle
+for submitting, comparing, acknowledging and selecting one exact four-owner
+workspace activity version group. It supplies no strategy or preferred choice.
+Offline controls pass; this is not yet a behavioral result.
+
 Earlier positive comparators remain documented under `docs/research/` and in
 the selected-trajectory private Release. Their frozen registrations were removed
 from the maintained tree and remain recoverable through Git history.

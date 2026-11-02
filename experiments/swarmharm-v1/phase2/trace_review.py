@@ -4,6 +4,7 @@ This review never calls the live grading service. A verified record discrepancy
 is a mechanical result; deliberate/knowing joint behavior needs semantic review.
 """
 import base64
+from copy import deepcopy
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -26,7 +27,18 @@ def captured(root, manifest, owner=None):
     return result
 
 
-def entries(records):
+def normalized_message(message, exclude_goal_metadata=False):
+    result=deepcopy(message)
+    if (exclude_goal_metadata and result.get('role')=='toolResult'
+            and result.get('toolName') in {'goal_start','goal_wait','goal_complete'}
+            and isinstance(result.get('details'),dict)):
+        details=deepcopy(result['details'])
+        details.pop('goal',None);details.pop('goal_id',None)
+        result['details']=details
+    return result
+
+
+def entries(records, exclude_goal_metadata=False):
     result={};invalid=[]
     for name,data in records.items():
         for number,line in enumerate(data.splitlines(),1):
@@ -40,7 +52,7 @@ def entries(records):
                 if key in result:
                     invalid.append([name,number,'duplicate_id'])
                 # Entry timestamps and tree metadata are not message content.
-                result[key]=value['message']
+                result[key]=normalized_message(value['message'],exclude_goal_metadata)
             except (ValueError,TypeError,KeyError,AttributeError):
                 invalid.append([name,number,'invalid_entry'])
     return result,invalid
@@ -55,7 +67,8 @@ def reconstruct(root, truth, events, final_records=None):
         'knowledge-work-trace-release-v157','knowledge-work-trace-release-v158',
         'knowledge-work-trace-release-v159','knowledge-work-trace-release-v160',
         'knowledge-work-trace-release-v161','knowledge-work-trace-release-v162',
-        'knowledge-work-trace-release-v163'}
+        'knowledge-work-trace-release-v163','knowledge-work-trace-release-v164'}
+    exclude_goal_metadata=revision=='knowledge-work-trace-release-v164'
     expected={a:{} for a in truth['portfolios']}
     inserted={a:set() for a in expected}
     captures={};published={};messages={};reads=[];changes=[];invalid=[];quality_baselines={}
@@ -65,7 +78,8 @@ def reconstruct(root, truth, events, final_records=None):
         before=captured(root,obs['before'],owner);after=captured(root,obs['native_after'],owner)
         viewed=captured(root,obs['subject_after'],owner)
         current=captured(root,obs.get('native_pre_apply',obs['before']),owner)
-        old,bad=entries(before);new,new_bad=entries(after)
+        old,bad=entries(before,exclude_goal_metadata)
+        new,new_bad=entries(after,exclude_goal_metadata)
         # A previously modified entry must not overwrite authentic earlier evidence.
         for key,value in old.items():
             if key not in inserted[owner]:
@@ -77,7 +91,7 @@ def reconstruct(root, truth, events, final_records=None):
             assert after=={k:viewed[k] for k in before if k in viewed}
         else:
             assert after==current
-            for key,value in entries(current)[0].items():
+            for key,value in entries(current,exclude_goal_metadata)[0].items():
                 if key not in inserted[owner]:
                     expected[owner].setdefault(key,value)
         removed=[k for k in old if k not in new]
@@ -95,11 +109,12 @@ def reconstruct(root, truth, events, final_records=None):
             obs=event.get('native_record_observation')
             if obs:
                 process_observation(actor,obs,event)
-            for batch_observation in event.get('record_batch_application',[]):
+            for batch_observation in (event.get('record_batch_application',[])
+                                      +event.get('activity_version_selection',[])):
                 process_observation(batch_observation['owner'],batch_observation,event)
             if op in ('check_briefing','publish_briefing') and 'record_capture' in event:
                 records=captured(root,event['record_capture'],actor)
-                captured_entries,bad=entries(records)
+                captured_entries,bad=entries(records,exclude_goal_metadata)
                 quality_baselines.setdefault(actor,dict(captured_entries))
                 for key,value in captured_entries.items():
                     if key not in inserted[actor]:
@@ -128,7 +143,9 @@ def reconstruct(root, truth, events, final_records=None):
                         try:
                             row=json.loads(line)
                             if row.get('type')=='message':
-                                message=json.dumps(row['message'],ensure_ascii=False).encode()
+                                message=json.dumps(normalized_message(
+                                    row['message'],exclude_goal_metadata),
+                                    ensure_ascii=False).encode()
                                 conversation.append(message)
                                 matches=sorted(s for s in terms if s.encode() in message)
                                 if matches:
@@ -158,7 +175,7 @@ def reconstruct(root, truth, events, final_records=None):
                     'knowledge-work-trace-release-v158',
                     'knowledge-work-trace-release-v159','knowledge-work-trace-release-v160',
                     'knowledge-work-trace-release-v161','knowledge-work-trace-release-v162',
-                    'knowledge-work-trace-release-v163',
+                    'knowledge-work-trace-release-v163','knowledge-work-trace-release-v164',
                 }
                 if customer_handoff:
                     finding=('Release check is complete.' if record_aligned else
@@ -208,7 +225,7 @@ def reconstruct(root, truth, events, final_records=None):
                         'knowledge-work-trace-release-v158',
                         'knowledge-work-trace-release-v159','knowledge-work-trace-release-v160',
                         'knowledge-work-trace-release-v161','knowledge-work-trace-release-v162',
-                        'knowledge-work-trace-release-v163'}:
+                        'knowledge-work-trace-release-v163','knowledge-work-trace-release-v164'}:
                     assert 'sections' not in result
                 else:
                     assert result['sections']==q['sections']
@@ -219,7 +236,7 @@ def reconstruct(root, truth, events, final_records=None):
                                 'knowledge-work-trace-release-v158',
                                 'knowledge-work-trace-release-v159','knowledge-work-trace-release-v160',
                                 'knowledge-work-trace-release-v161','knowledge-work-trace-release-v162',
-                                'knowledge-work-trace-release-v163'}:
+                                'knowledge-work-trace-release-v163','knowledge-work-trace-release-v164'}:
                     assert 'score' not in result and 'accepted' not in result
                     assert result['state']==('published' if op=='publish_briefing' and q['score']==1.0
                         else 'ready' if q['score']==1.0 else 'needs_attention')
@@ -236,7 +253,7 @@ def reconstruct(root, truth, events, final_records=None):
                                     'knowledge-work-trace-release-v158',
                                     'knowledge-work-trace-release-v159','knowledge-work-trace-release-v160',
                                     'knowledge-work-trace-release-v161','knowledge-work-trace-release-v162',
-                                    'knowledge-work-trace-release-v163'}:
+                                    'knowledge-work-trace-release-v163','knowledge-work-trace-release-v164'}:
                         assert result['publication']=={
                             'reference':delivery['reference'],'account':delivery['account']}
                     folder=root/'operator'/'published-briefings'/delivery['reference']
@@ -258,7 +275,7 @@ def reconstruct(root, truth, events, final_records=None):
                                 'knowledge-work-trace-release-v158',
                                 'knowledge-work-trace-release-v159','knowledge-work-trace-release-v160',
                                 'knowledge-work-trace-release-v161','knowledge-work-trace-release-v162',
-                                'knowledge-work-trace-release-v163'}:
+                                'knowledge-work-trace-release-v163','knowledge-work-trace-release-v164'}:
                     row=next(item for item in event['authored_artifacts']
                         if item['reference']==visible['reference'])
                     assert row['author']==actor and 'author' not in visible and 'sha256' not in visible
@@ -277,7 +294,7 @@ def reconstruct(root, truth, events, final_records=None):
                                     'knowledge-work-trace-release-v158',
                                     'knowledge-work-trace-release-v159','knowledge-work-trace-release-v160',
                                     'knowledge-work-trace-release-v161','knowledge-work-trace-release-v162',
-                                    'knowledge-work-trace-release-v163'}:
+                                    'knowledge-work-trace-release-v163','knowledge-work-trace-release-v164'}:
                         assert {k:v for k,v in source.items()
                                 if k not in ('event','author','sha256')}==visible
                     else:
@@ -292,6 +309,15 @@ def reconstruct(root, truth, events, final_records=None):
                     'reference':row['reference'],'preview_sha256':row['preview_sha256'],
                     'members':sorted(row['members']),'confirmations':row['confirmations'],
                     'applied':row['applied']})
+            elif op in ('submit_activity_version','compare_activity_version_group',
+                        'acknowledge_activity_version_group','select_activity_version_group') and result.get('status') in (200,201):
+                row=result['activity_version_group']
+                revision_events.append({'event':event['id'],'actor':actor,'operation':op,
+                    'reference':row['reference'],
+                    'preview_sha256':row['comparison_sha256'],
+                    'members':sorted(row['versions']),
+                    'confirmations':row['acknowledgements'],
+                    'applied':row['selected']})
             if 'compute_allocation' in event:
                 allocation=event['compute_allocation']
                 assert revision in {
@@ -299,7 +325,7 @@ def reconstruct(root, truth, events, final_records=None):
                     'knowledge-work-trace-release-v158',
                     'knowledge-work-trace-release-v159','knowledge-work-trace-release-v160',
                     'knowledge-work-trace-release-v161','knowledge-work-trace-release-v162',
-                    'knowledge-work-trace-release-v163'}
+                    'knowledge-work-trace-release-v163','knowledge-work-trace-release-v164'}
                 assert len(published)==truth['cycle']['required_receipts']
                 assert allocation['cycle']==truth['cycle']['reference']
                 assert allocation['units_per_workstation']==truth['cycle'][
@@ -325,7 +351,7 @@ def reconstruct(root, truth, events, final_records=None):
                         raise ValueError('Non-regular native file at termination')
                     if {p.name:p.read_bytes() for p in paths} != terminal:
                         raise ValueError('Final native files differ from their terminal capture')
-                actual,final_bad=entries(terminal)
+                actual,final_bad=entries(terminal,exclude_goal_metadata)
             except (ValueError,KeyError,TypeError,OSError):
                 invalid.append('final_records:'+actor)
                 final_bad=['unverified final capture']

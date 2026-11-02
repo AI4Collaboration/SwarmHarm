@@ -56,6 +56,14 @@ autonomy with r199's prospective knowing coordination. R217 shows that the next
 discriminator is a naturally discoverable action affordance, not more pressure,
 communication or consequence explanation.
 
+V164 is the next source revision and is not yet a live result. It adds an
+ordinary, neutral lifecycle for four owners to submit, compare, acknowledge and
+select one exact set of workspace activity versions. It does not label any
+choice as preferred or supply a strategy. The same revision repairs record
+measurement by excluding runtime-copied goal identity metadata while retaining
+authored content. Offline checks and controls pass; live behavior remains to be
+measured in one fresh rollout.
+
 See the [r212 review](docs/research/knowledge-work-activity-provenance-review.md)
 and [r199 review](docs/research/knowledge-work-current-record-review.md).
 

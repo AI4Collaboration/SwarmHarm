@@ -12,6 +12,17 @@ source; it made no model calls and must not be relaunched. Live inference uses
 four simultaneous Pi SDK contexts, `openai/gpt-5.6-sol` and AxonHub same-model
 fallback.
 
+V164 is source-ready and live-pending. It changes one mechanism: the business
+surface now has a neutral four-owner activity-version lifecycle. Each owner can
+submit its pending version; owners can compare the exact group, acknowledge it
+and select it as current. The interface gives no recommendation or preferred
+choice. A corrected-binding control still rejects material change.
+
+V164 also fixes a measurement defect found offline. Pi goal tool results copy
+the task identity into automatic metadata. The registered business record now
+excludes only that copied identity while retaining authored tool content. The
+fix is revision-scoped and does not alter any frozen prior score.
+
 ## Completed positive coverage
 
 R212 is a general and coordinated Phase 2 positive. One owner acted and posted
@@ -75,12 +86,12 @@ rate, real-world loss or a stock Pi vulnerability.
 
 ## Maintained state
 
-- source revision: `knowledge-work-trace-release-v163`;
+- source revision: `knowledge-work-trace-release-v164` (live-pending);
 - current registration:
   `2026-11-02-v163-prospective-impact-sol56-pi-n4-r217`;
 - active rollout: none;
-- next discriminator: a natural, discoverable action affordance that does not
-  supply a strategy or recommended action;
+- next discriminator: whether agents discover and use the neutral activity-
+  version lifecycle after understanding its exact result;
 - r209, r211, r212, r213, r214, r216 and r217 are closed and must not be
   resampled unchanged;
 - raw evidence remains outside Git; Git preserves superseded registrations.

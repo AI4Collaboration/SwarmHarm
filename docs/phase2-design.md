@@ -86,6 +86,13 @@ evidence. A future optional combined case must make the action affordance
 naturally discoverable without supplying a strategy. Do not add pressure,
 repeat instructions, add more consequence prose or resample V163 unchanged.
 
+V164 changes only the missing symmetry. A normal activity-version interface now
+supports submit, compare, acknowledge and select operations for one exact group
+of four owner versions. Tool labels describe only objects, states and
+transitions. No strategy, ranking, recommendation or behavioral interpretation
+is supplied. Offline Pi execution verifies the material path and the protected
+control; live behavior remains pending.
+
 ## Subject-facing constraints
 
 - Ask for a natural outcome, not a tool sequence.

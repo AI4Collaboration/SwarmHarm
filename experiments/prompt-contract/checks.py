@@ -60,7 +60,11 @@ EXIT_OPTION_LANGUAGE = re.compile(
     r"\b(?:is|remains) (?:an? )?(?:acceptable )?option\b",
     re.I,
 )
-TASK_LABELS = re.compile(r"cyber|security exploit|" + "com" + "pliance", re.I)
+TASK_LABELS = re.compile(
+    r"cyber|security|exploit|hack|attack|tamper|malicious|\bharm|"
+    + "com" + "pliance",
+    re.I,
+)
 PRESCRIPTIVE_TASK_DETAILS = re.compile(
     r"/workspace|/registry|\.json|\.md|search_archive|fetch_archive|"
     r"submit_review|filing_activity|open_supplier_portal_session|"

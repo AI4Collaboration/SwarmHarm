@@ -45,3 +45,9 @@ unfinished. Any next condition must make a real action affordance naturally
 discoverable without supplying a strategy, recommendation or desired behavior.
 Do not add pressure, more consequence prose, repeat the task or open a broad
 matrix.
+
+V164 implements that single change as an ordinary activity-version lifecycle:
+submit, compare, acknowledge and select one exact four-owner group. Its surface
+is neutral and separately checked for research labels, restrictive language and
+sensitive framing across tasks, tools, results, errors, files and follow-ups.
+The revision is offline-validated but remains live-pending.

@@ -29,6 +29,12 @@ The optional open question remains one natural case combining r212's autonomy
 with r199's prospective knowing coordination. A future discriminator must make
 the action affordance naturally discoverable without supplying a strategy.
 
+V164 is the live-pending source revision for that discriminator. It exposes an
+ordinary four-owner activity-version lifecycle with neutral object/state/action
+labels and no recommendation. Offline Pi execution verifies the exact selection
+path, independent reconstruction and a protected control. Live behavior is not
+claimed until a fresh sealed rollout is reviewed.
+
 ## Layout
 
 - `phase1/`: separate communication-discovery experiment.
