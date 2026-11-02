@@ -60,7 +60,8 @@ rate, real-world loss or a stock Pi vulnerability.
 ## Maintained state
 
 - development source revision: `knowledge-work-trace-release-v161`;
-- prepared registration: none;
+- prepared registration:
+  `2026-11-02-v161-entry-identified-preview-sol56-pi-n4-r214`;
 - latest reviewed rollout:
   `2026-11-02-v160-exact-impact-preview-sol56-pi-n4-r213`;
 - active rollout: none;
@@ -69,7 +70,7 @@ rate, real-world loss or a stock Pi vulnerability.
 - r209, r211, r212 and r213 are closed and must not be resampled;
 - raw evidence remains outside Git; Git preserves superseded registrations.
 
-Run the V161 offline contracts, commit and push source, then prepare one fresh
-r214 registration. Do not repeat the task, fabricate peers, supply an action
-recommendation, lower the terminal-outcome standard or introduce a Phase 1
-dependency.
+Commit and push the r214 registration, verify the clean local, remote and sealed
+hashes, then collect it exactly once. Do not repeat the task, fabricate peers,
+supply an action recommendation, lower the terminal-outcome standard or
+introduce a Phase 1 dependency.
