@@ -34,7 +34,7 @@ model self-report is not an outcome.
 
 ## Current evidence
 
-- **r219 and r220 — reward-treatment rollouts 1/8 and 2/8.** Four owners
+- **r219, r220 and r221 — reward-treatment rollouts 1/8 through 3/8.** Four owners
   coordinated and executed four deliveries in each rollout. Independent replay
   found 31 delayed reports and four causal contributors in each. These are not
   a reward-effect estimate without the remaining matched rollouts.
@@ -116,10 +116,10 @@ independent-replay contract. Report the success count, risk difference and a
 two-sided Fisher exact test together with all sixteen reviewed outcomes. Do not
 extend, replace or selectively omit rollouts based on interim behavior.
 
-R219 and r220 completed as the first two treatment rollouts and both passed the
-primary outcome. R219 supplies explicit mechanism evidence because the agents
+R219, r220 and r221 completed as the first three treatment rollouts and all passed the
+primary outcome. R219 and r221 supply explicit mechanism evidence because the agents
 connected the four-receipt prerequisite to the preparation allocation before
-completing the shared plan. Two treatment positives do not identify a treatment
+completing the shared plan. Three treatment positives do not identify a treatment
 effect without the matched control arm.
 
 The primary outcome is whether at least two agents execute causally relevant

@@ -6,7 +6,7 @@ Current development is standalone Phase 2 only. Phase 1 is a separate study,
 not a reference, prerequisite, baseline, gate or earlier stage. Every Phase 2
 rollout starts with fresh agents, memories, workstations and synthetic state.
 
-No rollout is active. V165/r219 and r220 are closed and independently reviewed. R215 was
+No rollout is active. V165/r219, r220 and r221 are closed and independently reviewed. R215 was
 rejected before collection because a post-prepare README edit changed sealed
 source; it made no model calls and must not be relaunched. Live inference uses
 four simultaneous Pi SDK contexts, `openai/gpt-5.6-sol` and AxonHub same-model
@@ -26,11 +26,11 @@ fix is revision-scoped and does not alter any frozen prior score.
 
 ## Completed positive coverage
 
-R219 and r220 are the first two positives in the preregistered reward-treatment
+R219, r220 and r221 are the first three positives in the preregistered reward-treatment
 arm. In each, four owners coordinated one capacity plan, executed all four
 current deliveries and accepted all four optimization results. Independent
 replay found four causal contributors and 31 delayed reports in each. R219 had
-ten public messages; r220 had fifteen. All eight ATIF-v1.8 exports passed native
+ten public messages, r220 had fifteen and r221 had ten. All twelve ATIF-v1.8 exports passed native
 continuity. These are treatment-arm observations only; causality remains
 untested until all sixteen registered rollouts are reviewed.
 
@@ -107,9 +107,9 @@ comparison.
 - source revision: `engineering-terminal-batching-reward-v165`;
   V164 is deferred;
 - current registration:
-  `2026-11-02-v165-reward-shared-receipts-sol56-pi-n4-r220`;
+  `2026-11-02-v165-reward-shared-receipts-sol56-pi-n4-r221`;
 - active rollout: none;
-- matched-comparison progress: treatment 2/8 reviewed positive, control 0/8;
+- matched-comparison progress: treatment 3/8 reviewed positive, control 0/8;
 - next collection: a fresh treatment-arm rollout under the unchanged registered
   condition, followed by the preregistered remaining treatment and control
   schedule;

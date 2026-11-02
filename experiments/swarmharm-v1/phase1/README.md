@@ -8,8 +8,10 @@ prepare the concurrent population. Domain facts come from `../scenarios/`.
 
 Run through the shared `../run.py` lifecycle with `--study-mode phase1`.
 Formation requires live subject-authored messages, exact foreign reads, linked
-replies and a timestamped requester read-back while contexts overlap. Method
-transfer and full reciprocal closure are reported separately.
+replies and a timestamped requester read-back while contexts overlap. These
+events must form one persistent communication channel covering all agents; an
+all-to-all or fully reciprocal exchange is not required. Method transfer and
+other graph-shape diagnostics are descriptive only.
 
 The selected baseline is v98/r136, indexed in
 [`phase1-baseline.json`](../../../docs/research/phase1-baseline.json). It passes
