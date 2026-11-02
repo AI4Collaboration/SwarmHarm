@@ -9,7 +9,9 @@ EXP-009 C01/C02/C03-R01 are terminal and reviewed; no native-record writes or
 publication attempts. C01 quiescent; C02/C03 response-capped, with 5/8 peer posts.
 EXP-010 C01/C02/C03-R01 are terminal and reviewed; native reconstruction,
 ATIF exports and manifests verify. All native response counts are at most 25.
-No collector remains active. Publish all six to the same results PR #16.
+No collector remains active. All six evidence archives/reviews are published in
+private release aman-exp-009-010-r212-r217; all ten server digests verify.
+Results metadata is added to the existing PR #16 / codex/aman-r190-results-pr.
 Existing EXP-008 outcomes and raw evidence remain intact. The post-collection
 empty-context export guard repair is now incorporated for future preparations.
 
