@@ -4984,7 +4984,7 @@
       "name_origin": "new alias-named preparation",
       "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P01-claude-code-a10-employment",
       "collection_executed": false,
-      "status": "prepared_uncollected",
+      "status": "superseded_uncollected",
       "created_at": "2026-11-02T13:20:39.692631+00:00",
       "started_at": null,
       "finished_at": null,
@@ -5053,7 +5053,8 @@
       "fidelity_proof": {
         "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-precollection-fidelity.json",
         "sha256": "f2bb8617e6bdcaf0b713fbb36699bcf6ea7d06dce8683bc3bb87478793a4a584"
-      }
+      },
+      "superseded_by": "EXP-007-C02-P03"
     },
     {
       "experiment_id": "EXP-007",
@@ -5166,6 +5167,195 @@
         "job-ae604d0c9f6a": 1
       },
       "external_review": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-R01-review/independent-review.json"
+    },
+    {
+      "experiment_id": "EXP-007",
+      "condition_id": "C01",
+      "condition_key": "10-none",
+      "preparation_id": "EXP-007-C01-P03",
+      "rollout_id": null,
+      "legacy_name": "EXP-007-C01-P03-claude-code-a10-none",
+      "name_origin": "new alias-named preparation",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P03-claude-code-a10-none",
+      "collection_executed": false,
+      "status": "prepared_uncollected",
+      "created_at": "2026-11-02T13:50:25.284366+00:00",
+      "started_at": null,
+      "finished_at": null,
+      "study_mode": "phase2-component",
+      "study_mode_source": "requested_design",
+      "scenario": "knowledge-work",
+      "models": {
+        "opus55": "claude-opus-5-5"
+      },
+      "reasoning_effort": "medium",
+      "harness": "claude-code",
+      "goal_mode": "claude_goal",
+      "route": "claude-subscription",
+      "population": 4,
+      "assignment_limit": 10,
+      "environment_revision": "knowledge-work-trace-decay-swarm-v3",
+      "registration_sha256": "79837c2ec11dfb6bf0a47b575b39183c6ef17e53c6b3a1afad76536ed3d45c00",
+      "frozen_source_set_sha256": "3f4be96f31968a988ecd6f2dab0b8db8b38c9eee188f2389dd09f4c6aa5c72db",
+      "registration_git": {
+        "path": "experiments/swarmharm-v1/registrations/EXP-007-C01-P03-claude-code-a10-none/registration.json",
+        "status": "committed with this registry revision"
+      },
+      "evidence": {
+        "registration.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P03-claude-code-a10-none/registration.json",
+          "sha256": "79837c2ec11dfb6bf0a47b575b39183c6ef17e53c6b3a1afad76536ed3d45c00"
+        },
+        "registration-seal.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P03-claude-code-a10-none/registration-seal.json",
+          "sha256": "a195796abc48e998a1b8002d83379cd8f1e72d10c1bf85ffac270261591914f7"
+        },
+        "source-manifest.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P03-claude-code-a10-none/source-manifest.json",
+          "sha256": "fcf83fcda712eaa8ae1085c45e075c6c59f66612e47839ab05ac816bea0e590f"
+        },
+        "controls.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P03-claude-code-a10-none/controls.json",
+          "sha256": "23afa8fa9d04556e64245805b8ec4cb9801a3b17cbbf66a2b78259703026d364"
+        }
+      },
+      "historical_guideline_notes": [
+        "Explicit user selection of subscription route and the existing narrow pressure comparison; no API fallback."
+      ],
+      "comparison_scope": "New harness condition; not native Pi continuation-counter parity or a model-only causal comparison.",
+      "provenance": {
+        "original_aman_experiment": "EXP-004",
+        "business_source_branch": "codex/score-decay-study"
+      },
+      "settings_status": "frozen",
+      "budgets": {
+        "request_timeout_seconds": 300,
+        "max_transport_attempts_per_request": 1,
+        "transport_retry_backoff_seconds": 0,
+        "max_output_tokens_per_response": 16384,
+        "max_actor_seconds": 21600,
+        "max_batch_seconds": 21600,
+        "provider_concurrency": 4,
+        "scenario_timeout_seconds": 30,
+        "active_contexts_natural": 4,
+        "max_subject_responses_per_assignment": 25,
+        "max_identical_tool_free_outputs": 3
+      },
+      "source_commit": "31e772a34",
+      "controls": {
+        "passed": true,
+        "test_methods": 452,
+        "prompt_contract_passed": true
+      },
+      "fidelity_proof": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P03-fidelity.json",
+        "sha256": "82b61836c6329482f85ddfebedae9dbcd73a582368069d987fe9409f049c7ae2"
+      },
+      "initial_context_mapping": "stock Claude preset append; native goal is the single initial user input"
+    },
+    {
+      "experiment_id": "EXP-007",
+      "condition_id": "C02",
+      "condition_key": "10-employment",
+      "preparation_id": "EXP-007-C02-P03",
+      "rollout_id": null,
+      "legacy_name": "EXP-007-C02-P03-claude-code-a10-employment",
+      "name_origin": "new alias-named preparation",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P03-claude-code-a10-employment",
+      "collection_executed": false,
+      "status": "prepared_uncollected",
+      "created_at": "2026-11-02T13:51:20.508111+00:00",
+      "started_at": null,
+      "finished_at": null,
+      "study_mode": "phase2-component",
+      "study_mode_source": "requested_design",
+      "scenario": "knowledge-work",
+      "models": {
+        "opus55": "claude-opus-5-5"
+      },
+      "reasoning_effort": "medium",
+      "harness": "claude-code",
+      "goal_mode": "claude_goal",
+      "route": "claude-subscription",
+      "population": 4,
+      "assignment_limit": 10,
+      "environment_revision": "knowledge-work-trace-decay-swarm-v3",
+      "registration_sha256": "92a47d235a73306ab4beb22e1a258adbb4d2f107153dc8a1ee01e3b2c7aebd81",
+      "frozen_source_set_sha256": "3f4be96f31968a988ecd6f2dab0b8db8b38c9eee188f2389dd09f4c6aa5c72db",
+      "registration_git": {
+        "path": "experiments/swarmharm-v1/registrations/EXP-007-C02-P03-claude-code-a10-employment/registration.json",
+        "status": "committed with this registry revision"
+      },
+      "evidence": {
+        "registration.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P03-claude-code-a10-employment/registration.json",
+          "sha256": "92a47d235a73306ab4beb22e1a258adbb4d2f107153dc8a1ee01e3b2c7aebd81"
+        },
+        "registration-seal.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P03-claude-code-a10-employment/registration-seal.json",
+          "sha256": "5ee484b41ae67368961f477d5814118327a6b3412dbc0bc0a042b41bd92cea45"
+        },
+        "source-manifest.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P03-claude-code-a10-employment/source-manifest.json",
+          "sha256": "fcf83fcda712eaa8ae1085c45e075c6c59f66612e47839ab05ac816bea0e590f"
+        },
+        "controls.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P03-claude-code-a10-employment/controls.json",
+          "sha256": "8860ccc4e63e7d1cb7b161588973b47ff8dff79cb6b54ea9237780a1644ba194"
+        }
+      },
+      "historical_guideline_notes": [
+        "Explicit user selection of subscription route and the existing narrow pressure comparison; no API fallback."
+      ],
+      "comparison_scope": "New harness condition; not native Pi continuation-counter parity or a model-only causal comparison.",
+      "provenance": {
+        "original_aman_experiment": "EXP-004",
+        "business_source_branch": "codex/score-decay-study"
+      },
+      "settings_status": "frozen",
+      "budgets": {
+        "request_timeout_seconds": 300,
+        "max_transport_attempts_per_request": 1,
+        "transport_retry_backoff_seconds": 0,
+        "max_output_tokens_per_response": 16384,
+        "max_actor_seconds": 21600,
+        "max_batch_seconds": 21600,
+        "provider_concurrency": 4,
+        "scenario_timeout_seconds": 30,
+        "active_contexts_natural": 4,
+        "max_subject_responses_per_assignment": 25,
+        "max_identical_tool_free_outputs": 3
+      },
+      "source_commit": "31e772a34",
+      "controls": {
+        "passed": true,
+        "test_methods": 452,
+        "prompt_contract_passed": true
+      },
+      "fidelity_proof": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P03-fidelity.json",
+        "sha256": "a3f05b205e0cd8621e256446510671c8444a0046aed7f60751cd49a89bef45d4"
+      },
+      "initial_context_mapping": "stock Claude preset append; native goal is the single initial user input"
+    },
+    {
+      "experiment_id": "EXP-007",
+      "condition_id": "C02",
+      "condition_key": "10-employment",
+      "preparation_id": "EXP-007-C02-P02",
+      "rollout_id": null,
+      "legacy_name": "EXP-007-C02-P02-claude-code-a10-employment",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P02-claude-code-a10-employment",
+      "collection_executed": false,
+      "status": "preparation_failed",
+      "reason": "Cached offline control proof had not been created because helper used the wrong Python runtime; no registration completed and no hosted inference.",
+      "source_commit": "31e772a34",
+      "evidence": {
+        "prepare.log": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P02-prepare.log",
+          "sha256": "7b9429534bea48721a8cae9d163b37e6fb1784ad8f9c0f5c9297268c5d013f2a"
+        }
+      }
     }
   ],
   "coverage": {
@@ -5182,5 +5372,5 @@
       "Other hosts/archives not inventoried"
     ]
   },
-  "updated_at": "2026-11-02T13:39:37.019097+00:00"
+  "updated_at": "2026-11-02T13:51:54.447739+00:00"
 }

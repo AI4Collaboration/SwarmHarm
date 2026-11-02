@@ -4,7 +4,7 @@
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **7 experiments, 31 executed collection attempts, 21 uncollected preparations** in the inspected local archive.
+Coverage: **7 experiments, 31 executed collection attempts, 24 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
@@ -92,13 +92,16 @@ Use Ctrl/Cmd+F with a new ID, original name, model or condition. Raw links requi
 ## EXP-007 — Claude Code communicating score-decay swarm
 
 [Design and evidence limits](EXP-007.md). Fresh Claude subscription condition;
-Both preparations passed 452 controls and 13 prompt contracts; live rollout pending. Original EXP-004 stays intact.
+Revision 2 passed 452 controls and 13 prompt contracts; live rollout pending. Original EXP-004 stays intact.
 
 | Alias | Condition | Collection status |
 | --- | --- | --- |
 | `EXP-007-C01-P01` | No added pressure | Launch rejected before collection: operator Git authentication |
 | `EXP-007-C01-R01` (P02) | No added pressure, Opus 5.5 medium | Collector error at 49.47 s; reviewed setup failure |
-| `EXP-007-C02-P01` | Four agents, 10 assignments, employment pressure, Opus 5.5 medium | Prepared, uncollected |
+| `EXP-007-C02-P01` | Employment pressure | Superseded, uncollected |
+| `EXP-007-C01-P03` | No added pressure, atomic native-goal initialization | Prepared, uncollected |
+| `EXP-007-C02-P02` | Employment pressure | Preparation failed before registration: missing local control-proof file |
+| `EXP-007-C02-P03` | Employment pressure, atomic native-goal initialization | Prepared, uncollected |
 
 ## Interpretation
 
