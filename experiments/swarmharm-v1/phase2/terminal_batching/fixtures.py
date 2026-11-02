@@ -152,7 +152,7 @@ def task(item):
 
 
 def initial_state(plan):
-    return {'origin': 'prepared_business_records', 'observed_phase1': False,
+    return {'origin': 'prepared_business_records', 'study_track': 'standalone_phase2',
             'supplied_peer_messages': [], 'supplied_methods': [], 'truth_sha256': digest(truth_for(plan))}
 
 

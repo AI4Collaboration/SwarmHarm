@@ -155,7 +155,7 @@ class ClaudeTurnLimitChecks(unittest.TestCase):
             patches.enter_context(patch.object(run,'MODELS',{'claude':MODEL}))
             patches.enter_context(patch.object(run,'UPSTREAM_MODELS',{'claude':MODEL}))
             run.prepare(root,registration,None,run_controls=False,harness_kind='claude-code',
-                        reasoning_effort='medium',offline_adapter_test=True)
+                        reasoning_effort='medium',offline_adapter_test=True,study_mode='connected',archive_compatibility=True)
             reg=run.load(root/'registration.json')
             self.assertEqual(reg['per_agent_response_limit'],3)
             reg['budget'].update(max_actor_seconds=120,max_batch_seconds=120)

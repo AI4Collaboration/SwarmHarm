@@ -25,19 +25,20 @@ class ComponentChecks(unittest.TestCase):
         self.plan = schedule.compile_plan(4, id_factory=lambda: next(ids), scenario='knowledge-work')[0]['natural']
         self.sources = component.prepared_sources(self.plan)
 
-    def test_prepared_records_are_not_agent_activity_or_formation(self):
+    def test_prepared_records_are_not_agent_activity(self):
         world = lab.World(self.plan)
         self.addCleanup(world.close)
         class Station:
-            def __init__(self, name): self.name = name
+            def __init__(self, name): self.name = name; self.closed = False
             def hydrate(self, files, reset): pass
             def pause(self): pass
         world.workstations = {a: Station(a) for a in self.plan}
         world.private = {a: {} for a in self.plan}
         holder = continuation.Continuation(world, continuation.plan_for(self.plan))
         activation = component.install(world, holder, self.sources)
-        self.assertFalse(activation['observed_phase1'])
-        self.assertIsNone(activation['formation_event'])
+        self.assertEqual(activation['study_track'], 'standalone_phase2')
+        self.assertNotIn('observed_phase1', activation)
+        self.assertNotIn('formation_event', activation)
         self.assertEqual(world.events, [])
         self.assertEqual(self.sources['supplied_peer_messages'], [])
         self.assertEqual(self.sources['supplied_methods'], [])
@@ -46,7 +47,7 @@ class ComponentChecks(unittest.TestCase):
         world.workstations = {}
 
     def test_forged_source_or_supplied_note_is_rejected(self):
-        for field in ('records', 'supplied_peer_messages', 'observed_phase1'):
+        for field in ('records', 'supplied_peer_messages', 'study_track'):
             altered = deepcopy(self.sources)
             altered[field] = None
             with self.assertRaises(ValueError): component.validate_sources(self.plan, altered)
@@ -168,7 +169,7 @@ class ComponentChecks(unittest.TestCase):
             reg = run.load(root/'registration.json')
             self.assertEqual(reg['input_revision'],batching.TARGET_REVISION)
             self.assertEqual(reg['phase2']['taxonomy_family'],'task-objective-or-acceptance-manipulation')
-            self.assertFalse(reg['phase2']['depends_on_phase1'])
+            self.assertNotIn('depends_on_phase1', reg['phase2'])
             self.assertNotIn('reservation_service',reg['phase2'])
             self.assertEqual(reg['component_truth'],batching.truth_for(reg['phase2']['assignments']))
             tools = release.tool_definitions(batching.TARGET_FAMILY,include_subject_goal=False)
@@ -191,8 +192,8 @@ class ComponentChecks(unittest.TestCase):
                     initial_material='method_available', material_distribution='one_workstation')
             reg = run.load(root/'registration.json')
             self.assertFalse(reg['continuous_rollout'])
-            self.assertFalse(reg['phase2']['depends_on_phase1'])
-            self.assertFalse(reg['phase2']['end_to_end_claim_supported'])
+            self.assertNotIn('depends_on_phase1', reg['phase2'])
+            self.assertNotIn('end_to_end_claim_supported', reg['phase2'])
             self.assertEqual(reg['phase2']['communication_condition'], workflow.COMMUNICATION_CONDITION)
             self.assertEqual(reg['phase2']['channel_descriptions'], workflow.CHANNELS)
             self.assertEqual(reg['phase2']['business_visibility']['research_logging'], 'complete_for_both_channels')
@@ -213,6 +214,12 @@ class ComponentChecks(unittest.TestCase):
             self.assertEqual(reg['measurement_contract']['primary_target'], 'conditional_collective_business_outcome')
             self.assertNotIn('calculation_version_notes', reg['phase2'])
             self.assertIsNone(reg['source_publication'])
+            self.assertNotIn('connected_protocol', reg)
+            self.assertNotIn('phase1_gate_revision', reg)
+            protocol = (root/'PROTOCOL.md').read_text()
+            self.assertIn('Standalone Phase 2 study', protocol)
+            self.assertNotIn('Phase 1', protocol)
+            self.assertNotIn('formation', protocol.lower())
             component.validate_sources(reg['plan']['natural'], reg['component_initial_state'])
             self.assertEqual(reg['input_hashes']['initial-file-audit.json'], run.sha(root/'initial-file-audit.json'))
             files = run.load(root/'initial-file-audit.json')['natural']
@@ -271,7 +278,7 @@ class ComponentChecks(unittest.TestCase):
         world, holder, activation = helper.new_publisher()
         world.events.clear()
         frozen = component.prepared_sources(world.plan)
-        activation.update(formation_event=None, source_handover_event=0, observed_phase1=False,
+        activation.update(formation_event=None, source_handover_event=0, study_track='standalone_phase2',
                           prepared_sources_sha256=outcome.fixtures.digest(frozen))
         holder.activation_event = None
         for actor in helper.actors:
@@ -288,9 +295,10 @@ class ComponentChecks(unittest.TestCase):
         self.assertFalse(result['integrated_end_to_end_passed'])
         projected = review.project_phase2(result, True, {'phase1_formation_passed': False})
         self.assertTrue(projected['passed'])
-        self.assertFalse(projected['depends_on_phase1'])
+        self.assertNotIn('depends_on_phase1', projected)
+        self.assertEqual(projected['study_track'], 'standalone_phase2')
         self.assertFalse(review.project_phase2(result, False, {})['passed'])
-        reg['component_initial_state']['observed_phase1'] = True
+        reg['component_initial_state']['study_track'] = 'phase1'
         tampered = outcome.assess(reg, world.snapshot(), states, {'activation': activation, 'state': holder.snapshot()})
         self.assertFalse(tampered['phase2_component_passed'])
 

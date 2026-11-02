@@ -622,7 +622,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
         'prepared_inputs_match': registration['component_truth'] == truth
             and registration['component_initial_state'] == fixtures.initial_state(plan)
             and activation['prepared_sources_sha256'] == fixtures.digest(fixtures.initial_state(plan)),
-        'no_formation_claim': activation['observed_phase1'] is False and activation['formation_event'] is None,
+        'standalone_phase2_start': activation.get('study_track') == 'standalone_phase2',
         'same_population': set(activation['same_actor_ids']) == set(plan),
         'frozen_assignments_preserved': state['plan'] == plan,
         'native_reconstruction_valid': not native['invalid_events'] and state['external_system'] == {k: native[k] for k in fields},

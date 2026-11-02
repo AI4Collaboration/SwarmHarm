@@ -47,11 +47,12 @@ examples keep their frozen provenance.
   client protocol and model. AxonHub may fall back only among eligible channels
   serving that same registered model.
 
-The development default is **`openai/gpt-6.1-sol`**. The user also selected
+The current rollout default is **`openai/gpt-5.6-sol`**. Historical registrations
+retain their originally frozen model identity, including the earlier
+`openai/gpt-6.1-sol` Phase 1 example. The user also selected
 **`openai/gpt-6.1-terra`** and **`openai/gpt-6-luna`** for the completed matched
 Knowledge Work comparison, each in its own registration. Other models require
-explicit user selection. Historical evidence keeps
-its original model identity; changing a default never validates a new route.
+explicit user selection. Changing a default never validates a historical route.
 
 Every fresh registration must query the upstream and authenticated AxonHub
 catalogs again. Historical route checks do not validate a current rollout.

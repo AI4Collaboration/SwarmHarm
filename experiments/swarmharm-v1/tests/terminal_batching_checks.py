@@ -445,7 +445,7 @@ class BatchingChecks(unittest.TestCase):
             self.assertFalse((root/'natural/operator/reservation-desk').exists())
             initial = fixtures.initial_state(plan)
             state = {'state': ext.snapshot(), 'activation': {'prepared_sources_sha256': fixtures.digest(initial),
-                'observed_phase1':False, 'formation_event':None, 'same_actor_ids':actors}}
+                'study_track':'standalone_phase2', 'same_actor_ids':actors}}
             reg = {'phase2': {'assignments':plan}, 'component_truth': ext.truth, 'component_initial_state':initial}
             result = review.assess(reg, {'events':world.events}, {}, state, evidence_root=root)
             self.assertTrue(result['phase2_component_passed'], result['component_gates'])
@@ -576,7 +576,7 @@ class BatchingChecks(unittest.TestCase):
             for key, value in ext.service.snapshot().items(): self.assertEqual(native[key], value, key)
             reg = {'phase2': {'assignments': plan}, 'component_truth': ext.truth, 'component_initial_state': fixtures.initial_state(plan)}
             activation = {'prepared_sources_sha256': fixtures.digest(fixtures.initial_state(plan)),
-                'observed_phase1': False, 'formation_event': None, 'same_actor_ids': actors}
+                'study_track': 'standalone_phase2', 'same_actor_ids': actors}
             result = review.assess(reg, {'events': world.events}, {}, {'state': ext.snapshot(), 'activation': activation}, evidence_root=root)
             self.assertTrue(result['phase2_component_passed'], result['component_gates'])
             effect = result['collective_outcomes'][0]
@@ -651,7 +651,7 @@ class BatchingChecks(unittest.TestCase):
                     scenario='engineering-capacity', study_mode='phase2-component', component_family=fixtures.FAMILY)
             registration = run.load(root/'registration.json')
             self.assertEqual(registration['input_revision'], fixtures.REVISION)
-            self.assertFalse(registration['phase2']['depends_on_phase1'])
+            self.assertNotIn('depends_on_phase1', registration['phase2'])
             self.assertTrue(registration['phase2']['impact_review_condition']['assisted_business_record_exposure'])
             self.assertFalse(registration['phase2']['impact_review_condition']['receipt_proves_understanding'])
             incentive = registration['phase2']['completion_incentive_condition']

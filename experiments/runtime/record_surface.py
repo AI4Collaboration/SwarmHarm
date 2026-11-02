@@ -13,6 +13,7 @@ from pathlib import Path
 import stat
 import subprocess
 import tempfile
+import threading
 
 from workstation import DockerWorkstation
 
@@ -68,17 +69,22 @@ def apply_view(directory, before, after, *, writable):
 
 
 class NativeRecordSurface:
-    def __init__(self, root, actors, *, writable=True, harness_kind="pi-sdk"):
+    def __init__(self, root, actors, *, writable=True, harness_kind="pi-sdk", apply_mode="immediate"):
         if harness_kind not in ("pi-sdk", "claude-code"):
             raise ValueError("Unsupported native record harness")
         self.harness_kind = harness_kind
         self.view = VIEW if harness_kind == "pi-sdk" else "/tmp/agent/.claude/sessions"
+        if apply_mode not in ('immediate', 'staged'):
+            raise ValueError('Unknown native-record application mode')
         self.root = Path(root).resolve()
         self.actors = set(actors)
         self.writable = writable
+        self.apply_mode = apply_mode
         self.archive = self.root / 'operator' / 'record-observer'
         self.archive.mkdir(parents=True, exist_ok=True)
         self.counter = {actor: 0 for actor in actors}
+        self.staged = {}
+        self.lock = threading.Lock()
 
     def directory(self, actor):
         if actor not in self.actors or Path(actor).name != actor:
@@ -115,6 +121,80 @@ class NativeRecordSurface:
     def capture(self, actor):
         return self.retain(actor, read_regular(self.directory(actor)))
 
+    def staged_revision(self, actor):
+        if actor not in self.actors:
+            raise ValueError('Unknown record owner')
+        with self.lock:
+            row = self.staged.get(actor)
+            if row is None:
+                return None
+            return {
+                'owner': actor,
+                'revision_sha256': row['revision_sha256'],
+                'changed_files': list(row['changed_files']),
+                'before': self.retain(actor, row['base']),
+                'after': self.retain(actor, row['after']),
+            }
+
+    def apply_staged(self, revisions):
+        """Apply one exact multi-owner set after the business layer confirms it."""
+        if self.apply_mode != 'staged' or not self.writable:
+            raise ValueError('Staged record application is not available')
+        if len(revisions) < 2:
+            raise ValueError('A record revision set requires multiple owners')
+        with self.lock:
+            selected = {}
+            for actor, expected in revisions.items():
+                row = self.staged.get(actor)
+                if row is None or row['revision_sha256'] != expected:
+                    raise ValueError('Staged record revision changed')
+                current = read_regular(self.directory(actor))
+                # Pi keeps recording the subject's later tool interactions after
+                # the subject stages a revision. Preserve only byte-exact append
+                # suffixes; any replacement, truncation, deletion, or new file is
+                # still an unregistered concurrent change and rejects the set.
+                if set(current) != set(row['base']):
+                    raise ValueError('Native record set changed after the revision was staged')
+                effective_after = {}
+                for name, base in row['base'].items():
+                    latest = current[name]
+                    if not latest.startswith(base):
+                        raise ValueError('Native record changed non-append-only after the revision was staged')
+                    suffix = latest[len(base):]
+                    if name in row['after']:
+                        effective_after[name] = row['after'][name] + suffix
+                    elif suffix:
+                        effective_after[name] = suffix
+                selected[actor] = (current, row, effective_after)
+            observations = []
+            for actor, (before, row, effective_after) in selected.items():
+                before_manifest = self.retain(actor, before)
+                staged_subject_after = self.retain(actor, row['after'])
+                subject_after = self.retain(actor, effective_after)
+                mutation = apply_view(
+                    self.directory(actor), before, effective_after, writable=True)
+                self.counter[actor] += 1
+                observation = {
+                    'owner': actor,
+                    'sequence': self.counter[actor],
+                    'before': before_manifest,
+                    'staged_subject_after': staged_subject_after,
+                    'subject_after': subject_after,
+                    'native_pre_apply': before_manifest,
+                    'native_after': self.capture(actor),
+                    'mutation': mutation,
+                    'staged_revision_sha256': row['revision_sha256'],
+                    'appended_native_bytes_preserved': sum(
+                        len(before[name]) - len(row['base'][name]) for name in before),
+                }
+                path = self.archive / f'{actor}-{self.counter[actor]:04d}.json'
+                with path.open('x') as handle:
+                    json.dump(observation, handle, indent=2)
+                observations.append(observation)
+            for actor in selected:
+                del self.staged[actor]
+            return observations
+
     def station(self, actor, files):
         surface = self
         class Station(DockerWorkstation):
@@ -122,15 +202,33 @@ class NativeRecordSurface:
                 super().__init__(files, environment={'HOME': '/tmp/agent'})
 
             def execute(self, command, shared):
-                before = read_regular(surface.directory(actor))
-                before_manifest = surface.retain(actor, before)
+                native_before = read_regular(surface.directory(actor))
+                with surface.lock:
+                    pending = surface.staged.get(actor)
+                    append_only = (pending is not None
+                        and set(pending['base']) == set(native_before)
+                        and all(native_before[name].startswith(base)
+                                for name, base in pending['base'].items()))
+                    if append_only:
+                        view_before = {}
+                        for name, base in pending['base'].items():
+                            suffix = native_before[name][len(base):]
+                            if name in pending['after']:
+                                view_before[name] = pending['after'][name] + suffix
+                            elif suffix:
+                                view_before[name] = suffix
+                    else:
+                        if pending is not None:
+                            del surface.staged[actor]
+                        view_before = native_before
+                before_manifest = surface.retain(actor, native_before)
                 self.resume()
                 # Clear only this disposable view before hydrating the current bytes.
                 code = f"import shutil,pathlib; p=pathlib.Path({surface.view!r}); shutil.rmtree(p,ignore_errors=True); p.mkdir(parents=True,exist_ok=True)"
                 subprocess.run(['docker','exec',self.name,'python','-I','-c',code],
                                check=True, capture_output=True, timeout=15)
                 self.hydrate({surface.view+'/'+name:base64.b64encode(data).decode()
-                              for name,data in before.items()}, False)
+                              for name,data in view_before.items()}, False)
                 reply, snapshot = super().execute(command, shared)
                 self.resume()
                 code = '''import pathlib,json,base64,stat
@@ -152,10 +250,64 @@ print(json.dumps({'files':result,'invalid':invalid,'invalid_directory':p.is_syml
                 pre_apply=surface.retain(actor,current)
                 if raw['invalid'] or raw['invalid_directory']:
                     mutation = {'applied':False,'rejected':'non_regular_record_view'}
-                elif current != before:
+                elif current != native_before:
                     mutation = {'applied':False,'rejected':'native_record_changed_during_command'}
+                elif surface.apply_mode == 'staged':
+                    # A pending revision is hydrated together with any later
+                    # append-only Pi activity. A command that leaves that view
+                    # unchanged has not authored a new revision: keep the
+                    # original base, subject bytes and revision identity. This
+                    # prevents ordinary reads or later tool calls from
+                    # invalidating an already filed transaction member.
+                    comparison_before = view_before if append_only else native_before
+                    changes = [name for name in native_before
+                               if after.get(name) != comparison_before.get(name)]
+                    unknown = sorted(set(after) - set(native_before))
+                    if changes and surface.writable:
+                        revision_sha256 = sha256(json.dumps({
+                            'owner': actor,
+                            'base': {name: sha256(data).hexdigest()
+                                     for name, data in sorted(native_before.items())},
+                            'after': {name: sha256(data).hexdigest()
+                                      for name, data in sorted(after.items())
+                                      if name in native_before},
+                        }, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+                        with surface.lock:
+                            surface.staged[actor] = {
+                                'base': native_before,
+                                'after': {name: after[name] for name in native_before if name in after},
+                                'changed_files': sorted(changes),
+                                'revision_sha256': revision_sha256,
+                            }
+                        mutation = {
+                            'applied': False,
+                            'staged': True,
+                            'changed_files': sorted(changes),
+                            'unknown_files_not_staged': unknown,
+                            'revision_sha256': revision_sha256,
+                            'condition': 'staged',
+                        }
+                    elif append_only and pending is not None:
+                        mutation = {
+                            'applied': False,
+                            'staged': True,
+                            'staged_revision_preserved': True,
+                            'changed_files': [],
+                            'unknown_files_not_staged': unknown,
+                            'revision_sha256': pending['revision_sha256'],
+                            'condition': 'staged',
+                        }
+                    else:
+                        mutation = {
+                            'applied': False,
+                            'staged': False,
+                            'changed_files': sorted(changes),
+                            'unknown_files_not_staged': unknown,
+                            'condition': 'staged',
+                        }
                 else:
-                    mutation = apply_view(surface.directory(actor), before, after, writable=surface.writable)
+                    mutation = apply_view(surface.directory(actor), native_before, after,
+                                          writable=surface.writable)
                 surface.counter[actor] += 1
                 observation = {'owner':actor,'sequence':surface.counter[actor],
                     'before':before_manifest,'subject_after':observed,

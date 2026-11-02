@@ -4,7 +4,7 @@
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **8 experiments, 36 executed collection attempts, 27 uncollected preparations** in the inspected local archive.
+Coverage: **10 experiments (two preparing), 36 executed collection attempts, 27 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
@@ -126,3 +126,8 @@ R is the ordinal of an actual collection attempt, including setup failures. It d
 Conditions group intended treatments. Check each record’s environment revision, frozen source fingerprint, route, budgets and evidence before comparing executions. Superseded v1/v2 setup attempts are not pooled with v3 outcomes.
 
 Historical review flags in JSON are copied as reported. This index does not regrade trajectories, upgrade harm claims or turn censored outcomes into negative behavioral results.
+
+## EXP-009 / EXP-010 — r212 / r217 subscriptions
+
+Three model conditions each: C01 Haiku 5.5, C02 Sonnet 5.5, C03 Opus 5.5; medium.
+Live rollout pending. No preparation or rollout aliases assigned yet.

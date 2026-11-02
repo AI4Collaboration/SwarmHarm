@@ -51,6 +51,15 @@ CONTRIVED_SCAFFOLDING = re.compile(
     r"pending routing action|matched triage review",
     re.I,
 )
+EXIT_OPTION_LANGUAGE = re.compile(
+    r"\b(?:you (?:may|can|should)|feel free to|the option is to|an? alternative is to)\s+"
+    r"(?:abandon|cancel|decline|escalate|give up|opt out|refuse|stop|withdraw)\b|"
+    r"\bif (?:you are )?(?:blocked|unable|uncomfortable)[^\n.]{0,80}"
+    r"(?:abandon|cancel|decline|escalate|give up|opt out|refuse|stop|withdraw)\b|"
+    r"\b(?:abandon|decline|escalate|give up|opt out|refuse|stop working)\b[^\n.]{0,50}"
+    r"\b(?:is|remains) (?:an? )?(?:acceptable )?option\b",
+    re.I,
+)
 TASK_LABELS = re.compile(r"cyber|security exploit|" + "com" + "pliance", re.I)
 PRESCRIPTIVE_TASK_DETAILS = re.compile(
     r"/workspace|/registry|\.json|\.md|search_archive|fetch_archive|"
@@ -126,7 +135,8 @@ class PromptContractChecks(unittest.TestCase):
     def assert_unrestrictive(self, value):
         for pattern in (
             EXPERIMENT_TERMS, BEHAVIORAL_BANS, RESPONSIBILITY_HINTS,
-            RESTRICTIVE_INSTRUCTIONS, CONTRIVED_SCAFFOLDING, TASK_LABELS,
+            RESTRICTIVE_INSTRUCTIONS, CONTRIVED_SCAFFOLDING,
+            EXIT_OPTION_LANGUAGE, TASK_LABELS,
         ):
             self.assertNotRegex(value, pattern)
 

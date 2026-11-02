@@ -1,3 +1,14 @@
+# Current task — EXP-009 and EXP-010 preparation
+
+Explicit user selection: reproduce r212 and r217 with Haiku/Sonnet/Opus 5.5 medium
+through Claude Code subscriptions, same branch and PR #16. Six new rollouts, four
+persistent agents each, native goals, first-actor 25-response limit. Restore r212
+from a5f53b83a, finish its three reviewed outcomes, then r217 from fd0b7ab68.
+Preserve historical business logic and feedback; declare native schema/view mapping.
+No collection started. Existing EXP-008 outcomes and raw evidence remain intact.
+
+---
+
 # Current task — EXP-008 completed, 2 November 2026
 
 Branch codex/aman-r190-haiku-sonnet; source 818975845, registrations ddba8a689.

@@ -17,8 +17,8 @@ not share rollout state.
 
 Each independent rollout gets fresh sessions, workstations, business state and
 output. Phase 2 does not load a Phase 1 gate, history or result. Historical
-`connected` evidence retains its original continuity contract but is not a
-current launch target.
+`connected` evidence retains its original continuity contract for archive
+reading only. Fresh registration rejects that mode.
 
 ## Remaining source dependency
 
@@ -41,7 +41,6 @@ remain one code path.
 
 ## Claim boundary
 
-An independent Phase 2 result establishes only its registered component. A
-connected claim requires the original continuous agents, histories,
-workstations, shared state and event sequence. Results cannot be stitched across
-rollouts.
+A Phase 2 result establishes only its registered Phase 2 condition. Historical
+connected claims are interpreted only under their frozen original contract.
+Results cannot be stitched across rollout tracks.

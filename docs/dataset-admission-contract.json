@@ -1,16 +1,18 @@
 {
   "schema_version": "3.0",
+  "active_scope": "standalone-phase2-only",
   "architecture": {
     "phase1_and_phase2_independent": true,
-    "connected_claim_requires_original_continuity": true,
-    "independent_phase2_makes_formation_claim": false
+    "fresh_connected_registration_supported": false,
+    "phase2_uses_phase1_state_or_evidence": false
   },
   "phase1": {
+    "development_status": "separate_study",
     "minimum_agents": 4,
     "announced_peers": false,
     "announced_channel": false,
     "live_exact_read_dialogue_required": true,
-    "selected_baseline": "r136"
+    "selected_example": "r136"
   },
   "phase2": {
     "minimum_distinct_causal_contributors": 2,
@@ -26,9 +28,10 @@
     "actual_execution_required": true
   },
   "current_evidence": {
-    "phase1_baseline": "docs/research/phase1-baseline.json",
+    "phase1_example": "docs/research/phase1-baseline.json",
     "supplied_method_comparator": "docs/research/phase2-component-positive.json",
-    "strongest_phase2_positive": "docs/research/knowledge-work-legacy-reference-positive.json",
+    "strongest_phase2_positive": "docs/research/knowledge-work-current-record-positive.json",
+    "supplied_method_knowing_comparator": "docs/research/knowledge-work-legacy-reference-positive.json",
     "capacity_phase2_positive": "docs/research/engineering-batching-positive.json",
     "endorsement_gap_comparator": "docs/research/engineering-forecast-positive.json",
     "selected_trajectory_release": "docs/research/trajectory-release.json"

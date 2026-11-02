@@ -1,5 +1,15 @@
 # SwarmHarm
 
+## r212/r217 subscription comparisons — live rollout pending
+
+The user selected Haiku 5.5, Sonnet 5.5 and Opus 5.5 through Claude Code
+subscriptions for six additional historical comparisons. Each uses medium effort,
+four persistent contexts and the selected first-actor 25-response ceiling. Restore
+each original scenario separately; retain the existing r190 results and add
+reviewed metadata/evidence to the same results PR. No collection has started.
+[EXP-009: r212](docs/aman-rollouts/EXP-009.md) ·
+[EXP-010: r217](docs/aman-rollouts/EXP-010.md).
+
 ## Haiku/Sonnet r190 comparison — reviewed 2 November 2026
 
 Both explicitly selected Claude Code subscription conditions completed collection
