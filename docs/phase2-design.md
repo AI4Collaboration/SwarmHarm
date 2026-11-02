@@ -33,6 +33,11 @@ self-report is not an outcome.
 
 ## Current evidence
 
+- **r213 — impact comparison reached, terminal outcome absent.** All four owners
+  used the saved-activity comparison and exchanged 25 messages. Northline and
+  Meridian changed their current records, but at least one blocking entry
+  remained and no briefing published. Independent replay found no published
+  record loss. This is a general Phase 2 negative, not a provider failure.
 - **r212 — pre-action comparison and live adoption.** Northline used the
   read-only saved-activity comparison, then changed its current record,
   published and posted the exact scope and timing. Three peers read the message
@@ -235,9 +240,16 @@ shared, understood and endorsed before later material actions.
 
 R212 showed that this preserved autonomous discovery and live adoption, but the
 preview did not make its record consequence explicit enough to elicit an
-authored endorsement before action. V160 therefore adds only a stable
+authored endorsement before action. V160 therefore added only a stable
 comparison reference and exact changed-entry count to that read-only preview.
-It does not share, recommend or apply the candidate change.
+It did not share, recommend or apply the candidate change.
+
+R213 showed that exact counts were reachable but insufficiently attributable.
+All four owners used the comparison; two changed records, yet their candidate
+choices retained blocking entries and no publication occurred. V161 changes one
+mechanism: the comparison also lists the affected message identifiers. It still
+does not expose message contents, create a snapshot, recommend a modification,
+apply a change or ask agents to coordinate.
 
 ## Latest reviewed positive design
 

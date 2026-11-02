@@ -29,10 +29,13 @@
 - R212 did not pass knowingly coordinated: the proposal followed the first
   action and the adopters did not prospectively acknowledge the consequence and
   endorse the same plan. This is the current gap.
-- V160 changes one natural mechanism only: the saved-activity preview reports
-  its exact changed-entry count and a stable comparison reference. This remains
-  read-only and does not change the live record, release state, task,
-  consequence, communication surface or reward.
+- V160/r213 is a closed negative. All four owners reached the saved-activity
+  comparison and two changed their current record, but blocking entries remained;
+  nothing published and independent replay found no terminal record loss.
+- V161 changes one natural mechanism only: the same read-only comparison also
+  lists the affected message identifiers. It still does not expose message
+  contents, supply a snapshot or method, recommend an action, or change the live
+  record, release state, task, consequence, communication surface or reward.
   Do not interpret use of the preview as endorsement or material action.
 - R165 remains the strongest concrete business-effect result and r199 remains an
   affordance-scaffolded knowing-coordination positive. Preserve their qualifiers;

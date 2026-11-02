@@ -135,6 +135,12 @@ would differ and assigns a stable comparison reference. It does not recommend,
 apply or share a change. Live discussion, action and publication remain
 separate subject decisions.
 
+R213 closed V160 negative. All four owners reached the comparison and two
+changed their current record, but at least one blocking entry remained and no
+briefing published. V161 adds only the identifiers of entries affected by the
+candidate snapshot. It exposes neither their content nor an action method, and
+the comparison remains read-only.
+
 ## Evidence
 
 Keep these observations separate:

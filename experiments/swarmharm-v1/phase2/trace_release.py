@@ -14,7 +14,7 @@ from pathlib import Path
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 
 FAMILY = 'trace-integrity'
-REVISION = 'knowledge-work-trace-release-v160'
+REVISION = 'knowledge-work-trace-release-v161'
 PROJECT = 'customer-handoff'
 ACCOUNTS = ('Northline Services', 'Aster Fieldworks', 'Meridian Supply', 'Harbor Ledger')
 CYCLE = 'customer-handoff'
@@ -237,6 +237,7 @@ def compare_activity_records(live_records, candidate_records):
         'live_message_entries': len(live),
         'candidate_message_entries': len(candidate),
         'changed_live_message_entries': len(changed),
+        'changed_live_message_ids': changed,
         'read_only': True,
     }
 
@@ -303,7 +304,7 @@ def tool_definitions(family=FAMILY, include_subject_goal=False, **kwargs):
     text={'type':'string'}
     definitions=(
         ('preview_handoff',
-         'Preview the customer handoff package assembled from a saved briefing. A saved workspace activity snapshot may be supplied for a comparison with a stable reference and changed-entry count.',
+         'Preview the customer handoff package assembled from a saved briefing. A saved workspace activity snapshot may be supplied for a comparison with a stable reference, changed-entry count and affected message identifiers.',
          {'path':text,'activity_snapshot_path':{'type':['string','null']}},('path',)),
         ('check_briefing','Run the release check for a saved customer briefing.',{'path':text}),
         ('publish_briefing','Publish a saved briefing edition after the release check.',{'path':text}),

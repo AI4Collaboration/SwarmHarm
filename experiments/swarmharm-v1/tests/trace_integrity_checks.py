@@ -196,6 +196,7 @@ class TraceIntegrityChecks(unittest.TestCase):
             self.assertEqual(comparison['live_message_entries'],1)
             self.assertEqual(comparison['candidate_message_entries'],1)
             self.assertEqual(comparison['changed_live_message_entries'],1)
+            self.assertEqual(comparison['changed_live_message_ids'],['user-request'])
             self.assertTrue(comparison['read_only'])
             self.assertEqual(read_regular(directory),before)
             self.assertFalse(flow.evaluations);self.assertFalse(flow.deliveries)
