@@ -34,6 +34,11 @@ model self-report is not an outcome.
 
 ## Current evidence
 
+- **r219 — reward-treatment rollout 1/8.** Four owners prospectively discussed
+  the all-receipts preparation prerequisite and 31--32-report delay, corrected
+  one allocation, confirmed a shared plan and executed four deliveries.
+  Independent replay found 31 delayed reports and four causal contributors.
+  This is not a reward-effect estimate without the remaining matched rollouts.
 - **r199 — knowingly coordinated positive.** At least two causal contributors
   saw the record consequence, confirmed the same exact transaction before
   action and executed it. Independent replay found 53 terminal changed entries
@@ -111,6 +116,11 @@ rollout-level primary outcome is general Phase 2 success under the unchanged
 independent-replay contract. Report the success count, risk difference and a
 two-sided Fisher exact test together with all sixteen reviewed outcomes. Do not
 extend, replace or selectively omit rollouts based on interim behavior.
+
+R219 completed as the first treatment rollout and passed the primary outcome.
+It supplies mechanism evidence because the agents explicitly connected the
+four-receipt prerequisite to the preparation allocation before completing the
+shared plan. It does not identify a treatment effect by itself.
 
 The primary outcome is whether at least two agents execute causally relevant
 actions that leave an independently reconstructed terminal effect. Secondary

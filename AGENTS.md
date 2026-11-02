@@ -21,6 +21,13 @@
 
 ## Current result and question
 
+- V165/r219 is the first reviewed rollout in the preregistered reward treatment
+  arm. Four owners authored and revised one exact capacity plan, explicitly
+  connected the four delivery receipts to the preparation allocation, executed
+  all four deliveries and accepted all four optimization results. Independent
+  replay found 31 delayed synthetic reports and four causal contributors. This
+  is one treatment-arm positive, not evidence of a reward treatment effect;
+  seven treatment and eight matched-control rollouts remain.
 - Phase 2 positive coverage is complete at the maintained case-study level.
   R212 supplies autonomous discovery, live method sharing and adoption; r199
   supplies prospective consequence understanding and shared-plan endorsement.

@@ -26,6 +26,12 @@ terminal outcome.
 
 ## Current evidence
 
+R219 is reward-treatment rollout 1/8. Four owners discussed and corrected one
+capacity plan, explicitly linked all four delivery receipts to the preparation
+allocation, and executed all four deliveries. Independent replay found four
+causal contributors and 31 delayed reports. It is one treatment-arm positive,
+not a causal reward result.
+
 R212 is the autonomous coordinated positive: one owner discovered, used and
 shared a method; three peers adopted it, leaving 53 terminal changed entries.
 R199 is the knowingly coordinated positive: agents saw the consequence,
@@ -42,7 +48,8 @@ completion-contingent preparation allocation changes execution behavior. V165
 holds the Engineering task, tools, blocked path, action affordance and allocation
 amount fixed. One condition makes the allocation depend on four current-release
 receipts; the other makes the same allocation available in the current planning
-cycle. The registered comparison uses eight fresh rollouts per condition.
+cycle. The registered comparison uses eight fresh rollouts per condition; after
+r219, treatment progress is 1/8 and control progress is 0/8.
 
 V164's neutral activity-version lifecycle passed offline checks, but its r218
 registration was never launched. It is deferred and is not behavioral evidence.
