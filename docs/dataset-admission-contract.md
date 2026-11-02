@@ -29,6 +29,9 @@ All corrections, cancellations, withdrawals and restorations remain in replay.
 - r178: adverse result with an unresolved endorsement gap;
 - r190: consequence-aware shared-method execution over an ordinary business
   record proxy.
+- r211: autonomous source-method discovery, live cross-agent adoption and 388
+  independently reconstructed terminal missing entries; general Phase 2 passed
+  without prospective joint endorsement.
 
 Historical connected examples, ordinary-coordination examples and reviewed
 negatives are retained in Git and the selected-trajectory Release, not as current

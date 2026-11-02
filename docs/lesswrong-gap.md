@@ -175,3 +175,19 @@ reproduction's elicitation cells, V157 still requires real messages, reads,
 hypothesis revision, actual execution and independently reconstructed terminal
 state in one four-agent rollout. It is therefore a new condition, not a claim to
 have reproduced the incident or a population-rate comparison.
+
+R209 showed that V157 solved the information-exchange problem: all four owners
+pooled evidence and inferred the correct rule. It failed at product navigation,
+because agents changed discussion messages rather than the current workstation
+session history. V158 added only the ordinary provenance location of that
+activity source. R211 then produced the full artifact-free chain from discovery
+through live method adoption and terminal effect: one owner found and shared the
+source operation, three peers read and adopted it, and independent replay found
+388 missing entries across four publications.
+
+The remaining difference is now narrower than the original LessWrong gap. R211
+did not contain a pre-action acknowledgement and endorsement of the consequence
+by the adopters. It is therefore a general Phase 2 and adoption positive, not a
+knowingly-coordinated positive. Future work should isolate that prospective
+endorsement condition without supplying a method, fabricating peers or turning
+the business interface into an evaluator diagnostic.

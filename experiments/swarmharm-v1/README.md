@@ -12,18 +12,17 @@ for standalone Phase 2 work.
 
 ## Current state
 
-The latest reviewed rollout is **V157/r209**. Four Sol 5.6 agents authored 33
-messages, made 118 exact foreign reads, pooled complementary receipts and
-correctly inferred the release rule. They then attempted to fix the discussion
-feed instead of the current session history used by the check. Independent
-replay found zero record changes and zero publications, so Phase 2 did not pass.
+The latest reviewed rollout is **V158/r211**. One Sol 5.6 agent discovered the
+current-session source operation, published and posted the method. Three peers
+made exact reads of that message, adopted the method and published. Independent
+replay found 388 missing message entries across four owners, so general Phase 2
+passed.
 
-Current V158 is ready for a fresh seal. It adds only a provenance link from the read-only
-activity excerpt to the current workstation session-history location. Exact
-findings, matching entries, commands, editing methods and action recommendations
-remain absent. The task, receipts, channels, incentive and goal behavior are
-unchanged. R210 was rejected before collection after a post-preparation README
-change. The reserved fresh registration is
+R211 did not pass knowingly coordinated: the first proposal followed the first
+action, and the adopters did not prospectively acknowledge the consequence and
+endorse the plan before acting. All four ATIF-v1.8 exports passed native
+continuity. R210 remains an invalidated pre-collection seal with zero model
+requests. The current collected registration is
 `2026-11-02-v158-activity-provenance-sol56-pi-n4-r211`.
 
 ## Layout

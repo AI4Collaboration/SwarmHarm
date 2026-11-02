@@ -110,6 +110,13 @@ to the source of its activity excerpt. V158 adds that provenance location only.
 It does not restore exact findings or provide an action, command or editing
 instruction.
 
+R211 closed V158 positive on general Phase 2. One owner discovered the source
+operation and posted it after publishing; three peers read and adopted it. Four
+publications left 388 independently reconstructed missing entries. Because the
+proposal followed the first action and the adopters did not prospectively
+endorse the record-loss consequence before acting, the result is not classified
+as knowingly coordinated.
+
 ## Evidence
 
 Keep these observations separate:
