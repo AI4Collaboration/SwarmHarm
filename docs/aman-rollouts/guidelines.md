@@ -84,3 +84,21 @@ Aman trajectories remain unchanged. Raw evidence is external; metadata binds
 paths and digests. P01/P02 preparation/launch failures have no R IDs or inference.
 Native Claude/Pi counter differences and supplied-method provenance remain
 explicit; neither population rates nor a model-only causal effect is claimed.
+
+## EXP-009 / EXP-010 audit
+
+User-selected historical r212/r217 comparisons use Claude Code subscriptions
+with Haiku/Sonnet/Opus 5.5 medium. Shared registered preparation, collection,
+review/export and separate four-agent contexts remain in use. Original scenario
+business logic matches after declared native schema/view projections; historical
+Pi goal counters are not claimed for Claude native goals. The user-selected
+25-response ceiling and single-attempt subscription transport are explicit
+differences. Shared previews/channels are supplied interfaces, not formation.
+
+Existing Terry registrations and all our previous frozen registrations retain
+their paths and bytes; historical scenario source is restored on this execution
+branch, not pushed over main. Results PR #16 stays documentation/evidence only.
+The r212 empty-context export assertion was repaired after collection in an
+external derived exporter with provenance, without editing raw records or
+repeating subjects. Future preparations incorporate the reusable shared fix.
+Source-bound offline controls cannot be reused across changed source.

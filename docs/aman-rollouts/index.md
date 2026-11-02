@@ -4,7 +4,7 @@
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **10 experiments (two preparing), 39 executed collection attempts, 27 uncollected preparations** in the inspected local archive.
+Coverage: **10 experiments (two preparing), 39 executed collection attempts, 30 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
@@ -132,4 +132,4 @@ Historical review flags in JSON are copied as reported. This index does not regr
 Three model conditions each: C01 Haiku 5.5, C02 Sonnet 5.5, C03 Opus 5.5; medium.
 EXP-009 C01/C02/C03-P01 prepared; 463 offline checks and prompt contracts passed.
 Business inputs match r212; C01/C02/C03-R01 reviewed and closed.
-EXP-010 is not prepared.
+EXP-010 C01/C02/C03-P01 prepared, 466 offline controls and 13 prompt checks passed.
