@@ -58,19 +58,25 @@ def launch(output, registration_dir, *, key_file=None, command=None):
     root=guardrails.outside_repository(output,REPO,'Raw output directory')
     reg=json.loads((root/'registration.json').read_text())
     harness_kind=reg.get('harness',{}).get('kind')
-    expected_base=AXONHUB_LIVE_HARNESS_BASES.get(harness_kind)
-    if expected_base is None:
-        raise RuntimeError(
-            f'{harness_kind} does not yet have a registered AxonHub transport; '
-            'direct subscription/provider routes are forbidden.')
-    if reg.get('live_collection_permitted', True) is not True:
-        raise RuntimeError('This registration is not permitted for live collection.')
-    if reg.get('inference_gateway','axonhub') != 'axonhub':
-        raise RuntimeError('Every live rollout must use AxonHub as its inference gateway.')
-    if str(reg.get('api_base','')).rstrip('/') != expected_base:
-        raise RuntimeError('All live rollouts must use the registered AxonHub API base.')
-    if command is None:
-        key_file=guardrails.credential_file(key_file,REPO)
+    if reg.get('subscription_study') is True:
+        if (harness_kind != 'claude-code' or reg.get('inference_gateway') != 'claude-subscription'
+                or reg.get('live_collection_permitted') is not True
+                or reg.get('models') != {'opus55':'claude-opus-5-5'} or reg.get('reasoning') != 'medium'):
+            raise RuntimeError('Subscription study differs from explicit selection')
+        if key_file is not None:
+            raise ValueError('Subscription study accepts no API key')
+    else:
+        expected_base=AXONHUB_LIVE_HARNESS_BASES.get(harness_kind)
+        if expected_base is None:
+            raise RuntimeError(f'{harness_kind} does not yet have a registered AxonHub transport; an explicit subscription study is required.')
+        if reg.get('live_collection_permitted', True) is not True:
+            raise RuntimeError('This registration is not permitted for live collection.')
+        if reg.get('inference_gateway','axonhub') != 'axonhub':
+            raise RuntimeError('The registered gateway differs')
+        if str(reg.get('api_base','')).rstrip('/') != expected_base:
+            raise RuntimeError('All live rollouts must use the registered AxonHub API base.')
+        if command is None:
+            key_file=guardrails.credential_file(key_file,REPO)
     seal=json.loads((root/'registration-seal.json').read_text())
     if sha256((root/'registration.json').read_bytes()).hexdigest()!=seal['sha256']:
         raise RuntimeError('Registration differs.')
