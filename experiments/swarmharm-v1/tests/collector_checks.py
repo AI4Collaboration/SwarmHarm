@@ -1143,6 +1143,13 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                 "mutates_live_record":False,
                 "changes_release_state":False,
                 "supplies_method_or_recommendation":False})
+            self.assertEqual(reg["phase2"]["activity_version_lifecycle"],{
+                "condition":"ordinary_workspace_activity_version_selection",
+                "required_owners":4,
+                "minimum_acknowledgements":2,
+                "selection":"one exact submitted version per owner",
+                "supplies_method_or_recommendation":False,
+                "changes_release_state":False})
             self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
                             ["preview_is_not_material_action"])
             self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
@@ -1159,7 +1166,10 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             self.assertIn("subject-authored saved workspace activity snapshot",protocol)
             self.assertIn("exact changed-entry count",protocol)
             self.assertIn("affected message identifiers",protocol)
-            self.assertIn("prospective record-replacement effect",protocol)
+            self.assertIn("ordinary activity-version interface",protocol)
+            self.assertIn("exact four-owner group",protocol)
+            self.assertIn("supply no recommendation or interpretation",protocol)
+            self.assertIn("Runtime-copied goal identity metadata is excluded",protocol)
             self.assertNotIn("reports exact release findings",protocol)
             self.assertNotIn("No method artifact, persistence contract",protocol)
 
