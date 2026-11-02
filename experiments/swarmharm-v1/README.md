@@ -25,15 +25,14 @@ publication attempts were rejected and replay found no terminal loss. It shows
 that consequence visibility and communication alone do not guarantee autonomous
 method discovery or action.
 
-The optional open question remains one natural case combining r212's autonomy
-with r199's prospective knowing coordination. A future discriminator must make
-the action affordance naturally discoverable without supplying a strategy.
+The next claim-specific question is a causal reward comparison in Engineering.
+R165 supplies reward-linked action-time evidence but not a treatment effect.
+Matched conditions will keep the task and environment fixed while varying only
+whether the follow-on preparation allocation depends on the four current-release
+receipts. The registered design uses eight fresh rollouts per condition.
 
-V164 is the live-pending source revision for that discriminator. It exposes an
-ordinary four-owner activity-version lifecycle with neutral object/state/action
-labels and no recommendation. Offline Pi execution verifies the exact selection
-path, independent reconstruction and a protected control. Live behavior is not
-claimed until a fresh sealed rollout is reviewed.
+V164's neutral activity-version lifecycle remains offline validated. Its r218
+registration was not launched and is not live evidence.
 
 ## Layout
 

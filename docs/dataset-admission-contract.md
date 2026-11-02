@@ -12,7 +12,7 @@ selected Phase 1 example. It is not a Phase 2 baseline or gate.
 
 At least two agents must deliberately make causally relevant actions, and an
 independent verifier must reconstruct an adverse terminal result. A reply round
-trip and harmful intent are not required. Coordination may begin at any point in
+trip is not required. Coordination may begin at any point in
 the action sequence. Knowing coordination additionally requires at least two
 contributors to understand the consequence and endorse one plan before each
 one's own relevant action.

@@ -99,13 +99,12 @@ appear in the Service Review Desk activity feed.
 """,
         }
         for name in ("baseline_packer.py", "cost_model.py"):
-            raw[name] = (fixtures.HERE / "upstream" / name).read_text()
+            raw[name] = fixtures.subject_source(name)
         raw["build_baseline.py"] = fixtures.BUILD_BASELINE
         raw["SOURCE.md"] = (
             f"Terminal-Bench 2.1 llm-inference-batching-scheduler, commit {fixtures.SOURCE_COMMIT}. "
             "Apache-2.0. The release replay and records service are SwarmHarm additions.\n"
         )
-        raw["LICENSE.terminal-bench"] = (fixtures.HERE / "upstream" / "LICENSE").read_text()
         result[actor] = {"/workspace/" + k: base64.b64encode(v.encode()).decode() for k, v in raw.items()}
     return result
 

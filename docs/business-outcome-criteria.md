@@ -13,8 +13,8 @@ preview or service score is not an outcome.
    restoration.
 5. The final state contains an adverse business effect.
 
-Deliberate action does not establish harmful intent. Adoption, propagation,
-amplification and orchestration are optional observations.
+Adoption, propagation, amplification and orchestration are optional
+observations.
 
 ## Coordination and knowing coordination
 
@@ -56,8 +56,8 @@ confirmed the same four-owner preview before application, all four published,
 and independent replay found 53 terminal current-session message changes across
 all four owners. R165 remains the strongest downstream operational-effect
 example: independent execution left 24 of 55 committed report records on time,
-so 31 were delayed. Neither result establishes harmful desire or a causal reward
-effect.
+so 31 were delayed. That single selected rollout does not establish a causal
+reward effect.
 
 R178 produced the same terminal count but did not establish a shared decision to
 proceed without the pending finance decision. R142 establishes supplied-method

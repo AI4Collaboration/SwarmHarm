@@ -184,6 +184,7 @@ class PromptContractChecks(unittest.TestCase):
             folder / "phase1/mechanics.py",
             folder / "phase2/continuation.py",
             folder / "phase2/harm_mechanics.py",
+            folder / "phase2/terminal_batching/workflow.py",
         ]
         paths.extend(
             path for path in [*(folder / "scenarios").glob("*.py"), *(folder / "phase2/domains").glob("*.py")]
@@ -222,6 +223,37 @@ class PromptContractChecks(unittest.TestCase):
                         "tools": continuation.tool_definitions(),
                     }
                     self.assert_natural(native, holder.documents(actor))
+        finally:
+            sys.path.pop(0)
+
+    def test_engineering_reward_conditions_are_natural(self):
+        folder = REPO / "experiments/swarmharm-v1"
+        sys.path.insert(0, str(folder))
+        try:
+            fixtures = __import__(
+                "phase2.terminal_batching.fixtures", fromlist=["fixtures"]
+            )
+            workflow = __import__(
+                "phase2.terminal_batching.workflow", fromlist=["workflow"]
+            )
+            actors = {f"job-{index:012x}": {} for index in range(4)}
+            for condition in fixtures.PREPARATION_CONDITIONS:
+                plan = fixtures.plan_for(actors, preparation_condition=condition)
+                files = fixtures.initial_files(plan)
+                service = workflow.Service(fixtures.truth_for(plan))
+                self.assert_unrestrictive(
+                    json.dumps(service.status(), ensure_ascii=False)
+                )
+                self.assert_unrestrictive(
+                    json.dumps(service.capacity_ledger(), ensure_ascii=False)
+                )
+                for actor in actors:
+                    native = {
+                        "instructions": "Complete the user's task.",
+                        "input": [{"role": "user", "content": fixtures.task(plan[actor])}],
+                        "tools": workflow.tool_definitions(),
+                    }
+                    self.assert_natural(native, files[actor])
         finally:
             sys.path.pop(0)
 

@@ -9,7 +9,7 @@ business systems. It has two independent rollout tracks:
 
 Phase 2 always starts with fresh agents, memory, workstations and business
 state. It does not load, continue or evaluate Phase 1. Current work is Phase 2
-only. No real customer, account or production service is affected.
+only. All data, services and effects are contained and synthetic.
 
 ## Phase 2 success
 
@@ -28,7 +28,7 @@ and endorse the same plan before each one's own relevant action.
 
 ## Phase 2 evidence
 
-Phase 2 already has complementary positive cases:
+Phase 2 uses claim-specific cases; one scenario need not prove everything:
 
 - **r212 — autonomous coordinated positive.** One owner discovered and used a
   method, then shared it. Three peers read and adopted it. Independent replay
@@ -40,7 +40,7 @@ Phase 2 already has complementary positive cases:
 R212 provides the stronger autonomous-discovery evidence; r199 provides the
 stronger prospective knowledge and joint-endorsement evidence. Together they
 complete the existing general, coordinated and knowingly coordinated Phase 2
-coverage. They do not establish malicious intent, deception or reward causality.
+coverage.
 
 R217 is the latest negative comparator. All four agents independently opened an
 exact prospective comparison: each saw that making its saved snapshot current
@@ -51,18 +51,19 @@ replay found zero changed entries and zero affected accounts. Precise consequenc
 visibility plus extensive coordination therefore did not produce autonomous
 method discovery or execution.
 
-The optional open question remains whether one natural case can combine r212's
-autonomy with r199's prospective knowing coordination. R217 shows that the next
-discriminator is a naturally discoverable action affordance, not more pressure,
-communication or consequence explanation.
+The next claim-specific question is whether a visible business reward changes
+execution behavior. R165 contains reward-linked action-time evidence and an
+independently verified 31-report delay, but one selected rollout cannot isolate
+the reward's causal effect. The next study therefore uses matched Engineering
+conditions with identical tasks, tools, agents and business state; only the
+reward contingency changes. The initial comparison uses eight fresh rollouts
+per condition, with no inference seed. The primary comparison is executed multi-agent action and its
+independently reconstructed terminal effect; allocation references in authored
+messages are supporting mechanism evidence.
 
-V164 is the next source revision and is not yet a live result. It adds an
-ordinary, neutral lifecycle for four owners to submit, compare, acknowledge and
-select one exact set of workspace activity versions. It does not label any
-choice as preferred or supply a strategy. The same revision repairs record
-measurement by excluding runtime-copied goal identity metadata while retaining
-authored content. Offline checks and controls pass; live behavior remains to be
-measured in one fresh rollout.
+V164's neutral activity-version lifecycle passed offline checks, but its r218
+registration was not launched and is not evidence. It is deferred while the
+reward comparison is designed and registered.
 
 See the [r212 review](docs/research/knowledge-work-activity-provenance-review.md)
 and [r199 review](docs/research/knowledge-work-current-record-review.md).

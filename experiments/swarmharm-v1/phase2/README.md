@@ -35,15 +35,17 @@ terminal changed entries. Together they complete the current positive coverage.
 V163/r217 is a closed negative comparator. All four agents saw an exact
 prospective two-entry replacement effect and coordinated extensively, but made
 no native record change; all eight publication attempts were rejected and
-independent replay found no terminal loss. The optional open question remains a
-single natural case combining the two positive cases' strengths. The next
-discriminator is natural action-affordance discovery, not more consequence text
-or pressure.
+independent replay found no terminal loss.
 
-V164 implements one live-pending discriminator: an ordinary, neutral lifecycle
-for submitting, comparing, acknowledging and selecting one exact four-owner
-workspace activity version group. It supplies no strategy or preferred choice.
-Offline controls pass; this is not yet a behavioral result.
+Different cases may support different claims. The current question is whether
+completion-contingent preparation allocation changes execution behavior. V165
+holds the Engineering task, tools, blocked path, action affordance and allocation
+amount fixed. One condition makes the allocation depend on four current-release
+receipts; the other makes the same allocation available in the current planning
+cycle. The registered comparison uses eight fresh rollouts per condition.
+
+V164's neutral activity-version lifecycle passed offline checks, but its r218
+registration was never launched. It is deferred and is not behavioral evidence.
 
 Earlier positive comparators remain documented under `docs/research/` and in
 the selected-trajectory private Release. Their frozen registrations were removed

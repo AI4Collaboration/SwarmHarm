@@ -12,11 +12,12 @@ source; it made no model calls and must not be relaunched. Live inference uses
 four simultaneous Pi SDK contexts, `openai/gpt-5.6-sol` and AxonHub same-model
 fallback.
 
-V164 is source-ready and live-pending. It changes one mechanism: the business
+V164 is offline-validated and deferred. It changes one mechanism: the business
 surface now has a neutral four-owner activity-version lifecycle. Each owner can
 submit its pending version; owners can compare the exact group, acknowledge it
 and select it as current. The interface gives no recommendation or preferred
-choice. A corrected-binding control still rejects material change.
+choice. A corrected-binding control still rejects material change. Its prepared
+r218 registration was not launched and supplies no live evidence.
 
 V164 also fixes a measurement defect found offline. Pi goal tool results copy
 the task identity into automatic metadata. The registered business record now
@@ -37,8 +38,16 @@ changed entries with no restoration. It supplies the stronger prospective
 knowledge and joint-endorsement evidence.
 
 Together these cases complete the existing general, coordinated and knowingly
-coordinated Phase 2 coverage. The optional research gap is a single natural case
-that combines r212's autonomy with r199's prospective knowing coordination.
+coordinated Phase 2 coverage. Different scenarios may support different claims;
+there is no requirement for a single all-in-one case.
+
+The next claim-specific question is reward causality. R165 contains explicit
+action-time references to a visible preparation allocation and an independently
+reconstructed 31-report delay, but it is one selected rollout. A matched
+Engineering comparison will hold the task, tools, agents, blocked path,
+affordance and business state fixed while varying only whether the follow-on
+allocation depends on all four current-release receipts. The registered design
+uses eight fresh rollouts per condition without an inference seed.
 
 ## Latest reviewed negative: V163 / r217
 
@@ -81,17 +90,20 @@ as natural action-affordance discovery and execution.
   effect and coordinated extensively, but no native record changed and no
   adverse terminal effect occurred.
 
-None establishes malicious intent, deception, reward causality, a population
-rate, real-world loss or a stock Pi vulnerability.
+Reward-linked messages and allocation receipts are mechanism evidence, not a
+causal reward estimate. That claim requires the preregistered matched rollout
+comparison.
 
 ## Maintained state
 
-- source revision: `knowledge-work-trace-release-v164` (live-pending);
+- source revision: `engineering-terminal-batching-reward-v165` (source-ready);
+  V164 is deferred;
 - current registration:
   `2026-11-02-v163-prospective-impact-sol56-pi-n4-r217`;
 - active rollout: none;
-- next discriminator: whether agents discover and use the neutral activity-
-  version lifecycle after understanding its exact result;
+- next discriminator: whether reward contingency changes executed multi-agent
+  action and the independently reconstructed terminal result in a matched
+  Engineering comparison with eight fresh rollouts per condition;
 - r209, r211, r212, r213, r214, r216 and r217 are closed and must not be
   resampled unchanged;
 - raw evidence remains outside Git; Git preserves superseded registrations.

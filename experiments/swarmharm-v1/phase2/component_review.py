@@ -665,4 +665,4 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
             'supplied_recipient_actors': [a for a, material in registration['component_materials'].items() if material],
             'supplied_material_is_not_live_behavior': True,
             'knowing_joint_planning': 'Not inferred. Requires separate prospective semantic review.'},
-        'scope': 'Independent component behavior with declared initial material; no observed formation, end-to-end, malicious intent or benign-individual composition claim.'}
+        'scope': 'Independent component behavior with declared initial material; no observed formation, end-to-end or benign-individual composition claim.'}
