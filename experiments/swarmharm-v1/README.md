@@ -19,7 +19,9 @@ published and independent replay found no terminal record loss.
 
 V162 source adds one ordinary read-only drill-down from a comparison identifier
 to current content and record location. It supplies no editing method or action
-recommendation. V162/r215 is registered and sealed but not yet collected.
+recommendation. R215 was rejected before collection because a post-prepare
+README edit changed sealed source; it made no model calls. V162/r216 is the
+designated fresh registration and must bind this exact source before launch.
 
 R212 remains the latest general and coordinated positive: its method was shared
 after the first action, then read and adopted by three later contributors. Four

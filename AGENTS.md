@@ -45,8 +45,9 @@
 - V162 changes only the r214 legibility gap: an affected comparison identifier
   can be opened through a read-only activity-entry view. It supplies current
   content and record location, but no editing method, action recommendation or
-  peer plan. V162/r215 is freshly registered and sealed; it has not been
-  collected.
+  peer plan. R215 was rejected before collection because a post-prepare README
+  edit changed sealed source. Do not collect it. V162/r216 is the designated
+  fresh registration; its seal must bind this exact source before launch.
 
 ## Subject-facing design
 

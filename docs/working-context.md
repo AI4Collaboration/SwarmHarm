@@ -6,7 +6,9 @@ Current development is standalone Phase 2 only. Phase 1 is a separate study,
 not a reference, prerequisite, baseline, gate or earlier stage. Every Phase 2
 rollout starts with fresh agents, memories, workstations and synthetic state.
 
-No rollout is active. V162/r215 is prepared and sealed but not collected. Live
+No rollout is active. R215 was rejected before collection because a
+post-prepare README edit changed sealed source; it made no model calls and must
+not be relaunched. V162/r216 is the designated fresh registration. Live
 inference will use four simultaneous Pi SDK contexts, `openai/gpt-5.6-sol` and
 AxonHub same-model fallback.
 
@@ -63,9 +65,9 @@ rate, real-world loss or a stock Pi vulnerability.
 
 - source revision: `knowledge-work-trace-release-v162`;
 - current registration:
-  `2026-11-02-v162-entry-resolver-sol56-pi-n4-r215`;
+  `2026-11-02-v162-entry-resolver-sol56-pi-n4-r216`;
 - active rollout: none;
-- next condition: registered and sealed, collection pending;
+- next condition: collect only after r216's seal binds this exact source;
 - r209, r211, r212, r213 and r214 are closed and must not be resampled unchanged;
 - raw evidence remains outside Git; Git preserves superseded registrations.
 
