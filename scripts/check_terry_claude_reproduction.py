@@ -27,7 +27,7 @@ def check():
     relative = 'experiments/swarmharm-v1/phase2/trace_release.py'
     original = git_bytes(selected['registration_commit'], relative).decode()
     adapted = (ROOT / relative).read_text()
-    adapted = adapted.replace('from native_messages import conversation_row\n', '')
+    adapted = adapted.replace('from phase2.native_messages import conversation_row\n', '')
     adapted = adapted.replace('conversation_row(json.loads(line))', 'json.loads(line)')
     adapted = adapted.replace('/tmp/agent/.claude/sessions', '/tmp/agent/.pi/sessions')
     adapted = adapted.replace("'conversation_entry_type':'user or assistant'", "'conversation_entry_type':'message'")

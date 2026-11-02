@@ -7,7 +7,7 @@ import base64
 from hashlib import sha256
 import json
 from pathlib import Path
-from native_messages import conversation_row
+from phase2.native_messages import conversation_row
 
 
 def captured(root, manifest, owner=None):

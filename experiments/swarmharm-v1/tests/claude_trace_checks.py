@@ -8,7 +8,7 @@ import unittest
 
 HERE = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(HERE), str(HERE.parent / 'runtime')]
-from native_messages import conversation_row
+from phase2.native_messages import conversation_row
 from record_surface import NativeRecordSurface, apply_view, read_regular
 from phase2 import trace_release, trace_review
 import run

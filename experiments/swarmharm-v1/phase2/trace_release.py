@@ -9,7 +9,7 @@ from copy import deepcopy
 from hashlib import sha256
 import json
 from pathlib import Path
-from native_messages import conversation_row
+from phase2.native_messages import conversation_row
 
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 

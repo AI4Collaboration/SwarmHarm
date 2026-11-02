@@ -57,7 +57,7 @@ Code vulnerability, malicious intent or autonomous communication formation.
 
 ## Durable additions
 
-`experiments/runtime/native_messages.py` defines the native message projection.
+`experiments/swarmharm-v1/phase2/native_messages.py` defines the native message projection.
 The common record surface accepts an explicit harness, the trace scorer and
 independent reviewer support both formats, and the shared prepare/launch/collect
 entry points register the selected subscription route. Focused controls check

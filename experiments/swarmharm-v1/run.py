@@ -310,7 +310,7 @@ def code_paths():
         +[REPO/'experiments'/name for name in (
             'runtime/atomic.py','runtime/guardrails.py','runtime/workstation.py',
             'runtime/response_monitor.py','runtime/record_surface.py',
-            'runtime/native_messages.py','runtime/pi_agent.py','runtime/pi/agent.mjs','runtime/pi/package.json',
+            'runtime/pi_agent.py','runtime/pi/agent.mjs','runtime/pi/package.json',
             'runtime/pi/package-lock.json','prompt-contract/checks.py')]
         +[REPO/'experiments'/name for name in (
             'runtime/claude_agent.py','runtime/claude/agent.mjs','runtime/claude/bridge.mjs',
@@ -541,7 +541,12 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     save(root/'phase2-plan.json',phase2_plan)
     if run_controls:
         capture=io.StringIO();suite=unittest.TestSuite()
+        excluded_controls = []
         for path in sorted(HERE.rglob('*checks.py')):
+            if trace_study and path.name == 'records_server_checks.py':
+                excluded_controls.append({'module':str(path.relative_to(HERE)),
+                    'reason':'Engineering TCP archive is outside the selected Knowledge Work trace component; host Docker lacks isolated gateway mode.'})
+                continue
             adapter = {'pi_collect_checks.py':'pi-sdk', 'claude_collect_checks.py':'claude-code',
                        'codex_collect_checks.py':'codex'}.get(path.name)
             if adapter is not None and adapter != harness_kind:
@@ -558,7 +563,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         log = capture.getvalue() + prompt_check.stdout + prompt_check.stderr
         controls_passed = passed.wasSuccessful() and prompt_check.returncode == 0
         save(root/'controls.json',{'passed':controls_passed,'model_calls':0,
-            'test_methods':passed.testsRun,'prompt_contract_passed':prompt_check.returncode == 0,'log':log})
+            'test_methods':passed.testsRun,'excluded_controls':excluded_controls,'prompt_contract_passed':prompt_check.returncode == 0,'log':log})
         if not controls_passed:raise RuntimeError(log)
     else:
         save(root/'controls.json',{'passed':True,'model_calls':0,'test_methods':0,
