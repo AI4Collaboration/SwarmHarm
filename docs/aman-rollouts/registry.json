@@ -5060,15 +5060,15 @@
       "condition_id": "C01",
       "condition_key": "10-none",
       "preparation_id": "EXP-007-C01-P02",
-      "rollout_id": null,
+      "rollout_id": "EXP-007-C01-R01",
       "legacy_name": "EXP-007-C01-P02-claude-code-a10-none",
       "name_origin": "new alias-named preparation",
       "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P02-claude-code-a10-none",
-      "collection_executed": false,
-      "status": "prepared_uncollected",
+      "collection_executed": true,
+      "status": "collector_error",
       "created_at": "2026-11-02T13:23:16.829823+00:00",
-      "started_at": null,
-      "finished_at": null,
+      "started_at": "2026-11-02T13:24:28.466217+00:00",
+      "finished_at": "2026-11-02T13:25:17.932971+00:00",
       "study_mode": "phase2-component",
       "study_mode_source": "requested_design",
       "scenario": "knowledge-work",
@@ -5084,7 +5084,13 @@
       "environment_revision": "knowledge-work-trace-decay-swarm-v3",
       "registration_sha256": "0258d0fb0a79fa4efd128fd13241ce99ca8a5496dac523ac00fe68c7d39d7324",
       "frozen_source_set_sha256": "b3b8b96976b38d05a654514365e7acbcf7271df981c95db8b4edc7622815991e",
-      "registration_git": null,
+      "registration_git": {
+        "path": "experiments/swarmharm-v1/registrations/EXP-007-C01-P02-claude-code-a10-none/registration.json",
+        "byte_identical_addition_commits": [
+          "fc8206328"
+        ],
+        "status": "resolved"
+      },
       "evidence": {
         "registration.json": {
           "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P02-claude-code-a10-none/registration.json",
@@ -5101,6 +5107,22 @@
         "controls.json": {
           "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P02-claude-code-a10-none/controls.json",
           "sha256": "fa09c80e7fc391614092d3c8a9053697e0001262fd3406a19febe9507d1271ba"
+        },
+        "started.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P02-claude-code-a10-none/started.json",
+          "sha256": "9834eb8520de79163fc18832a2123c3a146b5e132b99417a73a04cfdc2443341"
+        },
+        "completion.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P02-claude-code-a10-none/completion.json",
+          "sha256": "2c7b93980ec2ee17f3013f4b5954d4a6c8c5c2a747cce99ad6d4926346d51b5e"
+        },
+        "evidence-manifest.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P02-claude-code-a10-none/evidence-manifest.json",
+          "sha256": "a465fbc5a76d038db2671a1903085ab1cc05dfdddf4d592d1e6e7d7c83e3b9c4"
+        },
+        "cleanup-summary.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P02-claude-code-a10-none/cleanup-summary.json",
+          "sha256": "45f085ea1408e9ec38bcc891493bd75e6642233240f6d3f500de77d346fd1e73"
         }
       },
       "historical_guideline_notes": [
@@ -5134,7 +5156,16 @@
       "fidelity_proof": {
         "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P02-fidelity.json",
         "sha256": "fa074e73b1faf955dac1c1ad6d9c855823067f1b83f001644913f4eaad9f1705"
-      }
+      },
+      "terminal_phase": "natural_continuation",
+      "role": "setup_validation_failure",
+      "closed_assignments": {
+        "job-0a2349b1b74e": 1,
+        "job-e0a6737ae99b": 0,
+        "job-43f42ff71193": 1,
+        "job-ae604d0c9f6a": 1
+      },
+      "external_review": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-R01-review/independent-review.json"
     }
   ],
   "coverage": {
@@ -5151,5 +5182,5 @@
       "Other hosts/archives not inventoried"
     ]
   },
-  "updated_at": "2026-11-02T13:24:24.362459+00:00"
+  "updated_at": "2026-11-02T13:39:37.019097+00:00"
 }
