@@ -4894,7 +4894,7 @@
       "name_origin": "new alias-named preparation",
       "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P01-claude-code-a10-none",
       "collection_executed": false,
-      "status": "prepared_uncollected",
+      "status": "launch_rejected_before_collection",
       "created_at": "2026-11-02T13:17:17.862402+00:00",
       "started_at": null,
       "finished_at": null,
@@ -4930,6 +4930,14 @@
         "controls.json": {
           "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P01-claude-code-a10-none/controls.json",
           "sha256": "398591062648e5fca365fb74b12f55bfbee9b2669c57f92535f726feed047221"
+        },
+        "launcher.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P01-claude-code-a10-none/launcher.json",
+          "sha256": "d1390bb4a91317be2d6b1e2f0ab64955646eab85ca22f7b357e58658fa4b25ef"
+        },
+        "controller.log": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P01-claude-code-a10-none/controller.log",
+          "sha256": "33df6621087c36dab5c0a2d6e80b19beb6e0786d81ca9893ea18d343aeb9b8e3"
         }
       },
       "historical_guideline_notes": [
@@ -4963,7 +4971,8 @@
       "fidelity_proof": {
         "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-precollection-fidelity.json",
         "sha256": "f2bb8617e6bdcaf0b713fbb36699bcf6ea7d06dce8683bc3bb87478793a4a584"
-      }
+      },
+      "launch_error": "Git publication check used the wrong default GitHub account; zero inference, no started.json."
     },
     {
       "experiment_id": "EXP-007",
@@ -5045,6 +5054,87 @@
         "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-precollection-fidelity.json",
         "sha256": "f2bb8617e6bdcaf0b713fbb36699bcf6ea7d06dce8683bc3bb87478793a4a584"
       }
+    },
+    {
+      "experiment_id": "EXP-007",
+      "condition_id": "C01",
+      "condition_key": "10-none",
+      "preparation_id": "EXP-007-C01-P02",
+      "rollout_id": null,
+      "legacy_name": "EXP-007-C01-P02-claude-code-a10-none",
+      "name_origin": "new alias-named preparation",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P02-claude-code-a10-none",
+      "collection_executed": false,
+      "status": "prepared_uncollected",
+      "created_at": "2026-11-02T13:23:16.829823+00:00",
+      "started_at": null,
+      "finished_at": null,
+      "study_mode": "phase2-component",
+      "study_mode_source": "requested_design",
+      "scenario": "knowledge-work",
+      "models": {
+        "opus55": "claude-opus-5-5"
+      },
+      "reasoning_effort": "medium",
+      "harness": "claude-code",
+      "goal_mode": "claude_goal",
+      "route": "claude-subscription",
+      "population": 4,
+      "assignment_limit": 10,
+      "environment_revision": "knowledge-work-trace-decay-swarm-v3",
+      "registration_sha256": "0258d0fb0a79fa4efd128fd13241ce99ca8a5496dac523ac00fe68c7d39d7324",
+      "frozen_source_set_sha256": "b3b8b96976b38d05a654514365e7acbcf7271df981c95db8b4edc7622815991e",
+      "registration_git": null,
+      "evidence": {
+        "registration.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P02-claude-code-a10-none/registration.json",
+          "sha256": "0258d0fb0a79fa4efd128fd13241ce99ca8a5496dac523ac00fe68c7d39d7324"
+        },
+        "registration-seal.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P02-claude-code-a10-none/registration-seal.json",
+          "sha256": "f08e6252adf0584388f2a740f43398892f83d2e8246ce9c46531cf00f0970389"
+        },
+        "source-manifest.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P02-claude-code-a10-none/source-manifest.json",
+          "sha256": "fcf83fcda712eaa8ae1085c45e075c6c59f66612e47839ab05ac816bea0e590f"
+        },
+        "controls.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P02-claude-code-a10-none/controls.json",
+          "sha256": "fa09c80e7fc391614092d3c8a9053697e0001262fd3406a19febe9507d1271ba"
+        }
+      },
+      "historical_guideline_notes": [
+        "Explicit user selection of subscription route and the existing narrow pressure comparison; no API fallback."
+      ],
+      "comparison_scope": "New harness condition; not native Pi continuation-counter parity or a model-only causal comparison.",
+      "provenance": {
+        "original_aman_experiment": "EXP-004",
+        "business_source_branch": "codex/score-decay-study"
+      },
+      "settings_status": "frozen",
+      "budgets": {
+        "request_timeout_seconds": 300,
+        "max_transport_attempts_per_request": 1,
+        "transport_retry_backoff_seconds": 0,
+        "max_output_tokens_per_response": 16384,
+        "max_actor_seconds": 21600,
+        "max_batch_seconds": 21600,
+        "provider_concurrency": 4,
+        "scenario_timeout_seconds": 30,
+        "active_contexts_natural": 4,
+        "max_subject_responses_per_assignment": 25,
+        "max_identical_tool_free_outputs": 3
+      },
+      "source_commit": "350f66050",
+      "controls": {
+        "passed": true,
+        "test_methods": 452,
+        "prompt_contract_passed": true
+      },
+      "fidelity_proof": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P02-fidelity.json",
+        "sha256": "fa074e73b1faf955dac1c1ad6d9c855823067f1b83f001644913f4eaad9f1705"
+      }
     }
   ],
   "coverage": {
@@ -5061,5 +5151,5 @@
       "Other hosts/archives not inventoried"
     ]
   },
-  "updated_at": "2026-11-02T13:22:17.259346+00:00"
+  "updated_at": "2026-11-02T13:24:24.362459+00:00"
 }

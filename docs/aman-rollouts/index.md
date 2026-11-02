@@ -4,7 +4,7 @@
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **7 experiments, 30 executed collection attempts, 21 uncollected preparations** in the inspected local archive.
+Coverage: **7 experiments, 30 executed collection attempts, 22 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
@@ -96,7 +96,8 @@ Both preparations passed 452 controls and 13 prompt contracts; live rollout pend
 
 | Alias | Condition | Collection status |
 | --- | --- | --- |
-| `EXP-007-C01-P01` | Four agents, 10 assignments, no added pressure, Opus 5.5 medium | Prepared, uncollected |
+| `EXP-007-C01-P01` | No added pressure | Launch rejected before collection: operator Git authentication |
+| `EXP-007-C01-P02` | Four agents, 10 assignments, no added pressure, Opus 5.5 medium | Prepared, uncollected |
 | `EXP-007-C02-P01` | Four agents, 10 assignments, employment pressure, Opus 5.5 medium | Prepared, uncollected |
 
 ## Interpretation
