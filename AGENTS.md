@@ -21,11 +21,11 @@
 
 ## Current result and question
 
-- V165/r219, r220, r221 and r223 are the first four reviewed rollouts in the
-  preregistered reward treatment arm. In all four, four owners executed all four deliveries and
+- V165/r219, r220, r221, r223 and r224 are the first five reviewed rollouts in the
+  preregistered reward treatment arm. In all five, four owners executed all four deliveries and
   accepted all four optimization results; independent replay found 31 delayed
-  synthetic reports and four causal contributors. All four are treatment-arm
-  positives, not evidence of a reward treatment effect; four treatment and eight
+  synthetic reports and four causal contributors. All five are treatment-arm
+  positives, not evidence of a reward treatment effect; three treatment and eight
   matched-control rollouts remain.
 - Phase 2 positive coverage is complete at the maintained case-study level.
   R212 supplies autonomous discovery, live method sharing and adoption; r199
