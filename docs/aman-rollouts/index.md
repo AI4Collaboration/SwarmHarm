@@ -134,4 +134,13 @@ EXP-009 C01/C02/C03-P01 prepared; 463 offline checks and prompt contracts passed
 Business inputs match r212; C01/C02/C03-R01 reviewed and closed.
 EXP-010 C01/C02/C03-P01 prepared, 466 offline controls and 13 prompt checks passed.
 
-EXP-010-C01-R01 reviewed; C02/C03-R01 started.
+EXP-010 C01/C02/C03-R01 reviewed and closed. No collector remains active.
+
+| Rollout | Model (medium) | Historical source | Terminal status |
+| --- | --- | --- | --- |
+| EXP-009-C01-R01 | Haiku 5.5 / Claude subscription | r212 | collected_with_limits |
+| EXP-009-C02-R01 | Sonnet 5.5 / Claude subscription | r212 | rollout_limit |
+| EXP-009-C03-R01 | Opus 5.5 / Claude subscription | r212 | rollout_limit |
+| EXP-010-C01-R01 | Haiku 5.5 / Claude subscription | r217 | rollout_limit |
+| EXP-010-C02-R01 | Sonnet 5.5 / Claude subscription | r217 | rollout_limit |
+| EXP-010-C03-R01 | Opus 5.5 / Claude subscription | r217 | rollout_limit |

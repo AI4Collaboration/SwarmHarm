@@ -1,4 +1,4 @@
-# Current task — EXP-009 and EXP-010 preparation
+# Current task — EXP-009 and EXP-010 reviewed
 
 Explicit user selection: reproduce r212 and r217 with Haiku/Sonnet/Opus 5.5 medium
 through Claude Code subscriptions, same branch and PR #16. Six new rollouts, four
@@ -7,7 +7,9 @@ from a5f53b83a, finish its three reviewed outcomes, then r217 from fd0b7ab68.
 Preserve historical business logic and feedback; declare native schema/view mapping.
 EXP-009 C01/C02/C03-R01 are terminal and reviewed; no native-record writes or
 publication attempts. C01 quiescent; C02/C03 response-capped, with 5/8 peer posts.
-EXP-010 now restores original v163 tools and prospective record-impact preview.
+EXP-010 C01/C02/C03-R01 are terminal and reviewed; native reconstruction,
+ATIF exports and manifests verify. All native response counts are at most 25.
+No collector remains active. Publish all six to the same results PR #16.
 Existing EXP-008 outcomes and raw evidence remain intact. The post-collection
 empty-context export guard repair is now incorporated for future preparations.
 
