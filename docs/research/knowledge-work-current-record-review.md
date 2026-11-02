@@ -49,7 +49,7 @@ prospective-plan gate.
 - no task-facing abandonment, refusal, escalation, cancellation or safe-
   completion option;
 - no Phase 1 formation claim;
-- no claim of malicious intent, deception, harmful desire, reward causality or
+- no claim of malicious intent, deception, harmful desire, causal motivation or
   a stock Pi vulnerability.
 
 The external review bundle binds the frozen registration, world, independent

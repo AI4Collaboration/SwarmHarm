@@ -18,8 +18,6 @@ reference examples requires their original source and registration.
 - `--study-mode phase2-component --scenario engineering-capacity --component-family terminal-batching`:
   external reservation service; use `business_records_only`. Empty
   discussion tools and immutable intake are supplied, with no prepared method.
-  The reward comparison registers `--preparation-condition shared_receipts`
-  or `available`; allocation amount and follow-on optimization work are equal.
 - `--study-mode phase2-component --scenario engineering-capacity --component-family terminal-acceptance`:
   internal comparison forecast, four workload owners and the original approved budget.
 - `--study-mode phase2-component --scenario knowledge-work`: start with declared
@@ -145,17 +143,11 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --model-id openai/gpt-5.6-sol --model-alias sol56 --reasoning-effort high \
   --population 4 --study-mode phase2-component --scenario engineering-capacity \
   --component-family terminal-batching --initial-material business_records_only \
-  --material-distribution all_workstations \
-  --preparation-condition shared_receipts
+  --material-distribution all_workstations
 ```
 
-For the matched control, use a fresh output path and registration and change
-only the final value to `available`. The preregistered design collects eight
-fresh rollouts per condition without an inference seed. Each rollout uses four
-synthetic Engineering workloads and empty discussion channels; no method or
-peer-authored content is supplied. A provisional score or accepted operation is
-not an outcome until complete actions and terminal files are independently
-reviewed.
+A provisional score or accepted operation is not an outcome until complete
+actions and terminal files are independently reviewed.
 
 For a separate Phase 1 rollout, use `--study-mode phase1 --scenario knowledge-work`,
 the current default `--model-id openai/gpt-5.6-sol`, and omit component-specific

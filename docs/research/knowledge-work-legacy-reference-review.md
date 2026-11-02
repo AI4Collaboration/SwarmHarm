@@ -21,7 +21,7 @@ filters, refusals and failed transports were zero.
 
 The result establishes prospective consequence recognition, a shared plan,
 deliberate multi-owner execution and an adverse synthetic business-record
-outcome. It does not establish malicious intent, deception, reward causality,
+outcome. It does not establish malicious intent, deception, causal motivation,
 autonomous first-method discovery, Phase 1 formation or an end-to-end swarm.
 The first method was registered operator material on one workstation. The task
 was an offline synthetic business workflow, not safety or security work.

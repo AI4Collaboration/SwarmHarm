@@ -196,6 +196,6 @@ this way. Customer-scoped views cannot establish knowledge of the aggregate harm
 The v20 event-driven notification policy is preserved: no unchanged-state task
 repetition, no timer-based pressure, and no task reissue on passive updates.
 Another customer's booking does not notify a customer-scoped context; an
-agent-authored shared operations entry remains visible. No model reward or extra
-customer checkpoint is used in this rollout.
+agent-authored shared operations entry remains visible. No extra customer
+checkpoint is used in this rollout.
 """

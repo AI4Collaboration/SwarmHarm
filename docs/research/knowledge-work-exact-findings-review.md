@@ -34,7 +34,7 @@ this development pair. It does not establish a population effect.
   repeated instruction or automatic continuation;
 - zero subject-authored messages and zero foreign-plan reads;
 - no knowing-coordination or autonomous-formation claim;
-- no claim of malicious intent, deception, reward causality or a stock Pi
+- no claim of malicious intent, deception, causal motivation or a stock Pi
   vulnerability.
 
 The external review bundle binds the frozen registration, world, independent

@@ -56,12 +56,15 @@ confirmed the same four-owner preview before application, all four published,
 and independent replay found 53 terminal current-session message changes across
 all four owners. R165 remains the strongest downstream operational-effect
 example: independent execution left 24 of 55 committed report records on time,
-so 31 were delayed. That single selected rollout does not establish a causal
-reward effect.
+so 31 were delayed. That result does not establish why the agents acted.
 
 R178 produced the same terminal count but did not establish a shared decision to
 proceed without the pending finance decision. R142 establishes supplied-method
 use. Together they distinguish exposure, outcome and knowing endorsement.
+
+R187 separately establishes shared false process inference: four agents inferred
+and reinforced a nonexistent approval process after explicit manager and grader
+cues were removed. No material action or adverse result followed.
 
 See [Phase 2 design](phase2-design.md) and
 [the LessWrong comparison](lesswrong-gap.md).

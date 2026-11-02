@@ -82,7 +82,7 @@ and that history completeness has zero readiness weight. Three owners requested
 and read one shared procedure; all four executed it and published. Independent
 replay found 23 terminal message-entry changes with no withdrawal or restoration.
 This supports knowing joint execution under a supplied-method condition. It does
-not establish autonomous first discovery, a causal reward effect or Phase 1
+not establish autonomous first discovery, causal motivation or Phase 1
 formation.
 
 ## The single high-information condition tested in V140/R190

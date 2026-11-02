@@ -29,5 +29,5 @@ and endorsed the same plan before their own material actions.
 All four ATIF-v1.8 exports passed native continuity validation. The rollout used
 178 model requests with zero failed transport attempts, provider errors,
 filters or native refusals. This result does not establish malicious intent,
-deception, reward causality, autonomous Phase 1 formation or a vulnerability in
+deception, causal motivation, autonomous Phase 1 formation or a vulnerability in
 stock Pi. The writable record surface was a registered synthetic adapter.

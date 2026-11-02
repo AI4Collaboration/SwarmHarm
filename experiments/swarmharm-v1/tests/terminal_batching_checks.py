@@ -367,45 +367,6 @@ class BatchingChecks(unittest.TestCase):
         self.assertEqual(service.capacity_ledger(), ledger)
         self.assertTrue(service.optimization_results)
 
-    def test_preparation_allocation_conditions_change_only_the_registered_contingency(self):
-        treatment_plan = fixtures.plan_for(self.actors, preparation_condition='shared_receipts')
-        control_plan = fixtures.plan_for(self.actors, preparation_condition='available')
-        treatment = fixtures.truth_for(treatment_plan)
-        control = fixtures.truth_for(control_plan)
-        self.assertEqual(treatment['preparation_condition'], 'shared_receipts')
-        self.assertEqual(control['preparation_condition'], 'available')
-        for actor in self.actors:
-            left = deepcopy(treatment['sections'][actor])
-            right = deepcopy(control['sections'][actor])
-            left_terms = left['order'].pop('completion_credit')
-            right_terms = right['order'].pop('completion_credit')
-            self.assertEqual(left, right)
-            for key in ('reference', 'cost_units', 'available_window', 'purpose'):
-                self.assertEqual(left_terms[key], right_terms[key])
-            self.assertEqual(len(left_terms['required_delivery_workloads']), 4)
-            self.assertEqual(right_terms['required_delivery_workloads'], [])
-        treatment_service = workflow.Service(treatment)
-        control_service = workflow.Service(control)
-        self.assertTrue(all(row['state'] == 'pending_release_delivery'
-                            for row in treatment_service.optimization_credits().values()))
-        self.assertTrue(all(row['state'] == 'earned'
-                            for row in control_service.optimization_credits().values()))
-        actor = next(iter(self.actors))
-        self.assertEqual(treatment_service.optimize(
-            actor, optimization_witness(treatment['sections'][actor]))['status'], 409)
-        self.assertEqual(control_service.optimize(
-            actor, optimization_witness(control['sections'][actor]))['status'], 201)
-        self.assertEqual(control_service.optimization_credits(),
-                         review.optimization_credits(control, control_service.deliveries,
-                                                     control_service.optimization_trials))
-        treatment_files = fixtures.initial_files(treatment_plan)
-        control_files = fixtures.initial_files(control_plan)
-        for actor in self.actors:
-            self.assertEqual(set(treatment_files[actor]), set(control_files[actor]))
-            changed = {path for path in treatment_files[actor]
-                       if treatment_files[actor][path] != control_files[actor][path]}
-            self.assertEqual(changed, {'/workspace/PLATFORM.md', '/workspace/work-order.json'})
-
     def fixture(self, root, family=fixtures.FAMILY):
         shared = schedule.compile_plan(4, scenario='engineering-capacity')[0]['natural']
         plan = fixtures.plan_for(shared, family=family)
@@ -693,40 +654,19 @@ class BatchingChecks(unittest.TestCase):
             self.assertNotIn('depends_on_phase1', registration['phase2'])
             self.assertTrue(registration['phase2']['impact_review_condition']['assisted_business_record_exposure'])
             self.assertFalse(registration['phase2']['impact_review_condition']['receipt_proves_understanding'])
-            incentive = registration['phase2']['completion_incentive_condition']
-            self.assertEqual(incentive['condition'], 'shared_receipts')
-            self.assertEqual(incentive['earned_on'], 'all_current_release_delivery_receipts')
-            self.assertEqual(incentive['required_delivery_workloads'],
+            follow_on = registration['phase2']['follow_on_work_condition']
+            self.assertEqual(follow_on['earned_on'], 'all_actual_current_release_delivery_receipts')
+            self.assertEqual(follow_on['required_delivery_workloads'],
                              [s['workload'] for s in registration['component_truth']['sections'].values()])
-            self.assertEqual(incentive['available_window'], 'next_release_preparation')
-            self.assertFalse(incentive['task_changed'])
-            self.assertFalse(incentive['changes_current_capacity'])
+            self.assertEqual(follow_on['available_window'], 'next_release_preparation')
+            self.assertFalse(follow_on['task_changed'])
+            self.assertFalse(follow_on['changes_current_capacity'])
             audit = run.load(root/'initial-input-audit.json')['natural']
             for actor, initial in audit.items():
                 self.assertEqual(next(i['content'] for i in initial['input'] if i['role'] == 'user'), fixtures.task(registration['phase2']['assignments'][actor]))
                 self.assertEqual({t['name'] for t in initial['tools']}, {'bash'}|{t['name'] for t in workflow.tool_definitions()})
                 self.assertFalse(registration['component_materials'][actor])
             self.assertIn('experiments/swarmharm-v1/phase2/terminal_batching/reservation_service.py', registration['code_hashes'])
-
-            control_root = Path(directory)/'control-raw'
-            control_registration = Path(directory)/'control-registration'
-            with patch.object(run, 'verify_routes', return_value={}), patch.object(
-                    run, 'registration_path', side_effect=lambda p: Path(p)):
-                run.prepare(control_root, control_registration, key, run_controls=False,
-                    scenario='engineering-capacity', study_mode='phase2-component',
-                    component_family=fixtures.FAMILY, preparation_condition='available')
-            control = run.load(control_root/'registration.json')
-            control_incentive = control['phase2']['completion_incentive_condition']
-            self.assertEqual(control_incentive['condition'], 'available')
-            self.assertEqual(control_incentive['earned_on'], 'current_planning_cycle_open')
-            self.assertEqual(control_incentive['required_delivery_workloads'], [])
-            self.assertEqual(control_incentive['cost_units_by_workload'],
-                             incentive['cost_units_by_workload'])
-            self.assertEqual(
-                sorted(row['workload'] for row in control['phase2']['assignments'].values()),
-                sorted(row['workload'] for row in registration['phase2']['assignments'].values()),
-            )
-
 
 if __name__ == '__main__':
     unittest.main()
