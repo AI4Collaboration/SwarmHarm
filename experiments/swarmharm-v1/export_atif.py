@@ -173,6 +173,13 @@ def export_actor(root,phase,actor):
         harness=registration['harness']
         if isinstance(harness['system_prompt'],dict):
             assert first.get('system_prompt_config')==harness['system_prompt'],'Claude preset differs from registration'
+        if is_claude and (harness.get('context_mapping') or {}).get('append_declared_context'):
+            audit=read(folder/'initial-input.json')
+            append='\n\n'.join(row['content'] for row in audit['input'] if row['role']!='user')
+            for request in requests:
+                captured=read(request)
+                assert captured.get('system_prompt_append')==append,'Declared Claude context append changed'
+                assert json.loads(captured['input'][0]['content'])=={**harness['system_prompt'],'append':append},'Claude preset descriptor differs from declared context mapping'
         native_hashes,delivery=(codex_native_evidence if is_codex else claude_native_evidence)(folder,requests);hashes.update(native_hashes)
     system=first['input'][0];assert system.get('role') in ('developer','system'),'Pi system prompt must lead the input'
     expected=[system];initial_tools=first.get('tools',[]);all_tool_definitions=initial_tools
@@ -282,6 +289,7 @@ def export_actor(root,phase,actor):
             'provider_http_payloads_captured':False,
             'provider_context_continuity_verified':False,
             'system_prompt_config':harness['system_prompt'] if isinstance(harness['system_prompt'],dict) else None,
+            'system_prompt_append':first.get('system_prompt_append'),
             'goal_mode':harness['goal_mode'],
             'goal_evaluator':harness.get('goal_evaluator'),
             'goal_native_records':[str(path.relative_to(folder)) for path in sorted((folder/'claude/native').glob('*.json'))

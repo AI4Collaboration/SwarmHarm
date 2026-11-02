@@ -1534,17 +1534,18 @@ def platform_update_feedback(
 def procurement_update_feedback():
     return 'Continuity purchasing update: supplier activity records have changed.'
 
-def session_inputs(audit, harness_kind):
+def session_inputs(audit, harness_kind, *, context_to_system=False):
     """Project declared inputs to a harness without changing its stock preset.
 
-    Pi exposes a contextual system append; subscription harnesses retain their
-    native preset and receive declared context as ordinary controller input.
+    Pi exposes a contextual system append. Registered Claude sequence conditions
+    append declared context to its stock preset so the initial native goal is
+    the only first user input. Other subscription conditions use controller input.
     The resulting native requests/session records remain authoritative.
     """
     context = [row['content'] for row in audit['input'] if row['role'] != 'user']
     tasks = [row['content'] for row in audit['input'] if row['role'] == 'user']
     require(len(tasks) == 1, 'Each subject needs exactly one initial business task')
-    if harness_kind == 'pi-sdk':
+    if harness_kind == 'pi-sdk' or (harness_kind=='claude-code' and context_to_system):
         return '\n\n'.join(context), tasks
     return None, context + tasks
 
@@ -1725,7 +1726,8 @@ def collect(root,registration_dir):
                     tools=(phase2_component.base_tools(item, reg['phase2']['component_family']) if component else lab.tools(item))
                         +(phase2_definitions if not phase1_only else []),
                     active_tools=[tool['name'] for tool in initial[name][actor]['tools']],
-                    job_context=session_inputs(initial[name][actor], harness['kind'])[0],
+                    job_context=session_inputs(initial[name][actor], harness['kind'],
+                        context_to_system=bool((harness.get('context_mapping') or {}).get('append_declared_context')))[0],
                     goal_mode=harness['goal_mode'],
                     **({'registered_harness':harness} if is_codex else {}),
                     **({'subscription':True} if is_pi_subscription else {}),
@@ -1749,7 +1751,8 @@ def collect(root,registration_dir):
             })
             for actor in active:
                 starts[actor]=time.monotonic();states[actor]['started_at']=activation_time
-                _, texts=session_inputs(initial[name][actor], harness['kind'])
+                _, texts=session_inputs(initial[name][actor], harness['kind'],
+                    context_to_system=bool((harness.get('context_mapping') or {}).get('append_declared_context')))
                 task=texts[-1]
                 pending_texts[actor]=texts[:-1]+[(pi_agent.goal_prompt(task)
                     if harness['goal_mode']=='goal_command' else f'/goal {task}')

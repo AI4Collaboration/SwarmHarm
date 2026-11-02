@@ -162,6 +162,21 @@ class ClaudeAssignmentChecks(unittest.TestCase):
             self.assertTrue(all(len(v)==10 for v in terminal['closed_assignments'].values()),terminal)
             self.assertIsNone(terminal['first_full_score'])
             self.assertTrue(run.load(root/'cleanup-summary.json')['model_calls_finished'])
+            for folder in (root/'natural').glob('job-*'):
+                native=[run.load(p) for p in sorted((folder/'claude/native').glob('*.json'))]
+                inputs=[m for m in native if m['type']=='controller_input']
+                self.assertTrue(inputs[0]['input']['message']['content'].startswith('/goal '),inputs[0])
+                goals=[i for i,m in enumerate(native) if m.get('local_command_run',{}).get('command')=='goal']
+                starts=[i for i,m in enumerate(native) if m.get('event',{}).get('type')=='message_start']
+                self.assertEqual(len(goals),10)
+                self.assertLess(goals[0],starts[0],'Install initial native goal before model work')
+                initial=run.load(folder/'initial-input.json')
+                context='\n\n'.join(r['content'] for r in initial['input'] if r['role']!='user')
+                request=run.load(sorted((folder/'trace').glob('*.request.json'))[0])
+                self.assertEqual(request['system_prompt_append'],context)
+                self.assertTrue(any(context in '\n'.join(block.get('text','') for block in body.get('system',[]))
+                                    for body in SequenceMessages.requests),
+                                'Declared actor context must reach the real local SDK request')
             self.assertEqual(len(export_atif.export(root)),4)
             result=review.review(root,Path(temporary)/'independent-review')
             self.assertTrue(result['phase2']['component_gates']['native_reconstruction_valid'])

@@ -156,6 +156,10 @@ def harness_registration(goal_mode='off', model=None, *, assignment_limits=None)
         },
         'goal_mode': goal_mode, 'extension_tools': [], 'builtin_tools': [],
         'assignment_limits': assignment_limits,
+        'context_mapping': ({'append_declared_context':True,
+            'base_preset':'claude_code','first_user_input':'single native /goal command',
+            'purpose':'Install the native objective before any business model work; no queued bootstrap user turn.'}
+            if assignment_limits else None),
         'assignment_handoff': ({'scope':'same SDK query and session; new objective only',
             'counter_scope':'all visible main-model responses in the current assignment',
             'not_pi_automatic_turn_parity':True,
@@ -190,7 +194,7 @@ class ClaudeAgent:
 
     def __init__(self, actor, events, *, folder, model, thinking_level,
                  max_output_tokens, request_timeout_ms, tools, active_tools,
-                 goal_mode, assignment_limits=None, **unused):
+                 goal_mode, assignment_limits=None, job_context=None, **unused):
         validate_model(model)
         if goal_mode not in GOAL_MODES:
             raise ValueError('Claude Code does not load pi-goal; use claude_goal')
@@ -221,6 +225,7 @@ class ClaudeAgent:
             'request_timeout_ms': request_timeout_ms,
             'goal_mode': goal_mode,
             'assignment_limits': assignment_limits,
+            'job_context': job_context if assignment_limits else None,
         })
 
     def _read(self):

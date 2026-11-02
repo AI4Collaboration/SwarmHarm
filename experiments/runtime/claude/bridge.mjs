@@ -52,8 +52,9 @@ export class ClaudeBridge {
     // Claude Code can put cwd in model context. Keep operator run labels out.
     this.cwd = mkdtempSync(join(tmpdir(), "workspace-"));
     this.active = new Set(config.active_tools);
+    this.systemPrompt = { ...copy(SYSTEM_PROMPT), ...(config.job_context ? { append: config.job_context } : {}) };
     // A configuration descriptor, never an invented copy of the SDK's prompt.
-    this.history.push({ role: "system", content: JSON.stringify(SYSTEM_PROMPT) });
+    this.history.push({ role: "system", content: JSON.stringify(this.systemPrompt) });
     this.servers.work = this.server("work", config.active_tools);
     const hooks = {};
     if (this.assignmentLimits) for (const name of ["Stop", "PostToolBatch", "UserPromptSubmit"]) {
@@ -83,7 +84,7 @@ export class ClaudeBridge {
         ...(this.assignmentLimits ? { hooks, maxTurns: this.assignmentLimits.model_responses } : {}),
         pathToClaudeCodeExecutable: config.claude_binary,
         env: { ...process.env }, sessionId: this.sessionId,
-        systemPrompt: copy(SYSTEM_PROMPT),
+        systemPrompt: copy(this.systemPrompt),
         includePartialMessages: true,
         extraArgs: { "replay-user-messages": null },
         allowedTools: ["mcp__work__*", "mcp__continuation__*"],
@@ -116,7 +117,7 @@ export class ClaudeBridge {
     this.channel.emit({ type: "ready", session_id: this.sessionId,
       session_file: join(config.folder, "session.jsonl"),
       native_dir: join(config.folder, "native"),
-      active_tools: [...this.active], system_prompt: copy(SYSTEM_PROMPT),
+      active_tools: [...this.active], system_prompt: copy(this.systemPrompt),
       commands, harness: "claude-code" });
   }
 
@@ -192,6 +193,8 @@ export class ClaudeBridge {
     this.channel.emit({ type: "request", turn: this.turn, attempt: 1, control_epoch: this.controlEpoch, payload: {
       record_kind: "controller_projection", model: this.config.model,
       system_prompt_config: copy(SYSTEM_PROMPT),
+      system_prompt_append: this.config.job_context ?? null,
+      system_prompt_config_scope: "Base preset; declared actor context append is recorded separately.",
       input: copy(this.history), reasoning: { effort: this.config.effort },
       tools: this.config.tools.filter((tool) => this.active.has(tool.name)),
       sdk_message_id: message.id, native_record: source,

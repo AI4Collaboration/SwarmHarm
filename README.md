@@ -10,7 +10,10 @@ per-assignment response/repetition guards. Both frozen preparations passed 452 o
 All first tasks, business files and 40 case sets per condition match the Sol
 baseline. The first C01 execution ended on a handoff safety check after 49.47 seconds.
 Its full native trace, independent reconstruction and four ATIF exports are
-preserved. C02 remains uncollected; live validation is pending. No old rollout is resumed.
+preserved. Revision 2 changes only initial context/goal installation: declared
+context goes into the stock preset append, and one native goal is the first user
+input. Fresh registrations and live validation are pending. C02 remains
+uncollected. No old rollout is resumed.
 
 [Design and evidence limits](docs/aman-rollouts/EXP-007.md) ·
 [Aman's registry](docs/aman-rollouts/index.md).

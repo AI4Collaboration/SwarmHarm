@@ -8,7 +8,9 @@ The shared adapter adds reusable goal handoff and per-assignment 25-response /
 three-repeat guards; these are not Pi automatic-turn parity. Preserve the
 original Sol source, data, score semantics and evidence as EXP-004.
 
-Implementation/offline validation; live rollout pending. Review the first
+C01-R01 is closed and reviewed as a setup failure. Revision 2 moves declared
+initial context into the stock Claude preset append, with a single native goal
+as the first user input. Fresh validation and registrations are pending. Review the first
 no-pressure rollout before collecting the second condition. No unchanged retry
 of a provider-blocked attempt. Raw evidence stays outside Git; use the shared
 registered prepare/collect/review/export pipeline and commit/push the freeze
