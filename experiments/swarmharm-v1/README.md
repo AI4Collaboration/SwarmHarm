@@ -19,7 +19,7 @@ published and independent replay found no terminal record loss.
 
 V162 source adds one ordinary read-only drill-down from a comparison identifier
 to current content and record location. It supplies no editing method or action
-recommendation and is not yet registered or collected.
+recommendation. V162/r215 is registered and sealed but not yet collected.
 
 R212 remains the latest general and coordinated positive: its method was shared
 after the first action, then read and adopted by three later contributors. Four
