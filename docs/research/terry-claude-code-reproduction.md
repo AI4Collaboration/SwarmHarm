@@ -1,10 +1,10 @@
 # Terry condition reproduction with Claude Code
 
-Status: all collection stopped pending goal-control clarification. R190 and
-r191 native-Claude-goal attempts are preserved outside Git, with eight validated
-ATIF exports and independent terminal reconstructions. Five later conditions
-are prepared but have never started. Do not launch them before the user resolves
-the native-goal versus matched-goal condition.
+Status: the user selected native Claude Code /goal unchanged with a maximum
+of 25 subject turns per actor. The previous uncapped attempts remain separate.
+The cap implementation passed local SDK/CLI tests; fresh live validation is pending.
+The earlier explicit Claude Max subscription selection applies to this independent
+harness condition; it does not change the project's canonical AxonHub route.
 
 The user selected one four-agent rollout for each of r190, r191, r192, r194,
 r195, r196 and r197, using Claude Code, Claude Max subscription authentication,
@@ -15,8 +15,9 @@ The earlier score-decay campaign remains stopped and is not part of this work.
 The machine-readable companion records all seven original registration commits,
 registration hashes, verified source hashes, business tasks, material conditions
 and budgets. Reconstruct each condition from its own original source; never run
-the newest environment seven times under historical labels. Start with r190 and
-review its complete native trace before collecting any other condition. Preserve
+the newest environment seven times under historical labels. Validate the new cap once on r191 and review its complete native trace before
+collecting further capped conditions. R190 already ended with a native cyber
+refusal and is preserved; do not repeat that unchanged refused attempt. Preserve
 every outcome; do not replace a failed or negative trajectory.
 
 ## Shared contract
@@ -74,3 +75,27 @@ bind terminal evidence, review full native actions and export validated ATIF.
 Later condition branches carry the same reviewed adapter additions over their
 own frozen business source. Any conflict requires a recorded source comparison;
 never silently migrate historical tasks to current main.
+
+## Selected 25-turn budget
+
+A subject turn is one streamed model response group. Several tool calls within
+one response count once. The counter is cumulative across the persistent actor
+session and is never reset by a platform update, new input or goal continuation.
+Hidden native-goal evaluator calls are not fully observable and are not counted
+as visible subject turns. This counter is different from Pi's 25 automatic
+continuations and must not be described as equivalent.
+
+SDK maxTurns is fixed at 25. A local test with maxTurns=1 showed that a later
+streamed input can start another turn after the SDK limit, so the bridge also
+enforces a cumulative limit through Stop, PostToolBatch and UserPromptSubmit
+hooks. These return no decision below the limit. The native goal objective,
+commands, evaluator, prompts and business tools are unchanged; no Pi blocked or
+waiting tools are added. Exhaustion closes the four-agent cohort at its first
+actor limit, as with the existing first-actor wall-clock limit. The terminal is
+rollout_limit with limit_kind=actor_turn_limit, not a provider error or success.
+
+Four hosted-inference-free controls exercise streamed updates, native /goal
+with repeated tool use, the common collector's cohort shutdown and cleanup, and
+four valid ATIF exports. The native SDK/CLI and all inference in these controls
+use a local scripted endpoint; they are not experimental results. Fresh sealed
+registrations are required; never modify or relabel earlier uncapped outcomes.

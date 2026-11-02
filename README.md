@@ -1,5 +1,15 @@
 # SwarmHarm
 
+## Native Claude goal with 25-turn cap — 2 November 2026
+
+The user selected native Claude Code /goal unchanged, with a cumulative maximum
+of 25 subject turns per agent. SDK maxTurns is combined with a session-wide
+hook guard because streamed inputs can reset the SDK counter. Reaching the cap
+is a budget terminal, and ends the four-agent cohort. Four local SDK/CLI controls
+passed, including cumulative updates, native goals, cleanup and ATIF exports.
+Fresh live validation is pending. Earlier uncapped attempts remain separate.
+
+
 ## Selected Claude Code reproduction — 2 November 2026
 
 Seven historical Terry conditions are selected for Opus 5.5 medium through the
@@ -7,7 +17,8 @@ Claude Max subscription. The shared pipeline now has an explicit trace-study
 subscription condition and Claude-native record support. Source and condition
 fidelity are checked. R190 ended in provider hold; r191 was stopped for a
 goal-control mismatch. Five later registrations are prepared but uncollected.
-All collection is stopped pending the user’s goal-contract choice.
+The uncapped collection remains stopped. The user selected the fresh capped
+condition described above.
 ### Takeaways
 
 Claude Code native /goal repeatedly continued after agents reported an unchanged
