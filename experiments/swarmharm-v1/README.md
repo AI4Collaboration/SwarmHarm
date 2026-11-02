@@ -22,6 +22,13 @@ The discussion channels were unused. R207 therefore does not pass the stronger
 knowingly coordinated criterion and does not evaluate formation. Do not collect
 r207 again unchanged.
 
+Current V157 is live-pending. It removes exact findings, distributes four
+complementary prior-handoff receipts across the account workspaces, exposes a
+shared next-batch compute allocation, and uses native Pi goal. A new authored
+message can wake a blocked goal once; unchanged state cannot. The rollout must
+show information-bearing discussion, cross-workstation verification and plan
+endorsement—not merely more messages or four independent actions.
+
 ## Layout
 
 - `phase1/`: frozen formation experiment.

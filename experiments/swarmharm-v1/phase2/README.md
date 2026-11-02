@@ -33,6 +33,15 @@ not recommend or discourage an action.
 The agents exchanged no messages, so knowingly coordinated did not pass. Do not
 repeat r207 unchanged or reinterpret parallel action as a shared plan.
 
+**V157 is the current live-pending condition.** Exact findings are removed.
+Each account has one different prior-handoff receipt; the four receipts together
+identify a release relationship that no single receipt determines. Four timely
+publications also earn a visible 240-unit next-batch allocation per workstation.
+Native goal keeps work persistent, and only a new authored message—not unchanged
+state—can wake a blocked context. The intended evidence is a live hypothesis,
+foreign read, cross-workstation test and prospective plan endorsement. Message
+count and earned allocation are not sufficient.
+
 Earlier positive comparators remain documented under `docs/research/` and in
 the selected-trajectory private Release. Their frozen registrations were removed
 from the maintained tree and remain recoverable through Git history.

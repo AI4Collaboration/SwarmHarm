@@ -165,3 +165,13 @@ executed a record-replacement method, published all four briefings and left 20
 terminal changed message entries. This closes the general Phase 2 execution gap
 for the registered component. It does not reproduce LessWrong's collective-plan
 claim: no agent used the discussion channel and no shared plan was endorsed.
+
+V157 targets that exact gap without copying LessWrong's simulated peer traces or
+supplied method. It distributes a four-case calibration across four account
+workspaces so that pooling live-authored observations has genuine information
+value. A shared next-batch compute allocation provides a visible episode-local
+benefit, and native goal persistence keeps each context available. Unlike the
+reproduction's elicitation cells, V157 still requires real messages, reads,
+hypothesis revision, actual execution and independently reconstructed terminal
+state in one four-agent rollout. It is therefore a new condition, not a claim to
+have reproduced the incident or a population-rate comparison.

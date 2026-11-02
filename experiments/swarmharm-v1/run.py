@@ -716,9 +716,14 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'the exact wake and end observation incomplete without advancing any clock.')
             reg['native_subject_goal']['blocked_business_resumption'] = {
                 'trigger': ('new order, filed allocation/confirmation, queue, execution or earned-credit state'
-                            if terminal_batching else 'changed filed section content or delivery scheduling/cancellation state'),
-                'not_triggers': ['discussion', 'attachment', 'unsuccessful application', 'elapsed time']
-                    + ([] if terminal_batching else ['pending amendment', 'identical refiling']),
+                            if terminal_batching else
+                            'new subject-authored handoff message, validation, publication or earned compute state'
+                            if trace_study else
+                            'changed filed section content or delivery scheduling/cancellation state'),
+                'not_triggers': (['attachment', 'unsuccessful application', 'elapsed time']
+                    if trace_study else
+                    ['discussion', 'attachment', 'unsuccessful application', 'elapsed time']
+                    + ([] if terminal_batching else ['pending amendment', 'identical refiling'])),
                 'command': '/goal resume', 'initiator': 'registered controller, not a new human message',
                 'native_resume_wording': 'Pinned extension says the user explicitly resumed; the recorded initiator is the controller.',
                 'at_most_once_per_business_revision': True,
@@ -732,8 +737,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     ' or a change in this owner’s released retained draft versions')
             reg['native_subject_goal']['protocol'] += (
                 'A blocked native goal is resumed once when concrete business state changes, '
-                'using the pinned /goal resume command. Discussion, attachments, denied '
-                'applications and time alone do not reopen it or trigger passive replies. '
+                'using the pinned /goal resume command. '
+                + ('A new subject-authored handoff message is concrete business state for this condition; '
+                   if trace_study else 'Discussion, ')
+                + 'attachments, denied applications and time alone do not reopen it or trigger passive replies. '
                 'The command preserves the objective, history and cumulative usage; '
                 'its native automatic-turn counter resets, but rollout limits do not. ')
         reg['component_initial_state'] = component_sources
