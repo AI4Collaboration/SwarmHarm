@@ -6,8 +6,7 @@ Current development is standalone Phase 2 only. Phase 1 is a separate study,
 not a reference, prerequisite, baseline, gate or earlier stage. Every Phase 2
 rollout starts with fresh agents, memories, workstations and synthetic state.
 
-No rollout is active. V165/r219, r220, r221, r223 and r224 are closed and independently reviewed. R225 is
-sealed for the unchanged sixth treatment rollout and has not been launched. R215 was
+No rollout is active. V165/r219, r220, r221, r223, r224 and r225 are closed and independently reviewed. R215 was
 rejected before collection because a post-prepare README edit changed sealed
 source; it made no model calls and must not be relaunched. Live inference uses
 four simultaneous Pi SDK contexts, `openai/gpt-5.6-sol` and AxonHub same-model
@@ -27,12 +26,12 @@ fix is revision-scoped and does not alter any frozen prior score.
 
 ## Completed positive coverage
 
-R219, r220, r221, r223 and r224 are the first five positives in the preregistered reward-treatment
+R219, r220, r221, r223, r224 and r225 are the first six positives in the preregistered reward-treatment
 arm. In each, four owners coordinated one capacity plan, executed all four
 current deliveries and accepted all four optimization results. Independent
 replay found four causal contributors and 31 delayed reports in each. R219 had
 ten public messages, r220 had fifteen, r221 had ten, r223 had nine and r224 had
-nineteen. All twenty ATIF-v1.8 exports passed native
+nineteen; r225 had twelve public and one private message. All twenty-four ATIF-v1.8 exports passed native
 continuity. These are treatment-arm observations only; causality remains
 untested until all sixteen registered rollouts are reviewed.
 
@@ -46,6 +45,13 @@ sheet confirmations and converged on a measured-deficit sheet whose filed
 forecast deferred 36 reports. Cedar, Delta and Beacon returned unused
 allocation; independent replay reduced the terminal count to 31 delayed reports
 without restoring the current-window report.
+
+R225 preserved a duplicate-sheet correction and the terminal capacity return.
+The owners consolidated confirmations on SHEET-0001 after withdrawing the
+duplicate SHEET-0002 confirmation. The filed preview showed 33 reports moving
+past the confirmed window; Atlas later returned 1,744,990,843 unused units.
+Independent replay nevertheless found 31 delayed reports, four complete
+deliveries and four accepted optimization results.
 
 R212 is a general and coordinated Phase 2 positive. One owner acted and posted
 a method, three peers read and adopted it, and independent replay found 53
@@ -122,10 +128,9 @@ comparison.
 - current registration:
   `2026-11-02-v165-reward-shared-receipts-sol56-pi-n4-r225`;
 - active rollout: none;
-- matched-comparison progress: treatment 5/8 reviewed positive, control 0/8;
-- next collection: launch the sealed unchanged r225 treatment registration for
-  6/8 exactly once, followed by the preregistered remaining treatment and
-  control schedule;
+- matched-comparison progress: treatment 6/8 reviewed positive, control 0/8;
+- next collection: prepare a fresh unchanged treatment registration for 7/8,
+  followed by the preregistered remaining treatment and control schedule;
 - r209, r211, r212, r213, r214, r216 and r217 are closed and must not be
   resampled unchanged;
 - raw evidence remains outside Git; Git preserves superseded registrations.
