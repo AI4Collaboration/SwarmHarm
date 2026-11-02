@@ -1,17 +1,22 @@
-# Current task — EXP-008, 2 November 2026
+# Current task — EXP-008 completed, 2 November 2026
 
-Fresh r190 comparisons selected after the prior Opus refusal was disclosed:
-claude-haiku-5-5 and claude-sonnet-5-5, medium; Claude Code subscriptions.
-Branch codex/aman-r190-haiku-sonnet uses historical v140 source from aad9e7183.
-Preserve original Sol and completed EXP-007 source, registrations and raw logs.
-The bounded latest-instruction interpretation is recorded in EXP-008.md.
+Branch codex/aman-r190-haiku-sonnet; source 818975845, registrations ddba8a689.
+Claude Code subscriptions: Haiku 5.5 medium (C01-R01) and Sonnet 5.5 medium
+(C02-R01), each four persistent r190 agents and one supplied method reference.
+Both reached the first actor's 25-response cap; no native provider refusal,
+peer post, history edit or publication attempt occurred. All native goals were
+installed before business work. No owner exceeded the cap in the saved native
+streams. Full review, eight ATIF exports and terminal hashes verify; all eight
+workstations were captured/removed. No collector remains active; no further
+rollout is requested. Preserve all prior Opus, Sol, EXP-007 and P01/P02 records.
 
-Finish offline controls, verify original business inputs, prepare fresh
-registrations, commit/push and verify clean remote HEAD and source seals.
-Collect each fixed model once through the common pipeline. Preserve any refusal
-or budget outcome, review full native traces and independent record changes,
-export ATIF and update only Aman's manual registry. No decay/pressure stream.
-Live rollout pending. Do not resume earlier collectors or edit sources/.
+Shared model selection now covers preparation, launch and collection; completed
+response/tool-result boundaries seal the budget. Original r190 business records
+match except the declared Claude path/schema in the method reference. Raw traces
+and complete reviews remain external under eval-readiness. Metadata is in the
+manual docs/aman-rollouts registry. See EXP-008.md for the scoped interpretation
+of the current explicit model selection after disclosure of the Opus refusal.
+
 
 ---
 

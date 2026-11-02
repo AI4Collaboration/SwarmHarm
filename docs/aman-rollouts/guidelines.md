@@ -63,3 +63,24 @@ external semantic audit; the guard must not be described as strictly validated.
 The two earlier C01 adapter failures and failed/uncollected preparations remain
 separate records. There is no silent retry or replacement of these trajectories.
 All raw evidence stays outside Git; maintained files bind paths and digests.
+
+## EXP-008 completion audit — 2 November 2026
+
+The latest user selected Haiku and Sonnet after disclosure of the earlier Opus
+r190 cyber refusal. The operator interpreted this as a bounded exception to the
+prior mechanism-change-first instruction for two predeclared model comparisons;
+that interpretation is stated in EXP-008.md. No provider safeguard setting was
+relaxed and neither rollout was rerouted or retried to replace an outcome.
+Both fixed-model rollouts ended on the selected 25-response cohort budget, with
+no observed native provider refusal, peer post, history edit or publication.
+
+Preparation, launch, collection, review and export use the common registered
+pipeline. Both source/registration freezes were committed, pushed and verified
+before inference. Native goals precede initial model work; all captured native
+actor streams remain at or below 25 responses. Both full traces, independent
+reconstructions, eight ATIF exports and terminal hashes were reviewed. All eight
+workstations were captured and removed. Original Terry files and all earlier
+Aman trajectories remain unchanged. Raw evidence is external; metadata binds
+paths and digests. P01/P02 preparation/launch failures have no R IDs or inference.
+Native Claude/Pi counter differences and supplied-method provenance remain
+explicit; neither population rates nor a model-only causal effect is claimed.
