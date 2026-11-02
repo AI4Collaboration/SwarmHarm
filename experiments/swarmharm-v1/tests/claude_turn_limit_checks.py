@@ -104,6 +104,33 @@ class ClaudeTurnLimitChecks(unittest.TestCase):
         self.assertNotIsInstance(error,run.Hold)
         self.assertEqual(error.actor,'a')
 
+    def test_context_without_controller_response_exports_no_invented_agent_step(self):
+        for native_fragment in (False,True):
+            with self.subTest(native_fragment=native_fragment), tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);folder=root/'natural/a';native=folder/'claude/native'
+                native.mkdir(parents=True);(folder/'trace').mkdir()
+                run.save(root/'registration.json',{'harness':{'kind':'claude-code',
+                    'system_prompt':{'type':'preset','preset':'claude_code'},'goal_mode':'claude_goal'},
+                    'study_mode':'phase2-component','models':{'opus55':MODEL},
+                    'plan':{'natural':{'a':{'provider':'opus55'}}}})
+                run.save(folder/'history.json',[])
+                run.save(folder/'result.json',{'status':'rollout_limit','claude_session':{'session_id':'s'}})
+                run.save(native/'000001.json',{'type':'system','subtype':'init','session_id':'s'})
+                run.save(native/'000002.json',{'type':'controller_input',
+                    'input':{'message':{'content':'queued task'}}})
+                if native_fragment:
+                    run.save(native/'000003.json',{'type':'stream_event','session_id':'s',
+                        'event':{'type':'message_start','message':{'id':'partial','model':MODEL}}})
+                exported=export_atif.export_actor(root,'natural','a')
+                value=run.load(folder/'agent/trajectory.json')
+                self.assertTrue(exported['initialized_context_only'])
+                self.assertEqual(exported['requests'],0)
+                self.assertEqual([s['source'] for s in value['steps']],['system','user'])
+                self.assertFalse(value['steps'][1]['extra']['provider_consumption_verified'])
+                self.assertFalse(value['extra']['provider_context_continuity_verified'])
+                self.assertEqual(len(value['extra']['uncommitted_native_response_starts']),int(native_fragment))
+                self.assertEqual(value['extra']['source_sha256']['history.json'],run.sha(folder/'history.json'))
+
     def test_common_collector_preserves_budget_terminal_cleanup_and_native_exports(self):
         ScriptedMessages.requests=[]
         server=ThreadingHTTPServer(('127.0.0.1',0),ScriptedMessages)
