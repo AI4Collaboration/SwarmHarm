@@ -5173,15 +5173,15 @@
       "condition_id": "C01",
       "condition_key": "10-none",
       "preparation_id": "EXP-007-C01-P03",
-      "rollout_id": null,
+      "rollout_id": "EXP-007-C01-R02",
       "legacy_name": "EXP-007-C01-P03-claude-code-a10-none",
       "name_origin": "new alias-named preparation",
       "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P03-claude-code-a10-none",
-      "collection_executed": false,
-      "status": "prepared_uncollected",
+      "collection_executed": true,
+      "status": "collector_error",
       "created_at": "2026-11-02T13:50:25.284366+00:00",
-      "started_at": null,
-      "finished_at": null,
+      "started_at": "2026-11-02T13:52:16.795331+00:00",
+      "finished_at": "2026-11-02T13:54:27.029430+00:00",
       "study_mode": "phase2-component",
       "study_mode_source": "requested_design",
       "scenario": "knowledge-work",
@@ -5199,7 +5199,10 @@
       "frozen_source_set_sha256": "3f4be96f31968a988ecd6f2dab0b8db8b38c9eee188f2389dd09f4c6aa5c72db",
       "registration_git": {
         "path": "experiments/swarmharm-v1/registrations/EXP-007-C01-P03-claude-code-a10-none/registration.json",
-        "status": "committed with this registry revision"
+        "status": "resolved",
+        "byte_identical_addition_commits": [
+          "abcbca5f5"
+        ]
       },
       "evidence": {
         "registration.json": {
@@ -5217,6 +5220,22 @@
         "controls.json": {
           "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P03-claude-code-a10-none/controls.json",
           "sha256": "23afa8fa9d04556e64245805b8ec4cb9801a3b17cbbf66a2b78259703026d364"
+        },
+        "started.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P03-claude-code-a10-none/started.json",
+          "sha256": "3f7c75c00f243ef5a636fff3e46a592f86c5d58eb84a3de45acc46213dce6891"
+        },
+        "completion.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P03-claude-code-a10-none/completion.json",
+          "sha256": "97581c01f91d1e33c06e0a87bb7c454f4bd3af1b1570f3d7f62624d05759cd68"
+        },
+        "evidence-manifest.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P03-claude-code-a10-none/evidence-manifest.json",
+          "sha256": "b653ba91d2aae254b484bd84d434fe1dcc7820b6fd495adbabc2d31cd1fe30ad"
+        },
+        "cleanup-summary.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P03-claude-code-a10-none/cleanup-summary.json",
+          "sha256": "c6a8066b1f971aaa6ee853bf183e106ce82b193a0ffea9949cee480817f1bac5"
         }
       },
       "historical_guideline_notes": [
@@ -5251,7 +5270,16 @@
         "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P03-fidelity.json",
         "sha256": "82b61836c6329482f85ddfebedae9dbcd73a582368069d987fe9409f049c7ae2"
       },
-      "initial_context_mapping": "stock Claude preset append; native goal is the single initial user input"
+      "initial_context_mapping": "stock Claude preset append; native goal is the single initial user input",
+      "terminal_phase": "natural_continuation",
+      "role": "setup_validation_failure",
+      "closed_assignments": {
+        "job-ab9b2b243b52": 0,
+        "job-a085acc19420": 1,
+        "job-228439668812": 1,
+        "job-2e86b9475646": 0
+      },
+      "external_review": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-R02-review/independent-review.json"
     },
     {
       "experiment_id": "EXP-007",
@@ -5372,5 +5400,5 @@
       "Other hosts/archives not inventoried"
     ]
   },
-  "updated_at": "2026-11-02T13:51:54.447739+00:00"
+  "updated_at": "2026-11-02T13:56:47.710494+00:00"
 }

@@ -251,6 +251,8 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- **Claude result queue counts alone do not prove input completion.** In EXP-007-C01-R02, all four initial native goals were installed before model work. A later SDK result reported queued_turn_count zero while one previously sent platform notice was still unprocessed; a native command lifecycle then started that notice. The controller advanced too early and the response ownership check stopped collection. All 5,019 terminal files rehash, native reconstruction and four ATIF exports verify. Two peer posts occurred, but the assignment sequence is not a completed comparison. Repair the input-completion ledger in fresh source and registration; preserve this trajectory.
+
 - **EXP-007-C01-R01 is a setup failure.** The adapter streamed workspace context
   before the initial native goal command. Claude worked on the first input while
   the goal remained queued; the controller then replaced the assignment at an
