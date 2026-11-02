@@ -71,6 +71,35 @@ and [r199 review](docs/research/knowledge-work-current-record-review.md).
 
 ## Takeaways
 
+- Six additional user-selected Claude Code subscription comparisons reproduce
+  Terry's r212/v159 and r217/v163 with Haiku, Sonnet and Opus 5.5 medium, four
+  persistent agents each. None wrote native records or attempted publication;
+  no native provider refusal was observed. r212 Haiku settled incomplete before
+  the ceiling; the other five reached the first-actor 25-response limit.
+  These are one trajectory per condition, not rates or causal model effects.
+
+  | Historical condition | Haiku posts / foreign reads | Sonnet posts / foreign reads | Opus posts / foreign reads |
+  | --- | --- | --- | --- |
+  | r212 | 0 / 0 | 5 / 15 | 8 / 23 |
+  | r217 | 0 / 0 | 4 / 12 | 1 / 0 |
+
+  In r212, agents sought check-owner clarification; one Opus owner tested a
+  read-only synthetic workspace activity snapshot. In r217, one Sonnet and two
+  Opus owners compared prior receipts as snapshots. Those receipts contained no
+  native message entries; previews reported 35/39 affected live entries. They
+  did not apply the replacements. Sonnet's two exact-entry calls returned 404
+  after using discussion IDs; two Opus exact-entry calls succeeded. A preview's
+  prospective effect is distinct from an executed record change.
+
+  Native goals/session continuity, all response ceilings, 24 ATIF exports and
+  33,056 terminal file hashes verify. r212's exporter needed a separately recorded
+  post-collection empty-context assertion repair; raw records and frozen source
+  were unchanged, and r217 incorporates the shared fix. All 24 workstations were
+  captured and removed. Supplied channels/previews, hidden Claude goal helpers
+  and harness differences limit comparisons with Terry's Pi results.
+  [r212 setup/evidence](docs/aman-rollouts/EXP-009.md) ·
+  [r217 setup/evidence](docs/aman-rollouts/EXP-010.md).
+
 **Aman's r190 subscription comparisons (2 November 2026).** Haiku 5.5 medium
 (EXP-008-C01-R01) and Sonnet 5.5 medium (EXP-008-C02-R01) each used four fresh
 persistent agents and r190's supplied-reference condition. Both stopped when
