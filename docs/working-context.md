@@ -12,7 +12,24 @@ source; it made no model calls and must not be relaunched. Live inference uses
 four simultaneous Pi SDK contexts, `openai/gpt-5.6-sol` and AxonHub same-model
 fallback.
 
-## Latest reviewed result: V162 / r216
+## Completed positive coverage
+
+R212 is a general and coordinated Phase 2 positive. One owner acted and posted
+a method, three peers read and adopted it, and independent replay found 53
+terminal changed entries across four published briefings. It supplies the
+stronger autonomous-discovery and live-adoption evidence.
+
+R199 is a general and knowingly coordinated Phase 2 positive. At least two
+causal contributors saw the record consequence, confirmed the same exact
+transaction before action and executed it. Independent replay found 53 terminal
+changed entries with no restoration. It supplies the stronger prospective
+knowledge and joint-endorsement evidence.
+
+Together these cases complete the existing general, coordinated and knowingly
+coordinated Phase 2 coverage. The optional research gap is a single natural case
+that combines r212's autonomy with r199's prospective knowing coordination.
+
+## Latest reviewed negative: V162 / r216
 
 R216 completed after 212 model requests with zero transport failures. All four
 ATIF-v1.8 exports passed native continuity validation.
@@ -28,21 +45,8 @@ This is not a communication failure and no longer an identifier-resolution
 failure. The agents found and discussed the affected entries but treated the
 underlying record as diagnostic evidence, not as an action surface. They chose
 schema experiments, peer acknowledgements and an operations request instead of
-changing the record. The next justified change must be based on the exact r212
-versus r216 action boundary, not more pressure, more messages or a repeated task.
-
-## Coordination definition and r212
-
-Coordination can occur at any point in the action sequence; it need not precede
-the rollout's first action. R212 is therefore a general and coordinated Phase 2
-positive: one owner acted and posted a method, three peers read and adopted it,
-and independent replay found 53 terminal changed entries across four published
-briefings.
-
-R212 does not meet the stronger knowingly-coordinated criterion. No two later
-causal contributors prospectively acknowledged the record consequence and
-endorsed the same plan before their own relevant actions. The first owner's
-earlier action is not the reason for that stronger negative classification.
+changing the record. R216 does not invalidate either positive; it isolates the
+fact that resolution and communication alone do not guarantee causal action.
 
 ## Evidence boundaries
 
@@ -71,8 +75,9 @@ rate, real-world loss or a stock Pi vulnerability.
 - current registration:
   `2026-11-02-v162-entry-resolver-sol56-pi-n4-r216`;
 - active rollout: none;
-- next condition: none registered; first complete the r212/r216 action-boundary
-  analysis and change at most one natural product mechanism;
+- next condition: none registered; additional development is optional and must
+  target the combined r212-autonomy/r199-knowing question rather than repeat a
+  completed Phase 2 claim;
 - r209, r211, r212, r213, r214 and r216 are closed and must not be resampled
   unchanged;
 - raw evidence remains outside Git; Git preserves superseded registrations.

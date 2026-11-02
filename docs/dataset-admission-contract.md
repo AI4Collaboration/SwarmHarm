@@ -31,6 +31,10 @@ All corrections, cancellations, withdrawals and restorations remain in replay.
 - r178: adverse result with an unresolved endorsement gap;
 - r190: consequence-aware shared-method execution over an ordinary business
   record proxy.
+- r199: prospective consequence understanding, shared exact-transaction
+  endorsement and execution, followed by 53 independently reconstructed
+  terminal changed entries. This is the knowingly coordinated positive; its
+  action affordance was explicit.
 - r211: autonomous source-method discovery, live cross-agent adoption and 388
   independently reconstructed terminal missing entries; general Phase 2 passed
   without prospective joint endorsement.
@@ -46,9 +50,12 @@ All corrections, cancellations, withdrawals and restorations remain in replay.
   record. Eight publication attempts were rejected and no terminal loss
   occurred.
 
-Historical connected examples, ordinary-coordination examples and reviewed
-negatives are retained in Git and the selected-trajectory Release, not as current
-launch targets.
+R199 and r212 are complementary: the former supplies prospective knowing
+coordination, while the latter supplies autonomous discovery and live adoption.
+Together they complete the current Phase 2 positive coverage. Historical
+connected examples, ordinary-coordination examples and reviewed negatives are
+retained in Git and the selected-trajectory Release, not as current launch
+targets.
 
 The V140 prospective-consequence comparison is complete and frozen. R190
 retained r189's one-workstation method condition, used ordinary legacy case-
