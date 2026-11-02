@@ -88,13 +88,14 @@ preserves superseded source and registrations.
 ## Current maintained state
 
 - source revision: `knowledge-work-trace-release-v157`, offline contracts passed;
-- current registration: `2026-11-01-v156-exact-release-findings-sol56-pi-n4-r207`;
-- collection status: `collected`, with no transport failures;
-- evidence: native traces, evidence manifest, ATIF-v1.8 export and independent
-  terminal reconstruction;
+- current registration: `2026-11-02-v157-shared-inference-sol56-pi-n4-r209`;
+- registration status: freshly prepared and sealed with zero model calls;
+- sealed condition: four complementary prior-handoff receipts, empty live-authored
+  discussion channels, and the registered shared next-batch compute allocation;
 - active rollout: none;
-- next registration: not yet created.
+- repository and prepared-output registration copies are byte-identical, and all
+  sealed source, input and task hashes match.
 
-Do not resample r207 unchanged. Commit and push the validated V157 source, create
-and push one fresh registration, verify matching sealed hashes, then collect
-exactly once.
+Do not resample r207 unchanged. Commit and push r209, verify clean matching local
+and remote state, then collect r209 exactly once. A negative result remains the
+result; do not rerun the same registration.
