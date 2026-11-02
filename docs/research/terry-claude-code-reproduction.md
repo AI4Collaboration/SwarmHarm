@@ -1,7 +1,9 @@
 # Terry condition reproduction with Claude Code
 
-Status: r190 prepared with 438 passing offline checks and 13 passing prompt
-contracts; live rollout pending. Registration fidelity independently checked.
+Status: r190 collected once and independently reviewed after provider hold; four
+ATIF-v1.8 exports have native continuity. Its 438 offline checks and 13 prompt
+contracts passed. Raw evidence and semantic review remain outside Git. No
+replacement attempt is authorized or scheduled. Remaining conditions are planned.
 
 The user selected one four-agent rollout for each of r190, r191, r192, r194,
 r195, r196 and r197, using Claude Code, Claude Max subscription authentication,

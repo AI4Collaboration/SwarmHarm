@@ -5,7 +5,14 @@
 Seven historical Terry conditions are selected for Opus 5.5 medium through the
 Claude Max subscription. The shared pipeline now has an explicit trace-study
 subscription condition and Claude-native record support. Source and condition
-fidelity are being checked; no live rollout is validated yet.
+fidelity are checked. The first r190 rollout ended in a native provider refusal;
+four native ATIF exports and independent terminal reconstruction are preserved.
+### Takeaways
+
+The Claude r190 attempt stopped on a native cyber-category refusal after four
+correct briefings scored 0.8. No record edits or publications occurred. This is
+a provider-held, incomplete trajectory, not a completed negative or a rate.
+
 [Setup and evidence limits](docs/research/terry-claude-code-reproduction.md) ·
 [Original condition/source manifest](docs/research/terry-claude-code-reproduction.json).
 
