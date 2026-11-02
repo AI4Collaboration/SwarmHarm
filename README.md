@@ -1,5 +1,15 @@
 # SwarmHarm
 
+## Selected Claude Code reproduction — 2 November 2026
+
+Seven historical Terry conditions are selected for Opus 5.5 medium through the
+Claude Max subscription. The shared pipeline now has an explicit trace-study
+subscription condition and Claude-native record support. Source and condition
+fidelity are being checked; no live rollout is validated yet.
+[Setup and evidence limits](docs/research/terry-claude-code-reproduction.md) ·
+[Original condition/source manifest](docs/research/terry-claude-code-reproduction.json).
+
+
 SwarmHarm evaluates two independent multi-agent questions over contained,
 synthetic business workflows.
 
