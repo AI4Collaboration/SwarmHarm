@@ -5841,6 +5841,168 @@
         }
       },
       "hosted_inference_calls": 0
+    },
+    {
+      "experiment_id": "EXP-008",
+      "condition_id": "C01",
+      "condition_key": "haiku55-r190",
+      "preparation_id": "EXP-008-C01-P02",
+      "rollout_id": null,
+      "legacy_name": "EXP-008-C01-P02-r190-haiku55",
+      "name_origin": "new alias-named preparation",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C01-P02-r190-haiku55",
+      "collection_executed": false,
+      "status": "prepared_uncollected",
+      "created_at": "2026-11-02T18:10:26.042206+00:00",
+      "started_at": null,
+      "finished_at": null,
+      "study_mode": "phase2-component",
+      "scenario": "knowledge-work",
+      "models": {
+        "haiku55": "claude-haiku-5-5"
+      },
+      "reasoning_effort": "medium",
+      "harness": "claude-code",
+      "goal_mode": "claude_goal",
+      "route": "claude-subscription",
+      "population": 4,
+      "environment_revision": "knowledge-work-trace-release-v140",
+      "registration_sha256": "5b4c8b40ba2afaf6633d026fe8c19d99db0b88be2fbb4c6d0b92df66c957f9e0",
+      "frozen_source_set_sha256": "b0c809b08aca2250043f117166aa3a2c05f9794164dd38745b1a6a805dd3b201",
+      "registration_git": {
+        "path": "experiments/swarmharm-v1/registrations/EXP-008-C01-P02-r190-haiku55/registration.json",
+        "status": "committed with this registry revision"
+      },
+      "source_commit": "9b24cd0e7",
+      "budgets": {
+        "request_timeout_seconds": 300,
+        "max_transport_attempts_per_request": 1,
+        "transport_retry_backoff_seconds": 0,
+        "max_output_tokens_per_response": 16384,
+        "max_actor_seconds": 3600,
+        "max_batch_seconds": 4500,
+        "provider_concurrency": 4,
+        "scenario_timeout_seconds": 30,
+        "active_contexts_natural": 4,
+        "max_subject_turns_per_actor": 25
+      },
+      "controls": {
+        "passed": true,
+        "test_methods": 444,
+        "prompt_contract_passed": true
+      },
+      "provenance": {
+        "reproduces_terry_condition": "r190",
+        "original_registration": "experiments/swarmharm-v1/registrations/2026-10-31-v140-legacy-reference-sol56-pi-n4-r190/registration.json",
+        "original_registration_sha256": "48b79f74ab4a0ed5be7d2eeaf2ce7948109b0169c16ab57267bd76562ee212cd",
+        "historical_source_base": "aad9e7183"
+      },
+      "fidelity_proof": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C01-P02-fidelity.json",
+        "sha256": "43d30cb583bd43c6fe09969272279cde8f651074949da0bedff914253d62621d"
+      },
+      "prior_provider_refusal": "EXP-005-C01-R01; preserved, not replaced",
+      "current_instruction_interpretation": "Two predeclared model comparisons selected after disclosure of Opus cyber refusal; distinct from outcome-seeking rerouting. Provider protections unchanged; preserve any refusal.",
+      "comparison_scope": "Separate model/harness conditions; not Pi counter parity or a model-only causal comparison",
+      "evidence": {
+        "registration.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C01-P02-r190-haiku55/registration.json",
+          "sha256": "5b4c8b40ba2afaf6633d026fe8c19d99db0b88be2fbb4c6d0b92df66c957f9e0"
+        },
+        "registration-seal.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C01-P02-r190-haiku55/registration-seal.json",
+          "sha256": "6d7735b9db5eb624cf1a545f2fd939b0fa2fed87b075ac36fa9b5d573ed709e8"
+        },
+        "source-manifest.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C01-P02-r190-haiku55/source-manifest.json",
+          "sha256": "fcf83fcda712eaa8ae1085c45e075c6c59f66612e47839ab05ac816bea0e590f"
+        },
+        "controls.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C01-P02-r190-haiku55/controls.json",
+          "sha256": "6105a7d34b0b9c658e77b380a486eb9141a39e61544e45ce40bfca32ad236d46"
+        }
+      }
+    },
+    {
+      "experiment_id": "EXP-008",
+      "condition_id": "C02",
+      "condition_key": "sonnet55-r190",
+      "preparation_id": "EXP-008-C02-P02",
+      "rollout_id": null,
+      "legacy_name": "EXP-008-C02-P02-r190-sonnet55",
+      "name_origin": "new alias-named preparation",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C02-P02-r190-sonnet55",
+      "collection_executed": false,
+      "status": "prepared_uncollected",
+      "created_at": "2026-11-02T18:10:25.980907+00:00",
+      "started_at": null,
+      "finished_at": null,
+      "study_mode": "phase2-component",
+      "scenario": "knowledge-work",
+      "models": {
+        "sonnet55": "claude-sonnet-5-5"
+      },
+      "reasoning_effort": "medium",
+      "harness": "claude-code",
+      "goal_mode": "claude_goal",
+      "route": "claude-subscription",
+      "population": 4,
+      "environment_revision": "knowledge-work-trace-release-v140",
+      "registration_sha256": "ecc4e9f619c2a8fecbf40a5eb87f2a9948f6e421fe49dc0fdef8d1db7d1f3321",
+      "frozen_source_set_sha256": "b0c809b08aca2250043f117166aa3a2c05f9794164dd38745b1a6a805dd3b201",
+      "registration_git": {
+        "path": "experiments/swarmharm-v1/registrations/EXP-008-C02-P02-r190-sonnet55/registration.json",
+        "status": "committed with this registry revision"
+      },
+      "source_commit": "9b24cd0e7",
+      "budgets": {
+        "request_timeout_seconds": 300,
+        "max_transport_attempts_per_request": 1,
+        "transport_retry_backoff_seconds": 0,
+        "max_output_tokens_per_response": 16384,
+        "max_actor_seconds": 3600,
+        "max_batch_seconds": 4500,
+        "provider_concurrency": 4,
+        "scenario_timeout_seconds": 30,
+        "active_contexts_natural": 4,
+        "max_subject_turns_per_actor": 25
+      },
+      "controls": {
+        "passed": true,
+        "test_methods": 444,
+        "prompt_contract_passed": true
+      },
+      "provenance": {
+        "reproduces_terry_condition": "r190",
+        "original_registration": "experiments/swarmharm-v1/registrations/2026-10-31-v140-legacy-reference-sol56-pi-n4-r190/registration.json",
+        "original_registration_sha256": "48b79f74ab4a0ed5be7d2eeaf2ce7948109b0169c16ab57267bd76562ee212cd",
+        "historical_source_base": "aad9e7183"
+      },
+      "fidelity_proof": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C02-P02-fidelity.json",
+        "sha256": "38e0aa20869999775552e082e71221fe316821ca28cbbad65af494434988cad3"
+      },
+      "prior_provider_refusal": "EXP-005-C01-R01; preserved, not replaced",
+      "current_instruction_interpretation": "Two predeclared model comparisons selected after disclosure of Opus cyber refusal; distinct from outcome-seeking rerouting. Provider protections unchanged; preserve any refusal.",
+      "comparison_scope": "Separate model/harness conditions; not Pi counter parity or a model-only causal comparison",
+      "evidence": {
+        "registration.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C02-P02-r190-sonnet55/registration.json",
+          "sha256": "ecc4e9f619c2a8fecbf40a5eb87f2a9948f6e421fe49dc0fdef8d1db7d1f3321"
+        },
+        "registration-seal.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C02-P02-r190-sonnet55/registration-seal.json",
+          "sha256": "0887855baae362e710eb9f5d32a7ce707643ba765564e9f52fe3c0f4f367c8a2"
+        },
+        "source-manifest.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C02-P02-r190-sonnet55/source-manifest.json",
+          "sha256": "fcf83fcda712eaa8ae1085c45e075c6c59f66612e47839ab05ac816bea0e590f"
+        },
+        "controls.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C02-P02-r190-sonnet55/controls.json",
+          "sha256": "76798b765e57daca9d14ee370527e2066f94768687f0e6b61aa7f5a21663b611"
+        }
+      }
     }
   ],
   "coverage": {
@@ -5857,5 +6019,5 @@
       "Other hosts/archives not inventoried"
     ]
   },
-  "updated_at": "2026-11-02T18:07:16.200381+00:00"
+  "updated_at": "2026-11-02T18:11:46.012282+00:00"
 }
