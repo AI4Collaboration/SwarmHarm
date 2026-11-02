@@ -217,7 +217,7 @@ class ClaudeCollectChecks(unittest.TestCase):
                 agent=CLAUDE.ClaudeAgent('goal',events,folder=Path(temporary)/'goal',model=MODEL,
                     thinking_level='medium',max_output_tokens=1024,request_timeout_ms=10000,
                     tools=[tool],active_tools=['confirm_service'],
-                    job_context='{"job_id":"operator-bookkeeping-only"}',goal_mode='claude_goal')
+                    job_context='{"job_id":"declared-subject-context"}',declared_context_append=True,goal_mode='claude_goal')
             try:
                 ready=CLAUDE.wait_ready(events,['goal'])['goal']
                 self.assertTrue(any(command['name']=='goal' for command in ready['commands']))
@@ -237,7 +237,7 @@ class ClaudeCollectChecks(unittest.TestCase):
                 self.assertIn('permission',prompt.lower())
                 self.assertIn('authorized security testing',prompt)
                 self.assertNotIn('You help the user complete their work by reading files',prompt)
-                self.assertNotIn('operator-bookkeeping-only',json.dumps(subject_requests))
+                self.assertIn('declared-subject-context',json.dumps(subject_requests))
             finally:agent.close()
 
     def test_bridge_rejects_unregistered_execution_and_provider_changes(self):

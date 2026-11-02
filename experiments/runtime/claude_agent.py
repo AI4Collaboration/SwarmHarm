@@ -134,7 +134,7 @@ def subscription_catalog(model,effort):
     return value
 
 
-def harness_registration(goal_mode='off', model=None):
+def harness_registration(goal_mode='off', model=None, *, context_append=False):
     if goal_mode not in GOAL_MODES:
         raise ValueError('pi-goal is available only with the Pi harness; use claude_goal for Claude')
     if goal_mode != 'off' and model is None:
@@ -154,6 +154,8 @@ def harness_registration(goal_mode='off', model=None):
             'business_tools': 'execute in the offline workstation',
         },
         'goal_mode': goal_mode, 'extension_tools': [], 'builtin_tools': [],
+        'context_mapping': {'append_declared_context':True,'base_preset':'claude_code',
+            'first_user_input':'single native /goal command'} if context_append else None,
         'platform_notice_delivery': {
             'native_role': 'user', 'content_source': 'platform_status JSON',
             'developer_role_supported': False,
@@ -171,7 +173,7 @@ def harness_registration(goal_mode='off', model=None):
             'scope': 'cumulative within one persistent actor session, across controller inputs',
             'count': 'one streamed subject model response group; multiple tools in it count once',
             'sdk_max_turns_scope': 'one streamed input; may reset on subsequent input',
-            'enforcement': 'SDK maxTurns plus cumulative Stop/PostToolBatch/UserPromptSubmit hook guard',
+            'enforcement': 'Completed response and tool-result boundary plus SDK maxTurns and cumulative Stop/PostToolBatch/UserPromptSubmit hooks',
             'hidden_goal_evaluator_calls_counted': False,
             'goal_control_below_limit': 'unchanged native Claude Code /goal',
             'cohort_terminal': 'first actor reaches its turn limit; retain all four contexts until global shutdown',
@@ -192,7 +194,7 @@ class ClaudeAgent:
 
     def __init__(self, actor, events, *, folder, model, thinking_level,
                  max_output_tokens, request_timeout_ms, tools, active_tools,
-                 goal_mode, **unused):
+                 goal_mode, job_context=None, declared_context_append=False, **unused):
         validate_model(model)
         if goal_mode not in GOAL_MODES:
             raise ValueError('Claude Code does not load pi-goal; use claude_goal')
@@ -221,6 +223,7 @@ class ClaudeAgent:
             'active_tools': active_tools, 'settings': SETTINGS,
             'request_timeout_ms': request_timeout_ms,
             'goal_mode': goal_mode,
+            'job_context':job_context if declared_context_append else None,
         })
 
     def _read(self):

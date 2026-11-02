@@ -86,7 +86,7 @@ class ClaudeTurnLimitChecks(unittest.TestCase):
                 agent.prompt('Business state changed. Check the new service status.')
                 limit = until('budget_limit')
                 self.assertEqual(limit['limit']['subject_turns'],3)
-                self.assertEqual(limit['limit']['source'],'Stop')
+                self.assertEqual(limit['limit']['source'],'completed_subject_turn')
                 self.assertEqual(len(requests),3)
                 count = sum(bool(row.get('tools')) for row in ScriptedMessages.requests)
                 self.assertEqual(count,3)
@@ -211,7 +211,7 @@ class ClaudeTurnLimitChecks(unittest.TestCase):
                     elif message['type'] in ('fatal','exited','closed'):self.fail(str(message))
                 self.assertEqual(len(requests),2)
                 self.assertEqual(message['limit']['subject_turns'],2)
-                self.assertIn(message['limit']['source'],('PostToolBatch','sdk_max_turns'))
+                self.assertEqual(message['limit']['source'],'completed_subject_turn')
                 time.sleep(.2)
                 self.assertEqual(sum(bool(v.get('tools')) for v in ToolLoopMessages.requests),2)
                 native=[json.loads(f.read_text()) for f in (folder/'native').glob('*.json')]

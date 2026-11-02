@@ -160,6 +160,13 @@ def export_actor(root,phase,actor):
         harness=registration['harness']
         if isinstance(harness['system_prompt'],dict):
             assert first.get('system_prompt_config')==harness['system_prompt'],'Claude preset differs from registration'
+        if is_claude and (harness.get('context_mapping') or {}).get('append_declared_context'):
+            audit=read(folder/'initial-input.json')
+            append='\n\n'.join(row['content'] for row in audit['input'] if row['role']!='user')
+            for request in requests:
+                captured=read(request)
+                assert captured.get('system_prompt_append')==append,'Declared context append changed'
+                assert json.loads(captured['input'][0]['content'])=={**harness['system_prompt'],'append':append},'Claude context mapping differs'
         native_hashes,delivery=(codex_native_evidence if is_codex else claude_native_evidence)(folder,requests);hashes.update(native_hashes)
     system=first['input'][0];assert system.get('role') in ('developer','system'),'Pi system prompt must lead the input'
     expected=[system];initial_tools=first.get('tools',[]);all_tool_definitions=initial_tools

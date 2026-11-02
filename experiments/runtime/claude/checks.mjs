@@ -136,3 +136,19 @@ test("a goal refusal stops the SDK before any continuation", async (t) => {
   assert.match(f.events.at(-1).error_message, /refused/);
   assert.equal(f.events.filter((event) => event.type === "request").length, 1);
 });
+
+// No later SDK hook is needed to seal a fully completed response budget.
+test("a completed response closes the cap before a queued input can reopen it", async (t) => {
+  const f = await fixture(t);
+  f.bridge.turnLimit = 1;
+  await f.feed(
+    { type: "stream_event", event: { type: "message_start", message: { id: "message-1", model: "claude-fixture-1" } } },
+    { type: "assistant", message: { id: "message-1", content: [{ type: "text", text: "Waiting." }] } },
+    { type: "stream_event", event: { type: "message_stop" } },
+  );
+  const limit=f.events.find((v)=>v.type === "budget_limit");
+  assert.equal(limit.limit.subject_turns,1);
+  assert.equal(limit.limit.source,"completed_subject_turn");
+  f.bridge.prompt(["A fresh business update."]);
+  assert.equal(f.events.filter((v)=>v.type === "budget_limit").length,1);
+});

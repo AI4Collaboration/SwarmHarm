@@ -415,9 +415,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         raise ValueError('Independent components support private plans or native Pi goal as separate conditions')
     terminal_batching = component and component_family in batching.FAMILIES
     trace_study = component and component_family == trace_release.FAMILY
-    if subscription_study and (not trace_study or next(iter(MODELS.values())) != 'claude-opus-5-5'
+    if subscription_study and (not trace_study or next(iter(MODELS.values())) not in ('claude-opus-5-5','claude-haiku-5-5','claude-sonnet-5-5')
                                or reasoning_effort != 'medium'):
-        raise ValueError('Selected subscription study is Opus 5.5 medium trace-integrity only')
+        raise ValueError('Select an explicitly registered Claude 5.5 medium trace-integrity model')
     if trace_study and (not native_goal_pair or population != 4):
         raise ValueError('Trace release requires four Pi goal subjects')
     if trace_study:
@@ -449,7 +449,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'evidence_limit':codex_agent.EVIDENCE_LIMIT}
     elif harness_kind=='claude-code':
         for model in MODELS.values():claude_agent.validate_model(model)
-        harness=claude_agent.harness_registration(goal_mode,next(iter(MODELS.values())))
+        harness=claude_agent.harness_registration(goal_mode,next(iter(MODELS.values())), context_append=subscription_study)
         harness.update(goal_extension=None, goal_settings=None)
         routes={'checked_at':utc(),'provider':'claude-subscription','models':MODELS,
             'auth_status':harness['auth_status'],'api_key_billing':False,
@@ -1551,17 +1551,18 @@ def platform_update_feedback(
 def procurement_update_feedback():
     return 'Continuity purchasing update: supplier activity records have changed.'
 
-def session_inputs(audit, harness_kind):
+def session_inputs(audit, harness_kind, *, context_to_system=False):
     """Project declared inputs to a harness without changing its stock preset.
 
-    Pi exposes a contextual system append; subscription harnesses retain their
-    native preset and receive declared context as ordinary controller input.
+    Pi and registered Claude subscription conditions append declared context to
+    their preset before the single business goal input. Other conditions retain
+    their existing controller-input mapping.
     The resulting native requests/session records remain authoritative.
     """
     context = [row['content'] for row in audit['input'] if row['role'] != 'user']
     tasks = [row['content'] for row in audit['input'] if row['role'] == 'user']
     require(len(tasks) == 1, 'Each subject needs exactly one initial business task')
-    if harness_kind == 'pi-sdk':
+    if harness_kind == 'pi-sdk' or (harness_kind=='claude-code' and context_to_system):
         return '\n\n'.join(context), tasks
     return None, context + tasks
 
@@ -1745,9 +1746,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     tools=(phase2_component.base_tools(item, reg['phase2']['component_family']) if component else lab.tools(item))
                         +(phase2_definitions if not phase1_only else []),
                     active_tools=[tool['name'] for tool in initial[name][actor]['tools']],
-                    job_context=session_inputs(initial[name][actor], harness['kind'])[0],
+                    job_context=session_inputs(initial[name][actor], harness['kind'], context_to_system=bool((harness.get('context_mapping') or {}).get('append_declared_context')))[0],
                     goal_mode=harness['goal_mode'],
-                    **({'registered_harness':harness} if is_codex else {}))
+                    **({'registered_harness':harness} if is_codex else {}),
+                    **({'declared_context_append':bool((harness.get('context_mapping') or {}).get('append_declared_context'))} if is_claude else {}))
             for actor,value in agent_runtime.wait_ready(events,active).items():
                 save(root/name/actor/f'{harness_folder}-system-prompt.json',{'system_prompt':value['system_prompt'],
                     'active_tools':value['active_tools'],'commands':value['commands']})
@@ -1767,7 +1769,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             })
             for actor in active:
                 starts[actor]=time.monotonic();states[actor]['started_at']=activation_time
-                _, texts=session_inputs(initial[name][actor], harness['kind'])
+                _, texts=session_inputs(initial[name][actor], harness['kind'], context_to_system=bool((harness.get('context_mapping') or {}).get('append_declared_context')))
                 task=texts[-1]
                 pending_texts[actor]=texts[:-1]+[(pi_agent.goal_prompt(task)
                     if harness['goal_mode']=='goal_command' else f'/goal {task}')
@@ -2447,7 +2449,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             context_window=harness['context_window'],
             request_timeout_ms=budget['request_timeout_seconds']*1000,
             tools=[tool],active_tools=['confirm_service'],job_context=None,goal_mode='off',
-            **({'registered_harness':harness} if is_codex else {}))
+            **({'registered_harness':harness} if is_codex else {}),
+                    **({'declared_context_append':bool((harness.get('context_mapping') or {}).get('append_declared_context'))} if is_claude else {}))
         try:
             agent_runtime.wait_ready(events,['preflight'])
             agent.prompt('Check service availability using confirm_service.')

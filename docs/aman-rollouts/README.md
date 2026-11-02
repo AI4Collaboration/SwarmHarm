@@ -45,6 +45,7 @@ registration and a new R ID; refreshing this registry authorizes no inference.
 | EXP-004 | Communicating score-decay swarm, including superseded setup attempts |
 | EXP-005 | Our uncapped Claude reproductions of Terry's conditions |
 | EXP-006 | Our Claude reproductions with the cumulative 25-turn ceiling |
+| EXP-007 | Claude communicating score-decay swarm: ten assignments, with/without pressure |
 
 ## Update workflow
 
