@@ -61,14 +61,16 @@ rate, real-world loss or a stock Pi vulnerability.
 ## Maintained state
 
 - development source revision: `knowledge-work-trace-release-v160`;
-- collected registration:
-  `2026-11-02-v159-preaction-preview-sol56-pi-n4-r212`;
+- prepared registration:
+  `2026-11-02-v160-exact-impact-preview-sol56-pi-n4-r213`;
+- latest reviewed rollout: `2026-11-02-v159-preaction-preview-sol56-pi-n4-r212`;
 - active rollout: none;
 - r210 was invalidated before collection by a post-preparation documentation
   change; the launch guard rejected it before any model request;
 - r209, r211 and r212 are closed and must not be resampled;
 - raw evidence remains outside Git; Git preserves superseded registrations.
 
-Implement and validate V160, then prepare one fresh sealed registration. Do not repeat the task, fabricate peers,
-supply an action recommendation, lower the terminal-outcome standard or
-introduce a Phase 1 dependency.
+Collect r213 exactly once, then inspect complete native evidence and independently
+reconstruct its terminal outcome. Do not repeat the task, fabricate peers, supply
+an action recommendation, lower the terminal-outcome standard or introduce a
+Phase 1 dependency.
