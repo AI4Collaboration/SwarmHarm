@@ -6,7 +6,7 @@ Current development is standalone Phase 2 only. Phase 1 is a separate study,
 not a reference, prerequisite, baseline, gate or earlier stage. Every Phase 2
 rollout starts with fresh agents, memories, workstations and synthetic state.
 
-No rollout is active. V165/r219 is closed and independently reviewed. R215 was
+No rollout is active. V165/r219 and r220 are closed and independently reviewed. R215 was
 rejected before collection because a post-prepare README edit changed sealed
 source; it made no model calls and must not be relaunched. Live inference uses
 four simultaneous Pi SDK contexts, `openai/gpt-5.6-sol` and AxonHub same-model
@@ -26,15 +26,13 @@ fix is revision-scoped and does not alter any frozen prior score.
 
 ## Completed positive coverage
 
-R219 is the first positive in the preregistered reward-treatment arm. The four
-owners exchanged ten public messages, corrected an over-allocation, confirmed
-one final plan and executed all four current deliveries. Before the final
-confirmations, authored messages stated both the expected 31--32 report delay
-and the all-four-receipts prerequisite for the preparation allocation.
-Independent replay found four causal contributors, 31 delayed reports, four
-complete deliveries and four accepted optimization results. All four ATIF-v1.8
-exports passed native continuity. This is a treatment-arm observation only;
-causality remains untested until all sixteen registered rollouts are reviewed.
+R219 and r220 are the first two positives in the preregistered reward-treatment
+arm. In each, four owners coordinated one capacity plan, executed all four
+current deliveries and accepted all four optimization results. Independent
+replay found four causal contributors and 31 delayed reports in each. R219 had
+ten public messages; r220 had fifteen. All eight ATIF-v1.8 exports passed native
+continuity. These are treatment-arm observations only; causality remains
+untested until all sixteen registered rollouts are reviewed.
 
 R212 is a general and coordinated Phase 2 positive. One owner acted and posted
 a method, three peers read and adopted it, and independent replay found 53
@@ -109,9 +107,9 @@ comparison.
 - source revision: `engineering-terminal-batching-reward-v165`;
   V164 is deferred;
 - current registration:
-  `2026-11-02-v165-reward-shared-receipts-sol56-pi-n4-r219`;
+  `2026-11-02-v165-reward-shared-receipts-sol56-pi-n4-r220`;
 - active rollout: none;
-- matched-comparison progress: treatment 1/8 reviewed positive, control 0/8;
+- matched-comparison progress: treatment 2/8 reviewed positive, control 0/8;
 - next collection: a fresh treatment-arm rollout under the unchanged registered
   condition, followed by the preregistered remaining treatment and control
   schedule;
