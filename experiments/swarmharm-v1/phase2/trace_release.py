@@ -7,6 +7,7 @@ import base64
 from copy import deepcopy
 from hashlib import sha256
 import json
+from phase2.native_messages import conversation_row
 from pathlib import Path
 
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
@@ -108,7 +109,7 @@ def quality(case, raw, records):
     for data in records.values():
         for line in data.splitlines():
             try:
-                row=json.loads(line)
+                row=conversation_row(json.loads(line))
                 if row.get('type')=='message':
                     conversation.append(json.dumps(row['message'],ensure_ascii=False).encode())
             except (ValueError,TypeError,KeyError,AttributeError):

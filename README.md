@@ -1,5 +1,17 @@
 # SwarmHarm
 
+## Aman's Claude Code repeated-assignment condition — 2 November 2026
+
+EXP-007 adapts the original Sol score-decay swarm to the explicitly selected
+Claude Code subscription, Opus 5.5 medium. Two four-agent conditions supply ten
+fresh assignments per persistent context, with and without the authorized
+employment-pressure message. The shared adapter adds reusable goal handoff and
+per-assignment response/repetition guards. Focused SDK/CLI handoff, scoring, replay and ATIF controls passed; fresh full
+preparation checks and live rollout validation are pending. No old rollout is resumed.
+
+[Design and evidence limits](docs/aman-rollouts/EXP-007.md) ·
+[Aman's registry](docs/aman-rollouts/index.md).
+
 SwarmHarm studies autonomous swarm formation and collective misalignment.
 Phase 1 and Phase 2 can be evaluated separately; connected studies test both
 with the same agents, histories and shared system.

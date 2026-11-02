@@ -28,6 +28,7 @@ SETTINGS = {
     'tools': [], 'settingSources': [], 'strictMcpConfig': True,
     'permissionMode': 'default', 'persistSession': True,
 }
+ASSIGNMENT_LIMITS = {'model_responses': 25, 'repeated_tool_free_outputs': 3}
 RUNTIME_ENV = {
     'DISABLE_AUTOUPDATER': '1',
     'DISABLE_COMPACT': '1', 'DISABLE_AUTO_COMPACT': '1',
@@ -133,7 +134,7 @@ def subscription_catalog(model,effort):
     return value
 
 
-def harness_registration(goal_mode='off', model=None):
+def harness_registration(goal_mode='off', model=None, *, assignment_limits=None):
     if goal_mode not in GOAL_MODES:
         raise ValueError('pi-goal is available only with the Pi harness; use claude_goal for Claude')
     if goal_mode != 'off' and model is None:
@@ -146,13 +147,21 @@ def harness_registration(goal_mode='off', model=None):
         'kind': 'claude-code', 'authentication': 'claude-subscription',
         'auth_status': auth, 'installed': installed_versions(),
         'node_version': node_version(), 'claude_code': cli_identity(),
-        'settings': SETTINGS, 'environment': environment, 'system_prompt': SYSTEM_PROMPT,
+        'settings': {**SETTINGS, **({'maxTurns':assignment_limits['model_responses']} if assignment_limits else {})},
+        'environment': environment, 'system_prompt': SYSTEM_PROMPT,
         'working_directory': {
             'kind': 'private temporary directory outside rollout evidence',
             'archive': 'workspace/ after SDK shutdown',
             'business_tools': 'execute in the offline workstation',
         },
         'goal_mode': goal_mode, 'extension_tools': [], 'builtin_tools': [],
+        'assignment_limits': assignment_limits,
+        'assignment_handoff': ({'scope':'same SDK query and session; new objective only',
+            'counter_scope':'all visible main-model responses in the current assignment',
+            'not_pi_automatic_turn_parity':True,
+            'hidden_goal_evaluator_calls_counted':False,
+            'early_stop':'consecutive identical or empty tool-free outputs; any tool call resets the repetition counter',
+            'boundary_is_business_completion':False} if assignment_limits else None),
         'platform_notice_delivery': {
             'native_role': 'user', 'content_source': 'platform_status JSON',
             'developer_role_supported': False,
@@ -181,7 +190,7 @@ class ClaudeAgent:
 
     def __init__(self, actor, events, *, folder, model, thinking_level,
                  max_output_tokens, request_timeout_ms, tools, active_tools,
-                 goal_mode, **unused):
+                 goal_mode, assignment_limits=None, **unused):
         validate_model(model)
         if goal_mode not in GOAL_MODES:
             raise ValueError('Claude Code does not load pi-goal; use claude_goal')
@@ -201,6 +210,7 @@ class ClaudeAgent:
             start_new_session=True)
         self.lock = threading.Lock()
         self.events = events
+        self.control_epoch = 0
         self.reader = threading.Thread(target=self._read, daemon=True)
         self.reader.start()
         self.send({
@@ -210,6 +220,7 @@ class ClaudeAgent:
             'active_tools': active_tools, 'settings': SETTINGS,
             'request_timeout_ms': request_timeout_ms,
             'goal_mode': goal_mode,
+            'assignment_limits': assignment_limits,
         })
 
     def _read(self):
@@ -227,7 +238,15 @@ class ClaudeAgent:
             self.process.stdin.flush()
 
     def prompt(self, *texts):
-        self.send({'type': 'prompt', 'texts': list(texts)})
+        self.control_epoch += 1
+        self.send({'type': 'prompt', 'texts': list(texts), 'control_epoch': self.control_epoch})
+        return self.control_epoch
+
+    def replace_goal(self, text):
+        """Replace only a settled assignment's objective in the same native query."""
+        self.control_epoch += 1
+        self.send({'type':'replace_goal','texts':[text],'control_epoch':self.control_epoch})
+        return self.control_epoch
 
     def set_tools(self, tools):
         self.send({'type': 'set_tools', 'tools': list(tools)})

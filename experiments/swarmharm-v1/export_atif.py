@@ -97,8 +97,59 @@ def claude_native_evidence(folder,requests):
     if transcript.exists():paths.append(transcript)
     return {str(path.relative_to(folder)):sha(path) for path in paths},delivery
 
+def export_claude_context_without_response_group(root, phase, actor, registration):
+    """Preserve an initialized context with no controller response group.
+
+    A cohort budget can close other contexts before their first streamed
+    response reaches the collector. Queued SDK input is not verified provider
+    input, and native fragments are not reconstructed as completed agent steps.
+    """
+    folder=root/phase/actor;state=read(folder/'result.json');harness=registration['harness']
+    assert not list((folder/'trace').glob('[0-9]*-tool-[0-9]*.json')),'Tool execution without a controller response group'
+    hashes,_=claude_native_evidence(folder,[])
+    hashes.update({name:sha(folder/name) for name in ('history.json','result.json')})
+    steps=[{'step_id':1,'source':'system','message':json.dumps(harness['system_prompt']),
+        'extra':{'scope':'Registered SDK preset descriptor; not captured model input',
+                 'record_kind':'harness_configuration'}}]
+    starts=[]
+    for path in sorted((folder/'claude/native').glob('*.json')):
+        row=read(path)
+        if row.get('type')=='controller_input':
+            content=row['input']['message']['content']
+            steps.append({'step_id':len(steps)+1,'source':'user','message':text_of(content),
+                'extra':{'scope':'Input queued to SDK; provider consumption is unverified',
+                         'native_record':str(path.relative_to(folder)),
+                         'provider_consumption_verified':False}})
+        if row.get('type')=='stream_event' and row.get('event',{}).get('type')=='message_start':
+            starts.append(str(path.relative_to(folder)))
+    model=registration['models'][registration['plan'][phase][actor]['provider']]
+    value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,
+        'trajectory_id':phase+':'+actor+':primary',
+        'agent':{'name':'SwarmHarm rollout collector (Claude Agent SDK / subscription)',
+                 'version':'2.0','model_name':model,'tool_definitions':[]},
+        'steps':steps,'extra':{'phase':phase,'study_mode':registration['study_mode'],
+            'actor':actor,'native_status':state['status'],
+            'claude_session':state['claude_session']['session_id'],
+            'provider_http_payloads_captured':False,'provider_context_continuity_verified':False,
+            'controller_request_groups_recorded':0,'model_name_scope':'requested model; no controller response group',
+            'uncommitted_native_response_starts':starts,
+            'goal_mode':harness['goal_mode'],'source_sha256':hashes,
+            'conversion':'Initialized context closed before any controller response group. No agent response or tool execution is invented. Native fragments remain hashed; queued SDK inputs are not proof of provider consumption.'}}
+    validated=Trajectory.model_validate(value).to_json_dict()
+    dest=folder/'agent/trajectory.json';dest.parent.mkdir(parents=True,exist_ok=True)
+    existed=dest.exists()
+    if existed:assert Trajectory.model_validate(read(dest)).to_json_dict()==validated,'Existing ATIF export differs'
+    else:dest.write_text(json.dumps(validated,indent=2)+'\n')
+    return {'phase':phase,'actor':actor,'path':str(dest.relative_to(root)),
+        'schema_version':'ATIF-v1.8','requests':0,'tool_results':0,'sha256':sha(dest),
+        'native_continuity_passed':True,'provider_context_continuity_verified':False,
+        'initialized_context_only':True,'preserved_existing_export':existed}
+
+
 def export_actor(root,phase,actor):
     folder=root/phase/actor;history=read(folder/'history.json');requests=sorted((folder/'trace').glob('[0-9][0-9][0-9][0-9].request.json'))
+    if not requests and read(root/'registration.json')['harness']['kind']=='claude-code':
+        return export_claude_context_without_response_group(root,phase,actor,read(root/'registration.json'))
     assert requests,'No model requests';first=read(requests[0]);steps=[];hashes={};missing=[];uncommitted=[];tools=0
     registration=read(root/'registration.json');study_mode=registration.get('study_mode','connected')
     pi_subscription=(registration.get('harness',{}).get('kind')=='pi-sdk' and

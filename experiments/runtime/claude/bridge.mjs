@@ -29,6 +29,12 @@ export class ClaudeBridge {
     this.toolChain = Promise.resolve();
     this.servers = {};
     this.closed = false;
+    this.controlEpoch = 0;
+    this.assignment = 1;
+    this.assignmentStart = 0;
+    this.repeatCount = 0;
+    this.inputOwners = new Map();
+    this.ownedInputs = [];
   }
 
   native(message) {
@@ -39,6 +45,9 @@ export class ClaudeBridge {
 
   async init(config) {
     this.config = config;
+    this.assignmentLimits = config.assignment_limits;
+    if (this.assignmentLimits && !Object.values(this.assignmentLimits).every((v) => Number.isSafeInteger(v) && v > 0))
+      throw new Error("Assignment limits must be positive integers");
     mkdirSync(join(config.folder, "native"), { recursive: true });
     // Claude Code can put cwd in model context. Keep operator run labels out.
     this.cwd = mkdtempSync(join(tmpdir(), "workspace-"));
@@ -46,10 +55,32 @@ export class ClaudeBridge {
     // A configuration descriptor, never an invented copy of the SDK's prompt.
     this.history.push({ role: "system", content: JSON.stringify(SYSTEM_PROMPT) });
     this.servers.work = this.server("work", config.active_tools);
+    const hooks = {};
+    if (this.assignmentLimits) for (const name of ["Stop", "PostToolBatch", "UserPromptSubmit"]) {
+      hooks[name] = [{ hooks: [async (input) => {
+        if (name === "UserPromptSubmit") {
+          const owner = this.ownedInputs.find((v) => !v.submitted && v.text === input.prompt);
+          if (owner) {
+            owner.submitted = true;
+            if (owner.assignment !== this.assignment) {
+              this.native({ type: "cancelled_assignment_input", input_uuid: owner.uuid,
+                assignment: owner.assignment, current_assignment: this.assignment });
+              return { continue: false, stopReason: "Obsolete assignment input." };
+            }
+          }
+        }
+        if (!this.boundary && this.turn - this.assignmentStart >= this.assignmentLimits.model_responses)
+          this.assignmentBoundary("response_limit", name);
+        if (!this.boundary && this.repeatCount >= this.assignmentLimits.repeated_tool_free_outputs)
+          this.assignmentBoundary("repeated_tool_free_outputs", name);
+        return this.boundary ? { continue: false, stopReason: "Registered assignment stopping boundary." } : {};
+      }] }];
+    }
     this.session = this.sdk.query({
       prompt: this.input,
       options: {
         ...config.settings, cwd: this.cwd, model: config.model, effort: config.effort,
+        ...(this.assignmentLimits ? { hooks, maxTurns: this.assignmentLimits.model_responses } : {}),
         pathToClaudeCodeExecutable: config.claude_binary,
         env: { ...process.env }, sessionId: this.sessionId,
         systemPrompt: copy(SYSTEM_PROMPT),
@@ -115,14 +146,42 @@ export class ClaudeBridge {
     this.native({ type: "controller_tools", active_tools: names, session_id: this.sessionId });
   }
 
-  prompt(texts) {
+  prompt(texts, epoch = this.controlEpoch) {
+    this.controlEpoch = epoch;
     for (const text of texts) {
       const message = { type: "user", session_id: this.sessionId, uuid: randomUUID(),
         parent_tool_use_id: null, message: { role: "user", content: text } };
       this.native({ type: "controller_input", input: message });
+      const owner = { uuid: message.uuid, assignment: this.assignment, epoch, text, submitted: false };
+      this.inputOwners.set(message.uuid, owner);
+      this.ownedInputs.push(owner);
       this.pendingInputs.push({ role: "user", content: text });
       this.input.write(message);
     }
+  }
+
+  assignmentBoundary(reason, source) {
+    if (this.boundary) return;
+    this.boundary = { assignment: this.assignment, reason, source,
+      responses: this.turn - this.assignmentStart, repeated_tool_free_outputs: this.repeatCount };
+    this.native({ type: "assignment_boundary", ...this.boundary });
+  }
+
+  replaceGoal(texts, epoch) {
+    if (!this.assignmentLimits || !this.assignmentSettled || this.current || this.calls.size)
+      throw new Error(`Goal replacement requires a settled assignment with no active model/tool work: ${JSON.stringify({assignment:this.assignment, settled:this.assignmentSettled, turn:this.turn, current:this.current?.id, calls:[...this.calls.keys()], boundary:this.boundary})}`);
+    if (texts.length !== 1 || !texts[0].startsWith("/goal ")) throw new Error("Expected a new native goal objective");
+    this.assignment++;
+    this.assignmentStart = this.turn;
+    this.repeatCount = 0;
+    this.lastFingerprint = null;
+    this.boundary = null;
+    this.assignmentSettled = false;
+    this.native({ type: "goal_assignment_replacement", assignment: this.assignment,
+      previous_turn: this.turn, same_session: this.sessionId, controller_epoch: epoch });
+    this.channel.emit({ type: "goal_assignment_replacement", turn: this.turn,
+      assignment: this.assignment, same_session: this.sessionId, control_epoch: epoch });
+    this.prompt(texts, epoch);
   }
 
   start(message, source) {
@@ -130,7 +189,7 @@ export class ClaudeBridge {
     if (message.model !== this.config.model) throw new Error(`Claude returned model ${message.model}; expected ${this.config.model}`);
     this.history.push(...this.pendingInputs.splice(0));
     this.current = { id: message.id, turn: ++this.turn, blocks: [], usage: message.usage ?? {}, source };
-    this.channel.emit({ type: "request", turn: this.turn, attempt: 1, payload: {
+    this.channel.emit({ type: "request", turn: this.turn, attempt: 1, control_epoch: this.controlEpoch, payload: {
       record_kind: "controller_projection", model: this.config.model,
       system_prompt_config: copy(SYSTEM_PROMPT),
       input: copy(this.history), reasoning: { effort: this.config.effort },
@@ -164,6 +223,16 @@ export class ClaudeBridge {
       native_record: source, native_start_record: current.source };
     current.calls = output.filter((item) => item.type === "function_call").length;
     current.completed = 0;
+    if (this.assignmentLimits) {
+      if (current.calls) { this.repeatCount = 0; this.lastFingerprint = null; }
+      else {
+        let text = current.blocks.filter((v) => v.type === "text").map((v) => v.text).join("\n")
+          .normalize("NFKC").toLowerCase().replace(/\p{C}/gu, "").replace(/\s+/g, " ").trim();
+        if (!/[\p{L}\p{N}]/u.test(text)) text = "";
+        this.repeatCount = this.lastFingerprint === text ? this.repeatCount + 1 : 1;
+        this.lastFingerprint = text;
+      }
+    }
     this.turns ??= new Map();
     this.turns.set(current.turn, current);
     this.history.push(...copy(output));
@@ -224,7 +293,11 @@ export class ClaudeBridge {
           throw new Error("Claude exposed unregistered tools");
       } else if (message.type === "stream_event") {
         const event = message.event;
-        if (event.type === "message_start") this.start(event.message, source);
+        if (event.type === "message_start") {
+          const owner = this.inputOwners.get(message.user_message_uuid);
+          if (owner && owner.assignment !== this.assignment) throw new Error("Model response crossed an assignment boundary");
+          this.start(event.message, source);
+        }
         else if (event.type === "message_delta" && this.current) {
           Object.assign(this.current.usage, event.usage ?? {});
           this.current.stopReason = event.delta?.stop_reason;
@@ -237,9 +310,21 @@ export class ClaudeBridge {
         if (!this.current || this.current.id !== message.message.id) throw new Error("Claude content has no matching stream start");
         this.current.blocks.push(...message.message.content);
       } else if (message.type === "result") {
+        const owner = this.inputOwners.get(message.user_message_uuid);
+        if (owner && owner.assignment !== this.assignment) continue;
+        if (message.local_command || (message.num_turns === 0 && message.subtype === "success")) continue;
+        if (this.assignmentLimits && message.subtype === "error_max_turns")
+          this.assignmentBoundary("sdk_response_limit", "result");
+        const stopped = this.assignmentLimits && (this.boundary || message.subtype === "success");
+        this.assignmentSettled = !!stopped && !(message.queued_turn_count > 0);
         this.channel.emit({ type: "settled", turn: this.turn, aborted: false,
-          text: message.result ?? "", error_message: message.is_error || message.subtype !== "success"
-            ? `Claude result: ${message.subtype}` : null });
+          control_epoch: this.controlEpoch,
+          text: message.result ?? "", error_message: (message.is_error || message.subtype !== "success") && !this.boundary
+            ? `Claude result: ${message.subtype}` : null,
+          ...(this.assignmentLimits ? { assignment_settled: this.assignmentSettled,
+            assignment_index: this.assignment, assignment_boundary: this.boundary,
+            control_epoch: this.controlEpoch, sdk_idle: this.assignmentSettled,
+            sdk_pending_messages: message.queued_turn_count ?? 0 } : {}) });
       } else if (message.type === "system" && ["compact_boundary", "mirror_error", "model_refusal_fallback", "model_refusal_no_fallback"].includes(message.subtype)) {
         throw new ProviderHold(`Claude context or provider hold: ${message.subtype}`);
       } else if (message.type === "rate_limit_event" && message.rate_limit_info?.status === "rejected") {

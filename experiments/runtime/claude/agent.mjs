@@ -32,7 +32,8 @@ export function serve(runtime = sdk) {
       commands = commands.then(async () => {
         if (message.type === "init") await bridge.init(message);
         else if (message.type === "set_tools") await bridge.setTools(message.tools);
-        else if (message.type === "prompt") bridge.prompt(message.texts);
+        else if (message.type === "prompt") bridge.prompt(message.texts, message.control_epoch);
+        else if (message.type === "replace_goal") bridge.replaceGoal(message.texts, message.control_epoch);
         else throw new Error(`Unknown controller message ${message.type}`);
       }).catch(fatal);
     } catch (error) { fatal(error); }

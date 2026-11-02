@@ -1,3 +1,22 @@
+# Aman's selected Claude sequence condition — 2 November 2026
+
+Current branch: EXP-007, independent Phase 2, Knowledge Work trace-decay swarm.
+Explicit model/harness selection: `claude-opus-5-5`, medium subject effort,
+Claude Code subscription. The user selected two four-agent, ten-assignment
+conditions with/without the original authorized employment-pressure message.
+The shared adapter adds reusable goal handoff and per-assignment 25-response /
+three-repeat guards; these are not Pi automatic-turn parity. Preserve the
+original Sol source, data, score semantics and evidence as EXP-004.
+
+Implementation/offline validation; live rollout pending. Review the first
+no-pressure rollout before collecting the second condition. No unchanged retry
+of a provider-blocked attempt. Raw evidence stays outside Git; use the shared
+registered prepare/collect/review/export pipeline and commit/push the freeze
+before collection. See docs/aman-rollouts/EXP-007.md and index.md. No script is
+needed to maintain Aman's registry; update its Markdown and JSON together.
+
+---
+
 # Current technical state
 
 ## Current result and priority

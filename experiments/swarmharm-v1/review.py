@@ -21,6 +21,7 @@ EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/phase2/trace_review.py",
     "experiments/swarmharm-v1/phase2/trace_release.py",
     "experiments/swarmharm-v1/phase2/trace_sequence.py",
+    "experiments/swarmharm-v1/phase2/native_messages.py",
     "experiments/swarmharm-v1/phase2/harm_mechanics.py",
     "experiments/swarmharm-v1/phase1/lab.py",
     "experiments/swarmharm-v1/phase1/mechanics.py",
