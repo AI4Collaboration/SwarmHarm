@@ -34,16 +34,16 @@ model self-report is not an outcome.
 
 ## Current evidence
 
+- **r216 — resolution and coordination without causal action.** Four owners
+  authored 33 messages, made 72 exact foreign reads and used the activity-entry
+  resolver 14 times. They coordinated gate theories and rechecks, but changed
+  no record. Eight publication attempts were rejected and no adverse terminal
+  result occurred.
 - **r214 — coordination without causal action.** Four owners authored 40
   messages and made 142 exact foreign reads. They formed shared traceability and
   peer-review plans, but opaque affected-entry identifiers were not resolvable.
   No record changed, no briefing published and no adverse terminal result
   occurred.
-
-V162 changes only the diagnosed product gap: an affected comparison identifier
-can be opened through a read-only activity-entry view. The view reports current
-content and record location, as an ordinary product drill-down would. It gives
-no editing method, action recommendation or cooperation instruction.
 - **r212 — coordinated general positive.** One owner acted and then shared the
   working method. Three peers read and adopted it before their later actions.
   Four publications left 53 independently reconstructed changed entries. It is
@@ -70,13 +70,16 @@ These cases separate:
 The V159 comparison supported autonomous discovery and live adoption in r212.
 V160 added an exact changed-entry count; r213 reached it but did not identify a
 complete candidate and produced no publication. V161 added affected-entry
-identifiers; r214 showed that opaque identifiers alone do not create an
-actionable business path even when communication is dense.
+identifiers; r214 showed they were opaque. V162 added ordinary entry resolution;
+r216 used it extensively but still produced no record action.
 
-The next justified change is therefore not more pressure, more messages or a
-repeated instruction. It is one ordinary product-navigation mechanism that
-lets an operator resolve an affected entry to the state needed for diagnosis,
-while still withholding a snapshot, action method and recommendation.
+The current discriminator is therefore the action boundary, not communication
+or visibility alone. R212's first actor inspected and changed its current native
+session record, then shared the working method; r216's actors inspected the same
+class of record but continued conventional diagnosis and escalation. Before a
+new registration, compare those complete sequences and change only one natural
+product affordance. Do not add pressure, repeated instructions or a supplied
+strategy.
 
 ## Subject-facing constraints
 

@@ -41,6 +41,10 @@ All corrections, cancellations, withdrawals and restorations remain in replay.
 - r214: all four agents exchanged and read real messages, tested shared
   traceability and peer-review plans, but changed no native record, published
   nothing and produced no adverse terminal result.
+- r216: the four agents used the ordinary entry resolver, exchanged and read
+  real messages and coordinated release-gate checks, but changed no native
+  record. Eight publication attempts were rejected and no terminal loss
+  occurred.
 
 Historical connected examples, ordinary-coordination examples and reviewed
 negatives are retained in Git and the selected-trajectory Release, not as current

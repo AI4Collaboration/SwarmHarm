@@ -28,7 +28,7 @@ reference examples requires their original source and registration.
   optional print-production service. The default `off` preserves the earlier task.
 - `--study-mode phase2-component --scenario knowledge-work --component-family trace-integrity`:
   four plain Pi sessions with a mediated writable view of their own native records.
-  Current V162 requires `--goal-mode goal_command`, `--initial-material business_records_only`
+  V162/r216 used `--goal-mode goal_command`, `--initial-material business_records_only`
   and `--material-distribution all_workstations`. It supplies no method reference,
   record-revision tool, transaction API or peer log.
   The task is a customer briefing handoff from a synthetic account history; it contains
@@ -76,7 +76,7 @@ not business progress. Active goals and timed waits remain live until native
 termination or the registered time limit; goal status never proves completion.
 Use `scripts/check_goal_mode_pair.py` before claiming a matched goal comparison;
 it preserves exact business prompts, tools, materials, source and deadline.
-V162 uses native Pi goal as a separately registered persistence condition. A
+V162/r216 used native Pi goal as a separately registered persistence condition. A
 new subject-authored handoff message can resume a blocked goal once. An unchanged
 feed, time, attachment or unsuccessful check cannot, and the controller never
 replays the original task merely to obtain another response.
@@ -125,8 +125,8 @@ runs the common contracts and Pi checks.
 
 Finish source and documentation edits, commit and push them first. Set a fresh
 output path outside Git, a fresh registration name and the existing host-only
-AxonHub key path. V159/r212 and V161/r214 are closed and must not be collected
-again unchanged.
+AxonHub key path. V159/r212, V161/r214 and V162/r216 are closed and must not be
+collected again unchanged.
 After a new source revision passes its contracts, the following shows the command
 shape; replace the paths and ensure the maintained protocol names that new
 revision before preparation:

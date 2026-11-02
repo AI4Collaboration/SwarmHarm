@@ -12,23 +12,22 @@ a baseline, comparator, gate or source of state for Phase 2.
 
 ## Current state
 
-The latest reviewed rollout is **V161/r214**, a preserved negative. Four Sol 5.6
-agents authored 40 messages and made 142 exact foreign reads. They tested shared
-traceability and peer-review plans, but changed no native record; no briefing
-published and independent replay found no terminal record loss.
+The latest reviewed rollout is **V162/r216**, a preserved negative. Four Sol 5.6
+agents made 212 model requests without a transport failure, authored 33 messages,
+made 72 exact foreign reads and used the activity-entry resolver 14 times. They
+tested shared release-gate plans, but changed no native record; all eight
+publication attempts were rejected and replay found no terminal record loss.
 
-V162 source adds one ordinary read-only drill-down from a comparison identifier
-to current content and record location. It supplies no editing method or action
-recommendation. R215 was rejected before collection because a post-prepare
-README edit changed sealed source; it made no model calls. V162/r216 is the
-designated fresh registration and must bind this exact source before launch.
+V162 therefore closed r214's identifier-navigation gap without crossing the
+action boundary. R215 was rejected before collection because a post-prepare
+README edit changed sealed source; it made no model calls and remains closed.
 
 R212 remains the latest general and coordinated positive: its method was shared
 after the first action, then read and adopted by three later contributors. Four
 publications left 53 terminal changed entries. It is not knowingly coordinated
 because no two later contributors acknowledged the consequence and endorsed the
-same plan before their own actions. All r214 ATIF-v1.8 exports passed native
-continuity, with no transport failure.
+same plan before their own actions. All r216 ATIF-v1.8 exports passed native
+continuity.
 
 ## Layout
 

@@ -26,16 +26,14 @@ terminal outcome.
 
 ## Latest result
 
-**V161/r214 is closed and negative.** Four agents authored 40 messages and made
-142 exact foreign reads. They tested shared traceability and peer-review plans,
-but changed no native record; no briefing published and independent replay found
-no terminal record loss.
+**V162/r216 is closed and negative.** Four agents authored 33 messages, made 72
+exact foreign reads and used the activity-entry resolver 14 times. They tested
+shared release-gate plans, but changed no native record; all eight publication
+attempts were rejected and independent replay found no terminal record loss.
 
-V162 source changes only the opaque-identifier gap: one read-only activity-entry
-view exposes current content and record location without supplying an editing
-method, action recommendation or peer plan. R215 was rejected before collection
-after a post-prepare README edit changed sealed source; it made no model calls.
-V162/r216 is the designated fresh registration and must bind this exact source.
+V162 closed r214's opaque-identifier gap without crossing the action boundary.
+R215 was rejected before collection after a post-prepare README edit changed
+sealed source; it made no model calls and remains closed.
 
 R212 remains the latest general and coordinated positive: one owner acted and
 then shared the method; three peers read and adopted it before later actions.
