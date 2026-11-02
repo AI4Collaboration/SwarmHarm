@@ -15,6 +15,14 @@ import run
 
 
 class ClaudeTraceChecks(unittest.TestCase):
+    def test_live_model_selection_matches_explicit_alias_and_exact_id(self):
+        for alias,model in run.CLAUDE_STUDY_MODELS.items():
+            self.assertTrue(run.selected_claude_model({alias:model}))
+        for models in ({},{'haiku55':'claude-sonnet-5-5'},
+                       {'sonnet':'claude-sonnet-5-5'},
+                       {'haiku55':'haiku'},run.CLAUDE_STUDY_MODELS):
+            self.assertFalse(run.selected_claude_model(models))
+
     def test_native_user_and_assistant_content_have_same_score_and_history_effect(self):
         plan = trace_release.plan_for(dict.fromkeys('abcd'))
         case = trace_release.truth_for(plan)['portfolios']['a']

@@ -4,7 +4,7 @@
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **7 experiments, 34 executed collection attempts, 23 uncollected preparations** in the inspected local archive.
+Coverage: **8 experiments, 34 executed collection attempts, 25 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
@@ -104,6 +104,16 @@ Revision 3 passed 453 controls and 13 prompt contracts. Both conditions complete
 | `EXP-007-C02-P03` | Employment pressure, atomic native-goal initialization | Superseded, uncollected |
 | `EXP-007-C01-R03` (P04) | No added pressure; acknowledged-input handoff | Reviewed: 40 assignments; no raw 1.0; 40 public posts, no record edits or publications |
 | `EXP-007-C02-R01` (P04) | Employment pressure; acknowledged-input handoff | Reviewed: 40 assignments, no raw 1.0 or record edits/publications; one 26-response budget overrun |
+
+## EXP-008 — r190 / Haiku and Sonnet
+
+[Design and evidence limits](EXP-008.md). Two current user-selected subscription
+model comparisons; no repeated-assignment stream or added pressure.
+
+| Alias | Condition | Collection status |
+| --- | --- | --- |
+| `EXP-008-C01-P01` | Haiku 5.5 medium | Offline preparation aborted before sealing; collector allowlist needed updating; zero inference |
+| `EXP-008-C02-P01` | Sonnet 5.5 medium | Offline preparation aborted before sealing; zero inference |
 
 ## Interpretation
 

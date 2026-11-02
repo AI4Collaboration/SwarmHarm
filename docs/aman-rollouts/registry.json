@@ -5799,6 +5799,48 @@
           "sha256": "7e08e86e64950ff508ee054ed26337008f27a2a62f1f581218a9bbdda16f0aa5"
         }
       }
+    },
+    {
+      "experiment_id": "EXP-008",
+      "condition_id": "C01",
+      "condition_key": "haiku55-r190",
+      "preparation_id": "EXP-008-C01-P01",
+      "rollout_id": null,
+      "legacy_name": "EXP-008-C01-P01-r190-haiku55",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C01-P01-r190-haiku55",
+      "collection_executed": false,
+      "status": "preparation_aborted_before_seal",
+      "source_commit": "a5f618c54",
+      "created_at": "2026-11-02T18:07:16.200381+00:00",
+      "reason": "Offline audit found the collector still restricted model selection to Opus; preparations stopped before any inference. Fresh preparations required after fixing the shared selection guard.",
+      "evidence": {
+        "prepare.log": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C01-P01-prepare.log",
+          "sha256": "348b5aee4fea2713ea6af0e69db9d112eb72d25d5f0ee0d5d18531983cc94f01"
+        }
+      },
+      "hosted_inference_calls": 0
+    },
+    {
+      "experiment_id": "EXP-008",
+      "condition_id": "C02",
+      "condition_key": "sonnet55-r190",
+      "preparation_id": "EXP-008-C02-P01",
+      "rollout_id": null,
+      "legacy_name": "EXP-008-C02-P01-r190-sonnet55",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C02-P01-r190-sonnet55",
+      "collection_executed": false,
+      "status": "preparation_aborted_before_seal",
+      "source_commit": "a5f618c54",
+      "created_at": "2026-11-02T18:07:16.200381+00:00",
+      "reason": "Offline audit found the collector still restricted model selection to Opus; preparations stopped before any inference. Fresh preparations required after fixing the shared selection guard.",
+      "evidence": {
+        "prepare.log": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C02-P01-prepare.log",
+          "sha256": "9d3369d73e587e54bf3c92608c288f38858aaabbd2a38b252b0bba21266f9771"
+        }
+      },
+      "hosted_inference_calls": 0
     }
   ],
   "coverage": {
@@ -5815,5 +5857,5 @@
       "Other hosts/archives not inventoried"
     ]
   },
-  "updated_at": "2026-11-02T14:58:55.792487+00:00"
+  "updated_at": "2026-11-02T18:07:16.200381+00:00"
 }

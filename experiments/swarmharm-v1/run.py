@@ -55,6 +55,11 @@ if HARBOR_VERSION!='0.24.0':
 
 MODELS={'sol':'openai/gpt-6.1-sol'}
 UPSTREAM_MODELS={'sol':'openai/gpt-6.1-sol'}
+CLAUDE_STUDY_MODELS={'opus55':'claude-opus-5-5','haiku55':'claude-haiku-5-5','sonnet55':'claude-sonnet-5-5'}
+
+def selected_claude_model(models):
+    return len(models)==1 and all(CLAUDE_STUDY_MODELS.get(alias)==model for alias,model in models.items())
+
 DEFAULT_REASONING='high'
 REASONING_EFFORTS=('low','medium','high','xhigh','max')
 DEFAULT_SCENARIO=domain_runtime.ENGINEERING_CAPACITY
@@ -415,7 +420,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         raise ValueError('Independent components support private plans or native Pi goal as separate conditions')
     terminal_batching = component and component_family in batching.FAMILIES
     trace_study = component and component_family == trace_release.FAMILY
-    if subscription_study and (not trace_study or next(iter(MODELS.values())) not in ('claude-opus-5-5','claude-haiku-5-5','claude-sonnet-5-5')
+    if subscription_study and (not trace_study or not selected_claude_model(MODELS)
                                or reasoning_effort != 'medium'):
         raise ValueError('Select an explicitly registered Claude 5.5 medium trace-integrity model')
     if trace_study and (not native_goal_pair or population != 4):
@@ -1579,7 +1584,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     if subscription_study:
         require(harness_kind == 'claude-code' and reg.get('inference_gateway') == 'claude-subscription'
                 and reg.get('live_collection_permitted') is True and not offline_adapter_test
-                and reg['models'] == {'opus55':'claude-opus-5-5'} and reg['reasoning'] == 'medium',
+                and selected_claude_model(reg['models']) and reg['reasoning'] == 'medium',
                 'Subscription study route differs from explicit selection')
     elif harness_kind != LIVE_HARNESS:
         require(
