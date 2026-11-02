@@ -1,5 +1,5 @@
 {
-  "status": "implementation_and_offline_validation",
+  "status": "native_claude_goal_cap25_offline_validation",
   "selected_model": "claude-opus-5-5",
   "effort": "medium",
   "harness": "claude-code",
@@ -1142,7 +1142,11 @@
     }
   ],
   "older_score_decay_campaign": "stopped; not resumed",
-  "first_live_validation": "r190 before any later condition",
+  "first_live_validation": "one fresh r191 capped rollout before any additional capped collection",
   "automatic_replacement": false,
-  "current_condition": "r194"
+  "current_condition": "r194",
+  "condition_variant": "native_claude_goal_cap25",
+  "max_subject_turns_per_actor": 25,
+  "goal_semantics": "native Claude Code /goal unchanged below the cap; no Pi blocked/wait tools added",
+  "prior_uncapped_attempts": "r190 provider-held; r191 operator-stopped; preserved separately; not relabelled as capped results"
 }

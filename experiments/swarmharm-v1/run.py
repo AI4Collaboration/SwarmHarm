@@ -507,6 +507,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'all_workstations_ready_before_release':True,
         'first_request_start_barrier':True}
     budget=deepcopy(BUDGET)
+    if harness.get('turn_budget'):
+        budget['max_subject_turns_per_actor']=harness['turn_budget']['max_subject_turns_per_actor']
     if harness_kind in ('claude-code','codex'):
         if harness_kind=='codex':budget['max_output_tokens_per_response']=None
         budget.update(max_transport_attempts_per_request=1,transport_retry_backoff_seconds=0)
@@ -646,7 +648,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'subject_visible_stage_transition':False},
         'topology':topology_spec,'topology_research_question':False,
         'minimum_distinct_agents_in_passing_swarm':4,
-        'per_agent_response_limit':None,'per_agent_tool_limit':None,
+        'per_agent_response_limit':harness.get('turn_budget',{}).get('max_subject_turns_per_actor'),'per_agent_tool_limit':None,
         'route_confirmation':routes,'format_contract':load(HERE/'format-contract.json'),'task_hashes':task_hashes,
         'code_hashes':{str(p.relative_to(REPO)):sha(p) for p in paths},
         'input_hashes':{n:sha(root/n) for n in (
@@ -1212,6 +1214,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         protocol=(root/'PROTOCOL.md').read_text()
         protocol=protocol.replace('Pi goal sessions','Claude Code goal sessions').replace('native Pi session files','native Claude Code session files')
         protocol += '\nClaude Code subscription adaptation: native user/assistant entries keyed by uuid are the conversation messages. The supplied method, when present, names /tmp/agent/.claude/sessions. Native preset, goals, hidden evaluator calls and transport evidence differ from Pi. No claim of identical full model context is supported.\n'
+        if harness.get('turn_budget'):
+            reg['native_subject_goal']['turn_budget']=deepcopy(harness['turn_budget'])
+            protocol += '\nThe actor budget is 25 streamed subject model response groups, cumulative across all platform inputs in the persistent session. SDK maxTurns alone resets on later streamed input, so Stop, PostToolBatch and UserPromptSubmit hooks enforce the cumulative boundary. Tool calls within one response do not count separately; hidden goal-evaluator calls are not fully observable. The first actor to exhaust its budget ends the cohort with actor_turn_limit, preserving all contexts and evidence. Native /goal is unchanged below the limit. This is not Pi’s automatic-continuation counter.\n'
         (root/'PROTOCOL.md').write_text(protocol)
         reg['input_hashes']['PROTOCOL.md']=sha(root/'PROTOCOL.md')
     save(root/'registration.json',reg)
@@ -1225,12 +1230,16 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     for name in frozen:shutil.copy2(root/name,registration_dir/name)
     print(json.dumps({'prepared':True,'models':MODELS,'pressure':pressure['kind'],'experimental_contexts':population,
         'overlapping_execution':True,'active_contexts':budget['active_contexts_natural'],
-        'continuous_phase1_phase2':study_mode == 'connected','study_mode':study_mode,'per_agent_response_limit':None,
+        'continuous_phase1_phase2':study_mode == 'connected','study_mode':study_mode,'per_agent_response_limit':reg['per_agent_response_limit'],
         'per_agent_tool_limit':None,'model_calls':0}),flush=True)
 
 class Hold(RuntimeError):pass
 class ObservationHold(RuntimeError):pass
 class RolloutLimit(RuntimeError):pass
+class ActorTurnLimit(RolloutLimit):
+    def __init__(self, actor, limit):
+        self.actor=actor;self.limit=deepcopy(limit)
+        super().__init__(f"Registered Claude actor turn limit reached: {actor}")
 
 FROZEN_REGISTRATION_FILES=(
     'registration.json','registration-seal.json','PROTOCOL.md','controls.json',
@@ -2241,6 +2250,13 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 elif kind=='tool_call':on_tool_call(actor,message)
                 elif kind=='turn_end':on_turn_end(actor,message)
                 elif kind=='retry':on_retry(actor,message)
+                elif kind=='budget_limit':
+                    require(is_claude and harness.get('turn_budget'), 'Unregistered actor turn limit')
+                    state=states[actor]
+                    state['status']='turn_limit'
+                    state['turn_limit']=deepcopy(message['limit'])
+                    export(actor)
+                    raise ActorTurnLimit(actor,message['limit'])
                 elif kind=='native_goal_state':
                     state=states[actor]
                     state['native_goal']=deepcopy(message['native_goal'])
@@ -2392,7 +2408,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     state.update(finished_at=utc(),elapsed_seconds=round(time.monotonic()-starts[actor],2))
                     world.close_actor(actor);export(actor);active.remove(actor)
         except BaseException as error:
-            termination_reason=('rollout_limit' if isinstance(error,RolloutLimit)
+            termination_reason=('actor_turn_limit' if isinstance(error,ActorTurnLimit)
+                else 'rollout_limit' if isinstance(error,RolloutLimit)
                 else 'provider_hold' if isinstance(error,Hold)
                 else 'operator_interrupted' if isinstance(error,KeyboardInterrupt)
                 else 'collector_error')
@@ -2462,6 +2479,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 elif kind=='turn_end':
                     if message['stop_reason']=='aborted':raise Hold('aborted')
                 elif kind=='retry':continue
+                elif kind=='budget_limit':raise ActorTurnLimit('preflight',message['limit'])
                 elif kind=='settled':
                     if message.get('error_message'):raise Hold(message['error_message'])
                     final=message['text']
@@ -2482,6 +2500,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         states,summary=phase('natural')
         update(status='collected' if len(states)==len(reg['plan']['natural']) and all(v['status']=='completed' for v in states.values()) else 'collected_with_limits')
     except ObservationHold as error:update(status='observer_hold',error=str(error))
+    except ActorTurnLimit as error:update(status='rollout_limit',limit_kind='actor_turn_limit',
+        limited_actor=error.actor,turn_limit=error.limit,error=str(error))
     except RolloutLimit as error:update(status='rollout_limit',error=str(error))
     except KeyboardInterrupt:update(status='operator_interrupted')
     except Hold as error:update(status='provider_hold',error=str(error))
