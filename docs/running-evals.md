@@ -125,7 +125,8 @@ runs the common contracts and Pi checks.
 
 Finish source and documentation edits, commit and push them first. Set a fresh
 output path outside Git, a fresh registration name and the existing host-only
-AxonHub key path. V159/r212 is closed and must not be collected again unchanged.
+AxonHub key path. V159/r212 and V161/r214 are closed and must not be collected
+again unchanged.
 After a new source revision passes its contracts, the following shows the command
 shape; replace the paths and ensure the maintained protocol names that new
 revision before preparation:

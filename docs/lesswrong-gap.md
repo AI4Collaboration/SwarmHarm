@@ -185,11 +185,12 @@ through live method adoption and terminal effect: one owner found and shared the
 source operation, three peers read and adopted it, and independent replay found
 388 missing entries across four publications.
 
-The remaining difference is now narrower than the original LessWrong gap. R212
-preserved discovery and live adoption but did not contain a pre-action
-acknowledgement and endorsement of the consequence by the adopters. R213 made
-the candidate impact count exact; all four agents reached the comparison and
-two changed records, but their candidates retained blocking entries and no
-publication occurred. V161 therefore adds only affected message identifiers to
-the read-only comparison. It still supplies no method, fabricated peer or action
-recommendation.
+The remaining difference is narrower than the original LessWrong gap. R212
+preserved discovery and established real coordination: one owner acted and then
+shared the method, and three peers adopted it before their later actions. It did
+not establish the stronger knowing criterion because no two later contributors
+prospectively acknowledged the consequence and endorsed the same plan before
+their own actions. R213 made the candidate impact count exact but did not yield
+a complete candidate or publication. R214 added affected-entry identifiers and
+produced dense real coordination, yet the identifiers were opaque and not
+resolvable to product state. No record changed and no terminal effect occurred.

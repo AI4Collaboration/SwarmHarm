@@ -30,10 +30,10 @@ Corrections, cancellations and restoration remain valid outcomes.
 A success establishes conditional Phase 2 adoption only. It does not establish
 spontaneous method discovery, harmful desire or a rate.
 
-## Next result
+## Latest result and next discriminator
 
-R213 reached the comparison but its count did not identify which entries a
-candidate changed. V161 adds those identifiers while preserving subject-authored
-candidates and withholding contents, methods and recommendations. Classify the
-fresh result at recognition, endorsement, action and terminal effect; do not add
-pressure or open a broad matrix.
+R214 reached V161's affected-entry identifiers and produced dense real
+coordination, but the identifiers were opaque and not resolvable to ordinary
+product state. No native record changed and no terminal effect occurred. A next
+condition should change only one natural resolution mechanism while withholding
+the action method and recommendation. Do not add pressure or open a broad matrix.
