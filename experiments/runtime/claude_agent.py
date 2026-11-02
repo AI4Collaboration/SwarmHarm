@@ -17,6 +17,11 @@ CLAUDE_DIR = HERE / 'claude'
 AGENT = CLAUDE_DIR / 'agent.mjs'
 SDK_VERSION = '0.3.312'
 GOAL_MODES = ('off', 'claude_goal')
+STUDY_MODELS={'opus55':'claude-opus-5-5','haiku55':'claude-haiku-5-5','sonnet55':'claude-sonnet-5-5'}
+
+def selected_study_model(models):
+    return isinstance(models,dict) and len(models)==1 and all(STUDY_MODELS.get(alias)==model for alias,model in models.items())
+
 SYSTEM_PROMPT = {'type': 'preset', 'preset': 'claude_code'}
 CONTEXT_WINDOW = None  # The subscription CLI owns the actual model context limit.
 CONFLICTING_ENV = {

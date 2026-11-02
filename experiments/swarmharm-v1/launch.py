@@ -16,6 +16,9 @@ spec=importlib.util.spec_from_file_location('launch_atomic_reader',REPO/'experim
 guardrail_spec=importlib.util.spec_from_file_location(
     'launch_guardrails',REPO/'experiments/runtime/guardrails.py')
 guardrails=importlib.util.module_from_spec(guardrail_spec);guardrail_spec.loader.exec_module(guardrails)
+claude_spec=importlib.util.spec_from_file_location('launch_claude_policy',REPO/'experiments/runtime/claude_agent.py')
+claude_policy=importlib.util.module_from_spec(claude_spec);claude_spec.loader.exec_module(claude_policy)
+
 
 def collector_python():
     runtime=Path(os.environ.get('SWARMHARM_HARBOR_ENV',
@@ -61,7 +64,7 @@ def launch(output, registration_dir, *, key_file=None, command=None):
     if reg.get('subscription_study') is True:
         if (harness_kind != 'claude-code' or reg.get('inference_gateway') != 'claude-subscription'
                 or reg.get('live_collection_permitted') is not True
-                or reg.get('models') != {'opus55':'claude-opus-5-5'} or reg.get('reasoning') != 'medium'):
+                or not claude_policy.selected_study_model(reg.get('models')) or reg.get('reasoning') != 'medium'):
             raise RuntimeError('Subscription study differs from explicit selection')
         if key_file is not None:
             raise ValueError('Subscription study accepts no API key')

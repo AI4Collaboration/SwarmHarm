@@ -92,6 +92,20 @@ class SubscriptionChecks(unittest.TestCase):
             argv = launch.collector_command('/tmp/study', '/tmp/registration')
         self.assertNotIn('--key-file', argv)
 
+    def test_launcher_accepts_each_explicit_model_selection_without_inference(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            for alias,model in CLAUDE.STUDY_MODELS.items():
+                root=Path(temporary)/alias;root.mkdir()
+                run.save(root/'registration.json',{'harness':{'kind':'claude-code'},
+                    'subscription_study':True,'inference_gateway':'claude-subscription',
+                    'live_collection_permitted':True,'models':{alias:model},
+                    'reasoning':'medium','code_hashes':{}})
+                run.save(root/'registration-seal.json',{'sha256':run.sha(root/'registration.json')})
+                with patch.object(launch.subprocess,'Popen') as child,patch.object(launch,'wait_for_start'):
+                    child.return_value.pid=1234
+                    self.assertEqual(launch.launch(root,Path(temporary)/'registration',command=['offline-fixture']),1234)
+                    child.assert_called_once()
+
     def test_native_goal_pair_requires_matching_deadline_and_evaluator(self):
         checker=run.module('claude_goal_pair_check',run.REPO/'scripts/check_goal_mode_pair.py')
         with tempfile.TemporaryDirectory() as temporary,ExitStack() as patches:

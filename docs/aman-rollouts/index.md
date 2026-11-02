@@ -114,8 +114,8 @@ model comparisons; no repeated-assignment stream or added pressure.
 | --- | --- | --- |
 | `EXP-008-C01-P01` | Haiku 5.5 medium | Offline preparation aborted before sealing; collector allowlist needed updating; zero inference |
 | `EXP-008-C02-P01` | Sonnet 5.5 medium | Offline preparation aborted before sealing; zero inference |
-| `EXP-008-C01-P02` | Haiku 5.5 medium | Prepared; 444 controls + 13 prompt checks passed |
-| `EXP-008-C02-P02` | Sonnet 5.5 medium | Prepared; 444 controls + 13 prompt checks passed |
+| `EXP-008-C01-P02` | Haiku 5.5 medium | Launch rejected before collection: launcher model guard; zero inference |
+| `EXP-008-C02-P02` | Sonnet 5.5 medium | Superseded, uncollected |
 
 ## Interpretation
 

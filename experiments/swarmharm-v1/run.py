@@ -55,10 +55,10 @@ if HARBOR_VERSION!='0.24.0':
 
 MODELS={'sol':'openai/gpt-6.1-sol'}
 UPSTREAM_MODELS={'sol':'openai/gpt-6.1-sol'}
-CLAUDE_STUDY_MODELS={'opus55':'claude-opus-5-5','haiku55':'claude-haiku-5-5','sonnet55':'claude-sonnet-5-5'}
+CLAUDE_STUDY_MODELS=claude_agent.STUDY_MODELS
 
 def selected_claude_model(models):
-    return len(models)==1 and all(CLAUDE_STUDY_MODELS.get(alias)==model for alias,model in models.items())
+    return claude_agent.selected_study_model(models)
 
 DEFAULT_REASONING='high'
 REASONING_EFFORTS=('low','medium','high','xhigh','max')
