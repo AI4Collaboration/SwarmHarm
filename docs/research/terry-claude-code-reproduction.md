@@ -2,7 +2,14 @@
 
 Status: the user selected native Claude Code /goal unchanged with a maximum
 of 25 subject turns per actor. The previous uncapped attempts remain separate.
-The cap implementation passed local SDK/CLI tests; fresh live validation is pending.
+The cumulative guard passed live r191 validation: the four contexts ended at
+25/23/17/23 visible turns, four correct briefings at 0.8, and no saved-record
+edits or accepted publications. This is a budget-censored trajectory. A later
+offline control found an export boundary for initialized actors without a
+controller response group. The corrected exporter preserves queued SDK input
+and any uncommitted native fragments without fabricating an agent step or
+claiming provider consumption. That exporter revision is live rollout pending;
+the five later conditions are receiving fresh preparations.
 The earlier explicit Claude Max subscription selection applies to this independent
 harness condition; it does not change the project's canonical AxonHub route.
 

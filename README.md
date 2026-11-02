@@ -1,5 +1,3 @@
-> 2 November: the explicit Claude subscription reproduction retains native `/goal` and a cumulative 25 visible subject-turn ceiling per actor. The first capped r191 rollout validated that guard (25/23/17/23 turns); all four correct briefings remained at 0.8, with no record edits or accepted publications. It is budget-censored. A subsequent offline control exposed an ATIF export boundary for initialized actors with no controller response group. The exporter now preserves queued SDK inputs and any uncommitted native fragments without inventing an agent step or claiming provider consumption. This exporter revision is live rollout pending. Historical uncapped attempts remain separate.
-
 # SwarmHarm
 
 ## Native Claude goal with 25-turn cap — 2 November 2026
@@ -7,9 +5,13 @@
 The user selected native Claude Code /goal unchanged, with a cumulative maximum
 of 25 subject turns per agent. SDK maxTurns is combined with a session-wide
 hook guard because streamed inputs can reset the SDK counter. Reaching the cap
-is a budget terminal, and ends the four-agent cohort. Four local SDK/CLI controls
-passed, including cumulative updates, native goals, cleanup and ATIF exports.
-Fresh live validation is pending. Earlier uncapped attempts remain separate.
+is a budget terminal, and ends the four-agent cohort. The live r191 guard validation ended at 25/23/17/23 visible turns: four correct
+briefings at 0.8, no saved-record edits and no accepted publications. This is
+budget-censored, not a completed behavioral negative. The subsequent export
+boundary correction preserves initialized contexts with no controller response
+group, including queued SDK input and any uncommitted native fragments; it
+invents no agent response and does not claim provider consumption. This export
+revision is live rollout pending. Earlier uncapped attempts remain separate.
 
 
 ## Selected Claude Code reproduction — 2 November 2026
@@ -18,7 +20,8 @@ Seven historical Terry conditions are selected for Opus 5.5 medium through the
 Claude Max subscription. The shared pipeline now has an explicit trace-study
 subscription condition and Claude-native record support. Source and condition
 fidelity are checked. R190 ended in provider hold; r191 was stopped for a
-goal-control mismatch. Five later registrations are prepared but uncollected.
+goal-control mismatch. The five later capped conditions are receiving fresh preparations after an
+offline export-boundary correction.
 The uncapped collection remains stopped. The user selected the fresh capped
 condition described above.
 ### Takeaways
