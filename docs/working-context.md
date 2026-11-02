@@ -1,3 +1,5 @@
+Revision 3: preserve C01-R01/R02 setup failures. The adapter now requires native-result acknowledgement of every sent input UUID before assignment handoff; an SDK zero queue count alone is insufficient. Fresh registration and live validation pending.
+
 # Aman's selected Claude sequence condition — 2 November 2026
 
 Current branch: EXP-007, independent Phase 2, Knowledge Work trace-decay swarm.

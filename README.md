@@ -12,7 +12,9 @@ baseline. The first C01 execution ended on a handoff safety check after 49.47 se
 Its full native trace, independent reconstruction and four ATIF exports are
 preserved. Revision 2 changes only initial context/goal installation: declared
 context goes into the stock preset append, and one native goal is the first user
-input. Fresh registrations and live validation are pending. C02 remains
+input. A second live setup attempt exposed a queued-notice handoff race. Revision 3
+requires result acknowledgement of every sent input UUID before handoff. Fresh
+registrations and live validation are pending. C02 remains
 uncollected. No old rollout is resumed.
 
 [Design and evidence limits](docs/aman-rollouts/EXP-007.md) ·

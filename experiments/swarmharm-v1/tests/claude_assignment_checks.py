@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import subprocess
 import tempfile
 import threading
 import unittest
@@ -49,6 +50,39 @@ class SequenceMessages(ScriptedMessages):
 
 
 class ClaudeAssignmentChecks(unittest.TestCase):
+    def test_zero_sdk_queue_count_does_not_settle_unacknowledged_input(self):
+        # Replay the result/queued-input ordering observed in C01-R02. A canceled
+        # queued command may then return a zero-response result under the guard.
+        with tempfile.TemporaryDirectory() as temporary:
+            native=Path(temporary)/'native';native.mkdir()
+            script=f'''
+import assert from 'node:assert/strict';
+import {{ClaudeBridge}} from {json.dumps((CLAUDE.CLAUDE_DIR/'bridge.mjs').as_uri())};
+const events=[];
+const bridge=new ClaudeBridge({{}},{{emit:(event)=>{{
+  events.push(event);
+  if (events.length===1) assert.throws(()=>bridge.replaceGoal(['/goal New assignment.'],4),/settled assignment/);
+}}}});
+bridge.config={{folder:{json.dumps(temporary)}}};bridge.assignmentLimits={{model_responses:25,repeated_tool_free_outputs:3}};
+for (const uuid of ['goal','merged-notice','queued-notice']) {{
+ const input={{uuid,assignment:1}};bridge.inputOwners.set(uuid,input);bridge.ownedInputs.push(input);
+}}
+bridge.session=(async function*() {{
+ yield {{type:'result',subtype:'success',num_turns:24,queued_turn_count:0,
+   user_message_uuid:'goal',user_message_uuids:['goal','merged-notice']}};
+ yield {{type:'result',subtype:'success',num_turns:0,queued_turn_count:0,
+   user_message_uuid:'queued-notice',user_message_uuids:['queued-notice']}};
+ bridge.closed=true;
+}})();
+await bridge.consume();
+assert.equal(events.length,2);
+assert.equal(events[0].assignment_settled,false);assert.equal(events[0].sdk_pending_messages,1);
+assert.equal(events[1].assignment_settled,true);assert.equal(events[1].sdk_pending_messages,0);
+assert.equal(events[1].result_completed_input_uuids.length,3);
+'''
+            completed=subprocess.run([os.environ.get('SWARMHARM_NODE','node'),'--input-type=module','-e',script],capture_output=True,text=True,timeout=20)
+            self.assertEqual(completed.returncode,0,completed.stderr)
+
     def test_original_quality_weights_and_protected_history_match_native_formats(self):
         from phase2 import trace_release as base, trace_sequence as sequence
         for owner in range(4):

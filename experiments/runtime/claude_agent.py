@@ -161,6 +161,7 @@ def harness_registration(goal_mode='off', model=None, *, assignment_limits=None)
             'purpose':'Install the native objective before any business model work; no queued bootstrap user turn.'}
             if assignment_limits else None),
         'assignment_handoff': ({'scope':'same SDK query and session; new objective only',
+            'settlement':'Every sent input UUID must be acknowledged in a native result; queue count alone is insufficient',
             'counter_scope':'all visible main-model responses in the current assignment',
             'not_pi_automatic_turn_parity':True,
             'hidden_goal_evaluator_calls_counted':False,

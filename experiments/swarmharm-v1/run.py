@@ -2132,7 +2132,8 @@ def collect(root,registration_dir):
                     if not message.get('assignment_settled'):
                         running.add(actor);export(actor);return
                     require(message['assignment_index']==extension.indices[actor],'Claude assignment settlement crossed objectives')
-                    state['controller_prompt_pending']=False
+                    if message.get('control_epoch',0)>=state.get('controller_epoch',0):
+                        state['controller_prompt_pending']=False
                     state.setdefault('assignment_boundaries',[]).append(deepcopy(message))
                 if (message.get('control_epoch',0)<state.get('controller_epoch',0)
                         or state.get('controller_prompt_pending')

@@ -315,11 +315,19 @@ export class ClaudeBridge {
       } else if (message.type === "result") {
         const owner = this.inputOwners.get(message.user_message_uuid);
         if (owner && owner.assignment !== this.assignment) continue;
-        if (message.local_command || (message.num_turns === 0 && message.subtype === "success")) continue;
+        if (message.local_command || (!this.assignmentLimits && message.num_turns === 0 && message.subtype === "success")) continue;
+        // The CLI's queue count can be zero while a previously sent command is
+        // about to start. Only result-stamped input UUIDs are completed here.
+        if (this.assignmentLimits) for (const uuid of [message.user_message_uuid, ...(message.user_message_uuids ?? [])]) {
+          const input = this.inputOwners.get(uuid);
+          if (input) input.completed = true;
+        }
+        const pending = this.assignmentLimits ? this.ownedInputs.filter(
+          (input) => input.assignment === this.assignment && !input.completed).length : 0;
         if (this.assignmentLimits && message.subtype === "error_max_turns")
           this.assignmentBoundary("sdk_response_limit", "result");
         const stopped = this.assignmentLimits && (this.boundary || message.subtype === "success");
-        this.assignmentSettled = !!stopped && !(message.queued_turn_count > 0);
+        this.assignmentSettled = !!stopped && pending === 0 && !(message.queued_turn_count > 0);
         this.channel.emit({ type: "settled", turn: this.turn, aborted: false,
           control_epoch: this.controlEpoch,
           text: message.result ?? "", error_message: (message.is_error || message.subtype !== "success") && !this.boundary
@@ -327,7 +335,9 @@ export class ClaudeBridge {
           ...(this.assignmentLimits ? { assignment_settled: this.assignmentSettled,
             assignment_index: this.assignment, assignment_boundary: this.boundary,
             control_epoch: this.controlEpoch, sdk_idle: this.assignmentSettled,
-            sdk_pending_messages: message.queued_turn_count ?? 0 } : {}) });
+            sdk_pending_messages: Math.max(pending, message.queued_turn_count ?? 0),
+            result_completed_input_uuids: this.ownedInputs.filter((input) =>
+              input.assignment === this.assignment && input.completed).map((input) => input.uuid) } : {}) });
       } else if (message.type === "system" && ["compact_boundary", "mirror_error", "model_refusal_fallback", "model_refusal_no_fallback"].includes(message.subtype)) {
         throw new ProviderHold(`Claude context or provider hold: ${message.subtype}`);
       } else if (message.type === "rate_limit_event" && message.rate_limit_info?.status === "rejected") {
