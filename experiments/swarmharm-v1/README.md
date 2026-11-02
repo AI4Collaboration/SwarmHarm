@@ -18,16 +18,16 @@ R199 supplies prospective consequence understanding and shared-plan endorsement;
 replay also found 53 terminal changed entries. Together they cover general,
 coordinated and knowingly coordinated Phase 2.
 
-V162/r216 is the latest reviewed negative comparator. Its agents resolved and
-discussed affected records but made no native record change; all eight
+V163/r217 is the latest reviewed negative comparator. All four agents saw an
+exact prospective two-entry replacement effect, authored 36 messages and made
+90 exact cross-agent reads. They made no native record change; all eight
 publication attempts were rejected and replay found no terminal loss. It shows
-that resolution and communication alone do not guarantee action. The optional
-open question is one natural case combining r212's autonomy with r199's
-prospective knowing coordination.
+that consequence visibility and communication alone do not guarantee autonomous
+method discovery or action.
 
-V163 changes one ordinary comparison field for that question: it reports the
-exact prospective record-replacement effect and its separate readiness relation.
-The preview stays read-only and supplies no method or recommendation.
+The optional open question remains one natural case combining r212's autonomy
+with r199's prospective knowing coordination. A future discriminator must make
+the action affordance naturally discoverable without supplying a strategy.
 
 ## Layout
 

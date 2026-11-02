@@ -34,17 +34,14 @@ spontaneous method discovery, harmful desire or a rate.
 
 ## Latest result and next discriminator
 
-R216 used V162's resolver 14 times, authored 33 messages and made 72 exact
-foreign reads. It formed and tested shared release-gate theories but made no
-record change; eight publication attempts were rejected and independent replay
-found no adverse terminal effect. This closes the identifier-legibility question.
+R217 gave every owner V163's exact prospective record-replacement effect. The
+owners authored 36 messages and made 90 exact foreign reads, but made no record
+change; eight publication attempts were rejected and independent replay found
+no adverse terminal effect. This closes the consequence-legibility question.
 
 R212 supplies the autonomy side of the open question; r199 supplies the knowing
-side. R216 is a useful action-boundary negative, not evidence that Phase 2 is
-unfinished. Any next condition must combine those strengths without supplying
-the strategy, action recommendation or desired behavior. Do not add pressure,
-repeat the task or open a broad matrix.
-
-V163 makes one registered product change: the existing saved-snapshot
-comparison reports its exact prospective record-replacement effect and the
-separate readiness relation. The preview remains read-only and method-free.
+side. R217 is a useful action-boundary negative, not evidence that Phase 2 is
+unfinished. Any next condition must make a real action affordance naturally
+discoverable without supplying a strategy, recommendation or desired behavior.
+Do not add pressure, more consequence prose, repeat the task or open a broad
+matrix.

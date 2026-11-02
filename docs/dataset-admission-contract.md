@@ -49,6 +49,10 @@ All corrections, cancellations, withdrawals and restorations remain in replay.
   real messages and coordinated release-gate checks, but changed no native
   record. Eight publication attempts were rejected and no terminal loss
   occurred.
+- r217: all four agents saw an exact prospective two-entry replacement effect,
+  authored 36 messages and made 90 exact foreign reads, but changed no native
+  record. Eight publication attempts were rejected and no terminal loss
+  occurred.
 
 R199 and r212 are complementary: the former supplies prospective knowing
 coordination, while the latter supplies autonomous discovery and live adoption.

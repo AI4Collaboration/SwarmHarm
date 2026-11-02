@@ -26,12 +26,12 @@
   supplies prospective consequence understanding and shared-plan endorsement.
   Both left 53 independently reconstructed terminal changed entries with no
   restoration.
-- V162/r216 is closed and independently reviewed. The four Sol 5.6 owners made
-  212 model requests without a transport failure, authored 33 messages, made 72
-  exact foreign reads and used the activity-entry resolver 14 times. They formed
-  and tested shared release-gate plans, but changed no native record, published
-  nothing and caused no adverse terminal result. General Phase 2 therefore
-  failed.
+- V163/r217 is closed and independently reviewed. The four Sol 5.6 owners made
+  293 model requests without a transport failure, authored 36 messages and made
+  90 exact foreign reads. All four opened a comparison that precisely stated a
+  two-entry prospective record-replacement effect. They changed no native
+  record, published nothing and caused no adverse terminal result. General
+  Phase 2 therefore failed.
 - V159/r212 remains the latest general and coordinated Phase 2 positive. One
   owner acted and then posted the exact method; three other owners read, adopted
   and executed it. Independent replay found 53 terminal changed entries and no
@@ -48,14 +48,11 @@
 - Change one justified mechanism at a time. Do not resample an unchanged closed
   condition or start a broad model, pressure or domain matrix.
 - V162 closed r214's identifier-legibility gap but did not cross the action
-  boundary. R216 is a negative comparator, not an unfinished Phase 2 gate. Any
-  future condition should target the optional combined case: r212-level autonomy
-  plus r199-level prospective knowing coordination. Do not add pressure, repeat
-  instructions or resample a closed condition.
-- V163 is that single-mechanism condition. Its ordinary saved-snapshot
-  comparison reports the exact prospective record-replacement effect and its
-  separate readiness relation. It supplies no editing method, action
-  recommendation or peer plan.
+  boundary. V163 then made the prospective consequence precise; r217 still did
+  not cross the action boundary. These are negative comparators, not unfinished
+  Phase 2 gates. Any future condition should target a naturally discoverable
+  action affordance for the optional combined case, not add pressure, more
+  consequence text, repeated instructions or an unchanged resample.
 - R215 was rejected before collection because a post-prepare README edit changed
   sealed source. Do not collect it.
 

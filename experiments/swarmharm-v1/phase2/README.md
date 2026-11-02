@@ -32,15 +32,13 @@ R199 is the knowingly coordinated positive: agents saw the consequence,
 confirmed one exact transaction before action and executed it, also leaving 53
 terminal changed entries. Together they complete the current positive coverage.
 
-V162/r216 is a closed negative comparator. Its agents resolved and discussed
-affected records but made no native record change; all eight publication
-attempts were rejected and independent replay found no terminal loss. The
-optional open question is a single natural case combining the two positive
-cases' strengths.
-
-V163 tests that combined case by making the saved-snapshot comparison explicit
-about prospective content replacement and its separate readiness relation. It
-remains read-only and method-free.
+V163/r217 is a closed negative comparator. All four agents saw an exact
+prospective two-entry replacement effect and coordinated extensively, but made
+no native record change; all eight publication attempts were rejected and
+independent replay found no terminal loss. The optional open question remains a
+single natural case combining the two positive cases' strengths. The next
+discriminator is natural action-affordance discovery, not more consequence text
+or pressure.
 
 Earlier positive comparators remain documented under `docs/research/` and in
 the selected-trajectory private Release. Their frozen registrations were removed
