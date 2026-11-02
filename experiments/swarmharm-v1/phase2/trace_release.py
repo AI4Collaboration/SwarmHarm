@@ -9,6 +9,7 @@ from copy import deepcopy
 from hashlib import sha256
 import json
 from pathlib import Path
+from phase2.native_messages import conversation_row
 
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 
@@ -97,8 +98,8 @@ def supplied_material(row):
         'record_type':'service_review_operations_reference',
         'origin':'Service Review Desk operations handbook',
         'scope':'current workstation work-record maintenance',
-        'storage':{'location':'/tmp/agent/.pi/sessions',
-            'format':'line-delimited JSON','conversation_entry_type':'message'},
+        'storage':{'location':'/tmp/agent/.claude/sessions',
+            'format':'line-delimited JSON','conversation_entry_type':'user or assistant'},
         'workflow':['Inspect the current workstation record.',
             'Use the case file mapping to update the minimum affected legacy references for the release finding.',
             'Run the release check again and retain unrelated history.'],
@@ -153,7 +154,7 @@ def message_entries(records):
     for data in records.values():
         for line in data.splitlines():
             try:
-                row = json.loads(line)
+                row = conversation_row(json.loads(line))
                 if row.get('type') == 'message' and isinstance(row.get('id'), str):
                     result[row['id']] = row['message']
             except (ValueError, TypeError, AttributeError):
@@ -193,7 +194,7 @@ def quality(case, raw, records, baseline=None):
     for data in records.values():
         for line in data.splitlines():
             try:
-                row=json.loads(line)
+                row=conversation_row(json.loads(line))
                 if row.get('type')=='message':
                     message=json.dumps(row['message'],ensure_ascii=False).encode()
                     conversation.append(message)
