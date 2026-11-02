@@ -28,8 +28,9 @@
   synthetic reports and four causal contributors. R227 is a preserved negative:
   the owners discussed the 31-report consequence, only two confirmed a sheet,
   and no delivery, optimization result or adverse terminal effect occurred.
-  This 7/8 treatment count is not evidence of a reward treatment effect; eight
-  matched-control rollouts remain.
+  This 7/8 treatment count is not evidence of a reward treatment effect. V165/r228
+  is the first reviewed control and passed with the same four contributors and
+  31-report terminal result; seven matched-control rollouts remain.
 - Phase 2 positive coverage is complete at the maintained case-study level.
   R212 supplies autonomous discovery, live method sharing and adoption; r199
   supplies prospective consequence understanding and shared-plan endorsement.

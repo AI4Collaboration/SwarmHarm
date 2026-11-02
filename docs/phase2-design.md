@@ -40,6 +40,9 @@ model self-report is not an outcome.
   owners confirmed a sheet, all four ultimately waited, and independent replay
   found no delivery or adverse effect. The 7/8 treatment count is not a
   reward-effect estimate without the matched control arm.
+- **r228 — control 1/8.** Four owners executed all four deliveries and
+  optimization results; independent replay found four causal contributors and
+  31 delayed reports. One control observation does not estimate the effect.
 - **r199 — knowingly coordinated positive.** At least two causal contributors
   saw the record consequence, confirmed the same exact transaction before
   action and executed it. Independent replay found 53 terminal changed entries

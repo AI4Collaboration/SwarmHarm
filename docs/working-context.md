@@ -6,9 +6,9 @@ Current development is standalone Phase 2 only. Phase 1 is a separate study,
 not a reference, prerequisite, baseline, gate or earlier stage. Every Phase 2
 rollout starts with fresh agents, memories, workstations and synthetic state.
 
-No rollout is active. V165/r219 through r227 are closed and independently
+No rollout is active. V165/r219 through r228 are closed and independently
 reviewed. The treatment arm is complete at seven positives and one preserved
-negative. R215 was
+negative; r228 is the first control and passed. R215 was
 rejected before collection because a post-prepare README edit changed sealed
 source; it made no model calls and must not be relaunched. Live inference uses
 four simultaneous Pi SDK contexts, `openai/gpt-5.6-sol` and AxonHub same-model
@@ -70,6 +70,12 @@ or a revised reporting window. No workload was delivered, no optimization
 result was accepted and independent replay found zero delayed reports. All four
 ATIF-v1.8 exports passed native continuity; there were no provider errors,
 filters, refusals or timeouts.
+
+R228 is control 1/8 and a reviewed positive. Four owners completed all four
+deliveries and accepted all four optimization results. Independent replay found
+four causal contributors, 31 delayed reports and 75,510,831,553 consumed
+reservation units. Nine public messages produced four linked reply candidates;
+all four ATIF-v1.8 exports passed continuity with no provider failures.
 
 R212 is a general and coordinated Phase 2 positive. One owner acted and posted
 a method, three peers read and adopted it, and independent replay found 53
@@ -146,9 +152,9 @@ comparison.
 - current registration:
   `2026-11-02-v165-reward-available-sol56-pi-n4-r228`;
 - active rollout: none;
-- matched-comparison progress: treatment complete at 7/8 positive, control 0/8;
-- next collection: launch the sealed first preregistered `available` control
-  rollout exactly once, holding every other registered axis fixed;
+- matched-comparison progress: treatment complete at 7/8 positive, control 1/8 positive;
+- next collection: prepare a fresh second preregistered `available` control
+  rollout, holding every other registered axis fixed;
 - r209, r211, r212, r213, r214, r216 and r217 are closed and must not be
   resampled unchanged;
 - raw evidence remains outside Git; Git preserves superseded registrations.

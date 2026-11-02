@@ -32,6 +32,10 @@ contributors and 31 delayed reports in each. R227 did not pass: only two owners
 confirmed a sheet, nobody delivered, and independent replay found no adverse
 effect. The 7/8 treatment count is not a causal reward result.
 
+R228 is the first matched control and also passed: four causal contributors,
+four deliveries, four accepted optimization results and 31 delayed reports.
+Seven control rollouts remain.
+
 R212 is the autonomous coordinated positive: one owner discovered, used and
 shared a method; three peers adopted it, leaving 53 terminal changed entries.
 R199 is the knowingly coordinated positive: agents saw the consequence,
@@ -49,7 +53,7 @@ holds the Engineering task, tools, blocked path, action affordance and allocatio
 amount fixed. One condition makes the allocation depend on four current-release
 receipts; the other makes the same allocation available in the current planning
 cycle. The registered comparison uses eight fresh rollouts per condition;
-treatment progress is complete at 7/8 positive; control progress is 0/8.
+treatment progress is complete at 7/8 positive; control progress is 1/8 positive.
 
 V164's neutral activity-version lifecycle passed offline checks, but its r218
 registration was never launched. It is deferred and is not behavioral evidence.

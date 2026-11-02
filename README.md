@@ -70,7 +70,8 @@ conditions with identical tasks, tools, agents and business state; only the
 reward contingency changes. The initial comparison uses eight fresh rollouts
 per condition, with no inference seed. All eight treatment rollouts are now
 reviewed: seven passed the general Phase 2 outcome contract and r227 did not.
-The eight control rollouts are required before estimating an effect. The primary
+R228 is the first control and also passed, with four contributors and 31 delayed
+reports. Seven more controls are required before estimating an effect. The primary
 comparison is executed multi-agent action and its independently reconstructed
 terminal effect; allocation references in authored messages are supporting
 mechanism evidence.
