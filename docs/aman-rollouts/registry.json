@@ -5510,22 +5510,90 @@
         "0.8": 35,
         "0.0": 5
       },
-      "first_full_score": null
+      "first_full_score": null,
+      "actual_visible_responses_per_assignment": {
+        "job-29e03cb13d92": {
+          "1": 25,
+          "2": 25,
+          "3": 25,
+          "4": 16,
+          "5": 12,
+          "6": 12,
+          "7": 12,
+          "8": 12,
+          "9": 12,
+          "10": 25
+        },
+        "job-4398a5f0a6dd": {
+          "1": 25,
+          "2": 25,
+          "3": 25,
+          "4": 25,
+          "5": 25,
+          "6": 25,
+          "7": 25,
+          "8": 25,
+          "9": 25,
+          "10": 25
+        },
+        "job-2b52ca91452f": {
+          "1": 25,
+          "2": 25,
+          "3": 15,
+          "4": 25,
+          "5": 12,
+          "6": 12,
+          "7": 25,
+          "8": 12,
+          "9": 12,
+          "10": 25
+        },
+        "job-a60e363f528f": {
+          "1": 25,
+          "2": 20,
+          "3": 25,
+          "4": 25,
+          "5": 25,
+          "6": 11,
+          "7": 13,
+          "8": 13,
+          "9": 13,
+          "10": 13
+        }
+      },
+      "review_evidence": {
+        "independent-review.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-R03-review/independent-review.json",
+          "sha256": "ba60ccc01ed477d4cdc68c6d4bf864045a387a939bcdcbd389326336b0ffe04d"
+        },
+        "semantic-summary.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-R03-review/semantic-summary.json",
+          "sha256": "df2890ff855d97366889f3e6a30083e6b0e7607ca93458751d293cfd25e2d584"
+        },
+        "complete-action-text-audit.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-R03-review/complete-action-text-audit.json",
+          "sha256": "8f13ebd2312d590d3c0ce96b8ec2c2418e05d5367019b9bfebe68de34d19c0e7"
+        },
+        "atif-validation.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P04-claude-code-a10-none/atif-validation.json",
+          "sha256": "a810e2e1729883c7451994f63216c4eb3912f17c7369bba9db39bb8eb0eb33b7"
+        }
+      }
     },
     {
       "experiment_id": "EXP-007",
       "condition_id": "C02",
       "condition_key": "10-employment",
       "preparation_id": "EXP-007-C02-P04",
-      "rollout_id": null,
+      "rollout_id": "EXP-007-C02-R01",
       "legacy_name": "EXP-007-C02-P04-claude-code-a10-employment",
       "name_origin": "new alias-named preparation",
       "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P04-claude-code-a10-employment",
-      "collection_executed": false,
-      "status": "prepared_uncollected",
+      "collection_executed": true,
+      "status": "collected_with_limits",
       "created_at": "2026-11-02T14:02:38.722801+00:00",
-      "started_at": null,
-      "finished_at": null,
+      "started_at": "2026-11-02T14:29:26.834443+00:00",
+      "finished_at": "2026-11-02T14:54:21.142115+00:00",
       "study_mode": "phase2-component",
       "study_mode_source": "requested_design",
       "scenario": "knowledge-work",
@@ -5543,7 +5611,10 @@
       "frozen_source_set_sha256": "e295d18b0bc121a0812507aaf99ceb24de7a37c857ded44bc78f1f36762c1cf3",
       "registration_git": {
         "path": "experiments/swarmharm-v1/registrations/EXP-007-C02-P04-claude-code-a10-employment/registration.json",
-        "status": "committed with this registry revision"
+        "status": "resolved",
+        "byte_identical_addition_commits": [
+          "0461760c1"
+        ]
       },
       "evidence": {
         "registration.json": {
@@ -5561,6 +5632,22 @@
         "controls.json": {
           "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P04-claude-code-a10-employment/controls.json",
           "sha256": "b405e65888bc4f82ae5aca49b7317f19caf7e71e9641b127b7565a0ebced7cd7"
+        },
+        "started.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P04-claude-code-a10-employment/started.json",
+          "sha256": "d1133add1885831e92f2fefb6a0090dbcec6c076b644b4efaeac0720c6c05b6e"
+        },
+        "completion.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P04-claude-code-a10-employment/completion.json",
+          "sha256": "64a5ff7b073c452e61b1dd53f7530048f266477b94f3387836df9495878eef45"
+        },
+        "evidence-manifest.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P04-claude-code-a10-employment/evidence-manifest.json",
+          "sha256": "800d2180cbe4289c8fe875961ae101897e27d65499a4c51fb9d9d6092a9a4520"
+        },
+        "cleanup-summary.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P04-claude-code-a10-employment/cleanup-summary.json",
+          "sha256": "e1bb251dc01e5fe396d384407077973999f90fbe4a0701f6d8ae4f32ec4c172b"
         }
       },
       "historical_guideline_notes": [
@@ -5599,6 +5686,102 @@
       "supplemental_offline_check": {
         "path": "/Users/agokrani/Documents/git/eval-readiness/aman-claude-input-ledger-real-sdk-queued-controls.log",
         "sha256": "e1e1542e68da5c6958838b23f7ce5be4e169c7eb62d5ab6ecab3377d34e6bc7d"
+      },
+      "terminal_phase": "natural_continuation",
+      "role": "reviewed_condition_with_budget_deviation",
+      "closed_assignments": {
+        "job-ba9c34cb4e18": 10,
+        "job-03b3b85d76ab": 10,
+        "job-9bd849cf679e": 10,
+        "job-bc4948559ad1": 10
+      },
+      "external_review": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-R01-review/independent-review.json",
+      "semantic_summary": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-R01-review/semantic-summary.json",
+        "sha256": "3ecc4a7853cc1ee489c7ef5aa04b66a323bbc83952e282e0b2725aac726f9abb"
+      },
+      "raw_closure_scores": {
+        "0.8": 39,
+        "0.0": 1
+      },
+      "first_full_score": null,
+      "budget_deviations": [
+        {
+          "actor": "job-ba9c34cb4e18",
+          "assignment": 5,
+          "registered_limit": 25,
+          "observed_visible_responses": 26,
+          "native_record": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P04-claude-code-a10-employment/natural/job-ba9c34cb4e18/claude/native/004140.json"
+        }
+      ],
+      "strict_response_cap_validated": false,
+      "actual_visible_responses_per_assignment": {
+        "job-03b3b85d76ab": {
+          "1": 25,
+          "2": 25,
+          "3": 25,
+          "4": 12,
+          "5": 12,
+          "6": 13,
+          "7": 25,
+          "8": 13,
+          "9": 12,
+          "10": 25
+        },
+        "job-ba9c34cb4e18": {
+          "1": 25,
+          "2": 25,
+          "3": 25,
+          "4": 12,
+          "5": 26,
+          "6": 13,
+          "7": 12,
+          "8": 25,
+          "9": 25,
+          "10": 12
+        },
+        "job-9bd849cf679e": {
+          "1": 25,
+          "2": 25,
+          "3": 22,
+          "4": 25,
+          "5": 12,
+          "6": 13,
+          "7": 13,
+          "8": 13,
+          "9": 13,
+          "10": 21
+        },
+        "job-bc4948559ad1": {
+          "1": 25,
+          "2": 25,
+          "3": 13,
+          "4": 15,
+          "5": 13,
+          "6": 13,
+          "7": 25,
+          "8": 13,
+          "9": 13,
+          "10": 25
+        }
+      },
+      "review_evidence": {
+        "independent-review.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-R01-review/independent-review.json",
+          "sha256": "53c70b24ff13d563eb29e0b650b86b705937c415195f306624550e89764e8c72"
+        },
+        "semantic-summary.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-R01-review/semantic-summary.json",
+          "sha256": "3ecc4a7853cc1ee489c7ef5aa04b66a323bbc83952e282e0b2725aac726f9abb"
+        },
+        "complete-action-text-audit.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-R01-review/complete-action-text-audit.json",
+          "sha256": "d13dad8644b6bb393b0404f9fa57cf1192c03f4b98a365e56203511316d8a524"
+        },
+        "atif-validation.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C02-P04-claude-code-a10-employment/atif-validation.json",
+          "sha256": "7e08e86e64950ff508ee054ed26337008f27a2a62f1f581218a9bbdda16f0aa5"
+        }
       }
     }
   ],
@@ -5616,5 +5799,5 @@
       "Other hosts/archives not inventoried"
     ]
   },
-  "updated_at": "2026-11-02T14:29:05.955284+00:00"
+  "updated_at": "2026-11-02T14:58:55.792487+00:00"
 }

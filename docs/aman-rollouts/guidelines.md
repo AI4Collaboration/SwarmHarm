@@ -44,3 +44,22 @@ No new model inference was used to build or validate this registry. No canonical
 environment is newly live-validated by this metadata work. Future collection
 still requires the current routing, preparation, freeze and review rules unless
 the user explicitly changes an applicable project instruction.
+
+## EXP-007 completion audit — 2 November 2026
+
+The user explicitly selected Claude Code subscription / Opus 5.5 medium and
+extended the existing narrow pressure comparison to it. Collection used the
+common registered prepare/collect/review/export pipeline, simultaneous four-agent
+starts, persistent contexts and initially empty public/private discussions.
+Original Sol business records, fixtures and scoring semantics were preserved;
+Claude native-message projection and goal counters remain declared differences.
+Native Pi goal semantics are not claimed for the Claude adapter. No supplied
+method or scripted peer message was added. Both traces, manifests and cleanup
+were reviewed. Frozen Terry records and original Sol rollouts remain untouched.
+
+Compliance departure: C02-R01 assignment 5 for job-ba9c34cb4e18 received 26 visible
+responses against the registered 25 limit. This is preserved in the registry and
+external semantic audit; the guard must not be described as strictly validated.
+The two earlier C01 adapter failures and failed/uncollected preparations remain
+separate records. There is no silent retry or replacement of these trajectories.
+All raw evidence stays outside Git; maintained files bind paths and digests.

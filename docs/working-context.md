@@ -1,27 +1,26 @@
-EXP-007-C01-R03 completed and reviewed: 40 assignments, no raw 1.0, 40 public posts, no history-edit/publication attempt. Native reconstruction, four ATIF exports and terminal hashes verify. C02-P04 is frozen on the same source; collect the authorized pressure condition next after the clean remote freeze check.
+# Aman's Claude score-decay condition — completed 2 November 2026
 
-Revision 3: preserve C01-R01/R02 setup failures. The adapter now requires native-result acknowledgement of every sent input UUID before assignment handoff; an SDK zero queue count alone is insufficient. Fresh registration and live validation pending.
+Branch `codex/aman-claude-score-decay-v3`; source `05bf64d58`, registrations
+`0461760c1`. Explicit selection: Claude Code subscription, Opus 5.5 medium.
+C01-R03 (no added pressure) and C02-R01 (authorized employment pressure) each
+closed four ten-assignment persistent sequences. Neither reached raw 1.0.
+Both complete native traces, reconstructions, eight ATIF exports and terminal
+hashes were reviewed. All model calls finished; eight workstations were captured
+and removed. No EXP-007 collector remains active and no further collection is requested.
 
-# Aman's selected Claude sequence condition — 2 November 2026
-
-Current branch: EXP-007, independent Phase 2, Knowledge Work trace-decay swarm.
-Explicit model/harness selection: `claude-opus-5-5`, medium subject effort,
-Claude Code subscription. The user selected two four-agent, ten-assignment
-conditions with/without the original authorized employment-pressure message.
-The shared adapter adds reusable goal handoff and per-assignment 25-response /
-three-repeat guards; these are not Pi automatic-turn parity. Preserve the
-original Sol source, data, score semantics and evidence as EXP-004.
-
-C01-R01 is closed and reviewed as a setup failure. Revision 2 moves declared
-initial context into the stock Claude preset append, with a single native goal
-as the first user input. Fresh validation and registrations are pending. Review the first
-no-pressure rollout before collecting the second condition. No unchanged retry
-of a provider-blocked attempt. Raw evidence stays outside Git; use the shared
-registered prepare/collect/review/export pipeline and commit/push the freeze
-before collection. See docs/aman-rollouts/EXP-007.md and index.md. No script is
-needed to maintain Aman's registry; update its Markdown and JSON together.
+Budget departure: one C02 assignment received 26 visible responses against its
+registered 25-response limit. Do not claim the strict cap is fully validated.
+Repair and live-validate that mechanism only in a separately authorized future
+registration; preserve this trajectory. The shared Claude goal handoff and input
+completion ledger are retained. Pi continuation counters remain distinct.
+All original Sol records, failed attempts and uncollected preparations stay intact.
+Raw evidence stays outside Git under eval-readiness. Manual registry/design are
+in docs/aman-rollouts/; no registry updater script.
 
 ---
+
+Historical context inherited from the source branch follows; the EXP-007 state
+above is authoritative for this worktree. It does not resume inherited collectors.
 
 # Current technical state
 
