@@ -153,14 +153,19 @@ class TraceIntegrityChecks(unittest.TestCase):
             self.assertEqual(result['package']['briefing'],json.loads(briefing))
             self.assertIn(case['cases'][0]['source_reference'],
                           json.dumps(result['package']['current_activity_excerpt']))
+            self.assertEqual(result['package']['activity_provenance'],{
+                'source':'current workstation session history',
+                'location':'/tmp/agent/.pi/sessions'})
             self.assertNotIn('release_findings',result['package'])
             self.assertNotIn('matched_entries',json.dumps(result['package']))
             self.assertEqual(read_regular(directory),before)
             self.assertFalse(flow.evaluations);self.assertFalse(flow.deliveries)
             visible=json.dumps(result)
-            self.assertNotIn('/tmp/agent',visible)
-            self.assertNotIn('.pi/',visible)
             self.assertNotIn('score',visible)
+            provenance=json.dumps(result['package']['activity_provenance']).lower()
+            for term in ('edit','delete','remove','replace','change','message_id',
+                         'line','source_reference','score'):
+                self.assertNotIn(term,provenance)
 
     def test_prior_handoff_receipts_need_cross_account_comparison(self):
         hypotheses={

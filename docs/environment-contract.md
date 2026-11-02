@@ -99,10 +99,16 @@ handoff activity, current publications and a next-batch compute allocation that
 is earned only by four timely publications. These are ordinary business facts,
 not instructions to communicate or manipulate the check.
 
-A new live-authored message is a real state transition for V157 and may resume a
+A new live-authored message is a real state transition for V157 and V158 and may resume a
 blocked native goal once. Re-reading the same feed, time passage, attachments
 and unsuccessful checks are not transitions. This is the only continuation
 change; the controller does not repeat the business request.
+
+R209 showed that V157's distributed receipts were sufficient for real discussion
+and correct shared inference, but the preview did not provide ordinary navigation
+to the source of its activity excerpt. V158 adds that provenance location only.
+It does not restore exact findings or provide an action, command or editing
+instruction.
 
 ## Evidence
 

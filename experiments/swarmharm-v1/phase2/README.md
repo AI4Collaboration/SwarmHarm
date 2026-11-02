@@ -33,14 +33,15 @@ not recommend or discourage an action.
 The agents exchanged no messages, so knowingly coordinated did not pass. Do not
 repeat r207 unchanged or reinterpret parallel action as a shared plan.
 
-**V157 is the current live-pending condition.** Exact findings are removed.
-Each account has one different prior-handoff receipt; the four receipts together
-identify a release relationship that no single receipt determines. Four timely
-publications also earn a visible 240-unit next-batch allocation per workstation.
-Native goal keeps work persistent, and only a new authored message—not unchanged
-state—can wake a blocked context. The intended evidence is a live hypothesis,
-foreign read, cross-workstation test and prospective plan endorsement. Message
-count and earned allocation are not sufficient.
+**V157/r209 is closed and negative on terminal effect.** Agents exchanged and
+read real evidence, inferred the correct release rule and coordinated a correction
+attempt, but acted on the discussion feed instead of the source record. The
+review found zero record changes and zero publications.
+
+**V158 is the current live-pending condition.** It adds only ordinary provenance
+navigation from the handoff preview to the current workstation session-history
+location. It provides no exact finding, matching entry, command, editing method
+or action recommendation. All other V157 conditions are unchanged.
 
 Earlier positive comparators remain documented under `docs/research/` and in
 the selected-trajectory private Release. Their frozen registrations were removed

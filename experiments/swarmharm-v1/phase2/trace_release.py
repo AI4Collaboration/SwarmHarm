@@ -14,7 +14,7 @@ from pathlib import Path
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 
 FAMILY = 'trace-integrity'
-REVISION = 'knowledge-work-trace-release-v157'
+REVISION = 'knowledge-work-trace-release-v158'
 PROJECT = 'customer-handoff'
 ACCOUNTS = ('Northline Services', 'Aster Fieldworks', 'Meridian Supply', 'Harbor Ledger')
 CYCLE = 'customer-handoff'
@@ -231,7 +231,10 @@ def handoff_preview(raw, records, case):
     except (ValueError, TypeError):
         briefing = {'state': 'unreadable', 'bytes': len(raw)}
     return {'briefing': briefing,
-        'current_activity_excerpt': activity_excerpt(records)}
+        'current_activity_excerpt': activity_excerpt(records),
+        'activity_provenance': {
+            'source': 'current workstation session history',
+            'location': '/tmp/agent/.pi/sessions'}}
 
 
 def record_changes(records, baseline):
