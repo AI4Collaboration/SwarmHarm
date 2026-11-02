@@ -1,5 +1,7 @@
 # SwarmHarm
 
+Aman’s local rollout aliases and evidence pointers: [Aman's rollout registry](docs/aman-rollouts/index.md). Update it at preparation, collection start and terminal review for Aman-owned rollouts. Terry’s original records are separate and unchanged.
+
 ## Native Claude goal with 25-turn cap — 2 November 2026
 
 No live collectors remain. The selected Claude Code / Claude Max condition uses
