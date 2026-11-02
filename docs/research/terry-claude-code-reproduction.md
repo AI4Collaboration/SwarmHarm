@@ -1,9 +1,10 @@
 # Terry condition reproduction with Claude Code
 
-Status: this branch prepares the originally selected r191 method-free condition.
-The r190 attempt and four validated native exports are preserved separately after
-a provider refusal. It is not repeated. This condition keeps its own frozen
-business source and is not a rewritten version of the refused prompt.
+Status: all collection stopped pending goal-control clarification. R190 and
+r191 native-Claude-goal attempts are preserved outside Git, with eight validated
+ATIF exports and independent terminal reconstructions. Five later conditions
+are prepared but have never started. Do not launch them before the user resolves
+the native-goal versus matched-goal condition.
 
 The user selected one four-agent rollout for each of r190, r191, r192, r194,
 r195, r196 and r197, using Claude Code, Claude Max subscription authentication,

@@ -5,7 +5,17 @@
 Seven historical Terry conditions are selected for Opus 5.5 medium through the
 Claude Max subscription. The shared pipeline now has an explicit trace-study
 subscription condition and Claude-native record support. Source and condition
-fidelity are being checked; no live rollout is validated yet.
+fidelity are checked. R190 ended in provider hold; r191 was stopped for a
+goal-control mismatch. Five later registrations are prepared but uncollected.
+All collection is stopped pending the user’s goal-contract choice.
+### Takeaways
+
+Claude Code native /goal repeatedly continued after agents reported an unchanged
+blocker. R191 was stopped after 50 empty discussion checks following the last
+new message. Native Claude goal controls are not equivalent to Pi blocked/wait
+tools and its automatic-continuation limits. Preserve both interrupted attempts
+as a separate harness condition; do not claim matched reproduction results.
+
 [Setup and evidence limits](docs/research/terry-claude-code-reproduction.md) ·
 [Original condition/source manifest](docs/research/terry-claude-code-reproduction.json).
 
