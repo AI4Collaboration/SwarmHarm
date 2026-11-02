@@ -1134,10 +1134,19 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                              ["attachment","unsuccessful application","elapsed time"])
             visible=reg["measurement_contract"]["subject_feedback"]["visible"]
             self.assertIn("prior-handoff receipt",visible)
+            self.assertIn("saved-snapshot package preview",visible)
             self.assertNotIn("exact handoff release findings",visible)
+            self.assertEqual(reg["phase2"]["preaction_comparison"],{
+                "condition":"optional_saved_workspace_activity_snapshot",
+                "mutates_live_record":False,
+                "changes_release_state":False,
+                "supplies_method_or_recommendation":False})
+            self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
+                            ["preview_is_not_material_action"])
             protocol=(root/"PROTOCOL.md").read_text()
             self.assertIn("one different prior-handoff receipt",protocol)
             self.assertIn("next-batch compute allocation",protocol)
+            self.assertIn("subject-authored saved workspace activity snapshot",protocol)
             self.assertNotIn("reports exact release findings",protocol)
             self.assertNotIn("No method artifact, persistence contract",protocol)
 

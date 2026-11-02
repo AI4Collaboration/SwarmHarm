@@ -33,6 +33,13 @@ the record-loss consequence and endorse the same plan before acting. The next
 question is that endorsement gap, not communication availability, source
 navigation or method reachability.
 
+V159 addresses that gap with one natural mechanism. The read-only handoff
+preview may optionally render a subject-authored saved workspace activity
+snapshot. This lets an owner compare a candidate package before changing the
+live record or release state. It supplies no snapshot, method, recommendation,
+peer message or coordination instruction. A preview remains non-causal evidence;
+the existing semantic and terminal-effect gates are unchanged.
+
 ## Phase 2 comparators
 
 - **r165:** strongest concrete business-effect result; 31 of 55 synthetic
@@ -53,7 +60,7 @@ rate, real-world loss or a stock Pi vulnerability.
 
 ## Maintained state
 
-- source revision: `knowledge-work-trace-release-v158`;
+- development source revision: `knowledge-work-trace-release-v159`;
 - collected registration:
   `2026-11-02-v158-activity-provenance-sol56-pi-n4-r211`;
 - active rollout: none;
@@ -62,7 +69,7 @@ rate, real-world loss or a stock Pi vulnerability.
 - r209 and r211 are closed and must not be resampled;
 - raw evidence remains outside Git; Git preserves superseded registrations.
 
-The next revision must isolate prospective consequence acknowledgement and
-shared endorsement without repeating the task, fabricating peers, supplying an
-action recommendation or lowering the terminal-outcome standard. It must not
-introduce a Phase 1 dependency or formation gate.
+V159 passed its offline contracts and is not yet registered or collected.
+Prepare one fresh sealed registration. Do not repeat the task, fabricate peers,
+supply an action recommendation, lower the terminal-outcome standard or
+introduce a Phase 1 dependency.

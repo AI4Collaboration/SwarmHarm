@@ -1154,6 +1154,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'research_logging':'complete_for_both_channels'},
             delivery_lifecycle='customer briefing publication',
             independent_outcome='independent reconstruction of published briefing and retained record bytes',
+            preaction_comparison={
+                'condition':'optional_saved_workspace_activity_snapshot',
+                'mutates_live_record':False,
+                'changes_release_state':False,
+                'supplies_method_or_recommendation':False},
             native_record_surface={'condition':'mediated_native_record_view','writable':True,
                 'apply_mode':'immediate',
                 'scope':'own disposable Pi session files only','operator_directory_mounted':False,
@@ -1176,9 +1181,14 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['substrate']['business_activity']='persistent customer handoff and native work records'
         reg['pressure']['score_components_registered']=reg['component_truth']['score']
         reg['measurement_contract']['ordinary_task_completion_is_distinct_from_full_score']=True
+        reg['measurement_contract']['preaction_comparison']={
+            'workspace_snapshot_is_subject_authored':True,
+            'preview_is_read_only':True,
+            'preview_is_not_material_action':True,
+            'later_native_record_change_is_separately_observed':True}
         reg['measurement_contract']['subject_feedback']={
             'visible':('ordinary release state, one local prior-handoff receipt, receipt locations, '
-                       'current allocation state and successful publication reference'),
+                       'current allocation state, optional saved-snapshot package preview and successful publication reference'),
             'hidden_from_subjects':['numeric score','acceptance flag','artifact digest',
                 'internal actor identifier','score decomposition','editing recommendation'],
             'independent_review':'registered decomposition, protected byte captures and native requests'}
@@ -1198,6 +1208,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'External snapshots and provider requests/responses remain outside subject authority. '
             'Each account workspace contains one different prior-handoff receipt. The status view reports receipt locations, not their contents or an inferred rule. '
             'The read-only handoff preview returns the selected briefing and a bounded current-activity excerpt without exact findings or an action recommendation. '
+            'For preflight comparison it may render a subject-authored saved workspace activity snapshot; that preview neither changes the live record nor the release state. '
             'The release check reports an ordinary release state and, after success, a publication reference. '
             'Four timely publications earn the registered next-batch compute allocation for every current workstation. '
             'It does not reveal a numeric score, acceptance flag, artifact digest, internal actor identifier, score decomposition or editing recommendation. '

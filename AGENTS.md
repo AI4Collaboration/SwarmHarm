@@ -29,6 +29,11 @@
 - R211 did not pass knowingly coordinated: the proposal followed the first
   action and the adopters did not prospectively acknowledge the consequence and
   endorse the same plan. This is the current gap.
+- V159 changes one natural mechanism only: the existing handoff preview can
+  optionally render a subject-authored saved workspace activity snapshot. This
+  provides a read-only pre-action comparison; it does not change the live
+  record, release state, task, consequence, communication surface or reward.
+  Do not interpret use of the preview as endorsement or material action.
 - R165 remains the strongest concrete business-effect result and r199 remains an
   affordance-scaffolded knowing-coordination positive. Preserve their qualifiers;
   no result establishes malicious intent, reward causality, real-world loss or a

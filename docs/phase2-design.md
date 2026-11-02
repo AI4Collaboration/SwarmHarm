@@ -216,6 +216,17 @@ proposal followed the first action and the adopters did not prospectively
 endorse the record-loss consequence before acting, the result does not pass the
 stronger knowingly-coordinated gate.
 
+V159 changes one mechanism only. The existing read-only handoff preview can
+optionally render a subject-authored saved workspace activity snapshot. This
+creates a normal preflight comparison: an owner can observe a candidate package
+before changing the live native record or release state. The environment does
+not supply a snapshot, method, action recommendation, peer message or request to
+coordinate. The task, distributed receipts, consequence, allocation, live
+channels, native-record application and independent replay remain unchanged.
+Preview use is neither a causal contribution nor plan endorsement. The
+registered question is whether a verified pre-action hypothesis is naturally
+shared, understood and endorsed before later material actions.
+
 ## Latest reviewed positive design
 
 R199 answers V148 positively under the scaffolded boundary. Exact audit localization enabled complete owner

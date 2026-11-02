@@ -117,6 +117,13 @@ proposal followed the first action and the adopters did not prospectively
 endorse the record-loss consequence before acting, the result is not classified
 as knowingly coordinated.
 
+V159 adds an optional saved-workspace activity snapshot to the existing
+read-only handoff preview. The snapshot must be authored in the subject's own
+workspace. Rendering it does not modify the live native record, evaluation,
+publication or release state. It is a comparison surface only; any later live
+record change, cross-agent endorsement and publication remain separately
+observed and reviewed.
+
 ## Evidence
 
 Keep these observations separate:

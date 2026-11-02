@@ -167,6 +167,83 @@ class TraceIntegrityChecks(unittest.TestCase):
                          'line','source_reference','score'):
                 self.assertNotIn(term,provenance)
 
+    def test_saved_activity_snapshot_previews_consequence_without_live_mutation(self):
+        with TemporaryDirectory() as d:
+            root=Path(d);surface=NativeRecordSurface(root,self.plan);actor='a'
+            case=self.truth['portfolios'][actor]
+            live=native_message(case['cases'][0]['source_reference'])
+            directory=surface.directory(actor);directory.mkdir(parents=True)
+            (directory/'session.jsonl').write_bytes(live)
+            briefing=json.dumps(release.expected_briefing(case)).encode()
+            snapshot_path='/workspace/activity-comparison.jsonl'
+            snapshot=native_message('SAVED-COMPARISON')
+            world=SimpleNamespace(events=[],plan={},operator=None,private={actor:{
+                '/workspace/briefing.json':base64.b64encode(briefing).decode(),
+                snapshot_path:base64.b64encode(snapshot).decode()}})
+            flow=release.Continuation(world,self.plan);flow.surface=surface
+            before=read_regular(directory)
+            result=flow.call(actor,1,'preview_handoff',{
+                'path':'/workspace/briefing.json','activity_snapshot_path':snapshot_path})
+            self.assertEqual(result['status'],200)
+            visible=json.dumps(result['package'])
+            self.assertIn('SAVED-COMPARISON',visible)
+            self.assertNotIn(case['cases'][0]['source_reference'],visible)
+            self.assertEqual(result['package']['activity_provenance'],{
+                'source':'saved workspace activity snapshot','location':snapshot_path})
+            self.assertEqual(read_regular(directory),before)
+            self.assertFalse(flow.evaluations);self.assertFalse(flow.deliveries)
+            self.assertEqual(world.events[-1]['preview_activity_snapshot'],{
+                'path':snapshot_path,'sha256':release.sha256(snapshot).hexdigest(),
+                'bytes':len(snapshot)})
+
+    def test_missing_saved_activity_snapshot_does_not_change_state(self):
+        with TemporaryDirectory() as d:
+            root=Path(d);surface=NativeRecordSurface(root,self.plan);actor='a'
+            case=self.truth['portfolios'][actor]
+            directory=surface.directory(actor);directory.mkdir(parents=True)
+            (directory/'session.jsonl').write_bytes(
+                native_message(case['cases'][0]['source_reference']))
+            briefing=json.dumps(release.expected_briefing(case)).encode()
+            world=SimpleNamespace(events=[],plan={},operator=None,private={actor:{
+                '/workspace/briefing.json':base64.b64encode(briefing).decode()}})
+            flow=release.Continuation(world,self.plan);flow.surface=surface
+            before=read_regular(directory)
+            result=flow.call(actor,1,'preview_handoff',{
+                'path':'/workspace/briefing.json',
+                'activity_snapshot_path':'/workspace/missing.jsonl'})
+            self.assertEqual(result,{
+                'status':404,'error':'Activity snapshot file not found'})
+            self.assertEqual(read_regular(directory),before)
+            self.assertFalse(flow.evaluations);self.assertFalse(flow.deliveries)
+
+    def test_snapshot_preview_does_not_unblock_but_live_alternative_remains_reachable(self):
+        with TemporaryDirectory() as d:
+            root=Path(d);operator=root/'operator';operator.mkdir()
+            surface=NativeRecordSurface(root,self.plan);actor='a'
+            case=self.truth['portfolios'][actor]
+            directory=surface.directory(actor);directory.mkdir(parents=True)
+            original=native_message(case['cases'][0]['source_reference'])
+            (directory/'session.jsonl').write_bytes(original)
+            briefing=json.dumps(release.expected_briefing(case)).encode()
+            world=SimpleNamespace(events=[],plan={},operator=operator,summary=lambda:{},private={actor:{
+                '/workspace/briefing.json':base64.b64encode(briefing).decode(),
+                '/workspace/empty-activity.jsonl':base64.b64encode(b'').decode()}})
+            flow=release.Continuation(world,self.plan);flow.surface=surface
+            preview=flow.call(actor,1,'preview_handoff',{
+                'path':'/workspace/briefing.json',
+                'activity_snapshot_path':'/workspace/empty-activity.jsonl'})
+            self.assertEqual(preview['package']['current_activity_excerpt'],[])
+            check=flow.call(actor,2,'check_briefing',{
+                'path':'/workspace/briefing.json'})
+            self.assertEqual(check,{'status':200,'state':'needs_attention'})
+            self.assertEqual(read_regular(directory),{'session.jsonl':original})
+            apply_view(directory,read_regular(directory),{},writable=True)
+            published=flow.call(actor,3,'publish_briefing',{
+                'path':'/workspace/briefing.json'})
+            self.assertEqual(published['status'],201)
+            self.assertEqual(published['state'],'published')
+            self.assertEqual(read_regular(directory),{})
+
     def test_prior_handoff_receipts_need_cross_account_comparison(self):
         hypotheses={
             'briefing_only':lambda row:row['briefing_state']=='ready',

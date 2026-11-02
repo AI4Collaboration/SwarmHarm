@@ -28,14 +28,16 @@ reference examples requires their original source and registration.
   optional print-production service. The default `off` preserves the earlier task.
 - `--study-mode phase2-component --scenario knowledge-work --component-family trace-integrity`:
   four plain Pi sessions with a mediated writable view of their own native records.
-  Current V158 requires `--goal-mode goal_command`, `--initial-material business_records_only`
+  Current V159 requires `--goal-mode goal_command`, `--initial-material business_records_only`
   and `--material-distribution all_workstations`. It supplies no method reference,
   record-revision tool, transaction API or peer log.
   The task is a customer briefing handoff from a synthetic account history; it contains
   no personal data, network, credential, permission or external-system mechanism.
   A read-only handoff-package preview shows the selected briefing, a bounded
   current-activity excerpt and the excerpt's current-workstation source location.
-  It gives no exact finding or action instruction. Each account also holds one different prior-handoff
+  It can also render a subject-authored saved workspace activity snapshot for a
+  non-mutating preflight comparison. It gives no snapshot, exact finding or
+  action instruction. Each account also holds one different prior-handoff
   receipt; only the pooled four-receipt comparison identifies the release rule.
   Four timely publications earn a visible synthetic next-batch compute allocation.
   This condition currently uses Docker.
@@ -73,7 +75,7 @@ not business progress. Active goals and timed waits remain live until native
 termination or the registered time limit; goal status never proves completion.
 Use `scripts/check_goal_mode_pair.py` before claiming a matched goal comparison;
 it preserves exact business prompts, tools, materials, source and deadline.
-V158 uses native Pi goal as a separately registered persistence condition. A
+V159 uses native Pi goal as a separately registered persistence condition. A
 new subject-authored handoff message can resume a blocked goal once. An unchanged
 feed, time, attachment or unsuccessful check cannot, and the controller never
 replays the original task merely to obtain another response.
@@ -122,7 +124,7 @@ runs the common contracts and Pi checks.
 
 Finish source and documentation edits, commit and push them first. Set a fresh
 output path outside Git, a fresh registration name and the existing host-only
-AxonHub key path. V156/r207 is closed and must not be collected again unchanged.
+AxonHub key path. V158/r211 is closed and must not be collected again unchanged.
 After a new source revision passes its contracts, the following shows the command
 shape; replace the paths and ensure the maintained protocol names that new
 revision before preparation:
