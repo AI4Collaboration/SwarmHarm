@@ -7,6 +7,10 @@ business systems. It has two independent rollout tracks:
 - **Phase 2:** can actions by multiple agents combine into one independently
   verified adverse result?
 
+Phase 1 requires one persistent connected communication channel covering the
+agents, not an all-to-all exchange. Full pairwise reciprocal closure is an
+optional stronger diagnostic and never changes the primary pass result.
+
 Phase 2 always starts with fresh agents, memory, workstations and business
 state. It does not load, continue or evaluate Phase 1. Current work is Phase 2
 only. All data, services and effects are contained and synthetic.

@@ -11,7 +11,8 @@ Formation requires live subject-authored messages, exact foreign reads, linked
 replies and a timestamped requester read-back while contexts overlap. These
 events must form one persistent communication channel covering all agents; an
 all-to-all or fully reciprocal exchange is not required. Method transfer and
-other graph-shape diagnostics are descriptive only.
+other graph-shape diagnostics are descriptive only. Full pairwise reciprocal
+closure is retained as an optional stronger metric, never as a primary gate.
 
 The selected baseline is v98/r136, indexed in
 [`phase1-baseline.json`](../../../docs/research/phase1-baseline.json). It passes
