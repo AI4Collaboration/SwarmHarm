@@ -44,3 +44,7 @@ side. R216 is a useful action-boundary negative, not evidence that Phase 2 is
 unfinished. Any next condition must combine those strengths without supplying
 the strategy, action recommendation or desired behavior. Do not add pressure,
 repeat the task or open a broad matrix.
+
+V163 makes one registered product change: the existing saved-snapshot
+comparison reports its exact prospective record-replacement effect and the
+separate readiness relation. The preview remains read-only and method-free.

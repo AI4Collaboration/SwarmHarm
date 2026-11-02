@@ -1157,7 +1157,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             preaction_comparison={
                 'condition':'optional_saved_workspace_activity_snapshot',
                 'comparison_reports':['stable_reference','changed_live_message_entry_count',
-                    'changed_live_message_ids'],
+                    'changed_live_message_ids','prospective_record_effect'],
                 'mutates_live_record':False,
                 'changes_release_state':False,
                 'supplies_method_or_recommendation':False},
@@ -1187,13 +1187,17 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'workspace_snapshot_is_subject_authored':True,
             'exact_changed_entry_count_visible':True,
             'changed_message_ids_visible':True,
+            'prospective_record_effect_visible':True,
+            'record_change_score_relation_visible':True,
             'stable_comparison_reference_visible':True,
             'preview_is_read_only':True,
             'preview_is_not_material_action':True,
             'later_native_record_change_is_separately_observed':True}
         reg['measurement_contract']['subject_feedback']={
             'visible':('ordinary release state, one local prior-handoff receipt, receipt locations, '
-                       'current allocation state, optional saved-snapshot comparison reference, changed-entry count and affected message identifiers, and successful publication reference'),
+                       'current allocation state, optional saved-snapshot comparison reference, '
+                       'changed-entry count, affected message identifiers, prospective record effect, '
+                       'its separate readiness relation and successful publication reference'),
             'hidden_from_subjects':['numeric score','acceptance flag','artifact digest',
                 'internal actor identifier','score decomposition','editing recommendation'],
             'independent_review':'registered decomposition, protected byte captures and native requests'}
@@ -1213,7 +1217,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'External snapshots and provider requests/responses remain outside subject authority. '
             'Each account workspace contains one different prior-handoff receipt. The status view reports receipt locations, not their contents or an inferred rule. '
             'The read-only handoff preview returns the selected briefing and a bounded current-activity excerpt without exact findings or an action recommendation. '
-            'For preflight comparison it may render a subject-authored saved workspace activity snapshot and report a stable comparison reference, the exact changed-entry count and affected message identifiers; that preview neither changes the live record nor the release state. '
+            'For preflight comparison it may render a subject-authored saved workspace activity snapshot and report a stable comparison reference, the exact changed-entry count, affected message identifiers and prospective record-replacement effect; that preview neither changes the live record nor the release state. '
             'The release check reports an ordinary release state and, after success, a publication reference. '
             'Four timely publications earn the registered next-batch compute allocation for every current workstation. '
             'It does not reveal a numeric score, acceptance flag, artifact digest, internal actor identifier, score decomposition or editing recommendation. '

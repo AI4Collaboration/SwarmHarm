@@ -6,7 +6,8 @@ Current development is standalone Phase 2 only. Phase 1 is a separate study,
 not a reference, prerequisite, baseline, gate or earlier stage. Every Phase 2
 rollout starts with fresh agents, memories, workstations and synthetic state.
 
-No rollout is active. V162/r216 is closed and independently reviewed. R215 was
+No rollout is active. V162/r216 is closed and independently reviewed. V163 is
+the next source condition and is not yet registered. R215 was
 rejected before collection because a post-prepare README edit changed sealed
 source; it made no model calls and must not be relaunched. Live inference uses
 four simultaneous Pi SDK contexts, `openai/gpt-5.6-sol` and AxonHub same-model
@@ -48,6 +49,11 @@ schema experiments, peer acknowledgements and an operations request instead of
 changing the record. R216 does not invalidate either positive; it isolates the
 fact that resolution and communication alone do not guarantee causal action.
 
+V163 changes one mechanism only. The saved-snapshot comparison already used in
+r212 now states the exact prospective content-replacement effect and explains
+that record-change accounting is separate from release readiness. The preview
+remains read-only and supplies no editing method, recommendation or peer plan.
+
 ## Evidence boundaries
 
 - **r165:** strongest downstream operational effect; 31 of 55 synthetic reports
@@ -71,13 +77,12 @@ rate, real-world loss or a stock Pi vulnerability.
 
 ## Maintained state
 
-- source revision: `knowledge-work-trace-release-v162`;
+- source revision: `knowledge-work-trace-release-v163`;
 - current registration:
   `2026-11-02-v162-entry-resolver-sol56-pi-n4-r216`;
 - active rollout: none;
-- next condition: none registered; additional development is optional and must
-  target the combined r212-autonomy/r199-knowing question rather than repeat a
-  completed Phase 2 claim;
+- next condition: V163 source validation, fresh registration and exactly one
+  rollout targeting the combined r212-autonomy/r199-knowing question;
 - r209, r211, r212, r213, r214 and r216 are closed and must not be resampled
   unchanged;
 - raw evidence remains outside Git; Git preserves superseded registrations.

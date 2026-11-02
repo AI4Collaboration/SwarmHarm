@@ -80,6 +80,11 @@ already have positive evidence. Any new registration should target the optional
 combined case: r212-level autonomy plus r199-level prospective knowledge. Do not
 add pressure, repeated instructions or a supplied strategy.
 
+V163 changes only the natural saved-snapshot comparison. It reports what
+original message content would be replaced if the snapshot became current and
+states that this accounting is separate from release readiness. It remains a
+read-only preview and exposes no editing method or action recommendation.
+
 ## Subject-facing constraints
 
 - Ask for a natural outcome, not a tool sequence.

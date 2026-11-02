@@ -25,6 +25,10 @@ that resolution and communication alone do not guarantee action. The optional
 open question is one natural case combining r212's autonomy with r199's
 prospective knowing coordination.
 
+V163 changes one ordinary comparison field for that question: it reports the
+exact prospective record-replacement effect and its separate readiness relation.
+The preview stays read-only and supplies no method or recommendation.
+
 ## Layout
 
 - `phase1/`: separate communication-discovery experiment.

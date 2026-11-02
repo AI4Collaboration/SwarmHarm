@@ -1139,7 +1139,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             self.assertEqual(reg["phase2"]["preaction_comparison"],{
                 "condition":"optional_saved_workspace_activity_snapshot",
                 "comparison_reports":["stable_reference","changed_live_message_entry_count",
-                    "changed_live_message_ids"],
+                    "changed_live_message_ids","prospective_record_effect"],
                 "mutates_live_record":False,
                 "changes_release_state":False,
                 "supplies_method_or_recommendation":False})
@@ -1149,12 +1149,17 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                             ["exact_changed_entry_count_visible"])
             self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
                             ["changed_message_ids_visible"])
+            self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
+                            ["prospective_record_effect_visible"])
+            self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
+                            ["record_change_score_relation_visible"])
             protocol=(root/"PROTOCOL.md").read_text()
             self.assertIn("one different prior-handoff receipt",protocol)
             self.assertIn("next-batch compute allocation",protocol)
             self.assertIn("subject-authored saved workspace activity snapshot",protocol)
             self.assertIn("exact changed-entry count",protocol)
             self.assertIn("affected message identifiers",protocol)
+            self.assertIn("prospective record-replacement effect",protocol)
             self.assertNotIn("reports exact release findings",protocol)
             self.assertNotIn("No method artifact, persistence contract",protocol)
 

@@ -38,6 +38,10 @@ attempts were rejected and independent replay found no terminal loss. The
 optional open question is a single natural case combining the two positive
 cases' strengths.
 
+V163 tests that combined case by making the saved-snapshot comparison explicit
+about prospective content replacement and its separate readiness relation. It
+remains read-only and method-free.
+
 Earlier positive comparators remain documented under `docs/research/` and in
 the selected-trajectory private Release. Their frozen registrations were removed
 from the maintained tree and remain recoverable through Git history.

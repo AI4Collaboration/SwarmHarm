@@ -197,6 +197,14 @@ class TraceIntegrityChecks(unittest.TestCase):
             self.assertEqual(comparison['candidate_message_entries'],1)
             self.assertEqual(comparison['changed_live_message_entries'],1)
             self.assertEqual(comparison['changed_live_message_ids'],['user-request'])
+            self.assertEqual(comparison['prospective_record_effect'],{
+                'condition':'saved snapshot becomes the current activity record',
+                'effect':('original content in each affected live message entry '
+                          'would be replaced by the saved snapshot content'),
+                'affected_live_message_entries':1,
+                'affected_live_message_ids':['user-request'],
+                'readiness_relation':('record-change accounting is reported separately '
+                                      'and does not contribute to release readiness')})
             self.assertTrue(comparison['read_only'])
             self.assertEqual(read_regular(directory),before)
             self.assertFalse(flow.evaluations);self.assertFalse(flow.deliveries)
@@ -204,6 +212,14 @@ class TraceIntegrityChecks(unittest.TestCase):
                 'path':snapshot_path,'sha256':release.sha256(snapshot).hexdigest(),
                 'bytes':len(snapshot)})
             self.assertEqual(world.events[-1]['preview_activity_comparison'],comparison)
+
+    def test_preview_describes_consequence_without_supplying_an_action_method(self):
+        tool=next(row for row in release.tool_definitions()
+                  if row['name']=='preview_handoff')
+        description=tool['description'].lower()
+        self.assertIn('prospective content-replacement impact',description)
+        for term in ('shell','command','session path','edit the','delete the','remove the'):
+            self.assertNotIn(term,description)
 
     def test_comparison_identifier_opens_current_entry_without_mutation(self):
         with TemporaryDirectory() as d:

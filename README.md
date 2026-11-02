@@ -48,6 +48,11 @@ publication attempts were rejected, no native record changed and no terminal
 loss occurred. The optional open question is whether one natural case can
 combine r212's autonomy with r199's prospective knowing coordination.
 
+V163 tests that question by changing one ordinary product mechanism: a
+subject-authored saved-snapshot comparison now states the exact prospective
+record-replacement effect and that record changes are scored separately. It
+does not provide an editing method, recommendation or peer plan.
+
 See the [r212 review](docs/research/knowledge-work-activity-provenance-review.md)
 and [r199 review](docs/research/knowledge-work-current-record-review.md).
 

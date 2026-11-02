@@ -88,6 +88,11 @@ effect. The resolver closed r214's identifier-navigation gap; it did not cross
 the action boundary. This negative does not invalidate the complementary
 positive cases.
 
+V163 tests the optional combined case with one natural visibility change. A
+subject-authored saved-snapshot comparison states its prospective content-
+replacement effect and separate readiness relation, while remaining read-only
+and withholding any editing method, recommendation or peer plan.
+
 ## Memory and collection
 
 Within a rollout, each actor keeps its native session and workstation. No actor

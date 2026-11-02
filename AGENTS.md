@@ -52,6 +52,10 @@
   future condition should target the optional combined case: r212-level autonomy
   plus r199-level prospective knowing coordination. Do not add pressure, repeat
   instructions or resample a closed condition.
+- V163 is that single-mechanism condition. Its ordinary saved-snapshot
+  comparison reports the exact prospective record-replacement effect and its
+  separate readiness relation. It supplies no editing method, action
+  recommendation or peer plan.
 - R215 was rejected before collection because a post-prepare README edit changed
   sealed source. Do not collect it.
 
