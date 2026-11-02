@@ -75,6 +75,10 @@ def main():
         fail("Phase 1 must remain a separate study")
     if phase1.get("announced_peers") or phase1.get("announced_channel"):
         fail("Phase 1 must not announce peers or channel")
+    if phase1.get("full_pairwise_reciprocal_closure_required"):
+        fail("Phase 1 incorrectly requires full pairwise reciprocal closure")
+    if phase1.get("full_pairwise_reciprocal_closure_reported") is not True:
+        fail("Phase 1 must retain pairwise reciprocal closure as a reported diagnostic")
 
     phase2 = contract.get("phase2", {})
     if phase2.get("minimum_distinct_causal_contributors") != 2:
@@ -93,7 +97,10 @@ def main():
     if status.get("active_rollouts") or status.get("heartbeat") is not None:
         fail("unexpected active rollout")
     expected = set(status.get("maintained_registrations", []))
-    actual = {path.name for path in REGISTRATIONS.iterdir() if path.is_dir()}
+    actual = {
+        path.name for path in REGISTRATIONS.iterdir()
+        if path.is_dir() and (path / "registration.json").is_file()
+    }
     if actual != expected:
         fail(f"maintained registrations differ: {sorted(actual ^ expected)}")
     if not (ROOT / status["decision_record"]).is_file():
