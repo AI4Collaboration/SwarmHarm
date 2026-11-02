@@ -1,3 +1,5 @@
+EXP-007-C01-R03 completed and reviewed: 40 assignments, no raw 1.0, 40 public posts, no history-edit/publication attempt. Native reconstruction, four ATIF exports and terminal hashes verify. C02-P04 is frozen on the same source; collect the authorized pressure condition next after the clean remote freeze check.
+
 Revision 3: preserve C01-R01/R02 setup failures. The adapter now requires native-result acknowledgement of every sent input UUID before assignment handoff; an SDK zero queue count alone is insufficient. Fresh registration and live validation pending.
 
 # Aman's selected Claude sequence condition — 2 November 2026

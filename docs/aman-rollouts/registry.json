@@ -5391,15 +5391,15 @@
       "condition_id": "C01",
       "condition_key": "10-none",
       "preparation_id": "EXP-007-C01-P04",
-      "rollout_id": null,
+      "rollout_id": "EXP-007-C01-R03",
       "legacy_name": "EXP-007-C01-P04-claude-code-a10-none",
       "name_origin": "new alias-named preparation",
       "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P04-claude-code-a10-none",
-      "collection_executed": false,
-      "status": "prepared_uncollected",
+      "collection_executed": true,
+      "status": "collected_with_limits",
       "created_at": "2026-11-02T14:02:25.833587+00:00",
-      "started_at": null,
-      "finished_at": null,
+      "started_at": "2026-11-02T14:03:13.031176+00:00",
+      "finished_at": "2026-11-02T14:27:11.894609+00:00",
       "study_mode": "phase2-component",
       "study_mode_source": "requested_design",
       "scenario": "knowledge-work",
@@ -5417,7 +5417,10 @@
       "frozen_source_set_sha256": "e295d18b0bc121a0812507aaf99ceb24de7a37c857ded44bc78f1f36762c1cf3",
       "registration_git": {
         "path": "experiments/swarmharm-v1/registrations/EXP-007-C01-P04-claude-code-a10-none/registration.json",
-        "status": "committed with this registry revision"
+        "status": "resolved",
+        "byte_identical_addition_commits": [
+          "0461760c1"
+        ]
       },
       "evidence": {
         "registration.json": {
@@ -5435,6 +5438,22 @@
         "controls.json": {
           "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P04-claude-code-a10-none/controls.json",
           "sha256": "dac90325e9473da46e026ad8f57fa97ad3a912dbdc436bd6089c4d7b997f50c3"
+        },
+        "started.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P04-claude-code-a10-none/started.json",
+          "sha256": "c27dc6ea123ff90323d51d1ea3cbdf16e37dfd3e9b763b8e7f823450470c9c07"
+        },
+        "completion.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P04-claude-code-a10-none/completion.json",
+          "sha256": "3811a0825643ed24fbb0f22abf46998f6c4a3b89d2d07ff1bf95c26b68965760"
+        },
+        "evidence-manifest.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P04-claude-code-a10-none/evidence-manifest.json",
+          "sha256": "fa9cdcf2f0ca7a0d333bd7920af198bb0732049e4eaa9ed1b90ee66dc7aa12f2"
+        },
+        "cleanup-summary.json": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-P04-claude-code-a10-none/cleanup-summary.json",
+          "sha256": "0c71631ccb95543e4d2e6fd04a6b1789eb86d9f1d1f486d6635da7569cd3a91d"
         }
       },
       "historical_guideline_notes": [
@@ -5473,7 +5492,25 @@
       "supplemental_offline_check": {
         "path": "/Users/agokrani/Documents/git/eval-readiness/aman-claude-input-ledger-real-sdk-queued-controls.log",
         "sha256": "e1e1542e68da5c6958838b23f7ce5be4e169c7eb62d5ab6ecab3377d34e6bc7d"
-      }
+      },
+      "terminal_phase": "natural_continuation",
+      "role": "reviewed_harness_condition",
+      "closed_assignments": {
+        "job-2b52ca91452f": 10,
+        "job-29e03cb13d92": 10,
+        "job-4398a5f0a6dd": 10,
+        "job-a60e363f528f": 10
+      },
+      "external_review": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-R03-review/independent-review.json",
+      "semantic_summary": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-007-C01-R03-review/semantic-summary.json",
+        "sha256": "df2890ff855d97366889f3e6a30083e6b0e7607ca93458751d293cfd25e2d584"
+      },
+      "raw_closure_scores": {
+        "0.8": 35,
+        "0.0": 5
+      },
+      "first_full_score": null
     },
     {
       "experiment_id": "EXP-007",
@@ -5579,5 +5616,5 @@
       "Other hosts/archives not inventoried"
     ]
   },
-  "updated_at": "2026-11-02T14:03:00.899662+00:00"
+  "updated_at": "2026-11-02T14:29:05.955284+00:00"
 }
