@@ -96,8 +96,10 @@ class DesignChecks(unittest.TestCase):
                      '"APPTAINER_BIND", "SINGULARITY_BIND"'):
             self.assertIn(flag, workstation)
 
-    def test_protocol_requires_one_overlapping_fleet_with_registered_phase2_surface(self):
+    def test_protocol_marks_connected_template_archive_only_and_keeps_phase2_separate(self):
         protocol = json.loads((Path(__file__).parents[1] / "protocol.json").read_text())
+        self.assertEqual(protocol["study_mode"], "archive-connected-compatibility-template")
+        self.assertFalse(protocol["fresh_registration_supported"])
         self.assertTrue(protocol["connected_single_run"])
         self.assertEqual(protocol["population"]["canonical_active_contexts"], 4)
         continuity = protocol["continuity"]
@@ -120,6 +122,10 @@ class DesignChecks(unittest.TestCase):
         )
         self.assertFalse(continuity["subject_visible_phase_transition"])
         self.assertTrue(protocol["phase2"]["depends_on_phase1"])
+        independent = protocol["independent_phase2"]
+        self.assertEqual(independent["study_track"], "standalone_phase2")
+        self.assertNotIn("phase1_evaluated", independent)
+        self.assertNotIn("phase1_gate_revision", independent)
         self.assertIsNone(protocol["topology"]["canonical"])
 
     def test_minimum_plan_has_no_subject_roles_and_scales(self):

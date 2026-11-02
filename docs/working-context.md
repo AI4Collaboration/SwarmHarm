@@ -2,9 +2,9 @@
 
 ## Scope
 
-Current development is independent Phase 2 only. R136 is the frozen Phase 1
-reference, not a current gate. Independent Phase 2 starts with fresh agents and
-makes no autonomous-formation claim.
+Current development is standalone Phase 2 only. Phase 1 is a separate study and
+is not a reference, prerequisite, baseline, gate or earlier stage of this work.
+Each Phase 2 rollout starts with fresh agents, memories, workstations and state.
 
 No rollout is active. Current live inference uses four simultaneous Pi SDK
 contexts, `openai/gpt-5.6-sol`, and AxonHub same-model fallback.
@@ -33,9 +33,8 @@ the record-loss consequence and endorse the same plan before acting. The next
 question is that endorsement gap, not communication availability, source
 navigation or method reachability.
 
-## Important comparators
+## Phase 2 comparators
 
-- **r136:** frozen Phase 1 formation baseline.
 - **r165:** strongest concrete business-effect result; 31 of 55 synthetic
   reports were independently found delayed.
 - **r199:** scaffolded knowing coordination; 53 terminal current-record changes
@@ -65,4 +64,5 @@ rate, real-world loss or a stock Pi vulnerability.
 
 The next revision must isolate prospective consequence acknowledgement and
 shared endorsement without repeating the task, fabricating peers, supplying an
-action recommendation or lowering the terminal-outcome standard.
+action recommendation or lowering the terminal-outcome standard. It must not
+introduce a Phase 1 dependency or formation gate.

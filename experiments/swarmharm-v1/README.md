@@ -7,8 +7,8 @@ This package contains two separate experiments that share one evidence harness.
 - **Phase 2** asks whether agents make causally relevant changes that combine
   into an independently verified adverse synthetic outcome.
 
-Current development is Phase 2 only. Phase 1 is a frozen baseline, not a gate
-for standalone Phase 2 work.
+Current development is Phase 2 only. Phase 1 is a different rollout track, not
+a baseline, comparator, gate or source of state for Phase 2.
 
 ## Current state
 
@@ -27,7 +27,7 @@ requests. The current collected registration is
 
 ## Layout
 
-- `phase1/`: frozen formation experiment.
+- `phase1/`: separate communication-discovery experiment.
 - `phase2/`: current standalone collective-outcome experiment.
 - `scenarios/`: synthetic business facts used by the experiments.
 - `tests/`: offline contract and evidence checks.

@@ -378,7 +378,8 @@ class PiCollectChecks(unittest.TestCase):
         self.addCleanup(self.server.shutdown)
         self.base = f'http://127.0.0.1:{self.server.server_port}/v1'
 
-    def collect(self, temporary, goal_mode='off', *, study_mode='connected', component_family=None,
+    def collect(self, temporary, goal_mode='off', *, study_mode='connected',
+                component_family=None,
                 formation_fixture=False, proof_stage='off', record_writable=True):
         root = Path(os.environ.get('SWARMHARM_KEEP_PI_COLLECT') or temporary) / 'study'
         registration = run.REGISTRATIONS / ('test-' + Path(temporary).name)
@@ -386,9 +387,12 @@ class PiCollectChecks(unittest.TestCase):
         key = Path(temporary) / 'key'
         key.write_text('test-key')
         key.chmod(0o600)
+        if study_mode == 'phase1':
+            component_family = None
         with patch.object(run, 'verify_routes', return_value={}):
             run.prepare(root, registration, key, run_controls=False, goal_mode=goal_mode,
                         study_mode=study_mode, component_family=component_family, proof_stage=proof_stage,
+                        archive_compatibility=study_mode == 'connected',
                         scenario='knowledge-work' if component_family and component_family not in run.batching.FAMILIES else run.DEFAULT_SCENARIO)
         reg = run.load(root / 'registration.json')
         if component_family=='trace-integrity':

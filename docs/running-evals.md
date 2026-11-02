@@ -12,9 +12,6 @@ reference examples requires their original source and registration.
 
 - `--study-mode phase1`: autonomous discovery and live formation only. No Phase 2
   assignment or tools are exposed, and review makes no Phase 2 claim.
-- `--study-mode connected`: Phase 1 first, then the same sessions, workstations,
-  histories and shared state continue into Phase 2. In-flight work finishes before
-  tool activation; the registered source handover must also be ready.
 - `--study-mode phase2-component --scenario engineering-capacity --component-family terminal-records-server`:
   recover each released layout and deliver the replay. Docker exposes one isolated
   archive link per owner. The four links and journal are saved for independent review.
@@ -26,7 +23,7 @@ reference examples requires their original source and registration.
 - `--study-mode phase2-component --scenario knowledge-work`: start with declared
   business inputs. Select `--component-family external-service|acceptance|evidence`
   and `--initial-material business_records_only|need_available|method_available`.
-  This evaluates neither formation nor end-to-end continuity.
+  This evaluates the registered Phase 2 outcome only.
   For `evidence`, `--proof-stage section_draft|compiled_packet|accepted_packet` registers the
   optional print-production service. The default `off` preserves the earlier task.
 - `--study-mode phase2-component --scenario knowledge-work --component-family trace-integrity`:
@@ -152,9 +149,10 @@ native bytes support independent review.
 A maximum score, publication or record discrepancy is provisional until the
 semantic evidence is reviewed.
 
-For the Phase 1 baseline, use `--study-mode phase1 --scenario knowledge-work`,
-the current default `--model-id openai/gpt-5.6-sol`, and omit component-specific options. For a connected
-study use `--study-mode connected`. These select scope, not independent launchers.
+For a separate Phase 1 rollout, use `--study-mode phase1 --scenario knowledge-work`,
+the current default `--model-id openai/gpt-5.6-sol`, and omit component-specific
+options. Fresh `connected` preparation is intentionally unavailable. Historical
+connected evidence is readable only at its frozen revision.
 Keep the current `agent_initiated_activity` cue default unless a new condition
 is explicitly intended.
 
@@ -200,10 +198,11 @@ continuations refer only to an actor-authored distinct next step. Phase 2 outcom
 checks require no extra dialogue round trip. Budgets, quiescence and goal status
 must not be relabeled as business completion.
 
-Inspect `progress.json`, `natural/phase1-progress.json`, `natural/actors.json`,
-`controller.log`, native traces and the terminal `completion.json`. Milestones are
-operator-only. Provider errors/filters, interrupted collection, incomplete work,
-accepted records and independently executed outcomes are separate facts.
+Inspect `progress.json`, `natural/actors.json`, `controller.log`, native traces
+and the terminal `completion.json`. A Phase 1 rollout additionally writes its
+own Phase 1 progress files. Provider errors/filters, interrupted collection,
+incomplete work, accepted records and independently executed outcomes are
+separate facts.
 
 ## Review and export
 
@@ -229,16 +228,16 @@ delivery.
 
 ## Frozen examples
 
-The [Sol Phase 1 baseline](research/phase1-baseline.json) is v98/r136 at source
-`3dfff613`, registration `99bde55d`. It had four live read-back threads; its
-continuation ended safely incomplete. The maintained Phase 2 comparators are
+The separate [Sol Phase 1 example](research/phase1-baseline.json) is v98/r136 at
+source `3dfff613`, registration `99bde55d`. It had four live read-back threads.
+It is not a Phase 2 baseline or gate. The maintained Phase 2 comparators are
 [supplied-method r142](research/phase2-component-positive.json),
 [consequence-aware r165](research/engineering-batching-positive.json) and
 [endorsement-gap r178](research/engineering-forecast-positive.json).
 
-Historical connected examples, ordinary-coordination examples and reviewed
-negatives are available from the selected-trajectory Release and Git history;
-they are not current launch targets.
+Historical connected examples are archive compatibility evidence only. They are
+available with other reviewed examples from the selected-trajectory Release and
+Git history and are not current launch targets.
 
 To replay historical evidence, check out its exact source and registration in a
 separate directory and use that revision's commands. Current path moves do not

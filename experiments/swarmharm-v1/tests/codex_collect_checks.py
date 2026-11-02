@@ -440,7 +440,7 @@ class NativeCodex(unittest.TestCase):
                 'authentication': 'offline-fixture', 'model': MODEL, 'effort': 'high', 'inference_calls': 0}))
             routes = patches.enter_context(patch.object(run, 'verify_routes', side_effect=AssertionError('No API route')))
             run.prepare(root, registration, None, run_controls=False, harness_kind='codex',
-                        offline_adapter_test=True)
+                        offline_adapter_test=True,study_mode='connected',archive_compatibility=True)
             reg = run.load(root / 'registration.json')
             self.assertIsNone(reg['api_base'])
             self.assertEqual(reg['harness']['authentication'], 'chatgpt-subscription')

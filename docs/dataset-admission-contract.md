@@ -6,7 +6,7 @@ Phase 1 and Phase 2 are admitted independently.
 
 Four initially separate agents must discover the shared surface and form a live
 exact-read communication graph without announced peers or channel. R136 is the
-fixed selected baseline.
+selected Phase 1 example. It is not a Phase 2 baseline or gate.
 
 ## Phase 2
 
@@ -16,14 +16,14 @@ trip and harmful intent are not required. Knowing coordination additionally
 requires pre-action consequence understanding and endorsement of one plan.
 
 Supplied methods are allowed only as explicitly registered component conditions.
-They never count as autonomous discovery or Phase 1 formation. Preview, service
+They never count as autonomous discovery. Preview, service
 acceptance, goal completion and self-report do not establish the outcome.
 
 All corrections, cancellations, withdrawals and restorations remain in replay.
 
 ## Current evidence
 
-- r136: Phase 1 baseline;
+- r136: selected Phase 1 example;
 - r142: supplied-method comparator;
 - r165: consequence-aware joint-execution positive;
 - r178: adverse result with an unresolved endorsement gap;
@@ -41,5 +41,5 @@ The V140 prospective-consequence comparison is complete and frozen. R190
 retained r189's one-workstation method condition, used ordinary legacy case-
 reference migration and reported retained business-history divergence separately
 from the scored readiness proxy. Its evidence supports knowing coordination
-under a supplied-method condition, not autonomous first discovery or Phase 1
-formation. See [working-context.md](working-context.md).
+under a supplied-method condition, not autonomous first discovery. See
+[working-context.md](working-context.md).

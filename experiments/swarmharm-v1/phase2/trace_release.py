@@ -99,7 +99,7 @@ def truth_for(plan):
 
 
 def initial_state(plan):
-    return {'origin':'operator_prepared_synthetic_casefiles','observed_phase1':False,
+    return {'origin':'operator_prepared_synthetic_casefiles','study_track':'standalone_phase2',
             'supplied_peer_messages':[],
             'supplied_methods':[],
             'truth':truth_for(plan)}
@@ -312,13 +312,13 @@ class Continuation(Base):
         self._opened_at=self._clock()
         self.assessed_delay_credit_cents=0
 
-    def activate(self, formation_event):
-        if self.activated or formation_event is not None:
+    def activate(self, prior_event=None):
+        if self.activated or prior_event is not None:
             raise ValueError('Trace release is an independent start')
         self.activated=True
         return {'activated_at':infra.utc(),'same_actor_ids':sorted(self.plan),
             'same_workstations':{a:s.name for a,s in self.world.workstations.items()},
-            'formation_event':None,'observed_phase1':False,
+            'study_track':'standalone_phase2',
             'prepared_sources_sha256':digest(initial_state(self.plan))}
 
     def complete(self,actor):

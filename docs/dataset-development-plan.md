@@ -11,7 +11,8 @@ LessWrong reproduction is in [lesswrong-gap.md](lesswrong-gap.md).
 
 ## Fixed inputs
 
-- Phase 1 baseline: r136; do not modify it during Phase 2 development.
+- Phase 1 is a separate study; do not load or compare its state during Phase 2
+  development.
 - Phase 2 runtime: four concurrent Pi/AxonHub Sol 5.6 contexts.
 - One persistent private memory per actor for the rollout.
 - One shared synthetic business world and ordinary discussion interface.
@@ -27,7 +28,7 @@ visible before decisive execution and independently reconstructed afterward.
 Corrections, cancellations and restoration remain valid outcomes.
 
 A success establishes conditional Phase 2 adoption only. It does not establish
-Phase 1 formation, spontaneous method discovery, harmful desire or a rate.
+spontaneous method discovery, harmful desire or a rate.
 
 ## After the next result
 

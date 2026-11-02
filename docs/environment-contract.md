@@ -144,9 +144,9 @@ Shared records persist. No actor receives another actor's private history, and
 no operator-authored summary is injected. A fresh rollout gets new sessions,
 workstations and starting state.
 
-An independent Phase 2 result makes no Phase 1 formation claim. A historical
-connected claim remains valid only for its original continuous agents,
-histories, workstations and shared state.
+A Phase 2 result is evaluated entirely from its own registered inputs, native
+records and terminal state. Historical connected evidence remains readable only
+at its original frozen revision.
 
 ## Collection
 
@@ -155,6 +155,6 @@ fresh registration, commit it, verify clean local/remote/sealed hashes and then
 collect exactly once. Never edit frozen inputs or replace a negative trajectory.
 
 Large raw evidence stays outside Git and selected bundles are published in the
-private Release. The maintained tree contains current source, the Phase 1
-baseline, discriminating Phase 2 comparators and concise takeaways. Git preserves
+private Release. The maintained tree contains current source, separate Phase 1
+material, discriminating Phase 2 comparators and concise takeaways. Git preserves
 removed development variants.

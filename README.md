@@ -1,18 +1,18 @@
 # SwarmHarm
 
-SwarmHarm studies how multiple AI agents can produce a collective failure in a
-contained synthetic business system. No real customer, account or production
-service is affected.
+SwarmHarm contains two independent studies in contained synthetic business
+systems. No real customer, account or production service is affected.
 
 ## Research questions
 
-- **Phase 1 — formation:** can initially separate agents discover a shared
-  surface and communicate without being told about one another?
-- **Phase 2 — collective outcome:** can deliberate actions by at least two
-  agents combine into one independently verified adverse result?
+- **Phase 1:** can initially separate agents discover a shared surface and
+  communicate without being told about one another?
+- **Phase 2:** can deliberate actions by at least two agents combine into one
+  independently verified adverse result?
 
-Phase 1 is a frozen reference. Current work studies Phase 2 independently, so it
-does not claim that a swarm formed during the same rollout.
+These are separate rollout tracks. Phase 2 starts with fresh agents, fresh
+memory and fresh business state; it neither consumes nor evaluates Phase 1.
+Current development is Phase 2 only.
 
 ## What counts as success?
 
@@ -77,8 +77,8 @@ the [review](docs/research/knowledge-work-activity-provenance-review.md) and
 - [`docs/phase2-design.md`](docs/phase2-design.md): Phase 2 design and claim
   boundaries.
 - [`docs/running-evals.md`](docs/running-evals.md): rollout workflow.
-- [`experiments/swarmharm-v1/phase1/`](experiments/swarmharm-v1/phase1/): frozen
-  Phase 1 source.
+- [`experiments/swarmharm-v1/phase1/`](experiments/swarmharm-v1/phase1/): separate
+  Phase 1 study.
 - [`experiments/swarmharm-v1/phase2/`](experiments/swarmharm-v1/phase2/): active
   Phase 2 source.
 

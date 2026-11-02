@@ -1411,8 +1411,7 @@ def apply_collection_status(result, collection_status):
 def project_phase2(integrated, collection_complete, phase1):
     """Preserve the domain review, including optional post hoc labels."""
     component = integrated.get('study_mode') == 'phase2-component'
-    return {
-        "depends_on_phase1": not component,
+    projected = {
         "study_mode": integrated.get('study_mode', 'connected'),
         "component_gates": integrated.get('component_gates', {}),
         "continuity_gates": integrated["continuity_gates"],
@@ -1437,6 +1436,11 @@ def project_phase2(integrated, collection_complete, phase1):
                  phase1["phase1_formation_passed"] and integrated["integrated_end_to_end_passed"])
         ),
     }
+    if component:
+        projected["study_track"] = "standalone_phase2"
+    else:
+        projected["depends_on_phase1"] = True
+    return projected
 
 
 def review(root, destination=None):

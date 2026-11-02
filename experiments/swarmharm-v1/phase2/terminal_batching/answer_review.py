@@ -317,8 +317,8 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
     gates = {
         "prepared_inputs_match": registration["component_truth"] == truth
         and registration["component_initial_state"] == fixtures.initial_state(plan),
-        "independent_start": continuation["activation"]["formation_event"] is None
-        and not continuation["activation"]["observed_phase1"],
+        "independent_start": continuation["activation"].get("study_track")
+        == "standalone_phase2",
         "native_reconstruction_valid": valid,
         "reference_received": bool(echoed),
         "all_owner_requests_causal": bool(eligible) and all(not v for v in blocked.values()),

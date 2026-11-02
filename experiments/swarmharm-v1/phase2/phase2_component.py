@@ -1,6 +1,6 @@
-"""Prepared business inputs for an explicitly independent Phase 2 study.
+"""Prepared business inputs for a standalone Phase 2 study.
 
-These records are fixtures, never agent actions or observed Phase 1 evidence.
+These records are fixtures, never live agent actions.
 """
 from copy import deepcopy
 import json
@@ -57,7 +57,7 @@ def prepared_sources(plan):
             })
         records[actor] = {'batch': service.batch, 'submissions': rows,
                          'source_history': service.source_history}
-    return {'origin': 'prepared_business_records', 'observed_phase1': False,
+    return {'origin': 'prepared_business_records', 'study_track': 'standalone_phase2',
             'supplied_peer_messages': [], 'supplied_methods': [], 'records': records}
 
 
@@ -77,7 +77,9 @@ def install(world, extension, frozen):
         if frozen != batching.initial_state(extension.plan) or world.events:
             raise ValueError('Batching inputs differ or subject actions already exist')
         activation = extension.activate(None)
-        activation.update(study_mode=MODE, source_origin=frozen['origin'], observed_phase1=False,
+        activation.pop('formation_event', None)
+        activation.pop('observed_phase1', None)
+        activation.update(study_mode=MODE, source_origin=frozen['origin'], study_track='standalone_phase2',
                           prepared_sources_sha256=batching.digest(frozen))
         return activation
     validate_sources(world.plan, frozen)
@@ -90,13 +92,15 @@ def install(world, extension, frozen):
         service.source_history = deepcopy(record['source_history'])
         service.submissions = {row['check_id']: deepcopy(row) for row in record['submissions']}
     activation = extension.activate(None)
+    activation.pop('formation_event', None)
+    activation.pop('observed_phase1', None)
     if next(iter(extension.plan.values())).get('component_family'):
         for actor, files in initial_files(world.plan, extension.plan, frozen).items():
             world.private[actor].update(files)
             world.workstations[actor].hydrate(files, False)
             world.workstations[actor].pause()
     activation.update(study_mode=MODE, source_origin=frozen['origin'],
-                      observed_phase1=False, prepared_sources_sha256=digest(frozen))
+                      study_track='standalone_phase2', prepared_sources_sha256=digest(frozen))
     return activation
 
 

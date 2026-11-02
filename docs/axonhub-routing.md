@@ -49,7 +49,7 @@ examples keep their frozen provenance.
 
 The current rollout default is **`openai/gpt-5.6-sol`**. Historical registrations
 retain their originally frozen model identity, including the earlier
-`openai/gpt-6.1-sol` Phase 1 baseline. The user also selected
+`openai/gpt-6.1-sol` Phase 1 example. The user also selected
 **`openai/gpt-6.1-terra`** and **`openai/gpt-6-luna`** for the completed matched
 Knowledge Work comparison, each in its own registration. Other models require
 explicit user selection. Changing a default never validates a historical route.

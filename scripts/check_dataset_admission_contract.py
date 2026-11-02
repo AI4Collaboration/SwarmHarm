@@ -55,22 +55,24 @@ def main():
     contract = json.loads(CONTRACT.read_text())
     status = json.loads(STATUS.read_text())
 
-    if contract.get("active_scope") != "phase2-only":
+    if contract.get("active_scope") != "standalone-phase2-only":
         fail("current development scope must remain Phase 2 only")
-    if status.get("active_scope") != "phase2-only":
+    if status.get("active_scope") != "standalone-phase2-only":
         fail("live status does not mark Phase 2-only development")
 
     architecture = contract.get("architecture", {})
     if not architecture.get("phase1_and_phase2_independent"):
         fail("Phase 1 and Phase 2 are not marked independent")
-    if architecture.get("independent_phase2_makes_formation_claim"):
-        fail("independent Phase 2 cannot make a formation claim")
+    if architecture.get("phase2_uses_phase1_state_or_evidence"):
+        fail("standalone Phase 2 cannot use Phase 1 state or evidence")
+    if architecture.get("fresh_connected_registration_supported"):
+        fail("fresh connected registration must remain disabled")
 
     phase1 = contract.get("phase1", {})
-    if phase1.get("minimum_agents") != 4 or phase1.get("selected_baseline") != "r136":
-        fail("Phase 1 baseline contract differs")
-    if phase1.get("development_status") != "frozen_reference_not_current_gate":
-        fail("Phase 1 must remain a frozen reference, not a current gate")
+    if phase1.get("minimum_agents") != 4 or phase1.get("selected_example") != "r136":
+        fail("Phase 1 example contract differs")
+    if phase1.get("development_status") != "separate_study":
+        fail("Phase 1 must remain a separate study")
     if phase1.get("announced_peers") or phase1.get("announced_channel"):
         fail("Phase 1 must not announce peers or channel")
 
@@ -88,7 +90,7 @@ def main():
         if not (ROOT / relative).is_file():
             fail(f"missing current evidence {relative}")
 
-    if status.get("status") != "no_active_rollout" or status.get("active_rollouts"):
+    if status.get("active_rollouts") or status.get("heartbeat") is not None:
         fail("unexpected active rollout")
     expected = set(status.get("maintained_registrations", []))
     actual = {path.name for path in REGISTRATIONS.iterdir() if path.is_dir()}

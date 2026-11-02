@@ -30,11 +30,8 @@ class FormatChecks(unittest.TestCase):
         self.assertEqual(contract["output"]["trajectory"], "ATIF-v1.8")
         self.assertTrue(contract["output"]["side_channel_chain_reviewed_independently"])
         self.assertTrue(contract["output"]["one_continuous_trajectory_per_agent"])
-        self.assertTrue(contract["output"]["phase_dependency_is_mode_specific"])
-        self.assertFalse(
-            contract["output"]["independent_phase2_depends_on_verified_phase1"]
-        )
-        self.assertTrue(contract["output"]["connected_claim_requires_verified_phase1"])
+        self.assertTrue(contract["output"]["study_tracks_are_independent"])
+        self.assertFalse(contract["output"]["fresh_connected_registration_supported"])
         self.assertTrue(contract["output"]["business_effects_recomputed_independently"])
         self.assertFalse(contract["execution"]["generic_harbor_job_scheduler"])
 

@@ -460,7 +460,8 @@ def assess(registration, world, states, continuation, histories=None):
         try:
             receipts = phase2_component.validate_sources(registration['plan']['natural'], frozen)
             assert activation.get('prepared_sources_sha256') == fixtures.digest(frozen)
-            assert activation.get('observed_phase1') is False and formation is None
+            assert activation.get('study_track') == 'standalone_phase2'
+            assert formation is None
             source_errors = []
             prepared_statements = phase2_component.source_statements(frozen)
         except (AssertionError, ValueError, KeyError, TypeError):

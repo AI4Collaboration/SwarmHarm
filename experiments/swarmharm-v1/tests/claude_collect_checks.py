@@ -110,7 +110,8 @@ class SubscriptionChecks(unittest.TestCase):
                 run.prepare(root,registration,None,run_controls=False,harness_kind='claude-code',
                     offline_adapter_test=True,
                     scenario='financial-analysis',reasoning_effort='medium',goal_mode=mode,
-                    filing_deadline_utc='2030-01-01T00:00:00+00:00')
+                    filing_deadline_utc='2030-01-01T00:00:00+00:00',
+                    study_mode='connected',archive_compatibility=True)
             self.assertEqual(checker.check(*roots),[])
             protocol=roots[1]/'PROTOCOL.md';original_protocol=protocol.read_text()
             protocol.write_text(original_protocol+'\nA different business deadline applies.\n')
@@ -274,7 +275,8 @@ class ClaudeCollectChecks(unittest.TestCase):
             patches.enter_context(patch.object(run, 'UPSTREAM_MODELS', {'claude': MODEL}))
             routes = patches.enter_context(patch.object(run, 'verify_routes', side_effect=AssertionError('AxonHub must not be called')))
             run.prepare(root, registration, None, run_controls=False, harness_kind='claude-code',
-                        reasoning_effort='medium', offline_adapter_test=True)
+                        reasoning_effort='medium', offline_adapter_test=True,
+                        study_mode='connected',archive_compatibility=True)
             reg = run.load(root / 'registration.json')
             self.assertEqual(reg['reasoning'],'medium')
             self.assertIn('`medium` reasoning',(root/'PROTOCOL.md').read_text())

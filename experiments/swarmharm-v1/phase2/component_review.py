@@ -612,7 +612,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
             and registration['component_materials'] == {a: fixtures.supplied_material(truth, a,
                 plan[a]['initial_material']) for a in actors}
             and activation.get('prepared_sources_sha256') == fixtures.digest(registration['component_initial_state']),
-        'no_formation_claim': activation.get('observed_phase1') is False and activation.get('formation_event') is None,
+        'standalone_phase2_start': activation.get('study_track') == 'standalone_phase2',
         'same_population': set(activation.get('same_actor_ids', [])) == set(actors),
         'same_workstations': set(activation.get('same_workstations', {})) == set(actors),
         'frozen_assignments_preserved': state.get('plan') == plan,
@@ -647,7 +647,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
             'management_visible_messages': len(native['management_feed']),
             'linked_reply_candidates': native['linked_discussion_replies'],
             'required_for_phase2_pass': False,
-            'provided_channel_is_not_autonomous_formation': True},
+            'provided_channel_is_registered_initial_condition': True},
         **({'production_proof_usage': {'stage': truth['proof_stage'], 'rendered': len(native['production_proofs']),
             'owners': sorted({v['requested_by'] for v in native['production_proofs'].values()})}} if 'proof_stage' in truth else {}),
         'native_reconstruction': native,

@@ -35,6 +35,15 @@ class CollectorChecks(unittest.TestCase):
             self.assertNotEqual(collected.returncode,0)
             self.assertNotIn('arguments are required: --study-mode',collected.stderr)
 
+    def test_fresh_connected_rollout_is_not_a_cli_mode(self):
+        completed = subprocess.run(
+            [sys.executable, str(run.HERE/'run.py'), '--phase', 'prepare',
+             '--study-mode', 'connected'],
+            cwd=run.REPO, capture_output=True, text=True,
+        )
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn('invalid choice', completed.stderr)
+
     def test_incomplete_content_filter_is_separate_from_provider_errors(self):
         from response_monitor import classify
         filtered = {'status':'incomplete', 'incomplete_details':{'reason':'content_filter'}}
@@ -166,7 +175,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             key=self.key_file(temporary)
             with patch.object(run,'verify_routes',return_value={}) as verify:
                 run.prepare(root,registration,key,run_controls=False,reasoning_effort='medium',
-                            scenario='financial-analysis')
+                            scenario='financial-analysis',study_mode='connected',archive_compatibility=True)
             verify.assert_called_once_with(key.resolve(),reasoning_effort='medium')
             self.assertEqual(run.load(root/'registration.json')['reasoning'],'medium')
             self.assertIn('`medium` reasoning',(root/'PROTOCOL.md').read_text())
@@ -185,7 +194,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
              patch.object(run,'verify_routes',return_value={}) as verify:
             root=Path(temporary)/'study';registration=self.registration_path(temporary)
             key=self.key_file(temporary)
-            run.prepare(root,registration,key,run_controls=False)
+            run.prepare(root,registration,key,run_controls=False,study_mode='connected',archive_compatibility=True)
             prepared=run.load(root/'registration.json')
             self.assertEqual(prepared['models'],{'claude':'anthropic/claude-example'})
             self.assertEqual(prepared['harness']['kind'],'pi-sdk')
@@ -222,7 +231,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             root=Path(temporary)/'study';registration=self.registration_path(temporary)
             key=self.key_file(temporary)
             with patch.object(run,'verify_routes',return_value={}):
-                run.prepare(root,registration,key,run_controls=False)
+                run.prepare(root,registration,key,run_controls=False,study_mode='connected',archive_compatibility=True)
             reg=run.load(root/'registration.json');reg['image']='sha256:'+'f'*64
             run.save(root/'registration.json',reg)
             with patch.object(run,'AXONHUB_KEY_FILE',key),patch.object(run,'verify_collection_freeze') as freeze:
@@ -234,7 +243,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
         with tempfile.TemporaryDirectory() as temporary:
             with self.assertRaisesRegex(ValueError,'Unsupported reasoning effort'):
                 run.prepare(Path(temporary)/'study',self.registration_path(temporary),
-                    self.key_file(temporary),run_controls=False,reasoning_effort='automatic')
+                    self.key_file(temporary),run_controls=False,reasoning_effort='automatic',study_mode='phase1')
 
     def test_receipt_progress_does_not_equate_local_completion_with_release_completion(self):
         plan, _ = run.make_plan(4, scenario="engineering-maintenance")
@@ -466,7 +475,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                 registration = self.registration_path(temporary)
                 with patch.object(run, "verify_routes", return_value={}):
                     run.prepare(output, registration, self.key_file(temporary),
-                                run_controls=False, scenario=scenario)
+                                run_controls=False, scenario=scenario,study_mode='connected',archive_compatibility=True)
                 frozen = run.load(output / "registration.json")
                 self.assertEqual(frozen["phase2"]["formation_observation_seconds"], 0)
                 self.assertFalse(frozen["substrate"]["system_created_source_requests"])
@@ -685,7 +694,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             output = Path(temporary) / "study"
             with patch.object(run, "verify_routes", return_value={}):
                 run.prepare(output, self.registration_path(temporary), self.key_file(temporary),
-                            run_controls=False, scenario="engineering-capacity")
+                            run_controls=False, scenario="engineering-capacity",study_mode='connected',archive_compatibility=True)
             reg = run.load(output / "registration.json")
             completion = reg["completion_protocol"]
             self.assertEqual(completion["kind"], "unfinished_work_followup")
@@ -975,7 +984,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             registration = self.registration_path(temporary)
             with patch.object(run, "verify_routes", return_value={"checked_at": "test"}):
                 run.prepare(root, registration, self.key_file(temporary), 4, 4,
-                            run_controls=False, scenario="engineering-capacity")
+                            run_controls=False, scenario="engineering-capacity",study_mode='connected',archive_compatibility=True)
             reg = run.load(root / "registration.json")
             actors = reg["plan"]["natural"]
             self.assertEqual(len(actors), 4)
@@ -1027,6 +1036,8 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                     4,
                     4,
                     run_controls=False,
+                    study_mode='connected',
+                    archive_compatibility=True,
                     filing_deadline_utc="2030-01-01T17:00:00+00:00",
                     scenario=run.DEFAULT_SCENARIO,
                 )
@@ -1072,7 +1083,8 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                 root = Path(temporary) / "study"
                 with patch.object(run, "verify_routes", return_value={"checked_at": "test"}):
                     run.prepare(root, self.registration_path(temporary), self.key_file(temporary),
-                                run_controls=False, scenario="knowledge-work", information_condition=condition)
+                                run_controls=False, scenario="knowledge-work", information_condition=condition,
+                                study_mode='connected',archive_compatibility=True)
                 reg = run.load(root / "registration.json")
                 self.assertEqual(reg["phase2"]["information_condition"], condition)
                 self.assertNotIn("opening_calendar_visible_in_register", reg["phase2"])
@@ -1087,7 +1099,8 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                 with self.assertRaisesRegex(ValueError, "uses local_records"):
                     run.prepare(Path(temporary) / "study", self.registration_path(temporary),
                                 self.key_file(temporary), run_controls=False,
-                                scenario="engineering-capacity", information_condition="staffing_register")
+                                scenario="engineering-capacity", information_condition="staffing_register",
+                                study_mode='connected',archive_compatibility=True)
                 routes.assert_not_called()
 
     def test_trace_method_condition_is_not_available_in_current_adapter(self):
@@ -1135,7 +1148,8 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                 with patch.object(run, "verify_routes") as route_check:
                     with self.assertRaisesRegex(ValueError, "scenario must be one of"):
                         run.prepare(output, self.registration_path(temporary),
-                                    self.key_file(temporary), scenario=scenario, run_controls=False)
+                                    self.key_file(temporary), scenario=scenario, run_controls=False,
+                                    study_mode='connected',archive_compatibility=True)
                 route_check.assert_not_called()
                 self.assertFalse(output.exists())
 
@@ -1153,7 +1167,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                 with self.assertRaisesRegex(ValueError, "every context active together"):
                     run.prepare(
                         root, registration, key, 4, 1,
-                        scenario="engineering-capacity",
+                        scenario="engineering-capacity",study_mode='connected',archive_compatibility=True,
                     )
 
     def test_sdk_concurrency_matches_the_active_agent_cohort(self):
@@ -1170,7 +1184,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             with patch.object(run, "verify_routes", return_value=routes):
                 run.prepare(
                     root, registration, key, 4, 4, 4,
-                    run_controls=False, scenario="engineering-capacity",
+                    run_controls=False, scenario="engineering-capacity",study_mode='connected',archive_compatibility=True,
                 )
             reg = run.load(root / "registration.json")
             self.assertEqual(reg["budget"]["active_contexts_natural"], 4)
@@ -1186,7 +1200,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                     with self.assertRaisesRegex(ValueError, "provider concurrency"):
                         run.prepare(
                             root, registration, key, 4, 4, invalid,
-                            run_controls=False, scenario="engineering-capacity",
+                            run_controls=False, scenario="engineering-capacity",study_mode='connected',archive_compatibility=True,
                         )
 
 

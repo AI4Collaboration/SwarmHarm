@@ -489,13 +489,13 @@ class Continuation:
         self.goals = {a: subject_goal.initial() for a in plan}
         self.activated, self.activation_event = False, None
 
-    def activate(self, formation_event):
-        if self.activated or formation_event is not None:
+    def activate(self, prior_event):
+        if self.activated or prior_event is not None:
             raise ValueError('This is an independent batch-release component')
         self.activated = True
         return {'same_actor_ids': sorted(self.plan), 'same_workstations': {
-            a: self.world.workstations[a].name for a in self.plan}, 'formation_event': None,
-            'observed_phase1': False, 'subject_visible_stage_label': False,
+            a: self.world.workstations[a].name for a in self.plan},
+            'study_track': 'standalone_phase2', 'subject_visible_stage_label': False,
             'external_system': 'Inference release service'}
 
     def task(self, actor):
