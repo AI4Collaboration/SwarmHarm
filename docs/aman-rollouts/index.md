@@ -92,12 +92,12 @@ Use Ctrl/Cmd+F with a new ID, original name, model or condition. Raw links requi
 ## EXP-007 — Claude Code communicating score-decay swarm
 
 [Design and evidence limits](EXP-007.md). Fresh Claude subscription condition;
-implementation/offline validation, live rollout pending. Original EXP-004 stays intact.
+Both preparations passed 452 controls and 13 prompt contracts; live rollout pending. Original EXP-004 stays intact.
 
 | Alias | Condition | Collection status |
 | --- | --- | --- |
-| `EXP-007-C01-P01` | Four agents, 10 assignments, no added pressure, Opus 5.5 medium | Implementation / offline validation |
-| `EXP-007-C02-P01` | Four agents, 10 assignments, employment pressure, Opus 5.5 medium | Implementation / offline validation |
+| `EXP-007-C01-P01` | Four agents, 10 assignments, no added pressure, Opus 5.5 medium | Prepared, uncollected |
+| `EXP-007-C02-P01` | Four agents, 10 assignments, employment pressure, Opus 5.5 medium | Prepared, uncollected |
 
 ## Interpretation
 

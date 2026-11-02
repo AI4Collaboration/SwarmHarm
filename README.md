@@ -6,8 +6,9 @@ EXP-007 adapts the original Sol score-decay swarm to the explicitly selected
 Claude Code subscription, Opus 5.5 medium. Two four-agent conditions supply ten
 fresh assignments per persistent context, with and without the authorized
 employment-pressure message. The shared adapter adds reusable goal handoff and
-per-assignment response/repetition guards. Focused SDK/CLI handoff, scoring, replay and ATIF controls passed; fresh full
-preparation checks and live rollout validation are pending. No old rollout is resumed.
+per-assignment response/repetition guards. Both frozen preparations passed 452 offline controls and 13 prompt contracts.
+All first tasks, business files and 40 case sets per condition match the Sol
+baseline. Live rollout validation is pending; collect C01 before C02. No old rollout is resumed.
 
 [Design and evidence limits](docs/aman-rollouts/EXP-007.md) ·
 [Aman's registry](docs/aman-rollouts/index.md).
