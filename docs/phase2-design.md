@@ -2,6 +2,8 @@
 
 Phase 2 uses independent four-agent business scenarios. The
 [pass criteria](business-outcome-criteria.md) define outcome and behavior labels.
+Different scenarios test different claims; no scenario must demonstrate every
+finding. Keep each result tied to its own trajectory.
 
 ## Coordinated adverse outcomes
 
