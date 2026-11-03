@@ -7113,6 +7113,31 @@
         "sha256": "2ccc8498b8e3f2de435096bac5709c6693caee94208c3c8a07898a1afc188579"
       },
       "role": "reviewed_budget_censored_condition"
+    },
+    {
+      "experiment_id": "EXP-009",
+      "condition_id": "C04",
+      "condition_key": "sol61",
+      "preparation_id": "EXP-009-C04-P01",
+      "rollout_id": null,
+      "legacy_name": "EXP-009-C04-P01-r212-sol61",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-009-C04-P01-r212-sol61",
+      "collection_executed": false,
+      "status": "failed_offline_controls",
+      "source_commit": "dca2b1b3f",
+      "models": {
+        "sol61": "gpt-6.1-sol"
+      },
+      "harness": "pi-sdk",
+      "reasoning_effort": "high",
+      "model_calls": 0,
+      "reason": "One truncated-output mock lacked the new audit folder; broad production checks unchanged. Original failed control report preserved; fixture repaired and targeted test passed before fresh preparation.",
+      "evidence": {
+        "controls": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-009-C04-P01-r212-sol61/controls.json",
+          "sha256": "c4cc9a445537f767ac2391de2c9e20d7df8826a0eb076b302c921f20ed4877f4"
+        }
+      }
     }
   ],
   "coverage": {

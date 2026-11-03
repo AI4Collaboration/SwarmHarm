@@ -29,7 +29,11 @@ class PiBridgeChecks(unittest.TestCase):
         agent = object.__new__(PI.PiAgent)
         agent.actor, agent.events = 'interrupted', PI.new_queue()
         agent.process = SimpleNamespace(stdout=[b'{"type":"provider_response"'], wait=lambda: -9)
-        agent._read()
+        with tempfile.TemporaryDirectory() as temporary:
+            agent.folder=Path(temporary)
+            agent._read()
+            self.assertEqual((agent.folder/'sdk-events.jsonl').read_bytes(),
+                             b'{"type":"provider_response"\n')
         self.assertEqual(agent.events.get_nowait()[1]['type'], 'fatal')
         self.assertEqual(agent.events.get_nowait()[1], {'type': 'exited', 'returncode': -9})
 

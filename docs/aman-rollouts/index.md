@@ -4,7 +4,7 @@
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **11 experiments (one preparing), 46 executed collection attempts, 28 uncollected preparations** in the inspected local archive.
+Coverage: **11 experiments (one preparing), 46 executed collection attempts, 29 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
@@ -173,3 +173,6 @@ limitation. No collector remains active. No history changes or accepted publicat
 
 Pi / GPT-6.1 Sol high, ChatGPT subscription, no cash bonus. Four fresh native-goal
 contexts and original r212 interfaces. Offline checks; no P/R assigned yet.
+
+EXP-009-C04-P01: failed offline fixture setup, zero hosted calls. Broad report
+preserved. Sole fixture repaired and rerun; production hashes unchanged.
