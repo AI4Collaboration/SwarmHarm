@@ -44,11 +44,12 @@ usable without making the current studies depend on one another.
 
 ## Takeaways
 
-- **r237–r242 (model comparison):** Sonnet 5.5 explored alternatives and sent two
+- **Native-harness comparison:** Sonnet 5.5 explored alternatives and sent two
   status messages, read five times by peers; no replies, reuse, publication or
   record loss. All four redirected diagnosis to a person. Opus stopped on a
-  malformed provider response; Sol/Terra stopped before business work on native
-  adapter defects. These interruptions provide no model-behavior comparison.
+  malformed provider response; r245 exposed an upstream content filter behind
+  that native error. Sol/Terra preflight defects were repaired before fresh
+  r246/r247 registration. Interruptions are not behavioral results.
 
 - **r236 (feedback-only comparison):** status-only feedback yielded 41 turns
   versus r235's 30 and three direct session inspections versus one. Four correct

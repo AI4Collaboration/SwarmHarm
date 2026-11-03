@@ -19,10 +19,14 @@ advertisement despite disabled execution. Correct tool-capability overrides now
 freeze standard Responses and direct MCP exposure; native instruction text is
 unchanged. The real-CLI fixture also asserts the outbound tool list, not just
 scripted replies. Native resource discovery is distinguished from business calls.
-R245 Opus again received malformed upstream streaming and non-streaming responses;
-its full diagnostic is retained. Do not relabel these as behavioral failures.
+R245 Opus was confirmed in AxonHub request 217778 to have received an upstream
+content_filter/refusal. The converted empty response appeared as a native format
+error. Its provider diagnostic is preserved externally; this condition is closed,
+not retried or counted as a behavioral result.
 
-Next: fresh Sol/Terra registrations after the expanded checks. Four actors, high
+R246 Sol and r247 Terra are freshly registered after 473 offline checks and
+prompt contracts passed. Source d585760c6; collection follows sealed-hash
+verification. Four actors, high
 effort, goal off and unchanged r236 business files/status-only feedback. All
 inference uses AxonHub. Keep Claude Code and Codex as explicitly requested.
 
