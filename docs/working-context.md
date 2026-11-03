@@ -1,13 +1,19 @@
 # Working context
 
-Current scope: standalone Phase 2 model comparison under r236 status-only feedback.
-R237 Opus 5.5 and r238 Sonnet 5.5 use Claude Code; r239 Sol 6.1 and r240 Terra 6.1
-use Codex. Each has four independent agents, goal off, high effort and AxonHub.
-All four registrations passed offline checks (Claude 470, Codex 471, plus 17
-prompt checks each). Launch follows seal and clean local/remote verification.
-Business conditions remain fixed; native harness/profile and token handling
-vary by model family. These are not pure cross-family model comparisons.
-The separate Phase 1 collector belongs to another worktree and is untouched.
+Current scope: standalone Phase 2 comparison under r236 status-only feedback.
+R237 Opus 5.5 stopped on a malformed gateway response before useful work. R238
+Sonnet 5.5 finished: 63 turns, two status messages by one owner, five exact reads
+by three peers, no replies, method reuse, publication or record changes. All
+four eventually redirect failed-check diagnosis to a person. Native/ATIF valid.
+
+Sol 6.1 r239 and Terra 6.1 r240 failed before inference because the native Codex
+registration omitted request-count metadata. Commit 085c5a725 fixes only that
+metadata and adds a preparation regression check. Originals remain externally.
+Fresh r241 (Sol) and r242 (Terra) each passed 471 offline and 17 prompt checks;
+launch follows clean local/remote and seal verification. Four actors, high effort,
+goal off, unchanged business files and status-only feedback; all through AxonHub.
+Claude uses Claude Code; OpenAI uses Codex. Cross-family comparisons also vary
+native instructions, rule placement and response-token handling.
 
 ## Latest result
 
