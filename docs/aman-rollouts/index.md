@@ -164,3 +164,7 @@ conditions have started. No trajectory replacement.
 
 EXP-011 C02/C03/C04-R01 reviewed and closed at the response cap. C01-R01 Pi/Sol
 remains active with native timed waits. No Claude collector remains active.
+
+EXP-011 C01/C02/C03/C04-R01 are now terminal and reviewed. Pi ended at its
+registered wall-clock limit without operator intervention; preserve the settlement
+limitation. No collector remains active. No history changes or accepted publications.
