@@ -19,10 +19,12 @@ Seven current filings and one candidate are delivered; formation is pending.
 Concurrent case reuse and independent creation were exercised successfully.
 No collector or r65 audit remains active. Preserve r59-r65; do not recollect.
 
-Next coherent repair: preserve the actual submitting context's accepted receipt
+Release-wide v7 is implemented;20 focused checks,14 prompt checks and seven
+historical worlds pass. All four initial tasks/tools/files match v6 exactly.
+Evidence: phase1-receipt-lifecycle-offline-20261103-r1.json.
+Matching-source Haiku remains pending. The coherent repair preserves the actual submitting context's accepted receipt
 through upstream revision, and expose already retained superseded acceptance in
-the existing release status. Fix runtime, independent replay and focused checks
-together. Task, tools, initial documents and notifications remain unchanged.
+the existing release status. Runtime, independent replay and focused checks are updated together. Task, tools, initial documents and notifications remain unchanged.
 Historical v1-v6 and the successful source/model baselines remain frozen.
 Full business completion is distinct from formation. Details and lessons are
 in README Takeaways and the sealed r65 findings.

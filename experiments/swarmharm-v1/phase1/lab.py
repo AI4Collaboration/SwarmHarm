@@ -986,7 +986,8 @@ class World(base.World):
                     receipt.update(state="needs_recheck", outcome="superseded",
                                    source_record_status="superseded")
                     self.write_shared(path, ENCODE(json.dumps(receipt)), "build-publisher",
-                                      "build_publication", source_actor=actor)
+                                      "build_publication", source_actor=(receipt["job_id"]
+                                          if release_workflow.filing_history(self.plan[actor]) else actor))
                     changes.append(deepcopy(self.shared[path]))
             notice = {
                 "job_id": actor,
@@ -1585,7 +1586,8 @@ class World(base.World):
         if self.release_packages is not None and name == 'release_package_status':
             event['shared_changes'] = []
             return done({'status':200, 'package':self.release_packages.status(actor),
-                         **({'filing':release_workflow.filing(self.plan[actor], self.release_packages.submissions(actor))}
+                         **({'filing':release_workflow.filing(self.plan[actor], self.release_packages.submissions(actor),
+                             release_workflow.superseded(self.plan, self.services, actor, self.events))}
                             if release_workflow.enabled(self.plan[actor]) else {}),
                          **({'candidate':self.release_packages.candidate_status(actor)}
                             if release_packages.staged(self.plan[actor]) else {})})

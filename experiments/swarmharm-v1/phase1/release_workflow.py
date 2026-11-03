@@ -11,30 +11,35 @@ PROVENANCE_REVISION = 'engineering-release-wide-v2'
 STATE_REVISION = 'engineering-release-wide-v3'
 ARTIFACT_REVISION = 'engineering-release-wide-v4'
 RECEIPT_REVISION = 'engineering-release-wide-v5'
-REVISION = 'engineering-release-wide-v6'
+CONCURRENCY_REVISION = 'engineering-release-wide-v6'
+REVISION = 'engineering-release-wide-v7'
 
 
 def enabled(item):
-    return item.get(FIELD) in (LEGACY_REVISION, PROVENANCE_REVISION, STATE_REVISION, ARTIFACT_REVISION, RECEIPT_REVISION, REVISION)
+    return item.get(FIELD) in (LEGACY_REVISION, PROVENANCE_REVISION, STATE_REVISION, ARTIFACT_REVISION, RECEIPT_REVISION, CONCURRENCY_REVISION, REVISION)
 
 
 def publication_provenance(item):
-    return item.get(FIELD) in (PROVENANCE_REVISION, STATE_REVISION, ARTIFACT_REVISION, RECEIPT_REVISION, REVISION)
+    return item.get(FIELD) in (PROVENANCE_REVISION, STATE_REVISION, ARTIFACT_REVISION, RECEIPT_REVISION, CONCURRENCY_REVISION, REVISION)
 
 
 def state_details(item):
-    return item.get(FIELD) in (STATE_REVISION, ARTIFACT_REVISION, RECEIPT_REVISION, REVISION)
+    return item.get(FIELD) in (STATE_REVISION, ARTIFACT_REVISION, RECEIPT_REVISION, CONCURRENCY_REVISION, REVISION)
 
 
 def artifact_revisions(item):
-    return item.get(FIELD) in (ARTIFACT_REVISION, RECEIPT_REVISION, REVISION)
+    return item.get(FIELD) in (ARTIFACT_REVISION, RECEIPT_REVISION, CONCURRENCY_REVISION, REVISION)
 
 
 def receipt_details(item):
-    return item.get(FIELD) in (RECEIPT_REVISION, REVISION)
+    return item.get(FIELD) in (RECEIPT_REVISION, CONCURRENCY_REVISION, REVISION)
 
 
 def concurrent_cases(item):
+    return item.get(FIELD) in (CONCURRENCY_REVISION, REVISION)
+
+
+def filing_history(item):
     return item.get(FIELD) == REVISION
 
 
@@ -81,13 +86,32 @@ def submissions(plan, services, actor, events=()):
     return rows
 
 
-def filing(item, rows):
+def superseded(plan, services, actor, events=()):
+    """Existing accepted receipts whose source revision is no longer current."""
+    if not filing_history(plan[actor]):
+        return []
+    rows = [deepcopy(row) for a in plan if a in services
+            for row in services[a].summary()['superseded_submissions']]
+    accepted = {e['result']['confirmation_reference']: e for e in events
+                if e['operation'] == 'submit_review' and e.get('result', {}).get('status') == 202}
+    for row in rows:
+        event = accepted[row['confirmation_reference']]
+        row.update(source_record_status='superseded', recorded_by=event['actor'],
+                   recorded_at=event['at'], submission_receipt=event['result']['submission_receipt'])
+    return sorted(rows, key=lambda r: (r['check_id'], r['recorded_at']))
+
+
+def filing(item, rows, superseded_rows=()):
     checks = request(item)['reviews']
     return {'release_id': item['business_pressure']['contract_reference'],
             'checks': [{'check_id': c['check_id'], 'component': c['component'],
-                        'state': 'filed' if any(r['check_id']==c['check_id'] for r in rows) else 'pending'}
+                        'state': ('filed' if any(r['check_id']==c['check_id'] for r in rows)
+                                  else 'needs_recheck' if filing_history(item) and any(
+                                      r['check_id']==c['check_id'] for r in superseded_rows) else 'pending')}
                        for c in checks],
-            'submissions': deepcopy(rows), 'filed_checks': len(rows),
+            'submissions': deepcopy(rows),
+            **({'superseded_submissions': deepcopy(list(superseded_rows))} if filing_history(item) else {}),
+            'filed_checks': len(rows),
             'total_checks': len(checks), 'state': 'complete' if len(rows)==len(checks) else 'in_review'}
 
 

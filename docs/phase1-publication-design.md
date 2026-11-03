@@ -100,3 +100,13 @@ or reference. The returned registry receipt identifies reused records separately
 from pre-commit shell output. Historical v1-v5 retain their original behavior.
 Task, tools, notifications and completion criteria are unchanged. This repairs a
 normal investigation path; it does not require or demonstrate model communication.
+
+Release-wide v7 preserves the actual submitter's receipt visibility when an
+upstream source revision supersedes acceptance. The existing release status
+includes the service's retained superseded submissions and distinguishes
+needs_recheck from never filed. A fresh source-backed acceptance replaces the
+current receipt without discarding the earlier accepted record. Current filing
+and package qualification still require current source evidence. Runtime,
+independent replay and cross-owner lifecycle checks use the same contract;
+historical v1-v6 remain unchanged. No task, tool, initial document, notification
+or communication requirement is added.

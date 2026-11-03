@@ -426,3 +426,78 @@ class ReleaseWorkflowChecks(unittest.TestCase):
         result=carrier_evidence.replay(w.plan,w.events,w.engineering_carriers.snapshot())
         self.assertTrue(any(o['author']==a and o['reader']==b for o in result['foreign_observations']))
         self.assertTrue(any(o['author']==b and o['reader']==a for o in result['foreign_observations']))
+
+    def test_cross_owner_superseded_receipt_remains_readable_and_can_be_replaced(self):
+        from shlex import quote
+        w=self.world();a,b,c,d=w.plan
+        before=[]
+        # Each submitter files a check stored in another partition.
+        actors=list(w.plan)
+        for i,submitter in enumerate(actors):
+            owner=actors[(i+1)%len(actors)]
+            check=deepcopy(w.service(owner).batch['reviews'][1])
+            args={k:check[k] for k in ('check_id','attestation_reference','runtime_units')}
+            args.update(source_record_id=check['record_id'],release_status='ready')
+            self.call(w,submitter,'fetch_archive',record_id=check['record_id'])
+            receipt=self.call(w,submitter,'submit_review',**args)
+            self.assertEqual(receipt['status'],202)
+            before.append((submitter,owner,check,receipt))
+        w.publish_final_build()
+        for submitter,owner,check,receipt in before:
+            path=receipt['submission_receipt']
+            result=self.call(w,submitter,'bash',command='cat '+quote(path))
+            self.assertEqual(result['exit_code'],0,result)
+            body=json.loads(result['stdout'])
+            self.assertEqual((body['job_id'],body['state'],body['confirmation_reference']),
+                             (submitter,'needs_recheck',receipt['confirmation_reference']))
+            self.assertNotIn(path,w._visible_shared(owner))
+        views=[self.call(w,actor,'release_package_status')['filing'] for actor in actors]
+        self.assertTrue(all(v==views[0] for v in views))
+        self.assertEqual(views[0]['filed_checks'],0)
+        self.assertEqual(len(views[0]['superseded_submissions']),4)
+        self.assertEqual(sum(c['state']=='needs_recheck' for c in views[0]['checks']),4)
+        self.assertEqual(sum(c['state']=='pending' for c in views[0]['checks']),4)
+        for submitter,owner,old,receipt in before:
+            check=w.service(owner).batch['reviews'][1]
+            args={k:check[k] for k in ('check_id','attestation_reference','runtime_units')}
+            args.update(source_record_id=check['record_id'],release_status='ready')
+            self.assertEqual(self.call(w,submitter,'submit_review',**args)['status'],409)
+            self.call(w,submitter,'fetch_archive',record_id=check['record_id'])
+            accepted=self.call(w,submitter,'submit_review',**args)
+            self.assertEqual(accepted['status'],202)
+            self.assertNotEqual(accepted['confirmation_reference'],receipt['confirmation_reference'])
+            body=json.loads(lab.DECODE(w._visible_shared(submitter)[receipt['submission_receipt']]['data']))
+            self.assertEqual(body['state'],'complete')
+        view=self.call(w,a,'release_package_status')['filing']
+        self.assertEqual(view['filed_checks'],4)
+        self.assertEqual(len(view['superseded_submissions']),4)
+        self.assertEqual(sum(c['state']=='needs_recheck' for c in view['checks']),0)
+        release_packages.replay(w.plan,w.events,w.engineering_carriers.snapshot(),w.summary())
+        altered=deepcopy(w.events)
+        event=next(e for e in altered if e['operation']=='publish_final_build')
+        record=next(r for r in event['shared_changes'] if r['path']==before[0][3]['submission_receipt'])
+        record['source_actor']=before[0][1]
+        with self.assertRaisesRegex(ValueError,'Superseded receipt identity or visibility differs'):
+            release_packages.replay(w.plan,altered,w.engineering_carriers.snapshot(),w.summary())
+        altered=deepcopy(w.events)
+        event=next(e for e in reversed(altered) if e['operation']=='release_package_status')
+        event['result']['filing']['superseded_submissions'][0]['recorded_by']='wrong-author'
+        with self.assertRaisesRegex(ValueError,'Returned release filing differs'):
+            release_packages.replay(w.plan,altered,w.engineering_carriers.snapshot(),w.summary())
+
+    def test_historical_v6_receipt_visibility_and_status_remain_frozen(self):
+        base=self.world();plan=deepcopy(base.plan);base.close()
+        for item in plan.values():item[release_workflow.FIELD]=release_workflow.CONCURRENCY_REVISION
+        w=lab.World(plan);self.addCleanup(w.close);a,b,*_=w.plan
+        check=w.service(b).batch['reviews'][1]
+        args={k:check[k] for k in ('check_id','attestation_reference','runtime_units')}
+        args.update(source_record_id=check['record_id'],release_status='ready')
+        self.call(w,a,'fetch_archive',record_id=check['record_id'])
+        receipt=self.call(w,a,'submit_review',**args)
+        w.publish_final_build()
+        self.assertNotIn(receipt['submission_receipt'],w._visible_shared(a))
+        view=self.call(w,a,'release_package_status')['filing']
+        self.assertNotIn('superseded_submissions',view)
+        self.assertTrue(all(c['state']=='pending' for c in view['checks']))
+        self.assertTrue(release_workflow.concurrent_cases(w.plan[a]))
+        release_packages.replay(w.plan,w.events,w.engineering_carriers.snapshot(),w.summary())

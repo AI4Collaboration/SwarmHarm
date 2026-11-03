@@ -297,6 +297,22 @@ def replay(plan, events, terminal, summary=None):
         if op == 'publish_final_build':
             changes = {a:s.publish_final_build() for a,s in services.items()}
             if result != {'status':200, 'revised_checks':changes}: raise ValueError('Upstream revision differs')
+            for owner, checks in changes.items():
+                if not release_workflow.filing_history(plan[owner]):
+                    continue
+                for check in checks:
+                    previous = next((x for x in reversed(observed[:-1]) if x['operation']=='submit_review'
+                                     and x['arguments'].get('check_id')==check and x['result'].get('status')==202), None)
+                    if previous is None:
+                        continue
+                    path = previous['result']['submission_receipt']
+                    original = next(x for x in previous['shared_changes'] if x['path']==path)
+                    expected = json.loads(lab.DECODE(original['data']))
+                    expected.update(state='needs_recheck', outcome='superseded', source_record_status='superseded')
+                    updated = next((x for x in e['shared_changes'] if x['path']==path), None)
+                    if (updated is None or updated.get('source_actor') != previous['actor']
+                            or json.loads(lab.DECODE(updated['data'])) != expected):
+                        raise ValueError('Superseded receipt identity or visibility differs')
             continue
         if actor not in plan: continue
         if op == 'fetch_archive' and result['status'] == 200:
@@ -350,7 +366,8 @@ def replay(plan, events, terminal, summary=None):
             publications.append({'actor':actor,'event':e['id'],**receipt})
             persisted_packages[(actor,receipt['package'])] = source
         elif op == 'release_package_status' and result['status'] == 200:
-            if release_workflow.enabled(plan[actor]) and result.get('filing') != release_workflow.filing(plan[actor], current(actor)):
+            if release_workflow.enabled(plan[actor]) and result.get('filing') != release_workflow.filing(
+                    plan[actor], current(actor), release_workflow.superseded(plan, services, actor, observed)):
                 raise ValueError('Returned release filing differs')
             if result['package'] != assess(plan[actor],current(actor),published[actor]):
                 raise ValueError('Returned release-package status differs')

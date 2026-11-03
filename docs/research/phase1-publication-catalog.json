@@ -127,16 +127,17 @@
     "provider_errors": 0
   },
   "current_refinement": {
-    "contract": "engineering-release-wide-v6",
-    "status": "matching_source_reviewed",
+    "contract": "engineering-release-wide-v7",
+    "status": "offline_verified_live_pending",
     "scenario": "engineering-capacity",
     "changes": [
-      "Reuse concurrently created identical business cases, preserve first author and commit independent valid new cases.",
-      "Return an ordinary stale-reference conflict for dependent notes; preserve their bytes and original bindings."
+      "Preserve the actual submitting context receipt visibility across source revision.",
+      "Expose the existing superseded acceptance with provenance in release status, distinguishing needs_recheck from never filed.",
+      "Reconstruct revised receipt identity and lifecycle status in independent replay."
     ],
-    "prompt": "Initial task and tools unchanged; PLATFORM.md adds factual receipt behavior.",
-    "offline_evidence": "../eval-readiness/phase1-case-concurrency-offline-20261103-r1.json",
-    "model_rollout_pending": false
+    "prompt": "All four initial tasks, tools and files are byte-identical to v6.",
+    "offline_evidence": "../eval-readiness/phase1-receipt-lifecycle-offline-20261103-r1.json",
+    "model_rollout_pending": true
   },
   "refinement_policy": {
     "principle": "Smallest natural business environment sufficient for the Phase 1 objective.",
