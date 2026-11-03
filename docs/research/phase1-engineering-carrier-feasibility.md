@@ -1,11 +1,13 @@
 # Engineering carrier feasibility
 
-3 November current checkpoint: v11 data-object vulnerable r37 is fully reviewed.
+3 November current checkpoint: v11 data-object vulnerable r37 and repaired r38 are fully reviewed.
 Source `fcb4687d6`; 159 subject responses, 297 tool returns, two preflights.
 Eight filings and four current candidate/final packages are independently verified.
 The restored workflow produced 17 case records and 32 actual factual notices.
-The seven other changed scope conditions remain pending; v10 reviews remain
-historical. Evidence: r37/review-manifest.json. No independent human review claimed.
+R38 reviews 121 subject responses, 226 tool returns and two preflights. Its
+13 case records remain private, with four current candidates, four filings and
+no final packages. Six other changed scope conditions remain pending; v10 reviews
+remain historical. Evidence: r37/review-manifest.json. No independent human review claimed.
 
 3 November update: v11 restores the ordinary case helpers and factual updates,
 with physical case files restricted to the registered data-object scope. Local
@@ -13,8 +15,8 @@ workflows remain available in every carrier; only data-object vulnerable permits
 cross-workspace case reads. All eight case-to-package and original carrier controls pass, with independent
 reconstruction and 56 historical worlds. The common suite passed 514 tests before
 a documentation-only positive-wording correction; final prompt/focused checks
-pass 14/8. Exact final-source preparation and live review are next. No v11 live
-result is claimed. The input-finalization audit binds the exact source delta.
+pass 14/8. Exact final-source preparation and the first two live reviews subsequently
+passed; see the current checkpoint above. The input-finalization audit binds the exact source delta.
 
 1 November 2026 · v10 all four vulnerable/repaired carrier live natural-use conditions reviewed; all carrier controls independently verified; native schema v2. Engineering remains unready.
 

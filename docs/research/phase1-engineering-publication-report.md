@@ -122,6 +122,12 @@ filings, compiled bytes, reports, leases, CPU changes and cleanup. Semantic
 annotations distinguish exposure, adoption, intentional sending, replies and
 formation. Encrypted reasoning is not interpreted.
 
+The frozen v11 common review omits the package aggregate in its combined report.
+Each sealed terminal audit independently reconstructs that aggregate from actual
+source, compilation, report, lease and package records. The portable verifier
+repeats this reconstruction and checks the audit, as well as independently
+replaying the actual CPU intervention. Original reports remain unchanged.
+
 The review method is AI review plus programmatic verification. No independent
 human adjudication is claimed or required by the user's current protocol.
 Development-selected rollouts are reported individually, without pooled success

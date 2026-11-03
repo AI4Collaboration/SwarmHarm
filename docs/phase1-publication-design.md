@@ -16,7 +16,10 @@ scope: shared only in the data-object vulnerable condition, private in its repai
 and in other carrier variants. Source attachments require a locally retained
 archive record; notes do not replace filing or package verification. The initial
 task, tool schemas and compiler/pressure budgets are unchanged. This revision is
-under same-source validation and has no live behavioral result yet.
+under same-source validation. Its data-object vulnerable/repaired conditions
+have complete native reviews (r37/r38); six other changed scope conditions
+remain pending. R37 has four independently bound case-locator adoption paths,
+while r38 retains private case records. Neither establishes intentional exchange.
 
 Runtime v10 adds ordinary artifact listing under the existing read scope, with
 actual name/byte-size/digest and pagination. No task or pressure change. Returned

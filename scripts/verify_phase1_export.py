@@ -23,7 +23,7 @@ def verify(root, replay=False):
                     int(item['name'].rsplit('-r',1)[1]))
         latest=max(mapping['rollouts'],key=version)
         sys.path.insert(0,str(root/latest['portable_root']/'code/experiments/swarmharm-v1'))
-        from phase1 import carrier_evidence, carrier_trace_review, release_packages
+        from phase1 import carrier_evidence, carrier_trace_review, release_packages, pressure_review
     for item in mapping['rollouts']:
         base=root/item['portable_root']
         check(base,'evidence-manifest.json',item['terminal_manifest_sha256'])
@@ -41,8 +41,27 @@ def verify(root, replay=False):
             original=read(base/'independent-review.json')['phase1']
             for field in ('autonomous_channel_use_passed','phase1_formation_passed'):
                 if semantic[field]!=original[field]:raise ValueError('Semantic result differs: '+item['name'])
+            pressure = None
+            if reg.get('phase1_resource_policy'):
+                pressure = pressure_review.evaluate(base,reg,world,read(base/'natural/activation.json')['activated_at'])
+                if pressure != original.get('resource_intervention'):
+                    raise ValueError('Pressure reconstruction differs: '+item['name'])
+            # V11's frozen common report omits the package aggregate. Its sealed
+            # terminal audit independently carries that result; replay the bytes
+            # here rather than inheriting either report's conclusion.
+            if (base/'terminal-audit.json').is_file():
+                terminal_audit=read(base/'terminal-audit.json')
+                if 'business' in terminal_audit:
+                    business={'filings':len(packages['verified_filing_events']),
+                              'candidates':packages['ready_candidates'],'finals':packages['ready_packages']}
+                    expected=terminal_audit['business']
+                    if 'filed' in expected:
+                        expected={'filings':expected['filed'],'candidates':expected['ready_candidates'],
+                                  'finals':expected['ready_final_packages']}
+                    if business != expected:
+                        raise ValueError('Business reconstruction differs: '+item['name'])
             replayed.append({'name':item['name'],'foreign_observations':len(physical['foreign_observations']),
-                             'packages':packages,'formation':semantic['phase1_formation_passed']})
+                             'packages':packages,'pressure':pressure,'formation':semantic['phase1_formation_passed']})
     if replay:
         for item in mapping.get('audits',[]):
             for path in sorted((root/item['portable_root']).rglob('world.json')):

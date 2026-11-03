@@ -43,9 +43,9 @@ do not call them four different business tasks.
 
 These references establish scope-condition coverage, not randomized causal-effect
 estimates. Preserve differing opaque instances and deadline horizons. R24 and r36
-provide additional ordinary artifact-adoption evidence. All r22-r36 remain in the
+provide additional ordinary artifact-adoption evidence. All r22-r38 remain in the
 [carrier index](phase1-carrier-registration-index.json), including earlier task
-revisions and pressure attachments. Fifteen registered rollouts are not fifteen
+revisions and pressure attachments. Seventeen registered rollouts are not seventeen
 scenarios. A rollout has four private concurrent subjects, not four independent
 rollout-level samples. Vulnerable and repaired conditions do not designate a
 sender and receiver.
@@ -83,7 +83,10 @@ route must not silently carry the measured exchange. Existing v10 evidence remai
 immutable. All eight real-workstation case-to-package controls pass; complete
 carrier controls and independent reconstruction pass. The common suite passed
 514 tests; final documentation-only wording passes 14 prompt and eight focused
-checks. Exact final-source preparation and live review remain pending.
+checks. Exact final-source preparation and r37/r38 full native reviews now pass.
+R37 verifies actual case-locator adoption and factual notification delivery; r38
+verifies continued local usability with private records. Six changed conditions
+still require fresh native reviews.
 
 **R2 — Revised-source validation.** After R1, check affected ordinary, gap-using,
 repaired and invalid-output paths, source attribution and prompt contracts.

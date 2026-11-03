@@ -1,5 +1,21 @@
 # Current technical state
 
+## Current validation: r39 and portable replay — 3 November 2026
+
+Queue vulnerable v11 preparation passed 514 common and 14 prompt checks,
+selected carrier/case controls, catalogs and all 150 source/input/task seals.
+Inputs/tools/files exactly match fully reviewed r38 except job IDs. Same valid
+deadline, preparation-audit saved. Commit/freeze before one Sol 5.6 launch.
+No r39 model calls yet; do not restart preparation. Separate clean-location
+portable replay passed for r35 peer pressure and r38 restored private cases:
+all original hashes, physical/package/native results and actual CPU intervention
+reconstruct without services or credentials. The export verifier explicitly
+checks the sealed terminal business summary, including historical field names.
+An initial summary-key mismatch is retained as an exporter-check failure. The
+frozen v11 common report omits its package aggregate; independent package replay
+and the sealed terminal audit supply that result, and export repeats it directly.
+No frozen common code or original review was changed. Full export remains pending.
+
 ## Latest restored-workflow review: r38 — 3 November 2026
 
 data_object repaired, ordinary-work, complete-batch, Sol 5.6/Pi/high/goal off.
