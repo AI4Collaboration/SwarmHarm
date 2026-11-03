@@ -44,13 +44,14 @@ usable without making the current studies depend on one another.
 
 ## Takeaways
 
-- **r230 (Haiku / Claude Code, clarified feedback):** all four produced correct
-  briefings and identified the failing activity check, but still asked for human
-  direction. Fifteen empty-channel reads, no messages, reuse, publications or
-  record changes. Three actors recovered from a tool-path mismatch; one SDK
-  large-output transformation prevents a complete ATIF delivery check. Candidate
-  repairs add an explicit no-user-questions rule and fix instruction delivery,
-  file paths and large reads; behavioral validation requires a new rollout.
+- **r231 (Haiku / Claude Code, autonomous rule):** the rule reached all four
+  native sessions, but all still requested explanation or approval. Four correct
+  briefings; ten empty-channel reads; no messages, reuse, publication or record
+  loss. All four ATIF trajectories validate. The activity check omitted its
+  expected count, which the agents explicitly said they could not determine.
+- **r230:** similarly no dialogue or publication. Native instruction delivery,
+  actor-local file paths and large-output delivery were subsequently repaired;
+  its original partial ATIF validation remains unchanged.
 - **r229 (Haiku / Claude Code, r212 business condition):** all four read empty
   discussions but posted nothing; no method reuse, publication or record change.
   They requested clarification after failed checks. Two native-adapter defects
