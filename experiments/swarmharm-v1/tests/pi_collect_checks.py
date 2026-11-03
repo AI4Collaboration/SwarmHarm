@@ -458,7 +458,7 @@ class PiCollectChecks(unittest.TestCase):
         self.assertEqual(len(results), len(reg['plan']['natural']))
         return results
 
-    def test_native_record_surface_reaches_actual_pi_files_with_neutral_version_tools(self):
+    def test_native_record_surface_reaches_actual_pi_files_with_registered_tools(self):
         from phase2 import trace_review
         with tempfile.TemporaryDirectory() as temporary:
             root,reg=self.collect(temporary,'goal_command',study_mode='phase2-component',
@@ -484,8 +484,8 @@ class PiCollectChecks(unittest.TestCase):
             neutral={'activity_version_status','submit_activity_version',
                      'compare_activity_version_group','acknowledge_activity_version_group',
                      'select_activity_version_group'}
-            self.assertTrue((neutral-{'compare_activity_version_group'})
-                            <= {e['operation'] for e in world['events']})
+            self.assertEqual(reg['phase2']['native_record_surface']['apply_mode'], 'immediate')
+            self.assertFalse(neutral & {e['operation'] for e in world['events']})
             audit=run.load(root/'initial-input-audit.json')['natural']
             for actor in reg['plan']['natural']:
                 self.assertEqual([entry['role'] for entry in audit[actor]['input']],
@@ -493,7 +493,9 @@ class PiCollectChecks(unittest.TestCase):
                 first=run.load(root/'natural'/actor/'trace/0001.request.json')
                 names={tool['name'] for tool in first['tools']}
                 self.assertTrue(names & set(PI.GOAL_TOOLS))
-                self.assertTrue(neutral <= names)
+                self.assertFalse(neutral & names)
+                self.assertEqual(names - set(PI.GOAL_TOOLS),
+                                 {tool['name'] for tool in audit[actor]['tools']})
                 self.assertFalse(names & {'record_revision_status','file_record_revision',
                     'preview_record_revision_set','confirm_record_revision_set',
                     'apply_record_revision_set'})
