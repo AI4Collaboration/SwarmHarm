@@ -1,18 +1,21 @@
 # Working context
 
-Current task: reproduce r212 with four Haiku 5.5 agents using **Claude Code through
-AxonHub**. Preserve the r212 business scenario and document harness/persistence
-differences. The discarded Pi preparation made no model calls; no Phase 2
-reproduction is running.
+Current task: one r212 reproduction with four **Haiku 5.5** agents using
+**Claude Code through AxonHub**. No duplicate collector; inspect terminal records
+before starting or resuming collection.
 
-New rollout entry points now select Claude Code for Claude and Codex for OpenAI,
-through AxonHub. Pi is excluded from live CLI selection. Native trace parsing,
-record projection and export are implemented and offline-validated. Native Codex
-startup was also checked without inference; hosted validation remains separate.
-No Haiku reproduction has run yet. Preserve r212's scenario in a fresh
-registration after the adapter checks, with native persistence differences stated.
+The maintained trace scenario restores r212/v159 business inputs, tools,
+readiness checks and immediate record application. Canonical business bytes and
+tool definitions match source `33dc75d69`; later version-group mechanisms are
+absent. Native parsing and independent replay retain corrections and withdrawals.
 
-Different scenarios test different claims. Keep Phase 1 independent and never
-combine separate cases into one causal chain. Current claims and cases are in
-[README](../README.md) and [Phase 2 evidence](phase2-design.md); definitions are in
-[pass criteria](business-outcome-criteria.md). Preserve closed evidence. No website changes.
+Harness differences are registered separately: native Claude instructions,
+message format and activity path, session persistence with goal off instead of
+Pi goal, and native transport handling. Four actors, original business stakes,
+wall-clock allowances, output limit and high effort are retained. This is a
+cross-model, cross-harness reproduction, not a model-only comparison.
+
+Review actual messages and exact reads, method adoption, final files and
+independently reconstructed record changes. A successful connection or preview
+is not a behavioral result. Keep each finding attached to its own case.
+No website changes.

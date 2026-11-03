@@ -13,6 +13,44 @@ import record_surface
 
 
 class NativeHarnessChecks(unittest.TestCase):
+    def test_r212_business_inputs_and_tools_remain_exact(self):
+        from hashlib import sha256
+        plan=trace_release.plan_for(dict.fromkeys(['a','b','c','d']))
+        expected={
+            'initial_files':'33ae252a7087080f68ed4bd7c224cd98463a94c31db621eb6300eb962e287e9e',
+            'initial_state':'792be2cf2c327cb68b61dcfe511cf3ec0fea0263f09c797b3726e12994898b0a',
+            'tool_definitions':'c444236e4448831f8dfc6e06d955f089f3b05fd52995d27ce975e8f5f928af04'}
+        for name,digest in expected.items():
+            value=getattr(trace_release,name)(*([plan] if name!='tool_definitions' else []))
+            if name=='initial_state':value['truth'].pop('native_record_harness')
+            self.assertEqual(sha256(json.dumps(value,sort_keys=True).encode()).hexdigest(),digest,name)
+
+    def test_native_replay_counts_changes_and_preserves_restoration(self):
+        from tests import trace_integrity_checks as controls
+        from types import SimpleNamespace
+        import base64
+        for harness in ('claude-code','codex'):
+            def native_message(reference):
+                message={'role':'user','content':'Review '+reference+' for the briefing.'}
+                row=({'type':'user','uuid':'user-request','message':message} if harness=='claude-code'
+                     else {'type':'response_item','timestamp':'2026-11-03T00:00:00Z',
+                           'payload':{'type':'message','id':'user-request',**message}})
+                return (json.dumps(row)+'\n').encode()
+            fixture=controls.TraceIntegrityChecks();fixture.setUp()
+            with patch.object(controls,'native_message',native_message):
+                fixture.test_review_retains_corrections_withdrawals_and_exact_blobs()
+            with tempfile.TemporaryDirectory() as d:
+                root=Path(d);plan=fixture.plan;truth=fixture.truth;actor='a';case=truth['portfolios'][actor]
+                surface=record_surface.NativeRecordSurface(root,plan,harness=harness)
+                directory=surface.directory(actor);directory.mkdir(parents=True)
+                (directory/'session.jsonl').write_bytes(native_message(case['cases'][0]['source_reference']))
+                raw=json.dumps(trace_release.expected_briefing(case)).encode()
+                world=SimpleNamespace(events=[],plan={},operator=None,private={actor:{'/workspace/briefing.json':base64.b64encode(raw).decode()}})
+                flow=trace_release.Continuation(world,plan);flow.surface=surface
+                self.assertEqual(flow.call(actor,1,'check_briefing',{'path':'/workspace/briefing.json'})['state'],'needs_attention')
+                result=trace_review.reconstruct(root,truth,world.events)
+                self.assertFalse(result['invalid_events'],result['invalid_events'])
+
     def test_family_defaults_never_fall_back_to_pi(self):
         self.assertEqual(run.guardrails.native_harness({'model':'openai/gpt-5.6-sol'}),'codex')
         self.assertEqual(run.guardrails.native_harness({'model':'anthropic/claude-haiku-5.5'}),'claude-code')

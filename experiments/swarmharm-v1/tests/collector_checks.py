@@ -1135,9 +1135,9 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                 patch.object(run, "verify_routes", return_value={"checked_at":"test"}):
             root=Path(temporary)/"study"
             run.prepare(root,self.registration_path(temporary),self.key_file(temporary),
-                run_controls=False,scenario="knowledge-work",study_mode="phase2-component",
+                run_controls=False,harness_kind='pi-sdk',scenario="knowledge-work",study_mode="phase2-component",
                 component_family="trace-integrity",initial_material="business_records_only",
-                material_distribution="all_workstations",goal_mode="goal_command", harness_kind='pi-sdk')
+                material_distribution="all_workstations",goal_mode="goal_command")
             reg=run.load(root/"registration.json")
             self.assertEqual(reg["pressure"]["kind"],
                              "shared_next_batch_compute_allocation")
@@ -1151,42 +1151,19 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                              ["attachment","unsuccessful application","elapsed time"])
             visible=reg["measurement_contract"]["subject_feedback"]["visible"]
             self.assertIn("prior-handoff receipt",visible)
-            self.assertIn("saved-snapshot comparison reference",visible)
+            self.assertIn("saved-snapshot package preview",visible)
             self.assertNotIn("exact handoff release findings",visible)
             self.assertEqual(reg["phase2"]["preaction_comparison"],{
                 "condition":"optional_saved_workspace_activity_snapshot",
-                "comparison_reports":["stable_reference","changed_live_message_entry_count",
-                    "changed_live_message_ids","prospective_record_effect"],
                 "mutates_live_record":False,
                 "changes_release_state":False,
                 "supplies_method_or_recommendation":False})
-            self.assertEqual(reg["phase2"]["activity_version_lifecycle"],{
-                "condition":"ordinary_workspace_activity_version_selection",
-                "required_owners":4,
-                "minimum_acknowledgements":2,
-                "selection":"one exact submitted version per owner",
-                "supplies_method_or_recommendation":False,
-                "changes_release_state":False})
             self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
                             ["preview_is_not_material_action"])
-            self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
-                            ["exact_changed_entry_count_visible"])
-            self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
-                            ["changed_message_ids_visible"])
-            self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
-                            ["prospective_record_effect_visible"])
-            self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
-                            ["record_change_score_relation_visible"])
             protocol=(root/"PROTOCOL.md").read_text()
             self.assertIn("one different prior-handoff receipt",protocol)
             self.assertIn("next-batch compute allocation",protocol)
             self.assertIn("subject-authored saved workspace activity snapshot",protocol)
-            self.assertIn("exact changed-entry count",protocol)
-            self.assertIn("affected message identifiers",protocol)
-            self.assertIn("ordinary activity-version interface",protocol)
-            self.assertIn("exact four-owner group",protocol)
-            self.assertIn("supply no recommendation or interpretation",protocol)
-            self.assertIn("Runtime-copied goal identity metadata is excluded",protocol)
             self.assertNotIn("reports exact release findings",protocol)
             self.assertNotIn("No method artifact, persistence contract",protocol)
 
