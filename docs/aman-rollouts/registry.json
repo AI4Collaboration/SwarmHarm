@@ -7138,6 +7138,88 @@
           "sha256": "c4cc9a445537f767ac2391de2c9e20d7df8826a0eb076b302c921f20ed4877f4"
         }
       }
+    },
+    {
+      "experiment_id": "EXP-009",
+      "condition_id": "C04",
+      "condition_key": "sol61",
+      "preparation_id": "EXP-009-C04-P02",
+      "rollout_id": null,
+      "legacy_name": "EXP-009-C04-P02-r212-sol61",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-009-C04-P02-r212-sol61",
+      "collection_executed": false,
+      "status": "prepared_uncollected",
+      "source_commit": "3da2acc1e",
+      "created_at": "2026-11-03T14:03:48.301023+00:00",
+      "models": {
+        "sol61": "gpt-6.1-sol"
+      },
+      "reasoning_effort": "high",
+      "harness": "pi-sdk",
+      "goal_mode": "goal_command",
+      "route": "chatgpt-subscription",
+      "population": 4,
+      "scenario": "knowledge-work",
+      "study_mode": "phase2-component",
+      "environment_revision": "knowledge-work-trace-release-v159",
+      "registration_sha256": "9569057c040b4fcef86b75eb2b639927b91a51a91306f8c0f0f9beb9aa016653",
+      "registration_git": {
+        "path": "experiments/swarmharm-v1/registrations/EXP-009-C04-P02-r212-sol61/registration.json"
+      },
+      "budgets": {
+        "request_timeout_seconds": 300,
+        "max_transport_attempts_per_request": 4,
+        "transport_retry_backoff_seconds": 2,
+        "max_output_tokens_per_response": 16384,
+        "max_actor_seconds": 3600,
+        "max_batch_seconds": 4500,
+        "provider_concurrency": 4,
+        "scenario_timeout_seconds": 30,
+        "active_contexts_natural": 4
+      },
+      "controls": {
+        "passed": true,
+        "model_calls": 0,
+        "test_methods": 481,
+        "skipped_methods": 4,
+        "prompt_contract_passed": true,
+        "excluded_controls": [
+          {
+            "module": "tests/pi_collect_checks.py",
+            "method": "test_reference_archive_starts_from_ordinary_work_orders",
+            "reason": "Engineering TCP archive is outside the selected Knowledge Work trace component; host Docker lacks isolated gateway mode."
+          },
+          {
+            "module": "tests/records_server_checks.py",
+            "reason": "Engineering TCP archive is outside the selected Knowledge Work trace component; host Docker lacks isolated gateway mode."
+          }
+        ],
+        "verification": "Broad 481-method suite (4 condition-specific skips) plus successful rerun of its sole failing fixture after adding the audit folder. Every production source byte is unchanged from the broad suite. Original failed report preserved, not relabeled.",
+        "broad_report": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-009-C04-P01-r212-sol61/controls.json",
+          "sha256": "c4cc9a445537f767ac2391de2c9e20d7df8826a0eb076b302c921f20ed4877f4",
+          "source_commit": "dca2b1b3f",
+          "passed_at_original_collection": false
+        },
+        "targeted_fixture_report": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-009-C04-bridge-fixture-check.log",
+          "sha256": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad",
+          "passed": true
+        },
+        "changed_test_fixture": [
+          "experiments/swarmharm-v1/tests/pi_collect_checks.py"
+        ]
+      },
+      "fidelity_proof": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-009-C04-P02-fidelity.json",
+        "sha256": "b616ebff5107561a767ff1ef2b31b4841898592980dc21f91296cce5d2a07f78"
+      },
+      "provenance": {
+        "original_rollout": "r212",
+        "original_registration_commit": "a5f53b83a",
+        "cash_bonus_added": false,
+        "prior_closed_conditions_not_repeated": true
+      }
     }
   ],
   "coverage": {
@@ -7154,5 +7236,5 @@
       "Other hosts/archives not inventoried"
     ]
   },
-  "updated_at": "2026-11-03T13:53:08.191098+00:00"
+  "updated_at": "2026-11-03T14:04:39.225865+00:00"
 }

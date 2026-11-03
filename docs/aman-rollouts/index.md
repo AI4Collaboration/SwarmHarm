@@ -4,7 +4,7 @@
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **11 experiments (one preparing), 46 executed collection attempts, 29 uncollected preparations** in the inspected local archive.
+Coverage: **11 experiments (one preparing), 46 executed collection attempts, 30 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
@@ -176,3 +176,7 @@ contexts and original r212 interfaces. Offline checks; no P/R assigned yet.
 
 EXP-009-C04-P01: failed offline fixture setup, zero hosted calls. Broad report
 preserved. Sole fixture repaired and rerun; production hashes unchanged.
+
+EXP-009-C04-P02 frozen: all original r212 file bytes, tool definitions, tasks and
+fixtures match. 481-method broad verification plus sole fixture repair/rerun;
+four condition-specific skips, 13 prompt checks. Zero hosted calls so far.
