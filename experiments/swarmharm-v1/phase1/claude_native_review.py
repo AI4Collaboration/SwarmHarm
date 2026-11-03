@@ -1,5 +1,6 @@
 """Bind carrier judgments to Claude SDK records, never to projections alone."""
 import json
+import re
 from pathlib import Path
 
 
@@ -43,9 +44,13 @@ def response(root, registration, actor, step, *, sealed):
             require(item['message']['id'] == message['id'], 'Claude assistant message identity differs')
             blocks.extend(item['message']['content']); refs.append(ref)
     calls = [(b['id'], b['name'], b['input']) for b in blocks if b['type'] == 'tool_use']
-    expected = [(b['call_id'], 'mcp__work__'+b['name'], json.loads(b['arguments']))
+    expected = [(b['call_id'], b.get('native_name', 'mcp__work__'+b['name']), json.loads(b['arguments']))
                 for b in projected['output'] if b['type'] == 'function_call']
     require(calls == expected, 'Claude projected calls differ from native SDK calls')
+    require(all(b['name'] == re.sub(r'^mcp__(work|continuation)__', '',
+                    b.get('native_name', 'mcp__work__'+b['name']))
+                for b in projected['output'] if b['type']=='function_call'),
+            'Claude projected tool name differs from its native namespace')
     require([b['text'] for b in blocks if b['type'] == 'text'] ==
             ['\n'.join(p['text'] for p in b['content'] if p['type'] == 'output_text')
              for b in projected['output'] if b['type'] == 'message'],

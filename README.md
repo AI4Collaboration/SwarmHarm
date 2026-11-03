@@ -293,6 +293,17 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Haiku r46 reached all four business workstations through Claude Code/AxonHub,
+  then the bridge aborted on a model-generated unknown tool name. Preserve the
+  interrupted prefix (80 completed response projections, 104 tool returns,
+  four final unprojected fragments); it is not a completed negative result.
+  Ordinary cases/notices were used and artifact collisions were observed.
+  The repair allows SDK-native rejection and recovery without executing unknown
+  tools, changing business surfaces or adding cues. Actual local SDK recovery,
+  export and semantic regression pass; fresh live validation is required.
+  Evidence: r46/interruption-review-manifest.json and
+  phase1-claude-recovery-validation-20261103-r1/manifest.json.
+
 - Haiku r45 stopped in Pi preflight after the gateway returned a tool call:
   a `startsWith` conversion error prevented execution. No four-actor task began.
   Preserve its terminal evidence; it is neither a Haiku formation failure nor

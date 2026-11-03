@@ -15,44 +15,31 @@ The user permits updating harness implementations and CLI/SDK versions as
 needed, without renewed approval for old version requirements; verify compatibility. Old pins are not an immutable policy; preserve historical evidence
 and fresh-register changed versions. Do not modify active frozen preparations.
 
-## Active preparation r46 — 3 November 2026
+## Current harness recovery — 3 November 2026
 
-Source e82b045973d827414663e2d55e71c68dabd4a393 was pushed and actual remote
-matched before preparation. R46 preparation passed 516 common and 14 prompt checks plus selected real
-package/case controls; all 152 source/input/task/registration seals and catalogs
-verified. Four initial inputs/tools/files reviewed; preparation-audit.json saved.
-R46 is the fresh Engineering data_object vulnerable,
-ordinary_work/complete_batch, Haiku 5.5, Claude Code/AxonHub/high/goal off
-registration. Preparation session 42495 / PID 83789 completed; output
-../eval-readiness/phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-cc-r46.
-Do not restart preparation or edit its frozen 152 source files. Final common
-checks and selected physical package/case controls run inside preparation.
-No r46 hosted model call yet. Next: commit/push registration, verify absolute
-freeze, then collect once. Local exact
-Haiku SDK/high/tool-return/standalone replay check also passed without hosted calls.
+R46 is terminal collector_error at 11:47:59 UTC; do not restart. Source e82b04597,
+registration 26fe7cce5. Both preflights passed; all four subjects started through
+Claude Code/AxonHub. All available native semantic content was reviewed: 80
+completed controller responses, 104 executed tool returns and four additional
+unprojected final response fragments, plus preflight. All 6116 terminal files,
+152 frozen source files and four exact absent workstations verified.
+Evidence: r46/interruption-review-manifest.json and harness-failure-audit.json.
+This is an interrupted trajectory, not a completed behavioral result.
 
-## Claude Code / AxonHub integration in progress — 3 November 2026
+The bridge now retains unknown/schema-invalid calls and lets the real SDK reject
+them, including errors delivered before message_stop. Only registered handlers
+execute. Actual rejection text enters subsequent history and native/ATIF audit.
+40 focused/integration/semantic tests, 9 bridge and 14 prompt checks pass; initial
+fixture failures are preserved. Business v12 tasks, tools, ordinary cases/notices,
+carrier scopes and budgets are byte unchanged. Evidence:
+phase1-claude-recovery-validation-20261103-r1. No hosted model call during repair.
+Next: commit/push this source, prepare a fresh Engineering Haiku 5.5 / Claude Code
+AxonHub registration, validate seals and same-source controls, then collect once.
+No automation or human-review gate. Engineering and publication ready=false.
 
-Haiku r45 is terminal `provider_hold` at preflight, 11:10:39 UTC. One gateway
-model response returned confirm_service tool use; Pi parsing raised a startsWith
-TypeError before any subject workstations or business task. All 185 terminal
-files verified; preflight-failure-review.json binds the original manifest.
-Do not restart r45. Sol r44 remains prepared and uncollected.
-
-New gateway adapter work uses the existing Claude Agent SDK and shared
-prepare/collect/review pipeline, a private temporary config, AxonHub bearer
-credential and explicit canonical/native same-model identities. All model
-aliases are pinned to the selected model. Carrier semantic review binds actual
-SDK calls, public text and exact tool returns before interpreting a signal;
-controller projections are not complete provider HTTP context. Initial tasks,
-ordinary cases/notices, carrier scopes and budgets are unchanged.
-Final gateway/standalone replay tests pass (4), Claude bridge checks pass (8),
-and prompt checks pass (14). Initial full suite: 544 tests, six historical
-Codex CLI pin errors; isolated pinned Codex compatibility follow-up passes all
-12 tests. Original failure log retained. Final common source checks run again
-inside fresh preparation. Evidence: phase1-claude-gateway-validation-20261103-r1. No hosted Claude Code rollout or new registration yet. Complete offline
-checks, commit/push source, prepare a fresh Engineering Haiku 5.5 registration,
-audit inputs and freeze, then collect once and review every native trace.
+R45's Pi preflight failure and r44's uncollected Sol preparation remain preserved.
+The first gateway adapter validation and r46 preparation (516 common +14 prompt)
+remain historical evidence; they do not validate the current recovery revision.
 
 ## Haiku comparison authorized — 3 November 2026
 

@@ -397,14 +397,7 @@
     "portable_evidence": "../eval-readiness/phase1-engineering-offline-repair-evidence-20261103-r1",
     "portable_validation": "../eval-readiness/phase1-offline-repairs-portability-audit-20261103-r1/manifest.json"
   },
-  "active_rollout": {
-    "name": "phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-cc-r46",
-    "status": "prepared; registration push and collection freeze pending",
-    "harness": "claude-code",
-    "authentication": "axonhub",
-    "model": "anthropic/claude-haiku-5.5",
-    "model_calls": 0
-  },
+  "active_rollout": null,
   "incomplete_attempts": [
     {
       "registration": "phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-r45",
@@ -414,6 +407,16 @@
       "subject_population_started": false,
       "review": "../eval-readiness/phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-r45/preflight-failure-review.json",
       "review_sha256": "40464c14abaca10645cc5c79bcad35070cffe49d93ae4367f3bdf47dc3b186be"
+    },
+    {
+      "registration": "phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-cc-r46",
+      "harness": "claude-code",
+      "model": "anthropic/claude-haiku-5.5",
+      "status": "collector_error_unknown_tool_bridge",
+      "subject_population_started": true,
+      "completed_behavioral_rollout": false,
+      "review": "../eval-readiness/phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-cc-r46/interruption-review-manifest.json",
+      "review_sha256": "ede167e9db309f9b0e60eff44032b048767c8843e1d6875c13c61582f97a5380"
     }
   ]
 }

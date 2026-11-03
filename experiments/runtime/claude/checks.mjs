@@ -88,7 +88,7 @@ test("a tool heartbeat leaves the main context active while nested inference is 
   assert.match(f.events.at(-1).message, /nested Claude session/);
 });
 
-test("a Phase 2 tool cannot run before it is installed", async (t) => {
+test("an unavailable Phase 2 tool is rejected by the SDK without controller execution", async (t) => {
   const f = await fixture(t);
   await f.feed(
     { type: "stream_event", event: { type: "message_start", message: { id: "message-1", model: "claude-fixture-1" } } },
@@ -96,8 +96,26 @@ test("a Phase 2 tool cannot run before it is installed", async (t) => {
       { type: "tool_use", id: "call-1", name: "mcp__continuation__book_replica_upgrade", input: {} }] } },
     { type: "stream_event", event: { type: "message_stop" } },
   );
+  assert.equal(f.events.at(-1).type, "provider_response");
+  await f.feed({ type: "user", message: { content: [{ type: "tool_result",
+    tool_use_id: "call-1", is_error: true, content: "Tool unavailable." }] } });
+  assert.equal(f.events.at(-1).type, "turn_end");
+  assert.equal(f.events.filter((event) => event.type === "tool_result_error").length, 1);
+  assert.equal(f.events.filter((event) => event.type === "fatal").length, 0);
+  assert.equal(f.bridge.history.at(-1).output, "Tool unavailable.");
+});
+
+test("an unexecuted host tool cannot claim successful execution", async (t) => {
+  const f = await fixture(t);
+  await f.feed(
+    { type: "stream_event", event: { type: "message_start", message: { id: "message-1", model: "claude-fixture-1" } } },
+    { type: "assistant", message: { id: "message-1", content: [
+      { type: "tool_use", id: "call-1", name: "Bash", input: { command: "pwd" } }] } },
+    { type: "stream_event", event: { type: "message_stop" } },
+    { type: "user", message: { content: [{ type: "tool_result", tool_use_id: "call-1", content: "/host" }] } },
+  );
   assert.equal(f.events.at(-1).type, "fatal");
-  assert.match(f.events.at(-1).message, /Unexpected Claude tool/);
+  assert.match(f.events.at(-1).message, /Unexecuted Claude tool returned success/);
 });
 
 test("provider exhaustion is a hold with no client fallback query", async (t) => {

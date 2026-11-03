@@ -123,4 +123,90 @@ class GatewayChecks(unittest.TestCase):
             self.assertNotIn('local-fixture-token',''.join(p.read_text() for p in (folder/'claude/native').glob('*.json')))
 
 
+    def test_real_sdk_recovers_unknown_and_invalid_calls_without_executing_them(self):
+        from http.server import BaseHTTPRequestHandler
+        import export_atif
+        class Handler(BaseHTTPRequestHandler):
+            requests=[]
+            def log_message(self,*args):pass
+            def do_POST(self):
+                body=json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+                type(self).requests.append(body)
+                n=len(type(self).requests)
+                if n==1:
+                    blocks=[{'type':'tool_use','id':'unknown-1','name':'mcp__work__filing_status_placeholder_never_called','input':{}}]
+                elif n==2:
+                    blocks=[{'type':'tool_use','id':'invalid-2','name':'mcp__work__confirm_service','input':{'query':17}}]
+                elif n==3:
+                    blocks=[{'type':'tool_use','id':'unknown-3','name':'mcp__work__unknown','input':{}},
+                            {'type':'tool_use','id':'valid-3','name':'mcp__work__confirm_service','input':{'query':'available'}}]
+                else:blocks=[{'type':'text','text':'Service is available.'}]
+                message={'id':f'msg_{n}','type':'message','role':'assistant','model':'claude-haiku-5-5',
+                         'content':[],'stop_reason':None,'stop_sequence':None,'usage':{'input_tokens':10,'output_tokens':0}}
+                events=[{'type':'message_start','message':message}]
+                for i,b in enumerate(blocks):
+                    tool=b['type']=='tool_use'
+                    initial={**b,'input':{}} if tool else {'type':'text','text':''}
+                    delta={'type':'input_json_delta','partial_json':json.dumps(b['input'])} if tool else {'type':'text_delta','text':b['text']}
+                    events.extend([{'type':'content_block_start','index':i,'content_block':initial},
+                                   {'type':'content_block_delta','index':i,'delta':delta},
+                                   {'type':'content_block_stop','index':i}])
+                events.extend([{'type':'message_delta','delta':{'stop_reason':'end_turn' if n>=4 else 'tool_use','stop_sequence':None},'usage':{'output_tokens':5}},
+                               {'type':'message_stop'}])
+                self.send_response(200);self.send_header('Content-Type','text/event-stream');self.send_header('Connection','close');self.end_headers()
+                for e in events:self.wfile.write(('event: '+e['type']+'\ndata: '+json.dumps(e)+'\n\n').encode())
+        server=ThreadingHTTPServer(('127.0.0.1',0),Handler)
+        threading.Thread(target=server.serve_forever,daemon=True).start()
+        self.addCleanup(server.server_close);self.addCleanup(server.shutdown)
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);folder=root/'natural/actor';(folder/'trace').mkdir(parents=True)
+            tool={'name':'confirm_service','description':'Read service status.',
+                  'parameters':{'type':'object','properties':{'query':{'type':'string'}},'required':['query'],'additionalProperties':False}}
+            model='anthropic/claude-haiku-5.5';events=c.new_queue();seen=[];last=[];rejected=[]
+            with patch.object(c,'AXONHUB_BASE',f'http://127.0.0.1:{server.server_port}/v1'):
+                agent=c.ClaudeAgent('actor',events,folder=folder/'claude',model=model,thinking_level='high',
+                    max_output_tokens=1024,request_timeout_ms=10000,tools=[tool],active_tools=['confirm_service'],
+                    goal_mode='off',api_base=c.AXONHUB_BASE,api_key='local-only')
+            try:
+                ready=c.wait_ready(events,['actor']);agent.prompt('Check service availability.')
+                while True:
+                    _,m=events.get(timeout=40);seen.append(m['type'])
+                    if m['type']=='request':
+                        last=m['payload']['input'];run.save(folder/'trace'/f"{m['turn']:04d}.request.json",m['payload'])
+                    elif m['type']=='provider_response':
+                        run.save(folder/'trace'/f"{m['turn']:04d}.response.json",m['event']['response']);last.extend(m['event']['response']['output'])
+                    elif m['type']=='tool_call':
+                        self.assertEqual(m['call_id'],'valid-3')
+                        run.save(folder/'trace/0003-tool-1.json',{'event_id':1,'name':'confirm_service','call_id':'valid-3',
+                            'arguments':'{"query":"available"}','result':{'status':'available'}})
+                        agent.reply(m['id'],output='{"status": "available"}')
+                    elif m['type']=='tool_result_error':rejected.append(m)
+                    elif m['type']=='settled':
+                        self.assertFalse(m.get('error_message'),m);break
+                    elif m['type'] in ('fatal','exited'):self.fail(str(m))
+            finally:agent.close()
+            self.assertEqual(seen.count('tool_call'),1)
+            self.assertEqual(seen.count('turn_end'),4, {'seen':seen,'rejected':rejected,'sdk_results':[run.load(p) for p in sorted((folder/'claude/native').glob('*.json')) if run.load(p).get('type')=='user']})
+            self.assertEqual({m['call_id'] for m in rejected},{'unknown-1','invalid-2','unknown-3'})
+            self.assertEqual(len(Handler.requests),4)
+            for n,call in ((1,'unknown-1'),(2,'invalid-2'),(3,'unknown-3')):
+                results=[b for m in Handler.requests[n]['messages'] if isinstance(m['content'],list)
+                         for b in m['content'] if b.get('type')=='tool_result' and b.get('tool_use_id')==call]
+                self.assertTrue(results);self.assertTrue(results[-1]['is_error'])
+            native=list((folder/'claude/native').glob('*.json'))
+            session=next(run.load(p)['session_id'] for p in native if run.load(p).get('session_id'))
+            reg={'study_mode':'phase1','harness':{'kind':'claude-code','authentication':'axonhub','system_prompt':c.SYSTEM_PROMPT,
+                 'goal_mode':'off','accepted_native_model_ids':c.gateway_model_ids(model)},'models':{'claude':model},
+                 'plan':{'natural':{'actor':{'provider':'claude'}}}}
+            run.save(root/'registration.json',reg);run.save(folder/'history.json',last)
+            run.save(folder/'result.json',{'claude_session':{'session_id':session},'status':'complete','harness_rejected_tool_calls':rejected})
+            for step in range(1,5):claude_native_review.response(root,reg,'actor',step,sealed=False)
+            exported=export_atif.export_actor(root,'natural','actor')
+            self.assertTrue(exported['native_continuity_passed'])
+            atif=run.load(folder/'agent/trajectory.json')
+            observations=[o for s in atif['steps'] for o in s.get('observation',{}).get('results',[])]
+            self.assertEqual({o['source_call_id'] for o in observations},{'unknown-1','invalid-2','unknown-3','valid-3'})
+            self.assertEqual(atif['extra']['harness_rejected_tool_calls'],3)
+
+
 if __name__=='__main__':unittest.main()

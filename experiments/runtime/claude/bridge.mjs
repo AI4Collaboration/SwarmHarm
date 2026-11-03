@@ -25,6 +25,7 @@ export class ClaudeBridge {
     this.history = [];
     this.pendingInputs = [];
     this.calls = new Map();
+    this.earlyToolErrors = [];
     this.callWaiters = new Set();
     this.toolChain = Promise.resolve();
     this.servers = {};
@@ -146,10 +147,11 @@ export class ClaudeBridge {
     const output = [];
     for (const block of current.blocks) {
       if (block.type === "tool_use") {
-        if (!PREFIX.test(block.name) || !this.active.has(block.name.replace(PREFIX, "")))
-          throw new Error(`Unexpected Claude tool ${block.name}`);
+        // Preserve attempted calls, including hallucinated names. The SDK owns
+        // rejection; an unavailable tool is never installed or dispatched here.
         const call = { type: "function_call", call_id: block.id,
-          name: block.name.replace(PREFIX, ""), arguments: JSON.stringify(block.input) };
+          name: block.name.replace(PREFIX, ""), native_name: block.name,
+          arguments: JSON.stringify(block.input) };
         output.push(call);
         this.calls.set(block.id, { ...call, turn: current.turn, input: block.input, claimed: false });
       } else if (block.type === "text") {
@@ -170,6 +172,8 @@ export class ClaudeBridge {
     this.channel.emit({ type: "provider_response", turn: current.turn, attempt: 1,
       event: { type: "response.completed", response } });
     this.current = null;
+    for (const [message, record] of this.earlyToolErrors.splice(0))
+      this.rejectedResults(message, record);
     for (const wake of this.callWaiters) wake();
     if (!current.calls) this.turnEnd(current);
   }
@@ -210,6 +214,32 @@ export class ClaudeBridge {
     return run;
   }
 
+  rejectedResults(message, source) {
+    if (!Array.isArray(message.message?.content)) return;
+    for (const block of message.message.content) {
+      if (block.type !== "tool_result") continue;
+      const call = this.calls.get(block.tool_use_id);
+      // Successful controller calls were completed by execute(). Schema and
+      // unknown-name errors never enter that handler; await their real SDK result.
+      if (!call) {
+        // Claude Code may reject an unknown name before streaming message_stop.
+        if (block.is_error === true && this.current)
+          this.earlyToolErrors.push([{ message: { content: [block] } }, source]);
+        continue;
+      }
+      if (call.claimed) continue;
+      if (block.is_error !== true) throw new Error("Unexecuted Claude tool returned success");
+      const output = typeof block.content === "string" ? block.content
+        : block.content.map((part) => part.text ?? "").join("\n");
+      this.history.push({ type: "function_call_output", call_id: call.call_id, output });
+      this.calls.delete(call.call_id);
+      this.channel.emit({ type: "tool_result_error", call_id: call.call_id,
+        name: call.name, turn: call.turn, error: output, native_record: source });
+      const current = this.turns.get(call.turn);
+      if (++current.completed === current.calls) this.turnEnd(current);
+    }
+  }
+
   async consume() {
     // Iterate Query itself so disposal cannot wait behind a pending CLI read.
     // Same lifecycle pattern as T3 Code's Claude query runner.
@@ -236,6 +266,8 @@ export class ClaudeBridge {
         if (message.supersedes?.length) throw new ProviderHold("Claude superseded prior messages");
         if (!this.current || this.current.id !== message.message.id) throw new Error("Claude content has no matching stream start");
         this.current.blocks.push(...message.message.content);
+      } else if (message.type === "user") {
+        this.rejectedResults(message, source);
       } else if (message.type === "result") {
         this.channel.emit({ type: "settled", turn: this.turn, aborted: false,
           text: message.result ?? "", error_message: message.is_error || message.subtype !== "success"

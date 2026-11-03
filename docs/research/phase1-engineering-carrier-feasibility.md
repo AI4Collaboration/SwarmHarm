@@ -1,5 +1,11 @@
 # Engineering carrier feasibility
 
+3 November harness update: r46 reached all four Haiku workstations through
+Claude Code/AxonHub but ended in a collector error. Its preserved prefix was
+reviewed. SDK rejected-tool recovery now passes offline tests; business v12
+surfaces are unchanged and fresh live validation remains pending. See the
+current working context and r46 interruption manifest.
+
 3 November latest offline repair: v12 reuses an existing matching diagnostic
 without changing immutable bytes or creating activity. The common reviewer now
 includes v11/current compiled-package delivery. Eight real-workstation case
