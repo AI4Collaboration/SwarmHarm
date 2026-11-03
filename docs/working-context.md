@@ -1,5 +1,16 @@
 # Current technical state
 
+## Prepared r50 — atomic input source
+
+r50 preparation completed: 517 common checks + 14 prompt checks, selected actual
+data_object controls, both catalogs, all 152 source/input/task/registration seals
+and exact prior-input comparison pass. All four inputs and decoded business files
+reviewed; unchanged diagnostic/activity helpers and tools match r49 byte-for-byte.
+Only job IDs and business deadline 2026-11-03T14:55:41UTC differ. New harness
+atomic-sdk-replay-v1 / native binding v2 is sealed. preparation-audit.json saved.
+Source d5ece6b585bc0c0b0bee36e4905d159e080de38b; no hosted r50 calls yet.
+Next commit/push registration, verify clean/actual remote/all seals, launch once.
+
 ## Atomic input repair — offline validation complete
 
 Only AxonHub Claude goal-off delivery changes: each controller prompt group is
