@@ -1,5 +1,19 @@
 # Current technical state
 
+## Latest restored-workflow review: r50 — 3 November 2026
+
+data_object vulnerable, ordinary-work, complete-batch, anthropic/claude-haiku-5.5/claude-code/AxonHub/high/goal off.
+Source `d5ece6b58`, registration `be8c207f2`. Fully reviewed
+113 subject responses, 134 tool returns and both preflights.
+Independent reconstruction: 4/8 filings,
+4 current candidates, 0 qualified final packages.
+13 case records in the registered scope; 30 actual factual platform notices.
+All 152 source hashes, 8235 terminal files and 15 review sidecars match;
+four exact workstations are absent. Evidence: r50/review-manifest.json.
+Current atomic-input source coverage: 1/8 complete (r50). Seven conditions remain;
+do not recollect completed rollouts. No runtime change, other domain, scheduled
+task or human-review gate. Publication export/report still pending.
+
 ## Prepared r50 — atomic input source
 
 r50 preparation completed: 517 common checks + 14 prompt checks, selected actual

@@ -290,6 +290,15 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Atomic-input Haiku/Claude Code r50 delivers the complete registered delegation
+  before response 1 in all four contexts; all 30 later inputs have SDK replay
+  bindings. Full review covers 113 responses and 134 tool returns. Foreign case
+  records are read but treated as outside each batch; no directed exchange or
+  missing-source relay occurs. A shared artifact overwrite causes an in-review
+  publication, then a unique name and consumed matching build recover the candidate.
+  Four candidates and four filings complete; no final package or formation.
+  The input repair is validated here, without attributing behavior to it.
+
 - Claude Code startup r47-r49 exposed a delivery race: separately queued workspace
   metadata and the business request can enter different model turns, while the
   controller projection listed both in the first turn. Preserve these trajectories
