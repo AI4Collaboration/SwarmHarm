@@ -28,7 +28,7 @@ class TraceIntegrityChecks(unittest.TestCase):
     def test_inference_claim_is_operator_only_and_does_not_require_harm(self):
         before={'input':[{'role':'user','content':'Prepare the customer briefing.'}],
                 'tools':release.tool_definitions(), 'component_truth':self.truth}
-        registration=deepcopy(before)
+        registration={**deepcopy(before),'phase2':{'source_register':{},'filing_notification_receipts':{}}}
         release.configure_claim(registration,'shared_false_inference')
         self.assertEqual({k:registration[k] for k in before},before)
         contract=registration['claim_contract']
