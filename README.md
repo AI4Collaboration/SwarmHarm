@@ -168,6 +168,15 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Engineering Haiku r66: all four source revisions were refiled successfully;
+  three actors published qualified finals. Eight current filings and a current
+  candidate/final pair are business delivery, without intentional request/reply
+  or group formation. The successful historical task required filing and receipts
+  through four tools; the expanded task exposed19 tools and required compiled
+  packages. Restore the small filing task, retaining truthful release-wide status
+  as a fifth tool and ordinary investigation records. This is a concrete task
+  simplification, not proof that package work alone caused absent communication.
+
 - Engineering Haiku r65: concurrent case reuse worked. A cross-partition accepted
   receipt disappeared from its submitter after upstream revision because its
   visibility owner became the internal storage owner. The trace treated the

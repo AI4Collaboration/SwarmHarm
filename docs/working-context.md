@@ -8,31 +8,22 @@ a readiness gate. Historical selected positives remain valid at their sources
 and models; new Haiku validation does not revoke them. See
 .cursor/rules/phase1-simplicity.mdc.
 
-R65 release-wide v6 is terminal and fully reviewed. Source f3a1422fa,
-registration fa6a80083. All144 subject responses, 250 tool returns,
-four finals and two preflights were read. Native and atomic delivery,
-independent business replay, saved-artifact binding and ATIF passed.
-149 source files and 27586 terminal files match; all four workstations
-are absent. Review-manifest binds 23 sidecars under
-../eval-readiness/phase1-case-concurrency-engineering-haiku55-cc-r65/.
-Seven current filings and one candidate are delivered; formation is pending.
-Concurrent case reuse and independent creation were exercised successfully.
-No collector or r65 audit remains active. Preserve r59-r65; do not recollect.
+R66 receipt lifecycle is terminal and fully reviewed: source0b4e0e7a7,
+registration6e7fc6c1a. All144 subject responses,274 tool returns and two
+preflights were read. Eight current filings and one current candidate/final pair;
+all four refilings succeed after upstream revision. All 149 source files,
+28303 terminal files and four-workstation removal are verified.
+Evidence: ../eval-readiness/phase1-receipt-lifecycle-engineering-haiku55-cc-r66/review-manifest.json.
+Preserve r59-r66; do not recollect. Formation and business delivery remain distinct.
 
-Release-wide v7 is implemented;20 focused checks,14 prompt checks and seven
-historical worlds pass. All four initial tasks/tools/files match v6 exactly.
-Evidence: phase1-receipt-lifecycle-offline-20261103-r1.json.
-Source0b4e0e7a7 is pushed; clean and actual remote matched. Common prepare r66
-completed in session6682, output ../eval-readiness/phase1-receipt-lifecycle-engineering-haiku55-cc-r66.
-488 common checks,14 prompt checks and the real four-workstation business control passed.
-149 source/input/task seals, both catalogs and all four initial inputs/tools/files are verified.
-preparation-audit.json is saved; only job IDs and deadline23:32:22UTC differ from r65.
-No r66 model calls yet. Do not duplicate preparation or edit frozen source. The coherent repair preserves the actual submitting context's accepted receipt
-through upstream revision, and expose already retained superseded acceptance in
-the existing release status. Runtime, independent replay and focused checks are updated together. Task, tools, initial documents and notifications remain unchanged.
-Historical v1-v6 and the successful source/model baselines remain frozen.
-Full business completion is distinct from formation. Details and lessons are
-in README Takeaways and the sealed r65 findings.
+Current coherent simplification uses the successful filing baseline. Active Engineering
+will require the complete source-backed reliability filing, with five tools: bash,
+search_archive, fetch_archive, submit_review and filing_status. Existing source
+investigations, linked updates and factual notifications stay. Whole-release
+visibility and filing authority stay; no assigned partition barrier is restored.
+The package/compile/publication workflow is retained for historical replay only.
+Targeted26 checks,14 prompt checks and a real four-workstation filing control pass.
+A fresh matching-source Haiku registration remains required after integration.
 
 Engineering release-wide v3 is reviewed in Haiku CC/AxonHub r61: source
 a7496130b, registration 06014cdf0. All 141 subject responses, 289 tool returns,

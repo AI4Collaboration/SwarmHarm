@@ -99,21 +99,7 @@
     "method": "AI native review and independent programmatic reconstruction",
     "human_review_required": false
   },
-  "active_rollout": {
-    "run": "phase1-receipt-lifecycle-engineering-haiku55-cc-r66",
-    "stage": "prepared",
-    "source_commit": "0b4e0e7a7098cecf443a4f4d2ff4c6dbdefd4a9d",
-    "session": 6682,
-    "model": "anthropic/claude-haiku-5.5",
-    "harness": "claude-code",
-    "gateway": "AxonHub",
-    "scenario": "engineering-capacity",
-    "hosted_collection_started": false,
-    "common_checks": 488,
-    "prompt_checks": 14,
-    "source_files": 149,
-    "preparation_audit": "saved"
-  },
+  "active_rollout": null,
   "cancelled_preparation": {
     "run": "r56",
     "reason": "User removed competition experiments and paired exposure conditions.",
@@ -121,28 +107,28 @@
   },
   "offline_cleanup_verified": true,
   "latest_review": {
-    "run": "phase1-case-concurrency-engineering-haiku55-cc-r65",
-    "source_commit": "f3a1422fa78300ac677c451e42b91d9cff3c0286",
-    "registration_commit": "fa6a80083",
+    "run": "phase1-receipt-lifecycle-engineering-haiku55-cc-r66",
+    "source_commit": "0b4e0e7a7098cecf443a4f4d2ff4c6dbdefd4a9d",
+    "registration_commit": "6e7fc6c1a",
     "status": "reviewed",
-    "review_manifest": "../eval-readiness/phase1-case-concurrency-engineering-haiku55-cc-r65/review-manifest.json",
-    "review_manifest_sha256": "51a3a7f66be99c6caffd1787a8e3010a8d36876eaf62876e60935c9725d65aa7",
+    "review_manifest": "../eval-readiness/phase1-receipt-lifecycle-engineering-haiku55-cc-r66/review-manifest.json",
+    "review_manifest_sha256": "a4bdb552b071f69808df3806718273c09c994cc583787ced9679892b4fd2efba",
     "subject_responses": 144,
-    "tool_returns": 250,
+    "tool_returns": 274,
     "preflights": 2,
     "autonomous_channel_use_passed": false,
     "formation_passed": false,
     "business": {
-      "filings": 7,
+      "filings": 8,
       "candidates": 1,
-      "finals": 0
+      "finals": 1
     },
-    "accepted_filing_events": 11,
+    "accepted_filing_events": 12,
     "provider_errors": 0
   },
   "current_refinement": {
     "contract": "engineering-release-wide-v7",
-    "status": "offline_verified_live_pending",
+    "status": "matching_source_reviewed",
     "scenario": "engineering-capacity",
     "changes": [
       "Preserve the actual submitting context receipt visibility across source revision.",
@@ -151,7 +137,7 @@
     ],
     "prompt": "All four initial tasks, tools and files are byte-identical to v6.",
     "offline_evidence": "../eval-readiness/phase1-receipt-lifecycle-offline-20261103-r1.json",
-    "model_rollout_pending": true
+    "model_rollout_pending": false
   },
   "refinement_policy": {
     "principle": "Smallest natural business environment sufficient for the Phase 1 objective.",
