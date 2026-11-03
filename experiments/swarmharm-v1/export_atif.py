@@ -4,6 +4,7 @@ import re
 from pathlib import Path
 from harbor.models.trajectories import Trajectory
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'runtime'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'runtime'))
 from codex_evidence import native_evidence as codex_native_evidence
 
 def read(p):return json.loads(Path(p).read_text())
@@ -152,6 +153,19 @@ def export_actor(root,phase,actor):
         return export_claude_context_without_response_group(root,phase,actor,read(root/'registration.json'))
     assert requests,'No model requests';first=read(requests[0]);steps=[];hashes={};missing=[];uncommitted=[];tools=0
     registration=read(root/'registration.json');study_mode=registration.get('study_mode','connected')
+    pi_subscription=(registration.get('harness',{}).get('kind')=='pi-sdk' and
+                     registration['harness'].get('authentication')=='chatgpt-subscription')
+    def native_request(path):
+        value=read(path)
+        if pi_subscription and 'instructions' in value:
+            value={**value,'input':[{'role':'system','content':value['instructions']},*value.get('input',[])]}
+            response=path.with_name(path.name.replace('.request.json','.response.json'))
+            value['tools']=(read(response).get('tools',value.get('tools',[])) if response.exists()
+                            else first.get('tools',value.get('tools',[])))
+        return value
+    first=native_request(requests[0])
+    if pi_subscription and 'instructions' in read(requests[-1]):
+        history=[{'role':'system','content':native_request(requests[-1])['input'][0]['content']},*history]
     is_claude=registration.get('harness',{}).get('kind')=='claude-code'
     is_codex=registration.get('harness',{}).get('kind')=='codex'
     is_sdk=is_claude or is_codex
@@ -173,21 +187,28 @@ def export_actor(root,phase,actor):
     phase2_tools_seen=study_mode=='phase2-component' and bool(initial_tools)
     platform_updates={read(p)['input_message']['content']:p for p in (folder/'trace').glob('*-platform-update.json')}
     def add(source,message,**kw):steps.append({'step_id':len(steps)+1,'source':source,'message':message,**kw})
-    add('system',text_of(system['content']),extra={'native_role':system['role'],'native_field':'input[0]',
+    add('system',text_of(system['content']),extra={'native_role':system['role'],'native_field':'instructions' if pi_subscription else 'input[0]',
         'harness':'codex' if is_codex else 'claude-code' if is_claude else 'pi-sdk',
         'scope':('SDK system prompt preset configuration; rendered prompt text is not captured'
                  if isinstance(harness['system_prompt'],dict) else 'controller custom system prompt; SDK-internal additions unobservable')
                 if is_sdk else 'provider request'})
     last_agent=None;prompt_tools=[tool['name'] for tool in initial_tools]
     for request_index,reqpath in enumerate(requests):
-        req=read(reqpath);label=reqpath.name.split('.')[0];extension_outputs=[]
+        req=native_request(reqpath);label=reqpath.name.split('.')[0];extension_outputs=[]
         tool_names=[tool['name'] for tool in req.get('tools',[])]
-        updated=system_prompt_update(expected,req['input'],tool_names!=prompt_tools)
+        updated=(req['input'][0] if pi_subscription and canonical(req['input'][0])!=canonical(expected[0])
+                 else system_prompt_update(expected,req['input'],tool_names!=prompt_tools))
         if updated is not None:
             expected[0]=updated;prompt_tools=tool_names
             add('system',text_of(updated['content']),extra={'native_role':updated['role'],'native_record':str(reqpath.relative_to(folder)),'kind':'system_prompt_update','reason':'Pi re-rendered its system prompt for a changed active tool set.'})
         for item in appended_input(expected,req['input']):
             expected.append(item)
+            if pi_subscription and item.get('type')=='additional_tools':
+                add('system',json.dumps(item,ensure_ascii=False),extra={
+                    'native_record':str(reqpath.relative_to(folder)),
+                    'native_type':'additional_tools','native_role':item.get('role'),
+                    'scope':'Native subscription tool catalog; preserved without treating it as business dialogue.'})
+                continue
             if item.get('type')=='function_call_output':
                 extension_outputs.append({'source_call_id':item['call_id'],'content':item['output']})
                 continue
