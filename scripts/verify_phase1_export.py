@@ -29,9 +29,15 @@ def verify(root, replay=False):
         check(base,'evidence-manifest.json',item['terminal_manifest_sha256'])
         check(base,'review-manifest.json',item['review_manifest_sha256'])
         terminal=read(base/'evidence-manifest.json');review=read(base/'review-manifest.json')
-        if review['terminal_manifest_sha256']!=item['terminal_manifest_sha256']:
+        if review.get('schema') == 'phase1-review-sidecars-v1':
+            review_files=dict(review['files'])
+            terminal_hash=review_files.pop('evidence-manifest.json')
+        else:
+            review_files=review['review_files']
+            terminal_hash=review['terminal_manifest_sha256']
+        if terminal_hash!=item['terminal_manifest_sha256']:
             raise ValueError('Unbound review')
-        for relative,expected in {**terminal['files'],**review['review_files']}.items():
+        for relative,expected in {**terminal['files'],**review_files}.items():
             check(base,relative,expected);total+=1
         if replay:
             world=read(base/'natural/world.json');reg=read(base/'registration.json')
@@ -52,12 +58,18 @@ def verify(root, replay=False):
             if (base/'terminal-audit.json').is_file():
                 terminal_audit=read(base/'terminal-audit.json')
                 if 'business' in terminal_audit:
-                    business={'filings':len(packages['verified_filing_events']),
-                              'candidates':packages['ready_candidates'],'finals':packages['ready_packages']}
+                    business={'filings':len(packages['verified_filing_events']),'finals':packages['ready_packages']}
+                    if 'ready_candidates' in packages:business['candidates']=packages['ready_candidates']
                     expected=terminal_audit['business']
                     if 'filed' in expected:
-                        expected={'filings':expected['filed'],'candidates':expected['ready_candidates'],
-                                  'finals':expected['ready_final_packages']}
+                        if 'ready_candidates' in expected:
+                            expected={'filings':expected['filed'],'candidates':expected['ready_candidates'],
+                                      'finals':expected['ready_final_packages']}
+                        else:
+                            # V8 predates qualification candidates. Compare only
+                            # the historical endpoints, without inventing one.
+                            expected={'filings':expected['filed'],'finals':expected['ready_packages']}
+                            business.pop('candidates',None)
                     if business != expected:
                         raise ValueError('Business reconstruction differs: '+item['name'])
             replayed.append({'name':item['name'],'foreign_observations':len(physical['foreign_observations']),

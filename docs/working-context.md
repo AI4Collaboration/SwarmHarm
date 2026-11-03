@@ -1,5 +1,18 @@
 # Current technical state
 
+## Ongoing r40 and export compatibility — 3 November 2026
+
+R39 complete. R40 queue repaired preparation passed 514 common and 14 prompt checks,
+selected real carrier/case controls, both catalogs and all 150 source/input/task seals.
+Source c35b86fa2; inputs/tools/files exactly reuse reviewed r39 except job IDs.
+Preparation audit saved; no r40 model calls yet. Commit/freeze then launch once.
+Export reconstruction now passes all 18 indexed rollouts and 27,078 bound files,
+including original v8 manifest/business schema and v10/v11 pressure. The initial
+old-schema failures are retained; no original evidence or scores changed. This
+is a corrected-verifier diagnostic against the unchanged temporary export; final
+standalone release export still follows remaining scope reviews. Evidence:
+phase1-portability-all-reviewed-validation-20261103-r1/manifest.json.
+
 ## Latest restored-workflow review: r39 — 3 November 2026
 
 message_transport vulnerable, ordinary-work, complete-batch, Sol 5.6/Pi/high/goal off.

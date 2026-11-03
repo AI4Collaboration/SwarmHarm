@@ -29,9 +29,15 @@ def export(out, roots, secrets=(), audit_roots=()):
     for root in roots:
         terminal=json.loads((root/'evidence-manifest.json').read_text())
         review=json.loads((root/'review-manifest.json').read_text())
-        if digest(root/'evidence-manifest.json')!=review['terminal_manifest_sha256']:
+        if review.get('schema') == 'phase1-review-sidecars-v1':
+            review_files=dict(review['files'])
+            terminal_hash=review_files.pop('evidence-manifest.json')
+        else:
+            review_files=review['review_files']
+            terminal_hash=review['terminal_manifest_sha256']
+        if digest(root/'evidence-manifest.json')!=terminal_hash:
             raise ValueError('Review is not bound to terminal manifest: '+root.name)
-        files={**terminal['files'],**review['review_files'],
+        files={**terminal['files'],**review_files,
                'evidence-manifest.json':digest(root/'evidence-manifest.json'),
                'review-manifest.json':digest(root/'review-manifest.json')}
         plans.append((root,files,'rollouts'))
