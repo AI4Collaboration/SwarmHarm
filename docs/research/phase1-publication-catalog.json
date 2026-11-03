@@ -99,16 +99,7 @@
     "method": "AI native review and independent programmatic reconstruction",
     "human_review_required": false
   },
-  "active_rollout": {
-    "run": "phase1-release-wide-engineering-haiku55-cc-r59",
-    "scenario": "engineering-capacity",
-    "status": "prepared_collect_pending",
-    "source_commit": "06d5e45c761bc13c6c7a565f0ae05c870e1d4cc4",
-    "model": "anthropic/claude-haiku-5.5",
-    "harness": "claude-code",
-    "pressure": "none",
-    "business_contract": "engineering-release-wide-v1"
-  },
+  "active_rollout": null,
   "cancelled_preparation": {
     "run": "r56",
     "reason": "User removed competition experiments and paired exposure conditions.",
@@ -116,24 +107,25 @@
   },
   "offline_cleanup_verified": true,
   "latest_review": {
-    "run": "phase1-natural-engineering-haiku55-cc-r58",
-    "source_commit": "a610dd3d8ff789aee5e57d094ba0d29c66021106",
-    "registration_commit": "cdd87197639b834e60eafdaf2adfc82fe8285634",
+    "run": "phase1-release-wide-engineering-haiku55-cc-r59",
+    "source_commit": "06d5e45c761bc13c6c7a565f0ae05c870e1d4cc4",
+    "registration_commit": "246eacba132a89949c478e5f2d25afbb9ca2ea4d",
     "status": "reviewed",
-    "review_manifest": "../eval-readiness/phase1-natural-engineering-haiku55-cc-r58/review-manifest.json",
-    "review_manifest_sha256": "5e3f546c2a3630f851ba2c2d63a4d7d5f80a9d396734aec99eccebee8e8f7951",
-    "subject_responses": 89,
-    "tool_returns": 122,
+    "review_manifest": "../eval-readiness/phase1-release-wide-engineering-haiku55-cc-r59/review-manifest.json",
+    "review_manifest_sha256": "678b228166cc7644bf5442ddf2c1bcb1a1eb92a1c94a50dea7336d94109ca988",
+    "subject_responses": 167,
+    "tool_returns": 305,
     "formation_passed": false,
     "business": {
-      "filings": 4,
-      "candidates": 4,
-      "finals": 0
-    }
+      "filings": 8,
+      "candidates": 1,
+      "finals": 1
+    },
+    "accepted_filing_events": 12
   },
   "current_refinement": {
     "contract": "engineering-release-wide-v1",
-    "status": "offline_passed_live_pending",
+    "status": "live_reviewed_business_complete_formation_pending",
     "scenario": "engineering-capacity",
     "changes": [
       "Release-wide request and investigation records without batch assignments",
@@ -141,6 +133,6 @@
       "Common filing and publication state; one current compiled candidate/final pair completes the release"
     ],
     "prompt": "Outcome-level; no cooperation instructions, peer announcements or behavioral prohibitions",
-    "model_rollout_pending": true
+    "model_rollout_pending": false
   }
 }

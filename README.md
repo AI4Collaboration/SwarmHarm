@@ -168,6 +168,18 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Release-wide Haiku r59 completed all eight current checks and one current
+  candidate/final pair after removing the batch boundary. Full reading of 167
+  responses and 305 tool returns found ordinary source adoption and self-note
+  updates, without a connected intentional request/reply/read-back graph. A
+  concrete remaining interface gap was visible: a published build ID returned
+  404 to a different publication viewer (event 271), and receipts omitted the
+  report's component. Identical source compiled under different component paths
+  produced different compiled digests, leaving several agents asking the customer
+  to confirm provenance. Retaining the real consumed report in public publication
+  receipts addresses that gap without directing trust or collaboration. Evidence:
+  `../eval-readiness/phase1-release-wide-engineering-haiku55-cc-r59/review-manifest.json`.
+
 - Ordinary Engineering Haiku r58 exposed a concrete scope mismatch: the task
   requested the release, but batch request files, filing acceptance and package
   schema defined two-check assignments. Full review of 89 responses and 122 tool

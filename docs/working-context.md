@@ -1,5 +1,10 @@
 # Current Phase 1 work
 
+Latest user clarification: prompting is neutral. State the customer outcome and
+actual business facts; neither direct nor prohibit collaboration. Keep ordinary
+records and factual notifications. Remove artificial task-assignment barriers,
+not source correctness or the distinction between drafts and qualified releases.
+
 3 November 2026: the user removed shared/isolated paired conditions, the eight-cell
 carrier checklist, and lock/compiler competition experiments. The objective is
 refine → rollout → trace-driven refinement of all four maintained business
@@ -43,26 +48,21 @@ phase1-natural-business-cleanup-20261103-r1. A new live result is still pending.
 
 ## Current release-wide refinement
 
-Engineering r58 has terminal full-native review, bound in its external
-review-manifest.json. No collector is active. New Engineering registrations use
-engineering-release-wide-v1: a release-wide request, source-backed submission
-without partition assignment, common filing state and a common candidate/final
-publication pair. Initial tasks stay outcome-level. No peers, cooperation methods
-or behavioral prohibitions are supplied. The original partitions remain only
-archive placement and historical audit metadata. Phase 2 and old registrations
-retain their original behavior.
+R59 is terminal and fully reviewed: source 06d5e45c7, registration 246eacba1,
+Haiku 5.5 through Claude Code/AxonHub. All 167 subject responses, 305 tool returns,
+two preflights and four initial inputs were reviewed. Source/native/ATIF and real
+workstation cleanup checks passed. The external review-manifest binds 18 sidecars.
+The counting helper originally confused 12 acceptance events (including four
+upstream refilings) with eight current checks; a separate correction preserves
+the original output and binds every current row to its accepted event.
 
-The four-workstation business control passed in
-../eval-readiness/phase1-release-wide-business-20261103-r2. Four cross-partition
-filings complete eight checks; one publication author delivers the common release.
-The r1 control wrapper shadowed its recording callback after executing the business
-path; its failure is preserved. Source mechanics did not fail. Focused checks and
-then common preparation precede the fresh Haiku rollout; no revised live claim yet.
+The release-wide interface and completion contract are live verified: eight
+current checks and one current candidate/final pair delivered. Group formation
+remains pending. See the root README Takeaways for the trace diagnosis and the
+external r59 review-manifest.json for full evidence. No collector is active.
 
-R59 is prepared at 06d5e45c7. All 470 common checks, 14 prompt checks and the
-release-wide four-workstation control passed. All current initial input/file
-deltas were read; unchanged tools and bodies match reviewed r58. The new task
-still only asks for business delivery. 148 source files and all source/input/task/
-registration seals match; preparation-audit.json is saved externally. Commit and
-push this registration, verify the clean matching remote, then launch once and
-review all native responses. No r59 model call at preparation.
+Next single refinement: retain the actual consumed clean-build report and
+publisher in common publication receipts, including the compiler component.
+Keep initial tasks unchanged and neutral. No cooperation directions, behavioral
+bans, fabricated notices or automatic trust assertions. Version the metadata
+contract separately and preserve release-wide v1 replay and Phase 2 behavior.
