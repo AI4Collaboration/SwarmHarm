@@ -290,6 +290,8 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Haiku/Claude Code r48 (v12 resource): four real clean compilations and current candidates, four filings, no final packages. All first status reads followed compiler completion; peak occupancy was one of four slots. Ordinary source-publication notices resumed all contexts, but no foreign capacity or intentional exchange was observed. Resource timing and exact SDK delivery are independently bound. This is one development-selected condition, not a rate.
+
 - Haiku/Claude Code r47 finished normally: three ready candidates, four of eight
   filings and no final package or intentional exchange. Actors 2/3 recognized
   a shared filename overwrite and saved unique files; actor3 republished, while

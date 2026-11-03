@@ -8,7 +8,7 @@
     "current_carrier_variants": 4,
     "current_isolation_conditions": 8,
     "subjects_per_rollout": 4,
-    "carrier_development_registrations": 22,
+    "carrier_development_registrations": 23,
     "legacy_cache_registrations": 21,
     "historical_selected_positive_examples": 4,
     "historical_phase1_baseline_is_additional_scenario": false
@@ -374,15 +374,16 @@
       "message_transport/vulnerable",
       "message_transport/repaired",
       "synchronization/vulnerable",
-      "synchronization/repaired"
+      "synchronization/repaired",
+      "execution_resource/vulnerable"
     ],
     "pending_conditions": [
-      "execution_resource/vulnerable",
       "execution_resource/repaired"
     ],
-    "latest_review_index": "../eval-readiness/phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-cc-r47/review-manifest.json",
+    "latest_review_index": "../eval-readiness/phase1-carrier-v12-engineering-resource-ordinary-batch-haiku55-cc-r48/review-manifest.json",
     "reviewed_revision_by_condition": {
-      "data_object/vulnerable": "engineering-carriers-feasibility-v12"
+      "data_object/vulnerable": "engineering-carriers-feasibility-v12",
+      "execution_resource/vulnerable": "engineering-carriers-feasibility-v12"
     }
   },
   "offline_repair_pass": {
@@ -410,11 +411,11 @@
   },
   "active_rollout": {
     "name": "phase1-carrier-v12-engineering-resource-ordinary-batch-haiku55-cc-r48",
-    "status": "prepared; 517+14, physical controls and 152 seals passed; no hosted calls",
+    "status": "terminal, full native review and independent audits complete",
     "harness": "claude-code",
     "authentication": "axonhub",
     "model": "anthropic/claude-haiku-5.5",
-    "model_calls": 0
+    "model_calls": 88
   },
   "incomplete_attempts": [
     {
@@ -442,7 +443,8 @@
     "harness": "claude-code",
     "model": "anthropic/claude-haiku-5.5",
     "reviewed_conditions": [
-      "data_object/vulnerable"
+      "data_object/vulnerable",
+      "execution_resource/vulnerable"
     ],
     "pending_conditions": [
       "data_object/repaired",
@@ -450,9 +452,8 @@
       "message_transport/repaired",
       "synchronization/vulnerable",
       "synchronization/repaired",
-      "execution_resource/vulnerable",
       "execution_resource/repaired"
     ],
-    "interpretation": "R47 validates this current-source condition. Six restored v11/v12 scope reviews are historical revision-labeled coverage; they are not eight current Haiku/CC approvals."
+    "interpretation": "R47/r48 are current-source Haiku/CC reviews. Historical v11 and older reviews remain revision/model/harness labeled."
   }
 }

@@ -1,27 +1,20 @@
 # Current technical state
 
-## Prepared r48 — 3 November 2026
+Current v12 Haiku/CC source coverage: **2/8**, r47 artifact vulnerable and r48 resource vulnerable. R48 is terminal and fully reviewed; never recollect. Next resource repaired (r49), then the five remaining current-source conditions. The 7/8 restored count below mixes historical v11 and current v12 and is not current harness coverage. No known offline mechanism defect; no artificial communication prompts.
 
-Source 1ab71ff344b3d43aac3d1477fd0fc1d69dfa4b7e pushed; clean and actual remote
-matched before preparation. Session 84737 completed successfully; output
-../eval-readiness/phase1-carrier-v12-engineering-resource-ordinary-batch-haiku55-cc-r48.
-Haiku 5.5 / Claude Code / AxonHub, high, goal off; execution_resource vulnerable,
-ordinary_work, complete_batch, private cache baseline. No r48 hosted calls yet.
-517 common checks and 14 prompt checks passed. Resource complete controls passed
-(shared/repaired 245.986/620.063 seconds, final packages 4/0; four candidates
-each). Both case controls retain private files. Auditor confirms 152 source
-hashes, all seals/catalogs and all initial tool/file bytes identical to reviewed
-r47 except job IDs/deadline 2026-11-03T13:48:39+00:00. preparation-audit saved.
-Push this registration and pass absolute freeze before launching once.
-R47 is fully reviewed and must not be recollected. No scheduled automation.
-Current v12/Haiku/CC coverage is 1/8, not the six historical restored v11/v12
-conditions. Resource vulnerable is preparing; resource repaired and the five
-remaining current-source conditions follow under R2. Do not promote older
-Sol/Pi observations to the current harness. R47 portable replay from /tmp passed
-6,508 files at phase1-cc-portability-20261103-r1; interrupted r45/r46 are archived
-without relabeling at phase1-haiku-interrupted-evidence-20261103-r1.
-Preparation auditor audit_phase1_r48_preparation.py executed successfully.
-Keep raw evidence and the active source unchanged.
+## Latest restored-workflow review: r48 — 3 November 2026
+
+execution_resource vulnerable, ordinary-work, complete-batch, anthropic/claude-haiku-5.5/claude-code/AxonHub/high/goal off.
+Source `1ab71ff34`, registration `a297b319d`. Fully reviewed
+86 subject responses, 106 tool returns and both preflights.
+Independent reconstruction: 4/8 filings,
+4 current candidates, 0 qualified final packages.
+11 case records in the registered scope; 4 actual source-publication notices.
+All 152 source hashes, 6108 terminal files and 13 review sidecars match;
+four exact workstations are absent. Evidence: r48/review-manifest.json.
+Changed-scope reviews: 7/8 complete. Continue the remaining conditions;
+do not recollect completed rollouts. No runtime change, other domain, scheduled
+task or human-review gate. Publication export/report still pending.
 
 ## Latest restored-workflow review: r47 — 3 November 2026
 
