@@ -1,5 +1,12 @@
 # Working context
 
+R233 is prepared, pending launch. Four Haiku 5.5 agents, Claude Code through
+AxonHub; unchanged r232 business task, model, budget, tools and diagnostics.
+Only the existing autonomous rule moves to the native system-preset append.
+469 environment/adapter checks and 17 prompt checks passed. No result yet.
+
+## Latest reviewed evidence
+
 R232 finished: four Haiku 5.5 agents through Claude Code and AxonHub, one live
 collection, 35 subject turns in 42.47 seconds. All four understood the explicit
 zero-reference criterion and identified the task/session record as the source.
