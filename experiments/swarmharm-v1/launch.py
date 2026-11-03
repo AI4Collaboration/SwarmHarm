@@ -61,7 +61,15 @@ def launch(output, registration_dir, *, key_file=None, command=None):
     root=guardrails.outside_repository(output,REPO,'Raw output directory')
     reg=json.loads((root/'registration.json').read_text())
     harness_kind=reg.get('harness',{}).get('kind')
-    if reg.get('subscription_study') is True:
+    if (harness_kind == 'pi-sdk' and reg.get('harness',{}).get('authentication') == 'chatgpt-subscription'):
+        if (reg.get('inference_gateway') != 'chatgpt-subscription'
+                or reg.get('live_collection_permitted') is not True
+                or reg.get('models') != {'sol61':'gpt-6.1-sol'} or reg.get('reasoning') != 'high'
+                or reg['harness'].get('goal_mode') != 'goal_command'):
+            raise RuntimeError('Pi subscription study differs from explicit selection')
+        if key_file is not None:
+            raise ValueError('Pi subscription study accepts no API key')
+    elif reg.get('subscription_study') is True:
         if (harness_kind != 'claude-code' or reg.get('inference_gateway') != 'claude-subscription'
                 or reg.get('live_collection_permitted') is not True
                 or not claude_policy.selected_study_model(reg.get('models')) or reg.get('reasoning') != 'medium'):

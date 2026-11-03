@@ -322,7 +322,8 @@ def code_paths():
         +[REPO/'experiments'/name for name in (
             'runtime/atomic.py','runtime/guardrails.py','runtime/workstation.py',
             'runtime/response_monitor.py','runtime/record_surface.py',
-            'runtime/pi_agent.py','runtime/pi/agent.mjs','runtime/pi/package.json',
+            'runtime/pi_agent.py','runtime/pi_subscription.py','runtime/pi/agent.mjs',
+            'runtime/pi/subscription-auth.mjs','runtime/pi/package.json',
             'runtime/pi/package-lock.json','prompt-contract/checks.py')]
         +[REPO/'experiments'/name for name in (
             'runtime/claude_agent.py','runtime/claude/agent.mjs','runtime/claude/bridge.mjs',
@@ -396,20 +397,37 @@ def validate_harness_policy(harness_kind, offline_adapter_test=False, subscripti
             'Direct subscription/provider routes are not live rollout routes.'
         )
 
-def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
+def prepare(*args, **kwargs):
+    previous = trace_release.CASH_BONUS_ENABLED
+    try:
+        return _prepare(*args, **kwargs)
+    finally:
+        trace_release.CASH_BONUS_ENABLED = previous
+
+
+def _prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             provider_concurrency=None,topology_file=None,run_controls=True,
             cue_condition=schedule.DEFAULT_CUE_CONDITION,
             filing_deadline_utc=None,scenario=DEFAULT_SCENARIO,
             information_condition="local_records", study_mode=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode='off', harness_kind='pi-sdk',
-            reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False, subscription_study=False, archive_compatibility=False, control_report=None):
+            reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False, subscription_study=False, archive_compatibility=False, control_report=None, pi_auth="axonhub", cash_bonus=False):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
+    trace_release.CASH_BONUS_ENABLED = False
+    pi_subscription = harness_kind == 'pi-sdk' and pi_auth == 'chatgpt-subscription'
+    if pi_auth not in ('axonhub','chatgpt-subscription'):
+        raise ValueError('Unknown Pi authentication route')
+    if pi_auth != 'axonhub' and harness_kind != 'pi-sdk':
+        raise ValueError('Pi subscription requires Pi SDK')
+    if pi_subscription and (offline_adapter_test or MODELS != {'sol61':'gpt-6.1-sol'}
+                            or reasoning_effort != 'high'):
+        raise ValueError('Pi subscription study requires exact Sol 6.1/high selection')
     validate_harness_policy(harness_kind, offline_adapter_test, subscription_study)
     if reasoning_effort not in REASONING_EFFORTS:
         raise ValueError('Unsupported reasoning effort')
-    if harness_kind=='pi-sdk':
+    if harness_kind=='pi-sdk' and not pi_subscription:
         if AXONHUB_API_BASE != 'https://lmportal.iefbr14.xyz/v1':
             raise ValueError('All live rollouts must use the registered AxonHub API base')
         key_file=guardrails.credential_file(key_file,REPO)
@@ -459,7 +477,15 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             raise ValueError('Invalid component material distribution')
     if information_condition != "local_records":
         raise ValueError("The current workflow uses local_records")
-    if harness_kind=='codex':
+    if pi_subscription:
+        from pi_subscription import catalog
+        routes={'checked_at':utc(),'provider':'chatgpt-subscription','api_key_billing':False,
+            'catalog':catalog(),'evidence_limit':'Native Pi SDK requests/events; no packet-level transport audit. Catalog is not entitlement verification.'}
+        harness=pi_agent.harness_registration(goal_mode)
+        harness.update(authentication='chatgpt-subscription', api='openai-codex-responses',
+            provider='openai-codex', context_window=routes['catalog']['context_window'],
+            api_key_billing=False, output_token_budget_scope='SDK metadata; subscription transport omits a wire cap')
+    elif harness_kind=='codex':
         harness=codex_agent.harness_registration(goal_mode,next(iter(MODELS.values())))
         routes={'checked_at':utc(),'provider':'chatgpt-subscription','models':MODELS,
             'api_key_billing':False,'catalog':codex_agent.subscription_catalog(
@@ -597,6 +623,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     else:
         save(root/'controls.json',{'passed':True,'model_calls':0,'test_methods':0,
             'log':'Nested controls omitted only inside the prepare unit test.'})
+    trace_release.CASH_BONUS_ENABLED = bool(cash_bonus)
+    if cash_bonus and not trace_study:
+        raise ValueError('The cash bonus wording is registered only for trace-integrity')
     task_hashes=harbor_input.write(root/'tasks',plan)
     save(root/'initial-input-audit.json',harbor_input.initial_audit(root/'tasks',plan))
     save(root/'initial-file-audit.json', {'natural': trace_release.initial_files(phase2_plan)} if trace_study else
@@ -635,15 +664,19 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'upstream_models':UPSTREAM_MODELS,'reasoning':reasoning_effort,
         'preflight_instructions':lab.INSTRUCTIONS,'harness':harness,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
         'scenario':scenario,'domain':domain_runtime.public_domain(scenario),
-        'api_base':None if harness_kind in ('claude-code','codex') else AXONHUB_API_BASE,
-        'endpoint':None if harness_kind in ('claude-code','codex') else AXONHUB_ENDPOINT,
+        'api_base':None if pi_subscription or harness_kind in ('claude-code','codex') else AXONHUB_API_BASE,
+        'endpoint':None if pi_subscription or harness_kind in ('claude-code','codex') else AXONHUB_ENDPOINT,
         'credential_source':('Operator Claude subscription login; no API key or API fallback.'
             if harness_kind=='claude-code' else 'Operator ChatGPT subscription login; no API key or API fallback.'
-            if harness_kind=='codex' else 'Existing host-only AxonHub key; never supplied to subjects.'
+            if harness_kind=='codex' else 'Existing ChatGPT access-only snapshot for Pi subscription; no API fallback.'
+            if pi_subscription else 'Existing host-only AxonHub key; never supplied to subjects.'
             if AXONHUB_API_BASE=='https://lmportal.iefbr14.xyz/v1'
             else f'Existing host-only key for {AXONHUB_API_BASE}; never supplied to subjects.'),
         'runtime':{'harbor_version':HARBOR_VERSION,'python':sys.version.split()[0]},
-        'inference_gateway':'claude-subscription' if subscription_study else 'axonhub' if harness_kind in AXONHUB_LIVE_HARNESS_BASES else None,
+        'cash_bonus_condition':{'enabled':bool(cash_bonus),'notice':'/workspace/compensation-notice.md' if cash_bonus else None,
+            'statement':trace_release.CASH_BONUS_STATEMENT if cash_bonus else None,
+            'scope':'User-provided incentive wording only; original business scorer/effects unchanged; no payment system added.'},
+        'inference_gateway':'chatgpt-subscription' if pi_subscription else 'claude-subscription' if subscription_study else 'axonhub' if harness_kind in AXONHUB_LIVE_HARNESS_BASES else None,
         'subscription_study':bool(subscription_study),
         'inference_protocol':'openai/responses' if harness_kind == 'pi-sdk' else None,
         'live_collection_permitted':harness_kind == LIVE_HARNESS or subscription_study,
@@ -1645,8 +1678,16 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     harness_kind=reg.get('harness',{}).get('kind')
     if offline_adapter_test and offline_transport_test:
         raise ValueError('Choose one offline compatibility test mode')
+    trace_release.CASH_BONUS_ENABLED = reg.get('cash_bonus_condition',{}).get('enabled') is True
+    pi_subscription = harness_kind == 'pi-sdk' and reg.get('harness',{}).get('authentication') == 'chatgpt-subscription'
     subscription_study=reg.get('subscription_study') is True
-    if subscription_study:
+    if pi_subscription:
+        require(reg.get('inference_gateway') == 'chatgpt-subscription'
+            and reg.get('live_collection_permitted') is True and reg['models'] == {'sol61':'gpt-6.1-sol'}
+            and reg['reasoning'] == 'high' and reg['harness']['goal_mode'] == 'goal_command'
+            and not offline_adapter_test and not offline_transport_test,
+            'Pi subscription route differs from explicit selection')
+    elif subscription_study:
         require(harness_kind == 'claude-code' and reg.get('inference_gateway') == 'claude-subscription'
                 and reg.get('live_collection_permitted') is True and not offline_adapter_test
                 and selected_claude_model(reg['models']) and reg['reasoning'] == 'medium',
@@ -1671,7 +1712,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'All live rollouts must use the registered AxonHub API base.')
     is_claude=harness_kind=='claude-code'
     is_codex=harness_kind=='codex'
-    subscription=is_claude or is_codex
+    subscription=is_claude or is_codex or pi_subscription
     if subscription and AXONHUB_KEY_FILE is not None:
         raise ValueError('The registered subscription harness does not accept an API key file')
     if not subscription:AXONHUB_KEY_FILE=guardrails.credential_file(AXONHUB_KEY_FILE,REPO)
@@ -1824,6 +1865,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     job_context=session_inputs(initial[name][actor], harness['kind'], context_to_system=bool((harness.get('context_mapping') or {}).get('append_declared_context')))[0],
                     goal_mode=harness['goal_mode'],
                     **({'registered_harness':harness} if is_codex else {}),
+                    **({'subscription':True} if pi_subscription else {}),
                     **({'declared_context_append':bool((harness.get('context_mapping') or {}).get('append_declared_context'))} if is_claude else {}))
             for actor,value in agent_runtime.wait_ready(events,active).items():
                 save(root/name/actor/f'{harness_folder}-system-prompt.json',{'system_prompt':value['system_prompt'],
@@ -2525,6 +2567,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             request_timeout_ms=budget['request_timeout_seconds']*1000,
             tools=[tool],active_tools=['confirm_service'],job_context=None,goal_mode='off',
             **({'registered_harness':harness} if is_codex else {}),
+                    **({'subscription':True} if pi_subscription else {}),
                     **({'declared_context_append':bool((harness.get('context_mapping') or {}).get('append_declared_context'))} if is_claude else {}))
         try:
             agent_runtime.wait_ready(events,['preflight'])
@@ -2598,6 +2641,8 @@ if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path)
     p.add_argument('--control-report',type=Path,help='Reuse a passed offline report bound to the exact current source hashes.')
+    p.add_argument('--pi-auth', choices=('axonhub','chatgpt-subscription'), default='axonhub')
+    p.add_argument('--cash-bonus',action='store_true',help='Exact user-selected cash bonus notice and preview wording.')
     p.add_argument('--subscription-study',action='store_true', help='Explicit Claude subscription trace-reproduction condition.')
     p.add_argument('--harness',choices=(LIVE_HARNESS,'claude-code'),default=LIVE_HARNESS,
         help='All live inference uses Pi SDK through AxonHub, including Claude models.')
@@ -2658,5 +2703,5 @@ if __name__=='__main__':
             information_condition=a.information_condition,study_mode=a.study_mode,
             component_family=a.component_family,initial_material=a.initial_material,
             material_distribution=a.material_distribution,
-            goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,proof_stage=a.proof_stage,subscription_study=a.subscription_study,control_report=a.control_report)
+            goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,proof_stage=a.proof_stage,subscription_study=a.subscription_study,control_report=a.control_report,pi_auth=a.pi_auth,cash_bonus=a.cash_bonus)
     else:collect(root,registration_dir)

@@ -4,7 +4,7 @@
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **10 experiments (two preparing), 42 executed collection attempts, 27 uncollected preparations** in the inspected local archive.
+Coverage: **11 experiments (one preparing), 42 executed collection attempts, 27 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
@@ -144,3 +144,8 @@ EXP-010 C01/C02/C03-R01 reviewed and closed. No collector remains active.
 | EXP-010-C01-R01 | Haiku 5.5 / Claude subscription | r217 | rollout_limit |
 | EXP-010-C02-R01 | Sonnet 5.5 / Claude subscription | r217 | rollout_limit |
 | EXP-010-C03-R01 | Opus 5.5 / Claude subscription | r217 | rollout_limit |
+
+## EXP-011 — exact cash-bonus wording
+
+Four predeclared subscription conditions: C01 Pi / Sol 6.1 high; C02 Opus,
+C03 Haiku, C04 Sonnet 5.5 medium through Claude Code. Live rollout pending.

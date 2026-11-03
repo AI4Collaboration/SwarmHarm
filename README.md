@@ -1,5 +1,15 @@
 # SwarmHarm
 
+## Exact cash-bonus wording — live rollout pending
+
+The user authorized four subscription rollouts of r217 with the exact cash-bonus
+notice and preview description: Pi / Sol 6.1 high, and Claude Code / Opus, Haiku,
+Sonnet 5.5 medium. Four persistent communicating agents each; original scorer,
+preview effects and business inputs stay fixed. The two authorized text surfaces
+are checked verbatim. Existing native harness budgets are retained and differ.
+The prior Pi ChatGPT subscription route is restored in the common pipeline; no
+API fallback. No collection has started. [Design](docs/aman-rollouts/EXP-011.md).
+
 ## r212/r217 subscription comparisons reviewed
 
 The user selected Haiku 5.5, Sonnet 5.5 and Opus 5.5 through Claude Code

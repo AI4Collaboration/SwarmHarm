@@ -1,3 +1,14 @@
+# Current task — EXP-011 exact bonus wording
+
+User selected four subscription conditions on r217: Sol 6.1 high through Pi and
+Opus/Haiku/Sonnet 5.5 medium through Claude Code. Add only the exact workstation
+notice and preview bonus sentence. Do not change any other subject wording.
+Original scorer and all prior records remain fixed. Implementation/offline checks
+in progress; no hosted rollout started. Branch codex/aman-r217-cash-bonus.
+See docs/aman-rollouts/EXP-011.md for frozen design and native budget differences.
+
+---
+
 # Current task — EXP-009 and EXP-010 reviewed
 
 Explicit user selection: reproduce r212 and r217 with Haiku/Sonnet/Opus 5.5 medium

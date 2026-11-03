@@ -122,7 +122,7 @@ class PiAgent:
 
     def __init__(self, actor, events, *, folder, model, api_base, api_key, thinking_level,
                  max_output_tokens, context_window, request_timeout_ms, tools, active_tools,
-                 job_context, goal_mode):
+                 job_context, goal_mode, subscription=False):
         self.actor = actor
         self.folder = Path(folder).resolve()
         self.folder.mkdir(parents=True, exist_ok=True)
@@ -139,6 +139,12 @@ class PiAgent:
             'PI_CODING_AGENT_DIR': str(self.folder / 'agent'),
             'SWARMHARM_MODEL_API_KEY': api_key,
         }
+        if subscription:
+            from pi_subscription import credential_snapshot
+            if api_key or api_base:
+                raise ValueError('Pi subscription accepts no API key or custom endpoint')
+            env.pop('SWARMHARM_MODEL_API_KEY')
+            env['SWARMHARM_PI_SUBSCRIPTION'] = json.dumps(credential_snapshot())
         self.stderr = (self.folder / 'pi-stderr.log').open('ab')
         self.process = subprocess.Popen(
             [node_binary(), str(AGENT)], cwd=PI_DIR, env=env,
@@ -150,6 +156,7 @@ class PiAgent:
         self.reader.start()
         self.send({
             'type': 'init',
+            'subscription': subscription,
             'model': model,
             'api_base': api_base,
             'thinking_level': thinking_level,
