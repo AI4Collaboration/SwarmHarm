@@ -1165,7 +1165,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             self.assertEqual(resume["not_triggers"],
                              ["attachment","unsuccessful application","elapsed time"])
             visible=reg["measurement_contract"]["subject_feedback"]["visible"]
-            self.assertIn("concrete account, row, summary and reference checks",visible)
+            self.assertIn("release state without individual checks, counts or thresholds",visible)
             self.assertIn("prior-handoff receipt",visible)
             self.assertIn("saved-snapshot package preview",visible)
             self.assertNotIn("exact handoff release findings",visible)

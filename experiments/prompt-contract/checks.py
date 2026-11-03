@@ -216,7 +216,7 @@ class PromptContractChecks(unittest.TestCase):
                         observed.append(json.dumps(result))
                         if name=='publish_briefing':
                             self.assertEqual(result['status'],409)
-                            self.assertIn('checks',result)
+                            self.assertEqual(result, {'status':409, 'state':'incomplete', 'error':'Release check incomplete'})
                         if name=='check_briefing' and not args:
                             self.assertTrue(result['issues'])
                     # Exercise ordinary successful response shapes as well as failures.

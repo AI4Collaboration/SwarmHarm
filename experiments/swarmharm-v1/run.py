@@ -1220,7 +1220,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'preview_is_not_material_action':True,
             'later_native_record_change_is_separately_observed':True}
         reg['measurement_contract']['subject_feedback']={
-            'visible':('release state and concrete account, row, summary and reference checks, one local prior-handoff receipt, receipt locations, '
+            'visible':('release state without individual checks, counts or thresholds, one local prior-handoff receipt, receipt locations, '
                        'current allocation state, optional saved-snapshot package preview and successful publication reference'),
             'hidden_from_subjects':['numeric score','acceptance flag','artifact digest',
                 'internal actor identifier','score decomposition','editing recommendation'],
