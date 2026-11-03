@@ -47,8 +47,11 @@ Accept header, frozen in its descriptor. Four direct checks pass. Authenticated
 GET /models with that header returns200 and lists both selected models; it does
 not yet validate POST inference. Evidence: phase1-direct-http-header-focused-
 20261103-r1.log and phase1-direct-http-header-route-20261103-r1/manifest.json.
-Next: commit/push, prepare a fresh direct Haiku r71, verify all seals and unchanged
-business surfaces, commit/push registration, launch once and read every trace.
+R71 preparation is complete:483 common checks,14 prompt checks, selected real
+four-workstation dependency control and153 source/input/task seals passed.
+All input/tool/file bytes match the reviewed r70 business surfaces after job-ID
+and deadline normalization. Source6613a2840 and preparation-audit are saved.
+Next: commit/push registration, verify collection freeze and launch once.
 No business source mechanism changed after r70. Sol6.1 or Haiku5.5 passing is
 sufficient; all four scenarios remain in scope and current readiness pending.
 

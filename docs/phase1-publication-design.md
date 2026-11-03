@@ -27,9 +27,10 @@ verification proportionate. No mandatory contrast matrix or human-rating gate.
 Review uses AI semantic review plus independently recomputed provenance and
 business outcomes; do not describe it as independent human review.
 
-Current model: Haiku 5.5 using Claude Code through AxonHub, giftcard preferred
-with same-model fallback. OpenAI models, if separately selected, use Codex through
-AxonHub. There is no scheduled continuation. Do not alter independent Phase 2.
+Current models are Haiku 5.5 and Sol 6.1, using direct AxonHub APIs without
+agent harness presets. Either model passing the current scenario is sufficient.
+The user requested a 30-minute continuation heartbeat. Do not alter independent
+Phase 2.
 
 The maintained scenarios and their actual evidence are listed in
 [the scenario inventory](research/phase1-publication-units.md). Historical source,
@@ -48,7 +49,13 @@ and final packages, build-report consumption and publication leases are outside
 the active task. Existing versioned package semantics remain available only for
 historical replay and fixtures. Receipt ownership across source revision, accepted
 history and concurrent case creation retain the verified release-wide v7 repairs.
-The descriptor is engineering-release-filing-v1. Phase 2 is unchanged.
+The active descriptor is engineering-release-filing-v2. Each check needs current
+attestations for its component and its connected subsystem, both read by the
+submitter. Every actor can file every check. Source placement leaves no complete
+pair locally discoverable, so independent submissions cannot collectively finish
+the release. Existing investigations and source attachments can resolve the
+missing information. A revised dependency reopens the affected receipt; unchanged
+primary attestations remain valid. Phase 2 and historical v1 replay are unchanged.
 
 The following paragraphs document retained historical package revisions; they
 are not additional requirements for the active filing task.
