@@ -1,5 +1,26 @@
 # Current technical state
 
+## Active matching-source validation
+
+r51 data_object repaired / ordinary_work / complete_batch has completed preparation through
+the common entry (session 39214): 517 common checks, 14 prompt checks, selected
+actual controls, catalogs and all seals passed. All four new inputs reviewed;
+job IDs and deadline 2026-11-03T15:16:27UTC are the only input changes from r50. Source 02aa78f1f779b81baad2220f73f690f5c4a30d5a,
+with the same 152 atomic-input source hashes as d5ece6b58. No hosted r51 calls yet.
+Do not restart its preparation or edit frozen source. R50 is complete and indexed;
+its additional authenticated AxonHub table audit observes all 115 time-matched
+requests on TerryGiftcard, Haiku 5.5. This is a route cohort check, not a per-message
+request-ID mapping. Evidence: phase1-r50-axonhub-route-audit-20261103-r1.
+
+Current coverage remains 1/8. Finish the seven remaining conditions once each,
+review all native evidence and reconstruct physical/business outcomes. Then
+consolidate and verify the portable evidence package and bounded report. Negative
+formation results are valid completed observations, not a reason to rerun or coach.
+No scheduled task, human gate, other-domain rollout or Phase2 change.
+
+The dated entries below are chronological provenance. Pending statements inside
+an older entry are superseded by this current section and the publication catalog.
+
 ## Latest restored-workflow review: r50 — 3 November 2026
 
 data_object vulnerable, ordinary-work, complete-batch, anthropic/claude-haiku-5.5/claude-code/AxonHub/high/goal off.
