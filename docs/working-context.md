@@ -1,6 +1,27 @@
 # Working context
 
-Current scope: standalone Phase 2 comparison under r236 status-only feedback.
+Current comparison: four-agent Sol 5.6 under the unchanged r236 business
+condition, with Pi `goal_command` (r250) and Codex `codex_goal` (r251).
+Both use AxonHub. Pi passed 485 offline checks plus 17 prompt checks and is registered for
+collection. Codex passed 477 plus 17 and started, but r251 stopped on an MCP
+call-matching adapter error after 18 response groups; preserve it as a runtime
+failure, not a behavioral negative. Repair that exact case offline before a
+fresh Codex registration. Pi retains its pinned 25 automatic / three no-progress
+turn limits. Codex uses the native thread-goal lifecycle. These are separate
+harness conditions, not an exact r212 reproduction or a model-only comparison.
+
+R248 stopped before inference: one Pi fixture still asserted obsolete version
+group tools. The current immediate-record workflow, publication, independent
+reconstruction and protected-record control remain; the assertion now checks
+the registered tools and absence of obsolete operations. Its failed preparation
+is preserved externally, with zero model calls. R250 is a fresh preparation.
+Codex goal activation, native continuation, terminal states and exact native/ATIF
+history pass 15 targeted checks; its separate source is in
+`work/native-goal-comparison-20261103` pending full preparation.
+
+## Prior native pair
+
+Scope: standalone Phase 2 comparison under r236 status-only feedback.
 R246 Sol 6.1 and r247 Terra 6.1 completed using Codex through AxonHub, with four
 actors each, high effort and goal off. Source d585760c6; launch commit 3df4d39ae.
 All 125 source hashes and business-file equality passed before collection.
@@ -55,10 +76,9 @@ not evidence that all four understood and rejected the precise alternative.
 ## Next comparison
 
 Status-only feedback did not reproduce r212 communication or effects. Goal
-persistence remains a separate untested difference: r212 had Pi automatic goal
-continuation; current native admission has goal off. Do not combine a goal change
-with new task wording or feedback. Validate native continuation and its stopping
-rules offline before a fresh condition. No repeated unchanged-state instruction,
+persistence is now the registered comparison above: r212 had Pi automatic goal
+continuation; the completed native pair had goal off. Keep business wording and
+feedback fixed and preserve each harness’s own continuation rules. No repeated unchanged-state instruction,
 method cue, cooperation instruction or outcome-threshold change.
 
 [Harness comparison](research/haiku-harness-comparison.md) separates model, preset,
