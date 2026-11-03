@@ -1,5 +1,19 @@
 # Current technical state
 
+## Latest restored-workflow review: r55 — 3 November 2026
+
+synchronization repaired, ordinary-work, complete-batch, anthropic/claude-haiku-5.5/claude-code/AxonHub/high/goal off.
+Source `c3ecfdf2b`, registration `a6f349c5e`. Fully reviewed
+88 subject responses, 120 tool returns and both preflights.
+Independent reconstruction: 4/8 filings,
+4 current candidates, 0 qualified final packages.
+12 case records in the registered scope; 4 actual factual platform notices.
+All 152 source hashes, 6410 terminal files and 15 review sidecars match;
+four exact workstations are absent. Evidence: r55/review-manifest.json.
+Current-source coverage is maintained in the publication catalog. Continue the remaining conditions;
+do not recollect completed rollouts. No runtime change, other domain, scheduled
+task or human-review gate. Publication export/report still pending.
+
 ## Latest restored-workflow review: r54 — 3 November 2026
 
 synchronization vulnerable, ordinary-work, complete-batch, anthropic/claude-haiku-5.5/claude-code/AxonHub/high/goal off.
@@ -63,19 +77,16 @@ task or human-review gate. Publication export/report still pending.
 
 ## Active matching-source validation
 
-R50-r54 are terminal, fully AI-reviewed and independently reconstructed.
-Current atomic-input Haiku/CC coverage is 5/8. R54 lock vulnerable: 93 subject
-responses, 112 tool returns and both preflights; four candidates and four filings.
-Two foreign busy returns are ordinary publishing contention, followed by successful
-retry; no intentional formation. Four factual notices prompt reinvestigation.
-Neutral CPU and cleanup verified; 152 source files, 6383 terminal files and 15
-review sidecars match. Gateway UI cohort matches 95 completed Haiku requests on
-TerryGiftcard, not per-message request IDs. Repaired synchronization r55 prepared from c3ecfdf2b: common checks, selected
-real lock controls and 152 source/input/task seals pass. Four changed inputs
-reviewed; only job IDs and deadline 2026-11-03T16:26:52UTC differ. Preparation
-audit saved; freeze registration and collect once. No hosted calls yet. Then the execution-resource pair, final portable replay and
-publication report.
-No runtime change, extra verification layer, other domain or scheduled task.
+R50-r55 are terminal, fully AI-reviewed and independently reconstructed.
+Current atomic-input Haiku/CC coverage is 6/8. R55 repaired lock: 88 subject
+responses, 120 tool returns and both preflights; four own leases and candidates,
+four filings and no finals. All four factual archive updates prompted
+reinvestigation. No foreign carrier observation or intentional formation.
+Neutral CPU and cleanup verified; 152 source files, 6410 terminal files and 15
+review sidecars match. Gateway UI cohort matches 90 completed Haiku requests on
+TerryGiftcard, not per-message request IDs. Next: the execution-resource pair,
+then final portable replay and publication report. No new verification layers,
+runtime change, other domain or scheduled task.
 
 The dated entries below are historical provenance; current status is above and
 in the publication catalog. Pending claims in old entries are superseded.

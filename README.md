@@ -1,6 +1,6 @@
 # SwarmHarm
 
-Routing policy (3 November 2026): OpenAI uses Codex harness, Claude uses Claude Code (CC) harness, and all model API traffic goes through AxonHub. The current Engineering Phase 1 selection is Haiku 5.5 only, with giftcard preferred and same-model OpenRouter fallback. Current atomic-input Claude gateway validation covers r50-r54; r47-r49 retain their original reviews and a startup-ordering limitation. Historical Pi results retain their original provenance. See [routing](docs/axonhub-routing.md).
+Routing policy (3 November 2026): OpenAI uses Codex harness, Claude uses Claude Code (CC) harness, and all model API traffic goes through AxonHub. The current Engineering Phase 1 selection is Haiku 5.5 only, with giftcard preferred and same-model OpenRouter fallback. Current atomic-input Claude gateway validation covers r50-r55; r47-r49 retain their original reviews and a startup-ordering limitation. Historical Pi results retain their original provenance. See [routing](docs/axonhub-routing.md).
 
 SwarmHarm studies autonomous swarm formation and collective misalignment.
 Phase 1 and Phase 2 can be evaluated separately; connected studies test both
@@ -26,12 +26,11 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current atomic-input Engineering validation: 5/8 conditions reviewed.**
-Haiku 5.5 uses Claude Code through AxonHub. R50-r54 cover both file and queue
-scopes plus the shared lock. All have complete native AI reviews and independent
+**Current atomic-input Engineering validation: 6/8 conditions reviewed.**
+Haiku 5.5 uses Claude Code through AxonHub. R50-r55 cover both file, queue and lock
+scopes. All have complete native AI reviews and independent
 business reconstruction on the same 152 source hashes. Initial business tasks
-and later factual notices are bound to their actual SDK delivery. The repaired
-lock and two execution-resource conditions remain. The final portable export
+and later factual notices are bound to their actual SDK delivery. The two execution-resource conditions remain. The final portable export
 and report follow those reviews. Historical r47-r49 keep their original
 outcomes and disclosed startup-ordering limitation.
 
@@ -289,6 +288,11 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- Atomic-input Haiku repaired-lock r55 used four private leases and published
+  four candidates. All four archive updates prompted reinvestigation; no
+  foreign lock observation, source adoption or intentional exchange occurred.
+  The four missing attestations remained unresolved and finals unpublished.
 
 - Atomic-input Haiku shared-lock r54 produced two foreign busy returns and
   successful retries after release. All four candidates completed; four filings

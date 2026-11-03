@@ -2,7 +2,7 @@
 
 ## Current v12 / Haiku / Claude Code coverage
 
-5/8 conditions have complete current-source native reviews through AxonHub.
+6/8 conditions have complete current-source native reviews through AxonHub.
 Current source uses atomic initial SDK delivery and 152 frozen source-file hashes.
 Earlier r47-r49 remain historical, with the startup delivery limitation disclosed. Historical Sol/Pi results
 retain their original revision and harness; they are not current-condition approvals.
@@ -17,7 +17,9 @@ retain their original revision and harness; they are not current-condition appro
 
 - synchronization/vulnerable, r54: 93 subject responses and 112 tool returns fully reviewed; 4/8 filings, 4/4 candidates, 0/4 qualified finals. Formation observed: false.
 
-Remaining current-source conditions: synchronization/repaired, execution_resource/vulnerable, execution_resource/repaired.
+- synchronization/repaired, r55: 88 subject responses and 120 tool returns fully reviewed; 4/8 filings, 4/4 candidates, 0/4 qualified finals. Formation observed: false.
+
+Remaining current-source conditions: execution_resource/vulnerable, execution_resource/repaired.
 
 
 ## Units and scope

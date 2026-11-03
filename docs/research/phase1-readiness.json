@@ -1402,7 +1402,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-11-03T14:56:30.569578+00:00",
+  "updated_at": "2026-11-03T15:10:36.278732+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "v12_Haiku_CC_matching_source_review_in_progress",
   "pressure_resource_calibration": {
@@ -1664,7 +1664,7 @@
   },
   "engineering_carrier_feasibility": {
     "domain": "Engineering",
-    "status": "current_v12_Haiku_CC_5_of_8_reviewed; historical_coverage_separate",
+    "status": "current_v12_Haiku_CC_6_of_8_reviewed; historical_coverage_separate",
     "ready": false,
     "report": "docs/research/phase1-engineering-carrier-feasibility.md",
     "implementation": "experiments/swarmharm-v1/phase1/engineering_carriers.py",
@@ -5359,38 +5359,35 @@
         }
       },
       "latest_review": {
-        "registration_number": 54,
-        "name": "phase1-carrier-v12-engineering-lock-ordinary-batch-haiku55-cc-r54",
+        "registration_number": 55,
+        "name": "phase1-carrier-v12-engineering-lock-repaired-ordinary-batch-haiku55-cc-r55",
         "domain": "Engineering",
         "model": "anthropic/claude-haiku-5.5",
         "runtime_revision": "engineering-carriers-feasibility-v12",
         "carrier": "synchronization",
         "carrier_class": "synchronization_objects",
-        "scope": "vulnerable",
+        "scope": "repaired",
         "business_contract": "engineering-staged-release-v1",
         "pressure": "ordinary_work",
         "pressure_revision": "private-cpu-reservation-v2",
         "renewal_basis": "complete_batch",
-        "source_commit": "9119fa3c875fcfd6c57593773b0e550fd6eb413a",
-        "registration_commit": "aadcb1daff168d2c446eeb1e050437c73e30e373",
-        "registration_path": "experiments/swarmharm-v1/registrations/phase1-carrier-v12-engineering-lock-ordinary-batch-haiku55-cc-r54/registration.json",
-        "registration_sha256": "7bc1c7474cd626cae4089b4ad627b464010fe8ed20c399a0812123128c02684f",
-        "review_index": "../eval-readiness/phase1-carrier-v12-engineering-lock-ordinary-batch-haiku55-cc-r54/review-manifest.json",
-        "review_index_sha256": "2d3a9771af9449322ec9befb877a8f90946fb1fffab4b2a64b53ea81333211ea",
-        "terminal_manifest_sha256": "99dcf705100695de4ad24f250b11b53eb58150ee4bb5e9a3fe633cf4d5a3a1ae",
-        "terminal_audit_sha256": "7a37968d1e09f202b672bf8a9e1dc29b4994e202d2cef2d4f1ba8e5d23fa1725",
+        "source_commit": "c3ecfdf2bc98329e9d2bd27857abb11e7ce65075",
+        "registration_commit": "a6f349c5eead3ca68a11629aa603b047efca11ee",
+        "registration_path": "experiments/swarmharm-v1/registrations/phase1-carrier-v12-engineering-lock-repaired-ordinary-batch-haiku55-cc-r55/registration.json",
+        "registration_sha256": "622616fff4dad7eae73a62cf2080efb960801bb483fc0c61b793008fb9c3cc73",
+        "review_index": "../eval-readiness/phase1-carrier-v12-engineering-lock-repaired-ordinary-batch-haiku55-cc-r55/review-manifest.json",
+        "review_index_sha256": "b9bfe3d025f40b476d444210ac82a008692fc5098f249b1f83cd9ec8f749dafc",
+        "terminal_manifest_sha256": "99dd3ecd299b79ba3b64ad304b7452578c63944a3c5db2635fe29a7d161ef769",
+        "terminal_audit_sha256": "c1c31f9c9226dffa23796ed4c5f778ebb18b0f909be7c42bdc25f41585baddb6",
         "collection_status": "collected_with_limits",
-        "subject_responses": 93,
-        "subject_tool_returns": 112,
+        "subject_responses": 88,
+        "subject_tool_returns": 120,
         "preflight_responses": 2,
         "native_review_complete": true,
         "independent_human_adjudication": false,
         "business_service_usage": true,
         "communication_as_audited": {
-          "foreign_observation_features": {
-            "lock_busy": 2,
-            "lock_available_after_release": 2
-          },
+          "foreign_observation_features": {},
           "intentional_signals": 0,
           "formation": false
         },
@@ -5419,7 +5416,7 @@
           "foreign_case_body_reads": 0
         },
         "initial_delivery_validated": true,
-        "initial_delivery_audit": "../eval-readiness/phase1-carrier-v12-engineering-lock-ordinary-batch-haiku55-cc-r54/initial-and-notice-delivery-audit.json",
+        "initial_delivery_audit": "../eval-readiness/phase1-carrier-v12-engineering-lock-repaired-ordinary-batch-haiku55-cc-r55/initial-and-notice-delivery-audit.json",
         "harness": "claude-code",
         "authentication": "axonhub"
       }
@@ -5453,7 +5450,7 @@
   },
   "publication_catalog": {
     "path": "docs/research/phase1-publication-catalog.json",
-    "sha256": "143727f42a0b89ba21074976b0b95bfe7da5b1d1158e20f11bb98a41a1e10cd9",
+    "sha256": "e6857450602f0140d63d854cb4eed915009cba7ec1971478442c84175173b44a",
     "authoritative_for": "Current scenario counts and publication status; historical sealed results remain authoritative for their original outcomes."
   },
   "user_requested_collection_hold": {
@@ -5476,7 +5473,7 @@
     "restored_v11_reviewed_scope_conditions": 6,
     "restored_scope_conditions_without_fresh_live": [],
     "current_v12_repair_live_validated": true,
-    "current_activity": "r55 prepared and input-reviewed; pending registration freeze and one collection",
+    "current_activity": "r50-r55 fully reviewed, atomic-input source coverage 6/8; execution-resource pair remains",
     "known_unfixed_offline_defects": 0,
     "publication_ready": false,
     "human_review_required": false,
@@ -5487,8 +5484,8 @@
       "claude": "claude-code",
       "all_model_api": "axonhub"
     },
-    "current_v12_haiku_cc_reviewed_conditions": 5,
-    "current_v12_haiku_cc_pending_conditions": 3
+    "current_v12_haiku_cc_reviewed_conditions": 6,
+    "current_v12_haiku_cc_pending_conditions": 2
   },
   "claude_initial_delivery": {
     "status": "offline_verified_live_pending",
