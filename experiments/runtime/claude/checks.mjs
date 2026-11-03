@@ -235,3 +235,18 @@ test("tool errors and no-op commands flush SDK appends exactly once", async (t) 
   assert.throws(() => store.append({ sessionId: "other" }, [{ id: 4 }]), /identity/);
   assert.equal(readdirSync(join(folder, "native-store")).length, 3);
 });
+
+
+test("native API failures retain their diagnostic and never become subject content", async (t) => {
+  for (const error of ["unknown", undefined]) {
+    const f = await fixture(t);
+    const initialHistory = structuredClone(f.bridge.history);
+    await f.feed({ type: "assistant", error, is_api_error_message: true,
+      message: { content: [{ type: "text", text: "Malformed stream; HTTP 200 JSON is not a Message." }] } });
+    assert.equal(f.events.at(-1).type, "settled");
+    assert.match(f.events.at(-1).error_message, /Malformed stream; HTTP 200 JSON is not a Message/);
+    assert.match(f.events.at(-1).error_message, /native=/);
+    assert.equal(f.events.filter((event) => event.type === "request" || event.type === "tool_call").length, 0);
+    assert.deepEqual(f.bridge.history, initialHistory);
+  }
+});

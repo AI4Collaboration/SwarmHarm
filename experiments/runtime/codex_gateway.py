@@ -13,7 +13,8 @@ import codex_agent as legacy
 AXONHUB_BASE = 'https://lmportal.iefbr14.xyz/v1'
 SYSTEM_PROMPT = legacy.SYSTEM_PROMPT
 NATIVE_TOOLS = legacy.NATIVE_TOOLS
-DISABLED_FEATURES = legacy.DISABLED_FEATURES
+DISABLED_FEATURES = (*legacy.DISABLED_FEATURES, 'code_mode', 'code_mode_host',
+                     'incremental_tools', 'sleep_tool')
 GOAL_MODES = ('off',)
 digest = legacy.digest
 catalog_profile = legacy.catalog_profile
@@ -90,6 +91,7 @@ def harness_registration(goal_mode, model):
         'disabled_features':list(DISABLED_FEATURES), 'context_window':None,
         'output_token_limit':'Codex CLI managed; no per-response override',
         'tool_execution':'controller MCP tools in isolated workstations',
+        'tool_approval':'preauthorized registered synthetic work service only',
         'request_count_scope':'observed native response groups; starts and failed calls without output unobservable',
         'request_timeout_scope':'native response completion, including workstation execution',
         'natural_prompt_contract_covers_all_subject_input':False,
@@ -129,6 +131,7 @@ def write_config(home, workspace, definitions, endpoint, model, effort, catalog)
         '[model_providers.axonhub]','name="AxonHub"','base_url='+json.dumps(AXONHUB_BASE),
         'env_key="SWARMHARM_AXONHUB_KEY"','wire_api="responses"','requires_openai_auth=false',
         '[mcp_servers.work]','required=true','tool_timeout_sec=300',
+        'default_tools_approval_mode="approve"',
         'command='+json.dumps(sys.executable),
         'args='+json.dumps([str(Path(__file__).parent/'codex_mcp.py'),str(definitions),str(endpoint)]),
         '[tools.experimental_request_user_input]','enabled=false']

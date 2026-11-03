@@ -180,6 +180,58 @@ class NativeHarnessChecks(unittest.TestCase):
             surface.bound_directories.pop('a')
             self.assertEqual(surface.directory('a'),root/'a'/'codex')
 
+    def test_current_codex_mcp_blocks_reject_extra_or_changed_envelopes(self):
+        from codex_evidence import mcp_output_text
+        output=[{'type':'input_text','text':'Wall time: 0.0001 seconds\nOutput:'},
+                {'type':'input_text','text':'{"status":"available"}'}]
+        self.assertEqual(mcp_output_text(output),output[1]['text'])
+        for bad in (output+[output[1]], [{'type':'input_text','text':'truncated'},output[1]],
+                    [output[0],{'type':'image','text':'unexpected'}]):
+            with self.assertRaises(AssertionError):mcp_output_text(bad)
+
+    def test_current_gateway_cli_roundtrip_and_exact_tool_delivery(self):
+        from http.server import ThreadingHTTPServer
+        import threading
+        from tests.codex_collect_checks import ScriptedResponses, NativeCodex
+        server=ThreadingHTTPServer(('127.0.0.1',0),ScriptedResponses)
+        server.captures,server.capture_lock=[],threading.Lock()
+        server.mixed_tools=True
+        threading.Thread(target=server.serve_forever,daemon=True).start()
+        original=codex_gateway.write_config
+        def local_config(home,*args):
+            original(home,*args)
+            path=home/'config.toml'
+            text=path.read_text().replace(codex_gateway.AXONHUB_BASE,
+                f'http://127.0.0.1:{server.server_port}/v1')
+            text=text.replace('requires_openai_auth=false','requires_openai_auth=false\nsupports_websockets=false\nrequest_max_retries=0\nstream_max_retries=0')
+            path.write_text(text)
+        try:
+            with tempfile.TemporaryDirectory() as d, patch.object(codex_gateway,'write_config',local_config):
+                root=Path(d);folder=root/'natural'/'actor';folder.mkdir(parents=True)
+                events=queue.Queue();model='openai/gpt-6.1-sol'
+                tools=[{'type':'function','name':'confirm_service','description':'Read service status.',
+                        'parameters':{'type':'object','properties':{}}}]
+                harness=codex_gateway.harness_registration('off',model)
+                agent=run.codex_agent.CodexAgent('actor',events,folder=folder/'codex',
+                    model=model,thinking_level='high',tools=tools,active_tools=['confirm_service'],
+                    goal_mode='off',api_base=codex_gateway.AXONHUB_BASE,api_key='offline-fixture',
+                    registered_harness=harness)
+                try:
+                    ready=run.codex_agent.wait_ready(events,['actor'])['actor']
+                    agent.prompt('Service fixture request.')
+                    NativeCodex().drain(agent,events,folder)
+                finally:agent.close()
+                run.save(root/'registration.json',{'harness':harness})
+                run.save(folder/'result.json',{'status':'collected','codex_session':ready})
+                import export_atif
+                result=export_atif.export_actor(root,'natural','actor')
+                self.assertTrue(result['native_continuity_passed'])
+                self.assertEqual(result['tool_results'],1)
+                raw=[json.loads(p.read_text()) for p in (folder/'codex/native').glob('*.json')]
+                self.assertFalse(any(x.get('message',{}).get('params',{}).get('item',{}).get('type')=='additional_tools' for x in raw))
+                self.assertEqual(len(server.captures),2)
+        finally:server.shutdown();server.server_close()
+
     def test_native_trace_preparation_freezes_harness_and_gateway(self):
         for model,harness in [('anthropic/claude-haiku-5.5','claude-code'),('openai/gpt-5.6-sol','codex')]:
             with self.subTest(harness=harness), tempfile.TemporaryDirectory() as d:

@@ -40,6 +40,13 @@ preset. The business task stays in user input and does not duplicate that rule.
 Offline SDK requests verify the actual role; live traces record the preset
 configuration without inventing the full internal stock prompt.
 
+Codex preauthorizes only the registered synthetic work MCP server. Native tool
+injection features outside the registered tool surface are disabled and frozen
+in the registration. Real-CLI offline tests cover exact structured text results,
+auxiliary tool observations and ATIF export. Unknown or truncated results still
+fail validation. Claude API failures preserve their native error detail and stop
+the affected attempt; a provider failure is not a behavioral negative.
+
 Both adapters preserve one native session per actor. The trace environment reads
 their actual record formats and keeps protected observer captures. Pi remains
 only for archived evidence and offline fixture compatibility. Live CLI selection

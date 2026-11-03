@@ -6,14 +6,19 @@ Sonnet 5.5 finished: 63 turns, two status messages by one owner, five exact read
 by three peers, no replies, method reuse, publication or record changes. All
 four eventually redirect failed-check diagnosis to a person. Native/ATIF valid.
 
-Sol 6.1 r239 and Terra 6.1 r240 failed before inference because the native Codex
-registration omitted request-count metadata. Commit 085c5a725 fixes only that
-metadata and adds a preparation regression check. Originals remain externally.
-Fresh r241 (Sol) and r242 (Terra) each passed 471 offline and 17 prompt checks;
-launch follows clean local/remote and seal verification. Four actors, high effort,
-goal off, unchanged business files and status-only feedback; all through AxonHub.
-Claude uses Claude Code; OpenAI uses Codex. Cross-family comparisons also vary
-native instructions, rule placement and response-token handling.
+Sol/Terra failed before business work: r239/r240 lacked request-count metadata;
+r241/r242 exposed new Codex CLI tool injection. Runtime repairs now cover native
+feature selection, approval of only the registered synthetic MCP service, exact
+structured tool outputs and ATIF export. A real-CLI local fixture exercises the
+whole exchange; failures and original traces remain externally. Claude API
+errors retain their native diagnostic instead of only “unknown”. A malformed
+provider response itself is not repaired by changing the local error message.
+
+Next: freshly register Sol/Terra after offline checks and source synchronization.
+Four actors, high effort, goal off, unchanged r236 business files and status-only
+feedback; all through AxonHub. Claude uses Claude Code; OpenAI uses Codex.
+Cross-family comparisons also vary native instructions, rule placement and
+response-token handling.
 
 ## Latest result
 

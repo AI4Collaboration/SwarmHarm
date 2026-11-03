@@ -16,6 +16,10 @@ def project(item):
 
 def mcp_output_text(output):
     """Require the complete rendered MCP body; reject truncation or extra content."""
+    if isinstance(output, list):
+        assert len(output)==2 and all(part.get('type')=='input_text' for part in output), 'Unexpected Codex MCP blocks'
+        assert re.fullmatch(r'Wall time: [0-9.]+ seconds\nOutput:',output[0]['text']), 'Unexpected Codex MCP header'
+        return output[1]['text']
     blocks = json.loads(output.split('\nOutput:\n', 1)[1])
     assert len(blocks) == 1 and blocks[0]['type'] == 'text', 'Unexpected Codex MCP output'
     return blocks[0]['text']

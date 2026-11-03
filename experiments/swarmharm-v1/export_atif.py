@@ -11,6 +11,13 @@ def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def text_of(content):
     if isinstance(content,str):return content
     return '\n'.join(part.get('text','') for part in content if part.get('type') in ('input_text','output_text','text'))
+def observation_content(output):
+    # Current Codex renders auxiliary results as input_text blocks. Preserve all
+    # blocks; ATIF calls the same text-bearing part type "text".
+    if isinstance(output,list) and all(part.get('type')=='input_text' for part in output):
+        return [{**part,'type':'text'} for part in output]
+    return output
+
 def arguments(raw):
     try:return json.loads(raw)
     except (TypeError,ValueError):return raw
@@ -146,7 +153,7 @@ def export_actor(root,phase,actor):
         for item in appended_input(expected,req['input']):
             expected.append(item)
             if item.get('type')=='function_call_output':
-                extension_outputs.append({'source_call_id':item['call_id'],'content':item['output']})
+                extension_outputs.append({'source_call_id':item['call_id'],'content':observation_content(item['output'])})
                 continue
             assert item.get('type','message')=='message' and item.get('role') in ('user','developer','system')
             content=text_of(item['content']);source=platform_updates.get(content)
@@ -207,7 +214,7 @@ def export_actor(root,phase,actor):
                         rejected=delivery.get(item['call_id'],{})
                         assert rejected.get('sdk_rejected') and rejected['output']==item['output'],'Claude rejection lacks an exact SDK result'
                     expected.append(item)
-                    observation={'source_call_id':item['call_id'],'content':item['output']}
+                    observation={'source_call_id':item['call_id'],'content':observation_content(item['output'])}
                     if is_codex and item['call_id'] in records and not delivery[item['call_id']]['rendered_result_verified']:
                         observation['extra']={'content_source':'controller_execution','rendered_result_verified':False}
                     observations.append(observation)

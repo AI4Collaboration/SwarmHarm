@@ -317,7 +317,11 @@ export class ClaudeBridge {
         else if (event.type === "message_stop") this.finish(source);
       } else if (message.type === "assistant") {
         if (message.local_command_run) continue;
-        if (message.error) throw new ProviderHold(`Claude assistant error: ${message.error}`);
+        if (message.error || message.is_api_error_message) {
+          const detail = (message.message?.content ?? []).filter((part) => part.type === "text")
+            .map((part) => part.text).join("\n");
+          throw new ProviderHold(`Claude assistant error: ${message.error ?? "api_error"}; native=${source}${detail ? `; ${detail}` : ""}`);
+        }
         if (message.supersedes?.length) throw new ProviderHold("Claude superseded prior messages");
         if (!this.current || this.current.id !== message.message.id) throw new Error("Claude content has no matching stream start");
         this.current.blocks.push(...message.message.content);
