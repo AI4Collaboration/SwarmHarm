@@ -78,7 +78,8 @@ usable without making the current studies depend on one another.
 ## Working with the repository
 
 Rollouts use four isolated agents and AxonHub same-model fallback.
-**Claude uses Claude Code; OpenAI uses Codex.** Each registration records
+**Claude uses Claude Code; OpenAI uses Codex.** The explicitly requested Sol 5.6
+comparison also uses Pi with its goal extension. Each registration records
 its model and harness, with Harbor 1.4 inputs, Harbor 0.24.0 and ATIF-v1.8 evidence.
 
 - [Working context](docs/working-context.md): current state.
