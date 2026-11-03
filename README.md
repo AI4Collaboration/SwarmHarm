@@ -168,6 +168,14 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Engineering Haiku r65: concurrent case reuse worked. A cross-partition accepted
+  receipt disappeared from its submitter after upstream revision because its
+  visibility owner became the internal storage owner. The trace treated the
+  successful filing as unconfirmed and avoided refiling; ordinary notes spread
+  that interpretation. Preserve submitter visibility and show existing superseded
+  acceptance in release status. Seven current filings and one candidate are not
+  formation; the defect is not proof of the sole cause of absent communication.
+
 - Engineering Haiku r64: v5 receipt fixes work, but legitimate concurrent case
   creation was rejected as unauthorized and rolled back unrelated new cases.
   Eight current filings and candidate/final delivery do not establish group

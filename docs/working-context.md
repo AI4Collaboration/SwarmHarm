@@ -8,34 +8,24 @@ a readiness gate. Historical selected positives remain valid at their sources
 and models; new Haiku validation does not revoke them. See
 .cursor/rules/phase1-simplicity.mdc.
 
-R64 release-wide v5 is terminal and fully reviewed. Source 86fa20bdc,
-registration f436ad41f. All 155 subject responses, 268 tool returns, four finals
-and two preflights were read. Native/atomic delivery, independent business replay,
-saved-artifact binding and ATIF passed. 149 source files and 31325 terminal files
-match; all four workstations are absent. Review-manifest binds 24 sidecars under
-../eval-readiness/phase1-receipt-binding-engineering-haiku55-cc-r64/.
-Eight current filings and one candidate/final pair are delivered; formation is
-pending. v5 save acknowledgments and matching-report selection were exercised.
-No collector or r64 audit remains active. Preserve r59-r64; do not recollect.
+R65 release-wide v6 is terminal and fully reviewed. Source f3a1422fa,
+registration fa6a80083. All144 subject responses, 250 tool returns,
+four finals and two preflights were read. Native and atomic delivery,
+independent business replay, saved-artifact binding and ATIF passed.
+149 source files and 27586 terminal files match; all four workstations
+are absent. Review-manifest binds 23 sidecars under
+../eval-readiness/phase1-case-concurrency-engineering-haiku55-cc-r65/.
+Seven current filings and one candidate are delivered; formation is pending.
+Concurrent case reuse and independent creation were exercised successfully.
+No collector or r65 audit remains active. Preserve r59-r65; do not recollect.
 
-Release-wide v6 is implemented and offline verified; matching-source Haiku is pending.
-Eighteen focused checks, fourteen prompt checks and six historical reconstructions pass.
-Source f3a1422fa is pushed; clean and actual remote matched. Common r65 prepare
-completed in session53183, output ../eval-readiness/phase1-case-concurrency-engineering-haiku55-cc-r65.
-486 common checks,14 prompt checks and the real four-workstation business control passed.
-149 source/input/task seals and both catalogs pass. Four new inputs and the ordinary
-PLATFORM delta were reviewed; other files/tools match r64 after job/deadline normalization.
-preparation-audit.json is saved. Deadline 2026-11-03T23:07:39UTC.
-No r65 hosted collection yet; commit registration and verify freeze before launch.
-Initial task/tools are identical; PLATFORM.md explains transaction receipts.
-Evidence: phase1-case-concurrency-offline-20261103-r1.json.
-The repair addresses concurrent creation of the same investigation: preserve the first
-author, commit independent valid new cases, and return an honest stale-reference
-conflict for notes tied to a losing local diagnostic. No task, notification,
-completion, model or extra publication mechanism change is planned. This addresses
-r64 events71/72; it does not guarantee autonomous communication. Historical r65's
-case/thread/locator helpers and factual notifications are present in the current
-workflow. Full business completion remains distinct from formation.
+Next coherent repair: preserve the actual submitting context's accepted receipt
+through upstream revision, and expose already retained superseded acceptance in
+the existing release status. Fix runtime, independent replay and focused checks
+together. Task, tools, initial documents and notifications remain unchanged.
+Historical v1-v6 and the successful source/model baselines remain frozen.
+Full business completion is distinct from formation. Details and lessons are
+in README Takeaways and the sealed r65 findings.
 
 Engineering release-wide v3 is reviewed in Haiku CC/AxonHub r61: source
 a7496130b, registration 06014cdf0. All 141 subject responses, 289 tool returns,

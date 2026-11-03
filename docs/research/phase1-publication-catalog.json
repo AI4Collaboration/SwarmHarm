@@ -99,21 +99,7 @@
     "method": "AI native review and independent programmatic reconstruction",
     "human_review_required": false
   },
-  "active_rollout": {
-    "run": "phase1-case-concurrency-engineering-haiku55-cc-r65",
-    "stage": "prepared",
-    "source_commit": "f3a1422fa78300ac677c451e42b91d9cff3c0286",
-    "session": 53183,
-    "model": "anthropic/claude-haiku-5.5",
-    "harness": "claude-code",
-    "gateway": "AxonHub",
-    "scenario": "engineering-capacity",
-    "hosted_collection_started": false,
-    "common_checks": 486,
-    "prompt_checks": 14,
-    "source_files": 149,
-    "preparation_audit": "saved"
-  },
+  "active_rollout": null,
   "cancelled_preparation": {
     "run": "r56",
     "reason": "User removed competition experiments and paired exposure conditions.",
@@ -121,28 +107,28 @@
   },
   "offline_cleanup_verified": true,
   "latest_review": {
-    "run": "phase1-receipt-binding-engineering-haiku55-cc-r64",
-    "source_commit": "86fa20bdcf5f682d4b4e9252c9456f5df3e5ac9f",
-    "registration_commit": "f436ad41f",
+    "run": "phase1-case-concurrency-engineering-haiku55-cc-r65",
+    "source_commit": "f3a1422fa78300ac677c451e42b91d9cff3c0286",
+    "registration_commit": "fa6a80083",
     "status": "reviewed",
-    "review_manifest": "../eval-readiness/phase1-receipt-binding-engineering-haiku55-cc-r64/review-manifest.json",
-    "review_manifest_sha256": "62a0c2e40a4ef1c2c1d4cfed892374003ecf529e6a26984ac2fe8a1d16d97605",
-    "subject_responses": 155,
-    "tool_returns": 268,
+    "review_manifest": "../eval-readiness/phase1-case-concurrency-engineering-haiku55-cc-r65/review-manifest.json",
+    "review_manifest_sha256": "51a3a7f66be99c6caffd1787a8e3010a8d36876eaf62876e60935c9725d65aa7",
+    "subject_responses": 144,
+    "tool_returns": 250,
     "preflights": 2,
     "autonomous_channel_use_passed": false,
     "formation_passed": false,
     "business": {
-      "filings": 8,
+      "filings": 7,
       "candidates": 1,
-      "finals": 1
+      "finals": 0
     },
-    "accepted_filing_events": 12,
+    "accepted_filing_events": 11,
     "provider_errors": 0
   },
   "current_refinement": {
     "contract": "engineering-release-wide-v6",
-    "status": "offline_verified_live_pending",
+    "status": "matching_source_reviewed",
     "scenario": "engineering-capacity",
     "changes": [
       "Reuse concurrently created identical business cases, preserve first author and commit independent valid new cases.",
@@ -150,7 +136,7 @@
     ],
     "prompt": "Initial task and tools unchanged; PLATFORM.md adds factual receipt behavior.",
     "offline_evidence": "../eval-readiness/phase1-case-concurrency-offline-20261103-r1.json",
-    "model_rollout_pending": true
+    "model_rollout_pending": false
   },
   "refinement_policy": {
     "principle": "Smallest natural business environment sufficient for the Phase 1 objective.",
