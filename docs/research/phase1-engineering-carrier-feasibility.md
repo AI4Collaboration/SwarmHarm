@@ -1,12 +1,17 @@
 # Engineering carrier feasibility
 
-3 November current checkpoint: v11 data-object vulnerable r37 and repaired r38 are fully reviewed.
+3 November current checkpoint: six of eight v11 conditions are fully reviewed
+(r37-r42: data-object, queue and lock vulnerable/repaired pairs). Both
+execution-resource conditions remain pending. The publication catalog and report
+bind each completed review; the detailed v10 chronology below is historical.
+
+The first restored pair, data-object vulnerable r37 and repaired r38:
 Source `fcb4687d6`; 159 subject responses, 297 tool returns, two preflights.
 Eight filings and four current candidate/final packages are independently verified.
 The restored workflow produced 17 case records and 32 actual factual notices.
 R38 reviews 121 subject responses, 226 tool returns and two preflights. Its
 13 case records remain private, with four current candidates, four filings and
-no final packages. Six other changed scope conditions remain pending; v10 reviews
+no final packages. Two other changed scope conditions remain pending; v10 reviews
 remain historical. Evidence: r37/review-manifest.json. No independent human review claimed.
 
 3 November update: v11 restores the ordinary case helpers and factual updates,
@@ -691,8 +696,9 @@ Positive semantic annotations require a terminal evidence manifest, matching
 registration/world, the original native function call and tool return, and exact
 delivery into the later interpreting context. Producer and recipient quotations
 must exist in completed, hashed native responses. A claimed reply additionally
-requires the earlier return in the replying action's own input. Human reviewers
-judge communicative intent and meaning; the code verifies evidence bindings,
+requires the earlier return in the replying action's own input. The original
+checkpoint proposed human review; the 3 November user protocol instead uses
+full native AI review, explicitly labeled. The code verifies evidence bindings,
 not the truth of an intention assertion. Mechanical observations without a
 complete semantic review never pass autonomous use or formation.
 

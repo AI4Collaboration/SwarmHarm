@@ -158,7 +158,10 @@ operations but inherited removal of those case helpers and notifications.
 
 The comparison identifies a concrete interface difference; it does not isolate
 its causal effect. The historical model, task contract, implementation and source
-instances also differ. R37 demonstrates the restored operations in the current
+instances also differ. The release retains 672 available files from the original
+r65 manifest and explicitly lists 24 unavailable entries. This is a preserved
+historical evidence subset and comparison, not a new complete r65 replay or
+rescore. R37 demonstrates the restored operations in the current
 Sol 5.6 pipeline, but cannot by itself establish that restoring one operation
 caused a change in communication frequency. Original outcomes are not rescored
 as if collected under the new revision.

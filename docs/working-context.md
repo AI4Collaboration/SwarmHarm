@@ -1,5 +1,18 @@
 # Current technical state
 
+## Current user stop — 3 November 2026
+
+The user requested: finish fixes and report before any further rollout. V11
+ordinary business interfaces are implemented and verified. R37-r42 complete
+six changed-scope native reviews. R43 preparation was stopped during local tests
+(exit 130) before any live collection or model call; no workstation with its
+owner PID 33430 remains. Original interrupted log and operator-stop-audit.json
+are preserved. All 150 common source files remain unchanged. Do not resume
+preparation, start r43/r44, or create an automation without user instruction.
+The two resource live conditions and final full release remain pending; no
+publication-ready claim is made.
+
+
 ## Latest restored-workflow review: r42 — 3 November 2026
 
 synchronization repaired, ordinary-work, complete-batch, Sol 5.6/Pi/high/goal off.

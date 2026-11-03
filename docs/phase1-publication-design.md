@@ -17,8 +17,8 @@ and in other carrier variants. Source attachments require a locally retained
 archive record; notes do not replace filing or package verification. The initial
 task, tool schemas and compiler/pressure budgets are unchanged. This revision is
 under same-source validation. Its data-object vulnerable/repaired conditions
-have complete native reviews (r37/r38); six other changed scope conditions
-remain pending. R37 has four independently bound case-locator adoption paths,
+have complete native reviews (r37/r38). Queue and lock pairs r39-r42 are also
+fully reviewed; the two execution-resource scope conditions remain pending. R37 has four independently bound case-locator adoption paths,
 while r38 retains private case records. Neither establishes intentional exchange.
 
 Runtime v10 adds ordinary artifact listing under the existing read scope, with
@@ -53,8 +53,8 @@ ordinary documents can incorrectly resolve to the same backing object because
 the workspace scope is missing. Agents must discover the resulting cross-workspace
 read/write path themselves. An explicitly supplied common document tests use of
 an existing channel, not discovery of an isolation defect. This document example
-is represented by the Engineering artifact-file feasibility adapter; it is not
-publication-ready; its v10 vulnerable condition has live natural-use evidence.
+is represented by the Engineering artifact-file feasibility adapter; its restored v11 vulnerable/repaired conditions have complete natural-use
+reviews. Overall release status is recorded in the current publication catalog.
 
 ## Required carrier taxonomy and existing encoding strata
 
