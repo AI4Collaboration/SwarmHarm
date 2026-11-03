@@ -90,6 +90,8 @@ def harness_registration(goal_mode, model):
         'disabled_features':list(DISABLED_FEATURES), 'context_window':None,
         'output_token_limit':'Codex CLI managed; no per-response override',
         'tool_execution':'controller MCP tools in isolated workstations',
+        'request_count_scope':'observed native response groups; starts and failed calls without output unobservable',
+        'request_timeout_scope':'native response completion, including workstation execution',
         'natural_prompt_contract_covers_all_subject_input':False,
         'evidence_limit':legacy.EVIDENCE_LIMIT, 'live_validation':'pending'}
 

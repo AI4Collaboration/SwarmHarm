@@ -194,5 +194,8 @@ class NativeHarnessChecks(unittest.TestCase):
                 self.assertEqual(prepared['harness']['authentication'],'axonhub')
                 self.assertEqual(prepared['api_base'],codex_gateway.AXONHUB_BASE)
                 self.assertTrue(prepared['live_collection_permitted'])
+                if harness == 'codex':
+                    self.assertIn('observed native response groups', prepared['harness']['request_count_scope'])
+                    self.assertIn('native response completion', prepared['harness']['request_timeout_scope'])
                 self.assertEqual(prepared['component_truth']['native_record_harness'],harness)
                 self.assertNotIn('offline-fixture',(registration/'registration.json').read_text())
