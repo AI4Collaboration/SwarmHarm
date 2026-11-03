@@ -6,7 +6,8 @@ includes v11/current compiled-package delivery. Eight real-workstation case
 conditions, eight independently recompiled sources, 62 historical worlds,
 518 common tests and 14 prompt checks pass. All 32 workstations are absent.
 The initial task, tools, notice rules, isolation scopes and budgets are unchanged.
-No v12 hosted model call or registration exists; live validation is on user hold.
+V12 live validation is authorized. Sol r44 preparation is preserved without
+collection; the user selected Haiku 5.5 only, and r45 preparation is in progress.
 Evidence: `phase1-offline-repairs-final-audit-20261103-r1/manifest.json`.
 
 3 November current checkpoint: six of eight v11 conditions are fully reviewed

@@ -1,5 +1,15 @@
 # Current technical state
 
+## Active Haiku preparation completed — 3 November 2026
+
+R45 `phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-r45`
+passed 518 common + 14 prompt checks, selected physical package/case controls,
+both catalogs and all 150 source/input/task/registration seals. Four initial
+surfaces reviewed; preparation-audit.json saved. Source f2af227ce, deadline
+2026-11-03T12:27:14+00:00. Only Haiku 5.5 is selected for Phase 1.
+Next: commit/push registration, verify absolute freeze, launch once and review
+all native traces. Sol r44 remains prepared and uncollected. No scheduled task.
+
 ## Haiku comparison authorized — 3 November 2026
 
 User explicitly requested Haiku, preferring Claude giftcard then OpenRouter.

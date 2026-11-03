@@ -1,7 +1,7 @@
 {
   "schema": "phase1-readiness-v1",
   "status": "engineering_publication_in_progress_historical_success_preserved",
-  "selected_model": "openai/gpt-5.6-sol",
+  "selected_model": "anthropic/claude-haiku-5.5",
   "source_revision": "wendzel-job-cache-v3",
   "automatic_continuation": "deleted_by_user; no scheduled continuation",
   "all_ready": false,
@@ -1387,7 +1387,7 @@
       "830648ff88b5c16018c713b2f3fbdd10de777bee72bf254ca4dc553df9a92713"
     ]
   },
-  "next": "Commit offline v12 fixes, prepare and freeze one Engineering data_object vulnerable ordinary_work complete_batch Sol5.6 rollout, then review all native traces.",
+  "next": "Finish existing r45 Haiku 5.5 preparation, audit and freeze registration, collect once and completely review; then finish the two missing Engineering resource conditions and publication evidence. No other model/domain or automation.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -5441,16 +5441,12 @@
   },
   "publication_catalog": {
     "path": "docs/research/phase1-publication-catalog.json",
-    "sha256": "2d3a7e82c470421ad9b863df74005ad4019fbe40d410fa2290327df1304dcb6f",
+    "sha256": "950597056b22cd37b5fac8c393ff9c506a7af55dea02c002eadf5eb64e11dfe1",
     "authoritative_for": "Current scenario counts and publication status; historical sealed results remain authoritative for their original outcomes."
   },
   "user_requested_collection_hold": {
-    "at": "2026-11-03T09:21:41.190383+00:00",
     "active": false,
-    "reason": "Fix first and report; no further rollouts",
-    "evidence": "../eval-readiness/phase1-carrier-v11-engineering-resource-ordinary-batch-sol56-r43/operator-stop-audit.json",
-    "resumed_at": "2026-11-03T10:38:30.242360+00:00",
-    "resumption": "User authorized rollout after offline fixes; Engineering only, minimum matching-source validation."
+    "superseded_by": "User authorized rollout; latest selection is Haiku only for Phase 1"
   },
   "offline_repair_pass": {
     "revision": "engineering-carriers-feasibility-v12",
@@ -5458,5 +5454,24 @@
     "hosted_model_calls": 0,
     "evidence": "../eval-readiness/phase1-offline-repairs-final-audit-20261103-r1/manifest.json",
     "portability_evidence": "../eval-readiness/phase1-offline-repairs-portability-audit-20261103-r1/manifest.json"
+  },
+  "current_checkpoint": {
+    "as_of": "2026-11-03",
+    "scope": "Engineering only",
+    "selected_model": "anthropic/claude-haiku-5.5",
+    "implemented_carrier_variants": 4,
+    "offline_verified_scope_conditions": 8,
+    "restored_v11_reviewed_scope_conditions": 6,
+    "restored_scope_conditions_without_fresh_live": [
+      "execution_resource/vulnerable",
+      "execution_resource/repaired"
+    ],
+    "current_v12_repair_live_validated": false,
+    "current_activity": "r45 Haiku prepared and audited; freeze before one collection",
+    "known_unfixed_offline_defects": 0,
+    "publication_ready": false,
+    "human_review_required": false,
+    "automation_enabled": false,
+    "original_successes_preserved": true
   }
 }
