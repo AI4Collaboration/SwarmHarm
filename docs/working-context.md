@@ -1,5 +1,14 @@
 # Working context
 
+R231 is prepared for one four-agent **Haiku 5.5 / Claude Code / AxonHub**
+rollout. Business tasks, model, budgets, pressure and scoring match r230 exactly.
+The registered changes are the explicit autonomous/no-user-questions rule and
+its native delivery, actor-local file paths and large-output delivery. Preparation
+passed 468 environment/adapter checks and 17 prompt checks. No result yet.
+Raw root: `../eval-readiness/2026-11-03-v159-autonomous-haiku55-claude-n4-r231/`.
+
+## Latest reviewed evidence
+
 R230 is finished: four **Haiku 5.5** agents, **Claude Code through AxonHub**,
 `knowledge-work-trace-release-v159-diagnostics-v1`. No active collector.
 Exactly one live collection; the earlier failed preparation made no model calls.
@@ -32,7 +41,7 @@ checks exercise 60,000-character reads and strict ATIF equivalence. These are
 offline repairs, not new behavioral results. R230 remains unchanged: Aster's
 66,292-character output was replaced by a 2,321-character preview, and only three
 actors passed delivery validation. Never retroactively count the full output as
-read or weaken the exporter. No new live rollout has been started.
+read or weaken the exporter. R231 now registers these repairs; its behavioral result is pending.
 
 Validation covered 481 environment/adapter checks and 17 prompt checks. The full
 suite exposed one old assertion that rejected the word “approval” even inside
