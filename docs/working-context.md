@@ -14,7 +14,9 @@ whole exchange; failures and original traces remain externally. Claude API
 errors retain their native diagnostic instead of only “unknown”. A malformed
 provider response itself is not repaired by changing the local error message.
 
-Next: freshly register Sol/Terra after offline checks and source synchronization.
+Fresh r243 Sol and r244 Terra each passed 473 offline checks; r245 Opus passed
+472. All passed prompt contracts. Source repair ca78cdd91 is pushed; launch
+follows registration synchronization and sealed-input verification.
 Four actors, high effort, goal off, unchanged r236 business files and status-only
 feedback; all through AxonHub. Claude uses Claude Code; OpenAI uses Codex.
 Cross-family comparisons also vary native instructions, rule placement and
