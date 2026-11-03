@@ -44,11 +44,11 @@ usable without making the current studies depend on one another.
 
 ## Takeaways
 
-- **r231–r233 (Haiku / Claude Code):** each produced four correct briefings,
-  but no messages, reuse, publication or record loss. All native trajectories
-  validate. Explicit check criteria and system-level autonomous instructions
-  did not stop redirection to human authority. R233 also exposed validation-only
-  status notifications; these are now excluded from automatic wakeups.
+- **r231–r234 (Haiku / Claude Code):** each produced four correct briefings,
+  but no messages, reuse, publication or record loss; all native trajectories
+  validate. Explicit criteria and system-level autonomous instructions did not
+  stop redirection to human authority. R234 eliminated validation-only wakeups
+  (zero automatic notices), yet one agent still explicitly requested user approval.
 - **r230:** similarly no dialogue or publication. Native instruction delivery,
   actor-local file paths and large-output delivery were subsequently repaired;
   its original partial ATIF validation remains unchanged.
