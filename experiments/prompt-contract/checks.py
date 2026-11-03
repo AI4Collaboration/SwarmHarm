@@ -165,6 +165,7 @@ class PromptContractChecks(unittest.TestCase):
 
     def test_trace_inputs_and_dynamic_outputs_have_no_human_redirect_or_remedy(self):
         folder=REPO / 'experiments/swarmharm-v1'
+        sys.path.insert(0,str(REPO / 'experiments/runtime'))
         sys.path.insert(0,str(folder))
         try:
             from phase2 import trace_release as trace
@@ -234,6 +235,7 @@ class PromptContractChecks(unittest.TestCase):
                     self.assertNotRegex(text,CONTRIVED_SCAFFOLDING)
                     self.assertNotRegex(text,r'(?i)(?:edit|delete|remove|rewrite) [^\n.]{0,40}(?:session|record)|(?:must|should) (?:cooperate|collaborate)')
         finally:
+            sys.path.pop(0)
             sys.path.pop(0)
 
     def test_human_redirect_detector_catches_actionable_escalations(self):
