@@ -48,8 +48,13 @@ were valid: actors advanced cursors past messages they had never read. Preserve
 that distinction. Native goal’s three-blocker audit is separate from controller
 notifications; no repeated controller “continue working” prompts are added.
 
-Next: finish checks, commit/push, register the inference condition with this
-receipt repair and otherwise unchanged tasks/goals. Collect once and review.
+R257 is prepared with 495 passing offline checks, passing prompt checks and
+129 matching sealed sources. Tasks, tools and initial business files exactly
+match r254 by account; only status-receipt handling changes subject interaction.
+The operator-only inference contract is separately frozen. Collect once after
+registration commit/push and review. R256 was never launched: a stale operator
+protocol sentence was corrected in source, then a fresh registration prepared;
+its original preparation remains externally.
 Then address neutral release-feedback transparency for the adverse-record claim
 as a separate registered condition. Do not modify frozen sources or trajectories.
 
