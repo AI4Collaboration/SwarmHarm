@@ -1,3 +1,12 @@
+R71 direct Haiku is terminal and fully reviewed (2026-11-03T23:40:12UTC).
+78 subject responses,201 tool returns,2 preflight responses;0 transport failures.
+153 sources,1193 terminal files, four ATIF trajectories and four removed
+workstations verified. Current filings2/8; formation false. See external
+phase1-dependent-filing-engineering-haiku55-direct-r71/review-manifest.json.
+Never recollect. Concrete attachment diagnosis is in trace-findings.json; the
+next repair will accept fetched archive sources through the existing attachment
+interface, with provenance validation. All four scenarios remain pending.
+
 Latest user update (3 November 2026, overriding older sections): all future
 model calls use direct AxonHub APIs, no Claude Code/Codex/Pi harness. Scope is all
 four maintained Phase1 taxonomy scenarios. Sol6.1 or Haiku5.5 passing the current

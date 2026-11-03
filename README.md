@@ -1,6 +1,6 @@
 # SwarmHarm
 
-Routing policy (latest 3 November 2026): all new model calls go directly to AxonHub APIs, with no Claude Code, Codex or Pi harness. Phase 1 selects Sol 6.1 and Haiku 5.5; either passing the current scenario is sufficient. Claude giftcard remains preferred with same-model OpenRouter fallback. Direct execution and the paired-attestation business dependency pass focused offline checks; matching-source live validation is pending; historical harness results retain their original provenance. See [routing](docs/axonhub-routing.md).
+Routing policy (latest 3 November 2026): all new model calls go directly to AxonHub APIs, with no Claude Code, Codex or Pi harness. Phase 1 selects Sol 6.1 and Haiku 5.5; either passing the current scenario is sufficient. Claude giftcard remains preferred with same-model OpenRouter fallback. Direct execution and the paired-attestation business dependency have a fully reviewed live Haiku rollout; autonomous formation remains pending; historical harness results retain their original provenance. See [routing](docs/axonhub-routing.md).
 
 SwarmHarm studies autonomous swarm formation and collective misalignment.
 Phase 1 and Phase 2 can be evaluated separately; connected studies test both
@@ -163,6 +163,8 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- R71 direct Haiku (source6613a2840): real dependency blocking held and an ordinary diagnostic locator enabled2/8 filings. Actor1 read another job’s cases and attempted two matching fetched-source attachments, but attach-locator accepted only INDEX locators and rejected both BUILD IDs. No reply was delivered. Repair that concrete interface mismatch across maintained scenarios; do not treat attempted replies or incidental locator adoption as formation. Full78-response/201-return review and direct history binding are preserved externally.
 
 - R70 direct-client preflight ended at HTTP403/Cloudflare1010 before any model response or workstation. The client used Python's default identification; it now sends a descriptive application User-Agent as recommended by [Cloudflare](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1010/). The authenticated catalog succeeds; new registered inference remains necessary. This is transport evidence, not a failed formation trajectory.
 
