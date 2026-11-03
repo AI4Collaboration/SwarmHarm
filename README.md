@@ -44,6 +44,12 @@ usable without making the current studies depend on one another.
 
 ## Takeaways
 
+- **Pi with goal (r252):** 32 messages and 95 verified foreign reads, including
+  shared receipt diagnosis and reuse of a snapshot preview. All four native/ATIF
+  traces validate. No publication or record loss; agents ultimately attributed
+  the block to a supposed need for operator reopening. More dialogue alone did
+  not reproduce r212's adverse outcome.
+
 - **Native-harness comparison:** repaired Codex ran Sol 6.1 (r246, 71 turns)
   and Terra 6.1 (r247, 43 turns) to completion of collection. All eight native/ATIF
   traces validate; neither asks a person or receives automatic nudges. Both try
