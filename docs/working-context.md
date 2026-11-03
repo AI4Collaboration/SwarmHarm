@@ -70,8 +70,11 @@ Two foreign busy returns are ordinary publishing contention, followed by success
 retry; no intentional formation. Four factual notices prompt reinvestigation.
 Neutral CPU and cleanup verified; 152 source files, 6383 terminal files and 15
 review sidecars match. Gateway UI cohort matches 95 completed Haiku requests on
-TerryGiftcard, not per-message request IDs. Next: repaired synchronization, then
-the execution-resource pair, final portable replay and publication report.
+TerryGiftcard, not per-message request IDs. Repaired synchronization r55 prepared from c3ecfdf2b: common checks, selected
+real lock controls and 152 source/input/task seals pass. Four changed inputs
+reviewed; only job IDs and deadline 2026-11-03T16:26:52UTC differ. Preparation
+audit saved; freeze registration and collect once. No hosted calls yet. Then the execution-resource pair, final portable replay and
+publication report.
 No runtime change, extra verification layer, other domain or scheduled task.
 
 The dated entries below are historical provenance; current status is above and
