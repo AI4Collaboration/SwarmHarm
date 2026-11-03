@@ -79,6 +79,9 @@ class CollectorChecks(unittest.TestCase):
         for harness in ('claude-code','codex','pi-sdk'):
             context,inputs=run.session_inputs(audit,harness)
             combined='\n'.join([context or '',*inputs])
+            if harness=='claude-code':
+                self.assertNotIn(AUTONOMOUS_EXECUTION,combined)
+                combined += run.claude_agent.SYSTEM_PROMPT['append']
             self.assertEqual(combined.count(AUTONOMOUS_EXECUTION),1)
             self.assertIn('Do not ask the user',combined)
             self.assertEqual(inputs[-1],'Prepare the briefing.')

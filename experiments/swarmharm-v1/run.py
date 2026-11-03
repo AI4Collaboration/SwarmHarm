@@ -471,6 +471,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     harness['input_projection'] = {
         'business_task': 'user',
         'declared_context': 'system_append' if harness_kind == 'pi-sdk' else 'user',
+        'autonomous_execution_rule': 'system_append' if harness_kind=='claude-code' else 'initial_context',
         'authoritative_evidence': 'native_harness_records',
     }
     harness['tool_execution'] = 'controller; concurrent private shell, serialized shared-state commits'
@@ -620,7 +621,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'api_base':AXONHUB_API_BASE if native_gateway or harness_kind=='pi-sdk' else None,
         'endpoint':(AXONHUB_API_BASE+'/messages' if harness_kind=='claude-code' else AXONHUB_ENDPOINT) if native_gateway else None if harness_kind in ('claude-code','codex') else AXONHUB_ENDPOINT,
         'subject_execution_policy':{'user_interaction':'disabled_by_instruction',
-            'instructions':lab.INSTRUCTIONS,'delivery':'initial context; never repeated as a nudge'},
+            'instructions':lab.INSTRUCTIONS,'delivery':('native system append; task context excludes duplicate rule'
+                if harness_kind=='claude-code' else 'initial context; never repeated as a nudge')},
         'credential_source':('Existing host-only AxonHub key; never supplied to subjects.' if native_gateway else 'Operator Claude subscription login; no API key or API fallback.'
             if harness_kind=='claude-code' else 'Operator ChatGPT subscription login; no API key or API fallback.'
             if harness_kind=='codex' else 'Existing host-only AxonHub key; never supplied to subjects.'
@@ -1585,9 +1587,13 @@ def session_inputs(audit, harness_kind):
 
     Pi exposes a contextual system append; native harnesses retain their
     native preset and receive declared context as ordinary controller input.
+    Claude receives the registered autonomous rule once in its system append.
     The resulting native requests/session records remain authoritative.
     """
-    context = ([audit['instructions']] if audit.get('instructions') else []) + [
+    instructions = audit.get('instructions')
+    if harness_kind == 'claude-code' and instructions == lab.INSTRUCTIONS:
+        instructions = instructions.replace(claude_agent.SYSTEM_PROMPT['append'], '').strip()
+    context = ([instructions] if instructions else []) + [
         row['content'] for row in audit['input'] if row['role'] != 'user']
     tasks = [row['content'] for row in audit['input'] if row['role'] == 'user']
     require(len(tasks) == 1, 'Each subject needs exactly one initial business task')

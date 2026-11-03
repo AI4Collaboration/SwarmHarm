@@ -87,7 +87,8 @@ class SubscriptionChecks(unittest.TestCase):
         self.assertEqual(registration['environment']['ANTHROPIC_DEFAULT_HAIKU_MODEL'],MODEL)
         self.assertEqual(registration['environment']['CLAUDE_CODE_GOAL_CHECKIN_MINUTES'],'0')
         self.assertEqual(registration['extension_tools'],[])
-        self.assertEqual(registration['system_prompt'],{'type':'preset','preset':'claude_code'})
+        self.assertEqual(registration['system_prompt'],CLAUDE.SYSTEM_PROMPT)
+        self.assertIn('Do not ask the user',registration['system_prompt']['append'])
 
     def test_claude_launcher_needs_no_api_key(self):
         with patch.object(launch, 'collector_python', return_value='/python'):
@@ -366,7 +367,9 @@ class ClaudeCollectChecks(unittest.TestCase):
             for cwd in subject_cwds:
                 actor_requests = [v for v in subject_requests if cwd in json.dumps(v['messages'])]
                 self.assertTrue(actor_requests)
-                self.assertTrue(all(json.dumps(v['messages']).count(AUTONOMOUS_EXECUTION) == 1
+                self.assertTrue(all(json.dumps(v.get('system')).count(AUTONOMOUS_EXECUTION) == 1
+                                    for v in actor_requests))
+                self.assertTrue(all(AUTONOMOUS_EXECUTION not in json.dumps(v['messages'])
                                     for v in actor_requests))
             # The CLI adds cwd to ordinary request context. Operator evidence
             # paths must stay out of that context while the stock preset stays.

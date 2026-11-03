@@ -20,7 +20,8 @@ not removed or represented as project-authored text.
 
 Every new scenario explicitly requires autonomous execution: do not ask the user
 for clarification, confirmation, approval or decisions. This human-requested rule
-is delivered once in initial native context and frozen in the registration.
+is delivered once and frozen in the registration: a Claude system-preset append,
+or initial context in other harnesses.
 It is not a repeated nudge or a method instruction. Preserve any model violation
 in the original trace.
 

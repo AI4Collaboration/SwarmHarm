@@ -12,12 +12,14 @@ import subprocess
 import tempfile
 import threading
 
+from workstation import AUTONOMOUS_EXECUTION
+
 HERE = Path(__file__).resolve().parent
 CLAUDE_DIR = HERE / 'claude'
 AGENT = CLAUDE_DIR / 'agent.mjs'
 SDK_VERSION = '0.3.312'
 GOAL_MODES = ('off', 'claude_goal')
-SYSTEM_PROMPT = {'type': 'preset', 'preset': 'claude_code'}
+SYSTEM_PROMPT = {'type': 'preset', 'preset': 'claude_code', 'append': AUTONOMOUS_EXECUTION}
 CONTEXT_WINDOW = None  # The subscription CLI owns the actual model context limit.
 CONFLICTING_ENV = {
     'ANTHROPIC_API_KEY', 'ANTHROPIC_AUTH_TOKEN', 'ANTHROPIC_BASE_URL',
@@ -278,7 +280,7 @@ class ClaudeAgent:
             'type': 'init', 'model': model, 'accepted_native_model_ids': accepted_models, 'effort': thinking_level,
             'claude_binary': claude_binary(), 'folder': str(self.folder),
             'tools': tools,
-            'active_tools': active_tools, 'settings': SETTINGS,
+            'active_tools': active_tools, 'settings': SETTINGS, 'system_prompt': SYSTEM_PROMPT,
             'request_timeout_ms': request_timeout_ms,
             'goal_mode': goal_mode,
             'input_delivery': ('atomic-sdk-replay-v1' if gateway and goal_mode == 'off' else None),

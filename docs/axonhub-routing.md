@@ -34,6 +34,11 @@ exercise 60,000-character output through the real SDK and strict ATIF checks.
 Larger or otherwise transformed output still fails exact-delivery validation.
 [Claude MCP documentation](https://code.claude.com/docs/en/mcp#raise-the-limit-for-a-specific-tool).
 
+Claude appends the registered autonomous-execution rule to its stock system
+preset. The business task stays in user input and does not duplicate that rule.
+Offline SDK requests verify the actual role; live traces record the preset
+configuration without inventing the full internal stock prompt.
+
 Both adapters preserve one native session per actor. The trace environment reads
 their actual record formats and keeps protected observer captures. Pi remains
 only for archived evidence and offline fixture compatibility. Live CLI selection
