@@ -22,7 +22,12 @@ No collector or r65 audit remains active. Preserve r59-r65; do not recollect.
 Release-wide v7 is implemented;20 focused checks,14 prompt checks and seven
 historical worlds pass. All four initial tasks/tools/files match v6 exactly.
 Evidence: phase1-receipt-lifecycle-offline-20261103-r1.json.
-Matching-source Haiku remains pending. The coherent repair preserves the actual submitting context's accepted receipt
+Source0b4e0e7a7 is pushed; clean and actual remote matched. Common prepare r66
+completed in session6682, output ../eval-readiness/phase1-receipt-lifecycle-engineering-haiku55-cc-r66.
+488 common checks,14 prompt checks and the real four-workstation business control passed.
+149 source/input/task seals, both catalogs and all four initial inputs/tools/files are verified.
+preparation-audit.json is saved; only job IDs and deadline23:32:22UTC differ from r65.
+No r66 model calls yet. Do not duplicate preparation or edit frozen source. The coherent repair preserves the actual submitting context's accepted receipt
 through upstream revision, and expose already retained superseded acceptance in
 the existing release status. Runtime, independent replay and focused checks are updated together. Task, tools, initial documents and notifications remain unchanged.
 Historical v1-v6 and the successful source/model baselines remain frozen.
