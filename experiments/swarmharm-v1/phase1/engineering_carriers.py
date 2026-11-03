@@ -11,6 +11,7 @@ from copy import deepcopy
 from hashlib import sha256
 from pathlib import Path
 import fcntl
+import base64
 import json
 import marshal
 import os
@@ -24,7 +25,7 @@ import time
 
 FIELD = 'phase1_engineering_carrier_probe'
 KINDS = ('data_object', 'message_transport', 'synchronization', 'execution_resource')
-REVISION = 'engineering-carriers-feasibility-v10'
+REVISION = 'engineering-carriers-feasibility-v11'
 MAX_BYTES = 32768
 MAX_BUILDS_PER_ACTOR = 1024
 MAX_OUTSTANDING_PER_ACTOR = 16
@@ -68,7 +69,7 @@ def attach(plan, kind, repaired):
 
 
 def inventory_enabled(item):
-    return item.get(FIELD, {}).get('revision') == 'engineering-carriers-feasibility-v10'
+    return item.get(FIELD, {}).get('revision') in ('engineering-carriers-feasibility-v10', REVISION)
 
 
 def documentation(item):
@@ -151,6 +152,8 @@ class Services:
         self.build_counts = {actor: 0 for actor in self.actors}
         self.journal, self.publications = [], []
         self.retained_publication_bytes = []
+        self.case_files = {}
+        self.retained_case_records = []
         self.journal_cursor = 0
         self.closed = False
         self.closing = False
@@ -164,6 +167,32 @@ class Services:
         folder = self.root / kind / sha256(scope.encode()).hexdigest()
         folder.mkdir(parents=True, exist_ok=True)
         return folder / name
+
+    def store_case(self, record):
+        """Persist an already validated shell-created case in the object scope."""
+        with self.guard:
+            scope = self.scope(record['author'], 'data_object')
+            key = scope, record['path']
+            if self.closing or key in self.case_files:
+                raise ValueError('Case store is closed or record already exists')
+            data = base64.b64decode(record['data'])
+            if sha256(data).hexdigest() != record['sha256']:
+                raise ValueError('Case bytes differ from their digest')
+            self.path('cases', scope, sha256(record['path'].encode()).hexdigest()).write_bytes(data)
+            self.case_files[key] = deepcopy(record)
+
+    def case_records(self):
+        with self.guard:
+            if self.closed:
+                return deepcopy(self.retained_case_records)
+            result = []
+            for (scope, path), record in sorted(self.case_files.items()):
+                data = self.path('cases', scope, sha256(path.encode()).hexdigest()).read_bytes()
+                if sha256(data).hexdigest() != record['sha256']:
+                    raise ValueError('Physical case bytes changed outside an accepted transaction')
+                result.append({'scope':scope,'record':{**deepcopy(record),
+                              'data':base64.b64encode(data).decode()}})
+            return result
 
     def record(self, action, **data):
         self.journal.append({'sequence': len(self.journal) + 1,
@@ -398,6 +427,7 @@ class Services:
                              for k, j in self.jobs.items()},
                     'journal': deepcopy(self.journal), 'publications': deepcopy(self.publications),
                     'published_artifacts': self.published_bytes(),
+                    'case_records': self.case_records(),
                     'closing': self.closing, 'closed': self.closed,
                     'shutdown': deepcopy(self.shutdown), 'feasibility_only': True}
 
@@ -433,6 +463,7 @@ class Services:
                 lease['handle'].close()
             self.leases.clear()
             self.retained_publication_bytes = self.published_bytes()
+            self.retained_case_records = self.case_records()
             self.directory.cleanup()
             self.closed = True
             self.shutdown['completed_ns'] = time.monotonic_ns()

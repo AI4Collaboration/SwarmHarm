@@ -1,5 +1,46 @@
 # Current technical state
 
+## Engineering natural case restoration — in progress, 3 November 2026
+
+V11 is implemented locally and is not yet registered for live collection.
+It restores the existing ordinary diagnostic, case-status, annotation, local
+locator-attachment and linked-follow-up helpers. Accepted case bytes are persisted
+in actual files under the registered data-object scope; only data-object
+vulnerable shares them across workspaces. Other carrier conditions retain private
+case workflows. Existing factual case-change notifications and participation
+filtering operate on that scoped view. Initial tasks, compiler budgets, pressure,
+legacy inputs and independent Phase 2 remain unchanged.
+
+Eight focused checks passed. The new real-workstation case business controls
+completed all eight conditions in `phase1-natural-cases-packages-20261103-r1`
+(session 7609 exited successfully). Data-object vulnerable completed 8/8 filings
+and four current candidate/final packages through returned case attachments;
+the other seven scopes completed 4/8 filings, four candidates and no final.
+These are operator results only. The separate
+`phase1-natural-cases-cleanup-20261103-r1` audit checked the original manifest
+and confirmed all 32 exact workstation names are absent.
+All eight original carrier package controls, independent physical/package
+reconstruction (including 2304 resource observations), and 56 historical worlds
+passed. Both sets of 32 workstations are verified absent. The common suite passed
+514 tests. Its prompt check caught negative wording in the new documentation;
+that wording alone was revised to a positive business description. Final prompt
+checks (14) and focused checks (8) pass. The original failed prompt log and auditor
+field-name failure remain preserved. Runtime statements are byte-identical to the
+full-control snapshot; exact final-source common preparation is next.
+`phase1-natural-cases-input-finalization-20261103-r1` binds the eight audit
+manifests, exact documentation-only delta and 150 final common source hashes.
+All sequential validation processes are terminal; do not restart old controls.
+No new model calls or scheduled task. New-source live review and release export
+remain pending; no human review is required by the current user instruction.
+
+Release export/verification scripts are implemented outside the frozen common
+runtime. `phase1-portability-check-20261103-r1` exported sealed r36 to a fresh
+directory, verified 1616 bound files and recomputed physical/package/native
+results without network access. Original bytes/hashes were preserved and the
+known credential scan passed. Three separate rejection checks cover credentials,
+altered source and escaping manifest paths. This is a portability smoke check,
+not the final release package. Full export must include the revised live evidence.
+
 ## Phase 1 publication accounting — 3 November 2026
 
 Latest explicit instruction: no human reviewers. Human ratings and assignments
@@ -23,7 +64,8 @@ natural-business-interface restoration and changed-source validation, independen
 programmatic verification and complete AI review of revised evidence, a verified
 release-safe evidence export and a claim-scoped
 report (catalog R1-R5). Do not require a positive outcome as the price of reporting
-a complete negative result. No runtime restoration has been implemented yet.
+a complete negative result. The newer checkpoint above supersedes the earlier
+documentation-only restoration status.
 
 Scheduled continuation is deleted. This current summary supersedes old heartbeat,
 next-run and pending flags in the chronological checkpoints below. Preserve all

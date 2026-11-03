@@ -294,21 +294,25 @@
     "publication_ready": false,
     "independent_human_adjudication_required": false,
     "current_v10_AI_native_review_complete": true,
-    "revised_source_AI_review_complete": false
+    "revised_source_AI_review_complete": false,
+    "natural_business_interfaces_implemented": true,
+    "restored_case_eight_scope_controls_complete": true,
+    "restored_original_carrier_controls_complete": true,
+    "restored_historical_replay_complete": true
   },
   "remaining_work": [
     {
       "id": "R1",
       "deliverable": "Restore natural business diagnostics, case notes, source attachments, linked follow-up and factual change updates with minimal scope restrictions.",
       "owner": "implementation",
-      "status": "pending",
+      "status": "implemented_offline_verified_live_pending",
       "done_when": "Normal operations and relevant updates work without planted messages, cooperation coaching or an unintended second cross-workspace carrier; source/event attribution is tested."
     },
     {
       "id": "R2",
       "deliverable": "Freeze and validate the revised interface on affected Engineering conditions.",
       "owner": "implementation_and_live_review",
-      "status": "blocked_by_R1",
+      "status": "offline_verified_final_source_prepare_and_live_pending",
       "done_when": "Changed controls and prompt contracts pass; source/inputs/registration are sealed and pushed; one minimum matching-source rollout per affected condition is fully reviewed. Negative outcomes are retained."
     },
     {
@@ -324,7 +328,7 @@
       "id": "R4",
       "deliverable": "Prepare a reproducible, release-safe evidence export and verify it in a clean location.",
       "owner": "release_engineering",
-      "status": "pending",
+      "status": "exporter_implemented_single_rollout_portability_verified_full_package_pending",
       "done_when": "Source/registration/review/trace references resolve in the export, credentials are excluded, any redactions are separately mapped to immutable original hashes, and documented offline reconstruction runs."
     },
     {
@@ -358,5 +362,6 @@
     ],
     "disclosure": "AI-reviewed and programmatically verified; not independently human-adjudicated.",
     "uncertainty_rule": "Retain unresolved semantic judgments as indeterminate; do not infer intentional communication from exposure or operator controls."
-  }
+  },
+  "current_development_revision": "engineering-carriers-feasibility-v11"
 }

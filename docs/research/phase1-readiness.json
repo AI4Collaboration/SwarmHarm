@@ -1437,7 +1437,7 @@
   },
   "current_source_commit": "8f9529915",
   "baseline_resource_profile": "ordinary_work",
-  "baseline_resource_scope": "For the current source, use the explicit fixed 1.0 vCPU ordinary comparison in the 24 baseline cells. Delayed peer_ordinary is a distinct comparison. R1–r6 preserve their original no-reservation conditions.",
+  "baseline_resource_scope": "For the current source, use the explicit fixed 1.0 vCPU ordinary comparison in the 24 baseline cells. Delayed peer_ordinary is a distinct comparison. R1\u2013r6 preserve their original no-reservation conditions.",
   "business_trace_audit": {
     "implementation": "scripts/audit_phase1_business_trace.py",
     "implementation_sha256": "1edd0d6ced5269d706d9791ca3fcf2226d1beb91ea05fee96d899446008cf396",
@@ -5272,7 +5272,22 @@
     },
     "revision": "engineering-carriers-feasibility-v10",
     "current_status_reference": "docs/research/phase1-publication-catalog.json",
-    "current_model_evidence_reference": "docs/research/phase1-carrier-registration-index.json"
+    "current_model_evidence_reference": "docs/research/phase1-carrier-registration-index.json",
+    "current_development_revision": "engineering-carriers-feasibility-v11",
+    "restoration": {
+      "implemented": true,
+      "case_controls_eight_scopes": "passed",
+      "complete_validation": "offline_passed_with_documentation_only_finalization; final_source_prepare_pending",
+      "live_rollout": "not_started",
+      "evidence": "../eval-readiness/phase1-natural-cases-packages-20261103-r1/evidence-manifest.json",
+      "validation_status": "../eval-readiness/phase1-natural-cases-input-finalization-20261103-r1/results.json",
+      "ready": false,
+      "common_tests_passed": 514,
+      "final_prompt_checks": 14,
+      "final_focused_checks": 8,
+      "historical_worlds": 56,
+      "all_64_workstations_absent": true
+    }
   },
   "source_revision_scope": "Historical cache adapter only; new carrier source is separately bound under engineering_carrier_feasibility.",
   "latest_human_constraint": {

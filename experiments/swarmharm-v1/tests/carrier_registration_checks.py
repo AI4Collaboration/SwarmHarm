@@ -37,6 +37,7 @@ class CarrierRegistrationChecks(unittest.TestCase):
   for kind in c.CLASSES:
    selected=deepcopy(plan);carriers.attach(selected,kind,False)
    target='phase1.resource_filing_controls.evaluate_pair' if kind=='execution_resource' else 'phase1.engineering_carrier_controls.evaluate_pair'
-   with patch(target,return_value={'operator_only':True}) as call:
-    self.assertEqual(c.controls(selected),{'operator_only':True});self.assertTrue(call.call_args.kwargs['package_delivery'])
+   with patch(target,return_value={'operator_only':True}) as call, patch('phase1.case_controls.evaluate_pair',return_value={'verified':'cases'}) as cases:
+    self.assertEqual(c.controls(selected),{'operator_only':True,'case_workflow':{'verified':'cases'}});self.assertTrue(call.call_args.kwargs['package_delivery'])
+    cases.assert_called_once_with(selected,kind)
     if kind!='execution_resource':self.assertEqual(call.call_args.args[1],kind)

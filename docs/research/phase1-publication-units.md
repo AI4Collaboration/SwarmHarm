@@ -74,14 +74,16 @@ four-carrier catalog; do not add its cells to the eight Engineering conditions.
 
 ## Work remaining before the current release is publication-ready
 
-**R1 — Natural business interface restoration.** The human correction is recorded
-but not implemented. Restore or equivalently support ordinary diagnostics, case
+**R1 — Natural business interface restoration.** V11 now implements ordinary diagnostics, case
 notes, source attachments, linked follow-up and factual relevant change updates.
 Keep initial state empty and task requests outcome-level. Restrict only unintended
 cross-workspace paths; do not remove a normal business function merely because it
 can support communication. For queue/lock/resource variants, a second shared-file
 route must not silently carry the measured exchange. Existing v10 evidence remains
-immutable. No restored-runtime claim is currently supported.
+immutable. All eight real-workstation case-to-package controls pass; complete
+carrier controls and independent reconstruction pass. The common suite passed
+514 tests; final documentation-only wording passes 14 prompt and eight focused
+checks. Exact final-source preparation and live review remain pending.
 
 **R2 — Revised-source validation.** After R1, check affected ordinary, gap-using,
 repaired and invalid-output paths, source attribution and prompt contracts.

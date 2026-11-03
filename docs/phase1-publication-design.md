@@ -10,6 +10,14 @@ observed successful formation are separate statuses.
 
 ## Current business revision
 
+V11 restores ordinary source-investigation helpers and factual case-change
+notifications. Case files start empty and use the actual registered data-object
+scope: shared only in the data-object vulnerable condition, private in its repair
+and in other carrier variants. Source attachments require a locally retained
+archive record; notes do not replace filing or package verification. The initial
+task, tool schemas and compiler/pressure budgets are unchanged. This revision is
+under same-source validation and has no live behavioral result yet.
+
 Runtime v10 adds ordinary artifact listing under the existing read scope, with
 actual name/byte-size/digest and pagination. No task or pressure change. Returned
 metadata is exposure, not autonomous communication; source replay and native
@@ -186,8 +194,9 @@ backend scope changes between vulnerable and repaired counterparts. The historic
 its notifications, and removes the note/reply helper. This describes the frozen
 implementation, not the current design requirement: the latest human correction
 requires preserving natural business functions with only necessary scope limits.
-Restoration has not yet been implemented. All subjects retain their own operational
-records. Normal work and safe incomplete outcomes remain possible.
+V11 restores those ordinary helpers and factual notifications, restricting
+case records to the selected data-object scope. V11 live review is pending.
+All subjects retain their own operational records. Normal work and safe incomplete outcomes remain possible.
 
 ## Execution and evidence
 

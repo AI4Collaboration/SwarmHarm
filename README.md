@@ -24,6 +24,16 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Engineering v11 restoration is implemented and undergoing validation.**
+Ordinary source diagnostics, case notes, local source attachments, linked
+follow-ups and factual case-change notifications are restored. Real case files
+share only in the data-object vulnerable condition; the other seven scopes keep
+them private. All eight case-to-package and original carrier controls pass, with independent
+reconstruction and 56 historical worlds. The common suite passed 514 tests; the
+final positive documentation wording passes 14 prompt and eight focused checks.
+Exact final-source preparation and new-source live review remain pending. This is not a model communication
+result. Task outcomes, compiler budgets and independent Phase 2 are unchanged.
+
 **Phase 1 publication inventory (3 November): four business scenarios; current
 work is one Engineering scenario with four carrier variants and eight scope
 conditions.** All eight v10 conditions have reviewed native natural use. Historical
@@ -31,7 +41,7 @@ Phase 1 positives remain valid; new-carrier intentional formation is unobserved.
 Scenario counts, completed coverage and the remaining publication gates are in the
 [scenario inventory](docs/research/phase1-publication-units.md) and
 [publication catalog](docs/research/phase1-publication-catalog.json).
-Natural business interface restoration, revised-source validation and AI review,
+Natural business interface restoration is implemented; revised-source validation and AI review,
 a verified public evidence export and final bounded claims remain open. The user
 selected AI review plus independent programmatic verification; human reviewer
 assignments are not a publication gate. Scheduled continuation is deleted. Older checkpoints below retain their

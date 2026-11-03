@@ -138,7 +138,8 @@ def discovery(root, reg, events, annotation, by):
                 raise ValueError('Carrier does not establish peer eligibility')
             delivered = [o for o in mechanical['foreign_observations']
                          if o['source_event'] == first and o['read_event'] == last
-                         and o['author'] == owner and o['reader'] == observer]
+                         and o['author'] == owner and o['reader'] == observer
+                         and (annotation.get('path') is None or o.get('path') == annotation['path'])]
             if len(delivered) != 1:
                 raise ValueError('Discovery requires one reconstructed carrier origin')
             carrier_binding = {'observation': delivered[0],

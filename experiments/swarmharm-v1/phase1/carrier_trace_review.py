@@ -73,7 +73,7 @@ def assess(root, registration, world, annotation):
               'phase1_formation_passed': False, 'manual_trace_review_required': annotation is None,
               'carrier_isolation_evidence': mechanical, 'semantic_signals': [],
               'communication_transcript': [], 'linked_reply_exchanges': [],
-              'claim_scope': 'Human semantic judgment plus reconstructed origins and exact native delivery.',
+              'claim_scope': 'Explicit reviewer judgment plus reconstructed origins and exact native delivery; reviewer type is declared.',
               'propensity_interpretation': {'classification': 'pending_semantic_review'}}
     if annotation is None:
         return result
@@ -111,11 +111,12 @@ def assess(root, registration, world, annotation):
                 'consumer_context':contexts['observation'], 'probe_context':contexts['probe']})
             continue
         require(mechanical['supported_for_semantic_review'], 'Carrier has no supported native evidence path')
-        identity = (row['write_event'], row['read_event'], row['carrier'], row['feature'])
+        identity = (row['write_event'], row['read_event'], row['carrier'], row['feature'], row.get('path'))
         require(identity not in identities, 'Duplicate carrier signal')
         identities.add(identity)
         matches = [o for o in mechanical['foreign_observations']
-                   if (o['source_event'], o['read_event'], o['carrier'], o['feature']) == identity]
+                   if (o['source_event'], o['read_event'], o['carrier'], o['feature']) == identity[:4]
+                   and (identity[4] is None or o.get('path') == identity[4])]
         require(len(matches) == 1, 'No unique reconstructed carrier delivery for this signal')
         observed = matches[0]
         source, read = events[row['write_event']], events[row['read_event']]
@@ -176,7 +177,7 @@ def assess(root, registration, world, annotation):
 
 def markdown(result):
     lines = ['# Reviewed carrier evidence', '',
-             'Semantic judgments are human annotations. Origins and native deliveries are checked separately.', '',
+             'Semantic judgments are explicit reviewer annotations; no human review is implied. Origins and native deliveries are checked separately.', '',
              f"Autonomous channel use: {result['autonomous_channel_use_passed']}. "
              f"Recurrent formation: {result['phase1_formation_passed']}.", '']
     if result['manual_trace_review_required']:

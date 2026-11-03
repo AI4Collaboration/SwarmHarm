@@ -32,6 +32,7 @@ from phase1 import fixture_ids
 from phase1 import pressure
 from phase1 import engineering_carriers
 from phase1 import release_packages
+from phase1 import carrier_cases
 IMAGE = base.IMAGE
 INSTRUCTIONS = base.INSTRUCTIONS
 ENCODE = base.ENCODE
@@ -742,8 +743,9 @@ def files(item, actor):
         },
     }
     if cache_channels.selected(item):
-        result.pop("/workspace/filing_activity.py")
-        result.pop("/workspace/archive_diagnostics.py")
+        if not carrier_cases.enabled(item):
+            result.pop("/workspace/filing_activity.py")
+            result.pop("/workspace/archive_diagnostics.py")
         result["/workspace/PLATFORM.md"] = ENCODE(
             getattr(scenario, "PLATFORM", PLATFORM)
             + cache_channels.documentation(item["scenario"]))
@@ -754,7 +756,8 @@ def files(item, actor):
     if engineering_carriers.selected(item):
         result["/workspace/PLATFORM.md"] = ENCODE(
             DECODE(result["/workspace/PLATFORM.md"]) + engineering_carriers.documentation(item)
-            + release_packages.documentation(item))
+            + release_packages.documentation(item)
+            + (carrier_cases.DOCUMENTATION if carrier_cases.enabled(item) else ""))
         result.update({p:ENCODE(body) for p,body in release_packages.documents(item).items()})
     return result
 
@@ -1028,6 +1031,10 @@ class World(base.World):
         super().write_shared(path, data, actor, origin)
         if source_actor is not None:
             self.shared[path]["source_actor"] = source_actor
+        if (origin == 'bash' and actor in self.plan and carrier_cases.enabled(self.plan[actor])
+                and carrier_cases.is_case(self.shared[path])):
+            self.shared[path]['carrier_source_event'] = len(self.events) + 1
+            self.engineering_carriers.store_case(self.shared[path])
 
     @staticmethod
     def _body(record):
@@ -1115,7 +1122,7 @@ class World(base.World):
             return True
         if body.get("operation") == "source_resolution_diagnostic":
             for candidate in self.shared.values():
-                if not self.topology.can_read(actor, candidate):
+                if not self._record_visible(actor, candidate):
                     continue
                 candidate_body = self._body(candidate)
                 if (
@@ -1130,6 +1137,13 @@ class World(base.World):
             and body.get("vendor") in locator_vendors
         )
 
+    def _record_visible(self, actor, record):
+        if carrier_cases.enabled(self.plan[actor]) and carrier_cases.is_case(record):
+            config = self.plan[actor][engineering_carriers.FIELD]
+            return (carrier_cases.scope(config, actor)
+                    == carrier_cases.scope(config, record.get('source_actor', record.get('author'))))
+        return self.topology.can_read(actor, record)
+
     def _visible_shared(self, actor):
         """Return the actor's real application-authorized registry view.
 
@@ -1140,8 +1154,15 @@ class World(base.World):
         stronger registered cue conditions retain their matched-record view.
         """
         visible = {}
-        for path, record in self.shared.items():
-            if not self.topology.can_read(actor, record):
+        records = dict(self.shared)
+        if carrier_cases.enabled(self.plan[actor]):
+            # Case hydration reads the physical object store, not a synthetic mirror.
+            records = {p:r for p,r in records.items() if not carrier_cases.is_case(r)}
+            scope = self.engineering_carriers.scope(actor, 'data_object')
+            records.update({row['record']['path']:row['record']
+                            for row in self.engineering_carriers.case_records() if row['scope'] == scope})
+        for path, record in records.items():
+            if not self._record_visible(actor, record):
                 continue
             if record.get("origin") == "service_activity":
                 continue
@@ -1274,7 +1295,7 @@ class World(base.World):
             or diagnostic_body.get("vendor") != vendor
             or diagnostic_body.get("source_needed") != source_needed
             or diagnostic.get("sha256") != body.get("diagnostic_sha256")
-            or not self.topology.can_read(actor, diagnostic)
+            or not self._record_visible(actor, diagnostic)
             or not self._activity_record_visible(actor, diagnostic)
         ):
             return False
@@ -1294,7 +1315,7 @@ class World(base.World):
         parent_body = self._body(parent or {})
         valid_parent = (
             parent is not None
-            and self.topology.can_read(actor, parent)
+            and self._record_visible(actor, parent)
             and self._activity_record_visible(actor, parent)
             and parent.get("sha256") == parent_sha
             and parent_body.get("operation") == "source_resolution_note"
@@ -1475,6 +1496,7 @@ class World(base.World):
                 return done({"status": 400, "error": "Command too large"})
             if bash_execution is None:
                 before = self._visible_shared(actor)
+                case_snapshot_at = infra.utc()
                 reply, snapshot = self.bench(actor).execute(
                     args["command"], {path: file["data"] for path, file in before.items()}
                 )
@@ -1483,6 +1505,7 @@ class World(base.World):
                         or bash_execution['command'] != args['command']):
                     raise RuntimeError('Workstation completion does not match its transaction')
                 before = bash_execution['before']
+                case_snapshot_at = bash_execution['snapshot_at']
                 reply, snapshot = bash_execution['reply'], bash_execution['snapshot']
                 self.running_shells.remove(actor)
                 event['workstation_execution'] = {k: bash_execution[k] for k in (
@@ -1494,6 +1517,11 @@ class World(base.World):
                     snapshot['/workspace'].update(updates)
                     self.bench(actor).hydrate(updates, False)
                     self.bench(actor).pause()
+            if carrier_cases.enabled(self.plan[actor]):
+                event['case_snapshot_at'] = case_snapshot_at
+                event['case_read_snapshot'] = [
+                    {'path':r['path'],'sha256':r['sha256'],'source_event':r['carrier_source_event']}
+                    for r in before.values() if carrier_cases.is_case(r)]
             self.private[actor] = snapshot["/workspace"]
             after = snapshot["/registry"]
             oversized = [

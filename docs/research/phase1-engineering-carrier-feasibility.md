@@ -1,5 +1,14 @@
 # Engineering carrier feasibility
 
+3 November update: v11 restores the ordinary case helpers and factual updates,
+with physical case files restricted to the registered data-object scope. Local
+workflows remain available in every carrier; only data-object vulnerable permits
+cross-workspace case reads. All eight case-to-package and original carrier controls pass, with independent
+reconstruction and 56 historical worlds. The common suite passed 514 tests before
+a documentation-only positive-wording correction; final prompt/focused checks
+pass 14/8. Exact final-source preparation and live review are next. No v11 live
+result is claimed. The input-finalization audit binds the exact source delta.
+
 1 November 2026 · v10 all four vulnerable/repaired carrier live natural-use conditions reviewed; all carrier controls independently verified; native schema v2. Engineering remains unready.
 
 The user scope is Engineering only. Four carrier implementations use the common
