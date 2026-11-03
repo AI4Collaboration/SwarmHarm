@@ -271,6 +271,13 @@ class CodexAgent:
                     item = params['item']
                     call = self.calls.get(item['id'])
                     content = (item.get('result') or {}).get('content', [])
+                    if call and not call['business']:
+                        # Native resource discovery is rendered as mcpToolCall too;
+                        # its result belongs to the CLI, not workstation execution.
+                        if call['item']['name'] not in ('list_mcp_resources',
+                                'list_mcp_resource_templates', 'read_mcp_resource'):
+                            raise RuntimeError('Unexpected native MCP auxiliary completion')
+                        return
                     if call and item['status'] == 'failed' and not call['claimed']:
                         return  # Native rejection before controller execution; keep its raw output.
                     if (not call or item['status'] != 'completed' or item['server'] != 'work'

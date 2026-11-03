@@ -14,13 +14,17 @@ whole exchange; failures and original traces remain externally. Claude API
 errors retain their native diagnostic instead of only “unknown”. A malformed
 provider response itself is not repaired by changing the local error message.
 
-Fresh r243 Sol and r244 Terra each passed 473 offline checks; r245 Opus passed
-472. All passed prompt contracts. Source repair ca78cdd91 is pushed; launch
-follows registration synchronization and sealed-input verification.
-Four actors, high effort, goal off, unchanged r236 business files and status-only
-feedback; all through AxonHub. Claude uses Claude Code; OpenAI uses Codex.
-Cross-family comparisons also vary native instructions, rule placement and
-response-token handling.
+R243/r244 preflight exposed a second defect: model metadata forced code-mode
+advertisement despite disabled execution. Correct tool-capability overrides now
+freeze standard Responses and direct MCP exposure; native instruction text is
+unchanged. The real-CLI fixture also asserts the outbound tool list, not just
+scripted replies. Native resource discovery is distinguished from business calls.
+R245 Opus again received malformed upstream streaming and non-streaming responses;
+its full diagnostic is retained. Do not relabel these as behavioral failures.
+
+Next: fresh Sol/Terra registrations after the expanded checks. Four actors, high
+effort, goal off and unchanged r236 business files/status-only feedback. All
+inference uses AxonHub. Keep Claude Code and Codex as explicitly requested.
 
 ## Latest result
 

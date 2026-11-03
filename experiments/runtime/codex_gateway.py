@@ -12,12 +12,24 @@ import codex_agent as legacy
 
 AXONHUB_BASE = 'https://lmportal.iefbr14.xyz/v1'
 SYSTEM_PROMPT = legacy.SYSTEM_PROMPT
-NATIVE_TOOLS = legacy.NATIVE_TOOLS
+NATIVE_TOOLS = [name for name in legacy.NATIVE_TOOLS if name != 'update_plan']
 DISABLED_FEATURES = (*legacy.DISABLED_FEATURES, 'code_mode', 'code_mode_host',
                      'incremental_tools', 'sleep_tool')
 GOAL_MODES = ('off',)
 digest = legacy.digest
-catalog_profile = legacy.catalog_profile
+TOOL_CAPABILITIES = {
+    'tool_mode': None, 'use_responses_lite': False, 'supports_search_tool': False,
+    'experimental_supported_tools': [], 'multi_agent_version': None,
+}
+
+
+def catalog_profile(catalog):
+    # Model metadata can override feature flags. Freeze the direct MCP tool
+    # transport too; native instruction fields remain byte-for-byte unchanged.
+    value = legacy.catalog_profile(catalog)
+    for row in value['models']:
+        row.update(TOOL_CAPABILITIES)
+    return value
 initialize = legacy.initialize
 
 
@@ -87,7 +99,7 @@ def harness_registration(goal_mode, model):
         'codex_cli':cli_identity(), 'installed':{'codex-cli':cli_identity()['version']},
         'native_catalog_sha256':digest(catalog), 'goal_mode':'off',
         'system_prompt':SYSTEM_PROMPT, 'extension_tools':NATIVE_TOOLS, 'builtin_tools':NATIVE_TOOLS,
-        'tool_profile':{'input_modalities':['text'],'apply_patch_tool_type':None,'supports_parallel_tool_calls':False},
+        'tool_profile':{'input_modalities':['text'],'apply_patch_tool_type':None,'supports_parallel_tool_calls':False, **TOOL_CAPABILITIES},
         'disabled_features':list(DISABLED_FEATURES), 'context_window':None,
         'output_token_limit':'Codex CLI managed; no per-response override',
         'tool_execution':'controller MCP tools in isolated workstations',

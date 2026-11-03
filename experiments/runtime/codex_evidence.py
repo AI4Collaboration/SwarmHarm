@@ -87,6 +87,11 @@ def native_evidence(folder, requests):
     for model in expected['models']:
         model.update(apply_patch_tool_type=None, input_modalities=['text'], supports_parallel_tool_calls=False)
     if harness.get('authentication')=='axonhub':
+        capabilities=harness.get('tool_profile',{})
+        for row in expected['models']:
+            for field in ('tool_mode','use_responses_lite','supports_search_tool',
+                          'experimental_supported_tools','multi_agent_version'):
+                if field in capabilities:row[field]=capabilities[field]
         requested=requests and json.loads(requests[0].read_text())['model']
         for row in expected['models']:
             if row['slug']==requested.removeprefix('openai/'):

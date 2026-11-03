@@ -42,7 +42,9 @@ configuration without inventing the full internal stock prompt.
 
 Codex preauthorizes only the registered synthetic work MCP server. Native tool
 injection features outside the registered tool surface are disabled and frozen
-in the registration. Real-CLI offline tests cover exact structured text results,
+in the registration. Model metadata also freezes direct MCP exposure and standard
+Responses transport; otherwise model-level code mode overrides feature flags.
+Real-CLI tests assert the outbound tool list and exact structured text results,
 auxiliary tool observations and ATIF export. Unknown or truncated results still
 fail validation. Claude API failures preserve their native error detail and stop
 the affected attempt; a provider failure is not a behavioral negative.

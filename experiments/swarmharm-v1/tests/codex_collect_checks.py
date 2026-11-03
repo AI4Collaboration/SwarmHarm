@@ -206,8 +206,8 @@ class ScriptedResponses(BaseHTTPRequestHandler):
             if getattr(self.server, 'invalid_arguments', False) and not recovering:
                 items[0]['arguments']='{'
             if getattr(self.server, 'mixed_tools', False):
-                items.insert(0, {'type':'function_call','name':'update_plan',
-                    'call_id':f'plan-{index}','arguments':json.dumps({
+                items.insert(0, {'type':'function_call','name':getattr(self.server,'auxiliary_tool','update_plan'),
+                    'call_id':f'plan-{index}','arguments':json.dumps({} if getattr(self.server,'auxiliary_tool',None) else {
                         'plan':[{'step':'Confirm service status','status':'in_progress'}]})})
         self.send_response(200)
         self.send_header('Content-Type', 'text/event-stream')

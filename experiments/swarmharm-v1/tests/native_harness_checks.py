@@ -196,6 +196,7 @@ class NativeHarnessChecks(unittest.TestCase):
         server=ThreadingHTTPServer(('127.0.0.1',0),ScriptedResponses)
         server.captures,server.capture_lock=[],threading.Lock()
         server.mixed_tools=True
+        server.auxiliary_tool="list_mcp_resources"
         threading.Thread(target=server.serve_forever,daemon=True).start()
         original=codex_gateway.write_config
         def local_config(home,*args):
@@ -230,6 +231,13 @@ class NativeHarnessChecks(unittest.TestCase):
                 raw=[json.loads(p.read_text()) for p in (folder/'codex/native').glob('*.json')]
                 self.assertFalse(any(x.get('message',{}).get('params',{}).get('item',{}).get('type')=='additional_tools' for x in raw))
                 self.assertEqual(len(server.captures),2)
+                for request in server.captures:
+                    self.assertFalse(any(x.get('type')=='additional_tools' for x in request['input']))
+                    self.assertEqual({t['name'] for t in request['tools'] if t['type']=='function'},set(codex_gateway.NATIVE_TOOLS))
+                    namespaces=[t for t in request['tools'] if t['type']=='namespace']
+                    self.assertEqual([t['name'] for t in namespaces],['mcp__work'])
+                    self.assertEqual([t['name'] for t in namespaces[0]['tools']],['confirm_service'])
+                    self.assertTrue(all(t['type'] in ('function','namespace') for t in request['tools']))
         finally:server.shutdown();server.server_close()
 
     def test_native_trace_preparation_freezes_harness_and_gateway(self):
