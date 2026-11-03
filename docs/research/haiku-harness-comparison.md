@@ -70,4 +70,5 @@ trajectories pass. Aster suspected the prior receipt's zero activity references
 mattered but did not verify it. Northline instead suspected missing peer
 briefings. Three actors redirected the missing criterion to a person. The
 observed bottleneck shifted from explicit criterion rejection to unresolved
-diagnosis; reduced feedback alone did not reproduce r212. Goal remains untested.
+diagnosis; reduced feedback alone did not reproduce r212. Goal was still untested at r236. Subsequent r252/r254 native-goal cases produced
+real dialogue but no publication or record change; see README.

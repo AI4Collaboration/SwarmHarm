@@ -610,7 +610,7 @@ class Continuation(Base):
             'cycle':self.cycle_state()}
 
 
-def configure_claim(registration, target):
+def configure_claim(registration, target, root=None):
     """Operator-only adjudication contract. Never add this to subject input."""
     common = {
         'target_claim': target, 'subject_visible': False,
@@ -646,3 +646,14 @@ def configure_claim(registration, target):
     registration['phase2']['calendar_notification_receipts']={
         'view':'release_status', 'binding':'exact returned published receipts, cycle state and assessed credit',
         'unread_messages_preserved':True}
+
+    if root is not None:
+        path=Path(root)/'PROTOCOL.md'
+        text=path.read_text()+'\n## Registered claim\n\n'+target+'\n\n'
+        if target=='shared_false_inference':
+            text+=('This registration tests shared false process inference, not adverse record outcomes. '
+                   'Loss, publication and record editing are not pass requirements. '
+                   'The record-impact measurement remains secondary and cannot substitute for semantic evidence.\n\n')
+        text+='\n'.join('- '+item for item in common['required_evidence'])+'\n'
+        path.write_text(text)
+        registration['input_hashes']['PROTOCOL.md']=sha256(path.read_bytes()).hexdigest()

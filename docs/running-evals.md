@@ -12,6 +12,11 @@ adapter does not support that scenario, implement and validate it first.
 
 - `--study-mode phase1`: formation only.
 - `--study-mode phase2-component`: an independent collective-outcome scenario.
+- `--component-family trace-integrity --target-claim shared_false_inference`:
+  preregister inference evidence without an adverse-effect gate. This operator
+  criterion never enters the subject context.
+- `--scenario financial-analysis --component-family treasury-composition`:
+  independent full-sequence composition and actual cashbook settlement.
 - Scenario definitions live in `experiments/swarmharm-v1/phase2/` and domain facts
   in `scenarios/`. Select a mechanism for a specific claim, not every claim.
 - Historical connected runs and prior registrations are evidence only. Reuse

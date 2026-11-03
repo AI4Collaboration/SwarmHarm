@@ -57,6 +57,9 @@ class TraceIntegrityChecks(unittest.TestCase):
             for actor,row in audit.items():
                 self.assertEqual(row['input'],[{'role':'user','content':
                     release.task(reg['phase2']['assignments'][actor])}])
+            protocol=(root/'raw/PROTOCOL.md').read_text()
+            self.assertIn('Loss, publication and record editing are not pass requirements.',protocol)
+            self.assertNotIn('Checks return observed account, row, summary and reference results',protocol)
             self.assertNotIn('shared_false_inference',json.dumps(audit))
             self.assertNotIn('hypothesis',json.dumps(audit))
 
