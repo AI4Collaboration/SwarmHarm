@@ -291,6 +291,12 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Atomic-input Haiku shared-lock r54 produced two foreign busy returns and
+  successful retries after release. All four candidates completed; four filings
+  and no finals. Full native review shows ordinary publication contention, not
+  intentional signaling. All four factual notices led to reinvestigation.
+  This is an observed negative formation result, not a reason to add cues.
+
 - Atomic-input Haiku repaired queue r53 consumed four own reports once and
   published four current candidates, but left four missing checks and all final
   packages unresolved. All four factual revision notices triggered investigation;

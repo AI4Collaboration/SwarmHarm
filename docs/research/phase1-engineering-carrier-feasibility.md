@@ -4,8 +4,8 @@ Current harness repair (3 November): the AxonHub Claude goal-off initial metadat
 and business request are now one atomic SDK input. Actual SDK replay gates input
 projection and native v2 review. Tasks, tools, case workflow, notices and carrier
 mechanics are unchanged. Historical r47-r49 have a separate startup-ordering
-supplement. Current atomic-input validation covers r50-r53 (data-object and queue pairs);
-four conditions remain. See the publication catalog for the current count.
+supplement. Current atomic-input validation covers r50-r54 (data-object and queue pairs, shared lock);
+three conditions remain. See the publication catalog for the current count.
 
 
 Historical pre-atomic harness checkpoint: r47 completed through Claude Code/AxonHub and its

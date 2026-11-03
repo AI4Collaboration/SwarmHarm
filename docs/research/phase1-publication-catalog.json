@@ -8,7 +8,7 @@
     "current_carrier_variants": 4,
     "current_isolation_conditions": 8,
     "subjects_per_rollout": 4,
-    "carrier_development_registrations": 28,
+    "carrier_development_registrations": 29,
     "legacy_cache_registrations": 21,
     "historical_selected_positive_examples": 4,
     "historical_phase1_baseline_is_additional_scenario": false
@@ -314,7 +314,7 @@
       "id": "R2",
       "deliverable": "Freeze and validate the revised interface on affected Engineering conditions.",
       "owner": "implementation_and_live_review",
-      "status": "current_v12_Haiku_CC_4_of_8_fully_reviewed",
+      "status": "current_v12_Haiku_CC_5_of_8_fully_reviewed",
       "done_when": "Changed controls and prompt contracts pass; source/inputs/registration are sealed and pushed; one minimum matching-source rollout per affected condition is fully reviewed. Negative outcomes are retained."
     },
     {
@@ -379,14 +379,15 @@
       "execution_resource/repaired"
     ],
     "pending_conditions": [],
-    "latest_review_index": "../eval-readiness/phase1-carrier-v12-engineering-queue-repaired-ordinary-batch-haiku55-cc-r53/review-manifest.json",
+    "latest_review_index": "../eval-readiness/phase1-carrier-v12-engineering-lock-ordinary-batch-haiku55-cc-r54/review-manifest.json",
     "reviewed_revision_by_condition": {
       "data_object/vulnerable": "engineering-carriers-feasibility-v12",
       "execution_resource/vulnerable": "engineering-carriers-feasibility-v12",
       "execution_resource/repaired": "engineering-carriers-feasibility-v12",
       "data_object/repaired": "engineering-carriers-feasibility-v12",
       "message_transport/vulnerable": "engineering-carriers-feasibility-v12",
-      "message_transport/repaired": "engineering-carriers-feasibility-v12"
+      "message_transport/repaired": "engineering-carriers-feasibility-v12",
+      "synchronization/vulnerable": "engineering-carriers-feasibility-v12"
     }
   },
   "offline_repair_pass": {
@@ -414,12 +415,11 @@
   },
   "active_rollout": {
     "name": "phase1-carrier-v12-engineering-lock-ordinary-batch-haiku55-cc-r54",
-    "status": "prepared_reviewed_pending_freeze",
+    "status": "terminal_fully_reviewed",
     "source_commit": "9119fa3c875fcfd6c57593773b0e550fd6eb413a",
     "model": "anthropic/claude-haiku-5.5",
     "harness": "claude-code",
-    "input_delivery": "atomic-sdk-replay-v1",
-    "session": 45743
+    "input_delivery": "atomic-sdk-replay-v1"
   },
   "incomplete_attempts": [
     {
@@ -450,10 +450,10 @@
       "data_object/vulnerable",
       "data_object/repaired",
       "message_transport/vulnerable",
-      "message_transport/repaired"
+      "message_transport/repaired",
+      "synchronization/vulnerable"
     ],
     "pending_conditions": [
-      "synchronization/vulnerable",
       "synchronization/repaired",
       "execution_resource/vulnerable",
       "execution_resource/repaired"
@@ -463,7 +463,8 @@
       "data_object/vulnerable": 50,
       "data_object/repaired": 51,
       "message_transport/vulnerable": 52,
-      "message_transport/repaired": 53
+      "message_transport/repaired": 53,
+      "synchronization/vulnerable": 54
     },
     "source_hashes_identical": true,
     "source_files": 152,
