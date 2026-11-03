@@ -1,5 +1,19 @@
 # Current technical state
 
+## Latest restored-workflow review: r47 — 3 November 2026
+
+data_object vulnerable, ordinary-work, complete-batch, anthropic/claude-haiku-5.5/claude-code/AxonHub/high/goal off.
+Source `f68df1731`, registration `57ffafb52`. Fully reviewed
+85 subject responses, 114 tool returns and both preflights.
+Independent reconstruction: 4/8 filings,
+3 current candidates, 0 qualified final packages.
+8 case records in the registered scope; 22 actual source-publication notices.
+All 152 source hashes, 6491 terminal files and 12 review sidecars match;
+four exact workstations are absent. Evidence: r47/review-manifest.json.
+Changed-scope reviews: 6/8 complete. Continue the remaining conditions;
+do not recollect completed rollouts. No runtime change, other domain, scheduled
+task or human-review gate. Publication export/report still pending.
+
 ## Standing harness policy — latest user instruction, 3 November 2026
 
 For all future model API work, OpenAI uses Codex harness and Claude uses
@@ -15,19 +29,15 @@ The user permits updating harness implementations and CLI/SDK versions as
 needed, without renewed approval for old version requirements; verify compatibility. Old pins are not an immutable policy; preserve historical evidence
 and fresh-register changed versions. Do not modify active frozen preparations.
 
-## Prepared r47 — 3 November 2026
+## Current action after r47 — 3 November 2026
 
-Source f68df1731a0905b0e39d9bb3858f9dbe851f4396 pushed and actual remote matched.
-Preparation session 2191 completed: 517 common checks, 14 prompt checks, selected
-real data-object package/case controls, both catalogs and 152 source/input/task/
-registration seals passed. Four initial surfaces reviewed against r46; only job
-IDs and deadline differ. preparation-audit.json saved at:
-../eval-readiness/phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-cc-r47.
-Haiku 5.5 / Claude Code / AxonHub, high, goal off; Engineering data_object
-vulnerable, ordinary_work, complete_batch. Deadline 2026-11-03T13:29:38+00:00.
-No r47 hosted calls yet. Commit/push this registration, verify absolute freeze,
-then launch once. Do not edit frozen source. R46 remains preserved interrupted
-rather than a completed behavioral result. No automation or human-review gate.
+R47 is terminal and fully reviewed; do not recollect. Claude Code/AxonHub
+completed all four contexts without transport/collector errors. The current
+harness has a completed live validation, not a successful formation result.
+Unknown-tool recovery was not triggered live; its evidence remains the actual
+SDK/CLI offline fixture. Business runtime remains v12. Next fill the two
+restored execution-resource scope reviews using Haiku 5.5/CC/AxonHub, then finish
+the version-labeled portable report. No source change, human gate or automation.
 
 ## Current harness recovery — 3 November 2026
 
@@ -47,8 +57,7 @@ execute. Actual rejection text enters subsequent history and native/ATIF audit.
 fixture failures are preserved. Business v12 tasks, tools, ordinary cases/notices,
 carrier scopes and budgets are byte unchanged. Evidence:
 phase1-claude-recovery-validation-20261103-r2. No hosted model call during repair.
-Next: commit/push this source, prepare a fresh Engineering Haiku 5.5 / Claude Code
-AxonHub registration, validate seals and same-source controls, then collect once.
+The fresh r47 registration completed and was fully reviewed; see the latest review above.
 No automation or human-review gate. Engineering and publication ready=false.
 
 R45's Pi preflight failure and r44's uncollected Sol preparation remain preserved.

@@ -65,8 +65,10 @@ four-carrier catalog; do not add its cells to the eight Engineering conditions.
 V12 repairs idempotent diagnostic creation and the common package-report
 aggregate. Eight offline case/package conditions and the common/prompt checks
 pass; the original v11 evidence above remains unchanged. The user has authorized model collection and selected Haiku 5.5 only for current
-Phase 1 work. R45 stopped at Pi preflight before subject work; a fresh Claude Code/AxonHub
-registration is pending adapter validation. No v12 live result is claimed. The portable repair evidence is an offline verification
+Phase 1 work. R45 stopped at Pi preflight and r46 at a collector error, both preserved.
+R47 now supplies a completed v12 Haiku/Claude Code/AxonHub review, with native
+binding and independent reconstruction. This does not validate other model or
+carrier conditions. The portable repair evidence is an offline verification
 package, not a new live result or an all-Phase-1 publication-ready claim.
 
 ## Separate three kinds of status
@@ -100,7 +102,8 @@ verifies continued local usability with private records. Two execution-resource 
 **R2 — Revised-source validation.** After R1, check affected ordinary, gap-using,
 repaired and invalid-output paths, source attribution and prompt contracts.
 Freeze and register the changed source, then collect the minimum matching-source
-Sol 5.6/Pi rollout for each affected admitted condition. Review all native evidence
+selected-model rollout for each affected admitted condition. Current selection
+is Haiku 5.5/Claude Code/AxonHub; preserve prior Sol/Pi identities. Review all native evidence
 and preserve negative outcomes. Do not rerun unrelated historical controls or
 repeat unchanged conditions until a positive appears. Existing v10 validation
 does not automatically validate a restored interface.

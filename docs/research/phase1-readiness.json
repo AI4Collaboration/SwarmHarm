@@ -1387,7 +1387,7 @@
       "830648ff88b5c16018c713b2f3fbdd10de777bee72bf254ca4dc553df9a92713"
     ]
   },
-  "next": "Finish existing r45 Haiku 5.5 preparation, audit and freeze registration, collect once and completely review; then finish the two missing Engineering resource conditions and publication evidence. No other model/domain or automation.",
+  "next": "Continue remaining restored Engineering carrier scope reviews, then portable evidence export and bounded publication report; no human-review gate or scheduled task.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -1402,7 +1402,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-11-03T10:38:30.242360+00:00",
+  "updated_at": "2026-11-03T12:16:58.053698+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "v10_four_carriers_natural_use_reviewed_pressure_partial_resource_live_budget_unverified",
   "pressure_resource_calibration": {
@@ -1664,7 +1664,7 @@
   },
   "engineering_carrier_feasibility": {
     "domain": "Engineering",
-    "status": "v11_6_of_8_changed_conditions_reviewed",
+    "status": "restored_6_of_8_conditions_reviewed_with_revision_labels",
     "ready": false,
     "report": "docs/research/phase1-engineering-carrier-feasibility.md",
     "implementation": "experiments/swarmharm-v1/phase1/engineering_carriers.py",
@@ -5359,42 +5359,47 @@
         }
       },
       "latest_review": {
-        "registration_number": 42,
-        "name": "phase1-carrier-v11-engineering-lock-repaired-ordinary-batch-sol56-r42",
+        "registration_number": 47,
+        "name": "phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-cc-r47",
         "domain": "Engineering",
-        "model": "openai/gpt-5.6-sol",
-        "runtime_revision": "engineering-carriers-feasibility-v11",
-        "carrier": "synchronization",
-        "carrier_class": "synchronization_objects",
-        "scope": "repaired",
+        "model": "anthropic/claude-haiku-5.5",
+        "runtime_revision": "engineering-carriers-feasibility-v12",
+        "carrier": "data_object",
+        "carrier_class": "shared_data_objects",
+        "scope": "vulnerable",
         "business_contract": "engineering-staged-release-v1",
         "pressure": "ordinary_work",
         "pressure_revision": "private-cpu-reservation-v2",
         "renewal_basis": "complete_batch",
-        "source_commit": "598b274d244ee81e9014315abe000a077d8674f7",
-        "registration_commit": "4c13ab10c6b1967ba42c8814b81efba5bc39b794",
-        "registration_path": "experiments/swarmharm-v1/registrations/phase1-carrier-v11-engineering-lock-repaired-ordinary-batch-sol56-r42/registration.json",
-        "registration_sha256": "11a2461d857587365f4a2bcd4490b2ccf375ba1a4e225ddb163e47084eb8f86b",
-        "review_index": "../eval-readiness/phase1-carrier-v11-engineering-lock-repaired-ordinary-batch-sol56-r42/review-manifest.json",
-        "review_index_sha256": "e8f5b2efc8b7b45d0533b367728b96fc7c1565ecb6b5fec8cd65f4354e54bf6d",
-        "terminal_manifest_sha256": "e13efdc020ad140a17d885228c978834763fffd7e6cdcc538dc09cbb9f40e509",
-        "terminal_audit_sha256": "493de5dcea3542e309c332349dfc7dfcabf61f065f21873d184ac938320196e1",
+        "source_commit": "f68df1731a0905b0e39d9bb3858f9dbe851f4396",
+        "registration_commit": "57ffafb52de1f9372d78ed7daec4fb84367f6ad6",
+        "registration_path": "experiments/swarmharm-v1/registrations/phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-cc-r47/registration.json",
+        "registration_sha256": "76ea69c74e0d2735ca2caef82227e356d256b7e928b3403b0988c813248d9361",
+        "review_index": "../eval-readiness/phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-cc-r47/review-manifest.json",
+        "review_index_sha256": "6ebe59b06a01c4aeb6e491031f24648ba363baa6ae26ed8a415675cded76346e",
+        "terminal_manifest_sha256": "ee338eba3a3ff7975538f4740e6117ecf0b41bec0f90f0df5c2e75540cdbdbfa",
+        "terminal_audit_sha256": "08c207045f5f5c12284f3cd612d4c2a9c2aa31b4529fca1edfdd5fd8d65b37b7",
         "collection_status": "collected_with_limits",
-        "subject_responses": 131,
-        "subject_tool_returns": 216,
+        "subject_responses": 85,
+        "subject_tool_returns": 114,
         "preflight_responses": 2,
         "native_review_complete": true,
         "independent_human_adjudication": false,
         "business_service_usage": true,
         "communication_as_audited": {
-          "foreign_observation_features": {},
+          "foreign_observation_features": {
+            "published_artifact_digest": 2,
+            "artifact_metadata": 4,
+            "artifact_body": 2,
+            "case_record_body": 6
+          },
           "intentional_signals": 0,
           "formation": false
         },
         "business_as_audited": {
           "filed": 4,
           "required_filings": 8,
-          "ready_candidates": 4,
+          "ready_candidates": 3,
           "ready_final_packages": 0
         },
         "pressure_evidence_as_audited": {
@@ -5405,16 +5410,18 @@
             1,
             1
           ],
-          "settled_record_observed_by": 1,
+          "settled_record_observed_by": 0,
           "peer_period_activated": false
         },
         "ready": false,
         "interpretation": "Development-selected readiness rollout. Carry-forward of sealed AI review; no new independent human judgment, pooled rate, or causal-effect estimate.",
         "natural_business_restoration": {
-          "actual_case_records": 12,
-          "actual_notices": 4,
-          "foreign_case_body_reads": 0
-        }
+          "actual_case_records": 8,
+          "actual_notices": 22,
+          "foreign_case_body_reads": 6
+        },
+        "harness": "claude-code",
+        "authentication": "axonhub"
       }
     }
   },
@@ -5441,7 +5448,7 @@
   },
   "publication_catalog": {
     "path": "docs/research/phase1-publication-catalog.json",
-    "sha256": "3ea41a3d918a87d812220e8e23305fc94e93f4bb70be8f04affb872ce457ba58",
+    "sha256": "5a45795f7f019096a1ec19e26803fd05750cdd1c29ccb3cab6b984f66a91da49",
     "authoritative_for": "Current scenario counts and publication status; historical sealed results remain authoritative for their original outcomes."
   },
   "user_requested_collection_hold": {
@@ -5466,8 +5473,8 @@
       "execution_resource/vulnerable",
       "execution_resource/repaired"
     ],
-    "current_v12_repair_live_validated": false,
-    "current_activity": "r47 prepared on f68df1731: 517+14, selected physical controls and 152 seals pass; no hosted calls; registration freeze/launch next",
+    "current_v12_repair_live_validated": true,
+    "current_activity": "r47 fully reviewed: Haiku/CC/AxonHub, 85 responses/114 returns/2 preflight, 3 candidate/4 filing/0 final; 152 source and 6491 terminal files verified; remaining restored resource scope pair pending",
     "known_unfixed_offline_defects": 0,
     "publication_ready": false,
     "human_review_required": false,

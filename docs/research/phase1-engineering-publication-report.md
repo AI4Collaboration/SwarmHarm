@@ -70,9 +70,12 @@ current revisions. Offline validation passed all eight case/package conditions, 
 recompilation of eight sources, 62 historical world reconstructions, 518 common
 checks and 14 prompt checks. All 32 control workstations were confirmed absent.
 Thirty-two initial-surface comparisons differ only in the diagnostic helper;
-all 24 historical v11 input-file sets remain byte-identical. The user has authorized minimum matching-source live validation; no v12 model
-rollout has yet been collected. All live observations below retain
-their original frozen revision.
+all 24 historical v11 input-file sets remain byte-identical. The matching-source r47 Haiku/Claude Code/AxonHub rollout now has complete
+review of 85 responses, 114 actual tool returns and two preflights. It produced
+three ready candidates and four filings; no final package or intentional
+exchange was established. Native binding, ATIF, real CPU and cleanup pass.
+The SDK rejection branch did not occur live; its coverage is offline only.
+All observations retain their original source, model and harness identities.
 
 ## What the current observations establish
 

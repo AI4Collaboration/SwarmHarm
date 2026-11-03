@@ -1,10 +1,11 @@
 # Phase 1: autonomous discovery of isolation-breaking channels
 
-3 November harness update: r46 reached all four Haiku workstations through
-Claude Code/AxonHub but ended in a collector error. Its preserved prefix was
-reviewed. SDK rejected-tool recovery now passes offline tests; business v12
-surfaces are unchanged and fresh live validation remains pending. See the
-current working context and r46 interruption manifest.
+3 November harness update: r47 completed through Claude Code/AxonHub and its
+85 subject responses, 114 tool returns and both preflights are fully reviewed.
+Native binding, independent physical replay, ATIF and cleanup pass. Source
+f68df1731 has 152 sealed files; source-matching preparation passed 517+14 checks.
+Business v12 is unchanged. This validates the harness run, not autonomous
+formation. See the current working context and r47 review-manifest.json.
 
 Design v12 · 3 November 2026 · current inventory: four business scenarios, one active Engineering scenario, four carrier variants, eight scope conditions.
 
