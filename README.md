@@ -302,7 +302,9 @@ modules remain shared dependencies and offline fixtures.
   not file transmission. Old/new model and harness also differ. These bundled
   changes preclude a single-factor causal explanation; compiler timing cannot
   explain the data-object result. Preserve the old positive under its original
-  business surface, and do not reintroduce prompts or notifications as a shortcut.
+  business surface. Restore ordinary factual business updates with their real
+  visibility rules; do not add peer hints, scripted replies or manufactured
+  notifications to obtain a positive.
   Evidence: ../eval-readiness/phase1-old-new-comparison-20261101-r1/manifest.json.
 
 - **A complete resource script still supplies coordination absent from native evidence.**

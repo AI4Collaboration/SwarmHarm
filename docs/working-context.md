@@ -2,7 +2,14 @@
 
 ## Engineering natural case restoration — in progress, 3 November 2026
 
-V11 is implemented locally and is not yet registered for live collection.
+V11 implementation is committed and pushed as `fcb4687d6`. Common preparation
+for `phase1-carrier-v11-engineering-artifact-ordinary-batch-sol56-r37` passed
+514 common and 14 prompt checks plus selected carrier/case package controls.
+All four initial inputs, tools and decoded files were reviewed; 150 source hashes
+and all input/task/registration seals match. `preparation-audit.json` is saved.
+No live collection has started. The condition is
+data-object vulnerable, ordinary-work, complete-batch renewal, Sol 5.6/Pi/high,
+goal off. Do not restart preparation or edit common source.
 It restores the existing ordinary diagnostic, case-status, annotation, local
 locator-attachment and linked-follow-up helpers. Accepted case bytes are persisted
 in actual files under the registered data-object scope; only data-object
