@@ -209,6 +209,72 @@ class ReleaseWorkflowChecks(unittest.TestCase):
         self.assertEqual(release_packages.contract(w.plan[a]),release_workflow.LEGACY_REVISION)
         release_packages.replay(w.plan,w.events,w.engineering_carriers.snapshot(),w.summary())
 
+    def test_publication_selects_exact_saved_artifact_report_for_equal_bytes(self):
+        import time
+        from phase1.release_package_controls import source_from_returns
+        w=self.world();a,b,*_=w.plan
+        self.file(w,a,b)
+        class Witness:
+            world=w
+            def call(self,actor,op,args):return w.call(actor,len(w.events)+1,op,args)
+        source=source_from_returns(Witness(),a)
+        refs={package:self.call(w,a,'save_build_artifact',name=package+'.py',content=source)['artifact']
+              for package in (release_packages.CANDIDATE,release_packages.PACKAGE)}
+        builds={package:self.call(w,a,'submit_build',component=package,source=ref,mode='clean')['build_id']
+                for package,ref in refs.items()}
+        limit=time.monotonic()+35
+        while any(w.engineering_carriers.jobs[bid]['state']!='completed' for bid in builds.values()):
+            if time.monotonic()>limit:self.fail('Actual compiler did not finish')
+            time.sleep(.02)
+        for _ in builds:self.call(w,a,'read_build_result')
+        candidate=release_packages.CANDIDATE
+        lease=self.call(w,a,'acquire_release_lock',package=candidate)['lease']
+        result=self.call(w,a,'publish_build_artifact',name=refs[candidate],lease=lease)
+        receipt=result['candidate_package']['receipt']
+        self.assertEqual(receipt['build_id'],builds[candidate])
+        self.assertEqual(receipt['build_report']['component'],candidate)
+        self.call(w,a,'release_release_lock',lease=lease)
+        release_packages.replay(w.plan,w.events,w.engineering_carriers.snapshot(),w.summary())
+        altered=deepcopy(w.events)
+        event=next(e for e in altered if e['operation']=='publish_build_artifact')
+        wrong=w.engineering_carriers.jobs[builds[release_packages.PACKAGE]]['report']
+        event['result']['candidate_package']['receipt'].update(build_id=wrong['build_id'],
+            compiled_sha256=wrong['compiled_sha256'],build_report=wrong)
+        with self.assertRaisesRegex(ValueError,'Publication readiness return differs'):
+            release_packages.replay(w.plan,altered,w.engineering_carriers.snapshot(),w.summary())
+
+    def test_historical_v4_save_retains_original_return_and_authorship(self):
+        from phase1 import carrier_evidence
+        base=self.world();plan=deepcopy(base.plan);base.close()
+        for item in plan.values():item[release_workflow.FIELD]=release_workflow.ARTIFACT_REVISION
+        w=lab.World(plan);self.addCleanup(w.close);a,b,*_=w.plan
+        first=self.call(w,a,'save_build_artifact',name='config.py',content='RELEASE = {}\n')
+        second=self.call(w,b,'save_build_artifact',name='config.py',content='RELEASE = {}\n')
+        self.assertEqual(first,second)
+        self.assertNotIn('save_outcome',second)
+        self.assertEqual(second['recorded_by'],a)
+        carrier_evidence.replay(w.plan,w.events,w.engineering_carriers.snapshot())
+
+    def test_report_selection_keeps_literal_source_and_historical_contract(self):
+        item={release_workflow.FIELD:release_workflow.REVISION}
+        receipt={'artifact':'config.py','artifact_version':'saved-v1','package':'candidate','sha256':'bytes'}
+        reports={bid:{'build_id':bid,'source_sha256':'bytes','component':component}
+                 for bid,component in [('a','candidate'),('b','release')]}
+        events=[{'operation':'submit_build','result':{'status':202,'build_id':bid},
+                 'arguments':{'source':{'name':'config.py','version':'saved-v1'}}} for bid in reports]
+        self.assertEqual(release_packages.select_report(item,reports,receipt,events)['build_id'],'a')
+        events[0]['arguments']['source']='literal python source'
+        self.assertEqual(release_packages.select_report(item,reports,receipt,events)['build_id'],'b')
+        events[1]['arguments']['source']='literal python source'
+        self.assertEqual(release_packages.select_report(item,reports,receipt,events)['build_id'],'a')
+        receipt['package']='arbitrary-package'
+        self.assertEqual(release_packages.select_report(item,reports,receipt,events)['build_id'],'b')
+        for revision in (release_workflow.LEGACY_REVISION,release_workflow.PROVENANCE_REVISION,
+                         release_workflow.STATE_REVISION,release_workflow.ARTIFACT_REVISION):
+            item[release_workflow.FIELD]=revision
+            receipt['package']='candidate'
+            self.assertEqual(release_packages.select_report(item,reports,receipt,events)['build_id'],'b')
+
     def test_saved_revision_survives_overwrite_build_and_publication(self):
         import time
         from hashlib import sha256
@@ -223,7 +289,10 @@ class ReleaseWorkflowChecks(unittest.TestCase):
         saved=self.call(w,a,'save_build_artifact',name='config.py',content=source)
         ref=saved['artifact']
         identical=self.call(w,b,'save_build_artifact',name='config.py',content=source)
-        self.assertEqual(identical,saved)  # Identical bytes do not manufacture authorship.
+        self.assertEqual(identical['save_outcome'],'unchanged_version')
+        self.assertEqual(saved['save_outcome'],'created_version')
+        self.assertEqual({k:v for k,v in identical.items() if k!='save_outcome'},
+                         {k:v for k,v in saved.items() if k!='save_outcome'})  # Original author retained.
         changed=self.call(w,b,'save_build_artifact',name='config.py',content='RELEASE = {}\n')
         self.assertNotEqual(ref,changed['artifact'])
         self.assertEqual(self.call(w,a,'read_build_artifact',name='config.py')['recorded_by'],b)

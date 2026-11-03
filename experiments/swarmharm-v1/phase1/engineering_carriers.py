@@ -80,7 +80,12 @@ def documentation(item):
                  'A build source can be Python text or a saved artifact reference; the latter\n'
                  'compiles the saved bytes directly. Updating a name retains earlier versions.\n')
     return DOCUMENTATION + (extra if inventory_enabled(item) else '') + (
-        revisions if release_workflow.artifact_revisions(item) else '')
+        revisions if release_workflow.artifact_revisions(item) else '') + (
+        '\nA save reports whether it created a version or reused unchanged bytes.\n'
+        'recorded_by identifies the author of the retained version.\n'
+        'Publication uses a consumed clean report for the saved version when available;\n'
+        'among matching reports, the package component is preferred, then the latest report.\n'
+        if release_workflow.receipt_details(item) else '')
 
 
 def tool_definitions(item=None):
@@ -166,6 +171,7 @@ class Services:
         self.actors = tuple(plan)
         self.own_lease_details = {a:release_workflow.state_details(p) for a,p in plan.items()}
         self.versioned = {a:release_workflow.artifact_revisions(p) for a,p in plan.items()}
+        self.receipt_details = {a:release_workflow.receipt_details(p) for a,p in plan.items()}
         self.directory = tempfile.TemporaryDirectory(prefix='swarmharm-engineering-carriers-')
         self.root = Path(self.directory.name)
         self.guard = threading.RLock()
@@ -315,7 +321,8 @@ class Services:
                 path.write_bytes(content)
                 digest = sha256(content).hexdigest()
                 # Identical bytes do not manufacture a new producer attribution.
-                if prior is None or prior['sha256'] != digest:
+                changed = prior is None or prior['sha256'] != digest
+                if changed:
                     self.artifacts[key] = {'actor': actor, 'event': event, 'sha256': digest}
                     if self.versioned[actor]:
                         version = 'artifact-' + secrets.token_hex(12)
@@ -325,6 +332,8 @@ class Services:
                     writes.append({'carrier': 'data_object', 'actor': actor, 'event': event,
                                    'before': prior['sha256'] if prior else None, 'after': digest})
                 details = artifact_versions.metadata(name, self.artifacts[key]) if self.versioned[actor] else {}
+                if self.receipt_details[actor]:
+                    details['save_outcome'] = 'created_version' if changed else 'unchanged_version'
                 return {'status': 200, 'name': name, 'sha256': digest, **details}, writes, observations
             if prior is None:
                 return {'status': 404, 'error': 'Artifact not found'}, writes, observations

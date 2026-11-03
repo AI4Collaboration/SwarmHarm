@@ -34,9 +34,11 @@ saved-artifact binding and ATIF pass. All 149 source files and 23312 terminal
 files match; four workstations are absent. Review-manifest binds 23 sidecars.
 Four complete-note observations and two scope adoptions are independently bound.
 Business delivery is eight current filings and one candidate/final pair; formation
-remains pending. Preserve r63; do not recollect. Next coherent repair addresses
-report selection and unchanged-save explanation together. Runtime source edits
-have not yet started; no collector or review process remains active.
+remains pending. Preserve r63; do not recollect. Release-wide v5 repairs report selection and unchanged-save explanation together.
+Fourteen focused checks, fourteen prompt checks and five historical world/input
+reconstructions pass. New task and tools are identical; only ordinary PLATFORM.md
+receipt documentation changes. Offline evidence is phase1-receipt-binding-offline-20261103-r1.json.
+No collector is active; next commit/freeze and common preparation before new Haiku.
 
 
 

@@ -196,6 +196,27 @@ def publication(item, submissions, source, receipt, report, event_id, *, candida
             'issues_at_publication': issues, 'receipt': bound_receipt}
 
 
+def select_report(item, reports, receipt, events):
+    """Choose provenance for these bytes without confusing equal-byte artifacts.
+
+    Historical revisions keep last-consumed-digest selection. The new contract
+    prefers the exact saved artifact, then a component matching the package.
+    Plain source builds and arbitrary component labels remain supported.
+    """
+    matching = [r for r in reports.values() if r['source_sha256'] == receipt['sha256']]
+    if not matching:
+        return None
+    if not release_workflow.receipt_details(item):
+        return matching[-1]
+    sources = {e['result']['build_id']: e['arguments']['source'] for e in events
+               if e['operation'] == 'submit_build' and e['result'].get('status') == 202}
+    reference = {'name': receipt['artifact'], 'version': receipt.get('artifact_version')}
+    exact = [r for r in matching if sources.get(r['build_id']) == reference]
+    matching = exact or matching
+    component = [r for r in matching if r['component'] == receipt['package']]
+    return (component or matching)[-1]
+
+
 class Packages:
     def __init__(self, world):
         self.world = world
@@ -224,8 +245,7 @@ class Packages:
             source = service.path('published', actor, receipt['package'] + '.artifact').read_text()
             if sha256(source.encode()).hexdigest() != receipt['sha256']:
                 raise RuntimeError('Persisted release bytes differ from publication receipt')
-            report = next((r for r in reversed(list(self.reports[actor].values()))
-                           if r['source_sha256'] == receipt['sha256']), None)
+            report = select_report(self.world.plan[actor], self.reports[actor], receipt, self.world.events)
             entry = publication(self.world.plan[actor], self.submissions(actor),
                                 source, receipt, report, event_id, candidate=candidate, publisher=actor)
             # Other package names remain ordinary artifact publications. They
@@ -316,8 +336,7 @@ def replay(plan, events, terminal, summary=None):
                       if isinstance(reference,dict) else artifacts[key(actor,reference)])
             candidate = staged(plan[actor]) and receipt['package'] == CANDIDATE
             if sha256(source.encode()).hexdigest() != receipt['sha256']: raise ValueError('Release bytes differ')
-            report = next((r for r in reversed(list(reports[actor].values()))
-                           if r['source_sha256'] == receipt['sha256']), None)
+            report = select_report(plan[actor], reports[actor], receipt, events)
             entry = publication(plan[actor], current(actor),source,receipt,report,e['id'],candidate=candidate,publisher=actor)
             if result.get('candidate_package' if candidate else 'release_package') != assess(plan[actor],current(actor),entry,candidate=candidate):
                 raise ValueError('Publication readiness return differs from replay')

@@ -80,3 +80,14 @@ Whole-body reads retain their original evidence identity. This measurement repai
 does not change tasks, tools, notices, business acceptance or formation criteria;
 intent and replies still need native semantic anchors. Retrospective checks are
 separate from frozen historical scores.
+
+Release-wide v5 clarifies artifact receipts. An unchanged save reuses the existing
+immutable version and original author, and explicitly reports `unchanged_version`;
+a changed save reports `created_version`. Publication prefers a consumed clean
+report compiled from the exact saved reference, then a matching package component,
+then the latest qualifying report. Literal-source builds and arbitrary component
+labels remain valid; publication still needs matching bytes, not an invented
+component naming rule. Runtime and independent replay use the same declared
+selection contract. Historical v1-v4 keep their original returns and selection.
+The initial task, tools, notices and completion criteria are unchanged. Only the
+ordinary platform documentation explains these factual receipt semantics.

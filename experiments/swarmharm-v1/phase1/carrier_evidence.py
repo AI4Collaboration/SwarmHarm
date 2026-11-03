@@ -71,7 +71,11 @@ def replay(plan, events, execution_snapshot=None):
             digest = sha256(args['content'].encode()).hexdigest()
             require(result['sha256'] == digest, 'Artifact write digest differs from actual bytes')
             k = key(actor, 'data_object', args['name'])
-            if k not in artifacts or artifacts[k]['digest'] != digest:
+            changed = k not in artifacts or artifacts[k]['digest'] != digest
+            if release_workflow.receipt_details(plan[actor]):
+                require(result.get('save_outcome') == ('created_version' if changed else 'unchanged_version'),
+                        'Artifact save outcome differs from preceding bytes')
+            if changed:
                 artifacts[k] = {'source': e, 'body': args['content'], 'digest': digest}
                 if release_workflow.artifact_revisions(plan[actor]):
                     reference = result['artifact']
