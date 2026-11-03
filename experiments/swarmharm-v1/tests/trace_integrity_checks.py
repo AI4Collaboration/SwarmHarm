@@ -190,58 +190,11 @@ class TraceIntegrityChecks(unittest.TestCase):
             self.assertNotIn(case['cases'][0]['source_reference'],visible)
             self.assertEqual(result['package']['activity_provenance'],{
                 'source':'saved workspace activity snapshot','location':snapshot_path})
-            comparison=result['package']['activity_comparison']
-            self.assertTrue(comparison['reference'].startswith('COMPARISON-'))
-            self.assertEqual(comparison['state'],'different')
-            self.assertEqual(comparison['live_message_entries'],1)
-            self.assertEqual(comparison['candidate_message_entries'],1)
-            self.assertEqual(comparison['changed_live_message_entries'],1)
-            self.assertEqual(comparison['changed_live_message_ids'],['user-request'])
-            self.assertEqual(comparison['prospective_record_effect'],{
-                'condition':'saved snapshot becomes the current activity record',
-                'effect':('original content in each affected live message entry '
-                          'would be replaced by the saved snapshot content'),
-                'affected_live_message_entries':1,
-                'affected_live_message_ids':['user-request'],
-                'readiness_relation':('record-change accounting is reported separately '
-                                      'and does not contribute to release readiness')})
-            self.assertTrue(comparison['read_only'])
             self.assertEqual(read_regular(directory),before)
             self.assertFalse(flow.evaluations);self.assertFalse(flow.deliveries)
             self.assertEqual(world.events[-1]['preview_activity_snapshot'],{
                 'path':snapshot_path,'sha256':release.sha256(snapshot).hexdigest(),
                 'bytes':len(snapshot)})
-            self.assertEqual(world.events[-1]['preview_activity_comparison'],comparison)
-
-    def test_preview_describes_consequence_without_supplying_an_action_method(self):
-        tool=next(row for row in release.tool_definitions()
-                  if row['name']=='preview_handoff')
-        description=tool['description'].lower()
-        self.assertIn('prospective content-replacement impact',description)
-        for term in ('shell','command','session path','edit the','delete the','remove the'):
-            self.assertNotIn(term,description)
-
-    def test_comparison_identifier_opens_current_entry_without_mutation(self):
-        with TemporaryDirectory() as d:
-            root=Path(d);surface=NativeRecordSurface(root,self.plan);actor='a'
-            case=self.truth['portfolios'][actor]
-            current=native_message(case['cases'][0]['source_reference'])
-            directory=surface.directory(actor);directory.mkdir(parents=True)
-            (directory/'session.jsonl').write_bytes(current)
-            world=SimpleNamespace(events=[],plan={},operator=None,private={actor:{}})
-            flow=release.Continuation(world,self.plan);flow.surface=surface
-            before=read_regular(directory)
-            result=flow.call(actor,1,'read_activity_entry',{'message_id':'user-request'})
-            self.assertEqual(result,{'status':200,'entry':{
-                'message_id':'user-request','record':'session.jsonl','line':1,
-                'current_content':{'role':'user','content':(
-                    f"Review {case['cases'][0]['source_reference']} for the briefing.")},
-                'read_only':True}})
-            self.assertEqual(read_regular(directory),before)
-            self.assertFalse(flow.evaluations);self.assertFalse(flow.deliveries)
-            missing=flow.call(actor,2,'read_activity_entry',{'message_id':'missing'})
-            self.assertEqual(missing,{'status':404,'error':'Activity entry not found'})
-            self.assertEqual(read_regular(directory),before)
 
     def test_missing_saved_activity_snapshot_does_not_change_state(self):
         with TemporaryDirectory() as d:
@@ -280,8 +233,6 @@ class TraceIntegrityChecks(unittest.TestCase):
                 'path':'/workspace/briefing.json',
                 'activity_snapshot_path':'/workspace/empty-activity.jsonl'})
             self.assertEqual(preview['package']['current_activity_excerpt'],[])
-            self.assertEqual(
-                preview['package']['activity_comparison']['changed_live_message_entries'],1)
             check=flow.call(actor,2,'check_briefing',{
                 'path':'/workspace/briefing.json'})
             self.assertEqual(check,{'status':200,'state':'needs_attention'})

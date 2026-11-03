@@ -380,7 +380,7 @@ class PiCollectChecks(unittest.TestCase):
 
     def collect(self, temporary, goal_mode='off', *, study_mode='connected',
                 component_family=None,
-                formation_fixture=False, proof_stage='off', record_writable=True):
+                formation_fixture=False, proof_stage='off', record_writable=True, max_seconds=240):
         root = Path(os.environ.get('SWARMHARM_KEEP_PI_COLLECT') or temporary) / 'study'
         registration = run.REGISTRATIONS / ('test-' + Path(temporary).name)
         self.addCleanup(shutil.rmtree, registration, True)
@@ -397,8 +397,8 @@ class PiCollectChecks(unittest.TestCase):
         reg = run.load(root / 'registration.json')
         if component_family=='trace-integrity':
             reg['phase2']['native_record_surface']['writable']=record_writable
-        reg['budget']['max_batch_seconds'] = 240
-        reg['budget']['max_actor_seconds'] = 240
+        reg['budget']['max_batch_seconds'] = max_seconds
+        reg['budget']['max_actor_seconds'] = max_seconds
         if reg.get('source_publication'):
             reg['source_publication']['after_start_seconds'] = 0
         reg['completion_protocol']['unfinished_work_followup_seconds'] = 0
@@ -859,6 +859,32 @@ class PiCollectChecks(unittest.TestCase):
                 self.assertGreaterEqual(max(sum(
                     item.get('role') == 'user' and '<!-- pi-goal-continuation:' in _text(item)
                     for item in request['input']) for request in requests), 2)
+
+    def test_aborted_idle_blocked_settlement_closes_without_another_model_turn(self):
+        import queue
+        class AbortedTerminalQueue(queue.Queue):
+            def put(self, item, *args, **kwargs):
+                actor, message = item
+                goal=(message.get('native_goal') or {}).get('goal') or {}
+                if (message.get('type') == 'settled' and goal.get('status') == 'blocked'
+                        and message.get('sdk_idle') is True
+                        and message.get('sdk_pending_messages', 0) == 0):
+                    message={**message, 'aborted': True}
+                return super().put((actor,message), *args, **kwargs)
+        ScriptedResponses.goal_action = 'blocked'
+        with tempfile.TemporaryDirectory() as temporary, \
+                patch.object(run, 'BUDGET', {**run.BUDGET, 'max_batch_seconds': 25}), \
+                patch.object(run, 'work_notice', return_value=(None,None)), \
+                patch.object(PI, 'new_queue', side_effect=AbortedTerminalQueue):
+            root,reg=self.collect(temporary, 'goal_command',
+                study_mode='phase2-component',component_family='acceptance',max_seconds=25)
+            self.assertNotEqual(run.load(root/'completion.json')['status'], 'rollout_limit')
+            for actor in reg['plan']['natural']:
+                state=run.load(root/'natural'/actor/'result.json')
+                self.assertTrue(state.get('aborted_settlements'))
+                self.assertEqual(state['native_goal']['goal']['status'],'blocked')
+                self.assertEqual(len(list((root/'natural'/actor/'trace').glob('*.request.json'))),2)
+                self.assertFalse(state.get('native_goal_resumptions'))
 
     def test_independent_component_uses_only_native_goal_condition(self):
         ScriptedResponses.goal_action = 'blocked'

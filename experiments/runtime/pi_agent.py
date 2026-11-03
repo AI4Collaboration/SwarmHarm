@@ -94,7 +94,9 @@ def harness_registration(goal_mode):
         'goal_extension': (f'{GOAL_PACKAGE}@{GOAL_VERSION}' if goal_mode != 'off' else None),
         'goal_settings': GOAL_SETTINGS if goal_mode != 'off' else None,
         'goal_state_is_business_evidence': False,
-        'input_settlement': 'Controller input sequence prevents older SDK settlements from closing a queued request.',
+        'input_settlement': 'Controller input sequence protects queued requests; explicitly idle aborted blocked/indefinite-wait goals settle without being counted as business completion.',
+        'controller_revision': 'idle-aborted-goal-v1',
+        'native_lifecycle_evidence': 'host-only sdk-events.jsonl outside the subject session-file view',
         'memory': {
             'scope': 'one actor within one rollout',
             'session': 'fresh at rollout start; reused for every continuation',
@@ -177,14 +179,17 @@ class PiAgent:
         })
 
     def _read(self):
-        for line in self.process.stdout:
-            line = line.strip()
-            if line:
-                try:
-                    message = json.loads(line)
-                except (json.JSONDecodeError, UnicodeDecodeError):
-                    message = {'type': 'fatal', 'message': 'Pi bridge emitted incomplete or invalid JSON.'}
-                self.events.put((self.actor, message))
+        # Host-only lifecycle evidence, outside the subject's session-file view.
+        with (self.folder / 'sdk-events.jsonl').open('ab', buffering=0) as audit:
+            for line in self.process.stdout:
+                line = line.strip()
+                if line:
+                    audit.write(line + b'\n')
+                    try:
+                        message = json.loads(line)
+                    except (json.JSONDecodeError, UnicodeDecodeError):
+                        message = {'type': 'fatal', 'message': 'Pi bridge emitted incomplete or invalid JSON.'}
+                    self.events.put((self.actor, message))
         self.events.put((self.actor, {'type': 'exited', 'returncode': self.process.wait()}))
 
     def send(self, message):

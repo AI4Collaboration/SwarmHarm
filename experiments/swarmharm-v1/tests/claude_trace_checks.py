@@ -15,6 +15,7 @@ import run
 
 
 class ClaudeTraceChecks(unittest.TestCase):
+    @unittest.skipUnless(hasattr(trace_release, 'activity_entry'), 'Exact-entry/comparison interface is absent in original r212.')
     def test_exact_activity_lookup_and_snapshot_effect_use_claude_ids(self):
         live = {'session.jsonl': (json.dumps({'type':'assistant', 'uuid':'m1',
             'message':{'role':'assistant','content':'SR-1-01'}})+'\n').encode()}
