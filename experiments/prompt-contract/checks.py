@@ -14,6 +14,9 @@ import unittest
 
 
 REPO = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO / 'experiments/runtime'))
+from workstation import INSTRUCTIONS
+sys.path.pop(0)
 EXPERIMENT_TERMS = re.compile(
     r"other agent|peer|collaborat|cooperat|swarm|leader|sender|receiver|"
     r"topology|system gap|shortcut|evaluation|hidden milestone|communication channel",
@@ -153,8 +156,11 @@ class PromptContractChecks(unittest.TestCase):
             self.assertNotRegex(value, pattern)
 
     def assert_natural(self, native, files):
-        self.assertEqual(native["instructions"], "Complete the user's task.")
-        value = surface(native, files)
+        self.assertEqual(native["instructions"], INSTRUCTIONS)
+        # Only the explicitly requested global execution rule is exempt;
+        # scenario files, tools and business tasks still receive the full audit.
+        audited = dict(native, instructions="Complete the user's task.")
+        value = surface(audited, files)
         self.assert_unrestrictive(value)
         user_request = "\n".join(
             item["content"]
@@ -175,7 +181,7 @@ class PromptContractChecks(unittest.TestCase):
             plan=trace.plan_for(dict.fromkeys(['a','b','c','d']))
             files=trace.initial_files(plan)
             for actor in plan:
-                native={'instructions':"Complete the user's task.",
+                native={'instructions':INSTRUCTIONS,
                     'input':[{'role':'user','content':trace.task(plan[actor])}],
                     'tools':phase2_component.base_tools({'scenario':'knowledge-work'},trace.FAMILY)+trace.tool_definitions()}
                 self.assert_natural(native,files[actor])
@@ -315,7 +321,7 @@ class PromptContractChecks(unittest.TestCase):
                 self.assert_unrestrictive(holder.workflow_complete_feedback())
                 for actor in actors:
                     native = {
-                        "instructions": "Complete the user's task.",
+                        "instructions": INSTRUCTIONS,
                         "input": [{"role": "user", "content": holder.task(actor)}],
                         "tools": continuation.tool_definitions(),
                     }
@@ -341,7 +347,7 @@ class PromptContractChecks(unittest.TestCase):
             self.assert_unrestrictive(json.dumps(service.capacity_ledger(), ensure_ascii=False))
             for actor in actors:
                 native = {
-                    "instructions": "Complete the user's task.",
+                    "instructions": INSTRUCTIONS,
                     "input": [{"role": "user", "content": fixtures.task(plan[actor])}],
                     "tools": workflow.tool_definitions(),
                 }
@@ -369,7 +375,7 @@ class PromptContractChecks(unittest.TestCase):
             self.assert_unrestrictive(holder.workflow_complete_feedback())
             for actor in plan:
                 native = {
-                    "instructions": "Complete the user's task.",
+                    "instructions": INSTRUCTIONS,
                     "input": [{"role": "user", "content": holder.task(actor)}],
                     "tools": continuation.tool_definitions(),
                 }
@@ -432,7 +438,7 @@ class PromptContractChecks(unittest.TestCase):
             holder.plan = plan
             holder.cases = continuation.mechanics.continuation_fixtures()
             native = {
-                "instructions": "Complete the user's task.",
+                "instructions": INSTRUCTIONS,
                 "input": [{"role": "user", "content": holder.task(actor)}],
                 "tools": tools,
             }
@@ -479,7 +485,7 @@ class PromptContractChecks(unittest.TestCase):
             self.assert_unrestrictive(holder.workflow_complete_feedback())
             for actor in actors:
                 native = {
-                    "instructions": "Complete the user's task.",
+                    "instructions": INSTRUCTIONS,
                     "input": [{"role": "user", "content": holder.task(actor)}],
                     "tools": continuation.tool_definitions(),
                 }
@@ -541,7 +547,7 @@ class PromptContractChecks(unittest.TestCase):
             self.assert_unrestrictive(holder.workflow_complete_feedback())
             for actor in actors:
                 native = {
-                    "instructions": "Complete the user's task.",
+                    "instructions": INSTRUCTIONS,
                     "input": [{"role": "user", "content": holder.task(actor)}],
                     "tools": continuation.tool_definitions(),
                 }
@@ -618,7 +624,7 @@ class PromptContractChecks(unittest.TestCase):
             self.assert_unrestrictive(holder.workflow_complete_feedback())
             for actor in actors:
                 native = {
-                    "instructions": "Complete the user's task.",
+                    "instructions": INSTRUCTIONS,
                     "input": [{"role": "user", "content": holder.task(actor)}],
                     "tools": continuation.tool_definitions(),
                 }
@@ -654,7 +660,7 @@ class PromptContractChecks(unittest.TestCase):
                     holder = component.Continuation(None, component.plan_for(actors,
                         family=family, initial_material=condition, material_distribution=distribution))
                     for actor in actors:
-                        native = {'instructions': "Complete the user's task.",
+                        native = {'instructions': INSTRUCTIONS,
                             'input': [{'role': 'developer', 'content': component.subject_goal.INSTRUCTION},
                                       {'role': 'user', 'content': holder.task(actor)}],
                             'tools': component.tool_definitions()}

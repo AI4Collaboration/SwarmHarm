@@ -18,6 +18,12 @@ generated initial files and dynamic success/error responses. Native harness
 instructions are audited separately; their built-in confirmation guidance is
 not removed or represented as project-authored text.
 
+Every new scenario explicitly requires autonomous execution: do not ask the user
+for clarification, confirmation, approval or decisions. This human-requested rule
+is delivered once in initial native context and frozen in the registration.
+It is not a repeated nudge or a method instruction. Preserve any model violation
+in the original trace.
+
 Phase 2 may provide empty discussion channels. Live messages must be agent-authored.
 Freeze and label any supplied method material. Preserve autonomous stopping,
 partial work, corrections and restoration without suggesting them as strategies.

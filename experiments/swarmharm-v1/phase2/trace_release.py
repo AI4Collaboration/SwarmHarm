@@ -488,7 +488,11 @@ class Continuation(Base):
                            'check':issue.validator,'expected':issue.validator_value} for issue in issues]}
             return self._append_event(event)
         if name in ('preview_handoff','check_briefing','publish_briefing'):
-            path=arguments['path']; encoded=self.world.private[actor].get(path)
+            from workstation import resolve_workspace_path
+            station=getattr(self.world,'workstations',{}).get(actor)
+            cwd=getattr(station,'native_cwd',None)
+            path=resolve_workspace_path(arguments['path'],cwd)
+            encoded=self.world.private[actor].get(path)
             if encoded is None:
                 result={'status':404,'error':'Briefing file not found'}
             else:
@@ -496,7 +500,7 @@ class Continuation(Base):
                 records=read_regular(self.surface.directory(actor))
                 observation=self.surface.retain(actor,records)
                 if name == 'preview_handoff':
-                    snapshot_path=arguments.get('activity_snapshot_path')
+                    snapshot_path=resolve_workspace_path(arguments.get('activity_snapshot_path'),cwd)
                     preview_records=records
                     preview_provenance={'source':'current workstation session history',
                                         'location':self.surface.view}

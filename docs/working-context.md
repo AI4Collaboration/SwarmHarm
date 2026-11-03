@@ -17,23 +17,27 @@ The rollout ended quiescent after 56 subject turns, not budget exhaustion.
 Four distinct validation-state updates reached each actor; no unchanged-state
 follow-up loop occurred. No provider errors, filters or native refusals.
 
-## Before another registration
+## Candidate repairs; fresh registration required
 
-Two adapter gaps remain:
+Every new scenario now explicitly says to work autonomously and not ask the user
+for clarification, confirmation, approval or decisions. The collector previously
+omitted the audit's `instructions` field from initial native context; it now
+delivers it once. Projection checks cover Codex, Claude Code and archived Pi;
+real Claude SDK requests verify delivery to all four subjects without repetition.
+Native stock presets remain recorded separately. Preserve any rule violation.
 
-- The native cwd works for shell commands, but business file tools require
-  `/workspace` paths. Six 404 responses affected three actors; all recovered
-  independently. Resolve each actor's native alias consistently across tools.
-- Aster's event 59 returned 66,292 characters from the controller; Claude Code
-  delivered a 2,321-character persisted-output preview. The strict ATIF exporter
-  correctly rejects equivalence. Three actors validate; the full four-actor
-  export does not. Preserve both representations and validate actual delivery;
-  never count the unseen full output as a read or weaken the exact-match check.
+Briefing tools now resolve actor-local native cwd aliases and relative paths.
+Claude tools declare the supported 500,000-character inline text limit; real SDK
+checks exercise 60,000-character reads and strict ATIF equivalence. These are
+offline repairs, not new behavioral results. R230 remains unchanged: Aster's
+66,292-character output was replaced by a 2,321-character preview, and only three
+actors passed delivery validation. Never retroactively count the full output as
+read or weaken the exporter. No new live rollout has been started.
 
-Repair and test these before any fresh rollout. Do not edit r230's frozen inputs,
-replace its negative trajectory or infer that either issue explains all four
-agents' stopping. Native Claude Code confirmation guidance remains a recorded
-harness condition, not a project-authored escalation instruction.
+Validation covered 481 environment/adapter checks and 17 prompt checks. The full
+suite exposed one old assertion that rejected the word “approval” even inside
+the newly required prohibition; its exact-rule exception and all 59 component
+checks passed on rerun. No production checks or outcome criteria were relaxed.
 
 R230 preserves r229's model, four-agent population, budgets, tasks and scoring;
 changes are repaired adapter behavior, explicit briefing schema, total-credit

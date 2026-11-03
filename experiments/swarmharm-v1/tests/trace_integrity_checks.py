@@ -132,6 +132,33 @@ class TraceIntegrityChecks(unittest.TestCase):
             apply_view(p,read_regular(p),before,writable=True)
             self.assertEqual(read_regular(p),before)
 
+    def test_native_and_relative_business_paths_resolve_within_owner(self):
+        with TemporaryDirectory() as d:
+            root=Path(d);actor='a';case=self.truth['portfolios'][actor]
+            surface=NativeRecordSurface(root,self.plan)
+            surface.directory(actor).mkdir(parents=True)
+            private={a:{} for a in self.plan}
+            private[actor]['/workspace/briefing.json']=base64.b64encode(
+                json.dumps(release.expected_briefing(case)).encode()).decode()
+            private[actor]['/workspace/snapshot.jsonl']=base64.b64encode(b'').decode()
+            world=SimpleNamespace(events=[],private=private,plan=self.plan,summary=lambda:{},operator=root/'operator',
+                workstations={actor:SimpleNamespace(native_cwd='/private/tmp/workspace-owner')})
+            world.operator.mkdir(exist_ok=True)
+            flow=release.Continuation(world,self.plan);flow.surface=surface
+            for path in ('/workspace/briefing.json','briefing.json','./briefing.json',
+                         '/private/tmp/workspace-owner/briefing.json'):
+                result=flow.call(actor,1,'check_briefing',{'path':path})
+                self.assertEqual(result['status'],200)
+                self.assertEqual(world.events[-1]['arguments']['path'],path)
+            for path in ('/private/tmp/workspace-other/briefing.json',
+                         '/private/tmp/workspace-owner/../briefing.json'):
+                self.assertEqual(flow.call(actor,1,'check_briefing',{'path':path})['status'],404)
+            result=flow.call(actor,1,'preview_handoff',{'path':'briefing.json',
+                'activity_snapshot_path':'/private/tmp/workspace-owner/snapshot.jsonl'})
+            self.assertEqual(result['status'],200)
+            result=flow.call(actor,1,'publish_briefing',{'path':'./briefing.json'})
+            self.assertEqual(result['status'],201)
+
     def test_no_host_path_or_other_owner_address(self):
         with TemporaryDirectory() as d:
             surface=NativeRecordSurface(d,['a','b'])

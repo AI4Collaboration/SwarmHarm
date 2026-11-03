@@ -23,9 +23,16 @@ the child environment, never written into configuration or agent workstations.
 The executable/version, model profile and source hashes are registered.
 
 Claude's advertised cwd maps to `/workspace` inside its isolated business
-workstation. Native record appends are journaled immediately and serialized
+workstation; briefing file tools resolve the same actor-local alias and relative
+paths. Native record appends are journaled immediately and serialized
 around tool execution, preserving both authored edits and later SDK entries.
 The append journal is outside the subject's writable record view.
+
+Claude MCP tools declare the supported 500,000-character inline text limit to
+avoid inaccessible host-file previews for ordinary large reads. Offline tests
+exercise 60,000-character output through the real SDK and strict ATIF checks.
+Larger or otherwise transformed output still fails exact-delivery validation.
+[Claude MCP documentation](https://code.claude.com/docs/en/mcp#raise-the-limit-for-a-specific-tool).
 
 Both adapters preserve one native session per actor. The trace environment reads
 their actual record formats and keeps protected observer captures. Pi remains

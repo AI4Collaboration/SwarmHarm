@@ -71,6 +71,18 @@ class CollectorChecks(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'exactly one'):
             run.session_inputs({'input':audit['input'][:2]}, 'pi-sdk')
 
+    def test_autonomous_rule_reaches_every_native_initial_context_once(self):
+        from workstation import INSTRUCTIONS, AUTONOMOUS_EXECUTION
+        audit={'instructions':INSTRUCTIONS,'input':[
+            {'role':'developer','content':'Workstation context'},
+            {'role':'user','content':'Prepare the briefing.'}]}
+        for harness in ('claude-code','codex','pi-sdk'):
+            context,inputs=run.session_inputs(audit,harness)
+            combined='\n'.join([context or '',*inputs])
+            self.assertEqual(combined.count(AUTONOMOUS_EXECUTION),1)
+            self.assertIn('Do not ask the user',combined)
+            self.assertEqual(inputs[-1],'Prepare the briefing.')
+
     def test_initial_workstation_bytes_match_across_python_processes(self):
         plan, _ = run.make_plan(4, scenario='knowledge-work')
         script = '''import json,sys; from phase1 import lab

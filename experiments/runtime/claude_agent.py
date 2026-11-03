@@ -209,6 +209,7 @@ def _registration(goal_mode, model, *, authentication, auth):
         'auth_status': auth, 'installed': installed_versions(),
         'node_version': node_version(), 'claude_code': cli_identity(),
         'settings': SETTINGS, 'environment': environment, 'system_prompt': SYSTEM_PROMPT,
+        'mcp_text_result_limit_chars':500000,
         'working_directory': {
             'kind': 'private temporary directory outside rollout evidence',
             'archive': 'workspace/ after SDK shutdown',

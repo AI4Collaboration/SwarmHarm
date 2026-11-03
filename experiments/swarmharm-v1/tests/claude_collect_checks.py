@@ -131,6 +131,7 @@ class SubscriptionChecks(unittest.TestCase):
 
 
 class ScriptedMessages(BaseHTTPRequestHandler):
+    large_output = False
     """Local Anthropic protocol fixture. No requests leave localhost."""
     requests = []
 
@@ -159,6 +160,8 @@ class ScriptedMessages(BaseHTTPRequestHandler):
             if target.endswith('__bash'):
                 cwd = re.search(r'/(?:private/)?tmp/workspace-[A-Za-z0-9]+', json.dumps(body))
                 block['input'] = {'command': f'cd {cwd.group()} && ls' if cwd else 'ls /workspace'}
+                if type(self).large_output:
+                    block['input']['command'] += " && python3 -c \"print('x'*60000)\""
             delta = {'type': 'input_json_delta', 'partial_json': json.dumps(block['input'])}
             initial = {**block, 'input': {}}
             reason = 'tool_use'
@@ -250,6 +253,16 @@ class ClaudeCollectChecks(unittest.TestCase):
             capture_output=True, text=True, timeout=30)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+    def test_large_tool_result_stays_inline_in_real_sdk_and_atif(self):
+        ScriptedMessages.large_output=True
+        try:
+            self.test_real_sdk_collection_and_atif_preserve_native_messages()
+            rendered=json.dumps(ScriptedMessages.requests)
+            self.assertIn('x'*60000,rendered)
+            self.assertNotIn('<persisted-output>',rendered)
+        finally:
+            ScriptedMessages.large_output=False
+
     def test_real_sdk_collection_and_atif_preserve_native_messages(self):
         ScriptedMessages.requests = []
         server = ThreadingHTTPServer(('127.0.0.1', 0), ScriptedMessages)
@@ -316,9 +329,11 @@ class ClaudeCollectChecks(unittest.TestCase):
             self.assertIn(completion['status'], {'collected', 'collected_with_limits'}, completion)
             results = export_atif.export(root)
             self.assertEqual(len(results), 4)
+            subject_cwds = []
             for actor in reg['plan']['natural']:
                 folder = root / 'natural' / actor
                 result = run.load(folder / 'result.json')
+                subject_cwds.append(result['claude_session']['cwd'])
                 self.assertEqual(result['tools'], 2)
                 self.assertRegex(result['claude_session']['cwd'], r'^/(private/)?tmp/workspace-')
                 self.assertTrue(list((folder / 'claude/native-store').glob('*.json')))
@@ -346,6 +361,13 @@ class ClaudeCollectChecks(unittest.TestCase):
                 finally:first.write_bytes(original)
             subject_requests=[value for value in ScriptedMessages.requests if value.get('tools')]
             self.assertTrue(subject_requests)
+            from workstation import AUTONOMOUS_EXECUTION
+            # Exclude the separate transport preflight by its native cwd.
+            for cwd in subject_cwds:
+                actor_requests = [v for v in subject_requests if cwd in json.dumps(v['messages'])]
+                self.assertTrue(actor_requests)
+                self.assertTrue(all(json.dumps(v['messages']).count(AUTONOMOUS_EXECUTION) == 1
+                                    for v in actor_requests))
             # The CLI adds cwd to ordinary request context. Operator evidence
             # paths must stay out of that context while the stock preset stays.
             self.assertNotIn(str(root),json.dumps(subject_requests))

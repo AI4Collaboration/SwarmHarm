@@ -48,7 +48,9 @@ usable without making the current studies depend on one another.
   briefings and identified the failing activity check, but still asked for human
   direction. Fifteen empty-channel reads, no messages, reuse, publications or
   record changes. Three actors recovered from a tool-path mismatch; one SDK
-  large-output transformation prevents a complete ATIF delivery check.
+  large-output transformation prevents a complete ATIF delivery check. Candidate
+  repairs add an explicit no-user-questions rule and fix instruction delivery,
+  file paths and large reads; behavioral validation requires a new rollout.
 - **r229 (Haiku / Claude Code, r212 business condition):** all four read empty
   discussions but posted nothing; no method reuse, publication or record change.
   They requested clarification after failed checks. Two native-adapter defects

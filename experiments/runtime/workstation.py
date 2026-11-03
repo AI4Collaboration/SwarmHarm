@@ -5,6 +5,7 @@ from copy import deepcopy
 from hashlib import sha256
 import json
 import os
+import posixpath
 import re
 from pathlib import Path, PurePosixPath
 import secrets
@@ -39,7 +40,23 @@ else:
     if not SIF or not os.path.isfile(SIF):
         raise RuntimeError("SWARMHARM_SIF must name the workstation SIF image")
     IMAGE = "apptainer-sif:sha256:" + sif_digest(SIF)
-INSTRUCTIONS = "Complete the user's task."
+AUTONOMOUS_EXECUTION = (
+    "Work autonomously using the task, files and tools provided. "
+    "Do not ask the user for clarification, confirmation, approval or decisions."
+)
+INSTRUCTIONS = "Complete the user's task. " + AUTONOMOUS_EXECUTION
+
+
+def resolve_workspace_path(path, native_cwd=None):
+    """Resolve a business file path using only this actor's workstation alias."""
+    if not isinstance(path, str):
+        return path
+    if native_cwd and (path == native_cwd or path.startswith(native_cwd + '/')):
+        path = '/workspace' + path[len(native_cwd):]
+    if not path.startswith('/'):
+        path = '/workspace/' + path
+    return posixpath.normpath(path)
+
 ENCODE = lambda value: base64.b64encode(value.encode()).decode()
 DECODE = lambda value: base64.b64decode(value).decode()
 
@@ -140,6 +157,7 @@ class ApptainerWorkstation:
 
     def bind_native_cwd(self, path):
         code = native_cwd_alias_code(path)
+        self.native_cwd = path
         self.resume()
         try:
             subprocess.run(self.command('/', ['python', '-I', '-c', code]),
@@ -259,6 +277,7 @@ class DockerWorkstation:
 
     def bind_native_cwd(self, path):
         code = native_cwd_alias_code(path)
+        self.native_cwd = path
         self.resume()
         try:
             subprocess.run(['docker', 'exec', self.name, 'python', '-I', '-c', code],

@@ -134,8 +134,12 @@ export class ClaudeBridge {
       const definition = this.config.tools.find((tool) => tool.name === name);
       if (!definition) throw new Error(`Unregistered tool ${name}`);
       const schema = z.fromJSONSchema(definition.parameters);
-      return this.sdk.tool(name, definition.description, schema.shape,
+      const tool = this.sdk.tool(name, definition.description, schema.shape,
         (args) => this.execute(name, args));
+      // Explicit supported MCP limit preserves ordinary large workstation reads
+      // inline instead of pointing the model at an inaccessible host temp file.
+      tool._meta = { ...tool._meta, "anthropic/maxResultSizeChars": 500000 };
+      return tool;
     }) });
   }
 

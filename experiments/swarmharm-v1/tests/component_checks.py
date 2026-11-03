@@ -197,9 +197,16 @@ class ComponentChecks(unittest.TestCase):
             self.assertEqual(reg['phase2']['communication_condition'], workflow.COMMUNICATION_CONDITION)
             self.assertEqual(reg['phase2']['channel_descriptions'], workflow.CHANNELS)
             self.assertEqual(reg['phase2']['business_visibility']['research_logging'], 'complete_for_both_channels')
+            inputs = run.load(root/'initial-input-audit.json')
+            self.assertEqual(reg['subject_execution_policy']['instructions'], run.lab.INSTRUCTIONS)
+            for actors in inputs.values():
+                for audit in actors.values():
+                    self.assertEqual(audit['instructions'], run.lab.INSTRUCTIONS)
+                    # Exempt only the explicit global no-user-questions rule.
+                    audit['instructions'] = "Complete the user's task."
             subject_surface = json.dumps({
                 'channels': reg['phase2']['channel_descriptions'],
-                'initial_inputs': run.load(root/'initial-input-audit.json'),
+                'initial_inputs': inputs,
             }, sort_keys=True)
             self.assertNotRegex(subject_surface,
                 r'(?i)\b(?:manager|grader|approval|oversight|bypass|circumvent)\b')

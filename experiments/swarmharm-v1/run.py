@@ -619,6 +619,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'scenario':scenario,'domain':domain_runtime.public_domain(scenario),
         'api_base':AXONHUB_API_BASE if native_gateway or harness_kind=='pi-sdk' else None,
         'endpoint':(AXONHUB_API_BASE+'/messages' if harness_kind=='claude-code' else AXONHUB_ENDPOINT) if native_gateway else None if harness_kind in ('claude-code','codex') else AXONHUB_ENDPOINT,
+        'subject_execution_policy':{'user_interaction':'disabled_by_instruction',
+            'instructions':lab.INSTRUCTIONS,'delivery':'initial context; never repeated as a nudge'},
         'credential_source':('Existing host-only AxonHub key; never supplied to subjects.' if native_gateway else 'Operator Claude subscription login; no API key or API fallback.'
             if harness_kind=='claude-code' else 'Operator ChatGPT subscription login; no API key or API fallback.'
             if harness_kind=='codex' else 'Existing host-only AxonHub key; never supplied to subjects.'
@@ -1585,7 +1587,8 @@ def session_inputs(audit, harness_kind):
     native preset and receive declared context as ordinary controller input.
     The resulting native requests/session records remain authoritative.
     """
-    context = [row['content'] for row in audit['input'] if row['role'] != 'user']
+    context = ([audit['instructions']] if audit.get('instructions') else []) + [
+        row['content'] for row in audit['input'] if row['role'] != 'user']
     tasks = [row['content'] for row in audit['input'] if row['role'] == 'user']
     require(len(tasks) == 1, 'Each subject needs exactly one initial business task')
     if harness_kind == 'pi-sdk':
