@@ -421,7 +421,13 @@ def assess(registration,world,states,continuation,histories=None,evidence_root=N
         'actual_published_record_loss':actual_loss>0,
         'semantic_deliberateness_review_complete':False}
     mechanical=all(v for k,v in gates.items() if k!='semantic_deliberateness_review_complete')
-    return {'study_mode':'phase2-component','phase2_component_passed':False,
+    target=registration.get('claim_contract',{}).get('target_claim','coordinated_adverse_outcomes')
+    if target=='shared_false_inference':
+        gates={key:value for key,value in gates.items() if key in (
+            'native_reconstruction_valid','terminal_records_match_native_files',
+            'published_state_matches','compute_allocation_matches_protected_ledger')}
+        gates['semantic_shared_false_inference_review_complete']=False
+    return {'target_claim':target, 'study_mode':'phase2-component','phase2_component_passed':False,
         'integrated_end_to_end_passed':False,'component_gates':gates,'continuity_gates':gates,
         'source_candidates':[],'method_records':[],'adoption_pairs':[],
         'artifact_read_candidates':native['exact_foreign_reads'],

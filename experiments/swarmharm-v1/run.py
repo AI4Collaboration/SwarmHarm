@@ -384,7 +384,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode='off', harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False):
+            archive_compatibility=False, pi_comparison=False, target_claim=None):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind is None:
@@ -420,6 +420,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     treasury_study = component and component_family == financial_composition.FAMILY
     if treasury_study and (population != 4 or initial_material != 'business_records_only' or material_distribution != 'all_workstations'):
         raise ValueError('Treasury composition requires four actors and ordinary business records at every workstation')
+    if target_claim is not None and (not trace_study or target_claim not in ('shared_false_inference', 'coordinated_adverse_outcomes')):
+        raise ValueError('Explicit claim selection is supported for the independent customer-handoff condition only')
     if trace_study and population != 4:
         raise ValueError('Trace release requires four subjects')
     if trace_study:
@@ -1273,6 +1275,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['input_hashes']['PROTOCOL.md']=sha(root/'PROTOCOL.md')
     if treasury_study:
         financial_composition.configure_registration(reg, root)
+    if trace_study:
+        trace_release.configure_claim(reg, target_claim or 'coordinated_adverse_outcomes')
     save(root/'registration.json',reg)
     save(root/'registration-seal.json',{
         'sha256':sha(root/'registration.json'),'model_calls':0})
@@ -1512,11 +1516,13 @@ def platform_notice_message(message, kind, review_documents=()):
         body['filed_sheet_reviews'] = review_documents
     return {'role': 'developer', 'content': json.dumps(body, ensure_ascii=False)}
 
-def acknowledge_observed_activity(signal, delivered, observed):
+def acknowledge_observed_activity(signal, delivered, observed, calendar_revision=None):
     """Advance notification receipts after exact content is returned by a tool."""
-    if not observed:
+    if not observed and calendar_revision is None:
         return delivered
     acknowledged = deepcopy(delivered)
+    if calendar_revision is not None:
+        acknowledged['calendar_revision'] = calendar_revision
     for case, entries in signal.get('case_entries', {}).items():
         known = {(row['path'], row['sha256']) for row in
                  delivered.get('case_entries', {}).get(case, [])} | observed
@@ -2122,8 +2128,11 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 observe = getattr(extension, 'observed_activity_keys', None)
                 if extension.activated and observe is not None:
                     observed = observe(call['name'], result)
+                    calendar = getattr(extension, 'observed_calendar_revision', None)
+                    calendar_revision = calendar(call['name'], result) if calendar else None
                     delivered_activity_signals[actor] = acknowledge_observed_activity(
-                        activity_signal(actor), delivered_activity_signals[actor], observed)
+                        activity_signal(actor), delivered_activity_signals[actor], observed,
+                        calendar_revision)
                 export(actor)
                 if world.observation_error is not None:
                     error=world.observation_error
@@ -2609,6 +2618,8 @@ if __name__=='__main__':
         default='local_records', help='Knowledge Work Phase 2 information availability.')
     p.add_argument('--study-mode', choices=('phase1', phase2_component.MODE),
         help='Required during preparation. Phase 1 and Phase 2 are separate rollout tracks.')
+    p.add_argument('--target-claim', choices=('shared_false_inference','coordinated_adverse_outcomes'),
+        help='Operator-only preregistered claim; never exposed to subjects.')
     p.add_argument('--proof-stage',choices=('off', *component_workflow.production_proof.STAGES),default='off',
         help='Print production prerequisite for the independent execution-record study.')
     p.add_argument('--component-family', choices=(*component_workflow.FAMILIES, *batching.FAMILIES, trace_release.FAMILY, financial_composition.FAMILY),
@@ -2641,5 +2652,5 @@ if __name__=='__main__':
             component_family=a.component_family,initial_material=a.initial_material,
             material_distribution=a.material_distribution,
             goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
-            proof_stage=a.proof_stage,pi_comparison=a.pi_comparison)
+            proof_stage=a.proof_stage,pi_comparison=a.pi_comparison,target_claim=a.target_claim)
     else:collect(root,registration_dir)
