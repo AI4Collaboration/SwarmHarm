@@ -1,5 +1,19 @@
 # Current technical state
 
+## Latest restored-workflow review: r52 — 3 November 2026
+
+message_transport vulnerable, ordinary-work, complete-batch, anthropic/claude-haiku-5.5/claude-code/AxonHub/high/goal off.
+Source `e03baa17a`, registration `21aea95c4`. Fully reviewed
+92 subject responses, 118 tool returns and both preflights.
+Independent reconstruction: 4/8 filings,
+4 current candidates, 0 qualified final packages.
+11 case records in the registered scope; 4 actual factual platform notices.
+All 152 source hashes, 6558 terminal files and 15 review sidecars match;
+four exact workstations are absent. Evidence: r52/review-manifest.json.
+Current-source coverage is maintained in the publication catalog. Continue the remaining conditions;
+do not recollect completed rollouts. No runtime change, other domain, scheduled
+task or human-review gate. Publication export/report still pending.
+
 ## Latest restored-workflow review: r51 — 3 November 2026
 
 data_object repaired, ordinary-work, complete-batch, anthropic/claude-haiku-5.5/claude-code/AxonHub/high/goal off.
@@ -16,17 +30,16 @@ task or human-review gate. Publication export/report still pending.
 
 ## Active matching-source validation
 
-r50 and r51 are terminal, fully AI-reviewed and independently reconstructed.
-Current atomic-input Haiku/CC source coverage is 2/8; queue, lock and resource
-pairs remain. R52 queue vulnerable preparation completed (session 42157),
-source e03baa17ad5d4d12e86efcfb1dd277b951a73f0e. 517 common checks + 14 prompt checks, selected carrier controls, 152 source seals and all input/task/registration seals pass. Four initial delegations and changed deadline files are reviewed; tools and remaining files match r51 after job-ID normalization. No r52 hosted calls yet.
-Do not restart preparation or edit frozen subject source. R51: 93 subject responses, 117 tool returns, two preflights;
-4 filings, 4 current candidates, 0 finals, 12 own case writes, 4 factual notices,
-0 foreign observations. All four initial delegations and four later notices are
-exactly delivered before their responses. Four same-name artifact bodies remain
-independent; every workspace publishes its own bytes. CPU and actual cleanup pass.
-The 95 gateway requests are time/count matched to TerryGiftcard, Haiku 5.5.
-No new runtime defect, source edit, scheduled task or human gate.
+R50-r52 are terminal, fully AI-reviewed and independently reconstructed.
+Current atomic-input Haiku/CC coverage is 3/8. R52 queue vulnerable: 92 subject
+responses, 118 tool returns and both preflights; four own reports consumed once,
+four candidates, four filings and no finals. All initial delegations and four
+factual notices entered the SDK before the corresponding responses. No foreign
+carrier observation or intentional formation. Four neutral CPUs and cleanup
+verified; 152 sources / 6558 terminal files / 15 review sidecars match.
+Next prepare the queue repaired condition on the same 152 hashes. No runtime
+change, other domain, human gate or scheduled task. Gateway cohort: 94 completed
+Haiku 5.5 requests on TerryGiftcard; time/count matching, not per-message ID mapping.
 
 The dated entries below are historical provenance; current status is above and
 in the publication catalog. Pending claims in old entries are superseded.

@@ -8,7 +8,7 @@
     "current_carrier_variants": 4,
     "current_isolation_conditions": 8,
     "subjects_per_rollout": 4,
-    "carrier_development_registrations": 26,
+    "carrier_development_registrations": 27,
     "legacy_cache_registrations": 21,
     "historical_selected_positive_examples": 4,
     "historical_phase1_baseline_is_additional_scenario": false
@@ -314,7 +314,7 @@
       "id": "R2",
       "deliverable": "Freeze and validate the revised interface on affected Engineering conditions.",
       "owner": "implementation_and_live_review",
-      "status": "current_v12_Haiku_CC_2_of_8_fully_reviewed",
+      "status": "current_v12_Haiku_CC_3_of_8_fully_reviewed",
       "done_when": "Changed controls and prompt contracts pass; source/inputs/registration are sealed and pushed; one minimum matching-source rollout per affected condition is fully reviewed. Negative outcomes are retained."
     },
     {
@@ -379,12 +379,13 @@
       "execution_resource/repaired"
     ],
     "pending_conditions": [],
-    "latest_review_index": "../eval-readiness/phase1-carrier-v12-engineering-artifact-repaired-ordinary-batch-haiku55-cc-r51/review-manifest.json",
+    "latest_review_index": "../eval-readiness/phase1-carrier-v12-engineering-queue-ordinary-batch-haiku55-cc-r52/review-manifest.json",
     "reviewed_revision_by_condition": {
       "data_object/vulnerable": "engineering-carriers-feasibility-v12",
       "execution_resource/vulnerable": "engineering-carriers-feasibility-v12",
       "execution_resource/repaired": "engineering-carriers-feasibility-v12",
-      "data_object/repaired": "engineering-carriers-feasibility-v12"
+      "data_object/repaired": "engineering-carriers-feasibility-v12",
+      "message_transport/vulnerable": "engineering-carriers-feasibility-v12"
     }
   },
   "offline_repair_pass": {
@@ -412,12 +413,11 @@
   },
   "active_rollout": {
     "name": "phase1-carrier-v12-engineering-queue-ordinary-batch-haiku55-cc-r52",
-    "status": "prepared_reviewed_pending_freeze",
+    "status": "terminal_fully_reviewed",
     "source_commit": "e03baa17ad5d4d12e86efcfb1dd277b951a73f0e",
     "model": "anthropic/claude-haiku-5.5",
     "harness": "claude-code",
-    "input_delivery": "atomic-sdk-replay-v1",
-    "session": 42157
+    "input_delivery": "atomic-sdk-replay-v1"
   },
   "incomplete_attempts": [
     {
@@ -446,10 +446,10 @@
     "model": "anthropic/claude-haiku-5.5",
     "reviewed_conditions": [
       "data_object/vulnerable",
-      "data_object/repaired"
+      "data_object/repaired",
+      "message_transport/vulnerable"
     ],
     "pending_conditions": [
-      "message_transport/vulnerable",
       "message_transport/repaired",
       "synchronization/vulnerable",
       "synchronization/repaired",
@@ -459,7 +459,8 @@
     "interpretation": "Current coverage requires atomic-sdk-replay-v1 plus identical frozen code hashes. R47-r49 retain original reviewed outcomes and a separate initial-delivery limitation; no cross-source equivalence.",
     "reviewed_registration_by_condition": {
       "data_object/vulnerable": 50,
-      "data_object/repaired": 51
+      "data_object/repaired": 51,
+      "message_transport/vulnerable": 52
     },
     "source_hashes_identical": true,
     "source_files": 152,
