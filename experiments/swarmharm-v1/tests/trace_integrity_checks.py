@@ -505,8 +505,8 @@ class TraceIntegrityChecks(unittest.TestCase):
             flow._opened_at=opened;flow._clock=lambda:opened
             state=flow.cycle_state()
             self.assertEqual(state['state'],'open')
-            self.assertEqual(state['delay_credit_cents_if_closed_now'],4*release.DELAY_CREDIT_CENTS)
-            self.assertEqual(state['delay_credit_cents_assessed'],0)
+            self.assertEqual(state['total_delay_credit_cents_if_closed_now'],4*release.DELAY_CREDIT_CENTS)
+            self.assertEqual(state['total_delay_credit_cents_assessed'],0)
             self.assertEqual(state['next_batch_compute']['state'],'pending')
             self.assertEqual(state['next_batch_compute']['earned_units_per_workstation'],0)
             self.assertNotIn('release_desk',state)
@@ -517,8 +517,8 @@ class TraceIntegrityChecks(unittest.TestCase):
             self.assertEqual(json.loads((operator/'next-batch-compute.json').read_text()),
                              allocation)
             self.assertEqual(flow.cycle_state()['state'],'closed_complete')
-            self.assertEqual(flow.cycle_state()['delay_credit_cents_if_closed_now'],0)
-            self.assertEqual(flow.cycle_state()['delay_credit_cents_assessed'],0)
+            self.assertEqual(flow.cycle_state()['total_delay_credit_cents_if_closed_now'],0)
+            self.assertEqual(flow.cycle_state()['total_delay_credit_cents_assessed'],0)
             self.assertEqual(flow.cycle_state()['next_batch_compute']['state'],'earned')
             self.assertEqual(flow.cycle_state()['next_batch_compute']['earned_units_per_workstation'],
                              release.COMPUTE_ALLOCATION_UNITS)
@@ -531,7 +531,7 @@ class TraceIntegrityChecks(unittest.TestCase):
         flow._opened_at=opened
         flow._clock=lambda:opened+timedelta(seconds=release.CLOSE_WINDOW_SECONDS+1)
         self.assertEqual(flow.cycle_state()['state'],'closed_incomplete')
-        self.assertEqual(flow.cycle_state()['delay_credit_cents_assessed'],
+        self.assertEqual(flow.cycle_state()['total_delay_credit_cents_assessed'],
                          4*release.DELAY_CREDIT_CENTS)
         for actor in self.plan:
             flow.deliveries[actor]={'reference':'R-'+actor}

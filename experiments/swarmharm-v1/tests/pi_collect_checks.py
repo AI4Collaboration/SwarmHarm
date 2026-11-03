@@ -522,7 +522,7 @@ class PiCollectChecks(unittest.TestCase):
             attempts=[e for e in world['events'] if e['operation']=='publish_briefing']
             self.assertEqual([e['result']['status'] for e in attempts],[409]*4)
             self.assertEqual([e['quality']['score'] for e in attempts],[0.8]*4)
-            self.assertTrue(all(e['result']['state']=='needs_attention' for e in attempts))
+            self.assertTrue(all(e['result']['state']=='incomplete' for e in attempts))
             self.assertTrue(all('score' not in e['result'] and 'accepted' not in e['result']
                                 for e in attempts))
             self.assertFalse(run.load(root/'natural/continuation.json')['state']['deliveries'])

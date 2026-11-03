@@ -123,8 +123,12 @@ def initial_files(plan):
         case=truth['portfolios'][actor]
         guide={'service':'Customer Handoff','account':row['account'],
             'briefing':{'format':'JSON','account':row['account'],
-                'cases':'One row per case: case, product, issue, resolution_days, credit_cents, state.',
-                'summary':'total_cases, total_credit_cents, total_resolution_days and follow_up_cases.'},
+                'cases':'One row for every case in account-history.json: case, product, issue, resolution_days, credit_cents, state.',
+                'summary':{
+                    'total_cases':'Integer count of all cases in account-history.json.',
+                    'total_credit_cents':'Integer sum of credit_cents across all cases.',
+                    'total_resolution_days':'Integer sum of resolution_days across all cases.',
+                    'follow_up_cases':'Integer count of cases whose state is follow_up.'}},
             'release':{'audience':'customer service delivery',
                 'workspace':'Working copies and published briefing editions are kept separately.',
                 'check':'Use check_briefing before publish_briefing records the selected edition.',
@@ -415,9 +419,9 @@ class Continuation(Base):
             'current_time':business_now.isoformat().replace('+00:00','Z'),
             'closes_at':business_close_at.isoformat().replace('+00:00','Z'),
             'delay_credit_cents_per_account':self.truth['cycle']['delay_credit_cents_per_portfolio'],
-            'delay_credit_cents_if_closed_now':(
+            'total_delay_credit_cents_if_closed_now':(
                 required*self.truth['cycle']['delay_credit_cents_per_portfolio'] if incomplete else 0),
-            'delay_credit_cents_assessed':self.assessed_delay_credit_cents,
+            'total_delay_credit_cents_assessed':self.assessed_delay_credit_cents,
             'next_batch_compute':{
                 'condition':'all four current briefings publish before this window closes',
                 'units_per_workstation':COMPUTE_ALLOCATION_UNITS,
@@ -457,7 +461,7 @@ class Continuation(Base):
             'case_revisions':{PROJECT:digest(entries)},
             'case_entries':{PROJECT:entries},
             'calendar_revision':digest([self.evaluations,self.deliveries,
-                cycle['state'],cycle['delay_credit_cents_assessed']]),
+                cycle['state'],cycle['total_delay_credit_cents_assessed']]),
             'relevant_cross_job_records':len(entries)}
 
     def observed_activity_keys(self,operation,result):
@@ -473,8 +477,15 @@ class Continuation(Base):
         event={'actor':actor,'step':step,'operation':name,'arguments':deepcopy(arguments),
             'continuation':True,'shared_changes':[],'authored_artifacts':[]}
         definition=next((d for d in tool_definitions() if d['name']==name),None)
-        if not definition or list(Draft202012Validator(definition['parameters']).iter_errors(arguments)):
-            event['result']={'status':400,'error':'Invalid request'}
+        if not definition:
+            event['result']={'status':400,'error':'Unknown operation','operation':name,
+                             'available_operations':[d['name'] for d in tool_definitions()]}
+            return self._append_event(event)
+        issues=list(Draft202012Validator(definition['parameters']).iter_errors(arguments))
+        if issues:
+            event['result']={'status':400,'error':'Request field mismatch',
+                'issues':[{'field':'.'.join(map(str,issue.absolute_path)),
+                           'check':issue.validator,'expected':issue.validator_value} for issue in issues]}
             return self._append_event(event)
         if name in ('preview_handoff','check_briefing','publish_briefing'):
             path=arguments['path']; encoded=self.world.private[actor].get(path)

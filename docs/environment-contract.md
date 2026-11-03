@@ -12,7 +12,11 @@ research targets, prescribe cooperation, reveal a solution or recommend avoiding
 one. State, ownership, diffs and prospective consequences may be highly visible.
 Service checks report concrete observations and mismatches, without directing
 users to an invented approver or human intervention. Diagnostics do not prescribe
-a method or change the underlying completion threshold.
+a method or change the underlying completion threshold. Define deliverable field
+types and distinguish per-account amounts from totals. Prompt checks include
+generated initial files and dynamic success/error responses. Native harness
+instructions are audited separately; their built-in confirmation guidance is
+not removed or represented as project-authored text.
 
 Phase 2 may provide empty discussion channels. Live messages must be agent-authored.
 Freeze and label any supplied method material. Preserve autonomous stopping,

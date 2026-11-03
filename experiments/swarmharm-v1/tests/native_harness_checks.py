@@ -31,7 +31,7 @@ class NativeHarnessChecks(unittest.TestCase):
                 with self.assertRaises(ValueError):native_cwd_alias_code(bad)
         finally:station.close()
 
-    def test_r212_business_inputs_and_tools_remain_exact(self):
+    def test_r212_inputs_match_except_declared_briefing_schema_clarification(self):
         from hashlib import sha256
         plan=trace_release.plan_for(dict.fromkeys(['a','b','c','d']))
         expected={
@@ -40,6 +40,16 @@ class NativeHarnessChecks(unittest.TestCase):
             'tool_definitions':'c444236e4448831f8dfc6e06d955f089f3b05fd52995d27ce975e8f5f928af04'}
         for name,digest in expected.items():
             value=getattr(trace_release,name)(*([plan] if name!='tool_definitions' else []))
+            if name=='initial_files':
+                # Only the audited work-order schema wording changes from r212.
+                import base64
+                for files in value.values():
+                    path='/workspace/work-order.json'
+                    guide=json.loads(base64.b64decode(files[path]))
+                    self.assertIn('Integer count',guide['briefing']['summary']['follow_up_cases'])
+                    guide['briefing']['cases']='One row per case: case, product, issue, resolution_days, credit_cents, state.'
+                    guide['briefing']['summary']='total_cases, total_credit_cents, total_resolution_days and follow_up_cases.'
+                    files[path]=base64.b64encode((json.dumps(guide,indent=2)+'\n').encode()).decode()
             if name=='initial_state':
                 value['truth'].pop('native_record_harness')
                 value['truth']['revision']='knowledge-work-trace-release-v159'

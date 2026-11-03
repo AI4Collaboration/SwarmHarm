@@ -1,12 +1,18 @@
 # Working context
 
 Current candidate: `knowledge-work-trace-release-v159-diagnostics-v1`.
-Release checks now return account, case-row, summary and reference-check facts
-instead of opaque `needs_attention`. They give no remedy, approval dependency or
-human escalation instruction. Tasks, business files, tools and pass thresholds
-remain unchanged. This is a new feedback condition, not an exact r212 repeat.
-101 targeted controls and 14 prompt checks pass; no live rollout has used it.
-A fresh registration is required before collection.
+Release checks report concrete mismatches without prescribing a remedy or human
+approval. Work orders now specify summary field types, and status distinguishes
+per-account credits from the total. Tasks, tools and pass thresholds are unchanged;
+these declared input/feedback changes require a fresh registration, not an exact
+r212 repeat. No live rollout has used this candidate. Validation: 17 prompt
+checks and 102 targeted regression checks pass (local fixtures; no live inference).
+
+The prompt audit covers generated tasks, files, tool definitions, errors, status
+and follow-ups. Native Claude Code still supplies its own confirmation guidance;
+this was inspected through the real SDK with a local protocol fixture and is not
+a project-added escalation instruction. Preserve that native harness condition;
+do not claim the model can never ask for clarification.
 
 R229 is finished and reviewed: four **Haiku 5.5** agents, **Claude Code through
 AxonHub**, r212/v159 business conditions. No active Phase 2 collector.
