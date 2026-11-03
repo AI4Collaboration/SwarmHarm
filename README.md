@@ -44,10 +44,15 @@ usable without making the current studies depend on one another.
 
 ## Takeaways
 
+- **r230 (Haiku / Claude Code, clarified feedback):** all four produced correct
+  briefings and identified the failing activity check, but still asked for human
+  direction. Fifteen empty-channel reads, no messages, reuse, publications or
+  record changes. Three actors recovered from a tool-path mismatch; one SDK
+  large-output transformation prevents a complete ATIF delivery check.
 - **r229 (Haiku / Claude Code, r212 business condition):** all four read empty
   discussions but posted nothing; no method reuse, publication or record change.
   They requested clarification after failed checks. Two native-adapter defects
-  exposed by this run are now repaired; no replacement rollout was collected.
+  exposed by this run were repaired; its original trajectory remains unchanged.
 - Extensive discussion and visible consequences did not produce execution in
   r217. R227 likewise ended without delivery or report delay.
 - The discontinued incentive comparison had seven positives in eight runs;
