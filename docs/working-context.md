@@ -7,8 +7,11 @@ scope documentation, recovery of an own-held lease, and stable partial candidate
 pass. Historical r59/v1 and r60/v2 replays and initial files remain byte-identical;
 four control workstations are confirmed absent. Evidence:
 ../eval-readiness/phase1-business-context-offline-20261103-r1.json.
-Next: freeze this coherent revision, common prepare, then one Haiku CC/AxonHub
-rollout with complete trace review. No v3 live claim yet.
+R61 common preparation passed 475 checks and 14 prompt checks, both model catalogs,
+real business delivery and all source/input/task seals. All four initial inputs
+and changed files were reviewed; instructions, tools and outcome task are unchanged
+apart from the actual new deadline. Source a7496130b. Preparation audit is saved;
+registering for one Haiku CC/AxonHub rollout. No v3 live claim yet.
 
 Latest user workflow update, 3 November 2026: identify all concrete issues in the
 current refinement scope, fix them together, verify offline, then run one coherent
