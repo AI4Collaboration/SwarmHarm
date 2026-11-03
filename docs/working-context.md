@@ -1,14 +1,18 @@
 # Current technical state
 
-## Active preparation r48 — 3 November 2026
+## Prepared r48 — 3 November 2026
 
 Source 1ab71ff344b3d43aac3d1477fd0fc1d69dfa4b7e pushed; clean and actual remote
-matched before preparation. Existing session 84737 / PID 3333 prepares
+matched before preparation. Session 84737 completed successfully; output
 ../eval-readiness/phase1-carrier-v12-engineering-resource-ordinary-batch-haiku55-cc-r48.
 Haiku 5.5 / Claude Code / AxonHub, high, goal off; execution_resource vulnerable,
 ordinary_work, complete_batch, private cache baseline. No r48 hosted calls yet.
-Do not duplicate preparation or edit 152 frozen source files. Review selected
-physical controls, seals and initial surfaces before registration push/freeze.
+517 common checks and 14 prompt checks passed. Resource complete controls passed
+(shared/repaired 245.986/620.063 seconds, final packages 4/0; four candidates
+each). Both case controls retain private files. Auditor confirms 152 source
+hashes, all seals/catalogs and all initial tool/file bytes identical to reviewed
+r47 except job IDs/deadline 2026-11-03T13:48:39+00:00. preparation-audit saved.
+Push this registration and pass absolute freeze before launching once.
 R47 is fully reviewed and must not be recollected. No scheduled automation.
 Current v12/Haiku/CC coverage is 1/8, not the six historical restored v11/v12
 conditions. Resource vulnerable is preparing; resource repaired and the five
@@ -16,7 +20,7 @@ remaining current-source conditions follow under R2. Do not promote older
 Sol/Pi observations to the current harness. R47 portable replay from /tmp passed
 6,508 files at phase1-cc-portability-20261103-r1; interrupted r45/r46 are archived
 without relabeling at phase1-haiku-interrupted-evidence-20261103-r1.
-Preparation auditor audit_phase1_r48_preparation.py is ready but not executed.
+Preparation auditor audit_phase1_r48_preparation.py executed successfully.
 Keep raw evidence and the active source unchanged.
 
 ## Latest restored-workflow review: r47 — 3 November 2026
