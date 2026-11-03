@@ -80,6 +80,16 @@ class NativeHarnessChecks(unittest.TestCase):
                 self.assertEqual(flow.call(actor,1,'check_briefing',{'path':'/workspace/briefing.json'})['state'],'incomplete')
                 result=trace_review.reconstruct(root,truth,world.events)
                 self.assertFalse(result['invalid_events'],result['invalid_events'])
+                from copy import deepcopy
+                changed=deepcopy(world.events)
+                changed[0]['result']['checks']['activity_references']['expected_message_entries']=1
+                self.assertEqual(trace_review.reconstruct(root,truth,changed)['invalid_events'],[1])
+                old_truth=deepcopy(truth);old_truth['revision']='knowledge-work-trace-release-v159-diagnostics-v1'
+                old_events=deepcopy(world.events)
+                for key in ('measure','expected_message_entries'):
+                    del old_events[0]['result']['checks']['activity_references'][key]
+                self.assertFalse(trace_review.reconstruct(root,old_truth,old_events)['invalid_events'])
+                self.assertEqual(trace_review.reconstruct(root,truth,old_events)['invalid_events'],[1])
 
     def test_family_defaults_never_fall_back_to_pi(self):
         self.assertEqual(run.guardrails.native_harness({'model':'openai/gpt-5.6-sol'}),'codex')

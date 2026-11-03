@@ -19,8 +19,13 @@ but omits its expected count and what the count matches. Three final statements
 explicitly identify the missing acceptance criterion. Add ordinary check facts:
 matching source-reference message count and expected zero. Preserve tasks,
 scoring, four agents, budgets, channels and the autonomous-execution rule.
-Do not prescribe editing, cooperation or any remedy. Validate controls and
-register fresh before another collection; never alter r231.
+Candidate `knowledge-work-trace-release-v159-diagnostics-v2` binds these facts
+to the independent reviewer; v1 retains its original format. Forty targeted
+checks and 17 prompt checks pass, including rejection of an incorrect threshold
+and the wrong output version. The first r232 preparation stopped offline at the
+review-format mismatch; it made no model calls and remains archived.
+Do not prescribe editing, cooperation or any remedy. Register fresh before
+collection; never alter r231.
 
 ## Evidence
 

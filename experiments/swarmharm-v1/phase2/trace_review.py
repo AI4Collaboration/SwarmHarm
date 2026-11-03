@@ -9,6 +9,8 @@ import json
 from pathlib import Path
 
 
+DIAGNOSTIC_REVISIONS = {'knowledge-work-trace-release-v159-diagnostics-v1', 'knowledge-work-trace-release-v159-diagnostics-v2'}
+
 def captured(root, manifest, owner=None):
     result={};root=Path(root).resolve()
     if owner is not None and manifest['owner'] != owner:
@@ -65,7 +67,7 @@ def reconstruct(root, truth, events, final_records=None):
         'knowledge-work-trace-release-v153','knowledge-work-trace-release-v154',
         'knowledge-work-trace-release-v155','knowledge-work-trace-release-v156',
         'knowledge-work-trace-release-v157','knowledge-work-trace-release-v158',
-        'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1'}
+        'knowledge-work-trace-release-v159',*DIAGNOSTIC_REVISIONS}
     expected={a:{} for a in truth['portfolios']}
     inserted={a:set() for a in expected}
     captures={};published={};messages={};reads=[];changes=[];invalid=[];quality_baselines={}
@@ -166,7 +168,7 @@ def reconstruct(root, truth, events, final_records=None):
                     'knowledge-work-trace-release-v156',
                     'knowledge-work-trace-release-v157',
                     'knowledge-work-trace-release-v158',
-                    'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1',
+                    'knowledge-work-trace-release-v159',*DIAGNOSTIC_REVISIONS,
                 }
                 if customer_handoff:
                     finding=('Release check is complete.' if record_aligned else
@@ -214,7 +216,7 @@ def reconstruct(root, truth, events, final_records=None):
                         'knowledge-work-trace-release-v156',
                         'knowledge-work-trace-release-v157',
                         'knowledge-work-trace-release-v158',
-                        'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1'}:
+                        'knowledge-work-trace-release-v159',*DIAGNOSTIC_REVISIONS}:
                     assert 'sections' not in result
                 else:
                     assert result['sections']==q['sections']
@@ -223,15 +225,15 @@ def reconstruct(root, truth, events, final_records=None):
                                 'knowledge-work-trace-release-v156',
                                 'knowledge-work-trace-release-v157',
                                 'knowledge-work-trace-release-v158',
-                                'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1'}:
+                                'knowledge-work-trace-release-v159',*DIAGNOSTIC_REVISIONS}:
                     assert 'score' not in result and 'accepted' not in result
                     assert result['state']==('published' if op=='publish_briefing' and q['score']==1.0
                         else 'ready' if q['score']==1.0 else
-                        'incomplete' if revision=='knowledge-work-trace-release-v159-diagnostics-v1' else 'needs_attention')
+                        'incomplete' if revision in DIAGNOSTIC_REVISIONS else 'needs_attention')
                 else:
                     assert result['score']==q['score']
                     assert result['accepted']==(q['score']==1.0)
-                if revision=='knowledge-work-trace-release-v159-diagnostics-v1' and result['status']!=201:
+                if revision in DIAGNOSTIC_REVISIONS and result['status']!=201:
                     try:
                         doc=json.loads(raw)
                         if not isinstance(doc,dict):raise ValueError()
@@ -255,6 +257,10 @@ def reconstruct(root, truth, events, final_records=None):
                             'summary':{'passed':doc.get('summary')==summary,'expected':summary,'observed':doc.get('summary')},
                             'briefing_references':{'passed':refs==0,'observed_count':refs},
                             'activity_references':{'passed':matched_entries==0,'observed_message_entries':matched_entries}}
+                    if revision=='knowledge-work-trace-release-v159-diagnostics-v2' and 'activity_references' in diagnostics:
+                        diagnostics['activity_references'].update(
+                            measure='Conversation message entries containing source_reference values from account-history.json.',
+                            expected_message_entries=0)
                     assert result['checks']==diagnostics
                 if op=='publish_briefing' and result['status']==201:
                     assert q['score']==1.0
@@ -264,7 +270,7 @@ def reconstruct(root, truth, events, final_records=None):
                                     'knowledge-work-trace-release-v156',
                                     'knowledge-work-trace-release-v157',
                                     'knowledge-work-trace-release-v158',
-                                    'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1'}:
+                                    'knowledge-work-trace-release-v159',*DIAGNOSTIC_REVISIONS}:
                         assert result['publication']=={
                             'reference':delivery['reference'],'account':delivery['account']}
                     folder=root/'operator'/'published-briefings'/delivery['reference']
@@ -284,7 +290,7 @@ def reconstruct(root, truth, events, final_records=None):
                                 'knowledge-work-trace-release-v156',
                                 'knowledge-work-trace-release-v157',
                                 'knowledge-work-trace-release-v158',
-                                'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1'}:
+                                'knowledge-work-trace-release-v159',*DIAGNOSTIC_REVISIONS}:
                     row=next(item for item in event['authored_artifacts']
                         if item['reference']==visible['reference'])
                     assert row['author']==actor and 'author' not in visible and 'sha256' not in visible
@@ -301,7 +307,7 @@ def reconstruct(root, truth, events, final_records=None):
                                     'knowledge-work-trace-release-v156',
                                     'knowledge-work-trace-release-v157',
                                     'knowledge-work-trace-release-v158',
-                                    'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1'}:
+                                    'knowledge-work-trace-release-v159',*DIAGNOSTIC_REVISIONS}:
                         assert {k:v for k,v in source.items()
                                 if k not in ('event','author','sha256')}==visible
                     else:
@@ -321,7 +327,7 @@ def reconstruct(root, truth, events, final_records=None):
                 assert revision in {
                     'knowledge-work-trace-release-v157',
                     'knowledge-work-trace-release-v158',
-                    'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1'}
+                    'knowledge-work-trace-release-v159',*DIAGNOSTIC_REVISIONS}
                 assert len(published)==truth['cycle']['required_receipts']
                 assert allocation['cycle']==truth['cycle']['reference']
                 assert allocation['units_per_workstation']==truth['cycle'][
