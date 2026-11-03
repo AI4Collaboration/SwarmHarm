@@ -34,6 +34,13 @@ included operator-control worlds. A failure exits without changing the original
 evidence. `mapping.json` maps original absolute provenance paths to portable
 locations; original records are not rewritten.
 
+This offline verifier does not rerun a model or recreate historical process
+timing. It reconstructs the recorded processes and acceptance rules. Separate
+original independent audits also recompiled the delivered source. Repeating
+bytecode-digest checks requires the original pinned Python version because
+marshalled code is version-dependent; those hashes are not language-independent
+binary reproducibility claims.
+
 Each rollout retains its registration, prepared inputs, frozen code, native
 sessions and request/response records, world events, compiler-service snapshot,
 cleanup evidence, original collection manifest and sealed review sidecars.

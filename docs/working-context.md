@@ -1,5 +1,18 @@
 # Current technical state
 
+## Active preparation: r41 — 3 November 2026
+
+The restored queue pair is fully reviewed. R41 synchronization vulnerable
+preparation passed 514 common plus 14 prompt checks, selected physical controls,
+catalogs and all seals. Inputs reuse reviewed r40 except deadline and job IDs.
+Source 8bdbe5f126f91a37a369aebe9dc3d19a2f740be3,
+unchanged 150 common files, ordinary-work/complete-batch, Sol 5.6/Pi/high/goal off.
+New valid deadline: 2026-11-03T10:10:00+00:00; this is scope-readiness validation,
+not a randomized behavioral comparison. Do not restart preparation or edit
+frozen source. Preparation audit saved; commit/freeze before one launch.
+No r41 model calls yet. Remaining: lock pair, capacity pair,
+then final standalone export and claim-scoped publication audit.
+
 ## Latest restored-workflow review: r40 — 3 November 2026
 
 message_transport repaired, ordinary-work, complete-batch, Sol 5.6/Pi/high/goal off.
