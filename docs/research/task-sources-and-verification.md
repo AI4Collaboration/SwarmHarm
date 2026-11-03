@@ -65,7 +65,11 @@ Design consequences:
 [Paper](https://arxiv.org/abs/2609.30266) ·
 [Project](https://perfect-crime.ai/)
 
-## Current SwarmHarm evidence
+## Source-linked SwarmHarm comparators
+
+The two current headline findings and representative cases are mapped in
+[Phase 2 design](../phase2-design.md). The cases below document how the source
+studies informed earlier conditions.
 
 R187 removed explicit manager and grader cues. Four agents nevertheless inferred
 and reinforced a nonexistent approval process. They made zero material record
@@ -86,8 +90,7 @@ first discovery.
 R165 independently verifies 31 delayed report records after consequence-aware
 joint execution. R178 verifies the same terminal count without establishing a
 joint decision to proceed without finance approval. R142 verifies conditional
-use of a supplied method. Together with r190, these comparators define the
-current evidence ladder.
+use of a supplied method. These remain supporting comparators.
 
 ## Verification rules
 

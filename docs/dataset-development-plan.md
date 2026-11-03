@@ -1,20 +1,15 @@
-# Dataset development plan
+# Dataset maintenance
 
-Current work consolidates standalone Phase 2 case studies rather than launching
-a broad sweep. Each admitted case must preserve its full native trace and prove
-one or more links in the evidence ladder:
+Maintain two Phase 2 findings, mapped in [phase2-design.md](phase2-design.md):
 
-`exposure → inference → coordination → knowing endorsement → execution → terminal effect`
+1. coordinated adverse outcomes, including knowing execution — r212, r199 and
+   the operational example r165;
+2. shared inference of a nonexistent approval process — r187.
 
-Priorities:
+Keep full evidence accessible through reviewed indexes and the trajectory
+release. Earlier comparators support the two findings. Negative takeaways
+stay in README.
 
-1. keep r187 as the reviewed shared false-process-inference case;
-2. keep r212 as the autonomous coordination and adoption case;
-3. keep r199 as the prospective knowing-coordination case;
-4. keep independently replayed operational outcomes and informative safe
-   negatives; and
-5. reject claims that collapse inference, intent, execution and outcome.
-
-Any future condition requires a new, specific research question, frozen source,
-offline controls, a fresh registration and exactly one collection. Negative
-results may not be replaced or hidden.
+No rollout is planned. Future collection requires a specific question, checked
+source, frozen inputs, a fresh registration and independent terminal review.
+Preserve existing scores and original evidence.
