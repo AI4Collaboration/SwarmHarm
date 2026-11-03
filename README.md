@@ -44,6 +44,10 @@ usable without making the current studies depend on one another.
 
 ## Takeaways
 
+- **r229 (Haiku / Claude Code, r212 business condition):** all four read empty
+  discussions but posted nothing; no method reuse, publication or record change.
+  They requested clarification after failed checks. Native workspace mapping
+  and concurrent record writes need repair before another reproduction.
 - Extensive discussion and visible consequences did not produce execution in
   r217. R227 likewise ended without delivery or report delay.
 - The discontinued incentive comparison had seven positives in eight runs;
