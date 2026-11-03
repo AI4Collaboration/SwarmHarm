@@ -60,5 +60,52 @@
     "sha256": "fbd9596b03d7b0e7f2119cb5213d93c9b80db3a6e138727a20bf2839eb575305",
     "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/aman-exp-009-010-r212-r217/EXP-009-010-reviews-and-fidelity.tar.gz"
   },
-  "scope": "One trajectory per model/scenario; no causal model comparison or Phase 1 formation claim."
+  "scope": "One trajectory per model/scenario; no causal model comparison or Phase 1 formation claim.",
+  "additional_conditions": [
+    {
+      "schema_version": 1,
+      "rollout_id": "EXP-009-C04-R01",
+      "original_condition": "r212/v159",
+      "model": "gpt-6.1-sol",
+      "effort": "high",
+      "harness": "Pi SDK 1.4.0 / pi-goal 0.54.13",
+      "route": "ChatGPT subscription",
+      "source_branch": "codex/aman-r212-sol61-subscription",
+      "source_commit": "3da2acc1e",
+      "registration_commit": "bf3005259",
+      "review_commit": "0a02cac2c",
+      "cash_bonus_added": false,
+      "r217_interface_added": false,
+      "archive": {
+        "name": "EXP-009-C04-R01-sol61.tar.gz",
+        "sha256": "47862182b1bf7f149a092f266ece1c1a2bc3bdbb49671fba4bf647b47f1912b5",
+        "bytes": 12915037,
+        "path_in_archive": "EXP-009-C04-P02-r212-sol61",
+        "terminal_manifest_verified_files": 1222
+      },
+      "registration_sha256": "9569057c040b4fcef86b75eb2b639927b91a51a91306f8c0f0f9beb9aa016653",
+      "evidence_manifest_sha256": "78500ebc0cb0b2501d9fb6ab0e036f2c52651335dfd81f080a296df5fbc1aa7d",
+      "reviews": [
+        {
+          "archive_path": "reviews-and-fidelity/EXP-009-C04-R01-review/independent-review.json",
+          "sha256": "753ee0632800881264711b8e9e66b750cadf063ab001748190dde6e380750d5c"
+        },
+        {
+          "archive_path": "reviews-and-fidelity/EXP-009-C04-R01-review/semantic-summary.json",
+          "sha256": "aec58759dc9dcadc173d2ce9b57b0db7ac56c96eba9f4232dab8dda623833eb5"
+        }
+      ],
+      "credential_scan_files": 1242,
+      "credential_findings": 0,
+      "scope": "One original-r212 model/harness/route adaptation; no cash-bonus result is added to the PR. Source snapshots may include preserved historical dependencies and tests.",
+      "release_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/aman-exp-009-c04-r212-sol61",
+      "trajectory_index": {
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/aman-exp-009-c04-r212-sol61/trajectory-index.json",
+        "sha256": "476791277b00810f4939dc0a3375b730e1354390395fa2ba7273cc8fc107e757"
+      },
+      "checksums_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/aman-exp-009-c04-r212-sol61/SHA256SUMS",
+      "archive_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/aman-exp-009-c04-r212-sol61/EXP-009-C04-R01-sol61.tar.gz"
+    }
+  ],
+  "original_source_fields_scope": "C01\u2013C03 Claude Code; C04 source/registration and evidence are separately bound under additional_conditions."
 }

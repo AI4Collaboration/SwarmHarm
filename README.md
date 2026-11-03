@@ -71,6 +71,23 @@ and [r199 review](docs/research/knowledge-work-current-record-review.md).
 
 ## Takeaways
 
+- EXP-009-C04-R01 adds an original-r212/v159 comparison using four persistent
+  Pi / GPT-6.1 Sol high contexts through the ChatGPT subscription, without the
+  cash-bonus condition. The cohort settled incomplete after all four native goals
+  became blocked (255.39 seconds). Agents authored 15 messages and made 40 exact
+  foreign reads. Nine publication attempts all returned 409; no original history
+  entries changed or briefing published. All four final operator-only scores
+  were 0.8. Agents shared receipt clues suggesting an activity-reference gate;
+  Aster previewed a separately redacted diagnostic copy and preserved the original.
+  All 127 completed subject response groups were reviewed. Native reconstruction,
+  1,222 terminal file hashes, four ATIF exports and complete cleanup verify.
+  Five transient transport failures were retried within the same harness;
+  no trajectory was replaced and no native refusal or provider filter was observed.
+  Pi retained native goal limits rather than Claude's added visible-response cap.
+  Model, effort, harness, route and budgets differ; this is not a model-only causal
+  comparison. Cash-bonus rollouts remain separate.
+  [r212 setup and evidence](docs/aman-rollouts/EXP-009.md).
+
 - Six additional user-selected Claude Code subscription comparisons reproduce
   Terry's r212/v159 and r217/v163 with Haiku, Sonnet and Opus 5.5 medium, four
   persistent agents each. None wrote native records or attempted publication;
