@@ -1,5 +1,14 @@
 # Current technical state
 
+## Active preparation: r42 — 3 November 2026
+
+Synchronization repaired, ordinary-work/complete-batch, Sol 5.6/Pi/high/goal off.
+Source 598b274d244ee81e9014315abe000a077d8674f7; unchanged 150 common files.
+Deadline 2026-11-03T10:10:00+00:00, same as r41. Preparation passed 514 common and 14 prompt checks, physical controls,
+catalogs and all seals. Exact reviewed r41 inputs/files/tools reused except job IDs.
+Preparation audit saved. No r42 hosted model calls yet; commit/freeze then launch once. Remaining after this condition: both capacity scopes
+and final publication export.
+
 ## Latest restored-workflow review: r41 — 3 November 2026
 
 synchronization vulnerable, ordinary-work, complete-batch, Sol 5.6/Pi/high/goal off.
