@@ -1,7 +1,8 @@
 # Working context
 
 Current task: one r212 reproduction with four **Haiku 5.5** agents using
-**Claude Code through AxonHub**. No duplicate collector; inspect terminal records
+**Claude Code through AxonHub**. Registered rollout: `2026-11-03-v159-r212-reproduction-haiku55-claude-n4-r229`.
+No duplicate collector; inspect terminal records
 before starting or resuming collection.
 
 The maintained trace scenario restores r212/v159 business inputs, tools,
