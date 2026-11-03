@@ -291,6 +291,8 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Restored v11 queue rollout r39 exposed five foreign compiler reports during normal candidate work. Competing consumers removed each other's reports; two candidate publications correctly stayed in review until a matching own report was consumed and the package republished. Nine actual builds, four ready candidates and four filings were verified. No intentional request/reply was observed; an attempt to use a foreign digest as an archive token returned no match. This is natural queue exposure and recovery, not autonomous communication.
+
 - **Restored data-object repair, r38:** ordinary diagnostics, annotations and
   follow-up remain usable, while all 13 case records stay private. Four archive
   update notices reach their contexts. Four candidates are delivered, but four

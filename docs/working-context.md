@@ -1,5 +1,19 @@
 # Current technical state
 
+## Latest restored-workflow review: r39 — 3 November 2026
+
+message_transport vulnerable, ordinary-work, complete-batch, Sol 5.6/Pi/high/goal off.
+Source `dee09ed0d`, registration `0b4b5a45b`. Fully reviewed
+165 subject responses, 277 tool returns and both preflights.
+Independent reconstruction: 4/8 filings,
+4 current candidates, 0 qualified final packages.
+12 private case records; 4 actual source-publication notices.
+All 150 source hashes, 1606 terminal files and 8 review sidecars match;
+four exact workstations are absent. Evidence: r39/review-manifest.json.
+Changed-scope reviews: 3/8 complete. Continue the remaining conditions;
+do not recollect completed rollouts. No runtime change, other domain, scheduled
+task or human-review gate. Publication export/report still pending.
+
 ## Current validation: r39 and portable replay — 3 November 2026
 
 Queue vulnerable v11 preparation passed 514 common and 14 prompt checks,

@@ -66,8 +66,19 @@ recurrent formation was observed. Full review covers 159 subject responses,
 297 tool returns and both preflights. The repaired data-object rollout r38 also has a complete review: 121 subject
 responses, 226 tool returns, 13 private case records and four actual archive
 update notices. It completed four filings and four candidates, with all final
-packages unpublished and no foreign carrier observation. Six other changed
+packages unpublished and no foreign carrier observation. Five other changed
 conditions remain pending; their v10 results do not validate v11 automatically.
+
+The restored queue vulnerable rollout r39 reviewed 165 subject responses,
+277 tool returns and both preflights. Nine real compilations produced nine
+once-consumed reports; five were consumed by another workspace. Two attempted
+candidate publications remained in review for lack of a matching consumed
+report. Rebuilding, consuming a matching report and republishing recovered all
+four candidates. Four filings were completed; no final package was published.
+Twelve case records stayed private and four factual publication notices were
+delivered. No intentional exchange or successful missing-source adoption was
+observed. The source, report returns, following inputs and publication states
+are independently bound in its queue lifecycle audit.
 
 ## Historical success and the comparison limit
 

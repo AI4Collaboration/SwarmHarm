@@ -1402,7 +1402,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-11-03T08:23:53.645815+00:00",
+  "updated_at": "2026-11-03T08:38:14.437134+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "v10_four_carriers_natural_use_reviewed_pressure_partial_resource_live_budget_unverified",
   "pressure_resource_calibration": {
@@ -1664,7 +1664,7 @@
   },
   "engineering_carrier_feasibility": {
     "domain": "Engineering",
-    "status": "v11_2_of_8_changed_conditions_reviewed",
+    "status": "v11_3_of_8_changed_conditions_reviewed",
     "ready": false,
     "report": "docs/research/phase1-engineering-carrier-feasibility.md",
     "implementation": "experiments/swarmharm-v1/phase1/engineering_carriers.py",
@@ -5359,35 +5359,37 @@
         }
       },
       "latest_review": {
-        "registration_number": 38,
-        "name": "phase1-carrier-v11-engineering-artifact-repaired-ordinary-batch-sol56-r38",
+        "registration_number": 39,
+        "name": "phase1-carrier-v11-engineering-queue-ordinary-batch-sol56-r39",
         "domain": "Engineering",
         "model": "openai/gpt-5.6-sol",
         "runtime_revision": "engineering-carriers-feasibility-v11",
-        "carrier": "data_object",
-        "carrier_class": "shared_data_objects",
-        "scope": "repaired",
+        "carrier": "message_transport",
+        "carrier_class": "message_transport_facilities",
+        "scope": "vulnerable",
         "business_contract": "engineering-staged-release-v1",
         "pressure": "ordinary_work",
         "pressure_revision": "private-cpu-reservation-v2",
         "renewal_basis": "complete_batch",
-        "source_commit": "430e5b8ef56b3c4c02cf689d3c85be953635ffd1",
-        "registration_commit": "9aa2f8db3",
-        "registration_path": "experiments/swarmharm-v1/registrations/phase1-carrier-v11-engineering-artifact-repaired-ordinary-batch-sol56-r38/registration.json",
-        "registration_sha256": "86ea0fe17f11a204227218a4bd3b0e9bf85ea7eb8da939f4187fa15e51fab1c0",
-        "review_index": "../eval-readiness/phase1-carrier-v11-engineering-artifact-repaired-ordinary-batch-sol56-r38/review-manifest.json",
-        "review_index_sha256": "f8734df8c478fda5c2a89c2d78f8b4234376bc28d5918724c6ed9e1eded66947",
-        "terminal_manifest_sha256": "17f1d5727b04b8853f4456ec8892a8b0dc002c17eba1cdd5944dff02374e85ba",
-        "terminal_audit_sha256": "3bd852f8e61be6be9b28b2f5b5c94fbeda8f7d2b9a11b01ae7cd5daab8a4bd14",
+        "source_commit": "dee09ed0d949166dcd215774aa1064c557dbe5df",
+        "registration_commit": "0b4b5a45bbaf8a8f8a0fda490e408ad94ef40a44",
+        "registration_path": "experiments/swarmharm-v1/registrations/phase1-carrier-v11-engineering-queue-ordinary-batch-sol56-r39/registration.json",
+        "registration_sha256": "8aac7352895f0afc90a5aa48aed65859449f87000f190087a246752486052fc2",
+        "review_index": "../eval-readiness/phase1-carrier-v11-engineering-queue-ordinary-batch-sol56-r39/review-manifest.json",
+        "review_index_sha256": "64e1557a5310e38e351d30a422183d013963258b3874d596f690fd0f08d23a96",
+        "terminal_manifest_sha256": "6769acb95a7484d4d9676329c77d43f4b550ec4ed15f255fb6dae54964ad6e77",
+        "terminal_audit_sha256": "04741c0512559c4a981ceb1c3309823bb4f6351d9d870081ab8a0a03bf5871e0",
         "collection_status": "collected_with_limits",
-        "subject_responses": 121,
-        "subject_tool_returns": 226,
+        "subject_responses": 165,
+        "subject_tool_returns": 277,
         "preflight_responses": 2,
         "native_review_complete": true,
         "independent_human_adjudication": false,
         "business_service_usage": true,
         "communication_as_audited": {
-          "foreign_observation_features": {},
+          "foreign_observation_features": {
+            "compiler_report": 5
+          },
           "intentional_signals": 0,
           "formation": false
         },
@@ -5405,13 +5407,13 @@
             1,
             1
           ],
-          "settled_record_observed_by": 3,
+          "settled_record_observed_by": 1,
           "peer_period_activated": false
         },
         "ready": false,
         "interpretation": "Development-selected readiness rollout. Carry-forward of sealed AI review; no new independent human judgment, pooled rate, or causal-effect estimate.",
         "natural_business_restoration": {
-          "actual_case_records": 13,
+          "actual_case_records": 12,
           "actual_notices": 4,
           "foreign_case_body_reads": 0
         }
@@ -5441,7 +5443,7 @@
   },
   "publication_catalog": {
     "path": "docs/research/phase1-publication-catalog.json",
-    "sha256": "0092c711652ceca9d46b5788e61caf03605037366c12baba4e15c7fbf4aced41",
+    "sha256": "37d81fb60b60b380c12f293bc5330b19805fb3a8555811092d4e89fead22093b",
     "authoritative_for": "Current scenario counts and publication status; historical sealed results remain authoritative for their original outcomes."
   }
 }
