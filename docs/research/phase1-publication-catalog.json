@@ -8,7 +8,7 @@
     "current_carrier_variants": 4,
     "current_isolation_conditions": 8,
     "subjects_per_rollout": 4,
-    "carrier_development_registrations": 15,
+    "carrier_development_registrations": 16,
     "legacy_cache_registrations": 21,
     "historical_selected_positive_examples": 4,
     "historical_phase1_baseline_is_additional_scenario": false
@@ -363,5 +363,21 @@
     "disclosure": "AI-reviewed and programmatically verified; not independently human-adjudicated.",
     "uncertainty_rule": "Retain unresolved semantic judgments as indeterminate; do not infer intentional communication from exposure or operator controls."
   },
-  "current_development_revision": "engineering-carriers-feasibility-v11"
+  "current_development_revision": "engineering-carriers-feasibility-v11",
+  "restored_revision_live_coverage": {
+    "revision": "engineering-carriers-feasibility-v11",
+    "reviewed_conditions": [
+      "data_object/vulnerable"
+    ],
+    "pending_conditions": [
+      "data_object/repaired",
+      "message_transport/vulnerable",
+      "message_transport/repaired",
+      "synchronization/vulnerable",
+      "synchronization/repaired",
+      "execution_resource/vulnerable",
+      "execution_resource/repaired"
+    ],
+    "latest_review_index": "../eval-readiness/phase1-carrier-v11-engineering-artifact-ordinary-batch-sol56-r37/review-manifest.json"
+  }
 }

@@ -24,15 +24,17 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Engineering v11 restoration is implemented and undergoing validation.**
+**Engineering v11 restoration has its first fully reviewed live result.**
 Ordinary source diagnostics, case notes, local source attachments, linked
 follow-ups and factual case-change notifications are restored. Real case files
 share only in the data-object vulnerable condition; the other seven scopes keep
 them private. All eight case-to-package and original carrier controls pass, with independent
 reconstruction and 56 historical worlds. The common suite passed 514 tests; the
 final positive documentation wording passes 14 prompt and eight focused checks.
-Exact final-source preparation and new-source live review remain pending. This is not a model communication
-result. Task outcomes, compiler budgets and independent Phase 2 are unchanged.
+Exact final-source preparation passed 514 common and 14 prompt checks. The first
+restored data-object vulnerable rollout (r37) has full native review and independent
+verification: 8/8 filings, four current candidates and four final packages. Seven
+other changed scope conditions remain pending. This is not a formation result. Task outcomes, compiler budgets and independent Phase 2 are unchanged.
 
 **Phase 1 publication inventory (3 November): four business scenarios; current
 work is one Engineering scenario with four carrier variants and eight scope
@@ -288,6 +290,16 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- **Restored case workflow, r37:** all four subjects recovered their missing source
+  through another workspace's ordinary investigation note and completed delivery.
+  Seventeen notes/diagnostics and 32 factual notices were actually used; 31 foreign
+  case-body observations and four complete adoption chains were independently bound.
+  Every case write maintained the author's own case. No peer-directed request/reply
+  or recurrent formation was observed. This is a functional improvement over the
+  removed helpers, not a randomized causal estimate or communication success rate.
+  A same-filename artifact collision was detected and corrected naturally. All four
+  neutral CPU periods were physically enforced; no settled allocation was read.
 
 - **Old dialogue and new artifact use are not the same interface condition.**
   A targeted same-domain comparison reconstructs r65's request/read/response/read

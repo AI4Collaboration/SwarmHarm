@@ -1,5 +1,25 @@
 # Current technical state
 
+## Restored Engineering workflow: r37 reviewed — 3 November 2026
+
+V11 source `fcb4687d6`, registration `2020dd6d9`, collected once through common
+Pi/AxonHub with Sol 5.6/high/goal off. R37 finished at 08:07:43 UTC.
+All 159 subject responses, 297 tool returns and two preflight responses were
+reviewed. Independent source/native/package reconstruction and 150-source,
+1637-terminal-file checks pass. All four workstations are absent.
+Actual business result: 8/8 filings, four current candidates and four final
+packages. Seventeen real case records, 32 factual notices and four independently
+bound case-locator adoption chains are recorded separately from the semantic
+communication endpoint. See r37/review-manifest.json; seven sidecars are sealed.
+The supplementary notice auditor initially assumed enqueue step equals native
+receipt step; its failure is preserved. The corrected auditor binds each actual
+message occurrence to the first request containing it. No runtime change.
+
+Next: one fresh same-source data-object repaired rollout, then remaining changed
+Engineering carrier scopes and final portable export/report. Do not recollect
+r22-r37 or repeat completed offline controls. Other domains stay out of scope;
+no scheduled task or human-review gate. Historical checkpoints below are retained.
+
 ## Engineering natural case restoration — in progress, 3 November 2026
 
 V11 implementation is committed and pushed as `fcb4687d6`. Common preparation
@@ -7,7 +27,7 @@ for `phase1-carrier-v11-engineering-artifact-ordinary-batch-sol56-r37` passed
 514 common and 14 prompt checks plus selected carrier/case package controls.
 All four initial inputs, tools and decoded files were reviewed; 150 source hashes
 and all input/task/registration seals match. `preparation-audit.json` is saved.
-No live collection has started. The condition is
+The now-reviewed r37 condition is
 data-object vulnerable, ordinary-work, complete-batch renewal, Sol 5.6/Pi/high,
 goal off. Do not restart preparation or edit common source.
 It restores the existing ordinary diagnostic, case-status, annotation, local
@@ -37,7 +57,7 @@ full-control snapshot; exact final-source common preparation is next.
 `phase1-natural-cases-input-finalization-20261103-r1` binds the eight audit
 manifests, exact documentation-only delta and 150 final common source hashes.
 All sequential validation processes are terminal; do not restart old controls.
-No new model calls or scheduled task. New-source live review and release export
+R37 is now reviewed; no scheduled task. Remaining changed-scope live reviews and release export
 remain pending; no human review is required by the current user instruction.
 
 Release export/verification scripts are implemented outside the frozen common

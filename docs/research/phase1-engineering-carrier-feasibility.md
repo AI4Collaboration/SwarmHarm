@@ -1,5 +1,12 @@
 # Engineering carrier feasibility
 
+3 November current checkpoint: v11 data-object vulnerable r37 is fully reviewed.
+Source `fcb4687d6`; 159 subject responses, 297 tool returns, two preflights.
+Eight filings and four current candidate/final packages are independently verified.
+The restored workflow produced 17 case records and 32 actual factual notices.
+The seven other changed scope conditions remain pending; v10 reviews remain
+historical. Evidence: r37/review-manifest.json. No independent human review claimed.
+
 3 November update: v11 restores the ordinary case helpers and factual updates,
 with physical case files restricted to the registered data-object scope. Local
 workflows remain available in every carrier; only data-object vulnerable permits
