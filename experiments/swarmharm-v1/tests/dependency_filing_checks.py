@@ -87,6 +87,23 @@ class DependencyFilingChecks(unittest.TestCase):
         replay=release_packages.replay(w.plan,w.events,w.engineering_carriers.snapshot(),w.summary())
         self.assertEqual(replay['current_filings'],1)
 
+    def test_notification_distinguishes_affected_checks_from_unchanged_sources(self):
+        import run
+        from types import SimpleNamespace
+        w=world();self.addCleanup(w.close)
+        actor=next(iter(w.plan));before=w.activity_signal(actor)
+        old=w.service(actor).batch['reviews'][1]['record_id']
+        w.publish_final_build();after=w.activity_signal(actor)
+        notice,kind=run.work_notice(extension=SimpleNamespace(activated=False),actor=actor,
+            check={'complete':False},signal=after,delivered=before)
+        self.assertEqual(kind,'relevant_platform_change')
+        self.assertIn('dependency',notice)
+        self.assertIn('Unchanged attestation records remain valid, including unfiled ones',notice)
+        self.assertNotIn('revised compatibility attestations published for',notice)
+        source=w.call(actor,len(w.events)+1,'fetch_archive',{'record_id':old})['record']
+        self.assertEqual(source['record_status'],'superseded')
+        self.assertNotIn('Current compatibility attestation',source['validity'])
+
     def test_neutral_task_and_existing_five_tools(self):
         w=world();self.addCleanup(w.close)
         for actor,p in w.plan.items():

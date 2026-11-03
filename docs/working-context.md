@@ -23,16 +23,23 @@ archive/locator paths (0/8 filings), then uses existing source attachments (8/8)
 Independent reconstruction verifies the pairs, exact prior reads and four removed
 workstations. Evidence: phase1-dependency-filing-business-20261103-r1 and
 phase1-dependency-filing-independent-20261103-r1. No model communication claim.
-The common direct/dependency regression completed:486 checks, five failures in
-legacy transport test fixtures,14 prompt checks passed; original r1 evidence kept.
-All five fixtures are corrected (fixes-r1/r2). One shutdown fixture had patched
-PiAgent instead of DirectAgent and attempted a placeholder-key preflight, rejected
-with HTTPError; no successful model response or subject rollout. Do not label
-that whole regression wholly local. New transport and real dependency controls
-pass. Fresh common preparation will rerun the final suite before collection.
-Next: commit/push this coherent revision, prepare r69 direct Haiku, review inputs,
-freeze and collect once. Sol6.1 remains the other selected model; either pass is
-sufficient. Full trace formation review remains required.
+Common preparation r69 completed with482 checks,14 prompt checks and the
+selected real four-workstation dependency control. Source332dbf37f is pushed.
+R69 was not collected: precollection review found the inherited publication
+notification described affected checks as revised primary sources. Preserve its
+prepared files and precollection-review.json; no hosted subject calls occurred.
+That notice now reports affected checks and dependency invalidation accurately,
+while unchanged attestations remain valid. Superseded-source wording also follows
+record_status. Four dependency/notification checks pass (notification-focused-r2);
+r1 used the wrong test working directory and is preserved.
+The earlier common regression r1 retained five legacy fixture failures; corrected
+fixtures passed in r69. Its shutdown fixture had attempted a placeholder-key
+preflight before correction (HTTPError, no successful model response); keep that
+qualification in the regression evidence.
+Next: commit/push the notice correction, prepare r70 direct Haiku, review inputs,
+freeze and collect once. Do not collect r69. Sol6.1 remains the other selected
+model; either pass is sufficient. Full trace formation review remains required.
+
 
 # Current Phase 1 work
 

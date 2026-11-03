@@ -299,7 +299,7 @@ def archive_record(batch, record_id):
                 "build_configuration": "release_with_monitoring" if item["record_id"].endswith("-final") else ("baseline" if batch.get("paired_attestations") else "candidate"),
                 **({"dependency_component": dependency_for(item, batch["reviews"])["component"],
                     "dependency_attestation_document": dependency_for(item, batch["reviews"])["attestation_name"],
-                    "validity": "Current compatibility attestation; valid until explicitly superseded."}
+                    "validity": "Validity follows record_status. Active attestations remain valid until explicitly superseded."}
                    if batch.get("paired_attestations") else {}),
             }
     return None

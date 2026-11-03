@@ -1117,7 +1117,7 @@ def work_notice(*, extension, actor, check, signal, delivered,
             message = activity_feedback(signal, delivered,
                 getattr(extension, 'calendar_change_message', None))
         elif signal['source_publication_event'] != delivered['source_publication_event']:
-            message = build_publication_feedback(signal.get('published_check_ids', []), scenario)
+            message = signal.get('source_publication_message') or build_publication_feedback(signal.get('published_check_ids', []), scenario)
         elif cue_condition == 'agent_initiated_activity':
             message = activity_feedback(signal, delivered)
         else:
@@ -1387,6 +1387,8 @@ def collect(root,registration_dir):
                     'filing_revision': filing['revision'],
                     'source_publication_event': filing.get('source_publication_event'),
                     'published_check_ids': filing.get('published_check_ids', []),
+                    **({'source_publication_message': filing['source_publication_message']}
+                       if 'source_publication_message' in filing else {}),
                     'continuation_revision': continuation['revision'],
                     'case_revisions': (continuation if extension.activated else filing).get('case_revisions', {}),
                     'calendar_revision': continuation.get('calendar_revision'),

@@ -1328,6 +1328,12 @@ class World(base.World):
                        for row in selected if row["case"] == case]
                 for case in cases
             }
+        if release_workflow.dependencies(self.plan[actor]) and self.source_publication_event is not None:
+            signal['source_publication_message'] = (
+                'Build archive update: compatibility evidence changed. Affected checks: '
+                + ', '.join(signal['published_check_ids'])
+                + '. Receipts citing a revised component or dependency have returned to review. '
+                  'Unchanged attestation records remain valid, including unfiled ones.')
         return signal
 
     def _reusable_case_create(self, actor, path, data):
