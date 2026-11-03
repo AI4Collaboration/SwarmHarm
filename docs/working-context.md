@@ -29,7 +29,13 @@ only from completed stream items, retaining the unmodified terminal event.
 Seven targeted checks cover both paths and native goal continuation/ATIF.
 Fresh registrations r252 (Pi) and r253 (Codex) passed 492/480 offline checks
 respectively plus 17 prompt checks each. Their business tasks, tool definitions,
-instructions and initial files match byte-for-byte by account. Both started once from sealed, clean, pushed inputs and are collecting; actual native presets, goal lifecycle, transport
+instructions and initial files match byte-for-byte by account. Pi r252 is still collecting in the frozen `swarmharm-native-goal` worktree.
+Codex r253 stopped after 51 response groups: a 68,263-character workstation
+result became 47,939 characters in native history. This is native output
+truncation, not a behavioral negative. Development continues separately in
+`swarmharm-phase2-ready`; native tool-output retention now covers the existing
+workstation bound, and a real-CLI large-output/goal/ATIF fixture passes.
+Both started once from sealed, clean, pushed inputs; actual native presets, goal lifecycle, transport
 retries and output-token handling differ by harness.
 
 R248 stopped before inference on an obsolete Pi fixture assertion for removed

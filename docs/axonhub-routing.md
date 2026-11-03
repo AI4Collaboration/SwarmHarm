@@ -73,3 +73,9 @@ completion is checked separately. A blocked Codex goal currently stays blocked;
 Pi's registered changed-business-state resume remains a disclosed difference.
 Pi `goal_command` retains its pinned 25 automatic / three no-progress turn limits.
 The adapters' goal mechanisms are compared, not claimed identical.
+
+Codex freezes `tool_output_token_limit=262144` so its history can retain both
+64,000-byte workstation streams, JSON escaping and the MCP envelope. The
+workstation's own output bound is unchanged. Exact delivery is tested through
+the real CLI, including goal continuation and ATIF. See the official
+[configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).

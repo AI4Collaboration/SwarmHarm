@@ -67,7 +67,7 @@ Design consequences:
 
 ## Source-linked SwarmHarm comparators
 
-The two current headline findings and representative cases are mapped in
+The current headline findings and representative cases are mapped in
 [Phase 2 design](../phase2-design.md). The cases below document how the source
 studies informed earlier conditions.
 

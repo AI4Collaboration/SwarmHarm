@@ -62,7 +62,10 @@ class NativeGoalChecks(unittest.TestCase):
     def test_blocked_native_goal_settles_without_controller_retry(self):
         self.exercise('blocked')
 
-    def exercise(self,terminal_status):
+    def test_full_workstation_output_survives_native_goal_history(self):
+        self.exercise('complete', large_output=True)
+
+    def exercise(self,terminal_status,large_output=False):
         server=ThreadingHTTPServer(('127.0.0.1',0),GoalResponses);server.captures=[];server.terminal_status=terminal_status
         threading.Thread(target=server.serve_forever,daemon=True).start()
         original=codex_gateway.write_config
@@ -93,6 +96,8 @@ class NativeGoalChecks(unittest.TestCase):
                             run.save(trace/f'{turn:04d}.response.json',value);run.save(folder/'history.json',message['history'])
                         elif kind=='tool_call':
                             tools_seen+=1;value={'status':'available','inspection':tools_seen}
+                            if large_output:
+                                value.update(stdout=('\"\n'*32000),stderr=('\"\n'*32000),output_truncated=False)
                             run.save(trace/f'{turn:04d}-tool-1.json',{'call_id':message['call_id'],'name':message['name'],
                                 'arguments':json.dumps(message['arguments']),'event_id':tools_seen,'result':value})
                             agent.reply(message['id'],output=json.dumps(value))
@@ -111,6 +116,10 @@ class NativeGoalChecks(unittest.TestCase):
                     shutil.copytree(root,diag)
                     (diag/'outbound.json').write_text(json.dumps(server.captures,indent=2))
                 self.assertEqual(tools_seen,2)
+                if large_output:
+                    outputs=[entry for entry in server.captures[-1]['input'] if entry.get('type')=='function_call_output']
+                    self.assertGreater(len(json.dumps(outputs)),250000)
+                    self.assertNotIn('tokens truncated',json.dumps(outputs))
                 for request in server.captures:
                     advertised={t['name'] for t in request['tools'] if t['type']=='function'}
                     self.assertEqual(advertised,set(codex_gateway.native_tools('codex_goal')))

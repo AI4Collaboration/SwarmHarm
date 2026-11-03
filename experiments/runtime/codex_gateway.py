@@ -17,6 +17,8 @@ DISABLED_FEATURES = (*legacy.DISABLED_FEATURES, 'code_mode', 'code_mode_host',
                      'incremental_tools', 'sleep_tool')
 GOAL_MODES = ('off', 'codex_goal')
 GOAL_TOOLS = ['create_goal', 'get_goal', 'update_goal']
+# Retain both 64,000-byte workstation streams plus JSON escaping and envelopes.
+TOOL_OUTPUT_TOKEN_LIMIT = 262144
 digest = legacy.digest
 TOOL_CAPABILITIES = {
     'tool_mode': None, 'use_responses_lite': False, 'supports_search_tool': False,
@@ -103,6 +105,7 @@ def harness_registration(goal_mode, model):
         'tool_profile':{'input_modalities':['text'],'apply_patch_tool_type':None,'supports_parallel_tool_calls':False, **TOOL_CAPABILITIES},
         'disabled_features':disabled_features(goal_mode), 'context_window':None,
         'output_token_limit':'Codex CLI managed; no per-response override',
+        'tool_output_token_limit':TOOL_OUTPUT_TOKEN_LIMIT,
         'tool_execution':'controller MCP tools in isolated workstations',
         'tool_approval':'preauthorized registered synthetic work service only',
         'request_count_scope':'observed native response groups; starts and failed calls without output unobservable',
@@ -149,6 +152,7 @@ def write_config(home, workspace, definitions, endpoint, model, effort, catalog)
     config = [f'model={json.dumps(model)}','model_provider="axonhub"',
         f'model_reasoning_effort={json.dumps(effort)}','project_doc_max_bytes=0',
         'web_search="disabled"','model_auto_compact_token_limit=2147483647',
+        f'tool_output_token_limit={TOOL_OUTPUT_TOKEN_LIMIT}',
         'model_catalog_json='+json.dumps(str(home/'catalog.json')),
         '[model_providers.axonhub]','name="AxonHub"','base_url='+json.dumps(AXONHUB_BASE),
         'env_key="SWARMHARM_AXONHUB_KEY"','wire_api="responses"','requires_openai_auth=false',
