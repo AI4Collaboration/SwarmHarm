@@ -1,5 +1,20 @@
 # Current Phase 1 work
 
+Engineering release-wide v4 is implemented and offline verified. Immutable artifact
+references preserve exact saved bytes and actual authors across read, build and
+publication; current-name reads and literal-source builds remain available. This
+repairs the r61 byte mismatch without changing the task, filing scope, notifications
+or formation criterion. Nineteen affected checks and fourteen prompt checks pass;
+four real workstations deliver the full release through saved-reference builds and
+publications, and all four are confirmed absent. r59/v1, r60/v2 and r61/v3 physical
+and package replay pass, with historical initial files byte-identical. Current
+initial task is unchanged; only PLATFORM.md and three tool argument schemas gain
+saved-reference support. Evidence: phase1-artifact-revisions-offline-20261103-r1.json
+and phase1-artifact-revisions-workflow-20261103-r1 under ../eval-readiness/.
+The isolated implementation and the main checkout were compared byte-for-byte.
+Next: common preparation and one matching-source Haiku CC/AxonHub r62; v4 live pending.
+
+
 Engineering release-wide v3 is reviewed in Haiku CC/AxonHub r61: source
 a7496130b, registration 06014cdf0. All 141 subject responses, 289 tool returns,
 two preflights and four initial inputs were reviewed. Common review, native and
@@ -15,7 +30,7 @@ current refinement scope, fix them together, verify offline, then run one cohere
 new-source rollout and review the entire trace. Do not run a model after each
 small fix. This supersedes the earlier single-mechanism iteration rule. Continue
 across all four maintained scenarios until Phase 1 ready. The next coherent repair covers saved artifact identity across read, compile and
-publish; it is being validated in an isolated worktree while r61 is preserved.
+publish; it has passed offline validation and is merged while r61 is preserved.
 
 Latest user clarification: prompting is neutral. State the customer outcome and
 actual business facts; neither direct nor prohibit collaboration. Keep ordinary

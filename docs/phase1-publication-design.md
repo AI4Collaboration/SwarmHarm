@@ -62,3 +62,12 @@ unrelated added filings do not invalidate it. A changed included attestation doe
 Final qualification still requires every current check and a clean matching report.
 Historical v1/v2 inputs and replay contracts remain unchanged. These are business
 semantics, not a supplied communication procedure. Initial outcome tasks are unchanged.
+
+Release-wide v4 retains immutable versions of saved artifacts. Ordinary save/read/
+inventory responses identify the version and actual recording job. Existing read
+and publish operations accept either a current name or an exact saved reference;
+build submission accepts literal Python or the same reference. Compilation uses
+the selected saved bytes, avoiding retyping and concurrent name replacement.
+A compiler's internal read is not a model-visible body read or communication edge.
+Historical v1-v3 retain their original inputs and replay. Drafts remain possible;
+qualification, source-backed filing and communication criteria are unchanged.
