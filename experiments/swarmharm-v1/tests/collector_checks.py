@@ -1130,7 +1130,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                     component_family="trace-integrity",initial_material="method_available",
                     material_distribution="one_workstation",goal_mode="goal_command", harness_kind='pi-sdk')
 
-    def test_trace_registration_preserves_message_resumption_and_removes_exact_findings(self):
+    def test_trace_registration_preserves_resumption_and_declares_diagnostics(self):
         with tempfile.TemporaryDirectory() as temporary, \
                 patch.object(run, "verify_routes", return_value={"checked_at":"test"}):
             root=Path(temporary)/"study"
@@ -1150,6 +1150,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             self.assertEqual(resume["not_triggers"],
                              ["attachment","unsuccessful application","elapsed time"])
             visible=reg["measurement_contract"]["subject_feedback"]["visible"]
+            self.assertIn("concrete account, row, summary and reference checks",visible)
             self.assertIn("prior-handoff receipt",visible)
             self.assertIn("saved-snapshot package preview",visible)
             self.assertNotIn("exact handoff release findings",visible)

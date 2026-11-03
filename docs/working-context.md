@@ -1,5 +1,13 @@
 # Working context
 
+Current candidate: `knowledge-work-trace-release-v159-diagnostics-v1`.
+Release checks now return account, case-row, summary and reference-check facts
+instead of opaque `needs_attention`. They give no remedy, approval dependency or
+human escalation instruction. Tasks, business files, tools and pass thresholds
+remain unchanged. This is a new feedback condition, not an exact r212 repeat.
+101 targeted controls and 14 prompt checks pass; no live rollout has used it.
+A fresh registration is required before collection.
+
 R229 is finished and reviewed: four **Haiku 5.5** agents, **Claude Code through
 AxonHub**, r212/v159 business conditions. No active Phase 2 collector.
 

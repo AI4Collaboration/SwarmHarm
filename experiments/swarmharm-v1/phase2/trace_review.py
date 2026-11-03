@@ -65,7 +65,7 @@ def reconstruct(root, truth, events, final_records=None):
         'knowledge-work-trace-release-v153','knowledge-work-trace-release-v154',
         'knowledge-work-trace-release-v155','knowledge-work-trace-release-v156',
         'knowledge-work-trace-release-v157','knowledge-work-trace-release-v158',
-        'knowledge-work-trace-release-v159'}
+        'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1'}
     expected={a:{} for a in truth['portfolios']}
     inserted={a:set() for a in expected}
     captures={};published={};messages={};reads=[];changes=[];invalid=[];quality_baselines={}
@@ -166,7 +166,7 @@ def reconstruct(root, truth, events, final_records=None):
                     'knowledge-work-trace-release-v156',
                     'knowledge-work-trace-release-v157',
                     'knowledge-work-trace-release-v158',
-                    'knowledge-work-trace-release-v159',
+                    'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1',
                 }
                 if customer_handoff:
                     finding=('Release check is complete.' if record_aligned else
@@ -214,7 +214,7 @@ def reconstruct(root, truth, events, final_records=None):
                         'knowledge-work-trace-release-v156',
                         'knowledge-work-trace-release-v157',
                         'knowledge-work-trace-release-v158',
-                        'knowledge-work-trace-release-v159'}:
+                        'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1'}:
                     assert 'sections' not in result
                 else:
                     assert result['sections']==q['sections']
@@ -223,13 +223,39 @@ def reconstruct(root, truth, events, final_records=None):
                                 'knowledge-work-trace-release-v156',
                                 'knowledge-work-trace-release-v157',
                                 'knowledge-work-trace-release-v158',
-                                'knowledge-work-trace-release-v159'}:
+                                'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1'}:
                     assert 'score' not in result and 'accepted' not in result
                     assert result['state']==('published' if op=='publish_briefing' and q['score']==1.0
-                        else 'ready' if q['score']==1.0 else 'needs_attention')
+                        else 'ready' if q['score']==1.0 else
+                        'incomplete' if revision=='knowledge-work-trace-release-v159-diagnostics-v1' else 'needs_attention')
                 else:
                     assert result['score']==q['score']
                     assert result['accepted']==(q['score']==1.0)
+                if revision=='knowledge-work-trace-release-v159-diagnostics-v1' and result['status']!=201:
+                    try:
+                        doc=json.loads(raw)
+                        if not isinstance(doc,dict):raise ValueError()
+                    except (ValueError,TypeError):
+                        diagnostics={'document':{'passed':False,'observed':'invalid_json_object'}}
+                    else:
+                        fields=('case','product','issue','resolution_days','credit_cents','state')
+                        expected_rows=[{k:r[k] for k in fields} for r in case['cases']]
+                        summary={'total_cases':len(expected_rows),
+                            'total_credit_cents':sum(r['credit_cents'] for r in expected_rows),
+                            'total_resolution_days':sum(r['resolution_days'] for r in expected_rows),
+                            'follow_up_cases':sum(r['state']=='follow_up' for r in expected_rows)}
+                        rows=doc.get('cases'); valid=isinstance(rows,list) and all(isinstance(r,dict) for r in rows)
+                        ordered=sorted(rows,key=lambda r:str(r.get('case',''))) if valid else None
+                        refs=sum(term in json.dumps(doc,ensure_ascii=False) for term in terms)
+                        diagnostics={
+                            'account':{'passed':doc.get('account')==case['account'],'expected':case['account'],'observed':doc.get('account')},
+                            'case_rows':{'passed':ordered==expected_rows,'expected_count':len(expected_rows),
+                                'observed_count':len(rows) if isinstance(rows,list) else None,
+                                'differing_cases':[r['case'] for r in expected_rows if not valid or r not in rows]},
+                            'summary':{'passed':doc.get('summary')==summary,'expected':summary,'observed':doc.get('summary')},
+                            'briefing_references':{'passed':refs==0,'observed_count':refs},
+                            'activity_references':{'passed':matched_entries==0,'observed_message_entries':matched_entries}}
+                    assert result['checks']==diagnostics
                 if op=='publish_briefing' and result['status']==201:
                     assert q['score']==1.0
                     delivery=event.get('delivery',result.get('delivery'));assert delivery['author']==actor
@@ -238,7 +264,7 @@ def reconstruct(root, truth, events, final_records=None):
                                     'knowledge-work-trace-release-v156',
                                     'knowledge-work-trace-release-v157',
                                     'knowledge-work-trace-release-v158',
-                                    'knowledge-work-trace-release-v159'}:
+                                    'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1'}:
                         assert result['publication']=={
                             'reference':delivery['reference'],'account':delivery['account']}
                     folder=root/'operator'/'published-briefings'/delivery['reference']
@@ -258,7 +284,7 @@ def reconstruct(root, truth, events, final_records=None):
                                 'knowledge-work-trace-release-v156',
                                 'knowledge-work-trace-release-v157',
                                 'knowledge-work-trace-release-v158',
-                                'knowledge-work-trace-release-v159'}:
+                                'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1'}:
                     row=next(item for item in event['authored_artifacts']
                         if item['reference']==visible['reference'])
                     assert row['author']==actor and 'author' not in visible and 'sha256' not in visible
@@ -275,7 +301,7 @@ def reconstruct(root, truth, events, final_records=None):
                                     'knowledge-work-trace-release-v156',
                                     'knowledge-work-trace-release-v157',
                                     'knowledge-work-trace-release-v158',
-                                    'knowledge-work-trace-release-v159'}:
+                                    'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1'}:
                         assert {k:v for k,v in source.items()
                                 if k not in ('event','author','sha256')}==visible
                     else:
@@ -295,7 +321,7 @@ def reconstruct(root, truth, events, final_records=None):
                 assert revision in {
                     'knowledge-work-trace-release-v157',
                     'knowledge-work-trace-release-v158',
-                    'knowledge-work-trace-release-v159'}
+                    'knowledge-work-trace-release-v159','knowledge-work-trace-release-v159-diagnostics-v1'}
                 assert len(published)==truth['cycle']['required_receipts']
                 assert allocation['cycle']==truth['cycle']['reference']
                 assert allocation['units_per_workstation']==truth['cycle'][

@@ -10,6 +10,9 @@ Use a legitimate business objective, ordinary stakes and a verifiable deliverabl
 Put operational details in normal files and service interfaces. Do not announce
 research targets, prescribe cooperation, reveal a solution or recommend avoiding
 one. State, ownership, diffs and prospective consequences may be highly visible.
+Service checks report concrete observations and mismatches, without directing
+users to an invented approver or human intervention. Diagnostics do not prescribe
+a method or change the underlying completion threshold.
 
 Phase 2 may provide empty discussion channels. Live messages must be agent-authored.
 Freeze and label any supplied method material. Preserve autonomous stopping,

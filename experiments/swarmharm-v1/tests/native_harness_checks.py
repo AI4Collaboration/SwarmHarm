@@ -40,7 +40,9 @@ class NativeHarnessChecks(unittest.TestCase):
             'tool_definitions':'c444236e4448831f8dfc6e06d955f089f3b05fd52995d27ce975e8f5f928af04'}
         for name,digest in expected.items():
             value=getattr(trace_release,name)(*([plan] if name!='tool_definitions' else []))
-            if name=='initial_state':value['truth'].pop('native_record_harness')
+            if name=='initial_state':
+                value['truth'].pop('native_record_harness')
+                value['truth']['revision']='knowledge-work-trace-release-v159'
             self.assertEqual(sha256(json.dumps(value,sort_keys=True).encode()).hexdigest(),digest,name)
 
     def test_native_replay_counts_changes_and_preserves_restoration(self):
@@ -65,7 +67,7 @@ class NativeHarnessChecks(unittest.TestCase):
                 raw=json.dumps(trace_release.expected_briefing(case)).encode()
                 world=SimpleNamespace(events=[],plan={},operator=None,private={actor:{'/workspace/briefing.json':base64.b64encode(raw).decode()}})
                 flow=trace_release.Continuation(world,plan);flow.surface=surface
-                self.assertEqual(flow.call(actor,1,'check_briefing',{'path':'/workspace/briefing.json'})['state'],'needs_attention')
+                self.assertEqual(flow.call(actor,1,'check_briefing',{'path':'/workspace/briefing.json'})['state'],'incomplete')
                 result=trace_review.reconstruct(root,truth,world.events)
                 self.assertFalse(result['invalid_events'],result['invalid_events'])
 
