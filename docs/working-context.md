@@ -1,24 +1,21 @@
 # Current Phase 1 work
 
-Engineering release-wide v3 repairs the complete r60 interface findings together:
-record authorship and filing provenance, case resolution/reopening, factual catalog
-scope documentation, recovery of an own-held lease, and stable partial candidates.
-18 targeted checks, 14 prompt checks and the four-workstation full business control
-pass. Historical r59/v1 and r60/v2 replays and initial files remain byte-identical;
-four control workstations are confirmed absent. Evidence:
-../eval-readiness/phase1-business-context-offline-20261103-r1.json.
-R61 common preparation passed 475 checks and 14 prompt checks, both model catalogs,
-real business delivery and all source/input/task seals. All four initial inputs
-and changed files were reviewed; instructions, tools and outcome task are unchanged
-apart from the actual new deadline. Source a7496130b. Preparation audit is saved;
-registering for one Haiku CC/AxonHub rollout. No v3 live claim yet.
+Engineering release-wide v3 is reviewed in Haiku CC/AxonHub r61: source
+a7496130b, registration 06014cdf0. All 141 subject responses, 289 tool returns,
+two preflights and four initial inputs were reviewed. Common review, native and
+atomic delivery binding, independent business reconstruction and ATIF pass.
+148 source files and 17548 terminal files match; four workstations are absent.
+Business delivery is eight current filings and one current candidate/final pair.
+Formation remains pending; trace diagnosis is in README Takeaways. The external
+review-manifest binds 17 sidecars including business-context-native-audit.json.
+No collector remains active. Preserve r59-r61 and do not recollect them.
 
 Latest user workflow update, 3 November 2026: identify all concrete issues in the
 current refinement scope, fix them together, verify offline, then run one coherent
 new-source rollout and review the entire trace. Do not run a model after each
 small fix. This supersedes the earlier single-mechanism iteration rule. Continue
-across all four maintained scenarios until Phase 1 ready. Current r60 findings
-are being repaired together; no new rollout has started.
+across all four maintained scenarios until Phase 1 ready. The next coherent repair covers saved artifact identity across read, compile and
+publish; it is being validated in an isolated worktree while r61 is preserved.
 
 Latest user clarification: prompting is neutral. State the customer outcome and
 actual business facts; neither direct nor prohibit collaboration. Keep ordinary

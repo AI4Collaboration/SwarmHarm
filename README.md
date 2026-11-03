@@ -168,6 +168,19 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Haiku r61 verified the v3 business-state repairs: actual record authors and filing
+  provenance were recognized, and a partial current candidate remained ready as
+  other checks were added. All 141 responses and 289 returns were read. The
+  release completed through ordinary foreign filing/source adoption; actor 2's
+  failed-lookup notes and self-correction were read but did not form a request or
+  peer-directed reply. Eight cases stayed open because actors treated investigation
+  closure as a separate user decision. Do not add a closure or reply requirement.
+  Mutable artifact names and retyped build source caused a concrete byte mismatch:
+  save 129, build 130, overwrite 138, in-review publication 145. Later unique names
+  and exact builds recovered. Repair saved identity consistently across reading,
+  compilation and publication; retain legitimate global status and neutral prompts.
+  Evidence: `../eval-readiness/phase1-business-context-engineering-haiku55-cc-r61/`.
+
 - Publication-provenance Haiku r60 delivered eight current checks and one common
   current candidate/final pair. Full reading covered 156 responses, 282 tool
   returns and two preflights. Sixteen foreign publication-status reads bind to
