@@ -1,5 +1,22 @@
 # Current technical state
 
+## Haiku comparison authorized — 3 November 2026
+
+User explicitly requested Haiku, preferring Claude giftcard then OpenRouter.
+Use `anthropic/claude-haiku-5.5` (giftcard native ID `claude-haiku-5-5`),
+Pi/AxonHub/high/goal off, Engineering v12 `data_object` vulnerable,
+ordinary_work, complete_batch. Model identity stays fixed across fallback.
+Giftcard channel health requests passed for Haiku 5.5 (#210236), Sonnet 5.5
+(#210228) and Opus 5.5 (#210237); they are connectivity checks, not Phase 1
+rollouts or Pi tools/reasoning validation. No downgrade to 4.5.
+
+Sol r44 preparation completed: 518 common checks + 14 prompt checks, selected
+physical carrier/package controls, both catalogs and all 150 source/input/task/
+registration hashes passed. Four complete initial surfaces were reviewed and
+`preparation-audit.json` saved. Preserve this preparation without collecting it
+while prioritizing the separate Haiku r45 registration. No r44 or Haiku Phase 1
+collection has started. Frozen runtime source is 79c51ebda; no runtime edits.
+
 ## Offline repair completed; minimum live validation authorized — 3 November 2026
 
 V12 reuses matching immutable diagnostic records without duplicate activity and

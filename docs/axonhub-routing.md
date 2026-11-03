@@ -11,6 +11,27 @@ selected conditions with their own authentication. Their availability does not
 change the current Pi/AxonHub route. Historical direct-OpenRouter examples keep
 their frozen provenance.
 
+## Haiku selection — 3 November 2026
+
+The user selected Haiku 5.5 for an Engineering-only Phase 1 comparison, with
+TerryGiftcard preferred and OpenRouter fallback. The automatic giftcard model
+fetch listed a dated Haiku 4.5 but omitted the manually configured 5.5 models;
+that list alone does not establish the subscription's actual model eligibility.
+The test pins `anthropic/claude-haiku-5.5`; giftcard's manually configured
+`claude-haiku-5-5` and canonical alias are configured. Giftcard channel health
+requests completed for Sonnet 5.5 (#210228), Haiku 5.5 (#210236) and Opus 5.5
+(#210237), with matching returned model IDs and stop completions. These small
+channel checks do not validate the Pi tools/reasoning preflight or Phase 1 behavior.
+The default health-test model was restored to Sonnet 5.5 after the checks.
+Evidence: `../eval-readiness/phase1-claude-channel-tests-20261103-r1/manifest.json`.
+No model fallback to 4.5 is authorized by this registration. The prior added
+4.5 model/alias is retained separately and has received no test requests.
+TerryGiftcard has weight 1, OpenRouter-Backup weight 0. The existing evaluation
+profile uses ordered failover with no channel allowlist or model substitution.
+No credentials, existing model entries or global weights were changed.
+Inspect the actual execution record to distinguish giftcard success from
+OpenRouter fallback; catalog or configuration membership alone proves neither.
+
 ## Current routing policy
 
 - **30 October 2026 selection:** use AxonHub's native failover, preferring

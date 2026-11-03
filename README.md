@@ -1,5 +1,7 @@
 # SwarmHarm
 
+Routing update (3 November 2026): Claude giftcard health checks returned matching Haiku 5.5, Sonnet 5.5 and Opus 5.5 model IDs. The requested Engineering comparison pins Haiku 5.5 through Pi/AxonHub, preferring giftcard with same-model OpenRouter fallback; channel success is separate from Phase 1 success. See [routing](docs/axonhub-routing.md).
+
 SwarmHarm studies autonomous swarm formation and collective misalignment.
 Phase 1 and Phase 2 can be evaluated separately; connected studies test both
 with the same agents, histories and shared system.
