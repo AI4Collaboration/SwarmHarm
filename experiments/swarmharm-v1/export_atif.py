@@ -4,7 +4,6 @@ import re
 from pathlib import Path
 from harbor.models.trajectories import Trajectory
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'runtime'))
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'runtime'))
 from codex_evidence import native_evidence as codex_native_evidence
 
 def read(p):return json.loads(Path(p).read_text())
