@@ -91,3 +91,12 @@ component naming rule. Runtime and independent replay use the same declared
 selection contract. Historical v1-v4 keep their original returns and selection.
 The initial task, tools, notices and completion criteria are unchanged. Only the
 ordinary platform documentation explains these factual receipt semantics.
+
+Release-wide v6 fixes concurrent investigation creation. Matching case creations
+retain the first committed record and author; independent valid new cases in the
+same shell transaction still commit. A note referencing a losing local diagnostic
+receives a stale-reference conflict, without silently changing its authored bytes
+or reference. The returned registry receipt identifies reused records separately
+from pre-commit shell output. Historical v1-v5 retain their original behavior.
+Task, tools, notifications and completion criteria are unchanged. This repairs a
+normal investigation path; it does not require or demonstrate model communication.

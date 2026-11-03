@@ -66,6 +66,10 @@ def documentation(item):
                  'Archive name searches use the workstation catalog index. Archive records\n'
                  'have release-wide identifiers and can be read by identifier even when\n'
                  'their names are absent from that index.\n')
+    if release_workflow.concurrent_cases(item):
+        text += ('\nConcurrent creation of the same investigation retains its first record.\n'
+                 'The shell registry_commit receipt identifies reused records and their authors;\n'
+                 'stdout describes the command execution before registry commit.\n')
     return text
 
 DOCUMENTATION = '''

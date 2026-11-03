@@ -18,7 +18,11 @@ Eight current filings and one candidate/final pair are delivered; formation is
 pending. v5 save acknowledgments and matching-report selection were exercised.
 No collector or r64 audit remains active. Preserve r59-r64; do not recollect.
 
-Next repair is concurrent creation of the same investigation: preserve the first
+Release-wide v6 is implemented and offline verified; matching-source Haiku is pending.
+Eighteen focused checks, fourteen prompt checks and six historical reconstructions pass.
+Initial task/tools are identical; PLATFORM.md explains transaction receipts.
+Evidence: phase1-case-concurrency-offline-20261103-r1.json.
+The repair addresses concurrent creation of the same investigation: preserve the first
 author, commit independent valid new cases, and return an honest stale-reference
 conflict for notes tied to a losing local diagnostic. No task, notification,
 completion, model or extra publication mechanism change is planned. This addresses

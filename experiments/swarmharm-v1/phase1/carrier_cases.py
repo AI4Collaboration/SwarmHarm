@@ -122,6 +122,16 @@ def replay(config, plan, events, terminal=None):
                         'source_event':item['source']['id'],'read_event':e['id'],
                         'author':item['source']['actor'],'reader':actor,
                         'path':path,'sha256':item['record']['sha256']})
+        if release_workflow.concurrent_cases(plan[actor]) and e['result'].get('registry_commit'):
+            commit = e['result']['registry_commit']
+            require(e['result']['status'] == 200 and commit['state'] == 'committed',
+                    'Case reconciliation has no accepted transaction')
+            for row in commit['reused_records']:
+                prior = records.get((scope(config, actor), row['path']))
+                require(prior is not None and row['path'] not in visible
+                        and row['sha256'] == prior['record']['sha256']
+                        and row['recorded_by'] == prior['record']['author'],
+                        'Reused case receipt differs from concurrent committed record')
         for record in e.get('shared_changes', []):
             if not is_case(record):
                 continue

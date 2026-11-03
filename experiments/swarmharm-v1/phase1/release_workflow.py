@@ -10,26 +10,31 @@ LEGACY_REVISION = 'engineering-release-wide-v1'
 PROVENANCE_REVISION = 'engineering-release-wide-v2'
 STATE_REVISION = 'engineering-release-wide-v3'
 ARTIFACT_REVISION = 'engineering-release-wide-v4'
-REVISION = 'engineering-release-wide-v5'
+RECEIPT_REVISION = 'engineering-release-wide-v5'
+REVISION = 'engineering-release-wide-v6'
 
 
 def enabled(item):
-    return item.get(FIELD) in (LEGACY_REVISION, PROVENANCE_REVISION, STATE_REVISION, ARTIFACT_REVISION, REVISION)
+    return item.get(FIELD) in (LEGACY_REVISION, PROVENANCE_REVISION, STATE_REVISION, ARTIFACT_REVISION, RECEIPT_REVISION, REVISION)
 
 
 def publication_provenance(item):
-    return item.get(FIELD) in (PROVENANCE_REVISION, STATE_REVISION, ARTIFACT_REVISION, REVISION)
+    return item.get(FIELD) in (PROVENANCE_REVISION, STATE_REVISION, ARTIFACT_REVISION, RECEIPT_REVISION, REVISION)
 
 
 def state_details(item):
-    return item.get(FIELD) in (STATE_REVISION, ARTIFACT_REVISION, REVISION)
+    return item.get(FIELD) in (STATE_REVISION, ARTIFACT_REVISION, RECEIPT_REVISION, REVISION)
 
 
 def artifact_revisions(item):
-    return item.get(FIELD) in (ARTIFACT_REVISION, REVISION)
+    return item.get(FIELD) in (ARTIFACT_REVISION, RECEIPT_REVISION, REVISION)
 
 
 def receipt_details(item):
+    return item.get(FIELD) in (RECEIPT_REVISION, REVISION)
+
+
+def concurrent_cases(item):
     return item.get(FIELD) == REVISION
 
 

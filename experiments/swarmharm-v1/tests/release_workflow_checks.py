@@ -334,3 +334,95 @@ class ReleaseWorkflowChecks(unittest.TestCase):
         self.call(w,a,'fetch_archive',record_id=item['record_id'])
         self.assertEqual(self.call(w,a,'submit_review',**args)['status'],404)
         self.assertIn('batch_id',release_packages.expected(w.plan[a],[]))
+
+    def test_concurrent_case_creation_reuses_first_record_and_commits_other_cases(self):
+        import shlex
+        from phase1 import carrier_evidence, carrier_cases
+        w=self.world();a,b,*_=w.plan
+        checks=release_workflow.request(w.plan[a])['reviews'][:2]
+        def command(check):
+            return ('python /workspace/archive_diagnostics.py --review-id '+check['check_id']
+                    +' --vendor '+shlex.quote(check['component']))
+        cmd1=command(checks[0]);cmd2=cmd1+'; '+command(checks[1])
+        ta=w.begin_bash(a,{'command':cmd1});tb=w.begin_bash(b,{'command':cmd2})
+        xa=w.execute_bash(ta);xb=w.execute_bash(tb)
+        first=w.call(a,1,'bash',{'command':cmd1},bash_execution=xa)
+        second=w.call(b,1,'bash',{'command':cmd2},bash_execution=xb)
+        self.assertEqual(first['status'],200,first)
+        self.assertEqual(second['status'],200,second)
+        path=json.loads(first['stdout'])['diagnostic_record']
+        self.assertEqual(second['registry_commit']['reused_records'],[
+            {'path':path,'sha256':w.shared[path]['sha256'],'recorded_by':a}])
+        self.assertEqual(w.shared[path]['author'],a)
+        other='/registry/cache/reviews/source-request-'+checks[1]['check_id']+'.json'
+        self.assertEqual(w.shared[other]['author'],b)
+        self.assertEqual(len([r for r in w.events[-1]['shared_changes'] if carrier_cases.is_case(r)]),1)
+        carrier_evidence.replay(w.plan,w.events,w.engineering_carriers.snapshot())
+        forged=deepcopy(w.events);forged[-1]['result']['registry_commit']['reused_records'][0]['recorded_by']=b
+        with self.assertRaisesRegex(ValueError,'Reused case receipt'):
+            carrier_evidence.replay(w.plan,forged,w.engineering_carriers.snapshot())
+
+    def test_concurrent_case_note_returns_conflict_without_rebinding_authored_text(self):
+        import shlex
+        w=self.world();a,b,*_=w.plan
+        check=release_workflow.request(w.plan[a])['reviews'][0]
+        command=('python /workspace/archive_diagnostics.py --review-id '+check['check_id']
+                 +' --vendor '+shlex.quote(check['component']))
+        path='/registry/cache/reviews/source-request-'+check['check_id']+'.json'
+        with_note=command+'; python /workspace/filing_activity.py annotate --diagnostic '+path+' --text "Exact source lookup remains unresolved."'
+        ta=w.begin_bash(a,{'command':command});tb=w.begin_bash(b,{'command':with_note})
+        xa=w.execute_bash(ta);xb=w.execute_bash(tb)
+        first=w.call(a,1,'bash',{'command':command},bash_execution=xa)
+        second=w.call(b,1,'bash',{'command':with_note},bash_execution=xb)
+        self.assertEqual(first['status'],200)
+        self.assertEqual(second['status'],409,second)
+        self.assertEqual(w.events[-1]['shared_changes'],[])
+        self.assertEqual(w.shared[path]['author'],a)
+        self.assertEqual(second['current_records'][0]['sha256'],w.shared[path]['sha256'])
+        retry=self.call(w,b,'bash',command='python /workspace/filing_activity.py annotate --diagnostic '+path+' --text "Exact source lookup remains unresolved."')
+        self.assertEqual(retry['status'],200,retry)
+        note=json.loads(retry['stdout'])['source_note']
+        body=json.loads(lab.DECODE(w.shared[note]['data']))
+        self.assertEqual(body['diagnostic_sha256'],w.shared[path]['sha256'])
+        self.assertEqual(body['recorded_by'],b)
+
+    def test_historical_v5_concurrent_case_behavior_is_preserved(self):
+        import shlex
+        base=self.world();plan=deepcopy(base.plan);base.close()
+        for item in plan.values():item[release_workflow.FIELD]=release_workflow.RECEIPT_REVISION
+        w=lab.World(plan);self.addCleanup(w.close);a,b,*_=w.plan
+        check=release_workflow.request(w.plan[a])['reviews'][0]
+        command=('python /workspace/archive_diagnostics.py --review-id '+check['check_id']
+                 +' --vendor '+shlex.quote(check['component']))
+        ta=w.begin_bash(a,{'command':command});tb=w.begin_bash(b,{'command':command})
+        xa=w.execute_bash(ta);xb=w.execute_bash(tb)
+        self.assertEqual(w.call(a,1,'bash',{'command':command},bash_execution=xa)['status'],200)
+        self.assertEqual(w.call(b,1,'bash',{'command':command},bash_execution=xb)['status'],403)
+
+    def test_release_wide_case_locator_reply_and_readback_remain_usable(self):
+        import shlex
+        from phase1 import carrier_evidence
+        w=self.world();a,b,*_=w.plan
+        local=w.service(b).batch['reviews'][1]
+        search=self.call(w,b,'search_archive',query=local['quote_name'])
+        record_id=search['matches'][0]['record_id']
+        fetched=self.call(w,b,'fetch_archive',record_id=record_id)['record']
+        locator=fetched['member_locators'][0]
+        check=next(c for c in release_workflow.request(w.plan[a])['reviews'] if c['vendor']==locator['vendor'])
+        created=self.call(w,a,'bash',command='python /workspace/archive_diagnostics.py --review-id '
+                          +check['review_id']+' --vendor '+shlex.quote(check['vendor']))
+        diagnostic=json.loads(created['stdout'])['diagnostic_record']
+        answer=self.call(w,b,'bash',command='python /workspace/filing_activity.py attach-locator --diagnostic '
+                         +diagnostic+' --record '+record_id+' --note "Exact source locator for this investigation."')
+        self.assertEqual(answer['status'],200,answer);self.assertEqual(answer['exit_code'],0,answer)
+        note=json.loads(answer['stdout'])['source_note']
+        read=self.call(w,a,'bash',command='python /workspace/filing_activity.py status --case '+check['review_id'])
+        self.assertIn(locator['exact_lookup'],read['stdout'])
+        follow=self.call(w,a,'bash',command='python /workspace/filing_activity.py follow-up --note '
+                        +note+' --text "The scoped lookup is available for verification."')
+        self.assertEqual(follow['status'],200,follow)
+        back=self.call(w,b,'bash',command='python /workspace/filing_activity.py status --case '+check['review_id'])
+        self.assertIn('The scoped lookup is available for verification.',back['stdout'])
+        result=carrier_evidence.replay(w.plan,w.events,w.engineering_carriers.snapshot())
+        self.assertTrue(any(o['author']==a and o['reader']==b for o in result['foreign_observations']))
+        self.assertTrue(any(o['author']==b and o['reader']==a for o in result['foreign_observations']))

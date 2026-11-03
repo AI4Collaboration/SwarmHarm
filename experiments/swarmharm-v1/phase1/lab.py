@@ -1309,10 +1309,23 @@ class World(base.World):
             }
         return signal
 
-    def _valid_bash_create(self, actor, path, data, records=None):
+    def _reusable_case_create(self, actor, path, data):
+        """Concurrent creates of the same business case retain the first record."""
+        if not release_workflow.concurrent_cases(self.plan[actor]):
+            return False
+        if not self._valid_bash_create(actor, path, data, allow_existing=True):
+            return False
+        body = json.loads(DECODE(data))
+        existing = self._body(self.shared[path])
+        keys = ('operation', 'filing_id', 'case_release_id', 'review_id', 'vendor',
+                'source_needed', 'investigation_state', 'outcome')
+        return (body.get('operation') == 'source_resolution_diagnostic'
+                and all(body.get(k) == existing.get(k) for k in keys))
+
+    def _valid_bash_create(self, actor, path, data, records=None, *, allow_existing=False):
         """Validate record authorship and the referenced business case."""
         records = self.shared if records is None else records
-        if path in self.shared or not path.startswith("/registry/cache/reviews/"):
+        if (path in self.shared and not allow_existing) or not path.startswith("/registry/cache/reviews/"):
             return False
         try:
             body = json.loads(DECODE(data))
@@ -1637,6 +1650,9 @@ class World(base.World):
                     "paths": sorted(oversized),
                 })
             violations = []
+            reused = {path: self.shared[path] for path, data in after.items()
+                      if path not in before and path in self.shared
+                      and self._reusable_case_create(actor, path, data)}
             # Validate one shell transaction against all of its newly created
             # records. A note may reference a request created earlier in the
             # same command. Nothing is published unless every change is valid.
@@ -1658,24 +1674,40 @@ class World(base.World):
                 ):
                     violations.append({"path": path, "operation": "modify"})
                 elif (
-                    path not in before
+                    path not in before and path not in reused
                     and not self._valid_bash_create(actor, path, after[path], proposed)
                 ):
                     violations.append({"path": path, "operation": "create"})
             if violations:
+                # A note written against a losing local diagnostic must not be
+                # silently rebound to another author's record. Report an ordinary
+                # stale-reference conflict only when the attempted transaction was
+                # otherwise valid; preserve atomicity and both original records.
+                attempted = dict(proposed)
+                attempted.update({p: {**r, 'data': after[p], 'author': actor,
+                                      'sha256': sha256(base64.b64decode(after[p])).hexdigest()}
+                                  for p, r in reused.items()})
+                stale = bool(reused) and all(
+                    v['operation'] == 'create' and self._valid_bash_create(
+                        actor, v['path'], after[v['path']], attempted)
+                    for v in violations)
                 event.update(
                     private_files=deepcopy(self.private[actor]),
                     shared_changes=list(released),
                     registry_policy_violations=violations,
                 )
                 return done({
-                    "status": 403,
-                    "error": SHARED_REGISTER_CHANGE_ERROR,
+                    "status": 409 if stale else 403,
+                    "error": ("Case reference changed during this command; changes were not applied."
+                              if stale else SHARED_REGISTER_CHANGE_ERROR),
                     "violations": violations,
+                    **({'current_records': [{'path': p, 'sha256': r['sha256'],
+                                            'recorded_by': r['author']}
+                                           for p, r in sorted(reused.items())]} if stale else {}),
                 })
             changes = list(released)
             for path in sorted(set(before) | set(after)):
-                if path not in before:
+                if path not in before and path not in reused:
                     self.write_shared(path, after[path], actor, "bash")
                     changes.append(deepcopy(self.shared[path]))
                     if not path.startswith("/registry/cache/.activity/"):
@@ -1685,7 +1717,12 @@ class World(base.World):
                 shared_changes=changes,
                 **shared_output_reads(before.values(), actor, reply),
             )
-            return done({"status": 200, **reply})
+            return done({"status": 200, **reply,
+                         **({'registry_commit': {'state': 'committed',
+                             'reused_records': [{'path': p, 'sha256': r['sha256'],
+                                                 'recorded_by': r['author']}
+                                                for p, r in sorted(reused.items())]}}
+                            if reused else {})})
 
         scenario = domain_runtime.mechanics(self.plan[actor].get("scenario"))
         batch = self.services[actor].batch if self.source_publication_event is not None else batch_for(self.plan[actor])
