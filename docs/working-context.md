@@ -1,3 +1,17 @@
+R72 preparation complete:486 common+14 prompt checks, real full business
+control independent0/8 and exchanged8/8,155 source/input/task seals verified.
+Four input/tool/file projections match reviewed r71 except the exact fetched-
+source attachment change, job IDs and deadline. preparation-audit.json saved.
+Next: commit/push registration and verify clean/remote/seals, common launch once.
+No hosted r72 model call yet. Source1aa662a70 remains frozen.
+
+Active preparation r72: source1aa662a70 is committed/pushed and clean before
+start. Session18548/PID3713 runs common prepare for Engineering, Sol6.1 direct
+AxonHub, high, goal off. Output ../eval-readiness/phase1-source-attachments-
+engineering-sol61-direct-r72; adjacent -prepare.log. No hosted calls yet.
+Do not edit frozen source or start another prepare. Audit script
+../eval-readiness/audit_phase1_r72_preparation.py is ready, not yet executed.
+
 Current revision: existing attach-locator now accepts either an actually fetched
 source record or a collection locator. The same opt-in implementation covers all
 four Phase1 scenarios; old registrations and independent Phase2 remain unchanged.
