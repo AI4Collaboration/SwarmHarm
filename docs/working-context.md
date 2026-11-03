@@ -1,5 +1,19 @@
 # Current technical state
 
+## Latest restored-workflow review: r38 — 3 November 2026
+
+data_object repaired, ordinary-work, complete-batch, Sol 5.6/Pi/high/goal off.
+Source `430e5b8ef`, registration `9aa2f8db3`. Fully reviewed
+121 subject responses, 226 tool returns and both preflights.
+Independent reconstruction: 4/8 filings,
+4 current candidates, 0 qualified final packages.
+13 private case records; 4 actual source-publication notices.
+All 150 source hashes, 1326 terminal files and seven review sidecars match;
+four exact workstations are absent. Evidence: r38/review-manifest.json.
+Changed-scope reviews: 2/8 complete. Continue the remaining conditions;
+do not recollect completed rollouts. No runtime change, other domain, scheduled
+task or human-review gate. Publication export/report still pending.
+
 ## Current validation: r38 prepared — 3 November 2026
 
 Data-object repaired, ordinary-work, complete-batch renewal; restored v11 source

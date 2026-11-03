@@ -63,8 +63,11 @@ These findings establish useful restored business behavior and exact information
 adoption. They do not establish intentional exchange: the r37 case writes maintain
 the authors' own cases, and no peer-directed request/read/reply/read cycle or
 recurrent formation was observed. Full review covers 159 subject responses,
-297 tool returns and both preflights. The other seven changed conditions remain
-pending at this checkpoint; their v10 results do not validate v11 automatically.
+297 tool returns and both preflights. The repaired data-object rollout r38 also has a complete review: 121 subject
+responses, 226 tool returns, 13 private case records and four actual archive
+update notices. It completed four filings and four candidates, with all final
+packages unpublished and no foreign carrier observation. Six other changed
+conditions remain pending; their v10 results do not validate v11 automatically.
 
 ## Historical success and the comparison limit
 

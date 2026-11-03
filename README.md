@@ -291,6 +291,13 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- **Restored data-object repair, r38:** ordinary diagnostics, annotations and
+  follow-up remain usable, while all 13 case records stay private. Four archive
+  update notices reach their contexts. Four candidates are delivered, but four
+  missing sources remain unresolved and all final packages stay unpublished.
+  No foreign observation or intentional exchange occurs. Full native review and
+  independent file, package, CPU and cleanup reconstruction pass.
+
 - **Restored case workflow, r37:** all four subjects recovered their missing source
   through another workspace's ordinary investigation note and completed delivery.
   Seventeen notes/diagnostics and 32 factual notices were actually used; 31 foreign
