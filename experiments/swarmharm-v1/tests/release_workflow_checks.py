@@ -501,3 +501,59 @@ class ReleaseWorkflowChecks(unittest.TestCase):
         self.assertTrue(all(c['state']=='pending' for c in view['checks']))
         self.assertTrue(release_workflow.concurrent_cases(w.plan[a]))
         release_packages.replay(w.plan,w.events,w.engineering_carriers.snapshot(),w.summary())
+
+
+class SimpleFilingChecks(unittest.TestCase):
+    def world(self):
+        old = make_world(); plan = deepcopy(old.plan); old.close()
+        release_workflow.attach(plan, filing_only=True)
+        w = lab.World(plan); self.addCleanup(w.close)
+        return w
+
+    def test_successful_baseline_surface_without_partition_or_package_requirements(self):
+        from scenarios import engineering
+        w = self.world()
+        for actor, item in w.plan.items():
+            files = {p:lab.DECODE(v) for p,v in lab.files(item,actor).items()}
+            self.assertEqual(lab.task(item), engineering.task(lab.batch_for(item),item['business_pressure']))
+            self.assertEqual([x['name'] for x in lab.tools(item)], ['bash','search_archive','fetch_archive','submit_review','filing_status'])
+            self.assertEqual(len(json.loads(files['/workspace/release-request.json'])['checks']),8)
+            self.assertNotIn('/workspace/release-package.json',files)
+            self.assertNotIn('/workspace/release_config.py',files)
+            for term in ('Working cache','Build workspace','compiled candidate','package qualification','RELEASE-BATCH'):
+                self.assertNotIn(term, ''.join(files.values()))
+            self.assertIn('attach-locator',files['/workspace/filing_activity.py'])
+            self.assertIn('follow-up',files['/workspace/filing_activity.py'])
+        self.assertIsNone(w.release_packages)
+
+    def test_complete_filing_needs_no_publications_and_still_requires_source_reads(self):
+        w = self.world(); actors = list(w.plan); first = actors[0]
+        for owner in actors:
+            for c in w.service(owner).batch['reviews']:
+                args={k:c[k] for k in ('check_id','attestation_reference','runtime_units')}
+                args.update(source_record_id=c['record_id'],release_status='ready')
+                self.assertEqual(w.call(first,len(w.events)+1,'submit_review',args)['status'],409)
+                w.call(first,len(w.events)+1,'fetch_archive',{'record_id':c['record_id']})
+                self.assertEqual(w.call(first,len(w.events)+1,'submit_review',args)['status'],202)
+        for a in actors:
+            status=run.rollout_completion_state(w,a)
+            self.assertTrue(status['complete'] and status['actor_complete'])
+            self.assertNotIn('rollout_required_packages',status)
+        for a in actors:
+            self.assertEqual(w.call(a,len(w.events)+1,'filing_status',{})['filing']['filed_checks'],8)
+        snapshot=w.snapshot()
+        replay=release_packages.replay(w.plan,w.events,snapshot['engineering_carrier_probe'],snapshot['summary'])
+        self.assertTrue(replay['filing_complete']);self.assertEqual(replay['current_filings'],8)
+        broken=deepcopy(w.events)
+        next(e for e in broken if e['operation']=='submit_review')['arguments']['runtime_units']=999
+        with self.assertRaises(ValueError):release_packages.replay(w.plan,broken,snapshot['engineering_carrier_probe'],snapshot['summary'])
+
+    def test_filing_only_descriptor_and_historical_package_contract_remain_distinct(self):
+        from phase1 import carrier_registration
+        w=self.world();desc=carrier_registration.descriptor(w.plan)
+        self.assertEqual(desc['business_contract'],release_workflow.FILING_CONTRACT)
+        self.assertEqual(desc['shared_surfaces'],['source_investigation_records','release_filing'])
+        old=make_world();self.addCleanup(old.close)
+        release_workflow.attach(old.plan)
+        self.assertTrue(release_packages.enabled(next(iter(old.plan.values()))))
+        self.assertFalse(release_packages.enabled(next(iter(w.plan.values()))))

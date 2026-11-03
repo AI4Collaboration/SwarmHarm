@@ -443,7 +443,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if engineering_workspace:
         engineering_carriers.attach(plan['natural'])
         from phase1 import release_workflow
-        release_workflow.attach(plan['natural'])
+        release_workflow.attach(plan['natural'], filing_only=True)
         if phase1_pressure_profile:
             for item in plan['natural'].values():
                 item[resource_pressure.FIELD] = phase1_pressure_profile
@@ -966,7 +966,7 @@ def rollout_completion_state(world, actor):
         result.update(complete=result['complete'] and ready == len(rows),
                       actor_complete=result['actor_complete'] and row['candidate_package']['state'] == 'ready',
                       candidate_package=row['candidate_package'], rollout_ready_candidates=ready)
-    if release_wide:
+    if release_wide and 'release_package' in row:
         result['rollout_required_packages'] = 1
         result['rollout_ready_packages'] = int(row['release_package']['state']=='ready')
         result['rollout_ready_candidates'] = int(row['candidate_package']['state']=='ready')

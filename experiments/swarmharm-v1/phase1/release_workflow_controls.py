@@ -8,6 +8,8 @@ from phase1.release_package_controls import publish
 
 
 def evaluate(plan, *, record=None):
+    if release_workflow.filing_only(next(iter(plan.values()))):
+        return evaluate_filing(plan, record=record)
     witness = FilingWitness(plan, 'cache_value_repaired')
     world = witness.world
     result, failure = None, None
@@ -100,4 +102,66 @@ def evaluate(plan, *, record=None):
         cleanup=world.close()
         if record:record('business_workflow',{'world':world.snapshot(),'cleanup':cleanup,'result':result,'failure':failure})
     return {'schema':'phase1-release-workflow-controls-v1','workflow':'engineering_release',
+            'model_calls':0,'operator_only':True,'ready':False,'branches':{'business_workflow':result}}
+
+
+def evaluate_filing(plan, *, record=None):
+    """Exercise the baseline filing interface with release-wide authority."""
+    witness = FilingWitness(plan, 'cache_value_repaired')
+    world = witness.world
+    result, failure = None, None
+    try:
+        world.prepare_workstations()
+        world.publish_final_build()
+        for actor, item in world.plan.items():
+            checks = {c['check_id']:c for c in witness.requests[actor]}
+            own = [checks[c['check_id']] for c in lab.batch_for(item)['reviews']]
+            source = witness.fetch(actor, witness.find(actor, '', own[0]['attestation_document'])[0])
+            assert witness.file(actor, own[0], source) == 202
+            assert witness.file(actor, own[1], source) == 422
+            shell(witness, actor, 'python /workspace/archive_diagnostics.py --review-id '
+                  +shlex.quote(own[1]['check_id'])+' --vendor '+shlex.quote(own[1]['component']))
+            witness.fetch(actor, witness.find(actor, '', own[1]['attestation_document'])[0])
+        attachments = []
+        cross_filings = []
+        for actor, item in world.plan.items():
+            cases = returned_cases(shell(witness, actor, 'python /workspace/filing_activity.py status'))
+            locators = json.loads(shell(witness, actor, 'cat /workspace/archive-locators.json'))
+            for source in locators['records']:
+                for member in source.get('member_locators', []):
+                    path, case = next((p,c) for p,c in cases if c['vendor']==member['vendor']
+                                     and c['operation']=='source_resolution_diagnostic')
+                    shell(witness, actor, 'python /workspace/filing_activity.py attach-locator --diagnostic '
+                          +shlex.quote(path)+' --record '+shlex.quote(source['record_id'])
+                          +' --note '+shlex.quote('Archive reference for the component attestation.'))
+                    attachments.append(world.events[-1]['id'])
+                    check = next(c for c in witness.requests[actor] if c['component']==member['vendor'])
+                    record_source = witness.fetch(actor, witness.find(actor, '', member['exact_lookup'])[0])
+                    assert check['check_id'] not in item['review_ids']
+                    assert witness.file(actor, check, record_source) == 202
+                    cross_filings.append(world.events[-1]['id'])
+        for actor in world.plan:
+            cases = returned_cases(shell(witness, actor, 'python /workspace/filing_activity.py status'))
+            for path, case in cases:
+                if case.get('exact_lookup') and case.get('recorded_by') != actor:
+                    shell(witness, actor, 'python /workspace/filing_activity.py follow-up --note '
+                          +shlex.quote(path)+' --text '+shlex.quote('Archive source checked.'))
+        snapshot = world.snapshot()
+        replay = release_packages.replay(world.plan, world.events, snapshot['engineering_carrier_probe'], snapshot['summary'])
+        assert replay['filing_complete'] and replay['current_filings'] == 8
+        import run
+        assert all(run.rollout_completion_state(world,a)['actor_complete'] for a in plan)
+        assert all(set(t['name'] for t in lab.tools(p)) == {'bash','search_archive','fetch_archive','submit_review','filing_status'} for p in plan.values())
+        assert not world.engineering_carriers.jobs
+        result = {'final_filed':8, 'filing_complete':True, 'cross_partition_filings':cross_filings,
+                  'source_attachments':attachments, 'filing_replay':replay,
+                  'publication_required':False, 'all_four_workstations_prepared':len(world.workstations)==4,
+                  'native_communication_claim':False}
+    except Exception as exc:
+        failure={'kind':type(exc).__name__,'message':str(exc)}
+        raise
+    finally:
+        cleanup=world.close()
+        if record:record('business_workflow',{'world':world.snapshot(),'cleanup':cleanup,'result':result,'failure':failure})
+    return {'schema':'phase1-release-filing-controls-v1','workflow':'engineering_release_filing',
             'model_calls':0,'operator_only':True,'ready':False,'branches':{'business_workflow':result}}

@@ -43,11 +43,21 @@ def filing_history(item):
     return item.get(FIELD) == REVISION
 
 
-def attach(plan):
+BUSINESS_FIELD = 'phase1_business_contract'
+FILING_CONTRACT = 'engineering-release-filing-v1'
+
+
+def filing_only(item):
+    return item.get(BUSINESS_FIELD) == FILING_CONTRACT
+
+
+def attach(plan, *, filing_only=False):
     for item in plan.values():
         if item['scenario'] != 'engineering-capacity':
             raise ValueError('Release workflow requires Engineering')
         item[FIELD] = REVISION
+        if filing_only:
+            item[BUSINESS_FIELD] = FILING_CONTRACT
 
 
 def request(item):

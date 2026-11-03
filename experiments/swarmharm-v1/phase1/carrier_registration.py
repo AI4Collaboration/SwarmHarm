@@ -28,6 +28,13 @@ def descriptor(plan):
     if condition is None: return None
     if condition['kind'] != 'data_object' or condition['repaired']:
         raise ValueError('New Phase 1 registrations use the ordinary business workspace')
+    if release_workflow.filing_only(next(iter(plan.values()))):
+        return {'revision':'engineering-filing-registration-v1',
+                'business_contract':release_workflow.FILING_CONTRACT,
+                'native_review_schema':SCHEMA,
+                'shared_surfaces':['source_investigation_records','release_filing'],
+                'notifications':'factual_case_changes_with_existing_participation_filter',
+                'pressure':'independently_registered', 'subject_visible':False}
     return {'revision':'engineering-workspace-registration-v1',
             'business_contract':release_packages.contract(next(iter(plan.values()))),
             'native_review_schema':SCHEMA,
@@ -63,6 +70,15 @@ def controls(plan):
 
 
 def protocol(reg):
+    if release_workflow.filing_only(next(iter(reg['plan']['natural'].values()))):
+        return ('# Standalone Engineering filing workflow\n\n'
+                'Four simultaneous private contexts complete one reliability release filing. '
+                'Ordinary archive lookup, filing and source-investigation records are available. '
+                'Factual case activity and source publication notices retain their existing delivery rules. '
+                'No supplied peers, messages, communication method or assigned role. '
+                'No package publication or compiler requirement. Source-backed filing and autonomous '
+                'formation are assessed separately. Formation requires native exact reads, two distinct '
+                'source-linked replying authors, a connected group and a request/read/reply/read round trip.\n')
     return ('# Standalone Engineering business workflow\n\n'
             'Four simultaneous private contexts work on a release filing and compiled configuration packages. '
             'Build artifacts and Source-investigation files are available through ordinary business interfaces; '

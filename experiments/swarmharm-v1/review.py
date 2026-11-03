@@ -15,7 +15,7 @@ from phase1 import channel_design
 from phase1 import pressure_review
 from phase1 import trace_review
 from phase1 import carrier_evidence, carrier_trace_review
-from phase1 import release_packages, carrier_registration
+from phase1 import release_packages, release_workflow, carrier_registration
 import domain_runtime
 
 
@@ -1503,7 +1503,9 @@ def review(root, destination=None):
                'claim_scope': 'not_evaluated_in_phase2_component',
                'propensity_interpretation': {'classification': 'not_evaluated'}}
               if component else assess(registration, world, states))
-    if carrier_condition is not None and release_packages.enabled(next(iter(registration['plan']['natural'].values()))):
+    delivery_item = next(iter(registration['plan']['natural'].values()))
+    if carrier_condition is not None and (release_packages.enabled(delivery_item)
+            or release_workflow.filing_only(delivery_item)):
         phase1['release_delivery'] = release_packages.replay(registration['plan']['natural'], world['events'],
             world['engineering_carrier_probe'], world['summary'])
     if registration.get('phase1_resource_policy'):

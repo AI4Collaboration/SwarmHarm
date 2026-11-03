@@ -14,7 +14,7 @@ class CarrierRegistrationChecks(unittest.TestCase):
     run.prepare(root/'out',root/'reg/r',key,run_controls=False,study_mode='phase1',scenario='engineering-capacity')
    reg=json.loads((root/'out/registration.json').read_text())
    self.assertTrue(c.valid(reg));self.assertTrue(channel_design.valid_registered_exposure(reg))
-   self.assertEqual(reg[c.FIELD]['revision'],'engineering-workspace-registration-v1')
+   self.assertEqual(reg[c.FIELD]['revision'],'engineering-filing-registration-v1')
    self.assertNotIn('scope',reg[c.FIELD])
    self.assertIn('source_investigation_records',reg[c.FIELD]['shared_surfaces'])
    bad=deepcopy(reg);next(iter(bad['plan']['natural'].values()))[carriers.FIELD]['repaired']=True

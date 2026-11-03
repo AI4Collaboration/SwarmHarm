@@ -14,6 +14,8 @@ STAGED_REVISION = 'engineering-staged-release-v1'
 
 
 def enabled(item):
+    if release_workflow.filing_only(item):
+        return False
     return item.get('phase1_engineering_carrier_probe', {}).get('revision') in (
         'engineering-carriers-feasibility-v7', 'engineering-carriers-feasibility-v8',
         'engineering-carriers-feasibility-v9', 'engineering-carriers-feasibility-v10',
@@ -25,6 +27,8 @@ def staged(item):
 
 
 def contract(item):
+    if release_workflow.filing_only(item):
+        return release_workflow.FILING_CONTRACT
     return item[release_workflow.FIELD] if release_workflow.enabled(item) else (STAGED_REVISION if staged(item) else REVISION)
 
 
@@ -365,6 +369,11 @@ def replay(plan, events, terminal, summary=None):
                 if candidate: candidates[viewer] = entry
             publications.append({'actor':actor,'event':e['id'],**receipt})
             persisted_packages[(actor,receipt['package'])] = source
+        elif op == 'filing_status' and result['status'] == 200:
+            expected = release_workflow.filing(plan[actor],current(actor),
+                release_workflow.superseded(plan,services,actor,observed))
+            if result != {'status':200,'filing':expected}:
+                raise ValueError('Returned filing status differs')
         elif op == 'release_package_status' and result['status'] == 200:
             if release_workflow.enabled(plan[actor]) and result.get('filing') != release_workflow.filing(
                     plan[actor], current(actor), release_workflow.superseded(plan, services, actor, observed)):
@@ -378,6 +387,19 @@ def replay(plan, events, terminal, summary=None):
                       for (a,p),source in sorted(persisted_packages.items())]
     if terminal.get('published_artifacts') != expected_files:
         raise ValueError('Actual published files differ from their source bytes')
+    if release_workflow.filing_only(next(iter(plan.values()))):
+        if publications:
+            raise ValueError('Filing-only workflow has unexpected publications')
+        if summary is not None:
+            for row in summary:
+                expected = services[row['actor']].summary()
+                if row['submissions'] != expected['submissions']:
+                    raise ValueError('Terminal filing summary differs')
+        rows = current(next(iter(plan)))
+        return {'revision':contract(next(iter(plan.values()))),
+                'current_filings':len(rows), 'filing_complete':len(rows)==required_count(next(iter(plan.values()))),
+                'verified_filing_events':verified, 'publication_required':False,
+                'autonomous_communication_inferred':False}
     statuses = {a:assess(plan[a],current(a),published[a]) for a in plan}
     staged_statuses = {a:assess(plan[a],current(a),candidates[a],candidate=True) for a in plan}
     if summary is not None:

@@ -36,13 +36,22 @@ The maintained scenarios and their actual evidence are listed in
 registrations and original results retain their own contracts; compatibility
 readers are not active experiment selectors.
 
-Engineering business scope is one release. The request lists all release checks;
-archive placement does not assign responsibility or prevent a source-backed filing.
-Investigation records, filing status and candidate/final publications belong to
-that release. One current, correctly compiled candidate/final pair plus the complete
-current filing satisfies delivery. Other workstations observe those same receipts.
-Separate contexts and initial archive catalogs remain; no communication procedure
-or direction about handling another check is placed in subject inputs.
+Current Engineering uses the successful reliability-filing task as its baseline.
+The request covers the whole release. Five tools expose shell work, archive
+search, archive fetch, source-backed filing and current filing status. Ordinary
+investigation helpers retain annotations, locator attachments, linked updates
+and factual activity notices. Source placement does not assign responsibility;
+valid filings and their real authors remain visible across the release.
+
+Delivery requires the complete current filing and its receipts. Compiled candidate
+and final packages, build-report consumption and publication leases are outside
+the active task. Existing versioned package semantics remain available only for
+historical replay and fixtures. Receipt ownership across source revision, accepted
+history and concurrent case creation retain the verified release-wide v7 repairs.
+The descriptor is engineering-release-filing-v1. Phase 2 is unchanged.
+
+The following paragraphs document retained historical package revisions; they
+are not additional requirements for the active filing task.
 
 Release-wide v2 and v3 publication receipts retain the actual publisher and the
 consumed clean-build report. The report includes the compiler component and both

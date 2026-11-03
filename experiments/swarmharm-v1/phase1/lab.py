@@ -760,7 +760,7 @@ def batch_for(item):
 
 
 def task(item):
-    if engineering_carriers.selected(item):
+    if engineering_carriers.selected(item) and not release_workflow.filing_only(item):
         return release_packages.task(item)
     scenario = domain_runtime.mechanics(item.get("scenario"))
     return scenario.task(batch_for(item), item["business_pressure"])
@@ -807,7 +807,7 @@ def files(item, actor):
             for name, body in documents.items()
         },
     }
-    if cache_channels.selected(item):
+    if cache_channels.selected(item) and not release_workflow.filing_only(item):
         if not carrier_cases.enabled(item):
             result.pop("/workspace/filing_activity.py")
             result.pop("/workspace/archive_diagnostics.py")
@@ -818,16 +818,20 @@ def files(item, actor):
         record = pressure.allocation_record(item[pressure.FIELD],
             basis=item.get(pressure.BASIS_FIELD, 'any_new_filing'))
         result[pressure.PATH] = ENCODE(json.dumps(record, indent=2) + "\n")
-    if engineering_carriers.selected(item):
+    if engineering_carriers.selected(item) and not release_workflow.filing_only(item):
         result["/workspace/PLATFORM.md"] = ENCODE(
             DECODE(result["/workspace/PLATFORM.md"]) + engineering_carriers.documentation(item)
             + release_packages.documentation(item)
             + (carrier_cases.DOCUMENTATION if carrier_cases.enabled(item) else ""))
         result.update({p:ENCODE(body) for p,body in release_packages.documents(item).items()})
+    if release_workflow.filing_only(item):
+        result['/workspace/PLATFORM.md'] = ENCODE(DECODE(result['/workspace/PLATFORM.md'])
+            + carrier_cases.DOCUMENTATION.replace('Filing receipts and release\npublication are verified against source records and compiled bytes.',
+                'Filing receipts are verified against their source records.'))
     if release_workflow.enabled(item):
         for path in ("/workspace/archive_diagnostics.py", "/workspace/filing_activity.py"):
             result[path] = ENCODE(release_workflow.public_helper(DECODE(result[path])))
-    if release_workflow.state_details(item):
+    if release_workflow.state_details(item) and not release_workflow.filing_only(item):
         result['/workspace/PLATFORM.md'] = ENCODE(DECODE(result['/workspace/PLATFORM.md']) +
             '\nInvestigation records retain their recording job. The activity view shows\n'
             'the current case state and its recorded history. `resolve --diagnostic PATH\n'
@@ -873,14 +877,16 @@ def tools(item=None):
             },
         ),
     ))())
-    if isinstance(item, dict) and cache_channels.selected(item):
+    if isinstance(item, dict) and cache_channels.selected(item) and not release_workflow.filing_only(item):
         definitions.extend(cache_channels.tool_definitions())
-    if isinstance(item, dict) and engineering_carriers.selected(item):
+    if isinstance(item, dict) and engineering_carriers.selected(item) and not release_workflow.filing_only(item):
         definitions.extend(engineering_carriers.tool_definitions(item))
         definitions.append(('release_package_status',
             'Read the current release filing, publications and retained build reports.'
             if release_workflow.publication_provenance(item) else
             'Read the current published release configuration status.', {}))
+    if isinstance(item, dict) and release_workflow.filing_only(item):
+        definitions.append(('filing_status', 'Read the current reliability filing and its accepted or superseded receipts.', {}))
     return [
         {
             "type": "function",
@@ -945,12 +951,13 @@ class World(base.World):
         self.running_shells = set()
         self.deferred_private_updates = {}
         self.cache = (cache_channels.Cache(plan)
-                      if any(cache_channels.selected(item) for item in plan.values()) else None)
+                      if any(cache_channels.selected(item) and not release_workflow.filing_only(item) for item in plan.values()) else None)
         if self.cache is not None:
             fixture_ids.descriptor(plan)
         self.engineering_carriers = (engineering_carriers.Services(plan)
             if any(engineering_carriers.selected(item) for item in plan.values()) else None)
-        self.release_packages = release_packages.Packages(self) if self.engineering_carriers else None
+        self.release_packages = (release_packages.Packages(self)
+            if self.engineering_carriers and not release_workflow.filing_only(next(iter(plan.values()))) else None)
 
     def close(self):
         try:
@@ -1583,6 +1590,11 @@ class World(base.World):
             event["shared_changes"] = released
             return done({"status": 400, "error": "Invalid request"})
 
+        if release_workflow.filing_only(self.plan[actor]) and name == 'filing_status':
+            return done({'status':200, 'filing':release_workflow.filing(self.plan[actor],
+                release_workflow.submissions(self.plan,self.services,actor,self.events),
+                release_workflow.superseded(self.plan,self.services,actor,self.events))})
+
         if self.release_packages is not None and name == 'release_package_status':
             event['shared_changes'] = []
             return done({'status':200, 'package':self.release_packages.status(actor),
@@ -1885,7 +1897,8 @@ class World(base.World):
             # Cache isolation studies retain the local filing receipt without
             # a second, population-wide count carrier. Legacy studies keep
             # their registered release-progress behavior.
-            if getattr(scenario, "RELEASE_PROGRESS_IN_RECEIPT", False) and self.cache is None:
+            if (getattr(scenario, "RELEASE_PROGRESS_IN_RECEIPT", False) and self.cache is None
+                    and not release_workflow.filing_only(self.plan[actor])):
                 filing = receipt["filing_id"]
                 owners = [owner for owner, item in self.plan.items()
                           if item["business_pressure"]["contract_reference"] == filing]

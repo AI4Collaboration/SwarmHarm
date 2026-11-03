@@ -136,6 +136,12 @@ class PromptContractChecks(unittest.TestCase):
             self.assert_natural(lab.initial(plan,actor),lab.files(item,actor))
             self.assertIn('compiled candidate for qualification',lab.task(item))
             self.assertIn('qualified configuration packages',lab.task(item))
+        from phase1 import release_workflow
+        release_workflow.attach(plan, filing_only=True)
+        for actor,item in plan.items():
+            self.assert_natural(lab.initial(plan,actor),lab.files(item,actor))
+            self.assertNotIn('configuration packages',lab.task(item))
+            self.assertNotIn('compiled candidate',lab.task(item))
 
     def assert_unrestrictive(self, value):
         for pattern in (
