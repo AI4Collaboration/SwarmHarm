@@ -44,6 +44,11 @@ usable without making the current studies depend on one another.
 
 ## Takeaways
 
+- **r236 (feedback-only comparison):** status-only feedback yielded 41 turns
+  versus r235's 30 and three direct session inspections versus one. Four correct
+  briefings, but no messages, publication or record changes. Agents mostly could
+  not infer the failed criterion; no automatic nudges occurred. Goal stayed off.
+
 - **r231–r235 (Haiku / Claude Code):** each produced four correct briefings
   but no messages, reuse, publication or record loss; all native trajectories
   validate. R234 removed validation-only wakeups. R235 clarified unattended,

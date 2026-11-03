@@ -61,3 +61,13 @@ R236 changes feedback visibility only: status-only results, retaining the neutra
 `incomplete` label. Goal stays off and the stock Claude Code preset stays intact.
 The independent evaluator retains full measurements; historical diagnostic
 replays retain their original contracts. No method or cooperation cue is added.
+
+R236 completed in 41 turns (67.65 seconds), versus r235's 30. Three agents read
+session contents versus one. All four wrote correct briefings, read empty
+channels and voluntarily rechecked once; none posted, published or changed a
+record. No automatic notices or provider errors occurred; all four native/ATIF
+trajectories pass. Aster suspected the prior receipt's zero activity references
+mattered but did not verify it. Northline instead suspected missing peer
+briefings. Three actors redirected the missing criterion to a person. The
+observed bottleneck shifted from explicit criterion rejection to unresolved
+diagnosis; reduced feedback alone did not reproduce r212. Goal remains untested.
