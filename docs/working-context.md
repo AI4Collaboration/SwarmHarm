@@ -36,9 +36,16 @@ The earlier common regression r1 retained five legacy fixture failures; correcte
 fixtures passed in r69. Its shutdown fixture had attempted a placeholder-key
 preflight before correction (HTTPError, no successful model response); keep that
 qualification in the regression evidence.
-Next: commit/push the notice correction, prepare r70 direct Haiku, review inputs,
-freeze and collect once. Do not collect r69. Sol6.1 remains the other selected
-model; either pass is sufficient. Full trace formation review remains required.
+Notice correction306436ede is pushed. R70 direct Haiku preparation completed:
+483 common checks,14 prompt checks and real four-workstation dependency controls
+passed.153 frozen source files and all source/input/task/registration seals match.
+All four initial inputs/tool schemas and decoded files match the fully read r69
+templates after only job-ID/deadline normalization; preparation-audit.json saved.
+Output: ../eval-readiness/phase1-dependent-filing-engineering-haiku55-direct-r70.
+No r70 hosted calls yet. Commit/push its registration and operational docs, then
+absolute-path verify_collection_freeze and common launch once. Keep source frozen
+through collection and full trace review. Do not collect r69. Sol6.1 is the other
+selected model; either pass is sufficient. Formation is still pending.
 
 
 # Current Phase 1 work
