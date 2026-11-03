@@ -33,3 +33,13 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 def open_url(request, timeout):
     return urllib.request.build_opener(NoRedirect()).open(request, timeout=timeout)
+
+
+def validate_model_harness(models, harness, *, offline_fixture=False):
+    """Current live selection policy; offline fixture preparation cannot collect."""
+    for model in models.values():
+        model = str(model).lower()
+        if any(name in model for name in ('claude', 'haiku', 'sonnet', 'opus')) and harness != 'claude-code':
+            raise ValueError('Claude models require Claude Code through AxonHub; Pi is not a fallback.')
+        if not offline_fixture and (model.startswith('openai/') or model.startswith('gpt-')) and harness != 'codex':
+            raise ValueError('OpenAI models require Codex through AxonHub; Pi is historical only.')

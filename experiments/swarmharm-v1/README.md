@@ -9,8 +9,9 @@ Two independent studies share one evidence harness:
 - `registrations/`: current registration only.
 - `run.py`, `launch.py`, `review.py`, `export_atif.py`: rollout lifecycle.
 
-Harness adapters are in `../runtime/`. Phase 2 currently uses four independent
-Sol 5.6 contexts through Pi SDK and AxonHub. No rollout is active.
+Harness adapters are in `../runtime/`. All inference uses AxonHub; Claude uses
+Claude Code and OpenAI uses Codex. See [current work](../../docs/working-context.md) for readiness.
+The Phase 2 trace-record adapter must be ported before the Haiku reproduction.
 
 See [findings](../../docs/phase2-design.md),
 [pass criteria](../../docs/business-outcome-criteria.md),

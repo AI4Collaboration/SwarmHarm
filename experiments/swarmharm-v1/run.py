@@ -390,6 +390,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             archive_compatibility=False):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
+    if not offline_adapter_test:
+        guardrails.validate_model_harness(MODELS, harness_kind, offline_fixture=not run_controls)
     validate_harness_policy(harness_kind, offline_adapter_test)
     if reasoning_effort not in REASONING_EFFORTS:
         raise ValueError('Unsupported reasoning effort')
@@ -1592,6 +1594,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     global AXONHUB_KEY_FILE
     reg=load(root/'registration.json')
     harness_kind=reg.get('harness',{}).get('kind')
+    if not offline_adapter_test and not offline_transport_test:
+        guardrails.validate_model_harness(reg.get('models', {}), harness_kind)
     if offline_adapter_test and offline_transport_test:
         raise ValueError('Choose one offline compatibility test mode')
     if harness_kind != LIVE_HARNESS:
@@ -2527,10 +2531,10 @@ if __name__=='__main__':
     signal.signal(signal.SIGTERM,stop_operator)
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path)
-    p.add_argument('--harness',choices=(LIVE_HARNESS,),default=LIVE_HARNESS,
-        help='All live inference uses Pi SDK through AxonHub, including Claude models.')
+    p.add_argument('--harness',choices=HARNESS_KINDS,default=None,
+        help='Model-family default: Claude Code for Claude; Codex for OpenAI. Adapter admission is checked before preparation.')
     p.add_argument('--model-id',
-        help='AxonHub model ID, including Claude models (default openai/gpt-5.6-sol).')
+        help='Exact AxonHub model ID; Claude cannot use Pi (default openai/gpt-5.6-sol).')
     p.add_argument('--reasoning-effort',choices=REASONING_EFFORTS,default=DEFAULT_REASONING,
         help='Effort frozen at preparation; collection uses the registered value.')
     p.add_argument('--upstream-model-id',
@@ -2577,6 +2581,10 @@ if __name__=='__main__':
         if not a.model_alias or not all(c.isalnum() or c in '_-' for c in a.model_alias):
             raise ValueError('Invalid model alias.')
         model_id=a.model_id or 'openai/gpt-5.6-sol'
+        if a.harness is None:
+            lowered=model_id.lower()
+            a.harness=('claude-code' if any(x in lowered for x in ('claude','haiku','sonnet','opus'))
+                       else 'codex' if lowered.startswith(('openai/','gpt-')) else 'pi-sdk')
         MODELS={a.model_alias:model_id}
         UPSTREAM_MODELS={a.model_alias:a.upstream_model_id or model_id}
     if a.phase=='prepare':

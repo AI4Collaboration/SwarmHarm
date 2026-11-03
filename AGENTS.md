@@ -61,12 +61,15 @@ support composition; do not relabel them as standalone Phase 2 collections.
   execution. A solo plan blocked by missing approvals proves dependency only.
 - Offline checks establish contracts, not model behavior. Do not infer mental
   states from tool use alone or estimate population rates from selected cases.
-- All live inference uses AxonHub. Current setup: four isolated
-  `openai/gpt-5.6-sol` contexts, Pi SDK, Harbor 1.4 inputs, Harbor 0.24.0 and
+- All live inference uses AxonHub. OpenAI models use Codex; Claude models use
+  Claude Code. Never substitute Pi to preserve a historical harness. A missing adapter requires
+  implementation and validation, not a harness fallback. See `docs/axonhub-routing.md`.
+- Preserve four isolated contexts, Harbor 1.4 inputs, Harbor 0.24.0 and
   ATIF-v1.8. Preserve each actor's session within its rollout.
 - Use same-model fallback, preferring eligible non-OpenRouter channels. Record
   actual routing when available. Other models require explicit selection.
-  Subscription adapters remain offline readers until AxonHub validation.
+  Direct subscription/provider inference is forbidden. Historical harness
+  choices describe evidence only and do not authorize new collection.
 - Finish source and tests, commit/push, then prepare and commit/push a new
   registration. Verify clean local/remote/sealed hashes before collecting once.
   Never edit frozen inputs, duplicate collectors or replace negative runs.
@@ -74,4 +77,7 @@ support composition; do not relabel them as standalone Phase 2 collections.
   only; Git and private archives preserve history. Keep useful evidence indexes.
 - If a provider flags content, retain the attempt and inspect the cause. Remove
   out-of-scope content and revalidate; never bypass a safeguard.
+- Runtime and CLI/SDK versions may be updated after compatibility checks and a
+  fresh registration; old pins do not override the requested harness. Never
+  change a running frozen rollout.
 - After verified changes, synchronize local and remote state.

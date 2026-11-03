@@ -187,21 +187,37 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                     ValueError, 'does not yet have a registered AxonHub transport'):
                 run.validate_harness_policy(harness)
 
-    def test_claude_model_still_uses_the_pi_axonhub_harness(self):
+    def test_claude_pi_is_rejected_before_preparation_or_route_calls(self):
         with tempfile.TemporaryDirectory() as temporary, \
-             patch.object(run,'MODELS',{'claude':'anthropic/claude-example'}), \
-             patch.object(run,'UPSTREAM_MODELS',{'claude':'anthropic/claude-example'}), \
-             patch.object(run,'verify_routes',return_value={}) as verify:
-            root=Path(temporary)/'study';registration=self.registration_path(temporary)
-            key=self.key_file(temporary)
-            run.prepare(root,registration,key,run_controls=False,study_mode='connected',archive_compatibility=True)
-            prepared=run.load(root/'registration.json')
-            self.assertEqual(prepared['models'],{'claude':'anthropic/claude-example'})
-            self.assertEqual(prepared['harness']['kind'],'pi-sdk')
-            self.assertEqual(prepared['api_base'],run.AXONHUB_API_BASE)
-            self.assertTrue(prepared['live_collection_permitted'])
-            self.assertFalse(prepared['offline_adapter_test'])
-            verify.assert_called_once_with(key.resolve(),reasoning_effort='high')
+             patch.object(run,'MODELS',{'haiku':'anthropic/claude-haiku-5.5'}), \
+             patch.object(run,'verify_routes') as verify:
+            root=Path(temporary)/'study'
+            with self.assertRaisesRegex(ValueError, 'Claude models require Claude Code'):
+                run.prepare(root,self.registration_path(temporary),None,
+                            run_controls=False,study_mode='phase2-component')
+            verify.assert_not_called()
+            self.assertFalse(root.exists())
+
+    def test_claude_pi_is_rejected_by_launcher_and_direct_collector(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)/'study';root.mkdir()
+            run.save(root/'registration.json', {
+                'models':{'haiku':'anthropic/claude-haiku-5.5'},
+                'harness':{'kind':'pi-sdk'},
+            })
+            registration=self.registration_path(temporary)
+            with self.assertRaisesRegex(ValueError, 'Claude models require Claude Code'):
+                launch.launch(root,registration,command=['true'])
+            with self.assertRaisesRegex(ValueError, 'Claude models require Claude Code'):
+                run.collect(root,registration)
+            self.assertFalse((root/'launcher.json').exists())
+            self.assertFalse((root/'started.json').exists())
+
+    def test_model_harness_policy_requires_provider_native_harnesses(self):
+        run.guardrails.validate_model_harness({'haiku':'anthropic/claude-haiku-5.5'},'claude-code')
+        run.guardrails.validate_model_harness({'sol':'openai/gpt-5.6-sol'},'codex')
+        with self.assertRaisesRegex(ValueError, 'OpenAI models require Codex'):
+            run.guardrails.validate_model_harness({'sol':'openai/gpt-5.6-sol'},'pi-sdk')
 
     def test_launcher_rejects_an_offline_subscription_registration(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -233,6 +249,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             with patch.object(run,'verify_routes',return_value={}):
                 run.prepare(root,registration,key,run_controls=False,study_mode='connected',archive_compatibility=True)
             reg=run.load(root/'registration.json');reg['image']='sha256:'+'f'*64
+            reg['models']={'fixture':'test/fixture'}
             run.save(root/'registration.json',reg)
             with patch.object(run,'AXONHUB_KEY_FILE',key),patch.object(run,'verify_collection_freeze') as freeze:
                 with self.assertRaisesRegex(RuntimeError,'Workstation image differs'):
@@ -1198,7 +1215,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             with patch.object(run, "verify_routes", return_value=routes):
                 with self.assertRaisesRegex(ValueError, "every context active together"):
                     run.prepare(
-                        root, registration, key, 4, 1,
+                        root, registration, key, 4, 1, run_controls=False,
                         scenario="engineering-capacity",study_mode='connected',archive_compatibility=True,
                     )
 

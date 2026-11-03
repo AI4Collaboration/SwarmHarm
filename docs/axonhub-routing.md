@@ -1,92 +1,30 @@
-# Model routing
+# Model and harness routing
 
-Every live model inference uses AxonHub. The currently live-validated Pi harness
-uses the Responses endpoint:
+All live inference goes through **AxonHub**, including Claude Code. Direct
+provider and subscription inference are not rollout routes.
 
-`https://lmportal.iefbr14.xyz/v1/responses`
+- **Claude models: Claude Code.** This includes Haiku, Sonnet and Opus. Never
+  substitute Pi, even when reproducing a historical Pi case.
+- **OpenAI models: Codex.** Historical Sol/Pi cases retain their original
+  provenance. Reproductions record model, harness and persistence differences;
+  old settings never override this rule.
+- Use native same-model fallback, preferring eligible non-OpenRouter channels.
+  Freeze the exact model ID, gateway, protocol and actual adapter version.
+- Read the existing host-only key outside Git. Never copy it into an agent
+  workspace, registration or report. Do not change credentials or spending limits.
+- Verify catalog availability at preparation and actual routing during execution.
+  Catalog membership alone does not establish a successful call.
 
-The host reads a scoped key from a `0600` file outside the repository. A key
-must never enter a task, container, registration, trajectory, report or Git.
-Claude can be selected by its AxonHub model ID through Pi. Harnesses are a
-separate condition: AxonHub also exposes an Anthropic-compatible surface for
-Claude Code at `/anthropic/v1/messages` and a Codex-compatible surface at
-`/codex/responses`. Those harnesses may be enabled after SwarmHarm implements
-AxonHub-key authentication, freezes the protocol route and passes a fresh live
-validation. The current Claude Code/Codex adapters still implement subscription
-authentication, so they remain offline historical-compatibility readers. Direct
-provider or subscription inference is not allowed. Historical direct-OpenRouter
-examples keep their frozen provenance.
+## Current implementation
 
-## Current routing policy
+The Phase 1 publication branch implements Claude Code through AxonHub's Messages
+API. The maintained Phase 2 trace-integrity environment still uses Pi-specific
+record projection and goal handling. Its Claude Code adaptation must pass native
+record, continuation, export and outcome checks before a new registration.
+Live preparation and launch reject Claude or OpenAI with Pi; missing support is never a reason
+to change the requested harness.
 
-- **30 October 2026 selection:** use AxonHub's native failover, preferring
-  eligible non-OpenRouter channels and retaining OpenRouter as fallback.
-  The existing evaluation key uses `SwarmHarm-AxonHub-Fallback`: explicit
-  failover, no channel allowlist, no model remapping and inherited disabled
-  session affinity. This supersedes the earlier TerryJwy-only restriction.
-  Existing Sol routes retain weights 100 for TerryJwyethCO and TerryJwyappleCO,
-  50 for OpenRouter-Adam-OxRML and 0 for OpenRouter-Backup. Weights order
-  eligible channels; they do not change the requested model.
-  The global policy already permits four cross-channel retries and two
-  same-channel retries, with a 1,000 ms delay. No global channel was disabled;
-  credentials and quota settings were unchanged.
-- Existing OpenRouter channels synchronize all models without a model filter and
-  are eligible for automatic fallback.
-- Eligible Sol requests prefer the existing TerryJwy channels. Other eligible
-  channels remain fallback routes for the same fixed model identity.
-- Session affinity is disabled. AxonHub may retry on ordinary provider failures
-  and recognized credit exhaustion, but it must not substitute another model.
-- Bare and provider-prefixed aliases may resolve to the same upstream model.
-  Registration records the exact requested and upstream identities; collection
-  rejects a response with a different model identity.
-- Catalog membership does not prove which channel executed a request. Review the
-  AxonHub execution record and keep routing interventions separate from behavioral
-  evidence.
-- Model provider does not force a harness. OpenAI, Anthropic and every other
-  selected model must still traverse AxonHub. The registration freezes both the
-  client protocol and model. AxonHub may fall back only among eligible channels
-  serving that same registered model.
-
-The current rollout default is **`openai/gpt-5.6-sol`**. Historical registrations
-retain their originally frozen model identity, including the earlier
-`openai/gpt-6.1-sol` Phase 1 example. The user also selected
-**`openai/gpt-6.1-terra`** and **`openai/gpt-6-luna`** for the completed matched
-Knowledge Work comparison, each in its own registration. Other models require
-explicit user selection. Changing a default never validates a historical route.
-
-Every fresh registration must query the upstream and authenticated AxonHub
-catalogs again. Historical route checks do not validate a current rollout.
-
-The 30 October 08:41 UTC connectivity check succeeded with the unchanged Sol
-identity. AxonHub request #185988 records appleCO's 401 followed by successful
-ethCO execution. This demonstrates native failover between those two channels;
-OpenRouter is eligible but was not used in that check. The host-only probe and
-UI evidence are stored outside Git. Routing checks are not behavioral results.
-
-## Registration freeze
-
-Before every rollout:
-
-1. finish environment code, documentation and cleanup;
-2. query the upstream and authenticated AxonHub model catalogs;
-3. record exact model identities and catalog checks in a fresh registration;
-4. commit and push the registration;
-5. verify a clean worktree, matching local and remote commits, byte-identical
-   registration files and sealed source/input hashes; and
-6. edit no frozen source after preparation.
-
-The maintained request settings are:
-
-- API base: `https://lmportal.iefbr14.xyz/v1`;
-- Responses endpoint: `https://lmportal.iefbr14.xyz/v1/responses`;
-- reasoning effort: `high`;
-- request timeout: 300 seconds; Pi allows three retries after the first attempt,
-  with provider-SDK retries disabled and every attempt retained;
-- maximum output: 16,384 tokens per response;
-- provider concurrency: four for four simultaneously active agents;
-- actor wall clock: 3,600 seconds; and
-- rollout wall clock: 4,500 seconds.
-
-The registration fixes the model and local request configuration. AxonHub
-execution records establish the channel actually used. Provider errors, filters,
-refusals, budget limits and behavioral outcomes remain separate evidence.
+Use [working context](working-context.md) for the selected next model and
+[running evaluations](running-evals.md) for registration. Old channel weights,
+connectivity probes and subscription instructions belong in Git history; they
+are not current routing configuration.

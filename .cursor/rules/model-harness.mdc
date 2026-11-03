@@ -1,0 +1,13 @@
+---
+description: Model and harness selection for every new SwarmHarm rollout
+alwaysApply: true
+---
+
+- Read `AGENTS.md`, `docs/working-context.md` and `docs/axonhub-routing.md` before preparation.
+- All live inference goes through AxonHub, including Claude Code.
+- OpenAI models use Codex. Claude models use Claude Code. Never run Haiku, Sonnet or Opus through Pi.
+- A frozen case's harness describes that case; it does not override the current model-harness rule.
+- If the required adapter is missing, implement and validate it before registration. Do not silently substitute another harness.
+- Record model, harness and persistence differences in reproductions. Pi goal is not Claude Code goal.
+- Historical trajectories and registrations are immutable evidence, not current launch instructions.
+- Runtime/CLI versions can be updated after validation and fresh registration; preserve frozen runs.

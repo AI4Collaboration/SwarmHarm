@@ -8,5 +8,5 @@ an empty discussion surface.
 - [Environment contract](../../../docs/environment-contract.md)
 - [Registration and collection](../../../docs/running-evals.md)
 
-No rollout is active or registered. Historical evidence remains in reviewed
-indexes and linked releases.
+See [current work](../../../docs/working-context.md) for rollout status.
+Reviewed evidence remains in indexes and linked releases.

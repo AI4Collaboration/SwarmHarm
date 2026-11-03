@@ -52,9 +52,9 @@ usable without making the current studies depend on one another.
 
 ## Working with the repository
 
-The default setup uses four isolated
-`openai/gpt-5.6-sol` agents, Pi SDK and AxonHub same-model fallback, with
-Harbor 1.4 inputs, Harbor 0.24.0 and ATIF-v1.8 evidence.
+Rollouts use four isolated agents and AxonHub same-model fallback.
+**Claude uses Claude Code; OpenAI uses Codex.** Each registration records
+its model and harness, with Harbor 1.4 inputs, Harbor 0.24.0 and ATIF-v1.8 evidence.
 
 - [Working context](docs/working-context.md): current state.
 - [Environment contract](docs/environment-contract.md): scenario design.
