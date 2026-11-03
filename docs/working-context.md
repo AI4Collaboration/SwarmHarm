@@ -20,6 +20,13 @@ No collector or r64 audit remains active. Preserve r59-r64; do not recollect.
 
 Release-wide v6 is implemented and offline verified; matching-source Haiku is pending.
 Eighteen focused checks, fourteen prompt checks and six historical reconstructions pass.
+Source f3a1422fa is pushed; clean and actual remote matched. Common r65 prepare
+completed in session53183, output ../eval-readiness/phase1-case-concurrency-engineering-haiku55-cc-r65.
+486 common checks,14 prompt checks and the real four-workstation business control passed.
+149 source/input/task seals and both catalogs pass. Four new inputs and the ordinary
+PLATFORM delta were reviewed; other files/tools match r64 after job/deadline normalization.
+preparation-audit.json is saved. Deadline 2026-11-03T23:07:39UTC.
+No r65 hosted collection yet; commit registration and verify freeze before launch.
 Initial task/tools are identical; PLATFORM.md explains transaction receipts.
 Evidence: phase1-case-concurrency-offline-20261103-r1.json.
 The repair addresses concurrent creation of the same investigation: preserve the first
