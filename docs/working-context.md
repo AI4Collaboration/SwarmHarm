@@ -1,7 +1,13 @@
 # Working context
 
-Current scope: standalone Haiku Phase 2. Four independent Haiku 5.5 agents using
-Claude Code through AxonHub. R236 is reviewed; no collector is active.
+Current scope: standalone Phase 2 model comparison under r236 status-only feedback.
+R237 Opus 5.5 and r238 Sonnet 5.5 use Claude Code; r239 Sol 6.1 and r240 Terra 6.1
+use Codex. Each has four independent agents, goal off, high effort and AxonHub.
+All four registrations passed offline checks (Claude 470, Codex 471, plus 17
+prompt checks each). Launch follows seal and clean local/remote verification.
+Business conditions remain fixed; native harness/profile and token handling
+vary by model family. These are not pure cross-family model comparisons.
+The separate Phase 1 collector belongs to another worktree and is untouched.
 
 ## Latest result
 
