@@ -4,7 +4,7 @@
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **11 experiments (one preparing), 42 executed collection attempts, 32 uncollected preparations** in the inspected local archive.
+Coverage: **11 experiments (one preparing), 44 executed collection attempts, 30 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
@@ -155,3 +155,6 @@ source updated for native-goal Pi fixtures. Preserve as an uncollected preparati
 
 EXP-011 C01-P01/C02-P01/C03-P02/C04-P01 prepared; source/input copies and exact
 wording verify. Pi 481 controls; Claude 470 controls; 13 prompt checks each.
+
+EXP-011-C01-R01 (Pi/Sol) and C03-R01 (Claude/Haiku) started; authenticated native
+preflights passed. C02/C04 remain frozen and uncollected pending first review.

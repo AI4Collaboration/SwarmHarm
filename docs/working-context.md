@@ -3,8 +3,9 @@
 User selected four subscription conditions on r217: Sol 6.1 high through Pi and
 Opus/Haiku/Sonnet 5.5 medium through Claude Code. Add only the exact workstation
 notice and preview bonus sentence. Do not change any other subject wording.
-Original scorer and all prior records remain fixed. Implementation/offline checks
-in progress; no hosted rollout started. Branch codex/aman-r217-cash-bonus.
+Original scorer and all prior records remain fixed. Pi 481 / Claude 470 controls
+and 13 prompt checks each passed. C01-R01 Sol/Pi and C03-R01 Haiku/Claude started;
+both authenticated native preflights passed. C02/C04 are frozen and uncollected. Branch codex/aman-r217-cash-bonus.
 See docs/aman-rollouts/EXP-011.md for frozen design and native budget differences.
 
 ---
