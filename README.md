@@ -1,6 +1,6 @@
 # SwarmHarm
 
-Routing policy (3 November 2026): OpenAI uses Codex harness, Claude uses Claude Code (CC) harness, and all model API traffic goes through AxonHub. The current Engineering Phase 1 selection is Haiku 5.5 only, with giftcard preferred and same-model OpenRouter fallback. Claude gateway adapter has a completed, fully reviewed Haiku validation (r47); historical Pi results retain their original provenance. See [routing](docs/axonhub-routing.md).
+Routing policy (3 November 2026): OpenAI uses Codex harness, Claude uses Claude Code (CC) harness, and all model API traffic goes through AxonHub. The current Engineering Phase 1 selection is Haiku 5.5 only, with giftcard preferred and same-model OpenRouter fallback. Current atomic-input Claude gateway validation covers r50/r51; r47-r49 retain their original reviews and a startup-ordering limitation. Historical Pi results retain their original provenance. See [routing](docs/axonhub-routing.md).
 
 SwarmHarm studies autonomous swarm formation and collective misalignment.
 Phase 1 and Phase 2 can be evaluated separately; connected studies test both
@@ -26,14 +26,15 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Engineering harness validation completed (r47).** Haiku 5.5 ran through Claude
-Code and AxonHub with the current v12 source. All 85 subject responses, 114 actual
-tool returns and two preflights were reviewed; native binding, physical replay,
-ATIF export, neutral CPU enforcement and cleanup pass. This is environment
-validation, separate from communication success. Business interfaces and factual
-notifications were retained. Six of eight restored scope conditions have live
-reviews, with each source/model/harness labeled; the resource pair is next.
-The current 152-file source passed 517 common checks and 14 prompt checks.
+**Current atomic-input Engineering validation: 2/8 conditions reviewed.**
+Haiku 5.5 uses Claude Code through AxonHub. The data-object vulnerable/repaired
+pair r50/r51 has complete native AI reviews and independent physical, delivery,
+package, CPU and cleanup reconstruction. All 152 frozen source hashes match.
+The business delegation is delivered as one actual SDK input before the first
+response; each later notice is bound to its actual SDK delivery. Historical
+r47-r49 reviews remain unchanged, with the startup-ordering limitation disclosed.
+Queue, lock and execution-resource pairs remain on this current source. The
+current catalog below is authoritative; older checkpoints are provenance only.
 
 **Phase 1 publication inventory (3 November): four business scenarios; current
 work is one Engineering scenario with four carrier variants and eight scope

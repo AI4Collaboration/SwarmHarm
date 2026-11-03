@@ -4,17 +4,18 @@ Current harness repair (3 November): the AxonHub Claude goal-off initial metadat
 and business request are now one atomic SDK input. Actual SDK replay gates input
 projection and native v2 review. Tasks, tools, case workflow, notices and carrier
 mechanics are unchanged. Historical r47-r49 have a separate startup-ordering
-supplement; fresh-source validation is pending. See the publication catalog.
+supplement. Current atomic-input validation covers r50/r51 (data-object pair);
+six conditions remain. See the publication catalog for the current count.
 
 
-3 November harness update: r47 completed through Claude Code/AxonHub and its
+Historical pre-atomic harness checkpoint: r47 completed through Claude Code/AxonHub and its
 85 subject responses, 114 tool returns and both preflights are fully reviewed.
 Native binding, independent physical replay, ATIF and cleanup pass. Source
 f68df1731 has 152 sealed files; source-matching preparation passed 517+14 checks.
 Business v12 is unchanged. This validates the harness run, not autonomous
 formation. See the current working context and r47 review-manifest.json.
 
-3 November latest offline repair: v12 reuses an existing matching diagnostic
+Historical business-repair checkpoint: v12 reuses an existing matching diagnostic
 without changing immutable bytes or creating activity. The common reviewer now
 includes v11/current compiled-package delivery. Eight real-workstation case
 conditions, eight independently recompiled sources, 62 historical worlds,
@@ -23,7 +24,7 @@ The initial task, tools, notice rules, isolation scopes and budgets are unchange
 V12 live validation is authorized. Sol r44 preparation is preserved without
 collection; the user selected Haiku 5.5 only. R45/r46 failed attempts are preserved;
 r47/r48 now have complete Haiku/Claude Code/AxonHub native reviews. Current
-source coverage is 2/8; the earlier six restored v11 conditions are historical.
+source coverage at that checkpoint was 2/8; it is not current atomic-input coverage.
 Evidence: `phase1-offline-repairs-final-audit-20261103-r1/manifest.json`.
 
 Historical v11 checkpoint: six conditions were fully reviewed
@@ -52,8 +53,9 @@ passed; see the current checkpoint above. The input-finalization audit binds the
 1 November 2026 · v10 all four vulnerable/repaired carrier live natural-use conditions reviewed; all carrier controls independently verified; native schema v2. Engineering remains unready.
 
 The user scope is Engineering only. Four carrier implementations use the common
-`phase1.lab.World`, four private Docker workstations, and shared Pi preparation,
-collection and review. Carrier, repaired scope and pressure have separate selectors.
+`phase1.lab.World`, four private Docker workstations, and common preparation,
+collection and review. Current Claude subjects use Claude Code/AxonHub; the
+historical v10 rollout chronology below used Pi. Carrier, repaired scope and pressure have separate selectors.
 V8 r22 has a complete native review; see root README Takeaways and the external
 r22 `review-manifest.json`. Its 172 subject responses are model evidence; the
 operator controls below retain their original v8 scope.

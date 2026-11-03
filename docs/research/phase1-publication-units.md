@@ -70,22 +70,23 @@ scopes: 24 planned isolation cells. Its 21 indexed executions remain in the
 [legacy index](phase1-registration-index.json). That older grid is not the current
 four-carrier catalog; do not add its cells to the eight Engineering conditions.
 
-## Current offline repair
+## Business repair and atomic harness revision
 
 V12 repairs idempotent diagnostic creation and the common package-report
 aggregate. Eight offline case/package conditions and the common/prompt checks
 pass; the original v11 evidence above remains unchanged. The user has authorized model collection and selected Haiku 5.5 only for current
 Phase 1 work. R45 stopped at Pi preflight and r46 at a collector error, both preserved.
-R47 now supplies a completed v12 Haiku/Claude Code/AxonHub review, with native
-binding and independent reconstruction. This does not validate other model or
-carrier conditions. The portable repair evidence is an offline verification
+R47-r49 supply historical v12 Haiku/Claude Code/AxonHub reviews and a separately
+retained startup-ordering limitation. The atomic-input repair has passed 517
+common, 14 prompt and 11 bridge checks, plus historical native replay. Its
+matching-source live coverage is tracked at the top of this document. The portable repair evidence is an offline verification
 package, not a new live result or an all-Phase-1 publication-ready claim.
 
 ## Separate three kinds of status
 
-1. **Environment and evidence coverage:** v10 has all eight scope reviews. V11 has
-   independently verified physical delivery/repair controls and six of eight
-   changed-scope live reviews; the remaining reviews are tracked in the catalog.
+1. **Environment and evidence coverage:** v10 has all eight scope reviews and
+   v11 has six historical scope reviews. Current v12 atomic-input coverage is
+   counted only from matching frozen code and actual SDK delivery, as shown above.
 2. **Behavioral outcome:** current carrier rollouts show natural use, some foreign
    observations and some ordinary artifact adoption. They do not establish
    intentional communication or recurrent formation. Historical positive Phase 1
@@ -96,18 +97,13 @@ package, not a new live result or an all-Phase-1 publication-ready claim.
 
 ## Work remaining before the current release is publication-ready
 
-**R1 — Natural business interface restoration.** V11 now implements ordinary diagnostics, case
-notes, source attachments, linked follow-up and factual relevant change updates.
-Keep initial state empty and task requests outcome-level. Restrict only unintended
-cross-workspace paths; do not remove a normal business function merely because it
-can support communication. For queue/lock/resource variants, a second shared-file
-route must not silently carry the measured exchange. Existing v10 evidence remains
-immutable. All eight real-workstation case-to-package controls pass; complete
-carrier controls and independent reconstruction pass. The common suite passed
-514 tests; final documentation-only wording passes 14 prompt and eight focused
-checks. Exact final-source preparation and r37-r42 full native reviews now pass.
-R37 verifies actual case-locator adoption and factual notification delivery; r38
-verifies continued local usability with private records. Two execution-resource conditions still require completed fresh native reviews.
+**R1 — Natural business interface restoration: complete.** Ordinary diagnostics,
+case notes, source attachments, linked follow-up and factual updates are retained.
+Local operations remain available in every carrier; only the data-object
+vulnerable condition shares case files across workspaces. V12 idempotence and
+package-report repairs are validated offline. The Claude atomic-input repair
+changes SDK delivery and its verifier without altering business prompts,
+interfaces or notices. Exact source-matched live coverage is R2, not this gate.
 
 **R2 — Revised-source validation.** After R1, check affected ordinary, gap-using,
 repaired and invalid-output paths, source attribution and prompt contracts.

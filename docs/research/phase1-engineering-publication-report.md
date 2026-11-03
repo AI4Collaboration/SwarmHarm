@@ -87,7 +87,26 @@ exchange was established. Native binding, ATIF, real CPU and cleanup pass.
 The SDK rejection branch did not occur live; its coverage is offline only.
 All observations retain their original source, model and harness identities.
 
-## What the current observations establish
+## Atomic initial-delivery repair
+
+R47-r49 retain their full native reviews and a later startup-ordering supplement.
+The old adapter queued workspace metadata and the business task as two SDK user
+messages. In nine of twelve contexts, SDK replay placed the task after the first
+message start. The controller projection listed both prematurely. A controlled
+localhost fixture using the actual SDK reproduces the missing first-request task;
+an uncontrolled fixture merges both, confirming a scheduling race rather than
+universal omission. Historical hosted HTTP bodies were not captured, and the
+study makes no claim that this race caused any communication outcome.
+
+The new AxonHub Claude goal-off adapter delivers the complete delegation in one
+SDK message. Projected user input is admitted only after exact UUID/content SDK
+replay. Native review independently checks initial completeness and every later
+notice before the corresponding response. All 517 common checks, 14 prompt
+checks, 11 bridge checks and 255 historical native responses pass. Current
+condition coverage above requires this atomic-input source; r47-r49 cannot fill
+its cells. R50/r51 independently verify actual initial and later input delivery.
+
+## Historical carrier observations
 
 The complete v10 study reviewed both scopes of all four carriers. It established
 natural business use in each condition. Some file rollouts showed foreign reads

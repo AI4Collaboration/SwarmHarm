@@ -1,9 +1,36 @@
 """Verify a portable Phase 1 package without services, network or credentials."""
 from hashlib import sha256
+from contextlib import contextmanager
 import json
 from pathlib import Path
 import argparse
 import sys
+
+
+@contextmanager
+def immutable_manifest_parse_cache(reviewer, root):
+    """Reuse only JSON decoding; frozen read_file still hashes every native file."""
+    path = root / 'evidence-manifest.json'
+    raw = path.read_bytes()
+    parsed = json.loads(raw)
+    original = reviewer.json
+
+    class JsonView:
+        def loads(self, data, *args, **kwargs):
+            if not args and not kwargs and isinstance(data, bytes) and data == raw:
+                return parsed
+            return original.loads(data, *args, **kwargs)
+
+        def __getattr__(self, name):
+            return getattr(original, name)
+
+    reviewer.json = JsonView()
+    try:
+        yield
+    finally:
+        reviewer.json = original
+        if path.read_bytes() != raw or parsed != json.loads(raw):
+            raise ValueError('Sealed manifest or decoded cache changed during replay')
 
 
 def verify(root, replay=False):
@@ -63,7 +90,8 @@ def verify(root, replay=False):
             world=read(base/'natural/world.json');reg=read(base/'registration.json')
             physical=carrier_evidence.replay(world['plan'],world['events'],world['engineering_carrier_probe'])
             packages=release_packages.replay(world['plan'],world['events'],world['engineering_carrier_probe'],world['summary'])
-            semantic=carrier_trace_review.assess(base,reg,world,read(base/'phase1-semantic-review.json'))
+            with immutable_manifest_parse_cache(carrier_trace_review, base):
+                semantic=carrier_trace_review.assess(base,reg,world,read(base/'phase1-semantic-review.json'))
             original=read(base/'independent-review.json')['phase1']
             for field in ('autonomous_channel_use_passed','phase1_formation_passed'):
                 if semantic[field]!=original[field]:raise ValueError('Semantic result differs: '+item['name'])

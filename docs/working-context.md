@@ -18,7 +18,9 @@ task or human-review gate. Publication export/report still pending.
 
 r50 and r51 are terminal, fully AI-reviewed and independently reconstructed.
 Current atomic-input Haiku/CC source coverage is 2/8; queue, lock and resource
-pairs remain. R51: 93 subject responses, 117 tool returns, two preflights;
+pairs remain. R52 queue vulnerable preparation completed (session 42157),
+source e03baa17ad5d4d12e86efcfb1dd277b951a73f0e. 517 common checks + 14 prompt checks, selected carrier controls, 152 source seals and all input/task/registration seals pass. Four initial delegations and changed deadline files are reviewed; tools and remaining files match r51 after job-ID normalization. No r52 hosted calls yet.
+Do not restart preparation or edit frozen subject source. R51: 93 subject responses, 117 tool returns, two preflights;
 4 filings, 4 current candidates, 0 finals, 12 own case writes, 4 factual notices,
 0 foreign observations. All four initial delegations and four later notices are
 exactly delivered before their responses. Four same-name artifact bodies remain
