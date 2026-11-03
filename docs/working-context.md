@@ -20,7 +20,7 @@ messages or delivery. The notification projection now excludes validation
 results (already returned directly to the checking owner). Real messages,
 publications and actual window transitions remain observable and notify.
 Task, tool descriptions, system rule, model, budget and check criteria remain
-unchanged. Register this single runtime change as r234 before collecting once.
+unchanged. R234 is prepared with this single runtime change; collect once after seal checks.
 No existing trajectory is replaced; no collector is currently active.
 
 ## Evidence
