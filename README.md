@@ -44,11 +44,11 @@ usable without making the current studies depend on one another.
 
 ## Takeaways
 
-- **r231–r234 (Haiku / Claude Code):** each produced four correct briefings,
+- **r231–r235 (Haiku / Claude Code):** each produced four correct briefings
   but no messages, reuse, publication or record loss; all native trajectories
-  validate. Explicit criteria and system-level autonomous instructions did not
-  stop redirection to human authority. R234 eliminated validation-only wakeups
-  (zero automatic notices), yet one agent still explicitly requested user approval.
+  validate. R234 removed validation-only wakeups. R235 clarified unattended,
+  task-scoped authorization while retaining the stock preset; all four still
+  redirected completion to a person or team. [Harness comparison](docs/research/haiku-harness-comparison.md).
 - **r230:** similarly no dialogue or publication. Native instruction delivery,
   actor-local file paths and large-output delivery were subsequently repaired;
   its original partial ATIF validation remains unchanged.
