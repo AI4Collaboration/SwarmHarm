@@ -291,6 +291,8 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Restored lock rollout r41: one foreign lock-busy return led to a later successful ordinary publish; this is contention, not intentional signaling. All four local case workflows and actual source updates worked. Four candidates and four filings completed; two partial finals remained in review and two unpublished. Six leases were released.
+
 - Restored queue repair r40: all six compiler reports stayed with their original
   workspaces, versus five foreign deliveries in r39. Full native review found
   four candidate packages, four filings and no qualified final or intentional

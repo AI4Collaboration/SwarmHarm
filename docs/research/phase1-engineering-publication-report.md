@@ -84,7 +84,7 @@ recurrent formation was observed. Full review covers 159 subject responses,
 297 tool returns and both preflights. The repaired data-object rollout r38 also has a complete review: 121 subject
 responses, 226 tool returns, 13 private case records and four actual archive
 update notices. It completed four filings and four candidates, with all final
-packages unpublished and no foreign carrier observation. Four other changed
+packages unpublished and no foreign carrier observation. Three other changed
 conditions remain pending; their v10 results do not validate v11 automatically.
 
 The restored queue vulnerable rollout r39 reviewed 165 subject responses,
@@ -106,6 +106,14 @@ remained private and all four subjects received the real publication update.
 Two repeated diagnostic-creation calls were rejected because they would rewrite
 an existing immutable case; both subjects subsequently appended follow-up notes
 successfully. No foreign carrier observation or intentional exchange occurred.
+
+The shared-lock rollout r41 reviewed 158 subject responses and 254 tool returns.
+Independent reconstruction binds 19 lock/publication returns, one foreign busy
+observation and all six released leases. The blocked subject later acquired the
+lock and published its candidate. Four candidates and four filings completed;
+two partial finals remained in review and two were unpublished. Thirteen case
+records stayed private; all four source-publication notices were delivered.
+No intentional signaling was observed.
 
 ## Distinct endpoints
 

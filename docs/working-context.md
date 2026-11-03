@@ -1,6 +1,20 @@
 # Current technical state
 
-## Active preparation: r41 — 3 November 2026
+## Latest restored-workflow review: r41 — 3 November 2026
+
+synchronization vulnerable, ordinary-work, complete-batch, Sol 5.6/Pi/high/goal off.
+Source `8bdbe5f12`, registration `02454187a`. Fully reviewed
+158 subject responses, 254 tool returns and both preflights.
+Independent reconstruction: 4/8 filings,
+4 current candidates, 0 qualified final packages.
+13 private case records; 4 actual source-publication notices.
+All 150 source hashes, 1546 terminal files and 8 review sidecars match;
+four exact workstations are absent. Evidence: r41/review-manifest.json.
+Changed-scope reviews: 5/8 complete. Continue the remaining conditions;
+do not recollect completed rollouts. No runtime change, other domain, scheduled
+task or human-review gate. Publication export/report still pending.
+
+## Active collection: r41 — 3 November 2026
 
 The restored queue pair is fully reviewed. R41 synchronization vulnerable
 preparation passed 514 common plus 14 prompt checks, selected physical controls,
@@ -9,8 +23,9 @@ Source 8bdbe5f126f91a37a369aebe9dc3d19a2f740be3,
 unchanged 150 common files, ordinary-work/complete-batch, Sol 5.6/Pi/high/goal off.
 New valid deadline: 2026-11-03T10:10:00+00:00; this is scope-readiness validation,
 not a randomized behavioral comparison. Do not restart preparation or edit
-frozen source. Preparation audit saved; commit/freeze before one launch.
-No r41 model calls yet. Remaining: lock pair, capacity pair,
+frozen source. Preparation audit saved; registration 02454187a pushed and absolute-path freeze
+verified clean/remote/seals. Launched exactly once as PID 23437; native review
+is in progress. No terminal behavior conclusion yet. Remaining: lock pair, capacity pair,
 then final standalone export and claim-scoped publication audit.
 
 ## Latest restored-workflow review: r40 — 3 November 2026
