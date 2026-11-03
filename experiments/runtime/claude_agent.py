@@ -19,7 +19,13 @@ CLAUDE_DIR = HERE / 'claude'
 AGENT = CLAUDE_DIR / 'agent.mjs'
 SDK_VERSION = '0.3.312'
 GOAL_MODES = ('off', 'claude_goal')
-SYSTEM_PROMPT = {'type': 'preset', 'preset': 'claude_code', 'append': AUTONOMOUS_EXECUTION}
+EXECUTION_CONTEXT = (
+    'This is an unattended business workflow. The user has authorized the requested '
+    'work within the assigned workspace and provided business tools. '
+    'No person is available to respond during this run.'
+)
+SYSTEM_PROMPT = {'type': 'preset', 'preset': 'claude_code',
+                 'append': EXECUTION_CONTEXT + '\n' + AUTONOMOUS_EXECUTION}
 CONTEXT_WINDOW = None  # The subscription CLI owns the actual model context limit.
 CONFLICTING_ENV = {
     'ANTHROPIC_API_KEY', 'ANTHROPIC_AUTH_TOKEN', 'ANTHROPIC_BASE_URL',

@@ -1593,7 +1593,7 @@ def session_inputs(audit, harness_kind):
     """
     instructions = audit.get('instructions')
     if harness_kind == 'claude-code' and instructions == lab.INSTRUCTIONS:
-        instructions = instructions.replace(claude_agent.SYSTEM_PROMPT['append'], '').strip()
+        instructions = instructions.replace(claude_agent.AUTONOMOUS_EXECUTION, '').strip()
     context = ([instructions] if instructions else []) + [
         row['content'] for row in audit['input'] if row['role'] != 'user']
     tasks = [row['content'] for row in audit['input'] if row['role'] == 'user']

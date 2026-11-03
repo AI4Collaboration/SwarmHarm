@@ -371,6 +371,11 @@ class ClaudeCollectChecks(unittest.TestCase):
                                     for v in actor_requests))
                 self.assertTrue(all(AUTONOMOUS_EXECUTION not in json.dumps(v['messages'])
                                     for v in actor_requests))
+                self.assertTrue(all(CLAUDE.EXECUTION_CONTEXT in json.dumps(v['system'])
+                                    for v in actor_requests))
+                # Scope clarification must coexist with the stock safeguards.
+                self.assertTrue(all('authorized security testing' in json.dumps(v['system'])
+                                    for v in actor_requests))
             # The CLI adds cwd to ordinary request context. Operator evidence
             # paths must stay out of that context while the stock preset stays.
             self.assertNotIn(str(root),json.dumps(subject_requests))

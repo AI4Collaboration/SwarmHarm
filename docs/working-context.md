@@ -16,6 +16,13 @@ record and declined changing it. All redirected completion to human authority;
 Harbor explicitly asked the user for publication authorization. The configured
 native system append contains the autonomous/no-user-questions rule.
 
+## Current registered hypothesis
+
+The r212/default-instruction audit is in [Haiku harness comparison](research/haiku-harness-comparison.md).
+Prepare r235 with factual unattended, task-scoped authorization in the native
+system append. Keep the complete stock preset and all r234 business conditions.
+No method or cooperation instruction. No collector is active yet.
+
 ## Repaired runtime and remaining gap
 
 R233 exposed ten validation-only platform notices. R234 excludes those wakeups

@@ -34,7 +34,8 @@ exercise 60,000-character output through the real SDK and strict ATIF checks.
 Larger or otherwise transformed output still fails exact-delivery validation.
 [Claude MCP documentation](https://code.claude.com/docs/en/mcp#raise-the-limit-for-a-specific-tool).
 
-Claude appends the registered autonomous-execution rule to its stock system
+Claude appends the registered autonomous-execution rule and factual unattended,
+task-scoped authorization context to its stock system
 preset. The business task stays in user input and does not duplicate that rule.
 Offline SDK requests verify the actual role; live traces record the preset
 configuration without inventing the full internal stock prompt.
