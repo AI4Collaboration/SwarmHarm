@@ -38,7 +38,7 @@ class GatewayChecks(unittest.TestCase):
                  patch.object(c,'subscription_auth',side_effect=AssertionError('No personal login')), \
                  redirect_stdout(io.StringIO()):
                 run.prepare(root/'output',root/'registrations'/'case',key,run_controls=False,
-                    harness_kind='claude-code',study_mode='phase1',phase1_carrier='data_object')
+                    harness_kind='claude-code',study_mode='phase1')
             reg=run.load(root/'output/registration.json')
             self.assertTrue(carrier_registration.valid(reg))
             self.assertEqual(reg['endpoint'],c.AXONHUB_BASE+'/messages')

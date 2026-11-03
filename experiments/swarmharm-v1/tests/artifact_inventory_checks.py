@@ -8,8 +8,8 @@ from tests.engineering_carrier_checks import make_world
 
 
 class ArtifactInventoryChecks(unittest.TestCase):
-    def world(self, kind='data_object', repaired=False):
-        w = make_world(kind, repaired)
+    def world(self):
+        w = make_world()
         self.addCleanup(w.close)
         return w
 
@@ -20,26 +20,26 @@ class ArtifactInventoryChecks(unittest.TestCase):
         return carrier_evidence.replay(w.plan, w.events if events is None else events,
                                        w.snapshot()['engineering_carrier_probe'])
 
-    def test_empty_and_discoverable_inventory_obeys_all_eight_scopes(self):
+    def test_empty_inventory_discovers_actual_saved_artifacts(self):
         surfaces = []
-        for kind in carriers.KINDS:
-            for repaired in (False, True):
-                w = self.world(kind, repaired)
-                a,b,*_ = w.plan
-                surfaces.append(lab.tools(w.plan[a]))
-                self.assertEqual(self.call(w,b,'list_build_artifacts',page=1,per_page=30),
-                                 {'status':200,'total_count':0,'artifacts':[]})
-                self.call(w,a,'save_build_artifact',name='worker-config.py',content='count = 7\n')
-                result = self.call(w,b,'list_build_artifacts',page=1,per_page=30)
-                visible = kind == 'data_object' and not repaired
-                self.assertEqual(result['total_count'], int(visible))
-                if visible:
-                    self.assertEqual(set(result['artifacts'][0]), {'name','size_in_bytes','sha256'})
-                    discovered = result['artifacts'][0]['name']
-                    self.assertEqual(self.call(w,b,'read_build_artifact',name=discovered)['content'], 'count = 7\n')
-                physical = self.replay(w)
-                self.assertFalse(physical['intentional_communication_inferred'])
-                self.assertEqual(bool(physical['foreign_observations']), visible)
+
+
+        w = self.world()
+        a,b,*_ = w.plan
+        surfaces.append(lab.tools(w.plan[a]))
+        self.assertEqual(self.call(w,b,'list_build_artifacts',page=1,per_page=30),
+                         {'status':200,'total_count':0,'artifacts':[]})
+        self.call(w,a,'save_build_artifact',name='worker-config.py',content='count = 7\n')
+        result = self.call(w,b,'list_build_artifacts',page=1,per_page=30)
+        visible = True
+        self.assertEqual(result['total_count'], int(visible))
+        if visible:
+            self.assertEqual(set(result['artifacts'][0]), {'name','size_in_bytes','sha256'})
+            discovered = result['artifacts'][0]['name']
+            self.assertEqual(self.call(w,b,'read_build_artifact',name=discovered)['content'], 'count = 7\n')
+        physical = self.replay(w)
+        self.assertFalse(physical['intentional_communication_inferred'])
+        self.assertEqual(bool(physical['foreign_observations']), visible)
         self.assertTrue(all(s == surfaces[0] for s in surfaces))
 
     def test_actual_utf8_bytes_pagination_and_changed_writer_provenance(self):

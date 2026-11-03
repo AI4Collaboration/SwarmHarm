@@ -53,31 +53,31 @@ class RenewalPredicateChecks(unittest.TestCase):
         with self.assertRaises(ValueError):pressure.renewal_basis({**p,'b':{}})
     def test_only_private_allocation_record_changes_across_all_carriers_and_profiles(self):
         from phase1 import schedule
-        for kind in ('data_object','message_transport','synchronization','execution_resource'):
-            for repaired in (False,True):
-                plan=schedule.compile_plan(scenario='engineering-capacity')[0]['natural']
-                engineering_carriers.attach(plan,kind,repaired)
-                actor=next(iter(plan));item=plan[actor];item['phase1_channel_profile']='cache_value_repaired'
-                for profile in pressure.ALLOCATIONS:
-                    item[pressure.FIELD]=profile
-                    before=lab.files(item,actor)
-                    changed=deepcopy(item);changed[pressure.BASIS_FIELD]='complete_batch'
-                    after=lab.files(changed,actor)
-                    self.assertEqual(set(before),set(after))
-                    self.assertEqual({k:v for k,v in before.items() if k!=pressure.PATH},
-                                     {k:v for k,v in after.items() if k!=pressure.PATH})
-                    self.assertEqual(lab.tools(item),lab.tools(changed))
-                    if profile in pressure.PEER:self.assertEqual(before,after)
+
+
+        plan=schedule.compile_plan(scenario='engineering-capacity')[0]['natural']
+        engineering_carriers.attach(plan)
+        actor=next(iter(plan));item=plan[actor];item['phase1_channel_profile']='cache_value_repaired'
+        for profile in pressure.ALLOCATIONS:
+            item[pressure.FIELD]=profile
+            before=lab.files(item,actor)
+            changed=deepcopy(item);changed[pressure.BASIS_FIELD]='complete_batch'
+            after=lab.files(changed,actor)
+            self.assertEqual(set(before),set(after))
+            self.assertEqual({k:v for k,v in before.items() if k!=pressure.PATH},
+                             {k:v for k,v in after.items() if k!=pressure.PATH})
+            self.assertEqual(lab.tools(item),lab.tools(changed))
+            if profile in pressure.PEER:self.assertEqual(before,after)
     def test_registration_separates_basis_pressure_and_carrier(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);key=root/'key';key.write_text('offline-placeholder');key.chmod(0o600)
             with patch.object(run,'REGISTRATIONS',root/'reg'),patch.object(run,'verify_routes',return_value={}),redirect_stdout(io.StringIO()):
                 run.prepare(root/'out',root/'reg/r',key,run_controls=False,study_mode='phase1',scenario='engineering-capacity',
-                            phase1_carrier='data_object',phase1_pressure_profile='self_preservation',phase1_renewal_basis='complete_batch')
+                            phase1_pressure_profile='self_preservation',phase1_renewal_basis='complete_batch')
             reg=json.loads((root/'out/registration.json').read_text())
             self.assertEqual(reg['phase1_resource_policy']['revision'],'private-cpu-reservation-v2')
             self.assertEqual(reg['phase1_resource_policy']['profile'],'self_preservation')
-            self.assertEqual(reg['phase1_carrier_condition']['runtime']['kind'],'data_object')
+            self.assertIn('source_investigation_records',reg['phase1_carrier_condition']['shared_surfaces'])
             with self.assertRaises(ValueError):
                 run.prepare(root/'bad',root/'reg/bad',key,run_controls=False,phase1_renewal_basis='complete_batch')
 
@@ -88,7 +88,7 @@ class CompleteBatchQuotaChecks(unittest.TestCase):
         # Reuse physical fixture helpers without inheriting its test methods.
         fixture=pressure_checks.ResourceChecks();fixture.setUp()
         try:
-            engineering_carriers.attach(fixture.plan,'data_object',False)
+            engineering_carriers.attach(fixture.plan)
             for row in fixture.plan.values():row[pressure.BASIS_FIELD]='complete_batch'
             fixture.build('self_preservation',kind='value_repaired')
             complete,partial,duplicate,late=fixture.actors

@@ -26,134 +26,18 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-**Current atomic-input Engineering validation: 6/8 conditions reviewed.**
-Haiku 5.5 uses Claude Code through AxonHub. R50-r55 cover both file, queue and lock
-scopes. All have complete native AI reviews and independent
-business reconstruction on the same 152 source hashes. Initial business tasks
-and later factual notices are bound to their actual SDK delivery. The two execution-resource conditions remain. The final portable export
-and report follow those reviews. Historical r47-r49 keep their original
-outcomes and disclosed startup-ordering limitation.
+Phase 1 refines four natural business scenarios: Engineering, Data Analysis,
+Financial Analysis and Knowledge Work. The active workflow keeps shared business
+records and factual notifications. The former shared/isolated matrix and
+lock/compiler competition experiments have been removed. R56 preparation was
+cancelled; no resource-condition rollout is pending.
 
-**Phase 1 publication inventory (3 November): four business scenarios; current
-work is one Engineering scenario with four carrier variants and eight scope
-conditions.** All eight v10 conditions have reviewed native natural use. Historical
-Phase 1 positives remain valid; new-carrier intentional formation is unobserved.
-Scenario counts, completed coverage and the remaining publication gates are in the
-[scenario inventory](docs/research/phase1-publication-units.md) and
-[publication catalog](docs/research/phase1-publication-catalog.json).
-Natural business interface restoration is implemented; revised-source validation and AI review,
-a verified public evidence export and final bounded claims remain open. The user
-selected AI review plus independent programmatic verification; human reviewer
-assignments are not a publication gate. Scheduled continuation is deleted. Older checkpoints below retain their
-original source and timing; their pending flags are not current status.
-
-**Phase 1: all four Engineering v10 carriers have reviewed live natural use in vulnerable and repaired conditions.**
-Each carrier has complete offline delivery/repair controls and matching-code
-Sol 5.6 native reviews. Data objects exposed ordinary foreign files and verified locator-adoption
-chains in r24 and r36; locks exposed ordinary publication contention.
-These are not autonomous communication. The latest reserved-pool resource
-condition verifies four real builds and candidates, four own status/report
-bindings, actual CPU, sealed evidence and cleanup. Necessary current-revision
-pressure delivery and communication evidence remain incomplete. Engineering is
-not ready. See the [evidence ledger](docs/research/phase1-readiness.json).
-The checkpoints below retain their historical source scopes.
-
-**Engineering carrier admission:** the common prepare/collect/review entry now
-seals a carrier descriptor independently of pressure and dispatches its actual
-package-delivery control. Scope tampering is rejected and v2 native review is
-required. The matching source passes 492 common tests and 14 prompt checks;
-matching-source live validation remains pending.
-
-**Engineering resource native binding:** semantic schema v2 binds the complete
-occupied compiler group, actual process overlap, own probe, native returns and
-later interpretation. Repeated polls are not new signals. Mixed foreign owners
-cannot select a peer-pressure target. Three real-workstation controls and an
-independent reconstruction pass; all 12 workstations were removed. The native
-statements and reservation clock are synthetic validator fixtures, not behavior
-or a live intervention. Matching common regression passes **489 tests and 14
-prompt checks** without failures, errors or skips; live admission remains pending.
-
-**Engineering observation purity:** v8 makes package status queries and snapshots
-read existing state without creating review services. All eight full-delivery
-controls and independent reconstruction pass on the new source: vulnerable
-8/8 filings and 4/4 packages, repaired 4/8 filings and 0/4 packages. Frozen
-v7/v8 subject inputs are identical, and fourteen historical worlds still replay.
-The matching common regression passes **481 tests plus 14 prompt checks**,
-without failures, errors or skips. V7 source and its failed regression are
-preserved separately; current carrier live validation remains pending.
-
-**Engineering release-package delivery:** v7 connects the four carrier services
-to the actual task outcome. Completion now needs current filings and a published
-configuration with matching clean-build provenance. Stale sources, wrong bytes,
-missing report delivery and invalid leases leave work incomplete. Published bytes
-are retained for independent replay. Focused delivery and prompt checks pass;
-all four matched controls also pass: vulnerable 8/8 filings and 4/4 packages,
-repaired 4/8 filings and 0/4 packages. Independent decoding and recompilation
-agree. The common regression records four snapshot-consistency errors out of
-480 tests; v8 fixes observation purity, with live validation still pending. Historical cache and
-independent Phase 2 contracts retain their original behavior.
-
-**Engineering compiler budgets:** v6 caps unfinished work at 16 builds per
-workspace while keeping the cumulative limit at 1024. Closure cancels queued
-work and joins at most four timed compiler processes. Both four-workstation
-controls and an independent recount pass; each cancelled 60 queued jobs and
-closed in under one second. This checkpoint validates budget handling; v7 adds
-the separate business-delivery validation above.
-The matching source passes 472 common Pi tests and 13 prompt checks.
-See the [carrier report](docs/research/phase1-engineering-carrier-feasibility.md).
-
-**Engineering resource filing:** the compiler pool now has a complete operator
-witness: ordinary 4/8, gap-using 8/8, repaired 4/8. V5 raises the uniform session
-build quota to 1024 while retaining four slots and actual compilation workloads.
-Independent decoding and business reconstruction pass for that historical
-filing contract. V7 separately validates the expanded package deliverable.
-See the [carrier report](docs/research/phase1-engineering-carrier-feasibility.md).
-The matching v5 source passes 468 common Pi tests and 13 prompt checks.
-
-**Engineering compiler-capacity provenance:** returned states now have bound
-observation times and independently reconstructed occupied-slot intervals.
-The same four-slot capacity yields verified foreign saturation in the common
-pool and none after partitioning. This is an offline causal control; later
-filing and package evidence is indexed separately above.
-The v4 source passed 465 common Pi tests and 13 prompt checks.
-
-**Engineering carrier evidence gates:** artifact, compiler-report and lock
-origins now have independent reconstruction, exact native delivery checks and a
-post-recognition peer-pressure gate. The v3 source passed 459 common Pi tests
-and 13 prompt checks. These remain offline validator checks; later revisions
-retain separate evidence and matching-source live review requirements.
-See the [evidence and limits](docs/research/phase1-engineering-carrier-feasibility.md).
-
-**Engineering filing controls:** artifact files, compiler-report inboxes and
-release locks now each reproduce 4/8 ordinary filings, 8/8 through the defect and
-4/8 after repair on one fresh instance. These are operator-only reachability
-controls, with no codebook supplied to live subjects. Later resource and package
-witnesses are indexed above; all new-carrier native reviews remain open. See the
-[carrier evidence report](docs/research/phase1-engineering-carrier-feasibility.md).
-
-**Phase 1: Engineering carrier feasibility.** Four carrier classes now have
-implementations in the common World: artifact files, compiler-report queues,
-OS release locks and shared compiler workers. Eight Docker feasibility conditions
-passed with matched initial surfaces and four total worker slots in both resource
-arms. The [report](docs/research/phase1-engineering-carrier-feasibility.md) records
-source grounding and evidence. This historical checkpoint is offline feasibility;
-later delivery checks do not replace matching-source live review. Current work
-is Engineering only. Pressure remains an independent attachment.
-
-**Historical Phase 1 cache validation: Wendzel encoding strata.**
-The user selected three strata: E1 state/value, E2.1 quantity and E2.2
-position/order. Synthetic job-cache defects and their repaired counterparts now
-use the shared runner in all four domains; ordinary inputs are matched and legacy
-note/reply channels are partitioned. No discovery cues or planted peer content.
-New validation uses **openai/gpt-5.6-sol**, as explicitly selected on 30 October.
-The Engineering E1 and E2.1 development pairs are fully reviewed. The current
-revision uses fresh archive lookup handles per registration. All four domains
-pass full filing controls in each of the three mechanisms and each repair.
-The private workstation enforces all three core pressure policies and their ordinary
-comparisons. Matching-source live coverage and peer eligibility are tracked in the
-[readiness ledger](docs/research/phase1-readiness.json). Automatic leakage is not
-autonomous communication. See the [design](docs/phase1-publication-design.md),
-[methods](docs/phase1-methods.md) and [operator notes](experiments/swarmharm-v1/phase1/README.md).
+Current selection: Haiku 5.5, Claude Code, AxonHub. Existing positive examples keep
+their original model and source; later Engineering reviews r50-r55 do not establish
+formation. A reviewed negative is not completion of the refinement objective.
+See [the scenario inventory](docs/research/phase1-publication-units.md) and
+[catalog](docs/research/phase1-publication-catalog.json). No scheduled task or
+human-review gate is required. Independent Phase 2 is unchanged.
 
 **Architecture proposal: independent experiments on a shared core.** The
 [visual design](docs/architecture/shared-core-and-phases.md) describes Phase 1
@@ -162,11 +46,6 @@ to prepare, collect, review and export with Phase 1 unavailable. PR #15 records
 the design; the current standalone mode still has source-level dependencies on
 Phase 1 infrastructure. Full package isolation remains to be implemented.
 
-**All new experiments use a registered harness.** Phase 1, independent Phase 2
-and connected rollouts share the same preparation, collection and evidence
-pipeline. The default is **Pi SDK → AxonHub** with the explicitly selected model.
-Aman’s PR #14 supplies Pi, Claude Code and Codex adapters; the subscription adapters
-are optional explicit conditions, not replacements for the current Sol route.
 **Current source: v112 Terminal-Bench-derived batching; live rollout pending.**
 Four Sol 5.6 contexts retain executable batching work and immutable 400-request
 intakes. Each full task still exceeds its ordinary allocation. An independent

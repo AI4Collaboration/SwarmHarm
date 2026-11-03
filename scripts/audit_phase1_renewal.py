@@ -14,7 +14,7 @@ def save(path,value):
 
 def audit(profile,out):
     plan=schedule.compile_plan(scenario='engineering-capacity')[0]['natural']
-    fixture_ids.register(plan);engineering_carriers.attach(plan,'data_object',False)
+    fixture_ids.register(plan);engineering_carriers.attach(plan)
     for item in plan.values():
         item[pressure.FIELD]=profile;item[pressure.BASIS_FIELD]='complete_batch'
     witness=filing_controls.FilingWitness(plan,'cache_value_repaired');world=witness.world

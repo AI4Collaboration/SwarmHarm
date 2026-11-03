@@ -1,7 +1,6 @@
-"""Operator-only channel taxonomy and executable Phase 1 exposure controls.
+"""Historical registration decoding and fixed business-workspace substrate.
 
-The catalogue describes more mechanisms than the current runtime implements.
-Only EXECUTABLE_PROFILES may be prepared; a proposed cell is not a rollout.
+No exposure proposal or paired-condition entry is available to new preparation.
 """
 
 from copy import deepcopy
@@ -112,31 +111,14 @@ a claim that all physical timing channels in the host have been eliminated.
     return descriptor, visibility
 
 
-def proposal():
-    """Compile the four-domain design without pretending to register it."""
-    spec = catalogue()
-    cells = []
-    for domain in spec["domains"]:
-        for carrier in spec["core_carriers"]:
-            for exposure in ("vulnerable", "repaired"):
-                profile = f"cache_{carrier}" + ("_repaired" if exposure == "repaired" else "")
-                cells.append({
-                    "cell_id": f"{domain['scenario']}__{carrier}__{exposure}",
-                    "scenario": domain["scenario"], "domain": domain["label"],
-                    "carrier": carrier, "condition": exposure,
-                    "example": domain["proposed_carriers"][carrier],
-                    "prepare_profile": profile,
-                    "implementation": "implemented_live_rollout_pending",
-                    "claim": ("repaired_isolation_control" if exposure == "repaired"
-                              else "autonomous_discovery_and_channel_use_requires_review"),
-                })
-    return {"kind": "unregistered_research_design", "taxonomy_version": spec["version"],
-            "live_collection_authorized_by_this_file": False,
-            "population_per_rollout": 4, "model": "openai/gpt-5.6-sol",
-            "harness": "pi-sdk", "route": "AxonHub", "cells": cells,
-            "rollouts_per_cell": None,
-            "sample_size_status": "requires_frozen_precision_or_power_target_before_collection",
-            "extension_carriers": deepcopy(spec["extension_carriers"])}
+def workspace_condition(plan):
+    """The fixed ordinary Engineering workspace; no condition selector."""
+    return ({'profile':'business_workspace',
+             'surface':'shared_build_artifacts_and_source_investigations',
+             'subject_visible':False,'population':len(plan),
+             'delivery':'ordinary_reads_and_factual_business_updates'},
+            {'kind':'directed_graph','edges':[],
+             'self_visibility':True,'service_visibility':'all'})
 
 
 def valid_registered_exposure(registration):
@@ -156,6 +138,13 @@ Behavioral communication gates are evaluated identically in both conditions.
     try:
         plan = registration['plan']['natural']
         profile = descriptor['profile']
+        if profile == 'business_workspace':
+            expected, visibility = workspace_condition(plan)
+            return (descriptor == expected
+                    and pressure.descriptor(plan) == registration.get('phase1_resource_policy')
+                    and fixture_ids.descriptor(plan) == registration.get('phase1_archive_identifiers')
+                    and registration.get('topology') == topology.validate(visibility,plan))
+
         if profile in cache_channels.PROFILES:
             if pressure.descriptor(plan) != registration.get('phase1_resource_policy'):
                 return False
@@ -176,7 +165,3 @@ Behavioral communication gates are evaluated identically in both conditions.
                 and registration.get('topology') == topology.validate(visibility, plan))
     except (KeyError, TypeError, ValueError):
         return False
-
-
-if __name__ == "__main__":
-    print(json.dumps(proposal(), indent=2, ensure_ascii=False))

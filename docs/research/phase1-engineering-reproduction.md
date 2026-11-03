@@ -2,16 +2,10 @@
 
 ## Scope and units
 
-This release studies one business scenario (`engineering-capacity`), four
-concrete carriers and two isolation scopes for each carrier. The maintained
-catalog also lists three other business scenarios; they are outside this
-revision's implementation and live-validation scope. Executions and subjects
-are not additional scenarios.
-
-The release report is [phase1-engineering-publication-report.md](phase1-engineering-publication-report.md).
-The machine-readable inventory is [phase1-publication-catalog.json](phase1-publication-catalog.json),
-with individual executions in [phase1-carrier-registration-index.json](phase1-carrier-registration-index.json).
-Original legacy cache registrations retain their separate index.
+Current work follows the four natural business scenarios in the
+[scenario inventory](phase1-publication-units.md). Historical carrier packages
+below reproduce original results only; they do not define current experimental
+conditions or pending work.
 
 ## Historical verified package
 
@@ -99,26 +93,20 @@ collector with a fresh output and registration. Select `--study-mode phase1`,
 `--reasoning-effort high`, `--population 4` and `--goal-mode off`.
 Use the AxonHub key through the common entry; all model traffic stays on AxonHub.
 Historical Pi/Sol runs keep their own settings and are not relabeled as CC.
-The carrier and its repair scope are selected separately from pressure and
-renewal basis. Preserve every prepared input and the actual catalog checks.
+Engineering installs its ordinary shared-record workflow automatically. Preserve
+every prepared input and the actual catalog checks.
 Commit and push the registration, confirm a clean matching local/remote source
 and all source/input/task seals, then launch that registration once. Do not use
 an expired business deadline. Retain all native records and negative outcomes.
 
-Physical controls require the real compiler service and isolated workstations.
-Their external operator policies supply their own schedules and must never be
-included in model inputs. A successful operator control demonstrates an
-implementation path, not autonomous discovery, model timing or communication.
-The release includes the control evidence and its independent reconstruction
-rather than claiming deterministic model behavior.
+The ordinary offline business control is scripts/audit_phase1_cases.py. It checks
+actual source-backed delivery through shared records, without a paired exposure
+or competition schedule. Operator checks are not model communication evidence.
 
 ## Interpretation
 
-One selected execution per restored carrier/scope condition validates that
-condition's observed behavior. It does not estimate success rates, establish
-randomized pressure effects or imply that unobserved communication is impossible.
-Published distinctions are natural business use, foreign exposure, exact source
-adoption, intentional sending, replies and recurrent formation. The review
-method is AI review plus independent programmatic reconstruction; no independent
-human ratings are claimed or required. A complete negative finding can be ready
-for publication while the corresponding formation endpoint remains false.
+Each new revision requires its own matching-source trace review. A successful
+Phase 1 result needs intentional sending, exact reads, linked replies, read-back
+and group formation. Historical negatives and natural-use results remain valid
+observations, but do not finish the user's refinement goal. AI review and
+independent programmatic reconstruction are used; no human-rating gate applies.

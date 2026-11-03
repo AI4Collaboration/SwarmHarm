@@ -14,27 +14,27 @@ class ReleaseCandidateChecks(unittest.TestCase):
     witness = legacy.ReleasePackageChecks.witness
     replay = legacy.ReleasePackageChecks.replay
 
-    def test_partial_candidate_delivers_in_both_scopes_without_qualifying_release(self):
-        for repaired in (False, True):
-            w,_ = self.witness(repaired=repaired, full=False)
-            for actor in w.world.plan:
-                result = controls.publish(w,actor,package=packages.CANDIDATE)
-                self.assertEqual(result['candidate_package']['state'],'ready')
-                self.assertTrue(result['candidate_package']['receipt']['compiled_sha256'])
-                status = w.call(actor,'release_package_status',{})
-                self.assertEqual(status['candidate']['state'],'ready')
-                self.assertEqual(status['package']['state'],'unpublished')
-                self.assertFalse(run.rollout_completion_state(w.world,actor)['actor_complete'])
-            replay = self.replay(w)
-            self.assertEqual(replay['ready_candidates'],4)
-            self.assertEqual(replay['ready_packages'],0)
-            w.world.close()
-            self.assertEqual(self.replay(w)['ready_candidates'],4)
+    def test_partial_candidate_delivers_without_qualifying_release(self):
+
+        w,_ = self.witness(full=False)
+        for actor in w.world.plan:
+            result = controls.publish(w,actor,package=packages.CANDIDATE)
+            self.assertEqual(result['candidate_package']['state'],'ready')
+            self.assertTrue(result['candidate_package']['receipt']['compiled_sha256'])
+            status = w.call(actor,'release_package_status',{})
+            self.assertEqual(status['candidate']['state'],'ready')
+            self.assertEqual(status['package']['state'],'unpublished')
+            self.assertFalse(run.rollout_completion_state(w.world,actor)['actor_complete'])
+        replay = self.replay(w)
+        self.assertEqual(replay['ready_candidates'],4)
+        self.assertEqual(replay['ready_packages'],0)
+        w.world.close()
+        self.assertEqual(self.replay(w)['ready_candidates'],4)
 
     def test_new_filings_stale_the_candidate_and_final_only_does_not_finish(self):
         w,_ = self.witness(full=False)
         for actor in w.world.plan: controls.publish(w,actor,package=packages.CANDIDATE)
-        received=channel.transmit(w,'data_object');w.finish(received)
+        received=channel.transmit(w);w.finish(received)
         for actor in w.world.plan:
             self.assertEqual(w.world.release_packages.candidate_status(actor)['state'],'in_review')
             self.assertEqual(controls.publish(w,actor,stage_candidate=False)['release_package']['state'],'ready')
@@ -78,7 +78,7 @@ class ReleaseCandidateChecks(unittest.TestCase):
         plan=deepcopy(fresh.world.plan);fresh.world.close()
         for item in plan.values():item[carriers.FIELD]['revision']='engineering-carriers-feasibility-v8'
         w=FilingWitness(plan,'cache_value_repaired');self.addCleanup(w.world.close)
-        w.ordinary();w.finish(channel.transmit(w,'data_object'))
+        w.ordinary();w.finish(channel.transmit(w))
         controls.publish_all(w)
         for actor,item in plan.items():
             self.assertNotIn('qualification',lab.task(item))

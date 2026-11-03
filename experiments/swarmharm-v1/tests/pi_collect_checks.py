@@ -248,13 +248,15 @@ class PiCollectChecks(unittest.TestCase):
         with patch.object(run, 'verify_routes', return_value={}):
             run.prepare(root, registration, key, run_controls=False, goal_mode=goal_mode,
                         study_mode=study_mode, component_family=component_family,
-                        scenario=('data-analysis' if resource_profile else 'knowledge-work'
+                        scenario=(run.DEFAULT_SCENARIO if resource_profile else 'knowledge-work'
                                   if component_family and component_family != 'terminal-batching' else run.DEFAULT_SCENARIO),
-                        phase1_channel_profile='cache_count' if resource_profile else None,
                         phase1_pressure_profile=resource_profile)
         reg = run.load(root / 'registration.json')
         reg['budget']['max_batch_seconds'] = 240
         reg['budget']['max_actor_seconds'] = 240
+        if resource_profile:
+            # This timer fixture deliberately has no business publication event.
+            reg['source_publication'] = None
         if reg.get('source_publication'):
             reg['source_publication']['after_start_seconds'] = 0
         reg['completion_protocol']['unfinished_work_followup_seconds'] = 0

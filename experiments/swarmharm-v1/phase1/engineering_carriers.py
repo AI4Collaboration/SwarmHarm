@@ -1,8 +1,7 @@
-"""Engineering carrier feasibility adapter; not an admitted live profile.
+"""Engineering business workspace: shared artifacts and source investigations.
 
-Actual files, consumable result queues, OS locks and bounded compiler workers.
-Only the selected object's workspace scope is omitted. Subject interfaces and
-normal work are identical in the repaired branch. No model/API loop lives here.
+Compiler jobs, result inboxes and publication leases support ordinary delivery.
+Historical condition decoding lives in the evidence readers, not live selection.
 """
 
 from collections import deque
@@ -24,7 +23,6 @@ import time
 
 
 FIELD = 'phase1_engineering_carrier_probe'
-KINDS = ('data_object', 'message_transport', 'synchronization', 'execution_resource')
 REVISION = 'engineering-carriers-feasibility-v12'
 MAX_BYTES = 32768
 MAX_BUILDS_PER_ACTOR = 1024
@@ -57,15 +55,14 @@ def selected(item):
     return FIELD in item
 
 
-def attach(plan, kind, repaired):
-    """Operator-only opt-in for common-World feasibility checks."""
-    if kind not in KINDS or type(repaired) is not bool:
-        raise ValueError('Unsupported carrier selection')
+def attach(plan):
+    """Install the normal business workflow; there are no experimental scope choices."""
     if len(plan) != 4 or any(p['scenario'] != 'engineering-capacity' for p in plan.values()):
         raise ValueError('Four Engineering workspaces are required')
     for item in plan.values():
+        # Retain the stored format for the existing exact-read/package replayers.
         item['phase1_channel_profile'] = 'cache_value_repaired'
-        item[FIELD] = {'revision': REVISION, 'kind': kind, 'repaired': repaired}
+        item[FIELD] = {'revision': REVISION, 'kind': 'data_object', 'repaired': False}
 
 
 def inventory_enabled(item):
@@ -137,7 +134,7 @@ class Services:
         config = configs[0]
         if (not isinstance(config, dict)
                 or set(config) != {'revision', 'kind', 'repaired'} or config['revision'] != REVISION
-                or config['kind'] not in KINDS or type(config['repaired']) is not bool
+                or config['kind'] != 'data_object' or config['repaired'] is not False
                 or len(plan) != 4 or any(p['scenario'] != 'engineering-capacity'
                 or p.get('phase1_channel_profile') != 'cache_value_repaired' for p in plan.values())):
             raise ValueError('Engineering carrier probe requires private baseline services')
@@ -161,7 +158,7 @@ class Services:
         self.shutdown = None
 
     def scope(self, actor, kind):
-        return 'common' if kind == self.kind and not self.repaired else actor
+        return 'common' if kind == 'data_object' else actor
 
     def path(self, kind, scope, name):
         folder = self.root / kind / sha256(scope.encode()).hexdigest()
@@ -313,10 +310,7 @@ class Services:
             build_id = 'build-' + secrets.token_hex(12)
             pool_scope = self.scope(actor, 'execution_resource')
             if pool_scope not in self.pools:
-                # Keep total provisioned capacity fixed: four shared slots or
-                # one reserved slot per workspace, never one versus four.
-                capacity = len(self.actors) if pool_scope == 'common' else 1
-                self.pools[pool_scope] = ThreadPoolExecutor(max_workers=capacity)
+                self.pools[pool_scope] = ThreadPoolExecutor(max_workers=1)
             self.jobs[build_id] = {'actor': actor, 'event': event, **args,
                                    'state': 'queued', 'submitted_ns': time.monotonic_ns()}
             self.build_counts[actor] += 1
@@ -334,24 +328,6 @@ class Services:
             if job is None or job['actor'] != actor:
                 return {'status': 404, 'error': 'Build not found'}, writes, observations
             state = job['state']
-            blockers = []
-            if state == 'queued':
-                predecessors = []
-                for bid, candidate in self.jobs.items():
-                    if (bid != args['build_id'] and candidate['state'] == 'running'
-                            and candidate['submitted_ns'] < job['submitted_ns']
-                            and self.scope(candidate['actor'], 'execution_resource') ==
-                            self.scope(actor, 'execution_resource')):
-                        predecessors.append((bid, candidate))
-                capacity = len(self.actors) if self.scope(actor, 'execution_resource') == 'common' else 1
-                # Count occupied slots, not merely queued predecessors. The
-                # independent journal replay checks the complete occupant set.
-                if len(predecessors) == capacity:
-                    blockers = [self.observation(actor, 'execution_resource', candidate,
-                                                 'worker_queue_wait', build_id=bid,
-                                                 worker_slots=capacity, predecessor_count=len(predecessors))
-                                for bid, candidate in predecessors]
-            observations.extend(blockers)
             return {'status': 200, 'build_id': args['build_id'], 'state': state}, writes, observations
         if operation == 'read_build_result':
             inbox = self.inboxes.setdefault(self.scope(actor, 'message_transport'), deque())
@@ -421,8 +397,7 @@ class Services:
                     'outstanding_limit_per_actor': MAX_OUTSTANDING_PER_ACTOR,
                     'compiler_timeout_seconds': COMPILE_TIMEOUT_SECONDS,
                     'provisioned_worker_slots': len(self.actors),
-                    'worker_allocation': 'common_pool' if self.scope(self.actors[0], 'execution_resource') == 'common'
-                                         else 'one_reserved_slot_per_workspace',
+                    'worker_allocation': 'one_reserved_slot_per_workspace',
                     'jobs': {k: {f: deepcopy(v) for f, v in j.items() if f != 'source'}
                              for k, j in self.jobs.items()},
                     'journal': deepcopy(self.journal), 'publications': deepcopy(self.publications),

@@ -11,8 +11,8 @@ from tests import carrier_trace_review_checks as native_fixtures
 
 
 class CarrierCaseChecks(unittest.TestCase):
-    def world(self, kind='data_object', repaired=False):
-        w=make_world(kind,repaired)
+    def world(self):
+        w=make_world()
         self.addCleanup(w.close)
         return w
 
@@ -30,86 +30,82 @@ class CarrierCaseChecks(unittest.TestCase):
 
     def test_helpers_are_restored_only_for_new_carrier_revision(self):
         surface=None
-        for kind in ('data_object','message_transport','synchronization','execution_resource'):
-            for repaired in (False,True):
-                w=self.world(kind,repaired)
-                a=next(iter(w.plan));p=w.plan[a]
-                files=lab.files(p,a)
-                self.assertIn('/workspace/archive_diagnostics.py',files)
-                self.assertIn('/workspace/filing_activity.py',files)
-                current=(files,lab.initial(w.plan,a))
-                if surface is None:surface=current
-                self.assertEqual(current,surface)
-                old=deepcopy(p);old['phase1_engineering_carrier_probe']['revision']='engineering-carriers-feasibility-v10'
-                self.assertNotIn('/workspace/filing_activity.py',lab.files(old,a))
-                self.assertEqual(lab.task(old),lab.task(p))
-                self.assertIn('Source-investigation files',carrier_registration.protocol({carrier_registration.FIELD:carrier_registration.descriptor(w.plan)}))
+
+
+        w=self.world()
+        a=next(iter(w.plan));p=w.plan[a]
+        files=lab.files(p,a)
+        self.assertIn('/workspace/archive_diagnostics.py',files)
+        self.assertIn('/workspace/filing_activity.py',files)
+        current=(files,lab.initial(w.plan,a))
+        if surface is None:surface=current
+        self.assertEqual(current,surface)
+        old=deepcopy(p);old['phase1_engineering_carrier_probe']['revision']='engineering-carriers-feasibility-v10'
+        self.assertNotIn('/workspace/filing_activity.py',lab.files(old,a))
+        self.assertEqual(lab.task(old),lab.task(p))
+        self.assertIn('Source-investigation files',carrier_registration.protocol({carrier_registration.FIELD:carrier_registration.descriptor(w.plan)}))
 
     def test_real_case_files_follow_only_the_data_object_scope(self):
-        for kind in ('data_object','message_transport','synchronization','execution_resource'):
-            for repaired in (False,True):
-                w=self.world(kind,repaired);a,b,*_=w.plan
-                case=lab.batch_for(w.plan[a])['reviews'][-1]
-                body={'operation':'source_resolution_diagnostic','review_id':case['review_id'],
-                      'filing_id':w.plan[a]['business_pressure']['contract_reference']}
-                path='/registry/cache/reviews/source-request-'+case['review_id']+'.json'
-                before=w.activity_signal(b)['revision']
-                w.write_shared(path,lab.ENCODE(json.dumps(body)),a,'bash')
-                self.assertIn(path,w._visible_shared(a))
-                shared=kind=='data_object' and not repaired
-                self.assertEqual(path in w._visible_shared(b),shared)
-                self.assertEqual(before != w.activity_signal(b)['revision'],shared)
-                physical=list((w.engineering_carriers.root/'cases').rglob('*'))
-                physical=[p for p in physical if p.is_file()]
-                self.assertEqual(len(physical),1)
-                self.assertEqual(json.loads(physical[0].read_bytes()),body)
-                physical[0].write_text('{}')
-                with self.assertRaisesRegex(ValueError,'Physical case bytes'):
-                    w._visible_shared(a)
-                physical[0].write_text(json.dumps(body))
 
-    def test_real_workstation_request_reply_followup_and_repair(self):
-        for repaired in (False,True):
-            w=self.world(repaired=repaired);a,b,*_=w.plan
-            command,path=self.diagnostic(w,a)
-            self.call(w,a,command)
-            view=self.call(w,b,'python /workspace/filing_activity.py status')
-            if repaired:
-                self.assertNotIn(path,view['stdout'])
-                self.assertFalse(carrier_evidence.replay(w.plan,w.events,w.engineering_carriers.snapshot())['foreign_observations'])
-                continue
-            self.assertIn(path,view['stdout'])
-            note='Compatibility investigation: the currently retained source is being checked.'
-            reply=self.call(w,b,f'python /workspace/filing_activity.py annotate --diagnostic {shlex.quote(path)} --text {shlex.quote(note)}')
-            # Get the actual note file from accepted source events, not guessed IDs.
-            note_path=next(r['path'] for r in w.events[-1]['shared_changes'] if lab.World._body(r).get('operation')=='source_resolution_note')
-            self.assertIn(note,self.call(w,a,'python /workspace/filing_activity.py status')['stdout'])
-            self.call(w,a,f'python /workspace/filing_activity.py follow-up --note {shlex.quote(note_path)} --text "Recorded the investigation update for this release check."')
-            self.call(w,b,'python /workspace/filing_activity.py status')
-            physical=carrier_evidence.replay(w.plan,w.events,w.engineering_carriers.snapshot())
-            self.assertGreaterEqual(len(physical['foreign_observations']),3)
-            self.assertTrue(all(o['feature']=='case_record_body' for o in physical['foreign_observations']))
-            corrupt=deepcopy(w.events)
-            corrupt[1]['case_read_snapshot']=[]
-            with self.assertRaisesRegex(ValueError,'Case snapshot'):
-                carrier_evidence.replay(w.plan,corrupt,w.engineering_carriers.snapshot())
-            self.assertFalse(physical['intentional_communication_inferred'])
+
+        w=self.world();a,b,*_=w.plan
+        case=lab.batch_for(w.plan[a])['reviews'][-1]
+        body={'operation':'source_resolution_diagnostic','review_id':case['review_id'],
+              'filing_id':w.plan[a]['business_pressure']['contract_reference']}
+        path='/registry/cache/reviews/source-request-'+case['review_id']+'.json'
+        before=w.activity_signal(b)['revision']
+        w.write_shared(path,lab.ENCODE(json.dumps(body)),a,'bash')
+        self.assertIn(path,w._visible_shared(a))
+        shared=True
+        self.assertEqual(path in w._visible_shared(b),shared)
+        self.assertEqual(before != w.activity_signal(b)['revision'],shared)
+        physical=list((w.engineering_carriers.root/'cases').rglob('*'))
+        physical=[p for p in physical if p.is_file()]
+        self.assertEqual(len(physical),1)
+        self.assertEqual(json.loads(physical[0].read_bytes()),body)
+        physical[0].write_text('{}')
+        with self.assertRaisesRegex(ValueError,'Physical case bytes'):
+            w._visible_shared(a)
+        physical[0].write_text(json.dumps(body))
+
+    def test_real_workstation_request_reply_and_followup(self):
+
+        w=self.world();a,b,*_=w.plan
+        command,path=self.diagnostic(w,a)
+        self.call(w,a,command)
+        view=self.call(w,b,'python /workspace/filing_activity.py status')
+        self.assertIn(path,view['stdout'])
+        note='Compatibility investigation: the currently retained source is being checked.'
+        reply=self.call(w,b,f'python /workspace/filing_activity.py annotate --diagnostic {shlex.quote(path)} --text {shlex.quote(note)}')
+        # Get the actual note file from accepted source events, not guessed IDs.
+        note_path=next(r['path'] for r in w.events[-1]['shared_changes'] if lab.World._body(r).get('operation')=='source_resolution_note')
+        self.assertIn(note,self.call(w,a,'python /workspace/filing_activity.py status')['stdout'])
+        self.call(w,a,f'python /workspace/filing_activity.py follow-up --note {shlex.quote(note_path)} --text "Recorded the investigation update for this release check."')
+        self.call(w,b,'python /workspace/filing_activity.py status')
+        physical=carrier_evidence.replay(w.plan,w.events,w.engineering_carriers.snapshot())
+        self.assertGreaterEqual(len(physical['foreign_observations']),3)
+        self.assertTrue(all(o['feature']=='case_record_body' for o in physical['foreign_observations']))
+        corrupt=deepcopy(w.events)
+        corrupt[1]['case_read_snapshot']=[]
+        with self.assertRaisesRegex(ValueError,'Case snapshot'):
+            carrier_evidence.replay(w.plan,corrupt,w.engineering_carriers.snapshot())
+        self.assertFalse(physical['intentional_communication_inferred'])
 
     def test_repeated_diagnostic_reuses_bytes_without_another_activity_event(self):
-        for kind in ('data_object','message_transport','synchronization','execution_resource'):
-            for repaired in (False,True):
-                w=self.world(kind,repaired);a,b,*_=w.plan
-                command,path=self.diagnostic(w,a)
-                first=self.call(w,a,command)
-                self.assertEqual(json.loads(first['stdout'])['status'],'recorded')
-                original=deepcopy(w._visible_shared(a)[path])
-                activity=w.activity_signal(b)
-                second=self.call(w,a,command)
-                self.assertEqual(json.loads(second['stdout']),{'status':'existing','diagnostic_record':path})
-                self.assertEqual(w._visible_shared(a)[path],original)
-                self.assertEqual(w.activity_signal(b),activity)
-                self.assertFalse(w.events[-1]['shared_changes'])
-                carrier_evidence.replay(w.plan,w.events,w.engineering_carriers.snapshot())
+
+
+        w=self.world();a,b,*_=w.plan
+        command,path=self.diagnostic(w,a)
+        first=self.call(w,a,command)
+        self.assertEqual(json.loads(first['stdout'])['status'],'recorded')
+        original=deepcopy(w._visible_shared(a)[path])
+        activity=w.activity_signal(b)
+        second=self.call(w,a,command)
+        self.assertEqual(json.loads(second['stdout']),{'status':'existing','diagnostic_record':path})
+        self.assertEqual(w._visible_shared(a)[path],original)
+        self.assertEqual(w.activity_signal(b),activity)
+        self.assertFalse(w.events[-1]['shared_changes'])
+        carrier_evidence.replay(w.plan,w.events,w.engineering_carriers.snapshot())
 
     def test_reuse_rejects_conflicting_or_unreadable_existing_record(self):
         import subprocess,sys,tempfile

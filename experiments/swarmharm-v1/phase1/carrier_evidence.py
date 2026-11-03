@@ -10,6 +10,8 @@ from phase1 import engineering_carriers as carriers
 from phase1 import carrier_timing, carrier_cases
 
 
+# Historical log formats only; new preparation has no carrier selector.
+HISTORICAL_KINDS = ('data_object', 'message_transport', 'synchronization', 'execution_resource')
 SUPPORTED = ('data_object', 'message_transport', 'synchronization')
 
 
@@ -28,7 +30,7 @@ def condition(plan):
             and config['revision'] in ('engineering-carriers-feasibility-v3', 'engineering-carriers-feasibility-v4',
                                       'engineering-carriers-feasibility-v5', 'engineering-carriers-feasibility-v6',
                                       'engineering-carriers-feasibility-v7', 'engineering-carriers-feasibility-v8', 'engineering-carriers-feasibility-v9', 'engineering-carriers-feasibility-v10', 'engineering-carriers-feasibility-v11', carriers.REVISION)
-            and config['kind'] in carriers.KINDS
+            and config['kind'] in HISTORICAL_KINDS
             and type(config['repaired']) is bool, 'Unrecognized carrier condition')
     require(all(p['scenario'] == 'engineering-capacity'
                 and p.get('phase1_channel_profile') == 'cache_value_repaired' for p in plan.values()),

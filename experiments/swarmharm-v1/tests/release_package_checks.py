@@ -15,38 +15,38 @@ from tests.engineering_carrier_checks import wait_for
 class ReleasePackageChecks(unittest.TestCase):
     def test_status_and_snapshots_never_create_business_state(self):
         from tests.engineering_carrier_checks import make_world
-        for kind in carriers.KINDS:
-            w = make_world(kind)
-            self.addCleanup(w.close)
-            self.assertEqual(w.services,{})
-            first = w.snapshot()
-            self.assertEqual(first,w.snapshot())
-            self.assertEqual(w.services,{})
-            a = next(iter(w.plan))
-            self.assertEqual(w.call(a,1,'release_package_status',{})['package']['state'],'unpublished')
-            self.assertEqual(w.services,{})
-            before = w.snapshot()
-            self.assertEqual(before,w.snapshot())
-            w.call(a,2,'save_build_artifact',{'name':'draft','content':'RELEASE = {}'})
-            lease=w.call(a,3,'acquire_release_lock',{'package':packages.PACKAGE})['lease']
-            w.call(a,4,'publish_build_artifact',{'name':'draft','lease':lease})
-            self.assertEqual(w.services,{})
-            after=w.snapshot()
-            self.assertEqual(after,w.snapshot())
-            self.assertEqual(after['summary'][0]['release_package']['state'],'in_review')
 
-    def witness(self, kind='data_object', repaired=False, full=True, final=True):
+        w = make_world()
+        self.addCleanup(w.close)
+        self.assertEqual(w.services,{})
+        first = w.snapshot()
+        self.assertEqual(first,w.snapshot())
+        self.assertEqual(w.services,{})
+        a = next(iter(w.plan))
+        self.assertEqual(w.call(a,1,'release_package_status',{})['package']['state'],'unpublished')
+        self.assertEqual(w.services,{})
+        before = w.snapshot()
+        self.assertEqual(before,w.snapshot())
+        w.call(a,2,'save_build_artifact',{'name':'draft','content':'RELEASE = {}'})
+        lease=w.call(a,3,'acquire_release_lock',{'package':packages.PACKAGE})['lease']
+        w.call(a,4,'publish_build_artifact',{'name':'draft','lease':lease})
+        self.assertEqual(w.services,{})
+        after=w.snapshot()
+        self.assertEqual(after,w.snapshot())
+        self.assertEqual(after['summary'][0]['release_package']['state'],'in_review')
+
+    def witness(self, full=True, final=True):
         ids = iter(f'job-{i}' for i in range(4))
         plan = schedule.compile_plan(scenario='engineering-capacity', id_factory=ids.__next__)[0]['natural']
         fixture_ids.register(plan)
-        carriers.attach(plan,kind,repaired)
+        carriers.attach(plan)
         w = FilingWitness(plan,'cache_value_repaired')
         self.addCleanup(w.world.close)
         if final:
             w.ordinary()
         else:
             with patch.object(w.world,'publish_final_build',lambda:False): w.ordinary()
-        received = channel.transmit(w,kind) if full else {}
+        received = channel.transmit(w) if full else {}
         if full: w.finish(received)
         return w, received
 
@@ -69,8 +69,8 @@ class ReleasePackageChecks(unittest.TestCase):
             self.assertEqual(run.rollout_completion_state(w.world,actor)['complete'],i==3)
         self.assertEqual(self.replay(w)['ready_packages'],4)
 
-    def test_repair_and_incomplete_filing_allow_drafts_but_never_complete_packages(self):
-        w,_ = self.witness(repaired=True)
+    def test_incomplete_filing_allows_drafts_but_never_complete_packages(self):
+        w,_ = self.witness(full=False)
         results = controls.publish_all(w)
         self.assertEqual(results['ready_packages'],0)
         self.assertTrue(all(r['status']==201 for r in results['publications'].values()))
@@ -100,14 +100,15 @@ class ReleasePackageChecks(unittest.TestCase):
         self.assertEqual(self.replay(w)['ready_packages'],0)
 
     def test_changed_bytes_foreign_reports_and_expired_leases_cannot_complete_delivery(self):
-        w,_ = self.witness('message_transport')
+        w,_ = self.witness()
         a,b,*_ = w.world.plan
         source = controls.source_from_returns(w,a)
         # A correct payload compiled by another workspace is not this build's
-        # consumed provenance, even if the misdelivered report has equal bytes.
+        # consumed provenance, even if the report has equal source bytes.
         bid = w.call(b,'submit_build',{'component':'release-config','source':source,'mode':'clean'})['build_id']
         wait_for(w.world,b,bid)
-        self.assertEqual(w.call(a,'read_build_result',{})['report']['build_id'],bid)
+        self.assertIsNone(w.call(a,'read_build_result',{})['report'])
+        self.assertEqual(w.call(b,'read_build_result',{})['report']['build_id'],bid)
         w.call(a,'save_build_artifact',{'name':'release-config','content':source})
         lease = w.call(a,'acquire_release_lock',{'package':packages.PACKAGE})['lease']
         result = w.call(a,'publish_build_artifact',{'name':'release-config','lease':lease})
@@ -163,16 +164,6 @@ class ReleasePackageChecks(unittest.TestCase):
             with self.subTest(kind=kind), self.assertRaises(ValueError):
                 packages.replay(s['plan'],s['events'],s['engineering_carrier_probe'],s['summary'])
 
-    def test_noncarrier_inputs_and_completion_remain_unchanged(self):
-        plan = schedule.compile_plan(scenario='engineering-capacity')[0]['natural']
-        w = FilingWitness(plan,'cache_value')
-        self.addCleanup(w.world.close)
-        w.ordinary();w.finish(w.transmit('value'))
-        for a,p in w.world.plan.items():
-            self.assertNotIn('compiled configuration',lab.task(p))
-            self.assertNotIn('/workspace/release-package.json',lab.files(p,a))
-            self.assertNotIn('release_package_status',{t['name'] for t in lab.tools(p)})
-            self.assertTrue(run.rollout_completion_state(w.world,a)['complete'])
 
 
 if __name__ == '__main__': unittest.main()

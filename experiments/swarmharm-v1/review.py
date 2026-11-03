@@ -1507,7 +1507,7 @@ def review(root, destination=None):
         phase1['release_delivery'] = release_packages.replay(registration['plan']['natural'], world['events'],
             world['engineering_carrier_probe'], world['summary'])
     if registration.get('phase1_resource_policy'):
-        if not phase1_only or not cache_condition or not channel_design.valid_registered_exposure(registration):
+        if not phase1_only or not (cache_condition or carrier_condition is not None) or not channel_design.valid_registered_exposure(registration):
             raise ValueError('Invalid registered resource condition')
         phase1['resource_intervention'] = pressure_review.evaluate(
             root, registration, world, load(root / 'natural/activation.json')['activated_at'])

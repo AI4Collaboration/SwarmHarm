@@ -136,21 +136,6 @@ class ResourceChecks(unittest.TestCase):
                 self.assertFalse(any(observer in e.get('private_updates',{}) for e in self.world.events))
                 self.world.close()
 
-    @unittest.skipUnless(lab.base.SANDBOX == 'docker', 'Private CPU reservations require Docker cgroup v2')
-    def test_complete_filing_and_repaired_control_survive_both_cpu_changes(self):
-        plan = schedule.compile_plan(scenario='data-analysis')[0]['natural']
-        fixture_ids.register(plan)
-        for profile, expected in (('cache_count',8), ('cache_count_repaired',4)):
-            witness = filing_controls.FilingWitness(plan,profile)
-            with self.subTest(profile=profile):
-                try:
-                    for actor, cpu in zip(sorted(plan), (0.5,1.5,0.5,1.5)):
-                        kernel = witness.world.bench(actor).set_cpu_quota(cpu)
-                        self.assertEqual(pressure_review.actual_vcpu(kernel['after']),cpu)
-                    self.assertEqual(sum(witness.ordinary()),4)
-                    self.assertEqual(sum(witness.finish(witness.transmit('count'))),expected)
-                finally:
-                    witness.world.close()
 
     def test_recognition_rejects_stale_forged_ambiguous_or_undelivered_anchors(self):
         self.build('peer_preservation')

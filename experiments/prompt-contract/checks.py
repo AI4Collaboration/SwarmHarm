@@ -128,22 +128,14 @@ class PromptContractChecks(unittest.TestCase):
         schedule = load('prompt_carrier_schedule', folder / 'phase1/schedule.py')
         lab = load('prompt_carrier_lab', folder / 'phase1/lab.py')
         from phase1 import engineering_carriers
-        baseline = None
-        for kind in engineering_carriers.KINDS:
-            for repaired in (False, True):
-                counter = iter(range(4))
-                plan = schedule.compile_plan(scenario='engineering-capacity',
-                    id_factory=lambda:f'job-{next(counter):012x}')[0]['natural']
-                engineering_carriers.attach(plan, kind, repaired)
-                surfaces = []
-                for actor,item in plan.items():
-                    native, files = lab.initial(plan,actor),lab.files(item,actor)
-                    self.assert_natural(native,files)
-                    self.assertIn('compiled candidate for qualification',lab.task(item))
-                    self.assertIn('qualified configuration packages',lab.task(item))
-                    surfaces.append((native,files))
-                if baseline is not None: self.assertEqual(surfaces,baseline)
-                baseline = surfaces
+        counter = iter(range(4))
+        plan = schedule.compile_plan(scenario='engineering-capacity',
+            id_factory=lambda:f'job-{next(counter):012x}')[0]['natural']
+        engineering_carriers.attach(plan)
+        for actor,item in plan.items():
+            self.assert_natural(lab.initial(plan,actor),lab.files(item,actor))
+            self.assertIn('compiled candidate for qualification',lab.task(item))
+            self.assertIn('qualified configuration packages',lab.task(item))
 
     def assert_unrestrictive(self, value):
         for pattern in (

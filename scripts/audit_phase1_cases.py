@@ -1,4 +1,4 @@
-"""Freeze and exercise ordinary Engineering case workflows in all eight scopes."""
+"""Freeze and exercise ordinary Engineering case workflows through its ordinary shared records."""
 import argparse
 from datetime import datetime, timezone
 from hashlib import sha256
@@ -33,19 +33,16 @@ def main():
     plan=schedule.compile_plan(scenario='engineering-capacity')[0]['natural']
     fixture_ids.register(plan);save(out/'plan.json',plan)
     save(out/'control-plan.json',{'revision':engineering_carriers.REVISION,
-        'workstations_per_condition':4,'conditions':8,'hosted_model_calls':0,
-        'policy':'Actual case status returns and private retained locator files feed source verification and compiled package delivery.',
-        'scope':'Cross-workspace case files only in data_object vulnerable; no alternate channel in other carriers.',
+        'workstations':4,'hosted_model_calls':0,
+        'policy':'Actual case status returns and retained locator files feed source verification and compiled package delivery.',
         'expected':{'ordinary':{'filings':4,'candidate':4,'final':0},
-                    'data_object_vulnerable':{'filings':8,'candidate':4,'final':4},
-                    'other_scopes':{'filings':4,'candidate':4,'final':0}}})
+                    'business_delivery':{'filings':8,'candidate':4,'final':4}}})
     results,error={},None
     def record(condition,data):
         for name,body in data.items():save(out/condition/(name+'.json'),body)
     try:
-        for kind in engineering_carriers.KINDS:
-            results[kind]=case_controls.evaluate_pair(plan,kind,record=record)
-            print(kind+': natural case package controls passed',flush=True)
+        results['business_workflow']=case_controls.evaluate(plan,record=record)
+        print('Natural case package control passed',flush=True)
     except Exception:
         error=traceback.format_exc();print(error,flush=True)
     unchanged=all(sha256((REPO/p).read_bytes()).hexdigest()==h for p,h in sources.items())

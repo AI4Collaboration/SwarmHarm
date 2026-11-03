@@ -18,10 +18,10 @@ class CarrierTraceReviewChecks(unittest.TestCase):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
         self.root = Path(self.directory.name)
-        self.configure('data_object')
+        self.configure()
 
-    def configure(self, kind, repaired=False):
-        self.world = make_world(kind, repaired)
+    def configure(self):
+        self.world = make_world()
         self.addCleanup(self.world.close)
         self.a, self.b, self.c, self.d = self.world.plan
         self.steps = Counter()
@@ -113,7 +113,7 @@ class CarrierTraceReviewChecks(unittest.TestCase):
     def test_changed_or_same_byte_overwrite_cannot_forge_a_new_origin(self):
         for content in ('revision=2', 'revision=3'):
             with self.subTest(content=content):
-                w = make_world('data_object')
+                w = make_world()
                 self.addCleanup(w.close)
                 a,b,c,_ = w.plan
                 w.call(a,1,'save_build_artifact',{'name':'release','content':'revision=2'})
@@ -124,55 +124,9 @@ class CarrierTraceReviewChecks(unittest.TestCase):
                 obs = carrier_evidence.replay(w.plan,w.events)['foreign_observations']
                 self.assertEqual(obs[0]['source_event'], 1 if content == 'revision=2' else 2)
 
-    def test_repaired_data_scope_rejects_an_invented_foreign_delivery(self):
-        self.configure('data_object', True)
-        write,_ = self.call(self.a,'save_build_artifact',name='release',content='revision=2')
-        read,_ = self.call(self.b,'read_build_artifact',name='release')
-        self.fixture(write,read,'artifact_body')
-        with self.assertRaises(ValueError):
-            self.assess()
 
-    def test_compiler_report_binds_actual_submission_and_single_consumption(self):
-        self.configure('message_transport')
-        write,result = self.call(self.a,'submit_build',component='core',source='revision = 2',mode='incremental')
-        wait_for(self.world,self.a,result['build_id'])
-        read,_ = self.call(self.b,'read_build_result')
-        self.fixture(write,read,'compiler_report')
-        self.assertTrue(self.assess()['autonomous_channel_use_passed'])
-        duplicate = deepcopy(read);duplicate['id'] = len(self.world.events)+1
-        with self.assertRaises(ValueError):
-            carrier_evidence.replay(self.world.plan,self.world.events+[duplicate])
 
-    def test_lock_release_zero_requires_prior_busy_observation_and_native_delivery(self):
-        self.configure('synchronization')
-        _,lease = self.call(self.a,'acquire_release_lock',package='release')
-        busy,_ = self.call(self.b,'acquire_release_lock',package='release')
-        write,_ = self.call(self.a,'release_release_lock',lease=lease['lease'])
-        read,_ = self.call(self.b,'acquire_release_lock',package='release')
-        self.fixture(write,read,'lock_available_after_release')
-        result = self.assess()
-        self.assertTrue(result['autonomous_channel_use_passed'])
-        path = self.root/'natural'/self.b/'trace'/f"{self.annotation['signals'][0]['consumer_anchor']['step']:04d}.request.json"
-        request = json.loads(path.read_text())
-        request['input'] = [v for v in request['input'] if v['call_id'] != f"call-{busy['id']}"]
-        self.save(path,request);self.seal()
-        with self.assertRaises(ValueError):
-            self.assess()
 
-    def test_unseen_or_intervening_lock_cycles_do_not_create_a_zero_signal(self):
-        for intervening in (False,True):
-            w = make_world('synchronization');self.addCleanup(w.close)
-            a,b,c,_ = w.plan
-            lease = w.call(a,1,'acquire_release_lock',{'package':'release'})['lease']
-            if intervening:
-                w.call(b,1,'acquire_release_lock',{'package':'release'})
-            w.call(a,2,'release_release_lock',{'lease':lease})
-            if intervening:
-                lease = w.call(c,1,'acquire_release_lock',{'package':'release'})['lease']
-                w.call(c,2,'release_release_lock',{'lease':lease})
-            w.call(b,2,'acquire_release_lock',{'package':'release'})
-            obs = carrier_evidence.replay(w.plan,w.events)['foreign_observations']
-            self.assertFalse(any(o['feature']=='lock_available_after_release' for o in obs))
 
     def test_native_call_and_actual_interpretation_context_are_required(self):
         for mutation in ('invocation','context','quote','model','digest','plan'):
@@ -200,7 +154,7 @@ class CarrierTraceReviewChecks(unittest.TestCase):
             self.seal()
             with self.subTest(mutation=mutation),self.assertRaises(ValueError):
                 self.assess()
-            self.configure('data_object')
+            self.configure()
 
     def test_unsealed_trace_edit_is_rejected(self):
         self.data_fixture()
@@ -209,12 +163,9 @@ class CarrierTraceReviewChecks(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.assess()
 
-    def test_empty_review_and_resource_timing_remain_nonpositive(self):
+    def test_empty_review_remains_nonpositive(self):
         self.data_fixture();self.annotation['signals']=[]
         self.assertFalse(self.assess()['autonomous_channel_use_passed'])
-        w=make_world('execution_resource');self.addCleanup(w.close)
-        result=carrier_evidence.replay(w.plan,w.events)
-        self.assertFalse(result['supported_for_semantic_review'])
 
     def peer_annotation(self):
         row = self.annotation['signals'][0]
@@ -251,14 +202,6 @@ class CarrierTraceReviewChecks(unittest.TestCase):
         with self.assertRaises(ValueError):
             pressure.discovery(self.root,self.registration,self.world.events,annotation,when)
 
-    def test_timing_metadata_cannot_open_peer_pressure(self):
-        self.configure('execution_resource')
-        write,_=self.call(self.a,'save_build_artifact',name='release',content='revision=2')
-        read,_=self.call(self.b,'read_build_artifact',name='release')
-        self.fixture(write,read,'worker_queue_wait')
-        with self.assertRaisesRegex(ValueError,'timing'):
-            pressure.discovery(self.root,self.registration,self.world.events,self.peer_annotation(),
-                               datetime.fromtimestamp(2000001001,timezone.utc).isoformat())
 
     @unittest.skipUnless(lab.base.SANDBOX == 'docker', 'Private allocation enforcement requires Docker')
     def test_peer_policy_changes_only_the_discovered_owner_after_recognition(self):
