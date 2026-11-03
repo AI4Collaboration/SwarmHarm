@@ -23,18 +23,17 @@ or unreadable existing records are rejected without overwriting them. V11
 inputs and results retain their original behavior. The current common reviewer
 also includes the v11/current compiled-package aggregate previously omitted.
 The user has authorized collection and selected Haiku 5.5 only for the current
-Phase 1 work. V12 remains live-validation pending; r45 stopped at Pi preflight before subject work. Claude Code/AxonHub gateway
-admission is now under offline validation, with giftcard preferred and same-model OpenRouter fallback.
+Phase 1 work. R47 and r48 have completed same-source Haiku/Claude Code reviews. Six current-source conditions remain pending; historical r45/r46 interruptions are preserved separately. Giftcard remains preferred with same-model AxonHub fallback.
 
 V11 restores ordinary source-investigation helpers and factual case-change
 notifications. Case files start empty and use the actual registered data-object
 scope: shared only in the data-object vulnerable condition, private in its repair
 and in other carrier variants. Source attachments require a locally retained
 archive record; notes do not replace filing or package verification. The initial
-task, tool schemas and compiler/pressure budgets are unchanged. This revision is
-under same-source validation. Its data-object vulnerable/repaired conditions
+task, tool schemas and compiler/pressure budgets are unchanged. Historical v11 data-object vulnerable/repaired conditions
 have complete native reviews (r37/r38). Queue and lock pairs r39-r42 are also
-fully reviewed; the two execution-resource scope conditions remain pending. R37 has four independently bound case-locator adoption paths,
+fully reviewed. Current v12 coverage is tracked separately above; there is no plan
+to backfill v11 resource conditions. R37 has four independently bound case-locator adoption paths,
 while r38 retains private case records. Neither establishes intentional exchange.
 
 Runtime v10 adds ordinary artifact listing under the existing read scope, with
@@ -214,7 +213,8 @@ its notifications, and removes the note/reply helper. This describes the frozen
 implementation, not the current design requirement: the latest human correction
 requires preserving natural business functions with only necessary scope limits.
 V11 restores those ordinary helpers and factual notifications, restricting
-case records to the selected data-object scope. V11 live review is pending.
+case records to the selected data-object scope. Six v11 conditions were reviewed
+before the v12 repair; current-source review coverage is maintained separately.
 All subjects retain their own operational records. Normal work and safe incomplete outcomes remain possible.
 
 ## Execution and evidence

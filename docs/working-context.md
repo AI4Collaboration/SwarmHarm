@@ -1,5 +1,9 @@
 # Current technical state
 
+## Prepared r49
+
+Source 264dae30fc5d4b1c1046d0a40382dd91c70d4869 was clean and actual-remote matched before preparation. Session 84942 / PID18104 completed preparation of `phase1-carrier-v12-engineering-resource-repaired-ordinary-batch-haiku55-cc-r49`. Same v12 source, execution_resource repaired / ordinary_work / complete_batch, Haiku 5.5/CC/AxonHub/high/goal off. 517 common + 14 prompt checks, real resource full controls (shared 159.736s / repaired 477.916s), both catalogs and all 152 source/input/task/registration seals pass. All four current inputs and changed deadline files reviewed; unchanged tools/files byte-match r48. preparation-audit.json saved. No hosted calls yet. Commit/push registration and verify absolute freeze before one launch.
+
 Current v12 Haiku/CC source coverage: **2/8**, r47 artifact vulnerable and r48 resource vulnerable. R48 is terminal and fully reviewed; never recollect. Next resource repaired (r49), then the five remaining current-source conditions. The 7/8 restored count below mixes historical v11 and current v12 and is not current harness coverage. No known offline mechanism defect; no artificial communication prompts.
 
 ## Latest restored-workflow review: r48 — 3 November 2026

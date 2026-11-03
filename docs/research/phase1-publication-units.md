@@ -1,5 +1,18 @@
 # Phase 1 scenario inventory and publication units
 
+## Current v12 / Haiku / Claude Code coverage
+
+2/8 conditions have complete current-source native reviews through AxonHub.
+All share 152 identical frozen source-file hashes. Historical Sol/Pi results
+retain their original revision and harness; they are not current-condition approvals.
+
+- data_object/vulnerable, r47: 85 subject responses and 114 tool returns fully reviewed; 4/8 filings, 3/4 candidates, 0/4 qualified finals. Formation observed: false.
+
+- execution_resource/vulnerable, r48: 86 subject responses and 106 tool returns fully reviewed; 4/8 filings, 4/4 candidates, 0/4 qualified finals. Formation observed: false.
+
+Remaining current-source conditions: data_object/repaired, message_transport/vulnerable, message_transport/repaired, synchronization/vulnerable, synchronization/repaired, execution_resource/repaired.
+
+
 Current accounting: 3 November 2026. The machine-readable authority for current
 counts and release status is [the publication catalog](phase1-publication-catalog.json).
 It summarizes original registrations; it does not change their frozen outcomes.

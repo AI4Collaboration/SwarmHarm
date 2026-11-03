@@ -314,14 +314,14 @@
       "id": "R2",
       "deliverable": "Freeze and validate the revised interface on affected Engineering conditions.",
       "owner": "implementation_and_live_review",
-      "status": "current_v12_Haiku_CC_1_of_8_reviewed; resource_vulnerable_preparing; historical_restored_6_of_8_not_promoted",
+      "status": "current_v12_Haiku_CC_2_of_8_fully_reviewed",
       "done_when": "Changed controls and prompt contracts pass; source/inputs/registration are sealed and pushed; one minimum matching-source rollout per affected condition is fully reviewed. Negative outcomes are retained."
     },
     {
       "id": "R3",
       "deliverable": "Complete AI native review and independent programmatic evidence reconstruction for every included source revision.",
       "owner": "AI_review_and_programmatic_verification",
-      "status": "r22_r42_and_r47_full_native_reviews_complete; r45_r46_failed_attempts_preserved",
+      "status": "all_completed_indexed_rollouts_AI_reviewed_and_programmatically_verified; incomplete_attempts_separate",
       "done_when": "Complete native inputs/outputs/calls/returns reviewed; claims bound to exact source and delivered observations, independent causal/business replay and hashes; unresolved judgments disclosed. No human ratings required.",
       "packet": "../eval-readiness/phase1-carrier-adjudication-packet-20261101-r1/manifest.json",
       "packet_role": "Historical unscored human-review packet retained as evidence inventory only; not a release gate."
@@ -410,12 +410,12 @@
     }
   },
   "active_rollout": {
-    "name": "phase1-carrier-v12-engineering-resource-ordinary-batch-haiku55-cc-r48",
-    "status": "terminal, full native review and independent audits complete",
+    "name": "phase1-carrier-v12-engineering-resource-repaired-ordinary-batch-haiku55-cc-r49",
+    "status": "preparation running; no hosted calls",
     "harness": "claude-code",
     "authentication": "axonhub",
     "model": "anthropic/claude-haiku-5.5",
-    "model_calls": 88
+    "model_calls": 0
   },
   "incomplete_attempts": [
     {
@@ -454,6 +454,12 @@
       "synchronization/repaired",
       "execution_resource/repaired"
     ],
-    "interpretation": "R47/r48 are current-source Haiku/CC reviews. Historical v11 and older reviews remain revision/model/harness labeled."
+    "interpretation": "R47/r48 are current-source Haiku/CC reviews. Historical v11 and older reviews remain revision/model/harness labeled.",
+    "reviewed_registration_by_condition": {
+      "data_object/vulnerable": 47,
+      "execution_resource/vulnerable": 48
+    },
+    "source_hashes_identical": true,
+    "source_files": 152
   }
 }

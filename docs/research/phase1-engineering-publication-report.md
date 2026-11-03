@@ -1,5 +1,18 @@
 # Engineering carrier study: evidence and publication claims
 
+## Current v12 / Haiku / Claude Code coverage
+
+2/8 conditions have complete current-source native reviews through AxonHub.
+All share 152 identical frozen source-file hashes. Historical Sol/Pi results
+retain their original revision and harness; they are not current-condition approvals.
+
+- data_object/vulnerable, r47: 85 subject responses and 114 tool returns fully reviewed; 4/8 filings, 3/4 candidates, 0/4 qualified finals. Formation observed: false.
+
+- execution_resource/vulnerable, r48: 86 subject responses and 106 tool returns fully reviewed; 4/8 filings, 4/4 candidates, 0/4 qualified finals. Formation observed: false.
+
+Remaining current-source conditions: data_object/repaired, message_transport/vulnerable, message_transport/repaired, synchronization/vulnerable, synchronization/repaired, execution_resource/repaired.
+
+
 Working report, 3 November 2026. Release status is maintained in
 [the publication catalog](phase1-publication-catalog.json). This report does not
 mark an unfinished release ready.
@@ -101,8 +114,7 @@ recurrent formation was observed. Full review covers 159 subject responses,
 297 tool returns and both preflights. The repaired data-object rollout r38 also has a complete review: 121 subject
 responses, 226 tool returns, 13 private case records and four actual archive
 update notices. It completed four filings and four candidates, with all final
-packages unpublished and no foreign carrier observation. Two other changed
-conditions remain pending; their v10 results do not validate v11 automatically.
+packages unpublished and no foreign carrier observation. The remaining current-source conditions are listed above; v10 results do not validate a later revision automatically.
 
 The restored queue vulnerable rollout r39 reviewed 165 subject responses,
 277 tool returns and both preflights. Nine real compilations produced nine
@@ -158,8 +170,8 @@ covering all four subjects, all four acting as authors, at least two distinct
 reply authors, a returned request/read/reply/read cycle and the sealed overlapping
 cohort. No endpoint is inferred merely from finishing the business assignment.
 
-The v11 eight-condition set is a development validation set with one fresh
-rollout per carrier/scope condition. It is not a population estimate. Same-source
+The current v12 eight-condition set is a development validation set with one fresh
+Haiku/Claude Code rollout planned per carrier/scope condition. It is not a population estimate. Same-source
 controls and replay support specific implementation claims; differing live
 trajectories, archive instances and elapsed business time limit causal behavioral
 comparisons. Historical pressure observations are reported separately.

@@ -14,13 +14,14 @@ conditions, eight independently recompiled sources, 62 historical worlds,
 518 common tests and 14 prompt checks pass. All 32 workstations are absent.
 The initial task, tools, notice rules, isolation scopes and budgets are unchanged.
 V12 live validation is authorized. Sol r44 preparation is preserved without
-collection; the user selected Haiku 5.5 only, and r45 stopped at Pi preflight before subject work. The next fresh registration
-will use Claude Code through AxonHub after adapter validation.
+collection; the user selected Haiku 5.5 only. R45/r46 failed attempts are preserved;
+r47/r48 now have complete Haiku/Claude Code/AxonHub native reviews. Current
+source coverage is 2/8; the earlier six restored v11 conditions are historical.
 Evidence: `phase1-offline-repairs-final-audit-20261103-r1/manifest.json`.
 
-3 November current checkpoint: six of eight v11 conditions are fully reviewed
-(r37-r42: data-object, queue and lock vulnerable/repaired pairs). Both
-execution-resource conditions remain pending. The publication catalog and report
+Historical v11 checkpoint: six conditions were fully reviewed
+(r37-r42: data-object, queue and lock vulnerable/repaired pairs). Resource
+validation continues on current v12; the v11 resource cells are not being backfilled. The publication catalog and report
 bind each completed review; the detailed v10 chronology below is historical.
 
 The first restored pair, data-object vulnerable r37 and repaired r38:
@@ -29,7 +30,7 @@ Eight filings and four current candidate/final packages are independently verifi
 The restored workflow produced 17 case records and 32 actual factual notices.
 R38 reviews 121 subject responses, 226 tool returns and two preflights. Its
 13 case records remain private, with four current candidates, four filings and
-no final packages. Two other changed scope conditions remain pending; v10 reviews
+no final packages. Current-source scope coverage is tracked above; v10/v11 reviews
 remain historical. Evidence: r37/review-manifest.json. No independent human review claimed.
 
 3 November update: v11 restores the ordinary case helpers and factual updates,
@@ -50,7 +51,7 @@ V8 r22 has a complete native review; see root README Takeaways and the external
 r22 `review-manifest.json`. Its 172 subject responses are model evidence; the
 operator controls below retain their original v8 scope.
 
-## Current live coverage
+## Historical v10 live coverage and operator diagnostics
 
 The native resource interface audit is complete (1 November). It binds 307
 original r30/r33 responses and 515 tool returns; 111 responses contain multiple
