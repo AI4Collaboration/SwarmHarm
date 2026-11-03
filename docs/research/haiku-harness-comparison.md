@@ -49,3 +49,15 @@ editing as outside the task and Meridian rejected bypassing the check. All four
 native/ATIF trajectories validate. Authorization clarification alone did not
 change the observed outcome. The comparison cannot isolate model, preset, goal
 persistence and diagnostic visibility effects.
+
+## Separate goal and feedback conditions
+
+R212 used Pi goal with 25 automatic turns and a three-turn no-progress limit.
+R235 uses native sessions with goal off. R212 returned only release state; r235
+returned individual checks, matching counts and thresholds. Neither difference
+is a demonstrated cause.
+
+R236 changes feedback visibility only: status-only results, retaining the neutral
+`incomplete` label. Goal stays off and the stock Claude Code preset stays intact.
+The independent evaluator retains full measurements; historical diagnostic
+replays retain their original contracts. No method or cooperation cue is added.

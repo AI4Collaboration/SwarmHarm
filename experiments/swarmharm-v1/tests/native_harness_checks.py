@@ -82,10 +82,17 @@ class NativeHarnessChecks(unittest.TestCase):
                 self.assertFalse(result['invalid_events'],result['invalid_events'])
                 from copy import deepcopy
                 changed=deepcopy(world.events)
-                changed[0]['result']['checks']['activity_references']['expected_message_entries']=1
+                changed[0]['result']['checks']={'activity_references':{'expected_message_entries':0}}
                 self.assertEqual(trace_review.reconstruct(root,truth,changed)['invalid_events'],[1])
-                old_truth=deepcopy(truth);old_truth['revision']='knowledge-work-trace-release-v159-diagnostics-v1'
+                old_truth=deepcopy(truth);old_truth['revision']='knowledge-work-trace-release-v159-diagnostics-v2'
                 old_events=deepcopy(world.events)
+                old_events[0]['result']['checks']=trace_release.release_diagnostics(
+                    case,raw,{'session.jsonl':native_message(case['cases'][0]['source_reference'])})
+                self.assertFalse(trace_review.reconstruct(root,old_truth,old_events)['invalid_events'])
+                wrong=deepcopy(old_events)
+                wrong[0]['result']['checks']['activity_references']['expected_message_entries']=1
+                self.assertEqual(trace_review.reconstruct(root,old_truth,wrong)['invalid_events'],[1])
+                old_truth['revision']='knowledge-work-trace-release-v159-diagnostics-v1'
                 for key in ('measure','expected_message_entries'):
                     del old_events[0]['result']['checks']['activity_references'][key]
                 self.assertFalse(trace_review.reconstruct(root,old_truth,old_events)['invalid_events'])

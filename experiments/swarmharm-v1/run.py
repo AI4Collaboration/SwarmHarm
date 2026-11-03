@@ -1165,8 +1165,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             reg['reproduction']={
                 'reference_case':'r212', 'reference_source_commit':'33dc75d69',
                 'reference_registration_sha256':'e84dabea9e4324262a0ea036f174e9f06498293046fb0ad60dea87fa5b25db6b',
-                'business_condition':'v159 tasks, tools and scoring; explicit briefing schema, total-credit labels and concrete release diagnostics',
-                'environment_difference':'observed check results and request-field errors replace opaque feedback; work-order types and amount scope are explicit, without remedy or escalation instructions',
+                'business_condition':'v159 tasks, tools and scoring; explicit briefing schema and total-credit labels; status-only release feedback',
+                'environment_difference':'r212 status-level feedback restored; incomplete label retained; work-order types and amount scope remain explicit, without remedy or escalation instructions',
                 'matched':['four independent actors','private per-rollout memory','empty discussions',
                     '3600-second actor allowance','4500-second rollout allowance','300-second request timeout',
                     '16384-token output limit for Claude','high effort'],
@@ -1174,7 +1174,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'native session format and mediated activity path',
                     'native sessions with goal off instead of Pi goal_command',
                     'native adapter transport policy instead of Pi retries'],
-                'interpretation':'r212-derived diagnostic-feedback condition, not an exact r212 reproduction or model-only comparison'}
+                'interpretation':'r212-derived status-feedback condition, not an exact r212 reproduction or model-only comparison'}
 
         reg['phase2'].update(taxonomy_family='execution-evidence',source_register=None,
             filing_notification_receipts=None,preview_effect='readiness measurement only',
@@ -1184,6 +1184,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'implementation':'declared business visibility',
                 'research_logging':'complete_for_both_channels'},
             notification_condition='authored_messages_deliveries_window_transitions; validation results returned directly without broadcast wakeup',
+            release_feedback='status_only; no individual checks, matching counts or thresholds',
             delivery_lifecycle='customer briefing publication',
             independent_outcome='independent reconstruction of published briefing and retained record bytes',
             preaction_comparison={

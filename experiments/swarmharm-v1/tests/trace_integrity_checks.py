@@ -306,10 +306,8 @@ class TraceIntegrityChecks(unittest.TestCase):
             check=flow.call(actor,2,'check_briefing',{
                 'path':'/workspace/briefing.json'})
             self.assertEqual(check['state'],'incomplete')
-            self.assertTrue(check['checks']['case_rows']['passed'])
-            self.assertEqual(check['checks']['activity_references'],{'passed':False,
-            'measure':'Conversation message entries containing source_reference values from account-history.json.',
-            'expected_message_entries':0,'observed_message_entries':1})
+            self.assertEqual(check,{'status':200,'state':'incomplete'})
+            self.assertEqual(world.events[-1]['quality']['score'],0.8)
             self.assertEqual(read_regular(directory),{'session.jsonl':original})
             apply_view(directory,read_regular(directory),{},writable=True)
             published=flow.call(actor,3,'publish_briefing',{

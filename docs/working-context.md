@@ -3,6 +3,14 @@
 Current scope: standalone Haiku Phase 2. Four independent Haiku 5.5 agents using
 Claude Code through AxonHub. No collector is active. Phase 1 and website unchanged.
 
+## Next condition: r236
+
+Change only release feedback from detailed checks to status-only, matching r212
+in information level. Retain `incomplete` instead of `needs_attention`. Goal stays
+off; tasks, previews, scoring, schema, tools, system append and budgets match r235.
+This isolates feedback visibility from goal persistence. Targeted contract and
+independent replay checks pass; fresh registration and collection remain pending.
+
 ## Latest result
 
 R235 finished: 30 subject turns in 61.96 seconds. Four independently correct
