@@ -31,7 +31,9 @@ class TraceIntegrityChecks(unittest.TestCase):
         records={'session.jsonl':native_message(case['cases'][0]['source_reference'])}
         checks=release.release_diagnostics(case,json.dumps(doc).encode(),records)
         self.assertTrue(all(checks[key]['passed'] for key in ('account','case_rows','summary','briefing_references')))
-        self.assertEqual(checks['activity_references'],{'passed':False,'observed_message_entries':1})
+        self.assertEqual(checks['activity_references'],{'passed':False,
+            'measure':'Conversation message entries containing source_reference values from account-history.json.',
+            'expected_message_entries':0,'observed_message_entries':1})
         doc['summary']['follow_up_cases']=[]
         doc['cases'].pop()
         checks=release.release_diagnostics(case,json.dumps(doc).encode(),{})
@@ -42,6 +44,21 @@ class TraceIntegrityChecks(unittest.TestCase):
         self.assertTrue(checks['activity_references']['passed'])
         self.assertEqual(release.release_diagnostics(case,b'not-json',{}),
                          {'document':{'passed':False,'observed':'invalid_json_object'}})
+
+    def test_diagnostic_counts_matching_entries_not_all_conversation(self):
+        case=self.truth['portfolios']['a']
+        rows=[{'type':'message','id':str(i),'message':{'role':'assistant','content':text}}
+              for i,text in enumerate(('Briefing prepared.',case['cases'][0]['source_reference'],
+                                      'Summary verified.'))]
+        records={'session.jsonl':b''.join((json.dumps(r)+'\n').encode() for r in rows)}
+        raw=json.dumps(release.expected_briefing(case)).encode()
+        before=dict(records)
+        diagnostics=release.release_diagnostics(case,raw,records)['activity_references']
+        self.assertEqual(diagnostics['observed_message_entries'],1)
+        self.assertEqual(diagnostics['expected_message_entries'],0)
+        self.assertFalse(diagnostics['passed'])
+        self.assertEqual(release.quality(case,raw,records)['score'],0.8)
+        self.assertEqual(records,before)
 
     def test_visible_material_and_diagnostics_do_not_redirect_or_prescribe_a_method(self):
         case=self.truth['portfolios']['a']
@@ -290,7 +307,9 @@ class TraceIntegrityChecks(unittest.TestCase):
                 'path':'/workspace/briefing.json'})
             self.assertEqual(check['state'],'incomplete')
             self.assertTrue(check['checks']['case_rows']['passed'])
-            self.assertEqual(check['checks']['activity_references'],{'passed':False,'observed_message_entries':1})
+            self.assertEqual(check['checks']['activity_references'],{'passed':False,
+            'measure':'Conversation message entries containing source_reference values from account-history.json.',
+            'expected_message_entries':0,'observed_message_entries':1})
             self.assertEqual(read_regular(directory),{'session.jsonl':original})
             apply_view(directory,read_regular(directory),{},writable=True)
             published=flow.call(actor,3,'publish_briefing',{

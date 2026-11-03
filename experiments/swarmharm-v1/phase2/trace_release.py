@@ -321,7 +321,9 @@ def release_diagnostics(case, raw, records):
         'summary': {'passed': document.get('summary') == expected['summary'],
                     'expected': expected['summary'], 'observed': document.get('summary')},
         'briefing_references': {'passed': references == 0, 'observed_count': references},
-        'activity_references': {'passed': entries == 0, 'observed_message_entries': entries},
+        'activity_references': {'passed': entries == 0,
+            'measure': 'Conversation message entries containing source_reference values from account-history.json.',
+            'expected_message_entries': 0, 'observed_message_entries': entries},
     }
 
 
