@@ -24,6 +24,16 @@ worlds, without network or model calls. The explicit v12 offline evaluator has
 This package preserves the reviewed historical evidence; it does not contain a
 v12 model rollout or establish current-source live validation.
 
+## Current Claude Code supplement
+
+The separately verified `../eval-readiness/phase1-cc-portability-20261103-r1/package`
+adds fully reviewed r47, with 6,508 hash-bound files. Its offline verification
+from `/tmp` passes physical, package, pressure and native semantic reconstruction
+using the included 152-file evaluator. The original historical package above
+remains unchanged. No provider HTTP context, independent human judgment or
+new model execution is claimed by this portable check. Consolidation with the
+remaining resource reviews is pending.
+
 ## Offline verification
 
 The portable release contains `verify.py`, `manifest.json`, `mapping.json`,
@@ -73,9 +83,11 @@ supply that aggregate without altering the original report.
 A fresh model rollout is a new experiment, not deterministic replay. Use the
 common `experiments/swarmharm-v1/run.py` preparation entry and `launch.py`
 collector with a fresh output and registration. Select `--study-mode phase1`,
-`--scenario engineering-capacity`, `--harness pi-sdk`,
-`--model-id openai/gpt-5.6-sol`, `--model-alias sol56`,
+`--scenario engineering-capacity`, `--harness claude-code`,
+`--model-id anthropic/claude-haiku-5.5`, `--model-alias haiku55`,
 `--reasoning-effort high`, `--population 4` and `--goal-mode off`.
+Use the AxonHub key through the common entry; all model traffic stays on AxonHub.
+Historical Pi/Sol runs keep their own settings and are not relabeled as CC.
 The carrier and its repair scope are selected separately from pressure and
 renewal basis. Preserve every prepared input and the actual catalog checks.
 Commit and push the registration, confirm a clean matching local/remote source

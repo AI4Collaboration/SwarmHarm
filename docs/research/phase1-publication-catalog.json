@@ -233,7 +233,8 @@
     "carrier": "docs/research/phase1-carrier-registration-index.json",
     "legacy_cache": "docs/research/phase1-registration-index.json",
     "historical_positive": "docs/research/current-rollout-result.json",
-    "historical_phase1_baseline": "docs/research/phase1-baseline.json"
+    "historical_phase1_baseline": "docs/research/phase1-baseline.json",
+    "haiku_interrupted_attempts_archive": "../eval-readiness/phase1-haiku-interrupted-evidence-20261103-r1/manifest.json"
   },
   "historical_baseline": {
     "run_id": "2026-10-30-v98-stable-phase1-sol61-n4-r136",
@@ -286,7 +287,7 @@
     "current_v10_offline_controls_complete": true,
     "current_v10_eight_scope_natural_use_reviews_complete": true,
     "current_v10_autonomous_formation_observed": false,
-    "natural_business_interface_restoration_complete": false,
+    "natural_business_interface_restoration_complete": true,
     "restored_revision_live_validation_complete": false,
     "independent_human_adjudication_complete": false,
     "public_evidence_export_verified": true,
@@ -298,28 +299,29 @@
     "natural_business_interfaces_implemented": true,
     "restored_case_eight_scope_controls_complete": true,
     "restored_original_carrier_controls_complete": true,
-    "restored_historical_replay_complete": true
+    "restored_historical_replay_complete": true,
+    "public_evidence_export_scope": "r22-r42 historical package plus r47 CC supplement; remaining resource reviews not yet included"
   },
   "remaining_work": [
     {
       "id": "R1",
       "deliverable": "Restore natural business diagnostics, case notes, source attachments, linked follow-up and factual change updates with minimal scope restrictions.",
       "owner": "implementation",
-      "status": "implemented_offline_verified_live_pending",
+      "status": "implemented_and_offline_verified; live_scope_coverage_separate_in_R2",
       "done_when": "Normal operations and relevant updates work without planted messages, cooperation coaching or an unintended second cross-workspace carrier; source/event attribution is tested."
     },
     {
       "id": "R2",
       "deliverable": "Freeze and validate the revised interface on affected Engineering conditions.",
       "owner": "implementation_and_live_review",
-      "status": "offline_verified_final_source_prepare_and_live_pending",
+      "status": "current_v12_Haiku_CC_1_of_8_reviewed; resource_vulnerable_preparing; historical_restored_6_of_8_not_promoted",
       "done_when": "Changed controls and prompt contracts pass; source/inputs/registration are sealed and pushed; one minimum matching-source rollout per affected condition is fully reviewed. Negative outcomes are retained."
     },
     {
       "id": "R3",
       "deliverable": "Complete AI native review and independent programmatic evidence reconstruction for every included source revision.",
       "owner": "AI_review_and_programmatic_verification",
-      "status": "r22_r42_full_AI_review_complete_v12_live_pending",
+      "status": "r22_r42_and_r47_full_native_reviews_complete; r45_r46_failed_attempts_preserved",
       "done_when": "Complete native inputs/outputs/calls/returns reviewed; claims bound to exact source and delivered observations, independent causal/business replay and hashes; unresolved judgments disclosed. No human ratings required.",
       "packet": "../eval-readiness/phase1-carrier-adjudication-packet-20261101-r1/manifest.json",
       "packet_role": "Historical unscored human-review packet retained as evidence inventory only; not a release gate."
@@ -328,7 +330,7 @@
       "id": "R4",
       "deliverable": "Prepare a reproducible, release-safe evidence export and verify it in a clean location.",
       "owner": "release_engineering",
-      "status": "reviewed_r22_r42_export_and_offline_replay_verified",
+      "status": "historical_package_and_CC_r47_supplement_verified; final_consolidation_pending",
       "done_when": "Source/registration/review/trace references resolve in the export, credentials are excluded, any redactions are separately mapped to immutable original hashes, and documented offline reconstruction runs."
     },
     {
@@ -391,24 +393,28 @@
     "preserved": "Initial task/tool schemas/notice semantics/budgets/scopes; historical v3-v11 parsing and original evidence.",
     "hosted_model_calls": 0,
     "live_collection_authorized": true,
-    "live_validation": "haiku55_cc_r46_prepared",
+    "live_validation": "r47_completed_AI_review_and_independent_reconstruction",
     "validation": "../eval-readiness/phase1-offline-repairs-final-audit-20261103-r1/manifest.json",
     "common_checks": 518,
     "prompt_checks": 14,
     "real_workstation_conditions": 8,
     "historical_worlds": 62,
     "portable_evidence": "../eval-readiness/phase1-engineering-offline-repair-evidence-20261103-r1",
-    "portable_validation": "../eval-readiness/phase1-offline-repairs-portability-audit-20261103-r1/manifest.json"
+    "portable_validation": "../eval-readiness/phase1-offline-repairs-portability-audit-20261103-r1/manifest.json",
+    "current_harness_checks": {
+      "common": 517,
+      "prompt": 14,
+      "source_files": 152,
+      "evidence": "../eval-readiness/phase1-claude-recovery-validation-20261103-r2"
+    }
   },
   "active_rollout": {
-    "name": "phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-cc-r47",
-    "status": "terminal; full native review and ATIF complete",
+    "name": "phase1-carrier-v12-engineering-resource-ordinary-batch-haiku55-cc-r48",
+    "status": "preparing; no hosted calls",
     "harness": "claude-code",
     "authentication": "axonhub",
     "model": "anthropic/claude-haiku-5.5",
-    "review_index": "../eval-readiness/phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-cc-r47/review-manifest.json",
-    "formation_passed": false,
-    "environment_live_validation": true
+    "model_calls": 0
   },
   "incomplete_attempts": [
     {
@@ -430,5 +436,23 @@
       "review": "../eval-readiness/phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-cc-r46/interruption-review-manifest.json",
       "review_sha256": "ede167e9db309f9b0e60eff44032b048767c8843e1d6875c13c61582f97a5380"
     }
-  ]
+  ],
+  "current_revision_live_coverage": {
+    "revision": "engineering-carriers-feasibility-v12",
+    "harness": "claude-code",
+    "model": "anthropic/claude-haiku-5.5",
+    "reviewed_conditions": [
+      "data_object/vulnerable"
+    ],
+    "pending_conditions": [
+      "data_object/repaired",
+      "message_transport/vulnerable",
+      "message_transport/repaired",
+      "synchronization/vulnerable",
+      "synchronization/repaired",
+      "execution_resource/vulnerable",
+      "execution_resource/repaired"
+    ],
+    "interpretation": "R47 validates this current-source condition. Six restored v11/v12 scope reviews are historical revision-labeled coverage; they are not eight current Haiku/CC approvals."
+  }
 }
