@@ -13,19 +13,39 @@ def verify(root, replay=False):
         path=(base/relative).resolve()
         if not path.is_relative_to(base.resolve()):raise ValueError('Escaping manifest path')
         if digest(path)!=expected:raise ValueError('Hash mismatch: '+str(path))
+    root=root.resolve()
+    def portable(relative):
+        path=(root/relative).resolve()
+        if not path.is_relative_to(root):raise ValueError('Escaping portable mapping path')
+        return path
     manifest=read(root/'manifest.json')
     for relative,expected in manifest.items():check(root,relative,expected)
     mapping=read(root/'mapping.json');total=0;replayed=[];audit_worlds=[]
     if replay:
         def version(item):
-            reg=read(root/item['portable_root']/'registration.json')
+            reg=read(portable(item['portable_root'])/'registration.json')
             return (int(reg['phase1_carrier_condition']['runtime']['revision'].rsplit('v',1)[1]),
                     int(item['name'].rsplit('-r',1)[1]))
-        latest=max(mapping['rollouts'],key=version)
-        sys.path.insert(0,str(root/latest['portable_root']/'code/experiments/swarmharm-v1'))
+        explicit=mapping.get('replay_source')
+        if explicit:
+            snapshot=portable(explicit['portable_snapshot'])
+            source_manifest=portable(explicit['source_hashes'])
+            if str(source_manifest.relative_to(root)) not in manifest:
+                raise ValueError('Replay-source manifest is not bound')
+            hashes=read(source_manifest)
+            if len(hashes)!=explicit['source_files']:raise ValueError('Replay-source count differs')
+            for relative,expected in hashes.items():
+                check(snapshot,relative,expected)
+                if str((snapshot/relative).resolve().relative_to(root)) not in manifest:
+                    raise ValueError('Replay-source file is not bound')
+            evaluator=snapshot/'experiments/swarmharm-v1'
+        else:
+            latest=max(mapping['rollouts'],key=version)
+            evaluator=portable(latest['portable_root'])/'code/experiments/swarmharm-v1'
+        sys.path.insert(0,str(evaluator))
         from phase1 import carrier_evidence, carrier_trace_review, release_packages, pressure_review
     for item in mapping['rollouts']:
-        base=root/item['portable_root']
+        base=portable(item['portable_root'])
         check(base,'evidence-manifest.json',item['terminal_manifest_sha256'])
         check(base,'review-manifest.json',item['review_manifest_sha256'])
         terminal=read(base/'evidence-manifest.json');review=read(base/'review-manifest.json')
@@ -76,7 +96,7 @@ def verify(root, replay=False):
                              'packages':packages,'pressure':pressure,'formation':semantic['phase1_formation_passed']})
     if replay:
         for item in mapping.get('audits',[]):
-            for path in sorted((root/item['portable_root']).rglob('world.json')):
+            for path in sorted(portable(item['portable_root']).rglob('world.json')):
                 world=read(path)
                 if 'engineering_carrier_probe' not in world:continue
                 physical=carrier_evidence.replay(world['plan'],world['events'],world['engineering_carrier_probe'])
@@ -86,7 +106,7 @@ def verify(root, replay=False):
                     'ready_packages':packages['ready_packages'],'operator_only':True})
     return {'rollouts':len(mapping['rollouts']),'bound_evidence_files':total,
             'portable_hash_verification':'passed','network_or_model_calls':0,'replayed':replayed,
-            'audit_worlds':audit_worlds}
+            'audit_worlds':audit_worlds,'replay_source':mapping.get('replay_source')}
 
 
 if __name__=='__main__':

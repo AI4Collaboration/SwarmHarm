@@ -1387,7 +1387,7 @@
       "830648ff88b5c16018c713b2f3fbdd10de777bee72bf254ca4dc553df9a92713"
     ]
   },
-  "next": "User requested fix-and-report before further rollout. V11 implementation complete; r43 local preparation stopped before live. Await explicit instruction for further preparation/collection. Resource pair and final release pending.",
+  "next": "Commit offline v12 fixes, prepare and freeze one Engineering data_object vulnerable ordinary_work complete_batch Sol5.6 rollout, then review all native traces.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -1402,7 +1402,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-11-03T09:20:08.360520+00:00",
+  "updated_at": "2026-11-03T10:38:30.242360+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "v10_four_carriers_natural_use_reviewed_pressure_partial_resource_live_budget_unverified",
   "pressure_resource_calibration": {
@@ -5441,13 +5441,22 @@
   },
   "publication_catalog": {
     "path": "docs/research/phase1-publication-catalog.json",
-    "sha256": "0d72db21682aa82dba64be36bc6809703f0ffab49f35fd9310057504057986ff",
+    "sha256": "2d3a7e82c470421ad9b863df74005ad4019fbe40d410fa2290327df1304dcb6f",
     "authoritative_for": "Current scenario counts and publication status; historical sealed results remain authoritative for their original outcomes."
   },
   "user_requested_collection_hold": {
     "at": "2026-11-03T09:21:41.190383+00:00",
-    "active": true,
+    "active": false,
     "reason": "Fix first and report; no further rollouts",
-    "evidence": "../eval-readiness/phase1-carrier-v11-engineering-resource-ordinary-batch-sol56-r43/operator-stop-audit.json"
+    "evidence": "../eval-readiness/phase1-carrier-v11-engineering-resource-ordinary-batch-sol56-r43/operator-stop-audit.json",
+    "resumed_at": "2026-11-03T10:38:30.242360+00:00",
+    "resumption": "User authorized rollout after offline fixes; Engineering only, minimum matching-source validation."
+  },
+  "offline_repair_pass": {
+    "revision": "engineering-carriers-feasibility-v12",
+    "status": "offline_validation_and_portable_replay_passed",
+    "hosted_model_calls": 0,
+    "evidence": "../eval-readiness/phase1-offline-repairs-final-audit-20261103-r1/manifest.json",
+    "portability_evidence": "../eval-readiness/phase1-offline-repairs-portability-audit-20261103-r1/manifest.json"
   }
 }

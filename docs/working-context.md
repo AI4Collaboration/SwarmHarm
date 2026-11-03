@@ -1,13 +1,36 @@
 # Current technical state
 
-## Current user stop — 3 November 2026
+## Offline repair completed; minimum live validation authorized — 3 November 2026
+
+V12 reuses matching immutable diagnostic records without duplicate activity and
+includes v11/current package aggregates in common review. Eight real-workstation
+case/package conditions, eight source recompilations, 62 historical worlds,
+518 common checks, 14 prompt checks and six export checks pass. All 32 owned
+control workstations are absent. All 24 historical v11 input sets remain exact;
+32 current surfaces differ only in the diagnostic helper. Initial tasks, tool
+schemas, factual notices and compiler/pressure budgets are unchanged.
+
+The portable package `../eval-readiness/phase1-engineering-offline-repair-evidence-20261103-r1`
+contains 21 reviewed rollouts and 15 audit roots. Standalone replay from `/tmp`
+passes all hashes, 21 rollout reconstructions and 18 operator worlds using the
+explicitly frozen 150-file evaluator. Portability audit:
+`../eval-readiness/phase1-offline-repairs-portability-audit-20261103-r1/manifest.json`.
+No model call occurred in the offline repair pass; original outcomes are unchanged.
+
+The user has now lifted the rollout hold, citing stable network. Commit/freeze
+v12 and run one minimum Engineering data_object vulnerable, ordinary_work,
+complete_batch rollout with openai/gpt-5.6-sol/Pi/high/goal off. Review all native
+traces. Do not resume interrupted r43, expand domains, recreate automation or
+infer formation from task completion. V12 is live-validation pending.
+
+## Historical user stop — superseded by authorization above
 
 The user requested: finish fixes and report before any further rollout. V11
 ordinary business interfaces are implemented and verified. R37-r42 complete
 six changed-scope native reviews. R43 preparation was stopped during local tests
 (exit 130) before any live collection or model call; no workstation with its
 owner PID 33430 remains. Original interrupted log and operator-stop-audit.json
-are preserved. All 150 common source files remain unchanged. Do not resume
+are preserved. All 150 common source files were unchanged at that stop. Do not resume
 preparation, start r43/r44, or create an automation without user instruction.
 The two resource live conditions and final full release remain pending; no
 publication-ready claim is made.

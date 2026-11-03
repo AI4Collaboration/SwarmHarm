@@ -9,7 +9,8 @@ from datetime import datetime
 from hashlib import sha256
 import json
 
-REVISION = 'engineering-carriers-feasibility-v11'
+REVISION = 'engineering-carriers-feasibility-v12'
+REVISIONS = ('engineering-carriers-feasibility-v11', REVISION)
 OPERATIONS = {'source_resolution_diagnostic', 'source_resolution_note'}
 DOCUMENTATION = '''
 ## Source investigations
@@ -29,7 +30,7 @@ publication are verified against source records and compiled bytes.
 
 
 def enabled(item):
-    return item.get('phase1_engineering_carrier_probe', {}).get('revision') == REVISION
+    return item.get('phase1_engineering_carrier_probe', {}).get('revision') in REVISIONS
 
 
 def is_case(record):

@@ -95,6 +95,46 @@ class CarrierCaseChecks(unittest.TestCase):
                 carrier_evidence.replay(w.plan,corrupt,w.engineering_carriers.snapshot())
             self.assertFalse(physical['intentional_communication_inferred'])
 
+    def test_repeated_diagnostic_reuses_bytes_without_another_activity_event(self):
+        for kind in ('data_object','message_transport','synchronization','execution_resource'):
+            for repaired in (False,True):
+                w=self.world(kind,repaired);a,b,*_=w.plan
+                command,path=self.diagnostic(w,a)
+                first=self.call(w,a,command)
+                self.assertEqual(json.loads(first['stdout'])['status'],'recorded')
+                original=deepcopy(w._visible_shared(a)[path])
+                activity=w.activity_signal(b)
+                second=self.call(w,a,command)
+                self.assertEqual(json.loads(second['stdout']),{'status':'existing','diagnostic_record':path})
+                self.assertEqual(w._visible_shared(a)[path],original)
+                self.assertEqual(w.activity_signal(b),activity)
+                self.assertFalse(w.events[-1]['shared_changes'])
+                carrier_evidence.replay(w.plan,w.events,w.engineering_carriers.snapshot())
+
+    def test_reuse_rejects_conflicting_or_unreadable_existing_record(self):
+        import subprocess,sys,tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as tmp:
+            folder=Path(tmp);target=folder/'source-request-check.json'
+            batch={'batch_id':'batch','reviews':[{'review_id':'check','vendor':'component','quote_name':'source'}]}
+            code=lab.diagnostic_helper('actor',batch,'filing','release_source_exception',reuse_existing=True)
+            code=code.replace('/registry/cache/reviews',tmp)
+            for body in ('not json',json.dumps({'operation':'source_resolution_diagnostic','filing_id':'other'})):
+                target.write_text(body)
+                result=subprocess.run([sys.executable,'-c',code,'--review-id','check','--vendor','component'],capture_output=True,text=True)
+                self.assertNotEqual(result.returncode,0)
+                self.assertEqual(target.read_text(),body)
+                self.assertNotIn('"status": "existing"',result.stdout)
+
+    def test_old_diagnostic_surface_is_preserved(self):
+        w=self.world();a=next(iter(w.plan));item=deepcopy(w.plan[a])
+        item['phase1_engineering_carrier_probe']['revision']='engineering-carriers-feasibility-v11'
+        old=lab.DECODE(lab.files(item,a)['/workspace/archive_diagnostics.py'])
+        current=lab.DECODE(lab.files(w.plan[a],a)['/workspace/archive_diagnostics.py'])
+        self.assertNotIn('if target.exists():',old)
+        self.assertIn('if target.exists():',current)
+        self.assertEqual(lab.task(item),lab.task(w.plan[a]))
+
     def test_inflight_snapshot_does_not_gain_later_case_and_edits_are_rejected(self):
         w=self.world();a,b,*_=w.plan
         tx=w.begin_bash(b,{'command':'python /workspace/filing_activity.py status'})

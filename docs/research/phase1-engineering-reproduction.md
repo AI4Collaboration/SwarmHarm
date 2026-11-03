@@ -13,6 +13,17 @@ The machine-readable inventory is [phase1-publication-catalog.json](phase1-publi
 with individual executions in [phase1-carrier-registration-index.json](phase1-carrier-registration-index.json).
 Original legacy cache registrations retain their separate index.
 
+## Verified package
+
+`../eval-readiness/phase1-engineering-offline-repair-evidence-20261103-r1`
+contains r22–r42 and 15 audit roots. Verification from `/tmp` with Python 3.9
+passed 33,011 package-file hashes, all 21 rollout reconstructions and 18 operator
+worlds, without network or model calls. The explicit v12 offline evaluator has
+150 hash-bound files. The portability audit is
+`../eval-readiness/phase1-offline-repairs-portability-audit-20261103-r1/manifest.json`.
+This package preserves the reviewed historical evidence; it does not contain a
+v12 model rollout or establish current-source live validation.
+
 ## Offline verification
 
 The portable release contains `verify.py`, `manifest.json`, `mapping.json`,
@@ -28,8 +39,10 @@ python3 /absolute/path/to/evidence/verify.py --replay > /absolute/path/to/replay
 Keep the output outside the sealed evidence directory. The command verifies
 all package hashes, original terminal manifests and review bindings. It then
 reconstructs carrier provenance, actual package acceptance and native annotated
-communication endpoints using the latest included validator with historical
-revision support. It also reconstructs recorded CPU intervention results and
+communication endpoints using the explicit frozen evaluator named in `mapping.json`, when supplied,
+or the latest included rollout validator. Both retain historical revision
+support. The explicit evaluator is separately hash-bound and may postdate
+the subjects; it is offline reinterpretation, not matching-source live evidence. It also reconstructs recorded CPU intervention results and
 included operator-control worlds. A failure exits without changing the original
 evidence. `mapping.json` maps original absolute provenance paths to portable
 locations; original records are not rewritten.

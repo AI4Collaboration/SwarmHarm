@@ -289,7 +289,7 @@
     "natural_business_interface_restoration_complete": false,
     "restored_revision_live_validation_complete": false,
     "independent_human_adjudication_complete": false,
-    "public_evidence_export_verified": false,
+    "public_evidence_export_verified": true,
     "claim_scoped_manuscript_ready": false,
     "publication_ready": false,
     "independent_human_adjudication_required": false,
@@ -319,7 +319,7 @@
       "id": "R3",
       "deliverable": "Complete AI native review and independent programmatic evidence reconstruction for every included source revision.",
       "owner": "AI_review_and_programmatic_verification",
-      "status": "v10_review_complete_revised_source_review_pending",
+      "status": "r22_r42_full_AI_review_complete_v12_live_pending",
       "done_when": "Complete native inputs/outputs/calls/returns reviewed; claims bound to exact source and delivered observations, independent causal/business replay and hashes; unresolved judgments disclosed. No human ratings required.",
       "packet": "../eval-readiness/phase1-carrier-adjudication-packet-20261101-r1/manifest.json",
       "packet_role": "Historical unscored human-review packet retained as evidence inventory only; not a release gate."
@@ -328,7 +328,7 @@
       "id": "R4",
       "deliverable": "Prepare a reproducible, release-safe evidence export and verify it in a clean location.",
       "owner": "release_engineering",
-      "status": "exporter_implemented_single_rollout_portability_verified_full_package_pending",
+      "status": "reviewed_r22_r42_export_and_offline_replay_verified",
       "done_when": "Source/registration/review/trace references resolve in the export, credentials are excluded, any redactions are separately mapped to immutable original hashes, and documented offline reconstruction runs."
     },
     {
@@ -363,7 +363,7 @@
     "disclosure": "AI-reviewed and programmatically verified; not independently human-adjudicated.",
     "uncertainty_rule": "Retain unresolved semantic judgments as indeterminate; do not infer intentional communication from exposure or operator controls."
   },
-  "current_development_revision": "engineering-carriers-feasibility-v11",
+  "current_development_revision": "engineering-carriers-feasibility-v12",
   "restored_revision_live_coverage": {
     "revision": "engineering-carriers-feasibility-v11",
     "reviewed_conditions": [
@@ -379,5 +379,22 @@
       "execution_resource/repaired"
     ],
     "latest_review_index": "../eval-readiness/phase1-carrier-v11-engineering-lock-repaired-ordinary-batch-sol56-r42/review-manifest.json"
+  },
+  "offline_repair_pass": {
+    "revision": "engineering-carriers-feasibility-v12",
+    "status": "offline_validation_and_portable_replay_passed",
+    "business_change": "Repeated diagnostics reuse the original matching case without mutating bytes or creating activity.",
+    "review_change": "Common review includes release delivery for v11 and current package-bearing revisions.",
+    "preserved": "Initial task/tool schemas/notice semantics/budgets/scopes; historical v3-v11 parsing and original evidence.",
+    "hosted_model_calls": 0,
+    "live_collection_authorized": true,
+    "live_validation": "authorized_not_started",
+    "validation": "../eval-readiness/phase1-offline-repairs-final-audit-20261103-r1/manifest.json",
+    "common_checks": 518,
+    "prompt_checks": 14,
+    "real_workstation_conditions": 8,
+    "historical_worlds": 62,
+    "portable_evidence": "../eval-readiness/phase1-engineering-offline-repair-evidence-20261103-r1",
+    "portable_validation": "../eval-readiness/phase1-offline-repairs-portability-audit-20261103-r1/manifest.json"
   }
 }

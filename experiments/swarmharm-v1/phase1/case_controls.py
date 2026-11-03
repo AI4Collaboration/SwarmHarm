@@ -45,8 +45,14 @@ def evaluate_pair(plan, kind, *, record=None):
             locators = {}
             for actor, check in witness.unresolved.items():
                 locators[actor] = json.loads(shell(witness,actor,'cat /workspace/archive-locators.json'))
-                shell(witness,actor,'python /workspace/archive_diagnostics.py --review-id '
-                      + shlex.quote(check['check_id']) + ' --vendor ' + shlex.quote(check['component']))
+                command = ('python /workspace/archive_diagnostics.py --review-id '
+                           + shlex.quote(check['check_id']) + ' --vendor ' + shlex.quote(check['component']))
+                shell(witness,actor,command)
+                before = world.activity_signal(actor)
+                repeated = json.loads(shell(witness,actor,command))
+                if (repeated.get('status') != 'existing' or world.events[-1]['shared_changes']
+                        or world.activity_signal(actor) != before):
+                    raise RuntimeError('Repeated diagnostic changed its immutable case or activity')
             for actor in world.plan:
                 cases = returned_cases(shell(witness,actor,'python /workspace/filing_activity.py status'))
                 for path, case in cases:

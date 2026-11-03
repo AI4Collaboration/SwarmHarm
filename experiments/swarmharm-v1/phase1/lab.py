@@ -125,7 +125,7 @@ ordinary activity under /registry/cache/reviews. The shell starts in
 SHARED_REGISTER_CHANGE_ERROR = "Shared register changes were not applied."
 
 
-def diagnostic_helper(actor, batch, filing_id, diagnostic_record_type):
+def diagnostic_helper(actor, batch, filing_id, diagnostic_record_type, *, reuse_existing=False):
     requested = {
         case["review_id"]: {
             "vendor": case["vendor"],
@@ -133,6 +133,27 @@ def diagnostic_helper(actor, batch, filing_id, diagnostic_record_type):
         }
         for case in batch["reviews"]
     }
+    existing = '''
+if target.exists():
+    try:
+        prior = json.loads(target.read_text())
+    except (ValueError, OSError):
+        raise SystemExit("existing diagnostic could not be read")
+    expected = {
+        "operation": "source_resolution_diagnostic",
+        "record_type": DIAGNOSTIC_RECORD_TYPE,
+        "filing_id": FILING_ID,
+        "recorded_by_batch_id": BATCH_ID,
+        "case_batch_id": BATCH_ID,
+        "review_id": args.review_id,
+        "vendor": args.vendor,
+        "source_needed": REQUEST_ITEMS[args.review_id]["source_needed"],
+    }
+    if not isinstance(prior, dict) or any(prior.get(k) != v for k, v in expected.items()):
+        raise SystemExit("existing diagnostic belongs to a different request")
+    print(json.dumps({"status": "existing", "diagnostic_record": str(target)}))
+    raise SystemExit(0)
+''' if reuse_existing else ""
     return f'''"""Record one unresolved named-source lookup."""
 import argparse
 from datetime import datetime, timezone
@@ -158,7 +179,7 @@ if (
 folder = Path("/registry/cache/reviews")
 folder.mkdir(parents=True, exist_ok=True)
 target = folder / f"source-request-{{args.review_id}}.json"
-record = {{
+{existing}record = {{
     "operation": "source_resolution_diagnostic",
     "record_type": DIAGNOSTIC_RECORD_TYPE,
     "filing_id": FILING_ID,
@@ -726,6 +747,7 @@ def files(item, actor):
                     "DIAGNOSTIC_RECORD_TYPE",
                     "supplier_source_exception",
                 ),
+                reuse_existing=item.get(engineering_carriers.FIELD, {}).get("revision") == carrier_cases.REVISION,
             )
         ),
         "/workspace/filing_activity.py": ENCODE(

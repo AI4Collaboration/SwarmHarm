@@ -23,7 +23,7 @@ def safe_path(root, relative):
     return value
 
 
-def export(out, roots, secrets=(), audit_roots=()):
+def export(out, roots, secrets=(), audit_roots=(), replay_source=None):
     if out.exists():raise FileExistsError('Use a fresh export path')
     plans=[]
     for root in roots:
@@ -49,6 +49,24 @@ def export(out, roots, secrets=(), audit_roots=()):
             raise ValueError('Unsupported audit manifest: '+root.name)
         files[manifest_name] = digest(root/manifest_name)
         plans.append((root,files,'audits'))
+    replay_mapping = None
+    if replay_source is not None:
+        # Explicitly frozen evaluator snapshot, separate from historical subjects.
+        snapshot = replay_source.resolve()
+        hashes = json.loads((snapshot.parent/'source-hashes.json').read_text())
+        if not hashes or not all(isinstance(v,str) and re.fullmatch('[a-f0-9]{64}',v) for v in hashes.values()):
+            raise ValueError('Invalid replay-source manifest')
+        for relative in hashes:safe_path(snapshot,relative)
+        files = {snapshot.name+'/'+p:h for p,h in hashes.items()}
+        files['source-hashes.json'] = digest(snapshot.parent/'source-hashes.json')
+        plans.append((snapshot.parent,files,'validators'))
+        replay_mapping = {'portable_snapshot':'validators/'+snapshot.parent.name+'/'+snapshot.name,
+                          'source_hashes':'validators/'+snapshot.parent.name+'/source-hashes.json',
+                          'source_files':len(hashes),
+                          'interpretation':'Explicit offline evaluator snapshot; historical subject inputs and original reviews remain unchanged.'}
+    identities=[(role,root.name) for root,files,role in plans]
+    if len(identities)!=len(set(identities)):
+        raise ValueError('Duplicate portable evidence root name')
     for root,files,role in plans:
         for relative,expected in files.items():
             source=safe_path(root,relative)
@@ -65,6 +83,7 @@ def export(out, roots, secrets=(), audit_roots=()):
             target=out/role/root.name/relative
             target.parent.mkdir(parents=True,exist_ok=True)
             shutil.copyfile(safe_path(root,relative),target)
+        if role == 'validators':continue
         if role == 'audits':
             audits.append({'name':root.name,'original_root':str(root.resolve()),
                            'portable_root':'audits/'+root.name,'files':len(files)})
@@ -75,7 +94,7 @@ def export(out, roots, secrets=(), audit_roots=()):
             'redactions':[],'files':len(files)})
     (out/'mapping.json').write_text(json.dumps({'schema':'phase1-portable-evidence-v1',
         'scope':'Engineering carrier evidence only','review_method':'AI review and programmatic verification; no independent human adjudication',
-        'rollouts':mapping,'audits':audits},indent=2)+'\n')
+        'rollouts':mapping,'audits':audits,'replay_source':replay_mapping},indent=2)+'\n')
     shutil.copyfile(REPO/'scripts/verify_phase1_export.py',out/'verify.py')
     (out/'README.txt').write_text(
         'Engineering carrier evidence package\n\n'
@@ -85,11 +104,11 @@ def export(out, roots, secrets=(), audit_roots=()):
         'Absolute paths inside original records are provenance strings. Use mapping.json to locate portable roots.\n'
         'No files are redacted in this export; credential detection aborts before any export is created.\n'
         'A complete negative result does not demonstrate intentional communication.\n'
-        'Replay uses the latest included frozen carrier validator, with historical revision parsing;\n'
+        'Replay uses the explicit frozen evaluator in mapping.json, or the latest included rollout validator.\n'
         'later judgments must be stored separately from these immutable original outcomes.\n')
     manifest={str(p.relative_to(out)):digest(p) for p in sorted(out.rglob('*')) if p.is_file()}
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
-    return {'rollouts':len(mapping),'audits':len(audits),'files':len(manifest),'redactions':0,'model_calls':0}
+    return {'rollouts':len(mapping),'audits':len(audits),'files':len(manifest),'redactions':0,'model_calls':0,'explicit_replay_source':replay_mapping is not None}
 
 
 if __name__=='__main__':
@@ -99,8 +118,9 @@ if __name__=='__main__':
     parser.add_argument('--additional-rollout',type=Path,action='append',default=[])
     parser.add_argument('--secret-file',type=Path,action='append',default=[])
     parser.add_argument('--audit-root',type=Path,action='append',default=[])
+    parser.add_argument('--replay-source',type=Path,help='Frozen source directory with sibling source-hashes.json; offline reinterpretation only.')
     args=parser.parse_args()
     roots=[(REPO/row['review_index']).resolve().parent for row in json.loads(args.index.read_text())['rows']]
     roots=list(dict.fromkeys(roots+[p.resolve() for p in args.additional_rollout]))
     secrets=[p.read_bytes().strip() for p in args.secret_file]
-    print(json.dumps(export(args.output.resolve(),roots,secrets,[p.resolve() for p in args.audit_root])))
+    print(json.dumps(export(args.output.resolve(),roots,secrets,[p.resolve() for p in args.audit_root],args.replay_source)))

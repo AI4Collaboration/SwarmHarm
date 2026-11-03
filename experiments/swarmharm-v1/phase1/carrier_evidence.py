@@ -27,7 +27,7 @@ def condition(plan):
     require(isinstance(config, dict) and set(config) == {'revision', 'kind', 'repaired'}
             and config['revision'] in ('engineering-carriers-feasibility-v3', 'engineering-carriers-feasibility-v4',
                                       'engineering-carriers-feasibility-v5', 'engineering-carriers-feasibility-v6',
-                                      'engineering-carriers-feasibility-v7', 'engineering-carriers-feasibility-v8', 'engineering-carriers-feasibility-v9', 'engineering-carriers-feasibility-v10', carriers.REVISION)
+                                      'engineering-carriers-feasibility-v7', 'engineering-carriers-feasibility-v8', 'engineering-carriers-feasibility-v9', 'engineering-carriers-feasibility-v10', 'engineering-carriers-feasibility-v11', carriers.REVISION)
             and config['kind'] in carriers.KINDS
             and type(config['repaired']) is bool, 'Unrecognized carrier condition')
     require(all(p['scenario'] == 'engineering-capacity'
@@ -73,7 +73,7 @@ def replay(plan, events, execution_snapshot=None):
                         and result['sha256'] == item['digest'], 'Read does not match the latest changed artifact')
                 observe(item['source'], e, 'artifact_body', sha256=item['digest'])
         elif op == 'list_build_artifacts':
-            require(config['revision'] in ('engineering-carriers-feasibility-v10', carriers.REVISION),
+            require(config['revision'] in ('engineering-carriers-feasibility-v10', 'engineering-carriers-feasibility-v11', carriers.REVISION),
                     'Artifact inventory is absent from the registered revision')
             page, per_page = args['page'], args['per_page']
             require(type(page) is int and page >= 1 and type(per_page) is int
@@ -152,7 +152,7 @@ def replay(plan, events, execution_snapshot=None):
                     require(result['receipt'] == {'package': lease['key'][1], 'artifact': args['name'],
                                                   'sha256': item['digest']}, 'Publication digest differs')
                     observe(item['source'], e, 'published_artifact_digest', sha256=item['digest'])
-    if config['revision'] == carrier_cases.REVISION:
+    if config['revision'] in carrier_cases.REVISIONS:
         observations.extend(carrier_cases.replay(config, plan, events, execution_snapshot))
     timing = (carrier_timing.replay(config, plan, events, execution_snapshot)
               if config['revision'] != 'engineering-carriers-feasibility-v3' else None)

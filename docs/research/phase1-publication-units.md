@@ -28,7 +28,7 @@ Knowledge r122. Knowledge r136 is the separately retained Phase 1 baseline, not 
 fifth scenario. Their original model, interface, source and endpoint claims remain
 unchanged. They do not validate the new four-carrier extension in every domain.
 
-## Current Engineering coverage
+## Reviewed v11 Engineering coverage
 
 Engineering has **one business scenario, four carrier variants and eight scope
 conditions**. For a benchmark table, use four rows labelled *carrier variants*;
@@ -59,6 +59,14 @@ The historical cache grid has four scenarios, three encoding settings and two
 scopes: 24 planned isolation cells. Its 21 indexed executions remain in the
 [legacy index](phase1-registration-index.json). That older grid is not the current
 four-carrier catalog; do not add its cells to the eight Engineering conditions.
+
+## Current offline repair
+
+V12 repairs idempotent diagnostic creation and the common package-report
+aggregate. Eight offline case/package conditions and the common/prompt checks
+pass; the original v11 evidence above remains unchanged. New model rollouts are
+on explicit user hold. The portable repair evidence is an offline verification
+package, not a new live result or an all-Phase-1 publication-ready claim.
 
 ## Separate three kinds of status
 

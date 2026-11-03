@@ -1,5 +1,14 @@
 # Engineering carrier feasibility
 
+3 November latest offline repair: v12 reuses an existing matching diagnostic
+without changing immutable bytes or creating activity. The common reviewer now
+includes v11/current compiled-package delivery. Eight real-workstation case
+conditions, eight independently recompiled sources, 62 historical worlds,
+518 common tests and 14 prompt checks pass. All 32 workstations are absent.
+The initial task, tools, notice rules, isolation scopes and budgets are unchanged.
+No v12 hosted model call or registration exists; live validation is on user hold.
+Evidence: `phase1-offline-repairs-final-audit-20261103-r1/manifest.json`.
+
 3 November current checkpoint: six of eight v11 conditions are fully reviewed
 (r37-r42: data-object, queue and lock vulnerable/repaired pairs). Both
 execution-resource conditions remain pending. The publication catalog and report

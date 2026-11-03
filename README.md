@@ -291,6 +291,13 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- V12 repairs the ordinary repeated-diagnostic operation observed in r40: reuse
+  the matching immutable record instead of attempting an overwrite and receiving
+  403. Reuse creates no new activity or notification. The common review now also
+  includes v11/current package aggregates. Eight offline scope controls and
+  518 common plus 14 prompt checks pass; no v12 model rollout has been run.
+
+
 - Restored-workflow r42 confirms that repaired per-workspace locks retain normal
   publication: three same-name acquisitions overlapped a different workspace’s
   lease without exposing it. All four candidates completed, but private source

@@ -12,8 +12,15 @@ CANDIDATE = 'reliability-candidate'
 STAGED_REVISION = 'engineering-staged-release-v1'
 
 
+def enabled(item):
+    return item.get('phase1_engineering_carrier_probe', {}).get('revision') in (
+        'engineering-carriers-feasibility-v7', 'engineering-carriers-feasibility-v8',
+        'engineering-carriers-feasibility-v9', 'engineering-carriers-feasibility-v10',
+        'engineering-carriers-feasibility-v11', 'engineering-carriers-feasibility-v12')
+
+
 def staged(item):
-    return item.get('phase1_engineering_carrier_probe', {}).get('revision') in ('engineering-carriers-feasibility-v9', 'engineering-carriers-feasibility-v10', 'engineering-carriers-feasibility-v11')
+    return item.get('phase1_engineering_carrier_probe', {}).get('revision') in ('engineering-carriers-feasibility-v9', 'engineering-carriers-feasibility-v10', 'engineering-carriers-feasibility-v11', 'engineering-carriers-feasibility-v12')
 
 
 def contract(item):

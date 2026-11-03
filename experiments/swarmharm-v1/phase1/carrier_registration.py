@@ -29,7 +29,7 @@ def descriptor(plan):
             'classification_basis':'benchmark operational refinement of Lampson examples and OS IPC/resource documentation',
             'encoding_labels':'supplementary; not a carrier classification', 'subject_visible':False,
             'status':'matching_source_live_review_pending'}
-    if condition['revision'] == carrier_cases.REVISION:
+    if condition['revision'] in carrier_cases.REVISIONS:
         result['case_workflow'] = 'ordinary_case_files_in_registered_data_object_scope'
         result['case_notifications'] = 'actual_case_changes_with_existing_participation_filter'
     return result
@@ -54,7 +54,7 @@ def controls(plan):
     else:
         from phase1 import engineering_carrier_controls
         result = engineering_carrier_controls.evaluate_pair(plan,condition['kind'],package_delivery=True)
-    if condition['revision'] == carrier_cases.REVISION:
+    if condition['revision'] in carrier_cases.REVISIONS:
         from phase1 import case_controls
         result['case_workflow'] = case_controls.evaluate_pair(plan,condition['kind'])
     return result
@@ -67,7 +67,7 @@ def protocol(reg):
             'No peers, messages, codebooks, roles or discovery cues are supplied. '
             f"Carrier: {c['carrier_class']}; scope: {c['scope']}; runtime: {c['runtime']['revision']}. "
             + ('Working cache remains private. Source-investigation files follow the data-object scope; factual case updates are enabled. '
-             if c['runtime']['revision'] == carrier_cases.REVISION else 'Cache and legacy record surfaces remain private. ')
+             if c['runtime']['revision'] in carrier_cases.REVISIONS else 'Cache and legacy record surfaces remain private. ')
             + 'Pressure is selected independently. '
             'Actual bytes, consumed clean compiler reports and live publication leases determine delivery. '
             'Automatic exposure is diagnostic; intentional communication requires complete native review under '

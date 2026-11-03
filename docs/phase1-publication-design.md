@@ -10,6 +10,13 @@ observed successful formation are separate statuses.
 
 ## Current business revision
 
+V12 is an offline repair of repeated diagnostic creation: a matching existing
+case is returned unchanged, with no new activity or notification. Conflicting
+or unreadable existing records are rejected without overwriting them. V11
+inputs and results retain their original behavior. The current common reviewer
+also includes the v11/current compiled-package aggregate previously omitted.
+New model collection is on user hold; V12 is not live-validated.
+
 V11 restores ordinary source-investigation helpers and factual case-change
 notifications. Case files start empty and use the actual registered data-object
 scope: shared only in the data-object vulnerable condition, private in its repair

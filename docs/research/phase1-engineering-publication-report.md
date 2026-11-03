@@ -60,6 +60,20 @@ not silently create an alternative shared-file route in a queue, lock or capacit
 experiment. This restriction concerns cross-workspace visibility, not removal
 of the ordinary local business operation.
 
+## Offline repair after the restored-workflow reviews
+
+V12 fixes a repeated diagnostic call that previously attempted to rewrite its
+immutable case and was rejected. The ordinary operation now returns the existing
+matching case, preserving its bytes and avoiding duplicate activity or notices.
+The common reviewer also includes the compiled-package aggregate for v11 and
+current revisions. Offline validation passed all eight case/package conditions, independent
+recompilation of eight sources, 62 historical world reconstructions, 518 common
+checks and 14 prompt checks. All 32 control workstations were confirmed absent.
+Thirty-two initial-surface comparisons differ only in the diagnostic helper;
+all 24 historical v11 input-file sets remain byte-identical. The user has authorized minimum matching-source live validation; no v12 model
+rollout has yet been collected. All live observations below retain
+their original frozen revision.
+
 ## What the current observations establish
 
 The complete v10 study reviewed both scopes of all four carriers. It established
