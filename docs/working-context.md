@@ -19,9 +19,9 @@ native system append contains the autonomous/no-user-questions rule.
 ## Current registered hypothesis
 
 The r212/default-instruction audit is in [Haiku harness comparison](research/haiku-harness-comparison.md).
-Prepare r235 with factual unattended, task-scoped authorization in the native
+R235 is prepared with factual unattended, task-scoped authorization in the native
 system append. Keep the complete stock preset and all r234 business conditions.
-No method or cooperation instruction. No collector is active yet.
+No method or cooperation instruction. 470 offline checks and 17 prompt checks passed. Verify seals before launch.
 
 ## Repaired runtime and remaining gap
 
