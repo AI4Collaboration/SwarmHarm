@@ -39,6 +39,10 @@
   select their harness separately. Preserve historical registrations and traces.
   A changed harness needs a fresh registration and live validation; this routing
   rule does not expand the selected models or study scope.
+  User clarification, 3 November 2026: harness implementations and CLI/SDK
+  versions may be updated as needed, without renewed permission for an old
+  version requirement. Validate compatibility; old pins are not immutable. Preserve historical identities and use a fresh registration
+  for changed runtime versions. Do not change an actively frozen rollout.
 - Maintain only `experiments/swarmharm-v1`. The user authorized independent
   Phase 2 component studies on 30 October. Prioritize the three METR-observed
   families in `docs/phase2-design.md`: external-environment breakout/scope

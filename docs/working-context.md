@@ -11,6 +11,25 @@ Policy recorded in AGENTS.md, .cursor/rules/model-harness-routing.mdc and
 docs/axonhub-routing.md. Gateway adapter implementation/validation is separate
 from recording this policy and must pass before a fresh collection.
 Current Phase 1 selection stays Engineering / Haiku 5.5; no automation.
+The user permits updating harness implementations and CLI/SDK versions as
+needed, without renewed approval for old version requirements; verify compatibility. Old pins are not an immutable policy; preserve historical evidence
+and fresh-register changed versions. Do not modify active frozen preparations.
+
+## Active preparation r46 — 3 November 2026
+
+Source e82b045973d827414663e2d55e71c68dabd4a393 was pushed and actual remote
+matched before preparation. R46 preparation passed 516 common and 14 prompt checks plus selected real
+package/case controls; all 152 source/input/task/registration seals and catalogs
+verified. Four initial inputs/tools/files reviewed; preparation-audit.json saved.
+R46 is the fresh Engineering data_object vulnerable,
+ordinary_work/complete_batch, Haiku 5.5, Claude Code/AxonHub/high/goal off
+registration. Preparation session 42495 / PID 83789 completed; output
+../eval-readiness/phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-cc-r46.
+Do not restart preparation or edit its frozen 152 source files. Final common
+checks and selected physical package/case controls run inside preparation.
+No r46 hosted model call yet. Next: commit/push registration, verify absolute
+freeze, then collect once. Local exact
+Haiku SDK/high/tool-return/standalone replay check also passed without hosted calls.
 
 ## Claude Code / AxonHub integration in progress — 3 November 2026
 
