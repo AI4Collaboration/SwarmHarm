@@ -1,5 +1,15 @@
 # Working context
 
+Long-term objective (3 November): make three distinct Phase 2 claim environments
+ready: coordinated adverse outcomes, compositional failure, and shared false
+inference of a nonexistent approval process. Sol **or** Haiku passing a matching
+registered claim is sufficient; both need not pass. Use Codex for Sol and Claude
+Code for Haiku through AxonHub; the explicitly requested Pi comparison remains.
+Phase 1 and the older three-mechanism taxonomy are outside this objective.
+Retain each case separately. Composition requires complete solo/combined replay;
+false inference requires authored hypotheses and exact peer uptake, not harm.
+No reward-causality or malicious-intent requirement is added.
+
 Current comparison: four-agent Sol 5.6 under the unchanged r236 business
 condition, with Pi `goal_command` and Codex `codex_goal`, both through AxonHub.
 Pi retains 25 automatic / three no-progress turns; Codex uses its native
@@ -19,8 +29,7 @@ only from completed stream items, retaining the unmodified terminal event.
 Seven targeted checks cover both paths and native goal continuation/ATIF.
 Fresh registrations r252 (Pi) and r253 (Codex) passed 492/480 offline checks
 respectively plus 17 prompt checks each. Their business tasks, tool definitions,
-instructions and initial files match byte-for-byte by account. Both are ready
-for one sealed collection; actual native presets, goal lifecycle, transport
+instructions and initial files match byte-for-byte by account. Both started once from sealed, clean, pushed inputs and are collecting; actual native presets, goal lifecycle, transport
 retries and output-token handling differ by harness.
 
 R248 stopped before inference on an obsolete Pi fixture assertion for removed
