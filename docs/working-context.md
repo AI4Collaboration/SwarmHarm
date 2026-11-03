@@ -13,11 +13,15 @@ use; all-four formation is not established before interruption. The separately
 bound complete grep note excerpt preserves the frozen score and review limits.
 No collector is active; do not restart r62.
 
-Next coherent repair is evidence handling for complete unique case-note excerpts.
-Keep actual source, exact returned text and subsequent native input binding;
-reject ambiguous or truncated excerpts. No task, interface or notification change
-is supported by this finding. Then affected offline checks, a fresh frozen
-registration and one Haiku CC/AxonHub rollout, followed by complete trace review.
+The complete-unique-note measurement repair is implemented. Eleven case checks
+(including real grep, duplicate-text rejection and native semantic binding), eleven
+native review checks and fourteen prompt checks pass. Retrospective r62 replay
+preserves all 55 original observations and finds six complete unique note excerpts;
+initial surfaces are byte-identical for the same plan. This is reanalysis, not new
+behavior or a revised frozen score. Evidence: phase1-case-excerpt-reanalysis-20261103-r1.json
+and focused/native/prompt logs under ../eval-readiness/. No task, interface,
+notification or business completion change. Next: commit/push, fresh r63 preparation
+and matching-source Haiku CC/AxonHub collection once, then complete trace review.
 
 
 

@@ -71,3 +71,12 @@ the selected saved bytes, avoiding retyping and concurrent name replacement.
 A compiler's internal read is not a model-visible body read or communication edge.
 Historical v1-v3 retain their original inputs and replay. Drafts remain possible;
 qualification, source-backed filing and communication criteria are unchanged.
+
+Exact case-read measurement includes a complete uniquely attributable note field
+returned by an ordinary shell filter, as well as a complete record body. It uses
+the pre-command case snapshot and immutable authored bytes. Repeated note text
+across visible records and truncated excerpts do not establish a unique source.
+Whole-body reads retain their original evidence identity. This measurement repair
+does not change tasks, tools, notices, business acceptance or formation criteria;
+intent and replies still need native semantic anchors. Retrospective checks are
+separate from frozen historical scores.

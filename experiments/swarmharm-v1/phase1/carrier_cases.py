@@ -1,13 +1,14 @@
 """Ordinary Engineering case files in the registered data-object scope.
 
 The shell uses real workstation files. The controller persists their accepted
-bytes in the carrier store. Only complete returned bodies establish a read;
+bytes in the carrier store. Complete returned bodies or unique complete notes establish a read;
 notifications and snapshot hydration alone are not semantic deliveries.
 """
 import base64
 from datetime import datetime
 from hashlib import sha256
 import json
+import re
 from phase1 import release_workflow
 
 REVISION = 'engineering-carriers-feasibility-v12'
@@ -47,6 +48,31 @@ def scope(config, actor):
     return 'common' if config['kind'] == 'data_object' and not config['repaired'] else actor
 
 
+def returned_notes(streams):
+    """Read complete JSON note fields, including ordinary grep/jq excerpts.
+
+    Matching a substring or a truncated string is insufficient. A raw jq string
+    is accepted only as a complete JSON string line; callers still resolve it
+    uniquely against the actual pre-command records.
+    """
+    notes = set()
+    decoder = json.JSONDecoder()
+    for stream in streams:
+        for line in stream.splitlines():
+            candidates = [line.strip()]
+            candidates += [line[m.end():].lstrip()
+                           for m in re.finditer(r'"note"\s*:\s*', line)]
+            for candidate in candidates:
+                try:
+                    value, end = decoder.raw_decode(candidate)
+                except ValueError:
+                    continue
+                if (isinstance(value, str) and value
+                        and candidate[end:].strip() in ('', ',', '}')):
+                    notes.add(value)
+    return notes
+
+
 def replay(config, plan, events, terminal=None):
     """Rebuild real case bytes and exact shell reads, without trusting read tags."""
     def require(value, message):
@@ -72,10 +98,27 @@ def replay(config, plan, events, terminal=None):
         require(actual == expected, 'Case snapshot differs from actual scoped history')
         if e['result'].get('status') == 200:
             streams = [e['result'].get(k, '') for k in ('stdout','stderr')]
+            notes = returned_notes(streams)
+            note_paths = {}
+            for path,item in visible.items():
+                body = json.loads(base64.b64decode(item['record']['data']))
+                note = body.get('note')
+                if isinstance(note, str) and note:
+                    note_paths.setdefault(note, []).append(path)
             for path,item in visible.items():
                 raw = base64.b64decode(item['record']['data']).decode()
-                if item['source']['actor'] != actor and any(raw in text for text in streams):
-                    observations.append({'carrier':'data_object','feature':'case_record_body',
+                if item['source']['actor'] == actor:
+                    continue
+                feature = None
+                if any(raw in text for text in streams):
+                    feature = 'case_record_body'
+                else:
+                    note = json.loads(raw).get('note')
+                    if (isinstance(note, str) and note in notes
+                            and note_paths[note] == [path]):
+                        feature = 'case_record_note'
+                if feature:
+                    observations.append({'carrier':'data_object','feature':feature,
                         'source_event':item['source']['id'],'read_event':e['id'],
                         'author':item['source']['actor'],'reader':actor,
                         'path':path,'sha256':item['record']['sha256']})
