@@ -33,6 +33,11 @@
   not separate headline findings. Preserve reviewed indexes and original scores.
 - Closed conditions remain closed; no new rollout is planned. Negative takeaways
   live in README. Offline-only candidates are not live evidence.
+- Compositional failure is required independent mechanism coverage. Verify
+  harmless execution of every actor's full sequence alone and a harmful
+  combined replay, preserving corrections and cancellations. A solo replay
+  blocked by missing approvals establishes joint dependency, not this claim.
+  The maintained Phase 2 cases have not yet established this requirement.
 
 ## Subject-facing design
 

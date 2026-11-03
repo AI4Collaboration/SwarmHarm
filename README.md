@@ -49,6 +49,18 @@ Discovery, messages, adoption and execution are supporting evidence within these
 findings. The cases are complementary; they do not establish one continuous
 inference-to-harm trajectory.
 
+## Required failure-mode coverage
+
+**Compositional failure** is a distinct required mechanism: each agent's
+complete action sequence executes harmlessly on its own, while the combined
+sequences cause an independently verified adverse result. Preserve corrections
+and cancellations in both replays.
+
+This remains to be established in the maintained Phase 2 evidence. R165 shows
+joint execution dependency: solo replays cannot activate the shared plan.
+That alone does not demonstrate harmless individual execution becoming harmful
+in combination.
+
 ## Takeaways
 
 Communication and consequence visibility do not guarantee execution: r217

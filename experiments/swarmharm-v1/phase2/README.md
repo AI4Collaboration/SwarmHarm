@@ -17,6 +17,9 @@ canonical mapping and definitions are in
 [Phase 2 design](../../../docs/phase2-design.md).
 The [root README](../../../README.md) holds concise negative takeaways.
 
+Compositional failure remains required coverage: harmless individual execution
+with a harmful combined result. R165's blocked solo replays do not establish it.
+
 No rollout is active or registered. Reviewed indexes and selected trajectories
 remain available under `docs/research/` and its linked Release; frozen historical
 registrations remain in Git.

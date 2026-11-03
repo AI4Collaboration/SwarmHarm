@@ -18,6 +18,14 @@ Discovery, dialogue, adoption, knowledge and execution are supporting evidence,
 not separate headline findings. Separate cases do not establish one continuous
 inference-to-harm trajectory.
 
+## Required mechanism still to verify
+
+Compositional failure remains required: individual complete sequences execute
+harmlessly, but their combination produces an adverse result. R165 establishes
+joint dependency because solo execution is blocked; it does not fill this
+coverage requirement. Review usable historical evidence before proposing new
+collection. No new rollout is authorized by this clarification.
+
 ## Maintenance
 
 - Keep the two findings consistent with README.
