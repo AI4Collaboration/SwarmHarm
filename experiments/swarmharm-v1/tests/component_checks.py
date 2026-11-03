@@ -64,7 +64,7 @@ class ComponentChecks(unittest.TestCase):
                     run.prepare(root, Path(directory)/(mode+'-registration'), key,
                         run_controls=False, scenario='knowledge-work', study_mode=component.MODE,
                         component_family='acceptance', initial_material='method_available',
-                        goal_mode=mode, filing_deadline_utc='2030-01-01T00:00:00+00:00')
+                        goal_mode=mode, filing_deadline_utc='2030-01-01T00:00:00+00:00', harness_kind='pi-sdk')
             self.assertEqual(checker.check(*roots), [])
             path = roots[1]/'initial-input-audit.json'
             original = run.load(path)
@@ -91,7 +91,7 @@ class ComponentChecks(unittest.TestCase):
                     root = Path(directory)/mode; roots.append(root)
                     run.prepare(root, Path(directory)/(mode+'-registration'), key,
                         run_controls=False, scenario='engineering-capacity', study_mode=component.MODE,
-                        component_family='terminal-batching', goal_mode=mode)
+                        component_family='terminal-batching', goal_mode=mode, harness_kind='pi-sdk')
             self.assertEqual(checker.check(*roots), [])
             path = roots[1]/'registration.json'
             original = run.load(path)
@@ -130,7 +130,7 @@ class ComponentChecks(unittest.TestCase):
                     raw=base/stage
                     run.prepare(raw,base/(stage+'-reg'),key,run_controls=False,scenario='knowledge-work',
                                 study_mode=component.MODE,component_family='evidence',initial_material='method_available',
-                                proof_stage=stage,goal_mode='goal_command',filing_deadline_utc='2030-01-01T12:00:00+00:00')
+                                proof_stage=stage,goal_mode='goal_command',filing_deadline_utc='2030-01-01T12:00:00+00:00', harness_kind='pi-sdk')
                     reg=run.load(raw/'registration.json')
                     self.assertEqual(reg['phase2'].get('production_proof',{}).get('stage','off'),stage)
                     self.assertEqual(reg['component_truth'].get('proof_stage','off'),stage)
@@ -165,7 +165,7 @@ class ComponentChecks(unittest.TestCase):
             key = Path(directory)/'key'; key.write_text('offline-placeholder')
             with patch.object(run,'verify_routes',return_value={}), patch.object(run,'registration_path',side_effect=lambda path: Path(path)):
                 run.prepare(root,regdir,key,run_controls=False,scenario='engineering-capacity',study_mode=component.MODE,
-                            component_family=batching.TARGET_FAMILY,goal_mode='goal_command')
+                            component_family=batching.TARGET_FAMILY,goal_mode='goal_command', harness_kind='pi-sdk')
             reg = run.load(root/'registration.json')
             self.assertEqual(reg['input_revision'],batching.TARGET_REVISION)
             self.assertEqual(reg['phase2']['taxonomy_family'],'task-objective-or-acceptance-manipulation')
@@ -189,7 +189,7 @@ class ComponentChecks(unittest.TestCase):
             regdir = Path(directory)/'registration'
             with patch.object(run, 'verify_routes', return_value={}), patch.object(run, 'registration_path', side_effect=lambda p: Path(p)):
                 run.prepare(root, regdir, key, run_controls=False, scenario='knowledge-work', study_mode=component.MODE,
-                    initial_material='method_available', material_distribution='one_workstation')
+                    initial_material='method_available', material_distribution='one_workstation', harness_kind='pi-sdk')
             reg = run.load(root/'registration.json')
             self.assertFalse(reg['continuous_rollout'])
             self.assertNotIn('depends_on_phase1', reg['phase2'])
@@ -1697,7 +1697,7 @@ class MechanismChecks(unittest.TestCase):
                 key.write_text('offline-placeholder')
                 with patch.object(run,'verify_routes',return_value={}), patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
                     run.prepare(root,Path(directory)/'registration',key,run_controls=False,
-                        scenario='knowledge-work',study_mode=component.MODE,component_family=family)
+                        scenario='knowledge-work',study_mode=component.MODE,component_family=family, harness_kind='pi-sdk')
                 registration=run.load(root/'registration.json')
                 self.assertEqual(registration['harness']['kind'],'pi-sdk')
                 expected='draft_submit_withdraw_v1' if family=='acceptance' else None

@@ -43,3 +43,18 @@ def validate_model_harness(models, harness, *, offline_fixture=False):
             raise ValueError('Claude models require Claude Code through AxonHub; Pi is not a fallback.')
         if not offline_fixture and (model.startswith('openai/') or model.startswith('gpt-')) and harness != 'codex':
             raise ValueError('OpenAI models require Codex through AxonHub; Pi is historical only.')
+
+
+def native_harness(models):
+    kinds=set()
+    for model in models.values():
+        model=str(model).lower()
+        if any(name in model for name in ('claude','haiku','sonnet','opus')):
+            kinds.add('claude-code')
+        elif model.startswith(('openai/','gpt-')):
+            kinds.add('codex')
+        else:
+            raise ValueError('No validated native harness for the selected model family')
+    if len(kinds)!=1:
+        raise ValueError('A rollout requires one native harness family')
+    return kinds.pop()

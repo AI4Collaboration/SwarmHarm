@@ -10,8 +10,8 @@ not share rollout state.
 - `phase2/` owns collective-outcome inputs, mechanisms and terminal replay.
 - `scenarios/` contains ordinary domain facts used by either experiment.
 - `experiments/runtime/` owns harness adapters. Claude requires Claude Code
-  through AxonHub. The Phase 1 branch implements that transport; Phase 2
-  trace-record adaptation remains pending. See `docs/axonhub-routing.md`.
+  through AxonHub; OpenAI uses Codex. Phase 2 reads each native record format
+  and preserves protected observer captures. See `docs/axonhub-routing.md`.
 - `run.py`, `launch.py`, `review.py` and `export_atif.py` provide one registered
   lifecycle.
 

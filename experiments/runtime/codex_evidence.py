@@ -82,6 +82,11 @@ def native_evidence(folder, requests):
     expected = deepcopy(catalog)
     for model in expected['models']:
         model.update(apply_patch_tool_type=None, input_modalities=['text'], supports_parallel_tool_calls=False)
+    if harness.get('authentication')=='axonhub':
+        requested=requests and json.loads(requests[0].read_text())['model']
+        for row in expected['models']:
+            if row['slug']==requested.removeprefix('openai/'):
+                row['slug']=requested
     assert profile == expected, 'Codex profile changed native instructions or unregistered capabilities'
     for record in records.values():
         message = record['message']

@@ -24,7 +24,9 @@ export class ClaudeBridge {
     this.nativeIndex = 0;
     this.history = [];
     this.pendingInputs = [];
+    this.deliveredInputs = [];
     this.calls = new Map();
+    this.earlyToolErrors = [];
     this.callWaiters = new Set();
     this.toolChain = Promise.resolve();
     this.servers = {};
@@ -116,26 +118,36 @@ export class ClaudeBridge {
   }
 
   prompt(texts) {
-    for (const text of texts) {
+    // One controller delegation must reach one model context atomically. Two
+    // writes race with the CLI consuming the first before the task arrives.
+    // Native /goal commands retain their separate command semantics.
+    const groups = this.config.input_delivery === "atomic-sdk-replay-v1" && texts.length ? [texts.join("\n\n")] : texts;
+    for (const text of groups) {
       const message = { type: "user", session_id: this.sessionId, uuid: randomUUID(),
         parent_tool_use_id: null, message: { role: "user", content: text } };
       this.native({ type: "controller_input", input: message });
-      this.pendingInputs.push({ role: "user", content: text });
+      this.pendingInputs.push({ uuid: message.uuid, role: "user", content: text });
       this.input.write(message);
     }
   }
 
   start(message, source) {
     if (this.current) throw new Error("Overlapping Claude model messages");
-    if (message.model !== this.config.model) throw new Error(`Claude returned model ${message.model}; expected ${this.config.model}`);
-    this.history.push(...this.pendingInputs.splice(0));
+    if (!(this.config.accepted_native_model_ids ?? [this.config.model]).includes(message.model)) throw new Error(`Claude returned model ${message.model}; expected ${this.config.model}`);
+    if (this.config.input_delivery !== "atomic-sdk-replay-v1") {
+      this.history.push(...this.pendingInputs.splice(0).map(({ role, content }) => ({ role, content })));
+    } else if (this.turn === 0 && this.pendingInputs.length && !this.deliveredInputs.length) {
+      throw new Error("Initial Claude input has no SDK delivery before inference");
+    }
     this.current = { id: message.id, turn: ++this.turn, blocks: [], usage: message.usage ?? {}, source };
     this.channel.emit({ type: "request", turn: this.turn, attempt: 1, payload: {
-      record_kind: "controller_projection", model: this.config.model,
+      record_kind: "controller_projection", model: this.config.model, native_model: message.model,
       system_prompt_config: copy(SYSTEM_PROMPT),
       input: copy(this.history), reasoning: { effort: this.config.effort },
       tools: this.config.tools.filter((tool) => this.active.has(tool.name)),
       sdk_message_id: message.id, native_record: source,
+      ...(this.config.input_delivery === "atomic-sdk-replay-v1" ? { input_delivery: "atomic-sdk-replay-v1",
+        delivered_input_records: copy(this.deliveredInputs) } : {}),
     } });
   }
 
@@ -146,10 +158,11 @@ export class ClaudeBridge {
     const output = [];
     for (const block of current.blocks) {
       if (block.type === "tool_use") {
-        if (!PREFIX.test(block.name) || !this.active.has(block.name.replace(PREFIX, "")))
-          throw new Error(`Unexpected Claude tool ${block.name}`);
+        // Preserve attempted calls, including hallucinated names. The SDK owns
+        // rejection; an unavailable tool is never installed or dispatched here.
         const call = { type: "function_call", call_id: block.id,
-          name: block.name.replace(PREFIX, ""), arguments: JSON.stringify(block.input) };
+          name: block.name.replace(PREFIX, ""), native_name: block.name,
+          arguments: JSON.stringify(block.input) };
         output.push(call);
         this.calls.set(block.id, { ...call, turn: current.turn, input: block.input, claimed: false });
       } else if (block.type === "text") {
@@ -170,6 +183,8 @@ export class ClaudeBridge {
     this.channel.emit({ type: "provider_response", turn: current.turn, attempt: 1,
       event: { type: "response.completed", response } });
     this.current = null;
+    for (const [message, record] of this.earlyToolErrors.splice(0))
+      this.rejectedResults(message, record);
     for (const wake of this.callWaiters) wake();
     if (!current.calls) this.turnEnd(current);
   }
@@ -210,6 +225,32 @@ export class ClaudeBridge {
     return run;
   }
 
+  rejectedResults(message, source) {
+    if (!Array.isArray(message.message?.content)) return;
+    for (const block of message.message.content) {
+      if (block.type !== "tool_result") continue;
+      const call = this.calls.get(block.tool_use_id);
+      // Successful controller calls were completed by execute(). Schema and
+      // unknown-name errors never enter that handler; await their real SDK result.
+      if (!call) {
+        // Claude Code may reject an unknown name before streaming message_stop.
+        if (block.is_error === true && this.current)
+          this.earlyToolErrors.push([{ message: { content: [block] } }, source]);
+        continue;
+      }
+      if (call.claimed) continue;
+      if (block.is_error !== true) throw new Error("Unexecuted Claude tool returned success");
+      const output = typeof block.content === "string" ? block.content
+        : block.content.map((part) => part.text ?? "").join("\n");
+      this.history.push({ type: "function_call_output", call_id: call.call_id, output });
+      this.calls.delete(call.call_id);
+      this.channel.emit({ type: "tool_result_error", call_id: call.call_id,
+        name: call.name, turn: call.turn, error: output, native_record: source });
+      const current = this.turns.get(call.turn);
+      if (++current.completed === current.calls) this.turnEnd(current);
+    }
+  }
+
   async consume() {
     // Iterate Query itself so disposal cannot wait behind a pending CLI read.
     // Same lifecycle pattern as T3 Code's Claude query runner.
@@ -236,6 +277,19 @@ export class ClaudeBridge {
         if (message.supersedes?.length) throw new ProviderHold("Claude superseded prior messages");
         if (!this.current || this.current.id !== message.message.id) throw new Error("Claude content has no matching stream start");
         this.current.blocks.push(...message.message.content);
+      } else if (message.type === "user") {
+        if (this.config.input_delivery === "atomic-sdk-replay-v1") {
+          const index = this.pendingInputs.findIndex((input) => input.uuid === message.uuid);
+          if (index !== -1) {
+            const input = this.pendingInputs[index];
+            if (canonical(message.message) !== canonical({ role: input.role, content: input.content }))
+              throw new Error("Claude SDK input replay differs from controller delegation");
+            this.pendingInputs.splice(index, 1);
+            this.history.push({ role: input.role, content: input.content });
+            this.deliveredInputs.push({ uuid: input.uuid, native_record: source });
+          }
+        }
+        this.rejectedResults(message, source);
       } else if (message.type === "result") {
         this.channel.emit({ type: "settled", turn: this.turn, aborted: false,
           text: message.result ?? "", error_message: message.is_error || message.subtype !== "success"
@@ -243,7 +297,7 @@ export class ClaudeBridge {
       } else if (message.type === "system" && ["compact_boundary", "mirror_error", "model_refusal_fallback", "model_refusal_no_fallback"].includes(message.subtype)) {
         throw new ProviderHold(`Claude context or provider hold: ${message.subtype}`);
       } else if (message.type === "rate_limit_event" && message.rate_limit_info?.status === "rejected") {
-        throw new ProviderHold("Claude subscription limit reached; no API fallback");
+        throw new ProviderHold("Claude provider rate limit reached; session held");
       }
     }
     if (!this.closed) throw new Error("Claude session exited before global termination");

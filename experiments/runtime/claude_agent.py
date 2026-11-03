@@ -1,4 +1,4 @@
-"""Offline compatibility adapter for historical Claude Code evidence."""
+"""Claude Code sessions with explicit registered subscription or AxonHub routing."""
 
 from hashlib import sha256
 import json
@@ -75,6 +75,54 @@ def subscription_env():
     return env
 
 
+AXONHUB_BASE = 'https://lmportal.iefbr14.xyz/v1'
+
+
+def gateway_model_ids(model):
+    """Explicit same-model wire/native names; never a family or latest alias."""
+    match = re.fullmatch(r'anthropic/claude-(haiku|sonnet|opus)-(\d+)\.(\d+)', model)
+    if not match:
+        raise ValueError('AxonHub Claude requires an explicit anthropic/claude-family-major.minor ID')
+    return [model, 'claude-' + '-'.join(match.groups())]
+
+
+def gateway_env(api_base, api_key, model, config_dir):
+    if api_base.rstrip('/') != AXONHUB_BASE or not api_key or not str(config_dir):
+        raise ValueError('Claude gateway requires the registered AxonHub base, host key and private config directory')
+    gateway_model_ids(model)
+    env = {name: os.environ[name] for name in (
+        'PATH', 'HOME', 'USER', 'LOGNAME', 'TMPDIR', 'LANG', 'LC_ALL') if name in os.environ}
+    env.update(RUNTIME_ENV)
+    env.update(ANTHROPIC_BASE_URL=AXONHUB_BASE[:-3], ANTHROPIC_AUTH_TOKEN=api_key,
+               CLAUDE_CONFIG_DIR=str(config_dir), CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1')
+    for name in ('ANTHROPIC_MODEL', 'ANTHROPIC_DEFAULT_HAIKU_MODEL',
+                 'ANTHROPIC_DEFAULT_SONNET_MODEL', 'ANTHROPIC_DEFAULT_OPUS_MODEL',
+                 'ANTHROPIC_SMALL_FAST_MODEL'):
+        env[name] = model
+    return env
+
+
+def gateway_registration(model, goal_mode='off'):
+    if goal_mode != 'off':
+        raise ValueError('Claude AxonHub admission currently validates goal off only')
+    # Reuse the exact SDK/tool contract without consulting personal login.
+    return _registration(goal_mode, model, authentication='axonhub', auth={})
+
+
+def gateway_catalog(model, effort, api_key):
+    with tempfile.TemporaryDirectory(prefix='swarmharm-claude-gateway-') as folder:
+        result = subprocess.run([node_binary(), str(CLAUDE_DIR/'catalog.mjs'),
+            model, effort, claude_binary()], cwd=folder,
+            env=gateway_env(AXONHUB_BASE, api_key, model, Path(folder)/'config'),
+            capture_output=True, text=True, timeout=60)
+    if result.returncode:
+        raise RuntimeError('Claude AxonHub SDK catalog initialization failed')
+    value = json.loads(result.stdout)
+    if not value.get('model_and_effort_found'):
+        raise RuntimeError('Claude AxonHub SDK catalog does not confirm the requested model and effort')
+    return value
+
+
 def subscription_auth():
     """Read only an allowlist of auth-status fields; never save accounts or tokens."""
     result = subprocess.run(
@@ -139,11 +187,24 @@ def harness_registration(goal_mode='off', model=None):
     if goal_mode != 'off' and model is None:
         raise ValueError('Claude native goals require an exact evaluator model')
     if model is not None:validate_model(model)
-    auth = subscription_auth()
+    return _registration(goal_mode, model, authentication='claude-subscription', auth=subscription_auth())
+
+
+def _registration(goal_mode, model, *, authentication, auth):
+    if authentication == 'axonhub': gateway_model_ids(model)
     environment = dict(RUNTIME_ENV)
     if model is not None:environment['ANTHROPIC_DEFAULT_HAIKU_MODEL'] = model
+    if authentication == 'axonhub':
+        environment.update(ANTHROPIC_BASE_URL=AXONHUB_BASE[:-3],
+            CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1', ANTHROPIC_MODEL=model,
+            ANTHROPIC_DEFAULT_SONNET_MODEL=model, ANTHROPIC_DEFAULT_OPUS_MODEL=model,
+            ANTHROPIC_SMALL_FAST_MODEL=model)
+        environment['CLAUDE_CONFIG_DIR'] = 'private temporary directory; removed after shutdown'
     return {
-        'kind': 'claude-code', 'authentication': 'claude-subscription',
+        'kind': 'claude-code', 'authentication': authentication,
+        **({'gateway': AXONHUB_BASE, 'accepted_native_model_ids': gateway_model_ids(model),
+            'native_binding': ('claude-sdk-exact-delivery-v2' if goal_mode == 'off'
+                               else 'claude-sdk-exact-delivery-v1')} if authentication == 'axonhub' else {}),
         'auth_status': auth, 'installed': installed_versions(),
         'node_version': node_version(), 'claude_code': cli_identity(),
         'settings': SETTINGS, 'environment': environment, 'system_prompt': SYSTEM_PROMPT,
@@ -153,6 +214,8 @@ def harness_registration(goal_mode='off', model=None):
             'business_tools': 'execute in the offline workstation',
         },
         'goal_mode': goal_mode, 'extension_tools': [], 'builtin_tools': [],
+        **({'input_delivery': 'atomic-sdk-replay-v1'}
+           if authentication == 'axonhub' and goal_mode == 'off' else {}),
         'platform_notice_delivery': {
             'native_role': 'user', 'content_source': 'platform_status JSON',
             'developer_role_supported': False,
@@ -169,7 +232,9 @@ def harness_registration(goal_mode='off', model=None):
 
 
 def verify_runtime(harness):
-    subscription_auth()
+    if harness.get('authentication') == 'claude-subscription': subscription_auth()
+    elif harness.get('authentication') != 'axonhub' or harness.get('gateway') != AXONHUB_BASE:
+        raise ValueError('Unregistered Claude authentication route')
     if installed_versions() != harness['installed']:
         raise RuntimeError('Installed Claude Agent SDK differs from registration')
     if node_version() != harness['node_version'] or cli_identity() != harness['claude_code']:
@@ -181,14 +246,17 @@ class ClaudeAgent:
 
     def __init__(self, actor, events, *, folder, model, thinking_level,
                  max_output_tokens, request_timeout_ms, tools, active_tools,
-                 goal_mode, **unused):
-        validate_model(model)
+                 goal_mode, api_base=None, api_key=None, **unused):
+        gateway = api_base is not None or api_key is not None
+        accepted_models = gateway_model_ids(model) if gateway else [model]
+        if not gateway: validate_model(model)
         if goal_mode not in GOAL_MODES:
             raise ValueError('Claude Code does not load pi-goal; use claude_goal')
         self.actor = actor
         self.folder = Path(folder).resolve()
         self.folder.mkdir(parents=True, exist_ok=True)
-        env = subscription_env()
+        self.gateway_config = tempfile.TemporaryDirectory(prefix='swarmharm-claude-config-') if gateway else None
+        env = gateway_env(api_base, api_key, model, self.gateway_config.name) if gateway else subscription_env()
         # Native /goal normally uses a small model. Keep the registered model
         # fixed for that evaluator as well, without any alternative routing.
         env['ANTHROPIC_DEFAULT_HAIKU_MODEL'] = model
@@ -204,12 +272,13 @@ class ClaudeAgent:
         self.reader = threading.Thread(target=self._read, daemon=True)
         self.reader.start()
         self.send({
-            'type': 'init', 'model': model, 'effort': thinking_level,
+            'type': 'init', 'model': model, 'accepted_native_model_ids': accepted_models, 'effort': thinking_level,
             'claude_binary': claude_binary(), 'folder': str(self.folder),
             'tools': tools,
             'active_tools': active_tools, 'settings': SETTINGS,
             'request_timeout_ms': request_timeout_ms,
             'goal_mode': goal_mode,
+            'input_delivery': ('atomic-sdk-replay-v1' if gateway and goal_mode == 'off' else None),
         })
 
     def _read(self):
@@ -249,6 +318,7 @@ class ClaudeAgent:
             self.reader.join(timeout=5)
             for stream in (self.process.stdin, self.process.stdout, self.stderr):
                 stream.close()
+            if self.gateway_config is not None: self.gateway_config.cleanup()
         return self.process.returncode
 
 

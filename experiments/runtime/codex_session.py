@@ -19,9 +19,15 @@ class CodexAgent:
                  active_tools, goal_mode, job_context=None, api_key=None,
                  api_base=None, registered_harness=None, request_timeout_ms=300000, **unused):
         import codex_agent as runtime
+        self.gateway = api_base is not None or api_key is not None
+        if self.gateway:
+            import codex_gateway as runtime
+            if api_base != runtime.AXONHUB_BASE or not api_key:
+                raise ValueError('Codex requires AxonHub base and host key')
         runtime.validate_model(model)
-        if goal_mode != 'off' or api_key or api_base:
-            raise ValueError('Codex requires subscription auth and goal mode off')
+        if goal_mode != 'off':
+            raise ValueError('Codex currently supports goal mode off')
+        self.api_base, self.api_key = api_base, api_key
         self.runtime, self.actor, self.events = runtime, actor, events
         self.folder = Path(folder).resolve()
         self.folder.mkdir(parents=True, exist_ok=True)
@@ -102,12 +108,14 @@ class CodexAgent:
                     self.model, self.effort, catalog)
                 shutil.copy2(self.home / 'catalog.json', self.folder / 'tool-profile.json')
                 shutil.copy2(self.home / 'config.toml', self.folder / 'config.toml')
-                self.rpc = CodexRpc(self.runtime.command(), env=self.runtime.subscription_env(self.home),
+                self.rpc = CodexRpc(self.runtime.command(), env=(self.runtime.gateway_env(self.home, self.api_base, self.api_key) if self.gateway
+                         else self.runtime.subscription_env(self.home)),
                     cwd=workspace, folder=self.folder, notification=self._notification,
                     server_request=self._server_request)
                 stack.callback(self.rpc.close)
                 self.runtime.initialize(self.rpc)
-                self.runtime.check_subscription(self.rpc)
+                if not self.gateway:
+                    self.runtime.check_subscription(self.rpc)
                 started = self.rpc.request('thread/start', {'model': self.model,
                     'cwd': str(workspace), 'approvalPolicy': 'never', 'sandbox': 'read-only',
                     'experimentalRawEvents': True, 'ephemeral': False})
@@ -116,7 +124,15 @@ class CodexAgent:
                     raise RuntimeError('Codex selected a different model')
                 self._verify_tools()
                 threading.Thread(target=self._accept, daemon=True).start()
-                self.emit('ready', active_tools=self.active_tools + self.runtime.NATIVE_TOOLS,
+                session_file=started['thread'].get('path')
+                if self.gateway:
+                    path=Path(session_file).resolve() if session_file else None
+                    if (path is None or (self.home/'sessions').resolve() not in path.parents
+                            or path.suffix!='.jsonl' or self.thread_id not in path.name):
+                        raise RuntimeError('Codex returned an invalid native session path')
+                    # Codex creates this registered path when the first turn begins.
+                    session_file=str(path)
+                self.emit('ready', session_file=session_file, active_tools=self.active_tools + self.runtime.NATIVE_TOOLS,
                     system_prompt=self.runtime.SYSTEM_PROMPT, commands=[], session_id=self.thread_id)
                 while True:
                     try:

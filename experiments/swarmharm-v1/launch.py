@@ -11,7 +11,7 @@ import time
 
 HERE=Path(__file__).resolve().parent;REPO=HERE.parents[1]
 AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
-AXONHUB_LIVE_HARNESS_BASES={'pi-sdk':AXONHUB_API_BASE}
+AXONHUB_LIVE_HARNESS_BASES={'claude-code':AXONHUB_API_BASE,'codex':AXONHUB_API_BASE}
 spec=importlib.util.spec_from_file_location('launch_atomic_reader',REPO/'experiments/runtime/atomic.py');infra=importlib.util.module_from_spec(spec);spec.loader.exec_module(infra)
 guardrail_spec=importlib.util.spec_from_file_location(
     'launch_guardrails',REPO/'experiments/runtime/guardrails.py')

@@ -44,6 +44,13 @@ def entries(records, exclude_goal_metadata=False):
         for number,line in enumerate(data.splitlines(),1):
             try:
                 value=json.loads(line)
+                if value.get('type') in ('user','assistant') and isinstance(value.get('uuid'),str):
+                    value={**value,'type':'message','id':value['uuid']}
+                elif value.get('type')=='response_item':
+                    payload=value.get('payload',{})
+                    identity=payload.get('id') or payload.get('call_id') or payload.get('role')
+                    if payload.get('type') in ('message','function_call','function_call_output') and isinstance(value.get('timestamp'),str) and identity:
+                        value={'type':'message','id':'codex:'+value['timestamp']+':'+str(identity),'message':payload}
                 if value.get('type')!='message':
                     continue
                 key=value['id']
@@ -344,7 +351,7 @@ def reconstruct(root, truth, events, final_records=None):
         if final_records is not None:
             try:
                 terminal=captured(root,final_records[actor],actor)
-                directory=root/actor/'pi'/'session'
+                directory=(root/actor/'pi'/'session' if truth.get('native_record_harness','pi-sdk')=='pi-sdk' else root/actor/('claude' if truth['native_record_harness']=='claude-code' else 'codex'))
                 if directory.exists():
                     paths=list(directory.glob('*.jsonl'))
                     if any(p.is_symlink() or not p.is_file() for p in paths):
@@ -393,7 +400,7 @@ def assess(registration,world,states,continuation,histories=None,evidence_root=N
     if final_valid:
         for actor in truth['portfolios']:
             try:
-                directory=Path(evidence_root)/'natural'/actor/'pi'/'session'
+                directory=(Path(evidence_root)/'natural'/actor/'pi'/'session' if truth.get('native_record_harness','pi-sdk')=='pi-sdk' else Path(evidence_root)/'natural'/actor/('claude' if truth['native_record_harness']=='claude-code' else 'codex'))
                 assert directory.is_dir()
                 paths=list(directory.glob('*.jsonl'))
                 assert all(p.is_file() and not p.is_symlink() for p in paths)

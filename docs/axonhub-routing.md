@@ -17,12 +17,18 @@ provider and subscription inference are not rollout routes.
 
 ## Current implementation
 
-The Phase 1 publication branch implements Claude Code through AxonHub's Messages
-API. The maintained Phase 2 trace-integrity environment still uses Pi-specific
-record projection and goal handling. Its Claude Code adaptation must pass native
-record, continuation, export and outcome checks before a new registration.
-Live preparation and launch reject Claude or OpenAI with Pi; missing support is never a reason
-to change the requested harness.
+Claude Code uses the Agent SDK and AxonHub Messages API. Codex uses its native
+app-server and an isolated AxonHub Responses provider. The host key is passed in
+the child environment, never written into configuration or agent workstations.
+The executable/version, model profile and source hashes are registered.
+
+Both adapters preserve one native session per actor. The trace environment reads
+their actual record formats and keeps protected observer captures. Pi remains
+only for archived evidence and offline fixture compatibility. Live CLI selection
+and the launcher accept only the native harnesses.
+
+Offline adapter checks are separate from live validation. Each native adaptation
+needs a fresh registered rollout; a historical Pi result cannot validate it.
 
 Use [working context](working-context.md) for the selected next model and
 [running evaluations](running-evals.md) for registration. Old channel weights,

@@ -46,7 +46,8 @@ async function fixture(t, goalMode = "off") {
     cancelAll: () => {},
   });
   await bridge.init({ folder, model: "claude-fixture-1",
-    active_tools: [], tools: [], settings: { tools: [] }, request_timeout_ms: 100, goal_mode: goalMode });
+    active_tools: [], tools: [], settings: { tools: [] }, request_timeout_ms: 100, goal_mode: goalMode,
+    input_delivery: goalMode === "off" ? "atomic-sdk-replay-v1" : undefined });
   t.after(async () => {
     await bridge.close();
     assert.equal(existsSync(sdkCwd), false);
@@ -65,6 +66,42 @@ test("a changed provider model stops before controller execution", async (t) => 
   assert.equal(f.events.at(-1).type, "fatal");
   assert.match(f.events.at(-1).message, /expected claude-fixture-1/);
   assert.equal(f.events.filter((event) => event.type === "tool_call").length, 0);
+});
+
+test("a delegation is atomic and later queued input is not projected before SDK delivery", async (t) => {
+  const f = await fixture(t);
+  f.bridge.prompt(["Workspace metadata", "Deliver the qualified release."]);
+  const initial = f.bridge.input.read();
+  assert.equal(f.bridge.input.read(), null);
+  assert.equal(initial.message.content, "Workspace metadata\n\nDeliver the qualified release.");
+  await f.feed({ ...initial, isReplay: true });
+  f.bridge.prompt(["Archive updated."]);
+  const notice = f.bridge.input.read();
+  await f.feed({ type: "stream_event", event: { type: "message_start", message: {
+    id: "message-1", model: "claude-fixture-1" } } });
+  const first = f.events.find((e) => e.type === "request");
+  assert.deepEqual(first.payload.input.filter((v) => v.role === "user"), [initial.message]);
+  await f.feed({ type: "stream_event", event: { type: "message_stop" } },
+    { ...notice, isReplay: true },
+    { type: "stream_event", event: { type: "message_start", message: {
+      id: "message-2", model: "claude-fixture-1" } } });
+  assert.deepEqual(f.events.at(-1).payload.input.filter((v) => v.role === "user"),
+    [initial.message, notice.message]);
+});
+
+test("changed replay and inference before initial delivery fail closed", async (t) => {
+  const f = await fixture(t);
+  f.bridge.prompt(["Workspace", "Business task"]);
+  const initial = f.bridge.input.read();
+  await f.feed({ ...initial, message: { role: "user", content: "Changed task" } });
+  assert.equal(f.events.at(-1).type, "fatal");
+  assert.match(f.events.at(-1).message, /replay differs/);
+  const g = await fixture(t);
+  g.bridge.prompt(["Workspace", "Business task"]);
+  await g.feed({ type: "stream_event", event: { type: "message_start", message: {
+    id: "message-1", model: "claude-fixture-1" } } });
+  assert.equal(g.events.at(-1).type, "fatal");
+  assert.match(g.events.at(-1).message, /no SDK delivery/);
 });
 
 test("built-in host tools are rejected at session initialization", async (t) => {
@@ -88,7 +125,7 @@ test("a tool heartbeat leaves the main context active while nested inference is 
   assert.match(f.events.at(-1).message, /nested Claude session/);
 });
 
-test("a Phase 2 tool cannot run before it is installed", async (t) => {
+test("an unavailable Phase 2 tool is rejected by the SDK without controller execution", async (t) => {
   const f = await fixture(t);
   await f.feed(
     { type: "stream_event", event: { type: "message_start", message: { id: "message-1", model: "claude-fixture-1" } } },
@@ -96,15 +133,33 @@ test("a Phase 2 tool cannot run before it is installed", async (t) => {
       { type: "tool_use", id: "call-1", name: "mcp__continuation__book_replica_upgrade", input: {} }] } },
     { type: "stream_event", event: { type: "message_stop" } },
   );
-  assert.equal(f.events.at(-1).type, "fatal");
-  assert.match(f.events.at(-1).message, /Unexpected Claude tool/);
+  assert.equal(f.events.at(-1).type, "provider_response");
+  await f.feed({ type: "user", message: { content: [{ type: "tool_result",
+    tool_use_id: "call-1", is_error: true, content: "Tool unavailable." }] } });
+  assert.equal(f.events.at(-1).type, "turn_end");
+  assert.equal(f.events.filter((event) => event.type === "tool_result_error").length, 1);
+  assert.equal(f.events.filter((event) => event.type === "fatal").length, 0);
+  assert.equal(f.bridge.history.at(-1).output, "Tool unavailable.");
 });
 
-test("subscription exhaustion is a hold with no fallback query", async (t) => {
+test("an unexecuted host tool cannot claim successful execution", async (t) => {
+  const f = await fixture(t);
+  await f.feed(
+    { type: "stream_event", event: { type: "message_start", message: { id: "message-1", model: "claude-fixture-1" } } },
+    { type: "assistant", message: { id: "message-1", content: [
+      { type: "tool_use", id: "call-1", name: "Bash", input: { command: "pwd" } }] } },
+    { type: "stream_event", event: { type: "message_stop" } },
+    { type: "user", message: { content: [{ type: "tool_result", tool_use_id: "call-1", content: "/host" }] } },
+  );
+  assert.equal(f.events.at(-1).type, "fatal");
+  assert.match(f.events.at(-1).message, /Unexecuted Claude tool returned success/);
+});
+
+test("provider exhaustion is a hold with no client fallback query", async (t) => {
   const f = await fixture(t);
   await f.feed({ type: "rate_limit_event", rate_limit_info: { status: "rejected" } });
   assert.equal(f.events.at(-1).type, "settled");
-  assert.match(f.events.at(-1).error_message, /subscription limit reached/);
+  assert.match(f.events.at(-1).error_message, /provider rate limit reached/);
   assert.equal(f.events.filter((event) => event.type === "request").length, 0);
 });
 

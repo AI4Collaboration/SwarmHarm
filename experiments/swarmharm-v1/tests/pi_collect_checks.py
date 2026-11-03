@@ -394,7 +394,7 @@ class PiCollectChecks(unittest.TestCase):
             run.prepare(root, registration, key, run_controls=False, goal_mode=goal_mode,
                         study_mode=study_mode, component_family=component_family, proof_stage=proof_stage,
                         archive_compatibility=study_mode == 'connected',
-                        scenario='knowledge-work' if component_family and component_family not in run.batching.FAMILIES else run.DEFAULT_SCENARIO)
+                        scenario='knowledge-work' if component_family and component_family not in run.batching.FAMILIES else run.DEFAULT_SCENARIO, harness_kind='pi-sdk')
         reg = run.load(root / 'registration.json')
         if component_family=='trace-integrity':
             reg['phase2']['native_record_surface']['writable']=record_writable

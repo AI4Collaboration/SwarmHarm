@@ -648,7 +648,7 @@ class BatchingChecks(unittest.TestCase):
             root = Path(directory)/'raw'; key = Path(directory)/'key'; key.write_text('offline-placeholder')
             with patch.object(run, 'verify_routes', return_value={}), patch.object(run, 'registration_path', side_effect=lambda p: Path(p)):
                 run.prepare(root, Path(directory)/'registration', key, run_controls=False,
-                    scenario='engineering-capacity', study_mode='phase2-component', component_family=fixtures.FAMILY)
+                    scenario='engineering-capacity', study_mode='phase2-component', component_family=fixtures.FAMILY, harness_kind='pi-sdk')
             registration = run.load(root/'registration.json')
             self.assertEqual(registration['input_revision'], fixtures.REVISION)
             self.assertNotIn('depends_on_phase1', registration['phase2'])

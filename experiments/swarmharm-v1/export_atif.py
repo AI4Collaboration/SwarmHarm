@@ -54,7 +54,7 @@ def input_step(message, **extra):
     return {'source':'system' if role=='developer' else role,'message':content,
         'extra':{'native_role':role,**extra}}
 
-def claude_native_evidence(folder,requests):
+def claude_native_evidence(folder,requests,accepted_models=None):
     """Bind projections to SDK-native content; do not claim provider-context access."""
     native=folder/'claude'/'native';paths=sorted(native.glob('*.json'))
     assert paths,'Missing Claude SDK native evidence'
@@ -67,7 +67,9 @@ def claude_native_evidence(folder,requests):
     for reqpath in requests:
         req=read(reqpath);start=messages[req['native_record']]
         assert start['type']=='stream_event' and start['event']['type']=='message_start'
-        assert (start['event']['message']['id'],start['event']['message']['model'])==(req['sdk_message_id'],req['model'])
+        assert start['event']['message']['id']==req['sdk_message_id']
+        assert start['event']['message']['model'] in (accepted_models or [req['model']])
+        assert req.get('native_model',req['model'])==start['event']['message']['model']
         respath=reqpath.with_name(reqpath.name.replace('.request.json','.response.json'))
         if not respath.exists():continue
         response=read(respath);stop=messages[response['native_record']]
@@ -76,9 +78,14 @@ def claude_native_evidence(folder,requests):
                   if req['native_record']<path<response['native_record'] and message['type']=='assistant']
         blocks=[block for message in selected for block in message['message']['content']]
         assert all(message['message']['id']==response['id'] for message in selected)
-        calls=[(block['id'],block['name'].split('__',2)[2],block['input']) for block in blocks if block['type']=='tool_use']
+        native_calls={block['id']:block for block in blocks if block['type']=='tool_use'}
+        calls=[(block['id'],re.sub(r'^mcp__(work|continuation)__','',block['name']),block['input'])
+               for block in native_calls.values()]
         assert calls==[(item['call_id'],item['name'],arguments(item['arguments']))
                       for item in response['output'] if item['type']=='function_call'],'Claude projection changed native tool calls'
+        for item in response['output']:
+            if item['type']=='function_call' and 'native_name' in item:
+                assert item['native_name']==native_calls[item['call_id']]['name'],'Claude native tool namespace changed'
         assert [block['text'] for block in blocks if block['type']=='text']==[
             text_of(item['content']) for item in response['output'] if item['type']=='message'],'Claude projection changed native text'
     delivery={}
@@ -93,6 +100,13 @@ def claude_native_evidence(folder,requests):
             assert text_of(block['content'])==json.dumps(record['result'],ensure_ascii=False),'Claude native tool result differs from controller execution'
         delivery[record['call_id']]={'sdk_delivery_verified':bool(found),
             'native_records':['claude/'+source for source,_ in found]}
+    for source,message in messages.items():
+        if message['type']!='user' or not isinstance(message.get('message',{}).get('content'),list):continue
+        for block in message['message']['content']:
+            if block.get('type')!='tool_result' or not block.get('is_error'):continue
+            if block['tool_use_id'] in delivery:continue
+            delivery[block['tool_use_id']]={'sdk_delivery_verified':True,'sdk_rejected':True,
+                'output':text_of(block['content']),'native_records':['claude/'+source]}
     transcript=folder/'claude'/'session.jsonl'
     if transcript.exists():paths.append(transcript)
     return {str(path.relative_to(folder)):sha(path) for path in paths},delivery
@@ -109,7 +123,8 @@ def export_actor(root,phase,actor):
         harness=registration['harness']
         if isinstance(harness['system_prompt'],dict):
             assert first.get('system_prompt_config')==harness['system_prompt'],'Claude preset differs from registration'
-        native_hashes,delivery=(codex_native_evidence if is_codex else claude_native_evidence)(folder,requests);hashes.update(native_hashes)
+        native_hashes,delivery=(codex_native_evidence(folder,requests) if is_codex else
+            claude_native_evidence(folder,requests,harness.get('accepted_native_model_ids')));hashes.update(native_hashes)
     system=first['input'][0];assert system.get('role') in ('developer','system'),'Pi system prompt must lead the input'
     expected=[system];initial_tools=first.get('tools',[]);all_tool_definitions=initial_tools
     phase2_tools_seen=study_mode=='phase2-component' and bool(initial_tools)
@@ -172,12 +187,13 @@ def export_actor(root,phase,actor):
                 tp,record=records[c['call_id']];assert record['name']==c['name'] and record['arguments']==c['arguments']
                 hashes[str(tp.relative_to(folder))]=sha(tp);out=json.dumps(record['result'],ensure_ascii=False)
                 tools+=1
-                if not is_codex:
+                if not is_sdk:
                     expected.append({'type':'function_call_output','call_id':c['call_id'],'output':out})
                     observations.append({'source_call_id':c['call_id'],'content':out})
-            if is_codex:
-                step['extra']['controller_execution_order']=[
-                    call['call_id'] for call in executed_order if call['call_id'] in records]
+            if is_sdk:
+                if is_codex or any('native_name' in call for call in calls):
+                    step['extra']['controller_execution_order']=[
+                        call['call_id'] for call in executed_order if call['call_id'] in records]
                 incoming=(read(requests[request_index+1])['input']
                     if request_index+1<len(requests) else history)
                 # Native evidence validates these results and their order.
@@ -187,9 +203,12 @@ def export_actor(root,phase,actor):
                     assert item['call_id'] in {call['call_id'] for call in calls},'Tool result belongs to another response'
                     if item['call_id'] in records:
                         assert item['output']==json.dumps(records[item['call_id']][1]['result'],ensure_ascii=False),'Codex controller result changed'
+                    elif is_claude:
+                        rejected=delivery.get(item['call_id'],{})
+                        assert rejected.get('sdk_rejected') and rejected['output']==item['output'],'Claude rejection lacks an exact SDK result'
                     expected.append(item)
                     observation={'source_call_id':item['call_id'],'content':item['output']}
-                    if item['call_id'] in records and not delivery[item['call_id']]['rendered_result_verified']:
+                    if is_codex and item['call_id'] in records and not delivery[item['call_id']]['rendered_result_verified']:
                         observation['extra']={'content_source':'controller_execution','rendered_result_verified':False}
                     observations.append(observation)
             if observations:step['observation']={'results':observations}
@@ -201,7 +220,8 @@ def export_actor(root,phase,actor):
     model=first['model'];state=read(folder/'result.json')
     value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm rollout collector (Pi SDK)','version':'2.0','model_name':model,'tool_definitions':all_tool_definitions},'steps':steps,'extra':{'phase':phase,'study_mode':study_mode,'actor':actor,'phase2_tools_seen':phase2_tools_seen,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'extension_continuations':len(state.get('extension_continuations',[])),'harness_rejected_tool_calls':len(state.get('harness_rejected_tool_calls',[])),'pi_session_file':(state.get('pi_session') or {}).get('session_file'),'conversion':'Native records are the exact provider request payloads and completed Responses objects. Pi rebuilds prior items on each request, so continuity is checked on the model-visible meaning of each item. The Pi system prompt is the first input item. Controller platform updates and harness or extension inputs are retained as separate input steps. Observations of tools run inside Pi extensions come from the next native request. Pi re-renders its system prompt when the active tools change; each new version is retained as a system step. Opaque reasoning remains only in raw records.','source_sha256':hashes,'missing_response_records':missing,'uncommitted_response_records':uncommitted,'independent_review':'../../../independent-review.json'}}
     if is_claude:
-        value['agent']['name']='SwarmHarm rollout collector (Claude Agent SDK / subscription)'
+        route='AxonHub' if harness.get('authentication')=='axonhub' else 'subscription'
+        value['agent']['name']='SwarmHarm rollout collector (Claude Agent SDK / '+route+')'
         value['extra'].pop('pi_session_file')
         value['extra'].update({
             'claude_session':state['claude_session']['session_id'],

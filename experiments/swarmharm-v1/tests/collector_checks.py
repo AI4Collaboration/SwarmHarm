@@ -175,17 +175,17 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             key=self.key_file(temporary)
             with patch.object(run,'verify_routes',return_value={}) as verify:
                 run.prepare(root,registration,key,run_controls=False,reasoning_effort='medium',
-                            scenario='financial-analysis',study_mode='connected',archive_compatibility=True)
+                            scenario='financial-analysis',study_mode='connected',archive_compatibility=True, harness_kind='pi-sdk')
             verify.assert_called_once_with(key.resolve(),reasoning_effort='medium')
             self.assertEqual(run.load(root/'registration.json')['reasoning'],'medium')
             self.assertIn('`medium` reasoning',(root/'PROTOCOL.md').read_text())
             self.assertEqual(run.DEFAULT_REASONING,'high')
 
-    def test_live_preparation_rejects_harnesses_without_axonhub_transport(self):
-        for harness in ('claude-code', 'codex'):
-            with self.subTest(harness=harness), self.assertRaisesRegex(
-                    ValueError, 'does not yet have a registered AxonHub transport'):
-                run.validate_harness_policy(harness)
+    def test_native_harness_admission_replaces_pi_for_live_runs(self):
+        for harness in ('claude-code','codex'):
+            run.validate_harness_policy(harness)
+        with self.assertRaisesRegex(ValueError,'Pi is historical only'):
+            run.validate_harness_policy('pi-sdk')
 
     def test_claude_pi_is_rejected_before_preparation_or_route_calls(self):
         with tempfile.TemporaryDirectory() as temporary, \
@@ -194,7 +194,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             root=Path(temporary)/'study'
             with self.assertRaisesRegex(ValueError, 'Claude models require Claude Code'):
                 run.prepare(root,self.registration_path(temporary),None,
-                            run_controls=False,study_mode='phase2-component')
+                            run_controls=False,study_mode='phase2-component', harness_kind='pi-sdk')
             verify.assert_not_called()
             self.assertFalse(root.exists())
 
@@ -228,14 +228,14 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                 'offline_adapter_test':True,
             })
             with self.assertRaisesRegex(
-                    RuntimeError, 'does not yet have a registered AxonHub transport'):
+                    RuntimeError, 'not permitted for live collection'):
                 launch.launch(root, Path(temporary)/'registration', command=['true'])
 
-    def test_launcher_rejects_a_non_axonhub_pi_endpoint(self):
+    def test_launcher_rejects_a_non_axonhub_native_endpoint(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary)/'study';root.mkdir()
             run.save(root/'registration.json',{
-                'harness':{'kind':'pi-sdk'},
+                'harness':{'kind':'claude-code'},
                 'api_base':'https://example.invalid/v1',
                 'live_collection_permitted':True,
             })
@@ -247,20 +247,20 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             root=Path(temporary)/'study';registration=self.registration_path(temporary)
             key=self.key_file(temporary)
             with patch.object(run,'verify_routes',return_value={}):
-                run.prepare(root,registration,key,run_controls=False,study_mode='connected',archive_compatibility=True)
+                run.prepare(root,registration,key,run_controls=False,study_mode='connected',archive_compatibility=True, harness_kind='pi-sdk')
             reg=run.load(root/'registration.json');reg['image']='sha256:'+'f'*64
             reg['models']={'fixture':'test/fixture'}
             run.save(root/'registration.json',reg)
-            with patch.object(run,'AXONHUB_KEY_FILE',key),patch.object(run,'verify_collection_freeze') as freeze:
+            with patch.object(run,'AXONHUB_KEY_FILE',key),patch.object(run,'registration_api_base',return_value='http://127.0.0.1:1/v1'),patch.object(run,'verify_collection_freeze') as freeze:
                 with self.assertRaisesRegex(RuntimeError,'Workstation image differs'):
-                    run.collect(root,registration)
+                    run.collect(root,registration,offline_transport_test=True)
             freeze.assert_not_called()
 
     def test_unsupported_effort_is_rejected_before_preparation(self):
         with tempfile.TemporaryDirectory() as temporary:
             with self.assertRaisesRegex(ValueError,'Unsupported reasoning effort'):
                 run.prepare(Path(temporary)/'study',self.registration_path(temporary),
-                    self.key_file(temporary),run_controls=False,reasoning_effort='automatic',study_mode='phase1')
+                    self.key_file(temporary),run_controls=False,reasoning_effort='automatic',study_mode='phase1', harness_kind='pi-sdk')
 
     def test_receipt_progress_does_not_equate_local_completion_with_release_completion(self):
         plan, _ = run.make_plan(4, scenario="engineering-maintenance")
@@ -492,7 +492,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                 registration = self.registration_path(temporary)
                 with patch.object(run, "verify_routes", return_value={}):
                     run.prepare(output, registration, self.key_file(temporary),
-                                run_controls=False, scenario=scenario,study_mode='connected',archive_compatibility=True)
+                                run_controls=False, scenario=scenario,study_mode='connected',archive_compatibility=True, harness_kind='pi-sdk')
                 frozen = run.load(output / "registration.json")
                 self.assertEqual(frozen["phase2"]["formation_observation_seconds"], 0)
                 self.assertFalse(frozen["substrate"]["system_created_source_requests"])
@@ -711,7 +711,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             output = Path(temporary) / "study"
             with patch.object(run, "verify_routes", return_value={}):
                 run.prepare(output, self.registration_path(temporary), self.key_file(temporary),
-                            run_controls=False, scenario="engineering-capacity",study_mode='connected',archive_compatibility=True)
+                            run_controls=False, scenario="engineering-capacity",study_mode='connected',archive_compatibility=True, harness_kind='pi-sdk')
             reg = run.load(output / "registration.json")
             completion = reg["completion_protocol"]
             self.assertEqual(completion["kind"], "unfinished_work_followup")
@@ -1001,7 +1001,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             registration = self.registration_path(temporary)
             with patch.object(run, "verify_routes", return_value={"checked_at": "test"}):
                 run.prepare(root, registration, self.key_file(temporary), 4, 4,
-                            run_controls=False, scenario="engineering-capacity",study_mode='connected',archive_compatibility=True)
+                            run_controls=False, scenario="engineering-capacity",study_mode='connected',archive_compatibility=True, harness_kind='pi-sdk')
             reg = run.load(root / "registration.json")
             actors = reg["plan"]["natural"]
             self.assertEqual(len(actors), 4)
@@ -1057,7 +1057,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                     archive_compatibility=True,
                     filing_deadline_utc="2030-01-01T17:00:00+00:00",
                     scenario=run.DEFAULT_SCENARIO,
-                )
+                 harness_kind='pi-sdk')
 
             reg = run.load(root / "registration.json")
             self.assertEqual(reg["scenario"], run.DEFAULT_SCENARIO)
@@ -1101,7 +1101,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                 with patch.object(run, "verify_routes", return_value={"checked_at": "test"}):
                     run.prepare(root, self.registration_path(temporary), self.key_file(temporary),
                                 run_controls=False, scenario="knowledge-work", information_condition=condition,
-                                study_mode='connected',archive_compatibility=True)
+                                study_mode='connected',archive_compatibility=True, harness_kind='pi-sdk')
                 reg = run.load(root / "registration.json")
                 self.assertEqual(reg["phase2"]["information_condition"], condition)
                 self.assertNotIn("opening_calendar_visible_in_register", reg["phase2"])
@@ -1117,7 +1117,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                     run.prepare(Path(temporary) / "study", self.registration_path(temporary),
                                 self.key_file(temporary), run_controls=False,
                                 scenario="engineering-capacity", information_condition="staffing_register",
-                                study_mode='connected',archive_compatibility=True)
+                                study_mode='connected',archive_compatibility=True, harness_kind='pi-sdk')
                 routes.assert_not_called()
 
     def test_trace_method_condition_is_not_available_in_current_adapter(self):
@@ -1128,7 +1128,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                 run.prepare(root,self.registration_path(temporary),self.key_file(temporary),
                     run_controls=False,scenario="knowledge-work",study_mode="phase2-component",
                     component_family="trace-integrity",initial_material="method_available",
-                    material_distribution="one_workstation",goal_mode="goal_command")
+                    material_distribution="one_workstation",goal_mode="goal_command", harness_kind='pi-sdk')
 
     def test_trace_registration_preserves_message_resumption_and_removes_exact_findings(self):
         with tempfile.TemporaryDirectory() as temporary, \
@@ -1137,7 +1137,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
             run.prepare(root,self.registration_path(temporary),self.key_file(temporary),
                 run_controls=False,scenario="knowledge-work",study_mode="phase2-component",
                 component_family="trace-integrity",initial_material="business_records_only",
-                material_distribution="all_workstations",goal_mode="goal_command")
+                material_distribution="all_workstations",goal_mode="goal_command", harness_kind='pi-sdk')
             reg=run.load(root/"registration.json")
             self.assertEqual(reg["pressure"]["kind"],
                              "shared_next_batch_compute_allocation")
@@ -1198,7 +1198,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                     with self.assertRaisesRegex(ValueError, "scenario must be one of"):
                         run.prepare(output, self.registration_path(temporary),
                                     self.key_file(temporary), scenario=scenario, run_controls=False,
-                                    study_mode='connected',archive_compatibility=True)
+                                    study_mode='connected',archive_compatibility=True, harness_kind='pi-sdk')
                 route_check.assert_not_called()
                 self.assertFalse(output.exists())
 
@@ -1217,7 +1217,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                     run.prepare(
                         root, registration, key, 4, 1, run_controls=False,
                         scenario="engineering-capacity",study_mode='connected',archive_compatibility=True,
-                    )
+                     harness_kind='pi-sdk')
 
     def test_sdk_concurrency_matches_the_active_agent_cohort(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -1234,7 +1234,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                 run.prepare(
                     root, registration, key, 4, 4, 4,
                     run_controls=False, scenario="engineering-capacity",study_mode='connected',archive_compatibility=True,
-                )
+                 harness_kind='pi-sdk')
             reg = run.load(root / "registration.json")
             self.assertEqual(reg["budget"]["active_contexts_natural"], 4)
             self.assertEqual(reg["budget"]["provider_concurrency"], 4)
@@ -1250,7 +1250,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                         run.prepare(
                             root, registration, key, 4, 4, invalid,
                             run_controls=False, scenario="engineering-capacity",study_mode='connected',archive_compatibility=True,
-                        )
+                         harness_kind='pi-sdk')
 
 
 if __name__ == "__main__":

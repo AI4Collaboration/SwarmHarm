@@ -1,9 +1,9 @@
-"""Actor-scoped, mediated views of disposable Pi session files.
+"""Actor-scoped, mediated views of disposable native session files.
 
 No operator directory is mounted in a subject workstation. Before a shell tool,
 native bytes are copied into that actor's temporary home. Only edits to those
 same files can be applied back, with external before/after evidence retained.
-This is an explicit experimental adapter, not a stock Pi vulnerability claim.
+This is an explicit experimental adapter, not a stock harness vulnerability claim.
 """
 import base64
 from hashlib import sha256
@@ -69,11 +69,14 @@ def apply_view(directory, before, after, *, writable):
 
 
 class NativeRecordSurface:
-    def __init__(self, root, actors, *, writable=True, apply_mode='immediate'):
+    def __init__(self, root, actors, *, writable=True, apply_mode='immediate', harness='pi-sdk'):
         if apply_mode not in ('immediate', 'staged'):
             raise ValueError('Unknown native-record application mode')
         self.root = Path(root).resolve()
         self.actors = set(actors)
+        self.harness = harness
+        self.view = VIEW if harness=='pi-sdk' else '/tmp/agent/activity'
+        self.bound_directories = {}
         self.writable = writable
         self.apply_mode = apply_mode
         self.archive = self.root / 'operator' / 'record-observer'
@@ -85,7 +88,19 @@ class NativeRecordSurface:
     def directory(self, actor):
         if actor not in self.actors or Path(actor).name != actor:
             raise ValueError('Unknown record owner')
-        return self.root / actor / 'pi' / 'session'
+        if actor in self.bound_directories:
+            return self.bound_directories[actor]
+        if self.harness=='pi-sdk':
+            return self.root / actor / 'pi' / 'session'
+        return self.root / actor / ('claude' if self.harness=='claude-code' else 'codex')
+
+    def bind(self, actor, session_file):
+        if actor not in self.actors or self.harness != 'codex':
+            raise ValueError('Unexpected native session binding')
+        path=Path(session_file).resolve()
+        if path.suffix != '.jsonl' or (path.exists() and not path.is_file()):
+            raise ValueError('Native session file is unavailable')
+        self.bound_directories[actor]=path.parent
 
     def retain(self, actor, records):
         manifest = {}
@@ -144,7 +159,7 @@ class NativeRecordSurface:
                 if row is None or row['revision_sha256'] != expected:
                     raise ValueError('Staged record revision changed')
                 current = read_regular(self.directory(actor))
-                # Pi keeps recording the subject's later tool interactions after
+                # The harness keeps recording the subject's later tool interactions after
                 # the subject stages a revision. Preserve only byte-exact append
                 # suffixes; any replacement, truncation, deletion, or new file is
                 # still an unregistered concurrent change and rejects the set.
@@ -220,9 +235,9 @@ class NativeRecordSurface:
                 self.resume()
                 # Clear only this disposable view before hydrating the current bytes.
                 code = "import shutil,pathlib; p=pathlib.Path('/tmp/agent/.pi/sessions'); shutil.rmtree(p,ignore_errors=True); p.mkdir(parents=True,exist_ok=True)"
-                subprocess.run(['docker','exec',self.name,'python','-I','-c',code],
+                subprocess.run(['docker','exec',self.name,'python','-I','-c',code.replace(VIEW,surface.view)],
                                check=True, capture_output=True, timeout=15)
-                self.hydrate({VIEW+'/'+name:base64.b64encode(data).decode()
+                self.hydrate({surface.view+'/'+name:base64.b64encode(data).decode()
                               for name,data in view_before.items()}, False)
                 reply, snapshot = super().execute(command, shared)
                 self.resume()
@@ -236,7 +251,7 @@ for f in sorted(p.iterdir()) if p.is_dir() and not p.is_symlink() else []:
  result[f.name]=base64.b64encode(data).decode()
 print(json.dumps({'files':result,'invalid':invalid,'invalid_directory':p.is_symlink()}))'''
                 raw = json.loads(subprocess.check_output(
-                    ['docker','exec',self.name,'python','-I','-c',code], timeout=15))
+                    ['docker','exec',self.name,'python','-I','-c',code.replace(VIEW,surface.view)], timeout=15))
                 self.pause()
                 after = {name:base64.b64decode(value) for name,value in raw['files'].items()}
                 observed = surface.retain(actor, after)
@@ -248,7 +263,7 @@ print(json.dumps({'files':result,'invalid':invalid,'invalid_directory':p.is_syml
                     mutation = {'applied':False,'rejected':'native_record_changed_during_command'}
                 elif surface.apply_mode == 'staged':
                     # A pending revision is hydrated together with any later
-                    # append-only Pi activity. A command that leaves that view
+                    # append-only native activity. A command that leaves that view
                     # unchanged has not authored a new revision: keep the
                     # original base, subject bytes and revision identity. This
                     # prevents ordinary reads or later tool calls from

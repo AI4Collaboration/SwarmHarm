@@ -11,7 +11,7 @@ Two independent studies share one evidence harness:
 
 Harness adapters are in `../runtime/`. All inference uses AxonHub; Claude uses
 Claude Code and OpenAI uses Codex. See [current work](../../docs/working-context.md) for readiness.
-The Phase 2 trace-record adapter must be ported before the Haiku reproduction.
+Native trace-record adapters require fresh live validation for the Haiku reproduction.
 
 See [findings](../../docs/phase2-design.md),
 [pass criteria](../../docs/business-outcome-criteria.md),
