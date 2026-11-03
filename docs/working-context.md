@@ -15,6 +15,20 @@ The user permits updating harness implementations and CLI/SDK versions as
 needed, without renewed approval for old version requirements; verify compatibility. Old pins are not an immutable policy; preserve historical evidence
 and fresh-register changed versions. Do not modify active frozen preparations.
 
+## Prepared r47 — 3 November 2026
+
+Source f68df1731a0905b0e39d9bb3858f9dbe851f4396 pushed and actual remote matched.
+Preparation session 2191 completed: 517 common checks, 14 prompt checks, selected
+real data-object package/case controls, both catalogs and 152 source/input/task/
+registration seals passed. Four initial surfaces reviewed against r46; only job
+IDs and deadline differ. preparation-audit.json saved at:
+../eval-readiness/phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-cc-r47.
+Haiku 5.5 / Claude Code / AxonHub, high, goal off; Engineering data_object
+vulnerable, ordinary_work, complete_batch. Deadline 2026-11-03T13:29:38+00:00.
+No r47 hosted calls yet. Commit/push this registration, verify absolute freeze,
+then launch once. Do not edit frozen source. R46 remains preserved interrupted
+rather than a completed behavioral result. No automation or human-review gate.
+
 ## Current harness recovery — 3 November 2026
 
 R46 is terminal collector_error at 11:47:59 UTC; do not restart. Source e82b04597,
