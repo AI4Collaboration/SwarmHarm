@@ -24,6 +24,7 @@ export class ClaudeBridge {
     this.nativeIndex = 0;
     this.history = [];
     this.pendingInputs = [];
+    this.deliveredInputs = [];
     this.calls = new Map();
     this.earlyToolErrors = [];
     this.callWaiters = new Set();
@@ -117,11 +118,15 @@ export class ClaudeBridge {
   }
 
   prompt(texts) {
-    for (const text of texts) {
+    // One controller delegation must reach one model context atomically. Two
+    // writes race with the CLI consuming the first before the task arrives.
+    // Native /goal commands retain their separate command semantics.
+    const groups = this.config.input_delivery === "atomic-sdk-replay-v1" && texts.length ? [texts.join("\n\n")] : texts;
+    for (const text of groups) {
       const message = { type: "user", session_id: this.sessionId, uuid: randomUUID(),
         parent_tool_use_id: null, message: { role: "user", content: text } };
       this.native({ type: "controller_input", input: message });
-      this.pendingInputs.push({ role: "user", content: text });
+      this.pendingInputs.push({ uuid: message.uuid, role: "user", content: text });
       this.input.write(message);
     }
   }
@@ -129,7 +134,11 @@ export class ClaudeBridge {
   start(message, source) {
     if (this.current) throw new Error("Overlapping Claude model messages");
     if (!(this.config.accepted_native_model_ids ?? [this.config.model]).includes(message.model)) throw new Error(`Claude returned model ${message.model}; expected ${this.config.model}`);
-    this.history.push(...this.pendingInputs.splice(0));
+    if (this.config.input_delivery !== "atomic-sdk-replay-v1") {
+      this.history.push(...this.pendingInputs.splice(0).map(({ role, content }) => ({ role, content })));
+    } else if (this.turn === 0 && this.pendingInputs.length && !this.deliveredInputs.length) {
+      throw new Error("Initial Claude input has no SDK delivery before inference");
+    }
     this.current = { id: message.id, turn: ++this.turn, blocks: [], usage: message.usage ?? {}, source };
     this.channel.emit({ type: "request", turn: this.turn, attempt: 1, payload: {
       record_kind: "controller_projection", model: this.config.model, native_model: message.model,
@@ -137,6 +146,8 @@ export class ClaudeBridge {
       input: copy(this.history), reasoning: { effort: this.config.effort },
       tools: this.config.tools.filter((tool) => this.active.has(tool.name)),
       sdk_message_id: message.id, native_record: source,
+      ...(this.config.input_delivery === "atomic-sdk-replay-v1" ? { input_delivery: "atomic-sdk-replay-v1",
+        delivered_input_records: copy(this.deliveredInputs) } : {}),
     } });
   }
 
@@ -267,6 +278,17 @@ export class ClaudeBridge {
         if (!this.current || this.current.id !== message.message.id) throw new Error("Claude content has no matching stream start");
         this.current.blocks.push(...message.message.content);
       } else if (message.type === "user") {
+        if (this.config.input_delivery === "atomic-sdk-replay-v1") {
+          const index = this.pendingInputs.findIndex((input) => input.uuid === message.uuid);
+          if (index !== -1) {
+            const input = this.pendingInputs[index];
+            if (canonical(message.message) !== canonical({ role: input.role, content: input.content }))
+              throw new Error("Claude SDK input replay differs from controller delegation");
+            this.pendingInputs.splice(index, 1);
+            this.history.push({ role: input.role, content: input.content });
+            this.deliveredInputs.push({ uuid: input.uuid, native_record: source });
+          }
+        }
         this.rejectedResults(message, source);
       } else if (message.type === "result") {
         this.channel.emit({ type: "settled", turn: this.turn, aborted: false,

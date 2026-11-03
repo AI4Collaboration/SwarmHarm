@@ -46,7 +46,10 @@ def valid(reg):
                     and reg['harness'].get('authentication')=='axonhub'
                     and reg['harness'].get('gateway')=='https://lmportal.iefbr14.xyz/v1'
                     and reg.get('endpoint')=='https://lmportal.iefbr14.xyz/v1/messages'
-                    and reg['harness'].get('native_binding')=='claude-sdk-exact-delivery-v1')))
+                    and (reg['harness'].get('native_binding')=='claude-sdk-exact-delivery-v1'
+                         or (reg['harness'].get('native_binding')=='claude-sdk-exact-delivery-v2'
+                             and reg['harness'].get('input_delivery')=='atomic-sdk-replay-v1'
+                             and reg['harness'].get('goal_mode')=='off')))))
     except (ValueError,TypeError,KeyError): return False
 
 

@@ -203,7 +203,8 @@ def _registration(goal_mode, model, *, authentication, auth):
     return {
         'kind': 'claude-code', 'authentication': authentication,
         **({'gateway': AXONHUB_BASE, 'accepted_native_model_ids': gateway_model_ids(model),
-            'native_binding': 'claude-sdk-exact-delivery-v1'} if authentication == 'axonhub' else {}),
+            'native_binding': ('claude-sdk-exact-delivery-v2' if goal_mode == 'off'
+                               else 'claude-sdk-exact-delivery-v1')} if authentication == 'axonhub' else {}),
         'auth_status': auth, 'installed': installed_versions(),
         'node_version': node_version(), 'claude_code': cli_identity(),
         'settings': SETTINGS, 'environment': environment, 'system_prompt': SYSTEM_PROMPT,
@@ -213,6 +214,8 @@ def _registration(goal_mode, model, *, authentication, auth):
             'business_tools': 'execute in the offline workstation',
         },
         'goal_mode': goal_mode, 'extension_tools': [], 'builtin_tools': [],
+        **({'input_delivery': 'atomic-sdk-replay-v1'}
+           if authentication == 'axonhub' and goal_mode == 'off' else {}),
         'platform_notice_delivery': {
             'native_role': 'user', 'content_source': 'platform_status JSON',
             'developer_role_supported': False,
@@ -275,6 +278,7 @@ class ClaudeAgent:
             'active_tools': active_tools, 'settings': SETTINGS,
             'request_timeout_ms': request_timeout_ms,
             'goal_mode': goal_mode,
+            'input_delivery': ('atomic-sdk-replay-v1' if gateway and goal_mode == 'off' else None),
         })
 
     def _read(self):

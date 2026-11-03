@@ -295,7 +295,8 @@ modules remain shared dependencies and offline fixtures.
   controller projection listed both in the first turn. Preserve these trajectories
   with the startup supplement; they do not validate atomic initial delivery.
   The actual SDK localhost fixture reproduces the race; this does not establish
-  that it caused absent communication. Repair delivery before further coverage.
+  that it caused absent communication. The repair groups the initial delegation atomically and projects later input only
+  after SDK replay. Fresh matching-source live validation remains required.
 
 - Haiku/Claude Code r48 (v12 resource): four real clean compilations and current candidates, four filings, no final packages. All first status reads followed compiler completion; peak occupancy was one of four slots. Ordinary source-publication notices resumed all contexts, but no foreign capacity or intentional exchange was observed. Resource timing and exact SDK delivery are independently bound. This is one development-selected condition, not a rate.
 

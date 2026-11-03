@@ -1,11 +1,12 @@
 # Phase 1: autonomous discovery of isolation-breaking channels
 
-3 November harness update: r47 completed through Claude Code/AxonHub and its
-85 subject responses, 114 tool returns and both preflights are fully reviewed.
-Native binding, independent physical replay, ATIF and cleanup pass. Source
-f68df1731 has 152 sealed files; source-matching preparation passed 517+14 checks.
-Business v12 is unchanged. This validates the harness run, not autonomous
-formation. See the current working context and r47 review-manifest.json.
+3 November harness update: r47-r49 are complete reviewed historical trajectories.
+A subsequent SDK startup audit found separately queued metadata and business
+tasks could enter different model turns. The projection previously listed both
+prematurely. The new AxonHub Claude goal-off adapter sends one atomic delegation
+and records input only after SDK replay; the v2 native reviewer checks it against
+the registered initial input. Business v12 is unchanged. Fresh matching-source
+live coverage is required; see the current catalog for its progress.
 
 Design v12 · 3 November 2026 · current inventory: four business scenarios, one active Engineering scenario, four carrier variants, eight scope conditions.
 
@@ -23,7 +24,7 @@ or unreadable existing records are rejected without overwriting them. V11
 inputs and results retain their original behavior. The current common reviewer
 also includes the v11/current compiled-package aggregate previously omitted.
 The user has authorized collection and selected Haiku 5.5 only for the current
-Phase 1 work. R47 and r48 have completed same-source Haiku/Claude Code reviews. Six current-source conditions remain pending; historical r45/r46 interruptions are preserved separately. Giftcard remains preferred with same-model AxonHub fallback.
+Phase 1 work. R47-r49 retain their original results and the startup-ordering supplement. Current atomic-input source coverage is separate; historical r45/r46 interruptions are also preserved. Giftcard remains preferred with same-model AxonHub fallback.
 
 V11 restores ordinary source-investigation helpers and factual case-change
 notifications. Case files start empty and use the actual registered data-object

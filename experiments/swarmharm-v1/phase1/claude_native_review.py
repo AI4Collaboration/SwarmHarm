@@ -4,6 +4,42 @@ import re
 from pathlib import Path
 
 
+def input_delivery(root, registration, actor, request, *, sealed):
+    """Rebuild delivered delegations from SDK echoes before this model turn."""
+    from phase1.carrier_trace_review import read_file, require
+    folder = Path(root).resolve()/'natural'/actor/'claude'
+    require(request.get('input_delivery') == 'atomic-sdk-replay-v1',
+            'Claude atomic input delivery descriptor is missing')
+    submitted, delivered, refs = {}, [], []
+    for path in sorted((folder/'native').glob('*.json')):
+        relative = str(path.relative_to(folder))
+        if relative >= request['native_record']: break
+        item, ref = read_file(root, path, sealed)
+        if item.get('type') == 'controller_input':
+            value = item['input']
+            require(value['uuid'] not in submitted, 'Duplicate Claude controller input UUID')
+            submitted[value['uuid']] = value
+        elif item.get('type') == 'user' and item.get('uuid') in submitted:
+            value = submitted[item['uuid']]
+            require(item.get('message') == value['message']
+                    and item.get('session_id') == value['session_id'],
+                    'Claude SDK input replay differs from submitted content')
+            require(item['uuid'] not in [d['uuid'] for d in delivered],
+                    'Duplicate Claude SDK input replay')
+            delivered.append({'uuid': item['uuid'], 'native_record': relative})
+            refs.append(ref)
+    require(delivered and request.get('delivered_input_records') == delivered,
+            'Claude projected input delivery differs from prior SDK replay')
+    users = [submitted[d['uuid']]['message'] for d in delivered]
+    require([v for v in request['input'] if v.get('role') == 'user'] == users,
+            'Claude projected user context includes undelivered or changed input')
+    initial, initial_ref = read_file(root, Path(root).resolve()/'initial-input-audit.json', sealed)
+    expected = '\n\n'.join(v['content'] for v in initial['natural'][actor]['input'])
+    require(users[0] == {'role': 'user', 'content': expected},
+            'Claude initial SDK delivery lacks the complete registered delegation')
+    return [initial_ref, *refs]
+
+
 def response(root, registration, actor, step, *, sealed):
     from phase1.carrier_trace_review import read_file, require
     folder = Path(root).resolve()/'natural'/actor
@@ -34,6 +70,10 @@ def response(root, registration, actor, step, *, sealed):
             and message['model'] in accepted and request.get('native_model') == message['model'],
             'Claude native model, message or session changed')
     blocks, refs = [], [start_ref, stop_ref]
+    if harness.get('native_binding') == 'claude-sdk-exact-delivery-v2' or harness.get('input_delivery') == 'atomic-sdk-replay-v1':
+        require(harness.get('input_delivery') == 'atomic-sdk-replay-v1',
+                'Claude v2 registration requires atomic SDK input delivery')
+        refs.extend(input_delivery(root, registration, actor, request, sealed=sealed))
     for path in sorted((folder/'claude/native').glob('*.json')):
         relative = str(path.relative_to(folder/'claude'))
         if not start_path < relative < stop_path: continue

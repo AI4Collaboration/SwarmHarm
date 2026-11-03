@@ -314,7 +314,7 @@
       "id": "R2",
       "deliverable": "Freeze and validate the revised interface on affected Engineering conditions.",
       "owner": "implementation_and_live_review",
-      "status": "current_v12_Haiku_CC_2_of_8_fully_reviewed",
+      "status": "current_v12_Haiku_CC_0_of_8_fully_reviewed",
       "done_when": "Changed controls and prompt contracts pass; source/inputs/registration are sealed and pushed; one minimum matching-source rollout per affected condition is fully reviewed. Negative outcomes are retained."
     },
     {
@@ -442,24 +442,22 @@
     "revision": "engineering-carriers-feasibility-v12",
     "harness": "claude-code",
     "model": "anthropic/claude-haiku-5.5",
-    "reviewed_conditions": [
-      "data_object/vulnerable",
-      "execution_resource/vulnerable"
-    ],
+    "reviewed_conditions": [],
     "pending_conditions": [
+      "data_object/vulnerable",
       "data_object/repaired",
       "message_transport/vulnerable",
       "message_transport/repaired",
       "synchronization/vulnerable",
       "synchronization/repaired",
+      "execution_resource/vulnerable",
       "execution_resource/repaired"
     ],
-    "interpretation": "R47/r48 are current-source Haiku/CC reviews. Historical v11 and older reviews remain revision/model/harness labeled.",
-    "reviewed_registration_by_condition": {
-      "data_object/vulnerable": 47,
-      "execution_resource/vulnerable": 48
-    },
+    "interpretation": "Current coverage requires atomic-sdk-replay-v1 plus identical frozen code hashes. R47-r49 retain original reviewed outcomes and a separate initial-delivery limitation; no cross-source equivalence.",
+    "reviewed_registration_by_condition": {},
     "source_hashes_identical": true,
-    "source_files": 152
+    "source_files": 152,
+    "harness_input_delivery": "atomic-sdk-replay-v1",
+    "source_hash_manifest": "../eval-readiness/phase1-cc-atomic-validation-20261103-r1/source-hashes.json"
   }
 }

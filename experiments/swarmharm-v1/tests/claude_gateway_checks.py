@@ -80,7 +80,8 @@ class GatewayChecks(unittest.TestCase):
                     tools=[tool],active_tools=['confirm_service'],goal_mode='off',
                     api_base=c.AXONHUB_BASE,api_key='local-fixture-token')
             try:
-                c.wait_ready(events,['actor']);agent.prompt('Check service availability.')
+                texts = ['Workspace: /workspace.', 'Check service availability.']
+                c.wait_ready(events,['actor']);agent.prompt(*texts)
                 call_id=None
                 while True:
                     _,message=events.get(timeout=40)
@@ -96,13 +97,29 @@ class GatewayChecks(unittest.TestCase):
                 self.assertIsNotNone(call_id)
             finally:agent.close()
             self.assertTrue(Handler.requests)
+            first_users = [m for m in Handler.requests[0]['messages'] if m['role']=='user']
+            self.assertIn('\n\n'.join(texts), json.dumps(first_users).replace('\\n', '\n'))
             self.assertTrue(all(r['model']==MODEL for r in Handler.requests))
             self.assertTrue(all(a=='Bearer local-fixture-token' for a in Handler.authorization))
             self.assertTrue(all(r.get('output_config',{}).get('effort')=='high'
                                 for r in Handler.requests if r.get('tools')))
-            reg={'harness':{'accepted_native_model_ids':c.gateway_model_ids(MODEL)},
+            reg={'harness':{'accepted_native_model_ids':c.gateway_model_ids(MODEL),
+                           'input_delivery':'atomic-sdk-replay-v1'},
                  'models':{'claude':MODEL},'plan':{'natural':{'actor':{'provider':'claude'}}}}
+            run.save(root/'initial-input-audit.json',{'natural':{'actor':{'input':[
+                {'role':'developer','content':texts[0]}, {'role':'user','content':texts[1]}]}}})
             bound=claude_native_review.response(root,reg,'actor',1,sealed=False)
+            request_path=folder/'trace/0001.request.json';original_request=request_path.read_bytes()
+            forged=run.load(request_path);forged['input'].append({'role':'user','content':'Queued but not delivered'})
+            run.save(request_path,forged)
+            with self.assertRaisesRegex(ValueError,'undelivered or changed'):
+                claude_native_review.response(root,reg,'actor',1,sealed=False)
+            request_path.write_bytes(original_request)
+            forged=run.load(request_path);forged['delivered_input_records'][0]['native_record']='native/999999.json'
+            run.save(request_path,forged)
+            with self.assertRaisesRegex(ValueError,'prior SDK replay'):
+                claude_native_review.response(root,reg,'actor',1,sealed=False)
+            request_path.write_bytes(original_request)
             event={'actor':'actor','step':1,'result':{'status':'available'}}
             found=claude_native_review.delivered(root,reg,event,{'call_id':call_id},2,sealed=False)
             self.assertTrue(bound['records']);self.assertTrue(found)

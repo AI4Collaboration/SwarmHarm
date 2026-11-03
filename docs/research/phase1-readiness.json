@@ -1387,7 +1387,7 @@
       "830648ff88b5c16018c713b2f3fbdd10de777bee72bf254ca4dc553df9a92713"
     ]
   },
-  "next": "Repair confirmed Claude initial input delivery race; fresh offline and matching-source live validation before publication coverage.",
+  "next": "Freeze atomic-input source and prepare one minimum r50 Engineering data_object vulnerable Haiku/CC/AxonHub rollout; full native delivery review before expanding coverage.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -1402,7 +1402,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-11-03T13:14:05.447138+00:00",
+  "updated_at": "2026-11-03T13:19:34.568159+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "v12_Haiku_CC_matching_source_review_in_progress",
   "pressure_resource_calibration": {
@@ -1664,7 +1664,7 @@
   },
   "engineering_carrier_feasibility": {
     "domain": "Engineering",
-    "status": "restored_8_of_8_conditions_reviewed_with_revision_labels",
+    "status": "current_v12_Haiku_CC_0_of_8_reviewed; historical_coverage_separate",
     "ready": false,
     "report": "docs/research/phase1-engineering-carrier-feasibility.md",
     "implementation": "experiments/swarmharm-v1/phase1/engineering_carriers.py",
@@ -5376,7 +5376,7 @@
         "registration_path": "experiments/swarmharm-v1/registrations/phase1-carrier-v12-engineering-resource-repaired-ordinary-batch-haiku55-cc-r49/registration.json",
         "registration_sha256": "25e767446e3ffe0285d4ca8bad694abe279147b7b642905d161f138548f306ed",
         "review_index": "../eval-readiness/phase1-carrier-v12-engineering-resource-repaired-ordinary-batch-haiku55-cc-r49/review-manifest.json",
-        "review_index_sha256": "a84de7dd14e819d9f158593b6232cefac669781fcc185e8c32180bfe38793a98",
+        "review_index_sha256": "2c2074e63045087d361adce9920a5f3b8b142aa9fce3dd518699445bd9b0c20a",
         "terminal_manifest_sha256": "b77243661e852ae188a03d434ea49ad9ab394812fb4a26cbba21110da109ddf4",
         "terminal_audit_sha256": "fa468b08decfeb30480940a13bdcd9b35a6f4addb236242349dc18709c6ba543",
         "collection_status": "collected_with_limits",
@@ -5416,7 +5416,9 @@
           "foreign_case_body_reads": 0
         },
         "harness": "claude-code",
-        "authentication": "axonhub"
+        "authentication": "axonhub",
+        "initial_delivery_supplement": "../eval-readiness/phase1-cc-startup-audit-20261103-r2/manifest.json",
+        "initial_delivery_validated": false
       }
     },
     "unestablished_behavioral_claims": [
@@ -5448,7 +5450,7 @@
   },
   "publication_catalog": {
     "path": "docs/research/phase1-publication-catalog.json",
-    "sha256": "ed9531057a124acd626fa9932c0e62c455d535133715800ac914938247ab9e0e",
+    "sha256": "3b498147453f4f64e616b89b8465881f8f2c5f4f2b8f88837171fe462b3f9879",
     "authoritative_for": "Current scenario counts and publication status; historical sealed results remain authoritative for their original outcomes."
   },
   "user_requested_collection_hold": {
@@ -5484,12 +5486,17 @@
       "claude": "claude-code",
       "all_model_api": "axonhub"
     },
-    "current_v12_haiku_cc_reviewed_conditions": 2,
-    "current_v12_haiku_cc_pending_conditions": 6
+    "current_v12_haiku_cc_reviewed_conditions": 0,
+    "current_v12_haiku_cc_pending_conditions": 8
   },
   "claude_initial_delivery": {
-    "status": "repair_pending",
+    "status": "offline_verified_live_pending",
     "historical_supplement": "../eval-readiness/phase1-cc-startup-audit-20261103-r2/manifest.json",
-    "publication_blocking": true
+    "publication_blocking": true,
+    "validation": "../eval-readiness/phase1-cc-atomic-validation-20261103-r1/manifest.json",
+    "common_checks": 517,
+    "prompt_checks": 14,
+    "bridge_checks": 11,
+    "historical_native_responses": 255
   }
 }

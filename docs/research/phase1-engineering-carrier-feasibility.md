@@ -1,5 +1,12 @@
 # Engineering carrier feasibility
 
+Current harness repair (3 November): the AxonHub Claude goal-off initial metadata
+and business request are now one atomic SDK input. Actual SDK replay gates input
+projection and native v2 review. Tasks, tools, case workflow, notices and carrier
+mechanics are unchanged. Historical r47-r49 have a separate startup-ordering
+supplement; fresh-source validation is pending. See the publication catalog.
+
+
 3 November harness update: r47 completed through Claude Code/AxonHub and its
 85 subject responses, 114 tool returns and both preflights are fully reviewed.
 Native binding, independent physical replay, ATIF and cleanup pass. Source

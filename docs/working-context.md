@@ -1,5 +1,25 @@
 # Current technical state
 
+## Atomic input repair — offline validation complete
+
+Only AxonHub Claude goal-off delivery changes: each controller prompt group is
+one SDK user message, with exact business bytes joined by a blank line. Queued
+notices enter projected history only after exact UUID/content SDK replay. Initial
+inference without a delivered delegation fails closed. New registrations declare
+atomic-sdk-replay-v1 and claude-sdk-exact-delivery-v2; native review independently
+binds every projected user input before its response and the complete initial
+registered group. Legacy subscriptions/native goal command sequences and all
+business sources/tools/notices remain unchanged. Historical v1 replay is retained.
+
+R47-r49 are archived with the initial-delivery supplement (9/12 contexts with
+late business-task replay). New-source coverage resets to 0/8. The localhost
+controlled scheduling fixture fails before and passes after the repair; hosted
+behavior is still pending. All 517 common checks, 14 prompt checks, 11 bridge checks and 255 historical
+native responses pass in phase1-cc-atomic-validation-20261103-r1. All 152 source
+hashes and validation manifest files match. Six changed source files are limited
+to the Claude adapter, registration/native verifier and their tests. Next freeze
+and prepare r50 data_object vulnerable, Haiku/CC/AxonHub/high/goal off.
+
 ## Active repair: atomic Claude business input
 
 R49 is terminal and fully reviewed (84 subject responses, 104 tool returns,
@@ -23,7 +43,7 @@ Source `264dae30f`, registration `8ebd5dcd1`. Fully reviewed
 Independent reconstruction: 4/8 filings,
 4 current candidates, 0 qualified final packages.
 8 case records in the registered scope; 4 actual source-publication notices.
-All 152 source hashes, 5878 terminal files and 6 review sidecars match;
+All 152 source hashes, 5878 terminal files and 13 review sidecars match;
 four exact workstations are absent. Evidence: r49/review-manifest.json.
 Changed-scope reviews: 8/8 complete. Continue the remaining conditions;
 do not recollect completed rollouts. No runtime change, other domain, scheduled
