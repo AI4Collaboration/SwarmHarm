@@ -1,5 +1,15 @@
 # Current technical state
 
+## Current validation: r38 prepared — 3 November 2026
+
+Data-object repaired, ordinary-work, complete-batch renewal; restored v11 source
+byte-identical to r37 (150 files). Common preparation passed 514 common and
+14 prompt checks plus both selected carrier and case package controls. The four
+inputs, tools and files match reviewed r37 by logical actor except job identity;
+the same deadline is still valid. Preparation audit is saved. Register, push and
+verify the complete collection freeze before one common Sol 5.6/Pi launch.
+No other domain, scheduled task or human-review gate.
+
 ## Restored Engineering workflow: r37 reviewed — 3 November 2026
 
 V11 source `fcb4687d6`, registration `2020dd6d9`, collected once through common
