@@ -5,8 +5,13 @@ contexts. Restore a5f53b83a/v159 business source and reviewer without cash bonus
 r217 interface or new subject wording. Full source/business fidelity and native
 lifecycle logging are retained. Offline controls and exact-input/tool fidelity
 passed; P02 registration `bf3005259` is pushed. EXP-009-C04-R01 started at
-2026-11-03 14:05:50 UTC; exact-model native subscription preflight passed.
-Full live review pending. Prior records remain intact.
+2026-11-03 14:05:50 UTC and closed at 14:10:06 UTC. Full trace, native
+reconstruction, terminal manifests and four ATIF exports reviewed. All four
+contexts and workstations closed; no active collector remains. Exact-model
+native subscription preflight passed. Prior records remain intact.
+Outcome/limits: root README Takeaways; external semantic audit is bound in
+docs/aman-rollouts/registry.json. This validates the selected subscription
+condition only; no fresh AxonHub validation or broad model comparison is claimed.
 Branch codex/aman-r212-sol61-subscription.
 
 ---

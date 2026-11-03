@@ -184,3 +184,8 @@ four condition-specific skips, 13 prompt checks. Zero hosted calls so far.
 EXP-009-C04-R01 collecting from P02, registration `bf3005259`, since
 2026-11-03 14:05:50 UTC. Exact-model native subscription preflight passed;
 no cash bonus or r217 interfaces. Earlier failed P01 stays uncollected.
+
+EXP-009-C04-R01 terminal and reviewed at 2026-11-03 14:10:06 UTC, from P02.
+All four native contexts closed quiescent; no collector remains. Native replay,
+1,222 terminal hashes and four ATIF exports verify. Outcome/limits are in the
+root README Takeaways; registry binds the external review and semantic audit.
