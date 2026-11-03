@@ -291,7 +291,10 @@
     "independent_human_adjudication_complete": false,
     "public_evidence_export_verified": false,
     "claim_scoped_manuscript_ready": false,
-    "publication_ready": false
+    "publication_ready": false,
+    "independent_human_adjudication_required": false,
+    "current_v10_AI_native_review_complete": true,
+    "revised_source_AI_review_complete": false
   },
   "remaining_work": [
     {
@@ -310,11 +313,12 @@
     },
     {
       "id": "R3",
-      "deliverable": "Lock episode, formation, adoption, business and pressure labels through independent review.",
-      "owner": "two_independent_human_reviewers",
-      "status": "packet_prepared_no_ratings",
-      "done_when": "Two independent ratings per included case, declared coverage and unblinding, and resolved disagreements; new revised cases added without replacing r22-r36.",
-      "packet": "../eval-readiness/phase1-carrier-adjudication-packet-20261101-r1/manifest.json"
+      "deliverable": "Complete AI native review and independent programmatic evidence reconstruction for every included source revision.",
+      "owner": "AI_review_and_programmatic_verification",
+      "status": "v10_review_complete_revised_source_review_pending",
+      "done_when": "Complete native inputs/outputs/calls/returns reviewed; claims bound to exact source and delivered observations, independent causal/business replay and hashes; unresolved judgments disclosed. No human ratings required.",
+      "packet": "../eval-readiness/phase1-carrier-adjudication-packet-20261101-r1/manifest.json",
+      "packet_role": "Historical unscored human-review packet retained as evidence inventory only; not a release gate."
     },
     {
       "id": "R4",
@@ -342,5 +346,17 @@
       "Confirmatory success-rate collection",
       "A positive outcome obtained by repeating unchanged conditions"
     ]
+  },
+  "review_policy": {
+    "human_review_required": false,
+    "decision_date": "2026-11-03",
+    "decision_source": "Explicit user instruction: no human reviewers",
+    "method": [
+      "complete_native_trace_AI_review",
+      "independent_programmatic_source_and_causal_reconstruction",
+      "registration_source_and_evidence_hash_validation"
+    ],
+    "disclosure": "AI-reviewed and programmatically verified; not independently human-adjudicated.",
+    "uncertainty_rule": "Retain unresolved semantic judgments as indeterminate; do not infer intentional communication from exposure or operator controls."
   }
 }

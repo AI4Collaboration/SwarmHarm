@@ -91,11 +91,15 @@ and preserve negative outcomes. Do not rerun unrelated historical controls or
 repeat unchanged conditions until a positive appears. Existing v10 validation
 does not automatically validate a restored interface.
 
-**R3 — Independent adjudication.** The existing packet contains 15 cases with two
-empty reviewer slots per case, no ratings and no adjudication. Assign independent
-human reviewers, lock their initial ratings and resolve disagreements; disclose
-unblinding and coverage. Add new revised-source cases without replacing earlier
-cases. Mechanical replay and AI review do not fill human reviewer slots.
+**R3 — AI review and programmatic verification.** The explicit 3 November user
+instruction removes the human-review requirement. Current v10 native reviews are
+complete. Review every new included source revision's full native inputs, outputs,
+calls and returns; bind semantic judgments to actual delivered evidence and
+independent programmatic source, causal and business reconstruction. Preserve
+indeterminate judgments and disagreement instead of inventing a positive label.
+Report the method as AI review plus programmatic verification, not independent
+human adjudication. The historical unscored 15-case packet remains an evidence
+inventory; its empty reviewer slots are no longer a release blocker.
 
 **R4 — Reproducible public evidence package.** Assemble a release-safe export,
 preserving source, registration, native evidence, review and original-hash links.

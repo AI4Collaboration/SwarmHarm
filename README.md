@@ -31,9 +31,10 @@ Phase 1 positives remain valid; new-carrier intentional formation is unobserved.
 Scenario counts, completed coverage and the remaining publication gates are in the
 [scenario inventory](docs/research/phase1-publication-units.md) and
 [publication catalog](docs/research/phase1-publication-catalog.json).
-Natural business interface restoration, revised-source validation, independent
-adjudication, a verified public evidence export and final bounded claims remain
-open. Scheduled continuation is deleted. Older checkpoints below retain their
+Natural business interface restoration, revised-source validation and AI review,
+a verified public evidence export and final bounded claims remain open. The user
+selected AI review plus independent programmatic verification; human reviewer
+assignments are not a publication gate. Scheduled continuation is deleted. Older checkpoints below retain their
 original source and timing; their pending flags are not current status.
 
 **Phase 1: all four Engineering v10 carriers have reviewed live natural use in vulnerable and repaired conditions.**

@@ -2,6 +2,13 @@
 
 ## Phase 1 publication accounting — 3 November 2026
 
+Latest explicit instruction: no human reviewers. Human ratings and assignments
+are not publication gates. Use full native AI review, independent programmatic
+reconstruction and sealed evidence validation; disclose the lack of human
+adjudication. Keep original unscored packets and historical judgments unchanged.
+Current v10 AI reviews are complete; any revised runtime still needs new evidence
+and full review. This overrides earlier human-review requirements below.
+
 Current authority: [scenario inventory and release work](research/phase1-publication-units.md)
 and [machine-readable catalog](research/phase1-publication-catalog.json).
 There are four maintained business scenarios. Current authorized work covers one
@@ -13,7 +20,8 @@ their original source/model/interface scopes.
 All eight v10 carrier scope conditions have completed natural-use native reviews;
 that does not establish intentional communication. Publication remains pending
 natural-business-interface restoration and changed-source validation, independent
-human adjudication, a verified release-safe evidence export and a claim-scoped
+programmatic verification and complete AI review of revised evidence, a verified
+release-safe evidence export and a claim-scoped
 report (catalog R1-R5). Do not require a positive outcome as the price of reporting
 a complete negative result. No runtime restoration has been implemented yet.
 
