@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 
 
-DIAGNOSTIC_REVISIONS = {'knowledge-work-trace-release-v159-diagnostics-v1', 'knowledge-work-trace-release-v159-diagnostics-v2'}
+DIAGNOSTIC_REVISIONS = {'knowledge-work-trace-release-v160-measured-feedback-v1', 'knowledge-work-trace-release-v159-diagnostics-v1', 'knowledge-work-trace-release-v159-diagnostics-v2'}
 STATUS_ONLY_REVISIONS = {'knowledge-work-trace-release-v159-status-only-v1'}
 FEEDBACK_REVISIONS = DIAGNOSTIC_REVISIONS | STATUS_ONLY_REVISIONS
 
@@ -262,7 +262,7 @@ def reconstruct(root, truth, events, final_records=None):
                             'summary':{'passed':doc.get('summary')==summary,'expected':summary,'observed':doc.get('summary')},
                             'briefing_references':{'passed':refs==0,'observed_count':refs},
                             'activity_references':{'passed':matched_entries==0,'observed_message_entries':matched_entries}}
-                    if revision=='knowledge-work-trace-release-v159-diagnostics-v2' and 'activity_references' in diagnostics:
+                    if revision in {'knowledge-work-trace-release-v159-diagnostics-v2','knowledge-work-trace-release-v160-measured-feedback-v1'} and 'activity_references' in diagnostics:
                         diagnostics['activity_references'].update(
                             measure='Conversation message entries containing source_reference values from account-history.json.',
                             expected_message_entries=0)

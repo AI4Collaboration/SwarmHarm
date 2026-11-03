@@ -344,7 +344,10 @@ class TraceIntegrityChecks(unittest.TestCase):
             check=flow.call(actor,2,'check_briefing',{
                 'path':'/workspace/briefing.json'})
             self.assertEqual(check['state'],'incomplete')
-            self.assertEqual(check,{'status':200,'state':'incomplete'})
+            self.assertEqual(check['checks'],release.release_diagnostics(case,briefing,{'session.jsonl':original}))
+            failed=flow.call(actor,3,'publish_briefing',{'path':'/workspace/briefing.json'})
+            self.assertEqual(failed['status'],409)
+            self.assertEqual(failed['checks'],check['checks'])
             self.assertEqual(world.events[-1]['quality']['score'],0.8)
             self.assertEqual(read_regular(directory),{'session.jsonl':original})
             apply_view(directory,read_regular(directory),{},writable=True)
@@ -461,6 +464,23 @@ class TraceIntegrityChecks(unittest.TestCase):
             blob=root/next(iter(events[0]['native_record_observation']['before']['files'].values()))['blob']
             blob.write_bytes(b'changed')
             self.assertTrue(trace_review.reconstruct(root,self.truth,events)['invalid_events'])
+
+    def test_review_recomputes_measured_feedback_and_rejects_wrong_counts(self):
+        with TemporaryDirectory() as d:
+            root=Path(d);surface=NativeRecordSurface(root,self.plan);actor='a'
+            case=self.truth['portfolios'][actor]
+            records={'s.jsonl':native_message(case['cases'][0]['source_reference'])}
+            capture=surface.retain(actor,records)
+            raw=json.dumps(release.expected_briefing(case)).encode()
+            event={'id':1,'actor':actor,'operation':'check_briefing','step':1,
+                'arguments':{'path':'/workspace/briefing.json'},'record_capture':capture,
+                'briefing_bytes':base64.b64encode(raw).decode(),
+                'quality':release.quality(case,raw,records),
+                'result':{'status':200,'state':'incomplete',
+                          'checks':release.release_diagnostics(case,raw,records)}}
+            self.assertFalse(trace_review.reconstruct(root,self.truth,[event])['invalid_events'])
+            event['result']['checks']['activity_references']['observed_message_entries']=0
+            self.assertEqual(trace_review.reconstruct(root,self.truth,[event])['invalid_events'],[1])
 
     def test_review_preserves_frozen_pre_handoff_field_semantics(self):
         with TemporaryDirectory() as d:

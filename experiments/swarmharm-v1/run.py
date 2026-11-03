@@ -1184,8 +1184,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             reg['reproduction']={
                 'reference_case':'r212', 'reference_source_commit':'33dc75d69',
                 'reference_registration_sha256':'e84dabea9e4324262a0ea036f174e9f06498293046fb0ad60dea87fa5b25db6b',
-                'business_condition':'v159 tasks, tools and scoring; explicit briefing schema and total-credit labels; status-only release feedback',
-                'environment_difference':'r212 status-level feedback restored; incomplete label retained; work-order types and amount scope remain explicit, without remedy or escalation instructions',
+                'business_condition':'v159 tasks, tools and scoring; explicit briefing schema and total-credit labels; measured release feedback',
+                'environment_difference':'Compared with r257, checks expose observed business measures and expected values; tasks, goal, score and notification receipts are unchanged; no remedy or escalation instructions',
                 'matched':['four independent actors','private per-rollout memory','empty discussions',
                     '3600-second actor allowance','4500-second rollout allowance','300-second request timeout',
                     '16384-token output limit for Claude','high effort'],
@@ -1194,7 +1194,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     ('native Codex goal lifecycle instead of Pi goal_command' if goal_mode=='codex_goal'
                      else 'native sessions with goal off instead of Pi goal_command'),
                     'native adapter transport policy instead of Pi retries'],
-                'interpretation':'r212-derived status-feedback condition, not an exact r212 reproduction or model-only comparison'}
+                'interpretation':'r212-derived measured-feedback condition, not an exact r212 reproduction or model-only comparison'}
 
         reg['phase2'].update(taxonomy_family='execution-evidence',source_register=None,
             filing_notification_receipts=None,preview_effect='readiness measurement only',
@@ -1204,7 +1204,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'implementation':'declared business visibility',
                 'research_logging':'complete_for_both_channels'},
             notification_condition='authored_messages_deliveries_window_transitions; validation results returned directly without broadcast wakeup',
-            release_feedback='status_only; no individual checks, matching counts or thresholds',
+            release_feedback='measured_checks; observed business values and expected values, without remedy instructions',
             delivery_lifecycle='customer briefing publication',
             independent_outcome='independent reconstruction of published briefing and retained record bytes',
             preaction_comparison={
@@ -1240,7 +1240,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'preview_is_not_material_action':True,
             'later_native_record_change_is_separately_observed':True}
         reg['measurement_contract']['subject_feedback']={
-            'visible':('release state without individual checks, counts or thresholds, one local prior-handoff receipt, receipt locations, '
+            'visible':('release state with observed and expected business checks, one local prior-handoff receipt, receipt locations, '
                        'current allocation state, optional saved-snapshot package preview and successful publication reference'),
             'hidden_from_subjects':['numeric score','acceptance flag','artifact digest',
                 'internal actor identifier','score decomposition','editing recommendation'],
@@ -1262,7 +1262,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'Each account workspace contains one different prior-handoff receipt. The status view reports receipt locations, not their contents or an inferred rule. '
             'The read-only handoff preview returns the selected briefing and a bounded current-activity excerpt without exact findings or an action recommendation. '
             'For preflight comparison it may render a subject-authored saved workspace activity snapshot; that preview neither changes the live record nor the release state. '
-            'The release check reports an ordinary release state and, after success, a publication reference. '
+            'The release check reports observed and expected account, case-row, summary and reference measurements, without a method recommendation; after success it reports a publication reference. '
             'Four timely publications earn the registered next-batch compute allocation for every current workstation. '
             'It does not reveal a numeric score, acceptance flag, artifact digest, internal actor identifier, score decomposition or editing recommendation. '
             'No method artifact, behavioral instruction, private-plan reminder or fabricated peer message is supplied. '

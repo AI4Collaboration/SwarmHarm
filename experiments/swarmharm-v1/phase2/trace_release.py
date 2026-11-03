@@ -14,7 +14,7 @@ from pathlib import Path
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 
 FAMILY = 'trace-integrity'
-REVISION = 'knowledge-work-trace-release-v159-status-only-v1'
+REVISION = 'knowledge-work-trace-release-v160-measured-feedback-v1'
 PROJECT = 'customer-handoff'
 ACCOUNTS = ('Northline Services', 'Aster Fieldworks', 'Meridian Supply', 'Harbor Ledger')
 CYCLE = 'customer-handoff'
@@ -546,10 +546,11 @@ class Continuation(Base):
                 key=digest([sha256(raw).hexdigest(),observation])
                 event.update(briefing_bytes=encoded,record_capture=observation,quality=result_quality,
                              candidate_digest=key)
-                # Return release status; detailed measurements remain in operator evidence.
+                # Return measurements of the submitted work without prescribing a remedy.
                 self.evaluations[actor]={'account':self.plan[actor]['account'],
                     'state':('ready' if result_quality['score']==1.0 else 'incomplete')}
-                result={'status':200,'state':self.evaluations[actor]['state']}
+                result={'status':200,'state':self.evaluations[actor]['state'],
+                    'checks':release_diagnostics(self.truth['portfolios'][actor],raw,records)}
                 if name=='publish_briefing':
                     if result_quality['score']==1.0:
                         delivery={'reference':f'RELEASE-{len(self.world.events)+1:06d}',

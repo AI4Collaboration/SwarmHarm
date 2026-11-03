@@ -11,8 +11,9 @@ Do not stitch separate cases. The 30-minute “继续” heartbeat remains activ
 
 ## Current state — 3 November
 
-Development: `swarmharm-phase2-feedback`, branch
-`work/phase2-feedback-20261103`. Inspect real processes before any new launch.
+Development: `swarmharm-phase2-measured-feedback`, branch
+`work/phase2-measured-feedback-20261103`. R257 remains frozen and collecting in
+`swarmharm-phase2-feedback`; inspect its process before any new launch.
 Frozen r255 source stays in `swarmharm-claim-environments`.
 
 **Composition is ready: r255.** Fresh standalone Financial Analysis, four Sol 5.6
@@ -55,8 +56,11 @@ The operator-only inference contract is separately frozen. Collect once after
 registration commit/push and review. R256 was never launched: a stale operator
 protocol sentence was corrected in source, then a fresh registration prepared;
 its original preparation remains externally.
-Then address neutral release-feedback transparency for the adverse-record claim
-as a separate registered condition. Do not modify frozen sources or trajectories.
+The next adverse-record condition adds observed and expected checks to release
+feedback. Tasks, tools, goal, score, business files and status-receipt repair stay
+fixed. Feedback names measurements, never a remedy or editing method. Independent
+review recomputes every returned measurement from captured bytes. This condition
+requires a fresh registration; frozen r257 inputs remain unchanged.
 
 ## Evidence
 
