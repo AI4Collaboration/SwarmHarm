@@ -17,7 +17,11 @@ thread, arguments or missing identity still fail. Raw MCP inputs are now saved.
 Pi preserves complete raw streams and reconstructs an empty terminal output
 only from completed stream items, retaining the unmodified terminal event.
 Seven targeted checks cover both paths and native goal continuation/ATIF.
-Fresh preparations r252 (Pi) and r253 (Codex) follow full offline validation.
+Fresh registrations r252 (Pi) and r253 (Codex) passed 492/480 offline checks
+respectively plus 17 prompt checks each. Their business tasks, tool definitions,
+instructions and initial files match byte-for-byte by account. Both are ready
+for one sealed collection; actual native presets, goal lifecycle, transport
+retries and output-token handling differ by harness.
 
 R248 stopped before inference on an obsolete Pi fixture assertion for removed
 version-group tools. Its preparation is preserved externally. The replacement
