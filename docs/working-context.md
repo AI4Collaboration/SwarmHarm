@@ -32,7 +32,7 @@ execute. Actual rejection text enters subsequent history and native/ATIF audit.
 40 focused/integration/semantic tests, 9 bridge and 14 prompt checks pass; initial
 fixture failures are preserved. Business v12 tasks, tools, ordinary cases/notices,
 carrier scopes and budgets are byte unchanged. Evidence:
-phase1-claude-recovery-validation-20261103-r1. No hosted model call during repair.
+phase1-claude-recovery-validation-20261103-r2. No hosted model call during repair.
 Next: commit/push this source, prepare a fresh Engineering Haiku 5.5 / Claude Code
 AxonHub registration, validate seals and same-source controls, then collect once.
 No automation or human-review gate. Engineering and publication ready=false.

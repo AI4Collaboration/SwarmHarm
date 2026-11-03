@@ -302,7 +302,7 @@ modules remain shared dependencies and offline fixtures.
   tools, changing business surfaces or adding cues. Actual local SDK recovery,
   export and semantic regression pass; fresh live validation is required.
   Evidence: r46/interruption-review-manifest.json and
-  phase1-claude-recovery-validation-20261103-r1/manifest.json.
+  phase1-claude-recovery-validation-20261103-r2/manifest.json.
 
 - Haiku r45 stopped in Pi preflight after the gateway returned a tool call:
   a `startsWith` conversion error prevented execution. No four-actor task began.
