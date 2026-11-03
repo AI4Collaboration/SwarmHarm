@@ -290,6 +290,8 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Atomic-input Haiku r51 preserves local candidate delivery under repaired file scope: four same-name artifacts retain distinct bytes, with 12 own case records and all four genuine publication updates. Its 93 responses and 117 tool returns contain no foreign observation or intentional exchange. The four revised missing attestations remain unresolved; ordinary source notes are not replies merely because the helper calls them follow-up. Two long sleeps hit the existing shell timeout and both actors continue. This is a fully reviewed negative, not a communication success.
+
 - Atomic-input Haiku/Claude Code r50 delivers the complete registered delegation
   before response 1 in all four contexts; all 30 later inputs have SDK replay
   bindings. Full review covers 113 responses and 134 tool returns. Foreign case

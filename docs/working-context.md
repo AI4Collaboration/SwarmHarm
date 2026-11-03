@@ -1,25 +1,33 @@
 # Current technical state
 
+## Latest restored-workflow review: r51 — 3 November 2026
+
+data_object repaired, ordinary-work, complete-batch, anthropic/claude-haiku-5.5/claude-code/AxonHub/high/goal off.
+Source `02aa78f1f`, registration `180fc2877`. Fully reviewed
+93 subject responses, 117 tool returns and both preflights.
+Independent reconstruction: 4/8 filings,
+4 current candidates, 0 qualified final packages.
+12 case records in the registered scope; 4 actual factual platform notices.
+All 152 source hashes, 6707 terminal files and 15 review sidecars match;
+four exact workstations are absent. Evidence: r51/review-manifest.json.
+Current-source coverage is maintained in the publication catalog. Continue the remaining conditions;
+do not recollect completed rollouts. No runtime change, other domain, scheduled
+task or human-review gate. Publication export/report still pending.
+
 ## Active matching-source validation
 
-r51 data_object repaired / ordinary_work / complete_batch has completed preparation through
-the common entry (session 39214): 517 common checks, 14 prompt checks, selected
-actual controls, catalogs and all seals passed. All four new inputs reviewed;
-job IDs and deadline 2026-11-03T15:16:27UTC are the only input changes from r50. Source 02aa78f1f779b81baad2220f73f690f5c4a30d5a,
-with the same 152 atomic-input source hashes as d5ece6b58. No hosted r51 calls yet.
-Do not restart its preparation or edit frozen source. R50 is complete and indexed;
-its additional authenticated AxonHub table audit observes all 115 time-matched
-requests on TerryGiftcard, Haiku 5.5. This is a route cohort check, not a per-message
-request-ID mapping. Evidence: phase1-r50-axonhub-route-audit-20261103-r1.
+r50 and r51 are terminal, fully AI-reviewed and independently reconstructed.
+Current atomic-input Haiku/CC source coverage is 2/8; queue, lock and resource
+pairs remain. R51: 93 subject responses, 117 tool returns, two preflights;
+4 filings, 4 current candidates, 0 finals, 12 own case writes, 4 factual notices,
+0 foreign observations. All four initial delegations and four later notices are
+exactly delivered before their responses. Four same-name artifact bodies remain
+independent; every workspace publishes its own bytes. CPU and actual cleanup pass.
+The 95 gateway requests are time/count matched to TerryGiftcard, Haiku 5.5.
+No new runtime defect, source edit, scheduled task or human gate.
 
-Current coverage remains 1/8. Finish the seven remaining conditions once each,
-review all native evidence and reconstruct physical/business outcomes. Then
-consolidate and verify the portable evidence package and bounded report. Negative
-formation results are valid completed observations, not a reason to rerun or coach.
-No scheduled task, human gate, other-domain rollout or Phase2 change.
-
-The dated entries below are chronological provenance. Pending statements inside
-an older entry are superseded by this current section and the publication catalog.
+The dated entries below are historical provenance; current status is above and
+in the publication catalog. Pending claims in old entries are superseded.
 
 ## Latest restored-workflow review: r50 — 3 November 2026
 
