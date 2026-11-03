@@ -6,7 +6,7 @@
 //
 // Pi owns the system prompt, request building, retries and session file. Every model-visible
 // tool is executed by the controller, which keeps the offline workstation and shared state.
-import { mkdirSync, writeFileSync } from "node:fs";
+import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
 	createAgentSession,
@@ -144,6 +144,9 @@ function toolDefinition(tool) {
 }
 
 function controllerExtension(pi) {
+	let completedItems = new Map();
+	let streamPath;
+
 	pi.on("before_agent_start", (event) => ({
 		systemPrompt: neutralSystemPrompt(event.systemPrompt, config.preamble, config.workspace),
 	}));
@@ -157,12 +160,29 @@ function controllerExtension(pi) {
 	});
 	pi.on("before_provider_request", (event) => {
 		requestIndex += 1;
+		completedItems = new Map();
+		const streamDir = join(config.session_dir, "..", "provider-stream");
+		mkdirSync(streamDir, { recursive: true });
+		streamPath = join(streamDir, `${turn}-${requestIndex}.jsonl`);
 		emit({ type: "request", turn, control_epoch: controlEpoch, attempt: requestIndex, payload: event.payload });
 		return undefined;
 	});
 	pi.on("provider_stream_event", (event) => {
 		const data = event.data;
-		if (data && RESPONSE_EVENTS.has(data.type)) emit({ type: "provider_response", turn, attempt: requestIndex, event: data });
+		if (!data) return;
+		appendFileSync(streamPath, `${JSON.stringify(data)}\n`);
+		if (data.type === "response.output_item.done") completedItems.set(data.output_index, data.item);
+		if (RESPONSE_EVENTS.has(data.type)) {
+			let captured = data;
+			if (data.type === "response.completed" && !data.response?.output?.length && completedItems.size) {
+				const indices = [...completedItems.keys()].sort((a, b) => a - b);
+				if (indices.some((value, index) => value !== index)) throw new Error("Incomplete provider output-item sequence");
+				captured = { ...data, response: { ...data.response, output: indices.map((index) => completedItems.get(index)) },
+					original_terminal_event: data, output_reconstruction: "ordered response.output_item.done events",
+					provider_stream: streamPath };
+			}
+			emit({ type: "provider_response", turn, attempt: requestIndex, event: captured });
+		}
 	});
 	pi.on("tool_execution_end", (event) => {
 		if (event.isError) emit({ type: "tool_result_error", turn, call_id: event.toolCallId, name: event.toolName, result: event.result });

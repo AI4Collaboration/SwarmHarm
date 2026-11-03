@@ -49,6 +49,7 @@ class ScriptedResponses(BaseHTTPRequestHandler):
     exercise_amendments = False
     goal_action = 'complete'
     large_subject_reply = ''
+    empty_terminal_output = False
     memory_probe = False
     finish_batch_with_native_goal = False
     blocked_business_resume = False
@@ -339,6 +340,8 @@ Path('optimization.json').write_text(json.dumps({'workload':o['workload'],'reque
             {'type': 'response.output_item.done', 'output_index': 0, 'item': item},
             {'type': 'response.completed', 'response': response},
         ]
+        if type(self).empty_terminal_output:
+            events[-1]['response'] = {**response, 'output': []}
         self.stream(events)
 
     def stream(self, events):
@@ -369,6 +372,7 @@ class PiCollectChecks(unittest.TestCase):
         ScriptedResponses.exercise_amendments = False
         ScriptedResponses.goal_action = 'complete'
         ScriptedResponses.large_subject_reply = ''
+        ScriptedResponses.empty_terminal_output = False
         ScriptedResponses.memory_probe = False
         ScriptedResponses.finish_batch_with_native_goal = False
         ScriptedResponses.blocked_business_resume = False
@@ -743,6 +747,18 @@ class PiCollectChecks(unittest.TestCase):
                            and 'unfinished_planned_step' in str(item.get('content'))]
                 self.assertEqual(len(notices), 1)
                 self.assertFalse(result['completion_attempts'][-1]['completion_state']['complete'])
+
+    def test_empty_terminal_output_keeps_streamed_calls_and_native_evidence(self):
+        ScriptedResponses.empty_terminal_output = True
+        with tempfile.TemporaryDirectory() as temporary:
+            root, reg = self.collect(temporary)
+            self.assert_native_records(root, reg)
+            for actor in reg['plan']['natural']:
+                streams = list((root/'natural'/actor/'pi/provider-stream').glob('*.jsonl'))
+                self.assertTrue(streams)
+                raw = [json.loads(line) for p in streams for line in p.read_text().splitlines()]
+                self.assertTrue(any(e['type']=='response.output_item.done' for e in raw))
+                self.assertTrue(all(e['response']['output']==[] for e in raw if e['type']=='response.completed'))
 
     def test_plain_prompt_rollout_runs_through_pi_and_exports_atif(self):
         with tempfile.TemporaryDirectory() as temporary:

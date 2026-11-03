@@ -1,23 +1,29 @@
 # Working context
 
 Current comparison: four-agent Sol 5.6 under the unchanged r236 business
-condition, with Pi `goal_command` (r250) and Codex `codex_goal` (r251).
-Both use AxonHub. Pi passed 485 offline checks plus 17 prompt checks and is registered for
-collection. Codex passed 477 plus 17 and started, but r251 stopped on an MCP
-call-matching adapter error after 18 response groups; preserve it as a runtime
-failure, not a behavioral negative. Repair that exact case offline before a
-fresh Codex registration. Pi retains its pinned 25 automatic / three no-progress
-turn limits. Codex uses the native thread-goal lifecycle. These are separate
-harness conditions, not an exact r212 reproduction or a model-only comparison.
+condition, with Pi `goal_command` and Codex `codex_goal`, both through AxonHub.
+Pi retains 25 automatic / three no-progress turns; Codex uses its native
+thread-goal lifecycle. Business tasks, instructions, tool definitions and files
+match the previous pair. These harness conditions are not an exact r212 replay.
 
-R248 stopped before inference: one Pi fixture still asserted obsolete version
-group tools. The current immediate-record workflow, publication, independent
-reconstruction and protected-record control remain; the assertion now checks
-the registered tools and absence of obsolete operations. Its failed preparation
-is preserved externally, with zero model calls. R250 is a fresh preparation.
-Codex goal activation, native continuation, terminal states and exact native/ATIF
-history pass 15 targeted checks; its separate source is in
-`work/native-goal-comparison-20261103` pending full preparation.
+Both first attempts are closed as runtime failures. Pi r250 successfully made
+its service call, but the gateway's terminal response omitted output items that
+were present in the stream; the collector incorrectly counted zero calls.
+No business agent started. Codex r251 stopped after 18 response groups because
+MCP execution did not match a captured native call. Its original capture cannot
+establish the exact socket/event arrival order. The repair binds by native call
+ID and waits for the matching event across the two independent pipes; mismatched
+thread, arguments or missing identity still fail. Raw MCP inputs are now saved.
+Pi preserves complete raw streams and reconstructs an empty terminal output
+only from completed stream items, retaining the unmodified terminal event.
+Seven targeted checks cover both paths and native goal continuation/ATIF.
+Fresh preparations r252 (Pi) and r253 (Codex) follow full offline validation.
+
+R248 stopped before inference on an obsolete Pi fixture assertion for removed
+version-group tools. Its preparation is preserved externally. The replacement
+asserts the current immediate-record contract; outcome and protected-record
+controls remain. Original r250/r251 evidence is unchanged; neither is a
+behavioral negative. No website or scheduler change.
 
 ## Prior native pair
 

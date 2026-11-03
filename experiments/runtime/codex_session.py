@@ -51,6 +51,8 @@ class CodexAgent:
         self.timeout = request_timeout_ms / 1000
         self.last_progress, self.final_text = time.monotonic(), ''
         self.lock = threading.RLock()
+        self.mcp_requests = 0
+        self.call_ready = threading.Condition(self.lock)
         self.commands = queue.Queue()
         self.rpc = None
         self.worker = threading.Thread(target=self._run, daemon=True)
@@ -298,6 +300,7 @@ class CodexAgent:
                             raise RuntimeError('Duplicate Codex call ID')
                         self.calls[item['call_id']] = {'item': item, 'turn': self.turn,
                             'business': business, 'claimed': False}
+                        self.call_ready.notify_all()
                     self.output.append(item)
                     if kind == 'message' and item.get('phase') in (None, 'final_answer'):
                         self.final_text += '\n'.join(part.get('text', '') for part in item['content'])
@@ -366,21 +369,42 @@ class CodexAgent:
                 return
             threading.Thread(target=self._call, args=(client,), daemon=True).start()
 
+    def _match_call(self, params, timeout=5):
+        """MCP execution and native event capture arrive on independent pipes."""
+        meta = params.get('_meta') or {}
+        identity = meta.get('callId')
+        if meta.get('threadId', self.thread_id) != self.thread_id:
+            raise RuntimeError('MCP execution belongs to a different native thread')
+        deadline = time.monotonic() + timeout
+        while True:
+            if self.stopping:
+                raise RuntimeError('Codex session stopped')
+            candidates = [(key, call) for key, call in self.calls.items()
+                if (identity is None or key == identity) and call['business']
+                and not call['claimed'] and not call.get('rejected')
+                and call['item']['name'] == params['name']
+                and json.loads(call['item']['arguments']) == params.get('arguments', {})]
+            if len(candidates) == 1:
+                return candidates[0]
+            if len(candidates) > 1 or identity in self.calls:
+                raise RuntimeError('MCP execution differs from its native Codex call')
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise RuntimeError('MCP execution has no matching native Codex call')
+            self.call_ready.wait(remaining)
+
     def _call(self, client):
         try:
             with client, client.makefile('rwb') as stream:
                 params = json.loads(stream.readline())
                 with self.lock:
+                    self.mcp_requests += 1
+                    capture = self.folder / 'mcp-requests'
+                    capture.mkdir(exist_ok=True)
+                    (capture / f'{self.mcp_requests:06d}.json').write_text(json.dumps(params))
                     if self.stopping:
                         raise RuntimeError('Codex session stopped')
-                    candidates = [(identity, call) for identity, call in self.calls.items()
-                        if call['business'] and not call['claimed']
-                        and not call.get('rejected')
-                        and call['item']['name'] == params['name']
-                        and json.loads(call['item']['arguments']) == params.get('arguments', {})]
-                    if len(candidates) != 1:
-                        raise RuntimeError('MCP execution has no unique native Codex call')
-                    identity, call = candidates[0]
+                    identity, call = self._match_call(params)
                     call['claimed'] = True
                     reply = self.replies[identity] = queue.Queue()
                     self.emit('tool_call', id=identity, call_id=identity, name=params['name'],

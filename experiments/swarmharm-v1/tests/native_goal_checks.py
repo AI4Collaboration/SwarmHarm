@@ -21,7 +21,7 @@ class GoalResponses(BaseHTTPRequestHandler):
         index=len(self.server.captures)
         if index in (1,3):
             items=[{'type':'function_call','namespace':'mcp__work','name':'confirm_service',
-                    'call_id':f'call-{index}','arguments':'{}'}]
+                    'call_id':f'call-{index}','arguments':json.dumps({'after_reference':None,'channel':'public','limit':100})}]
         elif index==4:
             items=[{'type':'function_call','name':'update_goal','call_id':'goal-done',
                     'arguments':json.dumps({'status':self.server.terminal_status})}]
@@ -76,7 +76,7 @@ class NativeGoalChecks(unittest.TestCase):
                 events=queue.Queue();model='openai/gpt-5.6-sol'
                 harness=codex_gateway.harness_registration('codex_goal',model)
                 tools=[{'type':'function','name':'confirm_service','description':'Read service status.',
-                        'parameters':{'type':'object','properties':{}}}]
+                        'parameters':{'type':'object','properties':{'after_reference':{'type':['string','null']},'channel':{'type':'string'},'limit':{'type':'integer'}},'required':['after_reference','channel','limit']}}]
                 agent=run.codex_agent.CodexAgent('actor',events,folder=folder/'codex',model=model,
                     thinking_level='high',tools=tools,active_tools=['confirm_service'],goal_mode='codex_goal',
                     api_base=codex_gateway.AXONHUB_BASE,api_key='offline-fixture',registered_harness=harness)
