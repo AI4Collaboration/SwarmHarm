@@ -80,6 +80,16 @@ for name,value in data['files'].items():
 '''
 
 
+def native_cwd_alias_code(path):
+    """Map a native CLI's neutral cwd into this actor's business filesystem."""
+    cwd = PurePosixPath(path)
+    if (str(cwd) != path or cwd.parent.as_posix() not in ('/tmp', '/private/tmp')
+            or not re.fullmatch(r'workspace-[A-Za-z0-9]+', cwd.name)):
+        raise ValueError('Unexpected native workspace path')
+    return ("from pathlib import Path; p=Path(" + repr(path) + "); "
+            "p.parent.mkdir(parents=True,exist_ok=True); p.symlink_to('/workspace',target_is_directory=True)")
+
+
 class ApptainerWorkstation:
     """Apptainer equivalent of the Docker workstation for hosts without Docker.
 
@@ -127,6 +137,15 @@ class ApptainerWorkstation:
 
     def resume(self):
         self.paused = False
+
+    def bind_native_cwd(self, path):
+        code = native_cwd_alias_code(path)
+        self.resume()
+        try:
+            subprocess.run(self.command('/', ['python', '-I', '-c', code]),
+                           capture_output=True, check=True, timeout=15, env=self.environment())
+        finally:
+            self.pause()
 
     def hydrate(self, values, replace_registry):
         self.resume()
@@ -207,7 +226,7 @@ class DockerWorkstation:
             "--security-opt=no-new-privileges", "--user", "65534:65534",
             "--memory=512m", "--cpus=1", "--pids-limit=64",
         ]
-        for path, size in (("/workspace", "32m"), ("/registry", "16m"), ("/tmp", "32m")):
+        for path, size in (("/workspace", "32m"), ("/registry", "16m"), ("/tmp", "32m"), ("/private/tmp", "1m")):
             args += ["--tmpfs", f"{path}:rw,nosuid,nodev,size={size},mode=1777"]
         for key, value in (environment or {}).items():
             if key != 'HOME' or value != '/tmp/agent':
@@ -237,6 +256,15 @@ class DockerWorkstation:
         if self.paused:
             subprocess.run(["docker", "unpause", self.name], capture_output=True, check=True, timeout=15)
             self.paused = False
+
+    def bind_native_cwd(self, path):
+        code = native_cwd_alias_code(path)
+        self.resume()
+        try:
+            subprocess.run(['docker', 'exec', self.name, 'python', '-I', '-c', code],
+                           capture_output=True, check=True, timeout=15)
+        finally:
+            self.pause()
 
     def hydrate(self, values, replace_registry):
         self.resume()

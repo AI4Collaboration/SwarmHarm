@@ -13,6 +13,24 @@ import record_surface
 
 
 class NativeHarnessChecks(unittest.TestCase):
+    def test_native_cwd_alias_reaches_only_actor_business_files(self):
+        import base64
+        from workstation import DockerWorkstation, native_cwd_alias_code
+        files={'/workspace/business.txt':base64.b64encode(b'actor-owned').decode()}
+        station=DockerWorkstation(files)
+        try:
+            for parent in ('/tmp','/private/tmp'):
+                path=parent+'/workspace-fixture'
+                station.bind_native_cwd(path)
+                reply,_=station.execute(f'cd {path} && cat business.txt && printf updated > result.txt',{})
+                self.assertEqual(reply['exit_code'],0,reply)
+                self.assertEqual(reply['stdout'],'actor-owned')
+            reply,_=station.execute('cat /workspace/result.txt',{})
+            self.assertEqual(reply['stdout'],'updated')
+            for bad in ('/workspace','/tmp/../workspace','/tmp/another','/etc/workspace-x'):
+                with self.assertRaises(ValueError):native_cwd_alias_code(bad)
+        finally:station.close()
+
     def test_r212_business_inputs_and_tools_remain_exact(self):
         from hashlib import sha256
         plan=trace_release.plan_for(dict.fromkeys(['a','b','c','d']))

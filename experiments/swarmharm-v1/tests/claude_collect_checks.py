@@ -4,11 +4,13 @@ from http.server import BaseHTTPRequestHandler
 from http.server import ThreadingHTTPServer
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
 import tempfile
 import threading
+import time
 import unittest
 from unittest.mock import patch
 
@@ -154,7 +156,9 @@ class ScriptedMessages(BaseHTTPRequestHandler):
             reason='end_turn'
         elif not already:
             block = {'type': 'tool_use', 'id': f'toolu_{number}', 'name': target, 'input': {}}
-            if target.endswith('__bash'):block['input'] = {'command': 'ls /workspace'}
+            if target.endswith('__bash'):
+                cwd = re.search(r'/(?:private/)?tmp/workspace-[A-Za-z0-9]+', json.dumps(body))
+                block['input'] = {'command': f'cd {cwd.group()} && ls' if cwd else 'ls /workspace'}
             delta = {'type': 'input_json_delta', 'partial_json': json.dumps(block['input'])}
             initial = {**block, 'input': {}}
             reason = 'tool_use'
@@ -288,7 +292,25 @@ class ClaudeCollectChecks(unittest.TestCase):
             run.save(root / 'registration-seal.json', {'sha256': run.sha(root / 'registration.json')})
             patches.enter_context(patch.object(run, 'verify_collection_freeze'))
             patches.enter_context(patch.object(run, 'AXONHUB_KEY_FILE', None))
+            stable_tools = []
+            execute_bash = run.lab.World.execute_bash
+            def checked_bash(transaction):
+                folder = root / 'natural' / transaction['actor'] / 'claude'
+                record = folder / 'session.jsonl'
+                before = record.read_bytes() if record.exists() else b''
+                # Real eager SDK appends used to race with this controller interval.
+                time.sleep(0.1)
+                result = execute_bash(transaction)
+                self.assertEqual(record.read_bytes() if record.exists() else b'', before)
+                stable_tools.append(transaction['actor'])
+                return result
+            patches.enter_context(patch.object(run.lab.World, 'execute_bash', staticmethod(checked_bash)))
             run.collect(root, registration, offline_adapter_test=True)
+            self.assertEqual(len(stable_tools), 8)
+            shell_events = [e for e in run.load(root / 'natural/world.json')['events'] if e['operation'] == 'bash']
+            aliases = [e for e in shell_events if e['arguments']['command'].startswith('cd ')]
+            self.assertEqual(len(aliases), 4)
+            self.assertTrue(all(e['result']['exit_code'] == 0 for e in aliases), aliases)
             routes.assert_not_called()
             completion = run.load(root / 'completion.json')
             self.assertIn(completion['status'], {'collected', 'collected_with_limits'}, completion)
@@ -298,6 +320,8 @@ class ClaudeCollectChecks(unittest.TestCase):
                 folder = root / 'natural' / actor
                 result = run.load(folder / 'result.json')
                 self.assertEqual(result['tools'], 2)
+                self.assertRegex(result['claude_session']['cwd'], r'^/(private/)?tmp/workspace-')
+                self.assertTrue(list((folder / 'claude/native-store').glob('*.json')))
                 trajectory = run.load(folder / 'agent/trajectory.json')
                 self.assertFalse(trajectory['extra']['provider_http_payloads_captured'])
                 self.assertFalse(trajectory['extra']['provider_context_continuity_verified'])

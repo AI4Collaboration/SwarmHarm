@@ -1,10 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { setImmediate } from "node:timers/promises";
-import { ClaudeBridge } from "./bridge.mjs";
+import { ClaudeBridge, SessionRecordStore } from "./bridge.mjs";
 
 // Scripted SDK frames test fail-closed behavior. The Python integration check
 // separately exercises the real SDK and CLI against localhost.
@@ -190,4 +190,48 @@ test("a goal refusal stops the SDK before any continuation", async (t) => {
   assert.equal(f.events.at(-1).type, "settled");
   assert.match(f.events.at(-1).error_message, /refused/);
   assert.equal(f.events.filter((event) => event.type === "request").length, 1);
+});
+
+
+test("SDK appends during a tool preserve an authored edit and later native bytes", async (t) => {
+  const folder = mkdtempSync(join(tmpdir(), "record-transaction-"));
+  t.after(() => rmSync(folder, { recursive: true }));
+  const store = new SessionRecordStore(folder, "session-1");
+  const key = { sessionId: "session-1" };
+  const file = join(folder, "session.jsonl");
+  const original = { type: "user", uuid: "one", message: { content: "original" } };
+  const later = { type: "assistant", uuid: "two", message: { content: "later native entry" } };
+  store.append(key, [original]);
+  const before = readFileSync(file, "utf8");
+  await store.duringTool(async () => {
+    // The SDK can invoke its eager store callback while the controller awaits Docker.
+    store.append(key, [later]);
+    await setImmediate();
+    assert.equal(readFileSync(file, "utf8"), before);
+    assert.equal(readdirSync(join(folder, "native-store")).length, 2);
+    writeFileSync(file, before.replace("original", "edited"));
+  });
+  const rows = readFileSync(file, "utf8").trim().split("\n").map(JSON.parse);
+  assert.equal(rows[0].message.content, "edited");
+  assert.deepEqual(rows[1], later);
+  const journal = JSON.parse(readFileSync(join(folder, "native-store", "000001.json")));
+  assert.deepEqual(journal.entries, [original]);
+});
+
+test("tool errors and no-op commands flush SDK appends exactly once", async (t) => {
+  const folder = mkdtempSync(join(tmpdir(), "record-error-"));
+  t.after(() => rmSync(folder, { recursive: true }));
+  const store = new SessionRecordStore(folder, "session-1");
+  const key = { sessionId: "session-1" };
+  store.append(key, [{ id: 1 }]);
+  await assert.rejects(store.duringTool(async () => {
+    store.append(key, [{ id: 2 }]);
+    throw new Error("tool failed");
+  }), /tool failed/);
+  await store.duringTool(async () => { store.append(key, [{ id: 3 }]); });
+  store.flush();
+  assert.deepEqual(readFileSync(join(folder, "session.jsonl"), "utf8").trim().split("\n").map(JSON.parse),
+    [{ id: 1 }, { id: 2 }, { id: 3 }]);
+  assert.throws(() => store.append({ sessionId: "other" }, [{ id: 4 }]), /identity/);
+  assert.equal(readdirSync(join(folder, "native-store")).length, 3);
 });

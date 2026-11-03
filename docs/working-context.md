@@ -15,12 +15,21 @@ immediate application, with four actors and matching main budgets. Claude native
 instructions, format, input delivery and goal-off persistence differ from r212's
 Pi goal. This is not a model-only comparison.
 
-Before any further live registration, repair two adapter issues exposed by this
-run: Claude advertises a temporary native cwd that differs from the business
-workstation, and native appends can overlap a tool command. Nineteen commands
-hit the record consistency guard, but none attempted a record edit, so no
-observed edit was rejected. Validate both fixes offline; retain r229 unchanged.
-Do not silently rerun this one-rollout request or reinterpret it as Phase 1.
+The two native-adapter issues are repaired in current source. The CLI's neutral
+cwd resolves to that actor's `/workspace` inside the business workstation, with
+no host mount. SDK appends are journaled outside the subject view immediately,
+then appended to the disposable record after each tool transaction. Authored
+edits, later native entries and protected original evidence are all retained.
+
+Validation: 47 targeted Python checks (including the real SDK/CLI against a local
+protocol fixture), 13 bridge checks, and a four-session advertised-cwd regression.
+The real SDK test checks record stability across all eight shell calls. No live
+inference or replacement trajectory was collected for these repairs.
+
+R229's observed behavior remains unchanged: no discussion tool was rejected,
+no edit was attempted, and budgets were not exhausted. The agents requested
+human clarification after opaque checks. Any subsequent behavioral test needs
+a fresh registration; do not reuse r229's frozen inputs or scores.
 
 Evidence: `../eval-readiness/2026-11-03-v159-r212-reproduction-haiku55-claude-n4-r229/`
 contains the frozen inputs, full native sessions, `natural/world.json`,

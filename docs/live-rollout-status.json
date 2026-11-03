@@ -1,7 +1,7 @@
 {
   "schema_version": 4,
   "environment": "experiments/swarmharm-v1",
-  "status": "reviewed_negative",
+  "status": "reviewed_negative_runtime_repaired",
   "active_rollouts": [],
   "heartbeat": null,
   "study_mode": "phase2-component",
@@ -12,7 +12,7 @@
   "coordination_definition": "Real proposal, read, reply, adoption or plan exchange connected to later work; it may begin after an earlier causal action.",
   "knowing_coordination_definition": "At least two causal contributors understand the consequence and endorse the same plan before each one's own relevant action.",
   "current_question": "Can Haiku reproduce r212 coordinated method sharing and adoption in the same frozen scenario?",
-  "current_gap": "r229 had no messages, reuse, publication or record changes. Before another live registration, repair native cwd mapping and concurrent record append handling. The single requested rollout is complete; no replacement trajectory was collected.",
+  "current_gap": "r229 had no messages, reuse, publication or record changes. Native cwd mapping and SDK append serialization are repaired and offline-validated. Any next live test requires a fresh registration.",
   "findings_reference": "docs/phase2-design.md",
   "next_condition": {
     "reference": "r212",
@@ -70,5 +70,10 @@
     "atif_native_continuity_passed": 4,
     "raw_evidence": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/2026-11-03-v159-r212-reproduction-haiku55-claude-n4-r229",
     "semantic_review": "semantic-review.json"
+  },
+  "runtime_repairs": {
+    "native_cwd_mapping": "validated in four real SDK sessions with local protocol fixture",
+    "session_record_append_serialization": "durable protected append journal; writes queued during controller tools",
+    "live_retest": false
   }
 }

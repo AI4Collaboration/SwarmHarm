@@ -212,8 +212,9 @@ def _registration(goal_mode, model, *, authentication, auth):
         'working_directory': {
             'kind': 'private temporary directory outside rollout evidence',
             'archive': 'workspace/ after SDK shutdown',
-            'business_tools': 'execute in the offline workstation',
+            'business_tools': 'native cwd aliases /workspace inside the actor workstation; no host mount',
         },
+        'record_store': 'durable SDK append journal; visible appends serialized around controller tools',
         'goal_mode': goal_mode, 'extension_tools': [], 'builtin_tools': [],
         **({'input_delivery': 'atomic-sdk-replay-v1'}
            if authentication == 'axonhub' and goal_mode == 'off' else {}),

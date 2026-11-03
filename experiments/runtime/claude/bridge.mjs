@@ -1,6 +1,5 @@
 // Claude owns the loop. Only controller MCP tools can execute subject actions.
-import { appendFileSync, cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { appendFileSync, cpSync, mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { PassThrough } from "node:stream";
@@ -13,6 +12,47 @@ class ProviderHold extends Error {}
 const canonical = (value) => JSON.stringify(value, (_, entry) =>
   entry && typeof entry === "object" && !Array.isArray(entry)
     ? Object.fromEntries(Object.entries(entry).sort(([a], [b]) => a.localeCompare(b))) : entry);
+
+// Keep the disposable record stable while a controller tool observes/edits it.
+// Every SDK append is durably journaled first, even when its visible write waits.
+export class SessionRecordStore {
+  constructor(folder, sessionId) {
+    this.folder = folder;
+    this.sessionId = sessionId;
+    this.pending = [];
+    this.busy = false;
+    this.sequence = 0;
+    mkdirSync(join(folder, "native-store"), { recursive: true });
+  }
+
+  append(key, entries) {
+    if (key.sessionId !== this.sessionId || key.subpath)
+      throw new Error("Unexpected transcript identity");
+    const bytes = entries.map((entry) => JSON.stringify(entry)).join("\n") + "\n";
+    writeFileSync(join(this.folder, "native-store", `${String(++this.sequence).padStart(6, "0")}.json`),
+      JSON.stringify({ key, entries }) + "\n", { flag: "wx" });
+    this.pending.push(bytes);
+    if (!this.busy) this.flush();
+  }
+
+  flush() {
+    if (this.pending.length) {
+      appendFileSync(join(this.folder, "session.jsonl"), this.pending.join(""));
+      this.pending = [];
+    }
+  }
+
+  async duringTool(action) {
+    if (this.busy) throw new Error("Overlapping record transaction");
+    this.flush();
+    this.busy = true;
+    try { return await action(); }
+    finally {
+      this.busy = false;
+      this.flush();
+    }
+  }
+}
 
 export class ClaudeBridge {
   constructor(sdk, channel) {
@@ -43,7 +83,8 @@ export class ClaudeBridge {
     this.config = config;
     mkdirSync(join(config.folder, "native"), { recursive: true });
     // Claude Code can put cwd in model context. Keep operator run labels out.
-    this.cwd = mkdtempSync(join(tmpdir(), "workspace-"));
+    this.cwd = realpathSync(mkdtempSync("/tmp/workspace-"));
+    this.recordStore = new SessionRecordStore(config.folder, this.sessionId);
     this.active = new Set(config.active_tools);
     // A configuration descriptor, never an invented copy of the SDK's prompt.
     this.history.push({ role: "system", content: JSON.stringify(SYSTEM_PROMPT) });
@@ -62,10 +103,7 @@ export class ClaudeBridge {
           ? { behavior: "allow", updatedInput: args }
           : { behavior: "deny", message: "Tool unavailable." },
         sessionStore: {
-          append: async (key, entries) => {
-            if (key.sessionId !== this.sessionId || key.subpath) throw new Error("Unexpected transcript identity");
-            appendFileSync(join(config.folder, "session.jsonl"), entries.map((entry) => JSON.stringify(entry)).join("\n") + "\n");
-          },
+          append: async (key, entries) => this.recordStore.append(key, entries),
           load: async () => null,
         },
         sessionStoreFlush: "eager",
@@ -84,7 +122,7 @@ export class ClaudeBridge {
         ? { type: "settled", turn: this.turn, aborted: false, text: "", error_message: error.message }
         : { type: "fatal", message: String(error.message ?? error) });
     });
-    this.channel.emit({ type: "ready", session_id: this.sessionId,
+    this.channel.emit({ type: "ready", session_id: this.sessionId, cwd: this.cwd,
       session_file: join(config.folder, "session.jsonl"),
       native_dir: join(config.folder, "native"),
       active_tools: [...this.active], system_prompt: copy(SYSTEM_PROMPT),
@@ -212,8 +250,9 @@ export class ClaudeBridge {
     call.claimed = true;
     const run = this.toolChain.then(async () => {
       if (this.closed) throw new Error("Session closed");
-      const reply = await this.channel.request({ type: "tool_call", id: call.call_id,
-        call_id: call.call_id, name, turn: call.turn });
+      const reply = await this.recordStore.duringTool(() =>
+        this.channel.request({ type: "tool_call", id: call.call_id,
+          call_id: call.call_id, name, turn: call.turn }));
       if (reply.aborted) throw new Error("Operation aborted");
       this.history.push({ type: "function_call_output", call_id: call.call_id, output: reply.output });
       this.calls.delete(call.call_id);
@@ -312,6 +351,8 @@ export class ClaudeBridge {
       this.session?.close();
       await this.reading;
     } finally {
+      await this.toolChain;
+      this.recordStore?.flush();
       if (this.cwd) {
         cpSync(this.cwd, join(this.config.folder, "workspace"), { recursive: true });
         rmSync(this.cwd, { recursive: true });

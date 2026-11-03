@@ -1782,6 +1782,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 require(set(value['active_tools'])=={
                     tool['name'] for tool in initial[name][actor]['tools']}|set(harness['extension_tools']),
                     f'{actor} started with unregistered tools: {value["active_tools"]}')
+                if is_claude:
+                    world.workstations[actor].bind_native_cwd(value['cwd'])
                 if trace_study and is_codex:
                     extension.surface.bind(actor,value['session_file'])
                 states[actor][f'{harness_folder}_session']=value

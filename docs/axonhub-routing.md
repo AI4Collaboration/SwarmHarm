@@ -22,6 +22,11 @@ app-server and an isolated AxonHub Responses provider. The host key is passed in
 the child environment, never written into configuration or agent workstations.
 The executable/version, model profile and source hashes are registered.
 
+Claude's advertised cwd maps to `/workspace` inside its isolated business
+workstation. Native record appends are journaled immediately and serialized
+around tool execution, preserving both authored edits and later SDK entries.
+The append journal is outside the subject's writable record view.
+
 Both adapters preserve one native session per actor. The trace environment reads
 their actual record formats and keeps protected observer captures. Pi remains
 only for archived evidence and offline fixture compatibility. Live CLI selection
