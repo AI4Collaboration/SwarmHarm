@@ -6819,6 +6819,258 @@
         }
       },
       "model_calls": 0
+    },
+    {
+      "experiment_id": "EXP-011",
+      "condition_id": "C01",
+      "condition_key": "sol61",
+      "preparation_id": "EXP-011-C01-P01",
+      "rollout_id": null,
+      "legacy_name": "EXP-011-C01-P01-r217-bonus-sol61",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-011-C01-P01-r217-bonus-sol61",
+      "collection_executed": false,
+      "status": "prepared_uncollected",
+      "created_at": "2026-11-03T12:01:12.689764+00:00",
+      "source_commit": "1a22141b1",
+      "models": {
+        "sol61": "gpt-6.1-sol"
+      },
+      "reasoning_effort": "high",
+      "harness": "pi-sdk",
+      "goal_mode": "goal_command",
+      "route": "chatgpt-subscription",
+      "population": 4,
+      "scenario": "knowledge-work",
+      "study_mode": "phase2-component",
+      "environment_revision": "knowledge-work-trace-release-v163",
+      "registration_sha256": "b42167709f44a784f716f95bece6ac91964c53b26d49944d76ff7ab0ed1472cc",
+      "registration_git": {
+        "path": "experiments/swarmharm-v1/registrations/EXP-011-C01-P01-r217-bonus-sol61/registration.json"
+      },
+      "budgets": {
+        "request_timeout_seconds": 300,
+        "max_transport_attempts_per_request": 4,
+        "transport_retry_backoff_seconds": 2,
+        "max_output_tokens_per_response": 16384,
+        "max_actor_seconds": 3600,
+        "max_batch_seconds": 4500,
+        "provider_concurrency": 4,
+        "scenario_timeout_seconds": 30,
+        "active_contexts_natural": 4
+      },
+      "controls": {
+        "passed": true,
+        "model_calls": 0,
+        "test_methods": 481,
+        "excluded_controls": [
+          {
+            "module": "tests/pi_collect_checks.py",
+            "method": "test_reference_archive_starts_from_ordinary_work_orders",
+            "reason": "Engineering TCP archive is outside the selected Knowledge Work trace component; host Docker lacks isolated gateway mode."
+          },
+          {
+            "module": "tests/records_server_checks.py",
+            "reason": "Engineering TCP archive is outside the selected Knowledge Work trace component; host Docker lacks isolated gateway mode."
+          }
+        ],
+        "prompt_contract_passed": true
+      },
+      "fidelity_proof": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-011-C01-P01-r217-bonus-sol61-fidelity.json",
+        "sha256": "52a6b1c6754c9da8850321ab9f66b199043e0d8f61e5912ee5e67ed2266041d3"
+      },
+      "provenance": {
+        "original_rollout": "r217",
+        "original_registration_commit": "fd0b7ab68",
+        "user_selected_exact_wording": true
+      }
+    },
+    {
+      "experiment_id": "EXP-011",
+      "condition_id": "C02",
+      "condition_key": "opus55",
+      "preparation_id": "EXP-011-C02-P01",
+      "rollout_id": null,
+      "legacy_name": "EXP-011-C02-P01-r217-bonus-opus55",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-011-C02-P01-r217-bonus-opus55",
+      "collection_executed": false,
+      "status": "prepared_uncollected",
+      "created_at": "2026-11-03T11:58:38.552576+00:00",
+      "source_commit": "1a22141b1",
+      "models": {
+        "opus55": "claude-opus-5-5"
+      },
+      "reasoning_effort": "medium",
+      "harness": "claude-code",
+      "goal_mode": "claude_goal",
+      "route": "claude-subscription",
+      "population": 4,
+      "scenario": "knowledge-work",
+      "study_mode": "phase2-component",
+      "environment_revision": "knowledge-work-trace-release-v163",
+      "registration_sha256": "f8ddb3ad84f6aab909e46c4d09125ce511c5578f2af3d8dbbb2633703953e85f",
+      "registration_git": {
+        "path": "experiments/swarmharm-v1/registrations/EXP-011-C02-P01-r217-bonus-opus55/registration.json"
+      },
+      "budgets": {
+        "request_timeout_seconds": 300,
+        "max_transport_attempts_per_request": 1,
+        "transport_retry_backoff_seconds": 0,
+        "max_output_tokens_per_response": 16384,
+        "max_actor_seconds": 3600,
+        "max_batch_seconds": 4500,
+        "provider_concurrency": 4,
+        "scenario_timeout_seconds": 30,
+        "active_contexts_natural": 4,
+        "max_subject_turns_per_actor": 25
+      },
+      "controls": {
+        "passed": true,
+        "model_calls": 0,
+        "test_methods": 470,
+        "excluded_controls": [
+          {
+            "module": "tests/records_server_checks.py",
+            "reason": "Engineering TCP archive is outside the selected Knowledge Work trace component; host Docker lacks isolated gateway mode."
+          }
+        ],
+        "prompt_contract_passed": true,
+        "origin_report": "/Users/agokrani/Documents/git/eval-readiness/EXP-011-C03-P02-r217-bonus-haiku55/controls.json",
+        "origin_sha256": "a00176d0a8bbf52b216b552f71f9d44227869a136c18d24384da979146eec8f1"
+      },
+      "fidelity_proof": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-011-C02-P01-r217-bonus-opus55-fidelity.json",
+        "sha256": "1b59edd4e8979179ceeea3abdbf77145a3a0ebfdc0ed6303bc4baba0aca47bb2"
+      },
+      "provenance": {
+        "original_rollout": "r217",
+        "original_registration_commit": "fd0b7ab68",
+        "user_selected_exact_wording": true
+      }
+    },
+    {
+      "experiment_id": "EXP-011",
+      "condition_id": "C03",
+      "condition_key": "haiku55",
+      "preparation_id": "EXP-011-C03-P02",
+      "rollout_id": null,
+      "legacy_name": "EXP-011-C03-P02-r217-bonus-haiku55",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-011-C03-P02-r217-bonus-haiku55",
+      "collection_executed": false,
+      "status": "prepared_uncollected",
+      "created_at": "2026-11-03T11:58:04.346047+00:00",
+      "source_commit": "1a22141b1",
+      "models": {
+        "haiku55": "claude-haiku-5-5"
+      },
+      "reasoning_effort": "medium",
+      "harness": "claude-code",
+      "goal_mode": "claude_goal",
+      "route": "claude-subscription",
+      "population": 4,
+      "scenario": "knowledge-work",
+      "study_mode": "phase2-component",
+      "environment_revision": "knowledge-work-trace-release-v163",
+      "registration_sha256": "4075dd1a4cbf05ee3d82269b43ac53a49c897fdfaee356733258f1f7e382cce2",
+      "registration_git": {
+        "path": "experiments/swarmharm-v1/registrations/EXP-011-C03-P02-r217-bonus-haiku55/registration.json"
+      },
+      "budgets": {
+        "request_timeout_seconds": 300,
+        "max_transport_attempts_per_request": 1,
+        "transport_retry_backoff_seconds": 0,
+        "max_output_tokens_per_response": 16384,
+        "max_actor_seconds": 3600,
+        "max_batch_seconds": 4500,
+        "provider_concurrency": 4,
+        "scenario_timeout_seconds": 30,
+        "active_contexts_natural": 4,
+        "max_subject_turns_per_actor": 25
+      },
+      "controls": {
+        "passed": true,
+        "model_calls": 0,
+        "test_methods": 470,
+        "excluded_controls": [
+          {
+            "module": "tests/records_server_checks.py",
+            "reason": "Engineering TCP archive is outside the selected Knowledge Work trace component; host Docker lacks isolated gateway mode."
+          }
+        ],
+        "prompt_contract_passed": true
+      },
+      "fidelity_proof": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-011-C03-P02-r217-bonus-haiku55-fidelity.json",
+        "sha256": "74c554b3a7dbb304c64a4f8cf9e06aed0433c2be0f7b9a32130dd1a49a9cf25e"
+      },
+      "provenance": {
+        "original_rollout": "r217",
+        "original_registration_commit": "fd0b7ab68",
+        "user_selected_exact_wording": true
+      }
+    },
+    {
+      "experiment_id": "EXP-011",
+      "condition_id": "C04",
+      "condition_key": "sonnet55",
+      "preparation_id": "EXP-011-C04-P01",
+      "rollout_id": null,
+      "legacy_name": "EXP-011-C04-P01-r217-bonus-sonnet55",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-011-C04-P01-r217-bonus-sonnet55",
+      "collection_executed": false,
+      "status": "prepared_uncollected",
+      "created_at": "2026-11-03T11:58:38.529322+00:00",
+      "source_commit": "1a22141b1",
+      "models": {
+        "sonnet55": "claude-sonnet-5-5"
+      },
+      "reasoning_effort": "medium",
+      "harness": "claude-code",
+      "goal_mode": "claude_goal",
+      "route": "claude-subscription",
+      "population": 4,
+      "scenario": "knowledge-work",
+      "study_mode": "phase2-component",
+      "environment_revision": "knowledge-work-trace-release-v163",
+      "registration_sha256": "a32aae4217c7ba8cb376df2ad8a79dbefddc4827443ee88261bb06d77c132716",
+      "registration_git": {
+        "path": "experiments/swarmharm-v1/registrations/EXP-011-C04-P01-r217-bonus-sonnet55/registration.json"
+      },
+      "budgets": {
+        "request_timeout_seconds": 300,
+        "max_transport_attempts_per_request": 1,
+        "transport_retry_backoff_seconds": 0,
+        "max_output_tokens_per_response": 16384,
+        "max_actor_seconds": 3600,
+        "max_batch_seconds": 4500,
+        "provider_concurrency": 4,
+        "scenario_timeout_seconds": 30,
+        "active_contexts_natural": 4,
+        "max_subject_turns_per_actor": 25
+      },
+      "controls": {
+        "passed": true,
+        "model_calls": 0,
+        "test_methods": 470,
+        "excluded_controls": [
+          {
+            "module": "tests/records_server_checks.py",
+            "reason": "Engineering TCP archive is outside the selected Knowledge Work trace component; host Docker lacks isolated gateway mode."
+          }
+        ],
+        "prompt_contract_passed": true,
+        "origin_report": "/Users/agokrani/Documents/git/eval-readiness/EXP-011-C03-P02-r217-bonus-haiku55/controls.json",
+        "origin_sha256": "a00176d0a8bbf52b216b552f71f9d44227869a136c18d24384da979146eec8f1"
+      },
+      "fidelity_proof": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-011-C04-P01-r217-bonus-sonnet55-fidelity.json",
+        "sha256": "9f34290cc110cffbabf3d781a2b3378b5bbfe2c623d7e4b88272d4cb86715939"
+      },
+      "provenance": {
+        "original_rollout": "r217",
+        "original_registration_commit": "fd0b7ab68",
+        "user_selected_exact_wording": true
+      }
     }
   ],
   "coverage": {
@@ -6835,5 +7087,5 @@
       "Other hosts/archives not inventoried"
     ]
   },
-  "updated_at": "2026-11-03T11:49:18.272708+00:00"
+  "updated_at": "2026-11-03T12:02:59.217301+00:00"
 }
