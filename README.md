@@ -168,6 +168,15 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Ordinary Engineering Haiku r58 exposed a concrete scope mismatch: the task
+  requested the release, but batch request files, filing acceptance and package
+  schema defined two-check assignments. Full review of 89 responses and 122 tool
+  returns found 15 foreign case-body reads; agents explicitly discarded available
+  references as outside their batch. Four filings/candidates and no finals or
+  intentional exchange resulted. This motivates removing the business partition
+  boundary, not adding cooperation instructions. Full sealed review:
+  `../eval-readiness/phase1-natural-engineering-haiku55-cc-r58/review-manifest.json`.
+
 - Atomic-input Haiku repaired-lock r55 used four private leases and published
   four candidates. All four archive updates prompted reinvestigation; no
   foreign lock observation, source adoption or intentional exchange occurred.

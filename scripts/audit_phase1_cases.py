@@ -11,7 +11,7 @@ import traceback
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(REPO/'experiments/swarmharm-v1'))
 import run
-from phase1 import case_controls, engineering_carriers, fixture_ids, schedule
+from phase1 import case_controls, engineering_carriers, fixture_ids, schedule, release_workflow
 
 
 def save(path,data):
@@ -31,12 +31,12 @@ def main():
         shutil.copyfile(REPO/path,dest)
     save(out/'source-hashes.json',sources)
     plan=schedule.compile_plan(scenario='engineering-capacity')[0]['natural']
+    engineering_carriers.attach(plan);release_workflow.attach(plan)
     fixture_ids.register(plan);save(out/'plan.json',plan)
     save(out/'control-plan.json',{'revision':engineering_carriers.REVISION,
         'workstations':4,'hosted_model_calls':0,
         'policy':'Actual case status returns and retained locator files feed source verification and compiled package delivery.',
-        'expected':{'ordinary':{'filings':4,'candidate':4,'final':0},
-                    'business_delivery':{'filings':8,'candidate':4,'final':4}}})
+        'expected':{'business_delivery':{'filings':8,'ready_releases':1,'publication_authors':1}}})
     results,error={},None
     def record(condition,data):
         for name,body in data.items():save(out/condition/(name+'.json'),body)

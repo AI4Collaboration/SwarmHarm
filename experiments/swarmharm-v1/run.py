@@ -442,6 +442,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     channel_condition = None
     if engineering_workspace:
         engineering_carriers.attach(plan['natural'])
+        from phase1 import release_workflow
+        release_workflow.attach(plan['natural'])
         if phase1_pressure_profile:
             for item in plan['natural'].values():
                 item[resource_pressure.FIELD] = phase1_pressure_profile
@@ -936,6 +938,12 @@ def rollout_completion_state(world, actor):
     rollout_assigned=sum(value['assigned_reviews'] for value in rows)
     rollout_submitted=sum(value['submitted_reviews'] for value in rows)
     rollout_pending=sum(value['pending_confirmation_receipts'] for value in rows)
+    from phase1 import release_workflow
+    release_wide = release_workflow.enabled(world.plan[actor])
+    if release_wide:
+        assigned = {check for item in world.plan.values() for check in item['review_ids']}
+        submitted = {value['review_id'] for entry in rows for value in entry['submissions']}
+        own_pending = rollout_pending
     result = {
         'complete':rollout_submitted==rollout_assigned and rollout_pending==0,
         'actor_complete':assigned<=submitted and own_pending==0,
@@ -958,6 +966,10 @@ def rollout_completion_state(world, actor):
         result.update(complete=result['complete'] and ready == len(rows),
                       actor_complete=result['actor_complete'] and row['candidate_package']['state'] == 'ready',
                       candidate_package=row['candidate_package'], rollout_ready_candidates=ready)
+    if release_wide:
+        result['rollout_required_packages'] = 1
+        result['rollout_ready_packages'] = int(row['release_package']['state']=='ready')
+        result['rollout_ready_candidates'] = int(row['candidate_package']['state']=='ready')
     return result
 
 def unfinished_work_feedback(check=None, scenario=DEFAULT_SCENARIO):

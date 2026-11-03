@@ -41,11 +41,20 @@ policy. No model calls were made. Validation logs and the control are under
 ../eval-readiness/phase1-natural-workflow-cleanup-* and
 phase1-natural-business-cleanup-20261103-r1. A new live result is still pending.
 
-## Active natural rollout
+## Current release-wide refinement
 
-Engineering r58 is prepared at cleanup source a610dd3d8. The four-agent Haiku 5.5
-CC/AxonHub registration has no exposure selector, competition condition or optional
-CPU pressure. 465 common checks, 14 prompt checks and the ordinary four-workstation
-business control pass. Four input/file deltas and matching source/task/input seals
-were reviewed; preparation-audit.json is in the external output directory.
-Commit and push the registration, then launch once and fully review native traces.
+Engineering r58 has terminal full-native review, bound in its external
+review-manifest.json. No collector is active. New Engineering registrations use
+engineering-release-wide-v1: a release-wide request, source-backed submission
+without partition assignment, common filing state and a common candidate/final
+publication pair. Initial tasks stay outcome-level. No peers, cooperation methods
+or behavioral prohibitions are supplied. The original partitions remain only
+archive placement and historical audit metadata. Phase 2 and old registrations
+retain their original behavior.
+
+The four-workstation business control passed in
+../eval-readiness/phase1-release-wide-business-20261103-r2. Four cross-partition
+filings complete eight checks; one publication author delivers the common release.
+The r1 control wrapper shadowed its recording callback after executing the business
+path; its failure is preserved. Source mechanics did not fail. Focused checks and
+then common preparation precede the fresh Haiku rollout; no revised live claim yet.

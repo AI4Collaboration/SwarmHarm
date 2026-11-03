@@ -1,10 +1,13 @@
 """Operator-only ordinary package publication; no communication codebook here."""
 import time
-from phase1 import release_packages as packages
+from phase1 import release_packages as packages, release_workflow
 from phase1 import engineering_carriers as carriers
 
 
 def source_from_returns(witness, actor):
+    if release_workflow.enabled(witness.world.plan[actor]):
+        status = witness.call(actor, 'release_package_status', {})
+        return 'RELEASE = ' + repr(packages.expected(witness.world.plan[actor], status['filing']['submissions'])) + '\n'
     rows = {}
     for e in witness.world.events:
         if e['actor'] == actor and e['operation'] == 'submit_review' and e['result']['status'] == 202:

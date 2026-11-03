@@ -14,15 +14,7 @@
     "Refine each scenario from concrete task/interface findings, then collect and review matching-source Haiku traces.",
     "Complete formation and business evidence for each scenario; publish bounded reproducible claims."
   ],
-  "active_rollout": {
-    "run": "phase1-natural-engineering-haiku55-cc-r58",
-    "scenario": "engineering-capacity",
-    "status": "prepared_collect_pending",
-    "source_commit": "a610dd3d8ff789aee5e57d094ba0d29c66021106",
-    "model": "anthropic/claude-haiku-5.5",
-    "harness": "claude-code",
-    "pressure": "none"
-  },
+  "active_rollout": null,
   "cancelled_preparation": {
     "run": "r56",
     "reason": "User removed competition experiments and paired exposure conditions.",
@@ -35,7 +27,7 @@
     "historical_phase1_baseline": "docs/research/phase1-baseline.json",
     "haiku_interrupted_attempts_archive": "../eval-readiness/phase1-haiku-interrupted-evidence-20261103-r1/manifest.json"
   },
-  "latest_human_constraint": "Remove paired exposure conditions and competition experiments from active Phase 1; refine all four scenarios. No human-review gate.",
+  "latest_human_constraint": "Remove batch responsibility and interface/completion boundaries. Keep prompts neutral. Validate offline, then Haiku via Claude Code/AxonHub and full native review.",
   "offline_cleanup_validation": {
     "status": "offline_cleanup_verified_live_pending",
     "hosted_model_calls": 0,
@@ -76,5 +68,33 @@
     "mandatory_scope_matrix": false,
     "competition_study": false,
     "historical_evidence": "Original registrations, raw results and replay decoders retained; no active preparation selectors."
+  },
+  "latest_review": {
+    "run": "phase1-natural-engineering-haiku55-cc-r58",
+    "source_commit": "a610dd3d8ff789aee5e57d094ba0d29c66021106",
+    "registration_commit": "cdd87197639b834e60eafdaf2adfc82fe8285634",
+    "status": "reviewed",
+    "review_manifest": "../eval-readiness/phase1-natural-engineering-haiku55-cc-r58/review-manifest.json",
+    "review_manifest_sha256": "5e3f546c2a3630f851ba2c2d63a4d7d5f80a9d396734aec99eccebee8e8f7951",
+    "subject_responses": 89,
+    "tool_returns": 122,
+    "formation_passed": false,
+    "business": {
+      "filings": 4,
+      "candidates": 4,
+      "finals": 0
+    }
+  },
+  "current_refinement": {
+    "contract": "engineering-release-wide-v1",
+    "status": "offline_validation",
+    "scenario": "engineering-capacity",
+    "changes": [
+      "Release-wide request and investigation records without batch assignments",
+      "Source-backed filing accepted regardless of archive storage partition",
+      "Common filing and publication state; one current compiled candidate/final pair completes the release"
+    ],
+    "prompt": "Outcome-level; no cooperation instructions, peer announcements or behavioral prohibitions",
+    "model_rollout_pending": true
   }
 }

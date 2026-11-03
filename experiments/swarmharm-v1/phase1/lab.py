@@ -32,7 +32,7 @@ from phase1 import fixture_ids
 from phase1 import pressure
 from phase1 import engineering_carriers
 from phase1 import release_packages
-from phase1 import carrier_cases
+from phase1 import carrier_cases, release_workflow
 IMAGE = base.IMAGE
 INSTRUCTIONS = base.INSTRUCTIONS
 ENCODE = base.ENCODE
@@ -731,9 +731,13 @@ def task(item):
 
 def files(item, actor):
     scenario = domain_runtime.mechanics(item.get("scenario"))
-    batch = batch_for(item)
+    batch = release_workflow.request(item) if release_workflow.enabled(item) else batch_for(item)
     filing_id = item["business_pressure"]["contract_reference"]
     documents = scenario.local_documents(batch, item["business_pressure"])
+    if release_workflow.enabled(item):
+        request = documents.pop(f"{batch['batch_id']}-request.json")
+        request.pop("batch_id")
+        documents["release-request.json"] = request
     result = {
         "/workspace/README.md": ENCODE(task(item) + "\n"),
         "/workspace/PLATFORM.md": ENCODE(getattr(scenario, "PLATFORM", PLATFORM)),
@@ -781,6 +785,9 @@ def files(item, actor):
             + release_packages.documentation(item)
             + (carrier_cases.DOCUMENTATION if carrier_cases.enabled(item) else ""))
         result.update({p:ENCODE(body) for p,body in release_packages.documents(item).items()})
+    if release_workflow.enabled(item):
+        for path in ("/workspace/archive_diagnostics.py", "/workspace/filing_activity.py"):
+            result[path] = ENCODE(release_workflow.public_helper(DECODE(result[path])))
     return result
 
 
@@ -850,6 +857,9 @@ def initial(plan, actor, instruction=None):
         "workspace": "/workspace",
         "platform_document": "/workspace/PLATFORM.md",
     }
+    if release_workflow.enabled(item):
+        metadata.pop("batch_id")
+        metadata["release_id"] = item["business_pressure"]["contract_reference"]
     return {
         "instructions": INSTRUCTIONS,
         "input": [
@@ -1262,6 +1272,11 @@ class World(base.World):
         if not isinstance(body, dict) or "job_id" in body:
             return False
         batch = self.services[actor].batch if self.source_publication_event is not None else batch_for(self.plan[actor])
+        if release_workflow.enabled(self.plan[actor]):
+            batch = release_workflow.request(self.plan[actor])
+            # Normalize for the historical validator, without changing persisted bytes.
+            body = {**body, "recorded_by_batch_id": body.get("recorded_for_release_id"),
+                    "case_batch_id": body.get("case_release_id")}
         filing_id = self.plan[actor]["business_pressure"]["contract_reference"]
         if (
             body.get("filing_id") != filing_id
@@ -1310,6 +1325,8 @@ class World(base.World):
         if diagnostic is None:
             return False
         diagnostic_body = self._body(diagnostic)
+        if release_workflow.enabled(self.plan[actor]):
+            diagnostic_body = {**diagnostic_body, "case_batch_id": diagnostic_body.get("case_release_id")}
         if (
             diagnostic_body.get("operation") != "source_resolution_diagnostic"
             or body.get("case_batch_id") != diagnostic_body.get("case_batch_id")
@@ -1498,6 +1515,8 @@ class World(base.World):
         if self.release_packages is not None and name == 'release_package_status':
             event['shared_changes'] = []
             return done({'status':200, 'package':self.release_packages.status(actor),
+                         **({'filing':release_workflow.filing(self.plan[actor], self.release_packages.submissions(actor))}
+                            if release_workflow.enabled(self.plan[actor]) else {}),
                          **({'candidate':self.release_packages.candidate_status(actor)}
                             if release_packages.staged(self.plan[actor]) else {})})
 
@@ -1648,7 +1667,7 @@ class World(base.World):
             receipt = {
                 "job_id": actor,
                 "filing_id": self.plan[actor]["business_pressure"]["contract_reference"],
-                "batch_id": self.plan[actor]["batch_id"],
+                **({} if release_workflow.enabled(self.plan[actor]) else {"batch_id": self.plan[actor]["batch_id"]}),
                 "review_id": target["review_id"],
                 "vendor": target["vendor"],
                 "operation": "archive_search",
@@ -1746,7 +1765,8 @@ class World(base.World):
             event["shared_changes"] = released
             return done({"status": 200, "record": record})
 
-        reply = self.service(actor).submit(args, self.archive_reads[actor])
+        filing_owner = release_workflow.owner(self.plan, actor, args.get("check_id"))
+        reply = self.service(filing_owner).submit(args, self.archive_reads[actor])
         receipt_row = reply.pop("_receipt", None)
         event["verified_submission"] = reply.get("status") == 202
         event["shared_changes"] = list(released)

@@ -27,6 +27,10 @@ def returned_cases(text):
 
 
 def evaluate(plan, *, record=None):
+    from phase1 import release_workflow
+    if release_workflow.enabled(next(iter(plan.values()))):
+        from phase1.release_workflow_controls import evaluate as release_control
+        return release_control(plan, record=record)
     branches = {}
     name = 'business_workflow'
     attached = deepcopy(plan)

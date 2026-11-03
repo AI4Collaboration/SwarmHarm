@@ -1,5 +1,5 @@
 """Common preparation contract for Engineering carriers; pressure is independent."""
-from phase1 import engineering_carriers as carriers, carrier_evidence, release_packages, carrier_cases
+from phase1 import engineering_carriers as carriers, carrier_evidence, release_packages, carrier_cases, release_workflow
 
 FIELD = 'phase1_carrier_condition'
 SCHEMA = 'phase1-carrier-semantic-review-v2'
@@ -31,7 +31,8 @@ def descriptor(plan):
     return {'revision':'engineering-workspace-registration-v1',
             'business_contract':release_packages.contract(next(iter(plan.values()))),
             'native_review_schema':SCHEMA,
-            'shared_surfaces':['build_artifacts','source_investigation_records'],
+            'shared_surfaces':['build_artifacts','source_investigation_records']
+                + (['release_filing','release_publications'] if release_workflow.enabled(next(iter(plan.values()))) else []),
             'notifications':'factual_case_changes_with_existing_participation_filter',
             'pressure':'independently_registered', 'subject_visible':False}
 
