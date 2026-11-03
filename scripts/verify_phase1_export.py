@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import argparse
 import sys
+import re
 
 
 @contextmanager
@@ -31,6 +32,54 @@ def immutable_manifest_parse_cache(reviewer, root):
         reviewer.json = original
         if path.read_bytes() != raw or parsed != json.loads(raw):
             raise ValueError('Sealed manifest or decoded cache changed during replay')
+
+
+def verify_claude_native(base, registration, reviewer):
+    """Recheck SDK/projection correspondence, including negative trajectories."""
+    from phase1 import claude_native_review
+    read = lambda path: json.loads(path.read_text())
+    annotation = read(base/'phase1-semantic-review.json')
+    counts = {}
+    for actor in registration['plan']['natural']:
+        folder = base/'natural'/actor
+        native = [(str(p.relative_to(folder/'claude')), read(p))
+                  for p in sorted((folder/'claude/native').glob('*.json'))]
+        responses = sorted((folder/'trace').glob('????.response.json'))
+        ids = {read(p)['id'] for p in responses}
+        if {m['message']['id'] for _, m in native if m['type']=='assistant'} != ids:
+            raise ValueError('Unprojected or absent Claude response: '+actor)
+        for p in responses:
+            claude_native_review.response(base, registration, actor, int(p.name[:4]), sealed=True)
+        tools = [p for p in (folder/'trace').glob('*-tool-*.json')
+                 if re.fullmatch(r'\d+-tool-\d+\.json', p.name)]
+        for p in tools:
+            result = read(p)
+            step = int(p.name[:4])
+            before = read(folder/'trace'/f'{step:04d}.response.json')['native_record']
+            next_path = folder/'trace'/f'{step+1:04d}.request.json'
+            after = read(next_path)['native_record'] if next_path.exists() else None
+            matches = []
+            for relative, message in native:
+                if not (relative > before and (after is None or relative < after)):
+                    continue
+                content = message.get('message', {}).get('content')
+                if message['type']!='user' or not isinstance(content, list):
+                    continue
+                for block in content:
+                    if block.get('type')=='tool_result' and block.get('tool_use_id')==result['call_id']:
+                        value = block['content']
+                        text = value if isinstance(value,str) else '\n'.join(x.get('text','') for x in value)
+                        if json.loads(text) != result['result']:
+                            raise ValueError('Claude SDK tool return differs: '+str(p))
+                        matches.append(relative)
+            if len(matches) != 1:
+                raise ValueError('Missing or duplicate timely SDK tool delivery: '+str(p))
+        counts[actor] = {'assistant':len(responses), 'toolResult':len(tools)}
+    if counts != annotation['native_message_counts']:
+        raise ValueError('Claude review coverage differs from native records')
+    return {'responses':sum(v['assistant'] for v in counts.values()),
+            'tool_returns':sum(v['toolResult'] for v in counts.values()),
+            'atomic_input_rechecked':registration['harness'].get('input_delivery')=='atomic-sdk-replay-v1'}
 
 
 def verify(root, replay=False):
@@ -92,6 +141,8 @@ def verify(root, replay=False):
             packages=release_packages.replay(world['plan'],world['events'],world['engineering_carrier_probe'],world['summary'])
             with immutable_manifest_parse_cache(carrier_trace_review, base):
                 semantic=carrier_trace_review.assess(base,reg,world,read(base/'phase1-semantic-review.json'))
+                native = (verify_claude_native(base, reg, carrier_trace_review)
+                          if reg.get('harness',{}).get('kind')=='claude-code' else None)
             original=read(base/'independent-review.json')['phase1']
             for field in ('autonomous_channel_use_passed','phase1_formation_passed'):
                 if semantic[field]!=original[field]:raise ValueError('Semantic result differs: '+item['name'])
@@ -121,7 +172,8 @@ def verify(root, replay=False):
                     if business != expected:
                         raise ValueError('Business reconstruction differs: '+item['name'])
             replayed.append({'name':item['name'],'foreign_observations':len(physical['foreign_observations']),
-                             'packages':packages,'pressure':pressure,'formation':semantic['phase1_formation_passed']})
+                             'packages':packages,'pressure':pressure,'formation':semantic['phase1_formation_passed'],
+                             'claude_native':native})
     if replay:
         for item in mapping.get('audits',[]):
             for path in sorted(portable(item['portable_root']).rglob('world.json')):

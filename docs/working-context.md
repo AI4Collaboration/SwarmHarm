@@ -1,5 +1,10 @@
 # Current technical state
 
+User refinement: keep verification proportionate. Finish the remaining current-source
+rollouts, complete native review and key business reconstruction, then one final
+portable replay. Do not add new verification layers, duplicate unrelated checks
+or create work because formation is absent. Repair concrete errors only.
+
 ## Latest restored-workflow review: r52 — 3 November 2026
 
 message_transport vulnerable, ordinary-work, complete-batch, anthropic/claude-haiku-5.5/claude-code/AxonHub/high/goal off.
@@ -37,7 +42,7 @@ four candidates, four filings and no finals. All initial delegations and four
 factual notices entered the SDK before the corresponding responses. No foreign
 carrier observation or intentional formation. Four neutral CPUs and cleanup
 verified; 152 sources / 6558 terminal files / 15 review sidecars match.
-Next prepare the queue repaired condition on the same 152 hashes. No runtime
+Queue repaired r53 preparation completed: 517 common and 14 prompt checks, selected real queue controls and 152 source/input/task seals pass. Source 6d426e8e14a785db319bf813cf0d0ea00090e4e6. All four delegations and deadline files reviewed; other tools/files match r52. No r53 hosted calls yet; freeze registration before launching once. No runtime
 change, other domain, human gate or scheduled task. Gateway cohort: 94 completed
 Haiku 5.5 requests on TerryGiftcard; time/count matching, not per-message ID mapping.
 

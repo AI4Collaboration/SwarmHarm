@@ -13,7 +13,7 @@ The machine-readable inventory is [phase1-publication-catalog.json](phase1-publi
 with individual executions in [phase1-carrier-registration-index.json](phase1-carrier-registration-index.json).
 Original legacy cache registrations retain their separate index.
 
-## Verified package
+## Historical verified package
 
 `../eval-readiness/phase1-engineering-offline-repair-evidence-20261103-r1`
 contains r22–r42 and 15 audit roots. Verification from `/tmp` with Python 3.9
@@ -24,15 +24,15 @@ worlds, without network or model calls. The explicit v12 offline evaluator has
 This package preserves the reviewed historical evidence; it does not contain a
 v12 model rollout or establish current-source live validation.
 
-## Current Claude Code supplement
+## Historical Claude Code supplement
 
 The separately verified `../eval-readiness/phase1-cc-portability-20261103-r1/package`
 adds fully reviewed r47, with 6,508 hash-bound files. Its offline verification
 from `/tmp` passes physical, package, pressure and native semantic reconstruction
 using the included 152-file evaluator. The original historical package above
 remains unchanged. No provider HTTP context, independent human judgment or
-new model execution is claimed by this portable check. Consolidation with the
-remaining resource reviews is pending.
+new model execution is claimed by this portable check. Final consolidation uses the current atomic-input evaluator and all current
+condition reviews; see the catalog for its status.
 
 ## Offline verification
 
@@ -56,6 +56,17 @@ the subjects; it is offline reinterpretation, not matching-source live evidence.
 included operator-control worlds. A failure exits without changing the original
 evidence. `mapping.json` maps original absolute provenance paths to portable
 locations; original records are not rewritten.
+
+The consolidated verifier also reconstructs every Claude SDK response and exact
+tool return, even when no communication signal is annotated. It rejects extra
+unprojected assistant messages, missing or changed tool returns, and delivery
+outside the corresponding response interval. For atomic-input registrations it
+rechecks the whole initial delegation and every later input before each response.
+Legacy v1 registrations retain their startup-ordering limitation; replay does not
+retroactively give them atomic delivery. The performance cache reuses only the
+JSON decoding of identical terminal-manifest bytes. Every referenced native file
+is still read and checked against its original hash; cache or manifest mutation
+aborts verification.
 
 This offline verifier does not rerun a model or recreate historical process
 timing. It reconstructs the recorded processes and acceptance rules. Separate
