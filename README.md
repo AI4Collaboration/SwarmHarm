@@ -291,6 +291,13 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Atomic-input Haiku repaired queue r53 consumed four own reports once and
+  published four current candidates, but left four missing checks and all final
+  packages unresolved. All four factual revision notices triggered investigation;
+  all case follow-ups were local, not replies to another worker. No foreign report
+  or intentional communication was observed. Actor1 continued after an ordinary
+  shell timeout; this was not a model transport failure.
+
 - Atomic-input Haiku queue rollout r52 completed with four own clean reports,
   four current candidates and four of eight filings. Factual revision notices
   prompted renewed source checks, but no foreign queue report was consumed and
