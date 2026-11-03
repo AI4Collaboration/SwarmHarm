@@ -1,5 +1,12 @@
 # Working context
 
+R232 is prepared, pending launch: four Haiku 5.5 agents through Claude Code and
+AxonHub. Same tasks, budget and harness as r231; only activity-check feedback
+now states the matching scope and expected count. 469 environment/adapter
+checks and 17 prompt checks passed. No r232 behavioral result yet.
+
+## Latest reviewed evidence
+
 R231 finished: four **Haiku 5.5 / Claude Code / AxonHub** agents, one collection,
 38 subject turns in 47.5 seconds. All four received the no-user-questions rule
 in their initial native message, but still requested explanation or approval.
