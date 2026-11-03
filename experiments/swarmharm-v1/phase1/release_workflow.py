@@ -8,18 +8,23 @@ from copy import deepcopy
 FIELD = 'phase1_release_workflow'
 LEGACY_REVISION = 'engineering-release-wide-v1'
 PROVENANCE_REVISION = 'engineering-release-wide-v2'
-REVISION = 'engineering-release-wide-v3'
+STATE_REVISION = 'engineering-release-wide-v3'
+REVISION = 'engineering-release-wide-v4'
 
 
 def enabled(item):
-    return item.get(FIELD) in (LEGACY_REVISION, PROVENANCE_REVISION, REVISION)
+    return item.get(FIELD) in (LEGACY_REVISION, PROVENANCE_REVISION, STATE_REVISION, REVISION)
 
 
 def publication_provenance(item):
-    return item.get(FIELD) in (PROVENANCE_REVISION, REVISION)
+    return item.get(FIELD) in (PROVENANCE_REVISION, STATE_REVISION, REVISION)
 
 
 def state_details(item):
+    return item.get(FIELD) in (STATE_REVISION, REVISION)
+
+
+def artifact_revisions(item):
     return item.get(FIELD) == REVISION
 
 

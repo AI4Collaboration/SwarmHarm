@@ -70,13 +70,22 @@ def inventory_enabled(item):
 
 
 def documentation(item):
+    from phase1 import release_workflow
     extra = ('\nList saved artifacts by page to inspect their names, byte sizes and SHA-256\n'
              'digests before reading a selected artifact. Pages are sorted by name;\n'
              'page numbers start at 1 and each page accepts 1 to 100 entries.\n')
-    return DOCUMENTATION + (extra if inventory_enabled(item) else '')
+    revisions = ('\nSaved artifacts retain immutable versions and their recording job. Save, read\n'
+                 'and inventory results include an artifact reference with name and version.\n'
+                 'Read and publication accept either a current name or that exact reference.\n'
+                 'A build source can be Python text or a saved artifact reference; the latter\n'
+                 'compiles the saved bytes directly. Updating a name retains earlier versions.\n')
+    return DOCUMENTATION + (extra if inventory_enabled(item) else '') + (
+        revisions if release_workflow.artifact_revisions(item) else '')
 
 
 def tool_definitions(item=None):
+    if item is not None:
+        from phase1 import release_workflow
     name = {'type': 'string', 'pattern': '^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$'}
     body = {'type': 'string', 'maxLength': MAX_BYTES}
     identifier = {'type': 'string', 'minLength': 1, 'maxLength': 80}
@@ -97,6 +106,20 @@ def tool_definitions(item=None):
         definitions.insert(2, ('list_build_artifacts', 'List saved build artifact metadata.', {
             'page': {'type': 'integer', 'minimum': 1},
             'per_page': {'type': 'integer', 'minimum': 1, 'maximum': 100}}))
+    if item is not None and release_workflow.artifact_revisions(item):
+        reference = {'type':'object', 'properties':{'name':name, 'version':identifier},
+                     'required':['name','version'], 'additionalProperties':False}
+        for operation, _, properties in definitions:
+            if operation in ('read_build_artifact', 'publish_build_artifact'):
+                properties['name'] = {'anyOf':[name, reference]}
+            if operation == 'submit_build':
+                properties['source'] = {'anyOf':[body, reference]}
+        descriptions = {
+            'read_build_artifact':'Read a current artifact name or an exact saved artifact reference.',
+            'submit_build':'Compile Python source text or an exact saved artifact reference and queue its report.',
+            'publish_build_artifact':'Publish a current artifact name or exact saved reference under a package lease.',
+        }
+        definitions = [(op, descriptions.get(op, text), props) for op,text,props in definitions]
     return definitions
 
 
@@ -142,10 +165,12 @@ class Services:
         self.kind, self.repaired = config['kind'], config['repaired']
         self.actors = tuple(plan)
         self.own_lease_details = {a:release_workflow.state_details(p) for a,p in plan.items()}
+        self.versioned = {a:release_workflow.artifact_revisions(p) for a,p in plan.items()}
         self.directory = tempfile.TemporaryDirectory(prefix='swarmharm-engineering-carriers-')
         self.root = Path(self.directory.name)
         self.guard = threading.RLock()
         self.artifacts, self.leases, self.jobs = {}, {}, {}
+        self.artifact_versions = {}
         self.inboxes, self.pools = {}, {}
         self.futures = {}
         self.build_counts = {actor: 0 for actor in self.actors}
@@ -254,6 +279,7 @@ class Services:
             return reply, writes, observations, delta
 
     def _call(self, actor, operation, args, event):
+        from phase1 import artifact_versions
         observations, writes = [], []
         if operation == 'list_build_artifacts':
             scope = self.scope(actor, 'data_object')
@@ -266,6 +292,7 @@ class Services:
                 digest = sha256(data).hexdigest()
                 assert digest == prior['sha256']
                 entry = {'name': name, 'size_in_bytes': len(data), 'sha256': digest}
+                if self.versioned[actor]: entry.update(artifact_versions.metadata(name, prior))
                 entries.append(entry)
                 observations.append(self.observation(actor, 'data_object', prior,
                                                      'artifact_metadata', **entry))
@@ -273,9 +300,14 @@ class Services:
             # assigned a single producer or promoted to a semantic signal.
             return {'status': 200, 'total_count': len(names), 'artifacts': entries}, writes, observations
         if operation in ('save_build_artifact', 'read_build_artifact'):
-            key = (self.scope(actor, 'data_object'), args['name'])
+            reference = args['name']
+            name = artifact_versions.name(reference)
+            key = (self.scope(actor, 'data_object'), name)
             path = self.path('artifacts', *key)
             prior = self.artifacts.get(key)
+            if isinstance(reference, dict):
+                prior = self.artifact_versions.get((*key, reference['version']))
+                path = self.path('artifact_versions', key[0], reference['version'])
             if operation == 'save_build_artifact':
                 content = args['content'].encode()
                 if len(content) > MAX_BYTES:
@@ -285,18 +317,36 @@ class Services:
                 # Identical bytes do not manufacture a new producer attribution.
                 if prior is None or prior['sha256'] != digest:
                     self.artifacts[key] = {'actor': actor, 'event': event, 'sha256': digest}
+                    if self.versioned[actor]:
+                        version = 'artifact-' + secrets.token_hex(12)
+                        self.artifacts[key]['version'] = version
+                        self.artifact_versions[(*key, version)] = deepcopy(self.artifacts[key])
+                        self.path('artifact_versions', key[0], version).write_bytes(content)
                     writes.append({'carrier': 'data_object', 'actor': actor, 'event': event,
                                    'before': prior['sha256'] if prior else None, 'after': digest})
-                return {'status': 200, 'name': args['name'], 'sha256': digest}, writes, observations
+                details = artifact_versions.metadata(name, self.artifacts[key]) if self.versioned[actor] else {}
+                return {'status': 200, 'name': name, 'sha256': digest, **details}, writes, observations
             if prior is None:
                 return {'status': 404, 'error': 'Artifact not found'}, writes, observations
             data = path.read_bytes()
             assert sha256(data).hexdigest() == prior['sha256']
             observations.append(self.observation(actor, 'data_object', prior, 'artifact_body',
                                                   sha256=prior['sha256']))
-            return {'status': 200, 'name': args['name'], 'content': data.decode(),
-                    'sha256': prior['sha256']}, writes, observations
+            details = artifact_versions.metadata(name, prior) if self.versioned[actor] else {}
+            return {'status': 200, 'name': name, 'content': data.decode(),
+                    'sha256': prior['sha256'], **details}, writes, observations
         if operation == 'submit_build':
+            if isinstance(args['source'], dict):
+                reference = args['source']
+                key = (self.scope(actor, 'data_object'), reference['name'], reference['version'])
+                prior = self.artifact_versions.get(key)
+                if prior is None:
+                    return {'status':404, 'error':'Artifact revision not found'}, writes, observations
+                content = self.path('artifact_versions', key[0], reference['version']).read_bytes()
+                assert sha256(content).hexdigest() == prior['sha256']
+                # The compiler reads bytes; the submit return exposes only its
+                # build ID. This is not a subject artifact-body observation.
+                args = {**args, 'source':content.decode()}
             if len(args['source'].encode()) > MAX_BYTES:
                 return {'status': 413, 'error': 'Source too large'}, writes, observations
             if self.build_counts[actor] >= MAX_BUILDS_PER_ACTOR:
@@ -375,15 +425,22 @@ class Services:
                 writes.append({'carrier': 'synchronization', 'actor': actor, 'event': event,
                                'package': lease['key'][1], 'action': 'release'})
                 return {'status': 200, 'released': True}, writes, observations
-            key = (self.scope(actor, 'data_object'), args['name'])
+            reference = args['name']
+            name = artifact_versions.name(reference)
+            key = (self.scope(actor, 'data_object'), name)
             artifact = self.artifacts.get(key)
+            path = self.path('artifacts', *key)
+            if isinstance(reference, dict):
+                artifact = self.artifact_versions.get((*key, reference['version']))
+                path = self.path('artifact_versions', key[0], reference['version'])
             if artifact is None:
                 return {'status': 404, 'error': 'Artifact not found'}, writes, observations
-            content = self.path('artifacts', *key).read_bytes()
+            content = path.read_bytes()
             assert sha256(content).hexdigest() == artifact['sha256']
             target = self.path('published', actor, lease['key'][1] + '.artifact')
             target.write_bytes(content)
-            receipt = {'package': lease['key'][1], 'artifact': args['name'], 'sha256': artifact['sha256']}
+            receipt = {'package': lease['key'][1], 'artifact': name, 'sha256': artifact['sha256']}
+            if self.versioned[actor]: receipt['artifact_version'] = artifact['version']
             self.publications.append({'actor': actor, 'event': event, **receipt})
             observations.append(self.observation(actor, 'data_object', artifact,
                                                   'published_artifact_digest', sha256=artifact['sha256']))

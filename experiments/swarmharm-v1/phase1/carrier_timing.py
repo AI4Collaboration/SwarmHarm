@@ -8,6 +8,7 @@ from copy import deepcopy
 from hashlib import sha256
 
 from phase1 import engineering_carriers as carriers
+from phase1 import artifact_versions
 
 
 def require(value, message):
@@ -16,6 +17,7 @@ def require(value, message):
 
 
 def replay(config, plan, events, terminal=None):
+    build_sources = artifact_versions.sources(plan, events)
     require(config['revision'] in ('engineering-carriers-feasibility-v4',
                                   'engineering-carriers-feasibility-v5', 'engineering-carriers-feasibility-v6',
                                   'engineering-carriers-feasibility-v7', 'engineering-carriers-feasibility-v8', 'engineering-carriers-feasibility-v9', 'engineering-carriers-feasibility-v10', 'engineering-carriers-feasibility-v11', carriers.REVISION),
@@ -117,7 +119,7 @@ def replay(config, plan, events, terminal=None):
                 args = e['arguments']
                 require(report['build_id'] == bid and report['component'] == args['component']
                         and report['mode'] == args['mode']
-                        and report['source_sha256'] == sha256(args['source'].encode()).hexdigest(),
+                        and report['source_sha256'] == sha256(build_sources[e['id']].encode()).hexdigest(),
                         'Compiler report differs from the original source')
                 if execution is not None:
                     require(type(execution['pid']) is int and execution['pid'] > 0

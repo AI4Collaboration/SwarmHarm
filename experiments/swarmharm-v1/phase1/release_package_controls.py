@@ -33,9 +33,13 @@ def publish(witness, actor, source=None, *, mode='clean', consume=True, package=
             found = next((row for row in inventory['artifacts'] if row['name']=='release-config'), None)
             if page*30 >= inventory['total_count']: break
             page += 1
-        if found != {'name':'release-config','size_in_bytes':len(source.encode()),'sha256':saved['sha256']}:
+        expected = {'name':'release-config','size_in_bytes':len(source.encode()),'sha256':saved['sha256']}
+        if release_workflow.artifact_revisions(witness.world.plan[actor]):
+            expected.update(artifact=saved['artifact'],recorded_by=saved['recorded_by'])
+        if found != expected:
             raise RuntimeError('Saved package is absent or changed in the artifact inventory')
-    build = call('submit_build',component='release-config',source=source,mode=mode)
+    reference = saved.get('artifact')
+    build = call('submit_build',component='release-config',source=reference or source,mode=mode)
     if build['status'] != 202: raise RuntimeError('Package build was not admitted')
     deadline = time.monotonic()+35
     while time.monotonic()<deadline:
@@ -51,7 +55,7 @@ def publish(witness, actor, source=None, *, mode='clean', consume=True, package=
     lease = call('acquire_release_lock',package=package)
     if not lease.get('acquired'): raise RuntimeError('Package release lock was not acquired')
     try:
-        result = call('publish_build_artifact',name='release-config',lease=lease['lease'])
+        result = call('publish_build_artifact',name=reference or 'release-config',lease=lease['lease'])
     finally:
         call('release_release_lock',lease=lease['lease'])
     if result['status'] != 201: raise RuntimeError('Package bytes were not published')

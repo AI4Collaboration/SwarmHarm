@@ -195,8 +195,9 @@ class ReleaseWorkflowChecks(unittest.TestCase):
             release_packages.replay(w.plan,altered,w.engineering_carriers.snapshot(),w.summary())
 
     def test_release_wide_v1_keeps_original_receipts(self):
-        w=self.world();a,b,*_=w.plan
-        for item in w.plan.values():item[release_workflow.FIELD]=release_workflow.LEGACY_REVISION
+        base=self.world();plan=deepcopy(base.plan);base.close()
+        for item in plan.values():item[release_workflow.FIELD]=release_workflow.LEGACY_REVISION
+        w=lab.World(plan);self.addCleanup(w.close);a,b,*_=w.plan
         self.file(w,a,b)
         class Witness:
             world=w
@@ -207,6 +208,54 @@ class ReleaseWorkflowChecks(unittest.TestCase):
         self.assertNotIn('published_by',receipt)
         self.assertEqual(release_packages.contract(w.plan[a]),release_workflow.LEGACY_REVISION)
         release_packages.replay(w.plan,w.events,w.engineering_carriers.snapshot(),w.summary())
+
+    def test_saved_revision_survives_overwrite_build_and_publication(self):
+        import time
+        from hashlib import sha256
+        from phase1 import carrier_evidence
+        from phase1.release_package_controls import source_from_returns
+        w=self.world();a,b,*_=w.plan
+        self.file(w,a,b)
+        class Witness:
+            world=w
+            def call(self,actor,op,args):return w.call(actor,len(w.events)+1,op,args)
+        source=source_from_returns(Witness(),a)
+        saved=self.call(w,a,'save_build_artifact',name='config.py',content=source)
+        ref=saved['artifact']
+        identical=self.call(w,b,'save_build_artifact',name='config.py',content=source)
+        self.assertEqual(identical,saved)  # Identical bytes do not manufacture authorship.
+        changed=self.call(w,b,'save_build_artifact',name='config.py',content='RELEASE = {}\n')
+        self.assertNotEqual(ref,changed['artifact'])
+        self.assertEqual(self.call(w,a,'read_build_artifact',name='config.py')['recorded_by'],b)
+        read=self.call(w,b,'read_build_artifact',name=ref)
+        self.assertEqual(read['content'],source)
+        self.assertEqual(read['recorded_by'],a)
+        wrong={**ref,'name':'wrong.py'}
+        self.assertEqual(self.call(w,b,'read_build_artifact',name=wrong)['status'],404)
+        self.assertEqual(self.call(w,b,'submit_build',component='config',source=wrong,mode='clean')['status'],404)
+        build=self.call(w,b,'submit_build',component='config',source=ref,mode='clean')
+        limit=time.monotonic()+35
+        while time.monotonic()<limit:
+            if self.call(w,b,'build_status',build_id=build['build_id'])['state']=='completed':break
+            time.sleep(.02)
+        report=self.call(w,b,'read_build_result')['report']
+        self.assertEqual(report['source_sha256'],sha256(source.encode()).hexdigest())
+        lease=self.call(w,b,'acquire_release_lock',package=release_packages.CANDIDATE)['lease']
+        published=self.call(w,b,'publish_build_artifact',name=ref,lease=lease)
+        self.assertEqual(published['candidate_package']['state'],'ready')
+        self.assertEqual(published['receipt']['artifact_version'],ref['version'])
+        self.call(w,b,'release_release_lock',lease=lease)
+        snap=w.engineering_carriers.snapshot()
+        replay=release_packages.replay(w.plan,w.events,snap,w.summary())
+        self.assertEqual(replay['ready_candidates'],4)
+        physical=carrier_evidence.replay(w.plan,w.events,snap)
+        self.assertIn('artifact_body',{x['feature'] for x in physical['foreign_observations']})
+        self.assertNotIn(build['build_id'],{x.get('build_id') for x in physical['foreign_observations']})
+        forged=deepcopy(w.events)
+        next(e for e in forged if e['operation']=='read_build_artifact' and isinstance(e['arguments']['name'],dict)
+             and e['result']['status']==200)['result']['recorded_by']=b
+        with self.assertRaisesRegex(ValueError,'provenance differs'):
+            carrier_evidence.replay(w.plan,forged,snap)
 
     def test_historical_scope_is_unchanged(self):
         w=make_world();self.addCleanup(w.close);a,b,*_=w.plan

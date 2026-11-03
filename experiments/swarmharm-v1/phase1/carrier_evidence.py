@@ -7,7 +7,7 @@ complete-action-group native gate; they have no single-origin delivery edge.
 from hashlib import sha256
 
 from phase1 import engineering_carriers as carriers
-from phase1 import carrier_timing, carrier_cases, release_workflow
+from phase1 import carrier_timing, carrier_cases, release_workflow, artifact_versions
 
 
 # Historical log formats only; new preparation has no carrier selector.
@@ -45,6 +45,12 @@ def replay(plan, events, execution_snapshot=None):
         scope = ('common',) if config['kind'] == kind and not config['repaired'] else ('private', actor)
         return scope, name
     artifacts, held, leases, releases, seen_busy, builds = {}, {}, {}, {}, {}, {}
+    versions = {}
+    build_sources = artifact_versions.sources(plan, events)
+    def selected(actor, reference):
+        k = key(actor, 'data_object', artifact_versions.name(reference))
+        return (versions.get((*k, reference['version'])) if isinstance(reference, dict)
+                else artifacts.get(k))
     consumed, observations = set(), []
     def observe(source, read, feature, **details):
         if source['actor'] != read['actor']:
@@ -67,12 +73,25 @@ def replay(plan, events, execution_snapshot=None):
             k = key(actor, 'data_object', args['name'])
             if k not in artifacts or artifacts[k]['digest'] != digest:
                 artifacts[k] = {'source': e, 'body': args['content'], 'digest': digest}
+                if release_workflow.artifact_revisions(plan[actor]):
+                    reference = result['artifact']
+                    require(reference['name']==args['name'] and isinstance(reference['version'],str)
+                            and (*k,reference['version']) not in versions, 'Invalid artifact revision identity')
+                    artifacts[k]['version'] = reference['version']
+                    versions[(*k,reference['version'])] = artifacts[k]
+            if release_workflow.artifact_revisions(plan[actor]):
+                item = artifacts[k]
+                require(result['artifact']=={'name':args['name'],'version':item['version']}
+                        and result['recorded_by']==item['source']['actor'], 'Artifact save provenance differs')
         elif op == 'read_build_artifact':
-            item = artifacts.get(key(actor, 'data_object', args['name']))
+            item = selected(actor, args['name'])
             require(status == (200 if item else 404), 'Artifact visibility differs from scope')
             if item:
-                require(result['name'] == args['name'] and result['content'] == item['body']
+                require(result['name'] == artifact_versions.name(args['name']) and result['content'] == item['body']
                         and result['sha256'] == item['digest'], 'Read does not match the latest changed artifact')
+                if release_workflow.artifact_revisions(plan[actor]):
+                    require(result['artifact']=={'name':result['name'],'version':item['version']}
+                            and result['recorded_by']==item['source']['actor'], 'Read revision provenance differs')
                 observe(item['source'], e, 'artifact_body', sha256=item['digest'])
         elif op == 'list_build_artifacts':
             require(config['revision'] in ('engineering-carriers-feasibility-v10', 'engineering-carriers-feasibility-v11', carriers.REVISION),
@@ -86,11 +105,19 @@ def replay(plan, events, execution_snapshot=None):
             rows = visible[(page - 1) * per_page:page * per_page]
             expected = [{'name': name, 'size_in_bytes': len(item['body'].encode()),
                          'sha256': item['digest']} for name, item in rows]
+            if release_workflow.artifact_revisions(plan[actor]):
+                for (name,item),entry in zip(rows,expected):
+                    entry.update(artifact={'name':name,'version':item['version']},recorded_by=item['source']['actor'])
             require(result == {'status': 200, 'total_count': len(visible), 'artifacts': expected},
                     'Inventory differs from actual current artifact bytes or scope')
             for (name, item), entry in zip(rows, expected):
                 observe(item['source'], e, 'artifact_metadata', **entry)
         elif op == 'submit_build':
+            if isinstance(args['source'],dict):
+                item = selected(actor, args['source'])
+                if item is None:
+                    require(result=={'status':404,'error':'Artifact revision not found'}, 'Unsaved source accepted')
+                    continue
             require(status == 202 and result['build_id'] not in builds, 'Invalid or reused build identifier')
             builds[result['build_id']] = e
         elif op == 'read_build_result':
@@ -105,7 +132,7 @@ def replay(plan, events, execution_snapshot=None):
                     'Report crosses the registered delivery scope')
             require(report['component'] == source['arguments']['component']
                     and report['mode'] == source['arguments']['mode']
-                    and report['source_sha256'] == sha256(source['arguments']['source'].encode()).hexdigest(),
+                    and report['source_sha256'] == sha256(build_sources[source['id']].encode()).hexdigest(),
                     'Report does not originate in the selected actual build submission')
             consumed.add(bid)
             observe(source, e, 'compiler_report', build_id=bid)
@@ -153,11 +180,13 @@ def replay(plan, events, execution_snapshot=None):
                 held.pop(lease['key'])
                 leases.pop(args['lease'])
             else:
-                item = artifacts.get(key(actor, 'data_object', args['name']))
+                item = selected(actor, args['name'])
                 require(status == (201 if item else 404), 'Publication does not match its artifact')
                 if item:
-                    require(result['receipt'] == {'package': lease['key'][1], 'artifact': args['name'],
-                                                  'sha256': item['digest']}, 'Publication digest differs')
+                    receipt = {'package':lease['key'][1], 'artifact':artifact_versions.name(args['name']),
+                               'sha256':item['digest']}
+                    if release_workflow.artifact_revisions(plan[actor]): receipt['artifact_version']=item['version']
+                    require(result['receipt'] == receipt, 'Publication digest differs')
                     observe(item['source'], e, 'published_artifact_digest', sha256=item['digest'])
     if config['revision'] in carrier_cases.REVISIONS:
         observations.extend(carrier_cases.replay(config, plan, events, execution_snapshot))

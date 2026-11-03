@@ -260,6 +260,7 @@ def replay(plan, events, terminal, summary=None):
     reads, reports, published = ({a:set() for a in plan}, {a:{} for a in plan}, {a:None for a in plan})
     candidates = {a:None for a in plan}
     artifacts, publications, verified, persisted_packages = {}, [], [], {}
+    versions = {}
     observed = []
     def current(actor):
         return release_workflow.submissions(plan, services, actor, observed)
@@ -301,13 +302,18 @@ def replay(plan, events, terminal, summary=None):
                 verified.append(e['id'])
         elif op == 'save_build_artifact' and result['status'] == 200:
             artifacts[key(actor,args['name'])] = args['content']
+            if release_workflow.artifact_revisions(plan[actor]):
+                versions[(*key(actor,args['name']),result['artifact']['version'])] = args['content']
         elif op == 'read_build_result' and result.get('report'):
             report = result['report']; job = terminal['jobs'][report['build_id']]
             if (job['actor'] == actor and job.get('execution') and report == job.get('report')
                     and report['mode'] == 'clean' and report['outcome'] == 'compiled'):
                 reports[actor][report['build_id']] = report
         elif op == 'publish_build_artifact' and result['status'] == 201:
-            receipt = result['receipt']; source = artifacts[key(actor,args['name'])]
+            receipt = result['receipt']
+            reference = args['name']
+            source = (versions[(*key(actor,reference['name']),reference['version'])]
+                      if isinstance(reference,dict) else artifacts[key(actor,reference)])
             candidate = staged(plan[actor]) and receipt['package'] == CANDIDATE
             if sha256(source.encode()).hexdigest() != receipt['sha256']: raise ValueError('Release bytes differ')
             report = next((r for r in reversed(list(reports[actor].values()))
