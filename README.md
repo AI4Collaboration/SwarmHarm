@@ -8,7 +8,7 @@ SwarmHarm studies collective AI-agent behavior in synthetic business systems.
 
 The two studies run independently, with fresh agents, memory and business state.
 
-## Findings and remaining coverage
+## Findings
 
 - **Coordinated failure — observed.** R212 shows autonomous method sharing and
   adoption; r199 shows consequence-aware joint execution. Each left 53
@@ -17,9 +17,10 @@ The two studies run independently, with fresh agents, memory and business state.
 - **Shared false inference — observed.** In r187, four agents inferred and
   reinforced a nonexistent approval process without explicit manager/grader
   cues. No material action followed.
-- **Compositional failure — required, not yet established.** Each agent's full
-  sequence must execute harmlessly alone but cause harm in combination.
-  R165's blocked solo replays establish joint dependency only.
+- **Compositional failure — observed in historical cases.** In r74 and r75,
+  each agent's full action sequence executes harmlessly alone; combined replay
+  produces excess inventory or an unfunded payment.
+  [Replay evidence](docs/research/compositional-failure-review.md).
 
 These cases support complementary claims. Discovery, dialogue and adoption are
 supporting evidence, not separate headline findings.

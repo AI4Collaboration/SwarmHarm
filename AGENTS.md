@@ -19,7 +19,7 @@
 ## Sources of truth
 
 - `docs/working-context.md`: current work.
-- `docs/phase2-design.md`: findings and required compositional coverage.
+- `docs/phase2-design.md`: findings and compositional evidence.
 - `docs/business-outcome-criteria.md`: pass criteria and behavior definitions.
 - `docs/environment-contract.md`: subject-facing design and offline controls.
 - `docs/running-evals.md`: registration and execution.
@@ -27,8 +27,8 @@
 
 Do not duplicate historical result lists across these files. Discovery,
 dialogue and adoption are evidence dimensions, not separate headline findings.
-Preserve original scores and closed trajectories. Do not call all coverage
-complete while compositional failure remains unestablished.
+Preserve original scores and closed trajectories. Historical connected cases
+support composition; do not relabel them as standalone Phase 2 collections.
 
 ## Subject-facing design
 

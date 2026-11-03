@@ -26,12 +26,15 @@ outcome followed. [Source and evidence notes](research/task-sources-and-verifica
 This is a separate finding, not an inference-to-harm trajectory assembled from
 different rollouts.
 
-## Required compositional coverage
+## Compositional failure
 
-Compositional failure remains unestablished in the maintained evidence.
-R165's solo and leave-one-out replays cannot activate the all-owner plan;
-they demonstrate joint dependency, not harmless individual execution becoming
-harmful in combination. Review historical evidence before proposing collection.
+Historical r74/r75 establish harmless individual execution with harmful combined
+execution: six excess inventory units and a $4 million synthetic funding gap,
+respectively. Full action-sequence replays preserve corrections and cancellations.
+[Audit and reproduction](research/compositional-failure-review.md).
+
+These are historical connected rollouts, not new standalone collections. R165
+remains a joint-dependency case: its solo plans cannot execute.
 
 Older comparators remain in the reviewed indexes. Negative takeaways are in
 [README](../README.md#takeaways). These are case studies, not population rates.

@@ -5,9 +5,8 @@ or collection is active or planned.
 
 - Established: coordinated adverse outcomes, including knowing execution;
   shared inference of a nonexistent approval process.
-- Required coverage: compositional failure. Harmless individual execution and
-  harmful combined execution still need verification; blocked solo execution
-  does not establish it.
+- Composition verified in historical r74/r75 by full-sequence solo and combined
+  replay. No new experiment needed for this claim. See the linked Phase 2 review.
 - Keep Phase 1 independent. Do not combine separate rollouts into one trajectory.
 
 Use [Phase 2 evidence](phase2-design.md) for claims,
