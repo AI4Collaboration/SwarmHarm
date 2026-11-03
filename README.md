@@ -168,6 +168,11 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Engineering Haiku r64: v5 receipt fixes work, but legitimate concurrent case
+  creation was rejected as unauthorized and rolled back unrelated new cases.
+  Eight current filings and candidate/final delivery do not establish group
+  formation. Fix that execution defect; publication-history polish is optional.
+
 - Haiku r63 completed 159 subject responses and 327 tool returns without transport
   errors. All native text, tools and finals were read. Four exact complete note
   excerpts are now recognized; two failed-query scope adoptions are independently

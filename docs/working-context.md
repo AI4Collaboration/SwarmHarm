@@ -1,52 +1,30 @@
 # Current Phase 1 work
 
-Engineering release-wide v4 r62 is terminal and completely reviewed. Source
-eb8016e0d, registration f64efe5d6. Provider ECONNRESET interrupted collection;
-all 130 completed subject responses, 275 tool returns, two preflights and the
-unfinished visible native blocks were read. Four workstations are absent;
-149 source files and 12349 terminal files match. The 19-sidecar review manifest
-is under ../eval-readiness/phase1-artifact-revisions-engineering-haiku55-cc-r62/.
-Nine saved-reference builds, six reference publications and one historical read
-were independently bound. Eight current filings and one candidate/final pair
-were delivered. Three intentional resolution-note deliveries pass frozen channel
-use; all-four formation is not established before interruption. The separately
-bound complete grep note excerpt preserves the frozen score and review limits.
-No collector is active; do not restart r62.
+Latest user instruction: keep Phase 1 simple and use successful versions as the
+baseline. Fix demonstrated communication/execution defects together, validate,
+then run Haiku and read its complete trace. Preserve neutral tasks, natural
+business entries and factual notices. Optional publication-history polish is not
+a readiness gate. Historical selected positives remain valid at their sources
+and models; new Haiku validation does not revoke them. See
+.cursor/rules/phase1-simplicity.mdc.
 
-The complete-unique-note measurement repair is implemented. Eleven case checks
-(including real grep, duplicate-text rejection and native semantic binding), eleven
-native review checks and fourteen prompt checks pass. Retrospective r62 replay
-preserves all 55 original observations and finds six complete unique note excerpts;
-initial surfaces are byte-identical for the same plan. This is reanalysis, not new
-behavior or a revised frozen score. Evidence: phase1-case-excerpt-reanalysis-20261103-r1.json
-and focused/native/prompt logs under ../eval-readiness/. No task, interface,
-notification or business completion change. Source 02cfb6a36 is pushed and actual remote matched. Common r63 preparation
-passed 479 common checks, 14 prompt checks and the actual four-workstation
-business control. New initial inputs were read; tools and decoded files are
-unchanged from r62 except job IDs/deadline (2026-11-03T22:14:42UTC). All 149
-source/input/task/registration seals and both catalogs pass. Preparation-audit
-is saved under ../eval-readiness/phase1-case-excerpts-engineering-haiku55-cc-r63.
-Registration 644be37c9 is pushed. Absolute-path freeze verified clean/actual
-remote/all seals. Common launcher started r63 once at 2026-11-03T20:49:45.127827Z,
-PID62428. Terminal review is complete: 159 subject responses, 327 tool returns,
-two preflights, native/atomic input binding, independent business reconstruction,
-saved-artifact binding and ATIF pass. All 149 source files and 23312 terminal
-files match; four workstations are absent. Review-manifest binds 23 sidecars.
-Four complete-note observations and two scope adoptions are independently bound.
-Business delivery is eight current filings and one candidate/final pair; formation
-remains pending. Preserve r63; do not recollect. Release-wide v5 repairs report selection and unchanged-save explanation together.
-Fourteen focused checks, fourteen prompt checks and five historical world/input
-reconstructions pass. New task and tools are identical; only ordinary PLATFORM.md
-receipt documentation changes. Offline evidence is phase1-receipt-binding-offline-20261103-r1.json.
-Source 86fa20bdc is pushed; clean and actual remote matched. Common preparation
-for phase1-receipt-binding-engineering-haiku55-cc-r64 passed 482 common checks,
-14 prompt checks and the four-workstation full business control. All 149 source
-and input/task/registration seals and both catalogs pass. Four initial inputs and
-the PLATFORM.md delta were reviewed; other files/tools are byte-identical to r63
-after job/deadline normalization. Preparation-audit is saved. Deadline 22:37:33UTC.
-No new hosted calls. Push registration, verify freeze, then launch once.
+R64 release-wide v5 is terminal and fully reviewed. Source 86fa20bdc,
+registration f436ad41f. All 155 subject responses, 268 tool returns, four finals
+and two preflights were read. Native/atomic delivery, independent business replay,
+saved-artifact binding and ATIF passed. 149 source files and 31325 terminal files
+match; all four workstations are absent. Review-manifest binds 24 sidecars under
+../eval-readiness/phase1-receipt-binding-engineering-haiku55-cc-r64/.
+Eight current filings and one candidate/final pair are delivered; formation is
+pending. v5 save acknowledgments and matching-report selection were exercised.
+No collector or r64 audit remains active. Preserve r59-r64; do not recollect.
 
-
+Next repair is concurrent creation of the same investigation: preserve the first
+author, commit independent valid new cases, and return an honest stale-reference
+conflict for notes tied to a losing local diagnostic. No task, notification,
+completion, model or extra publication mechanism change is planned. This addresses
+r64 events71/72; it does not guarantee autonomous communication. Historical r65's
+case/thread/locator helpers and factual notifications are present in the current
+workflow. Full business completion remains distinct from formation.
 
 Engineering release-wide v3 is reviewed in Haiku CC/AxonHub r61: source
 a7496130b, registration 06014cdf0. All 141 subject responses, 289 tool returns,

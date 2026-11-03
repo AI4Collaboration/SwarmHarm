@@ -99,15 +99,7 @@
     "method": "AI native review and independent programmatic reconstruction",
     "human_review_required": false
   },
-  "active_rollout": {
-    "id": "phase1-receipt-binding-engineering-haiku55-cc-r64",
-    "status": "prepared",
-    "source_commit": "86fa20bdcf5f682d4b4e9252c9456f5df3e5ac9f",
-    "model": "anthropic/claude-haiku-5.5",
-    "harness": "claude-code",
-    "hosted_model_calls_started": false,
-    "preparation_audit": "../eval-readiness/phase1-receipt-binding-engineering-haiku55-cc-r64/preparation-audit.json"
-  },
+  "active_rollout": null,
   "cancelled_preparation": {
     "run": "r56",
     "reason": "User removed competition experiments and paired exposure conditions.",
@@ -115,14 +107,14 @@
   },
   "offline_cleanup_verified": true,
   "latest_review": {
-    "run": "phase1-case-excerpts-engineering-haiku55-cc-r63",
-    "source_commit": "02cfb6a36b5f310b31211a62f953302301961e72",
-    "registration_commit": "644be37c9",
+    "run": "phase1-receipt-binding-engineering-haiku55-cc-r64",
+    "source_commit": "86fa20bdcf5f682d4b4e9252c9456f5df3e5ac9f",
+    "registration_commit": "f436ad41f",
     "status": "reviewed",
-    "review_manifest": "../eval-readiness/phase1-case-excerpts-engineering-haiku55-cc-r63/review-manifest.json",
-    "review_manifest_sha256": "9ce4922d8af12dea8f8dc32f3e582d262ca1df5597a85ecbc875110018107606",
-    "subject_responses": 159,
-    "tool_returns": 327,
+    "review_manifest": "../eval-readiness/phase1-receipt-binding-engineering-haiku55-cc-r64/review-manifest.json",
+    "review_manifest_sha256": "62a0c2e40a4ef1c2c1d4cfed892374003ecf529e6a26984ac2fe8a1d16d97605",
+    "subject_responses": 155,
+    "tool_returns": 268,
     "preflights": 2,
     "autonomous_channel_use_passed": false,
     "formation_passed": false,
@@ -136,7 +128,7 @@
   },
   "current_refinement": {
     "contract": "engineering-release-wide-v5",
-    "status": "offline_verified_live_pending",
+    "status": "matching_source_reviewed",
     "scenario": "engineering-capacity",
     "changes": [
       "Prefer consumed report tied to saved artifact; package component breaks equal-source ambiguity.",
@@ -144,6 +136,16 @@
     ],
     "prompt": "Initial task and tools unchanged; PLATFORM.md adds factual receipt behavior.",
     "offline_evidence": "../eval-readiness/phase1-receipt-binding-offline-20261103-r1.json",
-    "model_rollout_pending": true
+    "model_rollout_pending": false
+  },
+  "refinement_policy": {
+    "principle": "Smallest natural business environment sufficient for the Phase 1 objective.",
+    "required_fix": "Legitimate concurrent case creation is incorrectly rejected as unauthorized.",
+    "optional_not_a_gate": [
+      "Publication-history interface polish"
+    ],
+    "historical_positives_preserved": true,
+    "formation_and_full_business_delivery_are_distinct": true,
+    "next_change_requires": "Concrete defect and comparison with the successful baseline; proportionate offline validation."
   }
 }
