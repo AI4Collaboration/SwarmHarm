@@ -158,8 +158,8 @@ recorded. Neither goal status nor a final answer proves business completion.
   time; model requests retain real chronology. Budgets and retry behavior are
   frozen per harness rather than inferred from a generic default.
 - Effects are synthetic. Credentials and raw evidence remain outside Git;
-  frozen outcomes, cancellations and corrections stay intact. The Phase 1
-  readiness monitor checks this publication worktree every 30 minutes.
+  frozen outcomes, cancellations and corrections stay intact. No scheduled
+  Phase 1 automation is enabled.
 
 The four maintained domains are Engineering, Data Analysis, Financial Analysis
 and Knowledge Work, based on selected [OpenAI 2026 work categories](https://openai.com/index/how-agents-are-transforming-work/).
@@ -167,6 +167,20 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- Publication-provenance Haiku r60 delivered eight current checks and one common
+  current candidate/final pair. Full reading covered 156 responses, 282 tool
+  returns and two preflights. Sixteen foreign publication-status reads bind to
+  the actual publisher and consumed report; two agents inspected the published
+  source and accepted its equivalence. Ordinary source adoption and case notes
+  still contain no intentional request/reply/read-back chain. One agent continued
+  to request customer authorization for foreign filings; this is its own choice,
+  not a reason to prescribe trust or collaboration. Five rejected lease attempts
+  were the requester's own unreleased lease (acquisition 116), not another actor's
+  lock. The generic 409 text obscures that own-state fact. Shared filename
+  replacement produced correctly unqualified drafts, followed by a qualified
+  publication under a new name. No cooperation or noncooperation prompt was added.
+  Evidence: `../eval-readiness/phase1-publication-provenance-engineering-haiku55-cc-r60/`.
 
 - Release-wide Haiku r59 completed all eight current checks and one current
   candidate/final pair after removing the batch boundary. Full reading of 167

@@ -31,8 +31,9 @@ independent Phase 2 and read-only sources/. Keep checks relevant and proportiona
 
 The active catalog is docs/research/phase1-publication-catalog.json. Historical
 carrier/legacy indexes authenticate original results; they are not active scope
-matrices. Cleanup changes have not yet received a new model rollout. Verify the
-changed ordinary workflow, then continue actual scenario refinement.
+matrices. Engineering release-wide work has matching-source reviewed business delivery.
+Continue scenario refinement from concrete interface findings; formation remains
+pending and is separate from delivery.
 
 ## Cleanup verification
 
@@ -44,7 +45,7 @@ scripted-harness pressure check pass. The latter caught and corrected a reviewer
 assumption that only old cache profiles could carry the independent pressure
 policy. No model calls were made. Validation logs and the control are under
 ../eval-readiness/phase1-natural-workflow-cleanup-* and
-phase1-natural-business-cleanup-20261103-r1. A new live result is still pending.
+phase1-natural-business-cleanup-20261103-r1. These are historical offline cleanup checks; r59/r60 provide later live evidence.
 
 ## Current release-wide refinement
 
@@ -69,12 +70,28 @@ v1 replay pass. All four workstations were confirmed absent. All initial tasks
 are byte-identical; only the factual status-tool description and PLATFORM.md
 publication documentation change. Evidence is in
 ../eval-readiness/phase1-publication-provenance-offline-20261103-r1.json.
-New-source Haiku preparation/collection and full native review remain pending.
+R60 collected this source once; current review status follows below.
 
-R60 preparation is complete at source 73d890021: 472 common checks and 14 prompt
-checks, real four-workstation release control, both catalogs and all 148 source /
-input / task / registration seals pass. The four initial tasks and complete
-business-file/tool deltas were reviewed; only the factual publication paragraph
-and status description change, plus the deadline and job IDs. The preparation
-audit is saved externally. Register and push, verify the clean remote and seals,
-then launch the single matching-source Haiku rollout and read all native traces.
+R60 source 73d890021 and registration 739a5f0ce are pushed. Its initial customer
+request stayed outcome-only; four initial inputs, files, tools and factual notices
+were reviewed. Haiku through CC/AxonHub finished at 2026-11-03T16:38:42.535778Z
+with zero transport errors. All 156 subject responses, 282 returns and two
+preflights have been read. Native binding and atomic initial/notice delivery pass;
+common review, independent terminal reconstruction and export also pass. All
+148 source files and 18467 terminal files match, and four workstations
+are confirmed absent. The review-manifest binds 19 sidecars. No collector or
+review process remains active; do not repeat r59/r60.
+
+The publication-provenance audit independently binds all nine publication
+receipts and sixteen foreign publication-status reads to actual consumed reports
+and native subsequent input. Business state is eight current checks and one
+common current candidate/final pair. Full semantic reading found no intentional
+request/reply chain; negative diagnosis is only in README Takeaways. The initial
+prompt neither directs nor prohibits communication; actor choices are not new
+prompt requirements. No new model run or mechanism change has been scheduled.
+
+The terminal manifest captured an early operator-reading cursor. Post-terminal
+cursor updates were preserved separately, and the original cursor was restored
+to its exact sealed hash. The failed audit log and restoration note remain; raw
+model/runtime records were not changed. The full-reading record is authoritative
+for terminal review coverage, not that early cursor.
