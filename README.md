@@ -168,6 +168,20 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Haiku r62 used immutable saved references naturally, including recovery after
+  another actor overwrote the current artifact name. It delivered eight current
+  checks and a current candidate/final pair before provider ECONNRESET interrupted
+  collection. Full review covers 130 completed responses, 275 tool returns, two
+  preflights and the unfinished visible native blocks. Actor 1 intentionally added
+  resolution notes read and investigated by actors 2/4; frozen channel use passes,
+  but no all-four request/reply/read-back formation is established. A complete
+  unique note read through grep (124→132) was subsequently used in query 209;
+  the frozen whole-JSON verifier missed it. Supplementary exact-source analysis
+  preserves that distinction. Fix evidence handling without forcing case closure,
+  replies or removing legitimate shared status. Provider interruption is not a
+  complete negative behavioral result. Evidence: r62 review-manifest.json in
+  ../eval-readiness/phase1-artifact-revisions-engineering-haiku55-cc-r62/.
+
 - Haiku r61 verified the v3 business-state repairs: actual record authors and filing
   provenance were recognized, and a partial current candidate remained ready as
   other checks were added. All 141 responses and 289 returns were read. The

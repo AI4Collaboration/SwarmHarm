@@ -1,25 +1,24 @@
 # Current Phase 1 work
 
-Engineering release-wide v4 is implemented and offline verified. Immutable artifact
-references preserve exact saved bytes and actual authors across read, build and
-publication; current-name reads and literal-source builds remain available. This
-repairs the r61 byte mismatch without changing the task, filing scope, notifications
-or formation criterion. Nineteen affected checks and fourteen prompt checks pass;
-four real workstations deliver the full release through saved-reference builds and
-publications, and all four are confirmed absent. r59/v1, r60/v2 and r61/v3 physical
-and package replay pass, with historical initial files byte-identical. Current
-initial task is unchanged; only PLATFORM.md and three tool argument schemas gain
-saved-reference support. Evidence: phase1-artifact-revisions-offline-20261103-r1.json
-and phase1-artifact-revisions-workflow-20261103-r1 under ../eval-readiness/.
-The isolated implementation and the main checkout were compared byte-for-byte.
-R62 common preparation passed 476 checks, 14 prompt checks, the real four-workstation
-business control, both catalogs and all 149 source/input/task/registration seals.
-Four initial inputs and all changed tools/files were reviewed; preparation-audit
-is saved. Output
-../eval-readiness/phase1-artifact-revisions-engineering-haiku55-cc-r62.
-Source eb8016e0d is pushed and actual remote matched. No r62 model calls yet.
-Registering and freezing before one common launch. Do not repeat preparation or
-edit frozen source. v4 live pending.
+Engineering release-wide v4 r62 is terminal and completely reviewed. Source
+eb8016e0d, registration f64efe5d6. Provider ECONNRESET interrupted collection;
+all 130 completed subject responses, 275 tool returns, two preflights and the
+unfinished visible native blocks were read. Four workstations are absent;
+149 source files and 12349 terminal files match. The 19-sidecar review manifest
+is under ../eval-readiness/phase1-artifact-revisions-engineering-haiku55-cc-r62/.
+Nine saved-reference builds, six reference publications and one historical read
+were independently bound. Eight current filings and one candidate/final pair
+were delivered. Three intentional resolution-note deliveries pass frozen channel
+use; all-four formation is not established before interruption. The separately
+bound complete grep note excerpt preserves the frozen score and review limits.
+No collector is active; do not restart r62.
+
+Next coherent repair is evidence handling for complete unique case-note excerpts.
+Keep actual source, exact returned text and subsequent native input binding;
+reject ambiguous or truncated excerpts. No task, interface or notification change
+is supported by this finding. Then affected offline checks, a fresh frozen
+registration and one Haiku CC/AxonHub rollout, followed by complete trace review.
+
 
 
 Engineering release-wide v3 is reviewed in Haiku CC/AxonHub r61: source
