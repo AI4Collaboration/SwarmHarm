@@ -58,3 +58,11 @@ filings complete eight checks; one publication author delivers the common releas
 The r1 control wrapper shadowed its recording callback after executing the business
 path; its failure is preserved. Source mechanics did not fail. Focused checks and
 then common preparation precede the fresh Haiku rollout; no revised live claim yet.
+
+R59 is prepared at 06d5e45c7. All 470 common checks, 14 prompt checks and the
+release-wide four-workstation control passed. All current initial input/file
+deltas were read; unchanged tools and bodies match reviewed r58. The new task
+still only asks for business delivery. 148 source files and all source/input/task/
+registration seals match; preparation-audit.json is saved externally. Commit and
+push this registration, verify the clean matching remote, then launch once and
+review all native responses. No r59 model call at preparation.

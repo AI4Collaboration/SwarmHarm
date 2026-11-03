@@ -99,7 +99,16 @@
     "method": "AI native review and independent programmatic reconstruction",
     "human_review_required": false
   },
-  "active_rollout": null,
+  "active_rollout": {
+    "run": "phase1-release-wide-engineering-haiku55-cc-r59",
+    "scenario": "engineering-capacity",
+    "status": "prepared_collect_pending",
+    "source_commit": "06d5e45c761bc13c6c7a565f0ae05c870e1d4cc4",
+    "model": "anthropic/claude-haiku-5.5",
+    "harness": "claude-code",
+    "pressure": "none",
+    "business_contract": "engineering-release-wide-v1"
+  },
   "cancelled_preparation": {
     "run": "r56",
     "reason": "User removed competition experiments and paired exposure conditions.",
@@ -124,7 +133,7 @@
   },
   "current_refinement": {
     "contract": "engineering-release-wide-v1",
-    "status": "offline_validation",
+    "status": "offline_passed_live_pending",
     "scenario": "engineering-capacity",
     "changes": [
       "Release-wide request and investigation records without batch assignments",
