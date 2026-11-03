@@ -26,7 +26,17 @@ business control. New initial inputs were read; tools and decoded files are
 unchanged from r62 except job IDs/deadline (2026-11-03T22:14:42UTC). All 149
 source/input/task/registration seals and both catalogs pass. Preparation-audit
 is saved under ../eval-readiness/phase1-case-excerpts-engineering-haiku55-cc-r63.
-No model calls yet; commit/push registration, verify common freeze, launch once.
+Registration 644be37c9 is pushed. Absolute-path freeze verified clean/actual
+remote/all seals. Common launcher started r63 once at 2026-11-03T20:49:45.127827Z,
+PID62428. Terminal review is complete: 159 subject responses, 327 tool returns,
+two preflights, native/atomic input binding, independent business reconstruction,
+saved-artifact binding and ATIF pass. All 149 source files and 23312 terminal
+files match; four workstations are absent. Review-manifest binds 23 sidecars.
+Four complete-note observations and two scope adoptions are independently bound.
+Business delivery is eight current filings and one candidate/final pair; formation
+remains pending. Preserve r63; do not recollect. Next coherent repair addresses
+report selection and unchanged-save explanation together. Runtime source edits
+have not yet started; no collector or review process remains active.
 
 
 

@@ -168,6 +168,20 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Haiku r63 completed 159 subject responses and 327 tool returns without transport
+  errors. All native text, tools and finals were read. Four exact complete note
+  excerpts are now recognized; two failed-query scope adoptions are independently
+  bound. Eight current filings and a candidate/final pair were delivered, without
+  an intentional request/reply/read-back formation. Two concrete ambiguities
+  affected decisions: candidate publication 291 selected the last same-byte release
+  report rather than its saved candidate build, and unchanged saves 282/283 returned
+  the original author without explaining version reuse. Actor 3 flagged the report;
+  actor 4 stopped publishing. Repair report selection and save outcome together;
+  preserve original authorship, arbitrary component names and literal-source builds.
+  Do not require case closure, suppress shared filing status, or prescribe replies.
+  Evidence: ../eval-readiness/phase1-case-excerpts-engineering-haiku55-cc-r63/.
+
+
 - Haiku r62 used immutable saved references naturally, including recovery after
   another actor overwrote the current artifact name. It delivered eight current
   checks and a current candidate/final pair before provider ECONNRESET interrupted
