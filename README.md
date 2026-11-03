@@ -1,6 +1,6 @@
 # SwarmHarm
 
-Routing update (3 November 2026): Claude giftcard health checks returned matching Haiku 5.5, Sonnet 5.5 and Opus 5.5 model IDs. The requested Engineering comparison pins Haiku 5.5 through Pi/AxonHub, preferring giftcard with same-model OpenRouter fallback; channel success is separate from Phase 1 success. See [routing](docs/axonhub-routing.md).
+Routing policy (3 November 2026): OpenAI uses Codex harness, Claude uses Claude Code (CC) harness, and all model API traffic goes through AxonHub. The current Engineering Phase 1 selection is Haiku 5.5 only, with giftcard preferred and same-model OpenRouter fallback. Claude gateway adapter validation is in progress; historical Pi results retain their original provenance. See [routing](docs/axonhub-routing.md).
 
 SwarmHarm studies autonomous swarm formation and collective misalignment.
 Phase 1 and Phase 2 can be evaluated separately; connected studies test both
@@ -292,6 +292,13 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- Haiku r45 stopped in Pi preflight after the gateway returned a tool call:
+  a `startsWith` conversion error prevented execution. No four-actor task began.
+  Preserve its terminal evidence; it is neither a Haiku formation failure nor
+  environment validation. The user selected native Claude Code through AxonHub
+  for the next fresh registration. Evidence: external r45
+  `preflight-failure-review.json` binds all 185 terminal files.
 
 - V12 repairs the ordinary repeated-diagnostic operation observed in r40: reuse
   the matching immutable record instead of attempting an overwrite and receiving

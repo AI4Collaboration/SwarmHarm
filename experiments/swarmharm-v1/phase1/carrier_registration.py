@@ -12,10 +12,10 @@ def select(kind, repaired, *, mode, scenario, harness, population, cue, topology
         if repaired: raise ValueError('Carrier repair requires a selected carrier')
         return cache
     if (kind not in CLASSES or type(repaired) is not bool or mode != 'phase1'
-            or scenario != 'engineering-capacity' or harness != 'pi-sdk' or population != 4
+            or scenario != 'engineering-capacity' or harness not in ('pi-sdk','claude-code') or population != 4
             or cue != 'agent_initiated_activity' or topology is not None
             or cache not in (None,'cache_value_repaired')):
-        raise ValueError('Concrete carriers require four-context natural Engineering Phase 1 through Pi SDK with a private baseline')
+        raise ValueError('Concrete carriers require four-context natural Engineering Phase 1 through a registered native SDK with a private baseline')
     return 'cache_value_repaired'
 
 
@@ -41,7 +41,12 @@ def valid(reg):
         if expected is None: return FIELD not in reg
         return (reg.get(FIELD)==expected and reg.get('phase1_gate_revision')==SCHEMA
                 and reg.get('study_mode')=='phase1' and reg.get('scenario')=='engineering-capacity'
-                and reg.get('harness',{}).get('kind')=='pi-sdk')
+                and (reg.get('harness',{}).get('kind')=='pi-sdk' or (
+                    reg.get('harness',{}).get('kind')=='claude-code'
+                    and reg['harness'].get('authentication')=='axonhub'
+                    and reg['harness'].get('gateway')=='https://lmportal.iefbr14.xyz/v1'
+                    and reg.get('endpoint')=='https://lmportal.iefbr14.xyz/v1/messages'
+                    and reg['harness'].get('native_binding')=='claude-sdk-exact-delivery-v1')))
     except (ValueError,TypeError,KeyError): return False
 
 

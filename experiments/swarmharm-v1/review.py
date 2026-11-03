@@ -125,7 +125,11 @@ def verify_evidence_manifest(root):
 
 def verify_frozen_evaluator(registration):
     hashes = registration.get("code_hashes", {})
-    for relative in EVALUATOR_PATHS:
+    paths = EVALUATOR_PATHS
+    if registration.get('phase1_carrier_condition') and registration.get('harness',{}).get('kind') == 'claude-code':
+        paths += ('experiments/swarmharm-v1/phase1/claude_native_review.py',
+                  'experiments/runtime/claude_agent.py')
+    for relative in paths:
         if hashes.get(relative) != digest(REPO / relative):
             raise RuntimeError(f"Evaluator differs from frozen registration: {relative}")
 

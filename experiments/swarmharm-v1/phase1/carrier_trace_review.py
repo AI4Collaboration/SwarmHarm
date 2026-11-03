@@ -41,7 +41,11 @@ def native_call(root, registration, event, *, sealed):
              and item.get('call_id') == returned['call_id']]
     require(len(calls) == 1 and calls[0]['name'] == event['operation']
             and json.loads(calls[0]['arguments']) == event['arguments'], 'Native carrier invocation differs')
-    return {'actor': actor, 'step': step, 'call_id': returned['call_id'],
+    sdk = {}
+    if registration.get('harness',{}).get('kind') == 'claude-code':
+        from phase1 import claude_native_review
+        sdk['claude_sdk'] = claude_native_review.response(root, registration, actor, step, sealed=sealed)
+    return {**sdk, 'actor': actor, 'step': step, 'call_id': returned['call_id'],
             'request': request_ref, 'response': response_ref, 'return': returned_ref}
 
 
@@ -53,6 +57,9 @@ def delivered_in(root, registration, event, binding, step, *, sealed):
         item.get('type') == 'function_call_output' and item.get('call_id') == binding['call_id']
         and json.loads(item['output']) == event['result'] for item in request['input']),
         'The interpreting context did not receive this exact carrier observation')
+    if registration.get('harness',{}).get('kind') == 'claude-code':
+        from phase1 import claude_native_review
+        ref['claude_sdk_delivery'] = claude_native_review.delivered(root, registration, event, binding, step, sealed=sealed)
     return ref
 
 
@@ -61,6 +68,9 @@ def anchor(root, registration, value, actor, minimum, maximum=None):
     response, ref = read_file(root, Path(root).resolve() / bound['path'], True)
     require(value.get('sha256') == ref['sha256'] and response.get('status') == 'completed',
             'Semantic anchor must bind a completed native response')
+    if registration.get('harness',{}).get('kind') == 'claude-code':
+        from phase1 import claude_native_review
+        bound['claude_sdk'] = claude_native_review.response(root, registration, actor, bound['step'], sealed=True)
     return bound
 
 
@@ -87,6 +97,17 @@ def assess(root, registration, world, annotation):
             and annotation.get('reviewer') and annotation.get('all_native_traces_reviewed') is True
             and annotation.get('registration_sha256') == registration_ref['sha256']
             and isinstance(annotation.get('signals'), list), 'Complete bound carrier review is required')
+    if registration.get('harness',{}).get('kind') == 'claude-code':
+        from phase1 import claude_native_review
+        import re
+        native_responses = {}
+        for actor in plan:
+            paths = sorted((root/'natural'/actor/'trace').glob('*.response.json'))
+            paths = [p for p in paths if re.fullmatch(r'\d{4}\.response\.json', p.name)]
+            require(paths, 'Claude carrier review has no completed native responses')
+            native_responses[actor] = [claude_native_review.response(root,registration,actor,
+                int(path.name.split('.')[0]),sealed=True) for path in paths]
+        result['claude_sdk_native_responses'] = native_responses
     events = {e['id']: e for e in world['events']}
     signals, identities = [], set()
     for row in annotation['signals']:

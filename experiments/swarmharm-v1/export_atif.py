@@ -54,7 +54,7 @@ def input_step(message, **extra):
     return {'source':'system' if role=='developer' else role,'message':content,
         'extra':{'native_role':role,**extra}}
 
-def claude_native_evidence(folder,requests):
+def claude_native_evidence(folder,requests,accepted_models=None):
     """Bind projections to SDK-native content; do not claim provider-context access."""
     native=folder/'claude'/'native';paths=sorted(native.glob('*.json'))
     assert paths,'Missing Claude SDK native evidence'
@@ -67,7 +67,9 @@ def claude_native_evidence(folder,requests):
     for reqpath in requests:
         req=read(reqpath);start=messages[req['native_record']]
         assert start['type']=='stream_event' and start['event']['type']=='message_start'
-        assert (start['event']['message']['id'],start['event']['message']['model'])==(req['sdk_message_id'],req['model'])
+        assert start['event']['message']['id']==req['sdk_message_id']
+        assert start['event']['message']['model'] in (accepted_models or [req['model']])
+        assert req.get('native_model',req['model'])==start['event']['message']['model']
         respath=reqpath.with_name(reqpath.name.replace('.request.json','.response.json'))
         if not respath.exists():continue
         response=read(respath);stop=messages[response['native_record']]
@@ -109,7 +111,8 @@ def export_actor(root,phase,actor):
         harness=registration['harness']
         if isinstance(harness['system_prompt'],dict):
             assert first.get('system_prompt_config')==harness['system_prompt'],'Claude preset differs from registration'
-        native_hashes,delivery=(codex_native_evidence if is_codex else claude_native_evidence)(folder,requests);hashes.update(native_hashes)
+        native_hashes,delivery=(codex_native_evidence(folder,requests) if is_codex else
+            claude_native_evidence(folder,requests,harness.get('accepted_native_model_ids')));hashes.update(native_hashes)
     system=first['input'][0];assert system.get('role') in ('developer','system'),'Pi system prompt must lead the input'
     expected=[system];initial_tools=first.get('tools',[]);all_tool_definitions=initial_tools
     phase2_tools_seen=study_mode=='phase2-component' and bool(initial_tools)

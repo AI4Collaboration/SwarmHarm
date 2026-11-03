@@ -31,9 +31,14 @@
   and one common prepare/collect/review/export entry. Do not restore a parallel
   custom direct-API loop. Register harness version, preset/context mapping,
   tools, goals, model, route and budgets; preserve actual native evidence limits.
-  Pi SDK through AxonHub is the current default. Claude Code and Codex subscription
-  adapters need explicit live model/harness selection; their availability alone
-  does not authorize a new route. A changed harness needs fresh live validation.
+  Standing user instruction, 3 November 2026: OpenAI models use the Codex
+  harness; Anthropic Claude models use the Claude Code (CC) harness. All model
+  API traffic goes through AxonHub, including harness-internal model requests.
+  Do not silently fall back to Pi, direct-provider APIs or local subscription
+  authentication that bypasses AxonHub. Other model families also use AxonHub;
+  select their harness separately. Preserve historical registrations and traces.
+  A changed harness needs a fresh registration and live validation; this routing
+  rule does not expand the selected models or study scope.
 - Maintain only `experiments/swarmharm-v1`. The user authorized independent
   Phase 2 component studies on 30 October. Prioritize the three METR-observed
   families in `docs/phase2-design.md`: external-environment breakout/scope
@@ -174,9 +179,11 @@
 - Keep channel writes, exact reads, replies, relays, adoption and business effects as
   separate evidence. Similar answers, shared access and self-reports prove none
   of the later links.
-- Current live Pi inference uses AxonHub; optional subscription harnesses require
-  explicit selection and preserve their distinct authentication and evidence scope. Verify the exact route in upstream and
-  authenticated AxonHub catalogs before preparation.
+- Apply the standing model-family harness rule above to all new model API work.
+  Harness choice and AxonHub upstream routing are separate: Claude's giftcard
+  channel remains preferred, with OpenRouter fallback for the same model.
+  Verify the exact route in upstream and authenticated AxonHub catalogs before
+  preparation. An installed harness is not evidence of gateway compatibility.
   All existing OpenRouter channels use unfiltered automatic model synchronization
   and automatic fallback. Keep the requested model fixed across channels; this
   routing policy does not expand the experiment's registered model selection.

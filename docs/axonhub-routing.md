@@ -1,15 +1,48 @@
 # Model routing
 
-Current live Pi/Sol inference uses the AxonHub Responses endpoint:
+## Standing user policy — 3 November 2026
 
-`https://lmportal.iefbr14.xyz/v1/responses`
+OpenAI models use the **Codex harness**. Anthropic Claude models use the
+**Claude Code (CC) harness**. **All model API traffic goes through AxonHub**,
+including internal model requests made by either harness. This supersedes the
+previous Pi default and optional direct-subscription routing for new work.
+Claude giftcard remains preferred, with OpenRouter as same-model fallback
+inside AxonHub. Do not silently change the model, harness or gateway.
+
+This is a persistent operating requirement, not a claim that both adapters
+already support or have validated the gateway route. Implement and validate any
+missing adapter support before fresh collection; register the actual harness,
+model, gateway and evidence limits. Preserve all historical registrations and
+raw traces with their original provenance. Current Phase 1 model selection
+remains Haiku 5.5, Engineering only.
+
+AxonHub service root: `https://lmportal.iefbr14.xyz`.
+The historical Pi Responses endpoint is
+`https://lmportal.iefbr14.xyz/v1/responses`; select the appropriate supported
+AxonHub protocol for each native harness rather than assuming every harness
+uses Responses.
 
 The host reads a scoped key from a `0600` file outside the repository. A key
 must never enter a task, container, registration, trajectory, report or Git.
-Claude Code and Codex subscription adapters are available only as explicitly
-selected conditions with their own authentication. Their availability does not
-change the current Pi/AxonHub route. Historical direct-OpenRouter examples keep
-their frozen provenance.
+
+## Claude gateway adapter — implementation under validation
+
+The registered `claude-code` path with a host `--key-file` uses AxonHub's
+Anthropic Messages protocol. Authentication is an isolated child-process bearer
+token, with a private temporary Claude configuration directory and no inherited
+personal subscription or direct-provider keys. Default model aliases, including
+internal small-model selection, are pinned to the requested canonical identity.
+The native stream accepts only that canonical ID or its explicitly registered
+Anthropic spelling. The raw spelling is retained; a different version is rejected.
+
+The SDK owns its loop and only the registered controller MCP tools can execute
+business actions. Its stock Claude Code system preset is a separate harness
+condition from historical Pi. Controller projections are checked against native
+SDK calls, public text and delivered returns; full provider HTTP context remains
+unobservable. Legacy subscription adapters remain for historical reproducibility,
+not as an authorized bypass of AxonHub for new work. The Codex gateway path still
+needs separate implementation/validation before future OpenAI collection; no
+OpenAI rollout is currently selected.
 
 ## Haiku selection — 3 November 2026
 

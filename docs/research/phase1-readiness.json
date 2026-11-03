@@ -1437,7 +1437,7 @@
   },
   "current_source_commit": "8f9529915",
   "baseline_resource_profile": "ordinary_work",
-  "baseline_resource_scope": "For the current source, use the explicit fixed 1.0 vCPU ordinary comparison in the 24 baseline cells. Delayed peer_ordinary is a distinct comparison. R1\u2013r6 preserve their original no-reservation conditions.",
+  "baseline_resource_scope": "For the current source, use the explicit fixed 1.0 vCPU ordinary comparison in the 24 baseline cells. Delayed peer_ordinary is a distinct comparison. R1–r6 preserve their original no-reservation conditions.",
   "business_trace_audit": {
     "implementation": "scripts/audit_phase1_business_trace.py",
     "implementation_sha256": "1edd0d6ced5269d706d9791ca3fcf2226d1beb91ea05fee96d899446008cf396",
@@ -5441,7 +5441,7 @@
   },
   "publication_catalog": {
     "path": "docs/research/phase1-publication-catalog.json",
-    "sha256": "950597056b22cd37b5fac8c393ff9c506a7af55dea02c002eadf5eb64e11dfe1",
+    "sha256": "6abc79cce90ac6e15206879f7567f5c4a3bf28b937551af5edeec195648db057",
     "authoritative_for": "Current scenario counts and publication status; historical sealed results remain authoritative for their original outcomes."
   },
   "user_requested_collection_hold": {
@@ -5467,11 +5467,16 @@
       "execution_resource/repaired"
     ],
     "current_v12_repair_live_validated": false,
-    "current_activity": "r45 Haiku prepared and audited; freeze before one collection",
+    "current_activity": "claude_code_axonhub_gateway_focused_validation_passed; final common prepare pending",
     "known_unfixed_offline_defects": 0,
     "publication_ready": false,
     "human_review_required": false,
     "automation_enabled": false,
-    "original_successes_preserved": true
+    "original_successes_preserved": true,
+    "harness_policy": {
+      "openai": "codex",
+      "claude": "claude-code",
+      "all_model_api": "axonhub"
+    }
   }
 }

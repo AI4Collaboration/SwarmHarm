@@ -56,7 +56,7 @@ def launch(output, registration_dir, *, key_file=None, command=None):
     root=guardrails.outside_repository(output,REPO,'Raw output directory')
     reg=json.loads((root/'registration.json').read_text())
     if command is None:
-        if reg.get('harness',{}).get('kind') in ('claude-code','codex'):
+        if reg.get('harness',{}).get('kind') in ('claude-code','codex') and reg['harness'].get('authentication') != 'axonhub':
             if key_file is not None:raise ValueError('Subscriptions do not accept an API key file')
         else:key_file=guardrails.credential_file(key_file,REPO)
     seal=json.loads((root/'registration-seal.json').read_text())

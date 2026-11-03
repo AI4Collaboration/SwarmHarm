@@ -1,7 +1,10 @@
 # SwarmHarm experiments
 
-Every experiment runs through the same registered SDK harness. The default is
-Pi SDK through AxonHub; Claude Code and Codex are explicit optional adapters.
+Every experiment runs through the shared registered harness pipeline. For new
+work, OpenAI uses Codex and Claude uses Claude Code; all model API requests go
+through AxonHub. Historical Pi/subscription evidence retains its original route.
+Claude gateway admission is under validation; Codex gateway support is pending
+before any new OpenAI collection. See the root routing policy.
 The active adapter is v112 Terminal-Bench-derived Engineering batching, with
 one fresh live rollout pending. Four Sol 5.6 subjects use native Pi goal and empty
 discussions. Full intake is fixed. A separate synthetic reservation desk requires

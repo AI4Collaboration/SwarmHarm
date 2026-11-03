@@ -100,11 +100,11 @@ test("a Phase 2 tool cannot run before it is installed", async (t) => {
   assert.match(f.events.at(-1).message, /Unexpected Claude tool/);
 });
 
-test("subscription exhaustion is a hold with no fallback query", async (t) => {
+test("provider exhaustion is a hold with no client fallback query", async (t) => {
   const f = await fixture(t);
   await f.feed({ type: "rate_limit_event", rate_limit_info: { status: "rejected" } });
   assert.equal(f.events.at(-1).type, "settled");
-  assert.match(f.events.at(-1).error_message, /subscription limit reached/);
+  assert.match(f.events.at(-1).error_message, /provider rate limit reached/);
   assert.equal(f.events.filter((event) => event.type === "request").length, 0);
 });
 

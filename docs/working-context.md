@@ -1,20 +1,45 @@
 # Current technical state
 
-## Active Haiku preparation completed — 3 November 2026
+## Standing harness policy — latest user instruction, 3 November 2026
 
-R45 `phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-r45`
-passed 518 common + 14 prompt checks, selected physical package/case controls,
-both catalogs and all 150 source/input/task/registration seals. Four initial
-surfaces reviewed; preparation-audit.json saved. Source f2af227ce, deadline
-2026-11-03T12:27:14+00:00. Only Haiku 5.5 is selected for Phase 1.
-Next: commit/push registration, verify absolute freeze, launch once and review
-all native traces. Sol r44 remains prepared and uncollected. No scheduled task.
+For all future model API work, OpenAI uses Codex harness and Claude uses
+Claude Code (CC) harness; every model API request goes through AxonHub.
+Claude giftcard remains preferred with same-model OpenRouter fallback inside
+AxonHub. This supersedes Pi/default and direct-subscription instructions below
+for new work; preserve historical registrations and evidence unchanged.
+Policy recorded in AGENTS.md, .cursor/rules/model-harness-routing.mdc and
+docs/axonhub-routing.md. Gateway adapter implementation/validation is separate
+from recording this policy and must pass before a fresh collection.
+Current Phase 1 selection stays Engineering / Haiku 5.5; no automation.
+
+## Claude Code / AxonHub integration in progress — 3 November 2026
+
+Haiku r45 is terminal `provider_hold` at preflight, 11:10:39 UTC. One gateway
+model response returned confirm_service tool use; Pi parsing raised a startsWith
+TypeError before any subject workstations or business task. All 185 terminal
+files verified; preflight-failure-review.json binds the original manifest.
+Do not restart r45. Sol r44 remains prepared and uncollected.
+
+New gateway adapter work uses the existing Claude Agent SDK and shared
+prepare/collect/review pipeline, a private temporary config, AxonHub bearer
+credential and explicit canonical/native same-model identities. All model
+aliases are pinned to the selected model. Carrier semantic review binds actual
+SDK calls, public text and exact tool returns before interpreting a signal;
+controller projections are not complete provider HTTP context. Initial tasks,
+ordinary cases/notices, carrier scopes and budgets are unchanged.
+Final gateway/standalone replay tests pass (4), Claude bridge checks pass (8),
+and prompt checks pass (14). Initial full suite: 544 tests, six historical
+Codex CLI pin errors; isolated pinned Codex compatibility follow-up passes all
+12 tests. Original failure log retained. Final common source checks run again
+inside fresh preparation. Evidence: phase1-claude-gateway-validation-20261103-r1. No hosted Claude Code rollout or new registration yet. Complete offline
+checks, commit/push source, prepare a fresh Engineering Haiku 5.5 registration,
+audit inputs and freeze, then collect once and review every native trace.
 
 ## Haiku comparison authorized — 3 November 2026
 
 User explicitly requested Haiku, preferring Claude giftcard then OpenRouter.
 Use `anthropic/claude-haiku-5.5` (giftcard native ID `claude-haiku-5-5`),
-Pi/AxonHub/high/goal off, Engineering v12 `data_object` vulnerable,
+Claude Code/AxonHub/high/goal off for the next fresh registration, Engineering v12 `data_object` vulnerable,
 ordinary_work, complete_batch. Model identity stays fixed across fallback.
 Giftcard channel health requests passed for Haiku 5.5 (#210236), Sonnet 5.5
 (#210228) and Opus 5.5 (#210237); they are connectivity checks, not Phase 1

@@ -7,7 +7,8 @@ conditions, eight independently recompiled sources, 62 historical worlds,
 518 common tests and 14 prompt checks pass. All 32 workstations are absent.
 The initial task, tools, notice rules, isolation scopes and budgets are unchanged.
 V12 live validation is authorized. Sol r44 preparation is preserved without
-collection; the user selected Haiku 5.5 only, and r45 preparation is in progress.
+collection; the user selected Haiku 5.5 only, and r45 stopped at Pi preflight before subject work. The next fresh registration
+will use Claude Code through AxonHub after adapter validation.
 Evidence: `phase1-offline-repairs-final-audit-20261103-r1/manifest.json`.
 
 3 November current checkpoint: six of eight v11 conditions are fully reviewed

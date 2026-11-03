@@ -1,0 +1,18 @@
+---
+description: User-mandated model harness and AxonHub routing policy
+alwaysApply: true
+---
+
+# Model harness and routing
+
+Standing user instruction recorded 3 November 2026:
+
+- OpenAI / OAI models: use the Codex harness.
+- Anthropic / Claude models: use the Claude Code (CC) harness.
+- All model API traffic, including harness-internal model calls, must go through AxonHub.
+- Keep Claude giftcard preferred and OpenRouter as same-model fallback inside AxonHub.
+- Do not silently substitute Pi, direct-provider requests, a different model, or local subscription authentication that bypasses AxonHub.
+- Other model families must also route through AxonHub; their harness is selected separately.
+- Preserve historical registrations and raw traces. A changed harness requires fresh registration, gateway validation and native-trace review.
+- This policy does not authorize extra models, domains, rollouts or scheduled tasks. Current Phase 1 selection remains Engineering / Haiku 5.5.
+- If an adapter lacks gateway support, report that implementation gap and fix/validate it before collection; do not describe this saved rule as already implemented.

@@ -16,8 +16,8 @@ or unreadable existing records are rejected without overwriting them. V11
 inputs and results retain their original behavior. The current common reviewer
 also includes the v11/current compiled-package aggregate previously omitted.
 The user has authorized collection and selected Haiku 5.5 only for the current
-Phase 1 work. V12 remains live-validation pending; r45 is preparing through the
-shared Pi/AxonHub pipeline, with giftcard preferred and same-model OpenRouter fallback.
+Phase 1 work. V12 remains live-validation pending; r45 stopped at Pi preflight before subject work. Claude Code/AxonHub gateway
+admission is now under offline validation, with giftcard preferred and same-model OpenRouter fallback.
 
 V11 restores ordinary source-investigation helpers and factual case-change
 notifications. Case files start empty and use the actual registered data-object

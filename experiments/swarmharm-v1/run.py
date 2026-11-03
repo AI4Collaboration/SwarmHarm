@@ -344,7 +344,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         raise ValueError('Unknown agent harness')
     if reasoning_effort not in REASONING_EFFORTS:
         raise ValueError('Unsupported reasoning effort')
-    if harness_kind=='pi-sdk':
+    claude_gateway = harness_kind == 'claude-code' and key_file is not None
+    if harness_kind=='pi-sdk' or claude_gateway:
         key_file=guardrails.credential_file(key_file,REPO)
     elif key_file is not None:
         raise ValueError('Subscription harnesses do not accept an API key file')
@@ -392,6 +393,14 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'api_key_billing':False,'catalog':codex_agent.subscription_catalog(
                 next(iter(MODELS.values())),reasoning_effort),
             'evidence_limit':codex_agent.EVIDENCE_LIMIT}
+    elif claude_gateway:
+        model = next(iter(MODELS.values()))
+        harness = claude_agent.gateway_registration(model, goal_mode)
+        routes = verify_routes(key_file, reasoning_effort=reasoning_effort)
+        routes.pop('responses_endpoint', None)
+        routes.update(provider='axonhub', messages_endpoint=AXONHUB_API_BASE+'/messages',
+            sdk_catalog=claude_agent.gateway_catalog(model, reasoning_effort, key_file.read_text().strip()),
+            evidence_limit=claude_agent.EVIDENCE_LIMIT)
     elif harness_kind=='claude-code':
         for model in MODELS.values():claude_agent.validate_model(model)
         harness=claude_agent.harness_registration(goal_mode,next(iter(MODELS.values())))
@@ -547,9 +556,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'upstream_models':UPSTREAM_MODELS,'reasoning':reasoning_effort,
         'preflight_instructions':lab.INSTRUCTIONS,'harness':harness,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
         'scenario':scenario,'domain':domain_runtime.public_domain(scenario),
-        'api_base':None if harness_kind in ('claude-code','codex') else AXONHUB_API_BASE,
-        'endpoint':None if harness_kind in ('claude-code','codex') else AXONHUB_ENDPOINT,
-        'credential_source':('Operator Claude subscription login; no API key or API fallback.'
+        'api_base':AXONHUB_API_BASE if claude_gateway else None if harness_kind in ('claude-code','codex') else AXONHUB_API_BASE,
+        'endpoint':AXONHUB_API_BASE+'/messages' if claude_gateway else None if harness_kind in ('claude-code','codex') else AXONHUB_ENDPOINT,
+        'credential_source':('Existing host-only AxonHub key; never supplied to subjects.' if claude_gateway else 'Operator Claude subscription login; no API key or API fallback.'
             if harness_kind=='claude-code' else 'Operator ChatGPT subscription login; no API key or API fallback.'
             if harness_kind=='codex' else 'Existing host-only AxonHub key; never supplied to subjects.'
             if AXONHUB_API_BASE=='https://lmportal.iefbr14.xyz/v1'
@@ -1210,7 +1219,7 @@ def collect(root,registration_dir):
         require(channel_design.valid_registered_exposure(reg),'Invalid registered carrier scope or private baseline')
     is_claude=reg.get('harness',{}).get('kind')=='claude-code'
     is_codex=reg.get('harness',{}).get('kind')=='codex'
-    subscription=is_claude or is_codex
+    subscription=(is_claude or is_codex) and reg['harness'].get('authentication') != 'axonhub'
     if subscription and AXONHUB_KEY_FILE is not None:
         raise ValueError('The registered subscription harness does not accept an API key file')
     if not subscription:AXONHUB_KEY_FILE=guardrails.credential_file(AXONHUB_KEY_FILE,REPO)
@@ -1253,7 +1262,7 @@ def collect(root,registration_dir):
         require(harness['authentication']=='chatgpt-subscription','Codex requires subscription authentication.')
         codex_agent.verify_runtime(harness)
     elif is_claude:
-        require(harness['authentication']=='claude-subscription','Claude requires subscription authentication.')
+        require(harness['authentication'] in ('claude-subscription','axonhub'),'Unknown Claude authentication.')
         claude_agent.verify_runtime(harness)
     else:
         require(pi_agent.installed_versions()==harness['installed'],'Installed Pi runtime differs from the registration.')
@@ -2005,7 +2014,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path)
     p.add_argument('--harness',choices=('pi-sdk','claude-code','codex'),default='pi-sdk',
-        help='Claude Code and Codex use operator subscriptions, without an API key.')
+        help='Claude Code uses AxonHub when --key-file is supplied; historical subscription adapters remain reproducible.')
     p.add_argument('--model-id',
         help='AxonHub model ID (default openai/gpt-6.1-sol), or required native subscription model ID.')
     p.add_argument('--reasoning-effort',choices=REASONING_EFFORTS,default=DEFAULT_REASONING,
@@ -2053,13 +2062,16 @@ if __name__=='__main__':
         AXONHUB_API_BASE=a.api_base.rstrip('/')
         AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
         AXONHUB_CATALOG=f'{AXONHUB_API_BASE}/models'
+    if a.phase=='prepare' and a.harness=='claude-code' and a.key_file:
+        if a.api_base.rstrip('/') != claude_agent.AXONHUB_BASE or not a.model_id:
+            p.error('Claude gateway requires the AxonHub API base and an explicit --model-id')
     AXONHUB_KEY_FILE=a.key_file
     root=guardrails.outside_repository(a.output,REPO,'Raw output directory')
     registration_dir=registration_path(a.registration_dir)
     if a.phase=='prepare':
         if not a.model_alias or not all(c.isalnum() or c in '_-' for c in a.model_alias):
             raise ValueError('Invalid model alias.')
-        if a.harness in ('claude-code','codex'):
+        if a.harness in ('claude-code','codex') and not (a.harness=='claude-code' and a.key_file):
             if not a.model_id:p.error('--model-id is required for subscription harnesses')
             if a.key_file or a.api_base!=AXONHUB_API_BASE or a.upstream_model_id:
                 p.error('Subscriptions do not accept --key-file, --api-base or --upstream-model-id')

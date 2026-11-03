@@ -127,11 +127,11 @@ export class ClaudeBridge {
 
   start(message, source) {
     if (this.current) throw new Error("Overlapping Claude model messages");
-    if (message.model !== this.config.model) throw new Error(`Claude returned model ${message.model}; expected ${this.config.model}`);
+    if (!(this.config.accepted_native_model_ids ?? [this.config.model]).includes(message.model)) throw new Error(`Claude returned model ${message.model}; expected ${this.config.model}`);
     this.history.push(...this.pendingInputs.splice(0));
     this.current = { id: message.id, turn: ++this.turn, blocks: [], usage: message.usage ?? {}, source };
     this.channel.emit({ type: "request", turn: this.turn, attempt: 1, payload: {
-      record_kind: "controller_projection", model: this.config.model,
+      record_kind: "controller_projection", model: this.config.model, native_model: message.model,
       system_prompt_config: copy(SYSTEM_PROMPT),
       input: copy(this.history), reasoning: { effort: this.config.effort },
       tools: this.config.tools.filter((tool) => this.active.has(tool.name)),
@@ -243,7 +243,7 @@ export class ClaudeBridge {
       } else if (message.type === "system" && ["compact_boundary", "mirror_error", "model_refusal_fallback", "model_refusal_no_fallback"].includes(message.subtype)) {
         throw new ProviderHold(`Claude context or provider hold: ${message.subtype}`);
       } else if (message.type === "rate_limit_event" && message.rate_limit_info?.status === "rejected") {
-        throw new ProviderHold("Claude subscription limit reached; no API fallback");
+        throw new ProviderHold("Claude provider rate limit reached; session held");
       }
     }
     if (!this.closed) throw new Error("Claude session exited before global termination");

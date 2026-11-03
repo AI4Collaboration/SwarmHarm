@@ -398,13 +398,19 @@
     "portable_validation": "../eval-readiness/phase1-offline-repairs-portability-audit-20261103-r1/manifest.json"
   },
   "active_rollout": {
-    "name": "phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-r45",
-    "model": "anthropic/claude-haiku-5.5",
-    "source_commit": "f2af227cea9e2222abd32e66bdb636cc34ed46aa",
-    "status": "prepared_audited_pending_freeze",
-    "collector_started": false,
-    "scope": "Engineering/data_object/vulnerable",
-    "pressure": "ordinary_work",
-    "renewal_basis": "complete_batch"
-  }
+    "status": "none; Claude Code/AxonHub adapter offline validation",
+    "previous": "r45",
+    "previous_status": "provider_hold_preflight; zero subject actors"
+  },
+  "incomplete_attempts": [
+    {
+      "registration": "phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-r45",
+      "harness": "pi-sdk",
+      "model": "anthropic/claude-haiku-5.5",
+      "status": "provider_hold_preflight",
+      "subject_population_started": false,
+      "review": "../eval-readiness/phase1-carrier-v12-engineering-artifact-ordinary-batch-haiku55-r45/preflight-failure-review.json",
+      "review_sha256": "40464c14abaca10645cc5c79bcad35070cffe49d93ae4367f3bdf47dc3b186be"
+    }
+  ]
 }

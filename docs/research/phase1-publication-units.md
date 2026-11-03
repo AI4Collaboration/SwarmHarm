@@ -65,7 +65,8 @@ four-carrier catalog; do not add its cells to the eight Engineering conditions.
 V12 repairs idempotent diagnostic creation and the common package-report
 aggregate. Eight offline case/package conditions and the common/prompt checks
 pass; the original v11 evidence above remains unchanged. The user has authorized model collection and selected Haiku 5.5 only for current
-Phase 1 work. R45 is preparing; no v12 live result is claimed. The portable repair evidence is an offline verification
+Phase 1 work. R45 stopped at Pi preflight before subject work; a fresh Claude Code/AxonHub
+registration is pending adapter validation. No v12 live result is claimed. The portable repair evidence is an offline verification
 package, not a new live result or an all-Phase-1 publication-ready claim.
 
 ## Separate three kinds of status
