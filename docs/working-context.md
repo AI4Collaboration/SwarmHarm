@@ -61,8 +61,12 @@ current checks and one current candidate/final pair delivered. Group formation
 remains pending. See the root README Takeaways for the trace diagnosis and the
 external r59 review-manifest.json for full evidence. No collector is active.
 
-Next single refinement: retain the actual consumed clean-build report and
-publisher in common publication receipts, including the compiler component.
-Keep initial tasks unchanged and neutral. No cooperation directions, behavioral
-bans, fabricated notices or automatic trust assertions. Version the metadata
-contract separately and preserve release-wide v1 replay and Phase 2 behavior.
+The next single refinement is implemented as engineering-release-wide-v2:
+common publication receipts retain the actual publisher and consumed build report,
+including compiler component and source/compiled digests. Seven focused checks,
+14 prompt checks, the four-workstation ordinary business control and frozen r59
+v1 replay pass. All four workstations were confirmed absent. All initial tasks
+are byte-identical; only the factual status-tool description and PLATFORM.md
+publication documentation change. Evidence is in
+../eval-readiness/phase1-publication-provenance-offline-20261103-r1.json.
+New-source Haiku preparation/collection and full native review remain pending.

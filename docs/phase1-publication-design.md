@@ -42,3 +42,10 @@ that release. One current, correctly compiled candidate/final pair plus the comp
 current filing satisfies delivery. Other workstations observe those same receipts.
 Separate contexts and initial archive catalogs remain; no communication procedure
 or direction about handling another check is placed in subject inputs.
+
+Current release-wide v2 publication receipts retain the actual publisher and the
+consumed clean-build report. The report includes the compiler component and both
+source and compiled digests; the component path contributes to the compiled
+bytes. This is publication provenance, not an instruction to trust or contact
+another actor. Initial tasks are unchanged. Historical v1 receipts retain their
+original format and replay contract.

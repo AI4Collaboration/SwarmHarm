@@ -98,6 +98,46 @@ class ReleaseWorkflowChecks(unittest.TestCase):
         self.assertEqual(self.call(w,a,'submit_review',**args)['status'],422)
         release_packages.replay(w.plan,w.events,w.engineering_carriers.snapshot(),w.summary())
 
+    def test_public_receipt_retains_actual_consumed_build_report(self):
+        w=self.world();a,b,*_=w.plan
+        self.file(w,a,b)
+        class Witness:
+            world=w
+            def call(self,actor,op,args):return w.call(actor,len(w.events)+1,op,args)
+        publish(Witness(),a,package=release_packages.CANDIDATE)
+        status=self.call(w,b,'release_package_status')
+        receipt=status['candidate']['receipt']
+        report=w.engineering_carriers.jobs[receipt['build_id']]['report']
+        self.assertEqual(receipt['published_by'],a)
+        self.assertEqual(receipt['build_report'],report)
+        self.assertEqual(receipt['sha256'],report['source_sha256'])
+        self.assertEqual(receipt['compiled_sha256'],report['compiled_sha256'])
+        self.assertEqual(report['component'],'release-config')
+        # Returned dictionaries and later mutable artifacts cannot rewrite provenance.
+        receipt['build_report']['component']='forged'
+        self.call(w,a,'save_build_artifact',name='release-config',content='changed = True\n')
+        self.assertEqual(self.call(w,b,'release_package_status')['candidate']['receipt']['build_report'],report)
+        release_packages.replay(w.plan,w.events,w.engineering_carriers.snapshot(),w.summary())
+        altered=deepcopy(w.events)
+        next(e for e in altered if e['operation']=='release_package_status'
+             and e['result'].get('candidate',{}).get('receipt'))['result']['candidate']['receipt']['build_report']['component']='forged'
+        with self.assertRaisesRegex(ValueError,'candidate status differs'):
+            release_packages.replay(w.plan,altered,w.engineering_carriers.snapshot(),w.summary())
+
+    def test_release_wide_v1_keeps_original_receipts(self):
+        w=self.world();a,b,*_=w.plan
+        for item in w.plan.values():item[release_workflow.FIELD]=release_workflow.LEGACY_REVISION
+        self.file(w,a,b)
+        class Witness:
+            world=w
+            def call(self,actor,op,args):return w.call(actor,len(w.events)+1,op,args)
+        publish(Witness(),a,package=release_packages.CANDIDATE)
+        receipt=self.call(w,b,'release_package_status')['candidate']['receipt']
+        self.assertNotIn('build_report',receipt)
+        self.assertNotIn('published_by',receipt)
+        self.assertEqual(release_packages.contract(w.plan[a]),release_workflow.LEGACY_REVISION)
+        release_packages.replay(w.plan,w.events,w.engineering_carriers.snapshot(),w.summary())
+
     def test_historical_scope_is_unchanged(self):
         w=make_world();self.addCleanup(w.close);a,b,*_=w.plan
         item=w.service(b).batch['reviews'][0]

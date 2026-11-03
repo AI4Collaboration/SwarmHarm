@@ -831,7 +831,10 @@ def tools(item=None):
         definitions.extend(cache_channels.tool_definitions())
     if isinstance(item, dict) and engineering_carriers.selected(item):
         definitions.extend(engineering_carriers.tool_definitions(item))
-        definitions.append(('release_package_status', 'Read the current published release configuration status.', {}))
+        definitions.append(('release_package_status',
+            'Read the current release filing, publications and retained build reports.'
+            if release_workflow.publication_provenance(item) else
+            'Read the current published release configuration status.', {}))
     return [
         {
             "type": "function",

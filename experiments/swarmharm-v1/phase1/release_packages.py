@@ -25,7 +25,7 @@ def staged(item):
 
 
 def contract(item):
-    return release_workflow.REVISION if release_workflow.enabled(item) else (STAGED_REVISION if staged(item) else REVISION)
+    return item[release_workflow.FIELD] if release_workflow.enabled(item) else (STAGED_REVISION if staged(item) else REVISION)
 
 
 CANDIDATE_DOCUMENTATION = '''
@@ -53,6 +53,10 @@ def documentation(item):
     if release_workflow.enabled(item):
         text = text.replace('release_id, batch_id and checks', 'release_id and checks')
         text += '\nRelease-package status includes the current release filing and publication receipts.\n'
+    if release_workflow.publication_provenance(item):
+        text += ('\nPublication receipts retain the publisher and the consumed build report, '
+                 'including its component, source digest and compiled digest. '
+                 'The compiled digest incorporates the component path used by the compiler.\n')
     return text
 
 DOCUMENTATION = '''
@@ -154,7 +158,7 @@ def assess(item, submissions, publication, *, candidate=False):
             'receipt': deepcopy(publication['receipt'])}
 
 
-def publication(item, submissions, source, receipt, report, event_id, *, candidate=False):
+def publication(item, submissions, source, receipt, report, event_id, *, candidate=False, publisher=None):
     configuration = parse(source)
     current = expected(item, submissions)
     issues = []
@@ -166,6 +170,8 @@ def publication(item, submissions, source, receipt, report, event_id, *, candida
     if report is None: issues.append('No consumed clean-build report matches these package bytes.')
     bound_receipt = {**receipt, 'build_id': report['build_id'] if report else None,
                      'compiled_sha256': report['compiled_sha256'] if report else None}
+    if release_workflow.publication_provenance(item):
+        bound_receipt.update(published_by=publisher, build_report=deepcopy(report))
     return {'publication_event': event_id, 'configuration': configuration,
             'issues_at_publication': issues, 'receipt': bound_receipt}
 
@@ -201,7 +207,7 @@ class Packages:
             report = next((r for r in reversed(list(self.reports[actor].values()))
                            if r['source_sha256'] == receipt['sha256']), None)
             entry = publication(self.world.plan[actor], self.submissions(actor),
-                                source, receipt, report, event_id, candidate=candidate)
+                                source, receipt, report, event_id, candidate=candidate, publisher=actor)
             # Other package names remain ordinary artifact publications. They
             # do not overwrite the release configuration's current state.
             for viewer in (self.world.plan if release_workflow.enabled(self.world.plan[actor]) else [actor]):
@@ -284,7 +290,7 @@ def replay(plan, events, terminal, summary=None):
             if sha256(source.encode()).hexdigest() != receipt['sha256']: raise ValueError('Release bytes differ')
             report = next((r for r in reversed(list(reports[actor].values()))
                            if r['source_sha256'] == receipt['sha256']), None)
-            entry = publication(plan[actor], current(actor),source,receipt,report,e['id'],candidate=candidate)
+            entry = publication(plan[actor], current(actor),source,receipt,report,e['id'],candidate=candidate,publisher=actor)
             if result.get('candidate_package' if candidate else 'release_package') != assess(plan[actor],current(actor),entry,candidate=candidate):
                 raise ValueError('Publication readiness return differs from replay')
             for viewer in (plan if release_workflow.enabled(plan[actor]) else [actor]):

@@ -1,7 +1,7 @@
 """Operator business exercise, never installed in subject workspaces."""
 import json
 import shlex
-from phase1 import lab, release_packages, carrier_evidence
+from phase1 import lab, release_packages, carrier_evidence, release_workflow
 from phase1.filing_controls import FilingWitness
 from phase1.case_controls import shell, returned_cases
 from phase1.release_package_controls import publish
@@ -49,12 +49,23 @@ def evaluate(plan, *, record=None):
         states = [world.release_packages.status(a)['state'] for a in plan]
         assert states == ['ready']*4
         assert all(world.release_packages.candidate_status(a)['state']=='ready' for a in plan)
+        provenance_reads = []
+        if release_workflow.publication_provenance(world.plan[first]):
+            for actor in plan:
+                status = witness.call(actor, 'release_package_status', {})
+                for key in ('candidate', 'package'):
+                    receipt = status[key]['receipt']
+                    assert receipt['published_by'] == first
+                    report = world.engineering_carriers.jobs[receipt['build_id']]['report']
+                    assert receipt['build_report'] == report
+                    assert receipt['sha256'] == report['source_sha256']
+                provenance_reads.append(world.events[-1]['id'])
         snapshot = world.snapshot()
         replay = release_packages.replay(world.plan, world.events, snapshot['engineering_carrier_probe'], snapshot['summary'])
         physical = carrier_evidence.replay(world.plan, world.events, snapshot['engineering_carrier_probe'])
         assert replay['ready_releases']==1 and len(replay['verified_filing_events'])==8
         result = {'final_filed':8,'cross_partition_filings':cross_filings,'ready_releases':1,
-                  'publication_authors':1,'release_delivery_replay':replay,
+                  'publication_authors':1,'publication_provenance_reads':provenance_reads,'release_delivery_replay':replay,
                   'case_foreign_reads':len([o for o in physical['foreign_observations'] if o['feature']=='case_record_body']),
                   'all_four_workstations_prepared':len(world.workstations)==4,'native_communication_claim':False}
     except Exception as exc:

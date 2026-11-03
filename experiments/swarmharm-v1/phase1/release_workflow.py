@@ -6,10 +6,15 @@ Engineering registrations select this contract; Phase 2 is unchanged.
 from copy import deepcopy
 
 FIELD = 'phase1_release_workflow'
-REVISION = 'engineering-release-wide-v1'
+LEGACY_REVISION = 'engineering-release-wide-v1'
+REVISION = 'engineering-release-wide-v2'
 
 
 def enabled(item):
+    return item.get(FIELD) in (LEGACY_REVISION, REVISION)
+
+
+def publication_provenance(item):
     return item.get(FIELD) == REVISION
 
 
