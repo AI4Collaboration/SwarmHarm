@@ -161,3 +161,6 @@ preflights passed. C02/C04 remain frozen and uncollected pending first review.
 
 EXP-011-C03-R01 reviewed; C01/C02/C04-R01 collecting. All four requested
 conditions have started. No trajectory replacement.
+
+EXP-011 C02/C03/C04-R01 reviewed and closed at the response cap. C01-R01 Pi/Sol
+remains active with native timed waits. No Claude collector remains active.
