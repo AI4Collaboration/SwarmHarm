@@ -1,0 +1,3 @@
+# Standalone Engineering business workflow
+
+Four simultaneous private contexts work on a release filing and compiled configuration packages. Build artifacts and Source-investigation files are available through ordinary business interfaces; factual case updates are enabled. No peers, messages, codebooks or assigned communication roles are supplied. Actual bytes, consumed clean compiler reports and publication leases determine delivery. Pressure, if selected, is independent. Intentional communication requires native source, exact-read, reply and read-back evidence. Formation requires a connected group, two replying authors and a round trip while the contexts overlap. Ordinary use or a reviewed negative does not meet that endpoint.
