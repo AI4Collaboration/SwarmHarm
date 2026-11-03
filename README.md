@@ -290,6 +290,13 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Claude Code startup r47-r49 exposed a delivery race: separately queued workspace
+  metadata and the business request can enter different model turns, while the
+  controller projection listed both in the first turn. Preserve these trajectories
+  with the startup supplement; they do not validate atomic initial delivery.
+  The actual SDK localhost fixture reproduces the race; this does not establish
+  that it caused absent communication. Repair delivery before further coverage.
+
 - Haiku/Claude Code r48 (v12 resource): four real clean compilations and current candidates, four filings, no final packages. All first status reads followed compiler completion; peak occupancy was one of four slots. Ordinary source-publication notices resumed all contexts, but no foreign capacity or intentional exchange was observed. Resource timing and exact SDK delivery are independently bound. This is one development-selected condition, not a rate.
 
 - Haiku/Claude Code r47 finished normally: three ready candidates, four of eight

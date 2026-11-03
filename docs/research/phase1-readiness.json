@@ -1387,7 +1387,7 @@
       "830648ff88b5c16018c713b2f3fbdd10de777bee72bf254ca4dc553df9a92713"
     ]
   },
-  "next": "Continue remaining restored Engineering carrier scope reviews, then portable evidence export and bounded publication report; no human-review gate or scheduled task.",
+  "next": "Repair confirmed Claude initial input delivery race; fresh offline and matching-source live validation before publication coverage.",
   "latest_offline_checks": {
     "source_commit": "8f9529915",
     "registered_tests_passed": 428,
@@ -1402,7 +1402,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-11-03T12:50:20.751225+00:00",
+  "updated_at": "2026-11-03T13:14:05.447138+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "v12_Haiku_CC_matching_source_review_in_progress",
   "pressure_resource_calibration": {
@@ -1664,7 +1664,7 @@
   },
   "engineering_carrier_feasibility": {
     "domain": "Engineering",
-    "status": "current_v12_Haiku_CC_2_of_8_reviewed; historical_coverage_separate",
+    "status": "restored_8_of_8_conditions_reviewed_with_revision_labels",
     "ready": false,
     "report": "docs/research/phase1-engineering-carrier-feasibility.md",
     "implementation": "experiments/swarmharm-v1/phase1/engineering_carriers.py",
@@ -5359,29 +5359,29 @@
         }
       },
       "latest_review": {
-        "registration_number": 48,
-        "name": "phase1-carrier-v12-engineering-resource-ordinary-batch-haiku55-cc-r48",
+        "registration_number": 49,
+        "name": "phase1-carrier-v12-engineering-resource-repaired-ordinary-batch-haiku55-cc-r49",
         "domain": "Engineering",
         "model": "anthropic/claude-haiku-5.5",
         "runtime_revision": "engineering-carriers-feasibility-v12",
         "carrier": "execution_resource",
         "carrier_class": "shared_execution_resources",
-        "scope": "vulnerable",
+        "scope": "repaired",
         "business_contract": "engineering-staged-release-v1",
         "pressure": "ordinary_work",
         "pressure_revision": "private-cpu-reservation-v2",
         "renewal_basis": "complete_batch",
-        "source_commit": "1ab71ff344b3d43aac3d1477fd0fc1d69dfa4b7e",
-        "registration_commit": "a297b319d6429a3a4bbbab27caad1adb2c8e2a35",
-        "registration_path": "experiments/swarmharm-v1/registrations/phase1-carrier-v12-engineering-resource-ordinary-batch-haiku55-cc-r48/registration.json",
-        "registration_sha256": "ddb56155a3c52afa602b1b5e6f4de500389af004cdf0b1e43b6ead11fa46955c",
-        "review_index": "../eval-readiness/phase1-carrier-v12-engineering-resource-ordinary-batch-haiku55-cc-r48/review-manifest.json",
-        "review_index_sha256": "86477a45adb2b820fd1e0ea3f1f1d9142c6b7789787cff7e79d90eae96847b4f",
-        "terminal_manifest_sha256": "596252ad8e2d2b07d3f5beafe817a2d895a7e4138ddf64722d3e6d2f0066eb25",
-        "terminal_audit_sha256": "b2545bee63a20f42df1795926342b5d5e6c7990471759863a6830e648181a7b8",
+        "source_commit": "264dae30fc5d4b1c1046d0a40382dd91c70d4869",
+        "registration_commit": "8ebd5dcd1762da8d91d2d6ee8ca1e151dcbc275d",
+        "registration_path": "experiments/swarmharm-v1/registrations/phase1-carrier-v12-engineering-resource-repaired-ordinary-batch-haiku55-cc-r49/registration.json",
+        "registration_sha256": "25e767446e3ffe0285d4ca8bad694abe279147b7b642905d161f138548f306ed",
+        "review_index": "../eval-readiness/phase1-carrier-v12-engineering-resource-repaired-ordinary-batch-haiku55-cc-r49/review-manifest.json",
+        "review_index_sha256": "a84de7dd14e819d9f158593b6232cefac669781fcc185e8c32180bfe38793a98",
+        "terminal_manifest_sha256": "b77243661e852ae188a03d434ea49ad9ab394812fb4a26cbba21110da109ddf4",
+        "terminal_audit_sha256": "fa468b08decfeb30480940a13bdcd9b35a6f4addb236242349dc18709c6ba543",
         "collection_status": "collected_with_limits",
-        "subject_responses": 86,
-        "subject_tool_returns": 106,
+        "subject_responses": 84,
+        "subject_tool_returns": 104,
         "preflight_responses": 2,
         "native_review_complete": true,
         "independent_human_adjudication": false,
@@ -5411,7 +5411,7 @@
         "ready": false,
         "interpretation": "Development-selected readiness rollout. Carry-forward of sealed AI review; no new independent human judgment, pooled rate, or causal-effect estimate.",
         "natural_business_restoration": {
-          "actual_case_records": 11,
+          "actual_case_records": 8,
           "actual_notices": 4,
           "foreign_case_body_reads": 0
         },
@@ -5448,7 +5448,7 @@
   },
   "publication_catalog": {
     "path": "docs/research/phase1-publication-catalog.json",
-    "sha256": "c47e2d9b13ced5b6422ed589f62df20e89c1d3f86d3ab7976f0762e85a88f3bb",
+    "sha256": "ed9531057a124acd626fa9932c0e62c455d535133715800ac914938247ab9e0e",
     "authoritative_for": "Current scenario counts and publication status; historical sealed results remain authoritative for their original outcomes."
   },
   "user_requested_collection_hold": {
@@ -5486,5 +5486,10 @@
     },
     "current_v12_haiku_cc_reviewed_conditions": 2,
     "current_v12_haiku_cc_pending_conditions": 6
+  },
+  "claude_initial_delivery": {
+    "status": "repair_pending",
+    "historical_supplement": "../eval-readiness/phase1-cc-startup-audit-20261103-r2/manifest.json",
+    "publication_blocking": true
   }
 }

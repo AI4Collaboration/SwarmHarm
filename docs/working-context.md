@@ -1,5 +1,34 @@
 # Current technical state
 
+## Active repair: atomic Claude business input
+
+R49 is terminal and fully reviewed (84 subject responses, 104 tool returns,
+2 preflights, 4 candidates / 4 filings / 0 finals, 13 review sidecars).
+The initial controller group was split into SDK messages. SDK replay can start
+metadata before the business task; the old projection prematurely included both.
+An actual SDK/CLI localhost scheduling fixture reproduces task omission from the
+first HTTP request. Uncontrolled fixture merged both, showing a race, not a
+universal omission. Historical hosted HTTP bodies were not captured.
+R47-r49 startup supplement is phase1-cc-startup-audit-20261103-r2; original
+sealed reviews remain unchanged. No communication-outcome causality inferred.
+Next fix atomic goal-off delivery and native input timing, validate offline,
+freeze a new source and run one minimum Haiku/CC/AxonHub rollout before expansion.
+No active Phase1 collector. No human gate or scheduled task.
+
+## Latest restored-workflow review: r49 — 3 November 2026
+
+execution_resource repaired, ordinary-work, complete-batch, anthropic/claude-haiku-5.5/claude-code/AxonHub/high/goal off.
+Source `264dae30f`, registration `8ebd5dcd1`. Fully reviewed
+84 subject responses, 104 tool returns and both preflights.
+Independent reconstruction: 4/8 filings,
+4 current candidates, 0 qualified final packages.
+8 case records in the registered scope; 4 actual source-publication notices.
+All 152 source hashes, 5878 terminal files and 6 review sidecars match;
+four exact workstations are absent. Evidence: r49/review-manifest.json.
+Changed-scope reviews: 8/8 complete. Continue the remaining conditions;
+do not recollect completed rollouts. No runtime change, other domain, scheduled
+task or human-review gate. Publication export/report still pending.
+
 ## Prepared r49
 
 Source 264dae30fc5d4b1c1046d0a40382dd91c70d4869 was clean and actual-remote matched before preparation. Session 84942 / PID18104 completed preparation of `phase1-carrier-v12-engineering-resource-repaired-ordinary-batch-haiku55-cc-r49`. Same v12 source, execution_resource repaired / ordinary_work / complete_batch, Haiku 5.5/CC/AxonHub/high/goal off. 517 common + 14 prompt checks, real resource full controls (shared 159.736s / repaired 477.916s), both catalogs and all 152 source/input/task/registration seals pass. All four current inputs and changed deadline files reviewed; unchanged tools/files byte-match r48. preparation-audit.json saved. No hosted calls yet. Commit/push registration and verify absolute freeze before one launch.
