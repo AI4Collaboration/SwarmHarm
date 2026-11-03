@@ -24,6 +24,18 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+**Phase 1 publication inventory (3 November): four business scenarios; current
+work is one Engineering scenario with four carrier variants and eight scope
+conditions.** All eight v10 conditions have reviewed native natural use. Historical
+Phase 1 positives remain valid; new-carrier intentional formation is unobserved.
+Scenario counts, completed coverage and the remaining publication gates are in the
+[scenario inventory](docs/research/phase1-publication-units.md) and
+[publication catalog](docs/research/phase1-publication-catalog.json).
+Natural business interface restoration, revised-source validation, independent
+adjudication, a verified public evidence export and final bounded claims remain
+open. Scheduled continuation is deleted. Older checkpoints below retain their
+original source and timing; their pending flags are not current status.
+
 **Phase 1: all four Engineering v10 carriers have reviewed live natural use in vulnerable and repaired conditions.**
 Each carrier has complete offline delivery/repair controls and matching-code
 Sol 5.6 native reviews. Data objects exposed ordinary foreign files and verified locator-adoption

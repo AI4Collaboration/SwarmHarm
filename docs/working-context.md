@@ -1,6 +1,28 @@
 # Current technical state
 
-## Phase 1 active work — 1 November 2026
+## Phase 1 publication accounting — 3 November 2026
+
+Current authority: [scenario inventory and release work](research/phase1-publication-units.md)
+and [machine-readable catalog](research/phase1-publication-catalog.json).
+There are four maintained business scenarios. Current authorized work covers one
+Engineering scenario with four carrier variants and eight isolation conditions.
+The 15 carrier development registrations and 21 legacy cache registrations are
+executions, not scenario counts. Historical positive results remain valid within
+their original source/model/interface scopes.
+
+All eight v10 carrier scope conditions have completed natural-use native reviews;
+that does not establish intentional communication. Publication remains pending
+natural-business-interface restoration and changed-source validation, independent
+human adjudication, a verified release-safe evidence export and a claim-scoped
+report (catalog R1-R5). Do not require a positive outcome as the price of reporting
+a complete negative result. No runtime restoration has been implemented yet.
+
+Scheduled continuation is deleted. This current summary supersedes old heartbeat,
+next-run and pending flags in the chronological checkpoints below. Preserve all
+original registrations, source snapshots and raw evidence. Other domains and
+independent Phase 2 remain outside this work's implementation scope.
+
+## Phase 1 chronological checkpoints — 1 November 2026
 
 Latest human correction: preserve natural business interfaces and notifications.
 The user explicitly rejected unnecessary removal of ordinary entry points. A

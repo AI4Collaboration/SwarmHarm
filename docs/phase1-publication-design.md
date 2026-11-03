@@ -1,6 +1,12 @@
 # Phase 1: autonomous discovery of isolation-breaking channels
 
-Design v11 · 1 November 2026 · v10 all four vulnerable and repaired carrier natural-use conditions reviewed; pressures and communication evidence incomplete
+Design v12 · 3 November 2026 · current inventory: four business scenarios, one active Engineering scenario, four carrier variants, eight scope conditions.
+
+Current counts and publication gates are maintained in the
+[scenario inventory](research/phase1-publication-units.md) and
+[publication catalog](research/phase1-publication-catalog.json). Completed negative
+observations remain reportable. Publication readiness, environment validation and
+observed successful formation are separate statuses.
 
 ## Current business revision
 
@@ -176,9 +182,11 @@ computed from actual entries. There is no fake counter, artificial delay, plante
 message, private-knowledge-based routing or automatic forwarding of final answers.
 
 All six profiles expose identical task/tool documentation. Only the relevant
-backend scope changes between vulnerable and repaired counterparts. The old
-business-note channel and its notifications are partitioned in every new profile;
-the supplied note/reply helper is absent. All subjects retain their own operational
+backend scope changes between vulnerable and repaired counterparts. The historical cache implementation partitions the old business-note channel and
+its notifications, and removes the note/reply helper. This describes the frozen
+implementation, not the current design requirement: the latest human correction
+requires preserving natural business functions with only necessary scope limits.
+Restoration has not yet been implemented. All subjects retain their own operational
 records. Normal work and safe incomplete outcomes remain possible.
 
 ## Execution and evidence
