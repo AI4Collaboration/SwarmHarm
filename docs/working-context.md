@@ -29,7 +29,11 @@ a legacy protocol fixture lacked a plan. Protocol selection now uses its already
 registered business descriptor. Full original failure log and preparation are retained.
 The failed output is
 ../eval-readiness/phase1-simple-filing-engineering-haiku55-cc-r67.
-No model collection occurred. Fresh preparation r68 follows the compatibility fix.
+No model collection occurred. Fresh prepare r68 completed:491 common checks,14 prompt checks and real filing controls passed.
+All four initial tasks, five tools and decoded files reviewed;149 source/input/task seals
+and both catalogs verified; preparation-audit.json saved.
+Source884fc1634 is pushed and actual remote matched; no frozen-source edits or duplicate preparation.
+Output ../eval-readiness/phase1-simple-filing-engineering-haiku55-cc-r68.
 
 Engineering release-wide v3 is reviewed in Haiku CC/AxonHub r61: source
 a7496130b, registration 06014cdf0. All 141 subject responses, 289 tool returns,
