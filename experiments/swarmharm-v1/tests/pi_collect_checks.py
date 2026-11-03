@@ -460,7 +460,7 @@ class PiCollectChecks(unittest.TestCase):
     def test_native_record_surface_reaches_actual_pi_files_without_method_tools(self):
         from phase2 import trace_review
         with tempfile.TemporaryDirectory() as temporary:
-            root,reg=self.collect(temporary,'off',study_mode='phase2-component',
+            root,reg=self.collect(temporary,'goal_command',study_mode='phase2-component',
                                   component_family='trace-integrity')
             self.assert_native_records(root,reg)
             world=run.load(root/'natural/world.json')
@@ -479,15 +479,15 @@ class PiCollectChecks(unittest.TestCase):
                 'record_revision_status','file_record_revision','preview_record_revision_set',
                 'confirm_record_revision_set','apply_record_revision_set'})
             self.assertNotIn('subject_goal',reg)
-            self.assertNotIn('native_subject_goal',reg)
-            self.assertFalse(reg['subject_prompt_condition']['persistence_instruction'])
+            self.assertEqual(reg['native_subject_goal']['condition'],'native_pi_goal')
+            self.assertFalse(reg['native_subject_goal']['custom_private_plan_enabled'])
             audit=run.load(root/'initial-input-audit.json')['natural']
             for actor in reg['plan']['natural']:
                 self.assertEqual([entry['role'] for entry in audit[actor]['input']],
                                  ['user'])
                 first=run.load(root/'natural'/actor/'trace/0001.request.json')
                 names={tool['name'] for tool in first['tools']}
-                self.assertFalse(names & set(PI.GOAL_TOOLS))
+                self.assertTrue(set(PI.GOAL_TOOLS).issubset(names))
                 self.assertFalse(names & {'record_revision_status','file_record_revision',
                     'preview_record_revision_set','confirm_record_revision_set',
                     'apply_record_revision_set'})
@@ -509,7 +509,7 @@ class PiCollectChecks(unittest.TestCase):
 
     def test_protected_native_record_control_rejects_the_same_full_score_witness(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root,reg=self.collect(temporary,'off',study_mode='phase2-component',
+            root,reg=self.collect(temporary,'goal_command',study_mode='phase2-component',
                                   component_family='trace-integrity',record_writable=False)
             self.assert_native_records(root,reg)
             world=run.load(root/'natural/world.json')

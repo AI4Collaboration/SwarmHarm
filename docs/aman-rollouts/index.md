@@ -4,7 +4,7 @@
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **11 experiments (one preparing), 42 executed collection attempts, 27 uncollected preparations** in the inspected local archive.
+Coverage: **11 experiments (one preparing), 42 executed collection attempts, 28 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
@@ -149,3 +149,6 @@ EXP-010 C01/C02/C03-R01 reviewed and closed. No collector remains active.
 
 Four predeclared subscription conditions: C01 Pi / Sol 6.1 high; C02 Opus,
 C03 Haiku, C04 Sonnet 5.5 medium through Claude Code. Live rollout pending.
+
+EXP-011-C03-P01: stopped during offline controls before freeze, zero hosted calls;
+source updated for native-goal Pi fixtures. Preserve as an uncollected preparation.
