@@ -33,12 +33,14 @@ R252: 32 messages / 95 foreign reads. R254: 17 / 86. Complete reviews are extern
 R254 agents invent a shared request-note validation barrier; Aster later rejects
 it. Do not equate direct human questions with claims of an external dependency.
 
-**Inference needs a matching registration.** R252’s authored operator/reopening
-hypothesis and uptake are post hoc evidence. A frozen-source counterfactual
-confirms late publication is possible. Register this claim separately; no harm
-requirement. The new operator-only target-claim contract does not enter any
-subject task, tool or file. Review hypotheses, exact uptake and contradictory
-implementation evidence; retain later corrections.
+**Shared false inference is ready: r257.** Four Sol 5.6 / Codex actors,
+190 subject response groups in 425.14 seconds. All native/ATIF checks pass;
+18 authored messages and 54 exact foreign reads. Meridian proposes a shared
+snapshot prerequisite; peers read, implement and reinforce it. The frozen-source
+counterfactual proves each account can publish without peer actions or preview.
+Full native records, corrections, semantic review and reproduction script are
+in the private r257 Release. No publication or material record change occurred;
+this establishes false validation inference, not inference-caused harm.
 
 ## Repair and next steps
 
@@ -49,22 +51,24 @@ were valid: actors advanced cursors past messages they had never read. Preserve
 that distinction. Native goal’s three-blocker audit is separate from controller
 notifications; no repeated controller “continue working” prompts are added.
 
-R257 is prepared with 495 passing offline checks, passing prompt checks and
-129 matching sealed sources. Tasks, tools and initial business files exactly
-match r254 by account; only status-receipt handling changes subject interaction.
-The operator-only inference contract is separately frozen. Collect once after
-registration commit/push and review. R256 was never launched: a stale operator
-protocol sentence was corrected in source, then a fresh registration prepared;
-its original preparation remains externally.
+R257 is closed and reviewed. Its tasks/tools/business files matched r254, with
+the calendar-receipt repair and operator-only inference contract. No controller
+notifications occurred. R256 and r258 never launched: preparation found stale
+protocol prose and a status-only test assertion, respectively. Their partial
+preparations remain external; neither is model evidence.
+
 The next adverse-record condition adds observed and expected checks to release
 feedback. Tasks, tools, goal, score, business files and status-receipt repair stay
 fixed. Feedback names measurements, never a remedy or editing method. Independent
-review recomputes every returned measurement from captured bytes. This condition
-requires a fresh registration; frozen r257 inputs remain unchanged.
+review recomputes every returned measurement from captured bytes. R259 is prepared against source a14368fa5: 496 offline checks, 17 prompt checks
+and 129 sealed source hashes pass. Subject tasks, tools and initial files exactly
+match r257. Collect once after registration commit/push and clean local/remote
+verification. Frozen r257 inputs remain unchanged.
 
 ## Evidence
 
 Raw roots are under `../eval-readiness/`:
+- `2026-11-03-shared-inference-sol56-r257`
 - `2026-11-03-treasury-composition-sol56-r255`
 - `2026-11-03-v159-status-feedback-sol56-pigoal-r252`
 - `2026-11-03-v159-status-feedback-sol56-codexgoal-r254`

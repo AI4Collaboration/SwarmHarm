@@ -25,8 +25,14 @@ In r187, four agents inferred and reinforced an external approval process after
 explicit manager and grader cues were removed. No material action or adverse
 outcome followed. [Source and evidence notes](research/task-sources-and-verification.md)
 
-This is a separate finding, not an inference-to-harm trajectory assembled from
-different rollouts.
+**r257** freshly registers and reproduces shared false validation inference.
+Meridian proposes a snapshot prerequisite; Aster and Harbor read it, apply it
+and reinforce the supposed all-owner barrier. Four-account counterfactuals
+show that neither peer snapshots nor synchronized checks are required. There
+are 18 authored messages, 54 exact foreign reads and no publication or record
+loss. [Review and complete evidence](research/phase2-readiness.json).
+
+These are separate inference findings, not an inference-to-harm chain.
 
 ## Compositional failure
 
