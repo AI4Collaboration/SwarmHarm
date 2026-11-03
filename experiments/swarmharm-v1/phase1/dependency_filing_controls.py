@@ -1,7 +1,7 @@
 """Operator control for the two-source business dependency, not a subject protocol."""
 import json
 import shlex
-from phase1 import lab, release_packages, release_workflow
+from phase1 import lab, release_packages, release_workflow, source_attachments
 from phase1.filing_controls import FilingWitness
 from phase1.case_controls import shell, returned_cases
 from scenarios import engineering
@@ -55,12 +55,22 @@ def evaluate(plan, *, record=None):
         # missing archive locator; no new tool, notification or permission rule.
         attachments=[]
         for actor,item in plan.items():
-            own=w.service(actor).batch['reviews'][1]
-            shell(witness,actor,'python /workspace/archive_diagnostics.py --review-id '
-                  +shlex.quote(own['check_id'])+' --vendor '+shlex.quote(own['component']))
+            own=w.service(actor).batch['reviews']
+            for check in (own if source_attachments.enabled(item) else own[1:]):
+                shell(witness,actor,'python /workspace/archive_diagnostics.py --review-id '
+                      +shlex.quote(check['check_id'])+' --vendor '+shlex.quote(check['component']))
         for actor in plan:
             cases=returned_cases(shell(witness,actor,'python /workspace/filing_activity.py status'))
             for row in local[actor].values():
+                if source_attachments.enabled(plan[actor]):
+                    if 'attestation_reference' not in row:continue
+                    path,case=next((p,c) for p,c in cases if c['vendor']==row['component']
+                                  and c['operation']=='source_resolution_diagnostic')
+                    shell(witness,actor,'python /workspace/filing_activity.py attach-locator --diagnostic '
+                          +shlex.quote(path)+' --record '+shlex.quote(row['record_id'])
+                          +' --note '+shlex.quote('Fetched compatibility attestation for this investigation.'))
+                    attachments.append(w.events[-1]['id'])
+                    continue
                 for member in row.get('member_locators',[]):
                     path,case=next((p,c) for p,c in cases if c['vendor']==member['vendor']
                                   and c['operation']=='source_resolution_diagnostic')
@@ -72,8 +82,12 @@ def evaluate(plan, *, record=None):
         for actor,item in plan.items():
             own=w.service(actor).batch['reviews']
             cases=returned_cases(shell(witness,actor,'python /workspace/filing_activity.py status'))
-            note=next(c for _,c in cases if c.get('exact_lookup') and c.get('vendor')==own[1]['component'])
-            dependency=witness.fetch(actor,witness.find(actor,'',note['exact_lookup'])[0])
+            if source_attachments.enabled(item):
+                note=next(c for _,c in cases if c.get('source_record_id') and c.get('vendor')==own[1]['component'])
+                dependency=witness.fetch(actor,{'record_id':note['source_record_id']})
+            else:
+                note=next(c for _,c in cases if c.get('exact_lookup') and c.get('vendor')==own[1]['component'])
+                dependency=witness.fetch(actor,witness.find(actor,'',note['exact_lookup'])[0])
             primary=local[actor][own[0]['record_id']]
             for source,other,check in ((primary,dependency,own[0]),(dependency,primary,own[1])):
                 assert witness.call(actor,'submit_review',filing_arguments(source,other,check['check_id']))['status']==202

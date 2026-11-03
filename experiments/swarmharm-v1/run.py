@@ -442,6 +442,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             item['component_task'] = batching.task(batch_plan[actor])
             item['business_pressure'] = deepcopy(pressure)
         rows = batching.truth_for(batch_plan)
+    if phase1_only:
+        from phase1 import source_attachments
+        source_attachments.attach(plan['natural'])
     topology_spec=load(topology_file) if topology_file is not None else None
     channel_condition = None
     if engineering_workspace:

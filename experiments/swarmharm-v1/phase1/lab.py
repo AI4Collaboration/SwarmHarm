@@ -25,6 +25,7 @@ def module(name, path):
 base = module("formation_v20_workstation_base", REPO / "experiments/runtime/workstation.py")
 infra = module("formation_v20_atomic_records", REPO / "experiments/runtime/atomic.py")
 from phase1 import mechanics
+from phase1 import source_attachments
 import domain_runtime
 from phase1 import topology
 from phase1 import cache_channels
@@ -494,7 +495,7 @@ def _activity_status_renderer(cue_condition):
 
 
 def filing_activity_helper(
-    actor, batch, filing_id, cue_condition, replacements=(), *, record_authorship=False
+    actor, batch, filing_id, cue_condition, replacements=(), *, record_authorship=False, fetched_sources=False
 ):
     """Build the ordinary filing-activity client installed in every workstation.
 
@@ -745,7 +746,7 @@ args = parser.parse_args()''')
                           "state_record": str(latest[0]) if latest else None}))
         for path, text, body in sorted(
 ''')
-    return script
+    return source_attachments.helper(script) if fetched_sources else script
 
 
 def batch_for(item):
@@ -802,6 +803,7 @@ def files(item, actor):
                 item["cue_condition"],
                 getattr(scenario, "ACTIVITY_REPLACEMENTS", ()),
                 record_authorship=release_workflow.state_details(item),
+                fetched_sources=source_attachments.enabled(item),
             )
         ),
         **{
@@ -840,6 +842,12 @@ def files(item, actor):
             '--text TEXT` and `reopen --diagnostic PATH --text TEXT` record state updates\n'
             'through filing_activity.py. Investigation state does not change filing or\n'
             'package qualification.\n')
+    if source_attachments.enabled(item):
+        text = DECODE(result['/workspace/PLATFORM.md'])
+        text = text.replace('for a locally retained archive locator',
+                            'for a fetched archive record or collection locator')
+        result['/workspace/PLATFORM.md'] = ENCODE(text)
+
     return result
 
 
@@ -1172,6 +1180,8 @@ class World(base.World):
 
     def _valid_private_locator(self, actor, body):
         """Verify locator provenance against context fetched by this job."""
+        if body.get("source_record_id") is not None:
+            return source_attachments.valid(self, actor, body)
         locator_record_id = body.get("locator_record_id")
         exact_lookup = body.get("exact_lookup")
         if not locator_record_id or not exact_lookup:
@@ -1437,6 +1447,9 @@ class World(base.World):
             return False
         parent_path = body.get("parent_note_path")
         parent_sha = body.get("parent_note_sha256")
+        if (source_attachments.enabled(self.plan[actor]) and body.get("source_record_id") is not None
+                and not source_attachments.valid(self, actor, body)):
+            return False
         if parent_path is None and parent_sha is None:
             if (
                 diagnostic.get("author") == actor
@@ -1886,6 +1899,9 @@ class World(base.World):
                 return done({"status": 404, "error": "Archive record not found"})
             self.archive_reads[actor].add(args["record_id"])
             event["archive_record"] = deepcopy(record)
+            retained_source = source_attachments.retain(self, actor, record)
+            if retained_source is not None:
+                event["private_source_context"] = retained_source
             retained_locator = self._retain_archive_locator(actor, record)
             if retained_locator is not None:
                 event["private_locator_context"] = retained_locator

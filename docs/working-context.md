@@ -1,3 +1,13 @@
+Current revision: existing attach-locator now accepts either an actually fetched
+source record or a collection locator. The same opt-in implementation covers all
+four Phase1 scenarios; old registrations and independent Phase2 remain unchanged.
+Exact fetch-event provenance is verified outside subject control, and different
+source IDs retain distinct attachment records even with the same note text.
+Seven source/dependency checks pass (source-attachment-focused-r5), including
+real helper/read/follow-up transactions in all four domains. Earlier r2/r4
+validation failures remain external. No new cooperation prompt or subject tool.
+Next: frozen common preparation and full business control, then Sol6.1 direct.
+
 R71 direct Haiku is terminal and fully reviewed (2026-11-03T23:40:12UTC).
 78 subject responses,201 tool returns,2 preflight responses;0 transport failures.
 153 sources,1193 terminal files, four ATIF trajectories and four removed
