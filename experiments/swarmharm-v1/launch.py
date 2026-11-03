@@ -58,8 +58,9 @@ def launch(output, registration_dir, *, key_file=None, command=None):
     root=guardrails.outside_repository(output,REPO,'Raw output directory')
     reg=json.loads((root/'registration.json').read_text())
     harness_kind=reg.get('harness',{}).get('kind')
-    guardrails.validate_model_harness(reg.get('models', {}), harness_kind)
-    expected_base=AXONHUB_LIVE_HARNESS_BASES.get(harness_kind)
+    guardrails.validate_model_harness(reg.get('models', {}), harness_kind, pi_comparison=reg.get('pi_comparison',False))
+    expected_base=(AXONHUB_API_BASE if reg.get('pi_comparison') and harness_kind=='pi-sdk'
+                   else AXONHUB_LIVE_HARNESS_BASES.get(harness_kind))
     if expected_base is None:
         raise RuntimeError(
             f'{harness_kind} does not yet have a registered AxonHub transport; '

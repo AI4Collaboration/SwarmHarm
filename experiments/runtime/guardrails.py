@@ -35,8 +35,12 @@ def open_url(request, timeout):
     return urllib.request.build_opener(NoRedirect()).open(request, timeout=timeout)
 
 
-def validate_model_harness(models, harness, *, offline_fixture=False):
+def validate_model_harness(models, harness, *, offline_fixture=False, pi_comparison=False):
     """Current live selection policy; offline fixture preparation cannot collect."""
+    if pi_comparison:
+        if harness != 'pi-sdk' or not models or set(models.values()) != {'openai/gpt-5.6-sol'}:
+            raise ValueError('The explicit Pi comparison requires openai/gpt-5.6-sol and pi-sdk')
+        return
     for model in models.values():
         model = str(model).lower()
         if any(name in model for name in ('claude', 'haiku', 'sonnet', 'opus')) and harness != 'claude-code':

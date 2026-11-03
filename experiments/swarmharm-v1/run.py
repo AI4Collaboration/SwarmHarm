@@ -369,10 +369,10 @@ def normalized_filing_deadline(value=None):
         raise ValueError('filing deadline must be in the future at preparation time')
     return normalized
 
-def validate_harness_policy(harness_kind, offline_adapter_test=False, offline_fixture=False):
+def validate_harness_policy(harness_kind, offline_adapter_test=False, offline_fixture=False, pi_comparison=False):
     if harness_kind not in HARNESS_KINDS:
         raise ValueError('Unknown agent harness')
-    if harness_kind == 'pi-sdk' and not (offline_adapter_test or offline_fixture):
+    if harness_kind == 'pi-sdk' and not (offline_adapter_test or offline_fixture or pi_comparison):
         raise ValueError('Pi is historical only; use the model family native harness through AxonHub.')
 
 
@@ -384,14 +384,14 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode='off', harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False):
+            archive_compatibility=False, pi_comparison=False):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind is None:
         harness_kind=guardrails.native_harness(MODELS)
     if not offline_adapter_test:
-        guardrails.validate_model_harness(MODELS, harness_kind, offline_fixture=not run_controls)
-    validate_harness_policy(harness_kind, offline_adapter_test, offline_fixture=not run_controls)
+        guardrails.validate_model_harness(MODELS, harness_kind, offline_fixture=not run_controls, pi_comparison=pi_comparison)
+    validate_harness_policy(harness_kind, offline_adapter_test, offline_fixture=not run_controls, pi_comparison=pi_comparison)
     if reasoning_effort not in REASONING_EFFORTS:
         raise ValueError('Unsupported reasoning effort')
     native_gateway = harness_kind in AXONHUB_LIVE_HARNESS_BASES and not offline_adapter_test
@@ -631,7 +631,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'runtime':{'harbor_version':HARBOR_VERSION,'python':sys.version.split()[0]},
         'inference_gateway':'axonhub' if native_gateway or harness_kind=='pi-sdk' else None,
         'inference_protocol':('anthropic/messages' if harness_kind=='claude-code' else 'openai/responses') if native_gateway else 'openai/responses' if harness_kind=='pi-sdk' else None,
-        'live_collection_permitted':native_gateway or (harness_kind=='pi-sdk' and not run_controls),
+        'live_collection_permitted':native_gateway or (harness_kind=='pi-sdk' and (pi_comparison or not run_controls)),
+        'pi_comparison':bool(pi_comparison),
         'offline_adapter_test':bool(offline_adapter_test),
         'continuous_rollout':True,
         'cue_condition':cue_condition,
@@ -1611,8 +1612,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     reg=load(root/'registration.json')
     harness_kind=reg.get('harness',{}).get('kind')
     if not offline_adapter_test and not offline_transport_test:
-        guardrails.validate_model_harness(reg.get('models', {}), harness_kind)
-        validate_harness_policy(harness_kind)
+        guardrails.validate_model_harness(reg.get('models', {}), harness_kind, pi_comparison=reg.get('pi_comparison',False))
+        validate_harness_policy(harness_kind, pi_comparison=reg.get('pi_comparison',False))
     if offline_adapter_test and offline_transport_test:
         raise ValueError('Choose one offline compatibility test mode')
     native_gateway = harness_kind in AXONHUB_LIVE_HARNESS_BASES and reg.get('harness',{}).get('authentication')=='axonhub'
@@ -2555,7 +2556,8 @@ if __name__=='__main__':
     signal.signal(signal.SIGTERM,stop_operator)
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path)
-    p.add_argument('--harness',choices=('claude-code','codex'),default=None,
+    p.add_argument('--pi-comparison',action='store_true',help='Explicit human-requested Sol 5.6 Pi comparison; never a fallback.')
+    p.add_argument('--harness',choices=('claude-code','codex','pi-sdk'),default=None,
         help='Model-family default: Claude Code for Claude; Codex for OpenAI. Adapter admission is checked before preparation.')
     p.add_argument('--model-id',
         help='Exact AxonHub model ID; Claude cannot use Pi (default openai/gpt-5.6-sol).')
@@ -2577,7 +2579,7 @@ if __name__=='__main__':
         help='Business scenario; defaults to the maintained Engineering source.')
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched rollouts.')
-    p.add_argument('--goal-mode',choices=('off',),default='off',
+    p.add_argument('--goal-mode',choices=('off','goal_command'),default='off',
         help='Native session persistence; a historical Pi goal extension is not a native goal.')
     p.add_argument('--api-base',default=AXONHUB_API_BASE,
         help='Fixed AxonHub Responses API base; alternative live endpoints are rejected.')
@@ -2617,5 +2619,5 @@ if __name__=='__main__':
             component_family=a.component_family,initial_material=a.initial_material,
             material_distribution=a.material_distribution,
             goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
-            proof_stage=a.proof_stage)
+            proof_stage=a.proof_stage,pi_comparison=a.pi_comparison)
     else:collect(root,registration_dir)

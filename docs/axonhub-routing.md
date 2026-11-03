@@ -7,7 +7,8 @@ provider and subscription inference are not rollout routes.
   substitute Pi, even when reproducing a historical Pi case.
 - **OpenAI models: Codex.** Historical Sol/Pi cases retain their original
   provenance. Reproductions record model, harness and persistence differences;
-  old settings never override this rule.
+  the explicit 3 November Sol 5.6 Pi comparison is separately registered with
+  `--harness pi-sdk --pi-comparison`. It never changes default routing.
 - Use native same-model fallback, preferring eligible non-OpenRouter channels.
   Freeze the exact model ID, gateway, protocol and actual adapter version.
 - Read the existing host-only key outside Git. Never copy it into an agent
@@ -50,9 +51,9 @@ fail validation. Claude API failures preserve their native error detail and stop
 the affected attempt; a provider failure is not a behavioral negative.
 
 Both adapters preserve one native session per actor. The trace environment reads
-their actual record formats and keeps protected observer captures. Pi remains
-only for archived evidence and offline fixture compatibility. Live CLI selection
-and the launcher accept only the native harnesses.
+their actual record formats and keeps protected observer captures. The explicitly
+authorized Sol 5.6 Pi comparison uses the same host-only AxonHub route and full
+registration checks. No provider-family fallback chooses Pi automatically.
 
 Offline adapter checks are separate from live validation. Each native adaptation
 needs a fresh registered rollout; a historical Pi result cannot validate it.

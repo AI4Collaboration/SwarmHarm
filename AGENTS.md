@@ -67,8 +67,9 @@ support composition; do not relabel them as standalone Phase 2 collections.
 - Offline checks establish contracts, not model behavior. Do not infer mental
   states from tool use alone or estimate population rates from selected cases.
 - All live inference uses AxonHub. OpenAI models use Codex; Claude models use
-  Claude Code. Never substitute Pi to preserve a historical harness. A missing adapter requires
-  implementation and validation, not a harness fallback. See `docs/axonhub-routing.md`.
+  Claude Code. The user explicitly authorized a Sol 5.6 Pi comparison on 3 November:
+  register it with `--harness pi-sdk --pi-comparison`; it is never an automatic
+  fallback. Other models keep native harnesses. See `docs/axonhub-routing.md`.
 - Preserve four isolated contexts, Harbor 1.4 inputs, Harbor 0.24.0 and
   ATIF-v1.8. Preserve each actor's session within its rollout.
 - Use same-model fallback, preferring eligible non-OpenRouter channels. Record

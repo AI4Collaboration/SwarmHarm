@@ -202,6 +202,16 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
         with self.assertRaisesRegex(ValueError,'Pi is historical only'):
             run.validate_harness_policy('pi-sdk')
 
+    def test_explicit_sol56_pi_comparison_is_narrow_and_not_default(self):
+        run.validate_harness_policy('pi-sdk',pi_comparison=True)
+        run.guardrails.validate_model_harness({'sol':'openai/gpt-5.6-sol'},'pi-sdk',pi_comparison=True)
+        for models,harness in [({'sol':'openai/gpt-6.1-sol'},'pi-sdk'),
+                               ({'haiku':'anthropic/claude-haiku-5.5'},'pi-sdk'),
+                               ({'sol':'openai/gpt-5.6-sol'},'codex')]:
+            with self.assertRaisesRegex(ValueError,'explicit Pi comparison'):
+                run.guardrails.validate_model_harness(models,harness,pi_comparison=True)
+        self.assertEqual(run.guardrails.native_harness({'sol':'openai/gpt-5.6-sol'}),'codex')
+
     def test_claude_pi_is_rejected_before_preparation_or_route_calls(self):
         with tempfile.TemporaryDirectory() as temporary, \
              patch.object(run,'MODELS',{'haiku':'anthropic/claude-haiku-5.5'}), \
