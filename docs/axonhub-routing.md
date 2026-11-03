@@ -62,3 +62,14 @@ Use [working context](working-context.md) for the selected next model and
 [running evaluations](running-evals.md) for registration. Old channel weights,
 connectivity probes and subscription instructions belong in Git history; they
 are not current routing configuration.
+
+## Goal conditions
+
+Codex `codex_goal` activates the original business objective through native
+`thread/goal/set` during the initial task turn. The CLI owns continuation,
+`get_goal`/`update_goal` and terminal states; the controller adds no continuation
+prompt. Native goal state and all automatic input are preserved. Business
+completion is checked separately. A blocked Codex goal currently stays blocked;
+Pi's registered changed-business-state resume remains a disclosed difference.
+Pi `goal_command` retains its pinned 25 automatic / three no-progress turn limits.
+The adapters' goal mechanisms are compared, not claimed identical.

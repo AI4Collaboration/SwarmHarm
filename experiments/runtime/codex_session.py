@@ -25,8 +25,14 @@ class CodexAgent:
             if api_base != runtime.AXONHUB_BASE or not api_key:
                 raise ValueError('Codex requires AxonHub base and host key')
         runtime.validate_model(model)
-        if goal_mode != 'off':
-            raise ValueError('Codex currently supports goal mode off')
+        if goal_mode not in (('off','codex_goal') if self.gateway else ('off',)):
+            raise ValueError('Unsupported Codex goal mode')
+        self.goal_mode = goal_mode
+        self.goal_started = False
+        self.first_native_turn = None
+        self.pending_user_echo = None
+        self.goal = None
+        self.native_tools = runtime.native_tools(goal_mode) if self.gateway else runtime.NATIVE_TOOLS
         self.api_base, self.api_key = api_base, api_key
         self.runtime, self.actor, self.events = runtime, actor, events
         self.folder = Path(folder).resolve()
@@ -64,7 +70,7 @@ class CodexAgent:
         self.commands.put(('close', None))
 
     def _tools(self):
-        names = self.base_tools + self.runtime.NATIVE_TOOLS + [
+        names = self.base_tools + self.native_tools + [
             name for name in self.active_tools if name not in self.base_tools]
         return [self.definitions[name] if name in self.definitions else {
             'type': 'function', 'name': name, 'description': 'Codex native auxiliary tool.',
@@ -108,7 +114,7 @@ class CodexAgent:
                     self.model, self.effort, catalog)
                 shutil.copy2(self.home / 'catalog.json', self.folder / 'tool-profile.json')
                 shutil.copy2(self.home / 'config.toml', self.folder / 'config.toml')
-                self.rpc = CodexRpc(self.runtime.command(), env=(self.runtime.gateway_env(self.home, self.api_base, self.api_key) if self.gateway
+                self.rpc = CodexRpc(self.runtime.command(self.goal_mode) if self.gateway else self.runtime.command(), env=(self.runtime.gateway_env(self.home, self.api_base, self.api_key) if self.gateway
                          else self.runtime.subscription_env(self.home)),
                     cwd=workspace, folder=self.folder, notification=self._notification,
                     server_request=self._server_request)
@@ -132,7 +138,7 @@ class CodexAgent:
                         raise RuntimeError('Codex returned an invalid native session path')
                     # Codex creates this registered path when the first turn begins.
                     session_file=str(path)
-                self.emit('ready', session_file=session_file, active_tools=self.active_tools + self.runtime.NATIVE_TOOLS,
+                self.emit('ready', session_file=session_file, active_tools=self.active_tools + self.native_tools,
                     system_prompt=self.runtime.SYSTEM_PROMPT, commands=[], session_id=self.thread_id)
                 while True:
                     try:
@@ -143,6 +149,15 @@ class CodexAgent:
                         continue
                     if command == 'close':
                         break
+                    if command == 'settle_goal':
+                        goal = self.rpc.request('thread/goal/get', {'threadId': self.thread_id})['goal']
+                        with self.lock:
+                            self.goal = goal
+                            snapshot = {'goal': deepcopy(goal), 'source': 'codex-thread-goal'}
+                            self.emit('settled', turn=value['turn'], text=value['text'],
+                                error_message=None, aborted=False, native_goal=snapshot,
+                                sdk_idle=not self.active, sdk_pending_messages=0)
+                        continue
                     if self.active:
                         raise RuntimeError('Cannot change tools or submit another input during a Codex turn')
                     if command == 'tools':
@@ -156,11 +171,18 @@ class CodexAgent:
                         text = '\n\n'.join(value)
                         with self.lock:
                             self.history.append({'role': 'user', 'content': text})
+                            self.pending_user_echo = text
                             self.active = True
                             self.last_progress, self.final_text = time.monotonic(), ''
                         self.rpc.request('turn/start', {'threadId': self.thread_id,
                             'model': self.model, 'effort': self.effort,
                             'input': [{'type': 'text', 'text': text, 'text_elements': []}]})
+                        if self.goal_mode == 'codex_goal' and not self.goal_started:
+                            self.goal_started = True
+                            # Activate while the initial task turn is running. Codex
+                            # owns subsequent continuation; no controller retry prompt.
+                            self.rpc.request('thread/goal/set', {'threadId': self.thread_id,
+                                'objective': value[-1], 'status':'active', 'origin':'user'})
                 if self.active and self.native_turn:
                     self.rpc.request('turn/interrupt', {'threadId': self.thread_id, 'turnId': self.native_turn})
                 snapshot = self.rpc.request('thread/read', {'threadId': self.thread_id, 'includeTurns': True})
@@ -218,6 +240,14 @@ class CodexAgent:
                     raise RuntimeError('Codex thread identity changed')
                 if method == 'turn/started':
                     self.native_turn = params['turn']['id']
+                    if self.first_native_turn is None:self.first_native_turn = self.native_turn
+                    self.active = True
+                    self.final_text = ''
+                    self.last_progress = time.monotonic()
+                elif method == 'thread/goal/updated':
+                    self.goal = deepcopy(params['goal'])
+                    self.emit('native_goal_state', turn=self.turn,
+                        native_goal={'goal':self.goal,'source':'codex-thread-goal'})
                 elif method in ('model/rerouted', 'thread/compacted', 'transport/error', 'error'):
                     raise RuntimeError('Codex stopped: ' + method)
                 elif method == 'item/started' and params['item']['type'] == 'contextCompaction':
@@ -227,6 +257,12 @@ class CodexAgent:
                     kind = item.get('type')
                     if kind == 'message' and item.get('role') != 'assistant':
                         self.inputs.append(source)
+                        if self.goal_mode == 'codex_goal' and item.get('role')=='user':
+                            text='\n'.join(p.get('text','') for p in item.get('content',[]))
+                            if text == self.pending_user_echo:
+                                self.pending_user_echo = None
+                            elif self.native_turn != self.first_native_turn:
+                                self.history.append({'role':'user','content':text})
                         return
                     if kind == 'function_call_output':
                         if not self.response_open:
@@ -256,7 +292,7 @@ class CodexAgent:
                             item['name'] = item['name'][len('mcp__work__'):]
                             business = True
                         if (business and item['name'] not in self.active_tools) or (
-                                not business and (namespace or item['name'] not in self.runtime.NATIVE_TOOLS)):
+                                not business and (namespace or item['name'] not in self.native_tools)):
                             raise RuntimeError('Unregistered Codex function call')
                         if item['call_id'] in self.calls:
                             raise RuntimeError('Duplicate Codex call ID')
@@ -300,8 +336,11 @@ class CodexAgent:
                     if status != 'completed' or self.response_open:
                         raise RuntimeError('Codex turn did not complete: ' + status)
                     self.active = False
-                    self.emit('settled', turn=self.turn, text=self.final_text,
-                        error_message=None, aborted=False)
+                    if self.goal_mode == 'codex_goal':
+                        self.commands.put(('settle_goal', {'turn':self.turn,'text':self.final_text}))
+                    else:
+                        self.emit('settled', turn=self.turn, text=self.final_text,
+                            error_message=None, aborted=False)
             except Exception as error:
                 self._fatal(error)
 

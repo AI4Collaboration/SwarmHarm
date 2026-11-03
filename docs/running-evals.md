@@ -37,8 +37,9 @@ installation of the same version. Install the selected adapter's pinned lockfile
 
 Native entry points are implemented. Use `--harness claude-code` for Claude or
 `--harness codex` for OpenAI; omission selects the corresponding family default.
-Current native admission uses `--goal-mode off`; Pi-goal is not rebranded as a
-native feature. For the explicitly requested Sol 5.6 Pi comparison, select
+Codex supports `--goal-mode off` and `--goal-mode codex_goal`; the latter uses
+the native thread-goal API and automatic continuation. Claude currently uses
+`off`. Pi-goal is not rebranded as a Codex feature. For the explicitly requested Sol 5.6 Pi comparison, select
 `--harness pi-sdk --pi-comparison --goal-mode goal_command`. Freeze that
 difference when reproducing a Pi-goal case.
 Registration success and offline checks do not certify live behavior.

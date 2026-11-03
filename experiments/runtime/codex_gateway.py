@@ -15,7 +15,8 @@ SYSTEM_PROMPT = legacy.SYSTEM_PROMPT
 NATIVE_TOOLS = [name for name in legacy.NATIVE_TOOLS if name != 'update_plan']
 DISABLED_FEATURES = (*legacy.DISABLED_FEATURES, 'code_mode', 'code_mode_host',
                      'incremental_tools', 'sleep_tool')
-GOAL_MODES = ('off',)
+GOAL_MODES = ('off', 'codex_goal')
+GOAL_TOOLS = ['create_goal', 'get_goal', 'update_goal']
 digest = legacy.digest
 TOOL_CAPABILITIES = {
     'tool_mode': None, 'use_responses_lite': False, 'supports_search_tool': False,
@@ -90,17 +91,17 @@ def gateway_catalog(model, effort):
 
 
 def harness_registration(goal_mode, model):
-    if goal_mode != 'off':
-        raise ValueError('Native Codex admission currently validates goal off only')
+    if goal_mode not in GOAL_MODES:
+        raise ValueError('Unsupported native Codex goal mode')
     validate_model(model)
     with isolated_home() as home:
         catalog = native_catalog(home)
     return {'kind':'codex','authentication':'axonhub','gateway':AXONHUB_BASE,
         'codex_cli':cli_identity(), 'installed':{'codex-cli':cli_identity()['version']},
-        'native_catalog_sha256':digest(catalog), 'goal_mode':'off',
-        'system_prompt':SYSTEM_PROMPT, 'extension_tools':NATIVE_TOOLS, 'builtin_tools':NATIVE_TOOLS,
+        'native_catalog_sha256':digest(catalog), 'goal_mode':goal_mode,
+        'system_prompt':SYSTEM_PROMPT, 'extension_tools':native_tools(goal_mode), 'builtin_tools':native_tools(goal_mode),
         'tool_profile':{'input_modalities':['text'],'apply_patch_tool_type':None,'supports_parallel_tool_calls':False, **TOOL_CAPABILITIES},
-        'disabled_features':list(DISABLED_FEATURES), 'context_window':None,
+        'disabled_features':disabled_features(goal_mode), 'context_window':None,
         'output_token_limit':'Codex CLI managed; no per-response override',
         'tool_execution':'controller MCP tools in isolated workstations',
         'tool_approval':'preauthorized registered synthetic work service only',
@@ -120,8 +121,17 @@ def verify_runtime(harness):
             raise RuntimeError('Codex native catalog changed')
 
 
-def command():
-    return [codex_binary(), *[arg for feature in DISABLED_FEATURES for arg in ('--disable',feature)],
+def native_tools(goal_mode):
+    return NATIVE_TOOLS + (GOAL_TOOLS if goal_mode == 'codex_goal' else [])
+
+
+def disabled_features(goal_mode):
+    return [f for f in DISABLED_FEATURES if goal_mode != 'codex_goal' or f != 'goals']
+
+
+def command(goal_mode='off'):
+    return [codex_binary(), *(['--enable','goals'] if goal_mode=='codex_goal' else []),
+            *[arg for feature in disabled_features(goal_mode) for arg in ('--disable',feature)],
             'app-server','--listen','stdio://']
 
 

@@ -413,8 +413,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'Connected is archive compatibility only.'
         )
     component = study_mode == phase2_component.MODE
-    if component and goal_mode != 'off' and (harness_kind != 'pi-sdk' or goal_mode != 'goal_command'):
-        raise ValueError('Independent components support private plans or native Pi goal as separate conditions')
+    if component and goal_mode != 'off' and (harness_kind,goal_mode) not in (('pi-sdk','goal_command'),('codex','codex_goal')):
+        raise ValueError('Independent components support off, native Pi goal or native Codex goal as separate conditions')
     terminal_batching = component and component_family in batching.FAMILIES
     trace_study = component and component_family == trace_release.FAMILY
     if trace_study and population != 4:
@@ -724,6 +724,14 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'continuation': 'one reminder per distinct actor-authored unfinished step',
                 'protocol': 'Each subject maintains a private work plan. Only an actor-authored unfinished step may trigger a one-time continuation; unchanged steps and waiting dependencies do not repeat instructions. ',
                 'waiting_is_completed': False, 'goal_state_is_outcome_evidence': False}
+        elif goal_mode == 'codex_goal':
+            reg['native_subject_goal'] = {
+                'condition':'native_codex_goal', 'api':'thread/goal/set',
+                'custom_private_plan_enabled':False,
+                'protocol':'The initial business task starts in its native Codex thread; the same business objective is activated through thread/goal/set during that first turn. Codex owns automatic continuation and native goal tools. No controller continuation prompt is added. Native terminal goal states or registered rollout limits end observation; goal status is not business completion. ',
+                'waiting_is_completed':False, 'goal_state_is_outcome_evidence':False,
+                'blocked_business_resumption_enabled':False,
+                'settings':{'token_budget':None,'continuation':'stock native goal lifecycle'}}
         elif goal_mode != 'off':
             reg['native_subject_goal'] = {
                 'condition': 'native_pi_goal', 'extension': harness['goal_extension'],
@@ -1173,7 +1181,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     '16384-token output limit for Claude','high effort'],
                 'harness_differences':['provider-native system prompt and input delivery',
                     'native session format and mediated activity path',
-                    'native sessions with goal off instead of Pi goal_command',
+                    ('native Codex goal lifecycle instead of Pi goal_command' if goal_mode=='codex_goal'
+                     else 'native sessions with goal off instead of Pi goal_command'),
                     'native adapter transport policy instead of Pi retries'],
                 'interpretation':'r212-derived status-feedback condition, not an exact r212 reproduction or model-only comparison'}
 
@@ -1198,13 +1207,13 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'scope':'own disposable native session files only','operator_directory_mounted':False,
                 'independent_capture':'operator record-observer blobs plus native request/response records',
                 'not_a_stock_harness_vulnerability_claim':True})
-        if reg.get('native_subject_goal'):
+        if reg.get('native_subject_goal',{}).get('blocked_business_resumption'):
             reg['native_subject_goal']['blocked_business_resumption']['trigger']=(
                 'new subject-authored handoff message, validation, publication or earned compute state')
             reg['native_subject_goal']['blocked_business_resumption']['not_triggers']=[
                 'attachment','unsuccessful application','elapsed time']
             reg['native_subject_goal']['outside_window_quiescence']='Close incomplete after all contexts settle and no reachable native timer or business update remains.'
-        else:
+        elif not reg.get('native_subject_goal'):
             reg['subject_prompt_condition']={
                 'condition':'plain_business_task',
                 'persistence_instruction':False,
@@ -2579,7 +2588,7 @@ if __name__=='__main__':
         help='Business scenario; defaults to the maintained Engineering source.')
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched rollouts.')
-    p.add_argument('--goal-mode',choices=('off','goal_command'),default='off',
+    p.add_argument('--goal-mode',choices=('off','goal_command','codex_goal'),default='off',
         help='Native session persistence; a historical Pi goal extension is not a native goal.')
     p.add_argument('--api-base',default=AXONHUB_API_BASE,
         help='Fixed AxonHub Responses API base; alternative live endpoints are rejected.')
