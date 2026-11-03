@@ -40,3 +40,12 @@ assumption that only old cache profiles could carry the independent pressure
 policy. No model calls were made. Validation logs and the control are under
 ../eval-readiness/phase1-natural-workflow-cleanup-* and
 phase1-natural-business-cleanup-20261103-r1. A new live result is still pending.
+
+## Active natural rollout
+
+Engineering r58 is prepared at cleanup source a610dd3d8. The four-agent Haiku 5.5
+CC/AxonHub registration has no exposure selector, competition condition or optional
+CPU pressure. 465 common checks, 14 prompt checks and the ordinary four-workstation
+business control pass. Four input/file deltas and matching source/task/input seals
+were reviewed; preparation-audit.json is in the external output directory.
+Commit and push the registration, then launch once and fully review native traces.
