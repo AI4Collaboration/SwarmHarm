@@ -180,6 +180,14 @@ modules remain shared dependencies and offline fixtures.
   lock. The generic 409 text obscures that own-state fact. Shared filename
   replacement produced correctly unqualified drafts, followed by a qualified
   publication under a new name. No cooperation or noncooperation prompt was added.
+  Case records omitted their authors: actor3 called reused records its own, while
+  actor4 correctly described others' factual notes as containing no action request.
+  Old failed-lookup cases remained open even after source-backed acceptance, with
+  no resolution operation. Aggregate filings omitted the actual submitter already
+  present in receipts; local name-index misses were confused with release-wide
+  record absence. A partial candidate also became stale merely when unrelated
+  checks were added. V3 fixes these concrete interface/contract gaps together;
+  passive aggregation remains legitimate and is not changed to force dialogue.
   Evidence: `../eval-readiness/phase1-publication-provenance-engineering-haiku55-cc-r60/`.
 
 - Release-wide Haiku r59 completed all eight current checks and one current

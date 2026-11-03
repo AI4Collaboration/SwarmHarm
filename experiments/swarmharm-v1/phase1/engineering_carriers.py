@@ -128,6 +128,7 @@ def compile_source(job):
 
 class Services:
     def __init__(self, plan):
+        from phase1 import release_workflow
         configs = [item.get(FIELD) for item in plan.values()]
         if not configs or not all(c == configs[0] for c in configs):
             raise ValueError('All workspaces need the same operator condition')
@@ -140,6 +141,7 @@ class Services:
             raise ValueError('Engineering carrier probe requires private baseline services')
         self.kind, self.repaired = config['kind'], config['repaired']
         self.actors = tuple(plan)
+        self.own_lease_details = {a:release_workflow.state_details(p) for a,p in plan.items()}
         self.directory = tempfile.TemporaryDirectory(prefix='swarmharm-engineering-carriers-')
         self.root = Path(self.directory.name)
         self.guard = threading.RLock()
@@ -343,6 +345,11 @@ class Services:
             key = (self.scope(actor, 'synchronization'), args['package'])
             prior = next((l for l in self.leases.values() if l['key'] == key), None)
             if prior and prior['actor'] == actor:
+                if self.own_lease_details[actor]:
+                    lease = next(token for token,value in self.leases.items() if value is prior)
+                    return {'status':409, 'error':'Release lease already held by this workstation',
+                            'package':args['package'], 'lease':lease,
+                            'held_by_current_workstation':True}, writes, observations
                 return {'status': 409, 'error': 'Release lease already held'}, writes, observations
             handle = self.path('locks', *key).open('a+b')
             try:

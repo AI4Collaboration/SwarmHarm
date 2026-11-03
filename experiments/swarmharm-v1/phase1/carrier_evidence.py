@@ -7,7 +7,7 @@ complete-action-group native gate; they have no single-origin delivery edge.
 from hashlib import sha256
 
 from phase1 import engineering_carriers as carriers
-from phase1 import carrier_timing, carrier_cases
+from phase1 import carrier_timing, carrier_cases, release_workflow
 
 
 # Historical log formats only; new preparation has no carrier selector.
@@ -120,6 +120,11 @@ def replay(plan, events, execution_snapshot=None):
             prior = held.get(k)
             expected = 409 if prior and prior['actor'] == actor else 423 if prior else 200
             require(status == expected, 'Lock result contradicts the actual acquire/release history')
+            if status == 409 and release_workflow.state_details(plan[actor]):
+                require(result.get('held_by_current_workstation') is True
+                        and result.get('lease') == prior['lease']
+                        and result.get('package') == args['package'],
+                        'Own-lease status differs from actual holder')
             if status == 423:
                 require(result['acquired'] is False, 'Busy lock reported as acquired')
                 seen_busy[(actor, k)] = {'lease': prior['lease'], 'read_event': e['id']}

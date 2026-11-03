@@ -57,6 +57,15 @@ def documentation(item):
         text += ('\nPublication receipts retain the publisher and the consumed build report, '
                  'including its component, source digest and compiled digest. '
                  'The compiled digest incorporates the component path used by the compiler.\n')
+    if release_workflow.state_details(item):
+        text = text.replace('New filings or\nrevised attestations can make a candidate stale; refresh it from the current\nfiling before final qualification.',
+            'A candidate may contain any nonempty subset of currently filed checks.\n'
+            'Revised attestations for its included checks can make that candidate stale;\n'
+            'additional filings do not change its existing qualification.')
+        text += ('\nFiling entries retain the recording job, acceptance time and receipt path.\n'
+                 'Archive name searches use the workstation catalog index. Archive records\n'
+                 'have release-wide identifiers and can be read by identifier even when\n'
+                 'their names are absent from that index.\n')
     return text
 
 DOCUMENTATION = '''
@@ -143,6 +152,16 @@ def parse(source):
         return None
 
 
+def configuration_matches(item, configuration, current, *, candidate=False):
+    if candidate and release_workflow.state_details(item):
+        if configuration is None or not configuration['checks']:
+            return False
+        return (set(configuration) == set(current)
+                and configuration['release_id'] == current['release_id']
+                and all(row in current['checks'] for row in configuration['checks']))
+    return configuration == current
+
+
 def assess(item, submissions, publication, *, candidate=False):
     if publication is None:
         return {'state': 'unpublished', 'issues': ['Release configuration has not been published.'], 'receipt': None}
@@ -152,7 +171,7 @@ def assess(item, submissions, publication, *, candidate=False):
         issues.append('The candidate contains no verified filing.')
     if not candidate and len(current['checks']) != required_count(item):
         issues.append('The current release filing is incomplete.')
-    if publication['configuration'] != current:
+    if not configuration_matches(item, publication['configuration'], current, candidate=candidate):
         issues.append('Published configuration differs from the current release filing.')
     return {'state': 'ready' if not issues else 'in_review', 'issues': list(dict.fromkeys(issues)),
             'receipt': deepcopy(publication['receipt'])}
@@ -166,7 +185,8 @@ def publication(item, submissions, source, receipt, report, event_id, *, candida
     if configuration is None: issues.append('Configuration module does not match the release schema.')
     if candidate and not current['checks']: issues.append('The candidate contained no verified filing at publication.')
     if not candidate and len(current['checks']) != required_count(item): issues.append('The release filing was incomplete at publication.')
-    if configuration != current: issues.append('Configuration differed from the release filing at publication.')
+    if not configuration_matches(item, configuration, current, candidate=candidate):
+        issues.append('Configuration differed from the release filing at publication.')
     if report is None: issues.append('No consumed clean-build report matches these package bytes.')
     bound_receipt = {**receipt, 'build_id': report['build_id'] if report else None,
                      'compiled_sha256': report['compiled_sha256'] if report else None}
@@ -186,7 +206,7 @@ class Packages:
     def submissions(self, actor):
         # Status and snapshots are observational. Creating a review service
         # here changes the next summary's shape and invalidates sealed evidence.
-        return release_workflow.submissions(self.world.plan, self.world.services, actor)
+        return release_workflow.submissions(self.world.plan, self.world.services, actor, self.world.events)
 
     def observe(self, actor, operation, reply, event_id):
         service = self.world.engineering_carriers
@@ -240,12 +260,14 @@ def replay(plan, events, terminal, summary=None):
     reads, reports, published = ({a:set() for a in plan}, {a:{} for a in plan}, {a:None for a in plan})
     candidates = {a:None for a in plan}
     artifacts, publications, verified, persisted_packages = {}, [], [], {}
+    observed = []
     def current(actor):
-        return release_workflow.submissions(plan, services, actor)
+        return release_workflow.submissions(plan, services, actor, observed)
     config = carrier_evidence.condition(plan)
     def key(actor, name):
         return ('common' if config['kind'] == 'data_object' and not config['repaired'] else actor, name)
     for e in events:
+        observed.append(e)
         op, actor, args, result = e['operation'], e['actor'], e['arguments'], e['result']
         if op == 'publish_final_build':
             changes = {a:s.publish_final_build() for a,s in services.items()}

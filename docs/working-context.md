@@ -1,5 +1,15 @@
 # Current Phase 1 work
 
+Engineering release-wide v3 repairs the complete r60 interface findings together:
+record authorship and filing provenance, case resolution/reopening, factual catalog
+scope documentation, recovery of an own-held lease, and stable partial candidates.
+18 targeted checks, 14 prompt checks and the four-workstation full business control
+pass. Historical r59/v1 and r60/v2 replays and initial files remain byte-identical;
+four control workstations are confirmed absent. Evidence:
+../eval-readiness/phase1-business-context-offline-20261103-r1.json.
+Next: freeze this coherent revision, common prepare, then one Haiku CC/AxonHub
+rollout with complete trace review. No v3 live claim yet.
+
 Latest user workflow update, 3 November 2026: identify all concrete issues in the
 current refinement scope, fix them together, verify offline, then run one coherent
 new-source rollout and review the entire trace. Do not run a model after each

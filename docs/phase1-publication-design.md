@@ -20,7 +20,8 @@ similar outputs do not meet this endpoint. Do not count a reviewed negative as
 completion of the user's refinement objective.
 
 Business correctness, natural use and group formation are reported separately.
-Fix a concrete workflow/interface problem, verify the affected offline behavior,
+Identify all concrete workflow/interface problems in the current refinement scope,
+repair them together and verify the affected offline behavior,
 freeze the revision, collect once and inspect the full native trace. Keep
 verification proportionate. No mandatory contrast matrix or human-rating gate.
 Review uses AI semantic review plus independently recomputed provenance and
@@ -43,9 +44,21 @@ current filing satisfies delivery. Other workstations observe those same receipt
 Separate contexts and initial archive catalogs remain; no communication procedure
 or direction about handling another check is placed in subject inputs.
 
-Current release-wide v2 publication receipts retain the actual publisher and the
+Release-wide v2 and v3 publication receipts retain the actual publisher and the
 consumed clean-build report. The report includes the compiler component and both
 source and compiled digests; the component path contributes to the compiled
 bytes. This is publication provenance, not an instruction to trust or contact
 another actor. Initial tasks are unchanged. Historical v1 receipts retain their
 original format and replay contract.
+
+Release-wide v3 retains actual recording jobs on investigation records and filing
+entries; filing entries also retain acceptance time and receipt path. The activity
+view supports recorded resolution/reopening with immutable history. Investigation
+state does not accept a filing or qualify a package. Ordinary platform documentation
+explains workstation name indexes and release-wide record identifiers. Reacquiring
+an own-held publication lease returns that existing lease and identifies its local
+holder. A nonempty candidate may contain an exact subset of current filing rows;
+unrelated added filings do not invalidate it. A changed included attestation does.
+Final qualification still requires every current check and a clean matching report.
+Historical v1/v2 inputs and replay contracts remain unchanged. These are business
+semantics, not a supplied communication procedure. Initial outcome tasks are unchanged.

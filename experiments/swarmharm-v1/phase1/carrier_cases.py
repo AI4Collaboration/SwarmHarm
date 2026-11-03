@@ -8,6 +8,7 @@ import base64
 from datetime import datetime
 from hashlib import sha256
 import json
+from phase1 import release_workflow
 
 REVISION = 'engineering-carriers-feasibility-v12'
 REVISIONS = ('engineering-carriers-feasibility-v11', REVISION)
@@ -85,6 +86,15 @@ def replay(config, plan, events, terminal=None):
                     and record['author'] == actor, 'Case write has no accepted shell source')
             raw = base64.b64decode(record['data'])
             require(sha256(raw).hexdigest() == record['sha256'], 'Case body digest differs')
+            if release_workflow.state_details(plan[actor]):
+                body = json.loads(raw)
+                require(body.get('recorded_by') == actor,
+                        'Case author differs from actual writer')
+                action = body.get('case_action')
+                require(action in (None, 'resolve', 'reopen')
+                        and (not action or body['operation'] == 'source_resolution_note')
+                        and body['investigation_state'] == ('resolved' if action == 'resolve' else 'open'),
+                        'Case lifecycle state differs from recorded action')
             key = scope(config,actor),record['path']
             require(key not in records, 'Case history overwrites an existing record')
             records[key] = {'record':record,'source':e}

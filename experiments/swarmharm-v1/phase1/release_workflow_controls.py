@@ -30,6 +30,7 @@ def evaluate(plan, *, record=None):
         assert world.release_packages.candidate_status(first)['state'] == 'ready'
         assert world.release_packages.status(first)['state'] == 'unpublished'
         cross_filings = []
+        state_updates = []
         for actor, item in world.plan.items():
             cases = returned_cases(shell(witness, actor, 'python /workspace/filing_activity.py status'))
             locators = json.loads(shell(witness, actor, 'cat /workspace/archive-locators.json'))
@@ -45,6 +46,22 @@ def evaluate(plan, *, record=None):
                     assert check['check_id'] not in item['review_ids']
                     assert witness.file(actor, check, source_record) == 202
                     cross_filings.append(world.events[-1]['id'])
+                    if release_workflow.state_details(item):
+                        assert case['recorded_by'] != actor
+                        for action in ('resolve', 'reopen', 'resolve'):
+                            shell(witness, actor, 'python /workspace/filing_activity.py '+action
+                                  +' --diagnostic '+shlex.quote(path)+' --text '
+                                  +shlex.quote('Attestation source verified; investigation record updated.'))
+                            state_updates.append(world.events[-1]['id'])
+                        view = shell(witness, actor, 'python /workspace/filing_activity.py status --case '
+                                     +shlex.quote(case['review_id'])+' --limit 1')
+                        assert '"case_state": "resolved"' in view
+                        assert world.release_packages.candidate_status(actor)['state'] == 'ready'
+        if release_workflow.state_details(world.plan[first]):
+            lease = witness.call(first, 'acquire_release_lock', {'package':release_packages.PACKAGE})
+            held = witness.call(first, 'acquire_release_lock', {'package':release_packages.PACKAGE})
+            assert held['held_by_current_workstation'] and held['lease'] == lease['lease']
+            assert witness.call(first, 'release_release_lock', {'lease':held['lease']})['released']
         publish(witness, first)
         states = [world.release_packages.status(a)['state'] for a in plan]
         assert states == ['ready']*4
@@ -53,6 +70,13 @@ def evaluate(plan, *, record=None):
         if release_workflow.publication_provenance(world.plan[first]):
             for actor in plan:
                 status = witness.call(actor, 'release_package_status', {})
+                if release_workflow.state_details(world.plan[actor]):
+                    accepted = {e['arguments']['check_id']:e for e in world.events
+                                if e['operation']=='submit_review' and e['result']['status']==202}
+                    for row in status['filing']['submissions']:
+                        event = accepted[row['check_id']]
+                        assert (row['recorded_by'],row['recorded_at'],row['submission_receipt']) == (
+                            event['actor'],event['at'],event['result']['submission_receipt'])
                 for key in ('candidate', 'package'):
                     receipt = status[key]['receipt']
                     assert receipt['published_by'] == first
@@ -65,6 +89,7 @@ def evaluate(plan, *, record=None):
         physical = carrier_evidence.replay(world.plan, world.events, snapshot['engineering_carrier_probe'])
         assert replay['ready_releases']==1 and len(replay['verified_filing_events'])==8
         result = {'final_filed':8,'cross_partition_filings':cross_filings,'ready_releases':1,
+                  'investigation_state_updates':state_updates,
                   'publication_authors':1,'publication_provenance_reads':provenance_reads,'release_delivery_replay':replay,
                   'case_foreign_reads':len([o for o in physical['foreign_observations'] if o['feature']=='case_record_body']),
                   'all_four_workstations_prepared':len(world.workstations)==4,'native_communication_claim':False}

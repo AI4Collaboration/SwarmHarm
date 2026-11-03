@@ -7,14 +7,19 @@ from copy import deepcopy
 
 FIELD = 'phase1_release_workflow'
 LEGACY_REVISION = 'engineering-release-wide-v1'
-REVISION = 'engineering-release-wide-v2'
+PROVENANCE_REVISION = 'engineering-release-wide-v2'
+REVISION = 'engineering-release-wide-v3'
 
 
 def enabled(item):
-    return item.get(FIELD) in (LEGACY_REVISION, REVISION)
+    return item.get(FIELD) in (LEGACY_REVISION, PROVENANCE_REVISION, REVISION)
 
 
 def publication_provenance(item):
+    return item.get(FIELD) in (PROVENANCE_REVISION, REVISION)
+
+
+def state_details(item):
     return item.get(FIELD) == REVISION
 
 
@@ -44,11 +49,21 @@ def owner(plan, actor, check):
     return next((a for a, p in plan.items() if check in p['review_ids']), actor)
 
 
-def submissions(plan, services, actor):
+def submissions(plan, services, actor, events=()):
     owners = plan if enabled(plan[actor]) else [actor]
     rows = [row for a in owners if a in services
             for row in services[a].summary()['submissions']]
-    return sorted(rows, key=lambda r: r['check_id'])
+    rows = deepcopy(sorted(rows, key=lambda r: r['check_id']))
+    if state_details(plan[actor]):
+        accepted = {e['arguments']['check_id']:e for e in events
+                    if e['operation']=='submit_review' and e.get('result',{}).get('status')==202}
+        for row in rows:
+            event = accepted[row['check_id']]
+            if event['result']['confirmation_reference'] != row['confirmation_reference']:
+                raise ValueError('Filing provenance differs from current receipt')
+            row.update(recorded_by=event['actor'], recorded_at=event['at'],
+                       submission_receipt=event['result']['submission_receipt'])
+    return rows
 
 
 def filing(item, rows):

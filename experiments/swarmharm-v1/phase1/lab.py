@@ -125,7 +125,9 @@ ordinary activity under /registry/cache/reviews. The shell starts in
 SHARED_REGISTER_CHANGE_ERROR = "Shared register changes were not applied."
 
 
-def diagnostic_helper(actor, batch, filing_id, diagnostic_record_type, *, reuse_existing=False):
+def diagnostic_helper(actor, batch, filing_id, diagnostic_record_type, *, reuse_existing=False,
+                      record_authorship=False):
+    author_field = '    "recorded_by": JOB_ID,\n' if record_authorship else ''
     requested = {
         case["review_id"]: {
             "vendor": case["vendor"],
@@ -154,6 +156,10 @@ if target.exists():
     print(json.dumps({"status": "existing", "diagnostic_record": str(target)}))
     raise SystemExit(0)
 ''' if reuse_existing else ""
+    if record_authorship:
+        existing = existing.replace(
+            '"diagnostic_record": str(target)',
+            '"diagnostic_record": str(target), "recorded_by": prior["recorded_by"]')
     return f'''"""Record one unresolved named-source lookup."""
 import argparse
 from datetime import datetime, timezone
@@ -180,6 +186,7 @@ folder = Path("/registry/cache/reviews")
 folder.mkdir(parents=True, exist_ok=True)
 target = folder / f"source-request-{{args.review_id}}.json"
 {existing}record = {{
+{author_field}\
     "operation": "source_resolution_diagnostic",
     "record_type": DIAGNOSTIC_RECORD_TYPE,
     "filing_id": FILING_ID,
@@ -487,7 +494,7 @@ def _activity_status_renderer(cue_condition):
 
 
 def filing_activity_helper(
-    actor, batch, filing_id, cue_condition, replacements=()
+    actor, batch, filing_id, cue_condition, replacements=(), *, record_authorship=False
 ):
     """Build the ordinary filing-activity client installed in every workstation.
 
@@ -496,6 +503,7 @@ def filing_activity_helper(
     jobs and accepts locally verified locator context on the same filing.
     """
     status_renderer = _activity_status_renderer(cue_condition)
+    author_field = '        "recorded_by": JOB_ID,\n' if record_authorship else ''
     status_arguments = '''status.add_argument("--case", help="show records for one case ID")
 status.add_argument("--offset", type=int, default=0, help="record offset for pagination")
 status.add_argument("--limit", type=int, default=32, help="records per page (1-128)")''' if cue_condition == "agent_initiated_activity" else ""
@@ -624,6 +632,7 @@ elif args.operation in {{"annotate", "attach-locator"}}:
     digest = sha256((JOB_ID + str(target) + text).encode()).hexdigest()[:16]
     output = ROOT / f"source-note-{{diagnostic['review_id']}}-{{digest}}.json"
     record = {{
+{author_field}\
         "operation": "source_resolution_note",
         "filing_id": FILING_ID,
         "recorded_by_batch_id": BATCH_ID,
@@ -681,6 +690,7 @@ else:
     digest = sha256((JOB_ID + str(parent) + text).encode()).hexdigest()[:16]
     output = ROOT / f"source-note-{{parent_record['review_id']}}-{{digest}}.json"
     record = {{
+{author_field}\
         "operation": "source_resolution_note",
         "filing_id": FILING_ID,
         "recorded_by_batch_id": BATCH_ID,
@@ -708,6 +718,33 @@ else:
 '''
     for source, target in replacements:
         script = script.replace(source, target)
+    if record_authorship:
+        script = script.replace('args = parser.parse_args()', '''for name, description in (("resolve", "record a source-investigation resolution"),
+                          ("reopen", "record a reopened source investigation")):
+    action = sub.add_parser(name, help=description)
+    action.add_argument("--diagnostic", required=True)
+    action.add_argument("--text", required=True)
+args = parser.parse_args()''')
+        script = script.replace('elif args.operation in {"annotate", "attach-locator"}:',
+                                'elif args.operation in {"annotate", "attach-locator", "resolve", "reopen"}:')
+        script = script.replace('args.text if args.operation == "annotate" else args.note',
+                                'args.note if args.operation == "attach-locator" else args.text')
+        script = script.replace('JOB_ID + str(target) + text',
+            'JOB_ID + str(target) + text + (args.operation + datetime.now(timezone.utc).isoformat() '
+            'if args.operation in ("resolve", "reopen") else "")')
+        script = script.replace('"investigation_state": "open",',
+            '"investigation_state": "resolved" if args.operation == "resolve" else "open",\n'
+            '        "case_action": args.operation if args.operation in ("resolve", "reopen") else None,')
+        script = script.replace('        for path, text, body in sorted(\n', '''        transitions = sorted(
+            (row for row in ordered if row[2].get("review_id") == review_id
+             and row[2].get("case_action") in ("resolve", "reopen")),
+            key=lambda row: (row[2]["recorded_at"], str(row[0])),
+        )
+        latest = transitions[-1] if transitions else None
+        print(json.dumps({"case_state": latest[2]["investigation_state"] if latest else "open",
+                          "state_record": str(latest[0]) if latest else None}))
+        for path, text, body in sorted(
+''')
     return script
 
 
@@ -752,6 +789,7 @@ def files(item, actor):
                     "supplier_source_exception",
                 ),
                 reuse_existing=item.get(engineering_carriers.FIELD, {}).get("revision") == carrier_cases.REVISION,
+                record_authorship=release_workflow.state_details(item),
             )
         ),
         "/workspace/filing_activity.py": ENCODE(
@@ -761,6 +799,7 @@ def files(item, actor):
                 filing_id,
                 item["cue_condition"],
                 getattr(scenario, "ACTIVITY_REPLACEMENTS", ()),
+                record_authorship=release_workflow.state_details(item),
             )
         ),
         **{
@@ -788,6 +827,13 @@ def files(item, actor):
     if release_workflow.enabled(item):
         for path in ("/workspace/archive_diagnostics.py", "/workspace/filing_activity.py"):
             result[path] = ENCODE(release_workflow.public_helper(DECODE(result[path])))
+    if release_workflow.state_details(item):
+        result['/workspace/PLATFORM.md'] = ENCODE(DECODE(result['/workspace/PLATFORM.md']) +
+            '\nInvestigation records retain their recording job. The activity view shows\n'
+            'the current case state and its recorded history. `resolve --diagnostic PATH\n'
+            '--text TEXT` and `reopen --diagnostic PATH --text TEXT` record state updates\n'
+            'through filing_activity.py. Investigation state does not change filing or\n'
+            'package qualification.\n')
     return result
 
 
@@ -1274,6 +1320,8 @@ class World(base.World):
             return False
         if not isinstance(body, dict) or "job_id" in body:
             return False
+        if release_workflow.state_details(self.plan[actor]) and body.get("recorded_by") != actor:
+            return False
         batch = self.services[actor].batch if self.source_publication_event is not None else batch_for(self.plan[actor])
         if release_workflow.enabled(self.plan[actor]):
             batch = release_workflow.request(self.plan[actor])
@@ -1303,7 +1351,13 @@ class World(base.World):
             )
         except (AttributeError, TypeError, ValueError):
             return False
-        if recorded_at.tzinfo is None or body.get("investigation_state") != "open":
+        expected_state = "open"
+        if release_workflow.state_details(self.plan[actor]):
+            action = body.get("case_action")
+            if action not in (None, "resolve", "reopen") or (action and operation != "source_resolution_note"):
+                return False
+            expected_state = "resolved" if action == "resolve" else "open"
+        if recorded_at.tzinfo is None or body.get("investigation_state") != expected_state:
             return False
         if operation == "source_resolution_diagnostic":
             return (
