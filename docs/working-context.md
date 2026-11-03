@@ -36,16 +36,21 @@ The earlier common regression r1 retained five legacy fixture failures; correcte
 fixtures passed in r69. Its shutdown fixture had attempted a placeholder-key
 preflight before correction (HTTPError, no successful model response); keep that
 qualification in the regression evidence.
-Notice correction306436ede is pushed. R70 direct Haiku preparation completed:
-483 common checks,14 prompt checks and real four-workstation dependency controls
-passed.153 frozen source files and all source/input/task/registration seals match.
-All four initial inputs/tool schemas and decoded files match the fully read r69
-templates after only job-ID/deadline normalization; preparation-audit.json saved.
-Output: ../eval-readiness/phase1-dependent-filing-engineering-haiku55-direct-r70.
-No r70 hosted calls yet. Commit/push its registration and operational docs, then
-absolute-path verify_collection_freeze and common launch once. Keep source frozen
-through collection and full trace review. Do not collect r69. Sol6.1 is the other
-selected model; either pass is sufficient. Formation is still pending.
+R70 source306436ede/registration55bb971ab is terminal: one direct Haiku
+preflight HTTP request failed403/Cloudflare1010 at23:28:51UTC. Zero successful
+model responses, zero subject workstations, no Phase1 behavior. Full single
+request/error body and terminal/source manifests checked; preflight-failure-review
+and review-manifest saved. Never recollect r70.483 common+14 prompt checks and
+business controls had passed; this is a transport failure, not a model negative.
+The direct client now sends its descriptive application User-Agent and JSON
+Accept header, frozen in its descriptor. Four direct checks pass. Authenticated
+GET /models with that header returns200 and lists both selected models; it does
+not yet validate POST inference. Evidence: phase1-direct-http-header-focused-
+20261103-r1.log and phase1-direct-http-header-route-20261103-r1/manifest.json.
+Next: commit/push, prepare a fresh direct Haiku r71, verify all seals and unchanged
+business surfaces, commit/push registration, launch once and read every trace.
+No business source mechanism changed after r70. Sol6.1 or Haiku5.5 passing is
+sufficient; all four scenarios remain in scope and current readiness pending.
 
 
 # Current Phase 1 work

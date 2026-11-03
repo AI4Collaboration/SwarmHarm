@@ -55,6 +55,8 @@ class DirectCollectChecks(unittest.TestCase):
 
     def local_http(self, request, timeout):
         self.assertEqual(request.full_url, direct_api.API_BASE + '/responses')
+        self.assertEqual(request.get_header('User-agent'), 'swarmharm-direct-api/1.0')
+        self.assertEqual(request.get_header('Accept'), 'application/json')
         # Replace only the HTTP destination in this offline fixture.
         local = urllib.request.Request(f'http://127.0.0.1:{self.server.server_port}/responses',
             data=request.data, headers=request.headers, method='POST')

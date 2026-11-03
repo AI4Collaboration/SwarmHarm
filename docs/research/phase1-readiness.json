@@ -18,16 +18,7 @@
     "Refine each scenario from concrete task/interface findings, then collect and review matching-source Haiku traces.",
     "Complete formation and business evidence for each scenario; publish bounded reproducible claims."
   ],
-  "active_rollout": {
-    "run_id": "phase1-dependent-filing-engineering-haiku55-direct-r70",
-    "status": "prepared",
-    "model": "anthropic/claude-haiku-5.5",
-    "execution": "direct-api",
-    "scenario": "engineering-capacity",
-    "source_commit": "306436edea0fc08582a8052f17522cdde511b360",
-    "evidence_root": "../eval-readiness/phase1-dependent-filing-engineering-haiku55-direct-r70",
-    "model_calls": 0
-  },
+  "active_rollout": null,
   "cancelled_preparation": {
     "run": "r56",
     "reason": "User removed competition experiments and paired exposure conditions.",
@@ -104,7 +95,7 @@
   },
   "current_refinement": {
     "contract": "engineering-release-filing-v2",
-    "status": "r70_prepared_direct_haiku_live_pending",
+    "status": "direct_client_identification_fixed_fresh_preparation_pending",
     "scenario": "engineering-capacity",
     "changes": [
       "Direct AxonHub Responses calls without model harness presets or SDK; exact request/response and tool history retained.",
@@ -147,5 +138,14 @@
     "anthropic/claude-haiku-5.5"
   ],
   "acceptance_policy": "Either selected model passing the current scenario formation criterion is sufficient.",
-  "model_execution": "direct_api_axonhub"
+  "model_execution": "direct_api_axonhub",
+  "latest_attempt": {
+    "run_id": "phase1-dependent-filing-engineering-haiku55-direct-r70",
+    "status": "preflight_http_failure",
+    "http_status": 403,
+    "edge_error": 1010,
+    "subject_responses": 0,
+    "model_responses": 0,
+    "review_manifest": "../eval-readiness/phase1-dependent-filing-engineering-haiku55-direct-r70/review-manifest.json"
+  }
 }

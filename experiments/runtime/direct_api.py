@@ -10,13 +10,16 @@ import urllib.request
 from guardrails import open_url
 
 API_BASE = 'https://lmportal.iefbr14.xyz/v1'
+PUBLIC_HEADERS = {'User-Agent': 'swarmharm-direct-api/1.0',
+                  'Accept': 'application/json', 'Content-Type': 'application/json'}
 
 
 def registration(goal_mode='off'):
     if goal_mode != 'off':
         raise ValueError('Direct API execution has no harness goal extension')
     return {'kind': 'direct-api', 'authentication': 'axonhub', 'gateway': API_BASE,
-            'api': 'openai-responses', 'installed': {}, 'context_window': None,
+            'api': 'openai-responses', 'http_headers': deepcopy(PUBLIC_HEADERS),
+            'installed': {}, 'context_window': None,
             'system_prompt': None, 'builtin_tools': [], 'extension_tools': [],
             'goal_mode': 'off', 'settings': {'retry': {'maxRetries': 0}},
             'native_binding': 'exact-http-json-v1',
@@ -89,8 +92,7 @@ class DirectAgent:
     def _post(self, payload):
         body = json.dumps(payload, ensure_ascii=False).encode()
         request = urllib.request.Request(API_BASE + '/responses', data=body,
-            headers={'Authorization': 'Bearer ' + self.key,
-                     'Content-Type': 'application/json'}, method='POST')
+            headers={'Authorization': 'Bearer ' + self.key, **PUBLIC_HEADERS}, method='POST')
         with open_url(request, timeout=self.timeout) as response:
             raw = response.read()
         (self.folder / f'{self.turn:04d}.response-body.json').write_bytes(raw)

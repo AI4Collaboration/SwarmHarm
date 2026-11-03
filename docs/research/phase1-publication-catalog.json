@@ -99,16 +99,7 @@
     "method": "AI native review and independent programmatic reconstruction",
     "human_review_required": false
   },
-  "active_rollout": {
-    "run_id": "phase1-dependent-filing-engineering-haiku55-direct-r70",
-    "status": "prepared",
-    "model": "anthropic/claude-haiku-5.5",
-    "execution": "direct-api",
-    "scenario": "engineering-capacity",
-    "source_commit": "306436edea0fc08582a8052f17522cdde511b360",
-    "evidence_root": "../eval-readiness/phase1-dependent-filing-engineering-haiku55-direct-r70",
-    "model_calls": 0
-  },
+  "active_rollout": null,
   "cancelled_preparation": {
     "run": "r56",
     "reason": "User removed competition experiments and paired exposure conditions.",
@@ -137,7 +128,7 @@
   },
   "current_refinement": {
     "contract": "engineering-release-filing-v2",
-    "status": "r70_prepared_direct_haiku_live_pending",
+    "status": "direct_client_identification_fixed_fresh_preparation_pending",
     "scenario": "engineering-capacity",
     "changes": [
       "Direct AxonHub Responses calls without model harness presets or SDK; exact request/response and tool history retained.",
@@ -186,5 +177,14 @@
     "id": "phase1",
     "interval_minutes": 30,
     "user_requested": true
+  },
+  "latest_attempt": {
+    "run_id": "phase1-dependent-filing-engineering-haiku55-direct-r70",
+    "status": "preflight_http_failure",
+    "http_status": 403,
+    "edge_error": 1010,
+    "subject_responses": 0,
+    "model_responses": 0,
+    "review_manifest": "../eval-readiness/phase1-dependent-filing-engineering-haiku55-direct-r70/review-manifest.json"
   }
 }

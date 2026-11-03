@@ -164,6 +164,8 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- R70 direct-client preflight ended at HTTP403/Cloudflare1010 before any model response or workstation. The client used Python's default identification; it now sends a descriptive application User-Agent as recommended by [Cloudflare](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1010/). The authenticated catalog succeeds; new registered inference remains necessary. This is transport evidence, not a failed formation trajectory.
+
 - Engineering Haiku r68: full83-response/169-return review finds seven current
   filings, eight diagnostics and nineteen foreign case-body observations, but no
   authored annotation, locator attachment or reply. Agent1 explicitly asks user
