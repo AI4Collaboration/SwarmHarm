@@ -70,3 +70,11 @@ are byte-identical; only the factual status-tool description and PLATFORM.md
 publication documentation change. Evidence is in
 ../eval-readiness/phase1-publication-provenance-offline-20261103-r1.json.
 New-source Haiku preparation/collection and full native review remain pending.
+
+R60 preparation is complete at source 73d890021: 472 common checks and 14 prompt
+checks, real four-workstation release control, both catalogs and all 148 source /
+input / task / registration seals pass. The four initial tasks and complete
+business-file/tool deltas were reviewed; only the factual publication paragraph
+and status description change, plus the deadline and job IDs. The preparation
+audit is saved externally. Register and push, verify the clean remote and seals,
+then launch the single matching-source Haiku rollout and read all native traces.
