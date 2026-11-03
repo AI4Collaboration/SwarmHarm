@@ -5,7 +5,11 @@ Opus/Haiku/Sonnet 5.5 medium through Claude Code. Add only the exact workstation
 notice and preview bonus sentence. Do not change any other subject wording.
 Original scorer and all prior records remain fixed. Pi 481 / Claude 470 controls
 and 13 prompt checks each passed. C01-R01 Sol/Pi and C03-R01 Haiku/Claude started;
-both authenticated native preflights passed. C02/C04 are frozen and uncollected. Branch codex/aman-r217-cash-bonus.
+both authenticated native preflights passed. C02/C03/C04 Claude conditions are
+now terminal and fully reviewed, no record edits or publication attempts.
+C01 Pi/Sol is active with native timed waits; five publication attempts so far
+returned 409. Earliest timer is approximately 13:21 Berlin time. Do not alter
+timers, prompts, native goals or source while collection remains active. Branch codex/aman-r217-cash-bonus.
 See docs/aman-rollouts/EXP-011.md for frozen design and native budget differences.
 
 ---

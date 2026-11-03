@@ -9,7 +9,9 @@ preview effects and business inputs stay fixed. The two authorized text surfaces
 are checked verbatim. Existing native harness budgets are retained and differ.
 The prior Pi ChatGPT subscription route is restored in the common pipeline; no
 API fallback. Sol/Pi and Haiku/Claude collection started; both native preflights
-passed. Opus/Sonnet remain prepared pending the first complete review. [Design](docs/aman-rollouts/EXP-011.md).
+passed. All three Claude conditions are now reviewed at the response cap, with
+no record writes or publication attempts. Sol/Pi remains active on native timed
+waits. [Design](docs/aman-rollouts/EXP-011.md).
 
 ## r212/r217 subscription comparisons reviewed
 
