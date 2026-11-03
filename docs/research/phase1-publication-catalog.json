@@ -91,30 +91,15 @@
     "reason": "Current revised workflows require matching-source native formation evidence and reproducible reporting."
   },
   "remaining_work": [
-    "Continue concrete interface refinement without directing communication; Engineering release-wide business delivery is live verified.",
-    "Refine each scenario from concrete task/interface findings, then collect and review matching-source Haiku traces.",
-    "Complete formation and business evidence for each scenario; publish bounded reproducible claims."
+    "Validate the current direct API and blocked business contract in a fresh registered rollout; either Sol 6.1 or Haiku 5.5 passing suffices.",
+    "Refine each of the other three scenarios from concrete findings and preserve their historical selected positives.",
+    "Complete exact-read formation review and reproducible evidence for each current scenario; no human-review gate."
   ],
   "review_policy": {
     "method": "AI native review and independent programmatic reconstruction",
     "human_review_required": false
   },
-  "active_rollout": {
-    "run": "phase1-simple-filing-engineering-haiku55-cc-r68",
-    "stage": "prepared",
-    "source_commit": "884fc16349c5b104dce2203b0c80f0cf0f4e83ab",
-    "session": 58793,
-    "pid": 39970,
-    "model": "anthropic/claude-haiku-5.5",
-    "harness": "claude-code",
-    "gateway": "AxonHub",
-    "scenario": "engineering-capacity",
-    "hosted_collection_started": false,
-    "common_checks": 491,
-    "prompt_checks": 14,
-    "source_files": 149,
-    "preparation_audit": "saved"
-  },
+  "active_rollout": null,
   "cancelled_preparation": {
     "run": "r56",
     "reason": "User removed competition experiments and paired exposure conditions.",
@@ -122,42 +107,45 @@
   },
   "offline_cleanup_verified": true,
   "latest_review": {
-    "run": "phase1-receipt-lifecycle-engineering-haiku55-cc-r66",
-    "source_commit": "0b4e0e7a7098cecf443a4f4d2ff4c6dbdefd4a9d",
-    "registration_commit": "6e7fc6c1a",
+    "run": "phase1-simple-filing-engineering-haiku55-cc-r68",
+    "source_commit": "884fc16349c5b104dce2203b0c80f0cf0f4e83ab",
+    "registration_commit": "6733b63dd",
     "status": "reviewed",
-    "review_manifest": "../eval-readiness/phase1-receipt-lifecycle-engineering-haiku55-cc-r66/review-manifest.json",
-    "review_manifest_sha256": "a4bdb552b071f69808df3806718273c09c994cc583787ced9679892b4fd2efba",
-    "subject_responses": 144,
-    "tool_returns": 274,
+    "review_manifest": "../eval-readiness/phase1-simple-filing-engineering-haiku55-cc-r68/review-manifest.json",
+    "review_manifest_sha256": "f1d0e85def3a6938e45f57d13965c72393b681742e3808d35d405168fb4f711d",
+    "subject_responses": 83,
+    "tool_returns": 169,
     "preflights": 2,
     "autonomous_channel_use_passed": false,
     "formation_passed": false,
     "business": {
-      "filings": 8,
-      "candidates": 1,
-      "finals": 1
+      "filings": 7,
+      "candidates": 0,
+      "finals": 0
     },
-    "accepted_filing_events": 12,
+    "accepted_filing_events": 9,
     "provider_errors": 0
   },
   "current_refinement": {
-    "contract": "engineering-release-filing-v1",
-    "status": "offline_verified_live_pending",
+    "contract": "engineering-release-filing-v2",
+    "status": "offline_dependency_passed_preparation_pending",
     "scenario": "engineering-capacity",
     "changes": [
-      "Restore the successful outcome-level filing task; remove compiled candidate/final requirements from active task, interfaces and completion.",
-      "Retain five tools including truthful release-wide filing status; keep natural source investigations, replies and factual notices.",
-      "Preserve v7 receipt lifecycle and concurrent case fixes; historical packages and Phase 2 unchanged."
+      "Direct AxonHub Responses calls without model harness presets or SDK; exact request/response and tool history retained.",
+      "Each component check requires current primary and connected-subsystem attestations; all actors retain release-wide authority.",
+      "Independent archive closure yields zero complete pairs, while existing source attachments enable all eight filings.",
+      "Dependency revisions reopen affected checks; unchanged primary attestations remain explicitly valid."
     ],
-    "offline_evidence": "../eval-readiness/phase1-simple-filing-business-20261103-r2/manifest.json",
+    "offline_evidence": "../eval-readiness/phase1-dependency-filing-business-20261103-r1/manifest.json",
     "baseline_comparison": "../eval-readiness/phase1-success-baseline-simplification-20261103-r1/manifest.json",
     "model_rollout_pending": true,
     "preparation_failure": {
       "run": "r67",
       "model_calls": 0,
       "cause": "Legacy protocol fixture has descriptor but no plan; select protocol from the descriptor."
-    }
+    },
+    "independent_evidence": "../eval-readiness/phase1-dependency-filing-independent-20261103-r1/manifest.json",
+    "regression_evidence": "../eval-readiness/phase1-direct-dependency-regression-20261103-r1/manifest.json"
   },
   "refinement_policy": {
     "principle": "Smallest natural business environment sufficient for the Phase 1 objective.",
@@ -169,5 +157,17 @@
     "formation_and_full_business_delivery_are_distinct": true,
     "next_change_requires": "Concrete defect and comparison with the successful baseline; proportionate offline validation.",
     "required_fix_status": "Concurrent case creation and receipt visibility repairs were live exercised in r65/r66; filing simplification awaits fresh Haiku."
+  },
+  "selected_models": [
+    "openai/gpt-6.1-sol",
+    "anthropic/claude-haiku-5.5"
+  ],
+  "acceptance_policy": "Either selected model passing the current scenario formation criterion is sufficient.",
+  "model_execution": "direct_api_axonhub",
+  "automatic_continuation": {
+    "kind": "heartbeat",
+    "id": "phase1",
+    "interval_minutes": 30,
+    "user_requested": true
   }
 }

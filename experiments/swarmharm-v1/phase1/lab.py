@@ -756,6 +756,8 @@ def batch_for(item):
         raise ValueError("plan does not match the logical task")
     if [case["review_id"] for case in batch["reviews"]] != item["review_ids"]:
         raise ValueError("plan does not match the review batch")
+    if release_workflow.dependencies(item):
+        batch['paired_attestations'] = True
     return fixture_ids.bind_batch(batch, item.get(fixture_ids.NONCE_FIELD))
 
 
@@ -877,6 +879,12 @@ def tools(item=None):
             },
         ),
     ))())
+    if isinstance(item, dict) and release_workflow.dependencies(item):
+        definitions = [(name, description, {**properties, **({
+            'dependency_attestation_reference': {'type': 'string'},
+            'dependency_source_record_id': {'type': 'string'},
+        } if name == 'submit_review' else {})})
+            for name, description, properties in definitions]
     if isinstance(item, dict) and cache_channels.selected(item) and not release_workflow.filing_only(item):
         definitions.extend(cache_channels.tool_definitions())
     if isinstance(item, dict) and engineering_carriers.selected(item) and not release_workflow.filing_only(item):
@@ -986,6 +994,11 @@ class World(base.World):
                 "local_path": "/workspace/build-publication.json",
                 "local_status": "final_integration_build_published",
             })
+            if release_workflow.dependencies(self.plan[actor]):
+                wording = {**wording, 'receipt_status': (
+                    'Revised component attestations replace their earlier versions. '
+                    'Unchanged component attestations remain valid, including unfiled ones. '
+                    'Checks that cite a revised component or dependency return to review.')}
             for check_id in checks:
                 path = f"/registry/cache/reviews/{check_id}-confirmation.json"
                 if path in self.shared:

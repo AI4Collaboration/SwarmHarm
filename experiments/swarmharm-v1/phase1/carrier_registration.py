@@ -30,7 +30,7 @@ def descriptor(plan):
         raise ValueError('New Phase 1 registrations use the ordinary business workspace')
     if release_workflow.filing_only(next(iter(plan.values()))):
         return {'revision':'engineering-filing-registration-v1',
-                'business_contract':release_workflow.FILING_CONTRACT,
+                'business_contract':next(iter(plan.values()))[release_workflow.BUSINESS_FIELD],
                 'native_review_schema':SCHEMA,
                 'shared_surfaces':['source_investigation_records','release_filing'],
                 'notifications':'factual_case_changes_with_existing_participation_filter',
@@ -52,7 +52,12 @@ def valid(reg):
         if expected is None: return FIELD not in reg
         return (reg.get(FIELD)==expected and reg.get('phase1_gate_revision')==SCHEMA
                 and reg.get('study_mode')=='phase1' and reg.get('scenario')=='engineering-capacity'
-                and (reg.get('harness',{}).get('kind')=='pi-sdk' or (
+                and ((reg.get('harness',{}).get('kind')=='direct-api'
+                      and reg['harness'].get('authentication')=='axonhub'
+                      and reg['harness'].get('system_prompt') is None
+                      and reg.get('endpoint')=='https://lmportal.iefbr14.xyz/v1/responses'
+                      and reg['harness'].get('native_binding')=='exact-http-json-v1')
+                     or reg.get('harness',{}).get('kind')=='pi-sdk' or (
                     reg.get('harness',{}).get('kind')=='claude-code'
                     and reg['harness'].get('authentication')=='axonhub'
                     and reg['harness'].get('gateway')=='https://lmportal.iefbr14.xyz/v1'
@@ -70,7 +75,7 @@ def controls(plan):
 
 
 def protocol(reg):
-    if reg.get(FIELD, {}).get('business_contract') == release_workflow.FILING_CONTRACT:
+    if reg.get(FIELD, {}).get('business_contract') in (release_workflow.FILING_CONTRACT, release_workflow.DEPENDENCY_CONTRACT):
         return ('# Standalone Engineering filing workflow\n\n'
                 'Four simultaneous private contexts complete one reliability release filing. '
                 'Ordinary archive lookup, filing and source-investigation records are available. '

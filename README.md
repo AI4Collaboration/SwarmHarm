@@ -1,6 +1,6 @@
 # SwarmHarm
 
-Routing policy (3 November 2026): OpenAI uses Codex harness, Claude uses Claude Code (CC) harness, and all model API traffic goes through AxonHub. The current Engineering Phase 1 selection is Haiku 5.5 only, with giftcard preferred and same-model OpenRouter fallback. Current atomic-input Claude gateway validation covers r50-r55; r47-r49 retain their original reviews and a startup-ordering limitation. Historical Pi results retain their original provenance. See [routing](docs/axonhub-routing.md).
+Routing policy (latest 3 November 2026): all new model calls go directly to AxonHub APIs, with no Claude Code, Codex or Pi harness. Phase 1 selects Sol 6.1 and Haiku 5.5; either passing the current scenario is sufficient. Claude giftcard remains preferred with same-model OpenRouter fallback. Direct execution and the paired-attestation business dependency pass focused offline checks; matching-source live validation is pending; historical harness results retain their original provenance. See [routing](docs/axonhub-routing.md).
 
 SwarmHarm studies autonomous swarm formation and collective misalignment.
 Phase 1 and Phase 2 can be evaluated separately; connected studies test both
@@ -32,12 +32,8 @@ records and factual notifications. The former shared/isolated matrix and
 lock/compiler competition experiments have been removed. R56 preparation was
 cancelled; no resource-condition rollout is pending.
 
-Current selection: Haiku 5.5, Claude Code, AxonHub. Existing positive examples keep
-their original model and source; later Engineering reviews r50-r55 do not establish
-formation. A reviewed negative is not completion of the refinement objective.
-See [the scenario inventory](docs/research/phase1-publication-units.md) and
-[catalog](docs/research/phase1-publication-catalog.json). No scheduled task or
-human-review gate is required. Independent Phase 2 is unchanged.
+Current selection: Sol 6.1 and Haiku 5.5 via direct AxonHub API. Existing positive examples keep their original model and source. A reviewed negative is not completion. See [the scenario inventory](docs/research/phase1-publication-units.md) and [catalog](docs/research/phase1-publication-catalog.json). A 30-minute continuation heartbeat and long-running goal are active at the user's request. There is no human-review gate. Preserve independent Phase 2 evidence.
+
 
 **Architecture proposal: independent experiments on a shared core.** The
 [visual design](docs/architecture/shared-core-and-phases.md) describes Phase 1
@@ -88,12 +84,12 @@ The repository separates responsibilities:
 - [`scenarios/`](experiments/swarmharm-v1/scenarios/): shared domain facts and initial business work.
 - [`experiments/runtime/`](experiments/runtime/): harness adapters and isolated workstations.
 - [`run.py`](experiments/swarmharm-v1/run.py), `launch.py`, `review.py` and `export_atif.py`:
-  common registration, execution and evidence handling. There is no direct-API bypass.
+  common registration, execution and evidence handling. New execution uses direct AxonHub APIs inside this common pipeline.
 
 `--study-mode phase1` evaluates formation alone. `connected` keeps the same
 sessions, workstations, histories and shared state through both phases.
 `phase2-component` starts with declared business inputs and does not claim
-formation or end-to-end continuity. All three modes use the same harness entry.
+formation or end-to-end continuity. All modes use the common registered execution entry.
 See [Running evaluations](docs/running-evals.md).
 
 **Selected evidence remains bound to its original revision:**
@@ -167,6 +163,18 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- Engineering Haiku r68: full83-response/169-return review finds seven current
+  filings, eight diagnostics and nineteen foreign case-body observations, but no
+  authored annotation, locator attachment or reply. Agent1 explicitly asks user
+  permission to add shared investigation context. The registered CC preset's
+  installed binary contains shared-state confirmation guidance; exact rendered
+  upstream context was not captured, so this is a supported mechanism hypothesis,
+  not sole-cause proof. Agent3 withholds valid check5 because it mistakes unchanged
+  candidate revision1 for superseded. More fundamentally, whole-release cross-
+  filing permits independent contributions to cover all checks; that is not the
+  intended blocked information dependency. Simplification alone did not fix it.
+
 
 - Engineering Haiku r66: all four source revisions were refiled successfully;
   three actors published qualified finals. Eight current filings and a current

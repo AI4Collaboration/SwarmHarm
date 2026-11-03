@@ -117,6 +117,7 @@ def export_actor(root,phase,actor):
     registration=read(root/'registration.json');study_mode=registration.get('study_mode','connected')
     is_claude=registration.get('harness',{}).get('kind')=='claude-code'
     is_codex=registration.get('harness',{}).get('kind')=='codex'
+    is_direct=registration.get('harness',{}).get('kind')=='direct-api'
     is_sdk=is_claude or is_codex
     assert is_sdk==(first.get('record_kind')=='controller_projection'),'Trace kind differs from registered harness'
     if is_sdk:
@@ -125,19 +126,28 @@ def export_actor(root,phase,actor):
             assert first.get('system_prompt_config')==harness['system_prompt'],'Claude preset differs from registration'
         native_hashes,delivery=(codex_native_evidence(folder,requests) if is_codex else
             claude_native_evidence(folder,requests,harness.get('accepted_native_model_ids')));hashes.update(native_hashes)
-    system=first['input'][0];assert system.get('role') in ('developer','system'),'Pi system prompt must lead the input'
+    system=first['input'][0];assert system.get('role') in (('user','developer','system') if is_direct else ('developer','system')),'Unexpected initial input role'
     expected=[system];initial_tools=first.get('tools',[]);all_tool_definitions=initial_tools
     phase2_tools_seen=study_mode=='phase2-component' and bool(initial_tools)
     platform_updates={read(p)['input_message']['content']:p for p in (folder/'trace').glob('*-platform-update.json')}
     def add(source,message,**kw):steps.append({'step_id':len(steps)+1,'source':source,'message':message,**kw})
-    add('system',text_of(system['content']),extra={'native_role':system['role'],'native_field':'input[0]',
-        'harness':'codex' if is_codex else 'claude-code' if is_claude else 'pi-sdk',
+    add('user' if is_direct and system['role']=='user' else 'system',text_of(system['content']),extra={'native_role':system['role'],'native_field':'input[0]',
+        'harness':registration.get('harness',{}).get('kind','pi-sdk'),
         'scope':('SDK system prompt preset configuration; rendered prompt text is not captured'
                  if isinstance(harness['system_prompt'],dict) else 'controller custom system prompt; SDK-internal additions unobservable')
                 if is_sdk else 'provider request'})
     last_agent=None;prompt_tools=[tool['name'] for tool in initial_tools]
     for request_index,reqpath in enumerate(requests):
         req=read(reqpath);label=reqpath.name.split('.')[0];extension_outputs=[]
+        if is_direct:
+            raw=folder/'direct-api'/f'{label}.request-body.json'
+            assert read(raw)==req,'Direct HTTP request differs from trace'
+            hashes[str(raw.relative_to(folder))]=sha(raw)
+            raw_response=folder/'direct-api'/f'{label}.response-body.json'
+            trace_response=folder/'trace'/f'{label}.response.json'
+            if trace_response.exists():
+                assert read(raw_response)==read(trace_response),'Direct HTTP response differs from trace'
+                hashes[str(raw_response.relative_to(folder))]=sha(raw_response)
         tool_names=[tool['name'] for tool in req.get('tools',[])]
         updated=system_prompt_update(expected,req['input'],tool_names!=prompt_tools)
         if updated is not None:
@@ -219,6 +229,11 @@ def export_actor(root,phase,actor):
     hashes['history.json']=sha(folder/'history.json')
     model=first['model'];state=read(folder/'result.json')
     value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm rollout collector (Pi SDK)','version':'2.0','model_name':model,'tool_definitions':all_tool_definitions},'steps':steps,'extra':{'phase':phase,'study_mode':study_mode,'actor':actor,'phase2_tools_seen':phase2_tools_seen,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'extension_continuations':len(state.get('extension_continuations',[])),'harness_rejected_tool_calls':len(state.get('harness_rejected_tool_calls',[])),'pi_session_file':(state.get('pi_session') or {}).get('session_file'),'conversion':'Native records are the exact provider request payloads and completed Responses objects. Pi rebuilds prior items on each request, so continuity is checked on the model-visible meaning of each item. The Pi system prompt is the first input item. Controller platform updates and harness or extension inputs are retained as separate input steps. Observations of tools run inside Pi extensions come from the next native request. Pi re-renders its system prompt when the active tools change; each new version is retained as a system step. Opaque reasoning remains only in raw records.','source_sha256':hashes,'missing_response_records':missing,'uncommitted_response_records':uncommitted,'independent_review':'../../../independent-review.json'}}
+    if registration.get('harness',{}).get('kind')=='direct-api':
+        value['agent']['name']='SwarmHarm direct AxonHub API collector'
+        value['extra'].pop('pi_session_file',None)
+        value['extra'].update(harness=None,transport='direct-api',
+            conversion='Exact gateway request and response JSON, explicit message history and controller tool returns. No model harness or hidden preset. Upstream gateway transformations are outside the capture boundary.')
     if is_claude:
         route='AxonHub' if harness.get('authentication')=='axonhub' else 'subscription'
         value['agent']['name']='SwarmHarm rollout collector (Claude Agent SDK / '+route+')'

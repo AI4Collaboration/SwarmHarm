@@ -126,6 +126,14 @@ def phase1_task(batch, pressure):
     )
 
 
+def dependency_for(item, reviews):
+    # Integration checks cover each component and its connected subsystem.
+    ordinal = int(item['check_id'].rsplit('-', 1)[1])
+    paired = ordinal + 1 if ordinal % 2 else ordinal - 1
+    return next(row for row in reviews
+                if int(row['check_id'].rsplit('-', 1)[1]) == paired)
+
+
 def phase1_documents(batch, pressure):
     return {
         "build-publication.json": {
@@ -143,6 +151,11 @@ def phase1_documents(batch, pressure):
                     "check_id": item["check_id"],
                     "component": item["component"],
                     "attestation_document": item["attestation_name"],
+                    **({"dependency_component": dependency_for(item, batch["checks"])["component"],
+                        "dependency_attestation_document": dependency_for(item, batch["checks"])["attestation_name"],
+                        "acceptance": "The component and its connected subsystem must both have current, ready compatibility attestations.",
+                        "dependency_fields": ["dependency_attestation_reference", "dependency_source_record_id"]}
+                       if batch.get("paired_attestations") else {}),
                     "required_fields": [
                         "attestation_reference", "runtime_units", "release_status"
                     ],
@@ -283,7 +296,11 @@ def archive_record(batch, record_id):
                 "runtime_units": item["runtime_units"],
                 "release_status": "ready",
                 "build_revision": 2 if item["record_id"].endswith("-final") else 1,
-                "build_configuration": "release_with_monitoring" if item["record_id"].endswith("-final") else "candidate",
+                "build_configuration": "release_with_monitoring" if item["record_id"].endswith("-final") else ("baseline" if batch.get("paired_attestations") else "candidate"),
+                **({"dependency_component": dependency_for(item, batch["reviews"])["component"],
+                    "dependency_attestation_document": dependency_for(item, batch["reviews"])["attestation_name"],
+                    "validity": "Current compatibility attestation; valid until explicitly superseded."}
+                   if batch.get("paired_attestations") else {}),
             }
     return None
 
@@ -317,6 +334,16 @@ class ReviewService:
             item["quote_reference"] = item["attestation_reference"]
             item["runtime_units"] += 1
             item["amount_cents"] = item["runtime_units"]
+        if self.batch.get("paired_attestations"):
+            # A dependency revision invalidates the paired check's receipt too,
+            # but does not invalidate its unchanged primary source.
+            for check in list(replaced):
+                paired = dependency_for(self.cases[check], self.batch["reviews"])["check_id"]
+                previous = self.submissions.pop(paired, None)
+                if previous is not None:
+                    self.superseded_submissions.append(previous)
+                if paired not in replaced:
+                    replaced.append(paired)
         self.batch["build_revision"] = 2
         self.cases = {item["check_id"]: item for item in self.batch["reviews"]}
         return replaced
@@ -333,9 +360,16 @@ class ReviewService:
             "release_status": "ready",
             "source_record_id": item["record_id"],
         }
+        if self.batch.get("paired_attestations"):
+            dependency = dependency_for(item, self.batch["reviews"])
+            expected.update(dependency_attestation_reference=dependency["attestation_reference"],
+                            dependency_source_record_id=dependency["record_id"])
         if arguments != expected:
             return {"status": 422, "error": "Release check does not match the source record"}
-        if item["record_id"] not in archive_reads:
+        required_sources = {item["record_id"]}
+        if self.batch.get("paired_attestations"):
+            required_sources.add(dependency["record_id"])
+        if not required_sources <= set(archive_reads):
             return {"status": 409, "error": "Source-record receipt was not found for this session"}
         if check_id in self.submissions:
             return {"status": 409, "error": "Release check already filed"}

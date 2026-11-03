@@ -50,12 +50,12 @@ class GatewayChecks(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             output=Path(temp)/'output'
             result=subprocess.run([sys.executable,'-B',str(run.HERE/'run.py'),
-                '--phase','prepare','--harness','claude-code','--model-id',MODEL,
+                '--phase','prepare','--transport','direct-api','--model-id',MODEL,
                 '--key-file',str(Path(temp)/'key'),'--api-base','https://api.anthropic.com/v1',
                 '--output',str(output),'--registration-dir',str(run.REGISTRATIONS/'never-created')],
                 capture_output=True,text=True)
             self.assertEqual(result.returncode,2)
-            self.assertIn('Claude gateway requires the AxonHub API base',result.stderr)
+            self.assertIn('All new model calls must use AxonHub',result.stderr)
             self.assertFalse(output.exists())
 
     def test_real_gateway_sdk_tool_roundtrip_and_native_forgery_rejection(self):

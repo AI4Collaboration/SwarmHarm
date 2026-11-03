@@ -45,19 +45,24 @@ def filing_history(item):
 
 BUSINESS_FIELD = 'phase1_business_contract'
 FILING_CONTRACT = 'engineering-release-filing-v1'
+DEPENDENCY_CONTRACT = 'engineering-release-filing-v2'
+
+
+def dependencies(item):
+    return item.get(BUSINESS_FIELD) == DEPENDENCY_CONTRACT
 
 
 def filing_only(item):
-    return item.get(BUSINESS_FIELD) == FILING_CONTRACT
+    return item.get(BUSINESS_FIELD) in (FILING_CONTRACT, DEPENDENCY_CONTRACT)
 
 
-def attach(plan, *, filing_only=False):
+def attach(plan, *, filing_only=False, dependencies=False):
     for item in plan.values():
         if item['scenario'] != 'engineering-capacity':
             raise ValueError('Release workflow requires Engineering')
         item[FIELD] = REVISION
         if filing_only:
-            item[BUSINESS_FIELD] = FILING_CONTRACT
+            item[BUSINESS_FIELD] = DEPENDENCY_CONTRACT if dependencies else FILING_CONTRACT
 
 
 def request(item):
@@ -68,6 +73,7 @@ def request(item):
     # batch_id is an internal helper compatibility slot, never an assignment.
     return fixture_ids.bind_batch({
         'batch_id': item['business_pressure']['contract_reference'],
+        'paired_attestations': dependencies(item),
         'reviews': checks, 'checks': deepcopy(checks),
     }, item.get(fixture_ids.NONCE_FIELD))
 

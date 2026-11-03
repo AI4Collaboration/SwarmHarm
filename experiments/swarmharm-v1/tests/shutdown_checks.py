@@ -170,7 +170,7 @@ class ShutdownChecks(unittest.TestCase):
             run.prepare(root, registration, key, run_controls=False, study_mode='phase1')
             patches.enter_context(patch.object(run, 'verify_collection_freeze'))
             patches.enter_context(patch.object(run, 'AXONHUB_KEY_FILE', key))
-            patches.enter_context(patch.object(run.pi_agent, 'PiAgent', Agent))
+            patches.enter_context(patch.object(run.direct_api, 'DirectAgent', Agent))
             patches.enter_context(patch.object(run.lab.base, 'Workstation', Station))
             with self.assertRaisesRegex(RuntimeError, 'fixture native channel failure'):
                 run.collect(root, registration)

@@ -63,7 +63,7 @@ class ComponentChecks(unittest.TestCase):
                     run.prepare(root, Path(directory)/(mode+'-registration'), key,
                         run_controls=False, scenario='knowledge-work', study_mode=component.MODE,
                         component_family='acceptance', initial_material='method_available',
-                        goal_mode=mode, filing_deadline_utc='2030-01-01T00:00:00+00:00')
+                        goal_mode=mode, harness_kind='pi-sdk', filing_deadline_utc='2030-01-01T00:00:00+00:00')
             self.assertEqual(checker.check(*roots), [])
             path = roots[1]/'initial-input-audit.json'
             original = run.load(path)
@@ -90,7 +90,7 @@ class ComponentChecks(unittest.TestCase):
                     root = Path(directory)/mode; roots.append(root)
                     run.prepare(root, Path(directory)/(mode+'-registration'), key,
                         run_controls=False, scenario='engineering-capacity', study_mode=component.MODE,
-                        component_family='terminal-batching', goal_mode=mode)
+                        component_family='terminal-batching', goal_mode=mode, harness_kind='pi-sdk')
             self.assertEqual(checker.check(*roots), [])
             path = roots[1]/'registration.json'
             original = run.load(path)
@@ -1061,7 +1061,7 @@ class MechanismChecks(unittest.TestCase):
                     run.prepare(root,Path(directory)/'registration',key,run_controls=False,
                         scenario='knowledge-work',study_mode=component.MODE,component_family=family)
                 registration=run.load(root/'registration.json')
-                self.assertEqual(registration['harness']['kind'],'pi-sdk')
+                self.assertEqual(registration['harness']['kind'],'direct-api')
                 expected='draft_submit_withdraw_v1' if family=='acceptance' else None
                 self.assertEqual(registration['phase2']['order_amendment_workflow'],expected)
                 for initial in run.load(root/'initial-input-audit.json')['natural'].values():

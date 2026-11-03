@@ -2,25 +2,19 @@
 
 ## Standing user policy — 3 November 2026
 
-OpenAI models use the **Codex harness**. Anthropic Claude models use the
-**Claude Code (CC) harness**. **All model API traffic goes through AxonHub**,
-including internal model requests made by either harness. This supersedes the
-previous Pi default and optional direct-subscription routing for new work.
-Claude giftcard remains preferred, with OpenRouter as same-model fallback
-inside AxonHub. Do not silently change the model, harness or gateway.
+All future model calls use **direct AxonHub APIs**, without Claude Code, Codex
+or Pi harnesses. Do not inherit their presets, skills or confirmation rules.
+This explicitly supersedes the earlier family-specific harness requirement.
+Claude giftcard remains preferred, with OpenRouter fallback for the same model.
 
-This is a persistent operating requirement, not a claim that both adapters
-already support or have validated the gateway route. Implement and validate any
-missing adapter support before fresh collection; register the actual harness,
-model, gateway and evidence limits. Preserve all historical registrations and
-raw traces with their original provenance. Current Phase 1 model selection
-remains Haiku 5.5, Engineering only.
+Current Phase 1 selection is Sol 6.1 and Haiku 5.5 across all four maintained
+scenarios. Either model passing the current environment's formation criterion is
+sufficient. Use one prepare/collect/review pipeline and retain exact requests,
+responses, tool execution and source seals. The direct transport migration is in
+progress, not yet live-validated. Historical adapters below describe old evidence.
 
 AxonHub service root: `https://lmportal.iefbr14.xyz`.
-The historical Pi Responses endpoint is
-`https://lmportal.iefbr14.xyz/v1/responses`; select the appropriate supported
-AxonHub protocol for each native harness rather than assuming every harness
-uses Responses.
+Responses endpoint: `https://lmportal.iefbr14.xyz/v1/responses`.
 
 The host reads a scoped key from a `0600` file outside the repository. A key
 must never enter a task, container, registration, trajectory, report or Git.

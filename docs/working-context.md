@@ -1,3 +1,39 @@
+Latest user update (3 November 2026, overriding older sections): all future
+model calls use direct AxonHub APIs, no Claude Code/Codex/Pi harness. Scope is all
+four maintained Phase1 taxonomy scenarios. Sol6.1 or Haiku5.5 passing the current
+scenario is sufficient. Long-running goal and requested30-minute continuation
+heartbeat phase1 are active. Business work must be blocked by real missing
+information, including against aggregated independent submissions. No artificial
+batch permissions, competition, cooperative cues or prohibitions.
+
+R68 is terminal and fully reviewed:83 responses,169 tool returns,2 preflights;
+149 source files,16466 terminal files, four-workstation cleanup verified.
+Seven current filings, no formation; full diagnosis is external trace-findings.json
+and root README Takeaways. Never recollect. Source884fc1634/registration6733b63dd.
+The old external native audit first expected package keys; failure preserved,
+filing-compatible audit and complete common review/export passed.
+
+Current code work: direct Responses HTTP transport plus common prepare/collect/
+export integration, no preset or SDK. Three offline checks pass (r4), including
+four-workstation collector and exact tool return/history export. No hosted direct
+model rollout yet. Engineering filing-v2 now requires current attestations for the component and
+its connected subsystem, with whole-release filing authority unchanged. Three
+focused checks pass; a real four-workstation control exhausts all independent
+archive/locator paths (0/8 filings), then uses existing source attachments (8/8).
+Independent reconstruction verifies the pairs, exact prior reads and four removed
+workstations. Evidence: phase1-dependency-filing-business-20261103-r1 and
+phase1-dependency-filing-independent-20261103-r1. No model communication claim.
+The common direct/dependency regression completed:486 checks, five failures in
+legacy transport test fixtures,14 prompt checks passed; original r1 evidence kept.
+All five fixtures are corrected (fixes-r1/r2). One shutdown fixture had patched
+PiAgent instead of DirectAgent and attempted a placeholder-key preflight, rejected
+with HTTPError; no successful model response or subject rollout. Do not label
+that whole regression wholly local. New transport and real dependency controls
+pass. Fresh common preparation will rerun the final suite before collection.
+Next: commit/push this coherent revision, prepare r69 direct Haiku, review inputs,
+freeze and collect once. Sol6.1 remains the other selected model; either pass is
+sufficient. Full trace formation review remains required.
+
 # Current Phase 1 work
 
 Latest user instruction: keep Phase 1 simple and use successful versions as the
@@ -34,6 +70,8 @@ All four initial tasks, five tools and decoded files reviewed;149 source/input/t
 and both catalogs verified; preparation-audit.json saved.
 Source884fc1634 is pushed and actual remote matched; no frozen-source edits or duplicate preparation.
 Output ../eval-readiness/phase1-simple-filing-engineering-haiku55-cc-r68.
+Registration6733b63dd pushed; clean/actual remote and absolute-path freeze passed.
+Common launch ran once at22:39:52.584182UTC. Terminal and full review completed; see latest status above.
 
 Engineering release-wide v3 is reviewed in Haiku CC/AxonHub r61: source
 a7496130b, registration 06014cdf0. All 141 subject responses, 289 tool returns,
@@ -78,7 +116,7 @@ Finance and Knowledge retain their natural business interfaces.
 
 Use Haiku 5.5 through Claude Code and AxonHub, giftcard preferred with same-model
 fallback. All OpenAI work uses Codex through AxonHub if selected. Harness versions
-may be updated. No scheduled automation and no human-review gate. Protect
+may be updated. The requested30-minute continuation heartbeat is active; no human-review gate. Protect
 independent Phase 2 and read-only sources/. Keep checks relevant and proportionate.
 
 The active catalog is docs/research/phase1-publication-catalog.json. Historical

@@ -8,6 +8,9 @@ from phase1.release_package_controls import publish
 
 
 def evaluate(plan, *, record=None):
+    if release_workflow.dependencies(next(iter(plan.values()))):
+        from phase1.dependency_filing_controls import evaluate as dependency_controls
+        return dependency_controls(plan, record=record)
     if release_workflow.filing_only(next(iter(plan.values()))):
         return evaluate_filing(plan, record=record)
     witness = FilingWitness(plan, 'cache_value_repaired')

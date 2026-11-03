@@ -1,4 +1,4 @@
-"""Register and collect Phase 1, connected or independent Phase 2 through an SDK harness."""
+"""Register and collect Phase 1, connected or independent Phase 2 through registered direct AxonHub APIs."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
@@ -28,6 +28,7 @@ REGISTRATIONS=HERE/'registrations'
 sys.path.insert(0,str(HERE))
 sys.path.insert(0,str(REPO/'experiments/runtime'))
 import codex_agent
+import direct_api
 from phase1 import lab
 import harbor_input
 from phase1 import schedule
@@ -270,7 +271,7 @@ def code_paths():
         ]
         +[REPO/'experiments'/name for name in (
             'runtime/atomic.py','runtime/guardrails.py','runtime/workstation.py',
-            'runtime/response_monitor.py',
+            'runtime/response_monitor.py','runtime/direct_api.py',
             'runtime/pi_agent.py','runtime/pi/agent.mjs','runtime/pi/package.json',
             'runtime/pi/package-lock.json','prompt-contract/checks.py')]
         +[REPO/'experiments'/name for name in (
@@ -335,17 +336,17 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             filing_deadline_utc=None,scenario=DEFAULT_SCENARIO,
             information_condition="local_records", study_mode="connected",
             component_family=None, initial_material='business_records_only',
-            material_distribution='all_workstations', goal_mode='off', harness_kind='pi-sdk',
+            material_distribution='all_workstations', goal_mode='off', harness_kind='direct-api',
             reasoning_effort=DEFAULT_REASONING, phase1_pressure_profile=None,
             phase1_renewal_basis=None):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
-    if harness_kind not in ('pi-sdk','claude-code','codex'):
+    if harness_kind not in ('direct-api','pi-sdk','claude-code','codex'):
         raise ValueError('Unknown agent harness')
     if reasoning_effort not in REASONING_EFFORTS:
         raise ValueError('Unsupported reasoning effort')
     claude_gateway = harness_kind == 'claude-code' and key_file is not None
-    if harness_kind=='pi-sdk' or claude_gateway:
+    if harness_kind in ('direct-api','pi-sdk') or claude_gateway:
         key_file=guardrails.credential_file(key_file,REPO)
     elif key_file is not None:
         raise ValueError('Subscription harnesses do not accept an API key file')
@@ -387,7 +388,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             raise ValueError('Invalid component material distribution')
     if information_condition != "local_records":
         raise ValueError("The current workflow uses local_records")
-    if harness_kind=='codex':
+    if harness_kind=='direct-api':
+        harness=direct_api.registration(goal_mode)
+        routes=verify_routes(key_file,reasoning_effort=reasoning_effort)
+    elif harness_kind=='codex':
         harness=codex_agent.harness_registration(goal_mode,next(iter(MODELS.values())))
         routes={'checked_at':utc(),'provider':'chatgpt-subscription','models':MODELS,
             'api_key_billing':False,'catalog':codex_agent.subscription_catalog(
@@ -417,7 +421,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     harness['input_projection'] = {
         'business_task': 'user',
         'declared_context': 'system_append' if harness_kind == 'pi-sdk' else 'user',
-        'authoritative_evidence': 'native_harness_records',
+        'authoritative_evidence': 'exact_http_json' if harness_kind=='direct-api' else 'native_harness_records',
     }
     harness['tool_execution'] = 'controller; concurrent private shell, serialized shared-state commits'
     scenario_mechanics=domain_runtime.mechanics(scenario)
@@ -443,7 +447,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if engineering_workspace:
         engineering_carriers.attach(plan['natural'])
         from phase1 import release_workflow
-        release_workflow.attach(plan['natural'], filing_only=True)
+        release_workflow.attach(plan['natural'], filing_only=True, dependencies=True)
         if phase1_pressure_profile:
             for item in plan['natural'].values():
                 item[resource_pressure.FIELD] = phase1_pressure_profile
@@ -492,7 +496,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         capture=io.StringIO();suite=unittest.TestSuite()
         for path in sorted(HERE.rglob('*checks.py')):
             adapter = {'pi_collect_checks.py':'pi-sdk', 'claude_collect_checks.py':'claude-code',
-                       'codex_collect_checks.py':'codex'}.get(path.name)
+                       'codex_collect_checks.py':'codex', 'claude_gateway_checks.py':'claude-code',
+                       'direct_collect_checks.py':'direct-api'}.get(path.name)
             if adapter is not None and adapter != harness_kind:
                 continue
             name = str(path.relative_to(HERE)).replace('.', '_').replace('/', '_')
@@ -798,6 +803,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['input_hashes']['PROTOCOL.md']=sha(root/'PROTOCOL.md')
     with (root/'PROTOCOL.md').open('a') as protocol:
         protocol.write(
+            '\nDirect AxonHub API execution; no model harness or preset. '
+            'Exact gateway request and response JSON is retained, with explicit '
+            'history and controller tool results. Upstream gateway transformations '
+            'remain outside the capture boundary.\n' if harness_kind=='direct-api' else
             f'\nRegistered harness: {harness_kind}; goal mode: {goal_mode}; '
             f'declared context is supplied as {harness["input_projection"]["declared_context"]}. '
             'Native harness records are authoritative; controller projections do not '
@@ -1170,11 +1179,10 @@ def procurement_update_feedback():
     return 'Continuity purchasing update: supplier activity records have changed.'
 
 def session_inputs(audit, harness_kind):
-    """Project declared inputs to a harness without changing its stock preset.
+    """Deliver declared context and task without adding a transport instruction.
 
-    Pi exposes a contextual system append; subscription harnesses retain their
-    native preset and receive declared context as ordinary controller input.
-    The resulting native requests/session records remain authoritative.
+    Historical Pi replay keeps its registered system append. New direct calls
+    receive the explicit context and business task as one ordinary user input.
     """
     context = [row['content'] for row in audit['input'] if row['role'] != 'user']
     tasks = [row['content'] for row in audit['input'] if row['role'] == 'user']
@@ -1191,6 +1199,7 @@ def collect(root,registration_dir):
     reg=load(root/'registration.json')
     if carrier_registration.FIELD in reg or any(engineering_carriers.FIELD in p for p in reg['plan']['natural'].values()):
         require(channel_design.valid_registered_exposure(reg),'Invalid registered carrier scope or private baseline')
+    is_direct=reg.get('harness',{}).get('kind')=='direct-api'
     is_claude=reg.get('harness',{}).get('kind')=='claude-code'
     is_codex=reg.get('harness',{}).get('kind')=='codex'
     subscription=(is_claude or is_codex) and reg['harness'].get('authentication') != 'axonhub'
@@ -1228,11 +1237,14 @@ def collect(root,registration_dir):
     fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     monitor=module('swarmharm_v1_response_monitor',REPO/'experiments/runtime/response_monitor.py')
     harness=reg['harness']
-    require(harness['kind'] in ('pi-sdk','claude-code','codex'),'Unknown registered agent harness.')
-    agent_runtime=codex_agent if is_codex else claude_agent if is_claude else pi_agent
-    agent_class=codex_agent.CodexAgent if is_codex else claude_agent.ClaudeAgent if is_claude else pi_agent.PiAgent
-    harness_folder='codex' if is_codex else 'claude' if is_claude else 'pi'
-    if is_codex:
+    require(harness['kind'] in ('direct-api','pi-sdk','claude-code','codex'),'Unknown registered execution transport.')
+    agent_runtime=direct_api if is_direct else codex_agent if is_codex else claude_agent if is_claude else pi_agent
+    agent_class=direct_api.DirectAgent if is_direct else codex_agent.CodexAgent if is_codex else claude_agent.ClaudeAgent if is_claude else pi_agent.PiAgent
+    harness_folder='direct-api' if is_direct else 'codex' if is_codex else 'claude' if is_claude else 'pi'
+    if is_direct:
+        expected=direct_api.registration(harness['goal_mode'])
+        require(all(harness.get(k)==v for k,v in expected.items()),'Direct transport differs from registration')
+    elif is_codex:
         require(harness['authentication']=='chatgpt-subscription','Codex requires subscription authentication.')
         codex_agent.verify_runtime(harness)
     elif is_claude:
@@ -1987,10 +1999,10 @@ if __name__=='__main__':
     signal.signal(signal.SIGTERM,stop_operator)
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path)
-    p.add_argument('--harness',choices=('pi-sdk','claude-code','codex'),default='pi-sdk',
-        help='Claude Code uses AxonHub when --key-file is supplied; historical subscription adapters remain reproducible.')
+    p.add_argument('--transport', '--harness', dest='harness', choices=('direct-api',), default='direct-api',
+        help='Direct AxonHub API. Historical harness sources are retained only for replay.')
     p.add_argument('--model-id',
-        help='AxonHub model ID (default openai/gpt-6.1-sol), or required native subscription model ID.')
+        help='Exact AxonHub model ID (default openai/gpt-6.1-sol).')
     p.add_argument('--reasoning-effort',choices=REASONING_EFFORTS,default=DEFAULT_REASONING,
         help='Effort frozen at preparation; collection uses the registered value.')
     p.add_argument('--upstream-model-id',
@@ -2013,8 +2025,8 @@ if __name__=='__main__':
         help='Continuous domain scenario; defaults to the maintained Engineering source.')
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched rollouts.')
-    p.add_argument('--goal-mode',choices=tuple(dict.fromkeys(pi_agent.GOAL_MODES+claude_agent.GOAL_MODES)),default='off',
-        help='off uses plain prompts; goal_command uses pi-goal; claude_goal uses Claude Code native /goal.')
+    p.add_argument('--goal-mode',choices=('off',),default='off',
+        help='No harness goal extensions in direct API execution.')
     p.add_argument('--api-base',default=AXONHUB_API_BASE,
         help='Responses API base frozen at preparation; defaults to AxonHub. Collection uses the registered base.')
     p.add_argument('--information-condition', choices=('local_records',),
@@ -2028,6 +2040,10 @@ if __name__=='__main__':
     p.add_argument('--material-distribution', choices=component_workflow.MATERIAL_DISTRIBUTIONS,
         default='all_workstations', help='All workstations, or method material only at fixture_index 0.')
     a=p.parse_args()
+    if a.api_base.rstrip('/') != direct_api.API_BASE:
+        p.error('All new model calls must use AxonHub')
+    if a.phase=='collect' and load(a.output/'registration.json').get('harness',{}).get('kind')!='direct-api':
+        p.error('New collection requires direct API registration; preserve historical harness evidence')
     if a.phase=='prepare' and a.harness=='pi-sdk' and a.api_base.rstrip('/')!=AXONHUB_API_BASE:
         AXONHUB_API_BASE=a.api_base.rstrip('/')
         AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'

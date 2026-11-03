@@ -28,7 +28,7 @@ def staged(item):
 
 def contract(item):
     if release_workflow.filing_only(item):
-        return release_workflow.FILING_CONTRACT
+        return item[release_workflow.BUSINESS_FIELD]
     return item[release_workflow.FIELD] if release_workflow.enabled(item) else (STAGED_REVISION if staged(item) else REVISION)
 
 

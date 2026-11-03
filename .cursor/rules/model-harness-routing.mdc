@@ -1,20 +1,15 @@
 ---
-description: User-mandated model harness and AxonHub routing policy
+description: Direct AxonHub API model execution; no model harnesses
 alwaysApply: true
 ---
 
-# Model harness and routing
+# Model routing
 
-Standing user instruction recorded 3 November 2026:
-
-- OpenAI / OAI models: use the Codex harness.
-- Anthropic / Claude models: use the Claude Code (CC) harness.
-- All model API traffic, including harness-internal model calls, must go through AxonHub.
-- Keep Claude giftcard preferred and OpenRouter as same-model fallback inside AxonHub.
-- Do not silently substitute Pi, direct-provider requests, a different model, or local subscription authentication that bypasses AxonHub.
-- Other model families must also route through AxonHub; their harness is selected separately.
-- Preserve historical registrations and raw traces. A changed harness requires fresh registration, gateway validation and native-trace review.
-- This policy does not authorize extra models, domains, rollouts or scheduled tasks. Current Phase 1 selection remains Engineering / Haiku 5.5.
-- If an adapter lacks gateway support, report that implementation gap and fix/validate it before collection; do not describe this saved rule as already implemented.
-
-- User also authorizes updating harness implementations and SDK/CLI versions as needed; do not make old version pins an approval barrier. Verify compatibility and fresh-register runtime changes while preserving active frozen work.
+Latest user instruction, 3 November 2026:
+- All future model calls go directly to AxonHub APIs. No Claude Code, Codex or Pi harness.
+- Do not load harness presets, skills, confirmation rules, hidden prompts or subscription authentication.
+- Keep the common registration, controlled tools, exact raw requests/responses and evidence review.
+- Claude giftcard is preferred; OpenRouter may provide the same model through AxonHub.
+- Phase 1 tests Sol 6.1 and Haiku 5.5 across all four maintained scenarios; either passing the current scenario qualifies it.
+- Preserve historical harness code and sealed results for replay, never relabel them direct API.
+- This replaces the earlier Claude/CC and OpenAI/Codex rule. Migration needs offline and fresh live validation.

@@ -24,25 +24,20 @@
   seed. Use "independent repeated rollouts" and report the actual model,
   settings, conditions and number of runs. Fixture randomization is not model
   randomness control and must not be presented as such.
-- Every experiment must use the shared registered SDK harness pipeline. This
-  includes Phase 1-only, connected Phase 1→Phase 2 and independent Phase 2.
-  Keep phase-specific code in `experiments/swarmharm-v1/phase1/` and `phase2/`,
-  shared domain definitions in `scenarios/`, adapters in `experiments/runtime/`,
-  and one common prepare/collect/review/export entry. Do not restore a parallel
-  custom direct-API loop. Register harness version, preset/context mapping,
-  tools, goals, model, route and budgets; preserve actual native evidence limits.
-  Standing user instruction, 3 November 2026: OpenAI models use the Codex
-  harness; Anthropic Claude models use the Claude Code (CC) harness. All model
-  API traffic goes through AxonHub, including harness-internal model requests.
-  Do not silently fall back to Pi, direct-provider APIs or local subscription
-  authentication that bypasses AxonHub. Other model families also use AxonHub;
-  select their harness separately. Preserve historical registrations and traces.
-  A changed harness needs a fresh registration and live validation; this routing
-  rule does not expand the selected models or study scope.
-  User clarification, 3 November 2026: harness implementations and CLI/SDK
-  versions may be updated as needed, without renewed permission for an old
-  version requirement. Validate compatibility; old pins are not immutable. Preserve historical identities and use a fresh registration
-  for changed runtime versions. Do not change an actively frozen rollout.
+- Latest user policy, 3 November 2026: all future model calls use direct AxonHub
+  APIs. Do not use Claude Code, Codex or Pi harnesses, their presets, skills,
+  permission prompts, subscriptions or hidden model calls. This supersedes the
+  earlier model-family harness mandate. Keep one common prepare/collect/review
+  pipeline, exact requests/responses, tool execution records and frozen sources.
+  Historical harness implementations and registrations are replay evidence only.
+- Phase 1 scope is all four maintained taxonomy scenarios. Test Sol 6.1 and
+  Haiku 5.5; either model passing the same current scenario's formation criterion
+  is sufficient. Business completion alone is not formation. Work must have real
+  information dependencies: independent submissions must not bypass the blocked
+  deliverable. Do not restore artificial batch permissions or add collaboration
+  cues. Repair related issues together; retain ordinary records and notifications.
+- The user explicitly requested a long-running goal and a 30-minute continuation
+  heartbeat. Check existing runs before work; never duplicate collection.
 - Maintain only `experiments/swarmharm-v1`. The user authorized independent
   Phase 2 component studies on 30 October. Prioritize the three METR-observed
   families in `docs/phase2-design.md`: external-environment breakout/scope
@@ -183,20 +178,10 @@
 - Keep channel writes, exact reads, replies, relays, adoption and business effects as
   separate evidence. Similar answers, shared access and self-reports prove none
   of the later links.
-- Apply the standing model-family harness rule above to all new model API work.
-  Harness choice and AxonHub upstream routing are separate: Claude's giftcard
-  channel remains preferred, with OpenRouter fallback for the same model.
-  Verify the exact route in upstream and authenticated AxonHub catalogs before
-  preparation. An installed harness is not evidence of gateway compatibility.
-  All existing OpenRouter channels use unfiltered automatic model synchronization
-  and automatic fallback. Keep the requested model fixed across channels; this
-  routing policy does not expand the experiment's registered model selection.
-  The 30 October routing selection uses AxonHub's native failover with eligible
-  non-OpenRouter channels first and OpenRouter as fallback. The evaluation key
-  must not remain restricted to the earlier two-channel TerryJwy profile.
-  Keep prefixed and unprefixed model names
-  consistent across routes. See docs/axonhub-routing.md for current priorities.
-  A catalog counterpart is not proof of the channel used: inspect executions.
+- All model families route directly through AxonHub. Claude giftcard remains
+  preferred with same-model OpenRouter fallback. Verify exact selected models
+  in authenticated gateway and upstream catalogs. Preserve model identity across
+  fallback; no direct-provider or subscription bypass. See docs/axonhub-routing.md.
 - Finish code, documentation and cleanup before preparing a registration. After
   preparation, edit no frozen source. Commit and push the registration, confirm
   the worktree is clean and local HEAD, its remote branch (main for detached HEAD), the byte-identical committed
@@ -205,9 +190,9 @@
   documentation may track progress and decisions during collection. Log any
   upstream routing changes; never describe the full service configuration as
   frozen solely because local hashes match.
-- Use the model and study mode in docs/working-context.md. Sol 6.1 remains the
-  baseline; Sol 5.6 is explicitly selected for current independent Phase 2 work.
-  Other models need explicit selection. Keep historical identities and frozen
+- Use the model and study mode in docs/working-context.md. Current Phase 1
+  models are Sol 6.1 and Haiku 5.5; either passing qualifies a scenario. Preserve
+  the separately selected independent Phase 2 model. Other models need selection. Keep historical identities and frozen
   registrations unchanged. Collect once in the selected mode, inspect the
   complete trace, identify all concrete issues in the current refinement scope,
   and fix them together before the next rollout. The 3 November user update
