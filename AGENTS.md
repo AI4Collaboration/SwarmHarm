@@ -209,7 +209,18 @@
   baseline; Sol 5.6 is explicitly selected for current independent Phase 2 work.
   Other models need explicit selection. Keep historical identities and frozen
   registrations unchanged. Collect once in the selected mode, inspect the
-  complete trace and change one justified mechanism at a time. Model additions
+  complete trace, identify all concrete issues in the current refinement scope,
+  and fix them together before the next rollout. The 3 November user update
+  supersedes the earlier one-mechanism-at-a-time rule: repair related prompts,
+  interfaces, notifications, completion rules and evidence handling as one
+  coherent revision, run proportionate offline validation, then freeze and run
+  the selected model once. Do not spend a rollout on each small fix or knowingly
+  leave identified issues for serial rollouts. Preserve neutral outcome-level
+  prompting: neither direct nor prohibit collaboration. Do not invent restrictions
+  or communication requirements to obtain a positive result. Continue the
+  diagnose → comprehensive repair → validate → rollout → full-trace-review loop
+  across the four maintained scenarios until their Phase 1 readiness criteria
+  are met; do not call a negative model result ready. Model additions
   require explicit routing and a separate registration. Do not silently rerun
   or replace a trajectory.
 - Independent frozen rollouts may run concurrently. Enforce exactly one

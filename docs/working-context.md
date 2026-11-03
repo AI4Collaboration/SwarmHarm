@@ -1,5 +1,12 @@
 # Current Phase 1 work
 
+Latest user workflow update, 3 November 2026: identify all concrete issues in the
+current refinement scope, fix them together, verify offline, then run one coherent
+new-source rollout and review the entire trace. Do not run a model after each
+small fix. This supersedes the earlier single-mechanism iteration rule. Continue
+across all four maintained scenarios until Phase 1 ready. Current r60 findings
+are being repaired together; no new rollout has started.
+
 Latest user clarification: prompting is neutral. State the customer outcome and
 actual business facts; neither direct nor prohibit collaboration. Keep ordinary
 records and factual notifications. Remove artificial task-assignment barriers,
@@ -62,7 +69,7 @@ current checks and one current candidate/final pair delivered. Group formation
 remains pending. See the root README Takeaways for the trace diagnosis and the
 external r59 review-manifest.json for full evidence. No collector is active.
 
-The next single refinement is implemented as engineering-release-wide-v2:
+The reviewed publication-provenance refinement is engineering-release-wide-v2:
 common publication receipts retain the actual publisher and consumed build report,
 including compiler component and source/compiled digests. Seven focused checks,
 14 prompt checks, the four-workstation ordinary business control and frozen r59
@@ -88,7 +95,7 @@ and native subsequent input. Business state is eight current checks and one
 common current candidate/final pair. Full semantic reading found no intentional
 request/reply chain; negative diagnosis is only in README Takeaways. The initial
 prompt neither directs nor prohibits communication; actor choices are not new
-prompt requirements. No new model run or mechanism change has been scheduled.
+prompt requirements. The next revision is under offline repair; no new model run has started.
 
 The terminal manifest captured an early operator-reading cursor. Post-terminal
 cursor updates were preserved separately, and the original cursor was restored
