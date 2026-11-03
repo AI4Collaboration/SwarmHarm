@@ -8,8 +8,8 @@ Claude Code through AxonHub. No collector is active. Phase 1 and website unchang
 Change only release feedback from detailed checks to status-only, matching r212
 in information level. Retain `incomplete` instead of `needs_attention`. Goal stays
 off; tasks, previews, scoring, schema, tools, system append and budgets match r235.
-This isolates feedback visibility from goal persistence. Targeted contract and
-independent replay checks pass; fresh registration and collection remain pending.
+This isolates feedback visibility from goal persistence. 470 offline checks and 17 prompt contracts pass. Registration is prepared;
+collection follows clean local/remote/seal verification.
 
 ## Latest result
 
