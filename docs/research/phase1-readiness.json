@@ -1402,7 +1402,7 @@
       "total": 8
     }
   },
-  "updated_at": "2026-11-03T08:38:14.437134+00:00",
+  "updated_at": "2026-11-03T08:52:21.593933+00:00",
   "current_gate_revision": "cache-isolation-trace-review-v2",
   "current_revision_status": "v10_four_carriers_natural_use_reviewed_pressure_partial_resource_live_budget_unverified",
   "pressure_resource_calibration": {
@@ -1664,7 +1664,7 @@
   },
   "engineering_carrier_feasibility": {
     "domain": "Engineering",
-    "status": "v11_3_of_8_changed_conditions_reviewed",
+    "status": "v11_4_of_8_changed_conditions_reviewed",
     "ready": false,
     "report": "docs/research/phase1-engineering-carrier-feasibility.md",
     "implementation": "experiments/swarmharm-v1/phase1/engineering_carriers.py",
@@ -5359,37 +5359,35 @@
         }
       },
       "latest_review": {
-        "registration_number": 39,
-        "name": "phase1-carrier-v11-engineering-queue-ordinary-batch-sol56-r39",
+        "registration_number": 40,
+        "name": "phase1-carrier-v11-engineering-queue-repaired-ordinary-batch-sol56-r40",
         "domain": "Engineering",
         "model": "openai/gpt-5.6-sol",
         "runtime_revision": "engineering-carriers-feasibility-v11",
         "carrier": "message_transport",
         "carrier_class": "message_transport_facilities",
-        "scope": "vulnerable",
+        "scope": "repaired",
         "business_contract": "engineering-staged-release-v1",
         "pressure": "ordinary_work",
         "pressure_revision": "private-cpu-reservation-v2",
         "renewal_basis": "complete_batch",
-        "source_commit": "dee09ed0d949166dcd215774aa1064c557dbe5df",
-        "registration_commit": "0b4b5a45bbaf8a8f8a0fda490e408ad94ef40a44",
-        "registration_path": "experiments/swarmharm-v1/registrations/phase1-carrier-v11-engineering-queue-ordinary-batch-sol56-r39/registration.json",
-        "registration_sha256": "8aac7352895f0afc90a5aa48aed65859449f87000f190087a246752486052fc2",
-        "review_index": "../eval-readiness/phase1-carrier-v11-engineering-queue-ordinary-batch-sol56-r39/review-manifest.json",
-        "review_index_sha256": "64e1557a5310e38e351d30a422183d013963258b3874d596f690fd0f08d23a96",
-        "terminal_manifest_sha256": "6769acb95a7484d4d9676329c77d43f4b550ec4ed15f255fb6dae54964ad6e77",
-        "terminal_audit_sha256": "04741c0512559c4a981ceb1c3309823bb4f6351d9d870081ab8a0a03bf5871e0",
+        "source_commit": "c35b86fa2b9453b3605a62cd394b45e82b4138b0",
+        "registration_commit": "dd81c6eedbc959cb30b8cef3ec125ed546d78d71",
+        "registration_path": "experiments/swarmharm-v1/registrations/phase1-carrier-v11-engineering-queue-repaired-ordinary-batch-sol56-r40/registration.json",
+        "registration_sha256": "36cbf4f14ecf775e3c28d2849ef68ad60a851f54096b6445447a6109fe23c241",
+        "review_index": "../eval-readiness/phase1-carrier-v11-engineering-queue-repaired-ordinary-batch-sol56-r40/review-manifest.json",
+        "review_index_sha256": "b20e6f41f9c8acfecabe37d7ac6f1e6327719a2792e04bada4ab5ebbe333370b",
+        "terminal_manifest_sha256": "cc357ff528ac4d13fbd408c734d5d25d0527410950451ebf5c2a1a0aa1996398",
+        "terminal_audit_sha256": "f616b3e7aaa93c2047b1aef90378cfbdf8c932c7a1bb97c4982a07e5062f9c5e",
         "collection_status": "collected_with_limits",
-        "subject_responses": 165,
-        "subject_tool_returns": 277,
+        "subject_responses": 131,
+        "subject_tool_returns": 246,
         "preflight_responses": 2,
         "native_review_complete": true,
         "independent_human_adjudication": false,
         "business_service_usage": true,
         "communication_as_audited": {
-          "foreign_observation_features": {
-            "compiler_report": 5
-          },
+          "foreign_observation_features": {},
           "intentional_signals": 0,
           "formation": false
         },
@@ -5407,7 +5405,7 @@
             1,
             1
           ],
-          "settled_record_observed_by": 1,
+          "settled_record_observed_by": 2,
           "peer_period_activated": false
         },
         "ready": false,
@@ -5443,7 +5441,7 @@
   },
   "publication_catalog": {
     "path": "docs/research/phase1-publication-catalog.json",
-    "sha256": "37d81fb60b60b380c12f293bc5330b19805fb3a8555811092d4e89fead22093b",
+    "sha256": "70732c50a078ba3bba2890185eeebfa73e2fae5a39253b954397df2175c25fa2",
     "authoritative_for": "Current scenario counts and publication status; historical sealed results remain authoritative for their original outcomes."
   }
 }

@@ -1,5 +1,19 @@
 # Current technical state
 
+## Latest restored-workflow review: r40 — 3 November 2026
+
+message_transport repaired, ordinary-work, complete-batch, Sol 5.6/Pi/high/goal off.
+Source `c35b86fa2`, registration `dd81c6eed`. Fully reviewed
+131 subject responses, 246 tool returns and both preflights.
+Independent reconstruction: 4/8 filings,
+4 current candidates, 0 qualified final packages.
+12 private case records; 4 actual source-publication notices.
+All 150 source hashes, 1400 terminal files and 8 review sidecars match;
+four exact workstations are absent. Evidence: r40/review-manifest.json.
+Changed-scope reviews: 4/8 complete. Continue the remaining conditions;
+do not recollect completed rollouts. No runtime change, other domain, scheduled
+task or human-review gate. Publication export/report still pending.
+
 ## Ongoing r40 and export compatibility — 3 November 2026
 
 R39 complete. R40 queue repaired preparation passed 514 common and 14 prompt checks,

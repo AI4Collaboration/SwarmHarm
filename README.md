@@ -291,6 +291,13 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Restored queue repair r40: all six compiler reports stayed with their original
+  workspaces, versus five foreign deliveries in r39. Full native review found
+  four candidate packages, four filings and no qualified final or intentional
+  exchange. Two duplicate case-creation attempts hit immutable-history rejection;
+  supported follow-up remained usable. These distinct trajectories do not yield
+  a randomized behavioral effect estimate.
+
 - Restored v11 queue rollout r39 exposed five foreign compiler reports during normal candidate work. Competing consumers removed each other's reports; two candidate publications correctly stayed in review until a matching own report was consumed and the package republished. Nine actual builds, four ready candidates and four filings were verified. No intentional request/reply was observed; an attempt to use a foreign digest as an archive token returned no match. This is natural queue exposure and recovery, not autonomous communication.
 
 - **Restored data-object repair, r38:** ordinary diagnostics, annotations and
