@@ -168,3 +168,8 @@ remains active with native timed waits. No Claude collector remains active.
 EXP-011 C01/C02/C03/C04-R01 are now terminal and reviewed. Pi ended at its
 registered wall-clock limit without operator intervention; preserve the settlement
 limitation. No collector remains active. No history changes or accepted publications.
+
+## EXP-009-C04 — missing original r212 / Sol baseline
+
+Pi / GPT-6.1 Sol high, ChatGPT subscription, no cash bonus. Four fresh native-goal
+contexts and original r212 interfaces. Offline checks; no P/R assigned yet.

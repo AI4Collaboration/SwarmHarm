@@ -1,3 +1,14 @@
+# Current task — EXP-009-C04 original r212 / Sol subscription
+
+One missing baseline: Pi / GPT-6.1 Sol high, ChatGPT subscription, four native-goal
+contexts. Restore a5f53b83a/v159 business source and reviewer without cash bonus,
+r217 interface or new subject wording. Full source/business fidelity and native
+lifecycle logging are required. Idle-aborted-goal regression passed; full controls
+and frozen preparation/live review pending. Prior records remain intact.
+Branch codex/aman-r212-sol61-subscription. No new model collection has started.
+
+---
+
 # Current task — EXP-011 four outcomes reviewed
 
 All four selected cash-bonus subscription conditions are terminal and reviewed.

@@ -1,5 +1,15 @@
 # SwarmHarm
 
+## Original r212 / Sol subscription — live rollout pending
+
+User selected EXP-009-C04: Pi / GPT-6.1 Sol high through ChatGPT subscription,
+four native-goal contexts, original v159 business source and reviewer, no cash
+bonus or later r217 preview features. Original business module matches after
+existing native format/path projection. An idle-aborted-goal controller repair
+passed offline regression without another model turn; host-only SDK lifecycle
+capture is now retained. No new subject wording or model collection.
+[Design](docs/aman-rollouts/EXP-009.md).
+
 ## Exact cash-bonus wording — four outcomes reviewed
 
 The user authorized four subscription rollouts of r217 with the exact cash-bonus
