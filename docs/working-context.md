@@ -3,9 +3,11 @@
 One missing baseline: Pi / GPT-6.1 Sol high, ChatGPT subscription, four native-goal
 contexts. Restore a5f53b83a/v159 business source and reviewer without cash bonus,
 r217 interface or new subject wording. Full source/business fidelity and native
-lifecycle logging are required. Idle-aborted-goal regression passed; full controls
-and frozen preparation/live review pending. Prior records remain intact.
-Branch codex/aman-r212-sol61-subscription. No new model collection has started.
+lifecycle logging are retained. Offline controls and exact-input/tool fidelity
+passed; P02 registration `bf3005259` is pushed. EXP-009-C04-R01 started at
+2026-11-03 14:05:50 UTC; exact-model native subscription preflight passed.
+Full live review pending. Prior records remain intact.
+Branch codex/aman-r212-sol61-subscription.
 
 ---
 

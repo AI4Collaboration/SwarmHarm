@@ -4,7 +4,7 @@
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **11 experiments (one preparing), 46 executed collection attempts, 30 uncollected preparations** in the inspected local archive.
+Coverage: **11 experiments, 47 executed collection attempts, 29 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
@@ -180,3 +180,7 @@ preserved. Sole fixture repaired and rerun; production hashes unchanged.
 EXP-009-C04-P02 frozen: all original r212 file bytes, tool definitions, tasks and
 fixtures match. 481-method broad verification plus sole fixture repair/rerun;
 four condition-specific skips, 13 prompt checks. Zero hosted calls so far.
+
+EXP-009-C04-R01 collecting from P02, registration `bf3005259`, since
+2026-11-03 14:05:50 UTC. Exact-model native subscription preflight passed;
+no cash bonus or r217 interfaces. Earlier failed P01 stays uncollected.
