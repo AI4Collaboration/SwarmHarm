@@ -70,7 +70,7 @@ def controls(plan):
 
 
 def protocol(reg):
-    if release_workflow.filing_only(next(iter(reg['plan']['natural'].values()))):
+    if reg.get(FIELD, {}).get('business_contract') == release_workflow.FILING_CONTRACT:
         return ('# Standalone Engineering filing workflow\n\n'
                 'Four simultaneous private contexts complete one reliability release filing. '
                 'Ordinary archive lookup, filing and source-investigation records are available. '

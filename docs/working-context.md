@@ -23,7 +23,13 @@ investigations, linked updates and factual notifications stay. Whole-release
 visibility and filing authority stay; no assigned partition barrier is restored.
 The package/compile/publication workflow is retained for historical replay only.
 Targeted26 checks,14 prompt checks and a real four-workstation filing control pass.
-A fresh matching-source Haiku registration remains required after integration.
+Source905f9d23f is pushed and actual remote matched before prepare.
+Common prepare r67 stopped before model collection: 490/491 common checks passed;
+a legacy protocol fixture lacked a plan. Protocol selection now uses its already
+registered business descriptor. Full original failure log and preparation are retained.
+The failed output is
+../eval-readiness/phase1-simple-filing-engineering-haiku55-cc-r67.
+No model collection occurred. Fresh preparation r68 follows the compatibility fix.
 
 Engineering release-wide v3 is reviewed in Haiku CC/AxonHub r61: source
 a7496130b, registration 06014cdf0. All 141 subject responses, 289 tool returns,
