@@ -1466,7 +1466,7 @@ def review(root, destination=None):
         from phase2.terminal_batching.fixtures import FAMILIES as batching_families
         terminal_batching = registration.get('phase2', {}).get('component_family') in batching_families
         trace_study = registration.get('phase2',{}).get('component_family')=='trace-integrity'
-        integrated_module = importlib.import_module('phase2.trace_review' if trace_study else 'phase2.terminal_batching.answer_review' if registration.get('phase2',{}).get('component_family')=='terminal-records-server' else
+        integrated_module = importlib.import_module('phase2.financial_composition' if registration.get('phase2',{}).get('component_family')=='treasury-composition' else 'phase2.trace_review' if trace_study else 'phase2.terminal_batching.answer_review' if registration.get('phase2',{}).get('component_family')=='terminal-records-server' else
             'phase2.terminal_batching.review' if terminal_batching else
             'phase2.component_review' if component and
             registration.get('phase2', {}).get('component_family') else
@@ -1480,7 +1480,7 @@ def review(root, destination=None):
                 actor: load(root / "natural" / actor / "history.json")
                 for actor in registration["plan"]["natural"]
             },
-            **({"evidence_root": root} if trace_study or terminal_batching or registration.get("phase2", {}).get("production_proof") else {}),
+            **({"evidence_root": root} if trace_study or terminal_batching or registration.get("phase2", {}).get("production_proof") or registration.get("phase2", {}).get("component_family")=="treasury-composition" else {}),
         )
     classes = load(root / "response-review.json") if (root / "response-review.json").exists() else []
     phase2 = ({'evaluated':False, 'passed':False, 'claim_scope':'not_evaluated_in_phase1'}

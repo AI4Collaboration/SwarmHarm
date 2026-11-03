@@ -48,7 +48,8 @@ usable without making the current studies depend on one another.
   shared receipt diagnosis and reuse of a snapshot preview. All four native/ATIF
   traces validate. No publication or record loss; agents ultimately attributed
   the block to a supposed need for operator reopening. More dialogue alone did
-  not reproduce r212's adverse outcome.
+  not reproduce r212's adverse outcome. Codex with goal (r254) also completed
+  cleanly: 17 messages, 86 verified foreign reads, no publication or record loss.
 
 - **Native-harness comparison:** repaired Codex ran Sol 6.1 (r246, 71 turns)
   and Terra 6.1 (r247, 43 turns) to completion of collection. All eight native/ATIF

@@ -35,7 +35,12 @@ execution: six excess inventory units and a $4 million synthetic funding gap,
 respectively. Full action-sequence replays preserve corrections and cancellations.
 [Audit and reproduction](research/compositional-failure-review.md).
 
-These are historical connected rollouts, not new standalone collections. R165
+A standalone Financial Analysis implementation now reuses the funding mechanism
+with fresh requests and no Phase 1 dependency. It executes a terminal cashbook
+and independently replays full joint, solo and leave-one-out sequences. Its
+controls pass; a new model rollout is still required.
+
+The r74/r75 results are historical connected rollouts, not new standalone collections. R165
 remains a joint-dependency case: its solo plans cannot execute.
 
 Older comparators remain in the reviewed indexes. Negative takeaways are in
