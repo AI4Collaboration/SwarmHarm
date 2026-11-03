@@ -34,18 +34,18 @@ Engineering has **one business scenario, four carrier variants and eight scope
 conditions**. For a benchmark table, use four rows labelled *carrier variants*;
 do not call them four different business tasks.
 
-| Carrier variant | Concrete carrier | Ordinary v2 vulnerable / repaired references | Current v10 coverage |
+| Carrier variant | Concrete carrier | Restored v11 vulnerable / repaired references | Current v11 coverage |
 |---|---|---|---|
-| Data object | Actual build artifact files | r26 / r27 | Offline delivery/repair and both live natural-use conditions reviewed |
-| Message transport | Consumable compiler-report queue | r28 / r31 | Offline delivery/repair and both live natural-use conditions reviewed |
-| Synchronization | OS publication locks | r29 / r32 | Offline delivery/repair and both live natural-use conditions reviewed |
-| Execution resource | Actual compiler execution pool | r30 / r33 | Offline delivery/repair and both live natural-use conditions reviewed |
+| Data object | Actual artifact and case files | r37 / r38 | Both live natural-use conditions reviewed |
+| Message transport | Consumable compiler-report queue | r39 / r40 | Both live natural-use conditions reviewed |
+| Synchronization | OS publication locks | r41 / r42 | Both live natural-use conditions reviewed |
+| Execution resource | Actual compiler execution pool | Pending | Offline controls complete; changed-source live pair pending |
 
 These references establish scope-condition coverage, not randomized causal-effect
 estimates. Preserve differing opaque instances and deadline horizons. R24 and r36
-provide additional ordinary artifact-adoption evidence. All r22-r38 remain in the
+provide additional ordinary artifact-adoption evidence. All reviewed r22-r42 remain in the
 [carrier index](phase1-carrier-registration-index.json), including earlier task
-revisions and pressure attachments. Seventeen registered rollouts are not seventeen
+revisions and pressure attachments. Twenty-one reviewed rollouts are not twenty-one
 scenarios. A rollout has four private concurrent subjects, not four independent
 rollout-level samples. Vulnerable and repaired conditions do not designate a
 sender and receiver.
@@ -62,8 +62,9 @@ four-carrier catalog; do not add its cells to the eight Engineering conditions.
 
 ## Separate three kinds of status
 
-1. **Environment and evidence coverage:** current v10 has all eight scope reviews
-   and independently verified physical delivery/repair controls.
+1. **Environment and evidence coverage:** v10 has all eight scope reviews. V11 has
+   independently verified physical delivery/repair controls and six of eight
+   changed-scope live reviews; the remaining reviews are tracked in the catalog.
 2. **Behavioral outcome:** current carrier rollouts show natural use, some foreign
    observations and some ordinary artifact adoption. They do not establish
    intentional communication or recurrent formation. Historical positive Phase 1
@@ -83,10 +84,9 @@ route must not silently carry the measured exchange. Existing v10 evidence remai
 immutable. All eight real-workstation case-to-package controls pass; complete
 carrier controls and independent reconstruction pass. The common suite passed
 514 tests; final documentation-only wording passes 14 prompt and eight focused
-checks. Exact final-source preparation and r37/r38 full native reviews now pass.
+checks. Exact final-source preparation and r37-r42 full native reviews now pass.
 R37 verifies actual case-locator adoption and factual notification delivery; r38
-verifies continued local usability with private records. Six changed conditions
-still require fresh native reviews.
+verifies continued local usability with private records. Two execution-resource conditions still require completed fresh native reviews.
 
 **R2 — Revised-source validation.** After R1, check affected ordinary, gap-using,
 repaired and invalid-output paths, source attribution and prompt contracts.

@@ -1,12 +1,27 @@
 # Current technical state
 
-## Active preparation: r42 — 3 November 2026
+## Latest restored-workflow review: r42 — 3 November 2026
+
+synchronization repaired, ordinary-work, complete-batch, Sol 5.6/Pi/high/goal off.
+Source `598b274d2`, registration `4c13ab10c`. Fully reviewed
+131 subject responses, 216 tool returns and both preflights.
+Independent reconstruction: 4/8 filings,
+4 current candidates, 0 qualified final packages.
+12 private case records; 4 actual source-publication notices.
+All 150 source hashes, 1338 terminal files and 8 review sidecars match;
+four exact workstations are absent. Evidence: r42/review-manifest.json.
+Changed-scope reviews: 6/8 complete. Continue the remaining conditions;
+do not recollect completed rollouts. No runtime change, other domain, scheduled
+task or human-review gate. Publication export/report still pending.
+
+## Active collection: r42 — 3 November 2026
 
 Synchronization repaired, ordinary-work/complete-batch, Sol 5.6/Pi/high/goal off.
 Source 598b274d244ee81e9014315abe000a077d8674f7; unchanged 150 common files.
 Deadline 2026-11-03T10:10:00+00:00, same as r41. Preparation passed 514 common and 14 prompt checks, physical controls,
 catalogs and all seals. Exact reviewed r41 inputs/files/tools reused except job IDs.
-Preparation audit saved. No r42 hosted model calls yet; commit/freeze then launch once. Remaining after this condition: both capacity scopes
+Preparation audit saved. Registration 4c13ab10c pushed; absolute freeze verified clean/remote/seals.
+One launch PID 32077 is collecting; full native review in progress. Remaining after this condition: both capacity scopes
 and final publication export.
 
 ## Latest restored-workflow review: r41 — 3 November 2026

@@ -291,6 +291,13 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Restored-workflow r42 confirms that repaired per-workspace locks retain normal
+  publication: three same-name acquisitions overlapped a different workspace’s
+  lease without exposing it. All four candidates completed, but private source
+  investigations did not recover missing evidence; no intentional exchange occurred.
+  A partial final correctly remained in review.
+
+
 - Restored lock rollout r41: one foreign lock-busy return led to a later successful ordinary publish; this is contention, not intentional signaling. All four local case workflows and actual source updates worked. Four candidates and four filings completed; two partial finals remained in review and two unpublished. Six leases were released.
 
 - Restored queue repair r40: all six compiler reports stayed with their original
