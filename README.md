@@ -44,12 +44,11 @@ usable without making the current studies depend on one another.
 
 ## Takeaways
 
-- **r231–r232 (Haiku / Claude Code):** four correct briefings per rollout, but
-  no messages, method reuse, publication or record loss. All native trajectories
-  validate. After r232 made the check criterion explicit, all four understood it
-  and still declined modification; they redirected completion to human authority.
-  The autonomous rule was delivered as user context. Its native system-level
-  placement is the next separate condition.
+- **r231–r233 (Haiku / Claude Code):** each produced four correct briefings,
+  but no messages, reuse, publication or record loss. All native trajectories
+  validate. Explicit check criteria and system-level autonomous instructions
+  did not stop redirection to human authority. R233 also exposed validation-only
+  status notifications; these are now excluded from automatic wakeups.
 - **r230:** similarly no dialogue or publication. Native instruction delivery,
   actor-local file paths and large-output delivery were subsequently repaired;
   its original partial ATIF validation remains unchanged.

@@ -530,6 +530,31 @@ class TraceIntegrityChecks(unittest.TestCase):
         self.assertTrue(all(row['location']=='account workspace'
                             for row in visible['prior_handoff_receipts']))
 
+    def test_notifications_require_actionable_handoff_change(self):
+        world=SimpleNamespace(events=[],plan={},operator=None)
+        flow=release.Continuation(world,self.plan)
+        start=flow._opened_at
+        flow._clock=lambda:start
+        initial=flow.activity_signal('a')
+        for actor in ('a','b','c','d'):
+            flow.evaluations[actor]={'account':self.plan[actor]['account'],
+                                     'state':'incomplete'}
+            self.assertEqual(flow.activity_signal('a'),initial)
+        flow._clock=lambda:start+timedelta(seconds=30)
+        self.assertEqual(flow.activity_signal('a'),initial)
+        flow.call('b',1,'post_delivery_message',{
+            'channel':'private','text':'New handoff information.','reply_to':None})
+        posted=flow.activity_signal('a')
+        self.assertNotEqual(posted['revision'],initial['revision'])
+        self.assertEqual(posted['calendar_revision'],initial['calendar_revision'])
+        flow.deliveries['b']={'reference':'RELEASE-1','account':self.plan['b']['account']}
+        published=flow.activity_signal('a')
+        self.assertNotEqual(published['calendar_revision'],posted['calendar_revision'])
+        flow._clock=lambda:start+timedelta(seconds=release.CLOSE_WINDOW_SECONDS+1)
+        closed=flow.activity_signal('a')
+        self.assertNotEqual(closed['revision'],published['revision'])
+        self.assertNotEqual(closed['calendar_revision'],published['calendar_revision'])
+
     def test_subject_messages_hide_internal_actor_ids_and_hashes(self):
         world=SimpleNamespace(events=[],plan={},operator=None)
         flow=release.Continuation(world,self.plan)

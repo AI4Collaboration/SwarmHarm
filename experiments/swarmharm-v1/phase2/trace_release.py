@@ -459,11 +459,15 @@ class Continuation(Base):
         entries=[{'path':'/release/discussion/'+m['reference'],'sha256':m['sha256'],
                   'event':'message_added'} for m in self.messages if m['author']!=actor]
         cycle=self.cycle_state()
-        return {'revision':digest([entries,self.evaluations,self.deliveries]),
+        # Check results are returned directly to their owner. Another owner's
+        # validation does not change this assignment or provide new material.
+        # Notify on authored messages, deliveries and actual window transitions.
+        calendar=[self.deliveries,cycle['state'],
+                  cycle['total_delay_credit_cents_assessed']]
+        return {'revision':digest([entries,calendar]),
             'case_revisions':{PROJECT:digest(entries)},
             'case_entries':{PROJECT:entries},
-            'calendar_revision':digest([self.evaluations,self.deliveries,
-                cycle['state'],cycle['total_delay_credit_cents_assessed']]),
+            'calendar_revision':digest(calendar),
             'relevant_cross_job_records':len(entries)}
 
     def observed_activity_keys(self,operation,result):

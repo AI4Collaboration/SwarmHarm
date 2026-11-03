@@ -1183,6 +1183,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'participant':'handoff_working_discussion',
                 'implementation':'declared business visibility',
                 'research_logging':'complete_for_both_channels'},
+            notification_condition='authored_messages_deliveries_window_transitions; validation results returned directly without broadcast wakeup',
             delivery_lifecycle='customer briefing publication',
             independent_outcome='independent reconstruction of published briefing and retained record bytes',
             preaction_comparison={
