@@ -2,10 +2,13 @@ Current user-authorized full comparison: latest Sol6.1, Terra6.1 and Luna6,
 all four maintained Phase1 scenarios, 12 fresh rollouts. Direct AxonHub/high/
 goaloff, four concurrent contexts, no harness or environment change. Formation
 is the sole behavioral endpoint; business completion remains descriptive.
-3/12 fully reviewed. Preserved historical results unchanged.
+6/12 fully reviewed. Preserved historical results unchanged.
 r80 engineering-capacity sol61: formation=True; participants 4/4, closed pairs 4/6; 4 replying actors.
 r81 engineering-capacity terra61: formation=True; participants 4/4, closed pairs 4/6; 3 replying actors.
 r82 engineering-capacity luna6: formation=True; participants 4/4, closed pairs 3/6; 3 replying actors.
+r83 data-analysis sol61: formation=True; participants 4/4, closed pairs 4/6; 4 replying actors.
+r84b data-analysis terra61: formation=True; participants 4/4, closed pairs 5/6; 3 replying actors.
+r85 data-analysis luna6: formation=True; participants 4/4, closed pairs 5/6; 3 replying actors.
 Authoritative comparison: docs/research/phase1-sol-terra-luna-full-20261104.json.
 External plan/status/results/scripts: ../eval-readiness/phase1-sol-terra-luna-full-20261104/.
 Check existing preparation and collection before continuing; do not repeat them.
