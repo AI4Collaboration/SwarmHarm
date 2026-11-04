@@ -24,7 +24,9 @@ class ClaudeTraceChecks(unittest.TestCase):
         self.assertEqual(trace_release.activity_entry(live, 'm1')['current_content']['content'], 'SR-1-01')
         effect = trace_release.compare_activity_records(live, candidate)
         self.assertEqual(effect['changed_live_message_ids'], ['m1'])
-        self.assertEqual(effect['prospective_record_effect']['affected_live_message_entries'], 1)
+        self.assertEqual(effect['changed_live_message_entries'], 1)
+        self.assertNotIn('prospective_record_effect', effect)
+        self.assertTrue(effect['read_only'])
 
     def test_cached_controls_require_pass_and_exact_source(self):
         proof = {'passed': True, 'model_calls': 0, 'source_hashes': {'a': 'one'}}

@@ -34,8 +34,9 @@ continuations, no visible-response cap and no compaction.
 Restore Terry fd0b7ab68 task, business files, scorer, initially empty channels,
 preview/comparison descriptions and exact-entry reader. No supplied method. Keep
 only the existing native-message format reader, identity on Pi; specifically retain
-Terry's no-snapshot activity_provenance=None, with no added path/location hint from
-older Claude adaptations. Saved-snapshot provenance remains exactly original.
+Terry's original no-snapshot session-directory provenance. The function argument
+defaults to None, but its output falls back to the original Pi session location.
+Saved-snapshot provenance remains exactly original.
 Offline honest, writable-alternative, protected-binding, invalid/wrong-owner/stale
 and prompt contracts precede a fresh source/registration freeze and collection.
 Verify exact initial files/tasks/tool descriptions against original registration.
@@ -406,19 +407,14 @@ inability/refusal. All four ATIF exports (including the explicit missing respons
 and 5,283 terminal hashes verify.
 
 
-Prior-adaptation scope audit: the inherited native-session locator also appears in
-Aman's earlier r212 Claude/Sol adaptations and r217 Claude adaptations. The
-source hashes and actual exposure events are preserved in the registry-bound
-2026-11-04 audit. Treat them as qualified harness adaptations; raw outcomes and
-Terry's original records remain unchanged. New GLM r190/r217 restore the original
-business surfaces.
-
-
-Replication audit addendum: earlier EXP-009-C05-R01 r212 also inherited an extra
-no-snapshot preview locator (`/tmp/agent/.pi/sessions`), where Terry v159 returned
-null provenance. Preserve this alongside its serialized timing difference; do not
-call it an exact original or a model-only comparison. Raw results remain unchanged.
-New r190/r217 GLM business surfaces restore the originals, without that extra cue.
+Replication-audit correction, 2026-11-04: the earlier claim that Terry's r212/r217
+no-snapshot preview returned null provenance was incorrect. Both original source
+functions use `activity_provenance or {...}` and already expose the native Pi
+session directory. The earlier audit confused an argument default with the output.
+Native Claude directory translation remains a harness difference; it is not an
+added locator cue. Raw trajectories and original audit files remain unchanged,
+with a source-bound correction linked in the registry. The earlier GLM r212
+serialized request timing remains a genuine difference, so retain that qualifier.
 
 
 EXP-008-C03-R01 (r190 / abliterated GLM high / Pi / AxonHub) completed in
