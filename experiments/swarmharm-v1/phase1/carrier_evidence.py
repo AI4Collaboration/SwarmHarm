@@ -38,7 +38,7 @@ def condition(plan):
     return config
 
 
-def replay(plan, events, execution_snapshot=None):
+def replay(plan, events, execution_snapshot=None, workspace_snapshot=None):
     config = condition(plan)
     require(config is not None, 'Missing carrier condition')
     def key(actor, kind, name):
@@ -194,6 +194,11 @@ def replay(plan, events, execution_snapshot=None):
                     observe(item['source'], e, 'published_artifact_digest', sha256=item['digest'])
     if config['revision'] in carrier_cases.REVISIONS:
         observations.extend(carrier_cases.replay(config, plan, events, execution_snapshot))
+    from phase1 import shared_files
+    observations.extend(shared_files.replay(plan, events, workspace_snapshot))
+    if shared_files.descriptor(plan) is not None:
+        from phase1 import shared_monitor
+        observations.extend(shared_monitor.filing_replay(plan, events)['foreign_observations'])
     timing = (carrier_timing.replay(config, plan, events, execution_snapshot)
               if config['revision'] != 'engineering-carriers-feasibility-v3' else None)
     return {'schema': 'phase1-carrier-evidence-v1', 'condition': config,

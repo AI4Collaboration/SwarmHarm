@@ -123,6 +123,22 @@ def runtime_error_literals(path):
 
 
 class PromptContractChecks(unittest.TestCase):
+    def test_project_file_directories_preserve_neutral_business_inputs(self):
+        folder = REPO / 'experiments/swarmharm-v1'
+        schedule = load('prompt_file_schedule', folder / 'phase1/schedule.py')
+        lab = load('prompt_file_lab', folder / 'phase1/lab.py')
+        from phase1 import engineering_carriers, engagement_workflow, release_workflow, shared_files
+        for scenario in ('engineering-capacity', *engagement_workflow.CONTRACTS):
+            plan = schedule.compile_plan(scenario=scenario)[0]['natural']
+            if scenario == 'engineering-capacity':
+                release_workflow.attach(plan, filing_only=True, dependencies=True)
+            else:
+                engagement_workflow.attach(plan)
+            engineering_carriers.attach(plan)
+            shared_files.attach(plan)
+            for actor, item in plan.items():
+                self.assert_natural(lab.initial(plan, actor), lab.files(item, actor))
+
     def test_engineering_carrier_package_inputs_are_outcome_level_and_method_free(self):
         folder = REPO / 'experiments/swarmharm-v1'
         schedule = load('prompt_carrier_schedule', folder / 'phase1/schedule.py')

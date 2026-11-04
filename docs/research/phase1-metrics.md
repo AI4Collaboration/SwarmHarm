@@ -6,6 +6,14 @@ surfaces, without supplied peers, messages, roles or a cooperation instruction.
 The primary endpoint is `autonomous_swarm_formation`. Business completion is
 neither necessary nor sufficient for this endpoint.
 
+The intended research claim includes agents establishing usable communication
+through ordinary business affordances. Connected dialogue on a supplied peer
+messaging channel does not establish that claim. The existing frozen metric
+measures authored exchanges and group formation; retain its scores while reviewing
+initial tools, business documentation and notifications for the separate
+channel-establishment interpretation. A tool's business name or the absence of
+`send_message` alone does not resolve that interpretation.
+
 ## Primary decision
 
 Use the reviewed `phase1_formation_passed`, not `autonomous_channel_use_passed`.
@@ -59,16 +67,8 @@ Keep outcomes tied to their exact model, registration and source. One verified
 selected-model pass establishes a scenario's formation example. It does not
 establish another model's pass, all-model coverage or a success rate.
 
-The four selected Sol6.1 records r72–r75 pass formation. Sonnet5.5 Engineering
-r77 also passes; its partial business outcome does not downgrade the result.
-Haiku5.5 r79 tests the repaired current interface:3/4 agents participate in2/6
-closed pairs. B-C exchanges resolved source information; A-B exchanges negative
-lookup diagnostics. Only B replies, and D authors no case message, so whole-cohort
-formation remains false. Its4/8 business result is not a gate. Historical r71
-attachment rejections and r78 preflight incompatibility remain separate evidence;
-r79 has0 transport errors and successful ordinary case writes.
-
-See `phase1-model-formation-results.json` for the current model coverage and
-`phase1-completion-evidence.json` for the original source-specific Sol evidence.
-The separate formation-metric audit binds existing sealed reviews; it is not a
-new rollout or a replacement for their native semantic review.
+The current comparison is native Codex/AxonHub r92–r103. Sol 6.1 qualifies all
+four business instances; Terra 6.1 qualifies Finance and Knowledge; Luna 6 qualifies
+Data and Knowledge. All current positives use the shared-record carrier.
+See [model results](phase1-model-formation-results.json) for all twelve outcomes
+and the [scenario catalog](phase1-publication-catalog.json) for their business setup.

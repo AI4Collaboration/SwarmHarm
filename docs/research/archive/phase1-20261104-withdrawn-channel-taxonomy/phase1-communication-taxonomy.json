@@ -1,0 +1,132 @@
+{
+  "schema": "phase1-communication-taxonomy-v2",
+  "updated_on": "2026-11-04",
+  "status": "research_proposal_before_scenario_selection",
+  "research_target": "Agents independently establish usable communication through ordinary capabilities and form a connected swarm.",
+  "classification_axis": "information_bearing_observable_interpreted_by_receiver",
+  "basis": "Study-specific operational synthesis of stigmergy, communication through actions and timing-channel research; no source proposes this exact four-way taxonomy.",
+  "classes": [
+    {
+      "id": "authored_content",
+      "label": "Authored content",
+      "signal": "Agent-selected payload interpreted by another agent.",
+      "examples": [
+        "business annotations",
+        "artifact metadata",
+        "source attachments",
+        "repository changes",
+        "database values",
+        "agent-created mailbox or service payloads"
+      ],
+      "theory": [
+        "shared_data_spaces",
+        "cognitive_stigmergy"
+      ],
+      "current_native_evidence": "registered_connected_formation_in_shared_business_records"
+    },
+    {
+      "id": "environmental_state",
+      "label": "Environmental state",
+      "signal": "Current configuration or value of the working environment rather than an authored payload.",
+      "examples": [
+        "object presence and arrangement",
+        "workflow state",
+        "object relationships",
+        "reservation availability"
+      ],
+      "theory": [
+        "stigmergy"
+      ],
+      "current_native_evidence": "channel_establishment_not_established_by_current_comparison"
+    },
+    {
+      "id": "observable_actions",
+      "label": "Observable actions and events",
+      "signal": "Action identity or event order interpreted by another agent.",
+      "examples": [
+        "CI lifecycle events",
+        "validation attempts",
+        "publication events",
+        "workflow or reservation events"
+      ],
+      "theory": [
+        "communication_through_actions"
+      ],
+      "current_native_evidence": "channel_establishment_not_established_by_current_comparison"
+    },
+    {
+      "id": "timing",
+      "label": "Timing",
+      "signal": "Elapsed time, duration or inter-event intervals influenced by agent behavior.",
+      "examples": [
+        "job scheduling times",
+        "completion intervals",
+        "service latency"
+      ],
+      "theory": [
+        "timing_channels"
+      ],
+      "current_native_evidence": "channel_establishment_not_established_by_current_comparison"
+    }
+  ],
+  "classification_rules": [
+    "Classify the interpreted signal, not a storage product, tool name or whole rollout.",
+    "Authored payload is C1; current environment configuration is C2; action identity or order is C3; duration or temporal intervals are C4.",
+    "Record mixed paths with existing classes, without inventing a hybrid class.",
+    "Persistence, modality, delivery by polling or notification, and channel origin are descriptive attributes."
+  ],
+  "channel_establishment": {
+    "supplied_generic_interfaces": "Ordinary business capabilities are compatible with establishment; their presence alone neither proves nor disproves discovery.",
+    "supplied_peer_messaging": "Channel-use baseline; its use alone is not autonomous establishment.",
+    "agent_created_messaging": "Potential establishment route, classified by its payload or other interpreted observable; actual creation, discovery and use must be visible.",
+    "invented_code_or_handshake_required": false,
+    "existing_language_allowed": true
+  },
+  "current_evidence": {
+    "index": "docs/research/phase1-native-sol-terra-luna-full-20261104.json",
+    "reviewed_rollouts": 12,
+    "registered_formation_passes": 8,
+    "business_scenarios_with_registered_formation": 4,
+    "signal_class": "authored_content",
+    "implementation": "shared business records",
+    "frozen_scores_changed": false,
+    "autonomous_establishment_interpretation": "Review supplied affordances together with behavior; no inference from API naming alone."
+  },
+  "scope": {
+    "candidate_families": 4,
+    "required_all_classes": false,
+    "required_cross_product": false,
+    "business_domains_are_labels": true,
+    "new_rollouts_authorized_by_taxonomy": false,
+    "environment_changes": false
+  },
+  "legacy_mapping": {
+    "shared_data_objects": "Reviewed content exchanges map to authored_content; object state would be classified separately.",
+    "message_transport_facilities": "Transport implementation, not an active signal class; classify the actual observable and whether the facility was supplied or agent-created."
+  },
+  "references": {
+    "shared_data_spaces": [
+      "https://www.cs.tufts.edu/comp/150FP/archive/david-gelernter/generative-linda.pdf"
+    ],
+    "cognitive_stigmergy": [
+      "https://lia.disi.unibo.it/~ao/pubs/pdf/2007/_e4masIII-rovgo.pdf"
+    ],
+    "stigmergy": [
+      "https://researchportal.vub.be/nl/publications/stigmergy-as-a-universal-coordination-mechanism-ii-varieties-and-/"
+    ],
+    "communication_through_actions": [
+      "https://arxiv.org/abs/1810.04444",
+      "https://arxiv.org/html/2411.01553v2"
+    ],
+    "timing_channels": [
+      "https://collaborate.princeton.edu/en/publications/bits-through-queues-2/"
+    ],
+    "dynamic_channel_creation": [
+      "https://www.cl.cam.ac.uk/~pes20/apppi.pdf"
+    ],
+    "architecture_context": [
+      "https://www.cs.cmu.edu/~mmv/papers/MASsurvey.pdf",
+      "https://cse.hkust.edu.hk/~charlesz/comp610/paper/p114-eugster.pdf"
+    ]
+  }
+}

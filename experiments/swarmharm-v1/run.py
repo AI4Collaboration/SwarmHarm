@@ -456,12 +456,13 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     topology_spec=load(topology_file) if topology_file is not None else None
     channel_condition = None
     if business_workspace:
-        from phase1 import release_workflow, engagement_workflow
+        from phase1 import release_workflow, engagement_workflow, shared_files
         if engineering_workspace:
             release_workflow.attach(plan['natural'], filing_only=True, dependencies=True)
         else:
             engagement_workflow.attach(plan['natural'])
         engineering_carriers.attach(plan['natural'])
+        shared_files.attach(plan['natural'])
         if phase1_pressure_profile:
             for item in plan['natural'].values():
                 item[resource_pressure.FIELD] = phase1_pressure_profile
@@ -1133,6 +1134,12 @@ def platform_notice_message(message, kind):
         'source':'platform_status','event':kind,'status':message,
     },ensure_ascii=False)}
 
+def monitored_notice(world, signal, delivered):
+    from phase1 import shared_files, shared_monitor
+    if shared_files.descriptor(world.plan) is None:
+        return {}
+    return {'shared_monitor': shared_monitor.notice_sources(world, signal, delivered)}
+
 def work_notice(*, extension, actor, check, signal, delivered,
                 completion_notice_delivered=False, unfinished_followup=False, state=None,
                 cue_condition=schedule.DEFAULT_CUE_CONDITION, scenario=DEFAULT_SCENARIO):
@@ -1518,6 +1525,7 @@ def collect(root,registration_dir):
                     save(folder/f'{label}-platform-update.json',{
                         'notice':notice,'input_message':input_message,
                         'peer_or_communication_hint':False,
+                        **monitored_notice(world, signal, delivered),
                     })
                 # The next response already sees the current request and tool
                 # results. Its unchanged final is not new information to feed back.

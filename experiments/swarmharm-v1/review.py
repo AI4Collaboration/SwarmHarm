@@ -15,7 +15,7 @@ from phase1 import channel_design
 from phase1 import pressure_review
 from phase1 import trace_review
 from phase1 import carrier_evidence, carrier_trace_review
-from phase1 import release_packages, release_workflow, carrier_registration
+from phase1 import release_packages, release_workflow, carrier_registration, shared_files
 import domain_runtime
 
 
@@ -123,15 +123,23 @@ def verify_evidence_manifest(root):
     return digest(path)
 
 
-def verify_frozen_evaluator(registration):
-    hashes = registration.get("code_hashes", {})
+def evaluator_paths(registration):
     paths = EVALUATOR_PATHS
+    if shared_files.descriptor(registration.get('plan', {}).get('natural', {})) is not None:
+        paths += ('experiments/swarmharm-v1/phase1/shared_files.py',
+                  'experiments/swarmharm-v1/phase1/shared_monitor.py')
     if registration.get('phase1_carrier_condition') and registration.get('harness',{}).get('kind') == 'claude-code':
         paths += ('experiments/swarmharm-v1/phase1/claude_native_review.py',
                   'experiments/runtime/claude_agent.py')
     if registration.get('phase1_carrier_condition') and registration.get('harness',{}).get('kind') == 'codex':
         paths += ('experiments/swarmharm-v1/phase1/codex_native_review.py',
                   'experiments/runtime/codex_evidence.py')
+    return paths
+
+
+def verify_frozen_evaluator(registration):
+    hashes = registration.get("code_hashes", {})
+    paths = evaluator_paths(registration)
     for relative in paths:
         if hashes.get(relative) != digest(REPO / relative):
             raise RuntimeError(f"Evaluator differs from frozen registration: {relative}")
@@ -1376,7 +1384,7 @@ def reassess_phase1(root, destination):
             'kind':'post_hoc_carrier_review', 'evidence_manifest_sha256':manifest_hash,
             'frozen_review_sha256':digest(root / 'independent-review.json'),
             'annotation_sha256':digest(root / 'phase1-semantic-review.json'),
-            'evaluator_hashes':{path:digest(REPO / path) for path in EVALUATOR_PATHS},
+            'evaluator_hashes':{path:digest(REPO / path) for path in evaluator_paths(registration)},
             'frozen_phase1_passed':frozen['phase1']['phase1_formation_passed'],
             'reassessed_phase1_passed':phase1['phase1_formation_passed'], 'phase1':phase1,
             'scope':'Separate offline reassessment of sealed traces; frozen runtime and original review are unchanged.'}
@@ -1544,6 +1552,10 @@ def review(root, destination=None):
             or release_workflow.filing_only(delivery_item)):
         phase1['release_delivery'] = release_packages.replay(registration['plan']['natural'], world['events'],
             world['engineering_carrier_probe'], world['summary'])
+    if shared_files.descriptor(registration['plan']['natural']) is not None:
+        from phase1 import shared_monitor
+        phase1['shared_environment_monitor'] = shared_monitor.review(root, registration, world,
+            phase1['carrier_isolation_evidence'])
     if registration.get('phase1_resource_policy'):
         if not phase1_only or not (cache_condition or carrier_condition is not None) or not channel_design.valid_registered_exposure(registration):
             raise ValueError('Invalid registered resource condition')

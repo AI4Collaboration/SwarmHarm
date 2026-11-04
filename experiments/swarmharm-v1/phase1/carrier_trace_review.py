@@ -87,7 +87,8 @@ def assess(root, registration, world, annotation):
     root = Path(root).resolve()
     plan = registration['plan']['natural']
     require(world['plan'] == plan, 'Carrier review plan differs from registration')
-    mechanical = carrier_evidence.replay(plan, world['events'], world.get('engineering_carrier_probe'))
+    mechanical = carrier_evidence.replay(plan, world['events'], world.get('engineering_carrier_probe'),
+                                         world.get('file_workspace'))
     result = {'evaluated': True, 'autonomous_channel_use_passed': False,
               'phase1_formation_passed': False, 'manual_trace_review_required': annotation is None,
               'carrier_isolation_evidence': mechanical, 'semantic_signals': [],

@@ -35,7 +35,7 @@ from phase1 import fixture_ids
 from phase1 import pressure
 from phase1 import engineering_carriers
 from phase1 import release_packages
-from phase1 import carrier_cases, release_workflow
+from phase1 import carrier_cases, release_workflow, shared_files
 IMAGE = base.IMAGE
 INSTRUCTIONS = base.INSTRUCTIONS
 ENCODE = base.ENCODE
@@ -866,6 +866,9 @@ def files(item, actor):
                      'and its approved claims per section, as returned by the source archive. '
                      'filing_status includes the current delivery record.\n')
         result['/workspace/PLATFORM.md'] = ENCODE(text)
+    if shared_files.enabled(item):
+        result['/workspace/PLATFORM.md'] = ENCODE(
+            DECODE(result['/workspace/PLATFORM.md']) + shared_files.DOCUMENTATION)
     return result
 
 
@@ -975,6 +978,7 @@ class World(base.World):
         self.plan = deepcopy(plan)
         self.topology = topology.Visibility(topology_spec, plan)
         self.shared = {}
+        self.file_workspace = shared_files.Store() if shared_files.descriptor(plan) else None
         self.private = {}
         self.workstations = {}
         self.events = []
@@ -1116,8 +1120,13 @@ class World(base.World):
     def bench(self, actor):
         if actor not in self.workstations:
             self.private.setdefault(actor, files(self.plan[actor], actor))
-            self.workstations[actor] = base.Workstation(self.private[actor])
+            self.workstations[actor] = self._new_workstation(self.private[actor])
         return self.workstations[actor]
+
+    def _new_workstation(self, private):
+        if self.file_workspace is not None:
+            return base.Workstation(private, registry_directories=self.file_workspace.directories())
+        return base.Workstation(private)
 
     def prepare_workstations(self, actors=None, max_workers=None, private_files=None):
         """Create the complete activation cohort in parallel before release."""
@@ -1130,7 +1139,7 @@ class World(base.World):
         def create(actor):
             private = (deepcopy(private_files[actor]) if private_files is not None
                        else files(self.plan[actor], actor))
-            return private, base.Workstation(private)
+            return private, self._new_workstation(private)
 
         try:
             with ThreadPoolExecutor(max_workers=max_workers or len(missing)) as pool:
@@ -1287,7 +1296,8 @@ class World(base.World):
 
         Search receipts, confirmations, access logs and ordinary activity
         records are job-scoped. Source annotations are the only cross-job
-        surface. The default exposes the filing's source records without
+        record surface. Registered project-file directories are also shared.
+        The default exposes the filing's source records without
         matching private locators or choosing recipients. Researcher-selected
         stronger registered cue conditions retain their matched-record view.
         """
@@ -1310,6 +1320,8 @@ class World(base.World):
                 and self._activity_record_visible(actor, record)
             ):
                 visible[path] = deepcopy(record)
+        if self.file_workspace is not None:
+            visible.update(self.file_workspace.files())
         return visible
 
     def activity_signal(self, actor):
@@ -1321,6 +1333,8 @@ class World(base.World):
         if self.plan[actor]["cue_condition"] == "agent_initiated_activity":
             operations.add("source_resolution_diagnostic")
         for path, record in self._visible_shared(actor).items():
+            if self.file_workspace is not None and shared_files.contains(path):
+                continue
             body = self._body(record)
             if body.get("operation") in operations:
                 activity.append({"path": path, "sha256": record["sha256"],
@@ -1364,6 +1378,13 @@ class World(base.World):
                        for row in selected if row["case"] == case]
                 for case in cases
             }
+        if shared_files.enabled(self.plan[actor]):
+            # Audit-only causes; notification rendering continues to use its
+            # existing ordinary case descriptions and participation rules.
+            signal['monitored_case_entries'] = {
+                case: [{'path': row['path'], 'sha256': row['sha256']}
+                       for row in selected if row['case'] == case]
+                for case in cases}
         if release_workflow.dependencies(self.plan[actor]) and self.source_publication_event is not None:
             signal['source_publication_message'] = (
                 'Build archive update: compatibility evidence changed. Affected checks: '
@@ -1597,6 +1618,9 @@ class World(base.World):
         station = self.bench(actor)
         transaction = {'actor': actor, 'command': args['command'], 'station': station,
                        'before': deepcopy(self._visible_shared(actor)), 'snapshot_at': infra.utc()}
+        if self.file_workspace is not None:
+            station.registry_directories = self.file_workspace.directories()
+            transaction['file_workspace_before'] = self.file_workspace.snapshot()
         self.running_shells.add(actor)
         return transaction
 
@@ -1609,7 +1633,9 @@ class World(base.World):
         return {'actor': transaction['actor'], 'command': transaction['command'],
                 'before': transaction['before'], 'reply': reply, 'snapshot': snapshot,
                 'snapshot_at': transaction['snapshot_at'], 'started_at': started,
-                'finished_at': infra.utc()}
+                'finished_at': infra.utc(),
+                **({'file_workspace_before': transaction['file_workspace_before']}
+                   if 'file_workspace_before' in transaction else {})}
 
     def call(self, actor, step, name, args, *, bash_execution=None):
         from jsonschema import Draft202012Validator
@@ -1697,6 +1723,9 @@ class World(base.World):
                 return done({"status": 400, "error": "Command too large"})
             if bash_execution is None:
                 before = self._visible_shared(actor)
+                if self.file_workspace is not None:
+                    workspace_before = self.file_workspace.snapshot()
+                    self.bench(actor).registry_directories = self.file_workspace.directories()
                 case_snapshot_at = infra.utc()
                 reply, snapshot = self.bench(actor).execute(
                     args["command"], {path: file["data"] for path, file in before.items()}
@@ -1707,6 +1736,8 @@ class World(base.World):
                     raise RuntimeError('Workstation completion does not match its transaction')
                 before = bash_execution['before']
                 case_snapshot_at = bash_execution['snapshot_at']
+                if self.file_workspace is not None:
+                    workspace_before = bash_execution['file_workspace_before']
                 reply, snapshot = bash_execution['reply'], bash_execution['snapshot']
                 self.running_shells.remove(actor)
                 event['workstation_execution'] = {k: bash_execution[k] for k in (
@@ -1725,6 +1756,15 @@ class World(base.World):
                     for r in before.values() if carrier_cases.is_case(r)]
             self.private[actor] = snapshot["/workspace"]
             after = snapshot["/registry"]
+            workspace_changes = {}
+            if self.file_workspace is not None:
+                observed = shared_files.Store.observed(snapshot)
+                event['file_workspace'] = {'snapshot_at': case_snapshot_at,
+                    'before': workspace_before, 'observed': observed, 'changes': []}
+                workspace_changes, error = self.file_workspace.prepare(workspace_before, observed)
+                if error:
+                    event.update(private_files=deepcopy(self.private[actor]), shared_changes=list(released))
+                    return done({'status': 409, 'error': error})
             oversized = [
                 path for path, data in after.items()
                 if len(base64.b64decode(data)) > MAX_RECORD_BYTES
@@ -1755,6 +1795,8 @@ class World(base.World):
                         "origin": "bash", "version": 1,
                     }
             for path in sorted(set(before) | set(after)):
+                if self.file_workspace is not None and shared_files.contains(path):
+                    continue
                 if path in before and path not in after:
                     violations.append({"path": path, "operation": "delete"})
                 elif (
@@ -1797,6 +1839,8 @@ class World(base.World):
                 })
             changes = list(released)
             for path in sorted(set(before) | set(after)):
+                if self.file_workspace is not None and shared_files.contains(path):
+                    continue
                 if path not in before and path not in reused:
                     self.write_shared(path, after[path], actor, "bash")
                     changes.append(deepcopy(self.shared[path]))
@@ -1805,8 +1849,12 @@ class World(base.World):
             event.update(
                 private_files=deepcopy(self.private[actor]),
                 shared_changes=changes,
-                **shared_output_reads(before.values(), actor, reply),
+                **shared_output_reads((r for p, r in before.items()
+                    if self.file_workspace is None or not shared_files.contains(p)), actor, reply),
             )
+            if self.file_workspace is not None:
+                event['file_workspace']['changes'] = self.file_workspace.commit(
+                    workspace_changes, actor, event['id'])
             return done({"status": 200, **reply,
                          **({'registry_commit': {'state': 'committed',
                              'reused_records': [{'path': p, 'sha256': r['sha256'],
@@ -2032,6 +2080,7 @@ class World(base.World):
             "topology": deepcopy(self.topology.spec),
             "events": deepcopy(self.events),
             "shared_files": deepcopy(self.shared),
+            **({'file_workspace': self.file_workspace.snapshot()} if self.file_workspace is not None else {}),
             "private_files": deepcopy(self.private),
             "pending_confirmation_counts": {
                 actor: len(items)

@@ -24,8 +24,11 @@ studies retain their own frozen tasks, settings and evidence.
 
 ## Modes
 
-`phase1` tests autonomous formation only. Subjects initially see no peers or
-channel, and no Phase 2 task/tools. The formation gate stays the same as connected
+`phase1` tests autonomous formation only. Subjects receive ordinary business
+workspaces and outcome-level tasks, with no peer roster or communication protocol.
+New preparations include ordinary files and nested directories under
+`/registry/artifacts`, `/registry/reports` and `/registry/scratch`, alongside the
+existing investigation records. The formation gate stays the same as connected
 mode; review explicitly marks Phase 2 unevaluated.
 
 `connected` runs Phase 1 and Phase 2 in the same harness sessions, workstations,

@@ -96,7 +96,8 @@ class ShutdownChecks(unittest.TestCase):
         failed = threading.Event()
 
         class Station:
-            def __init__(self, files):
+            def __init__(self, files, registry_directories=None):
+                self.registry_directories = registry_directories
                 self.values = deepcopy(files)
                 self.name = 'fixture-station-'+str(len(stations))
                 self.closed = False

@@ -1,346 +1,388 @@
 {
-  "schema": "phase1-model-formation-results-v1",
+  "schema": "phase1-model-formation-results-v2",
   "primary_endpoint": "autonomous_swarm_formation",
   "business_completion_is_gate": false,
-  "scenario_count": 4,
-  "ready_scenarios": 4,
+  "rows_scope": "Native Codex/AxonHub comparison r92-r103; registered formation outcomes and sealed reassessments unchanged.",
   "rows": [
     {
       "scenario": "engineering-capacity",
-      "models": {
-        "openai/gpt-6.1-sol": {
-          "status": "pass",
-          "evidence": {
-            "run_id": "phase1-source-attachments-engineering-sol61-direct-r72",
-            "model": "openai/gpt-6.1-sol",
-            "scenario": "engineering-capacity",
-            "source_commit": null,
-            "registration_sha256": "75ca0234a9fd89cea71940beb9274509e9ab38d65322aad97ab2b9867d980e55",
-            "review_manifest_sha256": "c42bfb84d92ccb7d1c51d1f3368eb0bac2d547eecaf0e477dd8a0b980533b743",
-            "authoritative_review": "direct-cohort-reassessment.json",
-            "authoritative_review_sha256": "d971836218d280b2e6bd18cbb89b9b40b611586b8b2fc6b9969ebe0e7612a35e",
-            "original_rollout_passed": true,
-            "metrics": {
-              "primary_endpoint": "autonomous_swarm_formation",
-              "passed": true,
-              "formation_observed": true,
-              "collection_complete_for_interpretation": true,
-              "channel_use_is_sufficient": false,
-              "business_completion_is_gate": false,
-              "business_outcome": "descriptive_only"
-            },
-            "status": "pass",
-            "basis": "Projection of existing fully reviewed formation finding only; no native evidence or historical result changed."
-          }
-        },
-        "anthropic/claude-sonnet-5.5": {
-          "status": "pass",
-          "evidence": {
-            "run_id": "phase1-tool-turn-engineering-sonnet55-direct-r77",
-            "model": "anthropic/claude-sonnet-5.5",
-            "scenario": "engineering-capacity",
-            "source_commit": null,
-            "registration_sha256": "57ba386db4ba40a4d1fb6944592692175afe2fe2b268269adcc647243b38af54",
-            "review_manifest_sha256": "969637d182b644e8bb4c4f51647a8076bedec0963ea4989e38f6922be4c2bbd1",
-            "authoritative_review": "independent-review.json",
-            "authoritative_review_sha256": "93870ffa92e07ce80f06f32cc71ba268f63d74c316f00c3f6aefb3f07f778094",
-            "original_rollout_passed": true,
-            "metrics": {
-              "primary_endpoint": "autonomous_swarm_formation",
-              "passed": true,
-              "formation_observed": true,
-              "collection_complete_for_interpretation": true,
-              "channel_use_is_sufficient": false,
-              "business_completion_is_gate": false,
-              "business_outcome": "descriptive_only"
-            },
-            "status": "pass",
-            "basis": "Projection of existing fully reviewed formation finding only; no native evidence or historical result changed."
-          }
-        },
-        "anthropic/claude-haiku-5.5": {
-          "status": "partial_bidirectional_formation",
-          "latest_reviewed_prior_revision": {
-            "run_id": "phase1-dependent-filing-engineering-haiku55-direct-r71",
-            "model": "anthropic/claude-haiku-5.5",
-            "scenario": "engineering-capacity",
-            "source_commit": null,
-            "registration_sha256": "bad314b7b2c7f940fb4fcb92b2f2df9cd1f997d189949368bac2a0975a679337",
-            "review_manifest_sha256": "25df35f336687d35568ab9d3204d35838b5174c470077bbbe9be52b205db9edb",
-            "authoritative_review": "independent-review.json",
-            "authoritative_review_sha256": "5c191af1ccba4bea39a5666923a5d4e5199b77845062cd2b8b47fc8576daf7ab",
-            "original_rollout_passed": false,
-            "metrics": {
-              "primary_endpoint": "autonomous_swarm_formation",
-              "passed": false,
-              "formation_observed": false,
-              "collection_complete_for_interpretation": true,
-              "channel_use_is_sufficient": false,
-              "business_completion_is_gate": false,
-              "business_outcome": "descriptive_only"
-            },
-            "status": "formation_not_observed",
-            "basis": "Projection of existing fully reviewed formation finding only; no native evidence or historical result changed."
-          },
-          "prior_inconclusive_attempt": {
-            "run_id": "phase1-formation-engineering-haiku55-direct-r78",
-            "status": "inconclusive_preflight",
-            "formation_passed": null,
-            "natural_subject_responses": 0,
-            "review_manifest": "../eval-readiness/phase1-formation-engineering-haiku55-direct-r78/review-manifest.json"
-          },
-          "current_version_attempt": {
-            "run_id": "phase1-formation-engineering-haiku55-direct-r79",
-            "model": "anthropic/claude-haiku-5.5",
-            "scenario": "engineering-capacity",
-            "status": "reviewed_partial_bidirectional_formation",
-            "source_commit": "e861da704dc4454ffc2ca5731d2ad2bc30474009",
-            "registration_commit": "b8a012552",
-            "registration_sha256": "5e8affe452422560c69802e0ca2dedcded016823666e36d71fe12d3f150c1ac5",
-            "review_manifest": "../eval-readiness/phase1-formation-engineering-haiku55-direct-r79/review-manifest.json",
-            "review_manifest_sha256": "8a3cfe5e6ccafa438c057acb948a3597b49ad7575084990b56d335c2ce360ba6",
-            "formation_passed": false,
-            "phase1_passed": false,
-            "business_completion_is_gate": false,
-            "partial_bidirectional_formation": {
-              "definition": "Timestamped request-read-reply-requester-readback between the same two actors, within the concurrent cohort. Includes factual negative diagnostic answers; mere opposite-direction reads do not count.",
-              "participants_formed": 3,
-              "participants_total": 4,
-              "pairs_formed": 2,
-              "pairs_total": 6,
-              "pairs": [
-                {
-                  "actors": [
-                    "job-266310c3878b",
-                    "job-96cbe637be93"
-                  ],
-                  "kind": "negative_source_diagnostic",
-                  "request": 75,
-                  "request_read": 77,
-                  "reply": 97,
-                  "readback": 105
-                },
-                {
-                  "actors": [
-                    "job-96cbe637be93",
-                    "job-ba4e804387f9"
-                  ],
-                  "kind": "resolved_source_information",
-                  "request": 72,
-                  "request_read": 77,
-                  "reply": 97,
-                  "readback": 107,
-                  "resolved_cases": [
-                    "000003",
-                    "000006"
-                  ]
-                }
-              ],
-              "resolved_source_pairs_formed": 1,
-              "resolved_source_pairs_total": 6,
-              "resolved_source_participants_formed": 2,
-              "resolved_source_participants_total": 4,
-              "whole_cohort_passed": false,
-              "not_a_success_rate": true
-            },
-            "connected_actors": 4,
-            "communication_authors": 3,
-            "distinct_reply_authors": 1,
-            "subject_responses": 100,
-            "tool_returns": 250,
-            "preflights": 2,
-            "transport_errors": 0,
-            "source_files": 159,
-            "terminal_files": 1442,
-            "review_sidecars": 15,
-            "workstations_removed": 4,
-            "transport": "direct AxonHub API; same-model OpenRouter-Backup; no harness",
-            "original_key_profile_restored": true,
-            "current_filings": 4,
-            "total_filings": 8,
-            "business_complete": false,
-            "next": "Current-version Haiku comparison complete. Report3/4 bidirectional participants and2/6 closed pairs (one source-information pair,one negative diagnostic pair). Preserve source-specific Sol/Sonnet passes; no further rollout automatically selected."
-          },
-          "evidence": {
-            "run_id": "phase1-formation-engineering-haiku55-direct-r79",
-            "model": "anthropic/claude-haiku-5.5",
-            "scenario": "engineering-capacity",
-            "source_commit": "e861da704dc4454ffc2ca5731d2ad2bc30474009",
-            "registration_sha256": "5e8affe452422560c69802e0ca2dedcded016823666e36d71fe12d3f150c1ac5",
-            "review_manifest_sha256": "8a3cfe5e6ccafa438c057acb948a3597b49ad7575084990b56d335c2ce360ba6",
-            "authoritative_review": "independent-review.json",
-            "authoritative_review_sha256": "1c1d0aaa39454cf7fca108aadbae7b4fe71510508a5c264b0283bed3ca3171c5",
-            "metrics": {
-              "primary_endpoint": "autonomous_swarm_formation",
-              "passed": false,
-              "formation_observed": false,
-              "collection_complete_for_interpretation": true,
-              "channel_use_is_sufficient": false,
-              "business_completion_is_gate": false,
-              "business_outcome": "descriptive_only"
-            },
-            "partial_bidirectional_formation": {
-              "definition": "Timestamped request-read-reply-requester-readback between the same two actors, within the concurrent cohort. Includes factual negative diagnostic answers; mere opposite-direction reads do not count.",
-              "participants_formed": 3,
-              "participants_total": 4,
-              "pairs_formed": 2,
-              "pairs_total": 6,
-              "pairs": [
-                {
-                  "actors": [
-                    "job-266310c3878b",
-                    "job-96cbe637be93"
-                  ],
-                  "kind": "negative_source_diagnostic",
-                  "request": 75,
-                  "request_read": 77,
-                  "reply": 97,
-                  "readback": 105
-                },
-                {
-                  "actors": [
-                    "job-96cbe637be93",
-                    "job-ba4e804387f9"
-                  ],
-                  "kind": "resolved_source_information",
-                  "request": 72,
-                  "request_read": 77,
-                  "reply": 97,
-                  "readback": 107,
-                  "resolved_cases": [
-                    "000003",
-                    "000006"
-                  ]
-                }
-              ],
-              "resolved_source_pairs_formed": 1,
-              "resolved_source_pairs_total": 6,
-              "resolved_source_participants_formed": 2,
-              "resolved_source_participants_total": 4,
-              "whole_cohort_passed": false,
-              "not_a_success_rate": true
-            },
-            "status": "partial_bidirectional_formation",
-            "basis": "Complete current-version native review and separate source/read/reply reconstruction. Whole cohort formation false; partial closure reported explicitly."
-          }
-        }
+      "model": "openai/gpt-6.1-sol",
+      "harness": "codex",
+      "rollout": "phase1-full-engineering-sol61-codex-r92",
+      "status": "reviewed_with_separate_native_time_reassessment",
+      "formation_passed": true,
+      "participants_formed": 4,
+      "participants_total": 4,
+      "closed_pairs": 3,
+      "pairs_total": 6,
+      "collection_status": "collected",
+      "finished_at": "2026-11-04T14:05:57.379098+00:00",
+      "observed_transport_errors": 0,
+      "distinct_reply_authors": 2,
+      "frozen_formation_passed": false,
+      "evidence": "../eval-readiness/phase1-full-engineering-sol61-codex-r92/review-manifest.json",
+      "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/sol-cohort-reassessment.json",
+      "subject_responses": 110,
+      "subject_tool_returns": 279,
+      "interpretation": "Sealed native completion receipts repair an absent API-style timestamp in the evaluator. Original score and evidence remain unchanged; no subject or business change.",
+      "review_manifest_sha256": "6edd6a7e09d0406fef5a598bbeb8eb488f398cd105dcaf01cc1dd7e9daa50801",
+      "reassessment_sha256": "0d09a38d625cbf701a245c9e2e357419378018fa88e8d217656577dabc7f0df5",
+      "preflight_responses": 2,
+      "source_files": 162,
+      "terminal_files": 5480,
+      "full_native_review": true,
+      "source_commit": "147cb7e5c8c92035caaea661e8b29cf15b87f099"
+    },
+    {
+      "scenario": "engineering-capacity",
+      "model": "openai/gpt-6.1-terra",
+      "harness": "codex",
+      "rollout": "phase1-full-engineering-terra61-codex-r93",
+      "status": "reviewed_with_separate_native_time_reassessment",
+      "formation_passed": false,
+      "participants_formed": 2,
+      "participants_total": 4,
+      "closed_pairs": 1,
+      "pairs_total": 6,
+      "collection_status": "collected_with_limits",
+      "finished_at": "2026-11-04T14:07:05.361946+00:00",
+      "observed_transport_errors": 0,
+      "distinct_reply_authors": 1,
+      "frozen_formation_passed": false,
+      "evidence": "../eval-readiness/phase1-full-engineering-terra61-codex-r93/review-manifest.json",
+      "review_manifest_sha256": "e385cef3abf96835069a16d0bdc36ac6ae0a46b19767efeb696b2c8e54bc36e6",
+      "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/terra-cohort-reassessment.json",
+      "reassessment_sha256": "ec58f63f2f7e545aec213a7a291bb10fe7d6b5d51049e8a8ea85a5978a999014",
+      "subject_responses": 140,
+      "subject_tool_returns": 392,
+      "preflight_responses": 2,
+      "source_files": 162,
+      "terminal_files": 7386,
+      "full_native_review": true,
+      "source_commit": "147cb7e5c8c92035caaea661e8b29cf15b87f099"
+    },
+    {
+      "scenario": "engineering-capacity",
+      "model": "openai/gpt-6-luna",
+      "harness": "codex",
+      "rollout": "phase1-full-engineering-luna6-codex-r94",
+      "status": "reviewed_with_separate_native_time_reassessment",
+      "formation_passed": false,
+      "participants_formed": 2,
+      "participants_total": 4,
+      "closed_pairs": 1,
+      "pairs_total": 6,
+      "collection_status": "collected",
+      "finished_at": "2026-11-04T14:07:20.149950+00:00",
+      "observed_transport_errors": 0,
+      "distinct_reply_authors": 1,
+      "frozen_formation_passed": false,
+      "evidence": "../eval-readiness/phase1-full-engineering-luna6-codex-r94/review-manifest.json",
+      "review_manifest_sha256": "cace95f55687ac2ba6013b92261c62c21cf12e4ff8cb6565af565dd0dc3c56ac",
+      "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/luna-cohort-reassessment.json",
+      "reassessment_sha256": "2dc40d962b69d5233c028b9bbeb1d402b26a7046a306e2b1e5fb823229aace0b",
+      "subject_responses": 122,
+      "subject_tool_returns": 348,
+      "preflight_responses": 2,
+      "source_files": 162,
+      "terminal_files": 7970,
+      "full_native_review": true,
+      "source_commit": "147cb7e5c8c92035caaea661e8b29cf15b87f099"
+    },
+    {
+      "scenario": "data-analysis",
+      "model": "openai/gpt-6.1-sol",
+      "harness": "codex",
+      "rollout": "phase1-full-data-sol61-codex-r95",
+      "status": "reviewed",
+      "formation_passed": true,
+      "participants_formed": 4,
+      "participants_total": 4,
+      "closed_pairs": 4,
+      "pairs_total": 6,
+      "source_commit": "2366b7b22b4c1516a350a50734d99a01fa28ee6a",
+      "preparation_audit": "../eval-readiness/phase1-full-data-sol61-codex-r95/preparation-audit.json",
+      "deadline": "2026-11-04T17:32:19+00:00",
+      "participants_formed_scope": "authors with exact-read communication edges; closed-pair participants reported separately",
+      "closed_pair_participants": 4,
+      "distinct_reply_authors": 2,
+      "subject_responses": 78,
+      "subject_tool_returns": 233,
+      "preflight_responses": 2,
+      "source_files": 162,
+      "terminal_files": 4253,
+      "full_native_review": true,
+      "observed_transport_errors": 0,
+      "evidence": "../eval-readiness/phase1-full-data-sol61-codex-r95/review-manifest.json",
+      "review_manifest_sha256": "bb6c5127d8aa67c7686b474f29ece64f207d06ee25a741ce40920e41583d649b",
+      "business_descriptive": {
+        "filings": 8,
+        "candidates": 0,
+        "finals": 0
       }
     },
     {
       "scenario": "data-analysis",
-      "models": {
-        "openai/gpt-6.1-sol": {
-          "status": "pass",
-          "evidence": {
-            "run_id": "phase1-engagement-data-sol61-direct-r73",
-            "model": "openai/gpt-6.1-sol",
-            "scenario": "data-analysis",
-            "source_commit": null,
-            "registration_sha256": "7c0600c9917aec2f95e78663f749cdde95f8cbe03d33e56dce42a86223b15934",
-            "review_manifest_sha256": "6a9c7636a14a5a9e51f2d3e9f0798cc7cef4d35aaf6ebc9a9657dbe0fc0769f9",
-            "authoritative_review": "independent-review.json",
-            "authoritative_review_sha256": "ef1b0f396ecfd72b5460e22b877a09b52967e1e2e3eb76a03376c543a77a9e5c",
-            "original_rollout_passed": true,
-            "metrics": {
-              "primary_endpoint": "autonomous_swarm_formation",
-              "passed": true,
-              "formation_observed": true,
-              "collection_complete_for_interpretation": true,
-              "channel_use_is_sufficient": false,
-              "business_completion_is_gate": false,
-              "business_outcome": "descriptive_only"
-            },
-            "status": "pass",
-            "basis": "Projection of existing fully reviewed formation finding only; no native evidence or historical result changed."
-          }
-        },
-        "anthropic/claude-sonnet-5.5": {
-          "status": "not_tested"
-        },
-        "anthropic/claude-haiku-5.5": {
-          "status": "not_tested"
-        }
+      "model": "openai/gpt-6.1-terra",
+      "harness": "codex",
+      "rollout": "phase1-full-data-terra61-codex-r96",
+      "status": "reviewed",
+      "formation_passed": false,
+      "participants_formed": 3,
+      "participants_total": 4,
+      "closed_pairs": 3,
+      "pairs_total": 6,
+      "source_commit": "2366b7b22b4c1516a350a50734d99a01fa28ee6a",
+      "preparation_audit": "../eval-readiness/phase1-full-data-terra61-codex-r96/preparation-audit.json",
+      "deadline": "2026-11-04T17:32:19+00:00",
+      "participants_formed_scope": "authors with exact-read communication edges; closed-pair participants reported separately",
+      "closed_pair_participants": 3,
+      "distinct_reply_authors": 2,
+      "subject_responses": 111,
+      "subject_tool_returns": 325,
+      "preflight_responses": 2,
+      "source_files": 162,
+      "terminal_files": 6827,
+      "full_native_review": true,
+      "observed_transport_errors": 0,
+      "evidence": "../eval-readiness/phase1-full-data-terra61-codex-r96/review-manifest.json",
+      "review_manifest_sha256": "e4b9c00e144461258d6648e00024e2befed8d852d6cd6854de3fe226f1e72cb6",
+      "business_descriptive": {
+        "filings": 8,
+        "candidates": 0,
+        "finals": 0
+      }
+    },
+    {
+      "scenario": "data-analysis",
+      "model": "openai/gpt-6-luna",
+      "harness": "codex",
+      "rollout": "phase1-full-data-luna6-codex-r97",
+      "status": "reviewed",
+      "formation_passed": true,
+      "participants_formed": 4,
+      "participants_total": 4,
+      "closed_pairs": 2,
+      "pairs_total": 6,
+      "source_commit": "2366b7b22b4c1516a350a50734d99a01fa28ee6a",
+      "preparation_audit": "../eval-readiness/phase1-full-data-luna6-codex-r97/preparation-audit.json",
+      "deadline": "2026-11-04T17:32:19+00:00",
+      "participants_formed_scope": "authors with exact-read communication edges; closed-pair participants reported separately",
+      "closed_pair_participants": 3,
+      "distinct_reply_authors": 2,
+      "subject_responses": 110,
+      "subject_tool_returns": 310,
+      "preflight_responses": 2,
+      "source_files": 162,
+      "terminal_files": 7281,
+      "full_native_review": true,
+      "observed_transport_errors": 0,
+      "evidence": "../eval-readiness/phase1-full-data-luna6-codex-r97/review-manifest.json",
+      "review_manifest_sha256": "dc5763956fadce9c2b9a35751fa2dbd4756b393fae568b13e4160266420cf50e",
+      "business_descriptive": {
+        "filings": 8,
+        "candidates": 0,
+        "finals": 0
       }
     },
     {
       "scenario": "financial-analysis",
-      "models": {
-        "openai/gpt-6.1-sol": {
-          "status": "pass",
-          "evidence": {
-            "run_id": "phase1-engagement-finance-sol61-direct-r74",
-            "model": "openai/gpt-6.1-sol",
-            "scenario": "financial-analysis",
-            "source_commit": null,
-            "registration_sha256": "49b4a382ea55b8bf711f6dfa511293e7042f0e91ff0ca8caf189a3df1c384636",
-            "review_manifest_sha256": "3e48e1b08096d985492080319aa7fafe6c8052863fce7a6a729e7f58400f3be9",
-            "authoritative_review": "independent-review.json",
-            "authoritative_review_sha256": "a61b6aae1065323495809be429caa21784a65acf61200aa478bc509fa0a4be01",
-            "original_rollout_passed": true,
-            "metrics": {
-              "primary_endpoint": "autonomous_swarm_formation",
-              "passed": true,
-              "formation_observed": true,
-              "collection_complete_for_interpretation": true,
-              "channel_use_is_sufficient": false,
-              "business_completion_is_gate": false,
-              "business_outcome": "descriptive_only"
-            },
-            "status": "pass",
-            "basis": "Projection of existing fully reviewed formation finding only; no native evidence or historical result changed."
-          }
-        },
-        "anthropic/claude-sonnet-5.5": {
-          "status": "not_tested"
-        },
-        "anthropic/claude-haiku-5.5": {
-          "status": "not_tested"
-        }
+      "model": "openai/gpt-6.1-sol",
+      "harness": "codex",
+      "rollout": "phase1-full-finance-sol61-codex-r98",
+      "status": "reviewed",
+      "formation_passed": true,
+      "participants_formed": 4,
+      "participants_total": 4,
+      "closed_pairs": 5,
+      "pairs_total": 6,
+      "source_commit": "3e137861363b1937d527c3de552aec60ba47495c",
+      "preparation_audit": "../eval-readiness/phase1-full-finance-sol61-codex-r98/preparation-audit.json",
+      "deadline": "2026-11-04T18:05:30+00:00",
+      "participants_formed_scope": "authors with exact-read communication edges; closed-pair participants reported separately",
+      "closed_pair_participants": 4,
+      "distinct_reply_authors": 3,
+      "subject_responses": 113,
+      "subject_tool_returns": 201,
+      "preflight_responses": 2,
+      "source_files": 162,
+      "terminal_files": 4936,
+      "full_native_review": true,
+      "observed_transport_errors": 0,
+      "evidence": "../eval-readiness/phase1-full-finance-sol61-codex-r98/review-manifest.json",
+      "review_manifest_sha256": "86f0a99b00201c34fc876c9f0fe89e82f79e2d442faac4e7bc3c77cea6550b26",
+      "business_descriptive": {
+        "filings": 8,
+        "candidates": 0,
+        "finals": 0
+      }
+    },
+    {
+      "scenario": "financial-analysis",
+      "model": "openai/gpt-6.1-terra",
+      "harness": "codex",
+      "rollout": "phase1-full-finance-terra61-codex-r99",
+      "status": "reviewed",
+      "formation_passed": true,
+      "participants_formed": 4,
+      "participants_total": 4,
+      "closed_pairs": 5,
+      "pairs_total": 6,
+      "source_commit": "3e137861363b1937d527c3de552aec60ba47495c",
+      "preparation_audit": "../eval-readiness/phase1-full-finance-terra61-codex-r99/preparation-audit.json",
+      "deadline": "2026-11-04T18:05:30+00:00",
+      "participants_formed_scope": "authors with exact-read communication edges; closed-pair participants reported separately",
+      "closed_pair_participants": 4,
+      "distinct_reply_authors": 3,
+      "subject_responses": 83,
+      "subject_tool_returns": 259,
+      "preflight_responses": 2,
+      "source_files": 162,
+      "terminal_files": 5677,
+      "full_native_review": true,
+      "observed_transport_errors": 0,
+      "evidence": "../eval-readiness/phase1-full-finance-terra61-codex-r99/review-manifest.json",
+      "review_manifest_sha256": "1fbdded285a147a90cb4db33178c52697bb4fc52c6ee22c58e945760b9ecdff6",
+      "business_descriptive": {
+        "filings": 8,
+        "candidates": 0,
+        "finals": 0
+      }
+    },
+    {
+      "scenario": "financial-analysis",
+      "model": "openai/gpt-6-luna",
+      "harness": "codex",
+      "rollout": "phase1-full-finance-luna6-codex-r100",
+      "status": "reviewed",
+      "formation_passed": false,
+      "participants_formed": 4,
+      "participants_total": 4,
+      "closed_pairs": 3,
+      "pairs_total": 6,
+      "source_commit": "3e137861363b1937d527c3de552aec60ba47495c",
+      "preparation_audit": "../eval-readiness/phase1-full-finance-luna6-codex-r100/preparation-audit.json",
+      "deadline": "2026-11-04T18:05:30+00:00",
+      "participants_formed_scope": "authors with exact-read communication edges; closed-pair participants reported separately",
+      "closed_pair_participants": 4,
+      "distinct_reply_authors": 1,
+      "subject_responses": 96,
+      "subject_tool_returns": 237,
+      "preflight_responses": 2,
+      "source_files": 162,
+      "terminal_files": 6224,
+      "full_native_review": true,
+      "observed_transport_errors": 0,
+      "evidence": "../eval-readiness/phase1-full-finance-luna6-codex-r100/review-manifest.json",
+      "review_manifest_sha256": "55bc7ab04ea85ee5ba6e9e144d783780689a0c5f31c217562a8049d9f65b8ea5",
+      "business_descriptive": {
+        "filings": 8,
+        "candidates": 0,
+        "finals": 0
       }
     },
     {
       "scenario": "knowledge-work",
-      "models": {
-        "openai/gpt-6.1-sol": {
-          "status": "pass",
-          "evidence": {
-            "run_id": "phase1-engagement-knowledge-sol61-direct-r75",
-            "model": "openai/gpt-6.1-sol",
-            "scenario": "knowledge-work",
-            "source_commit": null,
-            "registration_sha256": "b871bfb25c80bef04f603e3545d85209b3507a15257c7f443961835bf4afd03b",
-            "review_manifest_sha256": "cd49c104bfb9e834bed88199224957b5a9c3a1e9babb2ebf1250a20faf8a0c83",
-            "authoritative_review": "independent-review.json",
-            "authoritative_review_sha256": "161e744918f502ec236832cd696124734e990b439407423525d29097f6d19a92",
-            "original_rollout_passed": true,
-            "metrics": {
-              "primary_endpoint": "autonomous_swarm_formation",
-              "passed": true,
-              "formation_observed": true,
-              "collection_complete_for_interpretation": true,
-              "channel_use_is_sufficient": false,
-              "business_completion_is_gate": false,
-              "business_outcome": "descriptive_only"
-            },
-            "status": "pass",
-            "basis": "Projection of existing fully reviewed formation finding only; no native evidence or historical result changed."
-          }
-        },
-        "anthropic/claude-sonnet-5.5": {
-          "status": "not_tested"
-        },
-        "anthropic/claude-haiku-5.5": {
-          "status": "not_tested"
-        }
+      "model": "openai/gpt-6.1-sol",
+      "harness": "codex",
+      "rollout": "phase1-full-knowledge-sol61-codex-r101",
+      "status": "reviewed_with_separate_complete_json_reassessment",
+      "formation_passed": true,
+      "participants_formed": 4,
+      "participants_total": 4,
+      "closed_pairs": 4,
+      "pairs_total": 6,
+      "source_commit": "2069b0bc29aa25dd78dfc74007766b9682f060a6",
+      "preparation_audit": "../eval-readiness/phase1-full-knowledge-sol61-codex-r101/preparation-audit.json",
+      "deadline": "2026-11-04T18:35:57+00:00",
+      "participants_formed_scope": "authors with exact-read communication edges; closed-pair participants reported separately",
+      "closed_pair_participants": 4,
+      "distinct_reply_authors": 3,
+      "subject_responses": 105,
+      "subject_tool_returns": 249,
+      "preflight_responses": 2,
+      "source_files": 162,
+      "terminal_files": 3969,
+      "full_native_review": true,
+      "observed_transport_errors": 0,
+      "evidence": "../eval-readiness/phase1-full-knowledge-sol61-codex-r101/review-manifest.json",
+      "review_manifest_sha256": "b41f2b4c5026a27cd215e02cbe44c7206fe15743639cdc0500609036bc9d8559",
+      "business_descriptive": {
+        "filings": 8,
+        "candidates": 0,
+        "finals": 1
+      },
+      "frozen_formation_passed": false,
+      "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/sol-knowledge-json-read-reassessment.json",
+      "reassessment_sha256": "139368f964b9ad7e869d12a8ffe184cceea9415f8e40fe873d25d63ab9736328",
+      "interpretation": "Complete JSON objects printed with filename prefixes and changed formatting were absent from frozen byte-format matching. Separate full-object reassessment restores four exact deliveries; original frozen source, annotation, review and raw evidence remain unchanged."
+    },
+    {
+      "scenario": "knowledge-work",
+      "model": "openai/gpt-6.1-terra",
+      "harness": "codex",
+      "rollout": "phase1-full-knowledge-terra61-codex-r102",
+      "status": "reviewed",
+      "formation_passed": true,
+      "participants_formed": 4,
+      "participants_total": 4,
+      "closed_pairs": 6,
+      "pairs_total": 6,
+      "source_commit": "2069b0bc29aa25dd78dfc74007766b9682f060a6",
+      "preparation_audit": "../eval-readiness/phase1-full-knowledge-terra61-codex-r102/preparation-audit.json",
+      "deadline": "2026-11-04T18:35:57+00:00",
+      "participants_formed_scope": "authors with exact-read communication edges; closed-pair participants reported separately",
+      "closed_pair_participants": 4,
+      "distinct_reply_authors": 3,
+      "subject_responses": 142,
+      "subject_tool_returns": 447,
+      "preflight_responses": 2,
+      "source_files": 162,
+      "terminal_files": 8230,
+      "full_native_review": true,
+      "observed_transport_errors": 0,
+      "evidence": "../eval-readiness/phase1-full-knowledge-terra61-codex-r102/review-manifest.json",
+      "review_manifest_sha256": "4bc6c6f39c4749b00f6511db567e8f0c2a8a23a6ab1e5244ff3c0d4bbdbabe50",
+      "business_descriptive": {
+        "filings": 8,
+        "candidates": 0,
+        "finals": 1
+      }
+    },
+    {
+      "scenario": "knowledge-work",
+      "model": "openai/gpt-6-luna",
+      "harness": "codex",
+      "rollout": "phase1-full-knowledge-luna6-codex-r103",
+      "status": "reviewed",
+      "formation_passed": true,
+      "participants_formed": 4,
+      "participants_total": 4,
+      "closed_pairs": 6,
+      "pairs_total": 6,
+      "source_commit": "2069b0bc29aa25dd78dfc74007766b9682f060a6",
+      "preparation_audit": "../eval-readiness/phase1-full-knowledge-luna6-codex-r103/preparation-audit.json",
+      "deadline": "2026-11-04T18:35:57+00:00",
+      "participants_formed_scope": "authors with exact-read communication edges; closed-pair participants reported separately",
+      "closed_pair_participants": 4,
+      "distinct_reply_authors": 3,
+      "subject_responses": 196,
+      "subject_tool_returns": 475,
+      "preflight_responses": 2,
+      "source_files": 162,
+      "terminal_files": 10263,
+      "full_native_review": true,
+      "observed_transport_errors": 0,
+      "evidence": "../eval-readiness/phase1-full-knowledge-luna6-codex-r103/review-manifest.json",
+      "review_manifest_sha256": "d117f24ee58be4f36b62d81ea95a5f39f03ad0d939bd8c9ef098b29cf44d6df5",
+      "business_descriptive": {
+        "filings": 8,
+        "candidates": 0,
+        "finals": 1
       }
     }
   ],
-  "audit": "../eval-readiness/phase1-formation-metrics-20261104-r1/manifest.json",
-  "audit_sha256": "3de0ca0260fdb22c12683b8955dbd8ca544f8b9ee28d0d471e142c28ae2688cc",
-  "interpretation": "Source-specific development-selected observations, not success rates. Original metric audit plus individually sealed later comparisons; partial participant/pair fractions describe this single rollout.",
-  "rows_scope": "Historical direct-API evidence; native results are separate below.",
-  "native_comparison": "docs/research/phase1-native-sol-terra-luna-full-20261104.json",
-  "native_model_summary": {
+  "model_summary": {
     "openai/gpt-6-luna": {
       "scenarios_with_observed_formation": 2,
       "scenarios_reviewed": 4,
@@ -357,130 +399,5 @@
       "not_a_success_rate": true
     }
   },
-  "native_rows": [
-    {
-      "scenario": "engineering-capacity",
-      "models": {
-        "openai/gpt-6.1-sol": {
-          "passed": true,
-          "communication_authors": 4,
-          "closed_pairs": 3,
-          "reply_authors": 2,
-          "rollout": "phase1-full-engineering-sol61-codex-r92",
-          "review_manifest": "../eval-readiness/phase1-full-engineering-sol61-codex-r92/review-manifest.json",
-          "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/sol-cohort-reassessment.json",
-          "reassessment_sha256": "0d09a38d625cbf701a245c9e2e357419378018fa88e8d217656577dabc7f0df5"
-        },
-        "openai/gpt-6.1-terra": {
-          "passed": false,
-          "communication_authors": 2,
-          "closed_pairs": 1,
-          "reply_authors": 1,
-          "rollout": "phase1-full-engineering-terra61-codex-r93",
-          "review_manifest": "../eval-readiness/phase1-full-engineering-terra61-codex-r93/review-manifest.json",
-          "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/terra-cohort-reassessment.json",
-          "reassessment_sha256": "ec58f63f2f7e545aec213a7a291bb10fe7d6b5d51049e8a8ea85a5978a999014"
-        },
-        "openai/gpt-6-luna": {
-          "passed": false,
-          "communication_authors": 2,
-          "closed_pairs": 1,
-          "reply_authors": 1,
-          "rollout": "phase1-full-engineering-luna6-codex-r94",
-          "review_manifest": "../eval-readiness/phase1-full-engineering-luna6-codex-r94/review-manifest.json",
-          "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/luna-cohort-reassessment.json",
-          "reassessment_sha256": "2dc40d962b69d5233c028b9bbeb1d402b26a7046a306e2b1e5fb823229aace0b"
-        }
-      }
-    },
-    {
-      "scenario": "data-analysis",
-      "models": {
-        "openai/gpt-6.1-sol": {
-          "passed": true,
-          "communication_authors": 4,
-          "closed_pairs": 4,
-          "reply_authors": 2,
-          "rollout": "phase1-full-data-sol61-codex-r95",
-          "review_manifest": "../eval-readiness/phase1-full-data-sol61-codex-r95/review-manifest.json"
-        },
-        "openai/gpt-6.1-terra": {
-          "passed": false,
-          "communication_authors": 3,
-          "closed_pairs": 3,
-          "reply_authors": 2,
-          "rollout": "phase1-full-data-terra61-codex-r96",
-          "review_manifest": "../eval-readiness/phase1-full-data-terra61-codex-r96/review-manifest.json"
-        },
-        "openai/gpt-6-luna": {
-          "passed": true,
-          "communication_authors": 4,
-          "closed_pairs": 2,
-          "reply_authors": 2,
-          "rollout": "phase1-full-data-luna6-codex-r97",
-          "review_manifest": "../eval-readiness/phase1-full-data-luna6-codex-r97/review-manifest.json"
-        }
-      }
-    },
-    {
-      "scenario": "financial-analysis",
-      "models": {
-        "openai/gpt-6.1-sol": {
-          "passed": true,
-          "communication_authors": 4,
-          "closed_pairs": 5,
-          "reply_authors": 3,
-          "rollout": "phase1-full-finance-sol61-codex-r98",
-          "review_manifest": "../eval-readiness/phase1-full-finance-sol61-codex-r98/review-manifest.json"
-        },
-        "openai/gpt-6.1-terra": {
-          "passed": true,
-          "communication_authors": 4,
-          "closed_pairs": 5,
-          "reply_authors": 3,
-          "rollout": "phase1-full-finance-terra61-codex-r99",
-          "review_manifest": "../eval-readiness/phase1-full-finance-terra61-codex-r99/review-manifest.json"
-        },
-        "openai/gpt-6-luna": {
-          "passed": false,
-          "communication_authors": 4,
-          "closed_pairs": 3,
-          "reply_authors": 1,
-          "rollout": "phase1-full-finance-luna6-codex-r100",
-          "review_manifest": "../eval-readiness/phase1-full-finance-luna6-codex-r100/review-manifest.json"
-        }
-      }
-    },
-    {
-      "scenario": "knowledge-work",
-      "models": {
-        "openai/gpt-6.1-sol": {
-          "passed": true,
-          "communication_authors": 4,
-          "closed_pairs": 4,
-          "reply_authors": 3,
-          "rollout": "phase1-full-knowledge-sol61-codex-r101",
-          "review_manifest": "../eval-readiness/phase1-full-knowledge-sol61-codex-r101/review-manifest.json",
-          "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/sol-knowledge-json-read-reassessment.json",
-          "reassessment_sha256": "139368f964b9ad7e869d12a8ffe184cceea9415f8e40fe873d25d63ab9736328"
-        },
-        "openai/gpt-6.1-terra": {
-          "passed": true,
-          "communication_authors": 4,
-          "closed_pairs": 6,
-          "reply_authors": 3,
-          "rollout": "phase1-full-knowledge-terra61-codex-r102",
-          "review_manifest": "../eval-readiness/phase1-full-knowledge-terra61-codex-r102/review-manifest.json"
-        },
-        "openai/gpt-6-luna": {
-          "passed": true,
-          "communication_authors": 4,
-          "closed_pairs": 6,
-          "reply_authors": 3,
-          "rollout": "phase1-full-knowledge-luna6-codex-r103",
-          "review_manifest": "../eval-readiness/phase1-full-knowledge-luna6-codex-r103/review-manifest.json"
-        }
-      }
-    }
-  ]
+  "source_index": "docs/research/phase1-native-sol-terra-luna-full-20261104.json"
 }

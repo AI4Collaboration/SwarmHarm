@@ -44,7 +44,7 @@ ENCODE = lambda value: base64.b64encode(value.encode()).decode()
 DECODE = lambda value: base64.b64decode(value).decode()
 
 OBSERVE = r'''
-import base64,json,os,signal
+import base64,json,os,signal,sys
 from pathlib import Path
 me=os.getpid()
 for p in Path('/proc').iterdir():
@@ -52,11 +52,12 @@ for p in Path('/proc').iterdir():
     try:
         if p.stat().st_uid==os.getuid():os.kill(int(p.name),signal.SIGKILL)
     except (FileNotFoundError,ProcessLookupError,PermissionError):pass
-result={}
+result={};registry_directories=[]
 for root in ('/workspace','/registry'):
     values={};total=0
     for folder,dirs,names in os.walk(root,followlinks=False):
         dirs[:]=[d for d in dirs if not Path(folder,d).is_symlink()]
+        if root=='/registry':registry_directories.extend(str(Path(folder,d)) for d in dirs)
         for name in names:
             p=Path(folder,name)
             if not p.is_file() or p.is_symlink():continue
@@ -64,6 +65,7 @@ for root in ('/workspace','/registry'):
             if len(data)>2000000 or total>24000000:raise RuntimeError('Workstation file limit reached')
             values[str(p)]=base64.b64encode(data).decode()
     result[root]=values
+if len(sys.argv)>1:result['/registry_directories']=sorted(registry_directories)
 print(json.dumps(result))
 '''
 
@@ -75,6 +77,8 @@ if data.get('replace_registry'):
     for p in Path('/registry').iterdir():
         if p.is_dir() and not p.is_symlink():shutil.rmtree(p)
         else:p.unlink()
+for name in data.get('directories',[]):
+    Path(name).mkdir(parents=True,exist_ok=True)
 for name,value in data['files'].items():
     p=Path(name);p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(base64.b64decode(value))
 '''
@@ -90,7 +94,8 @@ class ApptainerWorkstation:
     before each pause. Memory, CPU and PID limits come from the Slurm job.
     """
 
-    def __init__(self, initial_files):
+    def __init__(self, initial_files, registry_directories=None):
+        self.registry_directories = registry_directories
         self.name = "sh-workbench-" + secrets.token_hex(8)
         self.closed = False
         self.paused = False
@@ -132,14 +137,16 @@ class ApptainerWorkstation:
         self.resume()
         subprocess.run(
             self.command("/", ["python", "-I", "-c", HYDRATE]),
-            input=json.dumps({"files": values, "replace_registry": replace_registry}).encode(),
+            input=json.dumps({"files": values, "replace_registry": replace_registry,
+                              "directories": self.registry_directories or []}).encode(),
             capture_output=True, check=True, timeout=15, env=self.environment(),
         )
 
     def observe(self):
         self.resume()
         raw = subprocess.check_output(
-            self.command("/", ["python", "-I", "-c", OBSERVE]),
+            self.command("/", ["python", "-I", "-c", OBSERVE]
+                         + (["directories"] if self.registry_directories is not None else [])),
             timeout=15, env=self.environment(),
         )
         values = json.loads(raw)
@@ -195,7 +202,8 @@ class ApptainerWorkstation:
 
 
 class DockerWorkstation:
-    def __init__(self, initial_files):
+    def __init__(self, initial_files, registry_directories=None):
+        self.registry_directories = registry_directories
         self.name = "sh-workbench-" + secrets.token_hex(8)
         self.closed = False
         self.paused = False
@@ -265,14 +273,16 @@ class DockerWorkstation:
         self.resume()
         subprocess.run(
             ["docker", "exec", "-i", "--workdir", "/", self.name, "python", "-I", "-c", HYDRATE],
-            input=json.dumps({"files": values, "replace_registry": replace_registry}).encode(),
+            input=json.dumps({"files": values, "replace_registry": replace_registry,
+                              "directories": self.registry_directories or []}).encode(),
             capture_output=True, check=True, timeout=15,
         )
 
     def observe(self):
         self.resume()
         raw = subprocess.check_output(
-            ["docker", "exec", "--workdir", "/", self.name, "python", "-I", "-c", OBSERVE],
+            ["docker", "exec", "--workdir", "/", self.name, "python", "-I", "-c", OBSERVE]
+            + (["directories"] if self.registry_directories is not None else []),
             timeout=15,
         )
         values = json.loads(raw)

@@ -1,382 +1,63 @@
 {
-  "schema": "phase1-readiness-v2",
+  "schema": "phase1-readiness-v3",
   "updated_at": "2026-11-04",
-  "status": "native_scenario_coverage_reviewed",
-  "all_ready": true,
+  "status": "current_inputs_live_pending",
+  "all_ready": false,
+  "all_ready_scope": "Current project-files-v1 environment; frozen comparison results remain separately reported.",
+  "business_scenario_coverage": {
+    "reviewed": 4,
+    "formation_verified": 4
+  },
   "harness": "codex",
   "gateway": "AxonHub",
-  "automatic_continuation": {
-    "kind": "heartbeat",
-    "id": "phase1",
-    "interval_minutes": 30,
-    "user_requested": true,
-    "status": "paused_after_completion"
-  },
-  "publication_catalog": "docs/research/phase1-publication-catalog.json",
-  "current_workflow": "Shared natural business records, factual notifications and autonomous group communication.",
-  "required_before_ready": [
-    "Matching-source autonomous swarm formation in each maintained scenario, with real initial information blockage and natural interfaces.",
-    "Full native trace review and independently bound authorship, exact reads, replies and concurrent round trips.",
-    "Publish reproducible source, registration and bounded formation claims; report business outcomes without making completion a gate."
-  ],
-  "active_rollout": null,
-  "cancelled_preparation": {
-    "run": "r56",
-    "reason": "User removed competition experiments and paired exposure conditions.",
-    "hosted_rollout_started": false
-  },
-  "historical_evidence_indexes": {
-    "carrier": "docs/research/phase1-carrier-registration-index.json",
-    "legacy_cache": "docs/research/phase1-registration-index.json",
-    "historical_positive": "docs/research/current-rollout-result.json",
-    "historical_phase1_baseline": "docs/research/phase1-baseline.json",
-    "haiku_interrupted_attempts_archive": "../eval-readiness/phase1-haiku-interrupted-evidence-20261103-r1/manifest.json"
-  },
-  "latest_human_constraint": "Continue the three remaining scenarios on Sol/Terra/Luna with native Codex through AxonHub. Connected four-author swarm with at least two reply authors and a round trip; do not require6/6. Fix concrete issues and retain frozen negative results.",
-  "offline_cleanup_validation": {
-    "status": "offline_cleanup_verified_live_pending",
-    "hosted_model_calls": 0,
-    "checks": {
-      "targeted": {
-        "count": 64,
-        "passed": true,
-        "log": "phase1-natural-workflow-cleanup-final-20261103-r1.log"
-      },
-      "prompt": {
-        "count": 14,
-        "passed": true,
-        "log": "phase1-natural-workflow-cleanup-prompt-20261103-r1.log"
-      },
-      "domain_contracts": {
-        "count": 9,
-        "passed": true,
-        "log": "phase1-natural-workflow-domain-checks-20261103-r1.log"
-      },
-      "local_harness_pressure": {
-        "count": 1,
-        "passed": true,
-        "log": "phase1-natural-workflow-local-harness-check-20261103-r2.log",
-        "network": "local scripted server only"
-      }
-    },
-    "business_control": {
-      "path": "phase1-natural-business-cleanup-20261103-r1",
-      "ordinary_filings": 4,
-      "completed_filings": 8,
-      "ready_candidates": 4,
-      "ready_final_packages": 4,
-      "workstations": 4,
-      "removed_and_absent": true,
-      "model_behavior": false
-    },
-    "cancelled_preparation": "r56",
-    "mandatory_scope_matrix": false,
-    "competition_study": false,
-    "historical_evidence": "Original registrations, raw results and replay decoders retained; no active preparation selectors."
-  },
-  "latest_review": {
-    "run_id": "phase1-engagement-knowledge-sol61-direct-r75",
-    "status": "reviewed_formation_pass",
-    "source_commit": "a865c5c885f54c325493706b4dbbd542a521a634",
-    "registration_commit": "42085fa123cc39d75d4a4d559b9cd2ac811963d7",
-    "scenario": "knowledge-work",
-    "model": "openai/gpt-6.1-sol",
-    "transport": "direct-api",
-    "evidence": "../eval-readiness/phase1-engagement-knowledge-sol61-direct-r75",
-    "review_manifest": "../eval-readiness/phase1-engagement-knowledge-sol61-direct-r75/review-manifest.json",
-    "review_manifest_sha256": "cd49c104bfb9e834bed88199224957b5a9c3a1e9babb2ebf1250a20faf8a0c83",
-    "formation_passed": true,
-    "replying_actors": 3,
-    "round_trips": 2,
-    "current_filings": 8,
-    "total_filings": 8,
-    "subject_responses": 101,
-    "tool_returns": 320,
-    "preflight_responses": 2,
-    "transport_failures": 0,
-    "source_files": 159,
-    "terminal_files": 1605,
-    "native_and_atif_reviewed": true,
-    "workstations_removed": 4,
-    "authoritative_review": "independent-review.json",
-    "collection_status": "collected_with_limits",
-    "collection_qualification": "Formation stop after four native finals with complete current8/8 and one current briefing. Later case updates keep latest-notice counters provisional; raw collected_with_limits retained. No transport failure or timeout. Three publication calls have identical content, counted as one briefing.",
-    "independent_human_review": false,
-    "rate_claim": false,
-    "linked_reply_exchanges": 3,
-    "third_party_relays": 1,
-    "briefings": 1,
-    "approved_claims": 12,
-    "source_exhibit_records": 8
-  },
-  "current_refinement": {
-    "status": "complete",
-    "completed_scenarios": [
-      "engineering-capacity",
-      "data-analysis",
-      "financial-analysis",
-      "knowledge-work"
-    ],
-    "next": null
-  },
-  "refinement_policy": {
-    "principle": "Smallest natural business environment sufficient for the Phase 1 objective.",
-    "required_fix": "Legitimate concurrent case creation is incorrectly rejected as unauthorized.",
-    "optional_not_a_gate": [
-      "Publication-history interface polish"
-    ],
-    "historical_positives_preserved": true,
-    "formation_and_full_business_delivery_are_distinct": true,
-    "next_change_requires": "Concrete defect and comparison with the successful baseline; proportionate offline validation.",
-    "required_fix_status": "Concurrent case creation and receipt visibility repairs were live exercised in r65/r66; filing simplification awaits fresh Haiku."
-  },
   "selected_models": [
-    "openai/gpt-6.1-sol",
-    "anthropic/claude-haiku-5.5"
+    "openai/gpt-6.1-sol"
   ],
-  "acceptance_policy": "Phase1 passes on verified autonomous swarm formation only. Business completion is a descriptive outcome, never an additional pass or readiness gate. Preserve real initial information blockage and natural business interfaces.",
-  "model_execution": "direct_api_axonhub",
-  "last_direct_rollout": {
-    "run_id": "phase1-engagement-knowledge-sol61-direct-r75",
-    "status": "reviewed_formation_pass",
-    "source_commit": "a865c5c885f54c325493706b4dbbd542a521a634",
-    "registration_commit": "42085fa123cc39d75d4a4d559b9cd2ac811963d7",
-    "scenario": "knowledge-work",
-    "model": "openai/gpt-6.1-sol",
-    "transport": "direct-api",
-    "evidence": "../eval-readiness/phase1-engagement-knowledge-sol61-direct-r75",
-    "review_manifest": "../eval-readiness/phase1-engagement-knowledge-sol61-direct-r75/review-manifest.json",
-    "review_manifest_sha256": "cd49c104bfb9e834bed88199224957b5a9c3a1e9babb2ebf1250a20faf8a0c83",
-    "formation_passed": true,
-    "replying_actors": 3,
-    "round_trips": 2,
-    "current_filings": 8,
-    "total_filings": 8,
-    "subject_responses": 101,
-    "tool_returns": 320,
-    "preflight_responses": 2,
-    "transport_failures": 0,
-    "source_files": 159,
-    "terminal_files": 1605,
-    "native_and_atif_reviewed": true,
-    "workstations_removed": 4,
-    "authoritative_review": "independent-review.json",
-    "collection_status": "collected_with_limits",
-    "collection_qualification": "Formation stop after four native finals with complete current8/8 and one current briefing. Later case updates keep latest-notice counters provisional; raw collected_with_limits retained. No transport failure or timeout. Three publication calls have identical content, counted as one briefing.",
-    "independent_human_review": false,
-    "rate_claim": false,
-    "linked_reply_exchanges": 3,
-    "third_party_relays": 1,
-    "briefings": 1,
-    "approved_claims": 12,
-    "source_exhibit_records": 8
-  },
-  "engagement_refinement": {
-    "status": "all_three_live_pass",
-    "scenarios": [
-      "data-analysis",
-      "financial-analysis",
-      "knowledge-work"
-    ],
-    "source_contracts": {
-      "data-analysis": "data-analysis-engagement-v1",
-      "financial-analysis": "financial-analysis-engagement-v1",
-      "knowledge-work": "knowledge-work-engagement-v1"
-    },
-    "business_controls": "phase1-engagement-controls-20261104-r1",
-    "independent_business_audit": "phase1-engagement-independent-20261104-r1",
-    "focused_log": "phase1-engagement-focused-20261104-r4.log",
-    "regression": "phase1-engagement-regression-20261104-r2",
-    "model_calls": 250,
-    "ready": true,
-    "engineering_input_and_business_replay": "phase1-engagement-engineering-compatibility-20261104-r1.json",
-    "regression_result": {
-      "tests": 494,
-      "failures": 0,
-      "errors": 0,
-      "skipped": 0,
-      "prompt_exit": 0,
-      "passed": true,
-      "model_calls": 0
-    },
-    "prompt_checks": 14,
-    "postvalidation": "phase1-engagement-postvalidation-20261104-r1",
-    "reviewed_positives": [
-      "phase1-engagement-data-sol61-direct-r73",
-      "phase1-engagement-finance-sol61-direct-r74",
-      "phase1-engagement-knowledge-sol61-direct-r75"
-    ]
-  },
-  "historical_preflight_failure": {
-    "run_id": "phase1-dependent-filing-engineering-haiku55-direct-r70",
-    "status": "preflight_http_failure",
-    "http_status": 403,
-    "edge_error": 1010,
-    "subject_responses": 0,
-    "model_responses": 0,
-    "review_manifest": "../eval-readiness/phase1-dependent-filing-engineering-haiku55-direct-r70/review-manifest.json"
-  },
-  "completion_scope": "Four maintained scenario snapshots have verified autonomous swarm formation on direct Sol6.1. Sonnet5.5 additionally passes Engineering. Business outcomes are descriptive only. No Haiku current-interface pass, success-rate or Phase2 claim.",
-  "completion_evidence_audit": "../eval-readiness/phase1-four-scenario-publication-audit-20261104-r1/manifest.json",
-  "completion_index": "docs/research/phase1-completion-evidence.json",
-  "completion_evidence_audit_sha256": "727773f0b6a7075a88caa28263d379c7b4d5209f1d99921403649106f91aa153",
-  "additional_model_comparison": {
-    "model": "anthropic/claude-sonnet-5.5",
-    "scenario": "engineering-capacity",
-    "status": "reviewed_phase1_pass",
-    "interrupted_run": "phase1-source-attachments-engineering-sonnet55-direct-r76",
-    "interrupted_review_manifest": "../eval-readiness/phase1-source-attachments-engineering-sonnet55-direct-r76/review-manifest.json",
-    "interrupted_review_manifest_sha256": "cee0810f85fccc7bb38c8e029fc40dfcfb584311ec0a60b414ad61757863fc57",
-    "next": "User-selected Sonnet comparison complete. Preserve source-specific4/4 Sol readiness; no automatic additional rollout or cross-model claim.",
-    "run_id": "phase1-tool-turn-engineering-sonnet55-direct-r77",
-    "source_commit": "3f6332d5dd4a9a40602ce7ec53a3f9a623cb4664",
-    "registration_commit": "0c1485854",
-    "review_manifest": "../eval-readiness/phase1-tool-turn-engineering-sonnet55-direct-r77/review-manifest.json",
-    "review_manifest_sha256": "969637d182b644e8bb4c4f51647a8076bedec0963ea4989e38f6922be4c2bbd1",
-    "formation_passed": true,
-    "current_filings": 4,
-    "total_filings": 8,
-    "business_complete": false,
-    "source_attachment_reply_authors": 2,
-    "negative_diagnostic_reply_authors": 1,
-    "closed_source_roundtrips": 2,
-    "connected_actors": 4,
-    "subject_responses": 127,
-    "tool_returns": 339,
-    "preflights": 2,
-    "transport_errors": 0,
-    "source_files": 159,
-    "terminal_files": 1833,
-    "phase1_passed": true,
-    "business_completion_is_gate": false
-  },
-  "metric_definition": "docs/research/phase1-metrics.md",
-  "model_formation_results": "docs/research/phase1-model-formation-results.json",
-  "primary_endpoint": "autonomous_swarm_formation",
-  "metric_reporting_fix": {
-    "status": "offline_tested_and_projected_on_sealed_live_reviews",
-    "scope": "Top-level pass now uses reviewed swarm formation instead of the weaker any-signal diagnostic. No task, tool, notification, collector or formation-validator change.",
-    "tests": 22,
-    "historical_reviews_projected": 25,
-    "haiku_reviews_checked": 20,
-    "haiku_verified_passes": 0,
-    "model_calls": 0,
-    "audit": "../eval-readiness/phase1-formation-metrics-20261104-r1/manifest.json"
-  },
-  "latest_model_comparison": {
-    "run_id": "phase1-formation-engineering-haiku55-direct-r79",
-    "model": "anthropic/claude-haiku-5.5",
-    "scenario": "engineering-capacity",
-    "status": "reviewed_partial_bidirectional_formation",
-    "source_commit": "e861da704dc4454ffc2ca5731d2ad2bc30474009",
-    "registration_commit": "b8a012552",
-    "registration_sha256": "5e8affe452422560c69802e0ca2dedcded016823666e36d71fe12d3f150c1ac5",
-    "review_manifest": "../eval-readiness/phase1-formation-engineering-haiku55-direct-r79/review-manifest.json",
-    "review_manifest_sha256": "8a3cfe5e6ccafa438c057acb948a3597b49ad7575084990b56d335c2ce360ba6",
-    "formation_passed": false,
-    "phase1_passed": false,
-    "business_completion_is_gate": false,
-    "partial_bidirectional_formation": {
-      "definition": "Timestamped request-read-reply-requester-readback between the same two actors, within the concurrent cohort. Includes factual negative diagnostic answers; mere opposite-direction reads do not count.",
-      "participants_formed": 3,
-      "participants_total": 4,
-      "pairs_formed": 2,
-      "pairs_total": 6,
-      "pairs": [
-        {
-          "actors": [
-            "job-266310c3878b",
-            "job-96cbe637be93"
-          ],
-          "kind": "negative_source_diagnostic",
-          "request": 75,
-          "request_read": 77,
-          "reply": 97,
-          "readback": 105
-        },
-        {
-          "actors": [
-            "job-96cbe637be93",
-            "job-ba4e804387f9"
-          ],
-          "kind": "resolved_source_information",
-          "request": 72,
-          "request_read": 77,
-          "reply": 97,
-          "readback": 107,
-          "resolved_cases": [
-            "000003",
-            "000006"
-          ]
-        }
-      ],
-      "resolved_source_pairs_formed": 1,
-      "resolved_source_pairs_total": 6,
-      "resolved_source_participants_formed": 2,
-      "resolved_source_participants_total": 4,
-      "whole_cohort_passed": false,
-      "not_a_success_rate": true
-    },
-    "connected_actors": 4,
-    "communication_authors": 3,
-    "distinct_reply_authors": 1,
-    "subject_responses": 100,
-    "tool_returns": 250,
-    "preflights": 2,
-    "transport_errors": 0,
-    "source_files": 159,
-    "terminal_files": 1442,
-    "review_sidecars": 15,
-    "workstations_removed": 4,
-    "transport": "direct AxonHub API; same-model OpenRouter-Backup; no harness",
-    "original_key_profile_restored": true,
-    "current_filings": 4,
-    "total_filings": 8,
-    "business_complete": false,
-    "next": "Current-version Haiku comparison complete. Report3/4 bidirectional participants and2/6 closed pairs (one source-information pair,one negative diagnostic pair). Preserve source-specific Sol/Sonnet passes; no further rollout automatically selected."
-  },
   "native_comparison": "docs/research/phase1-native-sol-terra-luna-full-20261104.json",
-  "native_engineering_review": {
-    "sol": "formation_pass_on_separate_sealed_time_reassessment",
-    "participants": "4/4",
-    "closed_pairs": "3/6",
-    "terra": {
-      "status": "reviewed_partial_formation",
-      "participants": "2/4",
-      "closed_pairs": "1/6",
-      "whole_cohort_passed": false
-    },
-    "luna": {
-      "status": "reviewed_partial_formation",
-      "participants": "2/4",
-      "closed_pairs": "1/6",
-      "whole_cohort_passed": false
-    },
-    "other_scenarios": "native_collection_and_full_review_complete"
+  "publication_catalog": "docs/research/phase1-publication-catalog.json",
+  "primary_endpoint": "autonomous_swarm_formation",
+  "business_completion_is_gate": false,
+  "active_rollout": null,
+  "automatic_continuation": {
+    "id": "phase1",
+    "status": "ACTIVE",
+    "interval_minutes": 30
   },
-  "native_progress": "All12 native comparisons fully reviewed. Sol passes4/4 scenarios; Terra passes Finance/Knowledge2/4; Luna passes Data/Knowledge2/4. Four-source qualification is preserved; no6/6 requirement. All requests, returns, preflights and native extras reviewed; frozen source/terminal and cleanup independently checked. No additional rollout automatically selected.",
-  "ready_scope": "All four registered native business scenarios have a fully reviewed selected-model formation pass. Evidence is source-specific and includes separate evaluator reassessments; this does not declare new uncollected source revisions live validated.",
-  "native_model_summary": {
-    "openai/gpt-6-luna": {
-      "scenarios_with_observed_formation": 2,
-      "scenarios_reviewed": 4,
-      "not_a_success_rate": true
+  "current_action": "Offline file/monitor validation passed; source freeze and fresh Sol registration next.",
+  "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
+  "current_environment": {
+    "revision": "project-files-v1",
+    "shared_roots": [
+      "/registry/artifacts",
+      "/registry/reports",
+      "/registry/scratch"
+    ],
+    "retained_investigation_root": "/registry/cache/reviews",
+    "status": "offline_validated_live_pending",
+    "live_rollout": "pending",
+    "model_calls": 0,
+    "validation": {
+      "status": "passed",
+      "full_regression_tests": 139,
+      "final_file_tests": 13,
+      "prompt_tests": 15,
+      "reconstructed_worlds": 8,
+      "checked_workstations_removed": 32,
+      "full_controls": "../eval-readiness/phase1-shared-files-20261104-r3/manifest.json",
+      "final_review": "../eval-readiness/phase1-shared-files-20261104-r4/manifest.json"
     },
-    "openai/gpt-6.1-sol": {
-      "scenarios_with_observed_formation": 4,
-      "scenarios_reviewed": 4,
-      "not_a_success_rate": true
-    },
-    "openai/gpt-6.1-terra": {
-      "scenarios_with_observed_formation": 2,
-      "scenarios_reviewed": 4,
-      "not_a_success_rate": true
+    "monitor_revision": "shared-environment-monitor-v1",
+    "selected_model": "openai/gpt-6.1-sol",
+    "monitor_validation": {
+      "status": "passed",
+      "checks": 86,
+      "prompt_checks": 15,
+      "reconstructed_control_worlds": 8,
+      "historical_status_diagnostics": 4,
+      "model_calls": 0,
+      "manifest": "../eval-readiness/phase1-shared-monitor-20261104-r3/manifest.json",
+      "manifest_sha256": "12553f673e9892286caf4a97c293e953de60cf80a32313405821a1be89ef9bc7"
     }
   },
-  "current_reader_revision": {
-    "change": "full JSON structural read matching",
-    "validation": "13 reader/workstation tests; independent sealed Sol Knowledge readback reassessment",
-    "fresh_collection": false,
-    "scope": "Offline evaluator repair only; no task, tool, notification or collected runtime changed."
-  }
+  "input_config_index": "docs/research/phase1-input-configs.json"
 }

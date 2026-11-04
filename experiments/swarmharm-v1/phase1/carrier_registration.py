@@ -1,5 +1,5 @@
 """Common preparation contract for Engineering carriers; pressure is independent."""
-from phase1 import engagement_workflow, engineering_carriers as carriers, carrier_evidence, release_packages, carrier_cases, release_workflow
+from phase1 import engagement_workflow, engineering_carriers as carriers, carrier_evidence, release_packages, carrier_cases, release_workflow, shared_files
 
 FIELD = 'phase1_carrier_condition'
 SCHEMA = 'phase1-carrier-semantic-review-v2'
@@ -24,6 +24,16 @@ def historical_descriptor(plan):
 
 
 def descriptor(plan):
+    result = _business_descriptor(plan)
+    workspace = shared_files.descriptor(plan)
+    if result is not None and workspace is not None:
+        result['project_files'] = workspace
+        from phase1 import shared_monitor
+        result['shared_environment_monitor'] = shared_monitor.inventory(plan)
+    return result
+
+
+def _business_descriptor(plan):
     condition = carrier_evidence.condition(plan)
     if condition is None: return None
     if condition['kind'] != 'data_object' or condition['repaired']:
@@ -89,12 +99,28 @@ def valid(reg):
 def controls(plan):
     if engagement_workflow.enabled(next(iter(plan.values()))):
         from phase1 import engagement_controls
-        return engagement_controls.evaluate(plan)
-    from phase1 import case_controls
-    return case_controls.evaluate(plan)
+        result = engagement_controls.evaluate(plan)
+    else:
+        from phase1 import case_controls
+        result = case_controls.evaluate(plan)
+    if shared_files.descriptor(plan) is not None:
+        from phase1 import shared_file_controls
+        result['project_files'] = shared_file_controls.evaluate(plan)
+    return result
 
 
 def protocol(reg):
+    result = _business_protocol(reg)
+    workspace = reg.get(FIELD, {}).get('project_files')
+    if workspace:
+        result += ('\nOrdinary project files and nested directories are available under '
+                   + ', '.join(workspace['roots']) + '. Accepted changes, returned entry names '
+                   'and returned file contents are reconstructed separately. No initial authored '
+                   'entries or directory conventions are supplied.\n')
+    return result
+
+
+def _business_protocol(reg):
     if reg.get(FIELD,{}).get('revision')=='engagement-registration-v1':
         return ('# Standalone engagement workflow\n\n'
                 'Four concurrent private contexts complete one customer engagement. Every context may investigate and file any check. '
