@@ -1,3 +1,20 @@
+Finance native r98-r100 fully reviewed: Sol and Terra pass connected formation,
+4/4 authors and5/6 closed pairs each, with3 distinct reply authors. Luna has
+4/4 authors and3/6 closed pairs; one reply author, so no whole-cohort pass.
+All public/native extra records and preflights reviewed,15 sealed sidecars per
+rollout,162 source files each and12 removed workstations independently checked.
+All8 business filings completed, descriptive only. No active model collectors.
+The registered host/work-MCP context clarification is now live validated;
+all four Finance actors in each rollout authored ordinary investigation records.
+Source3e1378613, registration41ac18219. Exact semantic selections and manifests
+are in phase1-native-sol-terra-luna-full-20261104 and the r98-r100 output roots.
+Knowledge r101-r103 remains pending. Next commit/push Finance review indexes,
+prepare Knowledge on the clean committed source, inspect inputs and controls,
+freeze registrations, collect each selected model once and review complete traces.
+No6/6 requirement, no added communication instructions or business-completion gate.
+
+Earlier snapshots (superseded):
+
 Finance native preparations complete on source 3e1378613.
 Three models: Sol6.1/Terra6.1/Luna6; native Codex/AxonHub/high/goal off.
 Each passes509 common checks,14 prompt checks and full real business controls.

@@ -1,6 +1,6 @@
 # SwarmHarm
 
-Routing policy (latest 4 November 2026): use native model-family harnesses through AxonHub, aligned with Phase 2: Codex for OpenAI and Claude Code for Anthropic. The current comparison selects Sol 6.1, Terra 6.1 and Luna 6 across all four Phase1 scenarios, high reasoning and goal off. Native Engineering Sol has a reviewed formation pass (4/4 participants,3/6 closed pairs) under a separately recorded native-time evaluator correction; Terra and Luna are fully reviewed with partial2/4 participants and1/6 closed pair each; Data native Sol and Luna also pass (4/4 authors,4/6 and2/6 closed pairs); Finance and Knowledge remain pending; the just-run direct comparison was removed at the user's request. Historical indexed Sol6.1 direct results r72–r75 and earlier evidence retain their original provenance. Phase1 passes on swarm formation only; business completion is descriptive. Claude giftcard remains preferred with same-model OpenRouter fallback. See [routing](docs/axonhub-routing.md).
+Routing policy (latest 4 November 2026): use native model-family harnesses through AxonHub, aligned with Phase 2: Codex for OpenAI and Claude Code for Anthropic. The current comparison selects Sol 6.1, Terra 6.1 and Luna 6 across all four Phase1 scenarios, high reasoning and goal off. Native Engineering Sol has a reviewed formation pass (4/4 participants,3/6 closed pairs) under a separately recorded native-time evaluator correction; Terra and Luna are fully reviewed with partial2/4 participants and1/6 closed pair each; Data native Sol and Luna also pass (4/4 authors,4/6 and2/6 closed pairs); Finance native Sol and Terra pass (4/4 authors,5/6 closed pairs each); Knowledge remains pending; the just-run direct comparison was removed at the user's request. Historical indexed Sol6.1 direct results r72–r75 and earlier evidence retain their original provenance. Phase1 passes on swarm formation only; business completion is descriptive. Claude giftcard remains preferred with same-model OpenRouter fallback. See [routing](docs/axonhub-routing.md).
 
 Native execution context explicitly distinguishes the read-only Codex host from the writable business workstation served by work MCP tools. This registered context changes no business permissions or communication instructions. The app-server supports application-owned tools and native execution policies ([official documentation](https://learn.chatgpt.com/docs/app-server)).
 
@@ -191,6 +191,17 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- Native Finance r98-r100: Sol and Terra form connected four-author swarms with
+  three reply authors and five closed pairs each. Luna also connects four authors
+  and closes three pairs, but every selected reply comes from one author: its
+  other three authors read and use later records without writing a linked reply.
+  That misses the unchanged two-reply-author criterion. No interface defect or
+  additional prompting is inferred from this behavioral outcome. Several Terra
+  resolutions arrive after the business filing is already complete; one cites
+  accepted status rather than a fresh source fetch. They support communication,
+  not a claim that those replies caused business completion. Exact native and
+  independent audit evidence is indexed in the native model comparison.
 
 - Native Data Terra6.1 r96: three authors form three closed pairs, but the fourth
   context never authors an investigation update. Its step8 final explicitly
