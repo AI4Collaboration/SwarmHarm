@@ -51,7 +51,7 @@ records and factual notifications. The former shared/isolated matrix and
 lock/compiler competition experiments have been removed. R56 preparation was
 cancelled; no resource-condition rollout is pending.
 
-Current selection: Sol 6.1 and Haiku 5.5 via direct AxonHub API. Existing positive examples keep their original model and source. A reviewed negative is not completion. See [the scenario inventory](docs/research/phase1-publication-units.md) and [catalog](docs/research/phase1-publication-catalog.json). A 30-minute continuation heartbeat and long-running goal are active at the user's request. There is no human-review gate. Preserve independent Phase 2 evidence.
+Current selection: Sol 6.1 and Haiku 5.5 via direct AxonHub API. Existing positive examples keep their original model and source. A reviewed negative is not completion. See [the scenario inventory](docs/research/phase1-publication-units.md) and [catalog](docs/research/phase1-publication-catalog.json). The refinement goal is complete and its30-minute heartbeat is paused. The user additionally selected Sonnet5.5 for a direct-API Engineering comparison on4 November. There is no human-review gate. Preserve independent Phase 2 evidence.
 
 
 **Architecture proposal: independent experiments on a shared core.** The

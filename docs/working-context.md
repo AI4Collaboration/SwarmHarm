@@ -1,3 +1,16 @@
+Additional user-selected comparison (4 November): test Sonnet on the current
+Engineering scenario, using direct AxonHub API. Both authenticated catalogs list
+anthropic/claude-sonnet-5.5. Freeze that exact identity, high effort, goal off,
+four concurrent contexts. Keep giftcard preferred/same-model fallback policy.
+No environment change, no harness and no restart of the completed heartbeat.
+Current4/4 Sol readiness remains intact; a Sonnet result is separate coverage.
+Haiku r71 predates the fetched-source attachment fix: its two deliberate source
+answers were rejected by the locator-only helper. That is a concrete interface
+confound, not evidence that Haiku could not attempt communication. Full raw r71
+and later Sol r72 remain separate source-specific observations.
+Prepare one fresh Engineering registration r76, full initial-surface/seal review,
+commit/push/freeze, then collect once and read all native traces.
+
 Phase1 refinement complete:4/4 maintained scenarios ready on their indexed,
 fully reviewed direct Sol6.1 snapshots. No further rollout is required by the
 user's either-model acceptance rule. Do not resume historical pending work.

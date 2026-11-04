@@ -10,8 +10,13 @@ Claude giftcard remains preferred, with OpenRouter fallback for the same model.
 Current Phase 1 selection is Sol 6.1 and Haiku 5.5 across all four maintained
 scenarios. Either model passing the current environment's formation criterion is
 sufficient. Use one prepare/collect/review pipeline and retain exact requests,
-responses, tool execution and source seals. The direct transport migration is in
-progress, not yet live-validated. Historical adapters below describe old evidence.
+responses, tool execution and source seals. Direct transport has fully reviewed passing Sol6.1 observations in all four
+Phase1 scenarios (r72-r75). Historical adapters below describe old evidence.
+
+On4 November the user additionally selected Sonnet for comparison. Use exact
+`anthropic/claude-sonnet-5.5`, verified in both authenticated AxonHub and upstream
+catalogs, on the current Engineering scenario. This is separate model coverage;
+keep the completed either-Sol-or-Haiku readiness judgment intact.
 
 AxonHub service root: `https://lmportal.iefbr14.xyz`.
 Responses endpoint: `https://lmportal.iefbr14.xyz/v1/responses`.
