@@ -1,3 +1,8 @@
+r190 P01 stopped offline before controls or model calls: the later r212 collector
+expected handoff-cycle metadata absent from v140. Preserve the attempt. Restore
+the original v140 registration metadata and prepare a fresh P02; no subject wording
+or selected business mechanism is changed by this compatibility repair.
+
 # GLM sequence — r190 first, then r217
 
 User selected two additional standalone Phase 2 conditions on 2026-11-04.
