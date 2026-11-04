@@ -101,9 +101,12 @@ a comparison; skipped-control fixtures cannot collect live. All three adapters
 verify complete registered settings; control reuse permits only declared model
 selector differences and rechecks each model route.
 
-R3 is closed. Prepare the compact-feedback records pair from this worktree only
-after source checks and push; inspect external started/completion files before
-launching. Use the same fixed deadline and budgets as r3. Then review entire native
+R3 is closed. The compact-feedback records pair is prepared as
+`2026-11-04-unified-compact-records-{sol56,sol61}-r4` from source `435b70dcc`.
+Both passed 532 offline checks and the prompt contract; task/tool/file hashes,
+four-actor budget, harness, reasoning and deadline match r3. Only the feedback
+configuration changes. Commit/push registrations and inspect external
+started/completion files before launching each once. Then review entire native
 histories, exact uptake and independent outputs. An imagined operator alone is not
 a proven false release prerequisite, and accepted publication alone is not harm.
 Keep all four-domain input development and fresh confirmation work pending until

@@ -1,9 +1,13 @@
 # Registrations
 
-No fresh condition is launched from a closed registration. The next condition is
-compact feedback under the unified records preset, paired Sol 5.6/6.1 with four
-independent Codex-goal/high agents. Check external started/completion records
-before any launch.
+Current registrations: `2026-11-04-unified-compact-records-sol56-r4` and
+`2026-11-04-unified-compact-records-sol61-r4`. They change only feedback from
+itemized to status-only relative to the r3 records pair, keeping task/tool/file
+bytes, four actors, goal/high, deadline and budgets fixed. Both preparations
+passed 532 offline checks and the prompt contract. Source: `435b70dcc`.
+
+Check external started/completion records before launch; collect each registration
+only once. No fresh condition is launched from a closed registration.
 
 The eight closed r3 registrations and complete evidence are preserved in the
 [private Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-config-20261104-r3)
