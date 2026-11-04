@@ -13,11 +13,20 @@ complete finals. Both implementation defects are corrected offline:490 common
 checks+14 prompts pass, no errors/failures/skips. The first focused launch had a
 wrong test-file working path; its log is retained, corrected8 checks passed.
 No business prompt, tool or environment changed in this correction.
+The standalone completion correction is explicitly gated to Phase1; connected
+and independent Phase2 retain their former activated-extension predicate.
+The final scope guard passes58 direct/collector checks (phase1-direct-completion-
+scope-20261104-r1), without model calls.
 
 Engineering ready is scoped to this reviewed source and corrected measurement.
 Other three scenarios remain pending; whole Phase1 ready=false. Next repair
 remaining batch authority and real business dependencies across all three,
-including interfaces, completion and independent controls together. Do not
+including interfaces, completion and independent controls together. Data needs
+a combined dataset validation, Finance a source-backed combined reconciliation,
+and Knowledge complete product-source coverage (its paired section records split
+the actual approved claims for the same product). These are design candidates,
+not implemented contracts. Review Knowledge task/document references to a later
+publisher together with its actual standalone completion scope. Do not
 rerun Engineering simply to replace the corrected metadata. Goal/30min heartbeat
 remain active, direct Sol6.1/Haiku5.5 only; either passing model suffices.
 

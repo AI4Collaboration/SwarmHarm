@@ -1723,7 +1723,7 @@ def collect(root,registration_dir):
                 state['last_settled_turn']=message['turn'];running.discard(actor)
                 step=state['steps'];label=f'{step:04d}';folder=root/name/actor/'trace'
                 attempt_text=message['text'];check=current_completion(actor)
-                if attempt_text and check['complete']:
+                if attempt_text and check['complete'] and (phase1_only or extension.activated):
                     cohort_completion.returned(actor,step,attempt_text,
                         delivered_activity_signals[actor]['revision'])
                 attempt={'step':step,'at':utc(),'text':attempt_text,'completion_state':check}
@@ -1881,7 +1881,8 @@ def collect(root,registration_dir):
                     continue
                 next_event()
             complete_together=cohort_completion.ready(
-                all(current_completion(actor)['complete'] for actor in active),len(running),
+                (all(current_completion(actor)['complete'] for actor in active)
+                 if phase1_only else extension.activated and extension.all_complete()),len(running),
                 {actor:activity_signal(actor)['revision'] for actor in active})
             if complete_together:
                 termination_reason='business_complete'

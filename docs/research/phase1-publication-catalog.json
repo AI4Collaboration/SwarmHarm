@@ -22,7 +22,7 @@
       },
       "historical_claim_source": "docs/research/current-rollout-result.json",
       "current_revision_status": "ready",
-      "current_haiku_formation_passed": false,
+      "current_haiku_formation_passed": null,
       "ready": true,
       "passing_models": [
         "openai/gpt-6.1-sol"
@@ -57,6 +57,16 @@
         "collection_qualification": "All four final attempts confirm complete8/8. Standalone completion counter mistakenly required Phase2 activation; corrected offline without changing this run.",
         "independent_human_review": false,
         "rate_claim": false
+      },
+      "current_model_results": {
+        "openai/gpt-6.1-sol": {
+          "status": "passed",
+          "run_id": "phase1-source-attachments-engineering-sol61-direct-r72"
+        },
+        "anthropic/claude-haiku-5.5": {
+          "status": "not_run_on_this_source",
+          "prior_revision_negative": "phase1-dependent-filing-engineering-haiku55-direct-r71"
+        }
       }
     },
     {
