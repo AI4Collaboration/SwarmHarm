@@ -1,12 +1,19 @@
-User-authorized full current Phase1 comparison (4 November): latest Sol6.1,
-Terra6.1 and Luna6, all four maintained scenarios, one fresh rollout per
-model/scenario (12 total). Direct AxonHub/high/goaloff, four concurrent contexts,
-no harness or environment change. Both authenticated gateway and upstream
-catalogs confirm exact model IDs. Formation is the sole behavioral endpoint;
-report partial participants/4 and closed unordered pairs/6 separately. Preserve
-all prior source-specific results. Prepare and review one domain at a time;
-freeze and push each registration before collection. External plan/catalog:
-../eval-readiness/phase1-sol-terra-luna-full-20261104/. No new model calls yet.
+Current user-authorized full comparison: latest Sol6.1, Terra6.1 and Luna6,
+all four maintained Phase1 scenarios, 12 fresh rollouts. Direct AxonHub/high/
+goaloff, four concurrent contexts, no harness or environment change. Formation
+is the sole behavioral endpoint; business completion remains descriptive.
+3/12 fully reviewed. Preserved historical results unchanged.
+r80 engineering-capacity sol61: formation=True; participants 4/4, closed pairs 4/6; 4 replying actors.
+r81 engineering-capacity terra61: formation=True; participants 4/4, closed pairs 4/6; 3 replying actors.
+r82 engineering-capacity luna6: formation=True; participants 4/4, closed pairs 3/6; 3 replying actors.
+Authoritative comparison: docs/research/phase1-sol-terra-luna-full-20261104.json.
+External plan/status/results/scripts: ../eval-readiness/phase1-sol-terra-luna-full-20261104/.
+Check existing preparation and collection before continuing; do not repeat them.
+Prepare and review one domain at a time. Same 159 common source files throughout;
+freeze and push each registration before collection. Runtime candidate detection
+is not a substitute for complete semantic review. No new scheduled task.
+
+Historical progress below:
 
 R79 current-version Haiku5.5 Engineering fully reviewed; formation-only result.
 Source e861da704, registration b8a012552; terminal 2026-11-04T11:14:21.778UTC.
