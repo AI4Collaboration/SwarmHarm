@@ -4,7 +4,7 @@
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **11 experiments, 47 executed collection attempts, 30 uncollected preparations** in the inspected local archive.
+Coverage: **11 experiments, 47 executed collection attempts, 31 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
@@ -202,3 +202,8 @@ EXP-009-C05-P01 failed one offline legacy concurrency guard check in the 486-met
 suite; 13 prompt checks passed. Zero hosted calls. Original failed report and
 source preserved; the scope guard is repaired and affected contracts rechecked
 before a fresh preparation.
+
+EXP-009-C05-P02 prepared with the exact model, vendor provenance and authenticated
+AxonHub catalog. All original r212 files, initial instructions/messages, tool
+definitions, fixture plans and scoring contract match C04’s verified reference.
+All frozen source copies match. Source abc03c79f; registration ready to commit.
