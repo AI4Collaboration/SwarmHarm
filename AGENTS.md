@@ -33,6 +33,9 @@
   The user authorized deleting the just-run r80-r87 direct comparison (including
   r84b), then rerunning Sol6.1, Terra6.1 and Luna6 across the four scenarios.
   Earlier historical evidence and independent Phase 2 work remain protected.
+- Native harness changes and fixes are authorized whenever needed. Diagnose and
+  repair concrete issues directly; no extra permission is needed for a harness
+  fix. Preserve collected traces and label revised interpretations separately.
 - Phase 1 scope is all four maintained taxonomy scenarios. Test Sol 6.1 and
   Haiku 5.5; either model passing the same current scenario's formation criterion
   is sufficient. Business completion alone is not formation. Work must have real

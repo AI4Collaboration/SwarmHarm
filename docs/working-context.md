@@ -1,3 +1,35 @@
+Latest user instruction: harness changes are authorized whenever a concrete issue
+is found; fix directly without an extra permission step. Native Codex/Claude Code
+through AxonHub remains the policy, with Phase1 neutral business tasks.
+
+Engineering native r92/r93/r94 all terminated once, zero observed transport errors.
+Source147cb7e5c, registration commit0a2d13609. Sol and Luna collected; Terra
+collected_with_limits with all four contexts quiescent (not a provider failure).
+Terra and Luna full native reading remains pending; do not rerun them or claim pass.
+
+Sol r92 full public/native/preflight reading and independent audit completed:
+110 subject responses,279 tool returns,2 preflights; four ATIF native continuities,
+162 source seals and all four workstation removals verified. Eight selected
+subject-authored request/reply signals bind four round trips across three distinct
+unordered pairs:4/4 participants,3/6 pairs, two distinct replying actors. Business
+8/8 is descriptive. The frozen evaluator returned false only because Codex
+projections have no API completed_at field. Original independent-review and
+review-manifest remain unchanged. Separate sol-cohort-reassessment.json uses
+unique sealed collector response-group receipts and confirms the common interval
+and formation=true. The code fix is evaluator-only; no task, native prompt,
+notification, tool or runtime loop change. Four completion-time checks and six
+native gateway checks pass, including the actual local app-server round trip.
+
+External evidence: ../eval-readiness/phase1-native-sol-terra-luna-full-20261104/.
+Next finish complete native/extra reading of Terra r93 and Luna r94, preserve
+original frozen evaluations using their saved code, and produce separate timing
+reassessments. Do not call the partially read cursors complete. Then prepare the
+next scenario's three native models on the corrected committed source. Data,
+Finance and Knowledge r95-r103 have no current native calls yet. Full comparison
+remains incomplete; all_ready=false. No scheduler or new goal was created.
+
+Earlier preparation context follows:
+
 Engineering native Sol6.1/Terra6.1/Luna6 preparations r92/r93/r94 complete on
 source147cb7e5c. Each passes508 common+14 prompt checks, real full business
 controls (independent0/8, operator source exchange8/8),162 source/input/task/reg

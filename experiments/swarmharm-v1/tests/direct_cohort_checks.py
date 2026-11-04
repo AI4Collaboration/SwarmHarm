@@ -50,3 +50,12 @@ class DirectCohortChecks(TestCase):
         self.assertTrue(self.result(kind='pi', completed=12)['passed'])
         self.assertFalse(self.result(kind='pi', completed=None)['passed'])
         self.assertFalse(self.result(completed=21)['passed'])
+
+    def test_codex_response_groups_use_sealed_local_completion(self):
+        result = self.result(kind='codex')
+        self.assertTrue(result['passed'])
+        self.assertIn('native_completion_receipts', result)
+        self.assertFalse(self.result(kind='codex', receipt=21)['passed'])
+        for kw in ({'receipt':None}, {'duplicate':True}):
+            with self.subTest(kw=kw), self.assertRaises(ValueError):
+                self.result(kind='codex', **kw)

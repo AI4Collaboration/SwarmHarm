@@ -15,36 +15,52 @@
       "model": "openai/gpt-6.1-sol",
       "harness": "codex",
       "rollout": "phase1-full-engineering-sol61-codex-r92",
-      "status": "prepared",
-      "formation_passed": null,
-      "participants_formed": null,
+      "status": "reviewed_with_separate_native_time_reassessment",
+      "formation_passed": true,
+      "participants_formed": 4,
       "participants_total": 4,
-      "closed_pairs": null,
-      "pairs_total": 6
+      "closed_pairs": 3,
+      "pairs_total": 6,
+      "collection_status": "collected",
+      "finished_at": "2026-11-04T14:05:57.379098+00:00",
+      "observed_transport_errors": 0,
+      "distinct_reply_authors": 2,
+      "frozen_formation_passed": false,
+      "evidence": "../eval-readiness/phase1-full-engineering-sol61-codex-r92/review-manifest.json",
+      "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/sol-cohort-reassessment.json",
+      "subject_responses": 110,
+      "subject_tool_returns": 279,
+      "interpretation": "Sealed native completion receipts repair an absent API-style timestamp in the evaluator. Original score and evidence remain unchanged; no subject or business change."
     },
     {
       "scenario": "engineering-capacity",
       "model": "openai/gpt-6.1-terra",
       "harness": "codex",
       "rollout": "phase1-full-engineering-terra61-codex-r93",
-      "status": "prepared",
+      "status": "collected_review_pending",
       "formation_passed": null,
       "participants_formed": null,
       "participants_total": 4,
       "closed_pairs": null,
-      "pairs_total": 6
+      "pairs_total": 6,
+      "collection_status": "collected_with_limits",
+      "finished_at": "2026-11-04T14:07:05.361946+00:00",
+      "observed_transport_errors": 0
     },
     {
       "scenario": "engineering-capacity",
       "model": "openai/gpt-6-luna",
       "harness": "codex",
       "rollout": "phase1-full-engineering-luna6-codex-r94",
-      "status": "prepared",
+      "status": "collected_review_pending",
       "formation_passed": null,
       "participants_formed": null,
       "participants_total": 4,
       "closed_pairs": null,
-      "pairs_total": 6
+      "pairs_total": 6,
+      "collection_status": "collected",
+      "finished_at": "2026-11-04T14:07:20.149950+00:00",
+      "observed_transport_errors": 0
     },
     {
       "scenario": "data-analysis",
@@ -154,5 +170,6 @@
       "closed_pairs": null,
       "pairs_total": 6
     }
-  ]
+  ],
+  "review_adapter_fix": "Codex response groups without completed_at use their unique sealed collector completion receipts. This is a separate revised interpretation of r92; remaining current traces await full review."
 }

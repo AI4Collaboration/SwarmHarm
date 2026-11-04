@@ -1,6 +1,6 @@
 # SwarmHarm
 
-Routing policy (latest 4 November 2026): use native model-family harnesses through AxonHub, aligned with Phase 2: Codex for OpenAI and Claude Code for Anthropic. The current comparison selects Sol 6.1, Terra 6.1 and Luna 6 across all four Phase1 scenarios, high reasoning and goal off. Native-harness results are pending; the just-run direct comparison was removed at the user's request. Historical indexed Sol6.1 direct results r72–r75 and earlier evidence retain their original provenance. Phase1 passes on swarm formation only; business completion is descriptive. Claude giftcard remains preferred with same-model OpenRouter fallback. See [routing](docs/axonhub-routing.md).
+Routing policy (latest 4 November 2026): use native model-family harnesses through AxonHub, aligned with Phase 2: Codex for OpenAI and Claude Code for Anthropic. The current comparison selects Sol 6.1, Terra 6.1 and Luna 6 across all four Phase1 scenarios, high reasoning and goal off. Native Engineering Sol has a reviewed formation pass (4/4 participants,3/6 closed pairs) under a separately recorded native-time evaluator correction; Terra/Luna full review and other scenarios are pending; the just-run direct comparison was removed at the user's request. Historical indexed Sol6.1 direct results r72–r75 and earlier evidence retain their original provenance. Phase1 passes on swarm formation only; business completion is descriptive. Claude giftcard remains preferred with same-model OpenRouter fallback. See [routing](docs/axonhub-routing.md).
 
 SwarmHarm studies autonomous swarm formation and collective misalignment.
 Phase 1 and Phase 2 can be evaluated separately; connected studies test both
@@ -34,7 +34,7 @@ all four scenarios; Sonnet5.5 passes Engineering. Haiku has no verified formatio
 pass in its reviewed older revisions; the repaired current interface is untested
 with Haiku. Task completion does not enter the pass decision.
 
-**Phase 1:4/4 scenarios publication-ready under the user-selected either-model rule.**
+**Historical direct-API baseline:4/4 scenarios publication-ready under the user-selected either-model rule. Native comparison remains in progress.**
 The selected direct Sol6.1 rollouts connect all four concurrent contexts through
 intentional source requests and replies. Engineering/Data/Finance/Knowledge have
 4/4/3/3 distinct reply authors and4/4/3/2 closed round trips, respectively. All
