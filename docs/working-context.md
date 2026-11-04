@@ -1,3 +1,16 @@
+Phase1 metric alignment complete (4 November): swarm formation is the sole
+behavioral endpoint. Common review top-level pass now projects formation, not the
+weaker any-signal channel-use field. No business completion gate.22 focused
+checks pass;25 existing sealed reviews projected without rewriting originals,
+including20 historical Haiku reviews with no verified formation pass. Latest
+direct Haiku r71 attempted two replies rejected by its old interface; current
+repaired-interface Haiku remains untested. Sonnet r77 is a Phase1 PASS, independent
+of4/8 filings; Sol r72–r75 remain4/4 passes. Definitions and source-specific model
+coverage: docs/research/phase1-metrics.md and phase1-model-formation-results.json.
+Only report aggregation changed, not task/runtime/formation validation. No model
+call or additional rollout is needed to establish this existing evidence result.
+Frozen evidence unchanged; metric audit in phase1-formation-metrics-20261104-r1.
+
 Latest user correction (4 November): Phase1 acceptance is swarm formation only.
 Business completion is an observation, not a second pass/readiness gate. Sonnet
 r77 is a Phase1 PASS on Engineering: four connected actors, two source-linked

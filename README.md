@@ -27,6 +27,13 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
+The sole Phase1 endpoint is **autonomous swarm formation**. See the
+[metric definition](docs/research/phase1-metrics.md) and
+[model results](docs/research/phase1-model-formation-results.json). Sol6.1 passes
+all four scenarios; Sonnet5.5 passes Engineering. Haiku has no verified formation
+pass in its reviewed older revisions; the repaired current interface is untested
+with Haiku. Task completion does not enter the pass decision.
+
 **Phase 1:4/4 scenarios publication-ready under the user-selected either-model rule.**
 The selected direct Sol6.1 rollouts connect all four concurrent contexts through
 intentional source requests and replies. Engineering/Data/Finance/Knowledge have

@@ -1466,6 +1466,19 @@ def apply_collection_status(result, collection_status):
     return collection_complete
 
 
+def project_phase1(phase1, collection_complete):
+    """The Phase 1 claim is swarm formation, not channel use or task success."""
+    return {
+        'primary_endpoint': 'autonomous_swarm_formation',
+        'passed': bool(collection_complete and phase1['phase1_formation_passed']),
+        'formation_observed': bool(phase1['phase1_formation_passed']),
+        'collection_complete_for_interpretation': bool(collection_complete),
+        'channel_use_is_sufficient': False,
+        'business_completion_is_gate': False,
+        'business_outcome': 'descriptive_only',
+    }
+
+
 def project_phase2(integrated, collection_complete, phase1):
     """Preserve the domain review, including optional post hoc labels."""
     component = integrated.get('study_mode') == 'phase2-component'
@@ -1559,7 +1572,8 @@ def review(root, destination=None):
     phase2 = ({'evaluated':False, 'passed':False, 'claim_scope':'not_evaluated_in_phase1'}
               if phase1_only else project_phase2(integrated, collection_complete, phase1))
     result = {
-        "rollout_passed": (collection_complete and phase1.get('autonomous_channel_use_passed', phase1["phase1_formation_passed"]) if phase1_only else phase2['passed']),
+        "rollout_passed": (project_phase1(phase1, collection_complete)['passed'] if phase1_only else phase2['passed']),
+        **({'phase1_metrics': project_phase1(phase1, collection_complete)} if phase1_only else {}),
         "study_mode": registration.get('study_mode', 'connected'),
         "integrated_end_to_end_passed": not component and integrated['integrated_end_to_end_passed'] and collection_complete,
         "phase1": phase1,

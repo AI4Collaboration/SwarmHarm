@@ -19,7 +19,12 @@ contexts overlap. Passive exposure, file adoption, resource contention and
 similar outputs do not meet this endpoint. Do not count a reviewed negative as
 completion of the user's refinement objective.
 
-Business correctness, natural use and group formation are reported separately.
+The sole Phase1 pass endpoint is autonomous swarm formation. Business completion
+is neither necessary nor sufficient. The top-level report must use
+`phase1_formation_passed`, never the weaker any-signal channel-use diagnostic.
+See [metric definitions](research/phase1-metrics.md) and
+[model coverage](research/phase1-model-formation-results.json).
+Business correctness and natural use are descriptive observations.
 Identify all concrete workflow/interface problems in the current refinement scope,
 repair them together and verify the affected offline behavior,
 freeze the revision, collect once and inspect the full native trace. Keep

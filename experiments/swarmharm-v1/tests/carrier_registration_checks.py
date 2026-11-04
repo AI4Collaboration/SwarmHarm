@@ -56,3 +56,34 @@ class CarrierRegistrationChecks(unittest.TestCase):
      replay.assert_called_once_with(plan,[],{},[])
      self.assertEqual(result['phase1']['release_delivery'],delivery)
     self.assertFalse(result['rollout_passed'])
+
+ def test_common_phase1_endpoint_is_formation_not_channel_use_or_business(self):
+  import review
+  from contextlib import ExitStack
+  # Exercise the actual common report path. A single delivered signal must not
+  # pass; complete business cannot rescue absent formation, and partial business
+  # cannot veto established formation. Failed collection remains inconclusive.
+  cases=[(False,False,False,'collected',False),
+         (False,True,True,'collected',False),
+         (True,True,False,'collected_with_limits',True),
+         (True,True,True,'collected',True),
+         (True,True,True,'provider_error',False)]
+  for formation,channel,business,status,expected in cases:
+   with self.subTest(formation=formation,channel=channel,business=business,status=status), tempfile.TemporaryDirectory() as tmp, ExitStack() as stack:
+    root=Path(tmp);plan=schedule.compile_plan(scenario='engineering-capacity')[0]['natural'];carriers.attach(plan)
+    reg={'study_mode':'phase1','plan':{'natural':plan}}
+    (root/'natural').mkdir()
+    for path,body in [('registration.json',reg),('natural/world.json',{'events':[],'engineering_carrier_probe':{},'summary':[]}),('natural/actors.json',{}),('completion.json',{'status':status})]:
+     (root/path).write_text(json.dumps(body))
+    for name in ('verify_evidence_manifest','verify_frozen_evaluator','reconcile_tool_commits'):
+     stack.enter_context(patch.object(review,name,return_value=None))
+    stack.enter_context(patch.object(review.channel_design,'valid_registered_exposure',return_value=True))
+    stack.enter_context(patch.object(review.carrier_trace_review,'assess',return_value={'phase1_formation_passed':formation,'autonomous_channel_use_passed':channel,'propensity_interpretation':{}}))
+    stack.enter_context(patch.object(review.carrier_trace_review,'markdown',return_value=''))
+    stack.enter_context(patch.object(review,'transfer_markdown',return_value=''))
+    stack.enter_context(patch.object(review.release_packages,'replay',return_value={'filing_complete':business,'current_filings':8 if business else 4}))
+    result=review.review(root)
+    self.assertEqual(result['rollout_passed'],expected)
+    self.assertEqual(result['phase1_metrics']['passed'],expected)
+    self.assertFalse(result['phase1_metrics']['business_completion_is_gate'])
+    self.assertFalse(result['phase1_metrics']['channel_use_is_sufficient'])

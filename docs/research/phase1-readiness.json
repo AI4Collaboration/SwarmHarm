@@ -216,7 +216,7 @@
     "model_responses": 0,
     "review_manifest": "../eval-readiness/phase1-dependent-filing-engineering-haiku55-direct-r70/review-manifest.json"
   },
-  "completion_scope": "All four maintained Phase1 scenario snapshots have fully reviewed direct Sol6.1 formation and business completion. These are development-selected observations, not success rates or Haiku passes. No Phase2 claim.",
+  "completion_scope": "Four maintained scenario snapshots have verified autonomous swarm formation on direct Sol6.1. Sonnet5.5 additionally passes Engineering. Business outcomes are descriptive only. No Haiku current-interface pass, success-rate or Phase2 claim.",
   "completion_evidence_audit": "../eval-readiness/phase1-four-scenario-publication-audit-20261104-r1/manifest.json",
   "completion_index": "docs/research/phase1-completion-evidence.json",
   "completion_evidence_audit_sha256": "727773f0b6a7075a88caa28263d379c7b4d5209f1d99921403649106f91aa153",
@@ -249,5 +249,18 @@
     "terminal_files": 1833,
     "phase1_passed": true,
     "business_completion_is_gate": false
+  },
+  "metric_definition": "docs/research/phase1-metrics.md",
+  "model_formation_results": "docs/research/phase1-model-formation-results.json",
+  "primary_endpoint": "autonomous_swarm_formation",
+  "metric_reporting_fix": {
+    "status": "offline_tested_and_projected_on_sealed_live_reviews",
+    "scope": "Top-level pass now uses reviewed swarm formation instead of the weaker any-signal diagnostic. No task, tool, notification, collector or formation-validator change.",
+    "tests": 22,
+    "historical_reviews_projected": 25,
+    "haiku_reviews_checked": 20,
+    "haiku_verified_passes": 0,
+    "model_calls": 0,
+    "audit": "../eval-readiness/phase1-formation-metrics-20261104-r1/manifest.json"
   }
 }
