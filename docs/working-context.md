@@ -15,8 +15,10 @@ four condition-specific skips; 13 prompt checks passed, zero hosted calls.
 One-line guard repair restricts admission to standalone Phase 2. Seven affected
 contracts passed; fresh P02 is prepared with source abc03c79f. Original file bytes,
 inputs, tools, fixture plans and scorer match the verified r212 reference.
-All frozen source copies match. Registration commit/push and live review pending. Earlier outcomes and frozen source stay
-intact. Branch codex/aman-r212-glm-pi. No evaluation collection has started.
+All frozen source copies match. P02 registration c5eb6afd8 is pushed; C05-R01
+started 2026-11-04 08:28:49 UTC. Native exact-model Pi tool preflight passed.
+Full live review pending; no later condition queued. Earlier outcomes and frozen source stay
+intact. Branch codex/aman-r212-glm-pi. C05-R01 is the sole active evaluation collection.
 
 ---
 

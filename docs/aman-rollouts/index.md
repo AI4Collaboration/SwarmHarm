@@ -4,7 +4,7 @@
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **11 experiments, 47 executed collection attempts, 31 uncollected preparations** in the inspected local archive.
+Coverage: **11 experiments, 48 executed collection attempts, 30 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
@@ -207,3 +207,7 @@ EXP-009-C05-P02 prepared with the exact model, vendor provenance and authenticat
 AxonHub catalog. All original r212 files, initial instructions/messages, tool
 definitions, fixture plans and scoring contract match C04’s verified reference.
 All frozen source copies match. Source abc03c79f; registration ready to commit.
+
+EXP-009-C05-R01 collecting from P02 registration c5eb6afd8 since 2026-11-04T08:28:49.087163+00:00.
+Native Pi exact-model tool preflight passed. Four active persistent contexts;
+one admitted native inference attempt at a time. No later condition queued.
