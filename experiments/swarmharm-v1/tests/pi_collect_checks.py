@@ -305,7 +305,7 @@ Path('optimization.json').write_text(json.dumps({'workload':o['workload'],'reque
                 for item in body['input'])
             waited = any(item.get('type') == 'function_call' and item.get('name') == 'goal_wait'
                          for item in body['input'])
-            if action == 'automatic' and automatic_inputs < 2:
+            if action == 'no_progress' or (action == 'automatic' and automatic_inputs < 2):
                 item = self.message('The work remains incomplete.', number)
             elif action in ('timed_wait', 'indefinite_wait', 'outside_window_wait') and not waited:
                 arguments = {'goal_id': goal.group(1), 'reason': 'Waiting for the external business update.'}
@@ -448,7 +448,12 @@ class PiCollectChecks(unittest.TestCase):
                 self.assertIn(json.loads(registered_input[0]['content'])['job_id'],system['content'])
             names = [tool['name'] for tool in first['tools']]
             registered = run.load(root / 'initial-input-audit.json')['natural'][actor]
-            self.assertEqual(names[:len(registered['tools'])], [tool['name'] for tool in registered['tools']])
+            business_names = [tool['name'] for tool in registered['tools']]
+            expected = set(business_names) | (set(PI.GOAL_TOOLS) if reg['harness']['goal_mode'] != 'off' else set())
+            self.assertEqual(set(names), expected)
+            self.assertEqual(len(names), len(expected))
+            # Pi 1.5 keeps canonical extension-first order across prompt updates.
+            self.assertEqual([name for name in names if name in business_names], business_names)
             self.assertFalse({'read', 'edit', 'write', 'grep', 'find', 'ls', 'powershell'} & set(names))
             tool = run.load(trace / '0001-tool-1.json')
             self.assertEqual(tool['name'], 'bash')
@@ -883,6 +888,22 @@ class PiCollectChecks(unittest.TestCase):
                 self.assertGreaterEqual(max(sum(
                     item.get('role') == 'user' and '<!-- pi-goal-continuation:' in _text(item)
                     for item in request['input']) for request in requests), 2)
+
+    def test_native_goal_no_progress_guard_preserves_incomplete_goal(self):
+        ScriptedResponses.goal_action = 'no_progress'
+        with tempfile.TemporaryDirectory() as temporary, \
+                patch.object(run, 'work_notice', return_value=(None, None)):
+            root, reg = self.collect(temporary, 'goal_command')
+            self.assert_native_records(root, reg)
+            for actor in reg['plan']['natural']:
+                goal = self.native_goal_entries(root, actor)[-1]['data']['goal']
+                self.assertEqual(goal['status'], 'paused')
+                self.assertEqual(goal['safetyPauseCause'], 'no_progress')
+                self.assertEqual(goal['toolFreeRepeatCount'], 3)
+                self.assertLess(goal['automaticModelTurns'], 25)
+                state = run.load(root / 'natural' / actor / 'result.json')
+                self.assertFalse(state.get('native_goal_resumptions'))
+                self.assertFalse(state['completion_attempts'][-1]['completion_state']['complete'])
 
     def test_independent_component_uses_only_native_goal_condition(self):
         ScriptedResponses.goal_action = 'blocked'

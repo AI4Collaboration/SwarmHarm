@@ -38,6 +38,26 @@ Real CLI/SDK offline tests verify bounded repetition, goal preservation, same-se
 resumption and successful continuation. A fresh rollout is still needed for
 behavioral validation; do not reuse the closed registrations for the new runtime.
 
+## Codex and Pi audit
+
+Codex's real CLI repeated tool-free final answers despite the documented
+[native stop behavior](https://developers.openai.com/cookbook/examples/codex/using_goals_in_codex), on both desktop `0.166.0-alpha.5.1` and stable `0.166.0`.
+The adapter now pauses the native goal after two turns without a novel business
+tool name/arguments/result; it preserves any already-running turn, objective and
+history. A genuine new business input resumes the parked goal, not a goal that
+subsequently completed. Guard actions and native API transitions are recorded.
+Tests cover repeated text, repeated identical tools, normal progress and resumption.
+The selected desktop binary remains unchanged; stable was tested in an isolated install.
+
+Pi is updated to 1.5.0 / pi-goal 0.54.15. The adapter's exact preamble check is
+aligned with the upstream change; canonical extension-first tool order is retained.
+Native extension controls remain 25 automatic responses / three identical
+no-tool replies. Tests verify an incomplete paused goal, not false completion.
+Pi-goal is a separate extension, not a Pi-core goal. Runtime changes require a
+fresh registration; no hosted rollout was launched by this audit. Validation:
+26 Pi collection checks, 13 native harness checks, and six Codex goal checks
+on each CLI channel passed. Audit logs: `../eval-readiness/harness-audit-20261104/`.
+
 ## Locations
 
 Worktree `swarmharm-claude-claims`, branch `work/claude-claims-20261104`.

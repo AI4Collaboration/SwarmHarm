@@ -13,9 +13,9 @@ import threading
 HERE = Path(__file__).resolve().parent
 PI_DIR = HERE / 'pi'
 AGENT = PI_DIR / 'agent.mjs'
-PI_VERSION = '1.4.0'
+PI_VERSION = '1.5.0'
 GOAL_PACKAGE = '@narumitw/pi-goal'
-GOAL_VERSION = '0.54.13'
+GOAL_VERSION = '0.54.15'
 GOAL_EXTENSION = PI_DIR / 'node_modules/@narumitw/pi-goal/dist/index.ts'
 NODE_MINIMUM = (22, 19, 0)
 # Replaces only Pi's harness preamble; Pi's tool, rule and cwd sections stay.

@@ -17,7 +17,7 @@ import {
 } from "@earendil-works/pi-coding-agent";
 
 const PI_PREAMBLE =
-	"You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.";
+	"You are a coding assistant running inside pi, a coding agent harness. Help users inspect files, run commands, and modify code.";
 const DOCS_SECTION = /\n*<docs>\n[\s\S]*?\n<\/docs>/;
 const CWD_SECTION = /<cwd>\n[^\n]*\n<\/cwd>/;
 const PROVIDER = "swarmharm";

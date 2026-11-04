@@ -3,6 +3,7 @@
 from contextlib import ExitStack, contextmanager
 from copy import deepcopy
 import os
+from hashlib import sha256
 import signal
 import json
 from pathlib import Path
@@ -31,6 +32,10 @@ class CodexAgent:
             raise ValueError('Unsupported Codex goal mode')
         self.goal_mode = goal_mode
         self.goal_started = False
+        self.goal_guard_parked = False
+        self.goal_idle_turns = 0
+        self.goal_tool_novel = False
+        self.goal_tool_seen = set()
         self.first_native_turn = None
         self.pending_user_echo = None
         self.goal = None
@@ -179,6 +184,14 @@ class CodexAgent:
                     if command == 'close':
                         break
                     if command == 'settle_goal':
+                        if value.get('park'):
+                            current = self.rpc.request('thread/goal/get', {'threadId': self.thread_id})['goal']
+                            if current and current['status'] == 'active':
+                                self.rpc.request('thread/goal/set', {'threadId': self.thread_id,
+                                    'status': 'paused', 'origin': 'user'})
+                                self.goal_guard_parked = True
+                                self.rpc.record('controller', {'method': 'goal_progress_guard',
+                                    'params': {'action': 'paused', 'idle_turns': self.goal_idle_turns}})
                         goal = self.rpc.request('thread/goal/get', {'threadId': self.thread_id})['goal']
                         with self.lock:
                             self.goal = goal
@@ -198,6 +211,14 @@ class CodexAgent:
                         self._verify_tools()
                     elif command == 'prompt':
                         text = '\n\n'.join(value)
+                        resume_guard = self.goal_guard_parked
+                        if resume_guard:
+                            current = self.rpc.request('thread/goal/get', {'threadId': self.thread_id})['goal']
+                            # A turn already in flight may have completed the goal after parking.
+                            resume_guard = bool(current and current['status'] == 'paused')
+                            self.goal_guard_parked = False
+                        self.goal_idle_turns = 0
+                        self.goal_tool_novel = False
                         with self.lock:
                             self.history.append({'role': 'user', 'content': text})
                             self.pending_user_echo = text
@@ -206,6 +227,12 @@ class CodexAgent:
                         self.rpc.request('turn/start', {'threadId': self.thread_id,
                             'model': self.model, 'effort': self.effort,
                             'input': [{'type': 'text', 'text': text, 'text_elements': []}]})
+                        if resume_guard:
+                            self.rpc.request('thread/goal/set', {'threadId': self.thread_id,
+                                'status': 'active', 'origin': 'user'})
+                            self.goal_guard_parked = False
+                            self.rpc.record('controller', {'method': 'goal_progress_guard',
+                                'params': {'action': 'resumed_new_business_input'}})
                         if self.goal_mode == 'codex_goal' and not self.goal_started:
                             self.goal_started = True
                             # Activate while the initial task turn is running. Codex
@@ -308,6 +335,13 @@ class CodexAgent:
                                 if mcp_output_text(item['output']) != call['output']:
                                     raise RuntimeError('Codex truncated or changed a workstation result')
                                 item['output'] = call['output']
+                        if call and call['business']:
+                            fingerprint = sha256(json.dumps([call['item']['name'],
+                                json.loads(call['item']['arguments']), item['output']],
+                                sort_keys=True).encode()).hexdigest()
+                            if fingerprint not in self.goal_tool_seen:
+                                self.goal_tool_seen.add(fingerprint)
+                                self.goal_tool_novel = True
                         self.outputs.append(item)
                         self._response(source)
                         return
@@ -367,7 +401,11 @@ class CodexAgent:
                         raise RuntimeError('Codex turn did not complete: ' + status)
                     self.active = False
                     if self.goal_mode == 'codex_goal':
-                        self.commands.put(('settle_goal', {'turn':self.turn,'text':self.final_text}))
+                        self.goal_idle_turns = 0 if self.goal_tool_novel else self.goal_idle_turns + 1
+                        self.goal_tool_novel = False
+                        self.commands.put(('settle_goal', {'turn':self.turn,'text':self.final_text,
+                            'park': self.goal_idle_turns >= self.runtime.GOAL_PROGRESS_GUARD['consecutive_idle_turns']
+                            and not self.goal_guard_parked}))
                     else:
                         self.emit('settled', turn=self.turn, text=self.final_text,
                             error_message=None, aborted=False)

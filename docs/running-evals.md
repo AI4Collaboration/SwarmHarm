@@ -48,7 +48,14 @@ installation of the same version. Install the selected adapter's pinned lockfile
 Native entry points are implemented. Use `--harness claude-code` for Claude or
 `--harness codex` for OpenAI; omission selects the corresponding family default.
 Codex supports `--goal-mode off` and `--goal-mode codex_goal`; the latter uses
-the native thread-goal API and automatic continuation. Claude supports
+the native thread-goal API and automatic continuation. A registered adapter guard
+pauses it after two turns without a novel business tool name/arguments/result.
+An already-running turn finishes and is retained; genuine new business input
+resumes the same goal. Native blocked/completed goals are not automatically reset.
+The desktop CLI currently reports `0.166.0-alpha.5.1`; stable `0.166.0` also passed
+the goal checks via `SWARMHARM_NATIVE_CODEX`. Each registration freezes the actual
+selected executable version/hash rather than treating release channels as identical.
+Claude supports
 `--goal-mode claude_goal` through AxonHub: atomic task delivery, native Stop
 evaluation using the same model, and a live goal preflight before subjects start.
 The project pins Claude Code 2.1.318 and SDK 0.3.318 locally. Timed check-ins
@@ -57,7 +64,12 @@ without a novel tool name/arguments/result; a new business input resumes the sam
 session and goal. This does not mark the task complete. Use `off`
 only for an explicitly registered goal-off comparison. Pi-goal is not rebranded as a Codex feature. For the explicitly requested Sol 5.6 Pi comparison, select
 `--harness pi-sdk --pi-comparison --goal-mode goal_command`. Freeze that
-difference when reproducing a Pi-goal case.
+difference when reproducing a Pi-goal case. Pi is pinned to 1.5.0 with the
+separate `@narumitw/pi-goal` 0.54.15 extension. Its native settings retain a
+25-response automatic-work limit and a three-repeat no-progress guard for
+identical tool-free responses; tool attempts reset that narrower guard.
+Pi 1.5 orders extension tools first; actual requests retain that order.
+These are distinct registered goal mechanisms, not identical persistence settings.
 Registration success and offline checks do not certify live behavior.
 
 ## Collect and review

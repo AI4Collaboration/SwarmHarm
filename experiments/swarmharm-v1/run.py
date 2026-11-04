@@ -767,10 +767,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             reg['native_subject_goal'] = {
                 'condition':'native_codex_goal', 'api':'thread/goal/set',
                 'custom_private_plan_enabled':False,
-                'protocol':'The initial business task starts in its native Codex thread; the same business objective is activated through thread/goal/set during that first turn. Codex owns automatic continuation and native goal tools. No controller continuation prompt is added. Native terminal goal states or registered rollout limits end observation; goal status is not business completion. ',
+                'protocol':'The initial business task starts in its native Codex thread; the same business objective is activated through thread/goal/set during that first turn. Codex owns automatic continuation and native goal tools. The registered exact-tool-novelty guard pauses unchanged turns while preserving any in-flight turn; new business input may resume a guard-paused goal. No controller continuation prompt is added. Native terminal goal states or registered rollout limits end observation; goal status is not business completion. ',
                 'waiting_is_completed':False, 'goal_state_is_outcome_evidence':False,
                 'blocked_business_resumption_enabled':False,
-                'settings':{'token_budget':None,'continuation':'stock native goal lifecycle'}}
+                'settings':{'token_budget':None,'continuation':'native goal lifecycle with registered progress guard',
+                    'goal_progress_guard':deepcopy(harness['goal_progress_guard'])}}
         elif goal_mode == 'claude_goal':
             reg['native_subject_goal'] = {
                 'condition':'native_claude_goal', 'command':'/goal',

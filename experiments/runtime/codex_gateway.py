@@ -92,6 +92,15 @@ def gateway_catalog(model, effort):
             'inference_calls': 0, 'inference_entitlement_verified': False}
 
 
+GOAL_PROGRESS_GUARD = {
+    'condition': 'exact_business_tool_novelty',
+    'consecutive_idle_turns': 2,
+    'action': 'pause_native_goal_preserve_history',
+    'resume': 'new_controller_business_input_only',
+    'inflight_turn': 'retain_and_finish_without_another_continuation',
+}
+
+
 def harness_registration(goal_mode, model):
     if goal_mode not in GOAL_MODES:
         raise ValueError('Unsupported native Codex goal mode')
@@ -101,6 +110,7 @@ def harness_registration(goal_mode, model):
     return {'kind':'codex','authentication':'axonhub','gateway':AXONHUB_BASE,
         'codex_cli':cli_identity(), 'installed':{'codex-cli':cli_identity()['version']},
         'native_catalog_sha256':digest(catalog), 'goal_mode':goal_mode,
+        'goal_progress_guard':dict(GOAL_PROGRESS_GUARD) if goal_mode=='codex_goal' else None,
         'system_prompt':SYSTEM_PROMPT, 'extension_tools':native_tools(goal_mode), 'builtin_tools':native_tools(goal_mode),
         'tool_profile':{'input_modalities':['text'],'apply_patch_tool_type':None,'supports_parallel_tool_calls':False, **TOOL_CAPABILITIES},
         'disabled_features':disabled_features(goal_mode), 'context_window':None,
@@ -117,6 +127,9 @@ def harness_registration(goal_mode, model):
 def verify_runtime(harness):
     if harness.get('authentication') != 'axonhub' or harness.get('gateway') != AXONHUB_BASE:
         raise ValueError('Unregistered Codex authentication route')
+    expected_guard = GOAL_PROGRESS_GUARD if harness.get('goal_mode') == 'codex_goal' else None
+    if harness.get('goal_progress_guard') != expected_guard:
+        raise RuntimeError('Codex goal guard changed; prepare a fresh registration')
     if cli_identity() != harness['codex_cli']:
         raise RuntimeError('Codex executable changed; prepare a fresh registration')
     with isolated_home() as home:

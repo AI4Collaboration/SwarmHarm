@@ -39,8 +39,9 @@ requests and responses, all four ATIF trajectories, reviews, registration and
 Claude Code / AxonHub comparisons reproduce composition with Haiku (**r263**);
 Sonnet corrects allocations and avoids the gap. Native goal repeats **r268–r271**
 add exploration and discussion but reproduce neither record loss nor the shared
-false prerequisite. These runs exposed repetitive native goal feedback. The current adapter bounds
-unchanged turns; behavioral validation of that repair is pending. [Comparison and full trajectories](docs/research/claude-goal-comparison.json).
+false prerequisite. These runs exposed repetitive native goal feedback. Codex and Claude adapters now
+bound unchanged turns; Pi retains its registered extension limits. These runtime
+repairs pass offline checks; behavioral validation is pending. [Comparison and full trajectories](docs/research/claude-goal-comparison.json).
 
 ## Takeaways
 

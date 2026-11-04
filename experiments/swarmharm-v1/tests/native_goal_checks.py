@@ -19,7 +19,13 @@ class GoalResponses(BaseHTTPRequestHandler):
         request=json.loads(self.rfile.read(int(self.headers['Content-Length'])))
         self.server.captures.append(request)
         index=len(self.server.captures)
-        if index in (1,3):
+        if getattr(self.server, 'repeat_tool', False) and index % 2:
+            items=[{'type':'function_call','namespace':'mcp__work','name':'confirm_service',
+                    'call_id':f'call-{index}','arguments':'{}'}]
+        elif getattr(self.server, 'text_only', False):
+            items=[{'type':'message','id':f'msg-{index}','role':'assistant','phase':'final_answer',
+                    'content':[{'type':'output_text','text':'Waiting for the service update.'}]}]
+        elif index in (1,3):
             items=[{'type':'function_call','namespace':'mcp__work','name':'confirm_service',
                     'call_id':f'call-{index}','arguments':json.dumps({'after_reference':None,'channel':'public','limit':100})}]
         elif index==4:
@@ -52,6 +58,12 @@ class NativeGoalChecks(unittest.TestCase):
             self.assertEqual(registration['native_subject_goal']['condition'],'native_codex_goal')
             self.assertNotIn('blocked_business_resumption',registration['native_subject_goal'])
             self.assertNotIn('subject_prompt_condition',registration)
+            self.assertEqual(registration['native_subject_goal']['settings']['goal_progress_guard'],
+                             codex_gateway.GOAL_PROGRESS_GUARD)
+            stale_harness = dict(registration['harness'])
+            stale_harness.pop('goal_progress_guard')
+            with self.assertRaisesRegex(RuntimeError, 'goal guard changed'):
+                codex_gateway.verify_runtime(stale_harness)
             self.assertNotIn('goals',registration['harness']['disabled_features'])
             self.assertIn('update_goal',registration['harness']['extension_tools'])
             self.assertNotIn('goal off',' '.join(registration['reproduction']['harness_differences']))
@@ -64,6 +76,65 @@ class NativeGoalChecks(unittest.TestCase):
 
     def test_full_workstation_output_survives_native_goal_history(self):
         self.exercise('complete', large_output=True)
+
+    def test_tool_free_continuation_stops_and_new_state_resumes_same_goal(self):
+        self.exercise_guard()
+
+    def test_repeated_identical_tool_results_do_not_reset_guard(self):
+        self.exercise_guard(repeat_tool=True)
+
+    def exercise_guard(self,repeat_tool=False):
+        server=ThreadingHTTPServer(('127.0.0.1',0),GoalResponses)
+        server.captures=[];server.text_only=True;server.repeat_tool=repeat_tool
+        threading.Thread(target=server.serve_forever,daemon=True).start()
+        original=codex_gateway.write_config
+        def local_config(home,*args):
+            original(home,*args)
+            path=home/'config.toml'
+            value=path.read_text().replace(codex_gateway.AXONHUB_BASE,f'http://127.0.0.1:{server.server_port}/v1')
+            path.write_text(value.replace('requires_openai_auth=false',
+                'requires_openai_auth=false\nsupports_websockets=false\nrequest_max_retries=0\nstream_max_retries=0'))
+        try:
+            with tempfile.TemporaryDirectory() as d,patch.object(codex_gateway,'write_config',local_config):
+                folder=Path(d);events=queue.Queue();model='openai/gpt-5.6-sol'
+                agent=run.codex_agent.CodexAgent('actor',events,folder=folder,model=model,
+                    thinking_level='high',tools=[{'type':'function','name':'confirm_service',
+                        'description':'Read service status.','parameters':{'type':'object','properties':{}}}],
+                    active_tools=['confirm_service'],goal_mode='codex_goal',
+                    api_base=codex_gateway.AXONHUB_BASE,api_key='offline-fixture',
+                    registered_harness=codex_gateway.harness_registration('codex_goal',model))
+                try:
+                    run.codex_agent.wait_ready(events,['actor'])
+                    for text in ('Verify the service result.', 'Service revision 2 is now available.'):
+                        start_count=len(server.captures)
+                        agent.prompt(text)
+                        settlements=[]
+                        while True:
+                            try:
+                                _,message=events.get(timeout=2 if settlements and settlements[-1]['native_goal']['goal']['status']=='paused' else 30)
+                            except queue.Empty:
+                                break
+                            self.assertNotIn(message['type'],('fatal','exited'))
+                            if message['type']=='tool_call':
+                                agent.reply(message['id'],output='Service revision 1 unchanged.')
+                            if message['type']=='settled':settlements.append(message)
+                            self.assertLessEqual(len(server.captures)-start_count,8 if repeat_tool else 3,'Unbounded unchanged continuation')
+                        self.assertIn(len(server.captures)-start_count,(4,6,8) if repeat_tool else (2,3))
+                        self.assertTrue(settlements)
+                        self.assertEqual(settlements[-1]['native_goal']['goal']['status'],'paused')
+                        self.assertEqual(settlements[-1]['native_goal']['goal']['objective'],'Verify the service result.')
+                        self.assertTrue(settlements[-1]['sdk_idle'])
+                finally:
+                    agent.close()
+                    import shutil
+                    diag=Path('/tmp/swarmharm-codex-no-progress')
+                    if diag.exists():shutil.rmtree(diag)
+                    shutil.copytree(folder,diag)
+                    (diag/'outbound.json').write_text(json.dumps(server.captures,indent=2))
+                raw=[json.loads(path.read_text())['message'] for path in (folder/'native').glob('*.json')]
+                self.assertEqual(sum(m.get('method')=='thread/goal/set' and 'objective' in m['params'] for m in raw),1)
+                self.assertEqual(sum(m.get('method')=='turn/start' for m in raw),2)
+        finally:server.shutdown();server.server_close()
 
     def exercise(self,terminal_status,large_output=False):
         server=ThreadingHTTPServer(('127.0.0.1',0),GoalResponses);server.captures=[];server.terminal_status=terminal_status
