@@ -157,6 +157,8 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             run.REPO/'experiments/prompt-contract/checks.py')
         module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
         audit = module.PromptContractChecks()
+        for error in module.runtime_error_literals(Path(s.__file__)):
+            audit.assertNotRegex(error, module.RESTRICTIVE_INSTRUCTIONS)
         for preset in s.PRESETS:
             f = self.flow(preset)
             for actor in f.plan:

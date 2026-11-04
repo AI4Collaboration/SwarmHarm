@@ -212,7 +212,7 @@ class Continuation(Base):
         definition = next((d for d in tool_definitions() if d['name'] == name), None)
         if actor not in self.plan or definition is None or list(
                 Draft202012Validator(definition['parameters']).iter_errors(arguments)):
-            result = {'status': 400, 'error': 'Request fields do not match the operation'}
+            result = {'status': 400, 'error': 'Request field mismatch'}
         else:
             result = self._dispatch(actor, name, arguments)
         event['result'] = result
