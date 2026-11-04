@@ -607,7 +607,7 @@ def _prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         else provider_concurrency)
     if not 1 <= resolved_provider_concurrency <= resolved_active_contexts:
         raise ValueError('provider concurrency must be between one and active contexts')
-    if resolved_provider_concurrency != resolved_active_contexts and harness_kind != 'pi-sdk':
+    if resolved_provider_concurrency != resolved_active_contexts and (harness_kind != 'pi-sdk' or not component):
         raise ValueError('each agent session sends its own requests; provider concurrency must equal active contexts')
     budget['provider_concurrency']=resolved_provider_concurrency
     if resolved_provider_concurrency != resolved_active_contexts:

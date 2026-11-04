@@ -4,7 +4,7 @@
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **11 experiments, 47 executed collection attempts, 29 uncollected preparations** in the inspected local archive.
+Coverage: **11 experiments, 47 executed collection attempts, 30 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
@@ -197,3 +197,8 @@ four persistent native-goal contexts, one outbound inference attempt at a time.
 One rollout selected before any later experiment. Original r212 business setup;
 no cash bonus or r217 interface. Native queue/tool/goal checks passed offline.
 Preparation and live review pending; no P/R assigned yet.
+
+EXP-009-C05-P01 failed one offline legacy concurrency guard check in the 486-method
+suite; 13 prompt checks passed. Zero hosted calls. Original failed report and
+source preserved; the scope guard is repaired and affected contracts rechecked
+before a fresh preparation.

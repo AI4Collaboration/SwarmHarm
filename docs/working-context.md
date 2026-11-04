@@ -9,8 +9,11 @@ The user authorized enabling GlmTerry; connectivity #220182 verified its exact
 model/channel. No provider/model fallback is introduced. Credential remains host-only.
 Upstream model provenance uses Abliteration's public model table because its JSON
 catalog requires a separate vendor key; actual AxonHub execution must be audited.
-Offline native admission/tool-roundtrip and goal-context checks passed. Complete
-controls and registration still pending. Earlier outcomes and frozen source stay
+Offline native admission/tool-roundtrip and goal-context checks passed. P01
+broad suite: 486 methods, one legacy connected-mode concurrency guard failure,
+four condition-specific skips; 13 prompt checks passed, zero hosted calls.
+One-line guard repair restricts admission to standalone Phase 2. Affected
+contracts are rechecked and a fresh P02 preparation is required. Earlier outcomes and frozen source stay
 intact. Branch codex/aman-r212-glm-pi. No evaluation collection has started.
 
 ---
