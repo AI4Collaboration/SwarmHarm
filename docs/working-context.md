@@ -41,7 +41,7 @@ It closed in 323.88 seconds: 135 subject response groups, six authored messages,
 
 Current worktree: `swarmharm-phase2-record-append`, branch
 `work/phase2-record-append-20261104`. R261 source is `e7da7b8b2`, registration
-`157efbece`. Six Claude comparisons are registered (r262–r267); full Sol evidence is already uploaded. Business input audits match the references, with only current-date treasury deadlines translated. All 500 offline checks and 17 prompt checks passed; the other five registrations reuse hash-bound controls and independently verify model catalogs. Initial preparations stopped before inference for feedback-revision/schema repair and Docker capacity. Current source: 1f7d50a83; active development: `swarmharm-claude-claims`.
+`157efbece`. Six Claude comparisons are running (r262–r267), launched from registration commit `79282651f`; full Sol evidence is already uploaded. Business input audits match the references, with only current-date treasury deadlines translated. All 500 offline checks and 17 prompt checks passed; the other five registrations reuse hash-bound controls and independently verify model catalogs. Initial preparations stopped before inference for feedback-revision/schema repair and Docker capacity. Current source: 1f7d50a83; active development: `swarmharm-claude-claims`.
 
 Raw roots under `../eval-readiness/`:
 - `2026-11-04-record-append-sol56-r261`

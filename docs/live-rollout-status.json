@@ -2,36 +2,8 @@
   "schema_version": 5,
   "updated_at": "2026-11-04",
   "environment": "experiments/swarmharm-v1",
-  "status": "claude_comparisons_registered",
-  "active_rollouts": [],
-  "heartbeat": null,
-  "study_mode": "phase2-component",
-  "active_scope": "standalone-phase2-only",
-  "phase_relationship": "independent_tracks_no_state_or_evidence_dependency",
-  "current_model": [
-    "anthropic/claude-haiku-5.5",
-    "anthropic/claude-sonnet-5.5"
-  ],
-  "current_harness": "claude-code",
-  "population": 4,
-  "claim_cases": {
-    "coordinated_adverse_outcomes": "r261",
-    "compositional_failure": "r255",
-    "shared_false_inference": "r257"
-  },
-  "readiness_reference": "docs/research/phase2-readiness.json",
-  "maintained_registrations": [
-    "experiments/swarmharm-v1/registrations/2026-11-04-record-append-sol56-r261",
-    "experiments/swarmharm-v1/registrations/2026-11-04-coordinated-haiku55-r262-final",
-    "experiments/swarmharm-v1/registrations/2026-11-04-composition-haiku55-r263-final",
-    "experiments/swarmharm-v1/registrations/2026-11-04-inference-haiku55-r264-final",
-    "experiments/swarmharm-v1/registrations/2026-11-04-coordinated-sonnet55-r265-final",
-    "experiments/swarmharm-v1/registrations/2026-11-04-composition-sonnet55-r266-final",
-    "experiments/swarmharm-v1/registrations/2026-11-04-inference-sonnet55-r267-final"
-  ],
-  "decision_record": "docs/working-context.md",
-  "next_condition": null,
-  "queued_rollouts": [
+  "status": "claude_comparisons_running",
+  "active_rollouts": [
     {
       "case": "r262",
       "model": "anthropic/claude-haiku-5.5",
@@ -74,5 +46,32 @@
       "reference": "r257",
       "registration": "experiments/swarmharm-v1/registrations/2026-11-04-inference-sonnet55-r267-final"
     }
-  ]
+  ],
+  "heartbeat": null,
+  "study_mode": "phase2-component",
+  "active_scope": "standalone-phase2-only",
+  "phase_relationship": "independent_tracks_no_state_or_evidence_dependency",
+  "current_model": [
+    "anthropic/claude-haiku-5.5",
+    "anthropic/claude-sonnet-5.5"
+  ],
+  "current_harness": "claude-code",
+  "population": 4,
+  "claim_cases": {
+    "coordinated_adverse_outcomes": "r261",
+    "compositional_failure": "r255",
+    "shared_false_inference": "r257"
+  },
+  "readiness_reference": "docs/research/phase2-readiness.json",
+  "maintained_registrations": [
+    "experiments/swarmharm-v1/registrations/2026-11-04-record-append-sol56-r261",
+    "experiments/swarmharm-v1/registrations/2026-11-04-coordinated-haiku55-r262-final",
+    "experiments/swarmharm-v1/registrations/2026-11-04-composition-haiku55-r263-final",
+    "experiments/swarmharm-v1/registrations/2026-11-04-inference-haiku55-r264-final",
+    "experiments/swarmharm-v1/registrations/2026-11-04-coordinated-sonnet55-r265-final",
+    "experiments/swarmharm-v1/registrations/2026-11-04-composition-sonnet55-r266-final",
+    "experiments/swarmharm-v1/registrations/2026-11-04-inference-sonnet55-r267-final"
+  ],
+  "decision_record": "docs/working-context.md",
+  "next_condition": null
 }
