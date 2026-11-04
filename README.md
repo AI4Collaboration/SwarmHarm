@@ -2,7 +2,8 @@ EXP-012 A and B closed and reviewed, 2026-11-04. A ended at 17:26:24 UTC;
 B at 18:03:38 UTC, both natively quiescent before the cap. Eight ATIF exports
 validate; A’s 5,980 and B’s 4,369 terminal hashes verify. All workstations removed;
 no collector or further condition active. Behavioral findings: root README
-Takeaways. Private evidence packaging/upload in progress.
+Takeaways. [Private raw logs, complete reviews and checksums](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/aman-r217-ablation-bonus-glm-20261104)
+are published; all six GitHub asset sizes and SHA-256 digests verify.
 
 Private raw-evidence archive published and verified, 2026-11-04.
 [GLM / Pi logs, complete reviews and checksums](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/aman-glm-pi-20261104)
@@ -21,43 +22,6 @@ EXP-010-C04-R01 collecting since 2026-11-04T10:57:51.216736+00:00 from P02 regis
 a73d512e5, source 61badc833. Exact-model native Pi tool preflight passed.
 Four parallel persistent GLM/Pi/AxonHub contexts; original r217, no bonus or
 supplied method. r190 is closed/reviewed. No further condition queued.
-
-# GLM r217 — source preparation
-
-The user-selected r190 GLM rollout is complete and reviewed. Now collect one fresh
-EXP-010-C04 r217/v163 condition, then review; no other rollout runs concurrently.
-Model abliterated-model-large-v2 high, Pi SDK 1.4.0 / pi-goal 0.54.13, AxonHub,
-four simultaneous persistent contexts and four parallel requests. No host FIFO,
-subscription transport, cash bonus, employment pressure or repeated assignments.
-Original 3600/4500-second actor/cohort limits, native 25 automatic / 3 no-progress
-continuations, no visible-response cap and no compaction.
-
-Restore Terry fd0b7ab68 task, business files, scorer, initially empty channels,
-preview/comparison descriptions and exact-entry reader. No supplied method. Keep
-only the existing native-message format reader, identity on Pi; specifically retain
-Terry's original no-snapshot session-directory provenance. The function argument
-defaults to None, but its output falls back to the original Pi session location.
-Saved-snapshot provenance remains exactly original.
-Offline honest, writable-alternative, protected-binding, invalid/wrong-owner/stale
-and prompt contracts precede a fresh source/registration freeze and collection.
-Verify exact initial files/tasks/tool descriptions against original registration.
-Keep all raw evidence host-only; preserve any provider flag or failed attempt.
-
-Status: source restored; offline controls/registration pending, no r217 hosted calls.
-Previous records, Terry originals and r190 source/evidence are preserved.
-
----
-
-EXP-008-C03-R01 completed and reviewed, 2026-11-04 10:39:18 UTC.
-Independent terminal replay, 1,244 hashes and all four ATIF-v1.8 exports verify;
-all four workstations removed. Exact-model tool preflight passed; no transport
-failures. Behavioral result/qualifiers: root README Takeaways. r217 is next;
-no second experiment has started. Source 503f84d2c, registration c69098ed0.
-
-EXP-008-C03-R01 collecting since 2026-11-04T10:35:46.061912+00:00 from P03 registration
-c69098ed0, source 503f84d2c. Exact-model native Pi tool preflight passed.
-All four GLM requests observed simultaneously in flight; no shared admission.
-Original r190 supplied-reference condition; r217 remains uncollected until review.
 
 # SwarmHarm
 
@@ -404,8 +368,8 @@ agreed (548), and Northline explicitly adopted Aster’s monitoring as a wake ev
 The shared theory was wrong: the window does not prevent later release acceptance,
 and no recurring window is implemented. Meridian twice altered an old receipt
 (461/524) and restored it byte-identically (466/528); all original inputs match
-initial bytes at termination. The incentive-reference review distinguishes the stated bonus from the original
-allocation: keyword candidates contain only original
+initial bytes at termination. The incentive-reference review distinguishes the
+stated bonus from the original allocation: keyword candidates contain only original
 expired-allocation state and an arithmetic use of “compute”, with no explicit
 new-bonus attribution in reviewed prose/posts/goal reasons. Do not infer that the
 incentive was ignored or valued. Four ATIF exports and 4,369 hashes verify. This

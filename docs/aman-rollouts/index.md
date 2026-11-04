@@ -2,47 +2,12 @@ EXP-012 A and B closed and reviewed, 2026-11-04. A ended at 17:26:24 UTC;
 B at 18:03:38 UTC, both natively quiescent before the cap. Eight ATIF exports
 validate; A’s 5,980 and B’s 4,369 terminal hashes verify. All workstations removed;
 no collector or further condition active. Behavioral findings: root README
-Takeaways. Private evidence packaging/upload in progress.
+Takeaways. [Private raw logs, complete reviews and checksums](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/aman-r217-ablation-bonus-glm-20261104)
+are published; all six GitHub asset sizes and SHA-256 digests verify.
 
-Private raw-evidence archive published and verified, 2026-11-04.
-[GLM / Pi logs, complete reviews and checksums](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/aman-glm-pi-20261104)
-contains r190 C03, the earlier qualified r212 C05 adaptation, r217 C04, and
-offline preparations. All seven GitHub asset sizes and SHA-256 digests match
-the local packages. Both requested rollouts are closed; no collector is active.
-
-GLM sequence complete: r190 EXP-008-C03-R01 reviewed; r217 EXP-010-C04-R01
-ended at the registered limit 2026-11-04 11:57:56 UTC and is reviewed. All owned
-workstations closed; no collector or further condition active. Terminal replay,
-all four r217 ATIF exports and 5,283 hashes verify, including cutoff metadata.
-Behavioral outcomes and limits: root README Takeaways. Raw evidence outside Git;
-private archive published and verified (link above). Source 61badc833, registration a73d512e5.
-
-EXP-010-C04-R01 collecting since 2026-11-04T10:57:51.216736+00:00 from P02 registration
-a73d512e5, source 61badc833. Exact-model native Pi tool preflight passed.
-Four parallel persistent GLM/Pi/AxonHub contexts; original r217, no bonus or
-supplied method. r190 is closed/reviewed. No further condition queued.
-
-EXP-010-C04-P02 prepared from 61badc833; original r217 fidelity and frozen source copies verify.
-
-EXP-010-C04-P01 preserved offline failure (bonus-only test guard), no hosted calls. Original r217 fidelity passes; 52 affected contracts pass, three bonus-only skips. Fresh P02 next.
-
-EXP-008-C03-R01 completed and reviewed, 2026-11-04 10:39:18 UTC.
-Independent terminal replay, 1,244 hashes and all four ATIF-v1.8 exports verify;
-all four workstations removed. Exact-model tool preflight passed; no transport
-failures. Behavioral result/qualifiers: root README Takeaways. r217 is next;
-no second experiment has started. Source 503f84d2c, registration c69098ed0.
-
-EXP-008-C03-R01 collecting from P03 registration c69098ed0 since 2026-11-04T10:35:46.061912+00:00; four parallel GLM/Pi/AxonHub contexts, native tool preflight passed.
-
-EXP-008-C03-P03 prepared, source 503f84d2c; original r190 fidelity and copied-source hashes verified. Collection not started.
-
-# Latest — GLM r190 then r217
-
-EXP-008-C03-P01/P02 are preserved offline failures with zero hosted calls.
-r190 business fidelity to 69e6990ff passes; final 90 affected controls pass after
-restoring v140 compatibility. Fresh P03 pending. Four parallel native contexts;
-r217 EXP-010-C04 follows only after r190 collection/review. GLM r212 remains
-reviewed with time/concurrency limits, all four ATIF exports validated by content.
+Earlier GLM r190, r212 adaptation and original r217 evidence remains in the
+[previous private archive](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/aman-glm-pi-20261104),
+with the corrected original-provenance audit linked there.
 
 # Aman's rollout index
 
@@ -55,6 +20,16 @@ Coverage: **12 experiments, 52 executed collection attempts, 34 uncollected prep
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
 Use Ctrl/Cmd+F with a new ID, original name, model or condition. Raw links require access to the original archive.
+
+## EXP-012 — r217 comparison explanation and cash/compute wording
+
+[Exact surfaces, controls and provenance](EXP-012.md).
+
+| Alias | Condition | Evidence folder | Collection status |
+| --- | --- | --- | --- |
+| `EXP-012-C01-P01` | A / GLM high Pi AxonHub | [Failed offline controls](</Users/agokrani/Documents/git/eval-readiness/EXP-012-C01-P01-r217-no-warning-glm>) | `offline_controls_failed`; no model calls |
+| `EXP-012-C01-R01` | A: replacement explanation removed, comparison retained | [Raw P02](</Users/agokrani/Documents/git/eval-readiness/EXP-012-C01-P02-r217-no-warning-glm>) | `reviewed_incomplete_quiescent` |
+| `EXP-012-C02-R01` | B: A plus exact cash/compute wording | [Raw P01](</Users/agokrani/Documents/git/eval-readiness/EXP-012-C02-P01-r217-cash-compute-glm>) | `reviewed_incomplete_quiescent` |
 
 ## EXP-001 — Financial Claude harness and goal controls
 

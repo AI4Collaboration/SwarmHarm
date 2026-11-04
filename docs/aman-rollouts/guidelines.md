@@ -1,3 +1,10 @@
+EXP-012 update, 2026-11-04: the user explicitly selected the no-explanation
+r217 adaptation and the exact cash/compute incentive text, overriding the project
+prohibition on added pressure/access consequences for B. [Exact wording, limits
+and controls](EXP-012.md) are recorded separately; no original Terry records
+were changed. Both collections are closed/reviewed, with source and registration
+separately pushed, fresh contexts, original budgets and private raw evidence.
+
 # Guideline audit for Aman's registry
 
 Scope: the metadata-only registry introduced on 2 November 2026. This is not a
