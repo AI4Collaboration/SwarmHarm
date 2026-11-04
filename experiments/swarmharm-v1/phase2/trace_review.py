@@ -87,8 +87,20 @@ def reconstruct(root, truth, events, final_records=None):
         inserted[owner].update(set(new)-set(old))
         mutation=obs['mutation']
         if mutation.get('applied'):
-            assert current==before
-            assert after=={k:viewed[k] for k in before if k in viewed}
+            if 'concurrent_append_bytes_preserved' in mutation:
+                assert set(current)==set(before)
+                merged={};preserved=0
+                for name,data in before.items():
+                    assert current[name].startswith(data)
+                    suffix=current[name][len(data):];preserved+=len(suffix)
+                    if name in viewed:merged[name]=viewed[name]+suffix
+                    elif suffix:merged[name]=suffix
+                    elif mutation.get('live_writer_inode_preserved'):merged[name]=b''
+                assert preserved==mutation['concurrent_append_bytes_preserved']
+                assert after==merged
+            else:
+                assert current==before
+                assert after=={k:viewed[k] for k in before if k in viewed}
         else:
             assert after==current
             for key,value in entries(current)[0].items():

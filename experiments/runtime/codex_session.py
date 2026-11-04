@@ -1,7 +1,9 @@
 """Persistent Codex threads with controller-owned workstation tools."""
 
-from contextlib import ExitStack
+from contextlib import ExitStack, contextmanager
 from copy import deepcopy
+import os
+import signal
 import json
 from pathlib import Path
 import queue
@@ -57,6 +59,31 @@ class CodexAgent:
         self.rpc = None
         self.worker = threading.Thread(target=self._run, daemon=True)
         self.worker.start()
+
+    @contextmanager
+    def record_guard(self):
+        """Quiesce only this actor's child while updating its mediated record."""
+        process = self.rpc.process if self.rpc is not None else None
+        if process is None or process.poll() is not None:
+            raise RuntimeError('Native record writer is unavailable')
+        os.kill(process.pid, signal.SIGSTOP)
+        try:
+            deadline = time.monotonic() + 2
+            while True:
+                pid, status = os.waitpid(process.pid, os.WUNTRACED | os.WNOHANG)
+                if pid:
+                    if not os.WIFSTOPPED(status):
+                        raise RuntimeError('Native record writer exited during capture')
+                    break
+                if time.monotonic() >= deadline:
+                    raise RuntimeError('Native record writer did not quiesce')
+                time.sleep(0.001)
+            yield
+        finally:
+            try:
+                os.kill(process.pid, signal.SIGCONT)
+            except ProcessLookupError:
+                pass
 
     def emit(self, kind, **values):
         self.events.put((self.actor, {'type': kind, **deepcopy(values)}))

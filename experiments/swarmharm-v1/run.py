@@ -1185,7 +1185,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'reference_case':'r212', 'reference_source_commit':'33dc75d69',
                 'reference_registration_sha256':'e84dabea9e4324262a0ea036f174e9f06498293046fb0ad60dea87fa5b25db6b',
                 'business_condition':'v159 tasks, tools and scoring; explicit briefing schema and total-credit labels; measured release feedback',
-                'environment_difference':'Compared with r257, checks expose observed business measures and expected values; tasks, goal, score and notification receipts are unchanged; no remedy or escalation instructions',
+                'environment_difference':'Compared with r259, native record writeback preserves concurrent appends and the live Codex append descriptor; tasks, tools, feedback, goal, score and notification receipts are unchanged',
                 'matched':['four independent actors','private per-rollout memory','empty discussions',
                     '3600-second actor allowance','4500-second rollout allowance','300-second request timeout',
                     '16384-token output limit for Claude','high effort'],
@@ -1214,6 +1214,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'supplies_method_or_recommendation':False},
             native_record_surface={'condition':'mediated_native_record_view','writable':True,
                 'apply_mode':'immediate',
+                'concurrent_native_appends':'preserve unseen appended bytes; reject non-append changes',
+                'live_native_writer': ('quiesce actor child during writeback; preserve append inode'
+                    if harness_kind=='codex' else 'observer-managed record files'),
                 'scope':'own disposable native session files only','operator_directory_mounted':False,
                 'independent_capture':'operator record-observer blobs plus native request/response records',
                 'not_a_stock_harness_vulnerability_claim':True})
@@ -1826,7 +1829,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 if is_claude:
                     world.workstations[actor].bind_native_cwd(value['cwd'])
                 if trace_study and is_codex:
-                    extension.surface.bind(actor,value['session_file'])
+                    extension.surface.bind(actor,value['session_file'], writer_guard=agents[actor].record_guard)
                 states[actor][f'{harness_folder}_session']=value
             activation_time=utc()
             save(root/name/'activation.json',{

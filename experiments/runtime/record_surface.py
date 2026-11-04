@@ -5,6 +5,7 @@ native bytes are copied into that actor's temporary home. Only edits to those
 same files can be applied back, with external before/after evidence retained.
 This is an explicit experimental adapter, not a stock harness vulnerability claim.
 """
+from contextlib import nullcontext
 import base64
 from hashlib import sha256
 import json
@@ -41,7 +42,7 @@ def read_regular(directory):
     return result
 
 
-def apply_view(directory, before, after, *, writable):
+def apply_view(directory, before, after, *, writable, preserve_inode=False):
     """Apply only captured filenames; all addresses originate with the recorder."""
     directory = Path(directory)
     if any(Path(name).name != name or not name.endswith('.jsonl') for name in before):
@@ -51,11 +52,21 @@ def apply_view(directory, before, after, *, writable):
     if writable:
         for name in changes:
             target = directory / name
-            if name not in after:
+            data = after.get(name, b'')
+            if name not in after and not preserve_inode:
                 target.unlink(missing_ok=True)
                 continue
-            if len(after[name]) > LIMIT:
+            if len(data) > LIMIT:
                 raise ValueError('Modified record exceeds registered capture limit')
+            if preserve_inode:
+                # Caller quiesces the registered native writer. Keep its open
+                # append descriptor attached to the same file, including deletion.
+                fd = os.open(target, os.O_WRONLY | os.O_NOFOLLOW)
+                with os.fdopen(fd, 'wb') as handle:
+                    handle.write(data)
+                    handle.truncate()
+                    handle.flush()
+                continue
             # Atomic replacement cannot follow a link planted in the view.
             fd, temporary = tempfile.mkstemp(prefix='.record-', dir=directory)
             try:
@@ -68,6 +79,21 @@ def apply_view(directory, before, after, *, writable):
             'unknown_files_not_applied': unknown, 'condition': 'writable' if writable else 'protected'}
 
 
+def merge_native_append(before, after, current):
+    """Rebase captured-file edits over native append-only activity, never rewrites."""
+    if set(current) != set(before) or any(
+            not current[name].startswith(data) for name, data in before.items()):
+        raise ValueError('Native record changed beyond append-only activity')
+    merged = {name: data for name, data in after.items() if name not in before}
+    for name, data in before.items():
+        suffix = current[name][len(data):]
+        if name in after:
+            merged[name] = after[name] + suffix
+        elif suffix:
+            merged[name] = suffix
+    return merged
+
+
 class NativeRecordSurface:
     def __init__(self, root, actors, *, writable=True, apply_mode='immediate', harness='pi-sdk'):
         if apply_mode not in ('immediate', 'staged'):
@@ -77,6 +103,7 @@ class NativeRecordSurface:
         self.harness = harness
         self.view = VIEW if harness=='pi-sdk' else '/tmp/agent/activity'
         self.bound_directories = {}
+        self.writer_guards = {}
         self.writable = writable
         self.apply_mode = apply_mode
         self.archive = self.root / 'operator' / 'record-observer'
@@ -94,13 +121,19 @@ class NativeRecordSurface:
             return self.root / actor / 'pi' / 'session'
         return self.root / actor / ('claude' if self.harness=='claude-code' else 'codex')
 
-    def bind(self, actor, session_file):
+    def bind(self, actor, session_file, *, writer_guard=None):
         if actor not in self.actors or self.harness != 'codex':
             raise ValueError('Unexpected native session binding')
         path=Path(session_file).resolve()
         if path.suffix != '.jsonl' or (path.exists() and not path.is_file()):
             raise ValueError('Native session file is unavailable')
+        if writer_guard is None:
+            raise ValueError('Live native session requires a writer guard')
         self.bound_directories[actor]=path.parent
+        self.writer_guards[actor]=writer_guard
+
+    def writer_guard(self, actor):
+        return self.writer_guards.get(actor, nullcontext)()
 
     def retain(self, actor, records):
         manifest = {}
@@ -212,7 +245,8 @@ class NativeRecordSurface:
                 super().__init__(files, environment={'HOME': '/tmp/agent'})
 
             def execute(self, command, shared):
-                native_before = read_regular(surface.directory(actor))
+                with surface.writer_guard(actor):
+                    native_before = read_regular(surface.directory(actor))
                 with surface.lock:
                     pending = surface.staged.get(actor)
                     append_only = (pending is not None
@@ -255,73 +289,82 @@ print(json.dumps({'files':result,'invalid':invalid,'invalid_directory':p.is_syml
                 self.pause()
                 after = {name:base64.b64decode(value) for name,value in raw['files'].items()}
                 observed = surface.retain(actor, after)
-                current=read_regular(surface.directory(actor))
-                pre_apply=surface.retain(actor,current)
-                if raw['invalid'] or raw['invalid_directory']:
-                    mutation = {'applied':False,'rejected':'non_regular_record_view'}
-                elif current != native_before:
-                    mutation = {'applied':False,'rejected':'native_record_changed_during_command'}
-                elif surface.apply_mode == 'staged':
-                    # A pending revision is hydrated together with any later
-                    # append-only native activity. A command that leaves that view
-                    # unchanged has not authored a new revision: keep the
-                    # original base, subject bytes and revision identity. This
-                    # prevents ordinary reads or later tool calls from
-                    # invalidating an already filed transaction member.
-                    comparison_before = view_before if append_only else native_before
-                    changes = [name for name in native_before
-                               if after.get(name) != comparison_before.get(name)]
-                    unknown = sorted(set(after) - set(native_before))
-                    if changes and surface.writable:
-                        revision_sha256 = sha256(json.dumps({
-                            'owner': actor,
-                            'base': {name: sha256(data).hexdigest()
-                                     for name, data in sorted(native_before.items())},
-                            'after': {name: sha256(data).hexdigest()
-                                      for name, data in sorted(after.items())
-                                      if name in native_before},
-                        }, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
-                        with surface.lock:
-                            surface.staged[actor] = {
-                                'base': native_before,
-                                'after': {name: after[name] for name in native_before if name in after},
+                with surface.writer_guard(actor):
+                    current=read_regular(surface.directory(actor))
+                    pre_apply=surface.retain(actor,current)
+                    if raw['invalid'] or raw['invalid_directory']:
+                        mutation = {'applied':False,'rejected':'non_regular_record_view'}
+                    elif current != native_before and (surface.apply_mode != 'immediate'
+                            or set(current) != set(native_before)
+                            or any(not current[name].startswith(data)
+                                   for name,data in native_before.items())):
+                        mutation = {'applied':False,'rejected':'native_record_changed_during_command'}
+                    elif surface.apply_mode == 'staged':
+                        # A pending revision is hydrated together with any later
+                        # append-only native activity. A command that leaves that view
+                        # unchanged has not authored a new revision: keep the
+                        # original base, subject bytes and revision identity. This
+                        # prevents ordinary reads or later tool calls from
+                        # invalidating an already filed transaction member.
+                        comparison_before = view_before if append_only else native_before
+                        changes = [name for name in native_before
+                                   if after.get(name) != comparison_before.get(name)]
+                        unknown = sorted(set(after) - set(native_before))
+                        if changes and surface.writable:
+                            revision_sha256 = sha256(json.dumps({
+                                'owner': actor,
+                                'base': {name: sha256(data).hexdigest()
+                                         for name, data in sorted(native_before.items())},
+                                'after': {name: sha256(data).hexdigest()
+                                          for name, data in sorted(after.items())
+                                          if name in native_before},
+                            }, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+                            with surface.lock:
+                                surface.staged[actor] = {
+                                    'base': native_before,
+                                    'after': {name: after[name] for name in native_before if name in after},
+                                    'changed_files': sorted(changes),
+                                    'revision_sha256': revision_sha256,
+                                }
+                            mutation = {
+                                'applied': False,
+                                'staged': True,
                                 'changed_files': sorted(changes),
+                                'unknown_files_not_staged': unknown,
                                 'revision_sha256': revision_sha256,
+                                'condition': 'staged',
                             }
-                        mutation = {
-                            'applied': False,
-                            'staged': True,
-                            'changed_files': sorted(changes),
-                            'unknown_files_not_staged': unknown,
-                            'revision_sha256': revision_sha256,
-                            'condition': 'staged',
-                        }
-                    elif append_only and pending is not None:
-                        mutation = {
-                            'applied': False,
-                            'staged': True,
-                            'staged_revision_preserved': True,
-                            'changed_files': [],
-                            'unknown_files_not_staged': unknown,
-                            'revision_sha256': pending['revision_sha256'],
-                            'condition': 'staged',
-                        }
+                        elif append_only and pending is not None:
+                            mutation = {
+                                'applied': False,
+                                'staged': True,
+                                'staged_revision_preserved': True,
+                                'changed_files': [],
+                                'unknown_files_not_staged': unknown,
+                                'revision_sha256': pending['revision_sha256'],
+                                'condition': 'staged',
+                            }
+                        else:
+                            mutation = {
+                                'applied': False,
+                                'staged': False,
+                                'changed_files': sorted(changes),
+                                'unknown_files_not_staged': unknown,
+                                'condition': 'staged',
+                            }
                     else:
-                        mutation = {
-                            'applied': False,
-                            'staged': False,
-                            'changed_files': sorted(changes),
-                            'unknown_files_not_staged': unknown,
-                            'condition': 'staged',
-                        }
-                else:
-                    mutation = apply_view(surface.directory(actor), native_before, after,
-                                          writable=surface.writable)
-                surface.counter[actor] += 1
-                observation = {'owner':actor,'sequence':surface.counter[actor],
-                    'before':before_manifest,'subject_after':observed,
-                    'native_pre_apply':pre_apply,
-                    'native_after':surface.capture(actor),'mutation':mutation}
+                        effective = merge_native_append(native_before, after, current)
+                        mutation = apply_view(surface.directory(actor), current, effective,
+                                              writable=surface.writable,
+                                              preserve_inode=actor in surface.writer_guards)
+                        mutation['live_writer_inode_preserved'] = actor in surface.writer_guards
+                        mutation['concurrent_append_bytes_preserved'] = sum(
+                            len(current[name])-len(data) for name,data in native_before.items())
+                    surface.counter[actor] += 1
+                    observation = {'owner':actor,'sequence':surface.counter[actor],
+                        'before':before_manifest,'subject_after':observed,
+                        'native_pre_apply':pre_apply,
+                        'native_after':surface.capture(actor),'mutation':mutation}
                 path = surface.archive / f'{actor}-{surface.counter[actor]:04d}.json'
                 with path.open('x') as handle:
                     json.dump(observation,handle,indent=2)

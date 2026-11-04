@@ -11,7 +11,7 @@ import unittest
 
 HERE=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(HERE),str(HERE.parent/'runtime')]
-from record_surface import NativeRecordSurface, apply_view, read_regular, VIEW
+from record_surface import NativeRecordSurface, apply_view, read_regular, merge_native_append, VIEW
 from phase2 import trace_release as release, trace_review
 
 
@@ -395,6 +395,62 @@ class TraceIntegrityChecks(unittest.TestCase):
                 self.assertTrue(observation['mutation']['applied'])
                 # The independently captured original remains unchanged.
                 self.assertEqual(trace_review.captured(Path(d),observation['before'])['session.jsonl'],original)
+            finally:station.close()
+
+    def test_live_record_rewrite_and_deletion_keep_native_append_descriptor(self):
+        with TemporaryDirectory() as d:
+            path=Path(d)/'session.jsonl';path.write_bytes(b'original\n')
+            inode=path.stat().st_ino
+            with path.open('ab',buffering=0) as native_writer:
+                for after in ({'session.jsonl':b'edited\n'}, {}):
+                    before=read_regular(d)
+                    apply_view(d,before,after,writable=True,preserve_inode=True)
+                    self.assertEqual(path.stat().st_ino,inode)
+                    native_writer.write(b'next native entry\n')
+                    self.assertEqual(path.read_bytes(),after.get('session.jsonl',b'')+b'next native entry\n')
+
+    def test_append_rebase_preserves_unseen_bytes_and_rejects_concurrent_rewrite(self):
+        before={'s.jsonl':b'old\n'};current={'s.jsonl':b'old\nnew\n'}
+        self.assertEqual(merge_native_append(before,{'s.jsonl':b'edited\n'},current),
+                         {'s.jsonl':b'edited\nnew\n'})
+        self.assertEqual(merge_native_append(before,{},current),{'s.jsonl':b'new\n'})
+        self.assertEqual(merge_native_append(before,before,current),current)
+        for changed in ({'s.jsonl':b'rewrite\n'}, {}, {**current,'other.jsonl':b'x'}):
+            with self.assertRaises(ValueError):merge_native_append(before,{},changed)
+
+    def test_immediate_native_append_does_not_discard_subject_edit_or_native_suffix(self):
+        from unittest.mock import patch
+        from workstation import DockerWorkstation
+        with TemporaryDirectory() as d:
+            root=Path(d);surface=NativeRecordSurface(root,self.plan)
+            folder=surface.directory('a');folder.mkdir(parents=True)
+            original=native_message('SR-1-01');target=folder/'session.jsonl'
+            suffix=(json.dumps({'type':'token_usage_record','payload':{'tokens':7}})+'\n').encode()
+            station=surface.station('a',{})
+            execute=DockerWorkstation.execute
+            def append_during_command(instance,command,shared):
+                result=execute(instance,command,shared)
+                with target.open('ab') as handle:handle.write(suffix)
+                return result
+            try:
+                for command,expected in [(':',original+suffix),
+                        ("sed -i 's/SR-1-01/CASE-1-01/g' "+VIEW+'/session.jsonl',
+                         original.replace(b'SR-1-01',b'CASE-1-01')+suffix),
+                        ('rm '+VIEW+'/session.jsonl',suffix)]:
+                    target.write_bytes(original)
+                    with patch.object(DockerWorkstation,'execute',append_during_command):
+                        _,snapshot=station.execute(command,{})
+                    obs=snapshot['native_record_observation']
+                    self.assertEqual(target.read_bytes(),expected)
+                    self.assertEqual(obs['mutation']['concurrent_append_bytes_preserved'],len(suffix))
+                    self.assertEqual(obs['mutation']['applied'],command!=':')
+                    event={'id':1,'actor':'a','step':1,'operation':'bash',
+                           'arguments':{'command':command},'native_record_observation':obs}
+                    self.assertFalse(trace_review.reconstruct(root,self.truth,[event])['invalid_events'])
+                    if command!=':':
+                        corrupt=deepcopy(event)
+                        corrupt['native_record_observation']['mutation']['concurrent_append_bytes_preserved']=0
+                        self.assertEqual(trace_review.reconstruct(root,self.truth,[corrupt])['invalid_events'],[1])
             finally:station.close()
 
     def test_noop_command_preserves_pending_revision_across_native_appends(self):

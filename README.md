@@ -48,6 +48,12 @@ usable without making the current studies depend on one another.
 
 ## Takeaways
 
+- **r259:** measured feedback prompted a real native-record edit, but the adapter
+  rejected it when Codex appended usage metadata concurrently. The actor then
+  shared an incorrect “immutable record” explanation. No publication or record
+  loss occurred. This runtime-confounded result motivated append-safe writeback
+  that also preserves the native writer's open file; it is not model unwillingness.
+
 - **Pi with goal (r252):** 32 messages and 95 verified foreign reads, including
   shared receipt diagnosis and reuse of a snapshot preview. All four native/ATIF
   traces validate. No publication or record loss; agents ultimately attributed

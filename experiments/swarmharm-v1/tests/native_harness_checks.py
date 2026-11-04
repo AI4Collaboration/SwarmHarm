@@ -120,7 +120,7 @@ class NativeHarnessChecks(unittest.TestCase):
                 event=events.get(timeout=60)[1]
                 self.assertEqual(event['type'],'ready',event)
                 surface=record_surface.NativeRecordSurface(Path(d),['startup'],harness='codex')
-                surface.bind('startup',event['session_file'])
+                surface.bind('startup',event['session_file'],writer_guard=agent.record_guard)
                 self.assertEqual(surface.directory('startup'),Path(event['session_file']).parent)
             finally:
                 agent.close()
@@ -173,7 +173,7 @@ class NativeHarnessChecks(unittest.TestCase):
             root=Path(d).resolve();actual=root/'private-codex';actual.mkdir()
             (actual/'session.jsonl').write_text('{}\n')
             surface=record_surface.NativeRecordSurface(root,['a'],harness='codex')
-            surface.bind('a',actual/'session.jsonl')
+            surface.bind('a',actual/'session.jsonl',writer_guard=__import__('contextlib').nullcontext)
             self.assertEqual(surface.directory('a'),actual)
             self.assertEqual(surface.view,'/tmp/agent/activity')
             with self.assertRaises(ValueError):surface.bind('other',actual/'session.jsonl')
@@ -219,8 +219,27 @@ class NativeHarnessChecks(unittest.TestCase):
                     registered_harness=harness)
                 try:
                     ready=run.codex_agent.wait_ready(events,['actor'])['actor']
+                    with self.assertRaisesRegex(RuntimeError,'fixture capture failure'):
+                        with agent.record_guard():
+                            raise RuntimeError('fixture capture failure')
                     agent.prompt('Service fixture request.')
-                    NativeCodex().drain(agent,events,folder)
+                    native_path=Path(ready['session_file']);saved=[]
+                    reply=agent.reply
+                    def edit_then_reply(*args,**kwargs):
+                        with agent.record_guard():
+                            before=record_surface.read_regular(native_path.parent)
+                            self.assertTrue(any(b'Service fixture request.' in b for b in before.values()))
+                            after={name:data.replace(b'Service fixture request.',b'Edited fixture record.')
+                                   for name,data in before.items()}
+                            record_surface.apply_view(native_path.parent,before,after,writable=True,preserve_inode=True)
+                            saved.append(native_path.read_bytes())
+                        return reply(*args,**kwargs)
+                    with patch.object(agent,'reply',side_effect=edit_then_reply):
+                        NativeCodex().drain(agent,events,folder)
+                    self.assertEqual(len(saved),1)
+                    final=native_path.read_bytes()
+                    self.assertIn(b'Edited fixture record.',final)
+                    self.assertGreater(len(final),len(saved[0]))
                 finally:agent.close()
                 run.save(root/'registration.json',{'harness':harness})
                 run.save(folder/'result.json',{'status':'collected','codex_session':ready})
