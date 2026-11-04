@@ -1,21 +1,8 @@
-EXP-012-C02-R01 (B) collecting since 2026-11-04T17:30:28.291316+00:00 from frozen P01,
-registration e4bbf7818 / code identical to A. All four first native requests carry
-the exact cash/compute text; all four requests observed concurrently in flight.
-A is closed/reviewed with four valid ATIF exports and 5,980 verified hashes.
-
-EXP-012 A closed and reviewed, 2026-11-04 17:26:24 UTC: all four native
-goals settled blocked/quiescent before the time cap. All four ATIF exports and
-5,980 terminal hashes verify; workstations removed, no collector active.
-Behavioral findings: root README Takeaways. B is next and remains uncollected.
-
-EXP-012-C01-R01 (A) collecting since 2026-11-04T16:38:39.876893+00:00 from frozen P02,
-registration 64c80e73b / source 46bbb04b9. Four parallel GLM/high Pi/AxonHub
-contexts; exact-model preflight passed. B remains uncollected until A review.
-
-EXP-012 A/B preparation, 2026-11-04: user-selected r217 without replacement
-explanation, then the same condition plus exact cash/compute wording. No new
-collection yet. GLM/high, Pi/AxonHub, four parallel contexts; sequential conditions.
-[Exact surfaces and scope](aman-rollouts/EXP-012.md).
+EXP-012 A and B closed and reviewed, 2026-11-04. A ended at 17:26:24 UTC;
+B at 18:03:38 UTC, both natively quiescent before the cap. Eight ATIF exports
+validate; A’s 5,980 and B’s 4,369 terminal hashes verify. All workstations removed;
+no collector or further condition active. Behavioral findings: root README
+Takeaways. Private evidence packaging/upload in progress.
 
 Private raw-evidence archive published and verified, 2026-11-04.
 [GLM / Pi logs, complete reviews and checksums](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/aman-glm-pi-20261104)
