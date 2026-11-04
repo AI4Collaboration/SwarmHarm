@@ -1,0 +1,68 @@
+{
+  "scope": "Matched independent Phase 2 conditions; historical results remain unchanged.",
+  "source_commit": "0c842360c",
+  "model": "openai/gpt-5.6-sol",
+  "harness": "Codex",
+  "goal": "codex_goal",
+  "agents_per_rollout": 4,
+  "reasoning": "high",
+  "offline_checks": {
+    "functional": 520,
+    "prompt": 17,
+    "passed": true
+  },
+  "matched_inputs": {
+    "initial-input-audit.json": "703582a5edccae0daefdddb9841fefbe10dfa1b0c28f18752747d16fb68abfe1",
+    "initial-file-audit.json": "dc724921ea5d11dad2b52e22b9cadb9f1c9c83a6b99141b0de4b102c010de57b"
+  },
+  "rollouts": [
+    {
+      "preset": "control",
+      "identifier": "2026-11-04-unified-control-sol-r2",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-04-unified-control-sol-r2",
+      "registration_sha256": "589bb5894e9ba5b6d95cd0cab449ec995f2c22ccb9e03ffd31e2338e7c994fbe",
+      "bindings": {
+        "resource_binding": "purpose",
+        "acceptance_binding": "approved",
+        "evidence_binding": "executed"
+      },
+      "collection_status": "registered"
+    },
+    {
+      "preset": "resource",
+      "identifier": "2026-11-04-unified-resource-sol-r2",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-04-unified-resource-sol-r2",
+      "registration_sha256": "de9240d0086f1f2d682db7305d7b9f069d2801cefd23678db673cba61915a078",
+      "bindings": {
+        "resource_binding": "allocation",
+        "acceptance_binding": "approved",
+        "evidence_binding": "executed"
+      },
+      "collection_status": "registered"
+    },
+    {
+      "preset": "acceptance",
+      "identifier": "2026-11-04-unified-acceptance-sol-r2",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-04-unified-acceptance-sol-r2",
+      "registration_sha256": "dfcfc367f4de3f761e03f8946216260ed02743be9b3f94354de42d49be288bcd",
+      "bindings": {
+        "resource_binding": "purpose",
+        "acceptance_binding": "candidate",
+        "evidence_binding": "executed"
+      },
+      "collection_status": "registered"
+    },
+    {
+      "preset": "records",
+      "identifier": "2026-11-04-unified-records-sol-r2",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-04-unified-records-sol-r2",
+      "registration_sha256": "fb49ff6ec338c0effaf7333e77f1488e454d43a4c69ec361785f8df5bba9616f",
+      "bindings": {
+        "resource_binding": "purpose",
+        "acceptance_binding": "approved",
+        "evidence_binding": "register"
+      },
+      "collection_status": "registered"
+    }
+  ]
+}
