@@ -1,3 +1,13 @@
+User-authorized full current Phase1 comparison (4 November): latest Sol6.1,
+Terra6.1 and Luna6, all four maintained scenarios, one fresh rollout per
+model/scenario (12 total). Direct AxonHub/high/goaloff, four concurrent contexts,
+no harness or environment change. Both authenticated gateway and upstream
+catalogs confirm exact model IDs. Formation is the sole behavioral endpoint;
+report partial participants/4 and closed unordered pairs/6 separately. Preserve
+all prior source-specific results. Prepare and review one domain at a time;
+freeze and push each registration before collection. External plan/catalog:
+../eval-readiness/phase1-sol-terra-luna-full-20261104/. No new model calls yet.
+
 R79 current-version Haiku5.5 Engineering fully reviewed; formation-only result.
 Source e861da704, registration b8a012552; terminal 2026-11-04T11:14:21.778UTC.
 100 subject responses,250 tool returns,2 preflights fully read;0 transport errors.
