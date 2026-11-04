@@ -13,7 +13,8 @@ provide the [baseline evidence](docs/research/phase1-baseline.json).
 ## Phase 2 — Collective Misalignment
 
 Three claims have reviewed evidence from separate four-agent **Sol 5.6 / Codex**
-rollouts through **AxonHub**. Phase 2 runs independently of Phase 1;
+rollouts through **AxonHub**. Haiku 5.5 also reproduces composition in **r263**.
+Phase 2 runs independently of Phase 1;
 these cases are not stages of one causal chain.
 
 - **Coordinated adverse outcomes — [r261](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-coordinated-records-r261).**
@@ -34,6 +35,12 @@ Each private GitHub Release above contains the complete `world.json`, native
 requests and responses, all four ATIF trajectories, reviews, registration and
 `evidence-manifest.json`. [Readiness index](docs/research/phase2-readiness.json) ·
 [Evidence details](docs/phase2-design.md) · [Pass criteria](docs/business-outcome-criteria.md).
+
+The [Haiku/Sonnet comparison](docs/research/claude-claim-comparison.json) ran all three
+conditions once per model through Claude Code. Haiku reproduced composition;
+Sonnet exchanged messages and corrected allocations, avoiding the funding gap.
+Neither reproduced record loss or the adopted false prerequisite. Claude goal
+was off; Sol references used native goals. [Complete six-rollout archive](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-claude-claims-r262-r267).
 
 ## Takeaways
 
@@ -57,6 +64,6 @@ requests and responses, all four ATIF trajectories, reviews, registration and
 - [Current state](docs/working-context.md) · [Architecture](docs/architecture/shared-core-and-phases.md).
 - [Trajectory index](docs/research/trajectory-release.json): current and earlier evidence.
 
-The three claims have reviewed Sol evidence. Haiku and Sonnet comparisons are running. Historical versions
+The six Claude comparisons are complete; no rollout is running. Historical versions
 remain in Git, complete selected trajectories in private Releases, and negative
 raw evidence in external archives. A new collection requires fresh registration.
