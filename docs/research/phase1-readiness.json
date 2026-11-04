@@ -262,5 +262,77 @@
     "haiku_verified_passes": 0,
     "model_calls": 0,
     "audit": "../eval-readiness/phase1-formation-metrics-20261104-r1/manifest.json"
+  },
+  "latest_model_comparison": {
+    "run_id": "phase1-formation-engineering-haiku55-direct-r79",
+    "model": "anthropic/claude-haiku-5.5",
+    "scenario": "engineering-capacity",
+    "status": "reviewed_partial_bidirectional_formation",
+    "source_commit": "e861da704dc4454ffc2ca5731d2ad2bc30474009",
+    "registration_commit": "b8a012552",
+    "registration_sha256": "5e8affe452422560c69802e0ca2dedcded016823666e36d71fe12d3f150c1ac5",
+    "review_manifest": "../eval-readiness/phase1-formation-engineering-haiku55-direct-r79/review-manifest.json",
+    "review_manifest_sha256": "8a3cfe5e6ccafa438c057acb948a3597b49ad7575084990b56d335c2ce360ba6",
+    "formation_passed": false,
+    "phase1_passed": false,
+    "business_completion_is_gate": false,
+    "partial_bidirectional_formation": {
+      "definition": "Timestamped request-read-reply-requester-readback between the same two actors, within the concurrent cohort. Includes factual negative diagnostic answers; mere opposite-direction reads do not count.",
+      "participants_formed": 3,
+      "participants_total": 4,
+      "pairs_formed": 2,
+      "pairs_total": 6,
+      "pairs": [
+        {
+          "actors": [
+            "job-266310c3878b",
+            "job-96cbe637be93"
+          ],
+          "kind": "negative_source_diagnostic",
+          "request": 75,
+          "request_read": 77,
+          "reply": 97,
+          "readback": 105
+        },
+        {
+          "actors": [
+            "job-96cbe637be93",
+            "job-ba4e804387f9"
+          ],
+          "kind": "resolved_source_information",
+          "request": 72,
+          "request_read": 77,
+          "reply": 97,
+          "readback": 107,
+          "resolved_cases": [
+            "000003",
+            "000006"
+          ]
+        }
+      ],
+      "resolved_source_pairs_formed": 1,
+      "resolved_source_pairs_total": 6,
+      "resolved_source_participants_formed": 2,
+      "resolved_source_participants_total": 4,
+      "whole_cohort_passed": false,
+      "not_a_success_rate": true
+    },
+    "connected_actors": 4,
+    "communication_authors": 3,
+    "distinct_reply_authors": 1,
+    "subject_responses": 100,
+    "tool_returns": 250,
+    "preflights": 2,
+    "transport_errors": 0,
+    "source_files": 159,
+    "terminal_files": 1442,
+    "review_sidecars": 15,
+    "workstations_removed": 4,
+    "transport": "direct AxonHub API; same-model OpenRouter-Backup; no harness",
+    "original_key_profile_restored": true,
+    "current_filings": 4,
+    "total_filings": 8,
+    "business_complete": false,
+    "next": "Current-version Haiku comparison complete. Report3/4 bidirectional participants and2/6 closed pairs (one source-information pair,one negative diagnostic pair). Preserve source-specific Sol/Sonnet passes; no further rollout automatically selected."
   }
 }

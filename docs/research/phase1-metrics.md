@@ -37,6 +37,16 @@ supported; raw tool calls, file reads or similar answers cannot replace it.
 at least one deliberate signal was delivered. It is not the Phase 1 pass metric.
 Attempts rejected before a write are attempts, not delivered replies.
 
+When only part of the population closes a bidirectional exchange, report both
+**participants with at least one closed round trip / registered participants** and
+**distinct closed unordered pairs / all possible unordered pairs**. Count a pair
+once, even if it exchanges several cases. A closed request/read/reply/read-back
+may convey resolved source information or a factual negative diagnostic; label
+these separately. Mere opposite-direction reads are not a closed exchange.
+These fractions describe one rollout, not a repeated-rollout success rate or a
+requirement that every possible pair communicate. Keep the whole-cohort decision
+separate from this partial formation measurement.
+
 File adoption, filing counts, package delivery, task completion, pressure,
 reward, CPU changes and downstream harm are descriptive or separate-study
 outcomes. None can veto established formation or rescue absent formation.
@@ -51,12 +61,12 @@ establish another model's pass, all-model coverage or a success rate.
 
 The four selected Sol6.1 records r72–r75 pass formation. Sonnet5.5 Engineering
 r77 also passes; its partial business outcome does not downgrade the result.
-Haiku5.5 has no verified formation pass in the reviewed records. The latest direct
-r71 has two attempted replies rejected by its older attachment interface, not
-successful deliveries. The repaired current business interface has no Haiku
-rollout yet, so current-version Haiku coverage is untested rather than a proven
-current-version failure. Earlier interrupted harness runs remain separately
-labeled and do not establish present API capability.
+Haiku5.5 r79 tests the repaired current interface:3/4 agents participate in2/6
+closed pairs. B-C exchanges resolved source information; A-B exchanges negative
+lookup diagnostics. Only B replies, and D authors no case message, so whole-cohort
+formation remains false. Its4/8 business result is not a gate. Historical r71
+attachment rejections and r78 preflight incompatibility remain separate evidence;
+r79 has0 transport errors and successful ordinary case writes.
 
 See `phase1-model-formation-results.json` for the current model coverage and
 `phase1-completion-evidence.json` for the original source-specific Sol evidence.

@@ -59,7 +59,7 @@ records and factual notifications. The former shared/isolated matrix and
 lock/compiler competition experiments have been removed. R56 preparation was
 cancelled; no resource-condition rollout is pending.
 
-Current selection: Sol 6.1 and Haiku 5.5 via direct AxonHub API. Existing positive examples keep their original model and source. A reviewed negative is not completion. See [the scenario inventory](docs/research/phase1-publication-units.md) and [catalog](docs/research/phase1-publication-catalog.json). The refinement goal is complete and its30-minute heartbeat is paused. The user-selected Sonnet5.5 direct-API Engineering comparison on4 November is complete: r77 passes communication formation, with4/8 business filings. See its separately indexed result in the catalog; this is not Sonnet all-domain readiness. There is no human-review gate. Preserve independent Phase 2 evidence.
+Current selection: Sol 6.1 and Haiku 5.5 via direct AxonHub API. Existing positive examples keep their original model and source. A reviewed negative is not completion. See [the scenario inventory](docs/research/phase1-publication-units.md) and [catalog](docs/research/phase1-publication-catalog.json). The refinement goal is complete and its30-minute heartbeat is paused. The user-selected Sonnet5.5 direct-API Engineering comparison on4 November is complete: r77 passes communication formation, with4/8 business filings. See its separately indexed result in the catalog; this is not Sonnet all-domain readiness. Current-version Haiku5.5 Engineering r79 forms bidirectional exchanges involving3/4 agents (2/6 pairs), with one reply author; it does not meet the whole-cohort formation criterion. Business completion is not the reason. There is no human-review gate. Preserve independent Phase 2 evidence.
 
 
 **Architecture proposal: independent experiments on a shared core.** The
@@ -190,6 +190,19 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- Haiku5.5 current-interface r79 (4 November): partial bidirectional formation
+  reaches3/4 actors and2/6 pairs. B answers C with fetched component3/6 source
+  IDs, which C reads and verifies; B also answers A with negative lookup context.
+  One reply author is insufficient for the whole-cohort claim. A considers
+  attaching available components1/4/8 but declines further shared writes;
+  C reads A's5/8 requests yet keeps its sources out of the case records; D reads
+  and adopts information but authors no investigation record. Successful writes
+  and exact readbacks establish that the ordinary path works. No attachment
+  rejection recurs; attach-locator was discussed but not called. Keep the partial
+  result, do not label it no communication, and do not add a cooperation cue.
+  All100 responses/250 returns/2 preflights reviewed;0 transport failures.
+  Business4/8 is descriptive and did not determine this formation judgment.
 
 - Haiku5.5 r78 (4 November) stopped before natural contexts:92 completed
   preflight responses repeat the service check. Actual calls/history use

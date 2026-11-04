@@ -1,3 +1,23 @@
+R79 current-version Haiku5.5 Engineering fully reviewed; formation-only result.
+Source e861da704, registration b8a012552; terminal 2026-11-04T11:14:21.778UTC.
+100 subject responses,250 tool returns,2 preflights fully read;0 transport errors.
+Partial bidirectional formation:3/4 actors in2/6 closed pairs. B-C supplies real
+source information (components3 and6); A-B exchanges negative lookup diagnostics.
+Only one distinct replying actor B; D reads but authors no case message. Four
+connected readers/three communication authors; whole-cohort formation=false.
+Business4/8 is descriptive only.159 source,1442 terminal files,15 review sidecars,
+four ATIF continuities and four absent workstations verified. Evidence:
+../eval-readiness/phase1-formation-engineering-haiku55-direct-r79/review-manifest.json.
+Direct AxonHub/OpenRouter-Backup,high,goaloff,no harness. Original API-key profile
+SwarmHarm-AxonHub-Fallback restored after terminal; route audit retained.
+User asks partial formation reported as out-of counts: include participants and
+closed unordered pairs; distinguish source information from negative diagnostics.
+Do not convert one reply author's multiple notes into multiple replying agents.
+Existing Sol4/4 and Sonnet Engineering source-specific passes remain. No pending
+collector, new model request, environment change or scheduled task from this result.
+
+Historical progress below:
+
 R79 current-version Engineering Haiku5.5 prepared on sourcee861da704.
 497 common+14 prompt checks, real control,159 source and all input/task/reg seals
 pass. All four initial inputs/tools/files match reviewed r78 except job IDs and

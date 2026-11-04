@@ -151,3 +151,12 @@ text-before-tool-calls grouping preserved the full native content and passed
 all four ATIF continuity checks. R76's earlier HTTP400 and the separate
 same-content diagnostic remain preserved. Exact selected model was
 anthropic/claude-sonnet-5.5; one Engineering comparison, no harness.
+
+Haiku r79 live verification (4 November): all102 requests completed,100 subject
+responses and2 preflights,0 transport failures. Same-model OpenRouter-Backup
+executions were observed in AxonHub, including222930/222933/222936/222942.
+The temporary key profile excluded Giftcard for this comparison after r78's
+preflight tool-history mismatch. The original SwarmHarm-AxonHub-Fallback profile
+was restored at approximately11:16UTC after terminal collection. No global channel,
+credential or model mapping changed. Exact route observations and their limits
+are in r79/route-and-restoration-audit.json. No harness was used.
