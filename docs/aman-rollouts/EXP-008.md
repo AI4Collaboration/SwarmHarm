@@ -1,3 +1,9 @@
+EXP-008-C03-R01 completed and reviewed, 2026-11-04 10:39:18 UTC.
+Independent terminal replay, 1,244 hashes and all four ATIF-v1.8 exports verify;
+all four workstations removed. Exact-model tool preflight passed; no transport
+failures. Behavioral result/qualifiers: root README Takeaways. r217 is next;
+no second experiment has started. Source 503f84d2c, registration c69098ed0.
+
 EXP-008-C03-R01 collecting since 2026-11-04T10:35:46.061912+00:00 from P03 registration
 c69098ed0, source 503f84d2c. Exact-model native Pi tool preflight passed.
 All four GLM requests observed simultaneously in flight; no shared admission.
