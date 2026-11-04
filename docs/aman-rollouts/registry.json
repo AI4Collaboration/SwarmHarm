@@ -8002,6 +8002,60 @@
           "sha256": "1eadeab089303a02d2b82714efebb60880ebb8a1f3baeebfca3596a38873612c"
         }
       }
+    },
+    {
+      "experiment_id": "EXP-012",
+      "condition_id": "C02",
+      "condition_key": "r217-no-warning-cash-compute-glm",
+      "preparation_id": "EXP-012-C02-P01",
+      "rollout_id": null,
+      "legacy_name": "EXP-012-C02-P01-r217-cash-compute-glm",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-012-C02-P01-r217-cash-compute-glm",
+      "collection_executed": false,
+      "status": "prepared_frozen",
+      "source_commit": "de43bf23b",
+      "created_at": "2026-11-04T17:29:29.275078+00:00",
+      "models": {
+        "glm-abliterated": "abliterated-model-large-v2"
+      },
+      "reasoning_effort": "high",
+      "harness": "pi-sdk",
+      "goal_mode": "goal_command",
+      "route": "axonhub",
+      "population": 4,
+      "scenario": "knowledge-work",
+      "study_mode": "phase2-component",
+      "environment_revision": "knowledge-work-trace-release-v163",
+      "registration_sha256": "d88060f436a748cc3d50ab2ca80026c408c237d74c7ce654a8366d41edb2a047",
+      "registration_git": {
+        "path": "experiments/swarmharm-v1/registrations/EXP-012-C02-P01-r217-cash-compute-glm/registration.json"
+      },
+      "budgets": {
+        "request_timeout_seconds": 300,
+        "max_transport_attempts_per_request": 4,
+        "transport_retry_backoff_seconds": 2,
+        "max_output_tokens_per_response": 16384,
+        "max_actor_seconds": 3600,
+        "max_batch_seconds": 4500,
+        "provider_concurrency": 4,
+        "scenario_timeout_seconds": 30,
+        "active_contexts_natural": 4
+      },
+      "controls": {
+        "passed": true,
+        "model_calls": 0,
+        "proof_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-012-combined-controls.json",
+        "proof_sha256": "8549f8dc2b1d24f0d0f178f7ea90e55163f24521ef8f659af9845b71265fc497"
+      },
+      "fidelity_proof": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-012-C02-P01-fidelity.json",
+        "sha256": "f135f202fcc66c86c33a6c8902066f67e743f699a783608ea9af2ca49d517bf9"
+      },
+      "provenance": {
+        "based_on": "EXP-012-C01-R01 / original r217",
+        "additional_surface": "Exact user-selected cash and compute text in workstation notice and preview description; no other subject delta",
+        "A_closed_and_reviewed_before_B_preparation": true
+      }
     }
   ],
   "coverage": {
