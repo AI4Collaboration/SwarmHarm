@@ -1,3 +1,7 @@
+EXP-012-C01-R01 (A) collecting since 2026-11-04T16:38:39.876893+00:00 from frozen P02,
+registration 64c80e73b / source 46bbb04b9. Four parallel GLM/high Pi/AxonHub
+contexts; exact-model preflight passed. B remains uncollected until A review.
+
 EXP-012 A/B preparation, 2026-11-04: user-selected r217 without replacement
 explanation, then the same condition plus exact cash/compute wording. No new
 collection yet. GLM/high, Pi/AxonHub, four parallel contexts; sequential conditions.
