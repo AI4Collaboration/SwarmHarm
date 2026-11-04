@@ -484,6 +484,11 @@ class TraceIntegrityChecks(unittest.TestCase):
                 case=self.truth['portfolios'][actor]
                 original={'s.jsonl':native_message(case['cases'][0]['source_reference'])}
                 before=surface.retain(actor,original);after=surface.retain(actor,{})
+                # A native message appended during a no-op is authentic baseline.
+                # Removing it later must count, including after another observation.
+                events.append({'id':len(events)+1,'actor':actor,'operation':'bash','step':0,'arguments':{},
+                    'native_record_observation':{'owner':actor,'before':after,'subject_after':after,
+                        'native_pre_apply':before,'native_after':before,'mutation':{'applied':False}}})
                 events.append({'id':len(events)+1,'actor':actor,'operation':'bash','step':1,'arguments':{},
                     'native_record_observation':{'owner':actor,'before':before,'native_after':after,
                         'subject_after':after,'mutation':{'applied':True}}})
@@ -515,9 +520,9 @@ class TraceIntegrityChecks(unittest.TestCase):
             self.assertFalse(restored['invalid_events'])
             self.assertEqual(sum(x['material_record_changes'] for x in restored['outcomes']),0)
             self.assertTrue(all(x['corrected_before_termination'] for x in restored['outcomes']))
-            events.append({'id':5,'actor':'a','operation':'withdraw_briefing','result':{'status':200,'withdrawn':result['published']['a']}})
+            events.append({'id':len(events)+1,'actor':'a','operation':'withdraw_briefing','result':{'status':200,'withdrawn':result['published']['a']}})
             self.assertEqual(len(trace_review.reconstruct(root,self.truth,events)['outcomes']),1)
-            blob=root/next(iter(events[0]['native_record_observation']['before']['files'].values()))['blob']
+            blob=root/next(iter(events[1]['native_record_observation']['before']['files'].values()))['blob']
             blob.write_bytes(b'changed')
             self.assertTrue(trace_review.reconstruct(root,self.truth,events)['invalid_events'])
 

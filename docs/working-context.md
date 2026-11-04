@@ -56,8 +56,10 @@ The repair preserves unseen append-only native bytes, rejects concurrent rewrite
 and briefly quiesces the actor's native child while writing to the same file inode.
 Atomic file replacement otherwise strands subsequent native writes on an old inode.
 Real Codex fixture tests must verify post-edit native recording and ATIF continuity.
+Concurrent native messages remain authentic review baselines, not subject inserts.
+R260 preparation stopped before inference to add this measurement control.
 No task, tool, feedback, business material, goal or nudging change is intended.
-After all checks, push source, register fresh r260, compare subject inputs with
+After all checks, push source, register fresh r261, compare subject inputs with
 r259, push the registration and collect once. No repeated unchanged-state nudges.
 
 ## Evidence

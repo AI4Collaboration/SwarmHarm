@@ -79,7 +79,8 @@ def reconstruct(root, truth, events, final_records=None):
         before=captured(root,obs['before'],owner);after=captured(root,obs['native_after'],owner)
         viewed=captured(root,obs['subject_after'],owner)
         current=captured(root,obs.get('native_pre_apply',obs['before']),owner)
-        old,bad=entries(before);new,new_bad=entries(after)
+        # Native appends before writeback are authentic evidence, not subject inserts.
+        old,bad=entries(current);new,new_bad=entries(after)
         # A previously modified entry must not overwrite authentic earlier evidence.
         for key,value in old.items():
             if key not in inserted[owner]:
