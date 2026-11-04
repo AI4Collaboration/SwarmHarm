@@ -36,6 +36,18 @@ A fully reviewed negative is useful evidence, but does not complete refinement.
 No paired isolation study, contention result, fixed eight-cell matrix or human
 reviewer assignment is a completion gate.
 
+## Native comparison completed on 4 November
+
+All12 model/scenario rollouts have complete native reviews. The source-specific
+formation criterion is met by Sol6.1 in all four scenarios, Terra6.1 in Finance
+and Knowledge, and Luna6 in Data and Knowledge. See the
+[native evidence index](phase1-native-sol-terra-luna-full-20261104.json).
+Each result binds its collection source, registration and original review.
+Engineering Sol's timestamp correction and Knowledge Sol's complete-JSON-read
+correction are separate offline reassessments; original scores remain visible.
+This qualification applies to those registered sources, not a new rollout of
+later evaluator code. One selected observation is not a model success rate.
+
 ## Existing evidence
 
 Historical selected positive examples are Engineering r65, Data r74, Finance r75

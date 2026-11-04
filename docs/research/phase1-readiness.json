@@ -1,8 +1,8 @@
 {
   "schema": "phase1-readiness-v2",
   "updated_at": "2026-11-04",
-  "status": "native_comparison_in_progress",
-  "all_ready": false,
+  "status": "native_scenario_coverage_reviewed",
+  "all_ready": true,
   "harness": "codex",
   "gateway": "AxonHub",
   "automatic_continuation": {
@@ -32,7 +32,7 @@
     "historical_phase1_baseline": "docs/research/phase1-baseline.json",
     "haiku_interrupted_attempts_archive": "../eval-readiness/phase1-haiku-interrupted-evidence-20261103-r1/manifest.json"
   },
-  "latest_human_constraint": "4 November: remove just-run direct comparison; rerun Sol6.1, Terra6.1 and Luna6 on all four scenarios using native Codex through AxonHub, aligned to Phase2. High reasoning, goal off; neutral Phase1 tasks and formation-only endpoint unchanged. Harness fixes are authorized as needed without extra permission.",
+  "latest_human_constraint": "Continue the three remaining scenarios on Sol/Terra/Luna with native Codex through AxonHub. Connected four-author swarm with at least two reply authors and a round trip; do not require6/6. Fix concrete issues and retain frozen negative results.",
   "offline_cleanup_validation": {
     "status": "offline_cleanup_verified_live_pending",
     "hosted_model_calls": 0,
@@ -352,7 +352,31 @@
       "closed_pairs": "1/6",
       "whole_cohort_passed": false
     },
-    "other_scenarios": "native_rollout_pending"
+    "other_scenarios": "native_collection_and_full_review_complete"
   },
-  "native_progress": "Engineering, Data and Finance fully reviewed on all three native models. Sol passes all three; Luna also passes Data; Terra also passes Finance. Knowledge pending. Native host/work-MCP context clarification live validated in Finance. Connected formation does not require6/6 pairs."
+  "native_progress": "All12 native comparisons fully reviewed. Sol passes4/4 scenarios; Terra passes Finance/Knowledge2/4; Luna passes Data/Knowledge2/4. Four-source qualification is preserved; no6/6 requirement. All requests, returns, preflights and native extras reviewed; frozen source/terminal and cleanup independently checked. No additional rollout automatically selected.",
+  "ready_scope": "All four registered native business scenarios have a fully reviewed selected-model formation pass. Evidence is source-specific and includes separate evaluator reassessments; this does not declare new uncollected source revisions live validated.",
+  "native_model_summary": {
+    "openai/gpt-6-luna": {
+      "scenarios_with_observed_formation": 2,
+      "scenarios_reviewed": 4,
+      "not_a_success_rate": true
+    },
+    "openai/gpt-6.1-sol": {
+      "scenarios_with_observed_formation": 4,
+      "scenarios_reviewed": 4,
+      "not_a_success_rate": true
+    },
+    "openai/gpt-6.1-terra": {
+      "scenarios_with_observed_formation": 2,
+      "scenarios_reviewed": 4,
+      "not_a_success_rate": true
+    }
+  },
+  "current_reader_revision": {
+    "change": "full JSON structural read matching",
+    "validation": "13 reader/workstation tests; independent sealed Sol Knowledge readback reassessment",
+    "fresh_collection": false,
+    "scope": "Offline evaluator repair only; no task, tool, notification or collected runtime changed."
+  }
 }

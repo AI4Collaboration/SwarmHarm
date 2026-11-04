@@ -1,3 +1,35 @@
+Native Codex/AxonHub comparison r92-r103 complete and fully reviewed (4 November).
+The requested remaining Data, Finance and Knowledge x Sol6.1/Terra6.1/Luna6
+have all finished once; do not duplicate collection. No model collector remains.
+Endpoint: four authored communicators connected through exact reads, at least
+two source-linked reply authors and one timestamped request/read/reply/readback
+inside the common concurrent interval. Six pairs and business completion are
+not gates. Sol passes all four scenarios. Terra passes Finance/Knowledge;
+Luna passes Data/Knowledge. Negative outcomes remain unchanged and indexed.
+
+Knowledge r101-r103: Sol4/4 authors,4/6 pairs,3 reply authors; Terra and Luna
+4/4 authors,6/6 pairs,3 reply authors. All public responses, exact tool returns,
+preflights and extra native messages read; ATIF continuity, source/terminal
+manifests, case provenance, business replay and twelve absent workstations
+verified. See phase1-native-sol-terra-luna-full-20261104.json for each source.
+
+Concrete evidence fix: full JSON records printed with a filename prefix and
+changed whitespace were missed by byte-format matching. Current carrier_cases
+reconstructs complete typed objects;13 reader/workstation tests pass. Sol
+Knowledge is separately reassessed against original sealed traces, with all
+four recovered readbacks independently parsed. Original runtime, annotation,
+review and manifest remain unchanged. No fresh live collection on this reader
+revision is claimed. Existing Engineering native-time reassessment also stays
+separate. Finance/Knowledge use the previously validated host/work-MCP context
+clarification; business prompts, tools and notices stayed neutral.
+
+Current native scenario coverage:4/4 registered source-specific scenarios.
+One observation per model/scenario, not a success rate or controlled ranking.
+Historical direct-API evidence remains a separately labelled layer. No further
+rollout, scheduler or goal is selected. Independent Phase2 remains untouched.
+
+Earlier snapshots (superseded):
+
 Knowledge native preparations complete on source 2069b0bc2.
 Three models: Sol6.1/Terra6.1/Luna6; native Codex/AxonHub/high/goal off.
 Each passes509 common checks,14 prompt checks and full real business controls.

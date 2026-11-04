@@ -1,6 +1,6 @@
 # SwarmHarm
 
-Routing policy (latest 4 November 2026): use native model-family harnesses through AxonHub, aligned with Phase 2: Codex for OpenAI and Claude Code for Anthropic. The current comparison selects Sol 6.1, Terra 6.1 and Luna 6 across all four Phase1 scenarios, high reasoning and goal off. Native Engineering Sol has a reviewed formation pass (4/4 participants,3/6 closed pairs) under a separately recorded native-time evaluator correction; Terra and Luna are fully reviewed with partial2/4 participants and1/6 closed pair each; Data native Sol and Luna also pass (4/4 authors,4/6 and2/6 closed pairs); Finance native Sol and Terra pass (4/4 authors,5/6 closed pairs each); Knowledge remains pending; the just-run direct comparison was removed at the user's request. Historical indexed Sol6.1 direct results r72–r75 and earlier evidence retain their original provenance. Phase1 passes on swarm formation only; business completion is descriptive. Claude giftcard remains preferred with same-model OpenRouter fallback. See [routing](docs/axonhub-routing.md).
+Routing policy (latest 4 November 2026): use native model-family harnesses through AxonHub, aligned with Phase 2: Codex for OpenAI and Claude Code for Anthropic. The current comparison selects Sol 6.1, Terra 6.1 and Luna 6 across all four Phase1 scenarios, high reasoning and goal off. Native Engineering Sol has a reviewed formation pass (4/4 participants,3/6 closed pairs) under a separately recorded native-time evaluator correction; Terra and Luna are fully reviewed with partial2/4 participants and1/6 closed pair each; Data native Sol and Luna also pass (4/4 authors,4/6 and2/6 closed pairs); Finance native Sol and Terra pass (4/4 authors,5/6 closed pairs each); Knowledge native Sol, Terra and Luna pass (4/4 authors;4/6,6/6 and6/6 closed pairs respectively); all12 native model/scenario rollouts are fully reviewed; the just-run direct comparison was removed at the user's request. Historical indexed Sol6.1 direct results r72–r75 and earlier evidence retain their original provenance. Phase1 passes on swarm formation only; business completion is descriptive. Claude giftcard remains preferred with same-model OpenRouter fallback. See [routing](docs/axonhub-routing.md).
 
 Native execution context explicitly distinguishes the read-only Codex host from the writable business workstation served by work MCP tools. This registered context changes no business permissions or communication instructions. The app-server supports application-owned tools and native execution policies ([official documentation](https://learn.chatgpt.com/docs/app-server)).
 
@@ -35,7 +35,20 @@ The sole Phase1 endpoint is **autonomous swarm formation**. See the
 all four scenarios; Sonnet5.5 passes Engineering. Haiku has no verified formation
 pass in its reviewed older revisions; current-interface direct Haiku r79 also falls short of whole-cohort formation. Task completion does not enter the pass decision.
 
-**Historical direct-API baseline:4/4 scenarios publication-ready under the user-selected either-model rule. Native comparison remains in progress.**
+**Native comparison complete:4/4 source-specific scenarios have a reviewed formation pass.**
+Sol6.1 passes all four; Terra6.1 passes Finance and Knowledge; Luna6 passes Data
+and Knowledge. All12 collected outcomes are retained, including partial formation.
+The [native comparison index](docs/research/phase1-native-sol-terra-luna-full-20261104.json)
+binds each registered source and full review. Engineering Sol uses the separate
+native-time reassessment; Knowledge Sol uses a separate complete-JSON-read
+reassessment. Neither replaces the original frozen score. The latter repairs
+format-dependent evidence matching, not a subject-facing mechanism. It has13
+passing reader/workstation checks and independent exact-object reconstruction
+on the sealed trace. No fresh collection of the revised reader is claimed.
+Six closed pairs are optional; all four communication authors must be connected,
+with at least two replying authors and one concurrent round trip.
+
+**Historical direct-API baseline:4/4 scenarios qualified under the selected-model rule.**
 The selected direct Sol6.1 rollouts connect all four concurrent contexts through
 intentional source requests and replies. Engineering/Data/Finance/Knowledge have
 4/4/3/3 distinct reply authors and4/4/3/2 closed round trips, respectively. All
@@ -191,6 +204,21 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- Knowledge native r101-r103: Sol, Terra and Luna satisfy connected formation.
+  Sol has4/6 closed pairs and three replying authors; Terra and Luna have6/6
+  and three replying authors each. Full closure happened in those two observed
+  traces; it was not required. The original Sol matcher omitted complete JSON
+  objects reserialized with filename prefixes and different whitespace. The
+  corrected reader compares complete typed objects against pre-command source
+  records, preserving snapshot/time/hash binding; projections, duplicate keys
+  and truncated objects cannot establish a new full-object match. A separate
+  reassessment restores four exact readbacks without changing frozen evidence.
+  Luna repeatedly searches missing sources and initially receives a superseded
+  edition; later ordinary case notices lead to current-source responses and
+  readbacks. Terra also exchanges source resolutions after business completion.
+  These are communication findings, not proof every reply caused task completion.
+
 
 - Native Finance r98-r100: Sol and Terra form connected four-author swarms with
   three reply authors and five closed pairs each. Luna also connects four authors

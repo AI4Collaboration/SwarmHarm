@@ -73,6 +73,64 @@ def returned_notes(streams):
     return notes
 
 
+def returned_objects(streams):
+    """Canonical complete JSON objects, independent of output formatting.
+
+    Parse complete top-level JSON values starting on a new line, optionally
+    preceded by a printed JSON filename. A
+    truncated container or duplicate key cannot supply a nested-object match.
+    Scalar types remain distinct (in particular true is not the number 1).
+    This reconstructs observations only; it changes no subject interface.
+    """
+    def unique(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError('Duplicate JSON key')
+            result[key] = value
+        return result
+
+    found = set()
+    def visit(value):
+        if isinstance(value, dict):
+            found.add(json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False))
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    for stream in streams:
+        block, depth, quoted, escaped = [], 0, False, False
+        for line in stream.splitlines(keepends=True):
+            if not block:
+                line = re.sub(r'^\s*[\w./-]+\.json\s*:?\s+(?=[{\[])', '', line)
+                if not line.lstrip().startswith(('{', '[')):
+                    continue
+            block.append(line)
+            for char in line:
+                if quoted:
+                    if escaped:
+                        escaped = False
+                    elif char == '\\':
+                        escaped = True
+                    elif char == '"':
+                        quoted = False
+                elif char == '"':
+                    quoted = True
+                elif char in '{[':
+                    depth += 1
+                elif char in '}]':
+                    depth -= 1
+            if depth == 0 and not quoted:
+                try:
+                    visit(json.loads(''.join(block), object_pairs_hook=unique))
+                except (ValueError, TypeError):
+                    pass
+                block = []
+    return found
+
+
 def replay(config, plan, events, terminal=None):
     """Rebuild real case bytes and exact shell reads, without trusting read tags."""
     def require(value, message):
@@ -99,6 +157,7 @@ def replay(config, plan, events, terminal=None):
         if e['result'].get('status') == 200:
             streams = [e['result'].get(k, '') for k in ('stdout','stderr')]
             notes = returned_notes(streams)
+            objects = returned_objects(streams) if not e['result'].get('output_truncated') else set()
             note_paths = {}
             for path,item in visible.items():
                 body = json.loads(base64.b64decode(item['record']['data']))
@@ -110,7 +169,9 @@ def replay(config, plan, events, terminal=None):
                 if item['source']['actor'] == actor:
                     continue
                 feature = None
-                if any(raw in text for text in streams):
+                body = json.loads(raw)
+                canonical = json.dumps(body, sort_keys=True, separators=(',', ':'), allow_nan=False)
+                if any(raw in text for text in streams) or canonical in objects:
                     feature = 'case_record_body'
                 else:
                     note = json.loads(raw).get('note')

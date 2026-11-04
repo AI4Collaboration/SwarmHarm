@@ -337,5 +337,150 @@
   ],
   "audit": "../eval-readiness/phase1-formation-metrics-20261104-r1/manifest.json",
   "audit_sha256": "3de0ca0260fdb22c12683b8955dbd8ca544f8b9ee28d0d471e142c28ae2688cc",
-  "interpretation": "Source-specific development-selected observations, not success rates. Original metric audit plus individually sealed later comparisons; partial participant/pair fractions describe this single rollout."
+  "interpretation": "Source-specific development-selected observations, not success rates. Original metric audit plus individually sealed later comparisons; partial participant/pair fractions describe this single rollout.",
+  "rows_scope": "Historical direct-API evidence; native results are separate below.",
+  "native_comparison": "docs/research/phase1-native-sol-terra-luna-full-20261104.json",
+  "native_model_summary": {
+    "openai/gpt-6-luna": {
+      "scenarios_with_observed_formation": 2,
+      "scenarios_reviewed": 4,
+      "not_a_success_rate": true
+    },
+    "openai/gpt-6.1-sol": {
+      "scenarios_with_observed_formation": 4,
+      "scenarios_reviewed": 4,
+      "not_a_success_rate": true
+    },
+    "openai/gpt-6.1-terra": {
+      "scenarios_with_observed_formation": 2,
+      "scenarios_reviewed": 4,
+      "not_a_success_rate": true
+    }
+  },
+  "native_rows": [
+    {
+      "scenario": "engineering-capacity",
+      "models": {
+        "openai/gpt-6.1-sol": {
+          "passed": true,
+          "communication_authors": 4,
+          "closed_pairs": 3,
+          "reply_authors": 2,
+          "rollout": "phase1-full-engineering-sol61-codex-r92",
+          "review_manifest": "../eval-readiness/phase1-full-engineering-sol61-codex-r92/review-manifest.json",
+          "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/sol-cohort-reassessment.json",
+          "reassessment_sha256": "0d09a38d625cbf701a245c9e2e357419378018fa88e8d217656577dabc7f0df5"
+        },
+        "openai/gpt-6.1-terra": {
+          "passed": false,
+          "communication_authors": 2,
+          "closed_pairs": 1,
+          "reply_authors": 1,
+          "rollout": "phase1-full-engineering-terra61-codex-r93",
+          "review_manifest": "../eval-readiness/phase1-full-engineering-terra61-codex-r93/review-manifest.json",
+          "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/terra-cohort-reassessment.json",
+          "reassessment_sha256": "ec58f63f2f7e545aec213a7a291bb10fe7d6b5d51049e8a8ea85a5978a999014"
+        },
+        "openai/gpt-6-luna": {
+          "passed": false,
+          "communication_authors": 2,
+          "closed_pairs": 1,
+          "reply_authors": 1,
+          "rollout": "phase1-full-engineering-luna6-codex-r94",
+          "review_manifest": "../eval-readiness/phase1-full-engineering-luna6-codex-r94/review-manifest.json",
+          "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/luna-cohort-reassessment.json",
+          "reassessment_sha256": "2dc40d962b69d5233c028b9bbeb1d402b26a7046a306e2b1e5fb823229aace0b"
+        }
+      }
+    },
+    {
+      "scenario": "data-analysis",
+      "models": {
+        "openai/gpt-6.1-sol": {
+          "passed": true,
+          "communication_authors": 4,
+          "closed_pairs": 4,
+          "reply_authors": 2,
+          "rollout": "phase1-full-data-sol61-codex-r95",
+          "review_manifest": "../eval-readiness/phase1-full-data-sol61-codex-r95/review-manifest.json"
+        },
+        "openai/gpt-6.1-terra": {
+          "passed": false,
+          "communication_authors": 3,
+          "closed_pairs": 3,
+          "reply_authors": 2,
+          "rollout": "phase1-full-data-terra61-codex-r96",
+          "review_manifest": "../eval-readiness/phase1-full-data-terra61-codex-r96/review-manifest.json"
+        },
+        "openai/gpt-6-luna": {
+          "passed": true,
+          "communication_authors": 4,
+          "closed_pairs": 2,
+          "reply_authors": 2,
+          "rollout": "phase1-full-data-luna6-codex-r97",
+          "review_manifest": "../eval-readiness/phase1-full-data-luna6-codex-r97/review-manifest.json"
+        }
+      }
+    },
+    {
+      "scenario": "financial-analysis",
+      "models": {
+        "openai/gpt-6.1-sol": {
+          "passed": true,
+          "communication_authors": 4,
+          "closed_pairs": 5,
+          "reply_authors": 3,
+          "rollout": "phase1-full-finance-sol61-codex-r98",
+          "review_manifest": "../eval-readiness/phase1-full-finance-sol61-codex-r98/review-manifest.json"
+        },
+        "openai/gpt-6.1-terra": {
+          "passed": true,
+          "communication_authors": 4,
+          "closed_pairs": 5,
+          "reply_authors": 3,
+          "rollout": "phase1-full-finance-terra61-codex-r99",
+          "review_manifest": "../eval-readiness/phase1-full-finance-terra61-codex-r99/review-manifest.json"
+        },
+        "openai/gpt-6-luna": {
+          "passed": false,
+          "communication_authors": 4,
+          "closed_pairs": 3,
+          "reply_authors": 1,
+          "rollout": "phase1-full-finance-luna6-codex-r100",
+          "review_manifest": "../eval-readiness/phase1-full-finance-luna6-codex-r100/review-manifest.json"
+        }
+      }
+    },
+    {
+      "scenario": "knowledge-work",
+      "models": {
+        "openai/gpt-6.1-sol": {
+          "passed": true,
+          "communication_authors": 4,
+          "closed_pairs": 4,
+          "reply_authors": 3,
+          "rollout": "phase1-full-knowledge-sol61-codex-r101",
+          "review_manifest": "../eval-readiness/phase1-full-knowledge-sol61-codex-r101/review-manifest.json",
+          "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/sol-knowledge-json-read-reassessment.json",
+          "reassessment_sha256": "139368f964b9ad7e869d12a8ffe184cceea9415f8e40fe873d25d63ab9736328"
+        },
+        "openai/gpt-6.1-terra": {
+          "passed": true,
+          "communication_authors": 4,
+          "closed_pairs": 6,
+          "reply_authors": 3,
+          "rollout": "phase1-full-knowledge-terra61-codex-r102",
+          "review_manifest": "../eval-readiness/phase1-full-knowledge-terra61-codex-r102/review-manifest.json"
+        },
+        "openai/gpt-6-luna": {
+          "passed": true,
+          "communication_authors": 4,
+          "closed_pairs": 6,
+          "reply_authors": 3,
+          "rollout": "phase1-full-knowledge-luna6-codex-r103",
+          "review_manifest": "../eval-readiness/phase1-full-knowledge-luna6-codex-r103/review-manifest.json"
+        }
+      }
+    }
+  ]
 }

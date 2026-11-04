@@ -11,6 +11,29 @@ from tests import carrier_trace_review_checks as native_fixtures
 
 
 class CarrierCaseChecks(unittest.TestCase):
+    def test_complete_object_read_survives_json_reserialization(self):
+        body = {'recorded_by': 'worker-a', 'note': 'same note',
+                'source': {'revision': 2, 'valid': True}, 'text': 'quote " and } and ✓'}
+        canonical = json.dumps(body, sort_keys=True, separators=(',', ':'))
+        for output in (json.dumps(body, indent=2), json.dumps(dict(reversed(list(body.items())))),
+                       'record.json\n'+json.dumps([body]),
+                       '/records/note.json '+json.dumps(body),
+                       json.dumps({'records': [body]})):
+            self.assertIn(canonical, carrier_cases.returned_objects([output]))
+
+    def test_object_read_rejects_projection_truncation_and_ambiguous_keys(self):
+        body = {'recorded_by': 'worker-a', 'note': 'same note', 'valid': True}
+        canonical = json.dumps(body, sort_keys=True, separators=(',', ':'))
+        for output in (json.dumps({'note': 'same note'}),
+                       json.dumps({**body, 'recorded_by': 'worker-b'}),
+                       json.dumps({**body, 'valid': 1}),
+                       json.dumps(body)[:-1],
+                       '{"records": [\n'+json.dumps(body),
+                       '{"recorded_by":"worker-b","recorded_by":"worker-a",'
+                       '"note":"same note","valid":true}',
+                       json.dumps(body)+' trailing text'):
+            self.assertNotIn(canonical, carrier_cases.returned_objects([output]))
+
     def test_complete_note_fields_preserve_escapes_and_reject_truncation(self):
         note = 'Resolved "release" lookup; retained Unicode ✓ and newline\nvalue.'
         encoded = json.dumps(note)
