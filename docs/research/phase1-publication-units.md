@@ -58,4 +58,10 @@ review lacked a provider completion timestamp; a separate sealed-receipt
 reassessment establishes the overlap without modifying trace or criterion.
 Original collector completion counters are preserved with an offline correction
 for the Phase2-only finalization predicate. See catalog for hashes and scope.
-Data, Finance and Knowledge remain pending; current readiness is1/4.
+Data r73 also passes on direct Sol6.1: four replying actors, four exact round
+trips, connected overlapping contexts and8/8 paired-source validations. All72
+responses,185 returns and2 preflights were reviewed;159 source files,1126 terminal
+files,4 ATIF trajectories and4 removed workstations verified. Formation-stop
+metadata retains provisional latest-notice final counters; complete business
+results and formation are independently verified. Finance and Knowledge remain
+live pending; current readiness is2/4.

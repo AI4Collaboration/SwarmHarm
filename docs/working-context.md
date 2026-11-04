@@ -1,3 +1,23 @@
+R73 Data Analysis is terminal and fully reviewed; current readiness2/4.
+Engineering r72 and Data r73 pass on direct Sol6.1; Finance and Knowledge next.
+R73 source44938ae6f, registrationaec21ded0, terminal2026-11-04T00:49:17.525425UTC.
+All72 subject responses,185 tool returns and2 preflights fully read;0 transport
+failures. Four source-linked reply authors and four exact request/read/reply/readback
+round trips connect all four overlapping contexts;8/8 current paired-source
+validations. Independent totals261/289/317/345 (1212 rows without duplicate pairs),
+real prior reads/receipts and native inputs verified. All159 source files,1126
+terminal files,13 review sidecars,4 ATIF trajectories and4 absent workstations
+verified. Evidence:../eval-readiness/phase1-engagement-data-sol61-direct-r73/review-manifest.json.
+No recollection. Collection stopped at formation_observed after four complete
+native finals. Later case activity leaves latest-notice final counters provisional;
+original collected_with_limits retained, no timeout or transport failure. No claim
+that every last case update was answered. Common formation and business replay pass.
+No source change is needed to obtain those results. Next prepare Finance on the
+validated engagement revision; full native review before Knowledge. Goal and
+30-minute continuation remain active. Independent Phase2 unchanged.
+
+Prior implementation and preparation record:
+
 The remaining three Phase1 scenario contracts are now implemented together,
 not merely documented. Data validates related partition definitions and combined
 row counts; Finance reconciles related account mappings and combined balances;
@@ -32,8 +52,12 @@ control0 independent filings/8 complete source-backed filings,159 source files,
 all source/input/task/registration seals and both route catalogs verified.
 Four initial inputs/files/tools reviewed; only private job IDs differ, all tasks
 cover the complete engagement. preparation-audit.json is saved in
-../eval-readiness/phase1-engagement-data-sol61-direct-r73. No r73 model call yet.
-Register and push, then absolute common freeze verification and launch exactly once.
+../eval-readiness/phase1-engagement-data-sol61-direct-r73. Registration aec21ded0 committed and pushed; absolute common freeze confirmed
+clean/actual remote and all seals. R73 launched exactly once, PID44425,
+2026-11-04T00:47:06.003675UTC. Actual Sol6.1 direct requests are running.
+Inspect existing progress/controller/native files; do not relaunch or edit source.
+Full native reader:../eval-readiness/read_phase1_r73_native.py; external hash cursor
+tracks completed reviewed files. No behavior conclusion until terminal full review.
 Data/Finance/Knowledge remain live_pending; all_ready=false. Source remains44938ae6f.
 Goal and30-minute continuation active; independent Phase2 unchanged.
 
