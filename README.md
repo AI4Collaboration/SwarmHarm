@@ -1,3 +1,8 @@
+EXP-008-C03-R01 collecting since 2026-11-04T10:35:46.061912+00:00 from P03 registration
+c69098ed0, source 503f84d2c. Exact-model native Pi tool preflight passed.
+All four GLM requests observed simultaneously in flight; no shared admission.
+Original r190 supplied-reference condition; r217 remains uncollected until review.
+
 # SwarmHarm
 
 ## GLM sequence — r190 then r217
