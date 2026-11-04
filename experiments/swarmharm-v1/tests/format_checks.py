@@ -75,6 +75,18 @@ class FormatChecks(unittest.TestCase):
         changed = dict(rebuilt_call, arguments='{"command":"pwd"}')
         self.assertNotEqual(export_atif.canonical(response_call), export_atif.canonical(changed))
 
+    def test_readable_reasoning_allows_rebuilt_ids_but_rejects_text_changes(self):
+        original={'type':'reasoning','id':'rs_old','summary':[],
+                  'content':[{'type':'reasoning_text','text':'Check the saved briefing.'}]}
+        rebuilt=dict(original,id='new',status='completed')
+        self.assertEqual(export_atif.appended_input([original],[rebuilt]),[])
+        changed=dict(rebuilt,content=[{'type':'reasoning_text','text':'Changed reasoning.'}])
+        with self.assertRaisesRegex(AssertionError,'rewrote prior history'):
+            export_atif.appended_input([original],[changed])
+        encrypted=dict(original,encrypted_content='first')
+        with self.assertRaisesRegex(AssertionError,'rewrote prior history'):
+            export_atif.appended_input([encrypted],[dict(encrypted,encrypted_content='second')])
+
     def test_atif_existing_export_must_match_native_reconstruction_and_study_scope(self):
         for mode in ('phase1', 'phase2-component', 'connected'):
             with self.subTest(mode=mode), tempfile.TemporaryDirectory() as temporary:

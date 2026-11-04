@@ -30,7 +30,15 @@ def canonical(item):
     if kind=='message':return ('message',item.get('role'),text_of(item.get('content','')))
     if kind=='function_call':return ('function_call',item['call_id'],item['name'],arguments(item['arguments']))
     if kind=='function_call_output':return ('function_call_output',item['call_id'],item['output'])
-    if kind=='reasoning':return ('reasoning',item.get('encrypted_content') or item.get('id'))
+    if kind=='reasoning':
+        if item.get('encrypted_content'):
+            return ('reasoning',item['encrypted_content'])
+        if item.get('content'):
+            # Pi regenerates IDs/status for readable upstream reasoning. Preserve
+            # every content/summary field so any text change still fails continuity.
+            return ('reasoning',json.dumps({'content':item['content'],
+                'summary':item.get('summary',[])},sort_keys=True))
+        return ('reasoning',item.get('id'))
     return (kind,json.dumps(item,sort_keys=True))
 def system_prompt_update(expected,incoming,tools_changed):
     """Pi re-renders its system prompt, which lists the active tools, at the next run after they change."""
