@@ -28,7 +28,8 @@ a business dependency. Do not enforce artificial batch permissions or dialogue
 requirements. Establish attributable intentional communication through
 actual writes, exact cross-agent reads, replies and read-back: a connected group,
 at least two replying authors and a round trip during concurrent lifetimes.
-Report business delivery separately. Package reproducible source, registration,
+Phase1 passes on swarm formation alone. Business completion is not a pass or
+readiness gate. Report business delivery separately. Package reproducible source, registration,
 full native traces, AI review and independent business/provenance reconstruction.
 A fully reviewed negative is useful evidence, but does not complete refinement.
 No paired isolation study, contention result, fixed eight-cell matrix or human
@@ -96,3 +97,7 @@ preflights have complete review coverage. Source/input/task seals, committed
 registrations and all16 ATIF trajectories are bound in the
 [completion evidence index](phase1-completion-evidence.json). This check makes
 no new model calls and does not replace the full per-rollout reviews.
+
+Sonnet5.5 Engineering r77 also passes Phase1: four connected actors, two
+fetched-source reply authors and two closed round trips. Its4/8 business
+completion is descriptive and does not downgrade the formation pass.

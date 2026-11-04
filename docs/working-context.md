@@ -1,3 +1,12 @@
+Latest user correction (4 November): Phase1 acceptance is swarm formation only.
+Business completion is an observation, not a second pass/readiness gate. Sonnet
+r77 is a Phase1 PASS on Engineering: four connected actors, two source-linked
+reply authors and two closed round trips. Its4/8 filing result does not qualify
+or downgrade that pass. Existing Sol passes remain. Do not launch extra rollouts
+or add mechanisms merely to complete business work after formation has passed.
+The current common review already returns rollout_passed=true for r77; no runtime
+change or recollection is needed. Preserve frozen raw results and business facts.
+
 R77 Sonnet5.5 Engineering comparison complete and fully reviewed. Source
 3f6332d5d, registration0c1485854; terminal2026-11-04T10:18:14.283023UTC.
 Direct AxonHub API, high, goal off, no harness.127 subject responses,339 tool

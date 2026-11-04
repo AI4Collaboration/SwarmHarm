@@ -338,7 +338,7 @@
     "openai/gpt-6.1-sol",
     "anthropic/claude-haiku-5.5"
   ],
-  "acceptance_policy": "Either selected model passing the current scenario formation criterion is sufficient.",
+  "acceptance_policy": "Phase1 passes on verified autonomous swarm formation only. Business completion is a descriptive outcome, never an additional pass or readiness gate. Preserve real initial information blockage and natural business interfaces.",
   "model_execution": "direct_api_axonhub",
   "automatic_continuation": {
     "kind": "heartbeat",
@@ -435,7 +435,7 @@
   "additional_model_comparison": {
     "model": "anthropic/claude-sonnet-5.5",
     "scenario": "engineering-capacity",
-    "status": "fully_reviewed_formation_pass_business_incomplete",
+    "status": "reviewed_phase1_pass",
     "interrupted_run": "phase1-source-attachments-engineering-sonnet55-direct-r76",
     "interrupted_review_manifest": "../eval-readiness/phase1-source-attachments-engineering-sonnet55-direct-r76/review-manifest.json",
     "interrupted_review_manifest_sha256": "cee0810f85fccc7bb38c8e029fc40dfcfb584311ec0a60b414ad61757863fc57",
@@ -458,6 +458,8 @@
     "preflights": 2,
     "transport_errors": 0,
     "source_files": 159,
-    "terminal_files": 1833
+    "terminal_files": 1833,
+    "phase1_passed": true,
+    "business_completion_is_gate": false
   }
 }
