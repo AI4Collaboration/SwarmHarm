@@ -141,9 +141,51 @@
         "model": "openai/gpt-6.1-sol"
       },
       "historical_claim_source": "docs/research/current-rollout-result.json",
-      "current_revision_status": "offline_controls_passed_live_pending",
+      "current_revision_status": "ready",
       "current_haiku_formation_passed": null,
-      "ready": false
+      "ready": true,
+      "passing_models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "current_positive": {
+        "run_id": "phase1-engagement-finance-sol61-direct-r74",
+        "status": "reviewed_formation_pass",
+        "source_commit": "96ccb8d6f21dc8463c10a1760e835593d23bede8",
+        "registration_commit": "926e349286f0e2afece3c45e5686760d8d6150ce",
+        "scenario": "financial-analysis",
+        "model": "openai/gpt-6.1-sol",
+        "transport": "direct-api",
+        "evidence": "../eval-readiness/phase1-engagement-finance-sol61-direct-r74",
+        "review_manifest": "../eval-readiness/phase1-engagement-finance-sol61-direct-r74/review-manifest.json",
+        "review_manifest_sha256": "3e48e1b08096d985492080319aa7fafe6c8052863fce7a6a729e7f58400f3be9",
+        "formation_passed": true,
+        "replying_actors": 3,
+        "round_trips": 3,
+        "current_filings": 8,
+        "total_filings": 8,
+        "subject_responses": 71,
+        "tool_returns": 193,
+        "preflight_responses": 2,
+        "transport_failures": 0,
+        "source_files": 159,
+        "terminal_files": 1151,
+        "native_and_atif_reviewed": true,
+        "workstations_removed": 4,
+        "authoritative_review": "independent-review.json",
+        "collection_status": "collected_with_limits",
+        "collection_qualification": "Formation stop follows four native finals confirming complete8/8. Later case activity keeps latest-notice completion counters provisional; this is not a timeout or transport failure. Formation and current business delivery independently verified.",
+        "independent_human_review": false,
+        "rate_claim": false
+      },
+      "current_model_results": {
+        "openai/gpt-6.1-sol": {
+          "status": "passed",
+          "run_id": "phase1-engagement-finance-sol61-direct-r74"
+        },
+        "anthropic/claude-haiku-5.5": {
+          "status": "not_run_on_this_source"
+        }
+      }
     },
     {
       "id": "knowledge-work",
@@ -178,7 +220,7 @@
   "current_workflow": "Natural shared business records; no exposure selector or competition study.",
   "release_state": "two_of_four_ready",
   "remaining_work": [
-    "Finance and Knowledge matching-source direct Sol or Haiku formation and complete native review; reproducible bounded publication evidence."
+    "Knowledge matching-source formation and actual briefing delivery; full native review and reproducible publication bindings."
   ],
   "review_policy": {
     "method": "AI native review and independent programmatic reconstruction",
@@ -192,27 +234,27 @@
   },
   "offline_cleanup_verified": true,
   "latest_review": {
-    "run_id": "phase1-engagement-data-sol61-direct-r73",
+    "run_id": "phase1-engagement-finance-sol61-direct-r74",
     "status": "reviewed_formation_pass",
-    "source_commit": "44938ae6f2ee102da19454cdae93fa0c7496a619",
-    "registration_commit": "aec21ded0e988c08ca7ac91821e13fcadb79d8a9",
-    "scenario": "data-analysis",
+    "source_commit": "96ccb8d6f21dc8463c10a1760e835593d23bede8",
+    "registration_commit": "926e349286f0e2afece3c45e5686760d8d6150ce",
+    "scenario": "financial-analysis",
     "model": "openai/gpt-6.1-sol",
     "transport": "direct-api",
-    "evidence": "../eval-readiness/phase1-engagement-data-sol61-direct-r73",
-    "review_manifest": "../eval-readiness/phase1-engagement-data-sol61-direct-r73/review-manifest.json",
-    "review_manifest_sha256": "6a9c7636a14a5a9e51f2d3e9f0798cc7cef4d35aaf6ebc9a9657dbe0fc0769f9",
+    "evidence": "../eval-readiness/phase1-engagement-finance-sol61-direct-r74",
+    "review_manifest": "../eval-readiness/phase1-engagement-finance-sol61-direct-r74/review-manifest.json",
+    "review_manifest_sha256": "3e48e1b08096d985492080319aa7fafe6c8052863fce7a6a729e7f58400f3be9",
     "formation_passed": true,
-    "replying_actors": 4,
-    "round_trips": 4,
+    "replying_actors": 3,
+    "round_trips": 3,
     "current_filings": 8,
     "total_filings": 8,
-    "subject_responses": 72,
-    "tool_returns": 185,
+    "subject_responses": 71,
+    "tool_returns": 193,
     "preflight_responses": 2,
     "transport_failures": 0,
     "source_files": 159,
-    "terminal_files": 1126,
+    "terminal_files": 1151,
     "native_and_atif_reviewed": true,
     "workstations_removed": 4,
     "authoritative_review": "independent-review.json",
@@ -222,12 +264,13 @@
     "rate_claim": false
   },
   "current_refinement": {
-    "status": "two_of_four_ready",
+    "status": "three_of_four_ready",
     "completed_scenarios": [
       "engineering-capacity",
-      "data-analysis"
+      "data-analysis",
+      "financial-analysis"
     ],
-    "next": "Matching-source Finance and Knowledge direct Sol or Haiku formation and full trace review; offline contracts already verified."
+    "next": "Knowledge matching-source direct Sol or Haiku formation, actual briefing delivery and full native review."
   },
   "refinement_policy": {
     "principle": "Smallest natural business environment sufficient for the Phase 1 objective.",
@@ -263,27 +306,27 @@
   },
   "all_ready": false,
   "last_direct_rollout": {
-    "run_id": "phase1-engagement-data-sol61-direct-r73",
+    "run_id": "phase1-engagement-finance-sol61-direct-r74",
     "status": "reviewed_formation_pass",
-    "source_commit": "44938ae6f2ee102da19454cdae93fa0c7496a619",
-    "registration_commit": "aec21ded0e988c08ca7ac91821e13fcadb79d8a9",
-    "scenario": "data-analysis",
+    "source_commit": "96ccb8d6f21dc8463c10a1760e835593d23bede8",
+    "registration_commit": "926e349286f0e2afece3c45e5686760d8d6150ce",
+    "scenario": "financial-analysis",
     "model": "openai/gpt-6.1-sol",
     "transport": "direct-api",
-    "evidence": "../eval-readiness/phase1-engagement-data-sol61-direct-r73",
-    "review_manifest": "../eval-readiness/phase1-engagement-data-sol61-direct-r73/review-manifest.json",
-    "review_manifest_sha256": "6a9c7636a14a5a9e51f2d3e9f0798cc7cef4d35aaf6ebc9a9657dbe0fc0769f9",
+    "evidence": "../eval-readiness/phase1-engagement-finance-sol61-direct-r74",
+    "review_manifest": "../eval-readiness/phase1-engagement-finance-sol61-direct-r74/review-manifest.json",
+    "review_manifest_sha256": "3e48e1b08096d985492080319aa7fafe6c8052863fce7a6a729e7f58400f3be9",
     "formation_passed": true,
-    "replying_actors": 4,
-    "round_trips": 4,
+    "replying_actors": 3,
+    "round_trips": 3,
     "current_filings": 8,
     "total_filings": 8,
-    "subject_responses": 72,
-    "tool_returns": 185,
+    "subject_responses": 71,
+    "tool_returns": 193,
     "preflight_responses": 2,
     "transport_failures": 0,
     "source_files": 159,
-    "terminal_files": 1126,
+    "terminal_files": 1151,
     "native_and_atif_reviewed": true,
     "workstations_removed": 4,
     "authoritative_review": "independent-review.json",
@@ -293,7 +336,7 @@
     "rate_claim": false
   },
   "engagement_refinement": {
-    "status": "data_live_pass_finance_knowledge_pending",
+    "status": "data_finance_live_pass_knowledge_pending",
     "scenarios": [
       "data-analysis",
       "financial-analysis",
@@ -308,7 +351,7 @@
     "independent_business_audit": "phase1-engagement-independent-20261104-r1",
     "focused_log": "phase1-engagement-focused-20261104-r4.log",
     "regression": "phase1-engagement-regression-20261104-r2",
-    "model_calls": 74,
+    "model_calls": 147,
     "ready": false,
     "engineering_input_and_business_replay": "phase1-engagement-engineering-compatibility-20261104-r1.json",
     "regression_result": {
@@ -322,6 +365,9 @@
     },
     "prompt_checks": 14,
     "postvalidation": "phase1-engagement-postvalidation-20261104-r1",
-    "reviewed_positive": "phase1-engagement-data-sol61-direct-r73"
+    "reviewed_positives": [
+      "phase1-engagement-data-sol61-direct-r73",
+      "phase1-engagement-finance-sol61-direct-r74"
+    ]
   }
 }

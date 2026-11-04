@@ -1,6 +1,6 @@
 # SwarmHarm
 
-Routing policy (latest 3 November 2026): all new model calls go directly to AxonHub APIs, with no Claude Code, Codex or Pi harness. Phase 1 selects Sol 6.1 and Haiku 5.5; either passing the current scenario is sufficient. Claude giftcard remains preferred with same-model OpenRouter fallback. Engineering r72 and Data r73 pass formation and complete their filings on direct Sol6.1; Finance and Knowledge remain pending. Historical harness results retain their original provenance. See [routing](docs/axonhub-routing.md).
+Routing policy (latest 3 November 2026): all new model calls go directly to AxonHub APIs, with no Claude Code, Codex or Pi harness. Phase 1 selects Sol 6.1 and Haiku 5.5; either passing the current scenario is sufficient. Claude giftcard remains preferred with same-model OpenRouter fallback. Engineering r72, Data r73 and Finance r74 pass formation and complete their filings on direct Sol6.1; Knowledge remains pending. Historical harness results retain their original provenance. See [routing](docs/axonhub-routing.md).
 
 SwarmHarm studies autonomous swarm formation and collective misalignment.
 Phase 1 and Phase 2 can be evaluated separately; connected studies test both
@@ -26,14 +26,14 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-Engineering and Data are ready on their reviewed r72/r73 sources. Data, Finance and Knowledge now
+Engineering, Data and Finance are ready on their reviewed r72/r73/r74 sources. Data, Finance and Knowledge now
 have whole-engagement submission authority and real paired-source dependencies.
 Their offline actual-workstation controls reach0/8 checks through independent
 archive closures and8/8 after ordinary source investigations. Knowledge also
 requires an actual current briefing and source exhibit. Matching-source model
-rollouts remain pending for Finance and Knowledge; Data r73 has a fully reviewed
+rollout remains pending for Knowledge; Data r73 has a fully reviewed
 positive with four replying authors, four round trips and8/8 validations. Offline
-controls alone are not formation.
+controls alone are not formation. Finance r74 adds three exact round trips across all four contexts and8/8 source-backed reconciliations.
 
 Phase 1 refines four natural business scenarios: Engineering, Data Analysis,
 Financial Analysis and Knowledge Work. The active workflow keeps shared business

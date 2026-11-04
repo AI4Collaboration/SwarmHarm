@@ -70,8 +70,8 @@ Ordinary investigation records, fetched-source attachments and factual updates
 use the same verified interfaces as Engineering. No communication is a business
 acceptance rule. These opt-in contracts leave historical and Phase2 behavior
 unchanged. Offline delivery is verified for all three. Data r73 now verifies
-matching-source live formation and complete delivery; Finance and Knowledge remain
-live pending. See the catalog for model, source and full evidence bindings.
+matching-source live formation and complete delivery. Finance r74 also passes
+with three round trips and8/8 reconciliations; Knowledge remains live pending. See the catalog for model, source and full evidence bindings.
 
 The following paragraphs document retained historical package revisions; they
 are not additional requirements for the active filing task.
