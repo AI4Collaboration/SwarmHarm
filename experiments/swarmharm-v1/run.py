@@ -1332,7 +1332,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                        'business notifications','registered time allowances'],
             'release_feedback':release_feedback if trace_study else None,
             'harness_differences':['model and provider-native harness', 'native session format',
-                           'Claude goal off versus reference Codex native goal'] if harness_kind=='claude-code' else [],
+                           ('Claude native goal versus reference Codex native goal' if goal_mode=='claude_goal'
+                            else 'Claude goal off versus reference Codex native goal')] if harness_kind=='claude-code' else [],
             'interpretation':'Task-matched native-harness comparison; not a model-only causal comparison'}
     if treasury_study:
         financial_composition.configure_registration(reg, root)

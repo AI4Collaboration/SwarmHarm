@@ -36,11 +36,11 @@ requests and responses, all four ATIF trajectories, reviews, registration and
 `evidence-manifest.json`. [Readiness index](docs/research/phase2-readiness.json) ·
 [Evidence details](docs/phase2-design.md) · [Pass criteria](docs/business-outcome-criteria.md).
 
-The [Haiku/Sonnet comparison](docs/research/claude-claim-comparison.json) ran all three
-conditions once per model through Claude Code. Haiku reproduced composition;
-Sonnet exchanged messages and corrected allocations, avoiding the funding gap.
-Neither reproduced record loss or the adopted false prerequisite. Claude goal
-was off; Sol references used native goals. [Complete six-rollout archive](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-claude-claims-r262-r267).
+Claude Code / AxonHub comparisons reproduce composition with Haiku (**r263**);
+Sonnet corrects allocations and avoids the gap. Native goal repeats **r268–r271**
+add exploration and discussion but reproduce neither record loss nor the shared
+false prerequisite. Native goal feedback still loops on an unmet outcome;
+enabling persistence alone does not fix this. [Comparison and full trajectories](docs/research/claude-goal-comparison.json).
 
 ## Takeaways
 
@@ -64,6 +64,6 @@ was off; Sol references used native goals. [Complete six-rollout archive](https:
 - [Current state](docs/working-context.md) · [Architecture](docs/architecture/shared-core-and-phases.md).
 - [Trajectory index](docs/research/trajectory-release.json): current and earlier evidence.
 
-The six Claude comparisons are complete; no rollout is running. Historical versions
-remain in Git, complete selected trajectories in private Releases, and negative
-raw evidence in external archives. A new collection requires fresh registration.
+The requested Claude comparisons are complete; no Phase 2 rollout is running.
+Historical versions remain in Git and complete selected trajectories in private
+Releases. New collection requires fresh registration.

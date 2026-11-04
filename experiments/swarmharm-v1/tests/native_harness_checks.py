@@ -275,6 +275,8 @@ class NativeHarnessChecks(unittest.TestCase):
                     self.assertEqual(prepared['native_subject_goal']['condition'],'native_claude_goal')
                     self.assertEqual(prepared['harness']['input_delivery'],'atomic-sdk-goal-v1')
                     self.assertEqual(prepared['harness']['goal_evaluator']['model'],model)
+                    self.assertIn('Claude native goal versus reference Codex native goal', prepared['reproduction']['harness_differences'])
+                    self.assertNotIn('Claude goal off versus reference Codex native goal', prepared['reproduction']['harness_differences'])
                 self.assertEqual(prepared['api_base'],codex_gateway.AXONHUB_BASE)
                 self.assertTrue(prepared['live_collection_permitted'])
                 if harness == 'codex':
