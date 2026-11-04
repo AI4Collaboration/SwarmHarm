@@ -1,3 +1,12 @@
+R76 Sonnet5.5 Engineering preparation complete:494 common checks+14 prompt
+checks; actual business control0 independent/8 complete filings.159 frozen
+source/input/task/registration seals and both model catalogs verified. Four
+normalized inputs/tools/files match successful r72 except job IDs/deadline;
+no environment edit. preparation-audit.json saved externally. Output:
+../eval-readiness/phase1-source-attachments-engineering-sonnet55-direct-r76.
+Commit/push this registration and pass absolute freeze before one common launch.
+The extra model comparison does not revoke completed4/4 Sol readiness.
+
 Additional user-selected comparison (4 November): test Sonnet on the current
 Engineering scenario, using direct AxonHub API. Both authenticated catalogs list
 anthropic/claude-sonnet-5.5. Freeze that exact identity, high effort, goal off,
