@@ -1,3 +1,8 @@
+EXP-010-C04-R01 collecting since 2026-11-04T10:57:51.216736+00:00 from P02 registration
+a73d512e5, source 61badc833. Exact-model native Pi tool preflight passed.
+Four parallel persistent GLM/Pi/AxonHub contexts; original r217, no bonus or
+supplied method. r190 is closed/reviewed. No further condition queued.
+
 # GLM r217 — source preparation
 
 The user-selected r190 GLM rollout is complete and reviewed. Now collect one fresh
