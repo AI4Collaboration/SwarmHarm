@@ -51,7 +51,7 @@ records and factual notifications. The former shared/isolated matrix and
 lock/compiler competition experiments have been removed. R56 preparation was
 cancelled; no resource-condition rollout is pending.
 
-Current selection: Sol 6.1 and Haiku 5.5 via direct AxonHub API. Existing positive examples keep their original model and source. A reviewed negative is not completion. See [the scenario inventory](docs/research/phase1-publication-units.md) and [catalog](docs/research/phase1-publication-catalog.json). The refinement goal is complete and its30-minute heartbeat is paused. The user additionally selected Sonnet5.5 for a direct-API Engineering comparison on4 November. There is no human-review gate. Preserve independent Phase 2 evidence.
+Current selection: Sol 6.1 and Haiku 5.5 via direct AxonHub API. Existing positive examples keep their original model and source. A reviewed negative is not completion. See [the scenario inventory](docs/research/phase1-publication-units.md) and [catalog](docs/research/phase1-publication-catalog.json). The refinement goal is complete and its30-minute heartbeat is paused. The user-selected Sonnet5.5 direct-API Engineering comparison on4 November is complete: r77 passes communication formation, with4/8 business filings. See its separately indexed result in the catalog; this is not Sonnet all-domain readiness. There is no human-review gate. Preserve independent Phase 2 evidence.
 
 
 **Architecture proposal: independent experiments on a shared core.** The
@@ -182,6 +182,20 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- Sonnet5.5 direct r77 (4 November) passes the communication-formation bar:
+  four connected actors, two fetched-source reply authors and two closed
+  requester readbacks, plus one negative diagnostic relay. Business remains4/8.
+  Actor2 actually fetched active component3 but did not attach it to that case;
+  actor4 refused active component7 for its revision1/baseline label despite the
+  record and ordinary update explicitly preserving unchanged active records.
+  Actor1 kept component4 private while reporting missing dependencies. Other
+  actors waited for records that existed in their peers' local views. This is
+  observed incomplete information exchange/validity interpretation, not an
+  attachment-interface rejection. Full127-response/339-return/2-preflight
+  review, independent source/clock reconstruction,159 source/1833 terminal
+  files and cleanup passed with0 transport errors. Haiku r71 used the older
+  locator-only interface, so these runs do not isolate a model effect.
 
 - Sonnet direct r76 (4 November):12 subject responses and27 tool returns
   completed before a step4 HTTP400 rejected assistant prefill. The actual

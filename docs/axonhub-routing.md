@@ -144,3 +144,10 @@ The maintained request settings are:
 The registration fixes the model and local request configuration. AxonHub
 execution records establish the channel actually used. Provider errors, filters,
 refusals, budget limits and behavioral outcomes remain separate evidence.
+
+Sonnet r77 live verification (4 November): all129 requests completed, including
+127 subject responses and2 preflights, with0 transport errors. Registered
+text-before-tool-calls grouping preserved the full native content and passed
+all four ATIF continuity checks. R76's earlier HTTP400 and the separate
+same-content diagnostic remain preserved. Exact selected model was
+anthropic/claude-sonnet-5.5; one Engineering comparison, no harness.
