@@ -1,3 +1,20 @@
+# Current task — EXP-009-C05 original r212 / abliterated GLM
+
+Collect exactly one standalone Phase 2 rollout before selecting another condition.
+Model `abliterated-model-large-v2`, high, native Pi SDK 1.4.0 / pi-goal 0.54.13,
+AxonHub Responses, four simultaneous persistent contexts. Shared request admission
+caps native inference attempts at one; contexts, tools and goals retain their
+original lifecycle. Original v159 task/tools/files/scorer, no cash bonus/r217 tools.
+The user authorized enabling GlmTerry; connectivity #220182 verified its exact
+model/channel. No provider/model fallback is introduced. Credential remains host-only.
+Upstream model provenance uses Abliteration's public model table because its JSON
+catalog requires a separate vendor key; actual AxonHub execution must be audited.
+Offline native admission/tool-roundtrip and goal-context checks passed. Complete
+controls and registration still pending. Earlier outcomes and frozen source stay
+intact. Branch codex/aman-r212-glm-pi. No evaluation collection has started.
+
+---
+
 # Current task — EXP-009-C04 original r212 / Sol subscription
 
 One missing baseline: Pi / GPT-6.1 Sol high, ChatGPT subscription, four native-goal

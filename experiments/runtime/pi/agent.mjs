@@ -156,8 +156,12 @@ function controllerExtension(pi) {
 		turn += 1;
 		requestIndex = 0;
 	});
-	pi.on("before_provider_request", (event) => {
+	pi.on("before_provider_request", async (event) => {
 		requestIndex += 1;
+		if (config.inference_admission) {
+			const reply = await channel.request({ type: "inference_admission", id: nextId("admission"), turn, attempt: requestIndex });
+			if (reply.aborted) throw new Error("Inference admission cancelled");
+		}
 		emit({ type: "request", turn, control_epoch: controlEpoch, attempt: requestIndex, payload: event.payload });
 		return undefined;
 	});

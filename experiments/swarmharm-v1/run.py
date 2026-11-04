@@ -148,6 +148,23 @@ def catalog(url,model,key_file=None,attempts=3,backoff_seconds=2,
                 json.JSONDecodeError):
             if attempt == attempts:raise
         time.sleep(backoff_seconds*attempt)
+def abliteration_model_listing(model):
+    """Public vendor model table; the vendor JSON catalog requires its own key."""
+    url='https://docs.abliteration.ai/models'
+    with guardrails.open_url(urllib.request.Request(url,
+            headers={'User-Agent':'swarmharm-route-check/1.0'}),
+            timeout=CATALOG_TIMEOUT_SECONDS) as response:
+        body=response.read();status=response.status
+    import re
+    found=bool(re.search(rb'(?<![a-z0-9-])'+re.escape(model.encode())+rb'(?![a-z0-9-])',body))
+    return {'url':url,'http_status':status,'model_found':found,
+            'source_kind':'vendor_public_model_documentation',
+            'body_sha256':sha256(body).hexdigest(),
+            'evidence_limit':'Public vendor listing, not an authenticated upstream JSON catalog. '
+                'The vendor /v1/models endpoint requires a separate vendor key; '
+                'actual execution channel/model must be verified in AxonHub.'}
+
+
 def verify_routes(key_file,reasoning_effort=DEFAULT_REASONING):
     model=next(iter(MODELS.values()))
     upstream=next(iter(UPSTREAM_MODELS.values()))
@@ -156,11 +173,18 @@ def verify_routes(key_file,reasoning_effort=DEFAULT_REASONING):
         'axonhub_catalog_endpoint':AXONHUB_CATALOG,
         'openrouter_catalog_endpoint':OPENROUTER_CATALOG,
         'model':model,'upstream_model':upstream,
-        'reasoning_effort':reasoning_effort,
-        'openrouter':catalog(
-            f'{OPENROUTER_CATALOG}/{upstream}/endpoints',upstream),
-        'axonhub':catalog(AXONHUB_CATALOG,model,key_file)}
-    if not routes['openrouter']['model_found'] or not routes['axonhub']['model_found']:
+        'reasoning_effort':reasoning_effort}
+    if upstream == 'abliterated-model-large-v2':
+        if model != upstream:
+            raise ValueError('Abliteration route must retain the exact upstream identity')
+        routes['upstream_catalog']=abliteration_model_listing(upstream)
+        routes['openrouter_catalog_endpoint']=None
+        upstream_found=routes['upstream_catalog']['model_found']
+    else:
+        routes['openrouter']=catalog(f'{OPENROUTER_CATALOG}/{upstream}/endpoints',upstream)
+        upstream_found=routes['openrouter']['model_found']
+    routes['axonhub']=catalog(AXONHUB_CATALOG,model,key_file)
+    if not upstream_found or not routes['axonhub']['model_found']:
         raise RuntimeError(
             f"AxonHub route {model} or upstream counterpart {upstream} is absent from its current catalog"
         )
@@ -583,9 +607,13 @@ def _prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         else provider_concurrency)
     if not 1 <= resolved_provider_concurrency <= resolved_active_contexts:
         raise ValueError('provider concurrency must be between one and active contexts')
-    if resolved_provider_concurrency != resolved_active_contexts:
+    if resolved_provider_concurrency != resolved_active_contexts and harness_kind != 'pi-sdk':
         raise ValueError('each agent session sends its own requests; provider concurrency must equal active contexts')
     budget['provider_concurrency']=resolved_provider_concurrency
+    if resolved_provider_concurrency != resolved_active_contexts:
+        harness['request_admission']={'kind':'host_fifo',
+            'max_inflight':resolved_provider_concurrency,
+            'scope':'All native Pi SDK attempts, including retries; contexts, goals and tools remain active.'}
     save(root/'fixtures.json',rows);save(root/'activation-plan.json',activation)
     save(root/'topology.json',topology_spec)
     shutil.copy2(HERE/'source-manifest.json',root/'source-manifest.json')
@@ -1778,6 +1806,13 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     monitor=module('swarmharm_v1_response_monitor',REPO/'experiments/runtime/response_monitor.py')
     harness=reg['harness']
+    admission=harness.get('request_admission')
+    if budget['provider_concurrency'] != budget['active_contexts_natural']:
+        require(harness['kind']=='pi-sdk' and admission is not None
+            and admission['kind']=='host_fifo'
+            and admission['max_inflight']==budget['provider_concurrency'],
+            'Reduced inference concurrency requires its registered native Pi admission gate.')
+    inference_gate=pi_agent.InferenceGate(admission['max_inflight']) if admission else None
     require(harness['kind'] in HARNESS_KINDS,'Unknown registered agent harness.')
     agent_runtime=codex_agent if is_codex else claude_agent if is_claude else pi_agent
     agent_class=codex_agent.CodexAgent if is_codex else claude_agent.ClaudeAgent if is_claude else pi_agent.PiAgent
@@ -1887,6 +1922,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     active_tools=[tool['name'] for tool in initial[name][actor]['tools']],
                     job_context=session_inputs(initial[name][actor], harness['kind'], context_to_system=bool((harness.get('context_mapping') or {}).get('append_declared_context')))[0],
                     goal_mode=harness['goal_mode'],
+                    **({'inference_gate':inference_gate} if inference_gate is not None else {}),
                     **({'registered_harness':harness} if is_codex else {}),
                     **({'subscription':True} if pi_subscription else {}),
                     **({'declared_context_append':bool((harness.get('context_mapping') or {}).get('append_declared_context'))} if is_claude else {}))
@@ -2600,6 +2636,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             context_window=harness['context_window'],
             request_timeout_ms=budget['request_timeout_seconds']*1000,
             tools=[tool],active_tools=['confirm_service'],job_context=None,goal_mode='off',
+            **({'inference_gate':inference_gate} if inference_gate is not None else {}),
             **({'registered_harness':harness} if is_codex else {}),
                     **({'subscription':True} if pi_subscription else {}),
                     **({'declared_context_append':bool((harness.get('context_mapping') or {}).get('append_declared_context'))} if is_claude else {}))

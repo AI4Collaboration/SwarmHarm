@@ -9,6 +9,7 @@ import shlex
 import shutil
 import subprocess
 import threading
+from collections import deque
 
 HERE = Path(__file__).resolve().parent
 PI_DIR = HERE / 'pi'
@@ -28,6 +29,48 @@ GOAL_MODES = ('off', 'goal_command')
 GOAL_TOOLS = ['goal_complete', 'goal_blocked', 'goal_wait']
 GOAL_SETTINGS = {'rpc': {'enabled': False},
                  'continuationLimits': {'automaticTurns': 25, 'noProgressTurns': 3}}
+
+
+class InferenceGate:
+    """FIFO admission for native SDK attempts; contexts and tools remain live."""
+
+    def __init__(self, limit):
+        if not isinstance(limit, int) or isinstance(limit, bool) or limit < 1:
+            raise ValueError('Inference concurrency must be a positive integer')
+        self.limit = limit
+        self.condition = threading.Condition()
+        self.pending = deque()
+        self.active = set()
+        self.cancelled = set()
+
+    def acquire(self, owner):
+        with self.condition:
+            if owner in self.active or owner in self.pending:
+                raise RuntimeError('Overlapping native request from one context')
+            self.pending.append(owner)
+            while owner not in self.cancelled:
+                if self.pending[0] is owner and len(self.active) < self.limit:
+                    self.pending.popleft()
+                    self.active.add(owner)
+                    self.condition.notify_all()
+                    return True
+                self.condition.wait()
+            if owner in self.pending:
+                self.pending.remove(owner)
+            self.condition.notify_all()
+            return False
+
+    def release(self, owner):
+        with self.condition:
+            self.active.discard(owner)
+            self.condition.notify_all()
+
+    def cancel(self, owner):
+        with self.condition:
+            self.cancelled.add(owner)
+            if owner in self.pending:
+                self.pending.remove(owner)
+            self.condition.notify_all()
 # Pi checks requests against this locally; the provider enforces the real model limit.
 CONTEXT_WINDOW = 1_000_000
 # Pi defaults that would add unregistered model calls or rewrite history are off.
@@ -124,10 +167,11 @@ class PiAgent:
 
     def __init__(self, actor, events, *, folder, model, api_base, api_key, thinking_level,
                  max_output_tokens, context_window, request_timeout_ms, tools, active_tools,
-                 job_context, goal_mode, subscription=False):
+                 job_context, goal_mode, subscription=False, inference_gate=None):
         self.actor = actor
         self.folder = Path(folder).resolve()
         self.folder.mkdir(parents=True, exist_ok=True)
+        self.inference_gate = inference_gate
         if goal_mode != 'off':
             goal_dir = self.folder / 'agent'
             goal_dir.mkdir(exist_ok=True)
@@ -159,6 +203,7 @@ class PiAgent:
         self.send({
             'type': 'init',
             'subscription': subscription,
+            'inference_admission': inference_gate is not None,
             'model': model,
             'api_base': api_base,
             'thinking_level': thinking_level,
@@ -189,7 +234,21 @@ class PiAgent:
                         message = json.loads(line)
                     except (json.JSONDecodeError, UnicodeDecodeError):
                         message = {'type': 'fatal', 'message': 'Pi bridge emitted incomplete or invalid JSON.'}
+                    gate = getattr(self, 'inference_gate', None)
+                    if gate is not None:
+                        if message['type'] == 'inference_admission':
+                            admitted = gate.acquire(self)
+                            try:
+                                self.reply(message['id'], aborted=not admitted)
+                            except (BrokenPipeError, OSError):
+                                gate.cancel(self)
+                            continue
+                        if message['type'] in ('provider_response', 'turn_end', 'closed', 'fatal'):
+                            gate.release(self)
                     self.events.put((self.actor, message))
+        if getattr(self, 'inference_gate', None) is not None:
+            self.inference_gate.cancel(self)
+            self.inference_gate.release(self)
         self.events.put((self.actor, {'type': 'exited', 'returncode': self.process.wait()}))
 
     def send(self, message):
@@ -214,6 +273,8 @@ class PiAgent:
         self.send({'reply_to': request_id, **values})
 
     def close(self, timeout=30):
+        if getattr(self, 'inference_gate', None) is not None:
+            self.inference_gate.cancel(self)
         try:
             if self.process.poll() is None:
                 self.send({'type': 'shutdown'})

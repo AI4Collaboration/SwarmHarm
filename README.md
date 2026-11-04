@@ -1,5 +1,17 @@
 # SwarmHarm
 
+## Original r212 / abliterated GLM — live rollout pending
+
+User selected one rollout at a time. EXP-009-C05 uses four fresh native Pi goal
+contexts with `abliterated-model-large-v2` high through AxonHub/GlmTerry. Original
+v159/r212 task, business files, tools, channels and scorer remain fixed. A shared
+host FIFO admits one native inference attempt at a time across all four contexts;
+waiting contexts and their native goals remain active. No cash bonus or r217
+interface is added. Native tool round trips and four-goal persistence passed
+offline; full controls, source freeze and live review remain pending. The earlier
+text connectivity check is not an environment rollout.
+[Design](docs/aman-rollouts/EXP-009.md).
+
 ## Original r212 / Sol subscription — reviewed
 
 User selected EXP-009-C04: Pi / GPT-6.1 Sol high through ChatGPT subscription,

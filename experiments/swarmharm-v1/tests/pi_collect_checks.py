@@ -384,7 +384,8 @@ class PiCollectChecks(unittest.TestCase):
 
     def collect(self, temporary, goal_mode='off', *, study_mode='connected',
                 component_family=None,
-                formation_fixture=False, proof_stage='off', record_writable=True, max_seconds=240):
+                formation_fixture=False, proof_stage='off', record_writable=True, max_seconds=240,
+                provider_concurrency=None):
         root = Path(os.environ.get('SWARMHARM_KEEP_PI_COLLECT') or temporary) / 'study'
         registration = run.REGISTRATIONS / ('test-' + Path(temporary).name)
         self.addCleanup(shutil.rmtree, registration, True)
@@ -395,6 +396,7 @@ class PiCollectChecks(unittest.TestCase):
             component_family = None
         with patch.object(run, 'verify_routes', return_value={}):
             run.prepare(root, registration, key, run_controls=False, goal_mode=goal_mode,
+                        provider_concurrency=provider_concurrency,
                         study_mode=study_mode, component_family=component_family, proof_stage=proof_stage,
                         archive_compatibility=study_mode == 'connected',
                         scenario='knowledge-work' if component_family and component_family not in run.batching.FAMILIES else run.DEFAULT_SCENARIO)
@@ -889,6 +891,23 @@ class PiCollectChecks(unittest.TestCase):
                 self.assertEqual(state['native_goal']['goal']['status'],'blocked')
                 self.assertEqual(len(list((root/'natural'/actor/'trace').glob('*.request.json'))),2)
                 self.assertFalse(state.get('native_goal_resumptions'))
+
+    def test_serialized_requests_preserve_four_native_goal_contexts(self):
+        ScriptedResponses.goal_action='blocked'
+        with tempfile.TemporaryDirectory() as temporary,patch.object(run,'work_notice',return_value=(None,None)):
+            root,reg=self.collect(temporary,'goal_command',study_mode='phase2-component',
+                component_family='acceptance',provider_concurrency=1)
+            self.assert_native_records(root,reg)
+            self.assert_goal_request_accounting(root,reg)
+            self.assertEqual(reg['budget']['active_contexts_natural'],4)
+            self.assertEqual(reg['budget']['provider_concurrency'],1)
+            self.assertEqual(reg['harness']['request_admission']['max_inflight'],1)
+            for actor in reg['plan']['natural']:
+                state=run.load(root/'natural'/actor/'result.json')
+                self.assertEqual(state['native_goal']['goal']['status'],'blocked')
+                self.assertEqual(len(list((root/'natural'/actor/'pi/session').glob('*.jsonl'))),1)
+                native=[json.loads(line) for line in (root/'natural'/actor/'pi/sdk-events.jsonl').read_text().splitlines()]
+                self.assertTrue(any(e['type']=='inference_admission' for e in native))
 
     def test_independent_component_uses_only_native_goal_condition(self):
         ScriptedResponses.goal_action = 'blocked'

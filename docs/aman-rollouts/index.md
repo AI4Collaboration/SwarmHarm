@@ -189,3 +189,11 @@ EXP-009-C04-R01 terminal and reviewed at 2026-11-03 14:10:06 UTC, from P02.
 All four native contexts closed quiescent; no collector remains. Native replay,
 1,222 terminal hashes and four ATIF exports verify. Outcome/limits are in the
 root README Takeaways; registry binds the external review and semantic audit.
+
+## EXP-009-C05 — original r212 / abliterated GLM
+
+New user-selected condition: `abliterated-model-large-v2` high, Pi/AxonHub,
+four persistent native-goal contexts, one outbound inference attempt at a time.
+One rollout selected before any later experiment. Original r212 business setup;
+no cash bonus or r217 interface. Native queue/tool/goal checks passed offline.
+Preparation and live review pending; no P/R assigned yet.
