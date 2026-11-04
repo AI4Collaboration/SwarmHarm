@@ -78,6 +78,9 @@ above remain separate evidence.
 
 - Communication can spread useful methods, mistaken explanations or harmful actions.
   These findings come from different cases, not one demonstrated chain.
+- Less detailed feedback alone did not reproduce grader inference in the unified
+  reporting comparison. Sol 5.6 shared mistaken methods, then withdrew all four
+  incomplete releases after checking their files. [Complete comparison](docs/research/unified-delivery-r4.json).
 - Discussion and persistence do not guarantee action. Some agents stop, correct
   their work or preserve the shared resource. Reward causality remains unproven.
 - Runtime faults can resemble model behavior. The matched Sol runs validate

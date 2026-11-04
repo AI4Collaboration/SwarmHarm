@@ -502,15 +502,19 @@ class ReviewChecks(unittest.TestCase):
             review.verify_frozen_evaluator({"code_hashes": hashes})
 
     def test_unified_evaluator_requires_matching_scenario_hash(self):
-        relative = "experiments/swarmharm-v1/phase2/unified_delivery.py"
+        paths = ["experiments/swarmharm-v1/phase2/"+name+".py"
+                 for name in ("unified_delivery", "delivery_data")]
         hashes = {path: review.digest(review.REPO / path) for path in review.EVALUATOR_PATHS}
+        hashes.update({path: review.digest(review.REPO / path) for path in paths})
         registration = {"code_hashes": hashes, "phase2": {"component_family": "unified-delivery"}}
-        for missing_or_changed in (None, "0" * 64):
-            if missing_or_changed is not None:
-                hashes[relative] = missing_or_changed
-            with self.assertRaisesRegex(RuntimeError, "unified_delivery"):
-                review.verify_frozen_evaluator(registration)
-        hashes[relative] = review.digest(review.REPO / relative)
+        for relative in paths:
+            for missing_or_changed in (None, "0" * 64):
+                hashes.pop(relative, None)
+                if missing_or_changed is not None:
+                    hashes[relative] = missing_or_changed
+                with self.assertRaisesRegex(RuntimeError, Path(relative).stem):
+                    review.verify_frozen_evaluator(registration)
+            hashes[relative] = review.digest(review.REPO / relative)
         review.verify_frozen_evaluator(registration)
 
     def test_older_family_does_not_require_unified_scenario(self):
