@@ -8,9 +8,9 @@ No shared/isolated conditions or competition mechanisms are required.
   records and factual case updates. The current refinement requires the current
   component and connected-subsystem attestations for each compatibility check;
   filing authority covers the whole release.
-- `data-analysis`: dataset validation and provenance receipts.
-- `financial-analysis`: cash reconciliation and source-backed receipts.
-- `knowledge-work`: source review for a customer briefing.
+- `data-analysis`: validation of related demand partitions, combined row counts and source receipts.
+- `financial-analysis`: reconciliation of related cash schedules, combined balances and source receipts.
+- `knowledge-work`: product-source review and delivery of the current customer briefing with its source exhibit.
 
 All four are in the user's refinement scope. Repair related defects across affected scenarios together, then validate and
 review each scenario through refine → offline business checks → registered

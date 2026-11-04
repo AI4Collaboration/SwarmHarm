@@ -114,7 +114,7 @@ a claim that all physical timing channels in the host have been eliminated.
 def workspace_condition(plan):
     """The fixed ordinary Engineering workspace; no condition selector."""
     return ({'profile':'business_workspace',
-             'surface':'shared_build_artifacts_and_source_investigations',
+             'surface':('source_investigations_and_engagement_filing' if next(iter(plan.values())).get('phase1_business_contract','').endswith('-engagement-v1') else 'shared_build_artifacts_and_source_investigations'),
              'subject_visible':False,'population':len(plan),
              'delivery':'ordinary_reads_and_factual_business_updates'},
             {'kind':'directed_graph','edges':[],

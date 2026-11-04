@@ -57,6 +57,20 @@ the release. Existing investigations and source attachments can resolve the
 missing information. A revised dependency reopens the affected receipt; unchanged
 primary attestations remain valid. Phase 2 and historical v1 replay are unchanged.
 
+The other three standalone contracts now use whole-engagement authority.
+Data requires the definitions and combined row count of related demand partitions.
+Finance requires both account mappings and the combined balance of related cash
+schedules. Knowledge requires both source sections for each product and actual
+briefing publication containing all current approved claims and the source exhibit.
+Source review receipts alone do not complete briefing delivery. All checks remain
+available to every context; locally discoverable archive closures lack a complete
+source pair. Acceptance requires both real source reads. An upstream statement
+revision invalidates dependent reviews and the old briefing's currency.
+Ordinary investigation records, fetched-source attachments and factual updates
+use the same verified interfaces as Engineering. No communication is a business
+acceptance rule. These opt-in contracts leave historical and Phase2 behavior
+unchanged. Offline delivery is verified; matching-source live formation is pending.
+
 The following paragraphs document retained historical package revisions; they
 are not additional requirements for the active filing task.
 

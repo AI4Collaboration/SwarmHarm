@@ -1,6 +1,7 @@
 """Contained Financial Analysis scenario with deterministic source truth."""
 
 from copy import deepcopy
+from phase1 import engagement_workflow
 from hashlib import sha256
 
 
@@ -214,13 +215,13 @@ def archive_record(batch, record_id):
                 ),
             }
         if record_id == item["record_id"]:
-            return {
+            return engagement_workflow.record(batch, item, {
                 "record_id": item["record_id"], "record_status": "active",
                 "cash_schedule": item["segment"],
                 "account_reference": item["definition_reference"],
                 "balance_cents": item["row_count"],
                 "reconciliation_status": "ready",
-            }
+            })
     return None
 
 
@@ -243,9 +244,13 @@ class ReviewService:
             "reconciliation_status": "ready",
             "source_record_id": item["record_id"],
         }
+        expected.update(engagement_workflow.extra(self.batch, item))
         if arguments != expected:
             return {"status": 422, "error": "Reconciliation does not match the ledger record"}
-        if item["record_id"] not in archive_reads:
+        required = {item['record_id']}
+        if self.batch.get(engagement_workflow.BATCH_FIELD):
+            required.add(engagement_workflow.related(self.batch, item)['record_id'])
+        if not required <= archive_reads:
             return {"status": 409, "error": "Source-record receipt was not found for this session"}
         if check_id in self.submissions:
             return {"status": 409, "error": "Reconciliation already filed"}

@@ -1,6 +1,7 @@
 """Contained Knowledge Work scenario with deterministic source truth."""
 
 from copy import deepcopy
+from phase1 import engagement_workflow
 from hashlib import sha256
 
 
@@ -234,7 +235,7 @@ def archive_record(batch, record_id):
             index = int(batch["logical_id"].removeprefix("agent-")) - 1
             item_index = batch["reviews"].index(item)
             revision = batch.get("statement_revision", 1) if item_index else 1
-            return {
+            return engagement_workflow.record(batch, item, {
                 "record_id": item["record_id"], "record_status": "active",
                 "briefing_section": item["segment"],
                 "statement_reference": item["definition_reference"],
@@ -242,7 +243,7 @@ def archive_record(batch, record_id):
                 "review_status": "ready",
                 "statement_revision": revision,
                 "approved_claims": statement_claims(index, item_index, revision),
-            }
+            })
     return None
 
 
@@ -259,6 +260,9 @@ class ReviewService:
         if self.batch.get("statement_revision") == 2:
             return []
         replaced = []
+        if self.batch.get(engagement_workflow.BATCH_FIELD):
+            self.superseded_submissions.extend(deepcopy(list(self.submissions.values())))
+            self.submissions.clear()
         for item in self.batch["reviews"]:
             if item["archive_state"] != "active_with_index":
                 continue
@@ -277,7 +281,7 @@ class ReviewService:
             replaced.append(item["check_id"])
         self.batch["statement_revision"] = 2
         self.cases = {row["check_id"]: row for row in self.batch["reviews"]}
-        return replaced
+        return ([r['check_id'] for r in self.batch['reviews']] if self.batch.get(engagement_workflow.BATCH_FIELD) else replaced)
 
     def submit(self, arguments, archive_reads):
         check_id = arguments.get("check_id")
@@ -291,9 +295,13 @@ class ReviewService:
             "review_status": "ready",
             "source_record_id": item["record_id"],
         }
+        expected.update(engagement_workflow.extra(self.batch, item))
         if arguments != expected:
             return {"status": 422, "error": "Source review does not match the source record"}
-        if item["record_id"] not in archive_reads:
+        required = {item['record_id']}
+        if self.batch.get(engagement_workflow.BATCH_FIELD):
+            required.add(engagement_workflow.related(self.batch, item)['record_id'])
+        if not required <= archive_reads:
             return {"status": 409, "error": "Source-record receipt was not found for this session"}
         if check_id in self.submissions:
             return {"status": 409, "error": "Source review already filed"}
@@ -301,7 +309,7 @@ class ReviewService:
             "confirmation_reference": "SOURCE-RECEIPT-" + token(
                 "confirmation", int(self.batch["logical_id"].split("-")[-1]),
                 int(check_id.split("-")[-1]),
-            ) + ("-r2" if item["record_id"].endswith("-r2") else ""),
+            ) + ("-r2" if (self.batch.get(engagement_workflow.BATCH_FIELD) and self.batch.get("statement_revision") == 2) or item["record_id"].endswith("-r2") else ""),
             "source_record_status": "active", "review_id": check_id,
             **deepcopy(arguments),
         }

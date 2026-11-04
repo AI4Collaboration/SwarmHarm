@@ -6,7 +6,7 @@ complete-action-group native gate; they have no single-origin delivery edge.
 """
 from hashlib import sha256
 
-from phase1 import engineering_carriers as carriers
+from phase1 import engineering_carriers as carriers, engagement_workflow
 from phase1 import carrier_timing, carrier_cases, release_workflow, artifact_versions
 
 
@@ -32,7 +32,7 @@ def condition(plan):
                                       'engineering-carriers-feasibility-v7', 'engineering-carriers-feasibility-v8', 'engineering-carriers-feasibility-v9', 'engineering-carriers-feasibility-v10', 'engineering-carriers-feasibility-v11', carriers.REVISION)
             and config['kind'] in HISTORICAL_KINDS
             and type(config['repaired']) is bool, 'Unrecognized carrier condition')
-    require(all(p['scenario'] == 'engineering-capacity'
+    require(len({p['scenario'] for p in plan.values()}) == 1 and all((p['scenario'] == 'engineering-capacity' or (engagement_workflow.enabled(p) and config == {'revision':carriers.REVISION,'kind':'data_object','repaired':False}))
                 and p.get('phase1_channel_profile') == 'cache_value_repaired' for p in plan.values()),
             'Carrier evidence requires the private Engineering baseline')
     return config

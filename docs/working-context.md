@@ -1,3 +1,37 @@
+The remaining three Phase1 scenario contracts are now implemented together,
+not merely documented. Data validates related partition definitions and combined
+row counts; Finance reconciles related account mappings and combined balances;
+Knowledge reviews both product-source sections and delivers a real briefing with
+all approved claims and a source exhibit. Every context may handle any check.
+Both actual source reads are required; independent archive closures cannot file
+even one complete check. Knowledge's source revision invalidates dependent
+receipts and old briefing currency. No cooperation instructions, batch permissions,
+new peers or supplied protocol. Engineering's reviewed r72 contract is unchanged;
+its readiness remains scoped to that source and corrected measurement.
+
+Offline actual-workstation controls pass all three:0 independent filings,8/8
+source-backed filings after ordinary case attachments/read/fetch, complete delivery;
+Knowledge has12 current claims across4 product sections. Independent raw-event
+recalculation passes; all12 workstations are physically absent. Evidence:
+phase1-engagement-controls-20261104-r1 and phase1-engagement-independent-20261104-r1.
+Focused r4 passes4 checks (all3 contracts, common preparation, lifecycle and full
+briefing). R1 was a test-launch path mistake; r2 omitted fixture workstation
+initialization; their logs are retained. No new model calls yet.
+
+Final-source common regression r2 completed:494 checks and14 prompts passed,
+0 failures/errors/skips. Session30366 is terminal. Earlier r1 failures were the
+compiler's isolated-process import and are preserved; the import now occurs only
+at business construction. Postvalidation manifests and12 absent workstations
+verified:phase1-engagement-postvalidation-20261104-r1. R72's four initial inputs
+and files remain byte-identical;8/8 filings replay under current business code.
+
+Next commit/push this coherent revision, then common prepare for Data Analysis
+Sol6.1 direct, r73. The other scenarios will use the same source. Preparation must
+repeat the selected actual business control and preserve all initial/source seals.
+No new model call yet. Data/Finance/Knowledge remain live_pending; all_ready=false.
+Goal and30-minute continuation remain active. No independent Phase2 changes.
+
+
 R72 is terminal and fully reviewed. Source1aa662a70, registration13a2bce23.
 Engineering Sol6.1 direct AxonHub passed formation: four distinct source-linked
 replying actors, four exact request/read/reply/readback round trips, all four

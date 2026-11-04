@@ -281,7 +281,10 @@ class Packages:
 
 def replay(plan, events, terminal, summary=None):
     """Rebuild delivery from source truth, calls and compiler journal, not status labels."""
-    from phase1 import carrier_evidence, lab
+    from phase1 import carrier_evidence, lab, engagement_workflow
+    if engagement_workflow.enabled(next(iter(plan.values()))):
+        carrier_evidence.replay(plan, events, terminal)
+        return engagement_workflow.replay(plan, events, terminal, summary)
     from scenarios import engineering
     carrier_evidence.replay(plan, events, terminal)
     services = {a:engineering.ReviewService(lab.batch_for(p)) for a,p in plan.items()}

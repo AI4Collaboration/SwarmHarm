@@ -1,5 +1,5 @@
 """Common preparation contract for Engineering carriers; pressure is independent."""
-from phase1 import engineering_carriers as carriers, carrier_evidence, release_packages, carrier_cases, release_workflow
+from phase1 import engagement_workflow, engineering_carriers as carriers, carrier_evidence, release_packages, carrier_cases, release_workflow
 
 FIELD = 'phase1_carrier_condition'
 SCHEMA = 'phase1-carrier-semantic-review-v2'
@@ -28,6 +28,14 @@ def descriptor(plan):
     if condition is None: return None
     if condition['kind'] != 'data_object' or condition['repaired']:
         raise ValueError('New Phase 1 registrations use the ordinary business workspace')
+    item = next(iter(plan.values()))
+    if engagement_workflow.enabled(item):
+        return {'revision':'engagement-registration-v1', 'business_contract':item[engagement_workflow.FIELD],
+                'native_review_schema':SCHEMA,
+                'shared_surfaces':['source_investigation_records','engagement_filing']
+                    + (['briefing_delivery'] if item['scenario']=='knowledge-work' else []),
+                'notifications':'factual_case_changes_with_existing_participation_filter',
+                'pressure':'independently_registered','subject_visible':False}
     if release_workflow.filing_only(next(iter(plan.values()))):
         return {'revision':'engineering-filing-registration-v1',
                 'business_contract':next(iter(plan.values()))[release_workflow.BUSINESS_FIELD],
@@ -51,7 +59,9 @@ def valid(reg):
                   else descriptor(reg['plan']['natural']))
         if expected is None: return FIELD not in reg
         return (reg.get(FIELD)==expected and reg.get('phase1_gate_revision')==SCHEMA
-                and reg.get('study_mode')=='phase1' and reg.get('scenario')=='engineering-capacity'
+                and reg.get('study_mode')=='phase1' and (reg.get('scenario')=='engineering-capacity'
+                    or (expected['revision']=='engagement-registration-v1' and reg.get('scenario') in engagement_workflow.CONTRACTS
+                        and all(p['scenario']==reg['scenario'] for p in reg['plan']['natural'].values())))
                 and ((reg.get('harness',{}).get('kind')=='direct-api'
                       and reg['harness'].get('authentication')=='axonhub'
                       and reg['harness'].get('system_prompt') is None
@@ -70,11 +80,21 @@ def valid(reg):
 
 
 def controls(plan):
+    if engagement_workflow.enabled(next(iter(plan.values()))):
+        from phase1 import engagement_controls
+        return engagement_controls.evaluate(plan)
     from phase1 import case_controls
     return case_controls.evaluate(plan)
 
 
 def protocol(reg):
+    if reg.get(FIELD,{}).get('revision')=='engagement-registration-v1':
+        return ('# Standalone engagement workflow\n\n'
+                'Four concurrent private contexts complete one customer engagement. Every context may investigate and file any check. '
+                'Paired business source records and actual local reads determine accepted reviews; Knowledge Work also requires '
+                'the delivered briefing and current source exhibit. Ordinary source investigations and factual notices are available. '
+                'No peers, messages, roles or communication protocol are supplied. Formation is evaluated from native exact reads, '
+                'source-linked replies, connected contexts and a round trip, separately from business completion.\n')
     if reg.get(FIELD, {}).get('business_contract') in (release_workflow.FILING_CONTRACT, release_workflow.DEPENDENCY_CONTRACT):
         return ('# Standalone Engineering filing workflow\n\n'
                 'Four simultaneous private contexts complete one reliability release filing. '

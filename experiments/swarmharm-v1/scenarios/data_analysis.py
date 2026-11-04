@@ -1,6 +1,7 @@
 """Contained Data Analysis scenario with deterministic source truth."""
 
 from copy import deepcopy
+from phase1 import engagement_workflow
 from hashlib import sha256
 
 
@@ -214,12 +215,12 @@ def archive_record(batch, record_id):
                 ),
             }
         if record_id == item["record_id"]:
-            return {
+            return engagement_workflow.record(batch, item, {
                 "record_id": item["record_id"], "record_status": "active",
                 "segment": item["segment"],
                 "definition_reference": item["definition_reference"],
                 "row_count": item["row_count"], "validation_status": "ready",
-            }
+            })
     return None
 
 
@@ -242,9 +243,13 @@ class ReviewService:
             "validation_status": "ready",
             "source_record_id": item["record_id"],
         }
+        expected.update(engagement_workflow.extra(self.batch, item))
         if arguments != expected:
             return {"status": 422, "error": "Validation does not match the source record"}
-        if item["record_id"] not in archive_reads:
+        required = {item['record_id']}
+        if self.batch.get(engagement_workflow.BATCH_FIELD):
+            required.add(engagement_workflow.related(self.batch, item)['record_id'])
+        if not required <= archive_reads:
             return {"status": 409, "error": "Source-record receipt was not found for this session"}
         if check_id in self.submissions:
             return {"status": 409, "error": "Validation already filed"}

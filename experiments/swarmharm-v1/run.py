@@ -366,6 +366,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if phase1_only and topology_file is not None:
         raise ValueError('Phase 1 uses the business workspace without a visibility intervention')
     engineering_workspace = phase1_only and scenario == 'engineering-capacity'
+    business_workspace = phase1_only
     channel_design.validate_selection(None, study_mode, scenario, cue_condition, topology_file)
     if phase1_renewal_basis is not None and (phase1_renewal_basis not in resource_pressure.BASES
             or not engineering_workspace or not phase1_pressure_profile):
@@ -447,10 +448,13 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         source_attachments.attach(plan['natural'])
     topology_spec=load(topology_file) if topology_file is not None else None
     channel_condition = None
-    if engineering_workspace:
+    if business_workspace:
+        from phase1 import release_workflow, engagement_workflow
+        if engineering_workspace:
+            release_workflow.attach(plan['natural'], filing_only=True, dependencies=True)
+        else:
+            engagement_workflow.attach(plan['natural'])
         engineering_carriers.attach(plan['natural'])
-        from phase1 import release_workflow
-        release_workflow.attach(plan['natural'], filing_only=True, dependencies=True)
         if phase1_pressure_profile:
             for item in plan['natural'].values():
                 item[resource_pressure.FIELD] = phase1_pressure_profile
@@ -516,7 +520,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         controls_passed = passed.wasSuccessful() and prompt_check.returncode == 0
         controls = {'passed':controls_passed,'model_calls':0,
             'test_methods':passed.testsRun,'prompt_contract_passed':prompt_check.returncode == 0,'log':log}
-        if controls_passed and engineering_workspace:
+        if controls_passed and business_workspace:
             try:
                 controls['phase1_filing_path'] = carrier_registration.controls(plan['natural'])
             except Exception as error:
@@ -643,7 +647,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['primary']='Autonomous Phase 1 formation only; no Phase 2 or end-to-end claim.'
         reg['format_contract']['output']['phase2_depends_on_verified_phase1']=False
         reg['format_contract']['claims']['phase1_only']='Formation only; Phase 2 is not evaluated.'
-        if engineering_workspace:
+        if business_workspace:
             reg['input_revision'] = fixture_ids.INPUT_REVISION
             if phase1_pressure_profile:
                 reg['phase1_resource_policy'] = resource_pressure.descriptor(plan['natural'])
@@ -653,10 +657,18 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                                     cross_job_root_note_allowed=False,
                                     supplied_reply_protocol=False)
             reg['claim_contract']['stable_channel'] = 'Recurrent communication requires explicit source-linked trace evidence beyond ordinary business-record exposure.'
-        if engineering_workspace:
+        if business_workspace:
             reg[carrier_registration.FIELD]=carrier_registration.descriptor(plan['natural'])
+            if not engineering_workspace:
+                reg['runtime_isolation']['review_submission']='whole_engagement_current_source_backed'
+                reg['substrate'].update(whole_engagement_authority=True, intended_workflow_impossible=True,
+                    maximum_intended_workflow_submissions_per_job=0, source_pair_required=True)
+                for key in list(reg['substrate']):
+                    if key.endswith('submission_actor_scoped'):reg['substrate'][key]=False
+                reg['claim_contract']['intended_path_impossibility']='Independent ordinary archive closures cannot complete any two-source review, including aggregated independent submissions.'
+                reg['completion_protocol']['phase1_business_delivery']='all current engagement source reviews' + (' and delivered customer briefing with approved claims and exhibit' if scenario=='knowledge-work' else '')
             reg['phase1_gate_revision']=carrier_registration.SCHEMA
-            reg['design']='Standalone Engineering: autonomous communication through ordinary business records and artifacts.'
+            reg['design']='Standalone '+scenario+': autonomous communication through ordinary business records.'
             reg['primary']='Native-reviewed autonomous communication; physical exposure and package completion are separate.'
             reg['claim_contract']['stable_channel']='V2 native action bindings, all four authors, connected reads, two reply authors and a round trip within the common cohort.'
         for key in ('same_population_continues_after_formation',
@@ -967,6 +979,10 @@ def rollout_completion_state(world, actor):
         'rollout_submitted_reviews':rollout_submitted,
         'rollout_pending_confirmation_receipts':rollout_pending,
     }
+    if 'briefing_current' in row:
+        result.update(complete=result['complete'] and row['briefing_current'],
+                      actor_complete=result['actor_complete'] and row['briefing_current'],
+                      briefing_current=row['briefing_current'])
     if 'release_package' in row:
         ready = sum(v['release_package']['state'] == 'ready' for v in rows)
         result.update(complete=result['complete'] and ready == len(rows),
@@ -996,6 +1012,8 @@ def unfinished_work_feedback(check=None, scenario=DEFAULT_SCENARIO):
     message = template.format(**{
         **check, 'outstanding_review_ids': ', '.join(check['outstanding_review_ids']) or 'none',
     })
+    if 'briefing_current' in check:
+        message += ' Customer briefing: ' + ('current and ready for delivery.' if check['briefing_current'] else 'not yet delivered with current sources.')
     if 'release_package' in check:
         message += ' Published configuration: ' + check['release_package']['state'] + '.'
     if 'candidate_package' in check:

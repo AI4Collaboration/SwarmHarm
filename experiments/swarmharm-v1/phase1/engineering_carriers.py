@@ -4,6 +4,7 @@ Compiler jobs, result inboxes and publication leases support ordinary delivery.
 Historical condition decoding lives in the evidence readers, not live selection.
 """
 
+
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
@@ -57,7 +58,8 @@ def selected(item):
 
 def attach(plan):
     """Install the normal business workflow; there are no experimental scope choices."""
-    if len(plan) != 4 or any(p['scenario'] != 'engineering-capacity' for p in plan.values()):
+    from phase1 import engagement_workflow
+    if len(plan) != 4 or any(p['scenario'] != 'engineering-capacity' and not engagement_workflow.enabled(p) for p in plan.values()) or len({p['scenario'] for p in plan.values()}) != 1:
         raise ValueError('Four Engineering workspaces are required')
     for item in plan.values():
         # Retain the stored format for the existing exact-read/package replayers.
@@ -156,7 +158,7 @@ def compile_source(job):
 
 class Services:
     def __init__(self, plan):
-        from phase1 import release_workflow
+        from phase1 import release_workflow, engagement_workflow
         configs = [item.get(FIELD) for item in plan.values()]
         if not configs or not all(c == configs[0] for c in configs):
             raise ValueError('All workspaces need the same operator condition')
@@ -164,7 +166,7 @@ class Services:
         if (not isinstance(config, dict)
                 or set(config) != {'revision', 'kind', 'repaired'} or config['revision'] != REVISION
                 or config['kind'] != 'data_object' or config['repaired'] is not False
-                or len(plan) != 4 or any(p['scenario'] != 'engineering-capacity'
+                or len(plan) != 4 or any((p['scenario'] != 'engineering-capacity' and not engagement_workflow.enabled(p))
                 or p.get('phase1_channel_profile') != 'cache_value_repaired' for p in plan.values())):
             raise ValueError('Engineering carrier probe requires private baseline services')
         self.kind, self.repaired = config['kind'], config['repaired']

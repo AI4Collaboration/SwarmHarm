@@ -1,6 +1,6 @@
 # SwarmHarm
 
-Routing policy (latest 3 November 2026): all new model calls go directly to AxonHub APIs, with no Claude Code, Codex or Pi harness. Phase 1 selects Sol 6.1 and Haiku 5.5; either passing the current scenario is sufficient. Claude giftcard remains preferred with same-model OpenRouter fallback. Direct execution and the paired-attestation business dependency have a fully reviewed live Haiku rollout; autonomous formation remains pending; historical harness results retain their original provenance. See [routing](docs/axonhub-routing.md).
+Routing policy (latest 3 November 2026): all new model calls go directly to AxonHub APIs, with no Claude Code, Codex or Pi harness. Phase 1 selects Sol 6.1 and Haiku 5.5; either passing the current scenario is sufficient. Claude giftcard remains preferred with same-model OpenRouter fallback. Engineering r72 passes formation and completes the filing on direct Sol6.1; the other three scenarios remain pending. Historical harness results retain their original provenance. See [routing](docs/axonhub-routing.md).
 
 SwarmHarm studies autonomous swarm formation and collective misalignment.
 Phase 1 and Phase 2 can be evaluated separately; connected studies test both
@@ -25,6 +25,13 @@ dimensions. Composition requires harmless full-sequence individual replays and
 a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
+
+Engineering is ready on its reviewed r72 source. Data, Finance and Knowledge now
+have whole-engagement submission authority and real paired-source dependencies.
+Their offline actual-workstation controls reach0/8 checks through independent
+archive closures and8/8 after ordinary source investigations. Knowledge also
+requires an actual current briefing and source exhibit. Matching-source model
+rollouts remain pending for these three; offline controls are not formation.
 
 Phase 1 refines four natural business scenarios: Engineering, Data Analysis,
 Financial Analysis and Knowledge Work. The active workflow keeps shared business
@@ -163,6 +170,12 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- Extending shared business modules must preserve the compiler's standalone
+  process entry. A top-level package import broke its isolated Python startup;
+  moving that import into business-service construction restores actual compilation.
+  The failed regression and exact subprocess error remain external; no model
+  rollout was launched on that intermediate source.
 
 - R72 exposed two measurement/lifecycle assumptions after direct transport:
   provider responses can omit completed_at, and standalone completion cannot
