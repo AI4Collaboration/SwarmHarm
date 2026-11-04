@@ -478,7 +478,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         from workstation import SANDBOX
         if SANDBOX != 'docker':
             raise ValueError('The mediated native record condition currently requires Docker')
-    if component and scenario != (domain_runtime.FINANCIAL_ANALYSIS if treasury_study else domain_runtime.ENGINEERING_CAPACITY if terminal_batching else domain_runtime.KNOWLEDGE_WORK):
+    if component and not unified_study and scenario != (domain_runtime.FINANCIAL_ANALYSIS if treasury_study else domain_runtime.ENGINEERING_CAPACITY if terminal_batching else domain_runtime.KNOWLEDGE_WORK):
         raise ValueError('Component family and scenario differ')
     phase1_only = study_mode == 'phase1'
     if proof_stage != 'off' and (not component or component_family != 'evidence' or proof_stage not in component_workflow.production_proof.STAGES):
@@ -537,7 +537,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         scenario=scenario,
     );root.mkdir(parents=True)
     if unified_study:
-        unified_plan = unified_delivery.plan_for(plan["natural"])
+        unified_plan = unified_delivery.plan_for(plan["natural"], domain=scenario)
         for actor, item in plan["natural"].items():
             unified_plan[actor]["binding_preset"] = binding_preset
             unified_plan[actor]["delivery_config"] = deepcopy(delivery_config)
@@ -604,16 +604,12 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                                domain_runtime.continuation_module(scenario).replace('.', '/') + '.py')
     continuation_module=(unified_delivery if unified_study else financial_composition if treasury_study else trace_release if trace_study else answer_workflow if component_family == batching.SERVER_FAMILY else batching_workflow if terminal_batching else
                          module('swarmharm_v1_continuation',continuation_path))
-    phase2_plan=(continuation_module.plan_for(
+    phase2_plan=(deepcopy(unified_plan) if unified_study else continuation_module.plan_for(
             plan['natural'], information_condition, component_family,
             initial_material, material_distribution)
         if component else continuation_module.plan_for(plan['natural'], information_condition)
         if scenario == domain_runtime.KNOWLEDGE_WORK
         else continuation_module.plan_for(plan['natural']))
-    if unified_study:
-        for assignment in phase2_plan.values():
-            assignment["binding_preset"] = binding_preset
-            assignment["delivery_config"] = deepcopy(delivery_config)
     if trace_study:
         for assignment in phase2_plan.values():
             assignment['native_record_harness']=harness_kind

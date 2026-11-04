@@ -19,7 +19,10 @@ MODE = 'phase2-component'
 def base_tools(item, family):
     """Carry forward inspection, not submission of already-filed source reviews."""
     names = {'bash'} if family in (*batching.FAMILIES, trace_release.FAMILY, financial_composition.FAMILY, unified_delivery.FAMILY) else {'bash', 'search_archive', 'fetch_archive'}
-    return [tool for tool in lab.tools(item) if tool['name'] in names]
+    tools = [deepcopy(tool) for tool in lab.tools(item) if tool['name'] in names]
+    if family == unified_delivery.FAMILY:
+        tools[0]['description'] = 'Run a command in the reporting workstation, starting in /workspace.'
+    return tools
 
 
 PLATFORM = '''# Customer delivery workstation

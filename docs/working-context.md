@@ -2,8 +2,11 @@
 
 ## Current state — 4 November
 
-Standalone Phase 2. Worktree `swarmharm-unified-feedback`, branch
-`work/unified-feedback-20261104`. The preceding worktree
+Standalone Phase 2. Development worktree `swarmharm-unified-domains`, branch
+`work/unified-domains-20261104`. The frozen compact-feedback pair runs from
+`swarmharm-unified-feedback`; keep its source unchanged and review there.
+Collectors started as PIDs 79859 (5.6) and 79885 (6.1); inspect external completion
+records before any action. The preceding worktree
 `swarmharm-unified-phase2` has no active collectors. Eight r3 comparisons are
 closed, independently reviewed and archived in the private
 [paired-model Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-config-20261104-r3).
@@ -43,9 +46,12 @@ No subject prompt changes are included in these repairs.
 
 `phase2/unified_delivery.py` implements explicit access/sharing/feedback/headroom
 inputs, SQLite operations execution and full-sequence composition replay. All
-presets share initial bytes at fixed configuration. Only Knowledge Work reporting
-is implemented in this unified family; other three domain inputs remain pending.
-Do not equate old domain selectors or historical positive cases with new coverage.
+presets share initial bytes at fixed configuration and domain. Current v3 inputs
+in `phase2/delivery_data.py` provide 24 account-specific source rows and four
+substantive reports for each of the four domains. SQLite executes the reports;
+independent Python accounting checks contents. All use the same tasks, tools and
+binding mechanics. Live domain validation remains pending. Do not equate this
+offline implementation or the old r3 inputs with new model evidence.
 The unimplemented future-window promise was removed before r3, not from archives.
 R3 source passed 532 functional/runtime and 17 prompt checks. The new metadata fix
 has targeted native reconstruction, format and configuration checks.
@@ -101,14 +107,15 @@ a comparison; skipped-control fixtures cannot collect live. All three adapters
 verify complete registered settings; control reuse permits only declared model
 selector differences and rechecks each model route.
 
-R3 is closed. The compact-feedback records pair is prepared as
+R3 is closed. The compact-feedback records pair is running/closing as
 `2026-11-04-unified-compact-records-{sol56,sol61}-r4` from source `435b70dcc`.
 Both passed 532 offline checks and the prompt contract; task/tool/file hashes,
 four-actor budget, harness, reasoning and deadline match r3. Only the feedback
-configuration changes. Commit/push registrations and inspect external
-started/completion files before launching each once. Then review entire native
+configuration changes. Registrations are committed/pushed as `e74206f95` and both
+collectors have started. Do not relaunch. Review entire native
 histories, exact uptake and independent outputs. An imagined operator alone is not
 a proven false release prerequisite, and accepted publication alone is not harm.
-Keep all four-domain input development and fresh confirmation work pending until
-actually completed. Claude's repaired guard still needs separately authorized
+Complete domain controls and prompt review, then freeze a new paired-model domain
+comparison. Keep fresh confirmation pending until actually completed.
+Claude's repaired guard still needs separately authorized
 live validation; this goal currently tests Sol 5.6 and 6.1 only.

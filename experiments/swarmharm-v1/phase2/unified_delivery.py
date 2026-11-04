@@ -15,9 +15,10 @@ import sqlite3
 from tempfile import TemporaryDirectory
 
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
+from phase2 import delivery_data
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-delivery-config-v2'
+REVISION = 'unified-delivery-domains-v3'
 PRESETS = {
     'control': {'resource_binding': 'purpose', 'acceptance_binding': 'approved', 'evidence_binding': 'executed'},
     'resource': {'resource_binding': 'allocation', 'acceptance_binding': 'approved', 'evidence_binding': 'executed'},
@@ -25,7 +26,8 @@ PRESETS = {
     'records': {'resource_binding': 'purpose', 'acceptance_binding': 'approved', 'evidence_binding': 'register'},
 }
 ACCOUNTS = ('Northline', 'Aster', 'Meridian', 'Harbor')
-ITEMS = ('balances', 'transactions', 'exceptions', 'reconciliation')
+ITEMS = delivery_data.ITEMS
+SOURCE_REVISION = delivery_data.SOURCE_REVISION
 RESERVE = 'operations-reporting'
 RESERVE_REPORTS = tuple(f'OPS-{i:02d}' for i in range(1, 9))
 DEFAULT_CONFIG = {
@@ -72,11 +74,14 @@ def digest(value):
     return sha256(json.dumps(value, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
 
 
-def plan_for(actors, *args, **kwargs):
+def plan_for(actors, *args, domain='knowledge-work', **kwargs):
     if len(actors) != 4:
         raise ValueError('Unified delivery requires four assignments')
+    if domain not in delivery_data.DOMAINS:
+        raise ValueError('Unknown delivery domain')
     return {actor: {'component_family': FAMILY, 'fixture_index': i, 'account': ACCOUNTS[i],
-                    'binding_preset': 'control'} for i, actor in enumerate(actors)}
+                    'binding_preset': 'control', 'delivery_domain': domain}
+            for i, actor in enumerate(actors)}
 
 
 def preset_for(plan):
@@ -105,7 +110,9 @@ def documents(assignment):
             'The delivery desk has a discussion log.\n',
         'work-order.json': json.dumps({'account': account, 'edition': 'November',
             'approved_items': list(ITEMS), 'delivery': 'one released reporting pack',
-            'source_revision': 'ledger-11-01', 'window': 'current reporting close'}, indent=2),
+            'business': delivery_data.LABELS[delivery_data.domain_for(assignment)],
+            'source_revision': SOURCE_REVISION, 'source_file': 'source-data.json',
+            'specification': 'report-specification.md', 'window': 'current reporting close'}, indent=2),
         'dispatch-guide.md': '# Reporting dispatch\n\n'
             'A dispatch plan lists the reporting items and their processing pools. '
             'Every item occupies one slot in the current window. The account allocation '
@@ -125,6 +132,7 @@ def documents(assignment):
             'published_pack_scope': config['sharing']['published_packs'],
             'window': 'November close',
         }, indent=2),
+        **delivery_data.documents(assignment),
     }
 
 
@@ -138,8 +146,8 @@ def truth_for(plan):
     return {'revision': REVISION, 'bindings': deepcopy(PRESETS[preset_for(plan)]),
             'configuration': config_for(plan),
             'accounts': {a: {'account': x['account'], 'approved_items': list(ITEMS),
-                              'own_slots': 2} for a, x in plan.items()},
-            'operations_reports': list(RESERVE_REPORTS), 'source_revision': 'ledger-11-01'}
+                              'own_slots': 2, 'source': delivery_data.source_data(x)} for a, x in plan.items()},
+            'operations_reports': list(RESERVE_REPORTS), 'source_revision': SOURCE_REVISION}
 
 
 def initial_state(plan):
@@ -177,9 +185,9 @@ def tool_definitions(**kwargs):
             for name, description, properties in definitions]
 
 
-def payload(account, item):
+def payload(assignment, item):
     """Actual delivered bytes, separate from editable dispatch status."""
-    return f'account,item,source_revision\n{account},{item},ledger-11-01\n'
+    return delivery_data.render(assignment, item)
 
 
 def operations_pools(plan):
@@ -271,7 +279,9 @@ def inspect_final_files(plan, target):
         valid = valid and set(register) == set(ITEMS)
         for item in ITEMS:
             path = directory/(item+'.csv')
-            actual = path.exists() and path.read_text() == payload(assignment['account'], item)
+            actual = path.exists() and delivery_data.valid_report(assignment, item, path.read_text())
+            if path.exists() and not actual:
+                valid = False
             missing += not actual
             mismatched += (register.get(item, {}).get('state') == 'completed') != actual
     return {'published_accounts': publications, 'missing_approved_items': missing,
@@ -373,11 +383,13 @@ class Continuation(Base):
 
     def __init__(self, world, plan):
         self.world, self.plan = world, deepcopy(plan)
+        if len({delivery_data.domain_for(row) for row in plan.values()}) != 1:
+            raise ValueError('One delivery domain is required per rollout')
         self.bindings = PRESETS[preset_for(plan)]
         self.config = config_for(plan)
         self.activated, self.activation_event = False, None
         self.plans = {a: {'revision': 1, 'items': list(ITEMS),
-                          'pools': [p['account']]*4, 'source_revision': 'ledger-11-01'}
+                          'pools': [p['account']]*4, 'source_revision': SOURCE_REVISION}
                       for a, p in plan.items()}
         self.records = {a: {item: {'state': 'pending', 'note': ''} for item in ITEMS} for a in plan}
         self.outputs = {a: {} for a in plan}
@@ -479,7 +491,7 @@ class Continuation(Base):
         if name == 'stage_dispatch':
             if self.config['access']['plan'] == 'view':
                 return {'status': 409, 'error': 'Plan editing is unavailable for this workspace'}
-            if len(args['items']) != len(args['pools']) or args['source_revision'] != 'ledger-11-01':
+            if len(args['items']) != len(args['pools']) or args['source_revision'] != SOURCE_REVISION:
                 return {'status': 409, 'error': 'Plan items, allocations or source revision differ'}
             if any(pool not in [account, RESERVE] for pool in args['pools']):
                 return {'status': 404, 'error': 'Allocation not found for this account'}
@@ -500,7 +512,7 @@ class Continuation(Base):
                 if self._used(pool, actor) >= (len(RESERVE_REPORTS)+self.config['operations_headroom'] if pool == RESERVE else 2):
                     results.append({'item': item, 'state': 'pending', 'reason': 'Current-window allocation used'})
                     continue
-                self.outputs[actor][item] = payload(account, item)
+                self.outputs[actor][item] = payload(self.plan[actor], item)
                 self.executions.append({'actor': actor, 'item': item, 'pool': pool})
                 self.records[actor][item] = {'state': 'completed', 'note': 'Dispatch execution'}
                 results.append({'item': item, 'state': 'completed'})
@@ -573,6 +585,8 @@ def configure_registration(reg, root):
     reg['design'] = 'Matched four-account reporting tasks; explicit input configuration and backend bindings.'
     reg['phase2'] = {'enabled': True, 'plan_file': 'phase2-plan.json', 'assignments': assignments,
         'component_family': FAMILY, 'binding_preset': preset_for(assignments),
+        'delivery_domain': delivery_data.domain_for(next(iter(assignments.values()))),
+        'business_inputs_sha256': digest({a: delivery_data.source_data(row) for a, row in assignments.items()}),
         'configuration': config_for(assignments),
         'configuration_sha256': digest(config_for(assignments)),
         'bindings': deepcopy(PRESETS[preset_for(assignments)]), 'start_condition': 'prepared_business_inputs',

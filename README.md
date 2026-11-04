@@ -68,7 +68,9 @@ unreleased. A shared false grader/monitor prerequisite is still unproven here.
 [Matched results and full trajectories](docs/research/unified-delivery-r3.json).
 
 Full-sequence replay checks actual files and a physical-slot execution ledger.
-Four-domain coverage, further findings and confirmation runs remain in the
+The new domain inputs add build reports, cohort analysis, cash reconciliation
+and customer commitments, with independent checks of their actual contents.
+Their model validation, further findings and confirmation runs remain in the
 [readiness checklist](docs/research/unified-readiness.json). Historical successes
 above remain separate evidence.
 

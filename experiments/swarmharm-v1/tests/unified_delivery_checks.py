@@ -1,6 +1,7 @@
 """Counterfactual business-binding checks, without model calls."""
 from copy import deepcopy
 import importlib.util
+from itertools import product
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -12,8 +13,8 @@ from phase2 import unified_delivery as s
 
 
 class UnifiedDeliveryChecks(unittest.TestCase):
-    def flow(self, preset, config=None):
-        plan = s.plan_for('abcd')
+    def flow(self, preset, config=None, domain='knowledge-work'):
+        plan = s.plan_for('abcd', domain=domain)
         for row in plan.values():
             row['binding_preset'] = preset
             row['delivery_config'] = s.normalize_config(config)
@@ -31,7 +32,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         if alternative == 'resource': pools = [account]*2+[s.RESERVE]*2
         if alternative == 'acceptance': items, pools = items[:2], pools[:2]
         stage = self.call(flow, actor, 'stage_dispatch', items=items, pools=pools,
-                          source_revision='ledger-11-01')
+                          source_revision=s.SOURCE_REVISION)
         self.assertEqual(stage['status'], 201)
         version = stage['plan']['revision']
         self.call(flow, actor, 'execute_dispatch', revision=version)
@@ -45,6 +46,69 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         for name, bindings in s.PRESETS.items():
             self.assertEqual(sum(v != s.PRESETS['control'][k] for k, v in bindings.items()),
                              0 if name == 'control' else 1)
+
+    def test_four_domains_have_substantive_independently_verified_reports(self):
+        data = s.delivery_data
+        source_digests = set()
+        for domain in data.DOMAINS:
+            f = self.flow('resource', {'operations_headroom': 6}, domain)
+            for actor, assignment in f.plan.items():
+                source = data.source_data(assignment)
+                self.assertEqual(len(source['rows']), 24)
+                self.assertEqual(source['domain'], domain)
+                source_digests.add(s.digest(source))
+                for item in s.ITEMS:
+                    report = data.render(assignment, item)
+                    self.assertTrue(data.valid_report(assignment, item, report), (domain, actor, item))
+                    self.assertGreater(len(report.splitlines()), 3)
+                    self.assertFalse(data.valid_report(assignment, item, report.replace(assignment['account'], 'Other')))
+                self.assertEqual(self.path(f, actor, 'resource')['status'], 201)
+            with TemporaryDirectory() as directory:
+                outcome = self.review(f, Path(directory))['collective_outcomes'][0]
+                self.assertTrue(outcome['final_files_match'])
+                self.assertTrue(outcome['composition']['composition_passed'])
+        self.assertEqual(len(source_digests), 16)
+
+    def test_independent_report_checker_detects_service_calculation_defect(self):
+        data = s.delivery_data
+        assignment = self.flow('resource', domain='financial-analysis').plan['a']
+        correct = data.render(assignment, 'summary')
+        self.assertTrue(data.valid_report(assignment, 'summary', correct))
+        queries = dict(data.QUERIES['financial-analysis'])
+        queries['summary'] = queries['summary'].replace('SUM(amount_cents) AS book_movement_cents',
+                                                        '0 AS book_movement_cents')
+        with patch.dict(data.QUERIES, {'financial-analysis': queries}):
+            defective = data.render(assignment, 'summary')
+            self.assertFalse(data.valid_report(assignment, 'summary', defective))
+        self.assertNotEqual(correct, defective)
+
+    def test_domain_controls_preserve_blocked_ordinary_and_binding_specific_paths(self):
+        for domain in s.delivery_data.DOMAINS:
+            for preset in s.PRESETS:
+                normal = self.flow(preset, domain=domain)
+                for actor in normal.plan:
+                    self.assertEqual(self.path(normal, actor, 'ordinary')['status'], 409)
+                for alternative in ('resource', 'acceptance', 'records'):
+                    f = self.flow(preset, domain=domain)
+                    for actor in f.plan:
+                        self.assertEqual(self.path(f, actor, alternative)['status'],
+                                         201 if alternative == preset else 409,
+                                         (domain, preset, alternative, actor))
+
+    def test_domain_varies_business_data_without_preset_or_method_hints(self):
+        for domain in s.delivery_data.DOMAINS:
+            control = self.flow('control', domain=domain)
+            for preset in s.PRESETS:
+                f = self.flow(preset, domain=domain)
+                self.assertEqual(s.initial_files(f.plan), s.initial_files(control.plan))
+                self.assertEqual(s.truth_for(f.plan)['accounts'], s.truth_for(control.plan)['accounts'])
+                for assignment in f.plan.values():
+                    self.assertNotIn(preset+' binding', json.dumps(s.documents(assignment)))
+        with self.assertRaises(ValueError): s.plan_for('abcd', domain='unknown')
+        plan = self.flow('control').plan
+        plan['a']['delivery_domain'] = 'data-analysis'
+        with self.assertRaises(ValueError):
+            s.Continuation(SimpleNamespace(events=[]), plan)
 
     def test_config_rejects_typos_unknown_values_and_actor_mismatch(self):
         from jsonschema import ValidationError
@@ -76,7 +140,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         for actor in f.plan:
             account = f.plan[actor]['account']
             self.assertEqual(self.call(f, actor, 'stage_dispatch', items=list(s.ITEMS),
-                pools=[account]*4, source_revision='ledger-11-01')['status'], 409)
+                pools=[account]*4, source_revision=s.SOURCE_REVISION)['status'], 409)
             self.assertEqual(self.call(f, actor, 'cancel_dispatch_item', item=s.ITEMS[0])['status'], 409)
             self.assertEqual(self.call(f, actor, 'update_dispatch_record', account=account,
                 item=s.ITEMS[0], state='completed', note='Check')['status'], 409)
@@ -151,15 +215,15 @@ class UnifiedDeliveryChecks(unittest.TestCase):
     def test_wrong_owner_stale_revision_invalid_source_and_duplicate_items(self):
         for preset in s.PRESETS:
             f = self.flow(preset)
-            self.assertEqual(self.call(f, 'a', 'stage_dispatch', items=['balances'], pools=['Aster'],
-                source_revision='ledger-11-01')['status'], 404)
+            self.assertEqual(self.call(f, 'a', 'stage_dispatch', items=['summary'], pools=['Aster'],
+                source_revision=s.SOURCE_REVISION)['status'], 404)
             self.assertEqual(self.call(f, 'a', 'update_dispatch_record', account='Aster',
-                item='balances', state='completed', note='fixture')['status'], 404)
+                item='summary', state='completed', note='fixture')['status'], 404)
             self.assertEqual(self.call(f, 'a', 'execute_dispatch', revision=2)['status'], 409)
-            self.assertEqual(self.call(f, 'a', 'stage_dispatch', items=['balances'], pools=['Northline'],
+            self.assertEqual(self.call(f, 'a', 'stage_dispatch', items=['summary'], pools=['Northline'],
                 source_revision='old')['status'], 409)
-            self.assertEqual(self.call(f, 'a', 'stage_dispatch', items=['balances']*2, pools=['Northline']*2,
-                source_revision='ledger-11-01')['status'], 400)
+            self.assertEqual(self.call(f, 'a', 'stage_dispatch', items=['summary']*2, pools=['Northline']*2,
+                source_revision=s.SOURCE_REVISION)['status'], 400)
             self.assertFalse(f.executions)
 
     def review(self, flow, root):
@@ -205,7 +269,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         with TemporaryDirectory() as directory:
             root = Path(directory)
             self.review(f, root)
-            (f.world.operator/'delivery-files/Northline/balances.csv').write_text('different\n')
+            (f.world.operator/'delivery-files/Northline/summary.csv').write_text('different\n')
             out = s.assess({'phase2': {'assignments': f.plan}}, {'events': f.world.events}, {}, {},
                            evidence_root=root)['collective_outcomes'][0]
             self.assertFalse(out['final_files_match'])
@@ -247,9 +311,9 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         for actor in 'abc': self.path(f, actor, 'resource')
         account = f.plan['d']['account']
         self.call(f, 'd', 'stage_dispatch', items=list(s.ITEMS),
-                  pools=[account]*2+[s.RESERVE]*2, source_revision='ledger-11-01')
+                  pools=[account]*2+[s.RESERVE]*2, source_revision=s.SOURCE_REVISION)
         self.call(f, 'd', 'stage_dispatch', items=list(s.ITEMS),
-                  pools=[account]*4, source_revision='ledger-11-01')
+                  pools=[account]*4, source_revision=s.SOURCE_REVISION)
         self.call(f, 'd', 'execute_dispatch', revision=3)
         self.call(f, 'd', 'release_delivery', revision=3)
         with TemporaryDirectory() as directory:
@@ -293,9 +357,9 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         configurations = [{}, {'operations_headroom': 6}, {'feedback': 'status_only'},
                           {'access': {'plan': 'view', 'register': 'view'}},
                           {'sharing': {name: 'per_account' for name in s.DEFAULT_CONFIG['sharing']}}]
-        for config in configurations:
+        for config, domain in product(configurations, s.delivery_data.DOMAINS):
             for preset in s.PRESETS:
-                f = self.flow(preset, config)
+                f = self.flow(preset, config, domain)
                 for actor in f.plan:
                     audit.assert_natural({'instructions': run.lab.INSTRUCTIONS,
                         'input': [{'role': 'user', 'content': s.task(f.plan[actor])}],
@@ -333,10 +397,41 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertEqual(reg['phase2']['configuration_sha256'], s.digest(s.normalize_config(config)))
                 self.assertNotIn('depends_on_phase1', reg['phase2'])
                 self.assertNotIn('subject_goal', reg)
+                self.assertEqual(reg['phase2']['delivery_domain'], 'knowledge-work')
+                self.assertEqual(reg['phase2']['business_inputs_sha256'], s.digest({
+                    a: s.delivery_data.source_data(row) for a, row in reg['phase2']['assignments'].items()}))
+                self.assertIn('experiments/swarmharm-v1/phase2/delivery_data.py', reg['code_hashes'])
                 inputs.append(run.load(raw/'initial-input-audit.json'))
                 files.append(run.load(raw/'initial-file-audit.json'))
             self.assertTrue(all(x == inputs[0] for x in inputs))
             self.assertTrue(all(x == files[0] for x in files))
+
+    def test_prepare_routes_and_freezes_all_four_actual_domain_inputs(self):
+        import base64
+        import run
+        with TemporaryDirectory() as directory:
+            root = Path(directory); key = root/'key'; key.write_text('offline-placeholder')
+            source_digests = set()
+            task_surfaces = []
+            for domain in s.delivery_data.DOMAINS:
+                raw = root/domain
+                with patch.object(run, 'verify_routes', return_value={}), patch.object(
+                        run.codex_gateway, 'gateway_catalog', return_value={}), patch.object(
+                        run, 'registration_path', side_effect=lambda p: Path(p)):
+                    run.prepare(raw, root/(domain+'-registration'), key, run_controls=False,
+                        scenario=domain, study_mode='phase2-component', component_family=s.FAMILY,
+                        harness_kind='codex', goal_mode='codex_goal', binding_preset='resource')
+                reg = run.load(raw/'registration.json')
+                self.assertEqual(reg['scenario'], domain)
+                self.assertEqual(reg['phase2']['delivery_domain'], domain)
+                source_digests.add(reg['phase2']['business_inputs_sha256'])
+                files = run.load(raw/'initial-file-audit.json')['natural']
+                for actor, assignment in reg['phase2']['assignments'].items():
+                    decoded = json.loads(base64.b64decode(files[actor]['/workspace/source-data.json']))
+                    self.assertEqual(decoded, s.delivery_data.source_data(assignment))
+                task_surfaces.append(run.load(raw/'initial-input-audit.json'))
+            self.assertEqual(len(source_digests), 4)
+            self.assertTrue(all(row == task_surfaces[0] for row in task_surfaces))
 
 
 if __name__ == '__main__': unittest.main()

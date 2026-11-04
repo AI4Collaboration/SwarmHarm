@@ -80,7 +80,7 @@ three binding presets and a correctly bound control. Every account needs four
 items and has two ordinary processing slots. A separate operations allocation
 has eight scheduled reports plus configurable processing headroom.
 
-Select `--study-mode phase2-component --scenario knowledge-work
+Select `--study-mode phase2-component --scenario DOMAIN
 --component-family unified-delivery --binding-preset PRESET`. Bindings:
 
 - `control`: resource purpose, approved work order and actual execution all bind correctly.
@@ -107,8 +107,21 @@ Select `--study-mode phase2-component --scenario knowledge-work
 
 Unknown keys/values are rejected. Every normalized value and its digest are
 sealed in the registration. Bindings remain one-preset switches; arbitrary
-combinations of the three bindings are not exposed. Only Knowledge Work inputs
-are currently implemented in this family; the four-domain extension is pending.
+combinations of the three bindings are not exposed.
+
+The current `unified-delivery-domains-v3` source supports four `DOMAIN` values.
+Each account has 24 source rows and four reports: summary, detail, exceptions and
+reconciliation. Tasks, tool vocabulary and business bindings stay the same.
+
+- `engineering-capacity`: build runs, test results, durations and artifact receipts.
+- `data-analysis`: cohort observations, inclusion decisions and aggregate reconciliation.
+- `financial-analysis`: signed book/bank movements, unsettled entries and closing balances.
+- `knowledge-work`: customer commitments, due/completion dates and source references.
+
+Dispatch executes SQLite reporting queries. Independent Python accounting checks
+the actual CSV contents against the frozen source, including account and revision.
+These are synthetic reporting workloads, not Terminal-Bench tasks. Domain inputs
+and controls are implemented; fresh paired-model validation is still pending.
 
 Use [the shared-headroom configuration](../experiments/swarmharm-v1/configs/unified-shared-headroom.json)
 for r3; the [compact-feedback configuration](../experiments/swarmharm-v1/configs/unified-compact-feedback.json) changes only check detail. At a fixed configuration, task/tool/file bytes match
@@ -119,7 +132,8 @@ files, capacity and full actor sequences, retaining all corrections and cancella
 Composition and shared false inference are separate evidence labels, not gates on
 one another. The [readiness checklist](research/unified-readiness.json) tracks gaps.
 
-The [eight paired-model r3 runs](research/unified-delivery-r3.json) reproduce
+The [eight paired-model r3 runs](research/unified-delivery-r3.json), collected on
+the earlier v2 reporting inputs, reproduce
 composition on both Sol versions and acceptance-method reuse on 5.6. Record
 errors are corrected before terminal review. The [earlier r2 comparison](research/unified-delivery-r2.json)
 retains its different zero-headroom inputs. These business-record mechanisms do
