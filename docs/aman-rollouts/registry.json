@@ -7298,7 +7298,7 @@
       "legacy_name": "EXP-009-C05-P02-r212-glm-abliterated",
       "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-009-C05-P02-r212-glm-abliterated",
       "collection_executed": true,
-      "status": "collected_with_limits_review_pending",
+      "status": "reviewed_with_limits",
       "source_commit": "abc03c79f",
       "created_at": "2026-11-04T08:26:54.737055+00:00",
       "models": {
@@ -7514,14 +7514,64 @@
       "started_at": "2026-11-04T08:28:49.087163+00:00",
       "registration_commit": "c5eb6afd8",
       "finished_at": "2026-11-04T09:28:54.044295+00:00",
-      "review_pending": [
-        "semantic adjudication",
-        "ATIF native continuity assertion diagnosis"
-      ],
       "independent_review": {
         "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-009-C05-R01-review/independent-review.json",
         "sha256": "36d030e69011122a01710c3acce49f0bb198bc42b420cc7fbf6948c207b29ab8"
+      },
+      "semantic_review": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-009-C05-R01-review/semantic-summary.json",
+        "sha256": "c6fc38ece910cb6667fbf869ba046e8b9aa5cdeaef016387ab5f5fcfac174060"
+      },
+      "atif_review": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-009-C05-R01-review/export-continuity-review.json",
+        "sha256": "db86b8a4476586c87f06be648079d2933f95f227336b68941a6dc743d30b71eb"
       }
+    },
+    {
+      "experiment_id": "EXP-008",
+      "condition_id": "C03",
+      "condition_key": "glm-abliterated",
+      "preparation_id": "EXP-008-C03-P01",
+      "rollout_id": null,
+      "legacy_name": "EXP-008-C03-P01-r190-glm-abliterated",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C03-P01-r190-glm-abliterated",
+      "collection_executed": false,
+      "status": "offline_preparation_failed",
+      "source_commit": "45bf8be4e",
+      "models": {
+        "glm-abliterated": "abliterated-model-large-v2"
+      },
+      "harness": "pi-sdk",
+      "route": "axonhub",
+      "reason": "Before controls/inference, later r212 collector expected CYCLE absent from restored v140. Original failure preserved; restore v140 registration metadata and use fresh P02.",
+      "hosted_model_calls": 0
+    },
+    {
+      "experiment_id": "EXP-008",
+      "condition_id": "C03",
+      "condition_key": "glm-abliterated",
+      "preparation_id": "EXP-008-C03-P02",
+      "rollout_id": null,
+      "legacy_name": "EXP-008-C03-P02-r190-glm-abliterated",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C03-P02-r190-glm-abliterated",
+      "collection_executed": false,
+      "status": "offline_controls_failed",
+      "source_commit": "f2e313e16",
+      "models": {
+        "glm-abliterated": "abliterated-model-large-v2"
+      },
+      "harness": "pi-sdk",
+      "route": "axonhub",
+      "controls": {
+        "passed": false,
+        "test_methods": 471,
+        "failures": 2,
+        "errors": 2,
+        "skipped": 3,
+        "prompt_contract_passed": true,
+        "hosted_model_calls": 0
+      },
+      "reason": "Two r212-only collector assertions and two native collector controls exposed later pressure/apply-mode assumptions. Preserve broad report; restore matching v140 assertions/fixtures and original immediate surface mode. Ninety affected contracts subsequently pass. Fresh P03 required."
     }
   ],
   "coverage": {
@@ -7538,5 +7588,5 @@
       "Other hosts/archives not inventoried"
     ]
   },
-  "updated_at": "2026-11-04T08:29:47.132448+00:00"
+  "updated_at": "2026-11-04"
 }

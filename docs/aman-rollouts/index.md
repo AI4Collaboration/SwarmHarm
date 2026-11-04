@@ -1,10 +1,18 @@
+# Latest — GLM r190 then r217
+
+EXP-008-C03-P01/P02 are preserved offline failures with zero hosted calls.
+r190 business fidelity to 69e6990ff passes; final 90 affected controls pass after
+restoring v140 compatibility. Fresh P03 pending. Four parallel native contexts;
+r217 EXP-010-C04 follows only after r190 collection/review. GLM r212 remains
+reviewed with time/concurrency limits, all four ATIF exports validated by content.
+
 # Aman's rollout index
 
 > Maintained alongside `registry.json`. Update both at preparation, collection start and terminal review.
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **11 experiments, 48 executed collection attempts, 30 uncollected preparations** in the inspected local archive.
+Coverage: **11 experiments, 48 executed collection attempts, 32 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 

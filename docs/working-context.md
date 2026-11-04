@@ -1,3 +1,13 @@
+r190 P02 broad controls finished: 471 methods, two r212-specific assertion
+failures, two native collector pressure-compatibility errors, three skips;
+13 prompt checks passed, zero hosted calls. Preserve the failed report. Restored
+v140 metadata validation, original immediate record-surface behavior, matching
+v140 scripted fixture and test assertions. One targeted intermediate run exposed
+the missing historical apply_mode field; its failure is preserved. Final 90
+collector/format/native-writable/protected/parallel/record-integrity contracts pass.
+Use their combined source-bound proof for fresh P03; do not relabel P02 passed.
+No source business bytes, tools, task or scoring change in these repairs.
+
 r190 P01 stopped offline before controls or model calls: the later r212 collector
 expected handoff-cycle metadata absent from v140. Preserve the attempt. Restore
 the original v140 registration metadata and prepare a fresh P02; no subject wording

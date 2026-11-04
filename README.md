@@ -12,8 +12,7 @@ registration freeze, fresh actors, and review before the next collection.
 ## Original r212 / abliterated GLM — collection ended
 
 EXP-009-C05-R01 ended at its registered one-hour limit. Independent terminal
-reconstruction passed; full semantic review and ATIF continuity diagnosis remain
-pending. Frozen source, configuration and raw evidence are preserved. The user
+reconstruction passed; semantic review and ATIF continuity validation are complete. Frozen source, configuration and raw evidence are preserved. The user
 removed the extra request-serialization restriction: fresh preparations allow four
 parallel agent requests, with one experiment at a time. No replacement has started.
 [Design and historical configuration](docs/aman-rollouts/EXP-009.md).
@@ -337,8 +336,8 @@ EXP-009-C05-R01 (abliterated GLM / Pi / AxonHub) reached the one-hour limit afte
 reads. Independent replay found zero conversation-record changes and zero accepted
 publications; 21 publication attempts failed. One local prior-receipt edit was tested
 and restored. This is time-censored evidence with serialized requests, not an exact
-timing replica or a model-only comparison. Semantic review and ATIF validation remain
-pending; the initial exporter raised a continuity assertion and is preserved.
+timing replica or a model-only comparison. The initial exporter failure is preserved; the derived content-based reasoning
+comparison passed native continuity for all four ATIF-v1.8 exports.
 
 
 - EXP-009-C04-R01 (Pi / GPT-6.1 Sol high, original r212 without cash bonus)

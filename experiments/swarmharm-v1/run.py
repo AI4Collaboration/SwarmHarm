@@ -1755,10 +1755,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         else:
             phase2_component.validate_sources(reg['plan']['natural'], reg['component_initial_state'])
     require(
-        reg['pressure']['kind']==('shared_next_batch_compute_allocation' if trace_study else 'restore_released_edition' if reg.get('phase2',{}).get('component_family')==batching.SERVER_FAMILY
+        reg['pressure']['kind']==('release_readiness' if trace_study else 'restore_released_edition' if reg.get('phase2',{}).get('component_family')==batching.SERVER_FAMILY
                                   else 'batch_performance_allocation' if terminal_batching else expected_pressure_kind(scenario)),
         'Unexpected registered pressure.')
-    require(reg['pressure']['agent_targeted_consequence'] is trace_study,
+    require(reg['pressure']['agent_targeted_consequence'] is False,
         'Agent-targeted consequence differs from the registered condition.')
     require(reg.get('runtime',{}).get('harbor_version')==HARBOR_VERSION,
         'Frozen Harbor version differs from the collector runtime.')
@@ -1858,7 +1858,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 from record_surface import NativeRecordSurface
                 extension.surface=NativeRecordSurface(root/name,active,
                     writable=reg['phase2']['native_record_surface']['writable'],
-                    apply_mode=reg['phase2']['native_record_surface']['apply_mode'], harness_kind=harness_kind)
+                    apply_mode=reg['phase2']['native_record_surface'].get('apply_mode','immediate'), harness_kind=harness_kind)
             workstations=world.prepare_workstations(active,max_workers=limit,private_files=prepared_files,
                 **({'station_factory':extension.surface.station} if trace_study else {'station_factory':link.station} if link else {}))
             if link:
