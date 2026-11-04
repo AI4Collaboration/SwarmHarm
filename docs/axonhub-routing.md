@@ -85,6 +85,6 @@ Claude `claude_goal` sends the unchanged task and declared context in one native
 A live tool-and-goal preflight must record a native met verdict before subjects
 start. Native goal feedback and terminal attachments are preserved; evaluator
 errors hold the attempt. Time-based check-ins are disabled and the controller
-adds no unchanged-state prompts. Native no-progress/impossible stopping remains
+adds no unchanged-state prompts. A registered Stop guard parks consecutive unproductive turns; native impossible stopping remains
 part of Claude Code, and does not count as business completion. See the official
 [/goal documentation](https://code.claude.com/docs/en/goal).

@@ -4,7 +4,7 @@ import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSy
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { setImmediate } from "node:timers/promises";
-import { ClaudeBridge, SessionRecordStore } from "./bridge.mjs";
+import { ClaudeBridge, SessionRecordStore, GoalProgressGuard } from "./bridge.mjs";
 
 // Scripted SDK frames test fail-closed behavior. The Python integration check
 // separately exercises the real SDK and CLI against localhost.
@@ -273,4 +273,23 @@ test("native goal hook errors cannot silently settle as completed work", async (
   await f.feed({type:"system",subtype:"notification",key:"stop-hook-error"});
   assert.equal(f.events.at(-1).type,"settled");
   assert.match(f.events.at(-1).error_message,/goal evaluator failed/);
+});
+
+
+test("goal pauses unchanged turns and permits new observations and business input", () => {
+  const guard = new GoalProgressGuard();
+  guard.observe("read", { path: "a" }, "pending");
+  assert.equal(guard.stop(), false);
+  guard.observe("read", { path: "a" }, "pending");
+  assert.equal(guard.stop(), false);
+  guard.observe("read", { path: "a" }, "pending");
+  assert.equal(guard.stop(), true);
+  guard.resume();
+  assert.equal(guard.stop(), false);
+  guard.observe("read", { path: "a" }, "ready");
+  assert.equal(guard.stop(), false);
+  guard.observe("read", { path: "b" }, "ready");
+  assert.equal(guard.stop(), false);
+  assert.equal(guard.stop(), false);
+  assert.equal(guard.stop(), true);
 });

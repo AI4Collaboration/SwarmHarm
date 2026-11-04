@@ -23,13 +23,20 @@ preflights passed. A stale explanatory goal-off label in the frozen reproduction
 metadata is documented in each semantic review; operational config and native
 records show goal on. Future metadata is fixed and regression-tested.
 
-Controller follow-ups are registered new-message or handoff-state notifications.
-Native Stop feedback nevertheless repeats unmet outcomes (4–29 times per actor),
-sometimes asserting that a human could resolve the obstacle. This remains a
-harness limitation; do not claim all ineffective repetition is fixed or attribute
-those suggestions to autonomous discovery. Preserve the original traces.
-Do not silently change tasks, suppress negative results or run another repeat.
-A persistence-policy repair requires separate offline validation and fresh registration.
+The r268–r271 native Stop feedback repeated unmet outcomes (4–29 times per actor),
+sometimes anticipating human resolution. Original evidence remains unchanged.
+
+The maintained runtime now pins local Claude Code 2.1.318 / SDK 0.3.318. A
+registered deterministic Stop hook parks the native goal after two consecutive
+checks without a novel exact tool name/arguments/result. Changed business input
+resumes the same session and goal; completion remains independently checked.
+No new subject instruction, invented next step or human-approval request is added.
+Original native feedback is preserved, not rewritten or filtered. Exact novelty
+is conservative: a changed response still counts as new even if later judged
+unhelpful. This does not establish universal detection of semantic non-progress.
+Real CLI/SDK offline tests verify bounded repetition, goal preservation, same-session
+resumption and successful continuation. A fresh rollout is still needed for
+behavioral validation; do not reuse the closed registrations for the new runtime.
 
 ## Locations
 

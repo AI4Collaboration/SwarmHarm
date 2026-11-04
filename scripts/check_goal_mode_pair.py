@@ -19,7 +19,7 @@ from pathlib import Path
 import sys
 
 
-GOAL_FIELDS = ('goal_mode', 'goal_extension', 'goal_settings', 'extension_tools',
+GOAL_FIELDS = ('goal_mode', 'goal_extension', 'goal_settings', 'goal_progress_guard', 'extension_tools',
                'natural_prompt_contract_covers_all_subject_input')
 # Hashes of files that embed job IDs; their normalized contents are compared instead.
 ID_DEPENDENT = {'initial-input-audit.json', 'initial-file-audit.json', 'phase2-plan.json', 'fixtures.json'}

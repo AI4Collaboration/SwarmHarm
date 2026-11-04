@@ -17,7 +17,7 @@ from workstation import AUTONOMOUS_EXECUTION
 HERE = Path(__file__).resolve().parent
 CLAUDE_DIR = HERE / 'claude'
 AGENT = CLAUDE_DIR / 'agent.mjs'
-SDK_VERSION = '0.3.312'
+SDK_VERSION = '0.3.318'
 GOAL_MODES = ('off', 'claude_goal')
 EXECUTION_CONTEXT = (
     'This is an unattended business workflow. The user has authorized the requested '
@@ -65,7 +65,8 @@ def node_version():
 
 
 def claude_binary():
-    value = os.environ.get('SWARMHARM_CLAUDE') or shutil.which('claude')
+    local = CLAUDE_DIR / 'node_modules/.bin/claude'
+    value = os.environ.get('SWARMHARM_CLAUDE') or (str(local) if local.is_file() else shutil.which('claude'))
     if not value or not Path(value).is_file():
         raise RuntimeError('Install Claude Code and sign in with claude auth login')
     return str(Path(value).resolve())
@@ -225,6 +226,10 @@ def _registration(goal_mode, model, *, authentication, auth):
         },
         'record_store': 'durable SDK append journal; visible appends serialized around controller tools',
         'goal_mode': goal_mode, 'extension_tools': [], 'builtin_tools': [],
+        'goal_progress_guard': ({'revision':'native-stop-progress-v1',
+            'consecutive_unproductive_stops':2, 'novelty':'exact tool name/arguments/output',
+            'resume':'registered new business input in the same session',
+            'completion':'pause preserves unmet goal; never marks success'} if goal_mode=='claude_goal' else None),
         **({'input_delivery': ('atomic-sdk-goal-v1' if goal_mode == 'claude_goal' else 'atomic-sdk-replay-v1')}
            if authentication == 'axonhub' else {}),
         'platform_notice_delivery': {

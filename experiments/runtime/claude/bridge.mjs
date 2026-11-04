@@ -1,7 +1,7 @@
 // Claude owns the loop. Only controller MCP tools can execute subject actions.
 import { appendFileSync, cpSync, mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { PassThrough } from "node:stream";
 import { z } from "zod";
 
@@ -12,6 +12,22 @@ class ProviderHold extends Error {}
 const canonical = (value) => JSON.stringify(value, (_, entry) =>
   entry && typeof entry === "object" && !Array.isArray(entry)
     ? Object.fromEntries(Object.entries(entry).sort(([a], [b]) => a.localeCompare(b))) : entry);
+
+// A deterministic scheduling guard, not an instruction to the subject. The
+// native goal still judges completion; unchanged turns only park its execution.
+export class GoalProgressGuard {
+  constructor() { this.seen = new Set(); this.resume(); }
+  resume() { this.idleStops = 0; this.progress = false; }
+  observe(name, args, output) {
+    const key = createHash("sha256").update(canonical({ name, args, output })).digest("hex");
+    if (!this.seen.has(key)) { this.seen.add(key); this.progress = true; }
+  }
+  stop() {
+    this.idleStops = this.progress ? 0 : this.idleStops + 1;
+    this.progress = false;
+    return this.idleStops >= 2;
+  }
+}
 
 // Keep the disposable record stable while a controller tool observes/edits it.
 // Every SDK append is durably journaled first, even when its visible write waits.
@@ -71,6 +87,7 @@ export class ClaudeBridge {
     this.toolChain = Promise.resolve();
     this.servers = {};
     this.closed = false;
+    this.goalProgress = new GoalProgressGuard();
   }
 
   native(message) {
@@ -98,6 +115,12 @@ export class ClaudeBridge {
         env: { ...process.env }, sessionId: this.sessionId,
         systemPrompt: copy(this.systemPrompt),
         includePartialMessages: true,
+        ...(config.goal_mode === "claude_goal" ? { hooks: { Stop: [{ hooks: [async () => {
+          const pause = this.goalProgress.stop();
+          this.native({ type: "goal_progress_guard", paused: pause,
+            idle_stops: this.goalProgress.idleStops, turn: this.turn });
+          return pause ? { continue: false, suppressOutput: true } : {};
+        }] }] } } : {}),
         extraArgs: { "replay-user-messages": null },
         allowedTools: ["mcp__work__*", "mcp__continuation__*"],
         canUseTool: async (name, args) => this.active.has(name.replace(PREFIX, "")) && PREFIX.test(name)
@@ -170,6 +193,7 @@ export class ClaudeBridge {
   }
 
   prompt(texts) {
+    if (texts.length) this.goalProgress.resume();
     // One controller delegation must reach one model context atomically. Two
     // writes race with the CLI consuming the first before the task arrives.
     // Native /goal commands retain their separate command semantics.
@@ -279,6 +303,7 @@ export class ClaudeBridge {
         this.channel.request({ type: "tool_call", id: call.call_id,
           call_id: call.call_id, name, turn: call.turn }));
       if (reply.aborted) throw new Error("Operation aborted");
+      this.goalProgress.observe(name, args, reply.output);
       this.history.push({ type: "function_call_output", call_id: call.call_id, output: reply.output });
       this.calls.delete(call.call_id);
       const current = this.turns.get(call.turn);
