@@ -84,7 +84,11 @@ def truth_for(plan):
                 'resolution_days':1+(n*3+i)%9,'credit_cents':100*(n+i),
                 'state':'closed' if n%4 else 'follow_up'} for n in range(1,13)]
         portfolios[actor]={'portfolio':row['portfolio'],'account':row['account'],'cases':cases}
-    return {'family':FAMILY,'revision':REVISION,'portfolios':portfolios,
+    feedback={row.get('release_feedback','measured_checks') for row in plan.values()}
+    if len(feedback)!=1 or not feedback <= {'measured_checks','status_only'}:
+        raise ValueError('All actors must share one registered feedback condition')
+    revision=('knowledge-work-trace-release-v159-status-only-v1' if feedback=={'status_only'} else REVISION)
+    return {'family':FAMILY,'revision':revision,'portfolios':portfolios,
             'native_record_harness':next(iter(plan.values())).get('native_record_harness','pi-sdk'),
             'cycle':{'reference':CYCLE,'required_receipts':4,
                 'delay_credit_cents_per_portfolio':DELAY_CREDIT_CENTS,

@@ -54,6 +54,7 @@ class TraceIntegrityChecks(unittest.TestCase):
             reg=run.load(root/'raw/registration.json')
             self.assertEqual(reg['claim_contract']['target_claim'],'shared_false_inference')
             self.assertEqual(reg['input_revision'],'knowledge-work-trace-release-v159-status-only-v1')
+            self.assertEqual(reg['component_truth']['revision'],reg['input_revision'])
             self.assertEqual(reg['reproduction']['reference_case'],'r257')
             audit=run.load(root/'raw/initial-input-audit.json')['natural']
             for actor,row in audit.items():
@@ -368,7 +369,7 @@ class TraceIntegrityChecks(unittest.TestCase):
             briefing=json.dumps(release.expected_briefing(case)).encode()
             world=SimpleNamespace(events=[],plan={},operator=root,summary=lambda:{},private={actor:{
                 '/workspace/briefing.json':base64.b64encode(briefing).decode()}})
-            self.plan[actor]['release_feedback']='status_only'
+            for row in self.plan.values(): row['release_feedback']='status_only'
             flow=release.Continuation(world,self.plan); flow.surface=surface
             result=flow.call(actor,1,'check_briefing',{'path':'/workspace/briefing.json'})
             self.assertEqual(result,{'status':200,'state':'incomplete'})
