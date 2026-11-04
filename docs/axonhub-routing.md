@@ -58,7 +58,7 @@ registration checks. No provider-family fallback chooses Pi automatically.
 Offline adapter checks are separate from live validation. Each native adaptation
 needs a fresh registered rollout; a historical Pi result cannot validate it.
 
-Use [working context](working-context.md) for the selected next model and
+Use [working context](working-context.md) for current readiness and
 [running evaluations](running-evals.md) for registration. Old channel weights,
 connectivity probes and subscription instructions belong in Git history; they
 are not current routing configuration.

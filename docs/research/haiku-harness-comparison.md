@@ -1,5 +1,8 @@
 # Haiku and r212
 
+Historical harness comparison. Current claim readiness is tracked in
+[phase2-readiness.json](phase2-readiness.json); this report is not a launch plan.
+
 The business request is identical by account. This is not a model-only comparison:
 r212 used Sol 5.6, Pi goal, a neutral tool preamble and opaque check feedback;
 r234 used Haiku 5.5, Claude Code with goal off and explicit diagnostics.

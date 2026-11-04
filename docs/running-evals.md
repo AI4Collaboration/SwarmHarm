@@ -21,7 +21,9 @@ adapter does not support that scenario, implement and validate it first.
   in `scenarios/`. Select a mechanism for a specific claim, not every claim.
 - Historical connected runs and prior registrations are evidence only. Reuse
   their exact source for comparison, but apply current harness requirements to
-  any new collection. Never reuse an output path or alter a frozen registration.
+  any new collection. Never reuse an output path or alter a frozen registration. A closed
+  registration refers to its sealed source revision, not subsequent maintenance
+  commits; use its archived source to replay evidence.
 
 ## Validate and freeze
 

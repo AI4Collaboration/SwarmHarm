@@ -1,5 +1,5 @@
 {
-  "schema_version": "3.0",
+  "schema_version": "3.1",
   "active_scope": "standalone-phase2-only",
   "architecture": {
     "phase1_and_phase2_independent": true,
@@ -22,7 +22,8 @@
     "reply_roundtrip_required": false,
     "harmful_intent_required": false,
     "corrections_and_cancellations_preserved": true,
-    "supplied_method_must_be_labeled": true
+    "supplied_method_must_be_labeled": true,
+    "terminal_outcome_scope": "Adverse-outcome claims; shared_false_inference requires independently disproved prerequisite and actual peer uptake, not harm."
   },
   "knowing_coordination": {
     "prospective_consequence_understanding_required": true,
@@ -31,14 +32,13 @@
   },
   "current_evidence": {
     "phase1_example": "docs/research/phase1-baseline.json",
-    "supplied_method_comparator": "docs/research/phase2-component-positive.json",
-    "strongest_phase2_positive": "docs/research/knowledge-work-current-record-positive.json",
-    "supplied_method_knowing_comparator": "docs/research/knowledge-work-legacy-reference-positive.json",
-    "capacity_phase2_positive": "docs/research/engineering-batching-positive.json",
-    "endorsement_gap_comparator": "docs/research/engineering-forecast-positive.json",
+    "phase2_readiness": "docs/research/phase2-readiness.json",
+    "coordinated_adverse_outcomes": "docs/research/coordinated-records-r261-review.json",
+    "compositional_failure": "docs/research/treasury-composition-r255-review.json",
+    "shared_false_inference": "docs/research/shared-inference-r257-review.json",
     "selected_trajectory_release": "docs/research/trajectory-release.json",
-    "historical_composition": "docs/research/compositional-failure-positive.json"
+    "trajectory_completeness": "docs/research/trajectory-release-audit.json"
   },
-  "latest_reviewed_negative_run": "2026-11-02-v163-prospective-impact-sol56-pi-n4-r217",
-  "current_question": "docs/working-context.md"
+  "current_question": "docs/working-context.md",
+  "negative_takeaways": "README.md#takeaways"
 }

@@ -50,6 +50,36 @@ def validate_rollout_language():
             fail(f"non-scenario terminology remains in {path.relative_to(ROOT)}")
 
 
+def validate_readiness(contract, status):
+    readiness_path = ROOT / status.get("readiness_reference", "")
+    if not readiness_path.is_file():
+        fail("current readiness index is missing")
+    claims = json.loads(readiness_path.read_text()).get("claims", {})
+    required = {"coordinated_adverse_outcomes", "compositional_failure", "shared_false_inference"}
+    if set(claims) != required or set(status.get("claim_cases", {})) != required:
+        fail("current claim coverage differs from the three maintained claims")
+    audit = json.loads((ROOT / contract["current_evidence"]["trajectory_completeness"]).read_text())["cases"]
+    for claim, entry in claims.items():
+        if not entry.get("ready") or status["claim_cases"][claim] != entry.get("case"):
+            fail(f"stale readiness or case selection for {claim}")
+        path = readiness_path.parent / entry["review"]
+        if contract["current_evidence"].get(claim) != str(path.relative_to(ROOT)):
+            fail(f"admission evidence differs from readiness for {claim}")
+        review = json.loads(path.read_text())
+        if review.get("case") != entry["case"] or not (review.get("passed") or review.get("claim_passed")):
+            fail(f"missing matching reviewed pass for {claim}")
+        release = entry.get("evidence_release", {})
+        if not release.get("remote_digest_verified") or not release.get("archive_sha256"):
+            fail(f"complete trajectory release is unverified for {claim}")
+        evidence = audit.get(entry["case"], {})
+        if (evidence.get("archive_sha256") != release["archive_sha256"]
+                or evidence.get("native_and_atif_actors") != 4
+                or not evidence.get("atif_file_hashes_verified")):
+            fail(f"trajectory completeness audit differs for {claim}")
+        if not any(name.endswith("complete-trajectory.tar.gz") for name in release.get("assets", {})):
+            fail(f"complete trajectory asset is missing for {claim}")
+
+
 def main():
     validate_rollout_language()
     contract = json.loads(CONTRACT.read_text())
@@ -98,7 +128,7 @@ def main():
         fail("unexpected active rollout")
     expected = set(status.get("maintained_registrations", []))
     actual = {
-        path.name for path in REGISTRATIONS.iterdir()
+        str(path.relative_to(ROOT)) for path in REGISTRATIONS.iterdir()
         if path.is_dir() and (path / "registration.json").is_file()
     }
     if actual != expected:
@@ -106,7 +136,8 @@ def main():
     if not (ROOT / status["decision_record"]).is_file():
         fail("current decision record is missing")
 
-    print("dataset admission contract: valid")
+    validate_readiness(contract, status)
+    print("dataset admission contract: valid; three reviewed claim cases and releases aligned")
 
 
 if __name__ == "__main__":

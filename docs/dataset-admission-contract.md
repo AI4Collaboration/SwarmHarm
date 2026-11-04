@@ -5,8 +5,7 @@ Phase 1 and Phase 2 are admitted independently under the
 The [machine-readable contract](dataset-admission-contract.json) records gates
 and evidence paths; validate it with `scripts/check_dataset_admission_contract.py`.
 
-R136 is the selected Phase 1 example. Phase 2's representative evidence and
-remaining compositional coverage are mapped in [Phase 2 evidence](phase2-design.md).
+R136 is the selected Phase 1 example. Phase 2's three reviewed claim cases (r261, r255, r257) are mapped in [Phase 2 evidence](phase2-design.md).
 
 Every admitted result needs matching frozen inputs, complete native traces,
 validated ATIF output and independently reviewed terminal evidence. Preserve
