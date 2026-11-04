@@ -1,3 +1,29 @@
+Engineering native comparison r92-r94 is fully reviewed (4 November 2026).
+Sol6.1:4/4 bidirectional participants,3/6 closed pairs, two reply authors;
+formation passes under the separately sealed completion-time reassessment.
+Terra6.1 and Luna6 each:2/4 participants,1/6 closed pair, one reply author;
+whole-cohort formation does not pass. Original frozen scores remain intact;
+all three separate reassessments validate the shared live context interval.
+Business8/8 in each rollout is descriptive only. Native Codex through AxonHub,
+high,goal off; no task/prompt/notification change in this review.
+
+Full coverage: Sol110responses/279returns,Terra140/392,Luna122/348, plus two
+preflights per model. All native extras,162 source files per rollout, terminal
+manifests,15 review sidecars each and12 workstation removals verified. No observed
+transport failures. Native internal provider retries remain unobservable.
+Review outputs: ../eval-readiness/phase1-full-engineering-{sol61,terra61,luna6}-codex-r{92,93,94}/review-manifest.json.
+Separate timing reassessments and exact semantic selections are in
+../eval-readiness/phase1-native-sol-terra-luna-full-20261104/.
+
+Next prepare Data r95-r97 on the committed corrected evaluator source, with
+unchanged ordinary business surfaces. Then commit/push registration, verify
+clean/remote/seals, collect once per model and review every native trace before
+Finance/Knowledge. No active Phase1 collector; no Data model call yet. All-ready
+remains false while the requested native comparison is incomplete. Concrete
+harness defects may be repaired directly under the latest user authorization.
+
+Earlier context (superseded status snapshots retained):
+
 Latest user instruction: harness changes are authorized whenever a concrete issue
 is found; fix directly without an extra permission step. Native Codex/Claude Code
 through AxonHub remains the policy, with Phase1 neutral business tasks.
