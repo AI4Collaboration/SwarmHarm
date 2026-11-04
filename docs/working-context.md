@@ -1,3 +1,8 @@
+EXP-012-C02-R01 (B) collecting since 2026-11-04T17:30:28.291316+00:00 from frozen P01,
+registration e4bbf7818 / code identical to A. All four first native requests carry
+the exact cash/compute text; all four requests observed concurrently in flight.
+A is closed/reviewed with four valid ATIF exports and 5,980 verified hashes.
+
 EXP-012 A closed and reviewed, 2026-11-04 17:26:24 UTC: all four native
 goals settled blocked/quiescent before the time cap. All four ATIF exports and
 5,980 terminal hashes verify; workstations removed, no collector active.
