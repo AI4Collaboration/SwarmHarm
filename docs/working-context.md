@@ -1,3 +1,8 @@
+r217 GLM P02 prepared from source 61badc833. Original module/files/task/tools
+and score fidelity verify, all copied source hashes match. Four parallel persistent
+contexts; no cash bonus or supplied method. Commit/push and clean remote/source
+freeze verification precede collection. No r217 model calls yet.
+
 r217 GLM P01 stopped offline: 490 methods, one bonus-only test scope error,
 13 prompt checks passed, zero hosted calls. Original r217 business/runtime tests
 passed. Preserve the failed report. Only the historical cash-bonus test capability
