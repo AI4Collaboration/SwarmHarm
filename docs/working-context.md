@@ -1,3 +1,14 @@
+R78 Haiku current-version comparison stopped in preflight before any natural context.
+92 completed responses,93 requests; exact tool-result histories match. Giftcard route
+reported proxy_confirm_service while actual calls/history use confirm_service.
+All terminal hashes and full public preflight trace reviewed; formation inconclusive,
+not a negative natural rollout. Same-model direct AxonHub/OpenRouter two-turn
+diagnostic succeeds. Temporary API-key fallback profile excludes Giftcard and keeps
+all other channels, original profile preserved for restoration after comparison.
+Preflight now stops repeated calls immediately and enforces its existing deadline;
+7 direct collector checks pass. Business prompts/interfaces/formation unchanged.
+Next fresh r79 preparation and full native review; never restart r78.
+
 R78 user-authorized Haiku5.5 current-version Engineering comparison prepared.
 Source13c4dccd7, direct AxonHub/high/goaloff, four concurrent contexts, no harness.
 Only swarm formation determines pass.496 common checks+14 prompt checks and

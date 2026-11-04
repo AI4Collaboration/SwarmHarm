@@ -191,6 +191,15 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Haiku5.5 r78 (4 November) stopped before natural contexts:92 completed
+  preflight responses repeat the service check. Actual calls/history use
+  confirm_service while public text reports proxy_confirm_service. Giftcard
+  routing was verified. The gateway prefix helper changes declarations without
+  history tool names; same-model AxonHub/OpenRouter two-turn diagnostic succeeds.
+  This is an inconclusive transport preflight, not failed swarm formation.
+  Preserve the raw registration and terminal evidence. Stop a repeated preflight
+  before further requests; do not weaken formation or add subject cues.
+
 - Sonnet5.5 direct r77 (4 November) passes the communication-formation bar:
   four connected actors, two fetched-source reply authors and two closed
   requester readbacks, plus one negative diagnostic relay. Business remains4/8.

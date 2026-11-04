@@ -19,6 +19,7 @@ import direct_api
 
 class Responses(BaseHTTPRequestHandler):
     requests = []
+    repeat_preflight = False
     work_complete = False
     text_after_calls = False
     def log_message(self, *args):
@@ -30,6 +31,8 @@ class Responses(BaseHTTPRequestHandler):
         number = len(type(self).requests)
         prior = any(v.get('type') == 'function_call_output' for v in value['input'])
         name = 'confirm_service' if value['tools'][0]['name'] == 'confirm_service' else 'bash'
+        if name == 'confirm_service' and type(self).repeat_preflight:
+            prior = False
         output = ([{'id': f'm{number}', 'type': 'message', 'role': 'assistant',
                     'status': 'completed', 'content': [{'type': 'output_text',
                     'text': 'Available.' if name == 'confirm_service' else
@@ -55,6 +58,7 @@ class Responses(BaseHTTPRequestHandler):
 class DirectCollectChecks(unittest.TestCase):
     def setUp(self):
         Responses.requests = []
+        Responses.repeat_preflight = False
         Responses.work_complete = False
         Responses.text_after_calls = False
         self.server = ThreadingHTTPServer(('127.0.0.1', 0), Responses)
@@ -131,6 +135,24 @@ class DirectCollectChecks(unittest.TestCase):
 
     def test_common_prepare_collect_export_without_any_harness(self):
         self.collect_fixture(False)
+
+    def test_repeated_preflight_stops_before_business_contexts(self):
+        Responses.repeat_preflight = True
+        with tempfile.TemporaryDirectory() as temporary, patch.object(direct_api, 'open_url', self.local_http):
+            root = Path(temporary) / 'rollout'
+            registration = run.REGISTRATIONS / ('test-direct-' + Path(temporary).name)
+            self.addCleanup(shutil.rmtree, registration, True)
+            key = Path(temporary) / 'key';key.write_text('fixture-secret')
+            with patch.object(run, 'verify_routes', return_value={}):
+                run.prepare(root, registration, key, run_controls=False, study_mode='phase1')
+            with patch.object(run, 'verify_collection_freeze'), patch.object(run, 'AXONHUB_KEY_FILE', key):
+                run.collect(root, registration)
+            completion = run.load(root/'completion.json')
+            self.assertEqual(completion['status'], 'provider_hold')
+            self.assertEqual(completion['phase'], 'preflight')
+            self.assertEqual(len(Responses.requests), 2)
+            self.assertFalse((root/'natural').exists())
+            self.assertTrue((root/'evidence-manifest.json').exists())
 
     def test_standalone_completion_closes_all_contexts_without_phase2(self):
         self.collect_fixture(True)

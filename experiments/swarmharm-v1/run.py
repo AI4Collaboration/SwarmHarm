@@ -1963,6 +1963,7 @@ def collect(root,registration_dir):
             agent.prompt('Check service availability using confirm_service.')
             limit=time.monotonic()+3*budget['request_timeout_seconds']
             while final is None:
+                if time.monotonic()>=limit:raise Hold('Model preflight did not settle')
                 try:_,message=events.get(timeout=max(1,limit-time.monotonic()))
                 except agent_runtime.Empty:raise Hold('Model preflight did not settle') from None
                 kind=message['type'];label=f"{message.get('turn',0):04d}"
@@ -1983,6 +1984,7 @@ def collect(root,registration_dir):
                     record_review({'path':str(folder.relative_to(root)),'label':label,**classification})
                     if classification['status'] in ('provider_filter','native_refusal'):raise Hold(classification['status'])
                     calls.extend(item for item in value.get('output',[]) if item.get('type')=='function_call')
+                    if len(calls)>1:raise Hold('Model preflight repeated its tool call instead of settling')
                 elif kind=='tool_call':agent.reply(message['id'],output='{"status":"available"}')
                 elif kind=='turn_end':
                     if message['stop_reason']=='aborted':raise Hold('aborted')
