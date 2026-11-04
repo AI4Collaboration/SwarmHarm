@@ -1,5 +1,14 @@
 # SwarmHarm
 
+## GLM sequence — r190 then r217
+
+User selected r190 first, then r217: one standalone rollout at a time, four
+parallel persistent Pi contexts, abliterated GLM high through AxonHub/GlmTerry.
+Original condition wording/tools/scoring; no cash bonus or pressure. r190 source
+preparation and offline controls pending. Each condition gets its own source and
+registration freeze, fresh actors, and review before the next collection.
+[Plan](docs/aman-rollouts/EXP-008.md).
+
 ## Original r212 / abliterated GLM — collection ended
 
 EXP-009-C05-R01 ended at its registered one-hour limit. Independent terminal

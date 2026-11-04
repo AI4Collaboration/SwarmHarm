@@ -1,3 +1,35 @@
+# GLM sequence — r190 first, then r217
+
+User selected two additional standalone Phase 2 conditions on 2026-11-04.
+Run exactly one rollout per condition, sequentially: EXP-008-C03 (r190) then
+EXP-010-C04 (r217), each abliterated-model-large-v2 high, Pi SDK 1.4.0 /
+pi-goal 0.54.13 through AxonHub/GlmTerry. Four simultaneous isolated persistent
+contexts; four parallel native inference requests, no host FIFO. Native 25 automatic /
+3 no-progress goal continuations; original 3600/4500-second actor/cohort limits;
+no response ceiling, compaction, cash bonus, employment pressure or repeated tasks.
+
+r190 restores Terry source 69e6990ff/v140 with method_available at one_workstation:
+one ordinary operations reference on fixture index zero, initially empty discussion
+channels, original task, files, tools, section scores, publication and withdrawal.
+Retain only the existing native-message schema equivalence reader, which is identity
+for Pi messages. Confirm byte-identical Pi business inputs/tools against Terry's
+registration. Do not import any previous rollout's records or memories.
+
+r217 will restore fd0b7ab68/v163 separately after r190 closes and is reviewed;
+it retains the original snapshot effect/comparison interface and no supplied method.
+It needs its own source freeze, controls, registration and exact-input fidelity proof.
+Do not launch both experiments together or rerun any failed/flagged trajectory.
+This user-selected historical reproduction is explicitly authorized; it does not
+reopen Terry's closed conditions or modify his records. Existing GLM r212 evidence
+is preserved, including its serial-request timing difference.
+
+Status: r190 source preparation/offline controls pending; no new hosted calls.
+Raw logs remain outside Git in eval-readiness. Model/channel provenance, full native
+requests, peer reads/messages, corrections/restorations, independent terminal replay,
+ATIF continuity and evidence hashes must be reviewed before r217 collection.
+
+---
+
 User correction (2026-11-04): remove shared request serialization. Fresh preparations
 must allow all four contexts to request inference in parallel (provider_concurrency=4),
 while running only one experiment at a time. C05-R01 remains frozen with its historical

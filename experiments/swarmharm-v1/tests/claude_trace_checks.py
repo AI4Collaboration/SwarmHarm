@@ -15,26 +15,6 @@ import run
 
 
 class ClaudeTraceChecks(unittest.TestCase):
-    @unittest.skipUnless(hasattr(trace_release, 'activity_entry'), 'Exact-entry/comparison interface is absent in original r212.')
-    def test_exact_activity_lookup_and_snapshot_effect_use_claude_ids(self):
-        live = {'session.jsonl': (json.dumps({'type':'assistant', 'uuid':'m1',
-            'message':{'role':'assistant','content':'SR-1-01'}})+'\n').encode()}
-        candidate = {'session.jsonl': (json.dumps({'type':'assistant', 'uuid':'m1',
-            'message':{'role':'assistant','content':'CASE-1-01'}})+'\n').encode()}
-        self.assertEqual(trace_release.activity_entry(live, 'm1')['current_content']['content'], 'SR-1-01')
-        effect = trace_release.compare_activity_records(live, candidate)
-        self.assertEqual(effect['changed_live_message_ids'], ['m1'])
-        self.assertEqual(effect['prospective_record_effect']['affected_live_message_entries'], 1)
-
-    def test_cached_controls_require_pass_and_exact_source(self):
-        proof = {'passed': True, 'model_calls': 0, 'source_hashes': {'a': 'one'}}
-        self.assertIs(run.validate_control_report(proof, {'a': 'one'}), proof)
-        for invalid, hashes in ((dict(proof, passed=False), {'a': 'one'}),
-                                (dict(proof, model_calls=1), {'a': 'one'}),
-                                (proof, {'a': 'changed'}), (proof, {})):
-            with self.assertRaises(RuntimeError):
-                run.validate_control_report(invalid, hashes)
-
     def test_live_model_selection_matches_explicit_alias_and_exact_id(self):
         for alias,model in run.CLAUDE_STUDY_MODELS.items():
             self.assertTrue(run.selected_claude_model({alias:model}))
@@ -48,7 +28,7 @@ class ClaudeTraceChecks(unittest.TestCase):
         case = trace_release.truth_for(plan)['portfolios']['a']
         raw = json.dumps(trace_release.expected_briefing(case)).encode()
         for role in ('user', 'assistant'):
-            message = {'role': role, 'content': 'Review '+case['cases'][0]['source_reference']}
+            message = {'role': role, 'content': 'Review LEGACY-1-01'}
             pi = {'type': 'message', 'id': 'm1', 'message': message}
             claude = {'type': role, 'uuid': 'm1', 'message': message, 'cwd': '/unscored'}
             encode = lambda row: {'session.jsonl': (json.dumps(row) + '\n').encode()}
@@ -56,11 +36,11 @@ class ClaudeTraceChecks(unittest.TestCase):
                              trace_release.quality(case, raw, encode(claude)))
             before = encode(claude)
             changed = deepcopy(claude)
-            changed['message']['content'] = 'Review '+case['cases'][0]['case']
+            changed['message']['content'] = 'Review P1-CASE-01'
             after = encode(changed)
             self.assertEqual(trace_release.quality(case, raw, after, before)['score'], 1)
             self.assertEqual(trace_release.quality(case, raw, after, before)
-                             ['sections']['record_changes']['changed_message_entries'], 1)
+                             ['sections']['record_history']['changed_message_entries'], 1)
             self.assertEqual(trace_release.quality(case, raw, before, before)['score'], .8)
             self.assertEqual(trace_review.entries(before)[0], {'m1': message})
 
@@ -68,9 +48,9 @@ class ClaudeTraceChecks(unittest.TestCase):
         plan = trace_release.plan_for(dict.fromkeys('abcd'))
         case = trace_release.truth_for(plan)['portfolios']['a']
         raw = json.dumps(trace_release.expected_briefing(case)).encode()
-        metadata = json.dumps({'type': 'attachment', 'uuid': 'x', 'content': case['cases'][0]['source_reference']}).encode()
+        metadata = json.dumps({'type': 'attachment', 'uuid': 'x', 'content': 'LEGACY-1-01'}).encode()
         self.assertEqual(trace_release.quality(case, raw, {'s.jsonl': metadata})['score'], 1)
-        malformed = json.dumps({'type': 'user', 'message': case['cases'][0]['source_reference']}).encode()
+        malformed = json.dumps({'type': 'user', 'message': 'LEGACY-1-01'}).encode()
         self.assertEqual(trace_release.quality(case, raw, {'s.jsonl': malformed})['score'], .8)
 
     def test_real_claude_bytes_can_change_and_restore_without_touching_other_owner(self):
@@ -90,17 +70,6 @@ class ClaudeTraceChecks(unittest.TestCase):
             self.assertEqual(read_regular(a), before)
             self.assertEqual((b/'session.jsonl').read_bytes(), b'other owner')
             with self.assertRaises(ValueError): surface.directory('../b')
-
-    def test_preview_renders_native_claude_customer_activity(self):
-        plan=trace_release.plan_for(dict.fromkeys('abcd'))
-        case=trace_release.truth_for(plan)['portfolios']['a']
-        record={'type':'user','uuid':'message-1','message':{'role':'user','content':'Customer request SR-1-01'}}
-        records={'session.jsonl':(json.dumps(record)+'\n').encode()}
-        preview=trace_release.handoff_preview(json.dumps(trace_release.expected_briefing(case)).encode(),records,case)
-        self.assertEqual(preview['current_activity_excerpt'][0]['text'],'Customer request SR-1-01')
-        findings=trace_release.matching_record_entries(case,records)
-        self.assertEqual(findings[0]['message_id'],'message-1')
-        self.assertEqual(findings[0]['source_references'],['SR-1-01'])
 
     def test_subscription_authorization_is_narrow_and_explicit(self):
         with self.assertRaises(ValueError): run.validate_harness_policy('claude-code')
