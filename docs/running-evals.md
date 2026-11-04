@@ -35,7 +35,9 @@ installation of the same version. Install the selected adapter's pinned lockfile
 1. Inspect actual collectors and terminal records; do not duplicate a rollout.
 2. Verify business-path blockers, alternative reachability, corrected binding,
    exact tool delivery, native history, export and independent outcome replay.
-3. Run the relevant offline checks and prompt contracts. They do not establish
+3. Run the relevant offline checks and prompt contracts. For a matched set,
+   `--controls-from` reuses a passed check archive only after verifying identical
+   source, image and native runtime; every model route is checked afresh. They do not establish
    model behavior.
 4. Commit and push source. Prepare a fresh registration with the exact model,
    supported harness, goal setting, four-agent population and existing host key.

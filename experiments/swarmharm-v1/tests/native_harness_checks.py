@@ -278,3 +278,31 @@ class NativeHarnessChecks(unittest.TestCase):
                     self.assertIn('native response completion', prepared['harness']['request_timeout_scope'])
                 self.assertEqual(prepared['component_truth']['native_record_harness'],harness)
                 self.assertNotIn('offline-fixture',(registration/'registration.json').read_text())
+
+class CheckedControlsReuse(unittest.TestCase):
+    def test_reuse_rejects_modified_result_source_and_runtime(self):
+        from tempfile import TemporaryDirectory
+        from unittest.mock import patch
+        import run
+        with TemporaryDirectory() as folder:
+            root=Path(folder); source=root/'source'; source.mkdir()
+            controls={'passed':True,'prompt_contract_passed':True,'model_calls':0,'test_methods':1}
+            run.save(source/'controls.json',controls)
+            harness={'kind':'claude-code','installed':{'sdk':'fixture'},'goal_mode':'off'}
+            reg={'code_hashes':{},'image':run.lab.IMAGE,'runtime':{'harbor_version':run.HARBOR_VERSION,
+                 'python':run.sys.version.split()[0]},'harness':harness,'input_hashes':{'controls.json':run.sha(source/'controls.json')}}
+            run.save(source/'registration.json',reg)
+            run.save(source/'registration-seal.json',{'sha256':run.sha(source/'registration.json')})
+            with patch.object(run,'code_paths',return_value=[]):
+                self.assertTrue(run.reuse_checked_controls(source,harness)['passed'])
+                with self.assertRaisesRegex(RuntimeError,'harness differs'):
+                    run.reuse_checked_controls(source,{**harness,'goal_mode':'changed'})
+                run.save(source/'controls.json',{**controls,'passed':False})
+                with self.assertRaisesRegex(RuntimeError,'results changed'):
+                    run.reuse_checked_controls(source,harness)
+                run.save(source/'controls.json',controls)
+                reg['code_hashes']={'different.py':'unmatched'}
+                run.save(source/'registration.json',reg)
+                run.save(source/'registration-seal.json',{'sha256':run.sha(source/'registration.json')})
+                with self.assertRaisesRegex(RuntimeError,'source differs'):
+                    run.reuse_checked_controls(source,harness)

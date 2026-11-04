@@ -376,6 +376,27 @@ def validate_harness_policy(harness_kind, offline_adapter_test=False, offline_fi
         raise ValueError('Pi is historical only; use the model family native harness through AxonHub.')
 
 
+def reuse_checked_controls(source, harness):
+    """Reuse offline checks only for identical source, image and native runtime."""
+    source=guardrails.outside_repository(source,REPO,'Offline check source')
+    reg=load(source/'registration.json'); seal=load(source/'registration-seal.json')
+    require(sha(source/'registration.json')==seal['sha256'],'Offline check registration changed')
+    expected={str(p.relative_to(REPO)):sha(p) for p in code_paths()}
+    require(reg['code_hashes']==expected,'Offline check source differs')
+    require(all(sha(source/'code'/path)==value for path,value in expected.items()),'Offline check archive differs')
+    require(reg['image']==lab.IMAGE and reg['runtime']=={
+        'harbor_version':HARBOR_VERSION,'python':sys.version.split()[0]},'Offline check runtime differs')
+    for field in ('kind','installed','node_version','claude_code','native_binding','goal_mode'):
+        require(reg['harness'].get(field)==harness.get(field),f'Offline check harness differs: {field}')
+    require(sha(source/'controls.json')==reg['input_hashes']['controls.json'],'Offline check results changed')
+    result=load(source/'controls.json')
+    require(result.get('passed') is True and result.get('prompt_contract_passed') is True
+            and result.get('model_calls')==0 and result.get('test_methods',0)>0,'Offline checks did not pass')
+    result['reuse']={'registration_sha256':seal['sha256'],'controls_sha256':sha(source/'controls.json'),
+        'scope':'same committed code, image, Python/Harbor and native runtime; route and model catalog rechecked per registration'}
+    return result
+
+
 def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             provider_concurrency=None,topology_file=None,run_controls=True,
             cue_condition=schedule.DEFAULT_CUE_CONDITION,
@@ -384,7 +405,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode='off', harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks"):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind is None:
@@ -569,7 +590,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         for assignment in phase2_plan.values():
             assignment['proof_stage'] = proof_stage
     save(root/'phase2-plan.json',phase2_plan)
-    if run_controls:
+    if controls_from is not None:
+        if not run_controls: raise ValueError('Offline check reuse cannot disable validation')
+        save(root/'controls.json',reuse_checked_controls(controls_from,harness))
+    elif run_controls:
         capture=io.StringIO();suite=unittest.TestSuite()
         for path in sorted(HERE.rglob('*checks.py')):
             adapter = {'pi_collect_checks.py':'pi-sdk', 'claude_collect_checks.py':'claude-code',
@@ -1295,7 +1319,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'matched':['four isolated actors','business tasks and materials','tool definitions','business scoring',
                        'business notifications','registered time allowances'],
             'release_feedback':release_feedback if trace_study else None,
-            'differences':['model and provider-native harness', 'native session format',
+            'harness_differences':['model and provider-native harness', 'native session format',
                            'Claude goal off versus reference Codex native goal'] if harness_kind=='claude-code' else [],
             'interpretation':'Task-matched native-harness comparison; not a model-only causal comparison'}
     if treasury_study:
@@ -2643,6 +2667,7 @@ if __name__=='__main__':
         default='local_records', help='Knowledge Work Phase 2 information availability.')
     p.add_argument('--study-mode', choices=('phase1', phase2_component.MODE),
         help='Required during preparation. Phase 1 and Phase 2 are separate rollout tracks.')
+    p.add_argument('--controls-from',type=Path,help='Reuse successful offline checks bound to identical source and native runtime; reverify model routing.')
     p.add_argument('--release-feedback', choices=('measured_checks','status_only'), default='measured_checks',
         help='Freeze the trace-release feedback condition; status_only reproduces r257.')
     p.add_argument('--target-claim', choices=('shared_false_inference','coordinated_adverse_outcomes'),
@@ -2679,5 +2704,5 @@ if __name__=='__main__':
             component_family=a.component_family,initial_material=a.initial_material,
             material_distribution=a.material_distribution,
             goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
-            proof_stage=a.proof_stage,pi_comparison=a.pi_comparison,target_claim=a.target_claim,release_feedback=a.release_feedback)
+            proof_stage=a.proof_stage,pi_comparison=a.pi_comparison,target_claim=a.target_claim,release_feedback=a.release_feedback,controls_from=a.controls_from)
     else:collect(root,registration_dir)
