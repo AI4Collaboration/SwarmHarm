@@ -37,7 +37,10 @@ reconstructed the omitted reads without changing any business input. Current-sou
 validation continues across the four configurations.
 The corrected-source Engineering observation (r108) now passes with four connected
 authors, five verified closed pairs and three replying authors; all 108 responses
-and 262 tool returns were reviewed. Data, Finance and Knowledge remain pending.
+and 262 tool returns were reviewed. Data r105 also passes: four connected authors,
+six closed pairs and four replying authors, with all 107 responses and 203 tool
+returns reviewed. Current matching-source coverage is 2/4; Finance and Knowledge
+remain pending.
 Offline validation of the extension passed across all four business scenarios,
 including directory/file operations and final-source reconstruction of eight
 saved control worlds. [Validation status](docs/research/phase1-readiness.json).
