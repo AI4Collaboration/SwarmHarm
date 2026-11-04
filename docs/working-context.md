@@ -1,3 +1,12 @@
+R79 current-version Engineering Haiku5.5 prepared on sourcee861da704.
+497 common+14 prompt checks, real control,159 source and all input/task/reg seals
+pass. All four initial inputs/tools/files match reviewed r78 except job IDs and
+new deadline. Same-model AxonHub/OpenRouter fallback independently confirmed.
+Output ../eval-readiness/phase1-formation-engineering-haiku55-direct-r79.
+Registration5e8affe452422560c69802e0ca2dedcded016823666e36d71fe12d3f150c1ac5.
+Commit/push/absolute freeze then launch once; full native review, formation only.
+No r79 calls yet. Restore original API-key profile after this comparison.
+
 R78 Haiku current-version comparison stopped in preflight before any natural context.
 92 completed responses,93 requests; exact tool-result histories match. Giftcard route
 reported proxy_confirm_service while actual calls/history use confirm_service.
