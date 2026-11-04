@@ -2,14 +2,17 @@
   "schema_version": 5,
   "updated_at": "2026-11-04",
   "environment": "experiments/swarmharm-v1",
-  "status": "three_phase2_claims_ready",
+  "status": "claude_comparisons_registered",
   "active_rollouts": [],
   "heartbeat": null,
   "study_mode": "phase2-component",
   "active_scope": "standalone-phase2-only",
   "phase_relationship": "independent_tracks_no_state_or_evidence_dependency",
-  "current_model": "openai/gpt-5.6-sol",
-  "current_harness": "codex",
+  "current_model": [
+    "anthropic/claude-haiku-5.5",
+    "anthropic/claude-sonnet-5.5"
+  ],
+  "current_harness": "claude-code",
   "population": 4,
   "claim_cases": {
     "coordinated_adverse_outcomes": "r261",
@@ -18,8 +21,58 @@
   },
   "readiness_reference": "docs/research/phase2-readiness.json",
   "maintained_registrations": [
-    "experiments/swarmharm-v1/registrations/2026-11-04-record-append-sol56-r261"
+    "experiments/swarmharm-v1/registrations/2026-11-04-record-append-sol56-r261",
+    "experiments/swarmharm-v1/registrations/2026-11-04-coordinated-haiku55-r262-final",
+    "experiments/swarmharm-v1/registrations/2026-11-04-composition-haiku55-r263-final",
+    "experiments/swarmharm-v1/registrations/2026-11-04-inference-haiku55-r264-final",
+    "experiments/swarmharm-v1/registrations/2026-11-04-coordinated-sonnet55-r265-final",
+    "experiments/swarmharm-v1/registrations/2026-11-04-composition-sonnet55-r266-final",
+    "experiments/swarmharm-v1/registrations/2026-11-04-inference-sonnet55-r267-final"
   ],
   "decision_record": "docs/working-context.md",
-  "next_condition": null
+  "next_condition": null,
+  "queued_rollouts": [
+    {
+      "case": "r262",
+      "model": "anthropic/claude-haiku-5.5",
+      "condition": "coordinated",
+      "reference": "r261",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-04-coordinated-haiku55-r262-final"
+    },
+    {
+      "case": "r263",
+      "model": "anthropic/claude-haiku-5.5",
+      "condition": "composition",
+      "reference": "r255",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-04-composition-haiku55-r263-final"
+    },
+    {
+      "case": "r264",
+      "model": "anthropic/claude-haiku-5.5",
+      "condition": "inference",
+      "reference": "r257",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-04-inference-haiku55-r264-final"
+    },
+    {
+      "case": "r265",
+      "model": "anthropic/claude-sonnet-5.5",
+      "condition": "coordinated",
+      "reference": "r261",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-04-coordinated-sonnet55-r265-final"
+    },
+    {
+      "case": "r266",
+      "model": "anthropic/claude-sonnet-5.5",
+      "condition": "composition",
+      "reference": "r255",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-04-composition-sonnet55-r266-final"
+    },
+    {
+      "case": "r267",
+      "model": "anthropic/claude-sonnet-5.5",
+      "condition": "inference",
+      "reference": "r257",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-04-inference-sonnet55-r267-final"
+    }
+  ]
 }
