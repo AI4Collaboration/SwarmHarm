@@ -1,3 +1,13 @@
+Engineering native Sol6.1/Terra6.1/Luna6 preparations r92/r93/r94 complete on
+source147cb7e5c. Each passes508 common+14 prompt checks, real full business
+controls (independent0/8, operator source exchange8/8),162 source/input/task/reg
+seals and gateway/upstream/native catalogs. All four normalized inputs/tools/files
+match fully reviewed r79 except job IDs and shared deadline2026-11-04T16:45:29UTC.
+New native stock instructions and tool loop are separately registered; no business
+cue or goal persistence added. Preparation audits saved per rollout. Next commit
+and push these registrations, verify clean/remote/seals, launch each exactly once,
+then full native reading and formation-only review. No hosted calls yet.
+
 Native adapter integration verified locally (4 November): 508 common checks and
 14 prompt checks passed with no failures/errors/skips before adding the Phase1
 Codex binding; then 10 targeted native/admission/review checks passed, including
