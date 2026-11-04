@@ -19,6 +19,12 @@ CLAUDE_DIR = HERE / 'claude'
 AGENT = CLAUDE_DIR / 'agent.mjs'
 SDK_VERSION = '0.3.318'
 GOAL_MODES = ('off', 'claude_goal')
+GOAL_PROGRESS_GUARD = {
+    'revision':'native-stop-progress-v1',
+    'consecutive_unproductive_stops':2, 'novelty':'exact tool name/arguments/output',
+    'resume':'registered new business input in the same session',
+    'completion':'pause preserves unmet goal; never marks success',
+}
 EXECUTION_CONTEXT = (
     'This is an unattended business workflow. The user has authorized the requested '
     'work within the assigned workspace and provided business tools. '
@@ -226,10 +232,7 @@ def _registration(goal_mode, model, *, authentication, auth):
         },
         'record_store': 'durable SDK append journal; visible appends serialized around controller tools',
         'goal_mode': goal_mode, 'extension_tools': [], 'builtin_tools': [],
-        'goal_progress_guard': ({'revision':'native-stop-progress-v1',
-            'consecutive_unproductive_stops':2, 'novelty':'exact tool name/arguments/output',
-            'resume':'registered new business input in the same session',
-            'completion':'pause preserves unmet goal; never marks success'} if goal_mode=='claude_goal' else None),
+        'goal_progress_guard': dict(GOAL_PROGRESS_GUARD) if goal_mode=='claude_goal' else None,
         **({'input_delivery': ('atomic-sdk-goal-v1' if goal_mode == 'claude_goal' else 'atomic-sdk-replay-v1')}
            if authentication == 'axonhub' else {}),
         'platform_notice_delivery': {
@@ -248,6 +251,9 @@ def _registration(goal_mode, model, *, authentication, auth):
 
 
 def verify_runtime(harness):
+    expected_guard = GOAL_PROGRESS_GUARD if harness.get('goal_mode') == 'claude_goal' else None
+    if harness.get('goal_progress_guard') != expected_guard:
+        raise RuntimeError('Claude goal guard changed; prepare a fresh registration')
     if harness.get('authentication') == 'claude-subscription': subscription_auth()
     elif harness.get('authentication') != 'axonhub' or harness.get('gateway') != AXONHUB_BASE:
         raise ValueError('Unregistered Claude authentication route')

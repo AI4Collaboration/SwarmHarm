@@ -273,6 +273,8 @@ class NativeHarnessChecks(unittest.TestCase):
                 self.assertEqual(prepared['harness']['authentication'],'axonhub')
                 if goal=='claude_goal':
                     self.assertEqual(prepared['native_subject_goal']['condition'],'native_claude_goal')
+                    self.assertEqual(prepared['native_subject_goal']['settings']['goal_progress_guard'],
+                                     run.claude_agent.GOAL_PROGRESS_GUARD)
                     self.assertEqual(prepared['harness']['input_delivery'],'atomic-sdk-goal-v1')
                     self.assertEqual(prepared['harness']['goal_evaluator']['model'],model)
                     self.assertIn('Claude native goal versus reference Codex native goal', prepared['reproduction']['harness_differences'])

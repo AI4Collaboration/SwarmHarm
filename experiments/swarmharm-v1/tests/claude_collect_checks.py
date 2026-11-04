@@ -86,6 +86,10 @@ class SubscriptionChecks(unittest.TestCase):
         self.assertEqual(registration['goal_evaluator']['model'],MODEL)
         self.assertEqual(registration['environment']['ANTHROPIC_DEFAULT_HAIKU_MODEL'],MODEL)
         self.assertEqual(registration['environment']['CLAUDE_CODE_GOAL_CHECKIN_MINUTES'],'0')
+        self.assertEqual(registration['goal_progress_guard'],CLAUDE.GOAL_PROGRESS_GUARD)
+        stale = dict(registration);stale.pop('goal_progress_guard')
+        with self.assertRaisesRegex(RuntimeError, 'Claude goal guard changed'):
+            CLAUDE.verify_runtime(stale)
         self.assertEqual(registration['extension_tools'],[])
         self.assertEqual(registration['system_prompt'],CLAUDE.SYSTEM_PROMPT)
         self.assertIn('Do not ask the user',registration['system_prompt']['append'])

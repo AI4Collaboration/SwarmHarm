@@ -68,10 +68,12 @@ are not current routing configuration.
 Codex `codex_goal` activates the original business objective through native
 `thread/goal/set` during the initial task turn. The CLI owns continuation,
 `get_goal`/`update_goal` and terminal states; the controller adds no continuation
-prompt. Native goal state and all automatic input are preserved. Business
-completion is checked separately. A blocked Codex goal currently stays blocked;
+prompt. The registered progress guard may pause unchanged turns; new business
+input resumes guard-paused goals. Native state and automatic inputs are preserved.
+Business completion is checked separately. A blocked Codex goal currently stays blocked;
 Pi's registered changed-business-state resume remains a disclosed difference.
-Pi `goal_command` retains its pinned 25 automatic / three no-progress turn limits.
+Pi `goal_command` retains its pinned extension limits, described in the
+[running guide](running-evals.md).
 The adapters' goal mechanisms are compared, not claimed identical.
 
 Codex freezes `tool_output_token_limit=262144` so its history can retain both

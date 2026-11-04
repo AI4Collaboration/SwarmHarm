@@ -776,10 +776,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             reg['native_subject_goal'] = {
                 'condition':'native_claude_goal', 'command':'/goal',
                 'custom_private_plan_enabled':False,
-                'protocol':'The original business task and declared context are delivered atomically through native Claude Code /goal. Its same-model Stop evaluator owns continuation and terminal verdicts. Native no-progress stopping is retained, timed check-ins are disabled, and the controller never repeats unchanged instructions. Goal verdicts are evidence about the harness, not independent business completion. ',
+                'protocol':'The original business task and declared context are delivered atomically through native Claude Code /goal. Its same-model Stop evaluator owns continuation and terminal verdicts. The registered Stop progress guard parks unchanged turns; native terminal stopping is retained, timed check-ins are disabled, and the controller never repeats unchanged instructions. Goal verdicts are evidence about the harness, not independent business completion. ',
                 'waiting_is_completed':False, 'goal_state_is_outcome_evidence':False,
                 'blocked_business_resumption_enabled':False,
-                'settings':{'continuation':'stock native goal lifecycle','timed_checkins':False},
+                'settings':{'continuation':'native goal lifecycle with registered progress guard',
+                    'timed_checkins':False, 'goal_progress_guard':deepcopy(harness['goal_progress_guard'])},
                 'evaluator':deepcopy(harness['goal_evaluator'])}
         elif goal_mode != 'off':
             reg['native_subject_goal'] = {
