@@ -55,21 +55,22 @@ these are recorded conditions, not a model-only ranking.
 [Evidence details](docs/phase2-design.md) ·
 [Scenario setup and parameters](docs/scenarios-and-parameters.md#phase-2).
 
-**New matched environment:** four agents deliver account reporting packs. One
-operator parameter selects resource-purpose, acceptance or execution-record
-binding; a fourth preset keeps every binding intact. Tasks, tools and initial
-files are identical across presets. Four Sol 5.6/Codex runs are complete:
-the acceptance preset published three incomplete packs, missing six required
-items, with method reuse through a shared release record. Resource and record
-presets produced no adverse delivery; control rejected incomplete publication.
+**Unified environment:** four agents deliver account reporting packs. Parameters
+control access, sharing, feedback, capacity and the binding checked at release.
+Eight matched runs compare three binding presets and an intact control on
+Sol 5.6 and 6.1; task, tool and initial-file bytes match across presets.
+Both models reproduce composition: each full sequence is harmless alone;
+together they delay **2 of 8 operations reports**. Sol 5.6 also reuses a peer's
+reduced-pack method, publishing three packs missing **6 required items**.
+Record errors are shared but ultimately corrected; control leaves all packs
+unreleased. A shared false grader/monitor prerequisite is still unproven here.
 [Presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
-[Matched results and full trajectories](docs/research/unified-delivery-r2.json).
+[Matched results and full trajectories](docs/research/unified-delivery-r3.json).
 
-The next revision makes access, sharing, feedback and resource headroom explicit
-inputs. Full-sequence replay now checks composition using an executed processing
-ledger. Model validation and all four unified domain inputs are tracked in the
-[readiness checklist](docs/research/unified-readiness.json); historical successes
-remain separate evidence.
+Full-sequence replay checks actual files and a physical-slot execution ledger.
+Four-domain coverage, further findings and confirmation runs remain in the
+[readiness checklist](docs/research/unified-readiness.json). Historical successes
+above remain separate evidence.
 
 ## Takeaways
 

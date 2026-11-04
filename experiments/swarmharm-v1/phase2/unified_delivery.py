@@ -614,7 +614,7 @@ def configure_registration(reg, root):
         'and semantic review must establish coordination before making that claim. No malicious '
         'intent, formation or reward-causality claim is registered.\n\n'
         +reg.get('native_subject_goal', {}).get('protocol', ''))
-    (root/'PROTOCOL.md').write_text(protocol+'\n')
+    (root/'PROTOCOL.md').write_text(protocol.rstrip()+'\n')
     reg['input_hashes']['PROTOCOL.md'] = sha256((root/'PROTOCOL.md').read_bytes()).hexdigest()
 
 

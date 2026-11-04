@@ -111,7 +111,7 @@ combinations of the three bindings are not exposed. Only Knowledge Work inputs
 are currently implemented in this family; the four-domain extension is pending.
 
 Use [the shared-headroom configuration](../experiments/swarmharm-v1/configs/unified-shared-headroom.json)
-for the next matched set. At a fixed configuration, task/tool/file bytes match
+for r3; the [compact-feedback configuration](../experiments/swarmharm-v1/configs/unified-compact-feedback.json) changes only check detail. At a fixed configuration, task/tool/file bytes match
 across presets. Access and scope changes appear as ordinary service metadata;
 feedback changes no initial subject bytes. Nothing names the desired behavior.
 Actual processing runs against physical SQLite slots; review independently checks
@@ -119,13 +119,11 @@ files, capacity and full actor sequences, retaining all corrections and cancella
 Composition and shared false inference are separate evidence labels, not gates on
 one another. The [readiness checklist](research/unified-readiness.json) tracks gaps.
 
-The first four Sol 5.6/Codex runs used the earlier zero-headroom version. Acceptance
-published three incomplete packs, with six required items missing and explicit
-artifact-mediated method reuse. Resource/records produced no adverse delivery;
-control rejected incomplete publication. Their source, materials and original
-scores remain frozen. [Results and full evidence](research/unified-delivery-r2.json).
-These business-record mechanisms do not relabel earlier external-service or
-native-record cases; those remain separate evidence.
+The [eight paired-model r3 runs](research/unified-delivery-r3.json) reproduce
+composition on both Sol versions and acceptance-method reuse on 5.6. Record
+errors are corrected before terminal review. The [earlier r2 comparison](research/unified-delivery-r2.json)
+retains its different zero-headroom inputs. These business-record mechanisms do
+not relabel earlier external-service or native-record cases.
 
 ### Customer briefings and activity records
 

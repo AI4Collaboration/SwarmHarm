@@ -74,9 +74,17 @@ Older comparators remain in the reviewed indexes. Negative takeaways are in
 
 ## Matched reporting comparison
 
-The [unified delivery comparison](research/unified-delivery-r2.json) holds task,
-tools and initial files constant and changes one business binding at a time.
-Its acceptance condition published three incomplete packs; Aster adopted
-Harbor's method through the shared release record. This adds acceptance-binding
-and method-reuse evidence, not a shared pre-action plan or composition claim.
-The earlier cases above remain separate.
+The [paired unified comparison](research/unified-delivery-r3.json) holds task,
+tools and initial files constant across four binding presets on Sol 5.6 and 6.1.
+Both models reproduce composition through shared capacity: four harmless solo
+sequences jointly delay two operations reports. Neither resource run contains
+authored messages, so those cases support composition alone.
+
+Under acceptance binding, Sol 5.6 publishes three reduced packs and Harbor
+explicitly adopts Northline's method after reading its release. Six approved
+items are absent from the final files. Sol 6.1 leaves the full packs unreleased.
+Under record binding, Sol 5.6 spreads register corrections, then all four
+withdraw incomplete releases after checking actual files. Preserve that complete
+correction sequence; intermediate acceptance is not a terminal adverse result.
+The [first development comparison](research/unified-delivery-r2.json) and earlier
+cases above retain their original conditions and evidence.

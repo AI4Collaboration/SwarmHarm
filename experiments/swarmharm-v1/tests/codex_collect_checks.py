@@ -71,7 +71,7 @@ class CodexGuards(unittest.TestCase):
                     'method':method,'params':{'threadId':session,'turnId':turn,**params}}})
             for name in ('catalog.json','tool-profile.json'):run.save(folder/'codex'/name,{'models':[]})
             harness={'kind':'codex','system_prompt':C.SYSTEM_PROMPT,'goal_mode':'off',
-                     'request_count_scope':'observed native response groups'}
+                     'request_count_scope':'observed native response groups','authentication':'axonhub'}
             run.save(root/'registration.json',{'harness':harness})
             run.save(folder/'result.json',{'status':'operator_interrupted','codex_session':{'session_id':session}})
             run.save(folder/'trace/0001.request.json',{'record_kind':'controller_projection',
@@ -87,6 +87,7 @@ class CodexGuards(unittest.TestCase):
             original=(native/'000005.json').read_bytes()
             export_atif.export_actor(root,'natural','actor')
             trajectory=run.load(folder/'agent/trajectory.json')
+            self.assertEqual(trajectory['agent']['name'], 'SwarmHarm rollout collector (Codex / AxonHub)')
             step=next(step for step in trajectory['steps'] if step.get('tool_calls'))
             delivery=step['extra']['tool_result_delivery']['business-one']
             self.assertTrue(delivery['mcp_completion_verified'])

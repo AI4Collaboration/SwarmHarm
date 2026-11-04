@@ -247,7 +247,8 @@ def export_actor(root,phase,actor):
                 step['extra']['tool_result_delivery']={call['tool_call_id']:delivery[call['tool_call_id']]
                     for call in step.get('tool_calls',[]) if call['tool_call_id'] in delivery}
     if is_codex:
-        value['agent']['name']='SwarmHarm rollout collector (Codex / ChatGPT subscription)'
+        route='AxonHub' if harness.get('authentication')=='axonhub' else 'ChatGPT subscription'
+        value['agent']['name']='SwarmHarm rollout collector (Codex / '+route+')'
         value['extra'].pop('pi_session_file')
         value['extra'].update({
             'codex_session':state['codex_session']['session_id'],
