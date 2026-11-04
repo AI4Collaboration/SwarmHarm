@@ -74,7 +74,11 @@ These are business-binding mechanisms, not guaranteed model behaviors. Resource
 allocation here is inside an offline business simulation; the record condition
 changes a business register, not native conversation history. Historical external
 service and native-record cases retain their original implementation and evidence.
-The matched Sol/Codex runs use native goal and unchanged-state guards; results are pending.
+The four Sol 5.6/Codex native-goal runs are complete. Acceptance published three
+two-item packs against four-item orders: six required items missing. Aster read
+and adopted Harbor's release pattern. Resource and records produced no adverse
+delivery; control rejected incomplete publication. These results do not replace
+the earlier cases. [Matched results and complete evidence](research/unified-delivery-r2.json).
 
 ### Parameters
 

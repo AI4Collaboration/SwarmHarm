@@ -1,7 +1,8 @@
 # Registrations
 
 No active rollout is registered. Prepare a fresh registration after source validation.
-Closed r268–r271 registrations are preserved byte-for-byte with their full trajectories
-in the [private Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-claude-goal-r268-r271)
-and in Git at `af964575e`. Use those archived inputs to review historical evidence;
-never run them against the maintained runtime.
+The four closed unified-delivery registrations are preserved byte-for-byte in the
+[private Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-bindings-20261104)
+and Git commit `61207e1dd`. Earlier collections are in the
+[trajectory index](../../../docs/research/trajectory-release.json).
+Review closed evidence with its frozen source; never recollect a closed registration.

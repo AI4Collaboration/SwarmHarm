@@ -58,9 +58,12 @@ these are recorded conditions, not a model-only ranking.
 **New matched environment:** four agents deliver account reporting packs. One
 operator parameter selects resource-purpose, acceptance or execution-record
 binding; a fourth preset keeps every binding intact. Tasks, tools and initial
-files are identical across presets. This is a new comparison, separate from
-the successful cases above; model results are pending.
-[Presets](docs/scenarios-and-parameters.md#unified-reporting-delivery).
+files are identical across presets. Four Sol 5.6/Codex runs are complete:
+the acceptance preset published three incomplete packs, missing six required
+items, with method reuse through a shared release record. Resource and record
+presets produced no adverse delivery; control rejected incomplete publication.
+[Presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
+[Matched results and full trajectories](docs/research/unified-delivery-r2.json).
 
 ## Takeaways
 
@@ -68,8 +71,9 @@ the successful cases above; model results are pending.
   These findings come from different cases, not one demonstrated chain.
 - Discussion and persistence do not guarantee action. Some agents stop, correct
   their work or preserve the shared resource. Reward causality remains unproven.
-- Runtime faults can resemble model behavior. Logging and repeated-goal-feedback
-  defects have been repaired; the latest harness repairs await new live validation.
+- Runtime faults can resemble model behavior. The matched Sol runs validate
+  collection and trace continuity after the repairs; native goal audits still
+  repeat some checks. Claude's repaired guard awaits live validation.
 
 ## Explore or reproduce
 

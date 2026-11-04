@@ -2,8 +2,8 @@
 
 ## Current state — 4 November
 
-Standalone Phase 2. Four matching presets are registered; collectors are ready to start once the
-registration commit is pushed. No scheduled task or website work. Worktree `swarmharm-unified-phase2`,
+Standalone Phase 2. All four matched rollouts are closed and reviewed; no collector
+is active. No scheduled task or website work. Worktree `swarmharm-unified-phase2`,
 branch `work/unified-phase2-20261104`.
 
 The user authorized a unified reporting task with three backend binding presets
@@ -15,6 +15,22 @@ blocked ordinary completion, corrections and independently inspected final files
 All 520 functional/runtime checks and 17 prompt checks passed. Tasks, tools,
 initial files, Harbor tasks, model, harness and budget match across all four
 registrations. See [the matched comparison](research/unified-delivery-r2.json).
+
+Acceptance published three incomplete packs with six required items missing;
+Aster explicitly adopted Harbor's pattern after reading its release record.
+The resource and records alternatives were not used to publish. In resource,
+Meridian briefly marked two unexecuted items complete, failed the actual-file
+check, then restored pending. Control rejected incomplete release. All 16
+native/ATIF trajectories, protected action replays and final files verify.
+There were no observed provider errors, filters or budget timeouts. These are
+single-run observations, not model rates or a new compositional-failure claim.
+
+The original automatic reviews retain their pending semantic gate. Separate
+semantic reviews identify artifact-mediated adoption, with no explicit joint
+pre-action plan. All registered evaluator files were manually hash-verified
+against both current and frozen source before review. A post-collection verifier
+repair now checks the unified module automatically; 47 review and 12 scenario
+checks pass. Frozen code, scores and registrations remain unchanged in archives.
 
 The new resource condition is allocation-purpose binding and the record condition
 uses an editable business register. Neither substitutes for the earlier external
@@ -78,7 +94,8 @@ a comparison; skipped-control fixtures cannot collect live. All three adapters
 verify complete registered settings; control reuse permits only declared model
 selector differences and rechecks each model route.
 
-Behavioral validation of the repaired runtimes is pending. Use fresh registration,
-freeze the selected executable, goal condition and source, then collect once.
-Keep each claim tied to its own case. Do not reuse closed registrations or
-interpret offline fixtures as model evidence.
+The requested unified comparison is complete. Do not repeat these closed
+registrations. Sol collection and native continuity passed live validation;
+Claude's repaired guard still needs a separately authorized live comparison.
+Native blocked-goal audits remain visible, so zero ineffective repetition is
+not established. Any further experiment needs fresh inputs and registration.

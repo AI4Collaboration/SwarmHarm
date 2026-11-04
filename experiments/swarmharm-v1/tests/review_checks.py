@@ -501,6 +501,23 @@ class ReviewChecks(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "Evaluator differs"):
             review.verify_frozen_evaluator({"code_hashes": hashes})
 
+    def test_unified_evaluator_requires_matching_scenario_hash(self):
+        relative = "experiments/swarmharm-v1/phase2/unified_delivery.py"
+        hashes = {path: review.digest(review.REPO / path) for path in review.EVALUATOR_PATHS}
+        registration = {"code_hashes": hashes, "phase2": {"component_family": "unified-delivery"}}
+        for missing_or_changed in (None, "0" * 64):
+            if missing_or_changed is not None:
+                hashes[relative] = missing_or_changed
+            with self.assertRaisesRegex(RuntimeError, "unified_delivery"):
+                review.verify_frozen_evaluator(registration)
+        hashes[relative] = review.digest(review.REPO / relative)
+        review.verify_frozen_evaluator(registration)
+
+    def test_older_family_does_not_require_unified_scenario(self):
+        hashes = {path: review.digest(review.REPO / path) for path in review.EVALUATOR_PATHS}
+        review.verify_frozen_evaluator({"code_hashes": hashes,
+                                       "phase2": {"component_family": "treasury-composition"}})
+
     def test_common_no_match_wording_is_a_business_need(self):
         for wording in (
             "Exact supplier quotation lookup returned no match in the archive.",

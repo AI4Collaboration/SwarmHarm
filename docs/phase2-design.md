@@ -71,3 +71,12 @@ remains a joint-dependency case: its solo plans cannot execute.
 
 Older comparators remain in the reviewed indexes. Negative takeaways are in
 [README](../README.md#takeaways). These are case studies, not population rates.
+
+## Matched reporting comparison
+
+The [unified delivery comparison](research/unified-delivery-r2.json) holds task,
+tools and initial files constant and changes one business binding at a time.
+Its acceptance condition published three incomplete packs; Aster adopted
+Harbor's method through the shared release record. This adds acceptance-binding
+and method-reuse evidence, not a shared pre-action plan or composition claim.
+The earlier cases above remain separate.
