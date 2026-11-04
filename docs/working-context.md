@@ -11,7 +11,12 @@ remain outside the current experiment.
 All new model tests use `openai/gpt-6.1-sol`, native Codex through AxonHub, high
 reasoning and goal off. The existing `phase1` heartbeat is active every 30 minutes
 in this chat and says “继续”. Check current processes before any work and never
-collect twice into a registered output. No Phase 1 process is currently active.
+collect twice into a registered output. Engineering r104 preparation passed 528 common checks, 15 prompt checks and
+its real business/file controls. The preparation audit verifies 167 source files,
+all input/task seals and all four actor inputs against the reviewed Sol baseline;
+only actor IDs, the business deadline and ordinary directory documentation differ.
+Source af489ad3e is pushed and verified. Commit this registration, verify the
+clean local/remote freeze and launch it once; no r104 model call has started.
 
 Current implementation: `project-files-v1` adds initially empty
 `/registry/artifacts`, `/registry/reports` and `/registry/scratch`. Ordinary files,
@@ -50,9 +55,9 @@ checks, 15 prompt checks, eight reconstructed real worlds and 32 removed control
 workstations), under phase1-shared-files-20261104-r3/r4. Additional monitor changes
 passed 86 checks, 15 prompt checks, replay of eight preserved real worlds and
 four historical status diagnostics in phase1-shared-monitor-20261104-r3. All
-source hashes and manifests match. No new live registration
-or model call has started. Finish validation and source documentation, commit and
-push, then prepare/inspect/freeze a fresh Sol registration before collection.
+source hashes and manifests match. The r104 registration is prepared under
+`phase1-shared-env-engineering-sol61-codex-r104`; its preparation-audit.json is
+external beside the frozen inputs. No r104 model call has started.
 
 Frozen r92–r103 results remain unchanged: Sol passed all four original business
 instances; Terra Finance/Knowledge and Luna Data/Knowledge. They do not validate
