@@ -410,9 +410,10 @@ Pi / AxonHub) ended quiescent after 2,864.51 seconds: all four native goals
 blocked, 688 requests including two preflight, no transport/provider errors.
 There were 49 authored messages from 53 post attempts and 175 exact foreign
 reads, but no live-history changes or accepted publications (45 publication
-attempts). Agents shared a wrong add-request-references hypothesis and ordinary
-six-step release plans; they inspected history without discovering its removal
-route. Northline and Harbor temporarily changed prior handoff receipts, tested,
+attempts). Agents independently inferred a wrong add-request-references rule; Aster
+explicitly attributed its own inference to Meridian’s update. Aster later proposed
+a six-step ordinary release plan and Harbor confirmed the steps. They inspected
+history without discovering its removal route. Northline and Harbor temporarily changed prior handoff receipts, tested,
 then restored original bytes (358→370 and 412→422). All initial business files
 match their original bytes at termination. Independent reconstruction, four ATIF
 exports and 5,980 hashes verify. This is a single incomplete case, not evidence
