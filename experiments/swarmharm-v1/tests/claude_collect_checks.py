@@ -133,6 +133,7 @@ class SubscriptionChecks(unittest.TestCase):
 
 class ScriptedMessages(BaseHTTPRequestHandler):
     large_output = False
+    goal_verdicts = None
     """Local Anthropic protocol fixture. No requests leave localhost."""
     requests = []
 
@@ -151,7 +152,13 @@ class ScriptedMessages(BaseHTTPRequestHandler):
                       and any(block.get('name') == target for block in message['content'])
                       for message in body['messages'])
         system='\n'.join(block.get('text','') for block in body.get('system',[]))
-        if 'naming a coding session' in system:
+        if 'evaluating a stop-condition hook' in system and type(self).goal_verdicts is not None:
+            verdict = type(self).goal_verdicts.pop(0)
+            block={'type':'text','text':json.dumps(verdict)}
+            initial={'type':'text','text':''}
+            delta={'type':'text_delta','text':block['text']}
+            reason='end_turn'
+        elif 'naming a coding session' in system:
             block={'type':'text','text':'{"title":"Service status"}'}
             initial={'type':'text','text':''}
             delta={'type':'text_delta','text':block['text']}
@@ -232,6 +239,7 @@ class ClaudeCollectChecks(unittest.TestCase):
                 self.assertTrue(any(command['name']=='goal' for command in ready['commands']))
                 agent.prompt('/goal The service status is confirmed.')
                 _,event=events.get(timeout=30)
+                while event['type']=='native_goal_state':_,event=events.get(timeout=30)
                 self.assertEqual(event['type'],'request',event)
                 self.assertEqual(event['payload']['reasoning']['effort'],'medium')
                 self.assertEqual(event['payload']['system_prompt_config'],CLAUDE.SYSTEM_PROMPT)
@@ -248,6 +256,56 @@ class ClaudeCollectChecks(unittest.TestCase):
                 self.assertNotIn('You help the user complete their work by reading files',prompt)
                 self.assertNotIn('operator-bookkeeping-only',json.dumps(subject_requests))
             finally:agent.close()
+
+    def test_gateway_native_goal_continues_then_settles_without_controller_nudges(self):
+        ScriptedMessages.requests=[]
+        ScriptedMessages.goal_verdicts=[
+            {'ok':False,'reason':'Report the observed service status.'},
+            {'ok':True,'reason':'Service result confirmed.'}]
+        self.addCleanup(setattr,ScriptedMessages,'goal_verdicts',None)
+        server=ThreadingHTTPServer(('127.0.0.1',0),ScriptedMessages)
+        threading.Thread(target=server.serve_forever,daemon=True).start()
+        self.addCleanup(server.server_close);self.addCleanup(server.shutdown)
+        with tempfile.TemporaryDirectory() as temporary:
+            folder=Path(temporary)/'goal'
+            fixture=Path(temporary)/'gateway-goal.mjs'
+            fixture.write_text(
+                f'import * as sdk from {json.dumps((CLAUDE.CLAUDE_DIR / "node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs").as_uri())};\n'
+                f'import {{serve}} from {json.dumps((CLAUDE.CLAUDE_DIR / "agent.mjs").as_uri())};\n'
+                f'serve({{...sdk, query: args => sdk.query({{...args, options: {{...args.options, env: {{...args.options.env, '
+                f'ANTHROPIC_API_KEY: "offline", ANTHROPIC_BASE_URL: "http://127.0.0.1:{server.server_port}"}}}}}})}});')
+            env={k:os.environ[k] for k in ('PATH','HOME','USER','TMPDIR') if k in os.environ}
+            env.update(CLAUDE.RUNTIME_ENV)
+            model='anthropic/claude-opus-5.5'
+            env['ANTHROPIC_DEFAULT_HAIKU_MODEL']=model
+            tool={'name':'confirm_service','description':'Read the service status.',
+                  'parameters':{'type':'object','properties':{},'required':[],'additionalProperties':False}}
+            events=CLAUDE.new_queue();seen=[]
+            with patch.object(CLAUDE,'AGENT',fixture),patch.object(CLAUDE,'gateway_env',return_value=env):
+                agent=CLAUDE.ClaudeAgent('goal',events,folder=folder,model=model,thinking_level='medium',
+                    max_output_tokens=1024,request_timeout_ms=10000,tools=[tool],active_tools=['confirm_service'],
+                    goal_mode='claude_goal',api_base=CLAUDE.AXONHUB_BASE,api_key='offline')
+            try:
+                CLAUDE.wait_ready(events,['goal'])
+                agent.prompt("Complete the user's task.",'/goal The service status is confirmed.')
+                while True:
+                    _,event=events.get(timeout=30);seen.append(event)
+                    self.assertNotEqual(event['type'],'fatal',event)
+                    if event['type']=='tool_call':agent.reply(event['id'],output='{"status":"confirmed"}')
+                    if event['type']=='settled':
+                        self.assertIsNone(event['error_message']);break
+            finally:agent.close()
+            requests=[e for e in seen if e['type']=='request']
+            self.assertEqual(len(requests),3)
+            self.assertIn('Stop hook feedback',json.dumps(requests[-1]['payload']['input']))
+            goals=[e['native_goal']['value'] for e in seen if e['type']=='native_goal_state']
+            self.assertTrue(goals[-1]['met']);self.assertEqual(goals[-1]['iterations'],2)
+            native=[run.load(p) for p in (folder/'native').glob('*.json')]
+            self.assertEqual(sum(e['type']=='controller_input' for e in native),1)
+            self.assertEqual(len(ScriptedMessages.goal_verdicts),0)
+            self.assertTrue(all(r['model']==model for r in ScriptedMessages.requests))
+            self.assertEqual(sum('evaluating a stop-condition hook' in json.dumps(r.get('system'))
+                                 for r in ScriptedMessages.requests),2)
 
     def test_bridge_rejects_unregistered_execution_and_provider_changes(self):
         result = subprocess.run([CLAUDE.node_binary(), '--test', str(CLAUDE.CLAUDE_DIR / 'checks.mjs')],

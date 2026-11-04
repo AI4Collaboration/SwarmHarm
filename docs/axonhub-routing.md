@@ -79,3 +79,12 @@ Codex freezes `tool_output_token_limit=262144` so its history can retain both
 workstation's own output bound is unchanged. Exact delivery is tested through
 the real CLI, including goal continuation and ATIF. See the official
 [configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
+
+Claude `claude_goal` sends the unchanged task and declared context in one native
+`/goal` command. Both worker and evaluator use the registered AxonHub model.
+A live tool-and-goal preflight must record a native met verdict before subjects
+start. Native goal feedback and terminal attachments are preserved; evaluator
+errors hold the attempt. Time-based check-ins are disabled and the controller
+adds no unchanged-state prompts. Native no-progress/impossible stopping remains
+part of Claude Code, and does not count as business completion. See the official
+[/goal documentation](https://code.claude.com/docs/en/goal).

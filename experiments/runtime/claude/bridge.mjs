@@ -104,7 +104,16 @@ export class ClaudeBridge {
           ? { behavior: "allow", updatedInput: args }
           : { behavior: "deny", message: "Tool unavailable." },
         sessionStore: {
-          append: async (key, entries) => this.recordStore.append(key, entries),
+          append: async (key, entries) => {
+            this.recordStore.append(key, entries);
+            for (const entry of entries) {
+              if (entry.attachment?.type !== "goal_status") continue;
+              const source = this.native({ type: "native_goal_attachment", entry: copy(entry) });
+              this.channel.emit({ type: "native_goal_state", turn: this.turn,
+                native_goal: { source: "claude-session-goal-status", native_record: source,
+                  value: copy(entry.attachment) } });
+            }
+          },
           load: async () => null,
         },
         sessionStoreFlush: "eager",
@@ -164,7 +173,18 @@ export class ClaudeBridge {
     // One controller delegation must reach one model context atomically. Two
     // writes race with the CLI consuming the first before the task arrives.
     // Native /goal commands retain their separate command semantics.
-    const groups = this.config.input_delivery === "atomic-sdk-replay-v1" && texts.length ? [texts.join("\n\n")] : texts;
+    let groups = texts;
+    if (this.config.input_delivery === "atomic-sdk-goal-v1" && texts.length) {
+      const goalIndex = texts.findIndex((text) => text.startsWith("/goal "));
+      if (goalIndex !== -1) {
+        if (goalIndex !== texts.length - 1) throw new Error("Goal must follow its declared context");
+        const condition = [...texts.slice(0, -1), texts.at(-1).slice(6)].join("\n\n");
+        if (condition.length > 4000) throw new Error("Native goal exceeds Claude's condition limit");
+        groups = ["/goal " + condition];
+      } else groups = [texts.join("\n\n")];
+    } else if (this.config.input_delivery === "atomic-sdk-replay-v1" && texts.length) {
+      groups = [texts.join("\n\n")];
+    }
     for (const text of groups) {
       const message = { type: "user", session_id: this.sessionId, uuid: randomUUID(),
         parent_tool_use_id: null, message: { role: "user", content: text } };
@@ -177,7 +197,7 @@ export class ClaudeBridge {
   start(message, source) {
     if (this.current) throw new Error("Overlapping Claude model messages");
     if (!(this.config.accepted_native_model_ids ?? [this.config.model]).includes(message.model)) throw new Error(`Claude returned model ${message.model}; expected ${this.config.model}`);
-    if (this.config.input_delivery !== "atomic-sdk-replay-v1") {
+    if (!this.config.input_delivery?.startsWith("atomic-sdk-")) {
       this.history.push(...this.pendingInputs.splice(0).map(({ role, content }) => ({ role, content })));
     } else if (this.turn === 0 && this.pendingInputs.length && !this.deliveredInputs.length) {
       throw new Error("Initial Claude input has no SDK delivery before inference");
@@ -189,7 +209,7 @@ export class ClaudeBridge {
       input: copy(this.history), reasoning: { effort: this.config.effort },
       tools: this.config.tools.filter((tool) => this.active.has(tool.name)),
       sdk_message_id: message.id, native_record: source,
-      ...(this.config.input_delivery === "atomic-sdk-replay-v1" ? { input_delivery: "atomic-sdk-replay-v1",
+      ...(this.config.input_delivery?.startsWith("atomic-sdk-") ? { input_delivery: this.config.input_delivery,
         delivered_input_records: copy(this.deliveredInputs) } : {}),
     } });
   }
@@ -316,7 +336,17 @@ export class ClaudeBridge {
         }
         else if (event.type === "message_stop") this.finish(source);
       } else if (message.type === "assistant") {
-        if (message.local_command_run) continue;
+        if (message.local_command_run) {
+          const command = message.local_command_run;
+          if (this.config.input_delivery === "atomic-sdk-goal-v1" && command.command === "goal") {
+            const index = this.pendingInputs.findIndex((input) => input.content === "/goal " + command.args);
+            if (index === -1) throw new Error("Native goal acknowledgement differs from delegation");
+            const input = this.pendingInputs.splice(index, 1)[0];
+            this.history.push({ role: input.role, content: input.content });
+            this.deliveredInputs.push({ uuid: input.uuid, native_record: source, delivery: "native_goal_acknowledgement" });
+          }
+          continue;
+        }
         if (message.error || message.is_api_error_message) {
           const detail = (message.message?.content ?? []).filter((part) => part.type === "text")
             .map((part) => part.text).join("\n");
@@ -326,9 +356,9 @@ export class ClaudeBridge {
         if (!this.current || this.current.id !== message.message.id) throw new Error("Claude content has no matching stream start");
         this.current.blocks.push(...message.message.content);
       } else if (message.type === "user") {
-        if (this.config.input_delivery === "atomic-sdk-replay-v1") {
+        if (this.config.input_delivery?.startsWith("atomic-sdk-")) {
           const index = this.pendingInputs.findIndex((input) => input.uuid === message.uuid);
-          if (index !== -1) {
+          if (index !== -1 && !(this.config.input_delivery === "atomic-sdk-goal-v1" && this.pendingInputs[index].content.startsWith("/goal "))) {
             const input = this.pendingInputs[index];
             if (canonical(message.message) !== canonical({ role: input.role, content: input.content }))
               throw new Error("Claude SDK input replay differs from controller delegation");
@@ -337,11 +367,22 @@ export class ClaudeBridge {
             this.deliveredInputs.push({ uuid: input.uuid, native_record: source });
           }
         }
+        if (this.config.goal_mode === "claude_goal" && message.isSynthetic === true
+            && Array.isArray(message.message?.content)
+            && message.message.content.every((part) => part.type === "text")) {
+          this.history.push({ role: "user", content: message.message.content.map((part) => part.text).join("\n") });
+          this.deliveredInputs.push({ uuid: message.uuid, native_record: source, delivery: "native_hook_feedback" });
+        }
         this.rejectedResults(message, source);
+      } else if (message.type === "active_goal") {
+        this.channel.emit({ type: "native_goal_state", turn: this.turn,
+          native_goal: { source: "claude-native-goal", native_record: source, value: copy(message.value) } });
       } else if (message.type === "result") {
         this.channel.emit({ type: "settled", turn: this.turn, aborted: false,
           text: message.result ?? "", error_message: message.is_error || message.subtype !== "success"
             ? `Claude result: ${message.subtype}` : null });
+      } else if (message.type === "system" && message.subtype === "notification" && message.key === "stop-hook-error" && this.config.goal_mode === "claude_goal") {
+        throw new ProviderHold("Claude native goal evaluator failed; native=" + source);
       } else if (message.type === "system" && ["compact_boundary", "mirror_error", "model_refusal_fallback", "model_refusal_no_fallback"].includes(message.subtype)) {
         throw new ProviderHold(`Claude context or provider hold: ${message.subtype}`);
       } else if (message.type === "rate_limit_event" && message.rate_limit_info?.status === "rejected") {

@@ -238,7 +238,7 @@ def export_actor(root,phase,actor):
             'goal_mode':harness['goal_mode'],
             'goal_evaluator':harness.get('goal_evaluator'),
             'goal_native_records':[str(path.relative_to(folder)) for path in sorted((folder/'claude/native').glob('*.json'))
-                if (read(path).get('type')=='active_goal' or read(path).get('local_command_run',{}).get('command')=='goal')],
+                if (read(path).get('type') in ('active_goal','native_goal_attachment') or read(path).get('local_command_run',{}).get('command')=='goal')],
             'conversion':'SDK-native messages and any mirrored session transcript are retained and hashed. Request/response JSON files are controller projections checked against native SDK message IDs, text and tool calls. Continuity checks establish SDK session identity and controller history, not complete model-visible provider context. SDK-internal prompts and transport retries are not observable.',
         })
         for step in value['steps']:

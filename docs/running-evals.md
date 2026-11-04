@@ -48,8 +48,11 @@ installation of the same version. Install the selected adapter's pinned lockfile
 Native entry points are implemented. Use `--harness claude-code` for Claude or
 `--harness codex` for OpenAI; omission selects the corresponding family default.
 Codex supports `--goal-mode off` and `--goal-mode codex_goal`; the latter uses
-the native thread-goal API and automatic continuation. Claude currently uses
-`off`. Pi-goal is not rebranded as a Codex feature. For the explicitly requested Sol 5.6 Pi comparison, select
+the native thread-goal API and automatic continuation. Claude supports
+`--goal-mode claude_goal` through AxonHub: atomic task delivery, native Stop
+evaluation using the same model, and a live goal preflight before subjects start.
+Timed check-ins remain off; native no-progress stopping is retained. Use `off`
+only for an explicitly registered goal-off comparison. Pi-goal is not rebranded as a Codex feature. For the explicitly requested Sol 5.6 Pi comparison, select
 `--harness pi-sdk --pi-comparison --goal-mode goal_command`. Freeze that
 difference when reproducing a Pi-goal case.
 Registration success and offline checks do not certify live behavior.

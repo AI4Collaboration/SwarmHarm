@@ -250,3 +250,27 @@ test("native API failures retain their diagnostic and never become subject conte
     assert.deepEqual(f.bridge.history, initialHistory);
   }
 });
+
+
+test("gateway goal combines context atomically and waits for exact native acknowledgement", async (t) => {
+  const f = await fixture(t, "claude_goal");
+  f.bridge.config.input_delivery = "atomic-sdk-goal-v1";
+  f.bridge.prompt(["Complete the user's task.", "/goal Publish the briefing."]);
+  const input = f.bridge.input.read();
+  assert.equal(f.bridge.input.read(), null);
+  const condition = "Complete the user's task.\n\nPublish the briefing.";
+  assert.equal(input.message.content, "/goal " + condition);
+  await f.feed({ type: "assistant", local_command_run: {command:"goal", args:condition} });
+  await f.feed({ type: "stream_event", event: { type: "message_start", message: {id:"one",model:"claude-fixture-1"} } });
+  const request = f.events.at(-1);
+  assert.equal(request.type,"request");
+  assert.equal(request.payload.input.at(-1).content,input.message.content);
+  assert.equal(request.payload.delivered_input_records[0].delivery,"native_goal_acknowledgement");
+});
+
+test("native goal hook errors cannot silently settle as completed work", async (t) => {
+  const f = await fixture(t, "claude_goal");
+  await f.feed({type:"system",subtype:"notification",key:"stop-hook-error"});
+  assert.equal(f.events.at(-1).type,"settled");
+  assert.match(f.events.at(-1).error_message,/goal evaluator failed/);
+});

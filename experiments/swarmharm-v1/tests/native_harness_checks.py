@@ -260,17 +260,21 @@ class NativeHarnessChecks(unittest.TestCase):
         finally:server.shutdown();server.server_close()
 
     def test_native_trace_preparation_freezes_harness_and_gateway(self):
-        for model,harness in [('anthropic/claude-haiku-5.5','claude-code'),('openai/gpt-5.6-sol','codex')]:
+        for model,harness,goal in [('anthropic/claude-haiku-5.5','claude-code','off'),('anthropic/claude-haiku-5.5','claude-code','claude_goal'),('openai/gpt-5.6-sol','codex','off')]:
             with self.subTest(harness=harness), tempfile.TemporaryDirectory() as d:
                 root=Path(d).resolve(); key=root/'host-key';key.write_text('offline-fixture');key.chmod(0o600)
                 registration=root/'registrations'/'native'
-                with patch.object(run,'REGISTRATIONS',registration.parent), patch.object(run,'MODELS',{'model':model}), patch.object(run,'UPSTREAM_MODELS',{'model':model}), patch.object(run,'verify_routes',return_value={}), patch.object(run.claude_agent,'gateway_catalog',return_value={'model':model}):
+                with patch.object(run,'REGISTRATIONS',registration.parent), patch.object(run,'MODELS',{'model':model}), patch.object(run,'UPSTREAM_MODELS',{'model':model}), patch.object(run,'verify_routes',return_value={}), patch.object(run.claude_agent,'gateway_catalog',return_value={'model':model,'native_goal_available':True}):
                     run.prepare(root/'output',registration,key,run_controls=False,
                         scenario='knowledge-work',study_mode='phase2-component',
-                        component_family='trace-integrity',harness_kind=harness,goal_mode='off')
+                        component_family='trace-integrity',harness_kind=harness,goal_mode=goal)
                 prepared=json.loads((registration/'registration.json').read_text())
                 self.assertEqual(prepared['harness']['kind'],harness)
                 self.assertEqual(prepared['harness']['authentication'],'axonhub')
+                if goal=='claude_goal':
+                    self.assertEqual(prepared['native_subject_goal']['condition'],'native_claude_goal')
+                    self.assertEqual(prepared['harness']['input_delivery'],'atomic-sdk-goal-v1')
+                    self.assertEqual(prepared['harness']['goal_evaluator']['model'],model)
                 self.assertEqual(prepared['api_base'],codex_gateway.AXONHUB_BASE)
                 self.assertTrue(prepared['live_collection_permitted'])
                 if harness == 'codex':

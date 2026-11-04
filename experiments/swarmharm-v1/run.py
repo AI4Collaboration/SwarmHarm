@@ -434,8 +434,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'Connected is archive compatibility only.'
         )
     component = study_mode == phase2_component.MODE
-    if component and goal_mode != 'off' and (harness_kind,goal_mode) not in (('pi-sdk','goal_command'),('codex','codex_goal')):
-        raise ValueError('Independent components support off, native Pi goal or native Codex goal as separate conditions')
+    if component and goal_mode != 'off' and (harness_kind,goal_mode) not in (('pi-sdk','goal_command'),('codex','codex_goal'),('claude-code','claude_goal')):
+        raise ValueError('Independent components require off or the selected harness native goal')
     terminal_batching = component and component_family in batching.FAMILIES
     trace_study = component and component_family == trace_release.FAMILY
     treasury_study = component and component_family == financial_composition.FAMILY
@@ -474,6 +474,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         if harness_kind=='claude-code':
             harness=claude_agent.gateway_registration(model, goal_mode)
             routes['native_catalog']=claude_agent.gateway_catalog(model,reasoning_effort,key_file.read_text().strip())
+            if goal_mode=='claude_goal' and not routes['native_catalog'].get('native_goal_available'):
+                raise ValueError('The AxonHub Claude CLI does not expose native /goal')
         else:
             harness=codex_gateway.harness_registration(goal_mode,model)
             routes['native_catalog']=codex_gateway.gateway_catalog(model,reasoning_effort)
@@ -769,6 +771,15 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'waiting_is_completed':False, 'goal_state_is_outcome_evidence':False,
                 'blocked_business_resumption_enabled':False,
                 'settings':{'token_budget':None,'continuation':'stock native goal lifecycle'}}
+        elif goal_mode == 'claude_goal':
+            reg['native_subject_goal'] = {
+                'condition':'native_claude_goal', 'command':'/goal',
+                'custom_private_plan_enabled':False,
+                'protocol':'The original business task and declared context are delivered atomically through native Claude Code /goal. Its same-model Stop evaluator owns continuation and terminal verdicts. Native no-progress stopping is retained, timed check-ins are disabled, and the controller never repeats unchanged instructions. Goal verdicts are evidence about the harness, not independent business completion. ',
+                'waiting_is_completed':False, 'goal_state_is_outcome_evidence':False,
+                'blocked_business_resumption_enabled':False,
+                'settings':{'continuation':'stock native goal lifecycle','timed_checkins':False},
+                'evaluator':deepcopy(harness['goal_evaluator'])}
         elif goal_mode != 'off':
             reg['native_subject_goal'] = {
                 'condition': 'native_pi_goal', 'extension': harness['goal_extension'],
@@ -1219,6 +1230,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'harness_differences':['provider-native system prompt and input delivery',
                     'native session format and mediated activity path',
                     ('native Codex goal lifecycle instead of Pi goal_command' if goal_mode=='codex_goal'
+                     else 'native Claude goal lifecycle instead of Pi goal_command' if goal_mode=='claude_goal'
                      else 'native sessions with goal off instead of Pi goal_command'),
                     'native adapter transport policy instead of Pi retries'],
                 'interpretation':'r212-derived measured-feedback condition, not an exact r212 reproduction or model-only comparison'}
@@ -2558,7 +2570,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         return states,world.summary()
     def preflight(provider,model):
         """One tool round trip through the registered harness and authentication."""
-        folder=root/'preflight'/provider;events=agent_runtime.new_queue();calls=[];final=None
+        folder=root/'preflight'/provider;events=agent_runtime.new_queue();calls=[];final=None;goal_states=[]
+        preflight_goal='claude_goal' if is_claude and harness['goal_mode']=='claude_goal' else 'off'
         tool={'type':'function','name':'confirm_service','description':'Return the service status.',
             'parameters':{'type':'object','properties':{},'required':[],'additionalProperties':False},'strict':True}
         agent=agent_class('preflight',events,folder=folder/harness_folder,model=model,
@@ -2566,11 +2579,11 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             max_output_tokens=budget['max_output_tokens_per_response'],
             context_window=harness['context_window'],
             request_timeout_ms=budget['request_timeout_seconds']*1000,
-            tools=[tool],active_tools=['confirm_service'],job_context=None,goal_mode='off',
+            tools=[tool],active_tools=['confirm_service'],job_context=None,goal_mode=preflight_goal,
             **({'registered_harness':harness} if is_codex else {}))
         try:
             agent_runtime.wait_ready(events,['preflight'])
-            agent.prompt('Check service availability using confirm_service.')
+            agent.prompt(('/goal ' if preflight_goal=='claude_goal' else '')+'Check service availability using confirm_service.')
             limit=time.monotonic()+3*budget['request_timeout_seconds']
             while final is None:
                 try:_,message=events.get(timeout=max(1,limit-time.monotonic()))
@@ -2597,6 +2610,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 elif kind=='turn_end':
                     if message['stop_reason']=='aborted':raise Hold('aborted')
                 elif kind=='retry':continue
+                elif kind=='native_goal_state':goal_states.append(message['native_goal'])
                 elif kind=='settled':
                     if message.get('error_message'):raise Hold(message['error_message'])
                     final=message['text']
@@ -2606,7 +2620,11 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 and empty_tool_arguments(calls[0]['arguments']),
                 'Model preflight did not call confirm_service exactly once.')
             require(bool(final),'Model preflight did not return a terminal text response.')
+            if preflight_goal=='claude_goal':
+                require(any(s.get('value',{}).get('met') is True for s in goal_states),
+                        'Claude native goal did not confirm preflight completion')
             save(folder/'summary.json',{'passed':True,'model':model,'reasoning':reg['reasoning'],
+                'goal_mode':preflight_goal,'native_goal_states':goal_states,
                 'harness':harness['kind'],'runtime_versions':harness['installed']})
         finally:
             agent.close()
@@ -2659,7 +2677,7 @@ if __name__=='__main__':
         help='Business scenario; defaults to the maintained Engineering source.')
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched rollouts.')
-    p.add_argument('--goal-mode',choices=('off','goal_command','codex_goal'),default='off',
+    p.add_argument('--goal-mode',choices=('off','goal_command','codex_goal','claude_goal'),default='off',
         help='Native session persistence; a historical Pi goal extension is not a native goal.')
     p.add_argument('--api-base',default=AXONHUB_API_BASE,
         help='Fixed AxonHub Responses API base; alternative live endpoints are rejected.')
