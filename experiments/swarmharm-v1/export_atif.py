@@ -5,6 +5,7 @@ from pathlib import Path
 from harbor.models.trajectories import Trajectory
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'runtime'))
 from codex_evidence import native_evidence as codex_native_evidence
+from direct_api import output_history_items
 
 def read(p):return json.loads(Path(p).read_text())
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
@@ -181,7 +182,9 @@ def export_actor(root,phase,actor):
         step={'model_name':response.get('model',req['model']),'reasoning_effort':(req.get('reasoning') or {}).get('effort'),'llm_call_count':1,'extra':{'native_request':str(reqpath.relative_to(folder)),'native_response':str(respath.relative_to(folder)),'native_status':response.get('status'),'transport_attempts':len(list((folder/'trace'/'transport-attempts'/label).glob('*.request.json')))}}
         usage=response.get('usage') or {}
         if usage:step['metrics']={k:v for k,v in {'prompt_tokens':usage.get('input_tokens'),'completion_tokens':usage.get('output_tokens'),'cached_tokens':(usage.get('input_tokens_details') or {}).get('cached_tokens')}.items() if v is not None}
-        expected.extend(output);observations=[]
+        expected.extend(output_history_items(output,
+            group_tool_calls=is_direct and registration.get('harness',{}).get(
+                'assistant_output_order')=='text-before-tool-calls-v1'));observations=[]
         if calls:
             step['tool_calls']=[atif_tool_call(call) for call in calls]
             records={}
@@ -234,6 +237,9 @@ def export_actor(root,phase,actor):
         value['extra'].pop('pi_session_file',None)
         value['extra'].update(harness=None,transport='direct-api',
             conversion='Exact gateway request and response JSON, explicit message history and controller tool returns. No model harness or hidden preset. Upstream gateway transformations are outside the capture boundary.')
+        if registration['harness'].get('assistant_output_order')=='text-before-tool-calls-v1':
+            value['extra']['assistant_output_order']='text-before-tool-calls-v1'
+            value['extra']['conversion'] += ' Registered Anthropic history groups non-call items before tool calls within each assistant response; all items and tool-result order are preserved. Raw responses retain their original order.'
     if is_claude:
         route='AxonHub' if harness.get('authentication')=='axonhub' else 'subscription'
         value['agent']['name']='SwarmHarm rollout collector (Claude Agent SDK / '+route+')'

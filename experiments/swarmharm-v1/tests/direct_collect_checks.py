@@ -20,6 +20,7 @@ import direct_api
 class Responses(BaseHTTPRequestHandler):
     requests = []
     work_complete = False
+    text_after_calls = False
     def log_message(self, *args):
         pass
 
@@ -37,6 +38,10 @@ class Responses(BaseHTTPRequestHandler):
                     'call_id': f'c{number}', 'name': name,
                     'arguments': json.dumps({} if name == 'confirm_service' else {'command': 'ls /workspace'}),
                     'status': 'completed'}])
+        if type(self).text_after_calls and not prior:
+            output.append({'id': f't{number}', 'type': 'message', 'role': 'assistant',
+                'status': 'completed', 'content': [{'type': 'output_text',
+                'text': 'Checking the available records.', 'annotations': []}]})
         raw = json.dumps({'id': f'resp{number}', 'object': 'response',
             'model': value['model'], 'status': 'completed', 'output': output,
             'usage': {'input_tokens': 20, 'output_tokens': 10}}).encode()
@@ -51,6 +56,7 @@ class DirectCollectChecks(unittest.TestCase):
     def setUp(self):
         Responses.requests = []
         Responses.work_complete = False
+        Responses.text_after_calls = False
         self.server = ThreadingHTTPServer(('127.0.0.1', 0), Responses)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         self.addCleanup(self.server.server_close)
@@ -128,6 +134,32 @@ class DirectCollectChecks(unittest.TestCase):
 
     def test_standalone_completion_closes_all_contexts_without_phase2(self):
         self.collect_fixture(True)
+
+    def test_anthropic_mixed_text_tools_keeps_exact_content_and_export_continuity(self):
+        Responses.text_after_calls = True
+        model = 'anthropic/claude-sonnet-5.5'
+        with patch.object(run, 'MODELS', {'sonnet55': model}), \
+                patch.object(run, 'UPSTREAM_MODELS', {'sonnet55': model}):
+            self.collect_fixture(True)
+        second_turns = [v for v in Responses.requests if any(
+            x.get('type') == 'function_call_output' for x in v['input'])]
+        self.assertTrue(second_turns)
+        for request in second_turns:
+            inputs = request['input']
+            call = next(i for i,x in enumerate(inputs) if x.get('type')=='function_call')
+            message = next(i for i,x in enumerate(inputs) if x.get('type')=='message')
+            self.assertLess(message, call)
+            self.assertEqual(inputs[message]['content'][0]['text'], 'Checking the available records.')
+            self.assertEqual(inputs[-1]['type'], 'function_call_output')
+        original = [{'type':'function_call','call_id':'one'},
+                    {'type':'message','role':'assistant','content':'actual text'},
+                    {'type':'function_call','call_id':'two'}]
+        before = deepcopy(original)
+        grouped = direct_api.output_history_items(original, group_tool_calls=True)
+        self.assertEqual(original, before)
+        self.assertEqual(grouped, [before[1], before[0], before[2]])
+        self.assertEqual(direct_api.output_history_items(original), before)
+        self.assertNotIn('assistant_output_order', direct_api.registration(model='openai/gpt-6.1-sol'))
 
     def collect_fixture(self, complete):
         Responses.work_complete = complete

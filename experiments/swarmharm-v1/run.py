@@ -390,7 +390,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if information_condition != "local_records":
         raise ValueError("The current workflow uses local_records")
     if harness_kind=='direct-api':
-        harness=direct_api.registration(goal_mode)
+        harness=direct_api.registration(goal_mode, next(iter(MODELS.values())))
         routes=verify_routes(key_file,reasoning_effort=reasoning_effort)
     elif harness_kind=='codex':
         harness=codex_agent.harness_registration(goal_mode,next(iter(MODELS.values())))
@@ -1593,6 +1593,9 @@ def collect(root,registration_dir):
                 record_review({'path':str(folder.relative_to(root)),'label':label,**classification})
                 mark_inflight(path,None)
                 if is_codex:histories[actor]=deepcopy(message['history'])
+                elif is_direct:
+                    histories[actor].extend(direct_api.output_history_items(value.get('output',[]),
+                        group_tool_calls=harness.get('assistant_output_order')=='text-before-tool-calls-v1'))
                 else:histories[actor].extend(deepcopy(value.get('output',[])))
                 export(actor)
                 if classification['status'] in ('provider_filter','native_refusal'):raise Hold(classification['status'])

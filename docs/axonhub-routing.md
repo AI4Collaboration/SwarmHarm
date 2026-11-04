@@ -24,6 +24,18 @@ Responses endpoint: `https://lmportal.iefbr14.xyz/v1/responses`.
 The host reads a scoped key from a `0600` file outside the repository. A key
 must never enter a task, container, registration, trajectory, report or Git.
 
+## Anthropic direct-history compatibility — 4 November 2026
+
+New Anthropic registrations declare `text-before-tool-calls-v1`. Within each
+assistant response, all non-call items precede the unchanged function-call list
+before actual tool results are appended. No prompt, result, call or assistant
+text is dropped. Raw provider responses keep their original order. Controller
+history and ATIF independently preserve the declared projection; registrations
+without the field retain their original replay. OpenAI ordering is unchanged.
+R76 exposed a gateway conversion HTTP400 on calls followed by assistant text;
+one separately sealed diagnostic using the same content with grouped order
+succeeded. This is transport compatibility, not evidence of communication.
+
 ## Claude gateway adapter — implementation under validation
 
 The registered `claude-code` path with a host `--key-file` uses AxonHub's

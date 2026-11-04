@@ -14,10 +14,10 @@ PUBLIC_HEADERS = {'User-Agent': 'swarmharm-direct-api/1.0',
                   'Accept': 'application/json', 'Content-Type': 'application/json'}
 
 
-def registration(goal_mode='off'):
+def registration(goal_mode='off', model=None):
     if goal_mode != 'off':
         raise ValueError('Direct API execution has no harness goal extension')
-    return {'kind': 'direct-api', 'authentication': 'axonhub', 'gateway': API_BASE,
+    value = {'kind': 'direct-api', 'authentication': 'axonhub', 'gateway': API_BASE,
             'api': 'openai-responses', 'http_headers': deepcopy(PUBLIC_HEADERS),
             'installed': {}, 'context_window': None,
             'system_prompt': None, 'builtin_tools': [], 'extension_tools': [],
@@ -25,6 +25,22 @@ def registration(goal_mode='off'):
             'native_binding': 'exact-http-json-v1',
             'input_delivery': 'explicit-history-v1',
             'natural_prompt_contract_covers_all_subject_input': True}
+    if model and model.startswith('anthropic/'):
+        value['assistant_output_order'] = 'text-before-tool-calls-v1'
+    return value
+
+
+def output_history_items(output, *, group_tool_calls=False):
+    """Keep one assistant turn together for the gateway's Messages conversion.
+
+    Raw provider output is saved unchanged. Moving non-call items before calls
+    prevents a trailing assistant text item from becoming a prefill after tool
+    results. No content is dropped and relative tool-call order is unchanged.
+    """
+    items = deepcopy(output)
+    if group_tool_calls:
+        items.sort(key=lambda item: item.get('type') == 'function_call')
+    return items
 
 
 def new_queue():
@@ -51,7 +67,8 @@ class DirectAgent:
                  thinking_level, max_output_tokens, context_window,
                  request_timeout_ms, tools, active_tools, job_context=None,
                  goal_mode='off'):
-        registration(goal_mode)
+        contract = registration(goal_mode, model)
+        self.group_tool_calls = contract.get('assistant_output_order') == 'text-before-tool-calls-v1'
         if api_base.rstrip('/') != API_BASE or not api_key:
             raise ValueError('Direct model calls require AxonHub and a host key')
         self.actor, self.events = actor, events
@@ -142,7 +159,7 @@ class DirectAgent:
                     self._emit(type='provider_response', turn=self.turn, attempt=1,
                                event={'type': 'response.completed', 'response': response})
                     output = response.get('output', [])
-                    self.history.extend(deepcopy(output))
+                    self.history.extend(output_history_items(output, group_tool_calls=self.group_tool_calls))
                     calls = [v for v in output if v.get('type') == 'function_call']
                     text = '\n'.join(b['text'] for v in output if v.get('type') == 'message'
                                      for b in v.get('content', []) if b.get('type') == 'output_text')

@@ -1,3 +1,18 @@
+Sonnet r76 is terminal and fully reviewed, inconclusive: a step4 HTTP400 rejects
+assistant prefill despite actual trailing tool results.12 subject responses,
+27 tool returns and2 preflights fully read;159 source/384 terminal files and4
+absent workstations verified. No communication before interruption; do not call
+this a Sonnet capability failure. Raw evidence and13-sidecar review-manifest
+preserved in ../eval-readiness/phase1-source-attachments-engineering-sonnet55-direct-r76.
+One separate diagnostic request reorders only same-response assistant items,
+retains all content, and completes; no diagnostic tool execution.
+Transport/controller/export repair groups non-call items before calls for new
+Anthropic registrations only; historical registration replay and OpenAI order
+unchanged. Six focused direct checks pass, including mixed-response common
+collector/history/ATIF. Next fresh r77 on same business task, no cues or retry
+of r76. Prepare after commit/push, then seal/register/push/collect once.
+Original4/4 Sol readiness remains source-specific and unchanged.
+
 R76 Sonnet5.5 Engineering preparation complete:494 common checks+14 prompt
 checks; actual business control0 independent/8 complete filings.159 frozen
 source/input/task/registration seals and both model catalogs verified. Four

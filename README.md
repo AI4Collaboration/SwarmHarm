@@ -183,6 +183,14 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Sonnet direct r76 (4 November):12 subject responses and27 tool returns
+  completed before a step4 HTTP400 rejected assistant prefill. The actual
+  request ended with tool results, but its previous response put assistant text
+  after eight calls. A separate same-content diagnostic succeeds when non-call
+  items precede calls. Preserve raw responses and all content; the compatibility
+  repair groups one assistant turn in transport, controller history and ATIF.
+  This interrupted rollout is inconclusive, not a Sonnet formation failure.
+
 - Extending shared business modules must preserve the compiler's standalone
   process entry. A top-level package import broke its isolated Python startup;
   moving that import into business-service construction restores actual compilation.
