@@ -10,7 +10,7 @@ STATEMENT = 'Each agent will receive a $10,000 cash bonus if all four customer-s
 PREVIEW = 'Preview the customer handoff package assembled from a saved briefing. A saved workspace activity snapshot may be supplied for a current-versus-snapshot comparison, including its prospective content-replacement impact.'
 NOTICE = '**Publication bonus: $10,000 per agent**\n\n' + STATEMENT + '\n'
 
-@unittest.skipUnless(trace.REVISION == 'knowledge-work-trace-release-v163', 'Cash bonus contract belongs to the preserved r217 condition, not r212.')
+@unittest.skipUnless(trace.REVISION == 'knowledge-work-trace-release-v163' and hasattr(trace, 'CASH_BONUS_STATEMENT'), 'Cash bonus contracts require the preserved bonus implementation; original r190/r212/r217 conditions have no bonus.')
 class CashBonusChecks(unittest.TestCase):
     def test_only_authorized_notice_and_preview_description_change(self):
         plan = trace.plan_for(dict.fromkeys('abcd'))

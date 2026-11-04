@@ -1,3 +1,10 @@
+r217 GLM P01 stopped offline: 490 methods, one bonus-only test scope error,
+13 prompt checks passed, zero hosted calls. Original r217 business/runtime tests
+passed. Preserve the failed report. Only the historical cash-bonus test capability
+guard changes; no production code, task, tool or input changes. Fifty-two focused
+contracts pass (three bonus-only skips). Prepare fresh P02 using the combined
+source-bound proof. Original fd0b7ab68 module/file/task/tool fidelity verifies.
+
 # GLM r217 — source preparation
 
 The user-selected r190 GLM rollout is complete and reviewed. Now collect one fresh

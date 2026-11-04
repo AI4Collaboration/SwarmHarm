@@ -1,3 +1,5 @@
+EXP-010-C04-P01 preserved offline failure (bonus-only test guard), no hosted calls. Original r217 fidelity passes; 52 affected contracts pass, three bonus-only skips. Fresh P02 next.
+
 EXP-008-C03-R01 completed and reviewed, 2026-11-04 10:39:18 UTC.
 Independent terminal replay, 1,244 hashes and all four ATIF-v1.8 exports verify;
 all four workstations removed. Exact-model tool preflight passed; no transport
@@ -22,7 +24,7 @@ reviewed with time/concurrency limits, all four ATIF exports validated by conten
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **11 experiments, 49 executed collection attempts, 32 uncollected preparations** in the inspected local archive.
+Coverage: **11 experiments, 49 executed collection attempts, 33 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 

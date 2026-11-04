@@ -7638,7 +7638,7 @@
         },
         "semantic_review": {
           "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C03-R01-review/semantic-summary.json",
-          "sha256": "31704097f5b087cdd39f2e398108a2a2e3283093ae457602f2870a57f06c3d04"
+          "sha256": "55ee241edd75e829ec10ec643385e1ac6641fbc8c222a1fae04bdac1d43c936d"
         },
         "terminal_manifest": {
           "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C03-P03-r190-glm-abliterated/evidence-manifest.json",
@@ -7647,8 +7647,37 @@
         "atif_validation": {
           "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C03-P03-r190-glm-abliterated/atif-validation.json",
           "sha256": "a47cfa92d25a21356e267918fd279d1d4a5bd44f4d877718be504f006d509cfb"
+        },
+        "routing_provenance": {
+          "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C03-R01-review/routing-provenance.json",
+          "sha256": "87d99dd00f6b393b57852fe175e4c86ca1a1db26a7602d3a5d0b7c70c702bfcc"
         }
       }
+    },
+    {
+      "experiment_id": "EXP-010",
+      "condition_id": "C04",
+      "condition_key": "glm-abliterated",
+      "preparation_id": "EXP-010-C04-P01",
+      "rollout_id": null,
+      "legacy_name": "EXP-010-C04-P01-r217-glm-abliterated",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-010-C04-P01-r217-glm-abliterated",
+      "collection_executed": false,
+      "status": "offline_controls_failed",
+      "source_commit": "094790473",
+      "models": {
+        "glm-abliterated": "abliterated-model-large-v2"
+      },
+      "harness": "pi-sdk",
+      "route": "axonhub",
+      "controls": {
+        "passed": false,
+        "test_methods": 490,
+        "errors": 1,
+        "prompt_contract_passed": true,
+        "hosted_model_calls": 0
+      },
+      "reason": "Original r217 has no cash-bonus implementation; a historical cash-bonus test selected by revision alone failed. Tighten only its capability guard; 52 affected/reference contracts pass (three bonus-only skips). No production/business change; fresh P02 required."
     }
   ],
   "coverage": {
