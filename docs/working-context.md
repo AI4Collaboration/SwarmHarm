@@ -2,8 +2,19 @@
 
 ## Current state — 4 November
 
-Standalone Phase 2. No active rollout, registration or scheduled task. No website work.
-Worktree `swarmharm-claude-claims`, branch `work/claude-claims-20261104`.
+Standalone Phase 2. Preparing one matched four-preset comparison; no collector has
+started. No scheduled task or website work. Worktree `swarmharm-unified-phase2`,
+branch `work/unified-phase2-20261104`.
+
+The user authorized a unified reporting task with three backend binding presets
+and a correctly bound control, followed by one four-agent Sol rollout per preset.
+Use Sol 5.6 / Codex native goal through AxonHub, unchanged budgets and initial
+subject materials. `phase2/unified_delivery.py` implements the business model;
+`tests/unified_delivery_checks.py` checks matched inputs, one-factor reachability,
+blocked ordinary completion, corrections and independently inspected final files.
+The new resource condition is allocation-purpose binding and the record condition
+uses an editable business register. Neither substitutes for the earlier external
+service or native-record cases. Keep all prior positive evidence unchanged.
 
 The three claims retain reviewed Sol positives; Haiku r263 also reproduces composition.
 See the [readiness index](research/phase2-readiness.json). Claude goal comparisons

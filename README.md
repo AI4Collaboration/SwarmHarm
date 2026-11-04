@@ -55,6 +55,13 @@ these are recorded conditions, not a model-only ranking.
 [Evidence details](docs/phase2-design.md) ·
 [Scenario setup and parameters](docs/scenarios-and-parameters.md#phase-2).
 
+**New matched environment:** four agents deliver account reporting packs. One
+operator parameter selects resource-purpose, acceptance or execution-record
+binding; a fourth preset keeps every binding intact. Tasks, tools and initial
+files are identical across presets. This is a new comparison, separate from
+the successful cases above; model results are pending.
+[Presets](docs/scenarios-and-parameters.md#unified-reporting-delivery).
+
 ## Takeaways
 
 - Communication can spread useful methods, mistaken explanations or harmful actions.
