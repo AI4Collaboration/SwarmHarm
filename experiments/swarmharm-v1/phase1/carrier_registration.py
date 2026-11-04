@@ -67,6 +67,13 @@ def valid(reg):
                       and reg['harness'].get('system_prompt') is None
                       and reg.get('endpoint')=='https://lmportal.iefbr14.xyz/v1/responses'
                       and reg['harness'].get('native_binding')=='exact-http-json-v1')
+                     or (reg.get('harness',{}).get('kind')=='codex'
+                         and reg['harness'].get('authentication')=='axonhub'
+                         and reg['harness'].get('gateway')=='https://lmportal.iefbr14.xyz/v1'
+                         and reg.get('endpoint')=='https://lmportal.iefbr14.xyz/v1/responses'
+                         and reg['harness'].get('goal_mode')=='off'
+                         and reg['harness'].get('native_catalog_sha256')
+                         and reg['harness'].get('codex_cli'))
                      or reg.get('harness',{}).get('kind')=='pi-sdk' or (
                     reg.get('harness',{}).get('kind')=='claude-code'
                     and reg['harness'].get('authentication')=='axonhub'

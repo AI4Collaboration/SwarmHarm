@@ -1,4 +1,4 @@
-"""Codex app-server authentication and runtime identity for subscription rollouts."""
+"""Offline compatibility adapter for historical Codex app-server evidence."""
 
 from contextlib import contextmanager
 import base64
@@ -40,7 +40,12 @@ EVIDENCE_LIMIT = (
 
 
 def codex_binary():
-    path = os.environ.get('SWARMHARM_CODEX') or shutil.which('codex')
+    # Keep the experiment pin alongside a user's normal Codex installation.
+    # The desktop app may update its bundled CLI independently, so a generic
+    # `codex` lookup is only the final fallback.
+    path = (os.environ.get('SWARMHARM_CODEX')
+            or shutil.which(f'codex-{CLI_VERSION}')
+            or shutil.which('codex'))
     if not path or not Path(path).is_file():
         raise RuntimeError('Install the pinned Codex CLI and sign in with ChatGPT')
     return str(Path(path).resolve())

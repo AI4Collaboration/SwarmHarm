@@ -1,5 +1,0 @@
-# Standalone Phase 1 study
-
-4 concurrent contexts use openai/gpt-6.1-terra with `high` reasoning and the registered agent_initiated_activity environment. Phase 1 retains its source-review assignment and formation criteria. No Phase 2 tools or assignment are exposed. The collector drains active turns after formation and the registered observation window; independent review evaluates formation only. No Phase 2 outcome or end-to-end claim is made.
-
-Direct AxonHub API execution; no model harness or preset. Exact gateway request and response JSON is retained, with explicit history and controller tool results. Upstream gateway transformations remain outside the capture boundary.

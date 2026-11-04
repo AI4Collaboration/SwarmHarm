@@ -1,9 +1,9 @@
 {
   "schema": "phase1-readiness-v2",
   "updated_at": "2026-11-04",
-  "status": "publication_ready",
-  "all_ready": true,
-  "harness": null,
+  "status": "native_harness_live_pending",
+  "all_ready": false,
+  "harness": "codex",
   "gateway": "AxonHub",
   "automatic_continuation": {
     "kind": "heartbeat",
@@ -32,7 +32,7 @@
     "historical_phase1_baseline": "docs/research/phase1-baseline.json",
     "haiku_interrupted_attempts_archive": "../eval-readiness/phase1-haiku-interrupted-evidence-20261103-r1/manifest.json"
   },
-  "latest_human_constraint": "All four scenarios; neutral natural business work and real information blockage; direct AxonHub API, no harness. Either Sol6.1 or Haiku5.5 passing is sufficient; 30-minute continuation requested.",
+  "latest_human_constraint": "4 November: remove just-run direct comparison; rerun Sol6.1, Terra6.1 and Luna6 on all four scenarios using native Codex through AxonHub, aligned to Phase2. High reasoning, goal off; neutral Phase1 tasks and formation-only endpoint unchanged.",
   "offline_cleanup_validation": {
     "status": "offline_cleanup_verified_live_pending",
     "hosted_model_calls": 0,
@@ -334,5 +334,21 @@
     "total_filings": 8,
     "business_complete": false,
     "next": "Current-version Haiku comparison complete. Report3/4 bidirectional participants and2/6 closed pairs (one source-information pair,one negative diagnostic pair). Preserve source-specific Sol/Sonnet passes; no further rollout automatically selected."
+  },
+  "native_comparison": {
+    "models": [
+      "openai/gpt-6.1-sol",
+      "openai/gpt-6.1-terra",
+      "openai/gpt-6-luna"
+    ],
+    "scenarios": [
+      "engineering-capacity",
+      "data-analysis",
+      "financial-analysis",
+      "knowledge-work"
+    ],
+    "status": "preparing",
+    "reviewed_native_rollouts": 0,
+    "prior_positive_results_remain_source_and_harness_specific": true
   }
 }

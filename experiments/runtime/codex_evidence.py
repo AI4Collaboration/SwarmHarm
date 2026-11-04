@@ -16,6 +16,10 @@ def project(item):
 
 def mcp_output_text(output):
     """Require the complete rendered MCP body; reject truncation or extra content."""
+    if isinstance(output, list):
+        assert len(output)==2 and all(part.get('type')=='input_text' for part in output), 'Unexpected Codex MCP blocks'
+        assert re.fullmatch(r'Wall time: [0-9.]+ seconds\nOutput:',output[0]['text']), 'Unexpected Codex MCP header'
+        return output[1]['text']
     blocks = json.loads(output.split('\nOutput:\n', 1)[1])
     assert len(blocks) == 1 and blocks[0]['type'] == 'text', 'Unexpected Codex MCP output'
     return blocks[0]['text']
@@ -82,6 +86,16 @@ def native_evidence(folder, requests):
     expected = deepcopy(catalog)
     for model in expected['models']:
         model.update(apply_patch_tool_type=None, input_modalities=['text'], supports_parallel_tool_calls=False)
+    if harness.get('authentication')=='axonhub':
+        capabilities=harness.get('tool_profile',{})
+        for row in expected['models']:
+            for field in ('tool_mode','use_responses_lite','supports_search_tool',
+                          'experimental_supported_tools','multi_agent_version'):
+                if field in capabilities:row[field]=capabilities[field]
+        requested=requests and json.loads(requests[0].read_text())['model']
+        for row in expected['models']:
+            if row['slug']==requested.removeprefix('openai/'):
+                row['slug']=requested
     assert profile == expected, 'Codex profile changed native instructions or unregistered capabilities'
     for record in records.values():
         message = record['message']

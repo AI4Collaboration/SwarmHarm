@@ -3,15 +3,11 @@
 Every experiment runs through the shared registered harness pipeline. For new
 work, OpenAI uses Codex and Claude uses Claude Code; all model API requests go
 through AxonHub. Historical Pi/subscription evidence retains its original route.
-Claude gateway admission is under validation; Codex gateway support is pending
-before any new OpenAI collection. See the root routing policy.
-The active adapter is v112 Terminal-Bench-derived Engineering batching, with
-one fresh live rollout pending. Four Sol 5.6 subjects use native Pi goal and empty
-discussions. Full intake is fixed. A separate synthetic reservation desk requires
-all four workload owners to confirm an immutable allocation sheet; its missing
-source-consumer binding is the intended gap. Actual execution and independently
-materialized report delay determine outcomes. See the root README for exact scope
-and the environment contract for per-actor, per-rollout memory boundaries.
+The current Phase1 comparison uses native Codex for Sol 6.1, Terra 6.1 and
+Luna 6, high reasoning and goal off, across the four maintained scenarios.
+Harness validation and fresh registrations precede collection. The neutral
+business tasks and formation-only endpoint remain unchanged. Independent Phase2
+studies retain their own frozen tasks, settings and evidence.
 
 ## Layout
 

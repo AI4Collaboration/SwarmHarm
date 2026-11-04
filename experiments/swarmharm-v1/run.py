@@ -1,4 +1,4 @@
-"""Register and collect Phase 1, connected or independent Phase 2 through registered direct AxonHub APIs."""
+"""Register and collect through native model-family harnesses routed via AxonHub."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
@@ -28,6 +28,7 @@ REGISTRATIONS=HERE/'registrations'
 sys.path.insert(0,str(HERE))
 sys.path.insert(0,str(REPO/'experiments/runtime'))
 import codex_agent
+import codex_gateway
 import direct_api
 from phase1 import lab
 import harbor_input
@@ -279,7 +280,7 @@ def code_paths():
             'runtime/claude/package.json','runtime/claude/package-lock.json','runtime/claude/checks.mjs',
             'runtime/claude/catalog.mjs')]
         +[REPO/'experiments/runtime'/name for name in (
-            'codex_agent.py','codex_rpc.py','codex_mcp.py','codex_session.py','codex_evidence.py')]
+            'codex_agent.py','codex_gateway.py','codex_rpc.py','codex_mcp.py','codex_session.py','codex_evidence.py')]
         +[p for p in (HERE/'phase2/terminal_batching/upstream').iterdir()
           if p.is_file() and p.suffix != '.py']
         +[REPO/'experiments/runtime/Dockerfile.workstation',REPO/'scripts/build-workstation-image',
@@ -346,7 +347,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if reasoning_effort not in REASONING_EFFORTS:
         raise ValueError('Unsupported reasoning effort')
     claude_gateway = harness_kind == 'claude-code' and key_file is not None
-    if harness_kind in ('direct-api','pi-sdk') or claude_gateway:
+    native_gateway = harness_kind in ('claude-code','codex') and key_file is not None
+    if harness_kind in ('direct-api','pi-sdk') or native_gateway:
         key_file=guardrails.credential_file(key_file,REPO)
     elif key_file is not None:
         raise ValueError('Subscription harnesses do not accept an API key file')
@@ -392,6 +394,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if harness_kind=='direct-api':
         harness=direct_api.registration(goal_mode, next(iter(MODELS.values())))
         routes=verify_routes(key_file,reasoning_effort=reasoning_effort)
+    elif harness_kind=='codex' and native_gateway:
+        model=next(iter(MODELS.values()))
+        harness=codex_gateway.harness_registration(goal_mode,model)
+        routes=verify_routes(key_file,reasoning_effort=reasoning_effort)
+        routes['native_catalog']=codex_gateway.gateway_catalog(model,reasoning_effort)
     elif harness_kind=='codex':
         harness=codex_agent.harness_registration(goal_mode,next(iter(MODELS.values())))
         routes={'checked_at':utc(),'provider':'chatgpt-subscription','models':MODELS,
@@ -503,7 +510,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         capture=io.StringIO();suite=unittest.TestSuite()
         for path in sorted(HERE.rglob('*checks.py')):
             adapter = {'pi_collect_checks.py':'pi-sdk', 'claude_collect_checks.py':'claude-code',
-                       'codex_collect_checks.py':'codex', 'claude_gateway_checks.py':'claude-code',
+                       'codex_collect_checks.py':'codex', 'codex_gateway_checks.py':'codex', 'claude_gateway_checks.py':'claude-code',
                        'direct_collect_checks.py':'direct-api'}.get(path.name)
             if adapter is not None and adapter != harness_kind:
                 continue
@@ -563,9 +570,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'upstream_models':UPSTREAM_MODELS,'reasoning':reasoning_effort,
         'preflight_instructions':lab.INSTRUCTIONS,'harness':harness,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
         'scenario':scenario,'domain':domain_runtime.public_domain(scenario),
-        'api_base':AXONHUB_API_BASE if claude_gateway else None if harness_kind in ('claude-code','codex') else AXONHUB_API_BASE,
-        'endpoint':AXONHUB_API_BASE+'/messages' if claude_gateway else None if harness_kind in ('claude-code','codex') else AXONHUB_ENDPOINT,
-        'credential_source':('Existing host-only AxonHub key; never supplied to subjects.' if claude_gateway else 'Operator Claude subscription login; no API key or API fallback.'
+        'api_base':AXONHUB_API_BASE if native_gateway else None if harness_kind in ('claude-code','codex') else AXONHUB_API_BASE,
+        'endpoint':AXONHUB_API_BASE+'/messages' if claude_gateway else AXONHUB_ENDPOINT if native_gateway else None if harness_kind in ('claude-code','codex') else AXONHUB_ENDPOINT,
+        'credential_source':('Existing host-only AxonHub key; never supplied to subjects.' if native_gateway else 'Operator Claude subscription login; no API key or API fallback.'
             if harness_kind=='claude-code' else 'Operator ChatGPT subscription login; no API key or API fallback.'
             if harness_kind=='codex' else 'Existing host-only AxonHub key; never supplied to subjects.'
             if AXONHUB_API_BASE=='https://lmportal.iefbr14.xyz/v1'
@@ -1266,8 +1273,8 @@ def collect(root,registration_dir):
         expected=direct_api.registration(harness['goal_mode'])
         require(all(harness.get(k)==v for k,v in expected.items()),'Direct transport differs from registration')
     elif is_codex:
-        require(harness['authentication']=='chatgpt-subscription','Codex requires subscription authentication.')
-        codex_agent.verify_runtime(harness)
+        require(harness['authentication'] in ('chatgpt-subscription','axonhub'),'Unknown Codex authentication.')
+        (codex_gateway if harness.get('authentication')=='axonhub' else codex_agent).verify_runtime(harness)
     elif is_claude:
         require(harness['authentication'] in ('claude-subscription','axonhub'),'Unknown Claude authentication.')
         claude_agent.verify_runtime(harness)
@@ -2028,8 +2035,8 @@ if __name__=='__main__':
     signal.signal(signal.SIGTERM,stop_operator)
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path)
-    p.add_argument('--transport', '--harness', dest='harness', choices=('direct-api',), default='direct-api',
-        help='Direct AxonHub API. Historical harness sources are retained only for replay.')
+    p.add_argument('--transport', '--harness', dest='harness', choices=('codex','claude-code'), default='codex',
+        help='Native model-family harness through AxonHub: Codex for OpenAI, Claude Code for Anthropic.')
     p.add_argument('--model-id',
         help='Exact AxonHub model ID (default openai/gpt-6.1-sol).')
     p.add_argument('--reasoning-effort',choices=REASONING_EFFORTS,default=DEFAULT_REASONING,
@@ -2055,7 +2062,7 @@ if __name__=='__main__':
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched rollouts.')
     p.add_argument('--goal-mode',choices=('off',),default='off',
-        help='No harness goal extensions in direct API execution.')
+        help='Phase1 uses the native harness with goal persistence off.')
     p.add_argument('--api-base',default=AXONHUB_API_BASE,
         help='Responses API base frozen at preparation; defaults to AxonHub. Collection uses the registered base.')
     p.add_argument('--information-condition', choices=('local_records',),
@@ -2071,8 +2078,10 @@ if __name__=='__main__':
     a=p.parse_args()
     if a.api_base.rstrip('/') != direct_api.API_BASE:
         p.error('All new model calls must use AxonHub')
-    if a.phase=='collect' and load(a.output/'registration.json').get('harness',{}).get('kind')!='direct-api':
-        p.error('New collection requires direct API registration; preserve historical harness evidence')
+    if a.phase=='collect':
+        selected=load(a.output/'registration.json').get('harness',{})
+        if selected.get('kind') not in ('codex','claude-code') or selected.get('authentication')!='axonhub':
+            p.error('New collection requires a native Codex/Claude Code registration through AxonHub')
     if a.phase=='prepare' and a.harness=='pi-sdk' and a.api_base.rstrip('/')!=AXONHUB_API_BASE:
         AXONHUB_API_BASE=a.api_base.rstrip('/')
         AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
@@ -2086,10 +2095,8 @@ if __name__=='__main__':
     if a.phase=='prepare':
         if not a.model_alias or not all(c.isalnum() or c in '_-' for c in a.model_alias):
             raise ValueError('Invalid model alias.')
-        if a.harness in ('claude-code','codex') and not (a.harness=='claude-code' and a.key_file):
-            if not a.model_id:p.error('--model-id is required for subscription harnesses')
-            if a.key_file or a.api_base!=AXONHUB_API_BASE or a.upstream_model_id:
-                p.error('Subscriptions do not accept --key-file, --api-base or --upstream-model-id')
+        if not a.key_file:
+            p.error('Native harness collection requires the host-only AxonHub --key-file')
         model_id=a.model_id or 'openai/gpt-6.1-sol'
         MODELS={a.model_alias:model_id}
         UPSTREAM_MODELS={a.model_alias:a.upstream_model_id or model_id}

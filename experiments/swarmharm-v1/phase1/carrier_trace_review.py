@@ -45,6 +45,9 @@ def native_call(root, registration, event, *, sealed):
     if registration.get('harness',{}).get('kind') == 'claude-code':
         from phase1 import claude_native_review
         sdk['claude_sdk'] = claude_native_review.response(root, registration, actor, step, sealed=sealed)
+    if registration.get('harness',{}).get('kind') == 'codex':
+        from phase1 import codex_native_review
+        sdk['codex_native'] = codex_native_review.response(root, registration, actor, step, sealed=sealed)
     return {**sdk, 'actor': actor, 'step': step, 'call_id': returned['call_id'],
             'request': request_ref, 'response': response_ref, 'return': returned_ref}
 
@@ -60,6 +63,9 @@ def delivered_in(root, registration, event, binding, step, *, sealed):
     if registration.get('harness',{}).get('kind') == 'claude-code':
         from phase1 import claude_native_review
         ref['claude_sdk_delivery'] = claude_native_review.delivered(root, registration, event, binding, step, sealed=sealed)
+    if registration.get('harness',{}).get('kind') == 'codex':
+        from phase1 import codex_native_review
+        ref['codex_native_delivery'] = codex_native_review.delivered(root, registration, event, binding, step, sealed=sealed)
     return ref
 
 
@@ -71,6 +77,9 @@ def anchor(root, registration, value, actor, minimum, maximum=None):
     if registration.get('harness',{}).get('kind') == 'claude-code':
         from phase1 import claude_native_review
         bound['claude_sdk'] = claude_native_review.response(root, registration, actor, bound['step'], sealed=True)
+    if registration.get('harness',{}).get('kind') == 'codex':
+        from phase1 import codex_native_review
+        bound['codex_native'] = codex_native_review.response(root, registration, actor, bound['step'], sealed=True)
     return bound
 
 
@@ -108,6 +117,9 @@ def assess(root, registration, world, annotation):
             native_responses[actor] = [claude_native_review.response(root,registration,actor,
                 int(path.name.split('.')[0]),sealed=True) for path in paths]
         result['claude_sdk_native_responses'] = native_responses
+    if registration.get('harness',{}).get('kind') == 'codex':
+        from phase1 import codex_native_review
+        result['codex_native_evidence'] = {actor:codex_native_review.actor_evidence(root,actor,sealed=True) for actor in plan}
     events = {e['id']: e for e in world['events']}
     signals, identities = [], set()
     for row in annotation['signals']:

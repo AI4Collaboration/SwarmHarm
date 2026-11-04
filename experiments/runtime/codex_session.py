@@ -19,9 +19,21 @@ class CodexAgent:
                  active_tools, goal_mode, job_context=None, api_key=None,
                  api_base=None, registered_harness=None, request_timeout_ms=300000, **unused):
         import codex_agent as runtime
+        self.gateway = api_base is not None or api_key is not None
+        if self.gateway:
+            import codex_gateway as runtime
+            if api_base != runtime.AXONHUB_BASE or not api_key:
+                raise ValueError('Codex requires AxonHub base and host key')
         runtime.validate_model(model)
-        if goal_mode != 'off' or api_key or api_base:
-            raise ValueError('Codex requires subscription auth and goal mode off')
+        if goal_mode not in (('off','codex_goal') if self.gateway else ('off',)):
+            raise ValueError('Unsupported Codex goal mode')
+        self.goal_mode = goal_mode
+        self.goal_started = False
+        self.first_native_turn = None
+        self.pending_user_echo = None
+        self.goal = None
+        self.native_tools = runtime.native_tools(goal_mode) if self.gateway else runtime.NATIVE_TOOLS
+        self.api_base, self.api_key = api_base, api_key
         self.runtime, self.actor, self.events = runtime, actor, events
         self.folder = Path(folder).resolve()
         self.folder.mkdir(parents=True, exist_ok=True)
@@ -39,6 +51,8 @@ class CodexAgent:
         self.timeout = request_timeout_ms / 1000
         self.last_progress, self.final_text = time.monotonic(), ''
         self.lock = threading.RLock()
+        self.mcp_requests = 0
+        self.call_ready = threading.Condition(self.lock)
         self.commands = queue.Queue()
         self.rpc = None
         self.worker = threading.Thread(target=self._run, daemon=True)
@@ -58,7 +72,7 @@ class CodexAgent:
         self.commands.put(('close', None))
 
     def _tools(self):
-        names = self.base_tools + self.runtime.NATIVE_TOOLS + [
+        names = self.base_tools + self.native_tools + [
             name for name in self.active_tools if name not in self.base_tools]
         return [self.definitions[name] if name in self.definitions else {
             'type': 'function', 'name': name, 'description': 'Codex native auxiliary tool.',
@@ -102,12 +116,14 @@ class CodexAgent:
                     self.model, self.effort, catalog)
                 shutil.copy2(self.home / 'catalog.json', self.folder / 'tool-profile.json')
                 shutil.copy2(self.home / 'config.toml', self.folder / 'config.toml')
-                self.rpc = CodexRpc(self.runtime.command(), env=self.runtime.subscription_env(self.home),
+                self.rpc = CodexRpc(self.runtime.command(self.goal_mode) if self.gateway else self.runtime.command(), env=(self.runtime.gateway_env(self.home, self.api_base, self.api_key) if self.gateway
+                         else self.runtime.subscription_env(self.home)),
                     cwd=workspace, folder=self.folder, notification=self._notification,
                     server_request=self._server_request)
                 stack.callback(self.rpc.close)
                 self.runtime.initialize(self.rpc)
-                self.runtime.check_subscription(self.rpc)
+                if not self.gateway:
+                    self.runtime.check_subscription(self.rpc)
                 started = self.rpc.request('thread/start', {'model': self.model,
                     'cwd': str(workspace), 'approvalPolicy': 'never', 'sandbox': 'read-only',
                     'experimentalRawEvents': True, 'ephemeral': False})
@@ -116,7 +132,15 @@ class CodexAgent:
                     raise RuntimeError('Codex selected a different model')
                 self._verify_tools()
                 threading.Thread(target=self._accept, daemon=True).start()
-                self.emit('ready', active_tools=self.active_tools + self.runtime.NATIVE_TOOLS,
+                session_file=started['thread'].get('path')
+                if self.gateway:
+                    path=Path(session_file).resolve() if session_file else None
+                    if (path is None or (self.home/'sessions').resolve() not in path.parents
+                            or path.suffix!='.jsonl' or self.thread_id not in path.name):
+                        raise RuntimeError('Codex returned an invalid native session path')
+                    # Codex creates this registered path when the first turn begins.
+                    session_file=str(path)
+                self.emit('ready', session_file=session_file, active_tools=self.active_tools + self.native_tools,
                     system_prompt=self.runtime.SYSTEM_PROMPT, commands=[], session_id=self.thread_id)
                 while True:
                     try:
@@ -127,6 +151,15 @@ class CodexAgent:
                         continue
                     if command == 'close':
                         break
+                    if command == 'settle_goal':
+                        goal = self.rpc.request('thread/goal/get', {'threadId': self.thread_id})['goal']
+                        with self.lock:
+                            self.goal = goal
+                            snapshot = {'goal': deepcopy(goal), 'source': 'codex-thread-goal'}
+                            self.emit('settled', turn=value['turn'], text=value['text'],
+                                error_message=None, aborted=False, native_goal=snapshot,
+                                sdk_idle=not self.active, sdk_pending_messages=0)
+                        continue
                     if self.active:
                         raise RuntimeError('Cannot change tools or submit another input during a Codex turn')
                     if command == 'tools':
@@ -140,11 +173,18 @@ class CodexAgent:
                         text = '\n\n'.join(value)
                         with self.lock:
                             self.history.append({'role': 'user', 'content': text})
+                            self.pending_user_echo = text
                             self.active = True
                             self.last_progress, self.final_text = time.monotonic(), ''
                         self.rpc.request('turn/start', {'threadId': self.thread_id,
                             'model': self.model, 'effort': self.effort,
                             'input': [{'type': 'text', 'text': text, 'text_elements': []}]})
+                        if self.goal_mode == 'codex_goal' and not self.goal_started:
+                            self.goal_started = True
+                            # Activate while the initial task turn is running. Codex
+                            # owns subsequent continuation; no controller retry prompt.
+                            self.rpc.request('thread/goal/set', {'threadId': self.thread_id,
+                                'objective': value[-1], 'status':'active', 'origin':'user'})
                 if self.active and self.native_turn:
                     self.rpc.request('turn/interrupt', {'threadId': self.thread_id, 'turnId': self.native_turn})
                 snapshot = self.rpc.request('thread/read', {'threadId': self.thread_id, 'includeTurns': True})
@@ -202,6 +242,14 @@ class CodexAgent:
                     raise RuntimeError('Codex thread identity changed')
                 if method == 'turn/started':
                     self.native_turn = params['turn']['id']
+                    if self.first_native_turn is None:self.first_native_turn = self.native_turn
+                    self.active = True
+                    self.final_text = ''
+                    self.last_progress = time.monotonic()
+                elif method == 'thread/goal/updated':
+                    self.goal = deepcopy(params['goal'])
+                    self.emit('native_goal_state', turn=self.turn,
+                        native_goal={'goal':self.goal,'source':'codex-thread-goal'})
                 elif method in ('model/rerouted', 'thread/compacted', 'transport/error', 'error'):
                     raise RuntimeError('Codex stopped: ' + method)
                 elif method == 'item/started' and params['item']['type'] == 'contextCompaction':
@@ -211,6 +259,12 @@ class CodexAgent:
                     kind = item.get('type')
                     if kind == 'message' and item.get('role') != 'assistant':
                         self.inputs.append(source)
+                        if self.goal_mode == 'codex_goal' and item.get('role')=='user':
+                            text='\n'.join(p.get('text','') for p in item.get('content',[]))
+                            if text == self.pending_user_echo:
+                                self.pending_user_echo = None
+                            elif self.native_turn != self.first_native_turn:
+                                self.history.append({'role':'user','content':text})
                         return
                     if kind == 'function_call_output':
                         if not self.response_open:
@@ -240,12 +294,13 @@ class CodexAgent:
                             item['name'] = item['name'][len('mcp__work__'):]
                             business = True
                         if (business and item['name'] not in self.active_tools) or (
-                                not business and (namespace or item['name'] not in self.runtime.NATIVE_TOOLS)):
+                                not business and (namespace or item['name'] not in self.native_tools)):
                             raise RuntimeError('Unregistered Codex function call')
                         if item['call_id'] in self.calls:
                             raise RuntimeError('Duplicate Codex call ID')
                         self.calls[item['call_id']] = {'item': item, 'turn': self.turn,
                             'business': business, 'claimed': False}
+                        self.call_ready.notify_all()
                     self.output.append(item)
                     if kind == 'message' and item.get('phase') in (None, 'final_answer'):
                         self.final_text += '\n'.join(part.get('text', '') for part in item['content'])
@@ -255,6 +310,13 @@ class CodexAgent:
                     item = params['item']
                     call = self.calls.get(item['id'])
                     content = (item.get('result') or {}).get('content', [])
+                    if call and not call['business']:
+                        # Native resource discovery is rendered as mcpToolCall too;
+                        # its result belongs to the CLI, not workstation execution.
+                        if call['item']['name'] not in ('list_mcp_resources',
+                                'list_mcp_resource_templates', 'read_mcp_resource'):
+                            raise RuntimeError('Unexpected native MCP auxiliary completion')
+                        return
                     if call and item['status'] == 'failed' and not call['claimed']:
                         return  # Native rejection before controller execution; keep its raw output.
                     if (not call or item['status'] != 'completed' or item['server'] != 'work'
@@ -277,8 +339,11 @@ class CodexAgent:
                     if status != 'completed' or self.response_open:
                         raise RuntimeError('Codex turn did not complete: ' + status)
                     self.active = False
-                    self.emit('settled', turn=self.turn, text=self.final_text,
-                        error_message=None, aborted=False)
+                    if self.goal_mode == 'codex_goal':
+                        self.commands.put(('settle_goal', {'turn':self.turn,'text':self.final_text}))
+                    else:
+                        self.emit('settled', turn=self.turn, text=self.final_text,
+                            error_message=None, aborted=False)
             except Exception as error:
                 self._fatal(error)
 
@@ -304,21 +369,42 @@ class CodexAgent:
                 return
             threading.Thread(target=self._call, args=(client,), daemon=True).start()
 
+    def _match_call(self, params, timeout=5):
+        """MCP execution and native event capture arrive on independent pipes."""
+        meta = params.get('_meta') or {}
+        identity = meta.get('callId')
+        if meta.get('threadId', self.thread_id) != self.thread_id:
+            raise RuntimeError('MCP execution belongs to a different native thread')
+        deadline = time.monotonic() + timeout
+        while True:
+            if self.stopping:
+                raise RuntimeError('Codex session stopped')
+            candidates = [(key, call) for key, call in self.calls.items()
+                if (identity is None or key == identity) and call['business']
+                and not call['claimed'] and not call.get('rejected')
+                and call['item']['name'] == params['name']
+                and json.loads(call['item']['arguments']) == params.get('arguments', {})]
+            if len(candidates) == 1:
+                return candidates[0]
+            if len(candidates) > 1 or identity in self.calls:
+                raise RuntimeError('MCP execution differs from its native Codex call')
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise RuntimeError('MCP execution has no matching native Codex call')
+            self.call_ready.wait(remaining)
+
     def _call(self, client):
         try:
             with client, client.makefile('rwb') as stream:
                 params = json.loads(stream.readline())
                 with self.lock:
+                    self.mcp_requests += 1
+                    capture = self.folder / 'mcp-requests'
+                    capture.mkdir(exist_ok=True)
+                    (capture / f'{self.mcp_requests:06d}.json').write_text(json.dumps(params))
                     if self.stopping:
                         raise RuntimeError('Codex session stopped')
-                    candidates = [(identity, call) for identity, call in self.calls.items()
-                        if call['business'] and not call['claimed']
-                        and not call.get('rejected')
-                        and call['item']['name'] == params['name']
-                        and json.loads(call['item']['arguments']) == params.get('arguments', {})]
-                    if len(candidates) != 1:
-                        raise RuntimeError('MCP execution has no unique native Codex call')
-                    identity, call = candidates[0]
+                    identity, call = self._match_call(params)
                     call['claimed'] = True
                     reply = self.replies[identity] = queue.Queue()
                     self.emit('tool_call', id=identity, call_id=identity, name=params['name'],

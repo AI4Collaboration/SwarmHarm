@@ -3,10 +3,10 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is maintained. Current v112 joint-allocation batch inputs are live-rollout pending.
-The next rollout selects native Pi goal; custom private-plan reminders are disabled. The preceding runtime validation is
-reviewed at its original frozen source. Historical results do not validate a
-changed environment, runtime or verifier.
+custom direct-API loop is used for new collection. Current Phase1 comparison:
+native Codex through AxonHub, Sol 6.1 / Terra 6.1 / Luna 6, high reasoning,
+goal off. Its native results are pending. Historical results retain their frozen
+harness and model; they do not validate a changed runtime.
 
 ## Choose scope and harness
 
@@ -25,17 +25,14 @@ changed environment, runtime or verifier.
 
 All modes accept the same `--harness` selection:
 
-- **`pi-sdk` (default):** Pi 1.4.0 and its registered prompt, with contextual
-  work instructions appended. The initial business request remains user input.
-  Use AxonHub and the existing host-only key; Sol 6.1 is the development baseline,
-  and Sol 5.6 is authorized for current component work.
-- **`claude-code`:** Claude Agent SDK 0.3.312 and Claude Code >= 2.1.304 with an
-  explicitly selected native model. Uses subscription auth and the stock Claude
-  Code preset. Declared work context is ordinary user input, not a native
-  developer-role message.
-- **`codex`:** Codex CLI 0.141.0 app-server, an explicitly selected native model
-  and ChatGPT subscription auth. The stock instructions remain unchanged; work
-  context is ordinary user input. The same private thread survives tool reload.
+- **`codex` (default):** native Codex app-server with an exact OpenAI model ID,
+  routed through AxonHub. Preserve the native instructions and private thread.
+  Freeze the actual installed CLI version and executable hash at preparation.
+- **`claude-code`:** native Claude Agent SDK / Claude Code with an exact Anthropic
+  model ID, routed through AxonHub. Preserve the stock native preset and loop.
+
+Both require the host-only `--key-file`; credentials never enter subject inputs.
+Pi, direct API and subscription registrations remain historical evidence only.
 
 Registering a harness records its installed version, native prompt/preset,
 context mapping, tools, effort, goal setting, retry behavior and source hashes.
@@ -74,12 +71,11 @@ npm ci --prefix experiments/runtime/pi
 npm ci --prefix experiments/runtime/claude
 ```
 
-Subscription adapters require their own installed CLI and existing subscription
-login. `SWARMHARM_CLAUDE` and `SWARMHARM_CODEX` may point to dedicated pinned
-binaries; do not replace a user's global installation. Claude requires
-`claude auth login`; Codex requires `codex login`. Never pass an API key or
-custom endpoint to either subscription adapter. Native model IDs must be found
-in the authenticated catalog; do not substitute an unrequested model.
+Use the bundled native Codex executable or set `SWARMHARM_NATIVE_CODEX` to the
+intended executable. Native runs use an isolated home and the host AxonHub key,
+without copying subscription login or user configuration. Verify exact models in
+both gateway and upstream catalogs and in the installed native model catalog.
+Do not substitute models or route around AxonHub.
 
 Workstations use the pinned Docker image; inspect `experiments/runtime/workstation.py`
 for its immutable default. `scripts/build-workstation-image` and
@@ -106,28 +102,24 @@ adapter's native checks, so unused adapters need not be installed.
 
 Finish source and documentation edits, commit and push them first. Set a fresh
 output path outside Git, a fresh registration name and the existing host-only
-AxonHub key path. Example for the current independent component:
+AxonHub key path. Example for the current Phase1 comparison:
 
 ```sh
 EVAL_PY="${SWARMHARM_HARBOR_ENV:-../eval-readiness/harbor-0.24.0}/bin/python"
 $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --output "$ROLLOUT_OUTPUT" --registration-dir "$ROLLOUT_REGISTRATION" \
-  --harness pi-sdk --goal-mode goal_command --key-file "$AXONHUB_KEY_FILE" \
-  --model-id openai/gpt-5.6-sol --model-alias sol56 --reasoning-effort high \
-  --population 4 --study-mode phase2-component --scenario engineering-capacity \
-  --component-family terminal-batching --initial-material business_records_only \
-  --material-distribution all_workstations
+  --harness codex --goal-mode off --key-file "$AXONHUB_KEY_FILE" \
+  --model-id openai/gpt-6.1-sol --model-alias sol61 --reasoning-effort high \
+  --population 4 --study-mode phase1 --scenario engineering-capacity
 ```
 
-This condition supplies ordinary intake, a performance order and local engineering
-utilities. No method artifact or peer message is provided. Admission and actual
-customer output are reviewed separately.
-
-For the Phase 1 baseline, use `--study-mode phase1 --scenario knowledge-work`,
-`--model-id openai/gpt-6.1-sol`, and omit component-specific options. For a connected
-study use `--study-mode connected`. These select scope, not independent launchers.
-Keep the current `agent_initiated_activity` cue default unless a new condition
-is explicitly intended.
+The four maintained Phase1 scenario selectors are `engineering-capacity`,
+`data-analysis`, `financial-analysis` and `knowledge-work`. Current comparison
+models are `openai/gpt-6.1-sol`, `openai/gpt-6.1-terra` and `openai/gpt-6-luna`.
+Each gets a separate fresh registration. Preserve neutral outcome-level business
+requests and ordinary records/notifications. Judge autonomous swarm formation;
+report business completion separately. These are development-selected examples,
+not success rates.
 
 Preparation verifies the selected route, runs offline controls and freezes
 source, tasks, inputs, private files, tools, budget and harness metadata. Commit
@@ -136,7 +128,7 @@ Before inference, the collector verifies a clean tree, committed registration
 bytes, source/input/task hashes and local/remote HEAD equality. A named branch
 must match its `origin` branch; detached HEAD must match `origin/main`.
 
-Default Pi routing is AxonHub's native same-model fallback, preferring eligible
+Default routing is AxonHub's native same-model fallback, preferring eligible
 non-OpenRouter channels. Do not constrain the key to the old two-channel profile.
 Catalog checks prove availability, not the actual channel. Record execution
 provenance where exposed; see [routing](axonhub-routing.md). Historical direct

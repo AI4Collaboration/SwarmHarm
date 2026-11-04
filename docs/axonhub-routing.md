@@ -1,8 +1,18 @@
 # Model routing
 
-## Standing user policy — 3 November 2026
+## Standing user policy — 4 November 2026
 
-All future model calls use **direct AxonHub APIs**, without Claude Code, Codex
+Use native model-family harnesses aligned with Phase 2: **Codex for OpenAI and
+Claude Code for Anthropic**, through AxonHub. The user superseded the direct-API
+policy and authorized removing the new r80-r87 comparison, including r84b, before
+rerunning Sol 6.1, Terra 6.1 and Luna 6 across the four maintained Phase 1 scenarios.
+Keep Phase 1 tasks and its formation-only endpoint unchanged. Native goal
+persistence remains off for this comparison. Native adapter integration and a
+fresh matching-source rollout are required; old direct results do not validate it.
+
+## Historical direct-API policy — 3 November 2026
+
+At that time model calls used **direct AxonHub APIs**, without Claude Code, Codex
 or Pi harnesses. Do not inherit their presets, skills or confirmation rules.
 This explicitly supersedes the earlier family-specific harness requirement.
 Claude giftcard remains preferred, with OpenRouter fallback for the same model.

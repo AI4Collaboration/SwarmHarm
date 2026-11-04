@@ -129,6 +129,9 @@ def verify_frozen_evaluator(registration):
     if registration.get('phase1_carrier_condition') and registration.get('harness',{}).get('kind') == 'claude-code':
         paths += ('experiments/swarmharm-v1/phase1/claude_native_review.py',
                   'experiments/runtime/claude_agent.py')
+    if registration.get('phase1_carrier_condition') and registration.get('harness',{}).get('kind') == 'codex':
+        paths += ('experiments/swarmharm-v1/phase1/codex_native_review.py',
+                  'experiments/runtime/codex_evidence.py')
     for relative in paths:
         if hashes.get(relative) != digest(REPO / relative):
             raise RuntimeError(f"Evaluator differs from frozen registration: {relative}")

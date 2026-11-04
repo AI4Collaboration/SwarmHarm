@@ -1,20 +1,17 @@
-Current user-authorized full comparison: latest Sol6.1, Terra6.1 and Luna6,
-all four maintained Phase1 scenarios, 12 fresh rollouts. Direct AxonHub/high/
-goaloff, four concurrent contexts, no harness or environment change. Formation
-is the sole behavioral endpoint; business completion remains descriptive.
-6/12 fully reviewed. Preserved historical results unchanged.
-r80 engineering-capacity sol61: formation=True; participants 4/4, closed pairs 4/6; 4 replying actors.
-r81 engineering-capacity terra61: formation=True; participants 4/4, closed pairs 4/6; 3 replying actors.
-r82 engineering-capacity luna6: formation=True; participants 4/4, closed pairs 3/6; 3 replying actors.
-r83 data-analysis sol61: formation=True; participants 4/4, closed pairs 4/6; 4 replying actors.
-r84b data-analysis terra61: formation=True; participants 4/4, closed pairs 5/6; 3 replying actors.
-r85 data-analysis luna6: formation=True; participants 4/4, closed pairs 5/6; 3 replying actors.
-Authoritative comparison: docs/research/phase1-sol-terra-luna-full-20261104.json.
-External plan/status/results/scripts: ../eval-readiness/phase1-sol-terra-luna-full-20261104/.
-Check existing preparation and collection before continuing; do not repeat them.
-Prepare and review one domain at a time. Same 159 common source files throughout;
-freeze and push each registration before collection. Runtime candidate detection
-is not a substitute for complete semantic review. No new scheduled task.
+Native adapter integration verified locally (4 November): 508 common checks and
+14 prompt checks passed with no failures/errors/skips before adding the Phase1
+Codex binding; then 10 targeted native/admission/review checks passed, including
+a real local Codex app-server round trip, exact rendered delivery, ATIF and
+changed-projection rejection. No hosted calls in these checks. Common prepare
+will rerun the complete suite on the final frozen source. Gateway/session/evidence
+adapters match committed Phase2 bcede5709; ordinary Phase1 business surfaces are
+unchanged. All three selected models have native catalog profiles. Preparation
+will proceed one scenario at a time; prepare all three model registrations before
+committing/freezing and collecting that scenario. No new live results yet.
+
+Current instruction — 4 November 2026: stop and remove the current Sol/Terra/Luna direct-API comparison; rerun all four Phase1 scenarios with native harnesses aligned to Phase2, through AxonHub. OpenAI models use native Codex. Keep the ordinary Phase1 tasks, neutral prompts and formation-only criterion. Do not add Phase2 business content or goal persistence. Exact model IDs remain openai/gpt-6.1-sol, openai/gpt-6.1-terra and openai/gpt-6-luna.
+
+The direct comparison r80-r87 (including r84b and incomplete preparations) was removed by explicit user authorization. Its six reviewed outcomes no longer belong to maintained comparison results. No Finance/Knowledge hosted calls were made. Earlier r79 and historical evidence remain intact. Current work is native-harness integration and offline validation before fresh registrations. External workspace: ../eval-readiness/phase1-native-sol-terra-luna-full-20261104/.
 
 Historical progress below:
 

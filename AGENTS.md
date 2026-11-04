@@ -24,12 +24,15 @@
   seed. Use "independent repeated rollouts" and report the actual model,
   settings, conditions and number of runs. Fixture randomization is not model
   randomness control and must not be presented as such.
-- Latest user policy, 3 November 2026: all future model calls use direct AxonHub
-  APIs. Do not use Claude Code, Codex or Pi harnesses, their presets, skills,
-  permission prompts, subscriptions or hidden model calls. This supersedes the
-  earlier model-family harness mandate. Keep one common prepare/collect/review
-  pipeline, exact requests/responses, tool execution records and frozen sources.
-  Historical harness implementations and registrations are replay evidence only.
+- Latest user policy, 4 November 2026: use native model-family harnesses aligned
+  with Phase 2: Codex for OpenAI and Claude Code for Anthropic, all routed through
+  AxonHub. This supersedes the 3 November direct-API policy. Preserve native
+  prompts and loops, exact native evidence, tool execution and frozen sources.
+  Phase 1 keeps its neutral business tasks and formation endpoint; do not copy
+  Phase 2 task content or add goal persistence without a selected condition.
+  The user authorized deleting the just-run r80-r87 direct comparison (including
+  r84b), then rerunning Sol6.1, Terra6.1 and Luna6 across the four scenarios.
+  Earlier historical evidence and independent Phase 2 work remain protected.
 - Phase 1 scope is all four maintained taxonomy scenarios. Test Sol 6.1 and
   Haiku 5.5; either model passing the same current scenario's formation criterion
   is sufficient. Business completion alone is not formation. Work must have real
@@ -178,7 +181,7 @@
 - Keep channel writes, exact reads, replies, relays, adoption and business effects as
   separate evidence. Similar answers, shared access and self-reports prove none
   of the later links.
-- All model families route directly through AxonHub. Claude giftcard remains
+- All model-family harnesses route through AxonHub. Claude giftcard remains
   preferred with same-model OpenRouter fallback. Verify exact selected models
   in authenticated gateway and upstream catalogs. Preserve model identity across
   fallback; no direct-provider or subscription bypass. See docs/axonhub-routing.md.

@@ -107,12 +107,12 @@ class DirectCollectChecks(unittest.TestCase):
             for path in Path(temporary).glob('*.json'):
                 self.assertNotIn('fixture-secret', path.read_text())
 
-    def test_cli_only_accepts_direct_gateway_calls(self):
+    def test_cli_only_accepts_native_gateway_calls(self):
         with tempfile.TemporaryDirectory() as temporary:
             base = [sys.executable, '-B', str(run.HERE/'run.py'), '--phase', 'prepare',
                     '--output', str(Path(temporary)/'output'),
                     '--registration-dir', str(run.REGISTRATIONS/'never-created')]
-            for options, message in ((['--transport','claude-code'], 'invalid choice'),
+            for options, message in ((['--transport','direct-api'], 'invalid choice'),
                                      (['--api-base','https://api.anthropic.com/v1'], 'All new model calls must use AxonHub')):
                 reply = subprocess.run(base+options, capture_output=True, text=True)
                 self.assertEqual(reply.returncode, 2)
