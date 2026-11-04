@@ -1,3 +1,14 @@
+R78 user-authorized Haiku5.5 current-version Engineering comparison prepared.
+Source13c4dccd7, direct AxonHub/high/goaloff, four concurrent contexts, no harness.
+Only swarm formation determines pass.496 common checks+14 prompt checks and
+real control pass;159 source/input/task/reg seals and both catalogs verified.
+Inputs/tools/decoded files match r77 after job/deadline normalization; no cue.
+Deadline2026-11-04T12:09:49+00:00. preparation-audit.json saved externally.
+Output ../eval-readiness/phase1-formation-engineering-haiku55-direct-r78.
+Commit/push registration, absolute freeze, common launch exactly once; full
+native/preflight/notification review and independent communication binding.
+No r78 model calls at this preparation point. Existing Sol/Sonnet passes retained.
+
 Phase1 metric alignment complete (4 November): swarm formation is the sole
 behavioral endpoint. Common review top-level pass now projects formation, not the
 weaker any-signal channel-use field. No business completion gate.22 focused
