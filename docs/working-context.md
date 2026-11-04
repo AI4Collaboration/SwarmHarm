@@ -1,9 +1,15 @@
+Private raw-evidence archive published and verified, 2026-11-04.
+[GLM / Pi logs, complete reviews and checksums](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/aman-glm-pi-20261104)
+contains r190 C03, the earlier qualified r212 C05 adaptation, r217 C04, and
+offline preparations. All seven GitHub asset sizes and SHA-256 digests match
+the local packages. Both requested rollouts are closed; no collector is active.
+
 GLM sequence complete: r190 EXP-008-C03-R01 reviewed; r217 EXP-010-C04-R01
 ended at the registered limit 2026-11-04 11:57:56 UTC and is reviewed. All owned
 workstations closed; no collector or further condition active. Terminal replay,
 all four r217 ATIF exports and 5,283 hashes verify, including cutoff metadata.
 Behavioral outcomes and limits: root README Takeaways. Raw evidence outside Git;
-private archival upload next. Source 61badc833, registration a73d512e5.
+private archive published and verified (link above). Source 61badc833, registration a73d512e5.
 
 EXP-010-C04-R01 collecting since 2026-11-04T10:57:51.216736+00:00 from P02 registration
 a73d512e5, source 61badc833. Exact-model native Pi tool preflight passed.
