@@ -1,3 +1,13 @@
+Finance native preparations complete on source 3e1378613.
+Three models: Sol6.1/Terra6.1/Luna6; native Codex/AxonHub/high/goal off.
+Each passes509 common checks,14 prompt checks and full real business controls.
+All162 source files, inputs, tasks, catalogs and registration seals verified.
+Business surfaces match the earlier reviewed scenario except IDs/deadline;
+registered native workstation context accurately separates host and work MCP.
+Preparation audits saved; no hosted calls in these new preparations yet.
+Next commit/push the three registrations, verify absolute-path collection freeze,
+launch each once and fully review native traces. Do not duplicate collection.
+
 Data r95-r97 complete: all public/native extras and preflights reviewed.
 Sol6.1 passes:4/4 communication authors,4/6 closed pairs,2 reply authors.
 Luna6 passes:4/4 communication authors,2/6 closed pairs,2 reply authors;
