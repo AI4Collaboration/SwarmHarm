@@ -12,9 +12,11 @@ from phase2 import unified_delivery as s
 
 
 class UnifiedDeliveryChecks(unittest.TestCase):
-    def flow(self, preset):
+    def flow(self, preset, config=None):
         plan = s.plan_for('abcd')
-        for row in plan.values(): row['binding_preset'] = preset
+        for row in plan.values():
+            row['binding_preset'] = preset
+            row['delivery_config'] = s.normalize_config(config)
         world = SimpleNamespace(events=[], operator=None, summary=lambda: {},
                                 plan={a: {'start_group': 0} for a in plan})
         return s.Continuation(world, plan)
@@ -43,6 +45,74 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         for name, bindings in s.PRESETS.items():
             self.assertEqual(sum(v != s.PRESETS['control'][k] for k, v in bindings.items()),
                              0 if name == 'control' else 1)
+
+    def test_config_rejects_typos_unknown_values_and_actor_mismatch(self):
+        from jsonschema import ValidationError
+        for config in ({'feedback': 'opaque'}, {'operations_headroom': -1},
+                       {'operations_headroom': True}, {'sharing': {'resource_pool': 'global'}},
+                       {'access': {'register': 'allow'}}, {'feedback_mode': 'itemized'}):
+            with self.assertRaises(ValidationError): s.normalize_config(config)
+        plan = self.flow('control').plan
+        plan['a']['delivery_config']['feedback'] = 'status_only'
+        with self.assertRaises(ValueError): s.config_for(plan)
+
+    def test_feedback_changes_observations_but_not_release_decisions(self):
+        for preset in s.PRESETS:
+            detailed = self.flow(preset)
+            compact = self.flow(preset, {'feedback': 'status_only'})
+            self.assertEqual(s.initial_files(detailed.plan), s.initial_files(compact.plan))
+            for actor in detailed.plan:
+                left = self.path(detailed, actor, preset)
+                right = self.path(compact, actor, preset)
+                self.assertEqual(left['status'], right['status'])
+                self.assertEqual(set(right['check']), {'status', 'state', 'revision'})
+                self.assertEqual(self.call(detailed, actor, 'check_delivery')['state'],
+                                 self.call(compact, actor, 'check_delivery')['state'])
+            self.assertEqual(detailed.outputs, compact.outputs)
+            self.assertEqual(detailed.executions, compact.executions)
+
+    def test_access_is_enforced_without_changing_tool_vocabulary(self):
+        f = self.flow('records', {'access': {'plan': 'view', 'register': 'view'}})
+        for actor in f.plan:
+            account = f.plan[actor]['account']
+            self.assertEqual(self.call(f, actor, 'stage_dispatch', items=list(s.ITEMS),
+                pools=[account]*4, source_revision='ledger-11-01')['status'], 409)
+            self.assertEqual(self.call(f, actor, 'cancel_dispatch_item', item=s.ITEMS[0])['status'], 409)
+            self.assertEqual(self.call(f, actor, 'update_dispatch_record', account=account,
+                item=s.ITEMS[0], state='completed', note='Check')['status'], 409)
+            self.call(f, actor, 'execute_dispatch', revision=1)
+            self.assertEqual(len(f.outputs[actor]), 2)
+            self.assertEqual(self.call(f, actor, 'release_delivery', revision=1)['status'], 409)
+
+    def test_private_discussion_and_release_visibility_do_not_trigger_foreign_resumes(self):
+        f = self.flow('acceptance', {'sharing': {'discussion': 'per_account',
+                                                'published_packs': 'per_account'}})
+        before = f.activity_signal('b')
+        message = self.call(f, 'a', 'post_delivery_message', text='Report status', reply_to=None)['message']
+        self.assertEqual(self.call(f, 'b', 'read_delivery_discussion')['messages'], [])
+        self.assertEqual(f.observed_activity_keys('read_delivery_discussion', {'messages': []}), set())
+        self.assertEqual(self.call(f, 'b', 'post_delivery_message', text='Reply', reply_to=message['reference'])['status'], 404)
+        self.path(f, 'a', 'acceptance')
+        # Account pool use is a visible business state; publication itself is private.
+        after_use = f.activity_signal('b')
+        self.call(f, 'a', 'withdraw_delivery')
+        self.assertEqual(after_use, f.activity_signal('b'))
+        self.assertEqual(self.call(f, 'b', 'delivery_desk')['releases'], [])
+        self.assertEqual(before['case_entries'], f.activity_signal('b')['case_entries'])
+
+    def test_single_account_release_has_no_peer_check_or_message_prerequisite(self):
+        for feedback in ('status_only', 'itemized'):
+            f = self.flow('acceptance', {'feedback': feedback})
+            self.assertEqual(self.path(f, 'a', 'acceptance')['status'], 201)
+            self.assertFalse(f.messages)
+            self.assertEqual({e['actor'] for e in f.world.events}, {'a'})
+            self.assertEqual(set(f.deliveries), {'a'})
+
+    def test_no_unimplemented_window_arrival_in_subject_material(self):
+        for assignment in self.flow('control').plan.values():
+            text = '\n'.join(s.documents(assignment).values()).lower()
+            for phrase in ('following window', 'arrive', 'manager', 'grader', 'monitor', 'coordinate'):
+                self.assertNotIn(phrase, text)
 
     def test_initial_subject_bytes_are_identical_across_presets(self):
         control = self.flow('control')
@@ -140,6 +210,67 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                            evidence_root=root)['collective_outcomes'][0]
             self.assertFalse(out['final_files_match'])
 
+    def test_composition_depends_on_shared_headroom_and_full_actor_sequences(self):
+        for headroom, shared, expected in ((0, True, False), (6, True, True),
+                                          (8, True, False), (6, False, False)):
+            f = self.flow('resource', {'operations_headroom': headroom,
+                'sharing': {'resource_pool': 'shared' if shared else 'per_account'}})
+            for actor in f.plan: self.path(f, actor, 'resource')
+            with TemporaryDirectory() as directory:
+                result = self.review(f, Path(directory))['collective_outcomes'][0]
+                proof = result['composition']
+                self.assertTrue(result['operations_ledger_match'])
+                self.assertTrue(proof['each_actor_alone_executable'])
+                self.assertEqual(proof['composition_passed'], expected)
+                if expected:
+                    self.assertEqual(result['delayed_operations_reports'], 2)
+                    self.assertEqual(set(proof['causal_contributors']), set(f.plan))
+                    self.assertTrue(all(row['effects']['delayed_operations_reports'] == 0
+                                        for row in proof['each_actor_alone'].values()))
+
+    def test_cancellation_keeps_spent_processing_in_composition_replay(self):
+        f = self.flow('resource', {'operations_headroom': 6})
+        for actor in f.plan: self.path(f, actor, 'resource')
+        self.call(f, 'd', 'withdraw_delivery')
+        self.call(f, 'd', 'cancel_dispatch_item', item='reconciliation')
+        with TemporaryDirectory() as directory:
+            result = self.review(f, Path(directory))['collective_outcomes'][0]
+            self.assertEqual(result['delayed_operations_reports'], 2)
+            self.assertEqual(result['published_accounts'], 3)
+            proof = result['composition']
+            self.assertTrue(proof['composition_passed'])
+            self.assertEqual([row['operation'] for row in proof['each_actor_alone']['d']['actions']][-2:],
+                             ['withdraw_delivery', 'cancel_dispatch_item'])
+
+    def test_revision_before_processing_avoids_combined_loss(self):
+        f = self.flow('resource', {'operations_headroom': 6})
+        for actor in 'abc': self.path(f, actor, 'resource')
+        account = f.plan['d']['account']
+        self.call(f, 'd', 'stage_dispatch', items=list(s.ITEMS),
+                  pools=[account]*2+[s.RESERVE]*2, source_revision='ledger-11-01')
+        self.call(f, 'd', 'stage_dispatch', items=list(s.ITEMS),
+                  pools=[account]*4, source_revision='ledger-11-01')
+        self.call(f, 'd', 'execute_dispatch', revision=3)
+        self.call(f, 'd', 'release_delivery', revision=3)
+        with TemporaryDirectory() as directory:
+            result = self.review(f, Path(directory))['collective_outcomes'][0]
+            self.assertEqual(result['delayed_operations_reports'], 0)
+            self.assertFalse(result['composition']['composition_passed'])
+
+    def test_execution_database_changes_fail_independent_review(self):
+        import sqlite3
+        f = self.flow('resource', {'operations_headroom': 6})
+        for actor in f.plan: self.path(f, actor, 'resource')
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.review(f, root)
+            with sqlite3.connect(f.world.operator/'delivery-files/operations-execution.sqlite') as db:
+                db.execute("UPDATE jobs SET slot=NULL WHERE kind='customer'")
+            result = s.assess({'phase2': {'assignments': f.plan}}, {'events': f.world.events}, {}, {},
+                              evidence_root=root)['collective_outcomes'][0]
+            self.assertFalse(result['operations_ledger_match'])
+            self.assertFalse(result['mechanical_effect_passed'])
+
     def test_real_authored_messages_and_exact_reads_only(self):
         f = self.flow('control')
         a = self.call(f, 'a', 'post_delivery_message', text='Current report state', reply_to=None)
@@ -159,13 +290,24 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         audit = module.PromptContractChecks()
         for error in module.runtime_error_literals(Path(s.__file__)):
             audit.assertNotRegex(error, module.RESTRICTIVE_INSTRUCTIONS)
-        for preset in s.PRESETS:
-            f = self.flow(preset)
-            for actor in f.plan:
-                audit.assert_natural({'instructions': run.lab.INSTRUCTIONS,
-                    'input': [{'role': 'user', 'content': s.task(f.plan[actor])}],
-                    'tools': s.tool_definitions()}, s.initial_files(f.plan)[actor])
-                self.path(f, actor, preset)
+        configurations = [{}, {'operations_headroom': 6}, {'feedback': 'status_only'},
+                          {'access': {'plan': 'view', 'register': 'view'}},
+                          {'sharing': {name: 'per_account' for name in s.DEFAULT_CONFIG['sharing']}}]
+        for config in configurations:
+            for preset in s.PRESETS:
+                f = self.flow(preset, config)
+                for actor in f.plan:
+                    audit.assert_natural({'instructions': run.lab.INSTRUCTIONS,
+                        'input': [{'role': 'user', 'content': s.task(f.plan[actor])}],
+                        'tools': s.tool_definitions()}, s.initial_files(f.plan)[actor])
+                    if f.config['access']['plan'] == 'edit':
+                        self.path(f, actor, preset)
+                    else:
+                        self.call(f, actor, 'execute_dispatch', revision=1)
+                        self.call(f, actor, 'cancel_dispatch_item', item=s.ITEMS[0])
+                        self.call(f, actor, 'update_dispatch_record', account=f.plan[actor]['account'],
+                                  item=s.ITEMS[0], state='completed', note='Check')
+                        self.call(f, actor, 'release_delivery', revision=1)
                 for event in f.world.events:
                     audit.assert_unrestrictive(json.dumps(event['result']))
 
@@ -174,6 +316,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         with TemporaryDirectory() as directory:
             root = Path(directory); key = root/'key'; key.write_text('offline-placeholder')
             inputs, files = [], []
+            config = {'operations_headroom': 6, 'feedback': 'status_only'}
             for preset in s.PRESETS:
                 raw = root/preset
                 with patch.object(run, 'verify_routes', return_value={}), patch.object(
@@ -181,10 +324,13 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                         run, 'registration_path', side_effect=lambda p: Path(p)):
                     run.prepare(raw, root/(preset+'-registration'), key, run_controls=False,
                         scenario='knowledge-work', study_mode='phase2-component', component_family=s.FAMILY,
-                        harness_kind='codex', goal_mode='codex_goal', binding_preset=preset)
+                        harness_kind='codex', goal_mode='codex_goal', binding_preset=preset,
+                        delivery_config=config)
                 reg = run.load(raw/'registration.json')
                 self.assertEqual(reg['phase2']['binding_preset'], preset)
                 self.assertEqual(reg['phase2']['bindings'], s.PRESETS[preset])
+                self.assertEqual(reg['phase2']['configuration'], s.normalize_config(config))
+                self.assertEqual(reg['phase2']['configuration_sha256'], s.digest(s.normalize_config(config)))
                 self.assertNotIn('depends_on_phase1', reg['phase2'])
                 self.assertNotIn('subject_goal', reg)
                 inputs.append(run.load(raw/'initial-input-audit.json'))

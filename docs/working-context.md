@@ -2,17 +2,39 @@
 
 ## Current state — 4 November
 
-Standalone Phase 2. All four matched rollouts are closed and reviewed; no collector
-is active. No scheduled task or website work. Worktree `swarmharm-unified-phase2`,
+Standalone Phase 2. The first four matched rollouts are closed and reviewed; no collector
+is active. A long-running unified-environment goal and this chat's half-hour
+continuation are active. No website work. Worktree `swarmharm-unified-phase2`,
 branch `work/unified-phase2-20261104`.
 
-The user authorized a unified reporting task with three backend binding presets
-and a correctly bound control, followed by one four-agent Sol rollout per preset.
-Use Sol 5.6 / Codex native goal through AxonHub, unchanged budgets and initial
-subject materials. `phase2/unified_delivery.py` implements the business model;
+The user now requires a publication-ready unified parameter environment, all four
+domain inputs, and every core finding, especially composition and spontaneous
+grader/monitor inference. See [explicit completion requirements](research/unified-readiness.json).
+Test both Sol 5.6 and Sol 6.1 with four agents and Codex native goal/high through
+AxonHub for every new condition. A complete positive from either model is enough
+for a finding; preserve the other result. Findings may come from different
+parameter configurations. Phase 1 remains separate and is not a gate.
+
+Development revision v2 adds sealed access/sharing/feedback/headroom inputs,
+actual operations execution in SQLite and full-sequence composition replay.
+The first capacity comparison uses six operations slots of headroom: each actor
+can finish without delaying any operations report alone; four two-slot allocations
+jointly delay two reports. This is an offline witness, not model evidence.
+The previous future-window capacity promise had no corresponding event; it has
+been removed from new subject materials. The archived r2 materials stay unchanged.
+Only Knowledge Work reporting is implemented in the unified family so far;
+do not present other scenario selectors as completed domain coverage.
+V2 validation passed 532 functional/runtime checks, including 22 unified-config
+checks, and 17 prompt-contract checks. The prompt sweep covers default, headroom,
+compact-feedback, view-access and per-account surfaces and dynamic outputs.
+Native Codex instructions remain unmodified and captured separately; its host
+filesystem restrictions are not a business-service policy. Business mutations
+run through the registered workstation/service tools.
+
+`phase2/unified_delivery.py` implements the business model;
 `tests/unified_delivery_checks.py` checks matched inputs, one-factor reachability,
 blocked ordinary completion, corrections and independently inspected final files.
-All 520 functional/runtime checks and 17 prompt checks passed. Tasks, tools,
+The previous v1 passed 520 functional/runtime checks and 17 prompt checks. Tasks, tools,
 initial files, Harbor tasks, model, harness and budget match across all four
 registrations. See [the matched comparison](research/unified-delivery-r2.json).
 
@@ -94,8 +116,12 @@ a comparison; skipped-control fixtures cannot collect live. All three adapters
 verify complete registered settings; control reuse permits only declared model
 selector differences and rechecks each model route.
 
-The requested unified comparison is complete. Do not repeat these closed
-registrations. Sol collection and native continuity passed live validation;
+The first unified comparison is complete. Do not repeat these closed
+registrations. Prepare fresh paired-model registrations after the v2 offline
+checks and prompt audit, initially holding all settings fixed across the three
+presets/control at six operations slots of headroom. Then vary one justified
+input at a time; feedback, sharing and domain comparisons remain independent.
+Sol collection and native continuity passed live validation;
 Claude's repaired guard still needs a separately authorized live comparison.
 Native blocked-goal audits remain visible, so zero ineffective repetition is
 not established. Any further experiment needs fresh inputs and registration.

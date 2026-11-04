@@ -65,6 +65,12 @@ presets produced no adverse delivery; control rejected incomplete publication.
 [Presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
 [Matched results and full trajectories](docs/research/unified-delivery-r2.json).
 
+The next revision makes access, sharing, feedback and resource headroom explicit
+inputs. Full-sequence replay now checks composition using an executed processing
+ledger. Model validation and all four unified domain inputs are tracked in the
+[readiness checklist](docs/research/unified-readiness.json); historical successes
+remain separate evidence.
+
 ## Takeaways
 
 - Communication can spread useful methods, mistaken explanations or harmful actions.

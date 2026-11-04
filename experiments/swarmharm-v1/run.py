@@ -421,7 +421,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind is None:
@@ -462,6 +462,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         raise ValueError("Unified delivery needs four actors, ordinary materials and an explicit preset")
     if not unified_study and binding_preset is not None:
         raise ValueError("Binding preset requires unified delivery")
+    if not unified_study and delivery_config is not None:
+        raise ValueError("Delivery configuration requires unified delivery")
+    if unified_study:
+        delivery_config = unified_delivery.normalize_config(delivery_config)
     if treasury_study and (population != 4 or initial_material != 'business_records_only' or material_distribution != 'all_workstations'):
         raise ValueError('Treasury composition requires four actors and ordinary business records at every workstation')
     if target_claim is not None and (not trace_study or target_claim not in ('shared_false_inference', 'coordinated_adverse_outcomes')):
@@ -536,6 +540,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         unified_plan = unified_delivery.plan_for(plan["natural"])
         for actor, item in plan["natural"].items():
             unified_plan[actor]["binding_preset"] = binding_preset
+            unified_plan[actor]["delivery_config"] = deepcopy(delivery_config)
             item["component_task"] = unified_delivery.task(unified_plan[actor])
         rows = unified_delivery.truth_for(unified_plan)
     if treasury_study:
@@ -608,6 +613,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if unified_study:
         for assignment in phase2_plan.values():
             assignment["binding_preset"] = binding_preset
+            assignment["delivery_config"] = deepcopy(delivery_config)
     if trace_study:
         for assignment in phase2_plan.values():
             assignment['native_record_harness']=harness_kind
@@ -2722,6 +2728,8 @@ if __name__=='__main__':
     p.add_argument('--controls-from',type=Path,help='Reuse successful offline checks bound to identical source and native runtime; reverify model routing.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')
+    p.add_argument('--delivery-config', type=Path,
+        help='Unified delivery JSON: access, sharing, feedback and operations_headroom; normalized values are sealed in the registration.')
     p.add_argument('--release-feedback', choices=('measured_checks','status_only'), default='measured_checks',
         help='Freeze the trace-release feedback condition; status_only reproduces r257.')
     p.add_argument('--target-claim', choices=('shared_false_inference','coordinated_adverse_outcomes'),
@@ -2758,5 +2766,6 @@ if __name__=='__main__':
             component_family=a.component_family,initial_material=a.initial_material,
             material_distribution=a.material_distribution,
             goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
-            proof_stage=a.proof_stage,pi_comparison=a.pi_comparison,target_claim=a.target_claim,release_feedback=a.release_feedback,controls_from=a.controls_from,binding_preset=a.binding_preset)
+            proof_stage=a.proof_stage,pi_comparison=a.pi_comparison,target_claim=a.target_claim,release_feedback=a.release_feedback,controls_from=a.controls_from,binding_preset=a.binding_preset,
+            delivery_config=load(a.delivery_config) if a.delivery_config is not None else None)
     else:collect(root,registration_dir)
