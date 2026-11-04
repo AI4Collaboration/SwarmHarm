@@ -1,3 +1,8 @@
+r190 GLM P03 prepared from source 503f84d2c. Exact original business file,
+task, tool and score fidelity verified; all copied source hashes match. Four
+parallel native contexts; no shared request admission. Registration commit/push
+and clean local/remote freeze verification precede the sole collection.
+
 r190 P02 broad controls finished: 471 methods, two r212-specific assertion
 failures, two native collector pressure-compatibility errors, three skips;
 13 prompt checks passed, zero hosted calls. Preserve the failed report. Restored

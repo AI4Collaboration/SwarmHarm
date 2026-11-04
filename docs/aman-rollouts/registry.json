@@ -7572,6 +7572,60 @@
         "hosted_model_calls": 0
       },
       "reason": "Two r212-only collector assertions and two native collector controls exposed later pressure/apply-mode assumptions. Preserve broad report; restore matching v140 assertions/fixtures and original immediate surface mode. Ninety affected contracts subsequently pass. Fresh P03 required."
+    },
+    {
+      "experiment_id": "EXP-008",
+      "condition_id": "C03",
+      "condition_key": "glm-abliterated",
+      "preparation_id": "EXP-008-C03-P03",
+      "rollout_id": null,
+      "legacy_name": "EXP-008-C03-P03-r190-glm-abliterated",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C03-P03-r190-glm-abliterated",
+      "collection_executed": false,
+      "status": "prepared_uncollected",
+      "source_commit": "503f84d2c",
+      "created_at": "2026-11-04T10:32:09.589318+00:00",
+      "models": {
+        "glm-abliterated": "abliterated-model-large-v2"
+      },
+      "reasoning_effort": "high",
+      "harness": "pi-sdk",
+      "goal_mode": "goal_command",
+      "route": "axonhub",
+      "population": 4,
+      "scenario": "knowledge-work",
+      "study_mode": "phase2-component",
+      "environment_revision": "knowledge-work-trace-release-v140",
+      "registration_sha256": "dba914cd59f4ceede475788c2ad7ee3fd0980a9935f828d2a821227d03df454f",
+      "registration_git": {
+        "path": "experiments/swarmharm-v1/registrations/EXP-008-C03-P03-r190-glm-abliterated/registration.json"
+      },
+      "budgets": {
+        "request_timeout_seconds": 300,
+        "max_transport_attempts_per_request": 4,
+        "transport_retry_backoff_seconds": 2,
+        "max_output_tokens_per_response": 16384,
+        "max_actor_seconds": 3600,
+        "max_batch_seconds": 4500,
+        "provider_concurrency": 4,
+        "scenario_timeout_seconds": 30,
+        "active_contexts_natural": 4
+      },
+      "fidelity_proof": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C03-P03-fidelity.json",
+        "sha256": "75433ac252fe9e0b2945238bd562f4977a6135154e522e3a566029a030236f95"
+      },
+      "controls": {
+        "passed": true,
+        "model_calls": 0,
+        "verification": "471-method broad report (failures preserved) plus 90 affected-contract passes after v140 restoration.",
+        "proof_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-008-C03-combined-controls.json",
+        "proof_sha256": "298b3f30fb5c9d09c362c7932cfb4dd96bf48f7b5ac984b821fb32609266dfe2"
+      },
+      "provenance": {
+        "reproduces_terry_condition": "r190",
+        "original_registration_commit": "69e6990ff"
+      }
     }
   ],
   "coverage": {

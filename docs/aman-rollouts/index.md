@@ -1,3 +1,5 @@
+EXP-008-C03-P03 prepared, source 503f84d2c; original r190 fidelity and copied-source hashes verified. Collection not started.
+
 # Latest — GLM r190 then r217
 
 EXP-008-C03-P01/P02 are preserved offline failures with zero hosted calls.
@@ -12,7 +14,7 @@ reviewed with time/concurrency limits, all four ATIF exports validated by conten
 
 [Naming and workflow](README.md) · [Machine-readable registry](registry.json) · [Guideline audit](guidelines.md)
 
-Coverage: **11 experiments, 48 executed collection attempts, 32 uncollected preparations** in the inspected local archive.
+Coverage: **11 experiments, 48 executed collection attempts, 33 uncollected preparations** in the inspected local archive.
 
 These IDs are new aliases. Original names, frozen files and Terry’s records remain intact. A preparation is not an execution; a preflight-only execution is not subject behavior.
 
