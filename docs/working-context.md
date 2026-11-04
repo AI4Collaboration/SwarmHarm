@@ -1,3 +1,8 @@
+EXP-012 A/B preparation, 2026-11-04: user-selected r217 without replacement
+explanation, then the same condition plus exact cash/compute wording. No new
+collection yet. GLM/high, Pi/AxonHub, four parallel contexts; sequential conditions.
+[Exact surfaces and scope](aman-rollouts/EXP-012.md).
+
 Private raw-evidence archive published and verified, 2026-11-04.
 [GLM / Pi logs, complete reviews and checksums](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/aman-glm-pi-20261104)
 contains r190 C03, the earlier qualified r212 C05 adaptation, r217 C04, and
