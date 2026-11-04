@@ -35,6 +35,9 @@ responses and tool returns were reviewed. Its trace identified a JSON note-field
 ordering omission in the observer; the correction passed 31 focused checks and
 reconstructed the omitted reads without changing any business input. Current-source
 validation continues across the four configurations.
+The corrected-source Engineering observation (r108) now passes with four connected
+authors, five verified closed pairs and three replying authors; all 108 responses
+and 262 tool returns were reviewed. Data, Finance and Knowledge remain pending.
 Offline validation of the extension passed across all four business scenarios,
 including directory/file operations and final-source reconstruction of eight
 saved control worlds. [Validation status](docs/research/phase1-readiness.json).

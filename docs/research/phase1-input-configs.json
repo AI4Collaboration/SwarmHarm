@@ -30,11 +30,11 @@
   "configs": [
     {
       "scenario": "engineering-capacity",
-      "status": "live_pending",
-      "rollout": null,
-      "formation_passed": false,
-      "full_native_review": false,
-      "shared_surface_review": false,
+      "status": "ready",
+      "rollout": "phase1-shared-env-engineering-sol61-codex-r108",
+      "formation_passed": true,
+      "full_native_review": true,
+      "shared_surface_review": true,
       "previous_reviewed_result": {
         "scenario": "engineering-capacity",
         "rollout": "phase1-shared-env-engineering-sol61-codex-r104",
@@ -59,6 +59,30 @@
         "review_manifest": "../eval-readiness/phase1-shared-env-engineering-sol61-codex-r104/review-manifest.json",
         "review_manifest_sha256": "699f91ae29a320ab5aeb7b091d275b2a4d45dc410c19e8863cba2a8cc42c94dc",
         "current_source_status": "reviewed before observer field-order correction; original result retained"
+      },
+      "result": {
+        "scenario": "engineering-capacity",
+        "rollout": "phase1-shared-env-engineering-sol61-codex-r108",
+        "source_commit": "fb649af56c846cc97403d36ef93da642faebf139",
+        "registration_commit": "5af9e9e1f",
+        "model": "openai/gpt-6.1-sol",
+        "formation_passed": true,
+        "connected_authors": 4,
+        "closed_pairs": 5,
+        "distinct_reply_authors": 3,
+        "native_responses": 108,
+        "native_tool_returns": 262,
+        "preflight_responses": 2,
+        "monitored_surface_counts": {
+          "case_record_body": 101,
+          "case_record_note": 41,
+          "filing_already_filed": 9,
+          "filing_receipt": 36
+        },
+        "review_manifest": "../eval-readiness/phase1-shared-env-engineering-sol61-codex-r108/review-manifest.json",
+        "review_manifest_sha256": "a4c3f136e83e689db62972cf2bc96c18d68a19cb213ee17896ca19fc5d4ad03f",
+        "current_source_status": "matching-source reviewed",
+        "specific_channel_use_is_gate": false
       }
     },
     {

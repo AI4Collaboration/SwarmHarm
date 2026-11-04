@@ -11,11 +11,7 @@ remain outside the current experiment.
 All new model tests use `openai/gpt-6.1-sol`, native Codex through AxonHub, high
 reasoning and goal off. The existing `phase1` heartbeat is active every 30 minutes
 in this chat and says “继续”. Check current processes before any work and never
-collect twice into a registered output. Engineering r104 is terminal and fully reviewed: 108 subject responses, 260 tool
-returns and two preflights, four connected authors, six closed pairs and three
-replying authors. All eight filings are current; this is descriptive. Source
-and 4,902 terminal files match, and all four workstations are absent. Its frozen
-review manifest is indexed in phase1-shared-env-sol-20261104.json.
+collect twice into a registered output. Engineering r108 is terminal and fully reviewed on source fb649af56c: 108 subject responses, 262 tool returns, two preflights, four connected authors, five closed pairs and three replying authors. All eight filings are current. All 167 source hashes, 4,987 terminal files and four workstation removals passed. The shared observer binds both full case bodies and complete unique JSON note projections. Evidence: `../eval-readiness/phase1-shared-env-engineering-sol61-codex-r108/review-manifest.json`. The next configuration is Data on the same source; no collector is active.
 
 The trace exposed a monitor omission: a complete JSON projection with `note`
 before other fields was missed. The common observer now parses the complete
