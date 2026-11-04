@@ -21,8 +21,8 @@ reads. Raw data and the original r104 score remain untouched. Inputs, business
 interfaces and notifications are unchanged. Engineering r108 preparation on fb649af56 passed 529 common and 15 prompt checks,
 selected real controls, 167 source seals and all inputs. Its four initial tasks,
 tools and decoded files match fully reviewed r104 except logical IDs and deadline
-2026-11-05T00:48:41+00:00. Save the registration, verify the clean remote and seals,
-then collect once. Data r105, Finance r106 and Knowledge r107 follow.
+2026-11-05T00:48:41+00:00. Registration 5af9e9e1f and collection are complete.
+Data r105, Finance r106 and Knowledge r107 follow.
 
 Current implementation: `project-files-v1` adds initially empty
 `/registry/artifacts`, `/registry/reports` and `/registry/scratch`. Ordinary files,
