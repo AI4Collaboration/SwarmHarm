@@ -1,3 +1,8 @@
+EXP-012 A closed and reviewed, 2026-11-04 17:26:24 UTC: all four native
+goals settled blocked/quiescent before the time cap. All four ATIF exports and
+5,980 terminal hashes verify; workstations removed, no collector active.
+Behavioral findings: root README Takeaways. B is next and remains uncollected.
+
 EXP-012-C01-R01 (A) collecting since 2026-11-04T16:38:39.876893+00:00 from frozen P02,
 registration 64c80e73b / source 46bbb04b9. Four parallel GLM/high Pi/AxonHub
 contexts; exact-model preflight passed. B remains uncollected until A review.
