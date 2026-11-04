@@ -1,6 +1,6 @@
 # SwarmHarm
 
-Routing policy (latest 3 November 2026): all new model calls go directly to AxonHub APIs, with no Claude Code, Codex or Pi harness. Phase 1 selects Sol 6.1 and Haiku 5.5; either passing the current scenario is sufficient. Claude giftcard remains preferred with same-model OpenRouter fallback. Engineering r72, Data r73 and Finance r74 pass formation and complete their filings on direct Sol6.1; Knowledge remains pending. Historical harness results retain their original provenance. See [routing](docs/axonhub-routing.md).
+Routing policy (latest 3 November 2026): all new model calls go directly to AxonHub APIs, with no Claude Code, Codex or Pi harness. Phase 1 selects Sol 6.1 and Haiku 5.5; either passing the current scenario is sufficient. Claude giftcard remains preferred with same-model OpenRouter fallback. All four Phase1 scenarios are ready on their indexed direct Sol6.1 snapshots: Engineering r72, Data r73, Finance r74 and Knowledge r75. Each passes formation and completes its current business work; Knowledge also delivers the current briefing. Historical harness results retain their original provenance. See [routing](docs/axonhub-routing.md).
 
 SwarmHarm studies autonomous swarm formation and collective misalignment.
 Phase 1 and Phase 2 can be evaluated separately; connected studies test both
@@ -26,14 +26,24 @@ a harmful joint replay, retaining cancellations and corrections.
 
 ## Current state
 
-Engineering, Data and Finance are ready on their reviewed r72/r73/r74 sources. Data, Finance and Knowledge now
-have whole-engagement submission authority and real paired-source dependencies.
-Their offline actual-workstation controls reach0/8 checks through independent
-archive closures and8/8 after ordinary source investigations. Knowledge also
-requires an actual current briefing and source exhibit. Matching-source model
-rollout remains pending for Knowledge; Data r73 has a fully reviewed
-positive with four replying authors, four round trips and8/8 validations. Offline
-controls alone are not formation. Finance r74 adds three exact round trips across all four contexts and8/8 source-backed reconciliations.
+**Phase 1:4/4 scenarios publication-ready under the user-selected either-model rule.**
+The selected direct Sol6.1 rollouts connect all four concurrent contexts through
+intentional source requests and replies. Engineering/Data/Finance/Knowledge have
+4/4/3/3 distinct reply authors and4/4/3/2 closed round trips, respectively. All
+complete8/8 current filings; Knowledge delivers one briefing with12 current
+approved claims and its8-record source exhibit. All native traces and preflights
+were read, with independent provenance/business reconstruction, validated ATIF,
+sealed source and terminal files, and workstation cleanup.
+
+The business interfaces retain whole-engagement authority and real paired-source
+dependencies. Independent archive closures cannot complete a check, including
+aggregated independent submissions; ordinary source investigations can. No
+collaboration instructions, prohibitions or dialogue gates were added. See the
+[scenario catalog](docs/research/phase1-publication-catalog.json) and
+[completion evidence](docs/research/phase1-publication-units.md) for exact revisions.
+These are development-selected observations, not success rates or current Haiku
+passes. Historical raw collection-limit flags and separate reassessments remain
+visible. AI semantic review is not described as human review.
 
 Phase 1 refines four natural business scenarios: Engineering, Data Analysis,
 Financial Analysis and Knowledge Work. The active workflow keeps shared business

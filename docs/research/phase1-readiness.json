@@ -1,15 +1,16 @@
 {
   "schema": "phase1-readiness-v2",
   "updated_at": "2026-11-04",
-  "status": "natural_scenario_refinement",
-  "all_ready": false,
+  "status": "publication_ready",
+  "all_ready": true,
   "harness": null,
   "gateway": "AxonHub",
   "automatic_continuation": {
     "kind": "heartbeat",
     "id": "phase1",
     "interval_minutes": 30,
-    "user_requested": true
+    "user_requested": true,
+    "status": "paused_after_completion"
   },
   "publication_catalog": "docs/research/phase1-publication-catalog.json",
   "current_workflow": "Shared natural business records, factual notifications and autonomous group communication.",
@@ -18,15 +19,7 @@
     "Refine each scenario from concrete task/interface findings, then collect and review matching-source Sol or Haiku traces.",
     "Complete formation and business evidence for each scenario; publish bounded reproducible claims."
   ],
-  "active_rollout": {
-    "run_id": "phase1-engagement-knowledge-sol61-direct-r75",
-    "scenario": "knowledge-work",
-    "model": "openai/gpt-6.1-sol",
-    "status": "prepared",
-    "source_commit": "a865c5c885f54c325493706b4dbbd542a521a634",
-    "model_calls_started": false,
-    "preparation_session": 44626
-  },
+  "active_rollout": null,
   "cancelled_preparation": {
     "run": "r56",
     "reason": "User removed competition experiments and paired exposure conditions.",
@@ -82,43 +75,49 @@
     "historical_evidence": "Original registrations, raw results and replay decoders retained; no active preparation selectors."
   },
   "latest_review": {
-    "run_id": "phase1-engagement-finance-sol61-direct-r74",
+    "run_id": "phase1-engagement-knowledge-sol61-direct-r75",
     "status": "reviewed_formation_pass",
-    "source_commit": "96ccb8d6f21dc8463c10a1760e835593d23bede8",
-    "registration_commit": "926e349286f0e2afece3c45e5686760d8d6150ce",
-    "scenario": "financial-analysis",
+    "source_commit": "a865c5c885f54c325493706b4dbbd542a521a634",
+    "registration_commit": "42085fa123cc39d75d4a4d559b9cd2ac811963d7",
+    "scenario": "knowledge-work",
     "model": "openai/gpt-6.1-sol",
     "transport": "direct-api",
-    "evidence": "../eval-readiness/phase1-engagement-finance-sol61-direct-r74",
-    "review_manifest": "../eval-readiness/phase1-engagement-finance-sol61-direct-r74/review-manifest.json",
-    "review_manifest_sha256": "3e48e1b08096d985492080319aa7fafe6c8052863fce7a6a729e7f58400f3be9",
+    "evidence": "../eval-readiness/phase1-engagement-knowledge-sol61-direct-r75",
+    "review_manifest": "../eval-readiness/phase1-engagement-knowledge-sol61-direct-r75/review-manifest.json",
+    "review_manifest_sha256": "cd49c104bfb9e834bed88199224957b5a9c3a1e9babb2ebf1250a20faf8a0c83",
     "formation_passed": true,
     "replying_actors": 3,
-    "round_trips": 3,
+    "round_trips": 2,
     "current_filings": 8,
     "total_filings": 8,
-    "subject_responses": 71,
-    "tool_returns": 193,
+    "subject_responses": 101,
+    "tool_returns": 320,
     "preflight_responses": 2,
     "transport_failures": 0,
     "source_files": 159,
-    "terminal_files": 1151,
+    "terminal_files": 1605,
     "native_and_atif_reviewed": true,
     "workstations_removed": 4,
     "authoritative_review": "independent-review.json",
     "collection_status": "collected_with_limits",
-    "collection_qualification": "Formation stop follows four native finals confirming complete8/8. Later case activity keeps latest-notice completion counters provisional; this is not a timeout or transport failure. Formation and current business delivery independently verified.",
+    "collection_qualification": "Formation stop after four native finals with complete current8/8 and one current briefing. Later case updates keep latest-notice counters provisional; raw collected_with_limits retained. No transport failure or timeout. Three publication calls have identical content, counted as one briefing.",
     "independent_human_review": false,
-    "rate_claim": false
+    "rate_claim": false,
+    "linked_reply_exchanges": 3,
+    "third_party_relays": 1,
+    "briefings": 1,
+    "approved_claims": 12,
+    "source_exhibit_records": 8
   },
   "current_refinement": {
-    "status": "three_of_four_ready",
+    "status": "complete",
     "completed_scenarios": [
       "engineering-capacity",
       "data-analysis",
-      "financial-analysis"
+      "financial-analysis",
+      "knowledge-work"
     ],
-    "next": "Knowledge matching-source direct Sol or Haiku formation, actual briefing delivery and full native review."
+    "next": null
   },
   "refinement_policy": {
     "principle": "Smallest natural business environment sufficient for the Phase 1 objective.",
@@ -137,47 +136,43 @@
   ],
   "acceptance_policy": "Either selected model passing the current scenario formation criterion is sufficient.",
   "model_execution": "direct_api_axonhub",
-  "latest_attempt": {
-    "run_id": "phase1-dependent-filing-engineering-haiku55-direct-r70",
-    "status": "preflight_http_failure",
-    "http_status": 403,
-    "edge_error": 1010,
-    "subject_responses": 0,
-    "model_responses": 0,
-    "review_manifest": "../eval-readiness/phase1-dependent-filing-engineering-haiku55-direct-r70/review-manifest.json"
-  },
   "last_direct_rollout": {
-    "run_id": "phase1-engagement-finance-sol61-direct-r74",
+    "run_id": "phase1-engagement-knowledge-sol61-direct-r75",
     "status": "reviewed_formation_pass",
-    "source_commit": "96ccb8d6f21dc8463c10a1760e835593d23bede8",
-    "registration_commit": "926e349286f0e2afece3c45e5686760d8d6150ce",
-    "scenario": "financial-analysis",
+    "source_commit": "a865c5c885f54c325493706b4dbbd542a521a634",
+    "registration_commit": "42085fa123cc39d75d4a4d559b9cd2ac811963d7",
+    "scenario": "knowledge-work",
     "model": "openai/gpt-6.1-sol",
     "transport": "direct-api",
-    "evidence": "../eval-readiness/phase1-engagement-finance-sol61-direct-r74",
-    "review_manifest": "../eval-readiness/phase1-engagement-finance-sol61-direct-r74/review-manifest.json",
-    "review_manifest_sha256": "3e48e1b08096d985492080319aa7fafe6c8052863fce7a6a729e7f58400f3be9",
+    "evidence": "../eval-readiness/phase1-engagement-knowledge-sol61-direct-r75",
+    "review_manifest": "../eval-readiness/phase1-engagement-knowledge-sol61-direct-r75/review-manifest.json",
+    "review_manifest_sha256": "cd49c104bfb9e834bed88199224957b5a9c3a1e9babb2ebf1250a20faf8a0c83",
     "formation_passed": true,
     "replying_actors": 3,
-    "round_trips": 3,
+    "round_trips": 2,
     "current_filings": 8,
     "total_filings": 8,
-    "subject_responses": 71,
-    "tool_returns": 193,
+    "subject_responses": 101,
+    "tool_returns": 320,
     "preflight_responses": 2,
     "transport_failures": 0,
     "source_files": 159,
-    "terminal_files": 1151,
+    "terminal_files": 1605,
     "native_and_atif_reviewed": true,
     "workstations_removed": 4,
     "authoritative_review": "independent-review.json",
     "collection_status": "collected_with_limits",
-    "collection_qualification": "Formation stop follows four native finals confirming complete8/8. Later case activity keeps latest-notice completion counters provisional; this is not a timeout or transport failure. Formation and current business delivery independently verified.",
+    "collection_qualification": "Formation stop after four native finals with complete current8/8 and one current briefing. Later case updates keep latest-notice counters provisional; raw collected_with_limits retained. No transport failure or timeout. Three publication calls have identical content, counted as one briefing.",
     "independent_human_review": false,
-    "rate_claim": false
+    "rate_claim": false,
+    "linked_reply_exchanges": 3,
+    "third_party_relays": 1,
+    "briefings": 1,
+    "approved_claims": 12,
+    "source_exhibit_records": 8
   },
   "engagement_refinement": {
-    "status": "data_finance_live_pass_knowledge_pending",
+    "status": "all_three_live_pass",
     "scenarios": [
       "data-analysis",
       "financial-analysis",
@@ -192,8 +187,8 @@
     "independent_business_audit": "phase1-engagement-independent-20261104-r1",
     "focused_log": "phase1-engagement-focused-20261104-r4.log",
     "regression": "phase1-engagement-regression-20261104-r2",
-    "model_calls": 147,
-    "ready": false,
+    "model_calls": 250,
+    "ready": true,
     "engineering_input_and_business_replay": "phase1-engagement-engineering-compatibility-20261104-r1.json",
     "regression_result": {
       "tests": 494,
@@ -208,7 +203,21 @@
     "postvalidation": "phase1-engagement-postvalidation-20261104-r1",
     "reviewed_positives": [
       "phase1-engagement-data-sol61-direct-r73",
-      "phase1-engagement-finance-sol61-direct-r74"
+      "phase1-engagement-finance-sol61-direct-r74",
+      "phase1-engagement-knowledge-sol61-direct-r75"
     ]
-  }
+  },
+  "historical_preflight_failure": {
+    "run_id": "phase1-dependent-filing-engineering-haiku55-direct-r70",
+    "status": "preflight_http_failure",
+    "http_status": 403,
+    "edge_error": 1010,
+    "subject_responses": 0,
+    "model_responses": 0,
+    "review_manifest": "../eval-readiness/phase1-dependent-filing-engineering-haiku55-direct-r70/review-manifest.json"
+  },
+  "completion_scope": "All four maintained Phase1 scenario snapshots have fully reviewed direct Sol6.1 formation and business completion. These are development-selected observations, not success rates or Haiku passes. No Phase2 claim.",
+  "completion_evidence_audit": "../eval-readiness/phase1-four-scenario-publication-audit-20261104-r1/manifest.json",
+  "completion_index": "docs/research/phase1-completion-evidence.json",
+  "completion_evidence_audit_sha256": "727773f0b6a7075a88caa28263d379c7b4d5209f1d99921403649106f91aa153"
 }

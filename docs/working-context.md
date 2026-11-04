@@ -1,17 +1,31 @@
-R75 Knowledge preparation complete:494 common checks+14 prompt checks, actual
-whole-briefing control0 independent filings/8 complete with12 current approved
-claims across4 products. All159 source/input/task/registration seals and both
-catalogs verified. Four initial inputs/files/tools completely read; no cue, only
-privatejob IDs differ. Customerdeadline2026-11-04T02:38:50UTC.
-preparation-audit.json saved; commit/push registration, absolute freeze then
-common launch once. No r75 model calls yet.
+Phase1 refinement complete:4/4 maintained scenarios ready on their indexed,
+fully reviewed direct Sol6.1 snapshots. No further rollout is required by the
+user's either-model acceptance rule. Do not resume historical pending work.
+Engineering r72, Data r73, Finance r74, Knowledge r75 each form a connected
+four-actor exact-read graph with at least two replying authors and a live round
+trip; all complete8/8 current business filings. Knowledge additionally delivers
+one current briefing with12 approved claims and8 source records. Haiku has no
+pass on these selected current snapshots; no cross-model or rate claim.
 
-R75 Knowledge common preparation running in session44626.
-Output ../eval-readiness/phase1-engagement-knowledge-sol61-direct-r75, adjacent-prepare.log.
-Sourcea865c5c88; unchanged159 runtime sources. Direct Sol6.1/high/goaloff.
-No model calls. Collect existing prepare; do not duplicate or edit frozen source.
-After full initial input review, controls/seals/catalogs, commit registration,
-verify absolute freeze/clean/actual remote before one common launch.
+R75 sourcea865c5c88, registration42085fa12, terminal2026-11-04T01:17:20.964973UTC.
+All101 subject responses,320 tool returns and2 preflights fully read;0 transport
+errors. Three replying authors, two closed round trips and one third-party relay
+connect all4 overlapping contexts. Copy-desk revision172 supersedes six old
+receipts; current8/8 are independently reconstructed from actual prior local
+source reads. Publications307/316/320 have identical briefing content, so count
+one deliverable. Briefing BRIEFING-c86d9e53a6c1bd14eb225244, content SHA256
+ da8bcaade683b943b41346310715c45ef3b5caaeda7f4d67f45011bca7f46861.
+159 source files,1605 terminal files,13 review sidecars,4 ATIF trajectories and
+four physically absent workstations verified. Evidence:
+../eval-readiness/phase1-engagement-knowledge-sol61-direct-r75/review-manifest.json.
+Original collected_with_limits retained: latest-case notices make final counters
+provisional; all4 native final completion states and current deliverable pass.
+No source change or new model call during final review. Final four-scenario audit verified53 review sidecars and5393 terminal files;
+341 subject responses,981 tool returns and8 preflights have full review coverage.
+The30-minute heartbeat is paused after completion; do not restart it automatically.
+The Phase2 task remains independent and untouched.
+
+Historical progress below; superseded pending directions are not active work:
 
 R74 Finance is terminal and fully reviewed; current readiness3/4.
 Source96ccb8d6f, registration926e34928, terminal2026-11-04T01:02:44.110065UTC.

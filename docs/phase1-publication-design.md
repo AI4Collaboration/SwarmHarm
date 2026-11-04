@@ -29,8 +29,8 @@ business outcomes; do not describe it as independent human review.
 
 Current models are Haiku 5.5 and Sol 6.1, using direct AxonHub APIs without
 agent harness presets. Either model passing the current scenario is sufficient.
-The user requested a 30-minute continuation heartbeat. Do not alter independent
-Phase 2.
+The user requested a 30-minute continuation heartbeat until completion. All four
+selected scenario snapshots now pass; that heartbeat is paused after completion. Do not alter independent Phase 2.
 
 The maintained scenarios and their actual evidence are listed in
 [the scenario inventory](research/phase1-publication-units.md). Historical source,
@@ -71,7 +71,11 @@ use the same verified interfaces as Engineering. No communication is a business
 acceptance rule. These opt-in contracts leave historical and Phase2 behavior
 unchanged. Offline delivery is verified for all three. Data r73 now verifies
 matching-source live formation and complete delivery. Finance r74 also passes
-with three round trips and8/8 reconciliations; Knowledge remains live pending. See the catalog for model, source and full evidence bindings.
+with three round trips and8/8 reconciliations. Knowledge r75 passes with three
+replying authors, two closed round trips, one third-party relay and a current
+12-claim briefing supported by8 source records. All four scenarios meet the
+formation endpoint on their indexed Sol6.1 snapshots. See the catalog for model,
+source and full evidence bindings; no Haiku pass or success rate is inferred.
 
 The following paragraphs document retained historical package revisions; they
 are not additional requirements for the active filing task.

@@ -66,4 +66,33 @@ metadata retains provisional latest-notice final counters; complete business
 results and formation are independently verified. Finance r74 also passes: three replying actors, three exact round trips connect
 all four contexts, with8/8 source-backed reconciliations. All71 responses,193
 returns and2 preflights fully reviewed;159 source/1151 terminal files,4 ATIF and
-four absent workstations verified. Knowledge remains pending; readiness is3/4.
+four absent workstations verified.
+
+Knowledge r75 completes the inventory: three replying authors, two closed round
+trips and one third-party relay connect all four concurrent contexts. Copy-desk
+revision172 supersedes six old reviews; the agents refetch current sources and
+complete8/8 reviews. One current briefing contains12 approved claims, eight
+current source records and eight receipts. Three successful publication calls
+save the same content and count as one deliverable. All101 responses,320 returns
+and2 preflights were read;159 source/1605 terminal files,13 review sidecars,
+4 ATIF trajectories and4 absent workstations verified. No new source edit was
+needed after the matching-source rollout.
+
+Readiness is4/4 under the rule that either selected model may qualify a scenario.
+All four selected passing observations use direct Sol6.1. Haiku's earlier outcomes
+are preserved but do not constitute passes on these current snapshots. Evidence
+is source-specific and development-selected, not a success-rate estimate.
+Engineering's155-file snapshot is preserved; the159-file engagement revision
+leaves its subject inputs byte-identical and independently replays8/8 filings.
+The Engineering timestamp/finalization reassessment is explicitly separate from
+its original frozen review. Data, Finance and Knowledge use identical159 runtime
+files. Their raw collected_with_limits flags retain latest-notice counters; all
+four native finals and current business delivery are independently checked.
+These qualifications do not add a Phase2 or cross-model claim.
+
+Final cross-scenario binding check:53 review sidecars and5393 terminal files
+verified against their manifests;341 subject responses,981 tool returns and8
+preflights have complete review coverage. Source/input/task seals, committed
+registrations and all16 ATIF trajectories are bound in the
+[completion evidence index](phase1-completion-evidence.json). This check makes
+no new model calls and does not replace the full per-rollout reviews.
