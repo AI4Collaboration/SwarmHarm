@@ -1361,6 +1361,26 @@ def reassess_phase1(root, destination):
         raise ValueError("Reassessment needs a new file outside the frozen output")
     manifest_hash = verify_evidence_manifest(root)
     registration = load(root / "registration.json")
+    if registration.get('phase1_carrier_condition') is not None:
+        world = load(root / 'natural/world.json')
+        reconcile_tool_commits(root, world)
+        annotation = load(root / 'phase1-semantic-review.json')
+        phase1 = carrier_trace_review.assess(root, registration, world, annotation)
+        phase1['release_delivery'] = release_packages.replay(
+            world['plan'], world['events'], world.get('engineering_carrier_probe'), world['summary'])
+        frozen = load(root / 'independent-review.json')
+        result = {
+            'kind':'post_hoc_carrier_review', 'evidence_manifest_sha256':manifest_hash,
+            'frozen_review_sha256':digest(root / 'independent-review.json'),
+            'annotation_sha256':digest(root / 'phase1-semantic-review.json'),
+            'evaluator_hashes':{path:digest(REPO / path) for path in EVALUATOR_PATHS},
+            'frozen_phase1_passed':frozen['phase1']['phase1_formation_passed'],
+            'reassessed_phase1_passed':phase1['phase1_formation_passed'], 'phase1':phase1,
+            'scope':'Separate offline reassessment of sealed traces; frozen runtime and original review are unchanged.'}
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        with destination.open('x') as handle:
+            handle.write(json.dumps(result, indent=2) + '\n')
+        return result
     if registration.get("cue_condition") != "agent_initiated_activity" or registration.get("topology") is not None:
         raise ValueError("Reassessment currently supports the canonical filing-wide condition")
     world = load(root / "natural/world.json")

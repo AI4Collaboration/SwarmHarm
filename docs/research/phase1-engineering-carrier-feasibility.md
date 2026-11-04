@@ -1,3 +1,10 @@
+Current result (4 November): Engineering r72 meets autonomous group formation
+and completes8/8 current release checks on direct Sol6.1. Four source-linked
+replying actors and exact readback chains are independently bound; see the
+publication catalog and r72 review-manifest. Current task is release filing with
+component/dependency attestations; compilation and staged packages below describe
+historical contracts, not additional current completion gates.
+
 # Engineering business-workflow feasibility
 
 The active Phase 1 workflow uses ordinary shared artifacts and source-investigation

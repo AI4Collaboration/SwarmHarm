@@ -19,6 +19,7 @@ import direct_api
 
 class Responses(BaseHTTPRequestHandler):
     requests = []
+    work_complete = False
     def log_message(self, *args):
         pass
 
@@ -30,7 +31,8 @@ class Responses(BaseHTTPRequestHandler):
         name = 'confirm_service' if value['tools'][0]['name'] == 'confirm_service' else 'bash'
         output = ([{'id': f'm{number}', 'type': 'message', 'role': 'assistant',
                     'status': 'completed', 'content': [{'type': 'output_text',
-                    'text': 'Available.' if name == 'confirm_service' else 'Work remains incomplete.', 'annotations': []}]}]
+                    'text': 'Available.' if name == 'confirm_service' else
+                        ('Work completed.' if type(self).work_complete else 'Work remains incomplete.'), 'annotations': []}]}]
                   if prior else [{'id': f'f{number}', 'type': 'function_call',
                     'call_id': f'c{number}', 'name': name,
                     'arguments': json.dumps({} if name == 'confirm_service' else {'command': 'ls /workspace'}),
@@ -48,6 +50,7 @@ class Responses(BaseHTTPRequestHandler):
 class DirectCollectChecks(unittest.TestCase):
     def setUp(self):
         Responses.requests = []
+        Responses.work_complete = False
         self.server = ThreadingHTTPServer(('127.0.0.1', 0), Responses)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         self.addCleanup(self.server.server_close)
@@ -121,6 +124,13 @@ class DirectCollectChecks(unittest.TestCase):
             self.assertEqual(post.call_count, 1)
 
     def test_common_prepare_collect_export_without_any_harness(self):
+        self.collect_fixture(False)
+
+    def test_standalone_completion_closes_all_contexts_without_phase2(self):
+        self.collect_fixture(True)
+
+    def collect_fixture(self, complete):
+        Responses.work_complete = complete
         with tempfile.TemporaryDirectory() as temporary, patch.object(direct_api, 'open_url', self.local_http):
             root = Path(temporary) / 'rollout'
             registration = run.REGISTRATIONS / ('test-direct-' + Path(temporary).name)
@@ -134,10 +144,13 @@ class DirectCollectChecks(unittest.TestCase):
             reg['completion_protocol']['unfinished_work_followup_seconds'] = 0
             run.save(root/'registration.json', reg)
             run.save(root/'registration-seal.json', {'sha256': run.sha(root/'registration.json')})
-            with patch.object(run, 'verify_collection_freeze'), patch.object(run, 'AXONHUB_KEY_FILE', key):
+            with patch.object(run, 'verify_collection_freeze'), patch.object(run, 'AXONHUB_KEY_FILE', key), \
+                    patch.object(run, 'rollout_completion_state', return_value={'complete':complete}):
                 run.collect(root, registration)
             completion = run.load(root/'completion.json')
             self.assertIn(completion['status'], ('collected', 'collected_with_limits'), completion)
+            self.assertEqual(completion['status'], 'collected' if complete else 'collected_with_limits')
+            self.assertEqual(completion['completed_workers'], 4 if complete else 0)
             initial = run.load(root/'initial-input-audit.json')['natural']
             for actor in reg['plan']['natural']:
                 folder = root/'natural'/actor

@@ -1,16 +1,25 @@
-R72 preparation complete:486 common+14 prompt checks, real full business
-control independent0/8 and exchanged8/8,155 source/input/task seals verified.
-Four input/tool/file projections match reviewed r71 except the exact fetched-
-source attachment change, job IDs and deadline. preparation-audit.json saved.
-Next: commit/push registration and verify clean/remote/seals, common launch once.
-No hosted r72 model call yet. Source1aa662a70 remains frozen.
+R72 is terminal and fully reviewed. Source1aa662a70, registration13a2bce23.
+Engineering Sol6.1 direct AxonHub passed formation: four distinct source-linked
+replying actors, four exact request/read/reply/readback round trips, all four
+contexts connected and overlapping;8/8 current filings.97 subject responses,
+283 tool returns,2 preflights,155 sources/1511 terminal files,4 ATIF trajectories
+and4 removed workstations verified. No recollection. Review index binds14 sidecars.
+The separate direct-cohort-reassessment.json is authoritative for formation;
+original frozen review false and collection metadata are retained. Provider
+responses omit completed_at; sealed local completion receipts verify overlap.
+Standalone cohort finalization also incorrectly depended on Phase2 activation,
+so original collector says quiescent/collected_with_limits despite four valid
+complete finals. Both implementation defects are corrected offline:490 common
+checks+14 prompts pass, no errors/failures/skips. The first focused launch had a
+wrong test-file working path; its log is retained, corrected8 checks passed.
+No business prompt, tool or environment changed in this correction.
 
-Active preparation r72: source1aa662a70 is committed/pushed and clean before
-start. Session18548/PID3713 runs common prepare for Engineering, Sol6.1 direct
-AxonHub, high, goal off. Output ../eval-readiness/phase1-source-attachments-
-engineering-sol61-direct-r72; adjacent -prepare.log. No hosted calls yet.
-Do not edit frozen source or start another prepare. Audit script
-../eval-readiness/audit_phase1_r72_preparation.py is ready, not yet executed.
+Engineering ready is scoped to this reviewed source and corrected measurement.
+Other three scenarios remain pending; whole Phase1 ready=false. Next repair
+remaining batch authority and real business dependencies across all three,
+including interfaces, completion and independent controls together. Do not
+rerun Engineering simply to replace the corrected metadata. Goal/30min heartbeat
+remain active, direct Sol6.1/Haiku5.5 only; either passing model suffices.
 
 Current revision: existing attach-locator now accepts either an actually fetched
 source record or a collection locator. The same opt-in implementation covers all

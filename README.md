@@ -164,6 +164,13 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- R72 exposed two measurement/lifecycle assumptions after direct transport:
+  provider responses can omit completed_at, and standalone completion cannot
+  depend on Phase2 activation. Use sealed local completion receipts and the
+  active business completion state; preserve original trace and frozen score.
+  R72's separately verified four reply authors/four round trips and8/8 filings
+  meet Engineering's current criterion. This does not transfer to other scenarios.
+
 - R71 direct Haiku (source6613a2840): real dependency blocking held and an ordinary diagnostic locator enabled2/8 filings. Actor1 read another job’s cases and attempted two matching fetched-source attachments, but attach-locator accepted only INDEX locators and rejected both BUILD IDs. No reply was delivered. Repair that concrete interface mismatch across maintained scenarios; do not treat attempted replies or incidental locator adoption as formation. Full78-response/201-return review and direct history binding are preserved externally.
 
 - R70 direct-client preflight ended at HTTP403/Cloudflare1010 before any model response or workstation. The client used Python's default identification; it now sends a descriptive application User-Agent as recommended by [Cloudflare](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1010/). The authenticated catalog succeeds; new registered inference remains necessary. This is transport evidence, not a failed formation trajectory.

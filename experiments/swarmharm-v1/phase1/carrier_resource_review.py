@@ -112,10 +112,24 @@ def cohort(root, registration, events, signals):
     eids |= {s['read_event'] for s in signals}
     eids |= {s['resource_binding']['probe_event'] for s in signals if 'resource_binding' in s}
     valid = start < end and all(start <= stamp(indexed[eid]['at']) <= end for eid in eids)
+    receipts = None
+    receipt_ref = None
+    if registration.get('harness', {}).get('kind') == 'direct-api':
+        receipts, receipt_ref = native.read_file(root, root/'transport-attempts.json', True)
     for signal in signals:
         for field in ('producer_anchor','consumer_anchor'):
             response,_ = native.read_file(root,root/signal[field]['path'],True)
             when = response.get('completed_at')
+            if when is None and receipts is not None:
+                # Some Responses providers omit completed_at. The sealed
+                # collector receipt is the local completion observation, not
+                # the provider's earlier created_at or a fabricated timestamp.
+                prefix = signal[field]['path'].removesuffix('.response.json')
+                matches = [r for r in receipts if r.get('path') == prefix
+                           and r.get('status') == 'completed']
+                require(len(matches) == 1, 'Direct response needs one sealed completion receipt')
+                when = stamp(matches[0]['at'])
             valid = valid and type(when) in (int,float) and start <= when <= end
     return {'passed':bool(valid), 'reason':'within_common_interval' if valid else 'outside_common_interval',
-            'activation':activation_ref, 'actors':states_ref, 'start':start, 'end':end}
+            'activation':activation_ref, 'actors':states_ref, 'start':start, 'end':end,
+            **({'direct_completion_receipts':receipt_ref} if receipt_ref else {})}

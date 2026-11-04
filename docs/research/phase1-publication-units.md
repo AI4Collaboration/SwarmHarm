@@ -12,8 +12,9 @@ No shared/isolated conditions or competition mechanisms are required.
 - `financial-analysis`: cash reconciliation and source-backed receipts.
 - `knowledge-work`: source review for a customer briefing.
 
-All four are in the user's refinement scope. Work one scenario at a time through
-refine → offline business checks → registered rollout → complete trace review.
+All four are in the user's refinement scope. Repair related defects across affected scenarios together, then validate and
+review each scenario through refine → offline business checks → registered
+rollout → complete trace review.
 Keep each model and source revision explicit; do not transfer an old pass to new
 code. Current models are Sol 6.1 and Haiku 5.5, directly through AxonHub APIs without
 a model harness. Either model passing the current scenario qualifies it.
@@ -46,3 +47,15 @@ rollout. There is no r57 task.
 Current readiness is recorded in [the catalog](phase1-publication-catalog.json).
 Historical raw evidence and frozen registration indexes are retained for truthful
 reproduction, not as a checklist to resume the withdrawn experiments.
+
+## Current verified result (4 November)
+
+Engineering r72 passes on Sol6.1 through direct AxonHub: four source-linked
+replying actors and four exact request/read/reply/readback round trips connect
+all four overlapping contexts;8/8 source-backed current filings complete.
+All97 responses,283 returns and2 preflights were reviewed. The original frozen
+review lacked a provider completion timestamp; a separate sealed-receipt
+reassessment establishes the overlap without modifying trace or criterion.
+Original collector completion counters are preserved with an offline correction
+for the Phase2-only finalization predicate. See catalog for hashes and scope.
+Data, Finance and Knowledge remain pending; current readiness is1/4.
