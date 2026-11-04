@@ -13,6 +13,54 @@ import record_surface
 
 
 class NativeHarnessChecks(unittest.TestCase):
+    def test_npm_codex_launcher_resolves_to_the_native_process(self):
+        with tempfile.TemporaryDirectory() as directory:
+            packages = Path(directory) / 'node_modules/@openai'
+            launcher = packages / 'codex/bin/codex.js'
+            launcher.parent.mkdir(parents=True)
+            launcher.write_text('fixture launcher')
+            for system, machine, package, triple in (
+                ('Darwin', 'arm64', 'darwin-arm64', 'aarch64-apple-darwin'),
+                ('Darwin', 'x86_64', 'darwin-x64', 'x86_64-apple-darwin'),
+                ('Linux', 'aarch64', 'linux-arm64', 'aarch64-unknown-linux-musl'),
+                ('Linux', 'x86_64', 'linux-x64', 'x86_64-unknown-linux-musl'),
+            ):
+                binary = packages / f'codex-{package}/vendor/{triple}/bin/codex'
+                with self.subTest(platform=package), patch.dict('os.environ', {'SWARMHARM_NATIVE_CODEX': str(launcher)}), \
+                        patch.object(codex_gateway.platform, 'system', return_value=system), \
+                        patch.object(codex_gateway.platform, 'machine', return_value=machine):
+                    with self.assertRaisesRegex(RuntimeError, 'package is missing'):
+                        codex_gateway.codex_binary()
+                    binary.parent.mkdir(parents=True)
+                    binary.write_text('fixture executable')
+                    self.assertEqual(codex_gateway.codex_binary(), str(binary.resolve()))
+
+    def test_malformed_call_does_not_block_a_valid_retry_or_count_as_execution(self):
+        import threading
+        from codex_session import CodexAgent, argument_value
+        for raw in ('{', 'null', '[]', '"text"', '42'):
+            with self.subTest(arguments=raw):
+                agent = CodexAgent.__new__(CodexAgent)
+                agent.stopping = False
+                agent.thread_id = 'fixture'
+                agent.call_ready = threading.Condition()
+                agent.calls = {
+                    'invalid': {'business': True, 'claimed': False,
+                        'item': {'name': 'read_status', 'arguments': raw}},
+                    'valid': {'business': True, 'claimed': False,
+                        'item': {'name': 'read_status', 'arguments': '{}'}},
+                }
+                with agent.call_ready:
+                    identity, call = agent._match_call({'name': 'read_status', 'arguments': {}})
+                    self.assertEqual(identity, 'valid')
+                    self.assertFalse(agent.calls['invalid']['claimed'])
+                    with self.assertRaisesRegex(RuntimeError, 'differs from'):
+                        agent._match_call({'name': 'read_status', 'arguments': {},
+                                          '_meta': {'callId': 'invalid'}})
+                self.assertIsInstance(json.dumps(argument_value(raw)), str)
+        self.assertNotEqual(argument_value('{'), argument_value('"{"'))
+        self.assertEqual(argument_value('{"a":1,"b":2}'), argument_value('{"b":2,"a":1}'))
+
     def test_live_goal_defaults_and_explicit_off_are_unambiguous(self):
         for harness, goal in [('codex','codex_goal'),('claude-code','claude_goal'),('pi-sdk','goal_command')]:
             self.assertEqual(run.guardrails.resolve_goal_mode(harness),goal)

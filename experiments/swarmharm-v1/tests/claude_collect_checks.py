@@ -212,9 +212,10 @@ class ScriptedMessages(BaseHTTPRequestHandler):
             self.wfile.write(f"event: {event['type']}\ndata: {json.dumps(event)}\n\n".encode())
 
 
-@unittest.skipUnless(shutil.which('claude') and shutil.which('node')
+@unittest.skipUnless((shutil.which('node') or os.environ.get('SWARMHARM_NODE'))
+    and (CLAUDE.CLAUDE_DIR / 'node_modules/.bin/claude').exists()
     and (CLAUDE.CLAUDE_DIR / 'node_modules/@anthropic-ai/claude-agent-sdk/package.json').exists(),
-    'Claude Code, Node.js and the optional Claude SDK install required')
+    'Install the repository-local Claude runtime and Node.js')
 class ClaudeCollectChecks(unittest.TestCase):
     def test_real_sdk_native_goal_is_acknowledged_before_first_model_request(self):
         ScriptedMessages.requests=[]

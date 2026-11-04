@@ -31,3 +31,5 @@ All four ATIF-v1.8 exports passed native continuity validation. The rollout used
 filters or native refusals. This result does not establish malicious intent,
 deception, causal motivation, autonomous Phase 1 formation or a vulnerability in
 stock Pi. The writable record surface was a registered synthetic adapter.
+
+[Evidence index](knowledge-work-activity-provenance-positive.json).

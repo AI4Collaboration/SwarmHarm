@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Install native harnesses and prepare a local offline workstation. No model calls.
+set -euo pipefail
+repo=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+state=${SWARMHARM_READINESS:-"$repo/../eval-readiness"}
+mkdir -p "$state"
+state=$(CDPATH= cd -- "$state" && pwd)
+case "$state/" in "$repo/"*) echo 'Runtime state must be outside the repository' >&2; exit 1;; esac
+for cmd in python3.12 node npm docker; do command -v "$cmd" >/dev/null || { echo "Install $cmd first" >&2; exit 1; }; done
+node -e 'const [a,b]=process.versions.node.split(".").map(Number); if(a<22||(a===22&&b<19))process.exit(1)' || { echo 'Node >=22.19 required' >&2; exit 1; }
+docker info >/dev/null
+runtime=${SWARMHARM_HARBOR_ENV:-"$state/harbor-0.24.0"}
+if [ ! -x "$runtime/bin/python" ]; then
+  python3.12 -m venv "$runtime"
+fi
+"$runtime/bin/python" -m pip install -r "$repo/experiments/runtime/python-requirements.txt"
+for adapter in codex claude pi; do npm ci --prefix "$repo/experiments/runtime/$adapter" --no-fund --no-audit; done
+case "$(uname -m)" in arm64|aarch64) platform=linux/arm64;; *) platform=linux/amd64;; esac
+provenance="$state/workstation-$(date +%Y%m%dT%H%M%S)-$$.json"
+"$runtime/bin/python" "$repo/scripts/build-workstation-image" --platform "$platform" --output "$provenance"
+image=$("$runtime/bin/python" -c 'import json,sys;print(json.load(open(sys.argv[1]))["image"])' "$provenance")
+{
+  printf 'export SWARMHARM_HARBOR_ENV=%q\n' "$runtime"
+  printf 'export SWARMHARM_NATIVE_CODEX=%q\n' "$repo/experiments/runtime/codex/node_modules/.bin/codex"
+  printf 'export SWARMHARM_DOCKER_IMAGE=%q\n' "$image"
+  printf 'export SWARMHARM_SANDBOX=docker\n'
+} > "$state/swarmharm-local.env"
+printf 'Ready. Source %s/swarmharm-local.env before running. No model requests were made.\n' "$state"

@@ -30,3 +30,5 @@ Registration/seal:
 `48b79f74ab4a0ed5be7d2eeaf2ce7948109b0169c16ab57267bd76562ee212cd`.
 Evidence manifest:
 `6c31ea8239c5793390a17a31ab4574e8979476eea156d4b2fba006441f0e80c8`.
+
+[Evidence index](knowledge-work-legacy-reference-positive.json).

@@ -80,6 +80,29 @@ def validate_readiness(contract, status):
             fail(f"complete trajectory asset is missing for {claim}")
 
 
+def validate_phase1_results(contract):
+    path = ROOT / contract['current_evidence']['phase1_current_results']
+    results = json.loads(path.read_text())
+    if results.get('phase') != 1 or len(results.get('source_branch_commit', '')) != 40:
+        fail('Phase 1 source snapshot is not pinned separately')
+    cases = results.get('cases', [])
+    ids = [entry['run_id'] for entry in cases]
+    if len(set(ids)) != len(ids) or any(not name.startswith('phase1-') for name in ids):
+        fail('Phase 1 evidence needs distinct full run identifiers')
+    sol_passes = {entry['scenario'] for entry in cases
+                  if entry['model'] == 'openai/gpt-6.1-sol' and entry['status'] == 'pass'}
+    if sol_passes != {'engineering-capacity', 'data-analysis', 'financial-analysis', 'knowledge-work'}:
+        fail('Phase 1 current four-scenario coverage differs')
+    for entry in cases:
+        archive = entry.get('archive', {})
+        if not archive.get('remote_digest_verified') or len(archive.get('sha256', '')) != 64:
+            fail('Unverified Phase 1 trajectory archive: ' + entry['run_id'])
+        if not archive.get('url', '').endswith(entry['run_id'] + '-complete-trajectory.tar.gz'):
+            fail('Phase 1 archive identifier mismatch: ' + entry['run_id'])
+        if any(len(entry.get(key, '')) != 64 for key in ('registration_sha256', 'review_manifest_sha256')):
+            fail('Phase 1 registration/review binding missing: ' + entry['run_id'])
+
+
 def main():
     validate_rollout_language()
     contract = json.loads(CONTRACT.read_text())
@@ -140,7 +163,8 @@ def main():
         fail("current decision record is missing")
 
     validate_readiness(contract, status)
-    print("dataset admission contract: valid; three reviewed claim cases and releases aligned")
+    validate_phase1_results(contract)
+    print("dataset admission contract: valid; separate Phase 1 coverage and three Phase 2 claims aligned")
 
 
 if __name__ == "__main__":

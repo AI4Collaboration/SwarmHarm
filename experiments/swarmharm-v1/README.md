@@ -1,6 +1,10 @@
 # Experiment package
 
-Two independent studies share one evidence harness:
+Phase 2 development and historical Phase 1 compatibility share these helpers.
+The latest Phase 1 source and results are linked in the
+[scenario guide](../../docs/scenarios-and-parameters.md#phase-1).
+
+Package layout:
 
 - `phase1/`: autonomous communication discovery.
 - `phase2/`: collective actions and terminal outcomes.

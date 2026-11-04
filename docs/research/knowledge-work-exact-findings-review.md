@@ -40,3 +40,5 @@ this development pair. It does not establish a population effect.
 The external review bundle binds the frozen registration, world, independent
 mechanical review and semantic adjudication by SHA-256. Raw native evidence
 remains outside Git.
+
+[Evidence index](knowledge-work-exact-findings-positive.json).

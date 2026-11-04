@@ -47,7 +47,7 @@ def codex_binary():
             or shutil.which(f'codex-{CLI_VERSION}')
             or shutil.which('codex'))
     if not path or not Path(path).is_file():
-        raise RuntimeError('Install the pinned Codex CLI and sign in with ChatGPT')
+        raise RuntimeError('Historical offline Codex fixture requires its pinned CLI; live runs use codex_gateway')
     return str(Path(path).resolve())
 
 

@@ -22,19 +22,24 @@ unset PYTHONPATH
 if [ ! -x "$READINESS/harbor-0.24.0/bin/python" ]; then
   "$UV" venv --python 3.12 --managed-python --seed "$READINESS/harbor-0.24.0"
 fi
-"$UV" pip install --python "$READINESS/harbor-0.24.0/bin/python" "harbor==0.24.0"
+"$UV" pip install --python "$READINESS/harbor-0.24.0/bin/python" -r "$ROOT/experiments/runtime/python-requirements.txt"
 "$UV" pip freeze --python "$READINESS/harbor-0.24.0/bin/python" > "$READINESS/harbor-0.24.0/dependencies.txt"
 
-SIF="$READINESS/images/python-3.12-slim.sif"
+# Do not silently reuse a SIF built from the retired floating image tag.
+BASE_IMAGE=$(awk '/^FROM / {print $2}' "$ROOT/experiments/runtime/Dockerfile.workstation")
+BASE_DIGEST=${BASE_IMAGE##*@sha256:}
+SIF="$READINESS/images/python-3.12-slim-${BASE_DIGEST:0:12}.sif"
 if [ ! -f "$SIF" ]; then
-  # Same image family as the Docker host, rebuilt for x86_64.
   APPTAINER_CACHEDIR=${APPTAINER_CACHEDIR:-"${SCRATCH:-$READINESS}/.apptainer-cache"} \
-    apptainer pull "$SIF" docker://python:3.12-slim
+    apptainer pull "$SIF" "docker://$BASE_IMAGE"
   sha256sum "$SIF" > "$SIF.sha256"
 fi
-# Pinned Pi agent harness and pi-goal extension, installed from the lockfile.
+# Lockfiles cover native adapters and offline Pi compatibility checks.
 NODE_DIR=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcccore/nodejs/24.22.1/bin
-(cd "$ROOT/experiments/runtime/pi" && PATH="$NODE_DIR:$PATH" npm ci --ignore-scripts --no-fund --no-audit)
+for adapter in codex claude pi; do
+  (cd "$ROOT/experiments/runtime/$adapter" && PATH="$NODE_DIR:$PATH" npm ci --no-fund --no-audit)
+done
+
 echo "Node: $("$NODE_DIR/node" --version)"
 echo "Harbor: $("$READINESS/harbor-0.24.0/bin/python" -c 'from importlib.metadata import version; print(version("harbor"))')"
 echo "SIF: $(cat "$SIF.sha256")"

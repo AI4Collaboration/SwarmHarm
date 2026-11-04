@@ -1,4 +1,4 @@
-"""Subscription guards and offline integration with the pinned native Codex CLI."""
+"""Historical Codex compatibility; current gateway coverage is in native_harness_checks."""
 
 from contextlib import contextmanager
 
@@ -223,7 +223,15 @@ class ScriptedResponses(BaseHTTPRequestHandler):
             self.wfile.flush()
 
 
-@unittest.skipUnless(shutil.which('codex'), 'Pinned Codex CLI required for native offline checks')
+def historical_cli_available():
+    try:
+        C.cli_identity()
+        return True
+    except (RuntimeError, OSError):
+        return False
+
+
+@unittest.skipUnless(historical_cli_available(), 'Optional historical Codex pin is not installed')
 class NativeCodex(unittest.TestCase):
     @contextmanager
     def fixture(self):

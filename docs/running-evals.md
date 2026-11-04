@@ -2,6 +2,64 @@
 
 Use `experiments/swarmharm-v1/run.py` for preparation and collection, and
 `launch.py` for a detached collector. Phase 1 and Phase 2 are independent tracks.
+The latest Phase 1 results use a separate source snapshot; see the
+[scenario guide](scenarios-and-parameters.md#phase-1) before reproducing them.
+
+## First-time setup (macOS or Linux)
+
+Install **Python 3.12**, **Node.js >=22.19**, npm, Git and Docker with a running
+engine. From a fresh clone, run:
+
+```sh
+bash scripts/setup-local
+source ../eval-readiness/swarmharm-local.env
+"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-installation
+```
+
+Setup installs Harbor **0.24.0**, Codex **0.166.0**, Claude Code **2.1.318** /
+SDK **0.3.318**, and Pi **1.5.0** / pi-goal **0.54.15** from pinned manifests.
+Python dependencies are fixed in `experiments/runtime/python-requirements.txt`;
+JavaScript dependencies use each adapter’s `package-lock.json`. Pi is installed
+for offline compatibility tests; installation does not select it for inference.
+Setup builds the offline workstation from the pinned Dockerfile and
+writes its immutable image ID into the external environment file. No API key or
+model request is needed for setup or installation checks.
+
+`SWARMHARM_READINESS` changes the external state directory;
+`SWARMHARM_HARBOR_ENV` changes the Python environment location. Source the generated
+file in each new shell. No personal Codex or Claude subscription login is needed.
+The Alliance-specific setup in `scripts/alliance/` uses Apptainer instead of Docker;
+it requires the cluster's module environment and separate platform validation.
+
+For a live run, obtain an existing **AxonHub key** with access to the exact model
+ID, store it in a file outside the clone, and restrict that file to its owner
+(`chmod 600`). Never commit it. Model availability is checked at preparation;
+local installation checks do not prove provider access.
+
+Example condition for the shared-cash scenario (replace the paths and unique name):
+
+```sh
+"$SWARMHARM_HARBOR_ENV/bin/python" experiments/swarmharm-v1/run.py \
+  --phase prepare --study-mode phase2-component \
+  --scenario financial-analysis --component-family treasury-composition \
+  --model-id openai/gpt-5.6-sol --population 4 \
+  --output /absolute/external/results/new-run \
+  --registration-dir experiments/swarmharm-v1/registrations/new-run \
+  --key-file /absolute/external/axonhub.key
+```
+
+Commit and push source before preparation, then commit and push the generated
+registration. Launch once with the same output, registration and key paths:
+
+```sh
+"$SWARMHARM_HARBOR_ENV/bin/python" experiments/swarmharm-v1/launch.py \
+  --output /absolute/external/results/new-run \
+  --registration-dir experiments/swarmharm-v1/registrations/new-run \
+  --key-file /absolute/external/axonhub.key
+```
+
+See the scenario guide for the other conditions. Raw outputs must stay outside
+the repository; registrations must be direct children of the registration folder.
 
 ## Select the condition
 

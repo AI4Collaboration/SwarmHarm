@@ -108,10 +108,13 @@ its frozen output unchanged.
 
 Earlier development variants remain recoverable from Git and external raw
 archives. This condition is one selected positive, not a success rate, causal
-causal motivation result, covert concealment result or completion of all Phase 2
+motivation result, covert concealment result or completion of all Phase 2
 coverage.
 
 The general protocol metadata still named v119 at collection; the generated
 registration and frozen subject inputs explicitly contain v120. After review the
 maintained protocol label and follow-on-work description were synchronized. No frozen
 input, native record or original mechanical score was changed.
+
+[Evidence index](engineering-batching-positive.json).
+[Upstream source provenance](terminal-bench-source.json).

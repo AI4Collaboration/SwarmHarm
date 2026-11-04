@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+"""Check local runtimes and an actual isolated workstation; no model/API calls."""
+import argparse
+from importlib.metadata import version
+from pathlib import Path
+import sys
+
+REPO = Path(__file__).resolve().parents[1]
+sys.path[:0] = [str(REPO / 'experiments/runtime'), str(REPO / 'experiments/swarmharm-v1')]
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--harness', choices=('codex', 'claude-code', 'pi-sdk', 'all'), default='all')
+    args = parser.parse_args()
+    if version('harbor') != '0.24.0':
+        raise RuntimeError('Use Harbor 0.24.0 in SWARMHARM_HARBOR_ENV')
+    import codex_gateway, claude_agent, pi_agent, workstation
+    checks = {
+        'codex': lambda: codex_gateway.runtime_registration('codex_goal'),
+        'claude-code': lambda: claude_agent.gateway_registration('anthropic/claude-haiku-5.5', 'claude_goal'),
+        'pi-sdk': lambda: pi_agent.harness_registration('goal_command'),
+    }
+    for name, check in checks.items():
+        if args.harness in ('all', name):
+            check()
+            print(name + ': runtime and goal configuration available')
+    station = workstation.Workstation({'/workspace/check.txt': workstation.ENCODE('ready')})
+    try:
+        reply, _ = station.execute('cat /workspace/check.txt', {})
+        if reply['exit_code'] != 0 or reply['stdout'] != 'ready':
+            raise RuntimeError('Workstation round trip failed')
+    finally:
+        station.close()
+    print('Harbor and isolated file/tool round trip: OK; no hosted inference')
+
+if __name__ == '__main__':
+    main()

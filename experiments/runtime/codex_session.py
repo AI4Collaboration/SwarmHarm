@@ -17,6 +17,14 @@ from codex_rpc import CodexRpc
 from codex_evidence import mcp_output_text
 
 
+def argument_value(raw):
+    """Keep malformed native calls observable until the CLI reports its rejection."""
+    try:
+        return ('json', json.loads(raw))
+    except (ValueError, TypeError):
+        return ('raw', raw)
+
+
 class CodexAgent:
     def __init__(self, actor, events, *, folder, model, thinking_level, tools,
                  active_tools, goal_mode, job_context=None, api_key=None,
@@ -337,7 +345,7 @@ class CodexAgent:
                                 item['output'] = call['output']
                         if call and call['business']:
                             fingerprint = sha256(json.dumps([call['item']['name'],
-                                json.loads(call['item']['arguments']), item['output']],
+                                argument_value(call['item']['arguments']), item['output']],
                                 sort_keys=True).encode()).hexdigest()
                             if fingerprint not in self.goal_tool_seen:
                                 self.goal_tool_seen.add(fingerprint)
@@ -448,7 +456,8 @@ class CodexAgent:
                 if (identity is None or key == identity) and call['business']
                 and not call['claimed'] and not call.get('rejected')
                 and call['item']['name'] == params['name']
-                and json.loads(call['item']['arguments']) == params.get('arguments', {})]
+                and isinstance(params.get('arguments', {}), dict)
+                and argument_value(call['item']['arguments']) == ('json', params.get('arguments', {}))]
             if len(candidates) == 1:
                 return candidates[0]
             if len(candidates) > 1 or identity in self.calls:

@@ -55,3 +55,5 @@ prospective-plan gate.
 The external review bundle binds the frozen registration, world, independent
 mechanical review and semantic adjudication by SHA-256. Raw native evidence
 remains outside Git.
+
+[Evidence index](knowledge-work-current-record-positive.json).

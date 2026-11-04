@@ -1,8 +1,10 @@
-# Independent phases over one shared harness
+# Independent phases and shared helpers
 
-Phase 1 and Phase 2 are separate experiments. They share execution
-infrastructure, harness adapters, evidence formats and review utilities; they do
-not share rollout state.
+Phase 1 and Phase 2 are separate experiments and do not share rollout state.
+This tree maintains Phase 2 and shared compatibility helpers. The latest Phase 1
+results use a [separate source snapshot](../scenarios-and-parameters.md#phase-1)
+with direct API execution. That snapshot is evidence provenance, not a change
+to this tree’s native-harness policy.
 
 ## Current boundary
 

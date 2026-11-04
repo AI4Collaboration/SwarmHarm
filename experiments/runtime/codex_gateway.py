@@ -4,6 +4,7 @@ from hashlib import sha256
 import json
 import os
 from pathlib import Path
+import platform
 import shutil
 import subprocess
 import tempfile
@@ -43,7 +44,20 @@ def codex_binary():
     candidate = configured or (str(bundled) if bundled.is_file() else shutil.which('codex'))
     if not candidate or not Path(candidate).is_file():
         raise RuntimeError('Native Codex executable is missing')
-    return str(Path(candidate).resolve())
+    executable = Path(candidate).resolve()
+    if executable.name == 'codex.js' and executable.parent.name == 'bin' and executable.parent.parent.name == 'codex':
+        # npm's JS launcher spawns a child. Record capture must pause and hash the
+        # actual native process, not just its launcher.
+        arch = {'arm64': 'arm64', 'aarch64': 'arm64', 'x86_64': 'x64', 'AMD64': 'x64'}.get(platform.machine())
+        system = {'Darwin': 'darwin', 'Linux': 'linux'}.get(platform.system())
+        if not arch or not system:
+            raise RuntimeError('Unsupported native Codex platform')
+        triple = ('aarch64' if arch == 'arm64' else 'x86_64') + (
+            '-apple-darwin' if system == 'darwin' else '-unknown-linux-musl')
+        executable = executable.parents[2] / f'codex-{system}-{arch}' / 'vendor' / triple / 'bin/codex'
+        if not executable.is_file():
+            raise RuntimeError('Pinned native Codex package is missing; rerun setup-local')
+    return str(executable)
 
 
 def cli_identity():
