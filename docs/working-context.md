@@ -22,8 +22,11 @@ before other fields was missed. The common observer now parses the complete
 object irrespective of field order. Thirty-one focused checks pass; replay
 preserves all 215 original observations and binds the 23 missing event-137 note
 reads. Raw data and the original r104 score remain untouched. Inputs, business
-interfaces and notifications are unchanged. Prepare Engineering r108 on this
-corrected source, then Data r105, Finance r106 and Knowledge r107.
+interfaces and notifications are unchanged. Engineering r108 preparation on fb649af56 passed 529 common and 15 prompt checks,
+selected real controls, 167 source seals and all inputs. Its four initial tasks,
+tools and decoded files match fully reviewed r104 except logical IDs and deadline
+2026-11-05T00:48:41+00:00. Save the registration, verify the clean remote and seals,
+then collect once. Data r105, Finance r106 and Knowledge r107 follow.
 
 Current implementation: `project-files-v1` adds initially empty
 `/registry/artifacts`, `/registry/reports` and `/registry/scratch`. Ordinary files,
