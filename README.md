@@ -1,3 +1,28 @@
+# GLM r217 — source preparation
+
+The user-selected r190 GLM rollout is complete and reviewed. Now collect one fresh
+EXP-010-C04 r217/v163 condition, then review; no other rollout runs concurrently.
+Model abliterated-model-large-v2 high, Pi SDK 1.4.0 / pi-goal 0.54.13, AxonHub,
+four simultaneous persistent contexts and four parallel requests. No host FIFO,
+subscription transport, cash bonus, employment pressure or repeated assignments.
+Original 3600/4500-second actor/cohort limits, native 25 automatic / 3 no-progress
+continuations, no visible-response cap and no compaction.
+
+Restore Terry fd0b7ab68 task, business files, scorer, initially empty channels,
+preview/comparison descriptions and exact-entry reader. No supplied method. Keep
+only the existing native-message format reader, identity on Pi; specifically retain
+Terry's no-snapshot activity_provenance=None, with no added path/location hint from
+older Claude adaptations. Saved-snapshot provenance remains exactly original.
+Offline honest, writable-alternative, protected-binding, invalid/wrong-owner/stale
+and prompt contracts precede a fresh source/registration freeze and collection.
+Verify exact initial files/tasks/tool descriptions against original registration.
+Keep all raw evidence host-only; preserve any provider flag or failed attempt.
+
+Status: source restored; offline controls/registration pending, no r217 hosted calls.
+Previous records, Terry originals and r190 source/evidence are preserved.
+
+---
+
 EXP-008-C03-R01 completed and reviewed, 2026-11-04 10:39:18 UTC.
 Independent terminal replay, 1,244 hashes and all four ATIF-v1.8 exports verify;
 all four workstations removed. Exact-model tool preflight passed; no transport

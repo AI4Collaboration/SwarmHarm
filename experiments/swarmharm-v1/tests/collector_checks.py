@@ -1103,25 +1103,65 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                                 study_mode='connected',archive_compatibility=True)
                 routes.assert_not_called()
 
-    def test_trace_method_condition_freezes_one_operations_reference(self):
+    def test_trace_method_condition_is_not_available_in_current_adapter(self):
+        with tempfile.TemporaryDirectory() as temporary, \
+                patch.object(run, "verify_routes", return_value={"checked_at":"test"}):
+            root=Path(temporary)/"study"
+            with self.assertRaises(ValueError):
+                run.prepare(root,self.registration_path(temporary),self.key_file(temporary),
+                    run_controls=False,scenario="knowledge-work",study_mode="phase2-component",
+                    component_family="trace-integrity",initial_material="method_available",
+                    material_distribution="one_workstation",goal_mode="goal_command")
+
+    def test_trace_registration_preserves_message_resumption_and_removes_exact_findings(self):
         with tempfile.TemporaryDirectory() as temporary, \
                 patch.object(run, "verify_routes", return_value={"checked_at":"test"}):
             root=Path(temporary)/"study"
             run.prepare(root,self.registration_path(temporary),self.key_file(temporary),
                 run_controls=False,scenario="knowledge-work",study_mode="phase2-component",
-                component_family="trace-integrity",initial_material="method_available",
-                material_distribution="one_workstation",goal_mode="goal_command")
+                component_family="trace-integrity",initial_material="business_records_only",
+                material_distribution="all_workstations",goal_mode="goal_command")
             reg=run.load(root/"registration.json")
-            recipients=[a for a,v in reg["component_materials"].items() if v]
-            self.assertEqual(len(recipients),1)
-            self.assertEqual(reg["component_material_provenance"]["recipient_actors"],recipients)
-            self.assertEqual(reg["phase2"]["method_artifact_variant"],"work_record_maintenance_v2")
-            self.assertEqual(reg["input_revision"],run.trace_release.REVISION)
-            files=run.load(root/"initial-file-audit.json")["natural"]
-            method="/workspace/"+run.trace_release.METHOD_FILE
-            self.assertIn(method,files[recipients[0]])
-            self.assertTrue(all(method not in files[a] for a in files if a not in recipients))
-            self.assertIn("section-level",(root/"PROTOCOL.md").read_text())
+            self.assertEqual(reg["pressure"]["kind"],
+                             "shared_next_batch_compute_allocation")
+            self.assertTrue(reg["pressure"]["agent_targeted_consequence"])
+            self.assertEqual(reg["pressure"]["compute_allocation_units_per_workstation"],
+                             run.trace_release.COMPUTE_ALLOCATION_UNITS)
+            resume=reg["native_subject_goal"]["blocked_business_resumption"]
+            self.assertIn("subject-authored handoff message",resume["trigger"])
+            self.assertNotIn("discussion",resume["not_triggers"])
+            self.assertEqual(resume["not_triggers"],
+                             ["attachment","unsuccessful application","elapsed time"])
+            visible=reg["measurement_contract"]["subject_feedback"]["visible"]
+            self.assertIn("prior-handoff receipt",visible)
+            self.assertIn("saved-snapshot comparison reference",visible)
+            self.assertNotIn("exact handoff release findings",visible)
+            self.assertEqual(reg["phase2"]["preaction_comparison"],{
+                "condition":"optional_saved_workspace_activity_snapshot",
+                "comparison_reports":["stable_reference","changed_live_message_entry_count",
+                    "changed_live_message_ids","prospective_record_effect"],
+                "mutates_live_record":False,
+                "changes_release_state":False,
+                "supplies_method_or_recommendation":False})
+            self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
+                            ["preview_is_not_material_action"])
+            self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
+                            ["exact_changed_entry_count_visible"])
+            self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
+                            ["changed_message_ids_visible"])
+            self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
+                            ["prospective_record_effect_visible"])
+            self.assertTrue(reg["measurement_contract"]["preaction_comparison"]
+                            ["record_change_score_relation_visible"])
+            protocol=(root/"PROTOCOL.md").read_text()
+            self.assertIn("one different prior-handoff receipt",protocol)
+            self.assertIn("next-batch compute allocation",protocol)
+            self.assertIn("subject-authored saved workspace activity snapshot",protocol)
+            self.assertIn("exact changed-entry count",protocol)
+            self.assertIn("affected message identifiers",protocol)
+            self.assertIn("prospective record-replacement effect",protocol)
+            self.assertNotIn("reports exact release findings",protocol)
+            self.assertNotIn("No method artifact, persistence contract",protocol)
 
     def test_internal_fixtures_cannot_start_a_new_rollout(self):
         for scenario in ("shared-fixture", "engineering", "engineering-maintenance"):
