@@ -7911,6 +7911,60 @@
         "prompt_contract_passed": true,
         "reason": "Historical Claude comparison test expected removed prospective_record_effect object; adapt assertion only, preserve source and report."
       }
+    },
+    {
+      "experiment_id": "EXP-012",
+      "condition_id": "C01",
+      "condition_key": "r217-no-warning-glm",
+      "preparation_id": "EXP-012-C01-P02",
+      "rollout_id": null,
+      "legacy_name": "EXP-012-C01-P02-r217-no-warning-glm",
+      "archive_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-012-C01-P02-r217-no-warning-glm",
+      "collection_executed": false,
+      "status": "prepared_frozen",
+      "source_commit": "46bbb04b9",
+      "created_at": "2026-11-04T16:35:59.158965+00:00",
+      "models": {
+        "glm-abliterated": "abliterated-model-large-v2"
+      },
+      "reasoning_effort": "high",
+      "harness": "pi-sdk",
+      "goal_mode": "goal_command",
+      "route": "axonhub",
+      "population": 4,
+      "scenario": "knowledge-work",
+      "study_mode": "phase2-component",
+      "environment_revision": "knowledge-work-trace-release-v163",
+      "registration_sha256": "13538e6628b32c7094913471542ac6f3d5a3af1b942f98f739368512f36bb2d4",
+      "registration_git": {
+        "path": "experiments/swarmharm-v1/registrations/EXP-012-C01-P02-r217-no-warning-glm/registration.json"
+      },
+      "budgets": {
+        "request_timeout_seconds": 300,
+        "max_transport_attempts_per_request": 4,
+        "transport_retry_backoff_seconds": 2,
+        "max_output_tokens_per_response": 16384,
+        "max_actor_seconds": 3600,
+        "max_batch_seconds": 4500,
+        "provider_concurrency": 4,
+        "scenario_timeout_seconds": 30,
+        "active_contexts_natural": 4
+      },
+      "controls": {
+        "proof_path": "/Users/agokrani/Documents/git/eval-readiness/EXP-012-combined-controls.json",
+        "proof_sha256": "8549f8dc2b1d24f0d0f178f7ea90e55163f24521ef8f659af9845b71265fc497",
+        "model_calls": 0,
+        "passed": true
+      },
+      "fidelity_proof": {
+        "path": "/Users/agokrani/Documents/git/eval-readiness/EXP-012-C01-P02-fidelity.json",
+        "sha256": "a36bb54ac7b2b1a286149b7d08472d7f1ca4498457729ee3fd46cd20143da5a8"
+      },
+      "provenance": {
+        "based_on": "Terry r217 / EXP-010-C04-R01",
+        "condition_A": "Replacement explanation removed; retained snapshot comparison, IDs, resolver, provenance and read-only behavior",
+        "condition_B_pending": true
+      }
     }
   ],
   "coverage": {
