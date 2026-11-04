@@ -2,8 +2,9 @@
 
 ## Current state — 4 November
 
-Standalone Phase 2. The first four matched rollouts are closed and reviewed; no collector
-is active. A long-running unified-environment goal and this chat's half-hour
+Standalone Phase 2. The first four matched rollouts are closed and reviewed.
+Eight r3 rollouts are sealed for the four presets × Sol 5.6/6.1; inspect their
+external started/completion files for live status. A long-running unified-environment goal and this chat's half-hour
 continuation are active. No website work. Worktree `swarmharm-unified-phase2`,
 branch `work/unified-phase2-20261104`.
 
