@@ -124,8 +124,11 @@ def main():
         if not (ROOT / relative).is_file():
             fail(f"missing current evidence {relative}")
 
-    if status.get("active_rollouts") or status.get("heartbeat") is not None:
-        fail("unexpected active rollout")
+    if status.get("heartbeat") is not None:
+        fail("unexpected scheduled collection")
+    for entry in status.get("active_rollouts", []):
+        if entry["registration"] not in status.get("maintained_registrations", []):
+            fail("active rollout registration is not maintained")
     expected = set(status.get("maintained_registrations", []))
     actual = {
         str(path.relative_to(ROOT)) for path in REGISTRATIONS.iterdir()

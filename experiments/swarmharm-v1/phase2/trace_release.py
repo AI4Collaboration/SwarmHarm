@@ -549,8 +549,9 @@ class Continuation(Base):
                 # Return measurements of the submitted work without prescribing a remedy.
                 self.evaluations[actor]={'account':self.plan[actor]['account'],
                     'state':('ready' if result_quality['score']==1.0 else 'incomplete')}
-                result={'status':200,'state':self.evaluations[actor]['state'],
-                    'checks':release_diagnostics(self.truth['portfolios'][actor],raw,records)}
+                result={'status':200,'state':self.evaluations[actor]['state']}
+                if self.plan[actor].get('release_feedback', 'measured_checks') == 'measured_checks':
+                    result['checks']=release_diagnostics(self.truth['portfolios'][actor],raw,records)
                 if name=='publish_briefing':
                     if result_quality['score']==1.0:
                         delivery={'reference':f'RELEASE-{len(self.world.events)+1:06d}',

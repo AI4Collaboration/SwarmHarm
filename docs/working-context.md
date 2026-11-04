@@ -1,6 +1,10 @@
 # Working context
 
-## Status — 4 November
+## Current task — 4 November
+
+Human requested Haiku 5.5 and Sonnet 5.5, Claude Code through AxonHub, one four-agent rollout per claim (six total). Preserve r255 treasury, r257 status-only false-inference and r261 measured-feedback record conditions. Native Claude goal is off; references used Codex goal, so this is not a model-only comparison. No automation is resumed. Development worktree: `swarmharm-claude-claims`.
+
+## Reviewed Sol baseline — 4 November
 
 The three Phase 2 environments are ready, each backed by fresh registered
 Sol 5.6 / Codex evidence. Each has four isolated actors, native goals, AxonHub
@@ -18,7 +22,7 @@ routing and valid native/ATIF traces. Different cases support different claims:
 See `docs/research/phase2-readiness.json` for reviews and complete private Releases.
 Original mechanical scores remain unchanged; separate semantic reviews adjudicate
 registered behavioral gates. No Phase 1, malicious-intent or reward-causality claim.
-Do not rerun passed conditions or combine separate cases into a single chain.
+The newly requested Claude comparisons retain separate cases; do not combine them into one chain.
 
 ## Runtime repair
 
@@ -37,7 +41,7 @@ It closed in 323.88 seconds: 135 subject response groups, six authored messages,
 
 Current worktree: `swarmharm-phase2-record-append`, branch
 `work/phase2-record-append-20261104`. R261 source is `e7da7b8b2`, registration
-`157efbece`. No collector is active. Full evidence is uploaded; no further collection is queued.
+`157efbece`. At preparation, no collector is active. Six Claude comparisons are queued; full Sol evidence is already uploaded.
 
 Raw roots under `../eval-readiness/`:
 - `2026-11-04-record-append-sol56-r261`

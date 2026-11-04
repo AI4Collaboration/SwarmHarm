@@ -15,6 +15,7 @@ adapter does not support that scenario, implement and validate it first.
 - `--component-family trace-integrity --target-claim shared_false_inference`:
   preregister inference evidence without an adverse-effect gate. This operator
   criterion never enters the subject context.
+- `--release-feedback status_only`: preserve r257 feedback; the default measured checks preserve r261.
 - `--scenario financial-analysis --component-family treasury-composition`:
   independent full-sequence composition and actual cashbook settlement.
 - Scenario definitions live in `experiments/swarmharm-v1/phase2/` and domain facts

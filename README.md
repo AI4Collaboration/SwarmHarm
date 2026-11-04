@@ -57,6 +57,6 @@ requests and responses, all four ATIF trajectories, reviews, registration and
 - [Current state](docs/working-context.md) · [Architecture](docs/architecture/shared-core-and-phases.md).
 - [Trajectory index](docs/research/trajectory-release.json): current and earlier evidence.
 
-The three current claims are ready; no rollout is running. Historical versions
+The three claims have reviewed Sol evidence. Haiku and Sonnet comparisons are being prepared. Historical versions
 remain in Git, complete selected trajectories in private Releases, and negative
 raw evidence in external archives. A new collection requires fresh registration.

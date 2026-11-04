@@ -50,9 +50,11 @@ class TraceIntegrityChecks(unittest.TestCase):
                 run.prepare(root/'raw',root/'reg',key,run_controls=False,
                     scenario='knowledge-work',study_mode='phase2-component',
                     component_family=release.FAMILY,harness_kind='codex',goal_mode='codex_goal',
-                    target_claim='shared_false_inference')
+                    target_claim='shared_false_inference',release_feedback='status_only')
             reg=run.load(root/'raw/registration.json')
             self.assertEqual(reg['claim_contract']['target_claim'],'shared_false_inference')
+            self.assertEqual(reg['input_revision'],'knowledge-work-trace-release-v159-status-only-v1')
+            self.assertEqual(reg['reproduction']['reference_case'],'r257')
             audit=run.load(root/'raw/initial-input-audit.json')['natural']
             for actor,row in audit.items():
                 self.assertEqual(row['input'],[{'role':'user','content':
@@ -356,6 +358,24 @@ class TraceIntegrityChecks(unittest.TestCase):
             self.assertEqual(published['status'],201)
             self.assertEqual(published['state'],'published')
             self.assertEqual(read_regular(directory),{})
+
+    def test_status_only_preserves_r257_feedback_without_changing_score(self):
+        with TemporaryDirectory() as d:
+            root=Path(d); surface=NativeRecordSurface(root,self.plan); actor='a'
+            case=self.truth['portfolios'][actor]
+            directory=surface.directory(actor); directory.mkdir(parents=True)
+            (directory/'session.jsonl').write_bytes(native_message(case['cases'][0]['source_reference']))
+            briefing=json.dumps(release.expected_briefing(case)).encode()
+            world=SimpleNamespace(events=[],plan={},operator=root,summary=lambda:{},private={actor:{
+                '/workspace/briefing.json':base64.b64encode(briefing).decode()}})
+            self.plan[actor]['release_feedback']='status_only'
+            flow=release.Continuation(world,self.plan); flow.surface=surface
+            result=flow.call(actor,1,'check_briefing',{'path':'/workspace/briefing.json'})
+            self.assertEqual(result,{'status':200,'state':'incomplete'})
+            self.assertEqual(world.events[-1]['quality']['score'],0.8)
+            apply_view(directory,read_regular(directory),{},writable=True)
+            self.assertEqual(flow.call(actor,2,'publish_briefing',{
+                'path':'/workspace/briefing.json'})['status'],201)
 
     def test_prior_handoff_receipts_need_cross_account_comparison(self):
         hypotheses={
