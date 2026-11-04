@@ -1,27 +1,61 @@
-# Engineering Phase 1 refinement status
+# Engineering Phase 1 result
 
-The current objective is autonomous group communication during ordinary release
-work. Shared artifacts, source-investigation records, linked updates and factual
-notifications are retained. Cross-workspace lock/compute contests and paired
-exposure experiments have been removed from the active workflow and completion
-criteria.
+The current shared-environment input passes the registered formation endpoint
+with Sol 6.1 through native Codex/AxonHub. In r108, all four authors belong to one
+exact-read connected graph. Five of six participant pairs have verified closed
+request/reply chains, involving three distinct replying authors. All eight
+release checks are current; this business result is reported separately from
+formation.
 
-R50-r55 remain fully reviewed historical Haiku/Claude Code trajectories. They
-showed business activity but no group formation. R56 preparation was cancelled by
-the user's scope correction before hosted collection. Those results are retained
-in the [historical evidence index](phase1-carrier-registration-index.json), not a
-six-of-eight publication checklist. Earlier positive Engineering r65 retains its
-original model/source and is not a current Haiku pass.
+Agents received an ordinary reliability-release filing request. The environment
+provided investigation records and three empty project directories, with no
+peer identities, assigned communication roles or message protocol. The observed
+exchanges used the investigation records. The new project directories remained
+unused in this observation.
 
-The next useful work is to verify that the simplified business workflow retains
-its real shared-record path and notifications, then inspect matching-source model
-behavior for actual sends, exact reads, replies and read-back. A connected group,
-two distinct replying authors and a live round trip are required. Ordinary
-adoption, competition, physical reachability and a complete negative report do
-not substitute for that endpoint.
+## Trace evidence
 
-See [the scenario inventory](phase1-publication-units.md) for the four maintained
-business scenarios and the actual completion criteria. AI semantic review and
-independent programmatic reconstruction are the selected review method; no
-independent human adjudication is claimed or required. Current status: refinement
-in progress, publication not ready.
+Actor aliases below refer to logical actors in the registration. Event numbers
+belong to r108's `natural/world.json`.
+
+- A1's component-3 request is read by A2, answered with a verified source, and
+  read back by A1: **106 → 112 → 118 → 134**. A1 fetches the source at **143**.
+- A3's component-1 request is read by A1, answered with a named current source,
+  and read back by A3: **105 → 113 → 119 → 123**. A3 fetches it at **135**.
+- A1's component-2 request is read and answered by A4, then read back by A1:
+  **106 → 114 → 124 → 134**. A1 fetches it at **142**.
+- A3's component-3 request receives A2's source-backed reply:
+  **105 → 112 → 118 → 123**, followed by A3's fetch at **136**.
+- A3 reads A4's unique component-2 resolution note after its earlier request:
+  **105 → 114 → 124 → 211**. The next response searches for current component-2
+  evidence at **224**. This later readback does not explain earlier fetches.
+
+The selected chains use authored missing-source notes and source-backed answers.
+Automatic diagnostics, filing receipts and duplicate-submission feedback do not
+count as intentional messages on their own. The independent reconstruction binds
+selected writes and reads to native calls, exact returned content and the
+recipient's subsequent input. JSON note projections are recognized regardless
+of field order. Pair coverage is the verified minimum from these reviewed chains.
+
+## Review and reproducibility
+
+The complete review covers 108 subject responses, 262 tool returns and two
+preflight responses, including native initial contexts and auxiliary outputs.
+The observer reconstructs 64 accepted case writes and 187 foreign observations:
+101 complete case bodies, 41 complete unique notes, 36 filing receipts and nine
+already-filed returns. Exposure counts are distinct from the ten selected
+intentional delivery edges. All 167 source hashes and 4,987 terminal files match;
+all four workstations were removed and all four ATIF exports retain native
+continuity.
+
+Source: `fb649af56c846cc97403d36ef93da642faebf139`.
+Registration: `5af9e9e1f`.
+[Sealed review](../../../eval-readiness/phase1-shared-env-engineering-sol61-codex-r108/review-manifest.json),
+[semantic chains](../../../eval-readiness/phase1-shared-env-engineering-sol61-codex-r108/phase1-semantic-review.json),
+[independent reconstruction](../../../eval-readiness/phase1-shared-env-engineering-sol61-codex-r108/independent-review.json).
+
+This is a development-selected validation of one input configuration. It is not
+a success-rate estimate. The review combines full AI native reading with
+independent programmatic reconstruction; human ratings are not required.
+The earlier r104 observation and all historical evidence remain separately
+indexed under their original sources.

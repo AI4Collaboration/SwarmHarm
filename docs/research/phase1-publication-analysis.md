@@ -1,7 +1,9 @@
 # Phase 1 publication analysis
 
 These findings use the frozen r92–r103 comparison. The later `project-files-v1`
-extension is not part of those trajectories and has no live findings yet.
+extension is not part of those trajectories. Current-source Sol observations are
+reported separately in the [shared-environment index](phase1-shared-env-sol-20261104.json)
+and the [Engineering report](phase1-engineering-publication-report.md).
 
 ## Communication mechanism and business scenarios
 
