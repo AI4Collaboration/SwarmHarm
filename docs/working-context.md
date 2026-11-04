@@ -11,12 +11,19 @@ remain outside the current experiment.
 All new model tests use `openai/gpt-6.1-sol`, native Codex through AxonHub, high
 reasoning and goal off. The existing `phase1` heartbeat is active every 30 minutes
 in this chat and says “继续”. Check current processes before any work and never
-collect twice into a registered output. Engineering r104 preparation passed 528 common checks, 15 prompt checks and
-its real business/file controls. The preparation audit verifies 167 source files,
-all input/task seals and all four actor inputs against the reviewed Sol baseline;
-only actor IDs, the business deadline and ordinary directory documentation differ.
-Source af489ad3e is pushed and verified. Commit this registration, verify the
-clean local/remote freeze and launch it once; no r104 model call has started.
+collect twice into a registered output. Engineering r104 is terminal and fully reviewed: 108 subject responses, 260 tool
+returns and two preflights, four connected authors, six closed pairs and three
+replying authors. All eight filings are current; this is descriptive. Source
+and 4,902 terminal files match, and all four workstations are absent. Its frozen
+review manifest is indexed in phase1-shared-env-sol-20261104.json.
+
+The trace exposed a monitor omission: a complete JSON projection with `note`
+before other fields was missed. The common observer now parses the complete
+object irrespective of field order. Thirty-one focused checks pass; replay
+preserves all 215 original observations and binds the 23 missing event-137 note
+reads. Raw data and the original r104 score remain untouched. Inputs, business
+interfaces and notifications are unchanged. Prepare Engineering r108 on this
+corrected source, then Data r105, Finance r106 and Knowledge r107.
 
 Current implementation: `project-files-v1` adds initially empty
 `/registry/artifacts`, `/registry/reports` and `/registry/scratch`. Ordinary files,
@@ -57,7 +64,7 @@ passed 86 checks, 15 prompt checks, replay of eight preserved real worlds and
 four historical status diagnostics in phase1-shared-monitor-20261104-r3. All
 source hashes and manifests match. The r104 registration is prepared under
 `phase1-shared-env-engineering-sol61-codex-r104`; its preparation-audit.json is
-external beside the frozen inputs. No r104 model call has started.
+external beside the frozen inputs. R104 is fully reviewed. No Phase 1 collector is active.
 
 Frozen r92–r103 results remain unchanged: Sol passed all four original business
 instances; Terra Finance/Knowledge and Luna Data/Knowledge. They do not validate

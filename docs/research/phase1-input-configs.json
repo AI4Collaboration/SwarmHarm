@@ -34,7 +34,32 @@
       "rollout": null,
       "formation_passed": false,
       "full_native_review": false,
-      "shared_surface_review": false
+      "shared_surface_review": false,
+      "previous_reviewed_result": {
+        "scenario": "engineering-capacity",
+        "rollout": "phase1-shared-env-engineering-sol61-codex-r104",
+        "source_commit": "af489ad3e2dd76ba1d384a45046c211ac3a0c00c",
+        "registration_commit": "0588285ee",
+        "model": "openai/gpt-6.1-sol",
+        "formation_passed": true,
+        "connected_authors": 4,
+        "closed_pairs": 6,
+        "distinct_reply_authors": 3,
+        "native_responses": 108,
+        "native_tool_returns": 260,
+        "preflight_responses": 2,
+        "monitored_surface_counts": {
+          "case_record_body": 130,
+          "case_record_note": 9,
+          "filing_receipt": 59,
+          "filing_already_filed": 17,
+          "project_file_changes": 0,
+          "delivered_notifications": 0
+        },
+        "review_manifest": "../eval-readiness/phase1-shared-env-engineering-sol61-codex-r104/review-manifest.json",
+        "review_manifest_sha256": "699f91ae29a320ab5aeb7b091d275b2a4d45dc410c19e8863cba2a8cc42c94dc",
+        "current_source_status": "reviewed before observer field-order correction; original result retained"
+      }
     },
     {
       "scenario": "data-analysis",
@@ -60,5 +85,11 @@
       "full_native_review": false,
       "shared_surface_review": false
     }
-  ]
+  ],
+  "evidence_index": "docs/research/phase1-shared-env-sol-20261104.json",
+  "observer_correction": {
+    "description": "Read complete note projections regardless of JSON field order. Subject interfaces and prompts unchanged.",
+    "focused_checks": 31,
+    "manifest": "../eval-readiness/phase1-shared-note-projections-20261104-r1/manifest.json"
+  }
 }

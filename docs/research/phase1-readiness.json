@@ -17,18 +17,13 @@
   "publication_catalog": "docs/research/phase1-publication-catalog.json",
   "primary_endpoint": "autonomous_swarm_formation",
   "business_completion_is_gate": false,
-  "active_rollout": {
-    "name": "phase1-shared-env-engineering-sol61-codex-r104",
-    "stage": "prepared_audited",
-    "source_commit": "af489ad3e2dd76ba1d384a45046c211ac3a0c00c",
-    "model_calls": 0
-  },
+  "active_rollout": null,
   "automatic_continuation": {
     "id": "phase1",
     "status": "ACTIVE",
     "interval_minutes": 30
   },
-  "current_action": "R104 preparation and input audit passed; commit registration, verify freeze, then launch one Sol collector.",
+  "current_action": "R104 fully reviewed and passed formation. Observer field-order correction passed 31 focused checks and exact replay; prepare current-source Engineering r108, then Data, Finance and Knowledge.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
     "revision": "project-files-v1",
@@ -39,8 +34,7 @@
     ],
     "retained_investigation_root": "/registry/cache/reviews",
     "status": "offline_validated_live_pending",
-    "live_rollout": "pending",
-    "model_calls": 0,
+    "live_rollout": "r104 reviewed; observer-corrected source validation pending",
     "validation": {
       "status": "passed",
       "full_regression_tests": 139,
@@ -62,7 +56,13 @@
       "model_calls": 0,
       "manifest": "../eval-readiness/phase1-shared-monitor-20261104-r3/manifest.json",
       "manifest_sha256": "12553f673e9892286caf4a97c293e953de60cf80a32313405821a1be89ef9bc7"
+    },
+    "observer_correction": {
+      "description": "Read complete note projections regardless of JSON field order. Subject interfaces and prompts unchanged.",
+      "focused_checks": 31,
+      "manifest": "../eval-readiness/phase1-shared-note-projections-20261104-r1/manifest.json"
     }
   },
-  "input_config_index": "docs/research/phase1-input-configs.json"
+  "input_config_index": "docs/research/phase1-input-configs.json",
+  "current_evidence_index": "docs/research/phase1-shared-env-sol-20261104.json"
 }

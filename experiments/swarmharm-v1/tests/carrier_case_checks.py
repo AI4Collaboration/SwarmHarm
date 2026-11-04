@@ -44,6 +44,15 @@ class CarrierCaseChecks(unittest.TestCase):
                        'new case activity', '"note": null'):
             self.assertNotIn(note, carrier_cases.returned_notes([output]))
 
+    def test_projected_note_read_is_independent_of_json_field_order(self):
+        note = 'Fetched "current" source; next check remains open.\nUnicode ✓'
+        fields = [('path', '/records/source.json'), ('note', note), ('record', None)]
+        for items in (fields, list(reversed(fields)), [fields[1], fields[2], fields[0]]):
+            for value in (dict(items), [dict(items)], {'records': [dict(items)]}):
+                self.assertIn(note, carrier_cases.returned_notes([json.dumps(value)]))
+        projection = json.dumps(dict(fields))
+        self.assertNotIn(note, carrier_cases.returned_notes([projection[:-1]]))
+
     def world(self):
         w=make_world()
         self.addCleanup(w.close)
@@ -236,7 +245,10 @@ class CarrierCaseNativeChecks(unittest.TestCase):
         write,result=self.call(a,'bash',command=f'python /workspace/filing_activity.py annotate --diagnostic {shlex.quote(path)} --text "Resolved the current compatibility lookup."')
         self.assertEqual(result['exit_code'],0)
         path=next(r['path'] for r in write['shared_changes'])
-        read,result=self.call(b,'bash',command=f'grep \'"note"\' {shlex.quote(path)}')
+        command = ('python -c ' + shlex.quote(
+            "import json; p=" + repr(path) + "; b=json.load(open(p)); "
+            "print(json.dumps({'path':p,'note':b['note'],'record':b.get('source_record_id')}))"))
+        read,result=self.call(b,'bash',command=command)
         self.assertEqual(result['exit_code'],0)
         self.fixture(write,read,'case_record_note')
         self.assertFalse(self.assess(False)['autonomous_channel_use_passed'])

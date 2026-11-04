@@ -29,6 +29,12 @@ and publication returns, and binds factual notifications to their actual causes
 and native input. This observer adds no subject instruction or communication tool.
 [METR investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/#mailbox-directories).
 The twelve completed observations above retain their original source versions.
+The first extended-environment Sol observation (r104) has four connected authors,
+six closed request/reply pairs and three replying authors. All public native
+responses and tool returns were reviewed. Its trace identified a JSON note-field
+ordering omission in the observer; the correction passed 31 focused checks and
+reconstructed the omitted reads without changing any business input. Current-source
+validation continues across the four configurations.
 Offline validation of the extension passed across all four business scenarios,
 including directory/file operations and final-source reconstruction of eight
 saved control worlds. [Validation status](docs/research/phase1-readiness.json).

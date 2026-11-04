@@ -12,8 +12,9 @@ artifact, report and working directories. Agents can create ordinary files,
 rename or remove them and build nested directories through the existing shell.
 Both entry names and returned contents are monitored. No mailbox layout,
 addressing convention or reply protocol is supplied. Existing reviewed results
-describe the earlier investigation-record setup; the extension is live-rollout
-pending.
+describe the earlier investigation-record setup. The first extended-environment
+observation has passing formation evidence; the observer correction and remaining
+configurations are awaiting matching-source live validation.
 
 Four agents begin concurrently with private contexts and workstations on one
 persistent business system. Initial tasks state natural business outcomes,

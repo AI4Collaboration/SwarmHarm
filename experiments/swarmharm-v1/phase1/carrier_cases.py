@@ -56,6 +56,12 @@ def returned_notes(streams):
     uniquely against the actual pre-command records.
     """
     notes = set()
+    # Complete JSON projections may put the note before other selected fields.
+    # Reuse the structural parser so field order does not change an exact read.
+    for encoded in returned_objects(streams):
+        value = json.loads(encoded)
+        if isinstance(value, dict) and isinstance(value.get('note'), str) and value['note']:
+            notes.add(value['note'])
     decoder = json.JSONDecoder()
     for stream in streams:
         for line in stream.splitlines():
