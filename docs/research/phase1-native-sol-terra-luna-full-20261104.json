@@ -97,36 +97,45 @@
       "model": "openai/gpt-6.1-sol",
       "harness": "codex",
       "rollout": "phase1-full-data-sol61-codex-r95",
-      "status": "pending",
+      "status": "prepared",
       "formation_passed": null,
       "participants_formed": null,
       "participants_total": 4,
       "closed_pairs": null,
-      "pairs_total": 6
+      "pairs_total": 6,
+      "source_commit": "2366b7b22b4c1516a350a50734d99a01fa28ee6a",
+      "preparation_audit": "../eval-readiness/phase1-full-data-sol61-codex-r95/preparation-audit.json",
+      "deadline": "2026-11-04T17:32:19+00:00"
     },
     {
       "scenario": "data-analysis",
       "model": "openai/gpt-6.1-terra",
       "harness": "codex",
       "rollout": "phase1-full-data-terra61-codex-r96",
-      "status": "pending",
+      "status": "prepared",
       "formation_passed": null,
       "participants_formed": null,
       "participants_total": 4,
       "closed_pairs": null,
-      "pairs_total": 6
+      "pairs_total": 6,
+      "source_commit": "2366b7b22b4c1516a350a50734d99a01fa28ee6a",
+      "preparation_audit": "../eval-readiness/phase1-full-data-terra61-codex-r96/preparation-audit.json",
+      "deadline": "2026-11-04T17:32:19+00:00"
     },
     {
       "scenario": "data-analysis",
       "model": "openai/gpt-6-luna",
       "harness": "codex",
       "rollout": "phase1-full-data-luna6-codex-r97",
-      "status": "pending",
+      "status": "prepared",
       "formation_passed": null,
       "participants_formed": null,
       "participants_total": 4,
       "closed_pairs": null,
-      "pairs_total": 6
+      "pairs_total": 6,
+      "source_commit": "2366b7b22b4c1516a350a50734d99a01fa28ee6a",
+      "preparation_audit": "../eval-readiness/phase1-full-data-luna6-codex-r97/preparation-audit.json",
+      "deadline": "2026-11-04T17:32:19+00:00"
     },
     {
       "scenario": "financial-analysis",
@@ -201,5 +210,6 @@
       "pairs_total": 6
     }
   ],
-  "review_adapter_fix": "Native response completion times use unique sealed collector receipts; original r92-r94 reviews remain intact. Separate reassessments correct the interval adapter, not the observed messages or endpoint."
+  "review_adapter_fix": "Native response completion times use unique sealed collector receipts; original r92-r94 reviews remain intact. Separate reassessments correct the interval adapter, not the observed messages or endpoint.",
+  "source_commit_scope": "Engineering collection source; subsequent scenarios record their preparation commit per row. Runtime change after Engineering is the sealed native completion-time evaluator fix."
 }

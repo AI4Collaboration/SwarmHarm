@@ -1,3 +1,15 @@
+Data native r95-r97 prepared on source2366b7b22 (4 November).
+Each passes509 common checks+14 prompt checks and real four-workstation business
+controls: independent closure0/8, ordinary source-exchange witness8/8. All162
+source seals, input/task/registration seals and three model catalogs verified.
+Four initial inputs/tools/decoded files per model match reviewed r73 except job
+IDs and common deadline2026-11-04T17:32:19UTC. No cooperation cue. Runtime native
+Codex/AxonHub/high/goal off; repaired completion-time evaluator included.
+Preparation-audit.json is saved per rollout. No Data model calls yet; next commit
+and push registrations, absolute-path freeze check, launch each once, then full
+native reading before the next scenario. The user reaffirms connected swarm,
+not6/6 pairs, and requests all remaining three scenarios on Sol/Terra/Luna.
+
 Engineering native comparison r92-r94 is fully reviewed (4 November 2026).
 Sol6.1:4/4 bidirectional participants,3/6 closed pairs, two reply authors;
 formation passes under the separately sealed completion-time reassessment.

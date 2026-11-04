@@ -16,8 +16,9 @@ All four are in the user's refinement scope. Repair related defects across affec
 review each scenario through refine → offline business checks → registered
 rollout → complete trace review.
 Keep each model and source revision explicit; do not transfer an old pass to new
-code. Current models are Sol 6.1 and Haiku 5.5, directly through AxonHub APIs without
-a model harness. Either model passing the current scenario qualifies it.
+code. The current comparison selects Sol 6.1, Terra 6.1 and Luna 6 through native
+Codex and AxonHub, aligned with Phase2. A verified selected-model formation pass
+qualifies that source-specific scenario; each model outcome is reported separately.
 
 ## Completion
 
@@ -49,7 +50,7 @@ Current readiness is recorded in [the catalog](phase1-publication-catalog.json).
 Historical raw evidence and frozen registration indexes are retained for truthful
 reproduction, not as a checklist to resume the withdrawn experiments.
 
-## Current verified result (4 November)
+## Historical direct-API verified result (4 November)
 
 Engineering r72 passes on Sol6.1 through direct AxonHub: four source-linked
 replying actors and four exact request/read/reply/readback round trips connect
