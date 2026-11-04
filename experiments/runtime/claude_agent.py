@@ -1,4 +1,4 @@
-"""Claude Code sessions with explicit registered subscription or AxonHub routing."""
+"""Claude Code through AxonHub, with legacy authentication only for offline fixtures."""
 
 from hashlib import sha256
 import json
@@ -13,6 +13,7 @@ import tempfile
 import threading
 
 from workstation import AUTONOMOUS_EXECUTION
+from guardrails import require_same_harness
 
 HERE = Path(__file__).resolve().parent
 CLAUDE_DIR = HERE / 'claude'
@@ -32,7 +33,7 @@ EXECUTION_CONTEXT = (
 )
 SYSTEM_PROMPT = {'type': 'preset', 'preset': 'claude_code',
                  'append': EXECUTION_CONTEXT + '\n' + AUTONOMOUS_EXECUTION}
-CONTEXT_WINDOW = None  # The subscription CLI owns the actual model context limit.
+CONTEXT_WINDOW = None  # The native CLI owns the actual model context limit.
 CONFLICTING_ENV = {
     'ANTHROPIC_API_KEY', 'ANTHROPIC_AUTH_TOKEN', 'ANTHROPIC_BASE_URL',
     'ANTHROPIC_CUSTOM_HEADERS', 'CLAUDE_CODE_USE_BEDROCK',
@@ -261,6 +262,11 @@ def verify_runtime(harness):
         raise RuntimeError('Installed Claude Agent SDK differs from registration')
     if node_version() != harness['node_version'] or cli_identity() != harness['claude_code']:
         raise RuntimeError('Node.js or Claude Code differs from registration; prepare a fresh rollout')
+    model = (harness.get('environment', {}).get('ANTHROPIC_MODEL')
+             if harness['authentication'] == 'axonhub'
+             else harness.get('environment', {}).get('ANTHROPIC_DEFAULT_HAIKU_MODEL'))
+    require_same_harness(harness, _registration(harness['goal_mode'], model,
+        authentication=harness['authentication'], auth=harness['auth_status']))
 
 
 class ClaudeAgent:

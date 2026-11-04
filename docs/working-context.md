@@ -29,13 +29,18 @@ byte-for-byte archive checks; Git and private Releases retain all original files
 The adapters preserve real native feedback and incomplete goals. A changed tool
 response counts as new; these guards do not detect all semantic non-progress.
 See [running guide](running-evals.md) for exact persistence and routing conditions.
-Offline validation: 26 Pi collection checks, 13 native harness checks and six Codex
+Offline validation: 26 Pi collection checks, 16 native harness checks and six Codex
 goal checks on each CLI channel passed. Claude guard tests also cover unchanged
 turns, successful completion and same-session resumption.
 Audit logs: `../eval-readiness/harness-audit-20261104/` and
 `../eval-readiness/claude-goal-20261104/`.
 
 ## Next execution
+
+Fresh preparation now defaults to the selected harness goal. Explicit `off` remains
+a comparison; skipped-control fixtures cannot collect live. All three adapters
+verify complete registered settings; control reuse permits only declared model
+selector differences and rechecks each model route.
 
 Behavioral validation of the repaired runtimes is pending. Use fresh registration,
 freeze the selected executable, goal condition and source, then collect once.

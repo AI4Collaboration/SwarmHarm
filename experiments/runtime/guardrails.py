@@ -1,5 +1,6 @@
 """Minimal host-path checks shared by maintained SwarmHarm entry points."""
 
+from copy import deepcopy
 from pathlib import Path
 import urllib.error
 import urllib.request
@@ -62,3 +63,38 @@ def native_harness(models):
     if len(kinds)!=1:
         raise ValueError('A rollout requires one native harness family')
     return kinds.pop()
+
+
+def resolve_goal_mode(harness, requested=None, *, offline_fixture=False):
+    """Live defaults enable the selected harness goal; off remains an explicit condition."""
+    defaults = {'codex': 'codex_goal', 'claude-code': 'claude_goal', 'pi-sdk': 'goal_command'}
+    if harness not in defaults:
+        raise ValueError('Unknown agent harness')
+    if requested is None:
+        return 'off' if offline_fixture else defaults[harness]
+    if requested not in ('off', defaults[harness]):
+        raise ValueError('Goal mode does not match the selected harness')
+    return requested
+
+
+def require_same_harness(registered, current):
+    """Reject silent settings drift, including newly added contract fields."""
+    if 'input_projection' in registered:
+        current = controller_harness(current)
+    for field in sorted(set(registered) | set(current)):
+        if field not in registered or field not in current or registered[field] != current[field]:
+            raise RuntimeError(f'Harness settings changed: {field}; prepare a fresh registration')
+
+
+def controller_harness(harness):
+    """One definition for the collector-owned execution and input contract."""
+    value=deepcopy(harness)
+    kind=value['kind']
+    value['input_projection']={
+        'business_task':'user',
+        'declared_context':'system_append' if kind=='pi-sdk' else 'user',
+        'autonomous_execution_rule':'system_append' if kind=='claude-code' else 'initial_context',
+        'authoritative_evidence':'native_harness_records',
+    }
+    value['tool_execution']='controller; concurrent private shell, serialized shared-state commits'
+    return value

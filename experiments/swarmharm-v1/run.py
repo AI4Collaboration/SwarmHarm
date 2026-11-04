@@ -376,6 +376,21 @@ def validate_harness_policy(harness_kind, offline_adapter_test=False, offline_fi
         raise ValueError('Pi is historical only; use the model family native harness through AxonHub.')
 
 
+def control_harness_contract(harness):
+    """Model selection is rechecked; all other native runtime settings must match."""
+    value=deepcopy(harness)
+    for field in ('ANTHROPIC_MODEL','ANTHROPIC_DEFAULT_HAIKU_MODEL',
+                  'ANTHROPIC_DEFAULT_SONNET_MODEL','ANTHROPIC_DEFAULT_OPUS_MODEL',
+                  'ANTHROPIC_SMALL_FAST_MODEL'):
+        if field in value.get('environment',{}):
+            value['environment'][field]='<registered-model>'
+    if value.get('goal_evaluator'):
+        value['goal_evaluator']['model']='<registered-model>'
+    if 'accepted_native_model_ids' in value:
+        value['accepted_native_model_ids']=['<registered-model>']
+    return value
+
+
 def reuse_checked_controls(source, harness):
     """Reuse offline checks only for identical source, image and native runtime."""
     source=guardrails.outside_repository(source,REPO,'Offline check source')
@@ -386,8 +401,8 @@ def reuse_checked_controls(source, harness):
     require(all(sha(source/'code'/path)==value for path,value in expected.items()),'Offline check archive differs')
     require(reg['image']==lab.IMAGE and reg['runtime']=={
         'harbor_version':HARBOR_VERSION,'python':sys.version.split()[0]},'Offline check runtime differs')
-    for field in ('kind','installed','node_version','claude_code','native_binding','goal_mode'):
-        require(reg['harness'].get(field)==harness.get(field),f'Offline check harness differs: {field}')
+    require(control_harness_contract(reg['harness'])==control_harness_contract(harness),
+            'Offline check harness differs')
     require(sha(source/'controls.json')==reg['input_hashes']['controls.json'],'Offline check results changed')
     result=load(source/'controls.json')
     require(result.get('passed') is True and result.get('prompt_contract_passed') is True
@@ -403,13 +418,15 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             filing_deadline_utc=None,scenario=DEFAULT_SCENARIO,
             information_condition="local_records", study_mode=None,
             component_family=None, initial_material='business_records_only',
-            material_distribution='all_workstations', goal_mode='off', harness_kind=None,
+            material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
             archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind is None:
         harness_kind=guardrails.native_harness(MODELS)
+    goal_mode=guardrails.resolve_goal_mode(harness_kind,goal_mode,
+        offline_fixture=offline_adapter_test or not run_controls)
     if not offline_adapter_test:
         guardrails.validate_model_harness(MODELS, harness_kind, offline_fixture=not run_controls, pi_comparison=pi_comparison)
     validate_harness_policy(harness_kind, offline_adapter_test, offline_fixture=not run_controls, pi_comparison=pi_comparison)
@@ -498,13 +515,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     else:
         routes=verify_routes(key_file,reasoning_effort=reasoning_effort)
         harness=pi_agent.harness_registration(goal_mode)
-    harness['input_projection'] = {
-        'business_task': 'user',
-        'declared_context': 'system_append' if harness_kind == 'pi-sdk' else 'user',
-        'autonomous_execution_rule': 'system_append' if harness_kind=='claude-code' else 'initial_context',
-        'authoritative_evidence': 'native_harness_records',
-    }
-    harness['tool_execution'] = 'controller; concurrent private shell, serialized shared-state commits'
+    harness=guardrails.controller_harness(harness)
     scenario_mechanics=domain_runtime.mechanics(scenario)
     filing_deadline=normalized_filing_deadline(filing_deadline_utc)
     pressure=scenario_mechanics.business_pressure(filing_deadline)
@@ -670,7 +681,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'runtime':{'harbor_version':HARBOR_VERSION,'python':sys.version.split()[0]},
         'inference_gateway':'axonhub' if native_gateway or harness_kind=='pi-sdk' else None,
         'inference_protocol':('anthropic/messages' if harness_kind=='claude-code' else 'openai/responses') if native_gateway else 'openai/responses' if harness_kind=='pi-sdk' else None,
-        'live_collection_permitted':native_gateway or (harness_kind=='pi-sdk' and (pi_comparison or not run_controls)),
+        'live_collection_permitted':bool(run_controls and (native_gateway or (harness_kind=='pi-sdk' and pi_comparison))),
         'pi_comparison':bool(pi_comparison),
         'offline_adapter_test':bool(offline_adapter_test),
         'continuous_rollout':True,
@@ -1713,7 +1724,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             f'{harness_kind} does not have a registered live AxonHub transport.',
         )
     else:
-        require(reg.get('live_collection_permitted', True) is True,
+        require(offline_transport_test or reg.get('live_collection_permitted') is True,
             'This registration is not permitted for live collection.')
         require(reg.get('inference_gateway', 'axonhub') == 'axonhub',
             'Every live rollout must use AxonHub as its inference gateway.')
@@ -1783,8 +1794,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         require(harness['authentication'] in ('claude-subscription','axonhub'),'Unknown Claude authentication.')
         claude_agent.verify_runtime(harness)
     else:
-        require(pi_agent.installed_versions()==harness['installed'],'Installed Pi runtime differs from the registration.')
-        require(pi_agent.node_version()==harness['node_version'],'Node.js differs from the registration.')
+        pi_agent.verify_runtime(harness)
     api_key=None if subscription else AXONHUB_KEY_FILE.read_text().strip()
     api_base=None if subscription else registration_api_base(reg)
     formation_review=module('swarmharm_v1_runtime_review',HERE/'review.py')
@@ -2680,8 +2690,8 @@ if __name__=='__main__':
         help='Business scenario; defaults to the maintained Engineering source.')
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched rollouts.')
-    p.add_argument('--goal-mode',choices=('off','goal_command','codex_goal','claude_goal'),default='off',
-        help='Native session persistence; a historical Pi goal extension is not a native goal.')
+    p.add_argument('--goal-mode',choices=('off','goal_command','codex_goal','claude_goal'),default=None,
+        help='Defaults to the selected harness goal. Use off only for an explicit comparison.')
     p.add_argument('--api-base',default=AXONHUB_API_BASE,
         help='Fixed AxonHub Responses API base; alternative live endpoints are rejected.')
     p.add_argument('--information-condition', choices=('local_records',),

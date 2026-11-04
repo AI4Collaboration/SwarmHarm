@@ -7,7 +7,9 @@ Use `experiments/swarmharm-v1/run.py` for preparation and collection, and
 
 Read [working context](working-context.md) and [model/harness routing](axonhub-routing.md).
 Claude uses **Claude Code** and OpenAI uses **Codex**, both through AxonHub. Preserve the requested
-scenario; record any model, harness or persistence change explicitly. If an
+scenario; record any model, harness or persistence change explicitly. Fresh preparation
+defaults to the selected harness goal; `--goal-mode off` is an explicit comparison.
+Offline fixtures that skip controls cannot collect live. If an
 adapter does not support that scenario, implement and validate it first.
 
 - `--study-mode phase1`: formation only.
@@ -37,7 +39,8 @@ installation of the same version. Install the selected adapter's pinned lockfile
    exact tool delivery, native history, export and independent outcome replay.
 3. Run the relevant offline checks and prompt contracts. For a matched set,
    `--controls-from` reuses a passed check archive only after verifying identical
-   source, image and native runtime; every model route is checked afresh. They do not establish
+   source, image and complete native harness contract (including goal controls, tools,
+   prompts and executable hashes); every model route is checked afresh. They do not establish
    model behavior.
 4. Commit and push source. Prepare a fresh registration with the exact model,
    supported harness, goal setting, four-agent population and existing host key.
@@ -70,7 +73,9 @@ separate `@narumitw/pi-goal` 0.54.15 extension. Its native settings retain a
 identical tool-free responses; tool attempts reset that narrower guard.
 Pi 1.5 orders extension tools first; actual requests retain that order.
 These are distinct registered goal mechanisms, not identical persistence settings.
-Registration success and offline checks do not certify live behavior.
+Startup rechecks the complete registered settings against the runtime. Changed or
+unknown fields require fresh registration. Registration and offline checks do not
+certify live behavior.
 
 ## Collect and review
 

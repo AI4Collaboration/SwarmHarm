@@ -13,6 +13,37 @@ import record_surface
 
 
 class NativeHarnessChecks(unittest.TestCase):
+    def test_live_goal_defaults_and_explicit_off_are_unambiguous(self):
+        for harness, goal in [('codex','codex_goal'),('claude-code','claude_goal'),('pi-sdk','goal_command')]:
+            self.assertEqual(run.guardrails.resolve_goal_mode(harness),goal)
+            self.assertEqual(run.guardrails.resolve_goal_mode(harness,'off'),'off')
+            self.assertEqual(run.guardrails.resolve_goal_mode(harness,offline_fixture=True),'off')
+            wrong = 'claude_goal' if harness != 'claude-code' else 'codex_goal'
+            with self.assertRaisesRegex(ValueError,'does not match'):
+                run.guardrails.resolve_goal_mode(harness,wrong)
+
+    def test_all_harnesses_reject_registered_settings_drift(self):
+        from copy import deepcopy
+        registrations = [
+            (run.pi_agent,run.pi_agent.harness_registration('goal_command'),'goal_settings'),
+            (run.claude_agent,run.claude_agent.gateway_registration('anthropic/claude-haiku-5.5','claude_goal'),'settings'),
+            (codex_gateway,codex_gateway.harness_registration('codex_goal','openai/gpt-5.6-sol'),'tool_profile'),
+        ]
+        for adapter, original, field in registrations:
+            with self.subTest(adapter=adapter.__name__):
+                adapter.verify_runtime(original)
+                prepared=run.guardrails.controller_harness(original)
+                adapter.verify_runtime(prepared)
+                prepared['input_projection']['business_task']='system'
+                with self.assertRaisesRegex(RuntimeError,'Harness settings changed'):
+                    adapter.verify_runtime(prepared)
+                changed=deepcopy(original);changed[field]['unregistered_setting']=True
+                with self.assertRaisesRegex(RuntimeError,'Harness settings changed'):
+                    adapter.verify_runtime(changed)
+                changed=deepcopy(original);changed['unregistered_field']=True
+                with self.assertRaisesRegex(RuntimeError,'Harness settings changed'):
+                    adapter.verify_runtime(changed)
+
     def test_native_cwd_alias_reaches_only_actor_business_files(self):
         import base64
         from workstation import DockerWorkstation, native_cwd_alias_code
@@ -280,7 +311,9 @@ class NativeHarnessChecks(unittest.TestCase):
                     self.assertIn('Claude native goal versus reference Codex native goal', prepared['reproduction']['harness_differences'])
                     self.assertNotIn('Claude goal off versus reference Codex native goal', prepared['reproduction']['harness_differences'])
                 self.assertEqual(prepared['api_base'],codex_gateway.AXONHUB_BASE)
-                self.assertTrue(prepared['live_collection_permitted'])
+                self.assertFalse(prepared['live_collection_permitted'])
+                with patch.object(run,'REGISTRATIONS',registration.parent), self.assertRaisesRegex(RuntimeError, 'not permitted for live collection'):
+                    run.collect(root/'output',registration)
                 if harness == 'codex':
                     self.assertIn('observed native response groups', prepared['harness']['request_count_scope'])
                     self.assertIn('native response completion', prepared['harness']['request_timeout_scope'])
@@ -288,6 +321,17 @@ class NativeHarnessChecks(unittest.TestCase):
                 self.assertNotIn('offline-fixture',(registration/'registration.json').read_text())
 
 class CheckedControlsReuse(unittest.TestCase):
+    def test_controls_normalize_only_declared_model_selectors(self):
+        from copy import deepcopy
+        first={'kind':'claude-code','environment':{'ANTHROPIC_MODEL':'haiku','DISABLE_COMPACT':'1'},
+               'accepted_native_model_ids':['haiku'], 'goal_evaluator':{'model':'haiku','implementation':'native'},
+               'goal_progress_guard':{'turns':2}}
+        second=deepcopy(first);second['environment']['ANTHROPIC_MODEL']='sonnet'
+        second['accepted_native_model_ids']=['sonnet'];second['goal_evaluator']['model']='sonnet'
+        self.assertEqual(run.control_harness_contract(first),run.control_harness_contract(second))
+        second['environment']['DISABLE_COMPACT']='0'
+        self.assertNotEqual(run.control_harness_contract(first),run.control_harness_contract(second))
+
     def test_reuse_rejects_modified_result_source_and_runtime(self):
         from tempfile import TemporaryDirectory
         from unittest.mock import patch
@@ -305,6 +349,9 @@ class CheckedControlsReuse(unittest.TestCase):
                 self.assertTrue(run.reuse_checked_controls(source,harness)['passed'])
                 with self.assertRaisesRegex(RuntimeError,'harness differs'):
                     run.reuse_checked_controls(source,{**harness,'goal_mode':'changed'})
+                for field in ('codex_cli','goal_progress_guard','goal_settings','settings','tool_profile','native_catalog_sha256'):
+                    with self.subTest(field=field), self.assertRaisesRegex(RuntimeError,'harness differs'):
+                        run.reuse_checked_controls(source,{**harness,field:{'changed':True}})
                 run.save(source/'controls.json',{**controls,'passed':False})
                 with self.assertRaisesRegex(RuntimeError,'results changed'):
                     run.reuse_checked_controls(source,harness)

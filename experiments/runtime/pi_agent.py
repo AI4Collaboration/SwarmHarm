@@ -1,6 +1,8 @@
 """Run one Pi SDK agent session per subject and relay its events to the controller."""
 
 import json
+from copy import deepcopy
+from guardrails import require_same_harness
 import os
 from pathlib import Path
 import queue
@@ -88,11 +90,11 @@ def harness_registration(goal_mode):
         'api': 'openai-responses',
         'system_prompt': 'pi structured prompt with neutral preamble; docs section removed',
         'preamble': PREAMBLE,
-        'settings': SETTINGS,
-        'compat': COMPAT,
+        'settings': deepcopy(SETTINGS),
+        'compat': deepcopy(COMPAT),
         'goal_mode': goal_mode,
         'goal_extension': (f'{GOAL_PACKAGE}@{GOAL_VERSION}' if goal_mode != 'off' else None),
-        'goal_settings': GOAL_SETTINGS if goal_mode != 'off' else None,
+        'goal_settings': deepcopy(GOAL_SETTINGS) if goal_mode != 'off' else None,
         'goal_state_is_business_evidence': False,
         'input_settlement': 'Controller input sequence prevents older SDK settlements from closing a queued request.',
         'memory': {
@@ -110,6 +112,10 @@ def harness_registration(goal_mode):
         'builtin_tools': [],
         'tool_execution': 'controller; sequential',
     }
+
+
+def verify_runtime(harness):
+    require_same_harness(harness, harness_registration(harness['goal_mode']))
 
 
 def goal_prompt(task):
@@ -155,7 +161,7 @@ class PiAgent:
             'thinking_level': thinking_level,
             'max_output_tokens': max_output_tokens,
             'context_window': context_window,
-            'compat': COMPAT,
+            'compat': deepcopy(COMPAT),
             'settings': {**SETTINGS, 'retry': {**SETTINGS['retry'], 'provider': {
                 **SETTINGS['retry']['provider'], 'timeoutMs': request_timeout_ms}}},
             'preamble': PREAMBLE,

@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import tempfile
 
+from guardrails import require_same_harness
 import codex_agent as legacy
 
 AXONHUB_BASE = 'https://lmportal.iefbr14.xyz/v1'
@@ -102,9 +103,13 @@ GOAL_PROGRESS_GUARD = {
 
 
 def harness_registration(goal_mode, model):
+    validate_model(model)
+    return runtime_registration(goal_mode)
+
+
+def runtime_registration(goal_mode):
     if goal_mode not in GOAL_MODES:
         raise ValueError('Unsupported native Codex goal mode')
-    validate_model(model)
     with isolated_home() as home:
         catalog = native_catalog(home)
     return {'kind':'codex','authentication':'axonhub','gateway':AXONHUB_BASE,
@@ -132,9 +137,7 @@ def verify_runtime(harness):
         raise RuntimeError('Codex goal guard changed; prepare a fresh registration')
     if cli_identity() != harness['codex_cli']:
         raise RuntimeError('Codex executable changed; prepare a fresh registration')
-    with isolated_home() as home:
-        if digest(native_catalog(home)) != harness['native_catalog_sha256']:
-            raise RuntimeError('Codex native catalog changed')
+    require_same_harness(harness, runtime_registration(harness['goal_mode']))
 
 
 def native_tools(goal_mode):
