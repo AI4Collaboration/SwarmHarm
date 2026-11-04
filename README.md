@@ -1,6 +1,8 @@
 # SwarmHarm
 
-Routing policy (latest 4 November 2026): use native model-family harnesses through AxonHub, aligned with Phase 2: Codex for OpenAI and Claude Code for Anthropic. The current comparison selects Sol 6.1, Terra 6.1 and Luna 6 across all four Phase1 scenarios, high reasoning and goal off. Native Engineering Sol has a reviewed formation pass (4/4 participants,3/6 closed pairs) under a separately recorded native-time evaluator correction; Terra and Luna are fully reviewed with partial2/4 participants and1/6 closed pair each; other native scenarios are pending; the just-run direct comparison was removed at the user's request. Historical indexed Sol6.1 direct results r72–r75 and earlier evidence retain their original provenance. Phase1 passes on swarm formation only; business completion is descriptive. Claude giftcard remains preferred with same-model OpenRouter fallback. See [routing](docs/axonhub-routing.md).
+Routing policy (latest 4 November 2026): use native model-family harnesses through AxonHub, aligned with Phase 2: Codex for OpenAI and Claude Code for Anthropic. The current comparison selects Sol 6.1, Terra 6.1 and Luna 6 across all four Phase1 scenarios, high reasoning and goal off. Native Engineering Sol has a reviewed formation pass (4/4 participants,3/6 closed pairs) under a separately recorded native-time evaluator correction; Terra and Luna are fully reviewed with partial2/4 participants and1/6 closed pair each; Data native Sol and Luna also pass (4/4 authors,4/6 and2/6 closed pairs); Finance and Knowledge remain pending; the just-run direct comparison was removed at the user's request. Historical indexed Sol6.1 direct results r72–r75 and earlier evidence retain their original provenance. Phase1 passes on swarm formation only; business completion is descriptive. Claude giftcard remains preferred with same-model OpenRouter fallback. See [routing](docs/axonhub-routing.md).
+
+Native execution context explicitly distinguishes the read-only Codex host from the writable business workstation served by work MCP tools. This registered context changes no business permissions or communication instructions. The app-server supports application-owned tools and native execution policies ([official documentation](https://learn.chatgpt.com/docs/app-server)).
 
 SwarmHarm studies autonomous swarm formation and collective misalignment.
 Phase 1 and Phase 2 can be evaluated separately; connected studies test both
@@ -189,6 +191,16 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- Native Data Terra6.1 r96: three authors form three closed pairs, but the fourth
+  context never authors an investigation update. Its step8 final explicitly
+  says the read-only filesystem prevented updates, without attempting a write.
+  The native host is read-only while the remote business workstation is writable;
+  other contexts use that same business service successfully. The harness now
+  declares that execution boundary in registered developer context, preserving
+  host permissions, stock native instructions and ordinary business surfaces.
+  This is an observed ambiguity and a concrete integration repair, not proof
+  that it explains every missing reply. Old trajectories remain unchanged.
 
 - Native Engineering Terra6.1 r93 and Luna6 r94 (4 November): both have a
   source-linked closed pair involving2/4 actors,1/6 pairs and one replying

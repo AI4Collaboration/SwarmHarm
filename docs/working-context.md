@@ -1,3 +1,29 @@
+Data r95-r97 complete: all public/native extras and preflights reviewed.
+Sol6.1 passes:4/4 communication authors,4/6 closed pairs,2 reply authors.
+Luna6 passes:4/4 communication authors,2/6 closed pairs,2 reply authors;
+three actors participate in the closed pairs, and the fourth connects through
+an authored source attachment that others read and use. Do not conflate those
+two participant counts. Terra6.1:3/4 authors,3/6 pairs,2 reply authors; no full
+cohort formation. All business8/8 is descriptive only. Raw r95-r97 unchanged;
+review-manifest binds full reading, exact native delivery, ATIF, independent
+replay,162 source files and12 removed workstations. No active model collector.
+
+Concrete native scope repair: registered developer context now states that work
+MCP bash executes in the writable business /workspace; native read-only applies
+to the local Codex host. Host permissions and native stock instructions remain.
+Six native gateway checks pass, including a real local CLI round trip verifying
+exact developer input, read-only host and unchanged service delivery. Two initial
+test assertions used the wrong RPC wrapper/tool ordering; logs preserved under
+phase1-native-sol-terra-luna-full-20261104/workstation-context-checks-r1/r2.log;
+r3 passes. No hosted model calls in these checks. See README Takeaways for the
+observed Terra ambiguity. Business inputs/tools/notices are unchanged. Finance
+r98-r100 and Knowledge r101-r103 are not prepared or collected yet. Next commit
+and push this repair, prepare Finance three models, review normalized inputs and
+all controls, commit/push registrations, freeze and collect each once. Keep full
+review before Knowledge. No6/6 gate; no scheduler or extra goal.
+
+Earlier snapshots (superseded):
+
 Data native r95-r97 prepared on source2366b7b22 (4 November).
 Each passes509 common checks+14 prompt checks and real four-workstation business
 controls: independent closure0/8, ordinary source-exchange witness8/8. All162

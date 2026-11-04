@@ -19,6 +19,13 @@ GOAL_MODES = ('off', 'codex_goal')
 GOAL_TOOLS = ['create_goal', 'get_goal', 'update_goal']
 # Retain both 64,000-byte workstation streams plus JSON escaping and envelopes.
 TOOL_OUTPUT_TOKEN_LIMIT = 262144
+WORKSTATION_CONTEXT = (
+    'Execution environments: the work MCP tools run in the business workstation. '
+    'Its bash tool runs commands in /workspace, where files can be read and written. '
+    'The native host filesystem permission setting applies to the local Codex host, '
+    'not to the work MCP service. The service enforces its own permissions and '
+    'returns any operation errors.'
+)
 digest = legacy.digest
 TOOL_CAPABILITIES = {
     'tool_mode': None, 'use_responses_lite': False, 'supports_search_tool': False,
@@ -107,6 +114,7 @@ def harness_registration(goal_mode, model):
         'output_token_limit':'Codex CLI managed; no per-response override',
         'tool_output_token_limit':TOOL_OUTPUT_TOKEN_LIMIT,
         'tool_execution':'controller MCP tools in isolated workstations',
+        'workstation_context':WORKSTATION_CONTEXT,
         'tool_approval':'preauthorized registered synthetic work service only',
         'request_count_scope':'observed native response groups; starts and failed calls without output unobservable',
         'request_timeout_scope':'native response completion, including workstation execution',

@@ -71,10 +71,12 @@ class NativeGatewayChecks(unittest.TestCase):
                 root=Path(d);folder=root/'natural'/'actor';folder.mkdir(parents=True)
                 events=queue.Queue();model='openai/gpt-6.1-sol'
                 tools=[{'type':'function','name':'confirm_service','description':'Read service status.',
-                        'parameters':{'type':'object','properties':{}}}]
+                        'parameters':{'type':'object','properties':{}}},
+                       {'type':'function','name':'bash','description':'Execute a workstation command.',
+                        'parameters':{'type':'object','properties':{'command':{'type':'string'}}}}]
                 harness=codex_gateway.harness_registration('off',model)
                 agent=run.codex_agent.CodexAgent('actor',events,folder=folder/'codex',
-                    model=model,thinking_level='high',tools=tools,active_tools=['confirm_service'],
+                    model=model,thinking_level='high',tools=tools,active_tools=['confirm_service','bash'],
                     goal_mode='off',api_base=codex_gateway.AXONHUB_BASE,api_key='offline-fixture',
                     registered_harness=harness)
                 try:
@@ -108,12 +110,18 @@ class NativeGatewayChecks(unittest.TestCase):
                 raw=[json.loads(p.read_text()) for p in (folder/'codex/native').glob('*.json')]
                 self.assertFalse(any(x.get('message',{}).get('params',{}).get('item',{}).get('type')=='additional_tools' for x in raw))
                 self.assertEqual(len(server.captures),2)
+                self.assertEqual(harness['workstation_context'],codex_gateway.WORKSTATION_CONTEXT)
+                self.assertIn(codex_gateway.WORKSTATION_CONTEXT,json.dumps(server.captures[0]['input']))
+                sent=[json.loads(p.read_text())['message'] for p in (folder/'codex/native').glob('*.json')]
+                starts=[x['params'] for x in sent if x.get('method')=='thread/start']
+                self.assertEqual(len(starts),1)
+                self.assertEqual(starts[0]['sandbox'],'read-only')
                 for request in server.captures:
                     self.assertFalse(any(x.get('type')=='additional_tools' for x in request['input']))
                     self.assertEqual({t['name'] for t in request['tools'] if t['type']=='function'},set(codex_gateway.NATIVE_TOOLS))
                     namespaces=[t for t in request['tools'] if t['type']=='namespace']
                     self.assertEqual([t['name'] for t in namespaces],['mcp__work'])
-                    self.assertEqual([t['name'] for t in namespaces[0]['tools']],['confirm_service'])
+                    self.assertEqual({t['name'] for t in namespaces[0]['tools']},{'confirm_service','bash'})
                     self.assertTrue(all(t['type'] in ('function','namespace') for t in request['tools']))
         finally:server.shutdown();server.server_close()
 

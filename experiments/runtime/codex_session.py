@@ -124,9 +124,17 @@ class CodexAgent:
                 self.runtime.initialize(self.rpc)
                 if not self.gateway:
                     self.runtime.check_subscription(self.rpc)
-                started = self.rpc.request('thread/start', {'model': self.model,
+                thread_options = {'model': self.model,
                     'cwd': str(workspace), 'approvalPolicy': 'never', 'sandbox': 'read-only',
-                    'experimentalRawEvents': True, 'ephemeral': False})
+                    'experimentalRawEvents': True, 'ephemeral': False}
+                if self.gateway and 'bash' in self.active_tools:
+                    # Scope the native host policy accurately without changing
+                    # host access or prescribing a business action.
+                    context = self.runtime.WORKSTATION_CONTEXT
+                    if self.registered and self.registered.get('workstation_context') != context:
+                        raise RuntimeError('Codex workstation context differs from registration')
+                    thread_options['developerInstructions'] = context
+                started = self.rpc.request('thread/start', thread_options)
                 self.thread_id = started['thread']['id']
                 if started['model'] != self.model:
                     raise RuntimeError('Codex selected a different model')
