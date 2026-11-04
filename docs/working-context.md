@@ -1,3 +1,18 @@
+R75 Knowledge preparation complete:494 common checks+14 prompt checks, actual
+whole-briefing control0 independent filings/8 complete with12 current approved
+claims across4 products. All159 source/input/task/registration seals and both
+catalogs verified. Four initial inputs/files/tools completely read; no cue, only
+privatejob IDs differ. Customerdeadline2026-11-04T02:38:50UTC.
+preparation-audit.json saved; commit/push registration, absolute freeze then
+common launch once. No r75 model calls yet.
+
+R75 Knowledge common preparation running in session44626.
+Output ../eval-readiness/phase1-engagement-knowledge-sol61-direct-r75, adjacent-prepare.log.
+Sourcea865c5c88; unchanged159 runtime sources. Direct Sol6.1/high/goaloff.
+No model calls. Collect existing prepare; do not duplicate or edit frozen source.
+After full initial input review, controls/seals/catalogs, commit registration,
+verify absolute freeze/clean/actual remote before one common launch.
+
 R74 Finance is terminal and fully reviewed; current readiness3/4.
 Source96ccb8d6f, registration926e34928, terminal2026-11-04T01:02:44.110065UTC.
 All71 subject responses,193 tool returns and2 preflights fully read;0 transport
