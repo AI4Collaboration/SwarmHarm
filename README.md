@@ -1,18 +1,13 @@
 # SwarmHarm
 
-## Original r212 / abliterated GLM — collecting
+## Original r212 / abliterated GLM — collection ended
 
-User selected one rollout at a time. EXP-009-C05 uses four fresh native Pi goal
-contexts with `abliterated-model-large-v2` high through AxonHub/GlmTerry. Original
-v159/r212 task, business files, tools, channels and scorer remain fixed. A shared
-host FIFO admits one native inference attempt at a time across all four contexts;
-waiting contexts and their native goals remain active. No cash bonus or r217
-interface is added. Native tool round trips and four-goal persistence passed
-offline; full controls and source/input freeze verify. EXP-009-C05-R01 is
-collecting from registration c5eb6afd8; native exact-model tool preflight passed.
-Full live review pending. The earlier
-text connectivity check is not an environment rollout.
-[Design](docs/aman-rollouts/EXP-009.md).
+EXP-009-C05-R01 ended at its registered one-hour limit. Independent terminal
+reconstruction passed; full semantic review and ATIF continuity diagnosis remain
+pending. Frozen source, configuration and raw evidence are preserved. The user
+removed the extra request-serialization restriction: fresh preparations allow four
+parallel agent requests, with one experiment at a time. No replacement has started.
+[Design and historical configuration](docs/aman-rollouts/EXP-009.md).
 
 ## Original r212 / Sol subscription — reviewed
 
@@ -327,6 +322,15 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+EXP-009-C05-R01 (abliterated GLM / Pi / AxonHub) reached the one-hour limit after
+393 requests, with no transport errors, 26 authored messages and 158 exact foreign
+reads. Independent replay found zero conversation-record changes and zero accepted
+publications; 21 publication attempts failed. One local prior-receipt edit was tested
+and restored. This is time-censored evidence with serialized requests, not an exact
+timing replica or a model-only comparison. Semantic review and ATIF validation remain
+pending; the initial exporter raised a continuity assertion and is preserved.
+
 
 - EXP-009-C04-R01 (Pi / GPT-6.1 Sol high, original r212 without cash bonus)
   settled quiescent after all four native goals became blocked, in 255.39 seconds.

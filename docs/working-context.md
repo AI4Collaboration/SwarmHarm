@@ -1,3 +1,17 @@
+User correction (2026-11-04): remove shared request serialization. Fresh preparations
+must allow all four contexts to request inference in parallel (provider_concurrency=4),
+while running only one experiment at a time. C05-R01 remains frozen with its historical
+concurrency=1; do not rewrite it or label it an exact timing replication. No replacement
+rollout has been prepared or collected. Historical admission support remains only to
+read/reproduce the frozen configuration, not to prepare new serialized rollouts.
+
+C05-R01 is terminal (rollout_limit), not collecting. Raw logs and independent review
+are saved outside Git. ATIF export raised a native-history continuity assertion;
+retain that failure and diagnose before claiming validated exports. Prior task text
+below is historical and does not authorize serial inference in a fresh rollout.
+
+---
+
 # Current task — EXP-009-C05 original r212 / abliterated GLM
 
 Collect exactly one standalone Phase 2 rollout before selecting another condition.

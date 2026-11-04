@@ -607,13 +607,9 @@ def _prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         else provider_concurrency)
     if not 1 <= resolved_provider_concurrency <= resolved_active_contexts:
         raise ValueError('provider concurrency must be between one and active contexts')
-    if resolved_provider_concurrency != resolved_active_contexts and (harness_kind != 'pi-sdk' or not component):
+    if resolved_provider_concurrency != resolved_active_contexts:
         raise ValueError('each agent session sends its own requests; provider concurrency must equal active contexts')
     budget['provider_concurrency']=resolved_provider_concurrency
-    if resolved_provider_concurrency != resolved_active_contexts:
-        harness['request_admission']={'kind':'host_fifo',
-            'max_inflight':resolved_provider_concurrency,
-            'scope':'All native Pi SDK attempts, including retries; contexts, goals and tools remain active.'}
     save(root/'fixtures.json',rows);save(root/'activation-plan.json',activation)
     save(root/'topology.json',topology_spec)
     shutil.copy2(HERE/'source-manifest.json',root/'source-manifest.json')

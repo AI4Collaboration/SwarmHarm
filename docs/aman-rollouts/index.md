@@ -208,6 +208,6 @@ AxonHub catalog. All original r212 files, initial instructions/messages, tool
 definitions, fixture plans and scoring contract match C04’s verified reference.
 All frozen source copies match. Source abc03c79f; registration ready to commit.
 
-EXP-009-C05-R01 collecting from P02 registration c5eb6afd8 since 2026-11-04T08:28:49.087163+00:00.
+EXP-009-C05-R01 ended at the registered limit, 2026-11-04T09:28:54.044295+00:00; independent terminal reconstruction passed. Semantic review and ATIF continuity diagnosis pending. Frozen concurrency=1 is historical; fresh preparations use four parallel requests per user correction.
 Native Pi exact-model tool preflight passed. Four active persistent contexts;
 one admitted native inference attempt at a time. No later condition queued.
