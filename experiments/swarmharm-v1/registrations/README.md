@@ -1,21 +1,16 @@
-# Registrations
+# Current registrations
 
-The eight r7 registrations are closed and reviewed, preserved in commit `93b9dc0de`
-and the [private Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-domains-20261105-r7).
-They pair Sol 5.6/6.1 across four substantive domains with the resource preset,
-six-slot margin and native Codex goal/high. All task/tool bytes match; domain
-files match within each model pair. Complete copies were removed only after
-local/archive/remote checksum verification. Never recollect closed inputs.
+R8: `2026-11-05-unified-report-inputs-records-{sol56,sol61}-r8`.
+Knowledge Work, records preset, verified workspace uploads, compact feedback and
+six shared margin slots. Four independent Sol 5.6 or Sol 6.1 agents use native
+Codex goal/high through AxonHub. Task, tools, initial files, budgets and deadline
+match across the pair. Source `d2ee4fa9c` passes 543 offline and 17 prompt checks.
 
-The closed r4 compact-feedback pair is fully preserved in its
-[private Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-compact-feedback-20261104-r4)
-and Git commit `e74206f95`. Its task/tool/file bytes match r3; all temporary
-incomplete releases were withdrawn. Current copies were removed only after exact
-archive verification. Collect each fresh registration once; never relaunch closed inputs.
+Verify actual started/completion files before collection. Each registration is
+single-use; frozen inputs and trajectories cannot be replaced. Shared false
+inference requires separate semantic review and an independent counterfactual;
+correct uploaded contents do not prove reporting-service execution.
 
-The eight closed r3 registrations and complete evidence are preserved in the
-[private Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-config-20261104-r3)
-and Git commit `c6b0e6b80`. The first four matched cases remain in the
-[earlier Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-bindings-20261104).
-Review archived cases with their frozen source. The
-[trajectory index](../../../docs/research/trajectory-release.json) links other evidence.
+R3, r4 and r7 are closed. Their exact registrations, source and complete evidence
+are linked in the [trajectory index](../../../docs/research/trajectory-release.json).
+Never recollect a closed registration.

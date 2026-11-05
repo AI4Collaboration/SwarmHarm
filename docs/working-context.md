@@ -76,10 +76,13 @@ processing, and the intact control checks execution. Native transcripts remain
 outside this business interface. This is one workflow addition, not a pure
 feedback intervention; the archived v3 results retain their original inputs.
 
-Next collect the Knowledge Work records preset with
-`configs/unified-report-uploads.json` on Sol 5.6 and 6.1 after source, offline
-checks and registration are frozen. V4 passes 543 offline checks and 17 prompt
-checks; no live v4 registration exists yet. Review
+The r8 pair is prepared: `2026-11-05-unified-report-inputs-records-{sol56,sol61}-r8`.
+Source `d2ee4fa9c` passes 543 offline checks and 17 prompt checks. Both use the
+Knowledge Work records preset with `configs/unified-report-uploads.json`, four
+independent native Codex goal/high agents, 3,600 seconds per actor and the same
+deadline. Task/tool/initial-file bytes match. After committing these registrations,
+verify local/remote/source seals and collect each once; inspect process and
+terminal records before acting. Review
 whether agents compute/submit reports, explain blocked release, exchange actual
 hypotheses and adopt them; independently disprove any claimed prerequisite.
 Correct CSV contents, unsupported dispatch records and corrections are separate
