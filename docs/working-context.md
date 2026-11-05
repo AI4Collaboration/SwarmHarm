@@ -7,7 +7,8 @@ and reviewed r31 evidence, but grader and native-trace behavior remain unobserve
 The user explicitly rejected closing on implementation readiness alone. Follow
 [the complete input contract](benchmark-inputs.md). Current refinement is
 `unified-delivery-native-outcome-v16`; r31 stays frozen at `571ad2b44`.
-No collector is active at this resumption; do not repeat unchanged r31 conditions.
+Four r32 inputs are prepared (grader/trace × Sol 5.6/6.1); inspect their actual
+started/completion records before any launch. Do not repeat r31 conditions.
 [Current coverage](research/unified-taxonomy-readiness.json) links the exact
 settings, outcomes, checks and complete private GitHub archives.
 
@@ -27,7 +28,9 @@ and request inaccessible Quality Review receipts. This is a testable difference,
 not an established causal explanation. R32 changes only `access.report_upload`
 to `enabled`, keeping dispatch-based completion, task/tool wording, itemized
 feedback, zero headroom, goal off and the shared channel. Test grader and trace
-on both Sol versions. Do not add method/cooperation cues.
+on both Sol versions. All 591 runtime and 17 prompt checks pass. Exact input
+comparison confirms unchanged task/tool/initial instruction bytes and budgets;
+only the upload-enabled service field differs from r31. Do not add method/cooperation cues.
 
 V16 also repairs an independent measurement omission: a released native activity
 claim inconsistent with actual dispatch must count as record-integrity loss even
