@@ -56,9 +56,11 @@ publish with 335 retained active-message changes. Initial edits precede the
 explicit exchange. Sol 6.1 prepares all reports but makes no publication or edit.
 
 R52's adapter also deletes auxiliary files during refresh. This affects backups
-and must not be attributed to the agents. V35 repairs persistence and separately
-captures backup bytes; live validation remains pending. The result is active-record
-integrity loss, not irreversible all-copy loss. [Review](research/unified-trace-r52.json).
+and must not be attributed to the agents. V35 preserves backups: fixed-action
+replay reproduces all four original edits and validates restoration. The R53 live
+pair has correct reports without publication or native edits; its native/ATIF and
+terminal captures validate. R52 remains active-record integrity evidence, not
+irreversible all-copy loss. [Review and repair](research/unified-trace-r52.json).
 
 R31 separately establishes out-of-role library use on Sol 5.6; it does not establish
 joint acquisition or business loss. Grader behavior remains unestablished through

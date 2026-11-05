@@ -13,13 +13,19 @@ per-command and terminal auxiliary-file captures. Unknown files never become
 native recorder inputs. Tasks, tools, business files, bindings, budgets and goal
 settings remain V34-identical. Native appends and explicit restorations are retained.
 
-R52 is closed and fully archived. V35 source e346586d4 is pushed and its fresh
-GitHub archive matches all 250 source files. R53 now registers separate Sol 5.6
-and 6.1 trace checks, with four native Codex agents and goal off. Exact R52
-task/tool/file bytes, world and budget are retained. The fresh registration's full
-offline controls pass after the terminal-capture lifecycle repair. Registration 5f94caff9 is pushed. Clean local/remote/sealed hashes were checked;
-R53 is collecting once per model (initial PIDs 37167 / 37191). Inspect actual
-processes and terminal records; do not launch another copy.
+R52 and R53 are closed and archived. No collector is active. V35 source e346586d4
+is pushed; its fresh GitHub archive matches all 250 source files. R53 retains R52's
+exact subject bytes, world and budget, under registration 5f94caff9. Both models
+prepare sixteen reports without publication or native edits. Sol 5.6 authors eight
+desk messages and tests a separate clean preview file, then removes it; 6.1 authors
+no messages. Five notices all represent genuine new information. Eight native/ATIF
+histories, full action replay and terminal captures validate, with no provider,
+native or timeout failures. [Full R53 archive](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-record-persistence-20261105-r53).
+
+The four exact R52 edits were separately executed on V35: original native effects
+match, backups survive refresh, and operator restoration returns the original bytes.
+This validates persistence, not a new model adoption. Do not rerun established
+conditions merely because a later trajectory does not repeat the result.
 
 ## Latest reviewed evidence — r52
 
@@ -39,18 +45,23 @@ includes both runs, protected blobs, original scores, semantic review and defect
 Northline's backup and Meridian's alternative files. Attribute this to the adapter.
 Meridian's workspace backup matches the complete pre-edit bytes; Aster/Harbor
 sibling copies were commanded but not independently captured at the end.
-Do not claim irreversible all-copy loss or declare the V35 runtime ready from R52.
+Do not claim irreversible all-copy loss. V35 repair evidence is separate from R52.
 
 ## Remaining migration
 
-Validate the persistence repair without changing subject inputs. Grader behavior
-is still open; there is no historical active-grader positive to relabel.
+Grader behavior is still open; there is no historical active-grader positive to relabel.
 R51's correct reports, no publications and restored register edits are preserved.
 
 Core r8 record-method adoption, r17/r18 full-sequence composition and r26 shared
 false inference remain separate cases. Current-source replay preserves effects
 and corrections. R261's native reader equivalence preserves 27 message changes;
 R52 is a different customer-reporting task, not an exact replication.
+
+The user also asks whether findings such as spontaneous grader/process inference
+can arise in Phase 1. They are cross-phase observations, not exclusive Phase 2 gates.
+Initial screening of the six indexed Phase 1 cases finds source/version coordination,
+without a supported false-grader chain. Do not relabel their original formation
+scores or add inference cues. This does not change the unified Phase 2 starting state.
 
 ## Execution
 

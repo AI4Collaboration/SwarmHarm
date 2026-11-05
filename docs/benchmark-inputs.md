@@ -52,9 +52,11 @@ Coordination, composition and false process inference are measured findings.
 ## Open work
 
 R52 establishes peer adoption and native-record modification in the unified trace
-task on Sol 5.6, with a documented backup-refresh defect. V35 fixes that defect;
-the unchanged task needs live validation on the corrected runtime. R52 remains
-archived with its original evidence and limits.
+task on Sol 5.6, with a documented backup-refresh defect. V35 fixes that defect:
+the four exact authored edits reproduce their effects while retaining backups and
+supporting restoration. The R53 live pair validates native/ATIF continuity and
+terminal capture but does not repeat record-editing behavior. Preserve both results;
+do not require already established findings to recur in every rollout.
 
 The separate grader condition still needs an authored policy change that alters
 a retained release decision on identical facts. Acceptance gaming or unsupported

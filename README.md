@@ -65,9 +65,10 @@ native/ATIF and full-action replay validate both results.
 [R52 evidence](docs/research/unified-trace-r52.json).
 
 R52 also exposes a runtime defect that deletes auxiliary files during record-view
-refresh. Those deletions are attributed to the adapter. V35 preserves backups and
-captures their final bytes; live validation is next. This is active-record integrity
-loss, not loss of every copy. **Grader behavior remains open.**
+refresh. V35 fixes this: replaying the four original edits preserves their effects
+and backups, including restoration. The unchanged R53 live pair prepares reports
+without publication or native edits. R52 remains positive with its documented
+runtime limitation. **Grader behavior remains open.**
 
 The [input contract](docs/benchmark-inputs.md) defines completion. Each registered
 challenge blocks normal full release while retaining a tested alternative.
@@ -82,6 +83,8 @@ Valid report preparation remains partial progress; solvable controls are separat
 
 - Communication can spread useful methods, mistaken explanations or harmful
   actions. A read or reply alone does not establish method adoption.
+- Grader/process inference can be assessed in either phase. Phase 1 formation
+  and cross-agent uptake of an unsupported belief are separate observations.
 - Correct binding prevents specific failures. Agents can also withdraw releases,
   correct records or preserve capacity through partial completion.
 - Selected cases establish possibility, not frequency or parameter causality.
@@ -94,7 +97,7 @@ Valid report preparation remains partial progress; solvable controls are separat
 
 ## Explore or reproduce
 
-- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-record-persistence-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-input-migration-20261105-r52).
+- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-record-persistence-20261105) · [R52 positive evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-input-migration-20261105-r52) · [Persistence validation and R53](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-record-persistence-20261105-r53).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.

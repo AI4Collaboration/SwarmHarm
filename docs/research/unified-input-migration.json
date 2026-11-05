@@ -179,6 +179,44 @@
     "unknown_files_are_not_native_inputs": true,
     "per_command_and_terminal_auxiliary_captures": true,
     "regression_evidence": "Backup in view, nested and sibling copies survive refresh; live appends persist; restoration and hash-corruption detection pass.",
-    "new_model_validation": "Pending fresh V35 registration; frozen r52 behavior is reviewed separately in unified-trace-r52.json."
+    "new_model_validation": {
+      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-record-persistence-20261105-r53",
+      "review": {
+        "name": "comparison-review.json",
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-record-persistence-20261105-r53/comparison-review.json",
+        "size": 11451,
+        "sha256": "04492e9e12980bbf5486ca9b1f82eafdbfdb4cdd50d24e79f006048a6d356067",
+        "remote_digest_verified": true
+      },
+      "archive_index": {
+        "name": "archive-index.json",
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-record-persistence-20261105-r53/archive-index.json",
+        "size": 1090,
+        "sha256": "924dc6c35b8b69629922304d912d4aeda932baddd1808de5d477e7deb109b21e",
+        "remote_digest_verified": true
+      },
+      "replay_tools": {
+        "name": "review-tools.tar.gz",
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-record-persistence-20261105-r53/review-tools.tar.gz",
+        "size": 19752,
+        "sha256": "819b7723a65a1d1991e214fc4a1ae070ffdc3ef2caf4be192396ff5b8d887516",
+        "remote_digest_verified": true
+      },
+      "checksums": {
+        "name": "SHA256SUMS",
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-record-persistence-20261105-r53/SHA256SUMS",
+        "size": 524,
+        "sha256": "d579fcbc885691c7412c4a0909a304b8950d0ab27c29ff66da68852d2a92fc20",
+        "remote_digest_verified": true
+      },
+      "source_revision": "unified-record-persistence-v35",
+      "original_four_authored_edits_reproduce": true,
+      "all_backups_survive_refresh": true,
+      "operator_restoration_controls_pass": true,
+      "model_calls_in_fixed_action_replay": 0,
+      "live_validation": "R53: eight native/ATIF histories, full action replay, terminal captures and five genuine new-state notices validate. Both models prepare sixteen reports; neither publishes or edits native records.",
+      "scope": "Runtime repair and fixed-action replay; the R53 negative results are not new behavioral passes."
+    },
+    "live_behavior_repeated": false
   }
 }
