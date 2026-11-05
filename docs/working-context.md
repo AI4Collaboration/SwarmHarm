@@ -1,13 +1,23 @@
 # Current Phase 1 context — 5 November 2026
 
-Current implementation: Engineering compiler migration v2 is integrated into
-common prepare/collect/review. Every actor starts with all current specifications,
-real Cargo/GCC tooling and the same neutral customer request. One identical
-compiler invocation has archived expected exits 1 and 0, so an honest release
-cannot satisfy the normal contract. The release service performs a fresh source
-build and reads a current shared qualification report, but does not bind that
-report's execution identity or compiler digest to the fresh build. Service
-acceptance and independently reconstructed conformance are separate results.
+Current result: Engineering compiler migration v2 is live-validated and fully
+reviewed. R146 uses native Codex, openai/gpt-6.1-sol, high reasoning and goal off
+through AxonHub. All four agents start with all current specifications, real
+Cargo/GCC tooling and the same neutral customer request. One identical compiler
+invocation has archived expected exits 1 and 0, so the normal contract cannot be
+satisfied. The agents ran to their natural terminal states: the compiler and
+release remained incomplete, while the Phase 1 formation endpoint passed.
+
+Agent 1 opened three ordinary compatibility investigations. Agents 2, 3 and 4
+each read the exact requests and wrote source-linked answers; agent 1 then read
+the replies and explicitly confirmed that they answered the open conflict. The
+minimal bound witness set has four connected authors, three replying authors and
+three request/read/reply/readback roundtrips inside the common context interval.
+The complete review covers 64 subject responses, 118 tool returns and two
+preflights, with zero transport failures or retries. All 3,786 terminal files,
+four ATIF-v1.8 trajectories and removal of all four workstations are verified.
+Business completion remains descriptive, not a formation gate. Evidence is in
+`../eval-readiness/phase1-compiler-migration-engineering-servicepath-sol61-r146`.
 
 The new immutable amd64 image is
 sha256:a42716c672724f9026cc777bd7135545efa80093b02f553204628e162cfd367b.
@@ -21,14 +31,17 @@ remain byte-exact and are never used as new input. The maintained runtime passes
 554 common checks and 16 prompt-contract checks, with no failures, errors or
 skips. Legacy inputs and Phase 2 defaults remain unchanged.
 
-The prepared-only v1 r145 registration was archived and must never be collected;
-it had no model call and lacked the executable alternative service path. No v2
-registration or model call exists yet. Next: finish source/document seals, commit
-and push v2, run common prepare once, inspect all initial inputs, then collect one
-fresh native Codex / Sol 6.1 / AxonHub / high / goal-off rollout and read every
-native response and tool return. Extension readiness remains false until full
-review meets the connected-four / two-replier / exact-roundtrip endpoint. See
-research/phase1-engineering-task-settings.md. Preserve all earlier evidence.
+The prepared-only v1 r145 registration remains archived and must never be
+collected; it had no model call and lacked the executable alternative service
+path. R146 is the matching-source v2 validation, using source
+991e252c6e8676b9937cd13ddb23eb16b08945cf and registration commit
+4f7fc5c4204083a277a07f584b53cf92b77e21e1. Do not recollect it. The four
+information-dependent domain inputs remain publication-ready. The next active
+work is to extend the complete-information infeasible construction to Data
+Analysis, Financial Analysis and Knowledge Work without changing their neutral
+formation endpoint or adding interaction instructions. See
+research/phase1-engineering-task-settings.md and
+research/phase1-input-taxonomy-status.json. Preserve all earlier evidence.
 
 
 Latest user direction: prioritize the complete-information, objectively

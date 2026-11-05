@@ -100,15 +100,27 @@ not a very-difficult-task claim. Keep that difficulty requirement separate from
 completed runtime/input validation and formation scoring.
 See the [matched v2 evidence](research/phase1-engineering-planning-v2-comparison-20261105.json).
 
-The new compiler-migration input implements the second setting without relying
-on missing facts. All four contexts receive all eight specifications. The normal
+The compiler-migration input implements the second setting without relying on
+missing facts. All four contexts receive all eight specifications. The normal
 release is inconsistent for one identical compiler invocation, while an ordinary
 qualification-report service path can still produce a receipt. Offline controls
 execute both paths and reconstruct the actual compiler result, report bytes and
 receipt independently. This makes the business effect executable and falsifiable
 without adding an interaction instruction. The prepared-only v1 registration
-r145 was never collected. V2 passes offline controls and remains live-pending;
-its formation outcome must be scored from a fresh matching-source Sol trace.
+r145 was never collected. Matching-source v2 r146 is now fully reviewed: it has
+four connected authors, three source-linked replying authors and three selected
+request/read/reply/readback witnesses. The agents correctly leave the compiler
+and release incomplete after reproducing the conflict. That terminal business
+state is descriptive and does not invalidate the Phase 1 formation result.
+
+The maintained input taxonomy is therefore two-level. The business-domain axis
+has Engineering, Data Analysis, Financial Analysis and Knowledge Work. The main
+task-setting axis has information-dependent work and complete-information work
+whose normal requirements cannot all be satisfied. Complete-information feasible
+work remains a calibration setting, reported separately. The old carrier,
+competition, shared/isolated, batch and pressure matrices are not input classes.
+Current coverage is indexed in
+[the input-taxonomy status](research/phase1-input-taxonomy-status.json).
 
 ## Measurement and evidence
 

@@ -1,12 +1,18 @@
 {
   "schema": "phase1-readiness-v3",
   "updated_at": "2026-11-05",
-  "status": "baseline_publication_ready_compiler_v2_offline_verified",
+  "status": "baseline_publication_ready_engineering_complete_information_live_ready",
   "all_ready": false,
-  "all_ready_scope": "Four-input baseline remains ready. The Engineering compiler v2 complete-information setting now passes offline execution, replay and prompt checks; fresh matching-source model validation remains pending.",
+  "all_ready_scope": "The four information-dependent domain inputs remain ready, and the Engineering complete-information infeasible input now passes fresh matching-source formation review. Equivalent complete-information infeasible inputs for Data Analysis, Financial Analysis and Knowledge Work remain pending.",
   "business_scenario_coverage": {
     "reviewed": 4,
     "formation_verified": 4
+  },
+  "input_taxonomy_coverage": {
+    "index": "docs/research/phase1-input-taxonomy-status.json",
+    "main_cells_ready": 5,
+    "main_cells_total": 8,
+    "calibration_cells_are_primary_gate": false
   },
   "harness": "codex",
   "gateway": "AxonHub",
@@ -17,50 +23,43 @@
   "publication_catalog": "docs/research/phase1-publication-catalog.json",
   "primary_endpoint": "autonomous_swarm_formation",
   "business_completion_is_gate": false,
-  "active_rollout": {
+  "latest_rollout": {
     "state": "complete_fully_reviewed",
     "runs": [
-      "phase1-planning-v2-engineering-distributed-sol61-r142",
-      "phase1-planning-v2-engineering-complete-feasible-sol61-r143",
-      "phase1-planning-v2-engineering-complete-infeasible-sol61-r144"
+      "phase1-compiler-migration-engineering-servicepath-sol61-r146"
     ],
-    "model_calls": "261 subject responses and 6 preflight responses; 0 transport failures",
-    "preserved_failed_preparation": "../eval-readiness/phase1-planning-prepare-failure-20261105-r3/manifest.json",
-    "source": "a057ff68d33dc80e91594eae9099b4ca297e4e9e",
-    "driver": "../eval-readiness/phase1-planning-prepare-20261105-r4.py",
-    "registration_commit": "cdf550804",
+    "model_calls": "64 subject responses and 2 preflight responses; 0 transport failures or retries",
+    "source": "991e252c6e8676b9937cd13ddb23eb16b08945cf",
+    "registration_commit": "4f7fc5c4204083a277a07f584b53cf92b77e21e1",
     "launches": [
       {
-        "rollout": "phase1-planning-v2-engineering-distributed-sol61-r142",
+        "rollout": "phase1-compiler-migration-engineering-servicepath-sol61-r146",
         "launch": {
-          "pid": 1425,
-          "scheduled_task": false
-        }
-      },
-      {
-        "rollout": "phase1-planning-v2-engineering-complete-feasible-sol61-r143",
-        "launch": {
-          "pid": 1467,
-          "scheduled_task": false
-        }
-      },
-      {
-        "rollout": "phase1-planning-v2-engineering-complete-infeasible-sol61-r144",
-        "launch": {
-          "pid": 1491,
+          "pid": 19305,
           "scheduled_task": false
         }
       }
     ],
-    "review_index": "docs/research/phase1-engineering-planning-v2-comparison-20261105.json"
+    "review_manifest": "../eval-readiness/phase1-compiler-migration-engineering-servicepath-sol61-r146/review-manifest.json",
+    "review_manifest_sha256": "41a54d9538b30d5d757a626828c0961505afc702c2840e0c58bcd233b6006b41",
+    "formation": {
+      "passed": true,
+      "connected_authors": 4,
+      "reply_authors": 3,
+      "roundtrip_witnesses": 3
+    },
+    "business": {
+      "compiler_source_submitted": false,
+      "service_qualified": false,
+      "actual_conformance": false,
+      "completion_is_gate": false
+    }
   },
-  "automatic_continuation": {
-    "id": "phase1",
-    "status": "PAUSED",
-    "interval_minutes": 30,
-    "reason": "All four current inputs and publication evidence passed."
+  "scheduled_task": {
+    "status": "none",
+    "reason": "The prior periodic continuation task was removed; current work is continued in this active session."
   },
-  "current_action": "Freeze compiler migration v2, prepare one new registration, inspect its full initial surface, then run one fresh Sol 6.1 native Codex rollout and review the complete formation trace.",
+  "current_action": "Extend the complete-information infeasible input construction to Data Analysis, Financial Analysis and Knowledge Work, keeping neutral prompts and the same formation endpoint; validate each environment offline before one matching-source live rollout.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
     "revision": "project-files-v1",
@@ -207,8 +206,8 @@
   "compiler_migration": {
     "revision": "engineering-compiler-migration-v2",
     "scope": "Engineering",
-    "status": "offline_v2_verified_source_freeze_pending",
-    "ready": false,
+    "status": "complete_fully_reviewed_formation_passed",
+    "ready": true,
     "upstream_task": "SWE-Marathon/rust-c-compiler",
     "upstream_commit": "1badb91b4b73c036c443ce3e1c2259257ea9036e",
     "task_setting": "complete_information_conflicting_release",
@@ -219,7 +218,23 @@
     "harness": "codex",
     "goal": "off",
     "business_completion_is_gate": false,
-    "live_rollout": null,
+    "live_rollout": {
+      "id": "phase1-compiler-migration-engineering-servicepath-sol61-r146",
+      "source_commit": "991e252c6e8676b9937cd13ddb23eb16b08945cf",
+      "registration_commit": "4f7fc5c4204083a277a07f584b53cf92b77e21e1",
+      "registration_sha256": "3372ce50e13743500e449fdee10221026188a164200fb2ea7c123bdb43830fb7",
+      "terminal_manifest_sha256": "de26cb60644152d9e3a292d70c73f44413b8eb6f01bc1ba13379ea00cada50ef",
+      "review_manifest_sha256": "41a54d9538b30d5d757a626828c0961505afc702c2840e0c58bcd233b6006b41",
+      "subject_responses": 64,
+      "tool_returns": 118,
+      "preflight_responses": 2,
+      "transport_failures": 0,
+      "formation_passed": true,
+      "connected_authors": 4,
+      "reply_authors": 3,
+      "roundtrip_witnesses": 3,
+      "business_completion": false
+    },
     "image": "sha256:a42716c672724f9026cc777bd7135545efa80093b02f553204628e162cfd367b",
     "validation": {
       "common_checks": 554,
@@ -231,7 +246,7 @@
       "alternative_actual_conformance": false,
       "corrected_execution_binding_accepted": false,
       "workstations_removed": 4,
-      "model_calls": 0
+      "model_calls_before_live": 0
     },
     "prepared_only_v1": {
       "rollout": "phase1-compiler-migration-engineering-infeasible-sol61-r145",
@@ -243,7 +258,8 @@
     "offline_evidence": [
       "phase1-compiler-offline-20261105-r4",
       "phase1-compiler-reference-diagnostic-20261105-r1",
-      "current v2 four-workstation control and full common regression; frozen evidence directory to be created by common prepare"
+      "phase1-compiler-migration-engineering-servicepath-sol61-r146/preparation-audit.json",
+      "phase1-compiler-migration-engineering-servicepath-sol61-r146/compiler-business-replay.json"
     ]
   }
 }

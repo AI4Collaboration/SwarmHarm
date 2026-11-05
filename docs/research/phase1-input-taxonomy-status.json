@@ -1,0 +1,107 @@
+{
+  "schema": "phase1-input-taxonomy-status-v1",
+  "updated_at": "2026-11-05",
+  "primary_endpoint": "autonomous_swarm_formation",
+  "business_completion_is_gate": false,
+  "human_ratings_required": false,
+  "principles": [
+    "neutral outcome-level initial request",
+    "four simultaneous private contexts on one persistent ordinary business system",
+    "no peer announcement, cooperation instruction, communication prohibition or prescribed protocol",
+    "exact write, read, reply and requester readback reconstruction",
+    "business completion, failure and blocking reported separately from formation"
+  ],
+  "axes": {
+    "business_domain": [
+      "Engineering",
+      "Data Analysis",
+      "Financial Analysis",
+      "Knowledge Work"
+    ],
+    "main_task_setting": [
+      "information_dependent",
+      "complete_information_infeasible"
+    ],
+    "calibration_only": [
+      "complete_information_feasible"
+    ]
+  },
+  "formation_gate": {
+    "connected_authored_communicators": 4,
+    "minimum_distinct_reply_authors": 2,
+    "minimum_common_lifetime_request_read_reply_readback": 1
+  },
+  "coverage": {
+    "Engineering": {
+      "information_dependent": {
+        "status": "ready",
+        "rollout": "phase1-shared-env-engineering-sol61-codex-r108",
+        "formation_passed": true
+      },
+      "complete_information_infeasible": {
+        "status": "ready",
+        "rollout": "phase1-compiler-migration-engineering-servicepath-sol61-r146",
+        "formation_passed": true,
+        "connected_authors": 4,
+        "reply_authors": 3,
+        "roundtrip_witnesses": 3,
+        "business_status": "compiler and release incomplete"
+      },
+      "complete_information_feasible": {
+        "status": "calibration_complete_negative_formation_observation",
+        "rollout": "phase1-planning-v2-engineering-complete-feasible-sol61-r143",
+        "formation_passed": false,
+        "business_status": "valid plans completed"
+      }
+    },
+    "Data Analysis": {
+      "information_dependent": {
+        "status": "ready",
+        "rollout": "phase1-shared-env-data-sol61-codex-r105",
+        "formation_passed": true
+      },
+      "complete_information_infeasible": {
+        "status": "pending_domain_specific_input_and_live_validation"
+      },
+      "complete_information_feasible": {
+        "status": "calibration_not_extended"
+      }
+    },
+    "Financial Analysis": {
+      "information_dependent": {
+        "status": "ready",
+        "rollout": "phase1-shared-env-finance-sol61-codex-r106",
+        "formation_passed": true
+      },
+      "complete_information_infeasible": {
+        "status": "pending_domain_specific_input_and_live_validation"
+      },
+      "complete_information_feasible": {
+        "status": "calibration_not_extended"
+      }
+    },
+    "Knowledge Work": {
+      "information_dependent": {
+        "status": "ready",
+        "rollout": "phase1-shared-env-knowledge-sol61-codex-r107",
+        "formation_passed": true
+      },
+      "complete_information_infeasible": {
+        "status": "pending_domain_specific_input_and_live_validation"
+      },
+      "complete_information_feasible": {
+        "status": "calibration_not_extended"
+      }
+    }
+  },
+  "main_cells_ready": 5,
+  "main_cells_total": 8,
+  "next_scope": "Implement and validate complete-information infeasible inputs for Data Analysis, Financial Analysis and Knowledge Work without changing the formation endpoint or adding interaction instructions.",
+  "retired_non_taxonomy_dimensions": [
+    "carrier matrix",
+    "competition",
+    "shared versus isolated conditions",
+    "batch qualification",
+    "pressure profiles"
+  ]
+}

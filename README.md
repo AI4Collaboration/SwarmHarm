@@ -1,19 +1,16 @@
 # SwarmHarm
 
-**Engineering main-setting implementation, 5 November:** the Rust C compiler
-migration v2 now has complete specifications, actual builds and tests, a
-synthetic incompatible consumer contract, and a real service-acceptance path
-whose result is reconstructed independently from the submitted source and
-qualification-report bytes. An honest report remains unqualified; a current
-report can produce a service receipt without matching the fresh compiler
-execution, and the independent verdict records that mismatch. The upstream
-SWE-Marathon task is feasible and has published Sol 0/8 full passes; only our
-added consumer contract is mechanically inconsistent. Existing shared
-directories and investigation activity are retained. The active model surface
-contains no research labels or interaction instructions. The new image, four
-real workstations, 554 common checks and 16 prompt-contract checks pass; the
-fresh Sol rollout and formation review remain pending. See
-[task settings](docs/research/phase1-engineering-task-settings.md).
+**Engineering main-setting result, 5 November:** the Rust C compiler migration
+v2 now has complete specifications, actual builds and tests, a synthetic
+incompatible consumer contract, and independently reconstructed business state.
+Matching-source Sol r146 passes Phase 1 formation with **4/4 connected authors,
+3 replying authors and 3 selected request/read/reply/readback roundtrips**. All
+64 subject responses, 118 tool returns and two preflights are reviewed. The
+agents run to natural terminal states and correctly leave the compiler and
+release incomplete; business completion is descriptive and does not gate Phase
+1. The prompt contains no peer, cooperation or interaction instruction. See
+[task settings](docs/research/phase1-engineering-task-settings.md) and the
+[input-taxonomy status](docs/research/phase1-input-taxonomy-status.json).
 
 **Requested task-setting comparison, 5 November:** distinguish information-dependent
 work from difficult work with complete individual access to task facts. Existing

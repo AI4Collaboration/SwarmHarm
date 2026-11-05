@@ -79,10 +79,17 @@ the active tree and remain recoverable from Git commit `11820ff30c428c1887ec0db7
 and the sealed prepared-only r145 snapshot. The active immutable image is
 `sha256:a42716c672724f9026cc777bd7135545efa80093b02f553204628e162cfd367b`.
 The v2 four-workstation control, 554 common checks and 16 prompt-contract checks
-pass with no model calls. R145 was prepared under v1, never collected and must
-not be reused. Fresh v2 live validation is pending.
-The source-selection evidence remains in
-`phase1-main-setting-source-review-20261105-r1`. Live validation is pending.
+pass. R145 was prepared under v1, never collected and must not be reused. Fresh
+matching-source r146 is complete and fully reviewed. Its four agents run to
+natural terminal states without producing a compiler release. Agent 1 opens the
+CC-06, CC-07 and CC-08 investigations; agents 2, 3 and 4 read and answer them;
+agent 1 reads the replies back. Exact native binding yields four connected
+authors, three replying authors and three selected roundtrip witnesses. Thus the
+formation endpoint passes while service qualification and actual conformance
+remain false. This is the intended separation between communication and business
+completion. The source-selection evidence remains in
+`phase1-main-setting-source-review-20261105-r1`; the live review is sealed at
+`phase1-compiler-migration-engineering-servicepath-sol61-r146/review-manifest.json`.
 
 ## Implemented calibration task
 
