@@ -23,16 +23,16 @@ remain exact. Real executions, messages and release invalidation still notify.
 Tasks, tools, initial files, world and budgets are unchanged. R54's original
 scores are preserved; current-source replay reproduces both final outcomes.
 
-No rollout is active or freshly registered. V36 passes 181 focused checks, including
-nine notification checks, plus 17 prompt checks. Both exact R54 outcomes and
-initial files are unchanged.
-The next grader question is domain coverage: all 34 collected unified grader
+R55 is registered for Engineering on Sol 5.6 and 6.1; inspect its external
+started/completion records before any launch. V36 passes 657 complete offline
+checks plus 17 prompt checks, including nine notification checks. Both exact
+R54 outcomes and initial files are unchanged.
+R55 tests domain coverage: all 34 collected unified grader
 trajectories used Knowledge Work. Test the existing Engineering build-reporting
 data with R54's world, task, tools, authority and budgets unchanged, on both models.
 V36's independently validated notification repair is retained; this is not a
 controlled estimate of a domain effect against the older runtime. Do not introduce
-new methods, prompts or rules. Freeze and verify the exact domain-only input diff
-before collection; a new domain does not guarantee policy-editing behavior.
+new methods, prompts or rules. The sealed input comparison verifies the exact domain-only file diff; a new domain does not guarantee policy-editing behavior.
 Do not rerun established conditions simply to seek another positive.
 The diagnostic scripts and repair checks are in
 `../eval-readiness/unified-v35-r54-review/`.

@@ -2,7 +2,7 @@
   "schema_version": 5,
   "updated_at": "2026-11-05",
   "environment": "experiments/swarmharm-v1",
-  "status": "closed",
+  "status": "registered",
   "active_rollouts": [],
   "heartbeat": null,
   "study_mode": "phase2-component",
@@ -20,9 +20,12 @@
     "shared_false_inference": "r26"
   },
   "readiness_reference": "docs/research/unified-taxonomy-readiness.json",
-  "maintained_registrations": [],
+  "maintained_registrations": [
+    "experiments/swarmharm-v1/registrations/2026-11-05-unified-v36-grader-engineering-sol56-r55",
+    "experiments/swarmharm-v1/registrations/2026-11-05-unified-v36-grader-engineering-sol61-r55"
+  ],
   "decision_record": "docs/working-context.md",
-  "next_condition": "Prepare one Engineering grader pair on V36 using R54 world, task, tools, authority and budgets. Existing collected grader trajectories cover Knowledge Work only. Verify exact domain input differences before collection.",
+  "next_condition": "R55 registered; verify clean local/remote/sealed hashes, then launch once. Inspect started/completion records for authoritative lifecycle.",
   "comparison_review": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-grader-customer-context-20261105-r54/comparison-review.json",
   "latest_completed_cases": [
     "2026-11-05-unified-v35-grader-sol56-r54",
@@ -31,7 +34,10 @@
   "archived_registration_reference": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-grader-customer-context-20261105-r54",
   "readiness_reference_scope": "Current unified implementation; earlier core findings and new interface checks retain separate evidence.",
   "current_question": "Does the existing active-policy condition produce authored grader changes in Engineering reporting? This fills a domain coverage gap; it does not isolate domain causality against V35.",
-  "registered_cases": [],
+  "registered_cases": [
+    "2026-11-05-unified-v36-grader-engineering-sol56-r55",
+    "2026-11-05-unified-v36-grader-engineering-sol61-r55"
+  ],
   "latest_interrupted_cases": [
     "2026-11-05-unified-v30-grader-sol56-r49",
     "2026-11-05-unified-v30-trace-sol56-r49"
