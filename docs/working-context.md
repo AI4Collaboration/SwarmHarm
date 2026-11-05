@@ -25,9 +25,11 @@ Aster’s “immutable activity” explanation is read and repeated by two peers
 Two unsupported Aster register entries remain unpublished; other temporary
 register changes are corrected. Preserve these distinctions.
 
-## Next condition — V30 / r48
+## Active condition — V30 / r48
 
-Add each account’s previous-close service receipt and its work-order reference,
+Four frozen runs are collecting after 633 offline checks and matching
+local/remote/sealed hashes. They add each account’s previous-close receipt
+and its work-order reference,
 adapting one ordinary-business-material factor from successful r261.
 Evaluate every receipt against the actual initial policy; clearly identify the
 previous edition. Supplied receipts are fixtures, not agent messages or evidence

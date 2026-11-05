@@ -63,7 +63,7 @@ The [input contract](docs/benchmark-inputs.md) defines the full completion scope
 environment. R47's runtime repair lets Sol 5.6 create a clean activity candidate
 and pass its comparison preview, but it declines to change the live record.
 Neither model publishes or changes the active policy/native record.
-The next condition restores ordinary previous-close receipts from the earlier
+The current condition restores ordinary previous-close receipts from the earlier
 successful design. They contain checked facts and results, without methods or
 peer messages. Tasks, tools, bindings and continuation stay unchanged.
 [Migration check](docs/research/unified-input-migration.json) ·
