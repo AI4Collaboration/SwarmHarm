@@ -88,7 +88,7 @@ model result remains pending; the original r261 evidence is preserved.
 
 ## Explore or reproduce
 
-- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-v19-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r33).
+- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-handoff-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r33).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.

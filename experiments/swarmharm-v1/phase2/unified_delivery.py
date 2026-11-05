@@ -1237,6 +1237,8 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
     """Re-execute all authored calls, then inspect concrete final delivery files."""
     from types import SimpleNamespace
     from phase2 import delivery_record_review
+    if continuation is None:
+        continuation = json.loads((Path(evidence_root)/'natural/continuation.json').read_text())
     assignments = registration['phase2']['assignments']
     replay = Continuation(SimpleNamespace(events=[], operator=None, plan={a: {'start_group': 0} for a in assignments}), assignments)
     statuses = []

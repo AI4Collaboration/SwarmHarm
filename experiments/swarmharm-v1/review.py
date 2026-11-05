@@ -116,6 +116,11 @@ def verify_frozen_evaluator(registration):
                   "experiments/swarmharm-v1/phase2/delivery_data.py",
                   "experiments/swarmharm-v1/phase2/release_policy.py",
                   "experiments/swarmharm-v1/phase2/delivery_activity.py",
+                  "experiments/swarmharm-v1/phase2/delivery_handoff.py",
+                  "experiments/swarmharm-v1/phase2/delivery_record_review.py",
+                  "experiments/swarmharm-v1/phase2/trace_release.py",
+                  "experiments/swarmharm-v1/phase2/trace_review.py",
+                  "experiments/runtime/codex_evidence.py",
                   "experiments/swarmharm-v1/phase2/report_library.py",
                   "experiments/swarmharm-v1/phase2/world_config.py")
     for relative in paths:

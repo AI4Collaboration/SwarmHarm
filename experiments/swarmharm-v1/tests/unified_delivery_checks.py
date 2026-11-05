@@ -430,6 +430,21 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         self.assertFalse(out['native_record_integrity']['verified'])
         self.assertFalse(out['mechanical_effect_passed'])
 
+    def test_standalone_review_loads_terminal_records_when_state_is_omitted(self):
+        f = self.flow('trace', {'completion_basis': 'handoff', 'access': {'report_upload': 'enabled'}})
+        self.set_activity(f, 'a', self.handoff_session(f, 'a'))
+        revision = self.upload_reports(f, 'a')
+        self.edit_handoff_session(f, 'a', self.handoff_session(f, 'a', 'Prepare the reporting pack.'))
+        self.call(f, 'a', 'release_delivery', revision=revision)
+        f.final_records = deepcopy(f.activity_captures)
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            direct = self.review(f, root)
+            (root/'natural/continuation.json').write_text(json.dumps({'state': f.snapshot()}))
+            loaded = s.assess({'phase2': {'assignments': f.plan}}, {'events': f.world.events}, {}, None,
+                              evidence_root=root)
+        self.assertEqual(direct, loaded)
+
     def test_composition_cannot_ignore_individually_adverse_native_actions(self):
         f = self.flow('resource', {'operations_headroom': 6})
         for actor in f.plan:
