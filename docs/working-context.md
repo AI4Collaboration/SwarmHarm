@@ -16,10 +16,10 @@ or prohibition was added. Business acceptance and formation are separate, and
 agents may stop naturally while the deliverable remains blocked. Final offline
 validation passes 562 combined runtime checks and 17 prompt-contract checks.
 Twelve actual workstations verified complete source access, opposite-side
-rejections, investigation visibility, independent replay and cleanup. No model
-call or live registration exists for these three inputs yet. Their status is
-offline validated and live pending; the main taxonomy remains 5/8 ready until
-matching-source Sol traces are fully reviewed. See
+rejections, investigation visibility, independent replay and cleanup. Fresh Sol
+registrations r149, r150 and r151 are prepared with matching source and zero
+model calls; they remain collection and full-trace-review pending. The main
+taxonomy stays 5/8 ready until those matching-source traces pass. See
 research/phase1-domain-task-settings.md.
 
 Current result: Engineering compiler migration v2 is live-validated and fully

@@ -1,7 +1,7 @@
 {
   "schema": "phase1-readiness-v3",
   "updated_at": "2026-11-05",
-  "status": "baseline_publication_ready_remaining_complete_information_inputs_offline_validated",
+  "status": "baseline_publication_ready_remaining_complete_information_inputs_prepared",
   "all_ready": false,
   "all_ready_scope": "The four information-dependent domain inputs and the Engineering complete-information infeasible input are ready. Data Analysis, Financial Analysis and Knowledge Work complete-information infeasible inputs now pass offline admission but still require fresh matching-source Sol rollout and complete native review.",
   "business_scenario_coverage": {
@@ -59,7 +59,7 @@
     "status": "none",
     "reason": "The prior periodic continuation task was removed; current work is continued in this active session."
   },
-  "current_action": "Commit and freeze the offline-validated Data Analysis, Financial Analysis and Knowledge Work complete-information infeasible inputs, then collect and fully review one matching-source Sol rollout for each.",
+  "current_action": "Commit and verify the three prepared registrations, then collect each once and fully review every native trace before updating readiness.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
     "revision": "project-files-v1",
@@ -210,7 +210,7 @@
       "Financial Analysis",
       "Knowledge Work"
     ],
-    "status": "offline_validated_live_rollouts_pending",
+    "status": "prepared_collection_pending",
     "ready": false,
     "task_setting": "complete_information_infeasible",
     "same_complete_sources_per_context": true,
@@ -252,9 +252,24 @@
       }
     ],
     "live_rollouts": {
-      "Data Analysis": null,
-      "Financial Analysis": null,
-      "Knowledge Work": null
+      "Data Analysis": {
+        "id": "phase1-domain-infeasible-data-sol61-r149",
+        "registration_sha256": "063cf9a062ad1fabfce77364d9c4b579240a98b89e4e31ab14545fe5487a8f68",
+        "prepared": true,
+        "collected": false
+      },
+      "Financial Analysis": {
+        "id": "phase1-domain-infeasible-finance-sol61-r150",
+        "registration_sha256": "3b03ccf28e5d6494ee45e2a536dafd8dcdb22ba009af76b544221880ff502940",
+        "prepared": true,
+        "collected": false
+      },
+      "Knowledge Work": {
+        "id": "phase1-domain-infeasible-knowledge-sol61-r151",
+        "registration_sha256": "bb03429a85a18769b412a595d1b7c7d016d6cce3d0199c30bfc5aa007520372d",
+        "prepared": true,
+        "collected": false
+      }
     },
     "design": "docs/research/phase1-domain-task-settings.md"
   },
