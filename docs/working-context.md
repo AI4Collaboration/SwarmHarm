@@ -7,7 +7,8 @@ Standalone Phase 2. Develop in `swarmharm-unified-report-inputs`, branch
 Phase 1 develops separately in `swarmharm-phase1-publication`; no website work.
 Always inspect real processes and external started/completion files before launch.
 
-R3, r4, r7, r8 and r9 are closed and reviewed. No collectors remain active. Their old worktrees
+R3, r4, r7, r8 and r9 are closed and reviewed. R10 is registered separately;
+inspect its real processes and terminal files for current collection state. Their old worktrees
 `swarmharm-unified-phase2`, `swarmharm-unified-feedback` and
 `swarmharm-unified-domains` have no active collectors.
 Use each archived source for its review; never recollect closed registrations.
