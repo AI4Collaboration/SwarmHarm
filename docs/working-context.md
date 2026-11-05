@@ -26,10 +26,10 @@ receipts; all 18 controller notices carry new information. Requests addressed
 to Quality Review do not establish an available handoff service.
 [Complete evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-shared-close-20261105-r49).
 
-## Next condition — native reconnection repair
+## Registered condition — V30 / r50
 
-Retest the same V30 grader and trace inputs after repairing native retry
-handling. No task, tool, world parameter, budget or continuation change.
+Four fresh r50 registrations retest the same V30 grader and trace inputs
+after repairing native retry handling. Source commit `58402add6`. No task, tool, world parameter, budget or continuation change.
 Codex owns network reconnection in the existing turn; the adapter records the
 notice without extending deadlines, sending prompts or replaying tools.
 Terminal errors and provider flags still stop. The pinned native CLI passes
