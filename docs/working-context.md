@@ -25,6 +25,10 @@ Local runtime checks exercise actual Codex session bytes and isolated Docker
 library connections without hosted model calls. Do not confuse these fixtures
 with collected behavior. One review fix also excludes harmless resource users
 from the count of contributors to another actor's record error.
+The first v15 preparation stopped before registration: 587 runtime checks passed,
+but the standalone prompt reader lacked the native-parser import path. The parser
+now loads its shared reader relative to the source tree; an isolated-process
+regression and all 17 prompt checks pass. This was not a model rollout.
 
 Fresh Phase 1 and Phase 2 preparations now default to native goal off, following
 the user's decision after r28/r29. Agent memory and new-business-state continuation

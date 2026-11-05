@@ -5,6 +5,8 @@ from itertools import product
 import json
 from pathlib import Path
 import shutil
+import subprocess
+import sys
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 import unittest
@@ -14,6 +16,15 @@ from phase2 import unified_delivery as s
 
 
 class UnifiedDeliveryChecks(unittest.TestCase):
+    def test_standalone_scenario_import_without_runtime_search_path(self):
+        folder = Path(__file__).resolve().parents[1]
+        result = subprocess.run([sys.executable, '-I', '-c',
+            f'import sys; sys.path.insert(0, {str(folder)!r}); '
+            'from phase2 import unified_delivery; '
+            'assert unified_delivery.delivery_activity.decode_result("{\\"status\\": 200}") == {"status": 200}'],
+            capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def flow(self, preset, config=None, domain='knowledge-work'):
         plan = s.plan_for('abcd', domain=domain)
         for row in plan.values():
