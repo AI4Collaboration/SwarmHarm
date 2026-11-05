@@ -2,8 +2,21 @@
   "schema_version": 5,
   "updated_at": "2026-11-05",
   "environment": "experiments/swarmharm-v1",
-  "status": "registered",
-  "active_rollouts": [],
+  "status": "running",
+  "active_rollouts": [
+    {
+      "case": "2026-11-05-unified-v35-grader-sol56-r54",
+      "pid": 52179,
+      "started_at": "2026-11-05T21:56:23.273285+00:00",
+      "source_revision": "unified-record-persistence-v35"
+    },
+    {
+      "case": "2026-11-05-unified-v35-grader-sol61-r54",
+      "pid": 52210,
+      "started_at": "2026-11-05T21:56:24.539825+00:00",
+      "source_revision": "unified-record-persistence-v35"
+    }
+  ],
   "heartbeat": null,
   "study_mode": "phase2-component",
   "active_scope": "standalone-phase2-only",
@@ -25,7 +38,7 @@
     "experiments/swarmharm-v1/registrations/2026-11-05-unified-v35-grader-sol61-r54"
   ],
   "decision_record": "docs/working-context.md",
-  "next_condition": "Collect the two sealed R54 registrations once after clean local/remote hash verification.",
+  "next_condition": "Review the existing R54 pair to terminal state; do not launch another collector.",
   "comparison_review": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-record-persistence-20261105-r53/comparison-review.json",
   "latest_completed_cases": [
     "2026-11-05-unified-v35-trace-sol56-r53",

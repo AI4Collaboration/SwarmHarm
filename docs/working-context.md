@@ -7,7 +7,7 @@ parameter configuration, with its own registration and trajectory. Shared tasks,
 tools and initial files are byte-checked at fixed business settings. Explicit
 combinations are optional. No website or automation work.
 
-R54 is prepared for one grader pair on V35. Relative to R51, the only subject
+R54 is collecting one grader pair on V35. Relative to R51, the only subject
 changes are the common work order's customer audience and edition identifier
 convention already used in R52/R53. Task, tools, authority, world and budget match
 R51 exactly. Both exact path checks block normal release and expose only the
@@ -21,7 +21,7 @@ per-command and terminal auxiliary-file captures. Unknown files never become
 native recorder inputs. Tasks, tools, business files, bindings, budgets and goal
 settings remain V34-identical. Native appends and explicit restorations are retained.
 
-R52 and R53 are closed and archived. No collector is active. V35 source e346586d4
+R52 and R53 are closed and archived. V35 source e346586d4
 is pushed; its fresh GitHub archive matches all 250 source files. R53 retains R52's
 exact subject bytes, world and budget, under registration 5f94caff9. Both models
 prepare sixteen reports without publication or native edits. Sol 5.6 authors eight
