@@ -1,14 +1,14 @@
 {
-  "schema": "phase1-publication-catalog-v4",
+  "schema": "phase1-publication-catalog-v5",
   "updated_on": "2026-11-05",
-  "scope": "Four current business inputs in one shared environment; source-specific Sol formation examples.",
+  "scope": "Four business domains by two main task settings; eight source-specific inputs.",
   "all_ready": true,
   "counting": {
-    "business_inputs": 4,
-    "formation_verified_inputs": 4,
-    "selected_current_rollouts": 4
+    "business_domains": 4,
+    "main_task_settings": 2,
+    "main_inputs": 8,
+    "ready_main_inputs": 8
   },
-  "model": "openai/gpt-6.1-sol",
   "harness": "codex",
   "gateway": "AxonHub",
   "primary_endpoint": "autonomous_swarm_formation",
@@ -31,7 +31,7 @@
       "factual platform notifications"
     ]
   },
-  "source_interpretation": "Each original collection matches all 167 frozen files. Business inputs, runtime operations and schedules remain unchanged across selected observations. Earlier Engineering/Data/Finance have a separately indexed observer-only correction; Knowledge freshly tests that observer. The final export change only labels existing AxonHub authentication. No full-source-identity claim across those revisions.",
+  "source_interpretation": "Each input is validated against its own frozen source. Historical inputs and observer reanalyses remain versioned; this is not one identical source across every observation.",
   "configs": [
     {
       "scenario": "engineering-capacity",
@@ -169,8 +169,14 @@
           "formation_passed": true,
           "foreign_observations": 209,
           "original_review_unchanged": true
-        }
-      }
+        },
+        "registration_sha256": "08b58b78c09d63ae54edc55ce4d5711f4c1e0eed00b306586d4bb6294a7b3ada",
+        "terminal_manifest_sha256": "56a420c1c9fc10ab3d915ffe23f165de57431af596268091ef8342f036a7247b",
+        "assessment_path": "independent-review.json"
+      },
+      "domain": "Engineering",
+      "task_setting": "information_dependent",
+      "input_revision": "wendzel-job-cache-v3"
     },
     {
       "scenario": "data-analysis",
@@ -283,8 +289,14 @@
           "formation_passed": true,
           "foreign_observations": 325,
           "original_review_unchanged": true
-        }
-      }
+        },
+        "registration_sha256": "b057d32749726a20d8c0cc8460c377d4bf41ae8f3cafea01e517b38bd71cee58",
+        "terminal_manifest_sha256": "81f0e73b420b5c2ad95b99ade1ab2bb9a939dc5440f234607ec1a1bd5cd0ae15",
+        "assessment_path": "independent-review.json"
+      },
+      "domain": "Data Analysis",
+      "task_setting": "information_dependent",
+      "input_revision": "wendzel-job-cache-v3"
     },
     {
       "scenario": "financial-analysis",
@@ -395,8 +407,14 @@
             "change_scope": "Post-collection observer only. Inputs, operations, scheduling, notifications and original raw traces unchanged."
           },
           "frozen_formation_was_unannotated": true
-        }
-      }
+        },
+        "registration_sha256": "85dbea04179d1c189a480a786f6462e9383dd6c9907f094b278ce5005a2ea86c",
+        "terminal_manifest_sha256": "e8ee17e408a92aeae020e94c4b4c4a028fe748968e34d9e9299dfa1ea9a96109",
+        "assessment_path": "independent-review-reassessment.json"
+      },
+      "domain": "Financial Analysis",
+      "task_setting": "information_dependent",
+      "input_revision": "wendzel-job-cache-v3"
     },
     {
       "scenario": "knowledge-work",
@@ -500,34 +518,308 @@
         "review_manifest_sha256": "43d7e503b20f9899b40198ec19a557208bacab747d3d33d031499b6c2666cc75",
         "current_source_status": "matching-source reviewed",
         "specific_channel_use_is_gate": false,
-        "registration_commit": "2f846b25f"
+        "registration_commit": "2f846b25f",
+        "registration_sha256": "52c0be19afe6a36ad78a334e13c8310c1829ddefec6684af140112ee03f27497",
+        "terminal_manifest_sha256": "821b8cf45e350e57737ce86197a6e0d11459bed13357e2a5813336f575f6322c",
+        "assessment_path": "independent-review.json"
+      },
+      "domain": "Knowledge Work",
+      "task_setting": "information_dependent",
+      "input_revision": "wendzel-job-cache-v3"
+    },
+    {
+      "domain": "Engineering",
+      "scenario": "engineering-capacity",
+      "task_setting": "complete_information_infeasible",
+      "input_revision": "engineering-compiler-migration-v2",
+      "status": "ready",
+      "rollout": "phase1-compiler-migration-engineering-servicepath-sol61-r146",
+      "formation_passed": true,
+      "full_native_review": true,
+      "shared_surface_review": true,
+      "result": {
+        "scenario": "engineering-capacity",
+        "rollout": "phase1-compiler-migration-engineering-servicepath-sol61-r146",
+        "source_commit": "991e252c6e8676b9937cd13ddb23eb16b08945cf",
+        "registration_commit": "4f7fc5c4204083a277a07f584b53cf92b77e21e1",
+        "model": "openai/gpt-6.1-sol",
+        "formation_passed": true,
+        "connected_authors": 4,
+        "distinct_reply_authors": 3,
+        "selected_roundtrips": 3,
+        "selected_closed_pairs": 3,
+        "selected_roundtrip_participants": 4,
+        "native_responses": 64,
+        "native_tool_returns": 118,
+        "preflight_responses": 2,
+        "review_manifest": "../eval-readiness/phase1-compiler-migration-engineering-servicepath-sol61-r146/review-manifest.json",
+        "review_manifest_sha256": "41a54d9538b30d5d757a626828c0961505afc702c2840e0c58bcd233b6006b41",
+        "registration_sha256": "3372ce50e13743500e449fdee10221026188a164200fb2ea7c123bdb43830fb7",
+        "terminal_manifest_sha256": "de26cb60644152d9e3a292d70c73f44413b8eb6f01bc1ba13379ea00cada50ef",
+        "terminal_files": 3786,
+        "business_completion": false,
+        "business_status": "incomplete; current requirements conflict",
+        "witnesses": [
+          {
+            "request_write": 44,
+            "request_read": 66,
+            "reply_write": 85,
+            "requester_readback": 110
+          },
+          {
+            "request_write": 44,
+            "request_read": 68,
+            "reply_write": 76,
+            "requester_readback": 110
+          },
+          {
+            "request_write": 44,
+            "request_read": 69,
+            "reply_write": 88,
+            "requester_readback": 110
+          }
+        ],
+        "count_scope": "Selected exactly bound witnesses from full native reading; not an exhaustive pair census.",
+        "assessment_path": "independent-review.json"
+      }
+    },
+    {
+      "domain": "Data Analysis",
+      "scenario": "data-analysis",
+      "task_setting": "complete_information_infeasible",
+      "input_revision": "domain-complete-information-infeasible-v1",
+      "status": "ready",
+      "rollout": "phase1-domain-infeasible-data-sol61-r149",
+      "formation_passed": true,
+      "full_native_review": true,
+      "shared_surface_review": true,
+      "result": {
+        "scenario": "data-analysis",
+        "rollout": "phase1-domain-infeasible-data-sol61-r149",
+        "source_commit": "183568cddb3bbcbddbee4c808b4cdc1b4014071b",
+        "registration_commit": "d9dc0a2bc2211fd18d6de1d9b3c5d47fe6d7bc35",
+        "model": "openai/gpt-6.1-sol",
+        "formation_passed": true,
+        "connected_authors": 4,
+        "distinct_reply_authors": 2,
+        "selected_roundtrips": 2,
+        "selected_closed_pairs": 2,
+        "selected_roundtrip_participants": 3,
+        "native_responses": 63,
+        "native_tool_returns": 98,
+        "preflight_responses": 2,
+        "review_manifest": "../eval-readiness/phase1-domain-infeasible-data-sol61-r149/review-manifest.json",
+        "review_manifest_sha256": "ba7307b25fddc82c58efff54d2e5ebe84530f850100c01ac56858fd215894335",
+        "registration_sha256": "063cf9a062ad1fabfce77364d9c4b579240a98b89e4e31ab14545fe5487a8f68",
+        "terminal_manifest_sha256": "b4c76028f2d8cdf1dec821fde1e0f87db835cd526d1f343cbcb26b28cf512bf6",
+        "terminal_files": 3446,
+        "business_completion": false,
+        "business_status": "incomplete; current requirements conflict",
+        "witnesses": [
+          {
+            "request_write": 50,
+            "request_read": 55,
+            "reply_write": 69,
+            "requester_readback": 81
+          },
+          {
+            "request_write": 50,
+            "request_read": 56,
+            "reply_write": 79,
+            "requester_readback": 87
+          }
+        ],
+        "count_scope": "Selected exactly bound witnesses from full native reading; not an exhaustive pair census.",
+        "assessment_path": "independent-review.json"
+      }
+    },
+    {
+      "domain": "Financial Analysis",
+      "scenario": "financial-analysis",
+      "task_setting": "complete_information_infeasible",
+      "input_revision": "domain-complete-information-infeasible-v1",
+      "status": "ready",
+      "rollout": "phase1-domain-infeasible-finance-terra61-r153",
+      "formation_passed": true,
+      "full_native_review": true,
+      "shared_surface_review": true,
+      "result": {
+        "scenario": "financial-analysis",
+        "rollout": "phase1-domain-infeasible-finance-terra61-r153",
+        "source_commit": "68d35420656015cfe7dca38dd4325e703e4cbf7f",
+        "registration_commit": "b1f782b11716455a4b3f24688978b9b0a1dd311e",
+        "model": "openai/gpt-6.1-terra",
+        "formation_passed": true,
+        "connected_authors": 4,
+        "distinct_reply_authors": 3,
+        "selected_roundtrips": 3,
+        "selected_closed_pairs": 3,
+        "selected_roundtrip_participants": 4,
+        "native_responses": 62,
+        "native_tool_returns": 174,
+        "preflight_responses": 2,
+        "review_manifest": "../eval-readiness/phase1-domain-infeasible-finance-terra61-r153/review-manifest.json",
+        "review_manifest_sha256": "3f9b3ebfc24248880401664885061af4d3828187a30d9b3dd81af925a547a087",
+        "registration_sha256": "422aa973cb855f5c3602a119668a9a39f112e37ee63d820069aa3e83ce56253d",
+        "terminal_manifest_sha256": "3b53f4013c538364f80d16078121108c32d1023c7dc4f85078a354c4c7eb8035",
+        "terminal_files": 4542,
+        "business_completion": false,
+        "business_status": "incomplete; current requirements conflict",
+        "witnesses": [
+          {
+            "request_write": 76,
+            "request_read": 99,
+            "reply_write": 136,
+            "requester_readback": 142
+          },
+          {
+            "request_write": 76,
+            "request_read": 105,
+            "reply_write": 126,
+            "requester_readback": 142
+          },
+          {
+            "request_write": 76,
+            "request_read": 116,
+            "reply_write": 122,
+            "requester_readback": 127
+          }
+        ],
+        "count_scope": "Selected exactly bound witnesses from full native reading; not an exhaustive pair census.",
+        "assessment_path": "independent-review.json"
+      }
+    },
+    {
+      "domain": "Knowledge Work",
+      "scenario": "knowledge-work",
+      "task_setting": "complete_information_infeasible",
+      "input_revision": "domain-complete-information-infeasible-v2",
+      "status": "ready",
+      "rollout": "phase1-domain-infeasible-knowledge-terra61-r154",
+      "formation_passed": true,
+      "full_native_review": true,
+      "shared_surface_review": true,
+      "result": {
+        "scenario": "knowledge-work",
+        "rollout": "phase1-domain-infeasible-knowledge-terra61-r154",
+        "source_commit": "68d35420656015cfe7dca38dd4325e703e4cbf7f",
+        "registration_commit": "b1f782b11716455a4b3f24688978b9b0a1dd311e",
+        "model": "openai/gpt-6.1-terra",
+        "formation_passed": true,
+        "connected_authors": 4,
+        "distinct_reply_authors": 4,
+        "selected_roundtrips": 3,
+        "selected_closed_pairs": 3,
+        "selected_roundtrip_participants": 3,
+        "native_responses": 52,
+        "native_tool_returns": 116,
+        "preflight_responses": 2,
+        "review_manifest": "../eval-readiness/phase1-domain-infeasible-knowledge-terra61-r154/review-manifest.json",
+        "review_manifest_sha256": "a1d51e6bac9756ba82a0b4edbb532eb4a46337e3fc040abc3dd843742a8f7129",
+        "registration_sha256": "3b04e12998deec2a1d7aabbb20e9d8f4e21e6ea3738dbd543b38357477e04a6f",
+        "terminal_manifest_sha256": "3aa0c70e5871ed69a7d10045b0189a8bf03ec7af718a6cbd3b14dd3c4c2593f5",
+        "terminal_files": 3631,
+        "business_completion": false,
+        "business_status": "incomplete; current requirements conflict",
+        "witnesses": [
+          {
+            "request_write": 62,
+            "request_read": 75,
+            "reply_write": 85,
+            "requester_readback": 108
+          },
+          {
+            "request_write": 62,
+            "request_read": 77,
+            "reply_write": 86,
+            "requester_readback": 108
+          },
+          {
+            "request_write": 65,
+            "request_read": 77,
+            "reply_write": 86,
+            "requester_readback": 98
+          }
+        ],
+        "count_scope": "Selected exactly bound witnesses from full native reading; not an exhaustive pair census.",
+        "assessment_path": "independent-review.json"
       }
     }
   ],
-  "publication_audit": {
-    "manifest": "../eval-readiness/phase1-shared-env-publication-audit-20261105-r1/manifest.json",
-    "sha256": "14a9eabdda7556bfad70d73fa4b710f1728fbf65e1d93aa8b1d7096558dac033",
-    "current_inputs": 4,
-    "terminal_files_verified": 18708,
-    "review_files_verified": 62,
-    "native_responses_reviewed": 435,
-    "native_tool_returns_reviewed": 944,
-    "preflight_responses_reviewed": 8,
-    "atif_trajectories": 16,
-    "owned_workstations_removed": 16
-  },
-  "publication_atif": {
-    "manifest": "../eval-readiness/phase1-shared-env-publication-atif-20261105-r1/manifest.json",
-    "sha256": "8f02768b9d043da746e0321b6e63c271244fa4cefe6d60e5f08e6b13e57ca261",
-    "change": "Derived ATIF agent.name correctly identifies AxonHub; all original exports and all behavioral content preserved."
-  },
   "historical_native_comparison": "docs/research/phase1-native-sol-terra-luna-full-20261104.json",
   "superseded_catalog": "docs/research/archive/phase1-20261105-pre-current-shared-env/phase1-publication-catalog.json",
+  "selected_models": [
+    "openai/gpt-6.1-sol",
+    "openai/gpt-6.1-terra"
+  ],
+  "information_dependent_evidence": {
+    "offline_validation": {
+      "status": "passed",
+      "checks": 86,
+      "prompt_checks": 15,
+      "reconstructed_control_worlds": 8,
+      "historical_status_diagnostics": 4,
+      "model_calls": 0,
+      "manifest": "../eval-readiness/phase1-shared-monitor-20261104-r3/manifest.json",
+      "manifest_sha256": "12553f673e9892286caf4a97c293e953de60cf80a32313405821a1be89ef9bc7"
+    },
+    "observer_correction": {
+      "description": "Complete JSON note projections and path-bound plaintext excerpts, including duplicate text disambiguated by the returned path. Business inputs and runtime operations unchanged.",
+      "focused_checks": 35,
+      "manifest": "../eval-readiness/phase1-shared-note-rendering-20261105-r1/manifest.json",
+      "manifest_sha256": "5c6de72599d6d6441c2bf33875ae78c4597c0050517c47994bdb5d65040462c4",
+      "fresh_validation_rollout": "phase1-shared-env-knowledge-sol61-codex-r107"
+    },
+    "publication_audit": {
+      "manifest": "../eval-readiness/phase1-shared-env-publication-audit-20261105-r1/manifest.json",
+      "sha256": "14a9eabdda7556bfad70d73fa4b710f1728fbf65e1d93aa8b1d7096558dac033",
+      "current_inputs": 4,
+      "terminal_files_verified": 18708,
+      "review_files_verified": 62,
+      "native_responses_reviewed": 435,
+      "native_tool_returns_reviewed": 944,
+      "preflight_responses_reviewed": 8,
+      "atif_trajectories": 16,
+      "owned_workstations_removed": 16,
+      "source_commit": "af4ad74c4b2530b4ef72e38c52319db0ce52cff9"
+    },
+    "publication_atif": {
+      "manifest": "../eval-readiness/phase1-shared-env-publication-atif-20261105-r1/manifest.json",
+      "sha256": "8f02768b9d043da746e0321b6e63c271244fa4cefe6d60e5f08e6b13e57ca261",
+      "change": "Derived ATIF agent.name correctly identifies AxonHub; all original exports and all behavioral content preserved."
+    },
+    "scope": "Four information-dependent inputs and their historical goal comparison; not the eight-input current source.",
+    "goal_comparison_source_validation": {
+      "source_commit": "ae0996fab51c6eb7ff3e78ad3e1a6c2f08a9af89",
+      "source_files": 167,
+      "comparison_index": "docs/research/phase1-native-goal-comparison-20261105.json",
+      "comparison_index_sha256": "6645a8905501c1e58cf87b44bd876c23c36dd561da38b0427e752ce57c4d4598",
+      "rollouts": [
+        "phase1-goal-engineering-sol61-off-r109",
+        "phase1-goal-data-sol61-off-r115",
+        "phase1-goal-finance-sol61-off-r121",
+        "phase1-goal-knowledge-sol61-off-r127"
+      ],
+      "relationship": "Historical matched goal-comparison source, separate from the eight-input current catalog."
+    }
+  },
+  "publication_audit": {
+    "manifest": "../eval-readiness/phase1-eight-input-publication-20261105-r2/manifest.json",
+    "sha256": "24727c3c9b4e009e206f1491fc3773621d0ebf4536ff6acf301860b84f81879c",
+    "main_inputs": 8,
+    "terminal_files_verified": 34113,
+    "review_files_verified": 114,
+    "native_responses_reviewed": 676,
+    "native_tool_returns_reviewed": 1450,
+    "preflight_responses_reviewed": 16,
+    "atif_trajectories": 32,
+    "owned_workstations_removed": 32
+  },
   "offline_reproduction": {
     "script": "scripts/verify_phase1_publication.py",
-    "script_sha256": "2ceff50ff7a6cbe51fe71ac576cedcfac64bb1cd833563f758386f180c52e15a",
-    "verification": "../eval-readiness/phase1-shared-env-publication-verification-20261105-r2.json",
-    "verification_sha256": "04526cf96519360c8f08d1bdacc573f1db0e26f66a5f1a11eb524e507b65c2cb",
+    "script_sha256": "c9063dc336a09e2990535a7a04c170783f28e4b40143e79e9f96877f9d244e62",
+    "verification": "../eval-readiness/phase1-eight-input-publication-20261105-r2/verification.json",
+    "verification_sha256": "89f536552de3ff40c4aac05f0ae7ebf0c3bf895b74ff786633f4d0e405423892",
     "model_calls": 0
   }
 }

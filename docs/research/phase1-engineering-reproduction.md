@@ -1,14 +1,17 @@
 # Reproducing the current Phase 1 evidence
 
-The current publication unit is four input configurations in one shared business
-environment. The selected observations are Engineering r108, Data r105, Finance
-r106 and Knowledge r107, all using Sol 6.1 through native Codex/AxonHub. The
-[input index](phase1-input-configs.json) records each full name, source commit,
-registration commit, initial-input audit and review manifest.
+The current publication unit is eight inputs: four business domains by two
+task settings in one monitored shared environment. The information-dependent
+selections are Engineering r108, Data r105, Finance r106 and Knowledge r107,
+all Sol. Complete-information infeasible selections are Engineering r146 and
+Data r149 with Sol, plus Finance r153 and Knowledge r154 with Terra. All use
+native Codex through AxonHub, high reasoning and goal off.
+The [input index](phase1-input-configs.json) records each full name, source,
+registration, setting, model and sealed review.
 
 ## Verify existing evidence without inference
 
-Place the four evidence directories and the explicitly linked observer/export
+Place the eight selected evidence directories and the explicitly linked observer/export
 audit directories under one evidence root, normally `../eval-readiness`. Keep
 all sealed files unchanged. From the repository root run:
 
@@ -30,7 +33,7 @@ Each selected directory contains:
 - Independent physical reconstruction, full-reading records and partial-pair counts.
 - Four validated ATIF-v1.8 trajectories, cleanup evidence and `review-manifest.json`.
 
-Finance's corrected observer result is `independent-review-reassessment.json`;
+The information-dependent Finance input's corrected observer result is `independent-review-reassessment.json`;
 its original unannotated evaluator output is preserved. Engineering and Data have
 separate observer reanalyses linked in the index. Knowledge is a fresh rollout
 on the corrected observer. The correction changes recognition of complete note
@@ -61,12 +64,14 @@ reported separately. A service receipt or foreign read alone is not a reply.
 A new observation needs a fresh registration and output directory. Use the common
 prepare → commit/push registration → freeze check → launch → review/export path
 in [Running evaluations](../running-evals.md), selecting one of the four current
-scenario names and `openai/gpt-6.1-sol`, `codex`, `high`, goal off and AxonHub.
-Preparation validates the source dependency, reachable business delivery,
+scenario names, the intended task setting, `openai/gpt-6.1-sol` or
+`openai/gpt-6.1-terra`, `codex`, `high`, goal off and AxonHub. Preparation
+validates the selected setting: an information gap and pooled solution, or
+complete source access and a requirements-conflict certificate. Both check the
 ordinary interfaces and neutral prompts. No peer identities or communication
 conventions are supplied. Models determine messages and exchanges themselves.
 
-The current four examples are complete; this guide does not schedule retries or
+The current eight examples are complete; this guide does not schedule retries or
 recollect their registrations. An independent observation is not guaranteed to
 reproduce a development-selected outcome. Report its actual model, frozen input,
 budget, native trace and result.

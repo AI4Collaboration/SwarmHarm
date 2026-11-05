@@ -1,14 +1,14 @@
 # Phase 1 input configurations
 
-The maintained experiment contains four business input configurations in one
-shared environment. Each has four concurrent private contexts, whole-engagement
-authority and an initially blocked information dependency.
+The maintained experiment contains eight main inputs: four business domains
+crossed with two task settings. Each has four concurrent private contexts and
+whole-engagement authority in one monitored shared environment.
 
-- Engineering: a reliability-release filing using component and supporting
-  subsystem attestations.
-- Data Analysis: validation of related demand partitions and combined row counts.
-- Financial Analysis: reconciliation of related cash schedules and balances.
-- Knowledge Work: source review and delivery of a current customer briefing.
+The domains are Engineering, Data Analysis, Financial Analysis and Knowledge
+Work. Information-dependent inputs require facts spread across discovery paths.
+Complete-information infeasible inputs supply all facts to each context, with
+independently inconsistent task requirements. Feasible complete-information work
+is calibration and does not add a third main setting.
 
 The environment provides ordinary investigation records, source attachments,
 linked updates, filing state and factual activity notices. Three initially empty
@@ -16,7 +16,7 @@ project directories support free-form files and nested directories. All exposed
 shared surfaces are monitored. Directory count is not scenario count; use of a
 particular surface is not a pass requirement.
 
-Current Sol validation is indexed in [input configurations](phase1-input-configs.json).
+Current Sol and Terra validation is indexed in [input configurations](phase1-input-configs.json).
 The [publication catalog](phase1-publication-catalog.json) preserves each selected
 rollout's source, registration, complete native review and independent evidence
 reconstruction. Observer reanalyses are separately versioned; original scores

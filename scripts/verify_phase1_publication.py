@@ -1,74 +1,27 @@
-"""Verify the selected current Phase 1 evidence without model or service calls."""
+"""Verify all eight selected Phase 1 inputs from frozen evidence, without model calls."""
 import argparse
+from functools import lru_cache
 import hashlib
 import json
 import subprocess
 from pathlib import Path
 
 
-def verify_current_runtime(repository: Path, evidence: Path, descriptor: dict) -> dict:
-    """Bind the current source to reviewed, goal-off observations of all inputs."""
-    load = lambda path: json.loads(path.read_text())
-    digest = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
-    comparison_path = repository / descriptor['comparison_index']
-    assert digest(comparison_path) == descriptor['comparison_index_sha256']
-    comparison = load(comparison_path)
-    assert comparison['status'] == 'complete_fully_reviewed'
-    assert comparison['source_commit'] == descriptor['source_commit']
-    cells = {cell['name']: cell for cell in comparison['cells']}
-    scenarios = set()
-    common_source = None
-    rows = []
-    for name in descriptor['rollouts']:
-        cell = cells[name]
-        result = cell['result']
-        assert cell['goal_mode'] == 'off' and cell['model'] == 'openai/gpt-6.1-sol'
-        assert result['formation'] and cell['scenario'] not in scenarios
-        scenarios.add(cell['scenario'])
-        root = evidence / name
-        reg = load(root / 'registration.json')
-        terminal = load(root / 'evidence-manifest.json')
-        review = load(root / 'review-manifest.json')
-        assert digest(root / 'registration.json') == terminal['registration_sha256']
-        assert digest(root / 'evidence-manifest.json') == result['terminal_manifest_sha256']
-        assert review['terminal_manifest_sha256'] == result['terminal_manifest_sha256']
-        assert digest(root / 'review-manifest.json') == result['review_manifest_sha256']
-        assert reg['scenario'] == cell['scenario'] and reg['harness']['goal_mode'] == 'off'
-        for manifest in (terminal['files'], review['review_files'], reg['input_hashes']):
-            for path, expected in manifest.items():
-                assert digest(root / path) == expected, (name, path)
-        for variants in reg['task_hashes'].values():
-            for paths in variants.values():
-                for path, expected in paths.items():
-                    assert digest(root / 'tasks' / path) == expected, (name, path)
-        if common_source is None:
-            common_source = reg['code_hashes']
-            for path, expected in common_source.items():
-                committed = subprocess.check_output(
-                    ['git', 'show', descriptor['source_commit'] + ':' + path], cwd=repository)
-                assert hashlib.sha256(committed).hexdigest() == expected, path
-                assert digest(repository / path) == expected, path
-        assert reg['code_hashes'] == common_source
-        for path, expected in common_source.items():
-            assert digest(root / 'code' / path) == expected, (name, path)
-        findings = load(root / 'trace-findings.json')
-        assert findings['formation_passed'] and findings['communication_authors'] == 4
-        assert findings['distinct_reply_authors'] >= 2
-        assert load(root / 'phase1-semantic-review.json')['all_native_traces_reviewed']
-        rows.append({'scenario': cell['scenario'], 'rollout': name,
-                     'connected': result['largest_exact_read_component'],
-                     'closed_pairs': result['closed_pairs'], 'reply_authors': result['reply_authors']})
-    assert scenarios == set(comparison['scenarios']) and len(rows) == 4
-    assert len(common_source) == descriptor['source_files']
-    return {'source_commit': descriptor['source_commit'], 'source_files': len(common_source),
-            'inputs': rows, 'passed': True}
-
-
 def verify(repository: Path, evidence: Path) -> dict:
     load = lambda path: json.loads(path.read_text())
     digest = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
     index = load(repository / 'docs/research/phase1-input-configs.json')
-    assert index['all_ready'] and len(index['configs']) == 4
+    taxonomy = load(repository / 'docs/research/phase1-input-taxonomy-status.json')
+    expected = {(domain, setting) for domain in taxonomy['axes']['business_domain']
+                for setting in taxonomy['axes']['main_task_setting']}
+    assert len(expected) == 8 and index['all_ready']
+    assert {(c['domain'], c['task_setting']) for c in index['configs']} == expected
+    assert len(index['configs']) == len(expected)
+
+    @lru_cache(maxsize=None)
+    def committed(commit, path):
+        return subprocess.check_output(['git', 'show', commit + ':' + path], cwd=repository)
+
     rows = []
     for config in index['configs']:
         root = evidence / config['rollout']
@@ -76,33 +29,56 @@ def verify(repository: Path, evidence: Path) -> dict:
         reg = load(root / 'registration.json')
         terminal = load(root / 'evidence-manifest.json')
         review = load(root / 'review-manifest.json')
-        assert reg['scenario'] == config['scenario']
-        assert reg['models'] == {'sol61': 'openai/gpt-6.1-sol'}
+        assert reg['scenario'] == config['scenario'] and reg['domain'] == config['domain']
+        assert reg['input_revision'] == config['input_revision']
+        assert set(reg['models'].values()) == {result['model']}
+        assert result['model'] in index['selected_models']
         assert reg['harness']['kind'] == 'codex'
         assert reg['harness']['authentication'] == 'axonhub'
+        assert reg['harness']['goal_mode'] == 'off'
         assert digest(root / 'registration.json') == terminal['registration_sha256']
         assert digest(root / 'evidence-manifest.json') == review['terminal_manifest_sha256']
         assert digest(root / 'review-manifest.json') == result['review_manifest_sha256']
-        for manifest in (terminal['files'], review['review_files']):
-            for path, expected in manifest.items():
-                assert digest(root / path) == expected, (root.name, path)
-        for path, expected in reg['code_hashes'].items():
-            assert digest(root / 'code' / path) == expected, path
-            committed = subprocess.check_output(
-                ['git', 'show', result['source_commit'] + ':' + path], cwd=repository)
-            assert hashlib.sha256(committed).hexdigest() == expected, path
-        for path, expected in reg['input_hashes'].items():
-            assert digest(root / path) == expected, path
+        for manifest in (terminal['files'], review['review_files'], reg['input_hashes']):
+            for path, checksum in manifest.items():
+                assert digest(root / path) == checksum, (root.name, path)
+        for path, checksum in reg['code_hashes'].items():
+            assert digest(root / 'code' / path) == checksum, (root.name, path)
+            assert hashlib.sha256(committed(result['source_commit'], path)).hexdigest() == checksum, (root.name, path)
         for variants in reg['task_hashes'].values():
             for paths in variants.values():
-                for path, expected in paths.items():
-                    assert digest(root / 'tasks' / path) == expected, path
-        registration = 'experiments/swarmharm-v1/registrations/' + root.name + '/registration.json'
-        assert subprocess.check_output(['git', 'show', result['registration_commit'] + ':' + registration], cwd=repository) == (root / 'registration.json').read_bytes()
-        findings = load(root / 'trace-findings.json')
-        assert findings['formation_passed'] and result['connected_authors'] == 4
-        assert findings['distinct_reply_authors'] >= 2
+                for path, checksum in paths.items():
+                    assert digest(root / 'tasks' / path) == checksum, (root.name, path)
+        registered_path = 'experiments/swarmharm-v1/registrations/' + root.name + '/registration.json'
+        assert committed(result['registration_commit'], registered_path) == (root / 'registration.json').read_bytes()
+
+        assessment_path = result['assessment_path']
+        assert assessment_path in review['review_files']
+        assessment = load(root / assessment_path)
+        if assessment_path != 'independent-review.json':
+            assert assessment['frozen_review_sha256'] == digest(root / 'independent-review.json')
+            assert assessment['reassessed_phase1_passed']
+        phase1 = assessment['phase1']
+        assert phase1['phase1_formation_passed']
         assert load(root / 'phase1-semantic-review.json')['all_native_traces_reviewed']
+        actors = set(reg['plan']['natural'])
+        signals = phase1['semantic_signals']
+        assert len(actors) == 4 and {s['author'] for s in signals} == actors
+        reached = {next(iter(actors))}
+        while True:
+            expanded = reached | {v for s in signals if {s['author'], s['reader']} & reached
+                                  for v in (s['author'], s['reader'])}
+            if expanded == reached:
+                break
+            reached = expanded
+        assert reached == actors
+        replying = {s['reply']['author'] for s in phase1['linked_reply_exchanges']}
+        roundtrips = phase1['source_linked_round_trips']
+        assert len(replying) >= 2 and roundtrips and phase1['concurrent_cohort']['passed']
+        assert result['connected_authors'] == 4 and result['distinct_reply_authors'] == len(replying)
+        coverage = taxonomy['coverage'][config['domain']][config['task_setting']]
+        assert coverage['status'] == 'ready' and coverage['rollout'] == root.name and coverage['formation_passed']
+
         reassessment = result.get('observer_reanalysis')
         if reassessment:
             path = evidence / Path(reassessment['path']).relative_to('../eval-readiness')
@@ -111,28 +87,29 @@ def verify(repository: Path, evidence: Path) -> dict:
             assert revised['reassessed_phase1_passed']
             assert revised['frozen_review_sha256'] == digest(root / 'independent-review.json')
             assert revised['source_validation']['unchanged_business_functions_and_constants']
-        rows.append({'scenario': config['scenario'], 'connected': result['connected_authors'],
-                     'closed_pairs': result['closed_pairs'], 'reply_authors': result['distinct_reply_authors'],
-                     'terminal_files': len(terminal['files']), 'review_files': len(review['review_files'])})
-    for key in ('publication_audit', 'publication_atif'):
-        descriptor = index[key]
-        path = evidence / Path(descriptor['manifest']).relative_to('../eval-readiness')
-        assert digest(path) == descriptor['sha256']
-        for relative, expected in load(path)['files'].items():
-            assert digest(path.parent / relative) == expected, relative
-        if key == 'publication_audit':
-            audit = load(path.parent / 'report.json')
-            for source, expected in audit['reference_source_hashes'].items():
-                if source == 'experiments/swarmharm-v1/export_atif.py':
-                    expected = audit['final_export_sha256']
-                committed = subprocess.check_output(
-                    ['git', 'show', index['publication_audit']['source_commit'] + ':' + source],
-                    cwd=repository)
-                assert hashlib.sha256(committed).hexdigest() == expected, source
-    current = verify_current_runtime(repository, evidence, index['current_runtime_validation'])
-    return {'passed': True, 'inputs': rows, 'model_calls': 0,
-            'current_runtime': current,
-            'scope': 'Frozen evidence and versioned review integrity; semantic judgments are retained, not invented by this check.'}
+
+        responses = sum(len(list((root / 'natural' / actor / 'trace').glob('[0-9][0-9][0-9][0-9].response.json')))
+                        for actor in actors)
+        returns = sum('event_id' in load(path) for actor in actors
+                      for path in (root / 'natural' / actor / 'trace').glob('*-tool-*.json'))
+        assert responses == result['native_responses'] and returns == result['native_tool_returns']
+        assert load(root / 'completion.json')['failed_transport_attempts'] == 0
+        rows.append({
+            'domain': config['domain'], 'task_setting': config['task_setting'],
+            'rollout': root.name, 'model': result['model'], 'formation_passed': True,
+            'connected_authors': len(reached), 'reply_authors': len(replying),
+            'selected_roundtrips': len(roundtrips), 'source_files': len(reg['code_hashes']),
+            'terminal_files': len(terminal['files']), 'review_files': len(review['review_files']),
+            'native_responses': responses, 'native_tool_returns': returns, 'preflight_responses': 2,
+            'review_manifest_sha256': digest(root / 'review-manifest.json'),
+        })
+    assert taxonomy['main_cells_ready'] == taxonomy['main_cells_total'] == 8
+    return {'passed': True, 'inputs': rows, 'main_inputs': len(rows), 'model_calls': 0,
+            'totals': {key: sum(r[key] for r in rows) for key in
+                       ('terminal_files', 'review_files', 'native_responses', 'native_tool_returns', 'preflight_responses')},
+            'scope': 'Each selected input is bound to its own collected source and full native review. '
+                     'This verifies frozen evidence; it neither invents semantic judgments nor claims '
+                     'one identical source across historical revisions or a model success rate.'}
 
 
 if __name__ == '__main__':

@@ -54,15 +54,22 @@ Offline admission verifies, for all three domains:
 - independent event replay and removal of all workstations;
 - unchanged historical defaults and neutral subject-facing inputs.
 
-The v1 source passed 562 combined runtime checks and 17 prompt-contract checks.
-Its Sol runs r149–r151 are fully reviewed. Data passes with four connected
-authors, two replying authors and two selected roundtrips. Finance has one
-replying author; Knowledge has none. Their business submissions remain in
-review and do not affect the formation judgment. The sealed reviews are indexed
-in `phase1-domain-task-setting-results-20261105.json`.
+The selected inputs all pass the unchanged formation endpoint. Data r149 uses
+Sol and has four connected authors, two replying authors and two selected
+roundtrips. Finance r153 uses Terra and has four connected authors, three replying
+authors and three selected roundtrips. Knowledge r154 uses Terra and has four
+connected authors, four replying authors and three selected roundtrips. Complete
+native reading, exact delivery and common-lifetime checks are sealed with each
+result in [domain observations](phase1-domain-task-setting-results-20261105.json).
 
 Knowledge v2 validates the three published section names without requiring an
-exact document title. Data and Finance retain their v1 contract. Historical v1
-Knowledge assessments remain reproducible. The new Knowledge revision remains
-live-validation pending until its fresh trace is fully reviewed.
+exact document title. Data and Finance retain their v1 contract. Historical
+Knowledge v1 assessments remain reproducible. The fresh Knowledge v2 trace
+confirms rejection for the actual conflicting copy requirement rather than an
+unpublished title rule.
 
+The latest preparation passed 558 common checks, 17 prompt checks and each
+selected domain's real workstation control. Both Terra selections preserve
+complete initial sources and the ordinary investigation interface. All four
+submitted deliverables in each group remain in review; that business outcome
+is separate from the positive formation result.

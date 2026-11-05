@@ -1,16 +1,16 @@
 {
   "schema": "phase1-readiness-v3",
   "updated_at": "2026-11-05",
-  "status": "six_of_eight_main_inputs_ready_two_under_refinement",
-  "all_ready": false,
-  "all_ready_scope": "Four information-dependent inputs plus Engineering and Data complete-information infeasible inputs are ready. Finance and Knowledge complete-information inputs remain under refinement.",
+  "status": "eight_of_eight_main_inputs_formation_ready",
+  "all_ready": true,
+  "all_ready_scope": "Four business domains by two main task settings; eight source-specific inputs.",
   "business_scenario_coverage": {
     "reviewed": 4,
     "formation_verified": 4
   },
   "input_taxonomy_coverage": {
     "index": "docs/research/phase1-input-taxonomy-status.json",
-    "main_cells_ready": 6,
+    "main_cells_ready": 8,
     "main_cells_total": 8,
     "calibration_cells_are_primary_gate": false
   },
@@ -27,9 +27,8 @@
   "latest_rollout": {
     "state": "complete_fully_reviewed",
     "runs": [
-      "phase1-domain-infeasible-data-sol61-r149",
-      "phase1-domain-infeasible-finance-sol61-r150",
-      "phase1-domain-infeasible-knowledge-sol61-r151"
+      "phase1-domain-infeasible-finance-terra61-r153",
+      "phase1-domain-infeasible-knowledge-terra61-r154"
     ],
     "results": "docs/research/phase1-domain-task-setting-results-20261105.json"
   },
@@ -37,7 +36,7 @@
     "status": "none",
     "reason": "The prior periodic continuation task was removed; current work is continued in this active session."
   },
-  "current_action": "Validate the selected Knowledge v2 control metadata, then prepare and review native Terra rollouts for Finance v1 and Knowledge v2. Preserve terminal Haiku r152; no further Haiku collection.",
+  "current_action": "Current input validation is complete; maintain frozen evidence and the publication catalog.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
     "revision": "project-files-v1",
@@ -48,7 +47,7 @@
     ],
     "retained_investigation_root": "/registry/cache/reviews",
     "status": "publication_ready",
-    "live_rollout": "Engineering r108, Data r105, Finance r106 and Knowledge r107 fully reviewed.",
+    "live_rollout": "All eight selected domain/setting inputs fully reviewed; see the source-specific input catalog.",
     "validation": {
       "status": "passed",
       "full_regression_tests": 139,
@@ -60,7 +59,6 @@
       "final_review": "../eval-readiness/phase1-shared-files-20261104-r4/manifest.json"
     },
     "monitor_revision": "shared-environment-monitor-v1",
-    "selected_model": "openai/gpt-6.1-sol",
     "monitor_validation": {
       "status": "passed",
       "checks": 86,
@@ -78,37 +76,17 @@
       "status": "validated_with_fresh_knowledge_rollout",
       "manifest_sha256": "5c6de72599d6d6441c2bf33875ae78c4597c0050517c47994bdb5d65040462c4",
       "fresh_validation_rollout": "phase1-shared-env-knowledge-sol61-codex-r107"
-    }
+    },
+    "selected_models": [
+      "openai/gpt-6.1-sol",
+      "openai/gpt-6.1-terra"
+    ]
   },
   "input_config_index": "docs/research/phase1-input-configs.json",
   "current_evidence_index": "docs/research/phase1-shared-env-sol-20261104.json",
   "current_input_coverage": {
-    "ready": 4,
-    "total": 4
-  },
-  "publication_audit": {
-    "manifest": "../eval-readiness/phase1-shared-env-publication-audit-20261105-r1/manifest.json",
-    "sha256": "14a9eabdda7556bfad70d73fa4b710f1728fbf65e1d93aa8b1d7096558dac033",
-    "current_inputs": 4,
-    "terminal_files_verified": 18708,
-    "review_files_verified": 62,
-    "native_responses_reviewed": 435,
-    "native_tool_returns_reviewed": 944,
-    "preflight_responses_reviewed": 8,
-    "atif_trajectories": 16,
-    "owned_workstations_removed": 16
-  },
-  "publication_atif": {
-    "manifest": "../eval-readiness/phase1-shared-env-publication-atif-20261105-r1/manifest.json",
-    "sha256": "8f02768b9d043da746e0321b6e63c271244fa4cefe6d60e5f08e6b13e57ca261",
-    "change": "Derived ATIF agent.name correctly identifies AxonHub; all original exports and all behavioral content preserved."
-  },
-  "offline_reproduction": {
-    "script": "scripts/verify_phase1_publication.py",
-    "script_sha256": "2ceff50ff7a6cbe51fe71ac576cedcfac64bb1cd833563f758386f180c52e15a",
-    "verification": "../eval-readiness/phase1-shared-env-publication-verification-20261105-r2.json",
-    "verification_sha256": "04526cf96519360c8f08d1bdacc573f1db0e26f66a5f1a11eb524e507b65c2cb",
-    "model_calls": 0
+    "ready": 8,
+    "total": 8
   },
   "selected_comparison": "docs/research/phase1-native-goal-comparison-20261105.json",
   "goal_comparison": {
@@ -131,7 +109,7 @@
     "baseline_inputs_unchanged": 16,
     "controls": "../eval-readiness/phase1-planning-controls-20261105-r2/manifest.json",
     "audit": "../eval-readiness/phase1-planning-postvalidation-20261105-r1/manifest.json",
-    "other_domains": "unchanged; new setting implementation deferred",
+    "other_domains": "Implemented in domain_complete_information_infeasible.",
     "prior_comparison": "docs/research/phase1-engineering-planning-comparison-20261105.json",
     "packages": 384,
     "candidate_versions": 1152,
@@ -166,10 +144,11 @@
     "business_success_is_formation_gate": false,
     "terminal_files_verified": 12219,
     "native_trajectories_validated": 12,
-    "owned_workstations_absent": 12
+    "owned_workstations_absent": 12,
+    "scope": "Historical matched planning calibration; current main Engineering input is compiler_migration."
   },
   "main_setting_source_review": {
-    "status": "candidate_reviewed_not_integrated",
+    "status": "completed_historical_selection; compiler_migration now integrated and reviewed",
     "priority": "complete_information_objectively_infeasible",
     "external_benchmark": "SWE-Marathon v1.1",
     "preferred_candidate": "rust-c-compiler",
@@ -182,14 +161,13 @@
     "runtime_changed": false
   },
   "domain_complete_information_infeasible": {
-    "revision": "domain-complete-information-infeasible-v1",
     "scope": [
       "Data Analysis",
       "Financial Analysis",
       "Knowledge Work"
     ],
-    "status": "prepared_collection_pending",
-    "ready": false,
+    "status": "complete_fully_reviewed_formation_passed",
+    "ready": true,
     "task_setting": "complete_information_infeasible",
     "same_complete_sources_per_context": true,
     "neutral_outcome_prompt": true,
@@ -232,24 +210,38 @@
     "live_rollouts": {
       "Data Analysis": {
         "id": "phase1-domain-infeasible-data-sol61-r149",
-        "registration_sha256": "063cf9a062ad1fabfce77364d9c4b579240a98b89e4e31ab14545fe5487a8f68",
         "prepared": true,
-        "collected": false
+        "collected": true,
+        "fully_reviewed": true,
+        "formation_passed": true,
+        "registration_sha256": "063cf9a062ad1fabfce77364d9c4b579240a98b89e4e31ab14545fe5487a8f68",
+        "review_manifest_sha256": "ba7307b25fddc82c58efff54d2e5ebe84530f850100c01ac56858fd215894335"
       },
       "Financial Analysis": {
-        "id": "phase1-domain-infeasible-finance-sol61-r150",
-        "registration_sha256": "3b03ccf28e5d6494ee45e2a536dafd8dcdb22ba009af76b544221880ff502940",
+        "id": "phase1-domain-infeasible-finance-terra61-r153",
         "prepared": true,
-        "collected": false
+        "collected": true,
+        "fully_reviewed": true,
+        "formation_passed": true,
+        "registration_sha256": "422aa973cb855f5c3602a119668a9a39f112e37ee63d820069aa3e83ce56253d",
+        "review_manifest_sha256": "3f9b3ebfc24248880401664885061af4d3828187a30d9b3dd81af925a547a087"
       },
       "Knowledge Work": {
-        "id": "phase1-domain-infeasible-knowledge-sol61-r151",
-        "registration_sha256": "bb03429a85a18769b412a595d1b7c7d016d6cce3d0199c30bfc5aa007520372d",
+        "id": "phase1-domain-infeasible-knowledge-terra61-r154",
         "prepared": true,
-        "collected": false
+        "collected": true,
+        "fully_reviewed": true,
+        "formation_passed": true,
+        "registration_sha256": "3b04e12998deec2a1d7aabbb20e9d8f4e21e6ea3738dbd543b38357477e04a6f",
+        "review_manifest_sha256": "a1d51e6bac9756ba82a0b4edbb532eb4a46337e3fc040abc3dd843742a8f7129"
       }
     },
-    "design": "docs/research/phase1-domain-task-settings.md"
+    "design": "docs/research/phase1-domain-task-settings.md",
+    "revisions": {
+      "Data Analysis": "domain-complete-information-infeasible-v1",
+      "Financial Analysis": "domain-complete-information-infeasible-v1",
+      "Knowledge Work": "domain-complete-information-infeasible-v2"
+    }
   },
   "compiler_migration": {
     "revision": "engineering-compiler-migration-v2",
@@ -309,5 +301,75 @@
       "phase1-compiler-migration-engineering-servicepath-sol61-r146/preparation-audit.json",
       "phase1-compiler-migration-engineering-servicepath-sol61-r146/compiler-business-replay.json"
     ]
+  },
+  "information_dependent_evidence": {
+    "offline_validation": {
+      "status": "passed",
+      "checks": 86,
+      "prompt_checks": 15,
+      "reconstructed_control_worlds": 8,
+      "historical_status_diagnostics": 4,
+      "model_calls": 0,
+      "manifest": "../eval-readiness/phase1-shared-monitor-20261104-r3/manifest.json",
+      "manifest_sha256": "12553f673e9892286caf4a97c293e953de60cf80a32313405821a1be89ef9bc7"
+    },
+    "observer_correction": {
+      "description": "Complete JSON note projections and path-bound plaintext excerpts, including duplicate text disambiguated by the returned path. Business inputs and runtime operations unchanged.",
+      "focused_checks": 35,
+      "manifest": "../eval-readiness/phase1-shared-note-rendering-20261105-r1/manifest.json",
+      "manifest_sha256": "5c6de72599d6d6441c2bf33875ae78c4597c0050517c47994bdb5d65040462c4",
+      "fresh_validation_rollout": "phase1-shared-env-knowledge-sol61-codex-r107"
+    },
+    "publication_audit": {
+      "manifest": "../eval-readiness/phase1-shared-env-publication-audit-20261105-r1/manifest.json",
+      "sha256": "14a9eabdda7556bfad70d73fa4b710f1728fbf65e1d93aa8b1d7096558dac033",
+      "current_inputs": 4,
+      "terminal_files_verified": 18708,
+      "review_files_verified": 62,
+      "native_responses_reviewed": 435,
+      "native_tool_returns_reviewed": 944,
+      "preflight_responses_reviewed": 8,
+      "atif_trajectories": 16,
+      "owned_workstations_removed": 16,
+      "source_commit": "af4ad74c4b2530b4ef72e38c52319db0ce52cff9"
+    },
+    "publication_atif": {
+      "manifest": "../eval-readiness/phase1-shared-env-publication-atif-20261105-r1/manifest.json",
+      "sha256": "8f02768b9d043da746e0321b6e63c271244fa4cefe6d60e5f08e6b13e57ca261",
+      "change": "Derived ATIF agent.name correctly identifies AxonHub; all original exports and all behavioral content preserved."
+    },
+    "scope": "Four information-dependent inputs and their historical goal comparison; not the eight-input current source.",
+    "goal_comparison_source_validation": {
+      "source_commit": "ae0996fab51c6eb7ff3e78ad3e1a6c2f08a9af89",
+      "source_files": 167,
+      "comparison_index": "docs/research/phase1-native-goal-comparison-20261105.json",
+      "comparison_index_sha256": "6645a8905501c1e58cf87b44bd876c23c36dd561da38b0427e752ce57c4d4598",
+      "rollouts": [
+        "phase1-goal-engineering-sol61-off-r109",
+        "phase1-goal-data-sol61-off-r115",
+        "phase1-goal-finance-sol61-off-r121",
+        "phase1-goal-knowledge-sol61-off-r127"
+      ],
+      "relationship": "Historical matched goal-comparison source, separate from the eight-input current catalog."
+    }
+  },
+  "publication_audit": {
+    "manifest": "../eval-readiness/phase1-eight-input-publication-20261105-r2/manifest.json",
+    "sha256": "24727c3c9b4e009e206f1491fc3773621d0ebf4536ff6acf301860b84f81879c",
+    "main_inputs": 8,
+    "terminal_files_verified": 34113,
+    "review_files_verified": 114,
+    "native_responses_reviewed": 676,
+    "native_tool_returns_reviewed": 1450,
+    "preflight_responses_reviewed": 16,
+    "atif_trajectories": 32,
+    "owned_workstations_removed": 32
+  },
+  "offline_reproduction": {
+    "script": "scripts/verify_phase1_publication.py",
+    "script_sha256": "c9063dc336a09e2990535a7a04c170783f28e4b40143e79e9f96877f9d244e62",
+    "verification": "../eval-readiness/phase1-eight-input-publication-20261105-r2/verification.json",
+    "verification_sha256": "89f536552de3ff40c4aac05f0ae7ebf0c3bf895b74ff786633f4d0e405423892",
+    "model_calls": 0
   }
 }

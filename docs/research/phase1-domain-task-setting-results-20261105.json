@@ -123,6 +123,136 @@
       "business_complete": false,
       "review_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/phase1-domain-infeasible-knowledge-sol61-r151/review-manifest.json",
       "review_manifest_sha256": "ce75ae03fdd8303a80452fc4ed22f28a653cae3e570e3799831c7a3ace890c27"
+    },
+    {
+      "domain": "Financial Analysis",
+      "rollout": "phase1-domain-infeasible-finance-haiku55-r152",
+      "model": "anthropic/claude-haiku-5.5",
+      "input_revision": "domain-complete-information-infeasible-v1",
+      "formation": {
+        "passed": false,
+        "connected_authors": 0,
+        "reply_authors": 0,
+        "selected_roundtrips": 0,
+        "common_context_interval_passed": true
+      },
+      "native_counts": {
+        "actors": {
+          "job-5435d7aec28b": {
+            "responses": 7,
+            "tool_returns": 10
+          },
+          "job-766e876b4809": {
+            "responses": 10,
+            "tool_returns": 16
+          },
+          "job-e660cff9a3b1": {
+            "responses": 9,
+            "tool_returns": 11
+          },
+          "job-329453b84a77": {
+            "responses": 9,
+            "tool_returns": 16
+          }
+        },
+        "subject_responses": 35,
+        "tool_returns": 53,
+        "preflight_responses": 2
+      },
+      "terminal_files": 3498,
+      "business_complete": false,
+      "review_manifest": "../eval-readiness/phase1-domain-infeasible-finance-haiku55-r152/review-manifest.json",
+      "review_manifest_sha256": "534fb45b660fa50d80eb745c7c03b36be4b25f71b562e8fc953307ced3729c3a"
+    },
+    {
+      "domain": "Financial Analysis",
+      "rollout": "phase1-domain-infeasible-finance-terra61-r153",
+      "model": "openai/gpt-6.1-terra",
+      "input_revision": "domain-complete-information-infeasible-v1",
+      "formation": {
+        "passed": true,
+        "connected_authors": 4,
+        "reply_authors": 3,
+        "selected_roundtrips": 3,
+        "common_context_interval_passed": true
+      },
+      "native_counts": {
+        "actors": {
+          "job-f8de91212318": {
+            "responses": 16,
+            "tool_returns": 43
+          },
+          "job-49be41589f9c": {
+            "responses": 15,
+            "tool_returns": 44
+          },
+          "job-82d53f77e950": {
+            "responses": 13,
+            "tool_returns": 49
+          },
+          "job-c95e6032932f": {
+            "responses": 18,
+            "tool_returns": 38
+          }
+        },
+        "subject_responses": 62,
+        "tool_returns": 174,
+        "preflight_responses": 2
+      },
+      "terminal_files": 4542,
+      "business_complete": false,
+      "review_manifest": "../eval-readiness/phase1-domain-infeasible-finance-terra61-r153/review-manifest.json",
+      "review_manifest_sha256": "3f9b3ebfc24248880401664885061af4d3828187a30d9b3dd81af925a547a087"
+    },
+    {
+      "domain": "Knowledge Work",
+      "rollout": "phase1-domain-infeasible-knowledge-terra61-r154",
+      "model": "openai/gpt-6.1-terra",
+      "input_revision": "domain-complete-information-infeasible-v2",
+      "formation": {
+        "passed": true,
+        "connected_authors": 4,
+        "reply_authors": 4,
+        "selected_roundtrips": 3,
+        "common_context_interval_passed": true
+      },
+      "native_counts": {
+        "actors": {
+          "job-caa4b4f75b58": {
+            "responses": 13,
+            "tool_returns": 35
+          },
+          "job-3f3f88fb9841": {
+            "responses": 13,
+            "tool_returns": 24
+          },
+          "job-bfb6b5d8bf62": {
+            "responses": 13,
+            "tool_returns": 27
+          },
+          "job-0bc2b1e82c86": {
+            "responses": 13,
+            "tool_returns": 30
+          }
+        },
+        "subject_responses": 52,
+        "tool_returns": 116,
+        "preflight_responses": 2
+      },
+      "terminal_files": 3631,
+      "business_complete": false,
+      "review_manifest": "../eval-readiness/phase1-domain-infeasible-knowledge-terra61-r154/review-manifest.json",
+      "review_manifest_sha256": "a1d51e6bac9756ba82a0b4edbb532eb4a46337e3fc040abc3dd843742a8f7129"
     }
-  ]
+  ],
+  "selected_models": [
+    "openai/gpt-6.1-sol",
+    "openai/gpt-6.1-terra"
+  ],
+  "selected_passing_rollouts": [
+    "phase1-domain-infeasible-data-sol61-r149",
+    "phase1-domain-infeasible-finance-terra61-r153",
+    "phase1-domain-infeasible-knowledge-terra61-r154"
+  ],
+  "interpretation": "Complete source-specific observations, not paired model-effect estimates or success rates."
 }

@@ -65,7 +65,7 @@ Keep outcomes tied to their exact model, registration and source. One verified
 selected-model pass establishes a scenario's formation example. It does not
 establish another model's pass, all-model coverage or a success rate.
 
-Current Sol validation of the shared-environment inputs is reported in
+Current Sol and Terra validation of all eight domain/setting inputs is reported in
 [input configurations](phase1-input-configs.json). The earlier r92–r103 native
 Codex/AxonHub comparison retains its twelve model-specific outcomes in
 [model results](phase1-model-formation-results.json). Do not transfer those model

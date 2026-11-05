@@ -1,41 +1,41 @@
 {
-  "schema": "phase1-completion-evidence-v2",
-  "at": "2026-11-05T00:28:45.191683+00:00",
+  "schema": "phase1-completion-evidence-v3",
+  "at": "2026-11-05",
   "all_ready": true,
-  "ready_inputs": 4,
-  "selected_passing_model": "openai/gpt-6.1-sol",
+  "ready_inputs": 8,
+  "business_domains": 4,
+  "main_task_settings": 2,
+  "selected_models": [
+    "openai/gpt-6.1-sol",
+    "openai/gpt-6.1-terra"
+  ],
   "harness": "codex",
   "gateway": "AxonHub",
   "primary_endpoint": "autonomous_swarm_formation",
-  "claim_scope": "Four current input configurations have source-specific connected formation evidence, full public native review, monitored exposed surfaces and reproducible frozen artifacts.",
+  "claim_scope": "Eight source-specific input configurations have connected formation evidence, full native review, monitored shared surfaces and reproducible frozen artifacts.",
   "business_completion_is_gate": false,
   "specific_channel_use_is_gate": false,
-  "independent_human_adjudication": false,
+  "human_ratings_required": false,
   "development_selected_not_rate": true,
   "input_index": "docs/research/phase1-input-configs.json",
   "evidence_audit": {
-    "manifest": "../eval-readiness/phase1-shared-env-publication-audit-20261105-r1/manifest.json",
-    "sha256": "14a9eabdda7556bfad70d73fa4b710f1728fbf65e1d93aa8b1d7096558dac033",
-    "current_inputs": 4,
-    "terminal_files_verified": 18708,
-    "review_files_verified": 62,
-    "native_responses_reviewed": 435,
-    "native_tool_returns_reviewed": 944,
-    "preflight_responses_reviewed": 8,
-    "atif_trajectories": 16,
-    "owned_workstations_removed": 16
+    "manifest": "../eval-readiness/phase1-eight-input-publication-20261105-r2/manifest.json",
+    "sha256": "24727c3c9b4e009e206f1491fc3773621d0ebf4536ff6acf301860b84f81879c",
+    "main_inputs": 8,
+    "terminal_files_verified": 34113,
+    "review_files_verified": 114,
+    "native_responses_reviewed": 676,
+    "native_tool_returns_reviewed": 1450,
+    "preflight_responses_reviewed": 16,
+    "atif_trajectories": 32,
+    "owned_workstations_removed": 32
   },
-  "publication_atif": {
-    "manifest": "../eval-readiness/phase1-shared-env-publication-atif-20261105-r1/manifest.json",
-    "sha256": "8f02768b9d043da746e0321b6e63c271244fa4cefe6d60e5f08e6b13e57ca261",
-    "change": "Derived ATIF agent.name correctly identifies AxonHub; all original exports and all behavioral content preserved."
-  },
-  "historical_completion": "docs/research/archive/phase1-20261105-pre-current-shared-env/phase1-completion-evidence.json",
   "offline_reproduction": {
     "script": "scripts/verify_phase1_publication.py",
-    "script_sha256": "2ceff50ff7a6cbe51fe71ac576cedcfac64bb1cd833563f758386f180c52e15a",
-    "verification": "../eval-readiness/phase1-shared-env-publication-verification-20261105-r2.json",
-    "verification_sha256": "04526cf96519360c8f08d1bdacc573f1db0e26f66a5f1a11eb524e507b65c2cb",
+    "script_sha256": "c9063dc336a09e2990535a7a04c170783f28e4b40143e79e9f96877f9d244e62",
+    "verification": "../eval-readiness/phase1-eight-input-publication-20261105-r2/verification.json",
+    "verification_sha256": "89f536552de3ff40c4aac05f0ae7ebf0c3bf895b74ff786633f4d0e405423892",
     "model_calls": 0
-  }
+  },
+  "historical_completion": "Git history and each preserved original review manifest."
 }

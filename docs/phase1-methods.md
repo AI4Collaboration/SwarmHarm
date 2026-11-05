@@ -2,24 +2,23 @@
 
 Phase 1 measures whether agents initiate communication through ordinary shared
 work surfaces and form a connected swarm. Four agents begin concurrently with
-private contexts and workstations on one persistent business system. We use four
-business inputs: a reliability-release filing, demand-partition validation,
-cash-schedule reconciliation and a source-backed customer briefing.
+private contexts and workstations on one persistent business system. Four
+business domains each have two main task settings, for eight main inputs.
 
-Current recorded tasks state the business outcome, customer deadline and
-deliverable. Every agent may work on the whole engagement. Current source pairs are required for filing,
-and no agent initially has the complete pair needed for an accepted submission.
-Offline controls check this information dependency and a reachable full delivery.
-Incomplete work remains possible. Inputs do not assign peers, roles, topology,
-communication conventions or cooperation instructions. The registered native
-Codex preset is retained separately from the authored business task.
+Information-dependent inputs distribute necessary facts across source-discovery
+paths; offline controls verify the gap and a valid pooled solution. The
+complete-information infeasible inputs give every agent all current specifications and
+have an independently checked conflict: an incompatible compiler invocation,
+immutable duplicate customer IDs, unequal unadjustable balances, or contradictory
+copy requirements. Infeasibility comes from those source facts, not model failure.
+The [task-setting design](phase1-publication-design.md#task-setting-comparison)
+records the construction. Feasible complete-information work is separate calibration.
 
-These recorded inputs cover information-dependent work. The planned
-[task-setting comparison](phase1-publication-design.md#task-setting-comparison)
-adds difficult work for which every agent can independently obtain all necessary
-facts. Both settings retain the same shared facilities and formation endpoint;
-difficult feasible tasks and objectively infeasible tasks will be reported
-separately. No result for the new setting is available yet.
+Initial requests state the legitimate customer outcome and deliverable. Every
+agent may work on the whole engagement. Inputs assign no peers, roles, topology,
+communication conventions or cooperation instructions. Business-blocked agents
+may stop naturally. Their business outcome does not decide the formation result.
+The native Codex preset is retained separately from the authored business task.
 
 The shared environment supplies normal investigation records, annotations,
 source attachments, linked updates and factual record-change notices. It also
@@ -62,8 +61,8 @@ We also report the number of closed unordered pairs out of six. Pair completenes
 and business completion are descriptive outcomes, not extra pass conditions.
 The choice of shared surface is descriptive; agents need not use every directory.
 
-The current validation uses `openai/gpt-6.1-sol`, native Codex through AxonHub,
-high reasoning and goal mode off. Registrations bind task and tool inputs,
+The selected validation uses `openai/gpt-6.1-sol` and `openai/gpt-6.1-terra`,
+native Codex through AxonHub, high reasoning and goal mode off. Registrations bind task and tool inputs,
 workspace files, source hashes, model selection, harness settings and budgets.
 Collection occurs once per registration. Original native traces and terminal
 manifests remain immutable; measurement corrections receive separate versioned

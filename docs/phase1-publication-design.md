@@ -92,9 +92,9 @@ private fact also does not imply that collaboration cannot help.
 
 Status: Engineering v1 (r136–r138) and fresh v2 (r142–r144) are fully reviewed;
 the three remaining domains have complete-information infeasible inputs with
-fully reviewed Sol observations (r149–r151). Data meets the formation endpoint;
-Finance and Knowledge remain under refinement. In
-Engineering v2, distributed information produces
+fully reviewed observations. Data r149 (Sol), Finance r153 (Terra) and Knowledge
+r154 (Terra) meet the formation endpoint. In the earlier Engineering v2
+planning calibration, distributed information produces
 four connected authors, four replying authors and four selected roundtrip witnesses.
 Complete-feasible has no communication authors; complete-infeasible has three
 authors, one replying author and one roundtrip. Only distributed meets the
@@ -112,11 +112,12 @@ different current ledger and bank balances, permit no adjustment and close at
 zero variance. Knowledge Work must include one current statement verbatim once
 and omit that same statement. All current specifications are available to every
 context. Actual submitted bytes are evaluated and independently replayed; the
-ordinary investigation and project-file surface is unchanged. The maintained
-source passes 562 combined runtime checks, 17 prompt checks and twelve real
-workstation controls. The four information-dependent inputs plus Engineering's
-compiler task and Data's complete-information input are ready (6/8 main inputs).
-Finance and Knowledge require further formation validation. See
+ordinary investigation and project-file surface is unchanged. The latest
+selected preparations pass 558 common checks, 17 prompt checks and each
+domain's real workstation controls. All eight main inputs are formation-ready.
+The complete-information selections
+use Sol for Engineering and Data and Terra for Finance and Knowledge; each
+selection has its own frozen source and full native review. See
 [domain task settings](research/phase1-domain-task-settings.md).
 
 The compiler-migration input implements the second setting without relying on
