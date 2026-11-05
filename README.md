@@ -1,5 +1,15 @@
 # SwarmHarm
 
+**Current input publication, 5 November:** the benchmark has four business inputs,
+four agents per rollout and one monitored shared environment. The manuscript's
+main formation table now uses the same-source Sol goal-off comparison cells
+r109/r115/r121/r127: all connect **4/4** authors; closed pairs are **6/6, 6/6,
+6/6, 5/6**, with **4, 3, 4, 3** replying authors. These are four of the 24
+comparison rollouts, not four extra runs. The publication verifier now binds the
+older validation cohort to its historical source and the current 167-file runtime
+to these already-reviewed current-source observations. No experimental input or
+runtime change, and no new model calls, were needed for this publication refresh.
+
 **Completed comparison, 5 November:** all 24 native Codex goal-off/on rollouts
 are collected and fully reviewed. Formation counts across four scenarios are
 Sol 6.1 **4/4 → 4/4**, Terra 6.1 **3/4 → 2/4**, and Luna 6 **1/4 → 1/4**
@@ -18,7 +28,7 @@ Data Analysis, Financial Analysis and Knowledge Work—are publication-ready
 under the registered formation criterion, with fully reviewed Sol 6.1 observations
 through native Codex and AxonHub (high reasoning, goal off).
 
-All four observations connect four authored communicators. Their verified closed
+The earlier input-validation observations connect four authored communicators. Their verified closed
 pairs and distinct replying authors are, respectively: Engineering **5/6 and 3**,
 Data **6/6 and 4**, Finance **3/6 and 3**, Knowledge **5/6 and 4**.
 These are development-selected examples, not success rates. Business completion
@@ -39,7 +49,7 @@ location motivate ordinary directory operations and coverage of every exposed
 shared surface. No developed mailbox convention is supplied to subjects.
 [METR investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/).
 
-The current evidence includes 435 subject responses, 944 tool returns, eight
+The earlier input-validation evidence includes 435 subject responses, 944 tool returns, eight
 preflight responses and sixteen native-continuity-validated ATIF trajectories.
 All 18,708 terminal files and 62 review sidecars pass the final hash audit.
 Observer-only reanalyses and derived export-label corrections are explicitly

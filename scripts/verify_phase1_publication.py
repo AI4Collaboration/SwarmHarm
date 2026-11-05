@@ -6,6 +6,64 @@ import subprocess
 from pathlib import Path
 
 
+def verify_current_runtime(repository: Path, evidence: Path, descriptor: dict) -> dict:
+    """Bind the current source to reviewed, goal-off observations of all inputs."""
+    load = lambda path: json.loads(path.read_text())
+    digest = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
+    comparison_path = repository / descriptor['comparison_index']
+    assert digest(comparison_path) == descriptor['comparison_index_sha256']
+    comparison = load(comparison_path)
+    assert comparison['status'] == 'complete_fully_reviewed'
+    assert comparison['source_commit'] == descriptor['source_commit']
+    cells = {cell['name']: cell for cell in comparison['cells']}
+    scenarios = set()
+    common_source = None
+    rows = []
+    for name in descriptor['rollouts']:
+        cell = cells[name]
+        result = cell['result']
+        assert cell['goal_mode'] == 'off' and cell['model'] == 'openai/gpt-6.1-sol'
+        assert result['formation'] and cell['scenario'] not in scenarios
+        scenarios.add(cell['scenario'])
+        root = evidence / name
+        reg = load(root / 'registration.json')
+        terminal = load(root / 'evidence-manifest.json')
+        review = load(root / 'review-manifest.json')
+        assert digest(root / 'registration.json') == terminal['registration_sha256']
+        assert digest(root / 'evidence-manifest.json') == result['terminal_manifest_sha256']
+        assert review['terminal_manifest_sha256'] == result['terminal_manifest_sha256']
+        assert digest(root / 'review-manifest.json') == result['review_manifest_sha256']
+        assert reg['scenario'] == cell['scenario'] and reg['harness']['goal_mode'] == 'off'
+        for manifest in (terminal['files'], review['review_files'], reg['input_hashes']):
+            for path, expected in manifest.items():
+                assert digest(root / path) == expected, (name, path)
+        for variants in reg['task_hashes'].values():
+            for paths in variants.values():
+                for path, expected in paths.items():
+                    assert digest(root / 'tasks' / path) == expected, (name, path)
+        if common_source is None:
+            common_source = reg['code_hashes']
+            for path, expected in common_source.items():
+                committed = subprocess.check_output(
+                    ['git', 'show', descriptor['source_commit'] + ':' + path], cwd=repository)
+                assert hashlib.sha256(committed).hexdigest() == expected, path
+                assert digest(repository / path) == expected, path
+        assert reg['code_hashes'] == common_source
+        for path, expected in common_source.items():
+            assert digest(root / 'code' / path) == expected, (name, path)
+        findings = load(root / 'trace-findings.json')
+        assert findings['formation_passed'] and findings['communication_authors'] == 4
+        assert findings['distinct_reply_authors'] >= 2
+        assert load(root / 'phase1-semantic-review.json')['all_native_traces_reviewed']
+        rows.append({'scenario': cell['scenario'], 'rollout': name,
+                     'connected': result['largest_exact_read_component'],
+                     'closed_pairs': result['closed_pairs'], 'reply_authors': result['reply_authors']})
+    assert scenarios == set(comparison['scenarios']) and len(rows) == 4
+    assert len(common_source) == descriptor['source_files']
+    return {'source_commit': descriptor['source_commit'], 'source_files': len(common_source),
+            'inputs': rows, 'passed': True}
+
+
 def verify(repository: Path, evidence: Path) -> dict:
     load = lambda path: json.loads(path.read_text())
     digest = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
@@ -67,8 +125,13 @@ def verify(repository: Path, evidence: Path) -> dict:
             for source, expected in audit['reference_source_hashes'].items():
                 if source == 'experiments/swarmharm-v1/export_atif.py':
                     expected = audit['final_export_sha256']
-                assert digest(repository / source) == expected, source
+                committed = subprocess.check_output(
+                    ['git', 'show', index['publication_audit']['source_commit'] + ':' + source],
+                    cwd=repository)
+                assert hashlib.sha256(committed).hexdigest() == expected, source
+    current = verify_current_runtime(repository, evidence, index['current_runtime_validation'])
     return {'passed': True, 'inputs': rows, 'model_calls': 0,
+            'current_runtime': current,
             'scope': 'Frozen evidence and versioned review integrity; semantic judgments are retained, not invented by this check.'}
 
 

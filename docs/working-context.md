@@ -1,5 +1,19 @@
 # Current Phase 1 context — 5 November 2026
 
+The manuscript input section is refreshed around four current business inputs,
+one shared environment, four agents, and the fixed formation endpoint. Its main
+table uses the same-source Sol goal-off cells r109/r115/r121/r127, which are already
+part of the 24-cell comparison: connected authors 4/4 throughout; pairs 6/6,
+6/6, 6/6, 5/6; replying authors 4, 3, 4, 3. All 16 initial file sets match the
+earlier fully reviewed business inputs after job-ID/deadline normalization.
+The publication verifier's obsolete current-checkout comparison against the old
+baseline was repaired: baseline evidence remains tied to source af4ad74c4,
+and the current 167 files are verified against four reviewed ae0996fab rollouts.
+Both checks pass; source/input-drift rejection checks pass too. This changes only
+publication evidence plumbing and prose, not the experimental runtime or inputs.
+See ../swarmharm-overleaf/evidence/phase1-inputs-20261105.json and external
+phase1-input-publication-refresh-20261105-r1. Figures were not changed.
+
 The native goal on/off comparison is complete: 24 fresh rollouts, all public
 native traces reviewed, under one matching 167-file runtime. Sol 6.1 passes four
 scenarios with goal off and four with goal on; Terra 6.1 passes three and two;

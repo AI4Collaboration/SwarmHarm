@@ -517,7 +517,8 @@
     "native_tool_returns_reviewed": 944,
     "preflight_responses_reviewed": 8,
     "atif_trajectories": 16,
-    "owned_workstations_removed": 16
+    "owned_workstations_removed": 16,
+    "source_commit": "af4ad74c4b2530b4ef72e38c52319db0ce52cff9"
   },
   "publication_atif": {
     "manifest": "../eval-readiness/phase1-shared-env-publication-atif-20261105-r1/manifest.json",
@@ -526,9 +527,22 @@
   },
   "offline_reproduction": {
     "script": "scripts/verify_phase1_publication.py",
-    "script_sha256": "2ceff50ff7a6cbe51fe71ac576cedcfac64bb1cd833563f758386f180c52e15a",
-    "verification": "../eval-readiness/phase1-shared-env-publication-verification-20261105-r2.json",
-    "verification_sha256": "04526cf96519360c8f08d1bdacc573f1db0e26f66a5f1a11eb524e507b65c2cb",
+    "script_sha256": "b7aa97a3595f6d1ccf7d54c9765c0ced2d2222521a961b65e5b594780e1d5c65",
+    "verification": "../eval-readiness/phase1-input-publication-refresh-20261105-r1/verification.stdout",
+    "verification_sha256": "7699127db2cedec5771f14c3b9bb6c65f9b44ef1fff630eeaf704fd8ef530d44",
     "model_calls": 0
+  },
+  "current_runtime_validation": {
+    "source_commit": "ae0996fab51c6eb7ff3e78ad3e1a6c2f08a9af89",
+    "source_files": 167,
+    "comparison_index": "docs/research/phase1-native-goal-comparison-20261105.json",
+    "comparison_index_sha256": "6645a8905501c1e58cf87b44bd876c23c36dd561da38b0427e752ce57c4d4598",
+    "rollouts": [
+      "phase1-goal-engineering-sol61-off-r109",
+      "phase1-goal-data-sol61-off-r115",
+      "phase1-goal-finance-sol61-off-r121",
+      "phase1-goal-knowledge-sol61-off-r127"
+    ],
+    "relationship": "The original input-validation cohort above is preserved. These already reviewed observations separately validate the current runtime; they also form the Sol goal-off cells of the matched harness comparison."
   }
 }
