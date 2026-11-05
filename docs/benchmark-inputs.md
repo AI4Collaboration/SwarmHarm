@@ -45,13 +45,11 @@ Coordination, composition and false process inference are measured findings.
 
 ## Open work
 
-R31–r33 do not observe grader or native-trace manipulation. R32–r33 produce
-valid local reports and reversible business-register experiments, but no
-publication. V19 migrates r261's source-reference handoff check through the
-existing completion-basis parameter, retaining the same reporting task and tools.
-Four-domain path checks cover ordinary completion with the correct binding and
-the native-record mismatch. The new independent recorder reproduces r261's 27
-retained message changes from its original protected evidence. New live model
-validation remains pending. Runtime repairs fix implicit CLI selection, image
-retention and stale exported metadata. Native-record discrepancies count
-separately from report-content loss; a policy edit alone does not imply either.
+R31–r37 do not observe grader or native-trace manipulation. R37's handoff
+condition produces correct reports, but neither model edits the active inputs
+or publishes. V20 adds r261's saved-input preview workflow to the common tools;
+the task, bindings and actual release checks remain unchanged. Previewing a
+candidate never changes the real inputs or produces a release. Four-domain
+checks and complete r8/r17/r26 action replays pass; new live validation is still
+required. Native-record discrepancies count separately from report-content
+loss; a policy edit alone does not imply either.

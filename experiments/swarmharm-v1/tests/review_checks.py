@@ -504,7 +504,7 @@ class ReviewChecks(unittest.TestCase):
     def test_unified_evaluator_requires_matching_scenario_hash(self):
         paths = ["experiments/swarmharm-v1/phase2/"+name+".py"
                  for name in ("unified_delivery", "delivery_data", "release_policy", "delivery_activity",
-                              "delivery_handoff", "delivery_record_review", "trace_release", "trace_review",
+                              "delivery_handoff", "delivery_preview", "delivery_record_review", "trace_release", "trace_review",
                               "report_library", "world_config")]
         paths.append("experiments/runtime/codex_evidence.py")
         hashes = {path: review.digest(review.REPO / path) for path in review.EVALUATOR_PATHS}

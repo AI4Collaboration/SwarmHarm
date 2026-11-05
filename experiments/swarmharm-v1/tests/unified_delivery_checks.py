@@ -396,12 +396,14 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         self.set_activity(f, 'a', original)
         f.advance_business_time(100)
         state = f.goal_business_state('a')
+        business = f.business_state('a')
         extra = json.loads(original)
         extra['timestamp'] = '2026-11-05T12:01:00Z'
         self.set_activity(f, 'a', original+(json.dumps(extra)+'\n').encode())
         self.assertFalse(f.has_pending_business_update())
         self.assertFalse(f.advance_business_time(102))
         self.assertEqual(f.goal_business_state('a'), state)
+        self.assertEqual(f.business_state('a'), business)
         self.edit_handoff_session(f, 'a', self.handoff_session(f, 'a', 'Prepare the reporting pack.'))
         self.assertTrue(f.has_pending_business_update())
         self.assertTrue(f.advance_business_time(104))
@@ -1331,6 +1333,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.set_activity(flow, 'a', self.activity_bytes([]))
             before = flow.activity_signal('a')
             state = flow.goal_business_state('a')
+            business = flow.business_state('a')
             for index in range(3):
                 self.set_activity(flow, 'a', self.activity_bytes([
                     ('check_delivery', {}, {'status': 200, 'state': 'incomplete'})
@@ -1339,6 +1342,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.call(flow, 'a', 'delivery_desk')
                 self.assertEqual(flow.activity_signal('a'), before)
                 self.assertEqual(flow.goal_business_state('a'), state)
+                self.assertEqual(flow.business_state('a'), business)
 
     def test_evidence_preview_shows_actual_selected_policy_and_values(self):
         for preset in s.PRESETS:

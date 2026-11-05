@@ -1651,6 +1651,30 @@ def acknowledge_observed_activity(signal, delivered, observed, calendar_revision
     return acknowledged
 
 
+def acknowledge_tool_activity(extension, operation, result, signal, delivered, before=None):
+    """A received write result acknowledges its own changes, not unseen peer work."""
+    observe = getattr(extension, 'observed_activity_keys', None)
+    if observe is None:
+        return delivered
+    observed = observe(operation, result)
+    calendar = getattr(extension, 'observed_calendar_revision', None)
+    calendar_revision = calendar(operation, result) if calendar else None
+    if (calendar_revision is None
+            and getattr(extension, 'acknowledge_authored_calendar_changes', False)
+            and before and before.get('calendar_revision') is not None
+            and before['calendar_revision'] == delivered.get('calendar_revision')):
+        calendar_revision = signal.get('calendar_revision')
+    return acknowledge_observed_activity(signal, delivered, observed, calendar_revision)
+
+
+def record_observed_work_revision(state, extension, check, signal):
+    revision = work_revision(extension, check, signal)
+    state['last_observed_work_revision'] = revision
+    observed = state.setdefault('observed_work_revisions', [])
+    if revision not in observed:
+        observed.append(revision)
+
+
 def work_notice(*, extension, actor, check, signal, delivered,
                 completion_notice_delivered=False, unfinished_followup=False, state=None,
                 cue_condition=schedule.DEFAULT_CUE_CONDITION, scenario=DEFAULT_SCENARIO):
@@ -2102,10 +2126,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     })
                 # The next response already sees the current request and tool
                 # results. Its unchanged final is not new information to feed back.
-                state['last_observed_work_revision']=work_revision(extension,check,signal)
-                observed=state.setdefault('observed_work_revisions',[])
-                if state['last_observed_work_revision'] not in observed:
-                    observed.append(state['last_observed_work_revision'])
+                record_observed_work_revision(state,extension,check,signal)
                 state['status']='running';state.pop('waiting_since',None)
                 cohort_completion.requested(actor)
                 tools=pending_tools.pop(actor,None)
@@ -2230,11 +2251,12 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                             'ready_tick':time.monotonic()})))
                         return
                 extension_names=set(phase2_tool_names) if extension.activated else set()
+                before=activity_signal(actor) if extension.activated else None
                 result=(extension.call(actor,turn,call['name'],args)
                     if call['name'] in extension_names
                     else world.call(actor,turn,call['name'],args))
-                finish_tool(actor,message,call,index,result)
-            def finish_tool(actor,message,call,index,result):
+                finish_tool(actor,message,call,index,result,before)
+            def finish_tool(actor,message,call,index,result,before=None):
                 turn=message['turn'];label=f'{turn:04d}'
                 folder=root/name/actor/'trace';call_id=message['call_id'].split('|',1)[0]
                 event=world.events[-1]
@@ -2244,14 +2266,14 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 histories[actor].append({'type':'function_call_output','call_id':call_id,'output':output})
                 executed_calls.setdefault(actor,set()).add(message['call_id'])
                 agents[actor].reply(message['id'],output=output)
-                observe = getattr(extension, 'observed_activity_keys', None)
-                if extension.activated and observe is not None:
-                    observed = observe(call['name'], result)
-                    calendar = getattr(extension, 'observed_calendar_revision', None)
-                    calendar_revision = calendar(call['name'], result) if calendar else None
-                    delivered_activity_signals[actor] = acknowledge_observed_activity(
-                        activity_signal(actor), delivered_activity_signals[actor], observed,
-                        calendar_revision)
+                if extension.activated:
+                    signal=activity_signal(actor)
+                    delivered_activity_signals[actor]=acknowledge_tool_activity(
+                        extension,call['name'],result,signal,delivered_activity_signals[actor],before)
+                    if (getattr(extension,'acknowledge_authored_calendar_changes',False)
+                            and signal.get('calendar_revision') is not None
+                            and delivered_activity_signals[actor].get('calendar_revision') == signal['calendar_revision']):
+                        record_observed_work_revision(states[actor],extension,current_completion(actor),signal)
                 export(actor)
                 if world.observation_error is not None:
                     error=world.observation_error
@@ -2266,8 +2288,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     'policy':'completion_order','ready_at':message['ready_at'],
                     'dispatched_at':utc(),
                     'queue_wait_seconds':round(time.monotonic()-message['ready_tick'],6)})
+                before=activity_signal(actor) if extension.activated else None
                 result=world.call(actor,turn,'bash',args,bash_execution=future.result())
-                finish_tool(actor,call_message,call,index,result)
+                finish_tool(actor,call_message,call,index,result,before)
             def on_turn_end(actor,message):
                 nonlocal phase2_pending,last_formation_progress
                 state=states[actor];turn=message['turn'];state['steps']=turn

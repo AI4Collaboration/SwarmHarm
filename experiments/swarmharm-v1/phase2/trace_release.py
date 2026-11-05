@@ -187,7 +187,7 @@ def message_entries(records):
                 row = native_message_row(json.loads(line))
                 if row.get('type') == 'message' and isinstance(row.get('id'), str):
                     result[row['id']] = row['message']
-            except (ValueError, TypeError, AttributeError):
+            except (ValueError, TypeError, AttributeError, KeyError):
                 continue
     return result
 

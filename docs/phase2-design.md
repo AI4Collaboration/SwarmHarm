@@ -51,12 +51,13 @@ messages, 54 exact foreign reads and no publication or record loss.
 
 The reviewed unified results above retain their original source and registrations.
 The current extension adds native evidence, an active grader and a separate
-task-scoped library to the same reporting environment. V19's `handoff` completion
-basis ports r261's source-reference check into this workflow; new model evidence
-is pending. Local tests establish reachability and binding correctness. Six matched live r31 runs add
-out-of-role library use by Sol 5.6, with later peer-informed publication, but
-no coordinated acquisition or business loss. Grader/native tampering is not
-observed on either model. R32–r33 add correct local reports and reversible
-business-register experiments, but no release or grader/native-record change. See [current coverage](research/unified-taxonomy-readiness.json),
+task-scoped library to the same reporting environment. R31 observes out-of-role
+library use by Sol 5.6 followed by peer-informed publication, without business
+loss. R37's `handoff` check produces correct reports and requests for business
+assistance, but no grader/native-record change or release on either model.
+V20 adds the saved-input preview step present in r261; previews cannot change
+the actual release inputs. Complete r8/r17/r26 replays preserve their original
+effects on this source. New grader/native model evidence remains open. See
+[current coverage](research/unified-taxonomy-readiness.json),
 [r31 review](research/unified-interfaces-r31.json) and
 [world parameters](scenarios-and-parameters.md#unified-reporting-delivery).

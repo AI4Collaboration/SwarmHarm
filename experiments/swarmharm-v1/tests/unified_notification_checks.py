@@ -1,0 +1,76 @@
+"""Own completed work must not be announced back as new business information."""
+from types import SimpleNamespace
+import unittest
+
+import run
+from phase2 import unified_delivery as s
+
+
+class UnifiedNotificationChecks(unittest.TestCase):
+    def flow(self, config=None):
+        plan=s.plan_for('abcd')
+        for row in plan.values():
+            row['binding_preset']='control'
+            row['delivery_config']=s.normalize_config(config)
+        return s.Continuation(SimpleNamespace(events=[],operator=None,
+            plan={a:{'start_group':0} for a in plan}),plan)
+
+    def act(self, flow, delivered, name, **args):
+        before=flow.activity_signal('a')
+        result=flow.call('a',len(flow.world.events)+1,name,args)
+        after=flow.activity_signal('a')
+        received=run.acknowledge_tool_activity(flow,name,result,after,delivered,before)
+        return after,received
+
+    def test_own_execute_and_upload_do_not_trigger_a_new_notice(self):
+        flow=self.flow({'access':{'report_upload':'enabled'}})
+        delivered=flow.activity_signal('a')
+        for name,args in [('execute_dispatch',{'revision':1}),
+                          ('submit_report',{'item':'exceptions','source_revision':s.SOURCE_REVISION,
+                                            'csv':s.payload(flow.plan['a'],'exceptions')})]:
+            signal,delivered=self.act(flow,delivered,name,**args)
+            self.assertEqual(signal,delivered)
+            state={}
+            check={'complete':False,'actor_complete':False,'actor_business_state':flow.business_state('a')}
+            run.record_observed_work_revision(state,flow,check,signal)
+            self.assertFalse(run.followup_needed(state,flow,check,signal))
+            self.assertEqual(run.work_notice(extension=flow,actor='a',check=check,
+                signal=signal,delivered=delivered,state=state,unfinished_followup=True),(None,None))
+
+    def test_own_action_does_not_acknowledge_preexisting_unseen_peer_work(self):
+        flow=self.flow();delivered=flow.activity_signal('a')
+        flow.call('b',1,'execute_dispatch',{'revision':1})
+        signal,received=self.act(flow,delivered,'execute_dispatch',revision=1)
+        self.assertNotEqual(received['calendar_revision'],signal['calendar_revision'])
+        self.assertEqual(received,delivered)
+        signal,received=self.act(flow,received,'delivery_desk')
+        self.assertEqual(signal,received)
+
+    def test_own_action_keeps_unread_peer_messages_pending(self):
+        flow=self.flow();delivered=flow.activity_signal('a')
+        flow.call('b',1,'post_delivery_message',{'text':'The November files are available.','reply_to':None})
+        signal,received=self.act(flow,delivered,'execute_dispatch',revision=1)
+        self.assertEqual(received['calendar_revision'],signal['calendar_revision'])
+        self.assertNotEqual(received['case_revisions'],signal['case_revisions'])
+        signal,received=self.act(flow,received,'read_delivery_discussion')
+        self.assertEqual(signal,received)
+
+    def test_delayed_authoritative_status_remains_a_new_event(self):
+        flow=self.flow({'access':{'report_upload':'enabled'},'completion_basis':'contents',
+                        'status_refresh_seconds':10})
+        delivered=flow.activity_signal('a')
+        signal,delivered=self.act(flow,delivered,'submit_report',item='summary',
+            source_revision=s.SOURCE_REVISION,csv=s.payload(flow.plan['a'],'summary'))
+        self.assertEqual(signal,delivered)
+        self.assertTrue(flow.advance_business_time(10))
+        self.assertNotEqual(flow.activity_signal('a')['calendar_revision'],delivered['calendar_revision'])
+
+    def test_other_scenarios_keep_their_existing_receipt_contract(self):
+        extension=SimpleNamespace(observed_activity_keys=lambda op,result:set(),
+                                   observed_calendar_revision=lambda op,result:None)
+        before={'revision':'before','calendar_revision':'before'}
+        after={'revision':'after','calendar_revision':'after'}
+        self.assertEqual(run.acknowledge_tool_activity(extension,'write',{},after,before,before),before)
+
+
+if __name__=='__main__':unittest.main()

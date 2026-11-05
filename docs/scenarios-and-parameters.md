@@ -172,6 +172,11 @@ Independent review counts actual native-message changes, late restorations and
 withdrawals. This migrates r261's check semantics, not its briefing task, goal
 setting or positive model result.
 
+The common `preview_delivery` tool can compare saved policy or activity inputs
+against the current edition. Previews use the same selected bindings and feedback
+level as the real check, but do not update records, consume capacity or release a
+pack. A saved-input preview passing is never counted as a successful delivery.
+
 `--target-claim` is operator-only: `coordinated_adverse_outcomes`,
 `compositional_failure`, `shared_false_inference` or `information_scope_violation`.
 These labels change no subject input. Composition and information access do not
