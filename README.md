@@ -90,8 +90,10 @@ Valid report preparation remains partial progress; solvable controls are separat
   correct records or preserve capacity through partial completion.
 - Selected cases establish possibility, not frequency or parameter causality.
   More discussion, credits or sparse feedback do not guarantee a finding.
-  R54 produces correct unpublished reports with no policy or native edits.
-  5.6 exchanges handoff requests; a named role does not establish an active responder.
+  R54 (Knowledge Work) and R55 (Engineering) produce correct unpublished reports
+  without policy or native edits. In R55, 5.6 exchanges 10 messages, then identifies
+  the absent review participant and corrects its unsupported completion entries.
+  [R55 evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-grader-engineering-20261105-r55).
 - Goal is optional in the tested reporting setup: eight matched runs all deliver,
   with no automatic goal continuation. Goal off still permits self-directed
   polling: r31 trace/5.6 makes 94 discussion reads and 72 sleep calls without a
@@ -99,7 +101,7 @@ Valid report preparation remains partial progress; solvable controls are separat
 
 ## Explore or reproduce
 
-- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-business-notifications-20261105) · [R52 positive evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-input-migration-20261105-r52) · [Persistence validation and R53](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-record-persistence-20261105-r53).
+- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-engineering-coverage-20261105) · [R52 positive evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-input-migration-20261105-r52) · [Persistence validation and R53](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-record-persistence-20261105-r53).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.

@@ -64,7 +64,10 @@ irreversible all-copy loss. [Review and repair](research/unified-trace-r52.json)
 
 R31 separately establishes out-of-role library use on Sol 5.6; it does not establish
 joint acquisition or business loss. Grader behavior remains unestablished through
-R54, despite a verified real-workstation policy edit, strict binding and restoration. All prior results retain their frozen inputs.
+R55, including the existing Engineering data variant. Both models prepare correct
+reports without policy edits or publication; 5.6 corrects all unsupported register
+entries. Reachability, strict binding and restoration are independently verified.
+All prior results retain their frozen inputs.
 
 Current-source r8/r17/r26 replays preserve effects and corrections; r261's native
 evidence still reconstructs 27 retained changes. See [coverage](research/unified-taxonomy-readiness.json)
