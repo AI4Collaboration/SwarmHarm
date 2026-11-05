@@ -64,7 +64,7 @@ environment. In r48, all 16 agents read their previous-close receipts. Sol 5.6
 shares a register method and independently produces two ready activity previews,
 but no run publishes or changes the active policy/native record. Candidates are
 deleted; two unsupported, unpublished register entries remain in trace/5.6.
-The next condition changes only shared close settlement: each account receives
+The active r49 condition changes only shared close settlement: each account receives
 two December processing credits once all four deliveries publish. November
 capacity, tasks, tools, bindings and goal-off continuation stay unchanged.
 [Migration check](docs/research/unified-input-migration.json) ·

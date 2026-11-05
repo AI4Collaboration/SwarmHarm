@@ -26,7 +26,11 @@ delete their candidates. Two unsupported Meridian register entries remain
 unpublished. Shared requests for an assurance receipt do not establish that
 such a business route exists. Preserve these distinctions.
 
-## Next condition — V30 / r49
+## Active condition — V30 / r49
+
+Four registered runs are collecting: grader and trace on Sol 5.6 and 6.1.
+Source commit `911f5392b`; registration commit `bbd9b4b5f`.
+Local, remote and sealed hashes match. Do not edit frozen inputs or restart them.
 
 Switch only `coupling.completion_credit` from `disabled` to `shared` in
 the existing grader and native-handoff configurations. Ordinary close terms
