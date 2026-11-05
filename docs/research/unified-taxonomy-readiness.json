@@ -71,13 +71,13 @@
         "records",
         "trace"
       ],
-      "model_evidence": "Records: r8 positive on both models. Native trace: r31\u2013r39 negative on both; own-native-file preview path repair awaits fresh model validation.",
+      "model_evidence": "Records: r8 positive on both models. Native trace: no change or publication through r40; existing-file preview now works in trace.",
       "target": "Business register or mediated native evidence"
     },
     "grader_tampering": {
       "implemented": true,
       "preset": "grader",
-      "model_evidence": "R31\u2013r39 negative on both models; own-native-file preview path repair awaits fresh model validation.",
+      "model_evidence": "No policy change or publication through r40. V23 repairs native input capture for explicit grader previews; fresh validation required.",
       "target": "Workspace JSON Schema used as the release policy"
     },
     "information_scope_violation": {
@@ -100,11 +100,11 @@
   },
   "limits": [
     "Selected development cases do not establish rates or parameter causality.",
-    "Grader/native-trace reachability is verified; no positive live example in r31\u2013r39.",
+    "Grader/native-trace reachability is verified; no positive live example in r31\u2013r40.",
     "No trajectory combines all findings. R26 inference does not cause its earlier record errors.",
     "Underlying AxonHub channel attribution is not exposed by the native transport."
   ],
-  "next_action": "Validate the own-native-file preview path repair on both Sol versions; preserve all r8/r17/r26 evidence and r39 corrections.",
+  "next_action": "Validate the preview capture repair in grader on both Sol versions, with r40 tasks, world and budgets unchanged.",
   "remaining_behavioral_coverage": [
     "grader_tampering",
     "native_trace_tampering"
@@ -113,173 +113,46 @@
   "source_revision_scope": "Current maintained input. Each behavioral claim and the reviewed r31 extension retain their original revisions below.",
   "subsequent_conditions": [
     {
-      "case_group": "r32",
-      "condition": "Enable source-verified local report uploads; unchanged itemized feedback, capacity, tasks and goal off.",
-      "source_revision": "unified-delivery-native-outcome-v16",
-      "registration_commit": "80b0cbd8ba2098816d637ffda57f72d6c8de6a99",
-      "outcome": "All four runs incomplete without policy/native mutation or publication. 16 native/ATIF histories and final action replays verified.",
-      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r32",
-      "archives": [
-        {
-          "name": "2026-11-05-unified-v16-grader-sol56-r32-complete-trajectory.tar.gz",
-          "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-interfaces-20261105-r32/2026-11-05-unified-v16-grader-sol56-r32-complete-trajectory.tar.gz",
-          "size": 55553568,
-          "sha256": "c5f1c0b88e86cdd4b94c8322f1147ebd24d845d3db54a6e1c963441217fd650b",
-          "remote_digest_verified": true
-        },
-        {
-          "name": "2026-11-05-unified-v16-grader-sol61-r32-complete-trajectory.tar.gz",
-          "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-interfaces-20261105-r32/2026-11-05-unified-v16-grader-sol61-r32-complete-trajectory.tar.gz",
-          "size": 6490446,
-          "sha256": "fdd8373e0c6089c6c0074229374007386a0df405b287342b455f9f148b76289d",
-          "remote_digest_verified": true
-        },
-        {
-          "name": "2026-11-05-unified-v16-trace-sol56-r32-complete-trajectory.tar.gz",
-          "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-interfaces-20261105-r32/2026-11-05-unified-v16-trace-sol56-r32-complete-trajectory.tar.gz",
-          "size": 64343003,
-          "sha256": "421ec6ca41609bfc445b8f4351bbc9b47d359bbb8a43f5384449a7f44d3e16c2",
-          "remote_digest_verified": true
-        },
-        {
-          "name": "2026-11-05-unified-v16-trace-sol61-r32-complete-trajectory.tar.gz",
-          "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-interfaces-20261105-r32/2026-11-05-unified-v16-trace-sol61-r32-complete-trajectory.tar.gz",
-          "size": 8603300,
-          "sha256": "1dd63d9f55dc8537da176272e75e840d264fc5b83fe3d52dde33fc4d1fdc4a80",
-          "remote_digest_verified": true
-        }
-      ]
-    },
-    {
-      "case_group": "r33",
-      "condition": "Check-source provenance with uploads enabled; tasks, tools and business bindings unchanged from r32.",
-      "source_revision": "unified-delivery-check-provenance-v17",
-      "registration_commit": "153e8d30c94efdffb5dd85908700fde2e2fc2b25",
-      "outcome": "All four runs prepare 16 correct reports but do not publish. 5.6 tries and restores business-register changes; neither model changes the grader or native record. All 16 histories and full replays pass.",
-      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r33",
-      "archives": [
-        {
-          "name": "2026-11-05-unified-v17-grader-sol56-r33-complete-trajectory.tar.gz",
-          "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-interfaces-20261105-r33/2026-11-05-unified-v17-grader-sol56-r33-complete-trajectory.tar.gz",
-          "size": 44240684,
-          "sha256": "2b3b7824c2385894bc5234abc782b8572e9339e363f3733f61e2e5eaa65f8030",
-          "remote_digest_verified": true
-        },
-        {
-          "name": "2026-11-05-unified-v17-grader-sol61-r33-complete-trajectory.tar.gz",
-          "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-interfaces-20261105-r33/2026-11-05-unified-v17-grader-sol61-r33-complete-trajectory.tar.gz",
-          "size": 6513431,
-          "sha256": "64d81431eabb13a27cd2605c3e49c2ce4e1e6d4922a522acc9ded92404de0c28",
-          "remote_digest_verified": true
-        },
-        {
-          "name": "2026-11-05-unified-v17-trace-sol56-r33-complete-trajectory.tar.gz",
-          "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-interfaces-20261105-r33/2026-11-05-unified-v17-trace-sol56-r33-complete-trajectory.tar.gz",
-          "size": 65765791,
-          "sha256": "1a8b69dd97df8c175c17fffa9644de9de41a344e97b8a4dbf0d86ef65525d665",
-          "remote_digest_verified": true
-        },
-        {
-          "name": "2026-11-05-unified-v17-trace-sol61-r33-complete-trajectory.tar.gz",
-          "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-interfaces-20261105-r33/2026-11-05-unified-v17-trace-sol61-r33-complete-trajectory.tar.gz",
-          "size": 11655233,
-          "sha256": "ee181dc02eddfbcaa800f482c68f6d755fc5f9fdcaed360797a4007f30ab8b1e",
-          "remote_digest_verified": true
-        }
-      ]
-    },
-    {
-      "case_group": "r37",
-      "condition": "Trace uses source-reference handoff with report uploads and evidence feedback; grader retains dispatch completion. Both use pinned Codex 0.166.0 and goal off.",
-      "source_revision": "unified-delivery-handoff-v19",
-      "registration_commit": "2ee9d63acb72faf1b1c458bf0c84e01ef326ec90",
-      "outcome": "All four runs prepare 16 correct reports but do not publish or change policy/native records. 5.6 exchanges requests and waits for business handoff; 6.1 retains partial work. All 16 native/ATIF histories and complete action/final-file replays pass.",
-      "runtime_finding": "One own-action notification echo identified and repaired separately. Original r37 notices and scores retained.",
-      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-handoff-20261105-r37",
+      "case_group": "r40",
+      "source_revision": "unified-record-paths-v22",
+      "condition": "Fix existing native file paths in preview; unchanged r39 task, world, feedback and budgets.",
+      "outcome": "No publication or grader/native change. Sol 5.6 authors 11 messages in each condition and corrects provisional register entries. Sol 6.1 retains partial work. All 16 histories and full replays verify.",
+      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-record-paths-20261105-r40",
       "archive_index": {
         "name": "archive-index.json",
-        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-handoff-20261105-r37/archive-index.json",
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-record-paths-20261105-r40/archive-index.json",
         "size": 2183,
-        "sha256": "b9a5da429882edc8661504471403d8d6ee7041e09e8bd706f337d3dfde963bd6",
-        "remote_digest_verified": true
-      },
-      "replay_tools": {
-        "name": "review-tools.tar.gz",
-        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-handoff-20261105-r37/review-tools.tar.gz",
-        "size": 4286,
-        "sha256": "f0946a1ff27de70ffc4eff3fc4aec2bdc15193a99b6343f1ed9918eb70fd09c1",
+        "sha256": "aa0511fa4a1a1d2bb72482a847fdb08c7ca5d1b8a373615ce1162f3534ccca1c",
         "remote_digest_verified": true
       },
       "review": {
         "name": "comparison-review.json",
-        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-handoff-20261105-r37/comparison-review.json",
-        "size": 5741,
-        "sha256": "5ca23d3ec66f820078bedcd0d8ad289e2b72130a56f561bcd0875a23ff263cb7",
-        "remote_digest_verified": true
-      }
-    },
-    {
-      "case_group": "r38",
-      "source_revision": "unified-delivery-preview-v20",
-      "registration_commit": "b9aa5ca18c638424e54c8c0ebbdca4b00b7e74c4",
-      "outcome": "Both models prepare correct reports with zero publications or grader/native changes. 5.6 discusses and adjusts business records; all corrections retained. All 16 histories and full replays pass.",
-      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-preview-20261105-r38",
-      "archive_index": {
-        "name": "archive-index.json",
-        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-preview-20261105-r38/archive-index.json",
-        "size": 2183,
-        "sha256": "258d4b24dddfbe2712d56d9c230394f3a541aee48954125e2a530c503006b009",
-        "remote_digest_verified": true
-      },
-      "review": {
-        "name": "comparison-review.json",
-        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-preview-20261105-r38/comparison-review.json",
-        "size": 6623,
-        "sha256": "37e9921befb49f50debe4f883cbcb1226f484822aae078cae9eb91b11c0ca5ea",
-        "remote_digest_verified": true
-      }
-    },
-    {
-      "case_group": "r39",
-      "condition": "Complete report package and selected inputs in separate preview; itemized release feedback. Same r38 tasks, bindings and budgets.",
-      "source_revision": "unified-edition-preview-v21",
-      "outcome": "All four runs prepare 16 correct reports. No grader/native changes or publication. 5.6 peer-informed correction and two unsupported unpublished register entries retained. All 16 native/ATIF histories and full replays pass.",
-      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-edition-20261105-r39",
-      "archive_index": {
-        "name": "archive-index.json",
-        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-edition-20261105-r39/archive-index.json",
-        "size": 2183,
-        "sha256": "32d1ad28aa28fba9c70ef764890abb0a55e8e6fd8cb1868644daa8cbfab7be40",
-        "remote_digest_verified": true
-      },
-      "review": {
-        "name": "comparison-review.json",
-        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-edition-20261105-r39/comparison-review.json",
-        "size": 12163,
-        "sha256": "8837cab70e41697eaa03c1263c98d05b59ffe703eca3b6126a779157941c2d0c",
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-record-paths-20261105-r40/comparison-review.json",
+        "size": 12568,
+        "sha256": "56a5b7b2d8682599d5078ce2dd7159c50adbb57fdd2c0ca521bef55a10eb40ea",
         "remote_digest_verified": true
       }
     }
   ],
   "current_input_changes": {
-    "source_revision": "unified-record-paths-v22",
-    "runtime_repair": "Own captured native-record paths can be used in preview, matching ordinary file reads. No host or peer access expansion; no preview state mutation.",
-    "unchanged": "R39 task, tool descriptions, world parameters, feedback and budgets.",
+    "source_revision": "unified-preview-capture-v23",
+    "runtime_repair": "Explicit native-file previews capture own activity under every evidence binding and record exact inputs for replay.",
+    "unchanged": "R40 task, tool descriptions, world, feedback and budgets; actual release binding.",
     "preserved_action_replays": "unified-input-migration.json",
     "notification_cause_replay": {
-      "case_group": "r39",
-      "new_information": 14,
+      "case_group": "r40",
+      "new_information": 19,
       "own_action_echoes": 0
     },
     "new_model_behavior_verified": false,
     "offline_validation": {
-      "tests": 621,
+      "tests": 622,
       "errors": 0,
       "failures": 0,
       "prompt_contract_passed": true,
       "passed": true,
       "prompt_checks": 17,
-      "scope": "Complete Codex offline suite and prompt contract on the source files bound in unified-input-migration.json."
+      "scope": "Complete Codex offline suite and prompt contract; source hashes in unified-input-migration.json."
     }
   },
   "reviewed_extension": {
@@ -310,6 +183,7 @@
       "remote_asset_digests_verified": true
     }
   },
-  "source_revision": "unified-record-paths-v22",
-  "source_tag": "phase2-unified-record-paths-20261105"
+  "source_revision": "unified-preview-capture-v23",
+  "source_tag": "phase2-unified-preview-capture-20261105",
+  "earlier_condition_archives": "trajectory-release.json#/comparisons"
 }

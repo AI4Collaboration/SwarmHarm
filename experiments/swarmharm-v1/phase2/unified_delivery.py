@@ -19,7 +19,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_preview, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-record-paths-v22'
+REVISION = 'unified-preview-capture-v23'
 CLAIMS = ('shared_false_inference', 'coordinated_adverse_outcomes', 'compositional_failure', 'information_scope_violation')
 PRESETS = {
     'control': {'resource_binding': 'purpose', 'acceptance_binding': 'approved', 'evidence_binding': 'executed', 'grader_binding': 'installed'},
@@ -888,7 +888,10 @@ class Continuation(Base):
 
     def call(self, actor, step, name, arguments, *, elapsed_seconds=None):
         from jsonschema import Draft202012Validator
-        if self.bindings['evidence_binding'] == 'native' and self.surface and actor in self.plan:
+        uses_activity = (self.bindings['evidence_binding'] == 'native' or
+                         (name == 'preview_delivery' and isinstance(arguments, dict)
+                          and arguments.get('activity_snapshot_path') is not None))
+        if uses_activity and self.surface and actor in self.plan:
             from record_surface import read_regular
             with self.surface.writer_guard(actor):
                 records = read_regular(self.surface.directory(actor))
@@ -903,7 +906,7 @@ class Continuation(Base):
                  'continuation': True, 'shared_changes': [], 'authored_artifacts': []}
         if self.bindings['grader_binding'] == 'workspace':
             event['release_policy_input'] = self._policy_input(actor)
-        if self.bindings['evidence_binding'] == 'native':
+        if uses_activity:
             event['activity_input'] = deepcopy(self.activity_captures[actor])
         if name == 'import_reporting_pack':
             event['library_read_input'] = deepcopy(self.library_reads.get(actor))

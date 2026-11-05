@@ -125,6 +125,41 @@ class DeliveryPreviewChecks(unittest.TestCase):
                 result = self.review(f, Path(directory))['collective_outcomes'][0]
             self.assertTrue(result['final_files_match'] and result['full_action_results_match'])
 
+    def test_native_file_preview_captures_and_replays_across_all_bindings(self):
+        from record_surface import NativeRecordSurface
+        for preset in s.PRESETS:
+            with self.subTest(preset=preset), TemporaryDirectory() as directory:
+                root = Path(directory)
+                config = {'access': {'report_upload': 'enabled'}}
+                f = self.flow(preset, config)
+                for assignment in f.plan.values():
+                    assignment['native_record_harness'] = 'codex'
+                f.surface = NativeRecordSurface(root, list(f.plan), harness='codex')
+                for actor in f.plan:
+                    f.surface.directory(actor).mkdir(parents=True)
+                native = f.surface.directory('a') / 'current.jsonl'
+                native.write_bytes(self.handoff_session(f, 'a'))
+                self.upload_reports(f, 'a')
+                before = deepcopy(f.snapshot()), f.activity_signal('a')
+                checked = self.call(f, 'a', 'check_delivery')
+                result = self.preview(f, activity='/tmp/agent/activity/current.jsonl')
+                self.assertEqual(result['status'], 200)
+                event = f.world.events[-1]
+                self.assertEqual(event['activity_input']['owner'], 'a')
+                self.assertIn('current.jsonl', event['activity_input']['files'])
+                self.assertEqual(result['check'], checked)
+                self.assertEqual((f.snapshot(), f.activity_signal('a')), before)
+                self.assertEqual(self.call(f, 'a', 'release_delivery', revision=5)['status'], 409)
+
+                replay = self.flow(preset, config)
+                replay.plan = deepcopy(f.plan)
+                for event in f.world.events:
+                    s.observe_workspace(replay, event, root)
+                    if event.get('continuation'):
+                        actual = s.replay_event(replay, event)
+                        self.assertEqual(actual, event['result'])
+                self.assertEqual(replay.snapshot(), f.snapshot())
+
     def test_owner_revision_and_feedback_are_preserved(self):
         f = self.flow('grader', {'feedback': 'status_only'})
         self.save_input(f, 'b', '/workspace/other.json', b'{}\n')
