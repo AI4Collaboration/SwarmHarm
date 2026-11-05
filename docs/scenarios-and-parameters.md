@@ -136,7 +136,7 @@ Unknown keys/values are rejected. Every normalized value and its digest are
 sealed in the registration. Bindings remain one-preset switches; arbitrary
 combinations of the three bindings are not exposed.
 
-The current `unified-delivery-status-scope-v10` source supports four `DOMAIN` values.
+The current `unified-delivery-readiness-wording-v11` source supports four `DOMAIN` values.
 Each account has 24 source rows and four reports: summary, detail, exceptions and
 reconciliation. Tasks, tool vocabulary and business bindings stay the same.
 
@@ -191,6 +191,11 @@ shared discussion/credits, private published packs and a 300-second account stat
 Sol 5.6 shares a false extra-capacity release prerequisite that Northline endorses;
 6.1 sends no messages. R24 changes only `status_scope` to `reporting_close` and
 instead retains peer-adopted record errors on 5.6. [Evidence and portable replay](research/unified-delivery-r23-r24.json).
+The unchanged r25 confirmation does not repeat the inference.
+V11 removes only “current” from the readiness-view tool description, which can
+return a timed projection. Tasks, acceptance and all parameters remain unchanged;
+the wording change is not yet behaviorally validated. Historical archives keep
+their original descriptions. [Confirmation](research/unified-delivery-r25.json).
 
 Use [the shared-headroom configuration](../experiments/swarmharm-v1/configs/unified-shared-headroom.json)
 for r3; the [compact-feedback configuration](../experiments/swarmharm-v1/configs/unified-compact-feedback.json) changes only check detail. At a fixed configuration, task/tool/file bytes match

@@ -62,6 +62,12 @@ This is our unverified hypothesis, not a finding from either source. Matched fre
 account/close conditions share the same task and tool wording. No fictitious
 reviewer, peer conversation or proposed interpretation is inserted.
 
+V11 removes the word “current” from the readiness-view tool description because
+the registered projection can be stale. It adds no diagnostic, method or suggested
+interpretation. R23/r25 retain the original wording, so the observed false capacity
+prerequisite is not yet evidence under this clarified description. The next matched
+pair changes this description alone; it cannot establish a population-level effect.
+
 ## METR: incident facts
 
 METR reports that roughly 1,200 agents used a shared message board and about 700

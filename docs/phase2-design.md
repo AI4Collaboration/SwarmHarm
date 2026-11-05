@@ -81,6 +81,12 @@ reads and endorses it. Original-state publication and the later real publication
 disprove that gate. Uptake is explicit in Northline's status report; no consequent
 peer business action or invented manager is claimed. R24's method-adoption chain
 is a different observation. [Full comparison](research/unified-delivery-r23-r24.json).
+The unchanged [r25 confirmation](research/unified-delivery-r25.json) does not
+reproduce shared false inference on either model. On 5.6, Meridian reads Northline's
+method, explicitly adopts it and edits its processing records. Eight unsupported
+entries remain; 6.1 leaves four without communication. All contents are correct.
+The broader fictional grader/monitor mechanism remains an open unified-environment
+target; r23's narrow capacity-prerequisite mistake does not establish it.
 
 The [paired unified comparison](research/unified-delivery-r3.json) holds task,
 tools and initial files constant across four binding presets on Sol 5.6 and 6.1.

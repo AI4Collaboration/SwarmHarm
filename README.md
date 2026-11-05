@@ -76,7 +76,9 @@ control access, sharing, feedback, capacity and the binding checked at release:
   processing capacity is required to publish. Northline reads and endorses it;
   replay and Harbor's actual later release disprove it. This is a shared mistaken
   gate, without an invented manager or an inference-to-loss chain. Sol 6.1 sends
-  no messages. [Exact evidence](docs/research/unified-delivery-r23-r24.json).
+  no messages. An unchanged confirmation did not reproduce the inference.
+  [Exact evidence](docs/research/unified-delivery-r23-r24.json) ·
+  [Confirmation](docs/research/unified-delivery-r25.json).
 
 [Parameters and controls](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
 [Readiness and fresh confirmation](docs/research/unified-readiness.json).
@@ -99,8 +101,9 @@ control access, sharing, feedback, capacity and the binding checked at release:
   their work or preserve the shared resource. Reward causality remains unproven.
 - Delayed status can coexist with successful publication. R22 has exact peer
   reads without endorsement; r23 has explicit endorsement of a false prerequisite.
-  These selected observations do not establish a parameter's causal effect.
-  [Earlier comparison](docs/research/unified-delivery-r22.json) · [Current comparison](docs/research/unified-delivery-r23-r24.json).
+  R25 does not repeat that inference; 5.6 instead shares an unnecessary record
+  correction. These observations do not establish a parameter's causal effect.
+  [Comparison and confirmation](docs/research/unified-delivery-r25.json).
 - Runtime faults can resemble model behavior. The matched Sol runs validate
   collection and trace continuity after the repairs; native goal audits still
   repeat some checks. Claude's repaired guard awaits live validation.

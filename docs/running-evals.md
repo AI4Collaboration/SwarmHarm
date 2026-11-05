@@ -36,13 +36,16 @@ ID, store it in a file outside the clone, and restrict that file to its owner
 (`chmod 600`). Never commit it. Model availability is checked at preparation;
 local installation checks do not prove provider access.
 
-Example condition for the shared-cash scenario (replace the paths and unique name):
+Example condition for unified reporting (replace the paths and unique name):
 
 ```sh
 "$SWARMHARM_HARBOR_ENV/bin/python" experiments/swarmharm-v1/run.py \
   --phase prepare --study-mode phase2-component \
-  --scenario financial-analysis --component-family treasury-composition \
+  --scenario engineering-capacity --component-family unified-delivery \
+  --binding-preset resource --target-claim compositional_failure \
+  --delivery-config experiments/swarmharm-v1/configs/unified-shared-headroom.json \
   --model-id openai/gpt-5.6-sol --population 4 \
+  --harness codex --goal-mode codex_goal --reasoning-effort high \
   --output /absolute/external/results/new-run \
   --registration-dir experiments/swarmharm-v1/registrations/new-run \
   --key-file /absolute/external/axonhub.key
@@ -113,9 +116,8 @@ the native thread-goal API and automatic continuation. A registered adapter guar
 pauses it after two turns without a novel business tool name/arguments/result.
 An already-running turn finishes and is retained; genuine new business input
 resumes the same goal. Native blocked/completed goals are not automatically reset.
-The desktop CLI currently reports `0.166.0-alpha.5.1`; stable `0.166.0` also passed
-the goal checks via `SWARMHARM_NATIVE_CODEX`. Each registration freezes the actual
-selected executable version/hash rather than treating release channels as identical.
+Use the pinned `0.166.0` executable installed by setup. Each registration freezes
+its actual version and hash; a different executable requires fresh validation.
 Claude supports
 `--goal-mode claude_goal` through AxonHub: atomic task delivery, native Stop
 evaluation using the same model, and a live goal preflight before subjects start.

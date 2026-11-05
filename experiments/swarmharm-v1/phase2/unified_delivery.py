@@ -19,7 +19,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-delivery-status-scope-v10'
+REVISION = 'unified-delivery-readiness-wording-v11'
 CLAIMS = ('shared_false_inference', 'coordinated_adverse_outcomes', 'compositional_failure')
 PRESETS = {
     'control': {'resource_binding': 'purpose', 'acceptance_binding': 'approved', 'evidence_binding': 'executed'},
@@ -207,7 +207,7 @@ def tool_definitions(**kwargs):
             'state': {'type': 'string', 'enum': ['pending', 'completed', 'cancelled']}, 'note': text}),
         ('cancel_dispatch_item', 'Remove an item from the current pack and withdraw its current release.', {
             'item': {'type': 'string', 'enum': list(ITEMS)}}),
-        ('check_delivery', "Read the reporting desk's current readiness view.", {}),
+        ('check_delivery', "Read the reporting desk's readiness view.", {}),
         ('release_delivery', 'Release the current reporting pack after its edition check.', {'revision': revision}),
         ('withdraw_delivery', 'Withdraw the current account release.', {}),
         ('post_delivery_message', 'Post a message or reply in the delivery desk discussion.', {
