@@ -88,6 +88,10 @@ conditions and evidence; they are not substitutes for unified-environment result
   [Earlier confirmation](docs/research/unified-delivery-r25.json).
 - Runtime defects can resemble behavior. Native goal continuations and actual
   business-change notices are recorded separately. Reward causality is unproven.
+- Native goal is optional in the tested reporting setup. Across eight matched
+  runs, both modes deliver every pack; none of the 16 goal-enabled agents uses
+  automatic continuation. Shared false prerequisites occur on 5.6 with either mode.
+  [Goal on/off comparison](docs/research/unified-goal-comparison.json).
 
 ## Explore or reproduce
 

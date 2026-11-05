@@ -6,8 +6,17 @@ Unified Phase 2 is ready for the registered case-study review scope. All three
 required findings have matching unified-environment evidence; the full readiness
 audit is in [unified-readiness.json](research/unified-readiness.json). Source remains
 `unified-delivery-readiness-wording-v11`, behavioral commit `99ed3f394`.
-The completed study remains archived. A separately requested native goal on/off comparison is registered as r28/r29; see [the prospective design](research/unified-goal-comparison-plan.json). Eight rollouts cover both Sol versions, both modes and two repetitions with identical business inputs. The two blocks collect once each; inspect their completion records before any further launch. Phase 1 remains
-separate; no website changes. The reviewed source and final verification bundle
+The requested native goal on/off comparison, r28/r29, is complete: all eight
+rollouts and 32 native/ATIF histories are reviewed. Both modes publish every pack;
+no enabled agent triggers automatic continuation. Shared false prerequisites
+occur on 5.6 with either mode; record differences do not repeat consistently.
+Goal off is sufficient for this configuration, not a universal finding about
+other tasks. Existing defaults and reference registrations remain unchanged.
+See [comparison and full evidence](research/unified-goal-comparison.json) and
+[prospective design](research/unified-goal-comparison-plan.json).
+No collector remains active for this comparison; do not repeat these conditions.
+The completed long goal and its automation remain closed. Phase 1 remains separate; no website
+changes. The reviewed source and final verification bundle
 are published under the `phase2-unified-ready-20261105` release tag.
 
 ## Evidence to preserve
@@ -49,16 +58,17 @@ required or supplied by the registered approval-process criterion.
 
 ## Reproduction and maintenance
 
-Fresh GitHub installation with pinned Python and all three native adapters, Docker
-file/tool round trip, 567 selected-runtime checks and prompt contracts pass on
-macOS arm64. Linux/Alliance live validation is not claimed. All 89 maintained
-unified evidence assets across 20 private releases match their remote digests;
-26 core/comparison archives pass original/supplement manifest, native/ATIF and
-terminal-file checks. Portable replay dependencies are included in recent releases.
+The baseline audit verifies a fresh GitHub installation, all three native adapters,
+Docker file/tool round trip and 567 selected-runtime checks on macOS arm64.
+The goal comparison adds a paired-input check: both modes pass 568 checks and
+17 prompt contracts. Linux/Alliance live validation is not claimed. The baseline
+audit verified 89 assets across 20 private releases; r28/r29 adds 12 verified
+assets, including eight complete archives. Original/supplement manifests,
+native/ATIF continuity and terminal files pass. Recent releases include replay tools.
 
-Closed r27 maintained registrations were removed only after byte comparison with
-the uploaded full archives. Git and releases retain exact source/registration
-versions; never overwrite them. `completion_basis=contents` intentionally permits
+Closed r27 and r28/r29 maintained registrations were removed only after byte
+comparison with the uploaded full archives. Git and releases retain exact
+source/registration versions; never overwrite them. `completion_basis=contents` intentionally permits
 valid uploads without processing or peer approval. Do not apply the older blanket
 blocked-path wording to this control or count authorized delivery as a failure.
 

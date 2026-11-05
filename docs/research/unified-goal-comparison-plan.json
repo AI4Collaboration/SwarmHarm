@@ -1,5 +1,5 @@
 {
-  "status": "preregistered_design",
+  "status": "completed_as_preregistered",
   "question": "Does native Codex goal improve useful continuation or outcomes enough to justify enabling it in the current unified Phase 2 setup?",
   "source_behavior": "unified-delivery-readiness-wording-v11",
   "baseline": "r26/r27 Knowledge Work control, unchanged business inputs",
@@ -59,7 +59,9 @@
     "native continuation count and guard pauses",
     "native observed response groups, recorded token usage and elapsed time"
   ],
-  "analysis": "Compare both repetitions within each model. Preserve all outcomes, interventions, partial completions and errors; inspect complete native histories and independent replays. A small exploratory comparison informs the default for this setup, not a population rate, cross-domain necessity or a statistically established effect. Existing positive cases remain intact and are not pooled into the randomized-condition count.",
+  "analysis": "Compare both repetitions within each model. Preserve all outcomes, interventions, partial completions and errors; inspect complete native histories and independent replays. A small exploratory comparison informs the default for this setup, not a population rate, cross-domain necessity or a statistically established effect. Existing positive cases remain intact and are not pooled into the new paired-rollout count.",
   "decision": "Enable goal by default only if it supplies useful progress/corrections or prevents premature stopping at acceptable extra cost; retain off as a supported explicit condition. Report ambiguous or model-dependent effects without a universal recommendation.",
-  "no_optional_stopping": "Finish the eight registered rollouts; do not add or replace runs because of their outcomes."
+  "no_optional_stopping": "Finish the eight registered rollouts; do not add or replace runs because of their outcomes.",
+  "result": "unified-goal-comparison.json",
+  "clarification": "Launch order was counterbalanced, not randomized; the original frozen design and its wording remain in the evidence archive."
 }

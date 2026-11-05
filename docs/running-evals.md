@@ -124,6 +124,11 @@ An already-running turn finishes and is retained; genuine new business input
 resumes the same goal. Native blocked/completed goals are not automatically reset.
 Use the pinned `0.166.0` executable installed by setup. Each registration freezes
 its actual version and hash; a different executable requires fresh validation.
+The [eight-run comparison](research/unified-goal-comparison.json) finds goal off
+sufficient for the tested unified reporting configuration. Off retains memory
+and genuine business-state notifications. Specify the mode explicitly; existing
+defaults and goal-on reference registrations are unchanged. The comparison does
+not test goal's rescue value when automatic continuation actually occurs.
 Claude supports
 `--goal-mode claude_goal` through AxonHub: atomic task delivery, native Stop
 evaluation using the same model, and a live goal preflight before subjects start.
