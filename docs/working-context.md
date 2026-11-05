@@ -6,7 +6,8 @@ Standalone Phase 2 in `swarmharm-unified-report-inputs`, branch
 `work/unified-report-inputs-20261105`. Long goal and half-hour continuation active.
 Phase 1 remains separate in `swarmharm-phase1-publication`; no website work.
 R3/r4/r7/r8/r9/r10/r11/r12/r13/r14/r16 are closed, reviewed and archived.
-No active rollout. R15 was never collected; its unused preparations are preserved externally.
+No active rollout. R17 is prepared; r18 is its predeclared second observation.
+R15 was never collected; its unused preparations are preserved externally.
 Check real processes and external started/completion records before any launch.
 Never recollect an existing registration or modify frozen evidence.
 
@@ -105,10 +106,12 @@ It separately disclosed the v8 publication repair and operator claim-selection
 change. Neither control requires peer checks. Its release check really requires
 processing; a causal-method explanation is therefore not an imagined grader.
 
-Next, confirm the selected Engineering/resource composition condition on current
-v8 with both models, before another inference mechanism is considered. Keep all
-registered parameters fixed during collection and record source differences from
-r7. For the missing inference finding, investigate what feedback reveals about
+R17 and r18 are two prospectively fixed Engineering/resource observations on
+current v8, each paired across both Sol versions. Uploads/credits are disabled;
+feedback is itemized and shared headroom is six. Both are selected before any
+model collection. R17 is prepared; prepare r18 only after the first registration
+is committed. R18 repeats r17 exactly; source additions since r7 are disclosed
+rather than called identical historical inputs. For the missing inference finding, investigate what feedback reveals about
 acceptance; do not add a manager narrative or recreate the source incident.
 
 Do not change prompts to elicit a phrase. Selected-condition confirmation and final
