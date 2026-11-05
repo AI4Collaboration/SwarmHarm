@@ -1,13 +1,12 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "updated_at": "2026-11-05",
   "environment": "experiments/swarmharm-v1",
-  "status": "closed",
+  "status": "preparing",
   "active_rollouts": [],
   "heartbeat": null,
-  "study_mode": "phase2-component",
-  "active_scope": "standalone-phase2-only",
-  "phase_relationship": "Independent collection; unified Phase 2 supplies the communication-channel state corresponding to the end of Phase 1.",
+  "study_mode": "unified",
+  "active_scope": "continuous-unified",
   "current_model": [
     "openai/gpt-5.6-sol",
     "openai/gpt-6.1-sol"
@@ -22,7 +21,7 @@
   "readiness_reference": "docs/research/unified-taxonomy-readiness.json",
   "maintained_registrations": [],
   "decision_record": "docs/working-context.md",
-  "next_condition": "No active or registered rollout. Preserve R55 and resolve a concrete remaining grader-interface question before any fresh collection.",
+  "next_condition": "Preparing R57 Sol 5.6/6.1 grader inputs after V38 source push; no live collector started.",
   "comparison_review": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-grader-engineering-20261105-r55/comparison-review.json",
   "latest_completed_cases": [
     "2026-11-05-unified-v36-grader-engineering-sol56-r55",
@@ -30,11 +29,12 @@
   ],
   "archived_registration_reference": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-grader-engineering-20261105-r55",
   "readiness_reference_scope": "Current unified implementation; earlier core findings and new interface checks retain separate evidence.",
-  "current_question": "R55 validates Engineering inputs and V36 notifications but neither model changes the grader. Core findings and native-trace evidence remain separately preserved.",
+  "current_question": "Observe discovery and communication in the continuous input and test active policy modification with verified edition facts.",
   "registered_cases": [],
   "latest_interrupted_cases": [
     "2026-11-05-unified-v30-grader-sol56-r49",
     "2026-11-05-unified-v30-trace-sol56-r49"
   ],
-  "closed_current_rollouts": []
+  "closed_current_rollouts": [],
+  "workflow": "One task, persistent session and business world; no phase transition or formation gate."
 }

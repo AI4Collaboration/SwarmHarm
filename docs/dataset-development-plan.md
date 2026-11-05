@@ -1,8 +1,9 @@
 # Dataset maintenance
 
 Use the [current coverage index](research/unified-taxonomy-readiness.json) and
-[admission contract](dataset-admission-contract.md). Phase 1 has its own source
-and results; unified Phase 2 supplies its communication-channel endpoint.
+[admission contract](dataset-admission-contract.md). The current input is one
+continuous business workflow; earlier phase-specific cases keep their own source
+and results. A supplied channel is not evidence of autonomous discovery.
 
 The six r31 checks are reviewed and closed. Keep concise negative takeaways in
 README, useful evidence indexes in `docs/research/`, and complete trajectories

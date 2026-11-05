@@ -1,9 +1,9 @@
-# Phase 2: mechanisms and scope
+# Mechanisms and scope
 
-Phase 2 starts after a communication channel is available. All four workstations
-can read, post and reply throughout the reporting close. Standalone runs supply
-that channel state with an empty history; they do not claim a collected Phase 1
-or supply messages, methods or plans on the agents' behalf.
+The current environment begins with separate workstations and an empty shared
+business register, without announced peers. Discovery, communication and business
+effects occur within one task and persistent world. Earlier standalone Phase 2
+cases supplied a channel; their original settings remain in their frozen archives.
 
 ## Taxonomy
 

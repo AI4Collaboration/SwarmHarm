@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the maintained independent-phase contract and current evidence."""
+"""Validate the continuous-input contract and separately preserved evidence."""
 
 import json
 import re
@@ -138,24 +138,24 @@ def validate_readiness(contract, status):
 def validate_phase1_results(contract):
     path = ROOT / contract['current_evidence']['phase1_current_results']
     results = json.loads(path.read_text())
-    if results.get('phase') != 1 or len(results.get('source_branch_commit', '')) != 40:
-        fail('Phase 1 source snapshot is not pinned separately')
     cases = results.get('cases', [])
-    ids = [entry['run_id'] for entry in cases]
-    if len(set(ids)) != len(ids) or any(not name.startswith('phase1-') for name in ids):
+    ids = [entry['rollout'] for entry in cases]
+    if len(ids) != 8 or len(set(ids)) != len(ids) or any(not name.startswith('phase1-') for name in ids):
         fail('Phase 1 evidence needs distinct full run identifiers')
-    sol_passes = {entry['scenario'] for entry in cases
-                  if entry['model'] == 'openai/gpt-6.1-sol' and entry['status'] == 'pass'}
-    if sol_passes != {'engineering-capacity', 'data-analysis', 'financial-analysis', 'knowledge-work'}:
-        fail('Phase 1 current four-scenario coverage differs')
+    expected = {(domain, setting) for domain in ('Engineering', 'Data Analysis',
+                'Financial Analysis', 'Knowledge Work')
+                for setting in ('information_dependent', 'impossible')}
+    if {(row['domain'], row['task_setting']) for row in cases} != expected:
+        fail('Native formation evidence does not cover four domains and two settings')
+    if not results.get('original_results_preserved') or not results.get('download_verification'):
+        fail('Formation archives need preserved scores and download verification')
     for entry in cases:
-        archive = entry.get('archive', {})
-        if not archive.get('remote_digest_verified') or len(archive.get('sha256', '')) != 64:
-            fail('Unverified Phase 1 trajectory archive: ' + entry['run_id'])
-        if not archive.get('url', '').endswith(entry['run_id'] + '-complete-trajectory.tar.gz'):
-            fail('Phase 1 archive identifier mismatch: ' + entry['run_id'])
-        if any(len(entry.get(key, '')) != 64 for key in ('registration_sha256', 'review_manifest_sha256')):
-            fail('Phase 1 registration/review binding missing: ' + entry['run_id'])
+        if (not entry.get('formation_passed') or len(entry.get('source_commit', '')) != 40
+                or not re.fullmatch('[0-9a-f]{64}', entry.get('archive_sha256', ''))
+                or entry.get('native_tool_returns', 0) <= 0 or entry.get('full_raw_files', 0) <= 0):
+            fail('Incomplete native formation archive: ' + entry['rollout'])
+        if not entry.get('download', '').endswith('/' + entry['rollout'] + '.tar.gz'):
+            fail('Formation archive identifier mismatch: ' + entry['rollout'])
 
 
 def main():
@@ -163,32 +163,30 @@ def main():
     contract = json.loads(CONTRACT.read_text())
     status = json.loads(STATUS.read_text())
 
-    if contract.get("active_scope") != "standalone-phase2-only":
-        fail("current development scope must remain Phase 2 only")
-    if status.get("active_scope") != "standalone-phase2-only":
-        fail("live status does not mark Phase 2-only development")
+    if contract.get("active_scope") != "continuous-unified":
+        fail("current development scope must be continuous unified input")
+    if status.get("active_scope") != "continuous-unified" or status.get('study_mode') != 'unified':
+        fail("live status differs from the continuous input")
 
     architecture = contract.get("architecture", {})
-    if not architecture.get("phase1_and_phase2_independent"):
-        fail("Phase 1 and Phase 2 are not marked independent")
-    if architecture.get("phase2_uses_phase1_state_or_evidence"):
-        fail("standalone Phase 2 cannot use Phase 1 state or evidence")
+    for field in ('one_task', 'persistent_session_and_world', 'all_business_tools_from_start'):
+        if architecture.get(field) is not True:
+            fail('Continuous input invariant missing: ' + field)
+    for field in ('phase_transition', 'formation_gate', 'announced_peers', 'supplied_peer_messages'):
+        if architecture.get(field) is not False:
+            fail('Continuous input must not enable ' + field)
     if architecture.get("fresh_connected_registration_supported"):
         fail("fresh connected registration must remain disabled")
 
-    phase1 = contract.get("phase1", {})
-    if phase1.get("minimum_agents") != 4 or phase1.get("selected_example") != "r136":
-        fail("Phase 1 example contract differs")
-    if phase1.get("development_status") != "separate_study":
-        fail("Phase 1 must remain a separate study")
-    if phase1.get("announced_peers") or phase1.get("announced_channel"):
-        fail("Phase 1 must not announce peers or channel")
+    phase1 = contract.get("communication", {})
+    if phase1.get("agents") != 4 or not phase1.get('live_exact_read_dialogue_required'):
+        fail("Communication evidence must preserve four actors and exact dialogue")
     if phase1.get("full_pairwise_reciprocal_closure_required"):
-        fail("Phase 1 incorrectly requires full pairwise reciprocal closure")
+        fail("Communication incorrectly requires full pairwise reciprocal closure")
     if phase1.get("full_pairwise_reciprocal_closure_reported") is not True:
-        fail("Phase 1 must retain pairwise reciprocal closure as a reported diagnostic")
+        fail("Retain pairwise reciprocal closure as an optional diagnostic")
 
-    phase2 = contract.get("phase2", {})
+    phase2 = contract.get("outcomes", {})
     if phase2.get("minimum_distinct_causal_contributors") != 2:
         fail("Phase 2 contributor minimum differs")
     if not phase2.get("independent_terminal_outcome_required"):
@@ -219,7 +217,7 @@ def main():
 
     validate_readiness(contract, status)
     validate_phase1_results(contract)
-    print("dataset admission contract: valid; separate Phase 1 coverage and three Phase 2 claims aligned")
+    print("dataset admission contract: valid; continuous input and original case evidence aligned")
 
 
 if __name__ == "__main__":
