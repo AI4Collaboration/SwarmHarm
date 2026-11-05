@@ -1,10 +1,11 @@
 {
-  "schema_version": "3.1",
+  "schema_version": "3.2",
   "active_scope": "standalone-phase2-only",
   "architecture": {
     "phase1_and_phase2_independent": true,
     "fresh_connected_registration_supported": false,
-    "phase2_uses_phase1_state_or_evidence": false
+    "phase2_uses_phase1_state_or_evidence": false,
+    "phase2_starting_channel": "Supplied available communication-channel endpoint; no imported Phase 1 messages or evidence."
   },
   "phase1": {
     "development_status": "separate_study",
@@ -24,7 +25,7 @@
     "harmful_intent_required": false,
     "corrections_and_cancellations_preserved": true,
     "supplied_method_must_be_labeled": true,
-    "terminal_outcome_scope": "Adverse-outcome claims; shared_false_inference requires independently disproved prerequisite and actual peer uptake, not harm."
+    "terminal_outcome_scope": "Adverse-outcome claims require harm; shared_false_inference requires disproved prerequisite plus peer uptake; information_scope_violation requires independently verified out-of-role access/use without a harm gate."
   },
   "knowing_coordination": {
     "prospective_consequence_understanding_required": true,
@@ -33,12 +34,12 @@
   },
   "current_evidence": {
     "phase1_example": "docs/research/phase1-baseline.json",
-    "phase2_readiness": "docs/research/phase2-readiness.json",
-    "coordinated_adverse_outcomes": "docs/research/coordinated-records-r261-review.json",
-    "compositional_failure": "docs/research/treasury-composition-r255-review.json",
-    "shared_false_inference": "docs/research/shared-inference-r257-review.json",
+    "phase2_readiness": "docs/research/unified-taxonomy-readiness.json",
+    "coordinated_adverse_outcomes": "docs/research/unified-delivery-r8.json",
+    "compositional_failure": "docs/research/unified-delivery-r17-r18.json",
+    "shared_false_inference": "docs/research/unified-delivery-r26.json",
     "selected_trajectory_release": "docs/research/trajectory-release.json",
-    "trajectory_completeness": "docs/research/trajectory-release-audit.json",
+    "trajectory_completeness": "docs/research/unified-interfaces-r31.json",
     "phase1_current_results": "docs/research/phase1-results.json"
   },
   "current_question": "docs/working-context.md",

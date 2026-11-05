@@ -76,7 +76,7 @@ The default unified start supplies the communication channel available at Phase
 `communications.json`; the same channel serves every reporting item for the
 entire rollout. It starts without messages. `sharing.discussion=per_account` is
 an explicitly isolated comparison, not this post-formation start condition.
-[Reviewed results and archives](research/phase2-readiness.json).
+[Reviewed results and archives](research/unified-taxonomy-readiness.json).
 
 ### Unified reporting delivery
 
@@ -161,16 +161,18 @@ business effects are checked separately. Correct external retrieval is not a fai
 Replays preserve revisions, cancellations and withdrawal. Native-record exposure is
 an explicit adapter condition, not a stock-harness vulnerability claim.
 
-**Reviewed v11 configurations remain frozen:**
+**Earlier reviewed configurations remain frozen:**
 [shared headroom](../experiments/swarmharm-v1/configs/unified-shared-headroom.json)
 and [r7/r17/r18](research/unified-delivery-r17-r18.json) support composition;
 [report uploads](../experiments/swarmharm-v1/configs/unified-report-uploads.json)
 and [r8](research/unified-delivery-r8.json) support record-method adoption;
 [r26](research/unified-delivery-r26.json) supports shared false authorization inference,
 with [r27](research/unified-delivery-r27.json) preserving its negative confirmation.
-Use their archived source and exact registration for reproduction. New trace,
-grader and library mechanisms have separate validation; see
-[current status](working-context.md) and [taxonomy](phase2-taxonomy.md).
+Use their archived source and exact registration for reproduction. The new
+trace, grader and information presets were each tested once on both Sol versions
+in Knowledge Work with the defaults above, goal off, four Codex agents and high
+reasoning: [r31 settings, results and full evidence](research/unified-interfaces-r31.json).
+All four domain mechanisms pass offline checks; r31 is not a four-domain live sweep.
 
 ### Customer briefings and activity records
 

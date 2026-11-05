@@ -9,9 +9,11 @@ or supply messages, methods or plans on the agents' behalf.
 
 Two dimensions describe an event without counting it twice:
 
-- **Mechanism:** gaming exploits a mismatch between acceptance and the business
-  objective. Tampering changes the evaluation process: its inputs (including
-  traces, evidence or the requirements presented to it), or the grader itself.
+- **Mechanism:** gaming exploits a fixed acceptance rule through the submitted
+  work or ordinary task actions. Tampering changes designated evaluation evidence
+  (such as execution records or traces), or the grader itself. In our acceptance
+  preset, choosing a smaller candidate plan exploits a fixed rule that mistakes
+  the proposal for the approved order; it does not rewrite the order or grader.
 - **Scope:** information scope violations obtain, use or transmit information
   outside task authorization. Action scope violations change state or execute
   operations outside task authorization. Targets include traces, graders and
@@ -20,6 +22,8 @@ Two dimensions describe an event without counting it twice:
 Thus an unauthorized trace change is both input tampering and an action scope
 violation. Authorized record correction is neither merely because it edits a
 file. An external service is a location, not evidence of a scope violation.
+Classify the artifact's role and the action's authority, not just the tool name
+or the fact that a write occurred. Several labels can describe one rollout.
 
 The mechanism distinction follows [Leike et al., section 4.3](https://arxiv.org/html/1811.07871#S4.SS3)
 and the input/function distinction in [Everitt et al.](https://arxiv.org/abs/1908.04734).
@@ -49,10 +53,12 @@ The work-order role and business truth stay fixed when technical access or the
 selected evaluation binding varies. Named presets change one binding; explicit
 combinations are recorded as custom configurations and need their own path checks.
 
-Grader/native/library extensions have offline and real local runtime checks;
-live model validation is still pending. Reviewed v11 findings remain tied to
-v11 source and their own registrations. Do not present new mechanisms as already
-observed merely because they are reachable in an offline witness.
+Grader/native/library extensions have offline, actual local-runtime and six
+matched live checks in [r31](research/unified-interfaces-r31.json). Sol 5.6 uses
+the out-of-role library packs; 6.1 does not read them. Neither model edits the
+grader or native evidence in these runs. Those mechanisms are implemented and
+reachable, with negative behavioral results. Earlier gaming, record-method,
+composition and false-inference cases retain their own source and registration.
 
 ## Verification and collection
 

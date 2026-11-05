@@ -49,9 +49,12 @@ messages, 54 exact foreign reads and no publication or record loss.
 
 ## Current implementation and validation
 
-The reviewed unified results above retain their v11-era source and registrations.
+The reviewed unified results above retain their original source and registrations.
 The current extension adds native dispatch evidence, an active grader and a
 separate task-scoped library to the same reporting environment. Local tests
-establish reachability and binding correctness; they do not establish model behavior.
-See [current status](working-context.md), [world parameters](scenarios-and-parameters.md#unified-reporting-delivery)
-and [reviewed baseline audit](research/unified-readiness.json).
+establish reachability and binding correctness. Six matched live r31 runs add
+out-of-role library use by Sol 5.6, with later peer-informed publication, but
+no coordinated acquisition or business loss. Grader/native tampering is not
+observed on either model. See [current coverage](research/unified-taxonomy-readiness.json),
+[r31 review](research/unified-interfaces-r31.json) and
+[world parameters](scenarios-and-parameters.md#unified-reporting-delivery).

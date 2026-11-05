@@ -16,7 +16,7 @@ Package layout:
 Harness adapters are in `../runtime/`. All inference uses AxonHub; Claude uses
 Claude Code and OpenAI uses Codex. See [current work](../../docs/working-context.md) for readiness.
 The three current Phase 2 claims have reviewed Sol/Codex evidence.
-See the [claim-to-case index](../../docs/research/phase2-readiness.json).
+See the [current claim and mechanism coverage](../../docs/research/unified-taxonomy-readiness.json).
 
 See [findings](../../docs/phase2-design.md),
 [pass criteria](../../docs/business-outcome-criteria.md),

@@ -54,11 +54,34 @@ def validate_readiness(contract, status):
     readiness_path = ROOT / status.get("readiness_reference", "")
     if not readiness_path.is_file():
         fail("current readiness index is missing")
-    claims = json.loads(readiness_path.read_text()).get("claims", {})
+    readiness = json.loads(readiness_path.read_text())
+    claims = readiness.get("claims", {})
     required = {"coordinated_adverse_outcomes", "compositional_failure", "shared_false_inference"}
     if set(claims) != required or set(status.get("claim_cases", {})) != required:
         fail("current claim coverage differs from the three maintained claims")
-    audit = json.loads((ROOT / contract["current_evidence"]["trajectory_completeness"]).read_text())["cases"]
+    if contract["current_evidence"]["phase2_readiness"] != str(readiness_path.relative_to(ROOT)):
+        fail("status and admission point to different readiness snapshots")
+    audit_path = ROOT / contract["current_evidence"]["trajectory_completeness"]
+    audit = json.loads(audit_path.read_text())
+    if audit_path != readiness_path.parent / readiness["extension_review"]:
+        fail("current interface review is not the current completeness audit")
+    verified = {a["url"]: a for a in audit.get("verified_baseline_archives", [])}
+    positive_fields = {
+        "coordinated_adverse_outcomes": "passed",
+        "compositional_failure": "composition",
+        "shared_false_inference": "shared_false_authorization_prerequisite",
+    }
+
+    def assets_in(value):
+        if isinstance(value, dict):
+            if "url" in value and "sha256" in value:
+                yield value
+            for child in value.values():
+                yield from assets_in(child)
+        elif isinstance(value, list):
+            for child in value:
+                yield from assets_in(child)
+
     for claim, entry in claims.items():
         if not entry.get("ready") or status["claim_cases"][claim] != entry.get("case"):
             fail(f"stale readiness or case selection for {claim}")
@@ -66,18 +89,47 @@ def validate_readiness(contract, status):
         if contract["current_evidence"].get(claim) != str(path.relative_to(ROOT)):
             fail(f"admission evidence differs from readiness for {claim}")
         review = json.loads(path.read_text())
-        if review.get("case") != entry["case"] or not (review.get("passed") or review.get("claim_passed")):
-            fail(f"missing matching reviewed pass for {claim}")
-        release = entry.get("evidence_release", {})
-        if not release.get("remote_digest_verified") or not release.get("archive_sha256"):
-            fail(f"complete trajectory release is unverified for {claim}")
-        evidence = audit.get(entry["case"], {})
-        if (evidence.get("archive_sha256") != release["archive_sha256"]
-                or evidence.get("native_and_atif_actors") != 4
-                or not evidence.get("atif_file_hashes_verified")):
-            fail(f"trajectory completeness audit differs for {claim}")
-        if not any(name.endswith("complete-trajectory.tar.gz") for name in release.get("assets", {})):
-            fail(f"complete trajectory asset is missing for {claim}")
+        observations = {r["case"]: r for r in review.get("rollouts", review.get("observations", []))}
+        selected = entry.get("selected_positive_cases", [])
+        if not selected or len(selected) != len(set(selected)):
+            fail(f"missing or duplicated selected cases for {claim}")
+        for case in selected:
+            if observations.get(case, {}).get(positive_fields[claim]) is not True:
+                fail(f"selected case does not support {claim}: {case}")
+            archives = [a for a in assets_in(review)
+                        if a["url"].endswith("/" + case + "-complete-trajectory.tar.gz")]
+            if not archives:
+                fail(f"complete trajectory asset is missing for {case}")
+            for asset in archives:
+                checked = verified.get(asset["url"], {})
+                if (not checked.get("remote_digest_verified")
+                        or checked.get("sha256") != asset["sha256"]
+                        or checked.get("size") != asset["size"]):
+                    fail(f"complete trajectory audit differs for {case}")
+        if sorted({observations[c]["model"] for c in selected}) != entry.get("positive_models"):
+            fail(f"positive-model summary differs for {claim}")
+
+    # New interfaces retain negative results; implementation readiness is not a pass flag.
+    expected = {(preset, model) for preset in ("grader", "trace", "information")
+                for model in ("openai/gpt-5.6-sol", "openai/gpt-6.1-sol")}
+    rows = audit.get("rollouts", [])
+    if len(rows) != len(expected) or {(r["preset"], r["model"]) for r in rows} != expected:
+        fail("current interface checks do not cover the registered paired model set")
+    if (audit["source_commit"] != readiness["behavior_commit"]
+            or audit["registration_commit"] != readiness["collection_commit"]
+            or not audit["setup"]["matched_task_tool_and_initial_file_audits"]):
+        fail("current source or matched-input audit differs")
+    for row in rows:
+        asset = row["trajectory_archive"]
+        if (row.get("native_atif_actors") != 4 or not row.get("native_atif_valid")
+                or not row.get("original_scores_preserved")
+                or not row["outcome"].get("full_action_results_match")
+                or not row["outcome"].get("final_files_match")
+                or not asset.get("remote_digest_verified")
+                or not asset["url"].endswith("/" + row["case"] + "-complete-trajectory.tar.gz")
+                or any(len(row.get(key, "")) != 64 for key in
+                       ("registration_sha256", "evidence_manifest_sha256", "post_review_manifest_sha256"))):
+            fail("incomplete current interface evidence: " + row["case"])
 
 
 def validate_phase1_results(contract):

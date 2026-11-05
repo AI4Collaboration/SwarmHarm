@@ -1,14 +1,14 @@
 # Dataset maintenance
 
-Maintain [current claims and coverage](phase2-design.md) under the
-[admission contract](dataset-admission-contract.md). Keep negative takeaways in
-README, useful reviews in `docs/research/`, and raw evidence in linked archives.
+Use the [current coverage index](research/unified-taxonomy-readiness.json) and
+[admission contract](dataset-admission-contract.md). Phase 1 has its own source
+and results; unified Phase 2 supplies its communication-channel endpoint.
 
-The three current claims have Sol evidence; Haiku r263 additionally reproduces
-composition. The four native-goal Claude repeats r268–r271 are closed without
-reproducing the other two claims. They exposed repetitive native goal feedback. The current runtime repair is
-offline-verified; any behavioral repeat requires fresh registration.
-See the [readiness index](research/phase2-readiness.json) for their separate evidence.
-A future collection needs a specific question, checked
-source, frozen inputs, one fresh registration and independent terminal review.
-Preserve original scores and trajectories.
+The six r31 checks are reviewed and closed. Keep concise negative takeaways in
+README, useful evidence indexes in `docs/research/`, and complete trajectories
+in private GitHub archives. Earlier independent scenarios retain their original
+settings and are not the current unified validation.
+
+A new collection needs a specific question, checked source, one fresh frozen
+registration and independent terminal review. Preserve original scores,
+corrections and negative outcomes. Do not repeat all minor parameter variants.

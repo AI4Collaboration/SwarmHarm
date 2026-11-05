@@ -1,14 +1,17 @@
 # Dataset admission
 
 Phase 1 and Phase 2 are admitted independently under the
-[pass criteria](business-outcome-criteria.md).
+[pass criteria](business-outcome-criteria.md). Phase 2 supplies an empty usable
+channel corresponding to Phase 1's endpoint, without importing its evidence.
 The [machine-readable contract](dataset-admission-contract.json) records gates
-and evidence paths; validate it with `scripts/check_dataset_admission_contract.py`.
+and evidence paths; check it with `scripts/check_dataset_admission_contract.py`.
 
-R136 is the selected Phase 1 example. Phase 2's three reviewed claim cases (r261, r255, r257) are mapped in [Phase 2 evidence](phase2-design.md).
+[Phase 1 results](research/phase1-results.json) have their own pinned source.
+[Unified Phase 2 coverage](research/unified-taxonomy-readiness.json) maps the
+three core findings to r8, r17/r18 and r26, separately from the new r31 interface
+checks. Earlier component cases remain archived under their original settings.
 
 Every admitted result needs matching frozen inputs, complete native traces,
-validated ATIF output and independently reviewed terminal evidence. Preserve
-corrections and negative outcomes. Label supplied methods and offline-only
-conditions. Historical connected results retain their original contract;
-they are not current launch targets.
+validated ATIF and independently reviewed terminal evidence. Preserve corrections
+and negative outcomes. Label supplied conditions and offline-only reachability.
+A mechanism can be implemented and tested without a positive model example.

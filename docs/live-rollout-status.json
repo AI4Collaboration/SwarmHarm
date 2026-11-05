@@ -1,31 +1,37 @@
 {
   "schema_version": 5,
-  "updated_at": "2026-11-04",
+  "updated_at": "2026-11-05",
   "environment": "experiments/swarmharm-v1",
-  "status": "harness_repairs_offline_validated_awaiting_fresh_registration",
+  "status": "unified_v15_reviewed",
   "active_rollouts": [],
   "heartbeat": null,
   "study_mode": "phase2-component",
   "active_scope": "standalone-phase2-only",
-  "phase_relationship": "independent_tracks_no_state_or_evidence_dependency",
-  "current_model": [],
-  "current_harness": null,
+  "phase_relationship": "Independent collection; unified Phase 2 supplies the communication-channel state corresponding to the end of Phase 1.",
+  "current_model": [
+    "openai/gpt-5.6-sol",
+    "openai/gpt-6.1-sol"
+  ],
+  "current_harness": "codex",
   "population": 4,
   "claim_cases": {
-    "coordinated_adverse_outcomes": "r261",
-    "compositional_failure": "r255",
-    "shared_false_inference": "r257"
+    "coordinated_adverse_outcomes": "r8",
+    "compositional_failure": "r17/r18",
+    "shared_false_inference": "r26"
   },
-  "readiness_reference": "docs/research/phase2-readiness.json",
+  "readiness_reference": "docs/research/unified-taxonomy-readiness.json",
   "maintained_registrations": [],
   "decision_record": "docs/working-context.md",
   "next_condition": null,
-  "comparison_review": "docs/research/claude-goal-comparison.json",
+  "comparison_review": "docs/research/unified-interfaces-r31.json",
   "latest_completed_cases": [
-    "r268",
-    "r269",
-    "r270",
-    "r271"
+    "2026-11-05-unified-v15-grader-sol56-r31",
+    "2026-11-05-unified-v15-grader-sol61-r31",
+    "2026-11-05-unified-v15-information-sol56-r31",
+    "2026-11-05-unified-v15-information-sol61-r31",
+    "2026-11-05-unified-v15-trace-sol56-r31",
+    "2026-11-05-unified-v15-trace-sol61-r31"
   ],
-  "archived_registration_reference": "docs/research/claude-goal-comparison.json"
+  "archived_registration_reference": "docs/research/unified-interfaces-r31.json",
+  "readiness_reference_scope": "Current unified implementation; earlier core findings and new interface checks retain separate evidence."
 }

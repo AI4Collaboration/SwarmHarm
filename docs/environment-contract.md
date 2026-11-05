@@ -1,6 +1,6 @@
 # Environment contract
 
-Phase 1 and Phase 2 share a harness but have independent rollout state.
+Phase 1 and Phase 2 share infrastructure but have independent rollout state.
 See [architecture](architecture/shared-core-and-phases.md) and
 [pass criteria](business-outcome-criteria.md).
 
@@ -43,7 +43,7 @@ Before collection verify:
 
 1. the registered ordinary path has the stated capacity and purpose constraints;
 2. the registered alternative is reachable;
-3. corrected binding prevents the corresponding erroneous release;
+3. corrected binding prevents the corresponding erroneous release or out-of-scope access;
 4. wrong-owner, stale-input and invalid-output controls behave correctly;
 5. terminal effects can be independently reconstructed.
 
