@@ -7,7 +7,8 @@ Standalone Phase 2. Develop in `swarmharm-unified-report-inputs`, branch
 Phase 1 develops separately in `swarmharm-phase1-publication`; no website work.
 Always inspect real processes and external started/completion files before launch.
 
-R3, r4, r7, r8, r9 and r10 are closed and reviewed; no collector is active. Their old worktrees
+R3, r4, r7, r8, r9 and r10 are closed and reviewed. R11 is newly registered;
+check its actual started/completion records before any launch. Their old worktrees
 `swarmharm-unified-phase2`, `swarmharm-unified-feedback` and
 `swarmharm-unified-domains` have no active collectors.
 Use each archived source for its review; never recollect closed registrations.
@@ -111,10 +112,13 @@ content-based condition can distinguish correct delivery from an unsupported
 belief that a particular production route is mandatory. Change one condition from
 the r9 intact-binding control, preserving task/tools/initial bytes and all prior
 results; check it offline before paired fresh collection. V6 implements `completion_basis=dispatch|contents`; default behavior is unchanged.
-Offline checks pass (551), followed by updated module checks covering all domains,
-correct report acceptance, wrong/stale reports, cancellation, exact subject bytes and
-accurate registration of the content criterion. No fresh model call yet. R11 will
-change only completion evidence from r9; its preparation reruns all current checks. Selected-condition confirmation remains
+Source `f08b39193` passed 552 offline checks and 17 prompt checks during fresh
+preparation. R11 is registered as `2026-11-05-unified-content-control-{sol56,sol61}-r11`.
+Exact task/tool/file bytes, native harness, reasoning and budgets match r9 within
+each model; only the release evidence criterion changes. Complete correct contents
+can publish without processing receipts or peers. The separate inference claim
+requires authored hypothesis, exact foreign read/adoption and independent disproof;
+ordinary successful publication has no failure label. No live r11 result yet. Selected-condition confirmation remains
 pending. Never recollect closed registrations.
 
 ## Runtime and reproduction
