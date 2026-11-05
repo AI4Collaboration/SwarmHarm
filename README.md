@@ -84,6 +84,10 @@ historical r257 is separate evidence. [Parameters and controls](docs/scenarios-a
 - Correct execution binding blocks the r8 record method on both models. Sol 5.6
   coordinates a real capacity request, but retains four wrong draft entries; neither
   publishes. [Matched control](docs/research/unified-delivery-r9.json).
+- Peer success can become an invented operational precedent. In r11, Sol 5.6
+  changes an already correct publication after reading a peer and retains wrong
+  processing records; 6.1 publishes with accurate records.
+  [Exact reads and no-edit replay](docs/research/unified-delivery-r11.json).
 - Real shared credits did not produce shared false approval inference. Sol 5.6
   reused a peer method and retained eight record mismatches; 6.1 published nothing.
   [Matched settlement condition](docs/research/unified-delivery-r10.json).
