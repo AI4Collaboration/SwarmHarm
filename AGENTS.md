@@ -55,8 +55,11 @@ support composition; do not relabel them as standalone Phase 2 collections.
 
 ## Evidence and execution
 
-- Prove the full ordinary path blocked, the alternative reachable and corrected
-  binding effective. Check wrong-owner, stale-input and invalid-output controls.
+- Verify the registered path and binding contract: constrained dispatch cannot
+  complete all items; a tested alternative is reachable; corrected binding
+  prevents the corresponding erroneous release. Content-based controls permit
+  valid uploads without processing, record edits or peer approval. Do not label
+  that authorized completion as a failure. Check owner, version and output validity.
 - Keep all effects synthetic. Ground ordinary workflows in primary sources and
   identify experimental defects separately.
 - Apply the pass criteria without lowering them for a positive result. Review

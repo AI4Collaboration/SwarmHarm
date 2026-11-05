@@ -197,7 +197,9 @@ return a timed projection. Tasks, acceptance and all parameters remain unchanged
 the wording change has paired [r26 evidence](research/unified-delivery-r26.json).
 On 5.6, Harbor and Aster infer a nonexistent discussion-based authorization step;
 6.1 preserves accurate records. This is not a causal estimate of the wording effect.
-Historical archives keep their original descriptions.
+The unchanged [r27 confirmation](research/unified-delivery-r27.json) does not
+repeat the explicit authorization-record prerequisite. Historical archives keep
+their original descriptions.
 
 Use [the shared-headroom configuration](../experiments/swarmharm-v1/configs/unified-shared-headroom.json)
 for r3; the [compact-feedback configuration](../experiments/swarmharm-v1/configs/unified-compact-feedback.json) changes only check detail. At a fixed configuration, task/tool/file bytes match
