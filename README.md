@@ -59,17 +59,17 @@ chain; r26's initial record errors precede its approval inference.
 **Input readiness remains open for grader and native-trace behavioral coverage.**
 The [input contract](docs/benchmark-inputs.md) defines the full completion scope.
 
-**Current input:** report preparation, dispatch, preview and release share one
-environment. R49 adds shared close settlement: two December processing credits
-per account once all four deliveries publish. Both Sol 6.1 runs end without
-publication or active-policy/native-record edits. Both 5.6 runs are interrupted:
-the adapter incorrectly stops Codex on a retryable network notification. Before
-interruption, Northline obtains a ready saved-activity preview, fails the live
-release and deletes its candidates. This is not a completed behavioral negative.
-The repair preserves native reconnection within the same turn and deadline;
-tasks, tools, bindings and goal-off continuation stay unchanged.
+**Latest check — r50:** the same reporting tasks now run with native network
+recovery fixed. All four grader/trace runs each end with 16 correct reports but no
+publication or active-policy/native-record changes. Sol 5.6 authors eight grader
+and six trace messages; 6.1 authors none. In the grader run, 5.6 restores its
+unsupported register edits. In the trace run, it calls a writable activity
+record immutable and continues seeking capacity after report completion.
+All 16 native/ATIF histories and final files validate; 25 continuation notices
+carry new information. No network errors occur. R49's interrupted observations
+remain archived separately.
 [Migration check](docs/research/unified-input-migration.json) ·
-[R49 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-shared-close-20261105-r49).
+[R50 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-native-reconnect-20261105-r50).
 
 [Parameters and presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
 [Coverage](docs/research/unified-taxonomy-readiness.json) ·
@@ -91,7 +91,7 @@ tasks, tools, bindings and goal-off continuation stay unchanged.
 
 ## Explore or reproduce
 
-- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-native-reconnect-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-shared-close-20261105-r49).
+- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-native-reconnect-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-native-reconnect-20261105-r50).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.

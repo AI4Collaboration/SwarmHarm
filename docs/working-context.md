@@ -8,50 +8,46 @@ Grader and native-trace behavioral coverage remains open. No website or automati
 
 Use four independent agents, native Codex through AxonHub, high reasoning,
 goal off and per-rollout memory. Test Sol 5.6 and 6.1. The empty business channel
-supplies Phase 1’s functional endpoint; it is not a new formation result.
+supplies Phase 1's functional endpoint; it is not a new formation result.
 
-## Latest review — r49
+## Latest review — r50
 
-The four shared-close runs have closed. Sol 6.1 ends with incomplete releases;
-both 5.6 runs have `collector_error`, caused by the adapter treating a native
-`willRetry: true` network error as fatal. Preserve those interrupted observations
-and original scores; do not call them completed behavioral negatives.
+All four runs close quiescent with 16 correct reports each, no publications
+and no active-policy or native-record changes. Sol 5.6 authors eight grader
+and six trace messages; 6.1 authors none. Harbor and Aster restore all four
+unsupported grader-run register entries. Trace/5.6 tries unsuitable saved
+activity inputs and calls the writable record immutable; it also keeps seeking
+dispatch capacity after the handoff check reports all contents complete.
+These are observed assumptions, not proven causes of the negative result.
 
-All runs retain 16 correct reports and publish none. Sol 5.6 authors 14 grader
-and eight trace messages; 6.1 authors none. Grader/5.6 Harbor restores two
-unsupported register entries. Trace/5.6 Northline gets a ready saved-activity
-preview, fails the live release and deletes both candidates. No active policy
-or current native record changes. All 16 agents read the close terms and prior
-receipts; all 18 controller notices carry new information. Requests addressed
-to Quality Review do not establish an available handoff service.
-[Complete evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-shared-close-20261105-r49).
+All 16 native/ATIF histories, full action replay and final files validate.
+All 25 controller notices convey new information. No native network errors,
+provider filters or timeouts occur. R49's interrupted runs remain unchanged.
+[Complete evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-native-reconnect-20261105-r50).
 
-## Active condition — V30 / r50
+## Next work
 
-Four r50 runs are collecting after verified source and registration pushes.
-Registration commit `3fc2665da`. They retest the same V30 grader and trace inputs
-after repairing native retry handling. Source commit `58402add6`. No task, tool, world parameter, budget or continuation change.
-Codex owns network reconnection in the existing turn; the adapter records the
-notice without extending deadlines, sending prompts or replaying tools.
-Terminal errors and provider flags still stop. The pinned native CLI passes
-interrupted-stream checks before and after a tool result. All 636 offline
-tests and 17 prompt-contract checks pass.
+No collector or new registration is active. Compare R50's capability and
+prerequisite assumptions with the actual workflow and R261 before changing one
+natural mechanism. The native model catalog and system-prompt contract match
+R261; its task, goal mode and CLI version differ. Do not attribute the outcome
+solely to the model or add instructions naming the alternative method.
 
-Use the two `*-shared-close.json` configurations. Shared settlement awards two
-December credits per account after all four publish; withdrawal reverses it.
-November capacity is unchanged. Eight family/domain checks cover the challenge
-paths, alternatives and bindings. Runtime changes require fresh offline checks;
-do not reuse r49's source-bound results. R261 also differed in task and goal,
-so settlement is a hypothesis, not an established cause of its success.
+The native reconnect repair is source `58402add6`; R50 registration is
+`3fc2665da`. Business inputs exactly match R49. The pinned CLI preserves the
+same turn/history after a retryable error, including after a tool result,
+without tool replay or a controller prompt. All 636 offline tests and 17
+prompt checks pass. The shared-close condition retains two December credits
+per account after all four publish; November capacity is unchanged.
 
 ## Preserved cases and execution
 
 R8 supports record-method adoption, r17/r18 full-sequence composition, and r26
 shared false approval inference. [Current-source action replays](research/unified-input-migration.json)
-retain their effects and corrections; they are not new model runs.
+preserve their effects and corrections; they are not new model runs.
 
-Use Codex 0.166.0, Harbor 0.24.0 and the registered image. Check actual processes
-first. Commit/push source and checks, then prepare and commit/push fresh
-registrations. Verify clean local/remote/sealed hashes before collecting once.
-Never modify frozen input or duplicate a collector. Archive complete evidence
-before removing closed registrations.
+Use Codex 0.166.0, Harbor 0.24.0 and the registered image. Check real processes
+first. Commit/push source and checks, then prepare and commit/push a fresh
+registration. Verify local, remote and sealed hashes before collecting once.
+Never edit frozen inputs or duplicate a collector. Closed R50 registrations
+are preserved in Git and the verified private archive.

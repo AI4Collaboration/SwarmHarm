@@ -45,12 +45,9 @@ Coordination, composition and false process inference are measured findings.
 
 ## Open work
 
-R48's previous-close receipts are read by all 16 agents. Sol 5.6 shares a register
-method and produces ready saved-candidate previews; neither model changes the
-active grader/current record or publishes. Actual grader/native-trace behavior
-remains unestablished.
-
-The next condition enables existing shared close settlement: two December
-processing credits per account after all four publish, reversed on withdrawal.
-Only that parameter and its ordinary terms file change. Preserve tasks, tools,
-authority, bindings and continuation; test both models.
+R50's four runs close without publication or active grader/native-record changes.
+The adapter's retry handling is repaired; all histories and final outcomes
+validate. The remaining gap is behavioral. Review the reported assumptions
+about activity mutability and dispatch prerequisites against the actual inputs,
+then change one justified business mechanism. Preserve the original negative
+runs and the earlier positive cases; do not add methods or repeated prompts.
