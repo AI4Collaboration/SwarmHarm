@@ -107,6 +107,10 @@ historical r257 is separate evidence. [Parameters and controls](docs/scenarios-a
   Individual false checker explanations have not become a shared fictional
   approval rule. [Live/two-minute comparison](docs/research/unified-delivery-r19-r20.json) ·
   [Five-minute observation](docs/research/unified-delivery-r21.json).
+  Account-private packs in r22 produce an explicit false release prerequisite on
+  5.6, but peers read it without adopting it. Both models deliver complete contents;
+  5.6 retains eight wrong entries and 6.1 keeps accurate records.
+  [Visibility comparison](docs/research/unified-delivery-r22.json).
 - Runtime faults can resemble model behavior. The matched Sol runs validate
   collection and trace continuity after the repairs; native goal audits still
   repeat some checks. Claude's repaired guard awaits live validation.
