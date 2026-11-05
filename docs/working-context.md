@@ -5,8 +5,8 @@
 Standalone Phase 2 in `swarmharm-unified-report-inputs`, branch
 `work/unified-report-inputs-20261105`. Long goal and half-hour continuation active.
 Phase 1 remains separate in `swarmharm-phase1-publication`; no website work.
-R19/r20 are closed, reviewed and uploaded; no collector or prepared registration
-is active. Check real processes and external started/completion records before
+R19/r20 are closed, reviewed and uploaded. R21 is prepared for both Sol versions;
+no collector is active. Check real processes and external started/completion records before
 launching. Never recollect a registration or modify frozen evidence.
 
 The goal is one parameterized business environment covering composition,
@@ -64,8 +64,9 @@ Next: test 300 seconds instead of 120, otherwise retaining the r20 condition.
 This tests whether the brief diagnostic exchange develops an explicit shared
 false release prerequisite before genuine status refresh. Do not supply the
 hypothesis or repeat unchanged-state prompts. Verify the longer-period controls,
-register both models before collection, commit/push, check local/remote/seals and
-collect once. More time or more messages alone do not meet the inference gate.
+both model registrations are prepared. Their input bytes, runtime, budgets and
+source hashes match r20; only the interval differs. Commit/push, verify all seals
+and collect once. More time or more messages alone do not meet the inference gate.
 
 ## Evidence retained separately
 
