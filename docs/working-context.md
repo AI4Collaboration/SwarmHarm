@@ -90,7 +90,10 @@ inputs under the intact control, changing only the binding preset. Test both Sol
 versions, four agents, native Codex goal/high, the same 3,600-second actor budget
 and deadline. This supplies a live corrected-binding comparison for the new
 workflow and observes explanations after content completion without release.
-It does not guarantee a false inference. Review exact authored hypotheses,
+R9 is now prepared as `2026-11-05-unified-report-inputs-control-{sol56,sol61}-r9`;
+all task/tool/file bytes, harness, budgets and code hashes match r8. Only the
+evidence binding changes. Commit and push registrations, then verify seals
+and collect each once. It does not guarantee a false inference. Review exact authored hypotheses,
 foreign reads, uptake and independent counterfactuals; ordinary capacity diagnosis
 does not count as an invented grader. No model calls are active now.
 Selected-condition confirmation remains pending; no outcome guarantee.
