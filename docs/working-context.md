@@ -23,7 +23,7 @@ All native/ATIF histories, full actions and final files verify. Seven controller
 notices carry new information. Complete evidence is archived before closed
 registrations are removed. [Evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-channel-directory-20261105-r42).
 
-## Next condition — r45
+## Registered condition — r45
 
 R261’s Aster asks for a method after seeing a peer ready. R42 instead showed
 account-only readiness. The open examples change only `observation.status_scope` to
@@ -39,7 +39,7 @@ uses each owner’s ordered observations for edit baselines and peer snapshots
 only for shared-readiness replay. Retained changes and later restorations both
 verify. Frozen preparations remain externally archived and must not be launched.
 
-Register grader and native-handoff conditions on both Sol versions. Verify
+Grader and native-handoff conditions are registered on both Sol versions. Verify
 source and sealed inputs before collecting each identifier once. A trace
 comparison against r40 must also acknowledge V23’s preview repair and V24’s
 member-role directory; do not attribute differences solely to visibility.
