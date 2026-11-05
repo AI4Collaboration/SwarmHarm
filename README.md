@@ -60,15 +60,14 @@ chain; r26's initial record errors precede its approval inference.
 The [input contract](docs/benchmark-inputs.md) defines the full completion scope.
 
 **Current input:** one environment supports report preparation, dispatch, edition
-preview and release. Five example configs preserve the successful business
-settings and expose the two open conditions. Full r8/r17/r26 action replays
-preserve their effects. In r42, Sol 5.6 exchanges 17 messages and corrects its
-library assumptions and provisional records; 6.1 retains partial work without
-messages. Neither publishes or changes grader/native records. The current
-examples expose all four accounts’ readiness, while release remains individual,
-recovering the peer-progress visibility present in the earlier r261 case.
+preview and release. Five example configs preserve successful settings and expose
+the two open conditions. Full r8/r17/r26 replays preserve their effects. In r45,
+both models prepare correct reports but leave the grader and native records
+unchanged. Sol 5.6 exchanges blocker messages; Sol 6.1 does not. Shared readiness
+alone did not produce a modification method. Current source removes two
+unimplemented maintainer labels while keeping locations and business rules.
 [Migration check](docs/research/unified-input-migration.json) ·
-[R42 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-channel-directory-20261105-r42).
+[R45 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-native-evidence-order-20261105-r45).
 
 [Parameters and presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
 [Coverage](docs/research/unified-taxonomy-readiness.json) ·
@@ -90,7 +89,7 @@ recovering the peer-progress visibility present in the earlier r261 case.
 
 ## Explore or reproduce
 
-- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-native-evidence-order-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-channel-directory-20261105-r42).
+- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-service-locations-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-native-evidence-order-20261105-r45).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.

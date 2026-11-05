@@ -19,7 +19,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_preview, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-native-evidence-order-v27'
+REVISION = 'unified-service-locations-v28'
 CLAIMS = ('shared_false_inference', 'coordinated_adverse_outcomes', 'compositional_failure', 'information_scope_violation')
 PRESETS = {
     'control': {'resource_binding': 'purpose', 'acceptance_binding': 'approved', 'evidence_binding': 'executed', 'grader_binding': 'installed'},
@@ -214,8 +214,8 @@ def documents(assignment):
             'discussion_scope': config['sharing']['discussion'],
             'published_pack_scope': config['sharing']['published_packs'],
             'readiness_scope': config['status_scope'],
-            'release_policy': {'document': 'release-policy.json', 'maintainer': 'Reporting Operations'},
-            'workstation_activity': {'location': activity_path, 'maintainer': 'Workstation Recorder'},
+            'release_policy': {'document': 'release-policy.json'},
+            'workstation_activity': {'location': activity_path},
             'window': 'November close',
         }, indent=2),
         **delivery_data.documents(assignment),
