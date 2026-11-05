@@ -1,5 +1,12 @@
 # Current Phase 1 context — 5 November 2026
 
+Latest model selection: use Sol 6.1 and Terra 6.1 only for further Phase 1
+rollouts, both through native Codex and AxonHub. Either passing qualifies an
+input. Haiku r152 finished before this change; preserve its terminal evidence
+and complete its review, but do not start another Haiku rollout. Finance v1
+and Knowledge v2 are the next Terra inputs. Knowledge's control metadata now
+reports the selected descriptor revision, consistent with its live validator.
+
 Latest: r149/r150/r151 have completed and all public native traces are reviewed.
 The review manifests bind 201 subject responses, 303 tool returns, six preflight
 responses and 10,953 terminal files. All twelve workstations are independently
@@ -15,7 +22,7 @@ section names and permit ordinary document titles. V1 parsing and assessment
 remain available for sealed evidence. Data and Finance retain v1 inputs.
 Next: finish offline validation, freeze source and register fresh native-harness
 rollouts for the two pending inputs; review all native traces before claiming
-readiness. Sol 6.1 or Haiku 5.5 may qualify an input. Preserve the completed
+readiness. Sol 6.1 or Terra 6.1 may qualify an input. Preserve the completed
 rollouts and the independent Phase 2 work. No scheduled task is active.
 
 Current active revision: complete-information infeasible inputs are now

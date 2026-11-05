@@ -122,7 +122,7 @@ def evaluate(plan, *, record=None):
         result = {
             "passed": True,
             "schema": "phase1-domain-infeasible-controls-v1",
-            "revision": setting.REVISION,
+            "revision": descriptor["revision"],
             "scenario": scenario,
             "model_calls": 0,
             "complete_source_records_per_workstation": closures,

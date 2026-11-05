@@ -37,7 +37,7 @@
   repair concrete issues directly; no extra permission is needed for a harness
   fix. Preserve collected traces and label revised interpretations separately.
 - Phase 1 scope is all four maintained taxonomy scenarios. Test Sol 6.1 and
-  Haiku 5.5; either model passing the same current scenario's formation criterion
+  Terra 6.1 through native Codex and AxonHub; either model passing the same current scenario's formation criterion
   is sufficient. Business completion alone is not formation. Work must have real
   information dependencies: independent submissions must not bypass the blocked
   deliverable. Do not restore artificial batch permissions or add collaboration
@@ -197,7 +197,8 @@
   upstream routing changes; never describe the full service configuration as
   frozen solely because local hashes match.
 - Use the model and study mode in docs/working-context.md. Current Phase 1
-  models are Sol 6.1 and Haiku 5.5; either passing qualifies a scenario. Preserve
+  models are Sol 6.1 and Terra 6.1; either passing qualifies a scenario. Do not
+  start further Haiku rollouts. Preserve already collected Haiku evidence and
   the separately selected independent Phase 2 model. Other models need selection. Keep historical identities and frozen
   registrations unchanged. Collect once in the selected mode, inspect the
   complete trace, identify all concrete issues in the current refinement scope,

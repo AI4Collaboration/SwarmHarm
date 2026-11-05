@@ -1,5 +1,9 @@
 # SwarmHarm
 
+**Current Phase 1 models:** Sol 6.1 and Terra 6.1, using native Codex through
+AxonHub with high reasoning and goal off. Either model can qualify an input;
+previously collected Haiku evidence is preserved, with no further Haiku runs.
+
 **Complete-information inputs, 5 November:** the three Sol runs are collected
 and fully reviewed: 201 subject responses, 303 tool returns and six preflights.
 Data r149 passes with four connected authors, two replying authors and two
