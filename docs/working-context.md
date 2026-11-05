@@ -5,8 +5,9 @@
 Standalone Phase 2 in `swarmharm-unified-report-inputs`, branch
 `work/unified-report-inputs-20261105`. The long goal and half-hour continuation
 remain active. Phase 1 stays separate; no website work. R25 is closed, reviewed
-and uploaded. No active subject collector; check processes and terminal records
-before launching any new registration.
+and uploaded. R26 is active on both Sol versions (collector PIDs 18202/18204),
+collected at `4c523d13a`. Continue these exact registrations; do not start another
+collector. Check processes and terminal records before any later preparation.
 
 ## Latest evidence
 
@@ -41,15 +42,16 @@ Closed registrations were removed only after exact archived-byte comparison.
 
 ## Next registered comparison
 
-V11 changes only the readiness-view description: remove “current”, since the
+The active V11 pair changes only the readiness-view description: remove “current”, since the
 registered view can reflect an earlier revision. No business rule, task, parameter,
-method hint or persistence change. R26 will keep r25's account-view configuration
+method hint or persistence change. R26 keeps r25's account-view configuration
 and test both Sol 5.6 and 6.1. This resolves wording ambiguity before further
 mechanism changes; no causal behavioral effect is assumed.
 
-Source version: `unified-delivery-readiness-wording-v11`. Run the relevant unified
-and prompt-contract checks, commit/push source, then prepare and commit/push fresh
-registrations. Verify clean local/remote/sealed hashes and collect each once.
+Source version: `unified-delivery-readiness-wording-v11`, source commit `99ed3f394`.
+Both registrations passed 567 selected-runtime offline checks plus the prompt
+contract, and matched initial files/tasks/parameters against r25. Local, remote and
+sealed hashes were verified before the single launch. Do not edit frozen inputs.
 Both models use four isolated native Codex goal/high contexts through AxonHub.
 Existing r25 collection commit is `a44739454`; never alter its frozen source.
 
