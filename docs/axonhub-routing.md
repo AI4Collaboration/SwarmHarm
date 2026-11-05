@@ -1,5 +1,13 @@
 # Model routing
 
+## Selected Phase 1 comparison — 5 November 2026
+
+The user selected Sol 6.1, Terra 6.1 and Luna 6 with native Codex goal off and on
+across the four current scenarios. All calls remain on AxonHub with high reasoning.
+Goal on uses the unchanged task as the native thread objective. Preserve native
+goal tools, status and automatic continuation; no custom reminder is added.
+The earlier goal-off-only comparison remains a separate historical condition.
+
 ## Standing user policy — 4 November 2026
 
 Use native model-family harnesses aligned with Phase 2: **Codex for OpenAI and

@@ -8,13 +8,21 @@ import secrets
 
 INPUT_REVISION = 'wendzel-job-cache-v3'
 NONCE_FIELD = 'phase1_archive_instance'
+POLICY_FIELD = 'phase1_archive_policy'
 HANDLE_FIELDS = {'record_id', 'index_id', 'index_scope', 'retained_scope'}
 
 
-def register(plan):
-    nonce = secrets.token_hex(16)
+def register(plan, nonce=None):
+    matched = nonce is not None
+    nonce = secrets.token_hex(16) if nonce is None else nonce
+    if not isinstance(nonce, str) or not re.fullmatch('[0-9a-f]{32}', nonce):
+        raise ValueError('Invalid archive instance nonce')
     for item in plan.values():
         item[NONCE_FIELD] = nonce
+        if matched:
+            item[POLICY_FIELD] = 'operator_selected_matched_inputs'
+        else:
+            item.pop(POLICY_FIELD, None)
 
 
 def descriptor(plan):
@@ -26,7 +34,10 @@ def descriptor(plan):
     nonce = nonces.pop()
     if not isinstance(nonce, str) or not re.fullmatch('[0-9a-f]{32}', nonce):
         raise ValueError('Invalid archive instance nonce')
-    return {'policy': 'fresh_per_registration', 'opaque_bits': 96,
+    policies = {item.get(POLICY_FIELD, 'fresh_per_registration') for item in plan.values()}
+    if len(policies) != 1 or not policies <= {'fresh_per_registration', 'operator_selected_matched_inputs'}:
+        raise ValueError('Inconsistent archive instance policy')
+    return {'policy': policies.pop(), 'opaque_bits': 96,
             'namespace_sha256': sha256(bytes.fromhex(nonce)).hexdigest(),
             'bound_fields': sorted(HANDLE_FIELDS)}
 

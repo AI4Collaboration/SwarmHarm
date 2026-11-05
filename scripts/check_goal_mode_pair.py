@@ -2,7 +2,7 @@
 """Confirm two prepared rollouts form a goal-mode comparison pair.
 
 The pair must use one plain-prompt (`off`) and one goal-enabled
-(`goal_command` for Pi, `claude_goal` for Claude Code)
+(`goal_command` for Pi, `claude_goal` for Claude Code, `codex_goal` for Codex)
 registration. Independent components compare the declared private-plan harness
 with native Pi goal, removing only the registered private-plan instruction/tools
 and goal-condition protocol from comparison. All business prompts, tool schemas,
@@ -74,6 +74,18 @@ def comparable(root, reg):
         value['component_initial_state']['truth_sha256'] = digest(value['component_truth'])
     value.pop('created_at')
     value['route_confirmation'].pop('checked_at')
+    if value['harness'].get('kind') == 'codex':
+        harness = value['harness']
+        goal_tools = {'create_goal', 'get_goal', 'update_goal'}
+        enabled = harness['goal_mode'] == 'codex_goal'
+        for field in ('builtin_tools', 'extension_tools'):
+            actual = set(harness[field]) & goal_tools
+            if actual != (goal_tools if enabled else set()):
+                raise ValueError(f'Codex {field} does not match its native goal condition')
+            harness[field] = [name for name in harness[field] if name not in goal_tools]
+        if ('goals' in harness['disabled_features']) == enabled:
+            raise ValueError('Codex goals feature does not match its native goal condition')
+        harness['disabled_features'] = [name for name in harness['disabled_features'] if name != 'goals']
     for field in GOAL_FIELDS:
         value['harness'].pop(field,None)
     if value['harness'].get('kind')=='claude-code':
@@ -124,7 +136,8 @@ def check(first, second, allow_verifier_update=False):
     modes = sorted(reg['harness']['goal_mode'] for _, reg in regs)
     problems = []
     kinds={reg['harness']['kind'] for _,reg in regs}
-    expected=['claude_goal','off'] if kinds=={'claude-code'} else ['goal_command','off']
+    expected=(['codex_goal','off'] if kinds=={'codex'} else
+              ['claude_goal','off'] if kinds=={'claude-code'} else ['goal_command','off'])
     if modes != expected:
         problems.append(f'goal modes are {modes}; this harness pair needs {expected}')
     for _,reg in regs:

@@ -30,6 +30,20 @@ def world_for(scenario, profile):
 
 
 class CacheChannelChecks(unittest.TestCase):
+    def test_matched_archive_instance_reproduces_rows_and_default_stays_fresh(self):
+        for scenario in channel_design.DOMAINS:
+            first=plan_for(scenario,'cache_value');second=plan_for(scenario,'cache_value')
+            fixture_ids.register(first,'ab'*16);fixture_ids.register(second,'ab'*16)
+            self.assertEqual([lab.batch_for(v) for v in first.values()],
+                             [lab.batch_for(v) for v in second.values()])
+            self.assertEqual(fixture_ids.descriptor(first)['policy'],'operator_selected_matched_inputs')
+            fixture_ids.register(second)
+            self.assertEqual(fixture_ids.descriptor(second)['policy'],'fresh_per_registration')
+            self.assertNotEqual(fixture_ids.descriptor(first)['namespace_sha256'],
+                                fixture_ids.descriptor(second)['namespace_sha256'])
+        for bad in ('x'*32,'ab'*15,23):
+            with self.assertRaises(ValueError):fixture_ids.register(first,bad)
+
     def test_old_archive_handles_fail_and_current_locator_chain_works_in_four_domains(self):
         for scenario in channel_design.DOMAINS:
             with self.subTest(scenario=scenario):

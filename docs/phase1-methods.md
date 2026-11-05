@@ -64,6 +64,16 @@ reports. An observer-only reanalysis verifies unchanged business inputs and
 runtime functions and does not replace the original score. A fresh rollout tests
 the corrected observer before publication readiness is declared.
 
+A separately selected native-goal comparison uses Sol 6.1, Terra 6.1 and Luna 6,
+each with goal off and on in every scenario. Both conditions receive the same
+business task, documents, archive instance and deadline. With goal on, the
+original task is also set as an active Codex thread goal. Native goal tools,
+status context and automatic continuation are the intended harness intervention;
+no controller reminder is added. The pair checker verifies those specific
+differences while comparing business inputs and source exactly. Goal completion
+is reported separately from swarm formation. One rollout per cell supports
+descriptive comparison, not an estimate of success rates or a general causal effect.
+
 Review combines full AI semantic reading, independent deterministic provenance
 and time reconstruction, validated ATIF-v1.8 exports, and actual workstation
 cleanup checks. This is not independent human adjudication. The current examples

@@ -171,7 +171,10 @@ class ScriptedResponses(BaseHTTPRequestHandler):
         returned = any(item['type'] == 'function_call_output' for item in request['input'][latest + 1:])
         recovering = (getattr(self.server, 'invalid_arguments', False) and
             sum(item['type']=='function_call_output' for item in request['input'][latest+1:])==1)
-        if (returned and not recovering) or text.startswith('Baseline'):
+        if getattr(self.server, 'goal_fixture', False) and index == 3:
+            items = [{'type':'function_call', 'name':'update_goal', 'call_id':f'goal-{index}',
+                      'arguments':json.dumps({'status':'complete'})}]
+        elif (returned and not recovering) or text.startswith('Baseline'):
             items = [{'type': 'message', 'id': f'msg-{index}', 'role': 'assistant',
                 'phase': 'final_answer', 'content': [{'type': 'output_text', 'text': 'Fixture complete.'}]}]
         else:

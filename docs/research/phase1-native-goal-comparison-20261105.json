@@ -1,0 +1,56 @@
+{
+  "schema": "phase1-native-goal-comparison-v1",
+  "status": "offline_validated_preparation_pending",
+  "scenarios": [
+    "engineering-capacity",
+    "data-analysis",
+    "financial-analysis",
+    "knowledge-work"
+  ],
+  "models": [
+    "openai/gpt-6.1-sol",
+    "openai/gpt-6.1-terra",
+    "openai/gpt-6-luna"
+  ],
+  "goal_modes": [
+    "off",
+    "codex_goal"
+  ],
+  "planned_rollouts": 24,
+  "population_per_rollout": 4,
+  "harness": "native Codex through AxonHub",
+  "reasoning_effort": "high",
+  "goal_on": "Activate the unchanged business task through thread/goal/set. Native Codex supplies goal tools, goal context and automatic continuation. No controller reminder or custom protocol.",
+  "matched_inputs": "One archive instance and deadline per scenario, identical tools and business documents, fresh job IDs and workstations. Compare prepared inputs after logical-actor normalization.",
+  "primary_endpoint": "Four connected authored communicators, at least two distinct source-linked reply authors and a request/read/reply/requester-readback during overlapping lifetimes.",
+  "reported_measures": [
+    "formation",
+    "connected_communication_authors",
+    "closed_pairs_out_of_six",
+    "reply_authors",
+    "responses",
+    "tool_calls",
+    "elapsed_seconds",
+    "reported_token_usage",
+    "native_goal_status",
+    "native_goal_continuations",
+    "business_completion"
+  ],
+  "budget": "Existing 3600-second actor and 4500-second rollout limits; no added goal token budget.",
+  "review": "Full public native inputs, responses, tools and finals; deterministic source/readback reconstruction; actual native goal lifecycle and continuation review.",
+  "evidence_limits": "One observation per cell; identical fixtures do not control inference randomness, routing or runtime load. Goal status is not formation. Prior off observations are not matched controls.",
+  "offline_validation": {
+    "adapter_and_fixture_checks": 12,
+    "prompt_checks": 15,
+    "native_continuation": "Verified with the installed Codex binary and a local scripted endpoint; zero hosted model calls.",
+    "logs": [
+      "../eval-readiness/phase1-native-goal-focused-20261105-r2.log",
+      "../eval-readiness/phase1-native-goal-prompt-20261105-r1.log"
+    ],
+    "common_suite_reuse": "Exact source, harness and sealed original suite verified before reuse; each preparation reruns its own business controls.",
+    "additional_logs": [
+      "../eval-readiness/phase1-native-goal-control-reuse-20261105-r1.log",
+      "../eval-readiness/phase1-native-goal-legacy-pairs-20261105-r1.log"
+    ]
+  }
+}

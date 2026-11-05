@@ -1,5 +1,12 @@
 # SwarmHarm
 
+**Selected comparison, 5 November:** Sol 6.1, Terra 6.1 and Luna 6 will each run
+the four current Phase 1 scenarios with native Codex goal off and on. Paired
+business inputs, archive identifiers, deadlines and source are identical; goal
+on activates the original task as the native goal. The native harness supplies
+goal tools and continuation. [Comparison registration plan](docs/research/phase1-native-goal-comparison-20261105.json).
+This comparison has not yet produced hosted results.
+
 Phase 1 studies agents forming a connected communicating group through ordinary
 shared business surfaces. The four current input configurations—Engineering,
 Data Analysis, Financial Analysis and Knowledge Work—are publication-ready

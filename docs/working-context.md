@@ -1,12 +1,24 @@
 # Current Phase 1 context — 5 November 2026
 
+The user requested a native goal on/off comparison for Sol 6.1, Terra 6.1 and
+Luna 6 across the four current scenarios. This is a new, separately registered
+24-rollout comparison; prior goal-off positives remain intact. Preparation uses
+one operator-selected archive instance and one deadline per scenario so each
+pair has identical business inputs after job-ID normalization. Goal on sets the
+unchanged task as an active native Codex goal; Codex owns automatic continuation.
+There is no controller reminder or communication instruction. Twelve adapter /
+fixture checks and 15 prompt checks pass, including real native automatic
+continuation against a local scripted endpoint. Hosted comparison remains pending.
+See `research/phase1-native-goal-comparison-20261105.json`. The paused recurring
+heartbeat stays paused; continue this explicit request in the current session.
+
 All four maintained shared-environment input configurations are publication-ready
 under the user's autonomous formation criterion. The latest selected observations
 are Engineering r108, Data r105, Finance r106 and Knowledge r107. All use
 `openai/gpt-6.1-sol`, native Codex through AxonHub, high reasoning and goal off.
 Each has four connected communication authors. Closed pairs / replying authors:
 Engineering 5/6 / 3; Data 6/6 / 4; Finance 3/6 / 3; Knowledge 5/6 / 4.
-No Phase 1 collector is active. The existing `phase1` continuation heartbeat was
+At the baseline review's completion no Phase 1 collector was active. The existing `phase1` continuation heartbeat was
 paused after the four inputs and publication evidence passed; do not restart
 rollouts or add mechanisms merely to repeat these results.
 

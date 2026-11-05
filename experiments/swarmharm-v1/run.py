@@ -287,6 +287,28 @@ def code_paths():
           REPO/'scripts/check_goal_mode_pair.py']
     )
 
+def reused_common_controls(root, harness):
+    """Reuse the common suite only; each preparation still runs its business control."""
+    root=Path(root).resolve()
+    reg=load(root/'registration.json');controls=load(root/'controls.json')
+    require(sha(root/'registration.json')==load(root/'registration-seal.json')['sha256'],
+            'Reused common controls registration seal differs')
+    require(sha(root/'controls.json')==reg['input_hashes']['controls.json'],
+            'Reused common controls payload differs')
+    require(reg['code_hashes']=={str(p.relative_to(REPO)):sha(p) for p in code_paths()},
+            'Reused common controls source differs')
+    require(all(reg['harness'].get(k)==harness.get(k) for k in (
+        'kind','authentication','codex_cli','native_catalog_sha256')),
+        'Reused common controls harness differs')
+    require(controls.get('passed') and controls.get('prompt_contract_passed')
+            and controls.get('test_methods',0)>0 and controls.get('model_calls')==0,
+            'Reused common controls must contain a successful full offline suite')
+    result={k:deepcopy(controls[k]) for k in ('passed','model_calls','test_methods','prompt_contract_passed','log')}
+    result['common_regression_reuse']={'source':str(root),
+        'registration_sha256':sha(root/'registration.json'),'controls_sha256':sha(root/'controls.json'),
+        'business_controls_reused':False}
+    return result
+
 def require(condition,message):
     if not condition:
         raise RuntimeError(message)
@@ -339,7 +361,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode='off', harness_kind='direct-api',
             reasoning_effort=DEFAULT_REASONING, phase1_pressure_profile=None,
-            phase1_renewal_basis=None):
+            phase1_renewal_basis=None, phase1_archive_instance=None, reuse_common_controls=None):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind not in ('direct-api','pi-sdk','claude-code','codex'):
@@ -364,6 +386,12 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if component and scenario != (domain_runtime.ENGINEERING_CAPACITY if terminal_batching else domain_runtime.KNOWLEDGE_WORK):
         raise ValueError('Component family and scenario differ')
     phase1_only = study_mode == 'phase1'
+    if goal_mode == 'codex_goal' and not (phase1_only and harness_kind == 'codex' and native_gateway):
+        raise ValueError('Native Codex goal requires standalone Phase 1 through AxonHub')
+    if phase1_archive_instance is not None and not phase1_only:
+        raise ValueError('Matched archive instances require standalone Phase 1')
+    if reuse_common_controls is not None and not (phase1_only and run_controls):
+        raise ValueError('Common suite reuse requires a validated Phase 1 preparation')
     # Phase 1 uses the scenario's normal business workspace, never an exposure matrix.
     if phase1_only and topology_file is not None:
         raise ValueError('Phase 1 uses the business workspace without a visibility intervention')
@@ -468,7 +496,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 item[resource_pressure.FIELD] = phase1_pressure_profile
                 if phase1_renewal_basis is not None:
                     item[resource_pressure.BASIS_FIELD] = phase1_renewal_basis
-        fixture_ids.register(plan['natural'])
+        fixture_ids.register(plan['natural'], phase1_archive_instance)
         rows = [lab.batch_for(item) for item in plan['natural'].values()]
         channel_condition, topology_spec = channel_design.workspace_condition(plan['natural'])
     topology_spec=topology.validate(topology_spec,plan['natural'])
@@ -507,7 +535,16 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         if scenario == domain_runtime.KNOWLEDGE_WORK
         else continuation_module.plan_for(plan['natural']))
     save(root/'phase2-plan.json',phase2_plan)
-    if run_controls:
+    if run_controls and reuse_common_controls is not None:
+        controls=reused_common_controls(reuse_common_controls,harness)
+        try:
+            controls['phase1_filing_path']=carrier_registration.controls(plan['natural'])
+        except Exception as error:
+            controls.update(passed=False,phase1_filing_error=str(error))
+            save(root/'controls.json',controls)
+            raise
+        save(root/'controls.json',controls)
+    elif run_controls:
         capture=io.StringIO();suite=unittest.TestSuite()
         for path in sorted(HERE.rglob('*checks.py')):
             adapter = {'pi_collect_checks.py':'pi-sdk', 'claude_collect_checks.py':'claude-code',
@@ -2069,8 +2106,12 @@ if __name__=='__main__':
         help='Continuous domain scenario; defaults to the maintained Engineering source.')
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched rollouts.')
-    p.add_argument('--goal-mode',choices=('off',),default='off',
-        help='Phase1 uses the native harness with goal persistence off.')
+    p.add_argument('--goal-mode',choices=('off','codex_goal'),default='off',
+        help='Optional native Codex goal condition; objective is the unchanged business task.')
+    p.add_argument('--phase1-archive-instance',
+        help='Optional 32-hex operator namespace for matched Phase 1 inputs; default creates a fresh instance.')
+    p.add_argument('--reuse-common-controls',type=Path,
+        help='Reuse a sealed common suite with identical source and harness; rerun the selected business controls.')
     p.add_argument('--api-base',default=AXONHUB_API_BASE,
         help='Responses API base frozen at preparation; defaults to AxonHub. Collection uses the registered base.')
     p.add_argument('--information-condition', choices=('local_records',),
@@ -2118,5 +2159,6 @@ if __name__=='__main__':
             goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
             phase1_pressure_profile=a.phase1_pressure_profile,
 
-            phase1_renewal_basis=a.phase1_renewal_basis)
+            phase1_renewal_basis=a.phase1_renewal_basis,
+            phase1_archive_instance=a.phase1_archive_instance,reuse_common_controls=a.reuse_common_controls)
     else:collect(root,registration_dir)

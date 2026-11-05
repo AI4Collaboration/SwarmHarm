@@ -11,6 +11,87 @@ import codex_gateway
 
 
 class NativeGatewayChecks(unittest.TestCase):
+    def test_common_suite_reuse_binds_source_and_harness_and_excludes_business_results(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);source=run.HERE/'run.py'
+            harness={'kind':'codex','authentication':'axonhub','codex_cli':{'version':'fixture'},
+                     'native_catalog_sha256':'fixture'}
+            controls={'passed':True,'model_calls':0,'test_methods':5,'prompt_contract_passed':True,
+                      'log':'offline suite','phase1_filing_path':{'old_business':True}}
+            run.save(root/'controls.json',controls)
+            reg={'harness':harness,'code_hashes':{str(source.relative_to(run.REPO)):run.sha(source)},
+                 'input_hashes':{'controls.json':run.sha(root/'controls.json')}}
+            def seal():
+                run.save(root/'registration.json',reg)
+                run.save(root/'registration-seal.json',{'sha256':run.sha(root/'registration.json')})
+            seal()
+            with patch.object(run,'code_paths',return_value=[source]):
+                reused=run.reused_common_controls(root,harness)
+                self.assertNotIn('phase1_filing_path',reused)
+                self.assertFalse(reused['common_regression_reuse']['business_controls_reused'])
+                with self.assertRaisesRegex(RuntimeError,'harness differs'):
+                    run.reused_common_controls(root,{**harness,'codex_cli':{'version':'changed'}})
+                reg['code_hashes'][str(source.relative_to(run.REPO))]='changed';seal()
+                with self.assertRaisesRegex(RuntimeError,'source differs'):run.reused_common_controls(root,harness)
+                reg['code_hashes'][str(source.relative_to(run.REPO))]=run.sha(source)
+                controls['test_methods']=0;run.save(root/'controls.json',controls)
+                reg['input_hashes']['controls.json']=run.sha(root/'controls.json');seal()
+                with self.assertRaisesRegex(RuntimeError,'full offline suite'):run.reused_common_controls(root,harness)
+
+    def test_native_goal_continues_without_controller_reminder_and_finishes(self):
+        from http.server import ThreadingHTTPServer
+        import threading
+        from tests.codex_collect_checks import ScriptedResponses, NativeCodex
+        server=ThreadingHTTPServer(('127.0.0.1',0),ScriptedResponses)
+        server.captures,server.capture_lock=[],threading.Lock()
+        server.goal_fixture=True
+        threading.Thread(target=server.serve_forever,daemon=True).start()
+        original=codex_gateway.write_config
+        def local_config(home,*args):
+            original(home,*args)
+            path=home/'config.toml'
+            text=path.read_text().replace(codex_gateway.AXONHUB_BASE,
+                f'http://127.0.0.1:{server.server_port}/v1')
+            text=text.replace('requires_openai_auth=false','requires_openai_auth=false\nsupports_websockets=false\nrequest_max_retries=0\nstream_max_retries=0')
+            path.write_text(text)
+        try:
+            with tempfile.TemporaryDirectory() as d, patch.object(codex_gateway,'write_config',local_config):
+                root=Path(d);folder=root/'natural'/'actor';folder.mkdir(parents=True)
+                events=queue.Queue();model='openai/gpt-6.1-sol'
+                task='Service fixture request.'
+                tools=[{'type':'function','name':'confirm_service','description':'Read service status.',
+                        'parameters':{'type':'object','properties':{}}}]
+                harness=codex_gateway.harness_registration('codex_goal',model)
+                agent=run.codex_agent.CodexAgent('actor',events,folder=folder/'codex',
+                    model=model,thinking_level='high',tools=tools,active_tools=['confirm_service'],
+                    goal_mode='codex_goal',api_base=codex_gateway.AXONHUB_BASE,api_key='offline-fixture',
+                    registered_harness=harness)
+                snapshots=[]
+                try:
+                    run.codex_agent.wait_ready(events,['actor'])
+                    agent.prompt(task)
+                    for _ in range(3):
+                        settled=NativeCodex().drain(agent,events,folder)
+                        snapshots.append(settled)
+                        if settled['native_goal']['goal']['status']=='complete':break
+                finally:agent.close()
+                self.assertEqual(snapshots[-1]['native_goal']['goal']['status'],'complete')
+                self.assertEqual(snapshots[-1]['native_goal']['goal']['objective'],task)
+                self.assertEqual(len(server.captures),4)
+                raw=[json.loads(p.read_text())['message'] for p in (folder/'codex/native').glob('*.json')]
+                self.assertEqual(sum(x.get('method')=='turn/start' for x in raw),1)
+                goals=[x['params'] for x in raw if x.get('method')=='thread/goal/set']
+                self.assertEqual(len(goals),1)
+                self.assertEqual(goals[0]['objective'],task)
+                self.assertEqual(goals[0]['origin'],'user')
+                turns={x.get('params',{}).get('turn',{}).get('id') for x in raw if x.get('method')=='turn/started'}
+                self.assertEqual(len(turns),2)
+                self.assertEqual({t['name'] for t in server.captures[-1]['tools'] if t['type']=='function'},
+                                 set(codex_gateway.native_tools('codex_goal')))
+                history=run.load(folder/'history.json')
+                self.assertGreaterEqual(sum(x.get('role')=='user' for x in history),2)
+        finally:server.shutdown();server.server_close()
+
     def test_codex_config_uses_exact_gateway_model_and_keeps_native_instructions(self):
         model='openai/gpt-5.6-sol'
         catalog={'models':[{'slug':'gpt-5.6-sol','base_instructions':'native instructions'}]}
@@ -151,3 +232,37 @@ class NativeGatewayChecks(unittest.TestCase):
             self.assertTrue(channel_design.valid_registered_exposure(prepared))
             self.assertEqual(prepared['harness']['goal_mode'],'off')
             self.assertEqual(prepared['models'],{'model':model})
+
+    def test_goal_pairs_match_all_four_business_inputs_and_reject_other_changes(self):
+        from copy import deepcopy
+        from datetime import datetime,timedelta,timezone
+        checker=run.module('goal_pair_native_check',run.REPO/'scripts/check_goal_mode_pair.py')
+        from phase1 import carrier_registration, fixture_ids
+        deadline=(datetime.now(timezone.utc)+timedelta(days=1)).isoformat()
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d).resolve();key=root/'key';key.write_text('offline-fixture');key.chmod(0o600)
+            model='openai/gpt-6.1-sol'
+            with patch.object(run,'REGISTRATIONS',root/'registrations'), patch.object(run,'MODELS',{'model':model}), patch.object(run,'UPSTREAM_MODELS',{'model':model}), patch.object(run,'verify_routes',return_value={'checked_at':'offline-fixture'}):
+                for scenario in run.domain_runtime.SUPPORTED:
+                    outputs=[]
+                    for mode in ('off','codex_goal'):
+                        name=f'{scenario}-{mode}';output=root/name
+                        run.prepare(output,root/'registrations'/name,key,run_controls=False,
+                            scenario=scenario,study_mode='phase1',harness_kind='codex',goal_mode=mode,
+                            filing_deadline_utc=deadline,phase1_archive_instance='a1'*16)
+                        reg=run.load(output/'registration.json')
+                        self.assertTrue(carrier_registration.valid(reg))
+                        self.assertEqual(fixture_ids.descriptor(reg['plan']['natural'])['policy'],
+                                         'operator_selected_matched_inputs')
+                        outputs.append(output)
+                    self.assertEqual(checker.check(*outputs),[])
+                    original=run.load(outputs[1]/'registration.json')
+                    for field in ('builtin_tools','disabled_features'):
+                        changed=deepcopy(original);changed['harness'][field].append('unrelated_change')
+                        run.save(outputs[1]/'registration.json',changed)
+                        self.assertTrue(checker.check(*outputs))
+                    changed=deepcopy(original)
+                    changed['harness']['builtin_tools'].remove('update_goal')
+                    run.save(outputs[1]/'registration.json',changed)
+                    self.assertTrue(checker.check(*outputs))
+                    run.save(outputs[1]/'registration.json',original)
