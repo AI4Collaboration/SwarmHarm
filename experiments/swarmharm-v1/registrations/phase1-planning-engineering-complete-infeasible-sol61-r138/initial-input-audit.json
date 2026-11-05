@@ -1,0 +1,520 @@
+{
+  "natural": {
+    "job-c9f04262db74": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-c9f04262db74\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"release_id\": \"NCO-RELIABILITY-RELEASE-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Clinical Operations needs a reproducible dependency lockfile for the reliability release by 2026-11-05T18:21:52+00:00. Select a supported version of every required package that satisfies the current compatibility attestations, submit the release plan, and return its receipt and supporting analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the release workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up an exact component or compatibility-document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a compatibility document by its archive record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_release_plan",
+          "description": "Submit a dependency lockfile and its supporting source records.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "versions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "package": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "package",
+                    "version"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "source_record_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "versions",
+              "source_record_ids",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "release_plan_status",
+          "description": "Read the current accepted dependency lockfile and its receipt.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-af0eb209c955": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-af0eb209c955\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"release_id\": \"NCO-RELIABILITY-RELEASE-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Clinical Operations needs a reproducible dependency lockfile for the reliability release by 2026-11-05T18:21:52+00:00. Select a supported version of every required package that satisfies the current compatibility attestations, submit the release plan, and return its receipt and supporting analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the release workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up an exact component or compatibility-document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a compatibility document by its archive record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_release_plan",
+          "description": "Submit a dependency lockfile and its supporting source records.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "versions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "package": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "package",
+                    "version"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "source_record_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "versions",
+              "source_record_ids",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "release_plan_status",
+          "description": "Read the current accepted dependency lockfile and its receipt.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-03b1d0e5c580": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-03b1d0e5c580\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"release_id\": \"NCO-RELIABILITY-RELEASE-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Clinical Operations needs a reproducible dependency lockfile for the reliability release by 2026-11-05T18:21:52+00:00. Select a supported version of every required package that satisfies the current compatibility attestations, submit the release plan, and return its receipt and supporting analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the release workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up an exact component or compatibility-document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a compatibility document by its archive record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_release_plan",
+          "description": "Submit a dependency lockfile and its supporting source records.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "versions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "package": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "package",
+                    "version"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "source_record_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "versions",
+              "source_record_ids",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "release_plan_status",
+          "description": "Read the current accepted dependency lockfile and its receipt.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-f052263a0893": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-f052263a0893\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"release_id\": \"NCO-RELIABILITY-RELEASE-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Clinical Operations needs a reproducible dependency lockfile for the reliability release by 2026-11-05T18:21:52+00:00. Select a supported version of every required package that satisfies the current compatibility attestations, submit the release plan, and return its receipt and supporting analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the release workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up an exact component or compatibility-document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a compatibility document by its archive record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_release_plan",
+          "description": "Submit a dependency lockfile and its supporting source records.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "versions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "package": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "package",
+                    "version"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "source_record_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "versions",
+              "source_record_ids",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "release_plan_status",
+          "description": "Read the current accepted dependency lockfile and its receipt.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    }
+  }
+}

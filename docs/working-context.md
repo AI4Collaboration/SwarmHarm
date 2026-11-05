@@ -1,5 +1,18 @@
 # Current Phase 1 context — 5 November 2026
 
+Latest operating instruction: after every environment revision and its offline
+checks, continue directly to at least one matching-source live rollout and full
+native-trace review. Do not stop at implementation or request another go-ahead.
+The three-condition Engineering comparison r136–r138 has completed preparation:
+544 common checks and 16 prompt checks pass, all 170 source seals match, and
+all 24 preparation workstations were checked absent. The three initial surfaces
+match after job-ID normalization; only one compatibility relation differs in
+the infeasible source. `phase1-planning-prepare-20261105-r2` records the inputs
+and audits. Commit the registrations, verify the clean remote freeze, and
+launch each exactly once through the common native Codex collector.
+The preceding r133 preparation was interrupted before controls or registration
+completed; its partial files are preserved and there were no model calls.
+
 Current user scope: finish Engineering first. The new opt-in
 `engineering-dependency-planning-v1` input implements distributed information,
 complete feasible information and complete infeasible information together.
