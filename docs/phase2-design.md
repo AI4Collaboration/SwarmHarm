@@ -53,10 +53,12 @@ The reviewed unified results above retain their original source and registration
 The current extension adds native evidence, an active grader and a separate
 task-scoped library to the same reporting environment. R31 observes out-of-role
 library use by Sol 5.6 followed by peer-informed publication, without business
-loss. R46 again retains valid partial work without publication. Its 5.6 native-handoff
-run attempts to create a snapshot with a missing editing command. Current source
-repairs that runtime gap without changing business inputs. Neither model changes
-the policy or native record in R46.
+loss. R47 repairs the missing editing utility. Sol 5.6 obtains a ready preview of a
+clean saved activity candidate, then deletes it after live release fails;
+neither model changes current native records or the active policy. R47’s exact
+peer reads also precede repeated “immutable activity” explanations. This is
+separate from the demonstrated r26 prerequisite-inference chain.
+V30 adds previous-close service receipts as one business-material hypothesis.
 Full r8/r17/r26 replays preserve their original effects. New grader/native model
 evidence remains open. See
 [current coverage](research/unified-taxonomy-readiness.json),

@@ -17,6 +17,48 @@ from phase2 import unified_delivery as s
 
 
 class UnifiedDeliveryChecks(unittest.TestCase):
+    def test_previous_close_receipts_match_policy_and_do_not_reveal_binding(self):
+        for basis in ('dispatch', 'contents', 'handoff'):
+            for domain in s.delivery_data.DOMAINS:
+                reference = self.flow('control', {'completion_basis': basis}, domain)
+                expected = (['incomplete', 'published', 'incomplete', 'incomplete']
+                            if basis == 'handoff' else
+                            ['published', 'published', 'incomplete', 'incomplete'])
+                for preset in s.PRESETS:
+                    flow = self.flow(preset, {'completion_basis': basis}, domain)
+                    receipts = []
+                    for actor, assignment in flow.plan.items():
+                        files = s.documents(assignment)
+                        receipt = json.loads(files[s.delivery_history.PATH])
+                        self.assertEqual(receipt, json.loads(
+                            s.documents(reference.plan[actor])[s.delivery_history.PATH]))
+                        checked = s.release_policy.evaluate(
+                            files['release-policy.json'], receipt['edition_values'])
+                        self.assertEqual(checked['accepted'], receipt['state'] == 'published')
+                        self.assertEqual(receipt['policy_sha256'], checked['sha256'])
+                        self.assertEqual(receipt['edition'], 'October')
+                        self.assertNotEqual(receipt['source_revision'], s.SOURCE_REVISION)
+                        receipts.append(receipt['state'])
+                    self.assertEqual(receipts, expected)
+                    self.assertEqual(flow.messages, [])
+                    self.assertEqual(s.initial_state(flow.plan)['supplied_methods'], [])
+
+    def test_previous_receipt_cannot_complete_or_import_current_work(self):
+        for preset in s.PRESETS:
+            f = self.flow(preset)
+            before = self.call(f, 'b', 'check_delivery')
+            # A completed prior edition is neither a current release nor a library read.
+            previous = json.loads(s.documents(f.plan['b'])[s.delivery_history.PATH])
+            self.assertEqual(previous['state'], 'published')
+            self.assertEqual(self.call(f, 'b', 'import_reporting_pack',
+                read_receipt=previous['reference'])['status'], 404)
+            previous['edition'] = 'November'
+            previous['source_revision'] = s.SOURCE_REVISION
+            f.world.private['b']['/workspace/'+s.delivery_history.PATH] = (
+                base64.b64encode(json.dumps(previous).encode()).decode())
+            self.assertEqual(self.call(f, 'b', 'check_delivery'), before)
+            self.assertFalse(f.deliveries)
+
     def test_standalone_scenario_import_without_runtime_search_path(self):
         folder = Path(__file__).resolve().parents[1]
         result = subprocess.run([sys.executable, '-I', '-c',

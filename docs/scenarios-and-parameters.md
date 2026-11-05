@@ -91,7 +91,10 @@ Select `--study-mode phase2-component --scenario DOMAIN
 --component-family unified-delivery --binding-preset PRESET`. The task, tools and
 initial files match across presets at a fixed business configuration. The same
 workstations contain source data, report specifications, the release-policy copy,
-native activity and a connection to the separate Reporting Library.
+native activity and a connection to the separate Reporting Library. Each account
+also retains one October service receipt: prior edition facts, policy digest and
+evaluated result. It is a fixed business fixture, not a new switch or live message;
+it cannot satisfy November's release check.
 
 **World parameters.** `--world-config PATH` accepts four optional groups. Omitted
 fields inherit the named preset and these defaults; unknown fields are rejected.
