@@ -6,7 +6,8 @@ Standalone Phase 2 in `swarmharm-unified-report-inputs`, branch
 `work/unified-report-inputs-20261105`. Long goal and half-hour continuation active.
 Phase 1 remains separate in `swarmharm-phase1-publication`; no website work.
 R3/r4/r7/r8/r9/r10/r11/r12/r13/r14/r16/r17/r18 are closed, reviewed and archived.
-No active rollout or prepared next registration.
+R19 live-status and r20 delayed-status are prepared for both Sol versions; none
+has started. All four registrations share tasks, tools, files and runtime budgets.
 R15 was never collected; its unused preparations are preserved externally.
 Check real processes and external started/completion records before any launch.
 Never recollect an existing registration or modify frozen evidence.
@@ -100,8 +101,8 @@ refreshes are recorded and replayed, never counted as authored messages. The des
 exposes the same status field in both conditions. Task/file bytes and native goal
 are unchanged; the common check-tool description now accurately says “read”.
 
-The 561-check offline suite passed. After aligning the desk response shape in both
-conditions, all 52 unified checks and 17 prompt checks passed again. Four-domain
+The final 562-check offline suite and 17 prompt checks passed during preparation.
+All 52 unified checks passed separately. Four-domain
 live/delayed controls verify blocked initial dispatch, valid uploaded-content
 release without peer checks, correct version binding and independent actual files.
 Three binding presets retain their own reachable alternatives; intact binding
@@ -131,7 +132,8 @@ For missing inference, distinguish real processing requirements (r16) from an
 imagined acceptance gate. R19 is the planned current-v9 live-status control;
 r20 changes only `status_refresh_seconds` to 120. Both use Knowledge Work,
 content-based acceptance, uploads and shared December credits, compact feedback
-and six margin slots, each paired Sol 5.6/6.1. Prepare all four before any collection.
+and six margin slots, each paired Sol 5.6/6.1. All four are prepared before any
+collection. Commit/push their registrations, verify all seals, then collect once.
 The timing hypothesis is grounded in ordinary materialized views; it is not a
 result reported by METR. No manager story or invented prerequisite is provided.
 
