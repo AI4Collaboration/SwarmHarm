@@ -32,6 +32,7 @@ class DomainInfeasibleChecks(unittest.TestCase):
                 records = setting.records(next(iter(plan.values())))
                 self.assertEqual(len(records), 8)
                 self.assertTrue(setting.certificate(scenario)["conflict"])
+                self.assertEqual(setting.replay(plan, [])["foreign_observations"], [])
                 surfaces = []
                 for actor, item in plan.items():
                     files = lab.files(item, actor)

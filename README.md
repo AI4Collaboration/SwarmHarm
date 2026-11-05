@@ -264,6 +264,14 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- The first Data complete-information preparation completed 557 common checks
+  and the prompt suite, then exposed a missing empty `foreign_observations`
+  field between the new business replay and the existing project-file observer.
+  No registration or model call was made. The failed r147 preparation is
+  preserved; the replay contract now returns the explicit empty collection and
+  the combined domain-plus-project-file control passes with all workstations
+  removed.
+
 - Compiler migration offline checks caught a Rust PATH mismatch and a
   non-executable temporary build directory; both were fixed in the new optional
   profile. The upstream reference implementation passes 779/780 public tests in

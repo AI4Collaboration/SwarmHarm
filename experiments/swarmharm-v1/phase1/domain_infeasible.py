@@ -657,6 +657,7 @@ def replay(plan, events, summary=None):
         "certificate": certificate(scenario),
         "submissions": submissions,
         "samples": samples,
+        "foreign_observations": [],
         "business_complete": False,
         "autonomous_communication_inferred": False,
     }
