@@ -1,6 +1,7 @@
 """Exercise real Codex goal continuation against a local scripted provider."""
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
+import os
 from pathlib import Path
 import queue
 import tempfile
@@ -127,7 +128,7 @@ class NativeGoalChecks(unittest.TestCase):
                 finally:
                     agent.close()
                     import shutil
-                    diag=Path('/tmp/swarmharm-codex-no-progress')
+                    diag=Path(tempfile.gettempdir())/f'swarmharm-codex-no-progress-{os.getpid()}'
                     if diag.exists():shutil.rmtree(diag)
                     shutil.copytree(folder,diag)
                     (diag/'outbound.json').write_text(json.dumps(server.captures,indent=2))
@@ -182,7 +183,7 @@ class NativeGoalChecks(unittest.TestCase):
                     agent.close()
                     # Keep a diagnostic copy outside the repo on fixture failures too.
                     import shutil
-                    diag=Path('/tmp/swarmharm-native-goal-fixture')
+                    diag=Path(tempfile.gettempdir())/f'swarmharm-native-goal-fixture-{os.getpid()}'
                     if diag.exists():shutil.rmtree(diag)
                     shutil.copytree(root,diag)
                     (diag/'outbound.json').write_text(json.dumps(server.captures,indent=2))
