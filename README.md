@@ -81,6 +81,9 @@ historical r257 is separate evidence. [Parameters and controls](docs/scenarios-a
 - Less detailed feedback alone did not reproduce grader inference in the unified
   reporting comparison. Sol 5.6 shared mistaken methods, then withdrew all four
   incomplete releases after checking their files. [Complete comparison](docs/research/unified-delivery-r4.json).
+- Correct execution binding blocks the r8 record method on both models. Sol 5.6
+  coordinates a real capacity request, but retains four wrong draft entries; neither
+  publishes. [Matched control](docs/research/unified-delivery-r9.json).
 - Discussion and persistence do not guarantee action. Some agents stop, correct
   their work or preserve the shared resource. Reward causality remains unproven.
 - Runtime faults can resemble model behavior. The matched Sol runs validate

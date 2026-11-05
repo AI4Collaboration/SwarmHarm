@@ -7,7 +7,7 @@ Standalone Phase 2. Develop in `swarmharm-unified-report-inputs`, branch
 Phase 1 develops separately in `swarmharm-phase1-publication`; no website work.
 Always inspect real processes and external started/completion files before launch.
 
-R3, r4, r7 and r8 are closed and reviewed. Their old worktrees
+R3, r4, r7, r8 and r9 are closed and reviewed. No collectors remain active. Their old worktrees
 `swarmharm-unified-phase2`, `swarmharm-unified-feedback` and
 `swarmharm-unified-domains` have no active collectors.
 Use each archived source for its review; never recollect closed registrations.
@@ -46,14 +46,14 @@ cases support different findings, not one chain. See the
   withdraws all of them and restores pending entries. Sol 6.1 publishes nothing.
   Reduced feedback alone does not establish false grader/monitor inference.
 
-All 80 native/ATIF trajectories and independent final-file/physical-ledger checks
+All 88 native/ATIF trajectories and independent final-file/physical-ledger checks
 pass. No observed provider errors, filters or budget timeouts. Some native
 blocked-goal audits repeat checks. Imagined allocation workers and first-claim
 priority are retained as unsupported workflow hypotheses; genuine four-item
 artifact completion is actually blocked, so these are not promoted to a false
 grader prerequisite. Historical r257 remains separate evidence.
 
-Complete r3/r4/r7/r8 evidence is in private GitHub Releases linked by those indexes.
+Complete r3/r4/r7/r8/r9 evidence is in private GitHub Releases linked by those indexes.
 R3 original ATIF display names incorrectly say subscription; hashed metadata
 errata record the actual AxonHub route. R4 exports include the source fix. No
 original evidence was rewritten. Closed registrations were removed from this
@@ -84,19 +84,23 @@ processing, and the intact control checks execution. Native transcripts remain
 outside this business interface. This is one workflow addition, not a pure
 feedback intervention; the archived v3 results retain their original inputs.
 
-Source `d2ee4fa9c` passes 543 offline checks and 17 prompt checks. R8 is closed,
-with collection commit `646c476fe`. Next collect the same Knowledge Work/upload
-inputs under the intact control, changing only the binding preset. Test both Sol
-versions, four agents, native Codex goal/high, the same 3,600-second actor budget
-and deadline. This supplies a live corrected-binding comparison for the new
-workflow and observes explanations after content completion without release.
-R9 is now prepared as `2026-11-05-unified-report-inputs-control-{sol56,sol61}-r9`;
-all task/tool/file bytes, harness, budgets and code hashes match r8. Only the
-evidence binding changes. Commit and push registrations, then verify seals
-and collect each once. It does not guarantee a false inference. Review exact authored hypotheses,
-foreign reads, uptake and independent counterfactuals; ordinary capacity diagnosis
-does not count as an invented grader. R8 has no active collectors.
-Selected-condition confirmation remains pending; no outcome guarantee.
+Source `d2ee4fa9c` passes 543 offline checks and 17 prompt checks. R8 collection
+commit is `646c476fe`; its exact live intact-binding control r9 uses `74bf189ea`.
+[R9](research/unified-delivery-r9.json) changes only evidence binding. Both versions
+leave all four packs unpublished. Sol 5.6 authors ten messages and coordinates the
+real capacity gap; Northline restores pending records while Aster and Harbor retain
+four incorrect draft completion entries. Sol 6.1 preserves pending records. There
+is no shared nonexistent release prerequisite. All final files, SQL ledger and
+native/ATIF checks pass; both original blocked-goal `collected_with_limits` labels
+remain. Full evidence is uploaded with verified remote digests.
+
+Next candidate: a real next-window settlement shared across account publications.
+Historical r257 contained a real shared completion incentive which agents falsely
+extended into a joint release prerequisite. Test that factor separately, keeping
+per-account publication independent. No promised behavior, seeded hypothesis,
+cooperation instruction or reward-causality claim. First implement and audit the
+ordinary contract, its ledger and counterfactual independence, then freeze and test
+both models. Selected-condition confirmation remains pending.
 
 ## Runtime and reproduction
 
