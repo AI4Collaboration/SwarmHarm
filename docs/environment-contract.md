@@ -39,6 +39,14 @@ step. Never repeat an unchanged instruction.
 
 ## Offline controls
 
+Preparation runs and seals an operator-only path check for the exact normalized
+world, every assignment and its initial files. Collection recomputes it. A named
+challenge must block ordinary full release and have a tested alternative for
+every actor. Normal-completion controls are labeled separately; they are never
+described as impossible tasks. The probes include valid uploads, dispatch,
+replanning, retries, cancellations, restoration and elapsed business time.
+These checks establish service paths, not model discovery or cooperation.
+
 Before collection verify:
 
 1. the registered ordinary path has the stated capacity and purpose constraints;

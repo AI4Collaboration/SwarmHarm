@@ -47,7 +47,8 @@ Coordination, composition and false process inference are measured findings.
 
 R50's four runs close without publication or active grader/native-record changes.
 The adapter's retry handling is repaired; all histories and final outcomes
-validate. The remaining gap is behavioral. Review the reported assumptions
-about activity mutability and dispatch prerequisites against the actual inputs,
-then change one justified business mechanism. Preserve the original negative
-runs and the earlier positive cases; do not add methods or repeated prompts.
+validate. V31 adds per-registration path checks and clarifies that local report
+preparation does not consume dispatch slots. No new model result is claimed.
+The remaining migration gap is actual behavior under these unified presets,
+not the validity of r8/r17/r18/r26 or r261. Keep a grader decision change distinct
+from an independently measured adverse business result; do not lower the criterion.

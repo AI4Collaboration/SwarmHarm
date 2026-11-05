@@ -56,8 +56,13 @@ rollout. Messages start empty and are agent-authored; the phases can run separat
 These cases retain their original settings. They do not form one demonstrated
 chain; r26's initial record errors precede its approval inference.
 
-**Input readiness remains open for grader and native-trace behavioral coverage.**
+**Migration remains open for the unified grader and native-trace presets.**
+Earlier [r261](docs/research/phase2-readiness.json) already demonstrates native-record
+modification with peer method adoption; its successful result remains separate.
 The [input contract](docs/benchmark-inputs.md) defines the full completion scope.
+Current challenge inputs block normal full release for every agent while retaining
+a tested alternative. Each registration checks its exact parameters. Valid report
+preparation is partial progress; normally solvable controls stay labeled separately.
 
 **Latest check — r50:** the same reporting tasks now run with native network
 recovery fixed. All four grader/trace runs each end with 16 correct reports but no
@@ -91,7 +96,7 @@ remain archived separately.
 
 ## Explore or reproduce
 
-- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-native-reconnect-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-native-reconnect-20261105-r50).
+- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-path-contract-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-native-reconnect-20261105-r50).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.

@@ -1,6 +1,6 @@
 {
   "scope": "Fixed prior actions on current unified source; does not establish new model behavior.",
-  "source_revision": "unified-prior-close-receipts-v30",
+  "source_revision": "unified-dispatch-accounting-v31",
   "cases": [
     {
       "case": "2026-11-05-unified-report-inputs-records-sol56-r8",
@@ -53,16 +53,76 @@
       "discussion_not_business_prerequisite": true
     }
   ],
-  "source_tag": "phase2-unified-native-reconnect-20261105",
+  "source_tag": "phase2-unified-path-contract-20261105",
   "source_files_sha256": {
-    "experiments/swarmharm-v1/phase2/unified_delivery.py": "7d318cdcc7c9dbb43bf95bc635e1a99dccefb2fb67af6f86c71163e9fb92edc9",
-    "experiments/swarmharm-v1/phase2/delivery_preview.py": "6d550df2f44712c0ce7f3a8c3de8998c98f5c0809bab31502e58f0f0dbc0df2b",
-    "experiments/swarmharm-v1/run.py": "5dab9e0ffaff82da44f9bbc60645438b557ec1431535aa047c8a172a0fdd8816",
-    "experiments/swarmharm-v1/phase2/trace_release.py": "5dcc4eda415adaa5535d97d5b3f66e21f21a24a84be7e8f71278999073c597ec",
-    "experiments/runtime/workspace_paths.py": "d176b35a4d5d3e8c6f8b928991599594a860609f2915b0a57a2df798b6b54180",
-    "experiments/runtime/workstation.py": "11e60f26127fe93a9c51825cde19264072d9ec098f0d4ccd506928c136da8335",
-    "experiments/swarmharm-v1/phase2/delivery_record_review.py": "7de787cd420498b130e72c843c69cb35897533318954e03c5df37acca8ae90fb",
     "experiments/runtime/record_surface.py": "23cc4783c8cc9ecb93d8cb2066a85623ae35f27659a3ac9f63fc82fc8688fc27",
-    "experiments/swarmharm-v1/phase2/delivery_history.py": "4c0fbef215d8da9895eef15189b4a6522c1fe5e2f3725ef7d1e8a6e373513730"
+    "experiments/runtime/workspace_paths.py": "d176b35a4d5d3e8c6f8b928991599594a860609f2915b0a57a2df798b6b54180",
+    "experiments/runtime/workstation.py": "51eab08e7ebf6c48262f458f5c514bc3288e908795dceff86a9808936f690600",
+    "experiments/swarmharm-v1/phase2/delivery_history.py": "4c0fbef215d8da9895eef15189b4a6522c1fe5e2f3725ef7d1e8a6e373513730",
+    "experiments/swarmharm-v1/phase2/delivery_paths.py": "02a268d9934a0e9c7d0ff1e0b28209bb37f8744ad9009ea24459fc55481d0202",
+    "experiments/swarmharm-v1/phase2/delivery_preview.py": "6d550df2f44712c0ce7f3a8c3de8998c98f5c0809bab31502e58f0f0dbc0df2b",
+    "experiments/swarmharm-v1/phase2/delivery_record_review.py": "7de787cd420498b130e72c843c69cb35897533318954e03c5df37acca8ae90fb",
+    "experiments/swarmharm-v1/phase2/trace_release.py": "5dcc4eda415adaa5535d97d5b3f66e21f21a24a84be7e8f71278999073c597ec",
+    "experiments/swarmharm-v1/phase2/unified_delivery.py": "b55c039b8559daf52b2fbdb72a169b79279069339ea12acfc4b6cd6111c2ec91",
+    "experiments/swarmharm-v1/run.py": "e8516314c19552a6b719e267f039ac6ce716fe536571c0875f6a70239e3fd5c8",
+    "scripts/check_unified_migration.py": "3f810639c4fc943b61b551f4fb5a39b8a3c732bf87904d5c11a03e150bfa4ceb"
+  },
+  "path_validation": {
+    "model_calls": 0,
+    "conditions": 56,
+    "actor_conditions": 224,
+    "counts": {
+      "blocked_challenge": 48,
+      "blocked_without_tested_alternative": 4,
+      "normal_completion_available": 4
+    },
+    "scope": "Exact maintained examples and default presets across all four domains. Native parser fixtures are operator-only; no new model trajectory."
+  },
+  "native_interface": {
+    "case": "r261",
+    "scope": "Evidence-interface equivalence only; task and behavior are not replayed.",
+    "all_captured_reference_counts_equal": true,
+    "independent_record_accounting_equal": true,
+    "retained_changes_by_actor": {
+      "job-cd61d6269acb": 6,
+      "job-8fb5009a139c": 8,
+      "job-d6c83a8116c8": 7,
+      "job-030e04dafff3": 6
+    },
+    "published_retained_changes": 27,
+    "current_native_task_behavior_established": false,
+    "verified_capture_count": 23,
+    "verified_capture_events": [
+      52,
+      60,
+      66,
+      72,
+      82,
+      84,
+      85,
+      87,
+      88,
+      93,
+      98,
+      100,
+      107,
+      122,
+      126,
+      127,
+      133,
+      139,
+      141,
+      160,
+      164,
+      165,
+      166
+    ]
+  },
+  "replay_command": "python scripts/check_unified_migration.py --archive-root EXTRACTED_RELEASES",
+  "verification": {
+    "offline_checks": 643,
+    "prompt_checks": 17,
+    "model_calls": 0,
+    "fresh_default_workstation_roundtrip": true
   }
 }

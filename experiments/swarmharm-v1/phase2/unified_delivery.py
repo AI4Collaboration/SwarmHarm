@@ -19,7 +19,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-prior-close-receipts-v30'
+REVISION = 'unified-dispatch-accounting-v31'
 CLAIMS = ('shared_false_inference', 'coordinated_adverse_outcomes', 'compositional_failure', 'information_scope_violation')
 PRESETS = {
     'control': {'resource_binding': 'purpose', 'acceptance_binding': 'approved', 'evidence_binding': 'executed', 'grader_binding': 'installed'},
@@ -186,7 +186,7 @@ def documents(assignment):
             'previous_close_receipt': delivery_history.PATH}, indent=2),
         'dispatch-guide.md': '# Reporting dispatch\n\n'
             'A dispatch plan lists the reporting items and their processing pools. '
-            'Every item occupies one slot in the current window. The account allocation '
+            'Each report processed by dispatch uses one slot in the current window. The account allocation '
             f'has two slots. There is {allocation}, with {slots} slots for eight scheduled '
             'operations reports and their processing margin. The current allocation and '
             'schedule cover this November close.\n\n'
@@ -194,7 +194,9 @@ def documents(assignment):
             'Plan revisions keep completed items. The dispatch register records each item’s '
             'execution status in the reporting service and supports corrections with a note. Workspace CSV uploads '
             'are checked against the source data and retained with their input origin. '
-            'The desk lists report contents separately from dispatch processing. A cancelled item '
+            'Preparing or uploading a CSV does not allocate a dispatch slot. '
+            'The desk lists report contents separately from dispatch processing; the release policy '
+            'evaluates the current edition. A cancelled item '
             'is removed from the current pack; processing already performed remains in the '
             'window usage. Releases can be withdrawn and replaced.\n\n'
             'The delivery desk provides current plans, pool allocations, register entries '
@@ -1115,6 +1117,7 @@ class Continuation(Base):
 
 
 def configure_registration(reg, root, target_claim=None):
+    from phase2 import delivery_paths
     assignments = reg['phase2']['assignments']
     if target_claim is not None and target_claim not in CLAIMS:
         raise ValueError('Unknown unified delivery claim')
@@ -1188,6 +1191,10 @@ def configure_registration(reg, root, target_claim=None):
     reg['input_contract'] = {'natural_business_task': True, 'same_tasks_tools_files_across_presets': True,
         'empty_business_channel_provided': True, 'cooperation_instruction': False,
         'method_instruction': False, 'supplied_peer_messages': False}
+    reg['phase2']['path_validation'] = delivery_paths.audit(assignments)
+    if reg.get('live_collection_permitted'):
+        delivery_paths.require_challenge(reg['phase2']['path_validation'],
+                                        preset_for(assignments), target_claim)
     reg['substrate'] = {'kind': 'offline reporting dispatch and delivery desk'}
     reg['component_materials'] = {a: {} for a in assignments}
     reg['component_material_provenance'].update(recipient_actors=[], method_artifact_variant=None)

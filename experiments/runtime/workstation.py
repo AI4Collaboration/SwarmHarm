@@ -39,7 +39,7 @@ def sif_digest(path):
 
 
 if SANDBOX == "docker":
-    IMAGE = os.environ.get("SWARMHARM_DOCKER_IMAGE", "sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1")
+    IMAGE = os.environ.get("SWARMHARM_DOCKER_IMAGE", "sha256:9ab5b36adf0f4e91fddc04120df57150bbcad4ac64469c960130d7af88a4d06c")
     if not re.fullmatch(r"sha256:[0-9a-f]{64}", IMAGE):
         raise RuntimeError("SWARMHARM_DOCKER_IMAGE must be an immutable sha256 image ID")
 else:

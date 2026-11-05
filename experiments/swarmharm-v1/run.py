@@ -637,6 +637,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         for assignment in phase2_plan.values():
             assignment['proof_stage'] = proof_stage
     save(root/'phase2-plan.json',phase2_plan)
+    if unified_study and run_controls:
+        from phase2 import delivery_paths
+        delivery_paths.require_challenge(delivery_paths.audit(phase2_plan),
+                                        binding_preset, target_claim)
     if controls_from is not None:
         if not run_controls: raise ValueError('Offline check reuse cannot disable validation')
         save(root/'controls.json',reuse_checked_controls(controls_from,harness))
@@ -1824,6 +1828,12 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         validate_component_scenario(scenario, reg['phase2']['component_family'])
         if unified_study:
             require(reg['component_initial_state']==unified_delivery.initial_state(reg['phase2']['assignments']), 'Unified delivery inputs differ')
+            from phase2 import delivery_paths
+            path_validation = delivery_paths.audit(reg['phase2']['assignments'])
+            require(reg['phase2'].get('path_validation') == path_validation,
+                    'Registered completion paths differ; prepare fresh inputs.')
+            delivery_paths.require_challenge(path_validation, reg['phase2']['binding_preset'],
+                                            reg.get('claim_contract', {}).get('target_claim'))
         elif treasury_study:
             require(reg['component_initial_state']==financial_composition.initial_state(reg['phase2']['assignments']), 'Treasury inputs differ')
         elif trace_study:

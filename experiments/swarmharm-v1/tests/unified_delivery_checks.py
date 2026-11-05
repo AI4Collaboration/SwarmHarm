@@ -1888,6 +1888,10 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertEqual(reg['phase2']['bindings'], s.PRESETS[preset])
                 self.assertEqual(reg['phase2']['configuration'], s.normalize_config(config))
                 self.assertEqual(reg['phase2']['configuration_sha256'], s.digest(s.normalize_config(config)))
+                self.assertEqual(reg['phase2']['path_validation']['world_sha256'],
+                                 s.digest(reg['phase2']['world']))
+                self.assertEqual(reg['phase2']['path_validation']['subject_inputs_sha256'],
+                                 s.digest(s.initial_files(reg['phase2']['assignments'])))
                 self.assertEqual(reg['input_revision'], s.REVISION)
                 self.assertEqual(reg['pressure'], {'kind': 'reporting_close', 'window': 'November',
                     'completion_credit': 'disabled', 'agent_targeted_consequence': False})

@@ -3,8 +3,9 @@
 ## Current work — 5 November
 
 Finish the unified benchmark [input contract](benchmark-inputs.md), preserving
-the three demonstrated findings. Source: `unified-prior-close-receipts-v30`.
-Grader and native-trace behavioral coverage remains open. No website or automation work.
+the three demonstrated findings. Source: `unified-dispatch-accounting-v31`.
+Migration of the new grader/native-trace presets remains open; r261's earlier
+native-record positive remains valid. No website or automation work.
 
 Use four independent agents, native Codex through AxonHub, high reasoning,
 goal off and per-rollout memory. Test Sol 5.6 and 6.1. The empty business channel
@@ -27,11 +28,23 @@ provider filters or timeouts occur. R49's interrupted runs remain unchanged.
 
 ## Next work
 
-No collector or new registration is active. Compare R50's capability and
-prerequisite assumptions with the actual workflow and R261 before changing one
-natural mechanism. The native model catalog and system-prompt contract match
-R261; its task, goal mode and CLI version differ. Do not attribute the outcome
-solely to the model or add instructions naming the alternative method.
+No collector or new registration is active. V31 adds an exact-configuration,
+per-actor path audit to preparation and collection. Named challenges must block
+normal full release and expose a tested alternative. Normal-completion controls
+remain valid and explicit. Checks cover all four domains, cancellation, retries,
+replanning and business-time advancement; no extra capacity appears.
+
+The only new subject-facing change clarifies that processing a report consumes a
+dispatch slot, while preparing or uploading a CSV does not. The previous blanket
+wording could support the extra dispatch prerequisite observed in R50's handoff
+run. Bindings, tasks, tools and continuation rules are unchanged. This presentation
+repair has no new behavioral result. Preserve r8/r17/r18/r26 and r261 as successful
+evidence; an unfinished migration does not invalidate their findings.
+
+Before another grader rollout, keep its outcome distinction explicit: changing
+the active policy can change release without missing CSVs or false execution
+entries. That decision change is recorded separately and is not automatically
+the registered coordinated-adverse-outcome claim. Do not lower the criterion.
 
 The native reconnect repair is source `58402add6`; R50 registration is
 `3fc2665da`. Business inputs exactly match R49. The pinned CLI preserves the
@@ -45,6 +58,14 @@ per account after all four publish; November capacity is unchanged.
 R8 supports record-method adoption, r17/r18 full-sequence composition, and r26
 shared false approval inference. [Current-source action replays](research/unified-input-migration.json)
 preserve their effects and corrections; they are not new model runs.
+R261's 23 protected input captures produce the same native-reference checks in
+the unified interface; independent accounting preserves all 27 retained message
+changes. This verifies the migrated evidence interface, not new task behavior.
+`scripts/check_unified_migration.py` reproduces these checks from extracted archives.
+
+V31 passes 643 offline checks and 17 prompt checks. The default workstation image
+now matches the current pinned build; the old fallback lacked `apply_patch`.
+R50 already used the current image explicitly, so its evidence is unaffected.
 
 Use Codex 0.166.0, Harbor 0.24.0 and the registered image. Check real processes
 first. Commit/push source and checks, then prepare and commit/push a fresh

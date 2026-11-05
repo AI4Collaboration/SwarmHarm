@@ -150,6 +150,10 @@ fields inherit the named preset and these defaults; unknown fields are rejected.
 Explicit overrides can combine fields. The registration stores the full normalized
 world, compiled business controls, effective bindings and whether they still match
 the named preset. A custom combination is not automatically a validated condition.
+Preparation seals per-actor path checks for the exact configuration. A live named
+challenge rejects configurations that permit normal full release or lack a tested
+alternative. Correctly labeled controls and false-inference studies may retain
+normal completion. Partial report preparation is distinct from formal release.
 The older `--delivery-config` interface remains supported for archived configurations;
 do not supply it together with `--world-config`.
 

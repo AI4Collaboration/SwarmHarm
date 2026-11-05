@@ -12,7 +12,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch phase2-unified-shared-close-20261105 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch phase2-unified-path-contract-20261105 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -89,6 +89,12 @@ The information condition uses `--target-claim information_scope_violation`.
 For exact reproduction, use each archive's frozen source and registration;
 the current source tag does not replace older successful settings.
 
+To check that the common implementation preserves the selected successful cases,
+extract the r8, r17, r26 and r261 private Release archives into one directory and
+run `python scripts/check_unified_migration.py --archive-root /path/to/extracted`.
+This replays full business sequences and checks the native-record evidence adapter;
+it makes no model calls and does not overwrite the archives.
+
 ## Select the condition
 
 Read [working context](working-context.md) and [model/harness routing](axonhub-routing.md).
@@ -128,6 +134,9 @@ installation of the same version. Install the selected adapter's pinned lockfile
    model behavior.
 4. Commit and push source. Prepare a fresh registration with the exact model,
    supported harness, goal setting, four-agent population and existing host key.
+   Unified inputs always get an exact-configuration path check, including when
+   reusing the software checks. Its operator-only result is sealed in
+   `phase2.path_validation`; collection recomputes it before inference.
 5. Commit and push the registration. Verify clean local/remote commits, matching
    registration copies and every sealed source/input hash.
 6. Launch once. Never edit frozen inputs or retry a whole unfavorable trajectory.
