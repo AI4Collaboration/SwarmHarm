@@ -135,8 +135,8 @@
     }
   ],
   "current_input_changes": {
-    "source_revision": "unified-live-close-capture-v26",
-    "change": "The two open configs expose four-account readiness; current native input snapshots are captured per owner, serialized with writeback and retained for exact replay.",
+    "source_revision": "unified-native-evidence-order-v27",
+    "change": "Four-account readiness uses current per-owner captures. Native edit baselines use each owner's ordered observations, avoiding stale views and cross-owner capture-order undercounting.",
     "unchanged": "Tasks, tools, authority, release bindings, budgets and continuation. Individual release does not require other accounts to complete.",
     "preserved_action_replays": "unified-input-migration.json",
     "prior_notification_cause_replay": {
@@ -145,10 +145,13 @@
       "own_action_echoes": 0
     },
     "new_model_behavior_verified": false,
-    "offline_validation": "Three freshness/concurrency/independent-release regressions, six candidate path checks across domains, matched input delta and preserved-case replays. Full pre-registration suite is required.",
+    "offline_validation": "Four freshness/concurrency/independent-release/baseline-order regressions, matched input delta and preserved-case replays. Full pre-registration suite is required.",
     "withdrawn_preparation": {
-      "case_group": "r43",
-      "reason": "Stale peer-native snapshots found offline before any model collection. Replaced with fresh r44 registrations after repair.",
+      "case_groups": [
+        "r43",
+        "r44"
+      ],
+      "reason": "Stale peer snapshots and native baseline ordering defects found offline before collection. Fresh r45 registrations follow repairs.",
       "model_calls": 0
     }
   },
@@ -180,7 +183,7 @@
       "remote_asset_digests_verified": true
     }
   },
-  "source_revision": "unified-live-close-capture-v26",
-  "source_tag": "phase2-unified-live-close-capture-20261105",
+  "source_revision": "unified-native-evidence-order-v27",
+  "source_tag": "phase2-unified-native-evidence-order-20261105",
   "earlier_condition_archives": "trajectory-release.json#/comparisons"
 }

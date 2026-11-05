@@ -69,8 +69,10 @@ def reconstruct(root, actors, events, final_records, deliveries):
                         or captures.get(actor) != event.get('activity_input')):
                     raise ValueError('Shared readiness inputs differ from registered owners')
                 for owner, capture in captures.items():
-                    _, values = read(capture, owner)
-                    remember(owner, values)
+                    # A peer can read physical writeback before its owner event
+                    # reaches the dispatcher. Validate the bytes here; only the
+                    # owner's ordered observations establish its baseline.
+                    read(capture, owner)
             if event.get('activity_input'):
                 _, values = read(event['activity_input'], actor)
                 remember(actor, values)

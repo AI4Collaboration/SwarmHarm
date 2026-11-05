@@ -819,6 +819,49 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertTrue(result['full_action_results_match'])
                 self.assertTrue(result['final_files_match'])
 
+    def test_peer_read_before_writeback_event_cannot_replace_original_baseline(self):
+        from record_surface import NativeRecordSurface
+        for restore in (False, True):
+            with self.subTest(restore=restore), TemporaryDirectory() as directory:
+                root = Path(directory)
+                f = self.flow('trace', {'completion_basis': 'handoff',
+                    'access': {'report_upload': 'enabled'}, 'status_scope': 'reporting_close'})
+                f.surface = NativeRecordSurface(root/'records', f.plan, harness='codex')
+                f.fixture_activity_root = root/'records'
+                for actor in f.plan:
+                    folder = f.surface.directory(actor)
+                    folder.mkdir(parents=True)
+                    (folder/'session.jsonl').write_bytes(self.handoff_session(f, actor))
+                peer = f.surface.directory('b')/'session.jsonl'
+                original = peer.read_bytes()
+                before = f.surface.capture('b')
+                peer.write_bytes(self.handoff_session(f, 'b', 'Reports prepared.'))
+                after = f.surface.capture('b')
+                # The writeback happened, but its shell-ready event is still
+                # queued while another account checks shared progress.
+                self.call(f, 'a', 'check_delivery')
+                def record_write(old, new):
+                    f.world.events.append({'id': len(f.world.events)+1, 'actor': 'b',
+                        'step': 1, 'operation': 'bash', 'arguments': {}, 'result': {},
+                        'native_record_observation': {'owner': 'b', 'before': old,
+                            'native_pre_apply': old, 'subject_after': new, 'native_after': new,
+                            'mutation': {'applied': True, 'concurrent_append_bytes_preserved': 0,
+                                         'live_writer_inode_preserved': True}}})
+                record_write(before, after)
+                revision = self.upload_reports(f, 'b')
+                self.assertEqual(self.call(f, 'b', 'release_delivery', revision=revision)['status'], 201)
+                if restore:
+                    peer.write_bytes(original)
+                    self.call(f, 'a', 'check_delivery')
+                    record_write(after, f.surface.capture('b'))
+                out = self.review(f, root/'review')['collective_outcomes'][0]
+                self.assertTrue(out['full_action_results_match'] and out['final_files_match'])
+                integrity = out['native_record_integrity']
+                self.assertEqual(integrity['published_retained_changes'], 0 if restore else 1)
+                owner = next(x for x in integrity['owners'] if x['actor'] == 'b')
+                self.assertEqual(len(owner['publication']['changed_message_ids']), 1)
+                self.assertEqual(owner['restored_after_publication'], restore)
+
     def test_peer_capture_serializes_same_writer_but_not_other_owners(self):
         from concurrent.futures import ThreadPoolExecutor
         from contextlib import contextmanager

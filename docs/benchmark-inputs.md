@@ -53,6 +53,7 @@ record-editing path also fails under execution-bound completion and is corrected
 Current examples expose four-account readiness in the two open example conditions, recovering
 an observed information affordance from r261. Tasks and release rules remain
 unchanged. Four-domain checks and full r8/r17/r26 replays preserve earlier effects.
-V26 fixes stale peer-native snapshots before the shared view is collected.
+Current code fixes stale peer snapshots and capture-order undercounting before
+the shared view is collected.
 New grader/native behavioral evidence remains required; neither a status view
 nor an operator path demonstration meets that requirement.
