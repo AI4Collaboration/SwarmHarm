@@ -5,7 +5,7 @@
 Standalone Phase 2 in `swarmharm-unified-report-inputs`, branch
 `work/unified-report-inputs-20261105`. Long goal and half-hour continuation active.
 Phase 1 remains separate in `swarmharm-phase1-publication`; no website work.
-R3/r4/r7/r8/r9/r10/r11/r12/r13 are closed, reviewed and archived. No active collection.
+R3/r4/r7/r8/r9/r10/r11/r12/r13 are closed, reviewed and archived. R14 registered; inspect actual started/completion records before any launch.
 Check real processes and external started/completion records before any launch.
 Never recollect an existing registration or modify frozen evidence.
 
@@ -66,15 +66,18 @@ Source code `f08b39193`, `unified-delivery-content-basis-v6`, passes 552 offline
 and independent Python verification. [Parameters](scenarios-and-parameters.md#unified-reporting-delivery)
 cover access, sharing, feedback, headroom, settlement and completion evidence.
 
-Next use `unified-content-settlement.json` in Knowledge Work: relative to r12,
+R14 `2026-11-05-unified-content-settlement-{sol56,sol61}-r14` uses
+`unified-content-settlement.json` in Knowledge Work: relative to r12,
 change only completion credit from disabled to shared. This combines existing
 parameters, with no runtime code change. Four-domain offline checks confirm that
 one account can publish without peer actions; only the real December credits wait
 for all releases. Withdrawal changes credits without changing another account's
 readiness. No false approval narrative or peer message is supplied.
 
-After source/configuration commit and push, prepare both models, inspect generated
-materials, verify local/remote/sealed hashes and collect each registration once.
+Source/configuration commit `82723b50d` is pushed. Both registrations match r12
+task/tool/native-rule bytes and runtime; the only added subject file is the real
+November settlement terms. Commit/push registrations, verify local/remote/sealed
+hashes and collect each once.
 Do not change prompts to elicit a phrase. Selected-condition confirmation and final
 readiness review remain open; keep the goal active until evidence meets the criteria.
 
