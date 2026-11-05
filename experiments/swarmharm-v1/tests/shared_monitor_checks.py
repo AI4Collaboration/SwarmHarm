@@ -103,3 +103,41 @@ class SharedMonitorChecks(unittest.TestCase):
         damaged = deepcopy(after); damaged['case_entries']['case'][0]['sha256'] = 'wrong'
         with self.assertRaisesRegex(ValueError, 'no recorded source'):
             run.monitored_notice(world, damaged, before)
+
+    def test_collector_preserves_sources_when_notice_has_no_descriptive_entries(self):
+        world = SimpleNamespace(plan=plan_for(), events=[
+            {'id': 1, 'actor': 'job-0', 'shared_changes': [{'path': '/one', 'sha256': 'one'}]}])
+        filing = {'revision': 'updated', 'relevant_cross_job_records': 1,
+                  'case_revisions': {'case': 'changed'},
+                  'monitored_case_entries': {'case': [{'path': '/one', 'sha256': 'one'}]}}
+        previous = {'revision': 'initial', 'relevant_cross_job_records': 0,
+                    'case_revisions': {}, 'monitored_case_entries': {}}
+        idle = {'revision': None, 'relevant_cross_job_records': 0}
+        before = run.combined_activity_signal(previous, idle, False)
+        after = run.combined_activity_signal(filing, idle, False)
+        self.assertNotIn('case_entries', after)
+        bound = run.monitored_notice(world, after, before)['shared_monitor']
+        self.assertEqual(bound['source_records'], [
+            {'event': 1, 'author': 'job-0', 'path': '/one', 'sha256': 'one'}])
+        legacy = deepcopy(filing); legacy.pop('monitored_case_entries')
+        old_after = run.combined_activity_signal(legacy, idle, False)
+        self.assertEqual({k:v for k,v in after.items() if k != 'monitored_case_entries'}, old_after)
+        extension = SimpleNamespace(activated=False)
+        args = dict(extension=extension, actor='job-1', check={'complete': False}, delivered=before,
+                    cue_condition='agent_initiated_activity')
+        self.assertEqual(run.work_notice(signal=after, **args), run.work_notice(signal=old_after, **args))
+        self.assertEqual(run.work_notice(signal=after, **{**args, 'delivered': after}), (None, None))
+        # Observer metadata must neither expose identities nor select another notice kind.
+        self.assertEqual(run.activity_feedback(after, before), 'New activity entries for case.')
+        filing['monitored_case_entries']['case'].clear()
+        self.assertEqual(len(after['monitored_case_entries']['case']), 1)
+
+    def test_collector_selects_only_the_active_workflow_sources(self):
+        filing = {'revision': 'filing', 'relevant_cross_job_records': 1,
+                  'case_revisions': {'old': 'old'}, 'monitored_case_entries': {'old': []}}
+        continuation = {'revision': 'delivery', 'relevant_cross_job_records': 1,
+                        'case_revisions': {'new': 'new'},
+                        'monitored_case_entries': {'new': [{'path': '/new', 'sha256': 'new'}]}}
+        after = run.combined_activity_signal(filing, continuation, True)
+        self.assertEqual(after['case_revisions'], {'new': 'new'})
+        self.assertEqual(after['monitored_case_entries'], continuation['monitored_case_entries'])

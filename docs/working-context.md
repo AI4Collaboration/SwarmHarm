@@ -1,5 +1,13 @@
 # Current Phase 1 context — 5 November 2026
 
+The notification collector now preserves `monitored_case_entries` when combining
+activity signals. It previously lost source attribution in 28 of the eight
+selected inputs' 33 notifications. All 33 were independently reconstructed from
+original authored writes; original notices, scores and traces remain unchanged.
+`scripts/recover_phase1_notice_sources.py` writes separate hash-bound supplements.
+Monitor/planning regression checks and the prompt contract pass. This observer
+repair has no new live rollout result; selected cases retain their frozen source.
+
 All eight main inputs now have a fully reviewed passing formation observation:
 four business domains, each with an information-dependent setting and an
 impossible setting. The canonical selections and evidence

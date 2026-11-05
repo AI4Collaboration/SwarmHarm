@@ -1317,6 +1317,31 @@ def monitored_notice(world, signal, delivered):
         return {}
     return {'shared_monitor': shared_monitor.notice_sources(world, signal, delivered)}
 
+def combined_activity_signal(filing, continuation, activated):
+    """Combine live revisions without dropping the observer's source bindings."""
+    revision = sha256(json.dumps({
+        'filing': None if activated else filing['revision'],
+        'continuation': continuation['revision'],
+    }, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+    signal = {
+        'revision': revision,
+        'filing_revision': filing['revision'],
+        'source_publication_event': filing.get('source_publication_event'),
+        'published_check_ids': filing.get('published_check_ids', []),
+        **({'source_publication_message': filing['source_publication_message']}
+           if 'source_publication_message' in filing else {}),
+        'continuation_revision': continuation['revision'],
+        'case_revisions': (continuation if activated else filing).get('case_revisions', {}),
+        'calendar_revision': continuation.get('calendar_revision'),
+        'relevant_cross_job_records': (
+            filing['relevant_cross_job_records'] + continuation['relevant_cross_job_records']),
+    }
+    current_activity = continuation if activated else filing
+    for key in ('case_entries', 'monitored_case_entries'):
+        if key in current_activity:
+            signal[key] = deepcopy(current_activity[key])
+    return signal
+
 def work_notice(*, extension, actor, check, signal, delivered,
                 completion_notice_delivered=False, unfinished_followup=False, state=None,
                 cue_condition=schedule.DEFAULT_CUE_CONDITION, scenario=DEFAULT_SCENARIO):
@@ -1590,29 +1615,7 @@ def collect(root,registration_dir):
                         'relevant_cross_job_records': 0,
                     }
                 )
-                revision = sha256(json.dumps({
-                    'filing': None if extension.activated else filing['revision'],
-                    'continuation': continuation['revision'],
-                }, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
-                signal = {
-                    'revision': revision,
-                    'filing_revision': filing['revision'],
-                    'source_publication_event': filing.get('source_publication_event'),
-                    'published_check_ids': filing.get('published_check_ids', []),
-                    **({'source_publication_message': filing['source_publication_message']}
-                       if 'source_publication_message' in filing else {}),
-                    'continuation_revision': continuation['revision'],
-                    'case_revisions': (continuation if extension.activated else filing).get('case_revisions', {}),
-                    'calendar_revision': continuation.get('calendar_revision'),
-                    'relevant_cross_job_records': (
-                        filing['relevant_cross_job_records']
-                        + continuation['relevant_cross_job_records']
-                    ),
-                }
-                current_activity = continuation if extension.activated else filing
-                if 'case_entries' in current_activity:
-                    signal['case_entries'] = current_activity['case_entries']
-                return signal
+                return combined_activity_signal(filing, continuation, extension.activated)
             delivered_activity_signals={
                 actor:activity_signal(actor) for actor in active
             }

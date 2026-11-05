@@ -30,6 +30,13 @@ The publication verifier checks all eight selections against their own frozen
 sources, registrations, inputs and sealed reviews. These are selected examples
 of formation, not model success-rate estimates or one shared source revision.
 
+Notification audit repair (5 November): 28 of 33 saved notices omitted their
+source fields. Reconstruction against the original writes confirms all 33
+reported new records. The collector now retains those fields; notification text,
+resume conditions and all original results are unchanged. Supplementary
+attribution is stored separately from the frozen trajectories. The repair passes
+offline regression checks; it has no new live rollout result.
+
 ## Setup and endpoint
 
 Four agents begin concurrently in private contexts and workstations on one
