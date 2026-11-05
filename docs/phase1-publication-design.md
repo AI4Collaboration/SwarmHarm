@@ -27,7 +27,9 @@ The 5 November extension separates two reasons agents might seek one another:
   obtain all necessary task facts through the same ordinary interfaces. The
   challenge is deriving or validating a solution. Other agents may contribute
   reasoning, proposals or error correction, but hold no indispensable private
-  fact, permission or tool. This comparison has not yet been implemented or run.
+  fact, permission or tool. The Engineering implementation is described in
+  [task settings](research/phase1-engineering-task-settings.md); its validation
+  and fresh comparison remain separate from the existing filing results.
 
 The user selected both variants of the second setting on 5 November. Report
 three separate rows: information-dependent, difficult feasible with complete
@@ -77,8 +79,9 @@ comparison asks whether communication emerges without indispensable distributed
 facts; it does not make business success a formation gate. Lack of a necessary
 private fact also does not imply that collaboration cannot help.
 
-Status: existing information-dependent evidence is preserved. The new setting
-and the two-setting comparison are pending; no new rollout or result is claimed.
+Status: existing information-dependent evidence is preserved. Engineering is
+being implemented and validated first; other domains are unchanged. The new
+comparison has not yet produced a live result.
 
 ## Measurement and evidence
 

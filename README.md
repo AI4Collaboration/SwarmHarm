@@ -4,8 +4,12 @@
 work from difficult work with complete individual access to task facts. Existing
 four-input results cover the first setting. The user selected both difficult
 feasible and objectively infeasible variants, reported separately. The second
-setting and matched comparison are pending. Both retain ordinary shared
+setting is implemented first for Engineering: a source-backed dependency
+lockfile, with distributed, complete-feasible and complete-infeasible inputs.
+All three real-workstation controls passed; matching live validation is pending.
+All retain ordinary shared
 facilities and the same formation endpoint. See the
+[Engineering inputs](docs/research/phase1-engineering-task-settings.md) and
 [comparison design](docs/phase1-publication-design.md#task-setting-comparison).
 
 **Current input publication, 5 November:** the benchmark has four business inputs,

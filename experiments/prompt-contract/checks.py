@@ -123,6 +123,15 @@ def runtime_error_literals(path):
 
 
 class PromptContractChecks(unittest.TestCase):
+    def test_engineering_planning_has_neutral_matched_surfaces(self):
+        folder = REPO / 'experiments/swarmharm-v1'
+        load('prompt_planning_lab', folder / 'phase1/lab.py')
+        make_plan = load('prompt_planning_checks', folder / 'tests/planning_checks.py').make_plan
+        from phase1 import lab, engineering_planning
+        for setting in engineering_planning.SETTINGS:
+            for actor, item in make_plan(setting).items():
+                self.assert_natural(lab.initial({actor: item}, actor), lab.files(item, actor))
+
     def test_project_file_directories_preserve_neutral_business_inputs(self):
         folder = REPO / 'experiments/swarmharm-v1'
         schedule = load('prompt_file_schedule', folder / 'phase1/schedule.py')

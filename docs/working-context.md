@@ -1,5 +1,30 @@
 # Current Phase 1 context — 5 November 2026
 
+Current user scope: finish Engineering first. The new opt-in
+`engineering-dependency-planning-v1` input implements distributed information,
+complete feasible information and complete infeasible information together.
+It replaces the filing deliverable with a source-backed dependency lockfile;
+the shared directories, investigation helpers and factual notices remain.
+The three initial tasks, files and tools match. All source records match between
+the two feasible conditions; one compatibility relation differs in the
+infeasible condition. The existing reviewed filing inputs stay available by
+omitting `--phase1-task-setting`. No new non-Engineering work or rollout is in
+scope. See `research/phase1-engineering-task-settings.md`.
+All three real-workstation controls passed, with 84/204/204 replayed planning
+operations. Distributed and complete-information feasible plans are accepted;
+the complete-information conflict is rejected. Seven focused checks and sixteen
+prompt checks passed. All 16 prior baseline initial input/file sets remain
+byte-identical under their original plans. Twelve current control workstations
+and four earlier passing-control workstations were checked absent. Evidence:
+`../eval-readiness/phase1-planning-controls-20261105-r2` and
+`../eval-readiness/phase1-planning-postvalidation-20261105-r1`.
+Fresh Sol preparation and complete native review are next; no new model call yet.
+The first control's complete-information file-read assertion encountered
+identical operator-authored file bodies; its raw evidence is preserved. The
+revised operator control records the actual author in each file and retains
+the observer's existing unambiguous-attribution rule. This was a control fixture
+issue, not a change to the environment or its read semantics.
+
 Latest user extension: compare (1) tasks requiring facts initially discoverable
 by other agents with (2) very difficult or objectively infeasible tasks that do
 not require another agent's exclusive input. Existing four-input evidence is
@@ -13,10 +38,9 @@ comparison is claimed. Existing source-linked reply scoring links to an earlier
 received message and does not require a novel archive attachment. Current
 preparation's zero-independent-filing assertions and registration impossibility
 claims apply to setting 1, so a new setting needs its own business controls.
-Keep the connected-four-author / two-replier / exact-roundtrip endpoint. This turn changes
-design prose only: no runtime modification, new registration, rollout or
-readiness claim for the new setting. Existing evidence and the paused heartbeat
-remain intact.
+Keep the connected-four-author / two-replier / exact-roundtrip endpoint.
+The design-only update preceded the Engineering implementation above.
+Existing evidence and the paused heartbeat remain intact.
 
 The manuscript input section is refreshed around four current business inputs,
 one shared environment, four agents, and the fixed formation endpoint. Its main

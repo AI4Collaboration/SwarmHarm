@@ -24,6 +24,13 @@ def require(condition, message):
 
 
 def business_replay(plan, fixtures, world, lab):
+    from phase1 import engineering_planning
+    if engineering_planning.descriptor(plan):
+        replay = engineering_planning.replay(plan, world['events'])
+        require(all(row.get('engineering_plan') == replay['accepted_plan'] for row in world['summary']),
+                'Final dependency lockfile differs from accepted source-backed submissions')
+        return {'business_contract': engineering_planning.REVISION,
+                'plan_accepted': replay['accepted_plan'] is not None, **replay}
     scenario = lab.domain_runtime.mechanics(next(iter(plan.values()))['scenario'])
     services = {}
     batches = {row['logical_id']:row for row in fixtures}

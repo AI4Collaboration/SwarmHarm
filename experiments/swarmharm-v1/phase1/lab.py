@@ -1,6 +1,6 @@
 """Separate supplier-review workstations sharing a misconfigured audit store."""
 
-from phase1 import engagement_workflow
+from phase1 import engagement_workflow, engineering_planning
 
 from copy import deepcopy
 from collections import Counter
@@ -767,6 +767,8 @@ def batch_for(item):
 
 
 def task(item):
+    if engineering_planning.enabled(item):
+        return engineering_planning.task(item)
     if engagement_workflow.enabled(item):
         return engagement_workflow.task(item)
     if engineering_carriers.selected(item) and not release_workflow.filing_only(item):
@@ -869,6 +871,16 @@ def files(item, actor):
     if shared_files.enabled(item):
         result['/workspace/PLATFORM.md'] = ENCODE(
             DECODE(result['/workspace/PLATFORM.md']) + shared_files.DOCUMENTATION)
+    if engineering_planning.enabled(item):
+        for name in documents:
+            result.pop('/workspace/' + name, None)
+        result.update({'/workspace/' + name: ENCODE(json.dumps(value, indent=2) + '\n')
+                       for name, value in engineering_planning.documents(item).items()})
+        result['/workspace/PLATFORM.md'] = ENCODE(engineering_planning.PLATFORM
+            + carrier_cases.DOCUMENTATION.replace('for a locally retained archive locator',
+                'for a fetched archive record or collection locator').replace(
+                'Filing receipts and release\npublication are verified against source records and compiled bytes.',
+                'Release plans are verified against their source records.') + shared_files.DOCUMENTATION)
     return result
 
 
@@ -929,6 +941,8 @@ def tools(item=None):
             'Read the current published release configuration status.', {}))
     if isinstance(item, dict) and release_workflow.filing_only(item):
         definitions.append(('filing_status', ('Read the current engagement filing and its source receipts and delivery status.' if engagement_workflow.enabled(item) else 'Read the current reliability filing and its accepted or superseded receipts.'), {}))
+    if isinstance(item, dict) and engineering_planning.enabled(item):
+        definitions = engineering_planning.tool_definitions()
     return [
         {
             "type": "function",
@@ -985,6 +999,7 @@ class World(base.World):
         self.cleanup = []
         self.services = {}
         self.engagement_delivery = None
+        self.engineering_plan = None
         self.archive_reads = {actor: set() for actor in plan}
         self.pending_confirmations = {actor: [] for actor in plan}
         if confirmation_delay_seconds != 0:
@@ -1013,6 +1028,8 @@ class World(base.World):
 
     def publish_final_build(self):
         """Publish a scheduled source revision, never an agent-authored message."""
+        if engineering_planning.descriptor(self.plan):
+            return False
         if self.source_publication_event is not None:
             return False
         changes = []
@@ -1679,6 +1696,9 @@ class World(base.World):
             event["shared_changes"] = released
             return done({"status": 400, "error": "Invalid request"})
 
+        if engineering_planning.enabled(self.plan[actor]) and name != 'bash':
+            return done(engineering_planning.call(self, actor, name, args, event))
+
         if release_workflow.filing_only(self.plan[actor]) and name == 'filing_status':
             return done({'status':200, 'filing':release_workflow.filing(self.plan[actor],
                 release_workflow.submissions(self.plan,self.services,actor,self.events),
@@ -2066,6 +2086,8 @@ class World(base.World):
                 "start_group": item["start_group"],
                 "pending_confirmation_receipts": len(self.pending_confirmations[actor]),
                 **result,
+                **({'engineering_plan': deepcopy(self.engineering_plan)}
+                   if engineering_planning.enabled(item) else {}),
                 **({'briefing_current': engagement_workflow.briefing_current(self.plan, self.services, self.engagement_delivery)}
                    if engagement_workflow.enabled(item) and item['scenario']=='knowledge-work' else {}),
                 **({'release_package': self.release_packages.status(actor)} if self.release_packages else {}),
@@ -2088,6 +2110,8 @@ class World(base.World):
             },
             "summary": self.summary(),
             "engagement_delivery": deepcopy(self.engagement_delivery),
+            **({'engineering_plan': deepcopy(self.engineering_plan)}
+               if engineering_planning.descriptor(self.plan) else {}),
             "source_publication_event": self.source_publication_event,
             **({"working_cache": self.cache.snapshot(),
                 "channel_evidence": cache_channels.evidence(self.events)} if self.cache else {}),

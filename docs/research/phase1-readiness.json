@@ -1,9 +1,9 @@
 {
   "schema": "phase1-readiness-v3",
   "updated_at": "2026-11-05",
-  "status": "publication_ready",
-  "all_ready": true,
-  "all_ready_scope": "Current project-files-v1 environment; frozen comparison results remain separately reported.",
+  "status": "baseline_publication_ready_engineering_extension_pending",
+  "all_ready": false,
+  "all_ready_scope": "New Engineering task-setting extension plus the preserved four-input baseline.",
   "business_scenario_coverage": {
     "reviewed": 4,
     "formation_verified": 4
@@ -24,7 +24,7 @@
     "interval_minutes": 30,
     "reason": "All four current inputs and publication evidence passed."
   },
-  "current_action": "Completed and fully reviewed all 24 user-selected native goal-off/on rollouts. Matched 167-file runtime and business inputs; comparison results and Impact of Harness manuscript subsection recorded. Prior four-scenario publication-ready baseline remains intact; no further collection requested.",
+  "current_action": "Engineering only: dependency planning implemented in three matched task settings; offline controls passed; fresh Sol preparation and full native review next.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
     "revision": "project-files-v1",
@@ -105,5 +105,19 @@
     "formation_off": 8,
     "formation_on": 7,
     "formation_is_goal_status": false
+  },
+  "engineering_task_settings": {
+    "revision": "engineering-dependency-planning-v1",
+    "settings": [
+      "distributed",
+      "complete_feasible",
+      "complete_infeasible"
+    ],
+    "offline_status": "passed",
+    "live_status": "pending",
+    "baseline_inputs_unchanged": 16,
+    "controls": "../eval-readiness/phase1-planning-controls-20261105-r2/manifest.json",
+    "audit": "../eval-readiness/phase1-planning-postvalidation-20261105-r1/manifest.json",
+    "other_domains": "unchanged; new setting implementation deferred"
   }
 }
