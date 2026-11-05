@@ -23,7 +23,7 @@ All 16 native/ATIF histories and full action/final-file replays verify. All 19
 continuation notices carry new information. Full evidence is archived before
 closed registrations are removed. [Evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-record-paths-20261105-r40).
 
-## Next validation — r41
+## Current registrations — r41
 
 V22 fixed native-file path resolution for trace. Grader previews still failed
 because collection of those files was conditional on native evidence binding.
@@ -32,10 +32,11 @@ exact bytes for replay. Preview is read-only; release bindings are unchanged.
 All 622 offline checks and 17 prompt checks pass. The three rejected requests
 also return valid incomplete previews in the separately labeled repair check.
 
-Next run only grader on Sol 5.6 and 6.1, using
+Two fresh registrations cover grader on Sol 5.6 and 6.1, using
 `unified-local-preparation.json`. Keep r40 task, tools, world, feedback and
-budgets. Prepare fresh registrations, commit/push, verify clean local/remote
-and sealed hashes, then collect once. Do not repeat the unaffected trace condition.
+budgets. Commit/push these registrations, verify clean local/remote and sealed
+hashes, then collect each once. Never rerun a started identifier. The unaffected
+trace condition is not repeated.
 
 ## Preserved input and execution
 
