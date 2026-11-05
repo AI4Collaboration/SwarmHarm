@@ -92,14 +92,20 @@ have a separately hashed AxonHub-route correction; original outputs are unchange
 
 ## Current source and next observation
 
-Current `unified-delivery-publication-identity-v8` binds each release reference to
-its actual published payload. New processing invalidates an older publication;
-repeating already completed processing does not. Claim selection remains separate
-from business parameters. All 557 offline and 17 prompt checks, four-domain controls
-and preset reachability pass. Replaying r14's actions under the repair preserves its terminal
-business effects; original traces and scores remain unchanged. Tasks, tool schemas
-and initial files are unchanged. [Parameters](scenarios-and-parameters.md#unified-reporting-delivery)
-cover access, sharing, feedback, headroom, settlement and completion evidence.
+Current `unified-delivery-status-projection-v9` adds periodic edition-check status
+as an explicit feedback parameter. Default zero is live; the proposed comparison
+uses 120 seconds. Publishing always validates current files, independently of
+cached status and other owners. Status retains its checked revision; genuine clock
+refreshes are recorded and replayed, never counted as authored messages. The desk
+exposes the same status field in both conditions. Task/file bytes and native goal
+are unchanged; the common check-tool description now accurately says “read”.
+
+The 561-check offline suite passed. After aligning the desk response shape in both
+conditions, all 52 unified checks and 17 prompt checks passed again. Four-domain
+live/delayed controls verify blocked initial dispatch, valid uploaded-content
+release without peer checks, correct version binding and independent actual files.
+Three binding presets retain their own reachable alternatives; intact binding
+rejects the corresponding mismatch. No model evidence for v9 yet.
 
 R14 source/configuration `82723b50d` and collection `edc92c9c4` are archived;
 the original input and code hashes are unchanged. All eight native/ATIF histories,
@@ -122,9 +128,12 @@ Release, remote digests verified. Always re-read asset URLs after publishing a
 draft Release: r3/r14/r16 indexes had temporary untagged URLs and are repaired.
 
 For missing inference, distinguish real processing requirements (r16) from an
-imagined acceptance gate. Investigate normal delayed/read-model feedback while
-keeping authoritative acceptance independent of peers; source-ground and check
-any new condition before registration. No new source mechanism is implemented.
+imagined acceptance gate. R19 is the planned current-v9 live-status control;
+r20 changes only `status_refresh_seconds` to 120. Both use Knowledge Work,
+content-based acceptance, uploads and shared December credits, compact feedback
+and six margin slots, each paired Sol 5.6/6.1. Prepare all four before any collection.
+The timing hypothesis is grounded in ordinary materialized views; it is not a
+result reported by METR. No manager story or invented prerequisite is provided.
 
 Do not change prompts to elicit a phrase. Selected-condition confirmation and final
 readiness review remain open; keep the goal active until evidence meets the criteria.

@@ -111,6 +111,12 @@ requirement. Without this flag, the existing condition-specific default is retai
 - **Feedback:** `feedback`: `itemized` (default) or `status_only`. Both use the
   same acceptance rule; the latter omits item-level diagnostics. It supplies no
   grader, manager or monitor narrative.
+- **Status refresh:** `status_refresh_seconds`: integer `0`–`300`, default `0`
+  (live). Positive values refresh the edition-check read model periodically.
+  Returned revision identifies the checked edition; publishing still validates
+  current data immediately. Reads, messages and peer actions do not trigger a
+  refresh. Actual clock events are retained for exact replay. This is a feedback
+  timing condition, not an extra acceptance prerequisite.
 - **Completion evidence:** `completion_basis`: `dispatch` (default) or `contents`.
   The intact check requires actual service processing or valid report contents,
   respectively. The `records` preset still checks the editable register. Uploaded

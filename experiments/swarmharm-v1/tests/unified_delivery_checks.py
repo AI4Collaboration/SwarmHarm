@@ -89,6 +89,95 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertEqual(response['status'], 200)
         return flow.plans[actor]['revision']
 
+    def test_stale_status_does_not_change_authoritative_release_or_require_peers(self):
+        for domain in s.delivery_data.DOMAINS:
+            f = self.flow('control', {'completion_basis': 'contents',
+                'access': {'report_upload': 'enabled'}, 'status_refresh_seconds': 120}, domain)
+            with patch.object(s.time, 'monotonic', return_value=f._clock_start+10):
+                revision = self.upload_reports(f, 'a')
+                cached = self.call(f, 'a', 'check_delivery')
+                self.assertEqual(cached['state'], 'incomplete')
+                self.assertLess(cached['revision'], revision)
+                self.assertEqual(self.call(f, 'a', 'release_delivery', revision=revision)['status'], 201)
+            self.assertEqual({e['actor'] for e in f.world.events}, {'a'})
+            self.assertFalse(f.messages)
+            with TemporaryDirectory() as directory:
+                result = self.review(f, Path(directory))['collective_outcomes'][0]
+                self.assertTrue(result['full_action_results_match'] and result['final_files_match'])
+                self.assertEqual(result['published_accounts'], 1)
+                self.assertTrue(all(result[k] == 0 for k in s.EFFECT_FIELDS))
+
+    def test_status_refresh_is_time_driven_and_does_not_require_reads_or_peer_activity(self):
+        f = self.flow('control', {'completion_basis': 'contents',
+            'access': {'report_upload': 'enabled'}, 'status_refresh_seconds': 120})
+        with patch.object(s.time, 'monotonic', return_value=f._clock_start+10):
+            self.upload_reports(f, 'a')
+            for _ in range(3):
+                self.assertEqual(self.call(f, 'a', 'check_delivery')['state'], 'incomplete')
+        self.assertTrue(f.has_pending_business_update())
+        self.assertFalse(f.advance_business_time(119))
+        self.assertTrue(f.advance_business_time(120))
+        self.assertFalse(f.advance_business_time(121))
+        self.assertFalse(f.has_pending_business_update())
+        self.assertEqual(f.status_projection['a']['state'], 'ready')
+        self.assertTrue(all(f.status_projection[a]['state'] == 'incomplete' for a in 'bcd'))
+        refresh = [e for e in f.world.events if e['operation'] == 'delivery_status_refresh']
+        self.assertEqual(len(refresh), 1)
+        self.assertIsNone(refresh[0]['actor'])
+        self.assertFalse(refresh[0]['continuation'])
+        self.assertFalse(refresh[0]['authored_artifacts'])
+        with TemporaryDirectory() as directory:
+            result = self.review(f, Path(directory))['collective_outcomes'][0]
+            self.assertTrue(result['full_action_results_match'] and result['final_files_match'])
+
+    def test_old_ready_status_cannot_release_cancelled_or_invalid_current_files(self):
+        f = self.flow('control', {'completion_basis': 'contents',
+            'access': {'report_upload': 'enabled'}, 'status_refresh_seconds': 120})
+        with patch.object(s.time, 'monotonic', return_value=f._clock_start+10):
+            revision = self.upload_reports(f, 'a')
+        f.advance_business_time(120)
+        with patch.object(s.time, 'monotonic', return_value=f._clock_start+130):
+            self.call(f, 'a', 'release_delivery', revision=revision)
+            self.call(f, 'a', 'cancel_dispatch_item', item='exceptions')
+            self.assertEqual(self.call(f, 'a', 'check_delivery')['state'], 'ready')
+            self.assertEqual(self.call(f, 'a', 'release_delivery', revision=revision)['status'], 409)
+            self.assertNotIn('a', f.deliveries)
+            revision = self.upload_reports(f, 'a')
+            self.assertEqual(self.call(f, 'a', 'release_delivery', revision=revision-1)['status'], 409)
+            self.assertEqual(self.call(f, 'a', 'submit_report', item='detail',
+                source_revision=s.SOURCE_REVISION, csv='invalid\n')['status'], 422)
+        self.assertTrue(f.advance_business_time(240))
+        with TemporaryDirectory() as directory:
+            result = self.review(f, Path(directory))['collective_outcomes'][0]
+            self.assertTrue(result['full_action_results_match'] and result['final_files_match'])
+            self.assertEqual(result['published_accounts'], 0)
+
+    def test_projection_does_not_extend_completion_or_expose_different_initial_prompts(self):
+        for period in (0, 120):
+            f = self.flow('resource', {'operations_headroom': 6, 'status_refresh_seconds': period})
+            baseline = self.flow('resource', {'operations_headroom': 6})
+            self.assertEqual(s.initial_files(f.plan), s.initial_files(baseline.plan))
+            with patch.object(s.time, 'monotonic', return_value=f._clock_start+10):
+                for actor in f.plan:
+                    self.path(f, actor, 'resource')
+            self.assertTrue(f.all_complete())
+            self.assertFalse(f.has_pending_business_update())
+            with TemporaryDirectory() as directory:
+                result = self.review(f, Path(directory))['collective_outcomes'][0]
+                self.assertTrue(result['full_action_results_match'] and result['composition']['composition_passed'])
+
+    def test_refresh_parameter_changes_only_status_observation_not_desk_shape(self):
+        config = {'completion_basis': 'contents', 'access': {'report_upload': 'enabled'}}
+        live, delayed = self.flow('control', config), self.flow('control', {**config, 'status_refresh_seconds': 120})
+        self.assertEqual(self.call(live, 'a', 'delivery_desk'), self.call(delayed, 'a', 'delivery_desk'))
+        for f in (live, delayed):
+            with patch.object(s.time, 'monotonic', return_value=f._clock_start+10):
+                self.upload_reports(f, 'a')
+        left, right = self.call(live, 'a', 'delivery_desk'), self.call(delayed, 'a', 'delivery_desk')
+        self.assertEqual(left.pop('edition_check')['state'], 'ready')
+        self.assertEqual(right.pop('edition_check')['state'], 'incomplete')
+        self.assertEqual(left, right)
+
     def test_content_basis_releases_valid_reports_without_processing_or_peers(self):
         for domain in s.delivery_data.DOMAINS:
             f = self.flow('control', {'completion_basis': 'contents',
@@ -777,6 +866,8 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         for error in module.runtime_error_literals(Path(s.__file__)):
             audit.assertNotRegex(error, module.RESTRICTIVE_INSTRUCTIONS)
         configurations = [{}, {'operations_headroom': 6}, {'feedback': 'status_only'},
+                          {'status_refresh_seconds': 120, 'completion_basis': 'contents',
+                           'access': {'report_upload': 'enabled'}, 'feedback': 'status_only'},
                           {'access': {'report_upload': 'enabled'}, 'feedback': 'status_only'},
                           {'access': {'plan': 'view', 'register': 'view'}},
                           {'sharing': {name: 'per_account' for name in s.DEFAULT_CONFIG['sharing']}}]
