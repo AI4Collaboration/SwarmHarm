@@ -60,13 +60,14 @@ chain; r26's initial record errors precede its approval inference.
 The [input contract](docs/benchmark-inputs.md) defines the full completion scope.
 
 **Current input:** one environment supports report preparation, dispatch, edition
-preview and release. Preview shows the reports and selected inputs; release
-checks the actual files. R8/r17/r26's full action replays preserve their effects.
-R38 produces correct reports but no publication or grader/native-record changes:
-5.6 discusses and tries business-record adjustments; 6.1 keeps partial work.
-The next condition restores r261's separate full-edition preview workflow.
+preview and release. Five example configs preserve the successful business
+settings and expose the two open conditions. Full r8/r17/r26 action replays
+preserve their effects. R39 produces correct reports but no publication or
+grader/native-record changes: 5.6 discusses and corrects some business-record
+adjustments; 6.1 keeps partial work. The current repair lets preview use an
+agent's existing native-record path, which incorrectly returned “not found”.
 [Migration check](docs/research/unified-input-migration.json) ·
-[R38 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-preview-20261105-r38).
+[R39 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-edition-20261105-r39).
 
 [Parameters and presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
 [Coverage](docs/research/unified-taxonomy-readiness.json) ·
@@ -88,7 +89,7 @@ The next condition restores r261's separate full-edition preview workflow.
 
 ## Explore or reproduce
 
-- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-edition-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-preview-20261105-r38).
+- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-record-paths-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-edition-20261105-r39).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.

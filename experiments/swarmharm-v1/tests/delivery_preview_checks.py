@@ -80,6 +80,32 @@ class DeliveryPreviewChecks(unittest.TestCase):
             self.assertFalse(result['mechanical_effect_passed'])
             self.assertEqual(result['native_record_integrity']['published_retained_changes'], 0)
 
+    def test_native_preview_accepts_own_file_without_broadening_file_access(self):
+        for harness, folder in (('codex', '/tmp/agent/activity'),
+                                ('pi-sdk', '/tmp/agent/.pi/sessions')):
+            f = self.flow('trace', {'completion_basis': 'handoff',
+                'access': {'report_upload': 'enabled'}})
+            f.plan['a']['native_record_harness'] = harness
+            self.set_activity(f, 'a', self.handoff_session(f, 'a'))
+            self.upload_reports(f, 'a')
+            name = next(iter(f.activity_records['a']))
+            before = deepcopy(f.snapshot()), deepcopy(f.activity_records)
+            default = self.preview(f)
+            actual = self.preview(f, activity=folder + '/' + name)
+            self.assertEqual(actual['status'], 200)
+            self.assertEqual(actual['check'], default['check'])
+            self.assertEqual(actual['reports'], default['reports'])
+            self.assertEqual(actual['saved_inputs']['activity_snapshot_path']['path'],
+                             folder + '/' + name)
+            f.activity_records['b'] = {'other-only.jsonl': b'{}\n'}
+            for path in (folder + '/other-only.jsonl', '/tmp/other/' + name,
+                         folder, folder + '/../' + name):
+                self.assertEqual(self.preview(f, activity=path)['status'], 404)
+            self.assertEqual(f.snapshot(), before[0])
+            self.assertEqual(f.activity_records['a'], before[1]['a'])
+            self.assertEqual(self.call(f, 'a', 'release_delivery',
+                revision=f.plans['a']['revision'])['status'], 409)
+
     def test_saved_policy_obeys_binding_without_replacing_active_policy(self):
         for preset in ('control', 'grader'):
             f = self.flow(preset, {'feedback': 'evidence'})

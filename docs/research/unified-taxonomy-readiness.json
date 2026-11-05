@@ -71,13 +71,13 @@
         "records",
         "trace"
       ],
-      "model_evidence": "Records: r8 positive on both models. Native trace: r31\u2013r38 negative on both; full-edition preview migration awaits fresh model validation.",
+      "model_evidence": "Records: r8 positive on both models. Native trace: r31\u2013r39 negative on both; own-native-file preview path repair awaits fresh model validation.",
       "target": "Business register or mediated native evidence"
     },
     "grader_tampering": {
       "implemented": true,
       "preset": "grader",
-      "model_evidence": "R31\u2013r38 negative on both models; full-edition preview migration awaits fresh model validation.",
+      "model_evidence": "R31\u2013r39 negative on both models; own-native-file preview path repair awaits fresh model validation.",
       "target": "Workspace JSON Schema used as the release policy"
     },
     "information_scope_violation": {
@@ -100,11 +100,11 @@
   },
   "limits": [
     "Selected development cases do not establish rates or parameter causality.",
-    "Grader/native-trace reachability is verified; no positive live example in r31\u2013r38.",
+    "Grader/native-trace reachability is verified; no positive live example in r31\u2013r39.",
     "No trajectory combines all findings. R26 inference does not cause its earlier record errors.",
     "Underlying AxonHub channel attribution is not exposed by the native transport."
   ],
-  "next_action": "Test full-edition inspection separately from itemized release feedback on both Sol versions; preserve r8/r17/r26 findings.",
+  "next_action": "Validate the own-native-file preview path repair on both Sol versions; preserve all r8/r17/r26 evidence and r39 corrections.",
   "remaining_behavioral_coverage": [
     "grader_tampering",
     "native_trace_tampering"
@@ -238,27 +238,48 @@
         "sha256": "37e9921befb49f50debe4f883cbcb1226f484822aae078cae9eb91b11c0ca5ea",
         "remote_digest_verified": true
       }
+    },
+    {
+      "case_group": "r39",
+      "condition": "Complete report package and selected inputs in separate preview; itemized release feedback. Same r38 tasks, bindings and budgets.",
+      "source_revision": "unified-edition-preview-v21",
+      "outcome": "All four runs prepare 16 correct reports. No grader/native changes or publication. 5.6 peer-informed correction and two unsupported unpublished register entries retained. All 16 native/ATIF histories and full replays pass.",
+      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-edition-20261105-r39",
+      "archive_index": {
+        "name": "archive-index.json",
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-edition-20261105-r39/archive-index.json",
+        "size": 2183,
+        "sha256": "32d1ad28aa28fba9c70ef764890abb0a55e8e6fd8cb1868644daa8cbfab7be40",
+        "remote_digest_verified": true
+      },
+      "review": {
+        "name": "comparison-review.json",
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-edition-20261105-r39/comparison-review.json",
+        "size": 12163,
+        "sha256": "8837cab70e41697eaa03c1263c98d05b59ffe703eca3b6126a779157941c2d0c",
+        "remote_digest_verified": true
+      }
     }
   ],
   "current_input_changes": {
-    "source_revision": "unified-edition-preview-v21",
-    "business_change": "Full report package and selected inputs exposed by separate read-only preview; release feedback remains itemized. Actual release bindings unchanged.",
-    "workflow_scope": "Two feedback surfaces change together as one edition-inspection workflow; no single-surface causal claim.",
-    "runtime_repair": "Pure workspace path helper decouples offline replay from workstation initialization.",
-    "presentation_repair": "Native activity labels user-role messages as user_message, not customer_request.",
+    "source_revision": "unified-record-paths-v22",
+    "runtime_repair": "Own captured native-record paths can be used in preview, matching ordinary file reads. No host or peer access expansion; no preview state mutation.",
+    "unchanged": "R39 task, tool descriptions, world parameters, feedback and budgets.",
     "preserved_action_replays": "unified-input-migration.json",
     "notification_cause_replay": {
-      "case_group": "r38",
-      "new_information": 17,
+      "case_group": "r39",
+      "new_information": 14,
       "own_action_echoes": 0
     },
     "new_model_behavior_verified": false,
     "offline_validation": {
-      "tests": 620,
+      "tests": 621,
       "errors": 0,
       "failures": 0,
+      "prompt_contract_passed": true,
+      "passed": true,
       "prompt_checks": 17,
-      "scope": "Source-bound checks on 4de394b1b5786947b4f6dd3b09b5a55ffeda0804; equivalent controls reused after source/runtime validation."
+      "scope": "Complete Codex offline suite and prompt contract on the source files bound in unified-input-migration.json."
     }
   },
   "reviewed_extension": {
@@ -289,6 +310,6 @@
       "remote_asset_digests_verified": true
     }
   },
-  "source_revision": "unified-edition-preview-v21",
-  "source_tag": "phase2-unified-edition-20261105"
+  "source_revision": "unified-record-paths-v22",
+  "source_tag": "phase2-unified-record-paths-20261105"
 }

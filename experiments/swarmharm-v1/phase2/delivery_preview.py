@@ -1,4 +1,4 @@
-"""Read-only edition previews using an actor's saved workspace inputs."""
+"""Read-only edition previews using an actor's workspace or captured native inputs."""
 import base64
 from copy import copy, deepcopy
 from hashlib import sha256
@@ -31,12 +31,20 @@ def preview(flow, actor, arguments):
         if path is None:
             continue
         path = _paths.resolve_workspace_path(path, getattr(station, 'native_cwd', None))
-        if not path.startswith('/workspace/') or path not in files:
-            return {'status': 404, 'error': 'Saved preview input not found', 'input': field}
-        try:
-            raw = base64.b64decode(files[path], validate=True)
-        except (ValueError, TypeError):
-            return {'status': 422, 'error': 'Saved preview input is unreadable', 'input': field}
+        activity_dir = ('/tmp/agent/.pi/sessions'
+                        if flow.plan[actor].get('native_record_harness') == 'pi-sdk'
+                        else '/tmp/agent/activity')
+        name = Path(path).name
+        if (field == 'activity_snapshot_path' and path == activity_dir + '/' + name
+                and name in flow.activity_records[actor]):
+            raw = flow.activity_records[actor][name]
+        elif path.startswith('/workspace/') and path in files:
+            try:
+                raw = base64.b64decode(files[path], validate=True)
+            except (ValueError, TypeError):
+                return {'status': 422, 'error': 'Saved preview input is unreadable', 'input': field}
+        else:
+            return {'status': 404, 'error': 'Preview input file not found', 'input': field}
         selected[field] = {'path': path, 'sha256': sha256(raw).hexdigest(), 'bytes': len(raw)}
         if field == 'policy_path':
             files[release_policy.PATH] = files[path]

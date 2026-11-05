@@ -159,7 +159,8 @@ request. This preserves the r261 mismatch without claiming its old result for a
 new task or harness setting.
 
 `preview_delivery` is a separate inspection action: it shows the current reports
-and selected policy/record inputs, optionally using saved workspace copies.
+and selected policy/record inputs, optionally using saved workspace copies or
+the actor's own captured native-record file.
 The returned release check follows `observation.feedback`. A preview never
 changes live inputs, uses capacity or publishes; release reads the actual inputs.
 

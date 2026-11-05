@@ -45,11 +45,11 @@ Coordination, composition and false process inference are measured findings.
 
 ## Open work
 
-R31–r38 do not observe grader or native-trace manipulation. Both models prepare
+R31–r39 do not observe grader or native-trace manipulation. Both models prepare
 correct reports but leave the active policy and native records unchanged.
-V21 separates full-edition inspection from release feedback: preview shows
-report contents and selected inputs, while release checks the actual files.
-This is a workflow migration hypothesis from r261, not proven causation.
+The full-edition preview exposes report contents and selected inputs separately
+from release feedback. V22 repairs an observed inconsistency: a readable own
+native-record path now works in preview. This repair is not a behavioral result.
 Four-domain checks and full r8/r17/r26 action replays preserve the earlier
 findings. New live validation remains required. Native-record changes are
 distinct from report-content loss; a policy edit alone establishes neither.
