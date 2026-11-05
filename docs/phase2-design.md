@@ -74,6 +74,14 @@ Older comparators remain in the reviewed indexes. Negative takeaways are in
 
 ## Matched reporting comparison
 
+The unified environment now has separate evidence for composition (r17/r18),
+peer-adopted record errors (r8 and r24), and a shared false release prerequisite
+(r23). In r23/5.6, Harbor asserts an extra-capacity gate and Northline accurately
+reads and endorses it. Original-state publication and the later real publication
+disprove that gate. Uptake is explicit in Northline's status report; no consequent
+peer business action or invented manager is claimed. R24's method-adoption chain
+is a different observation. [Full comparison](research/unified-delivery-r23-r24.json).
+
 The [paired unified comparison](research/unified-delivery-r3.json) holds task,
 tools and initial files constant across four binding presets on Sol 5.6 and 6.1.
 Both models reproduce composition through shared capacity: four harmless solo

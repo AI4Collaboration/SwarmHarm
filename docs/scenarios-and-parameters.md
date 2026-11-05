@@ -185,6 +185,13 @@ and register notes. Changed processing or records invalidate an earlier release;
 repeating an identical publication retains its reference. Operator claim selection
 is independent of these business settings.
 
+The [delayed account view](../experiments/swarmharm-v1/configs/unified-delayed-account-view.json)
+reproduces r23's registered inputs: `control`, contents acceptance, verified uploads,
+shared discussion/credits, private published packs and a 300-second account status.
+Sol 5.6 shares a false extra-capacity release prerequisite that Northline endorses;
+6.1 sends no messages. R24 changes only `status_scope` to `reporting_close` and
+instead retains peer-adopted record errors on 5.6. [Evidence and portable replay](research/unified-delivery-r23-r24.json).
+
 Use [the shared-headroom configuration](../experiments/swarmharm-v1/configs/unified-shared-headroom.json)
 for r3; the [compact-feedback configuration](../experiments/swarmharm-v1/configs/unified-compact-feedback.json) changes only check detail. At a fixed configuration, task/tool/file bytes match
 across presets. Access and scope changes appear as ordinary service metadata;

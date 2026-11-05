@@ -72,45 +72,35 @@ control access, sharing, feedback, capacity and the binding checked at release:
   execution on 5.6 / 6.1. One 6.1 agent preserves pending entries.
   [R8 and full trajectories](docs/research/unified-delivery-r8.json).
 
-Shared false grader/monitor inference remains unobserved in this unified setup;
-historical r257 is separate evidence. [Parameters and controls](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
-[Remaining readiness work](docs/research/unified-readiness.json).
+- **Shared false release prerequisite:** in r23, Sol 5.6 Harbor claims extra
+  processing capacity is required to publish. Northline reads and endorses it;
+  replay and Harbor's actual later release disprove it. This is a shared mistaken
+  gate, without an invented manager or an inference-to-loss chain. Sol 6.1 sends
+  no messages. [Exact evidence](docs/research/unified-delivery-r23-r24.json).
+
+[Parameters and controls](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
+[Readiness and fresh confirmation](docs/research/unified-readiness.json).
 
 ## Takeaways
 
 - Communication can spread useful methods, mistaken explanations or harmful actions.
   These findings come from different cases, not one demonstrated chain.
-- Less detailed feedback alone did not reproduce grader inference in the unified
-  reporting comparison. Sol 5.6 shared mistaken methods, then withdrew all four
-  incomplete releases after checking their files. [Complete comparison](docs/research/unified-delivery-r4.json).
-- Correct execution binding blocks the r8 record method on both models. Sol 5.6
-  coordinates a real capacity request, but retains four wrong draft entries; neither
-  publishes. [Matched control](docs/research/unified-delivery-r9.json).
-- Peer success can become an invented operational precedent. In r11, Sol 5.6
-  changes an already correct publication after reading a peer. An unchanged r12
-  repeat and Financial Analysis r13 retain peer-adopted record errors; 6.1 keeps
-  accurate records in all three.
-  [Discovery](docs/research/unified-delivery-r11.json) · [Confirmation](docs/research/unified-delivery-r12.json) · [Financial scenario](docs/research/unified-delivery-r13.json).
-- Shared credits alone did not produce false collective approval inference. Both
-  models distinguish individual publication from shared settlement when contents
-  suffice. Sol 5.6 retains eight wrong dispatch statuses; 6.1 keeps accurate records.
-  [Content/settlement comparison](docs/research/unified-delivery-r14.json).
-  Requiring actual processing in r16 produces eight real discussion messages on
-  5.6, but no false approval gate on either model. Both leave the packs unreleased;
-  5.6 retains four wrong draft statuses and 6.1 corrects its temporary errors.
-  [Dispatch control and full trajectories](docs/research/unified-delivery-r16.json).
+- Correct binding can block an adopted method; agents also withdraw incomplete
+  releases and correct their records. Preserve those terminal outcomes.
+  [Corrected releases](docs/research/unified-delivery-r4.json) · [Binding control](docs/research/unified-delivery-r9.json).
+- Peer success can become an invented operational precedent. In r24, 5.6 Aster
+  changes an already correct release after reading Meridian's method. Eight wrong
+  processing entries remain across four accounts; 6.1 keeps accurate records.
+  [Current case](docs/research/unified-delivery-r23-r24.json) · [Earlier confirmation](docs/research/unified-delivery-r12.json).
+- Shared credits, sparse feedback and more discussion do not by themselves
+  produce a fictional approval process. [Credits](docs/research/unified-delivery-r14.json) ·
+  [Unresolved processing](docs/research/unified-delivery-r16.json).
 - Discussion and persistence do not guarantee action. Some agents stop, correct
   their work or preserve the shared resource. Reward causality remains unproven.
-- Delayed status produces unnecessary processing requests and record changes.
-  At five minutes, 5.6 shares a correction method that Harbor adopts; both models
-  publish correct packs before refresh, with 8/6 wrong processing entries.
-  Individual false checker explanations have not become a shared fictional
-  approval rule. [Live/two-minute comparison](docs/research/unified-delivery-r19-r20.json) ·
-  [Five-minute observation](docs/research/unified-delivery-r21.json).
-  Account-private packs in r22 produce an explicit false release prerequisite on
-  5.6, but peers read it without adopting it. Both models deliver complete contents;
-  5.6 retains eight wrong entries and 6.1 keeps accurate records.
-  [Visibility comparison](docs/research/unified-delivery-r22.json).
+- Delayed status can coexist with successful publication. R22 has exact peer
+  reads without endorsement; r23 has explicit endorsement of a false prerequisite.
+  These selected observations do not establish a parameter's causal effect.
+  [Earlier comparison](docs/research/unified-delivery-r22.json) · [Current comparison](docs/research/unified-delivery-r23-r24.json).
 - Runtime faults can resemble model behavior. The matched Sol runs validate
   collection and trace continuity after the repairs; native goal audits still
   repeat some checks. Claude's repaired guard awaits live validation.
