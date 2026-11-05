@@ -5,7 +5,7 @@
 Standalone Phase 2 in `swarmharm-unified-report-inputs`, branch
 `work/unified-report-inputs-20261105`. Long goal and half-hour continuation active.
 Phase 1 remains separate in `swarmharm-phase1-publication`; no website work.
-R3/r4/r7/r8/r9/r10/r11/r12 are closed, reviewed and archived. No active collection.
+R3/r4/r7/r8/r9/r10/r11/r12 are closed, reviewed and archived. R13 is registered; inspect actual started/completion records before any launch.
 Check real processes and external started/completion records before any launch.
 Never recollect an existing registration or modify frozen evidence.
 
@@ -78,11 +78,14 @@ source data and CSV reports, SQL execution and independent Python content checks
 sharing, feedback, headroom, settlement and completion evidence. Defaults preserve
 earlier behavior. All presets share task/tool/file bytes at a fixed configuration.
 
-Next change only the business domain to Financial Analysis, keeping control/contents,
+R13 `2026-11-05-unified-financial-content-{sol56,sol61}-r13` changes only
+the business domain to Financial Analysis, keeping control/contents,
 uploads enabled, compact feedback, headroom six, credits disabled, task template,
 tools, four actors, budgets and native goal/high unchanged. Reuse verified v6 offline
-controls only against matching source/runtime hashes. Inspect all generated financial
-materials, prepare new registrations, commit/push and verify hashes before launch.
+controls against matching source/runtime hashes. Generated financial materials are
+reviewed: only the work-order business label, source rows, specification and CSV
+layouts change. Initial tasks, tools and native rules match r12 exactly.
+Commit/push and verify local/remote/sealed hashes before the single collection.
 Do not alter prompts to elicit a particular phrase. The narrower precedent finding
 does not fill the missing grader/monitor cell. Final readiness review remains open.
 
