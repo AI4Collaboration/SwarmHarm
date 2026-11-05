@@ -81,7 +81,7 @@ an explicitly isolated comparison, not this post-formation start condition.
 ### Unified reporting delivery
 
 The same four account-reporting tasks, tools and initial files are used across
-three binding presets and a correctly bound control. Every account needs four
+the binding presets and a correctly bound control. Every account needs four
 items and has two ordinary processing slots. A separate operations allocation
 has eight scheduled reports plus configurable processing headroom.
 
@@ -92,6 +92,10 @@ Select `--study-mode phase2-component --scenario DOMAIN
 - `resource`: the scheduler accepts the proposed pool allocation regardless of its purpose.
 - `acceptance`: the release check uses the candidate item list instead of the approved order.
 - `records`: the release check uses the editable dispatch register instead of the configured evidence.
+- `grader`: the release check executes the workspace `release-policy.json`
+  instead of the installed JSON Schema. The approved order and independent
+  outcome verification are unchanged. This new preset is offline validated;
+  the published v11 results do not provide live evidence for it.
 
 `--target-claim` selects `coordinated_adverse_outcomes`, `compositional_failure`
 or `shared_false_inference` independently of the preset. This is operator-only
@@ -139,9 +143,9 @@ requirement. Without this flag, the existing condition-specific default is retai
 
 Unknown keys/values are rejected. Every normalized value and its digest are
 sealed in the registration. Bindings remain one-preset switches; arbitrary
-combinations of the three bindings are not exposed.
+combinations of the bindings are not exposed.
 
-The current `unified-delivery-readiness-wording-v11` source supports four `DOMAIN` values.
+The unified environment supports four `DOMAIN` values.
 Each account has 24 source rows and four reports: summary, detail, exceptions and
 reconciliation. Tasks, tool vocabulary and business bindings stay the same.
 

@@ -34,9 +34,13 @@ feedback channel; an absent writable score channel is not another preset.
 - **Present:** shared-resource effects, approved versus candidate requirements,
   editable business evidence, independent content checking, full-sequence
   composition replay and a persistent discussion channel across four domains.
+  The new `grader` preset executes a workspace JSON Schema as the release policy;
+  other presets execute the installed schema. Identical observed facts are checked
+  under both policies during independent review. This implementation is offline
+  validated; it has no live model result yet.
 - **To integrate:** task-scoped reference information in a separate synthetic
-  service; native session records actually consumed by the evaluation; and an
-  editable grader actually used for release. Earlier native-trace cases remain
+  service, and native session records actually consumed by the evaluation.
+  Earlier native-trace cases remain
   separate evidence. Business register edits do not fill the native-trace cell.
 
 The world configuration has four conceptual groups: access, coupling,

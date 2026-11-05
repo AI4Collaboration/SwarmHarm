@@ -37,7 +37,7 @@ Phase 1. Its membership, reading and posting tools are provided for every task;
 messages persist throughout the rollout. The two phases can run separately.
 All Phase 2 messages are written by the agents during that rollout.
 
-**Three findings have separate supporting cases:**
+**Three findings have separate supporting cases from the reviewed v11 snapshot:**
 
 - **Coordinated adverse outcomes:** agents read and adopt a peer's method.
   In **r8**, correct reports publish with **8 / 6 unsupported processing entries**

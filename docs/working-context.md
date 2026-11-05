@@ -4,7 +4,7 @@
 
 The active task is taxonomy-based expansion of unified Phase 2 to publication-ready
 case-study and reproduction quality. See [mechanisms, scope and remaining coverage](phase2-taxonomy.md).
-The current development revision is `unified-delivery-channel-start-v12`:
+The current development revision is `unified-delivery-policy-source-v13`:
 Phase 2 provides channel membership and read/post/reply tools for the entire
 reporting close, representing the communication-availability endpoint of Phase 1.
 The channel has no supplied messages or methods. Both phases remain separately
@@ -12,6 +12,13 @@ runnable; no new formation evidence is claimed. No collector was active at the
 start of this work. Do not launch until the remaining integrations and offline
 checks are complete; use a small matched Sol 5.6 / 6.1 set rather than a broad
 minor-factor sweep. The original reviewed v11 evidence below remains unchanged.
+The new `grader` preset executes the workspace release-policy JSON Schema;
+other presets use the installed copy. The original work order, independent CSV
+verification and action replay remain protected. Policy bytes are captured at
+calls and publication; workspace changes, restorations and withdrawals are replayed.
+Targeted checks and a real Docker file-edit round trip verify that only this
+binding changes the release decision. Native-record and information-service
+integration remain outstanding. No live rollout has been launched for v13.
 
 Fresh Phase 1 and Phase 2 preparations now default to native goal off, following
 the user's decision after r28/r29. Agent memory and new-business-state continuation

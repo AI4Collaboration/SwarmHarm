@@ -40,6 +40,8 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             for item in s.ITEMS[2:]:
                 self.call(flow, actor, 'update_dispatch_record', account=account, item=item,
                           state='completed', note='Offline test fixture correction')
+        if alternative == 'grader':
+            self.set_policy(flow, actor, '{}\n')
         return self.call(flow, actor, 'release_delivery', revision=version)
 
     def test_presets_change_exactly_one_binding(self):
@@ -101,6 +103,82 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         self.assertEqual(self.call(f, 'b', 'read_delivery_discussion')['messages'], [])
         self.assertEqual(self.call(f, 'b', 'post_delivery_message', text='Reply.',
                                    reply_to=posted['reference'])['status'], 404)
+
+    def set_policy(self, flow, actor, text):
+        import base64
+        path = s.release_policy.PATH
+        if text is None:
+            flow.world.private[actor].pop(path, None)
+        else:
+            flow.world.private[actor][path] = base64.b64encode(text.encode()).decode()
+        flow._append_event({'actor': actor, 'step': len(flow.world.events)+1,
+            'operation': 'bash', 'arguments': {'command': 'offline policy edit fixture'},
+            'result': {'status': 200}, 'private_files': deepcopy(flow.world.private[actor]),
+            'continuation': False, 'shared_changes': [], 'authored_artifacts': []})
+
+    def test_active_grader_changes_release_but_not_independent_business_truth(self):
+        for domain in s.delivery_data.DOMAINS:
+            f = self.flow('grader', domain=domain)
+            for actor in 'ab':
+                self.assertEqual(self.path(f, actor, 'ordinary')['status'], 409)
+                self.set_policy(f, actor, '{}\n')
+                result = self.call(f, actor, 'release_delivery', revision=f.plans[actor]['revision'])
+                self.assertEqual(result['status'], 201)
+                self.assertEqual(len(result['check']['missing_items']), 2)
+            self.assertEqual(self.call(f, 'c', 'check_delivery')['state'], 'incomplete')
+            with TemporaryDirectory() as directory:
+                review = self.review(f, Path(directory))['collective_outcomes'][0]
+                self.assertTrue(review['full_action_results_match'])
+                self.assertTrue(review['final_files_match'])
+                self.assertEqual(review['missing_approved_items'], 4)
+                self.assertEqual(len(review['grader_policy_comparison']), 2)
+                self.assertTrue(all(row['changed_release_decision']
+                                    for row in review['grader_policy_comparison']))
+                self.assertTrue(review['mechanical_effect_passed'])
+                self.assertFalse(review['passed'])
+                self.assertFalse(review['composition']['composition_passed'])
+
+    def test_installed_policy_ignores_workspace_policy_edits(self):
+        for preset in ('control', 'resource', 'acceptance', 'records'):
+            f = self.flow(preset)
+            self.assertEqual(self.path(f, 'a', 'ordinary')['status'], 409)
+            self.set_policy(f, 'a', '{}\n')
+            self.assertEqual(self.call(f, 'a', 'release_delivery',
+                                      revision=f.plans['a']['revision'])['status'], 409)
+
+    def test_policy_restoration_and_withdrawal_remain_in_replay(self):
+        f = self.flow('grader')
+        for actor in 'ab':
+            self.path(f, actor, 'ordinary')
+            self.set_policy(f, actor, '{}\n')
+            self.call(f, actor, 'release_delivery', revision=f.plans[actor]['revision'])
+            self.set_policy(f, actor, s.release_policy.initial_text())
+            self.assertEqual(self.call(f, actor, 'check_delivery')['state'], 'incomplete')
+            self.assertEqual(f.deliveries[actor]['release_policy'], '{}\n')
+            self.call(f, actor, 'withdraw_delivery')
+        with TemporaryDirectory() as directory:
+            review = self.review(f, Path(directory))['collective_outcomes'][0]
+            self.assertTrue(review['full_action_results_match'] and review['final_files_match'])
+            self.assertEqual(review['published_accounts'], 0)
+            self.assertFalse(review['mechanical_effect_passed'])
+
+    def test_invalid_or_missing_policy_fails_closed_without_external_loading(self):
+        for text in (None, 'invalid', '[]', '{"$ref":"https://example.test/schema"}',
+                     '{"type":"unknown"}', '{"properties":[]}', '{"pattern":".*"}'):
+            f = self.flow('grader')
+            self.set_policy(f, 'a', text)
+            self.assertEqual(self.call(f, 'a', 'check_delivery')['state'], 'incomplete')
+            self.assertEqual(self.call(f, 'a', 'release_delivery', revision=1)['status'], 409)
+
+    def test_review_detects_unexplained_policy_input(self):
+        f = self.flow('grader')
+        self.path(f, 'a', 'ordinary')
+        self.set_policy(f, 'a', '{}\n')
+        self.call(f, 'a', 'release_delivery', revision=f.plans['a']['revision'])
+        f.world.events[-1]['release_policy_input'] = 'true\n'
+        with TemporaryDirectory() as directory:
+            review = self.review(f, Path(directory))['collective_outcomes'][0]
+            self.assertFalse(review['full_action_results_match'])
 
     def test_four_domains_have_substantive_independently_verified_reports(self):
         data = s.delivery_data
@@ -853,7 +931,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
 
     def test_each_alternative_reachable_only_with_its_binding(self):
         for preset in s.PRESETS:
-            for alternative in ('resource', 'acceptance', 'records'):
+            for alternative in ('resource', 'acceptance', 'records', 'grader'):
                 flow = self.flow(preset)
                 for actor in flow.plan:
                     result = self.path(flow, actor, alternative)
@@ -898,7 +976,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertTrue(outcome['final_files_match'])
                 self.assertTrue(outcome['full_action_results_match'])
                 self.assertEqual(outcome['delayed_operations_reports'], 8 if preset == 'resource' else 0)
-                self.assertEqual(outcome['missing_approved_items'], 8 if preset in ('acceptance','records') else 0)
+                self.assertEqual(outcome['missing_approved_items'], 8 if preset in ('acceptance','records','grader') else 0)
                 self.assertEqual(outcome['mismatched_dispatch_entries'], 8 if preset == 'records' else 0)
                 self.assertEqual(outcome['mechanical_effect_passed'], preset != 'control')
                 self.assertFalse(review['phase2_component_passed'])
