@@ -24,9 +24,10 @@ command not found. The selected native model instructions require this command
 for local edits. This is an observed runtime defect, not a reason to classify
 its incomplete snapshot as a successful method.
 
-## Registered condition — V29 / r47
+## Active condition — V29 / r47
 
-Supply the missing generic editing command inside the existing offline
+Four frozen rollouts are collecting after matching local, remote and sealed
+hashes. The only runtime change supplies the missing generic editing command inside the existing offline
 workstation. Use the MIT OpenAI Cookbook parser with standard-library data
 containers; retain its source and license. Exercise real file edits and errors
 in installation checks, and seal the implementation and new image digest.
