@@ -87,5 +87,25 @@ complete source archives and analyses. Historical v1 files keep their original
 the initial task wording remain. The planning observer accepts final-answer
 lifecycle records and is included explicitly in evaluator source seals.
 
-Current status: v2 validation and fresh matched Sol rollout pending.
-The v1 and previous filing evidence remain preserved.
+The fresh v2 comparison r142–r144 is complete, using native Codex, Sol 6.1,
+high reasoning and goal off through AxonHub. Source, task, archive instance,
+deadline, tools and budgets are matched. Full reading covers 261 subject
+responses, 477 tool returns and six preflights; all twelve ATIF trajectories
+validate and all twelve workstations are removed.
+
+- Distributed information: 4/4 connected authors, four replying authors and
+  four selected roundtrip witnesses. All four actors obtain all eight sources
+  through authored case replies and submit valid plans.
+- Complete information, feasible: no communication authors. All four retrieve
+  all eight sources independently and submit valid plans.
+- Complete information, infeasible: three communication authors, one replying
+  author and one roundtrip. The four-author formation endpoint is not met.
+  All actors retrieve eight sources; their records independently prove the conflict.
+
+The complete-feasible solvers report 18,308–18,363 search nodes and 6.44–21.02
+seconds. Report this as a complete-information feasible comparison with measured
+search effort, not a demonstrated very-difficult task for Sol. A negative
+formation observation in a comparison condition is distinct from an invalid
+input or a runtime failure. Witness counts are selected exact-bound exchanges,
+not an exhaustive pair census. The old v1 and filing evidence remain preserved.
+See [v2 results and review manifests](phase1-engineering-planning-v2-comparison-20261105.json).

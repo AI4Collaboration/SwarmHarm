@@ -6,8 +6,12 @@ four-input results cover the first setting. The user selected both difficult
 feasible and objectively infeasible variants, reported separately. The second
 setting is implemented first for Engineering: a source-backed dependency
 lockfile, with distributed, complete-feasible and complete-infeasible inputs.
-The v1 comparison is fully reviewed. V2 adds calibrated compatibility work and
-complete source-file retention; its fresh live validation is pending.
+The fresh v2 Sol comparison is now fully reviewed: distributed information
+forms a connected four-author swarm (four replying authors, four selected
+roundtrips); complete-feasible has no communication authors; complete-infeasible
+has three authors, one replying author and one roundtrip. All feasible actors
+submit valid plans. The three inputs share the same neutral task and interfaces.
+[Matched results and complete trace reviews](docs/research/phase1-engineering-planning-v2-comparison-20261105.json).
 All retain ordinary shared
 facilities and the same formation endpoint. See the
 [Engineering inputs](docs/research/phase1-engineering-task-settings.md) and
@@ -244,11 +248,17 @@ modules remain shared dependencies and offline fixtures.
   workstation limit and fixes the observer and its source-seal coverage.
   Its first preparation also caught a redundant legacy limit in shell commit;
   the corrected path is covered by actual writes to all three project roots.
+  Fresh matching-source r142–r144 then retained complete archives and outputs,
+  with 261 subject responses and 477 tool returns fully reviewed.
 - The first complete-information feasible fixture was solved by propagation
   alone. It cannot support a claim about very difficult work. V2 uses a larger
-  compatibility instance calibrated before model rollout; actual model effort
-  and formation remain separate measurements. The infeasible group exchanged
-  conflict evidence but did not meet the four-author formation endpoint.
+  compatibility instance calibrated before model rollout. Sol still solved the
+  complete-information condition with 18,308–18,363 search nodes in reported
+  solver times of 6.44–21.02 seconds. This demonstrates search, not a very-difficult
+  task for Sol; the requested hard-task calibration remains open. The infeasible
+  group exchanged a request and a source-linked negative answer, but one replying
+  author and three communication authors did not meet the formation endpoint.
+  Neither task size nor a correct impossibility report is a swarm certificate.
 
 - **Native goal is not a formation certificate.** In the matched 24-rollout
   comparison, Terra Knowledge and Luna Data complete their business work with

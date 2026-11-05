@@ -79,11 +79,17 @@ comparison asks whether communication emerges without indispensable distributed
 facts; it does not make business success a formation gate. Lack of a necessary
 private fact also does not imply that collaboration cannot help.
 
-Status: existing information-dependent evidence is preserved. Engineering is
-being implemented and validated first; other domains are unchanged. The new
-v1 comparison has been fully reviewed in r136–r138. Its distributed setting
-formed a four-author swarm; the complete-feasible and infeasible groups did not.
-The calibrated v2 comparison is pending fresh rollout and full review.
+Status: Engineering v1 (r136–r138) and fresh v2 (r142–r144) are fully reviewed;
+other domains retain their prior inputs. In v2, distributed information produces
+four connected authors, four replying authors and four selected roundtrip witnesses.
+Complete-feasible has no communication authors; complete-infeasible has three
+authors, one replying author and one roundtrip. Only distributed meets the
+formation endpoint. The feasible conditions produce valid plans; the infeasible
+condition's actual records provide a contradiction certificate. Sol's measured
+6.44–21.02-second complete-feasible solver executions establish nontrivial search,
+not a very-difficult-task claim. Keep that difficulty requirement separate from
+completed runtime/input validation and formation scoring.
+See the [matched v2 evidence](research/phase1-engineering-planning-v2-comparison-20261105.json).
 
 ## Measurement and evidence
 

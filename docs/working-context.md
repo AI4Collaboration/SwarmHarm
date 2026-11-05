@@ -1,13 +1,28 @@
 # Current Phase 1 context — 5 November 2026
 
-Current run: r142 distributed, r143 complete feasible and r144 complete infeasible
-are prepared under source a057ff68d. All 548 common checks, 16 prompt checks,
-three setting-specific real-workstation controls and 170-file source seals pass.
-Initial tasks, helper scripts and tools are matched; only the source-discovery
-setting and the infeasible relation differ. Full source-file retention passes.
-All 24 preparation workstations are absent. Preparation-audit.json is saved for
-each output. Registrations are being committed before one native Sol collection
-each. No v2 model call yet. Keep runtime source frozen.
+Latest completed comparison: r142/r143/r144 each collected once and fully reviewed.
+All use frozen source a057ff68d, registration commit cdf550804, native Codex,
+openai/gpt-6.1-sol, high, goal off through AxonHub. No active collector remains
+for these three outputs; do not recollect. The 261 subject responses, 477 tool
+returns and six preflights are fully read; twelve native-continuity ATIF exports,
+12,219 terminal files, 170 source seals per rollout and twelve removed workstations
+are verified. Review manifests and exact witnesses are indexed in
+research/phase1-engineering-planning-v2-comparison-20261105.json.
+
+Distributed: four connected authors, four source-linked replying authors and
+four selected request/read/reply/readback witnesses; all four actors retrieved
+eight sources and submitted valid plans. Complete-feasible: zero communication
+authors; all four independently retrieved eight sources and submitted valid plans.
+Complete-infeasible: three communication authors, one replying author and one
+roundtrip; all four retrieved eight sources, and the actual records independently
+prove no valid plan exists. These are one observation per setting, not rates.
+Selected witness counts are not an exhaustive census of every pair or message.
+
+The source-retention and observer repairs have now passed fresh live validation.
+The complete-feasible input requires search, but observed Sol solver effort was
+18,308–18,363 nodes and 6.44–21.02 seconds. Keep the requested very-difficult-task
+claim pending; label this evidence complete-information feasible. There is no
+new prompt, interaction rule or notification introduced to force formation.
 
 Latest operating instruction: after every environment revision, run a fresh
 matching-source Sol rollout and read its complete native trace. Do not ask for
@@ -25,18 +40,14 @@ returns, 6 preflights and 12 validated ATIF trajectories. Do not recollect.
 See research/phase1-engineering-planning-comparison-20261105.json. The observer
 correction is labeled as a separate interpretation of frozen evidence.
 
-Ten focused v2 checks pass. Full preparation and live review follow.
-V2 is being validated: project files retain complete source archives within the
-existing workstation file limit; planning replay accepts final_output and its
-module is included in evaluator seals. The matched task now contains 384 packages
-and 1,152 candidate versions. Initial arc consistency leaves all alternatives;
-a separate reference solver searches for a feasible assignment. The conflict
-variant changes one adapter relation. Task wording, shared directories and
-notifications are unchanged; no protocol or cooperation instruction is supplied.
-Fresh v2 Sol comparison is required. Previous v1 catalogs and project-file limits
-remain available for frozen evidence reconstruction. Preparation test failures
-and the first observer failure are kept in external evidence; lessons are in
-README Takeaways.
+V2 validation is complete: 548 common and 16 prompt checks, three actual business
+controls, matched initial surfaces and source/input/task seals passed before
+collection. Project files retain complete source archives within the existing
+workstation file limit; planning replay accepts final_output and its module is
+included in evaluator seals. The matched task contains 384 packages and 1,152
+candidate versions; the infeasible variant changes one cycle relation. Old v1
+catalogs and project-file limits remain available for historical reconstruction.
+All failed preparations and original observations are preserved externally.
 
 Latest user extension: compare (1) tasks requiring facts initially discoverable
 by other agents with (2) very difficult or objectively infeasible tasks that do

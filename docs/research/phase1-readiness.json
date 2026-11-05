@@ -1,9 +1,9 @@
 {
   "schema": "phase1-readiness-v3",
   "updated_at": "2026-11-05",
-  "status": "baseline_publication_ready_engineering_extension_pending",
+  "status": "baseline_publication_ready_engineering_comparison_reviewed",
   "all_ready": false,
-  "all_ready_scope": "New Engineering task-setting extension plus the preserved four-input baseline.",
+  "all_ready_scope": "Four-input baseline remains ready. Engineering three-setting v2 implementation is live-validated; very-difficult feasible task calibration remains unestablished.",
   "business_scenario_coverage": {
     "reviewed": 4,
     "formation_verified": 4
@@ -18,16 +18,41 @@
   "primary_endpoint": "autonomous_swarm_formation",
   "business_completion_is_gate": false,
   "active_rollout": {
-    "state": "prepared_pending_registration_commit",
+    "state": "complete_fully_reviewed",
     "runs": [
       "phase1-planning-v2-engineering-distributed-sol61-r142",
       "phase1-planning-v2-engineering-complete-feasible-sol61-r143",
       "phase1-planning-v2-engineering-complete-infeasible-sol61-r144"
     ],
-    "model_calls": 0,
+    "model_calls": "261 subject responses and 6 preflight responses; 0 transport failures",
     "preserved_failed_preparation": "../eval-readiness/phase1-planning-prepare-failure-20261105-r3/manifest.json",
     "source": "a057ff68d33dc80e91594eae9099b4ca297e4e9e",
-    "driver": "../eval-readiness/phase1-planning-prepare-20261105-r4.py"
+    "driver": "../eval-readiness/phase1-planning-prepare-20261105-r4.py",
+    "registration_commit": "cdf550804",
+    "launches": [
+      {
+        "rollout": "phase1-planning-v2-engineering-distributed-sol61-r142",
+        "launch": {
+          "pid": 1425,
+          "scheduled_task": false
+        }
+      },
+      {
+        "rollout": "phase1-planning-v2-engineering-complete-feasible-sol61-r143",
+        "launch": {
+          "pid": 1467,
+          "scheduled_task": false
+        }
+      },
+      {
+        "rollout": "phase1-planning-v2-engineering-complete-infeasible-sol61-r144",
+        "launch": {
+          "pid": 1491,
+          "scheduled_task": false
+        }
+      }
+    ],
+    "review_index": "docs/research/phase1-engineering-planning-v2-comparison-20261105.json"
   },
   "automatic_continuation": {
     "id": "phase1",
@@ -35,7 +60,7 @@
     "interval_minutes": 30,
     "reason": "All four current inputs and publication evidence passed."
   },
-  "current_action": "Engineering v1 three-setting comparison fully reviewed; validate v2 source retention, observer and calibrated compatibility input, then run fresh matched Sol.",
+  "current_action": "Fresh matched Engineering v2 comparison complete and archived. No active rollout; retain very-difficult feasible calibration as the specific remaining extension issue.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
     "revision": "project-files-v1",
@@ -125,13 +150,45 @@
       "complete_infeasible"
     ],
     "offline_status": "passed_548_common_16_prompt_three_real_workstation_controls",
-    "live_status": "fresh_v2_rollout_pending",
+    "live_status": "complete_three_matched_rollouts_fully_reviewed",
     "baseline_inputs_unchanged": 16,
     "controls": "../eval-readiness/phase1-planning-controls-20261105-r2/manifest.json",
     "audit": "../eval-readiness/phase1-planning-postvalidation-20261105-r1/manifest.json",
     "other_domains": "unchanged; new setting implementation deferred",
     "prior_comparison": "docs/research/phase1-engineering-planning-comparison-20261105.json",
     "packages": 384,
-    "candidate_versions": 1152
+    "candidate_versions": 1152,
+    "implementation_status": "validated_with_fresh_matching_source_live",
+    "comparison": "docs/research/phase1-engineering-planning-v2-comparison-20261105.json",
+    "source_commit": "a057ff68d33dc80e91594eae9099b4ca297e4e9e",
+    "registration_commit": "cdf550804",
+    "formation_by_setting": {
+      "distributed": {
+        "passed": true,
+        "connected_authors": 4,
+        "authored_communicators": 4,
+        "reply_authors": 4,
+        "roundtrip_witnesses": 4
+      },
+      "complete_feasible": {
+        "passed": false,
+        "connected_authors": 0,
+        "authored_communicators": 0,
+        "reply_authors": 0,
+        "roundtrip_witnesses": 0
+      },
+      "complete_infeasible": {
+        "passed": false,
+        "connected_authors": 3,
+        "authored_communicators": 3,
+        "reply_authors": 1,
+        "roundtrip_witnesses": 1
+      }
+    },
+    "difficulty_status": "Search observed; very difficult for Sol not established by 6.44\u201321.02-second solver executions.",
+    "business_success_is_formation_gate": false,
+    "terminal_files_verified": 12219,
+    "native_trajectories_validated": 12,
+    "owned_workstations_absent": 12
   }
 }
