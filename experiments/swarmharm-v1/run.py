@@ -430,7 +430,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind is None:
@@ -471,10 +471,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         raise ValueError("Unified delivery needs four actors, ordinary materials and an explicit preset")
     if not unified_study and binding_preset is not None:
         raise ValueError("Binding preset requires unified delivery")
-    if not unified_study and delivery_config is not None:
+    if not unified_study and (delivery_config is not None or world_config is not None):
         raise ValueError("Delivery configuration requires unified delivery")
     if unified_study:
-        delivery_config = unified_delivery.normalize_config(delivery_config)
+        world_config = unified_delivery.world_config.normalize(world_config, preset=binding_preset, delivery=delivery_config)
+        delivery_config, _ = unified_delivery.world_config.components(world_config)
     if treasury_study and (population != 4 or initial_material != 'business_records_only' or material_distribution != 'all_workstations'):
         raise ValueError('Treasury composition requires four actors and ordinary business records at every workstation')
     if target_claim is not None:
@@ -553,6 +554,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         for actor, item in plan["natural"].items():
             unified_plan[actor]["binding_preset"] = binding_preset
             unified_plan[actor]["delivery_config"] = deepcopy(delivery_config)
+            unified_plan[actor]["world_config"] = deepcopy(world_config)
             item["component_task"] = unified_delivery.task(unified_plan[actor])
         rows = unified_delivery.truth_for(unified_plan)
     if treasury_study:
@@ -622,10 +624,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         if component else continuation_module.plan_for(plan['natural'], information_condition)
         if scenario == domain_runtime.KNOWLEDGE_WORK
         else continuation_module.plan_for(plan['natural']))
-    if trace_study:
+    if trace_study or unified_study:
         for assignment in phase2_plan.values():
             assignment['native_record_harness']=harness_kind
-            assignment['release_feedback']=release_feedback
+            if trace_study:
+                assignment['release_feedback']=release_feedback
     component_material_variant=(None if treasury_study or unified_study else trace_release.material_variant(initial_material) if trace_study
         else component_workflow.material_variant(component_family, initial_material)
         if component else None)
@@ -1892,13 +1895,16 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             prepared_files = (phase2_component.initial_files(plan, extension.plan, reg['component_initial_state'])
                               if component else None)
             link = (extension.open_records_link() if component and reg['phase2']['component_family']==batching.SERVER_FAMILY else None)
-            if trace_study:
+            if trace_study or unified_study:
                 from record_surface import NativeRecordSurface
                 extension.surface=NativeRecordSurface(root/name,active,
                     writable=reg['phase2']['native_record_surface']['writable'],
                     apply_mode=reg['phase2']['native_record_surface']['apply_mode'],harness=harness_kind)
+            if unified_study:
+                link = extension.open_library_link()
             workstations=world.prepare_workstations(active,max_workers=limit,private_files=prepared_files,
-                **({'station_factory':extension.surface.station} if trace_study else {'station_factory':link.station} if link else {}))
+                **({'station_factory':link.station} if link else
+                   {'station_factory':extension.surface.station} if trace_study or unified_study else {}))
             if link:
                 link.activate(world.workstations)
             if component:
@@ -1935,7 +1941,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     f'{actor} started with unregistered tools: {value["active_tools"]}')
                 if is_claude:
                     world.workstations[actor].bind_native_cwd(value['cwd'])
-                if trace_study and is_codex:
+                if (trace_study or unified_study) and is_codex:
                     extension.surface.bind(actor,value['session_file'], writer_guard=agents[actor].record_guard)
                 states[actor][f'{harness_folder}_session']=value
             activation_time=utc()
@@ -2600,7 +2606,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             preserve_pending_shells(world,shell_tasks,root/name,reason=termination_reason)
             for actor,agent in agents.items():
                 states[actor][f'{harness_folder}_exit_code']=agent.close()
-                if trace_study and is_codex:
+                if (trace_study or unified_study) and is_codex:
                     extension.surface.bound_directories.pop(actor,None)
             if (terminal_batching or trace_study or treasury_study or unified_study) and extension.activated:
                 extension.finalize()
@@ -2738,6 +2744,8 @@ if __name__=='__main__':
         help='Operator-only backend binding for the matched unified delivery environment.')
     p.add_argument('--delivery-config', type=Path,
         help='Unified delivery JSON: access, sharing, feedback and operations_headroom; normalized values are sealed in the registration.')
+    p.add_argument('--world-config', type=Path,
+        help='Unified world JSON: access, coupling, verification and observation. Overrides the selected preset; mutually exclusive with delivery-config.')
     p.add_argument('--release-feedback', choices=('measured_checks','status_only'), default='measured_checks',
         help='Freeze the trace-release feedback condition; status_only reproduces r257.')
     p.add_argument('--target-claim', choices=unified_delivery.CLAIMS,
@@ -2775,5 +2783,6 @@ if __name__=='__main__':
             material_distribution=a.material_distribution,
             goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
             proof_stage=a.proof_stage,pi_comparison=a.pi_comparison,target_claim=a.target_claim,release_feedback=a.release_feedback,controls_from=a.controls_from,binding_preset=a.binding_preset,
-            delivery_config=load(a.delivery_config) if a.delivery_config is not None else None)
+            delivery_config=load(a.delivery_config) if a.delivery_config is not None else None,
+            world_config=load(a.world_config) if a.world_config is not None else None)
     else:collect(root,registration_dir)

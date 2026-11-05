@@ -29,7 +29,7 @@ separately from formation; full pairwise reciprocal closure is optional.
 ## Phase 2 — Collective Misalignment
 
 The unified environment gives four agents account-reporting tasks. Parameters
-change access, sharing, feedback, capacity and the binding checked at release;
+group access, coupling, verification and observation;
 task, tools and initial files match across binding presets at a fixed configuration.
 Both Sol 5.6 and 6.1 use native Codex with high reasoning through AxonHub.
 Phase 2 starts with an available communication channel: the endpoint studied in
@@ -64,7 +64,7 @@ These are distinct observations, not one demonstrated chain. In particular,
 r26's initial record errors precede its approval inference. Observed cases establish
 possibility under recorded conditions, not a frequency or a parameter's causal effect.
 
-[Parameters and controls](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
+[World parameters and presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
 [Reviewed v11 evidence](docs/research/unified-readiness.json) ·
 [Taxonomy and current implementation coverage](docs/phase2-taxonomy.md).
 

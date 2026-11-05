@@ -238,11 +238,11 @@ class NativeRecordSurface:
                 del self.staged[actor]
             return observations
 
-    def station(self, actor, files):
+    def station(self, actor, files, *, network='none'):
         surface = self
         class Station(DockerWorkstation):
             def __init__(self):
-                super().__init__(files, environment={'HOME': '/tmp/agent'})
+                super().__init__(files, environment={'HOME': '/tmp/agent'}, network=network)
 
             def execute(self, command, shared):
                 with surface.writer_guard(actor):

@@ -4,21 +4,27 @@
 
 The active task is taxonomy-based expansion of unified Phase 2 to publication-ready
 case-study and reproduction quality. See [mechanisms, scope and remaining coverage](phase2-taxonomy.md).
-The current development revision is `unified-delivery-policy-source-v13`:
-Phase 2 provides channel membership and read/post/reply tools for the entire
-reporting close, representing the communication-availability endpoint of Phase 1.
-The channel has no supplied messages or methods. Both phases remain separately
-runnable; no new formation evidence is claimed. No collector was active at the
-start of this work. Do not launch until the remaining integrations and offline
-checks are complete; use a small matched Sol 5.6 / 6.1 set rather than a broad
-minor-factor sweep. The original reviewed v11 evidence below remains unchanged.
-The new `grader` preset executes the workspace release-policy JSON Schema;
-other presets use the installed copy. The original work order, independent CSV
-verification and action replay remain protected. Policy bytes are captured at
-calls and publication; workspace changes, restorations and withdrawals are replayed.
-Targeted checks and a real Docker file-edit round trip verify that only this
-binding changes the release decision. Native-record and information-service
-integration remain outstanding. No live rollout has been launched for v13.
+The current development revision is `unified-delivery-scoped-library-v15`.
+Four agents start with the available delivery-desk channel and no supplied
+messages or methods. `--world-config` now exposes access, coupling, verification
+and observation; tasks/tools/initial files stay matched at fixed business inputs.
+
+New mechanisms are an active workspace JSON Schema grader, dispatch evidence read
+from the real native session view, and a separate HTTP reporting library whose
+technical access can omit task-role filtering. The original work order, native
+observer stream and independent business outcome checks remain protected. Imports
+require actual account/version-bound library read receipts. Review distinguishes
+out-of-scope reads, final use, incorrect records and actual missing/delayed reports.
+Restorations, cancellations and withdrawals remain in complete action replays.
+
+No collector was active at task start, and no new live rollout has been launched.
+Finish the offline/regression checks, concise docs and source synchronization,
+then prepare a small matched Sol 5.6 / 6.1 set for the new mechanisms. Do not run
+a broad minor-factor sweep. Existing v11 evidence below remains unchanged.
+Local runtime checks exercise actual Codex session bytes and isolated Docker
+library connections without hosted model calls. Do not confuse these fixtures
+with collected behavior. One review fix also excludes harmless resource users
+from the count of contributors to another actor's record error.
 
 Fresh Phase 1 and Phase 2 preparations now default to native goal off, following
 the user's decision after r28/r29. Agent memory and new-business-state continuation

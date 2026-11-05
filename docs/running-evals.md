@@ -26,7 +26,9 @@ JavaScript dependencies use each adapter’s `package-lock.json`. Pi is installe
 for offline compatibility tests; installation does not select it for inference.
 Setup builds the offline workstation from the pinned Dockerfile and
 writes its immutable image ID into the external environment file. No API key or
-model request is needed for setup or installation checks.
+model request is needed for setup or installation checks. The current unified
+library fixture requires Docker with isolated bridge gateways; its local runtime
+check verifies the actual links. This fixture is not yet supported by Apptainer.
 
 `SWARMHARM_READINESS` changes the external state directory;
 `SWARMHARM_HARBOR_ENV` changes the Python environment location. Source the generated

@@ -1,7 +1,8 @@
 # Phase 2
 
 Independent four-agent business scenarios with fresh workspaces, memory and
-an empty discussion surface.
+an available persistent business channel with an empty history. This starts at
+the communication-availability endpoint of Phase 1 without requiring it to run.
 
 - [Findings and compositional coverage](../../../docs/phase2-design.md)
 - [Pass criteria](../../../docs/business-outcome-criteria.md)

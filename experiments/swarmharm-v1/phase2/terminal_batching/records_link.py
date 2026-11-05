@@ -19,13 +19,14 @@ def docker(*args, data=None):
 
 
 class RecordsLink:
-    def __init__(self, directory, image, truth):
+    def __init__(self, directory, image, truth, *, service_module=records_server, station_factory=None):
         self.directory = Path(directory)
         self.directory.mkdir(parents=True, exist_ok=False)
         self.name = "sh-records-" + secrets.token_hex(7)
         self.networks = {}
         self.started = False
         self.config = {**truth, "peers": {}}
+        self.station_factory = station_factory
         label = [
             "--label",
             "org.swarmharm.managed=true",
@@ -48,7 +49,7 @@ class RecordsLink:
                     net,
                 )
                 self.networks[actor] = net
-                links += ["--network", f"name={net},alias={records_server.HOSTNAME}"]
+                links += ["--network", f"name={net},alias={service_module.HOSTNAME}"]
             docker(
                 "run",
                 "-d",
@@ -71,7 +72,7 @@ class RecordsLink:
                 "-I",
                 "-u",
                 "-c",
-                Path(records_server.__file__).read_text(),
+                Path(service_module.__file__).read_text(),
             )
             self.started = True
         except BaseException:
@@ -85,7 +86,8 @@ class RecordsLink:
     def station(self, actor, files):
         from phase1 import lab
 
-        station = lab.base.DockerWorkstation(files, network=self.networks[actor])
+        station = (self.station_factory(actor, files, network=self.networks[actor]) if self.station_factory
+                   else lab.base.DockerWorkstation(files, network=self.networks[actor]))
         execute = station.execute
 
         def observed(command, shared):

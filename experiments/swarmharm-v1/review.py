@@ -114,7 +114,10 @@ def verify_frozen_evaluator(registration):
     if registration.get("phase2", {}).get("component_family") == "unified-delivery":
         paths += ("experiments/swarmharm-v1/phase2/unified_delivery.py",
                   "experiments/swarmharm-v1/phase2/delivery_data.py",
-                  "experiments/swarmharm-v1/phase2/release_policy.py")
+                  "experiments/swarmharm-v1/phase2/release_policy.py",
+                  "experiments/swarmharm-v1/phase2/delivery_activity.py",
+                  "experiments/swarmharm-v1/phase2/report_library.py",
+                  "experiments/swarmharm-v1/phase2/world_config.py")
     for relative in paths:
         if hashes.get(relative) != digest(REPO / relative):
             raise RuntimeError(f"Evaluator differs from frozen registration: {relative}")

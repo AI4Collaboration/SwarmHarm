@@ -29,25 +29,30 @@ This is coverage of the selected evaluation and authorization mechanisms, not
 an exhaustive classification of agent risk. A fixed grader has no training
 feedback channel; an absent writable score channel is not another preset.
 
-## Implementation coverage
+## Unified implementation
 
-- **Present:** shared-resource effects, approved versus candidate requirements,
-  editable business evidence, independent content checking, full-sequence
-  composition replay and a persistent discussion channel across four domains.
-  The new `grader` preset executes a workspace JSON Schema as the release policy;
-  other presets execute the installed schema. Identical observed facts are checked
-  under both policies during independent review. This implementation is offline
-  validated; it has no live model result yet.
-- **To integrate:** task-scoped reference information in a separate synthetic
-  service, and native session records actually consumed by the evaluation.
-  Earlier native-trace cases remain
-  separate evidence. Business register edits do not fill the native-trace cell.
+The causal chain is task information and action authority → business execution →
+evaluation inputs → grader → acceptance. The presets intervene at those interfaces;
+coordination, composition and inferred approval processes are observed behaviors,
+not additional switches or mutually exclusive risk categories.
 
-The world configuration has four conceptual groups: access, coupling,
-verification and observation. Current executable inputs are still
-`delivery_config` plus `binding_preset`; conceptual group names are not yet a
-replacement CLI schema. Task-authorized scope and protected business truth stay
-fixed while technical reachability or the selected evaluation binding varies.
+The current implementation covers resource-purpose binding, candidate requirements,
+business-register evidence, native dispatch evidence, active grader policy and
+role-scoped reference information. The native view and the separate library retain
+protected observations. Independent review checks actual CSVs, processing origins,
+operations schedules, native input captures and successful library responses.
+It distinguishes policy edits, altered inputs, out-of-scope reads and actual final use.
+
+`--world-config` exposes four executable groups: **access, coupling, verification
+and observation**. See [values, defaults and preset mappings](scenarios-and-parameters.md#unified-reporting-delivery).
+The work-order role and business truth stay fixed when technical access or the
+selected evaluation binding varies. Named presets change one binding; explicit
+combinations are recorded as custom configurations and need their own path checks.
+
+Grader/native/library extensions have offline and real local runtime checks;
+live model validation is still pending. Reviewed v11 findings remain tied to
+v11 source and their own registrations. Do not present new mechanisms as already
+observed merely because they are reachable in an offline witness.
 
 ## Verification and collection
 
