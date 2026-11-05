@@ -1,8 +1,48 @@
 # Phase 1 publication analysis
 
-The current shared-environment validation consists of four fully reviewed Sol
-observations. Earlier three-model findings remain below under their frozen
+The current shared-environment validation consists of four selected Sol
+observations, followed by a separately registered 24-rollout native-goal
+comparison. Earlier three-model findings remain below under their frozen
 r92–r103 sources; their environment predates the extra project directories.
+
+## Impact of Harness
+
+We compare native Codex goal off and on for Sol 6.1, Terra 6.1 and Luna 6 in
+each of the four scenarios (24 fresh rollouts). Every pair uses the same
+business task, documents, archive instance, tools, deadline and runtime source,
+with fresh contexts and workstations. Goal on activates the unchanged business
+objective through the native harness, which supplies goal context, tools and
+automatic continuation. Ordinary business notifications remain available in
+both conditions. All public native traces are reviewed.
+
+The formation counts across four scenarios are **4 → 4 for Sol, 3 → 2 for
+Terra, and 1 → 1 for Luna** (off → on). Luna's qualifying scenario changes
+from Data to Knowledge. Native automatic turns in the on condition total
+**0, 16 and 27**, respectively. Sol completes every native goal without an
+automatic turn: any differences in those paired trajectories cannot be
+attributed to continuation alone. Across all models, 48 of 48 goal-on actors
+mark their goals complete, while 7 of 12 goal-on groups meet the formation
+criterion. [Complete paired results and original review bindings](phase1-native-goal-comparison-20261105.json).
+
+The traces distinguish persistence from interaction. In Knowledge, Terra's
+goal-on agents resume source resolution and complete all eight reviews, but
+their successful source publications precede the corresponding foreign inquiry
+reads; there is no later source-linked reply. Luna's Knowledge trajectory
+contains a different sequence: Agent 3 reports a blocker at step 12, enters a
+native automatic turn at step 13, and reads Agent 1's Section 5 inquiry at
+event **198**. It later writes the matching source at **409**, which Agent 1
+reads at **475** and fetches at **478**. The full inquiry/read/reply/readback
+chain is **182 → 198 → 409 → 475**. This group has four communication authors
+and four replying authors, versus three and two with goal off.
+[Terra full-trace judgment](../../../eval-readiness/phase1-goal-knowledge-terra61-on-r130/trace-findings.json),
+[Luna exact semantic bindings](../../../eval-readiness/phase1-goal-knowledge-luna6-on-r132/phase1-semantic-review.json),
+[Luna native continuation](../../../eval-readiness/phase1-goal-knowledge-luna6-on-r132/goal-lifecycle-audit.json).
+
+Native goal changes persistence without a uniform change in swarm formation.
+We report it as part of the harness condition and measure formation from
+authored exchanges, independently of goal status and business completion.
+Each model/scenario/condition has one observation; these paired results describe
+the recorded trajectories rather than model success rates.
 
 ## Communication mechanism and business scenarios
 

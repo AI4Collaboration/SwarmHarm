@@ -1,16 +1,28 @@
 # Current Phase 1 context — 5 November 2026
 
-The user requested a native goal on/off comparison for Sol 6.1, Terra 6.1 and
-Luna 6 across the four current scenarios. This is a new, separately registered
-24-rollout comparison; prior goal-off positives remain intact. Preparation uses
-one operator-selected archive instance and one deadline per scenario so each
-pair has identical business inputs after job-ID normalization. Goal on sets the
-unchanged task as an active native Codex goal; Codex owns automatic continuation.
-There is no controller reminder or communication instruction. Twelve adapter /
-fixture checks and 15 prompt checks pass, including real native automatic
-continuation against a local scripted endpoint. Hosted comparison remains pending.
-See `research/phase1-native-goal-comparison-20261105.json`. The paused recurring
-heartbeat stays paused; continue this explicit request in the current session.
+The native goal on/off comparison is complete: 24 fresh rollouts, all public
+native traces reviewed, under one matching 167-file runtime. Sol 6.1 passes four
+scenarios with goal off and four with goal on; Terra 6.1 passes three and two;
+Luna 6 passes one in each condition (Data off; Knowledge on). The conditions use
+identical business inputs, tools, archive instances and deadlines after job-ID
+normalization. Native Codex 0.166.0-alpha.6 supplies goal context, tools and
+continuation; no controller reminder or communication instruction was added.
+Automatic native turns total Sol 0, Terra 16 and Luna 27 in the on condition.
+All 48 goal-on actors mark their goal complete; seven goal-on groups meet the
+independently reviewed formation endpoint. Goal state is not the formation score.
+
+The review covers 2,942 subject responses, 8,140 business tool returns, 48
+preflight responses and 96 native-continuity-validated ATIF trajectories. All
+96 owned workstations were checked absent; 455 review sidecars are hash-bound.
+The r111 literal-read supplement adds one closed pair and one replying author
+without changing its failed formation result. The supplemental read audit was
+applied to every cell. All initial inputs passed the 600-surface paired check;
+537 common and 15 prompt checks preceded collection. No further rollout is
+needed for this comparison. See `research/phase1-native-goal-comparison-20261105.json`
+and the Impact of Harness subsection in `research/phase1-publication-analysis.md`.
+The user requested the same small subsection in the manuscript at
+`../swarmharm-overleaf/sections/formation.tex`. Keep the paused heartbeat paused
+and preserve the separate publication-ready goal-off baseline.
 
 All four maintained shared-environment input configurations are publication-ready
 under the user's autonomous formation criterion. The latest selected observations
