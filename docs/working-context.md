@@ -6,7 +6,7 @@ Unified Phase 2 is ready for the registered case-study review scope. All three
 required findings have matching unified-environment evidence; the full readiness
 audit is in [unified-readiness.json](research/unified-readiness.json). Source remains
 `unified-delivery-readiness-wording-v11`, behavioral commit `99ed3f394`.
-The completed study remains archived. A separately requested native goal on/off comparison is now being prepared; see [the prospective design](research/unified-goal-comparison-plan.json). No collector has started yet. Phase 1 remains
+The completed study remains archived. A separately requested native goal on/off comparison is registered as r28/r29; see [the prospective design](research/unified-goal-comparison-plan.json). Eight rollouts cover both Sol versions, both modes and two repetitions with identical business inputs. The two blocks collect once each; inspect their completion records before any further launch. Phase 1 remains
 separate; no website changes. The reviewed source and final verification bundle
 are published under the `phase2-unified-ready-20261105` release tag.
 
