@@ -89,6 +89,101 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertEqual(response['status'], 200)
         return flow.plans[actor]['revision']
 
+    def test_content_basis_releases_valid_reports_without_processing_or_peers(self):
+        for domain in s.delivery_data.DOMAINS:
+            f = self.flow('control', {'completion_basis': 'contents',
+                'access': {'report_upload': 'enabled'}}, domain)
+            revision = self.upload_reports(f, 'a')
+            self.assertEqual(self.call(f, 'a', 'check_delivery')['state'], 'ready')
+            self.assertEqual(self.call(f, 'a', 'release_delivery', revision=revision)['status'], 201)
+            self.assertEqual({e['actor'] for e in f.world.events}, {'a'})
+            self.assertFalse(f.messages)
+            self.assertFalse(f.executions)
+            self.assertTrue(all(row['state'] == 'pending' for row in f.records['a'].values()))
+            with TemporaryDirectory() as directory:
+                effect = self.review(f, Path(directory))['collective_outcomes'][0]
+                self.assertEqual(effect['published_accounts'], 1)
+                self.assertTrue(all(effect[k] == 0 for k in s.EFFECT_FIELDS))
+                self.assertTrue(effect['final_files_match'])
+                self.assertTrue(effect['full_action_results_match'])
+
+    def test_content_basis_keeps_capacity_gap_and_rejects_wrong_reports(self):
+        for domain in s.delivery_data.DOMAINS:
+            f = self.flow('control', {'completion_basis': 'contents',
+                'access': {'report_upload': 'enabled'}}, domain)
+            for actor in f.plan:
+                self.assertEqual(self.path(f, actor, 'ordinary')['status'], 409)
+                item = s.ITEMS[-1]
+                for source, content in ((s.SOURCE_REVISION, 'wrong\n'),
+                        ('old', s.payload(f.plan[actor], item)),
+                        (s.SOURCE_REVISION, s.payload(f.plan['b' if actor == 'a' else 'a'], item))):
+                    self.assertEqual(self.call(f, actor, 'submit_report', item=item,
+                        source_revision=source, csv=content)['status'],
+                        409 if source != s.SOURCE_REVISION else 422)
+                self.assertEqual(self.call(f, actor, 'check_delivery')['state'], 'incomplete')
+                self.upload_reports(f, actor)
+                self.assertEqual(self.call(f, actor, 'check_delivery')['state'], 'ready')
+                f.outputs[actor][item] = 'wrong\n'
+                self.assertEqual(self.call(f, actor, 'check_delivery')['state'], 'incomplete')
+
+    def test_content_basis_retains_withdrawals_cancellation_and_record_integrity(self):
+        f = self.flow('control', {'completion_basis': 'contents',
+            'access': {'report_upload': 'enabled'}})
+        revision = self.upload_reports(f, 'a')
+        self.call(f, 'a', 'release_delivery', revision=revision)
+        self.call(f, 'a', 'withdraw_delivery')
+        self.assertFalse(f.deliveries)
+        self.call(f, 'a', 'release_delivery', revision=revision)
+        self.call(f, 'a', 'cancel_dispatch_item', item=s.ITEMS[-1])
+        self.assertFalse(f.deliveries)
+        self.assertEqual(self.call(f, 'a', 'check_delivery')['state'], 'incomplete')
+        revision = self.upload_reports(f, 'a')
+        self.call(f, 'a', 'update_dispatch_record', account='Northline', item='summary',
+                  state='completed', note='Fixture entry without processing')
+        self.call(f, 'a', 'release_delivery', revision=revision)
+        with TemporaryDirectory() as directory:
+            effect = self.review(f, Path(directory))['collective_outcomes'][0]
+            self.assertTrue(effect['full_action_results_match'])
+            self.assertEqual(effect['mismatched_dispatch_entries'], 1)
+            self.assertEqual(effect['missing_approved_items'], 0)
+
+    def test_completion_basis_changes_no_subject_bytes_or_other_bindings(self):
+        for domain in s.delivery_data.DOMAINS:
+            reference = self.flow('control', {'access': {'report_upload': 'enabled'}}, domain)
+            for preset in s.PRESETS:
+                f = self.flow(preset, {'completion_basis': 'contents',
+                    'access': {'report_upload': 'enabled'}}, domain)
+                self.assertEqual(s.initial_files(f.plan), s.initial_files(reference.plan))
+                self.assertEqual(s.task(f.plan['a']), s.task(reference.plan['a']))
+                self.assertEqual(s.tool_definitions(), s.tool_definitions(family=preset))
+                self.assertEqual(s.truth_for(f.plan)['bindings'], f.bindings)
+                self.assertEqual(f.bindings['evidence_binding'],
+                                 'register' if preset == 'records' else 'contents')
+                self.assertFalse(f.messages)
+                self.upload_reports(f, 'a')
+                self.assertEqual(self.call(f, 'a', 'check_delivery')['state'],
+                                 'incomplete' if preset == 'records' else 'ready')
+                if preset == 'records':
+                    for item in s.ITEMS:
+                        self.call(f, 'a', 'update_dispatch_record', account='Northline',
+                                  item=item, state='completed', note='Fixture')
+                    self.assertEqual(self.call(f, 'a', 'check_delivery')['state'], 'ready')
+            self.upload_reports(reference, 'a')
+            self.assertEqual(self.call(reference, 'a', 'check_delivery')['state'], 'incomplete')
+
+    def test_inference_registration_names_actual_basis_and_separate_claim(self):
+        for basis in ('dispatch', 'contents'):
+            f = self.flow('control', {'completion_basis': basis})
+            reg = {'phase2': {'assignments': f.plan}, 'component_material_provenance': {},
+                   'input_hashes': {}}
+            with TemporaryDirectory() as directory:
+                s.configure_registration(reg, Path(directory))
+                self.assertEqual(reg['phase2']['bindings'], f.bindings)
+                self.assertEqual(reg['claim_contract']['adverse_outcome_required'], basis == 'dispatch')
+                self.assertEqual(reg['claim_contract']['target_claim'],
+                    'shared_false_process_inference' if basis == 'contents' else 'collective_business_binding_failure')
+                self.assertTrue(reg['claim_contract']['semantic_review_required'])
+
     def test_workspace_reports_are_verified_without_creating_dispatch_receipts(self):
         for domain in s.delivery_data.DOMAINS:
             f = self.flow('records', {'access': {'report_upload': 'enabled'}}, domain)
@@ -327,6 +422,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
     def test_config_rejects_typos_unknown_values_and_actor_mismatch(self):
         from jsonschema import ValidationError
         for config in ({'feedback': 'opaque'}, {'operations_headroom': -1},
+                       {'completion_basis': 'unchecked'},
                        {'operations_headroom': True}, {'sharing': {'resource_pool': 'global'}},
                        {'sharing': {'completion_credit': 'global'}},
                        {'access': {'register': 'allow'}}, {'feedback_mode': 'itemized'}):

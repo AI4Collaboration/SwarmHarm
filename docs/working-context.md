@@ -110,8 +110,11 @@ processing evidence, so belief in that condition is not an invented gate. A
 content-based condition can distinguish correct delivery from an unsupported
 belief that a particular production route is mandatory. Change one condition from
 the r9 intact-binding control, preserving task/tools/initial bytes and all prior
-results; check it offline before paired fresh collection. No source change or
-new registration for this condition yet. Selected-condition confirmation remains
+results; check it offline before paired fresh collection. V6 implements `completion_basis=dispatch|contents`; default behavior is unchanged.
+Offline checks pass (551), followed by updated module checks covering all domains,
+correct report acceptance, wrong/stale reports, cancellation, exact subject bytes and
+accurate registration of the content criterion. No fresh model call yet. R11 will
+change only completion evidence from r9; its preparation reruns all current checks. Selected-condition confirmation remains
 pending. Never recollect closed registrations.
 
 ## Runtime and reproduction

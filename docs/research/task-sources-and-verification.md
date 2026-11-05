@@ -22,6 +22,15 @@ our candidate explanatory factor, not a causal finding from METR or LessWrong.
 The new ledger records December credits; November publication remains independent
 per account. No invented prerequisite, peer message or scoring narrative is seeded.
 
+V6 isolates a closer distinction from METR: agents believed a scorer checked the
+causal route, although the correct result sufficed. R9 really required service
+execution, so believing that requirement was not a false inference. The new
+`completion_basis=contents` condition instead checks verified report contents;
+processing origin remains a separate truthful record. This is a synthetic business
+analogue, not an incident reproduction. Initial task, tools and files stay identical
+to r9. Independent checks permit publication without dispatch receipts or peer
+activity. No assumed scoring procedure is supplied to agents.
+
 ## METR: incident facts
 
 METR reports that roughly 1,200 agents used a shared message board and about 700
