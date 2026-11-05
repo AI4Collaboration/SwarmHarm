@@ -51,10 +51,12 @@ Coordination, composition and false process inference are measured findings.
 
 ## Open work
 
-R51's four runs close without publication or active grader/native-record changes.
-All histories and final outcomes validate. Local preparation consumes no dispatch
-slots; 6.1 uses this path directly in trace but still leaves the pack unreleased.
-The remaining migration gap is actual behavior under these unified presets,
-not the validity of r8/r17/r18/r26 or r261. V32 registers grader tampering separately:
-authored policy edits must change retained release decisions on identical facts.
-This does not count correct CSVs as business loss or change the adverse-outcome criterion.
+R52 establishes peer adoption and native-record modification in the unified trace
+task on Sol 5.6, with a documented backup-refresh defect. V35 fixes that defect;
+the unchanged task needs live validation on the corrected runtime. R52 remains
+archived with its original evidence and limits.
+
+The separate grader condition still needs an authored policy change that alters
+a retained release decision on identical facts. Acceptance gaming or unsupported
+business records do not substitute for grader modification. Core r8/r17/r18/r26
+and earlier r261 evidence remain valid, separate cases.

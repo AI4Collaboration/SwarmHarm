@@ -21,6 +21,49 @@ from workstation import DockerWorkstation
 VIEW = '/tmp/agent/.pi/sessions'
 LIMIT = 32 * 1024 * 1024
 
+# Refresh recorder-owned filenames only. Auxiliary files are subject workspace
+# state: deleting them would erase backups and change the observed behavior.
+REFRESH_VIEW = r'''
+import json,pathlib,sys
+p=pathlib.Path(sys.argv[1])
+for folder in reversed((p,*p.parents)):
+ if folder.is_symlink() or (folder.exists() and not folder.is_dir()):
+  raise ValueError('Non-directory native record view')
+ folder.mkdir(exist_ok=True)
+for name in json.loads(sys.argv[2]):
+ if pathlib.Path(name).name!=name or not name.endswith('.jsonl'):
+  raise ValueError('Invalid native record filename')
+ target=p/name
+ if target.is_dir() and not target.is_symlink():
+  raise ValueError('Directory at native record filename')
+ target.unlink(missing_ok=True)
+'''
+
+AUXILIARY_FILES = r'''
+import base64,json,os,pathlib,stat,sys
+root=pathlib.Path('/tmp/agent'); excluded=set(json.loads(sys.argv[1]))
+files={}; links=[]; total=0
+if root.is_symlink() or (root.exists() and not root.is_dir()):
+ raise ValueError('Non-directory agent home')
+for folder,dirs,names in os.walk(root,followlinks=False):
+ dirs.sort(); names.sort()
+ for name in list(dirs):
+  path=pathlib.Path(folder,name)
+  if path.is_symlink():
+   links.append(str(path.relative_to(root))); dirs.remove(name)
+ for name in names:
+  path=pathlib.Path(folder,name); relative=str(path.relative_to(root))
+  if str(path) in excluded:continue
+  if not stat.S_ISREG(path.lstat().st_mode):links.append(relative);continue
+  fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW)
+  with os.fdopen(fd,'rb') as handle:data=handle.read(33554433)
+  total+=len(data)
+  if len(data)>33554432 or total>134217728:
+   raise ValueError('Auxiliary evidence exceeds capture limit')
+  files[relative]=base64.b64encode(data).decode()
+print(json.dumps({'files':files,'non_regular_paths':sorted(links)}))
+'''
+
 
 def read_regular(directory):
     """Never follow subject-created links or recursively inspect other paths."""
@@ -247,7 +290,38 @@ class NativeRecordSurface:
         surface = self
         class Station(DockerWorkstation):
             def __init__(self):
+                self.record_ready = False
+                self.managed_names = set()
                 super().__init__(files, environment={'HOME': '/tmp/agent'}, network=network)
+                self.record_ready = True
+
+            def capture_auxiliary(self):
+                paused = self.paused
+                self.resume()
+                try:
+                    raw = json.loads(subprocess.check_output(
+                        ['docker', 'exec', self.name, 'python', '-I', '-c', AUXILIARY_FILES,
+                         json.dumps([surface.view+'/'+name for name in self.managed_names])],
+                        timeout=15))
+                    retained = surface.retain(actor, {
+                        name: base64.b64decode(value) for name, value in raw['files'].items()})
+                    retained['non_regular_paths'] = raw['non_regular_paths']
+                    return retained
+                finally:
+                    if paused:
+                        self.pause()
+
+            def close(self):
+                if self.closed:
+                    return
+                try:
+                    if self.record_ready:
+                        manifest = self.capture_auxiliary()
+                        path = surface.archive / f'{actor}-auxiliary-final.json'
+                        with path.open('x') as handle:
+                            json.dump(manifest, handle, indent=2)
+                finally:
+                    super().close()
 
             def execute(self, command, shared):
                 with surface.writer_guard(actor):
@@ -272,10 +346,11 @@ class NativeRecordSurface:
                         view_before = native_before
                 before_manifest = surface.retain(actor, native_before)
                 self.resume()
-                # Clear only this disposable view before hydrating the current bytes.
-                code = "import shutil,pathlib; p=pathlib.Path('/tmp/agent/.pi/sessions'); shutil.rmtree(p,ignore_errors=True); p.mkdir(parents=True,exist_ok=True)"
-                subprocess.run(['docker','exec',self.name,'python','-I','-c',code.replace(VIEW,surface.view)],
+                managed = self.managed_names | set(native_before)
+                subprocess.run(['docker','exec',self.name,'python','-I','-c',REFRESH_VIEW,
+                                surface.view,json.dumps(sorted(managed))],
                                check=True, capture_output=True, timeout=15)
+                self.managed_names = set(native_before)
                 self.hydrate({surface.view+'/'+name:base64.b64encode(data).decode()
                               for name,data in view_before.items()}, False)
                 reply, snapshot = super().execute(command, shared)
@@ -291,6 +366,7 @@ for f in sorted(p.iterdir()) if p.is_dir() and not p.is_symlink() else []:
 print(json.dumps({'files':result,'invalid':invalid,'invalid_directory':p.is_symlink()}))'''
                 raw = json.loads(subprocess.check_output(
                     ['docker','exec',self.name,'python','-I','-c',code.replace(VIEW,surface.view)], timeout=15))
+                auxiliary = self.capture_auxiliary()
                 self.pause()
                 after = {name:base64.b64decode(value) for name,value in raw['files'].items()}
                 observed = surface.retain(actor, after)
@@ -368,6 +444,7 @@ print(json.dumps({'files':result,'invalid':invalid,'invalid_directory':p.is_syml
                     surface.counter[actor] += 1
                     observation = {'owner':actor,'sequence':surface.counter[actor],
                         'before':before_manifest,'subject_after':observed,
+                        'subject_auxiliary_after':auxiliary,
                         'native_pre_apply':pre_apply,
                         'native_after':surface.capture(actor),'mutation':mutation}
                 path = surface.archive / f'{actor}-{surface.counter[actor]:04d}.json'

@@ -54,12 +54,12 @@ selected evaluation binding varies. Each threat model runs as a separate config
 and registration of the same environment. Named presets change one binding;
 `--combined-bindings` explicitly selects a combination, with separate path checks.
 
-Grader/native/library extensions have offline, actual local-runtime and six
-matched live checks in [r31](research/unified-interfaces-r31.json). Sol 5.6 uses
-the out-of-role library packs; 6.1 does not read them. Neither model edits the
-grader or native evidence in these runs. Those mechanisms are implemented and
-reachable, with negative behavioral results. Earlier gaming, record-method,
-composition and false-inference cases retain their own source and registration.
+The library condition has observed out-of-role use on Sol 5.6 in
+[r31](research/unified-interfaces-r31.json). Native-trace method adoption and
+active-record changes appear on 5.6 in [r52](research/unified-trace-r52.json),
+with a documented backup-refresh defect that V35 repairs. Grader behavior remains
+open. Gaming, record-method adoption, composition and false-inference cases retain
+their own source and registration.
 
 ## Verification and collection
 

@@ -183,6 +183,7 @@ PY'''
                     closed = True
                     flow.surface.bound_directories.pop('a', None)
                     flow.finalize()
+                    station.close()  # Terminal auxiliary evidence precedes independent review.
                     outcome = s.assess({'phase2': {'assignments': plan}}, {'events': world.events}, {},
                                        {'state': flow.snapshot()},
                                        evidence_root=root)['collective_outcomes'][0]

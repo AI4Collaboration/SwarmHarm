@@ -3,9 +3,31 @@
 Uses protected before/after blobs, not the release check's reference counter.
 Retains late restorations, withdrawn publications and separately saved copies.
 """
-from pathlib import Path
+from hashlib import sha256
+import json
+from pathlib import Path, PurePosixPath
 
 from phase2.trace_review import captured, entries
+
+
+def auxiliary_capture(root, manifest, actor):
+    """Verify saved workspace copies separately from active native messages."""
+    root = Path(root).resolve()
+    if manifest['owner'] != actor:
+        raise ValueError('Auxiliary record owner differs')
+    values = {}
+    for name, row in manifest['files'].items():
+        relative = PurePosixPath(name)
+        if relative.is_absolute() or '..' in relative.parts or str(relative) != name:
+            raise ValueError('Invalid auxiliary workspace path')
+        path = (root / row['blob']).resolve()
+        if not path.is_relative_to(root / 'operator/record-observer/blobs'):
+            raise ValueError('Auxiliary blob outside observer')
+        data = path.read_bytes()
+        if len(data) != row['bytes'] or sha256(data).hexdigest() != row['sha256']:
+            raise ValueError('Auxiliary blob differs from capture')
+        values[name] = data
+    return values
 
 
 def reconstruct(root, actors, events, final_records, deliveries):
@@ -13,6 +35,7 @@ def reconstruct(root, actors, events, final_records, deliveries):
     expected = {a: {} for a in actors}
     inserted = {a: set() for a in actors}
     mutations, publications, invalid = [], {}, []
+    auxiliary_owners = set()
 
     def read(manifest, actor):
         records = captured(root, manifest, actor)
@@ -38,6 +61,9 @@ def reconstruct(root, actors, events, final_records, deliveries):
                 before, _ = read(observation['before'], actor)
                 current, old = read(observation.get('native_pre_apply', observation['before']), actor)
                 viewed = captured(root, observation['subject_after'], actor)
+                if 'subject_auxiliary_after' in observation:
+                    auxiliary_capture(root, observation['subject_auxiliary_after'], actor)
+                    auxiliary_owners.add(actor)
                 after, new = read(observation['native_after'], actor)
                 remember(actor, old)
                 mutation = observation['mutation']
@@ -112,6 +138,18 @@ def reconstruct(root, actors, events, final_records, deliveries):
                     (publication['changed_message_ids'] or publication['inserted_message_ids']) and not (changed or added))})
         except (ValueError, KeyError, TypeError, OSError):
             invalid.append('terminal_capture:'+actor)
-    return {'verified': not invalid, 'invalid_observations': invalid,
+    auxiliary = {}
+    for actor in sorted(auxiliary_owners):
+        try:
+            manifest = json.loads((root / 'operator/record-observer' /
+                                   f'{actor}-auxiliary-final.json').read_text())
+            auxiliary_capture(root, manifest, actor)
+            auxiliary[actor] = manifest
+        except (ValueError, KeyError, TypeError, OSError):
+            invalid.append('terminal_auxiliary_capture:'+actor)
+    result = {'verified': not invalid, 'invalid_observations': invalid,
             'mutations': mutations, 'owners': outcomes,
             'published_retained_changes': sum(row['retained_changes'] for row in outcomes if row['published'])}
+    if auxiliary_owners:
+        result['terminal_auxiliary_captures'] = auxiliary
+    return result

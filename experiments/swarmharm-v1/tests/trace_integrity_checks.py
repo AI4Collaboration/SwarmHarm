@@ -430,6 +430,77 @@ class TraceIntegrityChecks(unittest.TestCase):
                     native_writer.write(b'next native entry\n')
                     self.assertEqual(path.read_bytes(),after.get('session.jsonl',b'')+b'next native entry\n')
 
+    def test_native_refresh_preserves_backups_and_independent_restoration_evidence(self):
+        from contextlib import nullcontext
+        from phase2.delivery_record_review import auxiliary_capture, reconstruct
+        with TemporaryDirectory() as d:
+            root=Path(d);surface=NativeRecordSurface(root,['a'],harness='codex')
+            directory=surface.directory('a');directory.mkdir(parents=True)
+            target=directory/'session.jsonl';original=native_message('SR-1-01')
+            target.write_bytes(original)
+            surface.bind('a',target,writer_guard=nullcontext)
+            station=surface.station('a',{});view=surface.view;events=[]
+            backups=['activity/original.retained','activity/copy.jsonl',
+                     'activity/nested/original.jsonl','activity-full/original.jsonl']
+            try:
+                command=(f'mkdir -p {view}/nested /tmp/agent/activity-full; '
+                         f'cp {view}/session.jsonl {view}/original.retained; '
+                         f'cp {view}/session.jsonl {view}/copy.jsonl; '
+                         f'cp {view}/session.jsonl {view}/nested/original.jsonl; '
+                         f'cp {view}/session.jsonl /tmp/agent/activity-full/original.jsonl; '
+                         f"sed -i 's/SR-1-01/CASE-1-01/g' {view}/session.jsonl; "
+                         f'ln -s /etc/hosts {view}/hosts-link')
+                for number,command in enumerate((command,':',
+                        f'cp {view}/original.retained {view}/session.jsonl'),1):
+                    if number==2:
+                        with target.open('ab') as handle:
+                            handle.write(b'{"type":"token_usage_record","tokens":1}\n')
+                    reply,snapshot=station.execute(command,{})
+                    self.assertEqual(reply['exit_code'],0,reply)
+                    observation=snapshot['native_record_observation']
+                    saved=auxiliary_capture(root,observation['subject_auxiliary_after'],'a')
+                    self.assertEqual({name:saved[name] for name in backups},
+                                     dict.fromkeys(backups,original))
+                    self.assertNotIn('activity/session.jsonl',saved)
+                    self.assertIn('activity/hosts-link',
+                                  observation['subject_auxiliary_after']['non_regular_paths'])
+                    self.assertEqual(observation['mutation']['unknown_files_not_applied'],['copy.jsonl'])
+                    self.assertEqual(set(read_regular(directory)),{'session.jsonl'})
+                    if number==2:
+                        self.assertIn(b'token_usage_record',target.read_bytes())
+                        self.assertFalse(observation['mutation']['applied'])
+                    events.append({'id':number,'actor':'a','operation':'bash',
+                                   'native_record_observation':observation})
+                self.assertEqual(target.read_bytes(),original)
+            finally:station.close()
+            station.close()  # Cleanup and evidence capture are idempotent.
+            final=json.loads((surface.archive/'a-auxiliary-final.json').read_text())
+            self.assertEqual(auxiliary_capture(root,final,'a'),saved)
+            result=reconstruct(root,['a'],events,{'a':surface.capture('a')},{})
+            self.assertTrue(result['verified'],result)
+            self.assertEqual(result['owners'][0]['retained_changes'],0)
+            self.assertEqual(result['terminal_auxiliary_captures']['a'],final)
+            damaged=deepcopy(events)
+            damaged[0]['native_record_observation']['subject_auxiliary_after']['files'][backups[0]]['sha256']='0'*64
+            self.assertFalse(reconstruct(root,['a'],damaged,{'a':surface.capture('a')},{})['verified'])
+
+    def test_refresh_does_not_remove_a_subject_directory_at_a_native_filename(self):
+        import subprocess
+        with TemporaryDirectory() as d:
+            surface=NativeRecordSurface(d,['a'])
+            directory=surface.directory('a');directory.mkdir(parents=True)
+            (directory/'session.jsonl').write_bytes(native_message('SR-1-01'))
+            station=surface.station('a',{})
+            try:
+                station.execute(f'rm {VIEW}/session.jsonl; mkdir {VIEW}/session.jsonl; '
+                                f'printf retained > {VIEW}/session.jsonl/backup',{})
+                with self.assertRaises(subprocess.CalledProcessError):
+                    station.execute(':',{})
+                raw=station.capture_auxiliary()
+                from phase2.delivery_record_review import auxiliary_capture
+                self.assertEqual(auxiliary_capture(d,raw,'a')['.pi/sessions/session.jsonl/backup'],b'retained')
+            finally:station.close()
+
     def test_append_rebase_preserves_unseen_bytes_and_rejects_concurrent_rewrite(self):
         before={'s.jsonl':b'old\n'};current={'s.jsonl':b'old\nnew\n'}
         self.assertEqual(merge_native_append(before,{'s.jsonl':b'edited\n'},current),
