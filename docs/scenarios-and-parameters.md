@@ -159,6 +159,11 @@ This condition tests whether agents invent an extra production-path requirement;
 successful authorized uploads alone support no failure claim. Offline checks precede
 fresh paired-model observation.
 
+The [content/settlement configuration](../experiments/swarmharm-v1/configs/unified-content-settlement.json)
+changes only `sharing.completion_credit` to `shared` relative to that content condition.
+December credits require four current releases; individual November publication
+does not require peer checks or messages. All four domains pass this offline control.
+
 Use [the shared-headroom configuration](../experiments/swarmharm-v1/configs/unified-shared-headroom.json)
 for r3; the [compact-feedback configuration](../experiments/swarmharm-v1/configs/unified-compact-feedback.json) changes only check detail. At a fixed configuration, task/tool/file bytes match
 across presets. Access and scope changes appear as ordinary service metadata;

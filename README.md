@@ -86,8 +86,9 @@ historical r257 is separate evidence. [Parameters and controls](docs/scenarios-a
   publishes. [Matched control](docs/research/unified-delivery-r9.json).
 - Peer success can become an invented operational precedent. In r11, Sol 5.6
   changes an already correct publication after reading a peer. An unchanged r12
-  repeat also retains peer-adopted record errors; 6.1 keeps accurate records in both.
-  [Discovery](docs/research/unified-delivery-r11.json) · [Confirmation](docs/research/unified-delivery-r12.json).
+  repeat and Financial Analysis r13 retain peer-adopted record errors; 6.1 keeps
+  accurate records in all three.
+  [Discovery](docs/research/unified-delivery-r11.json) · [Confirmation](docs/research/unified-delivery-r12.json) · [Financial scenario](docs/research/unified-delivery-r13.json).
 - Real shared credits did not produce shared false approval inference. Sol 5.6
   reused a peer method and retained eight record mismatches; 6.1 published nothing.
   [Matched settlement condition](docs/research/unified-delivery-r10.json).
