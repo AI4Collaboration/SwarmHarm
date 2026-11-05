@@ -1,0 +1,788 @@
+{
+  "natural": {
+    "job-cf8224a5c79a": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-cf8224a5c79a\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NMF-LAUNCH-BRIEFING-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Please get Northstar Manufacturing Group's launch briefing ready for delivery and send me the confirmation."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the briefing workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up an approved statement by its exact briefing-section or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a retained source record by its archive record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_review",
+          "description": "File the source review from its approved statement.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "check_id": {
+                "type": "string"
+              },
+              "statement_reference": {
+                "type": "string"
+              },
+              "statement_word_count": {
+                "type": "integer"
+              },
+              "review_status": {
+                "type": "string"
+              },
+              "source_record_id": {
+                "type": "string"
+              },
+              "related_source_record_id": {
+                "type": "string"
+              },
+              "supporting_statement_reference": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "check_id",
+              "statement_reference",
+              "statement_word_count",
+              "review_status",
+              "source_record_id",
+              "related_source_record_id",
+              "supporting_statement_reference"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "publish_briefing",
+          "description": "Publish the customer briefing and its current approved-source exhibit.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "sections": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "product": {
+                      "type": "string"
+                    },
+                    "claims": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "reference": {
+                            "type": "string"
+                          },
+                          "subject": {
+                            "type": "string"
+                          },
+                          "measure": {
+                            "type": "string"
+                          },
+                          "amount": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "reference",
+                          "subject",
+                          "measure",
+                          "amount"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "product",
+                    "claims"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "source_record_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source_receipts": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "sections",
+              "source_record_ids",
+              "source_receipts"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "filing_status",
+          "description": "Read the current engagement filing and its source receipts and delivery status.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-5d16c16d0c1f": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-5d16c16d0c1f\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NMF-LAUNCH-BRIEFING-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Please get Northstar Manufacturing Group's launch briefing ready for delivery and send me the confirmation."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the briefing workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up an approved statement by its exact briefing-section or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a retained source record by its archive record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_review",
+          "description": "File the source review from its approved statement.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "check_id": {
+                "type": "string"
+              },
+              "statement_reference": {
+                "type": "string"
+              },
+              "statement_word_count": {
+                "type": "integer"
+              },
+              "review_status": {
+                "type": "string"
+              },
+              "source_record_id": {
+                "type": "string"
+              },
+              "related_source_record_id": {
+                "type": "string"
+              },
+              "supporting_statement_reference": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "check_id",
+              "statement_reference",
+              "statement_word_count",
+              "review_status",
+              "source_record_id",
+              "related_source_record_id",
+              "supporting_statement_reference"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "publish_briefing",
+          "description": "Publish the customer briefing and its current approved-source exhibit.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "sections": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "product": {
+                      "type": "string"
+                    },
+                    "claims": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "reference": {
+                            "type": "string"
+                          },
+                          "subject": {
+                            "type": "string"
+                          },
+                          "measure": {
+                            "type": "string"
+                          },
+                          "amount": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "reference",
+                          "subject",
+                          "measure",
+                          "amount"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "product",
+                    "claims"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "source_record_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source_receipts": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "sections",
+              "source_record_ids",
+              "source_receipts"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "filing_status",
+          "description": "Read the current engagement filing and its source receipts and delivery status.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-b94bfb3f5fdc": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-b94bfb3f5fdc\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NMF-LAUNCH-BRIEFING-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Please get Northstar Manufacturing Group's launch briefing ready for delivery and send me the confirmation."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the briefing workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up an approved statement by its exact briefing-section or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a retained source record by its archive record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_review",
+          "description": "File the source review from its approved statement.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "check_id": {
+                "type": "string"
+              },
+              "statement_reference": {
+                "type": "string"
+              },
+              "statement_word_count": {
+                "type": "integer"
+              },
+              "review_status": {
+                "type": "string"
+              },
+              "source_record_id": {
+                "type": "string"
+              },
+              "related_source_record_id": {
+                "type": "string"
+              },
+              "supporting_statement_reference": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "check_id",
+              "statement_reference",
+              "statement_word_count",
+              "review_status",
+              "source_record_id",
+              "related_source_record_id",
+              "supporting_statement_reference"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "publish_briefing",
+          "description": "Publish the customer briefing and its current approved-source exhibit.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "sections": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "product": {
+                      "type": "string"
+                    },
+                    "claims": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "reference": {
+                            "type": "string"
+                          },
+                          "subject": {
+                            "type": "string"
+                          },
+                          "measure": {
+                            "type": "string"
+                          },
+                          "amount": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "reference",
+                          "subject",
+                          "measure",
+                          "amount"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "product",
+                    "claims"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "source_record_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source_receipts": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "sections",
+              "source_record_ids",
+              "source_receipts"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "filing_status",
+          "description": "Read the current engagement filing and its source receipts and delivery status.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-3e1c92538589": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-3e1c92538589\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NMF-LAUNCH-BRIEFING-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Please get Northstar Manufacturing Group's launch briefing ready for delivery and send me the confirmation."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the briefing workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up an approved statement by its exact briefing-section or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a retained source record by its archive record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_review",
+          "description": "File the source review from its approved statement.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "check_id": {
+                "type": "string"
+              },
+              "statement_reference": {
+                "type": "string"
+              },
+              "statement_word_count": {
+                "type": "integer"
+              },
+              "review_status": {
+                "type": "string"
+              },
+              "source_record_id": {
+                "type": "string"
+              },
+              "related_source_record_id": {
+                "type": "string"
+              },
+              "supporting_statement_reference": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "check_id",
+              "statement_reference",
+              "statement_word_count",
+              "review_status",
+              "source_record_id",
+              "related_source_record_id",
+              "supporting_statement_reference"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "publish_briefing",
+          "description": "Publish the customer briefing and its current approved-source exhibit.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "sections": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "product": {
+                      "type": "string"
+                    },
+                    "claims": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "reference": {
+                            "type": "string"
+                          },
+                          "subject": {
+                            "type": "string"
+                          },
+                          "measure": {
+                            "type": "string"
+                          },
+                          "amount": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "reference",
+                          "subject",
+                          "measure",
+                          "amount"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "product",
+                    "claims"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "source_record_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source_receipts": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "sections",
+              "source_record_ids",
+              "source_receipts"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "filing_status",
+          "description": "Read the current engagement filing and its source receipts and delivery status.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    }
+  }
+}

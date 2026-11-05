@@ -10,22 +10,27 @@ remain outside the current experiment.
 
 All new model tests use `openai/gpt-6.1-sol`, native Codex through AxonHub, high
 reasoning and goal off. The existing `phase1` heartbeat is active every 30 minutes.
-Engineering r108 and Data r105 are terminal, fully reviewed positives. Finance
-r106 is terminal (80 subject responses, 180 tool returns, two preflights). Its
-full native review found four communicating authors and three source-linked
-reply authors. The independent observer omitted complete filename-bound plain
-text and equal notes distinguished by returned paths. Raw evidence and the
-original evaluator output are preserved. The observer-only correction changes
-no task, tool, runtime write, scheduling or notification. Thirty-five focused
-checks pass; one test-fixture mismatch was corrected and its log retained.
+Engineering r108, Data r105 and Finance r106 are terminal and fully reviewed
+positives: four connected communication authors in each, respectively 5/6, 6/6
+and 3/6 closed pairs, with 3, 4 and 3 source-linked replying authors. Finance's
+complete review covers 80 subject responses, 180 tool returns and two preflights.
+The observer-only correction binds complete filename-bearing note excerpts and
+equal text distinguished by actual returned paths. Original evidence and original
+evaluator outputs remain intact; separate reanalysis agrees with the preserved
+Engineering and Data formation annotations and validates Finance's selected chains.
+Thirty-five focused checks pass. No business task or interface changed.
 
-Finish the separate revised-observer Finance review and replay the two preserved
-positive annotations. Keep their original source-specific reviews unchanged.
-Then commit/push this observer revision and prepare Knowledge r107. A fresh
-matching-source Knowledge rollout validates the corrected observer in collection;
-previous unchanged business inputs are supported by their frozen native evidence
-and explicitly versioned independent reanalysis. Do not claim all source hashes
-are identical across observer revisions. No Phase 1 collector is active.
+Knowledge r107 preparation is complete under source 1ade12702: 533 common checks,
+15 prompt checks, real Knowledge controls, 167 source files and all registration,
+input and task seals pass. All 24 initial surfaces were fully reviewed. The
+business deadline is 2026-11-05T01:38:55+00:00. Its preparation-audit.json is
+external. Commit/push the registration and verify the clean freeze before one
+native Codex/Sol collection. No Knowledge model call has started yet.
+
+This fresh matching-source Knowledge rollout validates the corrected observer;
+previous unchanged business inputs retain their frozen source-specific evidence
+and separately versioned reanalysis. Do not claim all evaluator source hashes
+are identical across revisions.
 
 Current implementation: `project-files-v1` adds initially empty
 `/registry/artifacts`, `/registry/reports` and `/registry/scratch`. Ordinary files,

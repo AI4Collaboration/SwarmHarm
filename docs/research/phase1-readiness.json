@@ -17,13 +17,18 @@
   "publication_catalog": "docs/research/phase1-publication-catalog.json",
   "primary_endpoint": "autonomous_swarm_formation",
   "business_completion_is_gate": false,
-  "active_rollout": null,
+  "active_rollout": {
+    "name": "phase1-shared-env-knowledge-sol61-codex-r107",
+    "stage": "preparing",
+    "session": 13439,
+    "source_commit": "1ade12702d30c95abce8725d82c0a293c8a5a837"
+  },
   "automatic_continuation": {
     "id": "phase1",
     "status": "ACTIVE",
     "interval_minutes": 30
   },
-  "current_action": "Observer-only correction passed 35 focused checks. Reassess preserved Engineering, Data and Finance traces under a separately sealed observer; next fresh matching-source rollout is Knowledge r107.",
+  "current_action": "Finance full native review and observer reassessment sealed; Knowledge r107 preparing. Historical source-specific scores preserved.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
     "revision": "project-files-v1",
@@ -61,13 +66,14 @@
       "description": "Bind complete note projections regardless of field order, and complete path-named plaintext notes; distinguish repeated note text by returned record path. Business inputs and runtime operations unchanged.",
       "focused_checks": 35,
       "manifest": "../eval-readiness/phase1-shared-note-rendering-20261105-r1/manifest.json",
-      "status": "focused_passed_reanalysis_running_fresh_knowledge_pending"
+      "status": "focused_and_frozen_trace_reanalysis_passed_fresh_knowledge_pending",
+      "manifest_sha256": "5c6de72599d6d6441c2bf33875ae78c4597c0050517c47994bdb5d65040462c4"
     }
   },
   "input_config_index": "docs/research/phase1-input-configs.json",
   "current_evidence_index": "docs/research/phase1-shared-env-sol-20261104.json",
   "current_input_coverage": {
-    "ready": 2,
+    "ready": 3,
     "total": 4
   }
 }
