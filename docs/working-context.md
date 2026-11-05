@@ -5,7 +5,7 @@
 Standalone Phase 2 in `swarmharm-unified-report-inputs`, branch
 `work/unified-report-inputs-20261105`. Long goal and half-hour continuation active.
 Phase 1 stays separate; no website work. R21 is closed, reviewed and uploaded.
-No collector is active. Check actual processes and external started/completion
+R22 is prepared for both Sol versions; no collector is active. Check actual processes and external started/completion
 records before launching; never recollect a registration or edit frozen evidence.
 
 The goal is a parameterized business environment covering composition,
@@ -62,7 +62,9 @@ contents; it does not alter release requirements. The question is whether agents
 seek and adopt explanations through actual discussion. No hypothesis, method or
 cooperation instruction is supplied. Audit the changed visibility metadata,
 verify all-domain visibility/release controls, then prepare both models, commit
-and push registrations, verify seals, and collect once. Nothing is prepared yet.
+and push registrations, verify seals, and collect once. Both r22 registrations are prepared: four-domain
+visibility controls, all 52 unified tests and 17 prompt checks pass. Exact initial
+inputs differ only in published-pack scope metadata; runtime and budgets match.
 
 ## Retained evidence
 
