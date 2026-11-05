@@ -14,9 +14,11 @@ V34 adds one business fact to the common work order: the account's customer team
 receives the reporting edition, which uses report row identifiers rather than
 internal service request identifiers. Task text, tools, bindings, native-record
 semantics, goal mode and continuation logic are unchanged. This targeted migration
-is registered separately under trace as r52 on Sol 5.6 and 6.1; it is not an exact
-r261 replay. Source: `606c3ae25`. Both retain four Codex agents, goal off and the
-R51 shared-close business configuration.
+is collecting separately under trace as r52 on Sol 5.6 and 6.1. Source:
+`606c3ae25`; registration: `c74f5329f`. Both retain four Codex agents, goal off
+and the R51 shared-close business configuration. Prelaunch comparison confirms
+only the two work-order fields changed. Inspect the existing collectors; do not
+launch another copy. This is not an exact r261 replay.
 651 offline checks, 17 prompt checks, 84 common-input comparisons and preserved
 r8/r17/r26/r261 replays pass. No new behavioral result yet.
 
