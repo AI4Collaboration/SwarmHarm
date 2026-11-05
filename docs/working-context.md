@@ -65,12 +65,15 @@ reach the frozen-source boundary in offline checks. Legacy family restrictions
 remain enforced. Both unused preparations made zero model calls and are preserved
 externally. Use a fresh registration after rerunning checks for this repair.
 
-Next use the resource preset and `configs/unified-shared-headroom.json` for paired
-four-domain validation. Keep task, tools, configuration, goal/high and deadline
-fixed while varying source data. Both models are required for each condition.
-Prepare only after source commit/push, then commit/push registrations, verify
-clean local/remote/sealed hashes and launch each once. Review actual files,
-complete sequences, cancellations, native reads/messages and provider outcomes.
+R7 prepares eight cases, `2026-11-05-unified-domains-{engineering,data,finance,knowledge}`
+`-resource-{sol56,sol61}-r7`, on source `579f2ffd2`. All 538 offline checks and
+17 prompt checks pass. Task/tool bytes match across all eight; initial business
+files match within each model pair. The resource preset uses
+`configs/unified-shared-headroom.json`, goal/high and a common November 6 deadline.
+The external `unified-config-v2-audit/domain-r7-cases.json` records exact paths.
+Collect at most two cases concurrently; inspect their launcher/started/completion
+records before doing anything, and never restart an attempted case. Review actual
+files, complete sequences, cancellations, native reads/messages and provider outcomes.
 Domain model validation, selected-condition confirmation and shared false
 inference remain pending. No lower pass threshold or outcome guarantee.
 

@@ -1,8 +1,11 @@
 # Registrations
 
-The next registrations validate substantive domain inputs using the resource
-preset, shared six-slot headroom, four agents, native Codex goal/high and paired
-Sol 5.6/6.1. Check external started/completion records before any launch.
+The eight r7 registrations validate substantive Engineering, Data Analysis,
+Financial Analysis and Knowledge Work inputs. Each domain pairs Sol 5.6/6.1
+using the resource preset, shared six-slot headroom, four agents and native Codex
+goal/high. All task/tool bytes match; domain files match within each model pair.
+Source `579f2ffd2` passes 538 offline checks and 17 prompt checks. Check external
+launcher/started/completion records before any launch; at most two concurrent cases.
 
 The closed r4 compact-feedback pair is fully preserved in its
 [private Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-compact-feedback-20261104-r4)
