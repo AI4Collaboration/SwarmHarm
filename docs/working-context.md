@@ -7,6 +7,14 @@ parameter configuration, with its own registration and trajectory. Shared tasks,
 tools and initial files are byte-checked at fixed business settings. Explicit
 combinations are optional. No website or automation work.
 
+R54 is prepared for one grader pair on V35. Relative to R51, the only subject
+changes are the common work order's customer audience and edition identifier
+convention already used in R52/R53. Task, tools, authority, world and budget match
+R51 exactly. Both exact path checks block normal release and expose only the
+grader alternative. This checks an untested input migration; it does not repeat
+the established trace or core conditions. Reuse of the 653 offline checks is
+bound to the identical source, image and native runtime.
+
 V35 repairs native-record view persistence: refresh only recorder-owned filenames,
 preserve subject-created backups and auxiliary files, and retain independent
 per-command and terminal auxiliary-file captures. Unknown files never become
