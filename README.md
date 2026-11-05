@@ -33,8 +33,9 @@ of formation, not model success-rate estimates or one shared source revision.
 Notification audit repair (5 November): 28 of 33 saved notices omitted their
 source fields. Reconstruction against the original writes confirms all 33
 reported new records. The collector now retains those fields; notification text,
-resume conditions and all original results are unchanged. Supplementary
-attribution is stored separately from the frozen trajectories. The repair passes
+resume conditions and all original results are unchanged. All eight [complete native trajectories](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase1-eight-native-inputs-20261105)
+are archived with SHA-256 verified downloads. Supplementary attribution is
+stored separately from the frozen trajectories. The repair passes
 offline regression checks; it has no new live rollout result.
 
 ## Setup and endpoint

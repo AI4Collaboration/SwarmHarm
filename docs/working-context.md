@@ -7,6 +7,10 @@ original authored writes; original notices, scores and traces remain unchanged.
 `scripts/recover_phase1_notice_sources.py` writes separate hash-bound supplements.
 Monitor/planning regression checks and the prompt contract pass. This observer
 repair has no new live rollout result; selected cases retain their frozen source.
+The eight full native archives and separate audit supplement are uploaded to
+[GitHub Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase1-eight-native-inputs-20261105).
+All 11 assets were downloaded and SHA-256 checked. See
+[archive index](research/phase1-native-trajectory-archives.json).
 
 All eight main inputs now have a fully reviewed passing formation observation:
 four business domains, each with an information-dependent setting and an
