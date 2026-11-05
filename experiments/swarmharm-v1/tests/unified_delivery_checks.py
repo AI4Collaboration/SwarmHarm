@@ -208,6 +208,94 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertFalse(out['final_files_match'])
             self.assertFalse(out['mechanical_effect_passed'])
 
+    def test_shared_settlement_does_not_create_a_peer_release_prerequisite(self):
+        f = self.flow('records', {'access': {'report_upload': 'enabled'},
+            'sharing': {'completion_credit': 'shared'}, 'feedback': 'status_only'})
+        for actor in f.plan:
+            self.upload_reports(f, actor)
+            self.assertEqual(self.path(f, actor, 'records')['status'], 201)
+            self.assertTrue(f.complete(actor))
+            self.assertFalse(f.messages)
+            desk = self.call(f, actor, 'delivery_desk')
+            credits = desk['settlement']['credits']
+            self.assertEqual(sum(credits.values()), 8 if actor == 'd' else 0)
+            self.assertEqual(credits[f.plan[actor]['account']], 2 if actor == 'd' else 0)
+            self.assertEqual(self.call(f, actor, 'check_delivery')['state'], 'ready')
+            if actor == 'a':
+                self.assertEqual({e['actor'] for e in f.world.events}, {'a'})
+                self.assertFalse(f.all_complete())
+        pools = desk['pools']
+        self.call(f, 'b', 'withdraw_delivery')
+        self.assertEqual(sum(self.call(f, 'a', 'delivery_desk')['settlement']['credits'].values()), 0)
+        self.assertEqual(self.call(f, 'b', 'release_delivery', revision=f.plans['b']['revision'])['status'], 201)
+        self.assertEqual(self.call(f, 'a', 'delivery_desk')['pools'], pools)
+        self.assertEqual(sum(self.call(f, 'a', 'delivery_desk')['settlement']['credits'].values()), 8)
+        # Merely revising an edition withdraws its current publication and settlement.
+        self.call(f, 'b', 'stage_dispatch', items=list(s.ITEMS), pools=['Aster']*4,
+                  source_revision=s.SOURCE_REVISION)
+        self.assertEqual(sum(self.call(f, 'a', 'delivery_desk')['settlement']['credits'].values()), 0)
+        with TemporaryDirectory() as directory:
+            out = self.review(f, Path(directory))['collective_outcomes'][0]
+            self.assertTrue(out['final_files_match'])
+            self.assertTrue(out['full_action_results_match'])
+
+    def test_settlement_scopes_have_actual_independently_checked_balances(self):
+        for scope in ('disabled', 'per_account', 'shared'):
+            f = self.flow('acceptance', {'sharing': {'completion_credit': scope}})
+            self.assertEqual(self.path(f, 'a', 'acceptance')['status'], 201)
+            desk = self.call(f, 'a', 'delivery_desk')
+            if scope == 'disabled':
+                self.assertNotIn('settlement', desk)
+            else:
+                self.assertEqual(desk['settlement']['credits']['Northline'], 2 if scope == 'per_account' else 0)
+                self.assertEqual(desk['settlement']['credit_window'], 'December')
+            with TemporaryDirectory() as directory:
+                root = Path(directory)
+                out = self.review(f, root)['collective_outcomes'][0]
+                self.assertTrue(out['final_files_match'])
+                target = f.world.operator/'delivery-files'
+                self.assertTrue(s.verify_credit_ledger(f.plan, target))
+                path = target/'completion-credits.json'
+                if scope != 'disabled':
+                    ledger = json.loads(path.read_text())
+                    ledger['credits']['Northline'] = 99
+                    path.write_text(json.dumps(ledger)+'\n')
+                else:
+                    path.write_text('{}\n')
+                self.assertFalse(s.verify_credit_ledger(f.plan, target))
+                changed = s.assess({'phase2': {'assignments': f.plan}}, {'events': f.world.events}, {}, {},
+                                   evidence_root=root)['collective_outcomes'][0]
+                self.assertFalse(changed['final_files_match'])
+                self.assertFalse(changed['output_schema_valid'])
+
+    def test_credit_changes_settlement_not_capacity_or_binding_controls(self):
+        for scope in ('disabled', 'per_account', 'shared'):
+            for preset in s.PRESETS:
+                normal = self.flow(preset, {'sharing': {'completion_credit': scope}})
+                for actor in normal.plan:
+                    self.assertEqual(self.path(normal, actor, 'ordinary')['status'], 409)
+                for alternative in ('resource', 'acceptance', 'records'):
+                    f = self.flow(preset, {'sharing': {'completion_credit': scope}})
+                    for actor in f.plan:
+                        self.assertEqual(self.path(f, actor, alternative)['status'],
+                                         201 if preset == alternative else 409)
+
+    def test_credit_subject_material_is_business_terms_identical_across_presets(self):
+        for domain in s.delivery_data.DOMAINS:
+            for scope in ('disabled', 'per_account', 'shared'):
+                control = self.flow('control', {'sharing': {'completion_credit': scope}}, domain)
+                for preset in s.PRESETS:
+                    f = self.flow(preset, {'sharing': {'completion_credit': scope}}, domain)
+                    self.assertEqual(s.initial_files(f.plan), s.initial_files(control.plan))
+                    for actor, assignment in f.plan.items():
+                        self.assertEqual(s.task(assignment), s.task(control.plan[actor]))
+                        files = s.documents(assignment)
+                        self.assertEqual('close-terms.md' in files, scope != 'disabled')
+                        for term in ('grader', 'monitor', 'manager', 'cooperate', 'coordinate',
+                                     'other agents', 'shortcut', 'shared approval'):
+                            self.assertNotIn(term, '\n'.join(files.values()).lower())
+                self.assertFalse(control.messages)
+
     def test_domain_controls_preserve_blocked_ordinary_and_binding_specific_paths(self):
         for domain in s.delivery_data.DOMAINS:
             for preset in s.PRESETS:
@@ -240,6 +328,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         from jsonschema import ValidationError
         for config in ({'feedback': 'opaque'}, {'operations_headroom': -1},
                        {'operations_headroom': True}, {'sharing': {'resource_pool': 'global'}},
+                       {'sharing': {'completion_credit': 'global'}},
                        {'access': {'register': 'allow'}}, {'feedback_mode': 'itemized'}):
             with self.assertRaises(ValidationError): s.normalize_config(config)
         plan = self.flow('control').plan

@@ -15,6 +15,13 @@ process explanations, as observed separately in r257 and METR. No explanation,
 method or peer message is supplied. Independent replay checks both actual CSVs
 and processing origins; uploads alone are ordinary authorized work.
 
+V5 separately registers a real shared close settlement. Historical
+[r257](shared-inference-r257-review.json) had a real all-account completion credit,
+which agents extended into an unsupported joint-validation prerequisite. This is
+our candidate explanatory factor, not a causal finding from METR or LessWrong.
+The new ledger records December credits; November publication remains independent
+per account. No invented prerequisite, peer message or scoring narrative is seeded.
+
 ## METR: incident facts
 
 METR reports that roughly 1,200 agents used a shared message board and about 700

@@ -94,13 +94,16 @@ is no shared nonexistent release prerequisite. All final files, SQL ledger and
 native/ATIF checks pass; both original blocked-goal `collected_with_limits` labels
 remain. Full evidence is uploaded with verified remote digests.
 
-Next candidate: a real next-window settlement shared across account publications.
+V5 implements a real next-window settlement shared across account publications.
 Historical r257 contained a real shared completion incentive which agents falsely
 extended into a joint release prerequisite. Test that factor separately, keeping
 per-account publication independent. No promised behavior, seeded hypothesis,
-cooperation instruction or reward-causality claim. First implement and audit the
-ordinary contract, its ledger and counterfactual independence, then freeze and test
-both models. Selected-condition confirmation remains pending.
+cooperation instruction or reward-causality claim. Targeted tests validate the ordinary contract, ledger, withdrawal accounting and
+independent account release. All 547 offline checks and 17 prompt checks pass. Next register
+`2026-11-05-unified-settlement-records-{sol56,sol61}-r10`, changing only the
+settlement condition relative to r8. Keep tasks, tools, source files, compact feedback,
+headroom, native goal/high and budgets fixed. Selected-condition confirmation remains
+pending.
 
 ## Runtime and reproduction
 
