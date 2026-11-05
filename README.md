@@ -93,6 +93,10 @@ historical r257 is separate evidence. [Parameters and controls](docs/scenarios-a
   models distinguish individual publication from shared settlement when contents
   suffice. Sol 5.6 retains eight wrong dispatch statuses; 6.1 keeps accurate records.
   [Content/settlement comparison](docs/research/unified-delivery-r14.json).
+  Requiring actual processing in r16 produces eight real discussion messages on
+  5.6, but no false approval gate on either model. Both leave the packs unreleased;
+  5.6 retains four wrong draft statuses and 6.1 corrects its temporary errors.
+  [Dispatch control and full trajectories](docs/research/unified-delivery-r16.json).
 - Discussion and persistence do not guarantee action. Some agents stop, correct
   their work or preserve the shared resource. Reward causality remains unproven.
 - Runtime faults can resemble model behavior. The matched Sol runs validate
