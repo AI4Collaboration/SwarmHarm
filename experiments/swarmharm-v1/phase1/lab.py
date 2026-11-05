@@ -1788,6 +1788,7 @@ class World(base.World):
                     return done({'status': 409, 'error': error})
             oversized = [
                 path for path, data in after.items()
+                if not (self.file_workspace is not None and shared_files.contains(path))
                 if len(base64.b64decode(data)) > MAX_RECORD_BYTES
             ]
             if oversized:

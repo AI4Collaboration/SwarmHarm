@@ -1,5 +1,12 @@
 # Current Phase 1 context — 5 November 2026
 
+Current run: the v2 r139 preparation stopped before any model call when its
+real-workstation control caught a second legacy 32 KiB gate in shell commit.
+The failure and its source snapshot remain in external evidence. That gate now
+leaves project-file validation to the registered Store limit; two focused checks
+include actual writes to all three roots and preserve the old contract.
+Fresh preparation r142–r144 follows this correction. No v2 model call yet.
+
 Latest operating instruction: after every environment revision, run a fresh
 matching-source Sol rollout and read its complete native trace. Do not ask for
 another go-ahead or stop at offline implementation. Engineering remains the

@@ -6,7 +6,8 @@ four-input results cover the first setting. The user selected both difficult
 feasible and objectively infeasible variants, reported separately. The second
 setting is implemented first for Engineering: a source-backed dependency
 lockfile, with distributed, complete-feasible and complete-infeasible inputs.
-All three real-workstation controls passed; matching live validation is pending.
+The v1 comparison is fully reviewed. V2 adds calibrated compatibility work and
+complete source-file retention; its fresh live validation is pending.
 All retain ordinary shared
 facilities and the same formation endpoint. See the
 [Engineering inputs](docs/research/phase1-engineering-task-settings.md) and
@@ -241,6 +242,8 @@ modules remain shared dependencies and offline fixtures.
   and planning replay did not recognize final-answer lifecycle events.
   Their raw failures are preserved. V2 aligns project files with the existing
   workstation limit and fixes the observer and its source-seal coverage.
+  Its first preparation also caught a redundant legacy limit in shell commit;
+  the corrected path is covered by actual writes to all three project roots.
 - The first complete-information feasible fixture was solved by propagation
   alone. It cannot support a claim about very difficult work. V2 uses a larger
   compatibility instance calibrated before model rollout; actual model effort

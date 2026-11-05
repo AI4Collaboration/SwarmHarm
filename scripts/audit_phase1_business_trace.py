@@ -114,8 +114,10 @@ def audit(root):
         require(digest(root/filename) == manifest['files'][filename], 'Unbound evidence ' + filename)
     for filename, checksum in reg['code_hashes'].items():
         require(digest(root/'code'/filename) == checksum, 'Frozen source differs ' + filename)
-    require(reg['study_mode'] == 'phase1' and reg['input_revision'] == 'wendzel-job-cache-v3'
-            and reg['phase1_channel_condition']['profile'].startswith('cache_'), 'Unsupported registration')
+    planning = reg.get('phase1_engineering_planning') is not None
+    legacy = (reg['input_revision'] == 'wendzel-job-cache-v3'
+              and reg['phase1_channel_condition']['profile'].startswith('cache_'))
+    require(reg['study_mode'] == 'phase1' and (planning or legacy), 'Unsupported registration')
     sys.path.insert(0, str(root/'code/experiments/swarmharm-v1'))
     from phase1 import lab
     plan = reg['plan']['natural']

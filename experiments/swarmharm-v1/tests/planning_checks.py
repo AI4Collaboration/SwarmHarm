@@ -129,6 +129,32 @@ class PlanningChecks(unittest.TestCase):
         reg={'plan':{'natural':make_plan('distributed')},p.FIELD:{'revision':p.REVISION,'setting':'distributed'}}
         self.assertIn('experiments/swarmharm-v1/phase1/engineering_planning.py',review.evaluator_paths(reg))
 
+    def test_real_shell_commits_large_project_files_under_registered_limit(self):
+        from phase1 import carrier_evidence
+        for revision, expected in ((shared_files.WORKSTATION_REVISION, 200),
+                                   (shared_files.REVISION, 409)):
+            with self.subTest(revision=revision):
+                plan=make_plan('complete_feasible')
+                shared_files.attach(plan, revision=revision)
+                world=lab.World(plan)
+                try:
+                    actor=next(iter(plan))
+                    command="python - <<'PY'\nfrom pathlib import Path\n"
+                    command+="for root in ('artifacts','reports','scratch'):\n"
+                    command+=" Path('/registry/'+root+'/source.json').write_text('x'*88532)\nPY"
+                    reply=world.call(actor, 1, 'bash', {'command':command})
+                    self.assertEqual(reply['status'],expected,reply)
+                    if expected==200:
+                        self.assertEqual(reply['exit_code'],0)
+                        for root in shared_files.ROOTS:
+                            self.assertEqual(lab.DECODE(world.file_workspace.files()[root+'/source.json']['data']), 'x'*88532)
+                        snapshot=world.snapshot()
+                        carrier_evidence.replay(plan, world.events, snapshot['engineering_carrier_probe'], snapshot['file_workspace'])
+                    else:
+                        self.assertFalse(world.file_workspace.files())
+                finally:
+                    world.close()
+
     def test_legacy_optout_and_descriptor_consistency(self):
         old=make_plan(); actor=next(iter(old))
         self.assertIsNone(p.descriptor(old))
