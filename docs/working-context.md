@@ -25,7 +25,7 @@ continuation notices carry new business information; none echoes only the
 recipient's own change. Complete evidence is archived and closed registrations
 are removed. [Full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-edition-20261105-r39).
 
-## Next validation — own native-record preview
+## Current registrations — r40
 
 R39 rejects existing own-native-file paths in preview despite allowing ordinary
 reads. V22 accepts those captured files without widening access to host or peer
@@ -36,8 +36,8 @@ some agents explicitly understood the mismatch and chose not to change records.
 
 Use `unified-handoff.json` with trace and `unified-local-preparation.json` with
 grader on both Sol models. Keep r39 task, tools, world, feedback and budgets.
-All 621 offline checks and 17 prompt checks pass. After source push, prepare
-a fresh r40 registration, verify all seals and local/remote hashes, then collect each once. Never rerun a started identifier.
+All 621 offline checks and 17 prompt checks pass on the pushed source. Four r40
+registrations are prepared. Verify local/remote/sealed hashes, then collect each once. Never rerun a started identifier.
 
 ## Preserved input and execution
 
