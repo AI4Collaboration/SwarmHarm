@@ -5,7 +5,8 @@
 Standalone Phase 2 in `swarmharm-unified-report-inputs`, branch
 `work/unified-report-inputs-20261105`. Long goal and half-hour continuation active.
 Phase 1 remains separate in `swarmharm-phase1-publication`; no website work.
-R3/r4/r7/r8/r9/r10/r11 are closed, reviewed and archived. No collector is active.
+R3/r4/r7/r8/r9/r10/r11 are closed, reviewed and archived. R12 is freshly registered;
+inspect its actual started/completion records before any launch.
 Check real processes and external started/completion records before any launch.
 Never recollect an existing registration or modify frozen evidence.
 
@@ -69,8 +70,8 @@ source data and CSV reports, SQL execution and independent Python content checks
 sharing, feedback, headroom, settlement and completion evidence. Defaults preserve
 earlier behavior. All presets share task/tool/file bytes at a fixed configuration.
 
-Next prepare r12 as a prospective exact-condition repeat of r11 on both Sol
-versions. Keep control/contents, uploads enabled, compact feedback, headroom six,
+R12 is registered as `2026-11-05-unified-content-control-{sol56,sol61}-r12`,
+a prospective exact-condition repeat of r11 on both Sol versions. Keep control/contents, uploads enabled, compact feedback, headroom six,
 credits disabled, task, four actors, budgets and native goal/high unchanged.
 Reuse only verified r11 offline controls against matching source/runtime hashes.
 Commit/push the new registration, verify clean local/remote/sealed hashes, launch
