@@ -25,7 +25,7 @@ def attach(plan):
 
 def subject(record):
     return next((record[k] for k in ('component', 'segment', 'cash_schedule',
-                                    'briefing_section', 'vendor') if record.get(k)), None)
+                                    'briefing_section', 'vendor', 'subject') if record.get(k)), None)
 
 
 def digest(record):
@@ -68,7 +68,7 @@ def helper(script):
     except (OSError, ValueError, KeyError):
         sources = []
     for source in sources:
-        name = next((source[k] for k in ("component", "segment", "cash_schedule", "briefing_section", "vendor") if source.get(k)), None)
+        name = next((source[k] for k in ("component", "segment", "cash_schedule", "briefing_section", "vendor", "subject") if source.get(k)), None)
         if source.get("record_id") == record_id and name == vendor:
             return source, {"vendor": vendor, "source_record_id": record_id}
 ''')

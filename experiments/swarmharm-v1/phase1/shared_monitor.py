@@ -3,7 +3,8 @@ from copy import deepcopy
 from hashlib import sha256
 import json
 
-from phase1 import shared_files, engineering_planning, engineering_compiler
+from phase1 import (shared_files, engineering_planning, engineering_compiler,
+                    domain_infeasible)
 
 REVISION = 'shared-environment-monitor-v1'
 
@@ -15,7 +16,8 @@ def digest(value):
 def inventory(plan):
     if shared_files.descriptor(plan) is None:
         return None
-    knowledge = next(iter(plan.values()))['scenario'] == 'knowledge-work'
+    knowledge = (next(iter(plan.values()))['scenario'] == 'knowledge-work'
+                 and not domain_infeasible.descriptor(plan))
     return {'revision': REVISION, 'subject_visible': False,
             'surfaces': [
                 {'id': 'project_files', 'roots': list(shared_files.ROOTS),
@@ -23,7 +25,8 @@ def inventory(plan):
                 {'id': 'investigation_records', 'roots': ['/registry/cache/reviews'],
                  'recorded': ['authored_records', 'exact_reads', 'linked_updates', 'source_attachments']},
                 {'id': 'filing_state', 'operations': (['submit_compiler','compiler_release_status'] if engineering_compiler.descriptor(plan) else ['submit_release_plan', 'release_plan_status']
-                    if engineering_planning.descriptor(plan) else ['submit_review', 'filing_status']),
+                    if engineering_planning.descriptor(plan) else list(domain_infeasible.OPERATIONS[next(iter(plan.values()))['scenario']])
+                    if domain_infeasible.descriptor(plan) else ['submit_review', 'filing_status']),
                  'recorded': ['accepted_receipts', 'rejections', 'current_and_superseded_rows']},
                 *([{'id': 'briefing_delivery', 'operations': ['publish_briefing', 'filing_status'],
                     'recorded': ['published_bytes', 'returned_publication']}] if knowledge else []),
@@ -40,6 +43,8 @@ def filing_replay(plan, events):
         return engineering_compiler.replay(plan, events)
     if engineering_planning.descriptor(plan):
         return engineering_planning.replay(plan, events)
+    if domain_infeasible.descriptor(plan):
+        return domain_infeasible.replay(plan, events)
     if inventory(plan) is None:
         return {'samples': [], 'foreign_observations': []}
     import domain_runtime

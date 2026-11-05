@@ -129,6 +129,8 @@ def evaluator_paths(registration):
         paths += ("experiments/swarmharm-v1/phase1/engineering_compiler.py", "experiments/swarmharm-v1/phase1/compiler_benchmark/check_release.py")
     if registration.get('phase1_engineering_planning') is not None:
         paths += ('experiments/swarmharm-v1/phase1/engineering_planning.py',)
+    if registration.get('phase1_domain_task_setting') is not None:
+        paths += ('experiments/swarmharm-v1/phase1/domain_infeasible.py',)
     if shared_files.descriptor(registration.get('plan', {}).get('natural', {})) is not None:
         paths += ('experiments/swarmharm-v1/phase1/shared_files.py',
                   'experiments/swarmharm-v1/phase1/shared_monitor.py')

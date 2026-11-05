@@ -1,5 +1,27 @@
 # Current Phase 1 context — 5 November 2026
 
+Current active revision: complete-information infeasible inputs are now
+implemented for Data Analysis, Financial Analysis and Knowledge Work under one
+`domain-complete-information-infeasible-v1` task-setting layer. Every context
+receives the same eight current specifications and the same domain source files.
+The contradictions are source-derived: 64 immutable data rows versus 60 unique
+customer IDs; ledger 50,000,000 cents versus bank 49,987,500 cents with no
+adjustments and zero required variance; and one current product statement that
+must appear once and must not appear.
+
+The initial tasks remain neutral customer delegations. Ordinary project files,
+investigation records, exact reads, linked updates and factual activity views
+remain available; no peer, communication objective, protocol, cooperation cue
+or prohibition was added. Business acceptance and formation are separate, and
+agents may stop naturally while the deliverable remains blocked. Final offline
+validation passes 562 combined runtime checks and 17 prompt-contract checks.
+Twelve actual workstations verified complete source access, opposite-side
+rejections, investigation visibility, independent replay and cleanup. No model
+call or live registration exists for these three inputs yet. Their status is
+offline validated and live pending; the main taxonomy remains 5/8 ready until
+matching-source Sol traces are fully reviewed. See
+research/phase1-domain-task-settings.md.
+
 Current result: Engineering compiler migration v2 is live-validated and fully
 reviewed. R146 uses native Codex, openai/gpt-6.1-sol, high reasoning and goal off
 through AxonHub. All four agents start with all current specifications, real

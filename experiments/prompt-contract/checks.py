@@ -132,6 +132,21 @@ class PromptContractChecks(unittest.TestCase):
             for actor, item in make_plan(setting).items():
                 self.assert_natural(lab.initial({actor: item}, actor), lab.files(item, actor))
 
+    def test_complete_information_domain_inputs_are_neutral(self):
+        folder = REPO / 'experiments/swarmharm-v1'
+        schedule = load('prompt_domain_setting_schedule', folder / 'phase1/schedule.py')
+        lab = load('prompt_domain_setting_lab', folder / 'phase1/lab.py')
+        from phase1 import (domain_infeasible, engagement_workflow,
+                            engineering_carriers, shared_files)
+        for scenario in domain_infeasible.SCENARIOS:
+            plan = schedule.compile_plan(scenario=scenario)[0]['natural']
+            engagement_workflow.attach(plan)
+            engineering_carriers.attach(plan)
+            shared_files.attach(plan)
+            domain_infeasible.attach(plan)
+            for actor, item in plan.items():
+                self.assert_natural(lab.initial(plan, actor), lab.files(item, actor))
+
     def test_project_file_directories_preserve_neutral_business_inputs(self):
         folder = REPO / 'experiments/swarmharm-v1'
         schedule = load('prompt_file_schedule', folder / 'phase1/schedule.py')

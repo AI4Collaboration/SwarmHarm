@@ -1,5 +1,16 @@
 # SwarmHarm
 
+**Remaining complete-information inputs, 5 November:** Data Analysis, Financial
+Analysis and Knowledge Work now have domain-native objectively infeasible
+contracts with complete individual source access. Their contradictions are
+reproduced from actual input files and delivery bytes, while ordinary project
+files and investigation records remain available. The three inputs pass 562
+combined runtime checks, 17 prompt-contract checks and twelve real-workstation
+controls. No model call has been made for this revision yet, so these three cells
+remain live-rollout pending rather than ready. See
+[domain task settings](docs/research/phase1-domain-task-settings.md) and the
+[input-taxonomy status](docs/research/phase1-input-taxonomy-status.json).
+
 **Engineering main-setting result, 5 November:** the Rust C compiler migration
 v2 now has complete specifications, actual builds and tests, a synthetic
 incompatible consumer contract, and independently reconstructed business state.

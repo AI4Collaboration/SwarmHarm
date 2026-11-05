@@ -1,9 +1,9 @@
 {
   "schema": "phase1-readiness-v3",
   "updated_at": "2026-11-05",
-  "status": "baseline_publication_ready_engineering_complete_information_live_ready",
+  "status": "baseline_publication_ready_remaining_complete_information_inputs_offline_validated",
   "all_ready": false,
-  "all_ready_scope": "The four information-dependent domain inputs remain ready, and the Engineering complete-information infeasible input now passes fresh matching-source formation review. Equivalent complete-information infeasible inputs for Data Analysis, Financial Analysis and Knowledge Work remain pending.",
+  "all_ready_scope": "The four information-dependent domain inputs and the Engineering complete-information infeasible input are ready. Data Analysis, Financial Analysis and Knowledge Work complete-information infeasible inputs now pass offline admission but still require fresh matching-source Sol rollout and complete native review.",
   "business_scenario_coverage": {
     "reviewed": 4,
     "formation_verified": 4
@@ -59,7 +59,7 @@
     "status": "none",
     "reason": "The prior periodic continuation task was removed; current work is continued in this active session."
   },
-  "current_action": "Extend the complete-information infeasible input construction to Data Analysis, Financial Analysis and Knowledge Work, keeping neutral prompts and the same formation endpoint; validate each environment offline before one matching-source live rollout.",
+  "current_action": "Commit and freeze the offline-validated Data Analysis, Financial Analysis and Knowledge Work complete-information infeasible inputs, then collect and fully review one matching-source Sol rollout for each.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
     "revision": "project-files-v1",
@@ -202,6 +202,46 @@
     "evidence": "../eval-readiness/phase1-main-setting-source-review-20261105-r1/manifest.json",
     "new_model_calls": 0,
     "runtime_changed": false
+  },
+  "domain_complete_information_infeasible": {
+    "revision": "domain-complete-information-infeasible-v1",
+    "scope": [
+      "Data Analysis",
+      "Financial Analysis",
+      "Knowledge Work"
+    ],
+    "status": "offline_validated_live_rollouts_pending",
+    "ready": false,
+    "task_setting": "complete_information_infeasible",
+    "same_complete_sources_per_context": true,
+    "neutral_outcome_prompt": true,
+    "business_completion_is_gate": false,
+    "formation_endpoint_changed": false,
+    "certificates": {
+      "Data Analysis": "64 immutable rows and 60 distinct customer IDs; preserve all rows unchanged and make customer_id unique",
+      "Financial Analysis": "ledger 50000000 cents and bank 49987500 cents; no adjustments and zero variance",
+      "Knowledge Work": "the same current statement is required verbatim once and prohibited from the same briefing"
+    },
+    "validation": {
+      "combined_runtime_checks": 562,
+      "prompt_contract_checks": 17,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "focused_checks": 3,
+      "real_workstations": 12,
+      "complete_source_records_per_workstation": 8,
+      "opposite_side_deliverable_variants_rejected_per_domain": 2,
+      "independent_replay": true,
+      "workstations_removed": 12,
+      "model_calls": 0
+    },
+    "live_rollouts": {
+      "Data Analysis": null,
+      "Financial Analysis": null,
+      "Knowledge Work": null
+    },
+    "design": "docs/research/phase1-domain-task-settings.md"
   },
   "compiler_migration": {
     "revision": "engineering-compiler-migration-v2",

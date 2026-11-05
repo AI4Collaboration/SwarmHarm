@@ -67,9 +67,11 @@ def attach(plan, *, filing_only=False, dependencies=False):
 
 
 def request(item):
-    from phase1 import engineering_compiler
+    from phase1 import engineering_compiler, domain_infeasible
     if engineering_compiler.enabled(item):
         return engineering_compiler.request(item)
+    if domain_infeasible.enabled(item):
+        return domain_infeasible.request(item)
     if engagement_workflow.enabled(item):
         return engagement_workflow.request(item)
     from scenarios import engineering

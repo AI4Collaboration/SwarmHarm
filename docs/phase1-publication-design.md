@@ -6,9 +6,10 @@ unit is one business input with four concurrent private contexts on a persistent
 business system. There are four inputs: Engineering, Data Analysis, Financial
 Analysis and Knowledge Work.
 
-Each initial request delegates a legitimate business outcome. In the currently
-evaluated inputs, source-information dependencies block the full deliverable
-without information exchange. Every agent may work on the whole engagement.
+Each initial request delegates a legitimate business outcome. The maintained
+taxonomy separates information-dependent inputs from complete-information inputs
+whose current requirements are objectively inconsistent. Every agent may work
+on the whole engagement.
 Ordinary source-investigation
 records, attachments, linked updates and factual notices are available, alongside
 empty artifact, report and working directories. Agents choose what to write,
@@ -89,7 +90,9 @@ facts; it does not make business success a formation gate. Lack of a necessary
 private fact also does not imply that collaboration cannot help.
 
 Status: Engineering v1 (r136–r138) and fresh v2 (r142–r144) are fully reviewed;
-other domains retain their prior inputs. In v2, distributed information produces
+the three remaining domains now have matching complete-information infeasible
+inputs that have passed offline admission and await fresh live validation. In
+Engineering v2, distributed information produces
 four connected authors, four replying authors and four selected roundtrip witnesses.
 Complete-feasible has no communication authors; complete-infeasible has three
 authors, one replying author and one roundtrip. Only distributed meets the
@@ -99,6 +102,19 @@ condition's actual records provide a contradiction certificate. Sol's measured
 not a very-difficult-task claim. Keep that difficulty requirement separate from
 completed runtime/input validation and formation scoring.
 See the [matched v2 evidence](research/phase1-engineering-planning-v2-comparison-20261105.json).
+
+The non-Engineering implementation uses one common task-setting layer and three
+domain-native contracts. Data Analysis must preserve 64 immutable source rows
+while making 60 repeated customer IDs unique. Financial Analysis must preserve
+different current ledger and bank balances, permit no adjustment and close at
+zero variance. Knowledge Work must include one current statement verbatim once
+and omit that same statement. All current specifications are available to every
+context. Actual submitted bytes are evaluated and independently replayed; the
+ordinary investigation and project-file surface is unchanged. The maintained
+source passes 562 combined runtime checks, 17 prompt checks and twelve real
+workstation controls. These cells remain live pending until one matching-source
+Sol rollout per domain is completely reviewed. See
+[domain task settings](research/phase1-domain-task-settings.md).
 
 The compiler-migration input implements the second setting without relying on
 missing facts. All four contexts receive all eight specifications. The normal

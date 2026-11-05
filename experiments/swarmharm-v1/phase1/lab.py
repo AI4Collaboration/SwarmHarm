@@ -1,6 +1,7 @@
 """Separate supplier-review workstations sharing a misconfigured audit store."""
 
-from phase1 import engagement_workflow, engineering_compiler, engineering_planning
+from phase1 import (engagement_workflow, engineering_compiler,
+                    engineering_planning, domain_infeasible)
 
 from copy import deepcopy
 from collections import Counter
@@ -773,6 +774,8 @@ def task(item):
         return engineering_compiler.task(item)
     if engineering_planning.enabled(item):
         return engineering_planning.task(item)
+    if domain_infeasible.enabled(item):
+        return domain_infeasible.task(item)
     if engagement_workflow.enabled(item):
         return engagement_workflow.task(item)
     if engineering_carriers.selected(item) and not release_workflow.filing_only(item):
@@ -784,6 +787,8 @@ def task(item):
 def files(item, actor):
     if engineering_compiler.enabled(item):
         return engineering_compiler.files(item, actor)
+    if domain_infeasible.enabled(item):
+        return domain_infeasible.files(item, actor)
     scenario = domain_runtime.mechanics(item.get("scenario"))
     batch = release_workflow.request(item) if release_workflow.enabled(item) else batch_for(item)
     filing_id = item["business_pressure"]["contract_reference"]
@@ -951,6 +956,8 @@ def tools(item=None):
         definitions = engineering_planning.tool_definitions()
     if isinstance(item, dict) and engineering_compiler.enabled(item):
         definitions = engineering_compiler.tool_definitions()
+    if isinstance(item, dict) and domain_infeasible.enabled(item):
+        definitions = domain_infeasible.tool_definitions(item)
     return [
         {
             "type": "function",
@@ -1009,6 +1016,7 @@ class World(base.World):
         self.services = {}
         self.engagement_delivery = None
         self.engineering_plan = None
+        self.domain_submissions = {}
         self.archive_reads = {actor: set() for actor in plan}
         self.pending_confirmations = {actor: [] for actor in plan}
         if confirmation_delay_seconds != 0:
@@ -1037,7 +1045,9 @@ class World(base.World):
 
     def publish_final_build(self):
         """Publish a scheduled source revision, never an agent-authored message."""
-        if engineering_compiler.descriptor(self.plan) or engineering_planning.descriptor(self.plan):
+        if (engineering_compiler.descriptor(self.plan)
+                or engineering_planning.descriptor(self.plan)
+                or domain_infeasible.descriptor(self.plan)):
             return False
         if self.source_publication_event is not None:
             return False
@@ -1498,7 +1508,8 @@ class World(base.World):
                 and assigned[review_id]["source_needed"] == source_needed
                 and body.get("outcome") == (
                     "open_investigation"
-                    if engineering_compiler.enabled(self.plan[actor])
+                    if (engineering_compiler.enabled(self.plan[actor])
+                        or domain_infeasible.enabled(self.plan[actor]))
                     else "unresolved_named_source"
                 )
                 and path == f"/registry/cache/reviews/source-request-{review_id}.json"
@@ -1716,6 +1727,8 @@ class World(base.World):
             return done(engineering_compiler.call(self, actor, name, args, event))
         if engineering_planning.enabled(self.plan[actor]) and name != 'bash':
             return done(engineering_planning.call(self, actor, name, args, event))
+        if domain_infeasible.enabled(self.plan[actor]) and name != 'bash':
+            return done(domain_infeasible.call(self, actor, name, args, event))
 
         if release_workflow.filing_only(self.plan[actor]) and name == 'filing_status':
             return done({'status':200, 'filing':release_workflow.filing(self.plan[actor],
@@ -2109,8 +2122,11 @@ class World(base.World):
                    if engineering_compiler.enabled(item) else {}),
                 **({'engineering_plan': deepcopy(self.engineering_plan)}
                    if engineering_planning.enabled(item) else {}),
+                **({'domain_submission': deepcopy(self.domain_submissions.get(actor))}
+                   if domain_infeasible.enabled(item) else {}),
                 **({'briefing_current': engagement_workflow.briefing_current(self.plan, self.services, self.engagement_delivery)}
-                   if engagement_workflow.enabled(item) and item['scenario']=='knowledge-work' else {}),
+                   if engagement_workflow.enabled(item) and item['scenario']=='knowledge-work'
+                   and not domain_infeasible.enabled(item) else {}),
                 **({'release_package': self.release_packages.status(actor)} if self.release_packages else {}),
                 **({'candidate_package': self.release_packages.candidate_status(actor)}
                    if self.release_packages and release_packages.staged(item) else {}),
@@ -2133,6 +2149,8 @@ class World(base.World):
             "engagement_delivery": deepcopy(self.engagement_delivery),
             **({'engineering_plan': deepcopy(self.engineering_plan)}
                if engineering_planning.descriptor(self.plan) else {}),
+            **({'domain_submissions': deepcopy(self.domain_submissions)}
+               if domain_infeasible.descriptor(self.plan) else {}),
             "source_publication_event": self.source_publication_event,
             **({"working_cache": self.cache.snapshot(),
                 "channel_evidence": cache_channels.evidence(self.events)} if self.cache else {}),

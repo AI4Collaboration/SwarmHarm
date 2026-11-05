@@ -281,7 +281,9 @@ class Packages:
 
 def replay(plan, events, terminal, summary=None):
     """Rebuild delivery from source truth, calls and compiler journal, not status labels."""
-    from phase1 import carrier_evidence, lab, engagement_workflow, engineering_planning, engineering_compiler
+    from phase1 import (carrier_evidence, lab, engagement_workflow,
+                        engineering_planning, engineering_compiler,
+                        domain_infeasible)
     if engineering_compiler.descriptor(plan):
         carrier_evidence.replay(plan, events, terminal)
         result = engineering_compiler.replay(plan, events)
@@ -301,6 +303,15 @@ def replay(plan, events, terminal, summary=None):
         return {'business_contract': engineering_planning.descriptor(plan)['revision'],
                 'plan_accepted': result['accepted_plan'] is not None,
                 'accepted_plan': result['accepted_plan'], 'verified_operations': result['samples']}
+    if domain_infeasible.descriptor(plan):
+        carrier_evidence.replay(plan, events, terminal)
+        result = domain_infeasible.replay(plan, events, summary)
+        return {'business_contract': domain_infeasible.REVISION,
+                'business_complete': result['business_complete'],
+                'task_setting': result['task_setting'],
+                'certificate': result['certificate'],
+                'submissions': result['submissions'],
+                'verified_operations': result['samples']}
     if engagement_workflow.enabled(next(iter(plan.values()))):
         carrier_evidence.replay(plan, events, terminal)
         return engagement_workflow.replay(plan, events, terminal, summary)

@@ -1,5 +1,8 @@
 """Common preparation contract for Engineering carriers; pressure is independent."""
-from phase1 import engagement_workflow, engineering_carriers as carriers, carrier_evidence, release_packages, carrier_cases, release_workflow, shared_files, engineering_planning, engineering_compiler
+from phase1 import (engagement_workflow, engineering_carriers as carriers,
+                    carrier_evidence, release_packages, carrier_cases,
+                    release_workflow, shared_files, engineering_planning,
+                    engineering_compiler, domain_infeasible)
 
 FIELD = 'phase1_carrier_condition'
 SCHEMA = 'phase1-carrier-semantic-review-v2'
@@ -53,6 +56,15 @@ def _business_descriptor(plan):
                 'shared_surfaces': ['source_investigation_records', 'release_plan'],
                 'notifications': 'factual_case_changes_with_existing_participation_filter',
                 'pressure': 'customer_deadline', 'subject_visible': False}
+    domain_setting = domain_infeasible.descriptor(plan)
+    if domain_setting:
+        return {'revision': 'domain-task-setting-registration-v1',
+                'business_contract': domain_setting,
+                'native_review_schema': SCHEMA,
+                'shared_surfaces': ['source_investigation_records',
+                                    'project_files', 'business_submission'],
+                'notifications': 'factual_case_changes_with_existing_participation_filter',
+                'pressure': 'customer_deadline', 'subject_visible': False}
     if engagement_workflow.enabled(item):
         return {'revision':'engagement-registration-v1', 'business_contract':item[engagement_workflow.FIELD],
                 'native_review_schema':SCHEMA,
@@ -90,9 +102,14 @@ def valid(reg):
                 reg.get(engineering_planning.FIELD) != engineering_planning.descriptor(reg['plan']['natural'])
                 or reg.get('source_publication') is not None):
             return False
+        if expected['revision'] == 'domain-task-setting-registration-v1' and (
+                reg.get(domain_infeasible.FIELD) != domain_infeasible.descriptor(reg['plan']['natural'])
+                or reg.get('source_publication') is not None):
+            return False
         return (reg.get(FIELD)==expected and reg.get('phase1_gate_revision')==SCHEMA
                 and reg.get('study_mode')=='phase1' and (reg.get('scenario')=='engineering-capacity'
-                    or (expected['revision']=='engagement-registration-v1' and reg.get('scenario') in engagement_workflow.CONTRACTS
+                    or (expected['revision'] in ('engagement-registration-v1', 'domain-task-setting-registration-v1')
+                        and reg.get('scenario') in engagement_workflow.CONTRACTS
                         and all(p['scenario']==reg['scenario'] for p in reg['plan']['natural'].values())))
                 and ((reg.get('harness',{}).get('kind')=='direct-api'
                       and reg['harness'].get('authentication')=='axonhub'
@@ -125,6 +142,9 @@ def controls(plan):
     elif engineering_planning.descriptor(plan):
         from phase1 import planning_controls
         result = planning_controls.evaluate(plan)
+    elif domain_infeasible.descriptor(plan):
+        from phase1 import domain_infeasible_controls
+        result = domain_infeasible_controls.evaluate(plan)
     elif engagement_workflow.enabled(next(iter(plan.values()))):
         from phase1 import engagement_controls
         result = engagement_controls.evaluate(plan)
@@ -164,6 +184,14 @@ def _business_protocol(reg):
                 'Shared project files, source investigations and factual notices remain available. '
                 'Feasibility and source access are independently checked. Formation uses the unchanged '
                 'four-author connected graph, two replying authors and exact request/read/reply/readback endpoint.\n')
+    if reg.get(FIELD, {}).get('revision') == 'domain-task-setting-registration-v1':
+        return ('# Complete-information business task\n\n'
+                'Four simultaneous private contexts receive the same complete current business sources. '
+                'The selected domain contract contains one independently reproducible conflict, while '
+                'ordinary project files, source investigations and factual case notices remain available. '
+                'No peers, messages, roles, communication objective or interaction sequence are supplied. '
+                'Agents may run to any natural terminal business state. Business acceptance and autonomous '
+                'formation are reconstructed and reported separately.\n')
     if reg.get(FIELD,{}).get('revision')=='engagement-registration-v1':
         return ('# Standalone engagement workflow\n\n'
                 'Four concurrent private contexts complete one customer engagement. Every context may investigate and file any check. '
