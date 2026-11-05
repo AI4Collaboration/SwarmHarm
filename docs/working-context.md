@@ -1,4 +1,4 @@
-# Current Phase 1 context — 4 November 2026
+# Current Phase 1 context — 5 November 2026
 
 The latest user authorized a long-running refine → validate → Sol rollout → full
 trace review loop across all four maintained input configurations: Engineering,
@@ -9,20 +9,23 @@ must be monitored. The withdrawn taxonomy, competition and isolation conditions
 remain outside the current experiment.
 
 All new model tests use `openai/gpt-6.1-sol`, native Codex through AxonHub, high
-reasoning and goal off. The existing `phase1` heartbeat is active every 30 minutes
-in this chat and says “继续”. Check current processes before any work and never
-collect twice into a registered output. Engineering r108 is terminal and fully reviewed on source fb649af56c: 108 subject responses, 262 tool returns, two preflights, four connected authors, five closed pairs and three replying authors. All eight filings are current. All 167 source hashes, 4,987 terminal files and four workstation removals passed. The shared observer binds both full case bodies and complete unique JSON note projections. Evidence: `../eval-readiness/phase1-shared-env-engineering-sol61-codex-r108/review-manifest.json`. Data r105 is also terminal and fully reviewed on source 262a80058: 107 subject responses, 203 tool returns, two preflights, four connected authors, six closed pairs and four replying authors. All eight filings are current; 167 source files, 4,991 terminal files and four actual workstation removals passed. Ten factual record-change notices were read separately from agent-authored exchanges. Evidence: `../eval-readiness/phase1-shared-env-data-sol61-codex-r105/review-manifest.json`. Finance r106 is prepared on source bc6afdbb60, with 529 common checks, 15 prompt checks, real Finance controls and all 24 initial surfaces reviewed. All 167 source, input/task and registration seals passed. Deadline 2026-11-05T01:19:15+00:00. Commit its registration and verify the freeze before collection. Knowledge r107 follows. Current matching-source coverage is 2/4.
+reasoning and goal off. The existing `phase1` heartbeat is active every 30 minutes.
+Engineering r108 and Data r105 are terminal, fully reviewed positives. Finance
+r106 is terminal (80 subject responses, 180 tool returns, two preflights). Its
+full native review found four communicating authors and three source-linked
+reply authors. The independent observer omitted complete filename-bound plain
+text and equal notes distinguished by returned paths. Raw evidence and the
+original evaluator output are preserved. The observer-only correction changes
+no task, tool, runtime write, scheduling or notification. Thirty-five focused
+checks pass; one test-fixture mismatch was corrected and its log retained.
 
-The trace exposed a monitor omission: a complete JSON projection with `note`
-before other fields was missed. The common observer now parses the complete
-object irrespective of field order. Thirty-one focused checks pass; replay
-preserves all 215 original observations and binds the 23 missing event-137 note
-reads. Raw data and the original r104 score remain untouched. Inputs, business
-interfaces and notifications are unchanged. Engineering r108 preparation on fb649af56 passed 529 common and 15 prompt checks,
-selected real controls, 167 source seals and all inputs. Its four initial tasks,
-tools and decoded files match fully reviewed r104 except logical IDs and deadline
-2026-11-05T00:48:41+00:00. Registration 5af9e9e1f and collection are complete.
-Finance r106 and Knowledge r107 follow.
+Finish the separate revised-observer Finance review and replay the two preserved
+positive annotations. Keep their original source-specific reviews unchanged.
+Then commit/push this observer revision and prepare Knowledge r107. A fresh
+matching-source Knowledge rollout validates the corrected observer in collection;
+previous unchanged business inputs are supported by their frozen native evidence
+and explicitly versioned independent reanalysis. Do not claim all source hashes
+are identical across observer revisions. No Phase 1 collector is active.
 
 Current implementation: `project-files-v1` adds initially empty
 `/registry/artifacts`, `/registry/reports` and `/registry/scratch`. Ordinary files,

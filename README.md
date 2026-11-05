@@ -217,6 +217,12 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Finance r106 exposed an observer omission: complete file-named plain-text notes
+  and equal note text with distinct returned paths were not attributed by the
+  independent replay. Bind complete returned text to its pre-call source record;
+  retain the original evaluator result and identify the correction as reanalysis.
+  This changes measurement, not subject inputs or the business workflow.
+
 - Knowledge native r101-r103: Sol, Terra and Luna satisfy connected formation.
   Sol has4/6 closed pairs and three replying authors; Terra and Luna have6/6
   and three replying authors each. Full closure happened in those two observed

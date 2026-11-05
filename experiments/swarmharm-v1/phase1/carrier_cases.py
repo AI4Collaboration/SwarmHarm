@@ -5,6 +5,7 @@ bytes in the carrier store. Complete returned bodies or unique complete notes es
 notifications and snapshot hydration alone are not semantic deliveries.
 """
 import base64
+import ast
 from datetime import datetime
 from hashlib import sha256
 import json
@@ -137,6 +138,68 @@ def returned_objects(streams):
     return found
 
 
+def path_bound_notes(streams, bodies):
+    """Bind complete note projections to their printed record paths.
+
+    Equal notes in two records are distinguishable when the returned object or
+    text line names one actual record. Plain text must contain the complete note;
+    any surrounding author/source fields must agree with that record. This is an
+    evidence reader, not an operation or formatting requirement for subjects.
+    """
+    found = set()
+    names = {}
+    for path in bodies:
+        for name in (path, path.rsplit('/', 1)[-1]):
+            names.setdefault(name, set()).add(path)
+    aliases = {'record': 'source_record_id', 'lookup': 'exact_lookup',
+               'check': 'review_id', 'author': 'recorded_by'}
+    source_fields = ('source_record_id', 'locator_record_id', 'exact_lookup')
+    for encoded in returned_objects(streams):
+        value = json.loads(encoded)
+        if not isinstance(value, dict) or not isinstance(value.get('path'), str):
+            continue
+        paths = names.get(value['path'], set())
+        if len(paths) != 1:
+            continue
+        path = next(iter(paths)); body = bodies[path]
+        if not isinstance(body.get('note'), str) or not body['note'] or value.get('note') != body['note']:
+            continue
+        fields = {**{key: key for key in (*source_fields, 'review_id', 'recorded_by')}, **aliases}
+        if all(key not in value or value[key] == body.get(field) for key, field in fields.items()):
+            found.add(path)
+    for stream in streams:
+        for line in stream.splitlines():
+            name, separator, tail = line.strip().partition(' ')
+            paths = names.get(name, set())
+            if not separator or len(paths) != 1:
+                continue
+            path = next(iter(paths)); body = bodies[path]; note = body.get('note')
+            if not isinstance(note, str) or not note or '\n' in note:
+                continue
+            tail = tail.lstrip()
+            author = body.get('recorded_by')
+            if isinstance(author, str) and tail.startswith(author + ' '):
+                tail = tail[len(author):].lstrip()
+            if not tail.startswith(note):
+                continue
+            rest = tail[len(note):]
+            if rest and not rest[0].isspace():
+                continue
+            rest = rest.strip()
+            expected = ' '.join(str(body.get(key) or '') for key in ('source_record_id', 'exact_lookup')).strip()
+            if rest in ('', expected):
+                found.add(path)
+                continue
+            try:
+                metadata = ast.literal_eval(rest)
+            except (ValueError, SyntaxError):
+                continue
+            if (isinstance(metadata, dict) and set(metadata) <= set(source_fields)
+                    and all(value == body.get(key) for key, value in metadata.items())):
+                found.add(path)
+    return found
+
+
 def replay(config, plan, events, terminal=None):
     """Rebuild real case bytes and exact shell reads, without trusting read tags."""
     def require(value, message):
@@ -164,6 +227,10 @@ def replay(config, plan, events, terminal=None):
             streams = [e['result'].get(k, '') for k in ('stdout','stderr')]
             notes = returned_notes(streams)
             objects = returned_objects(streams) if not e['result'].get('output_truncated') else set()
+            bodies = {path: json.loads(base64.b64decode(item['record']['data']))
+                      for path, item in visible.items()}
+            bound_notes = (path_bound_notes(streams, bodies)
+                           if not e['result'].get('output_truncated') else set())
             note_paths = {}
             for path,item in visible.items():
                 body = json.loads(base64.b64decode(item['record']['data']))
@@ -181,8 +248,8 @@ def replay(config, plan, events, terminal=None):
                     feature = 'case_record_body'
                 else:
                     note = json.loads(raw).get('note')
-                    if (isinstance(note, str) and note in notes
-                            and note_paths[note] == [path]):
+                    if (path in bound_notes or (isinstance(note, str) and note in notes
+                            and note_paths[note] == [path])):
                         feature = 'case_record_note'
                 if feature:
                     observations.append({'carrier':'data_object','feature':feature,

@@ -1,6 +1,6 @@
 {
   "schema": "phase1-readiness-v3",
-  "updated_at": "2026-11-04",
+  "updated_at": "2026-11-05",
   "status": "current_inputs_live_pending",
   "all_ready": false,
   "all_ready_scope": "Current project-files-v1 environment; frozen comparison results remain separately reported.",
@@ -17,18 +17,13 @@
   "publication_catalog": "docs/research/phase1-publication-catalog.json",
   "primary_endpoint": "autonomous_swarm_formation",
   "business_completion_is_gate": false,
-  "active_rollout": {
-    "name": "phase1-shared-env-finance-sol61-codex-r106",
-    "stage": "prepared",
-    "session": 35686,
-    "source_commit": "bc6afdbb60eca329ed0608497fc88ada883cb07a"
-  },
+  "active_rollout": null,
   "automatic_continuation": {
     "id": "phase1",
     "status": "ACTIVE",
     "interval_minutes": 30
   },
-  "current_action": "Finance r106 inputs and controls reviewed; commit registration, verify freeze, then collect once.",
+  "current_action": "Observer-only correction passed 35 focused checks. Reassess preserved Engineering, Data and Finance traces under a separately sealed observer; next fresh matching-source rollout is Knowledge r107.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
     "revision": "project-files-v1",
@@ -63,9 +58,10 @@
       "manifest_sha256": "12553f673e9892286caf4a97c293e953de60cf80a32313405821a1be89ef9bc7"
     },
     "observer_correction": {
-      "description": "Read complete note projections regardless of JSON field order. Subject interfaces and prompts unchanged.",
-      "focused_checks": 31,
-      "manifest": "../eval-readiness/phase1-shared-note-projections-20261104-r1/manifest.json"
+      "description": "Bind complete note projections regardless of field order, and complete path-named plaintext notes; distinguish repeated note text by returned record path. Business inputs and runtime operations unchanged.",
+      "focused_checks": 35,
+      "manifest": "../eval-readiness/phase1-shared-note-rendering-20261105-r1/manifest.json",
+      "status": "focused_passed_reanalysis_running_fresh_knowledge_pending"
     }
   },
   "input_config_index": "docs/research/phase1-input-configs.json",
