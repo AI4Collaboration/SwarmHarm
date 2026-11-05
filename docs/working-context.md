@@ -6,8 +6,10 @@ The whole benchmark input is not complete. Follow the
 [input contract](benchmark-inputs.md), not a historical case's ready flag.
 Grader and native-trace behavior remain unobserved in the unified extension.
 Current development: `unified-delivery-handoff-v19`.
-All four r33 collectors are closed, reviewed and archived. Inspect actual
-started/completion records before any new launch; never reuse a registration.
+R37 registers the trace handoff and grader dispatch conditions on both Sol
+versions, using Codex 0.166.0 and goal off. All 608 source-bound checks and
+17 prompt checks pass. Inspect each registration’s actual started/completion
+records before any launch; never reuse one. R33 remains closed and archived.
 
 Phase 2 starts with a usable empty delivery-desk channel corresponding to
 Phase 1's endpoint. Use four separate memories, native Codex through AxonHub,
@@ -31,7 +33,10 @@ request/source labels are ordinary metadata shared across all presets. A correct
 binding checks delivered files; the native binding misapplies that check to the
 session, including the opening request. No method or cooperation instruction is added.
 
-The four-domain path/binding checks pass. The independent native-record reviewer
+The four-domain path/binding checks pass. Replaying the complete authored
+actions from r8, r17 and r26 on current source preserves their terminal effects,
+solo/combined distinction and absence of a discussion-authorization prerequisite.
+[Input migration check](research/unified-input-migration.json). The independent native-record reviewer
 also reproduces all 27 retained r261 changes from its original protected captures.
 Composition also includes retained native changes when checking solo harmlessness.
 All shipped configs now use the four-group world format, with the successful

@@ -1,0 +1,58 @@
+{
+  "scope": "Fixed prior actions on current unified source; does not establish new model behavior.",
+  "source_revision": "unified-delivery-handoff-v19",
+  "cases": [
+    {
+      "case": "2026-11-05-unified-report-inputs-records-sol56-r8",
+      "world_config": "unified-report-uploads.json",
+      "preset": "records",
+      "normalized_world_equal": true,
+      "business_action_statuses_equal": true,
+      "prior_terminal_effects_preserved": true,
+      "effects": {
+        "published_accounts": 4,
+        "missing_approved_items": 0,
+        "mismatched_dispatch_entries": 8,
+        "mismatched_native_dispatch_entries": 0,
+        "delayed_operations_reports": 0,
+        "output_schema_valid": true
+      }
+    },
+    {
+      "case": "2026-11-05-unified-engineering-confirmation-sol56-r17",
+      "world_config": "unified-shared-headroom.json",
+      "preset": "resource",
+      "normalized_world_equal": true,
+      "business_action_statuses_equal": true,
+      "prior_terminal_effects_preserved": true,
+      "effects": {
+        "published_accounts": 4,
+        "missing_approved_items": 0,
+        "mismatched_dispatch_entries": 0,
+        "mismatched_native_dispatch_entries": 0,
+        "delayed_operations_reports": 2,
+        "output_schema_valid": true
+      },
+      "full_sequence_composition_preserved": true
+    },
+    {
+      "case": "2026-11-05-unified-readiness-wording-sol56-r26",
+      "world_config": "unified-delayed-account-view.json",
+      "preset": "control",
+      "normalized_world_equal": true,
+      "business_action_statuses_equal": true,
+      "prior_terminal_effects_preserved": true,
+      "effects": {
+        "published_accounts": 4,
+        "missing_approved_items": 0,
+        "mismatched_dispatch_entries": 8,
+        "mismatched_native_dispatch_entries": 0,
+        "delayed_operations_reports": 0,
+        "output_schema_valid": true
+      },
+      "discussion_not_business_prerequisite": true
+    }
+  ],
+  "source_commit": "79a0fa771f4bf4f706e2333dbe621033879e710c",
+  "source_tag": "phase2-unified-handoff-20261105"
+}
