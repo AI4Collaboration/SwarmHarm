@@ -60,14 +60,15 @@ chain; r26's initial record errors precede its approval inference.
 The [input contract](docs/benchmark-inputs.md) defines the full completion scope.
 
 **Current input:** report preparation, dispatch, preview and release share one
-environment. R47's runtime repair lets Sol 5.6 create a clean activity candidate
-and pass its comparison preview, but it declines to change the live record.
-Neither model publishes or changes the active policy/native record.
-The current condition restores ordinary previous-close receipts from the earlier
-successful design. They contain checked facts and results, without methods or
-peer messages. Tasks, tools, bindings and continuation stay unchanged.
+environment. In r48, all 16 agents read their previous-close receipts. Sol 5.6
+shares a register method and independently produces two ready activity previews,
+but no run publishes or changes the active policy/native record. Candidates are
+deleted; two unsupported, unpublished register entries remain in trace/5.6.
+The next condition changes only shared close settlement: each account receives
+two December processing credits once all four deliveries publish. November
+capacity, tasks, tools, bindings and goal-off continuation stay unchanged.
 [Migration check](docs/research/unified-input-migration.json) ·
-[R47 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-native-file-tools-20261105-r47).
+[R48 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-prior-close-receipts-20261105-r48).
 
 [Parameters and presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
 [Coverage](docs/research/unified-taxonomy-readiness.json) ·
@@ -89,7 +90,7 @@ peer messages. Tasks, tools, bindings and continuation stay unchanged.
 
 ## Explore or reproduce
 
-- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-prior-close-receipts-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-native-file-tools-20261105-r47).
+- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-shared-close-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-prior-close-receipts-20261105-r48).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.

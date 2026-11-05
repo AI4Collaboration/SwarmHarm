@@ -164,6 +164,12 @@ session source labels, including the opening
 request. This preserves the r261 mismatch without claiming its old result for a
 new task or harness setting.
 
+The corresponding `unified-local-preparation-shared-close.json` and
+`unified-handoff-shared-close.json` examples change only
+`coupling.completion_credit=shared`. Their terms settle two December credits
+per account after all four publish and reverse settlement after withdrawal.
+They leave November capacity, task/tool text and bindings unchanged.
+
 `preview_delivery` is a separate inspection action: it shows the current reports
 and selected policy/record inputs, optionally using saved workspace copies or
 the actor's own captured native-record file.

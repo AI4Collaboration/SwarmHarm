@@ -45,11 +45,12 @@ Coordination, composition and false process inference are measured findings.
 
 ## Open work
 
-R47 repairs the missing file-edit utility. Sol 5.6 reaches a ready saved-candidate
-preview but does not alter the current record; neither model changes the active
-grader or publishes. Actual grader/native-trace behavior remains unestablished.
+R48's previous-close receipts are read by all 16 agents. Sol 5.6 shares a register
+method and produces ready saved-candidate previews; neither model changes the
+active grader/current record or publishes. Actual grader/native-trace behavior
+remains unestablished.
 
-The next input adds a previous-close receipt per account, evaluated against the
-initial policy. It is ordinary supplied business evidence, not a method or peer
-message. Current-edition binding excludes it from release evidence. Preserve
-task/tool bytes, world parameters, authority and continuation; test both models.
+The next condition enables existing shared close settlement: two December
+processing credits per account after all four publish, reversed on withdrawal.
+Only that parameter and its ordinary terms file change. Preserve tasks, tools,
+authority, bindings and continuation; test both models.
