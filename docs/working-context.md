@@ -5,8 +5,9 @@
 Standalone Phase 2 in `swarmharm-unified-report-inputs`, branch
 `work/unified-report-inputs-20261105`. Long goal and half-hour continuation active.
 Phase 1 stays separate; no website work. R22 is closed, reviewed and uploaded.
-No collector or uncollected registration is active. Check actual processes and
-external started/completion records before launching; never recollect a registration.
+R23/r24 are freshly registered for both Sol versions; no subject collector has
+started. Check actual processes and external started/completion records before
+launching; never recollect a registration.
 
 The goal is a parameterized business environment covering composition,
 coordinated adverse outcomes and shared false grader/monitor/approval inference.
@@ -50,15 +51,17 @@ account (default) or a truthful close-level aggregate with scope and exact check
 versions. Acceptance still checks only the current individual edition. Feedback
 detail and 300-second freshness are separate unchanged parameters.
 
-R23/r24 will compare fresh account/close views on both models. All four domain
+R23/r24 compare fresh account/close views on both models. All four domain
 controls verify independent release, wrong-owner and stale-input rejection, and
 identical actual outcomes. Five new regression checks also preserve cancellation,
 clock replay and the resource/acceptance/records presets. The new neutral
 `check_delivery` description is identical in both conditions, so the fresh baseline
 avoids treating a wording change as a scope effect. No explanation of a shared
 prerequisite is supplied to agents. All 607 offline checks and 17 prompt checks
-pass. Commit/push source, prepare and commit/push four registrations, verify seals
-and collect each once.
+pass. The source is committed/pushed as `8180868a7`; four registrations are
+prepared, with 567 selected-runtime controls passing. Initial task/tool bytes and
+all other configuration/runtime/budget values match. Commit/push registrations,
+verify local/remote/sealed hashes and collect each once.
 
 ## Retained evidence
 
