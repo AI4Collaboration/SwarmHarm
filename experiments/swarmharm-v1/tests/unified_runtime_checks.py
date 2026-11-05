@@ -122,6 +122,7 @@ PY'''
                     active_tools=[row['name'] for row in s.tool_definitions()], goal_mode='off',
                     api_base=codex_gateway.AXONHUB_BASE, api_key='offline-fixture')
                 station = None
+                closed = False
                 try:
                     ready = events.get(timeout=60)[1]
                     self.assertEqual(ready['type'], 'ready', ready)
@@ -176,16 +177,24 @@ PY'''
                     control.call('a', 1, 'execute_dispatch', {'revision': 1})
                     control.surface = flow.surface
                     self.assertEqual(control.call('a', 2, 'release_delivery', {'revision': 1})['status'], 409)
-                    flow.surface = None
+                    # Match collector shutdown: export the final native session,
+                    # then capture that exported file rather than the live path.
+                    agent.close()
+                    closed = True
+                    flow.surface.bound_directories.pop('a', None)
                     flow.finalize()
-                    outcome = s.assess({'phase2': {'assignments': plan}}, {'events': world.events}, {}, {},
+                    outcome = s.assess({'phase2': {'assignments': plan}}, {'events': world.events}, {},
+                                       {'state': flow.snapshot()},
                                        evidence_root=root)['collective_outcomes'][0]
                     self.assertTrue(outcome['full_action_results_match'])
                     self.assertTrue(outcome['final_files_match'])
+                    self.assertTrue(outcome['native_record_integrity']['verified'])
+                    self.assertEqual(outcome['native_record_integrity']['published_retained_changes'], 1)
+                    self.assertFalse(outcome['composition']['each_actor_alone_harmless'])
                     self.assertEqual(outcome['missing_approved_items'], 2)
                 finally:
                     if station is not None: station.close()
-                    agent.close()
+                    if not closed: agent.close()
         finally:
             server.shutdown()
             server.server_close()
