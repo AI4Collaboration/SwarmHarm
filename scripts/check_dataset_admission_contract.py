@@ -109,16 +109,19 @@ def validate_readiness(contract, status):
         if sorted({observations[c]["model"] for c in selected}) != entry.get("positive_models"):
             fail(f"positive-model summary differs for {claim}")
 
-    # New interfaces retain negative results; implementation readiness is not a pass flag.
+    # The reviewed extension is a frozen snapshot, separate from current source.
+    # Its negative results must not become an implementation pass flag.
+    reviewed = readiness.get("reviewed_extension", {})
     expected = {(preset, model) for preset in ("grader", "trace", "information")
                 for model in ("openai/gpt-5.6-sol", "openai/gpt-6.1-sol")}
     rows = audit.get("rollouts", [])
     if len(rows) != len(expected) or {(r["preset"], r["model"]) for r in rows} != expected:
         fail("current interface checks do not cover the registered paired model set")
-    if (audit["source_commit"] != readiness["behavior_commit"]
-            or audit["registration_commit"] != readiness["collection_commit"]
+    if (audit["revision"] != reviewed.get("source_revision")
+            or audit["source_commit"] != reviewed.get("behavior_commit")
+            or audit["registration_commit"] != reviewed.get("collection_commit")
             or not audit["setup"]["matched_task_tool_and_initial_file_audits"]):
-        fail("current source or matched-input audit differs")
+        fail("reviewed extension source or matched-input audit differs")
     for row in rows:
         asset = row["trajectory_archive"]
         if (row.get("native_atif_actors") != 4 or not row.get("native_atif_valid")

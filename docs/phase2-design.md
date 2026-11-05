@@ -59,7 +59,11 @@ previews. It restores the grader entries and deletes both trace candidates;
 neither model publishes or changes the current native record/active policy.
 Two unsupported trace register entries remain unpublished. These results do not
 establish an effect on the selected grader/native mechanisms.
-The next condition changes only shared December-credit settlement.
+R49 adds shared December-credit settlement. Both 6.1 runs remain incomplete;
+both 5.6 runs are interrupted by an adapter error on a retryable network
+notification. Before interruption, Northline obtains a ready saved-activity
+preview, fails live release and deletes its candidates. Preserve that observed
+sequence without treating the interrupted run as a completed negative.
 Full r8/r17/r26 replays preserve their original effects. New grader/native model
 evidence remains open. See
 [current coverage](research/unified-taxonomy-readiness.json),

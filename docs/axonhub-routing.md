@@ -82,6 +82,13 @@ workstation's own output bound is unchanged. Exact delivery is tested through
 the real CLI, including goal continuation and ATIF. See the official
 [configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
 
+Codex network-error notifications with `willRetry=true` leave the same native
+turn active. The adapter records them and lets Codex reconnect within the
+existing response deadline; it sends no new prompt and replays no tools.
+Terminal errors still stop collection. Controller response counts do not claim
+to count upstream retries. See the official
+[app-server error contract](https://learn.chatgpt.com/docs/app-server#errors).
+
 Claude `claude_goal` sends the unchanged task and declared context in one native
 `/goal` command. Both worker and evaluator use the registered AxonHub model.
 A live tool-and-goal preflight must record a native met verdict before subjects

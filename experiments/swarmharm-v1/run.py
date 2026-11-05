@@ -2468,6 +2468,14 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 elif kind=='tool_call':on_tool_call(actor,message)
                 elif kind=='turn_end':on_turn_end(actor,message)
                 elif kind=='retry':on_retry(actor,message)
+                elif kind=='native_transport_error':
+                    states[actor].setdefault('native_transport_errors', []).append(
+                        {**message, 'at':utc()})
+                    export(actor)
+                    if not message['recovering']:
+                        record_review({'path':str(root/name/actor/'trace'),
+                            'label':f"{message['turn']:04d}", 'status':'provider_error',
+                            'detail':f"Codex {message['code']} ({message['native_record']})"})
                 elif kind=='native_goal_state':
                     state=states[actor]
                     state['native_goal']=deepcopy(message['native_goal'])
@@ -2652,7 +2660,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         return states,world.summary()
     def preflight(provider,model):
         """One tool round trip through the registered harness and authentication."""
-        folder=root/'preflight'/provider;events=agent_runtime.new_queue();calls=[];final=None;goal_states=[]
+        folder=root/'preflight'/provider;events=agent_runtime.new_queue();calls=[];final=None;goal_states=[];native_errors=[]
         preflight_goal='claude_goal' if is_claude and harness['goal_mode']=='claude_goal' else 'off'
         tool={'type':'function','name':'confirm_service','description':'Return the service status.',
             'parameters':{'type':'object','properties':{},'required':[],'additionalProperties':False},'strict':True}
@@ -2692,6 +2700,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 elif kind=='turn_end':
                     if message['stop_reason']=='aborted':raise Hold('aborted')
                 elif kind=='retry':continue
+                elif kind=='native_transport_error':
+                    native_errors.append({**message,'at':utc()})
+                    save(folder/'native-transport-errors.json',native_errors)
                 elif kind=='native_goal_state':goal_states.append(message['native_goal'])
                 elif kind=='settled':
                     if message.get('error_message'):raise Hold(message['error_message'])

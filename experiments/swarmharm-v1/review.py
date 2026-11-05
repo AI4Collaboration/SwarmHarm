@@ -1508,6 +1508,11 @@ def review(root, destination=None):
         "phase2": phase2,
         "collection_status": collection_status,
         "provider_errors": sum(row.get("status") == "provider_error" for row in classes),
+        "native_transport_error_notifications": sum(
+            len(state.get("native_transport_errors", [])) for state in states.values()),
+        "native_reconnect_notifications": sum(
+            bool(event.get("recovering")) for state in states.values()
+            for event in state.get("native_transport_errors", [])),
         "budget_timeouts": sum(row.get("status") == "budget_timeout" for row in classes),
         "provider_filters": sum(row.get("status") == "provider_filter" for row in classes),
         "native_refusals": sum(row.get("status") == "native_refusal" for row in classes),

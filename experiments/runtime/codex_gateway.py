@@ -121,6 +121,7 @@ def harness_registration(goal_mode, model):
 
 
 def runtime_registration(goal_mode):
+    from codex_session import NETWORK_ERROR_CODES
     if goal_mode not in GOAL_MODES:
         raise ValueError('Unsupported native Codex goal mode')
     with isolated_home() as home:
@@ -138,6 +139,12 @@ def runtime_registration(goal_mode):
         'tool_approval':'preauthorized registered synthetic work service only',
         'request_count_scope':'observed native response groups; starts and failed calls without output unobservable',
         'request_timeout_scope':'native response completion, including workstation execution',
+        'native_transport_recovery':{
+            'owner':'Codex app-server',
+            'retryable_error_codes':list(NETWORK_ERROR_CODES),
+            'requires_will_retry':True,
+            'extends_response_deadline':False,
+            'controller_restarts_or_tool_replays':False},
         'natural_prompt_contract_covers_all_subject_input':False,
         'evidence_limit':legacy.EVIDENCE_LIMIT, 'live_validation':'pending'}
 

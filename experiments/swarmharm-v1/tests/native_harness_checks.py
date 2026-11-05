@@ -13,6 +13,120 @@ import record_surface
 
 
 class NativeHarnessChecks(unittest.TestCase):
+    def test_codex_reconnect_keeps_turn_history_and_original_deadline(self):
+        from copy import deepcopy
+        import threading
+        from codex_session import CodexAgent
+        agent = CodexAgent.__new__(CodexAgent)
+        agent.lock = threading.RLock()
+        agent.actor, agent.thread_id, agent.turn = 'actor', 'thread', 3
+        agent.events, agent.commands = queue.Queue(), queue.Queue()
+        agent.active, agent.failed, agent.stopping = True, False, False
+        agent.last_progress, agent.response_open = 123, False
+        agent.goal_mode, agent.final_text = 'off', 'Finished after reconnection.'
+        agent.history = [{'role':'user','content':'Prepare the report.'}]
+        before = deepcopy(agent.history)
+        agent._notification({'method':'error','params':{
+            'threadId':'thread','willRetry':True,'error':{
+                'codexErrorInfo':{'responseStreamDisconnected':{'httpStatusCode':None}},
+                'message':'Reconnecting... waiting for network','misalignment':None}}},
+            'native/000042.json')
+        _, notice = agent.events.get_nowait()
+        self.assertEqual(notice['type'], 'native_transport_error')
+        self.assertTrue(notice['recovering'])
+        self.assertEqual(notice['native_record'], 'native/000042.json')
+        self.assertTrue(agent.active)
+        self.assertFalse(agent.failed)
+        self.assertEqual(agent.history, before)
+        self.assertEqual(agent.last_progress, 123)
+        self.assertTrue(agent.commands.empty())
+        agent._notification({'method':'turn/completed','params':{
+            'threadId':'thread','turn':{'id':'turn','status':'completed'}}},
+            'native/000043.json')
+        self.assertEqual(agent.events.get_nowait()[1]['type'], 'settled')
+        self.assertFalse(agent.active)
+
+    def test_codex_terminal_and_non_network_errors_still_stop(self):
+        import threading
+        from codex_session import CodexAgent
+        for retry, info, flag in (
+            (False, {'responseStreamDisconnected':{}}, None),
+            (True, 'unauthorized', None),
+            (True, 'badRequest', None),
+            (True, {'responseStreamDisconnected':{}}, {'category':'flagged'}),
+        ):
+            with self.subTest(retry=retry, info=info, flag=flag):
+                agent = CodexAgent.__new__(CodexAgent)
+                agent.lock = threading.RLock()
+                agent.actor, agent.thread_id, agent.turn = 'actor', 'thread', 1
+                agent.events, agent.commands = queue.Queue(), queue.Queue()
+                agent.failed, agent.stopping, agent.replies = False, False, {}
+                agent._notification({'method':'error','params':{
+                    'threadId':'thread','willRetry':retry,'error':{
+                        'codexErrorInfo':info,'misalignment':flag}}},
+                    'native/000007.json')
+                self.assertFalse(agent.events.get_nowait()[1]['recovering'])
+                self.assertEqual(agent.events.get_nowait()[1]['type'], 'fatal')
+                self.assertTrue(agent.failed)
+                self.assertEqual(agent.commands.get_nowait(), ('close', None))
+
+    def test_native_gateway_recovers_interrupted_stream_without_repeating_tools(self):
+        from http.server import ThreadingHTTPServer
+        import socket
+        import threading
+        from tests.codex_collect_checks import ScriptedResponses, NativeCodex
+        class InterruptedOnce(ScriptedResponses):
+            def do_POST(self):
+                # Interrupt the next response after the business tool has run.
+                if len(self.server.captures) == 1 and not self.server.disconnected:
+                    self.server.disconnected = True
+                    self.server.failed_request = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'text/event-stream')
+                    self.end_headers()
+                    self.wfile.write(b'event: response.created\ndata: {"type":"response.created","response":{"id":"interrupted"}}\n\n')
+                    self.wfile.flush()
+                    self.connection.shutdown(socket.SHUT_RDWR)
+                    self.connection.close()
+                    return
+                super().do_POST()
+        server = ThreadingHTTPServer(('127.0.0.1',0), InterruptedOnce)
+        server.disconnected, server.captures, server.capture_lock = False, [], threading.Lock()
+        threading.Thread(target=server.serve_forever,daemon=True).start()
+        original = codex_gateway.write_config
+        def local_config(home,*args):
+            original(home,*args)
+            path = home/'config.toml'
+            text = path.read_text().replace(codex_gateway.AXONHUB_BASE,
+                f'http://127.0.0.1:{server.server_port}/v1')
+            path.write_text(text.replace('requires_openai_auth=false',
+                'requires_openai_auth=false\nsupports_websockets=false\nrequest_max_retries=0\nstream_max_retries=1'))
+        try:
+            with tempfile.TemporaryDirectory() as d, patch.object(codex_gateway,'write_config',local_config):
+                folder = Path(d)/'actor'; folder.mkdir()
+                events = queue.Queue()
+                tools = [{'type':'function','name':'confirm_service','description':'Read service status.',
+                          'parameters':{'type':'object','properties':{}}}]
+                agent = run.codex_agent.CodexAgent('actor',events,folder=folder/'codex',
+                    model='openai/gpt-5.6-sol',thinking_level='high',tools=tools,
+                    active_tools=['confirm_service'],goal_mode='off',
+                    api_base=codex_gateway.AXONHUB_BASE,api_key='offline-fixture')
+                try:
+                    run.codex_agent.wait_ready(events,['actor'])
+                    agent.prompt('Service fixture request.')
+                    result = NativeCodex().drain(agent,events,folder)
+                    self.assertFalse(result['aborted'])
+                finally: agent.close()
+                raw = [json.loads(p.read_text()) for p in (folder/'codex/native').glob('*.json')]
+                errors = [x['message']['params'] for x in raw if x['message'].get('method')=='error']
+                self.assertTrue(any(x['willRetry'] for x in errors))
+                self.assertEqual(len(server.captures),2)
+                self.assertEqual(server.failed_request['input'],server.captures[1]['input'])
+                self.assertTrue(any(item.get('type') == 'function_call_output'
+                                    for item in server.failed_request['input']))
+                self.assertEqual(len(list((folder/'trace').glob('*-tool-*.json'))),1)
+        finally: server.shutdown(); server.server_close()
+
     def test_codex_default_uses_repository_pin_without_implicit_fallback(self):
         with tempfile.TemporaryDirectory() as directory:
             binary = Path(directory) / 'codex'

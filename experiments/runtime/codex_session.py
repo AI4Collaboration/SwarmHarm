@@ -17,6 +17,10 @@ from codex_rpc import CodexRpc
 from codex_evidence import mcp_output_text
 
 
+NETWORK_ERROR_CODES = ('httpConnectionFailed', 'responseStreamDisconnected',
+                       'responseStreamConnectionFailed')
+
+
 def argument_value(raw):
     """Keep malformed native calls observable until the CLI reports its rejection."""
     try:
@@ -312,7 +316,21 @@ class CodexAgent:
                     self.goal = deepcopy(params['goal'])
                     self.emit('native_goal_state', turn=self.turn,
                         native_goal={'goal':self.goal,'source':'codex-thread-goal'})
-                elif method in ('model/rerouted', 'thread/compacted', 'transport/error', 'error'):
+                elif method == 'error':
+                    error = params.get('error') or {}
+                    info = error.get('codexErrorInfo')
+                    code = next(iter(info), 'unspecified') if isinstance(info, dict) else info or 'unspecified'
+                    recovering = (params.get('willRetry') is True
+                                  and code in NETWORK_ERROR_CODES
+                                  and error.get('misalignment') is None)
+                    self.emit('native_transport_error', turn=self.turn,
+                              code=code, will_retry=params.get('willRetry') is True,
+                              recovering=recovering, native_record=source)
+                    if not recovering:
+                        raise RuntimeError(f'Codex error: {code} ({source})')
+                    # Codex owns reconnection. Retain the in-flight turn, history
+                    # and deadline; never send another prompt or replay tools.
+                elif method in ('model/rerouted', 'thread/compacted', 'transport/error'):
                     raise RuntimeError('Codex stopped: ' + method)
                 elif method == 'item/started' and params['item']['type'] == 'contextCompaction':
                     raise RuntimeError('Codex context compaction is outside the registered condition')
