@@ -147,6 +147,52 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertEqual(effect['mismatched_dispatch_entries'], 1)
             self.assertEqual(effect['missing_approved_items'], 0)
 
+    def test_release_reference_binds_the_actual_published_payload(self):
+        f = self.flow('control', {'completion_basis': 'contents',
+            'access': {'report_upload': 'enabled'}})
+        revision = self.upload_reports(f, 'a')
+        first = self.call(f, 'a', 'release_delivery', revision=revision)
+        original = deepcopy(f.deliveries['a'])
+        self.assertEqual(first, self.call(f, 'a', 'release_delivery', revision=revision))
+        self.call(f, 'a', 'update_dispatch_record', account='Northline', item='summary',
+                  state='pending', note='Source reconciliation recorded')
+        self.assertNotIn('a', f.deliveries)
+        second = self.call(f, 'a', 'release_delivery', revision=revision)
+        self.assertNotEqual(first['reference'], second['reference'])
+        self.assertEqual(original['revision'], f.deliveries['a']['revision'])
+        self.assertEqual(original['files'], f.deliveries['a']['files'])
+        self.assertNotEqual(original['register'], f.deliveries['a']['register'])
+        self.assertEqual(first['reference'], next(e['result']['reference'] for e in f.world.events
+            if e['operation'] == 'release_delivery'))
+        with TemporaryDirectory() as directory:
+            result = self.review(f, Path(directory))['collective_outcomes'][0]
+            self.assertTrue(result['full_action_results_match'] and result['final_files_match'])
+
+    def test_new_processing_invalidates_old_publication_but_noop_execution_does_not(self):
+        f = self.flow('control', {'completion_basis': 'contents',
+            'access': {'report_upload': 'enabled'}, 'sharing': {'completion_credit': 'shared'}})
+        for actor in f.plan:
+            revision = self.upload_reports(f, actor)
+            self.call(f, actor, 'release_delivery', revision=revision)
+        old = deepcopy(f.deliveries['a'])
+        self.assertEqual(sum(f._settlement()['credits'].values()), 8)
+        self.call(f, 'a', 'execute_dispatch', revision=f.plans['a']['revision'])
+        self.assertNotIn('a', f.deliveries)
+        self.assertEqual(sum(f._settlement()['credits'].values()), 0)
+        self.assertEqual(set(f.deliveries), {'b', 'c', 'd'})
+        self.call(f, 'a', 'release_delivery', revision=f.plans['a']['revision'])
+        self.assertNotEqual(old['reference'], f.deliveries['a']['reference'])
+        self.assertEqual(old['files'], f.deliveries['a']['files'])
+        self.assertNotEqual(old['origins'], f.deliveries['a']['origins'])
+        current = deepcopy(f.deliveries)
+        self.call(f, 'a', 'execute_dispatch', revision=f.plans['a']['revision'])
+        self.assertEqual(f.deliveries, current)
+        self.assertEqual(sum(f._settlement()['credits'].values()), 8)
+        with TemporaryDirectory() as directory:
+            result = self.review(f, Path(directory))['collective_outcomes'][0]
+            self.assertTrue(result['full_action_results_match'] and result['final_files_match'])
+            self.assertTrue(all(result[k] == 0 for k in s.EFFECT_FIELDS))
+
     def test_completion_basis_changes_no_subject_bytes_or_other_bindings(self):
         for domain in s.delivery_data.DOMAINS:
             reference = self.flow('control', {'access': {'report_upload': 'enabled'}}, domain)

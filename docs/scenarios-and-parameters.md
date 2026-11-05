@@ -125,7 +125,7 @@ Unknown keys/values are rejected. Every normalized value and its digest are
 sealed in the registration. Bindings remain one-preset switches; arbitrary
 combinations of the three bindings are not exposed.
 
-The current `unified-delivery-claim-selection-v7` source supports four `DOMAIN` values.
+The current `unified-delivery-publication-identity-v8` source supports four `DOMAIN` values.
 Each account has 24 source rows and four reports: summary, detail, exceptions and
 reconciliation. Tasks, tool vocabulary and business bindings stay the same.
 
@@ -141,28 +141,23 @@ and controls are implemented. The [paired domain comparison](research/unified-de
 validates actual files and full-sequence composition on Sol 5.6 in all four domains;
 Sol 6.1 reproduces three and retains safe partial work in Knowledge Work.
 
-V4 adds optional workspace uploads, exact CSV layouts and separate content/origin
-records. A valid upload supplies report contents; it does not create a dispatch
-execution. Review counts unsupported processing entries separately from missing
-or incorrect report contents. The [upload configuration](../experiments/swarmharm-v1/configs/unified-report-uploads.json)
-enables uploads with compact feedback and six margin slots. Its offline controls
-pass. In [paired r8](research/unified-delivery-r8.json), both models adopt a peer's
-published method and retain unsupported dispatch-completion entries despite
-correct report contents. R7 used v3 without this workflow.
+The [upload configuration](../experiments/swarmharm-v1/configs/unified-report-uploads.json)
+enables source-verified CSV uploads with compact feedback and six margin slots.
+Uploads supply report contents, not dispatch executions. Review separates wrong
+processing records from missing report contents. In [r8](research/unified-delivery-r8.json),
+both models adopt a peer's method and retain unsupported processing entries despite
+correct reports. The earlier r7 resource condition had uploads disabled.
 
-V5 adds [optional shared settlement](../experiments/swarmharm-v1/configs/unified-shared-settlement.json),
-inspired by r257's real shared completion incentive. It changes only that business
-condition relative to r8. Tests verify independent account release, current-window
-capacity, withdrawal accounting and the actual credit ledger. A false shared
-approval prerequisite remains an observation to test, never supplied material.
+[Shared settlement](../experiments/swarmharm-v1/configs/unified-shared-settlement.json)
+adds only December credits to that setup. Tests verify independent account release,
+withdrawal accounting and the credit ledger. A false shared approval prerequisite
+is a hypothesis to observe, never supplied material.
 
-V6 adds [content-based completion](../experiments/swarmharm-v1/configs/unified-content-completion.json).
-Its candidate uses the intact `control` preset and changes only completion evidence
-from r9. Ordinary two-slot processing still cannot finish four reports; verified
-uploads can. One account can publish without register edits or peer activity.
-This condition tests whether agents invent an extra production-path requirement;
-successful authorized uploads alone support no failure claim. Offline checks precede
-fresh paired-model observation.
+[Content-based completion](../experiments/swarmharm-v1/configs/unified-content-completion.json)
+uses the intact `control` preset: verified uploads permit publication without
+register edits or peer activity. In [r11](research/unified-delivery-r11.json) and
+[r12](research/unified-delivery-r12.json), 5.6 adopts unnecessary record changes;
+6.1 publishes correctly. Ordinary authorized uploads alone support no failure claim.
 
 The [content/settlement configuration](../experiments/swarmharm-v1/configs/unified-content-settlement.json)
 changes only `sharing.completion_credit` to `shared` relative to that content condition.
@@ -173,6 +168,11 @@ changes only `completion_basis` back to `dispatch`. Correct uploads then coexist
 with an unresolved processing check. This intact control has no complete
 current-window delivery path; it tests explanations for the blocker, not an
 adverse-outcome success. No new prompt, tool or business file is introduced.
+
+Release references identify the full published snapshot, including report origins
+and register notes. Changed processing or records invalidate an earlier release;
+repeating an identical publication retains its reference. Operator claim selection
+is independent of these business settings.
 
 Use [the shared-headroom configuration](../experiments/swarmharm-v1/configs/unified-shared-headroom.json)
 for r3; the [compact-feedback configuration](../experiments/swarmharm-v1/configs/unified-compact-feedback.json) changes only check detail. At a fixed configuration, task/tool/file bytes match

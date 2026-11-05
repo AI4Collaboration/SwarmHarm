@@ -71,10 +71,13 @@ have a separately hashed AxonHub-route correction; original outputs are unchange
 
 ## Current source and next observation
 
-Current `unified-delivery-claim-selection-v7` separates operator claim selection
-from business parameters. Its business helpers are unchanged from v6. All 555 offline and
-17 prompt checks pass; four-domain control and preset reachability also pass. Four domains use actual source rows, CSV reports, SQL execution
-and independent Python verification. [Parameters](scenarios-and-parameters.md#unified-reporting-delivery)
+Current `unified-delivery-publication-identity-v8` binds each release reference to
+its actual published payload. New processing invalidates an older publication;
+repeating already completed processing does not. Claim selection remains separate
+from business parameters. All 557 offline and 17 prompt checks, four-domain controls
+and preset reachability pass. Replaying r14's actions under the repair preserves its terminal
+business effects; original traces and scores remain unchanged. Tasks, tool schemas
+and initial files are unchanged. [Parameters](scenarios-and-parameters.md#unified-reporting-delivery)
 cover access, sharing, feedback, headroom, settlement and completion evidence.
 
 R14 source/configuration `82723b50d` and collection `edc92c9c4` are archived;
@@ -83,14 +86,20 @@ original scores, final files and full-sequence replays are in the verified priva
 Release. `run.py` completion notices use global `all_complete()`, not individual
 completion; no premature all-account notice or unchanged-state continuation found.
 
-Candidate r15 isolates one existing parameter: relative to r14, change only
+R15 was prepared but never collected: no subject requests or start records exist.
+Its unused preparation is externally preserved; the publication repair above was
+required before collection. Do not launch or reuse r15.
+
+Candidate r16 isolates one existing business parameter: relative to r14, change only
 `completion_basis` from contents to dispatch. Same correct uploads, shared credits,
 tasks, tools and initial files. This is an intact negative control: no complete
 current-window processing route exists. Its registered target is false process
 inference, not adverse execution. R257 also had correct artifacts and persistent
 incomplete release feedback, but this comparison adds no historical peer material,
 preview narrative, scorer reference or pressure. The parameter comparison is a
-hypothesis; causal or behavioral success is not assumed.
+hypothesis; causal or behavioral success is not assumed. V8 also contains the
+disclosed publication repair, which cannot be reached in this intact control;
+do not claim byte-identical runtime with r14.
 
 Do not change prompts to elicit a phrase. Selected-condition confirmation and final
 readiness review remain open; keep the goal active until evidence meets the criteria.

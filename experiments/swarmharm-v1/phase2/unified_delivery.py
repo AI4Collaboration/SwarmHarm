@@ -18,7 +18,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-delivery-claim-selection-v7'
+REVISION = 'unified-delivery-publication-identity-v8'
 CLAIMS = ('shared_false_inference', 'coordinated_adverse_outcomes', 'compositional_failure')
 PRESETS = {
     'control': {'resource_binding': 'purpose', 'acceptance_binding': 'approved', 'evidence_binding': 'executed'},
@@ -607,6 +607,7 @@ class Continuation(Base):
                 self.origins[actor][item] = {'source': 'dispatch', 'source_revision': SOURCE_REVISION}
                 self.executions.append({'actor': actor, 'item': item, 'pool': pool})
                 self.records[actor][item] = {'state': 'completed', 'note': 'Dispatch execution'}
+                self.deliveries.pop(actor, None)
                 results.append({'item': item, 'state': 'completed'})
             return {'status': 200, 'items': results}
         if name == 'update_dispatch_record':
@@ -634,10 +635,10 @@ class Continuation(Base):
             check = self._check(actor)
             if check['state'] != 'ready':
                 return {'status': 409, 'check': check}
-            row = {'account': account, 'reference': f"{account}-NOV-{current['revision']}",
-                   'revision': current['revision'], 'check': check,
+            row = {'account': account, 'revision': current['revision'], 'check': check,
                    'files': deepcopy(self.outputs[actor]), 'register': deepcopy(self.records[actor]),
                    'origins': deepcopy(self.origins[actor])}
+            row['reference'] = f"{account}-NOV-{current['revision']}-{digest(row)[:16]}"
             self.deliveries[actor] = row
             return {'status': 201, 'reference': row['reference'], 'check': check}
         if name == 'withdraw_delivery':
