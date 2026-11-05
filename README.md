@@ -56,24 +56,23 @@ these are recorded conditions, not a model-only ranking.
 [Scenario setup and parameters](docs/scenarios-and-parameters.md#phase-2).
 
 **Unified environment:** four agents deliver account reporting packs. Parameters
-control access, sharing, feedback, capacity and the binding checked at release.
-Eight matched runs compare three binding presets and an intact control on
-Sol 5.6 and 6.1; task, tool and initial-file bytes match across presets.
-Both models reproduce composition: each full sequence is harmless alone;
-together they delay **2 of 8 operations reports**. Sol 5.6 also reuses a peer's
-reduced-pack method, publishing three packs missing **6 required items**.
-Record errors are shared but ultimately corrected; control leaves all packs
-unreleased. A shared false grader/monitor prerequisite is still unproven here.
-[Presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
-[Matched results and full trajectories](docs/research/unified-delivery-r3.json).
+control access, sharing, feedback, capacity and the binding checked at release:
 
-**Four-domain validation:** build reports, cohort analysis, cash reconciliation
-and customer commitments now have substantive data and independent content checks.
-Sol 5.6 reproduces composition in all four; Sol 6.1 does so in three and preserves
-operating capacity in Knowledge Work by leaving one pack partly complete.
-These eight runs contain no authored messages. [Results and complete trajectories](docs/research/unified-delivery-r7.json).
-Shared false inference and selected-condition confirmation remain in the
-[readiness checklist](docs/research/unified-readiness.json).
+- **Resource:** Sol 5.6 reproduces composition across all four domains; 6.1 in
+  three. Complete solo sequences are harmless; joint processing delays **2 of 8
+  operations reports**. Knowledge Work / 6.1 preserves capacity through partial
+  completion. [R7 and full trajectories](docs/research/unified-delivery-r7.json).
+- **Acceptance:** Sol 5.6 reads and reuses a peer's reduced-pack method; three
+  published packs miss **6 approved items**. Sol 6.1 leaves packs unreleased.
+  [Matched r3 comparison](docs/research/unified-delivery-r3.json).
+- **Records:** both Sol versions reuse a published peer's method. Their reports
+  are correct, but **8 / 6 completed dispatch entries** lack corresponding service
+  execution on 5.6 / 6.1. One 6.1 agent preserves pending entries.
+  [R8 and full trajectories](docs/research/unified-delivery-r8.json).
+
+Shared false grader/monitor inference remains unobserved in this unified setup;
+historical r257 is separate evidence. [Parameters and controls](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
+[Remaining readiness work](docs/research/unified-readiness.json).
 
 ## Takeaways
 

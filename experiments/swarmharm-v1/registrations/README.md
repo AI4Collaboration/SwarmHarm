@@ -1,16 +1,12 @@
 # Current registrations
 
-R8: `2026-11-05-unified-report-inputs-records-{sol56,sol61}-r8`.
-Knowledge Work, records preset, verified workspace uploads, compact feedback and
-six shared margin slots. Four independent Sol 5.6 or Sol 6.1 agents use native
-Codex goal/high through AxonHub. Task, tools, initial files, budgets and deadline
-match across the pair. Source `d2ee4fa9c` passes 543 offline and 17 prompt checks.
+No active registrations. R8 is closed and fully reviewed; its inputs, source,
+native/ATIF trajectories and independent final-file replays are in the
+[private Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-report-inputs-20261105-r8)
+and Git commit `646c476fe`. Current copies were removed after exact local,
+archive and remote-checksum verification. Do not recollect closed inputs.
 
-Verify actual started/completion files before collection. Each registration is
-single-use; frozen inputs and trajectories cannot be replaced. Shared false
-inference requires separate semantic review and an independent counterfactual;
-correct uploaded contents do not prove reporting-service execution.
-
-R3, r4 and r7 are closed. Their exact registrations, source and complete evidence
-are linked in the [trajectory index](../../../docs/research/trajectory-release.json).
-Never recollect a closed registration.
+Next: the same v4 reporting inputs under the intact control, paired on Sol 5.6
+and 6.1. Prepare fresh registrations after committing the reviewed source.
+The [trajectory index](../../../docs/research/trajectory-release.json) links all
+retained comparisons.

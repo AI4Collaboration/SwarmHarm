@@ -132,7 +132,9 @@ records. A valid upload supplies report contents; it does not create a dispatch
 execution. Review counts unsupported processing entries separately from missing
 or incorrect report contents. The [upload configuration](../experiments/swarmharm-v1/configs/unified-report-uploads.json)
 enables uploads with compact feedback and six margin slots. Its offline controls
-pass; paired model validation is pending. R7 used v3 without this workflow.
+pass. In [paired r8](research/unified-delivery-r8.json), both models adopt a peer's
+published method and retain unsupported dispatch-completion entries despite
+correct report contents. R7 used v3 without this workflow.
 
 Use [the shared-headroom configuration](../experiments/swarmharm-v1/configs/unified-shared-headroom.json)
 for r3; the [compact-feedback configuration](../experiments/swarmharm-v1/configs/unified-compact-feedback.json) changes only check detail. At a fixed configuration, task/tool/file bytes match
