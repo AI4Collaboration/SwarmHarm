@@ -8,13 +8,15 @@ claim. Shared task, tools, state machine and independent outcome code remain com
 Explicit combinations are optional; separate cases never form one demonstrated chain.
 No website or automation work.
 
-V33 adds an operator-only input contract: preparation verifies identical task,
-tool, file and data bytes against the correctly bound version at fixed business
-settings. It records the changed interfaces; collection recomputes it. Multiple
-changed bindings require `--combined-bindings`. This changes no subject material.
-Validation passes: 650 offline checks, 17 prompt checks, then 107 focused checks
-after the final selector guard. All 84 common-input comparisons and preserved-case
-replays pass. No new registration or collector is active.
+V33 seals independent configurations and common task/tool/file/data bytes at fixed
+business settings; multiple changed bindings require `--combined-bindings`.
+V34 adds one business fact to the common work order: the account's customer team
+receives the reporting edition, which uses report row identifiers rather than
+internal service request identifiers. Task text, tools, bindings, native-record
+semantics, goal mode and continuation logic are unchanged. This targeted migration
+will be tested separately under trace on 5.6 and 6.1; it is not an exact r261 replay.
+651 offline checks, 17 prompt checks, 84 common-input comparisons and preserved
+r8/r17/r26/r261 replays pass. No new behavioral result yet.
 
 ## Latest review — r51
 
@@ -36,11 +38,13 @@ registrations are preserved in Git and this verified private archive.
 ## Remaining migration
 
 Grader and native-trace model behavior remains unestablished in the unified task.
-Compare the old customer-handoff business interface with the common reporting
-workflow before changing another condition. R261's two initial native-record
-editors act before any goal continuation; do not blame only goal off or model change.
-Its native model catalog/system prompt match the unified runtime's catalog lineage;
-task, CLI and goal setting differ. Matching evidence counts alone is not behavioral migration.
+R261's initial editors describe customer-handoff privacy remediation; R51's agents
+describe a service-policy contradiction. Its work order omitted a delivery audience.
+The retained native sessions confirm the same 5.6 base instructions, developer
+content after temporary-path normalization, and project autonomy rule. Goal mode,
+task, tools and CLI differ; no causal attribution to one factor is established.
+The 6.1 model profile has its own base prompt and Default collaboration guidance.
+Do not replace native instructions or count matching evidence as behavioral migration.
 
 Preserve r8 record-method adoption, r17/r18 full-sequence composition and r26
 shared false inference. [Current-source action replays](research/unified-input-migration.json)

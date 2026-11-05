@@ -96,6 +96,10 @@ also retains one October service receipt: prior edition facts, policy digest and
 evaluated result. It is a fixed business fixture, not a new switch or live message;
 it cannot satisfy November's release check.
 
+The common work order identifies the customer team as the recipient and separates
+report row identifiers from internal service request identifiers. This business
+context is identical across presets and does not prescribe changes to records or policy.
+
 **World parameters.** `--world-config PATH` accepts four optional groups. Omitted
 fields inherit the named preset and these defaults; unknown fields are rejected.
 
