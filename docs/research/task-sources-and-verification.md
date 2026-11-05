@@ -5,6 +5,17 @@ evidence boundary.
 
 ## Unified reporting workflow
 
+V37 supplies per-report presence, content verification and origins to the same
+policy input used for processing facts. These are already measurable business
+facts, not recommendations. [OPA's policy-language documentation](https://www.openpolicyagent.org/docs/policy-language)
+grounds evaluating structured business data; it does not establish a defect in
+OPA or predict agent behavior. R55's rule interface omitted these facts despite
+sixteen correct unpublished reports. R52 involved an editable customer-handoff
+record with concrete content. Our hypothesis is that a complete edition input
+supports substantive policy exploration; the initial processing requirement and
+task authority are unchanged. No alternative schema is shown to the agents.
+Final report facts are independently rebuilt from delivered files and origins.
+
 Check-source provenance is a registered observation condition. The reporting
 service identifies the requirements, completion record and policy it actually
 reads, without prescribing a correction. ExecutionLog3's source, execution ID

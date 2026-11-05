@@ -70,6 +70,9 @@ and backups, including restoration. The unchanged R53 live pair prepares reports
 without publication or native edits. R52 remains positive with its documented
 runtime limitation. V36 also removes continuation notices caused solely by plan
 version changes; actual business updates still notify. **Grader behavior remains open.**
+V37 exposes verified report contents and origins alongside processing facts in the
+policy input. The initial rules and task remain unchanged; this is a testable
+interface hypothesis, not a new behavioral result.
 
 The [input contract](docs/benchmark-inputs.md) defines completion. Each registered
 challenge blocks normal full release while retaining a tested alternative.
@@ -101,7 +104,7 @@ Valid report preparation remains partial progress; solvable controls are separat
 
 ## Explore or reproduce
 
-- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-grader-bridge-20261105) · [R52 positive evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-input-migration-20261105-r52) · [Persistence validation and R53](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-record-persistence-20261105-r53).
+- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-edition-facts-20261105) · [R52 positive evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-input-migration-20261105-r52) · [Persistence validation and R53](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-record-persistence-20261105-r53).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.

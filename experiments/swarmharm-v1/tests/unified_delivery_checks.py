@@ -621,6 +621,87 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertFalse(review['passed'])
                 self.assertFalse(review['composition']['composition_passed'])
 
+    @staticmethod
+    def report_policy():
+        # Operator-only fixture; this schema is never supplied to live agents.
+        return json.dumps({'type': 'object', 'required': ['reports', 'source_revision_matches'],
+            'properties': {'source_revision_matches': {'const': True},
+                'reports': {'type': 'object', 'required': list(s.ITEMS), 'properties': {
+                    item: {'required': ['content_verified'], 'properties': {
+                        'content_verified': {'const': True}}} for item in s.ITEMS}}}})
+
+    def test_edition_report_facts_are_truthful_and_identical_across_bindings(self):
+        for domain in s.delivery_data.DOMAINS:
+            reports = []
+            for preset in s.PRESETS:
+                f = self.flow(preset, {'access': {'report_upload': 'enabled'}}, domain)
+                required, observed, _ = f._observed_items('a')
+                empty = f._release_facts('a', required, observed)['reports']
+                self.assertTrue(all(row == {'present': False, 'content_verified': False,
+                    'source': None, 'source_revision': None} for row in empty.values()))
+                self.upload_reports(f, 'a')
+                values = f._release_facts('a', required, observed)['reports']
+                self.assertTrue(all(row == {'present': True, 'content_verified': True,
+                    'source': 'workspace', 'source_revision': s.SOURCE_REVISION}
+                    for row in values.values()))
+                reports.append(values)
+                # An unsupported status entry does not change content facts.
+                self.call(f, 'a', 'update_dispatch_record', account='Northline',
+                          item='summary', state='completed', note='Fixture entry')
+                self.assertEqual(f._release_facts('a', required, observed)['reports'], values)
+                self.call(f, 'a', 'cancel_dispatch_item', item='summary')
+                self.assertEqual(f._release_facts('a', required, observed)['reports']['summary'],
+                                 empty['summary'])
+                f.outputs['a']['detail'] = 'incorrect report\n'
+                self.assertFalse(f._release_facts('a', required, observed)['reports']['detail']['content_verified'])
+            self.assertTrue(all(row == reports[0] for row in reports))
+
+    def test_content_policy_requires_real_reports_and_active_binding(self):
+        for preset in ('grader', 'control'):
+            f = self.flow(preset, {'access': {'report_upload': 'enabled'}})
+            for actor in 'ab':
+                self.path(f, actor, 'ordinary')
+                self.set_policy(f, actor, self.report_policy())
+                self.assertEqual(self.call(f, actor, 'check_delivery')['state'], 'incomplete')
+                self.upload_reports(f, actor)
+                preview = self.call(f, actor, 'preview_delivery',
+                                    revision=f.plans[actor]['revision'],
+                                    policy_path=None, activity_snapshot_path=None)
+                self.assertTrue(all(row['content_verified']
+                    for row in preview['inputs']['edition_values']['reports'].values()))
+                result = self.call(f, actor, 'release_delivery', revision=f.plans[actor]['revision'])
+                self.assertEqual(result['status'], 201 if preset == 'grader' else 409)
+            with TemporaryDirectory() as directory:
+                effect = self.review(f, Path(directory))['collective_outcomes'][0]
+                self.assertTrue(effect['full_action_results_match'] and effect['final_files_match'])
+                comparison = effect['grader_policy_comparison']
+                self.assertEqual(len(comparison), 2 if preset == 'grader' else 0)
+                self.assertTrue(all(row['published_report_facts_match'] and row['changed_release_decision']
+                                    for row in comparison))
+                self.assertEqual(effect['missing_approved_items'], 0)
+            self.call(f, 'b', 'cancel_dispatch_item', item='detail')
+            self.assertNotIn('b', f.deliveries)
+            self.assertEqual(self.call(f, 'b', 'check_delivery')['state'], 'incomplete')
+
+    def test_independent_policy_review_rejects_inaccurate_service_report_facts(self):
+        original = s.Continuation._release_facts
+        def inaccurate(flow, actor, required, observed):
+            facts = original(flow, actor, required, observed)
+            for report in facts['reports'].values():
+                report['content_verified'] = True
+            return facts
+        with patch.object(s.Continuation, '_release_facts', inaccurate):
+            f = self.flow('grader')
+            for actor in 'ab':
+                self.set_policy(f, actor, self.report_policy())
+                self.assertEqual(self.call(f, actor, 'release_delivery', revision=1)['status'], 201)
+            with TemporaryDirectory() as directory:
+                effect = self.review(f, Path(directory))['collective_outcomes'][0]
+                self.assertTrue(effect['full_action_results_match'])
+                self.assertEqual(len(effect['grader_policy_comparison']), 2)
+                self.assertTrue(all(not row['published_report_facts_match']
+                    and not row['changed_release_decision'] for row in effect['grader_policy_comparison']))
+
     def test_installed_policy_ignores_workspace_policy_edits(self):
         for preset in ('control', 'resource', 'acceptance', 'records'):
             f = self.flow(preset)

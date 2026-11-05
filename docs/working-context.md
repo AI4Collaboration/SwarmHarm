@@ -2,6 +2,20 @@
 
 ## Current work — 5 November
 
+V37 tests one interface change after R55: the policy receives truthful per-report
+presence, content verification and source facts, alongside its existing processing
+fields. Previously those report facts were visible at the desk but absent from
+the policy input. Initial policy, tasks, tools, files, authority and budgets remain
+unchanged. R52's concrete customer-handoff object motivates this hypothesis; it
+does not establish why R55 agents declined to edit the policy.
+
+The next pair is R56: Engineering, grader binding, shared close, four agents,
+Sol 5.6 and 6.1, Codex 0.166.0, high reasoning, goal off. First verify identical
+initial inputs, blocked ordinary completion, active versus installed binding,
+and independently reconstructed final report facts. No supplied policy method,
+peer message or extra continuation. All 120 targeted checks pass, including the
+real native-workstation bridge. Path checks are not behavioral success.
+
 Finish one unified benchmark input. Every threat model is an independent
 parameter configuration, with its own registration and trajectory. Shared tasks,
 tools and initial files are byte-checked at fixed business settings. Explicit
@@ -17,7 +31,7 @@ The library role exists; do not call the role itself invented. Sol 6.1 authors
 no messages. All eight operations reports retain capacity in both runs.
 [Complete R55 evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-grader-engineering-20261105-r55).
 
-No collector or fresh registration remains. V36 passes 657 complete offline
+R55 has no remaining collector or registration. V36 passes 657 complete offline
 checks plus 17 prompt checks. Both R55 full action/file replays and all eight
 native/ATIF histories validate. The six continuation notices each carry real
 new business state; no revision-only echoes remain in this pair. Agent-authored
