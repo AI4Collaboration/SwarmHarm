@@ -1,55 +1,88 @@
 {
-  "kind": "offline_validation_not_model_evaluation",
-  "checked_at": "2026-10-30T19:10:06.063089+00:00",
-  "live_status": "live_rollout_pending",
-  "model_calls": 0,
-  "regression_tests": {
-    "passed": true,
-    "test_methods": 162,
-    "seconds": 77.597,
-    "suites": [
-      "channel_design_checks",
-      "collector_checks",
-      "message_read_checks",
-      "domain_checks",
-      "review_checks",
-      "integrated_review_checks",
-      "live_checks"
-    ],
-    "log": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/research-audit-2026-10-30/phase1-publication-checks.log",
-    "log_sha256": "a6b13aa3f3c881296c50f2c6dfe23669244d6306582ee17627fae41575915750"
+  "schema": "phase1-publication-validation-v2",
+  "updated_on": "2026-11-05",
+  "passed": true,
+  "scope": "Current four inputs: offline controls, complete native review and independently reconstructed frozen evidence.",
+  "new_model_calls_by_audit": 0,
+  "preparations": [
+    {
+      "scenario": "engineering-capacity",
+      "rollout": "phase1-shared-env-engineering-sol61-codex-r108",
+      "test_methods": 529,
+      "prompt_contract_passed": true,
+      "independent_filed": 0,
+      "complete_business_control_passed": true,
+      "controls": "../eval-readiness/phase1-shared-env-engineering-sol61-codex-r108/controls.json",
+      "controls_sha256": "4a3afb5c94cd3d52c06149358bcf5278d9078e0550707a61472a952a0a7de165",
+      "preparation_audit_sha256": "7d38771493a1a6491df68e74ad2a441198b7db8527f3fe09c377d7659b618265"
+    },
+    {
+      "scenario": "data-analysis",
+      "rollout": "phase1-shared-env-data-sol61-codex-r105",
+      "test_methods": 529,
+      "prompt_contract_passed": true,
+      "independent_filed": 0,
+      "complete_business_control_passed": true,
+      "controls": "../eval-readiness/phase1-shared-env-data-sol61-codex-r105/controls.json",
+      "controls_sha256": "12063bae586be9b1a9c906749b1774a817e6a26fbfb52b438b7df4e660687cab",
+      "preparation_audit_sha256": "c12a2fc6ca6369c0fed76553d82575d92a8b94602f8d040bc01a739636d1d480"
+    },
+    {
+      "scenario": "financial-analysis",
+      "rollout": "phase1-shared-env-finance-sol61-codex-r106",
+      "test_methods": 529,
+      "prompt_contract_passed": true,
+      "independent_filed": 0,
+      "complete_business_control_passed": true,
+      "controls": "../eval-readiness/phase1-shared-env-finance-sol61-codex-r106/controls.json",
+      "controls_sha256": "365ffaeb3ea86aefdba2c008600123fab1ca191b7cd32cfbbc80c772d9492c60",
+      "preparation_audit_sha256": "33b9891e8fe42dfaf6ee46dd6b8b7e06a047e7cb2e0a3e42f9c58db0c04154db"
+    },
+    {
+      "scenario": "knowledge-work",
+      "rollout": "phase1-shared-env-knowledge-sol61-codex-r107",
+      "test_methods": 533,
+      "prompt_contract_passed": true,
+      "independent_filed": 0,
+      "complete_business_control_passed": true,
+      "controls": "../eval-readiness/phase1-shared-env-knowledge-sol61-codex-r107/controls.json",
+      "controls_sha256": "538d42d60c8e75b924b66c160c4c8194edd53902a64cd329dcecd2c207394e5b",
+      "preparation_audit_sha256": "b1cc0d7f3fe5ca8e41efa6813287610c28624f4f4478ed06829fb698ba2d9fba"
+    }
+  ],
+  "file_and_monitor_offline_validation": {
+    "status": "passed",
+    "checks": 86,
+    "prompt_checks": 15,
+    "reconstructed_control_worlds": 8,
+    "historical_status_diagnostics": 4,
+    "model_calls": 0,
+    "manifest": "../eval-readiness/phase1-shared-monitor-20261104-r3/manifest.json",
+    "manifest_sha256": "12553f673e9892286caf4a97c293e953de60cf80a32313405821a1be89ef9bc7"
   },
-  "prompt_contract_tests": {
-    "passed": true,
-    "test_methods": 13
+  "observer_correction": {
+    "description": "Complete JSON note projections and path-bound plaintext excerpts, including duplicate text disambiguated by the returned path. Business inputs and runtime operations unchanged.",
+    "focused_checks": 35,
+    "manifest": "../eval-readiness/phase1-shared-note-rendering-20261105-r1/manifest.json",
+    "manifest_sha256": "5c6de72599d6d6441c2bf33875ae78c4597c0050517c47994bdb5d65040462c4",
+    "fresh_validation_rollout": "phase1-shared-env-knowledge-sol61-codex-r107"
   },
-  "real_workstation_controls": {
-    "domains": [
-      "Engineering",
-      "Data Analysis",
-      "Financial Analysis",
-      "Knowledge Work"
-    ],
-    "profiles": [
-      "records_shared",
-      "records_partitioned"
-    ],
-    "scripted_not_model_authored": true,
-    "initial_subject_inputs_match": true,
-    "foreign_payload_delivery_and_notification_partition_checked": true,
-    "own_records_and_ordinary_lookup_retained": true
+  "final_evidence_audit": {
+    "manifest": "../eval-readiness/phase1-shared-env-publication-audit-20261105-r1/manifest.json",
+    "sha256": "14a9eabdda7556bfad70d73fa4b710f1728fbf65e1d93aa8b1d7096558dac033",
+    "current_inputs": 4,
+    "terminal_files_verified": 18708,
+    "review_files_verified": 62,
+    "native_responses_reviewed": 435,
+    "native_tool_returns_reviewed": 944,
+    "preflight_responses_reviewed": 8,
+    "atif_trajectories": 16,
+    "owned_workstations_removed": 16
   },
-  "historical_evidence_audit": {
-    "passed": true,
-    "manifest_files_verified": 4210,
-    "rescored": false
+  "derived_export_validation": {
+    "manifest": "../eval-readiness/phase1-shared-env-publication-atif-20261105-r1/manifest.json",
+    "sha256": "8f02768b9d043da746e0321b6e63c271244fa4cefe6d60e5f08e6b13e57ca261",
+    "change": "Derived ATIF agent.name correctly identifies AxonHub; all original exports and all behavioral content preserved."
   },
-  "source_sha256": {
-    "experiments/swarmharm-v1/run.py": "5e07ca3ca3350141712c29c2575dbcdda16e7a5043dae950afa783114a918bbc",
-    "experiments/swarmharm-v1/review.py": "1dd26b2e0cd2350555b7233342b3c14c920c8009dfbb5bc8e7b0fc23557fd4c4",
-    "experiments/swarmharm-v1/phase1/channel_design.py": "f142ae0649f07710d46e2f9a273732995bba65b7a6ed8039eb68312920c4c2f6",
-    "experiments/swarmharm-v1/phase1/channel-taxonomy.json": "9ff21653423dc94941e9b4fdfd2874606c293f152ee53c8017398f73a979b753",
-    "experiments/swarmharm-v1/tests/channel_design_checks.py": "38257c3875f96d5678c7c8a6b5e27221d798b2714e30fdbf12506494bf8a36b8",
-    "scripts/audit_phase1_evidence.py": "a5063bd8e994ee3c40b66139b6273570129c07acafbae66f5471e6542a06ee7b"
-  }
+  "historical_validation": "docs/research/archive/phase1-20261105-pre-current-shared-env/phase1-publication-validation.json"
 }

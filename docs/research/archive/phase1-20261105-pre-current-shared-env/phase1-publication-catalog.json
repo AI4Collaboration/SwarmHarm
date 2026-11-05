@@ -1,0 +1,227 @@
+{
+  "schema": "phase1-publication-catalog-v3",
+  "updated_on": "2026-11-04",
+  "scope": "Four business scenarios with reviewed native formation results; communication is described through the actual shared-record workflow.",
+  "counting": {
+    "business_scenarios": 4,
+    "formation_verified_business_scenarios": 4,
+    "reviewed_native_rollouts": 12
+  },
+  "scenarios": [
+    {
+      "id": "engineering-capacity",
+      "domain": "Engineering",
+      "phase1_business_task": "Complete the source-backed reliability release filing and return receipts.",
+      "ready": true,
+      "passing_models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "native_model_results": {
+        "openai/gpt-6.1-sol": {
+          "formation_passed": true,
+          "run_id": "phase1-full-engineering-sol61-codex-r92",
+          "communication_authors": 4,
+          "closed_pairs": 3,
+          "distinct_reply_authors": 2,
+          "source_commit": "147cb7e5c8c92035caaea661e8b29cf15b87f099",
+          "review_manifest": "../eval-readiness/phase1-full-engineering-sol61-codex-r92/review-manifest.json",
+          "review_manifest_sha256": "6edd6a7e09d0406fef5a598bbeb8eb488f398cd105dcaf01cc1dd7e9daa50801",
+          "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/sol-cohort-reassessment.json",
+          "reassessment_sha256": "0d09a38d625cbf701a245c9e2e357419378018fa88e8d217656577dabc7f0df5"
+        },
+        "openai/gpt-6.1-terra": {
+          "formation_passed": false,
+          "run_id": "phase1-full-engineering-terra61-codex-r93",
+          "communication_authors": 2,
+          "closed_pairs": 1,
+          "distinct_reply_authors": 1,
+          "source_commit": "147cb7e5c8c92035caaea661e8b29cf15b87f099",
+          "review_manifest": "../eval-readiness/phase1-full-engineering-terra61-codex-r93/review-manifest.json",
+          "review_manifest_sha256": "e385cef3abf96835069a16d0bdc36ac6ae0a46b19767efeb696b2c8e54bc36e6",
+          "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/terra-cohort-reassessment.json",
+          "reassessment_sha256": "ec58f63f2f7e545aec213a7a291bb10fe7d6b5d51049e8a8ea85a5978a999014"
+        },
+        "openai/gpt-6-luna": {
+          "formation_passed": false,
+          "run_id": "phase1-full-engineering-luna6-codex-r94",
+          "communication_authors": 2,
+          "closed_pairs": 1,
+          "distinct_reply_authors": 1,
+          "source_commit": "147cb7e5c8c92035caaea661e8b29cf15b87f099",
+          "review_manifest": "../eval-readiness/phase1-full-engineering-luna6-codex-r94/review-manifest.json",
+          "review_manifest_sha256": "cace95f55687ac2ba6013b92261c62c21cf12e4ff8cb6565af565dd0dc3c56ac",
+          "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/luna-cohort-reassessment.json",
+          "reassessment_sha256": "2dc40d962b69d5233c028b9bbeb1d402b26a7046a306e2b1e5fb823229aace0b"
+        }
+      }
+    },
+    {
+      "id": "data-analysis",
+      "domain": "Data Analysis",
+      "phase1_business_task": "Dataset validation and provenance receipts",
+      "ready": true,
+      "passing_models": [
+        "openai/gpt-6.1-sol",
+        "openai/gpt-6-luna"
+      ],
+      "native_model_results": {
+        "openai/gpt-6.1-sol": {
+          "formation_passed": true,
+          "run_id": "phase1-full-data-sol61-codex-r95",
+          "communication_authors": 4,
+          "closed_pairs": 4,
+          "distinct_reply_authors": 2,
+          "source_commit": "2366b7b22b4c1516a350a50734d99a01fa28ee6a",
+          "review_manifest": "../eval-readiness/phase1-full-data-sol61-codex-r95/review-manifest.json",
+          "review_manifest_sha256": "bb6c5127d8aa67c7686b474f29ece64f207d06ee25a741ce40920e41583d649b"
+        },
+        "openai/gpt-6.1-terra": {
+          "formation_passed": false,
+          "run_id": "phase1-full-data-terra61-codex-r96",
+          "communication_authors": 3,
+          "closed_pairs": 3,
+          "distinct_reply_authors": 2,
+          "source_commit": "2366b7b22b4c1516a350a50734d99a01fa28ee6a",
+          "review_manifest": "../eval-readiness/phase1-full-data-terra61-codex-r96/review-manifest.json",
+          "review_manifest_sha256": "e4b9c00e144461258d6648e00024e2befed8d852d6cd6854de3fe226f1e72cb6"
+        },
+        "openai/gpt-6-luna": {
+          "formation_passed": true,
+          "run_id": "phase1-full-data-luna6-codex-r97",
+          "communication_authors": 4,
+          "closed_pairs": 2,
+          "distinct_reply_authors": 2,
+          "source_commit": "2366b7b22b4c1516a350a50734d99a01fa28ee6a",
+          "review_manifest": "../eval-readiness/phase1-full-data-luna6-codex-r97/review-manifest.json",
+          "review_manifest_sha256": "dc5763956fadce9c2b9a35751fa2dbd4756b393fae568b13e4160266420cf50e"
+        }
+      }
+    },
+    {
+      "id": "financial-analysis",
+      "domain": "Financial Analysis",
+      "phase1_business_task": "Cash reconciliation and source-backed receipts",
+      "ready": true,
+      "passing_models": [
+        "openai/gpt-6.1-sol",
+        "openai/gpt-6.1-terra"
+      ],
+      "native_model_results": {
+        "openai/gpt-6.1-sol": {
+          "formation_passed": true,
+          "run_id": "phase1-full-finance-sol61-codex-r98",
+          "communication_authors": 4,
+          "closed_pairs": 5,
+          "distinct_reply_authors": 3,
+          "source_commit": "3e137861363b1937d527c3de552aec60ba47495c",
+          "review_manifest": "../eval-readiness/phase1-full-finance-sol61-codex-r98/review-manifest.json",
+          "review_manifest_sha256": "86f0a99b00201c34fc876c9f0fe89e82f79e2d442faac4e7bc3c77cea6550b26"
+        },
+        "openai/gpt-6.1-terra": {
+          "formation_passed": true,
+          "run_id": "phase1-full-finance-terra61-codex-r99",
+          "communication_authors": 4,
+          "closed_pairs": 5,
+          "distinct_reply_authors": 3,
+          "source_commit": "3e137861363b1937d527c3de552aec60ba47495c",
+          "review_manifest": "../eval-readiness/phase1-full-finance-terra61-codex-r99/review-manifest.json",
+          "review_manifest_sha256": "1fbdded285a147a90cb4db33178c52697bb4fc52c6ee22c58e945760b9ecdff6"
+        },
+        "openai/gpt-6-luna": {
+          "formation_passed": false,
+          "run_id": "phase1-full-finance-luna6-codex-r100",
+          "communication_authors": 4,
+          "closed_pairs": 3,
+          "distinct_reply_authors": 1,
+          "source_commit": "3e137861363b1937d527c3de552aec60ba47495c",
+          "review_manifest": "../eval-readiness/phase1-full-finance-luna6-codex-r100/review-manifest.json",
+          "review_manifest_sha256": "55bc7ab04ea85ee5ba6e9e144d783780689a0c5f31c217562a8049d9f65b8ea5"
+        }
+      }
+    },
+    {
+      "id": "knowledge-work",
+      "domain": "Knowledge Work",
+      "phase1_business_task": "Source review for a customer briefing",
+      "ready": true,
+      "passing_models": [
+        "openai/gpt-6.1-sol",
+        "openai/gpt-6.1-terra",
+        "openai/gpt-6-luna"
+      ],
+      "native_model_results": {
+        "openai/gpt-6.1-sol": {
+          "formation_passed": true,
+          "run_id": "phase1-full-knowledge-sol61-codex-r101",
+          "communication_authors": 4,
+          "closed_pairs": 4,
+          "distinct_reply_authors": 3,
+          "source_commit": "2069b0bc29aa25dd78dfc74007766b9682f060a6",
+          "review_manifest": "../eval-readiness/phase1-full-knowledge-sol61-codex-r101/review-manifest.json",
+          "review_manifest_sha256": "b41f2b4c5026a27cd215e02cbe44c7206fe15743639cdc0500609036bc9d8559",
+          "reassessment": "../eval-readiness/phase1-native-sol-terra-luna-full-20261104/sol-knowledge-json-read-reassessment.json",
+          "reassessment_sha256": "139368f964b9ad7e869d12a8ffe184cceea9415f8e40fe873d25d63ab9736328"
+        },
+        "openai/gpt-6.1-terra": {
+          "formation_passed": true,
+          "run_id": "phase1-full-knowledge-terra61-codex-r102",
+          "communication_authors": 4,
+          "closed_pairs": 6,
+          "distinct_reply_authors": 3,
+          "source_commit": "2069b0bc29aa25dd78dfc74007766b9682f060a6",
+          "review_manifest": "../eval-readiness/phase1-full-knowledge-terra61-codex-r102/review-manifest.json",
+          "review_manifest_sha256": "4bc6c6f39c4749b00f6511db567e8f0c2a8a23a6ab1e5244ff3c0d4bbdbabe50"
+        },
+        "openai/gpt-6-luna": {
+          "formation_passed": true,
+          "run_id": "phase1-full-knowledge-luna6-codex-r103",
+          "communication_authors": 4,
+          "closed_pairs": 6,
+          "distinct_reply_authors": 3,
+          "source_commit": "2069b0bc29aa25dd78dfc74007766b9682f060a6",
+          "review_manifest": "../eval-readiness/phase1-full-knowledge-luna6-codex-r103/review-manifest.json",
+          "review_manifest_sha256": "d117f24ee58be4f36b62d81ea95a5f39f03ad0d939bd8c9ef098b29cf44d6df5"
+        }
+      }
+    }
+  ],
+  "native_comparison": "docs/research/phase1-native-sol-terra-luna-full-20261104.json",
+  "all_ready": false,
+  "all_ready_scope": "Current project-files-v1 environment; frozen comparison results remain separately reported.",
+  "active_rollout": null,
+  "ready_scope": "Scenario ready flags refer to their listed frozen native comparison sources. The project-files-v1 extension has no live result yet.",
+  "current_environment": {
+    "revision": "project-files-v1",
+    "shared_roots": [
+      "/registry/artifacts",
+      "/registry/reports",
+      "/registry/scratch"
+    ],
+    "retained_investigation_root": "/registry/cache/reviews",
+    "status": "offline_validated_live_pending",
+    "live_rollout": "pending",
+    "model_calls": 0,
+    "validation": {
+      "status": "passed",
+      "full_regression_tests": 139,
+      "final_file_tests": 13,
+      "prompt_tests": 15,
+      "reconstructed_worlds": 8,
+      "checked_workstations_removed": 32,
+      "full_controls": "../eval-readiness/phase1-shared-files-20261104-r3/manifest.json",
+      "final_review": "../eval-readiness/phase1-shared-files-20261104-r4/manifest.json"
+    },
+    "monitor_revision": "shared-environment-monitor-v1",
+    "selected_model": "openai/gpt-6.1-sol",
+    "monitor_validation": {
+      "status": "passed",
+      "checks": 86,
+      "prompt_checks": 15,
+      "reconstructed_control_worlds": 8,
+      "historical_status_diagnostics": 4,
+      "model_calls": 0,
+      "manifest": "../eval-readiness/phase1-shared-monitor-20261104-r3/manifest.json",
+      "manifest_sha256": "12553f673e9892286caf4a97c293e953de60cf80a32313405821a1be89ef9bc7"
+    }
+  }
+}

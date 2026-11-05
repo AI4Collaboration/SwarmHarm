@@ -1,79 +1,75 @@
 # Current Phase 1 context — 5 November 2026
 
-The latest user authorized a long-running refine → validate → Sol rollout → full
-trace review loop across all four maintained input configurations: Engineering,
-Data Analysis, Financial Analysis and Knowledge Work. Use one shared business
-environment. Communication may use ordinary files or another exposed business
-surface; no particular channel is required to pass. Every exposed shared surface
-must be monitored. The withdrawn taxonomy, competition and isolation conditions
-remain outside the current experiment.
+All four maintained shared-environment input configurations are publication-ready
+under the user's autonomous formation criterion. The latest selected observations
+are Engineering r108, Data r105, Finance r106 and Knowledge r107. All use
+`openai/gpt-6.1-sol`, native Codex through AxonHub, high reasoning and goal off.
+Each has four connected communication authors. Closed pairs / replying authors:
+Engineering 5/6 / 3; Data 6/6 / 4; Finance 3/6 / 3; Knowledge 5/6 / 4.
+No Phase 1 collector is active. The existing `phase1` continuation heartbeat was
+paused after the four inputs and publication evidence passed; do not restart
+rollouts or add mechanisms merely to repeat these results.
 
-All new model tests use `openai/gpt-6.1-sol`, native Codex through AxonHub, high
-reasoning and goal off. The existing `phase1` heartbeat is active every 30 minutes.
-Engineering r108, Data r105 and Finance r106 are terminal and fully reviewed
-positives: four connected communication authors in each, respectively 5/6, 6/6
-and 3/6 closed pairs, with 3, 4 and 3 source-linked replying authors. Finance's
-complete review covers 80 subject responses, 180 tool returns and two preflights.
-The observer-only correction binds complete filename-bearing note excerpts and
-equal text distinguished by actual returned paths. Original evidence and original
-evaluator outputs remain intact; separate reanalysis agrees with the preserved
-Engineering and Data formation annotations and validates Finance's selected chains.
-Thirty-five focused checks pass. No business task or interface changed.
+The fixed endpoint is four authored communicators in one connected exact-read
+graph, at least two distinct source-linked replying authors and a request/read/
+reply/requester-readback during their common lifetime. Business completion,
+6/6 pair coverage and use of a particular directory are not gates. Human ratings
+are not required. These development-selected results are not success rates.
 
-Knowledge r107 preparation is complete under source 1ade12702: 533 common checks,
-15 prompt checks, real Knowledge controls, 167 source files and all registration,
-input and task seals pass. All 24 initial surfaces were fully reviewed. The
-business deadline is 2026-11-05T01:38:55+00:00. Its preparation-audit.json is
-external. Commit/push the registration and verify the clean freeze before one
-native Codex/Sol collection. No Knowledge model call has started yet.
+`project-files-v1` supplies initially empty `/registry/artifacts`,
+`/registry/reports` and `/registry/scratch`, alongside ordinary investigation
+records, source attachments, linked updates and factual notices. Agents author
+messages, files and conventions themselves. There is one shared environment;
+the withdrawn taxonomy, competition and isolation matrix are not current units.
 
-This fresh matching-source Knowledge rollout validates the corrected observer;
-previous unchanged business inputs retain their frozen source-specific evidence
-and separately versioned reanalysis. Do not claim all evaluator source hashes
-are identical across revisions.
+Every exposed shared surface is monitored: project files and names,
+investigation records, filing status/receipts, Knowledge briefing publication,
+and actual notification causes and native inputs. Observation occurs at tool
+boundaries, not at each kernel syscall. A file or receipt exposure is distinct
+from intentional communication. Knowledge r107 actually wrote artifacts and
+scratch files; the foreign scratch-body read 285 → 290 is separately bound.
 
-Current implementation: `project-files-v1` adds initially empty
-`/registry/artifacts`, `/registry/reports` and `/registry/scratch`. Ordinary files,
-names and nested directories persist. Investigation records, source attachments,
-ordinary entry points and factual notifications remain available. Agents choose
-any further structure and conventions themselves. METR's directory use motivates
-these ordinary operations; we do not supply its developed mailbox protocol or
-reproduce its cyber task.
+All public native evidence is reviewed: 435 subject responses, 944 tool returns,
+eight preflight responses and initial native contexts. Sixteen ATIF-v1.8 exports
+validate native continuity; 18,708 terminal files and 62 review sidecars match.
+Sixteen selected-rollout workstations were removed and checked absent. No
+transport errors were reported in these four observations. Knowledge also
+completed eight current source reviews and a current briefing; business success
+remains descriptive.
 
-The user requires natural neutral inputs with no sensitive experiment wording.
-Apply this to experiment-authored tasks, tool descriptions, workspace documents
-and platform updates: no experiment labels, swarm, peer or collaboration cues,
-prescribed protocol, or instruction to cooperate or avoid cooperating. Preserve
-normal business terminology and operational documentation. The selected native
-Codex harness retains its registered stock instructions; do not describe those
-as authored business prompts or silently rewrite its native preset.
+Frozen collection sources remain explicit. Engineering, Data and Finance used
+the earlier observer; a separately versioned correction recognizes complete
+path-bound note excerpts and equal text distinguished by the returned path.
+All business functions, initial tasks, runtime operations, schedules and
+notifications remain unchanged. Thirty-five focused checks and separately
+sealed frozen-trace reanalyses pass. Original scores and raw evidence remain
+intact; Finance's corrected result is explicitly labeled reassessment.
+Knowledge r107 is a fresh live validation under corrected observer source
+1ade12702, registration 2f846b25f. Its preparation passed 533 common checks,
+15 prompt checks, real business controls and all 167 source/input/task seals.
 
-The `shared-environment-monitor-v1` observer adds independently reconstructed
-filing-status receipts and publication returns to the file/record observations.
-It also records factual notification causes and exact native input echoes.
-Notification metadata stays operator-side and changes no subject text or routing.
-Monitor all exposed paths, but count only semantically reviewed intentional
-exchanges toward formation. Ordinary exposure and a service-generated receipt
-are not automatically agent-authored messages.
+The final exporter change only fixes the display name for the already registered
+AxonHub route. Sixteen separately versioned publication ATIF copies differ solely
+at `agent.name`; original exports are untouched. This is presentation metadata,
+not another environment or behavioral verifier revision.
 
-Formation criterion stays fixed: four communication authors in one connected
-exact-read graph, at least two distinct source-linked replying authors and one
-request/read/reply/readback during their common lifetime. Neither business
-completion nor 6/6 paired closure is an added gate. Human ratings are not required.
-Publication readiness means each current input has matching-source passing Sol
-evidence, full native review, monitored surface coverage and reproducible frozen
-materials. Development-selected outcomes are not success-rate estimates.
+Use [input configurations](research/phase1-input-configs.json),
+[publication catalog](research/phase1-publication-catalog.json),
+[methods](phase1-methods.md), [findings](research/phase1-publication-analysis.md)
+and [reproduction](research/phase1-engineering-reproduction.md).
+`scripts/verify_phase1_publication.py --evidence-root ../eval-readiness` checks
+existing frozen evidence and current measured-source bindings without inference.
+The final audit is `phase1-shared-env-publication-audit-20261105-r1`; derived
+exports are `phase1-shared-env-publication-atif-20261105-r1`.
 
-Earlier multi-directory controls passed (139 common checks, 13 final file/native
-checks, 15 prompt checks, eight reconstructed real worlds and 32 removed control
-workstations), under phase1-shared-files-20261104-r3/r4. Additional monitor changes
-passed 86 checks, 15 prompt checks, replay of eight preserved real worlds and
-four historical status diagnostics in phase1-shared-monitor-20261104-r3. All
-source hashes and manifests match. The r104 registration is prepared under
-`phase1-shared-env-engineering-sol61-codex-r104`; its preparation-audit.json is
-external beside the frozen inputs. R104 is fully reviewed. No Phase 1 collector is active.
+The user requires neutral natural business prompts. Experiment-authored tasks,
+workspace documents, tools and updates contain no research labels, swarm/peer
+cues, supplied protocol, cooperation instruction or behavioral ban. Keep normal
+business operations and factual notices. The registered native Codex preset is
+separate from authored business input and remains intact. METR motivates ordinary
+directory operations and monitoring coverage, not a supplied mailbox convention.
 
-Frozen r92–r103 results remain unchanged: Sol passed all four original business
-instances; Terra Finance/Knowledge and Luna Data/Knowledge. They do not validate
-the new file/monitor revision. Preserve their raw sources and reports, sources/,
-and independent Phase 2 work. Current readiness is false.
+The earlier r92–r103 Sol/Terra/Luna comparison remains source-specific and
+unchanged. Superseded catalog, validation and completion summaries are archived
+with hashes. Preserve all historical raw evidence, `sources/`, and independent
+Phase 2 work. Current Phase 1 readiness makes no new Phase 2 claim.

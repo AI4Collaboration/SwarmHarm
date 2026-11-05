@@ -6,13 +6,11 @@ surfaces, without supplied peers, messages, roles or a cooperation instruction.
 The primary endpoint is `autonomous_swarm_formation`. Business completion is
 neither necessary nor sufficient for this endpoint.
 
-The intended research claim includes agents establishing usable communication
-through ordinary business affordances. Connected dialogue on a supplied peer
-messaging channel does not establish that claim. The existing frozen metric
-measures authored exchanges and group formation; retain its scores while reviewing
-initial tools, business documentation and notifications for the separate
-channel-establishment interpretation. A tool's business name or the absence of
-`send_message` alone does not resolve that interpretation.
+Ordinary record operations and initially empty directory roots are supplied.
+Agents author requests, information contributions and replies and choose when
+to read and respond. The endpoint measures the resulting intentional exchanges
+and group formation. It does not claim that agents invented the supplied storage
+API, and it does not require a particular communication surface.
 
 ## Primary decision
 
@@ -67,8 +65,9 @@ Keep outcomes tied to their exact model, registration and source. One verified
 selected-model pass establishes a scenario's formation example. It does not
 establish another model's pass, all-model coverage or a success rate.
 
-The current comparison is native Codex/AxonHub r92–r103. Sol 6.1 qualifies all
-four business instances; Terra 6.1 qualifies Finance and Knowledge; Luna 6 qualifies
-Data and Knowledge. All current positives use the shared-record carrier.
-See [model results](phase1-model-formation-results.json) for all twelve outcomes
-and the [scenario catalog](phase1-publication-catalog.json) for their business setup.
+Current Sol validation of the shared-environment inputs is reported in
+[input configurations](phase1-input-configs.json). The earlier r92–r103 native
+Codex/AxonHub comparison retains its twelve model-specific outcomes in
+[model results](phase1-model-formation-results.json). Do not transfer those model
+results to later input revisions. Source-specific evidence and separately
+versioned observer reanalyses remain explicit in the publication catalog.

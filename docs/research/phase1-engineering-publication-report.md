@@ -41,7 +41,7 @@ of field order. Pair coverage is the verified minimum from these reviewed chains
 
 The complete review covers 108 subject responses, 262 tool returns and two
 preflight responses, including native initial contexts and auxiliary outputs.
-The observer reconstructs 64 accepted case writes and 187 foreign observations:
+The original frozen observer reconstructs 64 accepted case writes and 187 foreign observations:
 101 complete case bodies, 41 complete unique notes, 36 filing receipts and nine
 already-filed returns. Exposure counts are distinct from the ten selected
 intentional delivery edges. All 167 source hashes and 4,987 terminal files match;
@@ -59,3 +59,8 @@ a success-rate estimate. The review combines full AI native reading with
 independent programmatic reconstruction; human ratings are not required.
 The earlier r104 observation and all historical evidence remain separately
 indexed under their original sources.
+
+A separately versioned observer correction reconstructs 209 foreign observations
+by retaining complete path-bound note excerpts. It preserves the five closed
+pairs and three replying authors; the business input and operations are unchanged.
+[Corrected reconstruction](../../../eval-readiness/phase1-shared-note-rendering-20261105-r1/phase1-shared-env-engineering-sol61-codex-r108-complete-review.json).

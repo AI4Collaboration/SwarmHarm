@@ -1,8 +1,8 @@
 {
   "schema": "phase1-readiness-v3",
   "updated_at": "2026-11-05",
-  "status": "current_inputs_live_pending",
-  "all_ready": false,
+  "status": "publication_ready",
+  "all_ready": true,
   "all_ready_scope": "Current project-files-v1 environment; frozen comparison results remain separately reported.",
   "business_scenario_coverage": {
     "reviewed": 4,
@@ -17,18 +17,14 @@
   "publication_catalog": "docs/research/phase1-publication-catalog.json",
   "primary_endpoint": "autonomous_swarm_formation",
   "business_completion_is_gate": false,
-  "active_rollout": {
-    "name": "phase1-shared-env-knowledge-sol61-codex-r107",
-    "stage": "preparing",
-    "session": 13439,
-    "source_commit": "1ade12702d30c95abce8725d82c0a293c8a5a837"
-  },
+  "active_rollout": null,
   "automatic_continuation": {
     "id": "phase1",
-    "status": "ACTIVE",
-    "interval_minutes": 30
+    "status": "PAUSED",
+    "interval_minutes": 30,
+    "reason": "All four current inputs and publication evidence passed."
   },
-  "current_action": "Finance full native review and observer reassessment sealed; Knowledge r107 preparing. Historical source-specific scores preserved.",
+  "current_action": "Four current Sol observations fully reviewed. Publication evidence, source-specific provenance and export metadata validated; no new rollout needed.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
     "revision": "project-files-v1",
@@ -38,8 +34,8 @@
       "/registry/scratch"
     ],
     "retained_investigation_root": "/registry/cache/reviews",
-    "status": "offline_validated_live_pending",
-    "live_rollout": "Engineering r108 and Data r105 reviewed and passed; Finance and Knowledge pending",
+    "status": "publication_ready",
+    "live_rollout": "Engineering r108, Data r105, Finance r106 and Knowledge r107 fully reviewed.",
     "validation": {
       "status": "passed",
       "full_regression_tests": 139,
@@ -66,14 +62,39 @@
       "description": "Bind complete note projections regardless of field order, and complete path-named plaintext notes; distinguish repeated note text by returned record path. Business inputs and runtime operations unchanged.",
       "focused_checks": 35,
       "manifest": "../eval-readiness/phase1-shared-note-rendering-20261105-r1/manifest.json",
-      "status": "focused_and_frozen_trace_reanalysis_passed_fresh_knowledge_pending",
-      "manifest_sha256": "5c6de72599d6d6441c2bf33875ae78c4597c0050517c47994bdb5d65040462c4"
+      "status": "validated_with_fresh_knowledge_rollout",
+      "manifest_sha256": "5c6de72599d6d6441c2bf33875ae78c4597c0050517c47994bdb5d65040462c4",
+      "fresh_validation_rollout": "phase1-shared-env-knowledge-sol61-codex-r107"
     }
   },
   "input_config_index": "docs/research/phase1-input-configs.json",
   "current_evidence_index": "docs/research/phase1-shared-env-sol-20261104.json",
   "current_input_coverage": {
-    "ready": 3,
+    "ready": 4,
     "total": 4
+  },
+  "publication_audit": {
+    "manifest": "../eval-readiness/phase1-shared-env-publication-audit-20261105-r1/manifest.json",
+    "sha256": "14a9eabdda7556bfad70d73fa4b710f1728fbf65e1d93aa8b1d7096558dac033",
+    "current_inputs": 4,
+    "terminal_files_verified": 18708,
+    "review_files_verified": 62,
+    "native_responses_reviewed": 435,
+    "native_tool_returns_reviewed": 944,
+    "preflight_responses_reviewed": 8,
+    "atif_trajectories": 16,
+    "owned_workstations_removed": 16
+  },
+  "publication_atif": {
+    "manifest": "../eval-readiness/phase1-shared-env-publication-atif-20261105-r1/manifest.json",
+    "sha256": "8f02768b9d043da746e0321b6e63c271244fa4cefe6d60e5f08e6b13e57ca261",
+    "change": "Derived ATIF agent.name correctly identifies AxonHub; all original exports and all behavioral content preserved."
+  },
+  "offline_reproduction": {
+    "script": "scripts/verify_phase1_publication.py",
+    "script_sha256": "2ceff50ff7a6cbe51fe71ac576cedcfac64bb1cd833563f758386f180c52e15a",
+    "verification": "../eval-readiness/phase1-shared-env-publication-verification-20261105-r2.json",
+    "verification_sha256": "04526cf96519360c8f08d1bdacc573f1db0e26f66a5f1a11eb524e507b65c2cb",
+    "model_calls": 0
   }
 }

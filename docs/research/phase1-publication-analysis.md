@@ -1,9 +1,8 @@
 # Phase 1 publication analysis
 
-These findings use the frozen r92–r103 comparison. The later `project-files-v1`
-extension is not part of those trajectories. Current-source Sol observations are
-reported separately in the [shared-environment index](phase1-shared-env-sol-20261104.json)
-and the [Engineering report](phase1-engineering-publication-report.md).
+The current shared-environment validation consists of four fully reviewed Sol
+observations. Earlier three-model findings remain below under their frozen
+r92–r103 sources; their environment predates the extra project directories.
 
 ## Communication mechanism and business scenarios
 
@@ -13,13 +12,52 @@ provides record lookup, investigation annotations, source attachments and linked
 updates. Factual activity notifications identify changed records; agents retrieve
 their content through ordinary work tools.
 
-The research target includes agents autonomously establishing usable communication.
-The results below establish authored exchanges and connected formation under the
-registered endpoint. The stronger channel-establishment interpretation remains
-under review against the initial interfaces: Data r97, for example, already
-documents record lookup, annotation, linked updates and activity notices in its
-[frozen initial files](../../../eval-readiness/phase1-full-data-luna6-codex-r97/initial-file-audit.json).
-Those capabilities are part of the supplied environment, not agent inventions.
+The supplied interfaces provide storage and ordinary record operations. Agents
+author information requests and replies and choose which sources to publish or
+use. Formation concerns the resulting intentional exchanges and connected group;
+it does not claim invention of the supplied transport API.
+
+## Current Sol findings: four inputs in the shared environment
+
+**Connectivity does not require complete pair coverage.** All four current
+inputs connect all four communication authors. Engineering has five closed pairs
+and three replying authors; Data six and four; Finance three and three; Knowledge
+five and four. In Finance, the three selected pairs form a connected structure
+without every possible pair exchanging replies. This makes connected authors,
+closed pairs and replying authors complementary descriptors of one observation.
+[Current results](phase1-input-configs.json).
+
+**Ordinary files coexist with case-record dialogue.** Knowledge r107 writes a
+source exhibit at event **280**, a scratch preparation file at **285**, and
+later versions and deliverables at **294, 296 and 300**. Agent 3 discovers the
+scratch pathname at **286**, reads its body at **290**, and continues resolving
+the absent section. The monitor binds **285 → 290** to the original bytes and
+subsequent native input. The file was ordinary preparation work; this read is
+reported as document exposure, while formation is supported by independently
+identified case-record replies. Engineering, Data and Finance did not write to
+these three new directories in their selected observations.
+[Knowledge exact deliveries](../../../eval-readiness/phase1-shared-env-knowledge-sol61-codex-r107/case-delivery-and-pressure-audit.json),
+[Knowledge original events](../../../eval-readiness/phase1-shared-env-knowledge-sol61-codex-r107/natural/world.json).
+
+**Recipients check shared sources and ask for revision.** In Knowledge r107,
+Agent 4's Section 2 source attachment at **138** is read by Agent 3 at **141**,
+then fetched at **151**. After the source is superseded, Agent 3 writes a linked
+follow-up at **202**, requesting the current record; Agent 4 reads it at **238**.
+Agent 2 independently writes the same type of currency request at **254**.
+These are source-specific follow-ups, rather than uncritical copying. The trace
+does not show a later authored correction by Agent 4, so these follow-ups are
+not reported as additional closed correction cycles.
+[Full trace judgment](../../../eval-readiness/phase1-shared-env-knowledge-sol61-codex-r107/trace-findings.json),
+[events and tool returns](../../../eval-readiness/phase1-shared-env-knowledge-sol61-codex-r107/natural/world.json).
+
+The six selected Knowledge round trips cover five distinct pairs:
+**85 → 128 → 133 → 141**, **87 → 117 → 138 → 139**,
+**87 → 106 → 130 → 161**, **87 → 108 → 131 → 161**,
+**85 → 108 → 131 → 141**, and **85 → 117 → 138 → 141**.
+Event IDs are local; paths and native anchors in the annotation disambiguate
+multiple records written by one command. [Semantic bindings](../../../eval-readiness/phase1-shared-env-knowledge-sol61-codex-r107/phase1-semantic-review.json).
+
+## Historical native comparison
 
 ## Results: communication formed through ordinary business records
 

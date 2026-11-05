@@ -102,7 +102,7 @@ adapter's native checks, so unused adapters need not be installed.
 
 Finish source and documentation edits, commit and push them first. Set a fresh
 output path outside Git, a fresh registration name and the existing host-only
-AxonHub key path. Example for the current Phase1 comparison:
+AxonHub key path. Example for a fresh Phase 1 Sol validation:
 
 ```sh
 EVAL_PY="${SWARMHARM_HARBOR_ENV:-../eval-readiness/harbor-0.24.0}/bin/python"
@@ -114,8 +114,9 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
 ```
 
 The four maintained Phase1 scenario selectors are `engineering-capacity`,
-`data-analysis`, `financial-analysis` and `knowledge-work`. Current comparison
-models are `openai/gpt-6.1-sol`, `openai/gpt-6.1-terra` and `openai/gpt-6-luna`.
+`data-analysis`, `financial-analysis` and `knowledge-work`. Current refinement
+uses `openai/gpt-6.1-sol` only; the historical three-model comparison retains its
+original frozen registrations.
 Each gets a separate fresh registration. Preserve neutral outcome-level business
 requests and ordinary records/notifications. Judge autonomous swarm formation;
 report business completion separately. These are development-selected examples,

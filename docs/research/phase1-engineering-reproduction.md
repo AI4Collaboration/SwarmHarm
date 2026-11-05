@@ -1,112 +1,76 @@
-# Reproducing the Engineering carrier evidence
+# Reproducing the current Phase 1 evidence
 
-## Scope and units
+The current publication unit is four input configurations in one shared business
+environment. The selected observations are Engineering r108, Data r105, Finance
+r106 and Knowledge r107, all using Sol 6.1 through native Codex/AxonHub. The
+[input index](phase1-input-configs.json) records each full name, source commit,
+registration commit, initial-input audit and review manifest.
 
-Current work follows the four natural business scenarios in the
-[scenario inventory](phase1-publication-units.md). Historical carrier packages
-below reproduce original results only; they do not define current experimental
-conditions or pending work.
+## Verify existing evidence without inference
 
-## Historical verified package
-
-`../eval-readiness/phase1-engineering-offline-repair-evidence-20261103-r1`
-contains r22–r42 and 15 audit roots. Verification from `/tmp` with Python 3.9
-passed 33,011 package-file hashes, all 21 rollout reconstructions and 18 operator
-worlds, without network or model calls. The explicit v12 offline evaluator has
-150 hash-bound files. The portability audit is
-`../eval-readiness/phase1-offline-repairs-portability-audit-20261103-r1/manifest.json`.
-This package preserves the reviewed historical evidence; it does not contain a
-v12 model rollout or establish current-source live validation.
-
-## Historical Claude Code supplement
-
-The separately verified `../eval-readiness/phase1-cc-portability-20261103-r1/package`
-adds fully reviewed r47, with 6,508 hash-bound files. Its offline verification
-from `/tmp` passes physical, package, pressure and native semantic reconstruction
-using the included 152-file evaluator. The original historical package above
-remains unchanged. No provider HTTP context, independent human judgment or
-new model execution is claimed by this portable check. Final consolidation uses the current atomic-input evaluator and all current
-condition reviews; see the catalog for its status.
-
-## Offline verification
-
-The portable release contains `verify.py`, `manifest.json`, `mapping.json`,
-`rollouts/` and `audits/`. Use Python 3.9 or later; the verified offline path uses
-the standard library and the frozen code included in the package. It requires
-no credentials, model calls, Docker service or access to the original directory.
-From any working directory, run:
+Place the four evidence directories and the explicitly linked observer/export
+audit directories under one evidence root, normally `../eval-readiness`. Keep
+all sealed files unchanged. From the repository root run:
 
 ```sh
-python3 /absolute/path/to/evidence/verify.py --replay > /absolute/path/to/replay-result.json
+python3 scripts/verify_phase1_publication.py --evidence-root ../eval-readiness
 ```
 
-Keep the output outside the sealed evidence directory. The command verifies
-all package hashes, original terminal manifests and review bindings. It then
-reconstructs carrier provenance, actual package acceptance and native annotated
-communication endpoints using the explicit frozen evaluator named in `mapping.json`, when supplied,
-or the latest included rollout validator. Both retain historical revision
-support. The explicit evaluator is separately hash-bound and may postdate
-the subjects; it is offline reinterpretation, not matching-source live evidence. It also reconstructs recorded CPU intervention results and
-included operator-control worlds. A failure exits without changing the original
-evidence. `mapping.json` maps original absolute provenance paths to portable
-locations; original records are not rewritten.
+This reads existing files and Git objects. It checks registration, task, input,
+frozen code, terminal and review hashes, selected formation results and versioned
+observer reanalyses. It makes no model or service calls. The evidence root is
+external to Git; keys are never part of an evidence handoff or repository commit.
 
-The consolidated verifier also reconstructs every Claude SDK response and exact
-tool return, even when no communication signal is annotated. It rejects extra
-unprojected assistant messages, missing or changed tool returns, and delivery
-outside the corresponding response interval. For atomic-input registrations it
-rechecks the whole initial delegation and every later input before each response.
-Legacy v1 registrations retain their startup-ordering limitation; replay does not
-retroactively give them atomic delivery. The performance cache reuses only the
-JSON decoding of identical terminal-manifest bytes. Every referenced native file
-is still read and checked against its original hash; cache or manifest mutation
-aborts verification.
+Each selected directory contains:
 
-This offline verifier does not rerun a model or recreate historical process
-timing. It reconstructs the recorded processes and acceptance rules. Separate
-original independent audits also recompiled the delivered source. Repeating
-bytecode-digest checks requires the original pinned Python version because
-marshalled code is version-dependent; those hashes are not language-independent
-binary reproducibility claims.
+- The committed registration, frozen `code/`, Harbor tasks and initial inputs.
+- Complete native responses, tool calls and returns, histories and terminal state.
+- `evidence-manifest.json` sealing collection outputs before semantic review.
+- `phase1-semantic-review.json` linking authored requests and replies to exact reads.
+- Independent physical reconstruction, full-reading records and partial-pair counts.
+- Four validated ATIF-v1.8 trajectories, cleanup evidence and `review-manifest.json`.
 
-Each rollout retains its registration, prepared inputs, frozen code, native
-sessions and request/response records, world events, compiler-service snapshot,
-cleanup evidence, original collection manifest and sealed review sidecars.
-Public native text and tool returns were fully reviewed. Encrypted model
-reasoning is neither decoded nor interpreted. The manifest authenticates bytes;
-it is not a substitute for the declared AI semantic review. Review annotations
-and their limits remain visible.
+Finance's corrected observer result is `independent-review-reassessment.json`;
+its original unannotated evaluator output is preserved. Engineering and Data have
+separate observer reanalyses linked in the index. Knowledge is a fresh rollout
+on the corrected observer. The correction changes recognition of complete note
+excerpts, not task content, runtime operations or notification delivery.
 
-Programmatic checks distinguish completed filings, candidate packages and final
-packages. Historical v8 records predate the candidate endpoint and are checked
-against their original endpoints. The frozen v11 combined report lacks the
-package aggregate; sealed terminal audits and independent portable replay
-supply that aggregate without altering the original report.
+Original ATIF exports retain a historical display-label error referring to a
+subscription. Separately versioned publication copies identify the registered
+AxonHub route. Only `agent.name` changes; all native content and original export
+hashes remain intact. The current exporter derives the label from authentication.
 
-## Repeating an experiment
+## Reproduce the measurement
 
-A fresh model rollout is a new experiment, not deterministic replay. Use the
-common `experiments/swarmharm-v1/run.py` preparation entry and `launch.py`
-collector with a fresh output and registration. Select `--study-mode phase1`,
-`--scenario engineering-capacity`, `--harness claude-code`,
-`--model-id anthropic/claude-haiku-5.5`, `--model-alias haiku55`,
-`--reasoning-effort high`, `--population 4` and `--goal-mode off`.
-Use the AxonHub key through the common entry; all model traffic stays on AxonHub.
-Historical Pi/Sol runs keep their own settings and are not relabeled as CC.
-Engineering installs its ordinary shared-record workflow automatically. Preserve
-every prepared input and the actual catalog checks.
-Commit and push the registration, confirm a clean matching local/remote source
-and all source/input/task seals, then launch that registration once. Do not use
-an expired business deadline. Retain all native records and negative outcomes.
+Use the exact `code/` and pinned Harbor 0.24.0 environment associated with the
+selected registration for original-review reproduction. Run review/export in a
+separate copy; never overwrite the original evidence or replace an original
+score with a later interpretation. Apply the recorded observer revision only
+when reproducing its separately labeled reassessment. The current publication
+audit binds the old and new observer hashes and unchanged business functions.
 
-The ordinary offline business control is scripts/audit_phase1_cases.py. It checks
-actual source-backed delivery through shared records, without a paired exposure
-or competition schedule. Operator checks are not model communication evidence.
+Formation requires four authored communicators in one connected exact-read
+graph, two distinct source-linked replying authors and a request/read/reply/
+requester-readback in their common lifetime. Inspect the selected native anchors
+and the surrounding full trace. Closed pairs out of six and task completion are
+reported separately. A service receipt or foreign read alone is not a reply.
 
-## Interpretation
+## Collect a new independent observation
 
-Each new revision requires its own matching-source trace review. A successful
-Phase 1 result needs intentional sending, exact reads, linked replies, read-back
-and group formation. Historical negatives and natural-use results remain valid
-observations, but do not finish the user's refinement goal. AI review and
-independent programmatic reconstruction are used; no human-rating gate applies.
+A new observation needs a fresh registration and output directory. Use the common
+prepare → commit/push registration → freeze check → launch → review/export path
+in [Running evaluations](../running-evals.md), selecting one of the four current
+scenario names and `openai/gpt-6.1-sol`, `codex`, `high`, goal off and AxonHub.
+Preparation validates the source dependency, reachable business delivery,
+ordinary interfaces and neutral prompts. No peer identities or communication
+conventions are supplied. Models determine messages and exchanges themselves.
+
+The current four examples are complete; this guide does not schedule retries or
+recollect their registrations. An independent observation is not guaranteed to
+reproduce a development-selected outcome. Report its actual model, frozen input,
+budget, native trace and result.
+
+The earlier carrier controls and Claude supplement remain in the
+[archived reproduction guide](archive/phase1-20261105-pre-current-shared-env/phase1-engineering-reproduction.md).
+They are not current conditions or additional requirements.

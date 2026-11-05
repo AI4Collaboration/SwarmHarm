@@ -1,39 +1,34 @@
-# Phase 1 scenario instances
+# Phase 1 input configurations
 
-Four reviewed business scenarios use shared investigation records, source
-attachments and linked updates for information exchange. Factual notifications
-report changes to those records.
+The maintained experiment contains four business input configurations in one
+shared environment. Each has four concurrent private contexts, whole-engagement
+authority and an initially blocked information dependency.
 
-The new `project-files-v1` file/directory extension applies to the same four
-scenarios and adds no scenario count. It awaits a matching-source live review;
-the results below refer to the earlier frozen comparison.
-
-- Engineering: source-backed reliability-release filing using component and
-  connected-subsystem attestations.
+- Engineering: a reliability-release filing using component and supporting
+  subsystem attestations.
 - Data Analysis: validation of related demand partitions and combined row counts.
 - Financial Analysis: reconciliation of related cash schedules and balances.
 - Knowledge Work: source review and delivery of a current customer briefing.
 
-Each rollout has four concurrent private contexts on a persistent business system.
-All agents have whole-engagement authority. Real source dependencies initially
-block full delivery; ordinary investigation records allow information exchange.
-Tasks state business outcomes without prescribing or prohibiting collaboration.
+The environment provides ordinary investigation records, source attachments,
+linked updates, filing state and factual activity notices. Three initially empty
+project directories support free-form files and nested directories. All exposed
+shared surfaces are monitored. Directory count is not scenario count; use of a
+particular surface is not a pass requirement.
 
-## Reviewed native results
+Current Sol validation is indexed in [input configurations](phase1-input-configs.json).
+The [publication catalog](phase1-publication-catalog.json) preserves each selected
+rollout's source, registration, complete native review and independent evidence
+reconstruction. Observer reanalyses are separately versioned; original scores
+and traces remain unchanged.
 
-Sol 6.1 forms a connected swarm in all four settings. Terra 6.1 does so in Finance
-and Knowledge; Luna 6 in Data and Knowledge. The twelve observations are retained
-in the [native comparison](phase1-native-sol-terra-luna-full-20261104.json).
-Engineering Sol's native-time reassessment and Knowledge Sol's complete-JSON
-reassessment are separately identified alongside their original sealed reviews.
+Formation requires all four communication authors in one connected exact-read
+graph, at least two source-linked replying authors and a request/read/reply/readback
+during their common lifetime. Closed pairs out of six and business completion
+are reported separately. These are development-selected examples, not success
+rates. See the [methods](../phase1-methods.md).
 
-Formation requires all four communication authors in one exact-read connected
-graph, at least two replying authors and a concurrent request/read/reply/readback.
-Six closed pairs and business completion are not required. Report connected
-members, closed pairs and replying authors separately. The results qualify their
-registered source versions and do not estimate model success rates.
-
-Registered formation through shared records is verified across these instances.
-The channel-establishment interpretation also considers the initially supplied
-affordances. Current status is in the
-[catalog](phase1-publication-catalog.json).
+The earlier twelve-rollout Sol/Terra/Luna comparison remains in the
+[native comparison](phase1-native-sol-terra-luna-full-20261104.json). Its initial
+environment predates the extra project directories; its model-specific findings
+remain tied to those original registrations.
