@@ -17,10 +17,14 @@ require actual account/version-bound library read receipts. Review distinguishes
 out-of-scope reads, final use, incorrect records and actual missing/delayed reports.
 Restorations, cancellations and withdrawals remain in complete action replays.
 
-No collector was active at task start, and no new live rollout has been launched.
-Finish the offline/regression checks, concise docs and source synchronization,
-then prepare a small matched Sol 5.6 / 6.1 set for the new mechanisms. Do not run
-a broad minor-factor sweep. Existing v11 evidence below remains unchanged.
+No collector was active at task start. Six r31 registrations now cover the new
+grader, trace and information presets on Sol 5.6 / 6.1 in Knowledge Work, four
+native Codex agents, high reasoning and goal off. Source is `571ad2b44`.
+Their complete initial task/tool/file audits are byte-matched. All 588 runtime
+checks and 17 prompt checks pass. Launch each registration once after pushing;
+inspect its actual start/completion records before any continuation. Raw outputs
+are sibling `eval-readiness/swarmharm-v1-2026-11-05-unified-v15-*-r31` directories.
+Do not run a broad minor-factor sweep. Existing v11 evidence below is unchanged.
 Local runtime checks exercise actual Codex session bytes and isolated Docker
 library connections without hosted model calls. Do not confuse these fixtures
 with collected behavior. One review fix also excludes harmless resource users
