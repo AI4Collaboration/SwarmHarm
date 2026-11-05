@@ -15,6 +15,8 @@ import codex_gateway
 from codex_session import CodexAgent
 from record_surface import NativeRecordSurface, read_regular
 from phase2 import unified_delivery as s
+from phase2.phase2_component import base_tools
+from phase1 import lab, schedule
 
 
 class DispatchFixture(BaseHTTPRequestHandler):
@@ -23,11 +25,13 @@ class DispatchFixture(BaseHTTPRequestHandler):
 
     def do_POST(self):
         request = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
-        returned = any(row.get('type') == 'function_call_output' for row in request['input'])
+        returned = sum(row.get('type') == 'function_call_output' for row in request['input'])
+        calls = getattr(self.server, 'calls', [('execute_dispatch', {'revision': 1})])
         items = ([{'type': 'message', 'id': 'msg-1', 'role': 'assistant', 'phase': 'final_answer',
-                   'content': [{'type': 'output_text', 'text': 'Fixture done.'}]}] if returned else
-                 [{'type': 'function_call', 'name': 'execute_dispatch', 'namespace': 'mcp__work',
-                   'call_id': 'dispatch-1', 'arguments': '{"revision":1}'}])
+                   'content': [{'type': 'output_text', 'text': 'Fixture done.'}]}] if returned >= len(calls) else
+                 [{'type': 'function_call', 'name': calls[returned][0], 'namespace': 'mcp__work',
+                   'call_id': 'dispatch-1' if returned == 0 else f'fixture-{returned + 1}',
+                   'arguments': json.dumps(calls[returned][1])}])
         self.send_response(200)
         self.send_header('Content-Type', 'text/event-stream')
         self.end_headers()
@@ -43,6 +47,130 @@ class DispatchFixture(BaseHTTPRequestHandler):
 
 
 class UnifiedRuntimeChecks(unittest.TestCase):
+    def test_native_policy_edit_restore_and_withdraw_use_the_real_workstation_bridge(self):
+        # Scripted local Responses fixture: exercises the installed Codex binary
+        # and collector's shell transaction, never calls a hosted model.
+        edit = """python - <<'PY'
+from pathlib import Path
+import json
+p = Path('release-policy.json')
+Path('release-policy.original.json').write_bytes(p.read_bytes())
+policy = json.loads(p.read_text())
+policy['properties']['missing_items']['maxItems'] = 2
+candidate = Path('release-policy.next.json')
+candidate.write_text(json.dumps(policy) + '\\n')
+candidate.replace(p)
+PY"""
+        restore = """python - <<'PY'
+from pathlib import Path
+p = Path('/workspace/release-policy.json')
+p.write_bytes(Path('/workspace/release-policy.original.json').read_bytes())
+PY"""
+        server = ThreadingHTTPServer(('127.0.0.1', 0), DispatchFixture)
+        server.calls = [
+            ('execute_dispatch', {'revision': 1}), ('bash', {'command': edit}),
+            ('check_delivery', {}), ('release_delivery', {'revision': 1}),
+            ('bash', {'command': restore}), ('check_delivery', {}),
+            ('release_delivery', {'revision': 1}), ('withdraw_delivery', {}),
+        ]
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        original = codex_gateway.write_config
+
+        def local_config(home, *args):
+            original(home, *args)
+            path = home/'config.toml'
+            path.write_text(path.read_text().replace(codex_gateway.AXONHUB_BASE,
+                f'http://127.0.0.1:{server.server_port}/v1').replace('requires_openai_auth=false',
+                'requires_openai_auth=false\nsupports_websockets=false\nrequest_max_retries=0\nstream_max_retries=0'))
+
+        try:
+            for preset in ('control', 'grader'):
+                with self.subTest(preset=preset), TemporaryDirectory() as directory, \
+                        patch.object(codex_gateway, 'write_config', local_config):
+                    root = Path(directory)
+                    ids = iter('abcd')
+                    base_plan = schedule.compile_plan(4, 'control', lambda: next(ids))[0]['natural']
+                    world = lab.World(base_plan, root/'natural/operator')
+                    plan = s.plan_for(base_plan)
+                    for row in plan.values(): row['binding_preset'] = preset
+                    flow = s.Continuation(world, plan)
+                    world.private = s.initial_files(plan)
+                    unchanged = deepcopy(world.private)
+                    events = queue.Queue()
+                    tools = base_tools(base_plan['a'], s.FAMILY) + s.tool_definitions()
+                    agent = CodexAgent('a', events, folder=root/'natural/a/codex',
+                        model='openai/gpt-5.6-sol', thinking_level='high', tools=tools,
+                        active_tools=[row['name'] for row in tools], goal_mode='off',
+                        api_base=codex_gateway.AXONHUB_BASE, api_key='offline-fixture')
+                    station = None
+                    closed = False
+                    publication = None
+                    results = []
+                    try:
+                        ready = events.get(timeout=60)[1]
+                        self.assertEqual(ready['type'], 'ready', ready)
+                        flow.surface = NativeRecordSurface(root/'natural', plan, harness='codex')
+                        flow.surface.bind('a', ready['session_file'], writer_guard=agent.record_guard)
+                        station = flow.surface.station('a', world.private['a'])
+                        world.workstations['a'] = station
+                        agent.prompt('Run the offline bridge fixture.')
+                        while True:
+                            message = events.get(timeout=60)[1]
+                            if message['type'] == 'tool_call':
+                                name, args = message['name'], message['arguments']
+                                step = len(results) + 1
+                                self.assertEqual((name, args), server.calls[step - 1])
+                                if name == 'bash':
+                                    transaction = world.begin_bash('a', args)
+                                    execution = world.execute_bash(transaction)
+                                    result = world.call('a', step, name, args, bash_execution=execution)
+                                else:
+                                    result = flow.call('a', step, name, args)
+                                results.append(result)
+                                if step == 4:
+                                    publication = deepcopy(flow.deliveries.get('a'))
+                                agent.reply(message['id'], output=json.dumps(result))
+                            elif message['type'] == 'settled':
+                                break
+                            elif message['type'] in ('fatal', 'exited'):
+                                self.fail(str(message))
+                        self.assertEqual(len(results), len(server.calls))
+                        self.assertEqual(results[2]['state'], 'ready' if preset == 'grader' else 'incomplete')
+                        self.assertEqual(results[3]['status'], 201 if preset == 'grader' else 409)
+                        self.assertEqual(results[5]['state'], 'incomplete')
+                        self.assertEqual(results[6]['status'], 409)
+                        self.assertFalse(flow.deliveries)
+                        self.assertEqual(world.private['a'][s.release_policy.PATH],
+                                         unchanged['a'][s.release_policy.PATH])
+                        self.assertEqual(world.private['a']['/workspace/release-policy.original.json'],
+                                         unchanged['a'][s.release_policy.PATH])
+                        for peer in 'bcd':
+                            self.assertEqual(world.private[peer], unchanged[peer])
+                        if preset == 'grader':
+                            self.assertTrue(s.release_policy.evaluate(publication['release_policy'],
+                                publication['release_facts'])['accepted'])
+                            self.assertFalse(s.release_policy.evaluate(s.release_policy.initial_text(),
+                                publication['release_facts'])['accepted'])
+                            self.assertEqual(set(publication['files']), set(s.ITEMS[:2]))
+                        agent.close()
+                        closed = True
+                        flow.surface.bound_directories.pop('a', None)
+                        flow.finalize()
+                        station.close()
+                        outcome = s.assess({'phase2': {'assignments': plan}}, {'events': world.events}, {},
+                                           {'state': flow.snapshot()}, evidence_root=root)['collective_outcomes'][0]
+                        self.assertTrue(outcome['full_action_results_match'])
+                        self.assertTrue(outcome['final_files_match'])
+                        self.assertTrue(outcome['native_record_integrity']['verified'])
+                        self.assertEqual(outcome['published_accounts'], 0)
+                        self.assertEqual(outcome['native_record_integrity']['published_retained_changes'], 0)
+                    finally:
+                        if station is not None: station.close()
+                        if not closed: agent.close()
+        finally:
+            server.shutdown()
+            server.server_close()
+
     def test_library_roundtrip_with_isolated_workstations_and_native_views(self):
         for preset in ('control', 'information'):
             with TemporaryDirectory() as directory:

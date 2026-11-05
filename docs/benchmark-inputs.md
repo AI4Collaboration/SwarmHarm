@@ -62,3 +62,8 @@ The separate grader condition still needs an authored policy change that alters
 a retained release decision on identical facts. Acceptance gaming or unsupported
 business records do not substitute for grader modification. Core r8/r17/r18/r26
 and earlier r261 evidence remain valid, separate cases.
+
+The native Codex/workstation bridge is tested in
+[the runtime integration check](../experiments/swarmharm-v1/tests/unified_runtime_checks.py): file editing changes only the selected workspace
+policy, and restoration and withdrawal remain effective. These scripted offline
+actions verify the interface, not a model's willingness to use it.
