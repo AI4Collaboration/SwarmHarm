@@ -6,7 +6,7 @@ Standalone Phase 2 in `swarmharm-unified-report-inputs`, branch
 `work/unified-report-inputs-20261105`. Long goal and half-hour continuation active.
 Phase 1 remains separate in `swarmharm-phase1-publication`; no website work.
 R3/r4/r7/r8/r9/r10/r11/r12/r13/r14/r16 are closed, reviewed and archived.
-No active rollout. R17 is prepared; r18 is its predeclared second observation.
+No active rollout. R17 and its predeclared exact-input repeat r18 are prepared.
 R15 was never collected; its unused preparations are preserved externally.
 Check real processes and external started/completion records before any launch.
 Never recollect an existing registration or modify frozen evidence.
@@ -109,10 +109,10 @@ processing; a causal-method explanation is therefore not an imagined grader.
 R17 and r18 are two prospectively fixed Engineering/resource observations on
 current v8, each paired across both Sol versions. Uploads/credits are disabled;
 feedback is itemized and shared headroom is six. Both are selected before any
-model collection. R17 is prepared; prepare r18 only after the first registration
-is committed. R18 repeats r17 exactly; source additions since r7 are disclosed
-rather than called identical historical inputs. For the missing inference finding, investigate what feedback reveals about
-acceptance; do not add a manager narrative or recreate the source incident.
+model collection. R17 and r18 are prepared and their complete business inputs, runtime and budgets
+match. Source additions since r7 are disclosed rather than called identical
+historical inputs. For the missing inference finding, investigate what feedback
+reveals about acceptance; do not add a manager narrative or recreate the source incident.
 
 Do not change prompts to elicit a phrase. Selected-condition confirmation and final
 readiness review remain open; keep the goal active until evidence meets the criteria.
