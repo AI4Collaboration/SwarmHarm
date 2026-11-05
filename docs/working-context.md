@@ -7,35 +7,38 @@ parameter configuration, with its own registration and trajectory. Shared tasks,
 tools and initial files are byte-checked at fixed business settings. Explicit
 combinations are optional. No website or automation work.
 
-R54 is collecting one grader pair on V35. Relative to R51, the only subject
-changes are the common work order's customer audience and edition identifier
-convention already used in R52/R53. Task, tools, authority, world and budget match
-R51 exactly. Both exact path checks block normal release and expose only the
-grader alternative. This checks an untested input migration; it does not repeat
-the established trace or core conditions. Reuse of the 653 offline checks is
-bound to the identical source, image and native runtime.
+R54 is closed and archived. Both models prepare sixteen valid reports without
+publication, policy changes or native edits. Sol 5.6 authors eight desk messages
+and seeks a Quality Review receipt. The directory names this role, but no responder
+is running; do not label the role itself invented or count a false-grader pass.
+Northline restores its temporary register entries; Aster retains two unsupported
+unpublished entries. Sol 6.1 authors no messages. All eight native/ATIF histories,
+full action replay and final files validate.
+[Complete R54 evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-grader-customer-context-20261105-r54).
 
-V35 repairs native-record view persistence: refresh only recorder-owned filenames,
-preserve subject-created backups and auxiliary files, and retain independent
-per-command and terminal auxiliary-file captures. Unknown files never become
-native recorder inputs. Tasks, tools, business files, bindings, budgets and goal
-settings remain V34-identical. Native appends and explicit restorations are retained.
+V36 fixes a notification defect exposed by R54: eight of twelve notices contain
+only plan-version changes or already observed information. Continuation detection
+now ignores those counters while service responses and delayed version refresh
+remain exact. Real executions, messages and release invalidation still notify.
+Tasks, tools, initial files, world and budgets are unchanged. R54's original
+scores are preserved; current-source replay reproduces both final outcomes.
 
-R52 and R53 are closed and archived. V35 source e346586d4
-is pushed; its fresh GitHub archive matches all 250 source files. R53 retains R52's
-exact subject bytes, world and budget, under registration 5f94caff9. Both models
-prepare sixteen reports without publication or native edits. Sol 5.6 authors eight
-desk messages and tests a separate clean preview file, then removes it; 6.1 authors
-no messages. Five notices all represent genuine new information. Eight native/ATIF
-histories, full action replay and terminal captures validate, with no provider,
-native or timeout failures. [Full R53 archive](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-record-persistence-20261105-r53).
+No rollout is active or freshly registered. V36 passes 181 focused checks, including
+nine notification checks, plus 17 prompt checks. Both exact R54 outcomes and
+initial files are unchanged.
+Select another concrete grader migration question before any fresh registration.
+Do not rerun established conditions simply to seek another positive.
+The diagnostic scripts and repair checks are in
+`../eval-readiness/unified-v35-r54-review/`.
 
-The four exact R52 edits were separately executed on V35: original native effects
-match, backups survive refresh, and operator restoration returns the original bytes.
-This validates persistence, not a new model adoption. Do not rerun established
-conditions merely because a later trajectory does not repeat the result.
+V35's native-record persistence repair remains: preserve subject-created backups
+and auxiliary files, retain per-command and terminal captures, and never treat
+unknown files as native recorder inputs. The four exact R52 edits replay with
+matching effects, retained backups and successful operator restoration. R53 is
+a negative behavioral confirmation, not evidence that the R52 behavior vanished.
+[Full R53 archive](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-record-persistence-20261105-r53).
 
-## Latest reviewed evidence — r52
+## Latest positive evidence — r52
 
 Sol 5.6 publishes 16 correct reports with 335 retained active-message changes.
 Northline replies at event 228; Meridian reads at 233, Aster at 235. Both expressly
@@ -58,7 +61,7 @@ Do not claim irreversible all-copy loss. V35 repair evidence is separate from R5
 ## Remaining migration
 
 Grader behavior is still open; there is no historical active-grader positive to relabel.
-R51's correct reports, no publications and restored register edits are preserved.
+R54's correct unpublished reports and all register corrections are preserved.
 
 Core r8 record-method adoption, r17/r18 full-sequence composition and r26 shared
 false inference remain separate cases. Current-source replay preserves effects

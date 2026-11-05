@@ -1,4 +1,5 @@
-"""Own completed work must not be announced back as new business information."""
+"""Continuation notices require new business information, not version churn."""
+from copy import deepcopy
 from types import SimpleNamespace
 import unittest
 
@@ -71,6 +72,76 @@ class UnifiedNotificationChecks(unittest.TestCase):
         before={'revision':'before','calendar_revision':'before'}
         after={'revision':'after','calendar_revision':'after'}
         self.assertEqual(run.acknowledge_tool_activity(extension,'write',{},after,before,before),before)
+
+    def shared_flow(self, config=None):
+        flow = self.flow({'status_scope': 'reporting_close', **(config or {})})
+        flow.activate()
+        return flow
+
+    def stage_again(self, flow, actor):
+        plan = deepcopy(flow.plans[actor])
+        plan.pop('revision')
+        return flow.call(actor, len(flow.world.events)+1, 'stage_dispatch', plan)
+
+    def test_identical_plan_versions_do_not_resume_observers(self):
+        for author in ('a', 'b'):
+            with self.subTest(author=author):
+                flow = self.shared_flow()
+                signal = flow.activity_signal('a')
+                business = flow.goal_business_state('a')
+                state = {}
+                check = {'complete': False, 'actor_complete': False,
+                         'actor_business_state': flow.business_state('a')}
+                run.record_observed_work_revision(state, flow, check, signal)
+                before = flow.plans[author]['revision']
+                result = self.stage_again(flow, author)
+                self.assertEqual(result['plan']['revision'], before+1)
+                now = flow.activity_signal('a')
+                self.assertEqual(now, signal)
+                self.assertEqual(flow.goal_business_state('a'), business)
+                check['actor_business_state'] = flow.business_state('a')
+                self.assertFalse(run.followup_needed(state, flow, check, now))
+                self.assertEqual(run.work_notice(extension=flow, actor='a',
+                    check=check, signal=now, delivered=signal, state=state,
+                    unfinished_followup=True), (None, None))
+
+    def test_new_execution_still_resumes_observers(self):
+        flow = self.shared_flow()
+        before = flow.activity_signal('a')
+        flow.call('b', 1, 'execute_dispatch', {'revision': 1})
+        after = flow.activity_signal('a')
+        self.assertNotEqual(before, after)
+        check = {'complete': False, 'actor_complete': False,
+                 'actor_business_state': flow.business_state('a')}
+        self.assertEqual(run.work_notice(extension=flow, actor='a', check=check,
+            signal=after, delivered=before)[1], 'relevant_platform_change')
+
+    def test_delayed_version_refresh_remains_exact_without_a_notice(self):
+        flow = self.shared_flow({'status_refresh_seconds': 10})
+        before = flow.activity_signal('a')
+        self.stage_again(flow, 'b')
+        self.assertTrue(flow.has_pending_business_update())
+        self.assertTrue(flow.advance_business_time(10))
+        result = flow.call('a', 2, 'delivery_desk', {})
+        account = flow.plan['b']['account']
+        self.assertEqual(result['edition_check']['checked_revisions'][account], 2)
+        self.assertEqual(flow.activity_signal('a'), before)
+        self.assertFalse(flow.has_pending_business_update())
+
+    def test_identical_plan_invalidating_a_release_is_still_new(self):
+        flow = self.shared_flow({'completion_basis': 'contents',
+                          'access': {'report_upload': 'enabled'}})
+        for item in s.ITEMS:
+            flow.call('b', 1, 'submit_report', {'item': item,
+                'source_revision': s.SOURCE_REVISION,
+                'csv': s.payload(flow.plan['b'], item)})
+        result = flow.call('b', 2, 'release_delivery',
+                          {'revision': flow.plans['b']['revision']})
+        self.assertEqual(result['status'], 201)
+        before = flow.activity_signal('a')
+        self.stage_again(flow, 'b')
+        self.assertNotEqual(flow.activity_signal('a'), before)
+        self.assertNotIn('b', flow.deliveries)
 
 
 if __name__=='__main__':unittest.main()

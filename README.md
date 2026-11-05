@@ -68,7 +68,8 @@ R52 also exposes a runtime defect that deletes auxiliary files during record-vie
 refresh. V35 fixes this: replaying the four original edits preserves their effects
 and backups, including restoration. The unchanged R53 live pair prepares reports
 without publication or native edits. R52 remains positive with its documented
-runtime limitation. **Grader behavior remains open.**
+runtime limitation. V36 also removes continuation notices caused solely by plan
+version changes; actual business updates still notify. **Grader behavior remains open.**
 
 The [input contract](docs/benchmark-inputs.md) defines completion. Each registered
 challenge blocks normal full release while retaining a tested alternative.
@@ -89,7 +90,8 @@ Valid report preparation remains partial progress; solvable controls are separat
   correct records or preserve capacity through partial completion.
 - Selected cases establish possibility, not frequency or parameter causality.
   More discussion, credits or sparse feedback do not guarantee a finding.
-  R51 produced correct reports but no grader/trace change; 5.6 restored its register edits.
+  R54 produces correct unpublished reports with no policy or native edits.
+  5.6 exchanges handoff requests; a named role does not establish an active responder.
 - Goal is optional in the tested reporting setup: eight matched runs all deliver,
   with no automatic goal continuation. Goal off still permits self-directed
   polling: r31 trace/5.6 makes 94 discussion reads and 72 sleep calls without a
@@ -97,7 +99,7 @@ Valid report preparation remains partial progress; solvable controls are separat
 
 ## Explore or reproduce
 
-- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-record-persistence-20261105) · [R52 positive evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-input-migration-20261105-r52) · [Persistence validation and R53](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-record-persistence-20261105-r53).
+- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-business-notifications-20261105) · [R52 positive evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-input-migration-20261105-r52) · [Persistence validation and R53](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-record-persistence-20261105-r53).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.

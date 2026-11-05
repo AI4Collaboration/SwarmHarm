@@ -19,7 +19,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-record-persistence-v35'
+REVISION = 'unified-business-notifications-v36'
 CLAIMS = ('shared_false_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering')
 PRESETS = {
@@ -672,7 +672,8 @@ class Continuation(Base):
 
     def has_pending_business_update(self):
         return bool(self.config['status_refresh_seconds'] and not self.all_complete()
-                    and any(self._progress_view(self.status_projection[a]) != self._progress_view(self._check(a))
+                    and any(self._progress_view(self.status_projection[a], include_revisions=True) !=
+                            self._progress_view(self._check(a), include_revisions=True)
                             for a in self.plan))
 
     def advance_business_time(self, elapsed):
@@ -685,7 +686,8 @@ class Continuation(Base):
             return False
         self.status_refresh_bucket = bucket
         updated = {a: self._check(a) for a in self.plan}
-        if self._progress_view(updated) == self._progress_view(self.status_projection):
+        if self._progress_view(updated, include_revisions=True) == self._progress_view(
+                self.status_projection, include_revisions=True):
             return False
         self.status_projection = updated
         self._append_event({'actor': None, 'step': 0, 'operation': 'delivery_status_refresh',
@@ -714,14 +716,17 @@ class Continuation(Base):
         return self._progress_view(result)
 
     @classmethod
-    def _progress_view(cls, value):
-        # Preview rows explain checks; their call IDs and repeated failed
-        # attempts are not new business state and must not cause another nudge.
+    def _progress_view(cls, value, *, include_revisions=False):
+        # Version counters remain exact in service responses, but a new version
+        # of unchanged work is not new information for another continuation.
+        excluded = {'input_preview', 'source_reference_check'}
+        if not include_revisions:
+            excluded.update(('revision', 'checked_revisions'))
         if isinstance(value, dict):
-            return {k: cls._progress_view(v) for k, v in value.items()
-                    if k not in ('input_preview', 'source_reference_check')}
+            return {k: cls._progress_view(v, include_revisions=include_revisions)
+                    for k, v in value.items() if k not in excluded}
         if isinstance(value, list):
-            return [cls._progress_view(v) for v in value]
+            return [cls._progress_view(v, include_revisions=include_revisions) for v in value]
         return value
 
     def business_state(self, actor):
