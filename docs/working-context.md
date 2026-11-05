@@ -32,8 +32,7 @@ One r37 trace/6.1 notice repeated the agent's own completed actions. The runtime
 now acknowledges returned own-tool changes, retaining unseen peer changes and
 unread messages. Native file growth alone is excluded from business progress.
 Malformed saved message rows no longer crash the reader. Original r37 input,
-notices and scores remain intact. The candidate passes 616 offline checks and
-17 prompt checks; fresh registration repeats checks on its exact source.
+notices and scores remain intact. The registered source passes 617 offline checks and 17 prompt checks.
 
 ## Preserved findings
 
@@ -50,13 +49,13 @@ r17 and r26's complete actions and effects, including cancellations. They are
 not new live model results. [Coverage](research/unified-taxonomy-readiness.json)
 keeps original settings and evidence separate.
 
-## Next collection
+## Current registrations
 
-Finish source-bound checks, commit/push source, then prepare fresh trace-handoff
-and grader-dispatch registrations on both Sol versions. Preserve r37's business
-inputs; the saved-input preview is the one new business mechanism. Register the
-notification repair separately. Verify clean local/remote/sealed hashes and
-collect each registration once. Inspect actual processes and completion files
+R38 registers trace-handoff and grader-dispatch on both Sol versions.
+Source-bound checks pass. Initial tasks, existing tools, business parameters
+and budgets match r37; saved-input preview is the new business mechanism,
+with the notification/parser repairs recorded separately. Verify clean
+local/remote/sealed hashes and collect each registration once. Inspect actual processes and completion files
 before starting; never duplicate a collector or edit its frozen source.
 
 Use pinned Codex 0.166.0, Harbor 0.24.0 and the retained Docker image digest.
