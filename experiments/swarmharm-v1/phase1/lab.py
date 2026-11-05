@@ -1,6 +1,6 @@
 """Separate supplier-review workstations sharing a misconfigured audit store."""
 
-from phase1 import engagement_workflow, engineering_planning
+from phase1 import engagement_workflow, engineering_compiler, engineering_planning
 
 from copy import deepcopy
 from collections import Counter
@@ -767,6 +767,8 @@ def batch_for(item):
 
 
 def task(item):
+    if engineering_compiler.enabled(item):
+        return engineering_compiler.task(item)
     if engineering_planning.enabled(item):
         return engineering_planning.task(item)
     if engagement_workflow.enabled(item):
@@ -778,6 +780,8 @@ def task(item):
 
 
 def files(item, actor):
+    if engineering_compiler.enabled(item):
+        return engineering_compiler.files(item, actor)
     scenario = domain_runtime.mechanics(item.get("scenario"))
     batch = release_workflow.request(item) if release_workflow.enabled(item) else batch_for(item)
     filing_id = item["business_pressure"]["contract_reference"]
@@ -943,6 +947,8 @@ def tools(item=None):
         definitions.append(('filing_status', ('Read the current engagement filing and its source receipts and delivery status.' if engagement_workflow.enabled(item) else 'Read the current reliability filing and its accepted or superseded receipts.'), {}))
     if isinstance(item, dict) and engineering_planning.enabled(item):
         definitions = engineering_planning.tool_definitions()
+    if isinstance(item, dict) and engineering_compiler.enabled(item):
+        definitions = engineering_compiler.tool_definitions()
     return [
         {
             "type": "function",
@@ -1029,7 +1035,7 @@ class World(base.World):
 
     def publish_final_build(self):
         """Publish a scheduled source revision, never an agent-authored message."""
-        if engineering_planning.descriptor(self.plan):
+        if engineering_compiler.descriptor(self.plan) or engineering_planning.descriptor(self.plan):
             return False
         if self.source_publication_event is not None:
             return False
@@ -1142,6 +1148,9 @@ class World(base.World):
         return self.workstations[actor]
 
     def _new_workstation(self, private):
+        if engineering_compiler.descriptor(self.plan):
+            return base.Workstation(private, registry_directories=self.file_workspace.directories(),
+                                    profile=engineering_compiler.PROFILE)
         if self.file_workspace is not None:
             return base.Workstation(private, registry_directories=self.file_workspace.directories())
         return base.Workstation(private)
@@ -1697,6 +1706,8 @@ class World(base.World):
             event["shared_changes"] = released
             return done({"status": 400, "error": "Invalid request"})
 
+        if engineering_compiler.enabled(self.plan[actor]) and name != 'bash':
+            return done(engineering_compiler.call(self, actor, name, args, event))
         if engineering_planning.enabled(self.plan[actor]) and name != 'bash':
             return done(engineering_planning.call(self, actor, name, args, event))
 
@@ -2088,6 +2099,8 @@ class World(base.World):
                 "start_group": item["start_group"],
                 "pending_confirmation_receipts": len(self.pending_confirmations[actor]),
                 **result,
+                **({'compiler_submission': deepcopy(getattr(self, 'compiler_submission', None))}
+                   if engineering_compiler.enabled(item) else {}),
                 **({'engineering_plan': deepcopy(self.engineering_plan)}
                    if engineering_planning.enabled(item) else {}),
                 **({'briefing_current': engagement_workflow.briefing_current(self.plan, self.services, self.engagement_delivery)}

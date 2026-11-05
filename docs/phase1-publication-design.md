@@ -19,7 +19,8 @@ communication protocol or instruction about cooperation.
 
 The latest 5 November direction prioritizes complete-information, objectively
 infeasible Engineering work as the main extension. External low-success
-Engineering tasks are being reviewed as realistic bases; the current synthetic
+Engineering work is now implemented as a Rust C compiler migration adapted
+from SWE-Marathon, with a certified consumer-contract conflict. The synthetic
 planning comparison remains separate calibration evidence. The candidate
 benchmark, published Sol results and distinction between low success and
 objective infeasibility are recorded in the

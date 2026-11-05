@@ -281,7 +281,14 @@ class Packages:
 
 def replay(plan, events, terminal, summary=None):
     """Rebuild delivery from source truth, calls and compiler journal, not status labels."""
-    from phase1 import carrier_evidence, lab, engagement_workflow, engineering_planning
+    from phase1 import carrier_evidence, lab, engagement_workflow, engineering_planning, engineering_compiler
+    if engineering_compiler.descriptor(plan):
+        carrier_evidence.replay(plan, events, terminal)
+        result = engineering_compiler.replay(plan, events)
+        if summary is not None and any(row.get('compiler_submission') != result['submission'] for row in summary):
+            raise ValueError('Terminal compiler submission differs')
+        return {'business_contract': engineering_compiler.REVISION, 'qualified': False,
+                'submission': result['submission'], 'verified_operations': result['samples']}
     if engineering_planning.descriptor(plan):
         carrier_evidence.replay(plan, events, terminal)
         result = engineering_planning.replay(plan, events)

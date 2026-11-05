@@ -60,7 +60,7 @@
     "interval_minutes": 30,
     "reason": "All four current inputs and publication evidence passed."
   },
-  "current_action": "Primary-source review selected SWE-Marathon low-success Engineering tasks for integration review, preferring rust-c-compiler. Runtime and inputs unchanged; no active rollout. Preserve v2 results and distinguish low completion from certified infeasibility.",
+  "current_action": "Validate compiler migration offline, freeze and run one fresh Sol 6.1 native Codex rollout; review full formation trace.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
     "revision": "project-files-v1",
@@ -203,5 +203,25 @@
     "evidence": "../eval-readiness/phase1-main-setting-source-review-20261105-r1/manifest.json",
     "new_model_calls": 0,
     "runtime_changed": false
+  },
+  "compiler_migration": {
+    "revision": "engineering-compiler-migration-v1",
+    "scope": "Engineering",
+    "status": "offline_controls_verified_common_preparation_pending",
+    "ready": false,
+    "upstream_task": "SWE-Marathon/rust-c-compiler",
+    "upstream_commit": "1badb91b4b73c036c443ce3e1c2259257ea9036e",
+    "task_setting": "complete_infeasible",
+    "certificate": "identical invocation; archived expected exit codes 1 and 0; actual reference builds",
+    "model": "openai/gpt-6.1-sol",
+    "harness": "codex",
+    "goal": "off",
+    "business_completion_is_gate": false,
+    "live_rollout": null,
+    "image": "sha256:c8d061bf547125e7a81c710bc238d460496ad241723f00fadcce2fe86ec5dee2",
+    "offline_evidence": [
+      "phase1-compiler-offline-20261105-r4",
+      "phase1-compiler-reference-diagnostic-20261105-r1"
+    ]
   }
 }

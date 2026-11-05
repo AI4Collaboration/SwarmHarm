@@ -1,12 +1,13 @@
 # SwarmHarm
 
-**Main-setting priority, 5 November:** prioritize complete-information,
-objectively infeasible Engineering work. Primary-source review found Sol 6.1 /
-Codex / max at 0/8 full passes on three SWE-Marathon v1.1 tasks; the compiler
-task is the first integration candidate. These externally measured hard tasks
-have reference solutions and are not themselves proven infeasible. No new
-task has been integrated or collected. See
-[benchmark source and adaptation requirements](docs/research/phase1-engineering-task-settings.md#main-setting-direction-and-benchmark-source).
+**Engineering main-setting implementation, 5 November:** the Rust C compiler
+migration now has complete specifications, actual builds and tests, and a
+synthetic incompatible consumer contract. The upstream SWE-Marathon task is
+feasible and has published Sol 0/8 full passes; our added contract conflict is
+independently demonstrated. Existing shared directories and investigation
+activity are retained. Offline validation is in progress; the fresh Sol rollout
+and formation review are pending. See
+[task settings](docs/research/phase1-engineering-task-settings.md).
 
 **Requested task-setting comparison, 5 November:** distinguish information-dependent
 work from difficult work with complete individual access to task facts. Existing
@@ -248,6 +249,16 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- Compiler migration offline checks caught a Rust PATH mismatch and a
+  non-executable temporary build directory; both were fixed in the new optional
+  profile. The upstream reference implementation passes 779/780 public tests in
+  the adapted amd64 image. Its `big_array` executable reports a Rosetta mmap
+  failure; GCC passes the same source. That observation is preserved separately
+  from the actual signed/unsigned-char contract certificate. The old whole-suite
+  timeout and its diagnostic outputs remain archived; bounded public-test
+  selections now give immediate progress. These are operator checks, not model
+  formation results.
 
 - Engineering planning r136–r138 exposed two practical defects: normal complete
   source backups (about 88 KiB) exceeded an inherited 32 KiB project-file cap,

@@ -202,7 +202,9 @@ class ApptainerWorkstation:
 
 
 class DockerWorkstation:
-    def __init__(self, initial_files, registry_directories=None):
+    def __init__(self, initial_files, registry_directories=None, profile=None):
+        self.profile = deepcopy(profile or {})
+        self.command_timeout = self.profile.get('command_timeout_seconds', 30)
         self.registry_directories = registry_directories
         self.name = "sh-workbench-" + secrets.token_hex(8)
         self.closed = False
@@ -213,10 +215,14 @@ class DockerWorkstation:
             "--label", f"org.swarmharm.owner-pid={os.getpid()}",
             "--network=none", "--read-only", "--cap-drop=ALL",
             "--security-opt=no-new-privileges", "--user", "65534:65534",
-            "--memory=512m", "--cpus=1", "--pids-limit=64",
+            f"--memory={self.profile.get('memory_mb',512)}m", "--cpus=1",
+            f"--pids-limit={self.profile.get('pids_limit',64)}",
         ]
-        for path, size in (("/workspace", "32m"), ("/registry", "16m"), ("/tmp", "32m")):
-            args += ["--tmpfs", f"{path}:rw,nosuid,nodev,size={size},mode=1777"]
+        for path, size in (("/workspace", f"{self.profile.get('workspace_mb',32)}m"),
+                           ("/registry", f"{self.profile.get('registry_mb',16)}m"),
+                           ("/tmp", f"{self.profile.get('tmp_mb',32)}m")):
+            options = ",exec" if path == "/tmp" and self.profile.get("executable_tmp") else ""
+            args += ["--tmpfs", f"{path}:rw,nosuid,nodev,size={size},mode=1777{options}"]
         try:
             subprocess.run(
                 args + [IMAGE, "python", "-I", "-c", "import time;time.sleep(172900)"],
@@ -294,14 +300,14 @@ class DockerWorkstation:
         with tempfile.TemporaryFile() as stdout_file, tempfile.TemporaryFile() as stderr_file:
             process = subprocess.Popen(
                 ["docker", "exec", "--workdir", "/workspace", self.name,
-                 "timeout", "--kill-after=1s", "30s", "bash", "-lc", command],
+                 "timeout", "--kill-after=1s", f"{self.command_timeout}s", "bash", "-lc", command],
                 stdout=stdout_file, stderr=stderr_file,
             )
             began = time.monotonic()
             limited = None
             try:
                 while process.poll() is None:
-                    if time.monotonic() - began > 35:
+                    if time.monotonic() - began > self.command_timeout + 5:
                         limited = "command timeout"
                         break
                     if stdout_file.tell() + stderr_file.tell() > 2_000_000:

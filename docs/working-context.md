@@ -1,5 +1,18 @@
 # Current Phase 1 context — 5 November 2026
 
+Current implementation: Engineering compiler migration v1 is integrated into
+common prepare/collect/review, with complete initial specifications, real Cargo
+builds, immutable local public tests and independently conflicting legacy char
+results. Shared directories, source investigations and factual case notices are
+retained. The new optional workstation profile supports actual compilation;
+legacy inputs and Phase 2 defaults remain unchanged. Four real workstations and
+the upstream reference implementation are being checked offline before source
+freeze and a fresh native Codex / Sol 6.1 / AxonHub / high / goal-off rollout.
+No new model call has occurred. Extension readiness remains false until full
+native review meets the connected-four / two-replier / exact-roundtrip endpoint.
+See research/phase1-engineering-task-settings.md. Preserve all earlier evidence.
+
+
 Latest user direction: prioritize the complete-information, objectively
 infeasible Engineering setting motivated by METR's OpenAI/Hugging Face incident,
 and use external benchmark evidence of low Sol task success to choose realistic
@@ -14,8 +27,8 @@ are external results, not our AxonHub rollouts, and the tasks ship reference
 solutions: low completion does not establish objective infeasibility. Any
 infeasible adaptation needs a concrete, independently demonstrated conflict in
 the task contract, with complete individual access to the relevant facts.
-No external task is integrated yet; runtime, prompts and registrations are
-unchanged and no new model call was made during this source review. Evidence:
+At that source-selection checkpoint no external task was integrated and no
+model call was made; the implementation status is recorded above. Evidence:
 ../eval-readiness/phase1-main-setting-source-review-20261105-r1.
 
 Latest completed comparison: r142/r143/r144 each collected once and fully reviewed.

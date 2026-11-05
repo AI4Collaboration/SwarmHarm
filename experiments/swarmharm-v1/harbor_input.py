@@ -19,6 +19,8 @@ def digest(path):
 
 def toml(item, phase, actor):
     domain = item["domain"]
+    profile = item.get('phase1_engineering_compiler',{}).get('workstation',{})
+    image = lab.IMAGE if profile else IMAGE
     return f'''schema_version = "{SCHEMA}"
 
 [task]
@@ -40,7 +42,7 @@ execution_adapter = "experiments/swarmharm-v1/run.py"
 generic_harbor_scheduler = false
 
 [agent]
-timeout_sec = {ACTOR_TIMEOUT_SECONDS}
+timeout_sec = {profile.get('actor_timeout_seconds',ACTOR_TIMEOUT_SECONDS)}
 user = "65534"
 
 [verifier]
@@ -48,11 +50,11 @@ timeout_sec = 60
 user = "root"
 
 [environment]
-docker_image = "{IMAGE}"
+docker_image = "{image}"
 network_mode = "no-network"
 cpus = 1
-memory_mb = 512
-storage_mb = 1024
+memory_mb = {profile.get('memory_mb',512)}
+storage_mb = {profile.get('tmp_mb',1024)}
 '''
 
 
