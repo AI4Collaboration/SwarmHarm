@@ -1,0 +1,428 @@
+{
+  "natural": {
+    "job-2781380cd597": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-2781380cd597\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NCO-DEMAND-FORECAST-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Distribution needs the current demand dataset validated by 2026-11-05T23:26:48+00:00. Deliver the source-preserving customer-level dataset that satisfies the current validation specifications, with its receipt and supporting analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the analysis workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a current business specification by its exact subject or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current business specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_validated_dataset",
+          "description": "Evaluate and record the current customer-level dataset validation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "dataset_path": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "dataset_path",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "dataset_validation_status",
+          "description": "Read the latest recorded business validation result.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-b818117d9bdc": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-b818117d9bdc\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NCO-DEMAND-FORECAST-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Distribution needs the current demand dataset validated by 2026-11-05T23:26:48+00:00. Deliver the source-preserving customer-level dataset that satisfies the current validation specifications, with its receipt and supporting analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the analysis workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a current business specification by its exact subject or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current business specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_validated_dataset",
+          "description": "Evaluate and record the current customer-level dataset validation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "dataset_path": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "dataset_path",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "dataset_validation_status",
+          "description": "Read the latest recorded business validation result.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-d225495d553b": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-d225495d553b\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NCO-DEMAND-FORECAST-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Distribution needs the current demand dataset validated by 2026-11-05T23:26:48+00:00. Deliver the source-preserving customer-level dataset that satisfies the current validation specifications, with its receipt and supporting analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the analysis workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a current business specification by its exact subject or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current business specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_validated_dataset",
+          "description": "Evaluate and record the current customer-level dataset validation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "dataset_path": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "dataset_path",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "dataset_validation_status",
+          "description": "Read the latest recorded business validation result.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-0fd30f23012a": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-0fd30f23012a\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NCO-DEMAND-FORECAST-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Distribution needs the current demand dataset validated by 2026-11-05T23:26:48+00:00. Deliver the source-preserving customer-level dataset that satisfies the current validation specifications, with its receipt and supporting analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the analysis workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a current business specification by its exact subject or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current business specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_validated_dataset",
+          "description": "Evaluate and record the current customer-level dataset validation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "dataset_path": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "dataset_path",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "dataset_validation_status",
+          "description": "Read the latest recorded business validation result.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    }
+  }
+}

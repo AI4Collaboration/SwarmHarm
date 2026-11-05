@@ -270,7 +270,10 @@ modules remain shared dependencies and offline fixtures.
   No registration or model call was made. The failed r147 preparation is
   preserved; the replay contract now returns the explicit empty collection and
   the combined domain-plus-project-file control passes with all workstations
-  removed.
+  removed. Prepared-only r148 then exposed inherited information-dependent
+  `terminal_success_requires_*` metadata during input audit. Runtime completion
+  already used the new domain contract, but the stale declarations were removed
+  together before any rollout; r148 is preserved and must not be collected.
 
 - Compiler migration offline checks caught a Rust PATH mismatch and a
   non-executable temporary build directory; both were fixed in the new optional

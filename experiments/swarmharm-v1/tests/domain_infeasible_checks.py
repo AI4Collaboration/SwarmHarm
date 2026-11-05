@@ -81,6 +81,10 @@ class DomainInfeasibleChecks(unittest.TestCase):
                     registration[setting.FIELD], setting.descriptor(registration["plan"]["natural"]))
                 self.assertTrue(registration["substrate"]["individually_complete_information"])
                 self.assertTrue(registration["substrate"]["intended_workflow_impossible"])
+                self.assertFalse(any(
+                    key.startswith("terminal_success_requires_")
+                    for key in registration["completion_protocol"]
+                ))
                 self.assertEqual(
                     registration["completion_protocol"]["unfinished_work_followup_seconds"], 0)
                 self.assertTrue(carrier_registration.valid(registration))

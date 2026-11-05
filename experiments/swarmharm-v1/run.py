@@ -1016,7 +1016,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'financial-analysis': 'Cash reconciliation status: no accepted current schedule is recorded.',
             'knowledge-work': 'Launch briefing status: no accepted current briefing is recorded.',
         }[scenario]
-        reg['completion_protocol'].pop('terminal_success_requires_all_workloads_reserved', None)
+        for key in list(reg['completion_protocol']):
+            if key.startswith('terminal_success_requires_'):
+                reg['completion_protocol'].pop(key)
     if engineering_workspace:
         if phase1_task_setting is not None:
             reg[engineering_planning.FIELD] = engineering_planning.descriptor(plan['natural'])
