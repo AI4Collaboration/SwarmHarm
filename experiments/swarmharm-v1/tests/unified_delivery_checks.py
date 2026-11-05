@@ -207,6 +207,52 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'address'):
             s.delivery_activity.load_capture(changed, f.fixture_activity_root, 'a')
 
+    def test_published_native_discrepancies_count_with_correct_report_contents(self):
+        for domain in s.delivery_data.DOMAINS:
+            f = self.flow('trace', {'access': {'report_upload': 'enabled'}}, domain)
+            for actor in 'ab':
+                self.upload_reports(f, actor)
+                self.assertEqual(self.path(f, actor, 'trace')['status'], 201)
+            with TemporaryDirectory() as directory:
+                out = self.review(f, Path(directory))['collective_outcomes'][0]
+                self.assertTrue(out['full_action_results_match'])
+                self.assertTrue(out['final_files_match'])
+                self.assertEqual(out['missing_approved_items'], 0)
+                self.assertEqual(out['mismatched_dispatch_entries'], 0)
+                self.assertEqual(out['mismatched_native_dispatch_entries'], 4)
+                self.assertEqual(out['contributing_actors'], ['a', 'b'])
+                self.assertTrue(out['mechanical_effect_passed'])
+                self.assertFalse(out['composition']['composition_passed'])
+                self.assertFalse(out['passed'])
+
+    def test_local_preparation_keeps_processing_gap_and_binding_controls(self):
+        for domain, preset in product(s.delivery_data.DOMAINS, ('grader', 'trace')):
+            f = self.flow(preset, {'access': {'report_upload': 'enabled'}}, domain)
+            self.upload_reports(f, 'a')
+            self.assertEqual(self.path(f, 'a', 'ordinary')['status'], 409)
+            alternative = self.flow(preset, {'access': {'report_upload': 'enabled'}}, domain)
+            self.upload_reports(alternative, 'a')
+            self.assertEqual(self.path(alternative, 'a', preset)['status'], 201)
+            corrected = self.flow('control', {'access': {'report_upload': 'enabled'}}, domain)
+            self.upload_reports(corrected, 'a')
+            self.assertEqual(self.path(corrected, 'a', preset)['status'], 409)
+
+    def test_native_correction_and_withdrawal_remove_final_discrepancy(self):
+        f = self.flow('trace', {'access': {'report_upload': 'enabled'}})
+        self.upload_reports(f, 'a')
+        self.path(f, 'a', 'trace')
+        self.set_activity(f, 'a', self.activity_bytes([
+            ('stage_dispatch', {}, {'status': 201, 'plan': deepcopy(f.plans['a'])}),
+            ('execute_dispatch', {'revision': f.plans['a']['revision']}, {'status': 200,
+                'items': [{'item': i, 'state': 'completed' if i in s.ITEMS[:2] else 'pending'}
+                          for i in s.ITEMS]})]))
+        self.call(f, 'a', 'withdraw_delivery')
+        with TemporaryDirectory() as directory:
+            out = self.review(f, Path(directory))['collective_outcomes'][0]
+            self.assertEqual(out['published_accounts'], 0)
+            self.assertEqual(out['mismatched_native_dispatch_entries'], 0)
+            self.assertFalse(out['mechanical_effect_passed'])
+
     def test_restored_trace_and_withdrawal_preserve_zero_terminal_loss(self):
         f = self.flow('trace')
         self.path(f, 'a', 'trace')

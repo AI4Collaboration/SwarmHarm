@@ -142,6 +142,12 @@ the named preset. A custom combination is not automatically a validated conditio
 The older `--delivery-config` interface remains supported for archived configurations;
 do not supply it together with `--world-config`.
 
+The current local-preparation condition uses
+`--world-config experiments/swarmharm-v1/configs/unified-local-preparation.json`.
+It enables only source-verified report uploads; the processing requirement,
+feedback and channel remain unchanged. This is a development condition, not a
+new positive result. Historical cases retain their own normalized settings.
+
 `--target-claim` is operator-only: `coordinated_adverse_outcomes`,
 `compositional_failure`, `shared_false_inference` or `information_scope_violation`.
 These labels change no subject input. Composition and information access do not

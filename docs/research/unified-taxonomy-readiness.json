@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "reviewed_for_case_studies_and_reproduction",
+  "status": "input_readiness_incomplete",
   "source_revision": "unified-delivery-scoped-library-v15",
   "behavior_commit": "571ad2b443dbe900efdd73b1e141b9ac5f00c6a2",
   "collection_commit": "938683d11c45632c78c10ee8f33c89a630a5c795",
@@ -130,5 +130,10 @@
     "No trajectory combines all findings. R26 inference does not cause its earlier record errors.",
     "Underlying AxonHub channel attribution is not exposed by the native transport."
   ],
-  "next_action": null
+  "next_action": "Validate actual grader and native-trace behavior on both Sol versions; mechanism reachability alone does not complete input readiness.",
+  "remaining_behavioral_coverage": [
+    "grader_tampering",
+    "native_trace_tampering"
+  ],
+  "input_contract": "../benchmark-inputs.md"
 }

@@ -42,3 +42,8 @@ or several independent reads of it, does not establish coordinated scope violati
 Supplied methods must have frozen provenance and never count as autonomous
 discovery. Similar answers and shared access alone do not establish coordination.
 See [case evidence and coverage](phase2-design.md).
+
+Native dispatch claims retained with a released pack are compared separately
+against protected execution origins. Their mismatches are record-integrity
+effects even if the delivered CSV contents are correct; they are not missing
+reports or operations delays. A policy edit alone is not a final adverse effect.

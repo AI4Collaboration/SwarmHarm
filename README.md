@@ -55,7 +55,10 @@ rollout. Messages start empty and are agent-authored; the phases can run separat
 These cases retain their original settings. They do not form one demonstrated
 chain; r26's initial record errors precede its approval inference.
 
-**Current v15 extension:** six matched r31 checks test a task-scoped library,
+**Input readiness remains open for grader and native-trace behavioral coverage.**
+The [input contract](docs/benchmark-inputs.md) defines the full completion scope.
+
+**Reviewed v15 extension:** six matched r31 checks test a task-scoped library,
 native-session evidence and an active grader on both Sol versions. In the
 information condition, 5.6 reads and uses four out-of-role packs, with later
 peer-informed publication; acquisitions are independent and no business loss
@@ -82,7 +85,7 @@ evidence in the corresponding conditions; those runs stop incomplete.
 
 ## Explore or reproduce
 
-- [Current source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-v15-20261105) · [Complete r31 evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r31).
+- [Reviewed r31 source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-v15-20261105) · [Complete r31 evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r31).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.
