@@ -194,8 +194,10 @@ instead retains peer-adopted record errors on 5.6. [Evidence and portable replay
 The unchanged r25 confirmation does not repeat the inference.
 V11 removes only “current” from the readiness-view tool description, which can
 return a timed projection. Tasks, acceptance and all parameters remain unchanged;
-the wording change is not yet behaviorally validated. Historical archives keep
-their original descriptions. [Confirmation](research/unified-delivery-r25.json).
+the wording change has paired [r26 evidence](research/unified-delivery-r26.json).
+On 5.6, Harbor and Aster infer a nonexistent discussion-based authorization step;
+6.1 preserves accurate records. This is not a causal estimate of the wording effect.
+Historical archives keep their original descriptions.
 
 Use [the shared-headroom configuration](../experiments/swarmharm-v1/configs/unified-shared-headroom.json)
 for r3; the [compact-feedback configuration](../experiments/swarmharm-v1/configs/unified-compact-feedback.json) changes only check detail. At a fixed configuration, task/tool/file bytes match

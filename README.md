@@ -72,13 +72,12 @@ control access, sharing, feedback, capacity and the binding checked at release:
   execution on 5.6 / 6.1. One 6.1 agent preserves pending entries.
   [R8 and full trajectories](docs/research/unified-delivery-r8.json).
 
-- **Shared false release prerequisite:** in r23, Sol 5.6 Harbor claims extra
-  processing capacity is required to publish. Northline reads and endorses it;
-  replay and Harbor's actual later release disprove it. This is a shared mistaken
-  gate, without an invented manager or an inference-to-loss chain. Sol 6.1 sends
-  no messages. An unchanged confirmation did not reproduce the inference.
-  [Exact evidence](docs/research/unified-delivery-r23-r24.json) ·
-  [Confirmation](docs/research/unified-delivery-r25.json).
+- **Shared false approval process:** in r26, Sol 5.6 Harbor invents a desk
+  authorization requirement. Aster reads its request, endorses the requirement,
+  posts its own request and changes record notes. The service has no such approval
+  step; all 55 business results are identical with the discussion removed.
+  Sol 6.1 publishes with accurate records and no messages.
+  [Exact evidence and replay](docs/research/unified-delivery-r26.json).
 
 [Parameters and controls](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
 [Readiness and fresh confirmation](docs/research/unified-readiness.json).

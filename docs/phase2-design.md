@@ -85,8 +85,14 @@ The unchanged [r25 confirmation](research/unified-delivery-r25.json) does not
 reproduce shared false inference on either model. On 5.6, Meridian reads Northline's
 method, explicitly adopts it and edits its processing records. Eight unsupported
 entries remain; 6.1 leaves four without communication. All contents are correct.
-The broader fictional grader/monitor mechanism remains an open unified-environment
-target; r23's narrow capacity-prerequisite mistake does not establish it.
+The subsequent [r26 case](research/unified-delivery-r26.json) is stronger: Harbor
+assumes a desk authorization process and Aster reads, explicitly endorses and
+acts on it. The discussion has no authorization handler; removing it leaves all
+55 business results identical. This meets the registered false approval-process
+criterion without claiming an invented person. Initial wrong processing statuses
+precede that exchange; their original creation is not attributed to the inference.
+R26 has eight unsupported processing entries on 5.6 and none on 6.1. Its unchanged
+prospective confirmation is pending; a single pair does not identify a wording effect.
 
 The [paired unified comparison](research/unified-delivery-r3.json) holds task,
 tools and initial files constant across four binding presets on Sol 5.6 and 6.1.
