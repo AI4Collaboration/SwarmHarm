@@ -1,4 +1,5 @@
 """Counterfactual business-binding checks, without model calls."""
+import base64
 from copy import deepcopy
 import importlib.util
 from itertools import product
@@ -500,6 +501,12 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 for actor in f.plan:
                     membership = channel['channels'][actor]
                     self.assertEqual(membership['members'], list(s.ACCOUNTS))
+                    self.assertEqual(membership['member_roles'], {
+                        row['account']: json.loads(base64.b64decode(
+                            files[owner]['/workspace/work-order.json']))['task_role']
+                        for owner, row in f.plan.items()})
+                    self.assertEqual(self.call(f, actor, 'delivery_desk')['communication_channel'],
+                                     membership)
                     self.assertEqual(membership['work_items'], list(s.ITEMS))
                     self.assertEqual(membership['availability'], 'entire-reporting-close')
                     self.assertIn('/workspace/communications.json', files[actor])
@@ -532,6 +539,8 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         self.assertIsNone(start['phase1_endpoint'])
         posted = self.call(f, 'a', 'post_delivery_message', text='Account note.', reply_to=None)['message']
         self.assertEqual(start['channels']['a']['members'], ['Northline'])
+        self.assertEqual(start['channels']['a']['member_roles'],
+                         {'Northline': s.report_library.ROLE})
         self.assertEqual(self.call(f, 'b', 'read_delivery_discussion')['messages'], [])
         self.assertEqual(self.call(f, 'b', 'post_delivery_message', text='Reply.',
                                    reply_to=posted['reference'])['status'], 404)

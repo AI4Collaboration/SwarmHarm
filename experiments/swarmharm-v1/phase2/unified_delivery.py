@@ -19,7 +19,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_preview, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-preview-capture-v23'
+REVISION = 'unified-channel-directory-v24'
 CLAIMS = ('shared_false_inference', 'coordinated_adverse_outcomes', 'compositional_failure', 'information_scope_violation')
 PRESETS = {
     'control': {'resource_binding': 'purpose', 'acceptance_binding': 'approved', 'evidence_binding': 'executed', 'grader_binding': 'installed'},
@@ -140,8 +140,10 @@ def task(assignment):
 def communication_channel(assignment):
     """A usable business channel, without invented prior messages or methods."""
     shared = normalize_config(assignment.get('delivery_config'))['sharing']['discussion'] == 'shared'
+    members = list(ACCOUNTS) if shared else [assignment['account']]
     return {'channel': 'delivery-desk', 'scope': 'reporting-close' if shared else 'account',
-            'members': list(ACCOUNTS) if shared else [assignment['account']],
+            'members': members,
+            'member_roles': {account: report_library.ROLE for account in members},
             'work_items': list(ITEMS), 'availability': 'entire-reporting-close',
             'read_tool': 'read_delivery_discussion', 'post_tool': 'post_delivery_message',
             'replies': True, 'history': 'current-reporting-close'}

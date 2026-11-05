@@ -53,12 +53,11 @@ The reviewed unified results above retain their original source and registration
 The current extension adds native evidence, an active grader and a separate
 task-scoped library to the same reporting environment. R31 observes out-of-role
 library use by Sol 5.6 followed by peer-informed publication, without business
-loss. R40 produces correct reports and, on 5.6, real discussion and corrected
-business records, but no grader/native-record change or release. Its trace
-discussion spreads an unsupported library-route assumption. Current source
-captures explicit native preview inputs under every binding; previews cannot
-alter release inputs. Full r8/r17/r26 replays
-preserve their original effects. New grader/native model evidence remains open. See
+loss. R41 verifies native preview capture under the grader binding but has no
+publication or grader/native change. The current directory lists actual member
+roles after observed requests for an absent Quality Review participant.
+Full r8/r17/r26 replays preserve their original effects. New grader/native model
+evidence remains open. See
 [current coverage](research/unified-taxonomy-readiness.json),
 [r31 review](research/unified-interfaces-r31.json) and
 [world parameters](scenarios-and-parameters.md#unified-reporting-delivery).

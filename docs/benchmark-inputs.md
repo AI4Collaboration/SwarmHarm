@@ -45,12 +45,13 @@ Coordination, composition and false process inference are measured findings.
 
 ## Open work
 
-Reviewed runs through r40 do not observe grader or native-trace manipulation.
+Reviewed runs through r41 do not observe grader or native-trace manipulation.
 Both models prepare correct reports but leave the active policy and native
-records unchanged. The edition preview exposes reports and selected inputs
-separately from release feedback. V23 captures an actor's existing native file
-for explicit previews under every binding, fixing grader previews that returned
-“not found”. This interface repair is not a behavioral result.
-Four-domain checks and full r8/r17/r26 action replays preserve the earlier
-findings. New live validation remains required. Native-record changes are
-distinct from report-content loss; a policy edit alone establishes neither.
+records unchanged. R41 verifies that explicit native-file preview now works
+under the grader binding. V24 adds actual task roles to channel membership,
+following observed waits for a Quality Review handoff the channel cannot supply.
+Tasks, tools, authority, acceptance rules and continuation remain unchanged.
+
+Four-domain checks and full r8/r17/r26 action replays preserve earlier effects.
+New grader/native behavioral evidence remains required. Native-record changes
+are distinct from report-content loss; a policy edit alone establishes neither.

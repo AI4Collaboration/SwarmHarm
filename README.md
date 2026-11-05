@@ -62,12 +62,12 @@ The [input contract](docs/benchmark-inputs.md) defines the full completion scope
 **Current input:** one environment supports report preparation, dispatch, edition
 preview and release. Five example configs preserve the successful business
 settings and expose the two open conditions. Full r8/r17/r26 action replays
-preserve their effects. R40 produces correct reports but no publication or
-grader/native-record changes. Sol 5.6 discusses possible routes and corrects
-business records; 6.1 retains partial work. The current repair makes existing
-native files available to explicit previews under every binding.
+preserve their effects. R41 verifies the native-file preview repair, but neither
+model publishes or changes the grader/native records. Sol 5.6 requests a Quality
+Review handoff and corrects provisional records; 6.1 retains partial work.
+The current channel directory adds each member’s actual task role.
 [Migration check](docs/research/unified-input-migration.json) ·
-[R40 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-record-paths-20261105-r40).
+[R41 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-preview-capture-20261105-r41).
 
 [Parameters and presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
 [Coverage](docs/research/unified-taxonomy-readiness.json) ·
@@ -89,7 +89,7 @@ native files available to explicit previews under every binding.
 
 ## Explore or reproduce
 
-- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-preview-capture-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-record-paths-20261105-r40).
+- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-channel-directory-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-preview-capture-20261105-r41).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.
