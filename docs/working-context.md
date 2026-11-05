@@ -1,42 +1,33 @@
 # Current Phase 1 context — 5 November 2026
 
-Latest operating instruction: after every environment revision and its offline
-checks, continue directly to at least one matching-source live rollout and full
-native-trace review. Do not stop at implementation or request another go-ahead.
-The three-condition Engineering comparison r136–r138 has completed preparation:
-544 common checks and 16 prompt checks pass, all 170 source seals match, and
-all 24 preparation workstations were checked absent. The three initial surfaces
-match after job-ID normalization; only one compatibility relation differs in
-the infeasible source. `phase1-planning-prepare-20261105-r2` records the inputs
-and audits. Commit the registrations, verify the clean remote freeze, and
-launch each exactly once through the common native Codex collector.
-The preceding r133 preparation was interrupted before controls or registration
-completed; its partial files are preserved and there were no model calls.
+Latest operating instruction: after every environment revision, run a fresh
+matching-source Sol rollout and read its complete native trace. Do not ask for
+another go-ahead or stop at offline implementation. Engineering remains the
+only active extension; the four-input baseline and paused heartbeat are preserved.
 
-Current user scope: finish Engineering first. The new opt-in
-`engineering-dependency-planning-v1` input implements distributed information,
-complete feasible information and complete infeasible information together.
-It replaces the filing deliverable with a source-backed dependency lockfile;
-the shared directories, investigation helpers and factual notices remain.
-The three initial tasks, files and tools match. All source records match between
-the two feasible conditions; one compatibility relation differs in the
-infeasible condition. The existing reviewed filing inputs stay available by
-omitting `--phase1-task-setting`. No new non-Engineering work or rollout is in
-scope. See `research/phase1-engineering-task-settings.md`.
-All three real-workstation controls passed, with 84/204/204 replayed planning
-operations. Distributed and complete-information feasible plans are accepted;
-the complete-information conflict is rejected. Seven focused checks and sixteen
-prompt checks passed. All 16 prior baseline initial input/file sets remain
-byte-identical under their original plans. Twelve current control workstations
-and four earlier passing-control workstations were checked absent. Evidence:
-`../eval-readiness/phase1-planning-controls-20261105-r2` and
-`../eval-readiness/phase1-planning-postvalidation-20261105-r1`.
-Fresh Sol preparation and complete native review are next; no new model call yet.
-The first control's complete-information file-read assertion encountered
-identical operator-authored file bodies; its raw evidence is preserved. The
-revised operator control records the actual author in each file and retains
-the observer's existing unambiguous-attribution rule. This was a control fixture
-issue, not a change to the environment or its read semantics.
+The v1 planning comparison r136–r138 is terminal and fully reviewed. It used
+source fa027a5d2 and registration commit 0e9d1ac9a. Distributed information:
+4 communication authors, 3 bound replying authors, 3 roundtrip witnesses;
+complete feasible: 0 communication authors; complete infeasible: 3 authors,
+1 replying author and 1 roundtrip witness. Each actor fetched all eight sources.
+The feasible groups submitted valid plans; the infeasible group reported the
+independently verified conflict. Counts cover 252 subject responses, 514 tool
+returns, 6 preflights and 12 validated ATIF trajectories. Do not recollect.
+See research/phase1-engineering-planning-comparison-20261105.json. The observer
+correction is labeled as a separate interpretation of frozen evidence.
+
+Ten focused v2 checks pass. Full preparation and live review follow.
+V2 is being validated: project files retain complete source archives within the
+existing workstation file limit; planning replay accepts final_output and its
+module is included in evaluator seals. The matched task now contains 384 packages
+and 1,152 candidate versions. Initial arc consistency leaves all alternatives;
+a separate reference solver searches for a feasible assignment. The conflict
+variant changes one adapter relation. Task wording, shared directories and
+notifications are unchanged; no protocol or cooperation instruction is supplied.
+Fresh v2 Sol comparison is required. Previous v1 catalogs and project-file limits
+remain available for frozen evidence reconstruction. Preparation test failures
+and the first observer failure are kept in external evidence; lessons are in
+README Takeaways.
 
 Latest user extension: compare (1) tasks requiring facts initially discoverable
 by other agents with (2) very difficult or objectively infeasible tasks that do

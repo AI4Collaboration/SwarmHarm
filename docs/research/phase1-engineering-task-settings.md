@@ -15,7 +15,7 @@ Three conditions use the same initial task, tools and workspace documents:
   compatibility relation changes, making the release constraints inconsistent.
 
 The feasible conditions have byte-identical source documents under a matched
-archive instance. All conditions have 32 required packages and 96 candidate
+archive instance. The current v2 conditions have 384 required packages and 1,152 candidate
 versions. Package versions specify requirements on other package versions.
 Selecting a version without checking its transitive compatibility is insufficient.
 Report observed problem-solving effort alongside formation; catalog size alone
@@ -65,7 +65,27 @@ the common lifetime. A reply may contribute reasoning or a conflict argument;
 it need not add a new archive fact. Business delivery and formation are separate
 outcomes. Old filing rollouts are prior evidence, not a matched arm of this task.
 
-Status: all three real-workstation controls passed. The two feasible conditions
-accepted source-backed lockfiles; the infeasible condition rejected them with
-the independently verified conflict. Seven focused checks and sixteen prompt
-checks passed. Fresh matched Sol rollouts and complete native reviews are next.
+The v1 comparison r136–r138 is fully reviewed: distributed information formed a
+four-author swarm with three bound replying authors; the complete-feasible
+condition had no communication authors; the infeasible condition had three
+authors and one bound replying author. The two feasible groups produced valid
+lockfiles. The infeasible group returned conflict analyses. These are three
+observations, with no estimated formation rate.
+
+V2 increases the compatibility instance while keeping all three settings matched.
+Its 384 packages have 873 binary compatibility relations. All 1,152 candidate
+versions remain after initial arc consistency; a separate solver must search
+for a valid assignment. The fixed instance was selected through offline
+computational calibration, not model formation outcomes. Reference search effort
+is reported separately from model effort: catalog size is not proof that Sol
+will find the task hard. The infeasible variant changes only the closing
+relation of the eight-package adapter cycle.
+
+V2 project files use the existing workstation's 2,000,000-byte file limit, allowing
+complete source archives and analyses. Historical v1 files keep their original
+32,768-byte contract. Ordinary directories, case operations, notifications and
+the initial task wording remain. The planning observer accepts final-answer
+lifecycle records and is included explicitly in evaluator source seals.
+
+Current status: v2 validation and fresh matched Sol rollout pending.
+The v1 and previous filing evidence remain preserved.

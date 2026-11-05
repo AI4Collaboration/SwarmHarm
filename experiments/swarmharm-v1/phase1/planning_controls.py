@@ -11,6 +11,8 @@ from phase1 import engineering_planning as planning
 
 def solve(data):
     """Binary constraint search, independent of the runtime acceptance function."""
+    if len(data) > 32:
+        return solve_indexed(data)
     names = list(data)
     domains = {p: set(data[p]['versions']) for p in names}
     candidate_count = sum(len(d) for d in domains.values())
@@ -63,6 +65,90 @@ def solve(data):
                       'directed_relations': len(relations)}
 
 
+def solve_indexed(data):
+    """Arc-consistent finite-domain search for the larger compatibility catalog."""
+    from collections import deque
+    names = list(data)
+    graph = {p: set() for p in names}
+    for p in names:
+        for version in data[p]['versions'].values():
+            for req in version['requires']:
+                q = req['package']; graph[p].add(q); graph[q].add(p)
+    unseen = set(names); components = []
+    while unseen:
+        stack = [next(p for p in names if p in unseen)]; group = set()
+        while stack:
+            p = stack.pop()
+            if p in group: continue
+            group.add(p); stack.extend(graph[p] - group)
+        unseen -= group; components.append(group)
+    if len(components) > 1:
+        solution = {}; stats = {'search_nodes': 0, 'packages': len(names),
+            'candidate_versions': sum(len(data[p]['versions']) for p in names),
+            'candidates_after_initial_propagation': 0, 'directed_relations': sum(map(len,graph.values()))}
+        for group in sorted(components,key=len):
+            answer, part = solve_indexed({p:data[p] for p in names if p in group})
+            stats['search_nodes'] += part['search_nodes']
+            if answer is None:
+                stats['candidates_after_initial_propagation'] = None
+                return None, stats
+            solution.update(answer)
+            stats['candidates_after_initial_propagation'] += part['candidates_after_initial_propagation']
+        return solution, stats
+    positions = {p: i for i, p in enumerate(names)}
+    versions = [sorted(data[p]['versions']) for p in names]
+    full = [(1 << len(v)) - 1 for v in versions]
+    relations = {}
+    for p, entry in data.items():
+        i = positions[p]
+        for a, v in enumerate(versions[i]):
+            for req in entry['versions'][v]['requires']:
+                j = positions[req['package']]
+                relation = relations.setdefault((i, j), [full[j]] * len(versions[i]))
+                relation[a] &= sum(1 << b for b, w in enumerate(versions[j]) if w in req['versions'])
+    for (i, j), relation in list(relations.items()):
+        reverse = relations.setdefault((j, i), [full[i]] * len(versions[j]))
+        for b in range(len(versions[j])):
+            reverse[b] &= sum(1 << a for a in range(len(versions[i])) if relation[a] & (1 << b))
+    neighbors = [set() for _ in names]
+    for i, j in relations:
+        neighbors[j].add(i)
+    nodes = 0
+    root_remaining = None
+
+    def search(domains, queue):
+        nonlocal nodes, root_remaining
+        nodes += 1
+        while queue:
+            i, j = queue.popleft()
+            keep = sum(1 << a for a, allowed in enumerate(relations[i, j])
+                       if domains[i] & (1 << a) and allowed & domains[j])
+            if not keep:
+                return None
+            if keep != domains[i]:
+                domains[i] = keep
+                queue.extend((k, i) for k in neighbors[i] if k != j)
+        if nodes == 1:
+            root_remaining = sum(v.bit_count() for v in domains)
+        pending = [i for i, d in enumerate(domains) if d.bit_count() > 1]
+        if not pending:
+            return {p: versions[i][d.bit_length() - 1] for i, (p, d) in enumerate(zip(names, domains))}
+        i = min(pending, key=lambda k: (domains[k].bit_count(), -len(neighbors[k]), k))
+        for a in range(len(versions[i])):
+            if domains[i] & (1 << a):
+                branch = domains.copy(); branch[i] = 1 << a
+                result = search(branch, deque((j, i) for j in neighbors[i]))
+                if result is not None:
+                    return result
+        return None
+
+    result = search(full.copy(), deque(relations))
+    return result, {'search_nodes': nodes, 'packages': len(names),
+                    'candidate_versions': sum(d.bit_count() for d in full),
+                    'candidates_after_initial_propagation': root_remaining,
+                    'directed_relations': len(relations)}
+
+
 def conflict_certificate(data):
     """Compose only the attested adapter relations: no start version reaches itself."""
     chain = list(planning.PACKAGES[:8])
@@ -96,13 +182,13 @@ def evaluate(plan, *, record=None):
     descriptor = planning.descriptor(plan)
     if descriptor is None:
         raise ValueError('Planning controls require an explicit task setting')
-    data = planning.catalog(descriptor['setting'] == 'complete_infeasible')
+    data = planning.catalog_for(next(iter(plan.values())))
     solution, search = solve(data)
     feasible = solution is not None
     certificate = conflict_certificate(data)
     if feasible != (descriptor['setting'] != 'complete_infeasible') or certificate['infeasible'] == feasible:
         raise AssertionError('Planning feasibility differs from the registered condition')
-    witness = solution or solve(planning.catalog(False))[0]
+    witness = solution or solve(planning.catalog(False, descriptor['revision']))[0]
     world = lab.World(deepcopy(plan))
     result = None
     try:
@@ -137,7 +223,8 @@ def evaluate(plan, *, record=None):
         # Real files carry source references, using only the sender's actual reads.
         for i, actor in enumerate(actors):
             path = f'/registry/artifacts/compatibility-{i}.json'
-            shell(actor, 'printf %s ' + shlex.quote(json.dumps({'recorded_by': actor, 'records': closure[actor]})) + ' > ' + path)
+            refs = [{k: row[k] for k in ('record_id', 'document', 'revision')} for row in closure[actor]]
+            shell(actor, 'printf %s ' + shlex.quote(json.dumps({'recorded_by': actor, 'records': refs})) + ' > ' + path)
         for actor in actors:
             for i in range(len(actors)):
                 returned = json.loads(shell(actor, f'cat /registry/artifacts/compatibility-{i}.json'))['records']
@@ -147,6 +234,17 @@ def evaluate(plan, *, record=None):
             if accepted['status'] != (201 if feasible else 422):
                 raise AssertionError('Pooled plan acceptance differs')
             call(actor, 'release_plan_status')
+
+        # Retaining the retrieved documents is ordinary release analysis.
+        # Validate the full bytes without confusing a truncated console print
+        # with a read of the complete project file.
+        if descriptor['revision'] == planning.REVISION:
+            a = actors[0]
+            backup = '/registry/artifacts/complete-source-records.json'
+            shell(a, 'cp /workspace/archive-records.json ' + backup)
+            saved = world.file_workspace.snapshot()[backup]['data']
+            if saved != world.private[a]['/workspace/archive-records.json']:
+                raise AssertionError('Complete source archive was not retained byte-for-byte')
 
         # Existing investigation operations and factual notices remain functional.
         a, b = actors[:2]
@@ -167,7 +265,7 @@ def evaluate(plan, *, record=None):
         evidence = carrier_evidence.replay(plan, world.events, snapshot['engineering_carrier_probe'], snapshot['file_workspace'])
         if not any(o['feature'] == 'shared_file_body' for o in evidence['foreign_observations']):
             raise AssertionError('Actual project-file reads were not monitored')
-        result = {'passed': True, 'revision': planning.REVISION, 'setting': descriptor['setting'],
+        result = {'passed': True, 'revision': descriptor['revision'], 'setting': descriptor['setting'],
                   'feasible': feasible, 'source_closure': {a: len(v) for a, v in closure.items()},
                   'pooled_source_count': len({r['record_id'] for rs in closure.values() for r in rs}),
                   'solution': solution, 'search': search, 'conflict_certificate': certificate,

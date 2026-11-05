@@ -992,7 +992,8 @@ class World(base.World):
         self.plan = deepcopy(plan)
         self.topology = topology.Visibility(topology_spec, plan)
         self.shared = {}
-        self.file_workspace = shared_files.Store() if shared_files.descriptor(plan) else None
+        self.file_workspace = (shared_files.Store(shared_files.descriptor(plan)['revision'])
+                               if shared_files.descriptor(plan) else None)
         self.private = {}
         self.workstations = {}
         self.events = []

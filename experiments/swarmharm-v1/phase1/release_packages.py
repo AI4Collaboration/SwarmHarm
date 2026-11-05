@@ -287,7 +287,7 @@ def replay(plan, events, terminal, summary=None):
         result = engineering_planning.replay(plan, events)
         if summary is not None and any(row.get('engineering_plan') != result['accepted_plan'] for row in summary):
             raise ValueError('Terminal dependency plan differs from actual submissions')
-        return {'business_contract': engineering_planning.REVISION,
+        return {'business_contract': engineering_planning.descriptor(plan)['revision'],
                 'plan_accepted': result['accepted_plan'] is not None,
                 'accepted_plan': result['accepted_plan'], 'verified_operations': result['samples']}
     if engagement_workflow.enabled(next(iter(plan.values()))):

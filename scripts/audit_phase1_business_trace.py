@@ -29,7 +29,7 @@ def business_replay(plan, fixtures, world, lab):
         replay = engineering_planning.replay(plan, world['events'])
         require(all(row.get('engineering_plan') == replay['accepted_plan'] for row in world['summary']),
                 'Final dependency lockfile differs from accepted source-backed submissions')
-        return {'business_contract': engineering_planning.REVISION,
+        return {'business_contract': engineering_planning.descriptor(plan)['revision'],
                 'plan_accepted': replay['accepted_plan'] is not None, **replay}
     scenario = lab.domain_runtime.mechanics(next(iter(plan.values()))['scenario'])
     services = {}
@@ -122,7 +122,9 @@ def audit(root):
     require(reg['phase1_archive_identifiers'] == lab.fixture_ids.descriptor(plan), 'Archive namespace differs')
     world = read(root/'natural/world.json')
     result = business_replay(plan, read(root/'fixtures.json'), world, lab)
-    for row in result['successful_fetches'] + result['accepted_events'] + result['rejected_submissions']:
+    audit_rows = (result['samples'] if 'samples' in result else
+                  result['successful_fetches'] + result['accepted_events'] + result['rejected_submissions'])
+    for row in audit_rows:
         event = world['events'][row['event']-1]
         trace = root/'natural'/event['actor']/'trace'
         matches = []

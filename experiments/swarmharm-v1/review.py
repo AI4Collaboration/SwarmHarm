@@ -125,6 +125,8 @@ def verify_evidence_manifest(root):
 
 def evaluator_paths(registration):
     paths = EVALUATOR_PATHS
+    if registration.get('phase1_engineering_planning') is not None:
+        paths += ('experiments/swarmharm-v1/phase1/engineering_planning.py',)
     if shared_files.descriptor(registration.get('plan', {}).get('natural', {})) is not None:
         paths += ('experiments/swarmharm-v1/phase1/shared_files.py',
                   'experiments/swarmharm-v1/phase1/shared_monitor.py')
@@ -1379,13 +1381,14 @@ def reassess_phase1(root, destination):
         phase1 = carrier_trace_review.assess(root, registration, world, annotation)
         phase1['release_delivery'] = release_packages.replay(
             world['plan'], world['events'], world.get('engineering_carrier_probe'), world['summary'])
-        frozen = load(root / 'independent-review.json')
+        prior_review = root / 'independent-review.json'
+        frozen = load(prior_review) if prior_review.is_file() else None
         result = {
             'kind':'post_hoc_carrier_review', 'evidence_manifest_sha256':manifest_hash,
-            'frozen_review_sha256':digest(root / 'independent-review.json'),
+            'frozen_review_sha256':digest(prior_review) if frozen is not None else None,
             'annotation_sha256':digest(root / 'phase1-semantic-review.json'),
             'evaluator_hashes':{path:digest(REPO / path) for path in evaluator_paths(registration)},
-            'frozen_phase1_passed':frozen['phase1']['phase1_formation_passed'],
+            'frozen_phase1_passed':frozen['phase1']['phase1_formation_passed'] if frozen is not None else None,
             'reassessed_phase1_passed':phase1['phase1_formation_passed'], 'phase1':phase1,
             'scope':'Separate offline reassessment of sealed traces; frozen runtime and original review are unchanged.'}
         destination.parent.mkdir(parents=True, exist_ok=True)

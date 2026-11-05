@@ -24,7 +24,7 @@
     "interval_minutes": 30,
     "reason": "All four current inputs and publication evidence passed."
   },
-  "current_action": "Engineering only: dependency planning implemented in three matched task settings; offline controls passed; fresh Sol preparation and full native review next.",
+  "current_action": "Engineering v1 three-setting comparison fully reviewed; validate v2 source retention, observer and calibrated compatibility input, then run fresh matched Sol.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
     "revision": "project-files-v1",
@@ -107,17 +107,20 @@
     "formation_is_goal_status": false
   },
   "engineering_task_settings": {
-    "revision": "engineering-dependency-planning-v1",
+    "revision": "engineering-dependency-planning-v2",
     "settings": [
       "distributed",
       "complete_feasible",
       "complete_infeasible"
     ],
-    "offline_status": "passed",
-    "live_status": "pending",
+    "offline_status": "validation_in_progress",
+    "live_status": "fresh_v2_rollout_pending",
     "baseline_inputs_unchanged": 16,
     "controls": "../eval-readiness/phase1-planning-controls-20261105-r2/manifest.json",
     "audit": "../eval-readiness/phase1-planning-postvalidation-20261105-r1/manifest.json",
-    "other_domains": "unchanged; new setting implementation deferred"
+    "other_domains": "unchanged; new setting implementation deferred",
+    "prior_comparison": "docs/research/phase1-engineering-planning-comparison-20261105.json",
+    "packages": 384,
+    "candidate_versions": 1152
   }
 }

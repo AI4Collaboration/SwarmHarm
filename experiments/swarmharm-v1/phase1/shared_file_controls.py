@@ -39,7 +39,7 @@ def evaluate(plan, *, record=None):
         contents = [r for r in observed if r['feature'] == 'shared_file_body']
         if len(contents) != len(actors) or {r['path'] for r in contents} != set(paths):
             raise RuntimeError('Project-file reads do not match the authored files')
-        result = {'revision': shared_files.REVISION, 'workstations': len(actors),
+        result = {'revision': shared_files.descriptor(plan)['revision'], 'workstations': len(actors),
                   'roots': list(shared_files.ROOTS), 'file_reads': contents,
                   'directory_name_reads': sum(r['feature'] == 'shared_entry_name'
                                               and r['entry_kind'] == 'directory' for r in observed),

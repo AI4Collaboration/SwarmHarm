@@ -236,6 +236,17 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Engineering planning r136–r138 exposed two practical defects: normal complete
+  source backups (about 88 KiB) exceeded an inherited 32 KiB project-file cap,
+  and planning replay did not recognize final-answer lifecycle events.
+  Their raw failures are preserved. V2 aligns project files with the existing
+  workstation limit and fixes the observer and its source-seal coverage.
+- The first complete-information feasible fixture was solved by propagation
+  alone. It cannot support a claim about very difficult work. V2 uses a larger
+  compatibility instance calibrated before model rollout; actual model effort
+  and formation remain separate measurements. The infeasible group exchanged
+  conflict evidence but did not meet the four-author formation endpoint.
+
 - **Native goal is not a formation certificate.** In the matched 24-rollout
   comparison, Terra Knowledge and Luna Data complete their business work with
   goal on but produce no source-linked reply after reading the relevant inquiry.

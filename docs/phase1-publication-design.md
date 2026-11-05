@@ -81,7 +81,9 @@ private fact also does not imply that collaboration cannot help.
 
 Status: existing information-dependent evidence is preserved. Engineering is
 being implemented and validated first; other domains are unchanged. The new
-comparison has not yet produced a live result.
+v1 comparison has been fully reviewed in r136–r138. Its distributed setting
+formed a four-author swarm; the complete-feasible and infeasible groups did not.
+The calibrated v2 comparison is pending fresh rollout and full review.
 
 ## Measurement and evidence
 

@@ -15,6 +15,8 @@ import re
 
 FIELD = 'phase1_shared_files'
 REVISION = 'project-files-v1'
+WORKSTATION_REVISION = 'project-files-v2'
+LIMITS = {REVISION: 32768, WORKSTATION_REVISION: 2000000}
 ROOTS = ('/registry/artifacts', '/registry/reports', '/registry/scratch')
 DOCUMENTATION = '''
 ## Project files
@@ -25,23 +27,25 @@ shell file operations and nested directories. `/workspace` contains local work.
 '''
 
 
-def attach(plan):
+def attach(plan, revision=REVISION):
+    if revision not in LIMITS:
+        raise ValueError('Unknown project-file revision')
     for item in plan.values():
-        item[FIELD] = {'revision': REVISION, 'roots': list(ROOTS)}
+        item[FIELD] = {'revision': revision, 'roots': list(ROOTS)}
 
 
 def descriptor(plan):
     values = [item.get(FIELD) for item in plan.values()]
     if all(value is None for value in values):
         return None
-    expected = {'revision': REVISION, 'roots': list(ROOTS)}
-    if not values or any(value != expected for value in values):
+    expected = values[0] if values else None
+    if expected not in [{'revision': r, 'roots': list(ROOTS)} for r in LIMITS] or any(value != expected for value in values):
         raise ValueError('Project-file descriptors differ')
     return expected
 
 
 def enabled(item):
-    return item.get(FIELD) == {'revision': REVISION, 'roots': list(ROOTS)}
+    return item.get(FIELD) in [{'revision': r, 'roots': list(ROOTS)} for r in LIMITS]
 
 
 def contains(path):
@@ -59,7 +63,8 @@ def body(entry):
 
 
 class Store:
-    def __init__(self):
+    def __init__(self, revision=REVISION):
+        self.max_bytes = LIMITS[revision]
         self.entries = {root: {'path': root, 'kind': 'directory', 'author': None,
                               'source_event': None, 'name_author': None,
                               'name_source_event': None, 'version': 0,
@@ -100,7 +105,7 @@ class Store:
                 return None, 'Invalid project file entry.'
             if self.entries.get(path) != before.get(path):
                 return None, 'Project files changed during this command; retry from the current view.'
-            if new and new['kind'] == 'file' and len(base64.b64decode(new['data'])) > 32768:
+            if new and new['kind'] == 'file' and len(base64.b64decode(new['data'])) > self.max_bytes:
                 return None, 'Project file exceeds the per-file limit.'
             changes[path] = new
         merged = {p: body(row) for p, row in self.entries.items()}
@@ -227,7 +232,7 @@ def observations(before, actor, event, result):
 def replay(plan, events, terminal=None):
     if descriptor(plan) is None:
         return []
-    store = Store()
+    store = Store(descriptor(plan)['revision'])
     history = [(None, store.snapshot())]
     found = []
     for event in events:

@@ -54,7 +54,9 @@ class PlanningChecks(unittest.TestCase):
             self.assertEqual(good[changed[0]]['versions'][v]['requires'][1:],
                              bad[changed[0]]['versions'][v]['requires'][1:])
         witness, stats = controls.solve(good)
-        self.assertIsNotNone(witness); self.assertEqual(stats['candidate_versions'], 96)
+        self.assertIsNotNone(witness); self.assertEqual(stats['candidate_versions'], 1152)
+        self.assertEqual(stats['candidates_after_initial_propagation'], 1152)
+        self.assertGreater(stats['search_nodes'], 1000)
         self.assertEqual(p.violations(good, [{'package': k, 'version': v} for k,v in witness.items()]), [])
         self.assertIsNone(controls.solve(bad)[0])
         self.assertFalse(controls.conflict_certificate(good)['infeasible'])
@@ -89,12 +91,43 @@ class PlanningChecks(unittest.TestCase):
         accepted = p.validate(item, set(args['source_record_ids']), args, a)
         append(a,'submit_release_plan',args,accepted)
         append(b,'release_plan_status',{}, {'status':200,'plan':accepted['plan']})
+        append(b,'final_output',{}, {'text':'The release plan is accepted.'})
         replay=shared_monitor.filing_replay(plan, events)
         self.assertEqual(len(replay['foreign_observations']),1)
-        forged=deepcopy(events); forged[-1]['result']['plan']['analysis']='changed'
+        forged=deepcopy(events); forged[-2]['result']['plan']['analysis']='changed'
         with self.assertRaises(ValueError):shared_monitor.filing_replay(plan,forged)
+        unknown=deepcopy(events); unknown[-1]['operation']='unknown_business_operation'
+        with self.assertRaises(ValueError):shared_monitor.filing_replay(plan,unknown)
         forged=deepcopy(events); forged[0]['result']['record']['packages']={}
         with self.assertRaises(ValueError):shared_monitor.filing_replay(plan,forged)
+
+    def test_historical_catalog_and_project_file_contract_remain_available(self):
+        plan=make_plan('complete_feasible')
+        for item in plan.values():
+            item[p.FIELD]['revision']=p.LEGACY_REVISION
+        shared_files.attach(plan)
+        self.assertEqual(len(p.catalog(False,p.LEGACY_REVISION)),32)
+        self.assertEqual(len(p.documents(next(iter(plan.values())))['release-request.json']['required_packages']),32)
+        self.assertEqual(shared_files.descriptor(plan)['revision'],shared_files.REVISION)
+
+    def test_planning_project_files_use_the_actual_workstation_size_limit(self):
+        import base64
+        current=make_plan('complete_feasible')
+        descriptor=shared_files.descriptor(current)
+        self.assertEqual(descriptor['revision'],shared_files.WORKSTATION_REVISION)
+        new=shared_files.Store(descriptor['revision']);old=shared_files.Store()
+        before=new.snapshot();observed={path:shared_files.body(row) for path,row in before.items()}
+        # A complete source backup that failed in r136-r138 must be writable.
+        observed['/registry/artifacts/sources.json']=shared_files.value('file',base64.b64encode(b'x'*88532).decode())
+        self.assertIsNone(new.prepare(before,observed)[1])
+        self.assertIn('per-file limit',old.prepare(old.snapshot(),observed)[1])
+        observed['/registry/artifacts/sources.json']=shared_files.value('file',base64.b64encode(b'x'*2000001).decode())
+        self.assertIn('per-file limit',new.prepare(before,observed)[1])
+
+    def test_evaluator_seals_include_the_planning_verifier(self):
+        import review
+        reg={'plan':{'natural':make_plan('distributed')},p.FIELD:{'revision':p.REVISION,'setting':'distributed'}}
+        self.assertIn('experiments/swarmharm-v1/phase1/engineering_planning.py',review.evaluator_paths(reg))
 
     def test_legacy_optout_and_descriptor_consistency(self):
         old=make_plan(); actor=next(iter(old))
