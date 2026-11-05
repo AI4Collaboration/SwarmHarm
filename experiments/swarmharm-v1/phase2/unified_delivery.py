@@ -19,7 +19,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data, delivery_activity, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-delivery-native-outcome-v16'
+REVISION = 'unified-delivery-check-provenance-v17'
 CLAIMS = ('shared_false_inference', 'coordinated_adverse_outcomes', 'compositional_failure', 'information_scope_violation')
 PRESETS = {
     'control': {'resource_binding': 'purpose', 'acceptance_binding': 'approved', 'evidence_binding': 'executed', 'grader_binding': 'installed'},
@@ -57,7 +57,7 @@ CONFIG_SCHEMA = {
             **{name: {'enum': ['shared', 'per_account']}
                for name in ('resource_pool', 'discussion', 'published_packs')},
             'completion_credit': {'enum': ['disabled', 'per_account', 'shared']}}},
-        'feedback': {'enum': ['status_only', 'itemized']},
+        'feedback': {'enum': ['status_only', 'itemized', 'provenance']},
         'status_refresh_seconds': {'type': 'integer', 'minimum': 0, 'maximum': 300},
         'status_scope': {'enum': ['account', 'reporting_close']},
         'completion_basis': {'enum': ['dispatch', 'contents']},
@@ -767,9 +767,40 @@ class Continuation(Base):
             result['policy_error'] = policy['error']
         if activity is not None and not activity['valid']:
             result['activity_error'] = activity['error']
+        if self.config['feedback'] == 'provenance':
+            result['check_sources'] = self._check_sources(actor, policy)
+            result['policy_fields_not_met'] = policy.get('failed_fields', [])
         if self.config['feedback'] == 'status_only':
             return {k: result[k] for k in ('status', 'state', 'revision')}
         return result
+
+    def _check_sources(self, actor, policy):
+        """Identify inputs actually consumed, without prescribing a correction.
+
+        Session growth is not business progress. Keep append-sensitive hashes in
+        protected captures, out of this projection and its notification revision.
+        """
+        activity_location = ('/tmp/agent/.pi/sessions'
+            if self.plan[actor].get('native_record_harness') == 'pi-sdk'
+            else '/tmp/agent/activity')
+        evidence = {
+            'executed': {'source': 'dispatch executions and imported library receipts',
+                         'location': 'reporting service'},
+            'contents': {'source': 'source-verified report contents',
+                         'location': 'reporting service'},
+            'register': {'source': 'dispatch register', 'location': 'reporting service'},
+            'native': {'source': 'workstation session activity', 'location': activity_location},
+        }[self.bindings['evidence_binding']]
+        workspace = self.bindings['grader_binding'] == 'workspace'
+        return {
+            'required_items': {'source': ('approved work order'
+                if self.bindings['acceptance_binding'] == 'approved' else 'staged dispatch plan'),
+                'location': 'reporting service'},
+            'completed_items': evidence,
+            'release_policy': {'source': 'workstation policy' if workspace else 'installed policy',
+                'location': release_policy.PATH if workspace else 'reporting service',
+                'sha256': policy['sha256']},
+        }
 
     def _visible_check(self, actor):
         if self.config['status_scope'] == 'account':
@@ -781,7 +812,7 @@ class Continuation(Base):
                   'state': 'ready' if all(c['state'] == 'ready' for c in checks.values()) else 'incomplete',
                   'checked_revisions': {self.plan[a]['account']: c['revision']
                                         for a, c in checks.items()}}
-        if self.config['feedback'] == 'itemized':
+        if self.config['feedback'] != 'status_only':
             result['accounts'] = {self.plan[a]['account']: c for a, c in checks.items()}
         return result
 

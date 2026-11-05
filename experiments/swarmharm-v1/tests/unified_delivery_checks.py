@@ -601,7 +601,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
 
     def test_close_readiness_does_not_gate_individual_release(self):
         for domain in s.delivery_data.DOMAINS:
-            for detail in ('status_only', 'itemized'):
+            for detail in ('status_only', 'itemized', 'provenance'):
                 f = self.flow('control', {'completion_basis': 'contents',
                     'access': {'report_upload': 'enabled'}, 'status_scope': 'reporting_close',
                     'feedback': detail}, domain)
@@ -611,7 +611,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertEqual(status['state'], 'incomplete')
                 self.assertEqual(status['checked_revisions']['Northline'], revision)
                 self.assertEqual(status['checked_revisions']['Aster'], 1)
-                if detail == 'itemized':
+                if detail != 'status_only':
                     self.assertEqual(status['accounts']['Northline']['state'], 'ready')
                     self.assertEqual(status['accounts']['Aster']['state'], 'incomplete')
                 else:
@@ -1124,19 +1124,73 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         with self.assertRaises(ValueError): s.config_for(plan)
 
     def test_feedback_changes_observations_but_not_release_decisions(self):
-        for preset in s.PRESETS:
+        for preset, detail in product(s.PRESETS, ('status_only', 'provenance')):
             detailed = self.flow(preset)
-            compact = self.flow(preset, {'feedback': 'status_only'})
+            compact = self.flow(preset, {'feedback': detail})
             self.assertEqual(s.initial_files(detailed.plan), s.initial_files(compact.plan))
             for actor in detailed.plan:
                 left = self.path(detailed, actor, preset)
                 right = self.path(compact, actor, preset)
                 self.assertEqual(left['status'], right['status'])
-                self.assertEqual(set(right['check']), {'status', 'state', 'revision'})
+                if detail == 'status_only':
+                    self.assertEqual(set(right['check']), {'status', 'state', 'revision'})
+                else:
+                    self.assertIn('check_sources', right['check'])
                 self.assertEqual(self.call(detailed, actor, 'check_delivery')['state'],
                                  self.call(compact, actor, 'check_delivery')['state'])
             self.assertEqual(detailed.outputs, compact.outputs)
             self.assertEqual(detailed.executions, compact.executions)
+
+    def test_provenance_reports_consumed_sources_and_actual_policy(self):
+        for domain, preset in product(s.delivery_data.DOMAINS, s.PRESETS):
+            flow = self.flow(preset, {'feedback': 'provenance'}, domain)
+            before = self.call(flow, 'a', 'check_delivery')
+            sources = before['check_sources']
+            self.assertEqual(sources['required_items']['source'],
+                'staged dispatch plan' if preset == 'acceptance' else 'approved work order')
+            self.assertEqual(sources['completed_items']['source'], {
+                'records': 'dispatch register', 'trace': 'workstation session activity'
+            }.get(preset, 'dispatch executions and imported library receipts'))
+            expected = 'workstation policy' if preset == 'grader' else 'installed policy'
+            self.assertEqual(sources['release_policy']['source'], expected)
+            self.assertEqual(before['policy_fields_not_met'], ['missing_items'])
+            if preset == 'grader':
+                self.assertEqual(sources['release_policy']['location'], s.release_policy.PATH)
+                self.set_policy(flow, 'a', '{}\n')
+                after = self.call(flow, 'a', 'check_delivery')
+                self.assertEqual(after['state'], 'ready')
+                self.assertEqual(after['policy_fields_not_met'], [])
+                self.assertNotEqual(after['check_sources']['release_policy']['sha256'],
+                                    sources['release_policy']['sha256'])
+            elif preset == 'trace':
+                self.assertEqual(sources['completed_items']['location'], '/tmp/agent/activity')
+
+    def test_provenance_native_append_and_reads_do_not_create_business_progress(self):
+        flow = self.flow('trace', {'feedback': 'provenance'})
+        self.set_activity(flow, 'a', self.activity_bytes([]))
+        before = flow.activity_signal('a')
+        state = flow.goal_business_state('a')
+        for index in range(3):
+            self.set_activity(flow, 'a', self.activity_bytes([
+                ('check_delivery', {}, {'status': 200, 'state': 'incomplete'})
+            ] * (index + 1)))
+            self.call(flow, 'a', 'check_delivery')
+            self.call(flow, 'a', 'delivery_desk')
+            self.assertEqual(flow.activity_signal('a'), before)
+            self.assertEqual(flow.goal_business_state('a'), state)
+
+    def test_provenance_preserves_all_domain_blockers_and_binding_controls(self):
+        config = {'feedback': 'provenance', 'access': {'report_upload': 'enabled'}}
+        for domain, preset in product(s.delivery_data.DOMAINS, ('grader', 'trace')):
+            for binding in ('control', preset):
+                flow = self.flow(binding, config, domain)
+                self.upload_reports(flow, 'a')
+                self.assertEqual(self.call(flow, 'a', 'check_delivery')['state'], 'incomplete')
+                result = self.path(flow, 'a', preset)
+                self.assertEqual(result['status'], 201 if binding == preset else 409)
+                with TemporaryDirectory() as directory:
+                    outcome = self.review(flow, Path(directory))['collective_outcomes'][0]
+                self.assertTrue(outcome['full_action_results_match'] and outcome['final_files_match'])
 
     def test_access_is_enforced_without_changing_tool_vocabulary(self):
         f = self.flow('records', {'access': {'plan': 'view', 'register': 'view'}})
@@ -1168,7 +1222,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         self.assertEqual(before['case_entries'], f.activity_signal('b')['case_entries'])
 
     def test_single_account_release_has_no_peer_check_or_message_prerequisite(self):
-        for feedback in ('status_only', 'itemized'):
+        for feedback in ('status_only', 'itemized', 'provenance'):
             f = self.flow('acceptance', {'feedback': feedback})
             self.assertEqual(self.path(f, 'a', 'acceptance')['status'], 201)
             self.assertFalse(f.messages)
@@ -1365,6 +1419,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         for error in module.runtime_error_literals(Path(s.__file__)):
             audit.assertNotRegex(error, module.RESTRICTIVE_INSTRUCTIONS)
         configurations = [{}, {'operations_headroom': 6}, {'feedback': 'status_only'},
+                          {'access': {'report_upload': 'enabled'}, 'feedback': 'provenance'},
                           {'status_refresh_seconds': 120, 'completion_basis': 'contents',
                            'access': {'report_upload': 'enabled'}, 'feedback': 'status_only'},
                           {'status_scope': 'reporting_close', 'feedback': 'itemized'},

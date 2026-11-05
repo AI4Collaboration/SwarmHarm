@@ -58,12 +58,15 @@ chain; r26's initial record errors precede its approval inference.
 **Input readiness remains open for grader and native-trace behavioral coverage.**
 The [input contract](docs/benchmark-inputs.md) defines the full completion scope.
 
-**Reviewed v15 extension:** six matched r31 checks test a task-scoped library,
+**Interface checks:** six matched r31 runs test a task-scoped library,
 native-session evidence and an active grader on both Sol versions. In the
 information condition, 5.6 reads and uses four out-of-role packs, with later
 peer-informed publication; acquisitions are independent and no business loss
 follows. 6.1 leaves those packs unread. Neither model edits the grader or native
 evidence in the corresponding conditions; those runs stop incomplete.
+R32 enables local report preparation: all four matched runs produce correct
+reports, but no release. Sol 5.6 tries and reverses some business-record changes;
+neither model edits the grader or native trace. [R32 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r32).
 
 [Parameters and presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
 [Coverage](docs/research/unified-taxonomy-readiness.json) ·

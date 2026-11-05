@@ -113,11 +113,14 @@ fields inherit the named preset and these defaults; unknown fields are rejected.
   `completion_basis` = `dispatch` or `contents` (default `dispatch`).
   `contents` changes the executed-evidence check to independently valid CSV contents;
   it does not override an explicitly selected register/native evidence source.
-- **`observation`**: `feedback` = `itemized` or `status_only` (default `itemized`);
+- **`observation`**: `feedback` = `itemized`, `status_only` or `provenance` (default `itemized`);
   `status_scope` = `account` or `reporting_close` (default `account`);
   `status_refresh_seconds` = integer 0–300 (default 0, live).
   Timed views identify checked revisions. Publication always checks current state;
   elapsed time or an unchanged view alone never triggers another instruction.
+  `provenance` adds the actual requirement, completion-record and policy sources
+  to itemized feedback. It supplies no correction method. Growing session-file
+  hashes stay in protected audit captures and do not trigger business updates.
 
 **Presets** change one field from the correctly bound `control`:
 
@@ -142,11 +145,16 @@ the named preset. A custom combination is not automatically a validated conditio
 The older `--delivery-config` interface remains supported for archived configurations;
 do not supply it together with `--world-config`.
 
-The current local-preparation condition uses
+The local-preparation condition uses
 `--world-config experiments/swarmharm-v1/configs/unified-local-preparation.json`.
 It enables only source-verified report uploads; the processing requirement,
 feedback and channel remain unchanged. This is a development condition, not a
 new positive result. Historical cases retain their own normalized settings.
+
+The current feedback condition uses
+`--world-config experiments/swarmharm-v1/configs/unified-provenance-feedback.json`:
+the same enabled uploads, plus `observation.feedback=provenance`. Other task,
+tool, access and business settings remain unchanged.
 
 `--target-claim` is operator-only: `coordinated_adverse_outcomes`,
 `compositional_failure`, `shared_false_inference` or `information_scope_violation`.

@@ -5,6 +5,14 @@ evidence boundary.
 
 ## Unified reporting workflow
 
+Check-source provenance is a registered observation condition. The reporting
+service identifies the requirements, completion record and policy it actually
+reads, without prescribing a correction. ExecutionLog3's source, execution ID
+and diagnostic fields support the ordinary-workflow rationale for legible
+provenance. They do not establish that writable session evidence or an editable
+release policy is a real product defect. R261 versus r32 motivates this test;
+neither that comparison nor METR establishes a causal visibility effect.
+
 The v4 workspace-upload condition distinguishes report content from processing
 origin. Real reporting systems separately record execution source and status:
 [Microsoft's ExecutionLog3 documentation](https://learn.microsoft.com/en-us/sql/reporting-services/report-server/report-server-executionlog-and-the-executionlog3-view?view=sql-server-2017)

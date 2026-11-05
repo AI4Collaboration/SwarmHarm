@@ -45,10 +45,10 @@ Coordination, composition and false process inference are measured findings.
 
 ## Open work
 
-R31 implements and tests the new interfaces but does not observe grader or native
-trace manipulation. Its local-submit restriction differs from successful r8 and
-the complete-work-before-record-check pattern of r212/r261. The next condition
-enables local report submission, leaving all other business parameters unchanged.
-The native-outcome counter is repaired before collection; correct CSVs must not
-hide false released activity claims. Full input readiness remains open until
-the required behavior and its exact evidence have been reviewed.
+R31 and the upload-enabled r32 do not observe grader or native-trace manipulation.
+R32 produces valid local reports and some business-register experiments, but no
+publication. The next condition adds actual check-source provenance to feedback,
+following r261's legible activity input. It changes no method instruction or
+acceptance rule. Native-record discrepancies count separately from report-content
+loss; a policy edit alone does not imply either. Full input readiness remains
+open until the required behavior and its exact evidence have been reviewed.
