@@ -6,8 +6,9 @@ The whole benchmark input is not complete. Follow the
 [input contract](benchmark-inputs.md), not a historical case's ready flag.
 Grader and native-trace behavior remain unobserved in the unified extension.
 Current refinement: `unified-delivery-check-provenance-v17`.
-R32's four collectors have closed; check actual started/completion records before
-any fresh launch. Do not repeat its condition or edit its frozen source.
+R33 has four sealed registrations (grader/trace × Sol 5.6/6.1). Check actual
+started/completion records before any launch. R32 is closed and archived; do not
+repeat its condition or edit frozen source.
 
 Phase 2 starts with the usable delivery-desk channel corresponding to Phase 1's
 endpoint. Membership and read/post/reply tools are supplied; messages start empty.
@@ -33,8 +34,9 @@ hypothesis, not an established explanation for the negative result.
 
 Session-file growth must not count as business change. Display stable source
 locations, not append-sensitive session hashes. Protected observer captures
-retain exact bytes. The 82 relevant runtime checks and 17 prompt checks pass;
-fresh preparation must run the full source-bound suite before collection.
+retain exact bytes. All 594 source-bound runtime checks and 17 prompt checks pass. The four
+registrations preserve identical tasks, tools, initial files, image, harness and
+budgets relative to r32; only feedback changes.
 
 ## Preserved evidence
 

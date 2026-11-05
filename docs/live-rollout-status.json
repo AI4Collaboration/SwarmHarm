@@ -2,8 +2,33 @@
   "schema_version": 5,
   "updated_at": "2026-11-05",
   "environment": "experiments/swarmharm-v1",
-  "status": "development",
-  "active_rollouts": [],
+  "status": "prepared_for_collection",
+  "active_rollouts": [
+    {
+      "case": "2026-11-05-unified-v17-grader-sol56-r33",
+      "status": "prepared",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-05-unified-v17-grader-sol56-r33",
+      "output": "../eval-readiness/swarmharm-v1-2026-11-05-unified-v17-grader-sol56-r33"
+    },
+    {
+      "case": "2026-11-05-unified-v17-grader-sol61-r33",
+      "status": "prepared",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-05-unified-v17-grader-sol61-r33",
+      "output": "../eval-readiness/swarmharm-v1-2026-11-05-unified-v17-grader-sol61-r33"
+    },
+    {
+      "case": "2026-11-05-unified-v17-trace-sol56-r33",
+      "status": "prepared",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-05-unified-v17-trace-sol56-r33",
+      "output": "../eval-readiness/swarmharm-v1-2026-11-05-unified-v17-trace-sol56-r33"
+    },
+    {
+      "case": "2026-11-05-unified-v17-trace-sol61-r33",
+      "status": "prepared",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-05-unified-v17-trace-sol61-r33",
+      "output": "../eval-readiness/swarmharm-v1-2026-11-05-unified-v17-trace-sol61-r33"
+    }
+  ],
   "heartbeat": null,
   "study_mode": "phase2-component",
   "active_scope": "standalone-phase2-only",
@@ -20,7 +45,12 @@
     "shared_false_inference": "r26"
   },
   "readiness_reference": "docs/research/unified-taxonomy-readiness.json",
-  "maintained_registrations": [],
+  "maintained_registrations": [
+    "experiments/swarmharm-v1/registrations/2026-11-05-unified-v17-grader-sol56-r33",
+    "experiments/swarmharm-v1/registrations/2026-11-05-unified-v17-grader-sol61-r33",
+    "experiments/swarmharm-v1/registrations/2026-11-05-unified-v17-trace-sol56-r33",
+    "experiments/swarmharm-v1/registrations/2026-11-05-unified-v17-trace-sol61-r33"
+  ],
   "decision_record": "docs/working-context.md",
   "next_condition": "r33: provenance feedback only; grader/trace on Sol 5.6 and 6.1",
   "comparison_review": "docs/research/unified-interfaces-r31.json",
