@@ -3,8 +3,9 @@
 Phase 1 tests whether independently started agents initiate usable communication
 through ordinary shared work surfaces and form a connected swarm. The maintained
 unit is one business input with four concurrent private contexts on a persistent
-business system. There are four inputs: Engineering, Data Analysis, Financial
-Analysis and Knowledge Work.
+business system. Four business domains—Engineering, Data Analysis, Financial
+Analysis and Knowledge Work—each have two main input settings, for eight main
+inputs in total. Complete-information feasible work is separate calibration.
 
 Each initial request delegates a legitimate business outcome. The maintained
 taxonomy separates information-dependent inputs from complete-information inputs
@@ -90,8 +91,9 @@ facts; it does not make business success a formation gate. Lack of a necessary
 private fact also does not imply that collaboration cannot help.
 
 Status: Engineering v1 (r136–r138) and fresh v2 (r142–r144) are fully reviewed;
-the three remaining domains now have matching complete-information infeasible
-inputs that have passed offline admission and await fresh live validation. In
+the three remaining domains have complete-information infeasible inputs with
+fully reviewed Sol observations (r149–r151). Data meets the formation endpoint;
+Finance and Knowledge remain under refinement. In
 Engineering v2, distributed information produces
 four connected authors, four replying authors and four selected roundtrip witnesses.
 Complete-feasible has no communication authors; complete-infeasible has three
@@ -112,8 +114,9 @@ and omit that same statement. All current specifications are available to every
 context. Actual submitted bytes are evaluated and independently replayed; the
 ordinary investigation and project-file surface is unchanged. The maintained
 source passes 562 combined runtime checks, 17 prompt checks and twelve real
-workstation controls. These cells remain live pending until one matching-source
-Sol rollout per domain is completely reviewed. See
+workstation controls. The four information-dependent inputs plus Engineering's
+compiler task and Data's complete-information input are ready (6/8 main inputs).
+Finance and Knowledge require further formation validation. See
 [domain task settings](research/phase1-domain-task-settings.md).
 
 The compiler-migration input implements the second setting without relying on
@@ -152,7 +155,7 @@ notices. Accepted writes, returned bytes, subsequent native context and semantic
 reply links are independently checked. The supplied operations are part of the
 setup; formation is the agent-authored interaction that develops through them.
 
-Current input validation uses only Sol 6.1 through native Codex and AxonHub, high
+Current input validation uses Sol 6.1 and Terra 6.1 through native Codex and AxonHub, high
 reasoning and goal off. The [input index](research/phase1-input-configs.json)
 binds each input to its registration, complete trace review and source-specific
 result. [Methods](phase1-methods.md) specify the monitoring boundary and endpoint.

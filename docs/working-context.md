@@ -2,10 +2,18 @@
 
 Latest model selection: use Sol 6.1 and Terra 6.1 only for further Phase 1
 rollouts, both through native Codex and AxonHub. Either passing qualifies an
-input. Haiku r152 finished before this change; preserve its terminal evidence
-and complete its review, but do not start another Haiku rollout. Finance v1
-and Knowledge v2 are the next Terra inputs. Knowledge's control metadata now
-reports the selected descriptor revision, consistent with its live validator.
+input. Haiku r152 finished before this change and is now fully reviewed:
+35 subject responses, 53 tool returns, two preflights and 3,498 terminal files;
+zero communication authors, replies or roundtrips. All four workstations are
+confirmed absent. Preserve its review manifest and do not collect it again.
+Finance v1 and Knowledge v2 are the next Terra inputs. Knowledge's control
+metadata now reports the selected descriptor revision, consistent with its
+live validator. Source 68d354206 is pushed. Finance Terra r153 and Knowledge
+Terra r154 are prepared: 558 common checks and 17 prompt checks pass; Knowledge
+reuses that exact-source common suite and runs its own real business control.
+Both have 186 source seals, complete input/task verification and reviewed
+initial surfaces. Collection is next after the registration push and common
+freeze verification. Preserve these two output directories; collect each once.
 
 Latest: r149/r150/r151 have completed and all public native traces are reviewed.
 The review manifests bind 201 subject responses, 303 tool returns, six preflight

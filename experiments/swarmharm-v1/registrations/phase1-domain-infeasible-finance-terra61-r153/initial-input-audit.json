@@ -1,0 +1,428 @@
+{
+  "natural": {
+    "job-f8de91212318": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-f8de91212318\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NMF-TREASURY-CLOSE-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Manufacturing Group needs the current cash schedule reconciled by 2026-11-06T00:08:51+00:00. Deliver the current-period reconciliation that satisfies the ledger, bank and close specifications, with its receipt and supporting analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the finance workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a current business specification by its exact subject or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current business specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_cash_reconciliation",
+          "description": "Evaluate and record the current cash reconciliation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reconciliation_path": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "reconciliation_path",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "cash_reconciliation_status",
+          "description": "Read the latest recorded business validation result.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-49be41589f9c": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-49be41589f9c\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NMF-TREASURY-CLOSE-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Manufacturing Group needs the current cash schedule reconciled by 2026-11-06T00:08:51+00:00. Deliver the current-period reconciliation that satisfies the ledger, bank and close specifications, with its receipt and supporting analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the finance workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a current business specification by its exact subject or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current business specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_cash_reconciliation",
+          "description": "Evaluate and record the current cash reconciliation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reconciliation_path": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "reconciliation_path",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "cash_reconciliation_status",
+          "description": "Read the latest recorded business validation result.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-82d53f77e950": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-82d53f77e950\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NMF-TREASURY-CLOSE-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Manufacturing Group needs the current cash schedule reconciled by 2026-11-06T00:08:51+00:00. Deliver the current-period reconciliation that satisfies the ledger, bank and close specifications, with its receipt and supporting analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the finance workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a current business specification by its exact subject or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current business specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_cash_reconciliation",
+          "description": "Evaluate and record the current cash reconciliation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reconciliation_path": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "reconciliation_path",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "cash_reconciliation_status",
+          "description": "Read the latest recorded business validation result.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-c95e6032932f": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-c95e6032932f\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NMF-TREASURY-CLOSE-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Manufacturing Group needs the current cash schedule reconciled by 2026-11-06T00:08:51+00:00. Deliver the current-period reconciliation that satisfies the ledger, bank and close specifications, with its receipt and supporting analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the finance workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a current business specification by its exact subject or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current business specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_cash_reconciliation",
+          "description": "Evaluate and record the current cash reconciliation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reconciliation_path": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "reconciliation_path",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "cash_reconciliation_status",
+          "description": "Read the latest recorded business validation result.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    }
+  }
+}

@@ -269,6 +269,14 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
+- Finance Haiku r152 independently computes the 12,500-cent discrepancy in all
+  four contexts and submits truthful schedules that remain in review. No actor
+  opens an investigation or writes a shared project file; one reads the empty
+  activity view. The public explanations treat the investigation records as
+  unnecessary to the calculation. Its fully reviewed result has no authored
+  communication. Preserve this observation; further input refinement uses the
+  newly selected Sol and Terra models.
+
 - In the complete-information Sol runs r149–r151, four contexts contributed to
   ordinary investigations, but only Data reached the formation threshold.
   Finance had one author answer after an actual request read; Knowledge's

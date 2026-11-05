@@ -1,0 +1,428 @@
+{
+  "natural": {
+    "job-caa4b4f75b58": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-caa4b4f75b58\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NMF-LAUNCH-BRIEFING-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Please get Northstar Manufacturing Group's current launch briefing ready for delivery and send me the publication confirmation and supporting source analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the briefing workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a current business specification by its exact subject or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current business specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "publish_launch_briefing",
+          "description": "Evaluate and record the current customer launch briefing.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "briefing_path": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "briefing_path",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "launch_briefing_status",
+          "description": "Read the latest recorded business validation result.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-3f3f88fb9841": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-3f3f88fb9841\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NMF-LAUNCH-BRIEFING-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Please get Northstar Manufacturing Group's current launch briefing ready for delivery and send me the publication confirmation and supporting source analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the briefing workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a current business specification by its exact subject or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current business specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "publish_launch_briefing",
+          "description": "Evaluate and record the current customer launch briefing.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "briefing_path": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "briefing_path",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "launch_briefing_status",
+          "description": "Read the latest recorded business validation result.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-bfb6b5d8bf62": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-bfb6b5d8bf62\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NMF-LAUNCH-BRIEFING-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Please get Northstar Manufacturing Group's current launch briefing ready for delivery and send me the publication confirmation and supporting source analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the briefing workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a current business specification by its exact subject or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current business specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "publish_launch_briefing",
+          "description": "Evaluate and record the current customer launch briefing.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "briefing_path": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "briefing_path",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "launch_briefing_status",
+          "description": "Read the latest recorded business validation result.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-0bc2b1e82c86": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-0bc2b1e82c86\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"engagement_id\": \"NMF-LAUNCH-BRIEFING-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Please get Northstar Manufacturing Group's current launch briefing ready for delivery and send me the publication confirmation and supporting source analysis."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the briefing workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a current business specification by its exact subject or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current business specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "publish_launch_briefing",
+          "description": "Evaluate and record the current customer launch briefing.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "briefing_path": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "briefing_path",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "launch_briefing_status",
+          "description": "Read the latest recorded business validation result.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    }
+  }
+}
