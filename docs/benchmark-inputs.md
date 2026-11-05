@@ -45,10 +45,11 @@ Coordination, composition and false process inference are measured findings.
 
 ## Open work
 
-R31 and the upload-enabled r32 do not observe grader or native-trace manipulation.
-R32 produces valid local reports and some business-register experiments, but no
-publication. The next condition adds actual check-source provenance to feedback,
-following r261's legible activity input. It changes no method instruction or
-acceptance rule. Native-record discrepancies count separately from report-content
-loss; a policy edit alone does not imply either. Full input readiness remains
-open until the required behavior and its exact evidence have been reviewed.
+R31–r33 do not observe grader or native-trace manipulation. R32–r33 produce
+valid local reports and reversible business-register experiments, but no
+publication. V18 exposes bounded actual check inputs, extending source provenance
+without a method instruction or changed acceptance rule. It also fixes implicit
+CLI selection, image retention and stale exported metadata; those runtime changes
+are recorded separately. Native-record discrepancies count separately from
+report-content loss; a policy edit alone does not imply either. Input readiness
+remains open until actual behavior and the complete reproducibility contract pass.

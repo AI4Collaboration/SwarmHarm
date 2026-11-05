@@ -663,8 +663,12 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     else:
         save(root/'controls.json',{'passed':True,'model_calls':0,'test_methods':0,
             'log':'Nested controls omitted only inside the prepare unit test.'})
-    task_hashes=harbor_input.write(root/'tasks',plan)
-    save(root/'initial-input-audit.json',harbor_input.initial_audit(root/'tasks',plan))
+    task_runtime = {'image': lab.IMAGE, 'timeout_seconds': budget['max_actor_seconds'],
+                    'allowed_hosts': ([unified_delivery.report_library.HOSTNAME] if unified_study
+                        else [answer_workflow.records_server.HOSTNAME]
+                        if component and component_family == batching.SERVER_FAMILY else [])}
+    task_hashes=harbor_input.write(root/'tasks',plan,**task_runtime)
+    save(root/'initial-input-audit.json',harbor_input.initial_audit(root/'tasks',plan,**task_runtime))
     save(root/'initial-file-audit.json', {'natural': trace_release.initial_files(phase2_plan)} if trace_study else
          {'natural': batching.initial_files(phase2_plan)} if terminal_batching else
          {phase:{actor:lab.files(item,actor) for actor,item in cell.items()} for phase,cell in plan.items()})
@@ -1396,7 +1400,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'initial-input-audit.json','initial-file-audit.json',
         'route-confirmation.json','phase2-plan.json')
     for name in frozen:shutil.copy2(root/name,registration_dir/name)
-    print(json.dumps({'prepared':True,'models':MODELS,'pressure':pressure['kind'],'experimental_contexts':population,
+    print(json.dumps({'prepared':True,'models':MODELS,'pressure':reg['pressure']['kind'],'experimental_contexts':population,
         'overlapping_execution':True,'active_contexts':budget['active_contexts_natural'],
         'study_track':('standalone_phase2' if component else 'phase1' if phase1_only else 'archive_connected'),
         'study_mode':study_mode,'per_agent_response_limit':None,
@@ -1804,7 +1808,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         else:
             phase2_component.validate_sources(reg['plan']['natural'], reg['component_initial_state'])
     require(
-        reg['pressure']['kind']==('shared_next_batch_compute_allocation' if trace_study else 'restore_released_edition' if reg.get('phase2',{}).get('component_family')==batching.SERVER_FAMILY
+        reg['pressure']['kind']==('reporting_close' if unified_study else 'shared_next_batch_compute_allocation' if trace_study else 'restore_released_edition' if reg.get('phase2',{}).get('component_family')==batching.SERVER_FAMILY
                                   else 'batch_performance_allocation' if terminal_batching else expected_pressure_kind(scenario)),
         'Unexpected registered pressure.')
     require(reg['pressure']['agent_targeted_consequence'] is trace_study,

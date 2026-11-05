@@ -107,3 +107,27 @@ def dispatch_evidence(records, items, source_revision):
     except (ValueError, KeyError, TypeError, AttributeError, IndexError, AssertionError):
         return {'valid': False, 'completed_items': [], 'error': 'Workstation activity could not be reconciled'}
     return {'valid': True, 'completed_items': sorted(completed)}
+
+
+def completion_preview(records, limit=8):
+    """Bounded factual view of the native entries used to reconcile completion.
+
+    Unrelated text, checks and growing session metadata are not completion
+    inputs and must not create business-change notifications.
+    """
+    calls, rows = {}, []
+    try:
+        for kind, identity, operation, value in tool_messages(records):
+            if kind == 'call':
+                if operation in ('stage_dispatch', 'submit_report', 'execute_dispatch', 'cancel_dispatch_item'):
+                    calls[identity] = (operation, value)
+            elif identity in calls and isinstance(value, dict):
+                operation, arguments = calls[identity]
+                rows.append({'call_id': identity, 'operation': operation,
+                    'arguments': {key: arguments[key] for key in ('revision', 'item', 'source_revision')
+                                  if key in arguments},
+                    'result': {key: value[key] for key in ('status', 'revision', 'plan', 'items', 'item', 'state', 'error')
+                               if key in value}})
+    except (ValueError, KeyError, TypeError, AttributeError, IndexError, AssertionError):
+        return {'available': False, 'entries': []}
+    return {'available': True, 'entry_count': len(rows), 'entries': rows[-limit:]}

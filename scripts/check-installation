@@ -26,9 +26,13 @@ def main():
             print(name + ': runtime configuration available (goal off)')
     station = workstation.Workstation({'/workspace/check.txt': workstation.ENCODE('ready')})
     try:
-        reply, _ = station.execute('cat /workspace/check.txt', {})
-        if reply['exit_code'] != 0 or reply['stdout'] != 'ready':
+        reply, _ = station.execute('rg --fixed-strings --no-line-number ready /workspace/check.txt', {})
+        if reply['exit_code'] != 0 or reply['stdout'].strip() != 'ready':
             raise RuntimeError('Workstation round trip failed')
+        for command in ('curl --version', 'ps -o pid,comm'):
+            reply, _ = station.execute(command, {})
+            if reply['exit_code'] != 0:
+                raise RuntimeError('Workstation utility is unavailable: ' + command)
     finally:
         station.close()
     print('Harbor and isolated file/tool round trip: OK; no hosted inference')

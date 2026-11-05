@@ -12,7 +12,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch phase2-unified-v15-20261105 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch phase2-unified-v18-20261105 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -25,7 +25,12 @@ Python dependencies are fixed in `experiments/runtime/python-requirements.txt`;
 JavaScript dependencies use each adapter’s `package-lock.json`. Pi is installed
 for offline compatibility tests; installation does not select it for inference.
 Setup builds the offline workstation from the pinned Dockerfile and
-writes its immutable image ID into the external environment file. No API key or
+writes its immutable image ID into the external environment file. The image
+includes `rg`, `curl` and `ps`; a fixed Debian snapshot and recorded package
+versions keep these tools reproducible. Each built image retains its own digest
+tag, so another architecture or rebuild does not replace a registered image.
+Exported Harbor inputs record the actual image, time budget and allowed service.
+No API key or
 model request is needed for setup or installation checks. The current unified
 library fixture requires Docker with isolated bridge gateways; its local runtime
 check verifies the actual links. This fixture is not yet supported by Apptainer.
@@ -71,8 +76,10 @@ registration. Launch once with the same output, registration and key paths:
 
 See the scenario guide for the other conditions. Raw outputs must stay outside
 the repository; registrations must be direct children of the registration folder.
-For the new r31 library, trace or grader condition, select `knowledge-work`,
+For the library, trace or grader condition, select `knowledge-work`,
 use `information`, `trace` or `grader`, and omit the headroom configuration.
+V18 grader/trace feedback uses `--world-config
+experiments/swarmharm-v1/configs/unified-evidence-preview.json`.
 The information condition uses `--target-claim information_scope_violation`.
 For exact reproduction, use each archive's frozen source and registration;
 the current source tag does not replace older successful settings.
@@ -132,6 +139,9 @@ An already-running turn finishes and is retained; genuine new business input
 resumes the same goal. Native blocked/completed goals are not automatically reset.
 Use the pinned `0.166.0` executable installed by setup. Each registration freezes
 its actual version and hash; a different executable requires fresh validation.
+The adapter resolves the repository's installed package by default, never a
+desktop app or a global `PATH` installation. An explicit `SWARMHARM_NATIVE_CODEX`
+override is recorded and requires a fresh registration.
 The [eight-run comparison](research/unified-goal-comparison.json) finds goal off
 sufficient for the tested unified reporting configuration. Off retains memory
 and genuine business-state notifications. Fresh runs default to off; historical

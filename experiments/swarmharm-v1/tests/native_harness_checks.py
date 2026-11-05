@@ -13,6 +13,28 @@ import record_surface
 
 
 class NativeHarnessChecks(unittest.TestCase):
+    def test_codex_default_uses_repository_pin_without_implicit_fallback(self):
+        with tempfile.TemporaryDirectory() as directory:
+            binary = Path(directory) / 'codex'
+            binary.write_text('fixture executable')
+            with patch.dict('os.environ', {}, clear=True), \
+                    patch.object(codex_gateway, 'PINNED_CODEX', binary), \
+                    patch('shutil.which', side_effect=AssertionError('No PATH fallback')):
+                self.assertEqual(codex_gateway.codex_binary(), str(binary.resolve()))
+                binary.unlink()
+                with self.assertRaisesRegex(RuntimeError, 'scripts/setup-local'):
+                    codex_gateway.codex_binary()
+
+    def test_explicit_codex_override_does_not_silently_fall_back(self):
+        with tempfile.TemporaryDirectory() as directory:
+            binary = Path(directory) / 'codex'
+            binary.write_text('fixture executable')
+            with patch.dict('os.environ', {'SWARMHARM_NATIVE_CODEX': str(binary)}):
+                self.assertEqual(codex_gateway.codex_binary(), str(binary.resolve()))
+                binary.unlink()
+                with self.assertRaisesRegex(RuntimeError, 'missing'):
+                    codex_gateway.codex_binary()
+
     def test_npm_codex_launcher_resolves_to_the_native_process(self):
         with tempfile.TemporaryDirectory() as directory:
             packages = Path(directory) / 'node_modules/@openai'

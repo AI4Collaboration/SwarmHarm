@@ -604,6 +604,10 @@ class PiCollectChecks(unittest.TestCase):
             for actor, assignment in reg['phase2']['assignments'].items():
                 request = run.load(root/'natural'/actor/'trace/0001.request.json')
                 self.assertIn(run.answer_workflow.task(assignment), _text(request['input'][1]))
+                task = run.harbor_input.tomllib.loads((root/'tasks/natural'/actor/'task.toml').read_text())
+                self.assertEqual(task['environment']['allowed_hosts'], [run.answer_workflow.records_server.HOSTNAME])
+                self.assertEqual(task['environment']['network_mode'], 'allowlist')
+                self.assertEqual(task['environment']['docker_image'], lab.IMAGE)
             world = run.load(root/'natural/world.json')
             self.assertEqual({e['actor'] for e in world['events'] if e['operation']=='replay_status'},
                              set(reg['phase2']['assignments']))

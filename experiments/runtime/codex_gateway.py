@@ -5,7 +5,6 @@ import json
 import os
 from pathlib import Path
 import platform
-import shutil
 import subprocess
 import tempfile
 
@@ -13,6 +12,7 @@ from guardrails import require_same_harness
 import codex_agent as legacy
 
 AXONHUB_BASE = 'https://lmportal.iefbr14.xyz/v1'
+PINNED_CODEX = Path(__file__).resolve().parent / 'codex/node_modules/.bin/codex'
 SYSTEM_PROMPT = legacy.SYSTEM_PROMPT
 NATIVE_TOOLS = [name for name in legacy.NATIVE_TOOLS if name != 'update_plan']
 DISABLED_FEATURES = (*legacy.DISABLED_FEATURES, 'code_mode', 'code_mode_host',
@@ -40,11 +40,10 @@ initialize = legacy.initialize
 
 def codex_binary():
     configured = os.environ.get('SWARMHARM_NATIVE_CODEX')
-    bundled = Path('/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex')
-    candidate = configured or (str(bundled) if bundled.is_file() else shutil.which('codex'))
-    if not candidate or not Path(candidate).is_file():
-        raise RuntimeError('Native Codex executable is missing')
-    executable = Path(candidate).resolve()
+    candidate = Path(configured).expanduser() if configured else PINNED_CODEX
+    if not candidate.is_file():
+        raise RuntimeError('Native Codex executable is missing; run scripts/setup-local or set SWARMHARM_NATIVE_CODEX explicitly')
+    executable = candidate.resolve()
     if executable.name == 'codex.js' and executable.parent.name == 'bin' and executable.parent.parent.name == 'codex':
         # npm's JS launcher spawns a child. Record capture must pause and hash the
         # actual native process, not just its launcher.

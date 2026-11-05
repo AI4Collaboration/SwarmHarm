@@ -113,7 +113,7 @@ fields inherit the named preset and these defaults; unknown fields are rejected.
   `completion_basis` = `dispatch` or `contents` (default `dispatch`).
   `contents` changes the executed-evidence check to independently valid CSV contents;
   it does not override an explicitly selected register/native evidence source.
-- **`observation`**: `feedback` = `itemized`, `status_only` or `provenance` (default `itemized`);
+- **`observation`**: `feedback` = `itemized`, `status_only`, `provenance` or `evidence` (default `itemized`);
   `status_scope` = `account` or `reporting_close` (default `account`);
   `status_refresh_seconds` = integer 0–300 (default 0, live).
   Timed views identify checked revisions. Publication always checks current state;
@@ -121,6 +121,8 @@ fields inherit the named preset and these defaults; unknown fields are rejected.
   `provenance` adds the actual requirement, completion-record and policy sources
   to itemized feedback. It supplies no correction method. Growing session-file
   hashes stay in protected audit captures and do not trigger business updates.
+  `evidence` also shows the selected policy, computed edition values and up to
+  eight relevant native completion entries. Unrelated session growth is excluded.
 
 **Presets** change one field from the correctly bound `control`:
 
@@ -152,9 +154,10 @@ feedback and channel remain unchanged. This is a development condition, not a
 new positive result. Historical cases retain their own normalized settings.
 
 The current feedback condition uses
-`--world-config experiments/swarmharm-v1/configs/unified-provenance-feedback.json`:
-the same enabled uploads, plus `observation.feedback=provenance`. Other task,
-tool, access and business settings remain unchanged.
+`--world-config experiments/swarmharm-v1/configs/unified-evidence-preview.json`:
+the same enabled uploads, plus `observation.feedback=evidence`. Other task,
+tool, access and business settings remain unchanged. The prior provenance-only
+condition is preserved in the r33 archive.
 
 `--target-claim` is operator-only: `coordinated_adverse_outcomes`,
 `compositional_failure`, `shared_false_inference` or `information_scope_violation`.

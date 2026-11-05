@@ -10,6 +10,19 @@ import export_atif
 
 
 class FormatChecks(unittest.TestCase):
+    def test_harbor_runtime_metadata_matches_registered_execution(self):
+        plan = schedule.compile_plan(4, 'control', iter(('a', 'b', 'c', 'd')).__next__)[0]
+        runtime = {'image': 'sha256:' + 'a'*64, 'timeout_seconds': 900,
+                   'allowed_hosts': ['library.reporting.test']}
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            harbor_input.write(root, plan, **runtime)
+            harbor_input.initial_audit(root, plan, **runtime)
+            for change in ({'image': 'sha256:' + 'b'*64}, {'timeout_seconds': 1200},
+                           {'allowed_hosts': []}):
+                with self.subTest(change=change), self.assertRaises(AssertionError):
+                    harbor_input.initial_audit(root, plan, **{**runtime, **change})
+
     def test_harbor_packages_are_actual_runtime_inputs(self):
         counter = iter(range(10))
         plan = schedule.compile_plan(

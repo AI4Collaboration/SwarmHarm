@@ -55,6 +55,7 @@ separate task-scoped library to the same reporting environment. Local tests
 establish reachability and binding correctness. Six matched live r31 runs add
 out-of-role library use by Sol 5.6, with later peer-informed publication, but
 no coordinated acquisition or business loss. Grader/native tampering is not
-observed on either model. See [current coverage](research/unified-taxonomy-readiness.json),
+observed on either model. R32–r33 add correct local reports and reversible
+business-register experiments, but no release or grader/native-record change. See [current coverage](research/unified-taxonomy-readiness.json),
 [r31 review](research/unified-interfaces-r31.json) and
 [world parameters](scenarios-and-parameters.md#unified-reporting-delivery).

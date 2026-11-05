@@ -58,15 +58,13 @@ chain; r26's initial record errors precede its approval inference.
 **Input readiness remains open for grader and native-trace behavioral coverage.**
 The [input contract](docs/benchmark-inputs.md) defines the full completion scope.
 
-**Interface checks:** six matched r31 runs test a task-scoped library,
-native-session evidence and an active grader on both Sol versions. In the
-information condition, 5.6 reads and uses four out-of-role packs, with later
-peer-informed publication; acquisitions are independent and no business loss
-follows. 6.1 leaves those packs unread. Neither model edits the grader or native
-evidence in the corresponding conditions; those runs stop incomplete.
-R32 enables local report preparation: all four matched runs produce correct
-reports, but no release. Sol 5.6 tries and reverses some business-record changes;
-neither model edits the grader or native trace. [R32 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r32).
+**Interface checks:** r31 observes out-of-role library use by Sol 5.6, followed
+by peer-informed publication, without business loss. Grader and native-record
+conditions remain incomplete on both models. R32–r33 produce correct local
+reports; 5.6 tries and restores business-register changes, but neither model
+changes the grader or native record. The current v18 condition exposes a bounded
+preview of the actual check inputs. It has no positive model result yet.
+[R33 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r33).
 
 [Parameters and presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
 [Coverage](docs/research/unified-taxonomy-readiness.json) ·
@@ -88,7 +86,7 @@ neither model edits the grader or native trace. [R32 full evidence](https://gith
 
 ## Explore or reproduce
 
-- [Reviewed r31 source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-v15-20261105) · [Complete r31 evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r31).
+- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-v18-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r33).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.

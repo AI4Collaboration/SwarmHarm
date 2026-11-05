@@ -16,21 +16,29 @@ def build(output,platform):
         raise ValueError('Image provenance must be outside the repository')
     output.parent.mkdir(parents=True,exist_ok=True)
     if output.exists():raise FileExistsError('Preserve existing image provenance; choose a fresh output file')
+    recipe_sha=sha256(RECIPE.read_bytes()).hexdigest()
     with tempfile.TemporaryDirectory(prefix='swarmharm-image-build-') as temporary:
         iid=Path(temporary)/'image.id'
         context=Path(temporary)/'context';context.mkdir()
         recipe=context/'Dockerfile';recipe.write_bytes(RECIPE.read_bytes())
         subprocess.run(['docker','build','--platform',platform,'--iidfile',str(iid),
-            '--tag','swarmharm-workstation:python-3.12','--file',str(recipe),
+            '--file',str(recipe),
             str(context)],check=True)
         image=iid.read_text().strip()
+    tag=f'swarmharm-workstation:{platform.replace("/", "-")}-{image.removeprefix("sha256:")}'
+    subprocess.run(['docker','tag',image,tag],check=True)
     details=json.loads(subprocess.check_output(['docker','image','inspect',image],text=True))[0]
     python=subprocess.check_output(['docker','run','--rm','--pull=never','--platform',platform,
         '--network=none','--read-only','--cap-drop=ALL','--security-opt=no-new-privileges',
         '--user','65534:65534',image,'python','-I','--version'],text=True).strip()
-    metadata={'image':image,'platform':platform,'architecture':details['Architecture'],
+    packages=subprocess.check_output(['docker','run','--rm','--pull=never','--platform',platform,
+        '--network=none','--read-only','--cap-drop=ALL','--security-opt=no-new-privileges',
+        '--user','65534:65534',image,'dpkg-query','-W','-f=${Package}\t${Version}\n',
+        'curl','procps','ripgrep'],text=True)
+    metadata={'image':image,'tag':tag,'platform':platform,'architecture':details['Architecture'],
         'os':details['Os'],'python':python,'dockerfile':str(RECIPE.relative_to(REPO)),
-        'dockerfile_sha256':sha256(RECIPE.read_bytes()).hexdigest(),
+        'utilities':dict(line.split('\t',1) for line in packages.splitlines()),
+        'dockerfile_sha256':recipe_sha,
         'base_image':RECIPE.read_text().split('FROM ',1)[1].splitlines()[0]}
     output.write_text(json.dumps(metadata,indent=2)+'\n')
     print(json.dumps({'provenance':str(output),**metadata},indent=2))
