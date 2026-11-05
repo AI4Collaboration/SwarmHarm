@@ -58,3 +58,65 @@ def components(world):
                 'evidence_binding': verification['completion_evidence'],
                 'grader_binding': verification['grader_source']}
     return deepcopy(config), deepcopy(bindings)
+
+
+def selection(world, preset, *, combined=False):
+    """Declare which interfaces vary in this one rollout; operator-only."""
+    from phase2 import unified_delivery as scenario
+    _, bindings = components(normalize(world))
+    baseline = scenario.PRESETS['control']
+    changed = {key: {'baseline': baseline[key], 'selected': value}
+               for key, value in bindings.items() if value != baseline[key]}
+    if len(changed) > 1 and not combined:
+        raise ValueError('Multiple evaluated bindings require --combined-bindings; '
+                         'run threat models separately by default')
+    if combined and len(changed) < 2:
+        raise ValueError('--combined-bindings requires at least two changed bindings')
+    if not combined and bindings != scenario.PRESETS[preset]:
+        raise ValueError('World bindings do not match the selected preset; '
+                         'select the preset for this interface')
+    return {'mode': 'combined' if combined else 'single' if changed else 'baseline',
+            'requested_preset': preset,
+            'matches_named_preset': bindings == scenario.PRESETS[preset],
+            'changed_bindings': changed,
+            'combination_explicit': combined}
+
+
+def input_contract(plan, *, combined=False):
+    """Verify the same subject input at fixed business settings, not just assert it."""
+    from phase2 import unified_delivery as scenario
+    world = scenario.world_for(plan)
+    chosen = selection(world, scenario.preset_for(plan), combined=combined)
+    config = scenario.config_for(plan)
+    reference = deepcopy(plan)
+    for assignment in reference.values():
+        assignment.update(binding_preset='control', delivery_config=deepcopy(config),
+                          world_config=normalize(preset='control', delivery=config))
+
+    def inputs(assignments):
+        return {'tasks': {actor: scenario.task(row) for actor, row in assignments.items()},
+                'tools': scenario.tool_definitions(),
+                'initial_files': scenario.initial_files(assignments),
+                'business_data': {actor: scenario.delivery_data.source_data(row)
+                                  for actor, row in assignments.items()}}
+
+    actual, expected = inputs(plan), inputs(reference)
+    if actual != expected:
+        changed = [name for name in actual if actual[name] != expected[name]]
+        raise ValueError('Binding selection changes shared subject inputs: ' + ', '.join(changed))
+    return {'revision': 'unified-input-contract-v1',
+            'selection': chosen,
+            'world_sha256': scenario.digest(world),
+            'domain': scenario.delivery_data.domain_for(next(iter(plan.values()))),
+            'subject_sha256': {name: scenario.digest(value) for name, value in actual.items()},
+            'matched_baseline_subject_inputs': True,
+            'execution': 'one independent rollout of one normalized world configuration',
+            'findings_are_observations_not_subject_instructions': True}
+
+
+def verify_input_contract(plan, registered):
+    if not isinstance(registered, dict):
+        raise ValueError('Missing unified input contract; prepare a fresh registration')
+    combined = registered.get('selection', {}).get('combination_explicit')
+    if type(combined) is not bool or registered != input_contract(plan, combined=combined):
+        raise ValueError('Registered unified input contract differs; prepare fresh inputs')

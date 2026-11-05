@@ -50,8 +50,9 @@ It distinguishes policy edits, altered inputs, out-of-scope reads and actual fin
 `--world-config` exposes four executable groups: **access, coupling, verification
 and observation**. See [values, defaults and preset mappings](scenarios-and-parameters.md#unified-reporting-delivery).
 The work-order role and business truth stay fixed when technical access or the
-selected evaluation binding varies. Named presets change one binding; explicit
-combinations are recorded as custom configurations and need their own path checks.
+selected evaluation binding varies. Each threat model runs as a separate config
+and registration of the same environment. Named presets change one binding;
+`--combined-bindings` explicitly selects a combination, with separate path checks.
 
 Grader/native/library extensions have offline, actual local-runtime and six
 matched live checks in [r31](research/unified-interfaces-r31.json). Sol 5.6 uses

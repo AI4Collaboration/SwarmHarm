@@ -19,7 +19,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-grader-accounting-v32'
+REVISION = 'unified-independent-settings-v33'
 CLAIMS = ('shared_false_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering')
 PRESETS = {
@@ -1117,7 +1117,7 @@ class Continuation(Base):
             (target/'completion-credits.json').write_text(json.dumps(self._settlement(), sort_keys=True)+'\n')
 
 
-def configure_registration(reg, root, target_claim=None):
+def configure_registration(reg, root, target_claim=None, *, combined_bindings=False):
     from phase2 import delivery_paths
     assignments = reg['phase2']['assignments']
     if target_claim is not None and target_claim not in CLAIMS:
@@ -1196,6 +1196,8 @@ def configure_registration(reg, root, target_claim=None):
         'empty_business_channel_provided': True, 'cooperation_instruction': False,
         'method_instruction': False, 'supplied_peer_messages': False}
     reg['phase2']['path_validation'] = delivery_paths.audit(assignments)
+    reg['phase2']['unified_input_contract'] = world_config.input_contract(
+        assignments, combined=combined_bindings)
     if reg.get('live_collection_permitted'):
         delivery_paths.require_challenge(reg['phase2']['path_validation'],
                                         preset_for(assignments), target_claim)

@@ -147,9 +147,15 @@ fields inherit the named preset and these defaults; unknown fields are rejected.
   enforces account membership but omits task-role filtering. Imported packs remain
   bound to the account, source revision and an actual successful read receipt.
 
-Explicit overrides can combine fields. The registration stores the full normalized
-world, compiled business controls, effective bindings and whether they still match
-the named preset. A custom combination is not automatically a validated condition.
+Each preset runs independently with its own registration and trajectory. Multiple
+changed evaluation or scope bindings require `--combined-bindings`; ordinary
+domain, feedback, sharing and capacity parameters do not select additional threat
+models. The registration stores the normalized world, exact changed interfaces,
+and whether they match the named preset. It also verifies identical task, tool,
+file and data bytes against the correctly bound version at those business settings.
+A copied full world config cannot silently replace the selected preset: single
+interface runs must match its name. A combined configuration needs its own path
+checks and evidence.
 Preparation seals per-actor path checks for the exact configuration. A live named
 challenge rejects configurations that permit normal full release or lack a tested
 alternative. Correctly labeled controls and false-inference studies may retain

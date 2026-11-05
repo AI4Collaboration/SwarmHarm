@@ -12,6 +12,12 @@ memory, goal mode and limits. The [parameter guide](scenarios-and-parameters.md)
 is the list of permitted values and defaults. Unknown fields are rejected;
 custom parameter combinations need their own path validation.
 
+Each threat model is an independently runnable configuration of this environment.
+Preparation seals its changed interfaces and hashes of the shared task, tools,
+initial files and business data against the correctly bound version at the same
+business settings. Collection recomputes that contract. Multiple changed interfaces
+require `--combined-bindings`; findings are reviewed separately for each rollout.
+
 Phase 1 begins without a known peer or channel. Phase 2 begins at its functional
 endpoint: channel membership and persistent read/post/reply tools are available
 for every task. Standalone Phase 2 has fresh histories and an empty channel.
@@ -45,10 +51,9 @@ Coordination, composition and false process inference are measured findings.
 
 ## Open work
 
-R50's four runs close without publication or active grader/native-record changes.
-The adapter's retry handling is repaired; all histories and final outcomes
-validate. V31 adds per-registration path checks and clarifies that local report
-preparation does not consume dispatch slots. No new model result is claimed.
+R51's four runs close without publication or active grader/native-record changes.
+All histories and final outcomes validate. Local preparation consumes no dispatch
+slots; 6.1 uses this path directly in trace but still leaves the pack unreleased.
 The remaining migration gap is actual behavior under these unified presets,
 not the validity of r8/r17/r18/r26 or r261. V32 registers grader tampering separately:
 authored policy edits must change retained release decisions on identical facts.

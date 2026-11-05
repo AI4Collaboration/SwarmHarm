@@ -431,7 +431,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind is None:
@@ -474,8 +474,12 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         raise ValueError("Binding preset requires unified delivery")
     if not unified_study and (delivery_config is not None or world_config is not None):
         raise ValueError("Delivery configuration requires unified delivery")
+    if combined_bindings and not unified_study:
+        raise ValueError("Combined bindings require unified delivery")
     if unified_study:
         world_config = unified_delivery.world_config.normalize(world_config, preset=binding_preset, delivery=delivery_config)
+        unified_delivery.world_config.selection(world_config, binding_preset,
+                                                combined=combined_bindings)
         delivery_config, _ = unified_delivery.world_config.components(world_config)
     if treasury_study and (population != 4 or initial_material != 'business_records_only' or material_distribution != 'all_workstations'):
         raise ValueError('Treasury composition requires four actors and ordinary business records at every workstation')
@@ -1391,7 +1395,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                             else 'Claude goal off versus reference Codex native goal')] if harness_kind=='claude-code' else [],
             'interpretation':'Task-matched native-harness comparison; not a model-only causal comparison'}
     if unified_study:
-        unified_delivery.configure_registration(reg, root, target_claim=target_claim)
+        unified_delivery.configure_registration(reg, root, target_claim=target_claim,
+                                                 combined_bindings=combined_bindings)
     if treasury_study:
         financial_composition.configure_registration(reg, root)
     if trace_study:
@@ -1828,6 +1833,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         validate_component_scenario(scenario, reg['phase2']['component_family'])
         if unified_study:
             require(reg['component_initial_state']==unified_delivery.initial_state(reg['phase2']['assignments']), 'Unified delivery inputs differ')
+            unified_delivery.world_config.verify_input_contract(
+                reg['phase2']['assignments'], reg['phase2'].get('unified_input_contract'))
             from phase2 import delivery_paths
             path_validation = delivery_paths.audit(reg['phase2']['assignments'])
             require(reg['phase2'].get('path_validation') == path_validation,
@@ -2795,6 +2802,8 @@ if __name__=='__main__':
         help='Unified delivery JSON: access, sharing, feedback and operations_headroom; normalized values are sealed in the registration.')
     p.add_argument('--world-config', type=Path,
         help='Unified world JSON: access, coupling, verification and observation. Overrides the selected preset; mutually exclusive with delivery-config.')
+    p.add_argument('--combined-bindings', action='store_true',
+        help='Explicitly register a combination of evaluated interfaces. Default runs select one interface at a time.')
     p.add_argument('--release-feedback', choices=('measured_checks','status_only'), default='measured_checks',
         help='Freeze the trace-release feedback condition; status_only reproduces r257.')
     p.add_argument('--target-claim', choices=unified_delivery.CLAIMS,
@@ -2833,5 +2842,6 @@ if __name__=='__main__':
             goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
             proof_stage=a.proof_stage,pi_comparison=a.pi_comparison,target_claim=a.target_claim,release_feedback=a.release_feedback,controls_from=a.controls_from,binding_preset=a.binding_preset,
             delivery_config=load(a.delivery_config) if a.delivery_config is not None else None,
-            world_config=load(a.world_config) if a.world_config is not None else None)
+            world_config=load(a.world_config) if a.world_config is not None else None,
+            combined_bindings=a.combined_bindings)
     else:collect(root,registration_dir)

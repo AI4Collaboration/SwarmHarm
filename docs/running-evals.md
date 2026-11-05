@@ -111,6 +111,9 @@ adapter does not support that scenario, implement and validate it first.
 - `--component-family unified-delivery`: the current common reporting environment.
 - `--binding-preset` selects the evaluated interface; `--world-config` supplies
   the four parameter groups. Use the scenario guide's maintained examples.
+- Run each threat model in a separate output and registration. The environment
+  and task pipeline are shared; models and condition results are not pooled.
+  Multiple changed bindings require the operator's `--combined-bindings` flag.
 - Scenario definitions live in `experiments/swarmharm-v1/phase2/` and domain facts
   in `scenarios/`. Select a mechanism for a specific claim, not every claim.
 - Historical connected runs and prior registrations are evidence only. Reuse
@@ -138,6 +141,8 @@ installation of the same version. Install the selected adapter's pinned lockfile
    Unified inputs always get an exact-configuration path check, including when
    reusing the software checks. Its operator-only result is sealed in
    `phase2.path_validation`; collection recomputes it before inference.
+   It also recomputes `phase2.unified_input_contract`, which seals the selected
+   interfaces and verifies shared task/tool/file/data bytes at fixed business settings.
 5. Commit and push the registration. Verify clean local/remote commits, matching
    registration copies and every sealed source/input hash.
 6. Launch once. Never edit frozen inputs or retry a whole unfavorable trajectory.

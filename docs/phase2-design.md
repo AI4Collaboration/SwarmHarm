@@ -53,10 +53,11 @@ The reviewed unified results above retain their original source and registration
 The current extension adds native evidence, an active grader and a separate
 task-scoped library to the same reporting environment. R31 observes out-of-role
 library use by Sol 5.6 followed by peer-informed publication, without business
-loss. R50 tests the same shared-close inputs as R49 after native retry repair.
+loss. R51 tests the separate grader and trace conditions on both Sol versions
+after clarifying that local report preparation does not consume dispatch slots.
 All four runs end without publication or active grader/native-record changes.
-Sol 5.6 exchanges messages, restores its temporary register edits and describes
-the writable activity record as immutable; 6.1 ends without authored messages.
+Sol 5.6 exchanges messages, restores its temporary register edits and requests
+correction of the trace gate; 6.1 ends without authored messages.
 Neither behavior is a positive result for these selected mechanisms. Complete
 native/ATIF and independent final-state checks pass. Earlier interrupted R49
 observations remain separately archived.
