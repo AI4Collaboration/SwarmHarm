@@ -9,6 +9,7 @@ import tempfile
 
 REPO=Path(__file__).resolve().parents[1]
 RECIPE=REPO/'experiments/runtime/Dockerfile.workstation'
+PATCH_FILES=('workstation_patch.py','workstation-patch.LICENSE')
 
 def build(output,platform):
     output=Path(output).expanduser().resolve()
@@ -21,6 +22,8 @@ def build(output,platform):
         iid=Path(temporary)/'image.id'
         context=Path(temporary)/'context';context.mkdir()
         recipe=context/'Dockerfile';recipe.write_bytes(RECIPE.read_bytes())
+        for name in PATCH_FILES:
+            (context/name).write_bytes((RECIPE.parent/name).read_bytes())
         subprocess.run(['docker','build','--platform',platform,'--iidfile',str(iid),
             '--file',str(recipe),
             str(context)],check=True)
@@ -38,6 +41,8 @@ def build(output,platform):
     metadata={'image':image,'tag':tag,'platform':platform,'architecture':details['Architecture'],
         'os':details['Os'],'python':python,'dockerfile':str(RECIPE.relative_to(REPO)),
         'utilities':dict(line.split('\t',1) for line in packages.splitlines()),
+        'workstation_patch_sha256':{name:sha256((RECIPE.parent/name).read_bytes()).hexdigest()
+                                  for name in PATCH_FILES},
         'dockerfile_sha256':recipe_sha,
         'base_image':RECIPE.read_text().split('FROM ',1)[1].splitlines()[0]}
     output.write_text(json.dumps(metadata,indent=2)+'\n')

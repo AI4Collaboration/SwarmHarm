@@ -12,7 +12,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch phase2-unified-service-locations-20261105 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch phase2-unified-native-file-tools-20261105 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -26,9 +26,12 @@ JavaScript dependencies use each adapter’s `package-lock.json`. Pi is installe
 for offline compatibility tests; installation does not select it for inference.
 Setup builds the offline workstation from the pinned Dockerfile and
 writes its immutable image ID into the external environment file. The image
-includes `rg`, `curl` and `ps`; a fixed Debian snapshot and recorded package
+includes `rg`, `curl`, `ps` and `apply_patch`; a fixed Debian snapshot and recorded package
 versions keep these tools reproducible. Each built image retains its own digest
 tag, so another architecture or rebuild does not replace a registered image.
+The patch command follows the OpenAI Cookbook implementation, with a pinned
+source and MIT license in `experiments/runtime/`. Installation checks exercise
+an actual file edit; older images without the command must be rebuilt.
 Exported Harbor inputs record the actual image, time budget and allowed service.
 No API key or
 model request is needed for setup or installation checks. The current unified

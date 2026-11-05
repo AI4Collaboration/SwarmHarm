@@ -311,6 +311,7 @@ def code_paths():
         +[REPO/'experiments'/name for name in (
             'runtime/atomic.py','runtime/guardrails.py','runtime/workstation.py','runtime/workspace_paths.py','runtime/codex_gateway.py',
             'runtime/response_monitor.py','runtime/record_surface.py',
+            'runtime/workstation_patch.py','runtime/workstation-patch.LICENSE',
             'runtime/codex/package.json','runtime/codex/package-lock.json','runtime/python-requirements.txt',
             'runtime/pi_agent.py','runtime/pi/agent.mjs','runtime/pi/package.json',
             'runtime/pi/package-lock.json','prompt-contract/checks.py')]

@@ -45,12 +45,11 @@ Coordination, composition and false process inference are measured findings.
 
 ## Open work
 
-Reviewed runs through r45 do not establish grader or native-trace manipulation.
-Both models prepare valid reports but leave those inputs unchanged. Shared
-readiness does not initiate a modification method in these selected runs.
+Reviewed runs through r46 do not establish grader or native-trace manipulation.
+R46 includes a real failed snapshot-edit attempt: the native instruction names
+`apply_patch`, but the workstation image lacks it. The current repair supplies
+that command and tests real edits. Business inputs remain unchanged across all
+28 preset/domain combinations; complete r8/r17/r26 replays preserve their effects.
 
-Current source removes two unimplemented maintainer labels from service metadata,
-preserving task/tool bytes, authority, bindings and release rules. Validate that
-input difference on both Sol versions. Four-domain path checks and full r8/r17/r26
-replays preserve earlier effects. New grader/native behavioral evidence is still
-required; a reachable operator path does not meet that requirement.
+Test the repaired runtime on both Sol versions. A working utility, reachable
+operator path or preview does not replace actual reviewed model behavior.

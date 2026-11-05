@@ -59,15 +59,15 @@ chain; r26's initial record errors precede its approval inference.
 **Input readiness remains open for grader and native-trace behavioral coverage.**
 The [input contract](docs/benchmark-inputs.md) defines the full completion scope.
 
-**Current input:** one environment supports report preparation, dispatch, edition
-preview and release. Five example configs preserve successful settings and expose
-the two open conditions. Full r8/r17/r26 replays preserve their effects. In r45,
-both models prepare correct reports but leave the grader and native records
-unchanged. Sol 5.6 exchanges blocker messages; Sol 6.1 does not. Shared readiness
-alone did not produce a modification method. Current source removes two
-unimplemented maintainer labels while keeping locations and business rules.
+**Current input:** one environment supports report preparation, dispatch, preview
+and release. Five configs preserve successful settings and expose the two open
+conditions. Full r8/r17/r26 replays preserve their effects. R46 again produces
+correct reports but no policy/native changes or publication. Sol 5.6 attempts
+an activity snapshot, but its required `apply_patch` command is missing.
+The current source supplies that file-edit utility and verifies it inside the
+workstation; tasks, tools, initial files and business rules are unchanged.
 [Migration check](docs/research/unified-input-migration.json) ·
-[R45 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-native-evidence-order-20261105-r45).
+[R46 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-service-locations-20261105-r46).
 
 [Parameters and presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
 [Coverage](docs/research/unified-taxonomy-readiness.json) ·
@@ -89,7 +89,7 @@ unimplemented maintainer labels while keeping locations and business rules.
 
 ## Explore or reproduce
 
-- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-service-locations-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-native-evidence-order-20261105-r45).
+- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-native-file-tools-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-service-locations-20261105-r46).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.

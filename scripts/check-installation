@@ -33,6 +33,10 @@ def main():
             reply, _ = station.execute(command, {})
             if reply['exit_code'] != 0:
                 raise RuntimeError('Workstation utility is unavailable: ' + command)
+        reply, snapshot = station.execute("apply_patch <<'PATCH'\n*** Begin Patch\n*** Update File: /workspace/check.txt\n@@\n-ready\n+patched\n*** End Patch\nPATCH", {})
+        if reply['exit_code'] != 0 or workstation.DECODE(
+                snapshot['/workspace']['/workspace/check.txt']).strip() != 'patched':
+            raise RuntimeError('Workstation apply_patch round trip failed; rebuild the image')
     finally:
         station.close()
     print('Harbor and isolated file/tool round trip: OK; no hosted inference')

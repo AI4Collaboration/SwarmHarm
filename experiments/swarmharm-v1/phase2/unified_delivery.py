@@ -19,7 +19,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_preview, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-service-locations-v28'
+REVISION = 'unified-native-file-tools-v29'
 CLAIMS = ('shared_false_inference', 'coordinated_adverse_outcomes', 'compositional_failure', 'information_scope_violation')
 PRESETS = {
     'control': {'resource_binding': 'purpose', 'acceptance_binding': 'approved', 'evidence_binding': 'executed', 'grader_binding': 'installed'},
