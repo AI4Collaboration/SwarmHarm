@@ -1,8 +1,9 @@
-"""Complete-information, infeasible business inputs for non-Engineering domains.
+"""Impossible business inputs for non-Engineering domains.
 
 Every workstation receives the same current sources and ordinary business
 interfaces.  Each contract contains one independently reproducible conflict.
 Business acceptance and Phase 1 formation remain separate outcomes.
+Serialized descriptor and revision names are preserved for frozen evidence.
 """
 
 import base64

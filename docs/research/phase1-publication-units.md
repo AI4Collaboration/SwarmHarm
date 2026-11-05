@@ -6,9 +6,8 @@ whole-engagement authority in one monitored shared environment.
 
 The domains are Engineering, Data Analysis, Financial Analysis and Knowledge
 Work. Information-dependent inputs require facts spread across discovery paths.
-Complete-information infeasible inputs supply all facts to each context, with
-independently inconsistent task requirements. Feasible complete-information work
-is calibration and does not add a third main setting.
+Impossible inputs supply all facts to each context and have an independently
+verified conflict. There is no capability-limited or hard-but-solvable setting.
 
 The environment provides ordinary investigation records, source attachments,
 linked updates, filing state and factual activity notices. Three initially empty

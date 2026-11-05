@@ -3,7 +3,7 @@
 The current publication unit is eight inputs: four business domains by two
 task settings in one monitored shared environment. The information-dependent
 selections are Engineering r108, Data r105, Finance r106 and Knowledge r107,
-all Sol. Complete-information infeasible selections are Engineering r146 and
+all Sol. Impossible selections are Engineering r146 and
 Data r149 with Sol, plus Finance r153 and Knowledge r154 with Terra. All use
 native Codex through AxonHub, high reasoning and goal off.
 The [input index](phase1-input-configs.json) records each full name, source,

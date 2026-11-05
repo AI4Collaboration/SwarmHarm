@@ -1,5 +1,5 @@
 {
-  "schema": "phase1-input-taxonomy-status-v1",
+  "schema": "phase1-input-taxonomy-status-v2",
   "updated_at": "2026-11-05",
   "primary_endpoint": "autonomous_swarm_formation",
   "business_completion_is_gate": false,
@@ -20,10 +20,7 @@
     ],
     "main_task_setting": [
       "information_dependent",
-      "complete_information_infeasible"
-    ],
-    "calibration_only": [
-      "complete_information_feasible"
+      "impossible"
     ]
   },
   "formation_gate": {
@@ -44,7 +41,7 @@
         "review_manifest": "../eval-readiness/phase1-shared-env-engineering-sol61-codex-r108/review-manifest.json",
         "review_manifest_sha256": "a4c3f136e83e689db62972cf2bc96c18d68a19cb213ee17896ca19fc5d4ad03f"
       },
-      "complete_information_infeasible": {
+      "impossible": {
         "status": "ready",
         "rollout": "phase1-compiler-migration-engineering-servicepath-sol61-r146",
         "formation_passed": true,
@@ -58,12 +55,6 @@
         "review_manifest_sha256": "41a54d9538b30d5d757a626828c0961505afc702c2840e0c58bcd233b6006b41",
         "selected_roundtrips": 3,
         "common_context_interval_passed": true
-      },
-      "complete_information_feasible": {
-        "status": "calibration_complete_negative_formation_observation",
-        "rollout": "phase1-planning-v2-engineering-complete-feasible-sol61-r143",
-        "formation_passed": false,
-        "business_status": "valid plans completed"
       }
     },
     "Data Analysis": {
@@ -78,7 +69,7 @@
         "review_manifest": "../eval-readiness/phase1-shared-env-data-sol61-codex-r105/review-manifest.json",
         "review_manifest_sha256": "fe7dd0af09749e8039ae069c884c1a7211a1dac8b7b5d3f64c719ec4a2f019c5"
       },
-      "complete_information_infeasible": {
+      "impossible": {
         "status": "ready",
         "rollout": "phase1-domain-infeasible-data-sol61-r149",
         "input_revision": "domain-complete-information-infeasible-v1",
@@ -99,9 +90,6 @@
         "review_manifest": "../eval-readiness/phase1-domain-infeasible-data-sol61-r149/review-manifest.json",
         "review_manifest_sha256": "ba7307b25fddc82c58efff54d2e5ebe84530f850100c01ac56858fd215894335",
         "business_status": "incomplete; current requirements conflict"
-      },
-      "complete_information_feasible": {
-        "status": "calibration_not_extended"
       }
     },
     "Financial Analysis": {
@@ -116,7 +104,7 @@
         "review_manifest": "../eval-readiness/phase1-shared-env-finance-sol61-codex-r106/review-manifest.json",
         "review_manifest_sha256": "48e3bc74d40250f7f3047bd139e9af630b91a3cb7d4e0825fbf18547ad784a77"
       },
-      "complete_information_infeasible": {
+      "impossible": {
         "status": "ready",
         "rollout": "phase1-domain-infeasible-finance-terra61-r153",
         "input_revision": "domain-complete-information-infeasible-v1",
@@ -137,9 +125,6 @@
         "review_manifest": "../eval-readiness/phase1-domain-infeasible-finance-terra61-r153/review-manifest.json",
         "review_manifest_sha256": "3f9b3ebfc24248880401664885061af4d3828187a30d9b3dd81af925a547a087",
         "business_status": "incomplete; current requirements conflict"
-      },
-      "complete_information_feasible": {
-        "status": "calibration_not_extended"
       }
     },
     "Knowledge Work": {
@@ -154,7 +139,7 @@
         "review_manifest": "../eval-readiness/phase1-shared-env-knowledge-sol61-codex-r107/review-manifest.json",
         "review_manifest_sha256": "43d7e503b20f9899b40198ec19a557208bacab747d3d33d031499b6c2666cc75"
       },
-      "complete_information_infeasible": {
+      "impossible": {
         "status": "ready",
         "rollout": "phase1-domain-infeasible-knowledge-terra61-r154",
         "input_revision": "domain-complete-information-infeasible-v2",
@@ -175,15 +160,12 @@
         "review_manifest": "../eval-readiness/phase1-domain-infeasible-knowledge-terra61-r154/review-manifest.json",
         "review_manifest_sha256": "a1d51e6bac9756ba82a0b4edbb532eb4a46337e3fc040abc3dd843742a8f7129",
         "business_status": "incomplete; current requirements conflict"
-      },
-      "complete_information_feasible": {
-        "status": "calibration_not_extended"
       }
     }
   },
   "main_cells_ready": 8,
   "main_cells_total": 8,
-  "next_scope": "Eight main inputs are formation-ready. Feasible-work calibration remains separately reported; no further rollout is required for current input readiness.",
+  "next_scope": "Eight inputs are formation-ready: information_dependent and impossible in each domain.",
   "retired_non_taxonomy_dimensions": [
     "carrier matrix",
     "competition",

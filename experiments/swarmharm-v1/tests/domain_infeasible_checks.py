@@ -87,7 +87,7 @@ class DomainInfeasibleChecks(unittest.TestCase):
                         root / "out", root / "reg/r", key,
                         run_controls=False, study_mode="phase1", scenario=scenario,
                         harness_kind="codex",
-                        phase1_domain_task_setting=setting.SETTING)
+                        phase1_task_setting='impossible')
                 registration = json.loads((root / "out/registration.json").read_text())
                 self.assertEqual(registration["input_revision"], setting.current_revision(scenario))
                 self.assertEqual(

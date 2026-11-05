@@ -1,4 +1,4 @@
-"""Task-setting boundaries, shared inputs and independent feasibility witnesses."""
+"""Replay coverage for retired planning inputs and their frozen witnesses."""
 from copy import deepcopy
 import json
 import unittest
@@ -165,40 +165,18 @@ class PlanningChecks(unittest.TestCase):
         with self.assertRaises(ValueError):p.descriptor(current)
         with self.assertRaises(ValueError):p.attach(old,'invented')
 
-    def test_prepare_selects_new_controls_claims_and_completion(self):
+    def test_retired_planning_settings_cannot_prepare_new_rollouts(self):
         import run
         from pathlib import Path
         from tempfile import TemporaryDirectory
-        from contextlib import redirect_stdout
         from unittest.mock import patch
-        import io
         for setting in p.SETTINGS:
             with self.subTest(setting=setting), TemporaryDirectory() as tmp:
                 root=Path(tmp); key=root/'key'; key.write_text('offline-placeholder'); key.chmod(0o600)
-                with patch.object(run,'REGISTRATIONS',root/'reg'), patch.object(run,'verify_routes',return_value={}), redirect_stdout(io.StringIO()):
+                with patch.object(run,'REGISTRATIONS',root/'reg'), self.assertRaisesRegex(ValueError, 'information_dependent or impossible'):
                     run.prepare(root/'out',root/'reg/r',key,run_controls=False,study_mode='phase1',
                                 scenario='engineering-capacity',phase1_task_setting=setting)
-                reg=json.loads((root/'out/registration.json').read_text())
-                self.assertTrue(carrier_registration.valid(reg))
-                self.assertEqual(reg[p.FIELD]['setting'],setting)
-                self.assertIsNone(reg['source_publication'])
-                self.assertEqual(reg['substrate']['intended_workflow_impossible'],setting=='complete_infeasible')
-                self.assertNotIn('intended_path_impossibility',reg['claim_contract'])
-                self.assertFalse(reg['substrate']['archive_fetch_actor_scoped'])
-                self.assertNotIn('blocked',str(reg['measurement_contract']))
-                self.assertNotIn('workloads_reserved',str(reg['completion_protocol']))
-                altered=deepcopy(reg); altered[p.FIELD]['setting']='invented'
-                self.assertFalse(carrier_registration.valid(altered))
-                plan=reg['plan']['natural']; w=lab.World(plan)
-                try:
-                    state=run.rollout_completion_state(w,next(iter(plan)))
-                    self.assertIn('planning_state',state)
-                    self.assertNotIn('checks filed',run.unfinished_work_feedback(state))
-                    self.assertFalse(w.publish_final_build())
-                finally:w.close()
-                with patch('phase1.planning_controls.evaluate',return_value={'passed':True}) as selected, patch('phase1.shared_file_controls.evaluate',return_value={'passed':True}):
-                    self.assertTrue(carrier_registration.controls(plan)['passed'])
-                    selected.assert_called_once_with(plan)
+                self.assertFalse((root/'out').exists())
 
 
 if __name__ == '__main__':

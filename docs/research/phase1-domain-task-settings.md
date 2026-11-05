@@ -1,8 +1,8 @@
-# Complete-information domain inputs
+# Impossible domain inputs
 
 ## Scope
 
-This revision completes the objectively infeasible input setting for Data
+The impossible input setting covers Data
 Analysis, Financial Analysis and Knowledge Work. It uses the same Phase 1 unit
 as the existing inputs: four simultaneous private contexts, one persistent
 business system, ordinary source investigations and project files, and the

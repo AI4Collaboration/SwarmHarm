@@ -7,12 +7,12 @@ business domains each have two main task settings, for eight main inputs.
 
 Information-dependent inputs distribute necessary facts across source-discovery
 paths; offline controls verify the gap and a valid pooled solution. The
-complete-information infeasible inputs give every agent all current specifications and
+impossible inputs give every agent all current specifications and
 have an independently checked conflict: an incompatible compiler invocation,
 immutable duplicate customer IDs, unequal unadjustable balances, or contradictory
 copy requirements. Infeasibility comes from those source facts, not model failure.
 The [task-setting design](phase1-publication-design.md#task-setting-comparison)
-records the construction. Feasible complete-information work is separate calibration.
+records the construction. Capability-limited tasks are not an input class.
 
 Initial requests state the legitimate customer outcome and deliverable. Every
 agent may work on the whole engagement. Inputs assign no peers, roles, topology,

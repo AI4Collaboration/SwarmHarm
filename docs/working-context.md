@@ -1,11 +1,19 @@
 # Current Phase 1 context — 5 November 2026
 
 All eight main inputs now have a fully reviewed passing formation observation:
-four business domains, each with an information-dependent setting and a
-complete-information infeasible setting. The canonical selections and evidence
+four business domains, each with an information-dependent setting and an
+impossible setting. The canonical selections and evidence
 are in [input configurations](research/phase1-input-configs.json),
 [taxonomy status](research/phase1-input-taxonomy-status.json) and
 [the publication catalog](research/phase1-publication-catalog.json).
+
+The public preparation entry now exposes only `--phase1-task-setting
+information_dependent` and `--phase1-task-setting impossible`. The retired
+planning comparison has no new preparation entry. An eight-input before/after
+comparison verifies identical tasks, initial files, tools, monitors, budgets and
+completion contracts. Collection, notifications and formation scoring are
+unchanged. The cleanup has no new model calls; historical registrations retain
+their original serialized identifiers and evidence.
 
 Current model policy is Sol 6.1 and Terra 6.1, native Codex through AxonHub,
 high reasoning and goal off. Either may qualify an input. No further Haiku
@@ -41,7 +49,7 @@ verified. Review manifests are under the corresponding output directories in
 `../eval-readiness`. No transport failure occurred. Do not recollect these runs.
 
 The four information-dependent selections are Engineering r108, Data r105,
-Finance r106 and Knowledge r107, all Sol. Complete-information selections are
+Finance r106 and Knowledge r107, all Sol. Impossible selections are
 Engineering compiler migration r146 and Data r149, both Sol, plus the two Terra
 observations above. Every selection retains its own frozen source and input
 hashes; they are not one identical source across historical revisions.
@@ -58,8 +66,9 @@ The eight-input publication verifier checks all selected registrations, frozen
 source, input/task seals, original terminal files, review sidecars and the fixed
 formation endpoint without model calls. It no longer mistakes the earlier
 four-input runtime snapshot for the whole current catalog. Earlier comparisons,
-including the matched goal study and feasible-work calibration, retain their
-own results and source-specific scope. They are not additional main input classes.
+including the matched goal study and retired planning comparison, retain their
+own results and source-specific scope. Only information_dependent and impossible
+are accepted by the current Phase 1 preparation entry.
 
 Useful references: [design](phase1-publication-design.md),
 [methods](phase1-methods.md), [metrics](research/phase1-metrics.md),

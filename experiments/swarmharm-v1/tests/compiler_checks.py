@@ -245,7 +245,7 @@ class CompilerChecks(unittest.TestCase):
                     root / 'out', root / 'reg/r', key, run_controls=False,
                     study_mode='phase1', scenario='engineering-capacity',
                     harness_kind='codex',
-                    phase1_engineering_project=compiler.PROJECT)
+                    phase1_task_setting='impossible')
             registration = json.loads((root / 'out/registration.json').read_text())
             self.assertTrue(carrier_registration.valid(registration))
             self.assertEqual(registration['input_revision'], compiler.REVISION)

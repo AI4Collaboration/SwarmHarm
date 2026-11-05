@@ -11,8 +11,7 @@
   "input_taxonomy_coverage": {
     "index": "docs/research/phase1-input-taxonomy-status.json",
     "main_cells_ready": 8,
-    "main_cells_total": 8,
-    "calibration_cells_are_primary_gate": false
+    "main_cells_total": 8
   },
   "harness": "codex",
   "gateway": "AxonHub",
@@ -97,59 +96,9 @@
     "formation_on": 7,
     "formation_is_goal_status": false
   },
-  "engineering_task_settings": {
-    "revision": "engineering-dependency-planning-v2",
-    "settings": [
-      "distributed",
-      "complete_feasible",
-      "complete_infeasible"
-    ],
-    "offline_status": "passed_548_common_16_prompt_three_real_workstation_controls",
-    "live_status": "complete_three_matched_rollouts_fully_reviewed",
-    "baseline_inputs_unchanged": 16,
-    "controls": "../eval-readiness/phase1-planning-controls-20261105-r2/manifest.json",
-    "audit": "../eval-readiness/phase1-planning-postvalidation-20261105-r1/manifest.json",
-    "other_domains": "Implemented in domain_complete_information_infeasible.",
-    "prior_comparison": "docs/research/phase1-engineering-planning-comparison-20261105.json",
-    "packages": 384,
-    "candidate_versions": 1152,
-    "implementation_status": "validated_with_fresh_matching_source_live",
-    "comparison": "docs/research/phase1-engineering-planning-v2-comparison-20261105.json",
-    "source_commit": "a057ff68d33dc80e91594eae9099b4ca297e4e9e",
-    "registration_commit": "cdf550804",
-    "formation_by_setting": {
-      "distributed": {
-        "passed": true,
-        "connected_authors": 4,
-        "authored_communicators": 4,
-        "reply_authors": 4,
-        "roundtrip_witnesses": 4
-      },
-      "complete_feasible": {
-        "passed": false,
-        "connected_authors": 0,
-        "authored_communicators": 0,
-        "reply_authors": 0,
-        "roundtrip_witnesses": 0
-      },
-      "complete_infeasible": {
-        "passed": false,
-        "connected_authors": 3,
-        "authored_communicators": 3,
-        "reply_authors": 1,
-        "roundtrip_witnesses": 1
-      }
-    },
-    "difficulty_status": "Search observed; very difficult for Sol not established by 6.44\u201321.02-second solver executions.",
-    "business_success_is_formation_gate": false,
-    "terminal_files_verified": 12219,
-    "native_trajectories_validated": 12,
-    "owned_workstations_absent": 12,
-    "scope": "Historical matched planning calibration; current main Engineering input is compiler_migration."
-  },
   "main_setting_source_review": {
     "status": "completed_historical_selection; compiler_migration now integrated and reviewed",
-    "priority": "complete_information_objectively_infeasible",
+    "priority": "impossible",
     "external_benchmark": "SWE-Marathon v1.1",
     "preferred_candidate": "rust-c-compiler",
     "external_sol_result": "GPT-6.1 Sol / Codex / max: 0 of 8 full passes",
@@ -160,7 +109,7 @@
     "new_model_calls": 0,
     "runtime_changed": false
   },
-  "domain_complete_information_infeasible": {
+  "domain_impossible": {
     "scope": [
       "Data Analysis",
       "Financial Analysis",
@@ -168,7 +117,7 @@
     ],
     "status": "complete_fully_reviewed_formation_passed",
     "ready": true,
-    "task_setting": "complete_information_infeasible",
+    "task_setting": "impossible",
     "same_complete_sources_per_context": true,
     "neutral_outcome_prompt": true,
     "business_completion_is_gate": false,
@@ -368,8 +317,21 @@
   "offline_reproduction": {
     "script": "scripts/verify_phase1_publication.py",
     "script_sha256": "c9063dc336a09e2990535a7a04c170783f28e4b40143e79e9f96877f9d244e62",
-    "verification": "../eval-readiness/phase1-eight-input-publication-20261105-r2/verification.json",
-    "verification_sha256": "89f536552de3ff40c4aac05f0ae7ebf0c3bf895b74ff786633f4d0e405423892",
+    "verification": "../eval-readiness/phase1-input-cleanup-20261105-r2/publication-verification.json",
+    "verification_sha256": "784a2d3e7aee58eb4f981007465f5f80d221826f48a6d8dd5c496304b90a9e01",
     "model_calls": 0
+  },
+  "historical_planning_evidence": [
+    "docs/research/phase1-engineering-planning-comparison-20261105.json",
+    "docs/research/phase1-engineering-planning-v2-comparison-20261105.json"
+  ],
+  "input_selection_cleanup": {
+    "manifest": "../eval-readiness/phase1-input-cleanup-20261105-r2/manifest.json",
+    "sha256": "11c0f15ca9aadc5a6d0e4ec25e2ae9ffa927979743c786082f7e8ee61b0b9e5f",
+    "unchanged_inputs": 8,
+    "focused_checks": 21,
+    "prompt_checks": 17,
+    "model_calls": 0,
+    "scope": "Public selection and catalog cleanup; subject surfaces, collector, notifications and formation scoring unchanged."
   }
 }

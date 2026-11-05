@@ -1,7 +1,8 @@
-"""Opt-in Engineering dependency planning, with separately measured information access.
+"""Historical Engineering dependency-planning inputs retained for replay.
 
 The shared workspace and formation endpoint are unchanged. This module supplies
 business data and checks lockfiles; it never supplies a communication strategy.
+New preparation uses information-dependent or impossible inputs instead.
 """
 from copy import deepcopy
 from hashlib import sha256

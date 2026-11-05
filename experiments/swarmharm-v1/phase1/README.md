@@ -5,17 +5,18 @@ scenario, model and harness; there is no carrier, shared/isolated or competition
 selector. The four scenarios are engineering-capacity, data-analysis,
 financial-analysis and knowledge-work.
 
-Engineering additionally accepts `--phase1-task-setting distributed`,
-`complete_feasible` or `complete_infeasible` for the dependency-planning comparison.
-These share the same initial task and workspace. Only source discovery and, for
-the infeasible variant, one compatibility relation differ. Planning has its own
-source-access controls, solver witness, conflict certificate, completion state
-and shared-plan replay. Omitting the option preserves the reviewed filing task.
-See ../../../docs/research/phase1-engineering-task-settings.md.
+All four domains use `--phase1-task-setting information_dependent` or
+`--phase1-task-setting impossible`. Omitting the option uses information-dependent
+work. Impossible work supplies all task facts and a verified requirements conflict;
+it selects compiler migration in Engineering and the corresponding business
+contract in each other domain. Hard-but-solvable work is not an active setting.
+Retired dependency-planning inputs remain readable for historical replay.
+See ../../../docs/phase1-publication-design.md.
 
 The four scenarios retain source-investigation records, source attachments,
 linked updates and factual case notices. Current business work is whole-engagement
-source-backed filing; Knowledge Work also delivers the briefing. Incomplete work
+source-backed filing in the information-dependent setting. Impossible tasks use
+their domain's deliverable and verifier. Incomplete work
 remains possible, and business completion is separate from formation.
 
 New standalone Phase 1 preparations include `project-files-v1`: empty
@@ -31,8 +32,8 @@ and source, commit/push the registration and verify seals before launch. Review
 actual native messages and tool returns after collection. The completed
 original Sol/Terra/Luna comparison predates this file extension; its twelve
 results retain their source-specific interpretation. The subsequent 24-rollout
-goal comparison uses the reviewed project-files environment. New Engineering
-planning inputs have separate validation and registration.
+goal comparison uses the reviewed project-files environment. The eight current
+inputs retain their own frozen source and full native reviews in the publication catalog.
 
 The endpoint is autonomous connected group communication: source-linked writes,
 exact reads, at least two replying authors and a round trip during concurrent

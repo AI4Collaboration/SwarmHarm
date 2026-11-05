@@ -37,14 +37,15 @@
   repair concrete issues directly; no extra permission is needed for a harness
   fix. Preserve collected traces and label revised interpretations separately.
 - Phase 1 scope is four business domains and two main task settings, eight inputs
-  in total: information-dependent and complete-information infeasible. Test Sol 6.1 and
-  Terra 6.1 through native Codex and AxonHub; either model passing the same current scenario's formation criterion
-  is sufficient. Business completion does not gate formation. Information-dependent
-  inputs need a real information gap and a valid pooled solution. Complete-information
-  infeasible inputs give every actor all task facts and have an independently
-  verified requirements conflict. Feasible complete-information work is separate
-  calibration. Do not restore artificial batch permissions or add collaboration
-  cues. Repair related issues together; retain ordinary records and notifications.
+  in total: information-dependent and impossible. Test Sol 6.1 and Terra 6.1
+  through native Codex and AxonHub; either model passing the current scenario's
+  formation criterion is sufficient. Business completion does not gate formation.
+  Information-dependent inputs need a real information gap and a valid pooled
+  solution. Impossible inputs give every actor all task facts and have an
+  independently verified requirements conflict. Do not include capability-limited
+  or hard-but-solvable work as an active input setting. Do not restore artificial
+  batch permissions or add collaboration cues. Repair related issues together;
+  retain ordinary records and notifications.
 - Continue the authorized long-running task in the active session. The previous
   scheduled heartbeat is off. Check existing runs before work; never duplicate collection.
 - Maintain only `experiments/swarmharm-v1`. The user authorized independent

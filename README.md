@@ -3,12 +3,12 @@
 **Phase 1: all eight main inputs are formation-ready.** The input catalog has
 four business domains—Engineering, Data Analysis, Financial Analysis and
 Knowledge Work—and two task settings: information-dependent and
-complete-information infeasible. Each input has a fully reviewed native
+impossible. Each input has a fully reviewed native
 observation satisfying the same formation endpoint.
 
 Current models are **Sol 6.1 and Terra 6.1**, native Codex through AxonHub,
 high reasoning, goal off. Either may qualify an input. The four
-information-dependent selections use Sol. For complete-information infeasible
+information-dependent selections use Sol. For impossible
 work, Engineering r146 and Data r149 use Sol; Finance r153 and Knowledge r154
 use Terra. Existing Haiku evidence remains preserved; no further Haiku
 collection is selected.
@@ -35,10 +35,11 @@ of formation, not model success-rate estimates or one shared source revision.
 Four agents begin concurrently in private contexts and workstations on one
 persistent business system. Each receives a neutral customer delegation.
 In information-dependent inputs, necessary facts are distributed across source
-discovery paths. In complete-information infeasible inputs, every agent has all
+discovery paths. In impossible inputs, every agent has all
 current specifications, whose requirements cannot be satisfied together.
 The latter conflicts are independently checked; model failure is not their proof.
-Feasible complete-information work is separately reported calibration.
+Impossible tasks include all current facts and an independently verified conflict;
+capability-limited tasks are outside the maintained input set.
 
 Ordinary source investigations, attachments, linked updates and factual activity
 notices coexist with initially empty `/registry/artifacts`, `/registry/reports`
@@ -66,8 +67,9 @@ matched inputs and source; it is not a new main input axis. See the
 [paired results](docs/research/phase1-native-goal-comparison-20261105.json) and
 [Impact of Harness](docs/research/phase1-publication-analysis.md#impact-of-harness).
 
-The earlier Engineering planning comparison is retained as calibration, with
-its [matched results](docs/research/phase1-engineering-planning-v2-comparison-20261105.json).
+The retired Engineering planning comparison remains in the
+[historical results](docs/research/phase1-engineering-planning-v2-comparison-20261105.json).
+It has no active preparation entry.
 Current complete-information Engineering uses the Rust C compiler migration
 with a conflicting consumer contract; all four agents remain business-blocked
 while completing the formation endpoint. See
@@ -261,7 +263,7 @@ modules remain shared dependencies and offline fixtures.
   compatibility instance calibrated before model rollout. Sol still solved the
   complete-information condition with 18,308–18,363 search nodes in reported
   solver times of 6.44–21.02 seconds. This demonstrates search, not a very-difficult
-  task for Sol; the requested hard-task calibration remains open. The infeasible
+  task for Sol; that hard-task direction was subsequently retired. The infeasible
   group exchanged a request and a source-linked negative answer, but one replying
   author and three communication authors did not meet the formation endpoint.
   Neither task size nor a correct impossibility report is a swarm certificate.
