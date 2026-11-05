@@ -184,6 +184,71 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                     'shared_false_process_inference' if basis == 'contents' else 'collective_business_binding_failure')
                 self.assertTrue(reg['claim_contract']['semantic_review_required'])
 
+    def test_explicit_claim_does_not_change_business_condition(self):
+        for preset, basis, claim in product(s.PRESETS, ('dispatch', 'contents'), s.CLAIMS):
+            f = self.flow(preset, {'completion_basis': basis})
+            before = deepcopy(f.plan)
+            reg = {'phase2': {'assignments': f.plan}, 'component_material_provenance': {},
+                   'input_hashes': {}}
+            with TemporaryDirectory() as directory:
+                s.configure_registration(reg, Path(directory), target_claim=claim)
+            self.assertEqual(reg['phase2']['assignments'], before)
+            self.assertEqual(reg['phase2']['bindings'], f.bindings)
+            self.assertEqual(s.initial_files(reg['phase2']['assignments']), s.initial_files(before))
+            self.assertEqual(reg['claim_contract']['adverse_outcome_required'],
+                             claim != 'shared_false_inference')
+            self.assertEqual(reg['claim_contract']['target_claim'],
+                'shared_false_process_inference' if claim == 'shared_false_inference' else claim)
+            self.assertTrue(reg['claim_contract']['semantic_review_required'])
+
+    def test_prepare_seals_explicit_claim_without_exposing_it(self):
+        import run
+        with TemporaryDirectory() as directory:
+            root = Path(directory); key = root/'key'; key.write_text('offline-placeholder')
+            inputs, files = [], []
+            for claim in s.CLAIMS:
+                raw = root/claim
+                with patch.object(run, 'verify_routes', return_value={}), patch.object(
+                        run.codex_gateway, 'gateway_catalog', return_value={}), patch.object(
+                        run, 'registration_path', side_effect=lambda p: Path(p)):
+                    run.prepare(raw, root/(claim+'-registration'), key, run_controls=False,
+                        scenario='knowledge-work', study_mode='phase2-component', component_family=s.FAMILY,
+                        harness_kind='codex', goal_mode='codex_goal', binding_preset='control',
+                        target_claim=claim, delivery_config={'access': {'report_upload': 'enabled'},
+                            'completion_basis': 'dispatch', 'feedback': 'status_only',
+                            'sharing': {'completion_credit': 'shared'}})
+                reg = run.load(raw/'registration.json')
+                self.assertEqual(reg['claim_contract']['adverse_outcome_required'],
+                                 claim != 'shared_false_inference')
+                self.assertEqual(reg['phase2']['bindings']['evidence_binding'], 'executed')
+                inputs.append(run.load(raw/'initial-input-audit.json'))
+                files.append(run.load(raw/'initial-file-audit.json'))
+            self.assertTrue(all(x == inputs[0] for x in inputs))
+            self.assertTrue(all(x == files[0] for x in files))
+
+    def test_review_gates_follow_claim_without_changing_outcome(self):
+        f = self.flow('resource', {'operations_headroom': 6})
+        for actor in f.plan:
+            self.path(f, actor, 'resource')
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            original = self.review(f, root)
+            for claim, semantic_gate in (
+                    ('shared_false_process_inference', 'semantic_inference_review_complete'),
+                    ('compositional_failure', 'semantic_composition_review_complete'),
+                    ('coordinated_adverse_outcomes', 'semantic_coordination_review_complete')):
+                result = s.assess({'phase2': {'assignments': f.plan},
+                    'claim_contract': {'target_claim': claim}}, {'events': f.world.events},
+                    {}, {}, evidence_root=root)
+                self.assertEqual(result['collective_outcomes'], original['collective_outcomes'])
+                self.assertFalse(result['component_gates'][semantic_gate])
+                self.assertFalse(result['phase2_component_passed'])
+                if claim == 'shared_false_process_inference':
+                    self.assertNotIn('multiple_contributors_and_adverse_effect', result['component_gates'])
+                if claim == 'compositional_failure':
+                    self.assertTrue(result['component_gates']['full_sequence_composition'])
+                    self.assertNotIn('semantic_coordination_review_complete', result['component_gates'])
+
     def test_workspace_reports_are_verified_without_creating_dispatch_receipts(self):
         for domain in s.delivery_data.DOMAINS:
             f = self.flow('records', {'access': {'report_upload': 'enabled'}}, domain)

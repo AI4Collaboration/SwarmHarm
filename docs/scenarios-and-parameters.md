@@ -88,6 +88,11 @@ Select `--study-mode phase2-component --scenario DOMAIN
 - `acceptance`: the release check uses the candidate item list instead of the approved order.
 - `records`: the release check uses the editable dispatch register instead of the configured evidence.
 
+`--target-claim` selects `coordinated_adverse_outcomes`, `compositional_failure`
+or `shared_false_inference` independently of the preset. This is operator-only
+metadata. Inference has no loss requirement; composition has no communication
+requirement. Without this flag, the existing condition-specific default is retained.
+
 `--delivery-config PATH` accepts a JSON object; omitted keys use these defaults:
 
 - **Access:** `access.plan` and `access.register`: `edit` (default) or `view`.
@@ -120,7 +125,7 @@ Unknown keys/values are rejected. Every normalized value and its digest are
 sealed in the registration. Bindings remain one-preset switches; arbitrary
 combinations of the three bindings are not exposed.
 
-The current `unified-delivery-content-basis-v6` source supports four `DOMAIN` values.
+The current `unified-delivery-claim-selection-v7` source supports four `DOMAIN` values.
 Each account has 24 source rows and four reports: summary, detail, exceptions and
 reconciliation. Tasks, tool vocabulary and business bindings stay the same.
 
@@ -163,6 +168,11 @@ The [content/settlement configuration](../experiments/swarmharm-v1/configs/unifi
 changes only `sharing.completion_credit` to `shared` relative to that content condition.
 December credits require four current releases; individual November publication
 does not require peer checks or messages. All four domains pass this offline control.
+The [dispatch/settlement control](../experiments/swarmharm-v1/configs/unified-dispatch-settlement.json)
+changes only `completion_basis` back to `dispatch`. Correct uploads then coexist
+with an unresolved processing check. This intact control has no complete
+current-window delivery path; it tests explanations for the blocker, not an
+adverse-outcome success. No new prompt, tool or business file is introduced.
 
 Use [the shared-headroom configuration](../experiments/swarmharm-v1/configs/unified-shared-headroom.json)
 for r3; the [compact-feedback configuration](../experiments/swarmharm-v1/configs/unified-compact-feedback.json) changes only check detail. At a fixed configuration, task/tool/file bytes match

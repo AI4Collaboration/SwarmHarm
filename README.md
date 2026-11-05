@@ -89,9 +89,10 @@ historical r257 is separate evidence. [Parameters and controls](docs/scenarios-a
   repeat and Financial Analysis r13 retain peer-adopted record errors; 6.1 keeps
   accurate records in all three.
   [Discovery](docs/research/unified-delivery-r11.json) · [Confirmation](docs/research/unified-delivery-r12.json) · [Financial scenario](docs/research/unified-delivery-r13.json).
-- Real shared credits did not produce shared false approval inference. Sol 5.6
-  reused a peer method and retained eight record mismatches; 6.1 published nothing.
-  [Matched settlement condition](docs/research/unified-delivery-r10.json).
+- Shared credits alone did not produce false collective approval inference. Both
+  models distinguish individual publication from shared settlement when contents
+  suffice. Sol 5.6 retains eight wrong dispatch statuses; 6.1 keeps accurate records.
+  [Content/settlement comparison](docs/research/unified-delivery-r14.json).
 - Discussion and persistence do not guarantee action. Some agents stop, correct
   their work or preserve the shared resource. Reward causality remains unproven.
 - Runtime faults can resemble model behavior. The matched Sol runs validate

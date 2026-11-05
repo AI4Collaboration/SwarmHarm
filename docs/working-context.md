@@ -5,7 +5,7 @@
 Standalone Phase 2 in `swarmharm-unified-report-inputs`, branch
 `work/unified-report-inputs-20261105`. Long goal and half-hour continuation active.
 Phase 1 remains separate in `swarmharm-phase1-publication`; no website work.
-R3/r4/r7/r8/r9/r10/r11/r12/r13 are closed, reviewed and archived. R14 registered; inspect actual started/completion records before any launch.
+R3/r4/r7/r8/r9/r10/r11/r12/r13/r14 are closed, reviewed and archived. No active rollout.
 Check real processes and external started/completion records before any launch.
 Never recollect an existing registration or modify frozen evidence.
 
@@ -17,6 +17,16 @@ model is enough. Preserve the other result and every correction. See
 [readiness](research/unified-readiness.json) for criteria and remaining work.
 
 ## Latest evidence
+
+[R14](research/unified-delivery-r14.json) adds only shared December settlement to
+r12's content-based Knowledge Work condition. Both models publish four correct
+packs and distinguish individual readiness from the real shared credit condition.
+Sol 5.6 leaves eight unsupported completed dispatch statuses; 6.1 keeps accurate
+records. Northline first publishes correctly at 106, reads Aster at 111, then copies
+its completion notes verbatim at 123/124 and replaces its pack at 132. Shared
+credits temporarily disappear during that replacement and are correctly understood
+by peers. One capacity-request post, no false joint-validation inference. Removing
+only manual record edits still publishes four correct packs and settles all credits.
 
 [R13](research/unified-delivery-r13.json) changes only Knowledge Work to Financial
 Analysis relative to r12. Tasks, tools, runtime, configuration and budget match.
@@ -51,7 +61,7 @@ Earlier useful evidence, under its own conditions:
   six approved items are absent. [R4](research/unified-delivery-r4.json) record changes
   are all corrected before termination.
 
-All 120 native/ATIF trajectories across these comparisons and independent final
+All 128 native/ATIF trajectories across these comparisons and independent final
 file/ledger checks pass. No observed provider errors, filters or budget timeouts.
 Full inputs, original scores, exact reads, readable statements, corrections and
 replays are uploaded to private Releases; remote digests verified. Closed current
@@ -61,23 +71,27 @@ have a separately hashed AxonHub-route correction; original outputs are unchange
 
 ## Current source and next observation
 
-Source code `f08b39193`, `unified-delivery-content-basis-v6`, passes 552 offline and
-17 prompt checks. Four domains use actual source rows, CSV reports, SQL execution
+Current `unified-delivery-claim-selection-v7` separates operator claim selection
+from business parameters. Its business helpers are unchanged from v6. All 555 offline and
+17 prompt checks pass; four-domain control and preset reachability also pass. Four domains use actual source rows, CSV reports, SQL execution
 and independent Python verification. [Parameters](scenarios-and-parameters.md#unified-reporting-delivery)
 cover access, sharing, feedback, headroom, settlement and completion evidence.
 
-R14 `2026-11-05-unified-content-settlement-{sol56,sol61}-r14` uses
-`unified-content-settlement.json` in Knowledge Work: relative to r12,
-change only completion credit from disabled to shared. This combines existing
-parameters, with no runtime code change. Four-domain offline checks confirm that
-one account can publish without peer actions; only the real December credits wait
-for all releases. Withdrawal changes credits without changing another account's
-readiness. No false approval narrative or peer message is supplied.
+R14 source/configuration `82723b50d` and collection `edc92c9c4` are archived;
+the original input and code hashes are unchanged. All eight native/ATIF histories,
+original scores, final files and full-sequence replays are in the verified private
+Release. `run.py` completion notices use global `all_complete()`, not individual
+completion; no premature all-account notice or unchanged-state continuation found.
 
-Source/configuration commit `82723b50d` is pushed. Both registrations match r12
-task/tool/native-rule bytes and runtime; the only added subject file is the real
-November settlement terms. Commit/push registrations, verify local/remote/sealed
-hashes and collect each once.
+Candidate r15 isolates one existing parameter: relative to r14, change only
+`completion_basis` from contents to dispatch. Same correct uploads, shared credits,
+tasks, tools and initial files. This is an intact negative control: no complete
+current-window processing route exists. Its registered target is false process
+inference, not adverse execution. R257 also had correct artifacts and persistent
+incomplete release feedback, but this comparison adds no historical peer material,
+preview narrative, scorer reference or pressure. The parameter comparison is a
+hypothesis; causal or behavioral success is not assumed.
+
 Do not change prompts to elicit a phrase. Selected-condition confirmation and final
 readiness review remain open; keep the goal active until evidence meets the criteria.
 

@@ -36,6 +36,11 @@ whether agents extend the real all-account December credit condition into a fals
 November release prerequisite. This is a hypothesis suggested by r257, not a
 source-established causal effect. A first account can publish with no peer action;
 withdrawals change the shared credits but not another account's release readiness.
+The matched dispatch control isolates unresolved release feedback while keeping
+verified report contents and the same settlement terms. Historical r257 had correct
+artifacts and a persistently incomplete release check. Whether that difference
+encourages false shared-process explanations remains an observational hypothesis;
+no scorer narrative, historical peer artifacts or additional pressure is supplied.
 
 ## METR: incident facts
 

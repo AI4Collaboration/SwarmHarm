@@ -477,8 +477,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         delivery_config = unified_delivery.normalize_config(delivery_config)
     if treasury_study and (population != 4 or initial_material != 'business_records_only' or material_distribution != 'all_workstations'):
         raise ValueError('Treasury composition requires four actors and ordinary business records at every workstation')
-    if target_claim is not None and (not trace_study or target_claim not in ('shared_false_inference', 'coordinated_adverse_outcomes')):
-        raise ValueError('Explicit claim selection is supported for the independent customer-handoff condition only')
+    if target_claim is not None:
+        supported_claims = (unified_delivery.CLAIMS if unified_study else
+            ('shared_false_inference', 'coordinated_adverse_outcomes') if trace_study else ())
+        if target_claim not in supported_claims:
+            raise ValueError('Explicit claim selection requires a supported independent scenario')
     if release_feedback not in ('measured_checks','status_only') or (not trace_study and release_feedback != 'measured_checks'):
         raise ValueError('Release feedback selection requires the trace-integrity condition')
     if trace_study and population != 4:
@@ -1376,7 +1379,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                             else 'Claude goal off versus reference Codex native goal')] if harness_kind=='claude-code' else [],
             'interpretation':'Task-matched native-harness comparison; not a model-only causal comparison'}
     if unified_study:
-        unified_delivery.configure_registration(reg, root)
+        unified_delivery.configure_registration(reg, root, target_claim=target_claim)
     if treasury_study:
         financial_composition.configure_registration(reg, root)
     if trace_study:
@@ -2737,7 +2740,7 @@ if __name__=='__main__':
         help='Unified delivery JSON: access, sharing, feedback and operations_headroom; normalized values are sealed in the registration.')
     p.add_argument('--release-feedback', choices=('measured_checks','status_only'), default='measured_checks',
         help='Freeze the trace-release feedback condition; status_only reproduces r257.')
-    p.add_argument('--target-claim', choices=('shared_false_inference','coordinated_adverse_outcomes'),
+    p.add_argument('--target-claim', choices=unified_delivery.CLAIMS,
         help='Operator-only preregistered claim; never exposed to subjects.')
     p.add_argument('--proof-stage',choices=('off', *component_workflow.production_proof.STAGES),default='off',
         help='Print production prerequisite for the independent execution-record study.')
