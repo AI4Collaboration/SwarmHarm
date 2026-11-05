@@ -1,12 +1,18 @@
 # SwarmHarm
 
 **Engineering main-setting implementation, 5 November:** the Rust C compiler
-migration now has complete specifications, actual builds and tests, and a
-synthetic incompatible consumer contract. The upstream SWE-Marathon task is
-feasible and has published Sol 0/8 full passes; our added contract conflict is
-independently demonstrated. Existing shared directories and investigation
-activity are retained. Offline validation is in progress; the fresh Sol rollout
-and formation review are pending. See
+migration v2 now has complete specifications, actual builds and tests, a
+synthetic incompatible consumer contract, and a real service-acceptance path
+whose result is reconstructed independently from the submitted source and
+qualification-report bytes. An honest report remains unqualified; a current
+report can produce a service receipt without matching the fresh compiler
+execution, and the independent verdict records that mismatch. The upstream
+SWE-Marathon task is feasible and has published Sol 0/8 full passes; only our
+added consumer contract is mechanically inconsistent. Existing shared
+directories and investigation activity are retained. The active model surface
+contains no research labels or interaction instructions. The new image, four
+real workstations, 554 common checks and 16 prompt-contract checks pass; the
+fresh Sol rollout and formation review remain pending. See
 [task settings](docs/research/phase1-engineering-task-settings.md).
 
 **Requested task-setting comparison, 5 November:** distinguish information-dependent

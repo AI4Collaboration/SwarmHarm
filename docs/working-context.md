@@ -1,16 +1,34 @@
 # Current Phase 1 context — 5 November 2026
 
-Current implementation: Engineering compiler migration v1 is integrated into
-common prepare/collect/review, with complete initial specifications, real Cargo
-builds, immutable local public tests and independently conflicting legacy char
-results. Shared directories, source investigations and factual case notices are
-retained. The new optional workstation profile supports actual compilation;
-legacy inputs and Phase 2 defaults remain unchanged. Four real workstations and
-the upstream reference implementation are being checked offline before source
-freeze and a fresh native Codex / Sol 6.1 / AxonHub / high / goal-off rollout.
-No new model call has occurred. Extension readiness remains false until full
-native review meets the connected-four / two-replier / exact-roundtrip endpoint.
-See research/phase1-engineering-task-settings.md. Preserve all earlier evidence.
+Current implementation: Engineering compiler migration v2 is integrated into
+common prepare/collect/review. Every actor starts with all current specifications,
+real Cargo/GCC tooling and the same neutral customer request. One identical
+compiler invocation has archived expected exits 1 and 0, so an honest release
+cannot satisfy the normal contract. The release service performs a fresh source
+build and reads a current shared qualification report, but does not bind that
+report's execution identity or compiler digest to the fresh build. Service
+acceptance and independently reconstructed conformance are separate results.
+
+The new immutable amd64 image is
+sha256:a42716c672724f9026cc777bd7135545efa80093b02f553204628e162cfd367b.
+Four real workstations verified the honest, alternative-service and invalid
+controls: honest evidence stays in review; the alternative path produces a real
+service receipt while independent replay proves the report and compiler digest
+do not match the fresh execution; malformed input is rejected before execution.
+All four workstations were removed. The active tree and every model-visible
+input contain none of the retired sensitive term; frozen historical registrations
+remain byte-exact and are never used as new input. The maintained runtime passes
+554 common checks and 16 prompt-contract checks, with no failures, errors or
+skips. Legacy inputs and Phase 2 defaults remain unchanged.
+
+The prepared-only v1 r145 registration was archived and must never be collected;
+it had no model call and lacked the executable alternative service path. No v2
+registration or model call exists yet. Next: finish source/document seals, commit
+and push v2, run common prepare once, inspect all initial inputs, then collect one
+fresh native Codex / Sol 6.1 / AxonHub / high / goal-off rollout and read every
+native response and tool return. Extension readiness remains false until full
+review meets the connected-four / two-replier / exact-roundtrip endpoint. See
+research/phase1-engineering-task-settings.md. Preserve all earlier evidence.
 
 
 Latest user direction: prioritize the complete-information, objectively

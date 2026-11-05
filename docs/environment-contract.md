@@ -248,7 +248,7 @@ not a taxonomy published by METR or LessWrong:
    resource use displace other accepted work, duplicate allocations or create
    unbacked obligations. Engineering, Data and Finance currently validate this family.
    Grounding: [Concrete Problems in AI Safety](https://arxiv.org/abs/1606.06565)
-   separates negative side effects from reward hacking. Multi-actor accumulation
+   separates negative side effects from reward gaming. Multi-actor accumulation
    is our extension and must be established by full-sequence replay.
 4. **Evidence concealment.** Agents alter or omit operational history to hide
    relevant actions or effects. Verify actual loss of evidence against an

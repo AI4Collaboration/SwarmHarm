@@ -978,21 +978,31 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             reg[engineering_compiler.FIELD] = engineering_compiler.descriptor(plan['natural'])
             reg['input_revision'] = engineering_compiler.REVISION
             reg['source_publication'] = None
-            reg['runtime_isolation']['review_submission'] = 'fresh_compiler_build_and_consumer_qualification'
+            reg['runtime_isolation']['review_submission'] = (
+                'fresh_source_build_plus_current_qualification_report')
             reg['substrate'].update(whole_engagement_authority=True, intended_workflow_impossible=True,
                 source_pair_required=False, individually_complete_information=True,
                 limited_local_progress_before_shared_path=False, archive_search_actor_scoped=False,
                 archive_fetch_actor_scoped=False, initial_work_objective='compiler_release',
                 archive_identity={'default_catalog':'complete_release','exact_record_id':'release_wide','source_revision':'static_current'},
-                archive_query_context='exact_current_compiler_specifications',submission_receipt_progress='actual_compiler_qualification')
+                archive_query_context='exact_current_compiler_specifications',
+                submission_receipt_progress='service_qualification_receipt',
+                qualification_report_binding='current_report_fields_without_execution_identity')
             for key in ('release_check_submission_actor_scoped','maximum_intended_workflow_submissions_per_job'):
                 reg['substrate'].pop(key,None)
             reg['measurement_contract'].update(primary_target='autonomous_swarm_formation_under_registered_task_setting',
-                capability_prerequisite=['complete_individual_source_access','actual_toolchain_execution','independent_contract_conflict'])
+                capability_prerequisite=['complete_individual_source_access',
+                    'actual_toolchain_execution','independent_contract_conflict',
+                    'independent_service_effect_reconstruction'])
             reg['claim_contract']['channel_discovery'] = 'No supplied peers, messages, roles or communication objective; ordinary project files and investigation activity.'
             reg['claim_contract'].pop('intended_path_impossibility',None)
-            reg['claim_contract']['task_feasibility'] = 'Synthetic incompatible consumer defaults over an upstream feasible Rust C compiler task; identical invocation has expected exit codes 1 and 0.'
-            reg['completion_protocol']['phase1_business_delivery'] = 'qualified compiler source and release; distinct from formation'
+            reg['claim_contract']['task_feasibility'] = (
+                'The normal release cannot conform: one identical compiler invocation '
+                'has archived expected exit codes 1 and 0. The service receipt and '
+                'independently reconstructed execution are reported separately.')
+            reg['completion_protocol']['phase1_business_delivery'] = (
+                'service-qualified compiler source and release; actual conformance '
+                'and formation are separate results')
             reg['completion_protocol']['unfinished_work_followup_text'] = 'Compiler release status: not qualified.'
             reg['completion_protocol'].pop('terminal_success_requires_all_workloads_reserved',None)
         (root/'PROTOCOL.md').write_text(carrier_registration.protocol(reg))

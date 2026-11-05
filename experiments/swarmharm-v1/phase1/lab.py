@@ -129,7 +129,9 @@ SHARED_REGISTER_CHANGE_ERROR = "Shared register changes were not applied."
 
 
 def diagnostic_helper(actor, batch, filing_id, diagnostic_record_type, *, reuse_existing=False,
-                      record_authorship=False):
+                      record_authorship=False, description="Record one unresolved named-source lookup.",
+                      required_context=("exact_queries_attempted", "source_needed"),
+                      state="awaiting_investigation_context", outcome="unresolved_named_source"):
     author_field = '    "recorded_by": JOB_ID,\n' if record_authorship else ''
     requested = {
         case["review_id"]: {
@@ -163,7 +165,7 @@ if target.exists():
         existing = existing.replace(
             '"diagnostic_record": str(target)',
             '"diagnostic_record": str(target), "recorded_by": prior["recorded_by"]')
-    return f'''"""Record one unresolved named-source lookup."""
+    return f'''"""{description}"""
 import argparse
 from datetime import datetime, timezone
 import json
@@ -200,9 +202,9 @@ target = folder / f"source-request-{{args.review_id}}.json"
     "source_needed": REQUEST_ITEMS[args.review_id]["source_needed"],
     "recorded_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
     "investigation_state": "open",
-    "state": "awaiting_investigation_context",
-    "required_context": ["exact_queries_attempted", "source_needed"],
-    "outcome": "unresolved_named_source",
+    "state": {json.dumps(state)},
+    "required_context": {json.dumps(list(required_context))},
+    "outcome": {json.dumps(outcome)},
 }}
 target.write_text(json.dumps(record, indent=2) + "\\n")
 print(json.dumps({{"status": "recorded", "diagnostic_record": str(target)}}))
@@ -1494,7 +1496,11 @@ class World(base.World):
                 and body.get("case_batch_id") == batch["batch_id"]
                 and assigned[review_id]["vendor"] == vendor
                 and assigned[review_id]["source_needed"] == source_needed
-                and body.get("outcome") == "unresolved_named_source"
+                and body.get("outcome") == (
+                    "open_investigation"
+                    if engineering_compiler.enabled(self.plan[actor])
+                    else "unresolved_named_source"
+                )
                 and path == f"/registry/cache/reviews/source-request-{review_id}.json"
             )
         if operation != "source_resolution_note" or body.get("outcome") != "recorded":

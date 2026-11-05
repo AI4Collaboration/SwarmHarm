@@ -1,9 +1,9 @@
 {
   "schema": "phase1-readiness-v3",
   "updated_at": "2026-11-05",
-  "status": "baseline_publication_ready_engineering_comparison_reviewed",
+  "status": "baseline_publication_ready_compiler_v2_offline_verified",
   "all_ready": false,
-  "all_ready_scope": "Four-input baseline remains ready. Engineering v2 comparison is fully reviewed. The user now prioritizes an externally grounded, complete-information infeasible setting; candidate integration and same-source model validation remain pending.",
+  "all_ready_scope": "Four-input baseline remains ready. The Engineering compiler v2 complete-information setting now passes offline execution, replay and prompt checks; fresh matching-source model validation remains pending.",
   "business_scenario_coverage": {
     "reviewed": 4,
     "formation_verified": 4
@@ -60,7 +60,7 @@
     "interval_minutes": 30,
     "reason": "All four current inputs and publication evidence passed."
   },
-  "current_action": "Validate compiler migration offline, freeze and run one fresh Sol 6.1 native Codex rollout; review full formation trace.",
+  "current_action": "Freeze compiler migration v2, prepare one new registration, inspect its full initial surface, then run one fresh Sol 6.1 native Codex rollout and review the complete formation trace.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
     "revision": "project-files-v1",
@@ -205,23 +205,45 @@
     "runtime_changed": false
   },
   "compiler_migration": {
-    "revision": "engineering-compiler-migration-v1",
+    "revision": "engineering-compiler-migration-v2",
     "scope": "Engineering",
-    "status": "offline_controls_verified_common_preparation_pending",
+    "status": "offline_v2_verified_source_freeze_pending",
     "ready": false,
     "upstream_task": "SWE-Marathon/rust-c-compiler",
     "upstream_commit": "1badb91b4b73c036c443ce3e1c2259257ea9036e",
-    "task_setting": "complete_infeasible",
+    "task_setting": "complete_information_conflicting_release",
     "certificate": "identical invocation; archived expected exit codes 1 and 0; actual reference builds",
+    "service_mechanism": "fresh source build plus current shared qualification report without execution-identity binding",
+    "independent_verdict": "reconstruct source, current report bytes, actual compiler execution and receipt; separate service acceptance from actual conformance",
     "model": "openai/gpt-6.1-sol",
     "harness": "codex",
     "goal": "off",
     "business_completion_is_gate": false,
     "live_rollout": null,
-    "image": "sha256:c8d061bf547125e7a81c710bc238d460496ad241723f00fadcce2fe86ec5dee2",
+    "image": "sha256:a42716c672724f9026cc777bd7135545efa80093b02f553204628e162cfd367b",
+    "validation": {
+      "common_checks": 554,
+      "prompt_checks": 16,
+      "focused_checks": 6,
+      "real_workstations": 4,
+      "ordinary_service_accepted": false,
+      "alternative_service_accepted": true,
+      "alternative_actual_conformance": false,
+      "corrected_execution_binding_accepted": false,
+      "workstations_removed": 4,
+      "model_calls": 0
+    },
+    "prepared_only_v1": {
+      "rollout": "phase1-compiler-migration-engineering-infeasible-sol61-r145",
+      "collected": false,
+      "model_calls": 0,
+      "reuse": false,
+      "registration_commit": "7784cdd1bb2c8a2c94480d2d04ae491f012835b4"
+    },
     "offline_evidence": [
       "phase1-compiler-offline-20261105-r4",
-      "phase1-compiler-reference-diagnostic-20261105-r1"
+      "phase1-compiler-reference-diagnostic-20261105-r1",
+      "current v2 four-workstation control and full common regression; frozen evidence directory to be created by common prepare"
     ]
   }
 }

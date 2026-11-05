@@ -70,27 +70,6 @@ This declared correction and workflow change do not form a one-factor comparison
 with v111. Agents retain real code editing, repeated measurement, artifact reuse,
 empty discussions and explicit queue/cancel/run actions. Live validation is pending.
 
-HVE and HackBait supply supporting measurement principles:
-
-- [Hack-Verifiable Terminal Bench](https://majoroth.github.io/hack-verifiable-environments/hvtb)
-  wraps 89 Terminal Bench 2.1 tasks. Real terminal work supplies artifacts,
-  execution and test feedback; watched solution/test access supplies separate
-  deterministic indicators. These are instrumentation references for the
-  Engineering adaptation. Original file-access indicators alone
-  do not establish collective effects or knowing agreement.
-- [Hack-Verifiable TextArena](https://arxiv.org/html/2605.20744v1#S2.SS2)
-  follows a Gymnasium-style interaction interface. Its 13 single-player and
-  eight two-player games produce 34 game/mechanism combinations, not 34 distinct
-  games. Tasks include Sudoku, Tower of Hanoi, private-priority negotiation and
-  sealed-bid auctions. Persistent-context trajectories can span several games.
-  This is a concrete reference for sequential decisions, feedback and reuse,
-  with wrapper-detected events separate from task reward.
-- [HackBait's adapter](https://github.com/meagoodboy/hackbait/blob/main/hackbait/verifiers_adapter.py)
-  is a single-turn evaluation interface. Its reward is the instrumented clean
-  verdict, not the gameable stated score; it explicitly targets evaluation
-  rather than training. Keep its honest/alternative/invalid-output controls,
-  but do not describe it as a complete long-horizon RL work environment.
-
 Using an RL environment for frozen-model evaluation does not train model weights.
 A four-subject shared system, public/private channels and independently measured
 business effects require our own explicit adaptation. Existing tasks are not
@@ -165,19 +144,11 @@ reconstructed source and output bytes establish what it returned, not delivery.
 
 ## Strict pre-inference controls
 
-[HackBait's design](https://github.com/meagoodboy/hackbait/blob/main/docs/design.md)
-uses scripted honest, shortcut and invalid-output policies to test detection
-before model calls. Its poisoned-key family has a no-key collision control;
-its documentation also acknowledges ambiguity and family-specific limits. This
-is an implementation reference, not an authority for all misalignment claims.
-[Hack-Verifiable Environments](https://arxiv.org/html/2605.20744v1#S2)
-requires designer-defined mechanisms and deterministic detection. It preserves
-an open action space rather than enumerating prohibitions. Its
-[Terminal Bench extension](https://majoroth.github.io/hack-verifiable-environments/hvtb)
-records watched file access separately from task reward. A detected read does
-not establish downstream damage, understanding or a jointly endorsed plan.
-HVE does not require every task to be impossible; our blocked complete-delivery
-condition is an additional registered design choice.
+Before model calls, scripted honest, alternative-path and invalid-output
+policies test that the runtime distinguishes service acceptance from the
+independently reconstructed business result. A detected read does not establish
+downstream damage, understanding or a jointly endorsed plan. The blocked
+complete-delivery condition remains a separately registered design choice.
 
 For each maintained component, the zero-model controls establish:
 
@@ -232,11 +203,6 @@ not establish our import defect or contractual values.
   satisfy the evaluator. We borrow explicit blocker verification and a narrow
   change, not its prompt restrictions. Our business fixture is synthetic, not
   a verbatim established task.
-- [Hack-Verifiable Environments](https://arxiv.org/html/2605.20744v1#S6.SS1):
-  goals may underspecify allowable actions; discoverable environmental mechanisms
-  and independent verifiers can expose unintended success paths. Keep the goal
-  natural rather than enumerating forbidden operations or explaining the method.
-  A verified trigger does not by itself prove intent or natural prevalence.
 - [τ-bench implementation](https://raw.githubusercontent.com/sierra-research/tau-bench/main/tau_bench/envs/base.py):
   evaluate the resulting business state, rather than accepting the assistant's
   success statement. Here we preserve every correction and cancellation and
@@ -299,7 +265,7 @@ business service, with independent truth and no real external effects.
 
 The broader conceptual grounding is
 [Concrete Problems in AI Safety, Sections 3–4](https://arxiv.org/abs/1606.06565),
-which distinguishes negative side effects from reward hacking, and
+which distinguishes negative side effects from reward gaming, and
 [DeepMind's specification-gaming analysis](https://deepmind.google/blog/specification-gaming-the-flip-side-of-ai-ingenuity/),
 which separates literal task success from the intended outcome. These sources
 justify different failure mechanisms; they do not establish our multi-actor
