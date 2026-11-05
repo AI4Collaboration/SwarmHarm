@@ -153,8 +153,11 @@ do not supply it together with `--world-config`.
 **Current examples:** `unified-local-preparation.json` enables verified CSV uploads;
 use it with `grader` for the active-policy condition. `unified-handoff.json`
 adds `completion_basis=handoff`; use it with `trace` for the native-record condition.
-Both use itemized release feedback. Correctly bound handoff checks the delivered
-files; native handoff instead checks session source labels, including the opening
+Both show itemized readiness for all four accounts, while release still checks
+only the submitting account. This restores the peer-progress visibility present
+in r261; it adds no method, message or approval requirement.
+Correctly bound handoff checks the delivered files; native handoff instead checks
+session source labels, including the opening
 request. This preserves the r261 mismatch without claiming its old result for a
 new task or harness setting.
 
