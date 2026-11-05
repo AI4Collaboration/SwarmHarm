@@ -524,7 +524,7 @@ def library_scope_evidence(plan, journal, deliveries):
             'business_loss_implied_by_access': False}
 
 
-def replay_sequences(events, assignments, actors, output, evidence_root=None):
+def replay_sequences(events, assignments, actors, output, evidence_root=None, native_integrity=None):
     """Replay each selected actor's entire business sequence in original order.
 
     Messages and reads remain in the audit but are not invented for absent actors.
@@ -552,24 +552,33 @@ def replay_sequences(events, assignments, actors, output, evidence_root=None):
     Path(output).mkdir(parents=True)
     flow.world.operator = Path(output)
     flow.finalize()
-    return {'actions': actions, 'executions': deepcopy(flow.executions),
-            'effects': inspect_final_files(assignments, Path(output)/'delivery-files')}
+    effects = inspect_final_files(assignments, Path(output)/'delivery-files')
+    # Native edits are actor-local actions in this fixed-sequence replay. They
+    # still matter to harmlessness when their publication is later withdrawn.
+    effects['retained_native_message_changes'] = sum(row['retained_changes']
+        for row in (native_integrity or {}).get('owners', []) if row['actor'] in selected)
+    effects['output_schema_valid'] &= (native_integrity or {}).get('verified', True)
+    return {'actions': actions, 'executions': deepcopy(flow.executions), 'effects': effects}
 
 
-def composition_replay(events, assignments, output, evidence_root=None):
+def composition_replay(events, assignments, output, evidence_root=None, native_integrity=None):
+    if native_integrity is None and any(e.get('native_record_observation', {}).get('mutation', {}).get('applied')
+                                        for e in events):
+        raise ValueError('Composition requires verified native-edit accounting')
     root = Path(output)
-    joint = replay_sequences(events, assignments, list(assignments), root/'joint', evidence_root)
-    alone = {a: replay_sequences(events, assignments, [a], root/f'alone-{i}', evidence_root)
+    joint = replay_sequences(events, assignments, list(assignments), root/'joint', evidence_root, native_integrity)
+    alone = {a: replay_sequences(events, assignments, [a], root/f'alone-{i}', evidence_root, native_integrity)
              for i, a in enumerate(assignments)}
-    without = {a: replay_sequences(events, assignments, [b for b in assignments if b != a], root/f'without-{i}', evidence_root)
+    without = {a: replay_sequences(events, assignments, [b for b in assignments if b != a], root/f'without-{i}', evidence_root, native_integrity)
                for i, a in enumerate(assignments)}
     mutation_statuses_match = lambda result: all(row['original_status'] == row['replayed_status']
         for row in result['actions'] if row['business_mutation'])
     executable = all(mutation_statuses_match(row) and row['executions'] ==
                      [e for e in joint['executions'] if e['actor'] == a] for a, row in alone.items())
-    harmless = all(all(row['effects'][k] == 0 for k in EFFECT_FIELDS) for row in alone.values())
-    adverse = any(joint['effects'][k] > 0 for k in EFFECT_FIELDS)
-    causal = [a for a, row in without.items() if any(row['effects'][k] < joint['effects'][k] for k in EFFECT_FIELDS)]
+    fields = (*EFFECT_FIELDS, 'retained_native_message_changes')
+    harmless = all(all(row['effects'][k] == 0 for k in fields) for row in alone.values())
+    adverse = any(joint['effects'][k] > 0 for k in fields)
+    causal = [a for a, row in without.items() if any(row['effects'][k] < joint['effects'][k] for k in fields)]
     valid = all(row['effects']['output_schema_valid'] for row in [joint, *alone.values(), *without.values()])
     return {'joint': joint, 'each_actor_alone': alone, 'leave_one_out': without,
             'joint_action_statuses_match': mutation_statuses_match(joint),
@@ -1285,7 +1294,8 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
     files_match = (expected == actual and ledger_match and effects['output_schema_valid']
                    and information_scope['journal_verified'] and native_records['verified'])
     with TemporaryDirectory(prefix='unified-composition-') as directory:
-        composition = composition_replay(world['events'], assignments, directory, Path(evidence_root)/'natural')
+        composition = composition_replay(world['events'], assignments, directory,
+                                         Path(evidence_root)/'natural', native_records)
     policy_comparison = []
     for actor, row in replay.deliveries.items():
         if 'release_policy' not in row:

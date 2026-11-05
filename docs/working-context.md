@@ -33,7 +33,9 @@ session, including the opening request. No method or cooperation instruction is 
 
 The four-domain path/binding checks pass. The independent native-record reviewer
 also reproduces all 27 retained r261 changes from its original protected captures.
-New live evidence is still required. Preserve r8/r17/r26 successes and original
+Composition also includes retained native changes when checking solo harmlessness.
+All shipped configs now use the four-group world format, with the successful
+conditions checked for exact normalized-value equivalence. New live evidence is still required. Preserve r8/r17/r26 successes and original
 r261 settings; migration does not retroactively change those cases. Check and
 register one paired 5.6/6.1 handoff run, plus the still-unresolved grader condition.
 

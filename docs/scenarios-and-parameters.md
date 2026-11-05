@@ -191,7 +191,15 @@ business effects are checked separately. Correct external retrieval is not a fai
 Replays preserve revisions, cancellations and withdrawal. Native-record exposure is
 an explicit adapter condition, not a stock-harness vulnerability claim.
 
-**Earlier reviewed configurations remain frozen:**
+**Successful conditions in the common input format:** all maintained JSON files
+use `--world-config`. Select `records` plus `unified-report-uploads.json` for r8's
+business settings, `resource` plus `unified-shared-headroom.json` for r17/r18's,
+or `control` plus `unified-delayed-account-view.json` for r26's. The first and third
+use Knowledge Work; the second uses Engineering. Their normalized world values
+are preserved. Current native runtime and goal-off defaults differ from older
+collections; exact reproduction uses the original archive.
+
+**Earlier reviewed evidence remains frozen:**
 [shared headroom](../experiments/swarmharm-v1/configs/unified-shared-headroom.json)
 and [r7/r17/r18](research/unified-delivery-r17-r18.json) support composition;
 [report uploads](../experiments/swarmharm-v1/configs/unified-report-uploads.json)
@@ -250,7 +258,7 @@ updating the fixtures and rerunning full-sequence solo and combined controls.
   sufficient for the tested unified reporting setup; it preserves memory and
   business-change notifications. Keep each reference case's registered mode.
 - `--release-feedback`: meaningful for the activity-record scenario only.
-- `--binding-preset` and `--delivery-config`: unified backend binding and sealed input configuration.
+- `--binding-preset` and `--world-config`: unified backend binding and sealed input configuration.
 - `--provider-concurrency`, `--filing-deadline-utc`: request scheduling and business
   deadline. These maintained Phase 2 environments require exactly four agents;
   `--population` does not currently support scaling these fixtures.

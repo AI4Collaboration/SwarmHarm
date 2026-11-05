@@ -56,7 +56,7 @@ Example condition for unified reporting (replace the paths and unique name):
   --phase prepare --study-mode phase2-component \
   --scenario engineering-capacity --component-family unified-delivery \
   --binding-preset resource --target-claim compositional_failure \
-  --delivery-config experiments/swarmharm-v1/configs/unified-shared-headroom.json \
+  --world-config experiments/swarmharm-v1/configs/unified-shared-headroom.json \
   --model-id openai/gpt-5.6-sol --population 4 \
   --harness codex --goal-mode off --reasoning-effort high \
   --output /absolute/external/results/new-run \
