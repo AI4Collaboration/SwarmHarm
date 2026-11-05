@@ -1,5 +1,23 @@
 # Current Phase 1 context — 5 November 2026
 
+Latest: r149/r150/r151 have completed and all public native traces are reviewed.
+The review manifests bind 201 subject responses, 303 tool returns, six preflight
+responses and 10,953 terminal files. All twelve workstations are independently
+confirmed absent. Data r149 passes the unchanged formation endpoint with four
+connected authors, two replying authors and two selected roundtrips. Finance
+r150 has four connected authors, one replying author and one roundtrip;
+Knowledge r151 has four connected authors and no replies. The main catalog is
+6/8 ready. Business outcomes remain descriptive; all three deliveries remain
+in review under the conflicting current requirements.
+
+Knowledge input v2 is being validated: structure checks use the published
+section names and permit ordinary document titles. V1 parsing and assessment
+remain available for sealed evidence. Data and Finance retain v1 inputs.
+Next: finish offline validation, freeze source and register fresh native-harness
+rollouts for the two pending inputs; review all native traces before claiming
+readiness. Sol 6.1 or Haiku 5.5 may qualify an input. Preserve the completed
+rollouts and the independent Phase 2 work. No scheduled task is active.
+
 Current active revision: complete-information infeasible inputs are now
 implemented for Data Analysis, Financial Analysis and Knowledge Work under one
 `domain-complete-information-infeasible-v1` task-setting layer. Every context
@@ -16,10 +34,9 @@ or prohibition was added. Business acceptance and formation are separate, and
 agents may stop naturally while the deliverable remains blocked. Final offline
 validation passes 562 combined runtime checks and 17 prompt-contract checks.
 Twelve actual workstations verified complete source access, opposite-side
-rejections, investigation visibility, independent replay and cleanup. Fresh Sol
-registrations r149, r150 and r151 are prepared with matching source and zero
-model calls; they remain collection and full-trace-review pending. The main
-taxonomy stays 5/8 ready until those matching-source traces pass. See
+rejections, investigation visibility, independent replay and cleanup. Sol
+registrations r149, r150 and r151 were prepared with matching source; their
+completed live review is recorded above. See
 research/phase1-domain-task-settings.md.
 
 Current result: Engineering compiler migration v2 is live-validated and fully

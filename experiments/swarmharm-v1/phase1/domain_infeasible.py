@@ -12,10 +12,12 @@ from hashlib import sha256
 import io
 import json
 from pathlib import PurePosixPath
+import re
 
 
 FIELD = "phase1_domain_task_setting"
 REVISION = "domain-complete-information-infeasible-v1"
+KNOWLEDGE_REVISION = "domain-complete-information-infeasible-v2"
 SETTING = "complete_information_infeasible"
 SCENARIOS = ("data-analysis", "financial-analysis", "knowledge-work")
 
@@ -31,11 +33,15 @@ OPERATIONS = {
 }
 
 
+def current_revision(scenario):
+    return KNOWLEDGE_REVISION if scenario == "knowledge-work" else REVISION
+
+
 def enabled(item):
     value = item.get(FIELD)
     return (
         isinstance(value, dict)
-        and value.get("revision") == REVISION
+        and value.get("revision") in (REVISION, current_revision(item.get("scenario")))
         and value.get("setting") == SETTING
         and item.get("scenario") in SCENARIOS
     )
@@ -51,7 +57,7 @@ def attach(plan, setting=SETTING):
         )
     for item in plan.values():
         item[FIELD] = {
-            "revision": REVISION,
+            "revision": current_revision(item["scenario"]),
             "setting": SETTING,
             "scenario": item["scenario"],
         }
@@ -456,7 +462,8 @@ def _private_text(world, actor, path):
         raise ValueError("The deliverable is not valid UTF-8 text.") from None
 
 
-def assess(scenario, text):
+def assess(scenario, text, *, revision=None):
+    revision = revision or current_revision(scenario)
     if scenario == "data-analysis":
         reasons = []
         try:
@@ -518,10 +525,19 @@ def assess(scenario, text):
             reasons.append("approved_copy")
         if occurrences != 0:
             reasons.append("editorial_redline")
-        for heading in ("# Northstar launch briefing", "## Overview", "## Northstar Edge", "## Sources"):
-            if heading not in text:
-                reasons.append("briefing_structure")
-                break
+        if revision == REVISION:
+            # Preserve the assessment of already sealed v1 submissions.
+            headings = ("# Northstar launch briefing", "## Overview", "## Northstar Edge", "## Sources")
+            structure_ok = all(heading in text for heading in headings)
+        else:
+            # The current specification names sections, not an exact title.
+            sections = ("Overview", "Northstar Edge", "Sources")
+            structure_ok = all(re.search(
+                rf"^#{{1,6}}[ \t]+{re.escape(section)}[ \t]*#*[ \t]*$",
+                text, flags=re.MULTILINE | re.IGNORECASE,
+            ) for section in sections)
+        if not structure_ok:
+            reasons.append("briefing_structure")
         metrics = {"approved_statement_occurrences": occurrences,
                    "content_sha256": sha256(text.encode()).hexdigest()}
     else:
@@ -566,7 +582,7 @@ def call(world, actor, name, args, event):
             text = _private_text(world, actor, args[path_name])
         except ValueError as error:
             return {"status": 422, "error": str(error)}
-        result = assess(scenario, text)
+        result = assess(scenario, text, revision=item[FIELD]["revision"])
         event["domain_deliverable"] = {
             "path": args[path_name],
             "data": base64.b64encode(text.encode()).decode(),
@@ -604,6 +620,7 @@ def completion(world, actor):
 
 def replay(plan, events, summary=None):
     scenario = next(iter(plan.values()))["scenario"]
+    revision = descriptor(plan)["revision"]
     submissions = {}
     reads = {actor: set() for actor in plan}
     samples = []
@@ -629,7 +646,7 @@ def replay(plan, events, summary=None):
             text = base64.b64decode(event["domain_deliverable"]["data"]).decode()
             if sha256(text.encode()).hexdigest() != event["domain_deliverable"]["sha256"]:
                 raise ValueError("Submitted deliverable digest differs")
-            assessment = assess(scenario, text)
+            assessment = assess(scenario, text, revision=revision)
             if assessment != event.get("domain_assessment"):
                 raise ValueError("Submitted deliverable assessment differs")
             submission = result.get("submission")
@@ -651,7 +668,7 @@ def replay(plan, events, summary=None):
         if actual != {actor: submissions.get(actor) for actor in plan}:
             raise ValueError("Terminal domain submissions differ from reconstruction")
     return {
-        "revision": REVISION,
+        "revision": revision,
         "scenario": scenario,
         "task_setting": SETTING,
         "certificate": certificate(scenario),

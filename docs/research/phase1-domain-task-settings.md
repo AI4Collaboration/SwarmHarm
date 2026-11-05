@@ -54,8 +54,15 @@ Offline admission verifies, for all three domains:
 - independent event replay and removal of all workstations;
 - unchanged historical defaults and neutral subject-facing inputs.
 
-The maintained source passes 562 combined runtime checks and 17 prompt-contract
-checks with no failures, errors or skips. The three settings are not publication
-ready until fresh matching-source Sol rollouts finish and their complete native
-traces pass the unchanged formation review.
+The v1 source passed 562 combined runtime checks and 17 prompt-contract checks.
+Its Sol runs r149–r151 are fully reviewed. Data passes with four connected
+authors, two replying authors and two selected roundtrips. Finance has one
+replying author; Knowledge has none. Their business submissions remain in
+review and do not affect the formation judgment. The sealed reviews are indexed
+in `phase1-domain-task-setting-results-20261105.json`.
+
+Knowledge v2 validates the three published section names without requiring an
+exact document title. Data and Finance retain their v1 contract. Historical v1
+Knowledge assessments remain reproducible. The new Knowledge revision remains
+live-validation pending until its fresh trace is fully reviewed.
 

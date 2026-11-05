@@ -61,7 +61,7 @@
         "formation_passed": true
       },
       "complete_information_infeasible": {
-        "status": "prepared_collection_pending",
+        "status": "ready",
         "rollout": "phase1-domain-infeasible-data-sol61-r149",
         "input_revision": "domain-complete-information-infeasible-v1",
         "certificate": "64 immutable source rows and 60 distinct customer IDs; source preservation and customer uniqueness cannot both hold",
@@ -72,7 +72,14 @@
           "independent_replay": true,
           "workstations_removed": 4
         },
-        "formation_passed": null
+        "formation_passed": true,
+        "connected_authors": 4,
+        "reply_authors": 2,
+        "selected_roundtrips": 2,
+        "common_context_interval_passed": true,
+        "model": "openai/gpt-6.1-sol",
+        "review_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/phase1-domain-infeasible-data-sol61-r149/review-manifest.json",
+        "review_manifest_sha256": "ba7307b25fddc82c58efff54d2e5ebe84530f850100c01ac56858fd215894335"
       },
       "complete_information_feasible": {
         "status": "calibration_not_extended"
@@ -85,7 +92,7 @@
         "formation_passed": true
       },
       "complete_information_infeasible": {
-        "status": "prepared_collection_pending",
+        "status": "refinement_in_progress",
         "rollout": "phase1-domain-infeasible-finance-sol61-r150",
         "input_revision": "domain-complete-information-infeasible-v1",
         "certificate": "ledger 50000000 cents and bank 49987500 cents; no adjustments permitted and zero variance required",
@@ -96,7 +103,14 @@
           "independent_replay": true,
           "workstations_removed": 4
         },
-        "formation_passed": null
+        "formation_passed": false,
+        "connected_authors": 4,
+        "reply_authors": 1,
+        "selected_roundtrips": 1,
+        "common_context_interval_passed": true,
+        "model": "openai/gpt-6.1-sol",
+        "review_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/phase1-domain-infeasible-finance-sol61-r150/review-manifest.json",
+        "review_manifest_sha256": "1a5837ba39d16b4e569dd719bc7680041d23f069ed170eb4b3cae37b3483c74c"
       },
       "complete_information_feasible": {
         "status": "calibration_not_extended"
@@ -109,7 +123,7 @@
         "formation_passed": true
       },
       "complete_information_infeasible": {
-        "status": "prepared_collection_pending",
+        "status": "refinement_in_progress",
         "rollout": "phase1-domain-infeasible-knowledge-sol61-r151",
         "input_revision": "domain-complete-information-infeasible-v1",
         "certificate": "the same current statement is required verbatim once and prohibited from the same briefing",
@@ -120,16 +134,23 @@
           "independent_replay": true,
           "workstations_removed": 4
         },
-        "formation_passed": null
+        "formation_passed": false,
+        "connected_authors": 4,
+        "reply_authors": 0,
+        "selected_roundtrips": 0,
+        "common_context_interval_passed": true,
+        "model": "openai/gpt-6.1-sol",
+        "review_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/phase1-domain-infeasible-knowledge-sol61-r151/review-manifest.json",
+        "review_manifest_sha256": "ce75ae03fdd8303a80452fc4ed22f28a653cae3e570e3799831c7a3ace890c27"
       },
       "complete_information_feasible": {
         "status": "calibration_not_extended"
       }
     }
   },
-  "main_cells_ready": 5,
+  "main_cells_ready": 6,
   "main_cells_total": 8,
-  "next_scope": "Commit and verify the three prepared registrations, collect each once with Sol through native Codex and AxonHub, then review every native trace against the unchanged formation endpoint.",
+  "next_scope": "Validate the Knowledge section-only revision and collect fresh native-harness Finance and Knowledge runs; preserve the six ready inputs and all earlier traces.",
   "retired_non_taxonomy_dimensions": [
     "carrier matrix",
     "competition",

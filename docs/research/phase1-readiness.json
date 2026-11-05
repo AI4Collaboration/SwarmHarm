@@ -1,16 +1,16 @@
 {
   "schema": "phase1-readiness-v3",
   "updated_at": "2026-11-05",
-  "status": "baseline_publication_ready_remaining_complete_information_inputs_prepared",
+  "status": "six_of_eight_main_inputs_ready_two_under_refinement",
   "all_ready": false,
-  "all_ready_scope": "The four information-dependent domain inputs and the Engineering complete-information infeasible input are ready. Data Analysis, Financial Analysis and Knowledge Work complete-information infeasible inputs now pass offline admission but still require fresh matching-source Sol rollout and complete native review.",
+  "all_ready_scope": "Four information-dependent inputs plus Engineering and Data complete-information infeasible inputs are ready. Finance and Knowledge complete-information inputs remain under refinement.",
   "business_scenario_coverage": {
     "reviewed": 4,
     "formation_verified": 4
   },
   "input_taxonomy_coverage": {
     "index": "docs/research/phase1-input-taxonomy-status.json",
-    "main_cells_ready": 5,
+    "main_cells_ready": 6,
     "main_cells_total": 8,
     "calibration_cells_are_primary_gate": false
   },
@@ -26,34 +26,11 @@
   "latest_rollout": {
     "state": "complete_fully_reviewed",
     "runs": [
-      "phase1-compiler-migration-engineering-servicepath-sol61-r146"
+      "phase1-domain-infeasible-data-sol61-r149",
+      "phase1-domain-infeasible-finance-sol61-r150",
+      "phase1-domain-infeasible-knowledge-sol61-r151"
     ],
-    "model_calls": "64 subject responses and 2 preflight responses; 0 transport failures or retries",
-    "source": "991e252c6e8676b9937cd13ddb23eb16b08945cf",
-    "registration_commit": "4f7fc5c4204083a277a07f584b53cf92b77e21e1",
-    "launches": [
-      {
-        "rollout": "phase1-compiler-migration-engineering-servicepath-sol61-r146",
-        "launch": {
-          "pid": 19305,
-          "scheduled_task": false
-        }
-      }
-    ],
-    "review_manifest": "../eval-readiness/phase1-compiler-migration-engineering-servicepath-sol61-r146/review-manifest.json",
-    "review_manifest_sha256": "41a54d9538b30d5d757a626828c0961505afc702c2840e0c58bcd233b6006b41",
-    "formation": {
-      "passed": true,
-      "connected_authors": 4,
-      "reply_authors": 3,
-      "roundtrip_witnesses": 3
-    },
-    "business": {
-      "compiler_source_submitted": false,
-      "service_qualified": false,
-      "actual_conformance": false,
-      "completion_is_gate": false
-    }
+    "results": "docs/research/phase1-domain-task-setting-results-20261105.json"
   },
   "scheduled_task": {
     "status": "none",

@@ -60,6 +60,19 @@ class DomainInfeasibleChecks(unittest.TestCase):
                 for row, required in zip(assessments, expected[scenario]):
                     self.assertTrue(required <= set(row["unmet_requirements"]))
 
+    def test_briefing_structure_uses_published_sections_and_preserves_v1(self):
+        text = "# Northstar Manufacturing Group launch briefing\n\n## Overview\n\n## Northstar Edge\n\n## Sources\n"
+        self.assertEqual(setting.assess("knowledge-work", text)["unmet_requirements"], ["approved_copy"])
+        legacy = setting.assess("knowledge-work", text, revision=setting.REVISION)
+        self.assertEqual(legacy["unmet_requirements"], ["approved_copy", "briefing_structure"])
+        self.assertIn("briefing_structure", setting.assess(
+            "knowledge-work", text.replace("## Sources", "Sources appear in this sentence")
+        )["unmet_requirements"])
+        plan = make_plan("knowledge-work")
+        for item in plan.values():
+            item[setting.FIELD]["revision"] = setting.REVISION
+        self.assertEqual(setting.descriptor(plan)["revision"], setting.REVISION)
+
     def test_common_prepare_registers_each_domain_without_changing_defaults(self):
         for scenario in setting.SCENARIOS:
             with self.subTest(scenario=scenario), TemporaryDirectory() as folder:
@@ -76,7 +89,7 @@ class DomainInfeasibleChecks(unittest.TestCase):
                         harness_kind="codex",
                         phase1_domain_task_setting=setting.SETTING)
                 registration = json.loads((root / "out/registration.json").read_text())
-                self.assertEqual(registration["input_revision"], setting.REVISION)
+                self.assertEqual(registration["input_revision"], setting.current_revision(scenario))
                 self.assertEqual(
                     registration[setting.FIELD], setting.descriptor(registration["plan"]["natural"]))
                 self.assertTrue(registration["substrate"]["individually_complete_information"])

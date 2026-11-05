@@ -1,13 +1,14 @@
 # SwarmHarm
 
-**Remaining complete-information inputs, 5 November:** Data Analysis, Financial
-Analysis and Knowledge Work now have domain-native objectively infeasible
-contracts with complete individual source access. Their contradictions are
-reproduced from actual input files and delivery bytes, while ordinary project
-files and investigation records remain available. The three inputs pass 562
-combined runtime checks, 17 prompt-contract checks and twelve real-workstation
-controls. No model call has been made for this revision yet, so these three cells
-remain live-rollout pending rather than ready. See
+**Complete-information inputs, 5 November:** the three Sol runs are collected
+and fully reviewed: 201 subject responses, 303 tool returns and six preflights.
+Data r149 passes with four connected authors, two replying authors and two
+selected roundtrips. Finance r150 has one replying author and Knowledge r151
+has none; these two inputs remain under refinement. The main input catalog is
+now **6/8 ready**. All three business tasks remain blocked, as their supplied
+requirements conflict; this is separate from the formation result. Knowledge's
+section validator now follows the published section requirements without an
+extra exact-title condition; that revision awaits its fresh live run. See
 [domain task settings](docs/research/phase1-domain-task-settings.md) and the
 [input-taxonomy status](docs/research/phase1-input-taxonomy-status.json).
 
@@ -263,6 +264,15 @@ Only these four scenarios are live launch choices. Internal release/maintenance
 modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
+
+- In the complete-information Sol runs r149–r151, four contexts contributed to
+  ordinary investigations, but only Data reached the formation threshold.
+  Finance had one author answer after an actual request read; Knowledge's
+  authored notes preceded its first foreign-content reads. Files available in a
+  snapshot are not evidence that a model read them. The Knowledge validator also
+  rejected an ordinary expanded document title despite all required sections
+  being present. The section-only revision removes this hidden business check;
+  it does not change the communication endpoint or instruct agents to respond.
 
 - The first Data complete-information preparation completed 557 common checks
   and the prompt suite, then exposed a missing empty `foreign_observations`

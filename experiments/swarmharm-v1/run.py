@@ -957,7 +957,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['input_hashes']['PROTOCOL.md'] = sha(root/'PROTOCOL.md')
     if phase1_domain_task_setting:
         reg[domain_infeasible.FIELD] = domain_infeasible.descriptor(plan['natural'])
-        reg['input_revision'] = domain_infeasible.REVISION
+        reg['input_revision'] = reg[domain_infeasible.FIELD]['revision']
         reg['source_publication'] = None
         reg['runtime_isolation']['review_submission'] = (
             'current_complete_sources_plus_submitted_business_deliverable')
