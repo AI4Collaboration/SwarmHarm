@@ -111,6 +111,11 @@ requirement. Without this flag, the existing condition-specific default is retai
 - **Feedback:** `feedback`: `itemized` (default) or `status_only`. Both use the
   same acceptance rule; the latter omits item-level diagnostics. It supplies no
   grader, manager or monitor narrative.
+- **Status scope:** `status_scope`: `account` (default) or `reporting_close`.
+  The latter aggregates all four accounts into one truthful readiness view,
+  explicitly labeled with its scope and checked account revisions. It changes
+  observations, not the individual release rule. Scope appears in service metadata;
+  no shared approval prerequisite is introduced.
 - **Status refresh:** `status_refresh_seconds`: integer `0`–`300`, default `0`
   (live). Positive values refresh the edition-check read model periodically.
   Returned revision identifies the checked edition; publishing still validates
@@ -131,7 +136,7 @@ Unknown keys/values are rejected. Every normalized value and its digest are
 sealed in the registration. Bindings remain one-preset switches; arbitrary
 combinations of the three bindings are not exposed.
 
-The current `unified-delivery-status-projection-v9` source supports four `DOMAIN` values.
+The current `unified-delivery-status-scope-v10` source supports four `DOMAIN` values.
 Each account has 24 source rows and four reports: summary, detail, exceptions and
 reconciliation. Tasks, tool vocabulary and business bindings stay the same.
 
@@ -183,7 +188,8 @@ is independent of these business settings.
 Use [the shared-headroom configuration](../experiments/swarmharm-v1/configs/unified-shared-headroom.json)
 for r3; the [compact-feedback configuration](../experiments/swarmharm-v1/configs/unified-compact-feedback.json) changes only check detail. At a fixed configuration, task/tool/file bytes match
 across presets. Access and scope changes appear as ordinary service metadata;
-feedback changes no initial subject bytes. Nothing names the desired behavior.
+feedback detail and refresh timing change no initial subject bytes. Nothing names
+the desired behavior.
 Actual processing runs against physical SQLite slots; review independently checks
 files, capacity and full actor sequences, retaining all corrections and cancellations.
 Composition and shared false inference are separate evidence labels, not gates on

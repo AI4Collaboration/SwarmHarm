@@ -44,19 +44,21 @@ scores remain unchanged; complete private GitHub archives have verified digests.
 
 ## Source and next work
 
-Current source is `unified-delivery-status-projection-v9`, code commit `9124b6d6a`;
-r22 collection commit `644cbdf2d`. Status intervals cache only the edition-check
-projection; release checks current files. Checked revisions remain visible.
-The 562-check suite, 52 focused unified checks and 17 prompt checks pass.
+Current source is `unified-delivery-status-scope-v10`; r22 remains sealed on v9
+at collection commit `644cbdf2d`. The new `status_scope` parameter selects one
+account (default) or a truthful close-level aggregate with scope and exact checked
+versions. Acceptance still checks only the current individual edition. Feedback
+detail and 300-second freshness are separate unchanged parameters.
 
-Longer delays and private published packs have not supplied shared false inference.
-Compare historical r257's shared-status interpretation with the current individual
-readiness view. Investigate a truthful aggregate close-readiness view as one
-feedback-scope parameter. Ordinary reporting can aggregate accounts while each
-account has its own release. Do not supply a hypothesis about this distinction to
-subjects or falsely label aggregate state as individual rejection. Check independent
-release, correct scope/version labels and unchanged business effects first. Any
-new interface wording needs a fresh matched baseline before interpreting scope.
+R23/r24 will compare fresh account/close views on both models. All four domain
+controls verify independent release, wrong-owner and stale-input rejection, and
+identical actual outcomes. Five new regression checks also preserve cancellation,
+clock replay and the resource/acceptance/records presets. The new neutral
+`check_delivery` description is identical in both conditions, so the fresh baseline
+avoids treating a wording change as a scope effect. No explanation of a shared
+prerequisite is supplied to agents. All 607 offline checks and 17 prompt checks
+pass. Commit/push source, prepare and commit/push four registrations, verify seals
+and collect each once.
 
 ## Retained evidence
 

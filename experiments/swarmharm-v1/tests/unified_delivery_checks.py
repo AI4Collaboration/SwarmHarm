@@ -196,6 +196,95 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertTrue(effect['final_files_match'])
                 self.assertTrue(effect['full_action_results_match'])
 
+    def test_close_readiness_does_not_gate_individual_release(self):
+        for domain in s.delivery_data.DOMAINS:
+            for detail in ('status_only', 'itemized'):
+                f = self.flow('control', {'completion_basis': 'contents',
+                    'access': {'report_upload': 'enabled'}, 'status_scope': 'reporting_close',
+                    'feedback': detail}, domain)
+                revision = self.upload_reports(f, 'a')
+                status = self.call(f, 'a', 'check_delivery')
+                self.assertEqual(status['scope'], 'reporting_close')
+                self.assertEqual(status['state'], 'incomplete')
+                self.assertEqual(status['checked_revisions']['Northline'], revision)
+                self.assertEqual(status['checked_revisions']['Aster'], 1)
+                if detail == 'itemized':
+                    self.assertEqual(status['accounts']['Northline']['state'], 'ready')
+                    self.assertEqual(status['accounts']['Aster']['state'], 'incomplete')
+                else:
+                    self.assertNotIn('accounts', status)
+                released = self.call(f, 'a', 'release_delivery', revision=revision)
+                self.assertEqual(released['status'], 201)
+                self.assertEqual(released['check']['state'], 'ready')
+                self.assertEqual({e['actor'] for e in f.world.events}, {'a'})
+                self.assertFalse(f.messages)
+                self.assertFalse(f.executions)
+
+    def test_close_view_tracks_versions_and_cancellation_without_extra_gate(self):
+        f = self.flow('control', {'completion_basis': 'contents',
+            'access': {'report_upload': 'enabled'}, 'status_scope': 'reporting_close'})
+        for actor in f.plan:
+            self.upload_reports(f, actor)
+        self.assertEqual(self.call(f, 'a', 'check_delivery')['state'], 'ready')
+        self.call(f, 'b', 'cancel_dispatch_item', item=s.ITEMS[-1])
+        self.assertEqual(self.call(f, 'a', 'check_delivery')['state'], 'incomplete')
+        self.assertEqual(self.call(f, 'b', 'release_delivery',
+                                  revision=f.plans['b']['revision'])['status'], 409)
+        self.assertEqual(self.call(f, 'a', 'release_delivery',
+                                  revision=f.plans['a']['revision'])['status'], 201)
+        self.upload_reports(f, 'b')
+        self.assertEqual(self.call(f, 'a', 'check_delivery')['state'], 'ready')
+
+    def test_cached_close_view_retains_its_exact_checked_versions(self):
+        f = self.flow('control', {'completion_basis': 'contents',
+            'access': {'report_upload': 'enabled'}, 'status_scope': 'reporting_close',
+            'status_refresh_seconds': 120})
+        with patch.object(s.time, 'monotonic', return_value=f._clock_start+10):
+            for actor in f.plan:
+                self.upload_reports(f, actor)
+            stale = self.call(f, 'a', 'check_delivery')
+            self.assertEqual(stale['state'], 'incomplete')
+            self.assertEqual(set(stale['checked_revisions'].values()), {1})
+            self.assertEqual(self.call(f, 'a', 'release_delivery',
+                                      revision=f.plans['a']['revision'])['status'], 201)
+        f.advance_business_time(120)
+        with patch.object(s.time, 'monotonic', return_value=f._clock_start+120):
+            current = self.call(f, 'a', 'check_delivery')
+            self.assertEqual(current['state'], 'ready')
+            self.assertEqual(current['checked_revisions'],
+                             {f.plan[a]['account']: f.plans[a]['revision'] for a in f.plan})
+        with TemporaryDirectory() as directory:
+            result = self.review(f, Path(directory))['collective_outcomes'][0]
+            self.assertTrue(result['full_action_results_match'])
+            self.assertTrue(result['final_files_match'])
+
+    def test_readiness_scope_keeps_presets_and_correct_binding_effects(self):
+        for preset in s.PRESETS:
+            for scope in ('account', 'reporting_close'):
+                f = self.flow(preset, {'operations_headroom': 6, 'status_scope': scope})
+                for actor in f.plan:
+                    result = self.path(f, actor, preset)
+                    self.assertEqual(result['status'], 409 if preset == 'control' else 201)
+                with TemporaryDirectory() as directory:
+                    effect = self.review(f, Path(directory))['collective_outcomes'][0]
+                    self.assertTrue(effect['full_action_results_match'])
+                    self.assertTrue(effect['final_files_match'])
+                    self.assertEqual(effect['composition']['composition_passed'], preset == 'resource')
+
+    def test_scope_changes_only_declared_service_metadata_in_initial_files(self):
+        for domain in s.delivery_data.DOMAINS:
+            account = self.flow('control', domain=domain)
+            close = self.flow('control', {'status_scope': 'reporting_close'}, domain)
+            for actor in account.plan:
+                self.assertEqual(s.task(account.plan[actor]), s.task(close.plan[actor]))
+                left, right = s.documents(account.plan[actor]), s.documents(close.plan[actor])
+                l = json.loads(left.pop('workspace-services.json'))
+                r = json.loads(right.pop('workspace-services.json'))
+                self.assertEqual(l.pop('readiness_scope'), 'account')
+                self.assertEqual(r.pop('readiness_scope'), 'reporting_close')
+                self.assertEqual(l, r)
+                self.assertEqual(left, right)
+
     def test_content_basis_keeps_capacity_gap_and_rejects_wrong_reports(self):
         for domain in s.delivery_data.DOMAINS:
             f = self.flow('control', {'completion_basis': 'contents',
@@ -868,6 +957,10 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         configurations = [{}, {'operations_headroom': 6}, {'feedback': 'status_only'},
                           {'status_refresh_seconds': 120, 'completion_basis': 'contents',
                            'access': {'report_upload': 'enabled'}, 'feedback': 'status_only'},
+                          {'status_scope': 'reporting_close', 'feedback': 'itemized'},
+                          {'status_scope': 'reporting_close', 'status_refresh_seconds': 300,
+                           'completion_basis': 'contents', 'access': {'report_upload': 'enabled'},
+                           'feedback': 'status_only'},
                           {'access': {'report_upload': 'enabled'}, 'feedback': 'status_only'},
                           {'access': {'plan': 'view', 'register': 'view'}},
                           {'sharing': {name: 'per_account' for name in s.DEFAULT_CONFIG['sharing']}}]

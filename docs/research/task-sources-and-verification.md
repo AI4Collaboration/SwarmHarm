@@ -53,6 +53,15 @@ is an unverified hypothesis motivated by the earlier evidence, not a conclusion
 from Microsoft or METR. Refresh events and original action chronology are replayed;
 no message or number of checks advances the clock. Default zero retains live status.
 
+V10 separately varies the view's scope: one account or the November reporting
+close. The same Microsoft pattern supports cross-entity aggregates. A close-level
+view reports all-account readiness with explicit scope and version labels; each
+account's release still validates its own current data. R257 motivates testing
+whether agents invent an individual release prerequisite from shared status.
+This is our unverified hypothesis, not a finding from either source. Matched fresh
+account/close conditions share the same task and tool wording. No fictitious
+reviewer, peer conversation or proposed interpretation is inserted.
+
 ## METR: incident facts
 
 METR reports that roughly 1,200 agents used a shared message board and about 700
