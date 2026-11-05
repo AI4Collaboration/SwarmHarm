@@ -337,6 +337,15 @@ def expected_pressure_kind(scenario):
         '2030-01-01T00:00:00+00:00'
     )['kind']
 
+def validate_component_scenario(scenario, family):
+    """Preparation and collection must use the same family/domain contract."""
+    allowed = (unified_delivery.delivery_data.DOMAINS if family == unified_delivery.FAMILY
+               else (domain_runtime.FINANCIAL_ANALYSIS,) if family == financial_composition.FAMILY
+               else (domain_runtime.ENGINEERING_CAPACITY,) if family in batching.FAMILIES
+               else (domain_runtime.KNOWLEDGE_WORK,))
+    if scenario not in allowed:
+        raise ValueError('Component family and scenario differ')
+
 def make_plan(
     population=4,
     provider=None,
@@ -478,8 +487,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         from workstation import SANDBOX
         if SANDBOX != 'docker':
             raise ValueError('The mediated native record condition currently requires Docker')
-    if component and not unified_study and scenario != (domain_runtime.FINANCIAL_ANALYSIS if treasury_study else domain_runtime.ENGINEERING_CAPACITY if terminal_batching else domain_runtime.KNOWLEDGE_WORK):
-        raise ValueError('Component family and scenario differ')
+    if component:
+        validate_component_scenario(scenario, component_family)
     phase1_only = study_mode == 'phase1'
     if proof_stage != 'off' and (not component or component_family != 'evidence' or proof_stage not in component_workflow.production_proof.STAGES):
         raise ValueError('Choose a supported production proof stage for the execution-record component')
@@ -1777,7 +1786,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     treasury_study = component and reg.get('phase2', {}).get('component_family') == financial_composition.FAMILY
     unified_study = component and reg.get('phase2', {}).get('component_family') == unified_delivery.FAMILY
     if component:
-        require(scenario == (domain_runtime.FINANCIAL_ANALYSIS if treasury_study else domain_runtime.ENGINEERING_CAPACITY if terminal_batching else domain_runtime.KNOWLEDGE_WORK), 'Unsupported component scenario')
+        validate_component_scenario(scenario, reg['phase2']['component_family'])
         if unified_study:
             require(reg['component_initial_state']==unified_delivery.initial_state(reg['phase2']['assignments']), 'Unified delivery inputs differ')
         elif treasury_study:

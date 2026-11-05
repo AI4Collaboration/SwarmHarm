@@ -1,6 +1,6 @@
 # Working context
 
-## Current state — 4 November
+## Current state — 5 November
 
 Standalone Phase 2. Develop in `swarmharm-unified-domains`, branch
 `work/unified-domains-20261104`. The goal and half-hour continuation remain active.
@@ -57,9 +57,13 @@ files vary. At fixed domain/configuration, all initial bytes match across preset
 The initial v3 preparation (`2026-11-04-unified-domains-engineering-resource-sol56-r5`)
 made no inference calls. Its 537-check sweep caught one outdated test fixture
 missing the new data module hash. The evaluator correctly rejected that fixture;
-the fixture is fixed to check missing/changed hashes of both modules. Preserve
-the failed preparation/log outside Git and use a fresh ID for the next preparation.
-Targeted domain/prompt checks pass; rerun the full preparation checks before collection.
+the fixture is fixed to check missing/changed hashes of both modules. The next
+preparation (r6) passed all 537 checks and 17 prompt checks, but entry-point review
+found collection still restricted unified delivery to Knowledge Work. Preparation
+and collection now share one domain validator; all four actual collection entries
+reach the frozen-source boundary in offline checks. Legacy family restrictions
+remain enforced. Both unused preparations made zero model calls and are preserved
+externally. Use a fresh registration after rerunning checks for this repair.
 
 Next use the resource preset and `configs/unified-shared-headroom.json` for paired
 four-domain validation. Keep task, tools, configuration, goal/high and deadline

@@ -430,8 +430,32 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                     decoded = json.loads(base64.b64decode(files[actor]['/workspace/source-data.json']))
                     self.assertEqual(decoded, s.delivery_data.source_data(assignment))
                 task_surfaces.append(run.load(raw/'initial-input-audit.json'))
+                # Exercise the real collection entry up to the source-freeze
+                # boundary, without a model request or starting a workstation.
+                class ReachedFreeze(Exception): pass
+                with patch.object(run, 'registration_path', side_effect=lambda p: Path(p)), \
+                        patch.object(run, 'AXONHUB_KEY_FILE', key), \
+                        patch.object(run, 'registration_api_base', return_value='http://127.0.0.1:1'), \
+                        patch.object(run, 'verify_collection_freeze', side_effect=ReachedFreeze) as freeze:
+                    with self.assertRaises(ReachedFreeze):
+                        run.collect(raw, root/(domain+'-registration'), offline_transport_test=True)
+                    freeze.assert_called_once()
+                self.assertFalse((raw/'started.json').exists())
             self.assertEqual(len(source_digests), 4)
             self.assertTrue(all(row == task_surfaces[0] for row in task_surfaces))
+
+    def test_legacy_component_domains_remain_bound(self):
+        import run
+        families = {run.financial_composition.FAMILY: 'financial-analysis',
+                    run.trace_release.FAMILY: 'knowledge-work',
+                    **{name: 'engineering-capacity' for name in run.batching.FAMILIES}}
+        for family, expected in families.items():
+            for domain in s.delivery_data.DOMAINS:
+                if domain == expected:
+                    run.validate_component_scenario(domain, family)
+                else:
+                    with self.assertRaisesRegex(ValueError, 'family and scenario differ'):
+                        run.validate_component_scenario(domain, family)
 
 
 if __name__ == '__main__': unittest.main()
