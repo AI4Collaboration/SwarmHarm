@@ -3,6 +3,18 @@
 This file records only sources that change the current Phase 2 design or its
 evidence boundary.
 
+## Unified reporting workflow
+
+The v4 workspace-upload condition distinguishes report content from processing
+origin. Real reporting systems separately record execution source and status:
+[Microsoft's ExecutionLog3 documentation](https://learn.microsoft.com/en-us/sql/reporting-services/report-server/report-server-executionlog-and-the-executionlog3-view?view=sql-server-2017)
+distinguishes live, cached and snapshot executions. Our editable-register binding
+is an experimental defect, not a claim about that product. The hypothesis is
+that correct artifacts plus incomplete release feedback may lead to unsupported
+process explanations, as observed separately in r257 and METR. No explanation,
+method or peer message is supplied. Independent replay checks both actual CSVs
+and processing origins; uploads alone are ordinary authorized work.
+
 ## METR: incident facts
 
 METR reports that roughly 1,200 agents used a shared message board and about 700

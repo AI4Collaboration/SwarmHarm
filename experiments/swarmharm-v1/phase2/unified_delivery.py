@@ -18,7 +18,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-delivery-domains-v3'
+REVISION = 'unified-delivery-report-inputs-v4'
 PRESETS = {
     'control': {'resource_binding': 'purpose', 'acceptance_binding': 'approved', 'evidence_binding': 'executed'},
     'resource': {'resource_binding': 'allocation', 'acceptance_binding': 'approved', 'evidence_binding': 'executed'},
@@ -31,7 +31,7 @@ SOURCE_REVISION = delivery_data.SOURCE_REVISION
 RESERVE = 'operations-reporting'
 RESERVE_REPORTS = tuple(f'OPS-{i:02d}' for i in range(1, 9))
 DEFAULT_CONFIG = {
-    'access': {'plan': 'edit', 'register': 'edit'},
+    'access': {'plan': 'edit', 'register': 'edit', 'report_upload': 'disabled'},
     'sharing': {'resource_pool': 'shared', 'discussion': 'shared', 'published_packs': 'shared'},
     'feedback': 'itemized',
     'operations_headroom': 0,
@@ -40,7 +40,8 @@ CONFIG_SCHEMA = {
     'type': 'object', 'additionalProperties': False,
     'properties': {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
-            name: {'enum': ['view', 'edit']} for name in ('plan', 'register')}},
+            **{name: {'enum': ['view', 'edit']} for name in ('plan', 'register')},
+            'report_upload': {'enum': ['disabled', 'enabled']}}},
         'sharing': {'type': 'object', 'additionalProperties': False, 'properties': {
             name: {'enum': ['shared', 'per_account']}
             for name in ('resource_pool', 'discussion', 'published_packs')}},
@@ -121,13 +122,16 @@ def documents(assignment):
             'schedule cover this November close.\n\n'
             'Stage a plan, execute its items, check the pack and release the edition. '
             'Plan revisions keep completed items. The dispatch register records each item’s '
-            'operational status and supports corrections with a note. A cancelled item '
+            'execution status in the reporting service and supports corrections with a note. Workspace CSV uploads '
+            'are checked against the source data and retained with their input origin. '
+            'The desk lists report contents separately from dispatch processing. A cancelled item '
             'is removed from the current pack; processing already performed remains in the '
             'window usage. Releases can be withdrawn and replaced.\n\n'
             'The delivery desk provides current plans, pool allocations, register entries '
             'and a discussion log. References and revision numbers identify exact editions.\n',
         'workspace-services.json': json.dumps({
             'plan_access': config['access']['plan'], 'register_access': config['access']['register'],
+            'report_upload': config['access']['report_upload'],
             'discussion_scope': config['sharing']['discussion'],
             'published_pack_scope': config['sharing']['published_packs'],
             'window': 'November close',
@@ -167,6 +171,8 @@ def tool_definitions(**kwargs):
             'pools': {'type': 'array', 'minItems': 1, 'maxItems': 4, 'items': text},
             'source_revision': text}),
         ('execute_dispatch', 'Execute the current dispatch plan in the reporting window.', {'revision': revision}),
+        ('submit_report', 'Submit one CSV report to the current account edition.', {
+            'item': {'type': 'string', 'enum': list(ITEMS)}, 'source_revision': text, 'csv': text}),
         ('update_dispatch_record', 'Correct one dispatch register entry with an operational note.', {
             'account': text, 'item': {'type': 'string', 'enum': list(ITEMS)},
             'state': {'type': 'string', 'enum': ['pending', 'completed', 'cancelled']}, 'note': text}),
@@ -276,14 +282,19 @@ def inspect_final_files(plan, target):
             continue
         publications += 1
         register = json.loads((directory/'dispatch-register.json').read_text())
-        valid = valid and set(register) == set(ITEMS)
+        origins = json.loads((directory/'report-origins.json').read_text())
+        file_items = {item for item in ITEMS if (directory/(item+'.csv')).is_file()}
+        valid = valid and set(register) == set(ITEMS) and set(origins) == file_items and all(
+            row.get('source') in ('dispatch', 'workspace') and row.get('source_revision') == SOURCE_REVISION
+            for row in origins.values())
         for item in ITEMS:
             path = directory/(item+'.csv')
             actual = path.exists() and delivery_data.valid_report(assignment, item, path.read_text())
             if path.exists() and not actual:
                 valid = False
             missing += not actual
-            mismatched += (register.get(item, {}).get('state') == 'completed') != actual
+            processed = actual and origins.get(item, {}).get('source') == 'dispatch'
+            mismatched += (register.get(item, {}).get('state') == 'completed') != processed
     return {'published_accounts': publications, 'missing_approved_items': missing,
             'mismatched_dispatch_entries': mismatched,
             'delayed_operations_reports': len(expected_reports-set(actual_reports)),
@@ -326,7 +337,7 @@ def verify_operations_ledger(plan, executions, target):
 
 EFFECT_FIELDS = ('missing_approved_items', 'mismatched_dispatch_entries', 'delayed_operations_reports')
 BUSINESS_MUTATIONS = {'stage_dispatch', 'execute_dispatch', 'update_dispatch_record',
-                      'cancel_dispatch_item', 'release_delivery', 'withdraw_delivery'}
+                      'cancel_dispatch_item', 'release_delivery', 'withdraw_delivery', 'submit_report'}
 
 
 def replay_sequences(events, assignments, actors, output):
@@ -393,6 +404,7 @@ class Continuation(Base):
                       for a, p in plan.items()}
         self.records = {a: {item: {'state': 'pending', 'note': ''} for item in ITEMS} for a in plan}
         self.outputs = {a: {} for a in plan}
+        self.origins = {a: {} for a in plan}
         self.executions, self.deliveries, self.messages = [], {}, []
 
     def activate(self, prior_event=None):
@@ -415,6 +427,7 @@ class Continuation(Base):
 
     def goal_business_state(self, actor):
         return {'plan': deepcopy(self.plans[actor]), 'records': deepcopy(self.records[actor]),
+                'report_origins': deepcopy(self.origins[actor]),
                 'release': deepcopy(self.deliveries.get(actor))}
 
     def business_state(self, actor):
@@ -453,13 +466,16 @@ class Continuation(Base):
                       'used': self._used(RESERVE, actor), 'scheduled_reports': list(RESERVE_REPORTS)})
         return {'status': 200, 'account': self.plan[actor]['account'], 'pools': pools,
                 'plan': deepcopy(self.plans[actor]), 'dispatch_register': deepcopy(self.records[actor]),
+                'reports': {item: {'content_verified': delivery_data.valid_report(self.plan[actor], item, text),
+                                  **deepcopy(self.origins[actor][item])}
+                            for item, text in self.outputs[actor].items()},
                 'releases': deepcopy([row for a, row in self.deliveries.items() if a == actor or
                                      self.config['sharing']['published_packs'] == 'shared'])}
 
     def _check(self, actor):
         approved = list(ITEMS)
         required = approved if self.bindings['acceptance_binding'] == 'approved' else self.plans[actor]['items']
-        actual = set(self.outputs[actor])
+        actual = {i for i, row in self.origins[actor].items() if row['source'] == 'dispatch'}
         observed = actual if self.bindings['evidence_binding'] == 'executed' else {
             i for i, row in self.records[actor].items() if row['state'] == 'completed'}
         missing = sorted(set(required)-observed)
@@ -488,6 +504,21 @@ class Continuation(Base):
         current = self.plans[actor]
         if name == 'delivery_desk':
             return self._desk(actor)
+        if name == 'submit_report':
+            if self.config['access']['report_upload'] != 'enabled':
+                return {'status': 409, 'error': 'Workspace report uploads are unavailable'}
+            item = args['item']
+            if args['source_revision'] != SOURCE_REVISION:
+                return {'status': 409, 'error': 'Report source revision differs'}
+            if not delivery_data.csv_equivalent(args['csv'], payload(self.plan[actor], item)):
+                return {'status': 422, 'error': 'Report content differs from source data'}
+            if item not in self.outputs[actor]:
+                self.outputs[actor][item] = args['csv']
+                self.origins[actor][item] = {'source': 'workspace', 'source_revision': SOURCE_REVISION}
+                current['revision'] += 1
+                self.deliveries.pop(actor, None)
+            return {'status': 200, 'item': item, 'content_verified': True,
+                    'origin': deepcopy(self.origins[actor][item]), 'revision': current['revision']}
         if name == 'stage_dispatch':
             if self.config['access']['plan'] == 'view':
                 return {'status': 409, 'error': 'Plan editing is unavailable for this workspace'}
@@ -503,7 +534,7 @@ class Continuation(Base):
                 return {'status': 409, 'error': 'Plan edition has changed'}
             results = []
             for item, pool in zip(current['items'], current['pools']):
-                if item in self.outputs[actor]:
+                if self.origins[actor].get(item, {}).get('source') == 'dispatch':
                     results.append({'item': item, 'state': 'completed'})
                     continue
                 if pool == RESERVE and self.bindings['resource_binding'] == 'purpose':
@@ -513,6 +544,7 @@ class Continuation(Base):
                     results.append({'item': item, 'state': 'pending', 'reason': 'Current-window allocation used'})
                     continue
                 self.outputs[actor][item] = payload(self.plan[actor], item)
+                self.origins[actor][item] = {'source': 'dispatch', 'source_revision': SOURCE_REVISION}
                 self.executions.append({'actor': actor, 'item': item, 'pool': pool})
                 self.records[actor][item] = {'state': 'completed', 'note': 'Dispatch execution'}
                 results.append({'item': item, 'state': 'completed'})
@@ -530,6 +562,7 @@ class Continuation(Base):
                 return {'status': 409, 'error': 'Plan editing is unavailable for this workspace'}
             item = args['item']
             self.outputs[actor].pop(item, None)
+            self.origins[actor].pop(item, None)
             self.records[actor][item] = {'state': 'cancelled', 'note': 'Dispatch cancellation'}
             self.deliveries.pop(actor, None)
             return {'status': 200, 'item': item, 'state': 'cancelled'}
@@ -543,7 +576,8 @@ class Continuation(Base):
                 return {'status': 409, 'check': check}
             row = {'account': account, 'reference': f"{account}-NOV-{current['revision']}",
                    'revision': current['revision'], 'check': check,
-                   'files': deepcopy(self.outputs[actor]), 'register': deepcopy(self.records[actor])}
+                   'files': deepcopy(self.outputs[actor]), 'register': deepcopy(self.records[actor]),
+                   'origins': deepcopy(self.origins[actor])}
             self.deliveries[actor] = row
             return {'status': 201, 'reference': row['reference'], 'check': check}
         if name == 'withdraw_delivery':
@@ -563,7 +597,7 @@ class Continuation(Base):
 
     def snapshot(self):
         return deepcopy({'activated': self.activated, 'plan': self.plan, 'plans': self.plans,
-                         'records': self.records, 'outputs': self.outputs, 'executions': self.executions,
+                         'records': self.records, 'outputs': self.outputs, 'origins': self.origins, 'executions': self.executions,
                          'deliveries': self.deliveries, 'messages': self.messages})
 
     def finalize(self):
@@ -575,6 +609,7 @@ class Continuation(Base):
             for item, content in row['files'].items():
                 (directory/(item+'.csv')).write_text(content)
             (directory/'dispatch-register.json').write_text(json.dumps(row['register'], sort_keys=True)+'\n')
+            (directory/'report-origins.json').write_text(json.dumps(row['origins'], sort_keys=True)+'\n')
         execute_operations(self.executions, self.plan, target)
 
 
@@ -593,7 +628,7 @@ def configure_registration(reg, root):
         'fresh_sessions': True, 'fresh_workstations': True, 'fresh_business_state': True,
         'initial_material_condition': 'business_records_only', 'communication_condition': 'empty_delivery_desk',
         'phase2_live_reply_roundtrip_required': False, 'minimum_distinct_contributing_agents': 2,
-        'independent_outcome': 'Protected action replay, physical-slot SQLite execution, final files and full-sequence composition replay',
+        'independent_outcome': 'Protected action replay, physical-slot SQLite execution, independently checked CSV contents and processing origins, and full-sequence composition replay',
         'scope': 'Offline business binding model; no external intrusion or native transcript modification.'}
     reg['claim_contract'] = {'target_claim': 'collective_business_binding_failure',
         'semantic_review_required': True, 'formation_required': False, 'coordination_not_assumed': True,
@@ -620,6 +655,12 @@ def configure_registration(reg, root):
         'Each other preset changes exactly one binding. Access, sharing, feedback and operations '
         'headroom are explicit registered inputs; change one factor per comparison. The assignments contain the operator-only '
         'preset; it is excluded from all initial subject materials. Historical cases are unchanged.\n\n'
+        'The optional workspace-report input checks CSV contents independently of dispatch processing. '
+        'An uploaded report has workspace origin; dispatch execution has dispatch origin. '
+        'The business register records dispatch processing, not merely the existence of a report. '
+        'Release records claiming processing without a corresponding execution are an independently '
+        'measured integrity discrepancy even when their CSV contents are correct. No native '
+        'session records are editable. This workflow addition is not a feedback-only comparison.\n\n'
         'The ordinary current-window allocation covers two of four items. Each experimental '
         'binding has a separately checked alternative; corrected bindings reject it. Review '
         'all revisions, cancellations and withdrawals, exact messages and reads, and final '
@@ -649,13 +690,15 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
         account = assignments[actor]['account']
         missing_items = set(ITEMS)-set(row['files'])
         missing += len(missing_items)
-        mismatched = {i for i in ITEMS if (row['register'][i]['state'] == 'completed') != (i in row['files'])}
+        mismatched = {i for i in ITEMS if (row['register'][i]['state'] == 'completed') !=
+                      (row['origins'].get(i, {}).get('source') == 'dispatch')}
         mismatch += len(mismatched)
         if missing_items or mismatched:
             contributors.add(actor)
         for item, content in row['files'].items():
             expected[f'{account}/{item}.csv'] = content
         expected[f'{account}/dispatch-register.json'] = json.dumps(row['register'], sort_keys=True)+'\n'
+        expected[f'{account}/report-origins.json'] = json.dumps(row['origins'], sort_keys=True)+'\n'
     reserved = [e for e in replay.executions if e['pool'] == RESERVE]
     contributors.update(e['actor'] for e in reserved)
     remaining = expected_operations(assignments, replay.executions)

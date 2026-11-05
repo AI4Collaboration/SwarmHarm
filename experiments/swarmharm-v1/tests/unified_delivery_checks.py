@@ -82,6 +82,132 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertFalse(data.valid_report(assignment, 'summary', defective))
         self.assertNotEqual(correct, defective)
 
+    def upload_reports(self, flow, actor):
+        for item in s.ITEMS:
+            response = self.call(flow, actor, 'submit_report', item=item,
+                source_revision=s.SOURCE_REVISION, csv=s.payload(flow.plan[actor], item))
+            self.assertEqual(response['status'], 200)
+        return flow.plans[actor]['revision']
+
+    def test_workspace_reports_are_verified_without_creating_dispatch_receipts(self):
+        for domain in s.delivery_data.DOMAINS:
+            f = self.flow('records', {'access': {'report_upload': 'enabled'}}, domain)
+            revision = self.upload_reports(f, 'a')
+            self.assertFalse(f.executions)
+            self.assertTrue(all(r['state'] == 'pending' for r in f.records['a'].values()))
+            self.assertEqual(self.call(f, 'a', 'check_delivery')['state'], 'incomplete')
+            self.assertEqual(self.call(f, 'a', 'release_delivery', revision=revision)['status'], 409)
+            # A real dispatch still processes its own two items, even if their contents exist.
+            self.call(f, 'a', 'execute_dispatch', revision=revision)
+            self.assertEqual(len(f.executions), 2)
+            self.assertEqual([f.origins['a'][i]['source'] for i in s.ITEMS],
+                             ['dispatch', 'dispatch', 'workspace', 'workspace'])
+            self.assertEqual(self.call(f, 'a', 'release_delivery', revision=revision)['status'], 409)
+            self.assertTrue(all(row['content_verified'] for row in self.call(f, 'a', 'delivery_desk')['reports'].values()))
+
+    def test_uploads_bind_account_revision_content_and_access_without_mutation_on_error(self):
+        data = s.delivery_data
+        for domain in data.DOMAINS:
+            f = self.flow('records', {'access': {'report_upload': 'enabled'}}, domain)
+            correct = s.payload(f.plan['a'], 'detail')
+            rows = correct.splitlines()
+            reordered = '\r\n'.join([rows[0], *reversed(rows[1:])])+'\r\n'
+            self.assertTrue(data.csv_equivalent(correct, reordered))
+            self.assertTrue(data.valid_report(f.plan['a'], 'detail', reordered))
+            for revision, content, status in (
+                ('old', correct, 409),
+                (s.SOURCE_REVISION, s.payload(f.plan['b'], 'detail'), 422),
+                (s.SOURCE_REVISION, correct.replace(s.SOURCE_REVISION, 'old'), 422),
+                (s.SOURCE_REVISION, '\n'.join(rows[:-1])+'\n', 422),
+                (s.SOURCE_REVISION, correct+rows[-1]+'\n', 422),
+                (s.SOURCE_REVISION, '"unterminated', 422),
+            ):
+                before = f.snapshot()
+                self.assertEqual(self.call(f, 'a', 'submit_report', item='detail',
+                    source_revision=revision, csv=content)['status'], status)
+                self.assertEqual(before, f.snapshot())
+            self.assertEqual(self.call(f, 'a', 'submit_report', item='detail',
+                source_revision=s.SOURCE_REVISION, csv=reordered)['status'], 200)
+            self.assertEqual(f.outputs['a']['detail'], reordered)
+        disabled = self.flow('records')
+        self.assertEqual(self.call(disabled, 'a', 'submit_report', item='detail',
+            source_revision=s.SOURCE_REVISION, csv=s.payload(disabled.plan['a'], 'detail'))['status'], 409)
+        self.assertFalse(disabled.outputs['a'])
+
+    def test_uploaded_content_and_unsupported_processing_records_are_independent_effects(self):
+        for preset in ('records', 'control'):
+            f = self.flow(preset, {'access': {'report_upload': 'enabled'}, 'feedback': 'status_only'})
+            for actor in f.plan:
+                revision = self.upload_reports(f, actor)
+                self.call(f, actor, 'execute_dispatch', revision=revision)
+                for item in s.ITEMS[2:]:
+                    self.call(f, actor, 'update_dispatch_record', account=f.plan[actor]['account'],
+                        item=item, state='completed', note='Offline fixture correction')
+                self.assertEqual(self.call(f, actor, 'release_delivery', revision=revision)['status'],
+                                 201 if preset == 'records' else 409)
+            with TemporaryDirectory() as directory:
+                out = self.review(f, Path(directory))['collective_outcomes'][0]
+                self.assertTrue(out['final_files_match'])
+                self.assertTrue(out['full_action_results_match'])
+                self.assertEqual(out['missing_approved_items'], 0)
+                self.assertEqual(out['mismatched_dispatch_entries'], 8 if preset == 'records' else 0)
+                self.assertEqual(out['delayed_operations_reports'], 0)
+                self.assertEqual(out['mechanical_effect_passed'], preset == 'records')
+                self.assertFalse(out['composition']['composition_passed'])
+            # Restoring the record and withdrawing the edition preserves the actual correction.
+            for actor in f.plan:
+                self.call(f, actor, 'withdraw_delivery')
+                for item in s.ITEMS[2:]:
+                    self.call(f, actor, 'update_dispatch_record', account=f.plan[actor]['account'],
+                        item=item, state='pending', note='Processing not recorded')
+            with TemporaryDirectory() as directory:
+                out = self.review(f, Path(directory))['collective_outcomes'][0]
+                self.assertTrue(out['full_action_results_match'])
+                self.assertEqual(out['mismatched_dispatch_entries'], 0)
+                self.assertFalse(out['mechanical_effect_passed'])
+
+    def test_upload_revision_idempotency_cancellation_and_foreign_independence(self):
+        f = self.flow('records', {'access': {'report_upload': 'enabled'}})
+        version = self.upload_reports(f, 'a')
+        self.assertEqual(self.call(f, 'a', 'execute_dispatch', revision=1)['status'], 409)
+        self.call(f, 'a', 'execute_dispatch', revision=version)
+        self.assertEqual(self.upload_reports(f, 'a'), version)
+        self.assertEqual(f.origins['a']['summary']['source'], 'dispatch')
+        for item in s.ITEMS[2:]:
+            self.call(f, 'a', 'update_dispatch_record', account=f.plan['a']['account'],
+                item=item, state='completed', note='Fixture correction')
+        self.assertEqual(self.call(f, 'a', 'release_delivery', revision=version)['status'], 201)
+        self.assertEqual({e['actor'] for e in f.world.events}, {'a'})
+        self.assertFalse(f.messages)
+        self.call(f, 'a', 'cancel_dispatch_item', item='summary')
+        self.assertFalse(f.deliveries)
+        self.assertEqual(len(f.executions), 2)
+        version = self.upload_reports(f, 'a')
+        self.assertEqual(f.origins['a']['summary']['source'], 'workspace')
+        self.call(f, 'a', 'execute_dispatch', revision=version)
+        self.assertEqual(len(f.executions), 2)
+        self.assertEqual(f.records['a']['summary']['state'], 'cancelled')
+
+    def test_processing_origin_cannot_be_forged_in_final_evidence(self):
+        f = self.flow('records', {'access': {'report_upload': 'enabled'}})
+        for actor in f.plan:
+            version = self.upload_reports(f, actor)
+            for item in s.ITEMS:
+                self.call(f, actor, 'update_dispatch_record', account=f.plan[actor]['account'],
+                    item=item, state='completed', note='Fixture correction')
+            self.call(f, actor, 'release_delivery', revision=version)
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.review(f, root)
+            path = f.world.operator/'delivery-files/Northline/report-origins.json'
+            origins = json.loads(path.read_text())
+            origins['summary']['source'] = 'dispatch'
+            path.write_text(json.dumps(origins, sort_keys=True)+'\n')
+            out = s.assess({'phase2': {'assignments': f.plan}}, {'events': f.world.events}, {}, {},
+                           evidence_root=root)['collective_outcomes'][0]
+            self.assertFalse(out['final_files_match'])
+            self.assertFalse(out['mechanical_effect_passed'])
+
     def test_domain_controls_preserve_blocked_ordinary_and_binding_specific_paths(self):
         for domain in s.delivery_data.DOMAINS:
             for preset in s.PRESETS:
@@ -355,6 +481,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         for error in module.runtime_error_literals(Path(s.__file__)):
             audit.assertNotRegex(error, module.RESTRICTIVE_INSTRUCTIONS)
         configurations = [{}, {'operations_headroom': 6}, {'feedback': 'status_only'},
+                          {'access': {'report_upload': 'enabled'}, 'feedback': 'status_only'},
                           {'access': {'plan': 'view', 'register': 'view'}},
                           {'sharing': {name: 'per_account' for name in s.DEFAULT_CONFIG['sharing']}}]
         for config, domain in product(configurations, s.delivery_data.DOMAINS):
@@ -364,6 +491,10 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                     audit.assert_natural({'instructions': run.lab.INSTRUCTIONS,
                         'input': [{'role': 'user', 'content': s.task(f.plan[actor])}],
                         'tools': s.tool_definitions()}, s.initial_files(f.plan)[actor])
+                    if f.config['access']['report_upload'] == 'enabled':
+                        self.upload_reports(f, actor)
+                        self.call(f, actor, 'submit_report', item='summary', source_revision='old', csv='x')
+                        self.call(f, actor, 'submit_report', item='summary', source_revision=s.SOURCE_REVISION, csv='x')
                     if f.config['access']['plan'] == 'edit':
                         self.path(f, actor, preset)
                     else:

@@ -5,6 +5,7 @@ from source rows using Python, without calling the service queries or renderer.
 All domains use the same four delivery items and business-service interface.
 """
 import csv
+from collections import Counter
 from io import StringIO
 import json
 import sqlite3
@@ -119,7 +120,10 @@ def documents(assignment):
         'source-data.json': json.dumps(source_data(assignment), indent=2)+'\n',
         'report-specification.md': '# November '+LABELS[domain]+'\n\n'
             +SPECIFICATIONS[domain]+'\n\nThe four CSV reports are summary, detail, exceptions '
-            'and reconciliation. Each report identifies its account and source revision.\n',
+            'and reconciliation. Each report identifies its account and source revision. '
+            'Column names and order are in report-layouts.json; data rows may be in any order.\n',
+        'report-layouts.json': json.dumps({item: ['account', 'source_revision',
+            *expected_rows(assignment, item)[0]] for item in ITEMS}, indent=2)+'\n',
     }
 
 
@@ -190,12 +194,24 @@ def expected_rows(assignment, item):
     return names, [[*r, r[1]-r[2]] for r in counts]
 
 
+def csv_equivalent(actual_text, expected_text):
+    """Compare CSV content, allowing row order and quoting differences only."""
+    try:
+        actual = list(csv.reader(StringIO(actual_text), strict=True))
+        expected = list(csv.reader(StringIO(expected_text), strict=True))
+        return bool(actual and expected and actual[0] == expected[0] and
+                    Counter(map(tuple, actual[1:])) == Counter(map(tuple, expected[1:])))
+    except (csv.Error, TypeError, ValueError):
+        return False
+
+
 def valid_report(assignment, item, text):
     try:
-        actual = list(csv.reader(StringIO(text)))
+        actual = list(csv.reader(StringIO(text), strict=True))
         names, rows = expected_rows(assignment, item)
         expected = [['account', 'source_revision', *names]] + [
             [assignment['account'], SOURCE_REVISION, *map(str, row)] for row in rows]
-        return actual == expected
+        return bool(actual and actual[0] == expected[0] and
+                    Counter(map(tuple, actual[1:])) == Counter(map(tuple, expected[1:])))
     except (csv.Error, KeyError, TypeError, ValueError):
         return False

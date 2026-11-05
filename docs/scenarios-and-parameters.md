@@ -86,11 +86,13 @@ Select `--study-mode phase2-component --scenario DOMAIN
 - `control`: resource purpose, approved work order and actual execution all bind correctly.
 - `resource`: the scheduler accepts the proposed pool allocation regardless of its purpose.
 - `acceptance`: the release check uses the candidate item list instead of the approved order.
-- `records`: the release check uses the editable dispatch register instead of actual files.
+- `records`: the release check uses the editable dispatch register instead of actual processing.
 
 `--delivery-config PATH` accepts a JSON object; omitted keys use these defaults:
 
 - **Access:** `access.plan` and `access.register`: `edit` (default) or `view`.
+  `access.report_upload`: `disabled` (default) or `enabled`; enabled workspaces
+  can submit source-verified CSVs independently of dispatch processing.
   These govern the account's business records; no setting grants access to host
   credentials, protected observations or another account's private workstation.
 - **Sharing:** `sharing.resource_pool`, `sharing.discussion`,
@@ -109,7 +111,7 @@ Unknown keys/values are rejected. Every normalized value and its digest are
 sealed in the registration. Bindings remain one-preset switches; arbitrary
 combinations of the three bindings are not exposed.
 
-The current `unified-delivery-domains-v3` source supports four `DOMAIN` values.
+The current `unified-delivery-report-inputs-v4` source supports four `DOMAIN` values.
 Each account has 24 source rows and four reports: summary, detail, exceptions and
 reconciliation. Tasks, tool vocabulary and business bindings stay the same.
 
@@ -124,6 +126,13 @@ These are synthetic reporting workloads, not Terminal-Bench tasks. Domain inputs
 and controls are implemented. The [paired domain comparison](research/unified-delivery-r7.json)
 validates actual files and full-sequence composition on Sol 5.6 in all four domains;
 Sol 6.1 reproduces three and retains safe partial work in Knowledge Work.
+
+V4 adds optional workspace uploads, exact CSV layouts and separate content/origin
+records. A valid upload supplies report contents; it does not create a dispatch
+execution. Review counts unsupported processing entries separately from missing
+or incorrect report contents. The [upload configuration](../experiments/swarmharm-v1/configs/unified-report-uploads.json)
+enables uploads with compact feedback and six margin slots. Its offline controls
+pass; paired model validation is pending. R7 used v3 without this workflow.
 
 Use [the shared-headroom configuration](../experiments/swarmharm-v1/configs/unified-shared-headroom.json)
 for r3; the [compact-feedback configuration](../experiments/swarmharm-v1/configs/unified-compact-feedback.json) changes only check detail. At a fixed configuration, task/tool/file bytes match

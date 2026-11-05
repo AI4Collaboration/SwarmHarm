@@ -2,13 +2,14 @@
 
 ## Current state — 5 November
 
-Standalone Phase 2. Develop in `swarmharm-unified-domains`, branch
-`work/unified-domains-20261104`. The goal and half-hour continuation remain active.
+Standalone Phase 2. Develop in `swarmharm-unified-report-inputs`, branch
+`work/unified-report-inputs-20261105`. The goal and half-hour continuation remain active.
 Phase 1 develops separately in `swarmharm-phase1-publication`; no website work.
 Always inspect real processes and external started/completion files before launch.
 
 R3, r4 and r7 are closed and reviewed. Their old worktrees
-`swarmharm-unified-phase2` and `swarmharm-unified-feedback` have no active collectors.
+`swarmharm-unified-phase2`, `swarmharm-unified-feedback` and
+`swarmharm-unified-domains` have no active collectors.
 Use each archived source for its review; never recollect closed registrations.
 
 The user requires all core findings and substantive four-domain inputs in one
@@ -53,7 +54,7 @@ worktree only after exact archive verification; Git retains them.
 ## Current source and next collection
 
 `phase2/unified_delivery.py` provides access/sharing/feedback/headroom parameters,
-three one-binding presets and an intact control. In `unified-delivery-domains-v3`,
+three one-binding presets and an intact control. Since `unified-delivery-domains-v3`,
 `phase2/delivery_data.py` adds 24 account-specific source rows and four substantive
 CSV reports per domain: build/test reporting, cohort analysis, cash reconciliation
 and customer commitments. SQLite executes reports; independent Python accounting
@@ -66,13 +67,24 @@ prompt checks; collection commit is `93b9dc0de`. Both unused r5/r6 preparations
 remain external with zero model calls. All eight r7 rollouts are archived; do not
 rerun them. Their full input/trajectory hashes are in the r7 index and Release.
 
-Next address the missing shared false inference. R257 and METR motivate a
-testable distinction between correct artifacts and an unexplained release check.
-R3/r4 instead expose plainly missing files. Investigate an ordinary report-upload
-workflow with separate content verification and dispatch receipts; do not supply
-a grader/manager story or a peer hypothesis. Preserve the completed domain cases.
-Selected-condition confirmation also remains pending. No lower pass threshold
-or outcome guarantee.
+The v4 candidate addresses the missing shared false inference. R257 and METR
+motivate distinguishing correct artifacts from an unexplained release check;
+r3/r4 instead expose plainly missing files. Optional workspace CSV submission
+now verifies contents while preserving a separate dispatch-origin record. All
+four domains expose exact CSV layouts. Register corrections do not create real
+processing, and the intact control checks execution. Native transcripts remain
+outside this business interface. This is one workflow addition, not a pure
+feedback intervention; the archived v3 results retain their original inputs.
+
+Next collect the Knowledge Work records preset with
+`configs/unified-report-uploads.json` on Sol 5.6 and 6.1 after source, offline
+checks and registration are frozen. V4 passes 543 offline checks and 17 prompt
+checks; no live v4 registration exists yet. Review
+whether agents compute/submit reports, explain blocked release, exchange actual
+hypotheses and adopt them; independently disprove any claimed prerequisite.
+Correct CSV contents, unsupported dispatch records and corrections are separate
+observations. No grader/manager story or peer hypothesis is supplied.
+Selected-condition confirmation remains pending; no outcome guarantee.
 
 ## Runtime and reproduction
 
