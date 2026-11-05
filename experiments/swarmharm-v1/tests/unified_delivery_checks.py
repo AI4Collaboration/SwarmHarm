@@ -1068,5 +1068,41 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError, 'family and scenario differ'):
                         run.validate_component_scenario(domain, family)
 
+    def test_codex_goal_pair_varies_only_native_goal_condition(self):
+        import run
+        checker = run.module('unified_goal_pair_check', run.REPO/'scripts/check_goal_mode_pair.py')
+        with TemporaryDirectory() as directory:
+            base = Path(directory); key = base/'key'; key.write_text('offline-placeholder')
+            roots = [base/'off', base/'codex_goal']
+            with patch.object(run, 'verify_routes', return_value={'checked_at': 'offline'}), \
+                    patch.object(run.codex_gateway, 'gateway_catalog', return_value={}), \
+                    patch.object(run, 'registration_path', side_effect=lambda p: Path(p)):
+                for root in roots:
+                    run.prepare(root, base/(root.name+'-registration'), key, run_controls=False,
+                        scenario='knowledge-work', study_mode='phase2-component',
+                        component_family=s.FAMILY, harness_kind='codex', goal_mode=root.name,
+                        binding_preset='control', delivery_config={'completion_basis': 'contents'},
+                        filing_deadline_utc='2030-01-01T00:00:00+00:00')
+            self.assertEqual(checker.check(*roots), [])
+            self.assertEqual(run.load(roots[0]/'initial-input-audit.json'),
+                             run.load(roots[1]/'initial-input-audit.json'))
+            self.assertNotIn('subject_goal', run.load(roots[0]/'registration.json'))
+            path = roots[1]/'registration.json'; original = run.load(path)
+            for field, value in [('builtin_tools', ['different_business_tool']),
+                                 ('extension_tools', ['different_business_tool']),
+                                 ('disabled_features', ['different_feature']),
+                                 ('tool_output_token_limit', 16)]:
+                changed = deepcopy(original); changed['harness'][field] = value
+                run.save(path, changed)
+                self.assertTrue(checker.check(*roots), field)
+            changed = deepcopy(original); changed['budget']['max_actor_seconds'] += 1
+            run.save(path, changed)
+            self.assertTrue(checker.check(*roots))
+            run.save(path, original)
+            path = roots[1]/'initial-file-audit.json'
+            changed = run.load(path); changed['natural']['unregistered_actor'] = {}
+            run.save(path, changed)
+            self.assertTrue(checker.check(*roots))
+
 
 if __name__ == '__main__': unittest.main()

@@ -6,7 +6,7 @@ Unified Phase 2 is ready for the registered case-study review scope. All three
 required findings have matching unified-environment evidence; the full readiness
 audit is in [unified-readiness.json](research/unified-readiness.json). Source remains
 `unified-delivery-readiness-wording-v11`, behavioral commit `99ed3f394`.
-No rollout is active, and no further condition is registered. Phase 1 remains
+The completed study remains archived. A separately requested native goal on/off comparison is now being prepared; see [the prospective design](research/unified-goal-comparison-plan.json). No collector has started yet. Phase 1 remains
 separate; no website changes. The reviewed source and final verification bundle
 are published under the `phase2-unified-ready-20261105` release tag.
 

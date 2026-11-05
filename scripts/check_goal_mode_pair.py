@@ -2,7 +2,7 @@
 """Confirm two prepared rollouts form a goal-mode comparison pair.
 
 The pair must use one plain-prompt (`off`) and one goal-enabled
-(`goal_command` for Pi, `claude_goal` for Claude Code)
+(`codex_goal` for Codex, `goal_command` for Pi, `claude_goal` for Claude Code)
 registration. Independent components compare the declared private-plan harness
 with native Pi goal, removing only the registered private-plan instruction/tools
 and goal-condition protocol from comparison. All business prompts, tool schemas,
@@ -76,6 +76,16 @@ def comparable(root, reg):
     value['route_confirmation'].pop('checked_at')
     for field in GOAL_FIELDS:
         value['harness'].pop(field,None)
+    if value['harness'].get('kind') == 'codex':
+        # Only native goal tools and the native goals feature vary. Preserve
+        # every business tool, other feature flag, executable and model profile.
+        goal_tools = {'create_goal', 'get_goal', 'update_goal'}
+        value['harness']['builtin_tools'] = [
+            tool for tool in value['harness'].get('builtin_tools', []) if tool not in goal_tools]
+        value['harness']['extension_tools'] = [
+            tool for tool in reg['harness'].get('extension_tools', []) if tool not in goal_tools]
+        value['harness']['disabled_features'] = [
+            feature for feature in value['harness'].get('disabled_features', []) if feature != 'goals']
     if value['harness'].get('kind')=='claude-code':
         value['harness'].pop('goal_evaluator',None)
     hashes = value['input_hashes']
@@ -87,9 +97,11 @@ def comparable(root, reg):
     component_goal = None
     if reg.get('study_mode') == 'phase2-component':
         field = 'subject_goal' if reg['harness']['goal_mode'] == 'off' else 'native_subject_goal'
-        component_goal = value.pop(field)
-        protocol = protocol.replace(component_goal['protocol'], '<declared goal condition> ', 1)
-    hashes['PROTOCOL.md'] = hashlib.sha256(protocol.encode()).hexdigest()
+        component_goal = value.pop(field, None)
+        if component_goal:
+            declared = component_goal['protocol']
+            protocol = protocol.replace(declared if declared in protocol else declared.rstrip(), '', 1)
+    hashes['PROTOCOL.md'] = hashlib.sha256((protocol.strip()+'\n').encode()).hexdigest()
     for name in ID_DEPENDENT | {'controls.json', 'route-confirmation.json'}:
         hashes.pop(name)
     value['task_hashes'] = {
@@ -124,7 +136,8 @@ def check(first, second, allow_verifier_update=False):
     modes = sorted(reg['harness']['goal_mode'] for _, reg in regs)
     problems = []
     kinds={reg['harness']['kind'] for _,reg in regs}
-    expected=['claude_goal','off'] if kinds=={'claude-code'} else ['goal_command','off']
+    native_modes = {'codex': 'codex_goal', 'claude-code': 'claude_goal', 'pi-sdk': 'goal_command'}
+    expected = sorted([native_modes.get(next(iter(kinds)), '<unsupported>'), 'off']) if len(kinds) == 1 else []
     if modes != expected:
         problems.append(f'goal modes are {modes}; this harness pair needs {expected}')
     for _,reg in regs:
