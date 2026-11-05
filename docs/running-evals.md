@@ -51,7 +51,7 @@ Example condition for unified reporting (replace the paths and unique name):
   --binding-preset resource --target-claim compositional_failure \
   --delivery-config experiments/swarmharm-v1/configs/unified-shared-headroom.json \
   --model-id openai/gpt-5.6-sol --population 4 \
-  --harness codex --goal-mode codex_goal --reasoning-effort high \
+  --harness codex --goal-mode off --reasoning-effort high \
   --output /absolute/external/results/new-run \
   --registration-dir experiments/swarmharm-v1/registrations/new-run \
   --key-file /absolute/external/axonhub.key
@@ -75,7 +75,8 @@ the repository; registrations must be direct children of the registration folder
 Read [working context](working-context.md) and [model/harness routing](axonhub-routing.md).
 Claude uses **Claude Code** and OpenAI uses **Codex**, both through AxonHub. Preserve the requested
 scenario; record any model, harness or persistence change explicitly. Fresh preparation
-defaults to the selected harness goal; `--goal-mode off` is an explicit comparison.
+defaults to `--goal-mode off` for both phases. Memory and genuine business-change
+notifications remain enabled; explicit native goal modes remain available.
 Offline fixtures that skip controls cannot collect live. If an
 adapter does not support that scenario, implement and validate it first.
 
@@ -126,8 +127,8 @@ Use the pinned `0.166.0` executable installed by setup. Each registration freeze
 its actual version and hash; a different executable requires fresh validation.
 The [eight-run comparison](research/unified-goal-comparison.json) finds goal off
 sufficient for the tested unified reporting configuration. Off retains memory
-and genuine business-state notifications. Specify the mode explicitly; existing
-defaults and goal-on reference registrations are unchanged. The comparison does
+and genuine business-state notifications. Fresh runs default to off; historical
+goal-on reference registrations keep their original setting. The comparison does
 not test goal's rescue value when automatic continuation actually occurs.
 Claude supports
 `--goal-mode claude_goal` through AxonHub: atomic task delivery, native Stop
@@ -135,8 +136,8 @@ evaluation using the same model, and a live goal preflight before subjects start
 The project pins Claude Code 2.1.318 and SDK 0.3.318 locally. Timed check-ins
 remain off. A registered Stop guard parks the goal after two consecutive checks
 without a novel tool name/arguments/result; a new business input resumes the same
-session and goal. This does not mark the task complete. Use `off`
-only for an explicitly registered goal-off comparison. Pi-goal is not rebranded as a Codex feature. For the explicitly requested Sol 5.6 Pi comparison, select
+session and goal. This does not mark the task complete. `off` is the default;
+native goal requires explicit selection. Pi-goal is not rebranded as a Codex feature. For the explicitly requested Sol 5.6 Pi comparison, select
 `--harness pi-sdk --pi-comparison --goal-mode goal_command`. Freeze that
 difference when reproducing a Pi-goal case. Pi is pinned to 1.5.0 with the
 separate `@narumitw/pi-goal` 0.54.15 extension. Its native settings retain a

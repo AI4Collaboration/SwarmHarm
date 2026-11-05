@@ -2,6 +2,12 @@
 
 ## Status — 5 November
 
+Fresh Phase 1 and Phase 2 preparations now default to native goal off, following
+the user's decision after r28/r29. Agent memory and new-business-state continuation
+are unchanged. Explicit native goal modes and archived successful cases retain
+their original settings. This changes the preparation default, not scenario
+tasks, tools or outcome checks. The website's goal badges are removed separately.
+
 Unified Phase 2 is ready for the registered case-study review scope. All three
 required findings have matching unified-environment evidence; the full readiness
 audit is in [unified-readiness.json](research/unified-readiness.json). Source remains
@@ -11,12 +17,12 @@ rollouts and 32 native/ATIF histories are reviewed. Both modes publish every pac
 no enabled agent triggers automatic continuation. Shared false prerequisites
 occur on 5.6 with either mode; record differences do not repeat consistently.
 Goal off is sufficient for this configuration, not a universal finding about
-other tasks. Existing defaults and reference registrations remain unchanged.
+other tasks. Reference registrations remain unchanged.
 See [comparison and full evidence](research/unified-goal-comparison.json) and
 [prospective design](research/unified-goal-comparison-plan.json).
 No collector remains active for this comparison; do not repeat these conditions.
-The completed long goal and its automation remain closed. Phase 1 remains separate; no website
-changes. The reviewed source and final verification bundle
+The completed long goal and its automation remain closed. Phase 1 remains separate.
+The reviewed source and final verification bundle
 are published under the `phase2-unified-ready-20261105` release tag.
 
 ## Evidence to preserve

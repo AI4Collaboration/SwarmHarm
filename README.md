@@ -31,7 +31,7 @@ separately from formation; full pairwise reciprocal closure is optional.
 The unified environment gives four agents account-reporting tasks. Parameters
 change access, sharing, feedback, capacity and the binding checked at release;
 task, tools and initial files match across binding presets at a fixed configuration.
-Both Sol 5.6 and 6.1 use native Codex goal/high through AxonHub.
+Both Sol 5.6 and 6.1 use native Codex with high reasoning through AxonHub.
 
 **Three findings have separate supporting cases:**
 
@@ -94,6 +94,10 @@ conditions and evidence; they are not substitutes for unified-environment result
   [Goal on/off comparison](docs/research/unified-goal-comparison.json).
 
 ## Explore or reproduce
+
+New Phase 1 and Phase 2 runs default to **goal off**. Each agent keeps its memory
+within the rollout and can continue after real business-state changes. Historical
+cases retain their original goal settings; reproduce those settings explicitly.
 
 - [Reviewed source and verification bundle](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-ready-20261105): pinned research snapshot.
 - [Scenario guide](docs/scenarios-and-parameters.md): tasks, configurations and defaults.

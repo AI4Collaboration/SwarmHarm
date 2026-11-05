@@ -61,14 +61,18 @@ class NativeHarnessChecks(unittest.TestCase):
         self.assertNotEqual(argument_value('{'), argument_value('"{"'))
         self.assertEqual(argument_value('{"a":1,"b":2}'), argument_value('{"b":2,"a":1}'))
 
-    def test_live_goal_defaults_and_explicit_off_are_unambiguous(self):
+    def test_goal_defaults_off_and_preserves_explicit_historical_modes(self):
         for harness, goal in [('codex','codex_goal'),('claude-code','claude_goal'),('pi-sdk','goal_command')]:
-            self.assertEqual(run.guardrails.resolve_goal_mode(harness),goal)
+            self.assertEqual(run.guardrails.resolve_goal_mode(harness),'off')
             self.assertEqual(run.guardrails.resolve_goal_mode(harness,'off'),'off')
+            self.assertEqual(run.guardrails.resolve_goal_mode(harness,goal),goal)
             self.assertEqual(run.guardrails.resolve_goal_mode(harness,offline_fixture=True),'off')
+            self.assertEqual(run.guardrails.resolve_goal_mode(harness,goal,offline_fixture=True),goal)
             wrong = 'claude_goal' if harness != 'claude-code' else 'codex_goal'
             with self.assertRaisesRegex(ValueError,'does not match'):
                 run.guardrails.resolve_goal_mode(harness,wrong)
+        with self.assertRaisesRegex(ValueError,'Unknown agent harness'):
+            run.guardrails.resolve_goal_mode('unregistered')
 
     def test_all_harnesses_reject_registered_settings_drift(self):
         from copy import deepcopy

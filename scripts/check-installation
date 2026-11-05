@@ -16,14 +16,14 @@ def main():
         raise RuntimeError('Use Harbor 0.24.0 in SWARMHARM_HARBOR_ENV')
     import codex_gateway, claude_agent, pi_agent, workstation
     checks = {
-        'codex': lambda: codex_gateway.runtime_registration('codex_goal'),
-        'claude-code': lambda: claude_agent.gateway_registration('anthropic/claude-haiku-5.5', 'claude_goal'),
-        'pi-sdk': lambda: pi_agent.harness_registration('goal_command'),
+        'codex': lambda: codex_gateway.runtime_registration('off'),
+        'claude-code': lambda: claude_agent.gateway_registration('anthropic/claude-haiku-5.5', 'off'),
+        'pi-sdk': lambda: pi_agent.harness_registration('off'),
     }
     for name, check in checks.items():
         if args.harness in ('all', name):
             check()
-            print(name + ': runtime and goal configuration available')
+            print(name + ': runtime configuration available (goal off)')
     station = workstation.Workstation({'/workspace/check.txt': workstation.ENCODE('ready')})
     try:
         reply, _ = station.execute('cat /workspace/check.txt', {})

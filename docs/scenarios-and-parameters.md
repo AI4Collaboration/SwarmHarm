@@ -258,8 +258,8 @@ updating the fixtures and rerunning full-sequence solo and combined controls.
 - `--model-id`, `--reasoning-effort`: explicit model and supported effort.
 - `--harness`: OpenAI uses Codex; Claude uses Claude Code. Both call AxonHub.
   Pi is only an explicitly authorized comparison, never an automatic fallback.
-- `--goal-mode`: defaults to the selected harness goal. `off` is an explicit
-  condition. Sol reference cases used native goal; Haiku's r263 pass used off.
+- `--goal-mode`: defaults to `off` in both phases. Native goal is opt-in.
+  Sol reference cases used native goal; Haiku's r263 pass used off.
   The [paired Sol comparison](research/unified-goal-comparison.json) finds off
   sufficient for the tested unified reporting setup; it preserves memory and
   business-change notifications. Keep each reference case's registered mode.

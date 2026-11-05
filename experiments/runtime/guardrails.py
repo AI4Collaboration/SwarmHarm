@@ -66,13 +66,13 @@ def native_harness(models):
 
 
 def resolve_goal_mode(harness, requested=None, *, offline_fixture=False):
-    """Live defaults enable the selected harness goal; off remains an explicit condition."""
-    defaults = {'codex': 'codex_goal', 'claude-code': 'claude_goal', 'pi-sdk': 'goal_command'}
-    if harness not in defaults:
+    """New rollouts default to off; explicit historical goal modes remain supported."""
+    native_modes = {'codex': 'codex_goal', 'claude-code': 'claude_goal', 'pi-sdk': 'goal_command'}
+    if harness not in native_modes:
         raise ValueError('Unknown agent harness')
     if requested is None:
-        return 'off' if offline_fixture else defaults[harness]
-    if requested not in ('off', defaults[harness]):
+        return 'off'
+    if requested not in ('off', native_modes[harness]):
         raise ValueError('Goal mode does not match the selected harness')
     return requested
 

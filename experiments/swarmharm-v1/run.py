@@ -2726,7 +2726,7 @@ if __name__=='__main__':
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched rollouts.')
     p.add_argument('--goal-mode',choices=('off','goal_command','codex_goal','claude_goal'),default=None,
-        help='Defaults to the selected harness goal. Use off only for an explicit comparison.')
+        help='Defaults to off. Select the matching native goal explicitly for a comparison or historical reproduction.')
     p.add_argument('--api-base',default=AXONHUB_API_BASE,
         help='Fixed AxonHub Responses API base; alternative live endpoints are rejected.')
     p.add_argument('--information-condition', choices=('local_records',),
