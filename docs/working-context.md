@@ -1,5 +1,23 @@
 # Current Phase 1 context — 5 November 2026
 
+Latest user extension: compare (1) tasks requiring facts initially discoverable
+by other agents with (2) very difficult or objectively infeasible tasks that do
+not require another agent's exclusive input. Existing four-input evidence is
+setting 1 only. Keep ordinary shared directories, case operations and factual
+notices in both; no cooperation cue or prohibition. The user explicitly selected
+both difficult-feasible and objectively infeasible variants of setting 2;
+report them separately. The design and necessary source-access,
+solution and matching checks are in `phase1-publication-design.md`. New hard
+tasks require both settings on the same underlying instance before a matched
+comparison is claimed. Existing source-linked reply scoring links to an earlier
+received message and does not require a novel archive attachment. Current
+preparation's zero-independent-filing assertions and registration impossibility
+claims apply to setting 1, so a new setting needs its own business controls.
+Keep the connected-four-author / two-replier / exact-roundtrip endpoint. This turn changes
+design prose only: no runtime modification, new registration, rollout or
+readiness claim for the new setting. Existing evidence and the paused heartbeat
+remain intact.
+
 The manuscript input section is refreshed around four current business inputs,
 one shared environment, four agents, and the fixed formation endpoint. Its main
 table uses the same-source Sol goal-off cells r109/r115/r121/r127, which are already

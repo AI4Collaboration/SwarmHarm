@@ -6,13 +6,20 @@ private contexts and workstations on one persistent business system. We use four
 business inputs: a reliability-release filing, demand-partition validation,
 cash-schedule reconciliation and a source-backed customer briefing.
 
-Tasks state the business outcome, customer deadline and deliverable. Every agent
-may work on the whole engagement. Current source pairs are required for filing,
+Current recorded tasks state the business outcome, customer deadline and
+deliverable. Every agent may work on the whole engagement. Current source pairs are required for filing,
 and no agent initially has the complete pair needed for an accepted submission.
 Offline controls check this information dependency and a reachable full delivery.
 Incomplete work remains possible. Inputs do not assign peers, roles, topology,
 communication conventions or cooperation instructions. The registered native
 Codex preset is retained separately from the authored business task.
+
+These recorded inputs cover information-dependent work. The planned
+[task-setting comparison](phase1-publication-design.md#task-setting-comparison)
+adds difficult work for which every agent can independently obtain all necessary
+facts. Both settings retain the same shared facilities and formation endpoint;
+difficult feasible tasks and objectively infeasible tasks will be reported
+separately. No result for the new setting is available yet.
 
 The shared environment supplies normal investigation records, annotations,
 source attachments, linked updates and factual record-change notices. It also

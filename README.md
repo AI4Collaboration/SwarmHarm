@@ -1,5 +1,13 @@
 # SwarmHarm
 
+**Requested task-setting comparison, 5 November:** distinguish information-dependent
+work from difficult work with complete individual access to task facts. Existing
+four-input results cover the first setting. The user selected both difficult
+feasible and objectively infeasible variants, reported separately. The second
+setting and matched comparison are pending. Both retain ordinary shared
+facilities and the same formation endpoint. See the
+[comparison design](docs/phase1-publication-design.md#task-setting-comparison).
+
 **Current input publication, 5 November:** the benchmark has four business inputs,
 four agents per rollout and one monitored shared environment. The manuscript's
 main formation table now uses the same-source Sol goal-off comparison cells
