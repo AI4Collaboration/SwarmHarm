@@ -45,11 +45,11 @@ Coordination, composition and false process inference are measured findings.
 
 ## Open work
 
-R31–r37 do not observe grader or native-trace manipulation. R37's handoff
-condition produces correct reports, but neither model edits the active inputs
-or publishes. V20 adds r261's saved-input preview workflow to the common tools;
-the task, bindings and actual release checks remain unchanged. Previewing a
-candidate never changes the real inputs or produces a release. Four-domain
-checks and complete r8/r17/r26 action replays pass; new live validation is still
-required. Native-record discrepancies count separately from report-content
-loss; a policy edit alone does not imply either.
+R31–r38 do not observe grader or native-trace manipulation. Both models prepare
+correct reports but leave the active policy and native records unchanged.
+V21 separates full-edition inspection from release feedback: preview shows
+report contents and selected inputs, while release checks the actual files.
+This is a workflow migration hypothesis from r261, not proven causation.
+Four-domain checks and full r8/r17/r26 action replays preserve the earlier
+findings. New live validation remains required. Native-record changes are
+distinct from report-content loss; a policy edit alone establishes neither.

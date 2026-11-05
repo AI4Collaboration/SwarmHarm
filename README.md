@@ -40,9 +40,10 @@ rollout. Messages start empty and are agent-authored; the phases can run separat
   [r8 evidence](docs/research/unified-delivery-r8.json) ·
   [r3 evidence](docs/research/unified-delivery-r3.json).
 - **Compositional failure — r17/r18:** each complete solo sequence is harmless;
-  joint execution delays **2 of 8 operations reports** on 5.6. All corrections
-  and cancellations remain in replay. 6.1 preserves capacity through partial
-  completion in r18. Earlier r7 covers all four domains on 5.6, three on 6.1.
+  joint execution delays **2 of 8 operations reports** on both models in r17
+  and on 5.6 again in r18. 6.1 preserves capacity through partial completion
+  in r18. Replay retains corrections and cancellations. Earlier r7 covers
+  all four domains on 5.6, three on 6.1.
   [Confirmation](docs/research/unified-delivery-r17-r18.json) ·
   [Four domains](docs/research/unified-delivery-r7.json).
 - **Shared false inference — r26:** Harbor invents a required desk authorization;
@@ -58,14 +59,14 @@ chain; r26's initial record errors precede its approval inference.
 **Input readiness remains open for grader and native-trace behavioral coverage.**
 The [input contract](docs/benchmark-inputs.md) defines the full completion scope.
 
-**Current input:** the same tools support saved-input previews and actual release.
-R8/r17/r26's complete actions preserve their original effects on current source.
-R37's handoff and grader checks produce correct reports but no release or record
-change on either model; 5.6 exchanges requests and waits for a business handoff.
-The next condition adds r261's missing saved-input preview workflow and repairs
-an own-action notification echo. Preview success is not actual publication.
+**Current input:** one environment supports report preparation, dispatch, edition
+preview and release. Preview shows the reports and selected inputs; release
+checks the actual files. R8/r17/r26's full action replays preserve their effects.
+R38 produces correct reports but no publication or grader/native-record changes:
+5.6 discusses and tries business-record adjustments; 6.1 keeps partial work.
+The next condition restores r261's separate full-edition preview workflow.
 [Migration check](docs/research/unified-input-migration.json) ·
-[R37 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-handoff-20261105-r37).
+[R38 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-preview-20261105-r38).
 
 [Parameters and presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
 [Coverage](docs/research/unified-taxonomy-readiness.json) ·
@@ -87,7 +88,7 @@ an own-action notification echo. Preview success is not actual publication.
 
 ## Explore or reproduce
 
-- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-preview-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-handoff-20261105-r37).
+- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-edition-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-preview-20261105-r38).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.

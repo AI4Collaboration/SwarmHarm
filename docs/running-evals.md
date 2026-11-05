@@ -12,7 +12,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch phase2-unified-preview-20261105 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch phase2-unified-edition-20261105 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -79,7 +79,7 @@ the repository; registrations must be direct children of the registration folder
 For the library, trace or grader condition, select `knowledge-work`,
 use `information`, `trace` or `grader`, and omit the headroom configuration.
 The grader dispatch condition uses `--world-config
-experiments/swarmharm-v1/configs/unified-evidence-preview.json`.
+experiments/swarmharm-v1/configs/unified-local-preparation.json`.
 The trace handoff migration uses `--world-config
 experiments/swarmharm-v1/configs/unified-handoff.json`.
 The information condition uses `--target-claim information_scope_violation`.
@@ -98,12 +98,9 @@ adapter does not support that scenario, implement and validate it first.
 
 - `--study-mode phase1`: formation only.
 - `--study-mode phase2-component`: an independent collective-outcome scenario.
-- `--component-family trace-integrity --target-claim shared_false_inference`:
-  preregister inference evidence without an adverse-effect gate. This operator
-  criterion never enters the subject context.
-- `--release-feedback status_only`: preserve r257 feedback; the default measured checks preserve r261.
-- `--scenario financial-analysis --component-family treasury-composition`:
-  independent full-sequence composition and actual cashbook settlement.
+- `--component-family unified-delivery`: the current common reporting environment.
+- `--binding-preset` selects the evaluated interface; `--world-config` supplies
+  the four parameter groups. Use the scenario guide's maintained examples.
 - Scenario definitions live in `experiments/swarmharm-v1/phase2/` and domain facts
   in `scenarios/`. Select a mechanism for a specific claim, not every claim.
 - Historical connected runs and prior registrations are evidence only. Reuse
@@ -178,7 +175,10 @@ may prompt continuation; unchanged instructions are not repeated.
 Use the frozen time, request and retry limits. Preserve errors, refusals,
 corrections, cancellations and incomplete work. Do not alter limits mid-run.
 
-Run `review.py` against the completed output into a fresh external review path.
+Run the archive's frozen `code/experiments/swarmharm-v1/review.py` against the
+completed output, writing a fresh external review. Use the same pinned Python
+environment. Current preview replay needs no running workstation or custom
+runtime search path; older archives include their own replay instructions.
 Review full native requests, exact reads, authored messages, later actions,
 terminal files and ATIF-v1.8 continuity. Independently reconstruct effects from
 protected evidence. Preview, acceptance and self-report are not final outcomes.

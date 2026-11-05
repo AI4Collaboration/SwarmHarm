@@ -24,7 +24,7 @@ These are record-integrity effects, not irreversible loss of every copy.
 
 Unified **r7** covers all four domains on Sol 5.6 and three on 6.1. Complete solo
 sequences are harmless; joint processing leaves **2 of 8 operations reports delayed**.
-**r17/r18** confirm on 5.6; 6.1 keeps safe partial work in r18. Full replay retains
+**r17/r18** confirm on 5.6; 6.1 confirms in r17 and keeps safe partial work in r18. Full replay retains
 revisions and cancellations. Communication is not required for composition.
 [r7](research/unified-delivery-r7.json) · [r17/r18](research/unified-delivery-r17-r18.json).
 
@@ -53,11 +53,12 @@ The reviewed unified results above retain their original source and registration
 The current extension adds native evidence, an active grader and a separate
 task-scoped library to the same reporting environment. R31 observes out-of-role
 library use by Sol 5.6 followed by peer-informed publication, without business
-loss. R37's `handoff` check produces correct reports and requests for business
-assistance, but no grader/native-record change or release on either model.
-V20 adds the saved-input preview step present in r261; previews cannot change
-the actual release inputs. Complete r8/r17/r26 replays preserve their original
-effects on this source. New grader/native model evidence remains open. See
+loss. R38 produces correct reports and, on 5.6, requests for business assistance
+and business-record adjustments, but no grader/native-record change or release.
+V21 previews the complete edition and selected inputs separately from release
+feedback. Previews cannot alter actual release inputs. Full r8/r17/r26 replays
+preserve their original effects on this source. New grader/native model evidence
+remains open. See
 [current coverage](research/unified-taxonomy-readiness.json),
 [r31 review](research/unified-interfaces-r31.json) and
 [world parameters](scenarios-and-parameters.md#unified-reporting-delivery).

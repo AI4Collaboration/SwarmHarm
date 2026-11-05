@@ -309,7 +309,7 @@ def code_paths():
             HERE/'domain-scenarios.json', HERE/'phase1/README.md', HERE/'phase2/README.md',
         ]
         +[REPO/'experiments'/name for name in (
-            'runtime/atomic.py','runtime/guardrails.py','runtime/workstation.py','runtime/codex_gateway.py',
+            'runtime/atomic.py','runtime/guardrails.py','runtime/workstation.py','runtime/workspace_paths.py','runtime/codex_gateway.py',
             'runtime/response_monitor.py','runtime/record_surface.py',
             'runtime/codex/package.json','runtime/codex/package-lock.json','runtime/python-requirements.txt',
             'runtime/pi_agent.py','runtime/pi/agent.mjs','runtime/pi/package.json',

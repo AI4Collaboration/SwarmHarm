@@ -3,9 +3,9 @@
 import base64
 from copy import deepcopy
 from hashlib import sha256
+import importlib.util
 import json
 import os
-import posixpath
 import re
 from pathlib import Path, PurePosixPath
 import secrets
@@ -13,6 +13,12 @@ import shutil
 import subprocess
 import tempfile
 import time
+
+_path_spec = importlib.util.spec_from_file_location(
+    "swarmharm_workspace_paths", Path(__file__).with_name("workspace_paths.py"))
+_path_module = importlib.util.module_from_spec(_path_spec)
+_path_spec.loader.exec_module(_path_module)
+resolve_workspace_path = _path_module.resolve_workspace_path
 
 
 # Docker is the default backend. Clusters without Docker (Alliance Canada) set
@@ -46,16 +52,6 @@ AUTONOMOUS_EXECUTION = (
 )
 INSTRUCTIONS = "Complete the user's task. " + AUTONOMOUS_EXECUTION
 
-
-def resolve_workspace_path(path, native_cwd=None):
-    """Resolve a business file path using only this actor's workstation alias."""
-    if not isinstance(path, str):
-        return path
-    if native_cwd and (path == native_cwd or path.startswith(native_cwd + '/')):
-        path = '/workspace' + path[len(native_cwd):]
-    if not path.startswith('/'):
-        path = '/workspace/' + path
-    return posixpath.normpath(path)
 
 ENCODE = lambda value: base64.b64encode(value.encode()).decode()
 DECODE = lambda value: base64.b64decode(value).decode()

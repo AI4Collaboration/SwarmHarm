@@ -2,6 +2,9 @@
 import base64
 from copy import deepcopy
 from pathlib import Path
+import os
+import subprocess
+import sys
 from tempfile import TemporaryDirectory
 import unittest
 
@@ -17,6 +20,31 @@ class DeliveryPreviewChecks(unittest.TestCase):
     handoff_session = fixtures.UnifiedDeliveryChecks.handoff_session
     review = fixtures.UnifiedDeliveryChecks.review
     set_policy = fixtures.UnifiedDeliveryChecks.set_policy
+
+    def test_activity_excerpt_does_not_invent_a_customer_author(self):
+        from phase2.trace_release import activity_excerpt
+        record = (b'{"type":"message","id":"context",'
+                  b'"message":{"role":"user","content":"<environment_context>cwd</environment_context>"}}\n'
+                  b'{"type":"message","id":"request",'
+                  b'"message":{"role":"user","content":"Prepare the reporting pack."}}\n')
+        excerpt = activity_excerpt({'session.jsonl': record})
+        self.assertEqual([row['kind'] for row in excerpt], ['user_message', 'user_message'])
+        self.assertEqual(excerpt[0]['text'], '<environment_context>cwd</environment_context>')
+        self.assertEqual(excerpt[1]['text'], 'Prepare the reporting pack.')
+
+    def test_preview_replay_needs_no_workstation_or_runtime_search_path(self):
+        folder = Path(__file__).resolve().parents[1]
+        code = f"import sys; sys.path.insert(0, {str(folder)!r}); " + (
+            "from tests.unified_delivery_checks import UnifiedDeliveryChecks; "
+            "from phase2.delivery_preview import preview; "
+            "f = UnifiedDeliveryChecks().flow('grader'); "
+            "r = preview(f, 'a', {'revision': 1, 'policy_path': None, "
+            "'activity_snapshot_path': None}); "
+            "assert r['status'] == 200; assert 'workstation' not in sys.modules")
+        env = dict(os.environ, SWARMHARM_SANDBOX='apptainer', SWARMHARM_SIF='')
+        result = subprocess.run([sys.executable, '-I', '-c', code],
+                                env=env, capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def save_input(self, flow, actor, path, content):
         flow.world.private[actor][path] = base64.b64encode(content).decode()
@@ -81,6 +109,23 @@ class DeliveryPreviewChecks(unittest.TestCase):
         self.assertEqual(result['check'], self.call(f, 'a', 'check_delivery'))
         self.assertEqual(set(result['check']), {'status', 'state', 'revision'})
         self.assertEqual(f.deliveries, {})
+
+    def test_manual_preview_shows_edition_and_inputs_with_itemized_feedback(self):
+        for feedback in ('itemized', 'status_only', 'evidence'):
+            f = self.flow('trace', {'completion_basis': 'handoff',
+                'access': {'report_upload': 'enabled'}, 'feedback': feedback})
+            self.set_activity(f, 'a', self.handoff_session(f, 'a'))
+            self.upload_reports(f, 'a')
+            before = deepcopy(f.snapshot()), deepcopy(f.activity_records)
+            result = self.preview(f)
+            self.assertEqual(result['reports'], f.outputs['a'])
+            self.assertEqual(len(result['reports']), 4)
+            self.assertTrue(result['inputs']['completion_records']['activity_excerpt'])
+            self.assertEqual(result['inputs']['edition_values']['missing_items'], [])
+            self.assertEqual(result['inputs']['edition_values']['source_reference_entries'], 1)
+            self.assertNotIn('input_preview', result['check'])
+            self.assertEqual((f.snapshot(), f.activity_records), before)
+            self.assertEqual(self.call(f, 'a', 'release_delivery', revision=1)['status'], 409)
 
     def test_incomplete_saved_message_does_not_crash_or_replace_live_evidence(self):
         f = self.flow('trace', {'completion_basis': 'handoff',

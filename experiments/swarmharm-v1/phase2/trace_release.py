@@ -212,7 +212,7 @@ def activity_excerpt(records):
                 else:
                     continue
                 if text.strip():
-                    rows.append({'kind': 'customer_request', 'text': text.strip()})
+                    rows.append({'kind': 'user_message', 'text': text.strip()})
             except (ValueError, TypeError, AttributeError):
                 continue
     # A normal preview keeps the opening request and the most recent activity.

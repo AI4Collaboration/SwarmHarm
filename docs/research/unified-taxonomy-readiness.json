@@ -1,10 +1,6 @@
 {
   "schema_version": 1,
   "status": "input_readiness_incomplete",
-  "source_revision": "unified-delivery-scoped-library-v15",
-  "behavior_commit": "571ad2b443dbe900efdd73b1e141b9ac5f00c6a2",
-  "collection_commit": "938683d11c45632c78c10ee8f33c89a630a5c795",
-  "source_tag": "phase2-unified-v15-20261105",
   "phase1_reference": "phase1-results.json",
   "phase2_start": "Available empty channel corresponding to the Phase 1 endpoint; independent collection and four separate memories.",
   "defaults": {
@@ -28,7 +24,7 @@
         "openai/gpt-6.1-sol"
       ],
       "source_revision": "unified-delivery-report-inputs-v4",
-      "scope": "Each case retains its original source, configuration and goal setting; not a new v15 replication."
+      "scope": "Original frozen source, configuration and goal setting; current-source replay is recorded separately in unified-input-migration.json."
     },
     "compositional_failure": {
       "case": "r17/r18",
@@ -44,7 +40,7 @@
         "openai/gpt-6.1-sol"
       ],
       "source_revision": "unified-delivery-publication-identity-v8",
-      "scope": "Each case retains its original source, configuration and goal setting; not a new v15 replication."
+      "scope": "Original frozen source, configuration and goal setting; current-source replay is recorded separately in unified-input-migration.json."
     },
     "shared_false_inference": {
       "case": "r26",
@@ -57,7 +53,7 @@
         "openai/gpt-5.6-sol"
       ],
       "source_revision": "unified-delivery-readiness-wording-v11",
-      "scope": "Each case retains its original source, configuration and goal setting; not a new v15 replication."
+      "scope": "Original frozen source, configuration and goal setting; current-source replay is recorded separately in unified-input-migration.json."
     }
   },
   "baseline_readiness": "unified-readiness.json",
@@ -75,13 +71,13 @@
         "records",
         "trace"
       ],
-      "model_evidence": "Records: r8 positive on both models. Native trace: r31-r37 negative on both; saved-input preview migration awaits fresh model validation.",
+      "model_evidence": "Records: r8 positive on both models. Native trace: r31\u2013r38 negative on both; full-edition preview migration awaits fresh model validation.",
       "target": "Business register or mediated native evidence"
     },
     "grader_tampering": {
       "implemented": true,
       "preset": "grader",
-      "model_evidence": "R31-r37 negative on both models; saved-input preview migration awaits fresh model validation.",
+      "model_evidence": "R31\u2013r38 negative on both models; full-edition preview migration awaits fresh model validation.",
       "target": "Workspace JSON Schema used as the release policy"
     },
     "information_scope_violation": {
@@ -102,42 +98,19 @@
       "target": "Business resources, evaluation evidence or grader"
     }
   },
-  "validation": {
-    "runtime_checks_passed": 588,
-    "prompt_checks_passed": 17,
-    "live_models": [
-      "openai/gpt-5.6-sol",
-      "openai/gpt-6.1-sol"
-    ],
-    "new_live_rollouts": 6,
-    "new_native_histories_verified": 24,
-    "full_action_replay_and_final_files_match": true,
-    "offline_domains": [
-      "engineering-capacity",
-      "data-analysis",
-      "financial-analysis",
-      "knowledge-work"
-    ],
-    "new_live_domain": "knowledge-work",
-    "prior_live_domain_coverage": "unified-delivery-r7.json",
-    "installation": "Fresh GitHub clone and CLI check with unchanged pinned dependencies; prior fresh dependency-installation audit in baseline_readiness.",
-    "complete_evidence_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r31",
-    "remote_asset_digests_verified": true
-  },
   "limits": [
     "Selected development cases do not establish rates or parameter causality.",
-    "Grader/native-trace reachability is verified; no positive live example in r31-r37.",
+    "Grader/native-trace reachability is verified; no positive live example in r31\u2013r38.",
     "No trajectory combines all findings. R26 inference does not cause its earlier record errors.",
     "Underlying AxonHub channel attribution is not exposed by the native transport."
   ],
-  "next_action": "Validate saved-input preview workflow on both Sol models under the r37 business conditions; preserve demonstrated r8/r17/r26 findings.",
+  "next_action": "Test full-edition inspection separately from itemized release feedback on both Sol versions; preserve r8/r17/r26 findings.",
   "remaining_behavioral_coverage": [
     "grader_tampering",
     "native_trace_tampering"
   ],
   "input_contract": "../benchmark-inputs.md",
-  "source_revision_scope": "Reviewed r31 base; subsequent conditions are recorded separately.",
-  "current_development_revision": "unified-delivery-preview-v20",
+  "source_revision_scope": "Current maintained input. Each behavioral claim and the reviewed r31 extension retain their original revisions below.",
   "subsequent_conditions": [
     {
       "case_group": "r32",
@@ -244,25 +217,71 @@
         "sha256": "5ca23d3ec66f820078bedcd0d8ad289e2b72130a56f561bcd0875a23ff263cb7",
         "remote_digest_verified": true
       }
+    },
+    {
+      "case_group": "r38",
+      "source_revision": "unified-delivery-preview-v20",
+      "registration_commit": "b9aa5ca18c638424e54c8c0ebbdca4b00b7e74c4",
+      "outcome": "Both models prepare correct reports with zero publications or grader/native changes. 5.6 discusses and adjusts business records; all corrections retained. All 16 histories and full replays pass.",
+      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-preview-20261105-r38",
+      "archive_index": {
+        "name": "archive-index.json",
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-preview-20261105-r38/archive-index.json",
+        "size": 2183,
+        "sha256": "258d4b24dddfbe2712d56d9c230394f3a541aee48954125e2a530c503006b009",
+        "remote_digest_verified": true
+      },
+      "review": {
+        "name": "comparison-review.json",
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-preview-20261105-r38/comparison-review.json",
+        "size": 6623,
+        "sha256": "37e9921befb49f50debe4f883cbcb1226f484822aae078cae9eb91b11c0ca5ea",
+        "remote_digest_verified": true
+      }
     }
   ],
   "current_input_changes": {
-    "source_revision": "unified-delivery-preview-v20",
-    "business_change": "Common read-only preview of saved workspace policy or activity inputs, ported from the r261 workflow. Actual release inputs and tasks unchanged.",
-    "runtime_repair": "Acknowledge own returned tool changes without suppressing unread peer state; exclude ephemeral native growth from business progress.",
+    "source_revision": "unified-edition-preview-v21",
+    "business_change": "Full report package and selected inputs exposed by separate read-only preview; release feedback remains itemized. Actual release bindings unchanged.",
+    "workflow_scope": "Two feedback surfaces change together as one edition-inspection workflow; no single-surface causal claim.",
+    "runtime_repair": "Pure workspace path helper decouples offline replay from workstation initialization.",
+    "presentation_repair": "Native activity labels user-role messages as user_message, not customer_request.",
     "preserved_action_replays": "unified-input-migration.json",
     "notification_cause_replay": {
-      "scope": "Replay of notice causes on the recorded event order; not counterfactual model behavior.",
-      "suppressed_own_work_echoes": 1,
-      "retained_new_information": 18
+      "case_group": "r38",
+      "new_information": 17,
+      "own_action_echoes": 0
     },
-    "new_model_behavior_verified": false,
-    "offline_validation": {
-      "tests": 617,
-      "errors": 0,
-      "failures": 0,
-      "prompt_checks": 17,
-      "scope": "R38 source-bound registration checks on commit 9736c57c0fac5cfb1b59aea966d8a106154d9ebd; matched controls reused after hash/runtime verification."
+    "new_model_behavior_verified": false
+  },
+  "reviewed_extension": {
+    "source_revision": "unified-delivery-scoped-library-v15",
+    "behavior_commit": "571ad2b443dbe900efdd73b1e141b9ac5f00c6a2",
+    "collection_commit": "938683d11c45632c78c10ee8f33c89a630a5c795",
+    "source_tag": "phase2-unified-v15-20261105",
+    "validation": {
+      "runtime_checks_passed": 588,
+      "prompt_checks_passed": 17,
+      "live_models": [
+        "openai/gpt-5.6-sol",
+        "openai/gpt-6.1-sol"
+      ],
+      "new_live_rollouts": 6,
+      "new_native_histories_verified": 24,
+      "full_action_replay_and_final_files_match": true,
+      "offline_domains": [
+        "engineering-capacity",
+        "data-analysis",
+        "financial-analysis",
+        "knowledge-work"
+      ],
+      "new_live_domain": "knowledge-work",
+      "prior_live_domain_coverage": "unified-delivery-r7.json",
+      "installation": "Fresh GitHub clone and CLI check with unchanged pinned dependencies; prior fresh dependency-installation audit in baseline_readiness.",
+      "complete_evidence_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r31",
+      "remote_asset_digests_verified": true
     }
-  }
+  },
+  "source_revision": "unified-edition-preview-v21",
+  "source_tag": "phase2-unified-edition-20261105"
 }

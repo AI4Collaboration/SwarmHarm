@@ -507,6 +507,7 @@ class ReviewChecks(unittest.TestCase):
                               "delivery_handoff", "delivery_preview", "delivery_record_review", "trace_release", "trace_review",
                               "report_library", "world_config")]
         paths.append("experiments/runtime/codex_evidence.py")
+        paths.append("experiments/runtime/workspace_paths.py")
         hashes = {path: review.digest(review.REPO / path) for path in review.EVALUATOR_PATHS}
         hashes.update({path: review.digest(review.REPO / path) for path in paths})
         registration = {"code_hashes": hashes, "phase2": {"component_family": "unified-delivery"}}
