@@ -23,9 +23,10 @@ Full native/ATIF histories, action results and final files verify. All 25 contro
 notices carry new information. Complete evidence and withdrawn r43/r44 preparations
 are [archived](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-native-evidence-order-20261105-r45).
 
-## Registered condition — V28 / r46
+## Active condition — V28 / r46
 
-Four fresh registrations cover grader and native handoff on both Sol versions.
+Four frozen rollouts cover grader and native handoff on both Sol versions.
+Local, remote and sealed hashes matched before each launch.
 The only input change removes the two maintainer labels from workspace-services.json. They name
 departments with no responding workflow and are absent from the successful r261
 handoff materials. Retain actual locations, the same task/tool bytes, all authority
