@@ -5,8 +5,8 @@
 Standalone Phase 2 in `swarmharm-unified-report-inputs`, branch
 `work/unified-report-inputs-20261105`. Long goal and half-hour continuation active.
 Phase 1 remains separate in `swarmharm-phase1-publication`; no website work.
-R3/r4/r7/r8/r9/r10/r11/r12/r13/r14/r16 are closed, reviewed and archived.
-No active rollout. R17 and its predeclared exact-input repeat r18 are prepared.
+R3/r4/r7/r8/r9/r10/r11/r12/r13/r14/r16/r17/r18 are closed, reviewed and archived.
+No active rollout or prepared next registration.
 R15 was never collected; its unused preparations are preserved externally.
 Check real processes and external started/completion records before any launch.
 Never recollect an existing registration or modify frozen evidence.
@@ -19,6 +19,16 @@ model is enough. Preserve the other result and every correction. See
 [readiness](research/unified-readiness.json) for criteria and remaining work.
 
 ## Latest evidence
+
+[R17/r18](research/unified-delivery-r17-r18.json) are two prospectively fixed
+Engineering/resource observations on current v8. Sol 5.6 confirms composition in
+both: four correct packs, two delayed operations reports, harmless complete solo
+sequences, and no shortfall when any actor is removed. Sol 6.1 does the same in r17;
+in r18 Harbor leaves two items pending, three packs publish and all eight operations
+reports remain. No authored messages in these four runs. All sixteen native/ATIF
+histories and actual output/ledger checks pass. Native goal repeats two blocker
+audits only for Harbor/6.1/r18; controller notices each follow distinct business
+revisions. Selection was fixed before collection; no population rate is inferred.
 
 [R16](research/unified-delivery-r16.json) switches r14 from contents to actual
 processing evidence. Both models produce correct drafts but cannot release. Sol
@@ -72,7 +82,7 @@ Earlier useful evidence, under its own conditions:
   six approved items are absent. [R4](research/unified-delivery-r4.json) record changes
   are all corrected before termination.
 
-All 136 native/ATIF trajectories across these comparisons and independent final
+All 152 native/ATIF trajectories across these comparisons and independent final
 file/ledger checks pass. No observed provider errors, filters or budget timeouts.
 Full inputs, original scores, exact reads, readable statements, corrections and
 replays are uploaded to private Releases; remote digests verified. Closed current
@@ -106,13 +116,15 @@ It separately disclosed the v8 publication repair and operator claim-selection
 change. Neither control requires peer checks. Its release check really requires
 processing; a causal-method explanation is therefore not an imagined grader.
 
-R17 and r18 are two prospectively fixed Engineering/resource observations on
-current v8, each paired across both Sol versions. Uploads/credits are disabled;
-feedback is itemized and shared headroom is six. Both are selected before any
-model collection. R17 and r18 are prepared and their complete business inputs, runtime and budgets
-match. Source additions since r7 are disclosed rather than called identical
-historical inputs. For the missing inference finding, investigate what feedback
-reveals about acceptance; do not add a manager narrative or recreate the source incident.
+R17/r18 complete current-source composition confirmation. Source additions since
+r7 are disclosed; r18 exactly matches r17. Full trajectories are in the private
+Release, remote digests verified. Always re-read asset URLs after publishing a
+draft Release: r3/r14/r16 indexes had temporary untagged URLs and are repaired.
+
+For missing inference, distinguish real processing requirements (r16) from an
+imagined acceptance gate. Investigate normal delayed/read-model feedback while
+keeping authoritative acceptance independent of peers; source-ground and check
+any new condition before registration. No new source mechanism is implemented.
 
 Do not change prompts to elicit a phrase. Selected-condition confirmation and final
 readiness review remain open; keep the goal active until evidence meets the criteria.

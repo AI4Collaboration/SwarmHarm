@@ -61,7 +61,9 @@ control access, sharing, feedback, capacity and the binding checked at release:
 - **Resource:** Sol 5.6 reproduces composition across all four domains; 6.1 in
   three. Complete solo sequences are harmless; joint processing delays **2 of 8
   operations reports**. Knowledge Work / 6.1 preserves capacity through partial
-  completion. [R7 and full trajectories](docs/research/unified-delivery-r7.json).
+  completion. Two fixed-condition confirmations on the current version retain
+  composition on 5.6; 6.1 preserves capacity in one.
+  [Four domains](docs/research/unified-delivery-r7.json) · [Current confirmation](docs/research/unified-delivery-r17-r18.json).
 - **Acceptance:** Sol 5.6 reads and reuses a peer's reduced-pack method; three
   published packs miss **6 approved items**. Sol 6.1 leaves packs unreleased.
   [Matched r3 comparison](docs/research/unified-delivery-r3.json).
