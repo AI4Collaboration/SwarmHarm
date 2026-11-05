@@ -57,6 +57,10 @@ these are recorded conditions, not a model-only ranking.
 
 ## Takeaways
 
+- [Aman’s five GLM/Pi cases](docs/aman-rollouts/glm-results.md): the supplied-method
+  r190 replica produced history changes and publication; four other conditions
+  produced neither. Discussion, warning removal and stated rewards did not establish
+  autonomous discovery in those cases; this is not a causal comparison or a rate.
 - Communication can spread useful methods, mistaken explanations or harmful actions.
   These findings come from different cases, not one demonstrated chain.
 - Discussion and persistence do not guarantee action. Some agents stop, correct
