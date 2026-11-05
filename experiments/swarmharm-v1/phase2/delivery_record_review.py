@@ -63,6 +63,14 @@ def reconstruct(root, actors, events, final_records, deliveries):
                         'inserted': sorted(set(new)-set(old))})
                 elif after != current:
                     raise ValueError('Unapplied record changed')
+            if 'activity_inputs' in event:
+                captures = event['activity_inputs']
+                if (not isinstance(captures, dict) or set(captures) != set(actors)
+                        or captures.get(actor) != event.get('activity_input')):
+                    raise ValueError('Shared readiness inputs differ from registered owners')
+                for owner, capture in captures.items():
+                    _, values = read(capture, owner)
+                    remember(owner, values)
             if event.get('activity_input'):
                 _, values = read(event['activity_input'], actor)
                 remember(actor, values)

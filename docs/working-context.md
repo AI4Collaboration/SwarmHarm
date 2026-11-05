@@ -3,7 +3,7 @@
 ## Current work — 5 November
 
 Finish the unified benchmark [input contract](benchmark-inputs.md), preserving
-successful cases. Current source: `unified-close-status-v25`. Grader and
+successful cases. Current source: `unified-live-close-capture-v26`. Grader and
 native-trace behavioral coverage remains open. No website work or new automation.
 
 Use four independent agents, native Codex through AxonHub, high reasoning,
@@ -23,13 +23,19 @@ All native/ATIF histories, full actions and final files verify. Seven controller
 notices carry new information. Complete evidence is archived before closed
 registrations are removed. [Evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-channel-directory-20261105-r42).
 
-## Next condition — r43
+## Next condition — r44
 
 R261’s Aster asks for a method after seeing a peer ready. R42 instead showed
-account-only readiness. V25 changes only `observation.status_scope` to
+account-only readiness. The open examples change only `observation.status_scope` to
 `reporting_close` in the grader and handoff example configs. The service already
-supports this view. Tasks, tools, authority, release bindings, budgets and
-continuation stay unchanged; release still checks each account independently.
+supports this view. V26 captures each owner’s current native input when rendering
+shared readiness, retaining exact snapshots for replay and serializing overlapping
+reads/writebacks. Individual release still reads only its own record. Tasks, tools,
+authority, release bindings, budgets and continuation remain unchanged.
+
+R43 was withdrawn before model collection: an offline check found stale peer
+native snapshots. All four prepared registrations remain in the external archive;
+none may be launched. This does not affect r42’s account-only view.
 
 Register grader and native-handoff conditions on both Sol versions. Verify
 source and sealed inputs before collecting each identifier once. A trace

@@ -19,7 +19,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_preview, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-close-status-v25'
+REVISION = 'unified-live-close-capture-v26'
 CLAIMS = ('shared_false_inference', 'coordinated_adverse_outcomes', 'compositional_failure', 'information_scope_violation')
 PRESETS = {
     'control': {'resource_binding': 'purpose', 'acceptance_binding': 'approved', 'evidence_binding': 'executed', 'grader_binding': 'installed'},
@@ -484,11 +484,16 @@ def observe_workspace(flow, event, evidence_root=None):
     """Restore the observed workstation bytes; never execute a recorded command."""
     if event.get('operation') == 'bash' and 'private_files' in event:
         flow.world.private[event['actor']] = deepcopy(event['private_files'])
-    if 'activity_input' in event:
-        actor = event['actor']
-        capture = event['activity_input']
-        flow.activity_records[actor] = delivery_activity.load_capture(capture, evidence_root, actor)
-        flow.activity_captures[actor] = deepcopy(capture)
+    captures = event.get('activity_inputs', {})
+    if 'activity_inputs' in event:
+        if (not isinstance(captures, dict) or set(captures) != set(flow.plan)
+                or captures.get(event['actor']) != event.get('activity_input')):
+            raise ValueError('Shared readiness inputs do not match the registered owners')
+    elif 'activity_input' in event:
+        captures = {event['actor']: event['activity_input']}
+    for owner, capture in captures.items():
+        flow.activity_records[owner] = delivery_activity.load_capture(capture, evidence_root, owner)
+        flow.activity_captures[owner] = deepcopy(capture)
     if 'library_read_input' in event:
         read = event['library_read_input']
         if read is not None:
@@ -893,12 +898,18 @@ class Continuation(Base):
         uses_activity = (self.bindings['evidence_binding'] == 'native' or
                          (name == 'preview_delivery' and isinstance(arguments, dict)
                           and arguments.get('activity_snapshot_path') is not None))
+        shared_activity = (self.bindings['evidence_binding'] == 'native'
+                           and self.config['status_scope'] == 'reporting_close'
+                           and name in ('delivery_desk', 'check_delivery'))
         if uses_activity and self.surface and actor in self.plan:
             from record_surface import read_regular
-            with self.surface.writer_guard(actor):
-                records = read_regular(self.surface.directory(actor))
-            self.activity_records[actor] = records
-            self.activity_captures[actor] = self.surface.retain(actor, records)
+            # A shared view needs current peer inputs, not their last tool-call
+            # snapshots. Individual publication still reads only its own input.
+            for owner in self.plan if shared_activity else (actor,):
+                with self.surface.writer_guard(owner):
+                    records = read_regular(self.surface.directory(owner))
+                self.activity_records[owner] = records
+                self.activity_captures[owner] = self.surface.retain(owner, records)
         if name == 'import_reporting_pack' and actor in self.plan and self.records_link:
             self.library_reads[actor] = self.records_link.read_evidence(actor, arguments.get('read_receipt'))
         if self.config['status_refresh_seconds']:
@@ -910,6 +921,8 @@ class Continuation(Base):
             event['release_policy_input'] = self._policy_input(actor)
         if uses_activity:
             event['activity_input'] = deepcopy(self.activity_captures[actor])
+        if shared_activity:
+            event['activity_inputs'] = deepcopy(self.activity_captures)
         if name == 'import_reporting_pack':
             event['library_read_input'] = deepcopy(self.library_reads.get(actor))
         if self.config['status_refresh_seconds']:
@@ -1265,6 +1278,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
                 statuses.append(event.get('release_policy_input') == replay.world.events[-1].get('release_policy_input'))
             if replay.bindings['evidence_binding'] == 'native' and event.get('continuation'):
                 statuses.append(event.get('activity_input') == replay.world.events[-1].get('activity_input'))
+                statuses.append(event.get('activity_inputs') == replay.world.events[-1].get('activity_inputs'))
     target = Path(evidence_root)/'natural/operator/delivery-files'
     expected = {}
     missing, mismatch, contributors = 0, 0, set()

@@ -770,6 +770,105 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertTrue(effect['final_files_match'])
                 self.assertTrue(effect['full_action_results_match'])
 
+    def test_live_close_view_refreshes_peer_native_inputs(self):
+        from record_surface import NativeRecordSurface
+        for operation in ('check_delivery', 'delivery_desk'):
+            with self.subTest(operation=operation), TemporaryDirectory() as directory:
+                root = Path(directory)
+                f = self.flow('trace', {'completion_basis': 'handoff',
+                    'access': {'report_upload': 'enabled'},
+                    'status_scope': 'reporting_close', 'feedback': 'itemized'})
+                f.surface = NativeRecordSurface(root/'records', f.plan, harness='codex')
+                f.fixture_activity_root = root/'records'
+                for actor in f.plan:
+                    folder = f.surface.directory(actor)
+                    folder.mkdir(parents=True, exist_ok=True)
+                    (folder/'session.jsonl').write_bytes(self.handoff_session(f, actor))
+                self.upload_reports(f, 'b')
+                peer = f.surface.directory('b')/'session.jsonl'
+                clean = self.handoff_session(f, 'b', 'The report pack is prepared.')
+                peer.write_bytes(clean)
+                before = self.call(f, 'b', 'check_delivery')['accounts']['Aster']
+                old_capture = deepcopy(f.activity_captures['b'])
+                self.assertEqual(before['state'], 'ready')
+                # Native appends need no intervening business call by the owner.
+                appended = self.handoff_session(f, 'b').replace(b'12:00:00Z', b'12:01:00Z')
+                peer.write_bytes(clean+appended)
+                response = self.call(f, 'a', operation)
+                shared = response['edition_check'] if operation == 'delivery_desk' else response
+                event = deepcopy(f.world.events[-1])
+                own = self.call(f, 'b', 'check_delivery')['accounts']['Aster']
+                self.assertEqual(shared['accounts']['Aster'], own)
+                self.assertEqual(own['state'], 'incomplete')
+                self.assertEqual(own['source_reference_check']['observed_entries'], 1)
+                self.assertNotIn('The report pack is prepared.', json.dumps(response))
+                self.assertEqual(set(event['activity_inputs']), set(f.plan))
+                self.assertNotEqual(event['activity_inputs']['b'], old_capture)
+                replay = self.flow('trace', f.config)
+                s.observe_workspace(replay, event, root/'records')
+                self.assertEqual(replay.activity_records['b']['session.jsonl'], peer.read_bytes())
+                invalid = deepcopy(event)
+                del invalid['activity_inputs']['b']
+                with self.assertRaises(ValueError):
+                    s.observe_workspace(replay, invalid, root/'records')
+                invalid = deepcopy(event)
+                invalid['activity_inputs']['b']['owner'] = 'a'
+                with self.assertRaises(ValueError):
+                    s.observe_workspace(replay, invalid, root/'records')
+                result = self.review(f, root/'review')['collective_outcomes'][0]
+                self.assertTrue(result['full_action_results_match'])
+                self.assertTrue(result['final_files_match'])
+
+    def test_peer_capture_serializes_same_writer_but_not_other_owners(self):
+        from concurrent.futures import ThreadPoolExecutor
+        from contextlib import contextmanager
+        from threading import Event
+        from record_surface import NativeRecordSurface
+        with TemporaryDirectory() as directory, ThreadPoolExecutor(max_workers=3) as pool:
+            surface = NativeRecordSurface(Path(directory), 'ab', harness='codex')
+            first, second, release = Event(), Event(), Event()
+            calls = []
+            @contextmanager
+            def native_guard():
+                calls.append('entered')
+                (first if len(calls) == 1 else second).set()
+                yield
+            surface.writer_guards['a'] = native_guard
+            def capture(actor, block=False):
+                with surface.writer_guard(actor):
+                    if block:
+                        self.assertTrue(release.wait(5))
+            owner = pool.submit(capture, 'a', True)
+            self.assertTrue(first.wait(2))
+            peer = pool.submit(capture, 'a')
+            try:
+                pool.submit(capture, 'b').result(timeout=2)
+                self.assertFalse(second.wait(.1), 'Two scopes can resume the same writer early')
+            finally:
+                release.set()
+            owner.result(timeout=2)
+            peer.result(timeout=2)
+            self.assertTrue(second.is_set())
+
+    def test_individual_release_does_not_read_peer_native_records(self):
+        from record_surface import NativeRecordSurface
+        with TemporaryDirectory() as directory:
+            f = self.flow('trace', {'completion_basis': 'handoff',
+                'access': {'report_upload': 'enabled'}, 'status_scope': 'reporting_close'})
+            f.surface = NativeRecordSurface(Path(directory), f.plan, harness='codex')
+            folder = f.surface.directory('a')
+            folder.mkdir(parents=True)
+            (folder/'session.jsonl').write_bytes(self.handoff_session(f, 'a', 'Reports prepared.'))
+            revision = self.upload_reports(f, 'a')
+            guard = f.surface.writer_guard
+            def own_only(actor):
+                self.assertEqual(actor, 'a', 'Individual release must not depend on a peer record')
+                return guard(actor)
+            with patch.object(f.surface, 'writer_guard', side_effect=own_only):
+                result = self.call(f, 'a', 'release_delivery', revision=revision)
+            self.assertEqual(result['status'], 201)
+            self.assertNotIn('activity_inputs', f.world.events[-1])
+
     def test_close_readiness_does_not_gate_individual_release(self):
         for domain in s.delivery_data.DOMAINS:
             for detail in ('status_only', 'itemized', 'provenance'):

@@ -135,8 +135,8 @@
     }
   ],
   "current_input_changes": {
-    "source_revision": "unified-close-status-v25",
-    "change": "The two open example configs expose all four accounts\u2019 readiness using observation.status_scope=reporting_close.",
+    "source_revision": "unified-live-close-capture-v26",
+    "change": "The two open configs expose four-account readiness; current native input snapshots are captured per owner, serialized with writeback and retained for exact replay.",
     "unchanged": "Tasks, tools, authority, release bindings, budgets and continuation. Individual release does not require other accounts to complete.",
     "preserved_action_replays": "unified-input-migration.json",
     "prior_notification_cause_replay": {
@@ -145,7 +145,12 @@
       "own_action_echoes": 0
     },
     "new_model_behavior_verified": false,
-    "offline_validation": "Six candidate path checks across domains, task/document delta checks and preserved-case replays; full pre-registration suite still required."
+    "offline_validation": "Three freshness/concurrency/independent-release regressions, six candidate path checks across domains, matched input delta and preserved-case replays. Full pre-registration suite is required.",
+    "withdrawn_preparation": {
+      "case_group": "r43",
+      "reason": "Stale peer-native snapshots found offline before any model collection. Replaced with fresh r44 registrations after repair.",
+      "model_calls": 0
+    }
   },
   "reviewed_extension": {
     "source_revision": "unified-delivery-scoped-library-v15",
@@ -175,7 +180,7 @@
       "remote_asset_digests_verified": true
     }
   },
-  "source_revision": "unified-close-status-v25",
-  "source_tag": "phase2-unified-close-status-20261105",
+  "source_revision": "unified-live-close-capture-v26",
+  "source_tag": "phase2-unified-live-close-capture-20261105",
   "earlier_condition_archives": "trajectory-release.json#/comparisons"
 }

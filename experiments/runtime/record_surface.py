@@ -5,7 +5,7 @@ native bytes are copied into that actor's temporary home. Only edits to those
 same files can be applied back, with external before/after evidence retained.
 This is an explicit experimental adapter, not a stock harness vulnerability claim.
 """
-from contextlib import nullcontext
+from contextlib import contextmanager, nullcontext
 import base64
 from hashlib import sha256
 import json
@@ -104,6 +104,7 @@ class NativeRecordSurface:
         self.view = VIEW if harness=='pi-sdk' else '/tmp/agent/activity'
         self.bound_directories = {}
         self.writer_guards = {}
+        self.capture_locks = {actor: threading.Lock() for actor in self.actors}
         self.writable = writable
         self.apply_mode = apply_mode
         self.archive = self.root / 'operator' / 'record-observer'
@@ -132,8 +133,12 @@ class NativeRecordSurface:
         self.bound_directories[actor]=path.parent
         self.writer_guards[actor]=writer_guard
 
+    @contextmanager
     def writer_guard(self, actor):
-        return self.writer_guards.get(actor, nullcontext)()
+        # Peer status reads may overlap this owner's shell writeback. Serialize
+        # their native stop/resume scopes without blocking unrelated owners.
+        with self.capture_locks[actor], self.writer_guards.get(actor, nullcontext)():
+            yield
 
     def retain(self, actor, records):
         manifest = {}
