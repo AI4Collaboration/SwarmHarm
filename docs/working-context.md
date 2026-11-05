@@ -13,11 +13,12 @@ per-command and terminal auxiliary-file captures. Unknown files never become
 native recorder inputs. Tasks, tools, business files, bindings, budgets and goal
 settings remain V34-identical. Native appends and explicit restorations are retained.
 
-R52 is closed and fully archived; no collector remains. Offline checks cover 653 tests; the lifecycle-fixture correction passes its native
-integration recheck. Prompt checks, 84 input comparisons and prior-case replays pass.
-Commit/push V35, prepare a new pair of trace registrations and verify clean,
-local/remote/sealed hashes before collecting once. This answers the runtime
-repair question; do not repeat prior established conditions.
+R52 is closed and fully archived. V35 source e346586d4 is pushed and its fresh
+GitHub archive matches all 250 source files. R53 now registers separate Sol 5.6
+and 6.1 trace checks, with four native Codex agents and goal off. Exact R52
+task/tool/file bytes, world and budget are retained. The fresh registration's full
+offline controls pass after the terminal-capture lifecycle repair. Verify clean,
+local/remote/sealed hashes, then collect each once. Do not duplicate a collector.
 
 ## Latest reviewed evidence — r52
 

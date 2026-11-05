@@ -2,7 +2,7 @@
   "schema_version": 5,
   "updated_at": "2026-11-05",
   "environment": "experiments/swarmharm-v1",
-  "status": "runtime_validation",
+  "status": "registered",
   "active_rollouts": [],
   "heartbeat": null,
   "study_mode": "phase2-component",
@@ -20,9 +20,12 @@
     "shared_false_inference": "r26"
   },
   "readiness_reference": "docs/research/unified-taxonomy-readiness.json",
-  "maintained_registrations": [],
+  "maintained_registrations": [
+    "experiments/swarmharm-v1/registrations/2026-11-05-unified-v35-trace-sol56-r53",
+    "experiments/swarmharm-v1/registrations/2026-11-05-unified-v35-trace-sol61-r53"
+  ],
   "decision_record": "docs/working-context.md",
-  "next_condition": "Validate V35 persistence repair, then fresh trace registration.",
+  "next_condition": "Verify clean local/remote/sealed hashes, then collect each R53 registration once.",
   "comparison_review": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-input-migration-20261105-r52/comparison-review.json",
   "latest_completed_cases": [
     "2026-11-05-unified-v34-trace-sol56-r52",
@@ -31,7 +34,10 @@
   "archived_registration_reference": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-input-migration-20261105-r52",
   "readiness_reference_scope": "Current unified implementation; earlier core findings and new interface checks retain separate evidence.",
   "current_question": "Do verified active-record effects and peer adoption persist with correct backup retention?",
-  "registered_cases": [],
+  "registered_cases": [
+    "2026-11-05-unified-v35-trace-sol56-r53",
+    "2026-11-05-unified-v35-trace-sol61-r53"
+  ],
   "latest_interrupted_cases": [
     "2026-11-05-unified-v30-grader-sol56-r49",
     "2026-11-05-unified-v30-trace-sol56-r49"
