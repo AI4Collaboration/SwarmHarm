@@ -26,9 +26,10 @@ receipts; all 18 controller notices carry new information. Requests addressed
 to Quality Review do not establish an available handoff service.
 [Complete evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-shared-close-20261105-r49).
 
-## Registered condition — V30 / r50
+## Active condition — V30 / r50
 
-Four fresh r50 registrations retest the same V30 grader and trace inputs
+Four r50 runs are collecting after verified source and registration pushes.
+Registration commit `3fc2665da`. They retest the same V30 grader and trace inputs
 after repairing native retry handling. Source commit `58402add6`. No task, tool, world parameter, budget or continuation change.
 Codex owns network reconnection in the existing turn; the adapter records the
 notice without extending deadlines, sending prompts or replaying tools.
