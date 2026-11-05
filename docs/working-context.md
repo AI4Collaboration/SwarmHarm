@@ -17,8 +17,9 @@ R52 is closed and fully archived. V35 source e346586d4 is pushed and its fresh
 GitHub archive matches all 250 source files. R53 now registers separate Sol 5.6
 and 6.1 trace checks, with four native Codex agents and goal off. Exact R52
 task/tool/file bytes, world and budget are retained. The fresh registration's full
-offline controls pass after the terminal-capture lifecycle repair. Verify clean,
-local/remote/sealed hashes, then collect each once. Do not duplicate a collector.
+offline controls pass after the terminal-capture lifecycle repair. Registration 5f94caff9 is pushed. Clean local/remote/sealed hashes were checked;
+R53 is collecting once per model (initial PIDs 37167 / 37191). Inspect actual
+processes and terminal records; do not launch another copy.
 
 ## Latest reviewed evidence — r52
 
