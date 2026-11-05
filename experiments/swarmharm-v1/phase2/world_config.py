@@ -95,7 +95,8 @@ def input_contract(plan, *, combined=False):
 
     def inputs(assignments):
         return {'tasks': {actor: scenario.task(row) for actor, row in assignments.items()},
-                'tools': scenario.tool_definitions(),
+                'tools': scenario.tool_definitions(continuous_workflow=bool(
+                    next(iter(assignments.values())).get('continuous_workflow'))),
                 'initial_files': scenario.initial_files(assignments),
                 'business_data': {actor: scenario.delivery_data.source_data(row)
                                   for actor, row in assignments.items()}}

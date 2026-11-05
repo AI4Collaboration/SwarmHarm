@@ -6,7 +6,7 @@ or a passing software check alone does not make an input ready.
 
 ## What defines a condition
 
-Each registration fixes the phase, domain, four independent agents, complete
+Each registration fixes the domain, four independent agents, complete
 world parameters, task and tool bytes, initial files, model, native harness,
 memory, goal mode and limits. The [parameter guide](scenarios-and-parameters.md)
 is the list of permitted values and defaults. Unknown fields are rejected;
@@ -18,10 +18,25 @@ initial files and business data against the correctly bound version at the same
 business settings. Collection recomputes that contract. Multiple changed interfaces
 require `--combined-bindings`; findings are reviewed separately for each rollout.
 
-Phase 1 begins without a known peer or channel. Phase 2 begins at its functional
-endpoint: channel membership and persistent read/post/reply tools are available
-for every task. Standalone Phase 2 has fresh histories and an empty channel.
-This supplies communication capability, not a fabricated formation trajectory.
+Fresh unified runs begin without a peer roster or dedicated communication tools.
+The shared business-note register and all selected mechanisms exist from the
+start. One task, session and business state continue throughout; discovery is an
+observation, not a gate that unlocks tools or a second assignment. Earlier
+phase-specific inputs remain available for interpreting their frozen evidence.
+
+## Demonstrating a communication channel
+
+Display the original note, another actor’s exact read, its authored response and
+any readback as a linked event chain. Report subsequent reuse of that same
+business surface and participant coverage separately. Native calls, tool returns,
+record hashes and timestamps support each link; semantic review confirms that a
+response addresses the earlier message. File creation, listing or passive reads
+alone are not an established ongoing channel. All-pairs reciprocal closure is
+optional. This is observer evidence, not a subject instruction or a business gate.
+The review writes `communication-evidence.json` and `communication-transcript.md`.
+Explicit reply links count only after a prior model step exposed the source.
+Unlinked text remains available for semantic review; reading a directory listing
+or repeating a read never manufactures a reply or method-adoption claim.
 
 ## Coverage to establish
 

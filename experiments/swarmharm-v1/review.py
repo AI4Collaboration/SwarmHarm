@@ -125,6 +125,9 @@ def verify_frozen_evaluator(registration):
                   "experiments/runtime/workspace_paths.py",
                   "experiments/swarmharm-v1/phase2/report_library.py",
                   "experiments/swarmharm-v1/phase2/world_config.py")
+        if registration.get('study_mode') == 'unified':
+            paths += ("experiments/swarmharm-v1/phase2/delivery_notes.py",
+                      "experiments/swarmharm-v1/phase2/communication_evidence.py")
     for relative in paths:
         if hashes.get(relative) != digest(REPO / relative):
             raise RuntimeError(f"Evaluator differs from frozen registration: {relative}")
@@ -1425,7 +1428,7 @@ def apply_collection_status(result, collection_status):
 
 def project_phase2(integrated, collection_complete, phase1):
     """Preserve the domain review, including optional post hoc labels."""
-    component = integrated.get('study_mode') == 'phase2-component'
+    component = integrated.get('study_mode') in ('phase2-component', 'unified')
     projected = {
         "study_mode": integrated.get('study_mode', 'connected'),
         "component_gates": integrated.get('component_gates', {}),
@@ -1452,7 +1455,7 @@ def project_phase2(integrated, collection_complete, phase1):
         ),
     }
     if component:
-        projected["study_track"] = "standalone_phase2"
+        projected["study_track"] = "continuous_unified" if integrated.get('study_mode') == 'unified' else "standalone_phase2"
     else:
         projected["depends_on_phase1"] = True
     return projected
@@ -1466,7 +1469,7 @@ def review(root, destination=None):
     world = load(root / "natural/world.json")
     reconcile_tool_commits(root, world)
     states = load(root / "natural/actors.json")
-    component = registration.get('study_mode') == 'phase2-component'
+    component = registration.get('study_mode') in ('phase2-component', 'unified')
     phase1_only = registration.get('study_mode') == 'phase1'
     phase1 = ({'evaluated': False, 'phase1_formation_passed': False,
                'claim_scope': 'not_evaluated_in_phase2_component',
@@ -1519,6 +1522,18 @@ def review(root, destination=None):
         "evidence_manifest_sha256": evidence_manifest_sha256,
         "scope": integrated["scope"],
     }
+    if registration.get('study_mode') == 'unified':
+        result.pop('phase1')
+        result['outcomes'] = result.pop('phase2')
+        result['communication'] = integrated['communication']
+        result.pop('integrated_end_to_end_passed')
+        from phase2 import communication_evidence
+        evidence = communication_evidence.build(root, world, result['communication'],
+                                                registration['plan']['natural'])
+        save(root/'communication-evidence.json', evidence)
+        (root/'communication-transcript.md').write_text(communication_evidence.markdown(evidence))
+        result['communication']['evidence_file'] = 'communication-evidence.json'
+        result['communication']['evidence_sha256'] = digest(root/'communication-evidence.json')
     save(root / "independent-review.json", result)
     if not component:
         (root / "communication-transcript.md").write_text(transcript_markdown(phase1))

@@ -71,10 +71,11 @@ def shared_output_reads(records, actor, result):
             body = json.loads(raw)
         except ValueError:
             body = {}
-        note = body.get("note") if isinstance(body, dict) else None
+        reporting_note = isinstance(body, dict) and body.get('record_type') == 'reporting_note'
+        note = body.get('text' if reporting_note else 'note') if isinstance(body, dict) else None
         note = note if (
             isinstance(note, str) and len(note.strip()) >= 24
-            and body.get("operation") == "source_resolution_note"
+            and (body.get("operation") == "source_resolution_note" or reporting_note)
             and file.get("origin") == "bash"
         ) else None
         decoded.append((file, raw, note))
@@ -1070,6 +1071,10 @@ class World(base.World):
         matching private locators or choosing recipients. Researcher-selected
         stronger registered cue conditions retain their matched-record view.
         """
+        visibility = getattr(self, 'shared_record_visibility', None)
+        if visibility is not None:
+            return {path: row for path, row in self.shared.items()
+                    if self.topology.can_read(actor, row) and visibility(actor, row)}
         visible = {}
         for path, record in self.shared.items():
             if not self.topology.can_read(actor, record):
@@ -1141,6 +1146,9 @@ class World(base.World):
     def _valid_bash_create(self, actor, path, data, records=None):
         """Validate record authorship and the referenced business case."""
         records = self.shared if records is None else records
+        validator = getattr(self, 'shared_record_validator', None)
+        if validator is not None:
+            return path not in self.shared and validator(actor, path, data, records)
         if path in self.shared or not path.startswith("/registry/cache/reviews/"):
             return False
         try:
@@ -1462,7 +1470,8 @@ class World(base.World):
                 if path not in before:
                     self.write_shared(path, after[path], actor, "bash")
                     changes.append(deepcopy(self.shared[path]))
-                    if not path.startswith("/registry/cache/.activity/"):
+                    if (not path.startswith("/registry/cache/.activity/")
+                            and getattr(self, 'shared_record_validator', None) is None):
                         changes.append(self._activity(actor, path, event["id"]))
             event.update(
                 private_files=deepcopy(self.private[actor]),

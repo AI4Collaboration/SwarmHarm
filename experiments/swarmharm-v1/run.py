@@ -455,13 +455,18 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     scenario=domain_runtime.normalize(scenario)
     if study_mode == 'connected' and not archive_compatibility:
         raise ValueError('Connected preparation is archive compatibility only.')
-    if study_mode not in ('phase1', phase2_component.MODE) and not (
+    if study_mode not in ('phase1', phase2_component.MODE, phase2_component.UNIFIED_MODE) and not (
             study_mode == 'connected' and archive_compatibility):
         raise ValueError(
-            'Fresh rollouts must select phase1 or phase2-component. '
+            'Fresh rollouts must select unified, phase1 or phase2-component. '
             'Connected is archive compatibility only.'
         )
-    component = study_mode == phase2_component.MODE
+    continuous_workflow = study_mode == phase2_component.UNIFIED_MODE
+    if continuous_workflow:
+        if component_family not in (None, unified_delivery.FAMILY):
+            raise ValueError('Unified study mode requires the common reporting environment')
+        component_family = unified_delivery.FAMILY
+    component = phase2_component.is_component(study_mode)
     if component and goal_mode != 'off' and (harness_kind,goal_mode) not in (('pi-sdk','goal_command'),('codex','codex_goal'),('claude-code','claude_goal')):
         raise ValueError('Independent components require off or the selected harness native goal')
     terminal_batching = component and component_family in batching.FAMILIES
@@ -560,6 +565,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             unified_plan[actor]["binding_preset"] = binding_preset
             unified_plan[actor]["delivery_config"] = deepcopy(delivery_config)
             unified_plan[actor]["world_config"] = deepcopy(world_config)
+            if continuous_workflow:
+                unified_plan[actor]['continuous_workflow'] = True
             item["component_task"] = unified_delivery.task(unified_plan[actor])
         rows = unified_delivery.truth_for(unified_plan)
     if treasury_study:
@@ -697,6 +704,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     {'role':'user','content':continuation_module.task(phase2_plan[actor])}]
             audit['natural'][actor]['tools'] += continuation_module.tool_definitions(
                 family=component_family,
+                **({'continuous_workflow': continuous_workflow} if unified_study else {}),
                 include_subject_goal=goal_mode == 'off' and not (trace_study or treasury_study or unified_study),
                 **({'proof_stage': proof_stage} if proof_stage != 'off' else {}))
             if goal_mode == 'off' and not (trace_study or treasury_study or unified_study):
@@ -1412,7 +1420,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     for name in frozen:shutil.copy2(root/name,registration_dir/name)
     print(json.dumps({'prepared':True,'models':MODELS,'pressure':reg['pressure']['kind'],'experimental_contexts':population,
         'overlapping_execution':True,'active_contexts':budget['active_contexts_natural'],
-        'study_track':('standalone_phase2' if component else 'phase1' if phase1_only else 'archive_connected'),
+        'study_track':('continuous_unified' if continuous_workflow else 'standalone_phase2' if component else 'phase1' if phase1_only else 'archive_connected'),
         'study_mode':study_mode,'per_agent_response_limit':None,
         'per_agent_tool_limit':None,'model_calls':0}),flush=True)
 
@@ -1582,6 +1590,31 @@ def current_work_feedback(extension, actor, check):
             message += (' A change handover is recorded.' if business.get('handover')
                         else ' No change handover is recorded.')
     return message
+
+def combined_activity_signal(filing, continuation, activated):
+    """Combine live revisions without dropping the observer's source bindings."""
+    revision = sha256(json.dumps({
+        'filing': None if activated else filing['revision'],
+        'continuation': continuation['revision'],
+    }, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+    signal = {
+        'revision': revision,
+        'filing_revision': filing['revision'],
+        'source_publication_event': filing.get('source_publication_event'),
+        'published_check_ids': filing.get('published_check_ids', []),
+        **({'source_publication_message': filing['source_publication_message']}
+           if 'source_publication_message' in filing else {}),
+        'continuation_revision': continuation['revision'],
+        'case_revisions': (continuation if activated else filing).get('case_revisions', {}),
+        'calendar_revision': continuation.get('calendar_revision'),
+        'relevant_cross_job_records': (
+            filing['relevant_cross_job_records'] + continuation['relevant_cross_job_records']),
+    }
+    current_activity = continuation if activated else filing
+    for key in ('case_entries', 'monitored_case_entries', 'review_documents'):
+        if key in current_activity:
+            signal[key] = deepcopy(current_activity[key])
+    return signal
 
 def activity_feedback(signal, delivered, calendar_message=None):
     changed = sorted(case for case, revision in signal.get('case_revisions', {}).items()
@@ -1816,8 +1849,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     if not subscription:AXONHUB_KEY_FILE=guardrails.credential_file(AXONHUB_KEY_FILE,REPO)
     scenario=domain_runtime.normalize(reg.get('scenario'))
     require(not (root/'started.json').exists(),'Never replace trajectories.')
-    component = reg.get('study_mode') == phase2_component.MODE
-    require(reg.get('study_mode') in ('phase1', 'connected', phase2_component.MODE), 'Unknown study mode')
+    component = phase2_component.is_component(reg.get('study_mode'))
+    require(reg.get('study_mode') in ('phase1', 'connected', phase2_component.MODE, phase2_component.UNIFIED_MODE), 'Unknown study mode')
+    continuous_workflow = reg.get('study_mode') == phase2_component.UNIFIED_MODE
     phase1_only = reg.get('study_mode') == 'phase1'
     if component:
         require('depends_on_phase1' not in reg.get('phase2', {}),
@@ -1832,6 +1866,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     if component:
         validate_component_scenario(scenario, reg['phase2']['component_family'])
         if unified_study:
+            require(all(bool(row.get('continuous_workflow')) == continuous_workflow
+                        for row in reg['phase2']['assignments'].values()),
+                    'Registered workflow does not match its initial condition')
             require(reg['component_initial_state']==unified_delivery.initial_state(reg['phase2']['assignments']), 'Unified delivery inputs differ')
             unified_delivery.world_config.verify_input_contract(
                 reg['phase2']['assignments'], reg['phase2'].get('unified_input_contract'))
@@ -1922,6 +1959,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         running=set();pending_texts={};pending_tools={}
         turn_records={};executed_calls={}
         phase2_definitions = continuation_module.tool_definitions(
+            **({'continuous_workflow': continuous_workflow} if unified_study else {}),
             **({'family': reg['phase2']['component_family'],
                 'include_subject_goal': bool(reg.get('subject_goal')),
                 **({'proof_stage':reg['phase2']['production_proof']['stage']} if reg['phase2'].get('production_proof') else {})} if component else {}))
@@ -2017,29 +2055,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                         'relevant_cross_job_records': 0,
                     }
                 )
-                revision = sha256(json.dumps({
-                    'filing': None if extension.activated else filing['revision'],
-                    'continuation': continuation['revision'],
-                }, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
-                signal = {
-                    'revision': revision,
-                    'filing_revision': filing['revision'],
-                    'source_publication_event': filing.get('source_publication_event'),
-                    'published_check_ids': filing.get('published_check_ids', []),
-                    'continuation_revision': continuation['revision'],
-                    'case_revisions': (continuation if extension.activated else filing).get('case_revisions', {}),
-                    'calendar_revision': continuation.get('calendar_revision'),
-                    'relevant_cross_job_records': (
-                        filing['relevant_cross_job_records']
-                        + continuation['relevant_cross_job_records']
-                    ),
-                }
-                current_activity = continuation if extension.activated else filing
-                if 'case_entries' in current_activity:
-                    signal['case_entries'] = current_activity['case_entries']
-                if 'review_documents' in current_activity:
-                    signal['review_documents'] = current_activity['review_documents']
-                return signal
+                return combined_activity_signal(filing, continuation, extension.activated)
             delivered_activity_signals={
                 actor:activity_signal(actor) for actor in active
             }
@@ -2793,8 +2809,8 @@ if __name__=='__main__':
         help='Fixed AxonHub Responses API base; alternative live endpoints are rejected.')
     p.add_argument('--information-condition', choices=('local_records',),
         default='local_records', help='Knowledge Work Phase 2 information availability.')
-    p.add_argument('--study-mode', choices=('phase1', phase2_component.MODE),
-        help='Required during preparation. Phase 1 and Phase 2 are separate rollout tracks.')
+    p.add_argument('--study-mode', choices=(phase2_component.UNIFIED_MODE, 'phase1', phase2_component.MODE),
+        help='Use unified for continuous discovery and outcomes. Phase-specific tracks retain earlier designs.')
     p.add_argument('--controls-from',type=Path,help='Reuse successful offline checks bound to identical source and native runtime; reverify model routing.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')

@@ -2,11 +2,12 @@
 
 ## Scope
 
-- Phase 1 and Phase 2 can run separately with fresh agents, memories,
-  workstations and business state. Unified Phase 2 starts with an available
-  communication channel, corresponding to Phase 1's formation endpoint.
-  This is a supplied starting condition, not newly collected formation evidence.
-  Current work concerns standalone Phase 2.
+- Current entry is `--study-mode unified`: one continuous business task, session,
+  workstation and shared world per rollout. Agents start without a peer roster
+  or dedicated chat tools. Business notes under `/registry/reporting/notes`
+  support autonomous discovery and communication. All selected business
+  mechanisms are present from the start; there is no phase transition or
+  formation gate. Earlier Phase 1/2 results retain their original conditions.
 - `connected` is a historical evidence reader only; never prepare it afresh
   or stitch separate rollouts into one trajectory.
 - Maintain `experiments/swarmharm-v1`. Some Phase 2 helpers still live under
@@ -36,8 +37,8 @@ support composition; do not relabel them as standalone Phase 2 collections.
 ## Subject-facing design
 
 - State a natural business outcome; place details in normal files and services.
-- Phase 1 must not announce peers or topology. Phase 2 may document the existing
-  business channel, membership and read/post/reply tools. Do not announce research
+- Fresh unified tasks must not announce peers or topology. Ordinary business
+  records and their storage schema may be documented. Do not announce research
   targets, hidden graders/managers or desired behavior. Do not prescribe
   cooperation, rationalization, methods or avoidance of methods. High visibility
   of ordinary business facts is allowed.
@@ -48,9 +49,10 @@ support composition; do not relabel them as standalone Phase 2 collections.
   it does not prescribe cooperation or a method. Preserve any violation in traces.
 - Do not advertise abandonment or a “safe choice”. Preserve autonomous stopping,
   correction, cancellation and restoration as observed behavior.
-- Empty Phase 2 discussion channels are allowed. All live messages must be
-  agent-authored. Freeze supplied method material with provenance; exclude it
-  from autonomous-discovery claims.
+- Earlier standalone Phase 2 conditions may supply an empty discussion channel.
+  Fresh unified runs instead use discoverable business notes without a roster.
+  All live messages must be agent-authored. Freeze supplied business materials
+  with provenance; exclude them from autonomous-discovery claims.
 - No unchanged-state nudges. A follow-up requires new business state or one
   distinct agent-authored unfinished step. A new handoff message may resume a
   blocked goal once; time passage, unchanged feeds and failed checks do not.

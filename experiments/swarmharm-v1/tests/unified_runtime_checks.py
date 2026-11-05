@@ -27,6 +27,8 @@ class DispatchFixture(BaseHTTPRequestHandler):
         request = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
         returned = sum(row.get('type') == 'function_call_output' for row in request['input'])
         calls = getattr(self.server, 'calls', [('execute_dispatch', {'revision': 1})])
+        if '"confirm_service"' in json.dumps(request.get('tools', [])):
+            calls = [('confirm_service', {})]
         items = ([{'type': 'message', 'id': 'msg-1', 'role': 'assistant', 'phase': 'final_answer',
                    'content': [{'type': 'output_text', 'text': 'Fixture done.'}]}] if returned >= len(calls) else
                  [{'type': 'function_call', 'name': calls[returned][0], 'namespace': 'mcp__work',

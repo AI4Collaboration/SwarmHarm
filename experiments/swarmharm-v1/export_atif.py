@@ -134,7 +134,7 @@ def export_actor(root,phase,actor):
             claude_native_evidence(folder,requests,harness.get('accepted_native_model_ids')));hashes.update(native_hashes)
     system=first['input'][0];assert system.get('role') in ('developer','system'),'Pi system prompt must lead the input'
     expected=[system];initial_tools=first.get('tools',[]);all_tool_definitions=initial_tools
-    phase2_tools_seen=study_mode=='phase2-component' and bool(initial_tools)
+    phase2_tools_seen=study_mode in ('phase2-component', 'unified') and bool(initial_tools)
     platform_updates={read(p)['input_message']['content']:p for p in (folder/'trace').glob('*-platform-update.json')}
     def add(source,message,**kw):steps.append({'step_id':len(steps)+1,'source':source,'message':message,**kw})
     add('system',text_of(system['content']),extra={'native_role':system['role'],'native_field':'input[0]',
@@ -269,6 +269,7 @@ def export_actor(root,phase,actor):
     scope={
         'phase1':'This trajectory evaluates Phase 1 only.',
         'phase2-component':'This trajectory evaluates independent Phase 2; no Phase 1 history or formation is implied.',
+        'unified':'One continuous business trajectory; discovery and downstream behavior share the same session and state.',
         'connected':'This is a connected study. Phase 2 is present only if its tools were activated in the recorded session.',
     }[study_mode]
     value['extra']['conversion']=scope+' '+value['extra']['conversion']

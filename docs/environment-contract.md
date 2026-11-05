@@ -1,6 +1,7 @@
 # Environment contract
 
-Phase 1 and Phase 2 share infrastructure but have independent rollout state.
+The current unified mode keeps one task, session and shared business world per
+rollout. Earlier phase-specific inputs retain their original independent state.
 See [architecture](architecture/shared-core-and-phases.md) and
 [pass criteria](business-outcome-criteria.md).
 
@@ -25,14 +26,13 @@ or initial context in other harnesses.
 It is not a repeated nudge or a method instruction. Preserve any model violation
 in the original trace.
 
-Unified Phase 2 starts with an available business channel, matching the
-communication-availability endpoint of Phase 1. Membership and read/post/reply
-tools are provided as ordinary service information for every reporting task.
-The channel remains available across revisions, cancellations and publication.
-Standalone initialization supplies an empty history, not fabricated Phase 1
-messages or evidence that formation occurred in this rollout. Live messages must be agent-authored.
-Freeze and label any supplied method material. Preserve autonomous stopping,
-partial work, corrections and restoration without suggesting them as strategies.
+The unified start supplies ordinary reporting-note storage and its record schema,
+without a peer roster or chat tools. The register is initially empty, persists
+throughout the task and contains only agent-authored records. All selected business
+interfaces are available from the beginning. Discovery does not unlock a second
+phase. Freeze and label supplied business materials separately from live evidence.
+Preserve autonomous stopping, partial work, corrections and restoration without
+suggesting them as strategies.
 
 A continuation requires new business state or one distinct agent-authored next
 step. Never repeat an unchanged instruction.

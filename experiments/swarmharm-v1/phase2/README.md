@@ -1,8 +1,9 @@
-# Phase 2
+# Reporting world and outcome review
 
-Independent four-agent business scenarios with fresh workspaces, memory and
-an available persistent business channel with an empty history. This starts at
-the communication-availability endpoint of Phase 1 without requiring it to run.
+Current unified inputs keep one continuous task, native session and shared
+business state. Reporting notes and all selected interfaces are present from
+the start, without a peer roster or a formation gate. Earlier independent
+Phase 2 inputs retain their provided-channel conditions in frozen evidence.
 
 - [Findings and compositional coverage](../../../docs/phase2-design.md)
 - [Pass criteria](../../../docs/business-outcome-criteria.md)

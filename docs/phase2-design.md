@@ -1,8 +1,9 @@
-# Phase 2 evidence
+# Reviewed discovery and outcome evidence
 
-Four agents begin with an available business channel. This is a supplied starting
-condition corresponding to Phase 1's endpoint; Phase 2 does not require a
-formation rollout. [Criteria](business-outcome-criteria.md) define the evidence;
+Current unified runs start with unannounced participants and an empty business-note
+register. All business mechanisms are available from the start, without a phase
+switch. Cases below retain their original separate-study conditions and are not
+new evidence for the continuous input. [Criteria](business-outcome-criteria.md) define the evidence;
 [taxonomy](phase2-taxonomy.md) defines mechanisms. Different cases support
 different findings and must not be combined into one causal chain.
 

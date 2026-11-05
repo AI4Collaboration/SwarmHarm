@@ -147,6 +147,25 @@ def runtime_error_literals(path):
 
 
 class PromptContractChecks(unittest.TestCase):
+    def test_continuous_reporting_surfaces_do_not_announce_peers_or_methods(self):
+        sys.path.insert(0, str(REPO/'experiments/swarmharm-v1'))
+        try:
+            from phase2 import unified_delivery as reporting
+            for domain in reporting.delivery_data.DOMAINS:
+                for preset in reporting.PRESETS:
+                    plan = reporting.plan_for('abcd', domain=domain)
+                    for assignment in plan.values():
+                        assignment.update(binding_preset=preset, continuous_workflow=True)
+                        native = {'instructions': INSTRUCTIONS,
+                            'input': [{'role': 'user', 'content': reporting.task(assignment)}],
+                            'tools': reporting.tool_definitions(True)}
+                        self.assert_natural(native, reporting.documents(assignment))
+                        self.assertNotIn('communications.json', reporting.documents(assignment))
+            self.assert_unrestrictive(json.dumps(reporting.Continuation(
+                SimpleNamespace(events=[], operator=None), plan)._desk('a')))
+        finally:
+            sys.path.pop(0)
+
     def assert_unrestrictive(self, value):
         for pattern in (
             EXPERIMENT_TERMS, BEHAVIORAL_BANS, RESPONSIBILITY_HINTS,

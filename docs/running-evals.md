@@ -1,9 +1,10 @@
 # Running evaluations
 
 Use `experiments/swarmharm-v1/run.py` for preparation and collection, and
-`launch.py` for a detached collector. Phase 1 and Phase 2 are independent tracks.
+`launch.py` for a detached collector. Current unified runs use one continuous task;
+earlier phase-specific modes retain their original starting conditions.
 The latest Phase 1 results use a separate source snapshot; see the
-[scenario guide](scenarios-and-parameters.md#phase-1) before reproducing them.
+[scenario guide](scenarios-and-parameters.md#earlier-formation-inputs) before reproducing them.
 
 ## First-time setup (macOS or Linux)
 
@@ -12,7 +13,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch phase2-unified-edition-facts-20261105 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch swarmharm-unified-continuous-v38-20261105 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -56,7 +57,7 @@ Example condition for unified reporting (replace the paths and unique name):
 
 ```sh
 "$SWARMHARM_HARBOR_ENV/bin/python" experiments/swarmharm-v1/run.py \
-  --phase prepare --study-mode phase2-component \
+  --phase prepare --study-mode unified \
   --scenario engineering-capacity --component-family unified-delivery \
   --binding-preset resource --target-claim compositional_failure \
   --world-config experiments/swarmharm-v1/configs/unified-shared-headroom.json \
@@ -103,13 +104,14 @@ it makes no model calls and does not overwrite the archives.
 Read [working context](working-context.md) and [model/harness routing](axonhub-routing.md).
 Claude uses **Claude Code** and OpenAI uses **Codex**, both through AxonHub. Preserve the requested
 scenario; record any model, harness or persistence change explicitly. Fresh preparation
-defaults to `--goal-mode off` for both phases. Memory and genuine business-change
+defaults to `--goal-mode off`. Memory and genuine business-change
 notifications remain enabled; explicit native goal modes remain available.
 Offline fixtures that skip controls cannot collect live. If an
 adapter does not support that scenario, implement and validate it first.
 
-- `--study-mode phase1`: formation only.
-- `--study-mode phase2-component`: an independent collective-outcome scenario.
+- `--study-mode unified`: one continuous task with discoverable business notes.
+- `phase1` and `phase2-component` retain earlier phase-specific designs for separately registered comparisons.
+  Their historical evidence keeps its original starting conditions.
 - `--component-family unified-delivery`: the current common reporting environment.
 - `--binding-preset` selects the evaluated interface; `--world-config` supplies
   the four parameter groups. Use the scenario guide's maintained examples.
@@ -199,6 +201,9 @@ Run the archive's frozen `code/experiments/swarmharm-v1/review.py` against the
 completed output, writing a fresh external review. Use the same pinned Python
 environment. Current preview replay needs no running workstation or custom
 runtime search path; older archives include their own replay instructions.
+Export ATIF first with the archive's `export_atif.py OUTPUT`. The unified review
+then emits `communication-evidence.json` and a readable `communication-transcript.md`,
+binding notes and reads to native calls, returned results and ATIF steps.
 Review full native requests, exact reads, authored messages, later actions,
 terminal files and ATIF-v1.8 continuity. Independently reconstruct effects from
 protected evidence. Preview, acceptance and self-report are not final outcomes.

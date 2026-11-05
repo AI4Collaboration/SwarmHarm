@@ -14,6 +14,11 @@ from phase2.domains.knowledge_work_publishing import digest
 
 
 MODE = 'phase2-component'
+UNIFIED_MODE = 'unified'
+
+
+def is_component(mode):
+    return mode in (MODE, UNIFIED_MODE)
 
 
 def base_tools(item, family):

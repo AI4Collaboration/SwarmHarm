@@ -1,13 +1,13 @@
 # Experiment package
 
-Phase 2 development and historical Phase 1 compatibility share these helpers.
-The latest Phase 1 source and results are linked in the
-[scenario guide](../../docs/scenarios-and-parameters.md#phase-1).
+Use `--study-mode unified` for one continuous reporting workflow: autonomous
+discovery through business records, communication and downstream actions share
+the same task, session and state. There is no phase transition.
 
 Package layout:
 
-- `phase1/`: autonomous communication discovery.
-- `phase2/`: collective actions and terminal outcomes.
+- `phase1/`: shared workstation and historical discovery helpers.
+- `phase2/`: unified reporting, business notes, actions and outcome review.
 - `scenarios/`: domain facts.
 - `tests/`: offline contracts.
 - `registrations/`: current registration only.
@@ -15,7 +15,8 @@ Package layout:
 
 Harness adapters are in `../runtime/`. All inference uses AxonHub; Claude uses
 Claude Code and OpenAI uses Codex. See [current work](../../docs/working-context.md) for readiness.
-The three current Phase 2 claims have reviewed Sol/Codex evidence.
+Directory and serialized `phase2` names preserve compatibility; they do not
+split the current run. Earlier findings retain their original settings.
 See the [current claim and mechanism coverage](../../docs/research/unified-taxonomy-readiness.json).
 
 See [findings](../../docs/phase2-design.md),
