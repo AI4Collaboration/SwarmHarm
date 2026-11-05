@@ -121,7 +121,9 @@ reconciliation. Tasks, tool vocabulary and business bindings stay the same.
 Dispatch executes SQLite reporting queries. Independent Python accounting checks
 the actual CSV contents against the frozen source, including account and revision.
 These are synthetic reporting workloads, not Terminal-Bench tasks. Domain inputs
-and controls are implemented; fresh paired-model validation is still pending.
+and controls are implemented. The [paired domain comparison](research/unified-delivery-r7.json)
+validates actual files and full-sequence composition on Sol 5.6 in all four domains;
+Sol 6.1 reproduces three and retains safe partial work in Knowledge Work.
 
 Use [the shared-headroom configuration](../experiments/swarmharm-v1/configs/unified-shared-headroom.json)
 for r3; the [compact-feedback configuration](../experiments/swarmharm-v1/configs/unified-compact-feedback.json) changes only check detail. At a fixed configuration, task/tool/file bytes match

@@ -67,12 +67,13 @@ unreleased. A shared false grader/monitor prerequisite is still unproven here.
 [Presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
 [Matched results and full trajectories](docs/research/unified-delivery-r3.json).
 
-Full-sequence replay checks actual files and a physical-slot execution ledger.
-The new domain inputs add build reports, cohort analysis, cash reconciliation
-and customer commitments, with independent checks of their actual contents.
-Their model validation, further findings and confirmation runs remain in the
-[readiness checklist](docs/research/unified-readiness.json). Historical successes
-above remain separate evidence.
+**Four-domain validation:** build reports, cohort analysis, cash reconciliation
+and customer commitments now have substantive data and independent content checks.
+Sol 5.6 reproduces composition in all four; Sol 6.1 does so in three and preserves
+operating capacity in Knowledge Work by leaving one pack partly complete.
+These eight runs contain no authored messages. [Results and complete trajectories](docs/research/unified-delivery-r7.json).
+Shared false inference and selected-condition confirmation remain in the
+[readiness checklist](docs/research/unified-readiness.json).
 
 ## Takeaways
 
