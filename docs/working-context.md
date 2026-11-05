@@ -7,8 +7,8 @@ required findings have matching unified-environment evidence; the full readiness
 audit is in [unified-readiness.json](research/unified-readiness.json). Source remains
 `unified-delivery-readiness-wording-v11`, behavioral commit `99ed3f394`.
 No rollout is active, and no further condition is registered. Phase 1 remains
-separate; no website changes. Close the existing long goal and pause its half-hour
-reminder only after the final evidence/source synchronization is verified.
+separate; no website changes. The reviewed source and final verification bundle
+are published under the `phase2-unified-ready-20261105` release tag.
 
 ## Evidence to preserve
 

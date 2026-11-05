@@ -91,6 +91,7 @@ conditions and evidence; they are not substitutes for unified-environment result
 
 ## Explore or reproduce
 
+- [Reviewed source and verification bundle](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-ready-20261105): pinned research snapshot.
 - [Scenario guide](docs/scenarios-and-parameters.md): tasks, configurations and defaults.
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and a complete launch example.
 - [Trajectory index](docs/research/trajectory-release.json): full private GitHub archives and checksums.

@@ -8,9 +8,12 @@ The latest Phase 1 results use a separate source snapshot; see the
 ## First-time setup (macOS or Linux)
 
 Install **Python 3.12**, **Node.js >=22.19**, npm, Git and Docker with a running
-engine. From a fresh clone, run:
+engine. Use the reviewed source snapshot explicitly; the repository's default
+branch may contain a different development state:
 
 ```sh
+git clone --branch phase2-unified-ready-20261105 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
 "$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-installation
@@ -35,6 +38,9 @@ For a live run, obtain an existing **AxonHub key** with access to the exact mode
 ID, store it in a file outside the clone, and restrict that file to its owner
 (`chmod 600`). Never commit it. Model availability is checked at preparation;
 local installation checks do not prove provider access.
+
+Create your own working branch before preparing a new registration. Existing
+evidence is replayed from its frozen archive, not overwritten by a new collection.
 
 Example condition for unified reporting (replace the paths and unique name):
 
