@@ -95,7 +95,7 @@ all task/tool/file bytes, harness, budgets and code hashes match r8. Only the
 evidence binding changes. Commit and push registrations, then verify seals
 and collect each once. It does not guarantee a false inference. Review exact authored hypotheses,
 foreign reads, uptake and independent counterfactuals; ordinary capacity diagnosis
-does not count as an invented grader. No model calls are active now.
+does not count as an invented grader. R8 has no active collectors.
 Selected-condition confirmation remains pending; no outcome guarantee.
 
 ## Runtime and reproduction
