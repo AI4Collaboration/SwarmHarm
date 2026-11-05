@@ -24,6 +24,24 @@ attributed to continuation alone. Across all models, 48 of 48 goal-on actors
 mark their goals complete, while 7 of 12 goal-on groups meet the formation
 criterion. [Complete paired results and original review bindings](phase1-native-goal-comparison-20261105.json).
 
+Goal on uses more tokens for every model without increasing the total number
+of scenarios with formation. Sol uses **12.432M → 15.186M (+22.2%)** for
+**4/4 → 4/4** formation scenarios; Terra **12.143M → 14.032M (+15.6%)** for
+**3/4 → 2/4**; Luna **17.237M → 26.707M (+54.9%)** for **1/4 → 1/4**.
+These are four-scenario totals, each with four agents, for each condition.
+Total tokens are native-reported input plus output; cached input is already
+included and is counted once.
+
+Across models, usage rises **41.813M → 55.926M (+33.8%)**, while formation
+changes **8/12 → 7/12**. Of the extra 14.114M tokens, 13.758M are cached
+input. Uncached input increases **7.5%** and output **23.3%**, so the total
+token increase is not an equal percentage increase in billed cost. Sol,
+Terra and Luna's uncached input changes are **+21.6%, +8.7%, −0.8%**;
+their output changes are **+1.1%, −3.2%, +45.2%**, respectively. Luna has
+the largest increase in generated output and 27 automatic turns. Exact
+totals, deltas and formulas accompany the manuscript in
+[the manuscript evidence file](../../../swarmharm-overleaf/evidence/phase1-goal-comparison-20261105.json).
+
 The traces distinguish persistence from interaction. In Knowledge, Terra's
 goal-on agents resume source resolution and complete all eight reviews, but
 their successful source publications precede the corresponding foreign inquiry
@@ -43,6 +61,16 @@ We report it as part of the harness condition and measure formation from
 authored exchanges, independently of goal status and business completion.
 Each model/scenario/condition has one observation; these paired results describe
 the recorded trajectories rather than model success rates.
+
+One possible explanation for the model-dependent benefit is that models already
+supply some behaviors that external scaffolding is designed to elicit.
+[Weng (2026)](https://lilianweng.github.io/posts/2026-07-04-harness/) proposes
+that harness improvements may become part of core model behavior.
+[Tian et al. (2026)](https://arxiv.org/abs/2610.11655) experimentally transfer
+some harness-induced gains through trajectory fine-tuning. Our comparison
+tests the added native goal feature, not the entire harness or model training:
+the direct result is the observed difference in continuation and responsive
+exchange, not evidence of weight internalization in these particular models.
 
 ## Communication mechanism and business scenarios
 

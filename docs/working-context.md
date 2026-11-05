@@ -24,6 +24,13 @@ The user requested the same small subsection in the manuscript at
 `../swarmharm-overleaf/sections/formation.tex`. Keep the paused heartbeat paused
 and preserve the separate publication-ready goal-off baseline.
 
+The manuscript comparison now pairs formation with measured token expenditure.
+Goal on increases total input-plus-output tokens by 22.2% for Sol, 15.6% for
+Terra and 54.9% for Luna; formation counts remain 4→4, 3→2 and 1→1.
+Combined usage rises 33.8% (41.813M→55.926M), mostly cached input; uncached
+input rises 7.5% and output 23.3%. These are usage totals, not billed cost.
+The manuscript evidence JSON includes exact arithmetic from all 24 cells.
+
 All four maintained shared-environment input configurations are publication-ready
 under the user's autonomous formation criterion. The latest selected observations
 are Engineering r108, Data r105, Finance r106 and Knowledge r107. All use
