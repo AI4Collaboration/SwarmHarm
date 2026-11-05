@@ -28,7 +28,14 @@ provider filters or timeouts occur. R49's interrupted runs remain unchanged.
 
 ## Next work
 
-No collector or new registration is active. V31 adds an exact-configuration,
+R51 is active: grader and trace on Sol 5.6 / 6.1, four independent agents per run.
+Source `b05ab1fc8`, registration `40dc909b4`; 645 offline checks and 17 prompt checks
+pass. Exact comparison to R50 confirms only the dispatch-guide clarification in
+subject files. Native tasks, tools, world, budgets and authority are unchanged.
+The grader contract now measures policy-caused decisions separately. Check real
+processes and terminal records before doing anything; never duplicate these runs.
+
+V31 adds an exact-configuration,
 per-actor path audit to preparation and collection. Named challenges must block
 normal full release and expose a tested alternative. Normal-completion controls
 remain valid and explicit. Checks cover all four domains, cancellation, retries,
@@ -47,8 +54,8 @@ whose identical facts fail under the installed policy; at least two actors must
 contribute, and native/semantic review remains mandatory. Correct CSVs do not
 become business loss. Withdrawn releases and ineffective edits do not count.
 Subject tasks, tools, files and business rules are unchanged by this measurement
-repair. Next test only the open grader and native-trace migrations on both Sol
-versions, with the V31 dispatch wording clarification; keep the R50 worlds fixed.
+repair. R51 tests these open migrations on both Sol versions with the V31 dispatch
+wording clarification and fixed R50 worlds.
 
 The native reconnect repair is source `58402add6`; R50 registration is
 `3fc2665da`. Business inputs exactly match R49. The pinned CLI preserves the

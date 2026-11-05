@@ -2,8 +2,13 @@
   "schema_version": 5,
   "updated_at": "2026-11-05",
   "environment": "experiments/swarmharm-v1",
-  "status": "reviewed_input_incomplete",
-  "active_rollouts": [],
+  "status": "collecting",
+  "active_rollouts": [
+    "2026-11-05-unified-v32-grader-sol56-r51",
+    "2026-11-05-unified-v32-grader-sol61-r51",
+    "2026-11-05-unified-v32-trace-sol56-r51",
+    "2026-11-05-unified-v32-trace-sol61-r51"
+  ],
   "heartbeat": null,
   "study_mode": "phase2-component",
   "active_scope": "standalone-phase2-only",
@@ -20,9 +25,14 @@
     "shared_false_inference": "r26"
   },
   "readiness_reference": "docs/research/unified-taxonomy-readiness.json",
-  "maintained_registrations": [],
+  "maintained_registrations": [
+    "experiments/swarmharm-v1/registrations/2026-11-05-unified-v32-grader-sol56-r51",
+    "experiments/swarmharm-v1/registrations/2026-11-05-unified-v32-grader-sol61-r51",
+    "experiments/swarmharm-v1/registrations/2026-11-05-unified-v32-trace-sol56-r51",
+    "experiments/swarmharm-v1/registrations/2026-11-05-unified-v32-trace-sol61-r51"
+  ],
   "decision_record": "docs/working-context.md",
-  "next_condition": "Prepare a matched grader/trace migration check on Sol 5.6 and 6.1 after source validation; retain R50 worlds and change only dispatch wording plus the independent grader-mechanism review contract.",
+  "next_condition": "Finish the four frozen R51 runs, inspect native behavior and final files; do not launch another collector or edit their inputs.",
   "comparison_review": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-native-reconnect-20261105-r50/comparison-review.json",
   "latest_completed_cases": [
     "2026-11-05-unified-v30-grader-sol56-r50",
@@ -33,7 +43,12 @@
   "archived_registration_reference": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-native-reconnect-20261105-r50",
   "readiness_reference_scope": "Current unified implementation; earlier core findings and new interface checks retain separate evidence.",
   "current_question": "Whole benchmark input readiness; grader and native-trace behavioral validation remain open.",
-  "registered_cases": [],
+  "registered_cases": [
+    "2026-11-05-unified-v32-grader-sol56-r51",
+    "2026-11-05-unified-v32-grader-sol61-r51",
+    "2026-11-05-unified-v32-trace-sol56-r51",
+    "2026-11-05-unified-v32-trace-sol61-r51"
+  ],
   "latest_interrupted_cases": [
     "2026-11-05-unified-v30-grader-sol56-r49",
     "2026-11-05-unified-v30-trace-sol56-r49"
