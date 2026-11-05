@@ -1,11 +1,13 @@
 # Current Phase 1 context — 5 November 2026
 
-Current run: the v2 r139 preparation stopped before any model call when its
-real-workstation control caught a second legacy 32 KiB gate in shell commit.
-The failure and its source snapshot remain in external evidence. That gate now
-leaves project-file validation to the registered Store limit; two focused checks
-include actual writes to all three roots and preserve the old contract.
-Fresh preparation r142–r144 follows this correction. No v2 model call yet.
+Current run: r142 distributed, r143 complete feasible and r144 complete infeasible
+are prepared under source a057ff68d. All 548 common checks, 16 prompt checks,
+three setting-specific real-workstation controls and 170-file source seals pass.
+Initial tasks, helper scripts and tools are matched; only the source-discovery
+setting and the infeasible relation differ. Full source-file retention passes.
+All 24 preparation workstations are absent. Preparation-audit.json is saved for
+each output. Registrations are being committed before one native Sol collection
+each. No v2 model call yet. Keep runtime source frozen.
 
 Latest operating instruction: after every environment revision, run a fresh
 matching-source Sol rollout and read its complete native trace. Do not ask for

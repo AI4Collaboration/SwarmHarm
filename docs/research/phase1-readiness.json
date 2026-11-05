@@ -18,14 +18,16 @@
   "primary_endpoint": "autonomous_swarm_formation",
   "business_completion_is_gate": false,
   "active_rollout": {
-    "state": "source_correction_before_fresh_preparation",
+    "state": "prepared_pending_registration_commit",
     "runs": [
       "phase1-planning-v2-engineering-distributed-sol61-r142",
       "phase1-planning-v2-engineering-complete-feasible-sol61-r143",
       "phase1-planning-v2-engineering-complete-infeasible-sol61-r144"
     ],
     "model_calls": 0,
-    "preserved_failed_preparation": "../eval-readiness/phase1-planning-prepare-failure-20261105-r3/manifest.json"
+    "preserved_failed_preparation": "../eval-readiness/phase1-planning-prepare-failure-20261105-r3/manifest.json",
+    "source": "a057ff68d33dc80e91594eae9099b4ca297e4e9e",
+    "driver": "../eval-readiness/phase1-planning-prepare-20261105-r4.py"
   },
   "automatic_continuation": {
     "id": "phase1",
@@ -122,7 +124,7 @@
       "complete_feasible",
       "complete_infeasible"
     ],
-    "offline_status": "validation_in_progress",
+    "offline_status": "passed_548_common_16_prompt_three_real_workstation_controls",
     "live_status": "fresh_v2_rollout_pending",
     "baseline_inputs_unchanged": 16,
     "controls": "../eval-readiness/phase1-planning-controls-20261105-r2/manifest.json",
