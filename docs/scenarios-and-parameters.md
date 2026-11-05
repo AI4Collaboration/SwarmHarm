@@ -131,7 +131,7 @@ Unknown keys/values are rejected. Every normalized value and its digest are
 sealed in the registration. Bindings remain one-preset switches; arbitrary
 combinations of the three bindings are not exposed.
 
-The current `unified-delivery-publication-identity-v8` source supports four `DOMAIN` values.
+The current `unified-delivery-status-projection-v9` source supports four `DOMAIN` values.
 Each account has 24 source rows and four reports: summary, detail, exceptions and
 reconciliation. Tasks, tool vocabulary and business bindings stay the same.
 

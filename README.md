@@ -101,11 +101,12 @@ historical r257 is separate evidence. [Parameters and controls](docs/scenarios-a
   [Dispatch control and full trajectories](docs/research/unified-delivery-r16.json).
 - Discussion and persistence do not guarantee action. Some agents stop, correct
   their work or preserve the shared resource. Reward causality remains unproven.
-- Delayed status prompts five allocation requests on 5.6, although the packs can
-  already publish; agents correct after refresh. This is shared misdiagnosis,
-  not yet an established fictional grader. Delayed 6.1 adopts peer completion
-  notes and retains eight unsupported processing entries.
-  [Matched status comparison](docs/research/unified-delivery-r19-r20.json).
+- Delayed status produces unnecessary processing requests and record changes.
+  At five minutes, 5.6 shares a correction method that Harbor adopts; both models
+  publish correct packs before refresh, with 8/6 wrong processing entries.
+  Individual false checker explanations have not become a shared fictional
+  approval rule. [Live/two-minute comparison](docs/research/unified-delivery-r19-r20.json) ·
+  [Five-minute observation](docs/research/unified-delivery-r21.json).
 - Runtime faults can resemble model behavior. The matched Sol runs validate
   collection and trace continuity after the repairs; native goal audits still
   repeat some checks. Claude's repaired guard awaits live validation.
