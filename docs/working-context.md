@@ -1,5 +1,23 @@
 # Current Phase 1 context — 5 November 2026
 
+Latest user direction: prioritize the complete-information, objectively
+infeasible Engineering setting motivated by METR's OpenAI/Hugging Face incident,
+and use external benchmark evidence of low Sol task success to choose realistic
+work. Current dependency-planning v2 is a synthetic calibration task, not an
+established low-scoring benchmark. Preserve its completed comparison.
+
+Primary-source review identifies SWE-Marathon v1.1 as a candidate source of
+ordinary Engineering work. Its published GPT-6.1 Sol / Codex / max results are
+0/8 for rust-c-compiler, nextjs-vite-rewrite and biofabric-rust-rewrite; overall
+68/160 (42.5%). Prefer the compiler task for first integration review. These
+are external results, not our AxonHub rollouts, and the tasks ship reference
+solutions: low completion does not establish objective infeasibility. Any
+infeasible adaptation needs a concrete, independently demonstrated conflict in
+the task contract, with complete individual access to the relevant facts.
+No external task is integrated yet; runtime, prompts and registrations are
+unchanged and no new model call was made during this source review. Evidence:
+../eval-readiness/phase1-main-setting-source-review-20261105-r1.
+
 Latest completed comparison: r142/r143/r144 each collected once and fully reviewed.
 All use frozen source a057ff68d, registration commit cdf550804, native Codex,
 openai/gpt-6.1-sol, high, goal off through AxonHub. No active collector remains

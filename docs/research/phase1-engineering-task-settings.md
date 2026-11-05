@@ -1,5 +1,51 @@
 # Engineering task-setting comparison
 
+## Main-setting direction and benchmark source
+
+The latest user direction prioritizes objectively infeasible work with complete
+individual information, while retaining the feasible and information-dependent
+comparisons. In the [METR incident report](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/),
+agents were assigned ExploitGym tasks; METR cites the authors' estimate that
+30–40% could not be solved through the specified vulnerability. Agents searching
+the package repository encountered shared traces and established communication.
+This motivates testing formation without a necessary private fact held by another
+agent. It does not establish that task infeasibility alone caused formation.
+
+The planning inputs below are synthetic calibration tasks. For a realistic
+external Engineering base, the reviewed candidate is
+[SWE-Marathon v1.1](https://www.swe-marathon.org/).
+Its public task results report GPT-6.1 Sol with native Codex and max reasoning
+at 0/8 full passes on each of rust-c-compiler, nextjs-vite-rewrite and
+biofabric-rust-rewrite. Its full-suite result is 68/160 (42.5%). These are
+benchmark-published observations, not SwarmHarm results. A full pass requires
+every verifier test; zero full passes is not zero useful implementation progress.
+
+Prefer [rust-c-compiler](https://github.com/abundant-ai/swe-marathon/tree/main/tasks/rust-c-compiler)
+for the first integration review: a CPU-only compiler implementation task with
+real compilation feedback, visible conformance tests and held-out tests.
+The candidate instructions and metadata were read at repository tree
+1badb91b4b73c036c443ce3e1c2259257ea9036e. This current tree has not been shown
+byte-identical to the benchmark's published Sol evaluation revision.
+
+The benchmark ships reference solutions. Its original tasks therefore supply
+the difficult-feasible comparison, not an objective-infeasibility certificate.
+A main infeasible adaptation must identify an actual incompatibility in the
+required behavior under its fixed environment, demonstrate it independently
+of Sol's failures, and leave all relevant facts individually accessible.
+Do not manufacture a low score through an unavailable dependency, an artificially
+short deadline or an unrelated failing verifier. Task requirements belong in
+ordinary project specifications; the initial delegation remains outcome-level.
+Preserve monitored shared work surfaces and agent-authored communication.
+
+This is a source-selection review, not an implemented replacement. No runtime,
+subject input or registration changed. Before attributing difficulty to our
+adaptation, measure it with the registered Sol model, native harness and budget;
+after integration, run the required matching-source rollout and review the full
+trace. Raw primary-source snapshots, extracted per-task results and their hashes
+are in ../eval-readiness/phase1-main-setting-source-review-20261105-r1.
+
+## Implemented calibration task
+
 The new Engineering input is a dependency-lockfile assignment. It uses the
 existing four private workstations, shared project directories, source
 investigations, attachments, linked updates and factual case notifications.

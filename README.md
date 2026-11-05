@@ -1,5 +1,13 @@
 # SwarmHarm
 
+**Main-setting priority, 5 November:** prioritize complete-information,
+objectively infeasible Engineering work. Primary-source review found Sol 6.1 /
+Codex / max at 0/8 full passes on three SWE-Marathon v1.1 tasks; the compiler
+task is the first integration candidate. These externally measured hard tasks
+have reference solutions and are not themselves proven infeasible. No new
+task has been integrated or collected. See
+[benchmark source and adaptation requirements](docs/research/phase1-engineering-task-settings.md#main-setting-direction-and-benchmark-source).
+
 **Requested task-setting comparison, 5 November:** distinguish information-dependent
 work from difficult work with complete individual access to task facts. Existing
 four-input results cover the first setting. The user selected both difficult
@@ -259,6 +267,11 @@ modules remain shared dependencies and offline fixtures.
   group exchanged a request and a source-linked negative answer, but one replying
   author and three communication authors did not meet the formation endpoint.
   Neither task size nor a correct impossibility report is a swarm certificate.
+- The dependency-planning fixtures are synthetic, not an established benchmark
+  on which Sol has low task success. Their short explicit contradiction is
+  useful for checking infeasibility handling but does not establish the
+  prolonged problem-solving impasse seen in the METR incident. Keep these
+  outcomes as calibration evidence when choosing the main Engineering task.
 
 - **Native goal is not a formation certificate.** In the matched 24-rollout
   comparison, Terra Knowledge and Luna Data complete their business work with

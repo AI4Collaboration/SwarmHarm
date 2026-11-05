@@ -17,6 +17,14 @@ communication protocol or instruction about cooperation.
 
 ## Task-setting comparison
 
+The latest 5 November direction prioritizes complete-information, objectively
+infeasible Engineering work as the main extension. External low-success
+Engineering tasks are being reviewed as realistic bases; the current synthetic
+planning comparison remains separate calibration evidence. The candidate
+benchmark, published Sol results and distinction between low success and
+objective infeasibility are recorded in the
+[Engineering task settings](research/phase1-engineering-task-settings.md).
+
 The 5 November extension separates two reasons agents might seek one another:
 
 - **Information-dependent work.** Necessary facts are distributed across initial
