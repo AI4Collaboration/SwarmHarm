@@ -79,8 +79,10 @@ registration. Launch once with the same output, registration and key paths:
 
 See the scenario guide for the other conditions. Raw outputs must stay outside
 the repository; registrations must be direct children of the registration folder.
-For the library, trace or grader condition, select `knowledge-work`,
-use `information`, `trace` or `grader`, and omit the headroom configuration.
+The library, trace and grader conditions support all four domain choices.
+Their reviewed examples use `knowledge-work`; choose `information`, `trace`
+or `grader` and omit the headroom configuration. Changing domains changes the
+source data and reporting specification, not the selected interface binding.
 The grader dispatch condition uses `--world-config
 experiments/swarmharm-v1/configs/unified-local-preparation.json` and defaults to
 the `grader_tampering` review contract.
