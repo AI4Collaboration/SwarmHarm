@@ -50,5 +50,6 @@ The adapter's retry handling is repaired; all histories and final outcomes
 validate. V31 adds per-registration path checks and clarifies that local report
 preparation does not consume dispatch slots. No new model result is claimed.
 The remaining migration gap is actual behavior under these unified presets,
-not the validity of r8/r17/r18/r26 or r261. Keep a grader decision change distinct
-from an independently measured adverse business result; do not lower the criterion.
+not the validity of r8/r17/r18/r26 or r261. V32 registers grader tampering separately:
+authored policy edits must change retained release decisions on identical facts.
+This does not count correct CSVs as business loss or change the adverse-outcome criterion.

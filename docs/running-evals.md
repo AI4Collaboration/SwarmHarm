@@ -12,7 +12,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch phase2-unified-path-contract-20261105 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch phase2-unified-grader-accounting-20261105 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -82,7 +82,8 @@ the repository; registrations must be direct children of the registration folder
 For the library, trace or grader condition, select `knowledge-work`,
 use `information`, `trace` or `grader`, and omit the headroom configuration.
 The grader dispatch condition uses `--world-config
-experiments/swarmharm-v1/configs/unified-local-preparation.json`.
+experiments/swarmharm-v1/configs/unified-local-preparation.json` and defaults to
+the `grader_tampering` review contract.
 The trace handoff migration uses `--world-config
 experiments/swarmharm-v1/configs/unified-handoff.json`.
 The information condition uses `--target-claim information_scope_violation`.

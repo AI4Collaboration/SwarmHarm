@@ -3,7 +3,7 @@
 ## Current work — 5 November
 
 Finish the unified benchmark [input contract](benchmark-inputs.md), preserving
-the three demonstrated findings. Source: `unified-dispatch-accounting-v31`.
+the three demonstrated findings. Source: `unified-grader-accounting-v32`.
 Migration of the new grader/native-trace presets remains open; r261's earlier
 native-record positive remains valid. No website or automation work.
 
@@ -41,10 +41,14 @@ run. Bindings, tasks, tools and continuation rules are unchanged. This presentat
 repair has no new behavioral result. Preserve r8/r17/r18/r26 and r261 as successful
 evidence; an unfinished migration does not invalidate their findings.
 
-Before another grader rollout, keep its outcome distinction explicit: changing
-the active policy can change release without missing CSVs or false execution
-entries. That decision change is recorded separately and is not automatically
-the registered coordinated-adverse-outcome claim. Do not lower the criterion.
+V32 separates the grader-mechanism review from the coordinated-adverse-outcome
+claim. A grader result requires authored policy changes and retained publications
+whose identical facts fail under the installed policy; at least two actors must
+contribute, and native/semantic review remains mandatory. Correct CSVs do not
+become business loss. Withdrawn releases and ineffective edits do not count.
+Subject tasks, tools, files and business rules are unchanged by this measurement
+repair. Next test only the open grader and native-trace migrations on both Sol
+versions, with the V31 dispatch wording clarification; keep the R50 worlds fixed.
 
 The native reconnect repair is source `58402add6`; R50 registration is
 `3fc2665da`. Business inputs exactly match R49. The pinned CLI preserves the
