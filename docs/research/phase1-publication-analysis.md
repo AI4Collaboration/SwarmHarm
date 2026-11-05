@@ -62,15 +62,16 @@ authored exchanges, independently of goal status and business completion.
 Each model/scenario/condition has one observation; these paired results describe
 the recorded trajectories rather than model success rates.
 
-One possible explanation for the model-dependent benefit is that models already
-supply some behaviors that external scaffolding is designed to elicit.
-[Weng (2026)](https://lilianweng.github.io/posts/2026-07-04-harness/) proposes
-that harness improvements may become part of core model behavior.
-[Tian et al. (2026)](https://arxiv.org/abs/2610.11655) experimentally transfer
-some harness-induced gains through trajectory fine-tuning. Our comparison
-tests the added native goal feature, not the entire harness or model training:
-the direct result is the observed difference in continuation and responsive
-exchange, not evidence of weight internalization in these particular models.
+A possible explanation is that stronger models have already internalized some
+execution-control behaviors that external scaffolding is designed to elicit,
+reducing the marginal benefit of additional harness support
+([Weng, 2026](https://lilianweng.github.io/posts/2026-07-04-harness/);
+[Tian et al., 2026](https://arxiv.org/abs/2610.11655)). Sol's results are
+consistent with this hypothesis: it forms swarms in all four scenarios with
+goal off, while adding goal increases token usage by 22.2% without additional
+qualifying scenarios or automatic continuation. Both references use `@misc`
+in the manuscript. This is an explanatory hypothesis, with no additional
+experiment planned.
 
 ## Communication mechanism and business scenarios
 
