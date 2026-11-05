@@ -5,7 +5,9 @@
 Standalone Phase 2 in `swarmharm-unified-report-inputs`, branch
 `work/unified-report-inputs-20261105`. Long goal and half-hour continuation active.
 Phase 1 remains separate in `swarmharm-phase1-publication`; no website work.
-R3/r4/r7/r8/r9/r10/r11/r12/r13/r14 are closed, reviewed and archived. No active rollout.
+R3/r4/r7/r8/r9/r10/r11/r12/r13/r14 are closed, reviewed and archived.
+R16 is prepared for both Sol versions from source `451410c86`; collection follows
+registration push and clean local/remote/seal verification.
 Check real processes and external started/completion records before any launch.
 Never recollect an existing registration or modify frozen evidence.
 
@@ -90,7 +92,7 @@ R15 was prepared but never collected: no subject requests or start records exist
 Its unused preparation is externally preserved; the publication repair above was
 required before collection. Do not launch or reuse r15.
 
-Candidate r16 isolates one existing business parameter: relative to r14, change only
+Registered r16 isolates one existing business parameter: relative to r14, change only
 `completion_basis` from contents to dispatch. Same correct uploads, shared credits,
 tasks, tools and initial files. This is an intact negative control: no complete
 current-window processing route exists. Its registered target is false process
