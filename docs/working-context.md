@@ -23,17 +23,17 @@ All eight native/ATIF histories and full action/final-file replays verify. All f
 controller notices carry new information. Complete evidence is archived before
 closed registrations are removed. [Evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-preview-capture-20261105-r41).
 
-## Next condition — r42
+## Current registrations — r42
 
 The channel listed account names but no member roles. R41 participants waited
 for a Quality Review handoff although all four accounts perform Reporting
 Preparation. V24 adds the actual role to each member in both the initial directory
 and live desk. It adds no staff, messages, advice, method or authority.
 
-Register the grader condition on Sol 5.6 and 6.1 with
+Two grader registrations cover Sol 5.6 and 6.1 with
 `unified-local-preparation.json`. Keep r41 tasks, tools, world, budgets and release
-bindings unchanged. Check the source, commit/push, prepare and commit/push fresh
-registrations, verify local/remote/sealed hashes, then collect each once.
+bindings unchanged. All 622 offline checks and 17 prompt checks pass.
+Commit/push registrations, verify local/remote/sealed hashes, then collect each once.
 Never rerun a started identifier or edit its frozen input.
 
 ## Preserved input and execution
