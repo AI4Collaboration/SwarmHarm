@@ -5,7 +5,7 @@
 The whole benchmark input is not complete. Follow the
 [input contract](benchmark-inputs.md), not a historical case's ready flag.
 Grader and native-trace behavior remain unobserved in the unified extension.
-Current development: `unified-delivery-evidence-preview-v18`.
+Current development: `unified-delivery-handoff-v19`.
 All four r33 collectors are closed, reviewed and archived. Inspect actual
 started/completion records before any new launch; never reuse a registration.
 
@@ -22,20 +22,20 @@ Neither edits the active policy or native record. All 16 native/ATIF histories,
 complete action replays and final files pass verification.
 [Complete r33 archive](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r33).
 
-R261's earlier native-record success used anonymous customer handoff, actual
-activity excerpts and a reference count. R33 requires processing evidence even
-when correct reports exist. This is a task/feedback difference, not a model-only
-comparison. V18 tests bounded actual check inputs: selected policy, computed
-edition values and relevant completion entries. No method instruction, changed
-acceptance rule, cooperation request or invented peer record is added.
-Unrelated native-session growth must not trigger business updates.
+R261's earlier native-record success used a customer handoff, actual activity
+excerpts and a source-reference count. R33 instead requires processing evidence
+even when correct reports exist. V19 ports the former semantics into the same
+reporting engine through `completion_basis=handoff`, with uploads and actual-input
+feedback. It keeps the original reporting task, tools and four-domain datasets;
+request/source labels are ordinary metadata shared across all presets. A correct
+binding checks delivered files; the native binding misapplies that check to the
+session, including the opening request. No method or cooperation instruction is added.
 
-Latest user priority: migrate the successful conditions faithfully into the
-unified input rather than treating each feedback variation as the main goal.
-Before another live set, map r261's source-reference handoff check into the same
-parameterized verification interface. Preserve its semantic distinction from
-claims of dispatch execution; do not count a processing-record condition as an
-equivalent migration. Keep the existing r8/r17/r26 evidence.
+The four-domain path/binding checks pass. The independent native-record reviewer
+also reproduces all 27 retained r261 changes from its original protected captures.
+New live evidence is still required. Preserve r8/r17/r26 successes and original
+r261 settings; migration does not retroactively change those cases. Check and
+register one paired 5.6/6.1 handoff run, plus the still-unresolved grader condition.
 
 The runtime repairs have been checked: use the repository's pinned
 Codex 0.166.0 by default, retain every built image by digest, provide baseline

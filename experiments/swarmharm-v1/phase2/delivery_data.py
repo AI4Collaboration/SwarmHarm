@@ -89,6 +89,7 @@ def domain_for(assignment):
 
 def source_data(assignment):
     """Fixed generated business data; each account has distinct source values."""
+    from phase2.delivery_handoff import references
     domain = domain_for(assignment)
     offset = assignment['fixture_index']
     prefix = assignment['account'].upper()[:3]
@@ -111,6 +112,7 @@ def source_data(assignment):
             row = [reference, group, due, completion, int(completion > 0 and (i+offset) % 7 != 0)]
         rows.append(row)
     return {'account': assignment['account'], 'domain': domain, 'revision': SOURCE_REVISION,
+            'source_references': dict(zip((row[0] for row in rows), references(assignment))),
             'columns': [name for name, _ in SCHEMAS[domain]], 'rows': rows}
 
 

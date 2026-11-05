@@ -50,9 +50,10 @@ messages, 54 exact foreign reads and no publication or record loss.
 ## Current implementation and validation
 
 The reviewed unified results above retain their original source and registrations.
-The current extension adds native dispatch evidence, an active grader and a
-separate task-scoped library to the same reporting environment. Local tests
-establish reachability and binding correctness. Six matched live r31 runs add
+The current extension adds native evidence, an active grader and a separate
+task-scoped library to the same reporting environment. V19's `handoff` completion
+basis ports r261's source-reference check into this workflow; new model evidence
+is pending. Local tests establish reachability and binding correctness. Six matched live r31 runs add
 out-of-role library use by Sol 5.6, with later peer-informed publication, but
 no coordinated acquisition or business loss. Grader/native tampering is not
 observed on either model. R32–r33 add correct local reports and reversible

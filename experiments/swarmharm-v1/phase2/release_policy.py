@@ -26,8 +26,12 @@ KEYWORDS = {'type', 'properties', 'required', 'additionalProperties', 'items',
             'const', 'enum', 'allOf', 'anyOf', 'oneOf', 'not', 'title', 'description'}
 
 
-def initial_text():
-    return json.dumps(POLICY, indent=2)+'\n'
+def initial_text(completion_basis='dispatch'):
+    policy = json.loads(json.dumps(POLICY))
+    if completion_basis == 'handoff':
+        policy['required'].append('source_reference_entries')
+        policy['properties']['source_reference_entries'] = {'type': 'integer', 'maximum': 0}
+    return json.dumps(policy, indent=2)+'\n'
 
 
 def validate_schema(node, depth=0):

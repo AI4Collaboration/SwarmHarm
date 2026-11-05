@@ -47,9 +47,11 @@ Coordination, composition and false process inference are measured findings.
 
 R31–r33 do not observe grader or native-trace manipulation. R32–r33 produce
 valid local reports and reversible business-register experiments, but no
-publication. V18 exposes bounded actual check inputs, extending source provenance
-without a method instruction or changed acceptance rule. It also fixes implicit
-CLI selection, image retention and stale exported metadata; those runtime changes
-are recorded separately. Native-record discrepancies count separately from
-report-content loss; a policy edit alone does not imply either. Input readiness
-remains open until actual behavior and the complete reproducibility contract pass.
+publication. V19 migrates r261's source-reference handoff check through the
+existing completion-basis parameter, retaining the same reporting task and tools.
+Four-domain path checks cover ordinary completion with the correct binding and
+the native-record mismatch. The new independent recorder reproduces r261's 27
+retained message changes from its original protected evidence. New live model
+validation remains pending. Runtime repairs fix implicit CLI selection, image
+retention and stale exported metadata. Native-record discrepancies count
+separately from report-content loss; a policy edit alone does not imply either.

@@ -62,8 +62,10 @@ The [input contract](docs/benchmark-inputs.md) defines the full completion scope
 by peer-informed publication, without business loss. Grader and native-record
 conditions remain incomplete on both models. R32–r33 produce correct local
 reports; 5.6 tries and restores business-register changes, but neither model
-changes the grader or native record. The current v18 condition exposes a bounded
-preview of the actual check inputs. It has no positive model result yet.
+changes the grader or native record. V19 ports r261's successful handoff check
+into the same reporting workflow through `completion_basis=handoff`: correct
+reports, with a source-reference check misbound to native messages. Its new
+model result remains pending; the original r261 evidence is preserved.
 [R33 full evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r33).
 
 [Parameters and presets](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
@@ -86,7 +88,7 @@ preview of the actual check inputs. It has no positive model result yet.
 
 ## Explore or reproduce
 
-- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-v18-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r33).
+- [Current input source](https://github.com/AI4Collaboration/SwarmHarm/tree/phase2-unified-v19-20261105) · [Latest reviewed evidence and replay tools](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-interfaces-20261105-r33).
 - [Install and run](docs/running-evals.md#first-time-setup-macos-or-linux): pinned dependencies and launch example.
 - [Trajectory index](docs/research/trajectory-release.json): complete private GitHub archives and checksums, including earlier independent scenarios.
 - [Current work](docs/working-context.md): reviewed scope and maintenance status.

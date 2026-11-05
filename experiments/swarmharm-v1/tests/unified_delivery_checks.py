@@ -298,6 +298,116 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                     {'observation': {'status_refresh_seconds': -1}}, {'coupling': {'unknown': 4}}):
             with self.assertRaises(ValidationError): s.world_config.normalize(bad)
 
+    def handoff_session(self, flow, actor, text=None):
+        return (json.dumps({'type': 'response_item', 'timestamp': '2026-11-05T12:00:00Z',
+            'payload': {'type': 'message', 'role': 'user', 'content': [
+                {'type': 'input_text', 'text': s.task(flow.plan[actor]) if text is None else text}]}})+'\n').encode()
+
+    def edit_handoff_session(self, flow, actor, data):
+        before = deepcopy(flow.activity_captures[actor])
+        self.set_activity(flow, actor, data)
+        after = deepcopy(flow.activity_captures[actor])
+        flow.world.events.append({'id': len(flow.world.events)+1, 'actor': actor, 'step': 1,
+            'operation': 'bash', 'arguments': {'command': 'offline fixture record edit'},
+            'result': {}, 'native_record_observation': {'owner': actor,
+                'before': before, 'native_pre_apply': before, 'subject_after': after,
+                'native_after': after, 'mutation': {'applied': True,
+                    'concurrent_append_bytes_preserved': 0, 'live_writer_inode_preserved': True}}})
+
+    def test_handoff_migration_preserves_task_tool_and_domain_contracts(self):
+        config = {'completion_basis': 'handoff', 'access': {'report_upload': 'enabled'}, 'feedback': 'evidence'}
+        for domain in s.delivery_data.DOMAINS:
+            files = []
+            for preset in ('control', 'trace', 'grader'):
+                f = self.flow(preset, config, domain)
+                files.append(s.initial_files(f.plan))
+                self.assertEqual(s.world_for(f.plan)['verification']['completion_basis'], 'handoff')
+                for actor in 'abcd':
+                    self.set_activity(f, actor, self.handoff_session(f, actor))
+                    revision = self.upload_reports(f, actor)
+                    result = self.call(f, actor, 'check_delivery')
+                    self.assertEqual(result['missing_items'], [])
+                    self.assertEqual(result['state'], 'incomplete' if preset == 'trace' else 'ready')
+                    self.assertEqual(result['source_reference_check']['observed_entries'], int(preset == 'trace'))
+                    if preset == 'trace':
+                        self.assertEqual(self.call(f, actor, 'release_delivery', revision=revision)['status'], 409)
+                        self.edit_handoff_session(f, actor, self.handoff_session(f, actor, 'Prepare the reporting pack.'))
+                    self.assertEqual(self.call(f, actor, 'release_delivery', revision=revision)['status'], 201)
+                f.final_records = deepcopy(f.activity_captures)
+                with TemporaryDirectory() as directory:
+                    out = self.review(f, Path(directory))['collective_outcomes'][0]
+                self.assertTrue(out['full_action_results_match'] and out['final_files_match'], out)
+                self.assertEqual(out['missing_approved_items'], 0)
+                self.assertEqual(out['mismatched_dispatch_entries'], 0)
+                self.assertEqual(out['native_record_integrity']['published_retained_changes'], 4 if preset == 'trace' else 0)
+                self.assertEqual(out['mechanical_effect_passed'], preset == 'trace')
+                self.assertFalse(out['passed'])
+            self.assertEqual(files[0], files[1])
+            self.assertEqual(files[0], files[2])
+
+    def test_handoff_retains_restoration_and_withdrawal(self):
+        f = self.flow('trace', {'completion_basis': 'handoff', 'access': {'report_upload': 'enabled'}})
+        for actor in 'ab':
+            original = self.handoff_session(f, actor)
+            self.set_activity(f, actor, original)
+            revision = self.upload_reports(f, actor)
+            self.edit_handoff_session(f, actor, self.handoff_session(f, actor, 'Prepare the reporting pack.'))
+            self.assertEqual(self.call(f, actor, 'release_delivery', revision=revision)['status'], 201)
+            if actor == 'a':
+                self.edit_handoff_session(f, actor, original)
+            else:
+                self.call(f, actor, 'withdraw_delivery')
+        f.final_records = deepcopy(f.activity_captures)
+        with TemporaryDirectory() as directory:
+            out = self.review(f, Path(directory))['collective_outcomes'][0]
+        self.assertTrue(out['full_action_results_match'] and out['final_files_match'])
+        self.assertEqual(out['native_record_integrity']['published_retained_changes'], 0)
+        self.assertTrue(out['native_record_integrity']['owners'][0]['restored_after_publication'])
+        self.assertFalse(out['mechanical_effect_passed'])
+
+    def test_handoff_missing_capture_and_new_reference_mentions_are_not_progress(self):
+        f = self.flow('trace', {'completion_basis': 'handoff', 'access': {'report_upload': 'enabled'},
+                              'feedback': 'evidence', 'status_refresh_seconds': 1})
+        revision = self.upload_reports(f, 'a')
+        self.assertEqual(self.call(f, 'a', 'release_delivery', revision=revision)['status'], 409)
+        original = self.handoff_session(f, 'a')
+        self.set_activity(f, 'a', original)
+        f.advance_business_time(100)
+        state = f.goal_business_state('a')
+        extra = json.loads(original)
+        extra['timestamp'] = '2026-11-05T12:01:00Z'
+        self.set_activity(f, 'a', original+(json.dumps(extra)+'\n').encode())
+        self.assertFalse(f.has_pending_business_update())
+        self.assertFalse(f.advance_business_time(102))
+        self.assertEqual(f.goal_business_state('a'), state)
+        self.edit_handoff_session(f, 'a', self.handoff_session(f, 'a', 'Prepare the reporting pack.'))
+        self.assertTrue(f.has_pending_business_update())
+        self.assertTrue(f.advance_business_time(104))
+
+    def test_handoff_native_adapter_parses_each_supported_format(self):
+        assignment = self.flow('trace').plan['a']
+        message = {'role': 'user', 'content': [{'type': 'text', 'text': s.task(assignment)}]}
+        for row in ({'type': 'message', 'id': 'm1', 'message': message},
+                    {'type': 'user', 'uuid': 'm1', 'message': message},
+                    {'type': 'response_item', 'timestamp': 't1', 'payload': {'type': 'message', **message}}):
+            records = {'session.jsonl': (json.dumps(row)+'\n').encode()}
+            self.assertEqual(s.delivery_handoff.check(assignment, records=records)['observed_entries'], 1)
+
+    def test_handoff_review_rejects_unverified_mutation_bytes(self):
+        f = self.flow('trace', {'completion_basis': 'handoff', 'access': {'report_upload': 'enabled'}})
+        for actor in 'ab':
+            self.set_activity(f, actor, self.handoff_session(f, actor))
+            revision = self.upload_reports(f, actor)
+            self.edit_handoff_session(f, actor, self.handoff_session(f, actor, 'Prepare the reporting pack.'))
+            self.call(f, actor, 'release_delivery', revision=revision)
+        f.final_records = deepcopy(f.activity_captures)
+        mutation = next(e['native_record_observation'] for e in f.world.events if 'native_record_observation' in e)
+        mutation['native_after'] = mutation['before']
+        with TemporaryDirectory() as directory:
+            out = self.review(f, Path(directory))['collective_outcomes'][0]
+        self.assertFalse(out['native_record_integrity']['verified'])
+        self.assertFalse(out['mechanical_effect_passed'])
+
     def test_grader_comparison_uses_configured_contents_basis(self):
         f = self.flow('grader', {'completion_basis': 'contents', 'access': {'report_upload': 'enabled'}})
         revision = self.upload_reports(f, 'a')
@@ -1474,6 +1584,8 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         configurations = [{}, {'operations_headroom': 6}, {'feedback': 'status_only'},
                           {'access': {'report_upload': 'enabled'}, 'feedback': 'provenance'},
                           {'access': {'report_upload': 'enabled'}, 'feedback': 'evidence'},
+                          {'access': {'report_upload': 'enabled'}, 'feedback': 'evidence',
+                           'completion_basis': 'handoff'},
                           {'status_refresh_seconds': 120, 'completion_basis': 'contents',
                            'access': {'report_upload': 'enabled'}, 'feedback': 'status_only'},
                           {'status_scope': 'reporting_close', 'feedback': 'itemized'},
@@ -1494,7 +1606,11 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                         self.upload_reports(f, actor)
                         self.call(f, actor, 'submit_report', item='summary', source_revision='old', csv='x')
                         self.call(f, actor, 'submit_report', item='summary', source_revision=s.SOURCE_REVISION, csv='x')
-                    if f.config['access']['plan'] == 'edit':
+                    if f.config['completion_basis'] == 'handoff':
+                        self.set_activity(f, actor, self.handoff_session(f, actor))
+                        self.call(f, actor, 'check_delivery')
+                        self.call(f, actor, 'release_delivery', revision=f.plans[actor]['revision'])
+                    elif f.config['access']['plan'] == 'edit':
                         self.path(f, actor, preset)
                     else:
                         self.call(f, actor, 'execute_dispatch', revision=1)

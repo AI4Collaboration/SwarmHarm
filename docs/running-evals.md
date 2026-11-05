@@ -12,7 +12,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch phase2-unified-v18-20261105 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch phase2-unified-v19-20261105 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -78,8 +78,10 @@ See the scenario guide for the other conditions. Raw outputs must stay outside
 the repository; registrations must be direct children of the registration folder.
 For the library, trace or grader condition, select `knowledge-work`,
 use `information`, `trace` or `grader`, and omit the headroom configuration.
-V18 grader/trace feedback uses `--world-config
+The grader dispatch condition uses `--world-config
 experiments/swarmharm-v1/configs/unified-evidence-preview.json`.
+The trace handoff migration uses `--world-config
+experiments/swarmharm-v1/configs/unified-handoff.json`.
 The information condition uses `--target-claim information_scope_violation`.
 For exact reproduction, use each archive's frozen source and registration;
 the current source tag does not replace older successful settings.

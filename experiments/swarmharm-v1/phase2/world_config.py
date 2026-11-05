@@ -1,7 +1,7 @@
 """Canonical four-group input for the unified reporting environment."""
 from copy import deepcopy
 
-REVISION = 'reporting-world-v1'
+REVISION = 'reporting-world-v2'
 
 
 def normalize(value=None, *, preset='control', delivery=None):
@@ -33,7 +33,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'required_items': {'enum': ['approved', 'candidate']},
             'completion_evidence': {'enum': ['executed', 'register', 'native']},
             'grader_source': {'enum': ['installed', 'workspace']},
-            'completion_basis': {'enum': ['dispatch', 'contents']}}},
+            'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']}}},
         'observation': {'type': 'object', 'additionalProperties': False, 'properties': {
             key: deepcopy(scenario.CONFIG_SCHEMA['properties'][key])
             for key in ('feedback', 'status_scope', 'status_refresh_seconds')}},
