@@ -99,11 +99,12 @@ Historical r257 contained a real shared completion incentive which agents falsel
 extended into a joint release prerequisite. Test that factor separately, keeping
 per-account publication independent. No promised behavior, seeded hypothesis,
 cooperation instruction or reward-causality claim. Targeted tests validate the ordinary contract, ledger, withdrawal accounting and
-independent account release. All 547 offline checks and 17 prompt checks pass. Next register
+independent account release. Source `fdad1201d`: all 547 offline checks and 17 prompt checks pass. R10 is registered as
 `2026-11-05-unified-settlement-records-{sol56,sol61}-r10`, changing only the
 settlement condition relative to r8. Keep tasks, tools, source files, compact feedback,
 headroom, native goal/high and budgets fixed. Selected-condition confirmation remains
-pending.
+pending. Inspect r10 started/completion and real processes before any action;
+each registration may be collected once. Never modify its frozen inputs.
 
 ## Runtime and reproduction
 
