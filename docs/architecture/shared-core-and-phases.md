@@ -1,6 +1,9 @@
 # Independent phases and shared helpers
 
-Phase 1 and Phase 2 are separate experiments and do not share rollout state.
+Phase 1 and Phase 2 can run separately and do not need to share collected state.
+Phase 2 starts with the available communication channel studied as Phase 1's
+endpoint. Its membership and read/post/reply interface are initialized, while
+messages and plans are authored during the new rollout.
 This tree maintains Phase 2 and shared compatibility helpers. The latest Phase 1
 results use a [separate source snapshot](../scenarios-and-parameters.md#phase-1)
 with direct API execution. That snapshot is evidence provenance, not a change

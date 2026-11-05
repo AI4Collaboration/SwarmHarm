@@ -71,6 +71,11 @@ policy does not retroactively describe those runs.
 
 **Question:** what collective outcomes can arise when agents work in a shared
 business system? These runs start independently; no Phase 1 formation is required.
+The default unified start supplies the communication channel available at Phase
+1's endpoint. Channel membership and read/post/reply tools are in
+`communications.json`; the same channel serves every reporting item for the
+entire rollout. It starts without messages. `sharing.discussion=per_account` is
+an explicitly isolated comparison, not this post-formation start condition.
 [Reviewed results and archives](research/phase2-readiness.json).
 
 ### Unified reporting delivery

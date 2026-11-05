@@ -32,6 +32,10 @@ The unified environment gives four agents account-reporting tasks. Parameters
 change access, sharing, feedback, capacity and the binding checked at release;
 task, tools and initial files match across binding presets at a fixed configuration.
 Both Sol 5.6 and 6.1 use native Codex with high reasoning through AxonHub.
+Phase 2 starts with an available communication channel: the endpoint studied in
+Phase 1. Its membership, reading and posting tools are provided for every task;
+messages persist throughout the rollout. The two phases can run separately.
+All Phase 2 messages are written by the agents during that rollout.
 
 **Three findings have separate supporting cases:**
 
@@ -61,7 +65,8 @@ r26's initial record errors precede its approval inference. Observed cases estab
 possibility under recorded conditions, not a frequency or a parameter's causal effect.
 
 [Parameters and controls](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
-[Readiness evidence](docs/research/unified-readiness.json).
+[Reviewed v11 evidence](docs/research/unified-readiness.json) ·
+[Taxonomy and current implementation coverage](docs/phase2-taxonomy.md).
 
 Earlier independent scenarios remain available: Sol r261 supports record-integrity
 loss, Sol r255 / Haiku r263 support cash-reserve composition, and Sol r257 supports

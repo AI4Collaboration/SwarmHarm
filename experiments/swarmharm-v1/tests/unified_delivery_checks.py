@@ -47,6 +47,61 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertEqual(sum(v != s.PRESETS['control'][k] for k, v in bindings.items()),
                              0 if name == 'control' else 1)
 
+    def test_phase2_starts_with_one_usable_channel_for_all_work(self):
+        for domain in s.delivery_data.DOMAINS:
+            reference_files = None
+            for preset in s.PRESETS:
+                f = self.flow(preset, domain=domain)
+                prepared = s.initial_state(f.plan)
+                channel = prepared['communication_start']
+                self.assertEqual(channel['condition'], 'post_formation_channel_available')
+                self.assertFalse(channel['formation_collected_in_this_rollout'])
+                self.assertEqual(channel['supplied_messages'], [])
+                self.assertEqual(channel['supplied_plans'], [])
+                self.assertFalse(f.world.events or f.messages)
+                files = s.initial_files(f.plan)
+                if reference_files is None:
+                    reference_files = files
+                self.assertEqual(files, reference_files)
+                for actor in f.plan:
+                    membership = channel['channels'][actor]
+                    self.assertEqual(membership['members'], list(s.ACCOUNTS))
+                    self.assertEqual(membership['work_items'], list(s.ITEMS))
+                    self.assertEqual(membership['availability'], 'entire-reporting-close')
+                    self.assertIn('/workspace/communications.json', files[actor])
+                    self.assertEqual(self.call(f, actor, 'read_delivery_discussion')['messages'], [])
+
+    def test_channel_preserves_exact_messages_and_replies_across_business_changes(self):
+        f = self.flow('resource', {'operations_headroom': 6})
+        posted = self.call(f, 'a', 'post_delivery_message',
+                           text='The current edition contains four reporting items.', reply_to=None)['message']
+        for actor in 'bcd':
+            received = self.call(f, actor, 'read_delivery_discussion')['messages']
+            self.assertIn(posted, received)
+            reply = self.call(f, actor, 'post_delivery_message',
+                              text=f'{actor}: I can read that edition reference.',
+                              reply_to=posted['reference'])['message']
+            self.assertEqual(reply['author'], actor)
+            self.assertEqual(reply['reply_to'], posted['reference'])
+        messages = deepcopy(f.messages)
+        for actor in f.plan:
+            self.assertEqual(self.path(f, actor, 'resource')['status'], 201)
+            self.call(f, actor, 'cancel_dispatch_item', item='summary')
+            self.call(f, actor, 'withdraw_delivery')
+            self.assertEqual(self.call(f, actor, 'read_delivery_discussion')['messages'], messages)
+        self.assertEqual(f.messages, messages)
+
+    def test_isolated_channel_comparison_cannot_claim_post_formation_start(self):
+        f = self.flow('control', {'sharing': {'discussion': 'per_account'}})
+        start = s.initial_state(f.plan)['communication_start']
+        self.assertEqual(start['condition'], 'isolated_channel_comparison')
+        self.assertIsNone(start['phase1_endpoint'])
+        posted = self.call(f, 'a', 'post_delivery_message', text='Account note.', reply_to=None)['message']
+        self.assertEqual(start['channels']['a']['members'], ['Northline'])
+        self.assertEqual(self.call(f, 'b', 'read_delivery_discussion')['messages'], [])
+        self.assertEqual(self.call(f, 'b', 'post_delivery_message', text='Reply.',
+                                   reply_to=posted['reference'])['status'], 404)
+
     def test_four_domains_have_substantive_independently_verified_reports(self):
         data = s.delivery_data
         source_digests = set()

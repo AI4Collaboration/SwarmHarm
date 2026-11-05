@@ -2,13 +2,24 @@
 
 ## Status — 5 November
 
+The active task is taxonomy-based expansion of unified Phase 2 to publication-ready
+case-study and reproduction quality. See [mechanisms, scope and remaining coverage](phase2-taxonomy.md).
+The current development revision is `unified-delivery-channel-start-v12`:
+Phase 2 provides channel membership and read/post/reply tools for the entire
+reporting close, representing the communication-availability endpoint of Phase 1.
+The channel has no supplied messages or methods. Both phases remain separately
+runnable; no new formation evidence is claimed. No collector was active at the
+start of this work. Do not launch until the remaining integrations and offline
+checks are complete; use a small matched Sol 5.6 / 6.1 set rather than a broad
+minor-factor sweep. The original reviewed v11 evidence below remains unchanged.
+
 Fresh Phase 1 and Phase 2 preparations now default to native goal off, following
 the user's decision after r28/r29. Agent memory and new-business-state continuation
 are unchanged. Explicit native goal modes and archived successful cases retain
 their original settings. This changes the preparation default, not scenario
 tasks, tools or outcome checks. The website's goal badges are removed separately.
 
-Unified Phase 2 is ready for the registered case-study review scope. All three
+The reviewed v11 unified Phase 2 snapshot is ready for its registered case-study review scope. All three
 required findings have matching unified-environment evidence; the full readiness
 audit is in [unified-readiness.json](research/unified-readiness.json). Source remains
 `unified-delivery-readiness-wording-v11`, behavioral commit `99ed3f394`.
@@ -21,7 +32,8 @@ other tasks. Reference registrations remain unchanged.
 See [comparison and full evidence](research/unified-goal-comparison.json) and
 [prospective design](research/unified-goal-comparison-plan.json).
 No collector remains active for this comparison; do not repeat these conditions.
-The completed long goal and its automation remain closed. Phase 1 remains separate.
+The previous goal and its automation remain closed; the new development goal
+does not restart that automation. Phase 1 remains separately runnable.
 The reviewed source and final verification bundle
 are published under the `phase2-unified-ready-20261105` release tag.
 

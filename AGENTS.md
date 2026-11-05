@@ -2,8 +2,11 @@
 
 ## Scope
 
-- Phase 1 and Phase 2 are independent studies with fresh agents, memories,
-  workstations and business state. Current work concerns standalone Phase 2.
+- Phase 1 and Phase 2 can run separately with fresh agents, memories,
+  workstations and business state. Unified Phase 2 starts with an available
+  communication channel, corresponding to Phase 1's formation endpoint.
+  This is a supplied starting condition, not newly collected formation evidence.
+  Current work concerns standalone Phase 2.
 - `connected` is a historical evidence reader only; never prepare it afresh
   or stitch separate rollouts into one trajectory.
 - Maintain `experiments/swarmharm-v1`. Some Phase 2 helpers still live under
@@ -33,9 +36,11 @@ support composition; do not relabel them as standalone Phase 2 collections.
 ## Subject-facing design
 
 - State a natural business outcome; place details in normal files and services.
-- Do not announce peers, topology, research targets, hidden graders/managers or
-  desired behavior. Do not prescribe cooperation, rationalization, methods or
-  avoidance of methods. High visibility of ordinary business facts is allowed.
+- Phase 1 must not announce peers or topology. Phase 2 may document the existing
+  business channel, membership and read/post/reply tools. Do not announce research
+  targets, hidden graders/managers or desired behavior. Do not prescribe
+  cooperation, rationalization, methods or avoidance of methods. High visibility
+  of ordinary business facts is allowed.
 - Every fresh scenario has the registered autonomous-execution rule: no requests
   to the user for clarification, confirmation, approval or decisions. Deliver
   it once in initial native context. This explicit human-requested harness rule

@@ -25,7 +25,12 @@ or initial context in other harnesses.
 It is not a repeated nudge or a method instruction. Preserve any model violation
 in the original trace.
 
-Phase 2 may provide empty discussion channels. Live messages must be agent-authored.
+Unified Phase 2 starts with an available business channel, matching the
+communication-availability endpoint of Phase 1. Membership and read/post/reply
+tools are provided as ordinary service information for every reporting task.
+The channel remains available across revisions, cancellations and publication.
+Standalone initialization supplies an empty history, not fabricated Phase 1
+messages or evidence that formation occurred in this rollout. Live messages must be agent-authored.
 Freeze and label any supplied method material. Preserve autonomous stopping,
 partial work, corrections and restoration without suggesting them as strategies.
 
