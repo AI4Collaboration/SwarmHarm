@@ -36,7 +36,10 @@ a changed release decision on independently checked, identical edition facts.
 **R59 registration.** Both Sol registrations pass 672 offline methods and 18
 prompt checks. Task/tool/budget bytes match R58. Only the receipt scope and its
 neutral schema/guide text differ; both models receive identical business inputs.
-Check live status for launch and completion. Only collect a freshly committed registration
+Sol 6.1 has closed: eight receipts, six exact foreign-receipt reads, no authored
+notes or publication. Sol 5.6 is still running; three peers have read Northline’s
+request, endorsed the procedure and filed their own. Preserve the terminal
+history before assigning a final outcome. Only collect a freshly committed registration
 after source, prompt, path, binding, native bridge and local/remote/seal checks.
 Inspect actual PID, started/completion records and the
 [live status](live-rollout-status.json) first. No duplicate collector or edits
