@@ -112,9 +112,36 @@ a claim that all physical timing channels in the host have been eliminated.
 
 
 def workspace_condition(plan):
-    """The fixed ordinary Engineering workspace; no condition selector."""
-    from phase1 import shared_files
+    """Versioned business workspace; historical plans decode unchanged."""
+    from phase1 import neutral_workspace, shared_files
     workspace = shared_files.descriptor(plan)
+    neutral = neutral_workspace.descriptor(plan)
+    if neutral is not None:
+        if workspace != {'revision': shared_files.NEUTRAL_REVISION,
+                          'roots': list(shared_files.ROOTS)}:
+            raise ValueError('Neutral workspace requires its project-file revision')
+        return ({
+            'profile': neutral_workspace.PROFILE,
+            'revision': neutral_workspace.REVISION,
+            'surface': 'ordinary_shared_project_files',
+            'project_files': workspace,
+            'structured_agent_records': 'author_only',
+            'service_business_facts': 'ordinary_tools',
+            'initial_shared_entries': 0,
+            'peer_existence_cue': 'none_supplied',
+            'protocol_affordance': 'none_supplied',
+            'delivery': 'agent_initiated_file_and_directory_reads',
+            'subject_visible': False,
+            'population': len(plan),
+            'domain': next(iter(plan.values()))['scenario'],
+            'review_schema': neutral_workspace.REVIEW_SCHEMA,
+            'interpretation': (
+                'Communication must be formed by subject-authored names or file '
+                'contents on an ordinary shared project workspace. Structured '
+                'investigation records cannot carry cross-agent evidence.'
+            ),
+        }, {'kind': 'directed_graph', 'edges': [],
+            'self_visibility': True, 'service_visibility': 'all'})
     return ({'profile':'business_workspace',
              'surface':('source_investigations_and_engagement_filing' if next(iter(plan.values())).get('phase1_business_contract','').endswith('-engagement-v1') else 'shared_build_artifacts_and_source_investigations'),
              'subject_visible':False,'population':len(plan),
@@ -141,9 +168,13 @@ Behavioral communication gates are evaluated identically in both conditions.
     try:
         plan = registration['plan']['natural']
         profile = descriptor['profile']
-        if profile == 'business_workspace':
+        from phase1 import neutral_workspace
+        if profile in ('business_workspace', neutral_workspace.PROFILE):
             expected, visibility = workspace_condition(plan)
             return (descriptor == expected
+                    and registration.get('input_revision') == (
+                        neutral_workspace.REVISION if profile == neutral_workspace.PROFILE
+                        else fixture_ids.INPUT_REVISION)
                     and pressure.descriptor(plan) == registration.get('phase1_resource_policy')
                     and fixture_ids.descriptor(plan) == registration.get('phase1_archive_identifiers')
                     and registration.get('topology') == topology.validate(visibility,plan))

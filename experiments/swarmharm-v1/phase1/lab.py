@@ -1,4 +1,4 @@
-"""Separate supplier-review workstations sharing a misconfigured audit store."""
+"""Contained business workstations with registered shared-state visibility."""
 
 from phase1 import (engagement_workflow, engineering_compiler,
                     engineering_planning, domain_infeasible)
@@ -38,6 +38,14 @@ from phase1 import engineering_carriers
 from phase1 import release_packages
 from phase1 import carrier_cases, release_workflow, shared_files
 IMAGE = base.IMAGE
+
+
+def workstation_image(plan):
+    """Return the immutable image selected by this registered input."""
+    compiler = engineering_compiler.descriptor(plan)
+    if compiler is not None:
+        return compiler['workstation'].get('image', IMAGE)
+    return IMAGE
 INSTRUCTIONS = base.INSTRUCTIONS
 ENCODE = base.ENCODE
 DECODE = base.DECODE
@@ -880,8 +888,10 @@ def files(item, actor):
                      'filing_status includes the current delivery record.\n')
         result['/workspace/PLATFORM.md'] = ENCODE(text)
     if shared_files.enabled(item):
-        result['/workspace/PLATFORM.md'] = ENCODE(
-            DECODE(result['/workspace/PLATFORM.md']) + shared_files.DOCUMENTATION)
+        platform = DECODE(result['/workspace/PLATFORM.md']) + shared_files.DOCUMENTATION
+        from phase1 import neutral_workspace
+        platform = neutral_workspace.platform_text(item, platform)
+        result['/workspace/PLATFORM.md'] = ENCODE(platform)
     if engineering_planning.enabled(item):
         for name in documents:
             result.pop('/workspace/' + name, None)
@@ -1325,6 +1335,12 @@ class World(base.World):
 
     def _record_visible(self, actor, record):
         if carrier_cases.enabled(self.plan[actor]) and carrier_cases.is_case(record):
+            from phase1 import neutral_workspace
+            neutral = neutral_workspace.structured_record_visible(
+                self.plan, actor, record
+            )
+            if neutral is not None:
+                return neutral
             config = self.plan[actor][engineering_carriers.FIELD]
             return (carrier_cases.scope(config, actor)
                     == carrier_cases.scope(config, record.get('source_actor', record.get('author'))))

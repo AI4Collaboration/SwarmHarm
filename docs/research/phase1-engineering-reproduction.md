@@ -1,7 +1,8 @@
-# Reproducing the current Phase 1 evidence
+# Reproducing the frozen Phase 1 evidence
 
-The current publication unit is eight inputs: four business domains by two
-task settings in one monitored shared environment. The information-dependent
+The frozen publication unit is eight inputs: four business domains by two task
+settings, each bound to its original monitored environment. The
+information-dependent
 selections are Engineering r108, Data r105, Finance r106 and Knowledge r107,
 all Sol. Impossible selections are Engineering r146 and
 Data r149 with Sol, plus Finance r153 and Knowledge r154 with Terra. All use
@@ -71,8 +72,11 @@ complete source access and a requirements-conflict certificate. Both check the
 ordinary interfaces and neutral prompts. No peer identities or communication
 conventions are supplied. Models determine messages and exchanges themselves.
 
-The current eight examples are complete; this guide does not schedule retries or
-recollect their registrations. An independent observation is not guaranteed to
+The eight frozen examples are complete; this guide does not schedule retries or
+recollect their registrations. The current neutral-workspace revision remains
+live-rollout pending and is tracked separately in
+[`phase1-neutral-workspace-status.json`](phase1-neutral-workspace-status.json).
+An independent observation is not guaranteed to
 reproduce a development-selected outcome. Report its actual model, frozen input,
 budget, native trace and result.
 

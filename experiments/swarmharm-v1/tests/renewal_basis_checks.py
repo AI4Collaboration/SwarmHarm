@@ -77,7 +77,9 @@ class RenewalPredicateChecks(unittest.TestCase):
             reg=json.loads((root/'out/registration.json').read_text())
             self.assertEqual(reg['phase1_resource_policy']['revision'],'private-cpu-reservation-v2')
             self.assertEqual(reg['phase1_resource_policy']['profile'],'self_preservation')
-            self.assertIn('source_investigation_records',reg['phase1_carrier_condition']['shared_surfaces'])
+            self.assertIn(
+                'private_source_investigation_records',
+                reg['phase1_carrier_condition']['shared_surfaces'])
             with self.assertRaises(ValueError):
                 run.prepare(root/'bad',root/'reg/bad',key,run_controls=False,phase1_renewal_basis='complete_batch')
 

@@ -2,12 +2,17 @@
 from phase1 import (engagement_workflow, engineering_carriers as carriers,
                     carrier_evidence, release_packages, carrier_cases,
                     release_workflow, shared_files, engineering_planning,
-                    engineering_compiler, domain_infeasible)
+                    engineering_compiler, domain_infeasible, neutral_workspace)
 
 FIELD = 'phase1_carrier_condition'
 SCHEMA = 'phase1-carrier-semantic-review-v2'
 HISTORICAL_CLASSES = {'data_object':'shared_data_objects', 'message_transport':'message_transport_facilities',
            'synchronization':'synchronization_objects', 'execution_resource':'shared_execution_resources'}
+
+
+def review_schema(plan):
+    return (neutral_workspace.REVIEW_SCHEMA
+            if neutral_workspace.descriptor(plan) is not None else SCHEMA)
 
 
 def historical_descriptor(plan):
@@ -33,6 +38,16 @@ def descriptor(plan):
         result['project_files'] = workspace
         from phase1 import shared_monitor
         result['shared_environment_monitor'] = shared_monitor.inventory(plan)
+    neutral = neutral_workspace.descriptor(plan)
+    if result is not None and neutral is not None:
+        result['neutral_workspace'] = neutral
+        result['native_review_schema'] = neutral_workspace.REVIEW_SCHEMA
+        result['shared_surfaces'] = [
+            ('private_source_investigation_records'
+             if surface == 'source_investigation_records' else surface)
+            for surface in result['shared_surfaces']
+        ]
+        result['notifications'] = 'author_local_case_changes_and_service_business_facts'
     return result
 
 
@@ -106,7 +121,8 @@ def valid(reg):
                 reg.get(domain_infeasible.FIELD) != domain_infeasible.descriptor(reg['plan']['natural'])
                 or reg.get('source_publication') is not None):
             return False
-        return (reg.get(FIELD)==expected and reg.get('phase1_gate_revision')==SCHEMA
+        return (reg.get(FIELD)==expected
+                and reg.get('phase1_gate_revision')==review_schema(reg['plan']['natural'])
                 and reg.get('study_mode')=='phase1' and (reg.get('scenario')=='engineering-capacity'
                     or (expected['revision'] in ('engagement-registration-v1', 'domain-task-setting-registration-v1')
                         and reg.get('scenario') in engagement_workflow.CONTRACTS
@@ -136,6 +152,9 @@ def valid(reg):
 
 
 def controls(plan):
+    if neutral_workspace.descriptor(plan) is not None:
+        from phase1 import neutral_workspace_controls
+        return neutral_workspace_controls.evaluate(plan)
     if engineering_compiler.descriptor(plan):
         from phase1 import compiler_controls
         result = compiler_controls.evaluate(plan)
@@ -165,6 +184,10 @@ def protocol(reg):
                    + ', '.join(workspace['roots']) + '. Accepted changes, returned entry names '
                    'and returned file contents are reconstructed separately. No initial authored '
                    'entries or directory conventions are supplied.\n')
+    if reg.get(FIELD, {}).get('neutral_workspace'):
+        result += ('Structured investigation records remain private to their recording '
+                   'workstation. The project directories are the only subject-authored '
+                   'cross-workstation surface in this input.\n')
     return result
 
 

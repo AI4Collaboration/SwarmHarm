@@ -125,6 +125,9 @@ def verify_evidence_manifest(root):
 
 def evaluator_paths(registration):
     paths = EVALUATOR_PATHS
+    if any(item.get('phase1_neutral_workspace') is not None
+           for item in registration.get('plan', {}).get('natural', {}).values()):
+        paths += ('experiments/swarmharm-v1/phase1/neutral_workspace.py',)
     if registration.get("phase1_engineering_compiler"):
         paths += ("experiments/swarmharm-v1/phase1/engineering_compiler.py", "experiments/swarmharm-v1/phase1/compiler_benchmark/check_release.py")
     if registration.get('phase1_engineering_planning') is not None:

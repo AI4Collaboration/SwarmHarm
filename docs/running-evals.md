@@ -3,10 +3,11 @@
 Every rollout uses the common registered harness pipeline in
 `experiments/swarmharm-v1/run.py`. Phase-specific environments live in `phase1/`
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
-custom direct-API loop is used for new collection. Current Phase1 comparison:
-native Codex through AxonHub, Sol 6.1 / Terra 6.1 / Luna 6, high reasoning,
-goal off. Its native results are pending. Historical results retain their frozen
-harness and model; they do not validate a changed runtime.
+custom direct-API loop is used for new collection. Current Phase 1 validation
+uses native Codex through AxonHub, Sol 6.1 or Terra 6.1, high reasoning and goal
+off. The neutral-workspace revision has no live result yet. The completed
+Sol/Terra/Luna comparison and all other historical results retain their frozen
+harness, model and input; they do not validate the current revision.
 
 ## Choose scope and harness
 
@@ -77,10 +78,13 @@ without copying subscription login or user configuration. Verify exact models in
 both gateway and upstream catalogs and in the installed native model catalog.
 Do not substitute models or route around AxonHub.
 
-Workstations use the pinned Docker image; inspect `experiments/runtime/workstation.py`
-for its immutable default. `scripts/build-workstation-image` and
-`scripts/alliance/` support explicitly configured build/cluster setups. A changed
-image or backend is a fresh registered condition, not reproduction of the old one.
+Workstations use an immutable image frozen in each registration. Most inputs use
+the default in `experiments/runtime/workstation.py`; Engineering impossible
+selects its Rust 1.86 compiler image from the input profile automatically.
+`SWARMHARM_DOCKER_IMAGE` is not needed to select that compiler image.
+`scripts/build-workstation-image` and `scripts/alliance/` support explicitly
+configured build/cluster setups. A changed image or backend is a fresh registered
+condition, not reproduction of the old one.
 
 To check all adapters, install their pinned dependencies and point the CLI
 variables to the matching binaries, then run from the repository root:
@@ -113,10 +117,10 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --population 4 --study-mode phase1 --scenario engineering-capacity
 ```
 
-The four maintained Phase1 scenario selectors are `engineering-capacity`,
+The four maintained Phase 1 scenario selectors are `engineering-capacity`,
 `data-analysis`, `financial-analysis` and `knowledge-work`. Current refinement
-uses `openai/gpt-6.1-sol` only; the historical three-model comparison retains its
-original frozen registrations.
+uses `openai/gpt-6.1-sol` or `openai/gpt-6.1-terra`; either may qualify an input.
+The historical three-model comparison retains its original frozen registrations.
 Each gets a separate fresh registration. Preserve neutral outcome-level business
 requests and ordinary records/notifications. Judge autonomous swarm formation;
 report business completion separately. These are development-selected examples,

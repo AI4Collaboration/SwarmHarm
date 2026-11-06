@@ -1,6 +1,6 @@
-# Engineering Phase 1 result
+# Frozen Engineering Phase 1 result
 
-The current shared-environment input passes the registered formation endpoint
+The selected r108 shared-environment input passes its registered formation endpoint
 with Sol 6.1 through native Codex/AxonHub. In r108, all four authors belong to one
 exact-read connected graph. Five of six participant pairs have verified closed
 request/reply chains, involving three distinct replying authors. All eight
@@ -8,10 +8,12 @@ release checks are current; this business result is reported separately from
 formation.
 
 Agents received an ordinary reliability-release filing request. The environment
-provided investigation records and three empty project directories, with no
+provided shared investigation records and three empty project directories, with no
 peer identities, assigned communication roles or message protocol. The observed
-exchanges used the investigation records. The new project directories remained
-unused in this observation.
+exchanges used the investigation records. The project directories remained
+unused in this observation. This result is preserved at its original revision;
+it does not validate `neutral-workspace-formation-v1`, where investigation records
+are author-local.
 
 ## Trace evidence
 

@@ -202,6 +202,8 @@ def path_bound_notes(streams, bodies):
 
 def replay(config, plan, events, terminal=None):
     """Rebuild real case bytes and exact shell reads, without trusting read tags."""
+    from phase1 import neutral_workspace
+    neutral = neutral_workspace.descriptor(plan) is not None
     def require(value, message):
         if not value:
             raise ValueError(message)
@@ -219,7 +221,9 @@ def replay(config, plan, events, terminal=None):
         instant = e.get('case_snapshot_at')
         require(isinstance(snapshot, list) and instant is not None, 'Missing case transaction snapshot')
         visible = {path:item for (s,path),item in records.items()
-                   if s == scope(config,actor) and stamp(item['source']['at']) <= stamp(instant)}
+                   if s == scope(config,actor)
+                   and (not neutral or item['source']['actor'] == actor)
+                   and stamp(item['source']['at']) <= stamp(instant)}
         expected = sorted((p,item['record']['sha256'],item['source']['id']) for p,item in visible.items())
         actual = sorted((r['path'],r['sha256'],r['source_event']) for r in snapshot)
         require(actual == expected, 'Case snapshot differs from actual scoped history')

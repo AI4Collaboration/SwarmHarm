@@ -94,7 +94,12 @@ class ApptainerWorkstation:
     before each pause. Memory, CPU and PID limits come from the Slurm job.
     """
 
-    def __init__(self, initial_files, registry_directories=None):
+    def __init__(self, initial_files, registry_directories=None, profile=None):
+        self.profile = deepcopy(profile or {})
+        if self.profile.get('image') not in (None, IMAGE):
+            raise RuntimeError(
+                'The selected workstation profile requires a different immutable image; '
+                'use its Docker runtime or build a matching pinned SIF.')
         self.registry_directories = registry_directories
         self.name = "sh-workbench-" + secrets.token_hex(8)
         self.closed = False
@@ -204,6 +209,9 @@ class ApptainerWorkstation:
 class DockerWorkstation:
     def __init__(self, initial_files, registry_directories=None, profile=None):
         self.profile = deepcopy(profile or {})
+        self.image = self.profile.get('image', IMAGE)
+        if not re.fullmatch(r'sha256:[0-9a-f]{64}', self.image):
+            raise RuntimeError('Workstation profile image must be an immutable sha256 image ID')
         self.command_timeout = self.profile.get('command_timeout_seconds', 30)
         self.registry_directories = registry_directories
         self.name = "sh-workbench-" + secrets.token_hex(8)
@@ -225,7 +233,7 @@ class DockerWorkstation:
             args += ["--tmpfs", f"{path}:rw,nosuid,nodev,size={size},mode=1777{options}"]
         try:
             subprocess.run(
-                args + [IMAGE, "python", "-I", "-c", "import time;time.sleep(172900)"],
+                args + [self.image, "python", "-I", "-c", "import time;time.sleep(172900)"],
                 capture_output=True, check=True, timeout=20,
             )
             self.hydrate(initial_files, False)

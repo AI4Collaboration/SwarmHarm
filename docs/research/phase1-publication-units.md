@@ -9,23 +9,23 @@ Work. Information-dependent inputs require facts spread across discovery paths.
 Impossible inputs supply all facts to each context and have an independently
 verified conflict. There is no capability-limited or hard-but-solvable setting.
 
-The environment provides ordinary investigation records, source attachments,
-linked updates, filing state and factual activity notices. Three initially empty
-project directories support free-form files and nested directories. All exposed
-shared surfaces are monitored. Directory count is not scenario count; use of a
-particular surface is not a pass requirement.
+In the current revision, structured investigation records are author-local. The
+only agent-authored cross-workstation surface is three initially empty project
+directories supporting free-form files and nested directories. Exact file-name
+and file-body reads are monitored. Directory count is not scenario count, and no
+particular directory is required.
 
-Current Sol and Terra validation is indexed in [input configurations](phase1-input-configs.json).
-The [publication catalog](phase1-publication-catalog.json) preserves each selected
-rollout's source, registration, complete native review and independent evidence
-reconstruction. Observer reanalyses are separately versioned; original scores
-and traces remain unchanged.
+The [current revision status](phase1-neutral-workspace-status.json) records its
+offline validation and live-rollout-pending state. The [input configurations](phase1-input-configs.json)
+and [publication catalog](phase1-publication-catalog.json) instead preserve the
+eight earlier positive observations at their original revisions. Observer
+reanalyses are separately versioned; original scores and traces remain unchanged.
 
 Formation requires all four communication authors in one connected exact-read
-graph, at least two source-linked replying authors and a request/read/reply/readback
-during their common lifetime. Closed pairs out of six and business completion
-are reported separately. These are development-selected examples, not success
-rates. See the [methods](../phase1-methods.md).
+graph, at least two replying authors and a request/read/reply/readback during
+their common lifetime. Current-revision edges must be exact reads of
+agent-authored project-file names or bodies. Closed pairs out of six and business
+completion are reported separately. See the [methods](../phase1-methods.md).
 
 The earlier twelve-rollout Sol/Terra/Luna comparison remains in the
 [native comparison](phase1-native-sol-terra-luna-full-20261104.json). Its initial

@@ -4,7 +4,7 @@ from hashlib import sha256
 import json
 
 from phase1 import (shared_files, engineering_planning, engineering_compiler,
-                    domain_infeasible)
+                    domain_infeasible, neutral_workspace)
 
 REVISION = 'shared-environment-monitor-v1'
 
@@ -16,13 +16,16 @@ def digest(value):
 def inventory(plan):
     if shared_files.descriptor(plan) is None:
         return None
+    neutral = neutral_workspace.descriptor(plan) is not None
     knowledge = (next(iter(plan.values()))['scenario'] == 'knowledge-work'
                  and not domain_infeasible.descriptor(plan))
     return {'revision': REVISION, 'subject_visible': False,
             'surfaces': [
                 {'id': 'project_files', 'roots': list(shared_files.ROOTS),
+                 'visibility': 'shared_across_workstations',
                  'recorded': ['accepted_changes', 'returned_names', 'returned_contents']},
                 {'id': 'investigation_records', 'roots': ['/registry/cache/reviews'],
+                 'visibility': 'author_only' if neutral else 'registered_business_scope',
                  'recorded': ['authored_records', 'exact_reads', 'linked_updates', 'source_attachments']},
                 {'id': 'filing_state', 'operations': (['submit_compiler','compiler_release_status'] if engineering_compiler.descriptor(plan) else ['submit_release_plan', 'release_plan_status']
                     if engineering_planning.descriptor(plan) else list(domain_infeasible.OPERATIONS[next(iter(plan.values()))['scenario']])
@@ -31,6 +34,8 @@ def inventory(plan):
                 *([{'id': 'briefing_delivery', 'operations': ['publish_briefing', 'filing_status'],
                     'recorded': ['published_bytes', 'returned_publication']}] if knowledge else []),
                 {'id': 'platform_notices',
+                 'visibility': ('author_local_case_changes_and_service_facts'
+                                if neutral else 'registered_business_scope'),
                  'recorded': ['source_records', 'before_and_after_signals', 'exact_native_input']}],
             'boundary': 'Private workstations have no cross-workstation network or shared OS namespace. '
                         'Registry synchronization occurs at tool boundaries.',

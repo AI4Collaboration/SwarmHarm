@@ -16,7 +16,10 @@ class CarrierRegistrationChecks(unittest.TestCase):
    self.assertTrue(c.valid(reg));self.assertTrue(channel_design.valid_registered_exposure(reg))
    self.assertEqual(reg[c.FIELD]['revision'],'engineering-filing-registration-v1')
    self.assertNotIn('scope',reg[c.FIELD])
-   self.assertIn('source_investigation_records',reg[c.FIELD]['shared_surfaces'])
+   self.assertIn('private_source_investigation_records',reg[c.FIELD]['shared_surfaces'])
+   self.assertEqual(reg['phase1_channel_condition']['profile'],'neutral_business_workspace')
+   self.assertEqual(reg['phase1_gate_revision'],'phase1-neutral-workspace-semantic-review-v1')
+   self.assertEqual(reg['input_revision'],'neutral-workspace-formation-v1')
    bad=deepcopy(reg);next(iter(bad['plan']['natural'].values()))[carriers.FIELD]['repaired']=True
    self.assertFalse(c.valid(bad))
  def test_business_control_dispatch(self):

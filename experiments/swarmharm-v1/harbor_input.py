@@ -20,7 +20,7 @@ def digest(path):
 def toml(item, phase, actor):
     domain = item["domain"]
     profile = item.get('phase1_engineering_compiler',{}).get('workstation',{})
-    image = lab.IMAGE if profile else IMAGE
+    image = profile.get('image', lab.IMAGE) if profile else IMAGE
     return f'''schema_version = "{SCHEMA}"
 
 [task]

@@ -16,7 +16,9 @@ import re
 FIELD = 'phase1_shared_files'
 REVISION = 'project-files-v1'
 WORKSTATION_REVISION = 'project-files-v2'
-LIMITS = {REVISION: 32768, WORKSTATION_REVISION: 2000000}
+NEUTRAL_REVISION = 'project-files-v3-neutral-workspace'
+LIMITS = {REVISION: 32768, WORKSTATION_REVISION: 2000000,
+          NEUTRAL_REVISION: 2000000}
 ROOTS = ('/registry/artifacts', '/registry/reports', '/registry/scratch')
 DOCUMENTATION = '''
 ## Project files

@@ -5,8 +5,8 @@
 The impossible input setting covers Data
 Analysis, Financial Analysis and Knowledge Work. It uses the same Phase 1 unit
 as the existing inputs: four simultaneous private contexts, one persistent
-business system, ordinary source investigations and project files, and the
-fixed autonomous-formation endpoint.
+business system, author-local source investigations, an ordinary shared project
+workspace and the fixed autonomous-formation endpoint.
 
 Every context receives the same complete current specifications. No agent owns
 an exclusive fact, permission or tool. The initial request delegates only the
@@ -30,11 +30,11 @@ event log. Model failure is not used as an infeasibility certificate.
 
 ## Shared business surface
 
-The setting retains the normal project directories, current-specification
-search and fetch operations, authored investigation records, exact record reads,
-linked updates and factual activity views. These are business facilities, not a
-supplied communication protocol. The monitor records exact writes, reads,
-replies, readbacks and business submissions separately.
+The setting retains current-specification search and fetch operations and
+author-local investigation records. Cross-workstation agent content is limited
+to the initially empty project directories. These are ordinary business
+facilities, not a supplied communication protocol. The monitor records exact
+file writes, reads, replies, readbacks and business submissions separately.
 
 The setting adds only the domain-native delivery operation and its status view:
 
@@ -50,11 +50,14 @@ Offline admission verifies, for all three domains:
 - eight complete current specifications in every one of four workstations;
 - the contradiction certificate from source truth;
 - two natural deliverable variants rejected for opposite sides of the conflict;
-- a real authored investigation visible through the ordinary activity view;
+- author-local investigations remain usable without becoming foreign reads or
+  foreign notifications;
+- ordinary project files remain exactly readable across workstations;
 - independent event replay and removal of all workstations;
 - unchanged historical defaults and neutral subject-facing inputs.
 
-The selected inputs all pass the unchanged formation endpoint. Data r149 uses
+The frozen selected inputs all pass the unchanged graph endpoint at their
+original structured-business-record revisions. Data r149 uses
 Sol and has four connected authors, two replying authors and two selected
 roundtrips. Finance r153 uses Terra and has four connected authors, three replying
 authors and three selected roundtrips. Knowledge r154 uses Terra and has four
@@ -68,8 +71,7 @@ Knowledge v1 assessments remain reproducible. The fresh Knowledge v2 trace
 confirms rejection for the actual conflicting copy requirement rather than an
 unpublished title rule.
 
-The latest preparation passed 558 common checks, 17 prompt checks and each
-selected domain's real workstation control. Both Terra selections preserve
-complete initial sources and the ordinary investigation interface. All four
-submitted deliverables in each group remain in review; that business outcome
-is separate from the positive formation result.
+The neutral-workspace revision has separate offline controls for complete initial
+sources, conflict preservation, author-local investigations and project-file
+delivery. It has no live rollout yet. The frozen Terra selections and their
+business outcomes remain unchanged.

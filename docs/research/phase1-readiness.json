@@ -1,9 +1,15 @@
 {
   "schema": "phase1-readiness-v3",
-  "updated_at": "2026-11-05",
-  "status": "eight_of_eight_main_inputs_formation_ready",
-  "all_ready": true,
-  "all_ready_scope": "Four business domains by two main task settings; eight source-specific inputs.",
+  "updated_at": "2026-11-06",
+  "status": "current_neutral_workspace_live_rollout_pending",
+  "all_ready": false,
+  "all_ready_scope": "The current neutral-workspace input revision requires a fresh reviewed live rollout.",
+  "frozen_selected_evidence": {
+    "status": "eight_of_eight_original_inputs_formation_ready",
+    "ready": 8,
+    "total": 8,
+    "interpretation": "These source-specific observations retain their original structured business-record revisions and scores."
+  },
   "business_scenario_coverage": {
     "reviewed": 4,
     "formation_verified": 4
@@ -23,7 +29,7 @@
   "publication_catalog": "docs/research/phase1-publication-catalog.json",
   "primary_endpoint": "autonomous_swarm_formation",
   "business_completion_is_gate": false,
-  "latest_rollout": {
+  "latest_frozen_rollout": {
     "state": "complete_fully_reviewed",
     "runs": [
       "phase1-domain-infeasible-finance-terra61-r153",
@@ -35,56 +41,38 @@
     "status": "none",
     "reason": "The prior periodic continuation task was removed; current work is continued in this active session."
   },
-  "current_action": "Current input validation is complete; maintain frozen evidence and the publication catalog.",
+  "current_action": "Prepare one fresh sealed live validation of the neutral-workspace revision after offline checks and source review.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
-    "revision": "project-files-v1",
+    "revision": "neutral-workspace-formation-v1",
+    "project_file_revision": "project-files-v3-neutral-workspace",
     "shared_roots": [
       "/registry/artifacts",
       "/registry/reports",
       "/registry/scratch"
     ],
-    "retained_investigation_root": "/registry/cache/reviews",
-    "status": "publication_ready",
-    "live_rollout": "All eight selected domain/setting inputs fully reviewed; see the source-specific input catalog.",
+    "structured_investigation_visibility": "author_only",
+    "agent_authored_cross_workstation_surface": "ordinary_project_files_only",
+    "initial_shared_entries": 0,
+    "status": "live_rollout_pending",
+    "live_rollout": null,
     "validation": {
-      "status": "passed",
-      "full_regression_tests": 139,
-      "final_file_tests": 13,
-      "prompt_tests": 15,
-      "reconstructed_worlds": 8,
-      "checked_workstations_removed": 32,
-      "full_controls": "../eval-readiness/phase1-shared-files-20261104-r3/manifest.json",
-      "final_review": "../eval-readiness/phase1-shared-files-20261104-r4/manifest.json"
+      "status": "offline_admission_passed_behavioral_validation_pending",
+      "status_index": "docs/research/phase1-neutral-workspace-status.json",
+      "model_calls": 0
     },
     "monitor_revision": "shared-environment-monitor-v1",
-    "monitor_validation": {
-      "status": "passed",
-      "checks": 86,
-      "prompt_checks": 15,
-      "reconstructed_control_worlds": 8,
-      "historical_status_diagnostics": 4,
-      "model_calls": 0,
-      "manifest": "../eval-readiness/phase1-shared-monitor-20261104-r3/manifest.json",
-      "manifest_sha256": "12553f673e9892286caf4a97c293e953de60cf80a32313405821a1be89ef9bc7"
-    },
-    "observer_correction": {
-      "description": "Bind complete note projections regardless of field order, and complete path-named plaintext notes; distinguish repeated note text by returned record path. Business inputs and runtime operations unchanged.",
-      "focused_checks": 35,
-      "manifest": "../eval-readiness/phase1-shared-note-rendering-20261105-r1/manifest.json",
-      "status": "validated_with_fresh_knowledge_rollout",
-      "manifest_sha256": "5c6de72599d6d6441c2bf33875ae78c4597c0050517c47994bdb5d65040462c4",
-      "fresh_validation_rollout": "phase1-shared-env-knowledge-sol61-codex-r107"
-    },
     "selected_models": [
       "openai/gpt-6.1-sol",
       "openai/gpt-6.1-terra"
     ]
   },
   "input_config_index": "docs/research/phase1-input-configs.json",
-  "current_evidence_index": "docs/research/phase1-shared-env-sol-20261104.json",
+  "current_input_status_index": "docs/research/phase1-neutral-workspace-status.json",
+  "frozen_evidence_index": "docs/research/phase1-shared-env-sol-20261104.json",
   "current_input_coverage": {
-    "ready": 8,
+    "ready": 0,
+    "offline_admitted": 8,
     "total": 8
   },
   "selected_comparison": "docs/research/phase1-native-goal-comparison-20261105.json",
@@ -287,7 +275,7 @@
       "sha256": "8f02768b9d043da746e0321b6e63c271244fa4cefe6d60e5f08e6b13e57ca261",
       "change": "Derived ATIF agent.name correctly identifies AxonHub; all original exports and all behavioral content preserved."
     },
-    "scope": "Four information-dependent inputs and their historical goal comparison; not the eight-input current source.",
+    "scope": "Four frozen information-dependent inputs and their historical goal comparison; not the current neutral-workspace source.",
     "goal_comparison_source_validation": {
       "source_commit": "ae0996fab51c6eb7ff3e78ad3e1a6c2f08a9af89",
       "source_files": 167,

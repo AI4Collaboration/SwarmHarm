@@ -1,12 +1,19 @@
 {
   "schema": "phase1-input-configs-v2",
+  "catalog_scope": "Frozen selected evidence at each rollout's original input revision; not the current preparation source.",
   "environment_revision": "project-files-v1",
+  "current_input": {
+    "revision": "neutral-workspace-formation-v1",
+    "status": "live_rollout_pending",
+    "status_index": "docs/research/phase1-neutral-workspace-status.json"
+  },
   "monitor_revision": "shared-environment-monitor-v1",
   "harness": "codex",
   "gateway": "AxonHub",
   "reasoning_effort": "high",
   "goal_mode": "off",
   "all_ready": true,
+  "all_ready_scope": "The eight frozen selected observations only.",
   "formation_gate": {
     "connected_authors": 4,
     "distinct_reply_authors_minimum": 2,

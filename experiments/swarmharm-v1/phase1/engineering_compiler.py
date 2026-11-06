@@ -18,7 +18,9 @@ UPSTREAM = '1badb91b4b73c036c443ce3e1c2259257ea9036e'
 REPORT_SCHEMA = 'compiler-qualification-report-v1'
 REPORT_ROOT = '/registry/reports'
 PUBLIC_TESTS = 780
-PROFILE = {'revision': 'compiler-workstation-v1', 'memory_mb': 2048, 'cpus': 1,
+IMAGE = 'sha256:a42716c672724f9026cc777bd7135545efa80093b02f553204628e162cfd367b'
+PROFILE = {'revision': 'compiler-workstation-v1', 'image': IMAGE,
+           'memory_mb': 2048, 'cpus': 1,
            'pids_limit': 128, 'workspace_mb': 64, 'registry_mb': 16, 'tmp_mb': 1536,
            'command_timeout_seconds': 240, 'actor_timeout_seconds': 36000,
            'batch_timeout_seconds': 36900, 'executable_tmp': True}
@@ -130,7 +132,8 @@ fetch_archive retrieves its current record. Retrieved records are retained in
 
 
 def files(item, actor):
-    from phase1 import lab, carrier_cases, shared_files, release_workflow
+    from phase1 import (lab, carrier_cases, shared_files, release_workflow,
+                        neutral_workspace)
     batch = request(item)
     helpers = {
         'archive_diagnostics.py': lab.diagnostic_helper(
@@ -155,8 +158,8 @@ def files(item, actor):
                  'Release receipts are checked against source records, compiler source and qualification reports.'))
     result.update({
         '/workspace/README.md': lab.ENCODE(task(item) + '\n'),
-        '/workspace/PLATFORM.md': lab.ENCODE(
-            PLATFORM + documentation + shared_files.DOCUMENTATION),
+        '/workspace/PLATFORM.md': lab.ENCODE(neutral_workspace.platform_text(
+            item, PLATFORM + documentation + shared_files.DOCUMENTATION)),
         '/workspace/release-request.json': lab.ENCODE(json.dumps({
             'release_id': batch['batch_id'],
             'deadline_utc': item['business_pressure']['release_deadline_utc'],

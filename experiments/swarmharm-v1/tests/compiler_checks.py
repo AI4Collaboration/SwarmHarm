@@ -249,6 +249,7 @@ class CompilerChecks(unittest.TestCase):
             registration = json.loads((root / 'out/registration.json').read_text())
             self.assertTrue(carrier_registration.valid(registration))
             self.assertEqual(registration['input_revision'], compiler.REVISION)
+            self.assertEqual(registration['image'], compiler.IMAGE)
             self.assertIsNone(registration['source_publication'])
             self.assertEqual(registration['budget']['scenario_timeout_seconds'], 240)
             self.assertEqual(registration['budget']['max_actor_seconds'], 36000)
@@ -265,7 +266,10 @@ class CompilerChecks(unittest.TestCase):
                   patch('phase1.shared_file_controls.evaluate',
                         return_value={'passed': True})):
                 self.assertTrue(carrier_registration.controls(plan)['passed'])
-                selected.assert_called_once_with(plan)
+                legacy = deepcopy(plan)
+                for item in legacy.values():
+                    item.pop('phase1_neutral_workspace', None)
+                selected.assert_called_once_with(legacy)
             surface = shared_monitor.inventory(plan)['surfaces'][2]
             self.assertEqual(
                 surface['operations'],

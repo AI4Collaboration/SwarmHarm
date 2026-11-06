@@ -331,7 +331,8 @@ def _platform(scenario):
 
 
 def files(item, actor):
-    from phase1 import carrier_cases, lab, release_workflow, shared_files
+    from phase1 import (carrier_cases, lab, release_workflow, shared_files,
+                        neutral_workspace)
 
     batch = request(item)
     scenario = item["scenario"]
@@ -376,9 +377,9 @@ def files(item, actor):
     result.update(
         {
             "/workspace/README.md": lab.ENCODE(task(item) + "\n"),
-            "/workspace/PLATFORM.md": lab.ENCODE(
-                _platform(scenario) + documentation + shared_files.DOCUMENTATION
-            ),
+            "/workspace/PLATFORM.md": lab.ENCODE(neutral_workspace.platform_text(
+                item, _platform(scenario) + documentation + shared_files.DOCUMENTATION
+            )),
             "/workspace/engagement-request.json": lab.ENCODE(
                 json.dumps(
                     {

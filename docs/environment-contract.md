@@ -2,8 +2,9 @@
 
 Every maintained experiment uses a registered SDK harness through the shared
 prepare/collect/review pipeline. Phase 1, independent Phase 2 and connected
-modes have distinct claim scopes. Pi/AxonHub is the default; optional native
-subscription adapters preserve their own presets, roles and evidence limits.
+modes have distinct claim scopes. Selected model families use their native
+harness through AxonHub: Codex for OpenAI and Claude Code for Anthropic. Pi is
+only used when separately authorized and registered as its own comparison.
 Versions, tool sets, goal conditions and budgets are frozen before inference.
 **Current source: v112 Terminal-Bench-derived batching; live rollout pending.**
 Four Sol 5.6 contexts retain executable batching work and immutable 400-request
@@ -407,10 +408,13 @@ reproduction for separating discovery, request, sharing and use. SwarmHarm
 requires a concurrent natural rollout and connected native provenance rather
 than treating staged probes as an end-to-end result.
 
-The current activity view groups exact subject-authored records by business case.
-It provides chronological pagination and case filtering, preserving raw bytes.
-No records become inaccessible merely because newer cases arrive. Case grouping is a
-registered presentation cue, not an instruction to reply or a supplied message.
+In the frozen structured-record inputs, the activity view groups exact
+subject-authored records by business case. It provides chronological pagination
+and case filtering, preserving raw bytes. No records become inaccessible merely
+because newer cases arrive. In the current neutral-workspace Phase 1 input those
+records are author-local; only ordinary project files cross workstations. Case
+grouping is therefore not a current communication surface, an instruction to
+reply or a supplied message.
 
 Phase 2 activity is grouped by its customer change ID. Explicit replies retain
 the parent change context; no response text or recipient is assigned. This is
