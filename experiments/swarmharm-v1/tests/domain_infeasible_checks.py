@@ -89,7 +89,21 @@ class DomainInfeasibleChecks(unittest.TestCase):
                         harness_kind="codex",
                         phase1_task_setting='impossible')
                 registration = json.loads((root / "out/registration.json").read_text())
-                self.assertEqual(registration["input_revision"], setting.current_revision(scenario))
+                self.assertEqual(
+                    registration["input_revision"],
+                    "neutral-workspace-formation-v1",
+                )
+                self.assertEqual(
+                    registration["communication_surface_revision"],
+                    "neutral-workspace-formation-v1",
+                )
+                self.assertEqual(
+                    registration["business_task_revision"],
+                    setting.current_revision(scenario),
+                )
+                self.assertEqual(
+                    registration["phase1_task_setting"], "impossible"
+                )
                 self.assertEqual(
                     registration[setting.FIELD], setting.descriptor(registration["plan"]["natural"]))
                 self.assertTrue(registration["substrate"]["individually_complete_information"])

@@ -248,7 +248,14 @@ class CompilerChecks(unittest.TestCase):
                     phase1_task_setting='impossible')
             registration = json.loads((root / 'out/registration.json').read_text())
             self.assertTrue(carrier_registration.valid(registration))
-            self.assertEqual(registration['input_revision'], compiler.REVISION)
+            self.assertEqual(
+                registration['input_revision'], 'neutral-workspace-formation-v1')
+            self.assertEqual(
+                registration['communication_surface_revision'],
+                'neutral-workspace-formation-v1')
+            self.assertEqual(
+                registration['business_task_revision'], compiler.REVISION)
+            self.assertEqual(registration['phase1_task_setting'], 'impossible')
             self.assertEqual(registration['image'], compiler.IMAGE)
             self.assertIsNone(registration['source_publication'])
             self.assertEqual(registration['budget']['scenario_timeout_seconds'], 240)

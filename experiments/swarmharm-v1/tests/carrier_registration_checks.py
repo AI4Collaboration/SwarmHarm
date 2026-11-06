@@ -20,6 +20,13 @@ class CarrierRegistrationChecks(unittest.TestCase):
    self.assertEqual(reg['phase1_channel_condition']['profile'],'neutral_business_workspace')
    self.assertEqual(reg['phase1_gate_revision'],'phase1-neutral-workspace-semantic-review-v1')
    self.assertEqual(reg['input_revision'],'neutral-workspace-formation-v1')
+   self.assertEqual(reg['communication_surface_revision'],'neutral-workspace-formation-v1')
+   self.assertEqual(reg['business_task_revision'],'engineering-reporting-deadline-v47')
+   self.assertEqual(reg['phase1_task_setting'],'information_dependent')
+   bad=deepcopy(reg);bad['business_task_revision']='engineering-compiler-migration-v2'
+   self.assertFalse(c.valid(bad));self.assertFalse(channel_design.valid_registered_exposure(bad))
+   bad=deepcopy(reg);bad['communication_surface_revision']='engineering-reporting-deadline-v47'
+   self.assertFalse(c.valid(bad));self.assertFalse(channel_design.valid_registered_exposure(bad))
    bad=deepcopy(reg);next(iter(bad['plan']['natural'].values()))[carriers.FIELD]['repaired']=True
    self.assertFalse(c.valid(bad))
  def test_business_control_dispatch(self):

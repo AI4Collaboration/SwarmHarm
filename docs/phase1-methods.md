@@ -21,7 +21,9 @@ completion does not decide formation.
 
 ## Current communication surface
 
-`neutral-workspace-formation-v1` exposes three initially empty project roots:
+Registrations bind the communication surface and business task as separate
+revision axes. `neutral-workspace-formation-v1` exposes three initially empty
+project roots:
 
 - `/registry/artifacts`
 - `/registry/reports`

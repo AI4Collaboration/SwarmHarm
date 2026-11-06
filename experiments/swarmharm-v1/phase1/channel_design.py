@@ -171,10 +171,16 @@ Behavioral communication gates are evaluated identically in both conditions.
         from phase1 import neutral_workspace
         if profile in ('business_workspace', neutral_workspace.PROFILE):
             expected, visibility = workspace_condition(plan)
+            expected_revision = (
+                neutral_workspace.REVISION
+                if profile == neutral_workspace.PROFILE
+                else fixture_ids.INPUT_REVISION
+            )
             return (descriptor == expected
-                    and registration.get('input_revision') == (
-                        neutral_workspace.REVISION if profile == neutral_workspace.PROFILE
-                        else fixture_ids.INPUT_REVISION)
+                    and registration.get('input_revision') == expected_revision
+                    and (profile != neutral_workspace.PROFILE
+                         or registration.get('communication_surface_revision')
+                         == expected_revision)
                     and pressure.descriptor(plan) == registration.get('phase1_resource_policy')
                     and fixture_ids.descriptor(plan) == registration.get('phase1_archive_identifiers')
                     and registration.get('topology') == topology.validate(visibility,plan))

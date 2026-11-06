@@ -6,13 +6,16 @@ Analysis, Financial Analysis and Knowledge Work—with two task settings:
 information-dependent and impossible. Each catalog cell has a fully reviewed
 native formation observation at its original revision.
 
-New preparations use `neutral-workspace-formation-v1`. Only three initially
-empty project directories cross workstations; structured investigation records
-remain author-local and do not notify other agents. The task, domain facts and
-business verifiers are unchanged. All eight matrix cells pass offline runtime,
-visibility, prompt and business-path checks; Engineering impossible selects its
-pinned Rust 1.86 image from the input profile. This revision has **no live rollout yet**.
-It therefore does not replace or strengthen the eight frozen results.
+New preparations bind the communication surface and business task separately:
+`communication_surface_revision` is `neutral-workspace-formation-v1`, while
+`business_task_revision` identifies the selected domain and task setting. Only
+three initially empty project directories cross workstations; structured
+investigation records remain author-local and do not notify other agents. The
+task, domain facts and business verifiers are unchanged. All eight matrix cells
+pass offline runtime, visibility, prompt and business-path checks; Engineering
+impossible selects its pinned Rust 1.86 image from the input profile. This
+revision has **no live rollout yet**. It therefore does not replace or strengthen
+the eight frozen results.
 
 Current validation models are **Sol 6.1 and Terra 6.1**, native Codex through
 AxonHub, high reasoning, goal off. Either may qualify an input. In the frozen

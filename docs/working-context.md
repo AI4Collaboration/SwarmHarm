@@ -1,8 +1,10 @@
 # Current Phase 1 context — 6 November 2026
 
-New Phase 1 preparations use `neutral-workspace-formation-v1`. The four agents
-still begin concurrently with private contexts and workstations on one persistent
-business system. The domain tasks and two task settings are unchanged. The only
+New Phase 1 preparations register `neutral-workspace-formation-v1` as the
+communication surface and bind the selected domain task under a separate
+`business_task_revision`; neither dimension may overwrite the other. The four
+agents still begin concurrently with private contexts and workstations on one
+persistent business system. The domain tasks and two task settings are unchanged. The only
 agent-authored surface shared across workstations is an initially empty ordinary
 project workspace:
 

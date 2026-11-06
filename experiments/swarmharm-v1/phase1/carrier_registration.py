@@ -121,7 +121,29 @@ def valid(reg):
                 reg.get(domain_infeasible.FIELD) != domain_infeasible.descriptor(reg['plan']['natural'])
                 or reg.get('source_publication') is not None):
             return False
+        neutral = neutral_workspace.descriptor(reg['plan']['natural'])
+        task_revision = (
+            engineering_compiler.descriptor(reg['plan']['natural']) or
+            domain_infeasible.descriptor(reg['plan']['natural'])
+        )
+        if task_revision is not None:
+            expected_task_revision = task_revision['revision']
+        else:
+            import domain_runtime
+            expected_task_revision = domain_runtime.mechanics(
+                reg['scenario']
+            ).registration_overrides(reg['cue_condition'])['input_revision']
+        revision_binding_valid = (
+            neutral is None or (
+                reg.get('input_revision') == neutral_workspace.REVISION
+                and reg.get('communication_surface_revision')
+                == neutral_workspace.REVISION
+                and isinstance(reg.get('business_task_revision'), str)
+                and reg.get('business_task_revision') == expected_task_revision
+            )
+        )
         return (reg.get(FIELD)==expected
+                and revision_binding_valid
                 and reg.get('phase1_gate_revision')==review_schema(reg['plan']['natural'])
                 and reg.get('study_mode')=='phase1' and (reg.get('scenario')=='engineering-capacity'
                     or (expected['revision'] in ('engagement-registration-v1', 'domain-task-setting-registration-v1')

@@ -681,6 +681,13 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'controls.json','initial-input-audit.json','initial-file-audit.json',
             'route-confirmation.json','phase2-plan.json')}}
     reg.update(scenario_mechanics.registration_overrides(cue_condition))
+    # Phase 1 has two independently versioned input dimensions.  Preserve the
+    # domain task selected by the scenario adapter before the communication
+    # surface applies its own revision below.  Frozen historical registrations
+    # keep their original single input_revision field.
+    scenario_task_revision = reg.get('input_revision')
+    if phase1_only and not isinstance(scenario_task_revision, str):
+        raise ValueError('Phase 1 scenario must register a business task revision')
     if channel_condition is not None:
         reg['phase1_channel_condition'] = channel_condition
     # These shared mechanics apply after every domain's metadata override.
@@ -720,15 +727,23 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     reg['study_mode'] = study_mode
     if phase1_only:
         reg.update(study_mode='phase1', continuous_rollout=False)
+        reg['phase1_task_setting'] = (
+            phase1_task_setting or 'information_dependent'
+        )
         reg['phase2'].update(enabled=False, depends_on_phase1=False, end_to_end_claim_supported=False)
         reg['design']='Standalone autonomous formation; Phase 2 is not evaluated.'
         reg['primary']='Autonomous Phase 1 formation only; no Phase 2 or end-to-end claim.'
         reg['format_contract']['output']['phase2_depends_on_verified_phase1']=False
         reg['format_contract']['claims']['phase1_only']='Formation only; Phase 2 is not evaluated.'
         if business_workspace:
-            reg['input_revision'] = (neutral_workspace.REVISION
-                                     if neutral_workspace.descriptor(plan['natural']) is not None
-                                     else fixture_ids.INPUT_REVISION)
+            communication_revision = (
+                neutral_workspace.REVISION
+                if neutral_workspace.descriptor(plan['natural']) is not None
+                else fixture_ids.INPUT_REVISION
+            )
+            reg['input_revision'] = communication_revision
+            reg['communication_surface_revision'] = communication_revision
+            reg['business_task_revision'] = scenario_task_revision
             if phase1_pressure_profile:
                 reg['phase1_resource_policy'] = resource_pressure.descriptor(plan['natural'])
             reg['phase1_archive_identifiers'] = fixture_ids.descriptor(plan['natural'])
@@ -975,7 +990,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['input_hashes']['PROTOCOL.md'] = sha(root/'PROTOCOL.md')
     if phase1_domain_task_setting:
         reg[domain_infeasible.FIELD] = domain_infeasible.descriptor(plan['natural'])
-        reg['input_revision'] = reg[domain_infeasible.FIELD]['revision']
+        reg['business_task_revision'] = reg[domain_infeasible.FIELD]['revision']
         reg['source_publication'] = None
         reg['runtime_isolation']['review_submission'] = (
             'current_complete_sources_plus_submitted_business_deliverable')
@@ -1040,7 +1055,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if engineering_workspace:
         if phase1_engineering_project:
             reg[engineering_compiler.FIELD] = engineering_compiler.descriptor(plan['natural'])
-            reg['input_revision'] = engineering_compiler.REVISION
+            reg['business_task_revision'] = engineering_compiler.REVISION
             reg['source_publication'] = None
             reg['runtime_isolation']['review_submission'] = (
                 'fresh_source_build_plus_current_qualification_report')
