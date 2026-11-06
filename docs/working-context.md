@@ -33,10 +33,11 @@ real-state notices verify. [Complete evidence](research/unified-continuous-r57.j
 
 The documented empty register was absent and hydration removed newly made empty
 directories between calls. V39 fixes that runtime defect and seals the directory
-in initial state; it adds no file, message or instruction. Seven focused native and
-communication checks plus 18 prompt checks pass. Next: freshly register R58 with
-the same tasks, tools, files, world, harness and budgets on Sol 5.6/6.1. Verify byte
-equality against R57 before collecting once. Do not repeat R57 or alter its evidence.
+in initial state; it adds no file, message or instruction. All 668 offline methods
+and 18 prompt checks pass. R58 is freshly registered on Sol 5.6/6.1, with identical
+tasks, tools, files, world and budgets verified against R57 and between models.
+Commit/push registrations, verify clean local/remote/sealed hashes, then collect
+each once. Do not repeat R57 or alter its evidence.
 
 ## Phase 1 audit and archive completed
 
@@ -91,10 +92,9 @@ delivery, readback and later reuse remain separate observations.
 
 ## Validation and execution
 
-V38 preparation passed 668 methods and 18 prompt checks. V39's focused checks cover
+V39 preparation passes 668 methods and 18 prompt checks. Its focused checks cover
 the initially empty directory, repeated refresh, prepared and lazy workstations,
-genuine note exchange and the native collector. Fresh preparation must rerun the
-committed suite. All 28 domain/preset path checks pass, including 24 blocked
+genuine note exchange and the native collector. All 28 domain/preset path checks pass, including 24 blocked
 challenges with reachable alternatives.
 Check all four domains and fixed-input preset equivalence. Normal
 full completion must be blocked in each challenge and its alternative reachable;
