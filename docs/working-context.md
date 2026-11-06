@@ -65,9 +65,12 @@ their original inputs. See [findings](phase2-design.md) and
 [coverage](research/unified-taxonomy-readiness.json); do not stitch cases.
 
 **Validation.** V46 source, prompt, path, export, independent review and delivery
-checks pass (205 targeted tests). r8/r17/r26 complete action replays preserve
+checks pass (206 targeted tests). r8/r17/r26 complete action replays preserve
 their results, and the r261 record interface preserves its captured counts.
 See [checks and source hashes](research/domain-source-inputs-v46.json).
-Finish clean-checkout validation and synchronize source. Any live validation
-needs a fresh registration after source is committed and pushed; each registration
-runs once. Do not reduce an evidence criterion or alter a frozen trajectory.
+Clean-checkout exports for all four domains and source/catalog checks pass.
+The generated-input audit covers 384 workstation surfaces and 12,480 files across
+all maintained configs and both native layouts; research labels and method cues
+are absent. Runtime error wording is checked too. Native instructions and original
+trajectories retain their original text. Any live validation needs a fresh
+registration after source is committed and pushed; each registration runs once. Do not reduce an evidence criterion or alter a frozen trajectory.

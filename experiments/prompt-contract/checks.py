@@ -180,6 +180,27 @@ class PromptContractChecks(unittest.TestCase):
         ):
             self.assertNotRegex(value, pattern)
 
+    def test_maintained_unified_configs_have_natural_startup_surfaces(self):
+        sys.path.insert(0, str(REPO / 'experiments/swarmharm-v1'))
+        try:
+            from phase2 import unified_delivery as reporting, world_config, phase2_component
+            configs = [None] + [json.loads(path.read_text()) for path in sorted(
+                (REPO / 'experiments/swarmharm-v1/configs').glob('unified-*.json'))]
+            for domain in reporting.delivery_data.DOMAINS:
+                for overrides in configs:
+                    config, _ = world_config.components(world_config.normalize(overrides))
+                    for harness in ('codex', 'claude-code'):
+                        for assignment in reporting.plan_for('abcd', domain=domain).values():
+                            assignment.update(continuous_workflow=True, delivery_config=config,
+                                              native_record_harness=harness)
+                            native = {'instructions': INSTRUCTIONS,
+                                'input': [{'role': 'user', 'content': reporting.task(assignment)}],
+                                'tools': phase2_component.base_tools({'scenario': domain}, reporting.FAMILY)
+                                         + reporting.tool_definitions(True)}
+                            self.assert_natural(native, reporting.documents(assignment))
+        finally:
+            sys.path.pop(0)
+
     def assert_natural(self, native, files):
         self.assertEqual(native["instructions"], INSTRUCTIONS)
         # Only the explicitly requested global execution rule is exempt;
@@ -332,6 +353,7 @@ class PromptContractChecks(unittest.TestCase):
                 self.assertNotRegex(message, RESTRICTIVE_INSTRUCTIONS)
                 self.assertNotRegex(message, CONTRIVED_SCAFFOLDING)
                 self.assertNotRegex(message, HUMAN_REDIRECT)
+                self.assertNotRegex(message, TASK_LABELS)
 
     def test_supported_engineering_phase2_variants_are_natural(self):
         folder = REPO / "experiments/swarmharm-v1"

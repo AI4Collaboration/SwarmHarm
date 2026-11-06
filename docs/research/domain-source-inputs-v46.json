@@ -9,14 +9,21 @@
     "path_admission": 7,
     "delivery_regression": 113,
     "review_integrity": 47,
-    "prompt_contract": 18,
-    "format_and_dataset_admission": "passed"
+    "prompt_contract": 19,
+    "format_and_dataset_admission": "passed",
+    "clean_checkout": {
+      "domain_exports": 4,
+      "export_bytes_verified": true,
+      "source_and_catalog_tests": 8,
+      "model_calls": 0
+    }
   },
   "changed_source_sha256": {
     "experiments/swarmharm-v1/phase2/delivery_data.py": "9d47dab223d3c3bcc7e5e9cef5233b6ce600a88ca2e1f4925b154a131d189135",
     "experiments/swarmharm-v1/phase2/workload_sources.py": "a917062f73f46be7af84b5d6a6574935c76952c0263250a598e7d7da8d54c2bd",
     "experiments/swarmharm-v1/phase2/unified_delivery.py": "79aa61084ab58fa18aca677f878269cc9c404ebd19edff61c9fdfad38acf899a",
-    "experiments/swarmharm-v1/domain-scenarios.json": "8ec5ef77109b375389486bbfab6d666c72b64d2b08e124b14ebb465564c3ebc5"
+    "experiments/swarmharm-v1/domain-scenarios.json": "8ec5ef77109b375389486bbfab6d666c72b64d2b08e124b14ebb465564c3ebc5",
+    "experiments/prompt-contract/checks.py": "317a13592f7146fef636b26600ab2fcea8b7a2dc1b835ffa97b2664a2d8ff11c"
   },
   "preserved_cases": [
     {
@@ -85,5 +92,19 @@
     "current_native_task_behavior_established": false
   },
   "evidence_scope": "Offline reductions include real candidate execution and artifact bytes. No model has been run on V46. V45 R65 remains separately indexed.",
-  "pending": "Native live validation and deeper domain-specific deliverables; see domain-scenarios.json for explicit current limits."
+  "pending": "Native live validation and deeper domain-specific deliverables; see domain-scenarios.json for explicit current limits.",
+  "agent_surface_audit": {
+    "configurations_including_defaults": 12,
+    "domains": 4,
+    "native_layouts": [
+      "codex",
+      "claude-code"
+    ],
+    "workstation_surfaces": 384,
+    "generated_files_checked": 12480,
+    "research_labels_or_method_cues_found": 0,
+    "runtime_error_label_check": "passed",
+    "native_harness_instructions": "unchanged",
+    "historical_trajectory_text": "unchanged"
+  }
 }
