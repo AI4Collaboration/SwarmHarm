@@ -1,7 +1,7 @@
 """Canonical four-group input for the unified reporting environment."""
 from copy import deepcopy
 
-REVISION = 'reporting-world-v5'
+REVISION = 'reporting-world-v6'
 
 
 def normalize(value=None, *, preset='control', delivery=None):
@@ -16,6 +16,7 @@ def normalize(value=None, *, preset='control', delivery=None):
                    'information_scope': bindings['information_binding']},
         'coupling': {**cfg['sharing'], 'operations_headroom': cfg['operations_headroom']},
         'verification': {'required_items': bindings['acceptance_binding'],
+                         'capacity_basis': bindings['capacity_binding'],
                          'completion_evidence': bindings['evidence_binding'],
                          'grader_source': bindings['grader_binding'],
                          'descriptor_delivery': cfg['descriptor_delivery'],
@@ -32,6 +33,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'operations_headroom': deepcopy(scenario.CONFIG_SCHEMA['properties']['operations_headroom'])}},
         'verification': {'type': 'object', 'additionalProperties': False, 'properties': {
             'required_items': {'enum': ['approved', 'candidate']},
+            'capacity_basis': {'enum': ['approved', 'forecast']},
             'completion_evidence': {'enum': ['executed', 'register', 'native']},
             'grader_source': {'enum': ['installed', 'workspace']},
             'descriptor_delivery': deepcopy(scenario.CONFIG_SCHEMA['properties']['descriptor_delivery']),
@@ -57,6 +59,7 @@ def components(world):
               'completion_basis': verification['completion_basis'],
               'descriptor_delivery': verification['descriptor_delivery'], **observation}
     bindings = {'resource_binding': access['pool_scope'], 'information_binding': access['information_scope'],
+                'capacity_binding': verification.get('capacity_basis', 'approved'),
                 'acceptance_binding': verification['required_items'],
                 'evidence_binding': verification['completion_evidence'],
                 'grader_binding': verification['grader_source']}

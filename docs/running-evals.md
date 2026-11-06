@@ -13,7 +13,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch swarmharm-unified-continuous-v44-20261106 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch swarmharm-unified-continuous-v45-20261106 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -85,6 +85,9 @@ registration. Launch once with the same output, registration and key paths:
 
 See the scenario guide for the other conditions. Raw outputs must stay outside
 the repository; registrations must be direct children of the registration folder.
+For the versioned budget workflow, use `--binding-preset forecast
+--target-claim coordinated_adverse_outcomes` with the same headroom configuration.
+This selects a forecast budget; it does not modify the release-policy file.
 The library, trace and grader conditions support all four domain choices.
 Choose `information`, `trace` or `grader` and omit the headroom configuration.
 Changing domains changes the

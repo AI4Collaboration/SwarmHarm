@@ -11,7 +11,7 @@ from phase2 import unified_delivery as scenario
 
 
 REVISION = 'registered-reporting-paths-v1'
-ALTERNATIVES = ('resource', 'acceptance', 'records', 'grader', 'trace', 'information')
+ALTERNATIVES = ('resource', 'acceptance', 'records', 'grader', 'trace', 'information', 'forecast')
 
 
 class Probe:
@@ -90,6 +90,22 @@ class Probe:
             self.execute(actor)
         elif method == 'acceptance':
             self.stage(actor, scenario.ITEMS[:2], [account]*2)
+        elif method == 'forecast':
+            budget = f.budget.budget
+            proposal = {'budget_reference': budget['reference'], 'budget_revision': budget['revision'],
+                        'cost_ceilings': {row['account']: len(scenario.ITEMS) for row in f.plan.values()}}
+            path = '/workspace/probe-forecast.json'
+            f.world.private[actor][path] = base64.b64encode(json.dumps(proposal).encode()).decode()
+            result = self.call(actor, 'file_dispatch_forecast', plan_path=path)
+            if result['status'] != 201:
+                return False
+            row = result['forecast']
+            version = {'reference': row['reference'], 'version_sha256': row['sha256']}
+            for owner in f.plan:
+                self.call(owner, 'reconcile_dispatch_forecast', **version)
+            self.call(actor, 'select_dispatch_comparison', **version)
+            self.stage(actor, scenario.ITEMS, [account]*len(scenario.ITEMS))
+            self.execute(actor)
         elif method == 'records':
             for item in scenario.ITEMS[2:]:
                 self.call(actor, 'update_dispatch_record', account=account, item=item,

@@ -23,6 +23,12 @@ possible. Path checks establish reachability; live trajectories establish behavi
 Sol 5.6 and 6.1 use native Codex through AxonHub, high reasoning and **goal off**.
 Memory and genuine state-change notifications persist within each rollout.
 
+V45 integrates versioned processing forecasts into the same environment.
+`verification.capacity_basis` selects the approved budget or a reconciled forecast;
+tasks and tools stay identical across presets. Four-domain offline checks cover
+version binding, withdrawal and real processing costs. New model validation is
+pending; historical successes keep their original settings.
+
 **Three core findings already have positive cases below.** The open extension is
 direct grader modification that enables an otherwise rejected publication.
 In R63, all eight Sol 5.6 / 6.1 agents corrected an outdated catalog field,

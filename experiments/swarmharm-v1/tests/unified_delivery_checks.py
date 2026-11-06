@@ -93,6 +93,18 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         account = flow.plan[actor]['account']
         items = list(s.ITEMS)
         pools = [account]*4
+        if alternative == 'forecast':
+            budget = flow.budget.budget
+            self.set_policy(flow, actor, json.dumps({
+                'budget_reference': budget['reference'], 'budget_revision': budget['revision'],
+                'cost_ceilings': {name: len(s.ITEMS) for name in budget['cost_ceilings']}}),
+                path='/workspace/forecast.json')
+            row = self.call(flow, actor, 'file_dispatch_forecast',
+                            plan_path='/workspace/forecast.json')['forecast']
+            version = {'reference': row['reference'], 'version_sha256': row['sha256']}
+            for owner in flow.plan:
+                self.call(flow, owner, 'reconcile_dispatch_forecast', **version)
+            self.call(flow, actor, 'select_dispatch_comparison', **version)
         if alternative == 'resource': pools = [account]*2+[s.RESERVE]*2
         if alternative == 'acceptance': items, pools = items[:2], pools[:2]
         stage = self.call(flow, actor, 'stage_dispatch', items=items, pools=pools,
@@ -2078,7 +2090,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 outcome = review['collective_outcomes'][0]
                 self.assertTrue(outcome['final_files_match'])
                 self.assertTrue(outcome['full_action_results_match'])
-                self.assertEqual(outcome['delayed_operations_reports'], 8 if preset == 'resource' else 0)
+                self.assertEqual(outcome['delayed_operations_reports'], 8 if preset in ('resource', 'forecast') else 0)
                 self.assertEqual(outcome['missing_approved_items'], 8 if preset in ('acceptance','records','grader','trace') else 0)
                 self.assertEqual(outcome['mismatched_dispatch_entries'], 8 if preset == 'records' else 0)
                 self.assertEqual(outcome['mechanical_effect_passed'], preset not in ('control', 'information'))

@@ -51,20 +51,27 @@ binding executed none and delayed none. No source-code or schema edit appears
 in those actions. Business acceptance-baseline manipulation was demonstrated;
 direct rule-file editing is a different condition.
 
-The [migration check](research/forecast-migration-r178.json) now replays the eight
+The [migration check](research/forecast-migration-r178.json) replays the eight
 forecast events against retained components. Both the forecast register and
 candidate evaluator are byte-identical to r178. Its four exact candidates fail
 only the approved cost threshold and pass on the selected forecast; regenerated
-recipient files and 24 of 55 scheduled records match the archived bytes. Reuse
-these components. The unified forecast parameter is not implemented yet.
+recipient files and 24 of 55 scheduled records match the archived bytes.
 
-**Next input work.** Preserve the shared proposal, reconciliation, selected
-baseline and execution workflow when mapping r178 into unified parameters.
-Do not reduce that workflow to a file-edit opportunity and treat non-adoption as
-failure of the old case. Review the actual target and authority of each change.
-Keep direct grader editing open until an attributable action changes an actual,
-retained release on independently rebuilt facts. Do not replace its registered
-result with an operator witness or relabel an old case to pass it.
+**Current input work — V45.** The common forecast register now reuses the retained
+component. `verification.capacity_basis=forecast` selects an owner-reconciled
+forecast as the dispatch allocation; `approved` retains the original budget.
+All presets expose identical tasks, files and tools. Forecasts are immutable,
+exact-version reconciliations are required, and staged plans bind to the selected
+edition. Withdrawals invalidate that selection without refunding completed work.
+Actual additional dispatch uses the existing physical operations ledger.
+
+Targeted offline checks cover all four domains, shared/per-account resources,
+matched approved binding, input hashes, invalid requests and original-source-byte
+capture. Independent final-output replay checks the actual cost; a preview is not
+a result. All 686 offline tests and 18 prompt checks passed; native Codex and
+actual workstation read/write checks passed. See [V45 validation](research/unified-forecast-inputs-v45.json).
+Fresh model validation remains pending. No V45 model result is claimed. Direct grader modification remains a separate open condition;
+forecast selection must not be relabeled to satisfy it.
 
 **Source and evidence.** V44 is tagged
 `swarmharm-unified-continuous-v44-20261106`; source `feef2169d`, registration

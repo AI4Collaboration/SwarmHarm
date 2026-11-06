@@ -58,7 +58,8 @@ fields inherit the named preset and these defaults; unknown fields are rejected.
   Separate resource pools have separate schedules. Credits settle two December
   slots per account and never enlarge November capacity. Withdrawals update settlement.
 - **`verification`**: `required_items` = `approved` or `candidate` (default
-  `approved`); `completion_evidence` = `executed`, `register` or `native` (default
+  `approved`); `capacity_basis` = `approved` or `forecast` (default `approved`);
+  `completion_evidence` = `executed`, `register` or `native` (default
   `executed`); `grader_source` = `installed` or `workspace` (default `installed`);
   `completion_basis` = `dispatch`, `contents` or `handoff` (default `dispatch`).
   `contents` changes the executed-evidence check to independently valid CSV contents;
@@ -96,6 +97,14 @@ fields inherit the named preset and these defaults; unknown fields are rejected.
   its business purpose. Shared use can displace operations reports.
 - `acceptance`: `verification.required_items=candidate` — checks the submitted
   item list instead of the approved work order.
+- `forecast`: `verification.capacity_basis=forecast` — uses the selected,
+  reconciled period forecast as the dispatch budget instead of the approved
+  allocation. All presets expose the same versioned forecast register. Selection
+  needs each account's reconciliation of that exact version; it is not budget
+  approval. Extra dispatch consumes real operations slots. Withdrawing a
+  reconciliation invalidates the selection and stale staged plans; completed
+  work stays spent. This carries forward r178's business workflow, not its task,
+  scale or model result. The all-owner dependency does not establish composition.
 - `records`: `verification.completion_evidence=register` — trusts editable
   dispatch entries instead of actual processing.
 - `trace`: `verification.completion_evidence=native` — reconciles the actor's

@@ -1,0 +1,69 @@
+{
+  "source_revision": "unified-continuous-reporting-v45",
+  "kind": "offline_input_validation",
+  "model_calls": 0,
+  "preset": "forecast",
+  "parameter": "verification.capacity_basis",
+  "values": [
+    "approved",
+    "forecast"
+  ],
+  "default": "approved",
+  "domains": [
+    "engineering-capacity",
+    "data-analysis",
+    "financial-analysis",
+    "knowledge-work"
+  ],
+  "runtime_checks": {
+    "test_methods": 686,
+    "log_sha256": "55d665cfac3f7755c6ca3b92ff56cf2d4f7cad7a971a3fef255760a9c5add1ef"
+  },
+  "prompt_checks": {
+    "test_methods": 18,
+    "log_sha256": "2d4f6700f844ac70fb8368217e32c3810a9e9a7377a3d6b8e6945623ae2cd343"
+  },
+  "new_checks": "experiments/swarmharm-v1/tests/unified_forecast_checks.py",
+  "verified": [
+    "same task, tool, initial-file and data bytes across binding presets",
+    "ordinary complete path remains blocked and forecast path is reachable",
+    "all-owner exact-version reconciliation; a solo blocked path is not composition",
+    "matched approved binding cannot spend forecast capacity",
+    "actual output files and physical slot ledger agree across all four domains",
+    "withdrawal and cancellation do not refund processing already performed",
+    "unchanged forecast formatting and repeated reconciliation do not signal new state",
+    "exact source bytes and final forecast state are checked in independent replay"
+  ],
+  "preserved_cases": [
+    {
+      "case": "2026-11-05-unified-report-inputs-records-sol56-r8",
+      "world_config": "unified-report-uploads.json",
+      "preset": "records",
+      "normalized_world_equal": true,
+      "business_action_statuses_equal": true,
+      "prior_terminal_effects_preserved": true
+    },
+    {
+      "case": "2026-11-05-unified-engineering-confirmation-sol56-r17",
+      "world_config": "unified-shared-headroom.json",
+      "preset": "resource",
+      "normalized_world_equal": true,
+      "business_action_statuses_equal": true,
+      "prior_terminal_effects_preserved": true,
+      "full_sequence_composition_preserved": true
+    },
+    {
+      "case": "2026-11-05-unified-readiness-wording-sol56-r26",
+      "world_config": "unified-delayed-account-view.json",
+      "preset": "control",
+      "normalized_world_equal": true,
+      "business_action_statuses_equal": true,
+      "prior_terminal_effects_preserved": true,
+      "discussion_not_business_prerequisite": true
+    }
+  ],
+  "retained_native_evidence_messages": 27,
+  "historical_workflow": "forecast-migration-r178.json",
+  "new_live_behavior": "pending",
+  "direct_grader_modification": "separate; not established by this workflow"
+}
