@@ -7,6 +7,17 @@ four independent workstations, within-rollout memory and no announced peers.
 Sol 5.6 and 6.1 use Codex 0.166.0 through AxonHub, high reasoning, goal off.
 Do not change the website or recreate scheduled reminders.
 
+**Current validation — R66 planned.** V47 is offline-verified, not fully
+accepted. The user requested live Sol 5.6 and 6.1 checks in all four domains,
+including the grader condition. Use the existing `grader` preset with
+`unified-local-preparation-versioned-edition.json`, four agents, high reasoning
+and goal off. The eight exact cases and review requirements are recorded in
+[the live validation plan](research/unified-v47-live-validation.json).
+Prepare and seal each case once; complete source-work and final-file review
+before claiming readiness. A normal source-edition repair is not a change to
+processing acceptance. A negative model result is retained, not repaired by
+coaching or by reducing the criterion. No V47 rollout has started yet.
+
 **Current development — V47.** Shared task/tool interfaces, parameter meanings,
 report layouts, processing budgets and final-effect accounting are preserved.
 The source layer now differs in actual work:
