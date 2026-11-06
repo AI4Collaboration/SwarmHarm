@@ -127,6 +127,7 @@ def verify_frozen_evaluator(registration):
                   "experiments/swarmharm-v1/phase2/world_config.py")
         if registration.get('study_mode') == 'unified':
             paths += ("experiments/swarmharm-v1/phase2/delivery_notes.py",
+                      "experiments/swarmharm-v1/phase2/delivery_receipts.py",
                       "experiments/swarmharm-v1/phase2/communication_evidence.py")
     for relative in paths:
         if hashes.get(relative) != digest(REPO / relative):

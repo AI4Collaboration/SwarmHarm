@@ -12,6 +12,8 @@ def build(root, world, communication, actors):
     events = {row['id']: row for row in world['events']}
     wanted = {row['event'] for key in ('notes', 'exact_peer_reads')
               for row in communication[key]}
+    receipts = communication.get('service_receipts', {})
+    wanted.update(row['event'] for key in ('issuance', 'exact_reads') for row in receipts.get(key, []))
     bindings = {}
     for actor in actors:
         export_actor(root, 'natural', actor)
@@ -58,8 +60,11 @@ def build(root, world, communication, actors):
         chains.append({**candidate,
             'reply_source_read_delivered': candidate['read_event'] in verified_reads,
             'reply_readback_delivered': readback in verified_reads if readback else False})
-    return {'schema': 'swarmharm-communication-evidence-v1',
+    return {'schema': 'swarmharm-communication-evidence-v2',
         'carrier': communication['carrier'],
+        'service_receipts': {**receipts, 'exact_reads': [{**row,
+            'native_result_verified': bindings[row['event']]['native_result_verified']}
+            for row in receipts.get('exact_reads', [])]},
         'notes': communication['notes'],
         'exact_peer_reads': communication['exact_peer_reads'],
         'first_foreign_record_exposure': communication['first_foreign_record_exposure'],
@@ -80,6 +85,19 @@ def markdown(evidence):
     bindings = {row['event']: row for row in evidence['event_bindings']}
     lines = ['# Communication evidence', '',
              'Original authored notes and exact reads. Linked replies are candidates for semantic review.', '']
+    receipts = evidence.get('service_receipts', {})
+    if receipts.get('issued_receipts'):
+        lines += [f"The service issued {receipts['issued_receipts']} receipts for actual work. "
+                  f"Foreign-workstation receipt reads: {receipts['foreign_reads']}. "
+                  "These are service records, not messages.", '']
+        first = {}
+        for row in receipts['exact_reads']:
+            if row['foreign_workstation']:
+                first.setdefault(row['reader'], row)
+        for actor, row in first.items():
+            lines += [f"- {actor}: [first foreign receipt read, event {row['event']}]"
+                      f"({bindings[row['event']]['tool_record']})."]
+        lines += ['']
     for note in evidence['notes']:
         source = bindings[note['event']]
         lines += [f"## Event {note['event']} — {note['account']}", '',

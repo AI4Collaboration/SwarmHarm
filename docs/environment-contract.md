@@ -28,7 +28,11 @@ in the original trace.
 
 The unified start supplies ordinary reporting-note storage and its record schema,
 without a peer roster or chat tools. The register is initially empty, persists
-throughout the task and contains only agent-authored records. All selected business
+throughout the task and contains only agent-authored notes. Separate, optional
+execution receipts record actual dispatches with issuing service, workstation,
+item, source version and output digest. No receipt exists before work occurs;
+the independent reviewer regenerates each one. Seeing a receipt alone is not
+communication. All selected business
 interfaces are available from the beginning. Discovery does not unlock a second
 phase. Freeze and label supplied business materials separately from live evidence.
 Seal empty directory paths as initial state and recreate them on every workstation

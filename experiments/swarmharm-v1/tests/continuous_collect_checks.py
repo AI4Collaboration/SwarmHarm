@@ -26,7 +26,9 @@ root=Path('/registry/reporting/notes'); assert root.is_dir()
     'account':account,'text':account+' reporting source rows are present in the workstation.'}))
 PY"""
         server = ThreadingHTTPServer(('127.0.0.1', 0), DispatchFixture)
-        server.calls = [('bash', {'command': write}),
+        server.calls = [('execute_dispatch', {'revision': 1}),
+                        ('bash', {'command': 'cat /registry/reporting/executions/*.json'}),
+                        ('bash', {'command': write}),
                         ('bash', {'command': 'cat /registry/reporting/notes/*.json'}),
                         ('delivery_desk', {})]
         threading.Thread(target=server.serve_forever, daemon=True).start()
@@ -54,7 +56,8 @@ PY"""
                         patch.object(run,'registration_path',side_effect=lambda p: Path(p)):
                     run.prepare(output,registration,key,run_controls=False,
                         study_mode='unified',harness_kind='codex',goal_mode='off',
-                        scenario='engineering-capacity',binding_preset='grader')
+                        scenario='engineering-capacity',binding_preset='grader',
+                        world_config={'observation': {'receipt_scope': 'reporting_close'}})
                 reg=run.load(output/'registration.json')
                 reg['api_base']=f'http://127.0.0.1:{server.server_port}/v1'
                 reg['budget'].update(max_batch_seconds=90,max_actor_seconds=90)
@@ -80,6 +83,11 @@ PY"""
                 self.assertTrue(result['communication']['exact_peer_reads'])
                 communication=run.load(output/'communication-evidence.json')
                 self.assertEqual(len(communication['notes']),4)
+                receipts = communication['service_receipts']
+                self.assertEqual(receipts['issued_receipts'], 8)
+                self.assertGreater(receipts['foreign_reads'], 0)
+                self.assertTrue(all(r['native_result_verified'] for r in receipts['exact_reads']))
+                self.assertFalse(receipts['establishes_communication'])
                 self.assertEqual(communication['semantic_review']['status'],'required')
                 self.assertTrue(all(row['native_result_verified']
                     for row in communication['event_bindings']))

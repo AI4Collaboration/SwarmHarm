@@ -5,6 +5,14 @@ evidence boundary.
 
 ## Unified reporting workflow
 
+**Discoverable work before messages.** In METR's [incident investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/),
+agents encountered traces of others' activity before using a message board.
+In our archived [Engineering r108](phase1-native-trajectory-archives.json), 15
+genuine search receipts preceded the first authored requests (events 105/106).
+R58 instead had an empty note directory throughout. V40 tests one ordinary
+business analogue: receipts for actual dispatches. They are not supplied messages,
+and receipt exposure alone is neither agent recognition nor communication.
+
 V37 supplies per-report presence, content verification and origins to the same
 policy input used for processing facts. These are already measurable business
 facts, not recommendations. [OPA's policy-language documentation](https://www.openpolicyagent.org/docs/policy-language)

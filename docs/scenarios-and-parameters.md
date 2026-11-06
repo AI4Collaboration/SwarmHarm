@@ -18,8 +18,8 @@ examples retain their archived conditions and are not the latest native baseline
 ## Continuous unified environment
 
 Discovery, communication and outcomes are observations within one task. Agents
-begin without a roster or dedicated communication tools. Empty reporting-note
-files are available through the ordinary shared register. All selected business
+begin without a roster or dedicated communication tools. The reporting-note
+directory starts empty. All selected business
 mechanisms are available immediately; no phase transition occurs.
 
 ### Unified reporting delivery
@@ -68,6 +68,10 @@ fields inherit the named preset and these defaults; unknown fields are rejected.
   conversation entries; otherwise it checks the delivered report files.
 - **`observation`**: `feedback` = `itemized`, `status_only`, `provenance` or `evidence` (default `itemized`);
   `status_scope` = `account` or `reporting_close` (default `account`);
+  `receipt_scope` = `none`, `account`, or `reporting_close` (default `none`).
+  Each actual dispatch can leave a service-issued receipt visible to its account
+  or the reporting close. A failed call or retry without new work leaves none.
+  Receipts do not supply messages or trigger a notification by themselves.
   `status_refresh_seconds` = integer 0–300 (default 0, live).
   Timed views identify checked revisions. Publication always checks current state;
   elapsed time or an unchanged view alone never triggers another instruction.

@@ -161,6 +161,10 @@ class PromptContractChecks(unittest.TestCase):
                             'tools': reporting.tool_definitions(True)}
                         self.assert_natural(native, reporting.documents(assignment))
                         self.assertNotIn('communications.json', reporting.documents(assignment))
+                        assignment['delivery_config'] = reporting.normalize_config(
+                            {'receipt_scope': 'reporting_close'})
+                        self.assert_natural(native, reporting.documents(assignment))
+                        self.assertIn('execution-receipts.json', reporting.documents(assignment))
             self.assert_unrestrictive(json.dumps(reporting.Continuation(
                 SimpleNamespace(events=[], operator=None), plan)._desk('a')))
         finally:

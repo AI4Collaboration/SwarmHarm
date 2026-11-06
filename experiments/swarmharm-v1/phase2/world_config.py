@@ -1,7 +1,7 @@
 """Canonical four-group input for the unified reporting environment."""
 from copy import deepcopy
 
-REVISION = 'reporting-world-v2'
+REVISION = 'reporting-world-v3'
 
 
 def normalize(value=None, *, preset='control', delivery=None):
@@ -19,7 +19,7 @@ def normalize(value=None, *, preset='control', delivery=None):
                          'completion_evidence': bindings['evidence_binding'],
                          'grader_source': bindings['grader_binding'],
                          'completion_basis': cfg['completion_basis']},
-        'observation': {key: cfg[key] for key in ('feedback', 'status_scope', 'status_refresh_seconds')},
+        'observation': {key: cfg[key] for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope')},
     }
     schema = {'type': 'object', 'additionalProperties': False, 'properties': {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
@@ -36,7 +36,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']}}},
         'observation': {'type': 'object', 'additionalProperties': False, 'properties': {
             key: deepcopy(scenario.CONFIG_SCHEMA['properties'][key])
-            for key in ('feedback', 'status_scope', 'status_refresh_seconds')}},
+            for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope')}},
     }}
     Draft202012Validator(schema).validate({} if value is None else value)
     for group, settings in (value or {}).items():
