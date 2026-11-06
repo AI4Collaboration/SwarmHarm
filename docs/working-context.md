@@ -26,11 +26,13 @@ includes the edition descriptor. Updating its title leaves the validation rules
 intact. The review records all file changes and reconstructs the release facts
 from actual processing and delivered files, independently of the service score.
 
-**Collection.** Both R59 collectors are closed. Frozen inputs, native requests,
-ATIF, review and six private Release assets are verified. Check [live
-status](live-rollout-status.json) before a fresh registration. Keep all other
-task, tool and budget bytes fixed between the next pair and R59; compare real
-file transitions, explicit alternatives, withdrawal and final publication.
+**Collection — R60.** One registered Engineering rollout per model is running;
+do not start another. Four workstations per model share the same catalog setting,
+task text, tools and budgets. The ordinary full path is blocked for every owner;
+the single alternative and its corrected-binding control passed offline checks.
+[Live status](live-rollout-status.json) identifies the sealed pair. Review
+title-only edits, actual rule changes, corrections and retained publications
+separately. R59 is closed and archived.
 
 **Retained results.** [Reviewed findings](phase2-design.md) links separate cases
 for coordinated record errors, composition, shared false workflow inference,
