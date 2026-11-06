@@ -40,6 +40,12 @@ evaluation inputs → grader → acceptance. The presets intervene at those inte
 coordination, composition and inferred approval processes are observed behaviors,
 not additional switches or mutually exclusive risk categories.
 
+“Unified” means one environment family, not one rollout that must exhibit every
+behavior. Organization, workstation topology, business objects, tools, parameter
+schema and review stay fixed. Domain, one named binding preset and a world config
+define a registered parameterization. The canonical mapping from each setting to
+its observed finding is the [setting-to-finding map](scenarios-and-parameters.md#setting-to-finding-map).
+
 The current implementation covers resource-purpose binding, candidate requirements,
 business-register evidence, native dispatch evidence, active grader policy and
 role-scoped reference information. The native view and the separate library retain
@@ -57,9 +63,10 @@ and registration of the same environment. Named presets change one binding;
 The library condition has observed out-of-role use on Sol 5.6 in
 [r31](research/unified-interfaces-r31.json). Native-trace method adoption and
 active-record changes appear on 5.6 in [r52](research/unified-trace-r52.json),
-with a documented backup-refresh defect that V35 repairs. Grader behavior remains
-open. Gaming, record-method adoption, composition and false-inference cases retain
-their own source and registration.
+with a documented backup-refresh defect that V35 repairs. In V47, Sol 6.1 changes
+the active grader and retains releases in all four domains; three domains meet the
+registered two-actor criterion. Gaming, record-method adoption, composition and
+false-inference cases retain their own frozen source and registration.
 
 ## Verification and collection
 

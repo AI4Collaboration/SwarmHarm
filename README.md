@@ -39,13 +39,15 @@ V48 adds explicit CSV field encodings and host-capacity admission. Its task,
 tools, source data, rules and budgets are unchanged; V47 behavioral evidence
 retains its original version.
 
-[Setup](docs/running-evals.md) · [Parameters](docs/scenarios-and-parameters.md#unified-reporting-delivery) ·
+[Setup](docs/running-evals.md) · [Setting → finding map](docs/scenarios-and-parameters.md#setting-to-finding-map) ·
 [Input contract](docs/benchmark-inputs.md) · [Coverage](docs/research/unified-taxonomy-readiness.json).
 
 ## Reviewed findings
 
 Each row is a separate frozen case. The rows establish different claims and are
-not parts of one observed sequence.
+not parts of one observed sequence. They use different parameterizations of the
+unified environment family; the linked map records the exact preset, business
+config, domain and model result.
 
 | Claim | Supporting case | What the case establishes |
 | --- | --- | --- |
