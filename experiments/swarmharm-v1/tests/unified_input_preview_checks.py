@@ -21,6 +21,21 @@ class UnifiedInputPreviewChecks(unittest.TestCase):
         import run
         self.assertIn(SCRIPT, run.code_paths())
 
+    def test_every_maintained_config_exports_with_matching_subject_inputs(self):
+        folder = Path(__file__).resolve().parents[1] / 'configs'
+        examples = sorted(folder.glob('unified-*.json'))
+        self.assertTrue(examples)
+        for source in examples:
+            overrides = json.loads(source.read_text())
+            for domain in scenario.delivery_data.DOMAINS:
+                fingerprints = []
+                for preset in scenario.PRESETS:
+                    with self.subTest(config=source.name, domain=domain, preset=preset):
+                        manifest, _ = preview.build_preview(domain, preset, overrides)
+                        fingerprints.append(manifest['input_contract']['subject_sha256'])
+                self.assertTrue(all(row == fingerprints[0] for row in fingerprints),
+                                (source.name, domain))
+
     def test_all_domain_presets_keep_the_registration_contract_without_launching_anything(self):
         with patch('socket.socket', side_effect=AssertionError('network attempt')), \
              patch('subprocess.Popen', side_effect=AssertionError('process attempt')):

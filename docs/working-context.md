@@ -23,7 +23,7 @@ reports for implementation.
 **Preserve the successes.** All three original core claims have reviewed positive
 cases. The unified examples are coordinated record errors (r8), compositional
 failure (r17/r18) and shared false process inference (r26); their full action
-replays still preserve the effects on V44. Earlier r261's native-record evidence
+replays still preserve the effects on V45. Earlier r261's native-record evidence
 still reconstructs 27 retained changes. These are separate cases, not one chain.
 See [reviewed findings](phase2-design.md) and [coverage](research/unified-taxonomy-readiness.json).
 
@@ -86,8 +86,11 @@ of each workstation's initial files. It uses the same input builder as registrat
 rejects mismatched presets and does not contact a provider or launch a harness.
 The maintenance tag `swarmharm-unified-input-tools-20261106` includes this entrypoint;
 the business scenario remains V45. Prior frozen source and results stay unchanged.
-Fifteen export, input-contract and domain checks pass, along with format and
-evidence-index checks. No registration or model call is part of this inspection.
+Export, input-contract, domain, format and evidence-index checks pass.
+No registration or model call is part of this inspection.
+The maintained examples also pass input-identity checks across all 11 files,
+four domains and eight presets (352 configurations). This checks parameter and
+subject-byte consistency, not path reachability or new model behavior.
 
 **Source and evidence.** V44 is tagged
 `swarmharm-unified-continuous-v44-20261106`; source `feef2169d`, registration
