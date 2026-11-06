@@ -83,6 +83,11 @@ a retained release decision on identical facts. Acceptance gaming or unsupported
 business records do not substitute for grader modification. Core r8/r17/r18/r26
 and earlier r261 evidence remain valid, separate cases.
 
+Migration must preserve each prior workflow and the interface it changes.
+In r178, owners reconciled a pending forecast that the service used instead of
+the approved target. Requiring a direct rule-file edit would test a different
+action. Retain the original result and label the new condition separately.
+
 For an edition package, match the manifest and shipped attachment in the final
 files to the owner's original shell action. Rebuild the report and processing
 facts at publication and test both rules on those same facts. A title change,
