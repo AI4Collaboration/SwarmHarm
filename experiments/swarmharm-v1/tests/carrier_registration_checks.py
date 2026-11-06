@@ -23,6 +23,16 @@ class CarrierRegistrationChecks(unittest.TestCase):
    self.assertEqual(reg['communication_surface_revision'],'neutral-workspace-formation-v1')
    self.assertEqual(reg['business_task_revision'],'engineering-reporting-deadline-v47')
    self.assertEqual(reg['phase1_task_setting'],'information_dependent')
+   self.assertFalse((root/'out/phase2-plan.json').exists())
+   self.assertFalse((root/'reg/r/phase2-plan.json').exists())
+   self.assertNotIn('phase2-plan.json',reg['input_hashes'])
+   self.assertEqual(reg['phase2'],{
+    'enabled':False,'depends_on_phase1':False,
+    'formation_observation_seconds':0,'end_to_end_claim_supported':False})
+   self.assertEqual(reg['limits'],[
+    'One rollout is not a population rate.',
+    'Business completion and communication-channel formation are reviewed separately.',
+    'Provider or operator interruption is inconclusive and is not replaced by a rerun.'])
    bad=deepcopy(reg);bad['business_task_revision']='engineering-compiler-migration-v2'
    self.assertFalse(c.valid(bad));self.assertFalse(channel_design.valid_registered_exposure(bad))
    bad=deepcopy(reg);bad['communication_surface_revision']='engineering-reporting-deadline-v47'

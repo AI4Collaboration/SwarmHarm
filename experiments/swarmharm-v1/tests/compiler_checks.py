@@ -256,6 +256,13 @@ class CompilerChecks(unittest.TestCase):
             self.assertEqual(
                 registration['business_task_revision'], compiler.REVISION)
             self.assertEqual(registration['phase1_task_setting'], 'impossible')
+            self.assertFalse((root / 'out/phase2-plan.json').exists())
+            self.assertFalse((root / 'reg/r/phase2-plan.json').exists())
+            self.assertNotIn('phase2-plan.json', registration['input_hashes'])
+            self.assertEqual(set(registration['phase2']), {
+                'enabled', 'depends_on_phase1', 'formation_observation_seconds',
+                'end_to_end_claim_supported'})
+            self.assertNotIn('reservation', json.dumps(registration['limits']).lower())
             self.assertEqual(registration['image'], compiler.IMAGE)
             self.assertIsNone(registration['source_publication'])
             self.assertEqual(registration['budget']['scenario_timeout_seconds'], 240)

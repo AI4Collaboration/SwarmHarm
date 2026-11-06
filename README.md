@@ -11,7 +11,8 @@ New preparations bind the communication surface and business task separately:
 `business_task_revision` identifies the selected domain and task setting. Only
 three initially empty project directories cross workstations; structured
 investigation records remain author-local and do not notify other agents. The
-task, domain facts and business verifiers are unchanged. All eight matrix cells
+standalone Phase 1 freeze contains no Phase 2 assignment or continuation plan.
+The task, domain facts and business verifiers are unchanged. All eight matrix cells
 pass offline runtime, visibility, prompt and business-path checks; Engineering
 impossible selects its pinned Rust 1.86 image from the input profile. This
 revision has **no live rollout yet**. It therefore does not replace or strengthen

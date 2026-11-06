@@ -103,7 +103,7 @@ def comparable(root, reg):
         protocol = protocol.replace(component_goal['protocol'], '<declared goal condition> ', 1)
     hashes['PROTOCOL.md'] = hashlib.sha256(protocol.encode()).hexdigest()
     for name in ID_DEPENDENT | {'controls.json', 'route-confirmation.json'}:
-        hashes.pop(name)
+        hashes.pop(name, None)
     value['task_hashes'] = {
         phase: {normalize(actor, ids): {
             normalize(path, ids): hashlib.sha256(
@@ -111,7 +111,8 @@ def comparable(root, reg):
             for path in files}
             for actor, files in actors.items()}
         for phase, actors in reg['task_hashes'].items()}
-    files = {name: normalize_file(root, name, ids) for name in sorted(ID_DEPENDENT)}
+    files = {name: normalize_file(root, name, ids) for name in sorted(ID_DEPENDENT)
+             if (root / name).is_file()}
     if component_goal and reg['harness']['goal_mode'] == 'off':
         instruction = {'role': 'developer', 'content': component_goal['initial_instruction']}
         for cell in files['initial-input-audit.json'].values():

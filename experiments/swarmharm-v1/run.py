@@ -66,6 +66,12 @@ DEFAULT_REASONING='high'
 REASONING_EFFORTS=('low','medium','high','xhigh','max')
 DEFAULT_SCENARIO=domain_runtime.ENGINEERING_CAPACITY
 PHASE1_TASK_SETTINGS=('information_dependent', 'impossible')
+PHASE1_DISABLED_PHASE2={
+    'enabled':False,
+    'depends_on_phase1':False,
+    'formation_observation_seconds':0,
+    'end_to_end_claim_supported':False,
+}
 AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
 AXONHUB_ENDPOINT=f'{AXONHUB_API_BASE}/responses'
 OPENROUTER_CATALOG='https://openrouter.ai/api/v1/models'
@@ -561,12 +567,17 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                                domain_runtime.continuation_module(scenario).replace('.', '/') + '.py')
     continuation_module=(batching_workflow if terminal_batching else
                          module('swarmharm_v1_continuation',continuation_path))
-    phase2_plan=(continuation_module.plan_for(plan['natural'], information_condition, component_family,
-                                            initial_material, material_distribution)
+    # Standalone Phase 1 has no Phase 2 assignment.  Do not freeze an unrelated
+    # continuation plan merely because the collector shares runtime code with
+    # connected and component studies.
+    phase2_plan=({} if phase1_only else
+        continuation_module.plan_for(plan['natural'], information_condition, component_family,
+                                     initial_material, material_distribution)
         if component else continuation_module.plan_for(plan['natural'], information_condition)
         if scenario == domain_runtime.KNOWLEDGE_WORK
         else continuation_module.plan_for(plan['natural']))
-    save(root/'phase2-plan.json',phase2_plan)
+    if not phase1_only:
+        save(root/'phase2-plan.json',phase2_plan)
     if run_controls and reuse_common_controls is not None:
         controls=reused_common_controls(reuse_common_controls,harness)
         try:
@@ -636,6 +647,12 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     paths=code_paths()
     for path in paths:
         target=root/'code'/path.relative_to(REPO);target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(path,target)
+    frozen_input_names=[
+        'fixtures.json','activation-plan.json','topology.json','source-manifest.json',
+        'controls.json','initial-input-audit.json','initial-file-audit.json',
+        'route-confirmation.json']
+    if not phase1_only:
+        frozen_input_names.append('phase2-plan.json')
     reg={'family':'swarmharm/swarmharm-v1','created_at':utc(),'models':MODELS,
         'upstream_models':UPSTREAM_MODELS,'reasoning':reasoning_effort,
         'preflight_instructions':lab.INSTRUCTIONS,'harness':harness,'pressure':pressure,'budget':budget,'plan':plan,
@@ -676,10 +693,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'per_agent_response_limit':None,'per_agent_tool_limit':None,
         'route_confirmation':routes,'format_contract':load(HERE/'format-contract.json'),'task_hashes':task_hashes,
         'code_hashes':{str(p.relative_to(REPO)):sha(p) for p in paths},
-        'input_hashes':{n:sha(root/n) for n in (
-            'fixtures.json','activation-plan.json','topology.json','source-manifest.json',
-            'controls.json','initial-input-audit.json','initial-file-audit.json',
-            'route-confirmation.json','phase2-plan.json')}}
+        'input_hashes':{n:sha(root/n) for n in frozen_input_names}}
     reg.update(scenario_mechanics.registration_overrides(cue_condition))
     # Phase 1 has two independently versioned input dimensions.  Preserve the
     # domain task selected by the scenario adapter before the communication
@@ -713,8 +727,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'Each reply follows receipt of its source in an earlier model response; '
         'unrelated later writes do not establish relay or adoption.'
     )
-    reg['phase2']['assignments'] = deepcopy(phase2_plan)
-    if scenario == domain_runtime.KNOWLEDGE_WORK:
+    if not phase1_only:
+        reg['phase2']['assignments'] = deepcopy(phase2_plan)
+    if not phase1_only and scenario == domain_runtime.KNOWLEDGE_WORK:
         reg['phase2']['information_condition'] = information_condition
         reg['phase2']['awareness_analysis'] = {
             'availability_is_not_knowledge': True,
@@ -730,7 +745,12 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['phase1_task_setting'] = (
             phase1_task_setting or 'information_dependent'
         )
-        reg['phase2'].update(enabled=False, depends_on_phase1=False, end_to_end_claim_supported=False)
+        reg['phase2'] = deepcopy(PHASE1_DISABLED_PHASE2)
+        reg['limits'] = [
+            'One rollout is not a population rate.',
+            'Business completion and communication-channel formation are reviewed separately.',
+            'Provider or operator interruption is inconclusive and is not replaced by a rerun.',
+        ]
         reg['design']='Standalone autonomous formation; Phase 2 is not evaluated.'
         reg['primary']='Autonomous Phase 1 formation only; no Phase 2 or end-to-end claim.'
         reg['format_contract']['output']['phase2_depends_on_verified_phase1']=False
@@ -1090,11 +1110,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     save(root/'registration.json',reg)
     save(root/'registration-seal.json',{
         'sha256':sha(root/'registration.json'),'model_calls':0})
-    frozen=(
-        'registration.json','registration-seal.json','PROTOCOL.md','controls.json',
-        'fixtures.json','activation-plan.json','topology.json','source-manifest.json',
-        'initial-input-audit.json','initial-file-audit.json',
-        'route-confirmation.json','phase2-plan.json')
+    frozen=frozen_registration_files(reg)
     for name in frozen:shutil.copy2(root/name,registration_dir/name)
     print(json.dumps({'prepared':True,'models':MODELS,'pressure':pressure['kind'],'experimental_contexts':population,
         'overlapping_execution':True,'active_contexts':budget['active_contexts_natural'],
@@ -1105,11 +1121,21 @@ class Hold(RuntimeError):pass
 class ObservationHold(RuntimeError):pass
 class RolloutLimit(RuntimeError):pass
 
-FROZEN_REGISTRATION_FILES=(
+class StandalonePhase1State:
+    """Minimal inactive continuation state for a Phase 1-only rollout."""
+    activated=False
+
+    def snapshot(self):
+        return {'enabled':False, 'study_mode':'phase1'}
+
+BASE_FROZEN_REGISTRATION_FILES=(
     'registration.json','registration-seal.json','PROTOCOL.md','controls.json',
     'fixtures.json','activation-plan.json','topology.json','source-manifest.json',
-    'initial-input-audit.json','initial-file-audit.json','route-confirmation.json',
-    'phase2-plan.json')
+    'initial-input-audit.json','initial-file-audit.json','route-confirmation.json')
+
+def frozen_registration_files(reg):
+    return BASE_FROZEN_REGISTRATION_FILES + (() if reg.get('study_mode') == 'phase1'
+                                              else ('phase2-plan.json',))
 
 def verify_collection_freeze(root,registration_dir,reg):
     status=subprocess.check_output(
@@ -1128,9 +1154,9 @@ def verify_collection_freeze(root,registration_dir,reg):
     tracked=subprocess.run(
         ['git','ls-files','--error-unmatch','--']+[
             str((registration_dir/name).relative_to(REPO))
-            for name in FROZEN_REGISTRATION_FILES],cwd=REPO,capture_output=True)
+            for name in frozen_registration_files(reg)],cwd=REPO,capture_output=True)
     require(tracked.returncode==0,'Every frozen registration file must be committed.')
-    for name in FROZEN_REGISTRATION_FILES:
+    for name in frozen_registration_files(reg):
         working=registration_dir/name
         require(sha(root/name)==sha(working),f'Prepared copy differs: {name}')
     for path,digest in reg['code_hashes'].items():
@@ -1491,6 +1517,15 @@ def collect(root,registration_dir):
     phase1_only = reg.get('study_mode') == 'phase1'
     require(reg.get('phase2',{}).get('depends_on_phase1') is (not component and not phase1_only),
         'Phase dependency differs from the registered study mode.')
+    if phase1_only:
+        require(reg.get('phase2') == PHASE1_DISABLED_PHASE2,
+            'Standalone Phase 1 must freeze only the disabled Phase 2 marker.')
+        require('phase2-plan.json' not in reg.get('input_hashes', {}),
+            'Standalone Phase 1 must not hash a Phase 2 assignment.')
+        require(not (root/'phase2-plan.json').exists(),
+            'Standalone Phase 1 output must not contain a Phase 2 assignment.')
+        require(not (registration_dir/'phase2-plan.json').exists(),
+            'Standalone Phase 1 registration must not contain a Phase 2 assignment.')
     terminal_batching = component and reg.get('phase2', {}).get('component_family') == batching.FAMILY
     if component:
         require(scenario == (domain_runtime.ENGINEERING_CAPACITY if terminal_batching else domain_runtime.KNOWLEDGE_WORK), 'Unsupported component scenario')
@@ -1568,7 +1603,8 @@ def collect(root,registration_dir):
         plan=reg['plan'][name];world=lab.World(plan,root/name/'operator',reg.get('topology'));states={};histories={};starts={}
         resources = (resource_pressure.Reservations(root, reg, world)
                      if reg.get('phase1_resource_policy') else None)
-        extension=continuation_module.Continuation(world,load(root/'phase2-plan.json'))
+        extension=(StandalonePhase1State() if phase1_only else
+                   continuation_module.Continuation(world,load(root/'phase2-plan.json')))
         phase2_activation=None;termination_reason='quiescence'
         events=agent_runtime.new_queue();agents={}
         shell_pool=ThreadPoolExecutor(max_workers=budget['active_contexts_natural'])

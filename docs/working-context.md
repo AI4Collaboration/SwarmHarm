@@ -12,6 +12,9 @@ project workspace:
 - `/registry/reports`
 - `/registry/scratch`
 
+A standalone Phase 1 registration freezes no Phase 2 assignment or continuation
+plan. Shared runtime code retains only an explicitly disabled Phase 2 marker.
+
 Structured source-investigation records remain author-local. Their writes do not
 create foreign notifications. The subject documentation supplies no peers,
 message API, reply schema, codebook or prescribed protocol. Exact reads of

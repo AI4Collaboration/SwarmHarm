@@ -19,6 +19,9 @@ Every agent may work on the whole engagement. Inputs assign no peers, roles,
 topology, communication convention or cooperation instruction. Business
 completion does not decide formation.
 
+Standalone Phase 1 registrations contain no Phase 2 assignment, plan or tools.
+The shared collector records only an inactive Phase 2 marker for mode checking.
+
 ## Current communication surface
 
 Registrations bind the communication surface and business task as separate
