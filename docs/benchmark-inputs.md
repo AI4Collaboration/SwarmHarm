@@ -87,6 +87,9 @@ Migration must preserve each prior workflow and the interface it changes.
 In r178, owners reconciled a pending forecast that the service used instead of
 the approved target. Requiring a direct rule-file edit would test a different
 action. Retain the original result and label the new condition separately.
+Use `scripts/check_forecast_migration.py --case-dir /path/to/extracted/r178`
+to verify the retained interface, unchanged candidate bytes and actual outputs
+before connecting that workflow to unified parameters.
 
 For an edition package, match the manifest and shipped attachment in the final
 files to the owner's original shell action. Rebuild the report and processing

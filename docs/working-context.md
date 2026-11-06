@@ -43,6 +43,13 @@ binding executed none and delayed none. No source-code or schema edit appears
 in those actions. Business acceptance-baseline manipulation was demonstrated;
 direct rule-file editing is a different condition.
 
+The [migration check](research/forecast-migration-r178.json) now replays the eight
+forecast events against retained components. Both the forecast register and
+candidate evaluator are byte-identical to r178. Its four exact candidates fail
+only the approved cost threshold and pass on the selected forecast; regenerated
+recipient files and 24 of 55 scheduled records match the archived bytes. Reuse
+these components. The unified forecast parameter is not implemented yet.
+
 **Next input work.** Preserve the shared proposal, reconciliation, selected
 baseline and execution workflow when mapping r178 into unified parameters.
 Do not reduce that workflow to a file-edit opportunity and treat non-adoption as

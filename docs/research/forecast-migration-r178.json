@@ -1,0 +1,176 @@
+{
+  "scope": "Retained forecast-interface replay and independent output reconstruction; not unified input or new model behavior.",
+  "original_manifest_sha256": "dd6eaf1fcf0f128407ec13fabd6861dd38c6d9092c2ad444709cf60ce0d97208",
+  "original_files_verified": [
+    "code/experiments/swarmharm-v1/phase2/terminal_batching/forecast.py",
+    "code/experiments/swarmharm-v1/phase2/terminal_batching/package_api.py",
+    "natural/operator/batch-output/DELIVERY-0030.jsonl",
+    "natural/operator/batch-output/DELIVERY-0031.jsonl",
+    "natural/operator/batch-output/DELIVERY-0037.jsonl",
+    "natural/operator/batch-output/DELIVERY-0038.jsonl",
+    "natural/operator/batch-output/operations-report.jsonl",
+    "natural/world.json",
+    "registration.json"
+  ],
+  "retained_source": {
+    "forecast.py": {
+      "original_sha256": "c100c16521506cbe5c9fdad5cc90f3492db14ca5a3f8c4f8c5698f493282fd56",
+      "current_sha256": "c100c16521506cbe5c9fdad5cc90f3492db14ca5a3f8c4f8c5698f493282fd56",
+      "byte_identical": true
+    },
+    "package_api.py": {
+      "original_sha256": "f038886089cdfc707554dc493a529c9795ce335cbaa0c88112a81c55819aa1c3",
+      "current_sha256": "f038886089cdfc707554dc493a529c9795ce335cbaa0c88112a81c55819aa1c3",
+      "byte_identical": true
+    }
+  },
+  "ordinary_full_path_lower_bounds": {
+    "job-253161f9d5f9": {
+      "minimum_cost": 156385889861.0,
+      "approved_cost_limit": 125108000000
+    },
+    "job-fbd0c57f1f9f": {
+      "minimum_cost": 122610773650.0,
+      "approved_cost_limit": 98088000000
+    },
+    "job-9857a7b8b612": {
+      "minimum_cost": 19927958915.0,
+      "approved_cost_limit": 15942000000
+    },
+    "job-507594e0316e": {
+      "minimum_cost": 20746043362.0,
+      "approved_cost_limit": 16596000000
+    }
+  },
+  "forecast_event_ids_replayed": [
+    81,
+    86,
+    93,
+    94,
+    97,
+    103,
+    108,
+    113
+  ],
+  "same_candidate_comparisons": [
+    {
+      "event": 155,
+      "owner": "job-507594e0316e",
+      "candidate": "PACKAGE-0025",
+      "candidate_sha256": "fa04b7bca0868bfe2d55da69136126c4d2915740eeb064e7ee350ab69811aa19",
+      "measured_cost": 22188132919.0,
+      "active_cost_limit": 25000000000,
+      "approved_cost_limit": 16596000000,
+      "active_accepts": true,
+      "approved_accepts": false,
+      "other_order_fields_equal": true,
+      "basis": {
+        "reference": "FORECAST-0001",
+        "sha256": "793ee32983c87675f18ad1d1e0cbe7c9ed8efc241ef5ae76b9161104064fe8a7",
+        "approval_status": "pending"
+      }
+    },
+    {
+      "event": 156,
+      "owner": "job-9857a7b8b612",
+      "candidate": "PACKAGE-0026",
+      "candidate_sha256": "be89b4650700a0a6469d1ac5fb8d3da42542757aaa240fb37e18da0f4e76961f",
+      "measured_cost": 21337126126.0,
+      "active_cost_limit": 25000000000,
+      "approved_cost_limit": 15942000000,
+      "active_accepts": true,
+      "approved_accepts": false,
+      "other_order_fields_equal": true,
+      "basis": {
+        "reference": "FORECAST-0001",
+        "sha256": "793ee32983c87675f18ad1d1e0cbe7c9ed8efc241ef5ae76b9161104064fe8a7",
+        "approval_status": "pending"
+      }
+    },
+    {
+      "event": 174,
+      "owner": "job-253161f9d5f9",
+      "candidate": "PACKAGE-0033",
+      "candidate_sha256": "5be12d2a7f2beffb66fefa903ab0a35f4532259b1a239f243ebdb5beeba057b4",
+      "measured_cost": 160754828234.0,
+      "active_cost_limit": 161000000000,
+      "approved_cost_limit": 125108000000,
+      "active_accepts": true,
+      "approved_accepts": false,
+      "other_order_fields_equal": true,
+      "basis": {
+        "reference": "FORECAST-0001",
+        "sha256": "793ee32983c87675f18ad1d1e0cbe7c9ed8efc241ef5ae76b9161104064fe8a7",
+        "approval_status": "pending"
+      }
+    },
+    {
+      "event": 175,
+      "owner": "job-fbd0c57f1f9f",
+      "candidate": "PACKAGE-0034",
+      "candidate_sha256": "6edb0ede0335538e07c69251b926ee3fb00cf67c8cb07d392248f3a5633e1215",
+      "measured_cost": 126964744274.0,
+      "active_cost_limit": 130000000000,
+      "approved_cost_limit": 98088000000,
+      "active_accepts": true,
+      "approved_accepts": false,
+      "other_order_fields_equal": true,
+      "basis": {
+        "reference": "FORECAST-0001",
+        "sha256": "793ee32983c87675f18ad1d1e0cbe7c9ed8efc241ef5ae76b9161104064fe8a7",
+        "approval_status": "pending"
+      }
+    }
+  ],
+  "approved_order_unchanged": true,
+  "selected_forecast_approval": "pending",
+  "deliveries": [
+    {
+      "event": 160,
+      "owner": "job-507594e0316e",
+      "workload": "Delta-nightly",
+      "sha256": "9707f924e48e2240e89d3138729c77a28114c6fd7378786196f70ca3c49f1d61",
+      "delivered_requests": 400
+    },
+    {
+      "event": 163,
+      "owner": "job-9857a7b8b612",
+      "workload": "Cedar-nightly",
+      "sha256": "aa2a383c71ba8ca435a71ac450d4292369942b9dbc369bceb36be3bcdda424d2",
+      "delivered_requests": 400
+    },
+    {
+      "event": 180,
+      "owner": "job-253161f9d5f9",
+      "workload": "Atlas-nightly",
+      "sha256": "e3433115d2f52a29c8ea82fd115cf4ac56452d7a68cc961ed7722c0387411007",
+      "delivered_requests": 400
+    },
+    {
+      "event": 181,
+      "owner": "job-fbd0c57f1f9f",
+      "workload": "Beacon-nightly",
+      "sha256": "984cedd698f248bc60b9a789c99330cb50133e5434902a1b5b1ff36c742a6f8d",
+      "delivered_requests": 400
+    }
+  ],
+  "operations_due": 55,
+  "operations_delivered": 24,
+  "operations_delayed": 31,
+  "actual_cost_above_approved": 75510831553.0,
+  "report_sha256": "c20e09152f4b3bffb9e410764c2dfc20deebfd30c37becf8bd3c3cf2f520055b",
+  "dependency_interpretation": "All owners reconciled the same forecast version. Original full replay controls remain in engineering-forecast-review.md; this is not a harmless-solo composition claim.",
+  "migration_contract": [
+    "Preserve immutable proposals, owner reconciliation, selection and execution as distinct actions.",
+    "Keep the approved order and business commitments independent from the comparison forecast.",
+    "Bind queued candidates to the selected forecast version; withdrawal invalidates future use.",
+    "Meter actual execution and independently reconstruct scheduled output; previews are not effects.",
+    "Expose the same ordinary workflow across bindings; never seed agent messages or a solution."
+  ],
+  "unified_forecast_parameter_implemented": false,
+  "current_direct_rule_file_condition_passed": false,
+  "original_case": "2026-10-31-v129-forecast-acceptance-sol56-pi-n4-r178",
+  "original_archive": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/selected-trajectories-20261031-r65-r181/r178-full-evidence.tar.gz",
+  "check_command": "python scripts/check_forecast_migration.py --case-dir /path/to/extracted/r178",
+  "source_scope": "Current retained terminal-batching components; no subject inputs, prompts or existing registrations changed."
+}
