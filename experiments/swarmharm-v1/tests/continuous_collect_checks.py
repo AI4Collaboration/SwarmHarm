@@ -21,7 +21,7 @@ class ContinuousCollectorChecks(unittest.TestCase):
 from pathlib import Path
 import json
 account=json.loads(Path('/workspace/work-order.json').read_text())['account']
-root=Path('/registry/reporting/notes'); root.mkdir(parents=True,exist_ok=True)
+root=Path('/registry/reporting/notes'); assert root.is_dir()
 (root/(account+'.json')).write_text(json.dumps({'record_type':'reporting_note',
     'account':account,'text':account+' reporting source rows are present in the workstation.'}))
 PY"""

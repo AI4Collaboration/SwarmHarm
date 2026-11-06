@@ -2,25 +2,8 @@
   "schema_version": 6,
   "updated_at": "2026-11-06",
   "environment": "experiments/swarmharm-v1",
-  "status": "running",
-  "active_rollouts": [
-    {
-      "case": "2026-11-05-unified-v38-grader-engineering-sol56-r57",
-      "registration": "experiments/swarmharm-v1/registrations/2026-11-05-unified-v38-grader-engineering-sol56-r57",
-      "model": "openai/gpt-5.6-sol",
-      "pid": 24007,
-      "output": "../eval-readiness/swarmharm-v1-2026-11-05-unified-v38-grader-engineering-sol56-r57",
-      "state": "running"
-    },
-    {
-      "case": "2026-11-05-unified-v38-grader-engineering-sol61-r57",
-      "registration": "experiments/swarmharm-v1/registrations/2026-11-05-unified-v38-grader-engineering-sol61-r57",
-      "model": "openai/gpt-6.1-sol",
-      "pid": 24029,
-      "output": "../eval-readiness/swarmharm-v1-2026-11-05-unified-v38-grader-engineering-sol61-r57",
-      "state": "running"
-    }
-  ],
+  "status": "development",
+  "active_rollouts": [],
   "heartbeat": null,
   "study_mode": "unified",
   "active_scope": "continuous-unified",
@@ -36,24 +19,18 @@
     "shared_false_inference": "r26"
   },
   "readiness_reference": "docs/research/unified-taxonomy-readiness.json",
-  "maintained_registrations": [
-    "experiments/swarmharm-v1/registrations/2026-11-05-unified-v38-grader-engineering-sol56-r57",
-    "experiments/swarmharm-v1/registrations/2026-11-05-unified-v38-grader-engineering-sol61-r57"
-  ],
+  "maintained_registrations": [],
   "decision_record": "docs/working-context.md",
-  "next_condition": "R57 collectors are active. Inspect these processes and terminal records; do not start duplicates or change frozen source.",
-  "comparison_review": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-grader-engineering-20261105-r55/comparison-review.json",
+  "next_condition": "R57 closed and fully archived; prepare fresh V39/R58 after pushing the empty-directory repair. No collector is active.",
+  "comparison_review": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/unified-continuous-grader-20261106-r57/comparison-review.json",
   "latest_completed_cases": [
-    "2026-11-05-unified-v36-grader-engineering-sol56-r55",
-    "2026-11-05-unified-v36-grader-engineering-sol61-r55"
-  ],
-  "archived_registration_reference": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/phase2-unified-grader-engineering-20261105-r55",
-  "readiness_reference_scope": "Current unified implementation; earlier core findings and new interface checks retain separate evidence.",
-  "current_question": "Observe discovery and communication in the continuous input and test active policy modification with verified edition facts.",
-  "registered_cases": [
     "2026-11-05-unified-v38-grader-engineering-sol56-r57",
     "2026-11-05-unified-v38-grader-engineering-sol61-r57"
   ],
+  "archived_registration_reference": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-continuous-grader-20261106-r57",
+  "readiness_reference_scope": "Current unified implementation; earlier core findings and new interface checks retain separate evidence.",
+  "current_question": "Observe discovery and communication in the continuous input and test active policy modification with verified edition facts.",
+  "registered_cases": [],
   "latest_interrupted_cases": [
     "2026-11-05-unified-v30-grader-sol56-r49",
     "2026-11-05-unified-v30-trace-sol56-r49"

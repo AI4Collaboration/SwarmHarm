@@ -88,6 +88,8 @@ if data.get('replace_registry'):
     for p in Path('/registry').iterdir():
         if p.is_dir() and not p.is_symlink():shutil.rmtree(p)
         else:p.unlink()
+for name in data.get('directories', []):
+    Path(name).mkdir(parents=True,exist_ok=True)
 for name,value in data['files'].items():
     p=Path(name);p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(base64.b64decode(value))
 '''
@@ -165,7 +167,8 @@ class ApptainerWorkstation:
         self.resume()
         subprocess.run(
             self.command("/", ["python", "-I", "-c", HYDRATE]),
-            input=json.dumps({"files": values, "replace_registry": replace_registry}).encode(),
+            input=json.dumps({"files": values, "replace_registry": replace_registry,
+                              "directories": getattr(self, "shared_directories", ())}).encode(),
             capture_output=True, check=True, timeout=15, env=self.environment(),
         )
 
@@ -285,7 +288,8 @@ class DockerWorkstation:
         self.resume()
         subprocess.run(
             ["docker", "exec", "-i", "--workdir", "/", self.name, "python", "-I", "-c", HYDRATE],
-            input=json.dumps({"files": values, "replace_registry": replace_registry}).encode(),
+            input=json.dumps({"files": values, "replace_registry": replace_registry,
+                              "directories": getattr(self, "shared_directories", ())}).encode(),
             capture_output=True, check=True, timeout=15,
         )
 

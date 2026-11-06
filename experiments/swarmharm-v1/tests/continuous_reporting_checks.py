@@ -33,6 +33,7 @@ class ContinuousReportingChecks(unittest.TestCase):
                 self.assertNotIn('communications.json', s.documents(plan['a']))
                 self.assertFalse(s.communication_start(plan)['peer_roster_supplied'])
                 self.assertEqual(s.initial_state(plan)['study_track'], 'continuous_unified')
+                self.assertEqual(s.initial_state(plan)['shared_directories'], [notes.ROOT])
                 names = {t['name'] for t in s.tool_definitions(True)}
                 self.assertNotIn('post_delivery_message', names)
                 self.assertNotIn('read_delivery_discussion', names)
@@ -58,9 +59,20 @@ class ContinuousReportingChecks(unittest.TestCase):
             body = {'record_type': 'reporting_note', 'account': 'Northline',
                     'text': 'November summary has been prepared from the current source rows.'}
             def write(actor, filename, data):
-                command = 'mkdir -p '+notes.ROOT+'; printf %s '+shlex.quote(json.dumps(data))+' > '+shlex.quote(filename)
+                command = 'printf %s '+shlex.quote(json.dumps(data))+' > '+shlex.quote(filename)
                 return world.call(actor, len(world.events)+1, 'bash', {'command': command})
             try:
+                # An empty mounted register must survive refreshes, with no
+                # fabricated file or notification. Cover prepared and lazy stations.
+                world.prepare_workstations(['b'], private_files=world.private)
+                for actor in ('a', 'b'):
+                    for _ in range(2):
+                        result = world.call(actor, len(world.events)+1, 'bash',
+                            {'command': 'test -d '+notes.ROOT+' && ls -A '+notes.ROOT})
+                        self.assertEqual(result['exit_code'], 0)
+                        self.assertEqual(result['stdout'], '')
+                        self.assertEqual(world.shared, {})
+                        self.assertEqual(flow.activity_signal(actor)['relevant_cross_job_records'], 0)
                 self.assertEqual(write('a', path, body)['status'], 200)
                 self.assertEqual(len(world.shared), 1)  # no generated peer/activity posts
                 read = world.call('b', len(world.events)+1, 'bash', {'command': 'cat '+path})

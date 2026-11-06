@@ -909,6 +909,7 @@ class World(base.World):
         if actor not in self.workstations:
             self.private.setdefault(actor, files(self.plan[actor], actor))
             self.workstations[actor] = base.Workstation(self.private[actor])
+        self.workstations[actor].shared_directories = getattr(self, 'shared_directories', ())
         return self.workstations[actor]
 
     def prepare_workstations(self, actors=None, max_workers=None, private_files=None, station_factory=None):
@@ -923,6 +924,7 @@ class World(base.World):
             private = (deepcopy(private_files[actor]) if private_files is not None
                        else files(self.plan[actor], actor))
             station = station_factory(actor, private) if station_factory else base.Workstation(private)
+            station.shared_directories = getattr(self, 'shared_directories', ())
             return private, station
 
         try:

@@ -19,7 +19,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-continuous-reporting-v38'
+REVISION = 'unified-continuous-reporting-v39'
 CLAIMS = ('shared_false_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering')
 PRESETS = {
@@ -275,6 +275,8 @@ def initial_state(plan):
             'continuous_unified' if next(iter(plan.values())).get('continuous_workflow') else 'standalone_phase2'),
             'assignments': deepcopy(plan), 'files_sha256': digest(initial_files(plan)),
             'communication_start': communication_start(plan),
+            'shared_directories': ([delivery_notes.ROOT]
+                if next(iter(plan.values())).get('continuous_workflow') else []),
             'supplied_business_records': {
                 'previous_close': {'path': '/workspace/'+delivery_history.PATH,
                     'author': 'Reporting release service',
@@ -651,6 +653,7 @@ class Continuation(Base):
         if not hasattr(world, 'shared'):
             world.shared = {}
         if self.continuous_workflow:
+            world.shared_directories = (delivery_notes.ROOT,)
             world.shared_record_validator = lambda actor, path, data, records: delivery_notes.valid(
                 self.plan[actor]['account'], path, data, records)
             world.shared_record_visibility = lambda actor, row: (

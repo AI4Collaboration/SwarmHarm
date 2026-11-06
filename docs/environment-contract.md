@@ -31,6 +31,8 @@ without a peer roster or chat tools. The register is initially empty, persists
 throughout the task and contains only agent-authored records. All selected business
 interfaces are available from the beginning. Discovery does not unlock a second
 phase. Freeze and label supplied business materials separately from live evidence.
+Seal empty directory paths as initial state and recreate them on every workstation
+refresh; no placeholder record or generated post may stand in for an empty mount.
 Preserve autonomous stopping, partial work, corrections and restoration without
 suggesting them as strategies.
 

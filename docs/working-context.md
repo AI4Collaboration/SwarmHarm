@@ -9,7 +9,7 @@ through AxonHub, high reasoning, goal off; test Sol 5.6 and 6.1. No website edit
 check progress in this task and remind once every half hour, without duplicate
 collectors or milestone-tracking automation.
 
-V38 (`unified-continuous-reporting-v38`) uses `--study-mode unified` and ordinary
+V39 (`unified-continuous-reporting-v39`) uses `--study-mode unified` and ordinary
 append-only business notes under `/registry/reporting/notes`, without a roster,
 chat tools or supplied messages. Authorship, exact returned text and replies are
 independently checked; parallel writes or reads alone are not coordination.
@@ -24,10 +24,19 @@ task remain unchanged. This interface hypothesis is not a model success.
 R56 preparation was stopped before collection when the continuous design was
 requested. `../eval-readiness/unified-v37-r56-review/superseded-before-collection.json`
 records that no rollout started. Never launch its old scripts or reuse its names.
-R57 is running after source push and 668 offline + 18 prompt checks: Engineering, grader
-binding, shared close, four agents, Sol 5.6/6.1. Freeze full source and input hashes,
-then collect once per registration. Do not treat a reachable offline path as
-behavioral validation.
+R57 is closed and fully reviewed: Engineering/grader, both Sol versions, no release
+or policy change. Sol 5.6 has three notes, 15 exact peer reads and two explicit
+endorsements of a peer's assurance-request procedure. The role exists; the inferred
+worker/request handler does not. Notes do not affect any of the 111 replayed business
+results. Sol 6.1 writes no notes. Eight native/ATIF histories, final files and ten
+real-state notices verify. [Complete evidence](research/unified-continuous-r57.json).
+
+The documented empty register was absent and hydration removed newly made empty
+directories between calls. V39 fixes that runtime defect and seals the directory
+in initial state; it adds no file, message or instruction. Seven focused native and
+communication checks plus 18 prompt checks pass. Next: freshly register R58 with
+the same tasks, tools, files, world, harness and budgets on Sol 5.6/6.1. Verify byte
+equality against R57 before collecting once. Do not repeat R57 or alter its evidence.
 
 ## Phase 1 audit and archive completed
 
@@ -65,7 +74,7 @@ replace native positives with earlier direct-API cases.
 
 Links and negative takeaways are in README; detailed original evidence is in the
 research indexes and Releases. No existing result establishes active-grader
-behavior. Current replay does not make an old case a fresh V38 rollout.
+behavior. Current replay does not make an old case a fresh V39 rollout.
 
 ## Communication demonstration
 
@@ -76,16 +85,17 @@ link to original commands, returned text and native/ATIF events; semantic review
 must verify that messages respond to one another. Full all-pairs closure is
 optional, and communication does not unlock business tools or a later phase.
 No prompt or task change is needed merely to demonstrate these observations.
-V38 now exports both a JSON evidence graph and a readable transcript. Explicit
+The reviewer exports both a JSON evidence graph and a readable transcript. Explicit
 reply candidates require a later model step than their source exposure; native
 delivery, readback and later reuse remain separate observations.
 
 ## Validation and execution
 
-The initial full offline suite passes 667 tests; the subsequent evidence-export
-and read/reply/readback additions pass seven targeted native and audit checks.
-Fresh preparation passes the full committed suite: 668 methods and 18 prompt checks. All 28 domain/preset
-path checks pass, including 24 blocked challenges with reachable alternatives.
+V38 preparation passed 668 methods and 18 prompt checks. V39's focused checks cover
+the initially empty directory, repeated refresh, prepared and lazy workstations,
+genuine note exchange and the native collector. Fresh preparation must rerun the
+committed suite. All 28 domain/preset path checks pass, including 24 blocked
+challenges with reachable alternatives.
 Check all four domains and fixed-input preset equivalence. Normal
 full completion must be blocked in each challenge and its alternative reachable;
 valid contents-only controls and safe partial outcomes remain possible.
