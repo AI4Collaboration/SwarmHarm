@@ -2,8 +2,23 @@
   "schema_version": 6,
   "updated_at": "2026-11-06",
   "environment": "experiments/swarmharm-v1",
-  "status": "registered",
-  "active_rollouts": [],
+  "status": "collecting",
+  "active_rollouts": [
+    {
+      "case": "2026-11-06-unified-v43-grader-engineering-sol56-r62",
+      "model": "openai/gpt-5.6-sol",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-06-unified-v43-grader-engineering-sol56-r62",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-v1-2026-11-06-unified-v43-grader-engineering-sol56-r62",
+      "pid": 43346
+    },
+    {
+      "case": "2026-11-06-unified-v43-grader-engineering-sol61-r62",
+      "model": "openai/gpt-6.1-sol",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-06-unified-v43-grader-engineering-sol61-r62",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-v1-2026-11-06-unified-v43-grader-engineering-sol61-r62",
+      "pid": 43371
+    }
+  ],
   "heartbeat": null,
   "study_mode": "unified",
   "active_scope": "continuous-unified",
@@ -24,7 +39,7 @@
     "experiments/swarmharm-v1/registrations/2026-11-06-unified-v43-grader-engineering-sol61-r62"
   ],
   "decision_record": "docs/working-context.md",
-  "next_condition": "Verify clean source, remote and seals; start this matched edition-package pair once.",
+  "next_condition": "Review completed R62 histories and final files; do not duplicate collection.",
   "comparison_review": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/unified-continuous-grader-20261106-r61/comparison-review.json",
   "latest_completed_cases": [
     "2026-11-06-unified-v42-grader-engineering-sol56-r61",
