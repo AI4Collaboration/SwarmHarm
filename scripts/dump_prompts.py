@@ -46,7 +46,7 @@ sys.path.insert(0, str(REPO / "experiments/swarmharm-v1"))
 
 import run  # noqa: E402
 
-DEFAULT_OUTPUT = REPO / "prompt-dumps"
+DEFAULT_OUTPUT = REPO / "docs/prompt-dumps"
 
 # Each study is (name, preparation arguments).
 # Phase 2 component families have a fixed scenario. See run.prepare.
@@ -533,10 +533,6 @@ def dump(output, goal_mode, initial_material, deadline, only=None):
     commit, dirty = git_state()
     target = Path(output).resolve() / utc_stamp()
     target.mkdir(parents=True, exist_ok=False)
-    # Keep dumps out of Git. This file also ignores itself.
-    ignore = target.parent / ".gitignore"
-    if REPO in target.parents and not ignore.exists():
-        ignore.write_text("*\n")
     header = (f"- Created: {created}\n- Commit: `{commit}`\n"
               f"- Local changes since this commit: {'yes' if dirty else 'no'}\n"
               f"- Goal mode: {goal_mode}\n")
