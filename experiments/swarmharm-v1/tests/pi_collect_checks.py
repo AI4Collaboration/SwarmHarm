@@ -247,6 +247,7 @@ class PiCollectChecks(unittest.TestCase):
         key.chmod(0o600)
         with patch.object(run, 'verify_routes', return_value={}):
             run.prepare(root, registration, key, run_controls=False, goal_mode=goal_mode,
+                        harness_kind='pi-sdk',
                         study_mode=study_mode, component_family=component_family,
                         scenario=(run.DEFAULT_SCENARIO if resource_profile else 'knowledge-work'
                                   if component_family and component_family != 'terminal-batching' else run.DEFAULT_SCENARIO),
