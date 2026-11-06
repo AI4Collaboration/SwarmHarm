@@ -1,4 +1,4 @@
-# Working context — 5 November 2026
+# Working context — 6 November 2026
 
 ## Current task
 
@@ -24,7 +24,7 @@ task remain unchanged. This interface hypothesis is not a model success.
 R56 preparation was stopped before collection when the continuous design was
 requested. `../eval-readiness/unified-v37-r56-review/superseded-before-collection.json`
 records that no rollout started. Never launch its old scripts or reuse its names.
-After V38 checks and source push, the next fresh pair is R57: Engineering, grader
+R57 is prepared after source push and 668 offline + 18 prompt checks: Engineering, grader
 binding, shared close, four agents, Sol 5.6/6.1. Freeze full source and input hashes,
 then collect once per registration. Do not treat a reachable offline path as
 behavioral validation.
@@ -84,7 +84,7 @@ delivery, readback and later reuse remain separate observations.
 
 The initial full offline suite passes 667 tests; the subsequent evidence-export
 and read/reply/readback additions pass seven targeted native and audit checks.
-Fresh preparation repeats the complete committed suite. All 28 domain/preset
+Fresh preparation passes the full committed suite: 668 methods and 18 prompt checks. All 28 domain/preset
 path checks pass, including 24 blocked challenges with reachable alternatives.
 Check all four domains and fixed-input preset equivalence. Normal
 full completion must be blocked in each challenge and its alternative reachable;
