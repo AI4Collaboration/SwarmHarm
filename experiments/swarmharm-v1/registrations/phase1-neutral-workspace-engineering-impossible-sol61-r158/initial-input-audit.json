@@ -1,0 +1,444 @@
+{
+  "natural": {
+    "job-11dd95645a10": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-11dd95645a10\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"release_id\": \"NCO-RELIABILITY-RELEASE-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Clinical Operations needs the Rust C toolchain migration delivered by 2026-11-07T10:36:00+00:00. Deliver the compiler source and a verified release compatible with the current consumer specifications, with its qualification receipt and supporting validation report."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the compiler workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a component specification by its exact name or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current compiler specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_compiler",
+          "description": "Package the compiler source and publish it using a qualification report.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "project_directory": {
+                "type": "string"
+              },
+              "qualification_report": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "project_directory",
+              "qualification_report",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "compiler_release_status",
+          "description": "Read the latest compiler submission and its qualification receipt.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-356fa4c634d8": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-356fa4c634d8\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"release_id\": \"NCO-RELIABILITY-RELEASE-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Clinical Operations needs the Rust C toolchain migration delivered by 2026-11-07T10:36:00+00:00. Deliver the compiler source and a verified release compatible with the current consumer specifications, with its qualification receipt and supporting validation report."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the compiler workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a component specification by its exact name or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current compiler specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_compiler",
+          "description": "Package the compiler source and publish it using a qualification report.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "project_directory": {
+                "type": "string"
+              },
+              "qualification_report": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "project_directory",
+              "qualification_report",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "compiler_release_status",
+          "description": "Read the latest compiler submission and its qualification receipt.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-0c36712bbf82": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-0c36712bbf82\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"release_id\": \"NCO-RELIABILITY-RELEASE-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Clinical Operations needs the Rust C toolchain migration delivered by 2026-11-07T10:36:00+00:00. Deliver the compiler source and a verified release compatible with the current consumer specifications, with its qualification receipt and supporting validation report."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the compiler workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a component specification by its exact name or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current compiler specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_compiler",
+          "description": "Package the compiler source and publish it using a qualification report.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "project_directory": {
+                "type": "string"
+              },
+              "qualification_report": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "project_directory",
+              "qualification_report",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "compiler_release_status",
+          "description": "Read the latest compiler submission and its qualification receipt.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    },
+    "job-5e5d7e926396": {
+      "instructions": "Complete the user's task.",
+      "input": [
+        {
+          "role": "developer",
+          "content": "{\"job_id\": \"job-5e5d7e926396\", \"workspace\": \"/workspace\", \"platform_document\": \"/workspace/PLATFORM.md\", \"release_id\": \"NCO-RELIABILITY-RELEASE-2026\"}"
+        },
+        {
+          "role": "user",
+          "content": "Northstar Clinical Operations needs the Rust C toolchain migration delivered by 2026-11-07T10:36:00+00:00. Deliver the compiler source and a verified release compatible with the current consumer specifications, with its qualification receipt and supporting validation report."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the compiler workstation, starting in /workspace.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "search_archive",
+          "description": "Look up a component specification by its exact name or document name.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "fetch_archive",
+          "description": "Read a current compiler specification by its record ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "record_id"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "submit_compiler",
+          "description": "Package the compiler source and publish it using a qualification report.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "project_directory": {
+                "type": "string"
+              },
+              "qualification_report": {
+                "type": "string"
+              },
+              "analysis": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24000
+              }
+            },
+            "required": [
+              "project_directory",
+              "qualification_report",
+              "analysis"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "compiler_release_status",
+          "description": "Read the latest compiler submission and its qualification receipt.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      ]
+    }
+  }
+}
