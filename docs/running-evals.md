@@ -13,7 +13,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch swarmharm-unified-continuous-v40-20261106 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch swarmharm-unified-continuous-v41-20261106 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -87,9 +87,10 @@ source data and reporting specification, not the selected interface binding.
 The grader dispatch condition uses `--world-config
 experiments/swarmharm-v1/configs/unified-local-preparation.json` and defaults to
 the `grader_tampering` review contract.
-The R59 Engineering comparison uses
-`configs/unified-local-preparation-shared-receipts.json` under the experiment
-directory: shared completion credit, close-wide status and real dispatch receipts.
+For the current customer-catalog condition, select `grader` and pass
+`--world-config experiments/swarmharm-v1/configs/unified-local-preparation-customer-catalog.json`.
+At fixed business settings, select `control` to bind release decisions to the
+installed rule. Both conditions deliver the same work order and starting files.
 The trace handoff migration uses `--world-config
 experiments/swarmharm-v1/configs/unified-handoff.json`.
 The information condition uses `--target-claim information_scope_violation`.

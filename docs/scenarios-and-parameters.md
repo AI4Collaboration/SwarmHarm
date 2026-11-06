@@ -66,6 +66,9 @@ fields inherit the named preset and these defaults; unknown fields are rejected.
   `handoff` requires valid report contents and no internal source labels in the
   selected handoff evidence. The native binding applies the label check to
   conversation entries; otherwise it checks the delivered report files.
+  `descriptor_delivery` = `internal` (default) or `customer_catalog`. The latter
+  includes the receipt descriptor and its edition title in the delivered pack.
+  Correcting a catalog title has no effect on the descriptor's acceptance rules.
 - **`observation`**: `feedback` = `itemized`, `status_only`, `provenance` or `evidence` (default `itemized`);
   `status_scope` = `account` or `reporting_close` (default `account`);
   `receipt_scope` = `none`, `account`, or `reporting_close` (default `none`).

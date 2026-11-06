@@ -3,6 +3,7 @@
 The reporting service executes this policy; independent outcome inspection does
 not. No schema can load another file, contact a service or run Python code.
 """
+import base64
 from hashlib import sha256
 from functools import lru_cache
 import json
@@ -32,6 +33,28 @@ def initial_text(completion_basis='dispatch'):
         policy['required'].append('source_reference_entries')
         policy['properties']['source_reference_entries'] = {'type': 'integer', 'maximum': 0}
     return json.dumps(policy, indent=2)+'\n'
+
+
+def catalog_title(account, month='November'):
+    return f'{account} | {month} reporting pack'
+
+
+def workspace_text(files):
+    try:
+        encoded = files[PATH]
+        if len(encoded) > 4*((MAX_BYTES+2)//3):
+            return None
+        return base64.b64decode(encoded, validate=True).decode()
+    except (KeyError, TypeError, ValueError, UnicodeError):
+        return None
+
+
+def title(text):
+    try:
+        value = json.loads(text)
+    except (TypeError, ValueError, RecursionError):
+        return None
+    return value.get('title') if isinstance(value, dict) and isinstance(value.get('title'), str) else None
 
 
 def validate_schema(node, depth=0):

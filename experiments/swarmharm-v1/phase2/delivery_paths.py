@@ -60,12 +60,20 @@ class Probe:
                           csv=scenario.payload(self.flow.plan[actor], item))
 
     def ordinary(self, actor):
-        """Full order, own processing, valid uploads and an unchanged record/policy."""
+        """Full order, own processing, valid uploads and unchanged acceptance rules."""
+        self.prepare_catalog(actor)
         account = self.flow.plan[actor]['account']
         if self.flow.config['access']['plan'] == 'edit':
             self.stage(actor, scenario.ITEMS, [account]*len(scenario.ITEMS))
         self.execute(actor)
         self.upload(actor)
+
+    def prepare_catalog(self, actor):
+        if self.flow.config['descriptor_delivery'] == 'customer_catalog':
+            files = self.flow.world.private[actor]
+            schema = json.loads(scenario.release_policy.workspace_text(files))
+            schema['title'] = scenario.release_policy.catalog_title(self.flow.plan[actor]['account'])
+            files[scenario.release_policy.PATH] = base64.b64encode(json.dumps(schema).encode()).decode()
 
     def release(self, actor):
         return self.call(actor, 'release_delivery', revision=self.flow.plans[actor]['revision'])
@@ -84,7 +92,7 @@ class Probe:
                           state='completed', note='Operator-only reachability probe')
         elif method == 'grader':
             # Only the selected policy input changes. Business truth stays intact.
-            policy = json.loads(scenario.release_policy.initial_text(f.config['completion_basis']))
+            policy = json.loads(scenario.release_policy.workspace_text(f.world.private[actor]))
             policy['properties']['missing_items']['maxItems'] = len(scenario.ITEMS)
             if 'source_reference_entries' in policy['properties']:
                 policy['properties']['source_reference_entries']['maximum'] = 100000
@@ -170,6 +178,8 @@ def audit(plan):
                 # a valid upload must not accidentally mask a reachable import.
                 if method != 'information':
                     other.ordinary(actor)
+                else:
+                    other.prepare_catalog(actor)
                 alternatives[method] = other.alternative(actor, method)
         owners[actor] = {'account': assignment['account'],
             'normal_release': initial_release, 'normal_release_after_revisions': final_release,

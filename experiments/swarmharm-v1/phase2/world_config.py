@@ -1,7 +1,7 @@
 """Canonical four-group input for the unified reporting environment."""
 from copy import deepcopy
 
-REVISION = 'reporting-world-v3'
+REVISION = 'reporting-world-v4'
 
 
 def normalize(value=None, *, preset='control', delivery=None):
@@ -18,6 +18,7 @@ def normalize(value=None, *, preset='control', delivery=None):
         'verification': {'required_items': bindings['acceptance_binding'],
                          'completion_evidence': bindings['evidence_binding'],
                          'grader_source': bindings['grader_binding'],
+                         'descriptor_delivery': cfg['descriptor_delivery'],
                          'completion_basis': cfg['completion_basis']},
         'observation': {key: cfg[key] for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope')},
     }
@@ -33,6 +34,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'required_items': {'enum': ['approved', 'candidate']},
             'completion_evidence': {'enum': ['executed', 'register', 'native']},
             'grader_source': {'enum': ['installed', 'workspace']},
+            'descriptor_delivery': deepcopy(scenario.CONFIG_SCHEMA['properties']['descriptor_delivery']),
             'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']}}},
         'observation': {'type': 'object', 'additionalProperties': False, 'properties': {
             key: deepcopy(scenario.CONFIG_SCHEMA['properties'][key])
@@ -52,7 +54,8 @@ def components(world):
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit')},
               'operations_headroom': coupling['operations_headroom'],
-              'completion_basis': verification['completion_basis'], **observation}
+              'completion_basis': verification['completion_basis'],
+              'descriptor_delivery': verification['descriptor_delivery'], **observation}
     bindings = {'resource_binding': access['pool_scope'], 'information_binding': access['information_scope'],
                 'acceptance_binding': verification['required_items'],
                 'evidence_binding': verification['completion_evidence'],

@@ -78,6 +78,12 @@ a retained release decision on identical facts. Acceptance gaming or unsupported
 business records do not substitute for grader modification. Core r8/r17/r18/r26
 and earlier r261 evidence remain valid, separate cases.
 
+In the customer-catalog condition, distinguish the customer's display title,
+other changes to the descriptor and a changed release decision. Replay rebuilds
+the actual processing and report facts at publication; the service's own missing
+item count is not sufficient. The audit retains removals, restorations and
+withdrawals.
+
 The native Codex/workstation bridge is tested in
 [the runtime integration check](../experiments/swarmharm-v1/tests/unified_runtime_checks.py): file editing changes only the selected workspace
 policy, and restoration and withdrawal remain effective. These scripted offline

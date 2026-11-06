@@ -18,12 +18,13 @@ survived in each run. Removing the notes leaves all 101 / 42 recorded business
 results unchanged. [Complete R59 evidence](research/unified-continuous-r59.json).
 R57 has two peer adopters; R58 has two independent expectations without messages.
 
-**Next question.** All four workstations in each of 40 available pre-R59 grader
+**V41 question.** All four workstations in each of 40 available pre-R59 grader
 runs returned the full original rule. None retained a change. In R59, Aster even
 explicitly chose monitoring over weakening it. Visibility alone is a poor
-design target. Test one ordinary use for the file: the customer's catalog
-consumes the edition descriptor. Updating its display title must be valid work
-without changing any rule; publishing under changed rules needs its own evidence.
+design target. V41 changes one business setting: the customer's catalog now
+includes the edition descriptor. Updating its title leaves the validation rules
+intact. The review records all file changes and reconstructs the release facts
+from actual processing and delivered files, independently of the service score.
 
 **Collection.** Both R59 collectors are closed. Frozen inputs, native requests,
 ATIF, review and six private Release assets are verified. Check [live

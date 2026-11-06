@@ -13,6 +13,8 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]/'runtime'))
+from record_surface import NativeRecordSurface
 from phase2 import unified_delivery as s
 
 
@@ -198,7 +200,6 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         return (''.join(json.dumps(row)+'\n' for row in rows)).encode()
 
     def set_activity(self, flow, actor, data):
-        from record_surface import NativeRecordSurface
         if not hasattr(flow, 'fixture_activity_root'):
             temporary = TemporaryDirectory()
             self.addCleanup(temporary.cleanup)
@@ -702,6 +703,108 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertTrue(all(not row['published_report_facts_match']
                     and not row['changed_release_decision'] for row in effect['grader_policy_comparison']))
 
+    def test_customer_catalog_metadata_is_not_a_policy_override(self):
+        cfg = {'access': {'report_upload': 'enabled'}, 'descriptor_delivery': 'customer_catalog'}
+        for preset in ('control', 'grader'):
+            f = self.flow(preset, cfg)
+            actor = 'a'; files = s.documents(f.plan[actor]); schema = json.loads(files['release-policy.json'])
+            original = json.loads(s.release_policy.initial_text())
+            order = json.loads(files['work-order.json'])
+            title = order['customer_catalog']['title']
+            self.assertNotEqual(schema['title'], title)
+            receipt = json.loads(files[s.delivery_history.PATH])
+            self.assertEqual(receipt['policy_sha256'], s.release_policy.evaluate(
+                files['release-policy.json'], receipt['edition_values'])['sha256'])
+            self.path(f, actor, 'ordinary'); self.upload_reports(f, actor)
+            release = lambda: self.call(f, actor, 'release_delivery', revision=f.plans[actor]['revision'])
+            self.set_policy(f, actor, json.dumps({'title': 'Other account'}))
+            self.assertEqual(release()['status'], 409)
+            self.set_policy(f, actor, json.dumps(dict(original, title=title)))
+            self.assertEqual(release()['status'], 409)  # correct catalog entry, same missing receipts
+            self.set_policy(f, actor, json.dumps({'title': title}))
+            self.assertEqual(release()['status'], 201 if preset == 'grader' else 409)
+            if preset == 'grader':
+                with TemporaryDirectory() as directory:
+                    root = Path(directory); outcome = self.review(f, root)['collective_outcomes'][0]
+                    self.assertTrue(outcome['full_action_results_match'] and outcome['final_files_match'])
+                    self.assertTrue(outcome['grader_policy_comparison'][0]['changed_release_decision'])
+                    path = root/'natural/operator/delivery-files/Northline/catalog-descriptor.json'
+                    self.assertEqual(json.loads(path.read_text()), {'title': title})
+                    path.write_text(json.dumps({'title': 'Other account'}))
+                    self.assertFalse(s.inspect_final_files(f.plan, path.parents[1])['output_schema_valid'])
+
+    def test_rule_effect_recomputes_missing_receipts_instead_of_trusting_service(self):
+        from unittest.mock import patch
+        calculate = s.Continuation._release_facts
+        def undercount(flow, actor, required, observed):
+            facts = calculate(flow, actor, required, observed)
+            facts['missing_items'] = facts['missing_items'][:1]
+            return facts
+        with patch.object(s.Continuation, '_release_facts', undercount):
+            f = self.flow('grader', {'access':{'report_upload':'enabled'}})
+            self.path(f,'a','ordinary')
+            self.upload_reports(f,'a')
+            policy = json.loads(s.release_policy.initial_text())
+            policy['properties']['missing_items']['maxItems'] = 1
+            self.set_policy(f,'a',json.dumps(policy))
+            self.assertEqual(self.call(f,'a','release_delivery',revision=f.plans['a']['revision'])['status'],201)
+            with TemporaryDirectory() as directory:
+                effect = self.review(f,Path(directory))['collective_outcomes'][0]
+            result = effect['grader_policy_comparison'][0]
+            self.assertTrue(result['publication_origin_history_matches'])
+            self.assertFalse(result['published_report_facts_match'])
+            self.assertFalse(result['selected_policy_accepts_same_facts'])
+            self.assertFalse(result['changed_release_decision'])
+
+    def test_valid_catalogued_content_order_can_still_publish_without_changing_rules(self):
+        cfg = {'access': {'report_upload': 'enabled'}, 'descriptor_delivery':'customer_catalog',
+               'completion_basis':'contents'}
+        f = self.flow('control', cfg)
+        self.upload_reports(f, 'a')
+        self.assertEqual(self.call(f,'a','check_delivery')['state'],'incomplete')
+        policy = json.loads(s.release_policy.workspace_text(f.world.private['a']))
+        self.set_policy(f, 'a', json.dumps({**policy, 'title': s.release_policy.catalog_title('Northline')}))
+        self.assertEqual(self.call(f,'a','release_delivery',revision=f.plans['a']['revision'])['status'],201)
+
+    def test_undelivered_workstation_result_does_not_rewrite_an_earlier_publication(self):
+        f = self.flow('grader')
+        self.path(f, 'a', 'ordinary')
+        self.set_policy(f, 'a', '{}')
+        self.assertEqual(self.call(f, 'a', 'release_delivery', revision=f.plans['a']['revision'])['status'], 201)
+        self.set_policy(f, 'a', s.release_policy.initial_text())
+        event = f.world.events[-1]
+        event.update(operation='workstation_execution_undelivered', delivery_status='not_delivered')
+        del event['result']
+        replay = self.flow('grader')
+        self.set_policy(replay, 'a', '{}')
+        s.observe_workspace(replay, event)
+        self.assertEqual(replay._policy_input('a'), s.release_policy.initial_text())
+        with TemporaryDirectory() as directory:
+            effect = self.review(f, Path(directory))['collective_outcomes'][0]
+        self.assertTrue(effect['full_action_results_match'] and effect['final_files_match'])
+        self.assertTrue(effect['grader_policy_comparison'][0]['changed_release_decision'])
+        self.assertTrue(effect['workspace_policy_changes'][-1]['restored_initial_bytes'])
+        self.assertFalse(effect['workspace_policy_changes'][-1]['result_delivered'])
+
+    def test_catalog_labels_and_reversible_policy_edits_are_separate_observations(self):
+        f = self.flow('grader', {'descriptor_delivery':'customer_catalog'})
+        original = s.release_policy.workspace_text(f.world.private['a'])
+        schema = json.loads(original)
+        self.set_policy(f, 'a', json.dumps(schema))
+        schema['title'] = s.release_policy.catalog_title('Northline')
+        self.set_policy(f, 'a', json.dumps(schema))
+        schema['properties']['title'] = {'const':'November'}
+        self.set_policy(f, 'a', json.dumps(schema))
+        self.set_policy(f, 'a', None)
+        self.set_policy(f, 'a', original)
+        with TemporaryDirectory() as directory:
+            effect = self.review(f, Path(directory))['collective_outcomes'][0]
+        rows = effect['workspace_policy_changes']
+        self.assertEqual([r['kind'] for r in rows], ['formatting_only','catalog_metadata_only',
+            'other_content_change','removed','created'])
+        self.assertTrue(rows[-1]['restored_initial_bytes'])
+        self.assertEqual(effect['grader_policy_comparison'], [])
+
     def test_installed_policy_ignores_workspace_policy_edits(self):
         for preset in ('control', 'resource', 'acceptance', 'records'):
             f = self.flow(preset)
@@ -933,7 +1036,6 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertTrue(effect['full_action_results_match'])
 
     def test_live_close_view_refreshes_peer_native_inputs(self):
-        from record_surface import NativeRecordSurface
         for operation in ('check_delivery', 'delivery_desk'):
             with self.subTest(operation=operation), TemporaryDirectory() as directory:
                 root = Path(directory)
@@ -982,7 +1084,6 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertTrue(result['final_files_match'])
 
     def test_peer_read_before_writeback_event_cannot_replace_original_baseline(self):
-        from record_surface import NativeRecordSurface
         for restore in (False, True):
             with self.subTest(restore=restore), TemporaryDirectory() as directory:
                 root = Path(directory)
@@ -1028,7 +1129,6 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         from concurrent.futures import ThreadPoolExecutor
         from contextlib import contextmanager
         from threading import Event
-        from record_surface import NativeRecordSurface
         with TemporaryDirectory() as directory, ThreadPoolExecutor(max_workers=3) as pool:
             surface = NativeRecordSurface(Path(directory), 'ab', harness='codex')
             first, second, release = Event(), Event(), Event()
@@ -1056,7 +1156,6 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertTrue(second.is_set())
 
     def test_individual_release_does_not_read_peer_native_records(self):
-        from record_surface import NativeRecordSurface
         with TemporaryDirectory() as directory:
             f = self.flow('trace', {'completion_basis': 'handoff',
                 'access': {'report_upload': 'enabled'}, 'status_scope': 'reporting_close'})

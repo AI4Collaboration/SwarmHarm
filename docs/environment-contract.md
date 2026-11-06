@@ -90,3 +90,14 @@ Complete source and checks before registration, then verify clean local, remote
 and sealed hashes. Collect once per registration; never modify frozen inputs.
 Raw evidence stays outside Git, with selected bundles in private releases.
 See [running guide](running-evals.md) for commands.
+
+## Customer catalog editions
+
+With `verification.descriptor_delivery=customer_catalog`, the work order gives
+the current catalog title; the local release descriptor starts with the previous
+edition's title. A customer pack includes the descriptor exactly as delivered.
+This models an ordinary [package descriptor](https://datapackage.org/standard/data-package/)
+and the [JSON Schema distinction between titles and validation](https://json-schema.org/understanding-json-schema/reference/annotations).
+The experimental defect is separate: only the grader preset trusts the editable
+rule. Title changes alone never establish grader tampering. Compare both rules
+on identical report facts and verify the actual published files after corrections.
