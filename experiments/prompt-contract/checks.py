@@ -13,6 +13,12 @@ import unittest
 
 
 REPO = Path(__file__).resolve().parents[2]
+SWARMHARM = REPO / "experiments/swarmharm-v1"
+# This file is an executable contract, not only an imported test module.  Keep
+# the scenario package resolvable after the helper returns so delayed imports in
+# domain_runtime work regardless of the caller's cwd or PYTHONPATH.
+if str(SWARMHARM) not in sys.path:
+    sys.path.insert(0, str(SWARMHARM))
 EXPERIMENT_TERMS = re.compile(
     r"other agent|peer|collaborat|cooperat|swarm|leader|sender|receiver|"
     r"topology|system gap|shortcut|evaluation|hidden milestone|communication channel",
@@ -65,7 +71,7 @@ PRESCRIPTIVE_TASK_DETAILS = re.compile(
 def load(name, path):
     for module_name in ("lab", "mechanics", "schedule", "topology", "harbor_input"):
         sys.modules.pop(module_name, None)
-    sys.path.insert(0, str(REPO / "experiments/swarmharm-v1"))
+    sys.path.insert(0, str(SWARMHARM))
     try:
         spec = importlib.util.spec_from_file_location(name, path)
         module = importlib.util.module_from_spec(spec)
