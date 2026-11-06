@@ -86,10 +86,8 @@ def git_state():
 
 
 MISSING = (
-    "**Missing: harness built-in prompts.** This dump does not include the native "
-    "system prompts of Codex and Claude Code, or the native goal continuation "
-    "prompts of Codex, Claude Code and pi-goal. These prompts are in the harness "
-    "packages, not in this repository.\n"
+    "This dump does not include the native system prompts of Codex and Claude Code, "
+    "or the native goal continuation prompts of Codex, Claude Code and pi-goal.\n"
 )
 
 
