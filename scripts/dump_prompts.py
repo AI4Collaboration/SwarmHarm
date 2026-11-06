@@ -13,6 +13,8 @@ Each file shows one subject:
 - the delivery for each harness,
 - the tool definitions,
 - the workspace files,
+- the archive responses for the sources that the subject's files name,
+  before and after the scheduled source revision,
 - the follow-up message templates and the conditions that start each
   message. Parts that come from a rollout show as placeholders.
 
@@ -153,9 +155,135 @@ def prepare(arguments, goal_mode, deadline):
         world = run.lab.World(plan, root / "operator", settings.get("topology"))
         extension = continuation_module(arguments).Continuation(
             world, run.load(root / "raw/phase2-plan.json"))
-        return (run.load(root / "raw/initial-input-audit.json"),
-                run.load(root / "raw/initial-file-audit.json"),
-                followups(arguments, settings, extension, plan))
+        audit = run.load(root / "raw/initial-input-audit.json")
+        files = run.load(root / "raw/initial-file-audit.json")
+        rows = followups(arguments, settings, extension, plan)
+        archive = archive_responses(world, settings, audit, files)
+        return audit, files, rows, archive
+
+
+ARCHIVE_TOOLS = {"search_archive", "fetch_archive"}
+
+
+class OfflineStation:
+    """Stand in for a workstation. Accept file writes and do nothing."""
+
+    def hydrate(self, files, *args):
+        pass
+
+    def pause(self):
+        pass
+
+
+def record_ids(value):
+    """Return the archive record IDs that a workspace JSON value names."""
+    if isinstance(value, dict):
+        for key, item in value.items():
+            if key.endswith("record_id") and isinstance(item, str):
+                yield item
+            else:
+                yield from record_ids(item)
+    elif isinstance(value, list):
+        for item in value:
+            yield from record_ids(item)
+
+
+def archive_pass(world, actor, files, earlier=()):
+    """Call the archive tools as a subject can and return each call.
+
+    The calls go through World.call, which is the handler that run.collect
+    uses for these tools. The pass searches each source name of the
+    subject's batch, fetches each match, follows each collection locator
+    with its exact lookup and fetches the record IDs that the workspace
+    files name. It fetches the IDs in `earlier` again.
+    """
+    calls = []
+    fetched = set()
+
+    def call(name, args):
+        reply = world.call(actor, len(calls) + 1, name, args)
+        calls.append({"tool": name, "arguments": args, "reply": reply})
+        return reply
+
+    def fetch(record_id):
+        if record_id in fetched:
+            return
+        fetched.add(record_id)
+        reply = call("fetch_archive", {"record_id": record_id})
+        for locator in (reply.get("record") or {}).get("member_locators", []):
+            if locator.get("exact_lookup"):
+                search(locator["exact_lookup"])
+
+    def search(query):
+        for match in call("search_archive", {"query": query}).get("matches", []):
+            fetch(match["record_id"])
+
+    for item in world.service(actor).batch["reviews"]:
+        search(item["quote_name"])
+    for path in sorted(files):
+        try:
+            value = json.loads(decode(files[path]))
+        except ValueError:
+            continue
+        for record_id in record_ids(value):
+            fetch(record_id)
+    for record_id in earlier:
+        fetch(record_id)
+    return calls
+
+
+def archive_responses(world, settings, audit, files):
+    """Return the archive calls of each subject that has the archive tools.
+
+    If the settings have a source publication, the result also has a second
+    pass after World.publish_final_build, which is the call that run.collect
+    makes at the scheduled time.
+    """
+    actors = [actor for actor, row in audit["natural"].items()
+              if ARCHIVE_TOOLS <= {tool.get("name") for tool in row.get("tools", [])}]
+    workspace = files.get("natural", {})
+    stages = {actor: [] for actor in actors}
+    # A fetched collection locator is also copied to the subject's
+    # workstation. This does not change the reply. Do not start a container.
+    world.bench = lambda actor: OfflineStation()
+    for actor in actors:
+        world.private.setdefault(actor, dict(workspace.get(actor, {})))
+    for actor in actors:
+        stages[actor].append(("Before the source revision" if settings.get("source_publication")
+                              else "Current sources",
+                              archive_pass(world, actor, workspace.get(actor, {}))))
+    if actors and settings.get("source_publication"):
+        world.publish_final_build()
+        for actor in actors:
+            earlier = [row["arguments"]["record_id"] for row in stages[actor][0][1]
+                       if row["tool"] == "fetch_archive"]
+            stages[actor].append(("After the source revision",
+                                  archive_pass(world, actor, workspace.get(actor, {}), earlier)))
+    return stages
+
+
+def render_archive(stages, settings_note):
+    """Return the archive section of one subject file."""
+    if not stages:
+        return ""
+    lines = ["## Archive responses\n", settings_note]
+    for title, calls in stages:
+        lines.append(f"### {title}\n")
+        for number, row in enumerate(calls, 1):
+            lines.append(f"{number}. `{row['tool']}` with "
+                         f"`{json.dumps(row['arguments'])}`\n")
+            lines.append(fence(json.dumps(row["reply"], indent=2), "json"))
+    return "\n".join(lines)
+
+
+ARCHIVE_NOTE = (
+    "These are the replies of the archive tools to an offline replay through "
+    "`World.call`, the handler that the collector uses. The replay searches each "
+    "source name in the subject's batch, fetches each match, follows each collection "
+    "locator and fetches each record ID that the workspace files name. A subject can "
+    "make other calls. A reply can depend on the calls before it. When a subject "
+    "fetches a collection locator, the collector also writes the record to "
+    "`/workspace/archive-locators.json` in the subject's workstation.\n")
 
 
 def notice(text, kind):
@@ -390,7 +518,7 @@ def workspace_note(arguments, folder):
             f"`{builder.__name__}()` in {location(builder, folder)}.\n")
 
 
-def render(study, arguments, actor, audit, files, header, folder, rows):
+def render(study, arguments, actor, audit, files, header, folder, rows, archive=()):
     lines = [f"# {study} / {actor}\n", header, MISSING]
     lines.append("## Study arguments\n")
     lines.append(fence(json.dumps(arguments, indent=2, sort_keys=True), "json"))
@@ -415,6 +543,8 @@ def render(study, arguments, actor, audit, files, header, folder, rows):
     for path in sorted(files):
         lines.append(f"### `{path}`\n")
         lines.append(fence(decode(files[path]), language_for(path)))
+    if archive:
+        lines.append(render_archive(archive, ARCHIVE_NOTE))
     lines.append(render_followups(rows))
     return "\n".join(lines)
 
@@ -447,7 +577,7 @@ def dump(output, goal_mode, initial_material, deadline, only=None):
         if family and family not in FIXED_MATERIAL:
             arguments["initial_material"] = initial_material
         try:
-            audit, files, rows = prepare(arguments, goal_mode, deadline)
+            audit, files, rows, archive = prepare(arguments, goal_mode, deadline)
         except Exception as error:  # Record the failure. Continue with the next study.
             failures += 1
             index.append(f"| {study} | 0 | - | failed: {type(error).__name__}: {error} |")
@@ -460,7 +590,8 @@ def dump(output, goal_mode, initial_material, deadline, only=None):
                         for number, actor in enumerate(actors, 1)}
         for number, (actor, actor_audit) in enumerate(actors.items(), 1):
             text = render(study, arguments, actor, actor_audit,
-                          files.get("natural", {}).get(actor, {}), header, folder, rows)
+                          files.get("natural", {}).get(actor, {}), header, folder, rows,
+                          archive.get(actor, ()))
             # Show each job ID as a placeholder. A live rollout makes new IDs.
             for value, placeholder in placeholders.items():
                 text = text.replace(value, placeholder)
