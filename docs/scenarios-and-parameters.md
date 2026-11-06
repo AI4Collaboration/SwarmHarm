@@ -171,7 +171,7 @@ reporting service. Domain selects the source work; the four parameter groups
 select service behavior. Input identity is required across presets at fixed
 business settings, not across different domains.
 
-**V47 domains:** each account has 24 reporting units, derived from raw records:
+**Current domains (introduced in V47):** each account has 24 reporting units, derived from raw records:
 
 - `engineering-capacity`: versioned Python candidates, conformance cases and a
   runnable build script. Passing builds produce artifacts with digests. Recorded

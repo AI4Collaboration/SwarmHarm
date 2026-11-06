@@ -1,0 +1,116 @@
+{
+  "source_revision": "unified-continuous-reporting-v48",
+  "source_commit": "5517981e1b62434f5ce5e803d480c3803ab664cb",
+  "status": "offline_verified_maintenance_patch",
+  "base_live_evidence": "unified-domain-validation-r66.json",
+  "live_model_source": "unified-continuous-reporting-v47",
+  "changes": [
+    "Explicit decimal and 0/1 encodings in report specification, including the pending completion-day representation.",
+    "Host launch admission reserves capacity across concurrent launchers before model calls.",
+    "Fresh registration limits describe reporting; malformed live-status entries fail with a clear diagnostic."
+  ],
+  "unchanged": [
+    "task",
+    "tools",
+    "source data",
+    "business rule semantics",
+    "budgets",
+    "memory",
+    "goal-off and state-change notification logic"
+  ],
+  "subject_input_comparison": {
+    "domains": 4,
+    "workstations": 16,
+    "only_changed_path": "/workspace/report-specification.md",
+    "tasks_equal": true,
+    "tools_equal": true,
+    "all_other_initial_files_equal": true,
+    "detail_sha256": "7070a433159af16f16aa5a57fdc478086a1566a466cdf4c1700e39c467e6c173"
+  },
+  "source_file_sha256": {
+    "experiments/runtime/launch_capacity.py": "0a14be1b9d520f9e8173a0b8a168a841429c633f46e61313c93c01d1e14c4716",
+    "experiments/swarmharm-v1/launch.py": "d5a884fef9803ca21b5ea150677c97c30d678aaa0c5a771141138268e4957fbe",
+    "experiments/swarmharm-v1/phase2/delivery_data.py": "ad7a0077d7feddeb962f2ff98adda7896bbbce248813ec3808be145635818d4c",
+    "experiments/swarmharm-v1/phase2/unified_delivery.py": "894af9add60a94380f0eadcc7db553e1ad1eb1ca12e8694dd7ef5db73a2a00b5",
+    "experiments/swarmharm-v1/run.py": "0b6da9926296ee12043ae14a174fb43d71111860b0617818c295d142a004b34f",
+    "experiments/swarmharm-v1/tests/host_capacity_checks.py": "bd2f9b0766f5568ba6fa3bd1b6c3ad1d7c8c48050b68c67120983efef35cd13a",
+    "experiments/swarmharm-v1/tests/unified_delivery_checks.py": "4f8ad0db8143216f7b21871c674fb70efeca906f1007d18671f9b4c42e709dee",
+    "scripts/check-unified-input-readiness": "66033aeb39c64f34fa532a0a1af3922f2d15d58c69be7af0aa8e4297f103ad66",
+    "scripts/check_dataset_admission_contract.py": "1b6b7028e65d9107f4c6bed1f9a39686d0260e6a6b9b9180b9ff0a507e50e6f6"
+  },
+  "full_check_passed": true,
+  "model_calls": 0,
+  "checks": [
+    {
+      "name": "domain source work",
+      "passed": true,
+      "seconds": 0.141
+    },
+    {
+      "name": "domain catalog",
+      "passed": true,
+      "seconds": 0.07
+    },
+    {
+      "name": "input contract",
+      "passed": true,
+      "seconds": 0.98
+    },
+    {
+      "name": "input export",
+      "passed": true,
+      "seconds": 3.085
+    },
+    {
+      "name": "path accounting",
+      "passed": true,
+      "seconds": 8.629
+    },
+    {
+      "name": "host launch capacity",
+      "passed": true,
+      "seconds": 0.042
+    },
+    {
+      "name": "delivery regression",
+      "passed": true,
+      "seconds": 66.0
+    },
+    {
+      "name": "evidence replay",
+      "passed": true,
+      "seconds": 52.824
+    },
+    {
+      "name": "subject-facing wording",
+      "passed": true,
+      "seconds": 15.387
+    },
+    {
+      "name": "dataset admission",
+      "passed": true,
+      "seconds": 0.072
+    },
+    {
+      "name": "format contract",
+      "passed": true,
+      "seconds": 0.124
+    }
+  ],
+  "additional_regression": {
+    "collector_launch_tests_passed": 65,
+    "host_capacity_tests_passed": 4
+  },
+  "evidence_scope": "This validates the maintenance patch. It does not relabel the frozen V47 model trajectories or claim a fresh V48 rollout. Complete logs and comparison details accompany the V47 review-tools archive.",
+  "fresh_github_checkout": {
+    "source_commit": "5517981e1b62434f5ce5e803d480c3803ab664cb",
+    "clean": true,
+    "exported_domains": [
+      "engineering-capacity",
+      "data-analysis",
+      "financial-analysis",
+      "knowledge-work"
+    ],
+    "model_calls": 0
+  }
+}

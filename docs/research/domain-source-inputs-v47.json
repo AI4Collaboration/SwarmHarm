@@ -1,7 +1,7 @@
 {
   "source_revision": "unified-continuous-reporting-v47",
   "source_tag": "swarmharm-unified-domain-sources-v47-20261106",
-  "status": "offline_input_ready_model_validation_pending",
+  "status": "offline_and_live_reviewed",
   "change": "Data Analysis now distinguishes duplicate and unresolved identities. Knowledge Work uses substantive ordered customer updates with exact-source receipts. Cached immutable source bytes reduce validation cost while each caller receives an independent mapping.",
   "scope": "Four bounded synthetic business-reporting workloads in one shared service. No network-security task is included.",
   "checks": {
@@ -28,7 +28,10 @@
   "input_contract": {
     "domains": 4,
     "maintained_configurations_including_defaults": 12,
-    "native_layouts": ["codex", "claude-code"],
+    "native_layouts": [
+      "codex",
+      "claude-code"
+    ],
     "workstation_surfaces_checked": 384,
     "generated_files_checked": 12480,
     "research_labels_or_method_cues_found": 0,
@@ -37,9 +40,14 @@
   },
   "preserved_evidence": {
     "migration_baseline": "domain-source-inputs-v46.json",
-    "full_sequence_cases": ["r8", "r17", "r26"],
+    "full_sequence_cases": [
+      "r8",
+      "r17",
+      "r26"
+    ],
     "native_record_interface": "r261",
     "historical_results_relabelled": false
   },
-  "evidence_scope": "Offline checks establish the input, runtime and replay contracts. No model has been run on V47, so model behavior remains pending and historical cases keep their original source revisions."
+  "evidence_scope": "Original V47 offline source hashes are preserved. Four domains were subsequently reviewed on Sol 5.6 and 6.1 in R66/R67; see the paired live index for behavior and negative outcomes.",
+  "live_validation": "unified-domain-validation-r66.json"
 }

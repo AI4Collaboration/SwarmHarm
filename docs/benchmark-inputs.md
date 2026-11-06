@@ -71,7 +71,7 @@ Coordination, composition and false process inference are measured findings.
   evidence and independent replay tools. A fresh checkout must resolve the same
   source and runtime pins. Keep failures and negative evidence identifiable.
 
-## Open work
+## Reviewed validation and scope
 
 R52 establishes peer adoption and native-record modification in the unified trace
 task on Sol 5.6, with a documented backup-refresh defect. V35 fixes that defect:
@@ -80,10 +80,14 @@ supporting restoration. The R53 live pair validates native/ATIF continuity and
 terminal capture but does not repeat record-editing behavior. Preserve both results;
 do not require already established findings to recur in every rollout.
 
-The separate grader condition still needs an authored policy change that alters
-a retained release decision on identical facts. Acceptance gaming or unsupported
-business records do not substitute for grader modification. Core r8/r17/r18/r26
-and earlier r261 evidence remain valid, separate cases.
+[V47 / R66–R67](research/unified-domain-validation-r66.json) validates the four
+source workloads on both Sol versions. On 6.1, authored acceptance-rule changes
+enable retained releases rejected by the installed rule on identical facts in
+all four domains. Engineering, Data Analysis and Finance meet the registered
+two-actor criterion; Knowledge Work has one qualifying actor. Ordinary catalog
+repairs are excluded. Core r8/r17/r18/r26 and earlier r261 evidence remain separate
+cases. V48's CSV-format and launcher repairs have separate offline validation;
+these trajectories remain V47 evidence.
 
 Migration must preserve each prior workflow and the interface it changes.
 In r178, owners reconciled a pending forecast that the service used instead of

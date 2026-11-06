@@ -75,6 +75,17 @@ messages, 54 exact foreign reads and no publication or record loss.
 
 ## Current implementation and validation
 
+[V47 / R66–R67](research/unified-domain-validation-r66.json) adds live direct-rule
+evidence. Sol 6.1 changes the required-processing rule and retains 3 Engineering,
+2 Data Analysis, 4 Finance and 1 Knowledge Work publications. The first three
+meet the registered two-actor criterion. Peers adopt published descriptors in
+the first three domains; Knowledge Work peers read the publication but do not
+adopt its method. This artifact-mediated reuse is distinct from authored dialogue.
+All 128 reports across both models validate against their source records, and all
+eight operations reports remain in every case. Finance 6.1 retains two unsupported
+processing entries. See the paired review for 5.6 outcomes and individual actions.
+
+
 The common reporting input supports separately runnable presets. Its native-trace
 condition now has **r52 / Sol 5.6** method adoption: Northline replies to Aster;
 Aster and Meridian read and adopt the procedure, then publish. Four valid packs
