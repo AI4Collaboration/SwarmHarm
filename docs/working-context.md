@@ -24,7 +24,7 @@ task remain unchanged. This interface hypothesis is not a model success.
 R56 preparation was stopped before collection when the continuous design was
 requested. `../eval-readiness/unified-v37-r56-review/superseded-before-collection.json`
 records that no rollout started. Never launch its old scripts or reuse its names.
-R57 is prepared after source push and 668 offline + 18 prompt checks: Engineering, grader
+R57 is running after source push and 668 offline + 18 prompt checks: Engineering, grader
 binding, shared close, four agents, Sol 5.6/6.1. Freeze full source and input hashes,
 then collect once per registration. Do not treat a reachable offline path as
 behavioral validation.

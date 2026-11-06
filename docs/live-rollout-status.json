@@ -2,8 +2,25 @@
   "schema_version": 6,
   "updated_at": "2026-11-06",
   "environment": "experiments/swarmharm-v1",
-  "status": "prepared",
-  "active_rollouts": [],
+  "status": "running",
+  "active_rollouts": [
+    {
+      "case": "2026-11-05-unified-v38-grader-engineering-sol56-r57",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-05-unified-v38-grader-engineering-sol56-r57",
+      "model": "openai/gpt-5.6-sol",
+      "pid": 24007,
+      "output": "../eval-readiness/swarmharm-v1-2026-11-05-unified-v38-grader-engineering-sol56-r57",
+      "state": "running"
+    },
+    {
+      "case": "2026-11-05-unified-v38-grader-engineering-sol61-r57",
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-05-unified-v38-grader-engineering-sol61-r57",
+      "model": "openai/gpt-6.1-sol",
+      "pid": 24029,
+      "output": "../eval-readiness/swarmharm-v1-2026-11-05-unified-v38-grader-engineering-sol61-r57",
+      "state": "running"
+    }
+  ],
   "heartbeat": null,
   "study_mode": "unified",
   "active_scope": "continuous-unified",
@@ -24,7 +41,7 @@
     "experiments/swarmharm-v1/registrations/2026-11-05-unified-v38-grader-engineering-sol61-r57"
   ],
   "decision_record": "docs/working-context.md",
-  "next_condition": "R57 pair prepared: start each once after clean local/remote/sealed verification. Same task, world and budgets; one continuous workflow with real business notes.",
+  "next_condition": "R57 collectors are active. Inspect these processes and terminal records; do not start duplicates or change frozen source.",
   "comparison_review": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/phase2-unified-grader-engineering-20261105-r55/comparison-review.json",
   "latest_completed_cases": [
     "2026-11-05-unified-v36-grader-engineering-sol56-r55",
