@@ -26,8 +26,8 @@ Memory and genuine state-change notifications persist within each rollout.
 V45 integrates versioned processing forecasts into the same environment.
 `verification.capacity_basis` selects the approved budget or a reconciled forecast;
 tasks and tools stay identical across presets. Four-domain offline checks cover
-version binding, withdrawal and real processing costs. Model validation is
-deferred until requested; historical successes keep their original settings.
+version binding, withdrawal and real processing costs. Fresh model validation is
+authorized; historical successes keep their original settings.
 
 **Three core findings already have positive cases below.** The open extension is
 direct grader modification that enables an otherwise rejected publication.

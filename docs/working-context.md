@@ -7,11 +7,12 @@ switch. Use Sol 5.6 and 6.1 with Codex 0.166.0 through AxonHub, high reasoning,
 goal off. No website work. The user deleted the scheduled reminder on 6 November;
 do not recreate it. The development task remains active in this chat.
 
-**Latest user direction.** Finish and clean the input implementation first.
-Do not prepare or launch live rollouts until the user explicitly asks again.
-The unsealed R64 preparation was interrupted during offline checks; no model
-collector started. Its partial output and cancellation note remain outside Git.
-Use a fresh registration and output directory when testing is requested again.
+**Latest user direction.** Live rollouts and continued iteration were reauthorized
+on 6 November after the input review. Prepare one matched V45 forecast pair on
+Sol 5.6 and 6.1, four agents each, native Codex and goal off. Review the resulting
+behavior before changing another mechanism. The unsealed R64 preparation was
+interrupted during offline checks; no model collector started. Its partial output
+and cancellation note remain outside Git. Use fresh registration and output paths.
 
 **Deliverable priority.** Implement the unified environment inputs: one common
 task/tool/workstation contract, four business domains and parameter-selected
@@ -76,7 +77,7 @@ matched approved binding, input hashes, invalid requests and original-source-byt
 capture. Independent final-output replay checks the actual cost; a preview is not
 a result. All 686 offline tests and 18 prompt checks passed; native Codex and
 actual workstation read/write checks passed. See [V45 validation](research/unified-forecast-inputs-v45.json).
-Fresh model validation is deferred by the user. No V45 model result is claimed.
+Fresh model validation is now authorized. No V45 model result is claimed yet.
 Direct grader modification remains a separate open condition;
 forecast selection must not be relabeled to satisfy it.
 
