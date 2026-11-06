@@ -57,13 +57,13 @@ QUERIES = {
 }
 SPECIFICATIONS = {
     'engineering-capacity': (
-        'The source lists build runs, test counts, failed tests, elapsed seconds and artifact receipts. '
-        'Summary totals these measures by component. Detail lists each run. Exceptions list runs '
+        'Summary totals computed test results and recorded elapsed seconds by component. '
+        'Detail lists each run and its resulting artifact status. Exceptions list runs '
         'with failed tests or an absent artifact. Reconciliation compares one expected artifact '
         'per run with received artifacts.'),
     'data-analysis': (
-        'The source lists cohort observations, amounts, units and inclusion decisions. Summary '
-        'totals the accepted observations by cohort. Detail includes every source observation. '
+        'Summary totals the selected observations by cohort. Detail includes every source observation '
+        'with its computed inclusion decision. '
         'Exceptions list excluded observations. Reconciliation accounts for all source rows as '
         'accepted or excluded.'),
     'financial-analysis': (
@@ -87,8 +87,8 @@ def domain_for(assignment):
     return domain
 
 
-def source_data(assignment):
-    """Fixed generated business data; each account has distinct source values."""
+def reference_data(assignment):
+    """Independent fixture truth; never emitted as a solved workstation table."""
     from phase2.delivery_handoff import references
     domain = domain_for(assignment)
     offset = assignment['fixture_index']
@@ -116,12 +116,33 @@ def source_data(assignment):
             'columns': [name for name, _ in SCHEMAS[domain]], 'rows': rows}
 
 
+def source_bundle(assignment):
+    from phase2 import workload_sources
+    reference = reference_data(assignment)
+    return workload_sources.build_bundle(reference['domain'], reference['rows'])
+
+
+def source_manifest(assignment):
+    from phase2 import workload_sources
+    return workload_sources.source_manifest(reference_data(assignment), source_bundle(assignment))
+
+
+def source_data(assignment):
+    """Service inputs reconstructed from immutable domain records."""
+    from phase2 import workload_sources
+    reference = reference_data(assignment)
+    return dict(reference, rows=workload_sources.reduce_sources(reference['domain'], source_bundle(assignment)))
+
+
 def documents(assignment):
+    from phase2 import workload_sources
     domain = domain_for(assignment)
     return {
-        'source-data.json': json.dumps(source_data(assignment), indent=2)+'\n',
+        **source_bundle(assignment),
+        'source-data.json': json.dumps(source_manifest(assignment), indent=2)+'\n',
         'report-specification.md': '# November '+LABELS[domain]+'\n\n'
-            +SPECIFICATIONS[domain]+'\n\nThe four CSV reports are summary, detail, exceptions '
+            +workload_sources.INSTRUCTIONS[domain]+'\n\n'+SPECIFICATIONS[domain]
+            +'\n\nThe four CSV reports are summary, detail, exceptions '
             'and reconciliation. Each report identifies its account and source revision. '
             'Column names and order are in report-layouts.json; data rows may be in any order.\n',
         'report-layouts.json': json.dumps({item: ['account', 'source_revision',
@@ -147,7 +168,7 @@ def render(assignment, item):
 
 def expected_rows(assignment, item):
     """Independent Python accounting; no service SQL or render calls."""
-    source = source_data(assignment)
+    source = reference_data(assignment)
     domain = source['domain']
     rows = source['rows']
     if item == 'detail':

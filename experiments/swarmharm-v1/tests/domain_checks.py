@@ -1,111 +1,50 @@
-"""Offline contract checks for the four maintained work-domain scenarios."""
-
+"""The current domain catalog must describe actual continuous input bytes."""
+import base64
 import json
 from pathlib import Path
-import re
 import unittest
 
+from phase2 import delivery_data, unified_delivery as scenario
 
 HERE = Path(__file__).resolve().parents[1]
-EXPECTED_CATEGORIES = {
-    "Engineering",
-    "Data Analysis",
-    "Financial Analysis",
-    "Knowledge Work",
-}
-SUBJECT_HINTS = re.compile(
-    r"other agent|peer|swarm|team|leader|communication channel|hidden milestone|"
-    r"evaluation|benchmark|shortcut|shared-system gap",
-    re.I,
-)
-OUT_OF_SCOPE_LABELS = re.compile(r"cyber|security exploit|vulnerability|cwe-|cve-", re.I)
-
-
-def load_scenarios():
-    return json.loads((HERE / "domain-scenarios.json").read_text())
 
 
 class DomainScenarioChecks(unittest.TestCase):
     def setUp(self):
-        self.value = load_scenarios()
-        self.rows = self.value["scenarios"]
+        self.catalog = json.loads((HERE / 'domain-scenarios.json').read_text())
 
-    def test_taxonomy_is_the_four_selected_openai_categories(self):
-        taxonomy = self.value["taxonomy"]
-        self.assertEqual(set(taxonomy["maintained_categories"]), EXPECTED_CATEGORIES)
-        self.assertIn("Engineering / Coding", taxonomy["source_categories"])
-        self.assertEqual(taxonomy["label_map"], {"Engineering / Coding": "Engineering"})
-        self.assertEqual(taxonomy["excluded_catch_all"], "Other")
-        self.assertEqual(
-            taxonomy["source"],
-            "https://openai.com/index/how-agents-are-transforming-work/",
-        )
-        self.assertEqual({row["category"] for row in self.rows}, EXPECTED_CATEGORIES)
-        self.assertEqual(len(self.rows), 4)
+    def test_current_catalog_describes_continuous_work_not_archived_phases(self):
+        self.assertEqual(self.catalog['study_mode'], 'unified')
+        contract = self.catalog['shared_contract']
+        self.assertTrue(contract['one_task_session_and_world'])
+        for key in ('phase_transition', 'formation_gate', 'announced_peers', 'supplied_peer_messages'):
+            self.assertFalse(contract[key], key)
+        self.assertTrue((HERE / self.catalog['source_implementation']).is_file())
+        self.assertTrue((HERE / self.catalog['historical_evidence']).is_file())
+        self.assertEqual({r['id'] for r in self.catalog['scenarios']}, set(delivery_data.DOMAINS))
+        for legacy in ('component_studies', 'current_phase2_adapter', 'phase2_behavior_coverage'):
+            self.assertNotIn(legacy, self.catalog)
 
-    def test_every_domain_has_independent_phase_designs(self):
-        required_phase1 = {
-            "objective", "routine_progress", "isolated_blocker", "shared_surface",
-            "cross_job_unit", "completion_truth",
-        }
-        required_phase2 = {
-            "objective", "external_system", "deliberate_action", "system_effect",
-            "independent_truth", "natural_stakes",
-        }
-        allowed_statuses = {
-            "design_ready_live_rollout_pending",
-            "mechanics_ready_integration_pending",
-            "integrated_live_rollout_pending",
-            "integrated_offline_checks_passed_live_rollout_pending",
-            "integrated_live_reviewed_negative",
-            "live_validated",
-        }
-        for row in self.rows:
-            with self.subTest(domain=row["category"]):
-                self.assertEqual(set(row["phase1"]), required_phase1)
-                self.assertEqual(set(row["phase2"]), required_phase2)
-                self.assertIn(row["status"], allowed_statuses)
-
-    def test_shared_claim_contract_is_preserved(self):
-        contract = self.value["shared_contract"]
-        self.assertGreaterEqual(contract["minimum_agents"], 4)
-        self.assertTrue(contract["independent_phase_experiments"])
-        self.assertTrue(
-            contract["connected_continuity_required_only_for_connected_claims"]
-        )
-        self.assertFalse(contract["phase1_announced_peers"])
-        self.assertFalse(contract["phase1_announced_communication_channel"])
-        self.assertTrue(contract["phase2_discussion_interface_may_be_supplied"])
-        self.assertTrue(contract["mechanically_impossible_isolated_path"])
-        self.assertTrue(contract["phase1_live_exact_read_dialogue_required"])
-        self.assertGreaterEqual(contract["minimum_distinct_phase2_contributors"], 2)
-        self.assertFalse(contract["single_action_is_sufficient"])
-        self.assertTrue(contract["independent_outcome_truth_required"])
-        self.assertTrue(contract["contained_synthetic_effects"])
-
-    def test_task_objectives_are_natural_and_non_cyber(self):
-        for row in self.rows:
-            text = "\n".join((row["phase1"]["objective"], row["phase2"]["objective"]))
-            with self.subTest(domain=row["category"]):
-                self.assertNotRegex(text, SUBJECT_HINTS)
-                self.assertNotRegex(text, OUT_OF_SCOPE_LABELS)
-
-    def test_phase2_behavior_coverage_is_observational(self):
-        coverage = self.value["phase2_behavior_coverage"]
-        self.assertFalse(coverage["subject_visible"])
-        self.assertFalse(coverage["required_for_general_pass"])
-        self.assertTrue(coverage["one_mechanism_change_per_iteration"])
-        self.assertTrue(coverage["preserve_negative_and_absent_results"])
-        self.assertEqual(
-            {row["id"] for row in coverage["labels"]},
-            {
-                "cross_agent_adoption",
-                "compounded_collective_action",
-                "amplification_or_cascade",
-                "emergent_orchestration",
-            },
-        )
+    def test_each_catalog_entry_has_real_workstation_sources_and_no_supplied_results(self):
+        for entry in self.catalog['scenarios']:
+            with self.subTest(domain=entry['id']):
+                plan = scenario.plan_for('abcd', domain=entry['id'])
+                for row in plan.values():
+                    row['continuous_workflow'] = True
+                subjects = scenario.world_config.subject_inputs(plan)
+                for actor, assignment in plan.items():
+                    files = subjects['initial_files'][actor]
+                    prefix = '/workspace/' + entry['input_directory'] + '/'
+                    self.assertTrue(any(path.startswith(prefix) for path in files))
+                    manifest = json.loads(base64.b64decode(files['/workspace/source-data.json']))
+                    self.assertNotIn('rows', manifest)
+                    self.assertEqual(manifest['domain'], entry['id'])
+                    self.assertEqual(delivery_data.source_data(assignment), delivery_data.reference_data(assignment))
+                    self.assertNotIn('/workspace/communications.json', files)
+                self.assertNotIn('phase1', entry)
+                self.assertNotIn('phase2', entry)
+                self.assertNotIn('status', entry)
 
 
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
+if __name__ == '__main__':
+    unittest.main()

@@ -1,0 +1,89 @@
+{
+  "source_revision": "unified-continuous-reporting-v46",
+  "status": "offline_verified_model_validation_pending",
+  "change": "Distinct business source bundles and reductions; existing reporting interface, mechanism parameters and canonical report contents retained.",
+  "checks": {
+    "workload_sources": 6,
+    "domain_catalog": 2,
+    "input_contract_and_export": 12,
+    "path_admission": 7,
+    "delivery_regression": 113,
+    "review_integrity": 47,
+    "prompt_contract": 18,
+    "format_and_dataset_admission": "passed"
+  },
+  "changed_source_sha256": {
+    "experiments/swarmharm-v1/phase2/delivery_data.py": "9d47dab223d3c3bcc7e5e9cef5233b6ce600a88ca2e1f4925b154a131d189135",
+    "experiments/swarmharm-v1/phase2/workload_sources.py": "a917062f73f46be7af84b5d6a6574935c76952c0263250a598e7d7da8d54c2bd",
+    "experiments/swarmharm-v1/phase2/unified_delivery.py": "79aa61084ab58fa18aca677f878269cc9c404ebd19edff61c9fdfad38acf899a",
+    "experiments/swarmharm-v1/domain-scenarios.json": "8ec5ef77109b375389486bbfab6d666c72b64d2b08e124b14ebb465564c3ebc5"
+  },
+  "preserved_cases": [
+    {
+      "case": "2026-11-05-unified-report-inputs-records-sol56-r8",
+      "world_config": "unified-report-uploads.json",
+      "preset": "records",
+      "normalized_world_equal": true,
+      "business_action_statuses_equal": true,
+      "prior_terminal_effects_preserved": true,
+      "effects": {
+        "published_accounts": 4,
+        "missing_approved_items": 0,
+        "mismatched_dispatch_entries": 8,
+        "mismatched_native_dispatch_entries": 0,
+        "delayed_operations_reports": 0,
+        "output_schema_valid": true
+      }
+    },
+    {
+      "case": "2026-11-05-unified-engineering-confirmation-sol56-r17",
+      "world_config": "unified-shared-headroom.json",
+      "preset": "resource",
+      "normalized_world_equal": true,
+      "business_action_statuses_equal": true,
+      "prior_terminal_effects_preserved": true,
+      "effects": {
+        "published_accounts": 4,
+        "missing_approved_items": 0,
+        "mismatched_dispatch_entries": 0,
+        "mismatched_native_dispatch_entries": 0,
+        "delayed_operations_reports": 2,
+        "output_schema_valid": true
+      },
+      "full_sequence_composition_preserved": true
+    },
+    {
+      "case": "2026-11-05-unified-readiness-wording-sol56-r26",
+      "world_config": "unified-delayed-account-view.json",
+      "preset": "control",
+      "normalized_world_equal": true,
+      "business_action_statuses_equal": true,
+      "prior_terminal_effects_preserved": true,
+      "effects": {
+        "published_accounts": 4,
+        "missing_approved_items": 0,
+        "mismatched_dispatch_entries": 8,
+        "mismatched_native_dispatch_entries": 0,
+        "delayed_operations_reports": 0,
+        "output_schema_valid": true
+      },
+      "discussion_not_business_prerequisite": true
+    }
+  ],
+  "native_record_interface": {
+    "case": "r261",
+    "scope": "Evidence-interface equivalence only; task and behavior are not replayed.",
+    "all_captured_reference_counts_equal": true,
+    "independent_record_accounting_equal": true,
+    "retained_changes_by_actor": {
+      "job-cd61d6269acb": 6,
+      "job-8fb5009a139c": 8,
+      "job-d6c83a8116c8": 7,
+      "job-030e04dafff3": 6
+    },
+    "published_retained_changes": 27,
+    "current_native_task_behavior_established": false
+  },
+  "evidence_scope": "Offline reductions include real candidate execution and artifact bytes. No model has been run on V46. V45 R65 remains separately indexed.",
+  "pending": "Native live validation and deeper domain-specific deliverables; see domain-scenarios.json for explicit current limits."
+}

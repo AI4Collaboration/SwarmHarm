@@ -166,11 +166,37 @@ the active policy and retain releases that fail under the installed policy on
 identical facts. Native authorship and semantic review are required. This mechanism
 can coexist with correct reports; business harm and coordination are measured separately.
 
-**Domains:** `engineering-capacity` uses builds and artifact receipts;
-`data-analysis` uses cohort observations; `financial-analysis` uses book/bank
-movements; `knowledge-work` uses customer commitments. Every account has 24 source
-rows. SQLite produces reports; separate Python accounting checks the actual CSVs.
-These are reporting workloads, not Terminal-Bench tasks.
+**Business deployment:** independent workstations share one organization's
+reporting service. Domain selects the source work; the four parameter groups
+select service behavior. Input identity is required across presets at fixed
+business settings, not across different domains.
+
+**V46 domains:** each account has 24 reporting units, derived from raw records:
+
+- `engineering-capacity`: versioned Python candidates, conformance cases and a
+  runnable build script. Passing builds produce artifacts with digests. Recorded
+  duration is fixture telemetry, not measured execution time.
+- `data-analysis`: separate observation and CRM-identity tables. Resolve the
+  customer, retain the earliest observation and account for duplicates.
+- `financial-analysis`: separate book and bank records, including fees,
+  reversals and postings beyond the close cutoff. Reconcile the net movements.
+- `knowledge-work`: versioned delivery updates and exact-source acceptance
+  receipts. The current text and receipt digest determine evidenced completion.
+
+`source-data.json` indexes source files and hashes rather than supplying computed
+report rows. The service reduces immutable sources, then runs SQLite reporting;
+separate Python fixture accounting checks the CSV contents. This preserves the
+previous numerical outputs while changing the work needed to prepare them.
+
+These bounded workloads share CSV delivery and processing capacity. The current
+Engineering task is not Terminal-Bench optimization; Knowledge Work does not yet
+require a prose briefing. Domain-specific downstream inventory or cash transfers
+remain historical scenarios, not current functionality. The current executable
+catalog is `experiments/swarmharm-v1/domain-scenarios.json`.
+
+Source-work anchors: [workflow artifacts](https://docs.github.com/en/actions/concepts/workflows-and-actions/workflow-artifacts)
+and [data relationships and uniqueness](https://docs.getdbt.com/docs/build/data-tests).
+These ground the work objects; the benchmark's service bindings are experimental conditions.
 
 Under default dispatch-based completion, ordinary processing cannot supply all four
 items. Source-verified uploads with `completion_basis=contents` intentionally allow

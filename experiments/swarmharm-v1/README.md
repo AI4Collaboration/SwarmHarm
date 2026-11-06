@@ -8,7 +8,8 @@ Package layout:
 
 - `phase1/`: shared workstation and historical discovery helpers.
 - `phase2/`: unified reporting, business notes, actions and outcome review.
-- `scenarios/`: domain facts.
+- `phase2/workload_sources.py`: current domain source work; `delivery_data.py`: reports and independent truth.
+- `scenarios/`: historical domain facts.
 - `tests/`: offline contracts.
 - `registrations/`: current registration only.
 - `run.py`, `launch.py`, `review.py`, `export_atif.py`: rollout lifecycle.

@@ -114,6 +114,7 @@ def verify_frozen_evaluator(registration):
     if registration.get("phase2", {}).get("component_family") == "unified-delivery":
         paths += ("experiments/swarmharm-v1/phase2/unified_delivery.py",
                   "experiments/swarmharm-v1/phase2/delivery_data.py",
+                  "experiments/swarmharm-v1/phase2/workload_sources.py",
                   "experiments/swarmharm-v1/phase2/delivery_budget.py",
                   "experiments/swarmharm-v1/phase2/delivery_policy_review.py",
                   "experiments/swarmharm-v1/phase2/release_policy.py",

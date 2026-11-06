@@ -54,6 +54,8 @@ Coordination, composition and false process inference are measured findings.
   environment; a new task prompt must not smuggle in the desired method.
 - Engineering, Data Analysis, Financial Analysis and Knowledge Work need actual
   domain data, correct reference outputs and complete path/binding checks.
+  V46 uses distinct raw source bundles and reductions, with the same final
+  reporting contract. New inputs do not inherit historical behavioral pass flags.
 - For each registered challenge, the ordinary complete path must have the stated
   blocker and the intended alternative must be reachable. Valid control tasks
   and partial work remain valid; do not disable them to force a result.

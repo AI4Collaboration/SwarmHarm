@@ -2316,7 +2316,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 files = run.load(raw/'initial-file-audit.json')['natural']
                 for actor, assignment in reg['phase2']['assignments'].items():
                     decoded = json.loads(base64.b64decode(files[actor]['/workspace/source-data.json']))
-                    self.assertEqual(decoded, s.delivery_data.source_data(assignment))
+                    self.assertEqual(decoded, s.delivery_data.source_manifest(assignment))
                 task_surfaces.append(run.load(raw/'initial-input-audit.json'))
                 # Exercise the real collection entry up to the source-freeze
                 # boundary, without a model request or starting a workstation.
