@@ -4,7 +4,7 @@
 independent agents receive one business task each and retain their own native
 session, memory, workstation and shared world. No roster, formation gate or phase
 switch. Test Sol 5.6 and 6.1 using Codex 0.166.0 through AxonHub, high reasoning,
-goal off. No website work. Check progress in this task every half hour.
+goal off. No website work. The current chat manages the reminder schedule.
 
 **Latest review — [R61](research/unified-continuous-r61.json).** Both collectors
 are closed and the full paired archives were downloaded and verified. Sol 5.6's
