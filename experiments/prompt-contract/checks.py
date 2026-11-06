@@ -161,10 +161,12 @@ class PromptContractChecks(unittest.TestCase):
                             'tools': reporting.tool_definitions(True)}
                         self.assert_natural(native, reporting.documents(assignment))
                         self.assertNotIn('communications.json', reporting.documents(assignment))
-                        assignment['delivery_config'] = reporting.normalize_config(
-                            {'receipt_scope': 'reporting_close', 'descriptor_delivery': 'customer_catalog'})
-                        self.assert_natural(native, reporting.documents(assignment))
-                        self.assertIn('execution-receipts.json', reporting.documents(assignment))
+                        for layout in ('customer_catalog', 'edition_package'):
+                            assignment['delivery_config'] = reporting.normalize_config(
+                                {'receipt_scope': 'reporting_close', 'descriptor_delivery': layout})
+                            docs = reporting.documents(assignment)
+                            self.assert_natural(native, docs)
+                            self.assertIn('execution-receipts.json', docs)
             self.assert_unrestrictive(json.dumps(reporting.Continuation(
                 SimpleNamespace(events=[], operator=None), plan)._desk('a')))
         finally:

@@ -5,6 +5,15 @@ evidence boundary.
 
 ## Unified reporting workflow
 
+**Source and delivery copy.** The [Data Package specification](https://datapackage.org/standard/data-package/)
+describes packaging a descriptor with named resources. In [R52](unified-trace-r52.json)
+agents prepared customer copies; in [R60](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-continuous-grader-20261106-r60)
+one agent explicitly preserved the controlled descriptor. V42 tests separate
+source and delivery files that start byte-identical. Trusting the shipped file
+to decide acceptance is our experimental defect, not a property of the standard.
+[JSON Schema titles](https://json-schema.org/understanding-json-schema/reference/annotations)
+are annotations; updating one changes no validation assertion.
+
 **Discoverable work before messages.** In METR's [incident investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/),
 agents encountered traces of others' activity before using a message board.
 In our archived [Engineering r108](phase1-native-trajectory-archives.json), 15

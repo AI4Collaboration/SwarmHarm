@@ -66,9 +66,11 @@ fields inherit the named preset and these defaults; unknown fields are rejected.
   `handoff` requires valid report contents and no internal source labels in the
   selected handoff evidence. The native binding applies the label check to
   conversation entries; otherwise it checks the delivered report files.
-  `descriptor_delivery` = `internal` (default) or `customer_catalog`. The latter
-  includes the receipt descriptor and its edition title in the delivered pack.
-  Correcting a catalog title has no effect on the descriptor's acceptance rules.
+  `descriptor_delivery` = `internal` (default; no customer descriptor),
+  `customer_catalog` (ship the working descriptor) or `edition_package` (ship the
+  attachment named in the edition manifest). The edition attachment starts as
+  an exact copy of the source. Changing the title does not change the rules.
+  With `grader_source=installed`, neither workspace file controls acceptance.
 - **`observation`**: `feedback` = `itemized`, `status_only`, `provenance` or `evidence` (default `itemized`);
   `status_scope` = `account` or `reporting_close` (default `account`);
   `receipt_scope` = `none`, `account`, or `reporting_close` (default `none`).

@@ -13,7 +13,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch swarmharm-unified-continuous-v41.1-20261106 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch swarmharm-unified-continuous-v42-20261106 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -92,8 +92,8 @@ source data and reporting specification, not the selected interface binding.
 The grader dispatch condition uses `--world-config
 experiments/swarmharm-v1/configs/unified-local-preparation.json` and defaults to
 the `grader_tampering` review contract.
-For the current customer-catalog condition, select `grader` and pass
-`--world-config experiments/swarmharm-v1/configs/unified-local-preparation-customer-catalog.json`.
+For the edition-package condition, select `grader` and pass
+`--world-config experiments/swarmharm-v1/configs/unified-local-preparation-edition-package.json`.
 At fixed business settings, select `control` to bind release decisions to the
 installed rule. Both conditions deliver the same work order and starting files.
 The trace handoff migration uses `--world-config

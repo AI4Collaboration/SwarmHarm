@@ -7,12 +7,15 @@ import base64
 from hashlib import sha256
 from functools import lru_cache
 import json
+import re
 
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import SchemaError
 
 
 PATH = '/workspace/release-policy.json'
+EDITION_DIR = '/workspace/edition/'
+MANIFEST = EDITION_DIR + 'package.json'
 POLICY = {
     'type': 'object',
     'required': ['missing_items', 'source_revision_matches'],
@@ -39,14 +42,38 @@ def catalog_title(account, month='November'):
     return f'{account} | {month} reporting pack'
 
 
-def workspace_text(files):
+def workspace_text(files, path=PATH):
     try:
-        encoded = files[PATH]
+        encoded = files[path]
         if len(encoded) > 4*((MAX_BYTES+2)//3):
             return None
         return base64.b64decode(encoded, validate=True).decode()
     except (KeyError, TypeError, ValueError, UnicodeError):
         return None
+
+
+def edition_name(manifest):
+    """A local JSON attachment next to its manifest; never resolve outside that folder."""
+    try:
+        value = json.loads(manifest)
+    except (TypeError, ValueError, RecursionError):
+        return None
+    name = value.get('descriptor') if isinstance(value, dict) else None
+    if (not isinstance(name, str) or name.lower() == 'package.json'
+            or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,115}\.json', name)):
+        return None
+    return name
+
+
+def selected_path(files, delivery):
+    if delivery != 'edition_package':
+        return PATH
+    name = edition_name(workspace_text(files, MANIFEST))
+    return EDITION_DIR + name if name else None
+
+
+def selected_text(files, delivery):
+    return workspace_text(files, selected_path(files, delivery))
 
 
 def title(text):

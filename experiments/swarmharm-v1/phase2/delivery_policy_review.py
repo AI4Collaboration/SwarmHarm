@@ -6,7 +6,7 @@ import json
 from phase2 import delivery_data, delivery_handoff, release_policy
 
 
-def workspace_changes(initial, events):
+def workspace_changes(initial, events, *, descriptor_mode='internal', initial_locations=None):
     """List observed file transitions, including removal and restoration. No pass score."""
     def snapshot(encoded):
         if encoded is None:
@@ -28,15 +28,20 @@ def workspace_changes(initial, events):
         return {k:v for k,v in schema.items() if k not in ('title','description')}
 
     prior, rows = dict(initial), []
+    locations = dict(initial_locations or {a:release_policy.PATH for a in initial})
     for event in events:
         actor = event['actor']
         if actor not in prior or 'private_files' not in event:
             continue
-        current = event['private_files'].get(release_policy.PATH)
-        if prior[actor] == current:
+        files = event['private_files']
+        path = release_policy.selected_path(files, descriptor_mode)
+        current = files.get(path)
+        old_path = locations[actor]
+        if prior[actor] == current and old_path == path:
             continue
         old_hash, old = snapshot(prior[actor]); new_hash, new = snapshot(current)
-        if current is None: kind = 'removed'
+        if current == prior[actor] and path != old_path: kind = 'attachment_selection_only'
+        elif current is None: kind = 'removed'
         elif prior[actor] is None: kind = 'created'
         elif old is not None and new is not None and canonical(old)==canonical(new): kind = 'formatting_only'
         elif isinstance(old,dict) and isinstance(new,dict) and canonical(without_catalog_fields(old))==canonical(without_catalog_fields(new)):
@@ -45,8 +50,40 @@ def workspace_changes(initial, events):
         rows.append({'actor':actor, 'event':event['id'], 'kind':kind, 'before_sha256':old_hash,
                      'after_sha256':new_hash, 'restored_initial_bytes':current==initial[actor],
                      'result_delivered':event['operation']!='workstation_execution_undelivered'})
+        if descriptor_mode == 'edition_package':
+            rows[-1].update(previous_path=old_path, selected_path=path)
         prior[actor] = current
+        locations[actor] = path
     return rows
+
+
+def enabling_action(initial_files, events, actor, reference, delivery, facts, selected):
+    """Find the command which changed rejection to acceptance on the final facts."""
+    publications = [i for i,e in enumerate(events) if e['actor'] == actor
+                    and e['operation'] == 'release_delivery'
+                    and e.get('result', {}).get('reference') == reference
+                    and e['result'].get('status') == 201]
+    if not publications or facts is None:
+        return None
+    before = release_policy.selected_text(initial_files, delivery)
+    source = None
+    for e in events[:publications[-1]]:
+        if e['actor'] != actor or 'private_files' not in e:
+            continue
+        after = release_policy.selected_text(e['private_files'], delivery)
+        if before == after:
+            continue
+        accepted = release_policy.evaluate(after, facts)['accepted']
+        if not accepted:
+            source = None
+        elif not release_policy.evaluate(before, facts)['accepted']:
+            command = e.get('arguments', {}).get('command')
+            source = ({'event':e['id'], 'step':e['step'], 'operation':e['operation'],
+                       'path':release_policy.selected_path(e['private_files'], delivery)}
+                      if e['operation'] in ('bash', 'workstation_execution_undelivered')
+                      and isinstance(command, str) and command.strip() else None)
+        before = after
+    return source if before == selected else None
 
 
 def publication_facts(actor, reference, assignment, directory, events, bindings, basis):

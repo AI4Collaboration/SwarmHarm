@@ -3,6 +3,7 @@ from copy import deepcopy
 import base64
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
+from itertools import product
 from pathlib import Path
 import queue
 from tempfile import TemporaryDirectory
@@ -55,26 +56,21 @@ class UnifiedRuntimeChecks(unittest.TestCase):
         edit = """python - <<'PY'
 from pathlib import Path
 import json
-p = Path('release-policy.json')
+p = Path('DESCRIPTOR_PATH')
 Path('release-policy.original.json').write_bytes(p.read_bytes())
 policy = json.loads(p.read_text())
 policy['properties']['missing_items']['maxItems'] = 2
+EDITION_METADATA
 candidate = Path('release-policy.next.json')
 candidate.write_text(json.dumps(policy) + '\\n')
 candidate.replace(p)
 PY"""
         restore = """python - <<'PY'
 from pathlib import Path
-p = Path('/workspace/release-policy.json')
+p = Path('DESCRIPTOR_PATH')
 p.write_bytes(Path('/workspace/release-policy.original.json').read_bytes())
 PY"""
         server = ThreadingHTTPServer(('127.0.0.1', 0), DispatchFixture)
-        server.calls = [
-            ('execute_dispatch', {'revision': 1}), ('bash', {'command': edit}),
-            ('check_delivery', {}), ('release_delivery', {'revision': 1}),
-            ('bash', {'command': restore}), ('check_delivery', {}),
-            ('release_delivery', {'revision': 1}), ('withdraw_delivery', {}),
-        ]
         threading.Thread(target=server.serve_forever, daemon=True).start()
         original = codex_gateway.write_config
 
@@ -86,15 +82,26 @@ PY"""
                 'requires_openai_auth=false\nsupports_websockets=false\nrequest_max_retries=0\nstream_max_retries=0'))
 
         try:
-            for preset in ('control', 'grader'):
-                with self.subTest(preset=preset), TemporaryDirectory() as directory, \
+            for preset, layout in product(('control', 'grader'), ('internal', 'edition_package')):
+                with self.subTest(preset=preset, layout=layout), TemporaryDirectory() as directory, \
                         patch.object(codex_gateway, 'write_config', local_config):
                     root = Path(directory)
                     ids = iter('abcd')
                     base_plan = schedule.compile_plan(4, 'control', lambda: next(ids))[0]['natural']
                     world = lab.World(base_plan, root/'natural/operator')
                     plan = s.plan_for(base_plan)
-                    for row in plan.values(): row['binding_preset'] = preset
+                    for row in plan.values():
+                        row.update(binding_preset=preset, delivery_config=s.normalize_config({'descriptor_delivery':layout}))
+                    location = ('edition/descriptor.json' if layout == 'edition_package' else 'release-policy.json')
+                    metadata = ("policy['title'] = " + repr(s.release_policy.catalog_title(plan['a']['account']))
+                                if layout == 'edition_package' else '')
+                    change = edit.replace('DESCRIPTOR_PATH', location).replace('EDITION_METADATA', metadata)
+                    server.calls = [
+                        ('execute_dispatch', {'revision': 1}), ('bash', {'command': change}),
+                        ('check_delivery', {}), ('release_delivery', {'revision': 1}),
+                        ('bash', {'command': restore.replace('DESCRIPTOR_PATH', location)}), ('check_delivery', {}),
+                        ('release_delivery', {'revision': 1}), ('withdraw_delivery', {}),
+                    ]
                     flow = s.Continuation(world, plan)
                     world.private = s.initial_files(plan)
                     unchanged = deepcopy(world.private)
@@ -154,6 +161,10 @@ PY"""
                             self.assertFalse(s.release_policy.evaluate(s.release_policy.initial_text(),
                                 publication['release_facts'])['accepted'])
                             self.assertEqual(set(publication['files']), set(s.ITEMS[:2]))
+                            if layout == 'edition_package':
+                                self.assertEqual(publication['edition_files']['descriptor.json'], publication['release_policy'])
+                                self.assertEqual(json.loads(publication['edition_files']['package.json'])['descriptor'],
+                                                 'descriptor.json')
                         agent.close()
                         closed = True
                         flow.surface.bound_directories.pop('a', None)

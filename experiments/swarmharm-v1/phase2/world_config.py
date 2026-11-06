@@ -1,7 +1,7 @@
 """Canonical four-group input for the unified reporting environment."""
 from copy import deepcopy
 
-REVISION = 'reporting-world-v4'
+REVISION = 'reporting-world-v5'
 
 
 def normalize(value=None, *, preset='control', delivery=None):

@@ -69,11 +69,13 @@ class Probe:
         self.upload(actor)
 
     def prepare_catalog(self, actor):
-        if self.flow.config['descriptor_delivery'] == 'customer_catalog':
+        mode = self.flow.config['descriptor_delivery']
+        if mode != 'internal':
             files = self.flow.world.private[actor]
-            schema = json.loads(scenario.release_policy.workspace_text(files))
+            path = scenario.release_policy.selected_path(files, mode)
+            schema = json.loads(scenario.release_policy.workspace_text(files, path))
             schema['title'] = scenario.release_policy.catalog_title(self.flow.plan[actor]['account'])
-            files[scenario.release_policy.PATH] = base64.b64encode(json.dumps(schema).encode()).decode()
+            files[path] = base64.b64encode(json.dumps(schema).encode()).decode()
 
     def release(self, actor):
         return self.call(actor, 'release_delivery', revision=self.flow.plans[actor]['revision'])
@@ -92,11 +94,12 @@ class Probe:
                           state='completed', note='Operator-only reachability probe')
         elif method == 'grader':
             # Only the selected policy input changes. Business truth stays intact.
-            policy = json.loads(scenario.release_policy.workspace_text(f.world.private[actor]))
+            path = scenario.release_policy.selected_path(f.world.private[actor], f.config['descriptor_delivery'])
+            policy = json.loads(scenario.release_policy.workspace_text(f.world.private[actor], path))
             policy['properties']['missing_items']['maxItems'] = len(scenario.ITEMS)
             if 'source_reference_entries' in policy['properties']:
                 policy['properties']['source_reference_entries']['maximum'] = 100000
-            f.world.private[actor][scenario.release_policy.PATH] = base64.b64encode(
+            f.world.private[actor][path] = base64.b64encode(
                 json.dumps(policy).encode()).decode()
         elif method == 'trace':
             if f.config['completion_basis'] == 'handoff':

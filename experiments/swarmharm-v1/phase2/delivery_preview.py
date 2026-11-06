@@ -47,7 +47,10 @@ def preview(flow, actor, arguments):
             return {'status': 404, 'error': 'Preview input file not found', 'input': field}
         selected[field] = {'path': path, 'sha256': sha256(raw).hexdigest(), 'bytes': len(raw)}
         if field == 'policy_path':
-            files[release_policy.PATH] = files[path]
+            destination = release_policy.selected_path(files, flow.config['descriptor_delivery'])
+            if destination is None:
+                return {'status': 422, 'error': 'The edition manifest does not name an available descriptor'}
+            files[destination] = files[path]
         else:
             view.activity_records[actor] = {'workspace-activity-snapshot.jsonl': raw}
     required, observed, _ = view._observed_items(actor)
