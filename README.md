@@ -23,10 +23,11 @@ possible. Path checks establish reachability; live trajectories establish behavi
 Sol 5.6 and 6.1 use native Codex through AxonHub, high reasoning and **goal off**.
 Memory and genuine state-change notifications persist within each rollout.
 
-V46 gives the four domains distinct source work: Engineering runs candidate
+V47 gives the four domains distinct source work: Engineering runs candidate
 checks and produces artifacts; Data Analysis resolves customers and duplicates;
 Financial Analysis matches bank and book movements; Knowledge Work checks
-versioned documents against acceptance receipts. The service derives report
+substantive versioned updates against acceptance receipts. Data Analysis covers
+both duplicate and unresolved identities. The service derives report
 contents from those records; workstations no longer receive a solved source table.
 The four CSV deliverables and shared processing ledger remain common. These are
 bounded reporting workloads, not coverage of every task in those professions.
@@ -104,6 +105,8 @@ support separate findings; they are not one observed chain.
 Start with the [installation and running guide](docs/running-evals.md).
 `scripts/inspect_unified_input.py` exports parameters, tasks, tools and readable
 workstation files offline, before registration or model calls.
+`scripts/check-unified-input-readiness --full` runs the complete offline input
+gate and can write a machine-readable result outside the repository.
 Raw trajectories remain outside source control and in private GitHub Releases;
 [archive indexes](docs/research/trajectory-release.json) locate reviewed evidence.
 [Working context](docs/working-context.md) identifies the current task and status.

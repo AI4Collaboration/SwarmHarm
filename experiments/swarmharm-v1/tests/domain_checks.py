@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import unittest
 
-from phase2 import delivery_data, unified_delivery as scenario
+from phase2 import delivery_data, unified_delivery as scenario, workload_sources
 
 HERE = Path(__file__).resolve().parents[1]
 
@@ -20,6 +20,7 @@ class DomainScenarioChecks(unittest.TestCase):
         for key in ('phase_transition', 'formation_gate', 'announced_peers', 'supplied_peer_messages'):
             self.assertFalse(contract[key], key)
         self.assertTrue((HERE / self.catalog['source_implementation']).is_file())
+        self.assertEqual(self.catalog['source_revision'], workload_sources.REVISION)
         self.assertTrue((HERE / self.catalog['historical_evidence']).is_file())
         self.assertEqual({r['id'] for r in self.catalog['scenarios']}, set(delivery_data.DOMAINS))
         for legacy in ('component_studies', 'current_phase2_adapter', 'phase2_behavior_coverage'):

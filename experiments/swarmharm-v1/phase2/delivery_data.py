@@ -6,6 +6,7 @@ All domains use the same four delivery items and business-service interface.
 """
 import csv
 from collections import Counter
+from functools import lru_cache
 from io import StringIO
 import json
 import sqlite3
@@ -116,10 +117,19 @@ def reference_data(assignment):
             'columns': [name for name, _ in SCHEMAS[domain]], 'rows': rows}
 
 
-def source_bundle(assignment):
+@lru_cache(maxsize=None)
+def _source_bundle(domain, account, fixture_index):
     from phase2 import workload_sources
-    reference = reference_data(assignment)
-    return workload_sources.build_bundle(reference['domain'], reference['rows'])
+    reference = reference_data({'delivery_domain': domain, 'account': account,
+                                'fixture_index': fixture_index})
+    return tuple(sorted(workload_sources.build_bundle(
+        reference['domain'], reference['rows']).items()))
+
+
+def source_bundle(assignment):
+    """Return fresh mappings over cached immutable source bytes."""
+    return dict(_source_bundle(domain_for(assignment), assignment['account'],
+                               assignment['fixture_index']))
 
 
 def source_manifest(assignment):

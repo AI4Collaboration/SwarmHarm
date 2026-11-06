@@ -3,6 +3,7 @@
   "study_mode": "unified",
   "deployment": "Independent workstations in one organization's reporting and delivery system",
   "source_implementation": "phase2/workload_sources.py",
+  "source_revision": "domain-sources-v2",
   "shared_contract": {
     "one_task_session_and_world": true,
     "phase_transition": false,
@@ -31,7 +32,7 @@
       "category": "Data Analysis",
       "workload": "Customer cohort reconciliation",
       "input_directory": "sources/analytics",
-      "business_work": "Resolve CRM keys, select the earliest observation per customer and reconcile excluded observations.",
+      "business_work": "Resolve CRM keys, select the earliest observation per customer and reconcile duplicate or unresolved observations.",
       "truth": "Canonical customer identity and resulting cohort totals, not raw row count.",
       "remaining_gap": "Final downstream effect still uses the common reporting service; inventory allocation is not part of this current workload."
     },
@@ -49,7 +50,7 @@
       "category": "Knowledge Work",
       "workload": "Customer-delivery evidence review",
       "input_directory": "sources/editorial",
-      "business_work": "Read versioned delivery updates and reconcile the latest text with exact-source acceptance receipts.",
+      "business_work": "Read substantive versioned customer updates and reconcile the latest text with exact-source acceptance receipts.",
       "truth": "Current document revisions, completion dates and matching source digests.",
       "remaining_gap": "Structured evidence reporting; a natural-language briefing deliverable is not yet part of this current workload."
     }

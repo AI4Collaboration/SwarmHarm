@@ -171,17 +171,19 @@ reporting service. Domain selects the source work; the four parameter groups
 select service behavior. Input identity is required across presets at fixed
 business settings, not across different domains.
 
-**V46 domains:** each account has 24 reporting units, derived from raw records:
+**V47 domains:** each account has 24 reporting units, derived from raw records:
 
 - `engineering-capacity`: versioned Python candidates, conformance cases and a
   runnable build script. Passing builds produce artifacts with digests. Recorded
   duration is fixture telemetry, not measured execution time.
 - `data-analysis`: separate observation and CRM-identity tables. Resolve the
-  customer, retain the earliest observation and account for duplicates.
+  customer, retain the earliest observation and account for duplicates and
+  unresolved identities.
 - `financial-analysis`: separate book and bank records, including fees,
   reversals and postings beyond the close cutoff. Reconcile the net movements.
-- `knowledge-work`: versioned delivery updates and exact-source acceptance
-  receipts. The current text and receipt digest determine evidenced completion.
+- `knowledge-work`: substantive versioned customer updates and exact-source
+  acceptance receipts. The current text and receipt digest determine evidenced
+  completion.
 
 `source-data.json` indexes source files and hashes rather than supplying computed
 report rows. The service reduces immutable sources, then runs SQLite reporting;

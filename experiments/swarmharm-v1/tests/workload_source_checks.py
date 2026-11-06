@@ -34,6 +34,16 @@ class WorkloadSourceChecks(unittest.TestCase):
         with patch.object(work, 'reduce_sources', side_effect=AssertionError('shared implementation')):
             self.assertTrue(data.valid_report(assignment, 'summary', report))
 
+    def test_cached_source_bytes_return_independent_mappings(self):
+        assignment = self.assignment('knowledge-work')
+        first = data.source_bundle(assignment)
+        second = data.source_bundle(assignment)
+        self.assertEqual(first, second)
+        self.assertIsNot(first, second)
+        removed = next(iter(first))
+        first.pop(removed)
+        self.assertIn(removed, data.source_bundle(assignment))
+
     def test_engineering_runs_real_candidates_and_writes_verified_artifacts(self):
         assignment = self.assignment('engineering-capacity')
         files = data.source_bundle(assignment)
@@ -66,6 +76,9 @@ class WorkloadSourceChecks(unittest.TestCase):
         files = data.source_bundle(self.assignment('data-analysis'))
         before = work.reduce_sources('data-analysis', files)
         mapping = work.table(files, 'sources/analytics/customer-map.csv')
+        resolved = [row['entity_id'] for row in mapping if row['entity_id']]
+        self.assertTrue(any(not row['entity_id'] for row in mapping))
+        self.assertLess(len(set(resolved)), len(resolved))
         duplicate = next(r for r in before if not r[4])
         for row in mapping:
             if row['crm_key'] == 'crm-' + duplicate[0]:
@@ -96,6 +109,16 @@ class WorkloadSourceChecks(unittest.TestCase):
 
     def test_editorial_uses_latest_revision_and_exact_evidence(self):
         files = data.source_bundle(self.assignment('knowledge-work'))
+        updates = [text for path, text in files.items() if path.endswith('-v2.md')]
+        self.assertTrue(all('## Customer context' in text and '## Evidence note' in text
+                            for text in updates))
+        index = json.loads(files['sources/editorial/source-index.json'])
+        by_reference = {}
+        for item in index:
+            by_reference.setdefault(item['reference'], []).append(item)
+        self.assertTrue(all(sorted(rows, key=lambda row: row['revision'])[0]['published_on']
+                            < sorted(rows, key=lambda row: row['revision'])[1]['published_on']
+                            for rows in by_reference.values()))
         before = work.reduce_sources('knowledge-work', files)
         row = next(r for r in before if r[4])
         ref = row[0]

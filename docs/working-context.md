@@ -7,13 +7,15 @@ four independent workstations, within-rollout memory and no announced peers.
 Sol 5.6 and 6.1 use Codex 0.166.0 through AxonHub, high reasoning, goal off.
 Do not change the website or recreate scheduled reminders.
 
-**Current development — V46.** Shared task/tool interfaces, parameter meanings,
+**Current development — V47.** Shared task/tool interfaces, parameter meanings,
 report layouts, processing budgets and final-effect accounting are preserved.
 The source layer now differs in actual work:
 - Engineering: execute candidate conformance cases and retain passing artifacts.
-- Data Analysis: resolve CRM identities, deduplicate observations and aggregate.
+- Data Analysis: resolve CRM identities, distinguish duplicates from unresolved
+  identities, deduplicate observations and aggregate.
 - Financial Analysis: reconcile book/bank files, fees, reversals and cutoff dates.
-- Knowledge Work: resolve document versions and exact-source acceptance receipts.
+- Knowledge Work: resolve substantive customer-update versions and exact-source
+  acceptance receipts.
 
 The source manifest contains file references and digests, not precomputed rows.
 Service-side reductions consume canonical fixture files; independent expected
@@ -23,13 +25,12 @@ across presets at fixed business settings. See the current
 [domain catalog](../experiments/swarmharm-v1/domain-scenarios.json) and
 [parameters](scenarios-and-parameters.md#unified-reporting-delivery).
 
-**Scope still to finish.** These are bounded reporting workloads. Engineering
-does not yet restore the earlier Terminal-Bench optimization task, and Knowledge
-Work still delivers structured reports rather than a prose briefing. The common
-final effect remains reporting integrity/capacity; the former inventory and
-treasury-transfer scenarios are not current adapters. Do not claim V46 live
-validation from V45 or older cases. Continue with one justified source/workflow
-change at a time; preserve all matched preset checks and existing evidence.
+**Declared scope.** These are bounded reporting workloads. Engineering validates
+release candidates rather than reproducing the earlier Terminal-Bench optimization
+task; Knowledge Work reads prose updates but delivers structured reports. The
+common final effect is reporting integrity/capacity; former inventory and treasury
+transfer scenarios are historical evidence. Do not claim V47 live validation from
+V45 or older cases. Preserve all matched preset checks and existing evidence.
 
 **Latest closed pair — [R65 / V45](research/unified-continuous-r65.json).** Both collectors finished; no rollout is
 currently active. Frozen-source review and eight native/ATIF histories validate.
@@ -64,13 +65,15 @@ acceptance, not direct grader editing. The eight native formation cases retain
 their original inputs. See [findings](phase2-design.md) and
 [coverage](research/unified-taxonomy-readiness.json); do not stitch cases.
 
-**Validation.** V46 source, prompt, path, export, independent review and delivery
-checks pass (206 targeted tests). r8/r17/r26 complete action replays preserve
+**Validation.** V47 source, prompt, path, export, independent review and delivery
+checks pass (207 targeted tests). r8/r17/r26 complete action replays preserve
 their results, and the r261 record interface preserves its captured counts.
-See [checks and source hashes](research/domain-source-inputs-v46.json).
+See [checks and source hashes](research/domain-source-inputs-v47.json).
 Clean-checkout exports for all four domains and source/catalog checks pass.
 The generated-input audit covers 384 workstation surfaces and 12,480 files across
 all maintained configs and both native layouts; research labels and method cues
 are absent. Runtime error wording is checked too. Native instructions and original
-trajectories retain their original text. Any live validation needs a fresh
-registration after source is committed and pushed; each registration runs once. Do not reduce an evidence criterion or alter a frozen trajectory.
+trajectories retain their original text. The pinned Codex, Claude Code and Pi
+runtimes and the Docker workstation round trip pass installation checks. Any live
+validation needs a fresh registration after source is committed and pushed; each
+registration runs once. Do not reduce an evidence criterion or alter a frozen trajectory.

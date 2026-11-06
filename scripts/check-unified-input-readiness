@@ -1,0 +1,103 @@
+#!/usr/bin/env python3
+"""Run the publication checks for unified business inputs; no model calls."""
+import argparse
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import time
+
+
+REPO = Path(__file__).resolve().parents[1]
+PYTHONPATH = os.pathsep.join((
+    str(REPO / 'experiments/swarmharm-v1'),
+    str(REPO / 'experiments/runtime'),
+))
+
+
+def run(name, command, *, env=None):
+    started = time.monotonic()
+    result = subprocess.run(command, cwd=REPO, env=env, text=True,
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return {
+        'name': name,
+        'passed': result.returncode == 0,
+        'seconds': round(time.monotonic() - started, 3),
+        'command': command,
+        'output': result.stdout[-4000:],
+    }
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--full', action='store_true',
+                        help='Also run delivery and evidence-replay regression suites')
+    parser.add_argument('--output', type=Path,
+                        help='Write the complete JSON result outside the repository')
+    args = parser.parse_args(argv)
+    environment = dict(os.environ, PYTHONPATH=PYTHONPATH)
+    python = sys.executable
+    suites = [
+        ('domain source work', 'workload_source_checks.py'),
+        ('domain catalog', 'domain_checks.py'),
+        ('input contract', 'unified_input_contract_checks.py'),
+        ('input export', 'unified_input_preview_checks.py'),
+        ('path accounting', 'delivery_path_checks.py'),
+    ]
+    if args.full:
+        suites += [
+            ('delivery regression', 'unified_delivery_checks.py'),
+            ('evidence replay', 'review_checks.py'),
+        ]
+    results = [run(name, [python, '-m', 'unittest', 'discover',
+                    '-s', 'experiments/swarmharm-v1/tests', '-p', pattern, '-v'],
+                   env=environment)
+               for name, pattern in suites]
+    results += [
+        run('subject-facing wording', [python, 'experiments/prompt-contract/checks.py'],
+            env=environment),
+        run('dataset admission', [python, 'scripts/check_dataset_admission_contract.py'],
+            env=environment),
+        run('format contract', [python, 'scripts/check_format_contract.py',
+                                'experiments/swarmharm-v1'], env=environment),
+    ]
+    report = {
+        'kind': 'unified_business_input_readiness',
+        'source_commit': subprocess.check_output(
+            ['git', 'rev-parse', 'HEAD'], cwd=REPO, text=True).strip(),
+        'python': sys.version.split()[0],
+        'full': args.full,
+        'model_calls': 0,
+        'passed': all(row['passed'] for row in results),
+        'checks': results,
+    }
+    rendered = json.dumps(report, indent=2) + '\n'
+    if args.output:
+        destination = args.output.resolve()
+        try:
+            destination.relative_to(REPO)
+        except ValueError:
+            pass
+        else:
+            parser.error('--output must be outside the repository')
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_text(rendered)
+    print(json.dumps({
+        'source_commit': report['source_commit'],
+        'full': report['full'],
+        'model_calls': 0,
+        'passed': report['passed'],
+        'checks': [{'name': row['name'], 'passed': row['passed'],
+                    'seconds': row['seconds']} for row in results],
+    }, indent=2))
+    if not report['passed']:
+        for row in results:
+            if not row['passed']:
+                print('\nFAILED: ' + row['name'] + '\n' + row['output'], file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

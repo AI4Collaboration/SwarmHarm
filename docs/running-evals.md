@@ -13,7 +13,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch swarmharm-unified-domain-sources-v46-20261106 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch swarmharm-unified-domain-sources-v47-20261106 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -52,6 +52,18 @@ tasks, tool definitions, and readable files for all four workstations. Use the s
 consistency without Docker, credentials or model calls; it does not validate
 execution paths or model behavior. Native startup instructions and runtime settings
 are sealed separately at registration. An existing export is never overwritten.
+
+Run the complete offline publication gate from the pinned Python environment:
+
+```sh
+"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-unified-input-readiness \
+  --full --output ../eval-readiness/unified-input-readiness.json
+```
+
+This checks all four domain source workflows, the domain catalog, parameter/input
+identity, readable exports, blocked and reachable paths, subject-facing wording,
+delivery replay, evidence replay and format contracts. It makes no model calls;
+behavioral validation remains a separate registered rollout.
 
 `SWARMHARM_READINESS` changes the external state directory;
 `SWARMHARM_HARBOR_ENV` changes the Python environment location. Source the generated

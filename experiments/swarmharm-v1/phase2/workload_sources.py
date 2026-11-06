@@ -10,7 +10,7 @@ from io import StringIO
 import json
 
 
-REVISION = 'domain-sources-v1'
+REVISION = 'domain-sources-v2'
 CUTOFF = '2026-11-30'
 
 
@@ -78,12 +78,18 @@ def build_bundle(domain, rows):
     if domain == 'data-analysis':
         observations, identities = [], []
         previous_entity = None
+        rejected = 0
         for n, (ref, cohort, amount, units, accepted) in enumerate(rows):
-            entity = ref if accepted else previous_entity
+            if accepted:
+                entity = ref
+                previous_entity = entity
+            else:
+                rejected += 1
+                # Rejected observations cover both duplicate and unresolved CRM keys.
+                entity = previous_entity if rejected % 2 else ''
             identities.append([f'crm-{ref}', entity])
             observations.append([ref, f'crm-{ref}', cohort, amount, units,
                                  f'2026-11-{n+1:02d}'])
-            previous_entity = entity
         return {
             'sources/analytics/observations.csv': csv_text(
                 ['row_id', 'crm_key', 'cohort', 'amount', 'units', 'observed_on'], observations),
@@ -116,16 +122,28 @@ def build_bundle(domain, rows):
         }
     if domain == 'knowledge-work':
         commitments, index, files = [], [], {}
-        for ref, project, due, completed, evidence in rows:
+        for position, (ref, project, due, completed, evidence) in enumerate(rows, 1):
             commitments.append([ref, project, f'2026-11-{due:02d}'])
             for revision, completion in ((1, 0), (2, completed)):
                 path = f'sources/editorial/{ref}-v{revision}.md'
                 finished = f'2026-11-{completion:02d}' if completion else 'pending'
+                status = 'Delivered' if completion else 'In progress'
+                owner = ('Editorial', 'Research', 'Client delivery')[position % 3]
+                narrative = (
+                    'The requested customer material has been delivered and the final source '
+                    'references are recorded for the November close.' if completion else
+                    'Draft material is being reconciled against the customer commitments. '
+                    'Completion has not yet been recorded for the November close.')
                 files[path] = (f'# Customer delivery update: {ref}\n\n'
-                    f'Reference: {ref}\nRevision: {revision}\nCompleted: {finished}\n\n'
-                    + ('The requested delivery has been completed.\n' if completion else
-                       'The delivery remains in progress.\n'))
-                index.append({'reference': ref, 'revision': revision, 'path': path})
+                    f'Reference: {ref}\nRevision: {revision}\nStatus: {status}\n'
+                    f'Owner: {owner}\nCompleted: {finished}\n\n'
+                    f'## Customer context\n\n{narrative}\n\n'
+                    '## Evidence note\n\nThe acceptance receipt, when present, identifies '
+                    'the exact revision reviewed for delivery.\n')
+                first_date = ('2026-10-31' if due == 1 else f'2026-11-{due-1:02d}')
+                latest_date = f'2026-11-{(completion or due):02d}'
+                index.append({'reference': ref, 'revision': revision, 'path': path,
+                              'published_on': first_date if revision == 1 else latest_date})
             if evidence:
                 latest = f'sources/editorial/{ref}-v2.md'
                 files[f'sources/editorial/{ref}-receipt.json'] = json_text({
