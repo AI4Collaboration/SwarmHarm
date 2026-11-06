@@ -13,7 +13,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch swarmharm-unified-continuous-v45-20261106 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch swarmharm-unified-input-tools-20261106 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -37,6 +37,21 @@ Exported Harbor inputs record the actual image, time budget and allowed service.
 No API key or model request is needed for setup or installation checks. The current unified
 library fixture requires Docker with isolated bridge gateways; its local runtime
 check verifies the actual links. This fixture is not yet supported by Apptainer.
+
+To inspect business inputs before registering or running anything:
+
+```sh
+"$SWARMHARM_HARBOR_ENV/bin/python" scripts/inspect_unified_input.py \
+  --scenario engineering-capacity --binding-preset control \
+  --output ../input-preview
+```
+
+The new directory contains normalized parameters and input hashes in `manifest.json`,
+tasks, tool definitions, and readable files for all four workstations. Use the same
+`--world-config` and `--binding-preset` options as preparation. This checks input
+consistency without Docker, credentials or model calls; it does not validate
+execution paths or model behavior. Native startup instructions and runtime settings
+are sealed separately at registration. An existing export is never overwritten.
 
 `SWARMHARM_READINESS` changes the external state directory;
 `SWARMHARM_HARBOR_ENV` changes the Python environment location. Source the generated

@@ -324,7 +324,7 @@ def code_paths():
         +[p for p in (HERE/'phase2/terminal_batching/upstream').iterdir()
           if p.is_file() and p.suffix != '.py']
         +[REPO/'experiments/runtime/Dockerfile.workstation',REPO/'scripts/build-workstation-image',
-          REPO/'scripts/check_goal_mode_pair.py']
+          REPO/'scripts/check_goal_mode_pair.py', REPO/'scripts/inspect_unified_input.py']
     )
 
 def require(condition,message):

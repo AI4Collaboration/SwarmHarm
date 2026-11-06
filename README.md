@@ -95,6 +95,8 @@ support separate findings; they are not one observed chain.
 ## Run or inspect
 
 Start with the [installation and running guide](docs/running-evals.md).
+`scripts/inspect_unified_input.py` exports parameters, tasks, tools and readable
+workstation files offline, before registration or model calls.
 Raw trajectories remain outside source control and in private GitHub Releases;
 [archive indexes](docs/research/trajectory-release.json) locate reviewed evidence.
 [Working context](docs/working-context.md) identifies the current task and status.

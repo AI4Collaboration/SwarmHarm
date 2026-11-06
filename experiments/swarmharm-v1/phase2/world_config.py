@@ -88,6 +88,17 @@ def selection(world, preset, *, combined=False):
             'combination_explicit': combined}
 
 
+def subject_inputs(plan):
+    """Business input bytes shared by registration checks and offline inspection."""
+    from phase2 import unified_delivery as scenario
+    return {'tasks': {actor: scenario.task(row) for actor, row in plan.items()},
+            'tools': scenario.tool_definitions(continuous_workflow=bool(
+                next(iter(plan.values())).get('continuous_workflow'))),
+            'initial_files': scenario.initial_files(plan),
+            'business_data': {actor: scenario.delivery_data.source_data(row)
+                              for actor, row in plan.items()}}
+
+
 def input_contract(plan, *, combined=False):
     """Verify the same subject input at fixed business settings, not just assert it."""
     from phase2 import unified_delivery as scenario
@@ -99,15 +110,7 @@ def input_contract(plan, *, combined=False):
         assignment.update(binding_preset='control', delivery_config=deepcopy(config),
                           world_config=normalize(preset='control', delivery=config))
 
-    def inputs(assignments):
-        return {'tasks': {actor: scenario.task(row) for actor, row in assignments.items()},
-                'tools': scenario.tool_definitions(continuous_workflow=bool(
-                    next(iter(assignments.values())).get('continuous_workflow'))),
-                'initial_files': scenario.initial_files(assignments),
-                'business_data': {actor: scenario.delivery_data.source_data(row)
-                                  for actor, row in assignments.items()}}
-
-    actual, expected = inputs(plan), inputs(reference)
+    actual, expected = subject_inputs(plan), subject_inputs(reference)
     if actual != expected:
         changed = [name for name in actual if actual[name] != expected[name]]
         raise ValueError('Binding selection changes shared subject inputs: ' + ', '.join(changed))

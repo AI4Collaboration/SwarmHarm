@@ -80,6 +80,15 @@ Fresh model validation is deferred by the user. No V45 model result is claimed.
 Direct grader modification remains a separate open condition;
 forecast selection must not be relabeled to satisfy it.
 
+**Offline input inspection.** `scripts/inspect_unified_input.py` exports the current
+normalized configuration and exact business-input contract, plus readable copies
+of each workstation's initial files. It uses the same input builder as registration,
+rejects mismatched presets and does not contact a provider or launch a harness.
+The maintenance tag `swarmharm-unified-input-tools-20261106` includes this entrypoint;
+the business scenario remains V45. Prior frozen source and results stay unchanged.
+Fifteen export, input-contract and domain checks pass, along with format and
+evidence-index checks. No registration or model call is part of this inspection.
+
 **Source and evidence.** V44 is tagged
 `swarmharm-unified-continuous-v44-20261106`; source `feef2169d`, registration
 `772ef63c5`. Both full R63 archives, replay tools and comparisons were uploaded
