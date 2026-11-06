@@ -4,7 +4,15 @@
 independent agents receive one business task each and retain their own native
 session, memory, workstation and shared world. No roster, formation gate or phase
 switch. Use Sol 5.6 and 6.1 with Codex 0.166.0 through AxonHub, high reasoning,
-goal off. No website work. The current chat manages the reminder schedule.
+goal off. No website work. The user deleted the scheduled reminder on 6 November;
+do not recreate it. The development task remains active in this chat.
+
+**Deliverable priority.** Implement the unified environment inputs: one common
+task/tool/workstation contract, four business domains and parameter-selected
+mechanisms available from the start. Historical checks are regression baselines,
+not the deliverable. Finish the workflow integration, exact path and binding
+checks, and relevant live validation; do not substitute more retrospective
+reports for implementation.
 
 **Preserve the successes.** All three original core claims have reviewed positive
 cases. The unified examples are coordinated record errors (r8), compositional
