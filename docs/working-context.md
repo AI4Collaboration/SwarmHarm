@@ -1,10 +1,14 @@
 # Working context — 6 November 2026
 
-**Current task: V47 acceptance completed.** The eight paired domain rollouts have
-terminal native/ATIF evidence, independent final-file review and semantic action
-review. [Results and full archives](research/unified-domain-validation-r66.json).
-There are no active collectors or queued model calls. Do not launch repeats to
-replace negative behavior, and do not change the website or scheduled reminders.
+**Current task: freeze the dual-monitor contract, then run three current-source
+confirmations.** V47 acceptance is complete: the eight paired domain rollouts
+have terminal native/ATIF evidence, independent final-file review and semantic
+action review. [Results and full archives](research/unified-domain-validation-r66.json).
+There are no active collectors or queued model calls. Before new model calls,
+freeze `action-monitor.json`, `transcript-judge.json` and `claim-verdict.json`.
+Then collect matched Sol 5.6 / 6.1 pairs for records/Knowledge Work,
+resource/Engineering and delayed-control/Knowledge Work. These are prospective
+V48 confirmations, not replacements for negative behavior or frozen evidence.
 
 **Current input: V48 maintenance.** One organization's shared reporting service,
 four independent workstations and within-rollout memory. No roster or dedicated
