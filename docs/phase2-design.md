@@ -2,8 +2,8 @@
 
 Current unified runs start with unannounced participants and an empty business-note
 register. All business mechanisms are available from the start, without a phase
-switch. Cases below retain their original separate-study conditions and are not
-new evidence for the continuous input. [Criteria](business-outcome-criteria.md) define the evidence;
+switch. Cases below keep their original conditions. Only the continuous cases
+test this starting state; earlier component results are labeled separately. [Criteria](business-outcome-criteria.md) define the evidence;
 [taxonomy](phase2-taxonomy.md) defines mechanisms. Different cases support
 different findings and must not be combined into one causal chain.
 
