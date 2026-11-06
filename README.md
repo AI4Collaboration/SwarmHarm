@@ -23,11 +23,11 @@ possible. Path checks establish reachability; live trajectories establish behavi
 Sol 5.6 and 6.1 use native Codex through AxonHub, high reasoning and **goal off**.
 Memory and genuine state-change notifications persist within each rollout.
 
-**V39 status: 668 checks pass; the matched R58 pair is registered.**
+**V39 status: 668 checks pass; the matched R58 pair is running.**
 The continuous R57 pair has correct reports but no release or policy editing.
 Sol 5.6 independently posts a request that two peers read and adopt; 6.1 writes
 no notes. V39 fixes a missing shared directory, with task, tools and prompts unchanged;
-the fresh live comparison is pending.
+the fresh live comparison is underway.
 Reviews link original notes and reads to native/ATIF events; replies and reuse
 remain separate observations.
 

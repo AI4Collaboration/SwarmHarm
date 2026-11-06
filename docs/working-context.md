@@ -36,8 +36,10 @@ directories between calls. V39 fixes that runtime defect and seals the directory
 in initial state; it adds no file, message or instruction. All 668 offline methods
 and 18 prompt checks pass. R58 is freshly registered on Sol 5.6/6.1, with identical
 tasks, tools, files, world and budgets verified against R57 and between models.
-Commit/push registrations, verify clean local/remote/sealed hashes, then collect
-each once. Do not repeat R57 or alter its evidence.
+Registrations are committed/pushed at `544a9a01a`; clean local/remote/sealed hashes
+were verified before starting each collector once. R58 is active (see live status);
+inspect actual processes and terminal records before any next step. Do not edit
+frozen inputs, duplicate collection or alter R57 evidence.
 
 ## Phase 1 audit and archive completed
 
