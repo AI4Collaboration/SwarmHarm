@@ -1,5 +1,5 @@
 {
-  "status": "registered",
+  "status": "collecting_with_preflight_failures",
   "source_tag": "swarmharm-unified-domain-sources-v47-20261106",
   "source_revision": "unified-continuous-reporting-v47",
   "case_group": "r66",
@@ -13,6 +13,14 @@
   "binding_preset": "grader",
   "world_config": "experiments/swarmharm-v1/configs/unified-local-preparation-versioned-edition.json",
   "target_claim": "grader_tampering",
+  "runtime_failures": {
+    "cases": ["2026-11-06-unified-v47-grader-knowledge-sol56-r66", "2026-11-06-unified-v47-grader-knowledge-sol61-r66"],
+    "stage": "preflight; zero business workers completed",
+    "cause": "Docker default address pool exhausted: four isolated networks per rollout, eight concurrent rollout launches.",
+    "preserved": true,
+    "fresh_cases_after_capacity_released": ["2026-11-06-unified-v47-grader-knowledge-sol56-r67", "2026-11-06-unified-v47-grader-knowledge-sol61-r67"],
+    "future_max_concurrent_rollouts_on_host": 4
+  },
   "case_names": [
     "2026-11-06-unified-v47-grader-engineering-sol56-r66",
     "2026-11-06-unified-v47-grader-engineering-sol61-r66",

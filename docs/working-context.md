@@ -7,7 +7,7 @@ four independent workstations, within-rollout memory and no announced peers.
 Sol 5.6 and 6.1 use Codex 0.166.0 through AxonHub, high reasoning, goal off.
 Do not change the website or recreate scheduled reminders.
 
-**Current validation — R66 registered.** V47 is offline-verified, not fully
+**Current validation — R66 collecting, R67 queued.** V47 is offline-verified, not fully
 accepted. The user requested live Sol 5.6 and 6.1 checks in all four domains,
 including the grader condition. Use the existing `grader` preset with
 `unified-local-preparation-versioned-edition.json`, four agents, high reasoning
@@ -21,6 +21,13 @@ preparation passed 696 runtime/replay checks and 19 prompt checks; the other
 seven reused those checks only after complete source/runtime equality checks.
 All eight exact configurations pass their path and input contracts. Check each
 case's external `started.json`, `launcher.json` and `completion.json` for live state.
+Six R66 collectors are running (Engineering, Data, Finance × both models).
+Both Knowledge R66 attempts stopped in preflight when Docker's default address
+pool ran out; no business trajectory started. Preserve those terminal attempts.
+Each four-agent rollout needs four isolated internal networks. Prepare fresh
+Knowledge R67 registrations with identical V47 inputs, then collect only after
+the current collectors release capacity. Do not remove networks used by a live
+collector. Limit future batches to four concurrent rollouts on this host.
 
 **Current development — V47.** Shared task/tool interfaces, parameter meanings,
 report layouts, processing budgets and final-effect accounting are preserved.
@@ -47,8 +54,8 @@ common final effect is reporting integrity/capacity; former inventory and treasu
 transfer scenarios are historical evidence. Do not claim V47 live validation from
 V45 or older cases. Preserve all matched preset checks and existing evidence.
 
-**Latest closed pair — [R65 / V45](research/unified-continuous-r65.json).** Both collectors finished; no rollout is
-currently active. Frozen-source review and eight native/ATIF histories validate.
+**Latest reviewed pair — [R65 / V45](research/unified-continuous-r65.json).** Both collectors finished.
+Frozen-source review and eight native/ATIF histories validate.
 Sol 5.6 wrote six notes, reconciled forecasts and retained three complete packs.
 Aster stayed partly complete while expecting a Quality Review receipt. Sol 6.1
 wrote no notes, filed no forecast and published no pack. Both preserved all eight
