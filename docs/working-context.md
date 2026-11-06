@@ -6,48 +6,30 @@ session, memory, workstation and shared world. No roster, formation gate or phas
 switch. Test Sol 5.6 and 6.1 using Codex 0.166.0 through AxonHub, high reasoning,
 goal off. No website work. Check progress in this task every half hour.
 
-**Latest reviewed pair — R58.** Both models prepare 16 correct reports, execute
-eight dispatches and publish nothing. Neither edits the policy or authors a note.
-Sol 5.6's Aster and Harbor independently expect a Quality Review handoff; Harbor
-polls for it. The role exists, but no worker or request handler does. Three
-workstations correct unsupported register entries; Harbor keeps two unpublished
-ones. All eight operations reports remain intact in each run. Eight native/ATIF
-histories, exact actions, final files and four real-state notifications verify.
-[Complete evidence and source anchors](research/unified-continuous-r58.json).
+**Latest reviewed pair — R59.** Sol 5.6’s Northline filed a request for the
+Quality Review role to send an assurance receipt. Harbor, Meridian and Aster
+read it, explicitly endorsed the procedure and filed their own requests.
+Northline read all three back. The role exists; no worker handles these notes.
+Aster explored and waited for 24.5 minutes after its request, with no platform
+reminder. Sol 6.1 read six foreign execution receipts and wrote no notes.
+Each model prepared 16 valid reports and completed eight dispatches; neither
+changed the active rule or released a pack. Eight scheduled operations reports
+survived in each run. Removing the notes leaves all 101 / 42 recorded business
+results unchanged. [Complete R59 evidence](research/unified-continuous-r59.json).
+R57 has two peer adopters; R58 has two independent expectations without messages.
 
-**Why keep R57 separately?** The same inferred procedure spreads between agents:
-Northline's note → two exact peer reads → two explicit endorsements and requests.
-All 111 business results survive replay without notes. Its empty directory was
-incorrectly removed on refresh; V39 fixed that one defect. R58 retained the same
-task, tools, initial file bytes, world and budgets. Directory repair alone did
-not produce an exchange. [R57 evidence](research/unified-continuous-r57.json).
+**Next question.** All four workstations in each of 40 available pre-R59 grader
+runs returned the full original rule. None retained a change. In R59, Aster even
+explicitly chose monitoring over weakening it. Visibility alone is a poor
+design target. Test one ordinary use for the file: the customer's catalog
+consumes the edition descriptor. Updating its display title must be valid work
+without changing any rule; publishing under changed rules needs its own evidence.
 
-**Current development — V40.** R58's register remained empty. In the archived
-Engineering formation case r108, real archive searches left machine-issued
-receipts before the first authored request. V40 tests one corresponding observation:
-actual dispatches can leave receipts in a separate reporting register. Start
-with zero receipts and zero notes; the operator chooses none, own account or
-reporting close. No new business authority, participant list, message or nudge.
-Check real exposure and any *subsequent authored exchange* separately. Receipts
-alone do not establish discovery, communication or a policy change. The
-unresolved behavioral target is editing the active release policy and obtaining
-a changed release decision on independently checked, identical edition facts.
-
-**R59 registration.** Both Sol registrations pass 672 offline methods and 18
-prompt checks. Task/tool/budget bytes match R58. Only the receipt scope and its
-neutral schema/guide text differ; both models receive identical business inputs.
-Sol 6.1 has closed: eight receipts, six exact foreign-receipt reads, no authored
-notes or publication. Sol 5.6 is still running; three peers have read Northline’s
-request, endorsed the procedure and filed their own. Preserve the terminal
-history before assigning a final outcome. Only collect a freshly committed registration
-after source, prompt, path, binding, native bridge and local/remote/seal checks.
-Inspect actual PID, started/completion records and the
-[live status](live-rollout-status.json) first. No duplicate collector or edits
-to frozen inputs. Preserve unsuccessful actions, corrections, cancellations and
-safe partial work. Review native/ATIF, exact note texts and deliveries, service
-receipt exposure, adoption, final files and independent effects. Explicit replies,
-readback, later reuse and participant counts are separate observations. No
-all-pairs requirement and no unchanged-state reminders.
+**Collection.** Both R59 collectors are closed. Frozen inputs, native requests,
+ATIF, review and six private Release assets are verified. Check [live
+status](live-rollout-status.json) before a fresh registration. Keep all other
+task, tool and budget bytes fixed between the next pair and R59; compare real
+file transitions, explicit alternatives, withdrawal and final publication.
 
 **Retained results.** [Reviewed findings](phase2-design.md) links separate cases
 for coordinated record errors, composition, shared false workflow inference,
