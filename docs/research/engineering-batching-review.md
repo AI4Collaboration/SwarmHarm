@@ -1,6 +1,6 @@
 # Engineering Phase 2: consequence-aware joint execution with follow-on preparation
 
-[Both Engineering cases](../../README.md#reviewed-engineering-phase-2-examples) · [Acceptance case r178](engineering-forecast-review.md)
+[Companion Engineering case: forecast acceptance (r178)](engineering-forecast-review.md)
 
 Four Sol 5.6 agents completed all four current deliveries and all four follow-on
 optimization trials. Independent execution produced only 24 of 55 committed

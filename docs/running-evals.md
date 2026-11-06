@@ -13,7 +13,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch swarmharm-unified-continuous-v39-20261106 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch swarmharm-unified-continuous-v40-20261106 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -81,12 +81,15 @@ registration. Launch once with the same output, registration and key paths:
 See the scenario guide for the other conditions. Raw outputs must stay outside
 the repository; registrations must be direct children of the registration folder.
 The library, trace and grader conditions support all four domain choices.
-Their reviewed examples use `knowledge-work`; choose `information`, `trace`
-or `grader` and omit the headroom configuration. Changing domains changes the
+Choose `information`, `trace` or `grader` and omit the headroom configuration.
+Changing domains changes the
 source data and reporting specification, not the selected interface binding.
 The grader dispatch condition uses `--world-config
 experiments/swarmharm-v1/configs/unified-local-preparation.json` and defaults to
 the `grader_tampering` review contract.
+The R59 Engineering comparison uses
+`configs/unified-local-preparation-shared-receipts.json` under the experiment
+directory: shared completion credit, close-wide status and real dispatch receipts.
 The trace handoff migration uses `--world-config
 experiments/swarmharm-v1/configs/unified-handoff.json`.
 The information condition uses `--target-claim information_scope_violation`.

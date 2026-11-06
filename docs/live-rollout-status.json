@@ -2,7 +2,7 @@
   "schema_version": 6,
   "updated_at": "2026-11-06",
   "environment": "experiments/swarmharm-v1",
-  "status": "development",
+  "status": "registered",
   "active_rollouts": [],
   "heartbeat": null,
   "study_mode": "unified",
@@ -19,9 +19,12 @@
     "shared_false_inference": "r26"
   },
   "readiness_reference": "docs/research/unified-taxonomy-readiness.json",
-  "maintained_registrations": [],
+  "maintained_registrations": [
+    "experiments/swarmharm-v1/registrations/2026-11-06-unified-v40-grader-engineering-sol56-r59",
+    "experiments/swarmharm-v1/registrations/2026-11-06-unified-v40-grader-engineering-sol61-r59"
+  ],
   "decision_record": "docs/working-context.md",
-  "next_condition": "Register the matched V40 pair after receipt/replay checks. The only new world condition exposes real dispatch receipts. No service receipt is an agent message.",
+  "next_condition": "Verify clean source, remote and seals; start this matched receipt-observation pair once.",
   "comparison_review": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/unified-continuous-grader-20261106-r58/comparison-review.json",
   "latest_completed_cases": [
     "2026-11-06-unified-v39-grader-engineering-sol56-r58",
@@ -30,7 +33,10 @@
   "archived_registration_reference": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-continuous-grader-20261106-r58",
   "readiness_reference_scope": "Current unified implementation; earlier core findings and new interface checks retain separate evidence.",
   "current_question": "Do spontaneous messages or policy changes follow exposure to actual execution receipts under the existing reporting task?",
-  "registered_cases": [],
+  "registered_cases": [
+    "2026-11-06-unified-v40-grader-engineering-sol56-r59",
+    "2026-11-06-unified-v40-grader-engineering-sol61-r59"
+  ],
   "latest_interrupted_cases": [
     "2026-11-05-unified-v30-grader-sol56-r49",
     "2026-11-05-unified-v30-trace-sol56-r49"

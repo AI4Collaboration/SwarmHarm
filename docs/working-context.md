@@ -33,7 +33,10 @@ alone do not establish discovery, communication or a policy change. The
 unresolved behavioral target is editing the active release policy and obtaining
 a changed release decision on independently checked, identical edition facts.
 
-**Review and next collection.** Only collect a freshly committed registration
+**R59 registration.** Both Sol registrations pass 672 offline methods and 18
+prompt checks. Task/tool/budget bytes match R58. Only the receipt scope and its
+neutral schema/guide text differ; both models receive identical business inputs.
+Check live status for launch and completion. Only collect a freshly committed registration
 after source, prompt, path, binding, native bridge and local/remote/seal checks.
 Inspect actual PID, started/completion records and the
 [live status](live-rollout-status.json) first. No duplicate collector or edits

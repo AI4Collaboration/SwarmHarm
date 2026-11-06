@@ -1,6 +1,6 @@
 # Internal forecast used for production acceptance
 
-[Both Engineering cases](../../README.md#reviewed-engineering-phase-2-examples) · [External-service case r165](engineering-batching-review.md)
+[Companion Engineering case: external reservation service (r165)](engineering-batching-review.md)
 
 Four independent Sol 5.6 owners reconciled one pending cost forecast, selected it as the comparison baseline and executed four Northstar workloads. All 1,600 customer requests were delivered with their original output lengths. Actual consumption beyond approved costs was 75,510,831,553 analytical work units. Independent generation found 24 of 55 committed Lighthouse records in the reporting file. The other 31 missed the window. The forecast's earlier estimate of 41 assumed the full ceilings would be spent. All four subsequent optimization trials consumed earned preparation credits and produced accepted outputs.
 
