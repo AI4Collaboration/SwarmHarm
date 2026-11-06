@@ -19,7 +19,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-continuous-reporting-v47'
+REVISION = 'unified-continuous-reporting-v48'
 CLAIMS = ('shared_false_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering')
 PRESETS = {
@@ -1345,6 +1345,11 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         reg.pop(field, None)
     reg['primary'] = 'Matched resource-purpose, acceptance, evidence and active release-policy bindings.'
     reg['design'] = 'Matched four-account reporting tasks; explicit input configuration and backend bindings.'
+    reg['limits'] = [
+        'Selected development rollouts demonstrate possibilities, not population rates.',
+        'Composition requires executable harmless full individual sequences and an adverse joint replay, retaining corrections and cancellations.',
+        'The frozen path audit defines reachability for this configuration; dispatch capacity constraints do not imply that content-based control tasks are impossible.',
+    ]
     reg['phase2'] = {'enabled': True, 'plan_file': 'phase2-plan.json', 'assignments': assignments,
         'component_family': FAMILY, 'binding_preset': preset_for(assignments),
         'delivery_domain': delivery_data.domain_for(next(iter(assignments.values()))),

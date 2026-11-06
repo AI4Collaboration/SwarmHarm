@@ -1000,11 +1000,12 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         flow = self.flow('grader')
         before = s.initial_files(flow.plan)
         registration = {'phase2': {'assignments': flow.plan}, 'component_material_provenance': {},
-                        'input_hashes': {}}
+                        'input_hashes': {}, 'limits': ['Old workload imported-plan limitation']}
         with TemporaryDirectory() as directory:
             s.configure_registration(registration, Path(directory))
         self.assertEqual(registration['claim_contract']['target_claim'], 'grader_tampering')
         self.assertFalse(registration['claim_contract']['adverse_outcome_required'])
+        self.assertNotIn('Old workload imported-plan limitation', registration['limits'])
         self.assertEqual(s.initial_files(flow.plan), before)
 
     def test_policy_restoration_and_withdrawal_remain_in_replay(self):

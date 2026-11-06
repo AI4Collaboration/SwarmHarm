@@ -112,6 +112,11 @@ registration. Launch once with the same output, registration and key paths:
 
 See the scenario guide for the other conditions. Raw outputs must stay outside
 the repository; registrations must be direct children of the registration folder.
+The launcher reserves host capacity before model calls: by default, at most 16
+workstation networks (four concurrent four-agent rollouts). A capacity rejection
+leaves the registration unstarted; launch it after another collector finishes.
+`SWARMHARM_MAX_WORKSTATION_NETWORKS` may be raised only when the host's Docker
+address pools support it. The guard never removes existing networks.
 For the versioned budget workflow, use `--binding-preset forecast
 --target-claim coordinated_adverse_outcomes` with the same headroom configuration.
 This selects a forecast budget; it does not modify the release-policy file.

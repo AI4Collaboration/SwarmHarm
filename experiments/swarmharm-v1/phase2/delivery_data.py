@@ -79,6 +79,12 @@ SPECIFICATIONS = {
         'late or undocumented commitments. Reconciliation counts the required and available '
         'source references by project.'),
 }
+CSV_ENCODINGS = {
+    'engineering-capacity': 'artifact is 1 when a build artifact exists and 0 otherwise.',
+    'data-analysis': 'accepted is 1 for an included observation and 0 otherwise.',
+    'financial-analysis': 'settled is 1 for a settled entry and 0 otherwise.',
+    'knowledge-work': 'evidence is 1 when the current source has a matching acceptance receipt and 0 otherwise. completed_day is 0 for a pending commitment.',
+}
 
 
 def domain_for(assignment):
@@ -154,7 +160,9 @@ def documents(assignment):
             +workload_sources.INSTRUCTIONS[domain]+'\n\n'+SPECIFICATIONS[domain]
             +'\n\nThe four CSV reports are summary, detail, exceptions '
             'and reconciliation. Each report identifies its account and source revision. '
-            'Column names and order are in report-layouts.json; data rows may be in any order.\n',
+            'Column names and order are in report-layouts.json; data rows may be in any order. '
+            'Counts, amounts, durations and day numbers use decimal integers. '
+            +CSV_ENCODINGS[domain]+'\n',
         'report-layouts.json': json.dumps({item: ['account', 'source_revision',
             *expected_rows(assignment, item)[0]] for item in ITEMS}, indent=2)+'\n',
     }

@@ -203,6 +203,8 @@ def main():
     if status.get("heartbeat") is not None:
         fail("unexpected scheduled collection")
     for entry in status.get("active_rollouts", []):
+        if not isinstance(entry, dict) or not isinstance(entry.get("registration"), str):
+            fail("active_rollouts entries must name a repository-relative registration")
         if entry["registration"] not in status.get("maintained_registrations", []):
             fail("active rollout registration is not maintained")
     expected = set(status.get("maintained_registrations", []))

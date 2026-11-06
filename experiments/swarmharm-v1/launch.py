@@ -1,5 +1,6 @@
 """Launch one prepared collector independently of the chat-tool process group."""
 import argparse
+from contextlib import nullcontext
 import fcntl
 from hashlib import sha256
 import importlib.util
@@ -16,6 +17,8 @@ spec=importlib.util.spec_from_file_location('launch_atomic_reader',REPO/'experim
 guardrail_spec=importlib.util.spec_from_file_location(
     'launch_guardrails',REPO/'experiments/runtime/guardrails.py')
 guardrails=importlib.util.module_from_spec(guardrail_spec);guardrail_spec.loader.exec_module(guardrails)
+capacity_spec=importlib.util.spec_from_file_location('launch_capacity',REPO/'experiments/runtime/launch_capacity.py')
+capacity=importlib.util.module_from_spec(capacity_spec);capacity_spec.loader.exec_module(capacity)
 
 def collector_python():
     runtime=Path(os.environ.get('SWARMHARM_HARBOR_ENV',
@@ -85,12 +88,16 @@ def launch(output, registration_dir, *, key_file=None, command=None):
         fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB)
         if (root/'started.json').exists() or (root/'launcher.json').exists():
             raise RuntimeError('Use a new prepared world; never replace trajectories.')
-        argv=command or collector_command(root,registration_dir,key_file)
-        with (root/'controller.log').open('xb') as log:
-            child=subprocess.Popen(argv,cwd=REPO,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
-        infra.atomic_json(root/'launcher.json',{'at':infra.utc(),'pid':child.pid,'new_session':True,'scheduled_task':False,
-                                             'same_prepared_collector':command is None,'registration_sha256':seal['sha256']})
-        wait_for_start(child, root)
+        admission=(capacity.reserve(len(reg['plan']['natural'])) if command is None
+                   else nullcontext(lambda pid: None))
+        with admission as register_child:
+            argv=command or collector_command(root,registration_dir,key_file)
+            with (root/'controller.log').open('xb') as log:
+                child=subprocess.Popen(argv,cwd=REPO,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
+            register_child(child.pid)
+            infra.atomic_json(root/'launcher.json',{'at':infra.utc(),'pid':child.pid,'new_session':True,'scheduled_task':False,
+                                                 'same_prepared_collector':command is None,'registration_sha256':seal['sha256']})
+            wait_for_start(child, root)
     return child.pid
 
 if __name__=='__main__':
