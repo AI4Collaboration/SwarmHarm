@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
 """Write the initial subject prompts for each study to Markdown files.
 
-This script runs the registered preparation step offline. It does not
-call a model, a gateway or a harness binary. It writes the result to a
-new directory with a UTC timestamp in its name.
+This script uses the current code only. It runs the preparation step of
+run.py offline. It does not call a model, a gateway or a harness binary.
+It writes the result to a new directory with a UTC timestamp in its name.
+Each file records the time, the commit and if there are local changes
+since that commit.
 
-Each file shows one subject at the start of one rollout:
-- the registered instructions,
+Each file shows one subject:
+- the instructions,
 - the initial input messages,
 - the delivery for each harness,
 - the tool definitions,
 - the workspace files,
-- the follow-up message templates, the Phase 1 to Phase 2 handoff task
-  and the conditions that start each message. Parts that come from the
-  rollout show as placeholders.
+- the follow-up message templates and the conditions that start each
+  message. Parts that come from a rollout show as placeholders.
 
 The harness built-in prompts are missing. The native system prompts of
 Codex and Claude Code and the native goal continuation prompts are in
@@ -77,7 +78,7 @@ def utc_stamp():
 
 
 def git_state():
-    """Return the commit and a flag for uncommitted changes."""
+    """Return the commit and a flag for local changes since that commit."""
     def git(*args):
         return subprocess.run(["git", *args], cwd=REPO, capture_output=True,
                               text=True).stdout.strip()
@@ -112,14 +113,14 @@ def continuation_module(arguments):
 
 
 def prepare(arguments, goal_mode, deadline):
-    """Run the registered preparation offline.
+    """Run the preparation step of run.py offline.
 
     Return the input audit, the file audit and the follow-up messages.
 
     The patches replace only the gateway route check and the calls to the
-    Codex binary. These calls write registration metadata. They do not
-    change the subject inputs. The registration goes to a temporary
-    directory, not to experiments/swarmharm-v1/registrations.
+    Codex binary. These calls write metadata. They do not change the
+    subject inputs. All output goes to a temporary directory that is
+    deleted after use.
     """
     native_goal = goal_mode == "native"
     gateway = run.codex_gateway
@@ -138,16 +139,16 @@ def prepare(arguments, goal_mode, deadline):
                         harness_kind="codex",
                         goal_mode="codex_goal" if native_goal else "off",
                         filing_deadline_utc=deadline, **arguments)
-        registration = run.load(root / "raw/registration.json")
+        settings = run.load(root / "raw/registration.json")
         # Make the same continuation object as run.collect. This does not
         # start a workstation.
-        plan = registration["plan"]["natural"]
-        world = run.lab.World(plan, root / "operator", registration.get("topology"))
+        plan = settings["plan"]["natural"]
+        world = run.lab.World(plan, root / "operator", settings.get("topology"))
         extension = continuation_module(arguments).Continuation(
             world, run.load(root / "raw/phase2-plan.json"))
         return (run.load(root / "raw/initial-input-audit.json"),
                 run.load(root / "raw/initial-file-audit.json"),
-                followups(arguments, registration, extension, plan))
+                followups(arguments, settings, extension, plan))
 
 
 def notice(text, kind):
@@ -169,19 +170,19 @@ def activity_examples(calendar_message=None):
     return examples
 
 
-def followups(arguments, registration, extension, plan):
+def followups(arguments, settings, extension, plan):
     """Return each follow-up message with its start condition.
 
     Keep the conditions the same as run.work_notice and run.collect.
     """
-    scenario = registration["scenario"]
+    scenario = settings["scenario"]
     component = arguments["study_mode"] == "phase2-component"
-    seconds = registration["completion_protocol"].get("unfinished_work_followup_seconds")
+    seconds = settings["completion_protocol"].get("unfinished_work_followup_seconds")
     unfinished = (f"Enabled. After a final answer with this subject's work not complete, "
                   f"the collector waits {seconds} s. It sends the message only when the "
                   "work state is different from the last state that the subject saw."
                   if seconds else
-                  "Disabled in this registration (no `unfinished_work_followup_seconds`).")
+                  "Disabled in the current settings (no `unfinished_work_followup_seconds`).")
     rows = []
     if component:
         rows.append(dict(
@@ -205,7 +206,7 @@ def followups(arguments, registration, extension, plan):
             texts=[notice(run.current_work_feedback(extension, actor, check),
                           "unfinished_work_followup")],
             note="Example uses the business state at the start of the rollout."))
-        goal = registration.get("subject_goal")
+        goal = settings.get("subject_goal")
         step = {"state": "active", "waiting_on": None,
                 "steps": [{"description": "<agent-authored step>", "status": "pending"}]}
         rows.append(dict(
@@ -224,16 +225,17 @@ def followups(arguments, registration, extension, plan):
             texts=[notice("The work record has changed.", "business_state_change"),
                    "/goal resume"]))
     else:
-        publication = registration.get("source_publication")
+        publication = settings.get("source_publication")
         rows.append(dict(
             name="Source publication", kind="relevant_platform_change",
             condition=(f"Enabled. The platform publishes revised sources one time, "
                        f"{publication['after_start_seconds']} s after the first subject "
                        "starts. Each subject gets this notice at its next request."
-                       if publication else "Disabled in this registration (no source publication)."),
+                       if publication else
+                       "Disabled in the current settings (no source publication)."),
             texts=[notice(run.build_publication_feedback(["<check>"], scenario),
                           "relevant_platform_change")]))
-        cue = registration["cue_condition"]
+        cue = settings["cue_condition"]
         texts = (activity_examples() if cue == "agent_initiated_activity"
                  else [run.platform_update_feedback(cue, scenario)])
         rows.append(dict(
@@ -246,18 +248,10 @@ def followups(arguments, registration, extension, plan):
             texts=[notice(run.unfinished_work_feedback(None, scenario),
                           "unfinished_work_followup")],
             note="Template. The collector fills the fields from the current work state."))
-        rows.append(dict(
-            name="Phase 1 to Phase 2 handoff task", kind="user task",
-            condition="Only in `connected` mode, which is archive compatibility only. "
-                      "A fresh `phase1` study stops after formation observation and does "
-                      "not send this task. In `connected` mode, the collector sends it "
-                      "after the formation observation ends and all subjects are idle. "
-                      "With Claude Code native goal, it starts with `/goal `.",
-            texts=[], per_actor={actor: extension.task(actor) for actor in plan}))
     return rows
 
 
-def render_followups(rows, actor):
+def render_followups(rows):
     """Return the follow-up section of one subject file."""
     lines = ["## Follow-up messages\n"]
     lines.append(
@@ -275,8 +269,7 @@ def render_followups(rows, actor):
         if row.get("note"):
             lines.append(f"- Note: {row['note']}")
         lines.append("")
-        texts = row["texts"] + ([row["per_actor"][actor]] if "per_actor" in row else [])
-        for text in texts:
+        for text in row["texts"]:
             lines.append(fence(text))
     return "\n".join(lines)
 
@@ -415,7 +408,7 @@ def render(study, arguments, actor, audit, files, header, folder, rows):
     for path in sorted(files):
         lines.append(f"### `{path}`\n")
         lines.append(fence(decode(files[path]), language_for(path)))
-    lines.append(render_followups(rows, actor))
+    lines.append(render_followups(rows))
     return "\n".join(lines)
 
 
@@ -429,8 +422,8 @@ def dump(output, goal_mode, initial_material, deadline, only=None):
     ignore = target.parent / ".gitignore"
     if REPO in target.parents and not ignore.exists():
         ignore.write_text("*\n")
-    header = (f"- Created: {created}\n- Commit: `{commit}`"
-              f"{' (with uncommitted changes)' if dirty else ''}\n"
+    header = (f"- Created: {created}\n- Commit: `{commit}`\n"
+              f"- Local changes since this commit: {'yes' if dirty else 'no'}\n"
               f"- Goal mode: {goal_mode}\n")
     index = [f"# Prompt dump {target.name}\n", header,
              "Each study has one file for each subject. The file shows the initial "
