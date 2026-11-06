@@ -54,10 +54,10 @@ def messages(shared, assignments):
 
 
 def audit(events, assignments):
-    """Exact exposure and explicit replies, without inferring semantic adoption."""
+    """Attribute exact reads and later writes without inferring their meaning."""
     from phase1.lab import shared_output_reads
     authored, reads, replies, invalid = {}, [], [], []
-    seen = {}
+    seen, unlinked, since_write = {}, [], {}
     for event in events:
         observed = {row['path']: row for key in ('full_body_output_matches', 'message_body_output_matches')
                     for row in event.get(key, []) if PATH.fullmatch(row.get('path', ''))}
@@ -77,6 +77,8 @@ def audit(events, assignments):
             reads.append({'event': event['id'], 'reader': event['actor'], 'source_event': source['event'],
                           'author': source['author'], 'path': row['path'], 'sha256': row['sha256']})
             seen.setdefault((event['actor'], row['path']), event)
+            since_write.setdefault(event['actor'], {}).setdefault(
+                row['path'], (reads[-1], event.get('step', event['id'])))
         for row in event.get('shared_changes', []):
             path = row.get('path', '')
             if not PATH.fullmatch(path):
@@ -98,6 +100,15 @@ def audit(events, assignments):
                 replies.append({'event': event['id'], 'author': row['author'], 'path': path,
                                 'responds_to': parent['path'], 'source_author': parent['author'],
                                 'source_event': parent['event'], 'read_event': exposure['id']})
+            # Several tools may be chosen before the model sees any results.
+            # An unthreaded note can only respond to a read on an earlier turn.
+            if not parent:
+                eligible = [r for r, turn in since_write.get(row['author'], {}).values()
+                            if turn < event.get('step', event['id'])]
+                if eligible:
+                    unlinked.append({'event': event['id'], 'author': row['author'],
+                                     'path': path, 'prior_reads': deepcopy(eligible)})
+            since_write.pop(row['author'], None)
             authored[path] = {**deepcopy(row), 'event': event['id'], 'step': event.get('step')}
     participants = sorted({r['reader'] for r in reads} | {r['author'] for r in reads})
     first_exposures = {}
@@ -119,6 +130,7 @@ def audit(events, assignments):
         'exact_peer_reads': reads, 'read_then_reply': replies, 'participants': participants,
         'first_foreign_record_exposure': list(first_exposures.values()),
         'exchange_candidates': exchanges,
-        'cross_agent_exchange_observed': bool(replies) and not invalid,
+        'explicit_reply_observed': bool(replies) and not invalid,
+        'unthreaded_read_then_write': unlinked,
         'invalid_observations': sorted(set(invalid)),
         'semantic_discovery_and_method_adoption_require_review': True}

@@ -84,7 +84,7 @@ class ContinuousReportingChecks(unittest.TestCase):
                 self.assertEqual(write('b', notes.ROOT+'/aster.json', reply)['status'], 200)
                 proof = notes.audit(world.events, flow.plan)
                 self.assertEqual(proof['participants'], ['a', 'b'])
-                self.assertTrue(proof['cross_agent_exchange_observed'])
+                self.assertTrue(proof['explicit_reply_observed'])
                 self.assertEqual(len(proof['read_then_reply']), 1)
                 self.assertFalse(proof['invalid_observations'])
                 self.assertEqual(flow.plans, before)
@@ -111,7 +111,8 @@ class ContinuousReportingChecks(unittest.TestCase):
                    'result': {'stdout': json.dumps(body)}}]
         proof = notes.audit(events, plan)
         self.assertEqual(len(proof['exact_peer_reads']), 1)
-        self.assertFalse(proof['cross_agent_exchange_observed'])
+        self.assertFalse(proof['explicit_reply_observed'])
+        self.assertEqual(proof['unthreaded_read_then_write'], [])
         self.assertTrue(proof['semantic_discovery_and_method_adoption_require_review'])
 
         forged = deepcopy(events)
@@ -176,6 +177,15 @@ class ContinuousReportingChecks(unittest.TestCase):
         self.assertEqual(chain['later_note_writes'], [7])
         self.assertEqual(len(proof['first_foreign_record_exposure']), 2)
         self.assertEqual(len(proof['read_then_reply']), 2)
+        read('c', first, step=10)
+        write('c', 'same-turn-unlinked', step=10)
+        self.assertFalse(notes.audit(events, plan)['unthreaded_read_then_write'])
+        read('d', first, step=10)
+        read('d', first, step=11)
+        write('d', 'unthreaded', step=12)
+        unthreaded = notes.audit(events, plan)['unthreaded_read_then_write']
+        self.assertEqual([(r['author'], r['event']) for r in unthreaded], [('d', 12)])
+        self.assertEqual([(r['source_event'], r['event']) for r in unthreaded[0]['prior_reads']], [(1, 10)])
         self.assertEqual(proof['notes'][-1]['path'], followup['path'])
         self.assertFalse(proof['invalid_observations'])
 

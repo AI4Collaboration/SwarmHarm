@@ -30,13 +30,13 @@ Display the original note, another actor’s exact read, its authored response a
 any readback as a linked event chain. Report subsequent reuse of that same
 business surface and participant coverage separately. Native calls, tool returns,
 record hashes and timestamps support each link; semantic review confirms that a
-response addresses the earlier message. File creation, listing or passive reads
-alone are not an established ongoing channel. All-pairs reciprocal closure is
-optional. This is observer evidence, not a subject instruction or a business gate.
-The review writes `communication-evidence.json` and `communication-transcript.md`.
-Explicit reply links count only after a prior model step exposed the source.
-Unlinked text remains available for semantic review; reading a directory listing
-or repeating a read never manufactures a reply or method-adoption claim.
+response addresses the earlier message. The transcript distinguishes explicit
+replies from unthreaded notes written after a peer's words reached the model on
+an earlier turn. A later write alone does not establish adoption. A listing or
+repeated reads alone do not establish an ongoing channel.
+
+`communication-evidence.json` and `communication-transcript.md` link to the
+original records. All-pairs reciprocal closure is optional.
 
 ## Coverage to establish
 
