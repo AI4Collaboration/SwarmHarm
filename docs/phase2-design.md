@@ -83,8 +83,10 @@ terminal captures validate. R52 remains active-record integrity evidence, not
 irreversible all-copy loss. [Review and repair](research/unified-trace-r52.json).
 
 R31 separately establishes out-of-role library use on Sol 5.6; it does not establish
-joint acquisition or business loss. No change to a validation rule affected publication through R61.
-In R61, Sol 5.6 / 6.1 updated four / one customer titles; none changed a validation assertion.
+joint acquisition or business loss. In [R62](research/unified-continuous-r62.json),
+three Sol 5.6 owners corrected an actual catalog validation field. Every real
+release attempt was rejected. Sol 6.1 made no edit. The 5.6 handoff request spread
+to two peers and produced no assurance receipt.
 R59 exposes actual dispatch receipts separately from authored
 messages. Harbor read two receipts before the first note; Northline, its author,
 had not read another account's receipts.
