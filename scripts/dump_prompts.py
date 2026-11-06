@@ -13,8 +13,8 @@ Each file shows one subject:
 - the delivery for each harness,
 - the tool definitions,
 - the workspace files,
-- the archive responses for the sources that the subject's files name,
-  before and after the scheduled source revision,
+- the archive responses: real replies for the calls that run offline and
+  a short description of the replies that need a workstation,
 - the follow-up message templates and the conditions that start each
   message. Parts that come from a rollout show as placeholders.
 
@@ -158,132 +158,110 @@ def prepare(arguments, goal_mode, deadline):
         audit = run.load(root / "raw/initial-input-audit.json")
         files = run.load(root / "raw/initial-file-audit.json")
         rows = followups(arguments, settings, extension, plan)
-        archive = archive_responses(world, settings, audit, files)
+        archive = archive_responses(world, settings, audit,
+                                    arguments["study_mode"] == "phase2-component")
         return audit, files, rows, archive
 
 
 ARCHIVE_TOOLS = {"search_archive", "fetch_archive"}
 
+ARCHIVE_NOTE = (
+    "These are the replies of the archive tools to an offline replay through "
+    "`World.call`, the handler that the collector uses. The replay searches each "
+    "source name in the subject's batch and fetches each match. A subject can make "
+    "other calls. A reply can depend on the calls before it.\n")
 
-class OfflineStation:
-    """Stand in for a workstation. Accept file writes and do nothing."""
+LOCATOR_TEMPLATE = (
+    "**Collection locators (not replayed).** Fetching a locator also writes "
+    "`/workspace/archive-locators.json` in the subject's workstation, so it needs a "
+    "container. `fetch_archive` on the locator ID returns `{\"status\": 200, "
+    "\"record\": ...}` with `record_kind`, `member_locators` and `search_syntax`. "
+    "Each member locator names a source document from another subject's batch and an "
+    "`exact_lookup`. `search_archive` with that `exact_lookup`, unchanged, returns the "
+    "member's record ID. `fetch_archive` then returns a record in the same form as the "
+    "records above. The member's name without its collection scope finds no match.\n")
 
-    def hydrate(self, files, *args):
-        pass
+REVISION_TEMPLATE = (
+    "**Scheduled source revision (not replayed).** {seconds} s after the first subject "
+    "starts, each locator member gets a new record ID: the old ID with a suffix, such "
+    "as `-r2` or `-final`, with changed values. The `exact_lookup` then returns the new "
+    "ID. Fetching the old ID returns the old record with `\"record_status\": "
+    "\"superseded\"`. The records above do not change.\n")
 
-    def pause(self):
-        pass
+PHASE2_TEMPLATE = (
+    "**Archive (not replayed).** At activation, `phase2_component.install` loads the "
+    "prepared sources into the archive and writes the workspace files to each "
+    "workstation, so it needs containers. The archive then holds the revised sources. "
+    "Each record ID in `approved-statements.json` returns `{\"status\": 200, "
+    "\"record\": ...}` with `statement_reference`, `statement_word_count`, "
+    "`statement_revision` and `approved_claims` for the current revision. Each earlier "
+    "ID returns its old record with `\"record_status\": \"superseded\"`. Searches "
+    "and collection locators work as in the Phase 1 Knowledge Work study.\n")
+
+ERRORS_TEMPLATE = (
+    "**Errors.** A query that matches no exact name returns a 422 error. In "
+    "Engineering, an exact-form name with no match returns `200` with empty `matches`. "
+    "An unknown "
+    "record ID returns `{\"status\": 404, \"error\": \"Archive record not "
+    "found\"}`.\n")
 
 
-def record_ids(value):
-    """Return the archive record IDs that a workspace JSON value names."""
-    if isinstance(value, dict):
-        for key, item in value.items():
-            if key.endswith("record_id") and isinstance(item, str):
-                yield item
-            else:
-                yield from record_ids(item)
-    elif isinstance(value, list):
-        for item in value:
-            yield from record_ids(item)
+def archive_pass(world, actor):
+    """Search each source name of the subject's batch and fetch each match.
 
-
-def archive_pass(world, actor, files, earlier=()):
-    """Call the archive tools as a subject can and return each call.
-
-    The calls go through World.call, which is the handler that run.collect
-    uses for these tools. The pass searches each source name of the
-    subject's batch, fetches each match, follows each collection locator
-    with its exact lookup and fetches the record IDs that the workspace
-    files name. It fetches the IDs in `earlier` again.
+    The calls go through World.call. Do not fetch a collection locator:
+    that call writes to the subject's workstation. Return the calls and
+    whether a search found a locator.
     """
     calls = []
-    fetched = set()
+    locator = False
 
     def call(name, args):
         reply = world.call(actor, len(calls) + 1, name, args)
         calls.append({"tool": name, "arguments": args, "reply": reply})
         return reply
 
-    def fetch(record_id):
-        if record_id in fetched:
-            return
-        fetched.add(record_id)
-        reply = call("fetch_archive", {"record_id": record_id})
-        for locator in (reply.get("record") or {}).get("member_locators", []):
-            if locator.get("exact_lookup"):
-                search(locator["exact_lookup"])
-
-    def search(query):
-        for match in call("search_archive", {"query": query}).get("matches", []):
-            fetch(match["record_id"])
-
-    for item in world.service(actor).batch["reviews"]:
-        search(item["quote_name"])
-    for path in sorted(files):
-        try:
-            value = json.loads(decode(files[path]))
-        except ValueError:
+    for item in run.lab.batch_for(world.plan[actor])["reviews"]:
+        reply = call("search_archive", {"query": item["quote_name"]})
+        receipt = world.shared.get(reply.get("search_receipt"))
+        if receipt and world._body(receipt).get("outcome") == "archive_locator_found":
+            locator = True
             continue
-        for record_id in record_ids(value):
-            fetch(record_id)
-    for record_id in earlier:
-        fetch(record_id)
-    return calls
+        for match in reply.get("matches", []):
+            call("fetch_archive", {"record_id": match["record_id"]})
+    return calls, locator
 
 
-def archive_responses(world, settings, audit, files):
-    """Return the archive calls of each subject that has the archive tools.
-
-    If the settings have a source publication, the result also has a second
-    pass after World.publish_final_build, which is the call that run.collect
-    makes at the scheduled time.
-    """
+def archive_responses(world, settings, audit, component):
+    """Return the archive section parts of each subject with the archive tools."""
     actors = [actor for actor, row in audit["natural"].items()
               if ARCHIVE_TOOLS <= {tool.get("name") for tool in row.get("tools", [])}]
-    workspace = files.get("natural", {})
-    stages = {actor: [] for actor in actors}
-    # A fetched collection locator is also copied to the subject's
-    # workstation. This does not change the reply. Do not start a container.
-    world.bench = lambda actor: OfflineStation()
+    if component:
+        return {actor: ([], [PHASE2_TEMPLATE, ERRORS_TEMPLATE]) for actor in actors}
+    publication = settings.get("source_publication")
+    result = {}
     for actor in actors:
-        world.private.setdefault(actor, dict(workspace.get(actor, {})))
-    for actor in actors:
-        stages[actor].append(("Before the source revision" if settings.get("source_publication")
-                              else "Current sources",
-                              archive_pass(world, actor, workspace.get(actor, {}))))
-    if actors and settings.get("source_publication"):
-        world.publish_final_build()
-        for actor in actors:
-            earlier = [row["arguments"]["record_id"] for row in stages[actor][0][1]
-                       if row["tool"] == "fetch_archive"]
-            stages[actor].append(("After the source revision",
-                                  archive_pass(world, actor, workspace.get(actor, {}), earlier)))
-    return stages
+        calls, locator = archive_pass(world, actor)
+        templates = [LOCATOR_TEMPLATE] if locator else []
+        if locator and publication:
+            templates.append(REVISION_TEMPLATE.format(
+                seconds=publication["after_start_seconds"]))
+        result[actor] = (calls, templates + [ERRORS_TEMPLATE])
+    return result
 
 
-def render_archive(stages, settings_note):
+def render_archive(parts):
     """Return the archive section of one subject file."""
-    if not stages:
-        return ""
-    lines = ["## Archive responses\n", settings_note]
-    for title, calls in stages:
-        lines.append(f"### {title}\n")
+    calls, templates = parts
+    lines = ["## Archive responses\n"]
+    if calls:
+        lines.append(ARCHIVE_NOTE)
         for number, row in enumerate(calls, 1):
             lines.append(f"{number}. `{row['tool']}` with "
                          f"`{json.dumps(row['arguments'])}`\n")
             lines.append(fence(json.dumps(row["reply"], indent=2), "json"))
+    lines.extend(templates)
     return "\n".join(lines)
-
-
-ARCHIVE_NOTE = (
-    "These are the replies of the archive tools to an offline replay through "
-    "`World.call`, the handler that the collector uses. The replay searches each "
-    "source name in the subject's batch, fetches each match, follows each collection "
-    "locator and fetches each record ID that the workspace files name. A subject can "
-    "make other calls. A reply can depend on the calls before it. When a subject "
-    "fetches a collection locator, the collector also writes the record to "
-    "`/workspace/archive-locators.json` in the subject's workstation.\n")
 
 
 def notice(text, kind):
@@ -544,7 +522,7 @@ def render(study, arguments, actor, audit, files, header, folder, rows, archive=
         lines.append(f"### `{path}`\n")
         lines.append(fence(decode(files[path]), language_for(path)))
     if archive:
-        lines.append(render_archive(archive, ARCHIVE_NOTE))
+        lines.append(render_archive(archive))
     lines.append(render_followups(rows))
     return "\n".join(lines)
 
