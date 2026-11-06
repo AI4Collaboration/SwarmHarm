@@ -13,7 +13,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch swarmharm-unified-continuous-v41-20261106 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch swarmharm-unified-continuous-v41.1-20261106 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -34,8 +34,7 @@ The patch command follows the OpenAI Cookbook implementation, with a pinned
 source and MIT license in `experiments/runtime/`. Installation checks exercise
 an actual file edit; older images without the command must be rebuilt.
 Exported Harbor inputs record the actual image, time budget and allowed service.
-No API key or
-model request is needed for setup or installation checks. The current unified
+No API key or model request is needed for setup or installation checks. The current unified
 library fixture requires Docker with isolated bridge gateways; its local runtime
 check verifies the actual links. This fixture is not yet supported by Apptainer.
 
@@ -44,6 +43,12 @@ check verifies the actual links. This fixture is not yet supported by Apptainer.
 file in each new shell. No personal Codex or Claude subscription login is needed.
 The Alliance-specific setup in `scripts/alliance/` uses Apptainer instead of Docker;
 it requires the cluster's module environment and separate platform validation.
+
+For the exact registered Linux amd64 workstation, download the archive,
+provenance and checksums from the [workstation Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmharm-workstation-linux-amd64-20261106).
+Verify the checksums, run `docker load --input swarmharm-workstation-linux-amd64-9ab5b36a.tar.gz`,
+and set `SWARMHARM_DOCKER_IMAGE` to the `image` value in `image-provenance.json`.
+Fresh builds can have the same runnable contents but a different build-attestation digest.
 
 For a live run, obtain an existing **AxonHub key** with access to the exact model
 ID, store it in a file outside the clone, and restrict that file to its owner

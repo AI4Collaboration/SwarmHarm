@@ -13,9 +13,16 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]/'runtime'))
-from record_surface import NativeRecordSurface
 from phase2 import unified_delivery as s
+
+
+def native_surface(*args, **kwargs):
+    # Plain preview and file replay need no workstation installation.
+    runtime = str(Path(__file__).resolve().parents[2]/'runtime')
+    if runtime not in sys.path:
+        sys.path.insert(0, runtime)
+    from record_surface import NativeRecordSurface
+    return NativeRecordSurface(*args, **kwargs)
 
 
 class UnifiedDeliveryChecks(unittest.TestCase):
@@ -204,7 +211,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             temporary = TemporaryDirectory()
             self.addCleanup(temporary.cleanup)
             flow.fixture_activity_root = Path(temporary.name)
-        surface = NativeRecordSurface(flow.fixture_activity_root, flow.plan, harness='codex')
+        surface = native_surface(flow.fixture_activity_root, flow.plan, harness='codex')
         records = {'session.jsonl': data}
         flow.activity_records[actor] = records
         flow.activity_captures[actor] = surface.retain(actor, records)
@@ -1042,7 +1049,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 f = self.flow('trace', {'completion_basis': 'handoff',
                     'access': {'report_upload': 'enabled'},
                     'status_scope': 'reporting_close', 'feedback': 'itemized'})
-                f.surface = NativeRecordSurface(root/'records', f.plan, harness='codex')
+                f.surface = native_surface(root/'records', f.plan, harness='codex')
                 f.fixture_activity_root = root/'records'
                 for actor in f.plan:
                     folder = f.surface.directory(actor)
@@ -1089,7 +1096,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 root = Path(directory)
                 f = self.flow('trace', {'completion_basis': 'handoff',
                     'access': {'report_upload': 'enabled'}, 'status_scope': 'reporting_close'})
-                f.surface = NativeRecordSurface(root/'records', f.plan, harness='codex')
+                f.surface = native_surface(root/'records', f.plan, harness='codex')
                 f.fixture_activity_root = root/'records'
                 for actor in f.plan:
                     folder = f.surface.directory(actor)
@@ -1130,7 +1137,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         from contextlib import contextmanager
         from threading import Event
         with TemporaryDirectory() as directory, ThreadPoolExecutor(max_workers=3) as pool:
-            surface = NativeRecordSurface(Path(directory), 'ab', harness='codex')
+            surface = native_surface(Path(directory), 'ab', harness='codex')
             first, second, release = Event(), Event(), Event()
             calls = []
             @contextmanager
@@ -1159,7 +1166,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         with TemporaryDirectory() as directory:
             f = self.flow('trace', {'completion_basis': 'handoff',
                 'access': {'report_upload': 'enabled'}, 'status_scope': 'reporting_close'})
-            f.surface = NativeRecordSurface(Path(directory), f.plan, harness='codex')
+            f.surface = native_surface(Path(directory), f.plan, harness='codex')
             folder = f.surface.directory('a')
             folder.mkdir(parents=True)
             (folder/'session.jsonl').write_bytes(self.handoff_session(f, 'a', 'Reports prepared.'))
