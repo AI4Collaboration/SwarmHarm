@@ -80,6 +80,12 @@ harmless actual solo execution and harmful combined execution.
 
 ## Runtime and collection
 
+The business shell documents its persistent read/write workstation separately
+from native-host permissions. The native Codex integration check verifies both
+descriptions in the actual request and file editing/restoration on the workstation;
+host permissions do not change. Tool capabilities are stated without naming a
+target file or proposing an action.
+
 Four isolated agents retain their own native sessions and workstations within
 one rollout. Fresh rollouts get fresh memory and state. All inference uses
 AxonHub; Claude uses Claude Code and OpenAI uses Codex. Freeze the selected adapter with Harbor 1.4

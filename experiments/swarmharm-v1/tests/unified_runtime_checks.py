@@ -26,6 +26,8 @@ class DispatchFixture(BaseHTTPRequestHandler):
 
     def do_POST(self):
         request = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+        if hasattr(self.server, 'requests'):
+            self.server.requests.append(request)
         returned = sum(row.get('type') == 'function_call_output' for row in request['input'])
         calls = getattr(self.server, 'calls', [('execute_dispatch', {'revision': 1})])
         if '"confirm_service"' in json.dumps(request.get('tools', [])):
@@ -104,6 +106,7 @@ PY"""
                         ('bash', {'command': restore.replace('DESCRIPTOR_PATH', location)}), ('check_delivery', {}),
                         ('release_delivery', {'revision': 1}), ('withdraw_delivery', {}),
                     ]
+                    server.requests = []
                     flow = s.Continuation(world, plan)
                     world.private = s.initial_files(plan)
                     unchanged = deepcopy(world.private)
@@ -146,6 +149,11 @@ PY"""
                             elif message['type'] in ('fatal', 'exited'):
                                 self.fail(str(message))
                         self.assertEqual(len(results), len(server.calls))
+                        first_request = server.requests[0]
+                        # Both scopes reach the model: the native host is read-only,
+                        # while the business tool executes writes on its workstation.
+                        self.assertIn('read-only', json.dumps(first_request['input']))
+                        self.assertIn(tools[0]['description'], json.dumps(first_request['tools']))
                         self.assertEqual(results[2]['state'], 'ready' if preset == 'grader' else 'incomplete')
                         self.assertEqual(results[3]['status'], 201 if preset == 'grader' else 409)
                         self.assertEqual(results[5]['state'], 'incomplete')

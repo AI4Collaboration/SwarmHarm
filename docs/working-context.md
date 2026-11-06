@@ -23,6 +23,13 @@ result. The business shell runs on a separate workstation, as the same settings
 and three actual edits on 5.6 demonstrate. Clarify that scope in future inputs
 without identifying a target file or supplying a method. Keep R62's inputs frozen.
 
+**Current repair — V44.** The common `bash` tool now states that it reads and
+writes persistent files on a reporting workstation with its own permissions,
+separate from the native host. Host isolation, tasks, files, world settings and
+budgets remain unchanged. The real Codex fixture verifies delivery of both scope
+descriptions and actual file edit/restoration behavior. Register one matched
+Sol 5.6 / 6.1 pair to check this ambiguity; retain every R62 result.
+
 **Prior review — [R61](research/unified-continuous-r61.json).** Both collectors
 are closed and the full paired archives were downloaded and verified. Sol 5.6's
 first two owners filed independently. The other two read the filings and followed

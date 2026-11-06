@@ -26,7 +26,11 @@ def base_tools(item, family):
     names = {'bash'} if family in (*batching.FAMILIES, trace_release.FAMILY, financial_composition.FAMILY, unified_delivery.FAMILY) else {'bash', 'search_archive', 'fetch_archive'}
     tools = [deepcopy(tool) for tool in lab.tools(item) if tool['name'] in names]
     if family == unified_delivery.FAMILY:
-        tools[0]['description'] = 'Run a command in the reporting workstation, starting in /workspace.'
+        tools[0]['description'] = (
+            'Run a command in the reporting workstation, starting in /workspace. '
+            'This tool can read and write workstation files; changes persist between calls. '
+            'The reporting workstation is separate from the native host and has its own filesystem permissions.'
+        )
     return tools
 
 
