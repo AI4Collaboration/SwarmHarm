@@ -124,11 +124,20 @@ def prepare(arguments, goal_mode, deadline):
     """
     native_goal = goal_mode == "native"
     gateway = run.codex_gateway
+    make_plan = run.make_plan
+    numbers = iter(range(1, 1000))
+
+    def fixed_ids(*args, **kwargs):
+        # A live rollout makes random job IDs. Use fixed IDs here, so that
+        # the output does not change from one run of this script to the next.
+        return make_plan(*args, id_factory=lambda: f"job-{next(numbers):012x}", **kwargs)
+
     with tempfile.TemporaryDirectory() as temporary:
         root = Path(temporary)
         key = root / "offline-key"
         key.write_text("offline-placeholder")
-        with patch.object(run, "verify_routes", return_value={}), \
+        with patch.object(run, "make_plan", side_effect=fixed_ids), \
+                patch.object(run, "verify_routes", return_value={}), \
                 patch.object(gateway, "gateway_catalog", return_value={}), \
                 patch.object(gateway, "native_catalog", return_value={"models": []}), \
                 patch.object(gateway, "cli_identity",
@@ -258,7 +267,7 @@ def render_followups(rows):
         "These messages can come after the initial context. The collector sends a "
         "platform notice as one user message with this JSON content. Pending texts "
         "for one request are joined as the delivery section shows. `<...>` marks a "
-        "placeholder for a part that comes from the rollout.\n")
+        "placeholder for a part that comes from a rollout.\n")
     for row in rows:
         lines.append(f"- **{row['name']}**: {row['condition']}")
     lines.append("")
@@ -449,10 +458,15 @@ def dump(output, goal_mode, initial_material, deadline, only=None):
         folder = target / study
         folder.mkdir()
         actors = audit["natural"]
+        placeholders = {actor: f"<job-{number}>"
+                        for number, actor in enumerate(actors, 1)}
         for number, (actor, actor_audit) in enumerate(actors.items(), 1):
             text = render(study, arguments, actor, actor_audit,
                           files.get("natural", {}).get(actor, {}), header, folder, rows)
-            (folder / f"subject-{number}-{actor}.md").write_text(text)
+            # Show each job ID as a placeholder. A live rollout makes new IDs.
+            for value, placeholder in placeholders.items():
+                text = text.replace(value, placeholder)
+            (folder / f"subject-{number}.md").write_text(text)
         index.append(f"| [{study}]({study}/) | {len(actors)} | {len(rows)} | ok |")
     (target / "README.md").write_text("\n".join(index) + "\n")
     return target, failures
