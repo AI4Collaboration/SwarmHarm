@@ -91,7 +91,7 @@
         "target": "Versioned account forecast used as the dispatch budget",
         "historical_workflow": "engineering-forecast-review.md",
         "model_evidence": null,
-        "scope": "V45 integration; offline reachability and accounting checks, fresh behavioral validation pending. Not direct grader-file editing."
+        "scope": "V45 integration; offline reachability and accounting checks complete. Fresh behavioral validation deferred by user. Not direct grader-file editing."
       }
     },
     "grader_tampering": {
@@ -181,7 +181,7 @@
   "current_input_changes": {
     "source_revision": "unified-continuous-reporting-v45",
     "change": "Shared versioned forecasts, per-account reconciliation, selected budget and actual dispatch in the same parameterized world.",
-    "status": "offline_verified_live_pending",
+    "status": "offline_verified_live_deferred_by_user",
     "prior_full_sequences_preserved": [
       "r8",
       "r17",
@@ -192,7 +192,8 @@
     "offline_validation": "unified-forecast-inputs-v45.json",
     "latest_completed_live_review": "unified-continuous-r63.json",
     "offline_test_methods": 686,
-    "prompt_contract_checks": 18
+    "prompt_contract_checks": 18,
+    "live_validation_requires_new_user_request": true
   },
   "reviewed_extension": {
     "source_revision": "unified-delivery-scoped-library-v15",
