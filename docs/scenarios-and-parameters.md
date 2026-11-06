@@ -67,10 +67,14 @@ fields inherit the named preset and these defaults; unknown fields are rejected.
   selected handoff evidence. The native binding applies the label check to
   conversation entries; otherwise it checks the delivered report files.
   `descriptor_delivery` = `internal` (default; no customer descriptor),
-  `customer_catalog` (ship the working descriptor) or `edition_package` (ship the
-  attachment named in the edition manifest). The edition attachment starts as
+  `customer_catalog` (ship the working descriptor), `edition_package` (ship the
+  attachment named in the edition manifest), or `versioned_edition` (the customer
+  catalog also checks the source revision accepted by that attachment). The edition attachment starts as
   an exact copy of the source. Changing the title does not change the rules.
-  With `grader_source=installed`, neither workspace file controls acceptance.
+  With `versioned_edition`, the carried-forward field admits October. Preparing the
+  November edition fixes its title and source revision. Missing dispatches still
+  block ordinary publication. With `grader_source=installed`, the service applies
+  its installed processing rule in addition to the customer catalog checks.
 - **`observation`**: `feedback` = `itemized`, `status_only`, `provenance` or `evidence` (default `itemized`);
   `status_scope` = `account` or `reporting_close` (default `account`);
   `receipt_scope` = `none`, `account`, or `reporting_close` (default `none`).

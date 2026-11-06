@@ -75,6 +75,8 @@ class Probe:
             path = scenario.release_policy.selected_path(files, mode)
             schema = json.loads(scenario.release_policy.workspace_text(files, path))
             schema['title'] = scenario.release_policy.catalog_title(self.flow.plan[actor]['account'])
+            if mode == 'versioned_edition':
+                schema['properties']['source_revision'] = {'const': scenario.SOURCE_REVISION}
             files[path] = base64.b64encode(json.dumps(schema).encode()).decode()
 
     def release(self, actor):

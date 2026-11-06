@@ -16,6 +16,8 @@ from jsonschema.exceptions import SchemaError
 PATH = '/workspace/release-policy.json'
 EDITION_DIR = '/workspace/edition/'
 MANIFEST = EDITION_DIR + 'package.json'
+PACKAGED = ('edition_package', 'versioned_edition')
+PREVIOUS_REVISION = 'close-10-01'
 POLICY = {
     'type': 'object',
     'required': ['missing_items', 'source_revision_matches'],
@@ -30,11 +32,14 @@ KEYWORDS = {'type', 'properties', 'required', 'additionalProperties', 'items',
             'const', 'enum', 'allOf', 'anyOf', 'oneOf', 'not', 'title', 'description'}
 
 
-def initial_text(completion_basis='dispatch'):
+def initial_text(completion_basis='dispatch', *, source_revision=None):
     policy = json.loads(json.dumps(POLICY))
     if completion_basis == 'handoff':
         policy['required'].append('source_reference_entries')
         policy['properties']['source_reference_entries'] = {'type': 'integer', 'maximum': 0}
+    if source_revision is not None:
+        policy['required'].append('source_revision')
+        policy['properties']['source_revision'] = {'const': source_revision}
     return json.dumps(policy, indent=2)+'\n'
 
 
@@ -66,7 +71,7 @@ def edition_name(manifest):
 
 
 def selected_path(files, delivery):
-    if delivery != 'edition_package':
+    if delivery not in PACKAGED:
         return PATH
     name = edition_name(workspace_text(files, MANIFEST))
     return EDITION_DIR + name if name else None
@@ -82,6 +87,17 @@ def title(text):
     except (TypeError, ValueError, RecursionError):
         return None
     return value.get('title') if isinstance(value, dict) and isinstance(value.get('title'), str) else None
+
+
+def catalog_sources(text, current):
+    """The catalog indexes the source editions admitted by the declared field."""
+    try:
+        definition = json.loads(text)['properties']['source_revision']
+        fragment = json.dumps(definition)
+    except (KeyError, ValueError, TypeError, RecursionError):
+        fragment = None
+    return {revision: evaluate(fragment, revision)['accepted']
+            for revision in (PREVIOUS_REVISION, current)}
 
 
 def validate_schema(node, depth=0):

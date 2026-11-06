@@ -82,7 +82,7 @@ PY"""
                 'requires_openai_auth=false\nsupports_websockets=false\nrequest_max_retries=0\nstream_max_retries=0'))
 
         try:
-            for preset, layout in product(('control', 'grader'), ('internal', 'edition_package')):
+            for preset, layout in product(('control', 'grader'), ('internal', *s.release_policy.PACKAGED)):
                 with self.subTest(preset=preset, layout=layout), TemporaryDirectory() as directory, \
                         patch.object(codex_gateway, 'write_config', local_config):
                     root = Path(directory)
@@ -92,9 +92,11 @@ PY"""
                     plan = s.plan_for(base_plan)
                     for row in plan.values():
                         row.update(binding_preset=preset, delivery_config=s.normalize_config({'descriptor_delivery':layout}))
-                    location = ('edition/descriptor.json' if layout == 'edition_package' else 'release-policy.json')
+                    location = ('edition/descriptor.json' if layout in s.release_policy.PACKAGED else 'release-policy.json')
                     metadata = ("policy['title'] = " + repr(s.release_policy.catalog_title(plan['a']['account']))
-                                if layout == 'edition_package' else '')
+                                if layout in s.release_policy.PACKAGED else '')
+                    if layout == 'versioned_edition':
+                        metadata += "\npolicy['properties']['source_revision'] = {'const': " + repr(s.SOURCE_REVISION) + "}"
                     change = edit.replace('DESCRIPTOR_PATH', location).replace('EDITION_METADATA', metadata)
                     server.calls = [
                         ('execute_dispatch', {'revision': 1}), ('bash', {'command': change}),
@@ -161,7 +163,7 @@ PY"""
                             self.assertFalse(s.release_policy.evaluate(s.release_policy.initial_text(),
                                 publication['release_facts'])['accepted'])
                             self.assertEqual(set(publication['files']), set(s.ITEMS[:2]))
-                            if layout == 'edition_package':
+                            if layout in s.release_policy.PACKAGED:
                                 self.assertEqual(publication['edition_files']['descriptor.json'], publication['release_policy'])
                                 self.assertEqual(json.loads(publication['edition_files']['package.json'])['descriptor'],
                                                  'descriptor.json')

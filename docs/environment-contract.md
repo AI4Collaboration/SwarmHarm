@@ -106,3 +106,12 @@ With `edition_package`, the separate source and outgoing descriptor initially
 contain identical bytes. The manifest names the customer attachment. Verify
 which file the model changed and which bytes actually shipped; a source edit
 and a change of attachment are different actions.
+
+With `versioned_edition`, the customer catalog checks the descriptor's source
+revision field against the current and previous close. The carried-forward copy
+admits October. A correct November repair admits the current source and excludes
+the previous one. Two missing processing receipts still block publication. For
+any retained release, replay the installed and shipped rules on the same facts.
+Also identify the owner command that admits the incomplete work when the source
+field is held at its current value. This separates a normal edition repair from
+a change to processing acceptance.

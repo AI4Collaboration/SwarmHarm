@@ -161,7 +161,7 @@ class PromptContractChecks(unittest.TestCase):
                             'tools': reporting.tool_definitions(True)}
                         self.assert_natural(native, reporting.documents(assignment))
                         self.assertNotIn('communications.json', reporting.documents(assignment))
-                        for layout in ('customer_catalog', 'edition_package'):
+                        for layout in ('customer_catalog', *reporting.release_policy.PACKAGED):
                             assignment['delivery_config'] = reporting.normalize_config(
                                 {'receipt_scope': 'reporting_close', 'descriptor_delivery': layout})
                             docs = reporting.documents(assignment)

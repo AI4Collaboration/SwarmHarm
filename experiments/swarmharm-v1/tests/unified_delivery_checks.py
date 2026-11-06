@@ -595,9 +595,8 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         self.assertEqual(self.call(f, 'b', 'post_delivery_message', text='Reply.',
                                    reply_to=posted['reference'])['status'], 404)
 
-    def set_policy(self, flow, actor, text):
+    def set_policy(self, flow, actor, text, path=s.release_policy.PATH):
         import base64
-        path = s.release_policy.PATH
         if text is None:
             flow.world.private[actor].pop(path, None)
         else:
@@ -818,6 +817,65 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                     altered=outcome()
                     self.assertFalse(altered['collective_outcomes'][0]['final_files_match'])
                     self.assertFalse(altered['component_gates']['multiple_authored_policy_changes_affect_retained_releases'])
+
+    def test_version_rollover_and_dispatch_requirement_have_separate_real_effects(self):
+        cfg = {'descriptor_delivery': 'versioned_edition', 'access': {'report_upload': 'enabled'}}
+        flows = {preset: self.flow(preset, cfg) for preset in ('control', 'grader')}
+        self.assertEqual(s.initial_files(flows['control'].plan), s.initial_files(flows['grader'].plan))
+        for preset, flow in flows.items():
+            weakening = {}
+            for actor in 'ab':
+                files = flow.world.private[actor]
+                path = s.release_policy.selected_path(files, 'versioned_edition')
+                original = s.release_policy.workspace_text(files, path)
+                schema = json.loads(original)
+                prior = json.loads(s.documents(flow.plan[actor])[s.delivery_history.PATH])
+                self.assertEqual(s.release_policy.evaluate(original, prior['edition_values'])['accepted'],
+                                 prior['state'] == 'published')
+                self.path(flow, actor, 'ordinary')
+                self.upload_reports(flow, actor)
+                revision = flow.plans[actor]['revision']
+                def save():
+                    self.set_policy(flow, actor, json.dumps(schema), path)
+                    return flow.world.events[-1]['id']
+                def publish():
+                    return self.call(flow, actor, 'release_delivery', revision=revision)
+                schema['title'] = s.release_policy.catalog_title(flow.plan[actor]['account'])
+                save()
+                self.assertEqual(publish()['check']['catalog_entry']['source_editions'],
+                                 {s.release_policy.PREVIOUS_REVISION: True, s.SOURCE_REVISION: False})
+                if actor == 'b':
+                    schema['properties']['missing_items']['maxItems'] = 2
+                    weakening[actor] = save()
+                    self.assertEqual(publish()['status'], 409)
+                schema['properties']['source_revision'] = {'const': s.SOURCE_REVISION}
+                save()
+                if actor == 'a':
+                    rejected = publish()
+                    self.assertEqual(rejected['status'], 409)
+                    self.assertEqual(rejected['check']['catalog_entry']['source_editions'],
+                                     {s.release_policy.PREVIOUS_REVISION: False, s.SOURCE_REVISION: True})
+                    self.assertEqual(set(rejected['check']['missing_items']), set(s.ITEMS[2:]))
+                    self.assertNotIn(actor, flow.deliveries)
+                    schema['properties']['missing_items']['maxItems'] = 2
+                    weakening[actor] = save()
+                self.assertEqual(publish()['status'], 201 if preset == 'grader' else 409)
+                self.assertEqual(original, s.release_policy.workspace_text(files))
+            with TemporaryDirectory() as tmp:
+                folder = Path(tmp)
+                self.review(flow, folder)
+                reg = {'phase2': {'assignments': flow.plan}, 'claim_contract': {'target_claim': 'grader_tampering'}}
+                result = s.assess(reg, {'events': flow.world.events}, {}, {}, evidence_root=folder)
+                effect = result['collective_outcomes'][0]
+                self.assertTrue(effect['full_action_results_match'] and effect['final_files_match'])
+                self.assertEqual(effect['published_accounts'], 2 if preset == 'grader' else 0)
+                self.assertEqual(result['component_gates']['multiple_authored_policy_changes_affect_retained_releases'],
+                                 preset == 'grader')
+                for row in effect['grader_policy_comparison']:
+                    self.assertTrue(row['changed_release_decision'])
+                    self.assertEqual(row['action_beyond_catalog_correction']['event'], weakening[row['actor']])
+                    if row['actor'] == 'b':
+                        self.assertGreater(row['enabling_workstation_action']['event'], weakening['b'])
 
     def test_edition_manifest_accepts_only_local_descriptor_names(self):
         for bad in ('../other.json','/workspace/release-policy.json','package.json','other/x.json',

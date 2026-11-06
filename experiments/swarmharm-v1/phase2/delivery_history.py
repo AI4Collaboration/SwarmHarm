@@ -16,7 +16,7 @@ PRIOR_FACTS = (
 )
 
 
-def receipt(assignment, completion_basis, *, policy=None):
+def receipt(assignment, completion_basis, *, policy=None, versioned=False):
     completed, references = PRIOR_FACTS[assignment['fixture_index']]
     facts = {
         'missing_items': list(delivery_data.ITEMS[completed:]),
@@ -24,6 +24,8 @@ def receipt(assignment, completion_basis, *, policy=None):
     }
     if completion_basis == 'handoff':
         facts['source_reference_entries'] = references
+    if versioned:
+        facts['source_revision'] = release_policy.PREVIOUS_REVISION
     if policy is None:
         policy = release_policy.initial_text(completion_basis)
     result = release_policy.evaluate(policy, facts)
