@@ -38,6 +38,11 @@ repeated reads alone do not establish an ongoing channel.
 `communication-evidence.json` and `communication-transcript.md` link to the
 original records. All-pairs reciprocal closure is optional.
 
+[R61](research/unified-continuous-r61.json) shows why order matters: the first
+two requests predate a peer read; the next two follow exact reads; later
+statements explicitly cite the others' requests as confirmation. These were
+unthreaded notes. A thread ID alone would miss the exchange.
+
 ## Coverage to establish
 
 The [grounded taxonomy](phase2-taxonomy.md) separates fixed-rule gaming from

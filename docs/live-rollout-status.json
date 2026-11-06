@@ -2,23 +2,8 @@
   "schema_version": 6,
   "updated_at": "2026-11-06",
   "environment": "experiments/swarmharm-v1",
-  "status": "collecting",
-  "active_rollouts": [
-    {
-      "case": "2026-11-06-unified-v42-grader-engineering-sol56-r61",
-      "model": "openai/gpt-5.6-sol",
-      "registration": "experiments/swarmharm-v1/registrations/2026-11-06-unified-v42-grader-engineering-sol56-r61",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-v1-2026-11-06-unified-v42-grader-engineering-sol56-r61",
-      "pid": 76000
-    },
-    {
-      "case": "2026-11-06-unified-v42-grader-engineering-sol61-r61",
-      "model": "openai/gpt-6.1-sol",
-      "registration": "experiments/swarmharm-v1/registrations/2026-11-06-unified-v42-grader-engineering-sol61-r61",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-v1-2026-11-06-unified-v42-grader-engineering-sol61-r61",
-      "pid": 76021
-    }
-  ],
+  "status": "development",
+  "active_rollouts": [],
   "heartbeat": null,
   "study_mode": "unified",
   "active_scope": "continuous-unified",
@@ -34,28 +19,25 @@
     "shared_false_inference": "r26"
   },
   "readiness_reference": "docs/research/unified-taxonomy-readiness.json",
-  "maintained_registrations": [
-    "experiments/swarmharm-v1/registrations/2026-11-06-unified-v42-grader-engineering-sol56-r61",
-    "experiments/swarmharm-v1/registrations/2026-11-06-unified-v42-grader-engineering-sol61-r61"
-  ],
+  "maintained_registrations": [],
   "decision_record": "docs/working-context.md",
-  "next_condition": "Review completed R61 histories and final files; do not duplicate collection.",
-  "comparison_review": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/unified-continuous-grader-20261106-r60/comparison-review.json",
+  "next_condition": "Investigate why owners edited ordinary catalog metadata but left the processing requirement intact. Keep the verified social inference as a separate result.",
+  "comparison_review": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/unified-continuous-grader-20261106-r61/comparison-review.json",
   "latest_completed_cases": [
-    "2026-11-06-unified-v41p1-grader-engineering-sol56-r60",
-    "2026-11-06-unified-v41p1-grader-engineering-sol61-r60"
-  ],
-  "archived_registration_reference": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-continuous-grader-20261106-r60",
-  "readiness_reference_scope": "Current unified implementation; earlier core findings and new interface checks retain separate evidence.",
-  "current_question": "Does a separate customer edition let agents prepare and validate the outgoing descriptor without changing their source copy?",
-  "registered_cases": [
     "2026-11-06-unified-v42-grader-engineering-sol56-r61",
     "2026-11-06-unified-v42-grader-engineering-sol61-r61"
   ],
+  "archived_registration_reference": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-continuous-grader-20261106-r61",
+  "readiness_reference_scope": "Current unified implementation; earlier core findings and new interface checks retain separate evidence.",
+  "current_question": "Does a separate customer edition let agents prepare and validate the outgoing descriptor without changing their source copy?",
+  "registered_cases": [],
   "latest_interrupted_cases": [
     "2026-11-05-unified-v30-grader-sol56-r49",
     "2026-11-05-unified-v30-trace-sol56-r49"
   ],
-  "closed_current_rollouts": [],
+  "closed_current_rollouts": [
+    "2026-11-06-unified-v42-grader-engineering-sol56-r61",
+    "2026-11-06-unified-v42-grader-engineering-sol61-r61"
+  ],
   "workflow": "One task, persistent session and business world; no phase transition or formation gate."
 }
