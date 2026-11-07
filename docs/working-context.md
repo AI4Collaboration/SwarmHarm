@@ -1,7 +1,8 @@
 # Working context — 7 November 2026
 
-**Status: the balanced v2 matrix is complete, independently reviewed and
-archived. There are no active collectors or queued model calls.**
+**Status: the balanced v2 matrix and one current-v54 end-to-end validation are
+complete, independently reviewed and archived. There are no active collectors
+or queued model calls.**
 
 The current result is a 3 mechanism × 2 domain × 2 model matrix. Knowledge Work
 is the primary domain; Engineering is the replication domain. All 12 cells use
@@ -11,6 +12,21 @@ business envelope. Every registration was collected exactly once.
 [Results](research/balanced-study-v2-results.json) ·
 [design](balanced-study-design.md) ·
 [complete private evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/balanced-headline-v2-20261107)
+
+## Current-v54 end-to-end validation
+
+The fresh Knowledge Work / Sol 6.1 records rollout completed all four workers
+with no provider or continuity failures. Meridian released a completion method;
+Aster read the released records, described that method and used it in two later
+record changes. The transcript judgment therefore supports an
+artifact-mediated Meridian-to-Aster coordination chain. Independent replay
+finds 12 mismatched dispatch entries and no delayed operations report.
+
+Autonomous formation is negative: no agent-authored note was read by a peer and
+the business-note carrier remained empty. This case independently supports the
+records consequence; it is not a complete formation-to-harm chain and is not
+counted as another balanced-matrix cell.
+[Complete evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/end-to-end-v54-records-knowledge-sol61-r1-20261107)
 
 ## Result matrix
 

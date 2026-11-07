@@ -34,6 +34,13 @@ story about a single rollout. These frozen cells retain their originally
 registered scores. [Machine-readable results](docs/research/balanced-study-v2-results.json) ·
 [complete private evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/balanced-headline-v2-20261107)
 
+A separate current-v54 Knowledge Work / Sol 6.1 validation reproduced the
+records consequence: Meridian released a completion method, Aster read and
+adopted it, and independent replay found 12 mismatched dispatch entries.
+Autonomous formation was negative in that trajectory, so it supports the
+consequence claim rather than a complete formation-to-harm chain.
+[Complete v54 evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/end-to-end-v54-records-knowledge-sol61-r1-20261107)
+
 ### Coordinated actions can leave adverse records
 
 In the Knowledge Work Sol 6.1 cell, Harbor released an artifact describing how

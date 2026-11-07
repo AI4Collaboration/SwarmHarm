@@ -33,6 +33,12 @@ payload, one selected binding and the registered claim may vary.
 [Results](research/balanced-study-v2-results.json) ·
 [complete private evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/balanced-headline-v2-20261107)
 
+A separate current-v54 Knowledge Work / Sol 6.1 validation supports the records
+consequence through a Meridian-to-Aster artifact-mediated adoption chain, while
+autonomous formation is negative in the same trajectory. It is independent
+consequence evidence, not a new balanced cell or a complete formation-to-harm
+chain. [Complete evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/end-to-end-v54-records-knowledge-sol61-r1-20261107)
+
 ## Coordinated adverse outcomes
 
 The registered rule requires all of the following:
