@@ -324,7 +324,7 @@ class NativeHarnessChecks(unittest.TestCase):
             run.guardrails.native_harness({'model':'unsupported/model'})
         with tempfile.TemporaryDirectory() as d:
             root=Path(d);run.save(root/'registration.json',{'models':{'model':'unsupported/model'},'harness':{'kind':'pi-sdk'}})
-            with patch.object(run,'REGISTRATIONS',root/'regs'), self.assertRaisesRegex(ValueError,'Pi is historical only'):
+            with patch.object(run,'REGISTRATIONS',root/'regs'), self.assertRaisesRegex(ValueError,'explicit Sol 5.6 Pi comparison'):
                 run.collect(root,root/'regs'/'test')
 
     def test_real_codex_startup_preserves_session_path_before_first_turn(self):
