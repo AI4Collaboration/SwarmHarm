@@ -105,9 +105,12 @@ found that V2's globally canonical diagnostic paths collided even though the
 records were author-private. V3 fixed that namespace defect, then r163 produced
 real cross-agent reuse but not the registered formation chain. It also exposed
 silent same-path body loss and failure to resume settled contexts after global
-filing progress. V4 preserves readable prior file versions and permits one
-state-grounded continuation only after a new work revision. Historical decoders
-remain unchanged. A fresh rollout is required before v4 has a behavioral claim.
+filing progress. V4 preserves readable prior file versions; r164 then exposed
+that later project-file changes did not wake settled participants. V5 adds
+participant-scoped, later-change-only updates. Data r165 is the matching v5
+positive: five reviewed messages connect all four authors, two agents author
+linked replies, two exchanges include requester readback, and all eight
+validation filings complete. Historical decoders remain unchanged.
 
 Runtime progress reports mechanical workspace visibility separately from
 semantic communication. A frozen score is never recomputed in place. Post-hoc

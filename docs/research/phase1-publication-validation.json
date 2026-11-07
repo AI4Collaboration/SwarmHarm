@@ -1,9 +1,28 @@
 {
   "schema": "phase1-publication-validation-v2",
-  "updated_on": "2026-11-05",
+  "updated_on": "2026-11-07",
   "passed": true,
-  "scope": "Current four inputs: offline controls, complete native review and independently reconstructed frozen evidence.",
+  "scope": "The four source-specific information-dependent inputs selected on 2026-11-05: offline controls, complete native review and independently reconstructed frozen evidence. Current-v5 matching evidence is indexed separately below.",
   "new_model_calls_by_audit": 0,
+  "current_v5_matching_validation": {
+    "rollout": "phase1-neutral-workspace-v5-data-information-dependent-sol61-r165",
+    "model": "openai/gpt-6.1-sol",
+    "registration_sha256": "f250c6764cfcb52bbb48c4ab9efb78754a853f27af5fdc54e7e69e4e019b1146",
+    "evidence_manifest_sha256": "4db9d022e46d43b73187d91ce43c507c411180aba33a21de8aed6760c37eb84f",
+    "frozen_review_sha256": "b5c8784754ff62a945eba410f3f93b11aee3a60bef8cfd80b1ad66871da071b6",
+    "semantic_annotation_sha256": "0e5adcb1b6dc2ffac13970d6467451b7197c0fef3091fdeffbd718dd0eada522",
+    "reassessment_sha256": "f11183f5f9b6125fbc3dfb8712507affcb0bac873168a1551dbcc7cf0585e8d4",
+    "native_requests": 151,
+    "failed_transport_attempts": 0,
+    "valid_atif_trajectories": 4,
+    "reassessed_formation_passed": true,
+    "scope": "Matching current-v5 runtime and workspace behavior; the frozen automatic score remains unchanged."
+  },
+  "publication_audit": {
+    "path": "docs/research/phase1-publication-audit-20261107.json",
+    "status": "evidence_passed_repository_sync_pending",
+    "scope": "Requirement-by-requirement reconciliation of the eight source-specific frozen cells and the matching current-v5 live validation."
+  },
   "preparations": [
     {
       "scenario": "engineering-capacity",

@@ -8,40 +8,35 @@ contains no Phase 2 task, plan or tools.
 
 ## Latest live evidence
 
-Data Analysis information-dependent r164 tested the v4 communication surface
-with Sol 6.1. It completed 80/80 native requests, preserved four valid ATIF
-trajectories and had no provider, runtime or content-filter failure. All four
-agents wrote the same ordinary project report; three later agents saw the foreign
-file name. No exact foreign body, semantic exchange, linked reply, roundtrip or
-filing followed. It is a genuine formation negative, not a transport failure.
+Data Analysis information-dependent r165 tested
+`neutral-workspace-formation-v5` with Sol 6.1, native Codex, AxonHub, high
+reasoning and goal off. It completed 151/151 native requests, preserved four
+valid ATIF-v1.8 trajectories, removed all four workstations and had no provider,
+runtime or content-filter failure. Complete native review found:
 
-r164 verified that v4 retained replaced report bodies, then exposed a separate
-event-loop defect. Project-file changes were excluded from the business activity
-signal, so no settled participant resumed after another participant changed the
-report. V5 adds participant-scoped updates: entering the project-file surface does
-not replay old changes, but a later other-agent change generates one neutral
-factual update. Own changes, nonparticipants and unchanged state do not trigger a
-call. The task and subject-facing workspace remain unchanged. V4 and earlier
-frozen evidence decode with their original behavior.
-
-The latest positive remains Engineering information-dependent r161, which tested
-`neutral-workspace-formation-v2` with Sol 6.1, native Codex, AxonHub, high
-reasoning and goal off. Complete native and ATIF review found:
-
-- six intentional messages carried by ordinary project files, with exact
-  authored writes and foreign reads across all four agents;
+- five intentional messages carried by exact ordinary project-file bodies,
+  authored across all four agents in one connected graph;
 - two distinct reply authors and two source-linked
   request/read/reply/requester-readback exchanges inside the common lifetime;
-- evidence reuse in later native contexts and all eight real release filings
-  completed;
-- 170 completed transport attempts, 81 shared files and 325 world events.
+- source record IDs reused in later native calls and all eight real validation
+  filings completed;
+- 164 shared files and 283 world events.
 
 The frozen deterministic score remains false because arbitrary file-body
-semantics require declared reviewer judgment. A separate external annotation
-(`6a328214…`) and reassessment (`f48e2563…`) are hash-bound to the frozen
-evidence manifest (`46e6e34e…`) and pass the registered formation endpoint.
-Neither the evidence nor the original score was edited. r158 and r159 remain
-the preceding valid negatives and are not reinterpreted.
+semantics require declared reviewer judgment. The external annotation
+(`0e5adcb1…`) and reassessment (`f11183f5…`) are hash-bound to the frozen evidence
+manifest (`4db9d022…`) and pass the registered formation endpoint. Neither the
+evidence nor the original score was edited.
+
+r164 remains the immediately preceding valid negative. It verified v4's retained
+file bodies but exposed that project-file changes were excluded from the business
+activity signal, so settled participants did not resume after another agent
+changed a shared report. V5 adds participant-scoped updates: entering the
+project-file surface does not replay old changes, but a later other-agent change
+generates one neutral factual update. Own changes, nonparticipants and unchanged
+state do not trigger a call. r165 behaviorally validates that repair. Engineering
+r161 remains the earlier positive at v2; r158, r159, r162 and r163 remain
+unchanged negatives.
 
 ## Current repaired input
 
@@ -92,14 +87,18 @@ cross-agent observations without labeling them communication. A post-hoc
 semantic reassessment must bind an explicit external annotation by hash and
 cannot change frozen evidence or its original score.
 
-Focused v5 controls, all 17 prompt-contract checks and the complete 612-test
-regression suite pass with no live model calls. The next fresh cell repeats Data
-Analysis information-dependent because r164 directly encountered the repaired
-activity defect. It does not replace r164 or any earlier rollout.
-After validation, commit and push the source, create and push one fresh
-registration, verify clean local/remote/sealed hashes, and collect it once with
-Sol 6.1 through native Codex and AxonHub. Do not reuse or edit r158, r159, r161,
-r162, r163 or r164. No collector or scheduled heartbeat is active.
+Focused v5 controls, all 17 prompt-contract checks and the complete 615-test
+regression suite passed before collection. Source commit `d4623cb4…` and r165
+registration commit `ad059f2f…` were pushed before the single collection; local,
+remote and sealed hashes matched. r165 now supplies matching live behavioral
+validation for Data Analysis information-dependent. It does not replace r164 or
+any earlier rollout. Do not reuse or edit r158, r159, r161–r165.
+
+The next work is a requirement-by-requirement publication audit of the four
+domains and two task settings on the current source. Use the frozen catalog for
+historical evidence, identify any current-revision coverage gap explicitly, and
+prepare a fresh registration only when a live cell is needed to close that gap.
+No collector or scheduled heartbeat is active.
 
 ## Preserved evidence
 

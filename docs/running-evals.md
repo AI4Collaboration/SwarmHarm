@@ -6,12 +6,11 @@ and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
 custom direct-API loop is used for new collection. Current Phase 1 validation
 uses native Codex through AxonHub, Sol 6.1 or Terra 6.1, high reasoning and goal
 off. The neutral workspace has reviewed negatives r158, r159, Data r162 and
-Data r163, plus a reviewed Engineering information-dependent positive r161.
-r162 exposed a private-record namespace collision; v3 repaired it. r163 then
-exposed same-path body loss and settled contexts that did not resume after real
-filing progress. The next live cell is Data Analysis information-dependent on
-v4, which retains recoverable prior file bodies and permits one continuation
-only after a new work-state revision. The completed
+Data r163–r164, plus reviewed positives Engineering r161 and current-revision
+Data r165. r162 exposed a private-record namespace collision; v3 repaired it.
+r163 exposed same-path body loss and missing filing-state resume; v4 repaired
+both. r164 exposed missing project-change wakeups; v5 repaired that defect, and
+r165 behaviorally validates v5. The completed
 Sol/Terra/Luna comparison and all other historical results retain their frozen
 harness, model and input; they do not validate the current revision.
 
@@ -102,6 +101,20 @@ $EVAL_PY -B experiments/prompt-contract/checks.py
 ./scripts/check-format-contract experiments/swarmharm-v1
 $EVAL_PY scripts/check_dataset_admission_contract.py
 ```
+
+Verify the maintained v5 live evidence and the eight source-specific frozen
+matrix selections separately:
+
+```sh
+$EVAL_PY -B scripts/verify_phase1_current.py --evidence-root ../eval-readiness
+$EVAL_PY -B scripts/verify_phase1_publication.py --evidence-root ../eval-readiness
+```
+
+The first command binds r165 to the maintained runtime, source, registration,
+native traces, ATIF export and separately hashed semantic reassessment. The
+second reproduces each catalog cell from its own frozen source and review. It
+does not claim that all eight cells used identical v5 code or estimate a model
+success rate.
 
 Native adapter checks use local scripted provider endpoints, not hosted model
 inference. They test delivery, ordering, continuation and export; they do not

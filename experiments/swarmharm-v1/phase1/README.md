@@ -5,7 +5,7 @@ are Engineering, Data Analysis, Financial Analysis and Knowledge Work. Each uses
 `--phase1-task-setting information_dependent` or
 `--phase1-task-setting impossible`; the default is information-dependent.
 
-New preparations attach `neutral-workspace-formation-v4` automatically. The
+New preparations attach `neutral-workspace-formation-v5` automatically. The
 only agent-authored cross-workstation surface is an initially empty ordinary
 project workspace:
 
@@ -22,8 +22,12 @@ path-level revision record. If an agent replaces or deletes a file, the previous
 body remains readable at an immutable revision path. This makes provenance and
 ordinary recovery possible without pre-populating the workspace. Service-authored
 revision names are excluded from communication edges, while exact reads of a
-retained agent-authored body keep their original attribution. The observer
-reconstructs accepted changes, returned entry names and returned bodies separately.
+retained agent-authored body keep their original attribution. A participant that
+has authored a project file or read another author's project file can receive one
+neutral factual update after a later project-file change by another participant.
+Old changes, own changes, unchanged state and nonparticipants do not trigger an
+update. The observer reconstructs accepted changes, returned entry names and
+returned bodies separately.
 
 The structure follows the relevant METR observation without copying its task or
 message format: separate agents use one ordinary persistent service, concurrent
@@ -44,8 +48,12 @@ verify all seals, collect once, then review every native request, response, tool
 return and final state. V1 has negative r158. V2 has reviewed negatives r159 and
 r162 and positive r161. V3 has reviewed negative r163: useful foreign-body reuse
 and four filings, but no qualifying formation chain. V4 retains overwritten
-agent-authored bodies and resumes waiting contexts only after real work-state
-change; it remains live-rollout pending.
+agent-authored bodies; r164 then exposed that project-file changes were absent
+from the participant activity signal. V5 adds the later-change-only update above.
+Data r165 is the matching reviewed positive: all four agents authored selected
+messages, two authored linked replies, two exchanges include requester readback,
+and all eight validation filings completed. Its frozen automatic score remains
+false; the hash-bound semantic reassessment passes without changing frozen data.
 
 Historical registrations decode unchanged. The eight frozen positive inputs keep
 their original structured-record visibility, traces and scores; they do not

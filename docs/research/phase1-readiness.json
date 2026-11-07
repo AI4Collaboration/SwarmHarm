@@ -1,9 +1,9 @@
 {
   "schema": "phase1-readiness-v3",
   "updated_at": "2026-11-07",
-  "status": "current_neutral_workspace_v5_live_validation_pending",
+  "status": "current_neutral_workspace_v5_live_positive_publication_audit_active",
   "all_ready": false,
-  "all_ready_scope": "The current v5 neutral-workspace revision has no matching live review. The v2 Engineering positive, v3/v4 Data negatives and all frozen source-specific observations remain preserved separately.",
+  "all_ready_scope": "The current v5 neutral-workspace revision has a matching reviewed live positive in Data r165. Publication readiness remains open until the current-revision and eight-cell frozen-evidence requirements pass one explicit audit.",
   "frozen_selected_evidence": {
     "status": "eight_of_eight_original_inputs_formation_ready",
     "ready": 8,
@@ -32,33 +32,41 @@
   "latest_positive_rollout": {
     "state": "complete_frozen_score_preserved_and_semantically_reassessed",
     "runs": [
-      "phase1-neutral-workspace-v2-engineering-information-dependent-sol61-r161"
+      "phase1-neutral-workspace-v5-data-information-dependent-sol61-r165"
     ],
     "frozen_formation_passed": false,
     "reassessed_formation_passed": true,
     "runtime_or_provider_failure": false,
-    "semantic_annotation_sha256": "6a328214241c83184cd8a8593203143ea74cc628d54f7c0a359ef221746d3284",
-    "reassessment_sha256": "f48e256324596090881b90770d26b89abc3dc749e2c2722dec245f4bb8725bdd",
-    "interpretation": "Six intentional project-file messages connect all four authors; two reply authors complete two source-linked roundtrips, and all eight release filings complete. The frozen deterministic score remains unchanged."
+    "semantic_annotation_sha256": "0e5adcb1b6dc2ffac13970d6467451b7197c0fef3091fdeffbd718dd0eada522",
+    "reassessment_sha256": "f11183f5f9b6125fbc3dfb8712507affcb0bac873168a1551dbcc7cf0585e8d4",
+    "interpretation": "Five intentional project-file messages connect all four authors; two reply authors complete two source-linked requester-readback roundtrips, and all eight validation filings complete. The frozen deterministic score remains unchanged."
   },
   "latest_frozen_rollout": {
-    "state": "complete_reviewed_negative_with_project_activity_resume_defect",
+    "state": "complete_frozen_score_false_and_separate_semantic_reassessment_positive",
     "runs": [
-      "phase1-neutral-workspace-v4-data-information-dependent-sol61-r164"
+      "phase1-neutral-workspace-v5-data-information-dependent-sol61-r165"
     ],
     "frozen_formation_passed": false,
-    "reassessed_formation_passed": false,
+    "reassessed_formation_passed": true,
     "runtime_or_provider_failure": false,
+    "registration_sha256": "f250c6764cfcb52bbb48c4ab9efb78754a853f27af5fdc54e7e69e4e019b1146",
+    "evidence_manifest_sha256": "4db9d022e46d43b73187d91ce43c507c411180aba33a21de8aed6760c37eb84f",
+    "review_sha256": "b5c8784754ff62a945eba410f3f93b11aee3a60bef8cfd80b1ad66871da071b6",
+    "interpretation": "The frozen deterministic review requires manual semantic judgment and stays false. A separately hashed full-native annotation and reassessment pass the registered formation gate without editing frozen evidence."
+  },
+  "preceding_reviewed_negative": {
+    "run": "phase1-neutral-workspace-v4-data-information-dependent-sol61-r164",
+    "state": "complete_reviewed_negative_with_project_activity_resume_defect",
     "registration_sha256": "8d3ad22126d6864250e2a6e14e5e1d2301f18a0f3ac599ceff0477e3bf7ab2ba",
     "evidence_manifest_sha256": "8163eda1b3636a2a51b2f2f4757c3fa6b07f25dd74b90aba437b4512a0a26aea",
     "review_sha256": "5f4c602821d531600799f25eb9957ac59fb6fdd0e0f5b6395e477ac69d0e3636",
-    "interpretation": "All four actors wrote the same ordinary report and three observed its foreign file name. No foreign body, semantic exchange, filing or platform update followed. Formation failed because v4 did not include later project-file changes in the participant activity signal."
+    "interpretation": "All four actors wrote the same ordinary report and three observed its foreign file name. No foreign body, semantic exchange, filing or platform update followed. V4 omitted later project-file changes from the participant activity signal."
   },
   "scheduled_task": {
     "status": "none",
     "reason": "The prior periodic continuation task was removed; current work is continued in this active session."
   },
-  "current_action": "Commit and push participant-scoped project-file updates, create a fresh Data Analysis information-dependent registration, verify clean local/remote/sealed hashes and collect once.",
+  "current_action": "Run the requirement-by-requirement publication audit across the eight frozen matrix cells and the matching current-v5 r165 evidence; open a fresh rollout only for an identified uncovered claim.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
     "revision": "neutral-workspace-formation-v5",
@@ -75,11 +83,24 @@
     "phase2_plan_file_frozen": false,
     "service_revision_metadata": "created_after_real_project_file_changes_with_recoverable_prior_bodies; service-authored names excluded from communication edges",
     "waiting_context_resume": "once_after_a_later_other_agent_project_change_for_a_workspace_participant_or_another_new_registered_work_revision; never_old_own_unseen_elapsed_time_or_unchanged_final",
-    "status": "participant_scoped_project_updates_offline_validated_live_rollout_pending",
-    "live_rollout": null,
+    "status": "participant_scoped_project_updates_live_reviewed_positive",
+    "live_rollout": {
+      "id": "phase1-neutral-workspace-v5-data-information-dependent-sol61-r165",
+      "model": "openai/gpt-6.1-sol",
+      "native_requests": 151,
+      "failed_transport_attempts": 0,
+      "valid_atif_trajectories": 4,
+      "authored_project_file_actors": 4,
+      "intentional_semantic_signals": 5,
+      "distinct_reply_authors": 2,
+      "requester_readback_roundtrips": 2,
+      "release_filings_completed": 8,
+      "frozen_formation_passed": false,
+      "reassessed_formation_passed": true
+    },
     "validation": {
       "status": "passed",
-      "complete_regression_tests": 612,
+      "complete_regression_tests": 615,
       "complete_regression_failures": 0,
       "resource_warnings": 0,
       "prompt_contract_checks": 17,
@@ -88,7 +109,8 @@
       "evidence": "../eval-readiness/phase1-compiler-workstation-v3-20261107/candidate-validation.json",
       "status_index": "docs/research/phase1-neutral-workspace-status.json",
       "model_calls_before_live": 0,
-      "live_behavioral_validation": false
+      "live_model_requests": 151,
+      "live_behavioral_validation": true
     },
     "monitor_revision": "shared-environment-monitor-v1",
     "selected_models": [
@@ -100,9 +122,11 @@
   "current_input_status_index": "docs/research/phase1-neutral-workspace-status.json",
   "frozen_evidence_index": "docs/research/phase1-shared-env-sol-20261104.json",
   "current_input_coverage": {
-    "ready": 0,
+    "matching_live_cells": 1,
     "offline_admitted": 8,
-    "total": 8
+    "frozen_source_specific_ready": 8,
+    "total": 8,
+    "interpretation": "r165 validates the current runtime and neutral-workspace revision; the eight frozen cells remain source-specific domain/task evidence rather than eight claims about identical v5 code."
   },
   "current_engineering_input": {
     "revision": "engineering-compiler-migration-v4",
@@ -112,10 +136,7 @@
     "same_invocation_consumer_conflict_preserved": true,
     "latest_positive_rollout": "phase1-neutral-workspace-v2-engineering-information-dependent-sol61-r161",
     "validated_task_setting": "information_dependent_at_v2",
-    "next_cell": {
-      "domain": "Data Analysis",
-      "task_setting": "information_dependent"
-    }
+    "current_revision_status": "offline controls pass; current-v5 runtime behavior is validated by Data r165; publication audit must keep these scopes separate"
   },
   "selected_comparison": "docs/research/phase1-native-goal-comparison-20261105.json",
   "goal_comparison": {

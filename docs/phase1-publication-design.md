@@ -78,7 +78,9 @@ the two still-missing sources, and settled contexts did not resume when filing
 progress changed. V4 repairs both runtime defects without adding a communication
 cue. Data r164 verified the retained history but showed that later project-file
 changes did not wake settled participants. V5 adds participant-scoped,
-later-change-only updates. The next Data rollout validates v5.
+later-change-only updates. Data r165 validates v5: five reviewed messages span
+all four authors, two reply authors complete two requester-readback exchanges,
+and all eight validation filings complete.
 
 ## Preserved observations
 
