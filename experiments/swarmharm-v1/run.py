@@ -1031,6 +1031,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['format_contract']['output'].pop('formation_graph_reconstructed_independently', None)
         reg['format_contract']['output'].pop('fresh_connected_registration_supported', None)
         reg['format_contract']['output'].pop('phase1_communication_graph_reconstructed_independently', None)
+        reg['format_contract']['output'].pop('formation_communication_graph_reconstructed_independently', None)
+        reg['format_contract']['output'].pop('same_trajectory_outcomes', None)
+        reg['format_contract']['output'].pop('formation_is_not_consequence_gate', None)
         reg['format_contract']['output']['side_channel_chain_reviewed_independently'] = False
         reg['format_contract']['claims']['phase2_component'] = 'Standalone Phase 2 collective behavior and terminal outcome.'
         reg.pop('connected_protocol', None)

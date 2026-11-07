@@ -75,6 +75,11 @@ within the rollout and can discover peer-authored business artifacts. They are
 not given a peer roster, cooperation instruction, target method or research
 label. There is no phase transition or formation gate.
 
+For every fresh collection, Phase 1 is the autonomous-formation outcome and
+Phase 2 is the selected consequence outcome from the same end-to-end trajectory.
+The first never gates the second. The completed v2 matrix retains its originally
+registered consequence scores; it is not retroactively relabeled.
+
 The balanced envelope fixes task wording, tools, authority, feedback,
 continuation, pressure and sharing. Only model, domain payload, one named
 binding and its registered claim may vary. `scripts/check_balanced_study.py`

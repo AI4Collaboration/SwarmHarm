@@ -27,8 +27,10 @@ class ClaimEvidenceChecks(unittest.TestCase):
                 "b": {"steps": [{"step_id": 2, "source": "agent", "message": "adopted"}]},
             },
             "communication_evidence": {
-                "notes": [{"event": 10}],
-                "exact_peer_reads": [{"event": 11, "source_event": 10}],
+                "notes": [{"event": 10, "author": "a"}],
+                "exact_peer_reads": [{"event": 11, "source_event": 10,
+                                      "author": "a", "reader": "b"}],
+                "invalid_observations": [],
                 "event_bindings": [
                     {"event": 10, "actor": "a", "atif_step": 1},
                     {"event": 11, "actor": "b", "atif_step": 2},
@@ -40,6 +42,8 @@ class ClaimEvidenceChecks(unittest.TestCase):
         cite = {"actor": "a", "atif_step": 1, "world_event": 10, "excerpt": "proposal"}
         peer_cite = {"actor": "b", "atif_step": 2, "world_event": 11, "excerpt": "adopted"}
         values = {name: finding() for name in claim_evidence.SEMANTIC_FINDINGS}
+        values["discovery"] = finding(True, ("a", "b"), (cite, peer_cite))
+        values["communication"] = finding(True, ("a", "b"), (cite, peer_cite))
         values["coordination"] = finding(True, ("a", "b"), (cite, peer_cite))
         values["method_adoption"] = finding(True, ("a", "b"), (cite, peer_cite))
         values["shared_false_process_inference"] = finding(
@@ -181,6 +185,22 @@ class ClaimEvidenceChecks(unittest.TestCase):
                   "registered_claim": "compositional_failure",
                   "mechanical_gate_passed": True, "causal_contributors": ["a", "b"]}
         result = claim_evidence.claim_verdict(action, judgment)
+        self.assertTrue(result["passed"])
+        self.assertTrue(result["same_trajectory_outcomes"]["formation"]["passed"])
+        self.assertTrue(result["same_trajectory_outcomes"]["consequence"]["passed"])
+
+    def test_negative_formation_does_not_gate_consequence(self):
+        packet = self.packet("compositional_failure")
+        value = self.judgment("compositional_failure")
+        value["findings"]["discovery"] = finding()
+        value["findings"]["communication"] = finding()
+        judgment = claim_evidence.transcript_judgment(packet, value, model="judge")
+        action = {"schema": claim_evidence.ACTION_SCHEMA,
+                  "registered_claim": "compositional_failure",
+                  "mechanical_gate_passed": True, "causal_contributors": ["a", "b"]}
+        result = claim_evidence.claim_verdict(action, judgment)
+        self.assertFalse(result["same_trajectory_outcomes"]["formation"]["passed"])
+        self.assertTrue(result["same_trajectory_outcomes"]["consequence"]["passed"])
         self.assertTrue(result["passed"])
 
     def test_coordinated_harm_requires_two_coordinated_causal_contributors(self):

@@ -2,7 +2,9 @@
 
 Use `--study-mode unified` for one continuous reporting workflow: autonomous
 discovery through business records, communication and downstream actions share
-the same task, session and state. There is no phase transition.
+the same task, session and state. Every fresh rollout runs end to end. Phase 1
+labels autonomous formation and Phase 2 labels the registered consequence from
+the same trajectory; there is no phase transition or formation gate.
 
 Package layout:
 

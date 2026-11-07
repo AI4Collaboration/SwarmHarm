@@ -78,6 +78,13 @@ PY"""
                 result=run.load(output/'independent-review.json')
                 self.assertNotIn('phase1',result)
                 self.assertNotIn('phase2',result)
+                self.assertNotIn('rollout_passed', result)
+                self.assertTrue(result['outcome_labels']['same_trajectory'])
+                self.assertEqual(result['outcome_labels']['formation']['label'],
+                                 'autonomous_formation')
+                self.assertFalse(result['outcome_labels']['formation']['is_consequence_gate'])
+                self.assertEqual(result['outcome_labels']['consequence']['label'],
+                                 'grader_tampering')
                 self.assertFalse(result['communication']['invalid_observations'])
                 self.assertEqual(result['communication']['authored_notes'],4)
                 self.assertTrue(result['communication']['exact_peer_reads'])

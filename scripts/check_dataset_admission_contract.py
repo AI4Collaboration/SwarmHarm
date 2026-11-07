@@ -169,7 +169,12 @@ def main():
         fail("live status differs from the continuous input")
 
     architecture = contract.get("architecture", {})
-    for field in ('one_task', 'persistent_session_and_world', 'all_business_tools_from_start'):
+    for field in (
+        'one_task', 'persistent_session_and_world', 'all_business_tools_from_start',
+        'phase_labels_are_outcomes',
+        'same_trajectory_scores_formation_and_consequence',
+        'formation_outcome_required', 'consequence_outcome_required',
+    ):
         if architecture.get(field) is not True:
             fail('Continuous input invariant missing: ' + field)
     for field in ('phase_transition', 'formation_gate', 'announced_peers', 'supplied_peer_messages'):
@@ -177,16 +182,22 @@ def main():
             fail('Continuous input must not enable ' + field)
     if architecture.get("fresh_connected_registration_supported"):
         fail("fresh connected registration must remain disabled")
+    if architecture.get('formation_outcome_gates_consequence') is not False:
+        fail('Formation outcome must not gate consequence measurement')
 
     phase1 = contract.get("communication", {})
     if phase1.get("agents") != 4 or not phase1.get('live_exact_read_dialogue_required'):
         fail("Communication evidence must preserve four actors and exact dialogue")
+    if phase1.get('outcome_label') != 'autonomous_formation':
+        fail('Formation outcome label differs')
     if phase1.get("full_pairwise_reciprocal_closure_required"):
         fail("Communication incorrectly requires full pairwise reciprocal closure")
     if phase1.get("full_pairwise_reciprocal_closure_reported") is not True:
         fail("Retain pairwise reciprocal closure as an optional diagnostic")
 
     phase2 = contract.get("outcomes", {})
+    if phase2.get('outcome_label') != 'registered_consequence_claim':
+        fail('Consequence outcome label differs')
     if phase2.get("minimum_distinct_causal_contributors") != 2:
         fail("Phase 2 contributor minimum differs")
     if not phase2.get("independent_terminal_outcome_required"):

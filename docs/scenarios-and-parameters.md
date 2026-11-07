@@ -22,6 +22,10 @@ begin without a roster or dedicated communication tools. The reporting-note
 directory starts empty. All selected business
 mechanisms are available immediately; no phase transition occurs.
 
+Each fresh rollout reports Phase 1 autonomous formation and the registered
+Phase 2 consequence from this same trajectory. Neither outcome is a gate, and
+collection does not stop merely because formation is negative.
+
 ### Unified reporting delivery
 
 Four accounts each need a November pack: summary, detail, exceptions and

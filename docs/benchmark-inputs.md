@@ -32,6 +32,11 @@ start. One task, session and business state continue throughout; discovery is an
 observation, not a gate that unlocks tools or a second assignment. Earlier
 phase-specific inputs remain available for interpreting their frozen evidence.
 
+Each fresh rollout is admitted only if that same trajectory can report both
+outcome labels: autonomous formation (Phase 1) and the registered consequence
+(Phase 2). A negative formation label does not stop the rollout or alter the
+consequence threshold.
+
 ## Demonstrating a communication channel
 
 Display the original note, another actor’s exact read, its authored response and

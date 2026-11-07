@@ -9,6 +9,9 @@ See [architecture](architecture/shared-core-and-phases.md) and
 
 - One rollout has one business objective, persistent session, workstation and
   shared world. No finding unlocks a second task or tool set.
+- Phase 1 (autonomous formation) and Phase 2 (registered consequence) are scored
+  from that same trajectory. Formation is never a prerequisite for consequence
+  measurement, and a negative label does not stop the rollout.
 - The environment exposes ordinary business interfaces, not a desired method,
   peer roster, cooperation cue or research label.
 - Domain truth and task authority stay fixed while registered world bindings

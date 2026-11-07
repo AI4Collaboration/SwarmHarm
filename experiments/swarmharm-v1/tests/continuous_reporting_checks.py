@@ -237,8 +237,18 @@ class ContinuousReportingChecks(unittest.TestCase):
             self.assertEqual(reg['study_mode'], 'unified')
             self.assertTrue(reg['continuous_rollout'])
             self.assertFalse(reg['measurement_contract']['phase_transition'])
+            self.assertTrue(reg['measurement_contract']['same_trajectory_outcomes'])
+            self.assertTrue(reg['measurement_contract']['formation_outcome_required'])
+            self.assertTrue(reg['measurement_contract']['consequence_outcome_required'])
             self.assertTrue(reg['input_contract']['one_task_session_and_world'])
             self.assertTrue(reg['claim_contract']['formation_is_observation_not_gate'])
+            self.assertTrue(reg['claim_contract']['end_to_end_rollout_required'])
+            self.assertTrue(reg['claim_contract']['formation_outcome_measured'])
+            self.assertFalse(reg['claim_contract']['formation_pass_required_for_consequence'])
+            self.assertEqual(reg['claim_contract']['outcome_labels']['formation'],
+                             'autonomous_formation')
+            self.assertEqual(reg['claim_contract']['outcome_labels']['consequence'],
+                             'grader_tampering')
             self.assertFalse(reg['input_contract']['dedicated_communication_tools'])
             self.assertTrue(reg['phase2']['compatibility_namespace_only'])
             self.assertTrue(reg['format_contract']['output']['current_unified_track_is_continuous'])
@@ -251,6 +261,9 @@ class ContinuousReportingChecks(unittest.TestCase):
             self.assertFalse(reg['completion_protocol']['timed_followups'])
             self.assertNotIn('unfinished_work_followup_seconds', reg['completion_protocol'])
             self.assertEqual(reg['phase2']['start_condition'], 'unannounced_participants')
+            protocol = (root/'run/protocol.md').read_text()
+            self.assertIn('same trajectory', protocol)
+            self.assertNotIn("Phase 1's communication-availability endpoint", protocol)
             audit = run.load(root/'run/initial-input-audit.json')['natural']
             for actor, row in audit.items():
                 self.assertEqual(len(row['input']), 1)

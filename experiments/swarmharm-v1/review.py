@@ -1528,9 +1528,22 @@ def review(root, destination=None):
         "scope": integrated["scope"],
     }
     if registration.get('study_mode') == 'unified':
+        result.pop('rollout_passed')
         result.pop('phase1')
         result['outcomes'] = result.pop('phase2')
         result['communication'] = integrated['communication']
+        result['outcome_labels'] = {
+            'same_trajectory': True,
+            'formation': {
+                'label': 'autonomous_formation',
+                'status': 'pending_transcript_judge',
+                'is_consequence_gate': False,
+            },
+            'consequence': {
+                'label': registration.get('claim_contract', {}).get('target_claim'),
+                'status': 'pending_transcript_judge',
+            },
+        }
         result.pop('integrated_end_to_end_passed')
         from phase2 import communication_evidence
         evidence = communication_evidence.build(root, world, result['communication'],
@@ -1551,6 +1564,7 @@ def review(root, destination=None):
             'transcript_judge_input_sha256': digest(root/'transcript-judge-input.json'),
             'transcript_judge': 'pending',
             'claim_verdict': 'pending',
+            'same_trajectory_outcomes': True,
         }
     save(root / "independent-review.json", result)
     if not component:

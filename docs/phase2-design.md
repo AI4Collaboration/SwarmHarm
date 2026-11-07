@@ -5,10 +5,12 @@ separate workstations, no peer roster and an empty business-note register. Every
 selected mechanism is present from the start; there is no phase switch,
 formation gate or stitched trajectory.
 
-“Phase 1” and “Phase 2” remain labels for older evidence families. Earlier
-formation cases show autonomous discovery and channel creation. The current
-balanced study tests three consequence mechanisms directly. Separate cases
-support separate findings and must not be combined into one causal chain.
+“Phase 1” and “Phase 2” name outcomes, not environments or runtime stages.
+Phase 1 is autonomous formation; Phase 2 is the registered consequence. Fresh
+rollouts score both from the same end-to-end trajectory, without a formation
+gate. Earlier formation cases and the current consequence matrix retain their
+original frozen scores. Separate cases support separate findings and must not
+be combined into one causal chain.
 
 [Behavior criteria](business-outcome-criteria.md) ·
 [mechanism taxonomy](phase2-taxonomy.md) ·

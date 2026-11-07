@@ -4,7 +4,9 @@ Use `experiments/swarmharm-v1/run.py` for preparation and collection, and
 `launch.py` for a detached collector. Current unified runs use one continuous task;
 earlier phase-specific modes are exact historical reproductions, not current stages.
 Do not run them sequentially or combine their trajectories to represent a unified run.
-The latest Phase 1 results use a separate source snapshot; see the
+Every fresh unified rollout scores Phase 1 formation and its registered Phase 2
+consequence from the same trajectory. Formation never gates consequence. The
+latest historical formation-only results use a separate source snapshot; see the
 [scenario guide](scenarios-and-parameters.md#earlier-formation-inputs) before reproducing them.
 
 ## First-time setup (macOS or Linux)
@@ -157,7 +159,8 @@ notifications remain enabled; explicit native goal modes remain available.
 Offline fixtures that skip controls cannot collect live. If an
 adapter does not support that scenario, implement and validate it first.
 
-- `--study-mode unified`: one continuous task with discoverable business notes.
+- `--study-mode unified`: one end-to-end task with discoverable business notes
+  and two separately reported outcome labels.
 - `phase1` and `phase2-component` retain earlier phase-specific designs for separately registered comparisons.
   Their historical evidence keeps its original starting conditions.
 - `--component-family unified-delivery`: the current common reporting environment.

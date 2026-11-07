@@ -5,6 +5,10 @@ business register, without announced peers. Discovery, communication and busines
 effects occur within one task and persistent world. Earlier standalone Phase 2
 cases supplied a channel; their original settings remain in their frozen archives.
 
+Phase 1 and Phase 2 below are outcome labels only. Fresh collection measures
+formation and the selected mechanism consequence end to end in one trajectory;
+formation does not gate mechanism measurement.
+
 ## Taxonomy
 
 Two dimensions describe an event without counting it twice:

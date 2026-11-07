@@ -69,6 +69,7 @@ def build(root, world, communication, actors):
             for row in receipts.get('exact_reads', [])]},
         'notes': communication['notes'],
         'exact_peer_reads': communication['exact_peer_reads'],
+        'participants': communication['participants'],
         'first_foreign_record_exposure': communication['first_foreign_record_exposure'],
         'exchange_candidates': chains,
         'unthreaded_read_then_write': unthreaded,
