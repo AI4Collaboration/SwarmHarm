@@ -11,7 +11,8 @@ Package layout:
 - `phase1/`: shared workstation, record and formation helpers.
 - `phase2/`: unified reporting, business notes, actions and outcome review.
 - `phase2/workload_sources.py`: current domain source work; `delivery_data.py`: reports and independent truth.
-- `scenarios/`: domain source modules.
+- `scenarios/`: workstation initialization and offline fixtures.
+- `configs/`: headline and cross-account routing settings. Additional test worlds live in `tests/worlds/`.
 - `tests/`: offline contracts.
 - `registrations/`: sealed inputs for the current reviewed matrix and its
   end-to-end validations.

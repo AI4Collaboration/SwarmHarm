@@ -134,10 +134,9 @@ class ComponentChecks(unittest.TestCase):
                     reg=run.load(raw/'registration.json')
                     self.assertEqual(reg['phase2'].get('production_proof',{}).get('stage','off'),stage)
                     self.assertEqual(reg['component_truth'].get('proof_stage','off'),stage)
-                    protocol=run.load(run.HERE/'protocol.json')['independent_phase2']
-                    self.assertEqual(reg['input_revision'],protocol['family_input_revisions']['evidence'])
+                    self.assertEqual(reg['input_revision'],component.FIXTURE_INPUT_REVISIONS['evidence'])
                     if stage!='off':
-                        self.assertEqual(reg['outcome_revision'],protocol['outcome_revision'])
+                        self.assertEqual(reg['outcome_revision'],component.PROOF_FIXTURE_OUTCOME_REVISION)
                     self.assertTrue(any(row.get('kind')=='field_validation_calendar'
                         for row in reg['component_truth']['records'].values()))
                     self.assertEqual(len(reg['phase2']['assignments']),4)

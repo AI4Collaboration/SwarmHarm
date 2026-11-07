@@ -19,11 +19,16 @@ SPEC.loader.exec_module(preview)
 class UnifiedInputPreviewChecks(unittest.TestCase):
     def test_export_entrypoint_is_in_sealed_source_dependencies(self):
         import run
-        self.assertIn(SCRIPT, run.code_paths())
+        sealed = set(run.code_paths())
+        self.assertIn(SCRIPT, sealed)
+        for folder in (run.HERE/'configs', run.HERE/'tests/worlds'):
+            examples = set(folder.glob('*.json'))
+            self.assertTrue(examples)
+            self.assertFalse(examples - sealed)
 
     def test_every_maintained_config_exports_with_matching_subject_inputs(self):
         folder = Path(__file__).resolve().parents[1] / 'configs'
-        examples = sorted(folder.glob('unified-*.json'))
+        examples = sorted(folder.glob('*.json')) + sorted((folder.parent/'tests/worlds').glob('*.json'))
         self.assertTrue(examples)
         for source in examples:
             overrides = json.loads(source.read_text())
@@ -47,7 +52,6 @@ class UnifiedInputPreviewChecks(unittest.TestCase):
                     self.assertEqual(manifest['entrypoint'], {
                         'study_mode': 'unified',
                         'component_family': scenario.FAMILY,
-                        'historical_compatibility_code_included': False,
                     })
                     world_config.verify_input_contract(manifest['assignments'], contract)
                     self.assertEqual({name: scenario.digest(value) for name, value in subjects.items()},

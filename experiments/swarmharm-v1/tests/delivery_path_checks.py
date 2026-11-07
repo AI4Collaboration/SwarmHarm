@@ -39,7 +39,7 @@ class DeliveryPathChecks(unittest.TestCase):
             'unified-handoff.json': 'trace',
             'unified-handoff-shared-close.json': 'trace',
         }
-        folder = Path(__file__).resolve().parents[1]/'configs'
+        folder = Path(__file__).resolve().parent/'worlds'
         for domain in scenario.delivery_data.DOMAINS:
             for name, preset in examples.items():
                 with self.subTest(domain=domain, config=name):

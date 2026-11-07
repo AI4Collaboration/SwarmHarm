@@ -23,47 +23,65 @@ import launch
 from phase1 import lab
 import run
 from phase1 import schedule
-class CollectorChecks(unittest.TestCase):
-    def test_study_mode_is_prepare_only_cli_input(self):
+
+
+class UnifiedEntryChecks(unittest.TestCase):
+    def test_unified_preparation_requires_a_preset_and_collection_uses_its_seal(self):
         with tempfile.TemporaryDirectory() as temporary:
             base=[sys.executable,str(run.HERE/'run.py'),'--output',str(Path(temporary)/'study'),
                 '--registration-dir','experiments/swarmharm-v1/registrations/missing-test-registration']
             prepared=subprocess.run([*base,'--phase','prepare'],cwd=run.REPO,capture_output=True,text=True)
             self.assertNotEqual(prepared.returncode,0)
-            self.assertIn('--study-mode is required during preparation',prepared.stderr)
+            self.assertIn('--binding-preset is required during preparation',prepared.stderr)
             collected=subprocess.run([*base,'--phase','collect'],cwd=run.REPO,capture_output=True,text=True)
             self.assertNotEqual(collected.returncode,0)
-            self.assertNotIn('arguments are required: --study-mode',collected.stderr)
+            self.assertNotIn('--binding-preset is required',collected.stderr)
 
-    def test_fresh_connected_rollout_is_not_a_cli_mode(self):
-        completed = subprocess.run(
-            [sys.executable, str(run.HERE/'run.py'), '--phase', 'prepare',
-             '--study-mode', 'connected'],
-            cwd=run.REPO, capture_output=True, text=True,
-        )
-        self.assertNotEqual(completed.returncode, 0)
-        self.assertIn('invalid choice', completed.stderr)
-
-    def test_phase_specific_inputs_require_archive_compatibility(self):
+    def test_phase_specific_live_inputs_are_rejected_before_side_effects(self):
         with tempfile.TemporaryDirectory() as temporary:
             base = [sys.executable, str(run.HERE/'run.py'), '--phase', 'prepare',
                     '--output', str(Path(temporary)/'study'),
                     '--registration-dir',
                     'experiments/swarmharm-v1/registrations/missing-test-registration']
-            for mode in ('phase1', 'phase2-component'):
+            for mode in ('phase1', 'phase2-component', 'connected'):
                 completed = subprocess.run(
-                    [*base, '--study-mode', mode], cwd=run.REPO,
+                    [*base, '--study-mode', mode, '--archive-compatibility'], cwd=run.REPO,
                     capture_output=True, text=True,
                 )
                 self.assertNotEqual(completed.returncode, 0)
-                self.assertIn('--archive-compatibility', completed.stderr)
+                self.assertIn('invalid choice', completed.stderr)
+                with self.assertRaisesRegex(ValueError, 'require study mode unified'):
+                    run.prepare(Path(temporary)/'study', run.REGISTRATIONS/Path(temporary).name, None,
+                                study_mode=mode, archive_compatibility=True)
             completed = subprocess.run(
                 [*base, '--study-mode', 'unified', '--archive-compatibility'],
                 cwd=run.REPO, capture_output=True, text=True,
             )
             self.assertNotEqual(completed.returncode, 0)
-            self.assertIn('cannot be combined', completed.stderr)
+            self.assertIn('unrecognized arguments', completed.stderr)
+            self.assertFalse((Path(temporary)/'study').exists())
 
+    def test_launcher_and_collector_require_unified_mode_and_family(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            raw = Path(temporary)/'raw'
+            raw.mkdir()
+            registration = run.REGISTRATIONS/Path(temporary).name
+            for mode, family in (('connected', 'unified-delivery'), ('phase2-component', 'trace-integrity'),
+                                 ('unified', 'trace-integrity')):
+                run.save(raw/'registration.json', {'study_mode': mode, 'phase2': {'component_family': family},
+                    'harness': {'kind': 'codex'}, 'models': run.MODELS, 'api_base': run.AXONHUB_API_BASE,
+                    'live_collection_permitted': True})
+                for entry in (run.collect, launch.launch):
+                    with self.subTest(mode=mode, family=family, entry=entry.__name__), self.assertRaisesRegex(
+                            ValueError, 'require study mode unified'):
+                        entry(raw, registration)
+                with self.assertRaisesRegex(RuntimeError, 'offline-only adapter fixture'):
+                    run.collect(raw, registration, offline_adapter_test=True)
+                self.assertFalse((raw/'started.json').exists())
+                self.assertFalse((raw/'launcher.json').exists())
+
+
+class CollectorChecks(unittest.TestCase):
     def test_incomplete_content_filter_is_separate_from_provider_errors(self):
         from response_monitor import classify
         filtered = {'status':'incomplete', 'incomplete_details':{'reason':'content_filter'}}
@@ -219,7 +237,7 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
     def test_native_harness_admission_replaces_pi_for_live_runs(self):
         for harness in ('claude-code','codex'):
             run.validate_harness_policy(harness)
-        with self.assertRaisesRegex(ValueError,'Pi is historical only'):
+        with self.assertRaisesRegex(ValueError,'explicit Sol 5.6 Pi comparison'):
             run.validate_harness_policy('pi-sdk')
 
     def test_explicit_sol56_pi_comparison_is_narrow_and_not_default(self):

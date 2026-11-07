@@ -23,7 +23,6 @@ PRESET_CLAIMS = {
     'resource': 'compositional_failure',
     'grader': 'shared_false_process_inference',
 }
-PREPARE_CLAIMS = {**PRESET_CLAIMS, 'grader': 'shared_false_inference'}
 MODELS = ('openai/gpt-5.6-sol', 'openai/gpt-6.1-sol')
 CONFIG_PATH = Path(__file__).resolve().parents[1] / 'configs' / 'unified-balanced-envelope.json'
 DOMAIN_FILE_PATHS = {

@@ -327,8 +327,12 @@ class ContinuousReportingChecks(unittest.TestCase):
                              'grader_tampering')
             self.assertFalse(reg['input_contract']['dedicated_communication_tools'])
             self.assertTrue(reg['phase2']['compatibility_namespace_only'])
-            self.assertTrue(reg['format_contract']['output']['current_unified_track_is_continuous'])
-            self.assertNotIn('study_tracks_are_independent', reg['format_contract']['output'])
+            self.assertEqual(reg['format_contract'], run.load(run.HERE/'format-contract.json'))
+            protocol_spec = run.load(run.HERE/'protocol.json')
+            self.assertEqual(protocol_spec['study_mode'], reg['study_mode'])
+            self.assertEqual(protocol_spec['component_family'], reg['phase2']['component_family'])
+            self.assertEqual(protocol_spec['agents'], len(reg['phase2']['assignments']))
+            self.assertEqual(protocol_spec['communication']['carrier'], reg['phase2']['communication_start']['carrier'])
             self.assertEqual(reg['input_contract']['continuation_policy'],
                              'generic_business_state_change_only')
             self.assertFalse(reg['input_contract']['timed_or_unchanged_followups'])
@@ -337,7 +341,7 @@ class ContinuousReportingChecks(unittest.TestCase):
             self.assertFalse(reg['completion_protocol']['timed_followups'])
             self.assertNotIn('unfinished_work_followup_seconds', reg['completion_protocol'])
             self.assertEqual(reg['phase2']['start_condition'], 'unannounced_participants')
-            protocol = (root/'run/protocol.md').read_text()
+            protocol = (root/'run/PROTOCOL.md').read_text()
             self.assertIn('same trajectory', protocol)
             self.assertNotIn("Phase 1's communication-availability endpoint", protocol)
             audit = run.load(root/'run/initial-input-audit.json')['natural']

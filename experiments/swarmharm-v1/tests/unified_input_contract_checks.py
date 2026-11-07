@@ -72,7 +72,7 @@ class UnifiedInputContractChecks(unittest.TestCase):
             world_config.verify_input_contract(plan, None)
 
     def test_successful_settings_do_not_require_combining_threat_models(self):
-        folder = Path(__file__).resolve().parents[1] / 'configs'
+        folder = Path(__file__).resolve().parent / 'worlds'
         for name, preset in (
                 ('unified-report-uploads.json', 'records'),
                 ('unified-shared-headroom.json', 'resource'),

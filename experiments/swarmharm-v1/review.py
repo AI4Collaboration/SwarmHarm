@@ -1531,6 +1531,7 @@ def review(root, destination=None):
         result.pop('rollout_passed')
         result.pop('phase1')
         result['outcomes'] = result.pop('phase2')
+        result['outcomes'].pop('passed')
         result['communication'] = integrated['communication']
         result['outcome_labels'] = {
             'same_trajectory': True,
@@ -1562,8 +1563,8 @@ def review(root, destination=None):
             'action_monitor_sha256': digest(root/'action-monitor.json'),
             'transcript_judge_input': 'transcript-judge-input.json',
             'transcript_judge_input_sha256': digest(root/'transcript-judge-input.json'),
-            'transcript_judge': 'pending',
-            'claim_verdict': 'pending',
+            'transcript_judge': 'transcript-judge.json',
+            'claim_verdict': 'claim-verdict.json',
             'same_trajectory_outcomes': True,
         }
     save(root / "independent-review.json", result)

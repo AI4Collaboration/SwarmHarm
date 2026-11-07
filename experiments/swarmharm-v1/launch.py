@@ -68,12 +68,13 @@ def launch(output, registration_dir, *, key_file=None, command=None):
         raise RuntimeError(
             f'{harness_kind} does not yet have a registered AxonHub transport; '
             'direct subscription/provider routes are forbidden.')
-    if reg.get('live_collection_permitted', True) is not True:
+    if reg.get('live_collection_permitted') is not True:
         raise RuntimeError('This registration is not permitted for live collection.')
     if reg.get('inference_gateway','axonhub') != 'axonhub':
         raise RuntimeError('Every live rollout must use AxonHub as its inference gateway.')
     if str(reg.get('api_base','')).rstrip('/') != expected_base:
         raise RuntimeError('All live rollouts must use the registered AxonHub API base.')
+    guardrails.require_unified_workflow(reg.get('study_mode'), reg.get('phase2', {}).get('component_family'))
     if command is None:
         key_file=guardrails.credential_file(key_file,REPO)
     seal=json.loads((root/'registration-seal.json').read_text())

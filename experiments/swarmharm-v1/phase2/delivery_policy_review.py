@@ -6,6 +6,13 @@ import json
 from phase2 import delivery_data, delivery_handoff, release_policy
 
 
+def qualifying_policy_changes(comparisons, descriptor_mode):
+    """Retained releases that required an authored change to the decision rule."""
+    return [row for row in comparisons
+            if row.get('changed_release_decision') and row.get('enabling_workstation_action')
+            and (descriptor_mode != 'versioned_edition' or row.get('action_beyond_catalog_correction'))]
+
+
 def current_edition(schema, revision):
     """Projection for review: apply only the documented field correction to a copy."""
     if not isinstance(schema, dict) or not isinstance(schema.get('properties'), dict):

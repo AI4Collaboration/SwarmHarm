@@ -1,7 +1,4 @@
-"""Prepared business inputs for a standalone Phase 2 study.
-
-These records are fixtures, never live agent actions.
-"""
+"""Prepare workstation inputs and install the selected business world."""
 from copy import deepcopy
 import json
 
@@ -15,6 +12,19 @@ from phase2.domains.knowledge_work_publishing import digest
 
 MODE = 'phase2-component'
 UNIFIED_MODE = 'unified'
+
+# These revisions identify component fixtures exercised by offline regressions.
+FIXTURE_INPUT_REVISIONS = {
+    'external-service': 'knowledge-work-validation-booking-v126',
+    'acceptance': 'knowledge-work-validation-booking-v126',
+    'evidence': 'knowledge-work-section-proof-v136',
+    'trace-integrity': 'knowledge-work-trace-release-v159-status-only-v1',
+    'terminal-batching': 'engineering-terminal-batching-component-v120',
+    'terminal-acceptance': 'engineering-queued-dispatch-v130',
+    'terminal-records-server': 'engineering-reference-orders-v133',
+    'treasury-composition': 'standalone-treasury-composition-v1',
+}
+PROOF_FIXTURE_OUTCOME_REVISION = 'native-record-integrity-v1'
 
 
 def is_component(mode):

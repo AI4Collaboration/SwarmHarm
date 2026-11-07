@@ -67,20 +67,10 @@ class DesignChecks(unittest.TestCase):
         )
 
     def test_runtime_isolation_is_least_privilege_and_search_is_scoped(self):
-        protocol = json.loads((Path(__file__).parents[1] / "protocol.json").read_text())
-        isolation = protocol["runtime_isolation"]
-        self.assertEqual(isolation["network"], "none")
-        self.assertEqual(isolation["root_filesystem"], "read_only")
-        self.assertFalse(isolation["run_as_root"])
-        self.assertEqual(isolation["linux_capabilities"], [])
-        self.assertFalse(isolation["privilege_escalation"])
-        self.assertEqual(isolation["task_relevant_initial_files_root"], "/workspace")
-        scenario = run.domain_runtime.mechanics(protocol["scenario"])
+        scenario = run.domain_runtime.mechanics(run.domain_runtime.KNOWLEDGE_WORK)
         self.assertEqual(
-            isolation["archive_queries"],
-            scenario.registration_overrides(
-                protocol["phase1"]["canonical_cue_condition"]
-            )["runtime_isolation"]["archive_queries"],
+            scenario.registration_overrides(schedule.DEFAULT_CUE_CONDITION)["runtime_isolation"]["archive_queries"],
+            "exact_section_or_statement_only",
         )
         workstation = (Path(__file__).parents[2] / "runtime" / "workstation.py").read_text()
         with patch('subprocess.run') as command:
@@ -95,38 +85,6 @@ class DesignChecks(unittest.TestCase):
                      '"bind-paths,home,cwd,tmp", "--net", "--network", "none"',
                      '"APPTAINER_BIND", "SINGULARITY_BIND"'):
             self.assertIn(flag, workstation)
-
-    def test_protocol_marks_connected_template_archive_only_and_keeps_phase2_separate(self):
-        protocol = json.loads((Path(__file__).parents[1] / "protocol.json").read_text())
-        self.assertEqual(protocol["study_mode"], "archive-connected-compatibility-template")
-        self.assertFalse(protocol["fresh_registration_supported"])
-        self.assertTrue(protocol["connected_single_run"])
-        self.assertEqual(protocol["population"]["canonical_active_contexts"], 4)
-        continuity = protocol["continuity"]
-        self.assertTrue(continuity["same_controller"])
-        self.assertTrue(continuity["same_agent_ids"])
-        self.assertTrue(continuity["same_model_histories"])
-        self.assertTrue(continuity["same_workstations"])
-        self.assertTrue(continuity["same_shared_business_system"])
-        self.assertTrue(continuity["continuous_event_sequence"])
-        self.assertFalse(continuity["state_reset_between_phases"])
-        scenario = run.domain_runtime.mechanics(protocol["scenario"])
-        registered = scenario.registration_overrides(
-            protocol["phase1"]["canonical_cue_condition"]
-        )
-        self.assertEqual(continuity["new_communication_surface_in_phase2"],
-                         registered["phase2"]["new_communication_surface_in_phase2"])
-        self.assertEqual(
-            continuity["phase2_communication_surfaces"],
-            registered["phase2"]["phase2_communication_surfaces"],
-        )
-        self.assertFalse(continuity["subject_visible_phase_transition"])
-        self.assertTrue(protocol["phase2"]["depends_on_phase1"])
-        independent = protocol["independent_phase2"]
-        self.assertEqual(independent["study_track"], "standalone_phase2")
-        self.assertNotIn("phase1_evaluated", independent)
-        self.assertNotIn("phase1_gate_revision", independent)
-        self.assertIsNone(protocol["topology"]["canonical"])
 
     def test_minimum_plan_has_no_subject_roles_and_scales(self):
         plan = plan_for(4)

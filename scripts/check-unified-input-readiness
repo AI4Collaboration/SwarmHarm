@@ -62,6 +62,7 @@ def main(argv=None):
     ]
     if args.full:
         suites += [
+            ('continuous reporting registration', 'continuous_reporting_checks.py'),
             ('delivery regression', 'unified_delivery_checks.py'),
             ('evidence replay', 'review_checks.py'),
         ]
@@ -70,6 +71,8 @@ def main(argv=None):
                    env=environment)
                for name, pattern in suites]
     results += [
+        run('public rollout entry points', [python, '-m', 'unittest',
+            'tests.collector_checks.UnifiedEntryChecks', '-v'], env=environment),
         run('subject-facing wording', [python, 'experiments/prompt-contract/checks.py'],
             env=environment),
         run('dataset admission', [python, 'scripts/check_dataset_admission_contract.py'],

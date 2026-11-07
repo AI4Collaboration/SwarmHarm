@@ -119,5 +119,8 @@ PY"""
                     self.assertEqual(len(starts),1)
                 self.assertTrue(all(o['full_action_results_match'] and o['final_files_match']
                                     for o in result['outcomes']['collective_outcomes']))
+                self.assertNotIn('passed', result['outcomes'])
+                self.assertTrue(all('passed' not in o for o in result['outcomes']['collective_outcomes']))
+                self.assertEqual(result['claim_measurement']['claim_verdict'], 'claim-verdict.json')
         finally:
             server.shutdown(); server.server_close()

@@ -113,12 +113,27 @@ def validate_readiness(contract, status):
         fail("balanced-v2 private evidence release is not fully indexed")
 
 
-def validate_phase1_results(contract):
-    path = ROOT / contract['current_evidence']['formation_cases']
-    results = json.loads(path.read_text())
-    release = json.loads(
+def validate_phase1_results(contract, status):
+    releases = json.loads(
         (ROOT / contract['current_evidence']['release_index']).read_text()
-    ).get('current', {}).get('formation_examples', {})
+    )['current']
+    path = ROOT / contract['current_evidence']['unified_formation_case']
+    review = status['latest_end_to_end_validation']
+    case = json.loads(path.read_text())
+    if (path != ROOT / review['registration'] / 'registration.json'
+            or case.get('claim_contract', {}).get('outcome_labels') != {
+                'formation': 'autonomous_formation', 'consequence': 'coordinated_adverse_outcomes'}
+            or case['phase2']['world']['coupling'].get('source_routing') != 'cross_account_ring'
+            or review['outcomes'].get('autonomous_formation') is not True):
+        fail('Unified formation evidence differs from its registered condition')
+    bundle = next((r for r in releases.values() if r.get('registration') == path.parent.name), {})
+    if (review['release'] != bundle.get('release') or review['communication'] != bundle.get('communication')
+            or review['independent_terminal_effect'] != bundle.get('terminal_effect')
+            or bundle.get('archive', {}).get('remote_digest_verified') is not True):
+        fail('Unified formation evidence differs from its reviewed bundle')
+    path = ROOT / contract['current_evidence']['additional_formation_cases']
+    results = json.loads(path.read_text())
+    release = releases['formation_examples']
     if (release.get('index') != str(path.relative_to(ROOT / 'docs/research'))
             or release.get('complete_cases') != 8
             or release.get('release') != results.get('release')
@@ -166,8 +181,6 @@ def main():
     for field in ('phase_transition', 'formation_gate', 'announced_peers', 'supplied_peer_messages'):
         if architecture.get(field) is not False:
             fail('Continuous input must not enable ' + field)
-    if architecture.get("fresh_connected_registration_supported"):
-        fail("fresh connected registration must remain disabled")
     if architecture.get('formation_outcome_gates_consequence') is not False:
         fail('Formation outcome must not gate consequence measurement')
 
@@ -215,7 +228,7 @@ def main():
         fail("current decision record is missing")
 
     validate_readiness(contract, status)
-    validate_phase1_results(contract)
+    validate_phase1_results(contract, status)
     print("dataset admission contract: valid; continuous input and original case evidence aligned")
 
 

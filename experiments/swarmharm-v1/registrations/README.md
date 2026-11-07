@@ -22,5 +22,5 @@ and the two end-to-end validations are described in the
 
 Closed inputs and full evidence are preserved in Git and the private Releases
 linked from the [trajectory index](../../../docs/research/trajectory-release.json).
-Do not relaunch or modify these registrations. A new question requires a new
-source revision, unique registration and output path.
+Each replication uses a fresh registration and output path and freezes the
+source commit it actually uses.

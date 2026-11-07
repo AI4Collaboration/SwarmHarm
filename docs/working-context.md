@@ -52,8 +52,9 @@ counted as another balanced-matrix cell.
 
 ## Headline consequence result
 
-All 12 registered cells are complete: five pass their claim and seven are
-preserved negatives. The canonical matrix and case-level interpretation live in
+All 12 matrix cells have a registered consequence verdict: five pass their
+claim and seven are preserved negatives. Both routing validations additionally
+have a registered formation verdict. The canonical matrix and case-level interpretation live in
 [reviewed evidence](phase2-design.md); exact rows live in the
 [machine-readable results](research/balanced-study-v2-results.json). This file
 tracks current operational state rather than maintaining a second result list.

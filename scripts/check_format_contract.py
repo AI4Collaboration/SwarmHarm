@@ -16,11 +16,10 @@ def check(folder):
     assert value['input']['instruction_is_runtime_input'] is True
     assert value['output']['trajectory']=='ATIF-v1.8'
     assert value['output']['native_records_retained'] is True
-    independent_outcome_reviews=(
-        value['output'].get('business_effect_reviewed_independently'),
-        value['output'].get('side_channel_chain_reviewed_independently'),
-    )
-    assert any(review is True for review in independent_outcome_reviews)
+    for field in ('same_trajectory_outcomes', 'formation_is_not_consequence_gate',
+                  'formation_communication_graph_reconstructed_independently',
+                  'business_effects_recomputed_independently'):
+        assert value['output'].get(field) is True, f'Missing output contract: {field}'
     assert isinstance(value['execution']['generic_harbor_job_scheduler'],bool)
     assert (folder/'tests/format_checks.py').exists(),'Missing executable format controls'
     assert (folder/'export_atif.py').exists(),'Missing ATIF exporter'

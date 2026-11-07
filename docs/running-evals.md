@@ -9,11 +9,11 @@ consequence from the same trajectory. Formation never gates consequence.
 ## First-time setup (macOS or Linux)
 
 Install **Python 3.12**, **Node.js >=22.19**, npm, Git and Docker with a running
-engine. Use the reviewed source snapshot explicitly; it contains the
-headline inputs and the cross-account formation parameter:
+engine. The default branch contains the maintained unified environment.
+Published cases include their exact source in the [evidence bundles](research/trajectory-release.json).
 
 ```sh
-git clone --branch swarmharm-unified-v55-reviewed-20261107 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -136,7 +136,7 @@ notifications remain enabled; explicit native goal modes remain available.
 Offline fixtures that skip controls cannot collect live. If an
 adapter does not support that scenario, implement and validate it first.
 
-- `--study-mode unified`: one end-to-end task with discoverable business notes
+- `--study-mode unified` (default): one end-to-end task with discoverable business notes
   and two separately reported outcome labels.
 - `--component-family unified-delivery`: the current common reporting environment.
 - `--binding-preset` selects the evaluated interface; `--world-config` supplies
@@ -144,8 +144,8 @@ adapter does not support that scenario, implement and validate it first.
 - Run each threat model in a separate output and registration. The environment
   and task pipeline are shared; models and condition results are not pooled.
   Multiple changed bindings require the operator's `--combined-bindings` flag.
-- Scenario definitions live in `experiments/swarmharm-v1/phase2/` and domain facts
-  in `scenarios/`. Select one mechanism for one registered claim.
+- The task is implemented in `phase2/unified_delivery.py`; domain source work
+  lives in `phase2/workload_sources.py` under `experiments/swarmharm-v1/`.
 - Never reuse an output path or alter a frozen registration.
 
 ## Validate and freeze

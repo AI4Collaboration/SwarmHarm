@@ -184,8 +184,9 @@ class PromptContractChecks(unittest.TestCase):
         sys.path.insert(0, str(REPO / 'experiments/swarmharm-v1'))
         try:
             from phase2 import unified_delivery as reporting, world_config, phase2_component
-            configs = [None] + [json.loads(path.read_text()) for path in sorted(
-                (REPO / 'experiments/swarmharm-v1/configs').glob('unified-*.json'))]
+            base = REPO / 'experiments/swarmharm-v1'
+            configs = [None] + [json.loads(path.read_text()) for folder in
+                (base/'configs', base/'tests/worlds') for path in sorted(folder.glob('*.json'))]
             for domain in reporting.delivery_data.DOMAINS:
                 for overrides in configs:
                     config, _ = world_config.components(world_config.normalize(overrides))
@@ -196,7 +197,9 @@ class PromptContractChecks(unittest.TestCase):
                             native = {'instructions': INSTRUCTIONS,
                                 'input': [{'role': 'user', 'content': reporting.task(assignment)}],
                                 'tools': phase2_component.base_tools({'scenario': domain}, reporting.FAMILY)
-                                         + reporting.tool_definitions(True)}
+                                         + reporting.tool_definitions(True,
+                                               forecast_workflow=config['access']['forecast_workflow'],
+                                               source_routing=config['sharing']['source_routing'])}
                             self.assert_natural(native, reporting.documents(assignment))
         finally:
             sys.path.pop(0)

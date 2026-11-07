@@ -1,4 +1,4 @@
-"""Register and collect the current unified workflow or historical studies."""
+"""Register and collect one continuous four-agent reporting workflow."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
@@ -305,10 +305,11 @@ def code_paths():
     return (
         [p for p in HERE.rglob('*.py') if 'registrations' not in p.relative_to(HERE).parts]
         +[
-            HERE/'README.md', HERE/'format-contract.json', HERE/'protocol.json',
+            HERE/'README.md', HERE/'format-contract.json', HERE/'protocol.json', HERE/'source-manifest.json',
             HERE/'domain-scenarios.json', HERE/'phase1/README.md', HERE/'phase2/README.md',
-            HERE/'configs/unified-balanced-envelope.json',
         ]
+        + sorted((HERE/'configs').glob('*.json'))
+        + sorted((HERE/'tests/worlds').glob('*.json'))
         +[REPO/'experiments'/name for name in (
             'runtime/atomic.py','runtime/guardrails.py','runtime/workstation.py','runtime/workspace_paths.py','runtime/codex_gateway.py',
             'runtime/response_monitor.py','runtime/record_surface.py','runtime/launch_capacity.py',
@@ -386,7 +387,7 @@ def validate_harness_policy(harness_kind, offline_adapter_test=False, offline_fi
     if harness_kind not in HARNESS_KINDS:
         raise ValueError('Unknown agent harness')
     if harness_kind == 'pi-sdk' and not (offline_adapter_test or offline_fixture or pi_comparison):
-        raise ValueError('Pi is historical only; use the model family native harness through AxonHub.')
+        raise ValueError('Live Pi use requires the explicit Sol 5.6 Pi comparison through AxonHub.')
 
 
 def control_harness_contract(harness):
@@ -429,11 +430,16 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             provider_concurrency=None,topology_file=None,run_controls=True,
             cue_condition=schedule.DEFAULT_CUE_CONDITION,
             filing_deadline_utc=None,scenario=DEFAULT_SCENARIO,
-            information_condition="local_records", study_mode=None,
+            information_condition="local_records", study_mode=phase2_component.UNIFIED_MODE,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
             archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None):
+    if run_controls:
+        guardrails.require_unified_workflow(study_mode, unified_delivery.FAMILY if component_family is None else component_family)
+    if study_mode == phase2_component.UNIFIED_MODE:
+        if archive_compatibility or cue_condition != schedule.DEFAULT_CUE_CONDITION:
+            raise ValueError('Unified reporting uses the standard business records at startup.')
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind is None:
@@ -460,8 +466,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if study_mode not in ('phase1', phase2_component.MODE, phase2_component.UNIFIED_MODE) and not (
             study_mode == 'connected' and archive_compatibility):
         raise ValueError(
-            'Fresh rollouts must select unified, phase1 or phase2-component. '
-            'Connected is archive compatibility only.'
+            'Unknown workflow for this offline fixture.'
         )
     continuous_workflow = study_mode == phase2_component.UNIFIED_MODE
     if continuous_workflow:
@@ -488,6 +493,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if combined_bindings and not unified_study:
         raise ValueError("Combined bindings require unified delivery")
     if unified_study:
+        target_claim = unified_delivery.canonical_claim(target_claim)
         world_config = unified_delivery.world_config.normalize(world_config, preset=binding_preset, delivery=delivery_config)
         unified_delivery.world_config.selection(world_config, binding_preset,
                                                 combined=combined_bindings)
@@ -501,7 +507,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 raise ValueError('Balanced comparison world differs from the common envelope')
             if harness_kind != 'codex' or goal_mode != 'off' or reasoning_effort != 'high':
                 raise ValueError('Balanced comparison requires native Codex, goal off and high reasoning')
-            if target_claim != balanced_study.PREPARE_CLAIMS[binding_preset]:
+            if target_claim != balanced_study.PRESET_CLAIMS[binding_preset]:
                 raise ValueError('Balanced comparison target claim does not match its preset')
     if treasury_study and (population != 4 or initial_material != 'business_records_only' or material_distribution != 'all_workstations'):
         raise ValueError('Treasury composition requires four actors and ordinary business records at every workstation')
@@ -841,7 +847,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'same_workstations_continue_after_formation'):
             reg['connected_protocol'][key]=False
     if component:
-        reg['input_revision'] = load(HERE/'protocol.json')['independent_phase2']['family_input_revisions'][component_family]
+        reg['input_revision'] = (unified_delivery.REVISION if unified_study else
+                                 phase2_component.FIXTURE_INPUT_REVISIONS[component_family])
         if component_family == 'evidence':
             reg['outcome_revision'] = 'knowledge-work-reviewed-edition-replay-v1'
         if goal_mode == 'off' and not (trace_study or treasury_study or unified_study):
@@ -933,10 +940,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'recipient_selection': 'fixture_index_0' if material_distribution == 'one_workstation' else 'all',
             'recipient_actors': [a for a, material in reg['component_materials'].items() if material],
             'visibility': 'private_workstation', 'supplied_live_messages': 0}
-        reg['continuous_rollout'] = False
-        reg['format_contract']['output'].pop('current_unified_track_is_continuous', None)
-        reg['format_contract']['output']['study_tracks_are_independent'] = True
-        reg['format_contract']['output']['historical_phase_specific_tracks_remain_distinct'] = True
+        reg['continuous_rollout'] = continuous_workflow
         reg['source_publication'] = None
         reg['phase2'] = {
             'enabled': True, 'plan_file': 'phase2-plan.json', 'assignments': deepcopy(phase2_plan),
@@ -1028,16 +1032,13 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['completion_protocol'].pop('phase1_activity_notice', None)
         reg.pop('minimum_distinct_agents_in_passing_swarm', None)
         reg.pop('phase1_gate_revision', None)
-        reg['format_contract']['output'].pop('independent_phase2_depends_on_verified_phase1', None)
-        reg['format_contract']['output'].pop('connected_claim_requires_verified_phase1', None)
-        reg['format_contract']['output'].pop('formation_graph_reconstructed_independently', None)
-        reg['format_contract']['output'].pop('fresh_connected_registration_supported', None)
-        reg['format_contract']['output'].pop('phase1_communication_graph_reconstructed_independently', None)
-        reg['format_contract']['output'].pop('formation_communication_graph_reconstructed_independently', None)
-        reg['format_contract']['output'].pop('same_trajectory_outcomes', None)
-        reg['format_contract']['output'].pop('formation_is_not_consequence_gate', None)
-        reg['format_contract']['output']['side_channel_chain_reviewed_independently'] = False
-        reg['format_contract']['claims']['phase2_component'] = 'Standalone Phase 2 collective behavior and terminal outcome.'
+        if not continuous_workflow:
+            output_format = reg['format_contract']['output']
+            for key in ('current_unified_track_is_continuous', 'formation_communication_graph_reconstructed_independently',
+                        'same_trajectory_outcomes', 'formation_is_not_consequence_gate'):
+                output_format.pop(key, None)
+            output_format['study_tracks_are_independent'] = True
+            reg['format_contract']['claims']['phase2_component'] = 'Standalone component outcome.'
         reg.pop('connected_protocol', None)
     registration_dir.mkdir(parents=True)
     topology_sentence = (
@@ -1302,7 +1303,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'The setup tests a possibility in a synthetic workflow and does not identify why agents act.\n')
         reg['input_hashes']['PROTOCOL.md'] = sha(root/'PROTOCOL.md')
     if proof_stage != 'off':
-        reg['outcome_revision'] = load(HERE/'protocol.json')['independent_phase2']['outcome_revision']
+        reg['outcome_revision'] = phase2_component.PROOF_FIXTURE_OUTCOME_REVISION
         proof_scope = ('saved draft version' if proof_stage=='section_draft' else 'compiled packet version')
         reg['phase2']['production_proof'] = {'stage': proof_stage, 'copies_per_owner': component_workflow.production_proof.ALLOWANCE,
             'scope': 'private owner proof from the '+proof_scope, 'charge': 'first render of an owned section for that '+proof_scope,
@@ -1859,13 +1860,17 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     if not offline_adapter_test and not offline_transport_test:
         guardrails.validate_model_harness(reg.get('models', {}), harness_kind, pi_comparison=reg.get('pi_comparison',False))
         validate_harness_policy(harness_kind, pi_comparison=reg.get('pi_comparison',False))
+        guardrails.require_unified_workflow(reg.get('study_mode'), reg.get('phase2', {}).get('component_family'))
     if offline_adapter_test and offline_transport_test:
         raise ValueError('Choose one offline compatibility test mode')
     native_gateway = harness_kind in AXONHUB_LIVE_HARNESS_BASES and reg.get('harness',{}).get('authentication')=='axonhub'
+    if offline_adapter_test:
+        require(not native_gateway and harness_kind in NATIVE_HARNESSES
+                and reg.get('offline_adapter_test') is True and reg.get('live_collection_permitted') is False,
+                'Offline adapter collection requires an offline-only adapter fixture.')
     if harness_kind != LEGACY_PI_HARNESS and not native_gateway:
         require(
-            offline_adapter_test and reg.get('offline_adapter_test') is True
-            and reg.get('live_collection_permitted') is False,
+            offline_adapter_test,
             f'{harness_kind} does not have a registered live AxonHub transport.',
         )
     else:
@@ -2836,58 +2841,40 @@ if __name__=='__main__':
         help='Exact upstream catalog counterpart; defaults to the AxonHub model ID.')
     p.add_argument('--model-alias',default=next(iter(MODELS)),
         help='Filesystem-safe label; defaults to the current Sol label.')
-    p.add_argument('--population',type=int,default=4,help='Number of separate agent contexts.')
+    p.add_argument('--population',type=int,choices=(4,),default=4,help='Four independent reporting workstations.')
     p.add_argument('--active-contexts',type=int,help='Simultaneously active contexts; defaults to and must equal population in a canonical run.')
     p.add_argument('--provider-concurrency',type=int,help='Concurrent AxonHub requests; defaults to active contexts without changing the active agent cohort.')
     p.add_argument('--topology-file',type=Path,help='Optional researcher-defined directed visibility graph; absent from canonical runs.')
-    p.add_argument('--cue-condition',choices=schedule.CUE_CONDITIONS,
-        default=schedule.DEFAULT_CUE_CONDITION,
-        help='Registered natural business cue level; used only when preparing a fresh run.')
+    p.add_argument('--cue-condition',choices=(schedule.DEFAULT_CUE_CONDITION,),
+        default=schedule.DEFAULT_CUE_CONDITION, help=argparse.SUPPRESS)
     p.add_argument('--scenario',choices=domain_runtime.SUPPORTED,
         default=DEFAULT_SCENARIO,
         help='Business scenario; defaults to the maintained Engineering source.')
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched rollouts.')
     p.add_argument('--goal-mode',choices=('off','goal_command','codex_goal','claude_goal'),default=None,
-        help='Defaults to off. Select the matching native goal explicitly for a comparison or historical reproduction.')
+        help='Defaults to off. A native-goal comparison uses the matching harness mode.')
     p.add_argument('--api-base',default=AXONHUB_API_BASE,
         help='Fixed AxonHub Responses API base; alternative live endpoints are rejected.')
-    p.add_argument('--information-condition', choices=('local_records',),
-        default='local_records', help='Knowledge Work information availability.')
-    p.add_argument('--study-mode', choices=(phase2_component.UNIFIED_MODE, 'phase1', phase2_component.MODE),
-        help='Use unified for the current one-task workflow. Other modes reproduce historical phase-specific inputs.')
-    p.add_argument('--archive-compatibility', action='store_true',
-        help='Required to prepare a historical phase1 or phase2-component reproduction. Never use for a current unified rollout.')
+    p.add_argument('--study-mode', choices=(phase2_component.UNIFIED_MODE,), default=phase2_component.UNIFIED_MODE,
+        help='One continuous reporting workflow (default: unified).')
     p.add_argument('--controls-from',type=Path,help='Reuse successful offline checks bound to identical source and native runtime; reverify model routing.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')
-    p.add_argument('--delivery-config', type=Path,
-        help='Unified delivery JSON: access, sharing, feedback and operations_headroom; normalized values are sealed in the registration.')
+    p.add_argument('--delivery-config', type=Path, help=argparse.SUPPRESS)
     p.add_argument('--world-config', type=Path,
-        help='Unified world JSON: access, coupling, verification and observation. Overrides the selected preset; mutually exclusive with delivery-config.')
+        help='World overrides in four groups: access, coupling, verification and observation.')
     p.add_argument('--combined-bindings', action='store_true',
         help='Explicitly register a combination of evaluated interfaces. Default runs select one interface at a time.')
     p.add_argument('--comparison-design', choices=(balanced_study.NAME,),
         help='Fail-closed balanced headline matrix; fixes all factors except model, domain and the named binding.')
-    p.add_argument('--release-feedback', choices=('measured_checks','status_only'), default='measured_checks',
-        help='Freeze the trace-release feedback condition; status_only reproduces r257.')
-    p.add_argument('--target-claim', choices=unified_delivery.CLAIMS,
+    p.add_argument('--target-claim', type=unified_delivery.canonical_claim, choices=unified_delivery.CLAIMS,
         help='Operator-only preregistered claim; never exposed to subjects.')
-    p.add_argument('--proof-stage',choices=('off', *component_workflow.production_proof.STAGES),default='off',
-        help='Historical component option: print the execution-record prerequisite.')
-    p.add_argument('--component-family', choices=(*component_workflow.FAMILIES, *batching.FAMILIES, trace_release.FAMILY, financial_composition.FAMILY, unified_delivery.FAMILY),
-        help='Select the current unified reporting family or a historical component family.')
-    p.add_argument('--initial-material', choices=component_workflow.CONDITIONS, default='business_records_only',
-        help='Frozen initial artifacts; current unified runs require ordinary business records.')
-    p.add_argument('--material-distribution', choices=component_workflow.MATERIAL_DISTRIBUTIONS,
-        default='all_workstations', help='All workstations, or method material only at fixture_index 0.')
+    p.add_argument('--component-family', choices=(unified_delivery.FAMILY,), default=unified_delivery.FAMILY,
+        help='Reporting and delivery service.')
     a=p.parse_args()
-    if a.phase=='prepare' and a.study_mode is None:
-        p.error('--study-mode is required during preparation')
-    if a.phase=='prepare' and a.study_mode != phase2_component.UNIFIED_MODE and not a.archive_compatibility:
-        p.error('Historical phase1 and phase2-component preparation requires --archive-compatibility')
-    if a.phase=='prepare' and a.study_mode == phase2_component.UNIFIED_MODE and a.archive_compatibility:
-        p.error('--archive-compatibility cannot be combined with the current unified workflow')
+    if a.phase=='prepare' and a.binding_preset is None:
+        p.error('--binding-preset is required during preparation')
     if a.phase=='prepare' and a.api_base.rstrip('/')!=AXONHUB_API_BASE:
         p.error('All live rollouts must use the registered AxonHub API base')
     AXONHUB_KEY_FILE=a.key_file
@@ -2905,12 +2892,9 @@ if __name__=='__main__':
         prepare(root,registration_dir,AXONHUB_KEY_FILE,a.population,a.active_contexts,
             a.provider_concurrency,a.topology_file,cue_condition=a.cue_condition,
             filing_deadline_utc=a.filing_deadline_utc,scenario=a.scenario,
-            information_condition=a.information_condition,study_mode=a.study_mode,
-            component_family=a.component_family,initial_material=a.initial_material,
-            material_distribution=a.material_distribution,
+            study_mode=a.study_mode,component_family=a.component_family,
             goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
-            proof_stage=a.proof_stage,archive_compatibility=a.archive_compatibility,
-            pi_comparison=a.pi_comparison,target_claim=a.target_claim,release_feedback=a.release_feedback,controls_from=a.controls_from,binding_preset=a.binding_preset,
+            pi_comparison=a.pi_comparison,target_claim=a.target_claim,controls_from=a.controls_from,binding_preset=a.binding_preset,
             delivery_config=load(a.delivery_config) if a.delivery_config is not None else None,
             world_config=load(a.world_config) if a.world_config is not None else None,
             combined_bindings=a.combined_bindings,comparison_design=a.comparison_design)

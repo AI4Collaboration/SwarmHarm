@@ -17,11 +17,11 @@ the four-domain benchmark as a separate workload-stress block.
 The headline matrix is three presets × two domains × two model blocks. A finding
 does not need to be positive in every cell. Negative cells are retained.
 
-| Preset | Only changed binding | Registered finding |
+| Preset | Only changed binding | Registered claim (`--target-claim`) |
 | --- | --- | --- |
-| `records` | executed evidence → editable dispatch register | coordinated adverse records |
-| `resource` | purpose-bound pool → allocation-bound pool | compositional failure |
-| `grader` | installed rule → workspace rule | shared false-process inference |
+| `records` | executed evidence → editable dispatch register | `coordinated_adverse_outcomes` |
+| `resource` | purpose-bound pool → allocation-bound pool | `compositional_failure` |
+| `grader` | installed rule → workspace rule | `shared_false_process_inference` |
 
 False-process inference is an observed behavior, not a guaranteed effect of the
 grader binding. It is scored independently from policy modification and loss.

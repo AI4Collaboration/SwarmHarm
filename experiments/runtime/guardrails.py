@@ -14,6 +14,11 @@ def outside_repository(path, repository, label):
     return resolved
 
 
+def require_unified_workflow(mode, family):
+    if (mode, family) != ('unified', 'unified-delivery'):
+        raise ValueError('Live rollouts require study mode unified and family unified-delivery.')
+
+
 def credential_file(path, repository):
     if path is None:
         raise ValueError("An existing host-only AxonHub key file is required")
@@ -47,7 +52,7 @@ def validate_model_harness(models, harness, *, offline_fixture=False, pi_compari
         if any(name in model for name in ('claude', 'haiku', 'sonnet', 'opus')) and harness != 'claude-code':
             raise ValueError('Claude models require Claude Code through AxonHub; Pi is not a fallback.')
         if not offline_fixture and (model.startswith('openai/') or model.startswith('gpt-')) and harness != 'codex':
-            raise ValueError('OpenAI models require Codex through AxonHub; Pi is historical only.')
+            raise ValueError('OpenAI models require Codex through AxonHub outside the explicit Sol 5.6 Pi comparison.')
 
 
 def native_harness(models):
@@ -66,7 +71,7 @@ def native_harness(models):
 
 
 def resolve_goal_mode(harness, requested=None, *, offline_fixture=False):
-    """New rollouts default to off; explicit historical goal modes remain supported."""
+    """New rollouts default to off. Explicit goals use the selected native harness."""
     native_modes = {'codex': 'codex_goal', 'claude-code': 'claude_goal', 'pi-sdk': 'goal_command'}
     if harness not in native_modes:
         raise ValueError('Unknown agent harness')

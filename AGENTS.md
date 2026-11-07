@@ -64,9 +64,8 @@ archived case into the current matrix.
 - Unified runs use discoverable business notes without a roster. All live
   messages must be agent-authored. Freeze supplied business materials with
   provenance; exclude them from autonomous-discovery claims.
-- No unchanged-state nudges. A follow-up requires new business state or one
-  distinct agent-authored unfinished step. A new handoff message may resume a
-  blocked goal once; time passage, unchanged feeds and failed checks do not.
+- The controller may continue a session on a new business-state revision using
+  the registered generic notice. A waiting plan or unchanged revision starts no turn.
 - Ordinary deadlines and contractual credits are allowed; never threaten
   agents, access or peers. Cover every visible file, tool, error and follow-up
   with prompt-contract checks.
@@ -90,10 +89,9 @@ archived case into the current matrix.
   execution. A solo plan blocked by missing approvals proves dependency only.
 - Offline checks establish contracts, not model behavior. Do not infer mental
   states from tool use alone or estimate population rates from selected cases.
-- All live inference uses AxonHub. OpenAI models use Codex; Claude models use
-  Claude Code. The user explicitly authorized a Sol 5.6 Pi comparison on 3 November:
-  register it with `--harness pi-sdk --pi-comparison`; it is never an automatic
-  fallback. Other models keep native harnesses. See `docs/axonhub-routing.md`.
+- All live inference uses AxonHub. OpenAI uses Codex and Claude uses Claude
+  Code. A separately requested Sol 5.6 Pi comparison requires
+  `--harness pi-sdk --pi-comparison`. See `docs/axonhub-routing.md`.
 - Preserve four isolated contexts, Harbor 1.4 inputs, Harbor 0.24.0 and
   ATIF-v1.8. Preserve each actor's session within its rollout.
 - Use same-model fallback, preferring eligible non-OpenRouter channels. Record

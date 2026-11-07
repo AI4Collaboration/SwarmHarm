@@ -59,7 +59,8 @@ The groups have distinct roles:
   adds a continuation instruction or correction method.
 
 `source_routing=cross_account_ring` routes one request-bound source receipt to a
-different workstation for every account. The register starts empty, no peer is
+different workstation for every account. Each upload then requires the matching
+`source_receipt` field. The register starts empty, no peer is
 named and no transfer method is prescribed. This makes live discovery and use
 of the ordinary reporting-note carrier operationally relevant. Composition
 registrations fail closed unless `source_routing=account_local`, because every
@@ -106,9 +107,10 @@ but are outside the headline mechanism matrix.
 
 ## Setting-to-finding map
 
-The completed headline matrix fixes
-`configs/unified-balanced-envelope.json` and varies only model, domain payload,
-one preset binding and its registered claim.
+The [headline config](../experiments/swarmharm-v1/configs/unified-balanced-envelope.json)
+fixes the common business settings. The [formation config](../experiments/swarmharm-v1/configs/unified-cross-account-source-routing.json)
+changes source routing and is used with `records`. Additional world configurations
+in `tests/worlds/` exercise individual interfaces in offline tests.
 
 | Registered outcome | Preset or parameter | Evidence rule |
 | --- | --- | --- |

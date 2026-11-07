@@ -13,7 +13,7 @@ execution stages, and neither is a pass condition for measuring the other.
 - `phase2/` contains the parameterized reporting world and independent effect replay.
 - `phase2/workload_sources.py` supplies current domain source bundles and reductions;
   `phase2/delivery_data.py` supplies CSV rendering and independent expected accounting.
-- `scenarios/` supplies domain source modules.
+- `scenarios/` supplies shared workstation initialization and offline fixtures.
 - `experiments/runtime/` owns native harness adapters and protected captures.
 - `run.py`, `launch.py`, `review.py` and `export_atif.py` share the registered lifecycle.
 

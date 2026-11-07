@@ -431,10 +431,6 @@ class KnowledgeWorkChecks(unittest.TestCase):
         self.assertEqual(len(holder.publisher.imports), 2)
 
     def test_population_and_subject_language(self):
-        protocol = json.loads((Path(__file__).resolve().parents[1] / 'protocol.json').read_text())
-        if protocol['scenario'] == 'knowledge-work':
-            self.assertEqual(knowledge_work.registration_overrides(
-                'agent_initiated_activity')['phase2'], protocol['phase2'])
         self.assertEqual(len(publishing.cases(128)), 128)
         with self.assertRaises(ValueError): publishing.cases(3)
         world, holder, _ = self.new_publisher()

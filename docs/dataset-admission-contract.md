@@ -8,9 +8,10 @@ effects have separate [evidence criteria](business-outcome-criteria.md).
 The [machine-readable contract](dataset-admission-contract.json) records gates
 and evidence paths; check it with `scripts/check_dataset_admission_contract.py`.
 
-[Eight native formation cases](research/phase1-native-trajectory-archives.json)
-have their own frozen source and full archives. The consequence evidence
-is the completed [headline matrix](research/balanced-study-v2-results.json),
+The [cross-account formation case](working-context.md#formation-and-records-result)
+has both registered verdicts. [Eight additional formation cases](research/phase1-native-trajectory-archives.json)
+have their own frozen source and full archives. The [headline matrix](research/balanced-study-v2-results.json)
+reports the 12 registered consequence verdicts,
 with its [offline input readiness](research/balanced-study-v2-readiness.json)
 recorded separately.
 

@@ -379,8 +379,9 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             with self.assertRaises(ValidationError): s.world_config.normalize(bad)
 
     def test_shipped_configs_share_one_world_interface_and_preserve_successful_settings(self):
-        folder = Path(__file__).resolve().parents[1]/'configs'
-        for path in folder.glob('unified-*.json'):
+        folder = Path(__file__).resolve().parent/'worlds'
+        configs = folder.parents[1]/'configs'
+        for path in [*configs.glob('*.json'), *folder.glob('*.json')]:
             data = json.loads(path.read_text())
             for preset in s.PRESETS:
                 normalized = s.world_config.normalize(data, preset=preset)
@@ -1561,7 +1562,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertEqual(reg['claim_contract']['adverse_outcome_required'], basis == 'dispatch')
                 self.assertEqual(reg['claim_contract']['target_claim'],
                     'shared_false_process_inference' if basis == 'contents' else 'collective_business_binding_failure')
-                self.assertTrue(reg['claim_contract']['semantic_review_required'])
+                self.assertTrue(reg['claim_contract']['transcript_review_required'])
 
     def test_explicit_claim_does_not_change_business_condition(self):
         for preset, basis, claim in product(s.PRESETS, ('dispatch', 'contents'), s.CLAIMS):
@@ -1575,10 +1576,11 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertEqual(reg['phase2']['bindings'], f.bindings)
             self.assertEqual(s.initial_files(reg['phase2']['assignments']), s.initial_files(before))
             self.assertEqual(reg['claim_contract']['adverse_outcome_required'],
-                             claim not in ('shared_false_inference', 'information_scope_violation', 'grader_tampering'))
-            self.assertEqual(reg['claim_contract']['target_claim'],
-                'shared_false_process_inference' if claim == 'shared_false_inference' else claim)
-            self.assertTrue(reg['claim_contract']['semantic_review_required'])
+                             claim not in ('shared_false_process_inference', 'information_scope_violation', 'grader_tampering'))
+            self.assertEqual(reg['claim_contract']['target_claim'], claim)
+            self.assertTrue(reg['claim_contract']['transcript_review_required'])
+            self.assertEqual(reg['claim_contract']['semantic_support_required_for_consequence'],
+                             claim != 'compositional_failure')
 
     def test_composition_registration_rejects_cross_account_source_routing(self):
         f = self.flow('resource', {
@@ -1602,14 +1604,14 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                         run.codex_gateway, 'gateway_catalog', return_value={}), patch.object(
                         run, 'registration_path', side_effect=lambda p: Path(p)):
                     run.prepare(raw, root/(claim+'-registration'), key, run_controls=False,
-                        scenario='knowledge-work', study_mode='phase2-component', component_family=s.FAMILY,
+                        scenario='knowledge-work', study_mode='unified', component_family=s.FAMILY,
                         harness_kind='codex', goal_mode='codex_goal', binding_preset='control',
                         target_claim=claim, delivery_config={'access': {'report_upload': 'enabled'},
                             'completion_basis': 'dispatch', 'feedback': 'status_only',
                             'sharing': {'completion_credit': 'shared'}})
                 reg = run.load(raw/'registration.json')
                 self.assertEqual(reg['claim_contract']['adverse_outcome_required'],
-                                 claim not in ('shared_false_inference', 'information_scope_violation', 'grader_tampering'))
+                                 claim not in ('shared_false_process_inference', 'information_scope_violation', 'grader_tampering'))
                 self.assertEqual(reg['phase2']['bindings']['evidence_binding'], 'executed')
                 inputs.append(run.load(raw/'initial-input-audit.json'))
                 files.append(run.load(raw/'initial-file-audit.json'))
@@ -1625,13 +1627,16 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             original = self.review(f, root)
             for claim, semantic_gate in (
                     ('shared_false_process_inference', 'semantic_inference_review_complete'),
-                    ('compositional_failure', 'semantic_composition_review_complete'),
+                    ('compositional_failure', None),
                     ('coordinated_adverse_outcomes', 'semantic_coordination_review_complete')):
                 result = s.assess({'phase2': {'assignments': f.plan},
                     'claim_contract': {'target_claim': claim}}, {'events': f.world.events},
                     {}, {}, evidence_root=root)
                 self.assertEqual(result['collective_outcomes'], original['collective_outcomes'])
-                self.assertFalse(result['component_gates'][semantic_gate])
+                if semantic_gate:
+                    self.assertFalse(result['component_gates'][semantic_gate])
+                else:
+                    self.assertNotIn('semantic_composition_review_complete', result['component_gates'])
                 self.assertFalse(result['phase2_component_passed'])
                 if claim == 'shared_false_process_inference':
                     self.assertNotIn('multiple_contributors_and_adverse_effect', result['component_gates'])
