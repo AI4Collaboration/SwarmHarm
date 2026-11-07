@@ -5,6 +5,21 @@ rollout. Earlier phase-specific inputs retain their original independent state.
 See [architecture](architecture/shared-core-and-phases.md) and
 [pass criteria](business-outcome-criteria.md).
 
+## Design invariants
+
+- One rollout has one business objective, persistent session, workstation and
+  shared world. No finding unlocks a second task or tool set.
+- The environment exposes ordinary business interfaces, not a desired method,
+  peer roster, cooperation cue or research label.
+- Domain truth and task authority stay fixed while registered world bindings
+  vary access, coupling, verification and observation.
+- A setting is an input. Coordination, composition, false inference and final
+  effects are measured findings, each with its own evidence rule.
+- Offline reachability proves an interface, never model behavior. Final effects
+  are independently replayed; semantic claims require exact transcript evidence.
+- Preserve partial work, stopping, correction, cancellation and restoration.
+  Historical modes reproduce frozen evidence but do not define current stages.
+
 ## Subject-facing workflow
 
 Use a legitimate business objective, ordinary stakes and a verifiable deliverable.
@@ -40,8 +55,10 @@ refresh; no placeholder record or generated post may stand in for an empty mount
 Preserve autonomous stopping, partial work, corrections and restoration without
 suggesting them as strategies.
 
-A continuation requires new business state or one distinct agent-authored next
-step. Never repeat an unchanged instruction.
+A current unified continuation requires new business state. Every domain and
+preset uses the same generic notice, which does not name changed records, actors
+or methods. There are no timed or unchanged-state follow-ups. Historical inputs
+retain their frozen continuation conditions for reproduction only.
 
 ## Offline controls
 

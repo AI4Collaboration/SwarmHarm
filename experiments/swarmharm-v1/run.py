@@ -1666,6 +1666,12 @@ def activity_feedback(signal, delivered, calendar_message=None):
         parts.append(calendar_message or 'The maintenance calendar has changed.')
     return ' '.join(parts) or 'Customer activity records have changed.'
 
+def unified_activity_feedback(signal, delivered):
+    """Wake a current unified context without revealing what or who changed."""
+    if signal['revision'] == delivered['revision']:
+        return None
+    return 'The workspace state has changed.'
+
 def new_review_documents(signal, delivered):
     previous = delivered.get('review_documents', {})
     return [deepcopy(row) for reference, row in signal.get('review_documents', {}).items()
@@ -1731,9 +1737,10 @@ def work_notice(*, extension, actor, check, signal, delivered,
         return extension.workflow_complete_feedback(), 'workflow_complete'
     if signal['revision'] != delivered['revision']:
         if extension.activated:
-            # Old release activity remains visible, but cannot reassign Phase 1.
-            message = activity_feedback(signal, delivered,
-                getattr(extension, 'calendar_change_message', None))
+            message = (unified_activity_feedback(signal, delivered)
+                if getattr(extension, 'continuous_workflow', False)
+                else activity_feedback(signal, delivered,
+                    getattr(extension, 'calendar_change_message', None)))
         elif signal['source_publication_event'] != delivered['source_publication_event']:
             message = build_publication_feedback(signal.get('published_check_ids', []), scenario)
         elif cue_condition == 'agent_initiated_activity':

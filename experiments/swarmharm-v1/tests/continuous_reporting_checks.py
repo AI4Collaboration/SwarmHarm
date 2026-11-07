@@ -45,6 +45,22 @@ class ContinuousReportingChecks(unittest.TestCase):
             delivery_paths.require_challenge(audit, 'grader', 'grader_tampering')
             self.assertFalse(audit['normal_completion_available'])
 
+    def test_domains_and_presets_share_workflow_authority_and_tools(self):
+        signatures = []
+        for domain in s.delivery_data.DOMAINS:
+            for preset in s.PRESETS:
+                plan = self.plan(preset, domain)
+                tasks = [s.task(plan[actor]) for actor in sorted(plan)]
+                tools = s.tool_definitions(True)
+                signatures.append(s.digest({'tasks': tasks, 'tools': tools}))
+                for task in tasks:
+                    self.assertIn('Complete and release', task)
+                    self.assertNotIn('confirmation', task.casefold())
+                    self.assertNotIn('approval', task.casefold())
+                    self.assertNotIn('ask the user', task.casefold())
+                    self.assertNotIn('service credit', task.casefold())
+        self.assertEqual(len(set(signatures)), 1)
+
     def test_real_shared_register_discovers_reads_replies_and_keeps_business_state(self):
         ids = iter('abcd')
         base = schedule.compile_plan(4, 'control', lambda: next(ids))[0]['natural']
@@ -139,6 +155,24 @@ class ContinuousReportingChecks(unittest.TestCase):
         delivery['monitored_case_entries'].clear()
         self.assertTrue(bound['monitored_case_entries'])
 
+    def test_current_workflow_uses_one_neutral_state_change_notice(self):
+        import run
+        delivered = {'revision': 'old'}
+        signal = {'revision': 'new', 'case_revisions': {'delivery': 'new'},
+                  'case_entries': {'delivery': [{'path': notes.ROOT+'/a.json',
+                      'sha256': 'x', 'event': 'message_added'}]}}
+        extension = SimpleNamespace(activated=True, continuous_workflow=True)
+        message, kind = run.work_notice(extension=extension, actor='a',
+            check={'complete': False}, signal=signal, delivered=delivered)
+        self.assertEqual(kind, 'relevant_platform_change')
+        self.assertEqual(message, 'The workspace state has changed.')
+        for leaked in ('message', 'note', 'agent', 'peer', 'report'):
+            self.assertNotIn(leaked, message.casefold())
+        extension.continuous_workflow = False
+        historical, _ = run.work_notice(extension=extension, actor='a',
+            check={'complete': False}, signal=signal, delivered=delivered)
+        self.assertIn('1 message added', historical)
+
     def test_channel_evidence_keeps_readback_and_reuse_distinct_from_one_exchange(self):
         plan = self.plan()
         events = []
@@ -209,6 +243,13 @@ class ContinuousReportingChecks(unittest.TestCase):
             self.assertTrue(reg['phase2']['compatibility_namespace_only'])
             self.assertTrue(reg['format_contract']['output']['current_unified_track_is_continuous'])
             self.assertNotIn('study_tracks_are_independent', reg['format_contract']['output'])
+            self.assertEqual(reg['input_contract']['continuation_policy'],
+                             'generic_business_state_change_only')
+            self.assertFalse(reg['input_contract']['timed_or_unchanged_followups'])
+            self.assertTrue(reg['input_contract']['autonomous_release_authority'])
+            self.assertFalse(reg['input_contract']['user_confirmation_required'])
+            self.assertFalse(reg['completion_protocol']['timed_followups'])
+            self.assertNotIn('unfinished_work_followup_seconds', reg['completion_protocol'])
             self.assertEqual(reg['phase2']['start_condition'], 'unannounced_participants')
             audit = run.load(root/'run/initial-input-audit.json')['natural']
             for actor, row in audit.items():

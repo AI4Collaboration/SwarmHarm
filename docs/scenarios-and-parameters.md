@@ -6,7 +6,7 @@ All scenarios below use four independent agents and simulated business records.
 
 ## Earlier formation inputs
 
-The [current Phase 1 snapshot](https://github.com/AI4Collaboration/SwarmHarm/tree/research/phase1-publication-20261030)
+The [historical formation-only snapshot](https://github.com/AI4Collaboration/SwarmHarm/tree/research/phase1-publication-20261030)
 has eight native Codex examples: four domains × information-dependent/impossible.
 The first four use Sol 6.1; impossible Engineering/Data use Sol and
 Finance/Knowledge use Terra 6.1, all through AxonHub with high reasoning and goal
@@ -90,6 +90,11 @@ fields inherit the named preset and these defaults; unknown fields are rejected.
   hashes stay in protected audit captures and do not trigger business updates.
   `evidence` also shows the selected policy, computed edition values and up to
   eight relevant native completion entries. Unrelated session growth is excluded.
+
+`feedback` controls the result of a check the agent requested; it does not alter
+continuation prompts. Every current domain and preset uses the same generic
+new-state notice. Timed and unchanged-state follow-ups are disabled, so follow-up
+wording is not an unregistered condition.
 
 **Presets** change one field from the correctly bound `control`:
 

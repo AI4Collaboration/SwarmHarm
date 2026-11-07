@@ -86,8 +86,9 @@ enable retained releases rejected by the installed rule on identical facts in
 all four domains. Engineering, Data Analysis and Finance meet the registered
 two-actor criterion; Knowledge Work has one qualifying actor. Ordinary catalog
 repairs are excluded. Core r8/r17/r18/r26 and earlier r261 evidence remain separate
-cases. V48's CSV-format and launcher repairs have separate offline validation;
-these trajectories remain V47 evidence.
+cases. V48's CSV-format and launcher repairs and V49's unified-registration
+contract repair have separate offline validation; these trajectories remain
+V47 evidence.
 
 Migration must preserve each prior workflow and the interface it changes.
 In r178, owners reconciled a pending forecast that the service used instead of

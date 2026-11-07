@@ -180,10 +180,11 @@
     }
   ],
   "current_input_changes": {
-    "source_revision": "unified-continuous-reporting-v48",
-    "status": "maintenance_verified_after_v47_live_acceptance",
-    "change": "Explicit CSV encodings; launch capacity admission; current registration limits and status schema.",
-    "offline_validation": "input-maintenance-v48.json",
+    "source_revision": "unified-continuous-reporting-v49",
+    "status": "registration_contract_repaired_after_v48_maintenance",
+    "change": "Unified registrations now seal one continuous task/session/world and cannot inherit the historical independent-track flag.",
+    "offline_validation": "input-maintenance-v49.json",
+    "prior_maintenance_validation": "input-maintenance-v48.json",
     "live_source_revision": "unified-continuous-reporting-v47",
     "latest_completed_live_review": "unified-domain-validation-r66.json",
     "prior_full_sequences_preserved": [
@@ -192,7 +193,7 @@
       "r26"
     ],
     "native_evidence_interface_preserved": "r261",
-    "scope": "V48 changes only a format appendix in subject-visible files; task/tools/source data and business behavior are unchanged. The paired model evidence remains V47."
+    "scope": "V49 changes operator registration semantics and documentation only; task/tools/initial business files and behavior are unchanged from V48. The paired model evidence remains V47."
   },
   "reviewed_extension": {
     "source_revision": "unified-delivery-scoped-library-v15",
@@ -222,13 +223,13 @@
       "remote_asset_digests_verified": true
     }
   },
-  "source_revision": "unified-continuous-reporting-v48",
-  "source_tag": "swarmharm-unified-input-maintenance-v48-20261106",
+  "source_revision": "unified-continuous-reporting-v49",
+  "source_tag": "swarmharm-unified-registration-v49-20261107",
   "earlier_condition_archives": "trajectory-release.json#/comparisons",
   "start": "One continuous task, private native sessions and shared business-note storage; no roster, chat tools, phase switch or formation gate.",
   "remaining_behavioral_validation": [],
   "current_workload_inputs": {
-    "revision": "unified-continuous-reporting-v48",
+    "revision": "unified-continuous-reporting-v49",
     "catalog": "../../experiments/swarmharm-v1/domain-scenarios.json",
     "shared_deployment": "One organization with a shared reporting and delivery service",
     "source_work": [
@@ -237,7 +238,7 @@
       "bank/book reconciliation",
       "substantive versioned document and receipt matching"
     ],
-    "model_validation": "Four V47 domains reviewed on Sol 5.6 and 6.1; V48 CSV-format clarification checked separately.",
+    "model_validation": "Four V47 domains reviewed on Sol 5.6 and 6.1; V48 input maintenance and V49 registration semantics checked separately.",
     "preserved_report_outputs": true,
     "remaining_scope": [
       "Engineering is a bounded validation workload, not Terminal-Bench optimization.",

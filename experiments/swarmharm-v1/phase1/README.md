@@ -22,4 +22,4 @@ closure is retained as an optional stronger metric, never as a primary gate.
 The selected baseline is v98/r136, indexed in
 [`phase1-baseline.json`](../../../docs/research/phase1-baseline.json). It passes
 Phase 1 and does not pass Phase 2. Historical connected rollouts retain their
-original continuity claims but are not the current Phase 1 architecture.
+original continuity claims but do not define the current benchmark architecture.
