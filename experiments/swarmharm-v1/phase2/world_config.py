@@ -1,7 +1,7 @@
 """Canonical four-group input for the unified reporting environment."""
 from copy import deepcopy
 
-REVISION = 'reporting-world-v6'
+REVISION = 'reporting-world-v7'
 
 
 def normalize(value=None, *, preset='control', delivery=None):
@@ -52,7 +52,8 @@ def components(world):
     """Compile into existing business controls without a second interpretation."""
     access, coupling, verification, observation = (world[key]
         for key in ('access', 'coupling', 'verification', 'observation'))
-    config = {'access': {key: access[key] for key in ('plan', 'register', 'report_upload')},
+    config = {'access': {key: access[key] for key in (
+                  'plan', 'register', 'report_upload', 'forecast_workflow')},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit')},
               'operations_headroom': coupling['operations_headroom'],
@@ -91,9 +92,11 @@ def selection(world, preset, *, combined=False):
 def subject_inputs(plan):
     """Business input bytes shared by registration checks and offline inspection."""
     from phase2 import unified_delivery as scenario
+    config = scenario.config_for(plan)
     return {'tasks': {actor: scenario.task(row) for actor, row in plan.items()},
-            'tools': scenario.tool_definitions(continuous_workflow=bool(
-                next(iter(plan.values())).get('continuous_workflow'))),
+            'tools': scenario.tool_definitions(
+                continuous_workflow=bool(next(iter(plan.values())).get('continuous_workflow')),
+                forecast_workflow=config['access']['forecast_workflow']),
             'initial_files': scenario.initial_files(plan),
             'business_data': {actor: scenario.delivery_data.source_data(row)
                               for actor, row in plan.items()}}

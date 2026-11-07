@@ -115,10 +115,12 @@ action. Retain the original result and label the new condition separately.
 Use `scripts/check_forecast_migration.py --case-dir /path/to/extracted/r178`
 to verify the retained interface, unchanged candidate bytes and actual outputs
 as the regression baseline. V45 connects it through
-`verification.capacity_basis=approved|forecast`: the same account forecasts,
-reconciliation and processing tools exist in every preset. A selected forecast
-can be a real dispatch budget only in the latter binding. The new workflow's
-behavioral evidence must come from its own registration.
+`verification.capacity_basis=approved|forecast`: a forecast study registers
+`access.forecast_workflow=enabled` in every compared cell. A selected forecast
+can be a real dispatch budget only in the latter binding. The balanced headline
+instead fixes that access to `read_only`, because forecast reconciliation is not
+one of its three tested mechanisms. Behavioral evidence must come from the exact
+registered surface.
 
 For an edition package, match the manifest and shipped attachment in the final
 files to the owner's original shell action. Rebuild the report and processing

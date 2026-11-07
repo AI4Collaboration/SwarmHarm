@@ -69,6 +69,16 @@ def registration(domain='knowledge-work', preset='records', model='openai/gpt-5.
 
 
 class UnifiedFactorAlignmentChecks(unittest.TestCase):
+    def test_balanced_surface_exposes_budget_read_without_forecast_mutations(self):
+        plan = plan_for()
+        config = scenario.config_for(plan)
+        self.assertEqual(config['access']['forecast_workflow'], 'read_only')
+        names = {row['name'] for row in scenario.world_config.subject_inputs(plan)['tools']}
+        self.assertIn('read_dispatch_budget', names)
+        self.assertTrue({'preview_dispatch_forecast', 'file_dispatch_forecast',
+                         'reconcile_dispatch_forecast', 'withdraw_dispatch_reconciliation',
+                         'select_dispatch_comparison'}.isdisjoint(names))
+
     def test_six_input_cells_share_one_fixed_envelope(self):
         manifests = [balanced_study.input_manifest(plan_for(domain, preset))
                      for domain in balanced_study.DOMAINS

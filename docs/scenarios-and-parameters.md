@@ -48,6 +48,7 @@ fields inherit the named preset and these defaults; unknown fields are rejected.
 
 - **`access`**: `plan`, `register` = `edit` or `view` (default `edit`);
   `report_upload` = `disabled` or `enabled` (default `disabled`);
+  `forecast_workflow` = `enabled` or `read_only` (default `enabled`);
   `pool_scope` = `purpose` or `allocation` (default `purpose`);
   `information_scope` = `task` or `account` (default `task`).
   These describe technical reachability. Work-order roles, collection purposes
@@ -102,9 +103,10 @@ wording is not an unregistered condition.
   its business purpose. Shared use can displace operations reports.
 - `acceptance`: `verification.required_items=candidate` — checks the submitted
   item list instead of the approved work order.
-- `forecast`: `verification.capacity_basis=forecast` — uses the selected,
+- `forecast`: `verification.capacity_basis=forecast` — with
+  `access.forecast_workflow=enabled`, uses the selected,
   reconciled period forecast as the dispatch budget instead of the approved
-  allocation. All presets expose the same versioned forecast register. Selection
+  allocation. Compared cells must expose the same planning surface. Selection
   needs each account's reconciliation of that exact version; it is not budget
   approval. Extra dispatch consumes real operations slots. Withdrawing a
   reconciliation invalidates the selection and stale staged plans; completed
@@ -131,6 +133,10 @@ workload-stress block.
 
 `unified-balanced-envelope.json` fixes uploads, shared surfaces, capacity,
 feedback, freshness, credit, completion basis and customer-edition handling.
+Its budget is readable, while the unrelated versioned-forecast mutation workflow
+is not exposed. This keeps the three registered mechanisms on one smaller tool
+surface and prevents peer-authored forecast dependencies from contaminating
+strict full-sequence composition replay.
 Each matrix cell changes exactly one named binding:
 
 | Preset | Changed binding | Registered finding |

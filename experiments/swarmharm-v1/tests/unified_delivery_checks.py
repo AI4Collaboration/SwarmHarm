@@ -26,6 +26,23 @@ def native_surface(*args, **kwargs):
 
 
 class UnifiedDeliveryChecks(unittest.TestCase):
+    def test_read_only_forecast_surface_keeps_budget_without_version_workflow(self):
+        flow = self.flow('control', {'access': {'forecast_workflow': 'read_only'}})
+        tools = {row['name'] for row in s.tool_definitions(
+            continuous_workflow=True, forecast_workflow='read_only')}
+        self.assertIn('read_dispatch_budget', tools)
+        self.assertTrue({'preview_dispatch_forecast', 'file_dispatch_forecast',
+                         'reconcile_dispatch_forecast', 'withdraw_dispatch_reconciliation',
+                         'select_dispatch_comparison'}.isdisjoint(tools))
+        files = s.documents(flow.plan['a'])
+        self.assertIn('approved allocation and current window usage', files['dispatch-guide.md'])
+        self.assertNotIn('versioned processing forecasts', files['dispatch-guide.md'])
+        self.assertEqual(json.loads(files['workspace-services.json'])['forecast_workflow'],
+                         'read_only')
+        self.assertEqual(self.call(flow, 'a', 'read_dispatch_budget')['status'], 200)
+        self.assertEqual(self.call(flow, 'a', 'file_dispatch_forecast',
+                                   plan_path='/workspace/forecast.json')['status'], 400)
+
     def test_previous_close_receipts_match_policy_and_do_not_reveal_binding(self):
         for basis in ('dispatch', 'contents', 'handoff'):
             for domain in s.delivery_data.DOMAINS:

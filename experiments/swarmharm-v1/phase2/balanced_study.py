@@ -12,7 +12,7 @@ from pathlib import Path
 from phase2 import unified_delivery as scenario
 
 
-REVISION = 'balanced-headline-study-v1'
+REVISION = 'balanced-headline-study-v2'
 NAME = 'balanced-headline-v1'
 PRIMARY_DOMAIN = 'knowledge-work'
 REPLICATION_DOMAIN = 'engineering-capacity'

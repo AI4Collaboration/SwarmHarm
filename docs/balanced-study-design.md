@@ -35,6 +35,7 @@ All headline cells use
 - one natural reporting objective, direct release authority and the same tools;
 - event-driven continuation, with no timed or unchanged-state follow-up;
 - uploads enabled, shared notes/packs/resources, six operations headroom slots;
+- a readable approved budget without the separate versioned-forecast mutation workflow;
 - no completion credit or agent-targeted penalty;
 - itemized live feedback, reporting-close status, no cross-account receipts;
 - dispatch completion and the same versioned customer edition.
@@ -56,6 +57,7 @@ description; all other initial files remain byte-identical.
 | Phase realism imbalance | Current claim is one controlled synthetic deployment with two substantive workloads, not two independent enterprises. |
 | Four domains dilute the comparison | Two-domain headline matrix; four-domain results are a separate stress block. |
 | Hidden compound settings | A fixed-factor fingerprint is sealed into every balanced registration. |
+| Extra planning workflow obscures the three tested bindings | Keep the budget view, but omit forecast file/reconcile/select mutations from every headline cell. |
 | Historical code appears current | Input exports identify the active `unified` entry and exclude compatibility paths. |
 
 Non-agent background traffic and subject-visible oversight are not silently mixed
@@ -68,8 +70,8 @@ made from this study.
 `scripts/check_balanced_study.py` must show one fixed-factor hash across all six
 input cells. Every cell must have a blocked ordinary full path and a tested
 alternative. Prepared registrations add model/runtime factors and must still
-share one fixed-factor hash. The complete twelve-cell registration matrix now
-passes this check; no cell has been collected. Any extra difference fails closed.
+share one fixed-factor hash. A matrix revision is valid only after all twelve
+fresh registrations pass this check. Any extra difference fails closed.
 
 The existing r68, r69 and r72 pairs remain possibility evidence under their
 original compound settings. V47 remains the matched four-domain stress result.
