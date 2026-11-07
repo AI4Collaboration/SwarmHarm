@@ -1,10 +1,10 @@
 # Working context — 7 November 2026
 
-**Current task: freeze the dual-monitor contract, then run three current-source
-confirmations.** V47 acceptance is complete: the eight paired domain rollouts
+**Current task: run three current-source confirmations under the frozen
+dual-monitor contract.** V47 acceptance is complete: the eight paired domain rollouts
 have terminal native/ATIF evidence, independent final-file review and semantic
 action review. [Results and full archives](research/unified-domain-validation-r66.json).
-There are no active collectors or queued model calls. V51 freezes the action
+There are no active collectors or queued model calls. V51 has frozen the action
 monitor, blinded transcript-judge packet, fixed judge model/prompt and
 deterministic claim join in every registration. Then collect matched Sol 5.6 /
 6.1 pairs for records/Knowledge Work, resource/Engineering and
