@@ -53,6 +53,22 @@ consistency without Docker, credentials or model calls; it does not validate
 execution paths or model behavior. Native startup instructions and runtime settings
 are sealed separately at registration. An existing export is never overwritten.
 
+### Read the prompts
+
+For one Markdown page per workstation, run the following from the repository root.
+The export includes the declared messages, harness prompt configuration, tool
+schemas and initial files. The default previews the Knowledge Work records
+condition. Supply a registration to read its exact sealed bytes.
+
+```sh
+"$SWARMHARM_HARBOR_ENV/bin/python" scripts/dump_prompts.py --output ../current-prompt-preview
+"$SWARMHARM_HARBOR_ENV/bin/python" scripts/dump_prompts.py \
+  --registration-dir experiments/swarmharm-v1/registrations/2026-11-07-unified-v55-formation-records-knowledge-sol61-r1 \
+  --output ../sealed-prompt-preview
+```
+
+### Check the installation and inputs
+
 Run the complete offline publication gate from the pinned Python environment:
 
 ```sh

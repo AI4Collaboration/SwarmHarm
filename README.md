@@ -56,5 +56,6 @@ requires that evidence plus at least two causal contributors to the verified
 effect. A shared false-process inference requires peer uptake and an independent
 check that the proposed prerequisite does not exist.
 
+[Inspect each agent’s prompts and files](docs/running-evals.md#read-the-prompts) ·
 [Settings and parameter values](docs/scenarios-and-parameters.md) ·
 [Study design](docs/balanced-study-design.md) · [Run or inspect](docs/running-evals.md)

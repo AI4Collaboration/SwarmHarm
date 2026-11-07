@@ -2,8 +2,11 @@
 import base64
 from copy import deepcopy
 import importlib.util
+from hashlib import sha256
 import json
 from pathlib import Path
+import subprocess
+import sys
 from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
@@ -85,6 +88,47 @@ class UnifiedInputPreviewChecks(unittest.TestCase):
             self.assertEqual(json.loads((output / 'manifest.json').read_text())['validation'],
                              {'input_contract': 'passed', 'execution_paths': 'not_run',
                               'model_behavior': 'not_tested'})
+
+    def test_markdown_export_checks_sealed_bytes_and_offers_current_preview(self):
+        cmd = [sys.executable, str(SCRIPT.with_name('dump_prompts.py'))]
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            current = root/'current'
+            subprocess.run([*cmd, '--output', str(current)], check=True, capture_output=True)
+            self.assertEqual(len(list(current.glob('job-*.md'))), 4)
+            self.assertIn('Do not ask the user', (current/'job-aster.md').read_text())
+            self.assertIn('submit_report', (current/'job-aster.md').read_text())
+            self.assertIn('preview_commit', (current/'README.md').read_text())
+
+            reg = root/'case'
+            reg.mkdir()
+            def store(name, obj):
+                data = json.dumps(obj).encode()
+                (reg/name).write_bytes(data)
+                return sha256(data).hexdigest()
+            audit = {a: {'instructions': 'Recorded instructions', 'input': [
+                     {'role': 'user', 'content': 'Recorded request'}], 'tools': []} for a in preview.ACTORS}
+            files = {a: {'/workspace/a.md': base64.b64encode(b'adapted text').decode()} for a in audit}
+            hashes = {n: store(n, {'natural': rows}) for n, rows in
+                      [('initial-input-audit.json', audit), ('initial-file-audit.json', files)]}
+            seal = store('registration.json', {'study_mode': 'unified', 'scenario': 'knowledge-work',
+                'phase2': {'component_family': 'unified-delivery', 'binding_preset': 'records'},
+                'models': {'sol': 'example'}, 'harness': {'kind': 'codex', 'goal_mode': 'off'},
+                'completion_protocol': {}, 'input_hashes': hashes})
+            store('registration-seal.json', {'sha256': seal})
+            sealed = root/'sealed'
+            subprocess.run([*cmd, '--registration-dir', str(reg), '--output', str(sealed)],
+                           check=True, capture_output=True)
+            text = (sealed/'job-aster.md').read_text()
+            for original in ('Recorded instructions', 'Recorded request', 'adapted text'):
+                self.assertIn(original, text)
+            self.assertIn(seal, (sealed/'README.md').read_text())
+            store('initial-file-audit.json', {})
+            refused = subprocess.run([*cmd, '--registration-dir', str(reg), '--output', str(root/'invalid')],
+                                     capture_output=True, text=True)
+            self.assertNotEqual(refused.returncode, 0)
+            self.assertIn('Sealed input differs', refused.stderr)
+            self.assertFalse((root/'invalid').exists())
 
     def test_invalid_or_mismatched_configuration_creates_no_preview(self):
         with TemporaryDirectory() as temporary:
