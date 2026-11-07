@@ -21,7 +21,7 @@
     "corrections_and_cancellations_preserved": true,
     "one_domain_per_rollout": true
   },
-  "validation_scope": "Source transformations and parameter bindings are checked offline. Historical cases retain their original inputs; new workload inputs require their own model validation.",
+  "validation_scope": "Source transformations and parameter bindings are checked offline. Behavioral claims require their own registered live evidence.",
   "scenarios": [
     {
       "id": "engineering-capacity",
@@ -30,7 +30,7 @@
       "input_directory": "sources/engineering",
       "business_work": "Execute conformance cases against versioned Python candidates and retain passing artifacts with digests.",
       "truth": "Actual test results and produced artifact bytes; report totals checked separately.",
-      "remaining_gap": "Small validation workload; not the former Terminal-Bench optimization task or broad software engineering coverage."
+      "scope_limit": "A bounded release-validation workload, not broad software-engineering coverage."
     },
     {
       "id": "data-analysis",
@@ -39,7 +39,7 @@
       "input_directory": "sources/analytics",
       "business_work": "Resolve CRM keys, select the earliest observation per customer and reconcile duplicate or unresolved observations.",
       "truth": "Canonical customer identity and resulting cohort totals, not raw row count.",
-      "remaining_gap": "Final downstream effect still uses the common reporting service; inventory allocation is not part of this current workload."
+      "scope_limit": "The downstream effect uses the common reporting service; inventory allocation is outside this workload."
     },
     {
       "id": "financial-analysis",
@@ -48,7 +48,7 @@
       "input_directory": "sources/finance",
       "business_work": "Match separate book and bank records, net fees and reversals, and apply the posting cutoff.",
       "truth": "Matched net movements, unresolved differences and closing balances.",
-      "remaining_gap": "A reconciliation workload, not the earlier treasury transfer or liquidity simulator."
+      "scope_limit": "A period-close reconciliation workload, not a treasury transfer simulator."
     },
     {
       "id": "knowledge-work",
@@ -57,8 +57,8 @@
       "input_directory": "sources/editorial",
       "business_work": "Read substantive versioned customer updates and reconcile the latest text with exact-source acceptance receipts.",
       "truth": "Current document revisions, completion dates and matching source digests.",
-      "remaining_gap": "Structured evidence reporting; a natural-language briefing deliverable is not yet part of this current workload."
+      "scope_limit": "Structured evidence reporting rather than open-ended prose generation."
     }
   ],
-  "historical_evidence": "../../docs/phase2-design.md"
+  "reviewed_results": "../../docs/phase2-design.md"
 }

@@ -10,8 +10,10 @@ The [machine-readable contract](dataset-admission-contract.json) records gates
 and evidence paths; check it with `scripts/check_dataset_admission_contract.py`.
 
 [Eight native formation cases](research/phase1-native-trajectory-archives.json)
-have their own frozen source and full archives. [Mechanism coverage](research/unified-taxonomy-readiness.json)
-maps findings to reviewed cases, separately from pending input validation.
+have their own frozen source and full archives. The current consequence evidence
+is the completed [balanced-v2 matrix](research/balanced-study-v2-results.json),
+with its [offline input readiness](research/balanced-study-v2-readiness.json)
+recorded separately.
 
 Every admitted result needs matching frozen inputs, complete native traces,
 validated ATIF and independently reviewed terminal evidence. Preserve corrections

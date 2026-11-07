@@ -13,14 +13,14 @@ Package layout:
 - `phase2/workload_sources.py`: current domain source work; `delivery_data.py`: reports and independent truth.
 - `scenarios/`: historical domain facts.
 - `tests/`: offline contracts.
-- `registrations/`: current registration only.
+- `registrations/`: registrations supporting the current reviewed matrix only.
 - `run.py`, `launch.py`, `review.py`, `export_atif.py`: rollout lifecycle.
 
 Harness adapters are in `../runtime/`. All inference uses AxonHub; Claude uses
 Claude Code and OpenAI uses Codex. See [current work](../../docs/working-context.md) for readiness.
 Directory and serialized `phase2` names preserve compatibility; they do not
 split the current run. Earlier findings retain their original settings.
-See the [current claim and mechanism coverage](../../docs/research/unified-taxonomy-readiness.json).
+See the [current balanced results](../../docs/research/balanced-study-v2-results.json).
 
 For the fail-closed headline comparison, select
 `--comparison-design balanced-headline-v1` with

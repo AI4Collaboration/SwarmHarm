@@ -21,10 +21,11 @@ Package names and some serialized `phase1`/`phase2` keys remain compatibility de
 They do not imply two stages in the current workflow. Avoid a package-only rewrite
 that duplicates infrastructure or breaks frozen evidence readers.
 
-Earlier `phase1` and `phase2-component` modes retain their distinct initial
-conditions. `connected` is archive-reading compatibility only; fresh preparation
-rejects it. Old examples retain their original source, harness and score.
-Separate trajectories cannot be stitched into a continuous result.
+Earlier `phase1` and `phase2-component` inputs retain their distinct initial
+conditions for archive reproduction and require `--archive-compatibility`.
+`connected` is archive-reading compatibility only; fresh preparation rejects it.
+Old examples retain their original source, harness and score. Separate
+trajectories cannot be stitched into a continuous result.
 
 The current domain catalog describes these runnable inputs, not separate phase
 environments. Distinct source work shares the same publishing, versioning,

@@ -2,7 +2,8 @@
 
 The handoff contract excludes internal source labels from delivered reports.
 The native binding applies that check to conversation entries instead. This
-ports the r261 requirement/evidence mismatch, not its model outcome.
+defines the registered requirement/evidence mismatch without importing any
+earlier model outcome.
 """
 import json
 

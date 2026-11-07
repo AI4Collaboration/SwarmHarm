@@ -2,8 +2,8 @@
 
 Current unified inputs keep one continuous task, native session and shared
 business state. Reporting notes and all selected interfaces are present from
-the start, without a peer roster or a formation gate. Earlier independent
-Phase 2 inputs retain their provided-channel conditions in frozen evidence.
+the start, without a peer roster or a formation gate. Archive-only component
+inputs retain their original provided-channel conditions in frozen evidence.
 
 - [Findings and compositional coverage](../../../docs/phase2-design.md)
 - [Pass criteria](../../../docs/business-outcome-criteria.md)

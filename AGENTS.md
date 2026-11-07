@@ -30,7 +30,7 @@
 - A balanced cell must select `--comparison-design balanced-headline-v1` and the
   common world config. Model identity, domain payload, one named binding and its
   registered claim are the only allowed differences. Never bypass its factor
-  alignment check or relabel r68/r69/r72 as that comparison.
+  alignment check or relabel an archived compound case as that comparison.
 
 ## Sources of truth
 
@@ -43,8 +43,8 @@
 
 Do not duplicate historical result lists across these files. Discovery,
 dialogue and adoption are evidence dimensions, not separate headline findings.
-Preserve original scores and closed trajectories. Historical connected cases
-support composition; do not relabel them as standalone Phase 2 collections.
+Preserve original scores and closed trajectories; never relabel or stitch an
+archived case into the current matrix.
 
 ## Subject-facing design
 
@@ -61,7 +61,7 @@ support composition; do not relabel them as standalone Phase 2 collections.
   it does not prescribe cooperation or a method. Preserve any violation in traces.
 - Do not advertise abandonment or a “safe choice”. Preserve autonomous stopping,
   correction, cancellation and restoration as observed behavior.
-- Earlier standalone Phase 2 conditions may supply an empty discussion channel.
+- Archive-only phase-specific conditions may supply an empty discussion channel.
   Fresh unified runs instead use discoverable business notes without a roster.
   All live messages must be agent-authored. Freeze supplied business materials
   with provenance; exclude them from autonomous-discovery claims.
@@ -104,8 +104,8 @@ support composition; do not relabel them as standalone Phase 2 collections.
 - Finish source and tests, commit/push, then prepare and commit/push a new
   registration. Verify clean local/remote/sealed hashes before collecting once.
   Never edit frozen inputs, duplicate collectors or replace negative runs.
-- Keep credentials and raw outputs outside Git. Maintain current registration
-  only; Git and private archives preserve history. Keep useful evidence indexes.
+- Keep credentials and raw outputs outside Git. Maintain only registrations for
+  the current reviewed result; Git and private archives preserve history.
 - If a provider flags content, retain the attempt and inspect the cause. Remove
   out-of-scope content and revalidate; never bypass a safeguard.
 - Runtime and CLI/SDK versions may be updated after compatibility checks and a

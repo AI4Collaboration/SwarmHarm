@@ -44,6 +44,26 @@ class CollectorChecks(unittest.TestCase):
         self.assertNotEqual(completed.returncode, 0)
         self.assertIn('invalid choice', completed.stderr)
 
+    def test_phase_specific_inputs_require_archive_compatibility(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base = [sys.executable, str(run.HERE/'run.py'), '--phase', 'prepare',
+                    '--output', str(Path(temporary)/'study'),
+                    '--registration-dir',
+                    'experiments/swarmharm-v1/registrations/missing-test-registration']
+            for mode in ('phase1', 'phase2-component'):
+                completed = subprocess.run(
+                    [*base, '--study-mode', mode], cwd=run.REPO,
+                    capture_output=True, text=True,
+                )
+                self.assertNotEqual(completed.returncode, 0)
+                self.assertIn('--archive-compatibility', completed.stderr)
+            completed = subprocess.run(
+                [*base, '--study-mode', 'unified', '--archive-compatibility'],
+                cwd=run.REPO, capture_output=True, text=True,
+            )
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn('cannot be combined', completed.stderr)
+
     def test_incomplete_content_filter_is_separate_from_provider_errors(self):
         from response_monitor import classify
         filtered = {'status':'incomplete', 'incomplete_details':{'reason':'content_filter'}}

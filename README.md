@@ -134,6 +134,6 @@ The implementation is in `experiments/swarmharm-v1/`; native adapters are in
 `experiments/runtime/`. Legacy `phase1/`, `phase2/` and serialized phase keys are
 compatibility names, not stages of the current workflow.
 
-Earlier frozen cases retain their original conditions and remain useful for
-formation, four-domain stress and historical component evidence. They are not
-relabeled as balanced cells or stitched into the result above.
+Earlier development cases retain their original conditions in Git history and
+private Releases. They are not relabeled as balanced cells, stitched into the
+result above or listed as current benchmark evidence.

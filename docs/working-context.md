@@ -85,15 +85,10 @@ continuation, pressure and sharing. Only model, domain payload, one named
 binding and its registered claim may vary. `scripts/check_balanced_study.py`
 verifies that contract before collection.
 
-## Evidence history
-
-The balanced v1 matrix is preserved separately because its resource solo replay
-exposed the forecast-workflow confound:
-[v1 evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/balanced-headline-v1-20261107).
-Earlier r68/r69/r72 confirmations retain their original compound settings. They
-are possibility evidence, not balanced cells, and are not stitched into v2.
+## Archive boundary
 
 Current v2 registrations stay in the repository. Raw outputs and credentials
-remain outside Git; complete evidence is in the private release. A new rollout
-requires a new research question or a justified input change, followed by a
-fresh sealed registration.
+remain outside Git; complete evidence is in the private release. Superseded
+development cases and balanced v1 remain in Git history and private Releases,
+not in the maintained result index. A new rollout requires a new research
+question or justified input change, followed by a fresh sealed registration.

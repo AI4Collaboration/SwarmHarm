@@ -98,7 +98,7 @@ disprove an agent's invented release prerequisite. Keep the original blocked
 path criteria for earlier scenarios whose registrations require them.
 
 `completion_basis=handoff` preserves the reporting workflow but checks source-label
-exclusion, ported from r261. Correct binding checks the delivered CSVs; the native
+exclusion. Correct binding checks the delivered CSVs; the native
 binding wrongly checks conversation entries. The opening work request therefore
 blocks an unchanged native record even when every report is correct. Independent
 before/after and terminal captures measure actual changes and restorations.

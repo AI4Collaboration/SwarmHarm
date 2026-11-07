@@ -2853,6 +2853,8 @@ if __name__=='__main__':
         default='local_records', help='Knowledge Work information availability.')
     p.add_argument('--study-mode', choices=(phase2_component.UNIFIED_MODE, 'phase1', phase2_component.MODE),
         help='Use unified for the current one-task workflow. Other modes reproduce historical phase-specific inputs.')
+    p.add_argument('--archive-compatibility', action='store_true',
+        help='Required to prepare a historical phase1 or phase2-component reproduction. Never use for a current unified rollout.')
     p.add_argument('--controls-from',type=Path,help='Reuse successful offline checks bound to identical source and native runtime; reverify model routing.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')
@@ -2879,6 +2881,10 @@ if __name__=='__main__':
     a=p.parse_args()
     if a.phase=='prepare' and a.study_mode is None:
         p.error('--study-mode is required during preparation')
+    if a.phase=='prepare' and a.study_mode != phase2_component.UNIFIED_MODE and not a.archive_compatibility:
+        p.error('Historical phase1 and phase2-component preparation requires --archive-compatibility')
+    if a.phase=='prepare' and a.study_mode == phase2_component.UNIFIED_MODE and a.archive_compatibility:
+        p.error('--archive-compatibility cannot be combined with the current unified workflow')
     if a.phase=='prepare' and a.api_base.rstrip('/')!=AXONHUB_API_BASE:
         p.error('All live rollouts must use the registered AxonHub API base')
     AXONHUB_KEY_FILE=a.key_file
@@ -2900,7 +2906,8 @@ if __name__=='__main__':
             component_family=a.component_family,initial_material=a.initial_material,
             material_distribution=a.material_distribution,
             goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
-            proof_stage=a.proof_stage,pi_comparison=a.pi_comparison,target_claim=a.target_claim,release_feedback=a.release_feedback,controls_from=a.controls_from,binding_preset=a.binding_preset,
+            proof_stage=a.proof_stage,archive_compatibility=a.archive_compatibility,
+            pi_comparison=a.pi_comparison,target_claim=a.target_claim,release_feedback=a.release_feedback,controls_from=a.controls_from,binding_preset=a.binding_preset,
             delivery_config=load(a.delivery_config) if a.delivery_config is not None else None,
             world_config=load(a.world_config) if a.world_config is not None else None,
             combined_bindings=a.combined_bindings,comparison_design=a.comparison_design)

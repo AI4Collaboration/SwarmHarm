@@ -6,7 +6,6 @@ from phase2 import delivery_data, release_policy
 
 
 PATH = 'prior-close-receipt.json'
-# Adapt the ordinary prior-receipt condition from trace-release r261.
 # Completion and activity counts are fixture facts, not prescribed actions.
 PRIOR_FACTS = (
     (4, 3),

@@ -2,8 +2,7 @@
 
 The current environment begins with separate workstations and an empty shared
 business register, without announced peers. Discovery, communication and business
-effects occur within one task and persistent world. Earlier standalone Phase 2
-cases supplied a channel; their original settings remain in their frozen archives.
+effects occur within one task and persistent world.
 
 Phase 1 and Phase 2 below are outcome labels only. Fresh collection measures
 formation and the selected mechanism consequence end to end in one trajectory;
@@ -50,12 +49,12 @@ schema and review stay fixed. Domain, one named binding preset and a world confi
 define a registered parameterization. The canonical mapping from each setting to
 its observed finding is the [setting-to-finding map](scenarios-and-parameters.md#setting-to-finding-map).
 
-The current implementation covers resource-purpose binding, candidate requirements,
+The implementation covers resource-purpose binding, candidate requirements,
 business-register evidence, native dispatch evidence, active grader policy and
-role-scoped reference information. The native view and the separate library retain
-protected observations. Independent review checks actual CSVs, processing origins,
-operations schedules, native input captures and successful library responses.
-It distinguishes policy edits, altered inputs, out-of-scope reads and actual final use.
+role-scoped reference information. Independent review checks actual CSVs,
+processing origins, operations schedules, protected native captures and
+successful library responses. It distinguishes policy edits, altered inputs,
+out-of-scope reads and actual final use.
 
 `--world-config` exposes four executable groups: **access, coupling, verification
 and observation**. See [values, defaults and preset mappings](scenarios-and-parameters.md#unified-reporting-delivery).
@@ -64,13 +63,11 @@ selected evaluation binding varies. Each threat model runs as a separate config
 and registration of the same environment. Named presets change one binding;
 `--combined-bindings` explicitly selects a combination, with separate path checks.
 
-The library condition has observed out-of-role use on Sol 5.6 in
-[r31](research/unified-interfaces-r31.json). Native-trace method adoption and
-active-record changes appear on 5.6 in [r52](research/unified-trace-r52.json),
-with a documented backup-refresh defect that V35 repairs. In V47, Sol 6.1 changes
-the active grader and retains releases in all four domains; three domains meet the
-registered two-actor criterion. Gaming, record-method adoption, composition and
-false-inference cases retain their own frozen source and registration.
+The balanced headline study selects three interfaces: editable completion
+records, allocation-bound shared capacity and a workspace-provided rule. Their
+registered findings—coordinated adverse records, composition and shared false
+process inference—are separate behavioral measurements. The other implemented
+presets remain extensions and are not counted as balanced results.
 
 ## Verification and collection
 

@@ -5,9 +5,7 @@ Use `experiments/swarmharm-v1/run.py` for preparation and collection, and
 earlier phase-specific modes are exact historical reproductions, not current stages.
 Do not run them sequentially or combine their trajectories to represent a unified run.
 Every fresh unified rollout scores Phase 1 formation and its registered Phase 2
-consequence from the same trajectory. Formation never gates consequence. The
-latest historical formation-only results use a separate source snapshot; see the
-[scenario guide](scenarios-and-parameters.md#earlier-formation-inputs) before reproducing them.
+consequence from the same trajectory. Formation never gates consequence.
 
 ## First-time setup (macOS or Linux)
 
@@ -16,7 +14,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch swarmharm-balanced-headline-v1-20261107 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch balanced-headline-v2-20261107 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -116,38 +114,18 @@ registration. Launch once with the same output, registration and key paths:
   --key-file /absolute/external/axonhub.key
 ```
 
-See the scenario guide for the other conditions. Raw outputs must stay outside
-the repository; registrations must be direct children of the registration folder.
+See the scenario guide for the other parameter values. Raw outputs must stay
+outside the repository; registrations must be direct children of the registration folder.
 The launcher reserves host capacity before model calls: by default, at most 16
 workstation networks (four concurrent four-agent rollouts). A capacity rejection
 leaves the registration unstarted; launch it after another collector finishes.
 `SWARMHARM_MAX_WORKSTATION_NETWORKS` may be raised only when the host's Docker
 address pools support it. The guard never removes existing networks.
-For the versioned budget workflow, use `--binding-preset forecast
---target-claim coordinated_adverse_outcomes` with the same headroom configuration.
-This selects a forecast budget; it does not modify the release-policy file.
-The library, trace and grader conditions support all four domain choices.
-Choose `information`, `trace` or `grader` and omit the headroom configuration.
-Changing domains changes the
-source data and reporting specification, not the selected interface binding.
-The grader dispatch condition uses `--world-config
-experiments/swarmharm-v1/configs/unified-local-preparation.json` and defaults to
-the `grader_tampering` review contract.
-For the edition-package condition, select `grader` and pass
-`--world-config experiments/swarmharm-v1/configs/unified-local-preparation-edition-package.json`.
-At fixed business settings, select `control` to bind release decisions to the
-installed rule. Both conditions deliver the same work order and starting files.
-The trace handoff migration uses `--world-config
-experiments/swarmharm-v1/configs/unified-handoff.json`.
-The information condition uses `--target-claim information_scope_violation`.
-For exact reproduction, use each archive's frozen source and registration;
-the current source tag does not replace older successful settings.
-
-To check that the common implementation preserves the selected successful cases,
-extract the r8, r17, r26 and r261 private Release archives into one directory and
-run `python scripts/check_unified_migration.py --archive-root /path/to/extracted`.
-This replays full business sequences and checks the native-record evidence adapter;
-it makes no model calls and does not overwrite the archives.
+The balanced comparison permits only `records`, `resource` and `grader`, with
+the claim mapping in the study design. Other implemented presets require a new
+question and separate registration; they are not part of the completed matrix.
+For exact reproduction, use the code and registration inside the corresponding
+private evidence archive rather than current source.
 
 ## Select the condition
 
@@ -161,8 +139,8 @@ adapter does not support that scenario, implement and validate it first.
 
 - `--study-mode unified`: one end-to-end task with discoverable business notes
   and two separately reported outcome labels.
-- `phase1` and `phase2-component` retain earlier phase-specific designs for separately registered comparisons.
-  Their historical evidence keeps its original starting conditions.
+- `phase1` and `phase2-component` are archive-only reproductions. Preparing
+  either requires `--archive-compatibility`; they are not current stages.
 - `--component-family unified-delivery`: the current common reporting environment.
 - `--binding-preset` selects the evaluated interface; `--world-config` supplies
   the four parameter groups. Use the scenario guide's maintained examples.
@@ -170,12 +148,10 @@ adapter does not support that scenario, implement and validate it first.
   and task pipeline are shared; models and condition results are not pooled.
   Multiple changed bindings require the operator's `--combined-bindings` flag.
 - Scenario definitions live in `experiments/swarmharm-v1/phase2/` and domain facts
-  in `scenarios/`. Select a mechanism for a specific claim, not every claim.
-- Historical connected runs and prior registrations are evidence only. Reuse
-  their exact source for comparison, but apply current harness requirements to
-  any new collection. Never reuse an output path or alter a frozen registration. A closed
-  registration refers to its sealed source revision, not subsequent maintenance
-  commits; use its archived source to replay evidence.
+  in `scenarios/`. Select one mechanism for one registered claim.
+- Historical connected runs and prior registrations are evidence only. Never
+  reuse an output path, alter a frozen registration or apply current source to
+  an old score.
 
 ## Validate and freeze
 
@@ -202,41 +178,12 @@ installation of the same version. Install the selected adapter's pinned lockfile
    registration copies and every sealed source/input hash.
 6. Launch once. Never edit frozen inputs or retry a whole unfavorable trajectory.
 
-Native entry points are implemented. Use `--harness claude-code` for Claude or
-`--harness codex` for OpenAI; omission selects the corresponding family default.
-Codex supports `--goal-mode off` and `--goal-mode codex_goal`; the latter uses
-the native thread-goal API and automatic continuation. A registered adapter guard
-pauses it after two turns without a novel business tool name/arguments/result.
-An already-running turn finishes and is retained; genuine new business input
-resumes the same goal. Native blocked/completed goals are not automatically reset.
-Use the pinned `0.166.0` executable installed by setup. Each registration freezes
-its actual version and hash; a different executable requires fresh validation.
-The adapter resolves the repository's installed package by default, never a
-desktop app or a global `PATH` installation. An explicit `SWARMHARM_NATIVE_CODEX`
-override is recorded and requires a fresh registration.
-The [eight-run comparison](research/unified-goal-comparison.json) finds goal off
-sufficient for the tested unified reporting configuration. Off retains memory
-and genuine business-state notifications. Fresh runs default to off; historical
-goal-on reference registrations keep their original setting. The comparison does
-not test goal's rescue value when automatic continuation actually occurs.
-Claude supports
-`--goal-mode claude_goal` through AxonHub: atomic task delivery, native Stop
-evaluation using the same model, and a live goal preflight before subjects start.
-The project pins Claude Code 2.1.318 and SDK 0.3.318 locally. Timed check-ins
-remain off. A registered Stop guard parks the goal after two consecutive checks
-without a novel tool name/arguments/result; a new business input resumes the same
-session and goal. This does not mark the task complete. `off` is the default;
-native goal requires explicit selection. Pi-goal is not rebranded as a Codex feature. For the explicitly requested Sol 5.6 Pi comparison, select
-`--harness pi-sdk --pi-comparison --goal-mode goal_command`. Freeze that
-difference when reproducing a Pi-goal case. Pi is pinned to 1.5.0 with the
-separate `@narumitw/pi-goal` 0.54.15 extension. Its native settings retain a
-25-response automatic-work limit and a three-repeat no-progress guard for
-identical tool-free responses; tool attempts reset that narrower guard.
-Pi 1.5 orders extension tools first; actual requests retain that order.
-These are distinct registered goal mechanisms, not identical persistence settings.
-Startup rechecks the complete registered settings against the runtime. Changed or
-unknown fields require fresh registration. Registration and offline checks do not
-certify live behavior.
+Use `--harness claude-code` for Claude and `--harness codex` for OpenAI; omission
+selects the model-family default. Current unified runs use `--goal-mode off`.
+Native goal modes and the explicitly authorized Pi comparison are nondefault
+conditions that require their own registration. Every adapter version, executable
+hash and goal setting is sealed; changed or unknown fields require fresh
+validation. See [model and harness routing](axonhub-routing.md) for details.
 
 ## Collect and review
 

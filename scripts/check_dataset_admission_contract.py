@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Validate the continuous-input contract and separately preserved evidence."""
 
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -55,89 +56,74 @@ def validate_readiness(contract, status):
     if not readiness_path.is_file():
         fail("current readiness index is missing")
     readiness = json.loads(readiness_path.read_text())
-    claims = readiness.get("claims", {})
-    required = {"coordinated_adverse_outcomes", "compositional_failure", "shared_false_inference"}
-    if set(claims) != required or set(status.get("claim_cases", {})) != required:
-        fail("current claim coverage differs from the three maintained claims")
-    if contract["current_evidence"]["phase2_readiness"] != str(readiness_path.relative_to(ROOT)):
+    if contract["current_evidence"]["balanced_input_readiness"] != str(readiness_path.relative_to(ROOT)):
         fail("status and admission point to different readiness snapshots")
-    audit_path = ROOT / contract["current_evidence"]["trajectory_completeness"]
-    audit = json.loads(audit_path.read_text())
-    if audit_path != readiness_path.parent / readiness["extension_review"]:
-        fail("current interface review is not the current completeness audit")
-    verified = {a["url"]: a for a in audit.get("verified_baseline_archives", [])}
-    positive_fields = {
-        "coordinated_adverse_outcomes": "passed",
-        "compositional_failure": "composition",
-        "shared_false_inference": "shared_false_authorization_prerequisite",
-    }
+    if (readiness.get("passed") is not True
+            or readiness.get("revision") != "balanced-headline-study-v2"
+            or readiness.get("model_calls") != 0):
+        fail("balanced-v2 input readiness is not the reviewed offline result")
+    input_cells = readiness.get("cells", [])
+    expected_inputs = {(domain, preset) for domain in ("knowledge-work", "engineering-capacity")
+                       for preset in ("records", "resource", "grader")}
+    if (len(input_cells) != 6
+            or {(row.get("domain"), row.get("preset")) for row in input_cells} != expected_inputs
+            or any(row.get("normal_completion_available") is not False
+                   or row.get("each_actor_has_tested_alternative") is not True
+                   for row in input_cells)):
+        fail("balanced-v2 input cells are incomplete or no longer path-checked")
+    alignment = readiness.get("prepared_registration_alignment", {})
+    if alignment.get("aligned") is not True or alignment.get("cell_count") != 12:
+        fail("balanced-v2 registrations are not aligned")
 
-    def assets_in(value):
-        if isinstance(value, dict):
-            if "url" in value and "sha256" in value:
-                yield value
-            for child in value.values():
-                yield from assets_in(child)
-        elif isinstance(value, list):
-            for child in value:
-                yield from assets_in(child)
+    results_path = ROOT / contract["current_evidence"]["balanced_results"]
+    results = json.loads(results_path.read_text())
+    if (results.get("study_revision") != readiness.get("revision")
+            or results.get("evidence_release") != status.get("evidence_release")):
+        fail("balanced-v2 readiness, results and live status differ")
+    cells = results.get("cells", [])
+    if len(cells) != 12 or len({row.get("case_id") for row in cells}) != 12:
+        fail("balanced-v2 results do not contain twelve distinct cells")
+    required = {"coordinated_adverse_outcomes", "compositional_failure", "shared_false_process_inference"}
+    observed_claims = {row.get("claim") for row in cells}
+    selected = status.get("current_claim_cases", {})
+    if observed_claims != required or set(selected) != required:
+        fail("current claim coverage differs from the three maintained claims")
+    for claim in required:
+        positive = sorted(row["case_id"] for row in cells
+                          if row["claim"] == claim and row.get("passed") is True)
+        negative = sorted(row["case_id"] for row in cells
+                          if row["claim"] == claim and row.get("passed") is False)
+        if positive != sorted(selected[claim].get("positive", [])):
+            fail(f"positive case index differs for {claim}")
+        if negative != sorted(selected[claim].get("negatives", [])):
+            fail(f"negative case index differs for {claim}")
+    summary = results.get("summary", {})
+    if (summary.get("registered_cells") != 12
+            or summary.get("claim_passes") != sum(row["passed"] is True for row in cells)
+            or summary.get("claim_negatives") != sum(row["passed"] is False for row in cells)
+            or summary.get("all_atif_continuity_checks_passed") is not True):
+        fail("balanced-v2 result summary differs from its cells")
 
-    for claim, entry in claims.items():
-        if not entry.get("ready") or status["claim_cases"][claim] != entry.get("case"):
-            fail(f"stale readiness or case selection for {claim}")
-        path = readiness_path.parent / entry["review"]
-        if contract["current_evidence"].get(claim) != str(path.relative_to(ROOT)):
-            fail(f"admission evidence differs from readiness for {claim}")
-        review = json.loads(path.read_text())
-        observations = {r["case"]: r for r in review.get("rollouts", review.get("observations", []))}
-        selected = entry.get("selected_positive_cases", [])
-        if not selected or len(selected) != len(set(selected)):
-            fail(f"missing or duplicated selected cases for {claim}")
-        for case in selected:
-            if observations.get(case, {}).get(positive_fields[claim]) is not True:
-                fail(f"selected case does not support {claim}: {case}")
-            archives = [a for a in assets_in(review)
-                        if a["url"].endswith("/" + case + "-complete-trajectory.tar.gz")]
-            if not archives:
-                fail(f"complete trajectory asset is missing for {case}")
-            for asset in archives:
-                checked = verified.get(asset["url"], {})
-                if (not checked.get("remote_digest_verified")
-                        or checked.get("sha256") != asset["sha256"]
-                        or checked.get("size") != asset["size"]):
-                    fail(f"complete trajectory audit differs for {case}")
-        if sorted({observations[c]["model"] for c in selected}) != entry.get("positive_models"):
-            fail(f"positive-model summary differs for {claim}")
-
-    # The reviewed extension is a frozen snapshot, separate from current source.
-    # Its negative results must not become an implementation pass flag.
-    reviewed = readiness.get("reviewed_extension", {})
-    expected = {(preset, model) for preset in ("grader", "trace", "information")
-                for model in ("openai/gpt-5.6-sol", "openai/gpt-6.1-sol")}
-    rows = audit.get("rollouts", [])
-    if len(rows) != len(expected) or {(r["preset"], r["model"]) for r in rows} != expected:
-        fail("current interface checks do not cover the registered paired model set")
-    if (audit["revision"] != reviewed.get("source_revision")
-            or audit["source_commit"] != reviewed.get("behavior_commit")
-            or audit["registration_commit"] != reviewed.get("collection_commit")
-            or not audit["setup"]["matched_task_tool_and_initial_file_audits"]):
-        fail("reviewed extension source or matched-input audit differs")
-    for row in rows:
-        asset = row["trajectory_archive"]
-        if (row.get("native_atif_actors") != 4 or not row.get("native_atif_valid")
-                or not row.get("original_scores_preserved")
-                or not row["outcome"].get("full_action_results_match")
-                or not row["outcome"].get("final_files_match")
-                or not asset.get("remote_digest_verified")
-                or not asset["url"].endswith("/" + row["case"] + "-complete-trajectory.tar.gz")
-                or any(len(row.get(key, "")) != 64 for key in
-                       ("registration_sha256", "evidence_manifest_sha256", "post_review_manifest_sha256"))):
-            fail("incomplete current interface evidence: " + row["case"])
+    release_path = ROOT / contract["current_evidence"]["release_index"]
+    release = json.loads(release_path.read_text()).get("current", {}).get("balanced_v2", {})
+    if (release.get("release") != results.get("evidence_release")
+            or release.get("complete_cells") != 12
+            or release.get("release_index", {}).get("remote_digest_verified") is not True
+            or release.get("sha256_manifest", {}).get("remote_digest_verified") is not True):
+        fail("balanced-v2 private evidence release is not fully indexed")
 
 
 def validate_phase1_results(contract):
-    path = ROOT / contract['current_evidence']['phase1_current_results']
+    path = ROOT / contract['current_evidence']['formation_cases']
     results = json.loads(path.read_text())
+    release = json.loads(
+        (ROOT / contract['current_evidence']['release_index']).read_text()
+    ).get('current', {}).get('formation_examples', {})
+    if (release.get('index') != str(path.relative_to(ROOT / 'docs/research'))
+            or release.get('complete_cases') != 8
+            or release.get('release') != results.get('release')
+            or release.get('index_sha256') != hashlib.sha256(path.read_bytes()).hexdigest()):
+        fail('Formation archive index and release record differ')
     cases = results.get('cases', [])
     ids = [entry['rollout'] for entry in cases]
     if len(ids) != 8 or len(set(ids)) != len(ids) or any(not name.startswith('phase1-') for name in ids):

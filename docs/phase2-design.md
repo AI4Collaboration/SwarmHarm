@@ -104,15 +104,15 @@ present. Four cases end at the registered controller boundary with waiting
 workers; their terminal evidence is complete and their non-completion status is
 preserved.
 
-## Scope and earlier evidence
+## Evidence boundaries
 
 The balanced matrix establishes observed possibilities and matched negatives,
 not rates or guaranteed model behavior. It does not claim malicious intent.
 Data Analysis and Financial Analysis remain in a separate four-domain workload
 stress block and are not silently counted as headline replications.
 
-Earlier r68/r69/r72 pairs remain useful possibility evidence under their
-original compound settings. V47 remains the matched four-domain grader stress
-study. Native formation cases remain the evidence for autonomous peer discovery
-and initial channel creation. None is relabeled as a balanced v2 cell, and no
-case is combined with another to manufacture an end-to-end trajectory.
+Selected native formation cases remain separate evidence for autonomous peer
+discovery and initial channel creation. They are not relabeled as balanced-v2
+cells, and no case is combined with another to manufacture an end-to-end
+trajectory. Superseded development cases remain in Git history and private
+Releases rather than the maintained result index.

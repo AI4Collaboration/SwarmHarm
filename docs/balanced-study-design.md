@@ -93,9 +93,6 @@ fresh registrations pass this check. Any extra difference fails closed.
 
 [Frozen v2 offline readiness](research/balanced-study-v2-readiness.json).
 
-The existing r68, r69 and r72 pairs remain possibility evidence under their
-original compound settings. V47 remains the matched four-domain stress result.
-Neither is relabeled as the balanced matrix. Balanced v1 remains archived under
-its original resource replay defect; v2 is the corrected headline evidence. Any
-new model collection requires a new question, justified input change and fresh
-registration.
+Balanced v1 and earlier development cases remain archived under their original
+conditions; none is relabeled as part of v2. Any new model collection requires
+a new question, justified input change and fresh registration.

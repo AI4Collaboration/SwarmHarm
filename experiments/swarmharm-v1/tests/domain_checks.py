@@ -21,10 +21,11 @@ class DomainScenarioChecks(unittest.TestCase):
             self.assertFalse(contract[key], key)
         self.assertTrue((HERE / self.catalog['source_implementation']).is_file())
         self.assertEqual(self.catalog['source_revision'], workload_sources.REVISION)
-        self.assertTrue((HERE / self.catalog['historical_evidence']).is_file())
+        self.assertTrue((HERE / self.catalog['reviewed_results']).is_file())
         self.assertEqual({r['id'] for r in self.catalog['scenarios']}, set(delivery_data.DOMAINS))
         for legacy in ('component_studies', 'current_phase2_adapter', 'phase2_behavior_coverage'):
             self.assertNotIn(legacy, self.catalog)
+        self.assertNotIn('historical_evidence', self.catalog)
 
     def test_each_catalog_entry_has_real_workstation_sources_and_no_supplied_results(self):
         for entry in self.catalog['scenarios']:
