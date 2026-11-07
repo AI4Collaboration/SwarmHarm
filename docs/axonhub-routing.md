@@ -3,12 +3,8 @@
 All live inference goes through **AxonHub**, including Claude Code. Direct
 provider and subscription inference are not rollout routes.
 
-- **Claude models: Claude Code.** This includes Haiku, Sonnet and Opus. Never
-  substitute Pi, even when reproducing a historical Pi case.
-- **OpenAI models: Codex.** Historical Sol/Pi cases retain their original
-  provenance. Reproductions record model, harness and persistence differences;
-  the explicit 3 November Sol 5.6 Pi comparison is separately registered with
-  `--harness pi-sdk --pi-comparison`. It never changes default routing.
+- **Claude models: Claude Code.** This includes Haiku, Sonnet and Opus.
+- **OpenAI models: Codex.** Pi is not a fallback route.
 - Use native same-model fallback, preferring eligible non-OpenRouter channels.
   Freeze the exact model ID, gateway, protocol and actual adapter version.
 - Read the existing host-only key outside Git. Never copy it into an agent
@@ -51,36 +47,20 @@ fail validation. Claude API failures preserve their native error detail and stop
 the affected attempt; a provider failure is not a behavioral negative.
 
 Both adapters preserve one native session per actor. The trace environment reads
-their actual record formats and keeps protected observer captures. The explicitly
-authorized Sol 5.6 Pi comparison uses the same host-only AxonHub route and full
-registration checks. No provider-family fallback chooses Pi automatically.
-
-Offline adapter checks are separate from live validation. Each native adaptation
-needs a fresh registered rollout; a historical Pi result cannot validate it.
+their actual record formats and keeps protected observer captures. Offline adapter
+checks are separate from live validation; each native adaptation needs a fresh
+registered rollout.
 
 Use [working context](working-context.md) for current readiness and
-[running evaluations](running-evals.md) for registration. Old channel weights,
-connectivity probes and subscription instructions belong in Git history; they
-are not current routing configuration.
+[running evaluations](running-evals.md) for registration.
 
-## Goal conditions
+## Continuation
 
-Codex `codex_goal` activates the original business objective through native
-`thread/goal/set` during the initial task turn. The CLI owns continuation,
-`get_goal`/`update_goal` and terminal states; the controller adds no continuation
-prompt. The registered progress guard may pause unchanged turns; new business
-input resumes guard-paused goals. Native state and automatic inputs are preserved.
-Business completion is checked separately. A blocked Codex goal currently stays blocked;
-Pi's registered changed-business-state resume remains a disclosed difference.
-Pi `goal_command` retains its pinned extension limits, described in the
-[running guide](running-evals.md).
-The adapters' goal mechanisms are compared, not claimed identical.
-
-Codex freezes `tool_output_token_limit=262144` so its history can retain both
+Current unified registrations use `goal_mode=off`. Codex freezes
+`tool_output_token_limit=262144` so its native history can retain both
 64,000-byte workstation streams, JSON escaping and the MCP envelope. The
 workstation's own output bound is unchanged. Exact delivery is tested through
-the real CLI, including goal continuation and ATIF. See the official
-[configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
+the real CLI. See the official [configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
 
 Codex network-error notifications with `willRetry=true` leave the same native
 turn active. The adapter records them and lets Codex reconnect within the
@@ -88,12 +68,3 @@ existing response deadline; it sends no new prompt and replays no tools.
 Terminal errors still stop collection. Controller response counts do not claim
 to count upstream retries. See the official
 [app-server error contract](https://learn.chatgpt.com/docs/app-server#errors).
-
-Claude `claude_goal` sends the unchanged task and declared context in one native
-`/goal` command. Both worker and evaluator use the registered AxonHub model.
-A live tool-and-goal preflight must record a native met verdict before subjects
-start. Native goal feedback and terminal attachments are preserved; evaluator
-errors hold the attempt. Time-based check-ins are disabled and the controller
-adds no unchanged-state prompts. A registered Stop guard parks consecutive unproductive turns; native impossible stopping remains
-part of Claude Code, and does not count as business completion. See the official
-[/goal documentation](https://code.claude.com/docs/en/goal).

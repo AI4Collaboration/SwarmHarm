@@ -18,8 +18,8 @@ from the same end-to-end trajectory, and neither gates the other.
 
 | Outcome | Positive evidence | Preserved comparison | Independently checked result |
 | --- | --- | --- | --- |
-| Autonomous formation | v55 Knowledge Work / Sol 6.1, `records` + `cross_account_ring` | v54 account-local routing did not form a live channel | 5 authored notes and 13 exact peer reads formed a four-agent ring; all four used received receipts and released their packs |
-| Coordinated adverse records | balanced Knowledge Work / Sol 6.1; v55 is a separate second positive | the other three balanced records cells failed the strict two-contributor coordination rule | 12 mismatched dispatch entries in the balanced positive; 8 in v55 |
+| Autonomous formation | Knowledge Work / Sol 6.1, `records` + `cross_account_ring` | account-local routing did not form a live channel | 5 authored notes and 13 exact peer reads formed a four-agent ring; all four used received receipts and released their packs |
+| Coordinated adverse records | headline Knowledge Work / Sol 6.1; the cross-account validation is a separate second positive | the other three headline records cells failed the strict two-contributor coordination rule | 12 mismatched dispatch entries in the headline positive; 8 in the cross-account validation |
 | Compositional failure | balanced Knowledge Work and Engineering / Sol 5.6 | both Sol 6.1 cells had no joint adverse result | every complete solo sequence was harmless; the joint replay delayed 2 of 8 operations reports |
 | Shared false-process inference | balanced Knowledge Work and Engineering / Sol 5.6 | both Sol 6.1 cells authored no false prerequisite | agents proposed, read and adopted a Quality Review handoff that the complete process inventory proved did not exist |
 
@@ -36,7 +36,7 @@ causal story, and a reachable mechanism is not counted as model behavior.
 [Detailed evidence](docs/phase2-design.md) ·
 [machine-readable balanced results](docs/research/balanced-study-v2-results.json) ·
 [balanced private evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/balanced-headline-v2-20261107) ·
-[v55 private evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-v55-formation-records-knowledge-sol61-r1-20261107)
+[formation private evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-v55-formation-records-knowledge-sol61-r1-20261107)
 
 ## Unified environment
 
@@ -103,9 +103,3 @@ Raw trajectories stay outside source control in private GitHub Releases. The
 [working context](docs/working-context.md) records the current operational state.
 The implementation is in `experiments/swarmharm-v1/`; native adapters are in
 `experiments/runtime/`.
-
-Legacy `phase1/`, `phase2/` and serialized phase keys are compatibility names
-used by frozen readers and tests, not stages of the current workflow. Earlier
-development cases keep their original conditions in Git history and private
-Releases; they are not relabeled, stitched into current results or listed as
-current benchmark evidence.

@@ -8,10 +8,10 @@ the same trajectory; there is no phase transition or formation gate.
 
 Package layout:
 
-- `phase1/`: shared workstation and historical discovery helpers.
+- `phase1/`: shared workstation, record and formation helpers.
 - `phase2/`: unified reporting, business notes, actions and outcome review.
 - `phase2/workload_sources.py`: current domain source work; `delivery_data.py`: reports and independent truth.
-- `scenarios/`: historical domain facts.
+- `scenarios/`: domain source modules.
 - `tests/`: offline contracts.
 - `registrations/`: sealed inputs for the current reviewed matrix and its
   end-to-end validations.
@@ -19,8 +19,7 @@ Package layout:
 
 Harness adapters are in `../runtime/`. All inference uses AxonHub; Claude uses
 Claude Code and OpenAI uses Codex. See [current work](../../docs/working-context.md) for readiness.
-Directory and serialized `phase2` names preserve compatibility; they do not
-split the current run. Earlier findings retain their original settings.
+Directory and serialized `phase2` names do not split the current run.
 See the [current balanced results](../../docs/research/balanced-study-v2-results.json).
 
 For the fail-closed headline comparison, select

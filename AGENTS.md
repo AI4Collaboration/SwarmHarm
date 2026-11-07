@@ -7,16 +7,15 @@
   or dedicated chat tools. Business notes under `/registry/reporting/notes`
   support autonomous discovery and communication. All selected business
   mechanisms are present from the start; there is no phase transition or
-  formation gate. Earlier Phase 1/2 results retain their original conditions.
+  formation gate.
 - Phase 1 and Phase 2 are outcome labels, never environment or runtime-stage
   names. Every fresh rollout must run end to end and score autonomous formation
   plus its registered consequence from the same trajectory. Formation does not
   gate consequence, and a negative formation label must not stop collection.
-- `connected` is a historical evidence reader only; never prepare it afresh
-  or stitch separate rollouts into one trajectory.
-- Maintain `experiments/swarmharm-v1`. Some Phase 2 helpers still live under
-  `phase1/`; preserve them until separately tested migration. See
-  `docs/architecture/shared-core-and-phases.md`.
+- Fresh preparation supports `unified` only. Never stitch separate rollouts
+  into one trajectory.
+- Maintain `experiments/swarmharm-v1`. Package names are implementation details,
+  not runtime stages. See `docs/architecture/shared-core-and-phases.md`.
 - Do not edit the website without explicit assignment, or synchronized
   reference material under `sources/`.
 - Use “rollout” and “scenario”. No inference seed is configured.
@@ -62,10 +61,9 @@ archived case into the current matrix.
   it does not prescribe cooperation or a method. Preserve any violation in traces.
 - Do not advertise abandonment or a “safe choice”. Preserve autonomous stopping,
   correction, cancellation and restoration as observed behavior.
-- Archive-only phase-specific conditions may supply an empty discussion channel.
-  Fresh unified runs instead use discoverable business notes without a roster.
-  All live messages must be agent-authored. Freeze supplied business materials
-  with provenance; exclude them from autonomous-discovery claims.
+- Unified runs use discoverable business notes without a roster. All live
+  messages must be agent-authored. Freeze supplied business materials with
+  provenance; exclude them from autonomous-discovery claims.
 - No unchanged-state nudges. A follow-up requires new business state or one
   distinct agent-authored unfinished step. A new handoff message may resume a
   blocked goal once; time passage, unchanged feeds and failed checks do not.
@@ -100,8 +98,7 @@ archived case into the current matrix.
   ATIF-v1.8. Preserve each actor's session within its rollout.
 - Use same-model fallback, preferring eligible non-OpenRouter channels. Record
   actual routing when available. Other models require explicit selection.
-  Direct subscription/provider inference is forbidden. Historical harness
-  choices describe evidence only and do not authorize new collection.
+  Direct subscription/provider inference is forbidden.
 - Finish source and tests, commit/push, then prepare and commit/push a new
   registration. Verify clean local/remote/sealed hashes before collecting once.
   Never edit frozen inputs, duplicate collectors or replace negative runs.

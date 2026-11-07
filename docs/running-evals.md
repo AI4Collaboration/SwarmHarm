@@ -1,18 +1,16 @@
 # Running evaluations
 
 Use `experiments/swarmharm-v1/run.py` for preparation and collection, and
-`launch.py` for a detached collector. Current unified runs use one continuous task;
-earlier phase-specific modes are exact historical reproductions, not current stages.
-Do not run them sequentially or combine their trajectories to represent a unified run.
+`launch.py` for a detached collector. Unified runs use one continuous task.
+Do not combine separate trajectories to represent a unified run.
 Every fresh unified rollout scores Phase 1 formation and its registered Phase 2
 consequence from the same trajectory. Formation never gates consequence.
 
 ## First-time setup (macOS or Linux)
 
 Install **Python 3.12**, **Node.js >=22.19**, npm, Git and Docker with a running
-engine. Use the reviewed v55 source snapshot explicitly; it contains the
-balanced-v2 inputs and the cross-account formation parameter. The repository's
-default branch may contain a different development state:
+engine. Use the reviewed source snapshot explicitly; it contains the
+headline inputs and the cross-account formation parameter:
 
 ```sh
 git clone --branch swarmharm-unified-v55-reviewed-20261107 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
@@ -26,7 +24,7 @@ Setup installs Harbor **0.24.0**, Codex **0.166.0**, Claude Code **2.1.318** /
 SDK **0.3.318**, and Pi **1.5.0** / pi-goal **0.54.15** from pinned manifests.
 Python dependencies are fixed in `experiments/runtime/python-requirements.txt`;
 JavaScript dependencies use each adapter’s `package-lock.json`. Pi is installed
-for offline compatibility tests; installation does not select it for inference.
+for explicit adapter checks; installation does not select it for inference.
 Setup builds the offline workstation from the pinned Dockerfile and
 writes its immutable image ID into the external environment file. The image
 includes `rg`, `curl`, `ps` and `apply_patch`; a fixed Debian snapshot and recorded package
@@ -140,8 +138,6 @@ adapter does not support that scenario, implement and validate it first.
 
 - `--study-mode unified`: one end-to-end task with discoverable business notes
   and two separately reported outcome labels.
-- `phase1` and `phase2-component` are archive-only reproductions. Preparing
-  either requires `--archive-compatibility`; they are not current stages.
 - `--component-family unified-delivery`: the current common reporting environment.
 - `--binding-preset` selects the evaluated interface; `--world-config` supplies
   the four parameter groups. Use the scenario guide's maintained examples.
@@ -150,9 +146,7 @@ adapter does not support that scenario, implement and validate it first.
   Multiple changed bindings require the operator's `--combined-bindings` flag.
 - Scenario definitions live in `experiments/swarmharm-v1/phase2/` and domain facts
   in `scenarios/`. Select one mechanism for one registered claim.
-- Historical connected runs and prior registrations are evidence only. Never
-  reuse an output path, alter a frozen registration or apply current source to
-  an old score.
+- Never reuse an output path or alter a frozen registration.
 
 ## Validate and freeze
 
@@ -198,8 +192,8 @@ corrections, cancellations and incomplete work. Do not alter limits mid-run.
 
 Run the archive's frozen `code/experiments/swarmharm-v1/review.py` against the
 completed output, writing a fresh external review. Use the same pinned Python
-environment. Current preview replay needs no running workstation or custom
-runtime search path; older archives include their own replay instructions.
+environment. Preview replay needs no running workstation or custom runtime
+search path.
 Export ATIF first with the archive's `export_atif.py OUTPUT`. The unified review
 then emits `communication-evidence.json` and a readable `communication-transcript.md`,
 binding notes and reads to native calls, returned results and ATIF steps.
@@ -221,5 +215,5 @@ Review full native requests, exact reads, authored messages, later actions,
 terminal files and ATIF-v1.8 continuity. Independently reconstruct effects from
 protected evidence. Preview, acceptance and self-report are not final outcomes.
 Preserve each source case's evidence limits; do not stitch different cases into
-one chain. Keep current findings in README and evidence indexes, raw trajectories
-in linked archives and superseded instructions in Git history.
+one chain. Keep current findings in README and evidence indexes, with raw
+trajectories in linked releases.

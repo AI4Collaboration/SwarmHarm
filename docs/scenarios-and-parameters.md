@@ -106,7 +106,7 @@ but are outside the headline mechanism matrix.
 
 ## Setting-to-finding map
 
-The completed balanced-v2 matrix fixes
+The completed headline matrix fixes
 `configs/unified-balanced-envelope.json` and varies only model, domain payload,
 one preset binding and its registered claim.
 
@@ -125,15 +125,10 @@ Reviewed positives and negatives are maintained once in the
 offline controls are in [input readiness](research/balanced-study-v2-readiness.json).
 
 Autonomous formation is a second outcome on every fresh unified trajectory. The
-reviewed v55 parameterization uses `records` plus
+reviewed formation parameterization uses `records` plus
 `source_routing=cross_account_ring`; its result is recorded in the canonical
 [case evidence](phase2-design.md). Formation and the records consequence retain
 separate gates even when both are scored from one trajectory.
-
-The selected
-[native formation examples](research/phase1-native-trajectory-archives.json)
-come from earlier frozen inputs and support formation as a possibility, not a
-claim that the balanced-v2 cells passed the new formation label.
 
 ## Runtime parameters
 
@@ -143,10 +138,6 @@ claim that the balanced-v2 cells passed the new formation label.
   their own registration.
 - `--binding-preset`, `--world-config`: selected backend binding and sealed world.
 - `--comparison-design balanced-headline-v1`: fail-closed factor alignment for
-  the completed balanced-v2 study revision.
+  the completed headline study.
 - `--provider-concurrency`, `--filing-deadline-utc`: request scheduling and
   business deadline. The maintained environment requires exactly four agents.
-
-Historical `phase1` and `phase2-component` inputs are archive reproductions only
-and require `--archive-compatibility`. They do not define stages in the current
-workflow and must never be stitched into one result.

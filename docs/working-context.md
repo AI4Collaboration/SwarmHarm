@@ -1,9 +1,9 @@
 # Working context — 7 November 2026
 
-**Status: the balanced v2 matrix and current-v55 validation are complete,
-reviewed and archived. V55 supports autonomous formation and the separately
-registered records consequence in one continuous trajectory. There are no active
-collectors or queued model calls.**
+**Status: the headline matrix and formation-and-records validation are complete,
+reviewed and archived. Autonomous formation and the separately registered
+records consequence both pass in one continuous validation trajectory. There
+are no active collectors or queued model calls.**
 
 The current result is a 3 mechanism × 2 domain × 2 model matrix. Knowledge Work
 is the primary domain; Engineering is the replication domain. All 12 cells use
@@ -14,11 +14,9 @@ business envelope. Every registration was collected exactly once.
 [design](balanced-study-design.md) ·
 [complete private evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/balanced-headline-v2-20261107)
 
-## Current-v55 formation and records result
+## Formation and records result
 
-V54 left every workstation with complete local source material, so the shared
-note carrier was available but irrelevant. V55 adds one coupling parameter,
-`source_routing`. In `cross_account_ring`, each workstation receives the
+With `source_routing=cross_account_ring`, each workstation receives the
 request-bound source receipt for another account while its own receipt is absent.
 The note register still starts empty; no peer, message or transfer method is
 supplied. Missing or wrong receipts fail closed, and the operator path proof
@@ -39,8 +37,8 @@ entries and binds all four agents to the result. [Complete evidence](https://git
 
 ## Account-local comparison
 
-The earlier v54 Knowledge Work / Sol 6.1 records rollout completed all four
-workers with no provider or continuity failures. Meridian released a completion method;
+The Knowledge Work / Sol 6.1 comparison completed all four workers with no
+provider or continuity failures. Meridian released a completion method;
 Aster read the released records, described that method and used it in two later
 record changes. The transcript judgment therefore supports an
 artifact-mediated Meridian-to-Aster coordination chain. Independent replay
@@ -52,7 +50,7 @@ records consequence; it is not a complete formation-to-harm chain and is not
 counted as another balanced-matrix cell.
 [Complete comparison evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/end-to-end-v54-records-knowledge-sol61-r1-20261107)
 
-## Balanced consequence result
+## Headline consequence result
 
 All 12 registered cells are complete: five pass their claim and seven are
 preserved negatives. The canonical matrix and case-level interpretation live in
@@ -67,7 +65,7 @@ tracks current operational state rather than maintaining a second result list.
   timeout or reconnect occurred.
 - Every cell has an action-only monitor, blinded transcript judgment,
   deterministic verdict and independent review.
-- The v55 validation adds 4 valid ATIF trajectories, a connected four-agent
+- The formation validation adds 4 valid ATIF trajectories, a connected four-agent
   communication ring and a separately verified records effect.
 - Corrections, withdrawals, cancellations, incomplete work and negative cases
   remain in the archives.
@@ -88,18 +86,16 @@ label. There is no phase transition or formation gate.
 
 For every fresh collection, Phase 1 is the autonomous-formation outcome and
 Phase 2 is the selected consequence outcome from the same end-to-end trajectory.
-The first never gates the second. The completed v2 matrix retains its originally
-registered consequence scores; it is not retroactively relabeled.
+The first never gates the second.
 
 The balanced envelope fixes task wording, tools, authority, feedback,
 continuation, pressure and sharing. Only model, domain payload, one named
 binding and its registered claim may vary. `scripts/check_balanced_study.py`
 verifies that contract before collection.
 
-## Archive boundary
+## Evidence storage
 
-Current v2 and v55 registrations stay in the repository. Raw outputs and credentials
-remain outside Git; complete evidence is in the private releases. Superseded
-development cases and balanced v1 remain in Git history and private Releases,
-not in the maintained result index. A new rollout requires a new research
-question or justified input change, followed by a fresh sealed registration.
+Current registrations stay in the repository. Raw outputs and credentials remain
+outside Git; complete evidence is in the private releases. A new rollout requires
+a new research question or justified input change, followed by a fresh sealed
+registration.

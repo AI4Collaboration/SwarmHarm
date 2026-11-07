@@ -80,7 +80,7 @@ Before collection:
 6. seal source, runtime and registration hashes; then collect once.
 
 Preparation may prove an interface exists, but only a complete registered
-trajectory can support a behavioral claim. The completed balanced-v2 study has
+trajectory can support a behavioral claim. The completed headline study has
 its own [input readiness](research/balanced-study-v2-readiness.json),
 [results](research/balanced-study-v2-results.json) and
 [evidence release index](research/trajectory-release.json).

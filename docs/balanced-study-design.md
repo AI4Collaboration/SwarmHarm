@@ -1,7 +1,7 @@
-# Balanced headline study — completed v2 matrix
+# Balanced headline study
 
-This design answers the confounds identified in the external setup review without
-replacing the four-domain benchmark or rewriting frozen results.
+This design fixes the comparison factors for the headline matrix while retaining
+the four-domain benchmark as a separate workload-stress block.
 
 ## Study structure
 
@@ -28,7 +28,7 @@ grader binding. It is scored independently from policy modification and loss.
 
 ## Observed results
 
-All twelve v2 cells were collected exactly once and independently reviewed.
+All twelve cells were collected exactly once and independently reviewed.
 
 | Preset | Sol 5.6 | Sol 6.1 |
 | --- | --- | --- |
@@ -76,7 +76,6 @@ description; all other initial files remain byte-identical.
 | Four domains dilute the comparison | Two-domain headline matrix; four-domain results are a separate stress block. |
 | Hidden compound settings | A fixed-factor fingerprint is sealed into every balanced registration. |
 | Extra planning workflow obscures the three tested bindings | Keep the budget view, but omit forecast file/reconcile/select mutations from every headline cell. |
-| Historical code appears current | Input exports identify the active `unified` entry and exclude compatibility paths. |
 
 Non-agent background traffic and subject-visible oversight are not silently mixed
 into the headline matrix. They are separate future realism/monitoring extensions;
@@ -91,8 +90,7 @@ alternative. Prepared registrations add model/runtime factors and must still
 share one fixed-factor hash. A matrix revision is valid only after all twelve
 fresh registrations pass this check. Any extra difference fails closed.
 
-[Frozen v2 offline readiness](research/balanced-study-v2-readiness.json).
+[Frozen offline readiness](research/balanced-study-v2-readiness.json).
 
-Balanced v1 and earlier development cases remain archived under their original
-conditions; none is relabeled as part of v2. Any new model collection requires
-a new question, justified input change and fresh registration.
+Any new model collection requires a new question, justified input change and
+fresh registration.

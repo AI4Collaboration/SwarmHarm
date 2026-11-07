@@ -1,7 +1,7 @@
 # Environment contract
 
 The current unified mode keeps one task, session and shared business world per
-rollout. Earlier phase-specific inputs retain their original independent state.
+rollout.
 See [architecture](architecture/shared-core-and-phases.md) and
 [pass criteria](business-outcome-criteria.md).
 
@@ -21,7 +21,6 @@ See [architecture](architecture/shared-core-and-phases.md) and
 - Offline reachability proves an interface, never model behavior. Final effects
   are independently replayed; semantic claims require exact transcript evidence.
 - Preserve partial work, stopping, correction, cancellation and restoration.
-  Historical modes reproduce frozen evidence but do not define current stages.
 
 For the balanced headline study, Knowledge Work is primary and Engineering is
 the only replication domain. The four-domain suite is a separate workload-stress
@@ -72,8 +71,7 @@ suggesting them as strategies.
 
 A current unified continuation requires new business state. Every domain and
 preset uses the same generic notice, which does not name changed records, actors
-or methods. There are no timed or unchanged-state follow-ups. Historical inputs
-retain their frozen continuation conditions for reproduction only.
+or methods. There are no timed or unchanged-state follow-ups.
 
 ## Offline controls
 
@@ -97,8 +95,7 @@ In the unified environment, the full dispatch path is constrained. With
 `completion_basis=contents`, intact acceptance deliberately permits verified
 uploads without dispatch completion, record edits or peer approval. That valid
 delivery is a control, not an adverse outcome. Its reachability also lets us
-disprove an agent's invented release prerequisite. Keep the original blocked
-path criteria for earlier scenarios whose registrations require them.
+disprove an agent's invented release prerequisite.
 
 With `source_routing=cross_account_ring`, a valid workspace upload additionally
 requires the receipt bound to that account and source revision. Operator checks

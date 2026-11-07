@@ -6,10 +6,10 @@ started/completion records before collecting. Each registration is collected onc
 
 The current directory contains:
 
-- the **completed balanced-v2 matrix**: three presets, Knowledge Work plus
+- the **completed headline matrix**: three presets, Knowledge Work plus
   Engineering, and Sol 5.6 plus 6.1 (12 registrations);
-- the v54 account-local Knowledge Work / Sol 6.1 records comparison; and
-- the v55 cross-account Knowledge Work / Sol 6.1 formation-and-records
+- the account-local Knowledge Work / Sol 6.1 records comparison; and
+- the cross-account Knowledge Work / Sol 6.1 formation-and-records
   validation.
 
 All 14 registrations were collected once, reviewed and archived. The balanced

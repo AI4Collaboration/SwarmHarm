@@ -13,19 +13,13 @@ execution stages, and neither is a pass condition for measuring the other.
 - `phase2/` contains the parameterized reporting world and independent effect replay.
 - `phase2/workload_sources.py` supplies current domain source bundles and reductions;
   `phase2/delivery_data.py` supplies CSV rendering and independent expected accounting.
-- `scenarios/` supplies historical domain-specific facts for earlier inputs.
+- `scenarios/` supplies domain source modules.
 - `experiments/runtime/` owns native harness adapters and protected captures.
 - `run.py`, `launch.py`, `review.py` and `export_atif.py` share the registered lifecycle.
 
-Package names and some serialized `phase1`/`phase2` keys remain compatibility details.
-They do not imply two stages in the current workflow. Avoid a package-only rewrite
-that duplicates infrastructure or breaks frozen evidence readers.
-
-Earlier `phase1` and `phase2-component` inputs retain their distinct initial
-conditions for archive reproduction and require `--archive-compatibility`.
-`connected` is archive-reading compatibility only; fresh preparation rejects it.
-Old examples retain their original source, harness and score. Separate
-trajectories cannot be stitched into a continuous result.
+Package names and serialized `phase1`/`phase2` keys do not imply two stages in
+the current workflow. Fresh preparation supports `unified` only, and separate
+trajectories cannot be stitched into one result.
 
 The current domain catalog describes these runnable inputs, not separate phase
 environments. Distinct source work shares the same publishing, versioning,
