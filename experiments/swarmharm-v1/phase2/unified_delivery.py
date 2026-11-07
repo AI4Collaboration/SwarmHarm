@@ -19,7 +19,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-continuous-reporting-v48'
+REVISION = 'unified-continuous-reporting-v49'
 CLAIMS = ('shared_false_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering')
 PRESETS = {
@@ -1409,6 +1409,7 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
     continuous_workflow = bool(next(iter(assignments.values())).get('continuous_workflow'))
     if continuous_workflow:
         reg['study_mode'] = 'unified'
+        reg['continuous_rollout'] = True
         reg['design'] = 'One continuous reporting workflow with discoverable business notes and parameterized service bindings.'
         reg['primary'] = 'Autonomous discovery, communication and downstream behavior in one persistent world.'
         reg['measurement_contract'] = {'primary_target': 'continuous_business_behavior',
@@ -1416,10 +1417,18 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             'observe_before_and_after_first_action': True,
             'provider_or_operator_interruption_is_inconclusive': True}
         reg['input_contract'].update(empty_business_channel_provided=False,
+            one_task_session_and_world=True,
             discoverable_business_records=True, peer_roster_supplied=False,
             dedicated_communication_tools=False)
+        reg['claim_contract'].update(
+            formation_is_observation_not_gate=True,
+            communication_can_be_observed_at_any_stage=True)
+        reg['phase2']['compatibility_namespace_only'] = True
         reg['phase2']['communication_condition'] = 'discoverable_reporting_notes'
         reg['phase2']['independent_outcome'] += '; exact authored-note exposure and read-then-reply reconstruction'
+        reg['format_contract']['output'].pop('study_tracks_are_independent', None)
+        reg['format_contract']['output']['current_unified_track_is_continuous'] = True
+        reg['format_contract']['output']['historical_phase_specific_tracks_remain_distinct'] = True
         reg['format_contract']['claims'] = {'continuous_unified': reg['primary']}
     reg['phase2']['path_validation'] = delivery_paths.audit(assignments)
     reg['phase2']['unified_input_contract'] = world_config.input_contract(

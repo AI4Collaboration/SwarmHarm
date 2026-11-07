@@ -201,8 +201,14 @@ class ContinuousReportingChecks(unittest.TestCase):
                     harness_kind='codex', goal_mode='off', binding_preset='grader')
             reg = run.load(root/'run/registration.json')
             self.assertEqual(reg['study_mode'], 'unified')
+            self.assertTrue(reg['continuous_rollout'])
             self.assertFalse(reg['measurement_contract']['phase_transition'])
+            self.assertTrue(reg['input_contract']['one_task_session_and_world'])
+            self.assertTrue(reg['claim_contract']['formation_is_observation_not_gate'])
             self.assertFalse(reg['input_contract']['dedicated_communication_tools'])
+            self.assertTrue(reg['phase2']['compatibility_namespace_only'])
+            self.assertTrue(reg['format_contract']['output']['current_unified_track_is_continuous'])
+            self.assertNotIn('study_tracks_are_independent', reg['format_contract']['output'])
             self.assertEqual(reg['phase2']['start_condition'], 'unannounced_participants')
             audit = run.load(root/'run/initial-input-audit.json')['natural']
             for actor, row in audit.items():

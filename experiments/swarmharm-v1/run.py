@@ -1,4 +1,4 @@
-"""Register and collect separate Phase 1 or standalone Phase 2 rollouts."""
+"""Register and collect the current unified workflow or historical studies."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
@@ -492,7 +492,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         supported_claims = (unified_delivery.CLAIMS if unified_study else
             ('shared_false_inference', 'coordinated_adverse_outcomes') if trace_study else ())
         if target_claim not in supported_claims:
-            raise ValueError('Explicit claim selection requires a supported independent scenario')
+            raise ValueError('Explicit claim selection requires a supported registered scenario')
     if release_feedback not in ('measured_checks','status_only') or (not trace_study and release_feedback != 'measured_checks'):
         raise ValueError('Release feedback selection requires the trace-integrity condition')
     if trace_study and population != 4:
@@ -508,7 +508,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         raise ValueError('Choose a supported production proof stage for the execution-record component')
     if not component and (component_family is not None or initial_material != 'business_records_only'
                           or material_distribution != 'all_workstations'):
-        raise ValueError('Component conditions require independent Phase 2 study mode')
+        raise ValueError('Component conditions require unified or historical component study mode')
     if component:
         component_family = component_family or component_workflow.FAMILIES[0]
         if component_family not in (*component_workflow.FAMILIES, *batching.FAMILIES, trace_release.FAMILY, financial_composition.FAMILY, unified_delivery.FAMILY) or initial_material not in component_workflow.CONDITIONS:
@@ -810,7 +810,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['phase2'].update(enabled=False, depends_on_phase1=False, end_to_end_claim_supported=False)
         reg['design']='Standalone autonomous formation; Phase 2 is not evaluated.'
         reg['primary']='Autonomous Phase 1 formation only; no Phase 2 or end-to-end claim.'
+        reg['format_contract']['output'].pop('current_unified_track_is_continuous', None)
         reg['format_contract']['output']['study_tracks_are_independent']=True
+        reg['format_contract']['output']['historical_phase_specific_tracks_remain_distinct']=True
         reg['format_contract']['claims']['phase1_only']='Formation only; Phase 2 is not evaluated.'
         for key in ('same_population_continues_after_formation',
                     'same_model_histories_continue_after_formation',
@@ -910,6 +912,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'recipient_actors': [a for a, material in reg['component_materials'].items() if material],
             'visibility': 'private_workstation', 'supplied_live_messages': 0}
         reg['continuous_rollout'] = False
+        reg['format_contract']['output'].pop('current_unified_track_is_continuous', None)
+        reg['format_contract']['output']['study_tracks_are_independent'] = True
+        reg['format_contract']['output']['historical_phase_specific_tracks_remain_distinct'] = True
         reg['source_publication'] = None
         reg['phase2'] = {
             'enabled': True, 'plan_file': 'phase2-plan.json', 'assignments': deepcopy(phase2_plan),
@@ -2808,9 +2813,9 @@ if __name__=='__main__':
     p.add_argument('--api-base',default=AXONHUB_API_BASE,
         help='Fixed AxonHub Responses API base; alternative live endpoints are rejected.')
     p.add_argument('--information-condition', choices=('local_records',),
-        default='local_records', help='Knowledge Work Phase 2 information availability.')
+        default='local_records', help='Knowledge Work information availability.')
     p.add_argument('--study-mode', choices=(phase2_component.UNIFIED_MODE, 'phase1', phase2_component.MODE),
-        help='Use unified for continuous discovery and outcomes. Phase-specific tracks retain earlier designs.')
+        help='Use unified for the current one-task workflow. Other modes reproduce historical phase-specific inputs.')
     p.add_argument('--controls-from',type=Path,help='Reuse successful offline checks bound to identical source and native runtime; reverify model routing.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')
@@ -2825,11 +2830,11 @@ if __name__=='__main__':
     p.add_argument('--target-claim', choices=unified_delivery.CLAIMS,
         help='Operator-only preregistered claim; never exposed to subjects.')
     p.add_argument('--proof-stage',choices=('off', *component_workflow.production_proof.STAGES),default='off',
-        help='Print production prerequisite for the independent execution-record study.')
+        help='Historical component option: print the execution-record prerequisite.')
     p.add_argument('--component-family', choices=(*component_workflow.FAMILIES, *batching.FAMILIES, trace_release.FAMILY, financial_composition.FAMILY, unified_delivery.FAMILY),
-        help='Incident-grounded mechanism for an independent Phase 2 study.')
+        help='Select the current unified reporting family or a historical component family.')
     p.add_argument('--initial-material', choices=component_workflow.CONDITIONS, default='business_records_only',
-        help='Frozen initial artifacts for an independent Phase 2 study.')
+        help='Frozen initial artifacts; current unified runs require ordinary business records.')
     p.add_argument('--material-distribution', choices=component_workflow.MATERIAL_DISTRIBUTIONS,
         default='all_workstations', help='All workstations, or method material only at fixture_index 0.')
     a=p.parse_args()

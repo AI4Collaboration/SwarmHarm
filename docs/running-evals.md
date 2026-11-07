@@ -2,7 +2,8 @@
 
 Use `experiments/swarmharm-v1/run.py` for preparation and collection, and
 `launch.py` for a detached collector. Current unified runs use one continuous task;
-earlier phase-specific modes retain their original starting conditions.
+earlier phase-specific modes are exact historical reproductions, not current stages.
+Do not run them sequentially or combine their trajectories to represent a unified run.
 The latest Phase 1 results use a separate source snapshot; see the
 [scenario guide](scenarios-and-parameters.md#earlier-formation-inputs) before reproducing them.
 

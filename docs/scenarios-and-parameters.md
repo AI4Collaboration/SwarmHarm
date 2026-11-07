@@ -263,14 +263,14 @@ reporting environment above.
 - `--model-id`, `--reasoning-effort`: explicit model and supported effort.
 - `--harness`: OpenAI uses Codex; Claude uses Claude Code. Both call AxonHub.
   Pi is only an explicitly authorized comparison, never an automatic fallback.
-- `--goal-mode`: defaults to `off` in both phases. Native goal is opt-in.
+- `--goal-mode`: defaults to `off` in the current unified workflow. Native goal is opt-in.
   Sol reference cases used native goal; Haiku's r263 pass used off.
   The [paired Sol comparison](research/unified-goal-comparison.json) finds off
   sufficient for the tested unified reporting setup; it preserves memory and
   business-change notifications. Keep each reference case's registered mode.
 - `--binding-preset` and `--world-config`: unified backend binding and sealed input configuration.
 - `--provider-concurrency`, `--filing-deadline-utc`: request scheduling and business
-  deadline. These maintained Phase 2 environments require exactly four agents;
+  deadline. The maintained unified reporting environment requires exactly four agents;
   `--population` does not currently support scaling these fixtures.
 - Time, output and retry budgets are frozen during preparation. See
   [the running guide](running-evals.md) for registration and runtime checks.

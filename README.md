@@ -23,6 +23,11 @@ one observed trajectory.
 This is the benchmark storyline, not an extra pass gate. Communication,
 adoption, composition and final effects are scored separately.
 
+“Phase 1” and “Phase 2” below label historical evidence families and research
+questions. They are not stages of a current rollout. Current runs never reset
+memory, introduce a second task, wait for a formation gate or stitch separate
+trajectories together.
+
 ## Unified environment
 
 Every current rollout uses one organization, four independent workstations and
