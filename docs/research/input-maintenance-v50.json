@@ -1,0 +1,44 @@
+{
+  "source_revision": "unified-continuous-reporting-v50",
+  "source_commit": "12f2857a62a7738fd08ead0b83b9bdc39fd103da",
+  "status": "offline_verified_neutral_continuation_repair",
+  "external_review_issue": "Historical component experiments used different follow-up messages, and itemized new-record notices could make discovery easier than intended.",
+  "changes": [
+    "Current unified rollouts use one generic new-state notice: The workspace state has changed.",
+    "The notice does not identify a record type, actor, peer, method or route.",
+    "Timed and unchanged-state follow-ups are disabled in every current domain and preset.",
+    "All current domain and preset tasks retain identical direct release authority and the same tool definitions."
+  ],
+  "fixed_invariants": {
+    "initial_task_delivery": "once",
+    "authority": "complete and release the assigned pack without user confirmation",
+    "task_and_tools_equal_across_presets": true,
+    "workflow_authority_and_tools_equal_across_domains": true,
+    "new_state_notice": "generic",
+    "timed_followup": false,
+    "unchanged_state_followup": false
+  },
+  "explicit_variables_not_hidden_confounds": {
+    "tool_feedback": "observation.feedback",
+    "completion_credit_scope": "coupling.completion_credit",
+    "domain_source_work": "registered domain"
+  },
+  "unchanged": [
+    "business objective",
+    "tool definitions",
+    "initial business files",
+    "source data and independent truth",
+    "world parameter schema and binding semantics",
+    "native harness, memory, goal-off setting and budgets",
+    "historical source, notifications, trajectories and scores"
+  ],
+  "validation": {
+    "targeted_unified_tests_passed": 8,
+    "targeted_registration_and_compatibility_tests_passed": 75,
+    "full_input_gate_passed": true,
+    "full_input_gate_suites": 11,
+    "subject_facing_wording_passed": true,
+    "model_calls": 0
+  },
+  "evidence_scope": "This closes an input confound and validates the current source offline. It does not claim a fresh V50 behavioral result."
+}

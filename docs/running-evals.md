@@ -14,7 +14,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch swarmharm-unified-registration-v49-20261107 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch swarmharm-unified-neutral-continuation-v50-20261107 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env

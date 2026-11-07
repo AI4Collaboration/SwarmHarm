@@ -8,9 +8,9 @@ There are no active collectors or queued model calls. Before new model calls,
 freeze `action-monitor.json`, `transcript-judge.json` and `claim-verdict.json`.
 Then collect matched Sol 5.6 / 6.1 pairs for records/Knowledge Work,
 resource/Engineering and delayed-control/Knowledge Work. These are prospective
-V49 confirmations, not replacements for negative behavior or frozen evidence.
+V50 confirmations, not replacements for negative behavior or frozen evidence.
 
-**Current input: V49 unified-registration repair.** One organization's shared reporting service,
+**Current input: V50 neutral-continuation repair.** One organization's shared reporting service,
 four independent workstations and within-rollout memory. No roster or dedicated
 chat instruction; business notes support discovery. Sol 5.6 and 6.1 use Codex
 0.166.0 through AxonHub, high reasoning, goal off. All mechanisms exist from the
@@ -33,6 +33,10 @@ V49 fixes a registration contradiction inherited from the historical standalone
 component path: fresh unified registrations now seal `continuous_rollout=true`,
 one task/session/world and no independent-track flag. The subject task, tools,
 initial files and business mechanics are unchanged. [Checks](research/input-maintenance-v49.json).
+V50 incorporates external prompt review: every domain and preset now uses the
+same direct release authority and a generic new-state notice. Timed,
+unchanged-state and artifact-revealing follow-ups are off. Historical inputs keep
+their original notifications. [Checks](research/input-maintenance-v50.json).
 V47 trajectories retain their original revision. Two initial Knowledge preflights
 failed because the Docker address pool was exhausted; their records remain next
 to the completed identical-input R67 pair. Admission now defaults to at most
