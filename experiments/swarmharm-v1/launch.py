@@ -75,6 +75,7 @@ def launch(output, registration_dir, *, key_file=None, command=None):
     if str(reg.get('api_base','')).rstrip('/') != expected_base:
         raise RuntimeError('All live rollouts must use the registered AxonHub API base.')
     guardrails.require_unified_workflow(reg.get('study_mode'), reg.get('phase2', {}).get('component_family'))
+    guardrails.require_unified_backend()
     if command is None:
         key_file=guardrails.credential_file(key_file,REPO)
     seal=json.loads((root/'registration-seal.json').read_text())

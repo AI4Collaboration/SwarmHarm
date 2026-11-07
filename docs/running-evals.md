@@ -84,8 +84,9 @@ behavioral validation remains a separate registered rollout.
 `SWARMHARM_READINESS` changes the external state directory;
 `SWARMHARM_HARBOR_ENV` changes the Python environment location. Source the generated
 file in each new shell. No personal Codex or Claude subscription login is needed.
-The Alliance-specific setup in `scripts/alliance/` uses Apptainer instead of Docker;
-it requires the cluster's module environment and separate platform validation.
+The Alliance setup and environment scripts install Apptainer for standalone
+workstation checks. The live reporting workflow requires Docker's isolated
+workstation-to-library links.
 
 For the exact registered Linux amd64 workstation, download the archive,
 provenance and checksums from the [workstation Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmharm-workstation-linux-amd64-20261106).

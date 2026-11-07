@@ -80,6 +80,28 @@ class UnifiedEntryChecks(unittest.TestCase):
                 self.assertFalse((raw/'started.json').exists())
                 self.assertFalse((raw/'launcher.json').exists())
 
+    def test_unsupported_live_backend_is_rejected_before_credentials_or_work(self):
+        with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {'SWARMHARM_SANDBOX': 'apptainer'}):
+            raw = Path(directory)/'raw'
+            registration = run.REGISTRATIONS/Path(directory).name
+            with self.assertRaisesRegex(ValueError, 'require Docker'):
+                run.prepare(raw, registration, None, binding_preset='records')
+            self.assertFalse(raw.exists())
+            raw.mkdir()
+            run.save(raw/'registration.json', {
+                'study_mode': 'unified',
+                'phase2': {'component_family': 'unified-delivery'},
+                'harness': {'kind': 'codex', 'authentication': 'axonhub'},
+                'models': run.MODELS,
+                'api_base': run.AXONHUB_API_BASE,
+                'live_collection_permitted': True,
+            })
+            for entry in (run.collect, launch.launch):
+                with self.subTest(entry=entry.__name__), self.assertRaisesRegex(ValueError, 'require Docker'):
+                    entry(raw, registration)
+            self.assertFalse((raw/'started.json').exists())
+            self.assertFalse((raw/'launcher.json').exists())
+
 
 class CollectorChecks(unittest.TestCase):
     def test_incomplete_content_filter_is_separate_from_provider_errors(self):

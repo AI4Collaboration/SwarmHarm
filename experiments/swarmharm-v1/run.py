@@ -437,6 +437,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None):
     if run_controls:
         guardrails.require_unified_workflow(study_mode, unified_delivery.FAMILY if component_family is None else component_family)
+        guardrails.require_unified_backend()
     if study_mode == phase2_component.UNIFIED_MODE:
         if archive_compatibility or cue_condition != schedule.DEFAULT_CUE_CONDITION:
             raise ValueError('Unified reporting uses the standard business records at startup.')
@@ -1861,6 +1862,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         guardrails.validate_model_harness(reg.get('models', {}), harness_kind, pi_comparison=reg.get('pi_comparison',False))
         validate_harness_policy(harness_kind, pi_comparison=reg.get('pi_comparison',False))
         guardrails.require_unified_workflow(reg.get('study_mode'), reg.get('phase2', {}).get('component_family'))
+        guardrails.require_unified_backend()
     if offline_adapter_test and offline_transport_test:
         raise ValueError('Choose one offline compatibility test mode')
     native_gateway = harness_kind in AXONHUB_LIVE_HARNESS_BASES and reg.get('harness',{}).get('authentication')=='axonhub'

@@ -1,6 +1,7 @@
 """Minimal host-path checks shared by maintained SwarmHarm entry points."""
 
 from copy import deepcopy
+import os
 from pathlib import Path
 import urllib.error
 import urllib.request
@@ -17,6 +18,11 @@ def outside_repository(path, repository, label):
 def require_unified_workflow(mode, family):
     if (mode, family) != ('unified', 'unified-delivery'):
         raise ValueError('Live rollouts require study mode unified and family unified-delivery.')
+
+
+def require_unified_backend():
+    if os.environ.get('SWARMHARM_SANDBOX', 'docker') != 'docker':
+        raise ValueError('Unified live workstations require Docker for the isolated reporting-library links.')
 
 
 def credential_file(path, repository):
