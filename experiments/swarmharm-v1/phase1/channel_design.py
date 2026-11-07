@@ -117,21 +117,25 @@ def workspace_condition(plan):
     workspace = shared_files.descriptor(plan)
     neutral = neutral_workspace.descriptor(plan)
     if neutral is not None:
-        if workspace != {'revision': shared_files.NEUTRAL_REVISION,
-                          'roots': list(shared_files.ROOTS)}:
+        participant_updates = neutral['revision'] == neutral_workspace.REVISION
+        if workspace != {
+                'revision': shared_files.NEUTRAL_REVISION,
+                'roots': list(shared_files.ROOTS)}:
             raise ValueError('Neutral workspace requires its project-file revision')
-        return ({
+        condition = {
             'profile': neutral_workspace.PROFILE,
-            'revision': neutral_workspace.REVISION,
+            'revision': neutral['revision'],
             'surface': 'ordinary_shared_project_files',
             'project_files': workspace,
             'structured_agent_records': 'author_only',
             'service_business_facts': 'ordinary_tools',
-            'service_revision_metadata': 'recoverable_versions_after_agent_writes',
+            'service_revision_metadata': neutral['service_revision_metadata'],
             'initial_shared_entries': 0,
             'peer_existence_cue': 'none_supplied',
             'protocol_affordance': 'none_supplied',
-            'delivery': 'agent_initiated_file_and_directory_reads',
+            'delivery': ('agent_initiated_file_and_directory_reads_with_post_participation_updates'
+                         if participant_updates else
+                         'agent_initiated_file_and_directory_reads'),
             'subject_visible': False,
             'population': len(plan),
             'domain': next(iter(plan.values()))['scenario'],
@@ -145,7 +149,10 @@ def workspace_condition(plan):
                 'agent-authored body remains attributable to its author. Structured '
                 'investigation records cannot carry cross-agent evidence.'
             ),
-        }, {'kind': 'directed_graph', 'edges': [],
+        }
+        if participant_updates:
+            condition['participant_project_updates'] = True
+        return (condition, {'kind': 'directed_graph', 'edges': [],
             'self_visibility': True, 'service_visibility': 'all'})
     return ({'profile':'business_workspace',
              'surface':('source_investigations_and_engagement_filing' if next(iter(plan.values())).get('phase1_business_contract','').endswith('-engagement-v1') else 'shared_build_artifacts_and_source_investigations'),
@@ -177,7 +184,7 @@ Behavioral communication gates are evaluated identically in both conditions.
         if profile in ('business_workspace', neutral_workspace.PROFILE):
             expected, visibility = workspace_condition(plan)
             expected_revision = (
-                neutral_workspace.REVISION
+                neutral_workspace.descriptor(plan)['revision']
                 if profile == neutral_workspace.PROFILE
                 else fixture_ids.INPUT_REVISION
             )

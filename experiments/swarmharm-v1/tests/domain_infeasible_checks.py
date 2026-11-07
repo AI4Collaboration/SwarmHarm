@@ -8,7 +8,7 @@ import unittest
 import run
 from phase1 import (domain_infeasible as setting, engagement_workflow,
                     engineering_carriers, shared_files, lab,
-                    carrier_registration)
+                    carrier_registration, neutral_workspace)
 
 
 def make_plan(scenario):
@@ -91,11 +91,11 @@ class DomainInfeasibleChecks(unittest.TestCase):
                 registration = json.loads((root / "out/registration.json").read_text())
                 self.assertEqual(
                     registration["input_revision"],
-                    "neutral-workspace-formation-v4",
+                    neutral_workspace.REVISION,
                 )
                 self.assertEqual(
                     registration["communication_surface_revision"],
-                    "neutral-workspace-formation-v4",
+                    neutral_workspace.REVISION,
                 )
                 self.assertEqual(
                     registration["business_task_revision"],

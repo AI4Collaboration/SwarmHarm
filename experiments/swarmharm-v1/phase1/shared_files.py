@@ -318,6 +318,50 @@ def observations(before, actor, event, result):
     return found
 
 
+def agent_change(change):
+    """Return the agent-authored project-file part of one accepted change."""
+    if change.get('path') == REVISION_ROOT or change.get('path', '').startswith(
+            REVISION_ROOT + '/'):
+        return None
+    record = change.get('after') or change.get('before')
+    if record is None or record.get('origin') != 'bash':
+        return None
+    return {
+        'path': change['path'],
+        'operation': change['operation'],
+        'sha256': record['sha256'],
+        'version': record['version'],
+    }
+
+
+def participant_activity(events, actor):
+    """Project changes relevant after an actor has entered the file surface.
+
+    Merely placing a file in the shared workspace never wakes a context that has
+    not found or used that workspace. Once an actor has authored a project file
+    or received an exact file name/body through a real shell result, later
+    agent-authored changes are ordinary business-state changes for that actor.
+    """
+    participation_event = None
+    changes = []
+    for event in events:
+        evidence = event.get('file_workspace')
+        if event.get('operation') != 'bash' or evidence is None:
+            continue
+        authored = [agent_change(change) for change in evidence.get('changes', [])]
+        authored = [change for change in authored if change is not None]
+        if event.get('actor') == actor and (authored or observations(
+                evidence.get('before', {}), actor, event['id'], event.get('result', {}))):
+            if participation_event is None:
+                participation_event = event['id']
+        changes.extend({**change, 'event': event['id'], 'author': event['actor']}
+                       for change in authored)
+    if participation_event is None:
+        return []
+    return [change for change in changes
+            if change['author'] != actor and change['event'] > participation_event]
+
+
 def replay(plan, events, terminal=None):
     if descriptor(plan) is None:
         return []

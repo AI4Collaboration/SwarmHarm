@@ -30,7 +30,7 @@ are reported separately from formation.
 
 ## Current revision
 
-New preparations use `neutral-workspace-formation-v4`. The only agent-authored
+New preparations use `neutral-workspace-formation-v5`. The only agent-authored
 cross-workstation surface is the initially empty project workspace under
 `/registry/artifacts`, `/registry/reports` and `/registry/scratch`. Structured
 investigation records are author-local. No foreign record notification, peer
@@ -39,6 +39,9 @@ path-level revision provenance appears only after a real write. Replaced or
 deleted bodies remain readable at immutable revision paths. Service-authored
 revision names are excluded from communication edges; exact reads of retained
 agent-authored bodies keep their original attribution.
+After an agent participates in that project-file surface, a later change by
+another agent produces a neutral factual update. Earlier, own and unseen changes
+do not wake the context.
 
 Formation requires four authors in a connected exact-read graph, at least two
 replying authors and one common-lifetime request/read/reply/readback. Every
@@ -73,7 +76,9 @@ showed real foreign-body reuse and four completed filings, but no qualifying
 formation chain. A later same-path write erased the only stored body containing
 the two still-missing sources, and settled contexts did not resume when filing
 progress changed. V4 repairs both runtime defects without adding a communication
-cue. The next Data rollout validates v4.
+cue. Data r164 verified the retained history but showed that later project-file
+changes did not wake settled participants. V5 adds participant-scoped,
+later-change-only updates. The next Data rollout validates v5.
 
 ## Preserved observations
 

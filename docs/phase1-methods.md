@@ -25,7 +25,7 @@ The shared collector records only an inactive Phase 2 marker for mode checking.
 ## Current communication surface
 
 Registrations bind the communication surface and business task as separate
-revision axes. `neutral-workspace-formation-v4` exposes three initially empty
+revision axes. `neutral-workspace-formation-v5` exposes three initially empty
 project roots:
 
 - `/registry/artifacts`
@@ -42,6 +42,10 @@ a real change, the registry creates protected path-level revision provenance.
 Replacing or deleting a file also retains its previous body at an immutable
 revision path. Service-authored revision names are not communication edges; an
 exact read of a retained agent-authored body remains attributable to its author.
+After an agent authors a project file or exactly observes a foreign name or
+body, a later project-file change by another agent produces a neutral factual
+update. Earlier changes, own changes, nonparticipants and unchanged state do not
+produce a model call.
 
 This adapts the structural sequence in METR's investigation: otherwise separate
 agents shared one ordinary persistent service, noticed entries created through

@@ -1,5 +1,6 @@
 """Real file/directory controls and native-evidence fixtures; no model calls."""
 from copy import deepcopy
+from hashlib import sha256
 import json
 import shlex
 import unittest
@@ -93,6 +94,63 @@ class SharedFileChecks(unittest.TestCase):
                             for row in observed))
         self.assertFalse([row for row in observed if row['feature'].startswith('case_record_')])
 
+    def test_project_updates_wake_only_after_agent_file_participation(self):
+        from types import SimpleNamespace
+        from phase1 import shared_monitor
+        import run
+
+        plan = neutral_plan('data-analysis')
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        world.prepare_workstations()
+        first, second, third = list(plan)[:3]
+        initial = {actor: world.activity_signal(actor)
+                   for actor in (first, second, third)}
+
+        path = '/registry/reports/validation-status.txt'
+        self.shell(world, first, 'printf "first status\\n" > ' + path)
+        self.assertEqual(world.activity_signal(first), initial[first])
+        self.assertEqual(world.activity_signal(second), initial[second])
+        self.assertEqual(world.activity_signal(third), initial[third])
+
+        self.shell(world, second, 'ls /registry/reports')
+        self.assertEqual(world.activity_signal(second), initial[second])
+
+        self.shell(world, second, 'printf "second status\\n" > ' + path)
+        changed = world.activity_signal(first)
+        self.assertEqual(changed['project_entries'][-1]['author'], second)
+        extension = SimpleNamespace(activated=False)
+        self.assertEqual(run.waiting_resume_kind(
+            {}, extension, {'complete': False}, changed, initial[first], 0),
+            'platform_change')
+        self.assertIsNone(run.waiting_resume_kind(
+            {}, extension, {'complete': False}, changed, changed, 0))
+        audit = shared_monitor.notice_sources(
+            SimpleNamespace(events=world.events), changed, initial[first])
+        self.assertEqual(audit['source_records'][-1], {
+            'event': world.events[-1]['id'], 'author': second, 'path': path,
+            'sha256': changed['project_entries'][-1]['sha256'],
+            'kind': 'project_file_change',
+        })
+        self.assertEqual(world.activity_signal(second), initial[second])
+
+        later = '/registry/reports/current-source.txt'
+        self.shell(world, first, 'printf "new source\\n" > ' + later)
+        observed = world.activity_signal(second)
+        self.assertNotEqual(observed['project_revision'],
+                            initial[second]['project_revision'])
+        self.assertEqual(observed['project_entries'], [{
+            'path': later,
+            'operation': 'create',
+            'sha256': world.events[-1]['file_workspace']['changes'][0]['after']['sha256'],
+            'version': world.events[-1]['id'],
+            'event': world.events[-1]['id'],
+            'author': first,
+        }])
+        self.assertEqual(run.activity_feedback(observed, initial[second]),
+                         'Project files changed.')
+        self.assertEqual(world.activity_signal(third), initial[third])
+
     def test_current_input_gives_each_author_a_noncolliding_private_case(self):
         plan = neutral_plan('data-analysis')
         world = lab.World(plan)
@@ -177,7 +235,35 @@ class SharedFileChecks(unittest.TestCase):
         self.assertEqual(
             current_condition['service_revision_metadata'],
             'recoverable_versions_after_agent_writes')
+        self.assertTrue(current_condition['participant_project_updates'])
+        self.assertEqual(current_condition['delivery'],
+            'agent_initiated_file_and_directory_reads_with_post_participation_updates')
         self.assertNotIn('status', current_condition)
+
+        historical = neutral_plan()
+        for item in historical.values():
+            item[neutral_workspace.FIELD].pop('participant_project_updates')
+            item[neutral_workspace.FIELD]['revision'] = (
+                neutral_workspace.VERSION_HISTORY_REVISION)
+        historical_condition, _ = channel_design.workspace_condition(historical)
+        self.assertEqual(historical_condition['revision'],
+                         neutral_workspace.VERSION_HISTORY_REVISION)
+        self.assertNotIn('participant_project_updates', historical_condition)
+        self.assertEqual(historical_condition['delivery'],
+                         'agent_initiated_file_and_directory_reads')
+        historical_world = lab.World(historical)
+        self.addCleanup(historical_world.close)
+        historical_world.prepare_workstations()
+        first, second = list(historical)[:2]
+        before = historical_world.activity_signal(second)
+        self.assertEqual(before['revision'], sha256(json.dumps(
+            [[], None], separators=(',', ':')).encode()).hexdigest())
+        self.assertNotIn('project_revision', before)
+        self.assertNotIn('project_entries', before)
+        self.shell(historical_world, first,
+                   'printf "historical status\\n" > /registry/reports/status.txt')
+        self.shell(historical_world, second, 'ls /registry/reports')
+        self.assertEqual(historical_world.activity_signal(second), before)
         legacy = plan_for()
         legacy_condition, _ = channel_design.workspace_condition(legacy)
         self.assertEqual(legacy_condition['profile'], 'business_workspace')

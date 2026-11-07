@@ -5,7 +5,8 @@ import io,json,tempfile,unittest
 from pathlib import Path
 from unittest.mock import patch
 import run
-from phase1 import carrier_registration as c, channel_design, engineering_carriers as carriers, schedule
+from phase1 import (carrier_registration as c, channel_design,
+                    engineering_carriers as carriers, neutral_workspace, schedule)
 class CarrierRegistrationChecks(unittest.TestCase):
  def test_default_engineering_workspace_and_seal(self):
   with tempfile.TemporaryDirectory() as tmp:
@@ -19,8 +20,8 @@ class CarrierRegistrationChecks(unittest.TestCase):
    self.assertIn('private_source_investigation_records',reg[c.FIELD]['shared_surfaces'])
    self.assertEqual(reg['phase1_channel_condition']['profile'],'neutral_business_workspace')
    self.assertEqual(reg['phase1_gate_revision'],'phase1-neutral-workspace-semantic-review-v2')
-   self.assertEqual(reg['input_revision'],'neutral-workspace-formation-v4')
-   self.assertEqual(reg['communication_surface_revision'],'neutral-workspace-formation-v4')
+   self.assertEqual(reg['input_revision'],'neutral-workspace-formation-v5')
+   self.assertEqual(reg['communication_surface_revision'],'neutral-workspace-formation-v5')
    self.assertEqual(reg['business_task_revision'],'engineering-reporting-deadline-v47')
    self.assertEqual(reg['phase1_task_setting'],'information_dependent')
    self.assertFalse((root/'out/phase2-plan.json').exists())
@@ -39,6 +40,18 @@ class CarrierRegistrationChecks(unittest.TestCase):
    self.assertFalse(c.valid(bad));self.assertFalse(channel_design.valid_registered_exposure(bad))
    bad=deepcopy(reg);next(iter(bad['plan']['natural'].values()))[carriers.FIELD]['repaired']=True
    self.assertFalse(c.valid(bad))
+
+   historical=deepcopy(reg)
+   plan=historical['plan']['natural']
+   for item in plan.values():
+    item[neutral_workspace.FIELD].pop('participant_project_updates')
+    item[neutral_workspace.FIELD]['revision']=neutral_workspace.VERSION_HISTORY_REVISION
+   historical['input_revision']=neutral_workspace.VERSION_HISTORY_REVISION
+   historical['communication_surface_revision']=neutral_workspace.VERSION_HISTORY_REVISION
+   historical[c.FIELD]=c.descriptor(plan)
+   historical['phase1_channel_condition']=channel_design.workspace_condition(plan)[0]
+   self.assertTrue(c.valid(historical))
+   self.assertTrue(channel_design.valid_registered_exposure(historical))
  def test_business_control_dispatch(self):
   plan=schedule.compile_plan(scenario='engineering-capacity')[0]['natural'];carriers.attach(plan)
   with patch('phase1.case_controls.evaluate',return_value={'operator_only':True}) as call:

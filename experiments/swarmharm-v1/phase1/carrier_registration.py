@@ -135,9 +135,9 @@ def valid(reg):
             ).registration_overrides(reg['cue_condition'])['input_revision']
         revision_binding_valid = (
             neutral is None or (
-                reg.get('input_revision') == neutral_workspace.REVISION
+                reg.get('input_revision') == neutral['revision']
                 and reg.get('communication_surface_revision')
-                == neutral_workspace.REVISION
+                == neutral['revision']
                 and isinstance(reg.get('business_task_revision'), str)
                 and reg.get('business_task_revision') == expected_task_revision
             )

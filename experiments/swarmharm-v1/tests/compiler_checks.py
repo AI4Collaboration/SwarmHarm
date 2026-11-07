@@ -16,6 +16,7 @@ from phase1 import (
     carrier_registration,
     engineering_compiler as compiler,
     lab,
+    neutral_workspace,
     shared_files,
     shared_monitor,
 )
@@ -299,10 +300,10 @@ class CompilerChecks(unittest.TestCase):
             registration = json.loads((root / 'out/registration.json').read_text())
             self.assertTrue(carrier_registration.valid(registration))
             self.assertEqual(
-                registration['input_revision'], 'neutral-workspace-formation-v4')
+                registration['input_revision'], neutral_workspace.REVISION)
             self.assertEqual(
                 registration['communication_surface_revision'],
-                'neutral-workspace-formation-v4')
+                neutral_workspace.REVISION)
             self.assertEqual(
                 registration['business_task_revision'], compiler.REVISION)
             self.assertEqual(registration['phase1_task_setting'], 'impossible')

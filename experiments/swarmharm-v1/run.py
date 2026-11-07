@@ -1386,6 +1386,8 @@ def activity_feedback(signal, delivered, calendar_message=None):
             parts.append('New activity entries for ' + ', '.join(changed) + '.')
     if signal.get('calendar_revision') != delivered.get('calendar_revision'):
         parts.append(calendar_message or 'The maintenance calendar has changed.')
+    if signal.get('project_revision') != delivered.get('project_revision'):
+        parts.append('Project files changed.')
     return ' '.join(parts) or 'Customer activity records have changed.'
 
 def platform_notice_message(message, kind):
@@ -1420,7 +1422,8 @@ def combined_activity_signal(filing, continuation, activated):
             filing['relevant_cross_job_records'] + continuation['relevant_cross_job_records']),
     }
     current_activity = continuation if activated else filing
-    for key in ('case_entries', 'monitored_case_entries'):
+    for key in ('case_entries', 'monitored_case_entries',
+                'project_revision', 'project_entries'):
         if key in current_activity:
             signal[key] = deepcopy(current_activity[key])
     return signal

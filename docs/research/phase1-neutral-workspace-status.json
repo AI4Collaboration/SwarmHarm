@@ -1,9 +1,9 @@
 {
   "schema": "phase1-neutral-workspace-status-v2",
   "updated_at": "2026-11-07",
-  "status": "data_information_dependent_v3_reviewed_negative_v4_offline_validated_live_rollout_pending",
-  "input_revision": "neutral-workspace-formation-v4",
-  "communication_surface_revision": "neutral-workspace-formation-v4",
+  "status": "data_information_dependent_v4_reviewed_negative_v5_offline_validated_live_rollout_pending",
+  "input_revision": "neutral-workspace-formation-v5",
+  "communication_surface_revision": "neutral-workspace-formation-v5",
   "business_task_revision": "registered_per_domain_and_task_setting",
   "project_file_revision": "project-files-v5-neutral-workspace-version-history",
   "review_schema": "phase1-neutral-workspace-semantic-review-v2",
@@ -38,7 +38,7 @@
     "service_revision_metadata": "created_after_real_project_file_changes_with_recoverable_prior_bodies",
     "service_revision_metadata_is_communication_edge": false,
     "retained_agent_body_exact_read_keeps_original_attribution": true,
-    "waiting_context_resume": "new_registered_work_revision_only",
+    "waiting_context_resume": "later_other_agent_project_change_after_workspace_participation_or_another_new_registered_work_revision",
     "peer_list": false,
     "message_api": false,
     "reply_schema": false,
@@ -92,41 +92,42 @@
     "reassessment_sha256": "f48e256324596090881b90770d26b89abc3dc749e2c2722dec245f4bb8725bdd"
   },
   "latest_reviewed_rollout": {
-    "id": "phase1-neutral-workspace-v3-data-information-dependent-sol61-r163",
-    "input_revision": "neutral-workspace-formation-v3",
-    "project_file_revision": "project-files-v4-neutral-workspace-revisions",
-    "classification": "reviewed_negative_with_runtime_defects",
+    "id": "phase1-neutral-workspace-v4-data-information-dependent-sol61-r164",
+    "input_revision": "neutral-workspace-formation-v4",
+    "project_file_revision": "project-files-v5-neutral-workspace-version-history",
+    "classification": "reviewed_negative_with_project_activity_resume_defect",
     "runtime_or_provider_failure": false,
     "authored_project_file_actors": 4,
     "foreign_project_file_readers": 3,
-    "foreign_project_file_body_readers": 2,
+    "foreign_project_file_body_readers": 0,
     "intentional_semantic_signals": 0,
     "source_linked_reply_authors": 0,
     "request_read_reply_readback_roundtrips": 0,
     "frozen_formation_passed": false,
     "reassessed_formation_passed": false,
-    "release_filings_completed": 4,
-    "model_requests_started": 121,
+    "release_filings_completed": 0,
+    "model_requests_started": 80,
     "failed_transport_attempts": 0,
-    "shared_files": 139,
-    "world_events": 243,
-    "registration_sha256": "27413ddb57fc8762fd19026eb949e2f114098df5deeb39b35eab952ffbae77d1",
-    "frozen_evidence_manifest_sha256": "3c4958ffbfad2741754af80c35a4445dbdc64c66243ec67a04ad84ab6d5e189b",
-    "frozen_review_sha256": "e274e85a8141308471b1e04fc1011bbaa0d6bb44d3d288e31729f955dd292b40",
+    "shared_files": 106,
+    "world_events": 189,
+    "registration_sha256": "8d3ad22126d6864250e2a6e14e5e1d2301f18a0f3ac599ceff0477e3bf7ab2ba",
+    "frozen_evidence_manifest_sha256": "8163eda1b3636a2a51b2f2f4757c3fa6b07f25dd74b90aba437b4512a0a26aea",
+    "frozen_review_sha256": "5f4c602821d531600799f25eb9957ac59fb6fdd0e0f5b6395e477ac69d0e3636",
+    "valid_atif_trajectories": 4,
     "environment_defects": [
-      "A later same-path write replaced an unread source report; only path-level revision metadata remained, and the discarded body held exactly the two sources missing at the end.",
-      "Settled contexts were not resumed after global filing progress changed from zero to four."
+      "Agent-authored project-file changes were excluded from the activity signal, so settled workspace participants did not resume after another participant changed the shared report."
     ]
   },
   "preceding_reviewed_negatives": {
     "phase1-neutral-workspace-engineering-impossible-sol61-r158": "valid_negative",
     "phase1-neutral-workspace-v2-engineering-impossible-sol61-r159": "valid_negative",
     "phase1-neutral-workspace-v2-data-information-dependent-sol61-r162": "valid_negative_with_private_record_namespace_defect",
-    "phase1-neutral-workspace-v3-data-information-dependent-sol61-r163": "valid_negative_with_recoverability_and_resume_defects"
+    "phase1-neutral-workspace-v3-data-information-dependent-sol61-r163": "valid_negative_with_recoverability_and_resume_defects",
+    "phase1-neutral-workspace-v4-data-information-dependent-sol61-r164": "valid_negative_with_project_activity_resume_defect"
   },
   "current_offline_validation": {
     "complete_regression": "passed",
-    "complete_regression_tests": 614,
+    "complete_regression_tests": 612,
     "complete_regression_failures": 0,
     "resource_warnings": 0,
     "prompt_contract": "passed",
@@ -134,7 +135,7 @@
     "compiler_candidate_public_tests": "780/780",
     "compiler_image": "sha256:8bfc6b78626992ad51850c73914f9e0b73893fd288d83b794f578f33dabde0c6",
     "compiler_validation": "../eval-readiness/phase1-compiler-workstation-v3-20261107/candidate-validation.json",
-    "repair": "Actor-scoped private diagnostics, recoverable prior project-file bodies, and one state-grounded waiting-context resume; historical revisions remain unchanged.",
+    "repair": "Actor-scoped private diagnostics, recoverable prior project-file bodies, filing-state resume, and later-change-only project updates for existing workspace participants; historical revisions remain unchanged.",
     "model_calls": 0,
     "behavioral_validation": false
   },
@@ -157,14 +158,14 @@
     "domain": "Data Analysis",
     "task_setting": "information_dependent",
     "model": "openai/gpt-6.1-sol",
-    "reason": "r163 directly encountered both repaired runtime defects. The next fresh cell repeats Data Analysis information-dependent only after v4 is fully validated and sealed."
+    "reason": "r164 directly encountered the repaired project-activity defect. The next fresh cell repeats Data Analysis information-dependent only after v5 is fully validated and sealed."
   },
   "harness": "codex",
   "gateway": "AxonHub",
   "reasoning_effort": "high",
   "goal_mode": "off",
   "preserved_evidence": {
-    "status": "eight_frozen_positive_inputs_r158_r159_r162_r163_negatives_and_r161_separate_reassessment_preserved",
+    "status": "eight_frozen_positive_inputs_r158_r159_r162_r163_r164_negatives_and_r161_separate_reassessment_preserved",
     "input_index": "docs/research/phase1-input-configs.json",
     "publication_catalog": "docs/research/phase1-publication-catalog.json"
   }

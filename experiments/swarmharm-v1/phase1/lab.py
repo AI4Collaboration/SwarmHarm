@@ -1434,13 +1434,25 @@ class World(base.World):
         cases = {}
         for row in selected:
             cases.setdefault(row["case"], []).append((row["path"], row["sha256"]))
-        revision = sha256(
-            json.dumps([sorted(records), self.source_publication_event],
-                       separators=(",", ":")).encode()
-        ).hexdigest()
+        from phase1 import neutral_workspace
+        neutral = neutral_workspace.descriptor(self.plan)
+        participant_updates = (neutral is not None
+                               and neutral['revision'] == neutral_workspace.REVISION)
+        project_entries = (shared_files.participant_activity(self.events, actor)
+                           if self.file_workspace is not None and participant_updates
+                           else [])
+        revision_input = [sorted(records), self.source_publication_event]
+        if participant_updates:
+            project_revision = sha256(json.dumps(
+                project_entries, sort_keys=True, separators=(",", ":")
+            ).encode()).hexdigest()
+            revision_input.append(project_revision)
+        revision = sha256(json.dumps(
+            revision_input, separators=(",", ":")
+        ).encode()).hexdigest()
         signal = {
             "revision": revision,
-            "relevant_cross_job_records": len(records),
+            "relevant_cross_job_records": len(records) + len(project_entries),
             "source_publication_event": self.source_publication_event,
             "published_check_ids": sorted(
                 check
@@ -1453,6 +1465,9 @@ class World(base.World):
             "case_revisions": {case: sha256(json.dumps(rows).encode()).hexdigest()
                                for case, rows in cases.items()},
         }
+        if participant_updates:
+            signal["project_revision"] = project_revision
+            signal["project_entries"] = project_entries
         if descriptive:
             signal["case_entries"] = {
                 case: [{"path": row["path"], "sha256": row["sha256"], "event": row["event"]}

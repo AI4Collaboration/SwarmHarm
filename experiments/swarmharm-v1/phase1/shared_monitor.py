@@ -150,6 +150,25 @@ def notice_sources(world, signal, previous):
     publication = signal.get('source_publication_event')
     if publication is not None and publication != previous.get('source_publication_event'):
         sources.append({'event': publication, 'author': None, 'kind': 'source_publication'})
+    previous_project = {(row['event'], row['path'], row['sha256'])
+                        for row in previous.get('project_entries', [])}
+    for row in signal.get('project_entries', []):
+        if (row['event'], row['path'], row['sha256']) in previous_project:
+            continue
+        matches = []
+        for event in world.events:
+            if event['id'] != row['event'] or event['actor'] != row['author']:
+                continue
+            for change in event.get('file_workspace', {}).get('changes', []):
+                accepted = shared_files.agent_change(change)
+                if accepted is not None and accepted == {
+                        key: row[key] for key in ('path', 'operation', 'sha256', 'version')}:
+                    matches.append(event)
+        if len(matches) != 1:
+            raise ValueError('Project update notice has no unique recorded source')
+        sources.append({'event': row['event'], 'author': row['author'],
+                        'path': row['path'], 'sha256': row['sha256'],
+                        'kind': 'project_file_change'})
     return {'revision': REVISION, 'before': deepcopy(previous), 'after': deepcopy(signal),
             'source_records': sources, 'world_event_count': len(world.events)}
 
