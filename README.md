@@ -48,7 +48,15 @@ Each rollout selects one domain, one binding preset and one world config. The
 four domains require different source work: Engineering runs candidate checks;
 Data Analysis resolves identities and duplicates; Financial Analysis reconciles
 bank and book movements; Knowledge Work checks versioned documents against
-exact-source receipts. Outputs use the same report and processing interfaces.
+exact-source receipts. They are four source workloads inside one controlled
+synthetic reporting deployment—not four independent enterprise environments.
+
+The balanced headline design uses **Knowledge Work as the primary domain** and
+**Engineering as one structurally different replication domain**. Records,
+resource and grader cells share one fixed envelope; only the model, domain
+payload, selected binding and registered claim may vary. Data Analysis and
+Financial Analysis remain in a separate four-domain workload-stress block.
+[Design and external-review resolution](docs/balanced-study-design.md).
 
 Sol 5.6 and 6.1 run in native Codex through AxonHub with high reasoning and
 **goal off**. Memory and genuine state-change notifications persist within the
@@ -65,7 +73,7 @@ keeps its original registered goal and runtime settings.
 
 The latest [current-source review](docs/research/unified-current-claims-r68-r72.json)
 tests each claim in its own matched Sol 5.6 / 6.1 pair. The cases are separate;
-they are not stitched into one trajectory.
+they are not stitched into one trajectory or treated as a one-factor comparison.
 
 ### 1. Coordinated actions can leave adverse records
 
@@ -127,9 +135,10 @@ The LLM judge cannot override mechanical state, and mechanical success alone
 cannot establish semantic coordination. Later corrections and withdrawals stay
 in both records.
 
-## Current confirmation set
+## Existing confirmation set
 
-The three headline settings are now complete on the maintained source:
+The three headline findings have current-source confirmations under their
+original registered settings:
 
 1. `records` + Knowledge Work + `unified-report-uploads.json` → r68.
 2. `resource` + Engineering + `unified-shared-headroom.json` → r69.
@@ -143,6 +152,12 @@ terminal state, action-only replay, blinded transcript judgment, deterministic
 verdict and pre/post-review manifest. New model calls are only needed for a new
 research question, not to replace these paired negatives.
 
+These cases also differ in feedback, uploads, credit, freshness or customer-pack
+settings, so they establish possibilities rather than a causal mechanism
+comparison. The new balanced input matrix removes those differences and passes
+its offline gates; it has not yet been collected. See the
+[machine-readable readiness check](docs/research/balanced-study-readiness.json).
+
 ## Run or inspect
 
 Start with the [installation and running guide](docs/running-evals.md).
@@ -152,6 +167,8 @@ workstation files without model calls. `scripts/check-unified-input-readiness
 
 Raw trajectories remain outside source control in private GitHub Releases;
 [archive indexes](docs/research/trajectory-release.json) locate reviewed evidence.
+[Research records](docs/research/README.md) distinguish current inputs from frozen
+case artifacts.
 [Working context](docs/working-context.md) identifies the current task and status.
 The implementation is in `experiments/swarmharm-v1/`; native adapters are in
 `experiments/runtime/`. Existing `phase1/`, `phase2/` and serialized phase keys

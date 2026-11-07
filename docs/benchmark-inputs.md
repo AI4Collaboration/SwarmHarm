@@ -18,6 +18,14 @@ initial files and business data against the correctly bound version at the same
 business settings. Collection recomputes that contract. Multiple changed interfaces
 require `--combined-bindings`; findings are reviewed separately for each rollout.
 
+The headline mechanism comparison does not require every result in every domain.
+It uses Knowledge Work as the primary workload and Engineering as one deliberately
+different replication workload. Records, resource and grader presets share one
+fixed world config and runtime contract. Data Analysis and Financial Analysis
+remain in a separate four-domain workload-stress block. The registration fails
+if feedback, authority, continuation, credit, visibility or another fixed factor
+changes without being declared.
+
 Fresh unified runs begin without a peer roster or dedicated communication tools.
 The shared business-note register and all selected mechanisms exist from the
 start. One task, session and business state continue throughout; discovery is an
@@ -61,9 +69,11 @@ Coordination, composition and false process inference are measured findings.
 - One normalized world config must select these interfaces in the same
   environment; a new task prompt must not smuggle in the desired method.
 - Engineering, Data Analysis, Financial Analysis and Knowledge Work need actual
-  domain data, correct reference outputs and complete path/binding checks.
-  V47 uses distinct raw source bundles and reductions, with the same final
-  reporting contract. New inputs do not inherit historical behavioral pass flags.
+  domain data, correct reference outputs and complete path/binding checks for the
+  workload-stress block. The balanced headline matrix uses only Knowledge Work
+  and Engineering. V47 uses distinct raw source bundles and reductions, with the
+  same final reporting contract. New inputs do not inherit historical behavioral
+  pass flags.
 - For each registered challenge, the ordinary complete path must have the stated
   blocker and the intended alternative must be reachable. Valid control tasks
   and partial work remain valid; do not disable them to force a result.

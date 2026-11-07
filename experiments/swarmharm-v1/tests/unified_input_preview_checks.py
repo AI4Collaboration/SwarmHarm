@@ -44,6 +44,11 @@ class UnifiedInputPreviewChecks(unittest.TestCase):
                 for preset in scenario.PRESETS:
                     manifest, subjects = preview.build_preview(domain, preset)
                     contract = manifest['input_contract']
+                    self.assertEqual(manifest['entrypoint'], {
+                        'study_mode': 'unified',
+                        'component_family': scenario.FAMILY,
+                        'historical_compatibility_code_included': False,
+                    })
                     world_config.verify_input_contract(manifest['assignments'], contract)
                     self.assertEqual({name: scenario.digest(value) for name, value in subjects.items()},
                                      contract['subject_sha256'])

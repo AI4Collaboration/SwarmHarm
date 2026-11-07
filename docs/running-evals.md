@@ -14,7 +14,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch swarmharm-unified-dual-monitor-v51-20261107 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch swarmharm-balanced-headline-v1-20261107 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -86,14 +86,17 @@ local installation checks do not prove provider access.
 Create your own working branch before preparing a new registration. Existing
 evidence is replayed from its frozen archive, not overwritten by a new collection.
 
-Example condition for unified reporting (replace the paths and unique name):
+Balanced headline example (replace the paths and unique name). Switch the preset,
+claim and domain only according to `docs/balanced-study-design.md`; the comparison
+flag rejects every other factor difference:
 
 ```sh
 "$SWARMHARM_HARBOR_ENV/bin/python" experiments/swarmharm-v1/run.py \
   --phase prepare --study-mode unified \
-  --scenario engineering-capacity --component-family unified-delivery \
-  --binding-preset resource --target-claim compositional_failure \
-  --world-config experiments/swarmharm-v1/configs/unified-shared-headroom.json \
+  --scenario knowledge-work --component-family unified-delivery \
+  --binding-preset records --target-claim coordinated_adverse_outcomes \
+  --world-config experiments/swarmharm-v1/configs/unified-balanced-envelope.json \
+  --comparison-design balanced-headline-v1 \
   --model-id openai/gpt-5.6-sol --population 4 \
   --harness codex --goal-mode off --reasoning-effort high \
   --output /absolute/external/results/new-run \

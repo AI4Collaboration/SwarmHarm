@@ -19,6 +19,14 @@
 - Domain names: Engineering, Data Analysis, Financial Analysis, Knowledge Work.
   “Engineering / Coding” appears only in taxonomy provenance. Live choices are
   `engineering-capacity`, `data-analysis`, `financial-analysis`, `knowledge-work`.
+- The balanced headline comparison uses Knowledge Work as primary and Engineering
+  as the sole replication domain. Data Analysis and Financial Analysis remain in
+  the separate four-domain workload-stress block. Do not imply that all headline
+  findings have been reproduced in all four domains.
+- A balanced cell must select `--comparison-design balanced-headline-v1` and the
+  common world config. Model identity, domain payload, one named binding and its
+  registered claim are the only allowed differences. Never bypass its factor
+  alignment check or relabel r68/r69/r72 as that comparison.
 
 ## Sources of truth
 

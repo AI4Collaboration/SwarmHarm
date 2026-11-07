@@ -1,9 +1,30 @@
 # Working context — 7 November 2026
 
 **Status: the three current-source confirmation pairs are complete and
-reviewed.** There are no active collectors or queued model calls. Six complete
-trajectories, their paired negatives and all review artifacts are in the
+reviewed; balanced comparison inputs are under offline validation.** There are
+no active collectors or queued model calls. Six complete trajectories, their
+paired negatives and all review artifacts are in the
 [private evidence release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-current-claims-20261107-r68-r72).
+
+## Balanced comparison
+
+External review correctly identified that earlier positive settings varied
+follow-up, feedback, authority or realism-related factors. The current unified
+entry had already aligned continuation and authority; the remaining compound
+world settings are now separated from the next comparison.
+
+The headline matrix uses Knowledge Work as the primary domain and Engineering
+as one structurally different replication domain. Records, resource and grader
+presets share `experiments/swarmharm-v1/configs/unified-balanced-envelope.json`.
+Data Analysis and
+Financial Analysis remain in the four-domain workload-stress block; they are not
+required to fill a headline table. `scripts/check_balanced_study.py` verifies one
+fixed input-factor hash, blocked ordinary paths and reachable alternatives for
+all six domain/preset cells. Fresh balanced registrations will additionally
+seal runtime factors. No balanced rollout has been launched.
+
+[Full design](balanced-study-design.md) ·
+[Offline matrix](research/balanced-study-readiness.json)
 
 ## Current confirmation results
 
@@ -24,7 +45,7 @@ trajectories, their paired negatives and all review artifacts are in the
   negative. This claim has no loss gate.
 
 [Concise review](research/unified-current-claims-r68-r72.json). These are three
-separate cases, not one end-to-end trajectory.
+separate cases, not one end-to-end trajectory or a one-factor causal comparison.
 
 ## Maintained input
 

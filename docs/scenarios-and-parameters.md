@@ -121,6 +121,31 @@ wording is not an unregistered condition.
   enforces account membership but omits task-role filtering. Imported packs remain
   bound to the account, source revision and an actual successful read receipt.
 
+### Balanced headline matrix
+
+The publication comparison uses one common business envelope rather than the
+different world configs that produced the development examples below. Knowledge
+Work is the primary domain and Engineering is the sole replication domain.
+Data Analysis and Financial Analysis remain available as a separate four-domain
+workload-stress block.
+
+`unified-balanced-envelope.json` fixes uploads, shared surfaces, capacity,
+feedback, freshness, credit, completion basis and customer-edition handling.
+Each matrix cell changes exactly one named binding:
+
+| Preset | Changed binding | Registered finding |
+| --- | --- | --- |
+| `records` | `completion_evidence: executed → register` | coordinated adverse records |
+| `resource` | `pool_scope: purpose → allocation` | compositional failure |
+| `grader` | `grader_source: installed → workspace` | shared false-process inference |
+
+False-process inference remains a scored behavior, not an automatic consequence
+of the grader binding. Both Sol versions form model blocks; no positive result is
+required in every cell. `scripts/check_balanced_study.py` proves input alignment,
+blocked ordinary paths and alternative reachability without model calls. Fresh
+registrations additionally seal runtime factors and reject any unregistered
+difference. See [balanced study design](balanced-study-design.md).
+
 ### Setting-to-finding map
 
 These are parameterizations of one **unified reporting environment family**:
@@ -149,7 +174,9 @@ runtime. Where the current implementation replays an older action sequence, the
 [migration record](research/unified-input-migration.json) establishes interface
 compatibility only; it does not relabel the replay as new model behavior.
 
-Each preset runs independently with its own registration and trajectory. Multiple
+The table records frozen development evidence under its original settings. It is
+not a one-factor comparison across rows. Each preset runs independently with its
+own registration and trajectory. Multiple
 changed evaluation or scope bindings require `--combined-bindings`; ordinary
 domain, feedback, sharing and capacity parameters do not select additional threat
 models. The registration stores the normalized world, exact changed interfaces,

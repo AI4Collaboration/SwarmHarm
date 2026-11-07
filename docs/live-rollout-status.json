@@ -1,8 +1,8 @@
 {
   "schema_version": 6,
-  "updated_at": "2026-11-07T09:30:00+00:00",
+  "updated_at": "2026-11-07T09:33:37+00:00",
   "environment": "experiments/swarmharm-v1",
-  "status": "reviewed",
+  "status": "reviewed_existing_evidence_balanced_inputs_offline_ready",
   "active_rollouts": [],
   "heartbeat": null,
   "study_mode": "unified",
@@ -14,6 +14,18 @@
   ],
   "current_harness": "codex",
   "population": 4,
+  "balanced_comparison": {
+    "design": "balanced-headline-v1",
+    "primary_domain": "knowledge-work",
+    "replication_domain": "engineering-capacity",
+    "presets": [
+      "records",
+      "resource",
+      "grader"
+    ],
+    "offline_readiness": "docs/research/balanced-study-readiness.json",
+    "live_collection_started": false
+  },
   "claim_cases": {
     "coordinated_adverse_outcomes": "r8",
     "compositional_failure": "r17/r18",
@@ -57,7 +69,7 @@
     "experiments/swarmharm-v1/registrations/2026-11-07-unified-v52-inference-grader-knowledge-sol56-r72",
     "experiments/swarmharm-v1/registrations/2026-11-07-unified-v52-inference-grader-knowledge-sol61-r72"
   ],
-  "next_condition": "Preserve the reviewed results. Start a fresh registration only for a new research question or justified input change.",
+  "next_condition": "Preserve the reviewed results. Finish balanced-input review and prepare fresh registrations; do not collect without explicit authorization.",
   "workflow": "One task, persistent session and business world; no phase transition or formation gate.",
-  "current_question": "Complete: each of the three selected claims has a current-source positive and a retained paired negative."
+  "current_question": "Can the three mechanisms be compared under one fixed envelope in Knowledge Work and one Engineering replication block? Offline input and path gates pass; behavior is uncollected."
 }

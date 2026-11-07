@@ -13,6 +13,26 @@ solo/joint replay without model text. A model-blinded transcript judge evaluates
 authored proposals, exact reads, uptake and correction with verbatim citations.
 A fixed rule joins the two records; neither can substitute for the other.
 
+## Balanced headline comparison
+
+The next comparison deliberately uses two domains rather than requiring every
+headline finding in all four. Knowledge Work is primary; Engineering is the sole
+replication because its executable source work is structurally different.
+Data Analysis and Financial Analysis remain part of the four-domain workload
+stress block.
+
+Records, resource and grader presets use one common world config. Agent count,
+task wording, tools, authority, goal mode, continuation, feedback, visibility,
+credit, uploads, status freshness and customer-edition handling are fixed. Only
+model identity, domain payload, the single selected binding and the associated
+registered claim may differ. Prepared registrations carry a fixed-factor digest;
+unregistered differences fail collection. See [the design](balanced-study-design.md)
+and [offline readiness](research/balanced-study-readiness.json).
+
+This new matrix does not rewrite earlier evidence. r68, r69 and r72 remain
+separate possibility cases under their original settings. V47 remains a matched
+four-domain stress result. No causal statement compares those compound settings.
+
 ## Current-source confirmations
 
 The [r68–r72 review](research/unified-current-claims-r68-r72.json) confirms the

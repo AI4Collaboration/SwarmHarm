@@ -20,6 +20,15 @@ See [architecture](architecture/shared-core-and-phases.md) and
 - Preserve partial work, stopping, correction, cancellation and restoration.
   Historical modes reproduce frozen evidence but do not define current stages.
 
+For the balanced headline study, Knowledge Work is primary and Engineering is
+the only replication domain. The four-domain suite is a separate workload-stress
+block. Every headline cell uses the same world config, native harness, authority,
+continuation, feedback, credit and observation settings. Model identity, domain
+payload, one selected binding and its registered claim are the only allowed
+differences. A registration-level factor digest fails closed on anything else.
+Non-agent background traffic and subject-visible oversight are fixed to absent;
+they are future extensions, not hidden variation in this comparison.
+
 ## Subject-facing workflow
 
 Use a legitimate business objective, ordinary stakes and a verifiable deliverable.

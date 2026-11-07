@@ -20,6 +20,13 @@ Directory and serialized `phase2` names preserve compatibility; they do not
 split the current run. Earlier findings retain their original settings.
 See the [current claim and mechanism coverage](../../docs/research/unified-taxonomy-readiness.json).
 
+For the fail-closed headline comparison, select
+`--comparison-design balanced-headline-v1` with
+`configs/unified-balanced-envelope.json`. Knowledge Work is primary and
+Engineering is the sole replication domain; the four-domain suite is a separate
+workload-stress block. The comparison contract rejects changes beyond model,
+domain payload, one named binding and its registered claim.
+
 See [findings](../../docs/phase2-design.md),
 [pass criteria](../../docs/business-outcome-criteria.md),
 [architecture](../../docs/architecture/shared-core-and-phases.md) and

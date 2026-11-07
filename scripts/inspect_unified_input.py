@@ -27,6 +27,8 @@ def build_preview(domain, preset, overrides=None, *, combined=False, harness='co
     contract = world_config.input_contract(plan, combined=combined)
     return {
         'kind': 'offline_business_input_preview',
+        'entrypoint': {'study_mode': 'unified', 'component_family': scenario.FAMILY,
+                       'historical_compatibility_code_included': False},
         'scenario_revision': scenario.REVISION,
         'world_revision': world_config.REVISION,
         'domain': domain, 'preset': preset, 'harness_file_layout': harness,

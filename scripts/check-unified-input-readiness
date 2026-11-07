@@ -54,6 +54,7 @@ def main(argv=None):
         ('domain source work', 'workload_source_checks.py'),
         ('domain catalog', 'domain_checks.py'),
         ('input contract', 'unified_input_contract_checks.py'),
+        ('factor alignment', 'unified_factor_alignment_checks.py'),
         ('input export', 'unified_input_preview_checks.py'),
         ('path accounting', 'delivery_path_checks.py'),
         ('host launch capacity', 'host_capacity_checks.py'),
@@ -75,6 +76,8 @@ def main(argv=None):
             env=environment),
         run('format contract', [python, 'scripts/check_format_contract.py',
                                 'experiments/swarmharm-v1'], env=environment),
+        run('balanced headline matrix', [python, 'scripts/check_balanced_study.py'],
+            env=environment),
     ]
     report = {
         'kind': 'unified_business_input_readiness',

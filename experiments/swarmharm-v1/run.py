@@ -36,7 +36,7 @@ from phase1 import topology
 import domain_runtime
 from phase2 import phase2_component
 from phase2 import component_workflow
-from phase2 import trace_release, financial_composition, unified_delivery
+from phase2 import trace_release, financial_composition, unified_delivery, balanced_study
 from phase2.terminal_batching import fixtures as batching, workflow as batching_workflow, answer_workflow
 GUARDRAIL_SPEC=importlib.util.spec_from_file_location(
     'swarmharm_run_guardrails',REPO/'experiments/runtime/guardrails.py')
@@ -307,6 +307,7 @@ def code_paths():
         +[
             HERE/'README.md', HERE/'format-contract.json', HERE/'protocol.json',
             HERE/'domain-scenarios.json', HERE/'phase1/README.md', HERE/'phase2/README.md',
+            HERE/'configs/unified-balanced-envelope.json',
         ]
         +[REPO/'experiments'/name for name in (
             'runtime/atomic.py','runtime/guardrails.py','runtime/workstation.py','runtime/workspace_paths.py','runtime/codex_gateway.py',
@@ -325,7 +326,7 @@ def code_paths():
           if p.is_file() and p.suffix != '.py']
         +[REPO/'experiments/runtime/Dockerfile.workstation',REPO/'scripts/build-workstation-image',
           REPO/'scripts/check_goal_mode_pair.py', REPO/'scripts/inspect_unified_input.py',
-          REPO/'scripts/judge_unified_transcript.py']
+          REPO/'scripts/check_balanced_study.py', REPO/'scripts/judge_unified_transcript.py']
     )
 
 def require(condition,message):
@@ -432,7 +433,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind is None:
@@ -474,6 +475,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     trace_study = component and component_family == trace_release.FAMILY
     treasury_study = component and component_family == financial_composition.FAMILY
     unified_study = component and component_family == unified_delivery.FAMILY
+    if comparison_design is not None and comparison_design != balanced_study.NAME:
+        raise ValueError('Unknown comparison design')
+    if comparison_design is not None and not unified_study:
+        raise ValueError('Balanced comparison design requires unified delivery')
     if unified_study and (population != 4 or initial_material != "business_records_only" or material_distribution != "all_workstations" or binding_preset not in unified_delivery.PRESETS):
         raise ValueError("Unified delivery needs four actors, ordinary materials and an explicit preset")
     if not unified_study and binding_preset is not None:
@@ -487,6 +492,17 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         unified_delivery.world_config.selection(world_config, binding_preset,
                                                 combined=combined_bindings)
         delivery_config, _ = unified_delivery.world_config.components(world_config)
+        if comparison_design == balanced_study.NAME:
+            if scenario not in balanced_study.DOMAINS:
+                raise ValueError('Balanced comparison uses Knowledge Work or Engineering')
+            if binding_preset not in balanced_study.PRESET_CLAIMS:
+                raise ValueError('Balanced comparison uses records, resource or grader')
+            if world_config != balanced_study.expected_world(binding_preset):
+                raise ValueError('Balanced comparison world differs from the common envelope')
+            if harness_kind != 'codex' or goal_mode != 'off' or reasoning_effort != 'high':
+                raise ValueError('Balanced comparison requires native Codex, goal off and high reasoning')
+            if target_claim != balanced_study.PREPARE_CLAIMS[binding_preset]:
+                raise ValueError('Balanced comparison target claim does not match its preset')
     if treasury_study and (population != 4 or initial_material != 'business_records_only' or material_distribution != 'all_workstations'):
         raise ValueError('Treasury composition requires four actors and ordinary business records at every workstation')
     if target_claim is not None:
@@ -1411,6 +1427,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if unified_study:
         unified_delivery.configure_registration(reg, root, target_claim=target_claim,
                                                  combined_bindings=combined_bindings)
+        if comparison_design == balanced_study.NAME:
+            reg['comparison_design'] = balanced_study.registration_manifest(reg)
     if treasury_study:
         financial_composition.configure_registration(reg, root)
     if trace_study:
@@ -1891,6 +1909,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     'Registered completion paths differ; prepare fresh inputs.')
             delivery_paths.require_challenge(path_validation, reg['phase2']['binding_preset'],
                                             reg.get('claim_contract', {}).get('target_claim'))
+            if 'comparison_design' in reg:
+                require(reg['comparison_design'] == balanced_study.registration_manifest(reg),
+                        'Balanced comparison factors differ; prepare fresh inputs.')
         elif treasury_study:
             require(reg['component_initial_state']==financial_composition.initial_state(reg['phase2']['assignments']), 'Treasury inputs differ')
         elif trace_study:
@@ -2833,6 +2854,8 @@ if __name__=='__main__':
         help='Unified world JSON: access, coupling, verification and observation. Overrides the selected preset; mutually exclusive with delivery-config.')
     p.add_argument('--combined-bindings', action='store_true',
         help='Explicitly register a combination of evaluated interfaces. Default runs select one interface at a time.')
+    p.add_argument('--comparison-design', choices=(balanced_study.NAME,),
+        help='Fail-closed balanced headline matrix; fixes all factors except model, domain and the named binding.')
     p.add_argument('--release-feedback', choices=('measured_checks','status_only'), default='measured_checks',
         help='Freeze the trace-release feedback condition; status_only reproduces r257.')
     p.add_argument('--target-claim', choices=unified_delivery.CLAIMS,
@@ -2872,5 +2895,5 @@ if __name__=='__main__':
             proof_stage=a.proof_stage,pi_comparison=a.pi_comparison,target_claim=a.target_claim,release_feedback=a.release_feedback,controls_from=a.controls_from,binding_preset=a.binding_preset,
             delivery_config=load(a.delivery_config) if a.delivery_config is not None else None,
             world_config=load(a.world_config) if a.world_config is not None else None,
-            combined_bindings=a.combined_bindings)
+            combined_bindings=a.combined_bindings,comparison_design=a.comparison_design)
     else:collect(root,registration_dir)
