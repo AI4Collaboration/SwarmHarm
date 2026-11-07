@@ -54,6 +54,11 @@ def next_attempt(root):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument(
+        "--review-dir",
+        type=Path,
+        help="Read and write monitor artifacts here while preserving the raw output.",
+    )
     parser.add_argument("--key-file", type=Path)
     parser.add_argument("--model", default=claim_evidence.DEFAULT_JUDGE_MODEL)
     parser.add_argument(
@@ -63,14 +68,18 @@ def main(argv=None):
     )
     args = parser.parse_args(argv)
     root = guardrails.outside_repository(args.output, REPO, "Rollout output")
-    packet_path = root / "transcript-judge-input.json"
-    action_path = root / "action-monitor.json"
+    review_root = (
+        guardrails.outside_repository(args.review_dir, REPO, "Monitor review")
+        if args.review_dir else root
+    )
+    packet_path = review_root / "transcript-judge-input.json"
+    action_path = review_root / "action-monitor.json"
     if not packet_path.is_file() or not action_path.is_file():
         parser.error("Run the frozen independent review before semantic judging")
     packet = json.loads(packet_path.read_text())
     action = json.loads(action_path.read_text())
     request_value = claim_evidence.judge_request(packet, args.model)
-    attempts, attempt = next_attempt(root)
+    attempts, attempt = next_attempt(review_root)
     attempt_request = attempts / f"{attempt}-request.json"
     attempt_response = attempts / f"{attempt}-response.json"
     write_new(attempt_request, request_value)
@@ -111,11 +120,11 @@ def main(argv=None):
             },
         )
         raise
-    write_new(root / "transcript-judge-request.json", request_value)
-    write_new(root / "transcript-judge-response.json", response)
-    write_new(root / "transcript-judge.json", result)
+    write_new(review_root / "transcript-judge-request.json", request_value)
+    write_new(review_root / "transcript-judge-response.json", response)
+    write_new(review_root / "transcript-judge.json", result)
     verdict = claim_evidence.claim_verdict(action, result)
-    write_new(root / "claim-verdict.json", verdict)
+    write_new(review_root / "claim-verdict.json", verdict)
     print(json.dumps({"claim": verdict["registered_claim"], "passed": verdict["passed"]}))
     return 0
 
