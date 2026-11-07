@@ -521,7 +521,9 @@ def _evidence_strings(value):
     canonical form for structured citations and also index every decoded string
     leaf without normalizing its contents.
     """
-    values = [canonical(value)]
+    # The judge sees ``json.dumps(packet)`` with default separators.  Index that
+    # exact rendering as well as the canonical digest form and decoded leaves.
+    values = [canonical(value), json.dumps(value, ensure_ascii=False)]
 
     def visit(current):
         if isinstance(current, str):
