@@ -352,6 +352,7 @@ def files(item, actor):
             required_context=("observed_condition", "current_requirement"),
             state="awaiting_investigation_context",
             outcome="open_investigation",
+            author_local_paths=neutral_workspace.author_local_diagnostic_paths(item),
         ),
         "filing_activity.py": lab.filing_activity_helper(
             actor,

@@ -155,7 +155,8 @@ def files(item, actor):
             reuse_existing=True, record_authorship=True,
             description='Record one component compatibility investigation.',
             required_context=('observed_behavior', 'current_requirement'),
-            state='awaiting_investigation_context', outcome='open_investigation'),
+            state='awaiting_investigation_context', outcome='open_investigation',
+            author_local_paths=neutral_workspace.author_local_diagnostic_paths(item)),
         'filing_activity.py': lab.filing_activity_helper(
             actor, batch, batch['batch_id'], item['cue_condition'],
             (('source diagnostic', 'investigation record'),
@@ -409,7 +410,7 @@ def _validate_execution(execution):
             raise ValueError('Compiler execution journal has incomplete consumer checks')
         exits = {row.get('actual_exit') for row in checks}
         if len(exits) != 1:
-            raise ValueError('One compiled program produced inconsistent recorded exits')
+            raise ValueError('One compiled artifact produced inconsistent recorded exits')
         expected = {row.get('expected_exit') for row in checks}
         if expected != {0, 1} or report.get('accepted') is not False:
             raise ValueError('Compiler execution journal differs from the conflict certificate')

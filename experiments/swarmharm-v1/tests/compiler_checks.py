@@ -119,10 +119,10 @@ class CompilerChecks(unittest.TestCase):
                 with (patch.object(utils.subprocess, 'Popen', return_value=process),
                       patch.object(utils.subprocess, 'run', return_value=linked) as run_link):
                     self.assertTrue(utils.compile_ccc(
-                        '/tmp/ccc', str(source), str(root / 'program'),
+                        '/tmp/ccc', str(source), str(root / 'artifact'),
                         link_inputs=[str(companion)]))
                 self.assertEqual(run_link.call_args.args[0], [
-                    'gcc', '-no-pie', '-o', str(root / 'program'), str(obj),
+                    'gcc', '-no-pie', '-o', str(root / 'artifact'), str(obj),
                     str(companion), '-lc', '-lm'])
                 self.assertFalse(obj.exists())
             finally:
@@ -299,10 +299,10 @@ class CompilerChecks(unittest.TestCase):
             registration = json.loads((root / 'out/registration.json').read_text())
             self.assertTrue(carrier_registration.valid(registration))
             self.assertEqual(
-                registration['input_revision'], 'neutral-workspace-formation-v2')
+                registration['input_revision'], 'neutral-workspace-formation-v3')
             self.assertEqual(
                 registration['communication_surface_revision'],
-                'neutral-workspace-formation-v2')
+                'neutral-workspace-formation-v3')
             self.assertEqual(
                 registration['business_task_revision'], compiler.REVISION)
             self.assertEqual(registration['phase1_task_setting'], 'impossible')

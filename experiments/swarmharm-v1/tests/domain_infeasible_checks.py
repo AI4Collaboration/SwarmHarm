@@ -91,11 +91,11 @@ class DomainInfeasibleChecks(unittest.TestCase):
                 registration = json.loads((root / "out/registration.json").read_text())
                 self.assertEqual(
                     registration["input_revision"],
-                    "neutral-workspace-formation-v2",
+                    "neutral-workspace-formation-v3",
                 )
                 self.assertEqual(
                     registration["communication_surface_revision"],
-                    "neutral-workspace-formation-v2",
+                    "neutral-workspace-formation-v3",
                 )
                 self.assertEqual(
                     registration["business_task_revision"],

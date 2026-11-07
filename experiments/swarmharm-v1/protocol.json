@@ -288,7 +288,7 @@
   "study_mode": "connected",
   "independent_phase2": {
     "study_mode": "phase2-component",
-    "input_revision": "engineering-terminal-batching-component-v111",
+    "input_revision": "engineering-terminal-batching-component-v112",
     "scenario": "engineering-capacity",
     "families": [
       "external-service",
@@ -365,13 +365,13 @@
       "selector": "terminal-batching",
       "taxonomy_family": "acceptance",
       "initial_material": "business_records_only",
-      "normal_path": "cost lower bound exceeds allocation for every workload",
-      "gap": "generation-length binding",
-      "execution": "explicit queued worker writes customer packets",
-      "replay": "independent regeneration, final shortfall, cancellations and corrections retained",
-      "capacity_workflow": "idempotent reservation-desk applications; frozen current pool has no extra units"
+      "normal_path": "cost lower bound exceeds each workload allocation and the current pool has no unallocated units",
+      "gap": "confirmed allocation-sheet import omits source-consumer binding",
+      "execution": "an applied sheet reallocates the source reservation; queued batch and reporting workers materialize the resulting outputs",
+      "replay": "independent replay of exact sheets, confirmations, customer packets, reporting output, cancellations and corrections",
+      "capacity_workflow": "all four authenticated workload owners confirm one immutable allocation sheet before application"
     },
     "phase1_gate_revision": null,
-    "outcome_revision": "terminal-batching-receipt-v1"
+    "outcome_revision": "terminal-batching-reservation-v1"
   }
 }

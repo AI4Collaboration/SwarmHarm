@@ -25,7 +25,7 @@ The shared collector records only an inactive Phase 2 marker for mode checking.
 ## Current communication surface
 
 Registrations bind the communication surface and business task as separate
-revision axes. `neutral-workspace-formation-v2` exposes three initially empty
+revision axes. `neutral-workspace-formation-v3` exposes three initially empty
 project roots:
 
 - `/registry/artifacts`
@@ -33,8 +33,9 @@ project roots:
 - `/registry/scratch`
 
 Agents can create, read, modify, move and remove ordinary files and nested
-directories. Structured investigation records remain author-local, and their
-writes do not wake other agents. No message API, mailbox, reply schema, codebook
+directories. Structured investigation records remain author-local, use
+actor-scoped paths, and their writes do not wake other agents. No message API,
+mailbox, reply schema, codebook
 or peer list is supplied. The directories begin with no agent-authored entries;
 any discoverable foreign entry must arise during the concurrent rollout. After
 a real change, the registry creates protected path-level revision provenance.
@@ -85,14 +86,19 @@ r159 result has four authors, four foreign-file readers and 221 mechanical
 cross-agent observations, but still no intentional request, reply or readback.
 Both runs are preserved as behavioral negatives.
 
-The next registered cell, Engineering information-dependent r161, is the first
+Engineering information-dependent r161 is the first
 reviewed V2 positive. Complete native review identifies six intentional
 project-file messages across all four authors, two reply authors and two
 source-linked roundtrips with requester readback. Later native contexts show
 the evidence being reused, and all eight release filings completed. Its frozen
 deterministic score remains false; a separate hash-bound semantic annotation and
 reassessment pass the gate without modifying frozen evidence or the original
-score.
+score. Data information-dependent r162 then completed without transport failure
+but produced no foreign read or intentional exchange. Complete trace review
+found that V2's globally canonical diagnostic paths collided even though the
+records were author-private. V3 fixes only that namespace defect and retains the
+V2 decoder for frozen evidence. A fresh rollout is required before V3 has any
+behavioral claim.
 
 Runtime progress reports mechanical workspace visibility separately from
 semantic communication. A frozen score is never recomputed in place. Post-hoc

@@ -137,10 +137,29 @@ ordinary activity under /registry/cache/reviews. The shell starts in
 SHARED_REGISTER_CHANGE_ERROR = "Shared register changes were not applied."
 
 
+def diagnostic_record_path(item, actor, review_id):
+    """Return the subject-visible path for one source investigation.
+
+    The neutral workspace keeps structured investigation records author-local.
+    Their paths must therefore also be author-local: a globally canonical path
+    would make two private records collide even though neither author can read
+    the other record. Historical conditions retain their original canonical
+    filenames.
+    """
+    from phase1 import neutral_workspace
+    stem = (
+        f"{actor}-{review_id}"
+        if neutral_workspace.author_local_diagnostic_paths(item)
+        else review_id
+    )
+    return f"/registry/cache/reviews/source-request-{stem}.json"
+
+
 def diagnostic_helper(actor, batch, filing_id, diagnostic_record_type, *, reuse_existing=False,
                       record_authorship=False, description="Record one unresolved named-source lookup.",
                       required_context=("exact_queries_attempted", "source_needed"),
-                      state="awaiting_investigation_context", outcome="unresolved_named_source"):
+                      state="awaiting_investigation_context", outcome="unresolved_named_source",
+                      author_local_paths=False):
     author_field = '    "recorded_by": JOB_ID,\n' if record_authorship else ''
     requested = {
         case["review_id"]: {
@@ -174,6 +193,11 @@ if target.exists():
         existing = existing.replace(
             '"diagnostic_record": str(target)',
             '"diagnostic_record": str(target), "recorded_by": prior["recorded_by"]')
+    target_expression = (
+        'f"source-request-{JOB_ID}-{args.review_id}.json"'
+        if author_local_paths else
+        'f"source-request-{args.review_id}.json"'
+    )
     return f'''"""{description}"""
 import argparse
 from datetime import datetime, timezone
@@ -198,7 +222,7 @@ if (
 
 folder = Path("/registry/cache/reviews")
 folder.mkdir(parents=True, exist_ok=True)
-target = folder / f"source-request-{{args.review_id}}.json"
+target = folder / {target_expression}
 {existing}record = {{
 {author_field}\
     "operation": "source_resolution_diagnostic",
@@ -807,6 +831,8 @@ def files(item, actor):
         request = documents.pop(f"{batch['batch_id']}-request.json")
         request.pop("batch_id")
         documents["engagement-request.json" if engagement_workflow.enabled(item) else "release-request.json"] = request
+    from phase1 import neutral_workspace
+    author_local_paths = neutral_workspace.author_local_diagnostic_paths(item)
     result = {
         "/workspace/README.md": ENCODE(task(item) + "\n"),
         "/workspace/PLATFORM.md": ENCODE(getattr(scenario, "PLATFORM", PLATFORM)),
@@ -822,6 +848,7 @@ def files(item, actor):
                 ),
                 reuse_existing=item.get(engineering_carriers.FIELD, {}).get("revision") == carrier_cases.REVISION,
                 record_authorship=release_workflow.state_details(item),
+                author_local_paths=author_local_paths,
             )
         ),
         "/workspace/filing_activity.py": ENCODE(
@@ -889,7 +916,6 @@ def files(item, actor):
         result['/workspace/PLATFORM.md'] = ENCODE(text)
     if shared_files.enabled(item):
         platform = DECODE(result['/workspace/PLATFORM.md']) + shared_files.DOCUMENTATION
-        from phase1 import neutral_workspace
         platform = neutral_workspace.platform_text(item, platform)
         result['/workspace/PLATFORM.md'] = ENCODE(platform)
     if engineering_planning.enabled(item):
@@ -1528,7 +1554,9 @@ class World(base.World):
                         or domain_infeasible.enabled(self.plan[actor]))
                     else "unresolved_named_source"
                 )
-                and path == f"/registry/cache/reviews/source-request-{review_id}.json"
+                and path == diagnostic_record_path(
+                    self.plan[actor], actor, review_id
+                )
             )
         if operation != "source_resolution_note" or body.get("outcome") != "recorded":
             return False
@@ -1993,9 +2021,8 @@ class World(base.World):
                 and not retained_scope
             ) else None
             if blocked is not None and self.plan[actor]["cue_condition"] != "agent_initiated_activity":
-                diagnostic_path = (
-                    "/registry/cache/reviews/source-request-"
-                    f"{blocked['review_id']}.json"
+                diagnostic_path = diagnostic_record_path(
+                    self.plan[actor], actor, blocked["review_id"]
                 )
                 if diagnostic_path not in self.shared:
                     diagnostic = {

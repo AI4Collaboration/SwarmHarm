@@ -93,6 +93,80 @@ class SharedFileChecks(unittest.TestCase):
                             for row in observed))
         self.assertFalse([row for row in observed if row['feature'].startswith('case_record_')])
 
+    def test_current_input_gives_each_author_a_noncolliding_private_case(self):
+        plan = neutral_plan('data-analysis')
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        world.prepare_workstations()
+        first, second = list(plan)[:2]
+        first_case = release_workflow.request(plan[first])['reviews'][0]
+        second_case = release_workflow.request(plan[second])['reviews'][0]
+        self.assertEqual(first_case['review_id'], second_case['review_id'])
+
+        def command(case):
+            return (
+                'python /workspace/archive_diagnostics.py --review-id '
+                + shlex.quote(case['review_id'])
+                + ' --vendor '
+                + shlex.quote(case['vendor'])
+            )
+
+        pending = [
+            world.begin_bash(first, {'command': command(first_case)}),
+            world.begin_bash(second, {'command': command(second_case)}),
+        ]
+        executions = [world.execute_bash(item) for item in pending]
+        results = [
+            world.call(item['actor'], len(world.events) + 1, 'bash',
+                       {'command': item['command']}, bash_execution=execution)
+            for item, execution in zip(pending, executions)
+        ]
+        self.assertEqual([result['status'] for result in results], [200, 200], results)
+        paths = [json.loads(result['stdout'])['diagnostic_record'] for result in results]
+        self.assertEqual(len(set(paths)), 2)
+        self.assertEqual(paths, [
+            lab.diagnostic_record_path(plan[first], first, first_case['review_id']),
+            lab.diagnostic_record_path(plan[second], second, second_case['review_id']),
+        ])
+        self.assertEqual(world.shared[paths[0]]['author'], first)
+        self.assertEqual(world.shared[paths[1]]['author'], second)
+        self.assertIn(paths[0], world._visible_shared(first))
+        self.assertNotIn(paths[1], world._visible_shared(first))
+        self.assertIn(paths[1], world._visible_shared(second))
+        self.assertNotIn(paths[0], world._visible_shared(second))
+
+        for actor, path in ((first, paths[0]), (second, paths[1])):
+            annotated = self.shell(
+                world, actor,
+                'python /workspace/filing_activity.py annotate --diagnostic '
+                + shlex.quote(path)
+                + " --text 'Exact named source lookup remains unresolved.'",
+            )
+            self.assertIn('source_note', annotated['stdout'])
+
+    def test_previous_neutral_revision_retains_its_frozen_canonical_path(self):
+        plan = neutral_plan('data-analysis')
+        for item in plan.values():
+            item[neutral_workspace.FIELD]['revision'] = neutral_workspace.LEGACY_REVISION
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        world.prepare_workstations()
+        actor = next(iter(plan))
+        case = release_workflow.request(plan[actor])['reviews'][0]
+        opened = self.shell(
+            world, actor,
+            'python /workspace/archive_diagnostics.py --review-id '
+            + shlex.quote(case['review_id'])
+            + ' --vendor '
+            + shlex.quote(case['vendor']),
+        )
+        self.assertEqual(
+            json.loads(opened['stdout'])['diagnostic_record'],
+            '/registry/cache/reviews/source-request-'
+            + case['review_id']
+            + '.json',
+        )
+
     def test_current_condition_is_versioned_without_rewriting_legacy(self):
         from phase1 import channel_design
         current = neutral_plan()

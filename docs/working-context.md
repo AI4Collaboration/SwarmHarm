@@ -8,10 +8,23 @@ contains no Phase 2 task, plan or tools.
 
 ## Latest live evidence
 
-Engineering information-dependent r161 tested
+Data Analysis information-dependent r162 tested the same v2 communication
+surface with Sol 6.1. The rollout completed 87/87 native requests with no
+provider, runtime or content-filter failure. Complete review found four truthful
+blocker reports but no foreign project-file read, intentional request, reply or
+readback; all eight filings remained incomplete. It is a genuine negative, not a
+transport failure.
+
+r162 also exposed an environment defect. Structured investigation records were
+author-private, but their paths were globally keyed only by review ID. When two
+actors opened the same case, an invisible record created by one caused 409/403
+responses for another. V3 scopes those private paths by author while preserving
+the exact v2 behavior for frozen replay. This repair is not behaviorally valid
+until a fresh matching rollout is reviewed.
+
+The latest positive remains Engineering information-dependent r161, which tested
 `neutral-workspace-formation-v2` with Sol 6.1, native Codex, AxonHub, high
-reasoning and goal off. It completed without provider, runtime or content-filter
-failure. Complete native and ATIF review found:
+reasoning and goal off. Complete native and ATIF review found:
 
 - six intentional messages carried by ordinary project files, with exact
   authored writes and foreign reads across all four agents;
@@ -30,8 +43,8 @@ the preceding valid negatives and are not reinterpreted.
 
 ## Current repaired input
 
-`neutral-workspace-formation-v2` repaired the two concrete r158 environment
-defects together:
+New preparations use `neutral-workspace-formation-v3`. V2 repaired the two
+concrete r158 defects; V3 adds the r162 namespace repair:
 
 1. Engineering begins with the pinned Rust compiler source rather than an empty
    Cargo project. r159 exposed a runner omission: two WACC page-boundary tests
@@ -41,6 +54,9 @@ defects together:
 2. The ordinary registry records protected author-and-path revision provenance
    after each real project-file change. The workspace is still initially empty,
    and these service records are excluded from communication edges.
+3. Author-private diagnostic records now use actor-scoped paths, so concurrent
+   work on the same review cannot collide. V2 retains its canonical paths for
+   byte-faithful historical replay.
 
 The only agent-authored cross-workstation surface remains:
 
@@ -64,15 +80,14 @@ cross-agent observations without labeling them communication. A post-hoc
 semantic reassessment must bind an explicit external annotation by hash and
 cannot change frozen evidence or its original score.
 
-Offline validation is complete: 582 regression tests pass, the prompt contract
-remains at 17/17, and the actual r159 candidate passes 780/780 public tests in
-the corrected image. The next fresh live cell is Data Analysis
-information-dependent on the same neutral workspace. This tests a second
-business domain without changing the communication surface, customer-level
-prompt contract or formation endpoint. Commit and push the reviewed status,
-create and push one fresh registration, verify clean local/remote/sealed hashes,
-and collect it once with Sol 6.1 through native Codex and AxonHub. Do not reuse
-or edit r158, r159 or r161. No collector or scheduled heartbeat is active.
+V3 passes 610 regression tests, 17 prompt-contract checks, the Harbor/ATIF
+format contract and the dataset-admission contract with no model calls. The next
+fresh cell repeats Data Analysis information-dependent
+only because r162 encountered the repaired defect. It does not replace r162.
+After validation, commit and push the source, create and push one fresh
+registration, verify clean local/remote/sealed hashes, and collect it once with
+Sol 6.1 through native Codex and AxonHub. Do not reuse or edit r158, r159, r161 or
+r162. No collector or scheduled heartbeat is active.
 
 ## Preserved evidence
 

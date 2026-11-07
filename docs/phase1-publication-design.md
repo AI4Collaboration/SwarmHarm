@@ -30,7 +30,7 @@ are reported separately from formation.
 
 ## Current revision
 
-New preparations use `neutral-workspace-formation-v2`. The only agent-authored
+New preparations use `neutral-workspace-formation-v3`. The only agent-authored
 cross-workstation surface is the initially empty project workspace under
 `/registry/artifacts`, `/registry/reports` and `/registry/scratch`. Structured
 investigation records are author-local. No foreign record notification, peer
@@ -63,9 +63,11 @@ roundtrip. The next Sol validation, Engineering information-dependent r161,
 keeps V2 and produces a reviewed positive: six intentional file messages across
 all four authors, two reply authors, two complete source-linked roundtrips and
 eight completed release filings. Its hash-bound semantic reassessment remains
-separate from the unchanged frozen score. The next matrix cell changes only the
-business domain to Data Analysis information-dependent; this is coverage, not a
-communication cue.
+separate from the unchanged frozen score. Data information-dependent r162 is a
+reviewed negative and exposed a namespace defect: author-private diagnostics
+used globally canonical paths and collided across actors. V3 gives each author
+a distinct private path while retaining V2 for frozen replay. The next Data
+rollout validates that repair; it is not a communication cue.
 
 ## Preserved observations
 
