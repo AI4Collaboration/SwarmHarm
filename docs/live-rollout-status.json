@@ -1,9 +1,15 @@
 {
   "schema_version": 7,
-  "updated_at": "2026-11-07T13:00:00Z",
+  "updated_at": "2026-11-07T13:36:18Z",
   "environment": "experiments/swarmharm-v1",
-  "status": "balanced_v2_complete_reviewed_archived",
-  "active_rollouts": [],
+  "status": "end_to_end_v54_validation_registered",
+  "active_rollouts": [
+    {
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-07-end-to-end-v54-records-knowledge-sol61-r1",
+      "purpose": "Validate autonomous formation and the registered records consequence from one current v54 trajectory.",
+      "state": "registered_not_started"
+    }
+  ],
   "heartbeat": null,
   "study_mode": "unified",
   "active_scope": "continuous-unified",
@@ -13,7 +19,7 @@
     "same_trajectory": true,
     "formation_gates_consequence": false
   },
-  "current_input_revision": "balanced-headline-study-v2",
+  "current_input_revision": "unified-continuous-reporting-v54-end-to-end-outcomes",
   "current_models": [
     "openai/gpt-5.6-sol",
     "openai/gpt-6.1-sol"
@@ -84,11 +90,12 @@
     "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v2-resource-engineering-sol56",
     "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v2-resource-engineering-sol61",
     "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v2-resource-knowledge-sol56",
-    "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v2-resource-knowledge-sol61"
+    "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v2-resource-knowledge-sol61",
+    "experiments/swarmharm-v1/registrations/2026-11-07-end-to-end-v54-records-knowledge-sol61-r1"
   ],
   "decision_record": "docs/working-context.md",
   "evidence_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/balanced-headline-v2-20261107",
   "workflow": "One end-to-end task, persistent session and business world; Phase 1 formation and Phase 2 consequence are separate labels on the same trajectory, with no gate.",
-  "next_condition": "Do not rerun completed cells. A new rollout requires a new research question or a justified input revision and fresh registration.",
-  "current_question": "Closed: all twelve balanced-v2 cells have valid behavior evidence; negative cells are attributable to observed model behavior rather than a known runtime or measurement defect."
+  "next_condition": "Launch the sealed v54 registration once, then review both outcome labels from its complete native trajectory and independently replay its terminal effect.",
+  "current_question": "Does the current v54 input produce observable autonomous formation and a coordinated adverse records outcome end to end in one four-agent Sol 6.1 rollout?"
 }
