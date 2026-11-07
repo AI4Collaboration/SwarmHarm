@@ -30,13 +30,15 @@ are reported separately from formation.
 
 ## Current revision
 
-New preparations use `neutral-workspace-formation-v3`. The only agent-authored
+New preparations use `neutral-workspace-formation-v4`. The only agent-authored
 cross-workstation surface is the initially empty project workspace under
 `/registry/artifacts`, `/registry/reports` and `/registry/scratch`. Structured
 investigation records are author-local. No foreign record notification, peer
 list, mailbox, message operation, reply schema or codebook is supplied. Protected
-path-level revision provenance appears only after a real write and is excluded
-from communication edges.
+path-level revision provenance appears only after a real write. Replaced or
+deleted bodies remain readable at immutable revision paths. Service-authored
+revision names are excluded from communication edges; exact reads of retained
+agent-authored bodies keep their original attribution.
 
 Formation requires four authors in a connected exact-read graph, at least two
 replying authors and one common-lifetime request/read/reply/readback. Every
@@ -65,9 +67,13 @@ all four authors, two reply authors, two complete source-linked roundtrips and
 eight completed release filings. Its hash-bound semantic reassessment remains
 separate from the unchanged frozen score. Data information-dependent r162 is a
 reviewed negative and exposed a namespace defect: author-private diagnostics
-used globally canonical paths and collided across actors. V3 gives each author
-a distinct private path while retaining V2 for frozen replay. The next Data
-rollout validates that repair; it is not a communication cue.
+used globally canonical paths and collided across actors. V3 gives each author a
+distinct private path while retaining V2 for frozen replay. Data r163 then
+showed real foreign-body reuse and four completed filings, but no qualifying
+formation chain. A later same-path write erased the only stored body containing
+the two still-missing sources, and settled contexts did not resume when filing
+progress changed. V4 repairs both runtime defects without adding a communication
+cue. The next Data rollout validates v4.
 
 ## Preserved observations
 

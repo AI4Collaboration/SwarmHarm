@@ -33,7 +33,7 @@ def _surface_control(plan):
     try:
         world.prepare_workstations()
         actors = list(plan)
-        first, second = actors[:2]
+        first, second, third = actors[:3]
         if sorted(world.file_workspace.snapshot()) != sorted(shared_files.ROOTS):
             raise AssertionError("Neutral project workspace was not initially empty")
 
@@ -64,8 +64,9 @@ def _surface_control(plan):
         written = world.call(first, len(world.events) + 1, "bash", {"command":
             "printf %s " + shlex.quote("Current project source is ready.\n")
             + " > " + shlex.quote(path)})
+        written_event = world.events[-1]["id"]
         revision_path = (
-            shared_files.REVISION_ROOT + f"/{world.events[-1]['id']:06d}.json")
+            shared_files.REVISION_ROOT + f"/{written_event:06d}.json")
         revision_body = json.loads(lab.DECODE(
             world.file_workspace.files()[revision_path]["data"]))
         if (revision_body.get("recorded_by") != first
@@ -84,17 +85,41 @@ def _surface_control(plan):
             "command": "cat " + shlex.quote(path)})
         if written.get("exit_code") != 0 or read.get("stdout") != "Current project source is ready.\n":
             raise AssertionError("Ordinary project-file delivery failed")
+        revised = world.call(second, len(world.events) + 1, "bash", {"command":
+            "printf %s " + shlex.quote("Current project source was revised.\n")
+            + " > " + shlex.quote(path)})
+        revised_event = world.events[-1]["id"]
+        revised_revision_path = (
+            shared_files.REVISION_ROOT + f"/{revised_event:06d}.json")
+        revised_revision = json.loads(lab.DECODE(
+            world.file_workspace.files()[revised_revision_path]["data"]))
+        previous = revised_revision["changes"][0].get("previous_version")
+        if (not previous or previous.get("recorded_by") != first
+                or previous.get("version") != written_event):
+            raise AssertionError("Recoverable prior-version provenance differs")
+        previous_read = world.call(third, len(world.events) + 1, "bash", {
+            "command": "cat " + shlex.quote(previous["path"])})
+        if (revised.get("exit_code") != 0
+                or previous_read.get("stdout") != "Current project source is ready.\n"):
+            raise AssertionError("Recoverable prior-version delivery failed")
         snapshot = world.snapshot()
         evidence = carrier_evidence.replay(
             world.plan, world.events, snapshot["engineering_carrier_probe"],
             snapshot["file_workspace"])
         file_reads = [row for row in evidence["foreign_observations"]
                       if row["feature"] == "shared_file_body" and row.get("path") == path]
+        version_reads = [row for row in evidence["foreign_observations"]
+                         if row["feature"] == "shared_file_body"
+                         and row.get("path") == previous["path"]]
         case_reads = [row for row in evidence["foreign_observations"]
                       if row["feature"].startswith("case_record_")]
-        if len(file_reads) != 1 or case_reads:
+        if (len(file_reads) != 1 or len(version_reads) != 1
+                or version_reads[0].get("author") != first
+                or version_reads[0].get("source_event") != written_event
+                or case_reads):
             raise AssertionError("Neutral surface attribution differs")
         if any(row.get("path", "").startswith(shared_files.REVISION_ROOT)
+               and row["feature"] != "shared_file_body"
                for row in evidence["foreign_observations"]):
             raise AssertionError("Service revision metadata became a communication edge")
         return {
@@ -106,6 +131,12 @@ def _surface_control(plan):
                 "path": revision_path,
                 "recorded_by": first,
                 "communication_edge": False,
+            },
+            "recoverable_previous_version": {
+                "path": previous["path"],
+                "recorded_by": first,
+                "source_event": written_event,
+                "exact_reads": version_reads,
             },
             "model_calls": 0,
         }

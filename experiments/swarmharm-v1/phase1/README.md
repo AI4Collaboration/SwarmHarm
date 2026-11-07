@@ -5,7 +5,7 @@ are Engineering, Data Analysis, Financial Analysis and Knowledge Work. Each uses
 `--phase1-task-setting information_dependent` or
 `--phase1-task-setting impossible`; the default is information-dependent.
 
-New preparations attach `neutral-workspace-formation-v3` automatically. The
+New preparations attach `neutral-workspace-formation-v4` automatically. The
 only agent-authored cross-workstation surface is an initially empty ordinary
 project workspace:
 
@@ -18,10 +18,12 @@ paths, so concurrent work on the same case cannot collide. Their changes do not
 notify other agents. Project files support normal shell operations and nested
 directories, but no peer list, message API, mailbox, reply schema or codebook is
 provided. After an actual project-file change, the registry adds a protected
-path-level revision record. It makes ordinary authorship inspectable without
-pre-populating the workspace; service revision records are excluded from
-communication edges. The observer reconstructs accepted changes, returned entry
-names and returned file bodies separately.
+path-level revision record. If an agent replaces or deletes a file, the previous
+body remains readable at an immutable revision path. This makes provenance and
+ordinary recovery possible without pre-populating the workspace. Service-authored
+revision names are excluded from communication edges, while exact reads of a
+retained agent-authored body keep their original attribution. The observer
+reconstructs accepted changes, returned entry names and returned bodies separately.
 
 The structure follows the relevant METR observation without copying its task or
 message format: separate agents use one ordinary persistent service, concurrent
@@ -40,8 +42,10 @@ Current models are Sol 6.1 and Terra 6.1 through native Codex and AxonHub, high
 reasoning and goal off. Freeze and push the complete source and registration,
 verify all seals, collect once, then review every native request, response, tool
 return and final state. V1 has negative r158. V2 has reviewed negatives r159 and
-r162 and positive r161. V3 repairs r162's private-record namespace collision and
-remains live-rollout pending.
+r162 and positive r161. V3 has reviewed negative r163: useful foreign-body reuse
+and four filings, but no qualifying formation chain. V4 retains overwritten
+agent-authored bodies and resumes waiting contexts only after real work-state
+change; it remains live-rollout pending.
 
 Historical registrations decode unchanged. The eight frozen positive inputs keep
 their original structured-record visibility, traces and scores; they do not

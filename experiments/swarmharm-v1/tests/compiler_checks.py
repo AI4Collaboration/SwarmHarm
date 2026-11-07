@@ -299,10 +299,10 @@ class CompilerChecks(unittest.TestCase):
             registration = json.loads((root / 'out/registration.json').read_text())
             self.assertTrue(carrier_registration.valid(registration))
             self.assertEqual(
-                registration['input_revision'], 'neutral-workspace-formation-v3')
+                registration['input_revision'], 'neutral-workspace-formation-v4')
             self.assertEqual(
                 registration['communication_surface_revision'],
-                'neutral-workspace-formation-v3')
+                'neutral-workspace-formation-v4')
             self.assertEqual(
                 registration['business_task_revision'], compiler.REVISION)
             self.assertEqual(registration['phase1_task_setting'], 'impossible')

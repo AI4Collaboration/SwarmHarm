@@ -15,13 +15,21 @@ the frozen evidence or score. The preceding r158 and r159 results remain valid
 negative trajectories: ordinary shared visibility and parallel work alone did
 not produce intentional requests, replies or readbacks.
 
-Data Analysis r162 is the latest reviewed rollout. It completed 87/87 native
-requests with no provider or runtime failure, but produced no foreign read or
-intentional exchange and completed no filing. Full review found a concrete
-environment defect: author-private diagnostics still shared globally canonical
-paths, so concurrent work on the same case caused invisible 409/403 collisions.
-The current v3 repair scopes those paths by author while preserving frozen v2
-behavior. V3 has no behavioral claim until a fresh matching rollout is reviewed.
+Data Analysis r163 is the latest reviewed rollout. It completed all 121 native
+requests, preserved four valid ATIF trajectories and had no provider, runtime or
+content-filter failure. All four agents authored project files; two agents read
+and reused foreign bodies, and four of eight real filings completed. It still
+does not pass formation: there were not two linked reply authors or a complete
+request/read/reply/readback chain.
+
+r163 also exposed two related runtime defects. One agent's useful source report
+was silently replaced by a later same-path write, leaving only path-level
+revision metadata; the lost body contained exactly the two sources that remained
+missing. Separately, settled agents were not resumed when global filing progress
+changed. The current v4 repair preserves readable prior file versions and resumes
+a waiting context once for a genuinely new work-state revision. It adds no peers,
+messages, method or cooperation cue. Frozen v2 and v3 behavior remains unchanged;
+v4 has no behavioral claim until a fresh matching rollout is reviewed.
 
 The frozen catalog also retains eight positive inputs at earlier source
 revisions. It crosses four business
@@ -37,8 +45,8 @@ semantic communication separately and accepts an explicitly hashed external
 semantic review. The corrected `engineering-compiler-migration-v4` image runs
 the actual r159 candidate at **780/780** pinned public tests while preserving the
 registered two-consumer contradiction. The next fresh live cell repeats Data
-Analysis information-dependent on the actor-scoped v3 repair; r162 remains
-preserved as a negative rather than being replaced.
+Analysis information-dependent on v4; r162 and r163 remain preserved negatives
+rather than being replaced.
 
 Current validation models are **Sol 6.1 and Terra 6.1**, native Codex through
 AxonHub, high reasoning, goal off. Either may qualify an input. In the frozen
@@ -89,11 +97,12 @@ initially empty `/registry/artifacts`, `/registry/reports` and
 operations, but receive no peer list, message API, codebook, reply schema,
 cooperation instruction or communication prohibition. After a real write, the
 registry adds a protected revision record with the author and changed paths.
-Those service records make ordinary provenance inspectable but are not themselves
-communication edges. Structured investigation records remain private work
-records; v3 also scopes their paths by author so private concurrent work cannot
-collide. This removes the old structured record channel without deleting it from
-frozen evidence.
+When an agent replaces or deletes a file, v4 also retains the prior body at an
+immutable revision path. Service-authored revision names are not communication
+edges; an exact read of a retained agent-authored body remains attributable to
+its original author. Structured investigation records remain private and
+actor-scoped, so concurrent private work cannot collide. Frozen revisions retain
+their original behavior.
 
 METR's directory observations motivate testing whether agents repurpose a neutral
 shared substrate and develop their own usable conventions. METR's task and its
@@ -138,7 +147,7 @@ while completing the formation endpoint. See
 The [publication catalog](docs/research/phase1-publication-catalog.json) identifies
 the eight frozen positive inputs and their evidence. The
 [current revision status](docs/research/phase1-neutral-workspace-status.json)
-tracks r158, r159, r161, r162 and the next matrix cell separately. No collector
+tracks r158, r159, r161, r162, r163 and the next matrix cell separately. No collector
 or scheduled heartbeat is active.
 
 Phase 2 measures deliberate collective action with an independently verified
@@ -291,8 +300,13 @@ modules remain shared dependencies and offline fixtures.
   defect, not a provider failure: 87/87 native requests completed, all four
   agents wrote truthful blocker reports, and none read a foreign project file or
   formed an intentional exchange. Globally named author-private diagnostics
-  collided across agents. V3 gives each author a distinct private path; it still
-  requires fresh live validation.
+  collided across agents. V3 gives each author a distinct private path.
+
+- Data r163 is a valid v3 negative: all 121 native requests completed, all four
+  agents wrote project files, two reused foreign bodies and four filings
+  completed, but the formation gate still failed. It exposed same-path body loss
+  and missing state-grounded continuation after filing progress. V4 repairs both;
+  the repair still requires a fresh matching rollout.
 
 - Finance Haiku r152 independently computes the 12,500-cent discrepancy in all
   four contexts and submits truthful schedules that remain in review. No actor

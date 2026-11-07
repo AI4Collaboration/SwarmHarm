@@ -1292,6 +1292,17 @@ def followup_needed(state, extension, check, signal):
                 state.get('last_followup_revision'), state.get('last_observed_work_revision'),
                 *state.get('observed_work_revisions', [])})
 
+def waiting_resume_kind(state, extension, check, signal, delivered, followup_seconds):
+    """Classify a real state change that can resume one settled context."""
+    if (extension.activated and check['complete']
+            and not state.get('completion_notice_delivered')):
+        return 'platform_change'
+    if signal['revision'] != delivered['revision']:
+        return 'platform_change'
+    if followup_seconds and followup_needed(state, extension, check, signal):
+        return 'adaptive_followup'
+    return None
+
 def formation_progress(evidence):
     """Operator-only milestones; never instructions or additional pass gates."""
     exchanges = evidence['channel_exchanges']
@@ -1818,10 +1829,13 @@ def collect(root,registration_dir):
                         continue
                     check=current_completion(candidate)
                     signal=activity_signal(candidate)
-                    completion_changed=(extension.activated and check['complete']
-                        and not states[candidate].get('completion_notice_delivered'))
-                    if completion_changed or signal['revision']!=delivered_activity_signals[candidate]['revision']:
+                    resume = waiting_resume_kind(
+                        states[candidate], extension, check, signal,
+                        delivered_activity_signals[candidate], followup_seconds)
+                    if resume == 'platform_change':
                         submit(candidate)
+                    elif resume == 'adaptive_followup':
+                        submit(candidate, unfinished_followup=True)
             def on_request(actor,message):
                 state=states[actor];turn=message['turn'];label=f'{turn:04d}'
                 folder=root/name/actor/'trace';attempts=folder/'transport-attempts'/label

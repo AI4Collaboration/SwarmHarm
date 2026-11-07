@@ -5,10 +5,13 @@ Every rollout uses the common registered harness pipeline in
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
 custom direct-API loop is used for new collection. Current Phase 1 validation
 uses native Codex through AxonHub, Sol 6.1 or Terra 6.1, high reasoning and goal
-off. The neutral workspace has reviewed negatives r158, r159 and Data r162, plus
-a reviewed Engineering information-dependent positive r161. r162 exposed a
-private-record namespace collision; the next live cell is Data Analysis
-information-dependent on the actor-scoped v3 repair. The completed
+off. The neutral workspace has reviewed negatives r158, r159, Data r162 and
+Data r163, plus a reviewed Engineering information-dependent positive r161.
+r162 exposed a private-record namespace collision; v3 repaired it. r163 then
+exposed same-path body loss and settled contexts that did not resume after real
+filing progress. The next live cell is Data Analysis information-dependent on
+v4, which retains recoverable prior file bodies and permits one continuation
+only after a new work-state revision. The completed
 Sol/Terra/Luna comparison and all other historical results retain their frozen
 harness, model and input; they do not validate the current revision.
 

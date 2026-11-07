@@ -17,9 +17,12 @@ FIELD = 'phase1_shared_files'
 REVISION = 'project-files-v1'
 WORKSTATION_REVISION = 'project-files-v2'
 LEGACY_NEUTRAL_REVISION = 'project-files-v3-neutral-workspace'
-NEUTRAL_REVISION = 'project-files-v4-neutral-workspace-revisions'
+PROVENANCE_NEUTRAL_REVISION = 'project-files-v4-neutral-workspace-revisions'
+NEUTRAL_REVISION = 'project-files-v5-neutral-workspace-version-history'
 LIMITS = {REVISION: 32768, WORKSTATION_REVISION: 2000000,
-          LEGACY_NEUTRAL_REVISION: 2000000, NEUTRAL_REVISION: 2000000}
+          LEGACY_NEUTRAL_REVISION: 2000000,
+          PROVENANCE_NEUTRAL_REVISION: 2000000,
+          NEUTRAL_REVISION: 2000000}
 ROOTS = ('/registry/artifacts', '/registry/reports', '/registry/scratch')
 REVISION_ROOT = '/registry/reports/revisions'
 DOCUMENTATION = '''
@@ -146,7 +149,8 @@ class Store:
                 self.entries.pop(path)
             journal.append({'path': path, 'before': deepcopy(old), 'after': deepcopy(row),
                             'operation': 'create' if old is None else 'delete' if row is None else 'modify'})
-        if self.revision == NEUTRAL_REVISION and changes:
+        recorded_changes = deepcopy(journal)
+        if self.revision in (PROVENANCE_NEUTRAL_REVISION, NEUTRAL_REVISION) and changes:
             if REVISION_ROOT not in self.entries:
                 directory = {'kind': 'directory', 'path': REVISION_ROOT,
                              'author': 'registry-service', 'source_event': event,
@@ -156,16 +160,58 @@ class Store:
                 self.entries[REVISION_ROOT] = directory
                 journal.append({'path': REVISION_ROOT, 'before': None,
                                 'after': deepcopy(directory), 'operation': 'create'})
+            version_records = {}
+            if self.revision == NEUTRAL_REVISION:
+                for entry in recorded_changes:
+                    old = entry['before']
+                    if old is None or old['kind'] != 'file':
+                        continue
+                    relative = PurePosixPath(entry['path']).relative_to('/registry')
+                    snapshot = str(PurePosixPath(
+                        REVISION_ROOT, f'{event:06d}-previous', relative))
+                    parent = PurePosixPath(snapshot).parent
+                    missing = []
+                    while str(parent) != REVISION_ROOT and str(parent) not in self.entries:
+                        missing.append(str(parent))
+                        parent = parent.parent
+                    for directory_path in reversed(missing):
+                        directory = {
+                            'kind': 'directory', 'path': directory_path,
+                            'author': 'registry-service', 'source_event': event,
+                            'name_author': 'registry-service', 'name_source_event': event,
+                            'version': event,
+                            'sha256': sha256(directory_path.encode()).hexdigest(),
+                            'origin': 'registry_revision',
+                        }
+                        self.entries[directory_path] = directory
+                        journal.append({'path': directory_path, 'before': None,
+                                        'after': deepcopy(directory), 'operation': 'create'})
+                    retained = {
+                        **body(old), 'path': snapshot,
+                        'author': old['author'], 'source_event': old['source_event'],
+                        'name_author': 'registry-service', 'name_source_event': event,
+                        'version': old['version'], 'sha256': old['sha256'],
+                        'origin': 'registry_revision_snapshot',
+                    }
+                    self.entries[snapshot] = retained
+                    journal.append({'path': snapshot, 'before': None,
+                                    'after': deepcopy(retained), 'operation': 'create'})
+                    version_records[entry['path']] = {
+                        'path': snapshot,
+                        'version': old['version'],
+                        'sha256': old['sha256'],
+                        'recorded_by': old['author'],
+                    }
             path = f'{REVISION_ROOT}/{event:06d}.json'
             if path in self.entries:
                 raise ValueError('Project revision event already exists')
-            recorded_changes = [entry for entry in journal
-                                if entry['path'] != REVISION_ROOT]
             document = {
                 'revision': event,
                 'recorded_by': actor,
                 'changes': [
-                    {'path': entry['path'], 'operation': entry['operation']}
+                    {'path': entry['path'], 'operation': entry['operation'],
+                     **({'previous_version': version_records[entry['path']]}
+                        if entry['path'] in version_records else {})}
                     for entry in recorded_changes
                 ],
             }

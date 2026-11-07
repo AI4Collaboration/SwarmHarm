@@ -251,6 +251,31 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
         self.assertFalse(run.followup_needed(state, extension,
             {**check, 'actor_complete': True}, signal))
 
+    def test_waiting_context_resumes_for_new_work_state_not_elapsed_time(self):
+        from types import SimpleNamespace
+        extension = SimpleNamespace(activated=False)
+        signal = {'revision': 'initial-business-state'}
+        initial = {'complete': False, 'actor_complete': False,
+                   'submitted_reviews': 0}
+        state = {
+            'last_observed_work_revision':
+                run.work_revision(extension, initial, signal),
+        }
+        self.assertIsNone(run.waiting_resume_kind(
+            state, extension, initial, signal, signal, 90))
+        progressed = {**initial, 'submitted_reviews': 4}
+        self.assertEqual(run.waiting_resume_kind(
+            state, extension, progressed, signal, signal, 90),
+            'adaptive_followup')
+        state['last_observed_work_revision'] = run.work_revision(
+            extension, progressed, signal)
+        self.assertIsNone(run.waiting_resume_kind(
+            state, extension, progressed, signal, signal, 90))
+        self.assertEqual(run.waiting_resume_kind(
+            state, extension, progressed,
+            {'revision': 'new-platform-state'}, signal, 90),
+            'platform_change')
+
     def test_dispatch_rechecks_stale_timer_and_passive_notice_does_not_rearm(self):
         from types import SimpleNamespace
         extension = SimpleNamespace(activated=True, task=lambda actor: 'Original assignment')

@@ -175,7 +175,8 @@ class SharedFileChecks(unittest.TestCase):
         self.assertEqual(current_condition['protocol_affordance'], 'none_supplied')
         self.assertEqual(current_condition['structured_agent_records'], 'author_only')
         self.assertEqual(
-            current_condition['service_revision_metadata'], 'after_agent_writes')
+            current_condition['service_revision_metadata'],
+            'recoverable_versions_after_agent_writes')
         self.assertNotIn('status', current_condition)
         legacy = plan_for()
         legacy_condition, _ = channel_design.workspace_condition(legacy)
@@ -270,6 +271,89 @@ class SharedFileChecks(unittest.TestCase):
             {'command': f'printf tampered > {revision}'})
         self.assertEqual(rejected['status'], 409)
         self.assertEqual(world.file_workspace.files()[revision], record)
+
+    def test_current_registry_retains_the_previous_file_version(self):
+        plan = neutral_plan()
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        world.prepare_workstations()
+        author, editor, reader = list(plan)[:3]
+        target = '/registry/reports/current-source.json'
+        self.shell(world, author, "printf 'SOURCE-A\\n' > " + target)
+        self.shell(world, editor, "printf 'SOURCE-B\\n' > " + target)
+        revision = shared_files.REVISION_ROOT + '/000002.json'
+        revision_body = json.loads(lab.DECODE(
+            world.file_workspace.files()[revision]['data']))
+        self.assertEqual(len(revision_body['changes']), 1)
+        previous = revision_body['changes'][0]['previous_version']
+        self.assertEqual(previous['version'], 1)
+        self.assertEqual(previous['recorded_by'], author)
+        snapshot = previous['path']
+        retained = world.file_workspace.files()[snapshot]
+        self.assertEqual(lab.DECODE(retained['data']), 'SOURCE-A\n')
+        self.assertEqual(retained['author'], author)
+        self.assertEqual(retained['source_event'], 1)
+        self.assertEqual(retained['origin'], 'registry_revision_snapshot')
+        self.shell(world, reader, f'cat {revision}; cat {snapshot}')
+        observed = self.replay(world)
+        self.assertTrue(any(
+            row['feature'] == 'shared_file_body'
+            and row['path'] == snapshot
+            and row['author'] == author
+            and row['source_event'] == 1
+            and row['reader'] == reader
+            for row in observed))
+        rejected = world.call(
+            reader, len(world.events) + 1, 'bash',
+            {'command': f'printf tampered > {snapshot}'})
+        self.assertEqual(rejected['status'], 409)
+
+    def test_current_registry_retains_a_deleted_file_version(self):
+        plan = neutral_plan()
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        author, deleter, reader = list(plan)[:3]
+        target = '/registry/reports/deleted-source.txt'
+        self.shell(world, author, "printf 'SOURCE-DELETED\\n' > " + target)
+        self.shell(world, deleter, 'rm ' + target)
+        revision = shared_files.REVISION_ROOT + '/000002.json'
+        revision_body = json.loads(lab.DECODE(
+            world.file_workspace.files()[revision]['data']))
+        self.assertEqual(len(revision_body['changes']), 1)
+        deleted = next(
+            change for change in revision_body['changes']
+            if change['path'] == target)
+        self.assertEqual(deleted['operation'], 'delete')
+        previous = deleted['previous_version']
+        self.assertEqual(previous['recorded_by'], author)
+        snapshot = previous['path']
+        retained = world.file_workspace.files()[snapshot]
+        self.assertEqual(lab.DECODE(retained['data']), 'SOURCE-DELETED\n')
+        self.assertEqual(retained['author'], author)
+        self.assertEqual(retained['source_event'], 1)
+        self.assertNotIn(target, world.file_workspace.snapshot())
+        self.shell(world, reader, 'cat ' + snapshot)
+        self.assertTrue(any(
+            row['feature'] == 'shared_file_body'
+            and row['path'] == snapshot
+            and row['author'] == author
+            and row['reader'] == reader
+            for row in self.replay(world)))
+
+    def test_frozen_provenance_revision_keeps_metadata_only_history(self):
+        store = shared_files.Store(shared_files.PROVENANCE_NEUTRAL_REVISION)
+        path = '/registry/reports/current-source.json'
+        store.commit({path: shared_files.value('file', lab.ENCODE('SOURCE-A\n'))},
+                     'author', 1)
+        store.commit({path: shared_files.value('file', lab.ENCODE('SOURCE-B\n'))},
+                     'editor', 2)
+        revision = json.loads(lab.DECODE(
+            store.files()[shared_files.REVISION_ROOT + '/000002.json']['data']))
+        self.assertEqual(revision['changes'], [
+            {'path': path, 'operation': 'modify'},
+        ])
+        self.assertFalse(any(
+            '-previous/' in retained for retained in store.files()))
 
     def test_names_are_not_content_and_ambiguous_bytes_are_not_unique_sources(self):
         w = self.world(); a, b, c, _ = w.plan

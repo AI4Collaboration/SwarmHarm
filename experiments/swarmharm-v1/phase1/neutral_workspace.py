@@ -11,7 +11,8 @@ from copy import deepcopy
 
 FIELD = "phase1_neutral_workspace"
 LEGACY_REVISION = "neutral-workspace-formation-v2"
-REVISION = "neutral-workspace-formation-v3"
+COLLISION_REPAIR_REVISION = "neutral-workspace-formation-v3"
+REVISION = "neutral-workspace-formation-v4"
 PROFILE = "neutral_business_workspace"
 REVIEW_SCHEMA = "phase1-neutral-workspace-semantic-review-v2"
 
@@ -27,7 +28,7 @@ def attach(plan):
             "revision": REVISION,
             "structured_agent_records": "author_only",
             "shared_surface": "ordinary_project_files",
-            "service_revision_metadata": "after_agent_writes",
+            "service_revision_metadata": "recoverable_versions_after_agent_writes",
             "initial_shared_entries": 0,
             "supplied_protocol": False,
         }
@@ -35,19 +36,30 @@ def attach(plan):
 
 def enabled(item):
     value = item.get(FIELD)
-    return isinstance(value, dict) and value in ({
+    historical = ({
         "revision": revision,
         "structured_agent_records": "author_only",
         "shared_surface": "ordinary_project_files",
         "service_revision_metadata": "after_agent_writes",
         "initial_shared_entries": 0,
         "supplied_protocol": False,
-    } for revision in (LEGACY_REVISION, REVISION))
+    } for revision in (LEGACY_REVISION, COLLISION_REPAIR_REVISION))
+    current = {
+        "revision": REVISION,
+        "structured_agent_records": "author_only",
+        "shared_surface": "ordinary_project_files",
+        "service_revision_metadata": "recoverable_versions_after_agent_writes",
+        "initial_shared_entries": 0,
+        "supplied_protocol": False,
+    }
+    return isinstance(value, dict) and (value == current or value in historical)
 
 
 def author_local_diagnostic_paths(item):
-    """True only for the revision that removes private-record collisions."""
-    return enabled(item) and item[FIELD]["revision"] == REVISION
+    """True for revisions that remove private-record collisions."""
+    return enabled(item) and item[FIELD]["revision"] in {
+        COLLISION_REPAIR_REVISION, REVISION,
+    }
 
 
 def descriptor(plan):

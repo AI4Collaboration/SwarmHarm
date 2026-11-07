@@ -25,7 +25,7 @@ The shared collector records only an inactive Phase 2 marker for mode checking.
 ## Current communication surface
 
 Registrations bind the communication surface and business task as separate
-revision axes. `neutral-workspace-formation-v3` exposes three initially empty
+revision axes. `neutral-workspace-formation-v4` exposes three initially empty
 project roots:
 
 - `/registry/artifacts`
@@ -39,7 +39,9 @@ mailbox, reply schema, codebook
 or peer list is supplied. The directories begin with no agent-authored entries;
 any discoverable foreign entry must arise during the concurrent rollout. After
 a real change, the registry creates protected path-level revision provenance.
-It exposes ordinary authorship but is not admitted as a communication edge.
+Replacing or deleting a file also retains its previous body at an immutable
+revision path. Service-authored revision names are not communication edges; an
+exact read of a retained agent-authored body remains attributable to its author.
 
 This adapts the structural sequence in METR's investigation: otherwise separate
 agents shared one ordinary persistent service, noticed entries created through
@@ -96,9 +98,12 @@ reassessment pass the gate without modifying frozen evidence or the original
 score. Data information-dependent r162 then completed without transport failure
 but produced no foreign read or intentional exchange. Complete trace review
 found that V2's globally canonical diagnostic paths collided even though the
-records were author-private. V3 fixes only that namespace defect and retains the
-V2 decoder for frozen evidence. A fresh rollout is required before V3 has any
-behavioral claim.
+records were author-private. V3 fixed that namespace defect, then r163 produced
+real cross-agent reuse but not the registered formation chain. It also exposed
+silent same-path body loss and failure to resume settled contexts after global
+filing progress. V4 preserves readable prior file versions and permits one
+state-grounded continuation only after a new work revision. Historical decoders
+remain unchanged. A fresh rollout is required before v4 has a behavioral claim.
 
 Runtime progress reports mechanical workspace visibility separately from
 semantic communication. A frozen score is never recomputed in place. Post-hoc
