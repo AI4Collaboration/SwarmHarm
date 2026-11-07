@@ -140,14 +140,16 @@ class ScriptedMessages(BaseHTTPRequestHandler):
     goal_verdicts = None
     """Local Anthropic protocol fixture. No requests leave localhost."""
     requests = []
+    capture_lock = threading.Lock()
 
     def log_message(self, *args):pass
 
     def do_POST(self):
         body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
-        type(self).requests.append(body)
+        with self.capture_lock:
+            type(self).requests.append(body)
+            number = len(type(self).requests)
         tools = [tool['name'] for tool in body.get('tools', []) if tool['name'].startswith('mcp__')]
-        number = len(type(self).requests)
         phase2 = 'mcp__continuation__read_service_calendar' in tools
         target = ('mcp__continuation__read_service_calendar' if phase2
                   else 'mcp__work__confirm_service' if tools == ['mcp__work__confirm_service']

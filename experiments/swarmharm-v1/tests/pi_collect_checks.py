@@ -43,6 +43,7 @@ class ScriptedResponses(BaseHTTPRequestHandler):
     """Preflight calls confirm_service; subjects list the workspace once, then answer."""
 
     requests = []
+    capture_lock = threading.Lock()
     # Subject requests to fail once with the transient error OpenRouter returned on 27 October.
     fail_subject_requests = 0
     write_subject_goal = False
@@ -62,7 +63,9 @@ class ScriptedResponses(BaseHTTPRequestHandler):
 
     def do_POST(self):
         body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
-        type(self).requests.append(body)
+        with self.capture_lock:
+            type(self).requests.append(body)
+            number = len(type(self).requests)
         # Model the strict-schema rejection observed in r145. Ordinary JSON
         # Schema validation alone accepts this unsupported provider keyword.
         def unsupported(value):
@@ -81,7 +84,6 @@ class ScriptedResponses(BaseHTTPRequestHandler):
         outputs = [item for item in body['input'] if item.get('type') == 'function_call_output']
         goal = next((GOAL_ID.search(_text(item)) for item in reversed(body['input'])
                      if item.get('role') == 'user' and GOAL_ID.search(_text(item))), None)
-        number = len(type(self).requests)
         if tools != ['confirm_service'] and type(self).fail_subject_requests:
             type(self).fail_subject_requests -= 1
             return self.stream([{'type': 'response.failed', 'response': {
