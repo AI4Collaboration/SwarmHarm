@@ -155,7 +155,8 @@ research question, not to replace these paired negatives.
 These cases also differ in feedback, uploads, credit, freshness or customer-pack
 settings, so they establish possibilities rather than a causal mechanism
 comparison. The new balanced input matrix removes those differences and passes
-its offline gates; it has not yet been collected. See the
+its offline gates. Its complete twelve-cell registration matrix is sealed but
+has not been collected. See the
 [machine-readable readiness check](docs/research/balanced-study-readiness.json).
 
 ## Run or inspect

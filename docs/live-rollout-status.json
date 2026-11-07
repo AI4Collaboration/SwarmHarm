@@ -1,8 +1,8 @@
 {
   "schema_version": 6,
-  "updated_at": "2026-11-07T09:33:37+00:00",
+  "updated_at": "2026-11-07T09:58:30+00:00",
   "environment": "experiments/swarmharm-v1",
-  "status": "reviewed_existing_evidence_balanced_inputs_offline_ready",
+  "status": "reviewed_existing_evidence_balanced_matrix_prepared_uncollected",
   "active_rollouts": [],
   "heartbeat": null,
   "study_mode": "unified",
@@ -24,6 +24,8 @@
       "grader"
     ],
     "offline_readiness": "docs/research/balanced-study-readiness.json",
+    "prepared_registration_count": 12,
+    "registration_alignment": "complete",
     "live_collection_started": false
   },
   "claim_cases": {
@@ -58,18 +60,20 @@
     "2026-11-07-unified-v52-inference-grader-knowledge-sol61-r72"
   ],
   "maintained_registrations": [
-    "experiments/swarmharm-v1/registrations/2026-11-07-unified-v51-records-knowledge-sol56-r68",
-    "experiments/swarmharm-v1/registrations/2026-11-07-unified-v51-records-knowledge-sol61-r68",
-    "experiments/swarmharm-v1/registrations/2026-11-07-unified-v51-resource-engineering-sol56-r69",
-    "experiments/swarmharm-v1/registrations/2026-11-07-unified-v51-resource-engineering-sol61-r69",
-    "experiments/swarmharm-v1/registrations/2026-11-07-unified-v51-control-knowledge-sol56-r70",
-    "experiments/swarmharm-v1/registrations/2026-11-07-unified-v51-control-knowledge-sol61-r70",
-    "experiments/swarmharm-v1/registrations/2026-11-07-unified-v51-inference-grader-knowledge-sol56-r71",
-    "experiments/swarmharm-v1/registrations/2026-11-07-unified-v51-inference-grader-knowledge-sol61-r71",
-    "experiments/swarmharm-v1/registrations/2026-11-07-unified-v52-inference-grader-knowledge-sol56-r72",
-    "experiments/swarmharm-v1/registrations/2026-11-07-unified-v52-inference-grader-knowledge-sol61-r72"
+    "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v1-records-knowledge-sol56",
+    "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v1-resource-knowledge-sol56",
+    "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v1-grader-knowledge-sol56",
+    "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v1-records-engineering-sol56",
+    "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v1-resource-engineering-sol56",
+    "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v1-grader-engineering-sol56",
+    "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v1-records-knowledge-sol61",
+    "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v1-resource-knowledge-sol61",
+    "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v1-grader-knowledge-sol61",
+    "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v1-records-engineering-sol61",
+    "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v1-resource-engineering-sol61",
+    "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v1-grader-engineering-sol61"
   ],
-  "next_condition": "Preserve the reviewed results. Finish balanced-input review and prepare fresh registrations; do not collect without explicit authorization.",
+  "next_condition": "Preserve the reviewed results and sealed balanced registrations; do not collect without explicit authorization.",
   "workflow": "One task, persistent session and business world; no phase transition or formation gate.",
-  "current_question": "Can the three mechanisms be compared under one fixed envelope in Knowledge Work and one Engineering replication block? Offline input and path gates pass; behavior is uncollected."
+  "current_question": "The twelve-cell balanced matrix passes input, path and runtime-factor gates. Behavioral results remain uncollected."
 }

@@ -68,7 +68,8 @@ made from this study.
 `scripts/check_balanced_study.py` must show one fixed-factor hash across all six
 input cells. Every cell must have a blocked ordinary full path and a tested
 alternative. Prepared registrations add model/runtime factors and must still
-share one fixed-factor hash. Any extra difference fails closed.
+share one fixed-factor hash. The complete twelve-cell registration matrix now
+passes this check; no cell has been collected. Any extra difference fails closed.
 
 The existing r68, r69 and r72 pairs remain possibility evidence under their
 original compound settings. V47 remains the matched four-domain stress result.

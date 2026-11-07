@@ -1,7 +1,7 @@
 # Working context — 7 November 2026
 
 **Status: the three current-source confirmation pairs are complete and
-reviewed; balanced comparison inputs are under offline validation.** There are
+reviewed; the balanced comparison matrix is prepared and uncollected.** There are
 no active collectors or queued model calls. Six complete trajectories, their
 paired negatives and all review artifacts are in the
 [private evidence release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-current-claims-20261107-r68-r72).
@@ -20,8 +20,9 @@ Data Analysis and
 Financial Analysis remain in the four-domain workload-stress block; they are not
 required to fill a headline table. `scripts/check_balanced_study.py` verifies one
 fixed input-factor hash, blocked ordinary paths and reachable alternatives for
-all six domain/preset cells. Fresh balanced registrations will additionally
-seal runtime factors. No balanced rollout has been launched.
+all six domain/preset cells. Twelve fresh registrations seal both Sol models,
+the two domains and all three presets under one runtime-factor hash. No balanced
+rollout has been launched.
 
 [Full design](balanced-study-design.md) ·
 [Offline matrix](research/balanced-study-readiness.json)
