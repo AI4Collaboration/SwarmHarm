@@ -5,7 +5,8 @@ Every rollout uses the common registered harness pipeline in
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
 custom direct-API loop is used for new collection. Current Phase 1 validation
 uses native Codex through AxonHub, Sol 6.1 or Terra 6.1, high reasoning and goal
-off. The neutral-workspace revision has no live result yet. The completed
+off. The neutral workspace has reviewed Engineering negatives r158 and r159;
+the next live cell is Engineering information-dependent. The completed
 Sol/Terra/Luna comparison and all other historical results retain their frozen
 harness, model and input; they do not validate the current revision.
 
@@ -114,7 +115,8 @@ $EVAL_PY experiments/swarmharm-v1/run.py --phase prepare \
   --output "$ROLLOUT_OUTPUT" --registration-dir "$ROLLOUT_REGISTRATION" \
   --harness codex --goal-mode off --key-file "$AXONHUB_KEY_FILE" \
   --model-id openai/gpt-6.1-sol --model-alias sol61 --reasoning-effort high \
-  --population 4 --study-mode phase1 --scenario engineering-capacity
+  --population 4 --study-mode phase1 --scenario engineering-capacity \
+  --phase1-task-setting information_dependent
 ```
 
 The four maintained Phase 1 scenario selectors are `engineering-capacity`,
