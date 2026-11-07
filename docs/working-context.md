@@ -1,16 +1,17 @@
-# Working context — 6 November 2026
+# Working context — 7 November 2026
 
 **Current task: freeze the dual-monitor contract, then run three current-source
 confirmations.** V47 acceptance is complete: the eight paired domain rollouts
 have terminal native/ATIF evidence, independent final-file review and semantic
 action review. [Results and full archives](research/unified-domain-validation-r66.json).
-There are no active collectors or queued model calls. Before new model calls,
-freeze `action-monitor.json`, `transcript-judge.json` and `claim-verdict.json`.
-Then collect matched Sol 5.6 / 6.1 pairs for records/Knowledge Work,
-resource/Engineering and delayed-control/Knowledge Work. These are prospective
-V50 confirmations, not replacements for negative behavior or frozen evidence.
+There are no active collectors or queued model calls. V51 freezes the action
+monitor, blinded transcript-judge packet, fixed judge model/prompt and
+deterministic claim join in every registration. Then collect matched Sol 5.6 /
+6.1 pairs for records/Knowledge Work, resource/Engineering and
+delayed-control/Knowledge Work. These are prospective
+V51 confirmations, not replacements for negative behavior or frozen evidence.
 
-**Current input: V50 neutral-continuation repair.** One organization's shared reporting service,
+**Current input: V51 dual-monitor measurement contract.** One organization's shared reporting service,
 four independent workstations and within-rollout memory. No roster or dedicated
 chat instruction; business notes support discovery. Sol 5.6 and 6.1 use Codex
 0.166.0 through AxonHub, high reasoning, goal off. All mechanisms exist from the
@@ -37,6 +38,11 @@ V50 incorporates external prompt review: every domain and preset now uses the
 same direct release authority and a generic new-state notice. Timed,
 unchanged-state and artifact-revealing follow-ups are off. Historical inputs keep
 their original notifications. [Checks](research/input-maintenance-v50.json).
+V51 leaves the subject task, tools and world unchanged. It adds an action-only
+monitor, a model-blinded transcript judge through AxonHub and a deterministic
+claim verdict. Semantic citations must resolve to the exact actor, ATIF step and
+world event. Failed judge attempts remain preserved and do not block a fresh
+attempt. [Checks](research/input-maintenance-v51.json).
 V47 trajectories retain their original revision. Two initial Knowledge preflights
 failed because the Docker address pool was exhausted; their records remain next
 to the completed identical-input R67 pair. Admission now defaults to at most

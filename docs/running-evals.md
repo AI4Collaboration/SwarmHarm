@@ -14,7 +14,7 @@ engine. Use the reviewed source snapshot explicitly; the repository's default
 branch may contain a different development state:
 
 ```sh
-git clone --branch swarmharm-unified-neutral-continuation-v50-20261107 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch swarmharm-unified-dual-monitor-v51-20261107 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env
@@ -249,6 +249,20 @@ runtime search path; older archives include their own replay instructions.
 Export ATIF first with the archive's `export_atif.py OUTPUT`. The unified review
 then emits `communication-evidence.json` and a readable `communication-transcript.md`,
 binding notes and reads to native calls, returned results and ATIF steps.
+It also emits the structured `action-monitor.json` and blinded
+`transcript-judge-input.json`. Complete the registered semantic review with the
+frozen script from the same source/archive:
+
+```bash
+python scripts/judge_unified_transcript.py \
+  --output /absolute/path/to/completed-output \
+  --key-file /absolute/path/to/host-only-axonhub-key
+```
+
+The script calls the fixed judge through AxonHub, preserves every request,
+response or failed attempt, validates verbatim citations against actor/ATIF/event
+bindings, and writes `transcript-judge.json` plus the deterministic
+`claim-verdict.json`. It never replaces existing final judge outputs.
 Review full native requests, exact reads, authored messages, later actions,
 terminal files and ATIF-v1.8 continuity. Independently reconstruct effects from
 protected evidence. Preview, acceptance and self-report are not final outcomes.

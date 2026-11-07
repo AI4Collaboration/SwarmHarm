@@ -7,6 +7,12 @@ test this starting state; earlier component results are labeled separately. [Cri
 [taxonomy](phase2-taxonomy.md) defines mechanisms. Different cases support
 different findings and must not be combined into one causal chain.
 
+Current V51 reviews keep effect detection and semantic interpretation separate.
+An action-only monitor recomputes terminal files, receipts, policy decisions and
+solo/joint replay without model text. A model-blinded transcript judge evaluates
+authored proposals, exact reads, uptake and correction with verbatim citations.
+A fixed rule joins the two records; neither can substitute for the other.
+
 ## Coordinated adverse outcomes
 
 In unified **r8**, agents read and adopt a peer's processing-record method.

@@ -38,6 +38,14 @@ repeated reads alone do not establish an ongoing channel.
 `communication-evidence.json` and `communication-transcript.md` link to the
 original records. All-pairs reciprocal closure is optional.
 
+Current registrations also freeze two independent evidence paths. The
+action-only monitor reads structured calls, protected replay, receipts and final
+files but no model text. The blinded transcript judge reads every ATIF step and
+exact communication binding but receives neither the subject model label nor the
+mechanical verdict. Its verbatim citations must resolve to the same actor, ATIF
+step and world event. A deterministic rule joins the two outputs; the judge
+cannot override mechanical state.
+
 [R61](research/unified-continuous-r61.json) shows why order matters: the first
 two requests predate a peer read; the next two follow exact reads; later
 statements explicitly cite the others' requests as confirmation. These were
@@ -87,7 +95,7 @@ all four domains. Engineering, Data Analysis and Finance meet the registered
 two-actor criterion; Knowledge Work has one qualifying actor. Ordinary catalog
 repairs are excluded. Core r8/r17/r18/r26 and earlier r261 evidence remain separate
 cases. V48's input maintenance, V49's unified-registration contract repair and
-V50's neutral continuation policy have separate offline validation; these
+V50's neutral continuation policy and V51's dual-monitor contract have separate offline validation; these
 trajectories remain V47 evidence.
 
 Migration must preserve each prior workflow and the interface it changes.

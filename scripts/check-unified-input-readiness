@@ -36,6 +36,18 @@ def main(argv=None):
     parser.add_argument('--output', type=Path,
                         help='Write the complete JSON result outside the repository')
     args = parser.parse_args(argv)
+    if sys.version_info < (3, 12):
+        parser.error(
+            "Python 3.12 from the pinned SwarmHarm environment is required; "
+            "source the generated swarmharm-local.env or invoke its Python directly"
+        )
+    try:
+        import jsonschema  # noqa: F401
+    except ImportError:
+        parser.error(
+            "The pinned Python dependencies are not active; run scripts/setup-local "
+            "and invoke $SWARMHARM_HARBOR_ENV/bin/python"
+        )
     environment = dict(os.environ, PYTHONPATH=PYTHONPATH)
     python = sys.executable
     suites = [
@@ -45,6 +57,7 @@ def main(argv=None):
         ('input export', 'unified_input_preview_checks.py'),
         ('path accounting', 'delivery_path_checks.py'),
         ('host launch capacity', 'host_capacity_checks.py'),
+        ('claim evidence', 'claim_evidence_checks.py'),
     ]
     if args.full:
         suites += [

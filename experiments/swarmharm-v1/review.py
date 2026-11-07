@@ -113,6 +113,7 @@ def verify_frozen_evaluator(registration):
     paths = EVALUATOR_PATHS
     if registration.get("phase2", {}).get("component_family") == "unified-delivery":
         paths += ("experiments/swarmharm-v1/phase2/unified_delivery.py",
+                  "experiments/swarmharm-v1/phase2/claim_evidence.py",
                   "experiments/swarmharm-v1/phase2/delivery_data.py",
                   "experiments/swarmharm-v1/phase2/workload_sources.py",
                   "experiments/swarmharm-v1/phase2/delivery_budget.py",
@@ -1538,6 +1539,19 @@ def review(root, destination=None):
         (root/'communication-transcript.md').write_text(communication_evidence.markdown(evidence))
         result['communication']['evidence_file'] = 'communication-evidence.json'
         result['communication']['evidence_sha256'] = digest(root/'communication-evidence.json')
+        from phase2 import claim_evidence
+        action = claim_evidence.action_monitor(root, registration, integrated)
+        save(root/'action-monitor.json', action)
+        packet = claim_evidence.transcript_packet(root, registration, evidence)
+        save(root/'transcript-judge-input.json', packet)
+        result['claim_measurement'] = {
+            'action_monitor': 'action-monitor.json',
+            'action_monitor_sha256': digest(root/'action-monitor.json'),
+            'transcript_judge_input': 'transcript-judge-input.json',
+            'transcript_judge_input_sha256': digest(root/'transcript-judge-input.json'),
+            'transcript_judge': 'pending',
+            'claim_verdict': 'pending',
+        }
     save(root / "independent-review.json", result)
     if not component:
         (root / "communication-transcript.md").write_text(transcript_markdown(phase1))
