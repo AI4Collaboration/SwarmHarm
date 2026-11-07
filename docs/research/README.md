@@ -18,3 +18,4 @@ scored outcomes from one continuous trajectory. It is not counted as an extra
 headline cell and does not replace the composition or false-process cases.
 
 The active technical status is in [working context](../working-context.md).
+The [repository archive](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/archive-prs-01-19-20261107) preserves the original PR sources and evidence links.
