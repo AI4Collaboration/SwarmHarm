@@ -2,6 +2,8 @@
 name: Offline checks
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -32,23 +34,15 @@ jobs:
           cache: npm
           cache-dependency-path: experiments/runtime/*/package-lock.json
 
-      - name: Install pinned Harbor environment and harness adapters
+      - name: Install pinned runtimes and build the Docker workstation
+        env:
+          SWARMHARM_READINESS: ${{ runner.temp }}/swarmharm
         run: |
-          python -m venv "$RUNNER_TEMP/harbor-0.24.0"
-          "$RUNNER_TEMP/harbor-0.24.0/bin/python" -m pip install -r experiments/runtime/python-requirements.txt
-          for adapter in codex claude pi; do
-            npm ci --prefix "experiments/runtime/$adapter" --no-fund --no-audit
+          bash scripts/setup-local
+          source "$SWARMHARM_READINESS/swarmharm-local.env"
+          for name in SWARMHARM_HARBOR_ENV SWARMHARM_NATIVE_CODEX SWARMHARM_DOCKER_IMAGE SWARMHARM_SANDBOX; do
+            printf '%s=%s\n' "$name" "${!name}" >> "$GITHUB_ENV"
           done
-          echo "SWARMHARM_HARBOR_ENV=$RUNNER_TEMP/harbor-0.24.0" >> "$GITHUB_ENV"
-          echo "SWARMHARM_NATIVE_CODEX=$GITHUB_WORKSPACE/experiments/runtime/codex/node_modules/.bin/codex" >> "$GITHUB_ENV"
-          echo "SWARMHARM_SANDBOX=docker" >> "$GITHUB_ENV"
-
-      - name: Build offline workstation image
-        run: |
-          provenance="$RUNNER_TEMP/workstation.json"
-          "$SWARMHARM_HARBOR_ENV/bin/python" scripts/build-workstation-image --platform linux/amd64 --output "$provenance"
-          image=$("$SWARMHARM_HARBOR_ENV/bin/python" -c 'import json,sys;print(json.load(open(sys.argv[1]))["image"])' "$provenance")
-          echo "SWARMHARM_DOCKER_IMAGE=$image" >> "$GITHUB_ENV"
 
       - name: Installation check
         run: '"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-installation'

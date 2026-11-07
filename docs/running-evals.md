@@ -99,8 +99,8 @@ ID, store it in a file outside the clone, and restrict that file to its owner
 (`chmod 600`). Never commit it. Model availability is checked at preparation;
 local installation checks do not prove provider access.
 
-Create your own working branch before preparing a new registration. Existing
-evidence is replayed from its frozen archive, not overwritten by a new collection.
+Prepare new registrations on an up-to-date `main`. GitHub runs the offline
+checks on every push to `main`. Replay published cases from their frozen archives.
 
 Balanced headline example (replace the paths and unique name). Switch the preset,
 claim and domain only according to `docs/balanced-study-design.md`; the comparison

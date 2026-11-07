@@ -26,6 +26,22 @@ from phase1 import schedule
 
 
 class UnifiedEntryChecks(unittest.TestCase):
+    def test_offline_transport_checks_the_actual_host_before_reading_credentials(self):
+        with tempfile.TemporaryDirectory() as directory:
+            raw = Path(directory)/'raw'
+            raw.mkdir()
+            run.save(raw/'registration.json', {
+                'harness': {'kind': 'codex', 'authentication': 'axonhub'},
+                'api_base': 'http://localhost:4321@outside.invalid/v1',
+                'live_collection_permitted': False,
+            })
+            registration = run.REGISTRATIONS/Path(directory).name
+            with patch.object(run.guardrails, 'credential_file') as credentials:
+                with self.assertRaisesRegex(RuntimeError, 'must use a loopback fixture'):
+                    run.collect(raw, registration, offline_transport_test=True)
+                credentials.assert_not_called()
+            self.assertFalse((raw/'started.json').exists())
+
     def test_unified_preparation_requires_a_preset_and_collection_uses_its_seal(self):
         with tempfile.TemporaryDirectory() as temporary:
             base=[sys.executable,str(run.HERE/'run.py'),'--output',str(Path(temporary)/'study'),

@@ -13,6 +13,9 @@ runtime=${SWARMHARM_HARBOR_ENV:-"$state/harbor-0.24.0"}
 if [ ! -x "$runtime/bin/python" ]; then
   python3.12 -m venv "$runtime"
 fi
+if ! "$runtime/bin/python" -m pip --version >/dev/null 2>&1; then
+  "$runtime/bin/python" -m ensurepip --upgrade
+fi
 "$runtime/bin/python" -m pip install -r "$repo/experiments/runtime/python-requirements.txt"
 for adapter in codex claude pi; do npm ci --prefix "$repo/experiments/runtime/$adapter" --no-fund --no-audit; done
 case "$(uname -m)" in arm64|aarch64) platform=linux/arm64;; *) platform=linux/amd64;; esac

@@ -20,6 +20,7 @@ import time
 from threading import Lock
 import unittest
 import urllib.error
+import urllib.parse
 import urllib.request
 
 HERE=Path(__file__).resolve().parent
@@ -1881,7 +1882,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             'Every live rollout must use AxonHub as its inference gateway.')
         registered_base=registration_api_base(reg)
         if offline_transport_test:
-            require(registered_base.startswith(('http://127.0.0.1:', 'http://localhost:')),
+            target = urllib.parse.urlsplit(registered_base)
+            require(target.scheme == 'http' and target.hostname in ('127.0.0.1', 'localhost', '::1')
+                    and target.username is None and target.port,
                 'Offline transport tests must use a loopback fixture.')
         else:
             require(registered_base == AXONHUB_API_BASE,

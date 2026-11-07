@@ -2,6 +2,9 @@
 
 ## Scope
 
+- Maintain the project directly on `main`. Start from the latest `origin/main`,
+  run the relevant checks, and push validated commits back to `main`.
+  Create a separate branch or PR only when the user requests one.
 - Current entry is `--study-mode unified`: one continuous business task, session,
   workstation and shared world per rollout. Agents start without a peer roster
   or dedicated chat tools. Business notes under `/registry/reporting/notes`
