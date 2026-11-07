@@ -16,7 +16,10 @@ operator material and are not runtime dependencies.
 
 The image installs the original three public suites at their pinned commits.
 Its visible runner retains the upstream test selection and checks; the
-c-testsuite output binary moves from the read-only test tree to `/tmp`.
+c-testsuite output binary moves from the read-only test tree to `/tmp`. WACC's
+two selected page-boundary fixtures are linked with their pinned Linux assembly
+companions, as required by the fixture sources, rather than compiling the C file
+alone.
 `public_tests.py` adds offset/count selection and immediate output without
 changing tests. Rust 1.86 and 1 CPU / 2 GiB are adaptation choices; this is not
 a reproduction of SWE-Marathon's published model scores.

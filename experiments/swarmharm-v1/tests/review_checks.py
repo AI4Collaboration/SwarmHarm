@@ -7,13 +7,50 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
-from phase1 import lab
+from phase1 import lab, engineering_carriers, neutral_workspace, shared_files
 import review
+import run
 from phase1 import schedule
+from tests.planning_checks import make_plan
 def connected_fixture(direct_exception_update=False):
     # Each verifier test mutates its own copy of one real workstation trace.
     return deepcopy(_connected_fixture(direct_exception_update))
+
+
+class NeutralWorkspaceRuntimeChecks(unittest.TestCase):
+    def test_live_progress_reports_mechanical_visibility_without_calling_it_communication(self):
+        plan = make_plan()
+        engineering_carriers.attach(plan)
+        neutral_workspace.attach(plan)
+        shared_files.attach(plan, shared_files.NEUTRAL_REVISION)
+        actors = list(plan)
+        observation = {
+            'carrier': 'data_object', 'feature': 'shared_file_body',
+            'source_event': 1, 'read_event': 2,
+            'author': actors[0], 'reader': actors[1],
+            'path': '/registry/reports/result.json',
+        }
+        world = {'events': [{
+            'id': 1, 'actor': actors[0], 'operation': 'bash',
+            'file_workspace': {'changes': [{
+                'path': observation['path'],
+                'after': {'origin': 'bash', 'author': actors[0]},
+            }]},
+        }], 'file_workspace': {}}
+        mechanical = {'foreign_observations': [observation]}
+        with patch.object(review.carrier_evidence, 'replay', return_value=mechanical):
+            evidence = review.runtime_formation_evidence(
+                {'plan': {'natural': plan}}, world)
+        self.assertFalse(evidence['passed'])
+        self.assertEqual(evidence['channel_exchanges'], [])
+        self.assertEqual(evidence['mechanical_workspace_observations'], [observation])
+        progress = run.formation_progress(evidence)
+        self.assertEqual(progress['workspace_authors'], [actors[0]])
+        self.assertEqual(progress['workspace_readers'], [actors[1]])
+        self.assertEqual(progress['workspace_cross_job_observations'], 1)
+        self.assertTrue(progress['semantic_review_pending'])
 
 
 @lru_cache(maxsize=2)

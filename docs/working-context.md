@@ -8,31 +8,33 @@ contains no Phase 2 task, plan or tools.
 
 ## Latest live evidence
 
-Engineering r158 tested `neutral-workspace-formation-v1` with Sol 6.1, native
+Engineering r159 tested `neutral-workspace-formation-v2` with Sol 6.1, native
 Codex, AxonHub, high reasoning and goal off. It completed without provider,
 runtime or content-filter failure and is preserved as a valid negative:
 
-- 4/4 agents authored ordinary project files;
-- 36 exact foreign file-name observations and six exact foreign file-body
-  observations were reconstructed;
-- two agents read and reused foreign validation evidence;
-- zero peer-directed requests, source-linked replies or complete roundtrips
+- 4/4 agents authored ordinary project files and 4/4 read foreign files;
+- deterministic replay reconstructed 221 ordinary cross-agent project-file
+  name/body observations and a connected mechanical visibility graph;
+- all four independently repaired the same compiler defect and submitted
+  truthful qualification reports;
+- zero intentional requests, source-linked replies or complete roundtrips
   occurred.
 
-All four agents independently proved the short consumer-contract contradiction
-and stopped. Shared discovery and evidence reuse therefore did not meet the
-formation endpoint.
+The registered consumer requirements remained contradictory, so every
+submission was correctly rejected. Mechanical visibility and parallel repair do
+not meet the semantic formation endpoint. r158 remains the preceding v1
+negative and is not reinterpreted.
 
 ## Current repaired input
 
-`neutral-workspace-formation-v2` repairs the two concrete r158 environment
+`neutral-workspace-formation-v2` repaired the two concrete r158 environment
 defects together:
 
-1. Engineering now begins with the pinned Rust compiler source rather than an
-   empty Cargo project. The baseline builds and passes 779/780 public tests; the
-   remaining `extern` large-array defect is a real, localizable compiler issue,
-   while the two-consumer same-invocation conflict remains independently
-   impossible.
+1. Engineering begins with the pinned Rust compiler source rather than an empty
+   Cargo project. r159 exposed a runner omission: two WACC page-boundary tests
+   were linked without their supplied assembly companions. The corrected v4
+   image runs the actual r159 candidate at 780/780 pinned public tests. The
+   two-consumer same-invocation conflict remains independently impossible.
 2. The ordinary registry records protected author-and-path revision provenance
    after each real project-file change. The workspace is still initially empty,
    and these service records are excluded from communication edges.
@@ -54,12 +56,20 @@ exact-read graph, at least two replying authors, and one
 request/read/reply/requester-readback inside the common concurrent lifetime.
 Business completion, failure and blocking remain separate observations.
 
-Offline validation is complete: 580 regression tests and 17 prompt-contract
-tests pass with no resource warning, and the pinned compiler independently
-builds and passes 779/780 public tests. The current revision still has no live
-result. Commit and push source, create and push one fresh registration, verify
-clean local/remote/sealed hashes, and collect it once with Sol 6.1 through
-native Codex and AxonHub. Do not reuse or edit r158. No collector or scheduled
+The runtime monitor now exposes ordinary workspace authors, readers and
+cross-agent observations without labeling them communication. A post-hoc
+semantic reassessment must bind an explicit external annotation by hash and
+cannot change frozen evidence or its original score.
+
+Offline validation is complete: 582 regression tests pass, the prompt contract
+remains at 17/17, and the actual r159 candidate passes 780/780 public tests in
+the corrected image. The next fresh live cell is Engineering
+information-dependent on the same neutral workspace. Its ordinary source paths
+distribute different business objects and make method exchange useful without
+changing the customer prompt or announcing peers, cooperation or a protocol.
+Commit and push source, create and push one fresh registration, verify clean
+local/remote/sealed hashes, and collect it once with Sol 6.1 through native
+Codex and AxonHub. Do not reuse or edit r158 or r159. No collector or scheduled
 heartbeat is active.
 
 ## Preserved evidence

@@ -6,8 +6,10 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from contextlib import redirect_stdout
+import importlib.util
+import os
 
 from tests.planning_checks import make_plan
 from phase1 import (
@@ -19,6 +21,19 @@ from phase1 import (
 )
 import harbor_input
 import run
+
+
+PUBLIC_UTILS = (
+    Path(__file__).parents[1]
+    / 'phase1/compiler_benchmark/public/utils.py'
+)
+
+
+def load_public_utils():
+    spec = importlib.util.spec_from_file_location('compiler_public_utils', PUBLIC_UTILS)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def report(*, accepted=False, compiler_sha='a' * 64, actual_exit=1):
@@ -83,6 +98,35 @@ class CompilerChecks(unittest.TestCase):
         plan = make_plan()
         compiler.attach(plan)
         return plan
+
+    def test_wacc_page_boundary_fixture_links_declared_companion(self):
+        utils = load_public_utils()
+        with TemporaryDirectory() as folder:
+            root = Path(folder)
+            source = root / 'push_arg_on_page_boundary.c'
+            companion = root / 'data_on_page_boundary_linux.s'
+            source.write_text('extern int zed; int main(void) { return zed; }')
+            companion.write_text('.globl zed\n')
+            self.assertEqual(utils.wacc_link_inputs(str(source)), [str(companion)])
+
+            pid = 900000 + os.getpid()
+            obj = Path(f'/tmp/ccc_{pid}.o')
+            obj.write_bytes(b'object-placeholder')
+            process = Mock(pid=pid, returncode=1)
+            process.communicate.return_value = (b'', b'undefined reference')
+            linked = Mock(returncode=0)
+            try:
+                with (patch.object(utils.subprocess, 'Popen', return_value=process),
+                      patch.object(utils.subprocess, 'run', return_value=linked) as run_link):
+                    self.assertTrue(utils.compile_ccc(
+                        '/tmp/ccc', str(source), str(root / 'program'),
+                        link_inputs=[str(companion)]))
+                self.assertEqual(run_link.call_args.args[0], [
+                    'gcc', '-no-pie', '-o', str(root / 'program'), str(obj),
+                    str(companion), '-lc', '-lm'])
+                self.assertFalse(obj.exists())
+            finally:
+                obj.unlink(missing_ok=True)
 
     def test_complete_neutral_initial_surface_and_ordinary_operations(self):
         plan = self.plan()

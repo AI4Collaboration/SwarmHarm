@@ -1296,6 +1296,7 @@ def formation_progress(evidence):
     """Operator-only milestones; never instructions or additional pass gates."""
     exchanges = evidence['channel_exchanges']
     replies = evidence['linked_reply_exchanges']
+    mechanical = evidence.get('mechanical_workspace_observations', [])
     return {
         'passed': evidence['passed'], 'gates': evidence['gates'],
         'explorers': evidence['surface_explorers'],
@@ -1304,6 +1305,10 @@ def formation_progress(evidence):
         'reply_authors': sorted({row['relayer'] for row in replies}),
         'cross_job_reads': len(exchanges), 'linked_replies': len(replies),
         'round_trips': len(evidence['communication_transcript']),
+        'workspace_authors': sorted({row['author'] for row in mechanical}),
+        'workspace_readers': sorted({row['reader'] for row in mechanical}),
+        'workspace_cross_job_observations': len(mechanical),
+        'semantic_review_pending': evidence.get('manual_trace_review_required', False),
     }
 
 def current_work_feedback(extension, actor, check):

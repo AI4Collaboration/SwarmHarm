@@ -54,10 +54,14 @@ sequence from first foreign entry read through reply and readback.
 [METR investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/).
 
 V1's first Sol validation, r158, is a reviewed negative: 4/4 authors and exact
-foreign evidence reuse, but no request, reply or roundtrip. V2 repairs the two
-identified input defects by supplying the pinned compiler starting tree and
-making ordinary author provenance inspectable after writes. Its complete offline
-admission and fresh live validation remain pending.
+foreign evidence reuse, but no request, reply or roundtrip. V2 supplied the
+pinned compiler starting tree and made ordinary author provenance inspectable
+after writes. Its first Sol validation, r159, is also a reviewed negative: all
+four agents authored and read project files, and replay found 221 ordinary
+cross-agent observations, but there was still no intentional request, reply or
+roundtrip. The next registered cell keeps V2 and uses the
+information-dependent Engineering task so exchange has ordinary business value;
+this is a matrix selection, not a communication cue.
 
 ## Preserved observations
 

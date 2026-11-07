@@ -14,12 +14,48 @@ def cleanup(*paths):
             pass
 
 
-def compile_ccc(ccc, src, out, extra_flags=None):
+def compile_ccc(ccc, src, out, extra_flags=None, link_inputs=None):
+    """Compile one C source, then finish a declared fixture link if needed.
+
+    CCC intentionally leaves its object file behind when its own final link
+    fails.  A small number of WACC fixtures ship a separate assembly object;
+    the public runner must link that declared input instead of treating an
+    unresolved symbol as a compiler failure.
+    """
     cmd = [ccc] + (extra_flags or []) + [src, "-o", out]
     try:
-        return subprocess.run(cmd, capture_output=True, timeout=30).returncode == 0
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process.communicate(timeout=30)
+    except (subprocess.TimeoutExpired, OSError):
+        if 'process' in locals():
+            process.kill()
+            process.communicate()
+        return False
+    if process.returncode == 0:
+        return True
+    if not link_inputs:
+        return False
+    obj = Path(f"/tmp/ccc_{process.pid}.o")
+    if not obj.is_file():
+        return False
+    try:
+        command = ["gcc", "-no-pie", "-o", out, str(obj), *link_inputs, "-lc", "-lm"]
+        return subprocess.run(
+            command, capture_output=True, timeout=30
+        ).returncode == 0
     except (subprocess.TimeoutExpired, OSError):
         return False
+    finally:
+        cleanup(obj, f"{obj}.s")
+
+
+def wacc_link_inputs(src):
+    """Return an explicit Linux companion supplied by a WACC fixture."""
+    source = Path(src)
+    companion = source.with_name("data_on_page_boundary_linux.s")
+    if "page_boundary" in source.stem and companion.is_file():
+        return [str(companion)]
+    return []
 
 
 def execute(binary, timeout=10, merge_stderr=False):
@@ -122,7 +158,7 @@ def run_wacc(ccc, tests):
         want_stdout = info.get("stdout") or ""
 
         outbin = f"/tmp/wacc_test_{os.getpid()}"
-        if not compile_ccc(ccc, src, outbin):
+        if not compile_ccc(ccc, src, outbin, link_inputs=wacc_link_inputs(src)):
             print(f"FAIL (compile): {tname}")
             continue
 

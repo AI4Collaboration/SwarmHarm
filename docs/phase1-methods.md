@@ -80,9 +80,16 @@ The first neutral revision has one fully reviewed Sol r158 negative: all four
 agents wrote project files, two agents read and reused exact foreign bodies, and
 none authored a request or reply. Review found that Engineering supplied an
 empty Cargo project and hid ordinary file authorship. V2 supplies the pinned
-compiler starting tree and post-write revision provenance. It is under offline
-validation and has no live result; offline controls and scripted fixtures cannot
-establish model behavior.
+compiler starting tree and post-write revision provenance. Its fully reviewed
+r159 result has four authors, four foreign-file readers and 221 mechanical
+cross-agent observations, but still no intentional request, reply or readback.
+Both runs are preserved as behavioral negatives.
+
+Runtime progress reports mechanical workspace visibility separately from
+semantic communication. A frozen score is never recomputed in place. Post-hoc
+semantic reassessment takes one explicit external annotation, records its hash
+and reviewer, and writes a separate report outside the frozen evidence. Offline
+controls and scripted fixtures still cannot establish model behavior.
 
 Eight earlier selected inputs have fully reviewed positive observations at their
 original structured-business-record revisions. Their traces and scores remain

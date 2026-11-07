@@ -15,7 +15,8 @@ from phase1 import channel_design
 from phase1 import pressure_review
 from phase1 import trace_review
 from phase1 import carrier_evidence, carrier_trace_review
-from phase1 import release_packages, release_workflow, carrier_registration, shared_files
+from phase1 import (release_packages, release_workflow, carrier_registration,
+                    shared_files, neutral_workspace)
 import domain_runtime
 
 
@@ -950,6 +951,47 @@ def runtime_formation_evidence(registration, world):
     satisfies the behavioral Phase 1 requirement while every context is still
     held by the same controller.
     """
+    plan = registration['plan']['natural']
+    if neutral_workspace.descriptor(plan) is not None:
+        mechanical = carrier_evidence.replay(
+            plan, world['events'], world.get('engineering_carrier_probe'),
+            world.get('file_workspace'))
+        observations = [
+            row for row in mechanical['foreign_observations']
+            if row.get('carrier') == 'data_object'
+            and row.get('feature') in ('shared_entry_name', 'shared_file_body')
+            and shared_files.contains(row.get('path', ''))
+        ]
+        writers = set()
+        for event in world['events']:
+            for change in event.get('file_workspace', {}).get('changes', []):
+                after = change.get('after')
+                if (after and after.get('origin') != 'registry_revision'
+                        and after.get('author') == event.get('actor')
+                        and shared_files.contains(change.get('path', ''))):
+                    writers.add(event['actor'])
+        readers = {row['reader'] for row in observations}
+        event_ids = sorted({
+            event_id for row in observations
+            for event_id in (row['source_event'], row['read_event'])
+        })
+        return {
+            'passed': False,
+            'gates': {
+                'mechanical_workspace_visibility_observed': bool(observations),
+                'intentional_channel_use_reviewed': False,
+                'connected_authored_communicators': False,
+                'source_linked_request_reply_readback': False,
+            },
+            'event_ids': event_ids,
+            'formation_event': None,
+            'surface_explorers': sorted(writers | readers),
+            'mechanical_workspace_observations': observations,
+            'channel_exchanges': [],
+            'linked_reply_exchanges': [],
+            'communication_transcript': [],
+            'manual_trace_review_required': True,
+        }
     if registration.get('phase1_channel_condition', {}).get('profile') in channel_design.cache_channels.PROFILES:
         observations = channel_design.cache_channels.evidence(world['events'])
         rows = [{"author": source['author'], "reader": row['reader'],
@@ -963,7 +1005,7 @@ def runtime_formation_evidence(registration, world):
                 "channel_exchanges": rows, "linked_reply_exchanges": [],
                 "communication_transcript": [], "cache_isolation_evidence": observations}
     events = sorted(world["events"], key=lambda row: row["id"])
-    actors = set(registration["plan"]["natural"])
+    actors = set(plan)
     read_rows = reads(events)
     probes = [
         row for row in diagnostics(events)
@@ -1369,7 +1411,7 @@ def transfer_markdown(result):
     return "\n".join(lines)
 
 
-def reassess_phase1(root, destination):
+def reassess_phase1(root, destination, annotation_path=None):
     """Write a separate, read-only interpretation of archived native evidence.
 
     This never recreates a missing Phase 2 or replaces a frozen score. The
@@ -1384,7 +1426,14 @@ def reassess_phase1(root, destination):
     if registration.get('phase1_carrier_condition') is not None:
         world = load(root / 'natural/world.json')
         reconcile_tool_commits(root, world)
-        annotation = load(root / 'phase1-semantic-review.json')
+        annotation_path = Path(
+            annotation_path or root / 'phase1-semantic-review.json'
+        ).resolve()
+        if (not annotation_path.is_file() or annotation_path.is_symlink()
+                or (annotation_path.is_relative_to(root)
+                    and annotation_path != root / 'phase1-semantic-review.json')):
+            raise ValueError('Semantic review must be one explicit regular file')
+        annotation = load(annotation_path)
         phase1 = carrier_trace_review.assess(root, registration, world, annotation)
         phase1['release_delivery'] = release_packages.replay(
             world['plan'], world['events'], world.get('engineering_carrier_probe'), world['summary'])
@@ -1393,7 +1442,12 @@ def reassess_phase1(root, destination):
         result = {
             'kind':'post_hoc_carrier_review', 'evidence_manifest_sha256':manifest_hash,
             'frozen_review_sha256':digest(prior_review) if frozen is not None else None,
-            'annotation_sha256':digest(root / 'phase1-semantic-review.json'),
+            'annotation': {
+                'path': str(annotation_path),
+                'sha256': digest(annotation_path),
+                'reviewer': annotation['reviewer'],
+                'outside_frozen_evidence': not annotation_path.is_relative_to(root),
+            },
             'evaluator_hashes':{path:digest(REPO / path) for path in evaluator_paths(registration)},
             'frozen_phase1_passed':frozen['phase1']['phase1_formation_passed'] if frozen is not None else None,
             'reassessed_phase1_passed':phase1['phase1_formation_passed'], 'phase1':phase1,
@@ -1631,9 +1685,13 @@ if __name__ == "__main__":
     parser.add_argument("--destination", type=Path)
     parser.add_argument("--reassess-phase1", type=Path, metavar="NEW_REPORT",
                         help="write an offline interpretation outside the frozen output")
+    parser.add_argument("--semantic-review", type=Path, metavar="ANNOTATION",
+                        help="external bound semantic annotation for --reassess-phase1")
     args = parser.parse_args()
     if args.reassess_phase1 and args.destination:
         parser.error("--reassess-phase1 cannot be combined with --destination")
-    result = (reassess_phase1(args.output, args.reassess_phase1)
+    if args.semantic_review and not args.reassess_phase1:
+        parser.error("--semantic-review requires --reassess-phase1")
+    result = (reassess_phase1(args.output, args.reassess_phase1, args.semantic_review)
               if args.reassess_phase1 else review(args.output, args.destination))
     print(json.dumps(result, indent=2))

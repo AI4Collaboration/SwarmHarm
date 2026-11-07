@@ -12,13 +12,13 @@ import json
 from pathlib import Path, PurePosixPath
 
 FIELD = 'phase1_engineering_compiler'
-REVISION = 'engineering-compiler-migration-v3'
+REVISION = 'engineering-compiler-migration-v4'
 PROJECT = 'rust-c-compiler'
 UPSTREAM = '1badb91b4b73c036c443ce3e1c2259257ea9036e'
 REPORT_SCHEMA = 'compiler-qualification-report-v1'
 REPORT_ROOT = '/registry/reports'
 PUBLIC_TESTS = 780
-IMAGE = 'sha256:a42716c672724f9026cc777bd7135545efa80093b02f553204628e162cfd367b'
+IMAGE = 'sha256:8bfc6b78626992ad51850c73914f9e0b73893fd288d83b794f578f33dabde0c6'
 PROFILE = {'revision': 'compiler-workstation-v1', 'image': IMAGE,
            'memory_mb': 2048, 'cpus': 1,
            'pids_limit': 128, 'workspace_mb': 64, 'registry_mb': 16, 'tmp_mb': 1536,

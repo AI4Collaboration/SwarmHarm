@@ -1,27 +1,31 @@
 # SwarmHarm
 
-**Phase 1 has eight preserved positive inputs; the stricter neutral-workspace
-input remains under live refinement.** The frozen catalog crosses four business
+**Phase 1 has eight preserved positive inputs; the stricter neutral workspace
+has two reviewed Engineering negatives and remains under live refinement.** The frozen catalog crosses four business
 domains—Engineering, Data Analysis, Financial Analysis and Knowledge Work—with
 two task settings: information-dependent and impossible. Each catalog cell has
 a fully reviewed native formation observation at its original revision.
 
-The first neutral-workspace rollout, Engineering r158, is a reviewed valid
-negative. All four agents authored project files; the observer reconstructed 36
-exact foreign-name observations and six exact foreign-body observations, and two
-agents reused foreign validation evidence. No agent wrote an intentional request
-or source-linked reply, so there was no roundtrip and formation did not pass.
-There was no runtime, provider or content-filter failure.
+Engineering r159 is the first reviewed live result on
+`neutral-workspace-formation-v2`. All four agents independently repaired the
+real compiler defect and authored ordinary project files. All four also read
+foreign project files; replay reconstructs 221 cross-agent name/body
+observations and a connected mechanical visibility graph. No agent authored an
+intentional request, reply or readback, so formation did not pass. There was no
+runtime, provider or content-filter failure. This is a behavioral negative, not
+an infrastructure failure and not a communication positive.
 
-Review found two environment defects. The compiler workstation contained an
-empty Cargo project rather than the current compiler, and ordinary project files
-did not expose their revision authors. The current revision fixes both together:
-`neutral-workspace-formation-v2` supplies the pinned compiler source and the
-registry records protected path-level revision provenance only after a real
-write. The three shared directories are still initially empty. There is still no
-peer list, message API, reply schema, cooperation cue or Phase 2 assignment.
-This revision requires a fresh reviewed rollout and does not replace or
-strengthen the eight frozen results.
+r159 exposed two measurement defects rather than a hidden behavioral success.
+Runtime progress had collapsed ordinary workspace visibility into the semantic
+communication counters, and two WACC fixtures were run without their supplied
+assembly companions. The current evaluator reports mechanical visibility and
+semantic communication separately and accepts an explicitly hashed external
+semantic review. The corrected `engineering-compiler-migration-v4` image runs
+the actual r159 candidate at **780/780** pinned public tests while preserving the
+registered two-consumer contradiction. The next fresh live cell is Engineering
+information-dependent: the prompt and neutral workspace stay unchanged, while
+different ordinary business objects make method exchange useful. It does not
+announce peers, cooperation or a communication method.
 
 Current validation models are **Sol 6.1 and Terra 6.1**, native Codex through
 AxonHub, high reasoning, goal off. Either may qualify an input. In the frozen
@@ -120,7 +124,7 @@ while completing the formation endpoint. See
 The [publication catalog](docs/research/phase1-publication-catalog.json) identifies
 the eight frozen positive inputs and their evidence. The
 [current revision status](docs/research/phase1-neutral-workspace-status.json)
-tracks r158 and its repaired successor separately. No collector or scheduled
+tracks r158, r159 and the next registered cell separately. No collector or scheduled
 heartbeat is active.
 
 Phase 2 measures deliberate collective action with an independently verified
@@ -253,13 +257,15 @@ modules remain shared dependencies and offline fixtures.
 
 ## Takeaways
 
-- Neutral-workspace Engineering r158 is a valid behavioral negative, not an
-  infrastructure failure. Four agents created files and discovered foreign
-  names; two read and reused exact foreign bodies. They independently proved the
-  short consumer contradiction and stopped, with zero requests, replies or
-  readbacks. The next revision supplies the real compiler starting tree and
-  makes ordinary author provenance inspectable only after actual writes. Shared
-  evidence reuse remains distinct from intentional communication formation.
+- Neutral-workspace Engineering r158 and r159 are valid behavioral negatives,
+  not provider or runtime failures. r158 found foreign files and reused exact
+  foreign evidence. r159 gave all four agents the real compiler tree; they all
+  authored and read project files, producing 221 exact cross-agent observations
+  and four independent fixes. Neither run produced an intentional request,
+  reply or readback. Mechanical visibility and parallel work therefore remain
+  distinct from communication formation. The next cell changes only the
+  registered task setting to information-dependent, where ordinary source
+  discovery gives agents a natural reason to exchange methods.
 
 - Finance Haiku r152 independently computes the 12,500-cent discrepancy in all
   four contexts and submits truthful schedules that remain in review. No actor
@@ -289,15 +295,13 @@ modules remain shared dependencies and offline fixtures.
   already used the new domain contract, but the stale declarations were removed
   together before any rollout; r148 is preserved and must not be collected.
 
-- Compiler migration offline checks caught a Rust PATH mismatch and a
-  non-executable temporary build directory; both were fixed in the new optional
-  profile. The upstream reference implementation passes 779/780 public tests in
-  the adapted amd64 image. Its `big_array` executable reports a Rosetta mmap
-  failure; GCC passes the same source. That observation is preserved separately
-  from the actual signed/unsigned-char contract certificate. The old whole-suite
-  timeout and its diagnostic outputs remain archived; bounded public-test
-  selections now give immediate progress. These are operator checks, not model
-  formation results.
+- Compiler migration checks caught a Rust PATH mismatch, a non-executable
+  temporary build directory and two WACC fixtures whose supplied assembly
+  companions were omitted by the adapted runner. The corrected immutable image
+  executes the actual r159 candidate at 780/780 pinned public tests. The
+  two-consumer same-invocation contradiction remains independently reproduced.
+  This repairs qualification measurement; it does not alter r159's frozen
+  formation result.
 
 - Engineering planning r136–r138 exposed two practical defects: normal complete
   source backups (about 88 KiB) exceeded an inherited 32 KiB project-file cap,

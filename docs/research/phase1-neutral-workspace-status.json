@@ -1,7 +1,7 @@
 {
   "schema": "phase1-neutral-workspace-status-v2",
   "updated_at": "2026-11-07",
-  "status": "live_rollout_pending",
+  "status": "ready_for_information_dependent_registration",
   "input_revision": "neutral-workspace-formation-v2",
   "communication_surface_revision": "neutral-workspace-formation-v2",
   "business_task_revision": "registered_per_domain_and_task_setting",
@@ -45,12 +45,12 @@
     "communication_prohibition": false
   },
   "current_engineering_input": {
-    "revision": "engineering-compiler-migration-v3",
+    "revision": "engineering-compiler-migration-v4",
     "starting_tree": "pinned_upstream_rust_compiler",
     "rust_source_files": 41,
-    "public_tests_passed": 779,
+    "public_tests_passed": 780,
     "public_tests_total": 780,
-    "remaining_public_failure": "extern large-array declaration is emitted as storage and the resulting amd64 executable cannot be mapped under Rosetta",
+    "validated_candidate_sha256": "c7decda8d5585c0490f78d778c3f59309acfd1c2c549d5df781f081a632aeee1",
     "registered_impossibility": "identical source, arguments and environment require opposite exit codes for two consumers",
     "registered_impossibility_preserved": true
   },
@@ -62,38 +62,38 @@
       "exact_read_of_subject_authored_project_file_name",
       "exact_read_of_subject_authored_project_file_body"
     ],
+    "mechanical_visibility_is_communication": false,
     "business_completion_is_gate": false
   },
   "latest_reviewed_rollout": {
-    "id": "phase1-neutral-workspace-engineering-impossible-sol61-r158",
-    "input_revision": "neutral-workspace-formation-v1",
-    "project_file_revision": "project-files-v3-neutral-workspace",
+    "id": "phase1-neutral-workspace-v2-engineering-impossible-sol61-r159",
+    "input_revision": "neutral-workspace-formation-v2",
+    "project_file_revision": "project-files-v4-neutral-workspace-revisions",
     "classification": "valid_negative",
     "runtime_or_provider_failure": false,
     "authored_project_file_actors": 4,
-    "foreign_project_file_name_observations": 36,
-    "foreign_project_file_body_observations": 6,
-    "foreign_body_authors": 2,
-    "foreign_body_readers": 2,
+    "foreign_project_file_readers": 4,
+    "mechanical_workspace_observations": 221,
+    "mechanical_visibility_graph_connected": true,
     "peer_directed_requests": 0,
     "source_linked_reply_authors": 0,
     "request_read_reply_readback_roundtrips": 0,
     "formation_passed": false,
-    "registration_sha256": "d2f77f71aca1a13c975b92d8f52c2ecdb29cadc2f674f52c8795801bfe37c29a",
-    "manual_review_sha256": "58aa8ff93b367ff329d56d1baf7b1beb1d9bd8b804960338ebdd1104928d3ef8"
+    "registration_sha256": "d2b8c8cf10c83c1a2565a0e2210c8ac8ce0f36e55197d3dfe6d18ddee4518ae8",
+    "frozen_evidence_manifest_sha256": "d3e131e002967a6a4df18d6ef901478d56d70bfc6ef2775948dd5eac62eb955f",
+    "frozen_review_sha256": "8affd3709177360c00662900de9ed12e036710a7cdfbc16cc989ba9d426de3b8",
+    "manual_review_sha256": "12205af1dca8997c61147d3a550fe5492137f38af3be304677f57e32b75af718"
   },
   "current_offline_validation": {
-    "focused_checks_passed": 33,
-    "focused_checks_failed": 0,
     "complete_regression": "passed",
-    "complete_regression_tests": 580,
+    "complete_regression_tests": 582,
     "complete_regression_failures": 0,
     "resource_warnings": 0,
     "prompt_contract": "passed",
     "prompt_contract_checks": 17,
-    "compiler_baseline_build": "passed",
-    "compiler_public_tests": "779/780",
-    "evidence": "../eval-readiness/phase1-neutral-workspace-v2-offline-20261107-r1/manifest.json",
+    "compiler_candidate_public_tests": "780/780",
+    "compiler_image": "sha256:8bfc6b78626992ad51850c73914f9e0b73893fd288d83b794f578f33dabde0c6",
+    "compiler_validation": "../eval-readiness/phase1-compiler-workstation-v3-20261107/candidate-validation.json",
     "model_calls": 0,
     "behavioral_validation": false
   },
@@ -112,13 +112,18 @@
     "openai/gpt-6.1-sol",
     "openai/gpt-6.1-terra"
   ],
-  "next_rollout_model": "openai/gpt-6.1-sol",
+  "next_rollout": {
+    "domain": "Engineering",
+    "task_setting": "information_dependent",
+    "model": "openai/gpt-6.1-sol",
+    "reason": "r159's identical complete tasks produced parallel repair without a natural unanswered question; this registered matrix cell makes method exchange useful without changing the customer prompt or workspace"
+  },
   "harness": "codex",
   "gateway": "AxonHub",
   "reasoning_effort": "high",
   "goal_mode": "off",
   "preserved_evidence": {
-    "status": "eight_frozen_positive_inputs_and_r158_negative_unchanged",
+    "status": "eight_frozen_positive_inputs_and_r158_r159_negatives_unchanged",
     "input_index": "docs/research/phase1-input-configs.json",
     "publication_catalog": "docs/research/phase1-publication-catalog.json"
   }

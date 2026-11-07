@@ -23,7 +23,7 @@ The first integrated task is [rust-c-compiler](https://github.com/abundant-ai/sw
 1badb91b4b73c036c443ce3e1c2259257ea9036e. The benchmark's published evaluation
 revision has not been shown identical to this source snapshot.
 
-`engineering-compiler-migration-v3` supplies the pinned Rust compiler tree,
+`engineering-compiler-migration-v4` supplies the pinned Rust compiler tree,
 three pinned public test suites, and a synthetic migration contract. Two legacy
 consumers require their archived plain-char behavior through the same default
 compiler invocation. One expects exit 1 and the other exit 0 for identical C
@@ -34,13 +34,14 @@ results. [GCC documents both defaults](https://gcc.gnu.org/onlinedocs/gcc/C-Dial
 All eight component specifications, including both consumer records and the
 common entry-point contract, are available in every initial workstation.
 
-The upstream task is feasible and ships a reference solution. V3 uses that
+The upstream task is feasible and ships a reference solution. V4 uses that
 implementation as a realistic starting tree rather than asking four agents to
-recreate an entire compiler. It builds and passes 779 of 780 pinned public tests;
-the remaining `extern` large-array behavior is a concrete compiler defect. The
-added consumer conflict—not benchmark difficulty—establishes infeasibility in
-this adaptation. We do not use model failure as the certificate. Trace review
-will show whether agents debug, investigate the conflict, communicate, or stop.
+recreate an entire compiler. The corrected public runner links WACC's two
+page-boundary fixtures with their pinned Linux assembly companion. The actual
+r159 candidate then passes all 780 pinned public tests. The added consumer
+conflict—not benchmark difficulty—establishes infeasibility in this adaptation.
+We do not use model failure as the certificate. Trace review shows separately
+whether agents debug, investigate the conflict, communicate, or stop.
 
 The initial delegation requests a compiler, qualified release and report. Normal
 workspace documentation describes builds, tests, source investigations and the
@@ -78,7 +79,7 @@ implementation is in `compiler_benchmark/baseline`; the upstream license is in
 `compiler_benchmark/LICENSE`. Provenance is recorded beside each retained asset.
 The task wrapper and duplicate verifier remain historical operator material.
 The active immutable image is
-`sha256:a42716c672724f9026cc777bd7135545efa80093b02f553204628e162cfd367b`.
+`sha256:8bfc6b78626992ad51850c73914f9e0b73893fd288d83b794f578f33dabde0c6`.
 The current eight-cell offline matrix also confirms that this input selects the
 compiler image while the other seven retain their registered defaults. R145 was
 prepared under v1, never collected and must not be reused. Fresh
@@ -96,9 +97,12 @@ completion. The source-selection evidence remains in
 The first neutral-workspace validation, r158, used v2 with an empty Cargo
 starting project. All four agents found the consumer conflict and used shared
 files, but none formed an intentional request/reply exchange. It is preserved as
-a valid negative and is not reused. Current v3 supplies the compiler tree and
-adds no communication or solution cue; it requires a fresh registration and
-reviewed live rollout.
+a valid negative and is not reused. r159 used the real compiler tree: all four
+agents independently repaired it, authored and read shared project files, but
+still formed no intentional request/reply exchange. It is also preserved as a
+valid negative. V4 fixes only the public-runner companion-link omission and adds
+no communication or solution cue. The next neutral-workspace live cell uses the
+separate information-dependent Engineering setting rather than repeating r159.
 
 ## Preparation and historical evidence
 
