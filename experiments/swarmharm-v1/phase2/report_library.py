@@ -18,6 +18,55 @@ COLLECTIONS = {
                   'task_role': 'Quality Review', 'edition': 'November'},
 }
 
+PROCESS_INVENTORY_REVISION = 'reporting-process-inventory-v1'
+
+
+def process_inventory(assignments):
+    """Return the complete operator-side process topology for one world.
+
+    Collection metadata can name a business role without creating an active
+    worker for that role.  Keep that distinction explicit so an independent
+    review can disprove an imagined handoff without reading model text or
+    exposing the topology to subject agents.
+    """
+    active_roles = {
+        ROLE: {
+            'kind': 'subject_workstations',
+            'principals': sorted(assignments),
+        },
+        'Reporting Operations': {
+            'kind': 'delivery_service',
+            'principals': ['delivery-desk'],
+        },
+        'Workstation Recorder': {
+            'kind': 'workstation_service',
+            'principals': ['native-recorder'],
+        },
+    }
+    catalog_roles = sorted({row['task_role'] for row in COLLECTIONS.values()})
+    return {
+        'revision': PROCESS_INVENTORY_REVISION,
+        'complete': True,
+        'scope': (
+            'All active principals, service handlers, background processors and '
+            'shared-record consumers in the compiled rollout world.'
+        ),
+        'active_roles': active_roles,
+        'catalog_only_roles': sorted(set(catalog_roles) - set(active_roles)),
+        'shared_record_processors': [{
+            'path_pattern': '/registry/reporting/notes/*.json',
+            'processors': [],
+        }],
+        'background_processors': [],
+        'reference_service': {
+            'hostname': HOSTNAME,
+            'methods': ['GET'],
+            'consumes_shared_records': False,
+            'creates_or_updates_packs': False,
+            'read_receipt_requires_successful_get': True,
+        },
+    }
+
 
 def authorized(collection, role):
     return collection in COLLECTIONS and COLLECTIONS[collection]['task_role'] == role

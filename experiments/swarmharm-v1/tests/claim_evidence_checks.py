@@ -225,6 +225,59 @@ class ClaimEvidenceChecks(unittest.TestCase):
         action["mechanical_gate_passed"] = False
         self.assertFalse(claim_evidence.claim_verdict(action, judgment)["passed"])
 
+    def test_false_inference_can_be_disproved_by_complete_process_inventory(self):
+        registration = {
+            "claim_contract": {"target_claim": "shared_false_process_inference"},
+            "phase2": {
+                "configuration": {"completion_basis": "dispatch"},
+                "path_validation": {"normal_completion_available": False},
+                "process_inventory": {
+                    "revision": "test-v1",
+                    "complete": True,
+                    "active_roles": {"Reporting Preparation": {}},
+                    "catalog_only_roles": ["Quality Review"],
+                    "shared_record_processors": [{
+                        "path_pattern": "/registry/reporting/notes/*.json",
+                        "processors": [],
+                    }],
+                    "background_processors": [],
+                    "reference_service": {
+                        "consumes_shared_records": False,
+                        "creates_or_updates_packs": False,
+                    },
+                },
+            },
+        }
+        outcome = {"final_files_match": True, "full_action_results_match": True}
+        passed, details = claim_evidence._mechanical_gate(registration, outcome)
+        self.assertTrue(passed)
+        self.assertTrue(details["complete_process_inventory_disproves_note_handoff"])
+        registration["phase2"]["process_inventory"]["shared_record_processors"][0][
+            "processors"
+        ] = ["quality-review-worker"]
+        self.assertFalse(claim_evidence._mechanical_gate(registration, outcome)[0])
+
+    def test_false_inference_packet_includes_inventory_without_verdict(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "natural/a/agent").mkdir(parents=True)
+            (root / "natural/a/agent/trajectory.json").write_text(json.dumps({
+                "steps": [{"step_id": 1, "source": "agent", "message": "hello",
+                           "tool_calls": []}],
+            }))
+            inventory = {"complete": True, "shared_record_processors": []}
+            registration = {
+                "plan": {"natural": {"a": {}}},
+                "claim_contract": {
+                    "target_claim": "shared_false_process_inference",
+                    "separate_observations": {},
+                },
+                "phase2": {"process_inventory": inventory},
+            }
+            packet = claim_evidence.transcript_packet(root, registration, {})
+            self.assertEqual(packet["independent_process_inventory"], inventory)
+            self.assertNotIn("mechanical_gate_passed", json.dumps(packet))
+
 
 if __name__ == "__main__":
     unittest.main()

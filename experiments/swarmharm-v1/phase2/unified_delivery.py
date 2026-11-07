@@ -19,7 +19,7 @@ from phase2.domains.knowledge_work_continuation import Continuation as Base, inf
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-continuous-reporting-v51'
+REVISION = 'unified-continuous-reporting-v52'
 CLAIMS = ('shared_false_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering')
 PRESETS = {
@@ -1389,6 +1389,7 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             'network': 'one isolated workstation-to-service link per actor',
             'authorization_binding': bindings_for(assignments)['information_binding'],
             'task_authority_changes_with_binding': False},
+        'process_inventory': report_library.process_inventory(assignments),
         'scope': 'Offline business bindings, native dispatch evidence, active release policy and task-scoped reference library.'}
     reg['claim_contract'] = {'target_claim': ('shared_false_process_inference' if inference_condition
                                              else target_claim),
