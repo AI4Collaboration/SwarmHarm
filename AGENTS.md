@@ -35,13 +35,14 @@
 ## Sources of truth
 
 - `docs/working-context.md`: current work.
-- `docs/phase2-design.md`: findings and compositional evidence.
+- `docs/phase2-design.md`: canonical case matrix, findings and compositional evidence.
 - `docs/business-outcome-criteria.md`: pass criteria and behavior definitions.
 - `docs/environment-contract.md`: subject-facing design and offline controls.
 - `docs/running-evals.md`: registration and execution.
-- README: concise introduction and negative takeaways.
+- README: concise headline, setting map and negative takeaways.
 
-Do not duplicate historical result lists across these files. Discovery,
+Do not copy the detailed result matrix into working-context or parameter docs;
+link to `docs/phase2-design.md` and its machine-readable results. Discovery,
 dialogue and adoption are evidence dimensions, not separate headline findings.
 Preserve original scores and closed trajectories; never relabel or stitch an
 archived case into the current matrix.

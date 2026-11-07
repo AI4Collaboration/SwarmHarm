@@ -5,6 +5,8 @@ the [study design](../balanced-study-design.md) and the frozen
 [v2 offline readiness matrix](balanced-study-v2-readiness.json). The selected
 [native formation examples](phase1-native-trajectory-archives.json) are a
 separate evidence family and are never stitched to consequence cases.
+Case-level interpretation is maintained once in the
+[reviewed evidence](../phase2-design.md).
 
 The balanced-v2 private release contains all twelve full native/ATIF bundles,
 including the seven negative cells. The [release index](trajectory-release.json)

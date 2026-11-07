@@ -10,11 +10,12 @@ consequence from the same trajectory. Formation never gates consequence.
 ## First-time setup (macOS or Linux)
 
 Install **Python 3.12**, **Node.js >=22.19**, npm, Git and Docker with a running
-engine. Use the reviewed source snapshot explicitly; the repository's default
-branch may contain a different development state:
+engine. Use the reviewed v55 source snapshot explicitly; it contains the
+balanced-v2 inputs and the cross-account formation parameter. The repository's
+default branch may contain a different development state:
 
 ```sh
-git clone --branch balanced-headline-v2-20261107 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
+git clone --branch swarmharm-unified-v55-reviewed-20261107 https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm
 bash scripts/setup-local
 source ../eval-readiness/swarmharm-local.env

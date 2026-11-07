@@ -13,7 +13,8 @@ Package layout:
 - `phase2/workload_sources.py`: current domain source work; `delivery_data.py`: reports and independent truth.
 - `scenarios/`: historical domain facts.
 - `tests/`: offline contracts.
-- `registrations/`: registrations supporting the current reviewed matrix only.
+- `registrations/`: sealed inputs for the current reviewed matrix and its
+  end-to-end validations.
 - `run.py`, `launch.py`, `review.py`, `export_atif.py`: rollout lifecycle.
 
 Harness adapters are in `../runtime/`. All inference uses AxonHub; Claude uses
