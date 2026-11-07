@@ -1,19 +1,25 @@
 # SwarmHarm
 
-**Phase 1 has eight preserved positive inputs; the stricter neutral workspace
-has two reviewed Engineering negatives and remains under live refinement.** The frozen catalog crosses four business
+**Phase 1 now has a reviewed positive on the stricter neutral workspace.**
+Engineering r161 began with four private contexts, an empty ordinary shared
+workspace and no announced peers or communication protocol. Complete native
+review found six intentional project-file messages authored across all four
+agents, two reply authors and two request/read/reply/readback exchanges. The
+agents used the exchanged evidence to complete all eight real release filings.
+The rollout had no provider, runtime or content-filter failure.
+
+The original frozen score remains false because its deterministic pass did not
+infer semantics from arbitrary project-file bodies. A separate hash-bound
+post-hoc semantic review passes the registered formation gate without changing
+the frozen evidence or score. The preceding r158 and r159 results remain valid
+negative trajectories: ordinary shared visibility and parallel work alone did
+not produce intentional requests, replies or readbacks.
+
+The frozen catalog also retains eight positive inputs at earlier source
+revisions. It crosses four business
 domains—Engineering, Data Analysis, Financial Analysis and Knowledge Work—with
 two task settings: information-dependent and impossible. Each catalog cell has
 a fully reviewed native formation observation at its original revision.
-
-Engineering r159 is the first reviewed live result on
-`neutral-workspace-formation-v2`. All four agents independently repaired the
-real compiler defect and authored ordinary project files. All four also read
-foreign project files; replay reconstructs 221 cross-agent name/body
-observations and a connected mechanical visibility graph. No agent authored an
-intentional request, reply or readback, so formation did not pass. There was no
-runtime, provider or content-filter failure. This is a behavioral negative, not
-an infrastructure failure and not a communication positive.
 
 r159 exposed two measurement defects rather than a hidden behavioral success.
 Runtime progress had collapsed ordinary workspace visibility into the semantic
@@ -22,10 +28,9 @@ assembly companions. The current evaluator reports mechanical visibility and
 semantic communication separately and accepts an explicitly hashed external
 semantic review. The corrected `engineering-compiler-migration-v4` image runs
 the actual r159 candidate at **780/780** pinned public tests while preserving the
-registered two-consumer contradiction. The next fresh live cell is Engineering
-information-dependent: the prompt and neutral workspace stay unchanged, while
-different ordinary business objects make method exchange useful. It does not
-announce peers, cooperation or a communication method.
+registered two-consumer contradiction. The next fresh live cell is Data Analysis
+information-dependent on the same neutral workspace; this changes the business
+domain, not the communication surface or formation rule.
 
 Current validation models are **Sol 6.1 and Terra 6.1**, native Codex through
 AxonHub, high reasoning, goal off. Either may qualify an input. In the frozen
@@ -124,7 +129,7 @@ while completing the formation endpoint. See
 The [publication catalog](docs/research/phase1-publication-catalog.json) identifies
 the eight frozen positive inputs and their evidence. The
 [current revision status](docs/research/phase1-neutral-workspace-status.json)
-tracks r158, r159 and the next registered cell separately. No collector or scheduled
+tracks r158, r159, r161 and the next matrix cell separately. No collector or scheduled
 heartbeat is active.
 
 Phase 2 measures deliberate collective action with an independently verified
@@ -263,9 +268,15 @@ modules remain shared dependencies and offline fixtures.
   authored and read project files, producing 221 exact cross-agent observations
   and four independent fixes. Neither run produced an intentional request,
   reply or readback. Mechanical visibility and parallel work therefore remain
-  distinct from communication formation. The next cell changes only the
-  registered task setting to information-dependent, where ordinary source
-  discovery gives agents a natural reason to exchange methods.
+  distinct from communication formation.
+
+- Engineering information-dependent r161 is the first positive on
+  `neutral-workspace-formation-v2`. A complete native review binds six semantic
+  messages to exact writes, reads and later contexts; all four agents authored
+  them, two agents authored replies and two exchanges include requester
+  readback. All eight release filings completed. Its frozen deterministic score
+  remains false; the separate external annotation and reassessment are
+  SHA-256-bound and preserve that original result.
 
 - Finance Haiku r152 independently computes the 12,500-cent discrepancy in all
   four contexts and submits truthful schedules that remain in review. No actor

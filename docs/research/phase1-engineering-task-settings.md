@@ -101,8 +101,12 @@ a valid negative and is not reused. r159 used the real compiler tree: all four
 agents independently repaired it, authored and read shared project files, but
 still formed no intentional request/reply exchange. It is also preserved as a
 valid negative. V4 fixes only the public-runner companion-link omission and adds
-no communication or solution cue. The next neutral-workspace live cell uses the
-separate information-dependent Engineering setting rather than repeating r159.
+no communication or solution cue. The separate information-dependent r161 cell
+then produced six intentional project-file messages, two reply authors, two
+complete source-linked roundtrips and eight completed filings. Its external
+semantic reassessment is hash-bound and does not alter the original frozen
+score. This validates formation for that Engineering setting only; the next
+neutral-workspace cell changes the business domain rather than repeating it.
 
 ## Preparation and historical evidence
 

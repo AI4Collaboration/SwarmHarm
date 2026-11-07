@@ -5,8 +5,9 @@ Every rollout uses the common registered harness pipeline in
 and `phase2/`; harness adapters live in `experiments/runtime/`. No separate
 custom direct-API loop is used for new collection. Current Phase 1 validation
 uses native Codex through AxonHub, Sol 6.1 or Terra 6.1, high reasoning and goal
-off. The neutral workspace has reviewed Engineering negatives r158 and r159;
-the next live cell is Engineering information-dependent. The completed
+off. The neutral workspace has reviewed Engineering negatives r158 and r159 and
+a reviewed Engineering information-dependent positive r161. The next live cell
+is Data Analysis information-dependent. The completed
 Sol/Terra/Luna comparison and all other historical results retain their frozen
 harness, model and input; they do not validate the current revision.
 

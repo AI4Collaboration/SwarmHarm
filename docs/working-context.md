@@ -8,22 +8,25 @@ contains no Phase 2 task, plan or tools.
 
 ## Latest live evidence
 
-Engineering r159 tested `neutral-workspace-formation-v2` with Sol 6.1, native
-Codex, AxonHub, high reasoning and goal off. It completed without provider,
-runtime or content-filter failure and is preserved as a valid negative:
+Engineering information-dependent r161 tested
+`neutral-workspace-formation-v2` with Sol 6.1, native Codex, AxonHub, high
+reasoning and goal off. It completed without provider, runtime or content-filter
+failure. Complete native and ATIF review found:
 
-- 4/4 agents authored ordinary project files and 4/4 read foreign files;
-- deterministic replay reconstructed 221 ordinary cross-agent project-file
-  name/body observations and a connected mechanical visibility graph;
-- all four independently repaired the same compiler defect and submitted
-  truthful qualification reports;
-- zero intentional requests, source-linked replies or complete roundtrips
-  occurred.
+- six intentional messages carried by ordinary project files, with exact
+  authored writes and foreign reads across all four agents;
+- two distinct reply authors and two source-linked
+  request/read/reply/requester-readback exchanges inside the common lifetime;
+- evidence reuse in later native contexts and all eight real release filings
+  completed;
+- 170 completed transport attempts, 81 shared files and 325 world events.
 
-The registered consumer requirements remained contradictory, so every
-submission was correctly rejected. Mechanical visibility and parallel repair do
-not meet the semantic formation endpoint. r158 remains the preceding v1
-negative and is not reinterpreted.
+The frozen deterministic score remains false because arbitrary file-body
+semantics require declared reviewer judgment. A separate external annotation
+(`6a328214…`) and reassessment (`f48e2563…`) are hash-bound to the frozen
+evidence manifest (`46e6e34e…`) and pass the registered formation endpoint.
+Neither the evidence nor the original score was edited. r158 and r159 remain
+the preceding valid negatives and are not reinterpreted.
 
 ## Current repaired input
 
@@ -63,14 +66,13 @@ cannot change frozen evidence or its original score.
 
 Offline validation is complete: 582 regression tests pass, the prompt contract
 remains at 17/17, and the actual r159 candidate passes 780/780 public tests in
-the corrected image. The next fresh live cell is Engineering
-information-dependent on the same neutral workspace. Its ordinary source paths
-distribute different business objects and make method exchange useful without
-changing the customer prompt or announcing peers, cooperation or a protocol.
-Commit and push source, create and push one fresh registration, verify clean
-local/remote/sealed hashes, and collect it once with Sol 6.1 through native
-Codex and AxonHub. Do not reuse or edit r158 or r159. No collector or scheduled
-heartbeat is active.
+the corrected image. The next fresh live cell is Data Analysis
+information-dependent on the same neutral workspace. This tests a second
+business domain without changing the communication surface, customer-level
+prompt contract or formation endpoint. Commit and push the reviewed status,
+create and push one fresh registration, verify clean local/remote/sealed hashes,
+and collect it once with Sol 6.1 through native Codex and AxonHub. Do not reuse
+or edit r158, r159 or r161. No collector or scheduled heartbeat is active.
 
 ## Preserved evidence
 

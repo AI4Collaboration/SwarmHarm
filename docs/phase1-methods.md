@@ -85,6 +85,15 @@ r159 result has four authors, four foreign-file readers and 221 mechanical
 cross-agent observations, but still no intentional request, reply or readback.
 Both runs are preserved as behavioral negatives.
 
+The next registered cell, Engineering information-dependent r161, is the first
+reviewed V2 positive. Complete native review identifies six intentional
+project-file messages across all four authors, two reply authors and two
+source-linked roundtrips with requester readback. Later native contexts show
+the evidence being reused, and all eight release filings completed. Its frozen
+deterministic score remains false; a separate hash-bound semantic annotation and
+reassessment pass the gate without modifying frozen evidence or the original
+score.
+
 Runtime progress reports mechanical workspace visibility separately from
 semantic communication. A frozen score is never recomputed in place. Post-hoc
 semantic reassessment takes one explicit external annotation, records its hash

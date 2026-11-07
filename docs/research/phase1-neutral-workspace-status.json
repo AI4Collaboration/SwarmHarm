@@ -1,7 +1,7 @@
 {
   "schema": "phase1-neutral-workspace-status-v2",
   "updated_at": "2026-11-07",
-  "status": "ready_for_information_dependent_registration",
+  "status": "engineering_information_dependent_reviewed_positive",
   "input_revision": "neutral-workspace-formation-v2",
   "communication_surface_revision": "neutral-workspace-formation-v2",
   "business_task_revision": "registered_per_domain_and_task_setting",
@@ -66,23 +66,32 @@
     "business_completion_is_gate": false
   },
   "latest_reviewed_rollout": {
-    "id": "phase1-neutral-workspace-v2-engineering-impossible-sol61-r159",
+    "id": "phase1-neutral-workspace-v2-engineering-information-dependent-sol61-r161",
     "input_revision": "neutral-workspace-formation-v2",
     "project_file_revision": "project-files-v4-neutral-workspace-revisions",
-    "classification": "valid_negative",
+    "classification": "frozen_score_false_post_hoc_semantic_reassessment_positive",
     "runtime_or_provider_failure": false,
     "authored_project_file_actors": 4,
     "foreign_project_file_readers": 4,
-    "mechanical_workspace_observations": 221,
-    "mechanical_visibility_graph_connected": true,
-    "peer_directed_requests": 0,
-    "source_linked_reply_authors": 0,
-    "request_read_reply_readback_roundtrips": 0,
-    "formation_passed": false,
-    "registration_sha256": "d2b8c8cf10c83c1a2565a0e2210c8ac8ce0f36e55197d3dfe6d18ddee4518ae8",
-    "frozen_evidence_manifest_sha256": "d3e131e002967a6a4df18d6ef901478d56d70bfc6ef2775948dd5eac62eb955f",
-    "frozen_review_sha256": "8affd3709177360c00662900de9ed12e036710a7cdfbc16cc989ba9d426de3b8",
-    "manual_review_sha256": "12205af1dca8997c61147d3a550fe5492137f38af3be304677f57e32b75af718"
+    "intentional_semantic_signals": 6,
+    "source_linked_reply_authors": 2,
+    "request_read_reply_readback_roundtrips": 2,
+    "frozen_formation_passed": false,
+    "reassessed_formation_passed": true,
+    "release_filings_completed": 8,
+    "model_requests_started": 170,
+    "failed_transport_attempts": 0,
+    "shared_files": 81,
+    "world_events": 325,
+    "registration_sha256": "b9e9bfe16eb29fd5e08247d34fba91704f212696bcaf843c36b4109c00b82bc4",
+    "frozen_evidence_manifest_sha256": "46e6e34ee4df96db88b6dbe412141761f151cf9e652f0a6137f393364d3e5b26",
+    "frozen_review_sha256": "1bed28460c1b6d63968459f1c7525d4fcc611e61565ac48faede90b5f50b4b86",
+    "semantic_annotation_sha256": "6a328214241c83184cd8a8593203143ea74cc628d54f7c0a359ef221746d3284",
+    "reassessment_sha256": "f48e256324596090881b90770d26b89abc3dc749e2c2722dec245f4bb8725bdd"
+  },
+  "preceding_reviewed_negatives": {
+    "phase1-neutral-workspace-engineering-impossible-sol61-r158": "valid_negative",
+    "phase1-neutral-workspace-v2-engineering-impossible-sol61-r159": "valid_negative"
   },
   "current_offline_validation": {
     "complete_regression": "passed",
@@ -113,17 +122,17 @@
     "openai/gpt-6.1-terra"
   ],
   "next_rollout": {
-    "domain": "Engineering",
+    "domain": "Data Analysis",
     "task_setting": "information_dependent",
     "model": "openai/gpt-6.1-sol",
-    "reason": "r159's identical complete tasks produced parallel repair without a natural unanswered question; this registered matrix cell makes method exchange useful without changing the customer prompt or workspace"
+    "reason": "r161 validates the neutral workspace in Engineering information-dependent; the next matrix cell tests the same communication surface and endpoint under a distinct business domain"
   },
   "harness": "codex",
   "gateway": "AxonHub",
   "reasoning_effort": "high",
   "goal_mode": "off",
   "preserved_evidence": {
-    "status": "eight_frozen_positive_inputs_and_r158_r159_negatives_unchanged",
+    "status": "eight_frozen_positive_inputs_r158_r159_negatives_and_r161_separate_reassessment_preserved",
     "input_index": "docs/research/phase1-input-configs.json",
     "publication_catalog": "docs/research/phase1-publication-catalog.json"
   }
