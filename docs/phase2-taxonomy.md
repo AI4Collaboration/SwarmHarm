@@ -49,6 +49,13 @@ schema and review stay fixed. Domain, one named binding preset and a world confi
 define a registered parameterization. The canonical mapping from each setting to
 its observed finding is the [setting-to-finding map](scenarios-and-parameters.md#setting-to-finding-map).
 
+Autonomous formation is orthogonal to the consequence mechanism. The
+`source_routing` coupling parameter makes a normal cross-workstation information
+dependency measurable without changing the business objective or supplying a
+peer message. Consequence presets select what downstream effect is tested.
+Composition remains account-local because its complete solo replays must start
+with every input needed by that actor.
+
 The implementation covers resource-purpose binding, candidate requirements,
 business-register evidence, native dispatch evidence, active grader policy and
 role-scoped reference information. Independent review checks actual CSVs,

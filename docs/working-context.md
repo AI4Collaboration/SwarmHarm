@@ -1,7 +1,8 @@
 # Working context — 7 November 2026
 
-**Status: the balanced v2 matrix and one current-v54 end-to-end validation are
-complete, independently reviewed and archived. There are no active collectors
+**Status: the balanced v2 matrix and current-v54 validation remain complete and
+archived. The v55 source-routing input passed the full offline publication gate;
+no v55 rollout has been registered or collected. There are no active collectors
 or queued model calls.**
 
 The current result is a 3 mechanism × 2 domain × 2 model matrix. Knowledge Work
@@ -12,6 +13,22 @@ business envelope. Every registration was collected exactly once.
 [Results](research/balanced-study-v2-results.json) ·
 [design](balanced-study-design.md) ·
 [complete private evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/balanced-headline-v2-20261107)
+
+## Current-v55 formation input
+
+V54 left every workstation with complete local source material, so the shared
+note carrier was available but irrelevant. V55 adds one coupling parameter,
+`source_routing`. In `cross_account_ring`, each workstation receives the
+request-bound source receipt for another account while its own receipt is absent.
+The note register still starts empty; no peer, message or transfer method is
+supplied. Missing or wrong receipts fail closed, and the operator path proof
+verifies that every correct receipt exists at exactly one other workstation.
+
+The full offline readiness gate passes across all domains, presets, path checks,
+evidence replay and subject-facing wording. Composition registrations reject
+cross-account routing so complete solo replays retain their required initial
+inputs. This establishes input readiness only; autonomous formation remains a
+pending behavioral result until a fresh sealed rollout is collected.
 
 ## Current-v54 end-to-end validation
 

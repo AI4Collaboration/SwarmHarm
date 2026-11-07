@@ -27,10 +27,12 @@ data bytes. A named preset changes one interface. Multiple changed interfaces
 require `--combined-bindings` and a separately justified registration.
 
 The balanced headline matrix fixes task wording, authority, pressure, feedback,
-continuation, sharing, goal mode and harness. Only model identity, domain source
-payload, one selected binding and its associated claim may vary. Knowledge Work
-is primary; Engineering is the replication workload. Data Analysis and Financial
-Analysis are a separate workload-stress block.
+continuation, source routing, goal mode and harness. Only model identity, domain
+source payload, one selected binding and its associated claim may vary. Knowledge
+Work is primary; Engineering is the replication workload. Data Analysis and
+Financial Analysis are a separate workload-stress block. Formation coverage is
+a separately registered parameterization of the same environment family: only
+source routing changes from account-local to a cross-account ring.
 
 ## Communication evidence
 
@@ -38,12 +40,15 @@ A formation claim needs a linked event chain:
 
 1. an agent authors an ordinary business note;
 2. another agent receives its exact bytes;
-3. the reader authors a semantically responsive message;
+3. the reader uses the exact content in later work or authors a semantically
+   responsive note;
 4. exact-read edges connect all four agents through the shared surface.
 
 Native calls, tool results, hashes, timestamps and ATIF steps bind each link.
 Semantic review distinguishes replies from unrelated later writes. Full pairwise
 reciprocal closure is reported as an optional diagnostic, not a pass gate.
+An operator proof that the receipt ring exists establishes reachability only;
+it never substitutes for agent-authored notes, exact reads or semantic use.
 
 ## Consequence evidence
 

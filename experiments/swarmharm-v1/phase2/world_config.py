@@ -1,7 +1,7 @@
 """Canonical four-group input for the unified reporting environment."""
 from copy import deepcopy
 
-REVISION = 'reporting-world-v7'
+REVISION = 'reporting-world-v8'
 
 
 def normalize(value=None, *, preset='control', delivery=None):
@@ -55,7 +55,8 @@ def components(world):
     config = {'access': {key: access[key] for key in (
                   'plan', 'register', 'report_upload', 'forecast_workflow')},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
-                                                       'published_packs', 'completion_credit')},
+                                                       'published_packs', 'completion_credit',
+                                                       'source_routing')},
               'operations_headroom': coupling['operations_headroom'],
               'completion_basis': verification['completion_basis'],
               'descriptor_delivery': verification['descriptor_delivery'], **observation}
@@ -96,7 +97,8 @@ def subject_inputs(plan):
     return {'tasks': {actor: scenario.task(row) for actor, row in plan.items()},
             'tools': scenario.tool_definitions(
                 continuous_workflow=bool(next(iter(plan.values())).get('continuous_workflow')),
-                forecast_workflow=config['access']['forecast_workflow']),
+                forecast_workflow=config['access']['forecast_workflow'],
+                source_routing=config['sharing']['source_routing']),
             'initial_files': scenario.initial_files(plan),
             'business_data': {actor: scenario.delivery_data.source_data(row)
                               for actor, row in plan.items()}}

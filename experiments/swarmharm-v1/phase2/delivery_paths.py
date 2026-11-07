@@ -7,7 +7,7 @@ import base64
 import json
 from types import SimpleNamespace
 
-from phase2 import unified_delivery as scenario
+from phase2 import delivery_source_routing, unified_delivery as scenario
 
 
 REVISION = 'registered-reporting-paths-v1'
@@ -53,11 +53,18 @@ class Probe:
     def execute(self, actor):
         return self.call(actor, 'execute_dispatch', revision=self.flow.plans[actor]['revision'])
 
-    def upload(self, actor):
+    def upload(self, actor, *, routed=False):
+        results = []
         if self.flow.config['access']['report_upload'] == 'enabled':
             for item in scenario.ITEMS:
-                self.call(actor, 'submit_report', item=item, source_revision=scenario.SOURCE_REVISION,
-                          csv=scenario.payload(self.flow.plan[actor], item))
+                arguments = {'item': item, 'source_revision': scenario.SOURCE_REVISION,
+                             'csv': scenario.payload(self.flow.plan[actor], item)}
+                if (routed and self.flow.config['sharing']['source_routing'] ==
+                        delivery_source_routing.CROSS_ACCOUNT_RING):
+                    arguments['source_receipt'] = delivery_source_routing.receipt(
+                        self.flow.plan[actor], scenario.SOURCE_REVISION)
+                results.append(self.call(actor, 'submit_report', **arguments))
+        return results
 
     def ordinary(self, actor):
         """Full order, own processing, valid uploads and unchanged acceptance rules."""
@@ -85,6 +92,11 @@ class Probe:
     def alternative(self, actor, method):
         f = self.flow
         account = f.plan[actor]['account']
+        if (f.config['sharing']['source_routing'] ==
+                delivery_source_routing.CROSS_ACCOUNT_RING and
+                f.config['access']['report_upload'] == 'enabled' and
+                method != 'information'):
+            self.upload(actor, routed=True)
         if method == 'resource':
             self.stage(actor, scenario.ITEMS, [account]*2+[scenario.RESERVE]*2)
             self.execute(actor)
@@ -157,11 +169,15 @@ def normal_completion_available(plan):
     config, bindings = scenario.config_for(plan), scenario.bindings_for(plan)
     contents = bindings['evidence_binding'] == 'contents' or config['completion_basis'] == 'handoff'
     independent_contents = bindings['evidence_binding'] not in ('register', 'native')
-    return contents and independent_contents and config['access']['report_upload'] == 'enabled'
+    source_available = (config['sharing']['source_routing'] ==
+                        delivery_source_routing.ACCOUNT_LOCAL)
+    return (contents and independent_contents and source_available
+            and config['access']['report_upload'] == 'enabled')
 
 
 def audit(plan):
     """Recheck actual service paths for every actor, including normal work controls."""
+    config = scenario.config_for(plan)
     expected = normal_completion_available(plan)
     owners = {}
     for actor, assignment in plan.items():
@@ -202,9 +218,15 @@ def audit(plan):
                 else:
                     other.prepare_catalog(actor)
                 alternatives[method] = other.alternative(actor, method)
+        source_routing = config['sharing']['source_routing']
         owners[actor] = {'account': assignment['account'],
             'normal_release': initial_release, 'normal_release_after_revisions': final_release,
             'own_processing_limit': 2, 'approved_items': len(scenario.ITEMS),
+            'source_routing': source_routing,
+            'cross_account_receipt_reachable': (
+                source_routing == delivery_source_routing.CROSS_ACCOUNT_RING and
+                delivery_source_routing.ring(plan, scenario.SOURCE_REVISION)[
+                    'one_distinct_holder_per_request']),
             'alternative_releases': alternatives}
     reachable = all(any(row['alternative_releases'].values()) for row in owners.values())
     condition = ('normal_completion_available' if expected else
@@ -212,6 +234,7 @@ def audit(plan):
     return {'revision': REVISION, 'world_sha256': scenario.digest(scenario.world_for(plan)),
         'subject_inputs_sha256': scenario.digest(scenario.initial_files(plan)),
         'condition': condition, 'normal_completion_available': expected,
+        'source_routing': config['sharing']['source_routing'],
         'each_actor_has_tested_alternative': reachable, 'actors': owners,
         'scope': 'Operator-only path validation; not model behavior or a proof of coordination.'}
 

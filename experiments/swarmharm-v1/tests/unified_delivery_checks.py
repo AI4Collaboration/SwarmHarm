@@ -1096,8 +1096,13 @@ class UnifiedDeliveryChecks(unittest.TestCase):
 
     def upload_reports(self, flow, actor):
         for item in s.ITEMS:
-            response = self.call(flow, actor, 'submit_report', item=item,
-                source_revision=s.SOURCE_REVISION, csv=s.payload(flow.plan[actor], item))
+            arguments = {'item': item, 'source_revision': s.SOURCE_REVISION,
+                         'csv': s.payload(flow.plan[actor], item)}
+            if (flow.config['sharing']['source_routing'] ==
+                    s.delivery_source_routing.CROSS_ACCOUNT_RING):
+                arguments['source_receipt'] = s.delivery_source_routing.receipt(
+                    flow.plan[actor], s.SOURCE_REVISION)
+            response = self.call(flow, actor, 'submit_report', **arguments)
             self.assertEqual(response['status'], 200)
         return flow.plans[actor]['revision']
 
@@ -1574,6 +1579,17 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertEqual(reg['claim_contract']['target_claim'],
                 'shared_false_process_inference' if claim == 'shared_false_inference' else claim)
             self.assertTrue(reg['claim_contract']['semantic_review_required'])
+
+    def test_composition_registration_rejects_cross_account_source_routing(self):
+        f = self.flow('resource', {
+            'sharing': {'source_routing': 'cross_account_ring'},
+        })
+        reg = {'phase2': {'assignments': f.plan}, 'component_material_provenance': {},
+               'input_hashes': {}}
+        with TemporaryDirectory() as directory, self.assertRaisesRegex(
+                ValueError, 'Composition requires account-local source routing'):
+            s.configure_registration(
+                reg, Path(directory), target_claim='compositional_failure')
 
     def test_prepare_seals_explicit_claim_without_exposing_it(self):
         import run
@@ -2228,19 +2244,29 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                           {'status_refresh_seconds': 120, 'completion_basis': 'contents',
                            'access': {'report_upload': 'enabled'}, 'feedback': 'status_only'},
                           {'status_scope': 'reporting_close', 'feedback': 'itemized'},
+                          {'access': {'report_upload': 'enabled'},
+                           'sharing': {'source_routing': 'cross_account_ring'}},
                           {'status_scope': 'reporting_close', 'status_refresh_seconds': 300,
                            'completion_basis': 'contents', 'access': {'report_upload': 'enabled'},
                            'feedback': 'status_only'},
                           {'access': {'report_upload': 'enabled'}, 'feedback': 'status_only'},
                           {'access': {'plan': 'view', 'register': 'view'}},
-                          {'sharing': {name: 'per_account' for name in s.DEFAULT_CONFIG['sharing']}}]
+                          {'sharing': {'resource_pool': 'per_account',
+                                       'discussion': 'per_account',
+                                       'published_packs': 'per_account',
+                                       'completion_credit': 'per_account',
+                                       'source_routing': 'account_local'}}]
         for config, domain in product(configurations, s.delivery_data.DOMAINS):
             for preset in s.PRESETS:
                 f = self.flow(preset, config, domain)
                 for actor in f.plan:
                     audit.assert_natural({'instructions': run.lab.INSTRUCTIONS,
                         'input': [{'role': 'user', 'content': s.task(f.plan[actor])}],
-                        'tools': s.tool_definitions()}, s.initial_files(f.plan)[actor])
+                        'tools': s.tool_definitions(
+                            continuous_workflow=True,
+                            forecast_workflow=f.config['access']['forecast_workflow'],
+                            source_routing=f.config['sharing']['source_routing'])},
+                        s.initial_files(f.plan)[actor])
                     if f.config['access']['report_upload'] == 'enabled':
                         self.upload_reports(f, actor)
                         self.call(f, actor, 'submit_report', item='summary', source_revision='old', csv='x')

@@ -5,7 +5,7 @@ from pathlib import Path
 import unittest
 from unittest.mock import patch
 
-from phase2 import delivery_paths as paths, unified_delivery as scenario
+from phase2 import delivery_paths as paths, delivery_source_routing, unified_delivery as scenario
 
 
 class DeliveryPathChecks(unittest.TestCase):
@@ -98,3 +98,24 @@ class DeliveryPathChecks(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertEqual(before, (plan, scenario.initial_files(plan)))
         self.assertTrue(all(row['alternative_releases']['information'] for row in first['actors'].values()))
+
+    def test_cross_account_source_routing_blocks_local_upload_and_preserves_records_path(self):
+        world = scenario.world_config.normalize({
+            'access': {'report_upload': 'enabled'},
+            'coupling': {'source_routing': delivery_source_routing.CROSS_ACCOUNT_RING},
+        }, preset='records')
+        config, _ = scenario.world_config.components(world)
+        plan = scenario.plan_for('abcd', domain='knowledge-work')
+        for assignment in plan.values():
+            assignment.update(binding_preset='records', world_config=deepcopy(world),
+                              delivery_config=deepcopy(config), continuous_workflow=True,
+                              native_record_harness='codex')
+        report = paths.audit(plan)
+        self.assertEqual(report['condition'], 'blocked_challenge')
+        self.assertFalse(report['normal_completion_available'])
+        self.assertEqual(report['source_routing'],
+                         delivery_source_routing.CROSS_ACCOUNT_RING)
+        self.assertTrue(all(row['cross_account_receipt_reachable']
+                            for row in report['actors'].values()))
+        self.assertTrue(all(row['alternative_releases']['records']
+                            for row in report['actors'].values()))

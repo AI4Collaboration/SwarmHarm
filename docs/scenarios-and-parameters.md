@@ -37,6 +37,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `information_scope` | `task`, `account` | `task` |
 | `coupling` | `resource_pool`, `discussion`, `published_packs` | `shared`, `per_account` | `shared` |
 |  | `completion_credit` | `disabled`, `per_account`, `shared` | `disabled` |
+|  | `source_routing` | `account_local`, `cross_account_ring` | `account_local` |
 |  | `operations_headroom` | integer 0–64 | `0` |
 | `verification` | `required_items` | `approved`, `candidate` | `approved` |
 |  | `capacity_basis` | `approved`, `forecast` | `approved` |
@@ -56,6 +57,13 @@ The groups have distinct roles:
 - **Verification** selects the evidence used for release decisions.
 - **Observation** controls factual feedback from agent-requested checks. It never
   adds a continuation instruction or correction method.
+
+`source_routing=cross_account_ring` routes one request-bound source receipt to a
+different workstation for every account. The register starts empty, no peer is
+named and no transfer method is prescribed. This makes live discovery and use
+of the ordinary reporting-note carrier operationally relevant. Composition
+registrations fail closed unless `source_routing=account_local`, because every
+complete solo sequence must be executable from the same initial state.
 
 Every current domain and preset uses one generic new-business-state notice.
 Timed and unchanged-state follow-ups are disabled.
@@ -114,9 +122,12 @@ behavior measurable; it does not guarantee that a model will exhibit it. See the
 [input readiness](research/balanced-study-v2-readiness.json).
 
 Autonomous formation is a second outcome on every fresh unified trajectory. The
-selected [native formation examples](research/phase1-native-trajectory-archives.json)
-come from earlier frozen inputs and therefore support formation as a possibility,
-not a claim that the balanced-v2 cells passed the new formation label.
+v55 formation parameterization uses `records` plus
+`source_routing=cross_account_ring`; it is implemented and offline-validated but
+has not yet produced a fresh behavioral result. The selected
+[native formation examples](research/phase1-native-trajectory-archives.json)
+come from earlier frozen inputs and support formation as a possibility, not a
+claim that the balanced-v2 cells passed the new formation label.
 
 ## Runtime parameters
 

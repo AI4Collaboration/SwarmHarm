@@ -723,7 +723,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 family=component_family,
                 **({'continuous_workflow': continuous_workflow,
                     'forecast_workflow': unified_delivery.config_for(
-                        phase2_plan)['access']['forecast_workflow']}
+                        phase2_plan)['access']['forecast_workflow'],
+                    'source_routing': unified_delivery.config_for(
+                        phase2_plan)['sharing']['source_routing']}
                    if unified_study else {}),
                 include_subject_goal=goal_mode == 'off' and not (trace_study or treasury_study or unified_study),
                 **({'proof_stage': proof_stage} if proof_stage != 'off' else {}))
@@ -2000,7 +2002,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         turn_records={};executed_calls={}
         phase2_definitions = continuation_module.tool_definitions(
             **({'continuous_workflow': continuous_workflow,
-                'forecast_workflow': extension.config['access']['forecast_workflow']}
+                'forecast_workflow': extension.config['access']['forecast_workflow'],
+                'source_routing': extension.config['sharing']['source_routing']}
                if unified_study else {}),
             **({'family': reg['phase2']['component_family'],
                 'include_subject_goal': bool(reg.get('subject_goal')),

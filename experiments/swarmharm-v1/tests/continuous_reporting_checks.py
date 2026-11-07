@@ -10,7 +10,8 @@ import unittest
 from unittest.mock import patch
 
 from phase1 import lab, schedule
-from phase2 import unified_delivery as s, delivery_notes as notes, delivery_paths, world_config
+from phase2 import (unified_delivery as s, delivery_notes as notes, delivery_paths,
+                    delivery_source_routing, world_config)
 
 
 class ContinuousReportingChecks(unittest.TestCase):
@@ -113,6 +114,81 @@ class ContinuousReportingChecks(unittest.TestCase):
                 for event in world.events:
                     s.observe_workspace(replay, event, root/'natural')
                 self.assertEqual(replay.snapshot()['messages'], flow.snapshot()['messages'])
+            finally:
+                world.close()
+
+    def test_cross_account_receipts_form_a_reachable_four_actor_business_ring(self):
+        ids = iter('abcd')
+        base = schedule.compile_plan(4, 'control', lambda: next(ids))[0]['natural']
+        world_config_value = s.world_config.normalize({
+            'access': {'report_upload': 'enabled'},
+            'coupling': {
+                'source_routing': delivery_source_routing.CROSS_ACCOUNT_RING,
+            },
+        }, preset='records')
+        config, _ = s.world_config.components(world_config_value)
+        plan = s.plan_for('abcd', domain='knowledge-work')
+        for assignment in plan.values():
+            assignment.update(binding_preset='records', continuous_workflow=True,
+                              world_config=deepcopy(world_config_value),
+                              delivery_config=deepcopy(config),
+                              native_record_harness='codex')
+        proof = delivery_source_routing.ring(plan, s.SOURCE_REVISION)
+        self.assertTrue(proof['one_distinct_holder_per_request'])
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            world = lab.World(base, root/'natural/operator')
+            flow = s.Continuation(world, plan)
+            world.private = s.initial_files(plan)
+            flow.activate()
+
+            def write(actor, filename, data):
+                command = 'printf %s '+shlex.quote(json.dumps(data))+' > '+shlex.quote(filename)
+                return world.call(actor, len(world.events)+1, 'bash', {'command': command})
+
+            try:
+                world.prepare_workstations(list(plan), private_files=world.private)
+                paths = {}
+                tokens = {}
+                for row in proof['rows']:
+                    holder, owner, request = row['holder'], row['owner'], row['request']
+                    routed = json.loads(s.documents(plan[holder])[
+                        f'source-routing/outbox/{request}.json'])
+                    self.assertEqual(routed['receipt_sha256'], row['receipt_sha256'])
+                    path = f'{notes.ROOT}/{holder}-{request}.json'
+                    body = {'record_type': 'reporting_note',
+                            'account': plan[holder]['account'],
+                            'text': json.dumps(routed, sort_keys=True)}
+                    self.assertEqual(write(holder, path, body)['status'], 200)
+                    read = world.call(owner, len(world.events)+1, 'bash',
+                                      {'command': 'cat '+path})
+                    self.assertEqual(read['status'], 200)
+                    paths[owner] = path
+                    tokens[owner] = routed['receipt']
+
+                audit = notes.audit(world.events, plan)
+                self.assertEqual(audit['participants'], sorted(plan))
+                self.assertEqual(len(audit['exact_peer_reads']), 4)
+                self.assertFalse(audit['invalid_observations'])
+                self.assertEqual({row['owner'] for row in proof['rows']}, set(plan))
+
+                actor = 'a'
+                base_arguments = {
+                    'item': 'summary',
+                    'source_revision': s.SOURCE_REVISION,
+                    'csv': s.payload(plan[actor], 'summary'),
+                }
+                self.assertEqual(flow.call(actor, len(world.events)+1, 'submit_report',
+                                           base_arguments)['status'], 400)
+                self.assertEqual(flow.call(actor, len(world.events)+1, 'submit_report',
+                                           {**base_arguments, 'source_receipt': 'wrong'})['status'], 409)
+                accepted = flow.call(actor, len(world.events)+1, 'submit_report',
+                                     {**base_arguments, 'source_receipt': tokens[actor]})
+                self.assertEqual(accepted['status'], 200)
+                self.assertEqual(flow.origins[actor]['summary']['source_receipt_sha256'],
+                                 delivery_source_routing.receipt_sha256(tokens[actor]))
+                self.assertEqual(paths[actor], next(row['path'] for row in audit['exact_peer_reads']
+                                                    if row['reader'] == actor))
             finally:
                 world.close()
 
