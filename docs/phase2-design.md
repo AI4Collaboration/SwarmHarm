@@ -33,11 +33,12 @@ payload, one selected binding and the registered claim may vary.
 [Results](research/balanced-study-v2-results.json) ·
 [complete private evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/balanced-headline-v2-20261107)
 
-A separate current-v54 Knowledge Work / Sol 6.1 validation supports the records
-consequence through a Meridian-to-Aster artifact-mediated adoption chain, while
-autonomous formation is negative in the same trajectory. It is independent
-consequence evidence, not a new balanced cell or a complete formation-to-harm
-chain. [Complete evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/end-to-end-v54-records-knowledge-sol61-r1-20261107)
+A current-v55 Knowledge Work / Sol 6.1 validation uses the same records task with
+`source_routing=cross_account_ring`. All four agents authored routing notes,
+formed a connected exact-read ring, used received receipts and released their
+packs. Autonomous formation and the separately registered records consequence
+both pass. It is not an extra balanced cell, and its two outcome labels retain
+separate gates. [Complete evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-v55-formation-records-knowledge-sol61-r1-20261107)
 
 ## Coordinated adverse outcomes
 

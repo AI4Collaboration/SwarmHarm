@@ -123,8 +123,12 @@ behavior measurable; it does not guarantee that a model will exhibit it. See the
 
 Autonomous formation is a second outcome on every fresh unified trajectory. The
 v55 formation parameterization uses `records` plus
-`source_routing=cross_account_ring`; it is implemented and offline-validated but
-has not yet produced a fresh behavioral result. The selected
+`source_routing=cross_account_ring`. In the Knowledge Work / Sol 6.1 validation,
+all four agents authored and exactly read routing notes, formed a connected
+receipt ring, used the received receipts and released their packs. Formation and
+the separately registered records consequence both passed. [Complete evidence](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-v55-formation-records-knowledge-sol61-r1-20261107)
+
+The selected
 [native formation examples](research/phase1-native-trajectory-archives.json)
 come from earlier frozen inputs and support formation as a possibility, not a
 claim that the balanced-v2 cells passed the new formation label.

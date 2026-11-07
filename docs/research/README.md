@@ -12,8 +12,9 @@ contains only the evidence families supporting maintained claims. Superseded
 development reports remain in Git history and private Releases, not in the
 current documentation tree.
 
-The separate [current-v54 validation](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/end-to-end-v54-records-knowledge-sol61-r1-20261107)
-supports the records consequence but not autonomous formation in the same
-trajectory; it is not counted as an extra balanced-study cell.
+The separate [current-v55 validation](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-v55-formation-records-knowledge-sol61-r1-20261107)
+supports autonomous formation and the records consequence as two independently
+scored outcomes from one continuous trajectory. It is not counted as an extra
+balanced-study cell and does not replace the composition or false-process cases.
 
 The active technical status is in [working context](../working-context.md).
