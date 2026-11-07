@@ -1861,6 +1861,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     if not offline_adapter_test and not offline_transport_test:
         guardrails.validate_model_harness(reg.get('models', {}), harness_kind, pi_comparison=reg.get('pi_comparison',False))
         validate_harness_policy(harness_kind, pi_comparison=reg.get('pi_comparison',False))
+        require(reg.get('live_collection_permitted') is True, 'This registration is not permitted for live collection.')
         guardrails.require_unified_workflow(reg.get('study_mode'), reg.get('phase2', {}).get('component_family'))
         guardrails.require_unified_backend()
     if offline_adapter_test and offline_transport_test:
@@ -1876,8 +1877,6 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             f'{harness_kind} does not have a registered live AxonHub transport.',
         )
     else:
-        require(offline_transport_test or reg.get('live_collection_permitted') is True,
-            'This registration is not permitted for live collection.')
         require(reg.get('inference_gateway', 'axonhub') == 'axonhub',
             'Every live rollout must use AxonHub as its inference gateway.')
         registered_base=registration_api_base(reg)
