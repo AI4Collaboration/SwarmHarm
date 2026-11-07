@@ -1,7 +1,7 @@
 {
   "schema": "phase1-publication-audit-v1",
   "audited_at": "2026-11-07",
-  "status": "evidence_passed_repository_sync_pending",
+  "status": "passed",
   "scope": "Phase 1 input and evidence readiness for four business domains by two main task settings. Phase 2 is independent and outside this decision.",
   "decision_rule": "The eight source-specific selected matrix cells must reproduce from their frozen sources and reviews, and the maintained neutral-workspace runtime must have one matching reviewed live validation. Offline checks alone are insufficient.",
   "claim_boundary": {
@@ -136,10 +136,11 @@
     },
     {
       "id": "repository_sync",
-      "passed": false,
-      "evidence": "Pending the final documentation commit, push, clean-tree check and exact local/remote branch comparison.",
-      "limit": "This is the only remaining operational publication-readiness item."
+      "passed": true,
+      "evidence": "Publication content commit 4ae0599f2418a09e4a075ec523aa5de25d0e4366 was pushed to research/phase1-publication-20261030; the local and remote hashes matched exactly and the tree was clean before this audit-only closure.",
+      "limit": "The closure commit changes only audit and status documentation and must also be pushed and checked for exact local/remote equality."
     }
   ],
-  "next_action": "Commit and push the audited documentation and verifier, verify a clean tree and exact local/remote equality, then finalize this audit without changing runtime or frozen evidence."
+  "conclusion": "Phase 1 input and evidence are publication-ready within the stated selected-example boundaries. No additional rollout is justified by this audit; a new runtime, input, claim or source revision requires a fresh sealed rollout.",
+  "next_action": "Preserve the frozen evidence and rerun the two verifiers before publication packaging or after any maintained runtime, input, evaluator or evidence-index change."
 }

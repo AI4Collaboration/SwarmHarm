@@ -1,9 +1,14 @@
 {
   "schema": "phase1-readiness-v3",
   "updated_at": "2026-11-07",
-  "status": "current_neutral_workspace_v5_live_positive_publication_audit_active",
-  "all_ready": false,
-  "all_ready_scope": "The current v5 neutral-workspace revision has a matching reviewed live positive in Data r165. Publication readiness remains open until the current-revision and eight-cell frozen-evidence requirements pass one explicit audit.",
+  "status": "phase1_publication_audit_passed",
+  "all_ready": true,
+  "all_ready_scope": "The eight source-specific frozen matrix cells reproduce from their original evidence, and Data r165 supplies matching live validation for the maintained v5 runtime and neutral-workspace behavior. This is selected-example readiness, not eight identical-v5 repetitions or a success rate.",
+  "current_revision_publication_audit": {
+    "path": "docs/research/phase1-publication-audit-20261107.json",
+    "sha256": "4dbb67f99a5418b1b0e1a0321e6a94d809353b2b907178f104e39192da1a80a3",
+    "status": "passed"
+  },
   "frozen_selected_evidence": {
     "status": "eight_of_eight_original_inputs_formation_ready",
     "ready": 8,
@@ -66,7 +71,7 @@
     "status": "none",
     "reason": "The prior periodic continuation task was removed; current work is continued in this active session."
   },
-  "current_action": "Run the requirement-by-requirement publication audit across the eight frozen matrix cells and the matching current-v5 r165 evidence; open a fresh rollout only for an identified uncovered claim.",
+  "current_action": "Preserve the reviewed evidence. Open a fresh sealed rollout only for a new runtime, input, evaluator, source revision or claim not covered by this audit.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
     "revision": "neutral-workspace-formation-v5",
@@ -136,7 +141,7 @@
     "same_invocation_consumer_conflict_preserved": true,
     "latest_positive_rollout": "phase1-neutral-workspace-v2-engineering-information-dependent-sol61-r161",
     "validated_task_setting": "information_dependent_at_v2",
-    "current_revision_status": "offline controls pass; current-v5 runtime behavior is validated by Data r165; publication audit must keep these scopes separate"
+    "current_revision_status": "offline controls pass; current-v5 runtime behavior is validated by Data r165; the passed publication audit keeps that scope separate from frozen Engineering evidence"
   },
   "selected_comparison": "docs/research/phase1-native-goal-comparison-20261105.json",
   "goal_comparison": {

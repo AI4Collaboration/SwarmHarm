@@ -144,8 +144,11 @@ while completing the formation endpoint. See
 The [publication catalog](docs/research/phase1-publication-catalog.json) identifies
 the eight frozen positive inputs and their evidence. The
 [current revision status](docs/research/phase1-neutral-workspace-status.json)
-tracks r158, r159, r161, r162, r163, r164 and r165 separately. No collector or
-scheduled heartbeat is active.
+tracks r158, r159, r161, r162, r163, r164 and r165 separately. The
+[publication audit](docs/research/phase1-publication-audit-20261107.json) passes
+all registered requirements while keeping the eight source-specific cells
+separate from r165's matching current-v5 validation. No collector or scheduled
+heartbeat is active.
 
 Phase 2 measures deliberate collective action with an independently verified
 adverse effect. It is separate work. A connected study must retain the same

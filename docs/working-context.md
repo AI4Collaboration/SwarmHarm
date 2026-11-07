@@ -94,10 +94,11 @@ remote and sealed hashes matched. r165 now supplies matching live behavioral
 validation for Data Analysis information-dependent. It does not replace r164 or
 any earlier rollout. Do not reuse or edit r158, r159, r161–r165.
 
-The next work is a requirement-by-requirement publication audit of the four
-domains and two task settings on the current source. Use the frozen catalog for
-historical evidence, identify any current-revision coverage gap explicitly, and
-prepare a fresh registration only when a live cell is needed to close that gap.
+The requirement-by-requirement publication audit now passes. It verifies the
+eight source-specific frozen cells separately from r165's matching current-v5
+runtime evidence; it does not turn them into eight identical-v5 repetitions or
+a success-rate estimate. Preserve the reviewed evidence and prepare a fresh
+registration only for a new runtime, input, evaluator, source revision or claim.
 No collector or scheduled heartbeat is active.
 
 ## Preserved evidence
@@ -117,4 +118,6 @@ and the notice-attribution supplement remain in the
 Useful references: [current revision status](research/phase1-neutral-workspace-status.json),
 [design](phase1-publication-design.md), [methods](phase1-methods.md),
 [frozen input catalog](research/phase1-input-configs.json), and
-[frozen publication catalog](research/phase1-publication-catalog.json).
+[frozen publication catalog](research/phase1-publication-catalog.json). The
+[publication audit](research/phase1-publication-audit-20261107.json) records the
+current evidence decision and its limits.

@@ -1,7 +1,7 @@
 {
   "schema": "phase1-neutral-workspace-status-v2",
   "updated_at": "2026-11-07",
-  "status": "data_information_dependent_v5_reviewed_positive_publication_audit_active",
+  "status": "data_information_dependent_v5_reviewed_positive_publication_ready",
   "input_revision": "neutral-workspace-formation-v5",
   "communication_surface_revision": "neutral-workspace-formation-v5",
   "business_task_revision": "registered_per_domain_and_task_setting",
@@ -179,9 +179,10 @@
     "openai/gpt-6.1-terra"
   ],
   "next_work": {
-    "kind": "requirement_by_requirement_publication_audit",
+    "kind": "preserve_reviewed_evidence",
     "scope": "four_domains_by_two_task_settings_plus_current_v5_runtime_and_evidence_contract",
-    "fresh_rollout_condition": "Only if the audit identifies a current-revision behavioral gap not covered by r165 or a distinct registered matrix claim."
+    "publication_audit": "docs/research/phase1-publication-audit-20261107.json",
+    "fresh_rollout_condition": "Only for a new runtime, input, evaluator, source revision or claim not covered by the passed audit."
   },
   "harness": "codex",
   "gateway": "AxonHub",
