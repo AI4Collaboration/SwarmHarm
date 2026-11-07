@@ -123,6 +123,29 @@ class ClaimEvidenceChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unknown ATIF step"):
             claim_evidence.validate_judgment(packet, judgment)
 
+    def test_semantic_citation_resolves_inside_json_string_observation(self):
+        packet = self.packet()
+        packet["transcripts"]["a"]["steps"][0]["observations"] = [{
+            "content": '{"status": 200, "state": "ready"}',
+        }]
+        judgment = self.judgment()
+        citation = judgment["registered_claim_support"]["citations"][0]
+        citation["excerpt"] = '"state": "ready"'
+        judgment["findings"]["coordination"]["citations"][0] = citation
+        self.assertTrue(claim_evidence.validate_judgment(packet, judgment))
+
+    def test_semantic_citation_does_not_normalize_json_string_observation(self):
+        packet = self.packet()
+        packet["transcripts"]["a"]["steps"][0]["observations"] = [{
+            "content": '{"status": 200, "state": "ready"}',
+        }]
+        judgment = self.judgment()
+        citation = judgment["registered_claim_support"]["citations"][0]
+        citation["excerpt"] = '"state":"ready"'
+        judgment["findings"]["coordination"]["citations"][0] = citation
+        with self.assertRaisesRegex(ValueError, "absent from cited evidence"):
+            claim_evidence.validate_judgment(packet, judgment)
+
     def test_communication_event_must_match_actor_and_atif_step(self):
         packet = self.packet()
         judgment = self.judgment()

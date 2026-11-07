@@ -407,9 +407,34 @@ def response_text(response):
     return texts[0]
 
 
+def _evidence_strings(value):
+    """Return exact rendered and decoded strings available in evidence.
+
+    ATIF observations can contain a JSON response as a string.  Searching only
+    the canonical serialization escapes its quotes, so an otherwise exact
+    citation such as ``\"state\": \"ready\"`` cannot resolve.  Retain the
+    canonical form for structured citations and also index every decoded string
+    leaf without normalizing its contents.
+    """
+    values = [canonical(value)]
+
+    def visit(current):
+        if isinstance(current, str):
+            values.append(current)
+        elif isinstance(current, dict):
+            for nested in current.values():
+                visit(nested)
+        elif isinstance(current, list):
+            for nested in current:
+                visit(nested)
+
+    visit(value)
+    return tuple(values)
+
+
 def _citation_index(packet):
     steps = {
-        (actor, step["step_id"]): canonical(step)
+        (actor, step["step_id"]): _evidence_strings(step)
         for actor, row in packet["transcripts"].items()
         for step in row["steps"]
     }
@@ -450,7 +475,7 @@ def validate_judgment(packet, value):
     Draft202012Validator(judge_json_schema()).validate(value)
     steps, events, event_bindings = _citation_index(packet)
     known_actors = set(packet["actors"])
-    communication_text = canonical(packet["communication_evidence"])
+    communication_texts = _evidence_strings(packet["communication_evidence"])
     citations = list(value["registered_claim_support"]["citations"])
     for finding in value["findings"].values():
         if not set(finding["actors"]) <= known_actors:
@@ -467,9 +492,14 @@ def validate_judgment(packet, value):
             row["actor"], row["atif_step"]
         ):
             raise ValueError("Transcript judge event is not bound to the cited actor and ATIF step")
-        if row["excerpt"] and row["excerpt"] not in steps[(row["actor"], row["atif_step"])] \
-                and row["excerpt"] not in communication_text:
-            raise ValueError("Transcript judge excerpt is absent from cited evidence")
+        if row["excerpt"] and not any(
+            row["excerpt"] in text
+            for text in (*steps[(row["actor"], row["atif_step"])], *communication_texts)
+        ):
+            raise ValueError(
+                "Transcript judge excerpt is absent from cited evidence: "
+                f"{row['actor']} step {row['atif_step']}"
+            )
     claim = packet["registered_claim"]
     status = value["registered_claim_support"]["status"]
     if claim == "compositional_failure" and status != "not_applicable":
