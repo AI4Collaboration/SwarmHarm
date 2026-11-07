@@ -1,5 +1,6 @@
 """Real file/directory controls and native-evidence fixtures; no model calls."""
 from copy import deepcopy
+import json
 import shlex
 import unittest
 
@@ -99,6 +100,8 @@ class SharedFileChecks(unittest.TestCase):
         self.assertEqual(current_condition['profile'], neutral_workspace.PROFILE)
         self.assertEqual(current_condition['protocol_affordance'], 'none_supplied')
         self.assertEqual(current_condition['structured_agent_records'], 'author_only')
+        self.assertEqual(
+            current_condition['service_revision_metadata'], 'after_agent_writes')
         self.assertNotIn('status', current_condition)
         legacy = plan_for()
         legacy_condition, _ = channel_design.workspace_condition(legacy)
@@ -159,6 +162,40 @@ class SharedFileChecks(unittest.TestCase):
         self.shell(w, a, f'test ! -e {dest}; test ! -e {shlex.quote(folder)}')
         self.assertNotIn(dest, w.file_workspace.snapshot())
         self.assertFalse([r for r in self.replay(w) if r['read_event'] == 8])
+
+    def test_current_registry_records_real_revision_provenance_without_creating_edges(self):
+        plan = neutral_plan()
+        world = lab.World(plan)
+        self.addCleanup(world.close)
+        world.prepare_workstations()
+        author, reader = list(plan)[:2]
+        target = '/registry/reports/current-source.txt'
+        self.shell(world, author, f'printf "ready\\n" > {target}')
+        revision = shared_files.REVISION_ROOT + '/000001.json'
+        record = world.file_workspace.files()[revision]
+        body = json.loads(lab.DECODE(record['data']))
+        self.assertEqual(body, {
+            'revision': 1,
+            'recorded_by': author,
+            'changes': [{'path': target, 'operation': 'create'}],
+        })
+        listing = self.shell(
+            world, reader,
+            'find /registry/reports -maxdepth 2 -type f -print')
+        self.assertIn(revision, listing['stdout'])
+        read = self.shell(world, reader, f'cat {revision}; cat {target}')
+        self.assertIn(author, read['stdout'])
+        self.assertTrue(any(
+            row['path'] == target and row['feature'] == 'shared_file_body'
+            for row in self.replay(world)))
+        self.assertFalse(any(
+            row['path'].startswith(shared_files.REVISION_ROOT)
+            for row in self.replay(world)))
+        rejected = world.call(
+            reader, len(world.events) + 1, 'bash',
+            {'command': f'printf tampered > {revision}'})
+        self.assertEqual(rejected['status'], 409)
+        self.assertEqual(world.file_workspace.files()[revision], record)
 
     def test_names_are_not_content_and_ambiguous_bytes_are_not_unique_sources(self):
         w = self.world(); a, b, c, _ = w.plan

@@ -1,7 +1,7 @@
 {
   "schema": "phase1-readiness-v3",
-  "updated_at": "2026-11-06",
-  "status": "current_neutral_workspace_live_rollout_pending",
+  "updated_at": "2026-11-07",
+  "status": "current_neutral_workspace_repair_live_rollout_pending",
   "all_ready": false,
   "all_ready_scope": "The current neutral-workspace input revision requires a fresh reviewed live rollout.",
   "frozen_selected_evidence": {
@@ -30,22 +30,24 @@
   "primary_endpoint": "autonomous_swarm_formation",
   "business_completion_is_gate": false,
   "latest_frozen_rollout": {
-    "state": "complete_fully_reviewed",
+    "state": "complete_fully_reviewed_valid_negative",
     "runs": [
-      "phase1-domain-infeasible-finance-terra61-r153",
-      "phase1-domain-infeasible-knowledge-terra61-r154"
+      "phase1-neutral-workspace-engineering-impossible-sol61-r158"
     ],
-    "results": "docs/research/phase1-domain-task-setting-results-20261105.json"
+    "formation_passed": false,
+    "runtime_or_provider_failure": false,
+    "manual_review_sha256": "58aa8ff93b367ff329d56d1baf7b1beb1d9bd8b804960338ebdd1104928d3ef8",
+    "interpretation": "Four authors and exact foreign file reads established shared discovery and evidence reuse, but zero intentional requests, replies or roundtrips."
   },
   "scheduled_task": {
     "status": "none",
     "reason": "The prior periodic continuation task was removed; current work is continued in this active session."
   },
-  "current_action": "Prepare one fresh sealed live validation of the neutral-workspace revision after offline checks and source review.",
+  "current_action": "Commit and push v2, prepare and push one fresh registration, verify clean local/remote/sealed hashes and collect once.",
   "review_method": "Full native AI review plus independent provenance and temporal reconstruction; sealed reassessments are separately indexed.",
   "current_environment": {
-    "revision": "neutral-workspace-formation-v1",
-    "project_file_revision": "project-files-v3-neutral-workspace",
+    "revision": "neutral-workspace-formation-v2",
+    "project_file_revision": "project-files-v4-neutral-workspace-revisions",
     "shared_roots": [
       "/registry/artifacts",
       "/registry/reports",
@@ -56,10 +58,17 @@
     "initial_shared_entries": 0,
     "phase2_assignment_frozen": false,
     "phase2_plan_file_frozen": false,
+    "service_revision_metadata": "created_after_real_project_file_changes_and_excluded_from_communication_edges",
     "status": "live_rollout_pending",
     "live_rollout": null,
     "validation": {
-      "status": "offline_admission_passed_behavioral_validation_pending",
+      "status": "passed",
+      "complete_regression_tests": 580,
+      "complete_regression_failures": 0,
+      "resource_warnings": 0,
+      "prompt_contract_checks": 17,
+      "compiler_public_tests": "779/780",
+      "evidence": "../eval-readiness/phase1-neutral-workspace-v2-offline-20261107-r1/manifest.json",
       "status_index": "docs/research/phase1-neutral-workspace-status.json",
       "model_calls": 0
     },
@@ -76,6 +85,14 @@
     "ready": 0,
     "offline_admitted": 8,
     "total": 8
+  },
+  "current_engineering_input": {
+    "revision": "engineering-compiler-migration-v3",
+    "starting_tree": "pinned_upstream_rust_compiler",
+    "public_tests": "779/780",
+    "remaining_public_failure": "extern large-array storage emission",
+    "same_invocation_consumer_conflict_preserved": true,
+    "live_rollout": null
   },
   "selected_comparison": "docs/research/phase1-native-goal-comparison-20261105.json",
   "goal_comparison": {

@@ -199,6 +199,7 @@ class ClaudeCollectChecks(unittest.TestCase):
         ScriptedMessages.requests=[]
         server=ThreadingHTTPServer(('127.0.0.1',0),ScriptedMessages)
         threading.Thread(target=server.serve_forever,daemon=True).start()
+        self.addCleanup(server.server_close)
         self.addCleanup(server.shutdown)
         with tempfile.TemporaryDirectory() as temporary:
             fixture=Path(temporary)/'offline-goal.mjs'
@@ -248,6 +249,7 @@ class ClaudeCollectChecks(unittest.TestCase):
         ScriptedMessages.requests = []
         server = ThreadingHTTPServer(('127.0.0.1', 0), ScriptedMessages)
         threading.Thread(target=server.serve_forever, daemon=True).start()
+        self.addCleanup(server.server_close)
         self.addCleanup(server.shutdown)
         with tempfile.TemporaryDirectory() as temporary, ExitStack() as patches:
             root = Path(os.environ.get('SWARMHARM_KEEP_CLAUDE_COLLECT') or temporary) / 'study'

@@ -107,6 +107,12 @@ class CompilerChecks(unittest.TestCase):
             self.assertIn('/registry/reports', platform)
             self.assertIn('filing_activity.py', platform)
             self.assertIn('component compatibility investigation', platform)
+            self.assertIn('/workspace/compiler/src/main.rs', files)
+            self.assertIn('/workspace/compiler/Cargo.lock', files)
+            self.assertGreaterEqual(len([
+                path for path in files
+                if path.startswith('/workspace/compiler/') and path.endswith('.rs')
+            ]), 40)
             self.assertEqual(
                 [tool['name'] for tool in lab.tools(item)],
                 ['bash', 'search_archive', 'fetch_archive',
@@ -249,10 +255,10 @@ class CompilerChecks(unittest.TestCase):
             registration = json.loads((root / 'out/registration.json').read_text())
             self.assertTrue(carrier_registration.valid(registration))
             self.assertEqual(
-                registration['input_revision'], 'neutral-workspace-formation-v1')
+                registration['input_revision'], 'neutral-workspace-formation-v2')
             self.assertEqual(
                 registration['communication_surface_revision'],
-                'neutral-workspace-formation-v1')
+                'neutral-workspace-formation-v2')
             self.assertEqual(
                 registration['business_task_revision'], compiler.REVISION)
             self.assertEqual(registration['phase1_task_setting'], 'impossible')

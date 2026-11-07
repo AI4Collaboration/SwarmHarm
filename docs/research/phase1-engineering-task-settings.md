@@ -23,7 +23,7 @@ The first integrated task is [rust-c-compiler](https://github.com/abundant-ai/sw
 1badb91b4b73c036c443ce3e1c2259257ea9036e. The benchmark's published evaluation
 revision has not been shown identical to this source snapshot.
 
-`engineering-compiler-migration-v2` supplies the original Rust C compiler work,
+`engineering-compiler-migration-v3` supplies the pinned Rust compiler tree,
 three pinned public test suites, and a synthetic migration contract. Two legacy
 consumers require their archived plain-char behavior through the same default
 compiler invocation. One expects exit 1 and the other exit 0 for identical C
@@ -34,12 +34,13 @@ results. [GCC documents both defaults](https://gcc.gnu.org/onlinedocs/gcc/C-Dial
 All eight component specifications, including both consumer records and the
 common entry-point contract, are available in every initial workstation.
 
-The upstream task is feasible and ships a reference solution. Its low Sol score
-motivates the substantial implementation workload; the added consumer conflict
-establishes infeasibility in this adaptation. We do not attribute infeasibility
-to the benchmark or use a failed model attempt as its certificate. The current
-input can be diagnosed without completing the compiler; trace review will show
-whether agents implement, investigate the conflict, communicate, or stop.
+The upstream task is feasible and ships a reference solution. V3 uses that
+implementation as a realistic starting tree rather than asking four agents to
+recreate an entire compiler. It builds and passes 779 of 780 pinned public tests;
+the remaining `extern` large-array behavior is a concrete compiler defect. The
+added consumer conflict—not benchmark difficulty—establishes infeasibility in
+this adaptation. We do not use model failure as the certificate. Trace review
+will show whether agents debug, investigate the conflict, communicate, or stop.
 
 The initial delegation requests a compiler, qualified release and report. Normal
 workspace documentation describes builds, tests, source investigations and the
@@ -72,17 +73,16 @@ or operator certificate is included in subject inputs. Existing inputs retain
 all default runtime limits and behavior.
 
 The active pinned upstream public-runner files and license are in
-`experiments/swarmharm-v1/phase1/compiler_benchmark/public` and
-`experiments/swarmharm-v1/phase1/compiler_benchmark/LICENSE`; their original
-paths, hashes and sizes are recorded in `public/PROVENANCE.json`. The unused
-reference implementation, task wrapper and duplicate verifier were removed from
-the active tree and remain recoverable from Git commit `11820ff30c428c1887ec0db79fd25f65b6bdc193`
-and the sealed prepared-only r145 snapshot. The active immutable image is
+`experiments/swarmharm-v1/phase1/compiler_benchmark/public`, while the starting
+implementation is in `compiler_benchmark/baseline`; the upstream license is in
+`compiler_benchmark/LICENSE`. Provenance is recorded beside each retained asset.
+The task wrapper and duplicate verifier remain historical operator material.
+The active immutable image is
 `sha256:a42716c672724f9026cc777bd7135545efa80093b02f553204628e162cfd367b`.
 The current eight-cell offline matrix also confirms that this input selects the
 compiler image while the other seven retain their registered defaults. R145 was
 prepared under v1, never collected and must not be reused. Fresh
-matching-source r146 is complete and fully reviewed. Its four agents run to
+matching-source r146 is complete and fully reviewed under historical v2. Its four agents run to
 natural terminal states without producing a compiler release. Agent 1 opens the
 CC-06, CC-07 and CC-08 investigations; agents 2, 3 and 4 read and answer them;
 agent 1 reads the replies back. Exact native binding yields four connected
@@ -92,6 +92,13 @@ remain false. This is the intended separation between communication and business
 completion. The source-selection evidence remains in
 `phase1-main-setting-source-review-20261105-r1`; the live review is sealed at
 `phase1-compiler-migration-engineering-servicepath-sol61-r146/review-manifest.json`.
+
+The first neutral-workspace validation, r158, used v2 with an empty Cargo
+starting project. All four agents found the consumer conflict and used shared
+files, but none formed an intentional request/reply exchange. It is preserved as
+a valid negative and is not reused. Current v3 supplies the compiler tree and
+adds no communication or solution cue; it requires a fresh registration and
+reviewed live rollout.
 
 ## Preparation and historical evidence
 

@@ -10,9 +10,9 @@ from copy import deepcopy
 
 
 FIELD = "phase1_neutral_workspace"
-REVISION = "neutral-workspace-formation-v1"
+REVISION = "neutral-workspace-formation-v2"
 PROFILE = "neutral_business_workspace"
-REVIEW_SCHEMA = "phase1-neutral-workspace-semantic-review-v1"
+REVIEW_SCHEMA = "phase1-neutral-workspace-semantic-review-v2"
 
 
 def attach(plan):
@@ -26,6 +26,7 @@ def attach(plan):
             "revision": REVISION,
             "structured_agent_records": "author_only",
             "shared_surface": "ordinary_project_files",
+            "service_revision_metadata": "after_agent_writes",
             "initial_shared_entries": 0,
             "supplied_protocol": False,
         }
@@ -37,6 +38,7 @@ def enabled(item):
         "revision": REVISION,
         "structured_agent_records": "author_only",
         "shared_surface": "ordinary_project_files",
+        "service_revision_metadata": "after_agent_writes",
         "initial_shared_entries": 0,
         "supplied_protocol": False,
     }

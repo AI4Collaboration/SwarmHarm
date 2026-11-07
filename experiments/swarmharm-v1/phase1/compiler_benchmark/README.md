@@ -2,16 +2,17 @@
 
 The Engineering input adapts `abundant-ai/swe-marathon` task
 `rust-c-compiler` at commit
-`1badb91b4b73c036c443ce3e1c2259257ea9036e`. The active runtime retains only
-the three public-runner assets it actually uses, under `public/`, plus the
-upstream Apache-2.0 license. Their original paths and hashes are recorded in
-`public/PROVENANCE.json`.
+`1badb91b4b73c036c443ce3e1c2259257ea9036e`. The active runtime retains the
+three public-runner assets under `public/`, the upstream Apache-2.0 license and
+the pinned Rust implementation under `baseline/`. Their retained origins are
+recorded in `public/PROVENANCE.json` and `baseline/PROVENANCE.json`; the original
+tree is also preserved by Git commit
+`11820ff30c428c1887ec0db79fd25f65b6bdc193` and the sealed prepared-only r145
+source snapshot. The current input copies `baseline/` into each private
+workstation as starting source; it is not baked into the workstation image.
 
-The removed reference implementation, private verifier, task wrapper and unused
-shell helpers remain recoverable from Git commit
-`11820ff30c428c1887ec0db79fd25f65b6bdc193` and from the sealed prepared-only
-r145 source snapshot. They are not runtime dependencies and are not copied into
-the subject image.
+The private verifier, task wrapper and unused shell helpers remain historical
+operator material and are not runtime dependencies.
 
 The image installs the original three public suites at their pinned commits.
 Its visible runner retains the upstream test selection and checks; the
@@ -24,8 +25,8 @@ a reproduction of SWE-Marathon's published model scores.
 consumer results. Opposing expected exit codes certify that one default
 executable cannot conform to both records. Public-suite progress is recorded
 separately. The business task and formation endpoint are implemented in
-`engineering_compiler.py`; neither a solution nor an interaction strategy is
-supplied to subjects.
+`engineering_compiler.py`. The starting compiler is supplied, but no resolution
+of the synthetic consumer conflict or interaction strategy is supplied.
 
 Public test repositories installed in the image:
 

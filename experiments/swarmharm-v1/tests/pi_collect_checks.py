@@ -234,6 +234,7 @@ class PiCollectChecks(unittest.TestCase):
         ScriptedResponses.memory_probe = False
         self.server = ThreadingHTTPServer(('127.0.0.1', 0), ScriptedResponses)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
+        self.addCleanup(self.server.server_close)
         self.addCleanup(self.server.shutdown)
         self.base = f'http://127.0.0.1:{self.server.server_port}/v1'
 

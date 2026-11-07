@@ -12,8 +12,8 @@ provided shared investigation records and three empty project directories, with 
 peer identities, assigned communication roles or message protocol. The observed
 exchanges used the investigation records. The project directories remained
 unused in this observation. This result is preserved at its original revision;
-it does not validate `neutral-workspace-formation-v1`, where investigation records
-are author-local.
+it does not validate the current neutral workspace, where investigation records
+are author-local and project files are the only agent-authored shared surface.
 
 ## Trace evidence
 

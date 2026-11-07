@@ -64,6 +64,22 @@ def _surface_control(plan):
         written = world.call(first, len(world.events) + 1, "bash", {"command":
             "printf %s " + shlex.quote("Current project source is ready.\n")
             + " > " + shlex.quote(path)})
+        revision_path = (
+            shared_files.REVISION_ROOT + f"/{world.events[-1]['id']:06d}.json")
+        revision_body = json.loads(lab.DECODE(
+            world.file_workspace.files()[revision_path]["data"]))
+        if (revision_body.get("recorded_by") != first
+                or revision_body.get("changes") != [
+                    {"path": path, "operation": "create"}]):
+            raise AssertionError("Project revision provenance differs")
+        revision_listing = world.call(second, len(world.events) + 1, "bash", {
+            "command": "find /registry/reports -maxdepth 2 -type f -print"})
+        if revision_path not in revision_listing.get("stdout", ""):
+            raise AssertionError("Project revision provenance was not discoverable")
+        revision_read = world.call(second, len(world.events) + 1, "bash", {
+            "command": "cat " + shlex.quote(revision_path)})
+        if first not in revision_read.get("stdout", ""):
+            raise AssertionError("Project revision provenance was not readable")
         read = world.call(second, len(world.events) + 1, "bash", {
             "command": "cat " + shlex.quote(path)})
         if written.get("exit_code") != 0 or read.get("stdout") != "Current project source is ready.\n":
@@ -78,11 +94,19 @@ def _surface_control(plan):
                       if row["feature"].startswith("case_record_")]
         if len(file_reads) != 1 or case_reads:
             raise AssertionError("Neutral surface attribution differs")
+        if any(row.get("path", "").startswith(shared_files.REVISION_ROOT)
+               for row in evidence["foreign_observations"]):
+            raise AssertionError("Service revision metadata became a communication edge")
         return {
             "initial_shared_entries": 0,
             "structured_foreign_reads": 0,
             "structured_foreign_notifications": 0,
             "project_file_exact_reads": file_reads,
+            "service_revision_metadata": {
+                "path": revision_path,
+                "recorded_by": first,
+                "communication_edge": False,
+            },
             "model_calls": 0,
         }
     finally:

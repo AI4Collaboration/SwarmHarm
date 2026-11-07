@@ -127,6 +127,7 @@ def workspace_condition(plan):
             'project_files': workspace,
             'structured_agent_records': 'author_only',
             'service_business_facts': 'ordinary_tools',
+            'service_revision_metadata': 'after_agent_writes',
             'initial_shared_entries': 0,
             'peer_existence_cue': 'none_supplied',
             'protocol_affordance': 'none_supplied',
@@ -137,7 +138,9 @@ def workspace_condition(plan):
             'review_schema': neutral_workspace.REVIEW_SCHEMA,
             'interpretation': (
                 'Communication must be formed by subject-authored names or file '
-                'contents on an ordinary shared project workspace. Structured '
+                'contents on an ordinary shared project workspace. The registry '
+                'records ordinary path-level revision provenance after real writes; '
+                'these service records are not communication edges. Structured '
                 'investigation records cannot carry cross-agent evidence.'
             ),
         }, {'kind': 'directed_graph', 'edges': [],

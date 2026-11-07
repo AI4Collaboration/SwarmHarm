@@ -16,10 +16,12 @@ import re
 FIELD = 'phase1_shared_files'
 REVISION = 'project-files-v1'
 WORKSTATION_REVISION = 'project-files-v2'
-NEUTRAL_REVISION = 'project-files-v3-neutral-workspace'
+LEGACY_NEUTRAL_REVISION = 'project-files-v3-neutral-workspace'
+NEUTRAL_REVISION = 'project-files-v4-neutral-workspace-revisions'
 LIMITS = {REVISION: 32768, WORKSTATION_REVISION: 2000000,
-          NEUTRAL_REVISION: 2000000}
+          LEGACY_NEUTRAL_REVISION: 2000000, NEUTRAL_REVISION: 2000000}
 ROOTS = ('/registry/artifacts', '/registry/reports', '/registry/scratch')
+REVISION_ROOT = '/registry/reports/revisions'
 DOCUMENTATION = '''
 ## Project files
 
@@ -66,6 +68,7 @@ def body(entry):
 
 class Store:
     def __init__(self, revision=REVISION):
+        self.revision = revision
         self.max_bytes = LIMITS[revision]
         self.entries = {root: {'path': root, 'kind': 'directory', 'author': None,
                               'source_event': None, 'name_author': None,
@@ -100,6 +103,8 @@ class Store:
             new = observed.get(path)
             if old == new:
                 continue
+            if path == REVISION_ROOT or path.startswith(REVISION_ROOT + '/'):
+                return None, 'Project revision records are maintained by the registry.'
             if not contains(path):
                 return None, 'Invalid project file path.'
             if new is not None and (new.get('kind') not in ('file', 'directory')
@@ -141,6 +146,40 @@ class Store:
                 self.entries.pop(path)
             journal.append({'path': path, 'before': deepcopy(old), 'after': deepcopy(row),
                             'operation': 'create' if old is None else 'delete' if row is None else 'modify'})
+        if self.revision == NEUTRAL_REVISION and changes:
+            if REVISION_ROOT not in self.entries:
+                directory = {'kind': 'directory', 'path': REVISION_ROOT,
+                             'author': 'registry-service', 'source_event': event,
+                             'name_author': 'registry-service', 'name_source_event': event,
+                             'version': event, 'sha256': sha256(REVISION_ROOT.encode()).hexdigest(),
+                             'origin': 'registry_revision'}
+                self.entries[REVISION_ROOT] = directory
+                journal.append({'path': REVISION_ROOT, 'before': None,
+                                'after': deepcopy(directory), 'operation': 'create'})
+            path = f'{REVISION_ROOT}/{event:06d}.json'
+            if path in self.entries:
+                raise ValueError('Project revision event already exists')
+            recorded_changes = [entry for entry in journal
+                                if entry['path'] != REVISION_ROOT]
+            document = {
+                'revision': event,
+                'recorded_by': actor,
+                'changes': [
+                    {'path': entry['path'], 'operation': entry['operation']}
+                    for entry in recorded_changes
+                ],
+            }
+            data = base64.b64encode(
+                (json.dumps(document, sort_keys=True, indent=2) + '\n').encode()).decode()
+            row = {'kind': 'file', 'data': data, 'path': path,
+                   'author': 'registry-service', 'source_event': event,
+                   'name_author': 'registry-service', 'name_source_event': event,
+                   'version': event,
+                   'sha256': sha256(base64.b64decode(data)).hexdigest(),
+                   'origin': 'registry_revision'}
+            self.entries[path] = row
+            journal.append({'path': path, 'before': None,
+                            'after': deepcopy(row), 'operation': 'create'})
         return journal
 
 
@@ -201,6 +240,8 @@ def observations(before, actor, event, result):
     canonical_counts = Counter(canonical.values())
     found = []
     for path, row in before.items():
+        if row.get('origin') == 'registry_revision':
+            continue
         name = PurePosixPath(path).name
         common = {'carrier': 'data_object', 'source_event': row['source_event'],
                   'read_event': event, 'author': row['author'], 'reader': actor,
