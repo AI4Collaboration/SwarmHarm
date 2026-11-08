@@ -14,8 +14,9 @@ Published cases include their exact source in the [evidence bundles](research/tr
 
 After a Codex rollout, run `python3 scripts/audit_codex_workstation.py RAW_OUTPUT`
 to check delivered inputs for known instrumentation markers. The audit reports
-startup material, tool returns and agent-authored text separately, with references
-to the original records. These observations do not measure private reasoning.
+initial files, native instructions, advertised tools, delivered tool results and
+agent-authored text with references to the original records. These observations
+do not measure private reasoning.
 
 ```sh
 git clone https://github.com/AI4Collaboration/SwarmHarm.git swarmharm

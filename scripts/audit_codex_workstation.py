@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Locate workstation fingerprints in recorded Codex inputs, separately from authored text."""
 import argparse
+import base64
 from collections import defaultdict
 from hashlib import sha256
 import json
@@ -21,20 +22,24 @@ def audit(root):
     root = Path(root)
     manifest = json.loads((root/'evidence-manifest.json').read_bytes())['files']
 
-    def read(path):
+    def verified_bytes(path):
         data = path.read_bytes()
         if sha256(data).hexdigest() != manifest[str(path.relative_to(root))]:
             raise ValueError(f'Digest differs for {path.name}')
-        return json.loads(data)
+        return data
+
+    def read(path):
+        return json.loads(verified_bytes(path))
 
     registration = read(root/'registration.json')
     if registration['harness']['kind'] != 'codex':
         raise ValueError('This audit uses the native Codex input records')
     actors = {}
+    initial_files = read(root/'initial-file-audit.json')['natural']
     for actor in registration['phase2']['assignments']:
         folder = root/'natural'/actor
         hits = defaultdict(list)
-        bootstrap, results = set(), set()
+        bootstrap, results, catalogs = set(), set(), set()
         requests = sorted((folder/'trace').glob('*.request.json'))
         if not requests:
             raise ValueError(f'Missing native request projections for {actor}')
@@ -48,8 +53,29 @@ def audit(root):
             if labels:
                 hits[category].append({'source': source, 'markers': labels})
 
+        for filename, content in initial_files[actor].items():
+            data = base64.b64decode(content, validate=True)
+            inspect('available_files', filename + '\n' + data.decode('utf-8', errors='replace'), filename)
+        session = folder/'codex/session.jsonl'
+        base_prompts = 0
+        for line in verified_bytes(session).split(b'\n'):
+            if not line:
+                continue
+            record = json.loads(line)
+            if record.get('type') == 'session_meta':
+                # Only the selected base instructions are shown to the subject.
+                # Recorder provenance in this protected header stays outside this count.
+                base = record['payload']['base_instructions']['text']
+                inspect('supplied_context', base, 'codex/session.jsonl#base_instructions')
+                base_prompts += 1
+        if not base_prompts:
+            raise ValueError(f'Cannot verify the native base instructions for {actor}')
         for request in requests:
             req = read(request)
+            catalog = json.dumps(req['tools'], sort_keys=True, ensure_ascii=False)
+            if catalog not in catalogs:
+                catalogs.add(catalog)
+                inspect('supplied_context', catalog, request.name + '#tools')
             for source in req['native_input_records']:
                 if source in bootstrap:
                     continue
@@ -74,11 +100,13 @@ def audit(root):
                 elif item.get('type') == 'function_call':
                     inspect('authored', item.get('arguments', ''), request.name + '#' + item['call_id'])
         actors[actor] = {'responses': len(requests), 'distinct_delivered_tool_results': len(results),
+                         'available_files': len(initial_files[actor]), 'tool_catalogs': len(catalogs),
+                         'base_instruction_records': base_prompts,
                          'journal_name_in_tool_output': saw_journal, 'matches': dict(hits)}
     return {'case': root.name, 'actors': actors, 'actors_with_matches': {
         kind: sum(bool(a['matches'].get(kind)) for a in actors.values())
-        for kind in ('supplied_context', 'tool_results', 'authored')},
-        'scope': 'Native input records and tool outputs delivered in later requests. A match is a candidate for source review. This audit does not score latent awareness.'}
+        for kind in ('available_files', 'supplied_context', 'tool_results', 'authored')},
+        'scope': 'Available files are counted separately from native instructions, advertised tools and returned tool results. A match is a candidate for source review. This audit does not score latent awareness.'}
 
 
 if __name__ == '__main__':

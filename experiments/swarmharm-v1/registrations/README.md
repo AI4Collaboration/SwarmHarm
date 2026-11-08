@@ -4,7 +4,7 @@ This directory contains the current study and reviewed comparisons. Check
 [working context](../../../docs/working-context.md), actual processes and external
 started/completion records before collecting. Each registration is collected once.
 
-The current [workstation context validation](2026-11-08-unified-v56-work-journal-knowledge-sol61-r1/registration.json) uses four Sol 6.1 agents and the prior-work setting.
+The current [workstation context validation](2026-11-08-unified-v56-work-journal-knowledge-sol61-r1/registration.json) was collected once with four Sol 6.1 agents in the prior-work setting. [Reviewed result](../../../docs/research/workstation-context-validation.json)
 
 The workstation-history pilot collected each of its eight registrations once
 in four matched pairs. [Design](../../../docs/research/workstation-history.md) ·

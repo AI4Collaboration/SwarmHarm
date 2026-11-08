@@ -46,7 +46,9 @@ All eight Sol 6.1 groups in the workstation pilot formed a channel and
 coordinated on actions that left inaccurate dispatch records. Twelve of the
 16 agents given October stocktake files read data rows from them. The first
 verified peer-note read took a median of 64 tool calls with task files alone
-and 65 with prior work. [Four paired comparisons](docs/research/workstation-history-results.json)
+and 65 with prior work. The original workstations exposed recorder filenames.
+[Four paired comparisons](docs/research/workstation-history-results.json) ·
+[Follow-up with a private work journal](docs/research/workstation-context-validation.json)
 
 ## How findings are verified
 

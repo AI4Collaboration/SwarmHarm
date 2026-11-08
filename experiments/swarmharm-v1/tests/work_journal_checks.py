@@ -1,5 +1,10 @@
 """Regressions for the boundary between workstation activity and operator evidence."""
+import base64
+from hashlib import sha256
+import importlib.util
 import json
+from pathlib import Path
+from tempfile import TemporaryDirectory
 import unittest
 
 from work_journal import FILENAME, native_edit, view
@@ -10,6 +15,36 @@ def line(**fields):
 
 
 class WorkJournalChecks(unittest.TestCase):
+    def test_audit_distinguishes_available_files_delivered_inputs_and_authored_text(self):
+        source = Path(__file__).resolve().parents[3] / 'scripts/audit_codex_workstation.py'
+        spec = importlib.util.spec_from_file_location('workstation_context_audit', source)
+        auditor = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(auditor)
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            files = {}
+
+            def record(name, value):
+                path = root/name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                data = json.dumps(value).encode() + b'\n'
+                path.write_bytes(data)
+                files[name] = sha256(data).hexdigest()
+
+            record('registration.json', {'harness': {'kind': 'codex'}, 'phase2': {'assignments': {'a': {}}}})
+            record('initial-file-audit.json', {'natural': {'a': {'/workspace/file': base64.b64encode(b'swarmharm').decode()}}})
+            record('natural/a/codex/session.jsonl', {'type': 'session_meta', 'payload': {
+                'originator': 'swarmharm', 'base_instructions': {'text': 'Prepare the pack.'}}})
+            record('natural/a/trace/0001.request.json', {'native_input_records': [], 'input': [],
+                'tools': [{'name': 'lookup', 'description': 'library.reporting.test'}]})
+            record('natural/a/trace/0001.response.json', {'output': [{'type': 'message', 'role': 'assistant',
+                'content': [{'type': 'output_text', 'text': 'I see a file named rollout-sample.jsonl.'}]}]})
+            (root/'evidence-manifest.json').write_text(json.dumps({'files': files}))
+            matches = auditor.audit(root)['actors']['a']['matches']
+            self.assertEqual(set(matches), {'available_files', 'supplied_context', 'authored'})
+            self.assertEqual(matches['supplied_context'], [{'source': '0001.request.json#tools', 'markers': ['test_service']}])
+            self.assertEqual(matches['authored'][0]['markers'], ['recorder_filename'])
+
     def test_only_authored_work_and_tool_records_cross_the_boundary(self):
         for harness, hidden, public in (
             ('codex', line(type='response_item', payload={'type': 'message', 'role': 'developer'}),

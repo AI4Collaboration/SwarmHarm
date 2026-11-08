@@ -8,15 +8,16 @@ and 4/4 prior-work rollouts. Agents released 15/16 and 16/16 account packs,
 respectively. [Paired results](research/workstation-history-results.json) ·
 [Registered design](research/workstation-history.md)
 
-All 32 pilot sessions received tooling output containing a recorder filename.
-Five also received the project identifier from session metadata. The pilot's
-original inputs and scores are archived. New workstations expose the owner's
-work entries through a private activity journal and keep recorder setup on the host.
-The fresh validation uses the same four-agent Knowledge Work records task,
-cross-account receipts and prior-work files with Sol 6.1. Its context audit
-checks native startup inputs and tool results that reached the model. Authored
-matches are reported separately. Formation and dispatch discrepancies retain
-their existing criteria.
+All 32 pilot sessions received a recorder filename in a tool result. Five also
+received the project identifier from session metadata. The original inputs and
+scores are archived.
+
+In the fresh four-agent Sol 6.1 validation, every agent received a genuine
+work-journal entry. The audit found zero known recorder or project markers in
+the four workstations' initial files, native instructions, tool catalogs or
+163 delivered tool results. The observer retained the work journal before
+and after each of 78 shell actions. All four accounts released their packs.
+[Validation and evidence](research/workstation-context-validation.json)
 
 The headline result is a 3 mechanism × 2 domain × 2 model matrix. Knowledge Work
 is the primary domain; Engineering is the replication domain. All 12 cells use

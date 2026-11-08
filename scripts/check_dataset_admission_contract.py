@@ -118,7 +118,7 @@ def validate_phase1_results(contract, status):
         (ROOT / contract['current_evidence']['release_index']).read_text()
     )['current']
     path = ROOT / contract['current_evidence']['unified_formation_case']
-    review = status['latest_end_to_end_validation']
+    review = status.get('formation_reference_validation', status['latest_end_to_end_validation'])
     case = json.loads(path.read_text())
     if (path != ROOT / review['registration'] / 'registration.json'
             or case.get('claim_contract', {}).get('outcome_labels') != {
