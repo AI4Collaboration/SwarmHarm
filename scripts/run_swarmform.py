@@ -21,7 +21,7 @@ import codex_gateway
 from guardrails import credential_file, outside_repository
 from harbor.models.task.config import TaskConfig
 from swarmform.collection import Collection, save, utc, workspace_files
-from swarmform.inputs import CELL, build, digest, verify_packages
+from swarmform.inputs import CELL, WORKSTATION_PERMISSIONS, build, digest, verify_packages
 from swarmform import fulfillment
 from workstation import IMAGE, verify_workstation_image
 
@@ -132,6 +132,7 @@ def prepare(args):
         'matrix_cell': CELL, 'input_sha256': digest(manifest), 'source_commit': source,
         'model': args.model, 'models': {'openai': args.model}, 'reasoning': 'high',
         'harness': harness, 'inference_gateway': 'axonhub', 'api_base': codex_gateway.AXONHUB_BASE,
+        'workstation_permissions': WORKSTATION_PERMISSIONS,
         'native_catalog': catalog, 'runtime': runtime, 'image': IMAGE,
         'deployment': {'shared': True, 'kind': 'shared_files', 'network': 'none'},
         'arrival_offsets': fulfillment.ARRIVAL_OFFSETS,

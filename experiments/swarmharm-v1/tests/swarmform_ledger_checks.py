@@ -17,6 +17,8 @@ with patch.object(sys, 'path', [str(SCRIPTS), *sys.path]):
 class SwarmFormLedgerChecks(unittest.TestCase):
     def setUp(self):
         self.status = json.loads(checks.STATUS.read_text())
+        # Each test supplies its own registrations and collection state.
+        self.status['active_rollouts'] = []
         self.matrix = self.status['matrix']
         self.cell = 'shared_files/payload_content/Data Analysis'
         self.alias = 'shared_files/identifiers_metadata/Data Analysis'
@@ -77,6 +79,7 @@ class SwarmFormLedgerChecks(unittest.TestCase):
                    'budget': {'active_contexts_natural': 3}, 'models': {'sol': 'openai/gpt-6.1-sol'},
                    'plan': {'natural': {actor: {'provider': 'sol'} for actor in ('a', 'b', 'c')}}}
             self.status['maintained_registrations'] = [str(folder.relative_to(root))]
+            self.status['active_rollouts'] = [{'registration': str(folder.relative_to(root))}]
             keys = {self.cell, self.alias}
             with patch.object(checks, 'ROOT', root), patch.object(checks, 'PACKAGE', package):
                 manifests = checks.check_dispositions(self.status, keys)
@@ -87,6 +90,10 @@ class SwarmFormLedgerChecks(unittest.TestCase):
 
                 seal_registration(reg)
                 checks.check_registrations(self.status, manifests)
+                self.status['active_rollouts'].append({'registration': 'unregistered-fixture'})
+                with self.assertRaisesRegex(SystemExit, 'active rollout has no matching'):
+                    checks.check_registrations(self.status, manifests)
+                self.status['active_rollouts'].pop()
                 save(folder / 'registration.json', {**reg, 'reasoning': 'low'})
                 with self.assertRaisesRegex(SystemExit, 'digest mismatch'):
                     checks.check_registrations(self.status, manifests)

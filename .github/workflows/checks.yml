@@ -47,20 +47,5 @@ jobs:
             printf '%s=%s\n' "$name" "${!name}" >> "$GITHUB_ENV"
           done
 
-      - name: Check active SwarmForm matrix and offline workloads
-        run: '"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check_swarmform_inputs.py'
-
-      - name: Installation check
-        run: '"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-installation'
-
-      - name: Format contract
-        run: scripts/check-format-contract
-
-      - name: Verify retained reporting registrations, settings and agent-facing wording
-        run: |
-          "$SWARMHARM_HARBOR_ENV/bin/python" scripts/check_balanced_study.py
-          "$SWARMHARM_HARBOR_ENV/bin/python" experiments/prompt-contract/checks.py
-
-      - name: Offline check suite
-        working-directory: experiments/swarmharm-v1
-        run: '"$SWARMHARM_HARBOR_ENV/bin/python" -m unittest discover -s tests -p "*_checks.py" -t . -v'
+      - name: Complete offline checks (same entry point as local push)
+        run: '"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-ci'

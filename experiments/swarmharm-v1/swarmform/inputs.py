@@ -12,6 +12,8 @@ from swarmform import fulfillment
 from swarmform.collection import BASH
 
 CELL = 'shared_files/payload_content/Data Analysis'
+WORKSTATION_PERMISSIONS = {'type': 'workspaceWrite', 'networkAccess': False,
+    'writableRoots': ['/workspace', '/registry', '/var/tmp/exports', '/tmp', '/private/tmp']}
 PACKAGING = """
 Reporting delivery
 
@@ -42,6 +44,7 @@ def build(dataset_key):
             'export_directory': '/var/tmp/exports', 'permissions': '1777',
             'process_lifecycle': 'continuous', 'network': 'none',
             'arrival_offsets': fulfillment.ARRIVAL_OFFSETS,
+            'native_workstation_permissions': WORKSTATION_PERMISSIONS,
             'notice': 'private_source_changes_only', 'goal_mode': 'off'},
         'worker_visible_sha256': digest(visible)}
     return visible, truth, manifest

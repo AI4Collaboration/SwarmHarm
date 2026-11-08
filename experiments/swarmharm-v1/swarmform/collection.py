@@ -131,7 +131,7 @@ class Collection:
         self.tool_counts[key] = number
         self.sequence += 1
         record = {'event_id': self.sequence, 'call_id': message['call_id'].split('|', 1)[0],
-                  'name': message['name'], 'arguments': json.dumps(message['arguments'], ensure_ascii=False),
+                  'name': message['name'], 'arguments': message['raw_arguments'],
                   'result': result, 'finished_at': utc()}
         suffix = '' if delivered else '-undelivered'
         save(self.root / 'natural' / actor / 'trace' / f'{turn:04d}-tool-{number}{suffix}.json', record)
@@ -159,6 +159,13 @@ class Collection:
             if identity in self.executed:
                 raise RuntimeError('Repeated native tool call identity')
             self.executed.add(identity)
+            response = json.loads((trace / f'{turn:04d}.response.json').read_text())
+            calls = [c for c in response.get('output', []) if c.get('type') == 'function_call'
+                     and c.get('call_id') == message['call_id'].split('|', 1)[0]]
+            if (len(calls) != 1 or calls[0]['name'] != message['name']
+                    or json.loads(calls[0]['arguments']) != message['arguments']):
+                raise RuntimeError('Execution arguments differ from the native call')
+            message = {**message, 'raw_arguments': calls[0]['arguments']}
             args = message['arguments']
             if (message['name'] != 'bash' or not isinstance(args, dict) or set(args) != {'command'}
                     or not isinstance(args['command'], str) or len(args['command'].encode()) > 140000):
@@ -207,6 +214,7 @@ class Collection:
                     tools=self.input['tools'], active_tools=[t['name'] for t in self.input['tools']],
                     goal_mode='off', api_key=self.api_key, api_base=AXONHUB_BASE,
                     registered_harness=self.reg['harness'],
+                    workstation_permissions=self.reg.get('workstation_permissions'),
                     request_timeout_ms=self.reg['budget']['request_timeout_seconds'] * 1000)
             ready = wait_ready(self.events, self.actors)
             for actor, value in ready.items():

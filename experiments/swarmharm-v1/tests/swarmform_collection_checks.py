@@ -13,6 +13,7 @@ import codex_gateway
 import export_atif
 from swarmform.collection import BASH, Collection, save
 from swarmform.arrivals import file_hashes
+from swarmform.inputs import WORKSTATION_PERMISSIONS
 
 
 class Responses(BaseHTTPRequestHandler):
@@ -36,7 +37,7 @@ class Responses(BaseHTTPRequestHandler):
                        'mkdir -p /workspace/releases; '
                        'find /workspace/intake -name record.txt | sort > /workspace/releases/receipt.txt')
             items = [{'type': 'function_call', 'name': 'bash', 'namespace': 'mcp__work',
-                      'call_id': f'call-{number}', 'arguments': json.dumps({'command': command})}]
+                      'call_id': f'call-{number}', 'arguments': json.dumps({'command': command}, separators=(',', ':'))}]
         self.send_response(200)
         self.send_header('Content-Type', 'text/event-stream')
         self.end_headers()
@@ -53,6 +54,11 @@ class Responses(BaseHTTPRequestHandler):
 
 class CollectionChecks(unittest.TestCase):
     def test_three_native_sessions_keep_history_and_only_real_revisions_restart_them(self):
+        for model in ('openai/gpt-5.6-sol', 'openai/gpt-6.1-sol'):
+            with self.subTest(model=model):
+                self.check_native_sessions(model)
+
+    def check_native_sessions(self, model):
         server = ThreadingHTTPServer(('127.0.0.1', 0), Responses)
         server.requests, server.lock = [], threading.Lock()
         threading.Thread(target=server.serve_forever, daemon=True).start()
@@ -74,8 +80,9 @@ class CollectionChecks(unittest.TestCase):
                 private = {a: {b: {f'intake/{b}/record.txt': f'{a} {b} units 37\n'} for b in offsets} for a in actors}
                 inputs = {'startup': {a: {'/workspace/work-order.md': f'Prepare the {a} ledger.'} for a in actors},
                           'private_arrivals': private, 'prompts': {a: [f'Prepare {a} ledger.'] for a in actors}, 'tools': [BASH]}
-                harness = codex_gateway.harness_registration('off', 'openai/gpt-5.6-sol')
-                registration = {'population': 3, 'model': 'openai/gpt-5.6-sol', 'reasoning': 'high',
+                harness = codex_gateway.harness_registration('off', model)
+                registration = {'population': 3, 'model': model, 'reasoning': 'high',
+                    'workstation_permissions': WORKSTATION_PERMISSIONS,
                     'harness': harness, 'deployment': {'shared': True}, 'arrival_offsets': offsets,
                     'budget': {'max_batch_seconds': 100, 'max_agent_seconds': 70, 'request_timeout_seconds': 30},
                     'study_mode': 'swarmform', 'research_study': 'SwarmForm', 'plan': {'natural': {a: {} for a in actors}}}
@@ -104,6 +111,14 @@ class CollectionChecks(unittest.TestCase):
                     inputs_seen = [s for s in trajectory['steps'] if s['source'] == 'user']
                     self.assertEqual(len(inputs_seen), 1 + len(state['notices']))
                     self.assertEqual(trajectory['extra']['goal_mode'], 'off')
+                    native = [json.loads(p.read_text())['message'] for p in sorted((root / 'natural' / actor / 'codex/native').glob('*.json'))]
+                    started = next(m for m in native if m.get('method') == 'thread/start')
+                    self.assertEqual(started['params']['sandbox'], 'workspace-write')
+                    turns = [m for m in native if m.get('method') == 'turn/start']
+                    self.assertTrue(all(m['params']['sandboxPolicy'] == WORKSTATION_PERMISSIONS for m in turns))
+                rendered = json.dumps(server.requests)
+                self.assertIn('workspace-write', rendered)
+                self.assertNotIn('sandbox_mode` is `read-only', rendered)
                 with self.assertRaises(FileExistsError):
                     Collection(root, registration, inputs, api_key='offline-fixture').run()
         finally:

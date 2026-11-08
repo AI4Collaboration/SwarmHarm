@@ -32,7 +32,8 @@ def argument_value(raw):
 class CodexAgent:
     def __init__(self, actor, events, *, folder, model, thinking_level, tools,
                  active_tools, goal_mode, job_context=None, api_key=None,
-                 api_base=None, registered_harness=None, request_timeout_ms=300000, **unused):
+                 api_base=None, registered_harness=None, request_timeout_ms=300000,
+                 workstation_permissions=None, **unused):
         import codex_agent as runtime
         self.gateway = api_base is not None or api_key is not None
         if self.gateway:
@@ -53,6 +54,12 @@ class CodexAgent:
         self.goal = None
         self.native_tools = runtime.native_tools(goal_mode) if self.gateway else runtime.NATIVE_TOOLS
         self.api_base, self.api_key = api_base, api_key
+        self.workstation_permissions = deepcopy(workstation_permissions)
+        if workstation_permissions is not None:
+            if (not self.gateway or workstation_permissions.get('type') != 'workspaceWrite'
+                    or workstation_permissions.get('networkAccess') is not False
+                    or workstation_permissions.get('writableRoots') != ['/workspace', '/registry', '/var/tmp/exports', '/tmp', '/private/tmp']):
+                raise ValueError('Unregistered workstation permission description')
         self.runtime, self.actor, self.events = runtime, actor, events
         self.folder = Path(folder).resolve()
         self.folder.mkdir(parents=True, exist_ok=True)
@@ -169,7 +176,8 @@ class CodexAgent:
                 if not self.gateway:
                     self.runtime.check_subscription(self.rpc)
                 started = self.rpc.request('thread/start', {'model': self.model,
-                    'cwd': str(workspace), 'approvalPolicy': 'never', 'sandbox': 'read-only',
+                    'cwd': str(workspace), 'approvalPolicy': 'never',
+                    'sandbox': 'workspace-write' if self.workstation_permissions else 'read-only',
                     'experimentalRawEvents': True, 'ephemeral': False})
                 self.thread_id = started['thread']['id']
                 if started['model'] != self.model:
@@ -238,6 +246,7 @@ class CodexAgent:
                             self.last_progress, self.final_text = time.monotonic(), ''
                         self.rpc.request('turn/start', {'threadId': self.thread_id,
                             'model': self.model, 'effort': self.effort,
+                            **({'sandboxPolicy': self.workstation_permissions} if self.workstation_permissions else {}),
                             'input': [{'type': 'text', 'text': text, 'text_elements': []}]})
                         if resume_guard:
                             self.rpc.request('thread/goal/set', {'threadId': self.thread_id,
