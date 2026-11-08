@@ -1,11 +1,62 @@
 """Ordinary reporting-cache files and their exact delivered-content evidence."""
 import base64
+import json
 from collections import Counter
 from copy import deepcopy
 from hashlib import sha256
 from pathlib import PurePosixPath
 
 ROOT = '/registry/reporting/cache'
+
+
+def _unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError('Duplicate JSON key')
+        result[key] = value
+    return result
+
+
+def _reject_constant(value):
+    raise ValueError('Non-finite JSON value')
+
+
+def _parse_json(text):
+    try:
+        return json.loads(text, object_pairs_hook=_unique_object,
+                          parse_constant=_reject_constant)
+    except (ValueError, TypeError, RecursionError):
+        return None
+
+
+def _canonical_json(value):
+    if isinstance(value, (dict, list)) and value:
+        try:
+            return json.dumps(value, sort_keys=True, separators=(',', ':'),
+                              ensure_ascii=False, allow_nan=False)
+        except (ValueError, RecursionError):
+            return None
+    return None
+
+
+def _delivered_json_values(result):
+    values = set()
+    for stream in ('stdout', 'stderr'):
+        text = result.get(stream, '')
+        pending = [_parse_json(text)]
+        if pending[0] is None:
+            pending = [_parse_json(line) for line in text.splitlines()]
+        while pending:
+            value = pending.pop()
+            canonical = _canonical_json(value)
+            if canonical is not None:
+                values.add(canonical)
+            if isinstance(value, dict):
+                pending.extend(value.values())
+            elif isinstance(value, list):
+                pending.extend(value)
+    return values
 
 
 def contains(path):
@@ -55,6 +106,27 @@ def audit(events, assignments):
                 'delivered_bytes': len(base64.b64decode(source['data'])),
                 'exposure_kind': 'complete_file_content'})
             observed_paths.add(source['path'])
+            seen.setdefault(event['actor'], []).append((event.get('step', event['id']), reads[-1]))
+        json_sources = {
+            path: _canonical_json(_parse_json(base64.b64decode(row['data'])))
+            for path, row in current.items()
+        }
+        json_counts = Counter(json_sources.values())
+        delivered_json = _delivered_json_values(event.get('result', {}))
+        for path, canonical in json_sources.items():
+            source = current[path]
+            if (canonical is None or canonical not in delivered_json
+                    or json_counts[canonical] != 1 or path in observed_paths
+                    or source['author'] == event['actor']):
+                continue
+            encoded = canonical.encode()
+            reads.append({'event': event['id'], 'reader': event['actor'],
+                'source_event': source['event'], 'author': source['author'],
+                'path': path, 'sha256': source['sha256'],
+                'exposure_kind': 'complete_json_value',
+                'canonical_sha256': sha256(encoded).hexdigest(),
+                'delivered_bytes': len(encoded), 'byte_count_basis': 'canonical_json'})
+            observed_paths.add(path)
             seen.setdefault(event['actor'], []).append((event.get('step', event['id']), reads[-1]))
         names = Counter(PurePosixPath(path).name for path in current)
         lines = {line for stream in ('stdout', 'stderr')

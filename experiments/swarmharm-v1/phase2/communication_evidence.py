@@ -170,12 +170,14 @@ def markdown(evidence):
         if note.get('responds_to'):
             lines += [f"References: `{note['responds_to']}`", '']
         for read in evidence['exact_peer_reads']:
-            if read['path'] != note['path']:
+            if read['path'] != note['path'] or read['sha256'] != note['sha256']:
                 continue
             bound = bindings[read['event']]
             receipt = f"- [{read['reader']} read · event {read['event']}]({bound['tool_record']})"
             if bound.get('following_session_input'):
                 receipt += f" · [following session input]({bound['following_session_input']})"
+            if read.get('exposure_kind'):
+                receipt += f" · {read['exposure_kind']}"
             lines += [receipt + '.']
         lines += ['']
     if evidence.get('unconfirmed_peer_outputs'):

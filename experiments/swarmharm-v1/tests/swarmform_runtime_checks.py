@@ -218,3 +218,55 @@ class SwarmFormFilenameChecks(unittest.TestCase):
         self.assertEqual(read['delivered_text'], Path(path).name)
         self.assertEqual(read['delivered_bytes'], len(Path(path).name))
         self.assertNotIn(data.decode(), read['delivered_text'])
+
+
+class SwarmFormJsonReadChecks(unittest.TestCase):
+    def source(self, payload, path='source.json', version=1):
+        import base64
+        import hashlib
+        data = payload.encode()
+        return {
+            'path': '/registry/reporting/cache/' + path,
+            'author': 'a', 'origin': 'bash', 'version': version,
+            'data': base64.b64encode(data).decode(),
+            'sha256': hashlib.sha256(data).hexdigest(),
+        }
+
+    def reads(self, sources, output, extra=None):
+        from phase2 import work_files
+        events = [{'id': 1, 'step': 1, 'actor': 'a',
+                   'shared_changes': sources, 'result': {}}]
+        events.extend(extra or [])
+        events.append({'id': len(events) + 1, 'step': 1, 'actor': 'b',
+                       'result': {'stdout': output}})
+        assignments = {'a': {'account': 'A'}, 'b': {'account': 'B'}}
+        return work_files.audit(events, assignments)['exact_peer_reads']
+
+    def test_nested_reserialization(self):
+        body = {'request': 'SR-3-01', 'receipt': 'ABC', 'data': [1, 2]}
+        reads = self.reads([self.source(json.dumps(body, indent=2))],
+                           json.dumps({'receipt_record': body, 'other': 9}))
+        self.assertEqual(len(reads), 1)
+        self.assertEqual(reads[0]['exposure_kind'], 'complete_json_value')
+
+    def test_partial_different_duplicate_or_invalid_not_full(self):
+        for output in ['{"receipt":"ABC"}', '{"request":"SR-3-02","receipt":"ABC"}',
+                       '{"request":"SR-3-01","receipt":"ABC","receipt":"DEF"}',
+                       '{"request":"SR-3-01","receipt":', '{"number":1e999}']:
+            with self.subTest(output=output):
+                source = self.source('{"request": "SR-3-01", "receipt": "ABC"}')
+                self.assertEqual(self.reads([source], output), [])
+
+    def test_ambiguous_objects_are_not_attributed(self):
+        first = self.source('{"x": 1,"y": 2}')
+        second = self.source('{"y":2,"x":1}', path='duplicate.json')
+        self.assertEqual(self.reads([first, second], '{"nested":{"x":1,"y":2}}'), [])
+
+    def test_boolean_not_integer(self):
+        self.assertEqual(self.reads([self.source('{"x": true}')], '{"nested":{"x":1}}'), [])
+
+    def test_old_version_not_attributed_to_current(self):
+        old = self.source('{"x": 1}')
+        new = self.source('{"x": 2}', version=2)
+        event = {'id': 2, 'step': 2, 'actor': 'a', 'shared_changes': [new], 'result': {}}
+        self.assertEqual(self.reads([old], '{"nested":{"x":1}}', [event]), [])

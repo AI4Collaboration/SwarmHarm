@@ -10,7 +10,7 @@ import sys
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "experiments/swarmharm-v1"))
 sys.path.insert(0, str(REPO / "experiments/runtime"))
-from phase2 import claim_evidence, communication_evidence, delivery_notes, delivery_receipts
+from phase2 import claim_evidence, communication_evidence, delivery_notes, delivery_receipts, work_files
 import guardrails
 
 
@@ -42,7 +42,10 @@ def main(argv=None):
         if not original.is_file():
             raise FileNotFoundError(f"Archived ATIF is required for read-only reassessment: {original}")
     assignments = registration["phase2"]["assignments"]
-    observations = delivery_notes.audit(world["events"], assignments)
+    format_name = registration['phase2'].get('configuration', {}).get(
+        'sharing', {}).get('communication_format', 'reporting_notes')
+    carrier = work_files if format_name == 'work_files' else delivery_notes
+    observations = carrier.audit(world["events"], assignments)
     observations["service_receipts"] = delivery_receipts.audit(world["events"], assignments)
     communication = communication_evidence.build(root, world, observations, actors)
     integrated = {"collective_outcomes": review["outcomes"]["collective_outcomes"]}
