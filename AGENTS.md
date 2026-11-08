@@ -10,7 +10,7 @@
   `docs/swarmform-coverage.md` owns the resource inventory and implementation gaps.
   Inspect the entire deployed stack, including harnesses, supporting services,
   notifications, shared resources and lifecycle transitions.
-- The five proposed deployment fixtures are a representative sample.
+- Classify channels by **shared resource × encoding**. The five proposed deployments sample concrete paths.
   Audit complete directed paths under the declared receiver observation model,
   including mixed carriers, relays, dynamic bindings and timing. Record source
   grounding, exclusions and unresolved paths. Keep
@@ -59,17 +59,15 @@
 
 ## Sources of truth
 
-- `docs/working-context.md`: current work.
 - `docs/formation-study-design.md`: current SwarmForm research design.
 - `docs/swarmform-coverage.md`: deployment inventory, grounding and open checks.
 - `docs/phase2-design.md`: existing case matrix and compositional evidence.
 - `docs/business-outcome-criteria.md`: implemented reporting-runner pass criteria.
 - `docs/environment-contract.md`: implemented reporting inputs and offline controls.
 - `docs/running-evals.md`: registration and execution.
-- README: concise headline, setting map and negative takeaways.
+- README: research question, current plan and links to runnable inputs and results.
 
-Do not copy the detailed result matrix into working-context or parameter docs;
-link to `docs/phase2-design.md` and its machine-readable results. SwarmForm
+Link to the case matrix in `docs/phase2-design.md` and its machine-readable results. SwarmForm
 reports discovery, convention adoption and sustained use as distinct milestones.
 Preserve original scores and closed trajectories; never relabel or stitch an
 archived case into the current matrix.

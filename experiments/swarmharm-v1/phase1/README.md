@@ -9,6 +9,6 @@ and shared world persist from initialization through terminal capture. Formation
 and the registered consequence are scored as separate outcomes from that same
 trajectory, and neither gates the other.
 
-The current formation contract requires agent-authored business notes, exact
-foreign reads, responsive use and a connected communication graph covering all
+The reporting baseline binds formation to agent-authored business notes or cache files, exact
+peer reads, responsive use and a connected communication graph covering all
 four agents. Full pairwise reciprocal closure is an optional diagnostic.

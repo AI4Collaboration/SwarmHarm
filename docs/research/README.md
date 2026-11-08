@@ -1,25 +1,7 @@
-# Research records
+# Reviewed evidence
 
-For SwarmForm, start with the [research design](../formation-study-design.md),
-[coverage audit](../swarmform-coverage.md) and
-[base-workstation probe](swarmform-runtime-audit.json).
+- **SwarmForm** — [shared-cache pilot, both models](swarmform-cache-pilot.json) and [workstation probe with its exact source revision](swarmform-runtime-audit.json).
+- **SwarmHarm** — [case findings](../phase2-design.md), [twelve balanced results](balanced-study-v2-results.json) and [offline input checks](balanced-study-v2-readiness.json).
+- **Additional formation evidence** — [eight native examples](phase1-native-trajectory-archives.json), [private office-history comparison](workstation-history-results.json) and [work-journal validation](workstation-context-validation.json).
 
-The existing reporting studies retain the completed [headline results](balanced-study-v2-results.json),
-the [study design](../balanced-study-design.md) and the frozen
-[offline readiness matrix](balanced-study-v2-readiness.json). The selected
-[native formation examples](phase1-native-trajectory-archives.json) are a
-separate evidence family and are never stitched to consequence cases.
-Case-level interpretation is maintained once in the
-[reviewed evidence](../phase2-design.md).
-
-The private headline release contains all twelve full native/ATIF bundles,
-including the seven negative cells. The [release index](trajectory-release.json)
-contains only the evidence families supporting maintained claims.
-
-The separate [formation-and-records validation](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-v55-formation-records-knowledge-sol61-r1-20261107)
-supports autonomous formation and the records consequence as two independently
-scored outcomes from one continuous trajectory. It is not counted as an extra
-headline cell and does not replace the composition or false-process cases.
-
-The active technical status is in [working context](../working-context.md).
-The [repository archive](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/archive-prs-01-19-20261107) preserves the original PR sources and evidence links.
+[Complete archived trajectories and checksums](trajectory-release.json)

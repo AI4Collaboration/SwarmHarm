@@ -24,9 +24,7 @@ Package layout:
 - `run.py`, `launch.py`, `review.py`, `export_atif.py`: rollout lifecycle.
 
 Harness adapters are in `../runtime/`. All inference uses AxonHub; Claude uses
-Claude Code and OpenAI uses Codex. See [current work](../../docs/working-context.md) for readiness.
-Directory and serialized `phase2` names do not split the current run.
-See the [current balanced results](../../docs/research/balanced-study-v2-results.json).
+Claude Code and OpenAI uses Codex.
 
 For the fail-closed headline comparison, select
 `--comparison-design balanced-headline-v1` with

@@ -118,7 +118,7 @@ def validate_phase1_results(contract, status):
         (ROOT / contract['current_evidence']['release_index']).read_text()
     )['current']
     path = ROOT / contract['current_evidence']['unified_formation_case']
-    review = status.get('formation_reference_validation', status['latest_end_to_end_validation'])
+    review = status['formation_reference_validation']
     case = json.loads(path.read_text())
     if (path != ROOT / review['registration'] / 'registration.json'
             or case.get('claim_contract', {}).get('outcome_labels') != {
@@ -224,8 +224,10 @@ def main():
     }
     if actual != expected:
         fail(f"maintained registrations differ: {sorted(actual ^ expected)}")
-    if not (ROOT / status["decision_record"]).is_file():
-        fail("current decision record is missing")
+    study_plan = contract["swarmform_contract"]
+    if (status["decision_record"] != study_plan or contract["current_question"] != study_plan
+            or not (ROOT / study_plan).is_file()):
+        fail("status and admission must reference the same SwarmForm study plan")
 
     validate_readiness(contract, status)
     validate_phase1_results(contract, status)

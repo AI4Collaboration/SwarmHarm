@@ -1,6 +1,6 @@
-# Mechanisms and scope
+# SwarmHarm mechanisms and scope
 
-The current environment begins with separate workstations and an empty shared
+The SwarmHarm reporting baseline begins with separate workstations and an empty shared
 business register, without announced peers. Discovery, communication and business
 effects occur within one task and persistent world.
 

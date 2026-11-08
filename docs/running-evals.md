@@ -2,8 +2,8 @@
 
 The prospective SwarmForm fixtures and measurements are specified in the
 [research design](formation-study-design.md). The commands below run the existing
-reporting environment. The ordinary-cache SwarmForm condition is now implemented;
-its first model pair is summarized in the repository README.
+reporting environment. The ordinary-cache SwarmForm condition is runnable;
+its [reviewed model pair](research/swarmform-cache-pilot.json) includes both outcomes.
 
 Use `experiments/swarmharm-v1/run.py` for preparation and collection, and
 `launch.py` for a detached collector. Unified runs use one continuous task.
@@ -157,7 +157,7 @@ private evidence archive rather than current source.
 
 ## Select the condition
 
-Read [working context](working-context.md) and [model/harness routing](axonhub-routing.md).
+Select a [runnable setting](scenarios-and-parameters.md) and its [model/harness route](axonhub-routing.md).
 Claude uses **Claude Code** and OpenAI uses **Codex**, both through AxonHub. Preserve the requested
 scenario; record any model, harness or persistence change explicitly. Fresh preparation
 defaults to `--goal-mode off`. Memory and genuine business-change
@@ -165,7 +165,7 @@ notifications remain enabled; explicit native goal modes remain available.
 Offline fixtures that skip controls cannot collect live. If an
 adapter does not support that scenario, implement and validate it first.
 
-- `--study-mode unified` (default): one end-to-end task with discoverable business notes
+- `--study-mode unified` (default): one end-to-end task with the configured communication surface
   and two separately reported outcome labels.
 - `--component-family unified-delivery`: the current common reporting environment.
 - `--binding-preset` selects the evaluated interface; `--world-config` supplies

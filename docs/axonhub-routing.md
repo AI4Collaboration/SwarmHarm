@@ -51,8 +51,7 @@ their actual record formats and keeps protected observer captures. Offline adapt
 checks are separate from live validation; each native adaptation needs a fresh
 registered rollout.
 
-Use [working context](working-context.md) for current readiness and
-[running evaluations](running-evals.md) for registration.
+See [running evaluations](running-evals.md) for registration and execution.
 
 ## Continuation
 
