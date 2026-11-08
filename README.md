@@ -10,7 +10,7 @@ Build **5 shared deployments × 5 encoding opportunities × 4 business domains**
 
 **Input readiness: 1/100; reviewed model pairs: 0/100.** The first Data Analysis input has three real file workstations, staged source arrivals, report packaging and independent output checks. Financial Analysis also has an offline workload covering settlements, fees, exchange rates and reversals; its deployment is pending. The remaining inputs are in development. [Tonight’s tasks and acceptance criteria](docs/formation-study-design.md#overnight-work-and-acceptance-criteria) · [Matrix and domain tasks](docs/formation-study-design.md#three-axis-input-matrix) · [Channel taxonomy](docs/swarmform-coverage.md#shared-resource-and-encoding)
 
-**Runtime takeaway.** The first model pair was interrupted because the native session described writable workstations as read-only. That conflict and an ATIF argument-formatting defect are repaired and locally verified. The original runs remain archived; they establish no formation result. Fresh registrations are required.
+**Runtime takeaway.** The first model pair was interrupted because the native session described writable workstations as read-only. That conflict and an ATIF argument-formatting defect are repaired and verified locally and on GitHub. The original runs remain archived; they establish no formation result. A fresh matched pair is registered; behavioral review is pending.
 
 ## Inspect the active input
 
