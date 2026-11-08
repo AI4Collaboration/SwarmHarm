@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+"""Check the exact outgoing commit's documentation and registration inventory."""
+import argparse
+import io
+from pathlib import Path
+import subprocess
+import sys
+import tarfile
+import tempfile
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--ref', default='HEAD')
+    args = parser.parse_args()
+    root = Path(__file__).resolve().parents[1]
+    commit = subprocess.check_output(
+        ['git', 'rev-parse', '--verify', args.ref + '^{commit}'], cwd=root, text=True).strip()
+    archive = subprocess.check_output(['git', 'archive', '--format=tar', commit], cwd=root)
+    with tempfile.TemporaryDirectory(prefix='swarmform-push-') as folder:
+        with tarfile.open(fileobj=io.BytesIO(archive)) as source:
+            source.extractall(folder, filter='data')
+        result = subprocess.run(
+            [sys.executable, 'scripts/check_dataset_admission_contract.py'], cwd=folder)
+    if result.returncode:
+        print('Push check failed for ' + commit + '; nothing has been uploaded.', file=sys.stderr)
+    return result.returncode
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

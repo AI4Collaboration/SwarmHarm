@@ -28,6 +28,9 @@ jobs:
           cache: pip
           cache-dependency-path: experiments/runtime/python-requirements.txt
 
+      - name: Check committed documentation and registration inventory
+        run: python scripts/check_dataset_admission_contract.py
+
       - uses: actions/setup-node@v5
         with:
           node-version: '22'
@@ -55,7 +58,6 @@ jobs:
 
       - name: Verify retained reporting registrations, settings and agent-facing wording
         run: |
-          "$SWARMHARM_HARBOR_ENV/bin/python" scripts/check_dataset_admission_contract.py
           "$SWARMHARM_HARBOR_ENV/bin/python" scripts/check_balanced_study.py
           "$SWARMHARM_HARBOR_ENV/bin/python" experiments/prompt-contract/checks.py
 

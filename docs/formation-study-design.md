@@ -40,7 +40,7 @@ Run `bash scripts/setup-local` and source the environment file it prints. The ma
   --dataset-key november --output <new-directory-outside-repository>
 ```
 
-Commit and push the new registration and matrix ledger, then collect once:
+Commit the new registration and matrix ledger, run `python3.12 scripts/check-push` against the committed snapshot, then push and collect once. This catches documentation and inventory mistakes introduced after the source checks; it does not replace the offline test suite.
 
 ```sh
 "$SWARMHARM_HARBOR_ENV/bin/python" scripts/run_swarmform.py collect \
