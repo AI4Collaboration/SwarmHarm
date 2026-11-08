@@ -1,9 +1,18 @@
 {
   "schema_version": 9,
-  "updated_at": "2026-11-07T14:39:44Z",
+  "updated_at": "2026-11-08T07:26:46Z",
   "environment": "experiments/swarmharm-v1",
-  "status": "v55_formation_and_records_reviewed_archived_no_active_rollout",
-  "active_rollouts": [],
+  "status": "private_workstation_history_pilot_in_progress",
+  "active_rollouts": [
+    {
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-08-office-history-b2-prior-work-sol61",
+      "observed_at": "2026-11-08T07:26:46Z"
+    },
+    {
+      "registration": "experiments/swarmharm-v1/registrations/2026-11-08-office-history-b2-task-only-sol61",
+      "observed_at": "2026-11-08T07:26:46Z"
+    }
+  ],
   "heartbeat": null,
   "study_mode": "unified",
   "active_scope": "continuous-unified",
@@ -123,12 +132,28 @@
     "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v2-resource-knowledge-sol56",
     "experiments/swarmharm-v1/registrations/2026-11-07-balanced-v2-resource-knowledge-sol61",
     "experiments/swarmharm-v1/registrations/2026-11-07-end-to-end-v54-records-knowledge-sol61-r1",
-    "experiments/swarmharm-v1/registrations/2026-11-07-unified-v55-formation-records-knowledge-sol61-r1"
+    "experiments/swarmharm-v1/registrations/2026-11-07-unified-v55-formation-records-knowledge-sol61-r1",
+    "experiments/swarmharm-v1/registrations/2026-11-08-office-history-b1-prior-work-sol61",
+    "experiments/swarmharm-v1/registrations/2026-11-08-office-history-b1-task-only-sol61",
+    "experiments/swarmharm-v1/registrations/2026-11-08-office-history-b2-prior-work-sol61",
+    "experiments/swarmharm-v1/registrations/2026-11-08-office-history-b2-task-only-sol61",
+    "experiments/swarmharm-v1/registrations/2026-11-08-office-history-b3-prior-work-sol61",
+    "experiments/swarmharm-v1/registrations/2026-11-08-office-history-b3-task-only-sol61",
+    "experiments/swarmharm-v1/registrations/2026-11-08-office-history-b4-prior-work-sol61",
+    "experiments/swarmharm-v1/registrations/2026-11-08-office-history-b4-task-only-sol61"
   ],
   "decision_record": "docs/working-context.md",
   "evidence_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/balanced-headline-v2-20261107",
   "latest_validation_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-v55-formation-records-knowledge-sol61-r1-20261107",
   "workflow": "One end-to-end task, persistent session and business world; Phase 1 formation and Phase 2 consequence are separate labels on the same trajectory, with no gate.",
-  "next_condition": "The maintained input family now has reviewed evidence for all four core findings under separate sealed parameterizations. Any new collection requires a new replication or rate question.",
-  "current_question": "Which replication or population-level question should be registered next?"
+  "next_condition": "Complete and review each of the four prespecified paired blocks.",
+  "current_question": "Does private history from a previous office task change autonomous communication or the current reporting outcome?",
+  "workstation_history_pilot": {
+    "design": "docs/research/workstation-history.md",
+    "blocks": 4,
+    "registered_rollouts": 8,
+    "subject_model": "openai/gpt-6.1-sol",
+    "registered_commit": "e45af6c2c059e4a568aa7d7fa0ac7e59ba589d45",
+    "status": "collecting"
+  }
 }
