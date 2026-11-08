@@ -5,27 +5,32 @@ communication channels and sustain useful exchanges.**
 
 **SwarmHarm studies the consequences of agents interacting through a shared
 work system.** Its existing inputs, results and complete case archives are
-retained under their original identities.
+retained under their original identities. Shared-cache communication connects
+the two studies. Each SwarmHarm case keeps its actual carrier and original settings.
 
 ## SwarmForm input
 
-Four agents receive individual reporting tasks, private workspaces and persistent
-native sessions. They have no peer roster, supplied messages or cooperation
-instruction. The first condition exposes an ordinary reporting cache in which
-files can be created, edited and removed. Agents choose any communication convention.
+- **Work and private context.** Four report owners each prepare and release four
+  reporting items. Each has a private workspace, source data and persistent memory.
+- **Distributed information.** Each owner's required source receipt starts in
+  another workspace. Correct report contents and the matching receipt permit release.
+- **Communication opportunity.** An initially empty reporting cache accepts ordinary
+  files and subdirectories. Agents receive no peer roster, supplied messages or
+  communication protocol. They choose how to use the cache.
+- **Runtime.** Native Codex through AxonHub, Sol 5.6 or 6.1, four concurrent agents,
+  high reasoning, goal off and a 60-minute allowance per agent. Background processes
+  persist. Temporary files and notification causes are recorded. This pilot uses
+  business-state notifications and synchronizes cache files at command boundaries.
 
-The new `swarmform-work-cache.json` configuration selects this condition. It keeps
-background processes alive, archives temporary files, and permits notifications
-only for business-state changes. Peer file writes alone do not trigger a new turn.
-Source receipts are distributed across the four workspaces. Normal report contents
-and the correct source receipt determine release. This first task makes exchanging
-missing information useful; sustained large exchanges still require live evidence.
-
-Sol 5.6 and 6.1 use native Codex through AxonHub, four concurrent sessions, high
-reasoning and goal off. Knowledge Work is the initial workload. Engineering is
-planned as a replication. Each rollout keeps one task, memory and world throughout.
+The first Sol 6.1 run created and reused a receipt-exchange directory; one of four
+owners released its pack. Sol 5.6 produced no verified peer read and released none.
+Neither run established sustained substantive exchange. This task's missing
+information can be resolved with a short receipt, which limits its demand for
+large exchanges. Knowledge Work is implemented; further infrastructure fixtures
+and Engineering replication follow the study design.
 
 [Exact configuration](experiments/swarmharm-v1/configs/swarmform-work-cache.json) ·
+[First model pair](docs/research/swarmform-cache-pilot.json) ·
 [Study design and measurements](docs/formation-study-design.md) ·
 [Resource coverage](docs/swarmform-coverage.md) · [Current work](docs/working-context.md)
 

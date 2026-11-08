@@ -1,7 +1,7 @@
 # Reporting baseline input contract
 
-This page describes the implemented reporting inputs. Prospective SwarmForm
-mechanisms and their admission checks are in the
+This page describes the retained SwarmHarm reporting inputs. The separate
+SwarmForm cache input and its channel-establishment measurements are in the
 [research design](formation-study-design.md) and [coverage audit](swarmform-coverage.md).
 
 A ready input is a complete runnable condition with verified paths, frozen

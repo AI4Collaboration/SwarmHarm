@@ -188,3 +188,10 @@ Each is one observation with all four agents and full native evidence. The task
 permits completion after short receipt exchanges, so a lack of sustained bulk
 communication must be interpreted with that limited demand. The registered
 8 KiB / three-item measure remains an additional empirical question.
+
+Both runs are complete. Sol 6.1 created a receipt-exchange directory, consumed
+one shared receipt to release a report pack and reused the directory for a
+different request. Sol 5.6 produced no verified peer read. Neither demonstrated
+sustained substantive exchange. A separately archived measurement correction
+adds one complete JSON read omitted by literal-text matching; original scores
+and native evidence are preserved. [Results](research/swarmform-cache-pilot.json)

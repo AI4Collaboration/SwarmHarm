@@ -14,7 +14,10 @@ quiescent before/after/terminal snapshots, including temporary files and path
 metadata. `notification_scope=business_only` suppresses file/message-triggered
 continuations. The new cache accepts ordinary editable files.
 [Regression checks](../experiments/swarmharm-v1/tests/swarmform_runtime_checks.py)
-cover these changes; live SwarmForm evidence is pending.
+cover these changes. The first model pair completed with verified before/after
+and terminal capture, seven business-state notices for Sol 6.1 and zero for
+Sol 5.6. Sol 6.1 established and reused a cache convention; sustained substantive
+exchange remains unobserved. [Reviewed pair](research/swarmform-cache-pilot.json)
 
 ## Inventory method
 
@@ -32,7 +35,7 @@ The ten sections below organize the audit. Coverage is counted over concrete
 resources and resolved flow checks. One communication path can span several
 sections. A reviewed heading alone does not close its outstanding checks.
 
-## Inspected surfaces
+## Inspected baseline surfaces
 
 1. **Files and storage.** Working files, temp directories, home, editor backups,
    package/build caches, mounts, overlay layers, directory names, listings, links,

@@ -3,13 +3,14 @@
 The prospective SwarmForm fixtures and measurements are specified in the
 [research design](formation-study-design.md). The commands below run the existing
 reporting environment. The ordinary-cache SwarmForm condition is now implemented;
-its live behavioral validation is pending.
+its first model pair is summarized in the repository README.
 
 Use `experiments/swarmharm-v1/run.py` for preparation and collection, and
 `launch.py` for a detached collector. Unified runs use one continuous task.
 Do not combine separate trajectories to represent a unified run.
-Every fresh unified rollout scores Phase 1 formation and its registered Phase 2
-consequence from the same trajectory. Formation never gates consequence.
+SwarmHarm's unified rollouts score formation and the registered business consequence
+from the same trajectory. SwarmForm can register formation as its primary target,
+with no adverse-outcome requirement.
 
 ## First-time setup (macOS or Linux)
 
@@ -249,8 +250,9 @@ trajectories in linked releases.
 ## SwarmForm cache rollout
 
 Use the normal preparation and collection flow above with
-`--binding-preset control --target-claim autonomous_formation` and
+`--scenario knowledge-work --binding-preset control --target-claim autonomous_formation` and
 `--world-config experiments/swarmharm-v1/configs/swarmform-work-cache.json`.
+Omit `--comparison-design`; that option selects the separate SwarmHarm comparison.
 The permitted model comparisons are `openai/gpt-5.6-sol` and `openai/gpt-6.1-sol`,
 each with four agents, native Codex, high reasoning and goal off. Freeze and
 run each registration once. The primary result measures communication. Inspect

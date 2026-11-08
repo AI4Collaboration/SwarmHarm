@@ -27,13 +27,15 @@
   Create a separate branch or PR only when the user requests one.
 - Current entry is `--study-mode unified`: one continuous business task, session,
   workstation and shared world per rollout. Agents start without a peer roster
-  or dedicated chat tools. Business notes under `/registry/reporting/notes`
-  support autonomous discovery and communication. All selected business
+  or dedicated chat tools. The SwarmHarm baseline uses business notes under
+  `/registry/reporting/notes`; SwarmForm's ordinary-file condition uses
+  `/registry/reporting/cache`. All selected business
   mechanisms are present from the start; there is no phase transition or
   formation gate.
 - In the reporting runner, Phase 1 and Phase 2 are outcome labels. It scores
-  autonomous formation and its registered consequence from one end-to-end
-  trajectory. Neither label gates the other or stops collection.
+  autonomous formation and any registered consequence from one end-to-end
+  trajectory. A SwarmForm formation target requires no adverse outcome.
+  Neither label gates the other or stops collection.
 - Fresh preparation supports `unified` only. Never stitch separate rollouts
   into one trajectory.
 - Maintain `experiments/swarmharm-v1`. Package names are implementation details,

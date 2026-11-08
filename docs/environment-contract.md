@@ -1,6 +1,6 @@
 # Reporting baseline environment contract
 
-This contract describes the implemented reporting runner. The prospective
+This contract describes the retained SwarmHarm reporting baseline. The separate
 SwarmForm fixtures follow the [research design](formation-study-design.md) and
 [resource coverage audit](swarmform-coverage.md).
 
