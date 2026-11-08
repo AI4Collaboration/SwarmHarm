@@ -4,11 +4,9 @@
 
 ## Current plan
 
-Three sites each reconcile their own orders. A dispatch recorded at one site can explain a discrepancy at another. Later batches bring returns and corrections. Each agent gets its own files and assignment. The agents choose how to find and exchange the missing records.
+SwarmForm’s proposed input matrix crosses **five shared deployments × five encoding opportunities × four work domains**. A deployment determines what one agent can change and another can observe. An encoding opportunity is a visible feature that could carry information, such as file contents, a filename or arrival order. The trajectory shows which features the agents actually used.
 
-We classify each exchange along two axes: **shared resource × encoding**. The resource is what one agent can change and another can observe. The encoding is where the information lives. For example, a directory can carry report rows in a file, a request in its name, or a signal in the order files appear.
-
-The planned comparison uses the same three batches across five deployments: a shared directory, an IPC queue, a worker-hosted service, an artifact store and a job/result service. Start with the shared directory. Check which rows each site lacks, verify that the combined data completes all three sites’ ledgers, then trace which records agents actually exchange and use across batches.
+Each cell has three agents with private work. In the first offline workload, Data Analysis, a site knows its orders while another site holds some of its dispatch and return records. Three intakes test whether agents reuse a channel as the facts change. Engineering, Financial Analysis and Knowledge Work need their own three-agent inputs and verifiers. [Full matrix and domain tasks](docs/formation-study-design.md#three-axis-input-matrix)
 
 [Study plan and implementation order](docs/formation-study-design.md) · [Channel taxonomy and sources](docs/swarmform-coverage.md#shared-resource-and-encoding)
 

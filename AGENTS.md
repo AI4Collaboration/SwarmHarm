@@ -10,7 +10,7 @@
   `docs/swarmform-coverage.md` owns the resource inventory and implementation gaps.
   Inspect the entire deployed stack, including harnesses, supporting services,
   notifications, shared resources and lifecycle transitions.
-- Classify channels by **shared resource × encoding**. The five proposed deployments sample concrete paths.
+- Classify channels by **shared resource × encoding**. The SwarmForm input plan crosses five concrete deployments and five encoding opportunities with all four domains. Track observed encodings and resource families separately from the registered input.
   Audit complete directed paths under the declared receiver observation model,
   including mixed carriers, relays, dynamic bindings and timing. Record source
   grounding, exclusions and unresolved paths. Keep
