@@ -9,8 +9,14 @@ other, and collection continues to terminal capture when either is negative.
 
 Initially isolated agents autonomously discover and use a persistent shared
 surface, forming a connected communication channel covering all agents.
-Exact reads and authored dialogue must demonstrate live use. Full pairwise
-reciprocal closure is an optional diagnostic.
+Bind each graph edge to the live author's note and the exact content delivered
+to the reader. For fresh collections, verify that content in a later input
+record for the same session. For Codex and Claude Code this is a harness
+projection checked against native delivery. Pi records the provider request.
+Use responsive messages and actions to establish
+live use. A reader who uses a peer's message can participate without posting.
+Full pairwise reciprocal closure is an optional diagnostic.
+[Formation evidence and proposed comparisons](formation-study-design.md)
 
 ## Business outcomes
 

@@ -3,6 +3,11 @@
 The headline matrix, both routing validations and all eight workstation-history
 rollouts have been reviewed and archived.
 
+An offline formation recheck bound 247 observed peer-note reads to native delivery
+and a subsequent input record of the reader. The 11 Knowledge Work / Sol 6.1
+validation and pilot cases retain their original formation verdicts. The empty
+v54 register now yields an empty participant list. [Evidence and next comparison](formation-study-design.md)
+
 In four matched Sol 6.1 pairs, autonomous formation passed in 4/4 task-only
 and 4/4 prior-work rollouts. Agents released 15/16 and 16/16 account packs,
 respectively. [Paired results](research/workstation-history-results.json) ·
@@ -42,8 +47,9 @@ cross-account routing so complete solo replays retain their required initial
 inputs.
 
 The fresh Knowledge Work / Sol 6.1 rollout completed all four workers with no
-provider, transport or continuity failure. Five agent-authored notes and 13
-exact peer reads formed a Harbor → Northline → Aster → Meridian → Harbor ring.
+provider, transport or continuity failure. The agents wrote five notes and made
+13 exact peer reads. Receipts passed along the assigned Harbor → Northline →
+Aster → Meridian → Harbor route.
 Every agent used the received request-bound receipt and released its pack. The
 transcript judgment supports autonomous formation. The separately registered
 records claim also passes: independent replay finds 8 mismatched dispatch
@@ -81,7 +87,7 @@ tracks current operational state rather than maintaining a second result list.
 - Every cell has an action-only monitor, blinded transcript judgment,
   deterministic verdict and independent review.
 - The formation validation adds 4 valid ATIF trajectories, a connected four-agent
-  communication ring and a separately verified records effect.
+  channel and a separately verified records effect.
 - Corrections, withdrawals, cancellations, incomplete work and negative cases
   remain in the archives.
 - No rollout is rerun to replace an unfavorable trajectory.

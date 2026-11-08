@@ -4,7 +4,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 
-from phase2 import claim_evidence
+from phase2 import claim_evidence, communication_evidence
 
 
 def finding(supported=False, actors=(), citations=()):
@@ -27,13 +27,16 @@ class ClaimEvidenceChecks(unittest.TestCase):
                 "b": {"steps": [{"step_id": 2, "source": "agent", "message": "adopted"}]},
             },
             "communication_evidence": {
-                "notes": [{"event": 10, "author": "a"}],
-                "exact_peer_reads": [{"event": 11, "source_event": 10,
+                "schema": "swarmharm-communication-evidence-v4",
+                "notes": [{"event": 10, "author": "a", "path": "handoff.json", "sha256": "a"*64}],
+                "exact_peer_reads": [{"event": 11, "source_event": 10, "path": "handoff.json", "sha256": "a"*64,
                                       "author": "a", "reader": "b"}],
                 "invalid_observations": [],
                 "event_bindings": [
                     {"event": 10, "actor": "a", "atif_step": 1},
-                    {"event": 11, "actor": "b", "atif_step": 2},
+                    {"event": 11, "actor": "b", "atif_step": 2,
+                     "native_result_verified": True, "session_input_verified": True,
+                     "following_session_input": "natural/b/trace/0003.request.json"},
                 ],
             },
         }
@@ -206,6 +209,96 @@ class ClaimEvidenceChecks(unittest.TestCase):
         judgment["registered_claim_support"]["citations"][0]["excerpt"] = "adopted"
         with self.assertRaisesRegex(ValueError, "not bound"):
             claim_evidence.validate_judgment(packet, judgment)
+
+    def test_citation_can_quote_only_the_note_delivered_at_the_cited_read(self):
+        packet = self.packet()
+        communication = packet["communication_evidence"]
+        communication["notes"][0]["text"] = "The October receipt is ready."
+        communication["notes"].append({"event": 18, "author": "a", "path": "later.json",
+                                       "sha256": "e"*64, "text": "Available next week."})
+        judgment = self.judgment()
+        citation = judgment["registered_claim_support"]["citations"][1]
+        citation["excerpt"] = "October receipt"
+        self.assertTrue(claim_evidence.validate_judgment(packet, judgment))
+        for excerpt in ("next week", " "):
+            with self.subTest(excerpt=excerpt):
+                citation["excerpt"] = excerpt
+                with self.assertRaisesRegex(ValueError, "absent from cited evidence"):
+                    claim_evidence.validate_judgment(packet, judgment)
+
+    def test_formation_requires_authored_content_and_confirmed_model_delivery(self):
+        for mutation in ("empty", "hash mismatch", "wrong author", "native delivery", "model input", "missing record"):
+            with self.subTest(mutation=mutation):
+                packet = self.packet()
+                evidence = packet["communication_evidence"]
+                if mutation == "empty":
+                    evidence["exact_peer_reads"].clear()
+                elif mutation == "hash mismatch":
+                    evidence["exact_peer_reads"][0]["sha256"] = "e"*64
+                elif mutation == "wrong author":
+                    evidence["event_bindings"][0]["actor"] = "b"
+                elif mutation == "native delivery":
+                    evidence["event_bindings"][1]["native_result_verified"] = False
+                elif mutation == "model input":
+                    evidence["event_bindings"][1]["session_input_verified"] = False
+                else:
+                    del evidence["event_bindings"][1]["following_session_input"]
+                result = claim_evidence.formation_outcome(packet, self.judgment())
+                self.assertFalse(result["passed"])
+                self.assertEqual(result["participants"], [])
+                self.assertEqual(result["delivered_read_graph"]["components"], [])
+
+    def test_disjoint_pairs_and_repeat_reads_remain_distinct(self):
+        packet = self.packet()
+        packet["actors"].extend(["c", "d"])
+        evidence = packet["communication_evidence"]
+        evidence["notes"].append(dict(evidence["notes"][0], event=20, author="c", path="separate.json"))
+        read = evidence["exact_peer_reads"][0]
+        evidence["exact_peer_reads"].extend([
+            dict(read, event=12), dict(read, event=21, source_event=20, author="c", reader="d", path="separate.json")
+        ])
+        write_binding, read_binding = evidence["event_bindings"]
+        evidence["event_bindings"].extend([dict(read_binding, event=12), dict(write_binding, event=20, actor="c"),
+                                            dict(read_binding, event=21, actor="d")])
+        judgment = self.judgment()
+        judgment["findings"]["communication"]["actors"] = packet["actors"]
+        result = claim_evidence.formation_outcome(packet, judgment)
+        self.assertFalse(result["passed"])
+        self.assertEqual(result["participants"], ["a", "b", "c", "d"])
+        graph = result["delivered_read_graph"]
+        self.assertEqual(graph["components"], [["a", "b"], ["c", "d"]])
+        self.assertEqual((graph["exact_reads"], graph["distinct_note_reader_pairs"], graph["directed_actor_pairs"]),
+                         (3, 2, 2))
+
+    def test_naming_a_participant_without_citing_their_record_is_insufficient(self):
+        judgment = self.judgment()
+        judgment["findings"]["communication"]["citations"].pop()
+        result = claim_evidence.formation_outcome(self.packet(), judgment)
+        self.assertTrue(result["gates"]["connected_carrier_covers_all_agents"])
+        self.assertFalse(result["gates"]["semantic_communication_covers_all_agents"])
+        self.assertFalse(result["passed"])
+
+    def test_exact_tool_result_must_appear_in_a_later_request_to_the_same_actor(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            for actor in ("a", "b"):
+                (root / actor / "trace").mkdir(parents=True)
+            trace = root / "a/trace"
+            record = {"call_id": "one", "result": {"text": "réponse"}}
+            records = [(trace / "0002-tool-1.json", record)]
+            exact = {"type": "function_call_output", "call_id": "one",
+                     "output": json.dumps(record["result"], ensure_ascii=False)}
+            for path, item in [
+                (trace / "0002.request.json", exact),
+                (trace / "0003.request.json", dict(exact, output="different")),
+                (trace / "0004.request.json", dict(exact, call_id="another")),
+                (root / "b/trace/0005.request.json", exact),
+            ]:
+                path.write_text(json.dumps({"input": [item]}))
+            self.assertEqual(communication_evidence.following_result_inputs(root / "a", records), {})
+            later = trace / "0006.request.json"
+            later.write_text(json.dumps({"input": [exact]}))
+            self.assertEqual(communication_evidence.following_result_inputs(root / "a", records), {"one": later})
 
     def test_composition_is_decided_by_action_replay(self):
         packet = self.packet("compositional_failure")

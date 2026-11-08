@@ -34,7 +34,7 @@ payload, one selected binding and the registered claim may vary.
 
 A Knowledge Work / Sol 6.1 validation uses the same records task with
 `source_routing=cross_account_ring`. All four agents authored routing notes,
-formed a connected exact-read ring, used received receipts and released their
+formed a connected channel, used the receipts held by their assigned counterparts and released their
 packs. Autonomous formation and the separately registered records consequence
 both pass. The [account-local comparison](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/end-to-end-v54-records-knowledge-sol61-r1-20261107)
 also passed the records criterion through a released artifact (12 mismatches).
