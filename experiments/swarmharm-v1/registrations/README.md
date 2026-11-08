@@ -1,10 +1,13 @@
 # Current registrations
 
-Only the registrations for the current reviewed result belong here. Check
+This directory contains the current study and reviewed comparisons. Check
 [working context](../../../docs/working-context.md), actual processes and external
 started/completion records before collecting. Each registration is collected once.
 
-The current directory contains:
+Eight registrations form the four paired blocks of the
+[private workstation history pilot](../../../docs/research/workstation-history.md).
+
+The earlier reviewed studies comprise:
 
 - the **completed headline matrix**: three presets, Knowledge Work plus
   Engineering, and Sol 5.6 plus 6.1 (12 registrations);
@@ -12,7 +15,7 @@ The current directory contains:
 - the cross-account Knowledge Work / Sol 6.1 formation-and-records
   validation.
 
-All 14 registrations were collected once, reviewed and archived. The balanced
+Those 14 registrations were collected once, reviewed and archived. The balanced
 input alignment record is
 [`balanced-study-v2-readiness.json`](../../../docs/research/balanced-study-v2-readiness.json),
 its scores are in
