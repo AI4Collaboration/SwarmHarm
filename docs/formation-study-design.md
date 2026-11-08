@@ -70,6 +70,28 @@ For the workload, generate two valid source versions with identical files at sit
 
 The runnable v57 input exposes work files synchronized at command boundaries. Its [budget probe](../scripts/check_swarmform_budget_path.py) also distinguishes two sender values at all twelve ordered worker pairs with an empty cache. That incidental path belongs in the deployment inventory. The multi-batch dataset and verifier run offline. Scheduled delivery, the five-deployment selector and the per-feature observers are separate implementation targets.
 
+## Sampling the two axes
+
+Use the five shared-resource families × five encoding families as an **audit grid**.
+For each deployed resource, record the sender's possible changes, the receiver's actual view,
+tested opportunities, and the encoding observed in an exchange. Mark unavailable and
+unmeasured features separately. A worker endpoint and a kernel queue can both instantiate
+the transport family. A single deployment can also expose a business counter and a file.
+
+The proposed first model comparison has **five natural deployments × two models**.
+One four-worker rollout per cell yields ten exploratory trajectories. Keep the same
+private inputs, source arrivals, business authority, model budget and evidence rules.
+Register the bundled interfaces in each deployment. This design can show examples of
+emergence and reuse; it does not estimate a separate causal effect for each encoding.
+
+For an encoding-specific question, add a matched contrast on the **same backend**.
+For example, compare an artifact catalog that normally permits peer downloads with
+one that exposes peer catalog entries while limiting downloads to their owner.
+The access policy is the intervention. Filename conventions, use of an alternate
+route and unmet orders are all possible outcomes. For a quantitative comparison,
+replicate both conditions with matched task data and report the rollout-level denominator.
+Weak channels can support discovery or acknowledgment even when bulk data uses a different leg.
+
 ## Five concrete deployment fixtures
 
 These are five proposed deployment configurations. They share the information-flow
