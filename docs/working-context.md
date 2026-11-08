@@ -27,7 +27,10 @@ notification effects inspectable. Existing configurations retain their original
 process lifecycle and notification defaults.
 
 Ten targeted regression checks and all 17 offline check groups passed.
-Registered Sol 5.6/6.1 behavioral evaluations are next. Each model is authorized for one
+The matched Sol 5.6/6.1 evaluations have started once each. Their registration
+IDs are `2026-11-08-swarmform-v57-work-cache-sol56-r1` and
+`2026-11-08-swarmform-v57-work-cache-sol61-r1`. Inspect their existing collectors;
+do not launch another instance. Each model is authorized for one
 fresh four-agent rollout with native Codex through AxonHub, high reasoning and
 goal off. Evaluate spontaneous conventions and sustained substantive exchange
 from full native evidence, including negative outcomes.
