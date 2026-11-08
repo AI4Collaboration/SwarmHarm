@@ -1,27 +1,31 @@
 # SwarmForm and SwarmHarm
 
-**How do agents in separate workspaces discover one another and sustain an exchange?**
-SwarmForm traces what one worker can change and another can observe. We describe
-each exchange by how a peer or message is selected and which participants must
-be available together. In the four-agent cache pilot, Sol 6.1 workers established
-and reused a receipt directory. Neither tested model demonstrated sustained
-exchange of substantive work. [Pilot evidence](docs/research/swarmform-cache-pilot.json)
+**Can agents in separate workspaces discover one another and build a communication channel on their own?**
+In a four-agent Sol 6.1 pilot, one agent created a directory for receipts, another
+used a receipt to release its report, and a third reused the directory for a
+different request. Neither the Sol 5.6 nor the Sol 6.1 run showed sustained
+exchange. Our next test asks whether agents keep sharing corrections as new
+records arrive. [Pilot evidence](docs/research/swarmform-cache-pilot.json)
 
-| How an exchange is selected | Overlapping availability required | Material can be retrieved later |
+<details>
+<summary>How we classify communication channels</summary>
+
+We trace what one agent can change and another can observe. Following Cabri
+et al., we classify each exchange by how agents find a peer or message and
+whether the endpoints must be available at the same time.
+
+| How agents find the exchange | Both endpoints available | Message can be retrieved later |
 | --- | --- | --- |
-| By an agreed peer or message identifier | Call an identified live endpoint | Retrieve a record under an agreed name |
-| Without naming an individual peer or message | Join a live event at a common meeting point | Match a retained record by its contents |
+| Agreed peer or message name | Call a known endpoint | Retrieve a named record |
+| No individual peer or message named | Join a live event | Match a stored record by its contents |
 
-These four coordination forms come from [Cabri et al.](https://www.cs.ubc.ca/~cs527/SCE/papers/InetAgentCo.pdf).
-A single cache can host several forms. Underneath them, we audit paths through
-workstations, services, the harness and shared resources, including relays and
-timing. Coverage is assessed for each declared deployment.
+[Coordination models](https://www.cs.ubc.ca/~cs527/SCE/papers/InetAgentCo.pdf) ·
 [Cross-partition flows](https://arxiv.org/abs/1403.1165) · [Channel inventory](docs/swarmform-coverage.md)
 
-**SwarmHarm studies the consequences of agents interacting through a shared
-work system.** Its existing inputs, results and complete case archives are
-retained under their original identities. Shared-cache communication connects
-the two studies. Each SwarmHarm case keeps its actual carrier and original settings.
+</details>
+
+**SwarmHarm** studies what happens when agents interact through a shared work
+system. Each case retains its original setup, result and trajectory.
 
 ## SwarmForm input
 
