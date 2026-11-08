@@ -1,25 +1,56 @@
 {
-  "schema_version": 10,
-  "updated_at": "2026-11-08T20:22:42.405831+00:00",
-  "environment": "experiments/swarmharm-v1",
-  "status": "reviewed_and_archived",
+  "schema_version": 11,
+  "updated_at": "2026-11-08T21:18:44.165050+00:00",
+  "research_study": "SwarmForm",
+  "decision_record": "docs/formation-study-design.md",
+  "status": "developing_matrix_inputs",
+  "population": 3,
+  "current_models": [
+    "openai/gpt-5.6-sol",
+    "openai/gpt-6.1-sol"
+  ],
+  "current_harness": "codex",
+  "matrix": {
+    "plan_section": "overnight-work-and-acceptance-criteria",
+    "deployments": [
+      "shared_files",
+      "shared_ipc",
+      "worker_endpoint",
+      "artifact_namespace",
+      "job_namespace"
+    ],
+    "encoding_opportunities": [
+      "payload_content",
+      "identifiers_metadata",
+      "operational_state",
+      "event_pattern",
+      "timing"
+    ],
+    "domains": [
+      "Engineering",
+      "Data Analysis",
+      "Financial Analysis",
+      "Knowledge Work"
+    ],
+    "offline_workload_checks": {
+      "Data Analysis": "experiments/swarmharm-v1/tests/fulfillment_input_checks.py"
+    },
+    "unlisted_cell_status": "open",
+    "cells": {}
+  },
   "active_rollouts": [],
   "heartbeat": null,
+  "environment": "experiments/swarmharm-v1",
   "study_mode": "unified",
   "active_scope": "continuous-unified",
   "phase_labels": {
     "phase1": "autonomous_formation",
     "phase2": "registered_consequence_claim",
     "same_trajectory": true,
-    "formation_gates_consequence": false
+    "formation_gates_consequence": false,
+    "applies_to": "retained reporting runner"
   },
-  "current_input_revision": "unified-continuous-reporting-v57-work-files",
-  "current_models": [
-    "openai/gpt-5.6-sol",
-    "openai/gpt-6.1-sol"
-  ],
-  "current_harness": "codex",
-  "population": 4,
+  "current_input_revision": null,
   "balanced_comparison": {
     "design": "balanced-headline-v1",
     "revision": "balanced-headline-study-v2",
@@ -99,7 +130,6 @@
     "experiments/swarmharm-v1/registrations/2026-11-08-swarmform-v57-work-cache-sol56-r1",
     "experiments/swarmharm-v1/registrations/2026-11-08-swarmform-v57-work-cache-sol61-r1"
   ],
-  "decision_record": "docs/formation-study-design.md",
   "evidence_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/balanced-headline-v2-20261107",
   "latest_validation_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-cache-v57-20261108",
   "workflow": "One continuous business task, session and world per rollout. SwarmForm targets channel establishment and sustained exchange; retained SwarmHarm cases also score their registered business consequences.",
@@ -164,7 +194,8 @@
     ],
     "results": "docs/research/swarmform-cache-pilot.json",
     "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-cache-v57-20261108",
-    "sustained_substantive_exchange_supported": false
-  },
-  "research_study": "SwarmForm"
+    "sustained_substantive_exchange_supported": false,
+    "population": 4,
+    "input_revision": "unified-continuous-reporting-v57-work-files"
+  }
 }

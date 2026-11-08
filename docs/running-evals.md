@@ -1,9 +1,12 @@
 # Running the reporting baseline
 
-The prospective SwarmForm fixtures and measurements are specified in the
-[research design](formation-study-design.md). The commands below run the existing
-reporting environment. The ordinary-cache SwarmForm condition is runnable;
-its [reviewed model pair](research/swarmform-cache-pilot.json) includes both outcomes.
+For the active three-agent SwarmForm matrix, start with the [overnight acceptance criteria](formation-study-design.md#overnight-work-and-acceptance-criteria). To inspect the implemented Data Analysis input, run:
+
+```sh
+python3 scripts/inspect_swarmform_workload.py --staged --dataset-key november --output ../fulfillment-preview
+```
+
+This exports private startup files, separate later deliveries and an operator audit. The instructions below run the four-agent reporting baseline, including the reviewed v57 cache pilot.
 
 Use `experiments/swarmharm-v1/run.py` for preparation and collection, and
 `launch.py` for a detached collector. Unified runs use one continuous task.
@@ -81,14 +84,14 @@ condition. Supply a registration to read its exact sealed bytes.
 
 ### Check the installation and inputs
 
-Run the complete offline publication gate from the pinned Python environment:
+Run the reporting baseline’s offline checks from the pinned Python environment:
 
 ```sh
 "$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-unified-input-readiness \
   --full --output ../eval-readiness/unified-input-readiness.json
 ```
 
-This checks all four domain source workflows, the domain catalog, parameter/input
+This also runs the offline three-agent fulfillment checks. For the reporting baseline it checks all four domain source workflows, the domain catalog, parameter/input
 identity, readable exports, blocked and reachable paths, subject-facing wording,
 delivery replay, evidence replay and format contracts. It makes no model calls;
 behavioral validation remains a separate registered rollout.

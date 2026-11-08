@@ -6,7 +6,9 @@
   case identities, results and full archived trajectories. Study isolated agents discovering
   peers, establishing communication conventions and sustaining substantive
   exchanges during ordinary business work.
-- `docs/formation-study-design.md` owns the research design.
+- Start with “Overnight work and acceptance criteria” in `docs/formation-study-design.md`.
+  It defines the active work order and completion bar. `docs/live-rollout-status.json`
+  identifies the active matrix and the separately reviewed reporting cases.
   `docs/swarmform-coverage.md` owns the resource inventory and implementation gaps.
   Inspect the entire deployed stack, including harnesses, supporting services,
   notifications, shared resources and lifecycle transitions.
@@ -27,10 +29,10 @@
 - Maintain the project directly on `main`. Start from the latest `origin/main`,
   run the relevant checks, and push validated commits back to `main`.
   Create a separate branch or PR only when the user requests one.
-- Current entry is `--study-mode unified`: one continuous business task, session,
+- The implemented four-worker reporting runner uses `--study-mode unified`: one continuous business task, session,
   workstation and shared world per rollout. Agents start without a peer roster
   or dedicated chat tools. The SwarmHarm baseline uses business notes under
-  `/registry/reporting/notes`; SwarmForm's ordinary-file condition uses
+  `/registry/reporting/notes`; the registered v57 cache pilot uses
   `/registry/reporting/cache`. All selected business
   mechanisms are present from the start; there is no phase transition or
   formation gate.
@@ -48,11 +50,11 @@
 - Domain names: Engineering, Data Analysis, Financial Analysis, Knowledge Work.
   “Engineering / Coding” appears only in taxonomy provenance. Live choices are
   `engineering-capacity`, `data-analysis`, `financial-analysis`, `knowledge-work`.
-- The completed balanced comparison uses Knowledge Work as primary and Engineering
+- The completed **SwarmHarm** balanced comparison uses Knowledge Work as primary and Engineering
   as the sole replication domain. Data Analysis and Financial Analysis remain in
   the separate four-domain workload-stress block. Do not imply that all headline
   findings have been reproduced in all four domains.
-- A balanced cell must select `--comparison-design balanced-headline-v1` and the
+- A SwarmHarm balanced-headline cell must select `--comparison-design balanced-headline-v1` and the
   common world config. Model identity, domain payload, one named binding and its
   registered claim are the only allowed differences. Never bypass its factor
   alignment check or relabel an archived compound case as that comparison.
@@ -87,7 +89,7 @@ archived case into the current matrix.
   it does not prescribe cooperation or a method. Preserve any violation in traces.
 - Do not advertise abandonment or a “safe choice”. Preserve autonomous stopping,
   correction, cancellation and restoration as observed behavior.
-- Runs use their registered business-note or ordinary-cache carrier without a roster. All live
+- Each rollout uses its registered deployment without a peer roster. All live
   messages must be agent-authored. Freeze supplied business materials with
   provenance; exclude them from autonomous-discovery claims.
 - The controller may continue a session on a new business-state revision using
@@ -122,7 +124,7 @@ archived case into the current matrix.
 - All live inference uses AxonHub. OpenAI uses Codex and Claude uses Claude
   Code. A separately requested Sol 5.6 Pi comparison requires
   `--harness pi-sdk --pi-comparison`. See `docs/axonhub-routing.md`.
-- Use three isolated contexts for the new SwarmForm fulfillment workload. The reporting
+- Use three isolated contexts in every new SwarmForm matrix cell, across all four domains. The reporting
   baseline and v57 cache pilot retain their registered four. Preserve Harbor 1.4
   inputs, Harbor 0.24.0, ATIF-v1.8 and each actor's session within its rollout.
 - Use same-model fallback, preferring eligible non-OpenRouter channels. Record

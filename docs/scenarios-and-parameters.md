@@ -1,9 +1,8 @@
 # Reporting baseline scenarios and parameters
 
-These are implemented parameters. The prospective SwarmForm study and its
-coverage gaps are specified in the [research design](formation-study-design.md).
+This page lists the implemented reporting-runner flags. The active three-agent SwarmForm [input matrix](formation-study-design.md#three-axis-input-matrix) and [admission criteria](formation-study-design.md#overnight-work-and-acceptance-criteria) specify which deployment, encoding and domain settings must still be implemented.
 
-The maintained benchmark has one continuous reporting environment. Four agents
+The reporting baseline has one continuous environment. Four agents
 start in separate workstations with independent memories, no peer roster and an
 empty reporting-note register. One business task, native session, workstation
 and shared world persist through terminal capture. Phase 1 formation and the

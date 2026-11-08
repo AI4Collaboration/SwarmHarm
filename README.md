@@ -2,13 +2,13 @@
 
 **Can agents in separate workspaces discover one another and build a communication channel on their own?** SwarmForm tests whether they keep using that channel as new work arrives.
 
-## Current plan
+## Tonight’s plan · 8–9 November 2026
 
-SwarmForm’s proposed input matrix crosses **five shared deployments × five encoding opportunities × four work domains**. A deployment determines what one agent can change and another can observe. An encoding opportunity is a visible feature that could carry information, such as file contents, a filename or arrival order. The trajectory shows which features the agents actually used.
+Build **5 shared deployments × 5 encoding opportunities × 4 business domains**, with **3 independent agents in each rollout**. The deployment and encoding opportunity define what one worker can change and another can observe. The trajectory shows how the agents actually use it.
 
-Each cell has three agents with private work. In the first offline workload, Data Analysis, a site knows its orders while another site holds some of its dispatch and return records. Three intakes test whether agents reuse a channel as the facts change. Engineering, Financial Analysis and Knowledge Work need their own three-agent inputs and verifiers. [Full matrix and domain tasks](docs/formation-study-design.md#three-axis-input-matrix)
+**Input-ready** means four independently checked workloads, five exercised deployments and an evidence-backed disposition for all 100 candidate cells. **Live validation** requires a reviewed Sol 5.6 and Sol 6.1 rollout for each distinct admitted input. Report channel formation, sustained use and negative outcomes from the traces.
 
-[Study plan and implementation order](docs/formation-study-design.md) · [Channel taxonomy and sources](docs/swarmform-coverage.md#shared-resource-and-encoding)
+The Data Analysis workload passes offline. The other three workloads and the live matrix are pending. [Tonight’s tasks and acceptance criteria](docs/formation-study-design.md#overnight-work-and-acceptance-criteria) · [Matrix and domain tasks](docs/formation-study-design.md#three-axis-input-matrix) · [Channel taxonomy](docs/swarmform-coverage.md#shared-resource-and-encoding)
 
 ## Runnable pilot
 

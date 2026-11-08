@@ -59,7 +59,8 @@ def main(argv=None):
         ('path accounting', 'delivery_path_checks.py'),
         ('host launch capacity', 'host_capacity_checks.py'),
         ('claim evidence', 'claim_evidence_checks.py'),
-        ('SwarmForm runtime and cache', 'swarmform_runtime_checks.py'),
+        ('four-agent v57 cache and runtime', 'swarmform_runtime_checks.py'),
+        ('three-agent SwarmForm Data Analysis workload (offline)', 'fulfillment_input_checks.py'),
     ]
     if args.full:
         suites += [
@@ -85,6 +86,7 @@ def main(argv=None):
     ]
     report = {
         'kind': 'unified_business_input_readiness',
+        'scope': 'Reporting baseline offline contracts and three-agent Data Analysis workload checks',
         'source_commit': subprocess.check_output(
             ['git', 'rev-parse', 'HEAD'], cwd=REPO, text=True).strip(),
         'python': sys.version.split()[0],

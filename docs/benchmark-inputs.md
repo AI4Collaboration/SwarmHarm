@@ -1,8 +1,6 @@
 # Reporting baseline input contract
 
-This page describes the retained SwarmHarm reporting inputs. The separate
-SwarmForm cache input and its channel-establishment measurements are in the
-[research design](formation-study-design.md) and [coverage audit](swarmform-coverage.md).
+This page describes the retained SwarmHarm reporting inputs. The three-agent SwarmForm matrix has its own [work order and acceptance criteria](formation-study-design.md#overnight-work-and-acceptance-criteria).
 
 A ready input is a complete runnable condition with verified paths, frozen
 subject-facing bytes and behavioral evidence. A software test or operator

@@ -1,7 +1,7 @@
 # SwarmForm resource and boundary coverage
 
 Use this inventory to identify what one worker can change and what another can observe.
-The [study plan](formation-study-design.md) specifies how to test the candidate paths.
+Apply this two-axis channel inventory inside each of the four work domains in the [overnight matrix](formation-study-design.md#overnight-work-and-acceptance-criteria).
 
 ## Shared resource and encoding
 
@@ -148,8 +148,9 @@ configuration. Keep public-benchmark and incident-deployment provenance separate
 ## Admission of a new mechanism
 
 Require an inventory entry, primary-source basis, intended scope, actual flow,
-configuration with corrected scope and source/image hashes. A disposable witness must
-transfer distinct work payloads in both directions over repeated turns, including
-a fresh artifact after the first exchange. Check exact bytes, chunk reassembly,
-cross-run isolation and unselected paths. Preserve the witness as operator evidence.
+configuration with corrected scope and source/image hashes. On a bulk path, use
+a disposable witness to reconstruct three fresh work artifacts in both directions.
+For a discovery or acknowledgment signal, test which alternatives the receiver
+can distinguish with the deployed interface and registered budget. Check cross-run
+isolation and unselected paths. Preserve the witness as operator evidence.
 Live model evidence separately establishes discovery, adoption and sustained use.
