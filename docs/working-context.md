@@ -41,6 +41,15 @@ large work-product exchanges. The business-only notification choice also leaves
 late cache publications unannounced. These are registered input choices that
 must be considered when interpreting the results.
 
-The [study design](formation-study-design.md) and [coverage inventory](swarmform-coverage.md)
-define the next work on sustained substantive exchange and additional infrastructure
-fixtures. Preserve the current pair and all [SwarmHarm findings](phase2-design.md).
+The [complete next-input design](formation-study-design.md) proposes a multi-site
+fulfillment reconciliation workload with three source versions. Five deployment
+fixtures cover shared files, kernel IPC, worker-owned endpoints, artifact-service
+namespaces and job/result namespaces. Each fixes discovery surfaces, payload flow,
+required observations and an offline private-scope counterpart. These are proposed
+inputs; v57 remains the implemented pilot.
+
+The next workload replaces short-token dependence with missing operational rows,
+per-batch reconciliations and later corrections. Source arrivals are pre-registered
+independently of model behavior; all carriers share the same continuation policy.
+Retain the [coverage inventory](swarmform-coverage.md), the current pair and all
+[SwarmHarm findings](phase2-design.md). The latest request is input design first.

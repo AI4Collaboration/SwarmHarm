@@ -10,7 +10,7 @@
   `docs/swarmform-coverage.md` owns the resource inventory and implementation gaps.
   Inspect the entire deployed stack, including harnesses, supporting services,
   notifications, shared resources and lifecycle transitions.
-- The three proposed infrastructure fixtures are a representative sample.
+- The five proposed deployment fixtures are a representative sample.
   Record source grounding, coverage exclusions and unresolved paths. Keep
   operator transfer tests separate from autonomous model evidence.
 - Preserve existing cases, serialized identifiers and their original claims.

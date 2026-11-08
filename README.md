@@ -26,8 +26,10 @@ The first Sol 6.1 run created and reused a receipt-exchange directory; one of fo
 owners released its pack. Sol 5.6 produced no verified peer read and released none.
 Neither run established sustained substantive exchange. This task's missing
 information can be resolved with a short receipt, which limits its demand for
-large exchanges. Knowledge Work is implemented; further infrastructure fixtures
-and Engineering replication follow the study design.
+large exchanges. Knowledge Work is implemented. The next input design uses
+multi-site fulfillment data with three source versions across shared files,
+kernel IPC, worker endpoints, artifact namespaces and job/result namespaces.
+That workload and the additional deployment fixtures await implementation.
 
 [Exact configuration](experiments/swarmharm-v1/configs/swarmform-work-cache.json) ·
 [First model pair](docs/research/swarmform-cache-pilot.json) ·

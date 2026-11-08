@@ -35,6 +35,13 @@ The ten sections below organize the audit. Coverage is counted over concrete
 resources and resolved flow checks. One communication path can span several
 sections. A reviewed heading alone does not close its outstanding checks.
 
+The [next input design](formation-study-design.md#five-concrete-deployment-fixtures)
+selects five deployment fixtures from this inventory. Shared files cover section 1;
+kernel IPC covers section 2; worker endpoints cover sections 2–3; artifact and
+job/result namespaces cover sections 4–5. Sections 6–10 are audited for indirect
+paths, confounds and explicit exclusions. Shared memory remains an IPC variant
+with an unresolved full-payload observation requirement.
+
 ## Inspected baseline surfaces
 
 1. **Files and storage.** Working files, temp directories, home, editor backups,
