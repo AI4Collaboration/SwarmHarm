@@ -42,6 +42,12 @@ Coordinated adverse records passed with account-local routing (12 mismatched
 entries) and cross-account routing (8). Formation passed in the cross-account run.
 [Reviewed cases](docs/phase2-design.md) · [Full trajectory bundles](docs/research/trajectory-release.json)
 
+All eight Sol 6.1 groups in the workstation pilot formed a channel and
+coordinated on actions that left inaccurate dispatch records. Twelve of the
+16 agents given October stocktake files read data rows from them. The first
+verified peer-note read took a median of 64 tool calls with task files alone
+and 65 with prior work. [Four paired comparisons](docs/research/workstation-history-results.json)
+
 ## How findings are verified
 
 An **action-only monitor** reconstructs executions and final files. For

@@ -1,15 +1,14 @@
 # Working context — 8 November 2026
 
-**Status: the headline matrix and formation-and-records validation are complete,
-reviewed and archived. Autonomous formation and the separately registered
-records consequence both pass in one continuous validation trajectory. There
-are eight fresh rollouts planned for the private-workstation comparison.**
+The headline matrix, both routing validations and all eight workstation-history
+rollouts have been reviewed and archived.
 
-The [workstation-history pilot](research/workstation-history.md) pairs the same
-four-agent cross-account task with a task-only workstation or a workstation
-containing a prior stationery count. Its results are tracked separately.
+In four matched Sol 6.1 pairs, autonomous formation passed in 4/4 task-only
+and 4/4 prior-work rollouts. Agents released 15/16 and 16/16 account packs,
+respectively. [Paired results](research/workstation-history-results.json) ·
+[Registered design](research/workstation-history.md)
 
-The current result is a 3 mechanism × 2 domain × 2 model matrix. Knowledge Work
+The headline result is a 3 mechanism × 2 domain × 2 model matrix. Knowledge Work
 is the primary domain; Engineering is the replication domain. All 12 cells use
 four agents, native Codex through AxonHub, high reasoning, goal off and one fixed
 business envelope. Every registration was collected exactly once.

@@ -1,18 +1,9 @@
 {
   "schema_version": 9,
-  "updated_at": "2026-11-08T07:26:46Z",
+  "updated_at": "2026-11-08T07:54:11Z",
   "environment": "experiments/swarmharm-v1",
-  "status": "private_workstation_history_pilot_in_progress",
-  "active_rollouts": [
-    {
-      "registration": "experiments/swarmharm-v1/registrations/2026-11-08-office-history-b2-prior-work-sol61",
-      "observed_at": "2026-11-08T07:26:46Z"
-    },
-    {
-      "registration": "experiments/swarmharm-v1/registrations/2026-11-08-office-history-b2-task-only-sol61",
-      "observed_at": "2026-11-08T07:26:46Z"
-    }
-  ],
+  "status": "reviewed_and_archived",
+  "active_rollouts": [],
   "heartbeat": null,
   "study_mode": "unified",
   "active_scope": "continuous-unified",
@@ -146,7 +137,7 @@
   "evidence_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/balanced-headline-v2-20261107",
   "latest_validation_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-v55-formation-records-knowledge-sol61-r1-20261107",
   "workflow": "One end-to-end task, persistent session and business world; Phase 1 formation and Phase 2 consequence are separate labels on the same trajectory, with no gate.",
-  "next_condition": "Complete and review each of the four prespecified paired blocks.",
+  "next_condition": null,
   "current_question": "Does private history from a previous office task change autonomous communication or the current reporting outcome?",
   "workstation_history_pilot": {
     "design": "docs/research/workstation-history.md",
@@ -154,6 +145,9 @@
     "registered_rollouts": 8,
     "subject_model": "openai/gpt-6.1-sol",
     "registered_commit": "e45af6c2c059e4a568aa7d7fa0ac7e59ba589d45",
-    "status": "collecting"
+    "status": "reviewed_and_archived",
+    "collected_once": 8,
+    "results": "docs/research/workstation-history-results.json",
+    "evidence_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/workstation-history-sol61-20261108"
   }
 }
