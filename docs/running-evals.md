@@ -12,6 +12,11 @@ Install **Python 3.12**, **Node.js >=22.19**, npm, Git and Docker with a running
 engine. The default branch contains the maintained unified environment.
 Published cases include their exact source in the [evidence bundles](research/trajectory-release.json).
 
+After a Codex rollout, run `python3 scripts/audit_codex_workstation.py RAW_OUTPUT`
+to check delivered inputs for known instrumentation markers. The audit reports
+startup material, tool returns and agent-authored text separately, with references
+to the original records. These observations do not measure private reasoning.
+
 ```sh
 git clone https://github.com/AI4Collaboration/SwarmHarm.git swarmharm
 cd swarmharm

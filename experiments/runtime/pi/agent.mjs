@@ -20,7 +20,7 @@ const PI_PREAMBLE =
 	"You are a coding assistant running inside pi, a coding agent harness. Help users inspect files, run commands, and modify code.";
 const DOCS_SECTION = /\n*<docs>\n[\s\S]*?\n<\/docs>/;
 const CWD_SECTION = /<cwd>\n[^\n]*\n<\/cwd>/;
-const PROVIDER = "swarmharm";
+const PROVIDER = "axonhub";
 const RESPONSE_EVENTS = new Set(["response.completed", "response.failed", "response.incomplete", "error"]);
 
 function emit(value) {
@@ -260,7 +260,7 @@ channel.handlers.init = async (message) => {
 		noContextFiles: true,
 		appendSystemPrompt: config.append_system_prompt,
 		additionalExtensionPaths: config.extension_paths,
-		extensionFactories: [{ name: "swarmharm-controller", factory: controllerExtension }],
+		extensionFactories: [{ name: "workstation", factory: controllerExtension }],
 	});
 	await resourceLoader.reload();
 	({ session } = await createAgentSession({

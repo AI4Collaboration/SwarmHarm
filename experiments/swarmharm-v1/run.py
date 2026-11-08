@@ -314,7 +314,7 @@ def code_paths():
         + sorted((HERE/'tests/worlds').glob('*.json'))
         +[REPO/'experiments'/name for name in (
             'runtime/atomic.py','runtime/guardrails.py','runtime/workstation.py','runtime/workspace_paths.py','runtime/codex_gateway.py',
-            'runtime/response_monitor.py','runtime/record_surface.py','runtime/launch_capacity.py',
+            'runtime/response_monitor.py','runtime/record_surface.py','runtime/work_journal.py','runtime/launch_capacity.py',
             'runtime/workstation_patch.py','runtime/workstation-patch.LICENSE',
             'runtime/codex/package.json','runtime/codex/package-lock.json','runtime/python-requirements.txt',
             'runtime/pi_agent.py','runtime/pi/agent.mjs','runtime/pi/package.json',
@@ -329,7 +329,8 @@ def code_paths():
           if p.is_file() and p.suffix != '.py']
         +[REPO/'experiments/runtime/Dockerfile.workstation',REPO/'scripts/build-workstation-image',
           REPO/'scripts/check_goal_mode_pair.py', REPO/'scripts/inspect_unified_input.py', REPO/'scripts/dump_prompts.py',
-          REPO/'scripts/check_balanced_study.py', REPO/'scripts/judge_unified_transcript.py']
+          REPO/'scripts/check_balanced_study.py', REPO/'scripts/judge_unified_transcript.py',
+          REPO/'scripts/audit_codex_workstation.py']
     )
 
 def require(condition,message):
@@ -440,6 +441,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if run_controls:
         guardrails.require_unified_workflow(study_mode, unified_delivery.FAMILY if component_family is None else component_family)
         guardrails.require_unified_backend()
+        from workstation import verify_workstation_image
+        verify_workstation_image()
     if study_mode == phase2_component.UNIFIED_MODE:
         if archive_compatibility or cue_condition != schedule.DEFAULT_CUE_CONDITION:
             raise ValueError('Unified reporting uses the standard business records at startup.')
@@ -593,6 +596,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             unified_plan[actor]["world_config"] = deepcopy(world_config)
             if continuous_workflow:
                 unified_plan[actor]['continuous_workflow'] = True
+                unified_plan[actor]['work_entries_only'] = True
             item["component_task"] = unified_delivery.task(unified_plan[actor])
         rows = unified_delivery.truth_for(unified_plan)
     if treasury_study:
@@ -2038,7 +2042,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 from record_surface import NativeRecordSurface
                 extension.surface=NativeRecordSurface(root/name,active,
                     writable=reg['phase2']['native_record_surface']['writable'],
-                    apply_mode=reg['phase2']['native_record_surface']['apply_mode'],harness=harness_kind)
+                    apply_mode=reg['phase2']['native_record_surface']['apply_mode'],harness=harness_kind,
+                    work_entries_only=reg['phase2']['native_record_surface'].get('work_entries_only',False))
             if unified_study:
                 link = extension.open_library_link()
             workstations=world.prepare_workstations(active,max_workers=limit,private_files=prepared_files,
@@ -2083,7 +2088,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 require(set(value['active_tools'])=={
                     tool['name'] for tool in initial[name][actor]['tools']}|set(harness['extension_tools']),
                     f'{actor} started with unregistered tools: {value["active_tools"]}')
-                if is_claude:
+                if is_claude or (is_codex and value.get('cwd')):
                     world.workstations[actor].bind_native_cwd(value['cwd'])
                 if (trace_study or unified_study) and is_codex:
                     extension.surface.bind(actor,value['session_file'], writer_guard=agents[actor].record_guard)

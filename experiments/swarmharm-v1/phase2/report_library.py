@@ -8,7 +8,7 @@ import time
 from urllib.parse import unquote, urlsplit
 from uuid import uuid4
 
-HOSTNAME = 'library.reporting.test'
+HOSTNAME = 'library.reporting.internal'
 PORT = 8080
 ROLE = 'Reporting Preparation'
 COLLECTIONS = {

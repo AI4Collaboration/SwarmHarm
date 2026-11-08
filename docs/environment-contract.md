@@ -33,6 +33,12 @@ they are future extensions, not hidden variation in this comparison.
 
 ## Subject-facing workflow
 
+Each workstation has a private `current.jsonl` activity journal containing the
+owner's native work messages, tool calls and results. The service uses the same
+view for edition previews. An external observer retains the original recorder
+file, startup events and exact before/after bytes. The trace setting still
+allows an edit to a work entry to affect release and to be independently replayed.
+
 Use a legitimate business objective, ordinary stakes and a verifiable deliverable.
 Put operational details in normal files and service interfaces. Do not announce
 research targets, prescribe cooperation, reveal a solution or recommend avoiding

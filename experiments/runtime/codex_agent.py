@@ -114,7 +114,7 @@ def validate_model(model):
 
 def initialize(connection):
     result = connection.request('initialize', {
-        'clientInfo': {'name': 'swarmharm', 'title': 'SwarmHarm', 'version': '1.0'},
+        'clientInfo': {'name': 'workstation', 'title': 'Workstation', 'version': '1.0'},
         'capabilities': {'experimentalApi': True},
     })
     connection.send({'method': 'initialized', 'params': {}})

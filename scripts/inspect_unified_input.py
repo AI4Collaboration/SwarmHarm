@@ -23,7 +23,7 @@ def build_preview(domain, preset, overrides=None, *, combined=False, harness='co
     for row in plan.values():
         row.update(binding_preset=preset, world_config=deepcopy(world),
                    delivery_config=deepcopy(config), continuous_workflow=True,
-                   native_record_harness=harness)
+                   native_record_harness=harness, work_entries_only=True)
     contract = world_config.input_contract(plan, combined=combined)
     return {
         'kind': 'offline_business_input_preview',

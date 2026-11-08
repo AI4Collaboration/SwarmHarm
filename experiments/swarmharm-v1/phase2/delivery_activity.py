@@ -9,11 +9,16 @@ import json
 from pathlib import Path
 
 # Independent scenario readers do not necessarily import the runtime launcher.
-_spec = importlib.util.spec_from_file_location(
-    'unified_codex_evidence', Path(__file__).resolve().parents[2] / 'runtime/codex_evidence.py')
-_evidence = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(_evidence)
-mcp_output_text = _evidence.mcp_output_text
+def _runtime_module(name):
+    path = Path(__file__).resolve().parents[2] / 'runtime' / (name + '.py')
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+mcp_output_text = _runtime_module('codex_evidence').mcp_output_text
+work_journal = _runtime_module('work_journal')
 
 
 def decode_result(value, codex=False):

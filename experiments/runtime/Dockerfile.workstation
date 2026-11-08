@@ -13,7 +13,5 @@ RUN sed -i \
     && rm -rf /var/lib/apt/lists/*
 
 # Provide the patch command used by native coding-agent instructions.
-COPY workstation_patch.py /usr/local/lib/swarmharm/workstation_patch.py
-COPY workstation-patch.LICENSE /usr/local/lib/swarmharm/workstation-patch.LICENSE
-RUN chmod 755 /usr/local/lib/swarmharm/workstation_patch.py \
-    && ln -s /usr/local/lib/swarmharm/workstation_patch.py /usr/local/bin/apply_patch
+COPY --chmod=755 workstation_patch.py /usr/local/bin/apply_patch
+COPY workstation-patch.LICENSE /usr/local/share/doc/apply_patch/workstation-patch.LICENSE

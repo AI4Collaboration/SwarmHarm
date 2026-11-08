@@ -143,7 +143,7 @@ class CodexAgent:
                     raise RuntimeError('Codex CLI differs from registration')
                 self.home = stack.enter_context(self.runtime.isolated_home())
                 import tempfile
-                workspace = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix='codex-work-')))
+                workspace = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix='workspace-', dir='/tmp'))).resolve()
                 catalog = self.runtime.native_catalog(self.home)
                 if self.registered and self.runtime.digest(catalog) != self.registered['native_catalog_sha256']:
                     raise RuntimeError('Codex model catalog differs from registration')
@@ -184,7 +184,7 @@ class CodexAgent:
                         raise RuntimeError('Codex returned an invalid native session path')
                     # Codex creates this registered path when the first turn begins.
                     session_file=str(path)
-                self.emit('ready', session_file=session_file, active_tools=self.active_tools + self.native_tools,
+                self.emit('ready', session_file=session_file, cwd=str(workspace), active_tools=self.active_tools + self.native_tools,
                     system_prompt=self.runtime.SYSTEM_PROMPT, commands=[], session_id=self.thread_id)
                 while True:
                     try:

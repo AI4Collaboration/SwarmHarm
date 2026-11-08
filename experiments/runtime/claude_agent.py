@@ -283,7 +283,7 @@ class ClaudeAgent:
         self.actor = actor
         self.folder = Path(folder).resolve()
         self.folder.mkdir(parents=True, exist_ok=True)
-        self.gateway_config = tempfile.TemporaryDirectory(prefix='swarmharm-claude-config-') if gateway else None
+        self.gateway_config = tempfile.TemporaryDirectory(prefix='claude-config-', dir='/tmp') if gateway else None
         env = gateway_env(api_base, api_key, model, self.gateway_config.name) if gateway else subscription_env()
         # Native /goal normally uses a small model. Keep the registered model
         # fixed for that evaluator as well, without any alternative routing.

@@ -19,7 +19,7 @@ from phase2 import office_history
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-continuous-reporting-v55-source-routing'
+REVISION = 'unified-continuous-reporting-v56-work-journal'
 CLAIMS = ('shared_false_process_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering')
 PRESETS = {
@@ -646,7 +646,8 @@ def observe_workspace(flow, event, evidence_root=None):
     elif 'activity_input' in event:
         captures = {event['actor']: event['activity_input']}
     for owner, capture in captures.items():
-        flow.activity_records[owner] = delivery_activity.load_capture(capture, evidence_root, owner)
+        records = delivery_activity.load_capture(capture, evidence_root, owner)
+        flow.activity_records[owner] = flow.workstation_activity(owner, records)
         flow.activity_captures[owner] = deepcopy(capture)
     if 'library_read_input' in event:
         read = event['library_read_input']
@@ -1110,6 +1111,11 @@ class Continuation(Base):
             result['accounts'] = {self.plan[a]['account']: c for a, c in checks.items()}
         return result
 
+    def workstation_activity(self, actor, records):
+        if self.plan[actor].get('work_entries_only'):
+            return delivery_activity.work_journal.view(records)
+        return records
+
     def call(self, actor, step, name, arguments, *, elapsed_seconds=None):
         from jsonschema import Draft202012Validator
         previous_executions = len(self.executions)
@@ -1126,7 +1132,7 @@ class Continuation(Base):
             for owner in self.plan if shared_activity else (actor,):
                 with self.surface.writer_guard(owner):
                     records = read_regular(self.surface.directory(owner))
-                self.activity_records[owner] = records
+                self.activity_records[owner] = self.workstation_activity(owner, records)
                 self.activity_captures[owner] = self.surface.retain(owner, records)
         if name == 'import_reporting_pack' and actor in self.plan and self.records_link:
             self.library_reads[actor] = self.records_link.read_evidence(actor, arguments.get('read_receipt'))
@@ -1437,12 +1443,13 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             'library_collections': deepcopy(report_library.COLLECTIONS),
             'workspace_policy_copy_is_not_task_authority': True},
         'native_record_surface': {'condition': 'mediated_native_record_view',
+            'work_entries_only': all(row.get('work_entries_only', False) for row in assignments.values()),
             'writable': True, 'apply_mode': 'immediate',
             'scope': 'own disposable native session file only',
             'evaluation_input': bindings_for(assignments)['evidence_binding'] == 'native',
             'operator_directory_mounted': False,
             'independent_capture': 'protected observer blobs and native request/response stream',
-            'view_refresh': 'registered native filenames only; preserve auxiliary workspace files',
+            'view_refresh': 'current.jsonl contains native work entries in the continuous workflow; preserve auxiliary workspace files',
             'auxiliary_capture': 'independent per-command and terminal copies; not recorder inputs',
             'not_a_stock_harness_vulnerability_claim': True},
         'start_condition': communication_start(assignments)['condition'],

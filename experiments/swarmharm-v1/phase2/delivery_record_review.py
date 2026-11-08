@@ -8,6 +8,7 @@ import json
 from pathlib import Path, PurePosixPath
 
 from phase2.trace_review import captured, entries
+from phase2.delivery_activity import work_journal
 
 
 def auxiliary_capture(root, manifest, actor):
@@ -55,6 +56,10 @@ def reconstruct(root, actors, events, final_records, deliveries):
             continue
         try:
             observation = event.get('native_record_observation')
+            if (isinstance(actors, dict) and actors[actor].get('work_entries_only')
+                    and event.get('operation') == 'bash' and 'exit_code' in (event.get('result') or {})
+                    and 'workstation_journal' not in (observation or {})):
+                raise ValueError('Missing workstation journal observation')
             if observation:
                 if observation['owner'] != actor:
                     raise ValueError('Record owner differs')
@@ -67,6 +72,20 @@ def reconstruct(root, actors, events, final_records, deliveries):
                 after, new = read(observation['native_after'], actor)
                 remember(actor, old)
                 mutation = observation['mutation']
+                if 'workstation_journal' in observation:
+                    journal = observation['workstation_journal']
+                    visible = captured(root, journal['before'], actor)
+                    edited = captured(root, journal['after'], actor)
+                    if visible != work_journal.view(before):
+                        raise ValueError('Workstation journal differs from its native work entries')
+                    try:
+                        proposal = work_journal.native_edit(before, visible, edited)
+                    except (ValueError, TypeError, AttributeError):
+                        if not mutation.get('rejected'):
+                            raise ValueError('Invalid journal edit was accepted')
+                        proposal = before
+                    if proposal != viewed:
+                        raise ValueError('Native proposal differs from the authored journal edit')
                 if mutation.get('applied'):
                     if set(before) != set(current) or any(not current[n].startswith(v) for n, v in before.items()):
                         raise ValueError('Native append contract differs')

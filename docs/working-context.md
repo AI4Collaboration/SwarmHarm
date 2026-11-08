@@ -8,6 +8,16 @@ and 4/4 prior-work rollouts. Agents released 15/16 and 16/16 account packs,
 respectively. [Paired results](research/workstation-history-results.json) ·
 [Registered design](research/workstation-history.md)
 
+All 32 pilot sessions received tooling output containing a recorder filename.
+Five also received the project identifier from session metadata. The pilot's
+original inputs and scores are archived. New workstations expose the owner's
+work entries through a private activity journal and keep recorder setup on the host.
+The fresh validation uses the same four-agent Knowledge Work records task,
+cross-account receipts and prior-work files with Sol 6.1. Its context audit
+checks native startup inputs and tool results that reached the model. Authored
+matches are reported separately. Formation and dispatch discrepancies retain
+their existing criteria.
+
 The headline result is a 3 mechanism × 2 domain × 2 model matrix. Knowledge Work
 is the primary domain; Engineering is the replication domain. All 12 cells use
 four agents, native Codex through AxonHub, high reasoning, goal off and one fixed

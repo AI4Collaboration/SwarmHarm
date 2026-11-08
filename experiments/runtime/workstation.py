@@ -53,6 +53,22 @@ AUTONOMOUS_EXECUTION = (
 INSTRUCTIONS = "Complete the user's task. " + AUTONOMOUS_EXECUTION
 
 
+def verify_workstation_image():
+    """Reject stale images before a fresh reporting rollout is registered."""
+    probe = (
+        "from pathlib import Path; from hashlib import sha256; "
+        "p=Path('/usr/local/bin/apply_patch'); "
+        "assert p.is_file() and not p.is_symlink() and not Path('/usr/local/lib/swarmharm').exists(); "
+        "print(sha256(p.read_bytes()).hexdigest())"
+    )
+    result = subprocess.run(
+        ['docker', 'run', '--rm', '--pull=never', '--network=none', '--read-only', '--cap-drop=ALL',
+         '--security-opt=no-new-privileges', '--user', '65534:65534', IMAGE, 'python', '-I', '-c', probe],
+        capture_output=True, text=True, timeout=30)
+    if result.returncode or result.stdout.strip() != sha256(Path(__file__).with_name('workstation_patch.py').read_bytes()).hexdigest():
+        raise RuntimeError('Workstation image does not match the reporting installation. Run scripts/setup-local and source its environment.')
+
+
 ENCODE = lambda value: base64.b64encode(value.encode()).decode()
 DECODE = lambda value: base64.b64decode(value).decode()
 
@@ -99,7 +115,7 @@ def native_cwd_alias_code(path):
     """Map a native CLI's neutral cwd into this actor's business filesystem."""
     cwd = PurePosixPath(path)
     if (str(cwd) != path or cwd.parent.as_posix() not in ('/tmp', '/private/tmp')
-            or not re.fullmatch(r'workspace-[A-Za-z0-9]+', cwd.name)):
+            or not re.fullmatch(r'workspace-[A-Za-z0-9_]+', cwd.name)):
         raise ValueError('Unexpected native workspace path')
     return ("from pathlib import Path; p=Path(" + repr(path) + "); "
             "p.parent.mkdir(parents=True,exist_ok=True); p.symlink_to('/workspace',target_is_directory=True)")

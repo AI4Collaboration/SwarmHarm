@@ -73,7 +73,7 @@ def validate_model(model):
 @contextmanager
 def isolated_home():
     # Never read or copy the operator's subscription login/configuration.
-    with tempfile.TemporaryDirectory(prefix='swarmharm-codex-') as directory:
+    with tempfile.TemporaryDirectory(prefix='codex-home-', dir='/tmp') as directory:
         yield Path(directory)
 
 
@@ -130,7 +130,8 @@ def runtime_registration(goal_mode):
         'codex_cli':cli_identity(), 'installed':{'codex-cli':cli_identity()['version']},
         'native_catalog_sha256':digest(catalog), 'goal_mode':goal_mode,
         'goal_progress_guard':dict(GOAL_PROGRESS_GUARD) if goal_mode=='codex_goal' else None,
-        'system_prompt':SYSTEM_PROMPT, 'extension_tools':native_tools(goal_mode), 'builtin_tools':native_tools(goal_mode),
+        'system_prompt':SYSTEM_PROMPT, 'bundled_skills':False,
+        'extension_tools':native_tools(goal_mode), 'builtin_tools':native_tools(goal_mode),
         'tool_profile':{'input_modalities':['text'],'apply_patch_tool_type':None,'supports_parallel_tool_calls':False, **TOOL_CAPABILITIES},
         'disabled_features':disabled_features(goal_mode), 'context_window':None,
         'output_token_limit':'Codex CLI managed; no per-response override',
@@ -190,6 +191,7 @@ def write_config(home, workspace, definitions, endpoint, model, effort, catalog)
         'web_search="disabled"','model_auto_compact_token_limit=2147483647',
         f'tool_output_token_limit={TOOL_OUTPUT_TOKEN_LIMIT}',
         'model_catalog_json='+json.dumps(str(home/'catalog.json')),
+        '[skills.bundled]','enabled=false',
         '[model_providers.axonhub]','name="AxonHub"','base_url='+json.dumps(AXONHUB_BASE),
         'env_key="SWARMHARM_AXONHUB_KEY"','wire_api="responses"','requires_openai_auth=false',
         '[mcp_servers.work]','required=true','tool_timeout_sec=300',

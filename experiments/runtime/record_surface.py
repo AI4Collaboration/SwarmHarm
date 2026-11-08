@@ -17,6 +17,7 @@ import tempfile
 import threading
 
 from workstation import DockerWorkstation
+import work_journal
 
 VIEW = '/tmp/agent/.pi/sessions'
 LIMIT = 32 * 1024 * 1024
@@ -138,12 +139,14 @@ def merge_native_append(before, after, current):
 
 
 class NativeRecordSurface:
-    def __init__(self, root, actors, *, writable=True, apply_mode='immediate', harness='pi-sdk'):
+    def __init__(self, root, actors, *, writable=True, apply_mode='immediate', harness='pi-sdk',
+                 work_entries_only=False):
         if apply_mode not in ('immediate', 'staged'):
             raise ValueError('Unknown native-record application mode')
         self.root = Path(root).resolve()
         self.actors = set(actors)
         self.harness = harness
+        self.work_entries_only = work_entries_only
         self.view = VIEW if harness=='pi-sdk' else '/tmp/agent/activity'
         self.bound_directories = {}
         self.writer_guards = {}
@@ -345,14 +348,15 @@ class NativeRecordSurface:
                             del surface.staged[actor]
                         view_before = native_before
                 before_manifest = surface.retain(actor, native_before)
+                visible = work_journal.view(view_before) if surface.work_entries_only else view_before
                 self.resume()
-                managed = self.managed_names | set(native_before)
+                managed = self.managed_names | set(visible)
                 subprocess.run(['docker','exec',self.name,'python','-I','-c',REFRESH_VIEW,
                                 surface.view,json.dumps(sorted(managed))],
                                check=True, capture_output=True, timeout=15)
-                self.managed_names = set(native_before)
+                self.managed_names = set(visible)
                 self.hydrate({surface.view+'/'+name:base64.b64encode(data).decode()
-                              for name,data in view_before.items()}, False)
+                              for name,data in visible.items()}, False)
                 reply, snapshot = super().execute(command, shared)
                 self.resume()
                 code = '''import pathlib,json,base64,stat
@@ -368,13 +372,22 @@ print(json.dumps({'files':result,'invalid':invalid,'invalid_directory':p.is_syml
                     ['docker','exec',self.name,'python','-I','-c',code.replace(VIEW,surface.view)], timeout=15))
                 auxiliary = self.capture_auxiliary()
                 self.pause()
-                after = {name:base64.b64decode(value) for name,value in raw['files'].items()}
+                workspace_after = {name:base64.b64decode(value) for name,value in raw['files'].items()}
+                after = workspace_after
+                invalid_edit = False
+                if surface.work_entries_only:
+                    try:
+                        after = work_journal.native_edit(view_before, visible, workspace_after)
+                    except (ValueError, TypeError, AttributeError):
+                        after, invalid_edit = view_before, True
                 observed = surface.retain(actor, after)
                 with surface.writer_guard(actor):
                     current=read_regular(surface.directory(actor))
                     pre_apply=surface.retain(actor,current)
                     if raw['invalid'] or raw['invalid_directory']:
                         mutation = {'applied':False,'rejected':'non_regular_record_view'}
+                    elif invalid_edit:
+                        mutation = {'applied':False,'rejected':'invalid_activity_entry'}
                     elif current != native_before and (surface.apply_mode != 'immediate'
                             or set(current) != set(native_before)
                             or any(not current[name].startswith(data)
@@ -447,6 +460,12 @@ print(json.dumps({'files':result,'invalid':invalid,'invalid_directory':p.is_syml
                         'subject_auxiliary_after':auxiliary,
                         'native_pre_apply':pre_apply,
                         'native_after':surface.capture(actor),'mutation':mutation}
+                    if surface.work_entries_only:
+                        observation['workstation_journal'] = {
+                            'before': surface.retain(actor, visible),
+                            'after': surface.retain(actor, workspace_after),
+                        }
+                        mutation['auxiliary_filenames'] = sorted(set(workspace_after) - set(visible))
                 path = surface.archive / f'{actor}-{surface.counter[actor]:04d}.json'
                 with path.open('x') as handle:
                     json.dump(observation,handle,indent=2)

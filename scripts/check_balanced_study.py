@@ -27,6 +27,7 @@ def plan_for(domain, preset):
             world_config=deepcopy(world),
             delivery_config=deepcopy(config),
             continuous_workflow=True,
+            work_entries_only=True,
             native_record_harness='codex',
         )
     return plan

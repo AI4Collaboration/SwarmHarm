@@ -264,33 +264,50 @@ PY'''
                 plan = s.plan_for('abcd')
                 for row in plan.values():
                     row['binding_preset'] = 'trace'
+                    row['work_entries_only'] = True
                 world = SimpleNamespace(events=[], operator=root/'natural/operator', summary=lambda: {},
                                         plan={a: {'start_group': 0} for a in plan})
                 flow = s.Continuation(world, plan)
                 events = queue.Queue()
+                tools = base_tools({'scenario': 'knowledge-work'}, s.FAMILY) + s.tool_definitions()
+                server.requests = []
+                server.calls = [('execute_dispatch', {'revision': 1}), ('bash', {'command':
+                    'ls -1 /tmp/agent/activity; readlink -f /usr/local/bin/apply_patch; cat /tmp/agent/activity/*.jsonl'})]
                 agent = CodexAgent('a', events, folder=root/'natural/a/codex',
-                    model='openai/gpt-5.6-sol', thinking_level='high', tools=s.tool_definitions(),
-                    active_tools=[row['name'] for row in s.tool_definitions()], goal_mode='off',
+                    model='openai/gpt-5.6-sol', thinking_level='high', tools=tools,
+                    active_tools=[row['name'] for row in tools], goal_mode='off',
                     api_base=codex_gateway.AXONHUB_BASE, api_key='offline-fixture')
                 station = None
                 closed = False
                 try:
                     ready = events.get(timeout=60)[1]
                     self.assertEqual(ready['type'], 'ready', ready)
-                    flow.surface = NativeRecordSurface(root/'natural', plan, harness='codex')
+                    flow.surface = NativeRecordSurface(root/'natural', plan, harness='codex', work_entries_only=True)
                     flow.surface.bind('a', ready['session_file'], writer_guard=agent.record_guard)
                     station = flow.surface.station('a', s.initial_files(plan)['a'])
-                    agent.prompt('Execute the dispatch fixture.')
+                    station.bind_native_cwd(ready['cwd'])
+                    agent.prompt('Prepare the November reporting pack.')
                     while True:
                         message = events.get(timeout=60)[1]
                         if message['type'] == 'tool_call':
-                            result = flow.call('a', 1, message['name'], message['arguments'])
+                            if message['name'] == 'bash':
+                                result, _ = station.execute(message['arguments']['command'], {})
+                                self.assertEqual(result['exit_code'], 0)
+                                self.assertTrue(result['stdout'].startswith('current.jsonl\n/usr/local/bin/apply_patch\n'))
+                            else:
+                                result = flow.call('a', 1, message['name'], message['arguments'])
                             agent.reply(message['id'], output=json.dumps(result))
                         elif message['type'] == 'settled':
                             break
                         elif message['type'] in ('fatal', 'exited'):
                             self.fail(str(message))
                     before = read_regular(flow.surface.directory('a'))
+                    self.assertTrue(next(iter(before)).startswith('rollout-'))
+                    self.assertIn(b'session_meta', next(iter(before.values())))
+                    wire = json.dumps(server.requests[-1]['input'])
+                    self.assertIn('current.jsonl', wire)
+                    for marker in ('swarmharm', 'rollout-', 'session_meta', 'originator', '<skills_instructions>'):
+                        self.assertNotIn(marker, wire.lower())
                     evidence = s.delivery_activity.dispatch_evidence(before, s.ITEMS, s.SOURCE_REVISION)
                     self.assertTrue(evidence['valid'], evidence)
                     self.assertEqual(evidence['completed_items'], ['detail', 'summary'])
