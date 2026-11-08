@@ -1,5 +1,5 @@
 // Claude owns the loop. Only controller MCP tools can execute subject actions.
-import { appendFileSync, cpSync, mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
+import { appendFileSync, closeSync, cpSync, linkSync, mkdirSync, mkdtempSync, openSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { createHash, randomUUID } from "node:crypto";
 import { PassThrough } from "node:stream";
@@ -12,6 +12,23 @@ class ProviderHold extends Error {}
 const canonical = (value) => JSON.stringify(value, (_, entry) =>
   entry && typeof entry === "object" && !Array.isArray(entry)
     ? Object.fromEntries(Object.entries(entry).sort(([a], [b]) => a.localeCompare(b))) : entry);
+
+function publishJsonRecord(path, record) {
+  const content = JSON.stringify(record) + "\n";
+  const staging = path + "." + randomUUID() + ".tmp";
+  const fd = openSync(staging, "wx");
+  try {
+    try {
+      writeFileSync(fd, content);
+    } finally {
+      closeSync(fd);
+    }
+    // Publish in one operation; a duplicate evidence path must still fail.
+    linkSync(staging, path);
+  } finally {
+    rmSync(staging);
+  }
+}
 
 // A deterministic scheduling guard, not an instruction to the subject. The
 // native goal still judges completion; unchanged turns only park its execution.
@@ -45,8 +62,8 @@ export class SessionRecordStore {
     if (key.sessionId !== this.sessionId || key.subpath)
       throw new Error("Unexpected transcript identity");
     const bytes = entries.map((entry) => JSON.stringify(entry)).join("\n") + "\n";
-    writeFileSync(join(this.folder, "native-store", `${String(++this.sequence).padStart(6, "0")}.json`),
-      JSON.stringify({ key, entries }) + "\n", { flag: "wx" });
+    publishJsonRecord(join(this.folder, "native-store", `${String(++this.sequence).padStart(6, "0")}.json`),
+      { key, entries });
     this.pending.push(bytes);
     if (!this.busy) this.flush();
   }
@@ -92,7 +109,7 @@ export class ClaudeBridge {
 
   native(message) {
     const path = join("native", `${String(++this.nativeIndex).padStart(6, "0")}.json`);
-    writeFileSync(join(this.config.folder, path), `${JSON.stringify(message)}\n`, { flag: "wx" });
+    publishJsonRecord(join(this.config.folder, path), message);
     return path;
   }
 

@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import fs, { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { setImmediate } from "node:timers/promises";
@@ -58,6 +59,35 @@ async function fixture(t, goalMode = "off") {
     frames.push(...messages); wake?.(); await setImmediate();
   } };
 }
+
+test("native journals publish complete records and preserve existing evidence", async (t) => {
+  const { bridge } = await fixture(t);
+  const originalWrite = fs.writeFileSync;
+  for (const [name, write] of [
+    ["native", () => bridge.native({ type: "user" })],
+    ["native-store", () => bridge.recordStore.append({ sessionId: bridge.sessionId }, [{ type: "user" }])],
+  ]) {
+    const directory = join(bridge.config.folder, name);
+    const interrupted = t.mock.method(fs, "writeFileSync", (target, data, options) => {
+      originalWrite(target, "{", options);
+      assert.deepEqual(readdirSync(directory).filter(file => file.endsWith(".json")), []);
+      throw new Error("interrupted write");
+    });
+    syncBuiltinESMExports();
+    try {
+      assert.throws(write, /interrupted write/);
+    } finally {
+      interrupted.mock.restore();
+      syncBuiltinESMExports();
+    }
+    assert.deepEqual(readdirSync(directory), []);
+    const existing = join(directory, "000002.json");
+    originalWrite(existing, "{}\n");
+    assert.throws(write, { code: "EEXIST" });
+    assert.equal(readFileSync(existing, "utf8"), "{}\n");
+    assert.deepEqual(readdirSync(directory), ["000002.json"]);
+  }
+});
 
 test("a changed provider model stops before controller execution", async (t) => {
   const f = await fixture(t);
