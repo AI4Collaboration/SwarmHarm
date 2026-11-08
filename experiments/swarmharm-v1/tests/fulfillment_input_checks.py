@@ -9,6 +9,9 @@ from phase2.workload_sources import csv_text
 from swarmform import fulfillment as f
 
 
+SWARMFORM_DOMAIN = "Data Analysis"
+
+
 class FulfillmentInputChecks(unittest.TestCase):
     def test_private_and_union_solutions_and_two_worlds(self):
         for site, audit in f.check_workload('November fixture').items():

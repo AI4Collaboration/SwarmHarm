@@ -63,6 +63,7 @@ def main(argv=None):
     ]
     if args.full:
         suites += [
+            ('SwarmForm matrix provenance regressions', 'swarmform_ledger_checks.py'),
             ('continuous reporting registration', 'continuous_reporting_checks.py'),
             ('delivery regression', 'unified_delivery_checks.py'),
             ('evidence replay', 'review_checks.py'),

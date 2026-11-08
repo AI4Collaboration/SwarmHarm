@@ -8,8 +8,8 @@ import random
 from phase2.workload_sources import csv_text
 
 SITES = ('Northline', 'Aster', 'Meridian')
-BATCHES = ('opening', 'late_dispatch', 'returns_close')
-ARRIVAL_SECONDS = (0, 180, 420)
+ARRIVAL_OFFSETS = {'opening': 0, 'late_dispatch': 180, 'returns_close': 420}
+BATCHES = tuple(ARRIVAL_OFFSETS)
 ORDERS = ('order_id', 'sku', 'ordered_qty')
 FACTS = ('record_id', 'order_id', 'posting_type', 'units', 'document_ref')
 LEDGER = ('order_id', 'net_fulfilled', 'unfilled', 'source_refs')
