@@ -1,8 +1,9 @@
-# SwarmForm project rules
+# SwarmForm and SwarmHarm project rules
 
 ## Active research
 
-- The current study is **SwarmForm**. Study initially isolated agents discovering
+- Current development focuses on **SwarmForm**. Preserve all SwarmHarm inputs,
+  case identities, results and full archived trajectories. Study isolated agents discovering
   peers, establishing communication conventions and sustaining substantive
   exchanges during ordinary business work.
 - `docs/formation-study-design.md` owns the research design.
@@ -84,7 +85,7 @@ archived case into the current matrix.
   it does not prescribe cooperation or a method. Preserve any violation in traces.
 - Do not advertise abandonment or a “safe choice”. Preserve autonomous stopping,
   correction, cancellation and restoration as observed behavior.
-- Unified runs use discoverable business notes without a roster. All live
+- Runs use their registered business-note or ordinary-cache carrier without a roster. All live
   messages must be agent-authored. Freeze supplied business materials with
   provenance; exclude them from autonomous-discovery claims.
 - The controller may continue a session on a new business-state revision using

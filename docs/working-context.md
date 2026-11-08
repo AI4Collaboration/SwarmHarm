@@ -1,49 +1,47 @@
 # Working context — 8 November 2026
 
-## Active research
+## Two retained research scopes
 
-The study's working title is **SwarmForm**. Its question is whether initially
-isolated agents discover one another, establish their own communication
-conventions and repeatedly exchange substantive work. The canonical plan is
-[formation-study-design.md](formation-study-design.md); implementation coverage
-and open checks are in [swarmform-coverage.md](swarmform-coverage.md).
+SwarmForm studies autonomous discovery, channel establishment and sustained
+exchange. SwarmHarm retains all existing configurations, cases, findings and
+archived trajectories. Both use the maintained runner; neither study renames
+or overwrites the other's evidence.
 
-The three initial scenario candidates are shared working data, reachable worker
-processes and shared supporting services. They are a sample grounded in the
-resource inventory. The new sustained-use thresholds and repetitions are
-prospective study choices. The current CLI implements the reporting baseline.
+## Current input and repairs
 
-## Last verified state
+The new [SwarmForm cache configuration](../experiments/swarmharm-v1/configs/swarmform-work-cache.json)
+uses four Knowledge Work report owners, ordinary editable cache files,
+cross-account source receipts and content-based release. There is no supplied
+message format or peer roster. It is a separate input from the documented-note
+SwarmHarm baseline.
 
-The latest v56 rollout completed and was reviewed. No collector was found in
-this audit. Its four Sol 6.1 agents used the documented note carrier; the complete
-[validation](research/workstation-context-validation.json) and
-[private release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-v56-work-journal-20261108)
-retain original results. The existing matrix and pilot results remain indexed in
-[reviewed evidence](phase2-design.md).
+Continuous workstation mode keeps child processes running between commands.
+Observation briefly suspends them for consistent file capture, then resumes
+only the processes it stopped. Full before/after/terminal snapshots retain
+regular temporary files, path metadata and process state in the external archive.
+Background cache changes are retained across the next synchronization.
 
-The offline formation recheck bound 247 peer-note reads across 11 cases to native
-delivery and subsequent session input. Their original formation verdicts remain
-recorded. This evidence supports the existing note mechanism.
+Business-only notifications ignore message/file writes. Every emitted notice
+records its previous/current revision and triggering record references, making
+notification effects inspectable. Existing configurations retain their original
+process lifecycle and notification defaults.
 
-## Next implementation
+Ten targeted regression checks and all 17 offline check groups passed.
+Registered Sol 5.6/6.1 behavioral evaluations are next. Each model is authorized for one
+fresh four-agent rollout with native Codex through AxonHub, high reasoning and
+goal off. Evaluate spontaneous conventions and sustained substantive exchange
+from full native evidence, including negative outcomes.
 
-1. Add ordinary files and directories with exact filename, metadata, content,
-   version and partial-read evidence. Preserve the JSON-note baseline as a named
-   condition. Match operations and limits when comparing supplied conventions.
-2. Build repeated source-revision work, with enough substantive material to measure
-   exchange and reuse. Keep workload and continuation identical within comparisons.
-3. Qualify the shared-service namespace and worker-endpoint fixtures. Current
-   observation kills background processes and pauses workers. The base lifecycle
-   probe also found persistent temp files outside the captured roots. Those paths
-   need explicit runtime and evidence support before endpoint collection.
-4. Audit fresh-run isolation and old container ownership before collection. The
-   audit found 65 managed containers with absent owner PIDs. Preserve their data
-   until terminal evidence and ownership are established.
-5. Freeze source, run path and corrected-scope checks, then register fresh matched
-   Sol 5.6/6.1 rollouts. Record all outcomes and independently review claimed
-   autonomous conventions and sustained exchange.
+## Existing evidence
 
-Existing reporting-runner consequence scoring remains part of its interface.
-SwarmForm's main result is communication formation and sustained use. Additional
-business effects retain their own evidence criteria and case identities.
+The v56 Sol 6.1 run supports use of a documented note carrier with four agents,
+12 notes and 28 exact peer reads. Its [complete case](research/workstation-context-validation.json)
+and all [SwarmHarm findings](phase2-design.md) retain their original definitions.
+The base-workstation audit is a snapshot of the previous lifecycle and is kept
+as [repair provenance](research/swarmform-runtime-audit.json).
+
+The new task still makes a short receipt exchange sufficient for its missing
+information. Large, repeated transfers are observable but are not required for
+business completion. Report that condition when interpreting the two new runs.
+The remaining infrastructure variants and richer repeated-work fixtures follow
+the [SwarmForm design](formation-study-design.md).

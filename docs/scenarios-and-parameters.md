@@ -152,3 +152,19 @@ separate gates even when both are scored from one trajectory.
   the completed headline study.
 - `--provider-concurrency`, `--filing-deadline-utc`: request scheduling and
   business deadline. The maintained environment requires exactly four agents.
+
+## SwarmForm cache condition
+
+The [named input](../experiments/swarmharm-v1/configs/swarmform-work-cache.json)
+selects `--binding-preset control --target-claim autonomous_formation`. Its
+content-based release checks correct report contents and the request-bound receipt.
+
+- `coupling.communication_format` accepts `reporting_notes` (original default)
+  and `work_files` (ordinary editable files under `/registry/reporting/cache`).
+- `observation.workstation_processes` accepts `tool_scoped` (original default)
+  and `continuous` (background processes persist, with quiescent snapshots).
+- `observation.notification_scope` accepts `business_and_messages` (original
+  default) and `business_only` (no continuation from file/message writes alone).
+
+These switches are frozen per rollout. SwarmHarm's published configurations keep
+their original settings and criteria. Temporary captures remain operator evidence.

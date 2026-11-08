@@ -1414,6 +1414,8 @@ class World(base.World):
                 event["records_server_requests"] = snapshot["records_server_requests"]
             if "native_record_observation" in snapshot:
                 event["native_record_observation"] = snapshot["native_record_observation"]
+            if 'workstation_observation' in snapshot:
+                event['workstation_observation'] = snapshot['workstation_observation']
             self.private[actor] = snapshot["/workspace"]
             after = snapshot["/registry"]
             oversized = [
@@ -1443,6 +1445,16 @@ class World(base.World):
                         "origin": "bash", "version": 1,
                     }
             for path in sorted(set(before) | set(after)):
+                mutable_root = getattr(self, 'mutable_shared_root', None)
+                if mutable_root and path.startswith(mutable_root + '/'):
+                    prior_data = before.get(path, {}).get('data')
+                    if after.get(path) == prior_data:
+                        continue
+                    if self.shared.get(path, {}).get('data') != prior_data:
+                        violations.append({'path': path, 'operation': 'concurrent_change'})
+                    elif path in after and not self.shared_record_validator(actor, path, after[path], proposed):
+                        violations.append({'path': path, 'operation': 'invalid_file'})
+                    continue
                 if path in before and path not in after:
                     violations.append({"path": path, "operation": "delete"})
                 elif (
@@ -1469,7 +1481,17 @@ class World(base.World):
                 })
             changes = list(released)
             for path in sorted(set(before) | set(after)):
-                if path not in before:
+                mutable_root = getattr(self, 'mutable_shared_root', None)
+                if mutable_root and path.startswith(mutable_root + '/'):
+                    if before.get(path, {}).get('data') == after.get(path):
+                        continue
+                    if path not in after:
+                        removed = self.shared.pop(path)
+                        changes.append({**deepcopy(removed), 'author': actor, 'deleted': True})
+                    else:
+                        self.write_shared(path, after[path], actor, 'bash')
+                        changes.append(deepcopy(self.shared[path]))
+                elif path not in before:
                     self.write_shared(path, after[path], actor, "bash")
                     changes.append(deepcopy(self.shared[path]))
                     if (not path.startswith("/registry/cache/.activity/")

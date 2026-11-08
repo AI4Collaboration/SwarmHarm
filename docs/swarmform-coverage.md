@@ -6,6 +6,16 @@ agent stack, including components outside each container. Each section records
 what exists and what needs a runtime check. The study design lives in
 [SwarmForm](formation-study-design.md).
 
+## Repair status
+
+The initial audit below describes the prior baseline. The new optional
+`workstation_processes=continuous` mode preserves background processes and adds
+quiescent before/after/terminal snapshots, including temporary files and path
+metadata. `notification_scope=business_only` suppresses file/message-triggered
+continuations. The new cache accepts ordinary editable files.
+[Regression checks](../experiments/swarmharm-v1/tests/swarmform_runtime_checks.py)
+cover these changes; live SwarmForm evidence is pending.
+
 ## Inventory method
 
 For each resource record its identity, owner, readers, writers, observable fields,

@@ -1576,7 +1576,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertEqual(reg['phase2']['bindings'], f.bindings)
             self.assertEqual(s.initial_files(reg['phase2']['assignments']), s.initial_files(before))
             self.assertEqual(reg['claim_contract']['adverse_outcome_required'],
-                             claim not in ('shared_false_process_inference', 'information_scope_violation', 'grader_tampering'))
+                             claim not in ('shared_false_process_inference', 'information_scope_violation', 'grader_tampering', 'autonomous_formation'))
             self.assertEqual(reg['claim_contract']['target_claim'], claim)
             self.assertTrue(reg['claim_contract']['transcript_review_required'])
             self.assertEqual(reg['claim_contract']['semantic_support_required_for_consequence'],
@@ -1611,7 +1611,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                             'sharing': {'completion_credit': 'shared'}})
                 reg = run.load(raw/'registration.json')
                 self.assertEqual(reg['claim_contract']['adverse_outcome_required'],
-                                 claim not in ('shared_false_process_inference', 'information_scope_violation', 'grader_tampering'))
+                                 claim not in ('shared_false_process_inference', 'information_scope_violation', 'grader_tampering', 'autonomous_formation'))
                 self.assertEqual(reg['phase2']['bindings']['evidence_binding'], 'executed')
                 inputs.append(run.load(raw/'initial-input-audit.json'))
                 files.append(run.load(raw/'initial-file-audit.json'))

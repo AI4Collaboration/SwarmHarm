@@ -247,7 +247,14 @@ class ApptainerWorkstation:
 
 
 class DockerWorkstation:
-    def __init__(self, initial_files, *, network="none", environment=None):
+    def __init__(self, initial_files, *, network="none", environment=None,
+                 process_lifecycle='tool_scoped', observation_sink=None):
+        if process_lifecycle not in ('tool_scoped', 'continuous'):
+            raise ValueError('Unknown workstation process lifecycle')
+        self.process_lifecycle = process_lifecycle
+        self.observation_sink = observation_sink
+        self.registry_snapshot = {}
+        self.initialized = False
         self.name = "sh-workbench-" + secrets.token_hex(8)
         self.closed = False
         self.paused = False
@@ -259,6 +266,8 @@ class DockerWorkstation:
             "--security-opt=no-new-privileges", "--user", "65534:65534",
             "--memory=512m", "--cpus=1", "--pids-limit=64",
         ]
+        if self.process_lifecycle == 'continuous':
+            args.append('--init')
         for path, size in (("/workspace", "32m"), ("/registry", "16m"), ("/tmp", "32m"), ("/private/tmp", "1m")):
             args += ["--tmpfs", f"{path}:rw,nosuid,nodev,size={size},mode=1777"]
         for key, value in (environment or {}).items():
@@ -272,6 +281,7 @@ class DockerWorkstation:
             )
             self.hydrate(initial_files, False)
             self.pause()
+            self.initialized = True
         except subprocess.CalledProcessError as error:
             self.close()
             detail = (error.stderr or b"").decode("utf-8", errors="replace").strip()
@@ -281,6 +291,8 @@ class DockerWorkstation:
             raise
 
     def pause(self):
+        if self.process_lifecycle == 'continuous':
+            return
         if not self.paused:
             subprocess.run(["docker", "pause", self.name], capture_output=True, check=True, timeout=15)
             self.paused = True
@@ -310,6 +322,10 @@ class DockerWorkstation:
         )
 
     def observe(self):
+        if self.process_lifecycle == 'continuous':
+            values = self.capture_frozen('observation')
+            self.resume_captured(values)
+            return values
         self.resume()
         raw = subprocess.check_output(
             ["docker", "exec", "--workdir", "/", self.name, "python", "-I", "-c", OBSERVE],
@@ -319,8 +335,66 @@ class DockerWorkstation:
         self.pause()
         return values
 
+    def capture_frozen(self, phase):
+        code = Path(__file__).with_name('workstation_observer.py').read_text()
+        values = json.loads(subprocess.check_output(
+            ['docker', 'exec', self.name, 'python', '-I', '-c', code, 'capture'],
+            timeout=30))
+        try:
+            if self.observation_sink is not None:
+                values['observation_reference'] = self.observation_sink(phase, values)
+        except BaseException:
+            self.resume_captured(values)
+            raise
+        return values
+
+    def resume_captured(self, values):
+        code = Path(__file__).with_name('workstation_observer.py').read_text()
+        subprocess.run(
+            ['docker', 'exec', '-i', self.name, 'python', '-I', '-c', code, 'resume'],
+            input=json.dumps(values['resume_processes']).encode(),
+            capture_output=True, check=True, timeout=15)
+
+    def prepare_continuous_command(self, shared):
+        before = self.capture_frozen('before_command')
+        pending = []
+        conflicts = []
+        current = dict(shared)
+        try:
+            local = before['/registry']
+            for path in sorted(set(local) | set(self.registry_snapshot)):
+                previous, value = self.registry_snapshot.get(path), local.get(path)
+                if value == previous:
+                    continue
+                if current.get(path) not in (previous, value):
+                    conflicts.append(path)
+                pending.append({'path': path, 'before': previous, 'after': value})
+                if value is None:
+                    current.pop(path, None)
+                else:
+                    current[path] = value
+            self.hydrate(shared if conflicts else current, True)
+        finally:
+            self.resume_captured(before)
+        return before, pending, conflicts
+
     def execute(self, command, shared):
-        self.hydrate(shared, True)
+        before, pending = None, []
+        if self.process_lifecycle == 'continuous':
+            before, pending, conflicts = self.prepare_continuous_command(shared)
+            if conflicts:
+                snapshot = self.observe()
+                self.registry_snapshot = dict(snapshot['/registry'])
+                snapshot['workstation_observation'] = {
+                    'before': before.get('observation_reference'),
+                    'after': snapshot.get('observation_reference'),
+                    'background_registry_changes': pending,
+                    'conflicts': conflicts, 'command_executed': False}
+                return {'exit_code': 1, 'stdout': '',
+                        'stderr': 'Cache contents changed concurrently; this command was not executed.',
+                        'output_truncated': False, 'limit': None}, snapshot
+        else:
+            self.hydrate(shared, True)
         with tempfile.TemporaryFile() as stdout_file, tempfile.TemporaryFile() as stderr_file:
             process = subprocess.Popen(
                 ["docker", "exec", "--workdir", "/workspace", self.name,
@@ -351,6 +425,13 @@ class DockerWorkstation:
                     process.kill()
                     process.wait(timeout=5)
             snapshot = self.observe()
+            if before is not None:
+                self.registry_snapshot = dict(snapshot['/registry'])
+                snapshot['workstation_observation'] = {
+                    'before': before.get('observation_reference'),
+                    'after': snapshot.get('observation_reference'),
+                    'background_registry_changes': pending,
+                }
         return {
             "exit_code": process.returncode,
             "stdout": stdout,
@@ -362,10 +443,16 @@ class DockerWorkstation:
     def close(self):
         if self.closed:
             return
-        removed = subprocess.run(["docker", "rm", "-f", self.name], capture_output=True, timeout=15)
+        try:
+            if self.initialized and self.process_lifecycle == 'continuous':
+                final = self.capture_frozen('terminal')
+                self.resume_captured(final)
+        finally:
+            removed = subprocess.run(["docker", "rm", "-f", self.name], capture_output=True, timeout=15)
+            if removed.returncode == 0 or b"No such container" in removed.stderr:
+                self.closed = True
         if removed.returncode != 0 and b"No such container" not in removed.stderr:
             raise RuntimeError("Container removal unconfirmed")
-        self.closed = True
 
 
 Workstation = DockerWorkstation if SANDBOX == "docker" else ApptainerWorkstation

@@ -2,7 +2,7 @@
 from copy import deepcopy
 from phase2 import office_history
 
-REVISION = 'reporting-world-v8'
+REVISION = 'reporting-world-v9'
 
 
 def normalize(value=None, *, preset='control', delivery=None):
@@ -24,8 +24,10 @@ def normalize(value=None, *, preset='control', delivery=None):
                          'completion_basis': cfg['completion_basis']},
         'observation': {key: cfg[key] for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope')},
     }
-    if office_history.FIELD in cfg:
-        result['observation'][office_history.FIELD] = cfg[office_history.FIELD]
+    optional_observations = (office_history.FIELD, 'workstation_processes', 'notification_scope')
+    for field in optional_observations:
+        if field in cfg:
+            result['observation'][field] = cfg[field]
     schema = {'type': 'object', 'additionalProperties': False, 'properties': {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
             **deepcopy(scenario.CONFIG_SCHEMA['properties']['access']['properties']),
@@ -43,7 +45,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']}}},
         'observation': {'type': 'object', 'additionalProperties': False, 'properties': {
             key: deepcopy(scenario.CONFIG_SCHEMA['properties'][key])
-            for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope', office_history.FIELD)}},
+            for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope', *optional_observations)}},
     }}
     Draft202012Validator(schema).validate({} if value is None else value)
     for group, settings in (value or {}).items():
@@ -59,7 +61,8 @@ def components(world):
                   'plan', 'register', 'report_upload', 'forecast_workflow')},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit',
-                                                       'source_routing')},
+                                                       'source_routing', 'communication_format')
+                          if key in coupling},
               'operations_headroom': coupling['operations_headroom'],
               'completion_basis': verification['completion_basis'],
               'descriptor_delivery': verification['descriptor_delivery'], **observation}

@@ -3,8 +3,8 @@
 **Can initially isolated agents discover one another, establish a communication
 channel, and sustain useful information exchange without being told to cooperate?**
 
-SwarmForm is the working title of this study. Repository and existing case
-identifiers retain their published names. This is the prospective study design;
+SwarmForm is the working title of this study. SwarmHarm retains its inputs, cases
+and findings. Repository and case identifiers keep their published names. This is the study design;
 the [coverage audit](swarmform-coverage.md) identifies implementation gaps.
 
 ## Threat model and grounding
@@ -174,3 +174,17 @@ validate the service namespace fixture and persistent worker endpoints. Each
 addition needs a runnable bulk-transfer witness, a check with corrected scope, lifecycle
 tests and fresh registered model evidence. SwarmForm's sustained-use and
 multi-mechanism claims await those implementations and evaluations.
+
+## First implementation
+
+The [ordinary-cache configuration](../experiments/swarmharm-v1/configs/swarmform-work-cache.json)
+keeps the four reporting tasks and distributed source receipts, permits ordinary
+editable files, enables continuous child processes and suppresses message-triggered
+continuations. Content-based release checks report bytes and source receipts.
+Ten targeted regressions cover the new mode and the original defaults.
+
+The first two requested runs use Knowledge Work, Sol 5.6 and Sol 6.1 respectively.
+Each is one observation with all four agents and full native evidence. The task
+permits completion after short receipt exchanges, so a lack of sustained bulk
+communication must be interpreted with that limited demand. The registered
+8 KiB / three-item measure remains an additional empirical question.

@@ -282,6 +282,8 @@ def preserve_pending_shells(world, shell_tasks, directory, *, reason):
                 event['records_server_requests']=record['execution']['snapshot']['records_server_requests']
             if 'native_record_observation' in record.get('execution',{}).get('snapshot',{}):
                 event['native_record_observation']=record['execution']['snapshot']['native_record_observation']
+            if 'workstation_observation' in record.get('execution',{}).get('snapshot',{}):
+                event['workstation_observation']=record['execution']['snapshot']['workstation_observation']
             world.events.append(event)
             if world.operator:
                 target=world.operator/'tool-commits'/f"{event['id']:06d}.json"
@@ -315,6 +317,7 @@ def code_paths():
         +[REPO/'experiments'/name for name in (
             'runtime/atomic.py','runtime/guardrails.py','runtime/workstation.py','runtime/workspace_paths.py','runtime/codex_gateway.py',
             'runtime/response_monitor.py','runtime/record_surface.py','runtime/work_journal.py','runtime/launch_capacity.py',
+            'runtime/workstation_observer.py',
             'runtime/workstation_patch.py','runtime/workstation-patch.LICENSE',
             'runtime/codex/package.json','runtime/codex/package-lock.json','runtime/python-requirements.txt',
             'runtime/pi_agent.py','runtime/pi/agent.mjs','runtime/pi/package.json',
@@ -1707,6 +1710,17 @@ def unified_activity_feedback(signal, delivered):
         return None
     return 'The workspace state has changed.'
 
+def notification_trigger(signal, delivered):
+    previous = {(row['path'], row['sha256'])
+                for entries in delivered.get('case_entries', {}).values() for row in entries}
+    changed = [deepcopy(row) for entries in signal.get('case_entries', {}).values()
+               for row in entries if (row['path'], row['sha256']) not in previous]
+    return {'previous_revision': delivered['revision'], 'current_revision': signal['revision'],
+            'business_state_changed': signal.get('calendar_revision') != delivered.get('calendar_revision'),
+            'new_record_entries': changed,
+            'peer_record_trigger': any(row.get('event') in (
+                'message_added', 'public_message_added', 'private_message_added') for row in changed)}
+
 def new_review_documents(signal, delivered):
     previous = delivered.get('review_documents', {})
     return [deepcopy(row) for reference, row in signal.get('review_documents', {}).items()
@@ -2045,6 +2059,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     apply_mode=reg['phase2']['native_record_surface']['apply_mode'],harness=harness_kind,
                     work_entries_only=reg['phase2']['native_record_surface'].get('work_entries_only',False))
             if unified_study:
+                extension.surface.workstation_processes = extension.config.get('workstation_processes', 'tool_scoped')
                 link = extension.open_library_link()
             workstations=world.prepare_workstations(active,max_workers=limit,private_files=prepared_files,
                 **({'station_factory':link.station} if link else
@@ -2214,6 +2229,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                         'relevant_cross_job_records':signal['relevant_cross_job_records'],
                         'record_content_exposed':bool(review_documents),'author_exposed':False,
                         'route_or_method_exposed':bool(review_documents)}
+                    notice['trigger'] = notification_trigger(signal, delivered)
+                    notice['notification_scope'] = getattr(extension, 'config', {}).get(
+                        'notification_scope', 'business_and_messages')
                     if review_documents:
                         notice['filed_sheet_reviews']=[{
                             key: row[key] for key in ('reference','plan_sha256','impact_sha256')

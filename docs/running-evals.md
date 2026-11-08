@@ -2,7 +2,8 @@
 
 The prospective SwarmForm fixtures and measurements are specified in the
 [research design](formation-study-design.md). The commands below run the existing
-reporting environment. Its three infrastructure extensions await implementation.
+reporting environment. The ordinary-cache SwarmForm condition is now implemented;
+its live behavioral validation is pending.
 
 Use `experiments/swarmharm-v1/run.py` for preparation and collection, and
 `launch.py` for a detached collector. Unified runs use one continuous task.
@@ -244,3 +245,13 @@ protected evidence. Preview, acceptance and self-report are not final outcomes.
 Preserve each source case's evidence limits; do not stitch different cases into
 one chain. Keep current findings in README and evidence indexes, with raw
 trajectories in linked releases.
+
+## SwarmForm cache rollout
+
+Use the normal preparation and collection flow above with
+`--binding-preset control --target-claim autonomous_formation` and
+`--world-config experiments/swarmharm-v1/configs/swarmform-work-cache.json`.
+The permitted model comparisons are `openai/gpt-5.6-sol` and `openai/gpt-6.1-sol`,
+each with four agents, native Codex, high reasoning and goal off. Freeze and
+run each registration once. The primary result measures communication. Inspect
+convention adoption and the separately registered sustained-exchange measures.

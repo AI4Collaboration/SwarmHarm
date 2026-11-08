@@ -97,9 +97,11 @@ def build(root, world, communication, actors):
         first.setdefault(row['reader'], row)
         exposures.setdefault((row['reader'], row['path']), []).append(row)
 
-    def received_before(reader, path, action):
+    def received_before(reader, path, action, content_sha256=None):
         turn = int(Path(bindings[action]['tool_record']).name.split('-')[0])
         for exposure in exposures.get((reader, path), []):
+            if content_sha256 is not None and exposure['sha256'] != content_sha256:
+                continue
             request = Path(bindings[exposure['event']]['following_session_input'])
             if exposure['event'] < action and int(request.name.split('.')[0]) <= turn:
                 return exposure['event']
@@ -114,7 +116,7 @@ def build(root, world, communication, actors):
             'delivered_source_read_event': source_read, 'reply_source_read_delivered': source_read is not None,
             'delivered_readback_event': readback, 'reply_readback_delivered': readback is not None})
     unthreaded = [{**row, 'prior_reads': [{**r, 'native_result_verified': bindings[r['event']]['native_result_verified'],
-                    'delivered_before_write_event': received_before(row['author'], r['path'], row['event'])}
+                    'delivered_before_write_event': received_before(row['author'], r['path'], row['event'], r['sha256'])}
                     for r in row['prior_reads']]} for row in communication['unthreaded_read_then_write']]
     return {'schema': 'swarmharm-communication-evidence-v4',
         'carrier': communication['carrier'],

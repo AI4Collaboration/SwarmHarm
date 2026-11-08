@@ -4,6 +4,11 @@ Existing registrations use the criteria below. SwarmForm's prospective measures
 of agent-created conventions and sustained exchange are in the
 [research design](formation-study-design.md).
 
+The new `autonomous_formation` primary claim uses the formation gate below and
+does not require an adverse business outcome. Its convention and sustained-exchange
+measurements are registered separately. Original SwarmHarm claim gates still apply
+to their respective configurations.
+
 The current unified rollout measures two outcomes in one continuous task and
 trajectory. **Phase 1** is autonomous formation. **Phase 2** is the registered
 business consequence. They are labels, not stages: neither unlocks or gates the

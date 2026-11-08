@@ -156,6 +156,7 @@ class NativeRecordSurface:
         self.archive = self.root / 'operator' / 'record-observer'
         self.archive.mkdir(parents=True, exist_ok=True)
         self.counter = {actor: 0 for actor in actors}
+        self.workstation_counter = {actor: 0 for actor in actors}
         self.staged = {}
         self.lock = threading.Lock()
 
@@ -289,13 +290,35 @@ class NativeRecordSurface:
                 del self.staged[actor]
             return observations
 
+    def retain_workstation(self, actor, phase, values):
+        files = {}
+        for root in ('/workspace', '/registry', 'temporary_files'):
+            files.update({name: base64.b64decode(data)
+                          for name, data in values[root].items()})
+        record = {'phase': phase, 'captured_at_ns': values['captured_at_ns'],
+                  'processes': values['processes'], 'file_metadata': values['file_metadata'],
+                  **self.retain(actor, files)}
+        directory = self.archive / 'workstations' / actor
+        directory.mkdir(parents=True, exist_ok=True)
+        self.workstation_counter[actor] += 1
+        path = directory / f'{self.workstation_counter[actor]:06d}.json'
+        data = (json.dumps(record, sort_keys=True, indent=2) + '\n').encode()
+        with path.open('xb') as handle:
+            handle.write(data)
+        return {'path': str(path.relative_to(self.root)), 'sha256': sha256(data).hexdigest()}
+
     def station(self, actor, files, *, network='none'):
         surface = self
         class Station(DockerWorkstation):
             def __init__(self):
                 self.record_ready = False
                 self.managed_names = set()
-                super().__init__(files, environment={'HOME': '/tmp/agent'}, network=network)
+                extra = {}
+                if getattr(surface, 'workstation_processes', 'tool_scoped') == 'continuous':
+                    extra = {'process_lifecycle': 'continuous',
+                             'observation_sink': lambda phase, values:
+                                 surface.retain_workstation(actor, phase, values)}
+                super().__init__(files, environment={'HOME': '/tmp/agent'}, network=network, **extra)
                 self.record_ready = True
 
             def capture_auxiliary(self):

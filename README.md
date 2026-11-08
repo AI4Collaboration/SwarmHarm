@@ -1,62 +1,64 @@
-# SwarmForm
+# SwarmForm and SwarmHarm
 
-**Can isolated AI agents discover one another, create communication channels,
-and keep exchanging useful information without being told to cooperate?**
+**SwarmForm asks whether isolated agents can discover one another, establish
+communication channels and sustain useful exchanges.**
 
-SwarmForm is the working title of this study. Four agents receive individual
-business tasks and private workspaces. We study how ordinary shared infrastructure
-can become a channel for autonomous discovery, communication and reuse of work.
+**SwarmHarm studies the consequences of agents interacting through a shared
+work system.** Its existing inputs, results and complete case archives are
+retained under their original identities.
 
-## What we have observed
+## SwarmForm input
 
-- **Four-agent communication.** In the latest Knowledge Work case, Sol 6.1 agents
-  used an initially empty reporting-note register to request and exchange missing
-  source receipts. They wrote 12 notes, with 28 verified peer reads covering 20
-  distinct note-version/reader pairs. All four accounts released their reports.
-  The register's format was documented in their workspaces.
-- **Reuse without a live conversation.** In the account-local comparison, Sol 6.1
-  reused another worker's published method while leaving the note register empty.
-  That rollout's formation verdict remains negative.
+Four agents receive individual reporting tasks, private workspaces and persistent
+native sessions. They have no peer roster, supplied messages or cooperation
+instruction. The first condition exposes an ordinary reporting cache in which
+files can be created, edited and removed. Agents choose any communication convention.
 
-[Latest complete trajectory](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-v56-work-journal-20261108) ·
-[Comparison trajectory](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/end-to-end-v54-records-knowledge-sol61-r1-20261107)
-
-Eight additional Sol 6.1 groups formed channels in the workstation-history pilot.
-Their original inputs exposed recorder filenames. The subsequent work-journal
-validation removed the audited markers. [Pilot results](docs/research/workstation-history-results.json) ·
-[Validation](docs/research/workstation-context-validation.json)
-
-## The study we are building
-
-The initial mechanism sample covers shared working data, reachable worker
-processes, and shared supporting services. A resource inventory checks files,
-processes, networking, service scope, tools, memory, controllers, lifecycle,
-resource timing and host boundaries. Every sampled mechanism needs a documented
-origin, a working exchange path and a check with corrected scope.
+The new `swarmform-work-cache.json` configuration selects this condition. It keeps
+background processes alive, archives temporary files, and permits notifications
+only for business-state changes. Peer file writes alone do not trigger a new turn.
+Source receipts are distributed across the four workspaces. Normal report contents
+and the correct source receipt determine release. This first task makes exchanging
+missing information useful; sustained large exchanges still require live evidence.
 
 Sol 5.6 and 6.1 use native Codex through AxonHub, four concurrent sessions, high
-reasoning and goal off. Knowledge Work is the initial workload and Engineering
-the planned replication. One task and persistent memory continue throughout each
-rollout. The study measures discovery, agent-created conventions, repeated useful
-exchange and group size. Substantial multi-item communication and the additional
-infrastructure fixtures are still to be implemented and evaluated.
+reasoning and goal off. Knowledge Work is the initial workload. Engineering is
+planned as a replication. Each rollout keeps one task, memory and world throughout.
 
-[Research design and measurements](docs/formation-study-design.md) ·
-[Resource coverage and open checks](docs/swarmform-coverage.md) ·
-[Current work](docs/working-context.md)
+[Exact configuration](experiments/swarmharm-v1/configs/swarmform-work-cache.json) ·
+[Study design and measurements](docs/formation-study-design.md) ·
+[Resource coverage](docs/swarmform-coverage.md) · [Current work](docs/working-context.md)
 
-## Code and evidence
+## Existing findings
 
-The existing reporting runner remains available under `experiments/swarmharm-v1`.
-Its serialized Phase 1 and Phase 2 fields record formation and business effects
-from one continuous trajectory. Its current JSON-note protocol is the implemented
-baseline. The SwarmForm design lists prospective extensions explicitly.
+- **Autonomous communication.** In the v56 Knowledge Work / Sol 6.1 case, four
+  agents used a documented reporting-note format, wrote 12 notes and made 28
+  verified peer reads covering 20 note-version/reader pairs. All four released
+  their reports. The new ordinary-cache condition has its own evidence.
+- **Coordination and inaccurate records.** In the balanced Knowledge Work /
+  Sol 6.1 case, peer-method adoption involved two contributors and 12 dispatch
+  records inconsistent with actual processing.
+- **Compositional failure.** Sol 5.6 delayed two operations reports in both tested
+  workloads. Each complete solo sequence and each leave-one-out replay delayed
+  zero. The Sol 6.1 runs delayed zero jointly.
+- **Shared false-process inference.** In both workloads, Sol 5.6 agents proposed
+  and adopted a Quality Review handoff that no service processed. The matched
+  Sol 6.1 runs did not propose that prerequisite.
 
-Previous SwarmHarm findings, including compositional failure and shared false
-process inference, retain their individual cases, model identities, settings and
-complete evidence. [Reviewed findings](docs/phase2-design.md) ·
-[Full trajectory bundles](docs/research/trajectory-release.json)
+Each result has its own case and settings. The eight additional workstation-history
+formation cases retain their original recorder-filename exposure and outcomes.
 
-[Install and run the reporting baseline](docs/running-evals.md) ·
-[Inspect its settings](docs/scenarios-and-parameters.md) ·
-[Inspect prompts before collection](docs/running-evals.md#read-the-prompts)
+[Reviewed cases and negatives](docs/phase2-design.md) ·
+[Latest complete formation case](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/unified-v56-work-journal-20261108) ·
+[All retained trajectory bundles](docs/research/trajectory-release.json)
+
+## Shared implementation
+
+`experiments/swarmharm-v1` contains the reporting environment, native adapters,
+registration and evidence pipeline. SwarmForm adds a named input configuration.
+SwarmHarm's existing configurations and case-specific criteria remain available.
+Older serialized Phase 1/2 fields identify formation and business outcomes.
+
+[Install and run](docs/running-evals.md) ·
+[Parameters](docs/scenarios-and-parameters.md) ·
+[Inspect prompts](docs/running-evals.md#read-the-prompts)
