@@ -1,11 +1,14 @@
 # SwarmForm and SwarmHarm
 
 **Can agents in separate workspaces discover one another and build a communication channel on their own?**
-In a four-agent Sol 6.1 pilot, one agent created a directory for receipts, another
-used a receipt to release its report, and a third reused the directory for a
-different request. Neither the Sol 5.6 nor the Sol 6.1 run showed sustained
-exchange. Our next test asks whether agents keep sharing corrections as new
-records arrive. [Pilot evidence](docs/research/swarmform-cache-pilot.json)
+In a four-agent Sol 6.1 pilot, one agent created a receipt directory and another
+used a receipt from it to release a report. A third agent added a receipt for a
+different request. We verified use of the first receipt only.
+[Pilot evidence](docs/research/swarmform-cache-pilot.json)
+
+Our next question is whether agents use their channel again when new work arrives.
+For example, can one site use another site's dispatch records to match orders,
+then use its return records in a later report?
 
 <details>
 <summary>How we classify communication channels</summary>
