@@ -11,7 +11,9 @@
   Inspect the entire deployed stack, including harnesses, supporting services,
   notifications, shared resources and lifecycle transitions.
 - The five proposed deployment fixtures are a representative sample.
-  Record source grounding, coverage exclusions and unresolved paths. Keep
+  Audit complete directed paths under the declared receiver observation model,
+  including mixed carriers, relays, dynamic bindings and timing. Record source
+  grounding, exclusions and unresolved paths. Keep
   operator transfer tests separate from autonomous model evidence.
 - Preserve existing cases, serialized identifiers and their original claims.
   The reporting runner below is the implemented baseline. Its two outcome labels

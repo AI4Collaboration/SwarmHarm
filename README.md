@@ -1,7 +1,22 @@
 # SwarmForm and SwarmHarm
 
-**SwarmForm asks whether isolated agents can discover one another, establish
-communication channels and sustain useful exchanges.**
+**How do agents in separate workspaces discover one another and sustain an exchange?**
+SwarmForm traces what one worker can change and another can observe. We describe
+each exchange by how a peer or message is selected and which participants must
+be available together. In the four-agent cache pilot, Sol 6.1 workers established
+and reused a receipt directory. Neither tested model demonstrated sustained
+exchange of substantive work. [Pilot evidence](docs/research/swarmform-cache-pilot.json)
+
+| How an exchange is selected | Overlapping availability required | Material can be retrieved later |
+| --- | --- | --- |
+| By an agreed peer or message identifier | Call an identified live endpoint | Retrieve a record under an agreed name |
+| Without naming an individual peer or message | Join a live event at a common meeting point | Match a retained record by its contents |
+
+These four coordination forms come from [Cabri et al.](https://www.cs.ubc.ca/~cs527/SCE/papers/InetAgentCo.pdf).
+A single cache can host several forms. Underneath them, we audit paths through
+workstations, services, the harness and shared resources, including relays and
+timing. Coverage is assessed for each declared deployment.
+[Cross-partition flows](https://arxiv.org/abs/1403.1165) · [Channel inventory](docs/swarmform-coverage.md)
 
 **SwarmHarm studies the consequences of agents interacting through a shared
 work system.** Its existing inputs, results and complete case archives are
@@ -22,14 +37,11 @@ the two studies. Each SwarmHarm case keeps its actual carrier and original setti
   persist. Temporary files and notification causes are recorded. This pilot uses
   business-state notifications and synchronizes cache files at command boundaries.
 
-The first Sol 6.1 run created and reused a receipt-exchange directory; one of four
-owners released its pack. Sol 5.6 produced no verified peer read and released none.
-Neither run established sustained substantive exchange. This task's missing
-information can be resolved with a short receipt, which limits its demand for
-large exchanges. Knowledge Work is implemented. The next input design uses
-multi-site fulfillment data with three source versions across shared files,
-kernel IPC, worker endpoints, artifact namespaces and job/result namespaces.
-That workload and the additional deployment fixtures await implementation.
+One Sol 6.1 account released its pack. Sol 5.6 recorded no peer cache-file read
+and released none. A short receipt suffices to resolve the missing information in
+this Knowledge Work pilot. The proposed next workload uses three batches of
+multi-site fulfillment data. Five planned deployment fixtures sample different
+carriers; each has its own reachability and model-evidence requirements.
 
 [Exact configuration](experiments/swarmharm-v1/configs/swarmform-work-cache.json) ·
 [First model pair](docs/research/swarmform-cache-pilot.json) ·

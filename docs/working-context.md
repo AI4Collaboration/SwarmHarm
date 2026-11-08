@@ -43,10 +43,18 @@ must be considered when interpreting the results.
 
 The [complete next-input design](formation-study-design.md) proposes a multi-site
 fulfillment reconciliation workload with three source versions. Five deployment
-fixtures cover shared files, kernel IPC, worker-owned endpoints, artifact-service
+fixtures sample shared files, kernel IPC, worker-owned endpoints, artifact-service
 namespaces and job/result namespaces. Each fixes discovery surfaces, payload flow,
-required observations and an offline private-scope counterpart. These are proposed
-inputs; v57 remains the implemented pilot.
+required observations and an offline private-scope counterpart. The [coverage contract](swarmform-coverage.md#what-completeness-means) accounts for all
+observable forms of influence in a declared model, including relays and timing.
+The wider stack still has unmeasured paths. In v57, Harbor's dispatch at event 67
+changed a count visible to Northline at 74. This is separate from the observed
+receipt-exchange convention. v57 remains the implemented pilot.
+
+Cabri et al. supply the coordination sampling axes of naming and overlapping
+availability. The [literature mapping](swarmform-coverage.md#what-the-literature-classifies)
+specifies two open contrasts, a transient meeting and asynchronous associative
+matching, and distinguishes actual conventions from infrastructure paths.
 
 The next workload replaces short-token dependence with missing operational rows,
 per-batch reconciliations and later corrections. Source arrivals are pre-registered
