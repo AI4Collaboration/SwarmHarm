@@ -1,0 +1,299 @@
+"""Three native sessions, real private arrivals and protected execution evidence.
+
+Registration and source sealing are checked by the caller before this module runs.
+Only an initial task or an actually delivered private revision starts a model turn.
+"""
+
+import base64
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import queue
+import threading
+import time
+
+from codex_agent import CodexAgent, wait_ready
+from codex_gateway import AXONHUB_BASE
+from response_monitor import classify
+from swarmform.arrivals import IntakeSchedule
+from swarmform.file_deployment import FileDeployment
+
+
+BASH = {'type': 'function', 'name': 'bash',
+        'description': 'Run a shell command on your persistent workstation. The working directory is /workspace. Commands have a 30-second limit; each output stream is limited to 64,000 bytes.',
+        'parameters': {'type': 'object', 'properties': {'command': {'type': 'string'}},
+                       'required': ['command'], 'additionalProperties': False}}
+
+
+def utc():
+    return datetime.now(timezone.utc).isoformat()
+
+
+def save(path, value):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + '.pending')
+    temporary.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+    temporary.replace(path)
+
+
+def workspace_files(snapshot):
+    return {path.removeprefix('/workspace/'): base64.b64decode(content).decode(errors='replace')
+            for path, content in snapshot.get('/workspace', {}).items()
+            if path.startswith('/workspace/releases/')}
+
+
+class Collection:
+    def __init__(self, root, registration, input_data, *, api_key,
+                 agent_class=CodexAgent, deployment_class=FileDeployment):
+        self.root, self.reg, self.input = Path(root), registration, input_data
+        self.api_key, self.agent_class, self.deployment_class = api_key, agent_class, deployment_class
+        self.actors = tuple(input_data['startup'])
+        if (len(self.actors) != 3 or registration['population'] != 3
+                or registration['harness']['goal_mode'] != 'off'
+                or set(input_data['prompts']) != set(self.actors)
+                or set(input_data['private_arrivals']) != set(self.actors)):
+            raise ValueError('Expected three matched workstations and goal off')
+        self.events = queue.Queue()
+        self.agents, self.states, self.active = {}, {}, set()
+        self.stopping = threading.Event()
+        self.arrival_lock = threading.RLock()
+        self.snapshot_lock = threading.Lock()
+        self.snapshots, self.terminals, self.tool_counts, self.executed = {}, {}, {}, set()
+        self.sequence = 0
+        self.pool = ThreadPoolExecutor(max_workers=3)
+        self.jobs = {}
+        self.failure, self.reason = None, 'quiescence'
+        self.schedule, self.arrival_thread = None, None
+
+    def observation(self, actor, phase, value):
+        with self.snapshot_lock:
+            number = self.snapshots.get(actor, 0) + 1
+            self.snapshots[actor] = number
+            path = self.root / 'natural' / actor / 'observations' / f'{number:06d}.json'
+            save(path, {'at': utc(), 'phase': phase, 'snapshot': value})
+            if phase == 'terminal':
+                self.terminals[actor] = path
+            return str(path.relative_to(self.root))
+
+    def record(self, actor, message):
+        # Callbacks pass Futures only in an internal queue event, never in evidence.
+        value = {k: v for k, v in message.items() if k != 'future'}
+        with (self.root / 'events.jsonl').open('a') as stream:
+            stream.write(json.dumps({'at': utc(), 'actor': actor, **value}, ensure_ascii=False) + '\n')
+
+    def progress(self):
+        save(self.root / 'progress.json', {'at': utc(), 'status': 'running',
+            'active_agents': sorted(self.active), 'tools_inflight': len(self.jobs),
+            'private_batches_delivered': len(self.schedule.receipts) if self.schedule else 0,
+            'actors': self.states})
+
+    def deliver_arrivals(self, deployment):
+        try:
+            while not self.stopping.is_set():
+                # This thread may wait for an actor's command to finish. Other
+                # sessions and their tool completions continue in the main loop.
+                with self.arrival_lock:
+                    receipts = self.schedule.deliver_due(time.monotonic(), deployment.deliver)
+                    if receipts:
+                        save(self.root / 'source-deliveries.json', list(self.schedule.receipts.values()))
+                for receipt in receipts:
+                    self.events.put((receipt['actor'], {'type': 'source_delivery', 'receipt': receipt}))
+                if self.schedule.all_delivered:
+                    return
+                self.stopping.wait(.1)
+        except BaseException as error:
+            self.events.put((None, {'type': 'arrival_error', 'error': repr(error)}))
+
+    def notify_ready(self):
+        # Do not hold the event loop behind an ongoing private delivery. An
+        # undelivered file cannot produce a prompt, even if its due time passed.
+        if not self.arrival_lock.acquire(blocking=False):
+            return
+        try:
+            for actor in self.actors:
+                notice = self.schedule.pending_notice(actor, active=actor in self.active)
+                if notice:
+                    self.agents[actor].prompt(notice['text'])
+                    self.schedule.acknowledge_notice(notice)
+                    self.active.add(actor)
+                    self.states[actor]['notices'].append({**notice, 'at': utc()})
+                    self.record(actor, {'type': 'business_notice', **notice})
+                    save(self.root / 'natural' / actor / 'notices.json', self.states[actor]['notices'])
+        finally:
+            self.arrival_lock.release()
+
+    def finish_tool(self, actor, message, result, *, delivered):
+        turn = message['turn']
+        key = actor, turn
+        number = self.tool_counts.get(key, 0) + 1
+        self.tool_counts[key] = number
+        self.sequence += 1
+        record = {'event_id': self.sequence, 'call_id': message['call_id'].split('|', 1)[0],
+                  'name': message['name'], 'arguments': json.dumps(message['arguments'], ensure_ascii=False),
+                  'result': result, 'finished_at': utc()}
+        suffix = '' if delivered else '-undelivered'
+        save(self.root / 'natural' / actor / 'trace' / f'{turn:04d}-tool-{number}{suffix}.json', record)
+        if delivered:
+            self.agents[actor].reply(message['id'], output=json.dumps(result, ensure_ascii=False))
+        self.states[actor]['tools'] += 1
+
+    def handle(self, actor, message, deployment):
+        self.record(actor, message)
+        kind, turn = message['type'], message.get('turn', 0)
+        trace = self.root / 'natural' / actor / 'trace' if actor else None
+        if kind == 'request':
+            save(trace / f'{turn:04d}.request.json', message['payload'])
+        elif kind in ('response_update', 'provider_response'):
+            value = message['response'] if kind == 'response_update' else message['event']['response']
+            save(trace / f'{turn:04d}.response.json', value)
+            save(trace.parent / 'history.json', message['history'])
+            if kind == 'provider_response':
+                classification = classify(value)
+                save(trace / f'{turn:04d}.response-review.json', classification)
+                if classification['status'] in ('provider_filter', 'native_refusal'):
+                    raise RuntimeError(classification['status'])
+        elif kind == 'tool_call':
+            identity = actor, message['call_id']
+            if identity in self.executed:
+                raise RuntimeError('Repeated native tool call identity')
+            self.executed.add(identity)
+            args = message['arguments']
+            if (message['name'] != 'bash' or not isinstance(args, dict) or set(args) != {'command'}
+                    or not isinstance(args['command'], str) or len(args['command'].encode()) > 140000):
+                self.finish_tool(actor, message, {'error': 'Expected a shell command string of at most 140,000 bytes.'}, delivered=True)
+            else:
+                save(trace / f'{turn:04d}-command-{len(self.executed):06d}-start.json',
+                     {'at': utc(), 'call_id': message['call_id'], 'arguments': args})
+                future = self.pool.submit(deployment.execute, actor, args['command'])
+                self.jobs[future] = actor, message
+                future.add_done_callback(lambda done: self.events.put((None, {'type': 'shell_ready', 'future': done})))
+        elif kind == 'shell_ready':
+            future = message['future']
+            owner, call = self.jobs.pop(future)
+            result, _ = future.result()
+            self.finish_tool(owner, call, result, delivered=True)
+        elif kind == 'settled':
+            if message.get('aborted') or message.get('error_message'):
+                raise RuntimeError('Native session did not settle normally: ' + str(message))
+            self.active.discard(actor)
+            self.states[actor].update(final=message.get('text', ''), last_settled_turn=turn)
+        elif kind in ('fatal', 'exited', 'arrival_error'):
+            raise RuntimeError(str(message))
+        elif kind == 'turn_end' and message.get('stop_reason') == 'aborted':
+            raise RuntimeError('Native turn aborted')
+
+    def run(self):
+        self.root.mkdir(parents=True, exist_ok=True)
+        if (self.root / 'started.json').exists():
+            raise FileExistsError('This registration has already been collected')
+        # Exclusive creation prevents a second invocation from crossing the start.
+        with (self.root / 'started.json').open('x') as stream:
+            json.dump({'at': utc(), 'population': 3}, stream)
+        began = time.monotonic()
+        deadline = began + self.reg['budget']['max_batch_seconds']
+        deployment = None
+        try:
+            deployment = self.deployment_class(self.input['startup'],
+                shared=self.reg['deployment']['shared'], observation_sink=self.observation,
+                observation_archive=self.root / 'read-observations')
+            save(self.root / 'bindings.json', deployment.bindings)
+            for actor in self.actors:
+                folder = self.root / 'natural' / actor
+                self.states[actor] = {'status': 'starting', 'tools': 0, 'notices': [], 'final': ''}
+                self.agents[actor] = self.agent_class(actor, self.events, folder=folder / 'codex',
+                    model=self.reg['model'], thinking_level=self.reg['reasoning'],
+                    tools=self.input['tools'], active_tools=[t['name'] for t in self.input['tools']],
+                    goal_mode='off', api_key=self.api_key, api_base=AXONHUB_BASE,
+                    registered_harness=self.reg['harness'],
+                    request_timeout_ms=self.reg['budget']['request_timeout_seconds'] * 1000)
+            ready = wait_ready(self.events, self.actors)
+            for actor, value in ready.items():
+                expected = {t['name'] for t in self.input['tools']} | set(self.reg['harness']['extension_tools'])
+                if set(value['active_tools']) != expected:
+                    raise RuntimeError('Native tools differ from registration')
+                deployment.stations[actor].bind_native_cwd(value['cwd'])
+                self.states[actor].update(codex_session=value, status='running')
+            activated = time.monotonic()
+            self.schedule = IntakeSchedule(self.input['private_arrivals'], self.reg['arrival_offsets'], activated_at=activated)
+            self.schedule.deliver_due(activated, deployment.deliver)
+            save(self.root / 'source-deliveries.json', list(self.schedule.receipts.values()))
+            save(self.root / 'activation.json', {'at': utc(), 'monotonic': activated,
+                'all_sessions_ready': True, 'actors': list(self.actors)})
+            deadline = min(deadline, activated + self.reg['budget']['max_agent_seconds'])
+            for actor in self.actors:
+                save(self.root / 'natural' / actor / 'initial-input.json', {
+                    'texts': self.input['prompts'][actor], 'tools': self.input['tools']})
+                self.agents[actor].prompt(*self.input['prompts'][actor])
+                self.active.add(actor)
+            self.arrival_thread = threading.Thread(target=self.deliver_arrivals, args=(deployment,), daemon=True)
+            self.arrival_thread.start()
+            while time.monotonic() < deadline:
+                self.notify_ready()
+                notifications_complete = len(self.schedule.notified) == len(self.actors) * (len(self.reg['arrival_offsets']) - 1)
+                if (self.schedule.all_delivered and notifications_complete
+                        and not self.arrival_thread.is_alive()
+                        and not self.active and not self.jobs and self.events.empty()):
+                    break
+                try:
+                    actor, message = self.events.get(timeout=.1)
+                except queue.Empty:
+                    continue
+                self.handle(actor, message, deployment)
+                self.progress()
+            else:
+                self.reason = 'wall_budget'
+        except BaseException as error:
+            self.failure = {'type': type(error).__name__, 'message': str(error), 'at': utc()}
+            self.reason = 'interrupted' if isinstance(error, KeyboardInterrupt) else 'runtime_failure'
+            save(self.root / 'failure.json', self.failure)
+        finally:
+            self.stopping.set()
+            if self.arrival_thread:
+                self.arrival_thread.join(timeout=120)
+                if self.arrival_thread.is_alive():
+                    self.failure = {'type': 'ArrivalShutdown', 'message': 'Private writer did not stop'}
+            # Collect actual command results even when interruption prevents model delivery.
+            self.pool.shutdown(wait=True)
+            for future, (actor, call) in list(self.jobs.items()):
+                try:
+                    result, _ = future.result()
+                    self.finish_tool(actor, call, result, delivered=False)
+                except BaseException as error:
+                    save(self.root / 'natural' / actor / 'command-error.json', {'error': repr(error)})
+            with ThreadPoolExecutor(max_workers=3) as pool:
+                closes = {actor: pool.submit(agent.close) for actor, agent in self.agents.items()}
+                for actor, future in closes.items():
+                    try:
+                        self.states[actor]['native_exit_code'] = future.result()
+                    except BaseException as error:
+                        self.failure = {'type': 'NativeShutdown', 'message': repr(error)}
+                        self.reason = 'runtime_failure'
+            # Retain final native projections generated during close as well. Do
+            # not execute or deliver any new tool call while shutting down.
+            while not self.events.empty():
+                actor, message = self.events.get_nowait()
+                if message['type'] in ('request', 'response_update', 'provider_response'):
+                    try:
+                        self.handle(actor, message, deployment)
+                    except RuntimeError:
+                        pass
+                else:
+                    self.record(actor, message)
+            if deployment:
+                try:
+                    deployment.close()
+                except BaseException as error:
+                    self.failure = {'type': 'DeploymentShutdown', 'message': repr(error)}
+                    self.reason = 'runtime_failure'
+            for actor, state in self.states.items():
+                state['status'] = self.reason
+                save(self.root / 'natural' / actor / 'result.json', state)
+            save(self.root / 'terminal-snapshots.json', {a: str(p.relative_to(self.root)) for a, p in self.terminals.items()})
+            completion = {'at': utc(), 'reason': self.reason, 'failure': self.failure,
+                'elapsed_seconds': time.monotonic() - began, 'actors': self.states,
+                'terminal_snapshot_count': len(self.terminals), 'behavior_review': 'pending'}
+            save(self.root / 'completion.json', completion)
+            save(self.root / 'progress.json', {'status': 'closed', **completion})
+        return completion

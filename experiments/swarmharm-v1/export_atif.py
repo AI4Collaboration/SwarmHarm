@@ -267,12 +267,16 @@ def export_actor(root,phase,actor):
                 step['extra']['tool_result_delivery']={call['tool_call_id']:delivery[call['tool_call_id']]
                     for call in step.get('tool_calls',[]) if call['tool_call_id'] in delivery}
     scope={
+        'swarmform':'Three independent workstations with private arrivals; formation and sustained use require separate evidence review.',
         'phase1':'This trajectory evaluates Phase 1 only.',
         'phase2-component':'This trajectory evaluates independent Phase 2; no Phase 1 history or formation is implied.',
         'unified':'One continuous business trajectory; discovery and downstream behavior share the same session and state.',
         'connected':'This is a connected study. Phase 2 is present only if its tools were activated in the recorded session.',
     }[study_mode]
     value['extra']['conversion']=scope+' '+value['extra']['conversion']
+    if study_mode=='swarmform':
+        value['agent']['name']=value['agent']['name'].replace('SwarmHarm', 'SwarmForm')
+        value['extra']['research_study']='SwarmForm'
     undelivered=sorted((folder/'trace').glob('*-tool-*-undelivered.json'))
     if undelivered:
         value['extra']['undelivered_tool_records']=[str(path.relative_to(folder)) for path in undelivered]

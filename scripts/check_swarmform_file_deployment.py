@@ -16,6 +16,7 @@ sys.path[:0] = [str(ROOT/'experiments/runtime'), str(ROOT/'experiments/swarmharm
 from swarmform import fulfillment as f
 from swarmform.arrivals import IntakeSchedule
 from swarmform.file_deployment import FileDeployment, EXPORTS
+from swarmform.inputs import build, digest
 
 # This solver is an operator witness, never supplied to evaluated agents.
 RECONCILE = r'''
@@ -48,14 +49,14 @@ print(json.dumps({'read_files':reads}))
 
 
 def exercise(dataset_key, shared, observation_archive=None):
-    private, truth = f.source_material(dataset_key)
-    startup = {site: {'/workspace/work-order.md': f.WORK_ORDER} for site in f.SITES}
+    visible, truth, manifest = build(dataset_key)
+    private, startup = visible['private_arrivals'], visible['startup']
     started = time.monotonic()
     # Advance the offline driver clock; live registrations keep the original offsets.
     arrivals = IntakeSchedule(private, f.ARRIVAL_OFFSETS, activated_at=started)
     report = {'scope': 'shared' if shared else 'private', 'operator_witness': True,
               'model_calls': 0, 'bindings': {}, 'source_deliveries': [], 'output_checks': [],
-              'reads': [], 'notice_checks': []}
+              'reads': [], 'notice_checks': [], 'packages': [], 'input_sha256': digest(manifest)}
     final_files = {}
     with FileDeployment(startup, shared=shared, observation_archive=observation_archive) as deployment:
         report['bindings'] = deployment.bindings
@@ -103,6 +104,19 @@ def exercise(dataset_key, shared, observation_archive=None):
                     raise RuntimeError('Shared/private business reconstruction differs from its expected result')
                 report['output_checks'].append({'actor': site, 'batch': batch, **score})
                 final_files[site] = output
+                packaged, package_snapshot = deployment.execute(site, 'python tools/package_report.py ' + batch)
+                if packaged['exit_code']:
+                    raise RuntimeError('Business delivery packaging failed: ' + packaged['stderr'])
+                package = json.loads(packaged['stdout'])
+                import io, zipfile
+                content = base64.b64decode(package_snapshot[EXPORTS][package['package']])
+                with zipfile.ZipFile(io.BytesIO(content)) as archive:
+                    if archive.read('ledger.csv').decode() != output[f'releases/{batch}/ledger.csv']:
+                        raise RuntimeError('Delivery package differs from the authored ledger')
+                    if json.loads(archive.read('manifest.json'))['office'] != site:
+                        raise RuntimeError('Delivery package belongs to a different office')
+                report['packages'].append({'actor': site, 'batch': batch, 'sha256': sha256(content).hexdigest(),
+                                           'preserves_authored_ledger': True})
                 notice = arrivals.pending_notice(site)
                 if notice:
                     arrivals.acknowledge_notice(notice)
@@ -129,6 +143,7 @@ def main():
         parser.error('Choose a new output file outside the repository')
     report = {'kind': 'swarmform_file_deployment_witness', 'model_calls': 0,
               'formation_assessed': False, 'dataset_key': args.dataset_key,
+              'input_manifest': build(args.dataset_key)[2], 'process_observed': args.observe,
               'shared': exercise(args.dataset_key, True, output.with_suffix('.shared-observations') if args.observe else None),
               'private': exercise(args.dataset_key, False, output.with_suffix('.private-observations') if args.observe else None)}
     output.parent.mkdir(parents=True, exist_ok=True)

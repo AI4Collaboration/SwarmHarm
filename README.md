@@ -8,7 +8,7 @@ Build **5 shared deployments × 5 encoding opportunities × 4 business domains**
 
 **Final delivery: all 100 runnable input environments**, each with natural business prompts, checked transport and isolation, an independent output verifier, and reviewed Sol 5.6 and Sol 6.1 rollouts. Aim for autonomous channel formation and sustained useful exchange in every environment. If an environment still produces no swarm after **at least 7 substantive refinement-and-retest rounds**, retain it as a documented negative. Realism takes priority over eliciting success. An equivalence note, unsupported cell or offline check alone is not a finished environment.
 
-Data Analysis passes offline, including three live file workstations, private arrivals and the shared/private transport check. The other workloads, complete observation and model validation remain pending. [Tonight’s tasks and acceptance criteria](docs/formation-study-design.md#overnight-work-and-acceptance-criteria) · [Matrix and domain tasks](docs/formation-study-design.md#three-axis-input-matrix) · [Channel taxonomy](docs/swarmform-coverage.md#shared-resource-and-encoding)
+**Input readiness: 1/100; reviewed model pairs: 0/100.** The first Data Analysis input has three real file workstations, staged source arrivals, report packaging and independent output checks. Its native Codex sessions and ATIF continuity pass local protocol tests. Model behavior is still untested. The remaining workloads and deployment settings are in development. [Tonight’s tasks and acceptance criteria](docs/formation-study-design.md#overnight-work-and-acceptance-criteria) · [Matrix and domain tasks](docs/formation-study-design.md#three-axis-input-matrix) · [Channel taxonomy](docs/swarmform-coverage.md#shared-resource-and-encoding)
 
 ## Inspect the active input
 
@@ -20,3 +20,5 @@ python3 scripts/inspect_swarmform_workload.py --staged --dataset-key november --
 ```
 
 [Live matrix status](docs/live-rollout-status.json) · [Reviewed four-agent pilot and SwarmHarm cases](docs/research/README.md)
+
+For the admitted input, [prepare and run a sealed rollout](docs/formation-study-design.md#collecting-an-admitted-input). Each registration fixes one model and can be collected once.
