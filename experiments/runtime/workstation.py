@@ -248,11 +248,13 @@ class ApptainerWorkstation:
 
 class DockerWorkstation:
     def __init__(self, initial_files, *, network="none", environment=None,
-                 process_lifecycle='tool_scoped', observation_sink=None, named_volumes=()):
+                 process_lifecycle='tool_scoped', observation_sink=None, named_volumes=(),
+                 trace_commands=False):
         if process_lifecycle not in ('tool_scoped', 'continuous'):
             raise ValueError('Unknown workstation process lifecycle')
         self.process_lifecycle = process_lifecycle
         self.observation_sink = observation_sink
+        self.trace_commands = trace_commands
         self.registry_snapshot = {}
         self.initialized = False
         self.observation_roots = []
@@ -274,6 +276,13 @@ class DockerWorkstation:
         ]
         if self.process_lifecycle == 'continuous':
             args.append('--init')
+        if trace_commands:
+            if self.process_lifecycle != 'continuous':
+                raise ValueError('Command observation requires a persistent workstation')
+            # The root-owned observer can follow its unprivileged child. The
+            # business processes still execute as 65534 with no effective caps.
+            args += ['--cap-add=SYS_PTRACE', '--cap-add=SETUID', '--cap-add=SETGID', '--cap-add=DAC_READ_SEARCH',
+                     '--tmpfs', '/var/log/workstation:rw,nosuid,nodev,size=128m,mode=0700']
         for path, size in (("/workspace", "32m"), ("/registry", "16m"), ("/tmp", "32m"), ("/private/tmp", "1m")):
             args += ["--tmpfs", f"{path}:rw,nosuid,nodev,size={size},mode=1777"]
         for volume, target in named_volumes:
@@ -346,7 +355,9 @@ class DockerWorkstation:
     def capture_frozen(self, phase):
         code = Path(__file__).with_name('workstation_observer.py').read_text()
         values = json.loads(subprocess.check_output(
-            ['docker', 'exec', self.name, 'python', '-I', '-c', code, 'capture', *self.observation_roots],
+            ['docker', 'exec', *(['--user', '0:0'] if self.trace_commands else []),
+             self.name, 'python', '-I', '-c', code, 'capture', *self.observation_roots,
+             *(['--observe-traced'] if self.trace_commands else [])],
             timeout=30))
         try:
             if self.observation_sink is not None:
@@ -359,7 +370,8 @@ class DockerWorkstation:
     def resume_captured(self, values):
         code = Path(__file__).with_name('workstation_observer.py').read_text()
         subprocess.run(
-            ['docker', 'exec', '-i', self.name, 'python', '-I', '-c', code, 'resume'],
+            ['docker', 'exec', '-i', *(['--user', '0:0'] if self.trace_commands else []),
+             self.name, 'python', '-I', '-c', code, 'resume'],
             input=json.dumps(values['resume_processes']).encode(),
             capture_output=True, check=True, timeout=15)
 
@@ -386,6 +398,10 @@ class DockerWorkstation:
             self.resume_captured(before)
         return before, pending, conflicts
 
+    def command_argv(self, command):
+        return ["docker", "exec", "--workdir", "/workspace", self.name,
+                "timeout", "--kill-after=1s", "30s", "bash", "-lc", command]
+
     def execute(self, command, shared):
         before, pending = None, []
         if self.process_lifecycle == 'continuous':
@@ -405,8 +421,7 @@ class DockerWorkstation:
             self.hydrate(shared, True)
         with tempfile.TemporaryFile() as stdout_file, tempfile.TemporaryFile() as stderr_file:
             process = subprocess.Popen(
-                ["docker", "exec", "--workdir", "/workspace", self.name,
-                 "timeout", "--kill-after=1s", "30s", "bash", "-lc", command],
+                self.command_argv(command),
                 stdout=stdout_file, stderr=stderr_file,
             )
             began = time.monotonic()

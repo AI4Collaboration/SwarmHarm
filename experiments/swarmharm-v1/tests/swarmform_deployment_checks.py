@@ -57,7 +57,7 @@ class RealVolumeChecks(unittest.TestCase):
         script = Path(__file__).resolve().parents[3] / 'scripts/check_swarmform_file_deployment.py'
         with TemporaryDirectory() as folder:
             output = Path(folder) / 'witness.json'
-            subprocess.run([sys.executable, str(script), '--dataset-key', 'november', '--output', str(output)],
+            subprocess.run([sys.executable, str(script), '--observe', '--dataset-key', 'november', '--output', str(output)],
                            check=True, capture_output=True, timeout=180)
             report = json.loads(output.read_text())
             self.assertEqual(report['model_calls'], 0)

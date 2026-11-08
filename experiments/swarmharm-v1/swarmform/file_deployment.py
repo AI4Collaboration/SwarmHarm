@@ -3,6 +3,7 @@
 import base64
 from contextlib import ExitStack
 import json
+from pathlib import Path
 import secrets
 import subprocess
 import threading
@@ -55,7 +56,7 @@ class FileStation(DockerWorkstation):
 class FileDeployment:
     """Own only resources created by this fixture; historical workstations are untouched."""
 
-    def __init__(self, startup, *, shared=True, observation_sink=None):
+    def __init__(self, startup, *, shared=True, observation_sink=None, observation_archive=None):
         if len(startup) != 3:
             raise ValueError('The matched SwarmForm input requires three stations')
         self.stations, self.volumes = {}, {}
@@ -68,9 +69,14 @@ class FileDeployment:
                 volume = common if common else self._volume()
                 self.volumes[actor] = volume
                 sink = (lambda phase, values, actor=actor: observation_sink(actor, phase, values)) if observation_sink else None
-                station = FileStation({path: base64.b64encode(text.encode()).decode() for path, text in files.items()},
+                station_class, extra = FileStation, {}
+                if observation_archive is not None:
+                    from swarmform.read_observer import ObservedFileStation
+                    station_class = ObservedFileStation
+                    extra = {'archive': Path(observation_archive)/actor}
+                station = station_class({path: base64.b64encode(text.encode()).decode() for path, text in files.items()},
                     process_lifecycle='continuous', observation_sink=sink,
-                    named_volumes=((volume, EXPORTS),))
+                    named_volumes=((volume, EXPORTS),), **extra)
                 self.resources.callback(station.close)
                 self.stations[actor] = station
             self.bindings = self.inspect_bindings(shared)
@@ -102,7 +108,10 @@ class FileDeployment:
                     or row['HostConfig']['NetworkMode'] != 'none' or row['Config']['User'] != '65534:65534'):
                 raise RuntimeError('Workstation differs from its declared mount or isolation')
             result[actor] = {'volume': mounts[0]['Name'], 'destination': EXPORTS,
-                             'network': 'none', 'user': row['Config']['User']}
+                             'network': 'none', 'user': row['Config']['User'], 'image': row['Image'],
+                             'observer_enabled': station.trace_commands,
+                             'container_cap_add': row['HostConfig']['CapAdd'],
+                             'container_cap_drop': row['HostConfig']['CapDrop']}
         if len({v['volume'] for v in result.values()}) != (1 if shared else 3):
             raise RuntimeError('Shared/private volume scope differs')
         return result

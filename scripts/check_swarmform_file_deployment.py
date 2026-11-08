@@ -47,7 +47,7 @@ print(json.dumps({'read_files':reads}))
 '''
 
 
-def exercise(dataset_key, shared):
+def exercise(dataset_key, shared, observation_archive=None):
     private, truth = f.source_material(dataset_key)
     startup = {site: {'/workspace/work-order.md': f.WORK_ORDER} for site in f.SITES}
     started = time.monotonic()
@@ -57,7 +57,7 @@ def exercise(dataset_key, shared):
               'model_calls': 0, 'bindings': {}, 'source_deliveries': [], 'output_checks': [],
               'reads': [], 'notice_checks': []}
     final_files = {}
-    with FileDeployment(startup, shared=shared) as deployment:
+    with FileDeployment(startup, shared=shared, observation_archive=observation_archive) as deployment:
         report['bindings'] = deployment.bindings
         for index, (batch, offset) in enumerate(f.ARRIVAL_OFFSETS.items()):
             receipts = arrivals.deliver_due(started + offset, deployment.deliver)
@@ -77,11 +77,24 @@ def exercise(dataset_key, shared):
                 if result['exit_code']:
                     raise RuntimeError(result['stderr'])
                 reads = json.loads(result['stdout'])['read_files']
+                if observation_archive is not None:
+                    from swarmform.read_observer import observed_reads
+                    station = deployment.stations[site]
+                    actual_reads = observed_reads(station.previous[f'{station.command_count:06d}.log'].decode())
+                    expected_paths = {row['path'] for row in reads}
+                    observed_paths = {row['path'] for row in actual_reads if row['returned_bytes']}
+                    if not expected_paths.issubset(observed_paths):
+                        raise RuntimeError('A source in the business solver has no independent process-read observation')
                 for read in reads:
                     _, owner, version, _ = read['path'].removeprefix(EXPORTS).split('/')
                     expected_hash = sha256(private[owner][version][f'intake/{version}/postings.csv'].encode()).hexdigest()
                     if read['sha256'] != expected_hash:
                         raise RuntimeError('Received source differs from the sealed fixture')
+                    if observation_archive is not None:
+                        received = b''.join(base64.b64decode(row['data_base64']) for row in actual_reads
+                                            if row['path'] == read['path'])
+                        if sha256(received).hexdigest() != expected_hash:
+                            raise RuntimeError('Independently observed source bytes differ from the delivered version')
                 report['reads'].append({'actor': site, 'batch': batch, 'files': reads})
                 output = {p.removeprefix('/workspace/'): base64.b64decode(data).decode()
                           for p, data in snapshot['/workspace'].items() if p.startswith('/workspace/releases/')}
@@ -109,14 +122,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dataset-key', required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--observe', action='store_true', help='Retain protected process observations using the installed strace runtime.')
     args = parser.parse_args()
     output = args.output.resolve()
     if output.is_relative_to(ROOT) or output.exists():
         parser.error('Choose a new output file outside the repository')
     report = {'kind': 'swarmform_file_deployment_witness', 'model_calls': 0,
               'formation_assessed': False, 'dataset_key': args.dataset_key,
-              'shared': exercise(args.dataset_key, True),
-              'private': exercise(args.dataset_key, False)}
+              'shared': exercise(args.dataset_key, True, output.with_suffix('.shared-observations') if args.observe else None),
+              'private': exercise(args.dataset_key, False, output.with_suffix('.private-observations') if args.observe else None)}
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open('x') as handle:
         json.dump(report, handle, indent=2)

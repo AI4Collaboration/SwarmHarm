@@ -14,8 +14,11 @@ def process_info(pid):
     path = Path('/proc') / str(pid)
     raw = (path / 'stat').read_text()
     fields = raw.rsplit(') ', 1)[1].split()
+    status = dict(line.split(':', 1) for line in (path / 'status').read_text().splitlines())
     return {'pid': int(pid), 'state': fields[0], 'parent': int(fields[1]),
             'start_ticks': fields[19], 'uid': path.stat().st_uid,
+            'tracer_pid': int(status.get('TracerPid', '0')),
+            'name': (path / 'comm').read_text().strip(),
             'command': (path / 'cmdline').read_bytes().replace(b'\0', b' ').decode(errors='replace')}
 
 
@@ -29,8 +32,9 @@ def resume(processes):
             pass
 
 
-def freeze():
+def freeze(observe_traced=False):
     stopped, observed = {}, {}
+    subject_uid = 65534 if observe_traced else os.getuid()
     try:
         for _ in range(20):
             active = False
@@ -39,11 +43,22 @@ def freeze():
                     continue
                 try:
                     item = process_info(path.name)
-                    if item['uid'] != os.getuid():
+                    observer = observe_traced and item['uid'] == 0 and item['name'] == 'strace'
+                    if item['uid'] != subject_uid and not observer:
                         continue
                     key = (item['pid'], item['start_ticks'])
                     observed.setdefault(key, item)
-                    if item['state'] in ('T', 't', 'Z', 'X'):
+                    if item['state'] in ('T', 'Z', 'X'):
+                        continue
+                    if item['state'] == 't':
+                        if not observe_traced:
+                            continue
+                        # A ptrace stop is transient while its tracer is running.
+                        # It is quiescent only after that tracer has also stopped.
+                        tracer = process_info(item['tracer_pid'])
+                        if tracer['state'] in ('T', 'Z', 'X'):
+                            continue
+                        active = True
                         continue
                     stopped.setdefault(key, item)
                     os.kill(item['pid'], signal.SIGSTOP)
@@ -59,10 +74,10 @@ def freeze():
         raise
 
 
-def snapshot(extra_roots=()):
+def snapshot(extra_roots=(), observe_traced=False):
     if any(root != '/var/tmp/exports' for root in extra_roots):
         raise ValueError('Unknown additional observation root')
-    stopped, processes = freeze()
+    stopped, processes = freeze(observe_traced)
     try:
         result = {'processes': processes, 'resume_processes': stopped,
                   'file_metadata': {}, 'temporary_files': {},
@@ -138,4 +153,6 @@ if __name__ == '__main__':
     if sys.argv[1] == 'resume':
         resume(json.load(sys.stdin))
     else:
-        print(json.dumps(snapshot(sys.argv[2:])))
+        args = sys.argv[2:]
+        traced = '--observe-traced' in args
+        print(json.dumps(snapshot([arg for arg in args if arg != '--observe-traced'], traced)))

@@ -37,7 +37,7 @@ def build(output,platform):
     packages=subprocess.check_output(['docker','run','--rm','--pull=never','--platform',platform,
         '--network=none','--read-only','--cap-drop=ALL','--security-opt=no-new-privileges',
         '--user','65534:65534',image,'dpkg-query','-W','-f=${Package}\t${Version}\n',
-        'curl','procps','ripgrep'],text=True)
+        'curl','procps','ripgrep','strace'],text=True)
     metadata={'image':image,'tag':tag,'platform':platform,'architecture':details['Architecture'],
         'os':details['Os'],'python':python,'dockerfile':str(RECIPE.relative_to(REPO)),
         'utilities':dict(line.split('\t',1) for line in packages.splitlines()),

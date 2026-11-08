@@ -9,7 +9,7 @@ RUN sed -i \
       -e 's|http://deb.debian.org/debian|https://snapshot.debian.org/archive/debian/20261027T000000Z/|' \
       /etc/apt/sources.list.d/debian.sources \
     && apt-get -o Acquire::Check-Valid-Until=false update \
-    && apt-get install -y --no-install-recommends curl procps ripgrep \
+    && apt-get install -y --no-install-recommends curl procps ripgrep strace \
     && rm -rf /var/lib/apt/lists/*
 
 # Provide the patch command used by native coding-agent instructions.
