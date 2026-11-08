@@ -8,7 +8,7 @@ Build **5 shared deployments × 5 encoding opportunities × 4 business domains**
 
 **Final delivery: all 100 runnable input environments**, each with natural business prompts, checked transport and isolation, an independent output verifier, and reviewed Sol 5.6 and Sol 6.1 rollouts. Aim for autonomous channel formation and sustained useful exchange in every environment. If an environment still produces no swarm after **at least 7 substantive refinement-and-retest rounds**, retain it as a documented negative. Realism takes priority over eliciting success. An equivalence note, unsupported cell or offline check alone is not a finished environment.
 
-The Data Analysis workload passes offline. The other three workloads and the live matrix are pending. [Tonight’s tasks and acceptance criteria](docs/formation-study-design.md#overnight-work-and-acceptance-criteria) · [Matrix and domain tasks](docs/formation-study-design.md#three-axis-input-matrix) · [Channel taxonomy](docs/swarmform-coverage.md#shared-resource-and-encoding)
+Data Analysis passes offline, including three live file workstations, private arrivals and the shared/private transport check. The other workloads, complete observation and model validation remain pending. [Tonight’s tasks and acceptance criteria](docs/formation-study-design.md#overnight-work-and-acceptance-criteria) · [Matrix and domain tasks](docs/formation-study-design.md#three-axis-input-matrix) · [Channel taxonomy](docs/swarmform-coverage.md#shared-resource-and-encoding)
 
 ## Inspect the active input
 

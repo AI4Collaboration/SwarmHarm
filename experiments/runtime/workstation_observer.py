@@ -59,18 +59,29 @@ def freeze():
         raise
 
 
-def snapshot():
+def snapshot(extra_roots=()):
+    if any(root != '/var/tmp/exports' for root in extra_roots):
+        raise ValueError('Unknown additional observation root')
     stopped, processes = freeze()
     try:
         result = {'processes': processes, 'resume_processes': stopped,
                   'file_metadata': {}, 'temporary_files': {},
                   'captured_at_ns': time.time_ns()}
-        for root in ('/workspace', '/registry', '/tmp', '/private/tmp'):
+        if extra_roots:
+            result['concurrent_roots'] = list(extra_roots)
+            result['capture_gaps'] = []
+        for root in ('/workspace', '/registry', '/tmp', '/private/tmp', *extra_roots):
             values, total = {}, 0
             for folder, dirs, names in os.walk(root, followlinks=False):
                 for name in sorted(set(dirs + names)):
                     path = Path(folder) / name
-                    info = path.lstat()
+                    try:
+                        info = path.lstat()
+                    except FileNotFoundError:
+                        if root not in extra_roots:
+                            raise
+                        result['capture_gaps'].append({'path': str(path), 'reason': 'removed_before_stat'})
+                        continue
                     kind = {stat.S_IFREG: 'file', stat.S_IFDIR: 'directory',
                             stat.S_IFLNK: 'symlink', stat.S_IFSOCK: 'socket',
                             stat.S_IFIFO: 'fifo'}.get(stat.S_IFMT(info.st_mode), 'special')
@@ -85,7 +96,30 @@ def snapshot():
                     limit = 32_000_000 if root in ('/tmp', '/private/tmp') else 2_000_000
                     if info.st_size > limit:
                         raise RuntimeError('Workstation file exceeds capture limit')
-                    data = path.read_bytes()
+                    if root in extra_roots:
+                        # Other stations remain live. Bind bytes and metadata to
+                        # one open file, and report instability instead of calling
+                        # the entire shared tree a single point-in-time snapshot.
+                        try:
+                            fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+                            with os.fdopen(fd, 'rb') as stream:
+                                opened = os.fstat(stream.fileno())
+                                if not stat.S_ISREG(opened.st_mode) or opened.st_size > limit:
+                                    raise ValueError('Shared capture target changed type or size')
+                                data = stream.read(limit + 1)
+                                after = os.fstat(stream.fileno())
+                            if len(data) > limit:
+                                raise ValueError('Shared capture grew beyond its limit')
+                            metadata.update(bytes=opened.st_size, mtime_ns=opened.st_mtime_ns,
+                                            inode=opened.st_ino, mode=stat.S_IMODE(opened.st_mode),
+                                            stable_during_read=(opened.st_size == after.st_size
+                                                and opened.st_mtime_ns == after.st_mtime_ns
+                                                and opened.st_ctime_ns == after.st_ctime_ns))
+                        except (OSError, ValueError) as error:
+                            result['capture_gaps'].append({'path': str(path), 'reason': str(error)})
+                            continue
+                    else:
+                        data = path.read_bytes()
                     total += len(data)
                     if total > 64_000_000:
                         raise RuntimeError('Workstation root exceeds capture limit')
@@ -104,4 +138,4 @@ if __name__ == '__main__':
     if sys.argv[1] == 'resume':
         resume(json.load(sys.stdin))
     else:
-        print(json.dumps(snapshot()))
+        print(json.dumps(snapshot(sys.argv[2:])))

@@ -248,13 +248,19 @@ class ApptainerWorkstation:
 
 class DockerWorkstation:
     def __init__(self, initial_files, *, network="none", environment=None,
-                 process_lifecycle='tool_scoped', observation_sink=None):
+                 process_lifecycle='tool_scoped', observation_sink=None, named_volumes=()):
         if process_lifecycle not in ('tool_scoped', 'continuous'):
             raise ValueError('Unknown workstation process lifecycle')
         self.process_lifecycle = process_lifecycle
         self.observation_sink = observation_sink
         self.registry_snapshot = {}
         self.initialized = False
+        self.observation_roots = []
+        for volume, target in named_volumes:
+            if (not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]+', volume)
+                    or target != '/var/tmp/exports' or target in self.observation_roots):
+                raise ValueError('Invalid named workstation volume')
+            self.observation_roots.append(target)
         self.name = "sh-workbench-" + secrets.token_hex(8)
         self.closed = False
         self.paused = False
@@ -270,6 +276,8 @@ class DockerWorkstation:
             args.append('--init')
         for path, size in (("/workspace", "32m"), ("/registry", "16m"), ("/tmp", "32m"), ("/private/tmp", "1m")):
             args += ["--tmpfs", f"{path}:rw,nosuid,nodev,size={size},mode=1777"]
+        for volume, target in named_volumes:
+            args += ['--mount', f'type=volume,src={volume},dst={target}']
         for key, value in (environment or {}).items():
             if key != 'HOME' or value != '/tmp/agent':
                 raise ValueError('Unregistered workstation environment override')
@@ -338,7 +346,7 @@ class DockerWorkstation:
     def capture_frozen(self, phase):
         code = Path(__file__).with_name('workstation_observer.py').read_text()
         values = json.loads(subprocess.check_output(
-            ['docker', 'exec', self.name, 'python', '-I', '-c', code, 'capture'],
+            ['docker', 'exec', self.name, 'python', '-I', '-c', code, 'capture', *self.observation_roots],
             timeout=30))
         try:
             if self.observation_sink is not None:

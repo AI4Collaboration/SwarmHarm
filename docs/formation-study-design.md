@@ -7,7 +7,7 @@ sustain useful information exchange during ordinary work?**
 
 **8–9 November 2026, London.** Build and validate SwarmForm's three-agent **5 deployments × 5 encoding opportunities × 4 domains** input matrix. The final deliverable is **all 100 runnable input environments**, with a reviewed Sol 5.6 / 6.1 pair on each final input. Report input readiness, collection and observed behavior separately.
 
-**Starting point.** Data Analysis has a [three-site dataset and independent verifier](../experiments/swarmharm-v1/swarmform/fulfillment.py) tested offline. The other three workloads, live source delivery and all five deployments still need three-agent admission. At the start of this work, 0 of the 100 cells have an admitted input or a reviewed model pair. The [four-agent v57 pilot](research/swarmform-cache-pilot.json) has its own registration and results. [Current matrix status](live-rollout-status.json)
+**Current implementation.** Data Analysis has a [three-site dataset and independent verifier](../experiments/swarmharm-v1/swarmform/fulfillment.py), [private arrival accounting](../experiments/swarmharm-v1/swarmform/arrivals.py) and [actual shared/private file volumes](../experiments/swarmharm-v1/swarmform/file_deployment.py). The [operator witness](../scripts/check_swarmform_file_deployment.py) reconstructs all nine station/batch outputs through shared volumes; all nine remain incomplete with private volumes. It advances an offline driver clock and makes no model calls. Pending: continuous read observation, the registered live controller, the other three workloads and four deployments. No new cell is admitted yet. The [four-agent v57 pilot](research/swarmform-cache-pilot.json) retains its own registration and results. [Current matrix status](live-rollout-status.json)
 
 **First end-to-end checkpoint.** Start with Data Analysis × shared directory × payload content. Deliver the three private batches on schedule, verify exact peer-visible versions and terminal ledgers, then register the matched model pair. Apply the same gates to each remaining cell as it becomes ready. This checkpoint counts once within the matrix.
 
@@ -70,7 +70,7 @@ For example, an agent could put an order ID in a filename and corrected quantiti
 
 For the workload, generate two valid source versions with identical files at site A and different fulfillment facts at site B. The correct output for A must differ. Verify all sites' outputs against protected truth and attribute later changes to the source versions actually available. This checks information dependence independently of any convention the agents choose.
 
-The runnable v57 input exposes work files synchronized at command boundaries. Its [budget probe](../scripts/check_swarmform_budget_path.py) also distinguishes two sender values at all twelve ordered worker pairs with an empty cache. That incidental path belongs in the deployment inventory. The multi-batch dataset and verifier run offline. Scheduled delivery, the five-deployment selector and the per-feature observers are separate implementation targets.
+The runnable v57 input exposes work files synchronized at command boundaries. Its [budget probe](../scripts/check_swarmform_budget_path.py) also distinguishes two sender values at all twelve ordered worker pairs with an empty cache. That incidental path belongs in the deployment inventory. The three-agent file fixture uses a real volume instead. Its private delivery receipts and duplicate-free notices pass offline. The live scheduler, five-deployment selector and per-feature observers remain implementation targets.
 
 ## Three-axis input matrix
 
@@ -104,8 +104,8 @@ Primary fixtures target one payload carrier. Register and check incidental paths
 ### Shared working directory — `shared_files`
 
 **Deployment.** Private workspaces use a common staging or temporary volume for
-business exports. The proposed implementation uses a real shared volume with ordinary
-filesystem visibility, atomic rename and version capture. The v57 pilot currently
+business exports. The implemented fixture uses a real shared volume with ordinary
+filesystem visibility, atomic intake publication and shared-file captures. Captures identify concurrent roots and unstable reads; they do not imply a single atomic shared snapshot or that a model read every captured file. Exact live-read observation is still pending. The v57 pilot
 synchronizes cache files at command boundaries; its timing remains separately labeled.
 
 **Discovery.** Normal export work creates files. A later directory listing or file
