@@ -1,0 +1,44 @@
+{
+  "source_file": "experiments/runtime/workstation.py",
+  "image": "sha256:9ab5b36adf0f4e91fddc04120df57150bbcad4ac64469c960130d7af88a4d06c",
+  "first": {
+    "exit_code": 0,
+    "stdout": "INITIAL_HTTP 200\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  },
+  "second": {
+    "exit_code": 0,
+    "stdout": "PROCESS_STATE Z\nSUBSEQUENT_HTTP_UNAVAILABLE\nTEMP_RETAINED True\nREGISTRY_REPLACED True\n",
+    "stderr": "",
+    "output_truncated": false,
+    "limit": null
+  },
+  "tmp_captured": false,
+  "temporary_container_removed": true,
+  "audit_date": "2026-11-08",
+  "source_commit": "d335e468639b6c0d3a2043916c1e095a4478fff0",
+  "source_sha256": "64a9a6024a18acdc76962a888f9f54a1aba0dab876d1bd16036a5630696c7b1c",
+  "scope": "Disposable base DockerWorkstation lifecycle check, without the reporting service wrapper or any model call.",
+  "commands": [
+    "python -m http.server 39871 --bind 127.0.0.1 </dev/null >/tmp/service.log 2>&1 & echo $! > /workspace/service.pid; python - <<'P'\nimport time,urllib.request\nfor i in range(100):\n try:\n  print('INITIAL_HTTP',urllib.request.urlopen('http://127.0.0.1:39871',timeout=.1).status);break\n except OSError:time.sleep(.01)\nelse:raise RuntimeError('service failed to start')\nP\nprintf retained > /tmp/ordinary-temp; printf local > /registry/transient-file",
+    "python - <<'P'\nimport pathlib,urllib.request\npid=pathlib.Path('/workspace/service.pid').read_text().strip()\np=pathlib.Path('/proc')/pid/'stat'\nprint('PROCESS_STATE',p.read_text().split(') ',1)[1].split()[0] if p.exists() else 'absent')\ntry:print('SUBSEQUENT_HTTP',urllib.request.urlopen('http://127.0.0.1:39871',timeout=.2).status)\nexcept OSError:print('SUBSEQUENT_HTTP_UNAVAILABLE')\nprint('TEMP_RETAINED',pathlib.Path('/tmp/ordinary-temp').exists())\nprint('REGISTRY_REPLACED',not pathlib.Path('/registry/transient-file').exists())\nP"
+  ],
+  "interpretation": {
+    "background_listener_usable_across_calls": false,
+    "pid_existence_alone_valid_liveness_check": false,
+    "temporary_files_persist_but_are_not_in_base_snapshot": true,
+    "registry_replaced_from_controller_on_next_call": true
+  },
+  "model_calls": 0,
+  "reproduction": "At the source revision and image above, instantiate DockerWorkstation({}), call execute(command, {}) for each command in order, then close() in finally. Keep the two returned results and snapshots.",
+  "host_inventory": {
+    "managed_containers": 65,
+    "owner_pid_present": 0,
+    "owner_pid_absent": 65,
+    "unknown_owner": 0,
+    "removed_by_audit": 0,
+    "scope": "Read-only observation; terminal capture and ownership require separate confirmation before cleanup."
+  }
+}

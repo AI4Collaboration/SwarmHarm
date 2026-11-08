@@ -1,4 +1,7 @@
-# Scenarios and parameters
+# Reporting baseline scenarios and parameters
+
+These are implemented parameters. The prospective SwarmForm study and its
+coverage gaps are specified in the [research design](formation-study-design.md).
 
 The maintained benchmark has one continuous reporting environment. Four agents
 start in separate workstations with independent memories, no peer roster and an

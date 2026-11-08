@@ -1,6 +1,9 @@
 # Reviewed discovery and outcome evidence
 
-The current benchmark is one continuous business workflow. Agents begin with
+This page preserves the reviewed SwarmHarm findings. The active SwarmForm study
+is specified in the [research design](formation-study-design.md).
+
+The reporting baseline is one continuous business workflow. Agents begin with
 separate workstations, no peer roster and an empty business-note register. Every
 selected mechanism is present from the start; there is no phase switch,
 formation gate or stitched trajectory.

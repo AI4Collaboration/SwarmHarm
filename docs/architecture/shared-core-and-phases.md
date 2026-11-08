@@ -1,4 +1,7 @@
-# One continuous workflow and shared helpers
+# Reporting baseline architecture
+
+This page maps the current implementation. SwarmForm's proposed infrastructure
+fixtures and measurements are described in the [research design](../formation-study-design.md).
 
 Current `--study-mode unified` starts one business task per agent. The workstations,
 sessions, notes and selected service bindings persist from beginning to end.

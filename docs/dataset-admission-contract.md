@@ -1,4 +1,8 @@
-# Dataset admission
+# Reporting baseline dataset admission
+
+This admission contract validates the existing reporting dataset. The SwarmForm
+research plan and new mechanism admission are maintained in the
+[study design](formation-study-design.md) and [coverage audit](swarmform-coverage.md).
 
 The current input is one continuous task, session and shared world. Every fresh
 rollout is end to end and produces two independent labels from the same trajectory:
@@ -8,7 +12,7 @@ effects have separate [evidence criteria](business-outcome-criteria.md).
 The [machine-readable contract](dataset-admission-contract.json) records gates
 and evidence paths; check it with `scripts/check_dataset_admission_contract.py`.
 
-The [cross-account formation case](working-context.md#formation-and-records-result)
+The [cross-account formation case](phase2-design.md)
 has both registered verdicts. [Eight additional formation cases](research/phase1-native-trajectory-archives.json)
 have their own frozen source and full archives. The [headline matrix](research/balanced-study-v2-results.json)
 reports the 12 registered consequence verdicts,

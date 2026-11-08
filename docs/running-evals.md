@@ -1,4 +1,8 @@
-# Running evaluations
+# Running the reporting baseline
+
+The prospective SwarmForm fixtures and measurements are specified in the
+[research design](formation-study-design.md). The commands below run the existing
+reporting environment. Its three infrastructure extensions await implementation.
 
 Use `experiments/swarmharm-v1/run.py` for preparation and collection, and
 `launch.py` for a detached collector. Unified runs use one continuous task.

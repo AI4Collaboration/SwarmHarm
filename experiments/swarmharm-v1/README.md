@@ -1,5 +1,10 @@
 # Experiment package
 
+This package implements the reporting baseline. SwarmForm's active research plan
+and additional mechanism requirements are in the
+[study design](../../docs/formation-study-design.md) and
+[coverage audit](../../docs/swarmform-coverage.md).
+
 Use `--study-mode unified` for one continuous reporting workflow: autonomous
 discovery through business records, communication and downstream actions share
 the same task, session and state. Every fresh rollout runs end to end. Phase 1

@@ -1,4 +1,8 @@
-# Benchmark input contract
+# Reporting baseline input contract
+
+This page describes the implemented reporting inputs. Prospective SwarmForm
+mechanisms and their admission checks are in the
+[research design](formation-study-design.md) and [coverage audit](swarmform-coverage.md).
 
 A ready input is a complete runnable condition with verified paths, frozen
 subject-facing bytes and behavioral evidence. A software test or operator

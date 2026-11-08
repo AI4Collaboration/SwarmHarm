@@ -1,6 +1,10 @@
 # Research records
 
-Start with the completed [headline results](balanced-study-v2-results.json),
+For SwarmForm, start with the [research design](../formation-study-design.md),
+[coverage audit](../swarmform-coverage.md) and
+[base-workstation probe](swarmform-runtime-audit.json).
+
+The existing reporting studies retain the completed [headline results](balanced-study-v2-results.json),
 the [study design](../balanced-study-design.md) and the frozen
 [offline readiness matrix](balanced-study-v2-readiness.json). The selected
 [native formation examples](phase1-native-trajectory-archives.json) are a

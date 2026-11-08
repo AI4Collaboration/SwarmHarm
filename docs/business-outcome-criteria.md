@@ -1,4 +1,8 @@
-# Pass criteria
+# Reporting baseline pass criteria
+
+Existing registrations use the criteria below. SwarmForm's prospective measures
+of agent-created conventions and sustained exchange are in the
+[research design](formation-study-design.md).
 
 The current unified rollout measures two outcomes in one continuous task and
 trajectory. **Phase 1** is autonomous formation. **Phase 2** is the registered

@@ -1,4 +1,8 @@
-# Environment contract
+# Reporting baseline environment contract
+
+This contract describes the implemented reporting runner. The prospective
+SwarmForm fixtures follow the [research design](formation-study-design.md) and
+[resource coverage audit](swarmform-coverage.md).
 
 The current unified mode keeps one task, session and shared business world per
 rollout.

@@ -1,4 +1,23 @@
-# SwarmHarm project rules
+# SwarmForm project rules
+
+## Active research
+
+- The current study is **SwarmForm**. Study initially isolated agents discovering
+  peers, establishing communication conventions and sustaining substantive
+  exchanges during ordinary business work.
+- `docs/formation-study-design.md` owns the research design.
+  `docs/swarmform-coverage.md` owns the resource inventory and implementation gaps.
+  Inspect the entire deployed stack, including harnesses, supporting services,
+  notifications, shared resources and lifecycle transitions.
+- The three proposed infrastructure fixtures are a representative sample.
+  Record source grounding, coverage exclusions and unresolved paths. Keep
+  operator transfer tests separate from autonomous model evidence.
+- Preserve existing cases, serialized identifiers and their original claims.
+  The reporting runner below is the implemented baseline. Its two outcome labels
+  do not impose an adverse-outcome requirement on SwarmForm's research question.
+- Prospective settings and thresholds must be labeled as such until implemented,
+  registered and tested. Do not silently treat the current note schema as an
+  agent-created protocol or the current lifecycle as persistent process support.
 
 ## Scope
 
@@ -11,10 +30,9 @@
   support autonomous discovery and communication. All selected business
   mechanisms are present from the start; there is no phase transition or
   formation gate.
-- Phase 1 and Phase 2 are outcome labels, never environment or runtime-stage
-  names. Every fresh rollout must run end to end and score autonomous formation
-  plus its registered consequence from the same trajectory. Formation does not
-  gate consequence, and a negative formation label must not stop collection.
+- In the reporting runner, Phase 1 and Phase 2 are outcome labels. It scores
+  autonomous formation and its registered consequence from one end-to-end
+  trajectory. Neither label gates the other or stops collection.
 - Fresh preparation supports `unified` only. Never stitch separate rollouts
   into one trajectory.
 - Maintain `experiments/swarmharm-v1`. Package names are implementation details,
@@ -25,7 +43,7 @@
 - Domain names: Engineering, Data Analysis, Financial Analysis, Knowledge Work.
   “Engineering / Coding” appears only in taxonomy provenance. Live choices are
   `engineering-capacity`, `data-analysis`, `financial-analysis`, `knowledge-work`.
-- The balanced headline comparison uses Knowledge Work as primary and Engineering
+- The completed balanced comparison uses Knowledge Work as primary and Engineering
   as the sole replication domain. Data Analysis and Financial Analysis remain in
   the separate four-domain workload-stress block. Do not imply that all headline
   findings have been reproduced in all four domains.
@@ -37,15 +55,17 @@
 ## Sources of truth
 
 - `docs/working-context.md`: current work.
-- `docs/phase2-design.md`: canonical case matrix, findings and compositional evidence.
-- `docs/business-outcome-criteria.md`: pass criteria and behavior definitions.
-- `docs/environment-contract.md`: subject-facing design and offline controls.
+- `docs/formation-study-design.md`: current SwarmForm research design.
+- `docs/swarmform-coverage.md`: deployment inventory, grounding and open checks.
+- `docs/phase2-design.md`: existing case matrix and compositional evidence.
+- `docs/business-outcome-criteria.md`: implemented reporting-runner pass criteria.
+- `docs/environment-contract.md`: implemented reporting inputs and offline controls.
 - `docs/running-evals.md`: registration and execution.
 - README: concise headline, setting map and negative takeaways.
 
 Do not copy the detailed result matrix into working-context or parameter docs;
-link to `docs/phase2-design.md` and its machine-readable results. Discovery,
-dialogue and adoption are evidence dimensions, not separate headline findings.
+link to `docs/phase2-design.md` and its machine-readable results. SwarmForm
+reports discovery, convention adoption and sustained use as distinct milestones.
 Preserve original scores and closed trajectories; never relabel or stitch an
 archived case into the current matrix.
 
@@ -75,11 +95,15 @@ archived case into the current matrix.
 
 ## Evidence and execution
 
-- Verify the registered path and binding contract: constrained dispatch cannot
+- For a named reporting challenge, verify its path and binding contract: constrained dispatch cannot
   complete all items; a tested alternative is reachable; corrected binding
   prevents the corresponding erroneous release. Content-based controls permit
   valid uploads without processing, record edits or peer approval. Do not label
   that authorized completion as a failure. Check owner, version and output validity.
+- SwarmForm registers information dependence separately. Check whether each
+  worker can finish locally, whether missing information is actually available,
+  and whether the declared communication path transports it. Locally sufficient
+  work is a valid condition; task impossibility is not a universal prerequisite.
 - Keep all effects synthetic. Ground ordinary workflows in primary sources and
   identify experimental defects separately.
 - Apply the pass criteria without lowering them for a positive result. Review
