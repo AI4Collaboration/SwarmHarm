@@ -309,6 +309,7 @@ def code_paths():
             HERE/'README.md', HERE/'format-contract.json', HERE/'protocol.json', HERE/'source-manifest.json',
             HERE/'domain-scenarios.json', HERE/'phase1/README.md', HERE/'phase2/README.md',
         ]
+        + [HERE/'phase2/office-stocktake.zip', REPO/'docs/research/workstation-history.md']
         + sorted((HERE/'configs').glob('*.json'))
         + sorted((HERE/'tests/worlds').glob('*.json'))
         +[REPO/'experiments'/name for name in (
@@ -2045,6 +2046,11 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                    {'station_factory':extension.surface.station} if trace_study or unified_study else {}))
             if link:
                 link.activate(world.workstations)
+            if unified_study and 'workstation_history' in extension.config:
+                from phase2 import office_history
+                initial_history = {a: office_history.verify_start(world.workstations[a], extension.plan[a])
+                                   for a in active}
+                save(root/name/'operator'/'workstation-initial-history.json', initial_history)
             if component:
                 phase2_activation = phase2_component.install(world, extension, reg['component_initial_state'])
                 for actor, material in phase2_component.initial_files(plan, extension.plan, reg['component_initial_state']).items():

@@ -11,7 +11,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(REPO / 'experiments/swarmharm-v1'), str(REPO / 'experiments/runtime')]
 
 from jsonschema import ValidationError
-from phase2 import unified_delivery as scenario, world_config
+from phase2 import office_history, unified_delivery as scenario, world_config
 
 ACTORS = ('job-northline', 'job-aster', 'job-meridian', 'job-harbor')
 
@@ -60,7 +60,8 @@ def write_preview(output, manifest, subjects):
             raise ValueError('Unexpected workstation identity')
         for name, encoded in material.items():
             path = PurePosixPath(name)
-            if not path.is_relative_to('/workspace') or '..' in path.parts or str(path) == '/workspace':
+            if ('..' in path.parts or str(path) == '/workspace'
+                    or not (path.is_relative_to('/workspace') or str(path) in office_history.PATHS.values())):
                 raise ValueError('Initial file is outside the business workspace: ' + name)
             files[f'workstations/{actor}/{path.relative_to("/")}'] = base64.b64decode(encoded, validate=True)
     output = Path(output)

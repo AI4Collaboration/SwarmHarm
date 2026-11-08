@@ -1,9 +1,13 @@
-# Working context — 7 November 2026
+# Working context — 8 November 2026
 
 **Status: the headline matrix and formation-and-records validation are complete,
 reviewed and archived. Autonomous formation and the separately registered
 records consequence both pass in one continuous validation trajectory. There
-are no active collectors or queued model calls.**
+are eight fresh rollouts planned for the private-workstation comparison.**
+
+The [workstation-history pilot](research/workstation-history.md) pairs the same
+four-agent cross-account task with a task-only workstation or a workstation
+containing a prior stationery count. Its results are tracked separately.
 
 The current result is a 3 mechanism × 2 domain × 2 model matrix. Knowledge Work
 is the primary domain; Engineering is the replication domain. All 12 cells use

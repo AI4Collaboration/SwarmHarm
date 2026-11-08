@@ -1,5 +1,6 @@
 """Canonical four-group input for the unified reporting environment."""
 from copy import deepcopy
+from phase2 import office_history
 
 REVISION = 'reporting-world-v8'
 
@@ -23,6 +24,8 @@ def normalize(value=None, *, preset='control', delivery=None):
                          'completion_basis': cfg['completion_basis']},
         'observation': {key: cfg[key] for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope')},
     }
+    if office_history.FIELD in cfg:
+        result['observation'][office_history.FIELD] = cfg[office_history.FIELD]
     schema = {'type': 'object', 'additionalProperties': False, 'properties': {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
             **deepcopy(scenario.CONFIG_SCHEMA['properties']['access']['properties']),
@@ -40,7 +43,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']}}},
         'observation': {'type': 'object', 'additionalProperties': False, 'properties': {
             key: deepcopy(scenario.CONFIG_SCHEMA['properties'][key])
-            for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope')}},
+            for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope', office_history.FIELD)}},
     }}
     Draft202012Validator(schema).validate({} if value is None else value)
     for group, settings in (value or {}).items():

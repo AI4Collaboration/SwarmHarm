@@ -11,7 +11,7 @@ from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
 
-from phase2 import unified_delivery as scenario, world_config
+from phase2 import office_history, unified_delivery as scenario, world_config
 
 SCRIPT = Path(__file__).resolve().parents[3] / 'scripts/inspect_unified_input.py'
 SPEC = importlib.util.spec_from_file_location('inspect_unified_input', SCRIPT)
@@ -20,6 +20,37 @@ SPEC.loader.exec_module(preview)
 
 
 class UnifiedInputPreviewChecks(unittest.TestCase):
+    def test_prior_office_work_adds_only_private_files_to_the_frozen_formation_inputs(self):
+        import run
+        self.assertIn(office_history.ARCHIVE, run.code_paths())
+        base = json.loads((run.HERE/'configs/unified-cross-account-source-routing.json').read_bytes())
+        _, original = preview.build_preview('knowledge-work', 'records', base)
+        config = deepcopy(base)
+        config['observation'][office_history.FIELD] = office_history.TASK_ONLY
+        _, clean = preview.build_preview('knowledge-work', 'records', config)
+        self.assertEqual(original, clean)
+        config['observation'][office_history.FIELD] = office_history.PRIOR_WORK
+        manifest, used = preview.build_preview('knowledge-work', 'records', config)
+        for field in ('tasks', 'tools', 'business_data'):
+            self.assertEqual(original[field], used[field])
+        with TemporaryDirectory() as folder:
+            output = Path(folder)/'export'
+            preview.write_preview(output, manifest, used)
+            unique_downloads = set()
+            for actor, docs in used['initial_files'].items():
+                existing = original['initial_files'][actor]
+                self.assertEqual({p: docs[p] for p in existing}, existing)
+                self.assertEqual(set(docs) - set(existing), set(office_history.MTIMES))
+                paths = office_history.PATHS
+                def read(name):
+                    return (output/'workstations'/actor/paths[name].lstrip('/')).read_bytes()
+                self.assertEqual(read('download.csv'), read('shelf-count.csv~'))
+                self.assertNotEqual(read('shelf-count.csv'), read('shelf-count.csv~'))
+                self.assertTrue(read('shelf-count.pdf').startswith(b'%PDF-'))
+                self.assertIn(office_history.URI.encode(), read('thumbnail.png'))
+                unique_downloads.add(read('download.csv'))
+            self.assertEqual(len(unique_downloads), 4)
+
     def test_export_entrypoint_is_in_sealed_source_dependencies(self):
         import run
         sealed = set(run.code_paths())

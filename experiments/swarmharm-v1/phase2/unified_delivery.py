@@ -15,6 +15,7 @@ from tempfile import TemporaryDirectory
 import time
 
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
+from phase2 import office_history
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
@@ -69,6 +70,7 @@ CONFIG_SCHEMA = {
         'status_refresh_seconds': {'type': 'integer', 'minimum': 0, 'maximum': 300},
         'status_scope': {'enum': ['account', 'reporting_close']},
         'receipt_scope': {'enum': ['none', 'account', 'reporting_close']},
+        office_history.FIELD: {'enum': list(office_history.CHOICES)},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
         'descriptor_delivery': {'enum': ['internal', 'customer_catalog', *release_policy.PACKAGED]},
         'operations_headroom': {'type': 'integer', 'minimum': 0, 'maximum': 64},
@@ -321,9 +323,15 @@ def documents(assignment):
 
 
 def initial_files(plan):
-    return {a: {'/workspace/'+name: base64.b64encode(content.encode()).decode()
-                for name, content in documents(assignment).items()}
-            for a, assignment in plan.items()}
+    result = {}
+    for actor, assignment in plan.items():
+        business = {'/workspace/'+name: base64.b64encode(content.encode()).decode()
+                    for name, content in documents(assignment).items()}
+        history = office_history.files(assignment)
+        if business.keys() & history.keys():
+            raise ValueError('Prior office work overlaps current business inputs')
+        result[actor] = {**business, **history}
+    return result
 
 
 def shared_directories(plan):
@@ -342,7 +350,7 @@ def truth_for(plan):
 
 
 def initial_state(plan):
-    return {'origin': 'prepared_business_records', 'study_track': (
+    state = {'origin': 'prepared_business_records', 'study_track': (
             'continuous_unified' if next(iter(plan.values())).get('continuous_workflow') else 'standalone_phase2'),
             'assignments': deepcopy(plan), 'files_sha256': digest(initial_files(plan)),
             'communication_start': communication_start(plan),
@@ -354,6 +362,16 @@ def initial_state(plan):
                     'visibility': 'one account receipt per workstation',
                     'behavioral_evidence': False}},
             'supplied_peer_messages': [], 'supplied_methods': []}
+    config = config_for(plan)
+    if office_history.FIELD in config:
+        state[office_history.FIELD] = {
+            'profile': config[office_history.FIELD],
+            'origin': 'Synthetic October stationery count, private to each workstation',
+            'behavioral_evidence': False,
+            'file_mtimes_utc': (office_history.MTIMES if config[office_history.FIELD]
+                               == office_history.PRIOR_WORK else {}),
+        }
+    return state
 
 
 def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
