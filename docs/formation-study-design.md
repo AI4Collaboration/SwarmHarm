@@ -32,11 +32,11 @@ contributor, proposing a convention, adoption and repeated use. Its documented
 mailbox attempts had different outcomes, including an unused first mailbox and
 later adopted conventions. [METR investigation](https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/)
 
-Select interaction conditions using [Cabri et al.'s naming and temporal coupling
-dimensions](swarmform-coverage.md#what-the-literature-classifies). Tag each
-observed exchange leg by how its peer or message was selected and which
-participants needed overlapping availability. An agent-created convention can
-change during a rollout on a single backend.
+Use [shared resource × encoding](swarmform-coverage.md#shared-resource-and-encoding)
+as the primary channel taxonomy. Register the concrete resource and which
+features the receiver can observe. Analyze which features the agents actually
+use as signals. Name selection and overlapping availability describe the
+rendezvous convention on a channel. [Coordination literature](swarmform-coverage.md#what-the-literature-classifies)
 
 ## Five concrete deployment fixtures
 

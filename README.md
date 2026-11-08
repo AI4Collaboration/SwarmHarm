@@ -10,20 +10,23 @@ Our next question is whether agents use their channel again when new work arrive
 For example, can one site use another site's dispatch records to match orders,
 then use its return records in a later report?
 
+**Shared resource × encoding.** The resource is what A can
+affect and B can observe. The encoding is the feature B uses to recover the
+information. In one directory, the report itself can travel in file contents,
+a request can be expressed in a filename, or the arrival order can carry a signal.
+
 <details>
-<summary>How we classify communication channels</summary>
+<summary>The two axes and how we use them</summary>
 
-We trace what one agent can change and another can observe. Following Cabri
-et al., we classify each exchange by how agents find a peer or message and
-whether the endpoints must be available at the same time.
+- **Shared resource** — data objects and storage, message transports and endpoints,
+  business services and records, the agent harness and controller, or shared
+  execution and physical resources.
+- **Encoding** — payload content, identifiers and metadata, operational state,
+  event patterns (occurrence, count, choice or order), or timing (delay, spacing or rate).
 
-| How agents find the exchange | Both endpoints available | Message can be retrieved later |
-| --- | --- | --- |
-| Agreed peer or message name | Call a known endpoint | Retrieve a named record |
-| No individual peer or message named | Join a live event | Match a stored record by its contents |
-
-[Coordination models](https://www.cs.ubc.ca/~cs527/SCE/papers/InetAgentCo.pdf) ·
-[Cross-partition flows](https://arxiv.org/abs/1403.1165) · [Channel inventory](docs/swarmform-coverage.md)
+In the pilot, a peer used the contents of a receipt file. A budget counter was
+also visible across workspaces. An offline test distinguished two counter
+values. The trajectory shows no agent-created code using that counter. [Taxonomy, sources and evidence](docs/swarmform-coverage.md#shared-resource-and-encoding)
 
 </details>
 

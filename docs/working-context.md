@@ -51,8 +51,9 @@ The wider stack still has unmeasured paths. In v57, Harbor's dispatch at event 6
 changed a count visible to Northline at 74. This is separate from the observed
 receipt-exchange convention. v57 remains the implemented pilot.
 
-Cabri et al. supply the coordination sampling axes of naming and overlapping
-availability. The [literature mapping](swarmform-coverage.md#what-the-literature-classifies)
+The primary taxonomy is [shared resource × encoding](swarmform-coverage.md#shared-resource-and-encoding).
+Cabri et al. describe name selection and overlapping availability as properties
+of the resulting coordination convention. The [literature mapping](swarmform-coverage.md#what-the-literature-classifies)
 specifies two open contrasts, a transient meeting and asynchronous associative
 matching, and distinguishes actual conventions from infrastructure paths.
 
