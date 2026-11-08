@@ -2,6 +2,8 @@
 
 The active [SwarmForm work order](../../docs/formation-study-design.md#overnight-work-and-acceptance-criteria) covers all four domains. `swarmform/fulfillment.py` implements the three-agent Data Analysis input and verifier. The rollout commands below describe the four-agent reporting baseline.
 
+## SwarmHarm reporting runner
+
 Use `--study-mode unified` for one continuous reporting workflow: autonomous
 discovery through business records, communication and downstream actions share
 the same task, session and state. Every fresh rollout runs end to end. Phase 1
@@ -16,7 +18,7 @@ Package layout:
 - `scenarios/`: workstation initialization and offline fixtures.
 - `configs/`: headline and cross-account routing settings. Additional test worlds live in `tests/worlds/`.
 - `tests/`: offline contracts.
-- `registrations/`: sealed inputs for the current reviewed matrix and its
+- `registrations/`: sealed inputs for the reviewed reporting matrix and its
   end-to-end validations.
 - `run.py`, `launch.py`, `review.py`, `export_atif.py`: rollout lifecycle.
 

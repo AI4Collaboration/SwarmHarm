@@ -1,143 +1,22 @@
-# SwarmForm and SwarmHarm project rules
+# SwarmForm
 
-## Active research
+The active task is the three-agent SwarmForm benchmark. Start with the [overnight work and acceptance criteria](docs/formation-study-design.md#overnight-work-and-acceptance-criteria). The [matrix ledger](docs/live-rollout-status.json) records the next checkpoint, open cells and active registrations. Run `python3 scripts/check_swarmform_inputs.py` to check its accounting and the implemented offline workloads.
 
-- Current development focuses on **SwarmForm**. Preserve all SwarmHarm inputs,
-  case identities, results and full archived trajectories. Study isolated agents discovering
-  peers, establishing communication conventions and sustaining substantive
-  exchanges during ordinary business work.
-- Start with “Overnight work and acceptance criteria” in `docs/formation-study-design.md`.
-  It defines the active work order and completion bar. `docs/live-rollout-status.json`
-  identifies the active matrix and the separately reviewed reporting cases.
-  `docs/swarmform-coverage.md` owns the resource inventory and implementation gaps.
-  Inspect the entire deployed stack, including harnesses, supporting services,
-  notifications, shared resources and lifecycle transitions.
-- Classify channels by **shared resource × encoding**. The SwarmForm input plan crosses five concrete deployments and five encoding opportunities with all four domains. Track observed encodings and resource families separately from the registered input.
-  Audit complete directed paths under the declared receiver observation model,
-  including mixed carriers, relays, dynamic bindings and timing. Record source
-  grounding, exclusions and unresolved paths. Keep
-  operator transfer tests separate from autonomous model evidence.
-- Preserve existing cases, serialized identifiers and their original claims.
-  The reporting runner below is the implemented baseline. Its two outcome labels
-  do not impose an adverse-outcome requirement on SwarmForm's research question.
-- Prospective settings and thresholds must be labeled as such until implemented,
-  registered and tested. Do not silently treat the current note schema as an
-  agent-created protocol or the current lifecycle as persistent process support.
+## Design and evidence
 
-## Scope
+- Apply the same three-agent design across Engineering, Data Analysis, Financial Analysis and Knowledge Work. Each candidate fixes a deployment, encoding opportunity and domain. Record the encoding the agents actually use and all observable alternative paths. Follow the [coverage contract](docs/swarmform-coverage.md) for resource scope, relays, timing, noise, receiver observations and unresolved paths.
+- Give each agent an ordinary business objective, private source material, a persistent workstation and its own session. Keep tasks, permissions, runtime and update policy matched within a domain. Keep research labels, peer rosters, cooperation cues, proposed methods and fabricated exchanges out of the workstations. Attribute supplied business records and automatic service events to their actual sources.
+- Deliver the registered autonomous-execution rule once at startup. Agents work independently of human clarification, confirmation or approval. A real business revision may trigger the registered neutral notice. Unchanged state starts no turn. Preserve autonomous stopping, corrections, cancellations, withdrawals and incomplete work.
+- Verify all legitimate sources can solve the workload. For distributed tasks, show how another worker's private fact changes the owner's correct output. Check the live interface, private-scope counterpart and receiver-visible evidence for each proposed channel. Keep all business systems and effects synthetic.
+- Use the separate discovery, adoption, sustained-use and group-size criteria in the study plan. Bind findings to the exact author, delivered content or signal, native reads and downstream work. Preserve artifact versions and independently reconstruct outputs. Offline transport checks establish reachability; behavioral evidence requires a registered rollout. Report negatives and ambiguous encodings.
 
-- Maintain the project directly on `main`. Start from the latest `origin/main`,
-  run the relevant checks, and push validated commits back to `main`.
-  Create a separate branch or PR only when the user requests one.
-- The implemented four-worker reporting runner uses `--study-mode unified`: one continuous business task, session,
-  workstation and shared world per rollout. Agents start without a peer roster
-  or dedicated chat tools. The SwarmHarm baseline uses business notes under
-  `/registry/reporting/notes`; the registered v57 cache pilot uses
-  `/registry/reporting/cache`. All selected business
-  mechanisms are present from the start; there is no phase transition or
-  formation gate.
-- In the reporting runner, Phase 1 and Phase 2 are outcome labels. It scores
-  autonomous formation and any registered consequence from one end-to-end
-  trajectory. A SwarmForm formation target requires no adverse outcome.
-  Neither label gates the other or stops collection.
-- Fresh preparation supports `unified` only. Never stitch separate rollouts
-  into one trajectory.
-- Maintain `experiments/swarmharm-v1`. Package names are implementation details,
-  not runtime stages. See `docs/architecture/shared-core-and-phases.md`.
-- Do not edit the website without explicit assignment, or synchronized
-  reference material under `sources/`.
-- Use “rollout” and “scenario”. No inference seed is configured.
-- Domain names: Engineering, Data Analysis, Financial Analysis, Knowledge Work.
-  “Engineering / Coding” appears only in taxonomy provenance. Live choices are
-  `engineering-capacity`, `data-analysis`, `financial-analysis`, `knowledge-work`.
-- The completed **SwarmHarm** balanced comparison uses Knowledge Work as primary and Engineering
-  as the sole replication domain. Data Analysis and Financial Analysis remain in
-  the separate four-domain workload-stress block. Do not imply that all headline
-  findings have been reproduced in all four domains.
-- A SwarmHarm balanced-headline cell must select `--comparison-design balanced-headline-v1` and the
-  common world config. Model identity, domain payload, one named binding and its
-  registered claim are the only allowed differences. Never bypass its factor
-  alignment check or relabel an archived compound case as that comparison.
+## Execution
 
-## Sources of truth
+- Use three concurrent agents of the same model. Each admitted input gets a matched Sol 5.6 and Sol 6.1 pair through native Codex and AxonHub, high reasoning, goal off, private memory per rollout. Use same-model fallback with eligible non-OpenRouter channels preferred. Keep host credentials and raw outputs outside Git. [Routing](docs/axonhub-routing.md)
+- Keep Harbor 1.4 inputs, Harbor 0.24.0 and validated ATIF-v1.8 trajectories. No inference seed is configured. Review complete native records, delivery limits, real actions and terminal outputs. Preserve provider failures and inspect the reason for a flagged attempt. Remove genuinely out-of-scope mechanisms before validating fresh inputs. Never bypass a provider safeguard.
+- Work on up-to-date `main` unless a separate branch is requested. Test, commit and push source before preparing a new registration. Commit and push the registration, verify local, remote and sealed hashes, inspect actual collectors and terminal records, then collect once. Keep each reviewed case’s sealed source snapshot, registration and archived trajectory immutable. Validate runtime changes before fresh collection.
+- Synced files under `sources/` are read-only. Website edits require an explicit assignment. Use “rollout” and “scenario” in project materials.
 
-- `docs/formation-study-design.md`: current SwarmForm research design.
-- `docs/swarmform-coverage.md`: deployment inventory, grounding and open checks.
-- `docs/phase2-design.md`: existing case matrix and compositional evidence.
-- `docs/business-outcome-criteria.md`: implemented reporting-runner pass criteria.
-- `docs/environment-contract.md`: implemented reporting inputs and offline controls.
-- `docs/running-evals.md`: registration and execution.
-- README: research question, current plan and links to runnable inputs and results.
+## Reproduction
 
-Link to the case matrix in `docs/phase2-design.md` and its machine-readable results. SwarmForm
-reports discovery, convention adoption and sustained use as distinct milestones.
-Preserve original scores and closed trajectories; never relabel or stitch an
-archived case into the current matrix.
-
-## Subject-facing design
-
-- State a natural business outcome; place details in normal files and services.
-- Fresh unified tasks must not announce peers or topology. Ordinary business
-  records and their storage schema may be documented. Do not announce research
-  targets, hidden graders/managers or desired behavior. Do not prescribe
-  cooperation, rationalization, methods or avoidance of methods. High visibility
-  of ordinary business facts is allowed.
-- Every fresh scenario has the registered autonomous-execution rule: no requests
-  to the user for clarification, confirmation, approval or decisions. Deliver
-  it once in initial native context. This explicit human-requested harness rule
-  is the sole exception to the no-behavioral-prohibition prompt convention;
-  it does not prescribe cooperation or a method. Preserve any violation in traces.
-- Do not advertise abandonment or a “safe choice”. Preserve autonomous stopping,
-  correction, cancellation and restoration as observed behavior.
-- Each rollout uses its registered deployment without a peer roster. All live
-  messages must be agent-authored. Freeze supplied business materials with
-  provenance; exclude them from autonomous-discovery claims.
-- The controller may continue a session on a new business-state revision using
-  the registered generic notice. A waiting plan or unchanged revision starts no turn.
-- Ordinary deadlines and contractual credits are allowed; never threaten
-  agents, access or peers. Cover every visible file, tool, error and follow-up
-  with prompt-contract checks.
-
-## Evidence and execution
-
-- For a named reporting challenge, verify its path and binding contract: constrained dispatch cannot
-  complete all items; a tested alternative is reachable; corrected binding
-  prevents the corresponding erroneous release. Content-based controls permit
-  valid uploads without processing, record edits or peer approval. Do not label
-  that authorized completion as a failure. Check owner, version and output validity.
-- SwarmForm registers information dependence separately. Check whether each
-  worker can finish locally, whether missing information is actually available,
-  and whether the declared communication path transports it. Locally sufficient
-  work is a valid condition; task impossibility is not a universal prerequisite.
-- Keep all effects synthetic. Ground ordinary workflows in primary sources and
-  identify experimental defects separately.
-- Apply the pass criteria without lowering them for a positive result. Review
-  full native requests, exact reads, authored messages, actions, corrections,
-  ATIF continuity and independently reconstructed terminal effects.
-- Never stitch trajectories or run a formation-only prelude before a consequence
-  task. Preserve one agent population, task, memory, workstation and world from
-  initialization through terminal capture.
-- For composition, verify actual harmless solo execution and harmful combined
-  execution. A solo plan blocked by missing approvals proves dependency only.
-- Offline checks establish contracts, not model behavior. Do not infer mental
-  states from tool use alone or estimate population rates from selected cases.
-- All live inference uses AxonHub. OpenAI uses Codex and Claude uses Claude
-  Code. A separately requested Sol 5.6 Pi comparison requires
-  `--harness pi-sdk --pi-comparison`. See `docs/axonhub-routing.md`.
-- Use three isolated contexts in every new SwarmForm matrix cell, across all four domains. The reporting
-  baseline and v57 cache pilot retain their registered four. Preserve Harbor 1.4
-  inputs, Harbor 0.24.0, ATIF-v1.8 and each actor's session within its rollout.
-- Use same-model fallback, preferring eligible non-OpenRouter channels. Record
-  actual routing when available. Other models require explicit selection.
-  Direct subscription/provider inference is forbidden.
-- Finish source and tests, commit/push, then prepare and commit/push a new
-  registration. Verify clean local/remote/sealed hashes before collecting once.
-  Never edit frozen inputs, duplicate collectors or replace negative runs.
-- Keep credentials and raw outputs outside Git. Maintain only registrations for
-  the current reviewed result; Git and private archives preserve history.
-- If a provider flags content, retain the attempt and inspect the cause. Remove
-  out-of-scope content and revalidate; never bypass a safeguard.
-- Runtime and CLI/SDK versions may be updated after compatibility checks and a
-  fresh registration; old pins do not override the requested harness. Never
-  change a running frozen rollout.
-- After verified changes, synchronize local and remote state.
+The four-agent v57 cache pilot and SwarmHarm reporting studies retain their original populations, software and scoring rules. Use the [reporting environment contract](docs/environment-contract.md), [running guide](docs/running-evals.md) and [reviewed evidence](docs/research/README.md) for those cases. OpenAI uses Codex and Claude uses Claude Code via AxonHub. A Sol 5.6 Pi comparison requires explicit selection and its own registration.

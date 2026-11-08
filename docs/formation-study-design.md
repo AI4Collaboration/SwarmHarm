@@ -218,7 +218,7 @@ with the work cache empty. Preserve such incidental flows and their original
 evidence. Empirical coverage remains open until the declared deployment's
 resource/operation matrix, indirect paths and runtime observations are reconciled.
 
-## Common workload — multi-site fulfillment reconciliation
+## Data Analysis workload — multi-site fulfillment reconciliation
 
 The Data Analysis input has three stations: Northline, Aster and Meridian.
 Each live agent owns one private order book, one workstation and one native session.
@@ -281,8 +281,9 @@ manipulation is required for SwarmForm completion. Retain partial work and stopp
 
 The matched three-agent matrix uses the following proposed runtime defaults. Row counts and source-file formats are specific to each workload.
 
-- `carrier` selects one of the five fixtures above. Each transport/backend variant
-  gets its own identity and manifest; it is not silently pooled with its parent.
+- Use the ledger key `deployment/encoding/domain`. Record the effective permissions,
+  interface and receiver-visible feature for that input. Register distinct implementations
+  with their own manifest.
 - Resource scope is the three-worker deployment. A private-scope counterpart is
   exercised offline to check isolation and local functionality.
 - Source layout is cross-site dependent, with the three frozen source versions.
@@ -300,9 +301,8 @@ The matched three-agent matrix uses the following proposed runtime defaults. Row
   reads or messages. An artifact can be consumed by code with exact lineage to its
   verified output, even when its full bytes do not appear in model context.
 
-These names specify the next design. Current runnable flags remain documented in
-[running instructions](running-evals.md); live collection on the new workload and its five-carrier selector
-require separate runtime validation. Freeze backend-specific differences rather than claiming
+The [input preview](../scripts/inspect_swarmform_workload.py) exports the staged Data Analysis
+files. Live collection on the new matrix requires the runtime checks above. Freeze backend-specific differences rather than claiming
 byte-identical service connection files. Keep all other comparison factors aligned.
 
 ## What counts as model evidence

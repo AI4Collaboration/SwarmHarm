@@ -4,13 +4,13 @@
 import hashlib
 import json
 import re
-from itertools import product
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "docs/dataset-admission-contract.json"
-STATUS = ROOT / "docs/live-rollout-status.json"
+ACTIVE_STATUS = ROOT / "docs/live-rollout-status.json"
+REPORTING = ROOT / "docs/research/reporting-run-index.json"
 REGISTRATIONS = ROOT / "experiments/swarmharm-v1/registrations"
 ROLLOUT_LANGUAGE_PATHS = [
     ROOT / "README.md",
@@ -160,41 +160,11 @@ def validate_phase1_results(contract, status):
             fail('Formation archive identifier mismatch: ' + entry['rollout'])
 
 
-def validate_active_matrix(status):
-    matrix = status["matrix"]
-    axes = (matrix["deployments"], matrix["encoding_opportunities"], matrix["domains"])
-    if tuple(len(axis) for axis in axes) != (5, 5, 4) or any(len(set(axis)) != len(axis) for axis in axes):
-        fail("SwarmForm needs five distinct deployments, five encoding opportunities and four domains")
-    catalog = json.loads((REGISTRATIONS.parent / "domain-scenarios.json").read_text())
-    if set(matrix["domains"]) != {scenario["category"] for scenario in catalog["scenarios"]}:
-        fail("SwarmForm matrix domain names differ from the domain catalog")
-    if (status["population"] != 3 or status["current_harness"] != "codex"
-            or set(status["current_models"]) != {"openai/gpt-5.6-sol", "openai/gpt-6.1-sol"}):
-        fail("SwarmForm's matched pair needs three agents of one registered Sol model per rollout")
-    if matrix["unlisted_cell_status"] != "open":
-        fail("unreviewed matrix cells must remain open")
-    for domain, evidence in matrix["offline_workload_checks"].items():
-        if domain not in matrix["domains"] or not (ROOT / evidence).is_file():
-            fail(f"missing workload check for {domain}")
-    keys = {"/".join(cell) for cell in product(*axes)}
-    cells = matrix["cells"]
-    for key, entry in cells.items():
-        if key not in keys or entry["status"] not in {"admitted", "equivalent", "unsupported"}:
-            fail(f"invalid matrix disposition: {key}")
-        if not (ROOT / entry["evidence"]).is_file():
-            fail(f"missing matrix disposition evidence: {key}")
-        if entry["status"] == "equivalent":
-            canonical = entry.get("canonical", "")
-            if (cells.get(canonical, {}).get("status") != "admitted"
-                    or key.rsplit("/", 1)[-1] != canonical.rsplit("/", 1)[-1]):
-                fail(f"equivalent input needs an admitted canonical cell in the same domain: {key}")
-    print(f"SwarmForm plan: {len(keys)} candidates; {len(keys) - len(cells)} open")
-
-
 def main():
     validate_rollout_language()
     contract = json.loads(CONTRACT.read_text())
-    status = json.loads(STATUS.read_text())
+    status = json.loads(REPORTING.read_text())
+    active = json.loads(ACTIVE_STATUS.read_text())
 
     if contract.get("active_scope") != "continuous-unified":
         fail("current development scope must be continuous unified input")
@@ -242,29 +212,23 @@ def main():
         if not (ROOT / relative).is_file():
             fail(f"missing current evidence {relative}")
 
-    if status.get("heartbeat") is not None:
-        fail("unexpected scheduled collection")
-    for entry in status.get("active_rollouts", []):
-        if not isinstance(entry, dict) or not isinstance(entry.get("registration"), str):
-            fail("active_rollouts entries must name a repository-relative registration")
-        if entry["registration"] not in status.get("maintained_registrations", []):
-            fail("active rollout registration is not maintained")
-    expected = set(status.get("maintained_registrations", []))
+    archived = set(status["maintained_registrations"])
+    current = set(active["maintained_registrations"])
+    if current & archived:
+        fail("a retained reporting registration is also indexed as an active SwarmForm input")
+    expected = archived | current
     actual = {
         str(path.relative_to(ROOT)) for path in REGISTRATIONS.iterdir()
         if path.is_dir() and (path / "registration.json").is_file()
     }
     if actual != expected:
         fail(f"maintained registrations differ: {sorted(actual ^ expected)}")
-    study_plan = contract["swarmform_contract"]
-    if (status["decision_record"] != study_plan or contract["current_question"] != study_plan
-            or not (ROOT / study_plan).is_file()):
-        fail("status and admission must reference the same SwarmForm study plan")
+    if contract["registration_index"] != str(REPORTING.relative_to(ROOT)):
+        fail("reporting admission and registration index differ")
 
-    validate_active_matrix(status)
     validate_readiness(contract, status)
     validate_phase1_results(contract, status)
-    print("dataset admission contract: valid; continuous input and original case evidence aligned")
+    print("Reporting baseline: sealed registration inventory and original case evidence aligned")
 
 
 if __name__ == "__main__":

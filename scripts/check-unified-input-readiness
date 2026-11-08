@@ -60,7 +60,6 @@ def main(argv=None):
         ('host launch capacity', 'host_capacity_checks.py'),
         ('claim evidence', 'claim_evidence_checks.py'),
         ('four-agent v57 cache and runtime', 'swarmform_runtime_checks.py'),
-        ('three-agent SwarmForm Data Analysis workload (offline)', 'fulfillment_input_checks.py'),
     ]
     if args.full:
         suites += [
@@ -77,7 +76,9 @@ def main(argv=None):
             'tests.collector_checks.UnifiedEntryChecks', '-v'], env=environment),
         run('subject-facing wording', [python, 'experiments/prompt-contract/checks.py'],
             env=environment),
-        run('dataset admission', [python, 'scripts/check_dataset_admission_contract.py'],
+        run('active SwarmForm index and offline workloads', [python, 'scripts/check_swarmform_inputs.py'],
+            env=environment),
+        run('retained reporting dataset admission', [python, 'scripts/check_dataset_admission_contract.py'],
             env=environment),
         run('format contract', [python, 'scripts/check_format_contract.py',
                                 'experiments/swarmharm-v1'], env=environment),
@@ -86,7 +87,7 @@ def main(argv=None):
     ]
     report = {
         'kind': 'unified_business_input_readiness',
-        'scope': 'Reporting baseline offline contracts and three-agent Data Analysis workload checks',
+        'scope': 'Aggregate offline checks for the retained reporting runner and active SwarmForm inputs',
         'source_commit': subprocess.check_output(
             ['git', 'rev-parse', 'HEAD'], cwd=REPO, text=True).strip(),
         'python': sys.version.split()[0],

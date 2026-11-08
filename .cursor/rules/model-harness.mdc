@@ -1,13 +1,6 @@
 ---
-description: Model and harness selection for SwarmForm and SwarmHarm rollouts
+description: Use the active SwarmForm plan and model routing
 alwaysApply: true
 ---
 
-- Read `AGENTS.md`, `docs/formation-study-design.md` and `docs/axonhub-routing.md` before preparation.
-- All live inference goes through AxonHub, including Claude Code.
-- OpenAI models use Codex. Claude models use Claude Code. Never run Haiku, Sonnet or Opus through Pi.
-- The active SwarmForm matrix uses three agents of one model per rollout. Run a matched Sol 5.6 and 6.1 pair through native Codex with high reasoning and goal off. Replay earlier cases with their registered populations.
-- If the required adapter is missing, implement and validate it before registration. Do not silently substitute another harness.
-- Any explicitly requested Sol 5.6 Pi comparison needs its own registration.
-- Replay a published case with its sealed source and registration.
-- Runtime/CLI versions can be updated after validation and fresh registration; preserve frozen runs.
+Follow the root `AGENTS.md` and the study it links. Use `docs/live-rollout-status.json` for the current population, model pair and cell inventory. Use `docs/axonhub-routing.md` for adapter setup. Published runs use their own sealed registration.

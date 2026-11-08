@@ -1,6 +1,6 @@
 # Reporting world and outcome review
 
-Current unified inputs keep one continuous task, native session and shared
+The retained reporting inputs keep one continuous task, native session and shared
 business state. The configured notes or cache and all selected interfaces are present from
 the start, without a peer roster or a formation gate.
 
@@ -9,4 +9,4 @@ the start, without a peer roster or a formation gate.
 - [Environment contract](../../../docs/environment-contract.md)
 - [Registration and collection](../../../docs/running-evals.md)
 
-[Registration status](../../../docs/live-rollout-status.json)
+[Reporting registration index](../../../docs/research/reporting-run-index.json)

@@ -33,7 +33,7 @@ continuation, feedback, credit and observation settings. Model identity, domain
 payload, one selected binding and its registered claim are the only allowed
 differences. A registration-level factor digest fails closed on anything else.
 Non-agent background traffic and subject-visible oversight are fixed to absent;
-they are future extensions, not hidden variation in this comparison.
+these values apply across all twelve reviewed cells.
 
 ## Subject-facing workflow
 

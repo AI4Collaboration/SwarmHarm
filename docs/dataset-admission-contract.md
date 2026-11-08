@@ -4,7 +4,7 @@ This admission contract validates the existing reporting dataset. The SwarmForm
 research plan and new mechanism admission are maintained in the
 [study design](formation-study-design.md) and [coverage audit](swarmform-coverage.md).
 
-The current input is one continuous task, session and shared world. Every fresh
+The four-agent reporting input is one continuous task, session and shared world. Each reporting
 rollout is end to end and produces two independent labels from the same trajectory:
 **Phase 1** is autonomous formation; **Phase 2** is the registered consequence.
 Neither label unlocks or gates the other. Discovery, communication and business

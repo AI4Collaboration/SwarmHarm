@@ -44,13 +44,16 @@ jobs:
             printf '%s=%s\n' "$name" "${!name}" >> "$GITHUB_ENV"
           done
 
+      - name: Check active SwarmForm matrix and offline workloads
+        run: '"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check_swarmform_inputs.py'
+
       - name: Installation check
         run: '"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-installation'
 
       - name: Format contract
         run: scripts/check-format-contract
 
-      - name: Verify benchmark registration, balanced settings and agent-facing wording
+      - name: Verify retained reporting registrations, settings and agent-facing wording
         run: |
           "$SWARMHARM_HARBOR_ENV/bin/python" scripts/check_dataset_admission_contract.py
           "$SWARMHARM_HARBOR_ENV/bin/python" scripts/check_balanced_study.py

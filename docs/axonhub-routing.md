@@ -1,6 +1,6 @@
 # Model and harness routing
 
-All live inference goes through **AxonHub**, including Claude Code. Direct
+For the active SwarmForm matrix use native Codex through **AxonHub** for both Sol models. All supported adapters route live inference through AxonHub, including Claude Code. Direct
 provider and subscription inference are not rollout routes.
 
 - **Claude models: Claude Code.** This includes Haiku, Sonnet and Opus.

@@ -1,8 +1,9 @@
 # Running the reporting baseline
 
-For the active three-agent SwarmForm matrix, start with the [overnight acceptance criteria](formation-study-design.md#overnight-work-and-acceptance-criteria). To inspect the implemented Data Analysis input, run:
+For the active three-agent SwarmForm matrix, start with the [overnight acceptance criteria](formation-study-design.md#overnight-work-and-acceptance-criteria). Use these commands to check the active matrix and inspect the implemented Data Analysis input:
 
 ```sh
+python3 scripts/check_swarmform_inputs.py
 python3 scripts/inspect_swarmform_workload.py --staged --dataset-key november --output ../fulfillment-preview
 ```
 
@@ -252,7 +253,7 @@ trajectories in linked releases.
 
 ## SwarmForm cache rollout
 
-Use the normal preparation and collection flow above with
+The following settings reproduce the reviewed four-agent v57 pilot. Use the normal preparation and collection flow above with
 `--scenario knowledge-work --binding-preset control --target-claim autonomous_formation` and
 `--world-config experiments/swarmharm-v1/configs/swarmform-work-cache.json`.
 Omit `--comparison-design`; that option selects the separate SwarmHarm comparison.

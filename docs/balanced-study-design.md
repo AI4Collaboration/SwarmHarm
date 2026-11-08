@@ -1,7 +1,6 @@
-# Balanced headline study
+# SwarmHarm balanced reporting study
 
-This design fixes the comparison factors for the headline matrix while retaining
-the four-domain benchmark as a separate workload-stress block.
+These are the frozen comparison factors for the reviewed SwarmHarm reporting matrix. The [SwarmForm study](formation-study-design.md#three-axis-input-matrix) covers all four domains.
 
 ## Study structure
 
