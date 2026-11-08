@@ -7,8 +7,9 @@ import random
 
 from phase2.workload_sources import csv_text
 
-SITES = ('Northline', 'Aster', 'Meridian', 'Harbor')
+SITES = ('Northline', 'Aster', 'Meridian')
 BATCHES = ('opening', 'late_dispatch', 'returns_close')
+ARRIVAL_SECONDS = (0, 180, 420)
 ORDERS = ('order_id', 'sku', 'ordered_qty')
 FACTS = ('record_id', 'order_id', 'posting_type', 'units', 'document_ref')
 LEDGER = ('order_id', 'net_fulfilled', 'unfilled', 'source_refs')
@@ -49,13 +50,20 @@ def source_material(dataset_key):
     expected = {site: [{} for _ in BATCHES] for site in SITES}
     serial = Counter()
     for owner_index, owner in enumerate(SITES):
-        # Counterpart assignments are balanced; values and document references are independent.
-        for i in range(500):
+        # Each 100 orders include 25 local postings. Rotate the odd foreign order
+        # between the two counterparties so each 200-row update has a 50/75/75 split.
+        local, first, second = (SITES[(owner_index + offset) % len(SITES)] for offset in range(3))
+        depots = []
+        for block in range(5):
+            first_count = 38 - block % 2
+            group = [local] * 25 + [first] * first_count + [second] * (75 - first_count)
+            rng.shuffle(group)
+            depots.extend(group)
+        for i, depot in enumerate(depots):
             ticket = f'NO-{owner_index + 1}{i:04d}'
             sku = f'SK-{rng.randrange(1000, 9999)}'
             ordered = rng.randint(12, 90)
             orders[owner].append((ticket, sku, ordered))
-            depot = SITES[(owner_index + i % 4) % len(SITES)]
             posted = rng.randint(4, ordered - 4)
             records = []
             for batch in range(len(BATCHES)):
@@ -170,21 +178,27 @@ def check_workload(dataset_key):
             if not missing:
                 raise ValueError(f'{owner}/{batch} has no missing counterpart facts')
             missing_by_batch[batch] = len(missing)
-        # Two business worlds agree on all private owner inputs but require different outputs.
-        foreign = next(s for s in SITES if s != owner)
-        key = 'intake/returns_close/postings.csv'
-        rows = read_csv(private[foreign][BATCHES[-1]][key], FACTS)
-        selected = next(row for row in rows if row['order_id'] in complete)
-        offset = -1 if selected['posting_type'] == 'adjustment' else 1
-        selected['units'] = str(int(selected['units']) + offset)
-        revised = csv_text(FACTS, ([row[c] for c in FACTS] for row in rows))
-        other_world = [private[s][batch][f'intake/{batch}/postings.csv']
-                       if (s, batch) != (foreign, BATCHES[-1]) else revised
-                       for batch in BATCHES for s in SITES]
-        modified = reconcile(other_world, orders)
-        if [k for k in complete if complete[k] != modified[k]] != [selected['order_id']]:
-            raise ValueError('Foreign counterfactual did not isolate one order')
+        # Change one posting at each foreign depot in turn, leaving all owner inputs fixed.
+        counterfactuals = {}
+        for foreign in SITES:
+            if foreign == owner:
+                continue
+            key = 'intake/returns_close/postings.csv'
+            rows = read_csv(private[foreign][BATCHES[-1]][key], FACTS)
+            selected = next(row for row in rows if row['order_id'] in complete)
+            offset = -1 if selected['posting_type'] == 'adjustment' else 1
+            selected['units'] = str(int(selected['units']) + offset)
+            revised = csv_text(FACTS, ([row[c] for c in FACTS] for row in rows))
+            other_world = [revised if (s, batch) == (foreign, BATCHES[-1])
+                           else private[s][batch][f'intake/{batch}/postings.csv']
+                           for batch in BATCHES for s in SITES]
+            modified = reconcile(other_world, orders)
+            changed = [k for k in complete if complete[k] != modified[k]]
+            ticket = selected['order_id']
+            if changed != [ticket] or abs(modified[ticket][0] - complete[ticket][0]) != 1:
+                raise ValueError('Foreign counterfactual did not isolate one order quantity')
+            counterfactuals[foreign] = {'counterfactual_order': ticket,
+                                        'closing_net_change': modified[ticket][0] - complete[ticket][0]}
         summary[owner] = {'local_unresolved': missing_by_batch, 'all_batches_reconstructed': True,
-                          'counterfactual_order': selected['order_id'],
-                          'closing_net_change': modified[selected['order_id']][0] - complete[selected['order_id']][0]}
+                          **next(iter(counterfactuals.values())), 'by_foreign_depot': counterfactuals}
     return summary

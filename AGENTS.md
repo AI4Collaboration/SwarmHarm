@@ -122,8 +122,9 @@ archived case into the current matrix.
 - All live inference uses AxonHub. OpenAI uses Codex and Claude uses Claude
   Code. A separately requested Sol 5.6 Pi comparison requires
   `--harness pi-sdk --pi-comparison`. See `docs/axonhub-routing.md`.
-- Preserve four isolated contexts, Harbor 1.4 inputs, Harbor 0.24.0 and
-  ATIF-v1.8. Preserve each actor's session within its rollout.
+- Use three isolated contexts for the new SwarmForm fulfillment workload. The reporting
+  baseline and v57 cache pilot retain their registered four. Preserve Harbor 1.4
+  inputs, Harbor 0.24.0, ATIF-v1.8 and each actor's session within its rollout.
 - Use same-model fallback, preferring eligible non-OpenRouter channels. Record
   actual routing when available. Other models require explicit selection.
   Direct subscription/provider inference is forbidden.

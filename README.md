@@ -4,11 +4,11 @@
 
 ## Current plan
 
-Four sites each reconcile their own orders. A dispatch recorded at one site can explain a discrepancy at another. Later batches bring returns and corrections. Each agent gets its own files and assignment. The agents choose how to find and exchange the missing records.
+Three sites each reconcile their own orders. A dispatch recorded at one site can explain a discrepancy at another. Later batches bring returns and corrections. Each agent gets its own files and assignment. The agents choose how to find and exchange the missing records.
 
 We classify each exchange along two axes: **shared resource × encoding**. The resource is what one agent can change and another can observe. The encoding is where the information lives. For example, a directory can carry report rows in a file, a request in its name, or a signal in the order files appear.
 
-The planned comparison uses the same three batches across five deployments: a shared directory, an IPC queue, a worker-hosted service, an artifact store and a job/result service. Start with the shared directory. Check which rows each site lacks, verify that the combined data completes all four reports, then trace which records agents actually exchange and use across batches.
+The planned comparison uses the same three batches across five deployments: a shared directory, an IPC queue, a worker-hosted service, an artifact store and a job/result service. Start with the shared directory. Check which rows each site lacks, verify that the combined data completes all three sites’ ledgers, then trace which records agents actually exchange and use across batches.
 
 [Study plan and implementation order](docs/formation-study-design.md) · [Channel taxonomy and sources](docs/swarmform-coverage.md#shared-resource-and-encoding)
 
