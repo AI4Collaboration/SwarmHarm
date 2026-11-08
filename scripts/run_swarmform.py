@@ -98,15 +98,18 @@ storage_mb = 1024
     return records
 
 
-def prepare(args):
-    source = published_head()
-    runtime = check_runtime()
+def prepare_destination(args):
     output = outside_repository(args.output, ROOT, 'Raw output')
     if not re.fullmatch(r'[a-z0-9][a-z0-9-]{2,100}', args.identifier):
         raise ValueError('Use a unique lowercase registration identifier')
     folder = ROOT / 'experiments/swarmharm-v1/registrations' / args.identifier
     if folder.exists() or output.exists():
         raise FileExistsError('Never reuse a registration or output directory')
+    return folder, output
+
+
+def prepare_one(args, source, runtime):
+    folder, output = prepare_destination(args)
     visible, truth, manifest = build(args.dataset_key)
     ledger = json.loads((ROOT / 'docs/live-rollout-status.json').read_text())
     cell = ledger['matrix']['cells'].get(CELL)
@@ -161,6 +164,30 @@ def prepare(args):
     save(ROOT / 'docs/live-rollout-status.json', ledger)
     return {'prepared': args.identifier, 'output': str(output), 'model_calls': 0,
             'next': 'Commit and push registration and ledger before collection'}
+
+
+def prepare(args):
+    return prepare_one(args, published_head(), check_runtime())
+
+
+def prepare_pair(args):
+    """Freeze both model registrations from one verified published source snapshot."""
+    source = published_head()
+    runtime = check_runtime()
+    planned = [argparse.Namespace(identifier=args.identifier + '-' + label,
+        model=model, dataset_key=args.dataset_key, output=args.output / label)
+        for label, model in (('sol56', 'openai/gpt-5.6-sol'), ('sol61', 'openai/gpt-6.1-sol'))]
+    # Reject either collision before writing the first registration. Both use the
+    # same code, business bytes and schedule; model identity is the only change.
+    for item in planned:
+        prepare_destination(item)
+    records = [prepare_one(item, source, runtime) for item in planned]
+    registrations = [json.loads((item.output / 'registration.json').read_text()) for item in planned]
+    for key in ('source_commit', 'input_sha256', 'code_hashes', 'input_hashes', 'task_hashes',
+                'arrival_offsets', 'deployment', 'budget', 'workstation_permissions'):
+        if registrations[0][key] != registrations[1][key]:
+            raise RuntimeError('Paired registration inputs differ: ' + key)
+    return {'prepared_pair': records, 'source_commit': source, 'model_calls': 0}
 
 
 def verify_frozen(folder, output):
@@ -227,17 +254,19 @@ def collect(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='command', required=True)
-    for name in ('prepare', 'collect'):
+    for name in ('prepare', 'prepare-pair', 'collect'):
         command = commands.add_parser(name)
         command.add_argument('--identifier', required=True)
         command.add_argument('--output', type=Path, required=True)
-        if name == 'prepare':
-            command.add_argument('--model', choices=['openai/gpt-5.6-sol', 'openai/gpt-6.1-sol'], required=True)
+        if name in ('prepare', 'prepare-pair'):
+            if name == 'prepare':
+                command.add_argument('--model', choices=['openai/gpt-5.6-sol', 'openai/gpt-6.1-sol'], required=True)
             command.add_argument('--dataset-key', required=True)
         else:
             command.add_argument('--key-file', type=Path, required=True)
     args = parser.parse_args()
-    print(json.dumps(prepare(args) if args.command == 'prepare' else collect(args), indent=2))
+    action = {'prepare': prepare, 'prepare-pair': prepare_pair, 'collect': collect}[args.command]
+    print(json.dumps(action(args), indent=2))
 
 
 if __name__ == '__main__':

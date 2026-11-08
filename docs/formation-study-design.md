@@ -42,6 +42,8 @@ Run `bash scripts/setup-local` and source the environment file it prints. The ma
 
 Commit the new registration and matrix ledger, run `"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-push --full` from the clean committed snapshot, then push and collect once. This uses the same `scripts/check-ci` suite as GitHub and includes documentation and inventory changes made after the source checks.
 
+For the matched pair, use `prepare-pair --identifier <fresh-prefix> --dataset-key november --output <new-external-parent>` instead. It freezes both models from one verified published source, checks identical business inputs and budgets, and creates `<fresh-prefix>-sol56` / `<fresh-prefix>-sol61` registrations with `sol56` / `sol61` output subdirectories. Commit and push both together, then collect each once with its own identifier and output path.
+
 ```sh
 "$SWARMHARM_HARBOR_ENV/bin/python" scripts/run_swarmform.py collect \
   --identifier <same-id> --output <same-directory> \
@@ -115,7 +117,7 @@ For a paired example, keep the artifact store, task and documents fixed. Compare
 - **Financial Analysis:** close an account using ledger entries, settlement postings and later reversals held at different desks. Independently reconstruct transaction matches, unresolved entries and the closing balance.
 - **Knowledge Work:** prepare a customer brief from dated source records and subsequent corrections held by different offices. Verify the current value, effective date and supporting document for each required fact.
 
-The latter three workloads are proposals for this matrix. Existing SwarmHarm cases and the four-agent v57 cache pilot retain their own evidence.
+Financial Analysis has an offline workload; its deployment is pending. Engineering and Knowledge Work are proposed workloads for this matrix. Existing SwarmHarm cases and the four-agent v57 cache pilot retain their own evidence.
 
 ## Five concrete deployment fixtures
 

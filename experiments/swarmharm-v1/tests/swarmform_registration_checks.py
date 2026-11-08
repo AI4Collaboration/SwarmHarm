@@ -1,6 +1,7 @@
 """Source sealing and independent final-package checks without hosted inference."""
 
 import base64
+import argparse
 import importlib.util
 import io
 import json
@@ -19,6 +20,40 @@ spec.loader.exec_module(entry)
 
 
 class RegistrationChecks(unittest.TestCase):
+    def test_pair_seals_same_published_input_and_rejects_either_reused_destination(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / 'source'; root.mkdir()
+            (root / 'experiments/swarmharm-v1/registrations').mkdir(parents=True)
+            (root / 'docs').mkdir()
+            (root / 'fixture.py').write_text('VERSION = 1\n')
+            _, _, manifest = build('november')
+            entry.save(root / 'docs/input-admission.json', {'input_sha256': entry.digest(manifest)})
+            entry.save(root / 'docs/live-rollout-status.json', {'maintained_registrations': [],
+                'matrix': {'cells': {entry.CELL: {'status': 'admitted', 'evidence': 'docs/input-admission.json'}}}})
+            args = argparse.Namespace(identifier='paired-test', output=Path(directory) / 'raw', dataset_key='november')
+            with patch.object(entry, 'ROOT', root), patch.object(entry, 'published_head', return_value='published') as head, \
+                    patch.object(entry, 'check_runtime', return_value={'harbor': '0.24.0'}) as runtime, \
+                    patch.object(entry, 'source_paths', return_value=['fixture.py']):
+                result = entry.prepare_pair(args)
+                head.assert_called_once(); runtime.assert_called_once()
+                self.assertEqual(result['model_calls'], 0)
+                registrations = [json.loads((args.output / model / 'registration.json').read_text())
+                                 for model in ('sol56', 'sol61')]
+                self.assertEqual([r['model'] for r in registrations], ['openai/gpt-5.6-sol', 'openai/gpt-6.1-sol'])
+                for key in ('source_commit', 'input_sha256', 'code_hashes', 'input_hashes', 'task_hashes'):
+                    self.assertEqual(registrations[0][key], registrations[1][key])
+                ledger_path = root / 'docs/live-rollout-status.json'
+                ledger = ledger_path.read_bytes()
+                self.assertEqual(len(json.loads(ledger)['maintained_registrations']), 2)
+                for index, label in enumerate(('sol56', 'sol61')):
+                    candidate = argparse.Namespace(identifier=f'collision-{index}', output=Path(directory) / f'raw-{index}',
+                                                  dataset_key='november')
+                    (candidate.output / label).mkdir(parents=True)
+                    with self.assertRaises(FileExistsError):
+                        entry.prepare_pair(candidate)
+                    self.assertEqual(ledger_path.read_bytes(), ledger)
+                    self.assertEqual(list(candidate.output.iterdir()), [candidate.output / label])
+
     def test_harbor_packages_retain_exact_prompts_and_current_three_agent_adapter(self):
         inputs, _, _ = build('november')
         with tempfile.TemporaryDirectory() as d:
