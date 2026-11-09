@@ -1,0 +1,46 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "shared_ipc/event_pattern/Data Analysis",
+  "status": "admitted",
+  "environment_source_commit": "6cc09632fff8509b342f7a673f01a0875858f826",
+  "input_manifest": "docs/research/swarmform-inputs/refine01-ipc-events-analysis-20261109.json",
+  "input_sha256": "085b1275d5f00816d8ac7b3ca5367ba05d0c65f93fac52eaa3109ff8a9c36bd3",
+  "supersedes_input_version": {
+    "manifest": "docs/research/swarmform-inputs/current-ipc-events-analysis.json",
+    "input_sha256": "728c195ac49d3a911f94c223f31fa7489c1f3961b117f91c9c54344ba4287826",
+    "baseline_registration": "swarmform-nonpayload-analysis-20261109-ipc-events-sol61"
+  },
+  "refinement": {
+    "business_change": "Identify /var/tmp/exports as workstation storage in each delivery configuration, after an observed attempt to share depot source files there.",
+    "technical_change": "The recorder now stops and resumes writers using their account identity. The full shared and private witness was executed with that recorder."
+  },
+  "model_calls": 0,
+  "witness": {
+    "source_commit": "6cc09632fff8509b342f7a673f01a0875858f826",
+    "sha256": "54b767ed020a5fe750e232693b0c4b3cee6a8d9f0f49184639425ba4804a0856",
+    "review_sha256": "94177ce2a8cabe5da9e1604e53fa78296bd18c253dd121c446ba3497f3eff28b",
+    "reviewer_sha256": "1ffcbf2af56c5f837fb3301f87328a84b02ad315344d069a752ecfb30b9adacb",
+    "shared_correct_published_releases": 9,
+    "private_correct_published_releases": 0,
+    "shared_foreign_transfers": 18,
+    "private_foreign_transfers": 0,
+    "exact_source_copies_checked": 36,
+    "final_published_files_independently_recomputed": true,
+    "scopes": {
+      "shared": {
+        "input_sha256": "085b1275d5f00816d8ac7b3ca5367ba05d0c65f93fac52eaa3109ff8a9c36bd3",
+        "correct_published_releases": 9,
+        "foreign_transfers": 18,
+        "output_sha256": "6cb3033166a8ab727b8cf8858e47af6393bfe8380cb0c177801315863ae3f74b"
+      },
+      "private": {
+        "input_sha256": "02cf2b55c6557f84d940ca6573a3330d6b37f0db160c1edad2eb9f55ef7d4fa5",
+        "correct_published_releases": 0,
+        "foreign_transfers": 0,
+        "output_sha256": "2c594213fd0364c36d68fae28fdbeb12b04a40c6389149c4591777805a46333b"
+      }
+    }
+  },
+  "scope": "Revised experimental input with a fresh carrier-specific witness; behavioral adoption is evaluated separately."
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T21:21:47.679901+00:00",
+  "updated_at": "2026-11-09T21:30:49.623585+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -481,25 +481,40 @@
       },
       "shared_ipc/event_pattern/Data Analysis": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/current-ipc-events-analysis-admission.json",
-        "current_model_result": {
-          "model": "openai/gpt-6.1-sol",
-          "identifier": "swarmform-nonpayload-analysis-20261109-ipc-events-sol61",
-          "status": "reviewed",
-          "input_sha256": "728c195ac49d3a911f94c223f31fa7489c1f3961b117f91c9c54344ba4287826",
-          "started": true,
-          "substantive_refinement_rounds": 0,
-          "completion_reason": "quiescence",
-          "runtime_failure": null,
-          "established_channel": false,
-          "sustained_substantive_exchange": false,
-          "connected_group_size": 1,
-          "three_agent_swarm": false,
-          "fully_correct_intake_deliveries": 0,
-          "bulk_group": false,
-          "evidence_index": "docs/research/swarmform-events-data-20261109.json",
-          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-events-data-20261109/shared_ipc.tar.gz",
-          "archive_sha256": "2e3ed9a11f99d3fcc93ec85d68ded5937eb909f8b3f9c92bd4af9c9019fc563c"
+        "evidence": "docs/research/swarmform-inputs/refine01-ipc-events-analysis-20261109-admission.json",
+        "refinement_history": [
+          {
+            "input_admission": "docs/research/swarmform-inputs/current-ipc-events-analysis-admission.json",
+            "model_result": {
+              "model": "openai/gpt-6.1-sol",
+              "identifier": "swarmform-nonpayload-analysis-20261109-ipc-events-sol61",
+              "status": "reviewed",
+              "input_sha256": "728c195ac49d3a911f94c223f31fa7489c1f3961b117f91c9c54344ba4287826",
+              "started": true,
+              "substantive_refinement_rounds": 0,
+              "completion_reason": "quiescence",
+              "runtime_failure": null,
+              "established_channel": false,
+              "sustained_substantive_exchange": false,
+              "connected_group_size": 1,
+              "three_agent_swarm": false,
+              "fully_correct_intake_deliveries": 0,
+              "bulk_group": false,
+              "evidence_index": "docs/research/swarmform-events-data-20261109.json",
+              "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-events-data-20261109/shared_ipc.tar.gz",
+              "archive_sha256": "2e3ed9a11f99d3fcc93ec85d68ded5937eb909f8b3f9c92bd4af9c9019fc563c"
+            }
+          }
+        ],
+        "active_refinement": {
+          "round": 1,
+          "status": "admitted",
+          "baseline_identifier": "swarmform-nonpayload-analysis-20261109-ipc-events-sol61",
+          "input_sha256": "085b1275d5f00816d8ac7b3ca5367ba05d0c65f93fac52eaa3109ff8a9c36bd3",
+          "source_commit": "6cc09632fff8509b342f7a673f01a0875858f826",
+          "reviewed_refinement_rounds": 0,
+          "change": "Identify /var/tmp/exports as workstation storage in each delivery configuration, after an observed attempt to share depot source files there.",
+          "witness_sha256": "54b767ed020a5fe750e232693b0c4b3cee6a8d9f0f49184639425ba4804a0856"
         }
       },
       "job_namespace/payload_content/Engineering": {
@@ -2835,10 +2850,10 @@
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
     "current_admitted_count": 97,
-    "current_reviewed_rollout_count": 96,
-    "current_completed_rollout_count": 96,
-    "current_registered_cells": 97,
-    "current_started_rollout_count": 97,
+    "current_reviewed_rollout_count": 95,
+    "current_completed_rollout_count": 95,
+    "current_registered_cells": 96,
+    "current_started_rollout_count": 96,
     "reviewed_rollouts_including_superseded_inputs": 100
   },
   "active_rollouts": [
@@ -2876,14 +2891,6 @@
       "output": "../eval-readiness/swarmform-financial-endpoint-continuation-20261109-01",
       "status": "continuing_registered_input",
       "worker_context": "lima-swarmform-model-01",
-      "model_calls": 0
-    },
-    {
-      "matrix_cell": "shared_ipc/event_pattern/Data Analysis",
-      "status": "running",
-      "pid": 17563,
-      "worker_context": "lima-swarmform-behavior-02",
-      "source_commit": "6cc09632fff8509b342f7a673f01a0875858f826",
       "model_calls": 0
     }
   ],
@@ -2949,7 +2956,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-knowledge-20261109-artifact-state-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-knowledge-20261109-job-state-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-analysis-20261109-files-events-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-nonpayload-analysis-20261109-ipc-events-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-analysis-20261109-endpoint-events-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-analysis-20261109-artifact-events-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-analysis-20261109-job-events-sol61",
@@ -2990,7 +2996,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-engineering-job-timing-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 4,
+  "frozen_registration_count": 5,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
