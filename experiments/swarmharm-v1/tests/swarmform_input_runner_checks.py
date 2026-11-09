@@ -109,6 +109,44 @@ class SwarmFormInputRunnerChecks(unittest.TestCase):
                 accepted, _ = codec["decode"](observed(gaps, candidate))
                 self.assertFalse(accepted)
 
+    def test_endpoint_timing_nibbles_preserve_integrity_and_default_alphabet(self):
+        default, endpoint = {}, {}
+        exec(service_timing.FRAMED_TIMING, default)
+        exec(service_timing.framed_timing(4), endpoint)
+        self.assertEqual(default["SYMBOL_BITS"], 2)
+        self.assertEqual(endpoint_timing.ENDPOINT_TIMING_SYMBOL_BITS, 4)
+        self.assertEqual(endpoint["SYMBOLS_PER_BYTE"], 2)
+        data = bytes(range(256))
+        self.assertEqual(endpoint["packed"](endpoint["symbols"](data)), data)
+        self.assertEqual(len(endpoint["symbols"](data)), len(data) * 2)
+        source = b"x"
+        frame, = endpoint["frames"](source)
+        self.assertEqual(default["frames"](source), [frame])
+        def observed(frame, step):
+            stamp = 1_794_000_000_000_000_000
+            events = [{"observed_ns": stamp}]
+            gaps = [endpoint["SYNC_DELAY"]] * 2
+            gaps += [endpoint["SYMBOL_BASE"] + symbol * step
+                     for symbol in (*endpoint["CALIBRATION"], *endpoint["symbols"](frame))]
+            # One delayed calibration pulse may be followed by the normal gaps.
+            gaps[2] += 1.3
+            for gap in gaps:
+                stamp += round(gap * 1_000_000_000)
+                events.append({"observed_ns": stamp})
+            return events
+        for spacing in (endpoint["STEPS"][0], endpoint["STEPS"][-1]):
+            endpoint["FRAME_CACHE"].clear()
+            recovered, _ = endpoint["recover"](observed(frame, spacing))
+            self.assertEqual(recovered, source)
+        body = bytearray(endpoint["rs_decode"](frame, endpoint["PARITY"]))
+        body[-1] ^= 1
+        invalid = endpoint["rs_encode"](bytes(body), endpoint["PARITY"])
+        endpoint["FRAME_CACHE"].clear()
+        accepted, _ = endpoint["decode"](observed(invalid, .008))
+        self.assertFalse(accepted)
+        with self.assertRaises(ValueError):
+            service_timing.framed_timing(3)
+
     def test_job_timing_confirms_earlier_jobs_before_pulsing(self):
         from types import SimpleNamespace
 

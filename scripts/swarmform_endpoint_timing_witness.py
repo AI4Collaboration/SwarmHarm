@@ -1,10 +1,13 @@
 """Operator-only endpoint adapter for the common receiver-timestamp codec."""
 
 from swarmform_endpoint_witness_codecs import COMMON
-from swarmform_service_timing_witness import FRAMED_TIMING
+from swarmform_service_timing_witness import framed_timing
 
 
-ENDPOINT_TIMING = COMMON + FRAMED_TIMING + r'''
+# Four-bit symbols halve real HTTP state transitions per wire byte while
+# preserving complete payloads, error correction and receiver-side timestamps.
+ENDPOINT_TIMING_SYMBOL_BITS = 4
+ENDPOINT_TIMING = COMMON + framed_timing(ENDPOINT_TIMING_SYMBOL_BITS) + r'''
 import socket
 from urllib.parse import urlsplit
 

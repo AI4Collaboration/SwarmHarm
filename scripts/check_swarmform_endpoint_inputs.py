@@ -23,7 +23,7 @@ from swarmform.arrivals import IntakeSchedule
 from swarmform.outcomes import review as review_outcomes
 from check_swarmform_ipc_inputs import SOURCE_FILES, SOLVERS, wait_file
 from swarmform_endpoint_witness_codecs import COMMON, PUBLISH, RECEIVE, STATE_SEND, STATE_RECEIVE
-from swarmform_endpoint_timing_witness import ENDPOINT_TIMING
+from swarmform_endpoint_timing_witness import ENDPOINT_TIMING, ENDPOINT_TIMING_SYMBOL_BITS
 from swarmform.endpoint_deployment import EndpointDeployment
 from swarmform.input_catalog import build, deployment_registration, task_network
 from swarmform.inputs import digest
@@ -465,7 +465,8 @@ def main():
         source_commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
         (output / 'source.json').write_text(json.dumps({'source_commit': source_commit,
             'working_tree_dirty': bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip()),
-            'witness_code_sha256': hashes}, indent=2) + '\n')
+            'witness_code_sha256': hashes,
+            'timing_symbol_bits': ENDPOINT_TIMING_SYMBOL_BITS if args.encoding == 'timing' else None}, indent=2) + '\n')
         scopes = (True, False) if args.scope == 'both' else (args.scope == 'shared',)
         rows = [business(args.encoding, args.domain, shared, output / ('shared' if shared else 'private'),
                          args.dataset_key) for shared in scopes]

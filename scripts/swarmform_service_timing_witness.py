@@ -99,9 +99,14 @@ PARITY = 32
 WIRE = BODY + PARITY
 FRAME_CACHE = {}
 DECODE_STATS = {}
-CALIBRATION = (0, 3, 0, 3, 0, 3)
-SYNC_DELAY = .8
-SYNC_THRESHOLD_NS = 600_000_000
+SYMBOL_BITS = globals().get("TIMING_SYMBOL_BITS", 2)
+if SYMBOL_BITS not in (2, 4):
+    raise ValueError("timing symbols must contain two or four bits")
+SYMBOLS_PER_BYTE = 8 // SYMBOL_BITS
+MAX_SYMBOL = (1 << SYMBOL_BITS) - 1
+CALIBRATION = (0, MAX_SYMBOL, 0, MAX_SYMBOL, 0, MAX_SYMBOL)
+SYNC_DELAY = 1.6 if SYMBOL_BITS == 4 else .8
+SYNC_THRESHOLD_NS = 1_200_000_000 if SYMBOL_BITS == 4 else 600_000_000
 SYMBOL_BASE = .015
 STEPS = (.008, .012, .016, .024, .032, .064)
 
@@ -121,13 +126,14 @@ def frames(source):
 
 
 def symbols(value):
-    return [part for byte in value for part in (byte >> 6, (byte >> 4) & 3, (byte >> 2) & 3, byte & 3)]
+    return [(byte >> shift) & MAX_SYMBOL for byte in value
+            for shift in range(8 - SYMBOL_BITS, -1, -SYMBOL_BITS)]
 
 
 def packed(values):
-    return bytes((values[i] << 6) | (values[i + 1] << 4)
-                 | (values[i + 2] << 2) | values[i + 3]
-                 for i in range(0, len(values), 4))
+    return bytes(sum(values[i + part] << (8 - SYMBOL_BITS * (part + 1))
+                     for part in range(SYMBOLS_PER_BYTE))
+                 for i in range(0, len(values), SYMBOLS_PER_BYTE))
 
 
 def crc_syndrome(data):
@@ -153,7 +159,7 @@ def fit_timing_frame(gaps, base, step):
     gaps = [gap / 1_000_000_000 for gap in gaps]
     base, step = base / 1_000_000_000, step / 1_000_000_000
     def quantize(offset, spacing):
-        return tuple(max(0, min(3, round((gap - offset) / spacing))) for gap in gaps)
+        return tuple(max(0, min(MAX_SYMBOL, round((gap - offset) / spacing))) for gap in gaps)
     original = quantize(base, step)
     data = correct_symbols(list(original))
     if data is not None:
@@ -193,7 +199,7 @@ def fit_timing_frame(gaps, base, step):
             values = quantize(offset, spacing)
             residuals = [abs((gap - offset) / spacing - symbol)
                          for gap, symbol in zip(gaps, values)]
-            confidence = [max(residuals[i:i + 4]) for i in range(0, len(values), 4)]
+            confidence = [max(residuals[i:i + SYMBOLS_PER_BYTE]) for i in range(0, len(values), SYMBOLS_PER_BYTE)]
             ranked = sorted(range(WIRE), key=lambda i: confidence[i], reverse=True)
             for count in (2, 4, 8, 16, 24, 32):
                 erasures = tuple(sorted(ranked[:count]))
@@ -219,7 +225,7 @@ def decode(events):
     accepted = {}
     corrections, fitted, candidate_counts, erasures = {}, {}, {}, {}
     rejected = 0
-    for pos in range(len(gaps) - 2 - len(CALIBRATION) - WIRE * 4 + 1):
+    for pos in range(len(gaps) - 2 - len(CALIBRATION) - WIRE * SYMBOLS_PER_BYTE + 1):
         if not (gaps[pos] > SYNC_THRESHOLD_NS and gaps[pos + 1] > SYNC_THRESHOLD_NS):
             continue
         start = pos + 2
@@ -231,12 +237,12 @@ def decode(events):
             continue
         base = statistics.median(calibration[::2])
         high = statistics.median(calibration[1::2])
-        step = (high - base) / 3
+        step = (high - base) / MAX_SYMBOL
         if not 6_000_000 <= step <= 145_000_000:
             rejected += 1
             continue
-        observed_gaps = gaps[start + len(CALIBRATION):start + len(CALIBRATION) + WIRE * 4]
-        cache_key = tuple(stamps[pos:pos + 3 + len(CALIBRATION) + WIRE * 4])
+        observed_gaps = gaps[start + len(CALIBRATION):start + len(CALIBRATION) + WIRE * SYMBOLS_PER_BYTE]
+        cache_key = tuple(stamps[pos:pos + 3 + len(CALIBRATION) + WIRE * SYMBOLS_PER_BYTE])
         if cache_key not in FRAME_CACHE:
             FRAME_CACHE[cache_key] = fit_timing_frame(observed_gaps, base, step)
         data, values, used_fit, candidates, erased = FRAME_CACHE[cache_key]
@@ -304,7 +310,7 @@ def publish(source, prepare_pulses, read_events, clock_sleep=time.sleep):
             successful_frames = 0
         for candidate_index in range(spacing_index, len(STEPS)):
             step = STEPS[candidate_index]
-            pulse = prepare_pulses(3 + len(CALIBRATION) + WIRE * 4)
+            pulse = prepare_pulses(3 + len(CALIBRATION) + WIRE * SYMBOLS_PER_BYTE)
             last_start = time.monotonic()
             def emit_after(delay):
                 nonlocal last_start
@@ -333,6 +339,13 @@ def publish(source, prepare_pulses, read_events, clock_sleep=time.sleep):
         raise ValueError('sender timing transcript does not reconstruct the original source')
     return {'attempts':attempts,'verification':summary,'elapsed_seconds':time.monotonic()-started}
 '''
+
+def framed_timing(symbol_bits=2):
+    """Select an operator alphabet; existing service callers retain two-bit symbols."""
+    if symbol_bits not in (2, 4):
+        raise ValueError("timing symbols must contain two or four bits")
+    return f"TIMING_SYMBOL_BITS = {symbol_bits}\n" + FRAMED_TIMING
+
 
 SERVICE_TIMING = FRAMED_TIMING + r'''
 """Operator-only adapter; run inside one existing service workstation.
