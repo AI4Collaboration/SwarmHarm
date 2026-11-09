@@ -23,6 +23,19 @@ spec.loader.exec_module(entry)
 
 
 class RegistrationChecks(unittest.TestCase):
+    def setUp(self):
+        # Sealing checks use explicit native profiles, never a host CLI install.
+        # A missed mock must fail locally as well as on a clean CI worker.
+        native = patch.object(entry.codex_gateway, 'native_catalog',
+                              side_effect=AssertionError('Offline checks must not query the native CLI'))
+        harness = patch.object(entry.codex_gateway, 'harness_registration',
+                               side_effect=lambda goal, model: {'kind': 'codex', 'goal_mode': goal})
+        catalog = patch.object(entry.codex_gateway, 'gateway_catalog',
+                               side_effect=lambda model, effort: {'model': model, 'effort': effort})
+        for fixture in (native, harness, catalog):
+            fixture.start()
+            self.addCleanup(fixture.stop)
+
     def test_matrix_requires_all_admissions_and_prepares_200_from_one_snapshot(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / 'source'

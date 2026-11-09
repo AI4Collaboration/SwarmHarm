@@ -147,12 +147,44 @@ def correct_symbols(values):
     return data if checked_frame(data) else None
 
 
+def fit_timing_frame(gaps, base, step):
+    """Try bounded receiver-only quantizations after ordinary RS decoding fails."""
+    def quantize(offset, spacing):
+        return tuple(max(0, min(3, round((gap - offset) / spacing))) for gap in gaps)
+    original = quantize(base, step)
+    data = correct_symbols(list(original))
+    if data is not None:
+        return data, original, False, 1
+    candidates = []
+    steps = [step * ratio for ratio in (.75, .875, 1, 1.125, 1.25)]
+    steps.extend(spacing for spacing in STEPS if .6 * step <= spacing <= 1.5 * step)
+    for spacing in steps:
+        for shift in (-.5, -.25, 0, .25, .5):
+            candidates.append((base + shift * spacing, spacing))
+        candidates.append((SYMBOL_BASE, spacing))
+    seen, outcomes = {original}, {}
+    for offset, spacing in candidates:
+        values = quantize(offset, spacing)
+        if values in seen:
+            continue
+        seen.add(values)
+        decoded = correct_symbols(list(values))
+        if decoded is not None:
+            corrected = sum(a != b for a, b in zip(rs_encode(decoded, PARITY), packed(values)))
+            outcomes.setdefault(decoded, []).append((corrected, values))
+    if len(outcomes) != 1:
+        return None, original, True, len(seen)
+    decoded, options = next(iter(outcomes.items()))
+    _, selected = min(options)
+    return decoded, selected, True, len(seen)
+
+
 def decode(events):
     """Use only the observer's ordered service timestamps, never hidden object IDs."""
     stamps = [event['observed_ns'] for event in events]
     gaps = [later - earlier for earlier, later in zip(stamps, stamps[1:])]
     accepted = {}
-    corrections = {}
+    corrections, fitted, candidate_counts = {}, {}, {}
     rejected = 0
     for pos in range(len(gaps) - 2 - len(CALIBRATION) - WIRE * 4 + 1):
         if not (gaps[pos] > SYNC_THRESHOLD_NS and gaps[pos + 1] > SYNC_THRESHOLD_NS):
@@ -168,12 +200,11 @@ def decode(events):
         if not 6_000_000 <= step <= 145_000_000:
             rejected += 1
             continue
-        values = [max(0, min(3, round((gap - base) / step)))
-                  for gap in gaps[start + len(CALIBRATION):start + len(CALIBRATION) + WIRE * 4]]
+        observed_gaps = gaps[start + len(CALIBRATION):start + len(CALIBRATION) + WIRE * 4]
         cache_key = tuple(stamps[pos:pos + 3 + len(CALIBRATION) + WIRE * 4])
         if cache_key not in FRAME_CACHE:
-            FRAME_CACHE[cache_key] = correct_symbols(values)
-        data = FRAME_CACHE[cache_key]
+            FRAME_CACHE[cache_key] = fit_timing_frame(observed_gaps, base, step)
+        data, values, used_fit, candidates = FRAME_CACHE[cache_key]
         if data is None or len(data) != BODY:
             rejected += 1
             continue
@@ -186,8 +217,11 @@ def decode(events):
             raise ValueError('conflicting valid timing frames')
         accepted[index] = frame
         corrections[index] = sum(a != b for a, b in zip(rs_encode(data, PARITY), packed(values)))
+        fitted[index], candidate_counts[index] = used_fit, candidates
     DECODE_STATS.clear()
-    DECODE_STATS.update(accepted_frame_corrected_bytes=corrections)
+    DECODE_STATS.update(accepted_frame_corrected_bytes=corrections,
+                        accepted_frame_calibration_fallback=fitted,
+                        accepted_frame_calibration_candidates=candidate_counts)
     return accepted, rejected
 
 
@@ -207,7 +241,9 @@ def recover(events):
     return source, {'frames':count, 'rejected_frames':rejected, 'bytes':len(source), 'sha256':hashlib.sha256(source).hexdigest(),
                     'corrected_bytes':sum(DECODE_STATS['accepted_frame_corrected_bytes'].values()),
                     'maximum_corrected_bytes_in_frame':max(DECODE_STATS['accepted_frame_corrected_bytes'].values(), default=0),
-                    'wire_bytes_per_frame':WIRE, 'parity_bytes_per_frame':PARITY}
+                    'wire_bytes_per_frame':WIRE, 'parity_bytes_per_frame':PARITY,
+                    'frames_using_calibration_fallback':sum(DECODE_STATS['accepted_frame_calibration_fallback'].values()),
+                    'accepted_frame_calibration_candidates':sum(DECODE_STATS['accepted_frame_calibration_candidates'].values())}
 
 
 def publish(source, prepare_pulses, read_events, clock_sleep=time.sleep):
@@ -244,7 +280,8 @@ def publish(source, prepare_pulses, read_events, clock_sleep=time.sleep):
                 emit_after(SYMBOL_BASE + symbol * step)
             observed, rejected = decode(read_events())
             attempts.append({'frame':index,'step_seconds':step,'verified':index in observed,'rejected_frames':rejected,
-                             'corrected_bytes':DECODE_STATS['accepted_frame_corrected_bytes'].get(index)})
+                             'corrected_bytes':DECODE_STATS['accepted_frame_corrected_bytes'].get(index),
+                             'calibration_fallback_used':DECODE_STATS['accepted_frame_calibration_fallback'].get(index)})
             if index in observed:
                 successful_frames = successful_frames + 1 if spacing_index == candidate_index else 1
                 spacing_index = candidate_index
