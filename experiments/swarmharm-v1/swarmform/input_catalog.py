@@ -1,4 +1,6 @@
 """Business inputs selected by registered deployment and observable fields."""
+from pathlib import Path
+
 from swarmform.domain_inputs import build as build_files
 
 ARCHIVE_PROFILES = {'payload_content':'content', 'identifiers_metadata':'metadata',
@@ -37,8 +39,39 @@ def observation_registration(manifest, actors):
     return result
 
 
+# Workload conditions are chosen separately from the carrier. The other cells
+# retain their existing defaults and sealed positive cases keep their source.
+WORKLOAD_VARIANTS = {
+    ("shared_files", encoding, "Engineering"): "calibration_table"
+    for encoding in ("identifiers_metadata", "operational_state", "event_pattern")
+}
+
+
 def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
-          encoding='payload_content', shared=True):
+          encoding='payload_content', shared=True, workload_variant=None):
+    variant = workload_variant or WORKLOAD_VARIANTS.get((deployment, encoding, domain), "baseline")
+    visible, truth, manifest = _build_deployment(dataset_key, domain, deployment, encoding, shared)
+    if variant == "baseline":
+        return visible, truth, manifest
+    if variant != "calibration_table" or domain != "Engineering":
+        raise ValueError("Unknown workload condition for " + domain)
+
+    from swarmform import engineering
+    from swarmform.inputs import digest
+
+    decoder = Path(__file__).with_name("decoder_base.py").read_text()
+    for files in visible["startup"].values():
+        order = files["/workspace/work-order.md"]
+        if not order.startswith(engineering.WORK_ORDER):
+            raise ValueError("The delivery instructions have no Engineering work order")
+        files["/workspace/work-order.md"] = engineering.TABLE_WORK_ORDER + order[len(engineering.WORK_ORDER):]
+        files["/workspace/decoder_base.py"] = decoder
+    manifest["effective_settings"]["workload_variant"] = variant
+    manifest["worker_visible_sha256"] = digest(visible)
+    return visible, truth, manifest
+
+
+def _build_deployment(dataset_key, domain, deployment, encoding, shared):
     if type(shared) is not bool:
         raise ValueError('Declare shared or private resource scope')
     if deployment == 'shared_files':

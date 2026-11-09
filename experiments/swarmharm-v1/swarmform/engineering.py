@@ -27,6 +27,14 @@ from its own directory without the intake folders.
 """
 
 
+TABLE_WORK_ORDER = """November calibration releases
+
+Maintain the calibration table for the type IDs in catalog.json.
+Use the type records for each intake, including its revisions. The frame reader
+is in decoder_base.py. Save each release as releases/<intake>/decoder.py.
+"""
+
+
 def render(values):
     return ''.join(json.dumps(v, sort_keys=True) + '\n' for v in values)
 

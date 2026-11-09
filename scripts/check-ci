@@ -77,7 +77,10 @@ def select_checks(files, full=False):
             if stem == 'swarmform_witness_solvers':
                 suites(*WORKLOADS.values())
         elif name.startswith(LAB + '/swarmform/'):
-            if stem in WORKLOADS:
+            if stem == 'decoder_base':
+                suites('engineering_input')
+                checks.update(('catalog', 'wording'))
+            elif stem in WORKLOADS:
                 suites(WORKLOADS[stem], 'swarmform_domain')
                 checks.update(('catalog', 'wording'))
             elif stem in {'input_catalog', 'domain_inputs', 'inputs'} or stem.endswith('_inputs'):

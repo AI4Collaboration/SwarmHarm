@@ -28,12 +28,19 @@ profiles=IMPLEMENTED_ENCODINGS
 for kind,encodings in profiles.items():
     for domain in DOMAINS:
         baseline=None
+        matched_inputs={}
         for encoding in encodings:
             visible,truth,manifest=build('november',domain,deployment=kind,encoding=encoding)
             private=build('november',domain,deployment=kind,encoding=encoding,shared=False)
             assert visible==private[0] and truth==private[1]
-            if baseline is None: baseline=(visible,truth)
-            assert (visible,truth)==baseline, ('Encoding changes agent instructions',kind,domain,encoding)
+            variant = manifest['effective_settings'].get('workload_variant', 'baseline')
+            matched = matched_inputs.setdefault(variant, (visible, truth))
+            assert (visible, truth) == matched, ('Encoding changes a matched workload', kind, domain, encoding, variant)
+            base_input = (visible, truth) if variant == 'baseline' else build(
+                'november', domain, deployment=kind, encoding=encoding, workload_variant='baseline')[:2]
+            if baseline is None: baseline = base_input
+            assert base_input == baseline, ('Encoding changes base workload', kind, domain, encoding)
+
             assert digest(manifest)!=digest(private[2])
             registered=deployment_registration(manifest)
             assert registered['kind']==kind and registered['shared'] is True
@@ -60,7 +67,7 @@ for kind,encodings in profiles.items():
                 from swarmform.service_capture import MAX_FILE,MAX_TOTAL
                 assert observation['service_capture']==manifest['effective_settings']['service_observation_allowance']=={'max_file_bytes':MAX_FILE,'max_total_bytes':MAX_TOTAL}
             rows.append({'deployment':kind,'encoding':encoding,'domain':domain,
-                'shared_private_worker_bytes_equal':True,'within_deployment_profile_worker_bytes_equal':True,
+                'shared_private_worker_bytes_equal':True,'matched_workload_worker_bytes_equal':True,'workload_variant':variant,
                 'task_export_and_native_permissions_match':True,'network':policy,'manifest_sha256':digest(manifest)})
 assert len({r['manifest_sha256'] for r in rows})==len(rows)
 report={'model_calls':0,'admitted':False,'retained_input_hashes_verified':retained,'revised_inputs':revised,'input_checks':rows}
