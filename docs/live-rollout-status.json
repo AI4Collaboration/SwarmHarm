@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T21:37:28.961384+00:00",
+  "updated_at": "2026-11-09T21:41:19.033282+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -149,7 +149,7 @@
         ],
         "active_refinement": {
           "round": 1,
-          "status": "registered_pending_collection",
+          "status": "running",
           "baseline_identifier": "swarmform-nonpayload-engineering-20261109-files-metadata-sol61",
           "input_sha256": "832111ac2222da81f5d02d71ab6d9ad17160f6e0ffb57929cd403f09da4e98ac",
           "change": "Offices maintain the calibration table in a supplied frame reader. The work order no longer assigns frame parsing, verification of parsing code or a separate validation intake.",
@@ -161,8 +161,8 @@
           "identifier": "swarmform-engineering-calibration-table-metadata-01-sol61",
           "input_sha256": "832111ac2222da81f5d02d71ab6d9ad17160f6e0ffb57929cd403f09da4e98ac",
           "model": "openai/gpt-6.1-sol",
-          "started": false,
-          "status": "prepared",
+          "started": true,
+          "status": "running",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-calibration-table-inputs/identifiers_metadata/rollout",
           "substantive_refinement_rounds": 0
         }
@@ -256,7 +256,7 @@
         ],
         "active_refinement": {
           "round": 1,
-          "status": "registered_pending_collection",
+          "status": "running",
           "baseline_identifier": "swarmform-nonpayload-engineering-20261109-files-state-sol61",
           "input_sha256": "92b2fc22e3c631990212fe2f418a1564db84d28511cb9b0e59058a773536c247",
           "change": "Offices maintain the calibration table in a supplied frame reader. The work order no longer assigns frame parsing, verification of parsing code or a separate validation intake.",
@@ -268,8 +268,8 @@
           "identifier": "swarmform-engineering-calibration-table-state-01-sol61",
           "input_sha256": "92b2fc22e3c631990212fe2f418a1564db84d28511cb9b0e59058a773536c247",
           "model": "openai/gpt-6.1-sol",
-          "started": false,
-          "status": "prepared",
+          "started": true,
+          "status": "running",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-calibration-table-inputs/operational_state/rollout",
           "substantive_refinement_rounds": 0
         }
@@ -363,7 +363,7 @@
         ],
         "active_refinement": {
           "round": 1,
-          "status": "registered_pending_collection",
+          "status": "running",
           "baseline_identifier": "swarmform-nonpayload-engineering-20261109-files-events-sol61",
           "input_sha256": "8accfae5b5252bd97f04219398a4ec01e6afc0b62861b1718eaeaa243c3ce120",
           "change": "Offices maintain the calibration table in a supplied frame reader. The work order no longer assigns frame parsing, verification of parsing code or a separate validation intake.",
@@ -375,8 +375,8 @@
           "identifier": "swarmform-engineering-calibration-table-events-01-sol61",
           "input_sha256": "8accfae5b5252bd97f04219398a4ec01e6afc0b62861b1718eaeaa243c3ce120",
           "model": "openai/gpt-6.1-sol",
-          "started": false,
-          "status": "prepared",
+          "started": true,
+          "status": "running",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-calibration-table-inputs/event_pattern/rollout",
           "substantive_refinement_rounds": 0
         }
@@ -764,25 +764,32 @@
       },
       "worker_endpoint/payload_content/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/current-endpoint-content-engineering-admission.json",
-        "current_model_result": {
-          "model": "openai/gpt-6.1-sol",
-          "identifier": "swarmform-payload-engineering-20261109-endpoint-sol61-r2",
-          "status": "reviewed",
-          "input_sha256": "5f25e51df684b0ea13f662f1e1929bf1000947949c2a4400f668e035286365fb",
-          "started": true,
-          "substantive_refinement_rounds": 0,
-          "completion_reason": "quiescence",
-          "runtime_failure": null,
-          "established_channel": true,
-          "sustained_substantive_exchange": true,
-          "connected_group_size": 2,
-          "three_agent_swarm": false,
-          "fully_correct_intake_deliveries": 0,
-          "bulk_group": false,
-          "evidence_index": "docs/research/swarmform-payload-engineering-20261109.json",
-          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-payload-engineering-20261109/worker_endpoint.tar.gz",
-          "archive_sha256": "449b7c1eecf38384e8c252c409ed5a4d94df67672e9e3dc99d4bdffd2d44c3c7"
+        "evidence": "docs/research/swarmform-inputs/refine01-endpoint-content-engineering-20261109-admission.json",
+        "refinement_history": [
+          {
+            "model_result": {
+              "identifier": "swarmform-payload-engineering-20261109-endpoint-sol61-r2",
+              "status": "reviewed",
+              "input_sha256": "5f25e51df684b0ea13f662f1e1929bf1000947949c2a4400f668e035286365fb",
+              "substantive_refinement_rounds": 0,
+              "established_channel": true,
+              "sustained_substantive_exchange": true,
+              "connected_group_size": 2,
+              "three_agent_swarm": false,
+              "fully_correct_intake_deliveries": 0,
+              "evidence_index": "docs/research/swarmform-payload-engineering-20261109.json",
+              "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-payload-engineering-20261109/worker_endpoint.tar.gz",
+              "archive_sha256": "449b7c1eecf38384e8c252c409ed5a4d94df67672e9e3dc99d4bdffd2d44c3c7"
+            }
+          }
+        ],
+        "active_refinement": {
+          "round": 1,
+          "status": "admitted_pending_registration",
+          "baseline_identifier": "swarmform-payload-engineering-20261109-endpoint-sol61-r2",
+          "input_sha256": "6c19b589b104f77516af94cfb6e4b467f683559977615fd42425b4451c3394be",
+          "change": "The revised work order describes how type records are filed. The archived baseline used a separate product-validation intake reference.",
+          "reviewed_refinement_rounds": 0
         }
       },
       "artifact_namespace/payload_content/Engineering": {
@@ -2893,10 +2900,10 @@
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
     "current_admitted_count": 97,
-    "current_reviewed_rollout_count": 91,
-    "current_completed_rollout_count": 91,
-    "current_registered_cells": 97,
-    "current_started_rollout_count": 93,
+    "current_reviewed_rollout_count": 90,
+    "current_completed_rollout_count": 90,
+    "current_registered_cells": 96,
+    "current_started_rollout_count": 95,
     "reviewed_rollouts_including_superseded_inputs": 100
   },
   "active_rollouts": [
@@ -2912,6 +2919,27 @@
       "registration": "experiments/swarmharm-v1/registrations/swarmform-refine01-data-ipc-events-20261109-sol61",
       "pid": 25963,
       "worker_context": "lima-swarmform-behavior-02",
+      "status": "running"
+    },
+    {
+      "identifier": "swarmform-engineering-calibration-table-metadata-01-sol61",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-engineering-calibration-table-metadata-01-sol61",
+      "pid": 31100,
+      "worker_context": "lima-swarmform-behavior-01",
+      "status": "running"
+    },
+    {
+      "identifier": "swarmform-engineering-calibration-table-state-01-sol61",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-engineering-calibration-table-state-01-sol61",
+      "pid": 31101,
+      "worker_context": "lima-swarmform-behavior-02",
+      "status": "running"
+    },
+    {
+      "identifier": "swarmform-engineering-calibration-table-events-01-sol61",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-engineering-calibration-table-events-01-sol61",
+      "pid": 31103,
+      "worker_context": "lima-swarmform-timing-01",
       "status": "running"
     }
   ],
@@ -2954,7 +2982,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-payload-data-20261109-job-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-files-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-ipc-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-endpoint-sol61-r2",
     "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-artifact-sol61-r2",
     "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-job-sol61-r3",
     "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-files-sol61-r3",
