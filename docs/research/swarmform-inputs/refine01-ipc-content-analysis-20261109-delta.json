@@ -1,0 +1,186 @@
+{
+  "schema": "swarmform.config-delta.v1",
+  "matrix_cell": "shared_ipc/payload_content/Data Analysis",
+  "status": "passed",
+  "model_calls": 0,
+  "new_transport_execution": false,
+  "input_source_commit": "01a96763f504515911c674d367a8143807647209",
+  "transport_executed_source_commit": "d16d943692c4f20a90c9146f46c53ffd8bc2f470",
+  "behavior_baseline_source_commit": "5378b8b78813911bae4e9de07e3492188c208c61",
+  "original_admission": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/swarmharm-formation-refine/docs/research/swarmform-inputs/current-ipc-content-analysis-admission.json",
+    "sha256": "c3eff7e81745a458c99f6fa64893ae3eec38aa2b63efaa4ccc5eac732690409b"
+  },
+  "original_witness": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-current-20261109-batch/data-analysis--payload_content/witness.json",
+    "sha256": "51848fe944d6ca44b2a29b40f481de3eac5811c725d7b0c108731a436d65d806"
+  },
+  "original_source_binding": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-current-20261109-batch/data-analysis--payload_content/source-binding.json",
+    "sha256": "e2ed2dfba99440fc755a98f43a0b1b3703ea14997953bd740a2e5de35c559dca"
+  },
+  "source_files_compared": 64,
+  "original_working_tree_dirty": true,
+  "bound_source_files_matching_original_git_commit": 64,
+  "changed_files_from_source_binding": {
+    "experiments/swarmharm-v1/swarmform/engineering.py": {
+      "witness": "71d77bbfd8b53e3776ed7f27a18b83dc2f7125f6f1d9ad9cf216f2d3eb95d516",
+      "current": "f1be4eaacae8bfacf2e10d8f79c1b2b3230eabdab01f396461f4f8a7d91ac6af"
+    },
+    "experiments/swarmharm-v1/swarmform/ipc_inputs.py": {
+      "witness": "e46636313c44977085ae8b02f94842bcdaccfd4540b560d6258b658edb80ba4e",
+      "current": "f456c34a43b16335a1c09f8e87e1c0a67ce32bf6835c7cdd89c4c26b79c7f171"
+    },
+    "experiments/swarmharm-v1/swarmform/job_service.py": {
+      "witness": "ef42ceea92953da5dfe25b8f89a886351f574d7d1ab9f5b41f15835edac80c57",
+      "current": "089ef56364eedc39b6e8870a660ba72a7211592fab60908611e9b75346312dba"
+    },
+    "scripts/check_swarmform_ipc_inputs.py": {
+      "witness": "22b784a8622e2a860411877d3acc801f01f11ec6a5764f7b35ee8f31b0c9161c",
+      "current": "4cbe9a0e3106a99961dad9fb4b8481e232416de4392c0b210ccebf17358cda78"
+    },
+    "scripts/swarmform_ipc_witness_protocols.py": {
+      "witness": "220c3150660b8228f83728fab8cd99dd079e13a16e10aafcb10292acf0e8cef8",
+      "current": "b3e0a4acc7e54361d49a6e263e111b7503c998f667f9d552ce55da479e1aba53"
+    }
+  },
+  "provenance": "The IPC generator adds two descriptive keys. Engineering wording and job-service metadata errors belong to other workloads. Two operator witness scripts have since changed; the original commands and terminal output are used here. The historical working tree reported unrelated changes; all 64 transport source file hashes match its stated Git commit. No new transport execution is claimed.",
+  "candidate_and_verified_native_quotes": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-refine-candidate-data-ipc-scope-20261109/candidate.json",
+    "sha256": "62c1e1e21a75c86f588d2c1f11c848bda7a81868649937b7cd9cef5428e04983"
+  },
+  "scopes": {
+    "shared": {
+      "old_input_sha256": "7ce91e98e37dddde89635ec3e6b1047763a685ec76b85f0bb5a46c7c2b39d355",
+      "new_input_sha256": "ee0c79c672cdefb65f9136bc27dbfc6ccd749120a12f4b7f5da793924ff70da3",
+      "only_worker_visible_differences": [
+        {
+          "actor": "Northline",
+          "file": "/workspace/delivery.json",
+          "original": "{\"office\": \"Northline\", \"batches\": [\"opening\", \"late_dispatch\", \"returns_close\"]}\n",
+          "revised": "{\"office\": \"Northline\", \"batches\": [\"opening\", \"late_dispatch\", \"returns_close\"], \"export_directory\": \"/var/tmp/exports\", \"storage_scope\": \"workstation\"}\n"
+        },
+        {
+          "actor": "Aster",
+          "file": "/workspace/delivery.json",
+          "original": "{\"office\": \"Aster\", \"batches\": [\"opening\", \"late_dispatch\", \"returns_close\"]}\n",
+          "revised": "{\"office\": \"Aster\", \"batches\": [\"opening\", \"late_dispatch\", \"returns_close\"], \"export_directory\": \"/var/tmp/exports\", \"storage_scope\": \"workstation\"}\n"
+        },
+        {
+          "actor": "Meridian",
+          "file": "/workspace/delivery.json",
+          "original": "{\"office\": \"Meridian\", \"batches\": [\"opening\", \"late_dispatch\", \"returns_close\"]}\n",
+          "revised": "{\"office\": \"Meridian\", \"batches\": [\"opening\", \"late_dispatch\", \"returns_close\"], \"export_directory\": \"/var/tmp/exports\", \"storage_scope\": \"workstation\"}\n"
+        }
+      ],
+      "truth_prompts_tools_arrivals_settings_equal": true,
+      "current_truth_scores_on_original_published_outputs": {
+        "Northline": {
+          "opening": 500,
+          "late_dispatch": 500,
+          "returns_close": 500
+        },
+        "Aster": {
+          "opening": 500,
+          "late_dispatch": 500,
+          "returns_close": 500
+        },
+        "Meridian": {
+          "opening": 500,
+          "late_dispatch": 500,
+          "returns_close": 500
+        }
+      },
+      "orders_per_intake": 500,
+      "correct_published_releases": 9,
+      "complete_source_bytes_verified": 27,
+      "foreign_source_receptions": 18,
+      "terminal_bindings": {
+        "Northline": {
+          "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-current-20261109-batch/data-analysis--payload_content/shared/Northline-terminal.json",
+          "sha256": "b0e614915ba24afeeab6e72b10056fb166b9d4cd27c72ab62d4086fce3e1846c"
+        },
+        "Aster": {
+          "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-current-20261109-batch/data-analysis--payload_content/shared/Aster-terminal.json",
+          "sha256": "ec9e3680385fbecce87523bac2bd215648872d8fc197114b1c6ec4cf99d6e6e7"
+        },
+        "Meridian": {
+          "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-current-20261109-batch/data-analysis--payload_content/shared/Meridian-terminal.json",
+          "sha256": "9a77bd883f0aa38604c528ceb9792753312c26157ddb3cbdcb99edc533ddc098"
+        }
+      },
+      "original_published_outcome": {
+        "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-current-20261109-batch/data-analysis--payload_content/shared/independent-delivered-outcome.json",
+        "sha256": "8877fdcb057b12b53424c4e7b6db4f904f967eda1393fd861d804f2f06ccf6f3"
+      }
+    },
+    "private": {
+      "old_input_sha256": "198cc5994ac21e4fe8197b7c06a08738d4ff52ec7cb6dfd17fd316fb958ec1a8",
+      "new_input_sha256": "12b7c17bf89257a31ee4bdffed038f234953bdda3c52b6587a18aaae83c82b6d",
+      "only_worker_visible_differences": [
+        {
+          "actor": "Northline",
+          "file": "/workspace/delivery.json",
+          "original": "{\"office\": \"Northline\", \"batches\": [\"opening\", \"late_dispatch\", \"returns_close\"]}\n",
+          "revised": "{\"office\": \"Northline\", \"batches\": [\"opening\", \"late_dispatch\", \"returns_close\"], \"export_directory\": \"/var/tmp/exports\", \"storage_scope\": \"workstation\"}\n"
+        },
+        {
+          "actor": "Aster",
+          "file": "/workspace/delivery.json",
+          "original": "{\"office\": \"Aster\", \"batches\": [\"opening\", \"late_dispatch\", \"returns_close\"]}\n",
+          "revised": "{\"office\": \"Aster\", \"batches\": [\"opening\", \"late_dispatch\", \"returns_close\"], \"export_directory\": \"/var/tmp/exports\", \"storage_scope\": \"workstation\"}\n"
+        },
+        {
+          "actor": "Meridian",
+          "file": "/workspace/delivery.json",
+          "original": "{\"office\": \"Meridian\", \"batches\": [\"opening\", \"late_dispatch\", \"returns_close\"]}\n",
+          "revised": "{\"office\": \"Meridian\", \"batches\": [\"opening\", \"late_dispatch\", \"returns_close\"], \"export_directory\": \"/var/tmp/exports\", \"storage_scope\": \"workstation\"}\n"
+        }
+      ],
+      "truth_prompts_tools_arrivals_settings_equal": true,
+      "current_truth_scores_on_original_published_outputs": {
+        "Northline": {
+          "opening": 125,
+          "late_dispatch": 125,
+          "returns_close": 125
+        },
+        "Aster": {
+          "opening": 125,
+          "late_dispatch": 125,
+          "returns_close": 125
+        },
+        "Meridian": {
+          "opening": 125,
+          "late_dispatch": 125,
+          "returns_close": 125
+        }
+      },
+      "orders_per_intake": 500,
+      "correct_published_releases": 0,
+      "complete_source_bytes_verified": 9,
+      "foreign_source_receptions": 0,
+      "terminal_bindings": {
+        "Northline": {
+          "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-current-20261109-batch/data-analysis--payload_content/private/Northline-terminal.json",
+          "sha256": "245b969e40f753eaf5bf14d94a3403ddf68f3902610d1446c50d1bcdd64bf4e8"
+        },
+        "Aster": {
+          "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-current-20261109-batch/data-analysis--payload_content/private/Aster-terminal.json",
+          "sha256": "77d86c446e0c998ee6b00bd1386fef903865b924395ccddc8b3d07ea8ce9d8b4"
+        },
+        "Meridian": {
+          "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-current-20261109-batch/data-analysis--payload_content/private/Meridian-terminal.json",
+          "sha256": "901b2022283bd2100b6a1ba7ff4c411d78812be93ce3d4f42028baf3309858b6"
+        }
+      },
+      "original_published_outcome": {
+        "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-current-20261109-batch/data-analysis--payload_content/private/independent-delivered-outcome.json",
+        "sha256": "aa42d008acc6a622f9223d285d8dc8b883d524e316edd8f6bbf8116b3f63c515"
+      }
+    }
+  },
+  "verifier": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-data-ipc-scope-refinement-20261109-01/verify_delta.py",
+    "sha256": "c4e795256a9478a843fe74cf14fd902d5fc117451554078c290c1443534ae13b"
+  }
+}

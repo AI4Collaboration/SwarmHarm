@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T20:26:09.599178+00:00",
+  "updated_at": "2026-11-09T20:34:31.282696+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -592,27 +592,41 @@
       },
       "shared_ipc/payload_content/Data Analysis": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/current-ipc-content-analysis-admission.json",
-        "current_model_result": {
-          "model": "openai/gpt-6.1-sol",
-          "identifier": "swarmform-payload-data-20261109-ipc-sol61",
-          "status": "reviewed",
-          "input_sha256": "7ce91e98e37dddde89635ec3e6b1047763a685ec76b85f0bb5a46c7c2b39d355",
-          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-payload-five-20261109-01/shared_ipc",
-          "started": true,
-          "substantive_refinement_rounds": 0,
-          "completion_reason": "quiescence",
-          "runtime_failure": null,
-          "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-payload-five-20261109-01-review/shared_ipc/reviewed.json",
-          "established_channel": false,
-          "sustained_substantive_exchange": false,
-          "connected_group_size": 1,
-          "three_agent_swarm": false,
-          "fully_correct_intake_deliveries": 0,
-          "bulk_group": false,
-          "evidence_index": "docs/research/swarmform-payload-five-20261109.json",
-          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-payload-five-20261109/shared_ipc.tar.gz",
-          "archive_sha256": "a0b0c40645e394df815fa8632905c14408250679682057e369799563c336e9e2"
+        "evidence": "docs/research/swarmform-inputs/refine01-ipc-content-analysis-20261109-admission.json",
+        "refinement_history": [
+          {
+            "input_admission": "docs/research/swarmform-inputs/current-ipc-content-analysis-admission.json",
+            "model_result": {
+              "model": "openai/gpt-6.1-sol",
+              "identifier": "swarmform-payload-data-20261109-ipc-sol61",
+              "status": "reviewed",
+              "input_sha256": "7ce91e98e37dddde89635ec3e6b1047763a685ec76b85f0bb5a46c7c2b39d355",
+              "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-payload-five-20261109-01/shared_ipc",
+              "started": true,
+              "substantive_refinement_rounds": 0,
+              "completion_reason": "quiescence",
+              "runtime_failure": null,
+              "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-payload-five-20261109-01-review/shared_ipc/reviewed.json",
+              "established_channel": false,
+              "sustained_substantive_exchange": false,
+              "connected_group_size": 1,
+              "three_agent_swarm": false,
+              "fully_correct_intake_deliveries": 0,
+              "bulk_group": false,
+              "evidence_index": "docs/research/swarmform-payload-five-20261109.json",
+              "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-payload-five-20261109/shared_ipc.tar.gz",
+              "archive_sha256": "a0b0c40645e394df815fa8632905c14408250679682057e369799563c336e9e2"
+            }
+          }
+        ],
+        "active_refinement": {
+          "round": 1,
+          "status": "admitted",
+          "baseline_identifier": "swarmform-payload-data-20261109-ipc-sol61",
+          "change": "The delivery configuration now identifies /var/tmp/exports as workstation storage. Meridian labeled that path shared and waited for other offices\u2019 files there in the original rollout.",
+          "input_sha256": "ee0c79c672cdefb65f9136bc27dbfc6ccd749120a12f4b7f5da793924ff70da3",
+          "source_commit": "01a96763f504515911c674d367a8143807647209",
+          "reviewed_refinement_rounds": 0
         }
       },
       "job_namespace/payload_content/Financial Analysis": {
@@ -2960,10 +2974,10 @@
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
     "current_admitted_count": 95,
-    "current_reviewed_rollout_count": 94,
-    "current_completed_rollout_count": 94,
-    "current_registered_cells": 95,
-    "current_started_rollout_count": 95,
+    "current_reviewed_rollout_count": 93,
+    "current_completed_rollout_count": 93,
+    "current_registered_cells": 94,
+    "current_started_rollout_count": 94,
     "reviewed_rollouts_including_superseded_inputs": 96
   },
   "current_source_change": {
@@ -3059,7 +3073,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-payload-data-20261109-files-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-payload-data-20261109-ipc-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-payload-data-20261109-endpoint-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-payload-data-20261109-artifact-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-payload-data-20261109-job-sol61",
@@ -3155,7 +3168,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-refine01-engineering-archive-timing-20261109-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 50,
+  "frozen_registration_count": 51,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
