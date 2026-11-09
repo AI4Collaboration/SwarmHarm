@@ -47,6 +47,10 @@ WORKLOAD_VARIANTS = {
     for encoding in ("identifiers_metadata", "operational_state", "event_pattern")
 }
 WORKLOAD_VARIANTS.update({
+    ("shared_files", encoding, "Engineering"): "existing_calibration_table"
+    for encoding in ("operational_state", "event_pattern")
+})
+WORKLOAD_VARIANTS.update({
     ("artifact_namespace", "identifiers_metadata", "Knowledge Work"): "opening_customer_roster",
     ("artifact_namespace", "timing", "Knowledge Work"): "opening_customer_roster",
     ("job_namespace", "event_pattern", "Knowledge Work"): "opening_customer_roster",
@@ -120,16 +124,21 @@ def _build_workload(dataset_key, domain='Data Analysis', *, deployment='shared_f
         return visible, truth, manifest
     from swarmform.inputs import digest
 
-    if variant == "calibration_table" and domain == "Engineering":
+    if variant in ("calibration_table", "existing_calibration_table") and domain == "Engineering":
         from swarmform import engineering
 
         decoder = Path(__file__).with_name("decoder_base.py").read_text()
-        for files in visible["startup"].values():
+        for actor, files in visible["startup"].items():
             order = files["/workspace/work-order.md"]
             if not order.startswith(engineering.WORK_ORDER):
                 raise ValueError("The delivery instructions have no Engineering work order")
             files["/workspace/work-order.md"] = engineering.TABLE_WORK_ORDER + order[len(engineering.WORK_ORDER):]
-            files["/workspace/decoder_base.py"] = decoder
+            local_decoder = decoder
+            if variant == "existing_calibration_table":
+                raw = visible["private_arrivals"][actor]["candidate"]["intake/candidate/types.jsonl"]
+                records = {record["type_id"]: record for record in map(json.loads, raw.splitlines())}
+                local_decoder = decoder.replace("TYPE_RECORDS = {}", "TYPE_RECORDS = " + repr(records))
+            files["/workspace/decoder_base.py"] = local_decoder
     elif variant == "primary_ledgers" and (deployment, encoding, domain) == ("shared_ipc", "timing", "Data Analysis"):
         from swarmform import fulfillment
 
