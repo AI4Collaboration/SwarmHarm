@@ -1,6 +1,6 @@
 {
   "schema_version": 12,
-  "updated_at": "2026-11-09T03:05:41.568861+00:00",
+  "updated_at": "2026-11-09T03:45:08.024292+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "developing_matrix_inputs",
@@ -122,7 +122,23 @@
     "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-knowledge-05-sol56",
     "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-knowledge-05-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-engineering-05-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-engineering-05-sol61"
+    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-engineering-05-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-content-data-06-sol56",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-content-data-06-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-content-financial-06-sol56",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-content-financial-06-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-content-knowledge-06-sol56",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-content-knowledge-06-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-content-engineering-06-sol56",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-content-engineering-06-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-data-06-sol56",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-data-06-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-financial-06-sol56",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-financial-06-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-knowledge-06-sol56",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-knowledge-06-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-engineering-06-sol56",
+    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-engineering-06-sol61"
   ],
   "runtime_fixture_checks": {
     "shared_files": {
@@ -140,13 +156,12 @@
       "continuity_audit": "docs/research/swarmform-runtime-continuity.json"
     },
     "artifact_namespace": {
-      "state": "first_pair_closed_with_observer_runtime_failure",
+      "state": "stream_repair_matched_inputs_registered",
       "model_calls": 0,
       "operator_witness": "scripts/check_swarmform_archive_deployment.py",
       "native_integration_check": "experiments/swarmharm-v1/tests/swarmform_archive_native_checks.py",
       "pending": [
-        "Publish bounded-memory observer repair and prepare fresh matched archive registrations.",
-        "Review first Sol 6.1 archive source convention from native reads and publications.",
+        "Collect archive06 pairs once; preserve archive05 outcomes and its runtime-failed attempt.",
         "State/event/timing workload checks."
       ],
       "witness_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-archive-input-witness-01",
