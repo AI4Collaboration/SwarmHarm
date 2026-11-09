@@ -34,9 +34,9 @@ def write_tasks(output,visible,manifest,duration,deployment):
     return records
 
 
-def register(args):
-    source=base.published_head()
-    runtime=base.check_runtime()
+def register(args, *, source=None, runtime=None):
+    source=source or base.published_head()
+    runtime=runtime or base.check_runtime()
     output=outside_repository(args.output,ROOT,'Structure output')
     if not base.re.fullmatch(r'[a-z0-9][a-z0-9-]{2,100}',args.identifier):
         raise ValueError('Invalid registration identifier')
@@ -47,9 +47,11 @@ def register(args):
     verification=verify_solvability(visible,truth)
     if not verification['passed']:raise ValueError('Business source verification failed')
     witness=json.loads(Path(args.witness).read_text())
+    same_witness_source=(witness.get('source_commit')==source or witness.get('code_hashes')==
+                         {p:base.sha(ROOT/p) for p in base.source_paths()})
     if (witness.get('passed') is not True or witness.get('population')!=args.population
             or witness.get('deployment')!=args.deployment or witness.get('image')!=base.IMAGE
-            or witness.get('source_commit')!=source or witness.get('model_calls')!=0):
+            or not same_witness_source or witness.get('model_calls')!=0):
         raise ValueError('A matching offline runtime witness is required')
     output.mkdir(parents=True)
     shutil.copy2(ROOT/'docs/structure-study-design.md',output/'study-design.md')
@@ -98,13 +100,42 @@ def register(args):
     return {'prepared':args.identifier,'output':str(output),'model_calls':0}
 
 
+def verify_registration(folder,output):
+    head=base.published_head()
+    reg=json.loads((folder/'registration.json').read_text())
+    seal=json.loads((folder/'registration-seal.json').read_text())['sha256']
+    if base.sha(folder/'registration.json')!=seal:raise ValueError('Registration seal differs')
+    for name in ('registration.json','registration-seal.json'):
+        base.git('ls-files','--error-unmatch',str((folder/name).relative_to(ROOT)))
+        if base.sha(output/name)!=base.sha(folder/name):raise ValueError('Prepared registration differs')
+    source=reg['source_commit']
+    if not base.re.fullmatch('[0-9a-f]{40}',source):raise ValueError('Expected a full source commit')
+    base.git('merge-base','--is-ancestor',source,head)
+    # The execution copy is compared with the committed historical bytes. Main
+    # can advance while earlier registrations remain exactly reproducible.
+    for name,expected in reg['code_hashes'].items():
+        if Path(name).is_absolute() or '..' in Path(name).parts:raise ValueError('Invalid code path')
+        committed=subprocess.check_output(['git','show',source+':'+name],cwd=ROOT)
+        if base.sha256(committed).hexdigest()!=expected or base.sha(output/'code'/name)!=expected:
+            raise ValueError('Sealed code differs from committed source: '+name)
+    for name,expected in {**reg['input_hashes'],**reg['task_hashes']}.items():
+        if base.sha(output/name)!=expected:raise ValueError('Prepared input differs: '+name)
+    if base.IMAGE!=reg['image'] or base.check_runtime()!=reg['runtime']:
+        raise ValueError('Runtime differs from registration')
+    base.codex_gateway.verify_runtime(reg['harness'])
+    save(output/'collection-preflight.json',{'at':utc(),'local_remote_commit':head,
+        'source_commit':source,'source_validation':'exact committed historical bytes and sealed execution copy',
+        'registration_sha256':seal,'frozen_inputs_verified':True})
+    return reg
+
+
 def collect(args):
     output=outside_repository(args.output,ROOT,'Structure output')
     if not base.re.fullmatch(r'[a-z0-9][a-z0-9-]{2,100}',args.identifier):raise ValueError('Invalid registration identifier')
     with (output/'.collector.lock').open('a+') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         if (output/'started.json').exists():raise FileExistsError('Preserve the original attempt; do not reuse it')
-        reg=base.verify_frozen(REGISTRATIONS/args.identifier,output)
+        reg=verify_registration(REGISTRATIONS/args.identifier,output)
         if reg['study_mode']!='swarmform-structure':raise ValueError('Wrong study')
         # Continue from the sealed copy so unrelated main updates cannot change
         # lazy imports or finalization during a long-lived model collection.

@@ -65,6 +65,8 @@ print(json.dumps(out))"""
                 records.append({'shared':shared,'actor':actor,'received_actors':sorted(actual),'matched':True})
     report={'passed':True,'population':args.population,'deployment':args.deployment,
             'image':base.IMAGE,'runtime':runtime,'source_commit':base.git('rev-parse','HEAD'),
+            'code_hashes':{p:base.sha(base.ROOT/p) for p in base.source_paths()},
+            'witness_code_sha256':base.sha(Path(__file__)),
             'model_calls':0,'scope':'Fresh payloads through real workstations; all readers, shared and private counterparts. Not behavioral evidence.',
             'checks':records}
     save(output/'witness.json',report)

@@ -121,3 +121,22 @@ is motivated by truncation and recorded waiting, independent of whether any
 organizational structure appears. Retain the original pilot separately; do not
 pool its different time/resource regime into later size comparisons. Report
 both elapsed time and number of business intakes when discussing persistence.
+
+## Frozen first scale exploration
+
+The 1.5-million-token intended calibration crossed three completed business
+stages but reached its cap as the fourth arrived. Preserve that censored attempt,
+including any withdrawn or incomplete delivery bytes. For the first matched
+size exploration, register fresh N=4, 8, 16 and 32 pairs with one shared new world
+key, fixed source ownership, 180-second arrival spacing, a 1,200-second allowance,
+3,000,000 observed tokens per member, 150 responses and 150 tools per member.
+The same per-member caps apply at every size and in both modes. All eight
+registrations are frozen before any of these scale-exploration outcomes are
+observed. Run N=4 and N=8 first, then one large cohort at a time. Do not raise
+a registered cap after collection begins.
+
+This first series contains one matched instance per size and carrier. Its
+findings are descriptive trajectories, not estimated population formation rates
+or a claim of a pure group-size causal effect. Keep its common timing/budget
+regime separate from both calibration regimes. Repetitions, additional source
+ownership schedules and the archive carrier retain separate registrations.

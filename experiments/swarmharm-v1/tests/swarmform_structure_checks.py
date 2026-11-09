@@ -5,6 +5,7 @@ from pathlib import Path
 import tempfile
 import sys
 import tomllib
+import subprocess
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -15,6 +16,34 @@ from swarmform.inputs import digest
 
 
 class StructureChecks(unittest.TestCase):
+    def test_later_main_changes_do_not_replace_committed_execution_bytes(self):
+        scripts=str(Path(__file__).resolve().parents[3]/'scripts')
+        with patch.object(sys,'path',[scripts,*sys.path]):
+            import run_swarmform_structure as runner
+        with tempfile.TemporaryDirectory() as directory:
+            area=Path(directory).resolve();repo=area/'repo';repo.mkdir();output=area/'evidence';output.mkdir()
+            def git(*args):return subprocess.check_output(['git',*args],cwd=repo,text=True,stderr=subprocess.DEVNULL).strip()
+            git('init','-q');git('config','user.name','Offline fixture');git('config','user.email','fixture@example.test')
+            source=repo/'worker.py';source.write_text('original source\n')
+            git('add','.');git('commit','-qm','source');commit=git('rev-parse','HEAD')
+            (output/'code').mkdir();(output/'code/worker.py').write_bytes(source.read_bytes())
+            (output/'input.json').write_text('{}')
+            reg={'identifier':'fixture','study_mode':'swarmform-structure','source_commit':commit,
+                 'code_hashes':{'worker.py':runner.base.sha(source)},
+                 'input_hashes':{'input.json':runner.base.sha(output/'input.json')},'task_hashes':{},
+                 'runtime':{'fixture':True},'image':runner.base.IMAGE,'harness':{}}
+            folder=repo/'registrations/fixture';folder.mkdir(parents=True)
+            for destination in (folder,output):
+                (destination/'registration.json').write_text(json.dumps(reg))
+                (destination/'registration-seal.json').write_text(json.dumps({'sha256':runner.base.sha(destination/'registration.json')}))
+            source.write_text('later source\n')
+            git('add','.');git('commit','-qm','registration and later source');head=git('rev-parse','HEAD')
+            with patch.object(runner,'ROOT',repo),patch.object(runner.base,'ROOT',repo),patch.object(runner.base,'published_head',return_value=head),patch.object(runner.base,'check_runtime',return_value=reg['runtime']),patch.object(runner.base.codex_gateway,'verify_runtime'):
+                self.assertEqual(runner.verify_registration(folder,output),reg)
+                self.assertTrue(json.loads((output/'collection-preflight.json').read_text())['frozen_inputs_verified'])
+                (output/'code/worker.py').write_text('later source\n')
+                with self.assertRaises(ValueError):runner.verify_registration(folder,output)
+
     def test_parent_collects_from_sealed_copy_after_committed_verification(self):
         scripts=str(Path(__file__).resolve().parents[3]/'scripts')
         with patch.object(sys,'path',[scripts,*sys.path]):
@@ -27,7 +56,7 @@ class StructureChecks(unittest.TestCase):
                 self.assertEqual(command[2],'execute-frozen')
                 self.assertTrue(options['check'])
                 (root/'collection-summary.json').write_text(json.dumps({'closed':'fixture'}))
-            with patch.object(runner.base,'verify_frozen',return_value={'study_mode':'swarmform-structure'}) as verify,patch.object(runner.subprocess,'run',side_effect=launched):
+            with patch.object(runner,'verify_registration',return_value={'study_mode':'swarmform-structure'}) as verify,patch.object(runner.subprocess,'run',side_effect=launched):
                 self.assertEqual(runner.collect(args),{'closed':'fixture'})
                 verify.assert_called_once()
 
