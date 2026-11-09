@@ -7,12 +7,14 @@ import io
 import json
 from pathlib import Path
 import tempfile
+import tomllib
 import unittest
 from unittest.mock import patch
 import zipfile
 
+import export_atif
 from swarmform.inputs import build, verify_packages
-from swarmform.domain_inputs import DOMAINS, build as build_domain
+from swarmform.input_catalog import build as build_input, task_network
 
 ROOT = Path(__file__).resolve().parents[3]
 spec = importlib.util.spec_from_file_location('swarmform_entry', ROOT / 'scripts/run_swarmform.py')
@@ -21,45 +23,6 @@ spec.loader.exec_module(entry)
 
 
 class RegistrationChecks(unittest.TestCase):
-    def test_cli_accepts_every_implemented_matrix_selector(self):
-        parser = entry.argument_parser()
-        for deployment in ('shared_files', 'shared_ipc', 'worker_endpoint',
-                           'artifact_namespace', 'job_namespace'):
-            for encoding in ('payload_content', 'identifiers_metadata',
-                             'operational_state', 'event_pattern', 'timing'):
-                args = parser.parse_args(['prepare-pair', '--identifier', 'matrix-cell',
-                    '--output', '/tmp/matrix-cell', '--dataset-key', 'november',
-                    '--deployment', deployment, '--encoding', encoding])
-                self.assertEqual((args.deployment, args.encoding), (deployment, encoding))
-
-    def test_each_domain_keeps_its_tasks_arrivals_and_pair_binding(self):
-        for domain in DOMAINS:
-            with self.subTest(domain=domain), tempfile.TemporaryDirectory() as directory:
-                root = Path(directory) / 'source'; root.mkdir()
-                (root / 'experiments/swarmharm-v1/registrations').mkdir(parents=True)
-                (root / 'docs').mkdir()
-                (root / 'fixture.py').write_text('VERSION = 1\n')
-                visible, _, manifest = build_domain('november', domain)
-                cell = 'shared_files/payload_content/' + domain
-                entry.save(root / 'docs/input-admission.json', {'input_sha256': entry.digest(manifest)})
-                entry.save(root / 'docs/live-rollout-status.json', {'maintained_registrations': [],
-                    'matrix': {'cells': {cell: {'status': 'admitted', 'evidence': 'docs/input-admission.json'}}}})
-                args = argparse.Namespace(identifier='domain-pair', output=Path(directory) / 'raw',
-                                          dataset_key='november', domain=domain)
-                with patch.object(entry, 'ROOT', root), patch.object(entry, 'published_head', return_value='published'), \
-                        patch.object(entry, 'check_runtime', return_value={'harbor': '0.24.0'}), \
-                        patch.object(entry, 'source_paths', return_value=['fixture.py']):
-                    entry.prepare_pair(args)
-                records = [json.loads((args.output / model / 'registration.json').read_text())
-                           for model in ('sol56', 'sol61')]
-                for record in records:
-                    self.assertEqual(record['matrix_cell'], cell)
-                    self.assertEqual(record['arrival_offsets'], manifest['effective_settings']['arrival_offsets'])
-                    self.assertEqual({p['domain'] for p in record['plan']['natural'].values()}, {domain})
-                self.assertEqual(records[0]['input_hashes'], records[1]['input_hashes'])
-                self.assertEqual(records[0]['task_hashes'], records[1]['task_hashes'])
-                self.assertEqual(json.loads((args.output / 'sol56/input.json').read_text()), visible)
-
     def test_pair_seals_same_published_input_and_rejects_either_reused_destination(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / 'source'; root.mkdir()
@@ -94,16 +57,6 @@ class RegistrationChecks(unittest.TestCase):
                     self.assertEqual(ledger_path.read_bytes(), ledger)
                     self.assertEqual(list(candidate.output.iterdir()), [candidate.output / label])
 
-    def test_harbor_packages_retain_exact_prompts_and_current_three_agent_adapter(self):
-        inputs, _, _ = build('november')
-        with tempfile.TemporaryDirectory() as d:
-            root = Path(d)
-            files = entry.write_tasks(root, inputs, entry.IMAGE)
-            self.assertEqual(len(files), 6)
-            for actor, prompts in inputs['prompts'].items():
-                self.assertEqual((root / 'tasks' / actor / 'instruction.md').read_text(), '\n\n'.join(prompts))
-            self.assertTrue(all(entry.sha(root / path) == digest for path, digest in files.items()))
-
     def test_frozen_check_rejects_changed_input_before_native_validation(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d); registration = root / 'registration'; registration.mkdir()
@@ -134,6 +87,65 @@ class RegistrationChecks(unittest.TestCase):
         self.assertFalse(verify_packages('Northline', snapshot('Northline', b'old', b'new'))['opening']['matches_authored_ledger'])
         self.assertFalse(verify_packages('Northline', snapshot('Aster', b'new', b'new'))['opening']['matches_authored_ledger'])
         self.assertFalse(verify_packages('Northline', {})['opening']['matches_authored_ledger'])
+
+    def test_invalid_matrix_selectors_are_rejected(self):
+        for args in ({'deployment':'unknown'},
+                     {'deployment':'artifact_namespace','encoding':'unknown'},{'shared':1}):
+            with self.assertRaises(ValueError):build_input('november',**args)
+
+    def test_paired_seals_keep_declared_network_and_effective_profile(self):
+        # The catalog gate covers all 100 input combinations. Exercise sealing
+        # once per backend, spanning every domain and encoding, here.
+        cases=(('Engineering','shared_files','payload_content'),
+               ('Data Analysis','shared_ipc','identifiers_metadata'),
+               ('Financial Analysis','worker_endpoint','operational_state'),
+               ('Knowledge Work','artifact_namespace','event_pattern'),
+               ('Data Analysis','job_namespace','timing'))
+        for domain,deployment,encoding in cases:
+            with self.subTest(domain=domain,deployment=deployment,encoding=encoding),tempfile.TemporaryDirectory() as d:
+                root=Path(d)/'source';(root/'experiments/swarmharm-v1/registrations').mkdir(parents=True)
+                (root/'docs').mkdir();(root/'fixture.py').write_text('FROZEN = 1\n')
+                inputs,_,manifest=build_input('november',domain,deployment=deployment,encoding=encoding)
+                cell='/'.join((deployment,encoding,domain))
+                entry.save(root/'docs/admission.json',{'input_sha256':entry.digest(manifest)})
+                entry.save(root/'docs/live-rollout-status.json',{'maintained_registrations':[],
+                    'matrix':{'cells':{cell:{'status':'admitted','evidence':'docs/admission.json'}}}})
+                args=entry.argument_parser().parse_args(['prepare-pair','--identifier','fixture-pair',
+                    '--output',str(Path(d)/'raw'),'--dataset-key','november',
+                    '--domain',domain,'--deployment',deployment,'--encoding',encoding])
+                with patch.object(entry,'ROOT',root),patch.object(entry,'published_head',return_value='fixture-source'),\
+                        patch.object(entry,'check_runtime',return_value={}),patch.object(entry,'source_paths',return_value=['fixture.py']):
+                    result=entry.prepare_pair(args)
+                self.assertEqual(result['model_calls'],0)
+                regs=[json.loads((args.output/m/'registration.json').read_text()) for m in ('sol56','sol61')]
+                for record in regs:
+                    self.assertEqual(record['matrix_cell'],cell)
+                    self.assertEqual(record['arrival_offsets'],manifest['effective_settings']['arrival_offsets'])
+                    self.assertEqual({p['domain'] for p in record['plan']['natural'].values()},{domain})
+                for key in ('source_commit','input_sha256','deployment','input_hashes','task_hashes','workstation_permissions'):
+                    self.assertEqual(regs[0][key],regs[1][key])
+                self.assertEqual(json.loads((args.output/'sol56/input.json').read_text()),inputs)
+                for task in (args.output/'sol56/tasks').glob('*/task.toml'):
+                    environment=tomllib.loads(task.read_text())['environment']
+                    expected=task_network(deployment)
+                    self.assertEqual(environment['network_mode'],expected['network_mode'])
+                    self.assertEqual(environment.get('allowed_hosts',[]),expected['allowed_hosts'])
+                seal=json.loads((args.output/'sol56/registration-seal.json').read_text())
+                self.assertEqual(seal['sha256'],entry.sha(args.output/'sol56/registration.json'))
+
+    def test_failed_outcome_and_atif_preserve_original_files_and_manifest(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);entry.save(root/'protected-truth.json',{})
+            (root/'native-record.jsonl').write_text('{"original":true}\n')
+            reg={'identifier':'failed-fixture','plan':{'natural':{'actor':{'domain':'Data Analysis'}}},
+                 'deployment':{'kind':'artifact_namespace'}}
+            with patch.object(export_atif,'export',side_effect=ValueError('fixture validation failure')):
+                result=entry.finalize_collection(root,reg,{}, {'reason':'failed','failure':'fixture'})
+            self.assertEqual(result['failures'],['collection','business_outcome','atif'])
+            manifest=json.loads((root/'evidence-manifest.json').read_text())
+            self.assertEqual(set(manifest['files']),{'protected-truth.json','native-record.jsonl',
+                'business-outcome-failure.json','atif-failure.json'})
+            self.assertTrue(all(entry.sha(root/path)==sha for path,sha in manifest['files'].items()))
 
 
 if __name__ == '__main__':

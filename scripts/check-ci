@@ -21,7 +21,8 @@ def main(argv=None):
         ('Documentation and registration inventory', [sys.executable, 'scripts/check_dataset_admission_contract.py']),
         ('Installation', [sys.executable, 'scripts/check-installation']),
         ('SwarmForm configuration export and runtime settings', [sys.executable, 'scripts/check_swarmform_catalog.py']),
-        ('SwarmForm input accounting and workloads', [sys.executable, 'scripts/check_swarmform_inputs.py']),
+        ('SwarmForm input accounting' + (' and workloads' if args.quick else ''),
+         [sys.executable, 'scripts/check_swarmform_inputs.py'] + ([] if args.quick else ['--inventory-only'])),
         ('Format contract', [sys.executable, 'scripts/check_format_contract.py', 'experiments/swarmharm-v1']),
         ('Agent-facing wording', [sys.executable, 'experiments/prompt-contract/checks.py']),
     ]

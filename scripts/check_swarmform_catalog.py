@@ -44,6 +44,7 @@ for kind,encodings in profiles.items():
                 root=Path(folder)
                 task_hashes=run_swarmform.write_tasks(root,visible,run_swarmform.IMAGE,domain,kind,manifest)
                 assert len(task_hashes)==6
+                assert all(run_swarmform.sha(root/path)==value for path,value in task_hashes.items())
                 for actor,prompts in visible['prompts'].items():
                     task=tomllib.loads((root/'tasks'/actor/'task.toml').read_text())
                     assert task['schema_version']=='1.4'

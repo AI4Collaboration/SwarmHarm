@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check the active SwarmForm matrix, registration provenance and offline workload tests."""
 
+import argparse
 from hashlib import sha256
 from importlib import import_module
 from itertools import product
@@ -146,7 +147,7 @@ def check_registrations(status, manifests):
             fail("active rollout has no matching SwarmForm registration")
 
 
-def check_workloads(matrix):
+def check_workloads(matrix, *, run_tests=True):
     checks = matrix["offline_workload_checks"]
     if str(PACKAGE) not in sys.path:
         sys.path.insert(0, str(PACKAGE))
@@ -158,16 +159,21 @@ def check_workloads(matrix):
         if Path(module.__file__).resolve() != path or getattr(module, "SWARMFORM_DOMAIN", None) != domain:
             fail(f"workload checks do not identify the SwarmForm domain {domain}: {relative}")
         suite = unittest.defaultTestLoader.loadTestsFromModule(module)
-        if not suite.countTestCases() or not unittest.TextTestRunner().run(suite).wasSuccessful():
+        if not suite.countTestCases() or (run_tests and not unittest.TextTestRunner().run(suite).wasSuccessful()):
             fail(f"offline workload checks failed for {domain}")
-    print(f"Offline workloads checked: {len(checks)} of {len(matrix['domains'])}. Model calls: 0.")
+    action = 'checked' if run_tests else 'bound to test modules'
+    print(f"Offline workloads {action}: {len(checks)} of {len(matrix['domains'])}. Model calls: 0.")
 
 
-def main():
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--inventory-only', action='store_true',
+                        help='Check input and registration records; the full suite runs workload tests separately')
+    args = parser.parse_args(argv)
     status = read_record(STATUS)
     manifests = validate_active_matrix(status)
     check_registrations(status, manifests)
-    check_workloads(status["matrix"])
+    check_workloads(status["matrix"], run_tests=not args.inventory_only)
 
 
 if __name__ == "__main__":
