@@ -1,9 +1,11 @@
 """Regression coverage for lightweight check selection; no runtime or model needed."""
 from pathlib import Path
+import os
 import runpy
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[3]
 ENTRY = runpy.run_path(str(ROOT / 'scripts/check-ci'))
@@ -73,7 +75,9 @@ class CheckSelectionChecks(unittest.TestCase):
         self.assertEqual(plan['harnesses'], [])
 
     def test_commit_range_deletions_local_edits_and_first_push(self):
-        with tempfile.TemporaryDirectory() as folder:
+        # A pre-push hook exports GIT_DIR; a fixture must never inherit the real repo.
+        fixture_env = {key: value for key, value in os.environ.items() if not key.startswith('GIT_')}
+        with patch.dict(os.environ, fixture_env, clear=True), tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
 
             def git(*args):
