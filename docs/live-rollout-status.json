@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T21:30:57.670663+00:00",
+  "updated_at": "2026-11-09T21:31:48.152973+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -508,7 +508,7 @@
         ],
         "active_refinement": {
           "round": 1,
-          "status": "prepared",
+          "status": "running",
           "baseline_identifier": "swarmform-nonpayload-analysis-20261109-ipc-events-sol61",
           "input_sha256": "085b1275d5f00816d8ac7b3ca5367ba05d0c65f93fac52eaa3109ff8a9c36bd3",
           "source_commit": "6cc09632fff8509b342f7a673f01a0875858f826",
@@ -522,8 +522,8 @@
           "model": "openai/gpt-6.1-sol",
           "identifier": "swarmform-refine01-data-ipc-events-20261109-sol61",
           "input_sha256": "085b1275d5f00816d8ac7b3ca5367ba05d0c65f93fac52eaa3109ff8a9c36bd3",
-          "status": "prepared",
-          "started": false,
+          "status": "running",
+          "started": true,
           "substantive_refinement_rounds": 0
         }
       },
@@ -2863,7 +2863,7 @@
     "current_reviewed_rollout_count": 95,
     "current_completed_rollout_count": 95,
     "current_registered_cells": 97,
-    "current_started_rollout_count": 96,
+    "current_started_rollout_count": 97,
     "reviewed_rollouts_including_superseded_inputs": 100
   },
   "active_rollouts": [
@@ -2872,6 +2872,13 @@
       "registration": "experiments/swarmharm-v1/registrations/swarmform-engineering-job-timing-01-sol61",
       "pid": 16816,
       "worker_context": "lima-swarmform-timing-01",
+      "status": "running"
+    },
+    {
+      "identifier": "swarmform-refine01-data-ipc-events-20261109-sol61",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-refine01-data-ipc-events-20261109-sol61",
+      "pid": 25963,
+      "worker_context": "lima-swarmform-behavior-02",
       "status": "running"
     }
   ],
@@ -3020,7 +3027,7 @@
       "scope": "Original archive-content Data Analysis input."
     }
   ],
-  "next_action": "Review the Engineering job timing rollout. Verify and register the Data Analysis IPC event refinement on its own input. Finish both scopes of the three remaining timing inputs. Export each accepted environment with its reviewed trajectory.",
+  "next_action": "Review the registered Data Analysis IPC event rollout and the other active collections when they close. Continue the listed timing input checks.",
   "open_timing_inputs": [
     {
       "matrix_cell": "job_namespace/timing/Financial Analysis",
