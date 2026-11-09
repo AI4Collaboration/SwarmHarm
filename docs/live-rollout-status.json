@@ -1221,7 +1221,7 @@
         ],
         "active_refinement": {
           "round": 1,
-          "status": "running",
+          "status": "collected_under_full_review",
           "change": "Only job metadata type/length errors now describe the existing contract; 8192 serialized characters, task, permissions, source versions and model settings stay fixed.",
           "baseline_identifier": "swarmform-nonpayload-financial-20261109-job-metadata-sol61",
           "input_sha256": "e77f6cf22cb5eb4372826826a927d4be25fe9a9e1ac973e1150e1bab35f72f75",
@@ -1233,11 +1233,13 @@
         "current_model_result": {
           "model": "openai/gpt-6.1-sol",
           "identifier": "swarmform-refine01-financial-job-metadata-20261109-sol61",
-          "status": "running",
+          "status": "collected",
           "input_sha256": "e77f6cf22cb5eb4372826826a927d4be25fe9a9e1ac973e1150e1bab35f72f75",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-refine01-20261109/financial/job_namespace",
           "started": true,
-          "substantive_refinement_rounds": 0
+          "substantive_refinement_rounds": 0,
+          "completion_reason": "quiescence",
+          "runtime_failure": null
         }
       },
       "shared_ipc/payload_content/Financial Analysis": {
@@ -2890,28 +2892,41 @@
       },
       "artifact_namespace/timing/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/current-archive-timing-engineering-admission.json",
-        "current_model_result": {
-          "model": "openai/gpt-6.1-sol",
-          "identifier": "swarmform-timing-engineering-20261109-archive-sol61",
-          "status": "reviewed",
-          "input_sha256": "48b4dafc4d8457f8a19a2474a7ddb23b1167cc93f15ec0da698c7b52528edd41",
-          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-new-timing-20261109-02/artifact_namespace/engineering",
-          "started": true,
-          "substantive_refinement_rounds": 0,
-          "completion_reason": "quiescence",
-          "runtime_failure": null,
-          "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-new-timing-20261109-02-review/artifact_namespace/engineering/reviewed.json",
-          "established_channel": false,
-          "sustained_substantive_exchange": false,
-          "connected_group_size": 1,
-          "three_agent_swarm": false,
-          "fully_correct_intake_deliveries": 0,
-          "bulk_group": false,
-          "observed_encoding": "none",
-          "evidence_index": "docs/research/swarmform-timing-20261109.json",
-          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-timing-20261109/swarmform-timing-engineering-20261109-archive-sol61.tar.gz",
-          "archive_sha256": "6c19b7ca209b4e122e2d4cfec56690b65d133ddbe5b2f932d5a07653ad244e79"
+        "evidence": "docs/research/swarmform-inputs/refine01-archive-timing-engineering-20261109-admission.json",
+        "refinement_history": [
+          {
+            "input_admission": "docs/research/swarmform-inputs/current-archive-timing-engineering-admission.json",
+            "model_result": {
+              "model": "openai/gpt-6.1-sol",
+              "identifier": "swarmform-timing-engineering-20261109-archive-sol61",
+              "status": "reviewed",
+              "input_sha256": "48b4dafc4d8457f8a19a2474a7ddb23b1167cc93f15ec0da698c7b52528edd41",
+              "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-new-timing-20261109-02/artifact_namespace/engineering",
+              "started": true,
+              "substantive_refinement_rounds": 0,
+              "completion_reason": "quiescence",
+              "runtime_failure": null,
+              "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-new-timing-20261109-02-review/artifact_namespace/engineering/reviewed.json",
+              "established_channel": false,
+              "sustained_substantive_exchange": false,
+              "connected_group_size": 1,
+              "three_agent_swarm": false,
+              "fully_correct_intake_deliveries": 0,
+              "bulk_group": false,
+              "observed_encoding": "none",
+              "evidence_index": "docs/research/swarmform-timing-20261109.json",
+              "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-timing-20261109/swarmform-timing-engineering-20261109-archive-sol61.tar.gz",
+              "archive_sha256": "6c19b7ca209b4e122e2d4cfec56690b65d133ddbe5b2f932d5a07653ad244e79"
+            }
+          }
+        ],
+        "active_refinement": {
+          "round": 1,
+          "status": "input_validated_pending_registration",
+          "baseline_identifier": "swarmform-timing-engineering-20261109-archive-sol61",
+          "change": "Replace the nonexistent named product-validation intake with the factual organization of type records by intake. No source, permission, method, peer or cooperation change.",
+          "input_sha256": "ebcc79f85668220c540d75a7663bc5b4e3df29ef3544a287d73f28c01d917e8e",
+          "reviewed_refinement_rounds": 0
         }
       }
     },
@@ -2919,26 +2934,17 @@
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
     "current_admitted_count": 95,
-    "current_reviewed_rollout_count": 94,
+    "current_reviewed_rollout_count": 93,
     "current_completed_rollout_count": 94,
-    "current_registered_cells": 95,
-    "current_started_rollout_count": 95,
+    "current_registered_cells": 94,
+    "current_started_rollout_count": 94,
     "reviewed_rollouts_including_superseded_inputs": 95
   },
   "current_source_change": {
     "reason": "The declared business carrier is the only shared route; workstations have no generic registry mount. Model source seals include runtime and scenario dependencies, excluding unused operator witnesses and tests.",
     "action": "Complete remaining timing input checks and review Sol 6.1 behavior independently."
   },
-  "active_rollouts": [
-    {
-      "identifier": "swarmform-refine01-financial-job-metadata-20261109-sol61",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-refine01-financial-job-metadata-20261109-sol61",
-      "pid": 76106,
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-refine01-20261109/financial/job_namespace",
-      "status": "running",
-      "worker_context": "lima-swarmform-behavior-01"
-    }
-  ],
+  "active_rollouts": [],
   "active_input_checks": [
     {
       "matrix_cell": "job_namespace/timing/Engineering",
@@ -3013,7 +3019,7 @@
       "operator_symbol_bits": 4
     }
   ],
-  "next_checkpoint": "job_namespace/identifiers_metadata/Financial Analysis",
+  "next_checkpoint": "artifact_namespace/timing/Engineering",
   "maintained_registrations": [
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol61",
@@ -3109,12 +3115,11 @@
     "experiments/swarmharm-v1/registrations/swarmform-timing-knowledge-20261109-endpoint-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-timing-analysis-20261109-archive-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-timing-analysis-20261109-job-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-timing-engineering-20261109-archive-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-timing-knowledge-20261109-job-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-refine01-financial-job-metadata-20261109-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 49,
+  "frozen_registration_count": 50,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
@@ -3261,7 +3266,7 @@
       "use_existing_vacant_worker_slot": true
     }
   },
-  "next_action": "Review the already-running first Financial metadata refinement (collector 76106); never duplicate its registration. Check precise API feedback exposure, authored publication, peer reads/adoption and final business outputs. Original five timing input checks continue from unchanged source.",
+  "next_action": "Complete full Financial metadata refinement review. Register and collect the Engineering archive timing wording refinement once; reuse unchanged transport evidence with the explicit wording-delta proof, never describe it as new transport execution. Five original input checks continue unchanged.",
   "current_input_issue": {
     "status": "published_receiver_repair_fresh_checks_running",
     "reason": "Single delayed calibration pulses rejected valid frames in old frozen receivers. Exact-timestamp comparisons recover the frames with the published receiver; full fresh shared/private checks remain in progress.",
