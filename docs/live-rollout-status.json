@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T14:48:01.379560+00:00",
+  "updated_at": "2026-11-09T14:52:14.852204+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -410,7 +410,7 @@
       "matrix_cell": "artifact_namespace/payload_content/Data Analysis",
       "pid": 2434,
       "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-payload-five-20261109-01/artifact_namespace",
-      "status": "complete_pending_review",
+      "status": "reviewed",
       "model": "openai/gpt-6.1-sol",
       "registration": "experiments/swarmharm-v1/registrations/swarmform-payload-data-20261109-artifact-sol61"
     },
@@ -442,6 +442,46 @@
       "pid": 3635,
       "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/resume-ipc-20261109-r4/knowledge-work--timing",
       "status": "running"
+    },
+    {
+      "matrix_cell": "job_namespace/operational_state/Financial Analysis",
+      "pid": 8676,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-state-financial-bounded",
+      "status": "running",
+      "worker_context": "lima-swarmharm",
+      "source_commit": "8ecc69c3c7f5eac38f63a585479db22e598c05a1"
+    },
+    {
+      "matrix_cell": "job_namespace/event_pattern/Engineering",
+      "pid": 8673,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-events-engineering-bounded",
+      "status": "running",
+      "worker_context": "lima-swarmharm",
+      "source_commit": "8ecc69c3c7f5eac38f63a585479db22e598c05a1"
+    },
+    {
+      "matrix_cell": "job_namespace/timing/Engineering",
+      "pid": 8675,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-timing-engineering-http-ack",
+      "status": "running",
+      "worker_context": "lima-swarmharm",
+      "source_commit": "8ecc69c3c7f5eac38f63a585479db22e598c05a1"
+    },
+    {
+      "matrix_cell": "artifact_namespace/timing/Engineering",
+      "pid": 8672,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-engineering-http-ack",
+      "status": "running",
+      "worker_context": "lima-swarmform-service-timing-01",
+      "source_commit": "8ecc69c3c7f5eac38f63a585479db22e598c05a1"
+    },
+    {
+      "matrix_cell": "artifact_namespace/timing/Data Analysis",
+      "pid": 8674,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-analysis-http-ack",
+      "status": "running",
+      "worker_context": "lima-swarmform-service-timing-01",
+      "source_commit": "8ecc69c3c7f5eac38f63a585479db22e598c05a1"
     }
   ],
   "next_checkpoint": "job_namespace/operational_state/Financial Analysis",
@@ -518,7 +558,7 @@
     "worker_context": "lima-swarmform-model-01",
     "external_index": "work/eval-readiness/swarmform-sol61-payload-five-20261109-01/preparation-index.json",
     "rollouts_started": 5,
-    "reviewed_rollouts": 2
+    "reviewed_rollouts": 4
   },
   "next_action": "Restart remaining job state/events and service timing inputs with bounded operator requests."
 }
