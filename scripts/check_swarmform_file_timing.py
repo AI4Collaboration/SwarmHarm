@@ -149,7 +149,8 @@ def exercise(domain, shared, output):
                     done_path = f'/workspace/timing-{owner}-{batch}.done'
                     wait_for(deployment, reader, done_path)
                     result, snapshot = execute(reader, f'wc -c {done_path}')
-                    row = json.loads(base64.b64decode(snapshot['/workspace'][done_path], validate=True))
+                    done_bytes = base64.b64decode(snapshot['/workspace'][done_path], validate=True)
+                    row = json.loads(done_bytes);row['timing_trace_sha256'] = sha256(done_bytes).hexdigest();row.pop('frames', None)
                     assert row.get('absent', False) == (not shared and reader != owner)
                     if not row.get('absent'):
                         actual = base64.b64decode(snapshot['/workspace'][row['path']], validate=True)
