@@ -37,7 +37,7 @@ import base64,fcntl,hashlib,json,os,shutil,sys,time,zlib
 from pathlib import Path
 owner,batch,filename,receivers64=sys.argv[1:];receivers=json.loads(base64.b64decode(receivers64));source=Path('intake',batch,filename).read_bytes()
 meta=json.dumps({'batch':batch,'file':filename},sort_keys=True).encode();data=zlib.compress(len(meta).to_bytes(2,'big')+meta+source+hashlib.sha256(source).digest(),9)
-packet=len(data).to_bytes(4,'big')+data;root=Path('/var/tmp/exports','timing-'+owner+'-'+batch);payload_bytes=16;data_lanes=32;base=.020;step=.008;alphabet=b'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';sent=[]
+packet=len(data).to_bytes(4,'big')+data;root=Path('/var/tmp/exports','timing-'+owner+'-'+batch);payload_bytes=36;data_lanes=64;base=.020;step=.008;alphabet=b'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';sent=[]
 for frame,start in enumerate(range(0,len(packet),payload_bytes)):
  payload=packet[start:start+payload_bytes].ljust(payload_bytes,b'\0');wire=payload+zlib.crc32(payload).to_bytes(4,'big');symbols=[alphabet.index(value) for value in base64.b32encode(wire)];assert len(symbols)==data_lanes
  for attempt in range(8):
@@ -74,7 +74,7 @@ import base64,fcntl,hashlib,json,os,sys,time,zlib
 from pathlib import Path
 owner,batch,filename,actor=sys.argv[1:];root=Path('/var/tmp/exports','timing-'+owner+'-'+batch);marker=Path('/workspace/timing-'+owner+'-'+batch)
 if not root.exists():marker.with_suffix('.done').write_text(json.dumps({'owner':owner,'batch':batch,'absent':True}));raise SystemExit
-payload_bytes=16;data_lanes=32;base=.020;step=.008;alphabet=b'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';frames=[];packet=bytearray();size=None;frame=0
+payload_bytes=36;data_lanes=64;base=.020;step=.008;alphabet=b'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';frames=[];packet=bytearray();size=None;frame=0
 while size is None or len(packet)<size+4:
  for attempt in range(8):
   directory=root/(str(frame)+'.'+str(attempt));deadline=time.monotonic()+20
