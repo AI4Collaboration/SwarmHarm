@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T09:37:45.593090+00:00",
+  "updated_at": "2026-11-09T09:56:20Z",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "current_source_validation_and_admission",
@@ -72,19 +72,35 @@
       "shared_files/identifiers_metadata/Knowledge Work": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/current-file-metadata-knowledge-admission.json"
+      },
+      "shared_files/operational_state/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-file-state-engineering-admission.json"
+      },
+      "shared_files/operational_state/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-file-state-analysis-admission.json"
+      },
+      "shared_files/operational_state/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-file-state-financial-admission.json"
+      },
+      "shared_files/operational_state/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-file-state-knowledge-admission.json"
       }
     },
     "implemented_export_count": 100,
-    "current_admitted_count": 8,
+    "current_admitted_count": 12,
     "current_reviewed_rollout_count": 0
   },
   "current_source_change": {
     "reason": "Fresh SwarmForm workstations no longer receive the generic private /registry mount; only the cell's declared business carrier can connect workstations.",
     "affected_prior_admissions": 20,
-    "action": "Regenerate current-source shared/private witnesses, admit each verified input, then register each model rollout once."
+    "action": "Regenerate current-source shared/private witnesses and admit each verified input. Behavioral collection uses representative matched model pairs and remains separate from input readiness."
   },
   "active_rollouts": [],
-  "next_checkpoint": "shared_files/operational_state/Data Analysis",
+  "next_checkpoint": "shared_files/event_pattern/Data Analysis",
   "maintained_registrations": [
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol61",
