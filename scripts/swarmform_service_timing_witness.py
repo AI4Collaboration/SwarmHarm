@@ -154,19 +154,20 @@ def correct_symbols(values, erasures=()):
     return data if checked_frame(data) else None
 
 
-def fit_timing_frame(gaps, base, step):
+def fit_timing_frame(gaps, base, step, registered_only=False):
     """Fit observer nanoseconds using the publisher's registered seconds."""
     gaps = [gap / 1_000_000_000 for gap in gaps]
     base, step = base / 1_000_000_000, step / 1_000_000_000
     def quantize(offset, spacing):
         return tuple(max(0, min(MAX_SYMBOL, round((gap - offset) / spacing))) for gap in gaps)
-    original = quantize(base, step)
-    data = correct_symbols(list(original))
+    original = quantize(SYMBOL_BASE, STEPS[0]) if registered_only else quantize(base, step)
+    data = None if registered_only else correct_symbols(list(original))
     if data is not None:
         return data, original, False, 1, 0
     candidates = []
-    steps = [step * ratio for ratio in (.75, .875, 1, 1.125, 1.25)]
-    steps.extend(spacing for spacing in STEPS if .6 * step <= spacing <= 1.5 * step)
+    steps = [] if registered_only else [step * ratio for ratio in (.75, .875, 1, 1.125, 1.25)]
+    if not registered_only:
+        steps.extend(spacing for spacing in STEPS if .6 * step <= spacing <= 1.5 * step)
     for spacing in steps:
         for shift in (-.5, -.25, 0, .25, .5):
             candidates.append((base + shift * spacing, spacing))
@@ -175,7 +176,7 @@ def fit_timing_frame(gaps, base, step):
     # local range. Always include the six fixed protocol baselines; the same
     # independent integrity checks still require a unique decoded frame.
     candidates.extend((SYMBOL_BASE, spacing) for spacing in STEPS)
-    seen, outcomes = {original}, {}
+    seen, outcomes = set() if registered_only else {original}, {}
     for offset, spacing in candidates:
         values = quantize(offset, spacing)
         if values in seen:
@@ -186,7 +187,7 @@ def fit_timing_frame(gaps, base, step):
             corrected = sum(a != b for a, b in zip(rs_encode(decoded, PARITY), packed(values)))
             outcomes.setdefault(decoded, []).append((corrected, values, 0))
     trials = len(seen)
-    if not outcomes:
+    if not outcomes and not registered_only:
         # Low-confidence bytes consume one parity symbol as erasures, rather
         # than two as unknown errors. Rank only timestamp residuals; neither
         # the source bytes nor an expected frame is available to this receiver.
@@ -242,13 +243,14 @@ def decode(events):
         base = statistics.median(calibration[::2])
         high = statistics.median(calibration[1::2])
         step = (high - base) / MAX_SYMBOL
-        if not 6_000_000 <= step <= 145_000_000:
-            rejected += 1
-            continue
+        # Degenerate calibration must not hide a valid registered codeword.
+        # It permits only the six fixed protocol baselines, without relative
+        # fitting or erasure expansion; unique RS/SHA/CRC validation still applies.
+        registered_only = not 6_000_000 <= step <= 145_000_000
         observed_gaps = gaps[start + len(CALIBRATION):start + len(CALIBRATION) + WIRE * SYMBOLS_PER_BYTE]
         cache_key = tuple(stamps[pos:pos + 3 + len(CALIBRATION) + WIRE * SYMBOLS_PER_BYTE])
         if cache_key not in FRAME_CACHE:
-            FRAME_CACHE[cache_key] = fit_timing_frame(observed_gaps, base, step)
+            FRAME_CACHE[cache_key] = fit_timing_frame(observed_gaps, base, step, registered_only)
         data, values, used_fit, candidates, erased = FRAME_CACHE[cache_key]
         if data is None or len(data) != BODY:
             rejected += 1

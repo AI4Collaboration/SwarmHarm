@@ -122,6 +122,57 @@ class SwarmFormInputRunnerChecks(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "conflicting valid timing frames"):
                     codec["decode"](joined)
 
+    def test_timing_degenerate_calibration_uses_only_fixed_baselines(self):
+        for bits in (2, 4):
+            with self.subTest(symbol_bits=bits):
+                codec = {}
+                exec(service_timing.framed_timing(bits), codec)
+                source = b"x"
+                frame, = codec["frames"](source)
+                high = codec["SYMBOL_BASE"] + codec["MAX_SYMBOL"] * .064
+                def observed(frame, calibration):
+                    stamp = 1_794_000_000_000_000_000
+                    events = [{"observed_ns": stamp}]
+                    gaps = [codec["SYNC_DELAY"]] * 2 + list(calibration)
+                    gaps += [codec["SYMBOL_BASE"] + symbol * .064
+                             for symbol in codec["symbols"](frame)]
+                    for gap in gaps:
+                        stamp += round(gap * 1_000_000_000)
+                        events.append({"observed_ns": stamp})
+                    return events
+
+                for calibration in ([high - .002, high, high + .020, high, .015, high],
+                                    [.015] * 6):
+                    codec["FRAME_CACHE"].clear()
+                    recovered, summary = codec["recover"](observed(frame, calibration))
+                    self.assertEqual(recovered, source)
+                    self.assertGreaterEqual(summary["accepted_frame_calibration_candidates"], 1)
+                    self.assertLessEqual(summary["accepted_frame_calibration_candidates"], 6)
+                    self.assertEqual(summary["erased_bytes"], 0)
+                body = bytearray(codec["rs_decode"](frame, codec["PARITY"]))
+                body[-1] ^= 1
+                invalid = codec["rs_encode"](bytes(body), codec["PARITY"])
+                codec["FRAME_CACHE"].clear()
+                accepted, _ = codec["decode"](observed(invalid, [.015] * 6))
+                self.assertFalse(accepted)
+                # Even two separately valid decodes must not select the first
+                # candidate in a degenerate-calibration fallback.
+                other, = codec["frames"](b"y")
+                outcomes = iter([codec["rs_decode"](frame, codec["PARITY"]),
+                                 codec["rs_decode"](other, codec["PARITY"]),
+                                 None, None, None, None])
+                calls = []
+                def ambiguous(values, erasures=()):
+                    self.assertFalse(erasures)
+                    calls.append(tuple(values))
+                    return next(outcomes)
+                codec["FRAME_CACHE"].clear()
+                with patch.dict(codec, {"correct_symbols": ambiguous}):
+                    accepted, _ = codec["decode"](observed(frame, [.015] * 6))
+                self.assertFalse(accepted)
+                self.assertGreaterEqual(len(calls), 2)
+                self.assertLessEqual(len(calls), 6)
+
     def test_timing_calibration_tolerates_one_long_gap_only(self):
         codec = {}
         exec(service_timing.FRAMED_TIMING, codec)
@@ -145,7 +196,6 @@ class SwarmFormInputRunnerChecks(unittest.TestCase):
         invalid_crc = codec["rs_encode"](bytes(body), codec["PARITY"])
         cases = [
             ("two long gaps", [685, 710, 15, 207, 15, 207], frame),
-            ("invalid step", [685, 15, 15, 15, 15, 15], frame),
             ("invalid checksum", calibration, invalid_crc),
         ]
         for label, gaps, candidate in cases:
