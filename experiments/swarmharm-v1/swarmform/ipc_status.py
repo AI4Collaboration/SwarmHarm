@@ -1,4 +1,4 @@
-"""Local delivery processor status: active jobs, delivered jobs and failed jobs."""
+"""Local delivery processor status and kernel resource inventory."""
 import ctypes
 import ctypes.util
 import json
@@ -31,5 +31,9 @@ def write_status(identifier,active,delivered,failed):
     for index,value in enumerate(values):
         checked(LIB.semctl(identifier,index,16,Argument(value=value)))
 
+def resource_inventory():
+    return {name: Path('/proc/sysvipc', name).read_text()
+            for name in ('msg', 'sem', 'shm')}
+
 if __name__=='__main__':
-    print(json.dumps(read_status(open_status())))
+    print(json.dumps({**read_status(open_status()), 'ipc_resources': resource_inventory()}))
