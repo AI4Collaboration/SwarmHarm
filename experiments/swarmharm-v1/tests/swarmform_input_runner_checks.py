@@ -48,6 +48,89 @@ class SwarmFormInputRunnerChecks(unittest.TestCase):
         self.assertEqual(recovered, source)
         self.assertEqual(summary["frames_using_calibration_fallback"], summary["frames"])
 
+    def test_service_timing_waits_for_actual_pulse_acknowledgments(self):
+        import json
+        import socket
+        import threading
+        import time
+        from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+        from urllib.parse import urlsplit
+
+        completed = []
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+            def do_POST(self):
+                body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+                time.sleep(.002)
+                completed.append(body)
+                data = b'{"ok": true}'
+                self.send_response(200)
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
+
+        server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        tree = ast.parse(service_timing.SERVICE_TIMING)
+        declarations = [node for node in tree.body if isinstance(node, ast.FunctionDef)
+                        and node.name in ("request", "receive_response")]
+        artifact = next(node for node in tree.body if isinstance(node, ast.If)
+                        and ast.unparse(node.test) == "kind == 'artifact'")
+        declarations.extend(node for node in artifact.body if isinstance(node, ast.FunctionDef))
+        url = urlsplit("http://127.0.0.1:" + str(server.server_port))
+        namespace = {"json": json, "socket": socket, "url": url,
+                     "config": {"key": "local-fixture"},
+                     "address": server.server_address, "record": {"id": 1}}
+        try:
+            exec(compile(ast.Module(body=declarations, type_ignores=[]),
+                         "service-timing-http", "exec"), namespace)
+            pulse = namespace["prepare_pulses"](32)
+            for count in range(1, 33):
+                pulse()
+                self.assertEqual(len(completed), count)
+            self.assertTrue(all(row == {"id": 1, "state": "ready"} for row in completed))
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join()
+
+    def test_job_witness_reads_only_the_relevant_history(self):
+        import contextlib
+        import io
+        import json
+        import types
+
+        calls = []
+        def request(method, path, value=None):
+            calls.append((method, path))
+            if method == "POST" and path == "/jobs-batch":
+                return {"jobs": [{"id": i} for i in range(1, 501)]}
+            if path == "/jobs?after=1000&limit=500":
+                return {"jobs": [{"id": i} for i in range(1001, 1501)], "next": 1500}
+            if path == "/events?after=0&limit=500":
+                return {"events": [{"id": i} for i in range(1, 4)], "next": 3}
+            self.fail("Unnecessary history read: " + path)
+
+        with patch.dict(sys.modules, {"job_client": types.SimpleNamespace(request=request)}):
+            output = io.StringIO()
+            with patch.object(sys, "argv", ["operator", "state", "500"]), contextlib.redirect_stdout(output):
+                exec(service_protocols.JOB_PREPARE, {})
+            self.assertEqual(json.loads(output.getvalue())["after"], 0)
+            self.assertEqual(len(calls), 1)
+            functions = {}
+            with patch.object(sys, "argv", ["operator", "state", "owner", "1001", "1100", "100", "0"]):
+                exec(service_protocols.JOB_RECEIVE.split("\njobs=[", 1)[0], functions)
+            calls.clear()
+            rows = functions["pages"]("/jobs?after=", "jobs", 1000, 1100)
+            self.assertEqual([row["id"] for row in rows], list(range(1001, 1101)))
+            self.assertEqual(len(calls), 1)
+            calls.clear()
+            rows = functions["pages"]("/events?after=", "events", 0)
+            self.assertEqual(len(rows), 3)
+            self.assertEqual(len(calls), 1)
+
     def test_operator_witness_protocols_parse(self):
         snippets = [value for module in (ipc_protocols, service_protocols, endpoint_protocols,
                                         service_timing, endpoint_timing)

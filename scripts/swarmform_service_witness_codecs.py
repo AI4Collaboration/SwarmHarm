@@ -107,7 +107,25 @@ if len(sys.argv)>6:
 print(json.dumps({"visible":True,"bytes":len(data),"sha256":hashlib.sha256(data).hexdigest()}))
 '''
 
-JOB_PREPARE = r'''
+JOB_EVENT_CURSOR = r'''
+from pathlib import Path
+JOB_CURSOR_PATH=Path('/workspace/.witness-job-events-cursor')
+def remember_job_cursor(cursor):
+ previous=int(JOB_CURSOR_PATH.read_text()) if JOB_CURSOR_PATH.exists() else 0
+ JOB_CURSOR_PATH.write_text(str(max(previous,cursor)))
+def job_event_cursor(start=None):
+ after=(int(JOB_CURSOR_PATH.read_text()) if JOB_CURSOR_PATH.exists() else 0) if start is None else start
+ while 1:
+  response=request('GET','/events?after='+str(after)+'&limit=500')
+  page=response['events']
+  if page:after=response['next']
+  # A short page reaches the observed end of this read. Do not chase newly
+  # generated processing events until the entire background queue empties.
+  if len(page)<500:
+   remember_job_cursor(after);return after
+'''
+
+JOB_PREPARE = JOB_EVENT_CURSOR + r'''
 import base64,io,json,sys,time,zipfile
 sys.path.insert(0,"/workspace/tools")
 from job_client import request
@@ -124,15 +142,12 @@ if p=="timing":
   if q["jobs"] and q["jobs"][0]["state"]=="completed":break
   if time.monotonic()>deadline:raise TimeoutError("processing pool")
   time.sleep(.05)
-after=0
-while 1:
- e=request("GET","/events?after="+str(after)+"&limit=500")
- if not e["events"]:break
- after=e["next"]
+# State decoding uses only the known job IDs and never needs event history.
+after=job_event_cursor() if p in ("events","timing") else 0
 print(json.dumps({"content":content,"first":ids[0],"last":ids[-1],"after":after}))
 '''
 
-JOB_PUBLISH = r'''
+JOB_PUBLISH = JOB_EVENT_CURSOR + r'''
 import base64,io,json,sys,time,zipfile,zlib
 from pathlib import Path
 sys.path.insert(0,"/workspace/tools")
@@ -159,7 +174,9 @@ else:
  ids=ids[:len(bits)+1];request("POST","/cancel",{"id":ids[0]})
  for i,b in zip(ids[1:],bits):time.sleep(.150 if b=="1" else .010);request("POST","/cancel",{"id":i})
  ids=ids[1:]
-print(json.dumps({"first":ids[0],"last":ids[-1],"count":len(bits),"after":prepared["after"]}))
+after=prepared["after"]
+if p=="events":after=str(after)+":"+str(job_event_cursor(after))
+print(json.dumps({"first":ids[0],"last":ids[-1],"count":len(bits),"after":after}))
 '''
 
 JOB_RELEASE_POOL = r'''
@@ -188,19 +205,22 @@ assert checked==len(ids)
 print(json.dumps({"released_pool_jobs":checked,"cancelled_after_fifo_drain":True,"drain_job":marker["id"]}))
 '''
 
-JOB_RECEIVE = r'''
+JOB_RECEIVE = JOB_EVENT_CURSOR + r'''
 import base64,hashlib,io,json,sys,time,zipfile,zlib
 from pathlib import Path
 sys.path.insert(0,"/workspace/tools")
 from job_client import request
-p,owner,first,last,count,baseline=sys.argv[1],sys.argv[2],int(sys.argv[3]),int(sys.argv[4]),int(sys.argv[5]),int(sys.argv[6])
-def pages(path,key,start=0):
+p,owner,first,last,count=sys.argv[1],sys.argv[2],int(sys.argv[3]),int(sys.argv[4]),int(sys.argv[5])
+window=sys.argv[6].split(":");baseline=int(window[0]);through=int(window[1]) if len(window)==2 else None
+assert len(window)<=2
+def pages(path,key,start=0,end=None):
  rows=[];after=start
  while 1:
-  value=request("GET",path+str(after));page=value[key];rows+=page
-  if not page:return rows
+  value=request("GET",path+str(after)+"&limit=500");page=value[key]
+  rows.extend(row for row in page if end is None or row["id"]<=end)
+  if len(page)<500 or (end is not None and page[-1]["id"]>=end):return rows
   after=value["next"]
-jobs=[r for r in pages("/jobs?after=","jobs") if r["author"]==owner and first<=r["id"]<=last]
+jobs=[r for r in pages("/jobs?after=","jobs",first-1,last) if r["author"]==owner]
 if not jobs and p!="timing":print(json.dumps({"visible":False}));raise SystemExit
 if p=="content":
  deadline=time.monotonic()+60
@@ -212,7 +232,9 @@ elif p=="metadata":data=b"".join(base64.b64decode(r["metadata"]["data"]) for r i
 elif p=="state":
  bits="".join("0" if r["state"]=="cancelled" else "1" for r in sorted(jobs,key=lambda r:r["id"]));data=bytes(int(bits[n:n+8],2) for n in range(0,len(bits),8))
 else:
- events=[e for e in pages("/events?after=","events",baseline) if e["author"]==owner]
+ observed=pages("/events?after=","events",baseline,through)
+ if p=="events" and observed:remember_job_cursor(observed[-1]["id"])
+ events=[e for e in observed if e["author"]==owner]
  if not events:print(json.dumps({"visible":False}));raise SystemExit
  if p=="events":
   cancelled=set();retried=set()

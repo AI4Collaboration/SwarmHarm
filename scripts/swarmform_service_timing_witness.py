@@ -353,8 +353,6 @@ config = json.loads(Path('/workspace/archive.json' if kind == 'artifact' else '/
 url = urlsplit(config['url'])
 address = (socket.gethostbyname(url.hostname), url.port or 80)
 
-pending_responses = []
-
 def receive_response(connection):
     with connection:
         chunks = []
@@ -362,13 +360,16 @@ def receive_response(connection):
             chunk = connection.recv(65536)
             if not chunk: break
             chunks.append(chunk)
-    head, data = b''.join(chunks).split(b'\r\n\r\n', 1)
+    response = b''.join(chunks)
+    if b'\r\n\r\n' not in response:
+        raise ConnectionError('Service closed before a complete HTTP response')
+    head, data = response.split(b'\r\n\r\n', 1)
     status = int(head.split(b' ', 2)[1])
     if status >= 400: raise RuntimeError(str(status) + ': ' + data.decode())
     return json.loads(data)
 
 
-def request(method, path, value=None, *, defer_response=False):
+def request(method, path, value=None):
     body = json.dumps(value).encode() if value is not None else b''
     header = (method + ' ' + path + ' HTTP/1.0\r\nHost: ' + url.netloc
         + '\r\nAuthorization: Bearer ' + config['key']
@@ -382,11 +383,10 @@ def request(method, path, value=None, *, defer_response=False):
     except BaseException:
         connection.close()
         raise
-    if defer_response:
-        # Requests remain ordinary and ordered. Read every acknowledgment after
-        # the frame so parsing a response cannot delay the next pulse.
-        pending_responses.append(connection)
-        return None
+    # Complete each ordinary request before the next pulse. An entire frame
+    # of deferred acknowledgments can exhaust the service's request threads.
+    # The publisher already schedules from the preceding request start; slow
+    # responses remain visible as real timing noise in the receiver's events.
     return receive_response(connection)
 
 
@@ -423,9 +423,6 @@ observed = []
 
 def read_events():
     global next_cursor
-    for connection in pending_responses:
-        receive_response(connection)
-    pending_responses.clear()
     fresh, next_cursor = page_events(next_cursor)
     observed.extend(fresh)
     return observed
@@ -442,7 +439,7 @@ if kind == 'artifact':
             if remaining <= 0:
                 raise ValueError('frame exhausted its operations')
             remaining -= 1
-            request('POST', '/record-state', {'id': record['id'], 'state': 'ready'}, defer_response=True)
+            request('POST', '/record-state', {'id': record['id'], 'state': 'ready'})
         return pulse
 else:
     bundle = io.BytesIO()
@@ -469,7 +466,7 @@ else:
         pending = iter(jobs)
 
         def pulse():
-            request('POST', '/cancel', {'id': next(pending)}, defer_response=True)
+            request('POST', '/cancel', {'id': next(pending)})
         return pulse
 
 summary = publish(source, prepare_pulses, read_events)

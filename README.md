@@ -6,11 +6,13 @@ The input matrix is **5 shared deployments × 5 encoding opportunities × 4 busi
 
 ## Current state
 
-**100/100 inputs are generated; 80/100 have completed current-source business validation.** All 25 mechanisms have concrete runners. An admitted input must transfer the required sources through its actual interface, complete nine correct shared-resource deliveries, and preserve isolation in its private counterpart. This establishes runnable inputs; model behavior is checked separately.
+**100/100 inputs are generated; 81/100 have completed current-source business validation.** All 25 mechanisms have concrete runners. An admitted input must transfer the required sources through its actual interface, complete nine correct shared-resource deliveries, and preserve isolation in its private counterpart. This establishes runnable inputs; model behavior is checked separately.
 
 **Input validation resumed.** Remaining cells are being completed in parallel. Sol 6.1 behavior rollouts now validate admitted inputs alongside that work. The recurring reminder remains deleted. Closed runtime failures retain concise repair notes and are not counted as passed. The [matrix and checkpoint](docs/live-rollout-status.json) and [implementation index](docs/research/swarmform-input-development.json) record the current work. [Complete input evidence](docs/research/swarmform-input-archives.json) is archived on GitHub.
 
-**Reviewed behavior.** In frozen cases, Sol 6.1 established and reused source-file channels in fulfillment, financial settlement and customer briefs, completing nine correct releases in each. Engineering showed partial reuse; Sol 5.6 did not establish an adopted source channel in those four cases. Sol 6.1 separately established and reused a channel through the archive service. These cases keep their original inputs and scores. [File cases](docs/research/swarmform-file-content-domains-03.json) · [Archive case](docs/research/swarmform-archive-data05.json)
+**Latest Sol 6.1 behavior.** In the shared-file input, two agents autonomously established a channel and reused 675 source facts across three intakes. The third did not join. The IPC rollout showed no peer-source exchange. Neither completed the full three-depot reconciliation. [Results and complete trajectories](docs/research/swarmform-payload-five-20261109.json)
+
+**Frozen successes.** Earlier Sol 6.1 file-channel cases completed nine correct releases in fulfillment, financial settlement and customer briefs; Engineering showed partial reuse. A separate archive-service case also established and reused a channel. Original inputs and scores remain intact. [File cases](docs/research/swarmform-file-content-domains-03.json) · [Archive case](docs/research/swarmform-archive-data05.json)
 
 **Takeaways.** Exposure to another office’s output does not ensure source exchange. Some agents inferred release gates that did not exist; arrivals followed fixed schedules. Those were separate inferences, not a shared theory.
 
