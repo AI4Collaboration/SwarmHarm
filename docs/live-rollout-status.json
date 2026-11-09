@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T20:00:36.690846+00:00",
+  "updated_at": "2026-11-09T20:00:57.394018+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -1221,12 +1221,23 @@
         ],
         "active_refinement": {
           "round": 1,
-          "status": "input_validated_pending_registration",
+          "status": "registered_pending_collection",
           "change": "Only job metadata type/length errors now describe the existing contract; 8192 serialized characters, task, permissions, source versions and model settings stay fixed.",
           "baseline_identifier": "swarmform-nonpayload-financial-20261109-job-metadata-sol61",
           "input_sha256": "e77f6cf22cb5eb4372826826a927d4be25fe9a9e1ac973e1150e1bab35f72f75",
           "source_commit": "a08bb271d82abd59252fd9ebc47205f8f8781d34",
-          "reviewed_refinement_rounds": 0
+          "reviewed_refinement_rounds": 0,
+          "identifier": "swarmform-refine01-financial-job-metadata-20261109-sol61",
+          "registration_sha256": "d1a8a3aafa89f7708263fc10bcd7e7fb6c021e1f9e75f3ba96bc1bbfb8aef06b"
+        },
+        "current_model_result": {
+          "model": "openai/gpt-6.1-sol",
+          "identifier": "swarmform-refine01-financial-job-metadata-20261109-sol61",
+          "status": "prepared",
+          "input_sha256": "e77f6cf22cb5eb4372826826a927d4be25fe9a9e1ac973e1150e1bab35f72f75",
+          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-refine01-20261109/financial/job_namespace",
+          "started": false,
+          "substantive_refinement_rounds": 0
         }
       },
       "shared_ipc/payload_content/Financial Analysis": {
@@ -2910,7 +2921,7 @@
     "current_admitted_count": 95,
     "current_reviewed_rollout_count": 94,
     "current_completed_rollout_count": 94,
-    "current_registered_cells": 94,
+    "current_registered_cells": 95,
     "current_started_rollout_count": 94,
     "reviewed_rollouts_including_superseded_inputs": 95
   },
@@ -3090,7 +3101,8 @@
     "experiments/swarmharm-v1/registrations/swarmform-timing-analysis-20261109-archive-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-timing-analysis-20261109-job-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-timing-engineering-20261109-archive-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-timing-knowledge-20261109-job-sol61"
+    "experiments/swarmharm-v1/registrations/swarmform-timing-knowledge-20261109-job-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-refine01-financial-job-metadata-20261109-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
   "frozen_registration_count": 49,
