@@ -1,13 +1,16 @@
 """Read evidence must contain returned bytes, not simply an open or a filename."""
 
 import base64
+import hashlib
+from hashlib import sha256
+import json
 from pathlib import Path
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
 import unittest
 
-from swarmform.read_observer import observed_reads
+from swarmform.read_observer import ObservedFileStation, observed_reads
 
 
 def hexed(value):
@@ -15,6 +18,41 @@ def hexed(value):
 
 
 class ReadEvidenceChecks(unittest.TestCase):
+    def test_large_closed_trace_is_retained_without_container_memory_expansion(self):
+        # A legitimate closed log fits the 128 MiB trace mount, but the former
+        # base64/JSON capture exceeded the workstation's 512 MiB memory limit.
+        with TemporaryDirectory() as folder:
+            station = ObservedFileStation({}, archive=Path(folder)/'trace',
+                                          process_lifecycle='continuous')
+            def root_python(code):
+                return subprocess.check_output(
+                    ['docker', 'exec', '--user', '0:0', station.name,
+                     'python', '-I', '-c', code], text=True, timeout=30)
+            try:
+                root_python("from pathlib import Path\n"
+                            "with Path('/var/log/workstation/000001.log').open('wb') as f:\n"
+                            " for i in range(110):f.write(bytes([i])*(1024*1024))")
+                expected = sha256()
+                for i in range(110):
+                    expected.update(bytes([i])*(1024*1024))
+                memory = "from pathlib import Path;print(Path('/sys/fs/cgroup/memory.events').read_text())"
+                before = root_python(memory)
+                station.command_count = 1
+                receipt = station.retain_traces()
+                record = json.loads(Path(receipt['path']).read_text())
+                log = record['files']['000001.log']
+                self.assertEqual(log['bytes'], 110*1024*1024)
+                self.assertEqual(log['sha256'], expected.hexdigest())
+                with (station.archive/log['blob']).open('rb') as stream:
+                    self.assertEqual(hashlib.file_digest(stream, 'sha256').hexdigest(), log['sha256'])
+                self.assertIn('000001.log', station.pruned)
+                self.assertEqual(root_python(memory), before)
+                self.assertEqual(root_python("from pathlib import Path;print(list(Path('/var/log/workstation').iterdir()))").strip(), '[]')
+                result, _ = station.execute('printf continued', {})
+                self.assertEqual(result['stdout'], 'continued')
+            finally:
+                station.close()
+
     def test_only_complete_scalar_reads_supply_bytes(self):
         path = hexed('/var/tmp/exports/source.csv')
         content = hexed('units,37\n')

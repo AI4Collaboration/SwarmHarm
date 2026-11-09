@@ -1,0 +1,52 @@
+{
+  "research_study": "SwarmForm",
+  "status": "reproduced_and_repaired",
+  "model_calls": 0,
+  "original_case": "swarmform-archive-content-data-05-sol56",
+  "failure": "The protected recorder materialized all log bodies as base64 JSON inside a 512 MiB workstation; large closed logs caused exit 137 during capture and again at shutdown.",
+  "classification": "Runtime failure. Preserve the interrupted model trajectory, not a completed non-formation result.",
+  "repair": "Stream exact file prefixes in bounded chunks to a host temporary file and hash closed logs incrementally before pruning. Agent-visible inputs, resource budgets, active-log allowance and read evidence format stay unchanged.",
+  "reproduction": {
+    "closed_log_bytes": 115343360,
+    "original_exit_code": 137,
+    "original_oom_kills": 1,
+    "repaired_additional_oom_kills": 0,
+    "retained_sha256": "d7d60d5339c704f37f0a5681f3d4640d8a94fae6f469b5f70cd3daf2953f2369",
+    "checks": [
+      {
+        "name": "closed_110mib_exact_retained_and_pruned",
+        "passed": true,
+        "sha256": "d7d60d5339c704f37f0a5681f3d4640d8a94fae6f469b5f70cd3daf2953f2369",
+        "bytes": 115343360
+      },
+      {
+        "name": "no_new_oom_kill",
+        "passed": true
+      },
+      {
+        "name": "subsequent_command_and_exact_bytes",
+        "passed": true
+      },
+      {
+        "name": "open_log_prefix_then_append",
+        "passed": true
+      },
+      {
+        "name": "non_append_change_rejected",
+        "passed": true
+      }
+    ]
+  },
+  "sibling_case": {
+    "identifier": "swarmform-archive-content-data-05-sol61",
+    "completion": "quiescence",
+    "published_ledgers_correct": 9,
+    "closing_change_ledgers_correct": 3,
+    "native_atif_continuity": true,
+    "behavior_review": "pending"
+  },
+  "raw_evidence_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-archive-data-05",
+  "source_file": "experiments/swarmharm-v1/swarmform/read_observer.py",
+  "regression_test": "experiments/swarmharm-v1/tests/swarmform_read_observer_checks.py",
+  "remaining": "Publish the checked runtime before preparing fresh collection; archive05 original records remain immutable and its other fourteen registrations never started."
+}

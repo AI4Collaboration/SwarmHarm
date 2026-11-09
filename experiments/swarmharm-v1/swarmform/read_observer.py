@@ -6,13 +6,14 @@ import json
 from pathlib import Path
 import re
 import subprocess
+from tempfile import TemporaryFile
 
 from atomic import atomic_json
 from swarmform.file_deployment import FileStation
 
 TRACE_ROOT = '/var/log/workstation'
 READ_LOGS = r'''
-import base64,json,os
+import json,os,sys
 from pathlib import Path
 root=Path('/var/log/workstation')
 opened=set()
@@ -23,8 +24,18 @@ for process in Path('/proc').iterdir():
             try:opened.add(os.readlink(fd))
             except OSError:pass
     except OSError:pass
-files={p.name:base64.b64encode(p.read_bytes()).decode() for p in root.iterdir() if p.is_file()}
-print(json.dumps({'files':files,'closed':[name for name in files if str(root/name) not in opened]}))
+files=[{'name':p.name,'bytes':p.stat().st_size} for p in sorted(root.iterdir()) if p.is_file()]
+header={'files':files,'closed':[item['name'] for item in files if str(root/item['name']) not in opened]}
+output=sys.stdout.buffer
+output.write(json.dumps(header).encode()+b'\n')
+for item in files:
+    with (root/item['name']).open('rb') as stream:
+        remaining=item['bytes']
+        while remaining:
+            data=stream.read(min(1024*1024,remaining))
+            if not data:raise RuntimeError('Command observation shrank during capture')
+            output.write(data);remaining-=len(data)
+output.flush()
 '''
 PRUNE_LOGS = r'''
 import hashlib,json
@@ -32,7 +43,9 @@ from pathlib import Path
 for name,digest in json.load(__import__('sys').stdin).items():
     if Path(name).name!=name:raise ValueError('Invalid observation filename')
     p=Path('/var/log/workstation')/name
-    if hashlib.sha256(p.read_bytes()).hexdigest()!=digest:raise ValueError('Closed observation changed')
+    with p.open('rb') as stream:
+        actual=hashlib.file_digest(stream,'sha256').hexdigest()
+    if actual!=digest:raise ValueError('Closed observation changed')
     p.unlink()
 '''
 
@@ -86,9 +99,25 @@ class ObservedFileStation(FileStation):
                 'timeout', '--kill-after=1s', '30s', 'bash', '-lc', command]
 
     def retain_traces(self):
-        observed = json.loads(subprocess.check_output(
-            ['docker', 'exec', '--user', '0:0', self.name, 'python', '-I', '-c', READ_LOGS], timeout=30))
-        logs = observed['files']
+        # Container RAM is shared with its tmpfs and business processes. Copy
+        # bounded chunks to a host file instead of materializing base64 JSON.
+        with TemporaryFile() as capture:
+            subprocess.run(['docker', 'exec', '--user', '0:0', self.name,
+                            'python', '-I', '-c', READ_LOGS], stdout=capture,
+                           stderr=subprocess.PIPE, check=True, timeout=30)
+            capture.seek(0)
+            observed = json.loads(capture.readline(1024 * 1024))
+            logs = {}
+            for item in observed['files']:
+                name, size = item['name'], item['bytes']
+                if Path(name).name != name or name in logs or not isinstance(size, int) or size < 0:
+                    raise RuntimeError('Invalid command observation header')
+                data = capture.read(size)
+                if len(data) != size:
+                    raise RuntimeError('Command observation capture is incomplete')
+                logs[name] = data
+            if capture.read(1):
+                raise RuntimeError('Unexpected bytes after command observation capture')
         if set(self.previous) - set(logs) - self.pruned:
             raise RuntimeError('An unarchived command observation disappeared')
         if set(logs) & self.pruned:
@@ -97,8 +126,7 @@ class ObservedFileStation(FileStation):
         blobs = self.archive/'blobs'
         blobs.mkdir(exist_ok=True)
         active_bytes = 0
-        for name, encoded in logs.items():
-            data = base64.b64decode(encoded, validate=True)
+        for name, data in logs.items():
             prior = self.previous.get(name, b'')
             if not data.startswith(prior):
                 raise RuntimeError('Command observation is no longer append-only')
