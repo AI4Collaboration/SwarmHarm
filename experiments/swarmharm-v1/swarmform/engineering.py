@@ -8,8 +8,8 @@ SITES = ('Northline', 'Aster', 'Meridian')
 BATCHES = ('candidate', 'calibration_update', 'release_cutoff')
 WORK_ORDER = """November measurement decoder release
 
-Build a Python decoder for the sensor types in catalog.json. Conformance records
-are filed with the product validation intake. Later intake contains calibration
+Build a Python decoder for the sensor types in catalog.json. Type records are
+organized by intake. Later intake contains calibration
 changes and release corrections. Preserve a decoder release for each intake.
 
 Each frame contains a two-byte type identifier, a two-byte sequence number,
