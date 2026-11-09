@@ -45,9 +45,19 @@ def main():
             raise RuntimeError('A listing was incorrectly counted as a content read')
         if not station.pruned:
             raise RuntimeError('Completed observations were not archived out of the workstation')
-        counter = "import pathlib,time\np=pathlib.Path('/tmp/counter')\ni=0\nwhile True:\n i+=1\n p.write_text(str(i))\n time.sleep(.02)"
+        counter = "import pathlib,time\np=pathlib.Path('/tmp/counter')\ni=0\nwhile True:\n i+=1\n q=p.with_suffix('.pending'); q.write_text(str(i)); q.replace(p)\n time.sleep(.02)"
         station.execute('python -c '+shlex.quote(counter)+' </dev/null >/tmp/counter.log 2>&1 &', {})
         time.sleep(.1)
+        progress = '''import pathlib,time
+p=pathlib.Path('/tmp/counter');before=int(p.read_text());deadline=time.monotonic()+2
+while time.monotonic()<deadline:
+ if int(p.read_text())>before:print('progressed');break
+ time.sleep(.01)
+else:raise SystemExit('Existing background work stopped at the next command')
+'''
+        result, _ = station.execute('python -c '+shlex.quote(progress), {})
+        if result['exit_code'] or result['stdout'].strip() != 'progressed':
+            raise RuntimeError(f'Background work did not run alongside the next command: {result}')
         frozen = station.capture_frozen('counter_check')
         def count():
             return subprocess.check_output(['docker', 'exec', station.name, 'cat', '/tmp/counter'], timeout=5)
@@ -64,6 +74,7 @@ def main():
         print(json.dumps({'passed': True, 'model_calls': 0, 'observer': station.observer_version,
                           'commands': station.command_count, 'output': str(args.output.resolve()),
                           'background_read_captured': True, 'quiescent_capture_and_resume': True,
+                          'background_progress_across_commands': True,
                           'unprivileged_business_process': True}))
     finally:
         station.close()

@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "kind": "runtime_continuity_repair",
+  "model_calls": 0,
+  "defect": "FileStation took a frozen before-command snapshot without resuming existing business processes. The next command could stop an agent-created background service.",
+  "repair": "Resume the snapshot-owned process list before executing the next command. Preserve explicit freeze/resume and terminal capture.",
+  "actual_reproduction": {
+    "source_commit": "8944afc1bb1a9c3d6efe045ed94bc3e8b6067b92",
+    "counter_before_next_command": [
+      68,
+      74
+    ],
+    "counter_after_next_command": [
+      76,
+      76
+    ]
+  },
+  "operator_validation": {
+    "workers_per_condition": 3,
+    "conditions": [
+      "shared/unobserved",
+      "shared/observed",
+      "private/unobserved",
+      "private/observed"
+    ],
+    "all_passed": true,
+    "checks": [
+      "background request processed during next command",
+      "background request processed after private intake arrival",
+      "explicit snapshot prevents changes",
+      "explicit resume restores progress",
+      "owned resources removed"
+    ]
+  },
+  "prior_result_audit": {
+    "review": "docs/research/swarmform-file-content-domains-03.json",
+    "rollouts": 8,
+    "before_command_snapshots": 903,
+    "surviving_nonidle_business_processes": 0,
+    "finding": "No persistent agent-created business process was present at these boundaries. Reviewed file-channel findings and original scores are unchanged. This audit does not establish background behavior in other historical rollouts."
+  },
+  "superseded_before_collection": {
+    "registration_commit": "8944afc1bb1a9c3d6efe045ed94bc3e8b6067b92",
+    "identifiers": [
+      "swarmform-archive-content-data-04-sol56",
+      "swarmform-archive-content-data-04-sol61",
+      "swarmform-archive-content-financial-04-sol56",
+      "swarmform-archive-content-financial-04-sol61",
+      "swarmform-archive-content-knowledge-04-sol56",
+      "swarmform-archive-content-knowledge-04-sol61",
+      "swarmform-archive-content-engineering-04-sol56",
+      "swarmform-archive-content-engineering-04-sol61",
+      "swarmform-archive-metadata-data-04-sol56",
+      "swarmform-archive-metadata-data-04-sol61",
+      "swarmform-archive-metadata-financial-04-sol56",
+      "swarmform-archive-metadata-financial-04-sol61",
+      "swarmform-archive-metadata-knowledge-04-sol56",
+      "swarmform-archive-metadata-knowledge-04-sol61",
+      "swarmform-archive-metadata-engineering-04-sol56",
+      "swarmform-archive-metadata-engineering-04-sol61"
+    ],
+    "model_calls": 0,
+    "frozen_inputs": "Full copies retained in the Release; no old registration will be collected."
+  },
+  "archive": {
+    "file": "swarmform-continuity-boundary-probe-01.tar.gz",
+    "bytes": 24310353,
+    "sha256": "b886e45f325620cdc56a02ab64ce685113c085e66b4d2f5117e7487dba509fa1",
+    "screened_files": 4068,
+    "model_calls": 0,
+    "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-runtime-continuity-01",
+    "asset": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-runtime-continuity-01/swarmform-continuity-boundary-probe-01.tar.gz",
+    "asset_id": 725995998,
+    "server_digest": "sha256:b886e45f325620cdc56a02ab64ce685113c085e66b4d2f5117e7487dba509fa1",
+    "private_repository": true
+  },
+  "fresh_model_validation": "New registrations required on corrected published source."
+}

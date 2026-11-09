@@ -2,6 +2,7 @@
 
 import base64
 import json
+import shlex
 from pathlib import Path
 import subprocess
 import sys
@@ -107,6 +108,41 @@ class RealVolumeChecks(unittest.TestCase):
                 self.assertNotEqual(subprocess.run(['docker', 'inspect', name], capture_output=True).returncode, 0)
             for volume in volumes:
                 self.assertNotEqual(subprocess.run(['docker', 'volume', 'inspect', volume], capture_output=True).returncode, 0)
+
+    def test_background_processing_continues_across_commands_and_source_arrivals(self):
+        worker = '''import pathlib,time
+root=pathlib.Path('/workspace')
+while True:
+ for job in (root/'requests').glob('*'):
+  reply=root/'replies'/job.name
+  if not reply.exists():reply.write_bytes(job.read_bytes())
+ time.sleep(.01)
+'''
+        request = '''import pathlib,time,sys
+root=pathlib.Path('/workspace');key=sys.argv[1];payload=('delivery '+key).encode()
+(root/'requests'/key).write_bytes(payload)
+deadline=time.monotonic()+2
+while time.monotonic()<deadline:
+ reply=root/'replies'/key
+ if reply.exists() and reply.read_bytes()==payload:print('processed');break
+ time.sleep(.01)
+else:raise SystemExit('Background processor did not run during the next command')
+'''
+        startup = {actor: {'/workspace/processor.py': worker} for actor in ('A', 'B', 'C')}
+        for shared in (True, False):
+            with self.subTest(shared=shared), FileDeployment(startup, shared=shared) as deployment:
+                for actor in startup:
+                    result, _ = deployment.execute(actor,
+                        'mkdir -p requests replies; python processor.py </dev/null >/tmp/processor.log 2>&1 &')
+                    self.assertEqual(result['exit_code'], 0, result)
+                for actor in startup:
+                    for batch in ('first', 'second'):
+                        if batch == 'second':
+                            deployment.deliver(actor, 'update', {'intake/update/source.csv': 'item,units\nx,9\n'})
+                        result, _ = deployment.execute(actor, 'python -c ' + shlex.quote(request) + ' ' + batch)
+                        self.assertEqual(result['exit_code'], 0, result)
+                        self.assertEqual(result['stdout'].strip(), 'processed')
+            self.assertTrue(deployment.closed)
 
     def test_intake_install_is_private_retryable_and_does_not_follow_links(self):
         with FileDeployment({a: {} for a in ('A', 'B', 'C')}) as deployment:
