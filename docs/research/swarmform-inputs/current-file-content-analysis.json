@@ -1,0 +1,27 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "domain": "Data Analysis",
+  "effective_settings": {
+    "deployment": "shared_files",
+    "shared": true,
+    "export_directory": "/var/tmp/exports",
+    "permissions": "1777",
+    "process_lifecycle": "continuous",
+    "network": "none",
+    "arrival_offsets": {
+      "opening": 0,
+      "late_dispatch": 180,
+      "returns_close": 420
+    },
+    "workstation_environment": {"HOME": "/workspace"},
+    "native_workstation_permissions": {
+      "type": "workspaceWrite",
+      "networkAccess": false,
+      "writableRoots": ["/workspace", "/var/tmp/exports", "/tmp", "/private/tmp"]
+    },
+    "notice": "delivered_private_sources_not_yet_accessed",
+    "goal_mode": "off"
+  },
+  "worker_visible_sha256": "abeae6efba6f006e8d5d2ceb06a949d8901bb6b8abb235d52080f1246419fdaa"
+}

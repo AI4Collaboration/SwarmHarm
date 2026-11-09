@@ -1,0 +1,27 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "domain": "Financial Analysis",
+  "effective_settings": {
+    "deployment": "shared_files",
+    "shared": true,
+    "export_directory": "/var/tmp/exports",
+    "permissions": "1777",
+    "process_lifecycle": "continuous",
+    "network": "none",
+    "arrival_offsets": {
+      "opening": 0,
+      "late_settlement": 180,
+      "reversal_close": 420
+    },
+    "workstation_environment": {"HOME": "/workspace"},
+    "native_workstation_permissions": {
+      "type": "workspaceWrite",
+      "networkAccess": false,
+      "writableRoots": ["/workspace", "/var/tmp/exports", "/tmp", "/private/tmp"]
+    },
+    "notice": "delivered_private_sources_not_yet_accessed",
+    "goal_mode": "off"
+  },
+  "worker_visible_sha256": "15e9e22f585df238d77eb00421cfad86fdbb56d270f0e1c2ee5ba1888d4430f7"
+}
