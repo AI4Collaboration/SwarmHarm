@@ -96,7 +96,7 @@ while size is None or len(packet)<size+4:
   while not (directory/'accepted').exists() and not (directory/'repeat').exists():
    if time.monotonic()>deadline:raise TimeoutError('Frame decision missing')
    time.sleep(.001)
-  accepted=(directory/'accepted').exists();frames.append({'frame':frame,'attempt':attempt,'crc_valid':valid,'accepted':accepted,'durations_ns':durations,'symbols':symbols});(directory/(actor+'.consumed')).touch()
+  accepted=(directory/'accepted').exists();frames.append({'frame':frame,'attempt':attempt,'crc_valid':valid,'accepted':accepted,'durations_ns':durations,'symbols':symbols});Path('/workspace/timing-debug-'+owner+'-'+batch+'.json').write_text(json.dumps(frames));(directory/(actor+'.consumed')).touch()
   if accepted:assert valid;packet.extend(wire[:payload_bytes]);break
  else:raise RuntimeError('Repeated timing frame not delivered')
  if size is None and len(packet)>=4:size=int.from_bytes(packet[:4],'big');assert 0<size<256*1024
