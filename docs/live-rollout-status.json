@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T15:13:40.634006+00:00",
+  "updated_at": "2026-11-09T15:17:55.408919+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -387,12 +387,16 @@
       "job_namespace/event_pattern/Financial Analysis": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/current-job-events-financial-admission.json"
+      },
+      "job_namespace/event_pattern/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-job-events-knowledge-admission.json"
       }
     },
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
-    "current_admitted_count": 87,
+    "current_admitted_count": 88,
     "current_reviewed_rollout_count": 5
   },
   "current_source_change": {
@@ -446,11 +450,12 @@
       "worker_context": "lima-swarmform-model-01"
     },
     {
-      "matrix_cell": "job_namespace/event_pattern/Knowledge Work",
-      "pid": 24123,
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-events-knowledge-bounded",
+      "matrix_cell": "job_namespace/timing/Data Analysis",
+      "pid": 27177,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-timing-analysis-http-ack",
       "status": "running",
-      "worker_context": "lima-swarmharm"
+      "worker_context": "lima-swarmharm",
+      "source_commit": "6ae2eed3adc2e3fcd83a9fac9d9b1d4bc647a994"
     },
     {
       "matrix_cell": "worker_endpoint/timing/Knowledge Work",
@@ -460,7 +465,7 @@
       "worker_context": "lima-swarmform-model-01"
     }
   ],
-  "next_checkpoint": "job_namespace/event_pattern/Knowledge Work",
+  "next_checkpoint": "worker_endpoint/timing/Engineering",
   "maintained_registrations": [
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol61",
@@ -482,7 +487,22 @@
     "experiments/swarmharm-v1/registrations/swarmform-payload-data-20261109-ipc-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-payload-data-20261109-endpoint-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-payload-data-20261109-artifact-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-payload-data-20261109-job-sol61"
+    "experiments/swarmharm-v1/registrations/swarmform-payload-data-20261109-job-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-files-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-ipc-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-endpoint-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-artifact-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-job-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-files-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-ipc-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-endpoint-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-artifact-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-job-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-files-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-ipc-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-endpoint-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-artifact-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-job-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
   "frozen_registration_count": 48,
@@ -535,7 +555,17 @@
     "external_index": "work/eval-readiness/swarmform-sol61-payload-five-20261109-01/preparation-index.json",
     "rollouts_started": 5,
     "reviewed_rollouts": 5,
-    "review_index": "docs/research/swarmform-payload-five-20261109.json"
+    "review_index": "docs/research/swarmform-payload-five-20261109.json",
+    "next_batch": {
+      "status": "prepared",
+      "model": "openai/gpt-6.1-sol",
+      "population": 3,
+      "cells": "Five deployments / payload_content / Engineering, Financial Analysis and Knowledge Work",
+      "external_index": "work/eval-readiness/swarmform-sol61-payload-remaining15-20261109-01/preparation-index.json",
+      "worker_context": "lima-swarmform-behavior-01",
+      "max_active_rollouts": 2,
+      "planned_rollouts": 15
+    }
   },
-  "next_action": "Finish remaining state/events and timing inputs. Reuse the idle model worker for queued endpoint timing inputs while keeping at most eight active inputs."
+  "next_action": "Finish the twelve timing inputs while collecting the remaining fifteen payload-content domain/deployment cells with Sol 6.1 on a separate worker."
 }

@@ -6,7 +6,7 @@ The input matrix is **5 shared deployments × 5 encoding opportunities × 4 busi
 
 ## Current state
 
-**100/100 inputs are generated; 87/100 have completed current-source business validation.** All 25 mechanisms have concrete runners. An admitted input must transfer the required sources through its actual interface, complete nine correct shared-resource deliveries, and preserve isolation in its private counterpart. This establishes runnable inputs; model behavior is checked separately.
+**100/100 inputs are generated; 88/100 have completed current-source business validation.** All 25 mechanisms have concrete runners. An admitted input must transfer the required sources through its actual interface, complete nine correct shared-resource deliveries, and preserve isolation in its private counterpart. This establishes runnable inputs; model behavior is checked separately.
 
 **Input validation resumed.** Remaining cells are being completed in parallel. Sol 6.1 behavior rollouts now validate admitted inputs alongside that work. The recurring reminder remains deleted. Closed runtime failures retain concise repair notes and are not counted as passed. The [matrix and checkpoint](docs/live-rollout-status.json) and [implementation index](docs/research/swarmform-input-development.json) record the current work. [Complete input evidence](docs/research/swarmform-input-archives.json) is archived on GitHub.
 
