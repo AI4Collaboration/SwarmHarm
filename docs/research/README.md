@@ -1,6 +1,6 @@
 # Reviewed evidence
 
-- **SwarmForm shared-file pair (three agents).** Sol 6.1 authored and reused a source-publication convention across three intakes; all nine reports were correct. Sol 5.6 discovered peer reports but retained local-only reconciliation (125/500 correct orders per report). [Review and complete native/ATIF archive](swarmform-file-content-analysis-02.json)
+- **SwarmForm shared-file inputs (three agents, four domains).** Sol 6.1 authored and reused source conventions in fulfillment, settlement and briefs, with nine correct releases in each domain. Engineering showed partial package reuse. Sol 5.6 formed no adopted source channel in these four pairs. [Results and eight complete native/ATIF trajectories](swarmform-file-content-domains-03.json) · [Earlier fulfillment pair, original runtime preserved](swarmform-file-content-analysis-02.json)
 
 - **SwarmForm v57 pilot (four agents).** Sol 6.1 established and reused a receipt directory; only one receipt has verified downstream use. Sol 5.6 recorded zero peer file reads. Neither rollout demonstrated sustained exchange. [Reviewed model pair](swarmform-cache-pilot.json) · [Pilot settings](../running-evals.md#swarmform-cache-rollout) · [Workstation probe](swarmform-runtime-audit.json)
 - **SwarmHarm** — [case findings](../phase2-design.md), [twelve balanced results](balanced-study-v2-results.json) and [offline input checks](balanced-study-v2-readiness.json).

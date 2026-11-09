@@ -22,7 +22,9 @@ from guardrails import credential_file, outside_repository
 from harbor.models.task.config import TaskConfig
 from swarmform.collection import Collection, save, utc, workspace_files
 from swarmform.inputs import CELL, WORKSTATION_PERMISSIONS, digest
-from swarmform.domain_inputs import DOMAINS, build, verify_business, verify_packages
+from swarmform.domain_inputs import DOMAINS
+from swarmform.input_catalog import build, deployment_registration
+from swarmform.outcomes import review as review_business
 from workstation import IMAGE, verify_workstation_image
 
 
@@ -69,7 +71,9 @@ def check_runtime():
                 ('ServerVersion', 'KernelVersion', 'OperatingSystem', 'OSType', 'Architecture', 'CgroupVersion')}}
 
 
-def write_tasks(root, visible, image, domain="Data Analysis"):
+def write_tasks(root, visible, image, domain="Data Analysis", deployment="shared_files"):
+    network_mode = "allowlist" if deployment == "artifact_namespace" else "no-network"
+    network_fields = 'allowed_hosts = ["records"]\n' if deployment == "artifact_namespace" else ""
     records = {}
     for actor, prompts in visible['prompts'].items():
         folder = root / 'tasks' / actor
@@ -89,8 +93,8 @@ timeout_sec = 3600
 user = "65534"
 [environment]
 docker_image = {json.dumps(image)}
-network_mode = "no-network"
-cpus = 1
+network_mode = {json.dumps(network_mode)}
+{network_fields}cpus = 1
 memory_mb = 512
 storage_mb = 1024
 '''
@@ -114,8 +118,10 @@ def prepare_destination(args):
 def prepare_one(args, source, runtime):
     folder, output = prepare_destination(args)
     domain = getattr(args, 'domain', 'Data Analysis')
-    visible, truth, manifest = build(args.dataset_key, domain)
-    cell_key = 'shared_files/payload_content/' + domain
+    deployment = getattr(args, 'deployment', 'shared_files')
+    encoding = getattr(args, 'encoding', 'payload_content')
+    visible, truth, manifest = build(args.dataset_key, domain, deployment=deployment, encoding=encoding)
+    cell_key = '/'.join((deployment, encoding, domain))
     ledger = json.loads((ROOT / 'docs/live-rollout-status.json').read_text())
     cell = ledger['matrix']['cells'].get(cell_key)
     if not cell or cell.get('status') != 'admitted':
@@ -134,15 +140,15 @@ def prepare_one(args, source, runtime):
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(ROOT / relative, destination)
         hashes[relative] = sha(destination)
-    task_hashes = write_tasks(output, visible, IMAGE, domain)
+    task_hashes = write_tasks(output, visible, IMAGE, domain, deployment)
     reg = {'schema_version': 1, 'identifier': args.identifier, 'created_at': utc(),
         'research_study': 'SwarmForm', 'study_mode': 'swarmform', 'population': 3,
         'matrix_cell': cell_key, 'domain': domain, 'input_sha256': digest(manifest), 'source_commit': source,
         'model': args.model, 'models': {'openai': args.model}, 'reasoning': 'high',
         'harness': harness, 'inference_gateway': 'axonhub', 'api_base': codex_gateway.AXONHUB_BASE,
-        'workstation_permissions': WORKSTATION_PERMISSIONS,
+        'workstation_permissions': manifest['effective_settings']['native_workstation_permissions'],
         'native_catalog': catalog, 'runtime': runtime, 'image': IMAGE,
-        'deployment': {'shared': True, 'kind': 'shared_files', 'network': 'none'},
+        'deployment': deployment_registration(manifest),
         'arrival_offsets': manifest['effective_settings']['arrival_offsets'],
         'budget': {'active_contexts_natural': 3, 'max_agent_seconds': 3600,
                    'max_batch_seconds': 4500, 'request_timeout_seconds': 300},
@@ -180,7 +186,9 @@ def prepare_pair(args):
     source = published_head()
     runtime = check_runtime()
     planned = [argparse.Namespace(identifier=args.identifier + '-' + label,
-        model=model, dataset_key=args.dataset_key, domain=getattr(args, 'domain', 'Data Analysis'), output=args.output / label)
+        model=model, dataset_key=args.dataset_key, domain=getattr(args, 'domain', 'Data Analysis'),
+        deployment=getattr(args, 'deployment', 'shared_files'), encoding=getattr(args, 'encoding', 'payload_content'),
+        output=args.output / label)
         for label, model in (('sol56', 'openai/gpt-5.6-sol'), ('sol61', 'openai/gpt-6.1-sol'))]
     # Reject either collision before writing the first registration. Both use the
     # same code, business bytes and schedule; model identity is the only change.
@@ -232,29 +240,42 @@ def collect(args):
     key = credential_file(args.key_file, ROOT).read_text().strip()
     inputs = json.loads((output / 'input.json').read_text())
     report = Collection(output, reg, inputs, api_key=key).run()
-    truth = json.loads((output / 'protected-truth.json').read_text())
-    domains = {row['domain'] for row in reg['plan']['natural'].values()}
-    if len(domains) != 1:
-        raise RuntimeError('A rollout must have one registered business domain')
-    domain = domains.pop()
-    terminals = json.loads((output / 'terminal-snapshots.json').read_text())
-    snapshots = {a: json.loads((output / path).read_text())['snapshot'] for a, path in terminals.items()}
-    outcomes = {a: verify_business(domain, a, snapshot, truth, inputs) for a, snapshot in snapshots.items()}
-    packages = {a: verify_packages(a, snapshot, domain) for a, snapshot in snapshots.items()}
-    save(output / 'business-outcome.json', {'independently_recomputed': True, 'actors': outcomes,
-        'delivery_packages': packages,
-        'behavioral_claims': 'pending full native, read and authored-convention review'})
+    result = finalize_collection(output, reg, inputs, report)
+    lock.close()
+    return result
+
+
+def finalize_collection(output, reg, inputs, report):
+    """Preserve evidence and expose any failure after collection closes."""
+    failures = ['collection'] if report.get('failure') else []
+    try:
+        truth = json.loads((output / 'protected-truth.json').read_text())
+        domains = {row['domain'] for row in reg['plan']['natural'].values()}
+        if len(domains) != 1:
+            raise RuntimeError('A rollout must have one registered business domain')
+        domain = domains.pop()
+        terminals = json.loads((output / 'terminal-snapshots.json').read_text())
+        snapshots = {a: json.loads((output / path).read_text())['snapshot'] for a, path in terminals.items()}
+        service_path = output / 'service-terminal.json'
+        service = json.loads(service_path.read_text()) if service_path.exists() else None
+        result = review_business(domain, inputs, truth, snapshots,
+            kind=reg['deployment'].get('kind', 'shared_files'), service=service)
+        save(output / 'business-outcome.json', result)
+    except Exception as error:
+        failures.append('business_outcome')
+        save(output / 'business-outcome-failure.json', {'type': type(error).__name__, 'message': str(error)})
     import export_atif
     try:
         export_atif.export(output)
     except Exception as error:
+        failures.append('atif')
         save(output / 'atif-failure.json', {'type': type(error).__name__, 'message': str(error)})
     files = {str(p.relative_to(output)): sha(p) for p in sorted(output.rglob('*'))
              if p.is_file() and not p.is_symlink() and p.name not in ('evidence-manifest.json', 'controller.log', '.collector.lock')}
     save(output / 'evidence-manifest.json', {'at': utc(), 'files': files,
         'excluded': ['evidence-manifest.json', 'controller.log', '.collector.lock']})
-    lock.close()
-    return {'closed': args.identifier, 'reason': report['reason'], 'output': str(output), 'review': 'pending'}
+    return {'closed': reg['identifier'], 'reason': report['reason'], 'output': str(output),
+            'failures': failures, 'review': 'pending'}
 
 
 def main():
@@ -269,11 +290,16 @@ def main():
                 command.add_argument('--model', choices=['openai/gpt-5.6-sol', 'openai/gpt-6.1-sol'], required=True)
             command.add_argument('--dataset-key', required=True)
             command.add_argument('--domain', choices=DOMAINS, default='Data Analysis')
+            command.add_argument('--deployment', choices=('shared_files','artifact_namespace'), default='shared_files')
+            command.add_argument('--encoding', choices=('payload_content','identifiers_metadata','operational_state'), default='payload_content')
         else:
             command.add_argument('--key-file', type=Path, required=True)
     args = parser.parse_args()
     action = {'prepare': prepare, 'prepare-pair': prepare_pair, 'collect': collect}[args.command]
-    print(json.dumps(action(args), indent=2))
+    result = action(args)
+    print(json.dumps(result, indent=2))
+    if args.command == 'collect' and result['failures']:
+        raise SystemExit(1)
 
 
 if __name__ == '__main__':

@@ -56,8 +56,9 @@ class CodexAgent:
         self.api_base, self.api_key = api_base, api_key
         self.workstation_permissions = deepcopy(workstation_permissions)
         if workstation_permissions is not None:
-            if (not self.gateway or workstation_permissions.get('type') != 'workspaceWrite'
-                    or workstation_permissions.get('networkAccess') is not False
+            if (not self.gateway or set(workstation_permissions) != {'type', 'networkAccess', 'writableRoots'}
+                    or workstation_permissions.get('type') != 'workspaceWrite'
+                    or not isinstance(workstation_permissions.get('networkAccess'), bool)
                     or workstation_permissions.get('writableRoots') != ['/workspace', '/registry', '/var/tmp/exports', '/tmp', '/private/tmp']):
                 raise ValueError('Unregistered workstation permission description')
         self.runtime, self.actor, self.events = runtime, actor, events

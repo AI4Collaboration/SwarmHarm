@@ -17,7 +17,7 @@ from codex_agent import CodexAgent, wait_ready
 from codex_gateway import AXONHUB_BASE
 from response_monitor import classify
 from swarmform.arrivals import IntakeSchedule
-from swarmform.file_deployment import FileDeployment
+from swarmform.deployments import make_deployment
 from swarmform.intake_observation import intake_read_receipts
 
 
@@ -47,7 +47,7 @@ def workspace_files(snapshot):
 
 class Collection:
     def __init__(self, root, registration, input_data, *, api_key,
-                 agent_class=CodexAgent, deployment_class=FileDeployment):
+                 agent_class=CodexAgent, deployment_class=None):
         self.root, self.reg, self.input = Path(root).resolve(), registration, input_data
         self.api_key, self.agent_class, self.deployment_class = api_key, agent_class, deployment_class
         self.actors = tuple(input_data['startup'])
@@ -216,9 +216,11 @@ class Collection:
         deadline = began + self.reg['budget']['max_batch_seconds']
         deployment = None
         try:
-            deployment = self.deployment_class(self.input['startup'],
-                shared=self.reg['deployment']['shared'], observation_sink=self.observation,
+            options = dict(observation_sink=self.observation,
                 observation_archive=self.root / 'read-observations')
+            deployment = (self.deployment_class(self.input['startup'],
+                shared=self.reg['deployment']['shared'], **options) if self.deployment_class
+                else make_deployment(self.input['startup'], self.reg, **options))
             save(self.root / 'bindings.json', deployment.bindings)
             for actor in self.actors:
                 folder = self.root / 'natural' / actor
@@ -309,13 +311,18 @@ class Collection:
                 except BaseException as error:
                     self.failure = {'type': 'DeploymentShutdown', 'message': repr(error)}
                     self.reason = 'runtime_failure'
+            service_terminal = getattr(deployment, 'terminal_service', None)
+            if service_terminal is not None:
+                save(self.root / 'service-terminal.json', service_terminal)
             for actor, state in self.states.items():
                 state['status'] = self.reason
                 save(self.root / 'natural' / actor / 'result.json', state)
             save(self.root / 'terminal-snapshots.json', {a: str(p.relative_to(self.root)) for a, p in self.terminals.items()})
             completion = {'at': utc(), 'reason': self.reason, 'failure': self.failure,
                 'elapsed_seconds': time.monotonic() - began, 'actors': self.states,
-                'terminal_snapshot_count': len(self.terminals), 'behavior_review': 'pending'}
+                'terminal_snapshot_count': len(self.terminals),
+                'service_terminal': 'service-terminal.json' if service_terminal is not None else None,
+                'behavior_review': 'pending'}
             save(self.root / 'completion.json', completion)
             save(self.root / 'progress.json', {'status': 'closed', **completion})
         return completion
