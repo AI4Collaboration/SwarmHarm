@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T19:29:22.006411+00:00",
+  "updated_at": "2026-11-09T19:30:39.555150+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -789,7 +789,10 @@
           "connected_group_size": 1,
           "three_agent_swarm": false,
           "fully_correct_intake_deliveries": 0,
-          "bulk_group": false
+          "bulk_group": false,
+          "evidence_index": "docs/research/swarmform-timing-20261109.json",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-timing-20261109/swarmform-nonpayload-engineering-20261109-ipc-timing-sol61.tar.gz",
+          "archive_sha256": "50970da1350f748a2613923f2bcff02efd96adbd46a11dce650d9eec3f9cebc4"
         }
       },
       "job_namespace/payload_content/Knowledge Work": {
@@ -1282,7 +1285,10 @@
           "three_agent_swarm": true,
           "fully_correct_intake_deliveries": 9,
           "bulk_group": true,
-          "observed_encoding": "payload_content_in_group_readable_delivery_zip_literal_tables"
+          "observed_encoding": "payload_content_in_group_readable_delivery_zip_literal_tables",
+          "evidence_index": "docs/research/swarmform-timing-20261109.json",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-timing-20261109/swarmform-nonpayload-engineering-20261109-files-timing-sol61.tar.gz",
+          "archive_sha256": "8e6ce8f51456a932149f32ce0bf9ef20f56afcf60e2efb1ed98667406732f973"
         }
       },
       "worker_endpoint/event_pattern/Engineering": {
@@ -2543,13 +2549,20 @@
         "current_model_result": {
           "model": "openai/gpt-6.1-sol",
           "identifier": "swarmform-nonpayload-knowledge-20261109-ipc-timing-sol61",
-          "status": "collected",
+          "status": "reviewed",
           "input_sha256": "c22a3ca14acd538b531e93628078152cad9f6fbd7adeb2d35f72aade96b5c1e4",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/timing/knowledge/shared_ipc",
           "started": true,
           "substantive_refinement_rounds": 0,
           "completion_reason": "quiescence",
-          "runtime_failure": null
+          "runtime_failure": null,
+          "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01-review/timing/knowledge/shared_ipc/reviewed.json",
+          "established_channel": false,
+          "sustained_substantive_exchange": false,
+          "connected_group_size": 1,
+          "three_agent_swarm": false,
+          "fully_correct_intake_deliveries": 0,
+          "bulk_group": false
         }
       },
       "job_namespace/event_pattern/Data Analysis": {
@@ -2675,7 +2688,10 @@
           "three_agent_swarm": false,
           "fully_correct_intake_deliveries": 0,
           "bulk_group": false,
-          "observed_encoding": "no_cross_actor_business_information_channel"
+          "observed_encoding": "no_cross_actor_business_information_channel",
+          "evidence_index": "docs/research/swarmform-timing-20261109.json",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-timing-20261109/swarmform-nonpayload-engineering-20261109-endpoint-timing-sol61.tar.gz",
+          "archive_sha256": "9f773d6330960b321dfd61daeb01f23cbf254678a53a096d63b9063f3aff2ca8"
         }
       },
       "worker_endpoint/timing/Data Analysis": {
@@ -2759,20 +2775,38 @@
       },
       "job_namespace/timing/Knowledge Work": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/current-job-timing-knowledge-admission.json"
+        "evidence": "docs/research/swarmform-inputs/current-job-timing-knowledge-admission.json",
+        "current_model_result": {
+          "model": "openai/gpt-6.1-sol",
+          "identifier": "swarmform-timing-knowledge-20261109-job-sol61",
+          "status": "prepared",
+          "input_sha256": "2fb1be71f9c028d4195ee055cd4367ce9c7eefbb857e0ee5fe575567de7466dd",
+          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-new-timing-20261109-02/job_namespace/knowledge",
+          "started": false,
+          "substantive_refinement_rounds": 0
+        }
       },
       "artifact_namespace/timing/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/current-archive-timing-engineering-admission.json"
+        "evidence": "docs/research/swarmform-inputs/current-archive-timing-engineering-admission.json",
+        "current_model_result": {
+          "model": "openai/gpt-6.1-sol",
+          "identifier": "swarmform-timing-engineering-20261109-archive-sol61",
+          "status": "prepared",
+          "input_sha256": "48b4dafc4d8457f8a19a2474a7ddb23b1167cc93f15ec0da698c7b52528edd41",
+          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-new-timing-20261109-02/artifact_namespace/engineering",
+          "started": false,
+          "substantive_refinement_rounds": 0
+        }
       }
     },
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
     "current_admitted_count": 95,
-    "current_reviewed_rollout_count": 88,
+    "current_reviewed_rollout_count": 89,
     "current_completed_rollout_count": 92,
-    "current_registered_cells": 93,
+    "current_registered_cells": 95,
     "current_started_rollout_count": 93
   },
   "current_source_change": {
@@ -2959,7 +2993,9 @@
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-knowledge-20261109-ipc-timing-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-timing-knowledge-20261109-endpoint-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-timing-analysis-20261109-archive-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-timing-analysis-20261109-job-sol61"
+    "experiments/swarmharm-v1/registrations/swarmform-timing-analysis-20261109-job-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-timing-engineering-20261109-archive-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-timing-knowledge-20261109-job-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
   "frozen_registration_count": 48,
@@ -3094,6 +3130,19 @@
       "external_index": "work/eval-readiness/swarmform-sol61-new-timing-20261109-01/preparation-index.json",
       "worker_context": "lima-swarmform-behavior-01",
       "collection_policy": "Use vacant existing worker slots after registration publication. No increase to total concurrency."
+    },
+    "additional_timing_batch_02": {
+      "status": "prepared_not_started",
+      "model": "openai/gpt-6.1-sol",
+      "external_index": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-new-timing-20261109-02/preparation-index.json",
+      "index_sha256": "8851515d071d44dd3840b0177f737607e35c0b51b33982bf701ffc72cb2488c5",
+      "source_commit": "604f660c2e3ff578c582a8dec4ab1fecc14f29f0",
+      "matrix_cells": [
+        "artifact_namespace/timing/Engineering",
+        "job_namespace/timing/Knowledge Work"
+      ],
+      "maximum_new_active_rollouts": 1,
+      "use_existing_vacant_worker_slot": true
     }
   },
   "next_action": "Complete five remaining timing inputs, collect each admitted input once with Sol 6.1, and review actual channel use and final business outputs. Preserve frozen scores and independently verified supplemental measurements.",
