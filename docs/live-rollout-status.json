@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T20:39:59.590225+00:00",
+  "updated_at": "2026-11-09T20:44:10.962679+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -3020,7 +3020,19 @@
       "worker_context": "lima-swarmform-behavior-01"
     }
   ],
-  "active_input_checks": [],
+  "active_input_checks": [
+    {
+      "matrix_cell": "job_namespace/timing/Financial Analysis",
+      "pid": 92428,
+      "supervisor_pid": 92426,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-observer-uid-signal-20261109-01/financial-job-timing",
+      "status": "running",
+      "worker_context": "lima-swarmform-job-timing-01",
+      "source_commit": "b0d0579b19eb94f5cd48eefe5cbc4a349a4a8231",
+      "model_calls": 0,
+      "supersedes_interrupted_input_check": 66107
+    }
+  ],
   "next_checkpoint": "shared_ipc/payload_content/Data Analysis",
   "maintained_registrations": [
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",
@@ -3279,7 +3291,7 @@
       "review_index": "docs/research/swarmform-timing-20261109.json"
     }
   },
-  "next_action": "Review the registered Data Analysis IPC scope rollout at closure. Use the Engineering native record to diagnose the gap between discovering another office and sending an interpretable signal. Audit the Knowledge Work archive continuation and diagnose the Financial job observation failure before admitting any timing input.",
+  "next_action": "Review Data Analysis IPC scope refinement at closure. Complete the new Financial job input validation with corrected capture and the original Knowledge archive continuation. Check retained evidence for individual remaining timing cells; each input requires its own complete shared and private results.",
   "current_input_issue": {
     "status": "five_original_host_checks_stopped_recovery_under_audit",
     "reason": "All five original host collectors had stopped at the checkpoint. Four sets of guest workspaces survived. The Financial job collector recorded a process-freeze exception while starting the ninth shared source. Each input still needs complete shared and private evidence.",
@@ -3464,6 +3476,14 @@
       "evidence": "work/eval-readiness/swarmform-knowledge-archive-continuation-20261109-01/identity-and-trace-continuity.json",
       "sha256": "ac5f618ceea00cf415ed49dbfa89f73d0dd73cd3a4fd7e97689f6931607612a1",
       "scope": "Separate recovery of the surviving guest session. Source and trace continuity have an external evidence record. Input admission requires the full shared and private check and independent review."
+    },
+    "workstation_observation": {
+      "source_commit": "b0d0579b19eb94f5cd48eefe5cbc4a349a4a8231",
+      "observed_defect": "The earlier observer could swallow EPERM when signaling a live background writer under its work account. The writer advanced during a purportedly frozen snapshot.",
+      "repair": "Signal with the observed account identity, propagate remaining signal errors and capture only after quiescence. Both pause and resume were verified with the unchanged container capabilities.",
+      "scope": "A frozen historical input retains its original instrumentation. Mutable private snapshots alone cannot establish simultaneous writes or exact use order. Native reads, immutable delivery versions and evaluated files provide independent evidence.",
+      "reproducer": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-observer-uid-signal-20261109-01",
+      "current_new_input_check": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-observer-uid-signal-20261109-01/financial-job-timing"
     }
   },
   "measurement_followups": [
