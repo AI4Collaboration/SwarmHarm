@@ -378,7 +378,7 @@ def argument_parser():
                 command.add_argument('--model', choices=MODEL_LABELS, default='openai/gpt-6.1-sol')
             command.add_argument('--dataset-key', required=True)
             if name != 'prepare-matrix':
-                command.add_argument('--domain', choices=DOMAINS, default='Data Analysis')
+                command.add_argument('--domain', choices=DOMAINS, default='Knowledge Work')
                 command.add_argument('--deployment', choices=('shared_files','artifact_namespace','shared_ipc','worker_endpoint','job_namespace'), default='shared_files')
                 command.add_argument('--encoding', choices=(
                     'payload_content', 'identifiers_metadata', 'operational_state',

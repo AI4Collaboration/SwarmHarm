@@ -1,10 +1,10 @@
 # Running the reporting baseline
 
-For the active three-agent SwarmForm matrix, start with the [acceptance criteria](formation-study-design.md#deliverables-and-acceptance-criteria). Use these commands to check the active matrix and inspect the implemented Data Analysis input:
+For the active three-agent SwarmForm matrix, start with the [acceptance criteria](formation-study-design.md#deliverables-and-acceptance-criteria). Use these commands to check the active matrix and inspect the primary Knowledge Work input:
 
 ```sh
 python3 scripts/check_swarmform_inputs.py
-python3 scripts/inspect_swarmform_workload.py --staged --dataset-key november --output ../fulfillment-preview
+python3 scripts/inspect_swarmform_workload.py --staged --dataset-key november --domain "Knowledge Work" --output ../knowledge-preview
 ```
 
 This exports private startup files, separate later deliveries and an operator audit. The instructions below run the four-agent reporting baseline, including the reviewed v57 cache pilot.

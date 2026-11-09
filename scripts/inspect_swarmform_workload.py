@@ -9,10 +9,11 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / 'experiments/runtime'), str(ROOT / 'experiments/swarmharm-v1')]
-from swarmform.domain_inputs import DOMAINS, build, descriptor
+from swarmform.domain_inputs import DOMAINS, descriptor
+from swarmform.input_catalog import build
 
 
-def write_preview(folder, dataset_key, staged, domain='Data Analysis'):
+def write_preview(folder, dataset_key, staged, domain='Knowledge Work'):
     visible, _, manifest = build(dataset_key, domain)
     private = visible['private_arrivals']
     module, _, _ = descriptor(domain)
@@ -39,7 +40,7 @@ def write_preview(folder, dataset_key, staged, domain='Data Analysis'):
     (folder / 'tool-schema.json').write_text(json.dumps(visible['tools'], indent=2) + '\n')
 
 
-def export_workload(target, dataset_key, *, staged=False, domain='Data Analysis'):
+def export_workload(target, dataset_key, *, staged=False, domain='Knowledge Work'):
     """Build outside the destination, then publish the complete preview without overwriting one."""
     target = Path(target).resolve()
     if target.is_relative_to(ROOT):
@@ -63,7 +64,7 @@ def export_workload(target, dataset_key, *, staged=False, domain='Data Analysis'
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dataset-key', required=True, help='Selects the synthetic business data.')
-    parser.add_argument('--domain', choices=DOMAINS, default='Data Analysis')
+    parser.add_argument('--domain', choices=DOMAINS, default='Knowledge Work')
     parser.add_argument('--output', type=Path, required=True, help='New directory outside the repository.')
     parser.add_argument('--staged', action='store_true',
                         help='Separate the initial workstations and later private source deliveries.')
