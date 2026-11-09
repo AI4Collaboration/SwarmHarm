@@ -25,7 +25,7 @@ class ServiceWorkstation(DockerWorkstation):
             process=subprocess.run(['docker','exec',self.name,'python','-I','-c',code],stdout=output,stderr=errors,timeout=180)
         if process.returncode:raise RuntimeError('Service capture failed; retained '+str(raw_path))
         with raw_path.open('rb') as stream:
-            line=stream.readline(64*1024*1024+1)
+            line=stream.readline()
             if not line.endswith(b'\n'):raise RuntimeError('Service capture header is incomplete')
             header=json.loads(line)
             values={key:value for key,value in header.items() if key!='files'}

@@ -3,6 +3,7 @@ import argparse
 import base64
 from hashlib import sha256
 import json
+import socket
 from pathlib import Path
 from urllib.parse import quote
 from urllib.request import Request, urlopen
@@ -23,10 +24,23 @@ def submit(path, batch):
         'sha256': sha256(data).hexdigest(), 'content_base64': base64.b64encode(data).decode()})
 
 
+def processor_status():
+    connection = json.loads(Path('/workspace/processor.json').read_text())
+    listeners = []
+    for line in Path('/proc/net/tcp').read_text().splitlines()[1:]:
+        fields = line.split()
+        if fields[3] == '0A':
+            address, port = fields[1].split(':')
+            listeners.append({'address': socket.inet_ntoa(bytes.fromhex(address)[::-1]),
+                              'port': int(port, 16)})
+    return {'processor': connection['url'], 'tcp_listeners': sorted(listeners, key=lambda row: (row['address'], row['port']))}
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='command', required=True)
     commands.add_parser('list', help='List delivery copies')
+    commands.add_parser('status', help='Show processor connection and local listener status')
     activity = commands.add_parser('activity', help='Read processor activity')
     activity.add_argument('--after', type=int, default=0)
     activity.add_argument('--limit', type=int, default=1024)
@@ -40,7 +54,9 @@ if __name__ == '__main__':
     copies=commands.add_parser('copy-batch',help='Prepare draft delivery copies');copies.add_argument('source');copies.add_argument('names_file',type=Path)
     states=commands.add_parser('state-batch',help='Update a list of delivery statuses');states.add_argument('changes_file',type=Path)
     args = parser.parse_args()
-    if args.command == 'list':
+    if args.command == 'status':
+        result = processor_status()
+    elif args.command == 'list':
         result = request('GET', '/deliveries')
     elif args.command == 'activity':
         result = request('GET', '/activity?after=' + str(args.after) + '&limit=' + str(args.limit))

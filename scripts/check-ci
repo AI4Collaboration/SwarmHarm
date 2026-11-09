@@ -96,6 +96,11 @@ def select_checks(files, full=False):
             elif stem in {'base_archive', 'profile_archive'}:
                 suites('swarmform_archive_policy', 'swarmform_archive_outcome')
                 checks.add('wording')
+            elif stem == 'endpoint_client':
+                suites('swarmform_input_runner', 'swarmform_registration')
+                checks.add('wording')
+            elif stem in {'service_workstation', 'service_capture'}:
+                suites('swarmform_service_capture')
             elif stem in {'report_package', 'package_delivery'}:
                 suites('swarmform_package')
             elif stem == 'ipc_status':

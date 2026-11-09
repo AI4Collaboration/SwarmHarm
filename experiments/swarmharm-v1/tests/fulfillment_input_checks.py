@@ -42,7 +42,7 @@ class FulfillmentInputChecks(unittest.TestCase):
         script = Path(__file__).resolve().parents[3] / 'scripts/inspect_swarmform_workload.py'
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / 'preview'
-            subprocess.run([sys.executable, str(script), '--staged', '--dataset-key', 'close',
+            subprocess.run([sys.executable, str(script), '--staged', '--domain', 'Data Analysis', '--dataset-key', 'close',
                             '--output', str(root)], check=True, capture_output=True)
             self.assertEqual(json.loads((root / 'arrival-offsets-seconds.json').read_text()),
                              {'opening': 0, 'late_dispatch': 180, 'returns_close': 420})
