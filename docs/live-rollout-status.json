@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T15:17:55.408919+00:00",
+  "updated_at": "2026-11-09T15:23:22.551930+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -404,7 +404,24 @@
     "affected_prior_admissions": 20,
     "action": "Regenerate current-source shared/private witnesses and admit each verified input. Sol 6.1 behavioral collection remains separate from input readiness."
   },
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "identifier": "swarmform-payload-engineering-20261109-files-sol61",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-files-sol61",
+      "model": "openai/gpt-6.1-sol",
+      "pid": 28214,
+      "output": "work/eval-readiness/swarmform-sol61-payload-remaining15-20261109-01/engineering/shared_files",
+      "status": "running"
+    },
+    {
+      "identifier": "swarmform-payload-engineering-20261109-ipc-sol61",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-ipc-sol61",
+      "model": "openai/gpt-6.1-sol",
+      "pid": 28236,
+      "output": "work/eval-readiness/swarmform-sol61-payload-remaining15-20261109-01/engineering/shared_ipc",
+      "status": "running"
+    }
+  ],
   "active_input_checks": [
     {
       "matrix_cell": "worker_endpoint/timing/Engineering",
@@ -417,14 +434,6 @@
       "pid": 88000,
       "output": "work/eval-readiness/swarmform-endpoint-timing-resume-analysis-20261109-01",
       "status": "running"
-    },
-    {
-      "matrix_cell": "job_namespace/timing/Engineering",
-      "pid": 8675,
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-timing-engineering-http-ack",
-      "status": "running",
-      "worker_context": "lima-swarmharm",
-      "source_commit": "8ecc69c3c7f5eac38f63a585479db22e598c05a1"
     },
     {
       "matrix_cell": "artifact_namespace/timing/Engineering",
@@ -450,19 +459,27 @@
       "worker_context": "lima-swarmform-model-01"
     },
     {
-      "matrix_cell": "job_namespace/timing/Data Analysis",
-      "pid": 27177,
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-timing-analysis-http-ack",
-      "status": "running",
-      "worker_context": "lima-swarmharm",
-      "source_commit": "6ae2eed3adc2e3fcd83a9fac9d9b1d4bc647a994"
-    },
-    {
       "matrix_cell": "worker_endpoint/timing/Knowledge Work",
       "pid": 19796,
       "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-timing-resume-knowledge-20261109-01",
       "status": "running",
       "worker_context": "lima-swarmform-model-01"
+    },
+    {
+      "matrix_cell": "artifact_namespace/timing/Financial Analysis",
+      "pid": 29864,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-financial-http-ack",
+      "status": "running",
+      "worker_context": "lima-swarmharm",
+      "source_commit": "26e3c1cc92fa0c6f7d0c25c27efb29f6472bc960"
+    },
+    {
+      "matrix_cell": "artifact_namespace/timing/Knowledge Work",
+      "pid": 29906,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-knowledge-http-ack",
+      "status": "running",
+      "worker_context": "lima-swarmharm",
+      "source_commit": "26e3c1cc92fa0c6f7d0c25c27efb29f6472bc960"
     }
   ],
   "next_checkpoint": "worker_endpoint/timing/Engineering",
@@ -557,15 +574,18 @@
     "reviewed_rollouts": 5,
     "review_index": "docs/research/swarmform-payload-five-20261109.json",
     "next_batch": {
-      "status": "prepared",
+      "status": "running_first_two",
       "model": "openai/gpt-6.1-sol",
       "population": 3,
       "cells": "Five deployments / payload_content / Engineering, Financial Analysis and Knowledge Work",
       "external_index": "work/eval-readiness/swarmform-sol61-payload-remaining15-20261109-01/preparation-index.json",
       "worker_context": "lima-swarmform-behavior-01",
       "max_active_rollouts": 2,
-      "planned_rollouts": 15
+      "planned_rollouts": 15,
+      "rollouts_started": 2,
+      "held_unstarted_rollouts": 13,
+      "hold_reason": "Wait for the two active model runs to close before publishing the operator-only job-timing polling repair; retain unstarted registrations unchanged and prepare fresh registrations afterward."
     }
   },
-  "next_action": "Finish the twelve timing inputs while collecting the remaining fifteen payload-content domain/deployment cells with Sol 6.1 on a separate worker."
+  "next_action": "Finish active timing inputs and the two Engineering model rollouts. Repair excessive job-timing status polling, then freshly seal the remaining model queue; do not reuse started inputs."
 }
