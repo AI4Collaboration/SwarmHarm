@@ -24,9 +24,10 @@ class ArchiveStation(ObservedFileStation):
 
 
 class ArtifactDeployment(FileDeployment):
-    def __init__(self,startup,*,shared=True,profile='content',observation_sink=None,observation_archive=None):
-        if len(startup)!=3 or profile not in ('content','metadata','state','events','timing'):
-            raise ValueError('Expected three business workstations and a known archive profile')
+    def __init__(self,startup,*,shared=True,profile='content',observation_sink=None,observation_archive=None,population=3):
+        if population not in (3,4,8,16,32) or len(startup)!=population or profile not in ('content','metadata','state','events','timing'):
+            raise ValueError('Expected the registered business population and a known archive profile')
+        self.population=population
         self.resources=ExitStack();self.closed=False;self.stations={};self.volumes={}
         self.locks={a:threading.RLock() for a in startup}
         self.networks={};accounts={};self.terminal_service=None
@@ -118,7 +119,7 @@ finally:
                     'service_state_volume':self.service_volume, 'service_state_path':'/var/tmp/exports/archive.sqlite',
                     'memory_bytes':host['Memory'],'nano_cpus':host['NanoCpus'],'pids_limit':host['PidsLimit']}
             for namespace in ('pid','ipc','mnt','net'):
-                if len({v['namespaces'][namespace] for v in self.bindings.values()})!=3:
+                if len({v['namespaces'][namespace] for v in self.bindings.values()})!=population:
                     raise RuntimeError('Archive workstations unexpectedly share '+namespace)
         except BaseException:
             self.close();raise

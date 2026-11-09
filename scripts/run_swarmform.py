@@ -58,7 +58,7 @@ def source_paths():
     # Operator witnesses and tests do not execute in a model rollout. Existing
     # registrations still verify their original complete code_hashes below.
     return [p for p in paths if '/registrations/' not in p and '/tests/' not in p
-            and (not p.startswith('scripts/') or p == 'scripts/run_swarmform.py')
+            and (not p.startswith('scripts/') or p in ('scripts/run_swarmform.py','scripts/run_swarmform_structure.py'))
             and (Path(p).suffix in ('.py', '.js', '.mjs', '.json', '.lock', '.txt') or Path(p).name == 'Dockerfile')
             and not (ROOT / p).is_symlink()]
 

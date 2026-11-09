@@ -26,7 +26,8 @@ def completeness(root, registration, trajectories=None):
     duplicates = sorted(actor for actor, count in counts.items() if count != 1)
     other_phases = [{'phase': row.get('phase'), 'actor': row.get('actor')}
                     for row in trajectories if row.get('phase') != 'natural']
-    registration_complete = registration.get('population') == 3 and len(registered) == 3
+    allowed = (4, 8, 16, 32) if registration.get('study_mode') == 'swarmform-structure' else (3,)
+    registration_complete = registration.get('population') in allowed and len(registered) == registration.get('population')
     native_complete = native == registered
     atif_complete = atif == registered and not duplicates and not other_phases
     continuity_complete = native_complete and atif_complete and verified == registered

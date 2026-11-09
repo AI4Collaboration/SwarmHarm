@@ -61,12 +61,13 @@ class FileStation(DockerWorkstation):
 class FileDeployment:
     """Own only resources created by this fixture; historical workstations are untouched."""
 
-    def __init__(self, startup, *, shared=True, observation_sink=None, observation_archive=None, profile='content'):
+    def __init__(self, startup, *, shared=True, observation_sink=None, observation_archive=None, profile='content', population=3):
         if profile not in ('content','metadata','state','events','timing'):
             raise ValueError('Unknown file access profile')
         self.profile=profile
-        if len(startup) != 3:
-            raise ValueError('The matched SwarmForm input requires three stations')
+        if population not in (3,4,8,16,32) or len(startup) != population:
+            raise ValueError('The workstation count differs from the registered population')
+        self.population = population
         self.stations, self.volumes = {}, {}
         self.locks = {actor: threading.RLock() for actor in startup}
         self.resources = ExitStack()
@@ -130,7 +131,7 @@ class FileDeployment:
                              'observer_enabled': station.trace_commands,
                              'container_cap_add': row['HostConfig']['CapAdd'],
                              'container_cap_drop': row['HostConfig']['CapDrop']}
-        if len({v['volume'] for v in result.values()}) != (1 if shared else 3):
+        if len({v['volume'] for v in result.values()}) != (1 if shared else self.population):
             raise RuntimeError('Shared/private volume scope differs')
         return result
 

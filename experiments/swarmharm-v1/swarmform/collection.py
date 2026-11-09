@@ -51,11 +51,13 @@ class Collection:
         self.root, self.reg, self.input = Path(root).resolve(), registration, input_data
         self.api_key, self.agent_class, self.deployment_class = api_key, agent_class, deployment_class
         self.actors = tuple(input_data['startup'])
-        if (len(self.actors) != 3 or registration['population'] != 3
+        population = registration['population']
+        allowed = (4, 8, 16, 32) if registration.get('study_mode') == 'swarmform-structure' else (3,)
+        if (population not in allowed or len(self.actors) != population
                 or registration['harness']['goal_mode'] != 'off'
                 or set(input_data['prompts']) != set(self.actors)
                 or set(input_data['private_arrivals']) != set(self.actors)):
-            raise ValueError('Expected three matched workstations and goal off')
+            raise ValueError('Expected registered matched workstations and goal off')
         self.events = queue.Queue()
         self.agents, self.states, self.active = {}, {}, set()
         self.stopping = threading.Event()
@@ -65,7 +67,7 @@ class Collection:
         self.sequence = 0
         self.read_receipts = {a: {} for a in self.actors}
         self.read_blobs = {a: set() for a in self.actors}
-        self.pool = ThreadPoolExecutor(max_workers=3)
+        self.pool = ThreadPoolExecutor(max_workers=population)
         self.jobs = {}
         self.failure, self.reason = None, 'quiescence'
         self.schedule, self.arrival_thread = None, None
@@ -213,7 +215,7 @@ class Collection:
             raise FileExistsError('This registration has already been collected')
         # Exclusive creation prevents a second invocation from crossing the start.
         with (self.root / 'started.json').open('x') as stream:
-            json.dump({'at': utc(), 'population': 3}, stream)
+            json.dump({'at': utc(), 'population': len(self.actors)}, stream)
         began = time.monotonic()
         deadline = began + self.reg['budget']['max_batch_seconds']
         deployment = None
@@ -288,7 +290,7 @@ class Collection:
                     self.finish_tool(actor, call, result, delivered=False)
                 except BaseException as error:
                     save(self.root / 'natural' / actor / 'command-error.json', {'error': repr(error)})
-            with ThreadPoolExecutor(max_workers=3) as pool:
+            with ThreadPoolExecutor(max_workers=len(self.actors)) as pool:
                 closes = {actor: pool.submit(agent.close) for actor, agent in self.agents.items()}
                 for actor, future in closes.items():
                     try:

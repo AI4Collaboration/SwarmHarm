@@ -4,6 +4,8 @@ from swarmform.file_deployment import FileDeployment
 
 
 def make_deployment(startup, registration, **observations):
+    if registration.get('study_mode') == 'swarmform-structure':
+        observations['population'] = registration['population']
     settings = registration['deployment']
     if not isinstance(settings.get('shared'), bool):
         raise ValueError('A deployment must declare its shared scope')
