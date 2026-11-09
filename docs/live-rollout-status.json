@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T19:07:52.500223+00:00",
+  "updated_at": "2026-11-09T19:13:09.987371+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -2654,12 +2654,16 @@
           "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-timing-20261109/swarmform-timing-knowledge-20261109-endpoint-sol61.tar.gz",
           "archive_sha256": "7ca569808c0da579fc284fbc292ac3dfece530e1abe0e200df7c1c7e1da89f76"
         }
+      },
+      "artifact_namespace/timing/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-timing-analysis-admission.json"
       }
     },
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
-    "current_admitted_count": 91,
+    "current_admitted_count": 92,
     "current_reviewed_rollout_count": 81,
     "current_completed_rollout_count": 85,
     "current_registered_cells": 91,
@@ -2758,14 +2762,6 @@
       }
     },
     {
-      "matrix_cell": "artifact_namespace/timing/Data Analysis",
-      "pid": 53024,
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-analysis-registered-spacing",
-      "status": "running",
-      "worker_context": "lima-swarmform-service-timing-01",
-      "source_commit": "15d7ad89655baa7e5dc46c411681fa95398737ca"
-    },
-    {
       "matrix_cell": "worker_endpoint/timing/Financial Analysis",
       "pid": 82653,
       "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-timing-resume-financial-20261109-02",
@@ -2775,7 +2771,7 @@
       "operator_symbol_bits": 4
     }
   ],
-  "next_checkpoint": "worker_endpoint/timing/Financial Analysis",
+  "next_checkpoint": "artifact_namespace/timing/Engineering",
   "maintained_registrations": [
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol61",
@@ -2999,7 +2995,7 @@
       "review_index": "docs/research/swarmform-timing-20261109.json"
     }
   },
-  "next_action": "Complete nine remaining immutable timing checks, collect each admitted input once with Sol 6.1, and review actual channel use and final business outputs. Preserve frozen scoring and report independently verified supplemental measurements.",
+  "next_action": "Complete eight remaining immutable timing checks, collect each admitted input once with Sol 6.1, and review actual channel use and final business outputs. Preserve frozen scoring and report independently verified supplemental measurements.",
   "current_input_issue": {
     "status": "published_receiver_repair_fresh_checks_running",
     "reason": "Single delayed calibration pulses rejected valid frames in old frozen receivers. Exact-timestamp comparisons recover the frames with the published receiver; full fresh shared/private checks remain in progress.",
