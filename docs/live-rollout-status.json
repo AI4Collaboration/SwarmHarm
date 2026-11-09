@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T13:58:08.103163+00:00",
+  "updated_at": "2026-11-09T14:15:48.712648+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -340,12 +340,20 @@
       "shared_ipc/event_pattern/Knowledge Work": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/current-ipc-events-knowledge-admission.json"
+      },
+      "artifact_namespace/event_pattern/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-events-analysis-admission.json"
+      },
+      "shared_ipc/timing/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-timing-analysis-admission.json"
       }
     },
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
-    "current_admitted_count": 75,
+    "current_admitted_count": 77,
     "current_reviewed_rollout_count": 0
   },
   "current_source_change": {
@@ -356,12 +364,43 @@
   "active_rollouts": [],
   "active_input_checks": [
     {
-      "matrix_cell": "shared_ipc/timing/Data Analysis",
-      "status": "running",
-      "output": "work/eval-readiness/resume-ipc-20261109-r4/data-analysis--timing"
+      "matrix_cell": "shared_ipc/timing/Financial Analysis",
+      "pid": 87958,
+      "output": "work/eval-readiness/resume-ipc-20261109-r4/financial-analysis--timing",
+      "status": "running"
+    },
+    {
+      "matrix_cell": "worker_endpoint/timing/Engineering",
+      "pid": 84633,
+      "output": "work/eval-readiness/swarmform-endpoint-timing-resume-engineering-20261109-02",
+      "status": "running"
+    },
+    {
+      "matrix_cell": "worker_endpoint/timing/Data Analysis",
+      "pid": 88000,
+      "output": "work/eval-readiness/swarmform-endpoint-timing-resume-analysis-20261109-01",
+      "status": "running"
+    },
+    {
+      "matrix_cell": "artifact_namespace/timing/Engineering",
+      "pid": 83392,
+      "output": "work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-engineering-rs-recovery",
+      "status": "running"
+    },
+    {
+      "matrix_cell": "artifact_namespace/event_pattern/Financial Analysis",
+      "pid": 86912,
+      "output": "work/eval-readiness/swarmform-services-resume-20261109-01/archive-events-financial",
+      "status": "running"
+    },
+    {
+      "matrix_cell": "job_namespace/operational_state/Data Analysis",
+      "pid": 86764,
+      "output": "work/eval-readiness/swarmform-services-resume-20261109-01/job-state-analysis",
+      "status": "running"
     }
   ],
-  "next_checkpoint": "worker_endpoint/timing/Engineering",
+  "next_checkpoint": "job_namespace/operational_state/Data Analysis",
   "maintained_registrations": [
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol61",
@@ -405,34 +444,14 @@
     "max_active_inputs": 8,
     "max_timing_inputs": 4,
     "model_calls": 0,
-    "temporary_window": {
-      "purpose": "Measure one complete service timing source under low input-runner load.",
-      "status": "completed",
-      "result": "First source reconstructed exactly by both receivers; subsequent source failed with the frozen timing codec. Preserved complete partial attempt; no admission.",
-      "evidence": "work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-engineering/first-source-review.json"
-    },
     "worker_capacity_record": "work/eval-readiness/swarmform-runtime-capacity-20261109/runtime-record.json",
     "max_timing_inputs_per_worker": 2
   },
-  "interrupted_input_checks": [
-    {
-      "matrix_cell": "artifact_namespace/operational_state/Engineering",
-      "output": "work/eval-readiness/swarmform-archive-state-engineering-20261109-01",
-      "status": "collector_missing_private_scope_incomplete",
-      "preserved_paused_containers": 4
-    },
-    {
-      "matrix_cell": "shared_ipc/payload_content/Engineering",
-      "output": "work/eval-readiness/swarmform-ipc-current-20261109-batch/engineering--payload_content",
-      "status": "collector_missing_private_scope_incomplete",
-      "preserved_paused_containers": 3
-    },
-    {
-      "matrix_cell": "shared_ipc/event_pattern/Engineering",
-      "output": "work/eval-readiness/swarmform-ipc-events-current-20261109-batch/engineering",
-      "status": "collector_missing_private_scope_incomplete",
-      "preserved_paused_containers": 3
-    }
-  ],
-  "host_capacity_record": "work/eval-readiness/swarmform-keyring-capacity-20261109.json"
+  "host_capacity_record": "work/eval-readiness/swarmform-keyring-capacity-20261109.json",
+  "retired_input_failures": {
+    "count": 8,
+    "model_calls": 0,
+    "notes": "work/eval-readiness/swarmform-input-repair-notes-20261109.json",
+    "raw_removed_at_user_request": true
+  }
 }

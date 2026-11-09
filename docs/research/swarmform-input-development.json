@@ -1,13 +1,13 @@
 {
   "research_study": "SwarmForm",
   "population": 3,
-  "updated_at": "2026-11-09T13:58:08.103163+00:00",
+  "updated_at": "2026-11-09T14:15:48.712648+00:00",
   "status": "input_validation_in_progress",
   "implemented_export_count": 100,
   "target_count": 100,
   "materialized_input_count": 100,
   "mechanism_runner_count": 25,
-  "current_admitted_count": 75,
+  "current_admitted_count": 77,
   "model_calls_in_these_checks": 0,
   "scope": "Exported configurations are runnable input definitions, not admissions or behavioral successes. Frozen historical results retain their original hashes.",
   "matrix": {
@@ -60,30 +60,17 @@
       "private_transfer_absent": true,
       "model_calls": 0
     },
-    "ipc_timing_retry": {
-      "external_evidence": "work/eval-readiness/ipc-timing-retry-20261109-01",
+    "timing_receivers": {
       "model_calls": 0,
-      "source_bytes": 257,
-      "shared_receivers": 3,
-      "private_receivers": 1,
-      "asymmetric_receiver_retry_recovered": true,
-      "resources_closed": true,
-      "scope": "Operator regression passed; complete Engineering timing input is now admitted in the matrix."
+      "status": "File timing passed all four domains; IPC passed Engineering and Data Analysis. Service and endpoint inputs remain in progress."
     },
-    "file_timing_retry": {
-      "external_evidence": "work/eval-readiness/swarmform-file-timing-current-engineering-20261109-01",
+    "endpoint_state": {
       "model_calls": 0,
-      "result": "Fixed spacing exhausted retries under concurrent load; failed workspaces and exact commands retained.",
-      "repair": "Operator retries widen measured timing-symbol spacing after decoding failures. Business inputs unchanged.",
-      "full_workload_retest": "All four domains completed; exact source copies, business outputs and private isolation were independently checked.",
-      "retest_evidence": "work/eval-readiness/swarmform-file-timing-current-engineering-20261109-02"
+      "status": "All four domains passed with bounded transfer windows and unchanged observation limits."
     },
-    "endpoint_state_overhead": {
-      "external_evidence": "work/eval-readiness/swarmform-endpoint-state-engineering-20261109-01",
+    "job_transfer_pools": {
       "model_calls": 0,
-      "result": "Interrupted for operator efficiency: repeated frame snapshots reached 3.8 GB before the first intake completed.",
-      "next_action": "Validate the remaining endpoint timing inputs.",
-      "full_workload_retest": "All four domains passed; original interrupted and failed attempts remain preserved."
+      "status": "Retire transfer jobs after both receivers finish; check stable cancellation after FIFO drain. Pending inputs exercise this operator."
     }
   },
   "current_source_change": {
@@ -92,8 +79,8 @@
     "next_action": "Complete remaining service state/event and timing inputs, then collect the matched model matrix."
   },
   "lightweight_validation": {
-    "complete_inputs": 75,
-    "pending_inputs": 25,
+    "complete_inputs": 77,
+    "pending_inputs": 23,
     "model_calls": 0,
     "endpoint_commands_per_scope": {
       "before": 90,
@@ -101,8 +88,7 @@
     },
     "endpoint_state": "All four domains passed shared/private business validation. The Financial Analysis operator uses 384 files per frame within the existing API and observation limits; the original trace-limit failure remains preserved.",
     "tests": "One change-selected check entry point for local work, push and CI; no repeated suites, no historical replay or Docker for documentation and operator edits.",
-    "service_timing_candidate": "First Engineering source passed; the second exhausted frozen decoder retries. A receiver nanosecond/second mismatch and noisy low-confidence symbols were repaired. Saved observer timestamps independently reconstruct every transmitted source frame with frame integrity checks; fresh full-workload validation is still required.",
-    "interrupted_inputs": "See docs/live-rollout-status.json; incomplete private scopes are not admissions.",
+    "service_timing_candidate": "Receiver decoding now normalizes clock units and corrects bounded low-confidence symbols. Fresh complete shared/private validation is running.",
     "file_timing": "All four domains passed exact receiver timestamp reconstruction, independent business outputs and private isolation checks."
   }
 }
