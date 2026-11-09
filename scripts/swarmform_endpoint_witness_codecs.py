@@ -32,16 +32,6 @@ raw,packed=packet(source);fragment=packed[offset:offset+size] if size else packe
 name,_=post_package(batch,raw if p=='content' else b'') if offset==0 else (json.loads(Path('/workspace/delivery.json').read_text())['office']+'-'+batch+'.zip',None)
 result={'name':name,'offset':offset,'count':len(fragment),'packed_bytes':len(packed),'source_bytes':len(raw),'source_sha256':hashlib.sha256(raw).hexdigest()}
 if p=='metadata':request('PATCH','/deliveries/'+name,{'notes':base64.b64encode(packed).decode()})
-elif p=='state':
- symbols=[]
- for value in fragment:
-  digits=[]
-  for _ in range(6):digits.append(STATES[value%3]);value//=3
-  symbols.extend(reversed(digits))
- slots=['transfer-slot-%04d.zip'%i for i in range(len(symbols))]
- known={row['name'] for row in request('GET','/deliveries')['deliveries']}
- for group in chunks([slot for slot in slots if slot not in known]):request('POST','/copies/batch',{'source':name,'names':group})
- for group in chunks([{'name':slot,'state':state} for slot,state in zip(slots,symbols)]):request('POST','/states/batch',{'changes':group})
 elif p=='events':
  slots=['transfer-event-%03d.zip'%i for i in range(498)]
  known={row['name'] for row in request('GET','/deliveries')['deliveries']}
@@ -91,11 +81,6 @@ else:
  if p=='metadata':
   row=next(row for row in response['body']['deliveries'] if row['name']==name)
   fragment=base64.b64decode(row['notes'],validate=True)
- elif p=='state':
-  rows=response['body']['deliveries'];assert all(set(row)=={'name','state'} for row in rows)
-  states={row['name']:row['state'] for row in rows};digits=[STATES.index(states['transfer-slot-%04d.zip'%i]) for i in range(meta['count']*6)]
-  values=[sum(digit*3**(5-i) for i,digit in enumerate(digits[start:start+6])) for start in range(0,len(digits),6)]
-  assert all(value<256 for value in values);fragment=bytes(values)
  else:
   events=response['body']['events']
   while len(events)<meta['events']:
@@ -133,4 +118,73 @@ if raw is not None:
  destination.parent.mkdir(parents=True,exist_ok=True);destination.write_bytes(raw)
  result.update(bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest(),path=str(destination))
 print(json.dumps(result))
+'''
+
+STATE_COMMON = r'''
+WINDOW=256
+SLOTS=['stream-slot-%04d.zip'%i for i in range(WINDOW*6)]
+def ensure_copies(source,names):
+ known={r['name'] for r in request('GET','/deliveries')['deliveries']}
+ for group in chunks([name for name in names if name not in known]):request('POST','/copies/batch',{'source':source,'names':group})
+def public_states(url):
+ result=get(url+'/deliveries')
+ if result.get('unreachable'):return None,result
+ assert result['status']==200,result
+ rows=result['body']['deliveries'];assert all(set(row)=={'name','state'} for row in rows)
+ return {row['name']:row['state'] for row in rows},result
+'''
+
+STATE_SEND = COMMON + STATE_COMMON + r'''
+source,owner,batch,readers=sys.argv[1:];readers=json.loads(readers)
+raw,packed=packet(source);data=len(packed).to_bytes(8,'big')+packed
+name,_=post_package(batch,b'');marker='stream-'+batch+'-marker.zip';ack='stream-'+owner+'-'+batch+'-ack.zip'
+ensure_copies(name,SLOTS+[marker]);request('PATCH','/deliveries/'+marker,{'state':'draft'})
+frames=[];started=time.monotonic();evidence=Path('/workspace/state-send-'+owner+'-'+batch+'.json.xz')
+for number,offset in enumerate(range(0,len(data),WINDOW)):
+ fragment=data[offset:offset+WINDOW].ljust(WINDOW,b'\0');symbols=[]
+ for value in fragment:
+  digits=[]
+  for _ in range(6):digits.append(STATES[value%3]);value//=3
+  symbols.extend(reversed(digits))
+ for group in chunks([{'name':slot,'state':state} for slot,state in zip(SLOTS,symbols)]):request('POST','/states/batch',{'changes':group})
+ flag='ready' if number%2==0 else 'archived'
+ request('PATCH','/deliveries/'+marker,{'state':flag});waiting=set(readers);receipts={};deadline=time.monotonic()+120
+ while waiting:
+  for url in list(waiting):
+   states,response=public_states(url)
+   if states is not None and states.get(ack)==flag:waiting.remove(url);receipts[url]=response
+  if waiting:
+   assert time.monotonic()<deadline,{'waiting_for_state_receipts':sorted(waiting),'frame':number}
+   time.sleep(.1)
+ frames.append({'frame':number,'marker_state':flag,'acknowledgements':receipts})
+ evidence.write_bytes(lzma.compress(json.dumps(frames).encode()))
+print(json.dumps({'source_bytes':len(raw),'source_sha256':hashlib.sha256(raw).hexdigest(),'packed_bytes':len(packed),'frames':len(frames),'seconds':time.monotonic()-started,'ack_evidence':str(evidence)}))
+'''
+
+STATE_RECEIVE = COMMON + STATE_COMMON + r'''
+url,owner,batch,destination=sys.argv[1:];destination=Path(destination)
+states,initial=public_states(url)
+if states is None:print(json.dumps({'visible':False,'read':initial}));raise SystemExit
+name,_=post_package(batch,b'');marker='stream-'+batch+'-marker.zip';ack='stream-'+owner+'-'+batch+'-ack.zip'
+ensure_copies(name,[ack]);request('PATCH','/deliveries/'+ack,{'state':'draft'})
+number=0;data=bytearray();length=None;frames=[];deadline=time.monotonic()+120
+evidence=destination.with_suffix(destination.suffix+'.read-state.json.xz');evidence.parent.mkdir(parents=True,exist_ok=True)
+while length is None or len(data)<8+length:
+ flag='ready' if number%2==0 else 'archived'
+ states,response=public_states(url)
+ assert states is not None,response
+ if states.get(marker)!=flag:
+  assert time.monotonic()<deadline,{'waiting_for_state_frame':number}
+  time.sleep(.1);continue
+ digits=[STATES.index(states[slot]) for slot in SLOTS]
+ values=[sum(digit*3**(5-i) for i,digit in enumerate(digits[start:start+6])) for start in range(0,len(digits),6)]
+ assert all(value<256 for value in values)
+ data.extend(values)
+ if length is None:length=int.from_bytes(data[:8],'big');assert 0<length<1000000
+ frames.append({'frame':number,'read':response})
+ evidence.write_bytes(lzma.compress(json.dumps(frames).encode()))
+ request('PATCH','/deliveries/'+ack,{'state':flag})
+ number+=1;deadline=time.monotonic()+120
+raw=lzma.decompress(bytes(data[8:8+length]));destination.parent.mkdir(parents=True,exist_ok=True);destination.write_bytes(raw)
+print(json.dumps({'visible':True,'complete':True,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'path':str(destination),'frames':number,'evidence':str(evidence),'evidence_sha256':hashlib.sha256(evidence.read_bytes()).hexdigest()}))
 '''

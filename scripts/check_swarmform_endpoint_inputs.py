@@ -5,7 +5,6 @@ import argparse
 import base64
 from hashlib import sha256
 import json
-import lzma
 import subprocess
 from pathlib import Path
 import shlex
@@ -23,7 +22,7 @@ from swarmform.domain_inputs import DOMAINS, descriptor
 from swarmform.arrivals import IntakeSchedule
 from swarmform.outcomes import review as review_outcomes
 from check_swarmform_ipc_inputs import SOURCE_FILES, SOLVERS, wait_file
-from swarmform_endpoint_witness_codecs import PUBLISH, RECEIVE
+from swarmform_endpoint_witness_codecs import PUBLISH, RECEIVE, STATE_SEND, STATE_RECEIVE
 from swarmform.endpoint_deployment import EndpointDeployment
 from swarmform.input_catalog import build, deployment_registration, task_network
 from swarmform.inputs import digest
@@ -270,8 +269,16 @@ def business(encoding, domain, shared, output, dataset_key='november'):
     commands, transfers, writes, snapshots = [], [], [], {}
     schedule = IntakeSchedule(inputs['private_arrivals'],
                               manifest['effective_settings']['arrival_offsets'], activated_at=0)
+    def retain_terminal(actor, phase, snapshot):
+        if phase == 'terminal':
+            target = output / (actor + '-closing-terminal.json')
+            target.write_text(json.dumps(snapshot) + '\n')
+            return {'path': str(target), 'sha256': sha256(target.read_bytes()).hexdigest()}
+        return None
+
     with EndpointDeployment(inputs['startup'], shared=shared, profile=profile,
-                            observation_archive=output / 'observations') as deployment:
+                            observation_archive=output / 'observations',
+                            observation_sink=retain_terminal) as deployment:
         def run(actor, text):
             result, snapshot = deployment.execute(actor, text)
             commands.append({'actor': actor, 'command': text, 'result': result})
@@ -299,15 +306,34 @@ def business(encoding, domain, shared, output, dataset_key='november'):
             filename = SOURCE_FILES[domain]
             source_path = f'intake/{batch}/{filename}'
             expected = {a: inputs['private_arrivals'][a][batch][source_path].encode() for a in actors}
-            lengths = {a: len(lzma.compress(data)) for a, data in expected.items()}
-            # Only state has a bounded reusable slot window. Frame coordinates
-            # contain no private source bytes and are identical for all readers.
-            window = 256 if profile == 'state' else max(lengths.values())
-            for offset in range(0, max(lengths.values()), window):
-                active = [a for a in actors if offset < lengths[a]]
-                pending = {a: start(a, command(PUBLISH, profile, source_path, batch, offset,
-                                              window if profile == 'state' else 0), settle=profile == 'timing') for a in active}
-                sent_by_owner = {owner: finish(owner, pending[owner])[0][0] for owner in active}
+            def retain(owner, actor, received, snapshot):
+                assert received.get('visible', False) == (shared or actor == owner), received
+                if received.get('complete'):
+                    destination = f'/workspace/received/{owner}/{batch}/{filename}'
+                    actual = base64.b64decode(snapshot['/workspace'][destination], validate=True)
+                    assert actual == expected[owner], (actor, owner, batch)
+                    transfers.append({'reader': actor, 'owner': owner, 'batch': batch,
+                                      'bytes': len(actual), 'sha256': sha256(actual).hexdigest(),
+                                      'read_evidence': received['evidence'],
+                                      'read_evidence_sha256': received['evidence_sha256']})
+
+            if profile == 'state':
+                for owner in actors:
+                    readers = {}
+                    for actor in actors:
+                        destination = f'/workspace/received/{owner}/{batch}/{filename}'
+                        readers[actor] = start(actor, command(STATE_RECEIVE, urls[owner], owner, batch, destination))
+                    ack_urls = [urls[a] for a in actors if shared or a == owner]
+                    sender = start(owner, command(STATE_SEND, source_path, owner, batch, json.dumps(ack_urls)))
+                    sent, _ = finish(owner, sender)
+                    writes.append({'owner': owner, 'batch': batch, **sent[0]})
+                    for actor in actors:
+                        received, snapshot = finish(actor, readers[actor])
+                        retain(owner, actor, received[0], snapshot)
+            else:
+                pending = {a: start(a, command(PUBLISH, profile, source_path, batch, 0, 0),
+                                    settle=profile == 'timing') for a in actors}
+                sent_by_owner = {owner: finish(owner, pending[owner])[0][0] for owner in actors}
                 for owner, sent in sent_by_owner.items():
                     writes.append({'owner': owner, 'batch': batch, **sent})
                 for actor in actors:
@@ -319,19 +345,11 @@ def business(encoding, domain, shared, output, dataset_key='november'):
                         reads.append(command(RECEIVE, profile, urls[owner], json.dumps(wire), destination))
                     job = start(actor, 'set -e\n' + '\n'.join(reads))
                     received_rows, snapshot = finish(actor, job)
-                    assert len(received_rows) == len(active), received_rows
-                    for owner, received in zip(active, received_rows):
-                        assert received.get('visible', False) == (shared or actor == owner), received
-                        if received.get('complete'):
-                            destination = f'/workspace/received/{owner}/{batch}/{filename}'
-                            actual = base64.b64decode(snapshot['/workspace'][destination], validate=True)
-                            assert actual == expected[owner], (actor, owner, batch)
-                            transfers.append({'reader': actor, 'owner': owner, 'batch': batch,
-                                              'bytes': len(actual), 'sha256': sha256(actual).hexdigest(),
-                                              'read_evidence': received['evidence'],
-                                              'read_evidence_sha256': received['evidence_sha256']})
-                (output / 'transfers.json').write_text(json.dumps(transfers, indent=2) + '\n')
-                (output / 'writes.json').write_text(json.dumps(writes, indent=2) + '\n')
+                    assert len(received_rows) == len(actors), received_rows
+                    for owner, received in zip(actors, received_rows):
+                        retain(owner, actor, received, snapshot)
+            (output / 'transfers.json').write_text(json.dumps(transfers, indent=2) + '\n')
+            (output / 'writes.json').write_text(json.dumps(writes, indent=2) + '\n')
             for actor in actors:
                 run(actor, command(SOLVERS[domain].replace('/var/tmp/exports', '/workspace/received'),
                                    json.dumps(list(module.BATCHES[:stage + 1]))))

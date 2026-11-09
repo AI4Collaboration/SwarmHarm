@@ -1,13 +1,13 @@
 {
   "research_study": "SwarmForm",
   "population": 3,
-  "updated_at": "2026-11-09T11:36:11Z",
-  "status": "all_inputs_materialize_mechanism_validation_in_progress",
+  "updated_at": "2026-11-09T11:43:42Z",
+  "status": "input_validation_paused",
   "implemented_export_count": 100,
   "target_count": 100,
   "materialized_input_count": 100,
   "mechanism_runner_count": 25,
-  "current_admitted_count": 25,
+  "current_admitted_count": 32,
   "model_calls_in_these_checks": 0,
   "scope": "Exported configurations are runnable input definitions, not admissions or behavioral successes. Frozen historical results retain their original hashes.",
   "matrix": {
@@ -60,12 +60,6 @@
       "private_transfer_absent": true,
       "model_calls": 0
     },
-    "job_content_business": {
-      "admission": "docs/research/swarmform-inputs/current-job-content-analysis-admission.json",
-      "shared_correct_published_releases": 9,
-      "private_correct_published_releases": 0,
-      "model_calls": 0
-    },
     "ipc_timing_retry": {
       "external_evidence": "work/eval-readiness/ipc-timing-retry-20261109-01",
       "model_calls": 0,
@@ -74,44 +68,22 @@
       "private_receivers": 1,
       "asymmetric_receiver_retry_recovered": true,
       "resources_closed": true,
-      "scope": "Operator-protocol regression only. Full domain workloads and input admission remain open."
-    },
-    "archive_metadata_business": {
-      "admission": "docs/research/swarmform-inputs/current-archive-metadata-financial-admission.json",
-      "shared_correct_published_releases": 9,
-      "private_correct_published_releases": 0,
-      "model_calls": 0
-    },
-    "ipc_event_business": {
-      "admission": "docs/research/swarmform-inputs/current-ipc-events-analysis-admission.json",
-      "shared_correct_published_releases": 9,
-      "private_correct_published_releases": 0,
-      "model_calls": 0
-    },
-    "job_content_engineering": {
-      "admission": "docs/research/swarmform-inputs/current-job-content-engineering-admission.json",
-      "shared_correct_published_releases": 9,
-      "private_correct_published_releases": 0,
-      "model_calls": 0
-    },
-    "endpoint_content_analysis": {
-      "admission": "docs/research/swarmform-inputs/current-endpoint-content-analysis-admission.json",
-      "shared_correct_published_releases": 9,
-      "private_correct_published_releases": 0,
-      "model_calls": 0
-    },
-    "ipc_content_business": {
-      "admission": "docs/research/swarmform-inputs/current-ipc-content-analysis-admission.json",
-      "shared_correct_published_releases": 9,
-      "private_correct_published_releases": 0,
-      "model_calls": 0
+      "scope": "Operator regression passed; complete Engineering timing input is now admitted in the matrix."
     },
     "file_timing_retry": {
       "external_evidence": "work/eval-readiness/swarmform-file-timing-current-engineering-20261109-01",
       "model_calls": 0,
       "result": "Fixed spacing exhausted retries under concurrent load; failed workspaces and exact commands retained.",
       "repair": "Operator retries widen measured timing-symbol spacing after decoding failures. Business inputs unchanged.",
-      "full_workload_retest": "pending"
+      "full_workload_retest": "Interrupted for user-requested pause; no admission.",
+      "retest_evidence": "work/eval-readiness/swarmform-file-timing-current-engineering-20261109-02"
+    },
+    "endpoint_state_overhead": {
+      "external_evidence": "work/eval-readiness/swarmform-endpoint-state-engineering-20261109-01",
+      "model_calls": 0,
+      "result": "Interrupted for operator efficiency: repeated frame snapshots reached 3.8 GB before the first intake completed.",
+      "next_action": "Stream frames within continuous operator processes using the same input and small state window.",
+      "full_workload_retest": "Streaming operator implemented and statically reviewed; not yet run."
     }
   },
   "current_source_change": {
@@ -119,6 +91,19 @@
     "prior_admissions_affected": 20,
     "current_source_admissions_completed": 16,
     "remaining_prior_cells_to_recheck": 4,
-    "next_action": "Complete eight parallel input-validation lanes; model collection remains paused."
+    "next_action": "Paused: review terminal evidence first; next validate the streamlined endpoint state witness and complete remaining current-source inputs."
+  },
+  "lightweight_validation": {
+    "complete_inputs": 32,
+    "pending_inputs": 68,
+    "model_calls": 0,
+    "endpoint_commands_per_scope": {
+      "before": 90,
+      "current_payload_metadata": 54
+    },
+    "endpoint_state": "Continuous processes reuse 256-byte slots and 100ms acknowledgement polling. Implemented, not yet validated on a full workload.",
+    "tests": "Duplicate catalog/fixture loops removed; one catalog check, one workload pass, quick local push gate.",
+    "service_timing_candidate": "External, unvalidated: work/eval-readiness/swarmform-services-current-20261109-batch/timing-candidate",
+    "interrupted_inputs": "See docs/live-rollout-status.json; incomplete private scopes are not admissions."
   }
 }

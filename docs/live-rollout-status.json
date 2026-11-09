@@ -1,9 +1,9 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T11:36:11Z",
+  "updated_at": "2026-11-09T11:43:42Z",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
-  "status": "input_construction_complete_mechanism_validation_in_progress",
+  "status": "input_validation_paused",
   "current_question": "Which current inputs lead three initially separate agents to create and reuse a useful communication convention?",
   "population": 3,
   "current_models": [
@@ -140,12 +140,40 @@
       "worker_endpoint/identifiers_metadata/Engineering": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/current-endpoint-metadata-engineering-admission.json"
+      },
+      "shared_ipc/operational_state/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-state-analysis-admission.json"
+      },
+      "worker_endpoint/payload_content/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-endpoint-content-engineering-admission.json"
+      },
+      "artifact_namespace/payload_content/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-content-engineering-admission.json"
+      },
+      "shared_ipc/timing/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-timing-engineering-admission.json"
+      },
+      "job_namespace/payload_content/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-job-content-knowledge-admission.json"
+      },
+      "worker_endpoint/payload_content/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-endpoint-content-financial-admission.json"
+      },
+      "artifact_namespace/payload_content/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-content-analysis-admission.json"
       }
     },
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
-    "current_admitted_count": 25,
+    "current_admitted_count": 32,
     "current_reviewed_rollout_count": 0
   },
   "current_source_change": {
@@ -154,51 +182,8 @@
     "action": "Regenerate current-source shared/private witnesses and admit each verified input. Behavioral collection uses representative matched model pairs and remains separate from input readiness."
   },
   "active_rollouts": [],
-  "active_input_checks": [
-    {
-      "pid": 7524,
-      "matrix_cell": "shared_ipc/timing/Engineering",
-      "output": "work/eval-readiness/swarmform-ipc-timing-full-20261109-01",
-      "model_calls": 0
-    },
-    {
-      "pid": 36335,
-      "matrix_cell": "worker_endpoint/payload_content/Engineering",
-      "output": "work/eval-readiness/swarmform-endpoint-content-engineering-20261109-01",
-      "model_calls": 0
-    },
-    {
-      "pid": 36767,
-      "matrix_cell": "artifact_namespace/payload_content/Engineering",
-      "output": "work/eval-readiness/swarmform-services-current-20261109-batch/artifact-content-engineering",
-      "model_calls": 0
-    },
-    {
-      "pid": 37264,
-      "matrix_cell": "shared_ipc/event_pattern/Engineering",
-      "output": "work/eval-readiness/swarmform-ipc-events-current-20261109-batch/engineering",
-      "model_calls": 0
-    },
-    {
-      "pid": 41480,
-      "matrix_cell": "job_namespace/payload_content/Knowledge Work",
-      "output": "work/eval-readiness/swarmform-services-current-20261109-batch/job-content-knowledge",
-      "model_calls": 0
-    },
-    {
-      "pid": 41999,
-      "matrix_cell": "shared_ipc/operational_state/Data Analysis",
-      "output": "work/eval-readiness/swarmform-ipc-current-20261109-batch/data-analysis--operational_state",
-      "model_calls": 0
-    },
-    {
-      "pid": 42727,
-      "matrix_cell": "worker_endpoint/operational_state/Engineering",
-      "output": "work/eval-readiness/swarmform-endpoint-state-engineering-20261109-01",
-      "model_calls": 0
-    }
-  ],
-  "next_checkpoint": "shared_ipc/timing/Engineering",
+  "active_input_checks": [],
+  "next_checkpoint": "worker_endpoint/operational_state/Engineering",
   "maintained_registrations": [
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol61",
@@ -238,14 +223,37 @@
     "model_calls": 0,
     "external_record": "work/eval-readiness/swarmform-all100-source-check-01.json"
   },
-  "heartbeat": {
-    "automation_id": "swarmform-20",
-    "interval_minutes": 20,
-    "status": "ACTIVE"
-  },
   "input_validation_parallelism": {
     "max_active_inputs": 8,
     "max_timing_inputs": 2,
     "model_calls": 0
-  }
+  },
+  "pause": {
+    "requested": "2026-11-09",
+    "new_input_checks": false,
+    "new_model_rollouts": false,
+    "automatic_queue_advancement": false,
+    "scheduled_task": "deleted",
+    "resume": "Read the matrix and preserved interruption records; start fresh witnesses only when requested."
+  },
+  "interrupted_input_checks": [
+    {
+      "matrix_cell": "artifact_namespace/operational_state/Engineering",
+      "output": "work/eval-readiness/swarmform-archive-state-engineering-20261109-01",
+      "status": "collector_missing_private_scope_incomplete",
+      "preserved_paused_containers": 4
+    },
+    {
+      "matrix_cell": "shared_ipc/payload_content/Engineering",
+      "output": "work/eval-readiness/swarmform-ipc-current-20261109-batch/engineering--payload_content",
+      "status": "collector_missing_private_scope_incomplete",
+      "preserved_paused_containers": 3
+    },
+    {
+      "matrix_cell": "shared_ipc/event_pattern/Engineering",
+      "output": "work/eval-readiness/swarmform-ipc-events-current-20261109-batch/engineering",
+      "status": "collector_missing_private_scope_incomplete",
+      "preserved_paused_containers": 3
+    }
+  ]
 }

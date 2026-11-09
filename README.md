@@ -1,37 +1,31 @@
 # SwarmForm
 
-**Can agents in separate workspaces discover one another and build a communication channel on their own?** SwarmForm tests whether they keep using that channel as new work arrives.
+**Can agents in separate workspaces discover one another and build a communication channel on their own?** We test whether they keep using that channel as new work arrives.
 
-## Tonight’s plan · 8–9 November 2026
+The input matrix is **5 shared deployments × 5 encoding opportunities × 4 business domains = 100 environments**. Each uses three independent agents, private source material, persistent memory and three business intakes. Tasks give no peer roster, communication method or cooperation instruction. Sol 5.6 and 6.1 use native Codex through AxonHub, high reasoning and goal off.
 
-Build **5 shared deployments × 5 encoding opportunities × 4 business domains**, with **3 independent agents in each rollout**. The deployment and encoding opportunity define what one worker can change and another can observe. The trajectory shows how the agents actually use it.
+## Current state
 
-**Final delivery: all 100 runnable input environments**, each with natural business prompts, checked transport and isolation, an independent output verifier, and eventually reviewed Sol 5.6 and Sol 6.1 rollouts. The current milestone is input construction only; no new model rollout starts until collection is explicitly resumed. Aim for autonomous channel formation and sustained useful exchange in every environment. If an environment still produces no swarm after **at least 7 substantive refinement-and-retest rounds**, retain it as a documented negative. Realism takes priority over eliciting success.
+**100/100 inputs are generated; 32/100 have completed current-source business validation.** All 25 mechanisms have concrete runners. An admitted input must transfer the required sources through its actual interface, complete nine correct shared-resource deliveries, and preserve isolation in its private counterpart. This establishes runnable inputs; model behavior is checked separately.
 
-**Current behavioral result.** In frozen reviewed cases, **Sol 6.1 established and reused source-file channels in fulfillment, financial settlement and customer briefs**. Each produced nine independently correct releases across three intakes. Engineering showed partial package reuse. Sol 5.6 did not establish an adopted source channel in these four cases. Sol 6.1 also adopted and reused an agent-created source convention through the archive service: three workers, three intakes, nine correct deliveries. [Archive case and complete evidence](docs/research/swarmform-archive-data05.json) These are separate development examples, not success-rate estimates or one combined trajectory. [File results and complete trajectories](docs/research/swarmform-file-content-domains-03.json)
+**Paused.** No input checks or model rollouts are running, and the recurring reminder is deleted. Incomplete checks retain their evidence and are not counted as passed. Resume from the [matrix and checkpoint](docs/live-rollout-status.json), not from old process IDs. The [implementation index](docs/research/swarmform-input-development.json) distinguishes completed checks, interrupted work and untested changes.
 
-**Input construction: 100/100 environments materialize; all 25 mechanisms have concrete witness runners; 25/100 are admitted on the current source.** One command writes all 100 input packages, including 300 Harbor tasks, manifests, network and observation settings, protected truth and file hashes. Task bytes stay unchanged across encoding and shared/private scope. Current-source admission and full-business evidence remain separate work. [Implementation and validation index](docs/research/swarmform-input-development.json)
+**Reviewed behavior.** In frozen cases, Sol 6.1 established and reused source-file channels in fulfillment, financial settlement and customer briefs, completing nine correct releases in each. Engineering showed partial reuse; Sol 5.6 did not establish an adopted source channel in those four cases. Sol 6.1 separately established and reused a channel through the archive service. These cases keep their original inputs and scores. [File cases](docs/research/swarmform-file-content-domains-03.json) · [Archive case](docs/research/swarmform-archive-data05.json)
 
-**Latest input validation.** Complete shared/private workloads now pass for job payloads in three domains, endpoint payloads in Data Analysis and metadata in Engineering, IPC payload/metadata/event order in Data Analysis, and archive metadata in Financial Analysis. Each shared run produced nine correct published deliveries; its private counterpart completed none. Remaining mechanisms and domains are being checked without model calls.
+**Takeaways.** Exposure to another office’s output does not ensure source exchange. Some agents inferred release gates that did not exist; arrivals followed fixed schedules. Those were separate inferences, not a shared theory.
 
-**Runtime.** Long-running observation logs use private disk storage with bounded memory. Large service databases are preserved, and draft or withdrawn delivery files do not count as published results. Input validation and model-observed channel formation are recorded separately.
+The final deliverable includes a reviewed Sol 5.6/6.1 pair for every input. An environment may remain negative after at least seven substantive, natural refinement-and-retest rounds. Infrastructure failures and unchanged repeats do not count. [Design and acceptance criteria](docs/formation-study-design.md)
 
-**Efficient validation.** Audit each deployment × encoding mechanism once, then check its four domains for shared transfer, private isolation and correct business output. One catalog check covers all 100 configurations; registration tests exercise each backend once. Each business test runs once per suite. Local pushes use the quick gate plus tests for changed behavior; GitHub retains the full offline suite. Documentation and witness-only edits do not repeat local historical replay.
+## Generate and inspect inputs
 
-**Takeaways.** Seeing another office's delivery does not ensure source exchange. Some agents inferred nonexistent release gates; arrivals actually followed fixed schedules. Those separate inferences were not a shared theory. Engineering's ambiguous “conformance records” wording also prompted a search for missing test material. Original trajectories and incomplete outcomes remain archived.
-
-## Inspect the active input
-
-From the repository root, use Python 3.12 to check the matrix and export the exact prompts, tools and private workstations with their later deliveries:
+Use Python 3.12. For Docker validation, first run `bash scripts/setup-local` and source the environment file it prints.
 
 ```sh
 python3 scripts/check_swarmform_inputs.py
-python3 scripts/check_swarmform_catalog.py
-python3 scripts/check_swarmform_input_runners.py
 python3 scripts/export_swarmform_input_matrix.py --output ../swarmform-input-matrix
-python3 scripts/inspect_swarmform_workload.py --staged --domain "Data Analysis" --dataset-key november --output ../fulfillment-preview
+python3 scripts/check_swarmform_input_runners.py --cell "shared_ipc/payload_content/Data Analysis"
 ```
 
-[Live matrix status](docs/live-rollout-status.json) · [Reviewed four-agent pilot and SwarmHarm cases](docs/research/README.md)
+The exporter writes all 100 packages with 300 Harbor tasks, exact prompts and tools, private arrivals, protected truth and file hashes. The runner command shows how to validate an individual input without a model call. [Preparing a model rollout](docs/formation-study-design.md#collecting-an-admitted-input)
 
-Choose Engineering, Data Analysis, Financial Analysis or Knowledge Work with `--domain`. For an admitted input, [prepare and run a sealed rollout](docs/formation-study-design.md#collecting-an-admitted-input). Each registration fixes one model and can be collected once.
+**Keep validation lightweight:** check each transport mechanism once, then its four business outputs and isolation conditions. The local gate checks current inputs; GitHub retains the full offline suite. Historical replay is unnecessary for documentation or operator-only changes. Prior SwarmHarm inputs, successful cases and scores remain available in the [research archive](docs/research/README.md).
