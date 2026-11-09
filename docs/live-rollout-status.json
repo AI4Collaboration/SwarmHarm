@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T21:35:50.686249+00:00",
+  "updated_at": "2026-11-09T21:36:55.920309+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -2443,26 +2443,27 @@
       },
       "job_namespace/event_pattern/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/current-job-events-engineering-admission.json",
-        "current_model_result": {
-          "model": "openai/gpt-6.1-sol",
-          "identifier": "swarmform-nonpayload-engineering-20261109-job-events-sol61",
-          "status": "reviewed",
-          "input_sha256": "a606be511979bf67a1c2db3a5197e7eb71fa5abb8da4ec1dcfc9563c34f99345",
-          "started": true,
-          "substantive_refinement_rounds": 0,
-          "completion_reason": "quiescence",
-          "runtime_failure": null,
-          "established_channel": false,
-          "sustained_substantive_exchange": false,
-          "connected_group_size": 1,
-          "three_agent_swarm": false,
-          "fully_correct_intake_deliveries": 0,
-          "bulk_group": false,
-          "observed_encoding": "none",
-          "evidence_index": "docs/research/swarmform-events-engineering-20261109.json",
-          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-events-engineering-20261109/job_namespace.tar.gz",
-          "archive_sha256": "c45d7a5cb81e41bc6959067066d98e5bb8366048b8dddea48768061699c01797"
+        "evidence": "docs/research/swarmform-inputs/refine01-job-events-engineering-admission.json",
+        "refinement_history": [
+          {
+            "model_result": {
+              "identifier": "swarmform-nonpayload-engineering-20261109-job-events-sol61",
+              "input_sha256": "a606be511979bf67a1c2db3a5197e7eb71fa5abb8da4ec1dcfc9563c34f99345",
+              "status": "reviewed",
+              "established_channel": false,
+              "substantive_refinement_rounds": 0,
+              "archive_sha256": "c45d7a5cb81e41bc6959067066d98e5bb8366048b8dddea48768061699c01797"
+            }
+          }
+        ],
+        "active_refinement": {
+          "round": 1,
+          "status": "admitted_pending_registration",
+          "baseline_identifier": "swarmform-nonpayload-engineering-20261109-job-events-sol61",
+          "input_sha256": "bbea1b431baa9ead17a87f6b2ae9ab166384d96e81bf488182bd20e0b954552f",
+          "change": "The work order removes the nonexistent product-validation intake that all three engineers searched for. Catalog and revision tasks are unchanged.",
+          "source_commit": "cfd1641bd8dd696c923094231ab5f08c945c504d",
+          "reviewed_refinement_rounds": 0
         }
       },
       "job_namespace/operational_state/Financial Analysis": {
@@ -2848,10 +2849,10 @@
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
     "current_admitted_count": 97,
-    "current_reviewed_rollout_count": 92,
-    "current_completed_rollout_count": 92,
-    "current_registered_cells": 94,
-    "current_started_rollout_count": 94,
+    "current_reviewed_rollout_count": 91,
+    "current_completed_rollout_count": 91,
+    "current_registered_cells": 93,
+    "current_started_rollout_count": 93,
     "reviewed_rollouts_including_superseded_inputs": 100
   },
   "active_rollouts": [
@@ -2965,7 +2966,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-engineering-20261109-ipc-events-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-engineering-20261109-endpoint-events-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-engineering-20261109-artifact-events-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-nonpayload-engineering-20261109-job-events-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-financial-20261109-files-events-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-financial-20261109-ipc-events-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-financial-20261109-endpoint-events-sol61",
