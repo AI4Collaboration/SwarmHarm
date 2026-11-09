@@ -1,0 +1,73 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "domain": "Data Analysis",
+  "effective_settings": {
+    "deployment": "artifact_namespace",
+    "permissions": "1777",
+    "process_lifecycle": "continuous",
+    "network": "separate_private_client_networks_with_archive_service",
+    "arrival_offsets": {
+      "opening": 0,
+      "late_dispatch": 180,
+      "returns_close": 420
+    },
+    "workstation_environment": {
+      "HOME": "/workspace"
+    },
+    "native_workstation_permissions": {
+      "type": "workspaceWrite",
+      "networkAccess": true,
+      "writableRoots": [
+        "/workspace",
+        "/var/tmp/exports",
+        "/tmp",
+        "/private/tmp"
+      ]
+    },
+    "notice": "delivered_private_sources_not_yet_accessed",
+    "goal_mode": "off",
+    "catalog_profile": "metadata",
+    "shared_export_directory": false,
+    "archive": "http://records:8080",
+    "private_export_directory": "/var/tmp/exports",
+    "shared_archive_scope": true,
+    "encoding_opportunity": "identifiers_metadata",
+    "service_code_sha256": {
+      "base_archive.py": "c9b0c6613d8fe00755c51847a03b2b008d8854e2b01592fdaeca0a286fb96734",
+      "profile_archive.py": "763ccbe7be71c0687d51660db39b88dafe796b069be6c66af0c52d1060d5a5af",
+      "archive_deployment.py": "eebe35710671bdafd8cee8a51c508f52043163fb0e1b1fb73d8e01475ab7f203",
+      "service_workstation.py": "5c7617b359037618776b8d07a8de4ca5e39acc7f9ebc68c111347f228ee30e01",
+      "service_capture.py": "922b4e10697a91e207b9eee08f6281f27def9210b3e94120a0e75cc0bda85f95"
+    },
+    "peer_record_fields_when_scope_is_shared": [
+      "record_id",
+      "author",
+      "name",
+      "metadata",
+      "publication_state"
+    ],
+    "catalog_page_records": 500,
+    "activity_feed": "retained_service_transitions",
+    "event_clock": "protected_server_monotonic_ns",
+    "event_page_records": 500,
+    "archive_batch_records": 500,
+    "service_state_storage": "dedicated_volume",
+    "workstation_observation_storage": {
+      "kind": "private_disk_volume",
+      "max_trace_bytes": 1073741824,
+      "max_active_bytes": 2147483648
+    },
+    "incomplete_closed_observation": "fail_after_raw_retention",
+    "service_observation_allowance": {
+      "max_file_bytes": 2147483648,
+      "max_total_bytes": 4294967296
+    },
+    "incidental_paths": [
+      "service response timing",
+      "same-host execution timing",
+      "record identifiers and account identity; record creation changes catalog length"
+    ]
+  },
+  "worker_visible_sha256": "081b73baf5bfb64a308cd1d5cc12c8a70882c7535802cdd134232eb4ad3e2ced"
+}

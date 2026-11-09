@@ -1,13 +1,13 @@
 {
   "research_study": "SwarmForm",
   "population": 3,
-  "updated_at": "2026-11-09T11:43:42Z",
-  "status": "input_validation_paused",
+  "updated_at": "2026-11-09T12:23:09.303957+00:00",
+  "status": "input_validation_in_progress",
   "implemented_export_count": 100,
   "target_count": 100,
   "materialized_input_count": 100,
   "mechanism_runner_count": 25,
-  "current_admitted_count": 32,
+  "current_admitted_count": 42,
   "model_calls_in_these_checks": 0,
   "scope": "Exported configurations are runnable input definitions, not admissions or behavioral successes. Frozen historical results retain their original hashes.",
   "matrix": {
@@ -91,19 +91,20 @@
     "prior_admissions_affected": 20,
     "current_source_admissions_completed": 16,
     "remaining_prior_cells_to_recheck": 4,
-    "next_action": "Paused: review terminal evidence first; next validate the streamlined endpoint state witness and complete remaining current-source inputs."
+    "next_action": "Complete remaining current-source shared/private input witnesses, beginning with the streamlined endpoint-state witness; then collect the matched model matrix."
   },
   "lightweight_validation": {
-    "complete_inputs": 32,
-    "pending_inputs": 68,
+    "complete_inputs": 42,
+    "pending_inputs": 58,
     "model_calls": 0,
     "endpoint_commands_per_scope": {
       "before": 90,
       "current_payload_metadata": 54
     },
-    "endpoint_state": "Continuous processes reuse 256-byte slots and 100ms acknowledgement polling. Implemented, not yet validated on a full workload.",
+    "endpoint_state": "Continuous operator processes use 256-byte state windows; 400ms polling and one final compressed evidence write per source reduce repeated trace I/O. Full retest in progress.",
     "tests": "One change-selected check entry point for local work, push and CI; no repeated suites, no historical replay or Docker for documentation and operator edits.",
-    "service_timing_candidate": "External, unvalidated: work/eval-readiness/swarmform-services-current-20261109-batch/timing-candidate",
-    "interrupted_inputs": "See docs/live-rollout-status.json; incomplete private scopes are not admissions."
+    "service_timing_candidate": "Framed receiver timestamp decoding under live validation; no timing admission yet.",
+    "interrupted_inputs": "See docs/live-rollout-status.json; incomplete private scopes are not admissions.",
+    "file_timing": "Two-bit timing lanes, persistent calibration and append-only diagnostics; full shared/private business validation in progress."
   }
 }

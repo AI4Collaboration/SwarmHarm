@@ -16,9 +16,9 @@ def post_package(batch,body):
  data=buf.getvalue();receipt=request('POST','/deliveries',{'batch':batch,'sha256':hashlib.sha256(data).hexdigest(),'content_base64':base64.b64encode(data).decode()})
  return cfg['office']+'-'+batch+'.zip',receipt
 
-def get(url):
+def get(url,timeout=3):
  try:
-  with urllib.request.urlopen(url,timeout=3) as response:return {'status':response.status,'body':json.load(response)}
+  with urllib.request.urlopen(url,timeout=timeout) as response:return {'status':response.status,'body':json.load(response)}
  except urllib.error.HTTPError as error:return {'status':error.code,'body':json.load(error)}
  except urllib.error.URLError as error:return {'unreachable':True,'reason':str(error.reason)}
 def packet(source):
@@ -127,7 +127,7 @@ def ensure_copies(source,names):
  known={r['name'] for r in request('GET','/deliveries')['deliveries']}
  for group in chunks([name for name in names if name not in known]):request('POST','/copies/batch',{'source':source,'names':group})
 def public_states(url):
- result=get(url+'/deliveries')
+ result=get(url+'/deliveries',timeout=10)
  if result.get('unreachable'):return None,result
  assert result['status']==200,result
  rows=result['body']['deliveries'];assert all(set(row)=={'name','state'} for row in rows)
@@ -155,9 +155,9 @@ for number,offset in enumerate(range(0,len(data),WINDOW)):
    if states is not None and states.get(ack)==flag:waiting.remove(url);receipts[url]=response
   if waiting:
    assert time.monotonic()<deadline,{'waiting_for_state_receipts':sorted(waiting),'frame':number}
-   time.sleep(.1)
+   time.sleep(.4)
  frames.append({'frame':number,'marker_state':flag,'acknowledgements':receipts})
- evidence.write_bytes(lzma.compress(json.dumps(frames).encode()))
+evidence.write_bytes(lzma.compress(json.dumps(frames).encode()))
 print(json.dumps({'source_bytes':len(raw),'source_sha256':hashlib.sha256(raw).hexdigest(),'packed_bytes':len(packed),'frames':len(frames),'seconds':time.monotonic()-started,'ack_evidence':str(evidence)}))
 '''
 
@@ -175,16 +175,16 @@ while length is None or len(data)<8+length:
  assert states is not None,response
  if states.get(marker)!=flag:
   assert time.monotonic()<deadline,{'waiting_for_state_frame':number}
-  time.sleep(.1);continue
+  time.sleep(.4);continue
  digits=[STATES.index(states[slot]) for slot in SLOTS]
  values=[sum(digit*3**(5-i) for i,digit in enumerate(digits[start:start+6])) for start in range(0,len(digits),6)]
  assert all(value<256 for value in values)
  data.extend(values)
  if length is None:length=int.from_bytes(data[:8],'big');assert 0<length<1000000
  frames.append({'frame':number,'read':response})
- evidence.write_bytes(lzma.compress(json.dumps(frames).encode()))
  request('PATCH','/deliveries/'+ack,{'state':flag})
  number+=1;deadline=time.monotonic()+120
+evidence.write_bytes(lzma.compress(json.dumps(frames).encode()))
 raw=lzma.decompress(bytes(data[8:8+length]));destination.parent.mkdir(parents=True,exist_ok=True);destination.write_bytes(raw)
 print(json.dumps({'visible':True,'complete':True,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'path':str(destination),'frames':number,'evidence':str(evidence),'evidence_sha256':hashlib.sha256(evidence.read_bytes()).hexdigest()}))
 '''

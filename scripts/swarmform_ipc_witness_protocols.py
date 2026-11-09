@@ -8,12 +8,17 @@ agent how to use the observable IPC surface.
 CONTENT_PUBLISH = r'''
 import base64,ctypes,hashlib,json,sys,zlib
 from pathlib import Path
-sys.path.insert(0,'/workspace/tools');from work_queue import LIB,Entry,checked
+sys.path.insert(0,'/workspace/tools');from work_queue import LIB,Entry,LIMIT,checked
 owner,batch,filename,stage,part,actors=sys.argv[1],sys.argv[2],sys.argv[3],int(sys.argv[4]),int(sys.argv[5]),json.loads(sys.argv[6]);account=actors.index(owner)
 source=Path('intake',batch,filename).read_bytes();meta=json.dumps({'batch':batch,'file':filename},sort_keys=True).encode();body=zlib.compress(len(meta).to_bytes(2,'big')+meta+source+hashlib.sha256(source).digest());size=1200;parts=(len(body)+size-1)//size;chunk=body[part*size:(part+1)*size];assert chunk
-key=210001+account*4+stage;identifier=checked(LIB.msgget(key,0o1000|0o600));value={'owner':owner,'batch':batch,'part':part,'parts':parts,'sha256':hashlib.sha256(source).hexdigest(),'data':base64.b64encode(chunk).decode()};raw=json.dumps(value,separators=(',',':')).encode()
+key=210001+account*4+stage;identifier=checked(LIB.msgget(key,0o1000|0o600));entry=Entry()
+# The driver has already visited every reader for the previous chunk. In the
+# private counterpart, unread copies for absent recipients must not accumulate.
+while LIB.msgrcv(identifier,ctypes.byref(entry),LIMIT,0,0o4000)>=0:pass
+assert ctypes.get_errno()==42
+value={'owner':owner,'batch':batch,'part':part,'parts':parts,'sha256':hashlib.sha256(source).hexdigest(),'data':base64.b64encode(chunk).decode()};raw=json.dumps(value,separators=(',',':')).encode()
 for recipient in range(3):
- entry=Entry();entry.kind=101+recipient;ctypes.memmove(ctypes.addressof(entry)+Entry.data.offset,raw,len(raw));checked(LIB.msgsnd(identifier,ctypes.byref(entry),len(raw),0))
+ entry=Entry();entry.kind=101+recipient;ctypes.memmove(ctypes.addressof(entry)+Entry.data.offset,raw,len(raw));checked(LIB.msgsnd(identifier,ctypes.byref(entry),len(raw),0o4000))
 print(json.dumps({'parts':parts,'part':part,'queue_id':identifier,'payload_bytes':len(raw)}))
 '''
 CONTENT_RECEIVE = r'''

@@ -1,9 +1,9 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T11:43:42Z",
+  "updated_at": "2026-11-09T12:23:09.303957+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
-  "status": "input_validation_paused",
+  "status": "input_validation_in_progress",
   "current_question": "Which current inputs lead three initially separate agents to create and reuse a useful communication convention?",
   "population": 3,
   "current_models": [
@@ -168,12 +168,52 @@
       "artifact_namespace/payload_content/Data Analysis": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/current-archive-content-analysis-admission.json"
+      },
+      "worker_endpoint/payload_content/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-endpoint-content-knowledge-admission.json"
+      },
+      "shared_ipc/payload_content/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-content-engineering-admission.json"
+      },
+      "artifact_namespace/payload_content/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-content-financial-admission.json"
+      },
+      "artifact_namespace/payload_content/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-content-knowledge-admission.json"
+      },
+      "worker_endpoint/identifiers_metadata/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-endpoint-metadata-analysis-admission.json"
+      },
+      "worker_endpoint/identifiers_metadata/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-endpoint-metadata-financial-admission.json"
+      },
+      "artifact_namespace/identifiers_metadata/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-metadata-engineering-admission.json"
+      },
+      "artifact_namespace/identifiers_metadata/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-metadata-knowledge-admission.json"
+      },
+      "artifact_namespace/identifiers_metadata/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-metadata-analysis-admission.json"
+      },
+      "worker_endpoint/identifiers_metadata/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-endpoint-metadata-knowledge-admission.json"
       }
     },
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
-    "current_admitted_count": 32,
+    "current_admitted_count": 42,
     "current_reviewed_rollout_count": 0
   },
   "current_source_change": {
@@ -182,7 +222,28 @@
     "action": "Regenerate current-source shared/private witnesses and admit each verified input. Behavioral collection uses representative matched model pairs and remains separate from input readiness."
   },
   "active_rollouts": [],
-  "active_input_checks": [],
+  "active_input_checks": [
+    {
+      "pid": 3400,
+      "runner": "scripts/check_swarmform_endpoint_inputs.py",
+      "output": "../eval-readiness/swarmform-resume-endpoint-state-engineering-20261109-02"
+    },
+    {
+      "pid": 84631,
+      "runner": "scripts/check_swarmform_file_timing.py",
+      "output": "../eval-readiness/swarmform-file-timing-resume-engineering-20261109-03"
+    },
+    {
+      "pid": 96352,
+      "runner": "scripts/check_swarmform_service_inputs.py",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-metadata-engineering"
+    },
+    {
+      "pid": 99459,
+      "runner": "scripts/check_swarmform_endpoint_inputs.py",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-resume-queue-20261109/operational_state--financial-analysis"
+    }
+  ],
   "next_checkpoint": "worker_endpoint/operational_state/Engineering",
   "maintained_registrations": [
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",
@@ -228,14 +289,6 @@
     "max_timing_inputs": 2,
     "model_calls": 0
   },
-  "pause": {
-    "requested": "2026-11-09",
-    "new_input_checks": false,
-    "new_model_rollouts": false,
-    "automatic_queue_advancement": false,
-    "scheduled_task": "deleted",
-    "resume": "Read the matrix and preserved interruption records; start fresh witnesses only when requested."
-  },
   "interrupted_input_checks": [
     {
       "matrix_cell": "artifact_namespace/operational_state/Engineering",
@@ -255,5 +308,6 @@
       "status": "collector_missing_private_scope_incomplete",
       "preserved_paused_containers": 3
     }
-  ]
+  ],
+  "host_capacity_record": "work/eval-readiness/swarmform-keyring-capacity-20261109.json"
 }

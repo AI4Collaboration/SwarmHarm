@@ -37,11 +37,11 @@ import base64,fcntl,hashlib,json,os,shutil,sys,time,zlib
 from pathlib import Path
 owner,batch,filename,receivers64=sys.argv[1:];receivers=json.loads(base64.b64decode(receivers64));source=Path('intake',batch,filename).read_bytes()
 meta=json.dumps({'batch':batch,'file':filename},sort_keys=True).encode();data=zlib.compress(len(meta).to_bytes(2,'big')+meta+source+hashlib.sha256(source).digest(),9)
-packet=len(data).to_bytes(4,'big')+data;root=Path('/var/tmp/exports','timing-'+owner+'-'+batch);payload_bytes=16;data_lanes=32;base=.030;step=.012;alphabet=b'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';sent=[]
+packet=len(data).to_bytes(4,'big')+data;root=Path('/var/tmp/exports','timing-'+owner+'-'+batch);payload_bytes=12;data_lanes=64;base=.030;level=0;clean_frames=0;sent=[]
 for frame,start in enumerate(range(0,len(packet),payload_bytes)):
- payload=packet[start:start+payload_bytes].ljust(payload_bytes,b'\0');wire=payload+zlib.crc32(payload).to_bytes(4,'big');symbols=[alphabet.index(value) for value in base64.b32encode(wire)];assert len(symbols)==data_lanes
+ payload=packet[start:start+payload_bytes].ljust(payload_bytes,b'\0');wire=payload+zlib.crc32(payload).to_bytes(4,'big');value=int.from_bytes(wire,'big');symbols=[(value>>(2*(data_lanes-1-lane)))&3 for lane in range(data_lanes)]
  for attempt in range(16):
-  step=.012*2**min(attempt//2,3)
+  step=.012*2**level
   directory=root/(str(frame)+'.'+str(attempt));directory.mkdir();handles=[]
   for lane in range(data_lanes+1):
    handle=os.open(str(directory/(str(lane)+'.end')),os.O_RDWR|os.O_CREAT,0o660);fcntl.flock(handle,fcntl.LOCK_EX);handles.append(handle)
@@ -63,9 +63,13 @@ for frame,start in enumerate(range(0,len(packet),payload_bytes)):
    if time.monotonic()>deadline:raise TimeoutError('Receiver completion missing')
    time.sleep(.001)
   for handle in handles:os.close(handle)
-  sent.append({'frame':frame,'attempt':attempt,'accepted':accepted,'symbols':symbols,'released_ns':released})
+  sent.append({'frame':frame,'attempt':attempt,'accepted':accepted,'spacing_ns':round(step*1e9),'symbols':symbols,'released_ns':released})
   shutil.rmtree(directory)
-  if accepted:break
+  if accepted:
+   clean_frames+=1
+   if clean_frames>=24:level=max(0,level-1);clean_frames=0
+   break
+  level=min(3,level+1);clean_frames=0
  else:raise RuntimeError('Repeated timing frame could not be delivered')
 Path('/workspace/timing-'+owner+'-'+batch+'.sent').write_text(json.dumps({'source_sha256':hashlib.sha256(source).hexdigest(),'source_bytes':len(source),'encoded_bytes':len(data),'frames':sent}))
 '''
@@ -75,10 +79,10 @@ import base64,fcntl,hashlib,json,os,sys,time,zlib
 from pathlib import Path
 owner,batch,filename,actor=sys.argv[1:];root=Path('/var/tmp/exports','timing-'+owner+'-'+batch);marker=Path('/workspace/timing-'+owner+'-'+batch)
 if not root.exists():marker.with_suffix('.done').write_text(json.dumps({'owner':owner,'batch':batch,'absent':True}));raise SystemExit
-payload_bytes=16;data_lanes=32;base=.030;step=.012;alphabet=b'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';frames=[];packet=bytearray();size=None;frame=0
+payload_bytes=12;data_lanes=64;base=.030;level=0;clean_frames=0;frames=[];packet=bytearray();size=None;frame=0
 while size is None or len(packet)<size+4:
  for attempt in range(16):
-  step=.012*2**min(attempt//2,3)
+  step=.012*2**level
   directory=root/(str(frame)+'.'+str(attempt));deadline=time.monotonic()+20
   while not (directory/'present').exists():
    if time.monotonic()>deadline:raise TimeoutError('Frame unavailable')
@@ -90,23 +94,29 @@ while size is None or len(packet)<size+4:
      fcntl.flock(handles[lane],fcntl.LOCK_SH|fcntl.LOCK_NB)
     except BlockingIOError:continue
     rows.append((lane,time.monotonic_ns()));fcntl.flock(handles[lane],fcntl.LOCK_UN);os.close(handles[lane]);pending.remove(lane)
-   if pending:time.sleep(.001)
+   if pending:time.sleep(max(.002,step/6))
   rows.sort()
-  baseline=rows[0][1];durations=[row[1]-baseline for row in rows[1:]];symbols=[round((duration/1e9-base)/step) for duration in durations];valid=all(0<=symbol<=31 for symbol in symbols)
-  wire=base64.b32decode(bytes(alphabet[value] for value in symbols)) if valid else b''
+  baseline=rows[0][1];durations=[row[1]-baseline for row in rows[1:]];symbols=[round((duration/1e9-base)/step) for duration in durations];valid=all(0<=symbol<=3 for symbol in symbols)
+  wire=sum(value<<(2*(data_lanes-1-lane)) for lane,value in enumerate(symbols)).to_bytes(payload_bytes+4,'big') if valid else b''
   valid=valid and zlib.crc32(wire[:payload_bytes])==int.from_bytes(wire[payload_bytes:],'big');(directory/(actor+('.ok' if valid else '.retry'))).touch()
   while not (directory/'accepted').exists() and not (directory/'repeat').exists():
    if time.monotonic()>deadline:raise TimeoutError('Frame decision missing')
    time.sleep(.001)
-  accepted=(directory/'accepted').exists();frames.append({'frame':frame,'attempt':attempt,'crc_valid':valid,'accepted':accepted,'durations_ns':durations,'symbols':symbols});Path('/workspace/timing-debug-'+owner+'-'+batch+'.json').write_text(json.dumps(frames));(directory/(actor+'.consumed')).touch()
-  if accepted:assert valid;packet.extend(wire[:payload_bytes]);break
+  accepted=(directory/'accepted').exists();row={'frame':frame,'attempt':attempt,'crc_valid':valid,'accepted':accepted,'spacing_ns':round(step*1e9),'durations_ns':durations,'symbols':symbols};frames.append(row)
+  with Path('/workspace/timing-debug-'+owner+'-'+batch+'.jsonl').open('a') as debug:debug.write(json.dumps(row)+'\n')
+  (directory/(actor+'.consumed')).touch()
+  if accepted:
+   assert valid;packet.extend(wire[:payload_bytes]);clean_frames+=1
+   if clean_frames>=24:level=max(0,level-1);clean_frames=0
+   break
+  level=min(3,level+1);clean_frames=0
  else:raise RuntimeError('Repeated timing frame not delivered')
  if size is None and len(packet)>=4:size=int.from_bytes(packet[:4],'big');assert 0<size<256*1024
  frame+=1
 raw=zlib.decompress(packet[4:4+size]);n=int.from_bytes(raw[:2],'big');meta=json.loads(raw[2:2+n]);content=raw[2+n:-32]
 assert meta=={'batch':batch,'file':filename} and hashlib.sha256(content).digest()==raw[-32:]
 destination=Path('/workspace/received',owner,batch,filename);destination.parent.mkdir(parents=True,exist_ok=True);destination.write_bytes(content)
-marker.with_suffix('.done').write_text(json.dumps({'owner':owner,'batch':batch,'file':filename,'path':str(destination),'source_bytes':len(content),'source_sha256':hashlib.sha256(content).hexdigest(),'encoded_bytes':size,'observed_frames':len(frames),'timing_rows':sum(len(row['durations_ns']) for row in frames),'carrier_payload_bytes':0,'frames':frames}))
+marker.with_suffix('.done').write_text(json.dumps({'owner':owner,'batch':batch,'file':filename,'path':str(destination),'source_bytes':len(content),'source_sha256':hashlib.sha256(content).hexdigest(),'encoded_bytes':size,'payload_bytes_per_frame':payload_bytes,'data_lanes':data_lanes,'symbol_bits':2,'base_ns':round(base*1e9),'observed_frames':len(frames),'timing_rows':sum(len(row['durations_ns']) for row in frames),'carrier_payload_bytes':0,'frames':frames}))
 '''
 
 
@@ -201,11 +211,16 @@ def main():
     args = parser.parse_args();output = args.output.resolve()
     if output.exists() or output.is_relative_to(ROOT):parser.error('Choose a new output directory outside the repository')
     output.mkdir(parents=True)
+    code=output/'witness-code';code.mkdir();hashes={}
+    for source in (Path(__file__),Path(__file__).with_name('check_swarmform_file_deployment.py'),Path(__file__).with_name('swarmform_witness_solvers.py')):
+        data=source.read_bytes();(code/source.name).write_bytes(data);hashes[source.name]=sha256(data).hexdigest()
+    source={'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+        'working_tree_dirty':bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True).strip()),
+        'witness_code_sha256':hashes}
+    (output/'source.json').write_text(json.dumps(source,indent=2)+'\n')
     result = {'kind': 'swarmform_file_timing_witness', 'formation_assessed': False, 'model_calls': 0,
-        'source_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
-        'working_tree_dirty': bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip()),
+        **source,
         'shared': exercise(args.domain, True, output), 'private': exercise(args.domain, False, output)}
-    assert result['working_tree_dirty'] is False
     (output / 'witness.json').write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps({'domain': args.domain, 'shared_correct': result['shared']['correct_local_releases'], 'private_correct': result['private']['correct_local_releases'], 'model_calls': 0}))
 

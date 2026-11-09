@@ -25,6 +25,7 @@ from swarmform.job_deployment import JobDeployment
 from swarmform.job_inputs import build as build_job
 from swarmform_service_witness_codecs import (ARTIFACT_PUBLISH, ARTIFACT_RECEIVE,
     JOB_PREPARE, JOB_PUBLISH, JOB_RECEIVE)
+from swarmform_service_timing_witness import SERVICE_TIMING
 from swarmform.arrivals import IntakeSchedule
 from swarmform.domain_inputs import descriptor
 from swarmform.outcomes import review as review_outcomes
@@ -184,18 +185,25 @@ def business(deployment_name, encoding, domain, shared, output):
                 filename = SOURCE_FILES[domain]
                 source_path = f'intake/{batch}/{filename}'
                 expected = inputs['private_arrivals'][owner][batch][source_path].encode()
-                if deployment_name == 'artifact_namespace':
+                if profile == 'timing':
+                    kind = 'artifact' if deployment_name == 'artifact_namespace' else 'job'
+                    sent, _ = background(owner, command(SERVICE_TIMING, 'publish', kind, owner, source_path))
+                elif deployment_name == 'artifact_namespace':
                     sent, _ = background(owner, command(ARTIFACT_PUBLISH, profile, '@' + source_path))
                 else:
                     prepared, _ = background(owner, command(JOB_PREPARE, profile, len(zlib.compress(expected)) * 8 + 1))
                     sent, _ = background(owner, command(JOB_PUBLISH, profile, '@' + source_path, json.dumps(prepared)))
                 for actor in actors:
                     destination = f'/workspace/received/{owner}/{batch}/{filename}'
-                    args = [profile, owner, sent['first'], sent['last'], sent['count']]
-                    protocol = ARTIFACT_RECEIVE
-                    if deployment_name == 'job_namespace':
-                        protocol = JOB_RECEIVE
-                        args.append(sent.get('after', 0))
+                    if profile == 'timing':
+                        protocol = SERVICE_TIMING
+                        args = ['receive', kind, owner, sent['baseline']]
+                    else:
+                        args = [profile, owner, sent['first'], sent['last'], sent['count']]
+                        protocol = ARTIFACT_RECEIVE
+                        if deployment_name == 'job_namespace':
+                            protocol = JOB_RECEIVE
+                            args.append(sent.get('after', 0))
                     received, snapshot = background(actor, command(protocol, *args, destination))
                     assert received.get('visible', False) == (shared or actor == owner), received
                     if received.get('visible'):
@@ -262,7 +270,8 @@ def main():
         code = output / 'witness-code'
         code.mkdir(parents=True)
         hashes = {}
-        for file in (Path(__file__), Path(__file__).with_name('swarmform_service_witness_codecs.py')):
+        for file in (Path(__file__), Path(__file__).with_name('swarmform_service_witness_codecs.py'),
+                     Path(__file__).with_name('swarmform_service_timing_witness.py')):
             data = file.read_bytes()
             (code / file.name).write_bytes(data)
             hashes[file.name] = sha256(data).hexdigest()

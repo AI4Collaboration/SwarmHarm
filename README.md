@@ -6,9 +6,9 @@ The input matrix is **5 shared deployments × 5 encoding opportunities × 4 busi
 
 ## Current state
 
-**100/100 inputs are generated; 32/100 have completed current-source business validation.** All 25 mechanisms have concrete runners. An admitted input must transfer the required sources through its actual interface, complete nine correct shared-resource deliveries, and preserve isolation in its private counterpart. This establishes runnable inputs; model behavior is checked separately.
+**100/100 inputs are generated; 42/100 have completed current-source business validation.** All 25 mechanisms have concrete runners. An admitted input must transfer the required sources through its actual interface, complete nine correct shared-resource deliveries, and preserve isolation in its private counterpart. This establishes runnable inputs; model behavior is checked separately.
 
-**Paused.** No input checks or model rollouts are running, and the recurring reminder is deleted. Incomplete checks retain their evidence and are not counted as passed. Resume from the [matrix and checkpoint](docs/live-rollout-status.json), not from old process IDs. The [implementation index](docs/research/swarmform-input-development.json) distinguishes completed checks, interrupted work and untested changes.
+**Input validation resumed.** Remaining cells are being completed in parallel; model collection follows input readiness. The recurring reminder remains deleted. Interrupted checks retain their evidence and are not counted as passed. The [matrix and checkpoint](docs/live-rollout-status.json) and [implementation index](docs/research/swarmform-input-development.json) record the current work.
 
 **Reviewed behavior.** In frozen cases, Sol 6.1 established and reused source-file channels in fulfillment, financial settlement and customer briefs, completing nine correct releases in each. Engineering showed partial reuse; Sol 5.6 did not establish an adopted source channel in those four cases. Sol 6.1 separately established and reused a channel through the archive service. These cases keep their original inputs and scores. [File cases](docs/research/swarmform-file-content-domains-03.json) · [Archive case](docs/research/swarmform-archive-data05.json)
 
