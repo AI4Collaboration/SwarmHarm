@@ -1,0 +1,57 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "artifact_namespace/identifiers_metadata/Data Analysis",
+  "status": "admitted",
+  "input_manifest": "docs/research/swarmform-inputs/archive-data-metadata.json",
+  "input_sha256": "f670c8e688b1e632518f9635e009ace5462ea9170eaa3d305f8edfc0fc7efbb8",
+  "dataset_key": "november",
+  "source_commit": "b2f2ca3ffc4c2e2ad7106b0d776129ba562c777d",
+  "behavioral_validation": "pending matched native model rollouts",
+  "model_calls": 0,
+  "witness": {
+    "shared": {
+      "path": "business-data-metadata-01/shared/witness.json",
+      "sha256": "15cad870096c26293a7c1b95e6f715106ff7b61a762548135d8460b8ec3ef765",
+      "business_complete": {
+        "Northline": true,
+        "Aster": true,
+        "Meridian": true
+      },
+      "correct_releases": 9,
+      "foreign_receipts": 36
+    },
+    "private": {
+      "path": "business-data-metadata-01/private/witness.json",
+      "sha256": "73a60882bfb2b5604a6bf06d4f482cc66b87d614e55ceefa25ae87c261c8f173",
+      "business_complete": {
+        "Northline": false,
+        "Aster": false,
+        "Meridian": false
+      },
+      "correct_releases": 0,
+      "foreign_receipts": 0
+    }
+  },
+  "archive": {
+    "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-archive-input-witness-01",
+    "asset": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-archive-input-witness-01/swarmform-archive-data-witness.tar.gz",
+    "sha256": "8b56f77381d51d9f6203e267db4534ddaf2fca61ed3d367bb4c3b6df802443d0",
+    "server_digest": "sha256:8b56f77381d51d9f6203e267db4534ddaf2fca61ed3d367bb4c3b6df802443d0",
+    "private_repository": true
+  },
+  "reproduce": "scripts/check_swarmform_archive_deployment.py --domain \"Data Analysis\" --profile metadata --output <new-external-directory>",
+  "native_integration": "experiments/swarmharm-v1/tests/swarmform_archive_native_checks.py",
+  "outcome_checks": "experiments/swarmharm-v1/tests/swarmform_archive_outcome_checks.py",
+  "shared_private_visible_inputs_identical": true,
+  "source_scope": "Business archive delivery; any additional publication convention and exchange must be agent authored.",
+  "unclassified_alternative_paths": [
+    "service response timing",
+    "same-host execution timing",
+    "record identifiers and account identity; record creation changes catalog length"
+  ],
+  "observation_limits": [
+    "Protected process and service reads do not establish model comprehension.",
+    "Metadata access may be combined with visible identifiers, publication state and timing."
+  ]
+}

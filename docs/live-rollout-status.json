@@ -1,6 +1,6 @@
 {
   "schema_version": 12,
-  "updated_at": "2026-11-09T01:51:37.250714+00:00",
+  "updated_at": "2026-11-09T02:21:33.431020+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "developing_matrix_inputs",
@@ -56,6 +56,38 @@
       "shared_files/payload_content/Knowledge Work": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/file-content-knowledge-admission.json"
+      },
+      "artifact_namespace/payload_content/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/archive-data-content-admission.json"
+      },
+      "artifact_namespace/identifiers_metadata/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/archive-data-metadata-admission.json"
+      },
+      "artifact_namespace/payload_content/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/archive-engineering-content-admission.json"
+      },
+      "artifact_namespace/identifiers_metadata/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/archive-engineering-metadata-admission.json"
+      },
+      "artifact_namespace/payload_content/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/archive-financial-content-admission.json"
+      },
+      "artifact_namespace/identifiers_metadata/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/archive-financial-metadata-admission.json"
+      },
+      "artifact_namespace/payload_content/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/archive-knowledge-content-admission.json"
+      },
+      "artifact_namespace/identifiers_metadata/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/archive-knowledge-metadata-admission.json"
       }
     }
   },
@@ -91,15 +123,15 @@
       "native_integration_check": "experiments/swarmharm-v1/tests/swarmform_collection_checks.py"
     },
     "artifact_namespace": {
-      "state": "source_integrated_exact_input_witnesses_running",
+      "state": "eight_exact_input_shared_private_workload_checks_passed",
       "model_calls": 0,
       "operator_witness": "scripts/check_swarmform_archive_deployment.py",
       "native_integration_check": "experiments/swarmharm-v1/tests/swarmform_archive_native_checks.py",
       "pending": [
-        "Complete exact-input shared/private business checks before admission.",
         "New archive registrations and live model validation.",
         "State/event/timing workload checks."
-      ]
+      ],
+      "witness_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-archive-input-witness-01"
     }
   },
   "reviewed_pairs": [
