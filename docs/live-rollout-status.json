@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-09T22:48:47.478757+00:00",
+  "updated_at": "2026-11-09T22:49:31.284247+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -347,7 +347,7 @@
         ],
         "active_refinement": {
           "round": 2,
-          "status": "registered",
+          "status": "running",
           "baseline_identifier": "swarmform-knowledge-cited-table-metadata-01-sol61",
           "input_sha256": "a1ee757f19593f9e4f004bbbed929a6a7ebc1f41e5c9254a203c9936d0eee872",
           "source_commit": "77d392c2ef11de5347fe63b0d49a7c8d8106a3e8",
@@ -362,10 +362,12 @@
           "input_sha256": "a1ee757f19593f9e4f004bbbed929a6a7ebc1f41e5c9254a203c9936d0eee872",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-knowledge-file-coverage-metadata-01-sol61",
           "registration_sha256": "3077fe1c3deaf16f63ffbdd52e4fe07de1f74f510462abfe5cff6d7bc5edf52c",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-flat-table-candidate/coverage-metadata/rollout",
-          "substantive_refinement_rounds": 1
+          "substantive_refinement_rounds": 1,
+          "pid": 76694,
+          "worker_context": "lima-swarmform-service-timing-01"
         }
       },
       "shared_files/operational_state/Engineering": {
@@ -526,7 +528,7 @@
         ],
         "active_refinement": {
           "round": 2,
-          "status": "registered",
+          "status": "running",
           "baseline_identifier": "swarmform-knowledge-cited-table-state-01-sol61",
           "input_sha256": "901580624768ee4126f07839548287b4e6699907e97f5920979d9c072ab671ac",
           "source_commit": "77d392c2ef11de5347fe63b0d49a7c8d8106a3e8",
@@ -541,10 +543,12 @@
           "input_sha256": "901580624768ee4126f07839548287b4e6699907e97f5920979d9c072ab671ac",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-knowledge-file-coverage-state-01-sol61",
           "registration_sha256": "fe3b0f0a4e58b64406705c843620468bec42a450ee8b23993cd7bf2e87d67a98",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-flat-table-candidate/coverage-state/rollout",
-          "substantive_refinement_rounds": 1
+          "substantive_refinement_rounds": 1,
+          "pid": 76693,
+          "worker_context": "lima-swarmform-service-timing-01"
         }
       },
       "shared_files/event_pattern/Engineering": {
@@ -4019,7 +4023,7 @@
     "current_reviewed_rollout_count": 85,
     "current_completed_rollout_count": 85,
     "current_registered_cells": 96,
-    "current_started_rollout_count": 91,
+    "current_started_rollout_count": 93,
     "reviewed_rollouts_including_superseded_inputs": 120
   },
   "active_rollouts": [
@@ -4087,6 +4091,32 @@
       "slot_suffix": ".slot2",
       "status": "running",
       "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-status-engineering-content-01-sol61"
+    },
+    {
+      "identifier": "swarmform-knowledge-file-coverage-metadata-01-sol61",
+      "matrix_cell": "shared_files/identifiers_metadata/Knowledge Work",
+      "model": "openai/gpt-6.1-sol",
+      "pid": 76694,
+      "supervisor_pid": 76691,
+      "worker_context": "lima-swarmform-service-timing-01",
+      "slot_suffix": "",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-flat-table-candidate/coverage-metadata/rollout",
+      "status": "running",
+      "registration_sha256": "3077fe1c3deaf16f63ffbdd52e4fe07de1f74f510462abfe5cff6d7bc5edf52c",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-knowledge-file-coverage-metadata-01-sol61"
+    },
+    {
+      "identifier": "swarmform-knowledge-file-coverage-state-01-sol61",
+      "matrix_cell": "shared_files/operational_state/Knowledge Work",
+      "model": "openai/gpt-6.1-sol",
+      "pid": 76693,
+      "supervisor_pid": 76692,
+      "worker_context": "lima-swarmform-service-timing-01",
+      "slot_suffix": ".slot2",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-flat-table-candidate/coverage-state/rollout",
+      "status": "running",
+      "registration_sha256": "fe3b0f0a4e58b64406705c843620468bec42a450ee8b23993cd7bf2e87d67a98",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-knowledge-file-coverage-state-01-sol61"
     }
   ],
   "active_input_checks": [
