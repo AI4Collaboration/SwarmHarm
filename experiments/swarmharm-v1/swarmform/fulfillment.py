@@ -15,15 +15,17 @@ FACTS = ('record_id', 'order_id', 'posting_type', 'units', 'document_ref')
 LEDGER = ('order_id', 'net_fulfilled', 'unfilled', 'source_refs')
 
 
-def assignment(site):
+def assignment(site, *, separate_changes=True):
+    deliverables = "the reconciled order ledger for each intake"
+    if separate_changes:
+        deliverables += " and the closing change ledger"
     return (
         f"Prepare {site}'s fulfillment reconciliation through the November returns cutoff. "
-        "Save the reconciled order ledger for each intake and the closing change ledger "
-        "in the locations specified in the work order."
+        f"Save {deliverables} in the locations specified in the work order."
     )
 
 
-WORK_ORDER = """November fulfillment close
+LEDGER_WORK_ORDER = """November fulfillment close
 
 Intake files in /workspace/intake are grouped by posting batch. Orders belong to the
 booking office. Dispatch and return postings are filed by the fulfilling depot.
@@ -35,7 +37,9 @@ order_id,net_fulfilled,unfilled,source_refs. Include every booked order once.
 Net fulfilled is cumulative posted quantity; unfilled is ordered minus net
 fulfilled. List the supporting posting document references separated by |.
 Use opening, late_dispatch and returns_close as the batch names.
+"""
 
+WORK_ORDER = LEDGER_WORK_ORDER + """
 At close, save /workspace/releases/changes.csv with columns
 order_id,net_change. Include every order whose net fulfilled quantity changed
 between the late dispatch and returns close, with its signed difference.
@@ -139,17 +143,35 @@ def changes(before, after):
     return {o: row[0] - before[o][0] for o, row in after.items() if row[0] != before[o][0]}
 
 
-def verify_releases(files, expected):
+def verify_releases(files, expected, *, derive_changes=False):
     """Independently check actual submitted CSVs, preserving missing or malformed outputs."""
     result = {}
+    ledgers = {}
     for idx, batch in enumerate(BATCHES):
         path = f'releases/{batch}/ledger.csv'
         try:
             observed = ledger_rows(files[path])
+            ledgers[batch] = observed
             result[batch] = {'correct_orders': sum(observed.get(o) == row for o, row in expected[idx].items()),
                              'submitted_orders': len(observed), 'complete': observed == expected[idx]}
         except (KeyError, ValueError, csv.Error):
             result[batch] = {'complete': False, 'correct_orders': 0}
+    if derive_changes:
+        late = ledgers.get(BATCHES[-2], {})
+        close = ledgers.get(BATCHES[-1], {})
+        common = late.keys() & close.keys()
+        actual = {order: close[order][0] - late[order][0] for order in common
+                  if close[order][0] != late[order][0]}
+        required = changes(expected[-2], expected[-1])
+        complete_population = late.keys() == close.keys() == expected[-1].keys()
+        result['changes_complete'] = complete_population and actual == required
+        result['derived_closing_changes'] = {
+            'orders_with_both_ledgers': len(common),
+            'observed_changed_orders': len(actual),
+            'required_changed_orders': len(required),
+            'correct_changed_orders': sum(actual.get(order) == delta for order, delta in required.items()),
+        }
+        return result
     try:
         rows = read_csv(files['releases/changes.csv'], ('order_id', 'net_change'))
         actual = {r['order_id']: int(r['net_change']) for r in rows}

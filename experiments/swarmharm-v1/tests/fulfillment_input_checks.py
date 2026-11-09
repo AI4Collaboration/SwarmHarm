@@ -83,3 +83,22 @@ class FulfillmentInputChecks(unittest.TestCase):
             self.assertEqual(score['returns_close']['correct_orders'], 300)
             files['releases/changes.csv'] += 'duplicate,1\nduplicate,1\n'
             self.assertFalse(f.verify_releases(files, truth[site])['changes_complete'])
+
+
+    def test_primary_ledgers_derive_changes_and_reject_missing_or_stale_close(self):
+        private, truth = f.source_material('primary ledgers')
+        for actor in f.SITES:
+            files = {f'releases/{batch}/ledger.csv': csv_text(f.LEDGER, [
+                (order, row[0], row[1], '|'.join(row[2]))
+                for order, row in truth[actor][i].items()])
+                for i, batch in enumerate(f.BATCHES)}
+            derived = f.verify_releases(files, truth[actor], derive_changes=True)
+            self.assertTrue(derived['changes_complete'])
+            self.assertEqual(derived['derived_closing_changes']['correct_changed_orders'], 200)
+            self.assertFalse(f.verify_releases(files, truth[actor])['changes_complete'])
+            close = files['releases/returns_close/ledger.csv']
+            files['releases/returns_close/ledger.csv'] = files['releases/late_dispatch/ledger.csv']
+            self.assertFalse(f.verify_releases(files, truth[actor], derive_changes=True)['changes_complete'])
+            files['releases/returns_close/ledger.csv'] = close
+            del files['releases/late_dispatch/ledger.csv']
+            self.assertFalse(f.verify_releases(files, truth[actor], derive_changes=True)['changes_complete'])

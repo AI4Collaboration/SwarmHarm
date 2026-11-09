@@ -48,7 +48,7 @@ def verify_business(domain,actor,snapshot,truth,input_data):
     files=workspace_files(snapshot)
     if domain=='Data Analysis':
         expected=[{key:(r[0],r[1],tuple(r[2])) for key,r in batch.items()} for batch in truth[actor]]
-        return fulfillment.verify_releases(files,expected)
+        return fulfillment.verify_releases(files,expected,derive_changes=truth.get('workload_variant') == 'primary_ledgers')
     if domain=='Financial Analysis':
         expected=[{key:tuple(row[:-1])+(tuple(row[-1]),) for key,row in batch.items()} for batch in truth[actor]]
         invoices=input_data['private_arrivals'][actor]['opening']['intake/opening/invoices.csv']
