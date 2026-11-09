@@ -2491,12 +2491,16 @@
       "matrix_cell": "artifact_namespace/timing/Knowledge Work",
       "pid": 49024,
       "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-knowledge-registered-spacing",
-      "status": "failed_under_review",
+      "status": "failed_repair_validated_pending_fresh_check",
       "worker_context": "lima-swarmharm",
       "source_commit": "f58b080aca2b058007555f2d7cfcdf414c274252",
       "failure": "Timing frame 11 exhausted calibrated attempts after three complete opening sources; original attempt preserved.",
       "failure_log": "work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-knowledge-registered-spacing.log",
-      "next_action": "Inspect exact failing frame before any fresh repaired input check."
+      "next_action": "After source push and hash verification, run one fresh input check; preserve original failed attempt.",
+      "diagnosis": "Observed sync intervals 586.080819 ms and 802.253365 ms missed a per-interval 600 ms gate. Decoding original timestamps restores frame 11 with intact RS/SHA/CRC.",
+      "repair": "Accept a sync pair only when its combined duration exceeds the original pair threshold and each interval exceeds half the old individual threshold.",
+      "repair_evidence": "work/eval-readiness/swarmform-services-resume-20261109-01/sync-pair-candidate/regression-result.json",
+      "repair_evidence_sha256": "da8d0c1fc1fb87fa3550be1b99be5690d6a45001b36e50f107825224faecfaa5"
     },
     {
       "matrix_cell": "artifact_namespace/timing/Data Analysis",

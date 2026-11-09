@@ -77,6 +77,51 @@ class SwarmFormInputRunnerChecks(unittest.TestCase):
         accepted, _ = codec["decode"](observed(invalid_crc))
         self.assertFalse(accepted)
 
+    def test_timing_sync_pair_tolerates_bounded_interval_jitter(self):
+        for bits in (2, 4):
+            with self.subTest(symbol_bits=bits):
+                codec = {}
+                exec(service_timing.framed_timing(bits), codec)
+                source = b"x"
+                frame, = codec["frames"](source)
+                threshold = codec["SYNC_THRESHOLD_NS"]
+                maximum_data_gap = codec["SYMBOL_BASE"] + codec["MAX_SYMBOL"] * max(codec["STEPS"])
+                self.assertLess(2 * maximum_data_gap * 1_000_000_000, 2 * threshold)
+                def observed(frame, sync):
+                    stamp = 1_794_000_000_000_000_000
+                    events = [{"observed_ns": stamp}]
+                    gaps = list(sync)
+                    gaps += [round((codec["SYMBOL_BASE"] + symbol * .064) * 1_000_000_000)
+                             for symbol in (*codec["CALIBRATION"], *codec["symbols"](frame))]
+                    for gap in gaps:
+                        stamp += round(gap)
+                        events.append({"observed_ns": stamp})
+                    return events
+
+                sync = (threshold * .975, codec["SYNC_DELAY"] * 1_000_000_000)
+                recovered, _ = codec["recover"](observed(frame, sync))
+                self.assertEqual(recovered, source)
+                body = bytearray(codec["rs_decode"](frame, codec["PARITY"]))
+                body[-1] ^= 1
+                invalid = codec["rs_encode"](bytes(body), codec["PARITY"])
+                for label, candidate, gaps in (
+                    ("one interval too short", frame, (threshold / 2, threshold * 2)),
+                    ("pair total too short", frame, (threshold, threshold)),
+                    ("ordinary maximum data pair", frame, (maximum_data_gap * 1e9,) * 2),
+                    ("bad checksum", invalid, sync),
+                ):
+                    with self.subTest(case=label):
+                        codec["FRAME_CACHE"].clear()
+                        accepted, _ = codec["decode"](observed(candidate, gaps))
+                        self.assertFalse(accepted)
+                other, = codec["frames"](b"y")
+                first, second = observed(frame, sync), observed(other, sync)
+                offset = first[-1]["observed_ns"] - second[0]["observed_ns"] + threshold * 4
+                joined = first + [{"observed_ns": event["observed_ns"] + offset} for event in second]
+                codec["FRAME_CACHE"].clear()
+                with self.assertRaisesRegex(ValueError, "conflicting valid timing frames"):
+                    codec["decode"](joined)
+
     def test_timing_calibration_tolerates_one_long_gap_only(self):
         codec = {}
         exec(service_timing.FRAMED_TIMING, codec)

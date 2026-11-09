@@ -226,7 +226,11 @@ def decode(events):
     corrections, fitted, candidate_counts, erasures = {}, {}, {}, {}
     rejected = 0
     for pos in range(len(gaps) - 2 - len(CALIBRATION) - WIRE * SYMBOLS_PER_BYTE + 1):
-        if not (gaps[pos] > SYNC_THRESHOLD_NS and gaps[pos + 1] > SYNC_THRESHOLD_NS):
+        # Adjacent service delays can compress one synchronization interval.
+        # Require the pair's original total threshold and a bounded minimum
+        # per interval; ordinary maximum data symbols cannot satisfy the sum.
+        sync = gaps[pos:pos + 2]
+        if min(sync) <= SYNC_THRESHOLD_NS / 2 or sum(sync) <= 2 * SYNC_THRESHOLD_NS:
             continue
         start = pos + 2
         calibration = gaps[start:start + len(CALIBRATION)]
