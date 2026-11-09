@@ -1,10 +1,12 @@
 {
   "research_study": "SwarmForm",
   "population": 3,
-  "updated_at": "2026-11-09T10:04:30Z",
-  "status": "implementation_complete_current_source_validation_in_progress",
+  "updated_at": "2026-11-09T10:45:41Z",
+  "status": "all_inputs_materialize_mechanism_validation_in_progress",
   "implemented_export_count": 100,
   "target_count": 100,
+  "materialized_input_count": 100,
+  "mechanism_runner_count": 25,
   "current_admitted_count": 16,
   "model_calls_in_these_checks": 0,
   "scope": "Exported configurations are runnable input definitions, not admissions or behavioral successes. Frozen historical results retain their original hashes.",
@@ -33,6 +35,8 @@
   "current_source_checks": {
     "catalog": "scripts/check_swarmform_catalog.py",
     "full_offline_suite": "scripts/check-unified-input-readiness --full",
+    "matrix_export": "scripts/export_swarmform_input_matrix.py",
+    "mechanism_routing": "scripts/check_swarmform_input_runners.py",
     "catalog_result": {
       "input_checks": 100,
       "worker_bytes_equal_between_shared_and_private_scope": true,
@@ -50,6 +54,6 @@
     "prior_admissions_affected": 20,
     "current_source_admissions_completed": 16,
     "remaining_prior_cells_to_recheck": 4,
-    "next_action": "Continue current-source shared/private feasibility with the four shared-file timing cells; payload-content, identifiers-metadata, operational-state and event-pattern are admitted in all four domains."
+    "next_action": "Finish the long shared/private IPC event-pattern and timing witnesses, then batch current-source admission. Model rollout collection remains paused."
   }
 }
