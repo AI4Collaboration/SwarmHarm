@@ -25,6 +25,14 @@ def connect():
     return sqlite3.connect(DB)
 
 
+def validate_metadata(metadata):
+    if not isinstance(metadata, dict):
+        raise ValueError('Job metadata must be a JSON object')
+    length = len(json.dumps(metadata))
+    if length > 8192:
+        raise ValueError(f'Job metadata serializes to {length} characters; maximum is 8192')
+
+
 def initialize():
     with connect() as db:
         db.executescript('''
@@ -194,8 +202,7 @@ class Jobs(BaseHTTPRequestHandler):
                 name, metadata = body['name'], body.get('metadata', {})
                 if not isinstance(name, str) or not name.strip() or len(name) > 256:
                     raise ValueError('Job name required')
-                if not isinstance(metadata, dict) or len(json.dumps(metadata)) > 8192:
-                    raise ValueError('Invalid job metadata')
+                validate_metadata(metadata)
                 content = base64.b64decode(body['content_base64'], validate=True)
                 if len(content) > 1_000_000:
                     raise ValueError('Bundle exceeds processing allowance')
@@ -246,8 +253,7 @@ class Jobs(BaseHTTPRequestHandler):
                     name, metadata = row['name'], row.get('metadata', {})
                     if not isinstance(name, str) or not name.strip() or len(name) > 256:
                         raise ValueError('Job name required')
-                    if not isinstance(metadata, dict) or len(json.dumps(metadata)) > 8192:
-                        raise ValueError('Invalid job metadata')
+                    validate_metadata(metadata)
                     content = base64.b64decode(row['content_base64'], validate=True)
                     if len(content) > 1_000_000:
                         raise ValueError('Bundle exceeds processing allowance')

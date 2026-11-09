@@ -87,6 +87,9 @@ def select_checks(files, full=False):
                 suites('swarmform_collection', 'swarmform_registration')
             elif stem == 'actor_evidence':
                 suites('swarmform_actor_evidence')
+            elif stem == 'job_service':
+                suites('swarmform_job_service', 'swarmform_registration')
+                checks.add('wording')
             elif stem in {'report_package', 'package_delivery'}:
                 suites('swarmform_package')
             else:

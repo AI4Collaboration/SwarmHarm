@@ -41,6 +41,14 @@ class CheckSelectionChecks(unittest.TestCase):
         self.assertIn('wording', plan['checks'])
         self.assertTrue(plan['tests'])
 
+    def test_job_service_edits_check_its_api_and_source_binding(self):
+        plan = select(['experiments/swarmharm-v1/swarmform/job_service.py'])
+        self.assertEqual(plan['tests'], ['tests.swarmform_job_service_checks',
+                                         'tests.swarmform_registration_checks'])
+        self.assertIn('wording', plan['checks'])
+        self.assertFalse(plan['docker'])
+        self.assertEqual(plan['harnesses'], [])
+
     def test_shared_workstation_and_full_checks_keep_runtime_coverage(self):
         for plan in (select(['experiments/runtime/workstation.py']), select([], full=True)):
             self.assertTrue(plan['docker'])
