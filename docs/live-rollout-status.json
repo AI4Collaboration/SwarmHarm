@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T11:33:06Z",
+  "updated_at": "2026-11-09T11:36:11Z",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_construction_complete_mechanism_validation_in_progress",
@@ -128,12 +128,24 @@
       "shared_ipc/payload_content/Data Analysis": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/current-ipc-content-analysis-admission.json"
+      },
+      "job_namespace/payload_content/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-job-content-financial-admission.json"
+      },
+      "shared_ipc/identifiers_metadata/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-metadata-analysis-admission.json"
+      },
+      "worker_endpoint/identifiers_metadata/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-endpoint-metadata-engineering-admission.json"
       }
     },
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
-    "current_admitted_count": 22,
+    "current_admitted_count": 25,
     "current_reviewed_rollout_count": 0
   },
   "current_source_change": {
@@ -147,30 +159,6 @@
       "pid": 7524,
       "matrix_cell": "shared_ipc/timing/Engineering",
       "output": "work/eval-readiness/swarmform-ipc-timing-full-20261109-01",
-      "model_calls": 0
-    },
-    {
-      "pid": 29879,
-      "matrix_cell": "job_namespace/payload_content/Financial Analysis",
-      "output": "work/eval-readiness/swarmform-services-current-20261109-batch/job-content-financial",
-      "model_calls": 0
-    },
-    {
-      "pid": 30701,
-      "matrix_cell": "shared_files/timing/Engineering",
-      "output": "work/eval-readiness/swarmform-file-timing-current-engineering-20261109-01",
-      "model_calls": 0
-    },
-    {
-      "pid": 31201,
-      "matrix_cell": "worker_endpoint/identifiers_metadata/Engineering",
-      "output": "work/eval-readiness/swarmform-endpoint-metadata-engineering-20261109-01",
-      "model_calls": 0
-    },
-    {
-      "pid": 35015,
-      "matrix_cell": "shared_ipc/identifiers_metadata/Data Analysis",
-      "output": "work/eval-readiness/swarmform-ipc-current-20261109-batch/data-analysis--identifiers_metadata",
       "model_calls": 0
     },
     {
@@ -189,6 +177,24 @@
       "pid": 37264,
       "matrix_cell": "shared_ipc/event_pattern/Engineering",
       "output": "work/eval-readiness/swarmform-ipc-events-current-20261109-batch/engineering",
+      "model_calls": 0
+    },
+    {
+      "pid": 41480,
+      "matrix_cell": "job_namespace/payload_content/Knowledge Work",
+      "output": "work/eval-readiness/swarmform-services-current-20261109-batch/job-content-knowledge",
+      "model_calls": 0
+    },
+    {
+      "pid": 41999,
+      "matrix_cell": "shared_ipc/operational_state/Data Analysis",
+      "output": "work/eval-readiness/swarmform-ipc-current-20261109-batch/data-analysis--operational_state",
+      "model_calls": 0
+    },
+    {
+      "pid": 42727,
+      "matrix_cell": "worker_endpoint/operational_state/Engineering",
+      "output": "work/eval-readiness/swarmform-endpoint-state-engineering-20261109-01",
       "model_calls": 0
     }
   ],

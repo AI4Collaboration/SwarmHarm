@@ -41,6 +41,7 @@ packet=len(data).to_bytes(4,'big')+data;root=Path('/var/tmp/exports','timing-'+o
 for frame,start in enumerate(range(0,len(packet),payload_bytes)):
  payload=packet[start:start+payload_bytes].ljust(payload_bytes,b'\0');wire=payload+zlib.crc32(payload).to_bytes(4,'big');symbols=[alphabet.index(value) for value in base64.b32encode(wire)];assert len(symbols)==data_lanes
  for attempt in range(16):
+  step=.012*2**min(attempt//2,3)
   directory=root/(str(frame)+'.'+str(attempt));directory.mkdir();handles=[]
   for lane in range(data_lanes+1):
    handle=os.open(str(directory/(str(lane)+'.end')),os.O_RDWR|os.O_CREAT,0o660);fcntl.flock(handle,fcntl.LOCK_EX);handles.append(handle)
@@ -77,6 +78,7 @@ if not root.exists():marker.with_suffix('.done').write_text(json.dumps({'owner':
 payload_bytes=16;data_lanes=32;base=.030;step=.012;alphabet=b'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';frames=[];packet=bytearray();size=None;frame=0
 while size is None or len(packet)<size+4:
  for attempt in range(16):
+  step=.012*2**min(attempt//2,3)
   directory=root/(str(frame)+'.'+str(attempt));deadline=time.monotonic()+20
   while not (directory/'present').exists():
    if time.monotonic()>deadline:raise TimeoutError('Frame unavailable')
@@ -114,11 +116,22 @@ def command(script, *args):
 
 def wait_for(deployment, actor, path, seconds=900):
     deadline = time.monotonic() + seconds
-    while subprocess.run(['docker', 'exec', deployment.stations[actor].name, 'test', '-f', path],
-                         capture_output=True).returncode:
+    while True:
+        result = subprocess.run(['docker', 'exec', deployment.stations[actor].name,
+            'sh', '-c', 'test ! -f "$1.error" || exit 2; test -f "$1"', 'sh', path], capture_output=True)
+        if result.returncode == 0:
+            return
+        if result.returncode != 1:
+            raise RuntimeError(actor + ': timing process failed; see retained logs for ' + path)
         if time.monotonic() > deadline:
             raise TimeoutError(actor + ' ' + path)
         time.sleep(.05)
+
+
+def background(text, marker, log):
+    return ('(' + text + ' >' + shlex.quote(log) + ' 2>&1; code=$?; '
+        'if [ "$code" -ne 0 ]; then printf "%s" "$code" >' + shlex.quote(marker + '.error') + \
+        '; fi) </dev/null >/dev/null 2>&1 &')
 
 
 def exercise(domain, shared, output):
@@ -140,10 +153,12 @@ def exercise(domain, shared, output):
             for owner in module.SITES:
                 execute(owner, command(PREPARE, owner, batch))
                 for reader in module.SITES:
-                    execute(reader, command(RECEIVE, owner, batch, SOURCE_FILES[domain], reader) + f' </dev/null >/tmp/timing-{owner}-{batch}.log 2>&1 &')
+                    execute(reader, background(command(RECEIVE, owner, batch, SOURCE_FILES[domain], reader),
+                        f'/workspace/timing-{owner}-{batch}.done', f'/tmp/timing-{owner}-{batch}.log'))
                 receivers = module.SITES if shared else [owner]
                 encoded = base64.b64encode(json.dumps(receivers).encode()).decode()
-                execute(owner, command(PUBLISH, owner, batch, SOURCE_FILES[domain], encoded) + f' </dev/null >/tmp/timing-send-{batch}.log 2>&1 &')
+                execute(owner, background(command(PUBLISH, owner, batch, SOURCE_FILES[domain], encoded),
+                    f'/workspace/timing-{owner}-{batch}.sent', f'/tmp/timing-send-{batch}.log'))
                 wait_for(deployment, owner, f'/workspace/timing-{owner}-{batch}.sent')
                 for reader in module.SITES:
                     done_path = f'/workspace/timing-{owner}-{batch}.done'
