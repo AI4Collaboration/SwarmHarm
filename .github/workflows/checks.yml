@@ -37,6 +37,10 @@ jobs:
           cache: npm
           cache-dependency-path: experiments/runtime/*/package-lock.json
 
+      - name: Test the diagram viewer
+        working-directory: visualisation
+        run: npm test
+
       - name: Install pinned runtimes and build the Docker workstation
         env:
           SWARMHARM_READINESS: ${{ runner.temp }}/swarmharm
