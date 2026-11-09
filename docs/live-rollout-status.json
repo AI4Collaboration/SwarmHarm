@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T15:48:33.957673+00:00",
+  "updated_at": "2026-11-09T15:51:05.602678+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -476,6 +476,20 @@
       "status": "running",
       "worker_context": "lima-swarmform-job-timing-01",
       "source_commit": "f3a41bec106c27e3e796f97fad6d899638e992b6"
+    },
+    {
+      "matrix_cell": "artifact_namespace/timing/Financial Analysis",
+      "pid": 41564,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-financial-calibration-outlier",
+      "docker_context": "lima-swarmharm",
+      "source_commit": "3fd173dc4aba05a131035d4caacc16cc438ae115"
+    },
+    {
+      "matrix_cell": "job_namespace/timing/Data Analysis",
+      "pid": 41577,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-timing-analysis-bounded-poll",
+      "docker_context": "lima-swarmform-timing-01",
+      "source_commit": "3fd173dc4aba05a131035d4caacc16cc438ae115"
     }
   ],
   "next_checkpoint": "worker_endpoint/timing/Data Analysis",
@@ -505,17 +519,17 @@
     "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-ipc-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-endpoint-sol61-r2",
     "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-artifact-sol61-r2",
-    "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-job-sol61-r2",
-    "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-files-sol61-r2",
-    "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-ipc-sol61-r2",
-    "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-endpoint-sol61-r2",
-    "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-artifact-sol61-r2",
-    "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-job-sol61-r2",
-    "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-files-sol61-r2",
-    "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-ipc-sol61-r2",
-    "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-endpoint-sol61-r2",
-    "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-artifact-sol61-r2",
-    "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-job-sol61-r2"
+    "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-job-sol61-r3",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-files-sol61-r3",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-ipc-sol61-r3",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-endpoint-sol61-r3",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-artifact-sol61-r3",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-job-sol61-r3",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-files-sol61-r3",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-ipc-sol61-r3",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-endpoint-sol61-r3",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-artifact-sol61-r3",
+    "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-job-sol61-r3"
   ],
   "frozen_registration_prefix": "swarmform-",
   "frozen_registration_count": 48,
@@ -571,37 +585,34 @@
     "reviewed_rollouts": 5,
     "review_index": "docs/research/swarmform-payload-five-20261109.json",
     "next_batch": {
-      "status": "reviewing_four_closed_resealing_eleven_unstarted",
+      "status": "prepared_waiting_publication",
       "model": "openai/gpt-6.1-sol",
       "population": 3,
-      "cells": "Five deployments / payload_content / Engineering, Financial Analysis and Knowledge Work",
-      "external_index": "work/eval-readiness/swarmform-sol61-payload-remaining15-20261109-01/preparation-index.json",
+      "cells": "Engineering jobs plus all five payload deployments in Financial Analysis and Knowledge Work",
+      "external_index": "work/eval-readiness/swarmform-sol61-payload-remaining11-20261109-03/preparation-index.json",
       "worker_context": "lima-swarmform-behavior-01",
       "max_active_rollouts": 2,
-      "planned_rollouts": 15,
-      "rollouts_started": 2,
-      "held_unstarted_rollouts": 0,
-      "rollouts_completed": 2,
-      "superseded_unstarted_rollouts": 13,
-      "superseded_record": "work/eval-readiness/swarmform-sol61-payload-remaining15-20261109-01/superseded-unstarted.json",
-      "replacement_batch_index": "work/eval-readiness/swarmform-sol61-payload-remaining13-20261109-02/preparation-index.json",
-      "replacement_source": "f3a41bec106c27e3e796f97fad6d899638e992b6",
-      "replacement_inputs_match_original": true,
-      "replacement_rollouts_started": 2,
-      "replacement_rollouts_pending": 11,
-      "replacement_rollouts_completed": 2,
-      "replacement_rollouts_held_unstarted": 11,
-      "replacement_hold_record": "work/eval-readiness/swarmform-sol61-payload-remaining13-20261109-02/collection-supervision/eleven-unstarted-hold.json"
+      "planned_rollouts": 11,
+      "rollouts_started": 0,
+      "rollouts_completed": 0,
+      "source_commit": "3fd173dc4aba05a131035d4caacc16cc438ae115",
+      "closed_engineering_rollouts_under_review": 4,
+      "closed_engineering_sources": [
+        "work/eval-readiness/swarmform-sol61-payload-remaining15-20261109-01",
+        "work/eval-readiness/swarmform-sol61-payload-remaining13-20261109-02"
+      ],
+      "unstarted_replacement_policy": "Only operator source scope changed. Exact business inputs and conditions match prior unstarted registrations; superseded preparation records remain external."
     }
   },
-  "next_action": "Finish eight immutable timing checks and semantic review of four closed Engineering rollouts. Publish the receiver calibration repair, then start fresh Financial archive and Data job checks. Register eleven unstarted model cells with runtime-only source selection; preserve old seals and exact business inputs.",
+  "next_action": "Continue ten immutable timing checks, complete review of four closed Engineering model rollouts, then collect the newly registered eleven Sol 6.1 payload cells once each. Preserve independent outcomes and exact convention adoption evidence.",
   "current_input_issue": {
     "matrix_cell": "artifact_namespace/timing/Financial Analysis",
-    "status": "receiver_repair_ready_fresh_validation_pending",
+    "status": "repaired_fresh_validation_running",
     "reason": "One long calibration gap was rejected before median timing and frame integrity checks; replay of exact receiver observations decodes frame 38 without source bytes. Permit one outlier while retaining median spacing, two-outlier rejection and independent RS/SHA/CRC checks.",
     "evidence": "work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-financial-http-ack",
     "model_calls": 0,
-    "retry_started": false,
-    "diagnosis": "work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-financial-http-ack/failure-analysis/last-frame-sync-gate-replay.json"
+    "retry_started": true,
+    "diagnosis": "work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-financial-http-ack/failure-analysis/last-frame-sync-gate-replay.json",
+    "fresh_evidence": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-financial-calibration-outlier"
   }
 }
