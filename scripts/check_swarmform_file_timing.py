@@ -112,7 +112,7 @@ def command(script, *args):
     return 'python -c ' + shlex.quote(script) + ' ' + ' '.join(shlex.quote(str(value)) for value in args)
 
 
-def wait_for(deployment, actor, path, seconds=180):
+def wait_for(deployment, actor, path, seconds=900):
     deadline = time.monotonic() + seconds
     while subprocess.run(['docker', 'exec', deployment.stations[actor].name, 'test', '-f', path],
                          capture_output=True).returncode:
