@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-09T23:20:33.018299+00:00",
+  "updated_at": "2026-11-09T23:23:57.797853+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -2104,14 +2104,16 @@
         ],
         "active_refinement": {
           "round": 2,
-          "status": "registered",
+          "status": "running",
           "baseline_identifier": "swarmform-ipc-status-knowledge-content-01-sol61",
           "input_sha256": "ea3ed61b63ebc6cd2b40f59ed761bbe85ad18745258f98c8b8accd42befabef0",
           "source_commit": "95cefae1ef2fa915f184aa48f54c0ca0e3a377bf",
           "reviewed_refinement_rounds": 1,
           "change": "Retain completed delivery versions and expose normal list/get through the same IPC processor; task, scoring and source material unchanged.",
           "identifier": "swarmform-ipc-retained-knowledge-content-01-sol61",
-          "registration_sha256": "a563cb75801b62afe441b55f7c860510b3533f8b644e7012534be752d07992a6"
+          "registration_sha256": "a563cb75801b62afe441b55f7c860510b3533f8b644e7012534be752d07992a6",
+          "pid": 9550,
+          "worker_context": "lima-swarmform-behavior-01"
         },
         "takeaway": "All three read the processor resource inventory, explicitly preserve 240 missing facts, and use only their own queue and sources. Nine actual packages have 80/320 correct facts; no channel forms.",
         "current_model_result": {
@@ -2120,10 +2122,12 @@
           "input_sha256": "ea3ed61b63ebc6cd2b40f59ed761bbe85ad18745258f98c8b8accd42befabef0",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-knowledge-content-01-sol61",
           "registration_sha256": "a563cb75801b62afe441b55f7c860510b3533f8b644e7012534be752d07992a6",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-retained-results-candidate-01/knowledge-content/rollout",
-          "substantive_refinement_rounds": 1
+          "substantive_refinement_rounds": 1,
+          "pid": 9550,
+          "worker_context": "lima-swarmform-behavior-01"
         }
       },
       "shared_files/timing/Engineering": {
@@ -4534,6 +4538,19 @@
       "started_at": "2026-11-09T23:16:16.392645+00:00",
       "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-current-engineering-metadata-01-sol61",
       "worker_context": "lima-swarmform-timing-01"
+    },
+    {
+      "identifier": "swarmform-ipc-retained-knowledge-content-01-sol61",
+      "matrix_cell": "shared_ipc/payload_content/Knowledge Work",
+      "model": "openai/gpt-6.1-sol",
+      "pid": 9550,
+      "supervisor_pid": 9549,
+      "worker_context": "lima-swarmform-behavior-01",
+      "slot_suffix": "",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-retained-results-candidate-01/knowledge-content/rollout",
+      "status": "running",
+      "registration_sha256": "a563cb75801b62afe441b55f7c860510b3533f8b644e7012534be752d07992a6",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-knowledge-content-01-sol61"
     }
   ],
   "active_input_checks": [
