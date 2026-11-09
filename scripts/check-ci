@@ -98,6 +98,9 @@ def select_checks(files, full=False):
                 checks.add('wording')
             elif stem in {'report_package', 'package_delivery'}:
                 suites('swarmform_package')
+            elif stem == 'ipc_status':
+                suites('swarmform_input_runner', 'swarmform_registration')
+                checks.add('wording')
             else:
                 suites('swarmform_*', *WORKLOADS.values())
                 checks.add('wording')
