@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T21:09:08.916655+00:00",
+  "updated_at": "2026-11-09T21:15:21.641907+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -2851,12 +2851,16 @@
           "status": "running",
           "started": true
         }
+      },
+      "job_namespace/timing/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-job-timing-engineering-admission.json"
       }
     },
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
-    "current_admitted_count": 96,
+    "current_admitted_count": 97,
     "current_reviewed_rollout_count": 94,
     "current_completed_rollout_count": 94,
     "current_registered_cells": 95,
@@ -2890,9 +2894,25 @@
       "source_commit": "b0d0579b19eb94f5cd48eefe5cbc4a349a4a8231",
       "model_calls": 0,
       "supersedes_interrupted_input_check": 66107
+    },
+    {
+      "matrix_cell": "artifact_namespace/timing/Financial Analysis",
+      "pid": 2633,
+      "output": "../eval-readiness/swarmform-financial-archive-input-continuation",
+      "status": "continuing_registered_input",
+      "worker_context": "lima-swarmharm",
+      "model_calls": 0
+    },
+    {
+      "matrix_cell": "worker_endpoint/timing/Financial Analysis",
+      "pid": 10956,
+      "output": "../eval-readiness/swarmform-financial-endpoint-continuation-20261109-01",
+      "status": "continuing_registered_input",
+      "worker_context": "lima-swarmform-model-01",
+      "model_calls": 0
     }
   ],
-  "next_checkpoint": "shared_ipc/identifiers_metadata/Data Analysis",
+  "next_checkpoint": "job_namespace/timing/Engineering",
   "maintained_registrations": [
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol61",
@@ -3007,16 +3027,8 @@
       "scope": "Original archive-content Data Analysis input."
     }
   ],
-  "next_action": "Review the registered Data Analysis IPC metadata refinement and Knowledge Work archive timing rollout after they close. Continue the timing input checks listed below.",
+  "next_action": "Register Engineering job timing once. Review the Knowledge archive and Data Analysis IPC metadata runs after closure. Complete the three remaining timing inputs and admit each one after its matched private check.",
   "open_timing_inputs": [
-    {
-      "matrix_cell": "job_namespace/timing/Engineering",
-      "shared_sources_at_checkpoint": 7,
-      "worker_context": "lima-swarmform-timing-01",
-      "original_host_pid": 32013,
-      "host_exit_cause": "unrecorded",
-      "next": "Bind the surviving workstations and check the remaining sources, private isolation and terminal deliveries."
-    },
     {
       "matrix_cell": "job_namespace/timing/Financial Analysis",
       "shared_sources_at_checkpoint": 8,
