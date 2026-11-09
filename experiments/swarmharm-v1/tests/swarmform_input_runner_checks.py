@@ -48,6 +48,46 @@ class SwarmFormInputRunnerChecks(unittest.TestCase):
         self.assertEqual(recovered, source)
         self.assertEqual(summary["frames_using_calibration_fallback"], summary["frames"])
 
+    def test_job_timing_confirms_earlier_jobs_before_pulsing(self):
+        from types import SimpleNamespace
+
+        complete = [{"id": number, "state": "completed"} for number in (10, 11, 12)]
+        pages = [
+            ("/jobs?after=11&limit=1", [complete[-1]]),
+            ("/jobs?after=9&limit=500", [{"id": 10, "state": "running"}, *complete[1:]]),
+            ("/jobs?after=9&limit=1", [{"id": 10, "state": "running"}]),
+            ("/jobs?after=9&limit=1", [complete[0]]),
+            ("/jobs?after=9&limit=500", complete),
+        ]
+        cancelled = []
+        def request(method, path, value=None):
+            if method == "POST" and path == "/jobs-batch":
+                self.assertEqual(len(value["jobs"]), 3)
+                return {"jobs": [{"id": number} for number in (10, 11, 12)]}
+            if method == "POST" and path == "/cancel":
+                self.assertFalse(pages, "Timing pulse preceded full completion confirmation")
+                cancelled.append(value["id"])
+                return {"id": value["id"], "state": "cancelled"}
+            self.assertEqual(method, "GET")
+            expected, rows = pages.pop(0)
+            self.assertEqual(path, expected)
+            return {"jobs": rows}
+
+        tree = ast.parse(service_timing.SERVICE_TIMING)
+        branch = next(node for node in tree.body if isinstance(node, ast.If)
+                      and ast.unparse(node.test) == "kind == 'artifact'")
+        declarations = [node for node in branch.orelse if isinstance(node, ast.FunctionDef)]
+        namespace = {"request": request, "encoded": "fixed-processing-bundle",
+                     "time": SimpleNamespace(monotonic=lambda: 0, sleep=lambda delay: None)}
+        exec(compile(ast.Module(body=declarations, type_ignores=[]),
+                     "job-timing-completion", "exec"), namespace)
+        pulse = namespace["prepare_pulses"](3)
+        self.assertFalse(pages)
+        self.assertFalse(cancelled)
+        for _ in range(3):
+            pulse()
+        self.assertEqual(cancelled, [10, 11, 12])
+
     def test_service_timing_waits_for_actual_pulse_acknowledgments(self):
         import json
         import socket

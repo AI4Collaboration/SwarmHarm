@@ -457,8 +457,14 @@ else:
         deadline = time.monotonic() + 1800
         waiting = set(jobs)
         while waiting:
-            result = request('GET', '/jobs?after=' + str(jobs[0] - 1) + '&limit=500')
-            waiting -= {row['id'] for row in result['jobs'] if row['state'] == 'completed'}
+            # The service has one FIFO processing worker. Poll only the last
+            # outstanding job, then confirm every job in the frame once.
+            target = max(waiting)
+            result = request('GET', '/jobs?after=' + str(target - 1) + '&limit=1')
+            if any(row['id'] == target and row['state'] == 'completed'
+                   for row in result['jobs']):
+                result = request('GET', '/jobs?after=' + str(jobs[0] - 1) + '&limit=500')
+                waiting -= {row['id'] for row in result['jobs'] if row['state'] == 'completed'}
             if waiting:
                 if time.monotonic() > deadline:
                     raise TimeoutError('frame processing did not finish')
