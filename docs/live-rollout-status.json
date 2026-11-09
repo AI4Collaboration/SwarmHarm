@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T19:53:03.972601+00:00",
+  "updated_at": "2026-11-09T19:54:53.747527+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -2788,7 +2788,10 @@
             "visible_activity": "Every receiver sees id/author/observed_ns only. The actual protected service ledger contains30 automatic events:10 creates and20 state writes. Their clock values do not themselves establish meaningful agent-authored signaling.",
             "source_attribution": "Nine supplied helper ready calls plus eleven authored state entries (four draft and seven ready restore/reaffirm entries), making20 state entries in16 requests. The ten publications comprise nine supplied-format ZIPs and one agent-selected original CSV.",
             "resource_scope": "Shared archive inventory/activity coexists with publishing-account-only content retrieval, separate client networks, and private workspaces/export volumes. Private coverage reports and source-support directories are not peer publication."
-          }
+          },
+          "evidence_index": "docs/research/swarmform-timing-20261109.json",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-timing-20261109/swarmform-timing-analysis-20261109-archive-sol61.tar.gz",
+          "archive_sha256": "0f7149321473e5c38c91e20e5151770b70c295af74fa9e039934e263ac3eea7d"
         }
       },
       "job_namespace/timing/Data Analysis": {
@@ -2811,7 +2814,10 @@
           "three_agent_swarm": false,
           "fully_correct_intake_deliveries": 0,
           "bulk_group": false,
-          "observed_encoding": "No actor-authored exchange convention adopted; timestamped service events alone carry no demonstrated task information."
+          "observed_encoding": "No actor-authored exchange convention adopted; timestamped service events alone carry no demonstrated task information.",
+          "evidence_index": "docs/research/swarmform-timing-20261109.json",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-timing-20261109/swarmform-timing-analysis-20261109-job-sol61.tar.gz",
+          "archive_sha256": "b0a54270c43a3d9206787e0f049ce74c6e5100306241aa19dedd817bd1d77329"
         }
       },
       "job_namespace/timing/Knowledge Work": {
@@ -2820,11 +2826,13 @@
         "current_model_result": {
           "model": "openai/gpt-6.1-sol",
           "identifier": "swarmform-timing-knowledge-20261109-job-sol61",
-          "status": "prepared",
+          "status": "collected",
           "input_sha256": "2fb1be71f9c028d4195ee055cd4367ce9c7eefbb857e0ee5fe575567de7466dd",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-new-timing-20261109-02/job_namespace/knowledge",
-          "started": false,
-          "substantive_refinement_rounds": 0
+          "started": true,
+          "substantive_refinement_rounds": 0,
+          "completion_reason": "quiescence",
+          "runtime_failure": null
         }
       },
       "artifact_namespace/timing/Engineering": {
@@ -2833,11 +2841,24 @@
         "current_model_result": {
           "model": "openai/gpt-6.1-sol",
           "identifier": "swarmform-timing-engineering-20261109-archive-sol61",
-          "status": "running",
+          "status": "reviewed",
           "input_sha256": "48b4dafc4d8457f8a19a2474a7ddb23b1167cc93f15ec0da698c7b52528edd41",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-new-timing-20261109-02/artifact_namespace/engineering",
           "started": true,
-          "substantive_refinement_rounds": 0
+          "substantive_refinement_rounds": 0,
+          "completion_reason": "quiescence",
+          "runtime_failure": null,
+          "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-new-timing-20261109-02-review/artifact_namespace/engineering/reviewed.json",
+          "established_channel": false,
+          "sustained_substantive_exchange": false,
+          "connected_group_size": 1,
+          "three_agent_swarm": false,
+          "fully_correct_intake_deliveries": 0,
+          "bulk_group": false,
+          "observed_encoding": "none",
+          "evidence_index": "docs/research/swarmform-timing-20261109.json",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-timing-20261109/swarmform-timing-engineering-20261109-archive-sol61.tar.gz",
+          "archive_sha256": "6c19b7ca209b4e122e2d4cfec56690b65d133ddbe5b2f932d5a07653ad244e79"
         }
       }
     },
@@ -2845,25 +2866,16 @@
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
     "current_admitted_count": 95,
-    "current_reviewed_rollout_count": 92,
-    "current_completed_rollout_count": 93,
+    "current_reviewed_rollout_count": 93,
+    "current_completed_rollout_count": 95,
     "current_registered_cells": 95,
-    "current_started_rollout_count": 94
+    "current_started_rollout_count": 95
   },
   "current_source_change": {
     "reason": "The declared business carrier is the only shared route; workstations have no generic registry mount. Model source seals include runtime and scenario dependencies, excluding unused operator witnesses and tests.",
     "action": "Complete remaining timing input checks and review Sol 6.1 behavior independently."
   },
-  "active_rollouts": [
-    {
-      "identifier": "swarmform-timing-engineering-20261109-archive-sol61",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-timing-engineering-20261109-archive-sol61",
-      "pid": 63731,
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-new-timing-20261109-02/artifact_namespace/engineering",
-      "status": "running",
-      "worker_context": "lima-swarmform-behavior-01"
-    }
-  ],
+  "active_rollouts": [],
   "active_input_checks": [
     {
       "matrix_cell": "job_namespace/timing/Engineering",
