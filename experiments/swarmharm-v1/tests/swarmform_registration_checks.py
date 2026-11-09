@@ -6,6 +6,7 @@ from contextlib import redirect_stderr
 import importlib.util
 import io
 import json
+import sys
 from pathlib import Path
 import tempfile
 import tomllib
@@ -18,6 +19,7 @@ from swarmform.inputs import build, verify_packages
 from swarmform.input_catalog import build as build_input, task_network
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / 'scripts'))
 spec = importlib.util.spec_from_file_location('swarmform_entry', ROOT / 'scripts/run_swarmform.py')
 entry = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(entry)
