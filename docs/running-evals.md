@@ -85,17 +85,20 @@ condition. Supply a registration to read its exact sealed bytes.
 
 ### Check the installation and inputs
 
-Run the reporting baseline’s offline checks from the pinned Python environment:
+Use one entry point for change-selected checks. Previewing the selection does not run tests:
 
 ```sh
-"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-unified-input-readiness \
-  --full --output ../eval-readiness/unified-input-readiness.json
+python3 scripts/check-ci --plan
+"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-ci
 ```
 
-This also runs the offline three-agent fulfillment checks. For the reporting baseline it checks all four domain source workflows, the domain catalog, parameter/input
-identity, readable exports, blocked and reachable paths, subject-facing wording,
-delivery replay, evidence replay and format contracts. It makes no model calls;
-behavioral validation remains a separate registered rollout.
+The default compares with `origin/main`, including local edits. Use `--base COMMIT`
+for another comparison. Documentation and progress notes need no Docker or native
+harness installation. Operator-witness changes select their small regression checks;
+input and runtime changes select the affected contracts and behavior tests. Each
+selected check runs once. `--full` explicitly runs the complete offline suite;
+`--output ../eval-readiness/checks.json` saves a result. No command here calls a model.
+The old `check-unified-input-readiness` name only forwards to this entry point.
 
 `SWARMHARM_READINESS` changes the external state directory;
 `SWARMHARM_HARBOR_ENV` changes the Python environment location. Source the generated
@@ -116,9 +119,9 @@ ID, store it in a file outside the clone, and restrict that file to its owner
 local installation checks do not prove provider access.
 
 Prepare new registrations on an up-to-date `main`. The repository pre-push hook
-runs the quick input, wording and format gate. GitHub runs the complete offline
-suite on pushes to `main`; run `scripts/check-ci` locally when the full historical
-replay is needed. Replay published cases from their frozen archives.
+checks the exact outgoing changes with `scripts/check-ci`. GitHub uses the same
+selection and installs only the dependencies it requires. Full regression is an
+explicit local option or manual workflow option. Replay published cases from their frozen archives.
 
 Balanced headline example (replace the paths and unique name). Switch the preset,
 claim and domain only according to `docs/balanced-study-design.md`; the comparison

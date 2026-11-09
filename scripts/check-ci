@@ -1,51 +1,218 @@
 #!/usr/bin/env python3
-"""Run offline checks without starting a rollout."""
+"""Run checks selected by changed files. Use --plan to inspect or --full for all."""
 import argparse
+import ast
+import json
+import os
 from pathlib import Path
 import subprocess
 import sys
 import time
 
-
 ROOT = Path(__file__).resolve().parents[1]
+LAB = 'experiments/swarmharm-v1'
+TESTS = ROOT / LAB / 'tests'
+SELF = {'scripts/check-ci', 'scripts/check-push', 'scripts/pre-push',
+        'scripts/check-unified-input-readiness', '.github/workflows/checks.yml'}
+WORKLOADS = {'engineering': 'engineering_input', 'fulfillment': 'fulfillment_input',
+             'settlement': 'settlement_input', 'knowledge': 'knowledge_input'}
+DOCKER_TESTS = {'swarmform_deployment', 'swarmform_read_observer', 'swarmform_runtime',
+                'swarmform_workstation_retention', 'workstation_patch'}
+
+
+def git(*args, root=ROOT):
+    return subprocess.check_output(['git', *args], cwd=root, text=True).strip()
+
+
+def changed_files(base=None, head='HEAD', *, root=ROOT, working=True):
+    if base is None:
+        base = 'origin/main'
+        if subprocess.run(['git', 'rev-parse', '--verify', base], cwd=root,
+                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode:
+            base = '0'
+    if base and set(base) == {'0'}:
+        base = subprocess.check_output(['git', 'hash-object', '-t', 'tree', '--stdin'],
+                                       input='', cwd=root, text=True).strip()
+    names = set(git('diff', '--name-only', '-z', '--no-renames', base, head, root=root).split('\0'))
+    if working:
+        names.update(git('diff', '--name-only', '-z', '--no-renames', head, root=root).split('\0'))
+        names.update(git('ls-files', '--others', '--exclude-standard', '-z', root=root).split('\0'))
+    return sorted(names - {''})
+
+
+def select_checks(files, full=False):
+    """One selection table for local work, pre-push and CI; sets prevent duplicates."""
+    checks, tests, harnesses = set(), set(), set()
+    docker = False
+
+    def suites(*patterns):
+        for pattern in patterns:
+            tests.update(p.stem.removesuffix('_checks') for p in TESTS.glob(pattern + '_checks.py'))
+
+    if files or full:
+        checks.update(('syntax', 'inventory'))
+    for name in files:
+        path = Path(name)
+        stem = path.stem
+        if name in SELF:
+            suites('check_selection')
+        elif name.startswith(LAB + '/tests/'):
+            if path.name.endswith('_checks.py'):
+                suites(stem.removesuffix('_checks'))
+            else:
+                suites('*')
+        elif name.startswith('docs/') or (path.suffix == '.md' and not name.startswith('experiments/')) or '/registrations/' in name:
+            if name == 'docs/live-rollout-status.json' or '/registrations/' in name:
+                checks.add('inputs')
+        elif name == 'scripts/check_dataset_admission_contract.py':
+            checks.add('inventory')
+        elif name in {'scripts/check_format_contract.py', 'scripts/check-format-contract'}:
+            checks.add('format')
+        elif name == 'scripts/check_balanced_study.py':
+            checks.add('balanced')
+        elif name.startswith('scripts/') and ('witness' in stem or
+                stem.startswith('check_swarmform_') and stem not in {
+                    'check_swarmform_catalog', 'check_swarmform_inputs', 'check_swarmform_read_observer'}):
+            suites('swarmform_input_runner')
+            if stem == 'swarmform_witness_solvers':
+                suites(*WORKLOADS.values())
+        elif name.startswith(LAB + '/swarmform/'):
+            if stem in WORKLOADS:
+                suites(WORKLOADS[stem], 'swarmform_domain')
+                checks.update(('catalog', 'wording'))
+            elif stem in {'input_catalog', 'domain_inputs', 'inputs'} or stem.endswith('_inputs'):
+                suites('swarmform_registration', 'swarmform_input_runner', 'swarmform_domain')
+                checks.update(('catalog', 'wording'))
+            elif stem == 'collection':
+                suites('swarmform_collection', 'swarmform_registration')
+            elif stem in {'report_package', 'package_delivery'}:
+                suites('swarmform_package')
+            else:
+                suites('swarmform_*', *WORKLOADS.values())
+                checks.add('wording')
+        elif name.startswith('experiments/runtime/'):
+            adapter = next((a for a in ('codex', 'claude', 'pi')
+                            if name.startswith('experiments/runtime/' + a)), None)
+            if adapter:
+                suites(adapter + '_collect', 'native_*', 'format')
+                harnesses.add(adapter)
+            else:
+                suites('*')  # Shared runtime and evidence code serves both studies.
+                docker = True
+        elif name in {'scripts/export_swarmform_input_matrix.py', 'scripts/run_swarmform.py',
+                      'scripts/check_swarmform_catalog.py', 'scripts/check_swarmform_inputs.py'}:
+            suites('swarmform_registration', 'swarmform_input_runner', 'swarmform_ledger')
+            checks.update(('catalog', 'inputs'))
+        elif name == 'scripts/check_swarmform_read_observer.py':
+            suites('swarmform_read_observer')
+        elif name.startswith(LAB + '/') or name.startswith('experiments/prompt-contract/'):
+            suites('*')
+            checks.update(('wording', 'balanced'))
+        elif name in {'scripts/setup-local', 'scripts/check-installation',
+                      'scripts/build-workstation-image', 'scripts/harbor'}:
+            checks.add('installation')
+            suites('native_*', 'workstation_patch')
+            harnesses.update(('codex', 'claude', 'pi'))
+            docker = True
+        elif name.startswith('scripts/'):
+            suites('review', 'claim_evidence', 'unified_input_contract')
+    if full:
+        suites('*')
+        checks.update(('installation', 'catalog', 'inputs', 'wording', 'balanced'))
+        docker = True
+        harnesses.update(('codex', 'claude', 'pi'))
+    if 'format' in tests:
+        tests.remove('format')  # The format command already executes this module.
+        checks.add('format')
+    if tests & DOCKER_TESTS:
+        docker = True
+    if 'native_goal' in tests:
+        harnesses.add('codex')
+    for adapter in ('codex', 'claude', 'pi'):
+        if adapter + '_collect' in tests:
+            harnesses.add(adapter)
+    order = ('syntax', 'inventory', 'inputs', 'catalog', 'wording', 'balanced', 'format', 'installation')
+    return {'files': sorted(files), 'full': full,
+            'checks': [c for c in order if c in checks],
+            'tests': ['tests.' + t + '_checks' for t in sorted(tests)],
+            'docker': docker, 'harnesses': sorted(harnesses),
+            'dependencies': bool(checks - {'syntax', 'inventory'} or tests - {'check_selection'})}
+
+
+def syntax(files):
+    for name in files:
+        path = ROOT / name
+        if not path.is_file():
+            continue  # Deletions still select affected suites.
+        if path.suffix == '.json':
+            json.loads(path.read_text())
+        elif path.suffix == '.py' or (name.startswith('scripts/') and
+                path.read_bytes().split(b'\n', 1)[0].endswith(b'python3')):
+            ast.parse(path.read_text(), filename=name)
+        elif path.suffix == '.sh' or name in {'scripts/pre-push', 'scripts/setup-local'}:
+            subprocess.run(['bash', '-n', str(path)], check=True)
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--quick', action='store_true',
-                        help='Run the input, wording and format gate without historical replay')
+    parser.add_argument('--base', help='Compare against this commit (default: origin/main)')
+    parser.add_argument('--head', default='HEAD')
+    parser.add_argument('--committed', action='store_true', help='Exclude local uncommitted changes')
+    parser.add_argument('--full', action='store_true', help='Explicit complete offline regression')
+    parser.add_argument('--quick', action='store_true', help=argparse.SUPPRESS)  # Old callers select changes.
+    parser.add_argument('--plan', action='store_true', help='Print selection without running checks')
+    parser.add_argument('--output', type=Path, help='Write the JSON result outside the repository')
     args = parser.parse_args(argv)
-    if sys.version_info[:2] != (3, 12):
-        raise SystemExit('Use Python 3.12 from the pinned runtime environment.')
-    steps = [
-        ('Documentation and registration inventory', [sys.executable, 'scripts/check_dataset_admission_contract.py']),
-        ('Installation', [sys.executable, 'scripts/check-installation']),
-        ('SwarmForm configuration export and runtime settings', [sys.executable, 'scripts/check_swarmform_catalog.py']),
-        ('SwarmForm input accounting' + (' and workloads' if args.quick else ''),
-         [sys.executable, 'scripts/check_swarmform_inputs.py'] + ([] if args.quick else ['--inventory-only'])),
-        ('Format contract', [sys.executable, 'scripts/check_format_contract.py', 'experiments/swarmharm-v1']),
-        ('Agent-facing wording', [sys.executable, 'experiments/prompt-contract/checks.py']),
-    ]
-    if args.quick:
-        steps.insert(4, ('SwarmForm 100-input mechanism matrix', [sys.executable, '-m', 'unittest', 'discover',
-                     '-s', 'tests', '-p', 'swarmform_*input*_checks.py', '-v']))
-    else:
-        steps.insert(-1, ('Retained reporting settings',
-                          [sys.executable, 'scripts/check_balanced_study.py']))
-        steps.append(('Complete offline regression suite', [sys.executable, '-m', 'unittest', 'discover',
-                     '-s', 'tests', '-p', '*_checks.py', '-t', '.', '-v']))
+    if args.output and args.output.resolve().is_relative_to(ROOT):
+        parser.error('--output must be outside the repository')
+    files = changed_files(args.base, args.head, working=not args.committed)
+    plan = select_checks(files, args.full)
+    if args.plan:
+        print(json.dumps(plan, indent=2))
+        return 0
+    if plan['dependencies'] and sys.version_info[:2] != (3, 12):
+        parser.error('Selected code checks need Python 3.12 from the pinned runtime environment.')
+    commands = {
+        'inventory': ['scripts/check_dataset_admission_contract.py'],
+        'inputs': ['scripts/check_swarmform_inputs.py', '--inventory-only'],
+        'catalog': ['scripts/check_swarmform_catalog.py'],
+        'wording': ['experiments/prompt-contract/checks.py'],
+        'balanced': ['scripts/check_balanced_study.py'],
+        'format': ['scripts/check_format_contract.py', LAB],
+        'installation': ['scripts/check-installation'],
+    }
+    steps = [(c, commands.get(c)) for c in plan['checks']]
+    if plan['tests']:
+        steps.append(('selected tests', ['-m', 'unittest', *plan['tests'], '-v']))
+    env = dict(os.environ, PYTHONPATH=os.pathsep.join((str(ROOT / LAB), str(ROOT / 'experiments/runtime'))))
+    results = []
     for name, command in steps:
-        print('Checking: ' + name, flush=True)
         started = time.monotonic()
-        directory = ROOT / 'experiments/swarmharm-v1' if command[1:3] == ['-m', 'unittest'] else ROOT
-        result = subprocess.run(command, cwd=directory, text=True,
-                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        if result.returncode:
-            print(result.stdout, flush=True)
-            print('FAILED: ' + name, file=sys.stderr)
-            return result.returncode
-        print(f'Passed: {name} ({time.monotonic() - started:.1f}s)', flush=True)
-    return 0
+        print('Checking: ' + name, flush=True)
+        output, code = '', 0
+        if name == 'syntax':
+            try:
+                syntax(files)
+            except (SyntaxError, ValueError, subprocess.CalledProcessError) as error:
+                output, code = str(error), 1
+        else:
+            result = subprocess.run([sys.executable, *command], env=env,
+                                    cwd=ROOT / LAB if name == 'selected tests' else ROOT,
+                                    text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            output, code = result.stdout, result.returncode
+        results.append({'name': name, 'passed': code == 0, 'seconds': round(time.monotonic() - started, 2)})
+        if code:
+            print(output, file=sys.stderr)
+            break
+        print(f"Passed: {name} ({results[-1]['seconds']}s)", flush=True)
+    report = {'source_commit': git('rev-parse', args.head), 'model_calls': 0,
+              'plan': plan, 'passed': all(r['passed'] for r in results), 'checks': results}
+    if args.output:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(json.dumps(report, indent=2) + '\n')
+    if not steps:
+        print('No changes to check.')
+    return 0 if report['passed'] else 1
 
 
 if __name__ == '__main__':

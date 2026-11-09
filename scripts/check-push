@@ -1,47 +1,34 @@
 #!/usr/bin/env python3
-"""Check outgoing metadata; --full also runs the CI suite on a clean exact commit."""
+"""Check only the changes being pushed, or the full suite when explicitly requested."""
 import argparse
-import io
 from pathlib import Path
 import subprocess
 import sys
-import tarfile
-import tempfile
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--ref', default='HEAD')
-    checks = parser.add_mutually_exclusive_group()
-    checks.add_argument('--quick', action='store_true',
-                        help='Run the input, wording and format gate before upload')
-    checks.add_argument('--full', action='store_true', help='Run the complete CI suite before upload')
+    parser.add_argument('--base', default='origin/main')
+    parser.add_argument('--full', action='store_true')
+    parser.add_argument('--quick', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    commit = subprocess.check_output(
-        ['git', 'rev-parse', '--verify', args.ref + '^{commit}'], cwd=root, text=True).strip()
-    if args.full or args.quick:
-        head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-        state = subprocess.check_output(['git', 'status', '--porcelain'], cwd=root, text=True).strip()
-        if head != commit or state:
-            raise SystemExit('Push checks require the exact outgoing commit and a clean working tree.')
-        command = [sys.executable, 'scripts/check-ci']
-        if args.quick:
-            command.append('--quick')
-        result = subprocess.run(command, cwd=root)
-        # A check must not silently change the source that will be uploaded.
-        if (subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip() != head
-                or subprocess.check_output(['git', 'status', '--porcelain'], cwd=root, text=True).strip()):
-            raise SystemExit('Source changed during push checks; commit and check again.')
-    else:
-        archive = subprocess.check_output(['git', 'archive', '--format=tar', commit], cwd=root)
-        with tempfile.TemporaryDirectory(prefix='swarmform-push-') as folder:
-            with tarfile.open(fileobj=io.BytesIO(archive)) as source:
-                source.extractall(folder, filter='data')
-            result = subprocess.run(
-                [sys.executable, 'scripts/check_dataset_admission_contract.py'], cwd=folder)
+
+    def git(*args):
+        return subprocess.check_output(['git', *args], cwd=root, text=True).strip()
+
+    commit = git('rev-parse', '--verify', args.ref + '^{commit}')
+    if git('rev-parse', 'HEAD') != commit or git('status', '--porcelain'):
+        raise SystemExit('Push checks require the exact outgoing commit and a clean working tree.')
+    command = [sys.executable, 'scripts/check-ci', '--base', args.base, '--head', commit, '--committed']
+    if args.full:
+        command.append('--full')
+    result = subprocess.run(command, cwd=root)
+    if git('rev-parse', 'HEAD') != commit or git('status', '--porcelain'):
+        raise SystemExit('Source changed during push checks; commit and check again.')
     if result.returncode:
-        print('Push check failed for ' + commit + '; nothing has been uploaded.', file=sys.stderr)
+        print('Push checks failed; nothing has been uploaded.', file=sys.stderr)
     return result.returncode
 
 

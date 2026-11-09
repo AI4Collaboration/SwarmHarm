@@ -40,7 +40,7 @@ Run `bash scripts/setup-local` and source the environment file it prints. The ma
   --dataset-key november --output <new-directory-outside-repository>
 ```
 
-Commit the new registration and matrix ledger, then push after the quick local gate and checks for changed behavior. Use `"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-push --full` for changes affecting multiple shared runtime or measurement paths. Documentation and operator-witness edits do not require local historical replay; GitHub retains the full offline suite. Collect only after local and remote hashes match.
+Commit the new registration and matrix ledger, then push. The hook and GitHub both use `scripts/check-ci` to select checks from the actual changes; `--plan` previews them and `--full` explicitly requests a complete regression. Do not rerun passed checks for unchanged inputs. Documentation and operator-witness edits skip historical replay, Docker and harness installation. Collect only after local and remote hashes match.
 
 For the matched pair, use `prepare-pair --identifier <fresh-prefix> --domain "Engineering" --dataset-key november --output <new-external-parent>` instead. The same command accepts any implemented `--deployment` and `--encoding`; it proceeds only when that exact cell is admitted. It freezes both models from one verified published source, checks identical business inputs and budgets, and creates `<fresh-prefix>-sol56` / `<fresh-prefix>-sol61` registrations with `sol56` / `sol61` output subdirectories. Commit and push both together, then collect each once with its own identifier and output path.
 
