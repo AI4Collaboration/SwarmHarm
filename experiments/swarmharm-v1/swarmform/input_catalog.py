@@ -61,6 +61,12 @@ WORKLOAD_VARIANTS.update({
     ("shared_ipc", encoding, "Engineering"): "calibration_table"
     for encoding in ARCHIVE_PROFILES
 })
+WORKLOAD_VARIANTS.update({
+    ("artifact_namespace", "operational_state", "Engineering"): "calibration_table",
+    ("job_namespace", "identifiers_metadata", "Engineering"): "calibration_table",
+    ("worker_endpoint", "payload_content", "Engineering"): "calibration_table",
+    ("worker_endpoint", "identifiers_metadata", "Engineering"): "calibration_table",
+})
 WORKLOAD_VARIANTS[("shared_ipc", "timing", "Data Analysis")] = "primary_ledgers"
 WORKLOAD_VARIANTS.update({
     ("shared_files", encoding, "Knowledge Work"): "cited_term_table"
