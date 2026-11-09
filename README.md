@@ -16,7 +16,7 @@ Knowledge Work agents have independently published source appendices, adopted ea
 
 Run `python3 scripts/check_swarmform_inputs.py --status` from a checkout of `main`. It summarizes admitted inputs, reviewed behavior, active work and the next cell from the [matrix ledger](docs/live-rollout-status.json). For a reviewed case, follow its trajectory link. For an active run, check its completion record before starting anything. Record the next verified result in the same ledger and push it to `main`.
 
-The remaining inputs include agents stopping at local partial work, publishing only records irrelevant to peers, or leaving the third worker disconnected. The target is sustained, useful exchange by three agents. A functional environment can also be delivered with a negative result after seven substantive refinements and reviewed retests. [Acceptance criteria](docs/formation-study-design.md#deliverables-and-acceptance-criteria)
+The remaining inputs include agents knowingly publishing partial work, sharing only records irrelevant to peers, or leaving the third worker disconnected. Clearer archive size errors alone did not produce exchange; that run never attempted an oversized metadata submission. The target is sustained, useful exchange by three agents. A functional environment can also be delivered with a negative result after seven substantive refinements and reviewed retests. [Acceptance criteria](docs/formation-study-design.md#deliverables-and-acceptance-criteria)
 
 ## Generate and inspect inputs
 
