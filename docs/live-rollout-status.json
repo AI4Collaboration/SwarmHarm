@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T20:00:57.394018+00:00",
+  "updated_at": "2026-11-09T20:03:13.776570+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -1221,7 +1221,7 @@
         ],
         "active_refinement": {
           "round": 1,
-          "status": "registered_pending_collection",
+          "status": "running",
           "change": "Only job metadata type/length errors now describe the existing contract; 8192 serialized characters, task, permissions, source versions and model settings stay fixed.",
           "baseline_identifier": "swarmform-nonpayload-financial-20261109-job-metadata-sol61",
           "input_sha256": "e77f6cf22cb5eb4372826826a927d4be25fe9a9e1ac973e1150e1bab35f72f75",
@@ -1233,10 +1233,10 @@
         "current_model_result": {
           "model": "openai/gpt-6.1-sol",
           "identifier": "swarmform-refine01-financial-job-metadata-20261109-sol61",
-          "status": "prepared",
+          "status": "running",
           "input_sha256": "e77f6cf22cb5eb4372826826a927d4be25fe9a9e1ac973e1150e1bab35f72f75",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-refine01-20261109/financial/job_namespace",
-          "started": false,
+          "started": true,
           "substantive_refinement_rounds": 0
         }
       },
@@ -2922,14 +2922,23 @@
     "current_reviewed_rollout_count": 94,
     "current_completed_rollout_count": 94,
     "current_registered_cells": 95,
-    "current_started_rollout_count": 94,
+    "current_started_rollout_count": 95,
     "reviewed_rollouts_including_superseded_inputs": 95
   },
   "current_source_change": {
     "reason": "The declared business carrier is the only shared route; workstations have no generic registry mount. Model source seals include runtime and scenario dependencies, excluding unused operator witnesses and tests.",
     "action": "Complete remaining timing input checks and review Sol 6.1 behavior independently."
   },
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "identifier": "swarmform-refine01-financial-job-metadata-20261109-sol61",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-refine01-financial-job-metadata-20261109-sol61",
+      "pid": 76106,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-refine01-20261109/financial/job_namespace",
+      "status": "running",
+      "worker_context": "lima-swarmform-behavior-01"
+    }
+  ],
   "active_input_checks": [
     {
       "matrix_cell": "job_namespace/timing/Engineering",
@@ -3201,7 +3210,7 @@
       "model": "openai/gpt-6.1-sol",
       "population": 3,
       "planned_rollouts": 70,
-      "rollouts_started": 70,
+      "rollouts_started": 69,
       "cells": "Seventy admitted non-payload cells registered in this batch; newly admitted timing cells are collected separately.",
       "external_index": "work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/preparation-index.json",
       "source_commit": "0bd47a131d5e3bf15ec8b8c986393f9faa01cf4a",
@@ -3215,7 +3224,7 @@
       "queue_path": "work/eval-readiness/swarmform-sol61-nonpayload70-20261109-queue",
       "worker_assignment": "work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/collection-worker-assignment-02.json",
       "live_collection_started": true,
-      "rollouts_completed": 70,
+      "rollouts_completed": 69,
       "rollouts_pending": 0
     },
     "total_max_active_rollouts": 4,
@@ -3252,7 +3261,7 @@
       "use_existing_vacant_worker_slot": true
     }
   },
-  "next_action": "Prepare and publish the first Financial job metadata refinement registration, collect it once with Sol 6.1, then review actual source publication, peer reads, adoption and independently recomputed deliveries. Five original timing input checks continue unchanged.",
+  "next_action": "Review the already-running first Financial metadata refinement (collector 76106); never duplicate its registration. Check precise API feedback exposure, authored publication, peer reads/adoption and final business outputs. Original five timing input checks continue from unchanged source.",
   "current_input_issue": {
     "status": "published_receiver_repair_fresh_checks_running",
     "reason": "Single delayed calibration pulses rejected valid frames in old frozen receivers. Exact-timestamp comparisons recover the frames with the published receiver; full fresh shared/private checks remain in progress.",
@@ -3330,10 +3339,10 @@
     },
     {
       "issue": "Financial job metadata source-publication attempts exceed the existing serialized JSON limit, but the API returns only a generic error.",
-      "status": "implemented_pending_targeted_check_and_fresh_retest",
+      "status": "validated_fresh_model_retest_running",
       "evidence": "work/eval-readiness/swarmform-refinement-candidates-data-financial-ipc-job-20261109-brief.json",
       "sha256": "8b369d8da2f5908dce50542ca7503aff962af9503eaacad18ef712f6b60a2f82",
-      "next_action": "Validate precise type/length rejection, unchanged boundary and atomicity, then run a newly admitted Financial metadata input once with Sol 6.1. The prior frozen attempts and scores remain intact; no reviewed refinement round yet."
+      "next_action": "Complete and review the first registered Sol 6.1 refinement; no formation is inferred from the passed input witness."
     }
   ],
   "capacity_maintenance": {
@@ -3403,6 +3412,14 @@
       "negative_cases": 10,
       "observation_blobs": 921,
       "scope": "Only published, closed negative observation blobs; complete original archives and exact restoration receipts remain on GitHub. Native/ATIF, terminal files, inputs, manifests and reviews remain local."
+    },
+    "latest_observer_offload": {
+      "receipt": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-published-negative-observer-offload-20261109-04-receipt.json",
+      "sha256": "3de85f4ae94f499c15ea8395d1d4b092f19837f98816bb1168e563a641f8bd27",
+      "scope": "36 closed and reviewed negative cases; complete original GitHub archives retained. Active input/model files, positive cases and unreviewed evidence unchanged.",
+      "restore_before_full_local_replay": true,
+      "publication_index": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-published-negative-observer-offload-20261109-04-publication.json",
+      "publication_sha256": "5c07804e5884aaf54bf4b2cc4c59d216418cbda8c7c24c30075d764de594112e"
     }
   },
   "development_directory": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/swarmharm-formation-refine"
