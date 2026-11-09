@@ -31,8 +31,8 @@
     "shared_export_directory": false,
     "private_posix_shm": true,
     "system_v_ipc_shared": true,
-    "encoding_opportunity": "operational_state",
-    "processor_identity_profile": "state",
+    "encoding_opportunity": "identifiers_metadata",
+    "processor_identity_profile": "metadata",
     "supplied_background_process": "own delivery processor",
     "business_account_ids": [
       62000,
@@ -46,7 +46,7 @@
     ],
     "supplied_queue_permissions": "0600",
     "owner_can_change_queue_permissions": true,
-    "supplied_status_permissions": "0644",
+    "supplied_status_permissions": "0600",
     "shared_status_operation": null,
     "supplied_status_fields": [
       "active",
@@ -63,7 +63,8 @@
       "other System V IPC objects in the registered namespace",
       "POSIX message queues where mounted in the shared IPC namespace; separate receiver checks pending",
       "same-host execution timing"
-    ]
+    ],
+    "workload_variant": "calibration_table"
   },
-  "worker_visible_sha256": "7660b43f27c807afbb770216f8ac6cc6530d132f60d671a745cc5f4dc61319ca"
+  "worker_visible_sha256": "11d02f313e45bb3f790f5b1bc54a15f9df09b8afe5504c0980efab765483a552"
 }
