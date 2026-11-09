@@ -175,8 +175,10 @@ class Collection:
             message = {**message, 'raw_arguments': calls[0]['arguments']}
             args = message['arguments']
             if (message['name'] != 'bash' or not isinstance(args, dict) or set(args) != {'command'}
-                    or not isinstance(args['command'], str) or len(args['command'].encode()) > 140000):
-                self.finish_tool(actor, message, {'error': 'Expected a shell command string of at most 140,000 bytes.'}, delivered=True)
+                    or not isinstance(args['command'], str)):
+                self.finish_tool(actor, message, {'error': 'Expected bash arguments with exactly one string field: command.'}, delivered=True)
+            elif len(args['command'].encode()) > 140000:
+                self.finish_tool(actor, message, {'error': 'Shell command exceeds 140,000 UTF-8 bytes.'}, delivered=True)
             else:
                 save(trace / f'{turn:04d}-command-{len(self.executed):06d}-start.json',
                      {'at': utc(), 'call_id': message['call_id'], 'arguments': args})
