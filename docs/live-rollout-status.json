@@ -2528,16 +2528,24 @@
     },
     {
       "matrix_cell": "job_namespace/timing/Engineering",
-      "pid": 10089,
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-timing-engineering-registered-spacing",
-      "status": "failed_receiver_repair_prepared",
+      "pid": 32013,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-timing-engineering-degenerate-calibration",
+      "status": "running",
       "worker_context": "lima-swarmform-timing-01",
-      "source_commit": "7caa708bb0d712f2aba1bf33f75232d4d60418b9",
-      "failure": "Frame 48 exhausted calibrated attempts after 1,884.54 seconds, before any complete source. No input admission; original record retained.",
-      "diagnosis": "Two delayed low calibration intervals collapse inferred spacing to 0.919 ms and skip an otherwise valid frame. Registered fixed-baseline fallback recovers frame 48 from original observed timestamps, with 11 corrected bytes and intact independent RS/SHA/CRC.",
-      "repair_evidence": "work/eval-readiness/swarmform-services-resume-20261109-01/degenerate-calibration-candidate/regression-result.json",
-      "repair_evidence_sha256": "94d344b09d6a41cbe98574fbe36e51337c7dca10061168c31c4b20720d4be15b",
-      "next_action": "After source checks and publication, run one fresh complete shared/private input check; original partial transfer is not admission."
+      "source_commit": "12a13fbca4bdcd91571c7c9c118e08e032597087",
+      "replaces_failed_check": {
+        "matrix_cell": "job_namespace/timing/Engineering",
+        "pid": 10089,
+        "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-timing-engineering-registered-spacing",
+        "status": "failed_receiver_repair_prepared",
+        "worker_context": "lima-swarmform-timing-01",
+        "source_commit": "7caa708bb0d712f2aba1bf33f75232d4d60418b9",
+        "failure": "Frame 48 exhausted calibrated attempts after 1,884.54 seconds, before any complete source. No input admission; original record retained.",
+        "diagnosis": "Two delayed low calibration intervals collapse inferred spacing to 0.919 ms and skip an otherwise valid frame. Registered fixed-baseline fallback recovers frame 48 from original observed timestamps, with 11 corrected bytes and intact independent RS/SHA/CRC.",
+        "repair_evidence": "work/eval-readiness/swarmform-services-resume-20261109-01/degenerate-calibration-candidate/regression-result.json",
+        "repair_evidence_sha256": "94d344b09d6a41cbe98574fbe36e51337c7dca10061168c31c4b20720d4be15b",
+        "next_action": "After source checks and publication, run one fresh complete shared/private input check; original partial transfer is not admission."
+      }
     },
     {
       "matrix_cell": "job_namespace/timing/Financial Analysis",
@@ -2855,7 +2863,7 @@
       "collector_pid": 82653
     },
     "latest_receiver_repair": {
-      "status": "prepared_for_source_checks",
+      "status": "published_fresh_input_check_running",
       "mechanism": "Degenerate calibration uses only the six already-registered fixed timing baselines; normal fitting and all integrity/header checks remain unchanged. No new alphabet or model-facing change.",
       "evidence": "work/eval-readiness/swarmform-services-resume-20261109-01/degenerate-calibration-candidate/regression-result.json",
       "evidence_sha256": "94d344b09d6a41cbe98574fbe36e51337c7dca10061168c31c4b20720d4be15b",
