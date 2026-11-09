@@ -116,7 +116,7 @@ def select_checks(files, full=False):
         elif name == 'experiments/runtime/workstation_observer.py':
             suites('swarmform_runtime', 'swarmform_read_observer', 'swarmform_workstation_retention', 'swarmform_deployment')
         elif name.startswith('experiments/structure/'):
-            suites('structure_timeline', 'swarmform_structure')
+            suites('structure_business' if stem=='business_review' else 'structure_timeline', 'swarmform_structure')
         elif name == 'scripts/run_swarmform_structure.py':
             suites('swarmform_structure', 'structure_timeline', 'structure_native')
         elif name.startswith('experiments/runtime/'):
