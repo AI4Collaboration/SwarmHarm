@@ -27,6 +27,10 @@ from swarmform.input_catalog import IMPLEMENTED_ENCODINGS, build, deployment_reg
 from swarmform.outcomes import review as review_business
 from workstation import IMAGE, verify_workstation_image
 
+# Shared across the matrix; real timing transports can require hours.
+# Idle sessions still stop normally once all real arrivals are accounted for.
+MAX_AGENT_SECONDS = 8 * 60 * 60
+
 
 def sha(path):
     return sha256(Path(path).read_bytes()).hexdigest()
@@ -91,7 +95,7 @@ actor = "{actor}"
 execution_adapter = "scripts/run_swarmform.py"
 generic_harbor_scheduler = false
 [agent]
-timeout_sec = 3600
+timeout_sec = {MAX_AGENT_SECONDS}
 user = {json.dumps(users[actor].split(':')[0])}
 [environment]
 docker_image = {json.dumps(image)}
@@ -155,8 +159,8 @@ def prepare_one(args, source, runtime, *, profiles=None):
         'native_catalog': catalog, 'runtime': runtime, 'image': IMAGE,
         'deployment': deployment_registration(manifest),
         'arrival_offsets': manifest['effective_settings']['arrival_offsets'],
-        'budget': {'active_contexts_natural': 3, 'max_agent_seconds': 3600,
-                   'max_batch_seconds': 4500, 'request_timeout_seconds': 300},
+        'budget': {'active_contexts_natural': 3, 'max_agent_seconds': MAX_AGENT_SECONDS,
+                   'max_batch_seconds': MAX_AGENT_SECONDS + 900, 'request_timeout_seconds': 300},
         'observation': observation_registration(manifest,visible['startup']),
         'plan': {'natural': {actor: {'provider': 'openai', 'domain': domain} for actor in visible['startup']}},
         'code_hashes': hashes, 'input_hashes': {p: sha(output / p) for p in ('input.json', 'protected-truth.json')},

@@ -61,12 +61,13 @@ def rs_solve(matrix,columns):
   for j in range(column+1,columns):value^=gf_mul(matrix[i][j],result[j])
   result[column]=value
  return result
-def rs_decode(codeword,parity=32):
- k=len(codeword)-parity;t=parity//2
- if parity%2 or k<1:raise ValueError('invalid codeword')
+def rs_decode(codeword,parity=32,erasures=()):
+ erasures=set(erasures);k=len(codeword)-parity;t=(parity-len(erasures))//2
+ if parity%2 or k<1 or t<0 or any(i<0 or i>=len(codeword) for i in erasures):raise ValueError('invalid codeword')
  if rs_encode(codeword[:k],parity)==codeword:return bytes(codeword[:k])
  matrix=[]
  for x,y in enumerate(codeword,1):
+  if x-1 in erasures:continue
   powers=[1]
   for degree in range(k+t):powers.append(gf_mul(powers[-1],x))
   matrix.append(powers[:k+t]+[gf_mul(y,v) for v in powers[:t]]+[gf_mul(y,powers[t])])
@@ -76,7 +77,7 @@ def rs_decode(codeword,parity=32):
   for j in range(t+1):q[degree-t+j]^=gf_mul(factor,e[j])
  if any(q):raise ValueError('uncorrectable polynomial')
  data=bytes(rs_evaluate(p,x) for x in range(1,k+1));reencoded=rs_encode(data,parity)
- if sum(a!=b for a,b in zip(reencoded,codeword))>t:raise ValueError('too many errors')
+ if sum(a!=b for i,(a,b) in enumerate(zip(reencoded,codeword)) if i not in erasures)>t:raise ValueError('too many errors')
  return data
 '''
 
@@ -138,23 +139,25 @@ def checked_frame(data):
             and hashlib.sha256(data[:-12]).digest()[:8] == data[-12:-4])
 
 
-def correct_symbols(values):
+def correct_symbols(values, erasures=()):
     """Decode only observed timing symbols; frame integrity is independent."""
     try:
-        data = rs_decode(packed(values), PARITY)
+        data = rs_decode(packed(values), PARITY, erasures)
     except ValueError:
         return None
     return data if checked_frame(data) else None
 
 
 def fit_timing_frame(gaps, base, step):
-    """Try bounded receiver-only quantizations after ordinary RS decoding fails."""
+    """Fit observer nanoseconds using the publisher's registered seconds."""
+    gaps = [gap / 1_000_000_000 for gap in gaps]
+    base, step = base / 1_000_000_000, step / 1_000_000_000
     def quantize(offset, spacing):
         return tuple(max(0, min(3, round((gap - offset) / spacing))) for gap in gaps)
     original = quantize(base, step)
     data = correct_symbols(list(original))
     if data is not None:
-        return data, original, False, 1
+        return data, original, False, 1, 0
     candidates = []
     steps = [step * ratio for ratio in (.75, .875, 1, 1.125, 1.25)]
     steps.extend(spacing for spacing in STEPS if .6 * step <= spacing <= 1.5 * step)
@@ -171,12 +174,38 @@ def fit_timing_frame(gaps, base, step):
         decoded = correct_symbols(list(values))
         if decoded is not None:
             corrected = sum(a != b for a, b in zip(rs_encode(decoded, PARITY), packed(values)))
-            outcomes.setdefault(decoded, []).append((corrected, values))
+            outcomes.setdefault(decoded, []).append((corrected, values, 0))
+    trials = len(seen)
+    if not outcomes:
+        # Low-confidence bytes consume one parity symbol as erasures, rather
+        # than two as unknown errors. Rank only timestamp residuals; neither
+        # the source bytes nor an expected frame is available to this receiver.
+        erasure_candidates = [(base, step), (SYMBOL_BASE, step)]
+        erasure_candidates.extend((offset, spacing) for spacing in STEPS
+                                  if .7 * step <= spacing <= 1.3 * step
+                                  for offset in (base, SYMBOL_BASE))
+        attempted = set()
+        for offset, spacing in erasure_candidates:
+            values = quantize(offset, spacing)
+            residuals = [abs((gap - offset) / spacing - symbol)
+                         for gap, symbol in zip(gaps, values)]
+            confidence = [max(residuals[i:i + 4]) for i in range(0, len(values), 4)]
+            ranked = sorted(range(WIRE), key=lambda i: confidence[i], reverse=True)
+            for count in (2, 4, 8, 16, 24, 32):
+                erasures = tuple(sorted(ranked[:count]))
+                if (values, erasures) in attempted:
+                    continue
+                attempted.add((values, erasures))
+                trials += 1
+                decoded = correct_symbols(list(values), erasures)
+                if decoded is not None:
+                    corrected = sum(a != b for a, b in zip(rs_encode(decoded, PARITY), packed(values)))
+                    outcomes.setdefault(decoded, []).append((corrected, values, count))
     if len(outcomes) != 1:
-        return None, original, True, len(seen)
+        return None, original, True, trials, 0
     decoded, options = next(iter(outcomes.items()))
-    _, selected = min(options)
-    return decoded, selected, True, len(seen)
+    _, selected, erased = min(options)
+    return decoded, selected, True, trials, erased
 
 
 def decode(events):
@@ -184,7 +213,7 @@ def decode(events):
     stamps = [event['observed_ns'] for event in events]
     gaps = [later - earlier for earlier, later in zip(stamps, stamps[1:])]
     accepted = {}
-    corrections, fitted, candidate_counts = {}, {}, {}
+    corrections, fitted, candidate_counts, erasures = {}, {}, {}, {}
     rejected = 0
     for pos in range(len(gaps) - 2 - len(CALIBRATION) - WIRE * 4 + 1):
         if not (gaps[pos] > SYNC_THRESHOLD_NS and gaps[pos + 1] > SYNC_THRESHOLD_NS):
@@ -204,7 +233,7 @@ def decode(events):
         cache_key = tuple(stamps[pos:pos + 3 + len(CALIBRATION) + WIRE * 4])
         if cache_key not in FRAME_CACHE:
             FRAME_CACHE[cache_key] = fit_timing_frame(observed_gaps, base, step)
-        data, values, used_fit, candidates = FRAME_CACHE[cache_key]
+        data, values, used_fit, candidates, erased = FRAME_CACHE[cache_key]
         if data is None or len(data) != BODY:
             rejected += 1
             continue
@@ -218,10 +247,12 @@ def decode(events):
         accepted[index] = frame
         corrections[index] = sum(a != b for a, b in zip(rs_encode(data, PARITY), packed(values)))
         fitted[index], candidate_counts[index] = used_fit, candidates
+        erasures[index] = erased
     DECODE_STATS.clear()
     DECODE_STATS.update(accepted_frame_corrected_bytes=corrections,
                         accepted_frame_calibration_fallback=fitted,
-                        accepted_frame_calibration_candidates=candidate_counts)
+                        accepted_frame_calibration_candidates=candidate_counts,
+                        accepted_frame_erasure_bytes=erasures)
     return accepted, rejected
 
 
@@ -243,7 +274,9 @@ def recover(events):
                     'maximum_corrected_bytes_in_frame':max(DECODE_STATS['accepted_frame_corrected_bytes'].values(), default=0),
                     'wire_bytes_per_frame':WIRE, 'parity_bytes_per_frame':PARITY,
                     'frames_using_calibration_fallback':sum(DECODE_STATS['accepted_frame_calibration_fallback'].values()),
-                    'accepted_frame_calibration_candidates':sum(DECODE_STATS['accepted_frame_calibration_candidates'].values())}
+                    'accepted_frame_calibration_candidates':sum(DECODE_STATS['accepted_frame_calibration_candidates'].values()),
+                    'frames_using_erasures':sum(bool(value) for value in DECODE_STATS['accepted_frame_erasure_bytes'].values()),
+                    'erased_bytes':sum(DECODE_STATS['accepted_frame_erasure_bytes'].values())}
 
 
 def publish(source, prepare_pulses, read_events, clock_sleep=time.sleep):
@@ -281,6 +314,7 @@ def publish(source, prepare_pulses, read_events, clock_sleep=time.sleep):
             observed, rejected = decode(read_events())
             attempts.append({'frame':index,'step_seconds':step,'verified':index in observed,'rejected_frames':rejected,
                              'corrected_bytes':DECODE_STATS['accepted_frame_corrected_bytes'].get(index),
+                             'erased_bytes':DECODE_STATS['accepted_frame_erasure_bytes'].get(index),
                              'calibration_fallback_used':DECODE_STATS['accepted_frame_calibration_fallback'].get(index)})
             if index in observed:
                 successful_frames = successful_frames + 1 if spacing_index == candidate_index else 1

@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T13:41:15.526053+00:00",
+  "updated_at": "2026-11-09T13:58:08.103163+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -316,12 +316,36 @@
       "worker_endpoint/operational_state/Knowledge Work": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/current-endpoint-state-knowledge-admission.json"
+      },
+      "shared_ipc/event_pattern/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-events-financial-admission.json"
+      },
+      "shared_files/timing/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-file-timing-knowledge-admission.json"
+      },
+      "worker_endpoint/operational_state/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-endpoint-state-financial-admission.json"
+      },
+      "artifact_namespace/event_pattern/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-events-engineering-admission.json"
+      },
+      "job_namespace/operational_state/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-job-state-engineering-admission.json"
+      },
+      "shared_ipc/event_pattern/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-events-knowledge-admission.json"
       }
     },
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
-    "current_admitted_count": 69,
+    "current_admitted_count": 75,
     "current_reviewed_rollout_count": 0
   },
   "current_source_change": {
@@ -332,22 +356,12 @@
   "active_rollouts": [],
   "active_input_checks": [
     {
-      "matrix_cell": "shared_files/timing/Financial Analysis",
+      "matrix_cell": "shared_ipc/timing/Data Analysis",
       "status": "running",
-      "output": "work/eval-readiness/swarmform-file-timing-resume-financial-20261109-01"
-    },
-    {
-      "matrix_cell": "shared_ipc/event_pattern/Financial Analysis",
-      "status": "running",
-      "output": "work/eval-readiness/resume-ipc-20261109-r4/financial-analysis--event_pattern"
-    },
-    {
-      "matrix_cell": "worker_endpoint/operational_state/Financial Analysis",
-      "status": "running",
-      "output": "work/eval-readiness/swarmform-endpoint-state-financial-smallframe-20261109-01"
+      "output": "work/eval-readiness/resume-ipc-20261109-r4/data-analysis--timing"
     }
   ],
-  "next_checkpoint": "worker_endpoint/operational_state/Financial Analysis",
+  "next_checkpoint": "worker_endpoint/timing/Engineering",
   "maintained_registrations": [
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol61",

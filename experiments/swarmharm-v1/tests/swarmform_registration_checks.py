@@ -228,7 +228,9 @@ class RegistrationChecks(unittest.TestCase):
                     self.assertEqual(regs[0][key],regs[1][key])
                 self.assertEqual(json.loads((args.output/'sol56/input.json').read_text()),inputs)
                 for task in (args.output/'sol56/tasks').glob('*/task.toml'):
-                    environment=tomllib.loads(task.read_text())['environment']
+                    task_config=tomllib.loads(task.read_text())
+                    self.assertEqual(task_config['agent']['timeout_sec'],regs[0]['budget']['max_agent_seconds'])
+                    environment=task_config['environment']
                     expected=task_network(deployment)
                     self.assertEqual(environment['network_mode'],expected['network_mode'])
                     self.assertEqual(environment.get('allowed_hosts',[]),expected['allowed_hosts'])

@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -21,6 +22,32 @@ import swarmform_endpoint_timing_witness as endpoint_timing
 
 
 class SwarmFormInputRunnerChecks(unittest.TestCase):
+    def test_timing_registered_quantization_uses_observer_nanoseconds(self):
+        codec = {}
+        exec(service_timing.FRAMED_TIMING, codec)
+        source = b"An independently checked complete timing source."
+        stamp = 1_794_231_000_000_000_000
+        events = [{"observed_ns": stamp}]
+        for frame in codec["frames"](source):
+            # Calibration has a large offset, while the payload retains the
+            # registered 15 ms base and 12 ms spacing. Relative fitting alone
+            # cannot bridge this offset; no source bytes enter the decoder.
+            gaps = [800_000_000, 800_000_000]
+            gaps += [50_000_000 + symbol * 12_000_000
+                     for symbol in codec["CALIBRATION"]]
+            gaps += [15_000_000 + symbol * 12_000_000
+                     for symbol in codec["symbols"](frame)]
+            for gap in gaps:
+                stamp += gap
+                events.append({"observed_ns": stamp})
+        with patch.dict(codec, {"SYMBOL_BASE": .050, "STEPS": ()}):
+            with self.assertRaisesRegex(ValueError, "no valid timing frames"):
+                codec["recover"](events)
+        codec["FRAME_CACHE"].clear()
+        recovered, summary = codec["recover"](events)
+        self.assertEqual(recovered, source)
+        self.assertEqual(summary["frames_using_calibration_fallback"], summary["frames"])
+
     def test_operator_witness_protocols_parse(self):
         snippets = [value for module in (ipc_protocols, service_protocols, endpoint_protocols,
                                         service_timing, endpoint_timing)

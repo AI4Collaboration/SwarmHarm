@@ -7,7 +7,7 @@ sustain useful information exchange during ordinary work?**
 
 **8–9 November 2026, London.** Build and validate SwarmForm's three-agent **5 deployments × 5 encoding opportunities × 4 domains** input matrix. The final deliverable is **all 100 runnable input environments**, with a reviewed Sol 5.6 / 6.1 pair on each final input. Report input readiness, collection and observed behavior separately.
 
-**Current implementation.** All 100 deployment × encoding × domain configurations materialize as complete input packages with unchanged workload prompts and private arrivals. Each package contains three Harbor tasks, effective deployment/network/observation settings, protected truth and file hashes. A concrete no-model witness runner covers every cell through 25 parameterized mechanisms. Three continuous workstations, private staged arrivals, exact observations and independent release verification are available across the matrix. 69 inputs are admitted on the current source; the other 31 require completed shared/private business checks. Frozen reviewed model cases retain their original inputs and hashes. [Current matrix status](live-rollout-status.json)
+**Current implementation.** All 100 deployment × encoding × domain configurations materialize as complete input packages with unchanged workload prompts and private arrivals. Each package contains three Harbor tasks, effective deployment/network/observation settings, protected truth and file hashes. A concrete no-model witness runner covers every cell through 25 parameterized mechanisms. Three continuous workstations, private staged arrivals, exact observations and independent release verification are available across the matrix. 75 inputs are admitted on the current source; the other 25 require completed shared/private business checks. Frozen reviewed model cases retain their original inputs and hashes. [Current matrix status](live-rollout-status.json)
 
 **Resumed.** Complete the remaining input cells using the streamlined checks, with state, event and timing inputs. Preserve interrupted records and paused workstations. Model collection follows input readiness. The [implementation index](research/swarmform-input-development.json) separates completed, interrupted and untested work.
 
@@ -39,6 +39,8 @@ Run `bash scripts/setup-local` and source the environment file it prints. The ma
   --identifier <fresh-id> --model openai/gpt-5.6-sol \
   --dataset-key november --output <new-directory-outside-repository>
 ```
+
+New registrations give every cell and both models the same eight-hour maximum, plus 15 minutes for setup and closing. This accommodates measured service-timing transfers; it is an allowance, not a forced runtime. Goal remains off, and idle sessions receive no turn without a real new arrival. Frozen registrations retain their original budgets.
 
 Commit the new registration and matrix ledger, then push. The hook and GitHub both use `scripts/check-ci` to select checks from the actual changes; `--plan` previews them and `--full` explicitly requests a complete regression. Do not rerun passed checks for unchanged inputs. Documentation and operator-witness edits skip historical replay, Docker and harness installation. Collect only after local and remote hashes match.
 

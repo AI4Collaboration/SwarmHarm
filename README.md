@@ -6,7 +6,7 @@ The input matrix is **5 shared deployments × 5 encoding opportunities × 4 busi
 
 ## Current state
 
-**100/100 inputs are generated; 69/100 have completed current-source business validation.** All 25 mechanisms have concrete runners. An admitted input must transfer the required sources through its actual interface, complete nine correct shared-resource deliveries, and preserve isolation in its private counterpart. This establishes runnable inputs; model behavior is checked separately.
+**100/100 inputs are generated; 75/100 have completed current-source business validation.** All 25 mechanisms have concrete runners. An admitted input must transfer the required sources through its actual interface, complete nine correct shared-resource deliveries, and preserve isolation in its private counterpart. This establishes runnable inputs; model behavior is checked separately.
 
 **Input validation resumed.** Remaining cells are being completed in parallel; model collection follows input readiness. The recurring reminder remains deleted. Interrupted checks retain their evidence and are not counted as passed. The [matrix and checkpoint](docs/live-rollout-status.json) and [implementation index](docs/research/swarmform-input-development.json) record the current work. [Complete input evidence](docs/research/swarmform-input-archives.json) is archived on GitHub.
 
