@@ -37,25 +37,23 @@ import base64,fcntl,hashlib,json,os,shutil,sys,time,zlib
 from pathlib import Path
 owner,batch,filename,receivers64=sys.argv[1:];receivers=json.loads(base64.b64decode(receivers64));source=Path('intake',batch,filename).read_bytes()
 meta=json.dumps({'batch':batch,'file':filename},sort_keys=True).encode();data=zlib.compress(len(meta).to_bytes(2,'big')+meta+source+hashlib.sha256(source).digest(),9)
-packet=len(data).to_bytes(4,'big')+data;root=Path('/var/tmp/exports','timing-'+owner+'-'+batch);payload_bytes=16;lanes=32;base=.020;step=.004;alphabet=b'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';sent=[]
+packet=len(data).to_bytes(4,'big')+data;root=Path('/var/tmp/exports','timing-'+owner+'-'+batch);payload_bytes=16;data_lanes=32;base=.030;step=.008;alphabet=b'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';sent=[]
 for frame,start in enumerate(range(0,len(packet),payload_bytes)):
- payload=packet[start:start+payload_bytes].ljust(payload_bytes,b'\0');wire=payload+zlib.crc32(payload).to_bytes(4,'big');symbols=[alphabet.index(value) for value in base64.b32encode(wire)];assert len(symbols)==lanes
+ payload=packet[start:start+payload_bytes].ljust(payload_bytes,b'\0');wire=payload+zlib.crc32(payload).to_bytes(4,'big');symbols=[alphabet.index(value) for value in base64.b32encode(wire)];assert len(symbols)==data_lanes
  for attempt in range(8):
   directory=root/(str(frame)+'.'+str(attempt));directory.mkdir();handles=[]
-  for lane in range(lanes):
-   a=os.open(str(directory/(str(lane)+'.start')),os.O_RDWR|os.O_CREAT,0o660);b=os.open(str(directory/(str(lane)+'.end')),os.O_RDWR|os.O_CREAT,0o660);fcntl.flock(a,fcntl.LOCK_EX);fcntl.flock(b,fcntl.LOCK_EX);handles.append((a,b))
+  for lane in range(data_lanes+1):
+   handle=os.open(str(directory/(str(lane)+'.end')),os.O_RDWR|os.O_CREAT,0o660);fcntl.flock(handle,fcntl.LOCK_EX);handles.append(handle)
   (directory/'present').touch();deadline=time.monotonic()+20
   while not all((directory/(reader+'.ready')).exists() for reader in receivers):
    if time.monotonic()>deadline:raise TimeoutError('Receiver setup incomplete')
    time.sleep(.001)
-  starts=[]
-  for a,b in handles:fcntl.flock(a,fcntl.LOCK_UN);starts.append(time.monotonic_ns())
-  due=[(starts[lane]+int((base+step*symbols[lane])*1e9),lane) for lane in range(lanes)]
-  released=[]
+  epoch=time.monotonic_ns();fcntl.flock(handles[0],fcntl.LOCK_UN);released=[time.monotonic_ns()]
+  due=[(epoch+int((base+step*symbols[lane])*1e9),lane+1) for lane in range(data_lanes)]
   for target,lane in sorted(due):
    left=(target-time.monotonic_ns())/1e9
    if left>0:time.sleep(left)
-   fcntl.flock(handles[lane][1],fcntl.LOCK_UN);released.append(time.monotonic_ns())
+   fcntl.flock(handles[lane],fcntl.LOCK_UN);released.append(time.monotonic_ns())
   while not all((directory/(reader+'.ok')).exists() or (directory/(reader+'.retry')).exists() for reader in receivers):
    if time.monotonic()>deadline:raise TimeoutError('Receiver verdict missing')
    time.sleep(.001)
@@ -63,7 +61,7 @@ for frame,start in enumerate(range(0,len(packet),payload_bytes)):
   while not all((directory/(reader+'.consumed')).exists() for reader in receivers):
    if time.monotonic()>deadline:raise TimeoutError('Receiver completion missing')
    time.sleep(.001)
-  for a,b in handles:os.close(a);os.close(b)
+  for handle in handles:os.close(handle)
   sent.append({'frame':frame,'attempt':attempt,'accepted':accepted,'symbols':symbols,'released_ns':released})
   shutil.rmtree(directory)
   if accepted:break
@@ -76,27 +74,27 @@ import base64,concurrent.futures,fcntl,hashlib,json,os,sys,time,zlib
 from pathlib import Path
 owner,batch,filename,actor=sys.argv[1:];root=Path('/var/tmp/exports','timing-'+owner+'-'+batch);marker=Path('/workspace/timing-'+owner+'-'+batch)
 if not root.exists():marker.with_suffix('.done').write_text(json.dumps({'owner':owner,'batch':batch,'absent':True}));raise SystemExit
-payload_bytes=16;lanes=32;base=.020;step=.004;alphabet=b'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';frames=[];packet=bytearray();size=None;frame=0
+payload_bytes=16;data_lanes=32;base=.030;step=.008;alphabet=b'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';frames=[];packet=bytearray();size=None;frame=0
 while size is None or len(packet)<size+4:
  for attempt in range(8):
   directory=root/(str(frame)+'.'+str(attempt));deadline=time.monotonic()+20
   while not (directory/'present').exists():
    if time.monotonic()>deadline:raise TimeoutError('Frame unavailable')
    time.sleep(.001)
-  handles=[(os.open(str(directory/(str(lane)+'.start')),os.O_RDWR),os.open(str(directory/(str(lane)+'.end')),os.O_RDWR)) for lane in range(lanes)];ready=[]
+  handles=[os.open(str(directory/(str(lane)+'.end')),os.O_RDWR) for lane in range(data_lanes+1)];ready=[]
   def receive(lane):
-   a,b=handles[lane];ready.append(lane);fcntl.flock(a,fcntl.LOCK_SH);begin=time.monotonic_ns();fcntl.flock(b,fcntl.LOCK_SH);end=time.monotonic_ns();fcntl.flock(b,fcntl.LOCK_UN);fcntl.flock(a,fcntl.LOCK_UN);os.close(a);os.close(b);duration=(end-begin)/1e9;return lane,duration,round((duration-base)/step)
-  with concurrent.futures.ThreadPoolExecutor(max_workers=lanes) as pool:
-   jobs=[pool.submit(receive,lane) for lane in range(lanes)]
-   while len(ready)!=lanes:time.sleep(.001)
+   handle=handles[lane];ready.append(lane);fcntl.flock(handle,fcntl.LOCK_SH);end=time.monotonic_ns();fcntl.flock(handle,fcntl.LOCK_UN);os.close(handle);return lane,end
+  with concurrent.futures.ThreadPoolExecutor(max_workers=data_lanes+1) as pool:
+   jobs=[pool.submit(receive,lane) for lane in range(data_lanes+1)]
+   while len(ready)!=data_lanes+1:time.sleep(.001)
    (directory/(actor+'.ready')).touch();rows=sorted(job.result() for job in jobs)
-  valid=all(0<=row[2]<=31 for row in rows);symbols=[row[2] for row in rows]
+  baseline=rows[0][1];durations=[row[1]-baseline for row in rows[1:]];symbols=[round((duration/1e9-base)/step) for duration in durations];valid=all(0<=symbol<=31 for symbol in symbols)
   wire=base64.b32decode(bytes(alphabet[value] for value in symbols)) if valid else b''
   valid=valid and zlib.crc32(wire[:payload_bytes])==int.from_bytes(wire[payload_bytes:],'big');(directory/(actor+('.ok' if valid else '.retry'))).touch()
   while not (directory/'accepted').exists() and not (directory/'repeat').exists():
    if time.monotonic()>deadline:raise TimeoutError('Frame decision missing')
    time.sleep(.001)
-  accepted=(directory/'accepted').exists();frames.append({'frame':frame,'attempt':attempt,'crc_valid':valid,'accepted':accepted,'durations_ns':[round(row[1]*1e9) for row in rows],'symbols':symbols});(directory/(actor+'.consumed')).touch()
+  accepted=(directory/'accepted').exists();frames.append({'frame':frame,'attempt':attempt,'crc_valid':valid,'accepted':accepted,'durations_ns':durations,'symbols':symbols});(directory/(actor+'.consumed')).touch()
   if accepted:assert valid;packet.extend(wire[:payload_bytes]);break
  else:raise RuntimeError('Repeated timing frame not delivered')
  if size is None and len(packet)>=4:size=int.from_bytes(packet[:4],'big');assert 0<size<256*1024
