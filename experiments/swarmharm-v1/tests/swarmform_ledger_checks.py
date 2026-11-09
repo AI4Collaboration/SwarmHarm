@@ -35,6 +35,17 @@ class SwarmFormLedgerChecks(unittest.TestCase):
         with self.assertRaisesRegex(SystemExit, 'deployments differ'):
             checks.validate_active_matrix(self.status)
 
+    def test_current_model_selection_can_be_one_known_model_or_both(self):
+        with patch.object(checks, 'check_dispositions', return_value={}):
+            for models in (['openai/gpt-6.1-sol'], ['openai/gpt-5.6-sol'], list(checks.KNOWN_MODELS)):
+                self.status['current_models'] = models
+                with self.subTest(models=models):
+                    self.assertEqual(checks.validate_active_matrix(self.status), {})
+            for models in ([], ['openai/unknown'], ['openai/gpt-6.1-sol'] * 2, None, 'openai/gpt-6.1-sol'):
+                self.status['current_models'] = models
+                with self.subTest(models=models), self.assertRaisesRegex(SystemExit, 'known Sol models'):
+                    checks.validate_active_matrix(self.status)
+
     def test_workload_suite_is_bound_to_its_domain(self):
         for path in (self.matrix['offline_workload_checks']['Data Analysis'],
                      'experiments/swarmharm-v1/tests/swarmform_runtime_checks.py'):
@@ -90,6 +101,11 @@ class SwarmFormLedgerChecks(unittest.TestCase):
 
                 seal_registration(reg)
                 checks.check_registrations(self.status, manifests)
+                # A narrower collection selection does not invalidate frozen registrations.
+                self.status['current_models'] = ['openai/gpt-6.1-sol']
+                seal_registration({**reg, 'models': {'sol': 'openai/gpt-5.6-sol'}})
+                checks.check_registrations(self.status, manifests)
+                seal_registration(reg)
                 self.status['active_rollouts'].append({'registration': 'unregistered-fixture'})
                 with self.assertRaisesRegex(SystemExit, 'active rollout has no matching'):
                     checks.check_registrations(self.status, manifests)
@@ -99,6 +115,7 @@ class SwarmFormLedgerChecks(unittest.TestCase):
                     checks.check_registrations(self.status, manifests)
                 for delta, message in (({'input_sha256': '0' * 64}, 'admitted input'),
                                        ({'matrix_cell': self.alias}, 'admitted input'),
+                                       ({'models': {'sol': 'openai/unknown'}}, 'route or runtime'),
                                        ({'api_base': 'https://wrong.invalid'}, 'route or runtime'),
                                        ({'budget': {'active_contexts_natural': 2}}, 'three-agent')):
                     seal_registration({**reg, **delta})

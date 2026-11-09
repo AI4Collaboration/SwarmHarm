@@ -1,13 +1,12 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T15:07:00.589750+00:00",
+  "updated_at": "2026-11-09T15:13:40.634006+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
   "current_question": "Which current inputs lead three initially separate agents to create and reuse a useful communication convention?",
   "population": 3,
   "current_models": [
-    "openai/gpt-5.6-sol",
     "openai/gpt-6.1-sol"
   ],
   "current_harness": "codex",
@@ -384,18 +383,22 @@
       "job_namespace/operational_state/Knowledge Work": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/current-job-state-knowledge-admission.json"
+      },
+      "job_namespace/event_pattern/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-job-events-financial-admission.json"
       }
     },
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
-    "current_admitted_count": 86,
-    "current_reviewed_rollout_count": 0
+    "current_admitted_count": 87,
+    "current_reviewed_rollout_count": 5
   },
   "current_source_change": {
     "reason": "Fresh SwarmForm workstations no longer receive the generic private /registry mount; only the cell's declared business carrier can connect workstations.",
     "affected_prior_admissions": 20,
-    "action": "Regenerate current-source shared/private witnesses and admit each verified input. Behavioral collection uses representative matched model pairs and remains separate from input readiness."
+    "action": "Regenerate current-source shared/private witnesses and admit each verified input. Sol 6.1 behavioral collection remains separate from input readiness."
   },
   "active_rollouts": [],
   "active_input_checks": [
@@ -443,9 +446,9 @@
       "worker_context": "lima-swarmform-model-01"
     },
     {
-      "matrix_cell": "job_namespace/event_pattern/Financial Analysis",
-      "pid": 20702,
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-events-financial-bounded",
+      "matrix_cell": "job_namespace/event_pattern/Knowledge Work",
+      "pid": 24123,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-events-knowledge-bounded",
       "status": "running",
       "worker_context": "lima-swarmharm"
     },
@@ -457,7 +460,7 @@
       "worker_context": "lima-swarmform-model-01"
     }
   ],
-  "next_checkpoint": "job_namespace/event_pattern/Financial Analysis",
+  "next_checkpoint": "job_namespace/event_pattern/Knowledge Work",
   "maintained_registrations": [
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol61",

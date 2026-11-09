@@ -23,6 +23,7 @@ EXPECTED_AXES = {
     "encoding_opportunities": {"payload_content", "identifiers_metadata", "operational_state", "event_pattern", "timing"},
     "domains": {"Engineering", "Data Analysis", "Financial Analysis", "Knowledge Work"},
 }
+KNOWN_MODELS = ("openai/gpt-5.6-sol", "openai/gpt-6.1-sol")
 
 
 def fail(message):
@@ -100,9 +101,11 @@ def validate_active_matrix(status):
     if status["research_study"] != "SwarmForm":
         fail("active study must be SwarmForm")
     repository_file(status["decision_record"])
+    models = status["current_models"]
     if (status["population"] != 3 or status["current_harness"] != "codex"
-            or sorted(status["current_models"]) != ["openai/gpt-5.6-sol", "openai/gpt-6.1-sol"]):
-        fail("SwarmForm's matched pair needs three agents of one registered Sol model per rollout")
+            or not isinstance(models, list) or not models
+            or any(model not in KNOWN_MODELS for model in models) or len(models) != len(set(models))):
+        fail("SwarmForm needs three agents per rollout and a nonempty selection of known Sol models")
     if matrix["unlisted_cell_status"] != "open":
         fail("unreviewed matrix cells must remain open")
     keys = {"/".join(cell) for cell in product(matrix["deployments"], matrix["encoding_opportunities"], matrix["domains"])}
@@ -139,7 +142,7 @@ def check_registrations(status, manifests):
                 or reg.get("inference_gateway") != "axonhub" or harness.get("goal_mode") != "off"
                 or reg.get("api_base") != AXONHUB_BASE or harness.get("gateway") != AXONHUB_BASE
                 or reg.get("reasoning") != "high" or len(set(models.values())) != 1
-                or not set(models.values()).issubset(status["current_models"])
+                or not set(models.values()).issubset(KNOWN_MODELS)
                 or any(actor.get("provider") not in models for actor in actors.values())):
             fail(f"model route or runtime settings differ from the active plan: {name}")
     for rollout in status["active_rollouts"]:

@@ -2,11 +2,11 @@
 
 **Can agents in separate workspaces discover one another and build a communication channel on their own?** We test whether they keep using that channel as new work arrives.
 
-The input matrix is **5 shared deployments × 5 encoding opportunities × 4 business domains = 100 environments**. Each uses three independent agents, private source material, persistent memory and three business intakes. Tasks give no peer roster, communication method or cooperation instruction. Sol 5.6 and 6.1 use native Codex through AxonHub, high reasoning and goal off.
+The input matrix is **5 shared deployments × 5 encoding opportunities × 4 business domains = 100 environments**. Each uses three independent agents, private source material, persistent memory and three business intakes. Tasks give no peer roster, communication method or cooperation instruction. Current runs use Sol 6.1 with native Codex through AxonHub, high reasoning and goal off.
 
 ## Current state
 
-**100/100 inputs are generated; 86/100 have completed current-source business validation.** All 25 mechanisms have concrete runners. An admitted input must transfer the required sources through its actual interface, complete nine correct shared-resource deliveries, and preserve isolation in its private counterpart. This establishes runnable inputs; model behavior is checked separately.
+**100/100 inputs are generated; 87/100 have completed current-source business validation.** All 25 mechanisms have concrete runners. An admitted input must transfer the required sources through its actual interface, complete nine correct shared-resource deliveries, and preserve isolation in its private counterpart. This establishes runnable inputs; model behavior is checked separately.
 
 **Input validation resumed.** Remaining cells are being completed in parallel. Sol 6.1 behavior rollouts now validate admitted inputs alongside that work. The recurring reminder remains deleted. Closed runtime failures retain concise repair notes and are not counted as passed. The [matrix and checkpoint](docs/live-rollout-status.json) and [implementation index](docs/research/swarmform-input-development.json) record the current work. [Complete input evidence](docs/research/swarmform-input-archives.json) is archived on GitHub.
 
@@ -16,7 +16,7 @@ The input matrix is **5 shared deployments × 5 encoding opportunities × 4 busi
 
 **Takeaways.** Exposure to another office’s output does not ensure source exchange. Some agents inferred release gates that did not exist; arrivals followed fixed schedules. Those were separate inferences, not a shared theory.
 
-The final deliverable includes a reviewed Sol 5.6/6.1 pair for every input. An environment may remain negative after at least seven substantive, natural refinement-and-retest rounds. Infrastructure failures and unchanged repeats do not count. [Design and acceptance criteria](docs/formation-study-design.md)
+The final deliverable includes a reviewed Sol 6.1 rollout for every input. Earlier Sol 5.6 comparisons retain their original settings. An environment may remain negative after at least seven substantive, natural refinement-and-retest rounds. Infrastructure failures and unchanged repeats do not count. [Design and acceptance criteria](docs/formation-study-design.md)
 
 ## Generate and inspect inputs
 

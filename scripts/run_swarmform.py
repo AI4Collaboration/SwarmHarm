@@ -30,6 +30,7 @@ from workstation import IMAGE, verify_workstation_image
 # Shared across the matrix; real timing transports can require hours.
 # Idle sessions still stop normally once all real arrivals are accounted for.
 MAX_AGENT_SECONDS = 8 * 60 * 60
+MODEL_LABELS = {'openai/gpt-5.6-sol': 'sol56', 'openai/gpt-6.1-sol': 'sol61'}
 
 
 def sha(path):
@@ -209,7 +210,7 @@ def prepare_pair(args):
 
 
 def prepare_matrix(args):
-    """Prepare the complete admitted matrix from one published source snapshot."""
+    """Prepare one selected model across the complete admitted input matrix."""
     ledger = json.loads((ROOT / 'docs/live-rollout-status.json').read_text())
     cells = [(deployment, encoding, domain)
              for deployment, encodings in IMPLEMENTED_ENCODINGS.items()
@@ -227,7 +228,8 @@ def prepare_matrix(args):
     output = outside_repository(args.output, ROOT, 'Raw matrix output')
     if output.exists():
         raise FileExistsError('Never reuse a matrix output directory')
-    models = (('sol56', 'openai/gpt-5.6-sol'), ('sol61', 'openai/gpt-6.1-sol'))
+    model = args.model
+    label = MODEL_LABELS[model]
     planned, admissions = [], {}
     for deployment, encoding, domain in cells:
         cell_key = '/'.join((deployment, encoding, domain))
@@ -239,37 +241,30 @@ def prepare_matrix(args):
             raise RuntimeError('Effective input differs from the admitted configuration: ' + cell_key)
         admissions[cell_key] = report
         slug = '-'.join((deployment, encoding, domain)).lower().replace('_', '-').replace(' ', '-')
-        for label, model in models:
-            item = argparse.Namespace(identifier=args.identifier + '-' + slug + '-' + label,
-                model=model, dataset_key=args.dataset_key, domain=domain,
-                deployment=deployment, encoding=encoding,
-                output=output / deployment / encoding / domain.lower().replace(' ', '-') / label)
-            prepare_destination(item)
-            planned.append(item)
+        item = argparse.Namespace(identifier=args.identifier + '-' + slug + '-' + label,
+            model=model, dataset_key=args.dataset_key, domain=domain,
+            deployment=deployment, encoding=encoding,
+            output=output / deployment / encoding / domain.lower().replace(' ', '-') / label)
+        prepare_destination(item)
+        planned.append(item)
 
     runtime = check_runtime()
     profiles = {model: (codex_gateway.harness_registration('off', model),
-                       codex_gateway.gateway_catalog(model, 'high')) for _, model in models}
-    records, previous, frozen_code = [], None, None
+                       codex_gateway.gateway_catalog(model, 'high'))}
+    records, frozen_code = [], None
     index_path = output / 'matrix-preparation.json'
     preparation = {'schema_version': 1, 'research_study': 'SwarmForm',
         'status': 'preparing', 'source_commit': source, 'dataset_key': args.dataset_key,
-        'runtime': runtime, 'input_environments': 100, 'model_calls': 0,
+        'runtime': runtime, 'input_environments': 100, 'model': model, 'model_calls': 0,
         'planned_identifiers': [item.identifier for item in planned], 'registrations': records}
     save(index_path, preparation)
-    for index, item in enumerate(planned):
+    for item in planned:
         prepare_one(item, source, runtime, profiles=profiles)
         reg = json.loads((item.output / 'registration.json').read_text())
         if frozen_code is None:
             frozen_code = reg['code_hashes']
         elif reg['code_hashes'] != frozen_code:
             raise RuntimeError('Source changed while preparing the matrix')
-        if index % 2:
-            for key in ('source_commit', 'input_sha256', 'code_hashes', 'input_hashes', 'task_hashes',
-                        'arrival_offsets', 'deployment', 'budget', 'workstation_permissions', 'runtime'):
-                if previous[key] != reg[key]:
-                    raise RuntimeError('Paired registration inputs differ: ' + key)
-        previous = reg
         records.append({'matrix_cell': reg['matrix_cell'], 'input_sha256': reg['input_sha256'],
                         'input_manifest': admissions[reg['matrix_cell']]['input_manifest'],
                         'model': item.model, 'identifier': item.identifier, 'output': str(item.output),
@@ -279,7 +274,7 @@ def prepare_matrix(args):
     preparation['status'] = 'prepared'
     save(index_path, preparation)
     return {'status': 'prepared', 'prepared_inputs': 100, 'prepared_registrations': len(records),
-            'source_commit': source, 'index': str(index_path), 'model_calls': 0,
+            'source_commit': source, 'model': model, 'index': str(index_path), 'model_calls': 0,
             'next': 'Commit and push all registrations and the ledger before collection'}
 
 
@@ -378,7 +373,9 @@ def argument_parser():
         command.add_argument('--output', type=Path, required=True)
         if name in ('prepare', 'prepare-pair', 'prepare-matrix'):
             if name == 'prepare':
-                command.add_argument('--model', choices=['openai/gpt-5.6-sol', 'openai/gpt-6.1-sol'], required=True)
+                command.add_argument('--model', choices=MODEL_LABELS, required=True)
+            elif name == 'prepare-matrix':
+                command.add_argument('--model', choices=MODEL_LABELS, default='openai/gpt-6.1-sol')
             command.add_argument('--dataset-key', required=True)
             if name != 'prepare-matrix':
                 command.add_argument('--domain', choices=DOMAINS, default='Data Analysis')

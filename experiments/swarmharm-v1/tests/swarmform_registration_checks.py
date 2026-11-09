@@ -2,6 +2,7 @@
 
 import base64
 import argparse
+from contextlib import redirect_stderr
 import importlib.util
 import io
 import json
@@ -36,7 +37,7 @@ class RegistrationChecks(unittest.TestCase):
             fixture.start()
             self.addCleanup(fixture.stop)
 
-    def test_matrix_requires_all_admissions_and_prepares_200_from_one_snapshot(self):
+    def test_matrix_requires_all_admissions_and_prepares_100_for_selected_model(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / 'source'
             (root / 'experiments/swarmharm-v1/registrations').mkdir(parents=True)
@@ -59,6 +60,7 @@ class RegistrationChecks(unittest.TestCase):
             entry.save(root / 'docs/live-rollout-status.json', ledger)
             args = entry.argument_parser().parse_args(['prepare-matrix', '--identifier', 'matrix-test',
                 '--dataset-key', 'november', '--output', str(Path(directory) / 'raw')])
+            self.assertEqual(args.model, 'openai/gpt-6.1-sol')
             runtime_value = {'fixture_runtime': True}
             prepared = []
 
@@ -104,26 +106,41 @@ class RegistrationChecks(unittest.TestCase):
                     entry.prepare_matrix(args)
                 one.assert_not_called(); runtime.assert_not_called()
                 self.assertFalse(args.output.exists())
-                collision.rmdir(); head.reset_mock()
+                collision.rmdir()
 
-                result = entry.prepare_matrix(args)
-                self.assertEqual(result['prepared_inputs'], 100)
-                self.assertEqual(result['prepared_registrations'], 200)
-                self.assertEqual(result['model_calls'], 0)
-                head.assert_called_once(); runtime.assert_called_once()
-                self.assertEqual(one.call_count, 200)
-                self.assertEqual(harness.call_count, 2); self.assertEqual(catalog.call_count, 2)
-                self.assertEqual(len({item.identifier for item in prepared}), 200)
-                self.assertEqual(len({item.output for item in prepared}), 200)
-                index = json.loads(Path(result['index']).read_text())
-                self.assertEqual(index['source_commit'], 'published')
-                self.assertEqual(len(index['registrations']), 200)
-                pairs = {}
-                for row in index['registrations']:
-                    pairs.setdefault(row['matrix_cell'], set()).add(row['model'])
-                self.assertEqual(len(pairs), 100)
-                self.assertTrue(all(models == {'openai/gpt-5.6-sol', 'openai/gpt-6.1-sol'}
-                                    for models in pairs.values()))
+                explicit = entry.argument_parser().parse_args(['prepare-matrix', '--identifier', 'matrix-sol56',
+                    '--model', 'openai/gpt-5.6-sol', '--dataset-key', 'november',
+                    '--output', str(Path(directory) / 'raw-sol56')])
+                for selected in (args, explicit):
+                    with self.subTest(model=selected.model):
+                        for fixture in (head, runtime, one, harness, catalog):
+                            fixture.reset_mock()
+                        prepared.clear()
+                        result = entry.prepare_matrix(selected)
+                        self.assertEqual(result['prepared_inputs'], 100)
+                        self.assertEqual(result['prepared_registrations'], 100)
+                        self.assertEqual(result['model_calls'], 0)
+                        self.assertEqual(result['model'], selected.model)
+                        head.assert_called_once(); runtime.assert_called_once()
+                        self.assertEqual(one.call_count, 100)
+                        harness.assert_called_once_with('off', selected.model)
+                        catalog.assert_called_once_with(selected.model, 'high')
+                        self.assertEqual(len({item.identifier for item in prepared}), 100)
+                        self.assertEqual(len({item.output for item in prepared}), 100)
+                        index = json.loads(Path(result['index']).read_text())
+                        self.assertEqual(index['source_commit'], 'published')
+                        self.assertEqual(index['status'], 'prepared')
+                        self.assertEqual(index['model'], selected.model)
+                        self.assertEqual(len(index['registrations']), 100)
+                        self.assertEqual(len({row['matrix_cell'] for row in index['registrations']}), 100)
+                        self.assertEqual({row['model'] for row in index['registrations']}, {selected.model})
+                        self.assertTrue(all(row['identifier'].endswith('-' + entry.MODEL_LABELS[selected.model])
+                                            for row in index['registrations']))
+
+    def test_matrix_rejects_unknown_model_at_argument_parsing(self):
+        with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            entry.argument_parser().parse_args(['prepare-matrix', '--identifier', 'matrix-test',
+                '--model', 'openai/unknown', '--dataset-key', 'november', '--output', '/unused'])
 
     def test_pair_seals_same_published_input_and_rejects_either_reused_destination(self):
         with tempfile.TemporaryDirectory() as directory:
