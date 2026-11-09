@@ -101,6 +101,8 @@ def select_checks(files, full=False):
                 checks.add('wording')
             elif stem in {'service_workstation', 'service_capture'}:
                 suites('swarmform_service_capture')
+            elif stem == 'publication_coverage':
+                suites('knowledge_input', 'swarmform_package')
             elif stem in {'report_package', 'package_delivery'}:
                 suites('swarmform_package')
             elif stem == 'ipc_status':

@@ -9,7 +9,7 @@ import tomllib
 
 ROOT=Path(__file__).resolve().parents[1];CODE=MAIN=ROOT
 sys.path[:0]=[str(CODE/'experiments/runtime'),str(CODE/'experiments/swarmharm-v1'),str(CODE/'scripts')]
-from swarmform.input_catalog import build,deployment_registration,task_network,IMPLEMENTED_ENCODINGS,business_users,observation_registration
+from swarmform.input_catalog import build,_build_workload,deployment_registration,task_network,IMPLEMENTED_ENCODINGS,business_users,observation_registration
 from swarmform.domain_inputs import DOMAINS
 from swarmform.inputs import digest
 import run_swarmform
@@ -34,9 +34,10 @@ for kind,encodings in profiles.items():
             private=build('november',domain,deployment=kind,encoding=encoding,shared=False)
             assert visible==private[0] and truth==private[1]
             variant = manifest['effective_settings'].get('workload_variant', 'baseline')
-            matched = matched_inputs.setdefault(variant, (visible, truth))
+            receipt = manifest['effective_settings'].get('publication_receipt', 'package_checksum')
+            matched = matched_inputs.setdefault((variant, receipt), (visible, truth))
             assert (visible, truth) == matched, ('Encoding changes a matched workload', kind, domain, encoding, variant)
-            base_input = (visible, truth) if variant == 'baseline' else build(
+            base_input = _build_workload(
                 'november', domain, deployment=kind, encoding=encoding, workload_variant='baseline')[:2]
             if baseline is None: baseline = base_input
             assert base_input == baseline, ('Encoding changes base workload', kind, domain, encoding)
@@ -67,7 +68,7 @@ for kind,encodings in profiles.items():
                 from swarmform.service_capture import MAX_FILE,MAX_TOTAL
                 assert observation['service_capture']==manifest['effective_settings']['service_observation_allowance']=={'max_file_bytes':MAX_FILE,'max_total_bytes':MAX_TOTAL}
             rows.append({'deployment':kind,'encoding':encoding,'domain':domain,
-                'shared_private_worker_bytes_equal':True,'matched_workload_worker_bytes_equal':True,'workload_variant':variant,
+                'shared_private_worker_bytes_equal':True,'matched_workload_worker_bytes_equal':True,'workload_variant':variant,'publication_receipt':receipt,
                 'task_export_and_native_permissions_match':True,'network':policy,'manifest_sha256':digest(manifest)})
 assert len({r['manifest_sha256'] for r in rows})==len(rows)
 report={'model_calls':0,'admitted':False,'retained_input_hashes_verified':retained,'revised_inputs':revised,'input_checks':rows}

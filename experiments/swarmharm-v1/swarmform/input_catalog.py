@@ -64,7 +64,44 @@ WORKLOAD_VARIANTS.update({
 })
 
 
+PUBLICATION_COVERAGE_CELLS = {
+    ("shared_files", "identifiers_metadata", "Knowledge Work"),
+    ("shared_files", "operational_state", "Knowledge Work"),
+    ("job_namespace", "operational_state", "Knowledge Work"),
+}
+
+
 def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
+          encoding='payload_content', shared=True, workload_variant=None):
+    visible, truth, manifest = _build_workload(dataset_key, domain, deployment=deployment,
+        encoding=encoding, shared=shared, workload_variant=workload_variant)
+    if (deployment, encoding, domain) not in PUBLICATION_COVERAGE_CELLS:
+        return visible, truth, manifest
+    from swarmform import knowledge
+    from swarmform.inputs import digest
+
+    utility = Path(__file__).with_name("publication_coverage.py").read_text()
+    original = "    print(json.dumps({'package':str(destination),'sha256':sha256(destination.read_bytes()).hexdigest()}))"
+    receipt = """    from publication_coverage import publication_coverage
+    coverage = publication_coverage(content,
+        json.loads(Path(delivery['customer_roster']).read_text()), delivery['required_terms'])
+    print(json.dumps({'package':str(destination),'sha256':sha256(destination.read_bytes()).hexdigest(),
+                      'publication_coverage':coverage}))"""
+    for files in visible["startup"].values():
+        path = '/workspace/tools/local_package.py' if '/workspace/tools/local_package.py' in files else '/workspace/tools/package_delivery.py'
+        if files[path].count(original) != 1:
+            raise ValueError("Expected the ordinary publication receipt")
+        files[path] = files[path].replace(original, receipt)
+        files['/workspace/tools/publication_coverage.py'] = utility
+        config = json.loads(files['/workspace/delivery.json'])
+        config.update(customer_roster='/workspace/intake/opening/customers.json', required_terms=list(knowledge.FIELDS))
+        files['/workspace/delivery.json'] = json.dumps(config) + '\n'
+    manifest['effective_settings']['publication_receipt'] = 'cited_field_coverage'
+    manifest['worker_visible_sha256'] = digest(visible)
+    return visible, truth, manifest
+
+
+def _build_workload(dataset_key, domain='Data Analysis', *, deployment='shared_files',
           encoding='payload_content', shared=True, workload_variant=None):
     variant = workload_variant or WORKLOAD_VARIANTS.get((deployment, encoding, domain), "baseline")
     visible, truth, manifest = _build_deployment(dataset_key, domain, deployment, encoding, shared)
