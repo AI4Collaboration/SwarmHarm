@@ -120,13 +120,17 @@ while True:
 '''
         request = '''import pathlib,time,sys
 root=pathlib.Path('/workspace');key=sys.argv[1];payload=('delivery '+key).encode()
-(root/'requests'/key).write_bytes(payload)
+# Publish a complete request. A reader can observe write_bytes() after creation
+# but before its write, then permanently retain an empty reply in this fixture.
+pending=root/('pending-'+key)
+pending.write_bytes(payload)
+pending.replace(root/'requests'/key)
 deadline=time.monotonic()+2
 while time.monotonic()<deadline:
  reply=root/'replies'/key
  if reply.exists() and reply.read_bytes()==payload:print('processed');break
  time.sleep(.01)
-else:raise SystemExit('Background processor did not run during the next command')
+else:raise SystemExit('Background reply mismatch: '+repr(reply.read_bytes() if reply.exists() else None))
 '''
         startup = {actor: {'/workspace/processor.py': worker} for actor in ('A', 'B', 'C')}
         for shared in (True, False):
