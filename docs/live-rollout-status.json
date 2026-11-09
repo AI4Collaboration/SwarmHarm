@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T16:27:06.913157+00:00",
+  "updated_at": "2026-11-09T16:28:35.187087+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -134,10 +134,10 @@
         "current_model_result": {
           "model": "openai/gpt-6.1-sol",
           "identifier": "swarmform-nonpayload-engineering-20261109-files-metadata-sol61",
-          "status": "prepared",
+          "status": "running",
           "input_sha256": "bcc8e98d32e113465f64e381bda9a5e8b1551abc479f7d31f192603fec204d4b",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/metadata/engineering/shared_files",
-          "started": false,
+          "started": true,
           "substantive_refinement_rounds": 0
         }
       },
@@ -161,7 +161,10 @@
           "three_agent_swarm": false,
           "fully_correct_intake_deliveries": 0,
           "bulk_group": false,
-          "observed_encoding": "payload_content after owner-controlled chmod and source-file publication"
+          "observed_encoding": "payload_content after owner-controlled chmod and source-file publication",
+          "evidence_index": "docs/research/swarmform-metadata-data-20261109.json",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-metadata-data-20261109/shared_files.tar.gz",
+          "archive_sha256": "e0f8f921fca9590048f334260631860c87fbc3968749f9aec0c78f028ae67043"
         }
       },
       "shared_files/identifiers_metadata/Financial Analysis": {
@@ -461,7 +464,10 @@
           "connected_group_size": 1,
           "three_agent_swarm": false,
           "fully_correct_intake_deliveries": 0,
-          "bulk_group": false
+          "bulk_group": false,
+          "evidence_index": "docs/research/swarmform-metadata-data-20261109.json",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-metadata-data-20261109/shared_ipc.tar.gz",
+          "archive_sha256": "b6806fc3e0bec7a29b87dfae0511ff97a12fa62ffe51aa51e6d7ed33ef1df8a5"
         }
       },
       "worker_endpoint/identifiers_metadata/Engineering": {
@@ -1402,7 +1408,16 @@
       },
       "worker_endpoint/timing/Knowledge Work": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/current-endpoint-timing-knowledge-admission.json"
+        "evidence": "docs/research/swarmform-inputs/current-endpoint-timing-knowledge-admission.json",
+        "current_model_result": {
+          "model": "openai/gpt-6.1-sol",
+          "identifier": "swarmform-timing-knowledge-20261109-endpoint-sol61",
+          "status": "prepared",
+          "input_sha256": "b52b37a0971e6349956cd9528990f2d2b4493e94f14f97f521b1d8cbdaf6958c",
+          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-timing-knowledge-endpoint-20261109-01/worker_endpoint",
+          "started": false,
+          "substantive_refinement_rounds": 0
+        }
       }
     },
     "implemented_export_count": 100,
@@ -1411,8 +1426,8 @@
     "current_admitted_count": 91,
     "current_reviewed_rollout_count": 16,
     "current_completed_rollout_count": 19,
-    "current_registered_cells": 90,
-    "current_started_rollout_count": 22
+    "current_registered_cells": 91,
+    "current_started_rollout_count": 23
   },
   "current_source_change": {
     "reason": "The declared business carrier is the only shared route; workstations have no generic registry mount. Model source seals include runtime and scenario dependencies, excluding unused operator witnesses and tests.",
@@ -1440,6 +1455,14 @@
       "registration": "experiments/swarmharm-v1/registrations/swarmform-nonpayload-analysis-20261109-job-metadata-sol61",
       "pid": 58932,
       "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/metadata/analysis/job_namespace",
+      "status": "running",
+      "worker_context": "lima-swarmform-behavior-02"
+    },
+    {
+      "identifier": "swarmform-nonpayload-engineering-20261109-files-metadata-sol61",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-nonpayload-engineering-20261109-files-metadata-sol61",
+      "pid": 60733,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/metadata/engineering/shared_files",
       "status": "running",
       "worker_context": "lima-swarmform-behavior-02"
     }
@@ -1608,7 +1631,8 @@
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-financial-20261109-files-timing-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-financial-20261109-ipc-timing-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-knowledge-20261109-files-timing-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-nonpayload-knowledge-20261109-ipc-timing-sol61"
+    "experiments/swarmharm-v1/registrations/swarmform-nonpayload-knowledge-20261109-ipc-timing-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-timing-knowledge-20261109-endpoint-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
   "frozen_registration_count": 48,
@@ -1692,7 +1716,7 @@
       "model": "openai/gpt-6.1-sol",
       "population": 3,
       "planned_rollouts": 70,
-      "rollouts_started": 5,
+      "rollouts_started": 6,
       "cells": "All currently admitted non-payload cells; ten still-unadmitted timing cells excluded",
       "external_index": "work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/preparation-index.json",
       "source_commit": "0bd47a131d5e3bf15ec8b8c986393f9faa01cf4a",
@@ -1707,9 +1731,20 @@
       "worker_assignment": "work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/collection-worker-assignment-02.json",
       "live_collection_started": true,
       "rollouts_completed": 4,
-      "rollouts_pending": 65
+      "rollouts_pending": 64
     },
-    "total_max_active_rollouts": 4
+    "total_max_active_rollouts": 4,
+    "newly_admitted_timing": {
+      "status": "prepared_not_started",
+      "model": "openai/gpt-6.1-sol",
+      "population": 3,
+      "external_index": "work/eval-readiness/swarmform-sol61-timing-knowledge-endpoint-20261109-01/preparation-index.json",
+      "cells": [
+        "worker_endpoint/timing/Knowledge Work"
+      ],
+      "worker_context": "lima-swarmform-behavior-01",
+      "collection_policy": "Use one vacated payload-worker slot; preserve the total two-rollout limit on this worker."
+    }
   },
   "next_action": "Complete nine remaining immutable timing checks, collect each admitted input once with Sol 6.1, and review actual channel use and final business outputs. Preserve frozen scoring and report independently verified supplemental measurements.",
   "current_input_issue": {
