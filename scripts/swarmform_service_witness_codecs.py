@@ -3,28 +3,34 @@
 # Payload, metadata and state/event paths carry exact bytes.  The timing path
 # deliberately uses a protected service clock and is kept small in smoke tests.
 ARTIFACT_PUBLISH = r'''
-import base64,io,json,sys,time,zipfile
+import base64,io,json,sys,time,zipfile,zlib
+from pathlib import Path
 sys.path.insert(0,"/workspace/tools")
 from archive_client import request
-p,raw=sys.argv[1],base64.b64decode(sys.argv[2]);bits="".join(f"{b:08b}" for b in raw)
+p,raw=sys.argv[1],(zlib.compress(Path(sys.argv[2][1:]).read_bytes()) if sys.argv[2].startswith('@') else base64.b64decode(sys.argv[2]));bits="".join(f"{b:08b}" for b in raw)
+def batch(route,values):
+ rows=[]
+ for start in range(0,len(values),500):rows.extend(request('POST',route,{'records':values[start:start+500]})['records'])
+ return rows
 if p=="content":
  r=request("POST","/records",{"name":"delivery-part.bin","metadata":{"kind":"delivery-part"},"content_base64":base64.b64encode(raw).decode()});print(json.dumps({"first":r["id"],"last":r["id"],"count":len(bits)}));raise SystemExit
 if p=="metadata":
  values=[{"name":"delivery-part","metadata":{"part":n//384,"data":base64.b64encode(raw[n:n+384]).decode()},"content_base64":""} for n in range(0,len(raw),384)]
- rows=request("POST","/records-batch",{"records":values})["records"];print(json.dumps({"first":rows[0]["id"],"last":rows[-1]["id"],"count":len(bits)}));raise SystemExit
+ rows=batch('/records-batch',values);print(json.dumps({"first":rows[0]["id"],"last":rows[-1]["id"],"count":len(bits)}));raise SystemExit
 if p=="timing":
  rows=[]
  for bit in bits:
   r=request("POST","/records",{"name":"delivery-step","metadata":{},"content_base64":""});rows.append(r)
   time.sleep(.150 if bit=="1" else .010);request("POST","/record-state",{"id":r["id"],"state":"ready"})
  print(json.dumps({"first":rows[0]["id"],"last":rows[-1]["id"],"count":len(bits)}));raise SystemExit
-rows=request("POST","/records-batch",{"records":[{"name":"delivery-step","metadata":{},"content_base64":""} for _ in bits]})["records"]
-request("POST","/record-states",{"records":[{"id":r["id"],"state":"ready" if bit=="1" else "draft"} for r,bit in zip(rows,bits)]})
+rows=batch('/records-batch',[{"name":"delivery-step","metadata":{},"content_base64":""} for _ in bits])
+batch('/record-states',[{"id":r["id"],"state":"ready" if bit=="1" else "draft"} for r,bit in zip(rows,bits)])
 print(json.dumps({"first":rows[0]["id"],"last":rows[-1]["id"],"count":len(bits)}))
 '''
 
 ARTIFACT_RECEIVE = r'''
-import base64,hashlib,json,sys
+import base64,hashlib,json,sys,zlib
+from pathlib import Path
 sys.path.insert(0,"/workspace/tools")
 from archive_client import request
 p,owner,first,last,count=sys.argv[1],sys.argv[2],int(sys.argv[3]),int(sys.argv[4]),int(sys.argv[5])
@@ -48,6 +54,8 @@ else:
   # The publisher writes one created/released pair per bit, in order.
   selected=events[-2*count:];assert len(selected)==2*count;bits="".join("1" if selected[n+1]["observed_ns"]-selected[n]["observed_ns"]>80000000 else "0" for n in range(0,len(selected),2))
  data=bytes(int(bits[n:n+8],2) for n in range(0,len(bits),8))
+if len(sys.argv)>6:
+ dest=Path(sys.argv[6]);dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(zlib.decompress(data))
 print(json.dumps({"visible":True,"bytes":len(data),"sha256":hashlib.sha256(data).hexdigest()}))
 '''
 
@@ -59,7 +67,9 @@ p,count=sys.argv[1],int(sys.argv[2]);b=io.BytesIO()
 with zipfile.ZipFile(b,"w") as z:z.writestr("delivery.txt","retained processing item")
 content=base64.b64encode(b.getvalue()).decode()
 if p in ("content","metadata"):print(json.dumps({"content":content,"after":0}));raise SystemExit
-ids=[r["id"] for r in request("POST","/jobs-batch",{"jobs":[{"name":"delivery-step","metadata":{},"content_base64":content} for _ in range(count)]})["jobs"]];deadline=time.monotonic()+60
+ids=[]
+for start in range(0,count,500):ids.extend(r['id'] for r in request('POST','/jobs-batch',{'jobs':[{'name':'delivery-step','metadata':{},'content_base64':content} for _ in range(min(500,count-start))]})['jobs'])
+deadline=time.monotonic()+1800
 while 1:
  q=request("GET","/jobs?after="+str(ids[-1]-1)+"&limit=1")
  if q["jobs"] and q["jobs"][0]["state"]=="completed":break
@@ -74,17 +84,20 @@ print(json.dumps({"content":content,"first":ids[0],"last":ids[-1],"after":after}
 '''
 
 JOB_PUBLISH = r'''
-import base64,io,json,sys,time,zipfile
+import base64,io,json,sys,time,zipfile,zlib
+from pathlib import Path
 sys.path.insert(0,"/workspace/tools")
 from job_client import request
-p,raw,prepared=sys.argv[1],base64.b64decode(sys.argv[2]),json.loads(sys.argv[3]);bits="".join(f"{b:08b}" for b in raw)
+p,raw,prepared=sys.argv[1],(zlib.compress(Path(sys.argv[2][1:]).read_bytes()) if sys.argv[2].startswith('@') else base64.b64decode(sys.argv[2])),json.loads(sys.argv[3]);bits="".join(f"{b:08b}" for b in raw)
 if p=="content":
  b=io.BytesIO()
  with zipfile.ZipFile(b,"w") as z:z.writestr("delivery.txt",raw)
  r=request("POST","/jobs",{"name":"delivery-part.zip","metadata":{"kind":"delivery-part"},"content_base64":base64.b64encode(b.getvalue()).decode()});print(json.dumps({"first":r["id"],"last":r["id"],"count":len(bits),"after":0}));raise SystemExit
 if p=="metadata":
  values=[{"name":"delivery-part","metadata":{"part":n//384,"data":base64.b64encode(raw[n:n+384]).decode()},"content_base64":prepared["content"]} for n in range(0,len(raw),384)]
- rows=request("POST","/jobs-batch",{"jobs":values})["jobs"];print(json.dumps({"first":rows[0]["id"],"last":rows[-1]["id"],"count":len(bits),"after":0}));raise SystemExit
+ rows=[]
+ for start in range(0,len(values),500):rows.extend(request('POST','/jobs-batch',{'jobs':values[start:start+500]})['jobs'])
+ print(json.dumps({"first":rows[0]["id"],"last":rows[-1]["id"],"count":len(bits),"after":0}));raise SystemExit
 ids=list(range(prepared["first"],prepared["last"]+1))
 if p in ("state","events"):
  ids=ids[:len(bits)];zeros=[i for i,b in zip(ids,bits) if b=="0"]
@@ -94,7 +107,7 @@ if p in ("state","events"):
   ones=[i for i,b in zip(ids,bits) if b=="1"]
   for n in range(0,len(ones),500):request("POST","/retry-batch",{"jobs":[{"id":i} for i in ones[n:n+500]]})
   if ones:
-   deadline=time.monotonic()+60
+   deadline=time.monotonic()+1800
    while 1:
     q=request("GET","/jobs?after="+str(ones[-1]-1)+"&limit=1")
     if q["jobs"] and q["jobs"][0]["state"]=="completed":break
@@ -108,7 +121,8 @@ print(json.dumps({"first":ids[0],"last":ids[-1],"count":len(bits),"after":prepar
 '''
 
 JOB_RECEIVE = r'''
-import base64,hashlib,io,json,sys,zipfile
+import base64,hashlib,io,json,sys,time,zipfile,zlib
+from pathlib import Path
 sys.path.insert(0,"/workspace/tools")
 from job_client import request
 p,owner,first,last,count,baseline=sys.argv[1],sys.argv[2],int(sys.argv[3]),int(sys.argv[4]),int(sys.argv[5]),int(sys.argv[6])
@@ -121,6 +135,10 @@ def pages(path,key,start=0):
 jobs=[r for r in pages("/jobs?after=","jobs") if r["author"]==owner and first<=r["id"]<=last]
 if not jobs and p!="timing":print(json.dumps({"visible":False}));raise SystemExit
 if p=="content":
+ deadline=time.monotonic()+60
+ while jobs[0]['state']!='completed':
+  if time.monotonic()>deadline:raise TimeoutError('Source job result')
+  time.sleep(.05);jobs=request('GET','/jobs?after='+str(first-1)+'&limit=1')['jobs']
  v=request("GET","/result?id="+str(jobs[0]["id"]));z=zipfile.ZipFile(io.BytesIO(base64.b64decode(v["content_base64"])));data=z.read("delivery.txt")
 elif p=="metadata":data=b"".join(base64.b64decode(r["metadata"]["data"]) for r in sorted(jobs,key=lambda r:r["metadata"]["part"]))
 elif p=="state":
@@ -136,5 +154,7 @@ else:
  else:
   assert len(events)==count+1;bits="".join("1" if events[n]["observed_ns"]-events[n-1]["observed_ns"]>80000000 else "0" for n in range(1,len(events)))
  data=bytes(int(bits[n:n+8],2) for n in range(0,len(bits),8))
+if len(sys.argv)>7:
+ dest=Path(sys.argv[7]);dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(zlib.decompress(data))
 print(json.dumps({"visible":True,"bytes":len(data),"sha256":hashlib.sha256(data).hexdigest()}))
 '''

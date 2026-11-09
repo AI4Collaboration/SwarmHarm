@@ -46,12 +46,9 @@ def runner(deployment, encoding, domain, output="{output}"):
         return ["scripts/check_swarmform_endpoint_inputs.py", "--domain", domain,
                 "--encoding", encoding, "--smoke", "--output", output]
     if deployment in ("artifact_namespace", "job_namespace"):
-        command = ["scripts/check_swarmform_service_inputs.py", "smoke",
+        return ["scripts/check_swarmform_service_inputs.py", "business",
                 "--deployment", deployment, "--encoding", encoding,
                 "--domain", domain, "--output", output]
-        if encoding == "timing":
-            command += ["--payload-bytes", "16"]
-        return command
     raise ValueError(deployment)
 
 
@@ -68,6 +65,7 @@ def matrix():
             "encoding": encoding,
             "domain": domain,
             "runner": command,
+            "validation_scope": "transport_only" if deployment == "worker_endpoint" else "full_business_workload",
             "model_calls": 0,
         })
     if len(rows) != 100 or len({row["matrix_cell"] for row in rows}) != 100:

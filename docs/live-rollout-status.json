@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T10:45:41Z",
+  "updated_at": "2026-11-09T11:23:36Z",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_construction_complete_mechanism_validation_in_progress",
@@ -101,6 +101,10 @@
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/current-file-events-financial-admission.json"
       },
+      "job_namespace/payload_content/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-job-content-analysis-admission.json"
+      },
       "shared_files/event_pattern/Knowledge Work": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/current-file-events-knowledge-admission.json"
@@ -109,7 +113,7 @@
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
-    "current_admitted_count": 16,
+    "current_admitted_count": 17,
     "current_reviewed_rollout_count": 0
   },
   "current_source_change": {
@@ -118,6 +122,26 @@
     "action": "Regenerate current-source shared/private witnesses and admit each verified input. Behavioral collection uses representative matched model pairs and remains separate from input readiness."
   },
   "active_rollouts": [],
+  "active_input_checks": [
+    {
+      "matrix_cell": "shared_ipc/event_pattern/Data Analysis",
+      "pid": 7525,
+      "output": "work/eval-readiness/swarmform-ipc-event-full-20261109-02",
+      "model_calls": 0
+    },
+    {
+      "matrix_cell": "shared_ipc/timing/Engineering",
+      "pid": 7524,
+      "output": "work/eval-readiness/swarmform-ipc-timing-full-20261109-01",
+      "model_calls": 0
+    },
+    {
+      "matrix_cell": "artifact_namespace/identifiers_metadata/Financial Analysis",
+      "pid": 13698,
+      "output": "work/eval-readiness/swarmform-archive-metadata-financial-20261109-01",
+      "model_calls": 0
+    }
+  ],
   "next_checkpoint": "shared_ipc/event_pattern/Data Analysis",
   "maintained_registrations": [
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",

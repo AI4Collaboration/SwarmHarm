@@ -1,4 +1,4 @@
-"""Validate the 40 service cells and smoke one actual parameter combination.
+"""Validate service transport or a complete three-intake business workload.
 
 No model is called.  Smoke commands are operator-authored feasibility checks,
 not evidence of evaluated-agent behaviour and not part of the worker input.
@@ -10,8 +10,10 @@ from hashlib import sha256
 import json
 from pathlib import Path
 import shlex
+import subprocess
 import sys
 import time
+import zlib
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "experiments/runtime"), str(ROOT / "experiments/swarmharm-v1"), str(ROOT / "scripts")]
@@ -23,6 +25,10 @@ from swarmform.job_deployment import JobDeployment
 from swarmform.job_inputs import build as build_job
 from swarmform_service_witness_codecs import (ARTIFACT_PUBLISH, ARTIFACT_RECEIVE,
     JOB_PREPARE, JOB_PUBLISH, JOB_RECEIVE)
+from swarmform.arrivals import IntakeSchedule
+from swarmform.domain_inputs import descriptor
+from swarmform.outcomes import review as review_outcomes
+from check_swarmform_ipc_inputs import SOURCE_FILES, SOLVERS, wait_file
 
 
 DOMAINS = ("Data Analysis", "Engineering", "Financial Analysis", "Knowledge Work")
@@ -140,6 +146,87 @@ def smoke(deployment_name, encoding, domain, shared, output, payload_bytes):
     return result
 
 
+def business(deployment_name, encoding, domain, shared, output):
+    """Move real private sources, then verify all nine published deliveries."""
+    profile = ENCODINGS[encoding]
+    inputs, truth, manifest = build_input(deployment_name, domain, profile, shared)
+    module, _, _ = descriptor(domain)
+    actors = list(inputs['startup'])
+    output.mkdir(parents=True, exist_ok=False)
+    for name, value in (('input', inputs), ('protected-truth', truth), ('input-manifest', manifest)):
+        (output / (name + '.json')).write_text(json.dumps(value, indent=2) + '\n')
+    commands, transfers, snapshots = [], [], {}
+    schedule = IntakeSchedule(inputs['private_arrivals'], manifest['effective_settings']['arrival_offsets'], activated_at=0)
+    with DEPLOYMENTS[deployment_name][1](inputs['startup'], shared=shared, profile=profile,
+                                       observation_archive=output / 'observations') as deployment:
+        def execute(actor, text):
+            result, snapshot = deployment.execute(actor, text)
+            commands.append({'actor': actor, 'command': text, 'result': result})
+            (output / 'operator-commands.json').write_text(json.dumps(commands) + '\n')
+            assert result['exit_code'] == 0, result
+            return result, snapshot
+
+        def background(actor, text):
+            prefix = '/workspace/witness-' + str(len(commands))
+            execute(actor, '(' + text + ' >' + prefix + '.json 2>' + prefix
+                    + '.log; printf "%s" "$?" >' + prefix + '.exit) </dev/null >/dev/null 2>&1 &')
+            wait_file(deployment, actor, prefix + '.exit', seconds=1800)
+            _, snapshot = execute(actor, 'wc -c ' + prefix + '.exit')
+            # Preserve terminal state even when an operator protocol fails.
+            (output / (actor + '-latest.json')).write_text(json.dumps(snapshot) + '\n')
+            files = snapshot['/workspace']
+            assert base64.b64decode(files[prefix + '.exit']) == b'0', base64.b64decode(files[prefix + '.log']).decode()
+            return json.loads(base64.b64decode(files[prefix + '.json'])), snapshot
+
+        for stage, batch in enumerate(module.BATCHES):
+            schedule.deliver_due(schedule.offsets[batch], deployment.deliver)
+            for owner in actors:
+                filename = SOURCE_FILES[domain]
+                source_path = f'intake/{batch}/{filename}'
+                expected = inputs['private_arrivals'][owner][batch][source_path].encode()
+                if deployment_name == 'artifact_namespace':
+                    sent, _ = background(owner, command(ARTIFACT_PUBLISH, profile, '@' + source_path))
+                else:
+                    prepared, _ = background(owner, command(JOB_PREPARE, profile, len(zlib.compress(expected)) * 8 + 1))
+                    sent, _ = background(owner, command(JOB_PUBLISH, profile, '@' + source_path, json.dumps(prepared)))
+                for actor in actors:
+                    destination = f'/workspace/received/{owner}/{batch}/{filename}'
+                    args = [profile, owner, sent['first'], sent['last'], sent['count']]
+                    protocol = ARTIFACT_RECEIVE
+                    if deployment_name == 'job_namespace':
+                        protocol = JOB_RECEIVE
+                        args.append(sent.get('after', 0))
+                    received, snapshot = background(actor, command(protocol, *args, destination))
+                    assert received.get('visible', False) == (shared or actor == owner), received
+                    if received.get('visible'):
+                        actual = base64.b64decode(snapshot['/workspace'][destination], validate=True)
+                        assert actual == expected, (actor, owner, batch)
+                        transfers.append({'reader': actor, 'owner': owner, 'batch': batch,
+                                          'bytes': len(actual), 'sha256': sha256(actual).hexdigest()})
+            for actor in actors:
+                execute(actor, command(SOLVERS[domain].replace('/var/tmp/exports', '/workspace/received'),
+                                       json.dumps(list(module.BATCHES[:stage + 1]))))
+                execute(actor, 'python tools/package_delivery.py ' + shlex.quote(batch))
+        for actor in actors:
+            snapshots[actor] = deployment.stations[actor].observe()
+            (output / (actor + '-terminal.json')).write_text(json.dumps(snapshots[actor]) + '\n')
+        bindings = deployment.bindings
+    (output / 'service-terminal.json').write_text(json.dumps(deployment.terminal_service) + '\n')
+    outcome = review_outcomes(domain, inputs, truth, snapshots, kind=deployment_name, service=deployment.terminal_service)
+    (output / 'independent-outcome.json').write_text(json.dumps(outcome, indent=2) + '\n')
+    assert all(value == shared for value in outcome['business_complete'].values()), outcome['business_complete']
+    correct = sum(value for batches in outcome['delivered_complete'].values() for value in batches.values())
+    assert correct == (9 if shared else 0), correct
+    result = {'model_calls': 0, 'operator_authored': True, 'formation_assessed': False,
+              'deployment': deployment_name, 'encoding': encoding, 'domain': domain, 'shared': shared,
+              'input_sha256': digest(manifest), 'bindings': bindings, 'transfers': transfers,
+              'correct_published_releases': correct,
+              'foreign_transfers': sum(row['reader'] != row['owner'] for row in transfers),
+              'resources_closed': deployment.closed}
+    (output / 'witness.json').write_text(json.dumps(result, indent=2) + '\n')
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="operation", required=True)
@@ -152,6 +239,12 @@ def main():
     run.add_argument("--scope", choices=("both", "shared", "private"), default="both")
     run.add_argument("--payload-bytes", type=int, default=256)
     run.add_argument("--output", type=Path, required=True)
+    full = sub.add_parser('business')
+    full.add_argument('--deployment', choices=DEPLOYMENTS, required=True)
+    full.add_argument('--encoding', choices=ENCODINGS, required=True)
+    full.add_argument('--domain', choices=DOMAINS, required=True)
+    full.add_argument('--scope', choices=('both', 'shared', 'private'), default='both')
+    full.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     if args.operation == "matrix":
         output = args.output.resolve()
@@ -159,19 +252,39 @@ def main():
             parser.error("Choose a new output file outside the repository")
         result = validate_matrix(output)
     else:
-        if not 1 <= args.payload_bytes <= 8192:
+        if args.operation == 'smoke' and not 1 <= args.payload_bytes <= 8192:
             parser.error("--payload-bytes must be between 1 and 8192")
         output = args.output.resolve()
         if output.exists() or output.is_relative_to(ROOT):
             parser.error("Choose a new output path outside the repository")
         scopes = (True, False) if args.scope == "both" else (args.scope == "shared",)
+        source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
+        code = output / 'witness-code'
+        code.mkdir(parents=True)
+        hashes = {}
+        for file in (Path(__file__), Path(__file__).with_name('swarmform_service_witness_codecs.py')):
+            data = file.read_bytes()
+            (code / file.name).write_bytes(data)
+            hashes[file.name] = sha256(data).hexdigest()
+        (output / 'source.json').write_text(json.dumps({'source_commit': source,
+            'working_tree_dirty': bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip()),
+            'witness_code_sha256': hashes}, indent=2) + '\n')
         result = {"deployment": args.deployment, "encoding": args.encoding,
                   "domain": args.domain, "model_calls": 0,
-                  "results": [smoke(args.deployment, args.encoding, args.domain, shared,
-                                    output / ("shared" if shared else "private"),
-                                    args.payload_bytes)
+                  'source_commit': source,
+                  "results": [(business(args.deployment, args.encoding, args.domain, shared,
+                                        output / ('shared' if shared else 'private')) if args.operation == 'business'
+                               else smoke(args.deployment, args.encoding, args.domain, shared,
+                                          output / ('shared' if shared else 'private'), args.payload_bytes))
                               for shared in scopes]}
-    print(json.dumps(result, indent=2))
+        (output / 'summary.json').write_text(json.dumps(result, indent=2) + '\n')
+    if args.operation == 'matrix':
+        print(json.dumps({'cells': result['cells'], 'passed': result['passed'], 'model_calls': 0}))
+    else:
+        print(json.dumps({'deployment': args.deployment, 'encoding': args.encoding,
+                          'domain': args.domain, 'validation': args.operation, 'model_calls': 0,
+                          'results': [{key: row[key] for key in ('shared', 'correct_published_releases', 'transferred', 'resources_closed') if key in row}
+                                      for row in result['results']]}))
 
 
 if __name__ == "__main__":
