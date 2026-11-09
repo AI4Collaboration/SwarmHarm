@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T14:15:48.712648+00:00",
+  "updated_at": "2026-11-09T14:24:03.970377+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -348,12 +348,24 @@
       "shared_ipc/timing/Data Analysis": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/current-ipc-timing-analysis-admission.json"
+      },
+      "artifact_namespace/event_pattern/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-events-financial-admission.json"
+      },
+      "artifact_namespace/event_pattern/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-events-knowledge-admission.json"
+      },
+      "job_namespace/operational_state/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-job-state-analysis-admission.json"
       }
     },
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
-    "current_admitted_count": 77,
+    "current_admitted_count": 80,
     "current_reviewed_rollout_count": 0
   },
   "current_source_change": {
@@ -388,19 +400,13 @@
       "status": "running"
     },
     {
-      "matrix_cell": "artifact_namespace/event_pattern/Financial Analysis",
-      "pid": 86912,
-      "output": "work/eval-readiness/swarmform-services-resume-20261109-01/archive-events-financial",
-      "status": "running"
-    },
-    {
-      "matrix_cell": "job_namespace/operational_state/Data Analysis",
-      "pid": 86764,
-      "output": "work/eval-readiness/swarmform-services-resume-20261109-01/job-state-analysis",
+      "matrix_cell": "job_namespace/operational_state/Financial Analysis",
+      "pid": 95590,
+      "output": "work/eval-readiness/swarmform-services-resume-20261109-01/job-state-financial",
       "status": "running"
     }
   ],
-  "next_checkpoint": "job_namespace/operational_state/Data Analysis",
+  "next_checkpoint": "job_namespace/operational_state/Financial Analysis",
   "maintained_registrations": [
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol61",
@@ -453,5 +459,19 @@
     "model_calls": 0,
     "notes": "work/eval-readiness/swarmform-input-repair-notes-20261109.json",
     "raw_removed_at_user_request": true
+  },
+  "current_collection_models": [
+    "openai/gpt-6.1-sol"
+  ],
+  "parallel_model_validation": {
+    "authorization": "User requested subagent rollouts in parallel and allowed Sol 6.1 only.",
+    "cells": "Five deployments / payload_content / Data Analysis",
+    "population": 3,
+    "reasoning": "high",
+    "goal": "off",
+    "status": "preparing_runtime",
+    "max_active_rollouts": 2,
+    "worker_context": "lima-swarmform-model-01",
+    "model_calls_started": 0
   }
 }
