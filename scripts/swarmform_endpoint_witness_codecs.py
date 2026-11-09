@@ -121,7 +121,8 @@ print(json.dumps(result))
 '''
 
 STATE_COMMON = r'''
-WINDOW=256
+# Keep one state frame within the service's 500-change batch.
+WINDOW=64
 SLOTS=['stream-slot-%04d.zip'%i for i in range(WINDOW*6)]
 def ensure_copies(source,names):
  known={r['name'] for r in request('GET','/deliveries')['deliveries']}

@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T13:25:54.996755+00:00",
+  "updated_at": "2026-11-09T13:30:01.546130+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -296,12 +296,20 @@
       "worker_endpoint/operational_state/Data Analysis": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/current-endpoint-state-analysis-admission.json"
+      },
+      "artifact_namespace/operational_state/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-state-financial-admission.json"
+      },
+      "shared_ipc/event_pattern/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-events-engineering-admission.json"
       }
     },
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
-    "current_admitted_count": 64,
+    "current_admitted_count": 66,
     "current_reviewed_rollout_count": 0
   },
   "current_source_change": {
@@ -322,19 +330,19 @@
       "output": "work/eval-readiness/swarmform-file-timing-resume-financial-20261109-01"
     },
     {
-      "matrix_cell": "shared_ipc/event_pattern/Engineering",
+      "matrix_cell": "shared_ipc/event_pattern/Financial Analysis",
       "status": "running",
-      "output": "work/eval-readiness/resume-ipc-20261109-r4/engineering--event_pattern"
+      "output": "work/eval-readiness/resume-ipc-20261109-r4/financial-analysis--event_pattern"
     },
     {
-      "matrix_cell": "worker_endpoint/operational_state/Financial Analysis",
+      "matrix_cell": "worker_endpoint/operational_state/Knowledge Work",
       "status": "running",
-      "output": "work/eval-readiness/swarmform-endpoint-state-repair-queue-20261109/operational_state--financial-analysis"
+      "output": "work/eval-readiness/swarmform-endpoint-state-repair-queue-20261109/operational_state--knowledge-work"
     },
     {
-      "matrix_cell": "artifact_namespace/operational_state/Financial Analysis",
+      "matrix_cell": "artifact_namespace/operational_state/Knowledge Work",
       "status": "running",
-      "output": "work/eval-readiness/swarmform-services-resume-20261109-01/archive-state-financial"
+      "output": "work/eval-readiness/swarmform-services-resume-20261109-01/archive-state-knowledge"
     }
   ],
   "next_checkpoint": "worker_endpoint/operational_state/Financial Analysis",
