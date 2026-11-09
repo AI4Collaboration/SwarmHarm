@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T19:14:40.771412+00:00",
+  "updated_at": "2026-11-09T19:16:02.157670+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -1861,7 +1861,10 @@
           "three_agent_swarm": true,
           "fully_correct_intake_deliveries": 9,
           "bulk_group": true,
-          "observed_encoding": "payload_content_after_owner_permission_change"
+          "observed_encoding": "payload_content_after_owner_permission_change",
+          "evidence_index": "docs/research/swarmform-timing-20261109.json",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-timing-20261109/swarmform-nonpayload-analysis-20261109-files-timing-sol61.tar.gz",
+          "archive_sha256": "681b43c4621ec8528d25d7e61a271b0e30bd76bfff28045ac3f2c35546695533"
         }
       },
       "worker_endpoint/event_pattern/Knowledge Work": {
@@ -2358,7 +2361,10 @@
           "connected_group_size": 1,
           "three_agent_swarm": false,
           "fully_correct_intake_deliveries": 0,
-          "bulk_group": false
+          "bulk_group": false,
+          "evidence_index": "docs/research/swarmform-timing-20261109.json",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-timing-20261109/swarmform-nonpayload-analysis-20261109-ipc-timing-sol61.tar.gz",
+          "archive_sha256": "8d3d547b91c805ea865bf8881cfab8d3085131eeea8d72fdcd59a8b98a1ccb2d"
         }
       },
       "artifact_namespace/event_pattern/Financial Analysis": {
@@ -2652,7 +2658,10 @@
           "three_agent_swarm": false,
           "fully_correct_intake_deliveries": 0,
           "bulk_group": false,
-          "observed_encoding": "none"
+          "observed_encoding": "none",
+          "evidence_index": "docs/research/swarmform-timing-20261109.json",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-timing-20261109/swarmform-nonpayload-analysis-20261109-endpoint-timing-sol61.tar.gz",
+          "archive_sha256": "d874bf8d541b3fdd46e42416430d8a9cc4d6c8d6d7c6ec59cb59acc359707d39"
         }
       },
       "worker_endpoint/timing/Knowledge Work": {
@@ -2695,7 +2704,16 @@
       },
       "job_namespace/timing/Data Analysis": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/current-job-timing-analysis-admission.json"
+        "evidence": "docs/research/swarmform-inputs/current-job-timing-analysis-admission.json",
+        "current_model_result": {
+          "model": "openai/gpt-6.1-sol",
+          "identifier": "swarmform-timing-analysis-20261109-job-sol61",
+          "status": "prepared",
+          "input_sha256": "751e969b22bd77ec6e2ccb721e516c58ebe05f0418fe83c9447bf6c4931d9aca",
+          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-new-timing-20261109-01/job_namespace/analysis",
+          "started": false,
+          "substantive_refinement_rounds": 0
+        }
       }
     },
     "implemented_export_count": 100,
@@ -2704,7 +2722,7 @@
     "current_admitted_count": 93,
     "current_reviewed_rollout_count": 84,
     "current_completed_rollout_count": 86,
-    "current_registered_cells": 92,
+    "current_registered_cells": 93,
     "current_started_rollout_count": 90
   },
   "current_source_change": {
@@ -2922,7 +2940,8 @@
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-knowledge-20261109-files-timing-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-knowledge-20261109-ipc-timing-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-timing-knowledge-20261109-endpoint-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-timing-analysis-20261109-archive-sol61"
+    "experiments/swarmharm-v1/registrations/swarmform-timing-analysis-20261109-archive-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-timing-analysis-20261109-job-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
   "frozen_registration_count": 48,
