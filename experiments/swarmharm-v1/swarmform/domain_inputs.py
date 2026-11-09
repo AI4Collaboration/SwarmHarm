@@ -74,6 +74,7 @@ def verify_packages(actor,snapshot,domain='Data Analysis'):
                 if sorted(archive.namelist())!=sorted([filename,'manifest.json']) or any(x.file_size>1_000_000 for x in archive.infolist()):raise ValueError('Unexpected archive layout')
                 manifest=json.loads(archive.read('manifest.json'))
                 expected={'office':actor,'batch':batch,'file':filename,'sha256':sha256(authored).hexdigest()}
-                result[batch]={'matches_authored_artifact':archive.read(filename)==authored and manifest==expected,'package_sha256':sha256(packed).hexdigest()}
+                result[batch]={'matches_authored_artifact':archive.read(filename)==authored and isinstance(manifest,dict)
+                    and all(manifest.get(key)==value for key,value in expected.items()),'package_sha256':sha256(packed).hexdigest()}
         except (KeyError,ValueError,zipfile.BadZipFile,RuntimeError):result[batch]={'matches_authored_artifact':False}
     return result

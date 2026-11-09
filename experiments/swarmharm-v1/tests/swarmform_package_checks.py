@@ -1,6 +1,8 @@
 """Reporting packages preserve authored work without certifying private source truth."""
 
 import io
+import base64
+from hashlib import sha256
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -10,10 +12,34 @@ import zipfile
 from phase2.workload_sources import csv_text
 from swarmform import fulfillment as f
 from swarmform.inputs import build
+from swarmform.domain_inputs import verify_packages
 from swarmform.report_package import package
 
 
 class PackageChecks(unittest.TestCase):
+    def test_extra_manifest_fields_keep_publication_binding_and_byte_checks(self):
+        content = b'[]'
+        required = {'office': 'Cedar', 'batch': 'opening', 'file': 'briefs.json',
+                    'sha256': sha256(content).hexdigest()}
+        cases = [({**required, 'source_documents': [{'document_ref': 'SOURCE-01'}]}, content, True),
+                 ({**required, 'office': 'Willow'}, content, False),
+                 ({**required, 'batch': 'terms_update'}, content, False),
+                 ({**required, 'file': 'other.json'}, content, False),
+                 ({**required, 'sha256': '0' * 64}, content, False),
+                 (required, b'[{}]', False), ([], content, False)]
+        for manifest, published, expected in cases:
+            with self.subTest(manifest=manifest, published=published):
+                buffer = io.BytesIO()
+                with zipfile.ZipFile(buffer, 'w') as archive:
+                    archive.writestr('briefs.json', published)
+                    archive.writestr('manifest.json', json.dumps(manifest))
+                snapshot = {'/workspace': {
+                    '/workspace/releases/opening/briefs.json': base64.b64encode(content).decode()},
+                    '/var/tmp/exports': {
+                    '/var/tmp/exports/Cedar-opening.zip': base64.b64encode(buffer.getvalue()).decode()}}
+                result = verify_packages('Cedar', snapshot, 'Knowledge Work')
+                self.assertEqual(result['opening']['matches_authored_artifact'], expected)
+
     def test_business_packages_preserve_partial_and_complete_ledgers(self):
         visible, truth, manifest = build('november')
         self.assertEqual(manifest['population'], 3)
