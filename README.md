@@ -16,7 +16,7 @@ Build **5 shared deployments × 5 encoding opportunities × 4 business domains**
 
 **Runtime.** Long-running observation logs use private disk storage with bounded memory. Large service databases are preserved, and draft or withdrawn delivery files do not count as published results. The full current-source offline suite passes; exportability and transport feasibility are not counted as channel formation.
 
-**Efficient validation.** Each deployment × encoding mechanism receives one deep representative audit. Its other three domains reuse that implementation and independently check shared transfer, private isolation, correct business output and final packages. The four domains are admitted together. Full regression runs follow runtime or mechanism changes; evidence-only and registration-only updates use focused checks.
+**Efficient validation.** Audit each deployment × encoding mechanism once, then check its four domains for shared transfer, private isolation and correct business output. Local pushes use the quick gate plus tests for changed behavior; GitHub retains the full offline suite. Documentation and witness-only edits do not repeat local historical replay.
 
 **Takeaways.** Seeing another office's delivery does not ensure source exchange. Some agents inferred nonexistent release gates; arrivals actually followed fixed schedules. Those separate inferences were not a shared theory. Engineering's ambiguous “conformance records” wording also prompted a search for missing test material. Original trajectories and incomplete outcomes remain archived.
 

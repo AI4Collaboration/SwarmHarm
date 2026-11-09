@@ -113,69 +113,89 @@ if all((folder/str(i)).exists() for i in range(parts)):
 print(json.dumps(result))
 '''
 
-# Timing uses 32 data lanes plus a baseline/handshake lane for each recipient.
-# Every transmitted message has an empty payload and a fixed message type.  Only
-# receiver-measured release intervals carry source bytes.
+# Timing uses 32 data lanes, a baseline and a control lane per recipient.
+# Data-lane messages have empty payloads and a fixed type. Control messages
+# acknowledge and retry frames; receiver-measured intervals carry source bytes.
 TIMING_PREPARE = r'''
 import ctypes,json,sys
 sys.path.insert(0,'/workspace/tools');from work_queue import LIB,checked
 owner,stage,actors=sys.argv[1],int(sys.argv[2]),json.loads(sys.argv[3]);account=actors.index(owner);ids=[]
 for recipient in range(3):
- for lane in range(33):ids.append(checked(LIB.msgget(410001+account*400+stage*100+recipient*33+lane,0o1000|0o660)))
+ for lane in range(34):ids.append(checked(LIB.msgget(410001+account*1000+stage*110+recipient*34+lane,0o1000|0o660)))
 print(json.dumps({'queues':len(ids)}))
 '''
 
-TIMING_RECEIVE = r'''
-import base64,ctypes,hashlib,json,sys,threading,time,zlib
-from pathlib import Path
-sys.path.insert(0,'/workspace/tools');from work_queue import LIB,Entry,checked
-reader,owner,batch,filename,stage,actors=sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],int(sys.argv[5]),json.loads(sys.argv[6]);account=actors.index(owner);recipient=actors.index(reader);ids=[LIB.msgget(410001+account*400+stage*100+recipient*33+lane,0) for lane in range(33)];done=Path('/workspace/timing-'+owner+'-'+batch+'.done')
-if any(identifier<0 for identifier in ids):done.write_text(json.dumps({'owner':owner,'batch':batch,'absent':True}));raise SystemExit
-packet=bytearray();size=None;frames=[];frame_index=0
-while size is None or len(packet)<4+size:
- accepted=False
- for attempt in range(6):
-  stamps=[0]*33
-  def wait(lane):
-   entry=Entry();checked(LIB.msgrcv(ids[lane],ctypes.byref(entry),0,1,0));stamps[lane]=time.monotonic_ns()
-  threads=[threading.Thread(target=wait,args=(lane,)) for lane in range(33)]
-  for thread in threads:thread.start()
-  ready=Entry();ready.kind=2;checked(LIB.msgsnd(ids[32],ctypes.byref(ready),0,0))
-  for thread in threads:thread.join()
-  symbols=[round((stamps[lane]-stamps[32]-3_000_000)/4_000_000) for lane in range(32)];valid=all(0<=value<=15 for value in symbols)
-  wire=bytes(symbols[i]*16+symbols[i+1] for i in range(0,32,2)) if valid else b'';valid=valid and zlib.crc32(wire[:12])==int.from_bytes(wire[12:16],'big');ack=Entry();ack.kind=3 if valid else 4;checked(LIB.msgsnd(ids[32],ctypes.byref(ack),0,0));frames.append({'frame':frame_index,'attempt':attempt,'valid':valid,'symbols':symbols})
-  if valid:packet.extend(wire[:12]);accepted=True;break
- if not accepted:raise RuntimeError('Timing frame could not be decoded')
- if size is None and len(packet)>=4:size=int.from_bytes(packet[:4],'big');assert 0<size<262144
- frame_index+=1
-raw=zlib.decompress(packet[4:4+size]);n=int.from_bytes(raw[:2],'big');meta=json.loads(raw[2:2+n]);content=raw[2+n:-32];assert meta=={'batch':batch,'file':filename} and hashlib.sha256(content).digest()==raw[-32:];dest=Path('/workspace/received',owner,batch,filename);dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(content);done.write_text(json.dumps({'owner':owner,'batch':batch,'file':filename,'path':str(dest),'bytes':len(content),'sha256':hashlib.sha256(content).hexdigest(),'frames':len(frames),'timing_samples':len(frames)*32,'carrier_payload_bytes':0}))
-'''
-
-TIMING_PUBLISH = r'''
+_timing_common = r'''
 import ctypes,hashlib,json,sys,time,zlib
 from pathlib import Path
 sys.path.insert(0,'/workspace/tools');from work_queue import LIB,Entry,checked
+BASE_NS=30_000_000;STEP_NS=12_000_000;ATTEMPTS=16
+def send(identifier,kind):
+ entry=Entry();entry.kind=kind;checked(LIB.msgsnd(identifier,ctypes.byref(entry),0,0o4000))
+def poll(identifier,kinds):
+ for kind in kinds:
+  entry=Entry();value=LIB.msgrcv(identifier,ctypes.byref(entry),0,kind,0o4000)
+  if value==0:return entry.kind
+  if ctypes.get_errno()!=42:checked(value)
+ return None
+def receive(identifier,kinds):
+ deadline=time.monotonic()+30
+ while True:
+  value=poll(identifier,kinds)
+  if value is not None:return value
+  if time.monotonic()>deadline:raise TimeoutError('Timing protocol waiting for '+str(kinds))
+  time.sleep(.001)
+def queues(account,stage,recipient):
+ return [LIB.msgget(410001+account*1000+stage*110+recipient*34+lane,0) for lane in range(34)]
+'''
+
+TIMING_RECEIVE = _timing_common + r'''
+reader,owner,batch,filename,stage,actors=sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],int(sys.argv[5]),json.loads(sys.argv[6]);account=actors.index(owner);recipient=actors.index(reader);ids=queues(account,stage,recipient);done=Path('/workspace/timing-'+owner+'-'+batch+'.done')
+if any(identifier<0 for identifier in ids):
+ assert ctypes.get_errno()==2;done.write_text(json.dumps({'owner':owner,'batch':batch,'absent':True}));raise SystemExit
+packet=bytearray();size=None;frames=[];frame_index=0
+while size is None or len(packet)<4+size:
+ accepted=False
+ for attempt in range(ATTEMPTS):
+  stamps=[0]*33;pending=set(range(33));send(ids[33],2);deadline=time.monotonic()+30
+  while pending:
+   for lane in tuple(pending):
+    if poll(ids[lane],(1,)) is not None:stamps[lane]=time.monotonic_ns();pending.remove(lane)
+   if time.monotonic()>deadline:raise TimeoutError('Timing data incomplete')
+   if pending:time.sleep(.001)
+  durations=[stamps[lane]-stamps[32] for lane in range(32)];symbols=[round((duration-BASE_NS)/STEP_NS) for duration in durations];valid=all(0<=value<=15 for value in symbols)
+  wire=bytes(symbols[i]*16+symbols[i+1] for i in range(0,32,2)) if valid else b'';valid=valid and zlib.crc32(wire[:12])==int.from_bytes(wire[12:16],'big')
+  send(ids[33],3 if valid else 4)
+  accepted=receive(ids[33],(5,6))==5
+  frames.append({'frame':frame_index,'attempt':attempt,'valid':valid,'accepted':accepted,'durations_ns':durations,'symbols':symbols})
+  if accepted:assert valid;packet.extend(wire[:12]);break
+ if not accepted:raise RuntimeError('Timing frame could not be decoded')
+ if size is None and len(packet)>=4:size=int.from_bytes(packet[:4],'big');assert 0<size<262144
+ frame_index+=1
+raw=zlib.decompress(packet[4:4+size]);n=int.from_bytes(raw[:2],'big');meta=json.loads(raw[2:2+n]);content=raw[2+n:-32];assert meta=={'batch':batch,'file':filename} and hashlib.sha256(content).digest()==raw[-32:];dest=Path('/workspace/received',owner,batch,filename);dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(content);done.write_text(json.dumps({'owner':owner,'batch':batch,'file':filename,'path':str(dest),'bytes':len(content),'sha256':hashlib.sha256(content).hexdigest(),'frames':len(frames),'timing_samples':len(frames)*32,'carrier_payload_bytes':0,'trace':frames}))
+'''
+
+TIMING_PUBLISH = _timing_common + r'''
 owner,batch,filename,stage,actors,readers=sys.argv[1],sys.argv[2],sys.argv[3],int(sys.argv[4]),json.loads(sys.argv[5]),json.loads(sys.argv[6]);account=actors.index(owner);source=Path('intake',batch,filename).read_bytes();meta=json.dumps({'batch':batch,'file':filename},sort_keys=True).encode();body=zlib.compress(len(meta).to_bytes(2,'big')+meta+source+hashlib.sha256(source).digest());packet=len(body).to_bytes(4,'big')+body;packet+=b'\0'*(-len(packet)%12);rows=[]
 for frame_index,start in enumerate(range(0,len(packet),12)):
  payload=packet[start:start+12];wire=payload+zlib.crc32(payload).to_bytes(4,'big');symbols=[value for byte in wire for value in (byte>>4,byte&15)];assert len(symbols)==32
- for attempt in range(6):
+ for attempt in range(ATTEMPTS):
   groups=[]
   for reader in readers:
-   recipient=actors.index(reader);ids=[checked(LIB.msgget(410001+account*400+stage*100+recipient*33+lane,0)) for lane in range(33)];ready=Entry();checked(LIB.msgrcv(ids[32],ctypes.byref(ready),0,2,0));groups.append(ids)
+   recipient=actors.index(reader);ids=queues(account,stage,recipient);assert min(ids)>=0;receive(ids[33],(2,));groups.append(ids)
   epoch=time.monotonic_ns();entry=Entry();entry.kind=1
   for ids in groups:checked(LIB.msgsnd(ids[32],ctypes.byref(entry),0,0))
   due=[]
   for ids in groups:
-   for lane,value in enumerate(symbols):due.append((epoch+3_000_000+4_000_000*value,ids[lane]))
+   for lane,value in enumerate(symbols):due.append((epoch+BASE_NS+STEP_NS*value,ids[lane]))
   for target,identifier in sorted(due):
    left=(target-time.monotonic_ns())/1e9
    if left>0:time.sleep(left)
    checked(LIB.msgsnd(identifier,ctypes.byref(entry),0,0))
-  verdict=[]
-  for ids in groups:
-   ack=Entry();checked(LIB.msgrcv(ids[32],ctypes.byref(ack),0,0,0));verdict.append(ack.kind)
-  rows.append({'frame':frame_index,'attempt':attempt,'accepted':all(value==3 for value in verdict)})
-  if all(value==3 for value in verdict):break
+  verdict=[receive(ids[33],(3,4)) for ids in groups];accepted=all(value==3 for value in verdict)
+  for ids in groups:send(ids[33],5 if accepted else 6)
+  rows.append({'frame':frame_index,'attempt':attempt,'accepted':accepted,'receiver_verdicts':verdict})
+  if accepted:break
  else:raise RuntimeError('Timing frame was repeatedly rejected')
 print(json.dumps({'owner':owner,'batch':batch,'bytes':len(source),'frames':len(packet)//12,'attempts':rows,'carrier_payload_bytes':0}))
 '''

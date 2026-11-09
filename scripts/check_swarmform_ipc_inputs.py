@@ -3,6 +3,7 @@
 
 import argparse
 import base64
+from hashlib import sha256
 import json
 from pathlib import Path
 import shlex
@@ -93,11 +94,17 @@ def exercise(domain, encoding, shared, output):
                     for reader in actors:
                         execute(reader, command(protocols.TIMING_RECEIVE, reader, owner, batch, source_file, stage, json.dumps(actors)) + f' </dev/null >/tmp/timing-{owner}-{batch}.log 2>&1 &')
                     readers = actors if shared else [owner]
-                    result, _ = execute(owner, command(protocols.TIMING_PUBLISH, owner, batch, source_file, stage, json.dumps(actors), json.dumps(readers)))
-                    writes.append({'actor': owner, 'batch': batch, **json.loads(result['stdout'])})
+                    sent_path = f'/workspace/timing-{owner}-{batch}.sent'
+                    publish = command(protocols.TIMING_PUBLISH, owner, batch, source_file, stage, json.dumps(actors), json.dumps(readers))
+                    execute(owner, f'({publish} >{sent_path}.tmp 2>/tmp/timing-send-{batch}.log && mv {sent_path}.tmp {sent_path}) </dev/null >/dev/null 2>&1 &')
+                    wait_file(deployment, owner, sent_path)
+                    _, snapshot = execute(owner, 'wc -c ' + sent_path)
+                    writes.append({'actor': owner, 'batch': batch, **json.loads(base64.b64decode(snapshot['/workspace'][sent_path]))})
                     for reader in actors:
                         done = f'/workspace/timing-{owner}-{batch}.done';wait_file(deployment, reader, done)
-                        result, snapshot = execute(reader, 'cat ' + done);row = json.loads(result['stdout'])
+                        _, snapshot = execute(reader, 'wc -c ' + done)
+                        record = base64.b64decode(snapshot['/workspace'][done], validate=True)
+                        row = json.loads(record);row['timing_trace_sha256'] = sha256(record).hexdigest();row.pop('trace', None)
                         assert row.get('absent', False) == (not shared and reader != owner)
                         if not row.get('absent'):
                             actual = base64.b64decode(snapshot['/workspace'][row['path']], validate=True)

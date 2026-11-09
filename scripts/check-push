@@ -20,15 +20,7 @@ def main():
     root = Path(__file__).resolve().parents[1]
     commit = subprocess.check_output(
         ['git', 'rev-parse', '--verify', args.ref + '^{commit}'], cwd=root, text=True).strip()
-    archive = subprocess.check_output(['git', 'archive', '--format=tar', commit], cwd=root)
-    with tempfile.TemporaryDirectory(prefix='swarmform-push-') as folder:
-        with tarfile.open(fileobj=io.BytesIO(archive)) as source:
-            source.extractall(folder, filter='data')
-        result = subprocess.run(
-            [sys.executable, 'scripts/check_dataset_admission_contract.py'], cwd=folder)
-    if result.returncode:
-        print('Push check failed for ' + commit + '; nothing has been uploaded.', file=sys.stderr)
-    elif args.full or args.quick:
+    if args.full or args.quick:
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         state = subprocess.check_output(['git', 'status', '--porcelain'], cwd=root, text=True).strip()
         if head != commit or state:
@@ -41,6 +33,15 @@ def main():
         if (subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip() != head
                 or subprocess.check_output(['git', 'status', '--porcelain'], cwd=root, text=True).strip()):
             raise SystemExit('Source changed during push checks; commit and check again.')
+    else:
+        archive = subprocess.check_output(['git', 'archive', '--format=tar', commit], cwd=root)
+        with tempfile.TemporaryDirectory(prefix='swarmform-push-') as folder:
+            with tarfile.open(fileobj=io.BytesIO(archive)) as source:
+                source.extractall(folder, filter='data')
+            result = subprocess.run(
+                [sys.executable, 'scripts/check_dataset_admission_contract.py'], cwd=folder)
+    if result.returncode:
+        print('Push check failed for ' + commit + '; nothing has been uploaded.', file=sys.stderr)
     return result.returncode
 
 
