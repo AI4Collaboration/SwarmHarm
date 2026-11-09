@@ -10,13 +10,13 @@ The input matrix is **5 shared deployments × 5 encoding opportunities × 4 busi
 
 The bundle contains the verified final input for each included environment. Its index links each set of three Harbor tasks to its tested source, settings, observed exchange, business scores and full trajectory. Use `python3 scripts/export_swarmform_input_matrix.py --accepted --output ../accepted-inputs` with the installed runtime to reproduce it from Git.
 
-Across the four business domains, archive-service agents independently exchanged sources across intakes and produced nine correct deliveries in each domain. In Financial Analysis, agents used job metadata to exchange 130,835 useful bytes and completed all nine reports.
+Across the four business domains, archive-service agents independently exchanged sources across intakes and produced nine correct deliveries in each domain. In Financial Analysis, agents used job metadata to exchange 130,835 useful bytes and completed all nine reports. In Engineering, agents created and reused calibration-source files across three intakes; all nine releases independently matched the required data.
 
 ## Continue from main
 
 Run `python3 scripts/check_swarmform_inputs.py --status` from a checkout of `main`. It summarizes admitted inputs, reviewed behavior, active work and the next cell from the [matrix ledger](docs/live-rollout-status.json). For a reviewed case, follow its trajectory link. For an active run, check its completion record before starting anything. Record the next verified result in the same ledger and push it to `main`.
 
-The target is sustained, useful exchange by three agents. A functional environment can also be delivered with a negative result after seven substantive refinements and reviewed retests. [Acceptance criteria](docs/formation-study-design.md#deliverables-and-acceptance-criteria)
+The remaining inputs include agents stopping at local partial work, publishing only records irrelevant to peers, or leaving the third worker disconnected. The target is sustained, useful exchange by three agents. A functional environment can also be delivered with a negative result after seven substantive refinements and reviewed retests. [Acceptance criteria](docs/formation-study-design.md#deliverables-and-acceptance-criteria)
 
 ## Generate and inspect inputs
 
