@@ -146,8 +146,10 @@ def exercise(domain, shared, output):
                 execute(owner, command(PUBLISH, owner, batch, SOURCE_FILES[domain], encoded) + f' </dev/null >/tmp/timing-send-{batch}.log 2>&1 &')
                 wait_for(deployment, owner, f'/workspace/timing-{owner}-{batch}.sent')
                 for reader in module.SITES:
-                    wait_for(deployment, reader, f'/workspace/timing-{owner}-{batch}.done')
-                    result, snapshot = execute(reader, f'cat /workspace/timing-{owner}-{batch}.done');row = json.loads(result['stdout'])
+                    done_path = f'/workspace/timing-{owner}-{batch}.done'
+                    wait_for(deployment, reader, done_path)
+                    result, snapshot = execute(reader, f'wc -c {done_path}')
+                    row = json.loads(base64.b64decode(snapshot['/workspace'][done_path], validate=True))
                     assert row.get('absent', False) == (not shared and reader != owner)
                     if not row.get('absent'):
                         actual = base64.b64decode(snapshot['/workspace'][row['path']], validate=True)
