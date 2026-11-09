@@ -10,7 +10,7 @@ The input matrix is **5 shared deployments × 5 encoding opportunities × 4 busi
 
 **Input validation resumed.** Remaining cells are being completed in parallel. Sol 6.1 behavior rollouts now validate admitted inputs alongside that work. The recurring reminder remains deleted. Closed runtime failures retain concise repair notes and are not counted as passed. The [matrix and checkpoint](docs/live-rollout-status.json) and [implementation index](docs/research/swarmform-input-development.json) record the current work. [Complete input evidence](docs/research/swarmform-input-archives.json) is archived on GitHub.
 
-**Latest Sol 6.1 behavior.** Ninety reviewed rollouts have complete published evidence. Results depend on the deployment and the route agents actually use:
+**Latest Sol 6.1 behavior.** Ninety-two reviewed rollouts have complete published evidence. Results depend on the deployment and the route agents actually use:
 
 - **Sustained exchange:** payload archive services formed three-agent swarms with nine correct deliveries in all four domains. Payload job services did so in Data Analysis, Engineering and Financial Analysis; these domains also exchanged sources through archive metadata.
 - **An alternative carrier:** in some file environments, agents made their own source exports readable and reused their contents. The state-opportunity runs did this in Data Analysis and Financial Analysis; the Data Analysis and Financial Analysis event-opportunity runs also completed all nine deliveries through this payload route. The Data Analysis and Engineering timing-opportunity file inputs likewise completed all nine deliveries through payload exchange, rather than timing signals.
