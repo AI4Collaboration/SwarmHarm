@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-09T23:55:57.127938+00:00",
+  "updated_at": "2026-11-09T23:57:27.972153+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -1368,13 +1368,15 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-calibration-engineering-metadata-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "input_sha256": "6617ee70a198f78056b57bf0071f1efca89e7ed5c686c82c981196a28190cc9d",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-calibration-engineering-metadata-01-sol61",
           "registration_sha256": "72f1c0b8241fbbc170a6b5127935fdde2631aeeb9dc1e0f0c8951c8f7c23a9bd",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-calibration-engineering-01/metadata/rollout",
-          "substantive_refinement_rounds": 2
+          "substantive_refinement_rounds": 2,
+          "pid": 41939,
+          "started_at": "2026-11-09T23:57:05.358623+00:00"
         },
         "refinement_history": [
           {
@@ -1441,7 +1443,7 @@
         ],
         "active_refinement": {
           "round": 2,
-          "status": "registered",
+          "status": "running",
           "identifier": "swarmform-endpoint-calibration-engineering-metadata-01-sol61",
           "input_sha256": "6617ee70a198f78056b57bf0071f1efca89e7ed5c686c82c981196a28190cc9d",
           "source_commit": "5011170d3d083871ab4cda55d0d3c00344da4aac",
@@ -1592,7 +1594,7 @@
         ],
         "active_refinement": {
           "round": 3,
-          "status": "registered",
+          "status": "running",
           "identifier": "swarmform-endpoint-calibration-engineering-content-01-sol61",
           "input_sha256": "651b024eba598a87f11e4a87945286cf7f0a741406af538fca9c2f5fa76cd1ca",
           "source_commit": "5011170d3d083871ab4cda55d0d3c00344da4aac",
@@ -1601,13 +1603,15 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-calibration-engineering-content-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "input_sha256": "651b024eba598a87f11e4a87945286cf7f0a741406af538fca9c2f5fa76cd1ca",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-calibration-engineering-content-01-sol61",
           "registration_sha256": "53f99430b04380d1ce529cf3b0d7dcabb7afa364183f4b3851bb3ba77ab50b5c",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-calibration-engineering-01/content/rollout",
-          "substantive_refinement_rounds": 3
+          "substantive_refinement_rounds": 3,
+          "pid": 41938,
+          "started_at": "2026-11-09T23:57:05.268420+00:00"
         }
       },
       "artifact_namespace/payload_content/Engineering": {
@@ -5149,6 +5153,28 @@
       "status": "running",
       "registration_sha256": "007c5221adbc6e0517916b9b7a53e4b0543b06430858972e25cda2a9fd83950c",
       "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-knowledge-metadata-01-sol61"
+    },
+    {
+      "identifier": "swarmform-endpoint-calibration-engineering-content-01-sol61",
+      "matrix_cell": "worker_endpoint/payload_content/Engineering",
+      "model": "openai/gpt-6.1-sol",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-calibration-engineering-content-01-sol61",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-calibration-engineering-01/content/rollout",
+      "worker_context": "lima-swarmform-behavior-02",
+      "slot_suffix": "",
+      "pid": 41938,
+      "started_at": "2026-11-09T23:57:05.268420+00:00"
+    },
+    {
+      "identifier": "swarmform-endpoint-calibration-engineering-metadata-01-sol61",
+      "matrix_cell": "worker_endpoint/identifiers_metadata/Engineering",
+      "model": "openai/gpt-6.1-sol",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-calibration-engineering-metadata-01-sol61",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-calibration-engineering-01/metadata/rollout",
+      "worker_context": "lima-swarmform-behavior-02",
+      "slot_suffix": ".slot2",
+      "pid": 41939,
+      "started_at": "2026-11-09T23:57:05.358623+00:00"
     }
   ],
   "active_input_checks": [],
