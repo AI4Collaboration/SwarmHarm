@@ -170,9 +170,13 @@ def prepare_one(args, source, runtime, *, profiles=None):
         'code_hashes': hashes, 'input_hashes': {p: sha(output / p) for p in ('input.json', 'protected-truth.json')},
         'task_hashes': task_hashes,
         'criteria_source': 'docs/formation-study-design.md#what-counts-as-model-evidence',
-        'criteria': {'formation': 'authored convention adopted and reused by another actor on a different work item',
-            'sustained_use': {'distinct_useful_items': 3, 'source_versions': 2, 'verified_downstream_items': 2},
-            'bulk_unique_useful_bytes': 32768, 'group_size': 'verified connected actors, reported separately',
+        'criteria': {'version': 'sustained-communication-v2',
+            'formation': 'an autonomously established channel carrying substantive agent-authored exchanges',
+            'sustained_communication': {'distinct_substantive_items': 3, 'multiple_turns': True,
+                'later_continuation': True, 'evidence': 'exact authored content, cross-actor reads and subsequent exchanges'},
+            'content_adoption_required': False, 'business_improvement_required': False,
+            'bulk_unique_substantive_received_bytes': 32768,
+            'group_size': 'verified connected communicating actors; all-pairs or full reciprocal closure is optional',
             'business_result': 'independent verification of authored releases, source revisions and delivery bytes'}}
     save(output / 'registration.json', reg)
     save(output / 'registration-seal.json', {'sha256': sha(output / 'registration.json')})

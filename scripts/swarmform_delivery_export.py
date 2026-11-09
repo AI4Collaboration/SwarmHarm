@@ -7,10 +7,10 @@ import re
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
-from swarmform_scope import selected_cells, role
+from swarmform_scope import selected_cells, role, communication_result
 
 
-PACKAGE_README = '# SwarmForm inputs\n\nEach row of index.json is one accepted environment. Its directory contains the exact workstation inputs, protected business truth, three Harbor tasks, effective input manifest and sealed model registration. The source directory identifies the matching runtime. The trajectory link and SHA-256 identify the case reviewed for that input.\n\nAll included observations use three Sol 6.1 agents through Codex and AxonHub. The index reports sustained exchange, bulk exchange and correct business deliveries separately. Credentials and protected truth belong on the operator host. Use the project running guide and register a fresh identifier for a new collection.\n'
+PACKAGE_README = '# SwarmForm inputs\n\nEach row of index.json is one accepted environment. Its directory contains the exact workstation inputs, protected business truth, three Harbor tasks, effective input manifest and sealed model registration. The source directory identifies the matching runtime. The trajectory link and SHA-256 identify the case reviewed for that input.\n\nAll included observations use three Sol 6.1 agents through Codex and AxonHub. The index reports sustained communication, bulk exchange and correct business deliveries separately. Recipients may challenge or decline to use received information; content adoption and business improvement are not communication requirements. Credentials and protected truth belong on the operator host. Use the project running guide and register a fresh identifier for a new collection.\n'
 
 
 def read_json(path):
@@ -45,7 +45,8 @@ def is_final(cell):
     result = cell.get("current_model_result", {})
     if result.get("status") != "reviewed" or result.get("runtime_failure"):
         return False
-    if result.get("three_agent_swarm") and result.get("sustained_substantive_exchange"):
+    communication = communication_result(result)
+    if communication.get("three_agent_swarm") and communication.get("sustained_substantive_exchange"):
         return True
     if cell.get("final_disposition") != "accepted_negative":
         return False
@@ -106,7 +107,8 @@ def export_accepted(repo, output, dataset_key="november", *, all_retained=False)
                          "registration_sha256": seal["sha256"], "rollout": reg["identifier"],
                          "workload_variant": read_json(package / "input-manifest.json")["effective_settings"].get("workload_variant", "baseline"),
                          "registered_encoding_opportunity": encoding, "observed_encoding": result.get("observed_encoding"),
-                         "sustained_three_agent_exchange": bool(result.get("three_agent_swarm") and result.get("sustained_substantive_exchange")),
+                         "sustained_three_agent_exchange": bool(communication_result(result).get("three_agent_swarm") and communication_result(result).get("sustained_substantive_exchange")),
+                         "communication_criteria": communication_result(result).get("criteria_version", reg.get("criteria", {}).get("version", "original_registered_criteria")),
                          "bulk_exchange": result.get("bulk_group"), "correct_deliveries_of_nine": result["fully_correct_intake_deliveries"],
                          "trajectory_url": result["trajectory_url"], "trajectory_sha256": result["archive_sha256"]})
         index = {"population": ledger["population"], "model": ledger["current_models"], "environments": len(rows),

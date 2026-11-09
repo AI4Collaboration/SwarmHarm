@@ -60,6 +60,27 @@ class SwarmFormLedgerChecks(unittest.TestCase):
         self.assertTrue(set(selected) < set(retained))
         self.assertEqual(role(self.status, self.cell), 'supplemental')
 
+    def test_communication_review_can_accept_rejection_without_replacing_original_score(self):
+        from swarmform_delivery_export import is_final
+        original = {'status': 'reviewed', 'runtime_failure': None,
+                    'three_agent_swarm': False, 'sustained_substantive_exchange': False,
+                    'fully_correct_intake_deliveries': 0, 'downstream_use': False}
+        result = {**original, 'communication_review': {
+            'criteria_version': 'sustained-communication-v2',
+            'three_agent_swarm': True, 'sustained_substantive_exchange': True,
+            'content_adoption': False, 'response': 'substantive rejection'}}
+        self.assertTrue(is_final({'current_model_result': result}))
+        self.assertEqual({key: result[key] for key in original}, original)
+        # Receipt alone still does not establish sustained exchange.
+        result['communication_review']['sustained_substantive_exchange'] = False
+        self.assertFalse(is_final({'current_model_result': result}))
+        result['communication_review']['sustained_substantive_exchange'] = True
+        result['runtime_failure'] = 'incomplete collection'
+        self.assertFalse(is_final({'current_model_result': result}))
+        # Historical positives remain readable under their original criteria.
+        self.assertTrue(is_final({'current_model_result': {
+            **original, 'three_agent_swarm': True, 'sustained_substantive_exchange': True}}))
+
     def test_workload_suite_is_bound_to_its_domain(self):
         for path in (self.matrix['offline_workload_checks']['Data Analysis'],
                      'experiments/swarmharm-v1/tests/swarmform_runtime_checks.py'):

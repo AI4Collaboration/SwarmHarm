@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import sys
 import unittest
-from swarmform_scope import selected_cells
+from swarmform_scope import selected_cells, communication_result
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -181,9 +181,10 @@ def print_status(status):
     admitted = sum(cell["status"] == "admitted" for cell in cells)
     results = [cell.get("current_model_result", {}) for cell in cells]
     reviewed = [result for result in results if result.get("status") == "reviewed"]
+    communication = [communication_result(result) for result in reviewed]
     sustained = sum(bool(result.get("three_agent_swarm") and result.get("sustained_substantive_exchange"))
-                    for result in reviewed)
-    smaller = sum(bool(result.get("established_channel")) for result in reviewed) - sustained
+                    for result in communication)
+    smaller = sum(bool(result.get("established_channel")) for result in communication) - sustained
     sys.path.insert(0, str(PACKAGE))
     from swarmform.input_catalog import build
     from swarmform.inputs import digest

@@ -27,3 +27,8 @@ def role(ledger, cell):
     if domain == scope['generalization_domain'] and encoding in scope['generalization_encodings']:
         return 'generalization'
     return 'supplemental'
+
+
+def communication_result(result):
+    """Use an explicit later communication review without replacing frozen scores."""
+    return result.get('communication_review', result)
