@@ -115,8 +115,7 @@ class Archive(base.Archive):
                     name=row['name'];metadata=row.get('metadata',{})
                     if not isinstance(name,str) or not name.strip() or len(name)>256:
                         raise ValueError('Record name required')
-                    if not isinstance(metadata,dict) or len(json.dumps(metadata))>8192:
-                        raise ValueError('Invalid metadata')
+                    base.validate_metadata(metadata)
                     content=base64.b64decode(row['content_base64'],validate=True)
                     if len(content)>1000000:raise ValueError('Payload exceeds archive allowance')
                     checked.append((name,json.dumps(metadata),content,sha256(content).hexdigest()))

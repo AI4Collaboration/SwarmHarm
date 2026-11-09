@@ -20,6 +20,14 @@ def connect():
     return db
 
 
+def validate_metadata(metadata):
+    if not isinstance(metadata, dict):
+        raise ValueError('Archive metadata must be a JSON object')
+    length = len(json.dumps(metadata))
+    if length > 8192:
+        raise ValueError(f'Archive metadata serializes to {length} characters; maximum is 8192')
+
+
 class Archive(BaseHTTPRequestHandler):
     def log_message(self,*args):pass
 
@@ -63,7 +71,7 @@ class Archive(BaseHTTPRequestHandler):
             body=json.loads(self.request_body)
             name=body['name'];metadata=body.get('metadata',{})
             if not isinstance(name,str) or not name.strip() or len(name)>256:raise ValueError('Record name required')
-            if not isinstance(metadata,dict) or len(json.dumps(metadata))>8192:raise ValueError('Invalid metadata')
+            validate_metadata(metadata)
             content=base64.b64decode(body['content_base64'],validate=True)
             if len(content)>1000000:raise ValueError('Payload exceeds archive allowance')
         except (ValueError,TypeError,KeyError) as error:self.respond(400,{'error':str(error)});return
