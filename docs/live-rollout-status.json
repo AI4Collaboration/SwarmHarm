@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T13:30:01.546130+00:00",
+  "updated_at": "2026-11-09T13:41:15.526053+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -304,12 +304,24 @@
       "shared_ipc/event_pattern/Engineering": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/current-ipc-events-engineering-admission.json"
+      },
+      "artifact_namespace/operational_state/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-state-knowledge-admission.json"
+      },
+      "shared_files/timing/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-file-timing-financial-admission.json"
+      },
+      "worker_endpoint/operational_state/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-endpoint-state-knowledge-admission.json"
       }
     },
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
-    "current_admitted_count": 66,
+    "current_admitted_count": 69,
     "current_reviewed_rollout_count": 0
   },
   "current_source_change": {
@@ -319,11 +331,6 @@
   },
   "active_rollouts": [],
   "active_input_checks": [
-    {
-      "matrix_cell": "artifact_namespace/timing/Engineering",
-      "status": "running",
-      "output": "work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-engineering"
-    },
     {
       "matrix_cell": "shared_files/timing/Financial Analysis",
       "status": "running",
@@ -335,14 +342,9 @@
       "output": "work/eval-readiness/resume-ipc-20261109-r4/financial-analysis--event_pattern"
     },
     {
-      "matrix_cell": "worker_endpoint/operational_state/Knowledge Work",
+      "matrix_cell": "worker_endpoint/operational_state/Financial Analysis",
       "status": "running",
-      "output": "work/eval-readiness/swarmform-endpoint-state-repair-queue-20261109/operational_state--knowledge-work"
-    },
-    {
-      "matrix_cell": "artifact_namespace/operational_state/Knowledge Work",
-      "status": "running",
-      "output": "work/eval-readiness/swarmform-services-resume-20261109-01/archive-state-knowledge"
+      "output": "work/eval-readiness/swarmform-endpoint-state-financial-smallframe-20261109-01"
     }
   ],
   "next_checkpoint": "worker_endpoint/operational_state/Financial Analysis",
@@ -387,14 +389,16 @@
   },
   "input_validation_parallelism": {
     "max_active_inputs": 8,
-    "max_timing_inputs": 2,
+    "max_timing_inputs": 4,
     "model_calls": 0,
     "temporary_window": {
       "purpose": "Measure one complete service timing source under low input-runner load.",
       "status": "completed",
-      "result": "Both foreign receivers independently reconstructed 32,649 source bytes; other input queues resumed. Complete Engineering timing validation is still running.",
+      "result": "First source reconstructed exactly by both receivers; subsequent source failed with the frozen timing codec. Preserved complete partial attempt; no admission.",
       "evidence": "work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-engineering/first-source-review.json"
-    }
+    },
+    "worker_capacity_record": "work/eval-readiness/swarmform-runtime-capacity-20261109/runtime-record.json",
+    "max_timing_inputs_per_worker": 2
   },
   "interrupted_input_checks": [
     {
