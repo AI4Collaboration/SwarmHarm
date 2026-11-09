@@ -24,7 +24,7 @@ from swarmform.inputs import digest
 from swarmform.job_deployment import JobDeployment
 from swarmform.job_inputs import build as build_job
 from swarmform_service_witness_codecs import (ARTIFACT_PUBLISH, ARTIFACT_RECEIVE,
-    JOB_PREPARE, JOB_PUBLISH, JOB_RECEIVE, LOCAL_SOURCE_COPY,
+    JOB_PREPARE, JOB_PUBLISH, JOB_RECEIVE, JOB_RELEASE_POOL, LOCAL_SOURCE_COPY,
     SERVICE_ISOLATION_MARKER, SERVICE_ISOLATION_RECEIVE)
 from swarmform_service_timing_witness import SERVICE_TIMING
 from swarmform.arrivals import IntakeSchedule
@@ -133,6 +133,9 @@ def smoke(deployment_name, encoding, domain, shared, output, payload_bytes):
                 sent["first"], sent["last"], sent["count"], sent.get("after", 0)))
         assert received_result["exit_code"] == 0, received_result
         received = json.loads(received_result["stdout"])
+        if deployment_name == 'job_namespace' and profile in ('state', 'events'):
+            released, _ = deployment.execute(owner, command(JOB_RELEASE_POOL, prepared))
+            assert released['exit_code'] == 0, released
         bindings = deployment.bindings
     assert received.get("visible", False) == shared, received
     if shared:
@@ -222,6 +225,8 @@ def business(deployment_name, encoding, domain, shared, output):
                         transfers.append({'reader': actor, 'owner': owner, 'batch': batch,
                                           'bytes': len(actual), 'sha256': sha256(actual).hexdigest(),
                                           'transport':'local_copy' if actor == owner else deployment_name})
+                if shared and deployment_name == 'job_namespace' and profile in ('state', 'events'):
+                    background(owner, command(JOB_RELEASE_POOL, json.dumps(prepared)))
             for actor in actors:
                 execute(actor, command(SOLVERS[domain].replace('/var/tmp/exports', '/workspace/received'),
                                        json.dumps(list(module.BATCHES[:stage + 1]))))

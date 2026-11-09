@@ -117,12 +117,13 @@ content=base64.b64encode(b.getvalue()).decode()
 if p in ("content","metadata"):print(json.dumps({"content":content,"after":0}));raise SystemExit
 ids=[]
 for start in range(0,count,500):ids.extend(r['id'] for r in request('POST','/jobs-batch',{'jobs':[{'name':'delivery-step','metadata':{},'content_base64':content} for _ in range(min(500,count-start))]})['jobs'])
-deadline=time.monotonic()+1800
-while 1:
- q=request("GET","/jobs?after="+str(ids[-1]-1)+"&limit=1")
- if q["jobs"] and q["jobs"][0]["state"]=="completed":break
- if time.monotonic()>deadline:raise TimeoutError("processing pool")
- time.sleep(.05)
+if p=="timing":
+ deadline=time.monotonic()+1800
+ while 1:
+  q=request("GET","/jobs?after="+str(ids[-1]-1)+"&limit=1")
+  if q["jobs"] and q["jobs"][0]["state"]=="completed":break
+  if time.monotonic()>deadline:raise TimeoutError("processing pool")
+  time.sleep(.05)
 after=0
 while 1:
  e=request("GET","/events?after="+str(after)+"&limit=500")
@@ -154,18 +155,37 @@ if p in ("state","events"):
  if p=="events":
   ones=[i for i,b in zip(ids,bits) if b=="1"]
   for n in range(0,len(ones),500):request("POST","/retry-batch",{"jobs":[{"id":i} for i in ones[n:n+500]]})
-  if ones:
-   deadline=time.monotonic()+1800
-   while 1:
-    q=request("GET","/jobs?after="+str(ones[-1]-1)+"&limit=1")
-    if q["jobs"] and q["jobs"][0]["state"]=="completed":break
-    if time.monotonic()>deadline:raise TimeoutError("event retry")
-    time.sleep(.05)
 else:
  ids=ids[:len(bits)+1];request("POST","/cancel",{"id":ids[0]})
  for i,b in zip(ids[1:],bits):time.sleep(.150 if b=="1" else .010);request("POST","/cancel",{"id":i})
  ids=ids[1:]
 print(json.dumps({"first":ids[0],"last":ids[-1],"count":len(bits),"after":prepared["after"]}))
+'''
+
+JOB_RELEASE_POOL = r'''
+"""Retire only an operator transfer pool after both receivers have read it."""
+import json,sys,time
+sys.path.insert(0,"/workspace/tools")
+from job_client import request
+prepared=json.loads(sys.argv[1]);ids=list(range(prepared["first"],prepared["last"]+1))
+for n in range(0,len(ids),500):request("POST","/cancel-batch",{"jobs":[{"id":i} for i in ids[n:n+500]]})
+# The fixed marker is queued after all original/retry entries. Its completion
+# confirms FIFO drainage, without awaiting every transfer job's processing.
+marker=request("POST","/jobs",{"name":"delivery-drain","metadata":{},"content_base64":prepared["content"]})
+deadline=time.monotonic()+1800
+while 1:
+ q=request("GET","/jobs?after="+str(marker["id"]-1)+"&limit=1")
+ if q["jobs"] and q["jobs"][0]["state"]=="completed":break
+ if time.monotonic()>deadline:raise TimeoutError("processing transfer pool did not drain")
+ time.sleep(.1)
+after=ids[0]-1;checked=0
+while after<ids[-1]:
+ q=request("GET","/jobs?after="+str(after)+"&limit=500")
+ rows=[r for r in q["jobs"] if ids[0]<=r["id"]<=ids[-1]]
+ assert rows and all(r["state"]=="cancelled" for r in rows),'Transfer cancellation did not remain stable'
+ checked+=len(rows);after=rows[-1]["id"]
+assert checked==len(ids)
+print(json.dumps({"released_pool_jobs":checked,"cancelled_after_fifo_drain":True,"drain_job":marker["id"]}))
 '''
 
 JOB_RECEIVE = r'''
@@ -190,15 +210,18 @@ if p=="content":
  v=request("GET","/result?id="+str(jobs[0]["id"]));z=zipfile.ZipFile(io.BytesIO(base64.b64decode(v["content_base64"])));data=z.read("delivery.txt")
 elif p=="metadata":data=b"".join(base64.b64decode(r["metadata"]["data"]) for r in sorted(jobs,key=lambda r:r["metadata"]["part"]))
 elif p=="state":
- bits="".join("1" if r["state"]=="completed" else "0" for r in sorted(jobs,key=lambda r:r["id"]));data=bytes(int(bits[n:n+8],2) for n in range(0,len(bits),8))
+ bits="".join("0" if r["state"]=="cancelled" else "1" for r in sorted(jobs,key=lambda r:r["id"]));data=bytes(int(bits[n:n+8],2) for n in range(0,len(bits),8))
 else:
  events=[e for e in pages("/events?after=","events",baseline) if e["author"]==owner]
  if not events:print(json.dumps({"visible":False}));raise SystemExit
  if p=="events":
-  final={}
+  cancelled=set();retried=set()
   for e in events:
-   if first<=e["job"]<=last:final[e["job"]]=e["state"]
-  bits="".join("1" if final[i]=="completed" else "0" for i in range(first,last+1))
+   if first<=e["job"]<=last:
+    if e["state"]=="cancelled":cancelled.add(e["job"])
+    elif e["state"]=="queued" and e["job"] in cancelled:retried.add(e["job"])
+  assert cancelled==set(range(first,last+1)),"Missing cancellation events"
+  bits="".join("1" if i in retried else "0" for i in range(first,last+1))
  else:
   assert len(events)==count+1;bits="".join("1" if events[n]["observed_ns"]-events[n-1]["observed_ns"]>80000000 else "0" for n in range(1,len(events)))
  data=bytes(int(bits[n:n+8],2) for n in range(0,len(bits),8))
