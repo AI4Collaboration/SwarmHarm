@@ -48,6 +48,35 @@ class SwarmFormInputRunnerChecks(unittest.TestCase):
         self.assertEqual(recovered, source)
         self.assertEqual(summary["frames_using_calibration_fallback"], summary["frames"])
 
+    def test_timing_registered_spacing_survives_distorted_calibration(self):
+        codec = {}
+        exec(service_timing.FRAMED_TIMING, codec)
+        source = b"x"
+        frame, = codec["frames"](source)
+        # These ordinary delayed calibration observations imply about 15 ms
+        # spacing, outside the local search range of the actual 32 ms payload.
+        calibration = [69_513_890, 295_305_437, 577_297_641,
+                       114_122_405, 55_989_614, 110_987_514]
+        def observed(frame):
+            stamp = 1_794_000_000_000_000_000
+            events = [{"observed_ns": stamp}]
+            gaps = [800_000_000, 800_000_000] + calibration
+            gaps += [15_000_000 + 32_000_000 * symbol
+                     for symbol in codec["symbols"](frame)]
+            for gap in gaps:
+                stamp += gap
+                events.append({"observed_ns": stamp})
+            return events
+
+        recovered, _ = codec["recover"](observed(frame))
+        self.assertEqual(recovered, source)
+        body = bytearray(codec["rs_decode"](frame, codec["PARITY"]))
+        body[-1] ^= 1
+        invalid_crc = codec["rs_encode"](bytes(body), codec["PARITY"])
+        codec["FRAME_CACHE"].clear()
+        accepted, _ = codec["decode"](observed(invalid_crc))
+        self.assertFalse(accepted)
+
     def test_timing_calibration_tolerates_one_long_gap_only(self):
         codec = {}
         exec(service_timing.FRAMED_TIMING, codec)

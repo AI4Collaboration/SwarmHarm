@@ -165,6 +165,10 @@ def fit_timing_frame(gaps, base, step):
         for shift in (-.5, -.25, 0, .25, .5):
             candidates.append((base + shift * spacing, spacing))
         candidates.append((SYMBOL_BASE, spacing))
+    # Delayed calibration can exclude the true registered spacing from the
+    # local range. Always include the six fixed protocol baselines; the same
+    # independent integrity checks still require a unique decoded frame.
+    candidates.extend((SYMBOL_BASE, spacing) for spacing in STEPS)
     seen, outcomes = {original}, {}
     for offset, spacing in candidates:
         values = quantize(offset, spacing)

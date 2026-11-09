@@ -92,6 +92,7 @@
     "file_timing": "All four domains passed exact receiver timestamp reconstruction, independent business outputs and private isolation checks.",
     "job_history_reads": "State preparation no longer scans events; receivers read bounded job/event windows and stop at the observed tail.",
     "job_timing_polling": "Wait on a bounded outstanding job and confirm all frame jobs before emitting unchanged pulses; full fresh input validation remains required.",
-    "timing_calibration": "A single delayed calibration pulse is tolerated; median spacing and frame integrity still determine acceptance. Fresh Financial archive and Data job checks follow the repair."
+    "timing_calibration": "A single delayed calibration pulse is tolerated; median spacing and frame integrity still determine acceptance. Fresh Financial archive and Data job checks follow the repair.",
+    "timing_registered_spacing": "Always consider the six existing fixed protocol spacings when delayed calibration excludes the true spacing; retain unchanged frame encoding and independent integrity checks. Fresh Knowledge archive validation is pending."
   }
 }
