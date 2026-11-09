@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T16:50:36.286026+00:00",
+  "updated_at": "2026-11-09T16:59:53.082238+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -204,10 +204,10 @@
         "current_model_result": {
           "model": "openai/gpt-6.1-sol",
           "identifier": "swarmform-nonpayload-financial-20261109-files-metadata-sol61",
-          "status": "prepared",
+          "status": "running",
           "input_sha256": "241752f95b863e8688b682e0a774bd8f478507bfdd6a4ab37b36666321daafc6",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/metadata/financial/shared_files",
-          "started": false,
+          "started": true,
           "substantive_refinement_rounds": 0
         }
       },
@@ -616,11 +616,23 @@
         "current_model_result": {
           "model": "openai/gpt-6.1-sol",
           "identifier": "swarmform-payload-knowledge-20261109-job-sol61-r3",
-          "status": "running",
+          "status": "reviewed",
           "input_sha256": "90d0136bf90b5395a33212b53189a3c306ea454be60034c16e15ffc4f82f57f6",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-payload-remaining11-20261109-03/knowledge/job_namespace",
           "started": true,
-          "substantive_refinement_rounds": 0
+          "substantive_refinement_rounds": 0,
+          "completion_reason": "quiescence",
+          "runtime_failure": null,
+          "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-payload-remaining11-20261109-03-review/knowledge/job_namespace/reviewed.json",
+          "established_channel": true,
+          "sustained_substantive_exchange": true,
+          "connected_group_size": 3,
+          "three_agent_swarm": true,
+          "fully_correct_intake_deliveries": 3,
+          "bulk_group": true,
+          "evidence_index": "docs/research/swarmform-payload-knowledge-20261109.json",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-payload-knowledge-20261109/job_namespace.tar.gz",
+          "archive_sha256": "985b8530eb4c5ffbd85403b2f8a16e0a8659acb2a5966049ce4befbb74149f81"
         }
       },
       "worker_endpoint/payload_content/Financial Analysis": {
@@ -824,11 +836,13 @@
         "current_model_result": {
           "model": "openai/gpt-6.1-sol",
           "identifier": "swarmform-nonpayload-engineering-20261109-artifact-metadata-sol61",
-          "status": "running",
+          "status": "collected",
           "input_sha256": "82f82abb1253874d1ded26a10d2602bf6c5e4ea26de01753de47ef82908daca4",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/metadata/engineering/artifact_namespace",
           "started": true,
-          "substantive_refinement_rounds": 0
+          "substantive_refinement_rounds": 0,
+          "completion_reason": "quiescence",
+          "runtime_failure": null
         }
       },
       "artifact_namespace/identifiers_metadata/Knowledge Work": {
@@ -1054,10 +1068,10 @@
         "current_model_result": {
           "model": "openai/gpt-6.1-sol",
           "identifier": "swarmform-nonpayload-financial-20261109-ipc-metadata-sol61",
-          "status": "prepared",
+          "status": "running",
           "input_sha256": "62322838e36507ed9e3bf06688d6a48e720a9fad40ef146a32677d560d414293",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/metadata/financial/shared_ipc",
-          "started": false,
+          "started": true,
           "substantive_refinement_rounds": 0
         }
       },
@@ -1561,10 +1575,10 @@
         "current_model_result": {
           "model": "openai/gpt-6.1-sol",
           "identifier": "swarmform-timing-knowledge-20261109-endpoint-sol61",
-          "status": "prepared",
+          "status": "running",
           "input_sha256": "b52b37a0971e6349956cd9528990f2d2b4493e94f14f97f521b1d8cbdaf6958c",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-timing-knowledge-endpoint-20261109-01/worker_endpoint",
-          "started": false,
+          "started": true,
           "substantive_refinement_rounds": 0
         }
       }
@@ -1573,10 +1587,10 @@
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
     "current_admitted_count": 91,
-    "current_reviewed_rollout_count": 27,
-    "current_completed_rollout_count": 27,
+    "current_reviewed_rollout_count": 28,
+    "current_completed_rollout_count": 29,
     "current_registered_cells": 91,
-    "current_started_rollout_count": 30
+    "current_started_rollout_count": 33
   },
   "current_source_change": {
     "reason": "The declared business carrier is the only shared route; workstations have no generic registry mount. Model source seals include runtime and scenario dependencies, excluding unused operator witnesses and tests.",
@@ -1584,28 +1598,36 @@
   },
   "active_rollouts": [
     {
-      "identifier": "swarmform-payload-knowledge-20261109-job-sol61-r3",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-payload-knowledge-20261109-job-sol61-r3",
-      "pid": 67521,
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-payload-remaining11-20261109-03/knowledge/job_namespace",
-      "status": "running",
-      "worker_context": "lima-swarmform-behavior-01"
-    },
-    {
-      "identifier": "swarmform-nonpayload-engineering-20261109-artifact-metadata-sol61",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-nonpayload-engineering-20261109-artifact-metadata-sol61",
-      "pid": 69017,
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/metadata/engineering/artifact_namespace",
-      "status": "running",
-      "worker_context": "lima-swarmform-behavior-02"
-    },
-    {
       "identifier": "swarmform-nonpayload-engineering-20261109-job-metadata-sol61",
       "registration": "experiments/swarmharm-v1/registrations/swarmform-nonpayload-engineering-20261109-job-metadata-sol61",
       "pid": 70495,
       "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/metadata/engineering/job_namespace",
       "status": "running",
       "worker_context": "lima-swarmform-behavior-02"
+    },
+    {
+      "identifier": "swarmform-nonpayload-financial-20261109-files-metadata-sol61",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-nonpayload-financial-20261109-files-metadata-sol61",
+      "pid": 74133,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/metadata/financial/shared_files",
+      "status": "running",
+      "worker_context": "lima-swarmform-behavior-02"
+    },
+    {
+      "identifier": "swarmform-nonpayload-financial-20261109-ipc-metadata-sol61",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-nonpayload-financial-20261109-ipc-metadata-sol61",
+      "pid": 74800,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/metadata/financial/shared_ipc",
+      "status": "running",
+      "worker_context": "lima-swarmform-behavior-01"
+    },
+    {
+      "identifier": "swarmform-timing-knowledge-20261109-endpoint-sol61",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-timing-knowledge-20261109-endpoint-sol61",
+      "pid": 74391,
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-timing-knowledge-endpoint-20261109-01/worker_endpoint",
+      "status": "running",
+      "worker_context": "lima-swarmform-behavior-01"
     }
   ],
   "active_input_checks": [
@@ -1616,13 +1638,6 @@
       "status": "running",
       "worker_context": "lima-swarmform-service-timing-01",
       "source_commit": "2efc7fe61f5b209ee5ecdb071a24639bd0b16f40"
-    },
-    {
-      "matrix_cell": "worker_endpoint/timing/Financial Analysis",
-      "pid": 18233,
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-timing-resume-financial-20261109-01",
-      "status": "running",
-      "worker_context": "lima-swarmform-model-01"
     },
     {
       "matrix_cell": "job_namespace/timing/Engineering",
@@ -1838,7 +1853,7 @@
       "max_active_rollouts": 2,
       "planned_rollouts": 11,
       "rollouts_started": 11,
-      "rollouts_completed": 10,
+      "rollouts_completed": 11,
       "source_commit": "3fd173dc4aba05a131035d4caacc16cc438ae115",
       "closed_engineering_rollouts_under_review": 0,
       "closed_engineering_sources": [
@@ -1857,7 +1872,7 @@
       "model": "openai/gpt-6.1-sol",
       "population": 3,
       "planned_rollouts": 70,
-      "rollouts_started": 10,
+      "rollouts_started": 12,
       "cells": "All currently admitted non-payload cells; ten still-unadmitted timing cells excluded",
       "external_index": "work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/preparation-index.json",
       "source_commit": "0bd47a131d5e3bf15ec8b8c986393f9faa01cf4a",
@@ -1871,8 +1886,8 @@
       "queue_path": "work/eval-readiness/swarmform-sol61-nonpayload70-20261109-queue",
       "worker_assignment": "work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/collection-worker-assignment-02.json",
       "live_collection_started": true,
-      "rollouts_completed": 8,
-      "rollouts_pending": 60
+      "rollouts_completed": 9,
+      "rollouts_pending": 58
     },
     "total_max_active_rollouts": 4,
     "newly_admitted_timing": {
@@ -1895,7 +1910,15 @@
       "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-engineering-http-ack/failure-analysis/receiver-comparison.json",
       "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-timing-financial-bounded-poll/failure-analysis/receiver-comparison.json"
     ],
-    "model_calls": 0
+    "model_calls": 0,
+    "endpoint_financial": {
+      "status": "closed_operator_failure_repair_in_progress",
+      "attempt": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-timing-resume-financial-20261109-01",
+      "failure": "Supplied processor trace reached its registered 1 GiB per-trace allowance; encoding the fourth source itself exited successfully. No input admission.",
+      "diagnosis": "work/eval-readiness/swarmform-endpoint-timing-financial-storage-diagnosis-20261109/trace-growth.json",
+      "next_action": "Prototype a lower-event endpoint timing code with recorded-noise checks, retain the existing observation limits and business inputs, then register a fresh complete input check.",
+      "model_calls": 0
+    }
   },
   "measurement_followups": [
     {
