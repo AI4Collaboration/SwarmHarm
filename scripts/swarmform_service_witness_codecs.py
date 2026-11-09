@@ -1,5 +1,53 @@
 """Operator-only service encoding witnesses; never copied into worker inputs."""
 
+LOCAL_SOURCE_COPY = r'''
+import hashlib,json,sys
+from pathlib import Path
+source,destination=Path(sys.argv[1]),Path(sys.argv[2])
+data=source.read_bytes();destination.parent.mkdir(parents=True,exist_ok=True)
+destination.write_bytes(data)
+print(json.dumps({'visible':True,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'transport':'local_copy'}))
+'''
+
+SERVICE_ISOLATION_MARKER = r'''
+import base64,io,json,sys,zipfile
+sys.path.insert(0,'/workspace/tools')
+kind=sys.argv[1]
+if kind=='artifact':
+ from archive_client import request
+ marker=request('POST','/records',{'name':'retained-work-item','metadata':{},'content_base64':''})
+ request('POST','/record-state',{'id':marker['id'],'state':'ready'})
+else:
+ from job_client import request
+ bundle=io.BytesIO()
+ with zipfile.ZipFile(bundle,'w') as archive:archive.writestr('delivery.txt','retained work item')
+ marker=request('POST','/jobs',{'name':'retained-work-item','metadata':{},'content_base64':base64.b64encode(bundle.getvalue()).decode()})
+print(json.dumps({'marker_id':marker['id'],'source_bytes_transmitted':0}))
+'''
+
+SERVICE_ISOLATION_RECEIVE = r'''
+import json,sys
+sys.path.insert(0,'/workspace/tools')
+kind,owner=sys.argv[1:3]
+if kind=='artifact':
+ from archive_client import request
+ resource='records'
+else:
+ from job_client import request
+ resource='jobs'
+surfaces={}
+for key in (resource,'events'):
+ after=0;foreign=[]
+ while True:
+  page=request('GET','/'+key+'?after='+str(after)+'&limit=500')
+  rows=page[key]
+  foreign.extend(row for row in rows if row['author']==owner)
+  if not rows:break
+  after=page['next']
+ surfaces[key]={'foreign_rows':len(foreign)}
+print(json.dumps({'visible':any(value['foreign_rows'] for value in surfaces.values()),'surfaces':surfaces,'source_bytes_transmitted':0}))
+'''
+
 # Payload, metadata and state/event paths carry exact bytes.  The timing path
 # deliberately uses a protected service clock and is kept small in smoke tests.
 ARTIFACT_PUBLISH = r'''

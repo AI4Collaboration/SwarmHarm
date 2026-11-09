@@ -22,7 +22,8 @@ from swarmform.domain_inputs import DOMAINS, descriptor
 from swarmform.arrivals import IntakeSchedule
 from swarmform.outcomes import review as review_outcomes
 from check_swarmform_ipc_inputs import SOURCE_FILES, SOLVERS, wait_file
-from swarmform_endpoint_witness_codecs import PUBLISH, RECEIVE, STATE_SEND, STATE_RECEIVE
+from swarmform_endpoint_witness_codecs import COMMON, PUBLISH, RECEIVE, STATE_SEND, STATE_RECEIVE
+from swarmform_endpoint_timing_witness import ENDPOINT_TIMING
 from swarmform.endpoint_deployment import EndpointDeployment
 from swarmform.input_catalog import build, deployment_registration, task_network
 from swarmform.inputs import digest
@@ -293,7 +294,7 @@ def business(encoding, domain, shared, output, dataset_key='november'):
             return prefix
 
         def finish(actor, prefix):
-            wait_file(deployment, actor, prefix + '.exit', seconds=1800)
+            wait_file(deployment, actor, prefix + '.exit', seconds=7200 if profile == 'timing' else 1800)
             _, snapshot = run(actor, 'wc -c ' + prefix + '.exit')
             (output / (actor + '-latest.json')).write_text(json.dumps(snapshot) + '\n')
             files = snapshot['/workspace']
@@ -317,7 +318,7 @@ def business(encoding, domain, shared, output, dataset_key='november'):
                                       'read_evidence': received['evidence'],
                                       'read_evidence_sha256': received['evidence_sha256']})
 
-            if profile == 'state':
+            if profile in ('state', 'timing'):
                 for owner in actors:
                     # Own source material needs no network relay. Cross-office
                     # data still travels only through the selected public state view.
@@ -332,6 +333,27 @@ print(json.dumps({'visible':True,'complete':True,'evidence':str(evidence),'evide
 """
                     result, snapshot = run(owner, command(local, source_path, destination))
                     retain(owner, owner, json.loads(result['stdout']), snapshot)
+                    if profile == 'timing':
+                        if shared:
+                            sender = start(owner, command(ENDPOINT_TIMING, 'publish', source_path, batch))
+                            sent, _ = finish(owner, sender)
+                            metadata = sent[0]
+                        else:
+                            # Private isolation needs an actual service marker,
+                            # not a retransmission of the owner's local source.
+                            marker = COMMON + "\npost_package(sys.argv[1], b'')\nprint(json.dumps({'after': 0, 'transport': 'private_isolation_marker'}))\n"
+                            result, _ = run(owner, command(marker, batch))
+                            metadata = json.loads(result['stdout'])
+                        writes.append({'owner': owner, 'batch': batch, **metadata})
+                        for actor in actors:
+                            if actor == owner:
+                                continue
+                            destination = f'/workspace/received/{owner}/{batch}/{filename}'
+                            reader = start(actor, command(ENDPOINT_TIMING, 'receive',
+                                urls[owner], metadata['after'], destination))
+                            received, snapshot = finish(actor, reader)
+                            retain(owner, actor, received[0], snapshot)
+                        continue
                     readers = {}
                     for actor in actors:
                         if actor == owner:
@@ -416,7 +438,9 @@ def main():
         code = output / 'witness-code'
         code.mkdir(parents=True)
         hashes = {}
-        for source in (Path(__file__), Path(__file__).with_name('swarmform_endpoint_witness_codecs.py')):
+        for source in (Path(__file__), Path(__file__).with_name('swarmform_endpoint_witness_codecs.py'),
+                       Path(__file__).with_name('swarmform_endpoint_timing_witness.py'),
+                       Path(__file__).with_name('swarmform_service_timing_witness.py')):
             data = source.read_bytes()
             (code / source.name).write_bytes(data)
             hashes[source.name] = sha256(data).hexdigest()

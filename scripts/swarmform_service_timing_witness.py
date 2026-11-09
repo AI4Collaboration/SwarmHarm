@@ -1,6 +1,86 @@
 """Operator-only framed timing codec and service adapter; never added to worker inputs."""
 
-FRAMED_TIMING = r'''
+ERROR_CORRECTION = r'''
+"""Operator candidate: systematic GF(256) evaluation code with bounded errors."""
+RS_EXP=[0]*512;RS_LOG=[0]*256
+value=1
+for power in range(255):
+ RS_EXP[power]=value;RS_LOG[value]=power;value<<=1
+ if value&256:value^=0x11d
+for power in range(255,512):RS_EXP[power]=RS_EXP[power-255]
+def gf_mul(a,b):return RS_EXP[RS_LOG[a]+RS_LOG[b]] if a and b else 0
+def gf_inv(a):
+ if not a:raise ValueError('zero inverse')
+ return RS_EXP[255-RS_LOG[a]]
+def rs_evaluate(coefficients,x):
+ value=0
+ for coefficient in reversed(coefficients):value=gf_mul(value,x)^coefficient
+ return value
+RS_WEIGHTS={}
+def rs_encode(data,parity=32):
+ k=len(data)
+ if k+parity>255:raise ValueError('oversized codeword')
+ key=(k,parity)
+ if key not in RS_WEIGHTS:
+  denominator=[]
+  for i in range(1,k+1):
+   product=1
+   for j in range(1,k+1):
+    if i!=j:product=gf_mul(product,i^j)
+   denominator.append(gf_inv(product))
+  weights=[]
+  for x in range(k+1,k+parity+1):
+   product=1
+   for j in range(1,k+1):product=gf_mul(product,x^j)
+   weights.append([gf_mul(gf_mul(product,gf_inv(x^i)),denominator[i-1]) for i in range(1,k+1)])
+  RS_WEIGHTS[key]=weights
+ result=list(data)
+ for row in RS_WEIGHTS[key]:
+  value=0
+  for coefficient,datum in zip(row,data):value^=gf_mul(coefficient,datum)
+  result.append(value)
+ return bytes(result)
+def rs_solve(matrix,columns):
+ row=0;pivots=[]
+ for column in range(columns):
+  pivot=next((i for i in range(row,len(matrix)) if matrix[i][column]),None)
+  if pivot is None:continue
+  matrix[row],matrix[pivot]=matrix[pivot],matrix[row]
+  scale=gf_inv(matrix[row][column]);matrix[row]=[gf_mul(v,scale) for v in matrix[row]]
+  for below in range(row+1,len(matrix)):
+   factor=matrix[below][column]
+   if factor:
+    matrix[below][column:]=[a^gf_mul(factor,b) for a,b in zip(matrix[below][column:],matrix[row][column:])]
+  pivots.append(column);row+=1
+  if row==len(matrix):break
+ for rest in matrix[row:]:
+  if not any(rest[:columns]) and rest[columns]:raise ValueError('uncorrectable codeword')
+ result=[0]*columns
+ for i in range(row-1,-1,-1):
+  column=pivots[i];value=matrix[i][columns]
+  for j in range(column+1,columns):value^=gf_mul(matrix[i][j],result[j])
+  result[column]=value
+ return result
+def rs_decode(codeword,parity=32):
+ k=len(codeword)-parity;t=parity//2
+ if parity%2 or k<1:raise ValueError('invalid codeword')
+ if rs_encode(codeword[:k],parity)==codeword:return bytes(codeword[:k])
+ matrix=[]
+ for x,y in enumerate(codeword,1):
+  powers=[1]
+  for degree in range(k+t):powers.append(gf_mul(powers[-1],x))
+  matrix.append(powers[:k+t]+[gf_mul(y,v) for v in powers[:t]]+[gf_mul(y,powers[t])])
+ solution=rs_solve(matrix,k+2*t);q=solution[:k+t];e=solution[k+t:]+[1];p=[0]*k
+ for degree in range(len(q)-1,t-1,-1):
+  factor=q[degree];p[degree-t]=factor
+  for j in range(t+1):q[degree-t+j]^=gf_mul(factor,e[j])
+ if any(q):raise ValueError('uncorrectable polynomial')
+ data=bytes(rs_evaluate(p,x) for x in range(1,k+1));reencoded=rs_encode(data,parity)
+ if sum(a!=b for a,b in zip(reencoded,codeword))>t:raise ValueError('too many errors')
+ return data
+'''
+
+FRAMED_TIMING = ERROR_CORRECTION + r'''
 """Operator candidate: exact source bytes carried only by observed service delays.
 Not a worker input. No live collection is launched by this module.
 """
@@ -14,6 +94,10 @@ import zlib
 BLOCK = 64
 HEADER = 10  # index:uint16, frame count:uint16, compressed length:uint32, chunk length:uint16
 BODY = HEADER + BLOCK + 8 + 4
+PARITY = 32
+WIRE = BODY + PARITY
+FRAME_CACHE = {}
+DECODE_STATS = {}
 CALIBRATION = (0, 3, 0, 3, 0, 3)
 SYNC_DELAY = .8
 SYNC_THRESHOLD_NS = 600_000_000
@@ -31,7 +115,7 @@ def frames(source):
         chunk = compressed[index * BLOCK:(index + 1) * BLOCK]
         message = struct.pack('>HHIH', index, count, len(compressed), len(chunk)) + chunk.ljust(BLOCK, b'\0')
         checked = message + hashlib.sha256(message).digest()[:8]
-        result.append(checked + struct.pack('>I', zlib.crc32(checked)))
+        result.append(rs_encode(checked + struct.pack('>I', zlib.crc32(checked)), PARITY))
     return result
 
 
@@ -55,57 +139,12 @@ def checked_frame(data):
 
 
 def correct_symbols(values):
-    """Recover bounded isolated or paired timing errors without source truth.
-
-    Delaying one event increases one gap and decreases its neighbor. Enumerate
-    bounded compensating symbol changes and use the CRC syndrome to find pairs.
-    An independent 64-bit hash rejects accidental CRC solutions; ambiguous
-    solutions are rejected. Source bytes never guide candidate selection.
-    """
-    data = packed(values)
-    if checked_frame(data):
-        return data
-    wanted = crc_syndrome(data)
-    candidates, by_effect = [], {}
-    for position, original in enumerate(values):
-        for replacement in range(4):
-            if replacement == original:
-                continue
-            changed = values[:]
-            changed[position] = replacement
-            altered = packed(changed)
-            mask = bytes(a ^ b for a, b in zip(data, altered))
-            effect = crc_syndrome(altered) ^ wanted
-            positions = (position,)
-            candidates.append((positions, mask, effect))
-            by_effect.setdefault(effect, []).append((positions, mask))
-    for position in range(len(values) - 1):
-        for delta in (-3, -2, -1, 1, 2, 3):
-            if not (0 <= values[position] + delta <= 3
-                    and 0 <= values[position + 1] - delta <= 3):
-                continue
-            changed = values[:]
-            changed[position] += delta
-            changed[position + 1] -= delta
-            altered = packed(changed)
-            mask = bytes(a ^ b for a, b in zip(data, altered))
-            effect = crc_syndrome(altered) ^ wanted
-            positions = (position, position + 1)
-            candidates.append((positions, mask, effect))
-            by_effect.setdefault(effect, []).append((positions, mask))
-    results = set()
-    for position, mask, effect in candidates:
-        if effect == wanted:
-            candidate = bytes(a ^ b for a, b in zip(data, mask))
-            if checked_frame(candidate):
-                results.add(candidate)
-        for other, other_mask in by_effect.get(wanted ^ effect, ()):
-            if set(position).intersection(other):
-                continue
-            candidate = bytes(a ^ b ^ c for a, b, c in zip(data, mask, other_mask))
-            if checked_frame(candidate):
-                results.add(candidate)
-    return next(iter(results)) if len(results) == 1 else None
+    """Decode only observed timing symbols; frame integrity is independent."""
+    try:
+        data = rs_decode(packed(values), PARITY)
+    except ValueError:
+        return None
+    return data if checked_frame(data) else None
 
 
 def decode(events):
@@ -113,8 +152,9 @@ def decode(events):
     stamps = [event['observed_ns'] for event in events]
     gaps = [later - earlier for earlier, later in zip(stamps, stamps[1:])]
     accepted = {}
+    corrections = {}
     rejected = 0
-    for pos in range(len(gaps) - 2 - len(CALIBRATION) - BODY * 4 + 1):
+    for pos in range(len(gaps) - 2 - len(CALIBRATION) - WIRE * 4 + 1):
         if not (gaps[pos] > SYNC_THRESHOLD_NS and gaps[pos + 1] > SYNC_THRESHOLD_NS):
             continue
         start = pos + 2
@@ -129,8 +169,11 @@ def decode(events):
             rejected += 1
             continue
         values = [max(0, min(3, round((gap - base) / step)))
-                  for gap in gaps[start + len(CALIBRATION):start + len(CALIBRATION) + BODY * 4]]
-        data = correct_symbols(values)
+                  for gap in gaps[start + len(CALIBRATION):start + len(CALIBRATION) + WIRE * 4]]
+        cache_key = tuple(stamps[pos:pos + 3 + len(CALIBRATION) + WIRE * 4])
+        if cache_key not in FRAME_CACHE:
+            FRAME_CACHE[cache_key] = correct_symbols(values)
+        data = FRAME_CACHE[cache_key]
         if data is None or len(data) != BODY:
             rejected += 1
             continue
@@ -142,6 +185,9 @@ def decode(events):
         if index in accepted and accepted[index] != frame:
             raise ValueError('conflicting valid timing frames')
         accepted[index] = frame
+        corrections[index] = sum(a != b for a, b in zip(rs_encode(data, PARITY), packed(values)))
+    DECODE_STATS.clear()
+    DECODE_STATS.update(accepted_frame_corrected_bytes=corrections)
     return accepted, rejected
 
 
@@ -158,7 +204,10 @@ def recover(events):
     if len(compressed) != length:
         raise ValueError('compressed length mismatch')
     source = lzma.decompress(compressed)
-    return source, {'frames':count, 'rejected_frames':rejected, 'bytes':len(source), 'sha256':hashlib.sha256(source).hexdigest()}
+    return source, {'frames':count, 'rejected_frames':rejected, 'bytes':len(source), 'sha256':hashlib.sha256(source).hexdigest(),
+                    'corrected_bytes':sum(DECODE_STATS['accepted_frame_corrected_bytes'].values()),
+                    'maximum_corrected_bytes_in_frame':max(DECODE_STATS['accepted_frame_corrected_bytes'].values(), default=0),
+                    'wire_bytes_per_frame':WIRE, 'parity_bytes_per_frame':PARITY}
 
 
 def publish(source, prepare_pulses, read_events, clock_sleep=time.sleep):
@@ -169,6 +218,7 @@ def publish(source, prepare_pulses, read_events, clock_sleep=time.sleep):
     read_events() fetches receiver-visible owner events after the saved baseline.
     Returned metadata has no source content, timestamp override, or object map.
     """
+    started = time.monotonic()
     all_frames = frames(source)
     attempts = []
     spacing_index = 0
@@ -179,7 +229,7 @@ def publish(source, prepare_pulses, read_events, clock_sleep=time.sleep):
             successful_frames = 0
         for candidate_index in range(spacing_index, len(STEPS)):
             step = STEPS[candidate_index]
-            pulse = prepare_pulses(3 + len(CALIBRATION) + BODY * 4)
+            pulse = prepare_pulses(3 + len(CALIBRATION) + WIRE * 4)
             last_start = time.monotonic()
             def emit_after(delay):
                 nonlocal last_start
@@ -193,7 +243,8 @@ def publish(source, prepare_pulses, read_events, clock_sleep=time.sleep):
             for symbol in (*CALIBRATION, *symbols(frame)):
                 emit_after(SYMBOL_BASE + symbol * step)
             observed, rejected = decode(read_events())
-            attempts.append({'frame':index,'step_seconds':step,'verified':index in observed,'rejected_frames':rejected})
+            attempts.append({'frame':index,'step_seconds':step,'verified':index in observed,'rejected_frames':rejected,
+                             'corrected_bytes':DECODE_STATS['accepted_frame_corrected_bytes'].get(index)})
             if index in observed:
                 successful_frames = successful_frames + 1 if spacing_index == candidate_index else 1
                 spacing_index = candidate_index
@@ -203,7 +254,7 @@ def publish(source, prepare_pulses, read_events, clock_sleep=time.sleep):
     decoded, summary = recover(read_events())
     if decoded != source:
         raise ValueError('sender timing transcript does not reconstruct the original source')
-    return {'attempts':attempts,'verification':summary}
+    return {'attempts':attempts,'verification':summary,'elapsed_seconds':time.monotonic()-started}
 '''
 
 SERVICE_TIMING = FRAMED_TIMING + r'''

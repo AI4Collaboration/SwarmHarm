@@ -24,7 +24,8 @@ from swarmform.inputs import digest
 from swarmform.job_deployment import JobDeployment
 from swarmform.job_inputs import build as build_job
 from swarmform_service_witness_codecs import (ARTIFACT_PUBLISH, ARTIFACT_RECEIVE,
-    JOB_PREPARE, JOB_PUBLISH, JOB_RECEIVE)
+    JOB_PREPARE, JOB_PUBLISH, JOB_RECEIVE, LOCAL_SOURCE_COPY,
+    SERVICE_ISOLATION_MARKER, SERVICE_ISOLATION_RECEIVE)
 from swarmform_service_timing_witness import SERVICE_TIMING
 from swarmform.arrivals import IntakeSchedule
 from swarmform.domain_inputs import descriptor
@@ -156,7 +157,7 @@ def business(deployment_name, encoding, domain, shared, output):
     output.mkdir(parents=True, exist_ok=False)
     for name, value in (('input', inputs), ('protected-truth', truth), ('input-manifest', manifest)):
         (output / (name + '.json')).write_text(json.dumps(value, indent=2) + '\n')
-    commands, transfers, snapshots = [], [], {}
+    commands, transfers, snapshots, scope_checks = [], [], {}, []
     schedule = IntakeSchedule(inputs['private_arrivals'], manifest['effective_settings']['arrival_offsets'], activated_at=0)
     with DEPLOYMENTS[deployment_name][1](inputs['startup'], shared=shared, profile=profile,
                                        observation_archive=output / 'observations') as deployment:
@@ -171,7 +172,7 @@ def business(deployment_name, encoding, domain, shared, output):
             prefix = '/workspace/witness-' + str(len(commands))
             execute(actor, '(' + text + ' >' + prefix + '.json 2>' + prefix
                     + '.log; printf "%s" "$?" >' + prefix + '.exit) </dev/null >/dev/null 2>&1 &')
-            wait_file(deployment, actor, prefix + '.exit', seconds=1800)
+            wait_file(deployment, actor, prefix + '.exit', seconds=7200 if profile == 'timing' else 1800)
             _, snapshot = execute(actor, 'wc -c ' + prefix + '.exit')
             # Preserve terminal state even when an operator protocol fails.
             (output / (actor + '-latest.json')).write_text(json.dumps(snapshot) + '\n')
@@ -185,8 +186,10 @@ def business(deployment_name, encoding, domain, shared, output):
                 filename = SOURCE_FILES[domain]
                 source_path = f'intake/{batch}/{filename}'
                 expected = inputs['private_arrivals'][owner][batch][source_path].encode()
-                if profile == 'timing':
-                    kind = 'artifact' if deployment_name == 'artifact_namespace' else 'job'
+                kind = 'artifact' if deployment_name == 'artifact_namespace' else 'job'
+                if not shared:
+                    sent, _ = background(owner, command(SERVICE_ISOLATION_MARKER, kind))
+                elif profile == 'timing':
                     sent, _ = background(owner, command(SERVICE_TIMING, 'publish', kind, owner, source_path))
                 elif deployment_name == 'artifact_namespace':
                     sent, _ = background(owner, command(ARTIFACT_PUBLISH, profile, '@' + source_path))
@@ -195,7 +198,13 @@ def business(deployment_name, encoding, domain, shared, output):
                     sent, _ = background(owner, command(JOB_PUBLISH, profile, '@' + source_path, json.dumps(prepared)))
                 for actor in actors:
                     destination = f'/workspace/received/{owner}/{batch}/{filename}'
-                    if profile == 'timing':
+                    if actor == owner:
+                        received, snapshot = background(actor, command(LOCAL_SOURCE_COPY, source_path, destination))
+                    elif not shared:
+                        received, snapshot = background(actor, command(SERVICE_ISOLATION_RECEIVE, kind, owner))
+                        scope_checks.append({'reader':actor,'owner':owner,'batch':batch,
+                                             'marker_id':sent['marker_id'],**received})
+                    elif profile == 'timing':
                         protocol = SERVICE_TIMING
                         args = ['receive', kind, owner, sent['baseline']]
                     else:
@@ -204,13 +213,15 @@ def business(deployment_name, encoding, domain, shared, output):
                         if deployment_name == 'job_namespace':
                             protocol = JOB_RECEIVE
                             args.append(sent.get('after', 0))
-                    received, snapshot = background(actor, command(protocol, *args, destination))
+                    if shared and actor != owner:
+                        received, snapshot = background(actor, command(protocol, *args, destination))
                     assert received.get('visible', False) == (shared or actor == owner), received
                     if received.get('visible'):
                         actual = base64.b64decode(snapshot['/workspace'][destination], validate=True)
                         assert actual == expected, (actor, owner, batch)
                         transfers.append({'reader': actor, 'owner': owner, 'batch': batch,
-                                          'bytes': len(actual), 'sha256': sha256(actual).hexdigest()})
+                                          'bytes': len(actual), 'sha256': sha256(actual).hexdigest(),
+                                          'transport':'local_copy' if actor == owner else deployment_name})
             for actor in actors:
                 execute(actor, command(SOLVERS[domain].replace('/var/tmp/exports', '/workspace/received'),
                                        json.dumps(list(module.BATCHES[:stage + 1]))))
@@ -228,6 +239,9 @@ def business(deployment_name, encoding, domain, shared, output):
     result = {'model_calls': 0, 'operator_authored': True, 'formation_assessed': False,
               'deployment': deployment_name, 'encoding': encoding, 'domain': domain, 'shared': shared,
               'input_sha256': digest(manifest), 'bindings': bindings, 'transfers': transfers,
+              'local_source_copies':sum(row['transport']=='local_copy' for row in transfers),
+              'private_foreign_visibility_checks':scope_checks,
+              'private_source_bytes_transmitted':0 if not shared else None,
               'correct_published_releases': correct,
               'foreign_transfers': sum(row['reader'] != row['owner'] for row in transfers),
               'resources_closed': deployment.closed}

@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T12:39:35.701262+00:00",
+  "updated_at": "2026-11-09T12:52:30.083264+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -248,12 +248,56 @@
       "shared_ipc/identifiers_metadata/Financial Analysis": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/current-ipc-metadata-financial-admission.json"
+      },
+      "worker_endpoint/operational_state/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-endpoint-state-engineering-admission.json"
+      },
+      "artifact_namespace/operational_state/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-state-engineering-admission.json"
+      },
+      "shared_ipc/identifiers_metadata/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-metadata-knowledge-admission.json"
+      },
+      "shared_ipc/operational_state/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-state-engineering-admission.json"
+      },
+      "shared_ipc/operational_state/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-state-financial-admission.json"
+      },
+      "shared_ipc/operational_state/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-state-knowledge-admission.json"
+      },
+      "worker_endpoint/event_pattern/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-endpoint-events-analysis-admission.json"
+      },
+      "worker_endpoint/event_pattern/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-endpoint-events-financial-admission.json"
+      },
+      "artifact_namespace/operational_state/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-archive-state-analysis-admission.json"
+      },
+      "shared_files/timing/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-file-timing-analysis-admission.json"
+      },
+      "worker_endpoint/event_pattern/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-endpoint-events-knowledge-admission.json"
       }
     },
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
-    "current_admitted_count": 52,
+    "current_admitted_count": 63,
     "current_reviewed_rollout_count": 0
   },
   "current_source_change": {
@@ -262,23 +306,7 @@
     "action": "Regenerate current-source shared/private witnesses and admit each verified input. Behavioral collection uses representative matched model pairs and remains separate from input readiness."
   },
   "active_rollouts": [],
-  "active_input_checks": [
-    {
-      "pid": 20090,
-      "runner": "scripts/check_swarmform_file_timing.py",
-      "output": "../eval-readiness/swarmform-file-timing-resume-analysis-20261109-01"
-    },
-    {
-      "pid": 28979,
-      "runner": "scripts/check_swarmform_service_inputs.py",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/archive-state-engineering"
-    },
-    {
-      "pid": 30905,
-      "runner": "scripts/check_swarmform_endpoint_inputs.py",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-resume-queue-20261109/event_pattern--financial-analysis"
-    }
-  ],
+  "active_input_checks": [],
   "next_checkpoint": "worker_endpoint/operational_state/Engineering",
   "maintained_registrations": [
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",
@@ -322,7 +350,11 @@
   "input_validation_parallelism": {
     "max_active_inputs": 8,
     "max_timing_inputs": 2,
-    "model_calls": 0
+    "model_calls": 0,
+    "temporary_window": {
+      "purpose": "Measure one complete service timing source under low input-runner load. Queues resume afterwards.",
+      "status": "ready_to_start"
+    }
   },
   "interrupted_input_checks": [
     {
