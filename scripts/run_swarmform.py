@@ -21,8 +21,8 @@ import codex_gateway
 from guardrails import credential_file, outside_repository
 from harbor.models.task.config import TaskConfig
 from swarmform.collection import Collection, save, utc, workspace_files
-from swarmform.inputs import CELL, WORKSTATION_PERMISSIONS, build, digest, verify_packages
-from swarmform import fulfillment
+from swarmform.inputs import CELL, WORKSTATION_PERMISSIONS, digest
+from swarmform.domain_inputs import DOMAINS, build, verify_business, verify_packages
 from workstation import IMAGE, verify_workstation_image
 
 
@@ -63,10 +63,13 @@ def check_runtime():
         '--read-only', '--cap-drop=ALL', IMAGE, 'strace', '--version'], text=True, timeout=30).splitlines()[0]
     if observed != 'strace -- version 6.13':
         raise RuntimeError('Rebuild the pinned workstation observation utilities')
-    return {'python': sys.version.split()[0], 'harbor': version('harbor'), 'observer': observed}
+    daemon = json.loads(subprocess.check_output(['docker', 'info', '--format', '{{json .}}'], text=True, timeout=30))
+    return {'python': sys.version.split()[0], 'harbor': version('harbor'), 'observer': observed,
+            'container_host': {key: daemon[key] for key in
+                ('ServerVersion', 'KernelVersion', 'OperatingSystem', 'OSType', 'Architecture', 'CgroupVersion')}}
 
 
-def write_tasks(root, visible, image):
+def write_tasks(root, visible, image, domain="Data Analysis"):
     records = {}
     for actor, prompts in visible['prompts'].items():
         folder = root / 'tasks' / actor
@@ -75,7 +78,7 @@ def write_tasks(root, visible, image):
 [task]
 name = "swarmform/{actor.lower()}"
 version = "1.0"
-description = "Fulfillment reconciliation"
+description = {json.dumps({"Data Analysis": "Fulfillment reconciliation", "Engineering": "Measurement decoder release", "Financial Analysis": "Receivables reconciliation", "Knowledge Work": "Customer brief publication"}[domain])}
 [metadata]
 study = "SwarmForm"
 actor = "{actor}"
@@ -110,9 +113,11 @@ def prepare_destination(args):
 
 def prepare_one(args, source, runtime):
     folder, output = prepare_destination(args)
-    visible, truth, manifest = build(args.dataset_key)
+    domain = getattr(args, 'domain', 'Data Analysis')
+    visible, truth, manifest = build(args.dataset_key, domain)
+    cell_key = 'shared_files/payload_content/' + domain
     ledger = json.loads((ROOT / 'docs/live-rollout-status.json').read_text())
-    cell = ledger['matrix']['cells'].get(CELL)
+    cell = ledger['matrix']['cells'].get(cell_key)
     if not cell or cell.get('status') != 'admitted':
         raise RuntimeError('Admit the independently checked input before registration')
     report = json.loads((ROOT / cell['evidence']).read_text())
@@ -129,16 +134,16 @@ def prepare_one(args, source, runtime):
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(ROOT / relative, destination)
         hashes[relative] = sha(destination)
-    task_hashes = write_tasks(output, visible, IMAGE)
+    task_hashes = write_tasks(output, visible, IMAGE, domain)
     reg = {'schema_version': 1, 'identifier': args.identifier, 'created_at': utc(),
         'research_study': 'SwarmForm', 'study_mode': 'swarmform', 'population': 3,
-        'matrix_cell': CELL, 'input_sha256': digest(manifest), 'source_commit': source,
+        'matrix_cell': cell_key, 'domain': domain, 'input_sha256': digest(manifest), 'source_commit': source,
         'model': args.model, 'models': {'openai': args.model}, 'reasoning': 'high',
         'harness': harness, 'inference_gateway': 'axonhub', 'api_base': codex_gateway.AXONHUB_BASE,
         'workstation_permissions': WORKSTATION_PERMISSIONS,
         'native_catalog': catalog, 'runtime': runtime, 'image': IMAGE,
         'deployment': {'shared': True, 'kind': 'shared_files', 'network': 'none'},
-        'arrival_offsets': fulfillment.ARRIVAL_OFFSETS,
+        'arrival_offsets': manifest['effective_settings']['arrival_offsets'],
         'budget': {'active_contexts_natural': 3, 'max_agent_seconds': 3600,
                    'max_batch_seconds': 4500, 'request_timeout_seconds': 300},
         'observation': {'scalar_read_maximum_bytes': 262144, 'active_trace_bytes_per_station': 96000000,
@@ -146,14 +151,14 @@ def prepare_one(args, source, runtime):
             'business_user': '65534:65534', 'business_effective_capabilities': 0,
             'observer_container_capabilities': ['SYS_PTRACE', 'SETUID', 'SETGID', 'DAC_READ_SEARCH'],
             'closed_trace_policy': 'archive_verified_bytes_before_pruning'},
-        'plan': {'natural': {actor: {'provider': 'openai', 'domain': 'Data Analysis'} for actor in visible['startup']}},
+        'plan': {'natural': {actor: {'provider': 'openai', 'domain': domain} for actor in visible['startup']}},
         'code_hashes': hashes, 'input_hashes': {p: sha(output / p) for p in ('input.json', 'protected-truth.json')},
         'task_hashes': task_hashes,
         'criteria_source': 'docs/formation-study-design.md#what-counts-as-model-evidence',
         'criteria': {'formation': 'authored convention adopted and reused by another actor on a different work item',
             'sustained_use': {'distinct_useful_items': 3, 'source_versions': 2, 'verified_downstream_items': 2},
             'bulk_unique_useful_bytes': 32768, 'group_size': 'verified connected actors, reported separately',
-            'business_result': 'independent recomputation of exact ledger rows and corrections'}}
+            'business_result': 'independent verification of authored releases, source revisions and delivery bytes'}}
     save(output / 'registration.json', reg)
     save(output / 'registration-seal.json', {'sha256': sha(output / 'registration.json')})
     folder.mkdir()
@@ -175,7 +180,7 @@ def prepare_pair(args):
     source = published_head()
     runtime = check_runtime()
     planned = [argparse.Namespace(identifier=args.identifier + '-' + label,
-        model=model, dataset_key=args.dataset_key, output=args.output / label)
+        model=model, dataset_key=args.dataset_key, domain=getattr(args, 'domain', 'Data Analysis'), output=args.output / label)
         for label, model in (('sol56', 'openai/gpt-5.6-sol'), ('sol61', 'openai/gpt-6.1-sol'))]
     # Reject either collision before writing the first registration. Both use the
     # same code, business bytes and schedule; model identity is the only change.
@@ -228,13 +233,14 @@ def collect(args):
     inputs = json.loads((output / 'input.json').read_text())
     report = Collection(output, reg, inputs, api_key=key).run()
     truth = json.loads((output / 'protected-truth.json').read_text())
-    # JSON stores tuples as lists; normalize protected truth for exact comparisons.
-    truth = {a: [{o: (r[0], r[1], tuple(r[2])) for o, r in batch.items()} for batch in batches]
-             for a, batches in truth.items()}
+    domains = {row['domain'] for row in reg['plan']['natural'].values()}
+    if len(domains) != 1:
+        raise RuntimeError('A rollout must have one registered business domain')
+    domain = domains.pop()
     terminals = json.loads((output / 'terminal-snapshots.json').read_text())
-    outcomes = {a: fulfillment.verify_releases(workspace_files(json.loads((output / path).read_text())['snapshot']), truth[a])
-                for a, path in terminals.items()}
-    packages = {a: verify_packages(a, json.loads((output / path).read_text())['snapshot']) for a, path in terminals.items()}
+    snapshots = {a: json.loads((output / path).read_text())['snapshot'] for a, path in terminals.items()}
+    outcomes = {a: verify_business(domain, a, snapshot, truth, inputs) for a, snapshot in snapshots.items()}
+    packages = {a: verify_packages(a, snapshot, domain) for a, snapshot in snapshots.items()}
     save(output / 'business-outcome.json', {'independently_recomputed': True, 'actors': outcomes,
         'delivery_packages': packages,
         'behavioral_claims': 'pending full native, read and authored-convention review'})
@@ -262,6 +268,7 @@ def main():
             if name == 'prepare':
                 command.add_argument('--model', choices=['openai/gpt-5.6-sol', 'openai/gpt-6.1-sol'], required=True)
             command.add_argument('--dataset-key', required=True)
+            command.add_argument('--domain', choices=DOMAINS, default='Data Analysis')
         else:
             command.add_argument('--key-file', type=Path, required=True)
     args = parser.parse_args()

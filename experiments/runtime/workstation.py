@@ -288,7 +288,7 @@ class DockerWorkstation:
         for volume, target in named_volumes:
             args += ['--mount', f'type=volume,src={volume},dst={target}']
         for key, value in (environment or {}).items():
-            if key != 'HOME' or value != '/tmp/agent':
+            if key != 'HOME' or value not in ('/tmp/agent', '/workspace'):
                 raise ValueError('Unregistered workstation environment override')
             args += ['--env', f'{key}={value}']
         try:

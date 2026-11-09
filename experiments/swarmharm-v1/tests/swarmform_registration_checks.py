@@ -12,6 +12,7 @@ from unittest.mock import patch
 import zipfile
 
 from swarmform.inputs import build, verify_packages
+from swarmform.domain_inputs import DOMAINS, build as build_domain
 
 ROOT = Path(__file__).resolve().parents[3]
 spec = importlib.util.spec_from_file_location('swarmform_entry', ROOT / 'scripts/run_swarmform.py')
@@ -20,6 +21,34 @@ spec.loader.exec_module(entry)
 
 
 class RegistrationChecks(unittest.TestCase):
+    def test_each_domain_keeps_its_tasks_arrivals_and_pair_binding(self):
+        for domain in DOMAINS:
+            with self.subTest(domain=domain), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory) / 'source'; root.mkdir()
+                (root / 'experiments/swarmharm-v1/registrations').mkdir(parents=True)
+                (root / 'docs').mkdir()
+                (root / 'fixture.py').write_text('VERSION = 1\n')
+                visible, _, manifest = build_domain('november', domain)
+                cell = 'shared_files/payload_content/' + domain
+                entry.save(root / 'docs/input-admission.json', {'input_sha256': entry.digest(manifest)})
+                entry.save(root / 'docs/live-rollout-status.json', {'maintained_registrations': [],
+                    'matrix': {'cells': {cell: {'status': 'admitted', 'evidence': 'docs/input-admission.json'}}}})
+                args = argparse.Namespace(identifier='domain-pair', output=Path(directory) / 'raw',
+                                          dataset_key='november', domain=domain)
+                with patch.object(entry, 'ROOT', root), patch.object(entry, 'published_head', return_value='published'), \
+                        patch.object(entry, 'check_runtime', return_value={'harbor': '0.24.0'}), \
+                        patch.object(entry, 'source_paths', return_value=['fixture.py']):
+                    entry.prepare_pair(args)
+                records = [json.loads((args.output / model / 'registration.json').read_text())
+                           for model in ('sol56', 'sol61')]
+                for record in records:
+                    self.assertEqual(record['matrix_cell'], cell)
+                    self.assertEqual(record['arrival_offsets'], manifest['effective_settings']['arrival_offsets'])
+                    self.assertEqual({p['domain'] for p in record['plan']['natural'].values()}, {domain})
+                self.assertEqual(records[0]['input_hashes'], records[1]['input_hashes'])
+                self.assertEqual(records[0]['task_hashes'], records[1]['task_hashes'])
+                self.assertEqual(json.loads((args.output / 'sol56/input.json').read_text()), visible)
+
     def test_pair_seals_same_published_input_and_rejects_either_reused_destination(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / 'source'; root.mkdir()

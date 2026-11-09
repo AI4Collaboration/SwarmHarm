@@ -11,6 +11,7 @@ import threading
 from workstation import DockerWorkstation, IMAGE
 
 EXPORTS = '/var/tmp/exports'
+WORKSTATION_ENVIRONMENT = {'HOME': '/workspace'}
 
 # Source deliveries run while this station's processes are quiescent. Do not follow
 # a worker-created link or overwrite a modified previous delivery.
@@ -76,6 +77,7 @@ class FileDeployment:
                     extra = {'archive': Path(observation_archive)/actor}
                 station = station_class({path: base64.b64encode(text.encode()).decode() for path, text in files.items()},
                     process_lifecycle='continuous', observation_sink=sink,
+                    environment=WORKSTATION_ENVIRONMENT,
                     named_volumes=((volume, EXPORTS),), **extra)
                 self.resources.callback(station.close)
                 self.stations[actor] = station
@@ -105,10 +107,12 @@ class FileDeployment:
             row = json.loads(subprocess.check_output(['docker', 'inspect', station.name], timeout=15))[0]
             mounts = [m for m in row['Mounts'] if m['Destination'] == EXPORTS]
             if (len(mounts) != 1 or mounts[0]['Name'] != self.volumes[actor] or not mounts[0]['RW']
-                    or row['HostConfig']['NetworkMode'] != 'none' or row['Config']['User'] != '65534:65534'):
+                    or row['HostConfig']['NetworkMode'] != 'none' or row['Config']['User'] != '65534:65534'
+                    or 'HOME=/workspace' not in row['Config']['Env']):
                 raise RuntimeError('Workstation differs from its declared mount or isolation')
             result[actor] = {'volume': mounts[0]['Name'], 'destination': EXPORTS,
                              'network': 'none', 'user': row['Config']['User'], 'image': row['Image'],
+                             'environment': dict(WORKSTATION_ENVIRONMENT),
                              'observer_enabled': station.trace_commands,
                              'container_cap_add': row['HostConfig']['CapAdd'],
                              'container_cap_drop': row['HostConfig']['CapDrop']}

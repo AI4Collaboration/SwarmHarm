@@ -10,6 +10,7 @@ import zipfile
 from workstation import AUTONOMOUS_EXECUTION
 from swarmform import fulfillment
 from swarmform.collection import BASH
+from swarmform.file_deployment import WORKSTATION_ENVIRONMENT
 
 CELL = 'shared_files/payload_content/Data Analysis'
 WORKSTATION_PERMISSIONS = {'type': 'workspaceWrite', 'networkAccess': False,
@@ -44,6 +45,7 @@ def build(dataset_key):
             'export_directory': '/var/tmp/exports', 'permissions': '1777',
             'process_lifecycle': 'continuous', 'network': 'none',
             'arrival_offsets': fulfillment.ARRIVAL_OFFSETS,
+            'workstation_environment': WORKSTATION_ENVIRONMENT,
             'native_workstation_permissions': WORKSTATION_PERMISSIONS,
             'notice': 'private_source_changes_only', 'goal_mode': 'off'},
         'worker_visible_sha256': digest(visible)}

@@ -1,6 +1,6 @@
 {
   "schema_version": 12,
-  "updated_at": "2026-11-08T23:36:30.571234+00:00",
+  "updated_at": "2026-11-09T00:05:40.647791+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "developing_matrix_inputs",
@@ -35,53 +35,59 @@
     ],
     "offline_workload_checks": {
       "Data Analysis": "experiments/swarmharm-v1/tests/fulfillment_input_checks.py",
-      "Financial Analysis": "experiments/swarmharm-v1/tests/settlement_input_checks.py"
+      "Financial Analysis": "experiments/swarmharm-v1/tests/settlement_input_checks.py",
+      "Engineering": "experiments/swarmharm-v1/tests/engineering_input_checks.py",
+      "Knowledge Work": "experiments/swarmharm-v1/tests/knowledge_input_checks.py"
     },
     "unlisted_cell_status": "open",
     "cells": {
       "shared_files/payload_content/Data Analysis": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/file-content-analysis-admission.json"
+      },
+      "shared_files/payload_content/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/file-content-engineering-admission.json"
+      },
+      "shared_files/payload_content/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/file-content-financial-admission.json"
+      },
+      "shared_files/payload_content/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/file-content-knowledge-admission.json"
       }
     }
   },
-  "active_rollouts": [
-    {
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-file-content-analysis-02-sol56",
-      "model": "openai/gpt-5.6-sol",
-      "records": "../eval-readiness/swarmform-file-content-analysis-02/sol56",
-      "status_source": "started.json and completion.json in the external records directory"
-    },
-    {
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-file-content-analysis-02-sol61",
-      "model": "openai/gpt-6.1-sol",
-      "records": "../eval-readiness/swarmform-file-content-analysis-02/sol61",
-      "status_source": "started.json and completion.json in the external records directory"
-    }
-  ],
+  "active_rollouts": [],
   "heartbeat": {
     "automation_id": "swarmform-20",
     "interval_minutes": 20,
     "status": "ACTIVE"
   },
-  "next_checkpoint": "shared_files/payload_content/Data Analysis",
-  "maintained_registrations": [
-    "experiments/swarmharm-v1/registrations/swarmform-file-content-analysis-02-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-file-content-analysis-02-sol61"
-  ],
+  "next_checkpoint": "shared_files/payload_content/Engineering",
+  "maintained_registrations": [],
   "runtime_fixture_checks": {
     "shared_files": {
-      "state": "native_sessions_and_real_arrivals_verified",
+      "state": "four_domains_witnessed_first_model_pair_reviewed",
       "test": "experiments/swarmharm-v1/tests/swarmform_deployment_checks.py",
       "operator_witness": "scripts/check_swarmform_file_deployment.py",
       "shared_correct_station_batches": 9,
       "private_incomplete_station_batches": 9,
       "model_calls": 0,
       "pending": [
-        "model_validation"
+        "model_validation_of_new_domains_and_private_home_condition"
       ],
       "read_observer_check": "experiments/swarmharm-v1/tests/swarmform_read_observer_checks.py",
       "native_integration_check": "experiments/swarmharm-v1/tests/swarmform_collection_checks.py"
     }
-  }
+  },
+  "reviewed_pairs": [
+    {
+      "review": "docs/research/swarmform-file-content-analysis-02.json",
+      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-file-content-analysis-02",
+      "input_sha256": "d35a83b827ce2aee3e8b864ea0641237f5c337af16db5774065151bf105c58f2",
+      "current_input_delta": "private HOME corrected; model replay pending"
+    }
+  ]
 }

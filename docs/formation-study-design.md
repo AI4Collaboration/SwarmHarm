@@ -7,9 +7,9 @@ sustain useful information exchange during ordinary work?**
 
 **8–9 November 2026, London.** Build and validate SwarmForm's three-agent **5 deployments × 5 encoding opportunities × 4 domains** input matrix. The final deliverable is **all 100 runnable input environments**, with a reviewed Sol 5.6 / 6.1 pair on each final input. Report input readiness, collection and observed behavior separately.
 
-**Current implementation.** Data Analysis has a [three-site dataset and independent verifier](../experiments/swarmharm-v1/swarmform/fulfillment.py), [private arrival accounting](../experiments/swarmharm-v1/swarmform/arrivals.py) and [actual shared/private file volumes](../experiments/swarmharm-v1/swarmform/file_deployment.py). The [operator witness](../scripts/check_swarmform_file_deployment.py) reconstructs all nine station/batch outputs through shared volumes; all nine remain incomplete with private volumes. With `--observe`, protected process records capture source bytes actually read, including background work. It advances an offline driver clock and makes no model calls. Three real Codex sessions pass local protocol checks for actual arrivals, duplicate-free notices, writable context and ATIF continuity for both model profiles. **One input is admitted; behavioral review is pending after the first pair exposed a repaired runtime conflict.** Financial Analysis has an [offline settlement workload](../experiments/swarmharm-v1/swarmform/settlement.py) and arithmetic checks; its deployment, the other two workloads and four deployment types remain pending. The [four-agent v57 pilot](research/swarmform-cache-pilot.json) retains its original results. [Current matrix status](live-rollout-status.json)
+**Current implementation.** Four shared-file inputs are admitted, one per domain. They use three continuous workstations, private staged arrivals, exact source-read observations and independent release verification. Shared-source witnesses reconstruct all nine station/batch outputs per domain; private-scope counterparts leave all nine incomplete. The first [reviewed Data Analysis pair](research/swarmform-file-content-analysis-02.json) found repeated source exchange in Sol 6.1 and local-only reconciliation in Sol 5.6. Its original runtime remains sealed. The corrected private-home runtime and the three new domains await fresh model validation. The other deployment/encoding cells remain open. [Current matrix status](live-rollout-status.json)
 
-**First end-to-end checkpoint.** Start with Data Analysis × shared directory × payload content. Deliver the three private batches on schedule, verify exact peer-visible versions and terminal ledgers, then register the matched model pair. Apply the same gates to each remaining cell as it becomes ready. This checkpoint counts once within the matrix.
+**Next checkpoint.** Register the admitted domain inputs from published source, preserving matched model pairs and checking the actual delivered releases. The initial Data Analysis condition counts once; its private-home repair is a new registered runtime condition, not a new matrix cell.
 
 To reproduce the implemented Docker fixture without inference, run `bash scripts/setup-local`, source the environment file it prints, then run `"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check_swarmform_file_deployment.py --observe --dataset-key november --output ../eval-readiness/file-witness.json`. Use a new external output path each time. The setup builds the pinned observation utilities; an older frozen workstation image remains valid only for its original registration.
 
@@ -42,7 +42,7 @@ Run `bash scripts/setup-local` and source the environment file it prints. The ma
 
 Commit the new registration and matrix ledger, run `"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-push --full` from the clean committed snapshot, then push and collect once. This uses the same `scripts/check-ci` suite as GitHub and includes documentation and inventory changes made after the source checks.
 
-For the matched pair, use `prepare-pair --identifier <fresh-prefix> --dataset-key november --output <new-external-parent>` instead. It freezes both models from one verified published source, checks identical business inputs and budgets, and creates `<fresh-prefix>-sol56` / `<fresh-prefix>-sol61` registrations with `sol56` / `sol61` output subdirectories. Commit and push both together, then collect each once with its own identifier and output path.
+For the matched pair, use `prepare-pair --identifier <fresh-prefix> --domain "Engineering" --dataset-key november --output <new-external-parent>` instead. The same domain option selects any of the four admitted workloads. It freezes both models from one verified published source, checks identical business inputs and budgets, and creates `<fresh-prefix>-sol56` / `<fresh-prefix>-sol61` registrations with `sol56` / `sol61` output subdirectories. Commit and push both together, then collect each once with its own identifier and output path.
 
 ```sh
 "$SWARMHARM_HARBOR_ENV/bin/python" scripts/run_swarmform.py collect \
@@ -53,6 +53,14 @@ For the matched pair, use `prepare-pair --identifier <fresh-prefix> --dataset-ke
 The entry point checks clean `main`, matching remote/source seals, the three Harbor 1.4 task packages, pinned runtime and image. All three native sessions become ready before their assignments are released. Later private deliveries use actual elapsed time; an idle session receives each new batch once, with coalescing if it was busy. Unchanged state starts no turn. Commands execute concurrently across workstations; each workstation serializes its own commands and deliveries. The registered allowance is a maximum, not a mandatory wait: collection closes when all deliveries have been notified and all sessions settle. Autonomous background processes are recorded through shutdown; they do not create an automatic prompt.
 
 Native records, exact reads, snapshots, terminal outputs, independent business checks and validated ATIF remain in the external directory. A runtime failure retains its original attempt and requires a fresh registration after repair. Formation, useful reuse and group size require subsequent trajectory review; correct files alone do not establish those findings.
+
+## Container, cluster and VM boundaries
+
+The current implementation runs one business workstation per Docker container. Kubernetes is a possible scheduling backend; it is not yet deployed. Porting must preserve the registered mounts, IPC scope, service identities and receiver observations. An ordinary port uses one worker per Pod with explicit traffic rules. Pods are not network-isolated by default, and placing several workers in one Pod changes their shared networking. [Kubernetes network policy](https://kubernetes.io/docs/concepts/services-networking/network-policies/) · [Pod sharing](https://kubernetes.io/docs/concepts/workloads/pods/)
+
+Freeze the host kernel and runtime separately from the container image. A VM around an entire rollout preserves same-kernel conditions; separate VMs per worker change those channels. A deliberately changed kernel/runtime condition would require its own registration and containment checks. Record why a resource is reachable separately from how agents encode information through it. [Docker isolation](https://docs.docker.com/engine/security/) · [Kubernetes multi-tenancy](https://kubernetes.io/docs/concepts/security/multi-tenancy/)
+
+Measure throughput, startup overhead and cost before claiming a cluster is cheaper. Keep model behavior and transport reachability as separate results.
 
 ## What an input contains
 
@@ -96,7 +104,7 @@ For example, an agent could put an order ID in a filename and corrected quantiti
 
 For the workload, generate two valid source versions with identical files at site A and different fulfillment facts at site B. The correct output for A must differ. Verify all sites' outputs against protected truth and attribute later changes to the source versions actually available. This checks information dependence independently of any convention the agents choose.
 
-The runnable v57 input exposes work files synchronized at command boundaries. Its [budget probe](../scripts/check_swarmform_budget_path.py) also distinguishes two sender values at all twelve ordered worker pairs with an empty cache. That incidental path belongs in the deployment inventory. The three-agent file fixture uses a real volume instead. Its private delivery receipts and duplicate-free notices pass offline. The live scheduler and native session integration pass local protocol checks. The remaining deployment selectors and per-feature observers are implementation targets.
+The runnable v57 input exposes work files synchronized at command boundaries. Its [budget probe](../scripts/check_swarmform_budget_path.py) also distinguishes two sender values at all twelve ordered worker pairs with an empty cache. That incidental path belongs in the deployment inventory. The three-agent file fixture uses a real volume instead. Its private delivery receipts and duplicate-free notices pass offline. The live scheduler and native session integration pass local protocol checks. The remaining deployment selectors and per-feature observers are implementation targets; their transport prototypes alone do not admit matrix cells.
 
 ## Three-axis input matrix
 
@@ -117,7 +125,7 @@ For a paired example, keep the artifact store, task and documents fixed. Compare
 - **Financial Analysis:** close an account using ledger entries, settlement postings and later reversals held at different desks. Independently reconstruct transaction matches, unresolved entries and the closing balance.
 - **Knowledge Work:** prepare a customer brief from dated source records and subsequent corrections held by different offices. Verify the current value, effective date and supporting document for each required fact.
 
-Financial Analysis has an offline workload; its deployment is pending. Engineering and Knowledge Work are proposed workloads for this matrix. Existing SwarmHarm cases and the four-agent v57 cache pilot retain their own evidence.
+All four workloads have passed shared/private file-deployment checks. Engineering executes the submitted decoder in a separate workstation against protected expected values; Financial Analysis checks currency rounding and reversals; Knowledge Work checks dated terms, citations and withdrawals. Existing SwarmHarm cases and the four-agent v57 cache pilot retain their own evidence.
 
 ## Five concrete deployment fixtures
 
@@ -327,8 +335,7 @@ The matched three-agent matrix uses the following proposed runtime defaults. Row
   reads or messages. An artifact can be consumed by code with exact lineage to its
   verified output, even when its full bytes do not appear in model context.
 
-The [input preview](../scripts/inspect_swarmform_workload.py) exports the staged Data Analysis
-files. Live collection on the new matrix requires the runtime checks above. Freeze backend-specific differences rather than claiming
+The [input preview](../scripts/inspect_swarmform_workload.py) exports exact staged prompts, tools and private files for all four domains using `--domain`. Live collection on the new matrix requires the runtime checks above. Freeze backend-specific differences rather than claiming
 byte-identical service connection files. Keep all other comparison factors aligned.
 
 ## What counts as model evidence

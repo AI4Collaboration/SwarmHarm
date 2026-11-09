@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export the three private fulfillment intakes and run the independent input checks."""
+"""Export exact startup prompts, tools and staged business files for a domain."""
 
 import argparse
 import json
@@ -8,33 +8,38 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'experiments/swarmharm-v1'))
-from swarmform import fulfillment
+sys.path[:0] = [str(ROOT / 'experiments/runtime'), str(ROOT / 'experiments/swarmharm-v1')]
+from swarmform.domain_inputs import DOMAINS, build, descriptor
 
 
-def write_preview(folder, dataset_key, staged):
-    audit = fulfillment.check_workload(dataset_key)
-    private, _ = fulfillment.source_material(dataset_key)
+def write_preview(folder, dataset_key, staged, domain='Data Analysis'):
+    visible, _, manifest = build(dataset_key, domain)
+    private = visible['private_arrivals']
+    module, _, _ = descriptor(domain)
     for site, batches in private.items():
         station = folder / 'initial' / site if staged else folder / site
         startup = station / 'workspace' if staged else station
         startup.mkdir(parents=True)
-        (station / 'assignment.txt').write_text(fulfillment.assignment(site) + '\n')
-        (startup / 'work-order.md').write_text(fulfillment.WORK_ORDER)
+        (station / 'assignment.txt').write_text('\n\n'.join(visible['prompts'][site]))
+        for absolute, text in visible['startup'][site].items():
+            path = startup / absolute.removeprefix('/workspace/')
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text)
         for batch, files in batches.items():
             destination = startup
-            if staged and batch != fulfillment.BATCHES[0]:
+            if staged and batch != module.BATCHES[0]:
                 destination = folder / 'arrivals' / batch / site / 'workspace'
             for relative, content in files.items():
                 path = destination / relative
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(content)
     if staged:
-        (folder / 'arrival-offsets-seconds.json').write_text(json.dumps(fulfillment.ARRIVAL_OFFSETS, indent=2) + '\n')
-    (folder / 'input-audit.json').write_text(json.dumps(audit, indent=2) + '\n')
+        (folder / 'arrival-offsets-seconds.json').write_text(json.dumps(manifest['effective_settings']['arrival_offsets'], indent=2) + '\n')
+    (folder / 'input-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    (folder / 'tool-schema.json').write_text(json.dumps(visible['tools'], indent=2) + '\n')
 
 
-def export_workload(target, dataset_key, *, staged=False):
+def export_workload(target, dataset_key, *, staged=False, domain='Data Analysis'):
     """Build outside the destination, then publish the complete preview without overwriting one."""
     target = Path(target).resolve()
     if target.is_relative_to(ROOT):
@@ -44,7 +49,7 @@ def export_workload(target, dataset_key, *, staged=False):
     target.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=target.parent) as tmp:
         preview = Path(tmp) / 'preview'
-        write_preview(preview, dataset_key, staged)
+        write_preview(preview, dataset_key, staged, domain)
         # Reserve the name only after export succeeds. Concurrent exporters cannot
         # take over an existing destination, including an empty directory.
         target.mkdir()
@@ -58,15 +63,16 @@ def export_workload(target, dataset_key, *, staged=False):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dataset-key', required=True, help='Selects the synthetic business data.')
+    parser.add_argument('--domain', choices=DOMAINS, default='Data Analysis')
     parser.add_argument('--output', type=Path, required=True, help='New directory outside the repository.')
     parser.add_argument('--staged', action='store_true',
                         help='Separate the initial workstations and later private source deliveries.')
     args = parser.parse_args()
     try:
-        export_workload(args.output, args.dataset_key, staged=args.staged)
+        export_workload(args.output, args.dataset_key, staged=args.staged, domain=args.domain)
     except (OSError, ValueError) as error:
         parser.error(str(error))
-    print(f'Checked {len(fulfillment.SITES)} sites and {len(fulfillment.BATCHES)} batches. Input preview: {args.output.resolve()}')
+    print(f'Exported {args.domain}: three private workstations and three source batches. Input preview: {args.output.resolve()}')
 
 
 if __name__ == '__main__':

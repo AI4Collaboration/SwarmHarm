@@ -50,7 +50,8 @@ class FulfillmentInputChecks(unittest.TestCase):
             for site in f.SITES:
                 station = root / 'initial' / site
                 self.assertEqual({p.relative_to(station).as_posix() for p in station.rglob('*') if p.is_file()},
-                                 {'assignment.txt', 'workspace/work-order.md', 'workspace/intake/opening/orders.csv',
+                                 {'assignment.txt', 'workspace/work-order.md', 'workspace/delivery.json',
+                                  'workspace/tools/package_report.py', 'workspace/intake/opening/orders.csv',
                                   'workspace/intake/opening/postings.csv'})
                 for batch in f.BATCHES[1:]:
                     update = root / 'arrivals' / batch / site

@@ -77,6 +77,10 @@ class RealVolumeChecks(unittest.TestCase):
                     observation_sink=lambda a, p, v: retained.append((a, p, v))) as deployment:
                 names = [s.name for s in deployment.stations.values()]
                 volumes = set(deployment.volumes.values())
+                home, _ = deployment.execute('A', 'printf "%s" "$HOME"; test -w "$HOME"')
+                self.assertEqual(home['exit_code'], 0)
+                self.assertEqual(home['stdout'], '/workspace')
+                self.assertEqual(home['stderr'], '')
                 result, _ = deployment.execute('A',
                     "python -c 'import pathlib,time; time.sleep(.2); "
                     "pathlib.Path(\"/var/tmp/exports/note.txt\").write_text(\"new source\")' "
