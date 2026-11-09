@@ -39,7 +39,7 @@ def build(dataset_key,domain='Data Analysis'):
                 'permissions':'1777','process_lifecycle':'continuous','network':'none',
                 'arrival_offsets':dict(zip(module.BATCHES,(0,180,420))),
                 'workstation_environment':WORKSTATION_ENVIRONMENT,
-                'native_workstation_permissions':inputs.WORKSTATION_PERMISSIONS,'notice':'private_source_changes_only','goal_mode':'off'},
+                'native_workstation_permissions':inputs.WORKSTATION_PERMISSIONS,'notice':'delivered_private_sources_not_yet_accessed','goal_mode':'off'},
               'worker_visible_sha256':inputs.digest(visible)}
     return visible,truth,manifest
 

@@ -1,5 +1,6 @@
 """Real Codex threads and containers against a local deterministic protocol fixture."""
 
+from hashlib import sha256
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
@@ -27,6 +28,9 @@ class Responses(BaseHTTPRequestHandler):
             number = len(self.server.requests)
         latest = max(i for i, item in enumerate(request['input']) if item.get('role') == 'user')
         returned = any(i.get('type') == 'function_call_output' for i in request['input'][latest + 1:])
+        if not returned and self.server.wait_for_arrivals:
+            if not self.server.deliveries_ready.wait(timeout=25):
+                raise TimeoutError('Fixture deliveries did not complete')
         if returned:
             items = [{'type': 'message', 'id': f'msg-{number}', 'role': 'assistant',
                       'phase': 'final_answer', 'content': [{'type': 'output_text', 'text': 'Fixture finished.'}]}]
@@ -58,9 +62,16 @@ class CollectionChecks(unittest.TestCase):
             with self.subTest(model=model):
                 self.check_native_sessions(model)
 
-    def check_native_sessions(self, model):
+    def test_busy_sessions_do_not_restart_after_accessing_the_delivered_updates(self):
+        for model in ('openai/gpt-5.6-sol', 'openai/gpt-6.1-sol'):
+            with self.subTest(model=model):
+                self.check_native_sessions(model, wait_for_arrivals=True)
+
+    def check_native_sessions(self, model, *, wait_for_arrivals=False):
         server = ThreadingHTTPServer(('127.0.0.1', 0), Responses)
         server.requests, server.lock = [], threading.Lock()
+        server.wait_for_arrivals = wait_for_arrivals
+        server.deliveries_ready = threading.Event()
         threading.Thread(target=server.serve_forever, daemon=True).start()
         original = codex_gateway.write_config
 
@@ -87,7 +98,13 @@ class CollectionChecks(unittest.TestCase):
                     'budget': {'max_batch_seconds': 100, 'max_agent_seconds': 70, 'request_timeout_seconds': 30},
                     'study_mode': 'swarmform', 'research_study': 'SwarmForm', 'plan': {'natural': {a: {} for a in actors}}}
                 save(root / 'registration.json', registration)
-                collection = Collection(root, registration, inputs, api_key='offline-fixture')
+                class FixtureCollection(Collection):
+                    def deliver_arrivals(self, deployment):
+                        super().deliver_arrivals(deployment)
+                        if self.schedule.all_delivered:
+                            server.deliveries_ready.set()
+
+                collection = FixtureCollection(root, registration, inputs, api_key='offline-fixture')
                 report = collection.run()
                 self.assertIsNone(report['failure'], report)
                 self.assertEqual(report['reason'], 'quiescence')
@@ -100,8 +117,20 @@ class CollectionChecks(unittest.TestCase):
                     self.assertEqual(record['files'], file_hashes(private[record['actor']][record['batch']]))
                 for actor in actors:
                     state = report['actors'][actor]
-                    self.assertEqual([b for notice in state['notices'] for b in notice['batches']], ['update', 'close'])
-                    self.assertGreaterEqual(state['tools'], 2)
+                    notified = {b for notice in state['notices'] for b in notice['batches']}
+                    accessed = {b for a, b in collection.schedule.accessed if a == actor}
+                    self.assertEqual(notified | accessed, {'update', 'close'})
+                    self.assertFalse(notified & accessed)
+                    for batch in accessed:
+                        for receipt in collection.schedule.accessed[(actor, batch)]['reads'].values():
+                            self.assertFalse(Path(receipt['observation']).is_absolute())
+                            raw = (root / receipt['observation']).read_bytes()
+                            self.assertEqual(sha256(raw).hexdigest(), receipt['observation_sha256'])
+                    if wait_for_arrivals:
+                        self.assertEqual(state['notices'], [])
+                        self.assertEqual(accessed, {'update', 'close'})
+                        self.assertEqual(state['tools'], 1)
+                    self.assertGreaterEqual(state['tools'], 1)
                     self.assertLessEqual(state['tools'], 3)
                     self.assertEqual(state['tools'], 1 + len(state['notices']))
                     output = export_atif.export_actor(root, 'natural', actor)

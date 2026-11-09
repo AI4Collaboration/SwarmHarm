@@ -21,6 +21,7 @@ class IntakeSchedule:
         self.activated_at = activated_at
         self.receipts = {}
         self.notified = set()
+        self.accessed = {}
         for batches in private.values():
             for batch, files in batches.items():
                 for path in files:
@@ -58,7 +59,7 @@ class IntakeSchedule:
         if active:
             return None
         batches = [batch for batch, offset in self.offsets.items()
-                   if offset and (actor, batch) in self.receipts and (actor, batch) not in self.notified]
+                   if offset and (actor, batch) in self.receipts and (actor, batch) not in self.notified and (actor, batch) not in self.accessed]
         if not batches:
             return None
         paths = [f'/workspace/{path}' for batch in batches for path in sorted(self.private[actor][batch])]
@@ -70,6 +71,35 @@ class IntakeSchedule:
         if not batches or any((actor, batch) not in self.receipts or not self.offsets[batch] for batch in batches):
             raise ValueError('Notice does not identify delivered private updates')
         self.notified.update((actor, batch) for batch in batches)
+
+    def acknowledge_reads(self, actor, reads):
+        """Omit arrival-only notices once each delivered file was accessed.
+
+        This is scheduling evidence, not a business-completion judgment.
+        """
+        if actor not in self.private:
+            raise ValueError('Unknown station')
+        added = []
+        for batch, offset in self.offsets.items():
+            identity = (actor, batch)
+            if not offset or identity not in self.receipts or identity in self.notified or identity in self.accessed:
+                continue
+            hashes = self.receipts[identity]['files']
+            selected = {path: reads.get('/workspace/' + path) for path in hashes}
+            if not all(receipt and receipt.get('bytes_read', 0) > 0
+                       and receipt.get('delivered_file_sha256') == hashes[path]
+                       for path, receipt in selected.items()):
+                continue
+            record = {'actor': actor, 'batch': batch, 'reads': selected,
+                      'reason': 'delivered_files_already_accessed',
+                      'claim_scope': 'arrival_awareness_not_completion'}
+            self.accessed[identity] = record
+            added.append(record)
+        return added
+
+    @property
+    def updates_accounted(self):
+        return len(self.notified | set(self.accessed)) == len(self.private) * (len(self.offsets) - 1)
 
     @property
     def all_delivered(self):

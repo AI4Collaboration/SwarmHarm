@@ -42,4 +42,3 @@ def execute_release(source, probes):
                 'source_sha256':sha256(source.encode()).hexdigest(),'command':result}
     finally:
         station.close()
-

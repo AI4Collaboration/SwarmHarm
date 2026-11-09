@@ -18,6 +18,7 @@ from codex_gateway import AXONHUB_BASE
 from response_monitor import classify
 from swarmform.arrivals import IntakeSchedule
 from swarmform.file_deployment import FileDeployment
+from swarmform.intake_observation import intake_read_receipts
 
 
 BASH = {'type': 'function', 'name': 'bash',
@@ -47,7 +48,7 @@ def workspace_files(snapshot):
 class Collection:
     def __init__(self, root, registration, input_data, *, api_key,
                  agent_class=CodexAgent, deployment_class=FileDeployment):
-        self.root, self.reg, self.input = Path(root), registration, input_data
+        self.root, self.reg, self.input = Path(root).resolve(), registration, input_data
         self.api_key, self.agent_class, self.deployment_class = api_key, agent_class, deployment_class
         self.actors = tuple(input_data['startup'])
         if (len(self.actors) != 3 or registration['population'] != 3
@@ -62,6 +63,8 @@ class Collection:
         self.snapshot_lock = threading.Lock()
         self.snapshots, self.terminals, self.tool_counts, self.executed = {}, {}, {}, set()
         self.sequence = 0
+        self.read_receipts = {a: {} for a in self.actors}
+        self.read_blobs = {a: set() for a in self.actors}
         self.pool = ThreadPoolExecutor(max_workers=3)
         self.jobs = {}
         self.failure, self.reason = None, 'quiescence'
@@ -113,6 +116,10 @@ class Collection:
             return
         try:
             for actor in self.actors:
+                for receipt in self.schedule.acknowledge_reads(actor, self.read_receipts[actor]):
+                    self.record(actor, {'type': 'intake_notice_suppressed', **receipt})
+                    save(self.root / 'natural' / actor / 'intake-read-receipts.json',
+                         [row for (owner, _), row in self.schedule.accessed.items() if owner == actor])
                 notice = self.schedule.pending_notice(actor, active=actor in self.active)
                 if notice:
                     self.agents[actor].prompt(notice['text'])
@@ -179,7 +186,14 @@ class Collection:
         elif kind == 'shell_ready':
             future = message['future']
             owner, call = self.jobs.pop(future)
-            result, _ = future.result()
+            result, snapshot = future.result()
+            if reference := snapshot.get('command_observation'):
+                expected = {'/workspace/' + path: content.encode()
+                    for files in self.input['private_arrivals'][owner].values() for path, content in files.items()}
+                reads = intake_read_receipts(reference, expected, self.read_blobs[owner])
+                for path, receipt in reads.items():
+                    receipt['observation'] = str(Path(receipt['observation']).relative_to(self.root))
+                    self.read_receipts[owner].setdefault(path, receipt)
             self.finish_tool(owner, call, result, delivered=True)
         elif kind == 'settled':
             if message.get('aborted') or message.get('error_message'):
@@ -239,7 +253,7 @@ class Collection:
             self.arrival_thread.start()
             while time.monotonic() < deadline:
                 self.notify_ready()
-                notifications_complete = len(self.schedule.notified) == len(self.actors) * (len(self.reg['arrival_offsets']) - 1)
+                notifications_complete = self.schedule.updates_accounted
                 if (self.schedule.all_delivered and notifications_complete
                         and not self.arrival_thread.is_alive()
                         and not self.active and not self.jobs and self.events.empty()):

@@ -4,13 +4,13 @@
   "matrix_cell": "shared_files/payload_content/Data Analysis",
   "status": "admitted",
   "input_manifest": "docs/research/swarmform-inputs/file-content-analysis.json",
-  "input_sha256": "7f40124efb57f0a426aa0e36325dfbe24fa80040c6b35155c1d1071680836a65",
+  "input_sha256": "e070f8d4ed92464629006571de1f5132456926d37ea2ea0479a8f307bbf0c95c",
   "dataset_key": "november",
   "behavioral_validation": "pending on this exact runtime condition",
   "model_calls": 0,
   "witness": {
-    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-admission-03/data.json",
-    "sha256": "59e6f774ccc071b63a55fddede76fbac462cfba863a274862dd0410bee6b35d5",
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-admission-04/data.json",
+    "sha256": "10be36d640d7c02f239dc1fbcade8b59364c6ab8f34b57c8214536e8ef4c29b5",
     "reproduce": "scripts/check_swarmform_file_deployment.py --observe --dataset-key november --output <new-external-path>",
     "shared_correct_station_batches": 9,
     "private_incomplete_station_batches": 9,
@@ -33,6 +33,7 @@
   "previous_reviewed_pair": {
     "review": "docs/research/swarmform-file-content-analysis-02.json",
     "input_sha256": "d35a83b827ce2aee3e8b864ea0641237f5c337af16db5774065151bf105c58f2",
-    "runtime_delta": "Explicit private HOME=/workspace; task, source bytes and notice policy unchanged."
-  }
+    "runtime_delta": "Private HOME=/workspace and observed-arrival notification repair; task and source bytes unchanged. Original notices and scores remain sealed."
+  },
+  "notice_policy": "Delivered private batches generate one notice only if protected reads have not already established access to every file; access is not completion."
 }

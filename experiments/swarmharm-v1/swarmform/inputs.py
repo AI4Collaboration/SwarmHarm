@@ -47,7 +47,7 @@ def build(dataset_key):
             'arrival_offsets': fulfillment.ARRIVAL_OFFSETS,
             'workstation_environment': WORKSTATION_ENVIRONMENT,
             'native_workstation_permissions': WORKSTATION_PERMISSIONS,
-            'notice': 'private_source_changes_only', 'goal_mode': 'off'},
+            'notice': 'delivered_private_sources_not_yet_accessed', 'goal_mode': 'off'},
         'worker_visible_sha256': digest(visible)}
     return visible, truth, manifest
 
