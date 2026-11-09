@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-09T23:15:22.693874+00:00",
+  "updated_at": "2026-11-09T23:16:29.491665+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -1120,13 +1120,17 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-current-engineering-metadata-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "input_sha256": "59a6abb77d79920bda899a563040beda09fddb6a203897ffeb51d14dd2be14c4",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-current-engineering-metadata-01-sol61",
           "registration_sha256": "c725087e9d6a788b2e3a1269f6cb2ad655838545820688a98cdf729262754926",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-endpoint-current-metadata-01/engineering/rollout",
-          "substantive_refinement_rounds": 1
+          "substantive_refinement_rounds": 1,
+          "pid": 3649,
+          "started_at": "2026-11-09T23:16:16.392645+00:00",
+          "worker": "lima-swarmform-timing-01",
+          "supervisor_pid": 3646
         },
         "refinement_history": [
           {
@@ -1156,11 +1160,13 @@
         ],
         "active_refinement": {
           "round": 1,
-          "status": "registered",
+          "status": "running",
           "identifier": "swarmform-endpoint-current-engineering-metadata-01-sol61",
           "input_sha256": "59a6abb77d79920bda899a563040beda09fddb6a203897ffeb51d14dd2be14c4",
           "source_commit": "f649dbb288ac0d58fc2a70e0cf39c520e1b61e75",
-          "change": "Current corrected intake wording and optional processor status; data, business truth and service authorization unchanged. No isolated causal attribution to either repair."
+          "change": "Current corrected intake wording and optional processor status; data, business truth and service authorization unchanged. No isolated causal attribution to either repair.",
+          "pid": 3649,
+          "started_at": "2026-11-09T23:16:16.392645+00:00"
         }
       },
       "shared_ipc/operational_state/Data Analysis": {
@@ -1859,13 +1865,17 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-current-knowledge-metadata-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "input_sha256": "e16ee79d3facb339f71e6503ab3650cede0e886b30ccddc355af313befe27f8b",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-current-knowledge-metadata-01-sol61",
           "registration_sha256": "eebbc997e8fae7e11076f2748ea08b238fc12e788dc2755197ae2bec907d334f",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-endpoint-current-metadata-01/knowledge/rollout",
-          "substantive_refinement_rounds": 1
+          "substantive_refinement_rounds": 1,
+          "pid": 3650,
+          "started_at": "2026-11-09T23:16:16.478592+00:00",
+          "worker": "lima-swarmform-timing-01",
+          "supervisor_pid": 3645
         },
         "refinement_history": [
           {
@@ -1891,11 +1901,13 @@
         ],
         "active_refinement": {
           "round": 1,
-          "status": "registered",
+          "status": "running",
           "identifier": "swarmform-endpoint-current-knowledge-metadata-01-sol61",
           "input_sha256": "e16ee79d3facb339f71e6503ab3650cede0e886b30ccddc355af313befe27f8b",
           "source_commit": "f649dbb288ac0d58fc2a70e0cf39c520e1b61e75",
-          "change": "Optional actual processor listener status; unchanged task, sources and original service operations."
+          "change": "Optional actual processor listener status; unchanged task, sources and original service operations.",
+          "pid": 3650,
+          "started_at": "2026-11-09T23:16:16.478592+00:00"
         }
       },
       "job_namespace/identifiers_metadata/Data Analysis": {
@@ -4484,6 +4496,44 @@
       "status": "running",
       "registration_sha256": "1a06ce0e2421c7708f2af071296ff2fc62a4cab46b47de44cd56b1bfcf723ae3",
       "registration": "experiments/swarmharm-v1/registrations/swarmform-engineering-intake-job-metadata-01-sol61"
+    },
+    {
+      "identifier": "swarmform-endpoint-current-knowledge-metadata-01-sol61",
+      "matrix_cell": "worker_endpoint/identifiers_metadata/Knowledge Work",
+      "cell": "worker_endpoint/identifiers_metadata/Knowledge Work",
+      "model": "openai/gpt-6.1-sol",
+      "domain": "Knowledge Work",
+      "encoding": "identifiers_metadata",
+      "slot_suffix": "",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-endpoint-current-metadata-01/knowledge/rollout",
+      "input_sha256": "e16ee79d3facb339f71e6503ab3650cede0e886b30ccddc355af313befe27f8b",
+      "registration_sha256": "eebbc997e8fae7e11076f2748ea08b238fc12e788dc2755197ae2bec907d334f",
+      "source_commit": "f649dbb288ac0d58fc2a70e0cf39c520e1b61e75",
+      "pid": 3650,
+      "supervisor_pid": 3645,
+      "status": "running",
+      "started_at": "2026-11-09T23:16:16.478592+00:00",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-current-knowledge-metadata-01-sol61",
+      "worker_context": "lima-swarmform-timing-01"
+    },
+    {
+      "identifier": "swarmform-endpoint-current-engineering-metadata-01-sol61",
+      "matrix_cell": "worker_endpoint/identifiers_metadata/Engineering",
+      "cell": "worker_endpoint/identifiers_metadata/Engineering",
+      "model": "openai/gpt-6.1-sol",
+      "domain": "Engineering",
+      "encoding": "identifiers_metadata",
+      "slot_suffix": ".slot2",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-endpoint-current-metadata-01/engineering/rollout",
+      "input_sha256": "59a6abb77d79920bda899a563040beda09fddb6a203897ffeb51d14dd2be14c4",
+      "registration_sha256": "c725087e9d6a788b2e3a1269f6cb2ad655838545820688a98cdf729262754926",
+      "source_commit": "f649dbb288ac0d58fc2a70e0cf39c520e1b61e75",
+      "pid": 3649,
+      "supervisor_pid": 3646,
+      "status": "running",
+      "started_at": "2026-11-09T23:16:16.392645+00:00",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-current-engineering-metadata-01-sol61",
+      "worker_context": "lima-swarmform-timing-01"
     }
   ],
   "active_input_checks": [
