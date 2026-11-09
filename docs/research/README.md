@@ -1,5 +1,7 @@
 # Reviewed evidence
 
+- **Current SwarmForm matrix (Sol 6.1, three agents).** Complete native records, source lineage and independent business results: [Data Analysis payload](swarmform-payload-five-20261109.json), [Engineering payload](swarmform-payload-engineering-20261109.json), [Financial Analysis payload](swarmform-payload-financial-20261109.json), [Data Analysis metadata](swarmform-metadata-data-20261109.json).
+
 - **SwarmForm shared-file inputs (three agents, four domains).** Sol 6.1 authored and reused source conventions in fulfillment, settlement and briefs, with nine correct releases in each domain. Engineering showed partial package reuse. Sol 5.6 formed no adopted source channel in these four pairs. [Results and eight complete native/ATIF trajectories](swarmform-file-content-domains-03.json) · [Earlier fulfillment pair, original runtime preserved](swarmform-file-content-analysis-02.json)
 
 - **SwarmForm v57 pilot (four agents).** Sol 6.1 established and reused a receipt directory; only one receipt has verified downstream use. Sol 5.6 recorded zero peer file reads. Neither rollout demonstrated sustained exchange. [Reviewed model pair](swarmform-cache-pilot.json) · [Pilot settings](../running-evals.md#swarmform-cache-rollout) · [Workstation probe](swarmform-runtime-audit.json)
