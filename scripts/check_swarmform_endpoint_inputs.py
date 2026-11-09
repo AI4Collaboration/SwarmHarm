@@ -319,16 +319,31 @@ def business(encoding, domain, shared, output, dataset_key='november'):
 
             if profile == 'state':
                 for owner in actors:
+                    # Own source material needs no network relay. Cross-office
+                    # data still travels only through the selected public state view.
+                    destination = f'/workspace/received/{owner}/{batch}/{filename}'
+                    local = r"""import hashlib,json,sys
+from pathlib import Path
+source,destination=map(Path,sys.argv[1:]);data=source.read_bytes()
+destination.parent.mkdir(parents=True,exist_ok=True);destination.write_bytes(data)
+evidence=destination.with_suffix(destination.suffix+'.local-read.json')
+evidence.write_text(json.dumps({'source':str(source),'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'transport':'own_intake'}))
+print(json.dumps({'visible':True,'complete':True,'evidence':str(evidence),'evidence_sha256':hashlib.sha256(evidence.read_bytes()).hexdigest()}))
+"""
+                    result, snapshot = run(owner, command(local, source_path, destination))
+                    retain(owner, owner, json.loads(result['stdout']), snapshot)
                     readers = {}
                     for actor in actors:
+                        if actor == owner:
+                            continue
                         destination = f'/workspace/received/{owner}/{batch}/{filename}'
                         readers[actor] = start(actor, command(STATE_RECEIVE, urls[owner], owner, batch, destination))
-                    ack_urls = [urls[a] for a in actors if shared or a == owner]
+                    ack_urls = [urls[a] for a in actors if shared and a != owner]
                     sender = start(owner, command(STATE_SEND, source_path, owner, batch, json.dumps(ack_urls)))
                     sent, _ = finish(owner, sender)
                     writes.append({'owner': owner, 'batch': batch, **sent[0]})
-                    for actor in actors:
-                        received, snapshot = finish(actor, readers[actor])
+                    for actor, prefix in readers.items():
+                        received, snapshot = finish(actor, prefix)
                         retain(owner, actor, received[0], snapshot)
             else:
                 pending = {a: start(a, command(PUBLISH, profile, source_path, batch, 0, 0),

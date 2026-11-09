@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T12:23:09.303957+00:00",
+  "updated_at": "2026-11-09T12:39:35.701262+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -208,12 +208,52 @@
       "worker_endpoint/identifiers_metadata/Knowledge Work": {
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/current-endpoint-metadata-knowledge-admission.json"
+      },
+      "job_namespace/identifiers_metadata/Data Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-job-metadata-analysis-admission.json"
+      },
+      "job_namespace/identifiers_metadata/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-job-metadata-engineering-admission.json"
+      },
+      "job_namespace/identifiers_metadata/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-job-metadata-financial-admission.json"
+      },
+      "shared_ipc/payload_content/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-content-financial-admission.json"
+      },
+      "shared_ipc/payload_content/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-content-knowledge-admission.json"
+      },
+      "shared_files/timing/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-file-timing-engineering-admission.json"
+      },
+      "worker_endpoint/event_pattern/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-endpoint-events-engineering-admission.json"
+      },
+      "job_namespace/identifiers_metadata/Knowledge Work": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-job-metadata-knowledge-admission.json"
+      },
+      "shared_ipc/identifiers_metadata/Engineering": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-metadata-engineering-admission.json"
+      },
+      "shared_ipc/identifiers_metadata/Financial Analysis": {
+        "status": "admitted",
+        "evidence": "docs/research/swarmform-inputs/current-ipc-metadata-financial-admission.json"
       }
     },
     "implemented_export_count": 100,
     "materialized_input_count": 100,
     "mechanism_runner_count": 25,
-    "current_admitted_count": 42,
+    "current_admitted_count": 52,
     "current_reviewed_rollout_count": 0
   },
   "current_source_change": {
@@ -224,24 +264,19 @@
   "active_rollouts": [],
   "active_input_checks": [
     {
-      "pid": 3400,
-      "runner": "scripts/check_swarmform_endpoint_inputs.py",
-      "output": "../eval-readiness/swarmform-resume-endpoint-state-engineering-20261109-02"
-    },
-    {
-      "pid": 84631,
+      "pid": 20090,
       "runner": "scripts/check_swarmform_file_timing.py",
-      "output": "../eval-readiness/swarmform-file-timing-resume-engineering-20261109-03"
+      "output": "../eval-readiness/swarmform-file-timing-resume-analysis-20261109-01"
     },
     {
-      "pid": 96352,
+      "pid": 28979,
       "runner": "scripts/check_swarmform_service_inputs.py",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-metadata-engineering"
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/archive-state-engineering"
     },
     {
-      "pid": 99459,
+      "pid": 30905,
       "runner": "scripts/check_swarmform_endpoint_inputs.py",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-resume-queue-20261109/operational_state--financial-analysis"
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-resume-queue-20261109/event_pattern--financial-analysis"
     }
   ],
   "next_checkpoint": "worker_endpoint/operational_state/Engineering",

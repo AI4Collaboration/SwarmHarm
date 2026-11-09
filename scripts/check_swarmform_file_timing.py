@@ -125,17 +125,20 @@ def command(script, *args):
 
 
 def wait_for(deployment, actor, path, seconds=900):
-    deadline = time.monotonic() + seconds
-    while True:
-        result = subprocess.run(['docker', 'exec', deployment.stations[actor].name,
-            'sh', '-c', 'test ! -f "$1.error" || exit 2; test -f "$1"', 'sh', path], capture_output=True)
-        if result.returncode == 0:
-            return
-        if result.returncode != 1:
-            raise RuntimeError(actor + ': timing process failed; see retained logs for ' + path)
-        if time.monotonic() > deadline:
-            raise TimeoutError(actor + ' ' + path)
-        time.sleep(.05)
+    script = """import pathlib,sys,time
+path=pathlib.Path(sys.argv[1]);deadline=time.monotonic()+float(sys.argv[2])
+while True:
+ if pathlib.Path(str(path)+'.error').exists():raise SystemExit(2)
+ if path.exists():raise SystemExit(0)
+ if time.monotonic()>deadline:raise SystemExit(3)
+ time.sleep(.05)
+"""
+    result = subprocess.run(['docker', 'exec', deployment.stations[actor].name,
+        'python', '-I', '-c', script, path, str(seconds)], capture_output=True, timeout=seconds+30)
+    if result.returncode == 3:
+        raise TimeoutError(actor + ' ' + path)
+    if result.returncode:
+        raise RuntimeError(actor + ': timing process failed; see retained logs for ' + path)
 
 
 def background(text, marker, log):

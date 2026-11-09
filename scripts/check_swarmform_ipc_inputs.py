@@ -9,7 +9,6 @@ from pathlib import Path
 import shlex
 import subprocess
 import sys
-import time
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / 'experiments/runtime'), str(ROOT / 'experiments/swarmharm-v1'), str(ROOT / 'scripts')]
@@ -34,11 +33,23 @@ def command(script, *args):
 
 
 def wait_file(deployment, actor, path, seconds=900):
-    deadline = time.monotonic() + seconds
-    while subprocess.run(['docker', 'exec', deployment.stations[actor].name, 'test', '-f', path], capture_output=True).returncode:
-        if time.monotonic() > deadline:
-            raise TimeoutError(actor + ': ' + path)
-        time.sleep(.05)
+    script = '''import sys,time
+from pathlib import Path
+path=Path(sys.argv[1]);deadline=time.monotonic()+float(sys.argv[2])
+while not path.is_file():
+ if time.monotonic()>=deadline:sys.exit(124)
+ time.sleep(.05)
+'''
+    try:
+        subprocess.run(['docker', 'exec', deployment.stations[actor].name,
+                        'python', '-I', '-c', script, path, str(seconds)],
+                       check=True, capture_output=True, timeout=seconds + 10)
+    except subprocess.TimeoutExpired as error:
+        raise TimeoutError(actor + ': ' + path) from error
+    except subprocess.CalledProcessError as error:
+        if error.returncode == 124:
+            raise TimeoutError(actor + ': ' + path) from error
+        raise
 
 
 def exercise(domain, encoding, shared, output):
