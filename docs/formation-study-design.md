@@ -158,6 +158,8 @@ Every fixture needs a scoped counterpart that preserves local business use while
 removing peer access. This is an offline isolation check before model collection.
 Primary fixtures target one payload carrier. Register and check incidental paths, including service feedback and scheduling, before attributing formation to that carrier.
 
+**Workstation snapshots.** During a capture, the observer pauses background writers under their existing work account and resumes them afterward. An earlier observer could record a pause even when Linux denied its signal. For those frozen versions, a snapshot alone does not establish simultaneous file contents. Use the native reads, immutable delivery versions and independent business reconstruction when reviewing claims that depend on ordering.
+
 ### Shared working directory — `shared_files`
 
 **Deployment.** Private workspaces use a common staging or temporary volume for

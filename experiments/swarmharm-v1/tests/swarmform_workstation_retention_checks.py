@@ -3,6 +3,7 @@ import base64
 import json
 from pathlib import Path
 import subprocess
+import time
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 import unittest
@@ -13,6 +14,44 @@ from swarmform.endpoint_deployment import EndpointDeployment
 from swarmform.ipc_deployment import IPCDeployment
 
 class WorkstationRetentionChecks(unittest.TestCase):
+    def test_background_writer_stops_for_snapshot_and_resumes(self):
+        with TemporaryDirectory() as folder:
+            station = ObservedFileStation(
+                {}, archive=Path(folder) / 'trace', process_lifecycle='continuous',
+                business_uid=62000, business_gid=62000)
+            path = '/workspace/counter'
+            writer = (
+                "import time\n"
+                f"with open({path!r}, 'ab', buffering=0) as counter:\n"
+                "    while True:\n        counter.write(b'x')\n        time.sleep(.005)"
+            )
+
+            def size():
+                return int(subprocess.check_output(
+                    ['docker', 'exec', station.name, 'stat', '-c', '%s', path],
+                    text=True, timeout=10))
+
+            try:
+                subprocess.run(['docker', 'exec', station.name, 'touch', path], check=True)
+                subprocess.run(['docker', 'exec', '-d', station.name, 'python', '-c', writer], check=True)
+                deadline = time.monotonic() + 3
+                while size() == 0 and time.monotonic() < deadline:
+                    time.sleep(.01)
+                self.assertGreater(size(), 0)
+                snapshot = station.capture_frozen('observation')
+                try:
+                    captured = len(base64.b64decode(snapshot['/workspace'][path]))
+                    time.sleep(.05)
+                    self.assertEqual(size(), captured)
+                finally:
+                    station.resume_captured(snapshot)
+                deadline = time.monotonic() + 3
+                while size() == captured and time.monotonic() < deadline:
+                    time.sleep(.01)
+                self.assertGreater(size(), captured)
+            finally:
+                station.close()
+
     def test_three_megabyte_business_history_is_retained_and_work_continues(self):
         with TemporaryDirectory() as folder:
             station=ObservedFileStation({},archive=Path(folder)/'trace',process_lifecycle='continuous')

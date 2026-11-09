@@ -22,28 +22,52 @@ def process_info(pid):
             'command': (path / 'cmdline').read_bytes().replace(b'\0', b' ').decode(errors='replace')}
 
 
+def signal_process(process, sig):
+    """Signal the observed process with its own UID when the observer lacks CAP_KILL."""
+    try:
+        os.kill(process['pid'], sig)
+    except PermissionError:
+        caller = os.geteuid()
+        if caller != 0 or process['uid'] == caller:
+            raise
+        os.seteuid(process['uid'])
+        try:
+            os.kill(process['pid'], sig)
+        finally:
+            os.seteuid(caller)
+
+
 def resume(processes):
+    denied = []
     for item in processes:
         try:
             current = process_info(item['pid'])
             if current['start_ticks'] == item['start_ticks']:
-                os.kill(item['pid'], signal.SIGCONT)
-        except (FileNotFoundError, ProcessLookupError, PermissionError):
+                signal_process(current, signal.SIGCONT)
+        except (FileNotFoundError, ProcessLookupError):
             pass
+        except PermissionError:
+            denied.append(item['pid'])
+    if denied:
+        raise PermissionError(f'Workstation processes could not be resumed: {denied}')
 
 
 def freeze(observe_traced=False, subject_uid=None):
     stopped, observed = {}, {}
     subject_uid = (65534 if observe_traced else os.getuid()) if subject_uid is None else subject_uid
     if not 0<=subject_uid<=65534:raise ValueError('Invalid observed account')
+    deadline = time.monotonic() + 2
     try:
-        for _ in range(20):
-            active = False
+        while True:
+            pending = []
             for path in Path('/proc').iterdir():
                 if not path.name.isdigit() or int(path.name) in (1, os.getpid()):
                     continue
                 try:
                     item = process_info(path.name)
+                except (FileNotFoundError, ProcessLookupError, PermissionError):
+                    continue
+                try:
                     observer = observe_traced and item['uid'] == 0 and item['name'] == 'strace'
                     if item['uid'] != subject_uid and not observer:
                         continue
@@ -59,17 +83,18 @@ def freeze(observe_traced=False, subject_uid=None):
                         tracer = process_info(item['tracer_pid'])
                         if tracer['state'] in ('T', 'Z', 'X'):
                             continue
-                        active = True
+                        pending.append((item['pid'], 't', item['tracer_pid']))
                         continue
+                    signal_process(item, signal.SIGSTOP)
                     stopped.setdefault(key, item)
-                    os.kill(item['pid'], signal.SIGSTOP)
-                    active = True
-                except (FileNotFoundError, ProcessLookupError, PermissionError):
+                    pending.append((item['pid'], item['state'], item['tracer_pid']))
+                except (FileNotFoundError, ProcessLookupError):
                     continue
-            if not active:
+            if not pending:
                 return list(stopped.values()), list(observed.values())
+            if time.monotonic() >= deadline:
+                raise RuntimeError(f'Workstation processes did not settle for observation: {pending}')
             time.sleep(.005)
-        raise RuntimeError('Workstation processes did not settle for observation')
     except BaseException:
         resume(stopped.values())
         raise
