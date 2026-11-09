@@ -46,6 +46,20 @@ class SwarmFormLedgerChecks(unittest.TestCase):
                 with self.subTest(models=models), self.assertRaisesRegex(SystemExit, 'known Sol models'):
                     checks.validate_active_matrix(self.status)
 
+    def test_delivery_scope_keeps_supplemental_cells_out_of_default_selection(self):
+        from swarmform_scope import selected_cells, role
+        selected = selected_cells(self.status)
+        retained = selected_cells(self.status, all_retained=True)
+        self.assertEqual(len(selected), 30)
+        self.assertEqual(sum(cell[2] == 'Knowledge Work' for cell in selected), 25)
+        engineering = [cell for cell in selected if cell[2] == 'Engineering']
+        self.assertEqual(len(engineering), 5)
+        self.assertEqual({cell[1] for cell in engineering}, {'payload_content'})
+        self.assertEqual({cell[0] for cell in engineering}, set(self.matrix['deployments']))
+        self.assertEqual(len(retained), 100)
+        self.assertTrue(set(selected) < set(retained))
+        self.assertEqual(role(self.status, self.cell), 'supplemental')
+
     def test_workload_suite_is_bound_to_its_domain(self):
         for path in (self.matrix['offline_workload_checks']['Data Analysis'],
                      'experiments/swarmharm-v1/tests/swarmform_runtime_checks.py'):

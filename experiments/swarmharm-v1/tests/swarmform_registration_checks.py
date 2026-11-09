@@ -82,7 +82,7 @@ class RegistrationChecks(unittest.TestCase):
                             entry.verify_frozen(registration, output)
                         changed.write_text('original operator\n')
 
-    def test_matrix_requires_all_admissions_and_prepares_100_for_selected_model(self):
+    def test_matrix_requires_all_admissions_and_prepares_selected_scope_for_selected_model(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / 'source'
             (root / 'experiments/swarmharm-v1/registrations').mkdir(parents=True)
@@ -99,7 +99,7 @@ class RegistrationChecks(unittest.TestCase):
                         entry.save(root / evidence, {'matrix_cell': key, 'status': 'admitted',
                             'input_manifest': effective, 'input_sha256': entry.digest(manifest)})
                         cells[key] = {'status': 'admitted', 'evidence': evidence}
-            ledger = {'maintained_registrations': [], 'matrix': {'cells': cells}}
+            ledger = {'maintained_registrations': [], 'delivery_scope': {'primary_domain': 'Knowledge Work', 'generalization_domain': 'Engineering', 'generalization_encoding': 'payload_content'}, 'matrix': {'cells': cells, 'deployments': list(entry.IMPLEMENTED_ENCODINGS), 'encoding_opportunities': list(next(iter(entry.IMPLEMENTED_ENCODINGS.values()))), 'domains': list(entry.DOMAINS)}}
             missing = next(reversed(cells))
             cells[missing]['status'] = 'pending'
             entry.save(root / 'docs/live-rollout-status.json', ledger)
@@ -162,22 +162,22 @@ class RegistrationChecks(unittest.TestCase):
                             fixture.reset_mock()
                         prepared.clear()
                         result = entry.prepare_matrix(selected)
-                        self.assertEqual(result['prepared_inputs'], 100)
-                        self.assertEqual(result['prepared_registrations'], 100)
+                        self.assertEqual(result['prepared_inputs'], 30)
+                        self.assertEqual(result['prepared_registrations'], 30)
                         self.assertEqual(result['model_calls'], 0)
                         self.assertEqual(result['model'], selected.model)
                         head.assert_called_once(); runtime.assert_called_once()
-                        self.assertEqual(one.call_count, 100)
+                        self.assertEqual(one.call_count, 30)
                         harness.assert_called_once_with('off', selected.model)
                         catalog.assert_called_once_with(selected.model, 'high')
-                        self.assertEqual(len({item.identifier for item in prepared}), 100)
-                        self.assertEqual(len({item.output for item in prepared}), 100)
+                        self.assertEqual(len({item.identifier for item in prepared}), 30)
+                        self.assertEqual(len({item.output for item in prepared}), 30)
                         index = json.loads(Path(result['index']).read_text())
                         self.assertEqual(index['source_commit'], 'published')
                         self.assertEqual(index['status'], 'prepared')
                         self.assertEqual(index['model'], selected.model)
-                        self.assertEqual(len(index['registrations']), 100)
-                        self.assertEqual(len({row['matrix_cell'] for row in index['registrations']}), 100)
+                        self.assertEqual(len(index['registrations']), 30)
+                        self.assertEqual(len({row['matrix_cell'] for row in index['registrations']}), 30)
                         self.assertEqual({row['model'] for row in index['registrations']}, {selected.model})
                         self.assertTrue(all(row['identifier'].endswith('-' + entry.MODEL_LABELS[selected.model])
                                             for row in index['registrations']))

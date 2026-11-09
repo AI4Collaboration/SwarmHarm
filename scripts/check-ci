@@ -93,6 +93,9 @@ def select_checks(files, full=False):
             elif stem == 'job_service':
                 suites('swarmform_job_service', 'swarmform_registration')
                 checks.add('wording')
+            elif stem in {'base_archive', 'profile_archive'}:
+                suites('swarmform_archive_policy', 'swarmform_archive_outcome')
+                checks.add('wording')
             elif stem in {'report_package', 'package_delivery'}:
                 suites('swarmform_package')
             else:
@@ -109,7 +112,7 @@ def select_checks(files, full=False):
             else:
                 suites('*')  # Shared runtime and evidence code serves both studies.
                 docker = True
-        elif name in {'scripts/swarmform_delivery_export.py', 'scripts/export_swarmform_input_matrix.py', 'scripts/run_swarmform.py',
+        elif name in {'scripts/swarmform_scope.py', 'scripts/swarmform_delivery_export.py', 'scripts/export_swarmform_input_matrix.py', 'scripts/run_swarmform.py',
                       'scripts/check_swarmform_catalog.py', 'scripts/check_swarmform_inputs.py'}:
             suites('swarmform_registration', 'swarmform_input_runner', 'swarmform_ledger')
             checks.update(('catalog', 'inputs'))

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Materialize all 100 SwarmForm input environments without model calls."""
+"""Materialize the selected SwarmForm inputs without model calls."""
 
 import argparse
 from hashlib import sha256
-from itertools import product
 import json
 from pathlib import Path
 import subprocess
@@ -18,7 +17,7 @@ sys.path[:0] = [
 ]
 
 import run_swarmform
-from swarmform.domain_inputs import DOMAINS
+from swarmform_scope import selected_cells
 from swarmform.input_catalog import (
     IMPLEMENTED_ENCODINGS,
     build,
@@ -92,6 +91,7 @@ def main(argv=None):
     parser.add_argument("--dataset-key", default="november")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--accepted", action="store_true", help="Export the reviewed final input for each qualifying environment")
+    parser.add_argument("--all-retained", action="store_true", help="Include all retained domains and configurations")
     args = parser.parse_args(argv)
     output = args.output.resolve()
     if output.exists():
@@ -101,23 +101,18 @@ def main(argv=None):
     if args.accepted:
         from swarmform_delivery_export import export_accepted
         output.parent.mkdir(parents=True, exist_ok=True)
-        index = export_accepted(ROOT, output, args.dataset_key)
+        index = export_accepted(ROOT, output, args.dataset_key, all_retained=args.all_retained)
         print(f"Exported {index['environments']} accepted environments to {output}")
         return
     output.mkdir(parents=True)
+    ledger = json.loads((ROOT / 'docs/live-rollout-status.json').read_text())
+    selected = selected_cells(ledger, all_retained=args.all_retained)
     rows = []
-    for deployment, domain in product(IMPLEMENTED_ENCODINGS, DOMAINS):
-        for encoding in IMPLEMENTED_ENCODINGS[deployment]:
-            rows.append(materialize(
-                output,
-                args.dataset_key,
-                deployment,
-                encoding,
-                domain,
-            ))
-    if len(rows) != 100 or len({row["matrix_cell"] for row in rows}) != 100:
-        raise RuntimeError("The generated matrix is not 5 x 5 x 4")
-    if len({row["input_sha256"] for row in rows}) != 100:
+    for deployment, encoding, domain in selected:
+        rows.append(materialize(output, args.dataset_key, deployment, encoding, domain))
+    if len(rows) != len(selected) or len({row["matrix_cell"] for row in rows}) != len(selected):
+        raise RuntimeError("The generated inputs differ from the selected scope")
+    if len({row["input_sha256"] for row in rows}) != len(selected):
         raise RuntimeError("Two matrix cells produced the same effective input")
     index = {
         "kind": "swarmform_input_matrix",
@@ -127,6 +122,7 @@ def main(argv=None):
         "dataset_key": args.dataset_key,
         "input_environments": len(rows),
         "model_calls": 0,
+        "scope": "all_retained" if args.all_retained else ledger['delivery_scope'],
         "cells": rows,
     }
     save(output / "index.json", index)
@@ -134,7 +130,7 @@ def main(argv=None):
         "input_environments": len(rows),
         "deployments": len(IMPLEMENTED_ENCODINGS),
         "encodings_per_deployment": sorted({len(value) for value in IMPLEMENTED_ENCODINGS.values()}),
-        "domains": len(DOMAINS),
+        "domains": len({cell[2] for cell in selected}),
         "model_calls": 0,
         "output": str(output),
     }))

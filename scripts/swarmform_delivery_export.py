@@ -7,6 +7,7 @@ import re
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
+from swarmform_scope import selected_cells, role
 
 
 PACKAGE_README = '# SwarmForm inputs\n\nEach row of index.json is one accepted environment. Its directory contains the exact workstation inputs, protected business truth, three Harbor tasks, effective input manifest and sealed model registration. The source directory identifies the matching runtime. The trajectory link and SHA-256 identify the case reviewed for that input.\n\nAll included observations use three Sol 6.1 agents through Codex and AxonHub. The index reports sustained exchange, bulk exchange and correct business deliveries separately. Credentials and protected truth belong on the operator host. Use the project running guide and register a fresh identifier for a new collection.\n'
@@ -55,15 +56,16 @@ def is_final(cell):
                for key in ("identifier", "input_sha256", "substantive_refinement_rounds"))
 
 
-def export_accepted(repo, output, dataset_key="november"):
+def export_accepted(repo, output, dataset_key="november", *, all_retained=False):
     ledger = read_json(repo / "docs/live-rollout-status.json")
+    selected = {'/'.join(cell) for cell in selected_cells(ledger, all_retained=all_retained)}
     rows = []
     with TemporaryDirectory(dir=output.parent) as temporary:
         stage = Path(temporary) / "inputs"
         stage.mkdir()
         for cell, item in sorted(ledger["matrix"]["cells"].items()):
             result = item.get("current_model_result", {})
-            if not is_final(item):
+            if cell not in selected or not is_final(item):
                 continue
             reg_dir = repo / "experiments/swarmharm-v1/registrations" / result["identifier"]
             reg_path = reg_dir / "registration.json"
@@ -97,13 +99,14 @@ def export_accepted(repo, output, dataset_key="november"):
                 (package / name).write_bytes((reg_dir / name).read_bytes())
             subprocess.run([sys.executable, "-B", str(Path(__file__).resolve()), "--build",
                             str(source), str(package), str(package / "registration.json"), dataset_key], check=True)
-            rows.append({"cell": cell, "directory": package.relative_to(stage).as_posix(),
+            rows.append({"cell": cell, "role": role(ledger, cell), "directory": package.relative_to(stage).as_posix(),
                          "source": source.relative_to(stage).as_posix(), "input_sha256": reg["input_sha256"],
                          "registration_sha256": seal["sha256"], "rollout": reg["identifier"],
                          "sustained_three_agent_exchange": bool(result.get("three_agent_swarm") and result.get("sustained_substantive_exchange")),
                          "bulk_exchange": result.get("bulk_group"), "correct_deliveries_of_nine": result["fully_correct_intake_deliveries"],
                          "trajectory_url": result["trajectory_url"], "trajectory_sha256": result["archive_sha256"]})
-        index = {"population": ledger["population"], "model": ledger["current_models"], "environments": len(rows), "cells": rows}
+        index = {"population": ledger["population"], "model": ledger["current_models"], "environments": len(rows),
+                 "scope": "all_retained" if all_retained else ledger['delivery_scope'], "cells": rows}
         (stage / "index.json").write_text(json.dumps(index, indent=2) + "\n")
         (stage / "README.md").write_text(PACKAGE_README)
         if output.exists():

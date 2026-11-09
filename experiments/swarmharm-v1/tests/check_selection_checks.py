@@ -51,6 +51,15 @@ class CheckSelectionChecks(unittest.TestCase):
         self.assertFalse(plan['docker'])
         self.assertEqual(plan['harnesses'], [])
 
+    def test_archive_service_edits_do_not_select_unrelated_harnesses(self):
+        plan = select(['experiments/swarmharm-v1/swarmform/base_archive.py',
+                       'experiments/swarmharm-v1/swarmform/profile_archive.py'])
+        self.assertEqual(plan['tests'], ['tests.swarmform_archive_outcome_checks',
+                                         'tests.swarmform_archive_policy_checks'])
+        self.assertIn('wording', plan['checks'])
+        self.assertFalse(plan['docker'])
+        self.assertEqual(plan['harnesses'], [])
+
     def test_shared_workstation_and_full_checks_keep_runtime_coverage(self):
         for plan in (select(['experiments/runtime/workstation.py']), select([], full=True)):
             self.assertTrue(plan['docker'])

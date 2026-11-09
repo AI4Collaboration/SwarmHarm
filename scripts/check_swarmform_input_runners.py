@@ -2,9 +2,9 @@
 """Check and list the offline witness runner for every SwarmForm input cell."""
 
 import argparse
-from itertools import product
 import json
 from pathlib import Path
+from swarmform_scope import selected_cells
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,9 +52,11 @@ def runner(deployment, encoding, domain, output="{output}"):
     raise ValueError(deployment)
 
 
-def matrix():
+def matrix(*, all_retained=False):
     rows = []
-    for deployment, encoding, domain in product(DEPLOYMENTS, ENCODINGS, DOMAINS):
+    ledger = json.loads((ROOT / "docs/live-rollout-status.json").read_text())
+    selected = selected_cells(ledger, all_retained=all_retained)
+    for deployment, encoding, domain in selected:
         command = runner(deployment, encoding, domain)
         script = ROOT / command[0]
         if not script.is_file():
@@ -68,8 +70,8 @@ def matrix():
             "validation_scope": "full_business_workload",
             "model_calls": 0,
         })
-    if len(rows) != 100 or len({row["matrix_cell"] for row in rows}) != 100:
-        raise AssertionError("Runner routing does not cover the 5 x 5 x 4 matrix")
+    if len(rows) != len(selected) or len({row["matrix_cell"] for row in rows}) != len(selected):
+        raise AssertionError("Runner routing differs from the selected scope")
     if len({(row["deployment"], row["encoding"]) for row in rows}) != 25:
         raise AssertionError("Runner routing does not cover all 25 mechanisms")
     return rows
@@ -77,11 +79,12 @@ def matrix():
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--all-retained", action="store_true", help="Include supplemental configurations")
     parser.add_argument("--cell", help="Print the runner for deployment/encoding/domain")
     parser.add_argument("--output", type=Path,
                         help="Optional JSON path for the complete routing matrix")
     args = parser.parse_args(argv)
-    rows = matrix()
+    rows = matrix(all_retained=args.all_retained or bool(args.cell))
     if args.cell:
         matches = [row for row in rows if row["matrix_cell"] == args.cell]
         if not matches:

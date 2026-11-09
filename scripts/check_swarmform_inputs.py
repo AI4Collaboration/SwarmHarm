@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import sys
 import unittest
+from swarmform_scope import selected_cells
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -109,10 +110,14 @@ def validate_active_matrix(status):
     if matrix["unlisted_cell_status"] != "open":
         fail("unreviewed matrix cells must remain open")
     keys = {"/".join(cell) for cell in product(matrix["deployments"], matrix["encoding_opportunities"], matrix["domains"])}
-    if status["next_checkpoint"] is not None and status["next_checkpoint"] not in keys:
-        fail("next checkpoint is outside the matrix")
+    try:
+        selected = {'/'.join(cell) for cell in selected_cells(status)}
+    except (KeyError, ValueError) as error:
+        fail(str(error))
+    if status["next_checkpoint"] is not None and status["next_checkpoint"] not in selected:
+        fail("next checkpoint is outside the delivery scope")
     manifests = check_dispositions(status, keys)
-    print(f"SwarmForm plan: {len(keys)} candidates; {len(keys) - len(matrix['cells'])} open")
+    print(f"SwarmForm delivery: {len(selected)} inputs; {len(selected - matrix['cells'].keys())} awaiting admission. Retained catalog: {len(keys)}.")
     return manifests
 
 
@@ -170,8 +175,9 @@ def check_workloads(matrix, *, run_tests=True):
 
 def print_status(status):
     matrix = status["matrix"]
-    cells = matrix["cells"].values()
-    total = len(matrix["deployments"]) * len(matrix["encoding_opportunities"]) * len(matrix["domains"])
+    selected = {'/'.join(cell) for cell in selected_cells(status)}
+    cells = [cell for key, cell in matrix['cells'].items() if key in selected]
+    total = len(selected)
     admitted = sum(cell["status"] == "admitted" for cell in cells)
     results = [cell.get("current_model_result", {}) for cell in cells]
     reviewed = [result for result in results if result.get("status") == "reviewed"]
@@ -183,13 +189,16 @@ def print_status(status):
     from swarmform.inputs import digest
     from_main = 0
     for key, cell in matrix["cells"].items():
-        if cell["status"] == "admitted":
+        if key in selected and cell["status"] == "admitted":
             deployment, encoding, domain = key.split("/")
             manifest = build("november", domain, deployment=deployment, encoding=encoding)[2]
             from_main += digest(manifest) == read_record(repository_file(cell["evidence"]))["input_sha256"]
-    print(f"Inputs: {matrix['materialized_input_count']}/{total} generated, {admitted}/{total} have an admitted version, {from_main}/{total} match the current generator.")
+    scope = status['delivery_scope']
+    print(f"Delivery: 25 {scope['primary_domain']} inputs + 5 {scope['generalization_domain']} / {scope['generalization_encoding']} generalization inputs.")
+    print(f"Inputs: {admitted}/{total} have an admitted version, {from_main}/{total} match the current generator.")
     print(f"Latest reviewed versions: {len(reviewed)}. Sustained three-agent exchange: {sustained}. "
           f"Other observed channels: {smaller}. No observed channel: {len(reviewed) - sustained - smaller}.")
+    print(f"Supplemental records retained: {len(matrix['cells']) - len(cells)}. These do not increase the delivery count.")
     for run in status["active_rollouts"] + status.get("active_input_checks", []):
         print(f"Active: {run.get('identifier') or run['matrix_cell']} (last recorded PID {run.get('pid')}).")
     print("Next:", status["next_action"])

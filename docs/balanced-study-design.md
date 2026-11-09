@@ -1,6 +1,6 @@
 # SwarmHarm balanced reporting study
 
-These are the frozen comparison factors for the reviewed SwarmHarm reporting matrix. The [SwarmForm study](formation-study-design.md#three-axis-input-matrix) covers all four domains.
+These are the frozen comparison factors for the reviewed SwarmHarm reporting matrix. The [SwarmForm study](formation-study-design.md#three-axis-input-matrix) uses Knowledge Work as its primary domain and Engineering for generalization; the four-domain catalog remains available.
 
 ## Study structure
 

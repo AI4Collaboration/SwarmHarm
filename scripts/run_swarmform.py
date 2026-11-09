@@ -213,18 +213,15 @@ def prepare_pair(args):
 
 
 def prepare_matrix(args):
-    """Prepare one selected model across the complete admitted input matrix."""
+    """Prepare one selected model across the current delivery scope."""
+    from swarmform_scope import selected_cells
     ledger = json.loads((ROOT / 'docs/live-rollout-status.json').read_text())
-    cells = [(deployment, encoding, domain)
-             for deployment, encodings in IMPLEMENTED_ENCODINGS.items()
-             for encoding in encodings for domain in DOMAINS]
-    if len(cells) != 100:
-        raise RuntimeError('The preparation matrix must contain exactly 100 inputs')
+    cells = selected_cells(ledger)
     missing = ['/'.join(cell) for cell in cells
                if ledger['matrix']['cells'].get('/'.join(cell), {}).get('status') != 'admitted']
     if missing:
-        return {'status': 'inputs_incomplete', 'required_inputs': 100,
-                'admitted_inputs': 100 - len(missing), 'missing_inputs': missing,
+        return {'status': 'inputs_incomplete', 'required_inputs': len(cells),
+                'admitted_inputs': len(cells) - len(missing), 'missing_inputs': missing,
                 'prepared_registrations': 0, 'model_calls': 0}
 
     source = published_head()
@@ -258,7 +255,7 @@ def prepare_matrix(args):
     index_path = output / 'matrix-preparation.json'
     preparation = {'schema_version': 1, 'research_study': 'SwarmForm',
         'status': 'preparing', 'source_commit': source, 'dataset_key': args.dataset_key,
-        'runtime': runtime, 'input_environments': 100, 'model': model, 'model_calls': 0,
+        'runtime': runtime, 'input_environments': len(cells), 'scope': ledger['delivery_scope'], 'model': model, 'model_calls': 0,
         'planned_identifiers': [item.identifier for item in planned], 'registrations': records}
     save(index_path, preparation)
     for item in planned:
@@ -276,7 +273,7 @@ def prepare_matrix(args):
         save(index_path, preparation)
     preparation['status'] = 'prepared'
     save(index_path, preparation)
-    return {'status': 'prepared', 'prepared_inputs': 100, 'prepared_registrations': len(records),
+    return {'status': 'prepared', 'prepared_inputs': len(cells), 'prepared_registrations': len(records),
             'source_commit': source, 'model': model, 'index': str(index_path), 'model_calls': 0,
             'next': 'Commit and push all registrations and the ledger before collection'}
 

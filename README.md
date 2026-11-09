@@ -2,15 +2,15 @@
 
 **Can agents in separate workspaces discover one another and build a communication channel on their own?** We test whether they keep using that channel as new work arrives.
 
-The input matrix is **5 shared deployments × 5 encoding opportunities × 4 business domains = 100 environments**. Each uses three independent agents, private source material, persistent memory and three business intakes. Tasks give no peer roster, communication method or cooperation instruction. Current runs use Sol 6.1 with native Codex through AxonHub, high reasoning and goal off.
+The main matrix is **5 shared deployments × 5 encoding opportunities = 25 Knowledge Work environments**. Engineering adds **5 generalization environments**, one payload-content configuration per deployment. The delivery target is **30 inputs**; all existing inputs and results from the four-domain catalog remain available. Each uses three independent agents, private source material, persistent memory and three business intakes. Tasks give no peer roster, communication method or cooperation instruction. Current runs use Sol 6.1 with native Codex through AxonHub, high reasoning and goal off.
 
 ## Accepted inputs
 
 [Download the input bundle](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-inputs.zip) · [Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs)
 
-The bundle contains the verified final input for each included environment. Its index links each set of three Harbor tasks to its tested source, settings, observed exchange, business scores and full trajectory. Use `python3 scripts/export_swarmform_input_matrix.py --accepted --output ../accepted-inputs` with the installed runtime to reproduce it from Git.
+The linked retained bundle contains verified inputs across the four domains. New exports select the current 30-input scope; add `--all-retained` to include supplemental results. Its index links each set of three Harbor tasks to its tested source, settings, observed exchange, business scores and full trajectory. Use `python3 scripts/export_swarmform_input_matrix.py --accepted --output ../accepted-inputs` with the installed runtime to reproduce it from Git.
 
-Across the four business domains, archive-service agents independently exchanged sources across intakes and produced nine correct deliveries in each domain. In Financial Analysis, agents used job metadata to exchange 130,835 useful bytes and completed all nine reports. In Engineering, agents created and reused calibration-source files across three intakes; all nine releases independently matched the required data.
+Knowledge Work agents have independently published source appendices, adopted each other’s convention and reused revised documents across three intakes, producing nine correct deliveries. Archive and job-service cases also show sustained exchange. Engineering tests whether formation extends to executable artifact work. Earlier Data Analysis, Financial Analysis and other Engineering cases remain supplemental evidence.
 
 ## Continue from main
 
@@ -25,9 +25,9 @@ Use Python 3.12. For Docker validation, first run `bash scripts/setup-local` and
 ```sh
 python3 scripts/check_swarmform_inputs.py
 python3 scripts/export_swarmform_input_matrix.py --output ../swarmform-input-matrix
-python3 scripts/check_swarmform_input_runners.py --cell "shared_ipc/payload_content/Data Analysis"
+python3 scripts/check_swarmform_input_runners.py --cell "shared_ipc/payload_content/Knowledge Work"
 ```
 
-The exporter writes all 100 packages with 300 Harbor tasks, exact prompts and tools, private arrivals, protected truth and file hashes. The runner command shows how to validate an individual input without a model call. [Preparing a model rollout](docs/formation-study-design.md#collecting-an-admitted-input)
+By default the exporter writes the 30 selected packages with 90 Harbor tasks, exact prompts and tools, private arrivals, protected truth and file hashes. `--all-retained` exports the full 100-input catalog. The smaller scope changes selection only; frozen inputs and original scores stay intact. The runner command shows how to validate an individual input without a model call. [Preparing a model rollout](docs/formation-study-design.md#collecting-an-admitted-input)
 
 **Keep validation lightweight:** check each transport mechanism once, then its four business outputs and isolation conditions. `python3 scripts/check-ci --plan` shows checks selected from your changes against `origin/main`. Local push and GitHub use that same selection and run each check once. Documentation needs no Docker or harness installation; operator-witness edits skip historical replay. Use `--full` only for an intentional complete regression. Prior SwarmHarm inputs, successful cases and scores remain available in the [research archive](docs/research/README.md).
