@@ -50,11 +50,11 @@ class SwarmFormLedgerChecks(unittest.TestCase):
         from swarmform_scope import selected_cells, role
         selected = selected_cells(self.status)
         retained = selected_cells(self.status, all_retained=True)
-        self.assertEqual(len(selected), 30)
+        self.assertEqual(len(selected), 50)
         self.assertEqual(sum(cell[2] == 'Knowledge Work' for cell in selected), 25)
         engineering = [cell for cell in selected if cell[2] == 'Engineering']
-        self.assertEqual(len(engineering), 5)
-        self.assertEqual({cell[1] for cell in engineering}, {'payload_content'})
+        self.assertEqual(len(engineering), 25)
+        self.assertEqual({cell[1] for cell in engineering}, set(self.matrix['encoding_opportunities']))
         self.assertEqual({cell[0] for cell in engineering}, set(self.matrix['deployments']))
         self.assertEqual(len(retained), 100)
         self.assertTrue(set(selected) < set(retained))

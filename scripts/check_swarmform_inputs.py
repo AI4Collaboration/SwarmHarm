@@ -194,7 +194,7 @@ def print_status(status):
             manifest = build("november", domain, deployment=deployment, encoding=encoding)[2]
             from_main += digest(manifest) == read_record(repository_file(cell["evidence"]))["input_sha256"]
     scope = status['delivery_scope']
-    print(f"Delivery: 25 {scope['primary_domain']} inputs + 5 {scope['generalization_domain']} / {scope['generalization_encoding']} generalization inputs.")
+    print(f"Delivery: {scope['primary_input_count']} {scope['primary_domain']} inputs + {scope['generalization_input_count']} {scope['generalization_domain']} inputs.")
     print(f"Inputs: {admitted}/{total} have an admitted version, {from_main}/{total} match the current generator.")
     print(f"Latest reviewed versions: {len(reviewed)}. Sustained three-agent exchange: {sustained}. "
           f"Other observed channels: {smaller}. No observed channel: {len(reviewed) - sustained - smaller}.")

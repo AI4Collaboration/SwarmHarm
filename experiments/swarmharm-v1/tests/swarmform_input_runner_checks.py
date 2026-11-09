@@ -375,7 +375,7 @@ class SwarmFormInputRunnerChecks(unittest.TestCase):
             ast.parse(snippet, filename=f"witness-protocol-{index}")
 
     def test_exporter_materializes_a_complete_hashed_input(self):
-        self.assertEqual(len(matrix()), 30)
+        self.assertEqual(len(matrix()), 50)
         self.assertEqual(len(matrix(all_retained=True)), 100)
         with TemporaryDirectory() as folder:
             root = Path(folder)
