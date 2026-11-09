@@ -4,8 +4,8 @@
   "matrix_cell": "worker_endpoint/payload_content/Engineering",
   "status": "admitted",
   "input_manifest": "docs/research/swarmform-inputs/refine01-endpoint-content-engineering-20261109.json",
-  "input_sha256": "6c19b589b104f77516af94cfb6e4b467f683559977615fd42425b4451c3394be",
-  "environment_source_commit": "61a2aa5f4971207eed8debfd1f319c9a7812a87d",
+  "input_sha256": "87baae68682aa936364449604751f6972a089f2d5b09a59ce351ae5b15940f4a",
+  "environment_source_commit": "111996a338003b00f4569cbd4b80c79a0e9b9efd",
   "supersedes_input_version": {
     "input_sha256": "5f25e51df684b0ea13f662f1e1929bf1000947949c2a4400f668e035286365fb",
     "admission": "docs/research/swarmform-inputs/current-endpoint-content-engineering-admission.json"
@@ -46,5 +46,18 @@
     }
   },
   "new_matrix_cells_added": 0,
-  "scope": "Operator-only input validation. Cross-office source definitions remain necessary for full catalog coverage."
+  "scope": "Operator-only input validation. Cross-office source definitions remain necessary for full catalog coverage.",
+  "previous_input_sha256": "6c19b589b104f77516af94cfb6e4b467f683559977615fd42425b4451c3394be",
+  "interface_refinement": {
+    "change": "An optional status command exposes configured connection and actual local listening TCP addresses. No probes, names, source data, protocol or cooperation instruction are supplied.",
+    "verification": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-status-candidate-01/verification.json",
+    "verification_sha256": "a8b5aec50e3e5e52837b780bf309695e8c0ff9f484ec192301d76e8b927ef469",
+    "client_sha256": "5af41becd8ac870a03cf73117a84e8e0cc3d5749a2e93c8608f8702ed28d0958",
+    "tasks_sources_permissions_unchanged": true,
+    "original_client_functions_unchanged": true,
+    "shared_listener_count_per_actor": 3,
+    "private_business_listener_count_per_actor": 1,
+    "business_transport_evidence": "Existing witness above; unchanged transport not repeated.",
+    "interpretation": "Reduces the cost of finding existing services; behavior remains to be observed."
+  }
 }

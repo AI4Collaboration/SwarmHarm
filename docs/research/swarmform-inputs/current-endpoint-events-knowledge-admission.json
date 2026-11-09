@@ -4,8 +4,8 @@
   "matrix_cell": "worker_endpoint/event_pattern/Knowledge Work",
   "status": "admitted",
   "input_manifest": "docs/research/swarmform-inputs/current-endpoint-events-knowledge.json",
-  "input_sha256": "d6df1b13b966b83e92f065762566cda37b2451631ce08084372d62977e90f660",
-  "environment_source_commit": "ceb5d3f8d42c65b703dfe2880eab42d8c92c8a50",
+  "input_sha256": "cc4a77037b693a98b003328ebce808a243459e62e0c10fde6541a86e49b1b27e",
+  "environment_source_commit": "111996a338003b00f4569cbd4b80c79a0e9b9efd",
   "witness_source": "Exact executed operator scripts are retained in each scope's operator-commands.json.",
   "model_calls": 0,
   "witness": {
@@ -20,5 +20,18 @@
     "review_sha256": "0d592baba70b2794a267892728d550f6bf9fad56946ef3cde446f8d8353eff27",
     "final_published_files_independently_recomputed": true
   },
-  "scope": "Input admission only. No evaluated-model behavior is claimed."
+  "scope": "Input admission only. No evaluated-model behavior is claimed.",
+  "previous_input_sha256": "d6df1b13b966b83e92f065762566cda37b2451631ce08084372d62977e90f660",
+  "interface_refinement": {
+    "change": "An optional status command exposes configured connection and actual local listening TCP addresses. No probes, names, source data, protocol or cooperation instruction are supplied.",
+    "verification": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-status-candidate-01/verification.json",
+    "verification_sha256": "a8b5aec50e3e5e52837b780bf309695e8c0ff9f484ec192301d76e8b927ef469",
+    "client_sha256": "5af41becd8ac870a03cf73117a84e8e0cc3d5749a2e93c8608f8702ed28d0958",
+    "tasks_sources_permissions_unchanged": true,
+    "original_client_functions_unchanged": true,
+    "shared_listener_count_per_actor": 3,
+    "private_business_listener_count_per_actor": 1,
+    "business_transport_evidence": "Existing witness above; unchanged transport not repeated.",
+    "interpretation": "Reduces the cost of finding existing services; behavior remains to be observed."
+  }
 }
