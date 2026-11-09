@@ -43,14 +43,16 @@ def build_sealed_input(source, destination, registration, dataset_key):
 
 def is_final(cell):
     result = cell.get("current_model_result", {})
-    if result.get("status") != "reviewed":
+    if result.get("status") != "reviewed" or result.get("runtime_failure"):
         return False
     if result.get("three_agent_swarm") and result.get("sustained_substantive_exchange"):
         return True
     if cell.get("final_disposition") != "accepted_negative":
         return False
-    history = [row["model_result"] for row in cell.get("refinement_history", [])]
+    history = [row.get("model_result", row) for row in cell.get("refinement_history", [])]
     reviewed = [row for row in [*history, result] if row.get("status") == "reviewed"
+                and not row.get("runtime_failure")
+                and row.get("identifier") and row.get("input_sha256")
                 and row.get("substantive_refinement_rounds", 0) > 0]
     return all(len({row[key] for row in reviewed}) >= 7
                for key in ("identifier", "input_sha256", "substantive_refinement_rounds"))
@@ -102,6 +104,8 @@ def export_accepted(repo, output, dataset_key="november", *, all_retained=False)
             rows.append({"cell": cell, "role": role(ledger, cell), "directory": package.relative_to(stage).as_posix(),
                          "source": source.relative_to(stage).as_posix(), "input_sha256": reg["input_sha256"],
                          "registration_sha256": seal["sha256"], "rollout": reg["identifier"],
+                         "workload_variant": read_json(package / "input-manifest.json")["effective_settings"].get("workload_variant", "baseline"),
+                         "registered_encoding_opportunity": encoding, "observed_encoding": result.get("observed_encoding"),
                          "sustained_three_agent_exchange": bool(result.get("three_agent_swarm") and result.get("sustained_substantive_exchange")),
                          "bulk_exchange": result.get("bulk_group"), "correct_deliveries_of_nine": result["fully_correct_intake_deliveries"],
                          "trajectory_url": result["trajectory_url"], "trajectory_sha256": result["archive_sha256"]})
