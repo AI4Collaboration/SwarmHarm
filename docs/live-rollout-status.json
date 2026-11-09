@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T15:32:23.193798+00:00",
+  "updated_at": "2026-11-09T15:39:04.653398+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -409,7 +409,24 @@
     "affected_prior_admissions": 20,
     "action": "Regenerate current-source shared/private witnesses and admit each verified input. Sol 6.1 behavioral collection remains separate from input readiness."
   },
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "identifier": "swarmform-payload-engineering-20261109-endpoint-sol61-r2",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-endpoint-sol61-r2",
+      "model": "openai/gpt-6.1-sol",
+      "pid": 35885,
+      "output": "work/eval-readiness/swarmform-sol61-payload-remaining13-20261109-02/engineering/worker_endpoint",
+      "status": "running"
+    },
+    {
+      "identifier": "swarmform-payload-engineering-20261109-artifact-sol61-r2",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-artifact-sol61-r2",
+      "model": "openai/gpt-6.1-sol",
+      "pid": 35912,
+      "output": "work/eval-readiness/swarmform-sol61-payload-remaining13-20261109-02/engineering/artifact_namespace",
+      "status": "running"
+    }
+  ],
   "active_input_checks": [
     {
       "matrix_cell": "worker_endpoint/timing/Data Analysis",
@@ -581,7 +598,7 @@
     "reviewed_rollouts": 5,
     "review_index": "docs/research/swarmform-payload-five-20261109.json",
     "next_batch": {
-      "status": "two_completed_and_thirteen_freshly_prepared",
+      "status": "replacement_batch_running",
       "model": "openai/gpt-6.1-sol",
       "population": 3,
       "cells": "Five deployments / payload_content / Engineering, Financial Analysis and Knowledge Work",
@@ -596,8 +613,10 @@
       "superseded_record": "work/eval-readiness/swarmform-sol61-payload-remaining15-20261109-01/superseded-unstarted.json",
       "replacement_batch_index": "work/eval-readiness/swarmform-sol61-payload-remaining13-20261109-02/preparation-index.json",
       "replacement_source": "f3a41bec106c27e3e796f97fad6d899638e992b6",
-      "replacement_inputs_match_original": true
+      "replacement_inputs_match_original": true,
+      "replacement_rollouts_started": 2,
+      "replacement_rollouts_pending": 11
     }
   },
-  "next_action": "Run fresh job-timing inputs with bounded status polling; complete remaining timing inputs and re-register only the thirteen unstarted Sol 6.1 payload cells. Review the two completed Engineering rollouts."
+  "next_action": "Continue ten active timing inputs and the thirteen-run Sol 6.1 queue. Admit Data endpoint timing after independent closure, then start the final Data job timing input in its freed worker slot. Complete semantic reviews and upload evidence; keep source frozen during the registered model queue."
 }
