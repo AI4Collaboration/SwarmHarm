@@ -17,7 +17,7 @@ SELF = {'scripts/check-ci', 'scripts/check-push', 'scripts/pre-push',
 WORKLOADS = {'engineering': 'engineering_input', 'fulfillment': 'fulfillment_input',
              'settlement': 'settlement_input', 'knowledge': 'knowledge_input'}
 DOCKER_TESTS = {'swarmform_deployment', 'swarmform_read_observer', 'swarmform_runtime',
-                'swarmform_workstation_retention', 'workstation_patch'}
+                'swarmform_workstation_retention', 'workstation_patch', 'structure_native'}
 
 
 def git(*args, root=ROOT):
@@ -88,6 +88,8 @@ def select_checks(files, full=False):
                 checks.update(('catalog', 'wording'))
             elif stem == 'collection':
                 suites('swarmform_collection', 'swarmform_registration')
+            elif stem in {'structure', 'structure_collection'}:
+                suites('swarmform_structure', 'structure_timeline', 'structure_native')
             elif stem == 'actor_evidence':
                 suites('swarmform_actor_evidence')
             elif stem == 'job_service':
@@ -113,6 +115,10 @@ def select_checks(files, full=False):
                 checks.add('wording')
         elif name == 'experiments/runtime/workstation_observer.py':
             suites('swarmform_runtime', 'swarmform_read_observer', 'swarmform_workstation_retention', 'swarmform_deployment')
+        elif name.startswith('experiments/structure/'):
+            suites('structure_timeline', 'swarmform_structure')
+        elif name == 'scripts/run_swarmform_structure.py':
+            suites('swarmform_structure', 'structure_timeline', 'structure_native')
         elif name.startswith('experiments/runtime/'):
             adapter = next((a for a in ('codex', 'claude', 'pi')
                             if name.startswith('experiments/runtime/' + a)), None)
@@ -150,6 +156,8 @@ def select_checks(files, full=False):
     if tests & DOCKER_TESTS:
         docker = True
     if 'native_goal' in tests:
+        harnesses.add('codex')
+    if 'structure_native' in tests:
         harnesses.add('codex')
     for adapter in ('codex', 'claude', 'pi'):
         if adapter + '_collect' in tests:

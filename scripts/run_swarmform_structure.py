@@ -1,0 +1,166 @@
+#!/usr/bin/env python3
+"""Seal and collect role-neutral scalable SwarmForm business experiments."""
+import argparse
+import fcntl
+import json
+from pathlib import Path
+import shutil
+import sys
+
+import run_swarmform as base
+from swarmform.collection import save, utc
+from swarmform.structure import build, verify_solvability, verify_outputs, POPULATIONS, CONDITIONS, DEPLOYMENTS
+from swarmform.structure_collection import StructureCollection, time_inventory
+from swarmform.inputs import digest
+from swarmform.input_catalog import observation_registration
+from guardrails import outside_repository, credential_file
+
+ROOT=base.ROOT
+REGISTRATIONS=ROOT/'experiments/structure/registrations'
+LEDGER=ROOT/'docs/structure-rollout-status.json'
+
+
+def write_tasks(output,visible,manifest,duration,deployment):
+    records=base.write_tasks(output,visible,base.IMAGE,'Knowledge Work',deployment,manifest)
+    for name in records:
+        if name.endswith('/task.toml'):
+            path=output/name
+            text=path.read_text().replace('execution_adapter = "scripts/run_swarmform.py"',
+                'execution_adapter = "scripts/run_swarmform_structure.py"')
+            text=text.replace(f'timeout_sec = {base.MAX_AGENT_SECONDS}',f'timeout_sec = {duration}')
+            base.TaskConfig.model_validate(base.tomllib.loads(text))
+            path.write_text(text);records[name]=base.sha(path)
+    return records
+
+
+def register(args):
+    source=base.published_head()
+    runtime=base.check_runtime()
+    output=outside_repository(args.output,ROOT,'Structure output')
+    if not base.re.fullmatch(r'[a-z0-9][a-z0-9-]{2,100}',args.identifier):
+        raise ValueError('Invalid registration identifier')
+    folder=REGISTRATIONS/args.identifier
+    if output.exists() or folder.exists():raise FileExistsError('Use fresh registration and output paths')
+    visible,truth,manifest=build(args.dataset_key,args.population,args.condition,args.deployment,
+        spacing=args.spacing,customers_per_actor=args.customers,source_schedule=args.source_schedule)
+    verification=verify_solvability(visible,truth)
+    if not verification['passed']:raise ValueError('Business source verification failed')
+    witness=json.loads(Path(args.witness).read_text())
+    if (witness.get('passed') is not True or witness.get('population')!=args.population
+            or witness.get('deployment')!=args.deployment or witness.get('image')!=base.IMAGE
+            or witness.get('source_commit')!=source or witness.get('model_calls')!=0):
+        raise ValueError('A matching offline runtime witness is required')
+    output.mkdir(parents=True)
+    shutil.copy2(ROOT/'docs/structure-study-design.md',output/'study-design.md')
+    shutil.copy2(ROOT/'experiments/structure/temporal.py',output/'temporal-review.py')
+    for name,value in [('input.json',visible),('protected-truth.json',truth),('input-manifest.json',manifest),
+                       ('solvability.json',verification),('runtime-witness.json',witness)]:save(output/name,value)
+    hashes={}
+    for relative in base.source_paths():
+        destination=output/'code'/relative;destination.parent.mkdir(parents=True,exist_ok=True)
+        shutil.copy2(ROOT/relative,destination);hashes[relative]=base.sha(destination)
+    task_hashes=write_tasks(output,visible,manifest,args.duration,args.deployment)
+    harness=base.codex_gateway.harness_registration('off',args.model)
+    settings=manifest['effective_settings']
+    reg={'schema_version':1,'identifier':args.identifier,'created_at':utc(),
+        'research_study':'SwarmForm Structure','study_mode':'swarmform-structure','population':args.population,
+        'condition':args.condition,'domain':'Knowledge Work','input_sha256':digest(manifest),'source_commit':source,
+        'model':args.model,'models':{'openai':args.model},'reasoning':'high','harness':harness,
+        'inference_gateway':'axonhub','api_base':base.codex_gateway.AXONHUB_BASE,
+        'native_catalog':base.codex_gateway.gateway_catalog(args.model,'high'),
+        'workstation_permissions':settings['native_workstation_permissions'],'runtime':runtime,'image':base.IMAGE,
+        'deployment':{'kind':args.deployment,'shared':settings['shared'],'access_profile':'content','catalog_profile':'content'},
+        'arrival_offsets':settings['arrival_offsets'],
+        'budget':{'active_contexts_natural':args.population,'max_agent_seconds':args.duration,
+            'max_batch_seconds':args.duration+1800,'request_timeout_seconds':300,
+            'max_tools_per_agent':args.max_tools,'max_responses_per_agent':args.max_responses,
+            'max_observed_tokens_per_agent':args.max_tokens,
+            'min_free_bytes':args.min_free_gib*1024**3,
+            'stop_policy':'Any agent crossing a measured cap censors the whole rollout; in-flight work may overshoot.'},
+        'observation':observation_registration(manifest,visible['startup']),
+        'plan':{'natural':{a:{'provider':'openai','domain':'Knowledge Work'} for a in visible['startup']}},
+        'code_hashes':hashes,'input_hashes':{p:base.sha(output/p) for p in
+            ('input.json','protected-truth.json','input-manifest.json','solvability.json','runtime-witness.json',
+             'study-design.md','temporal-review.py')},
+        'task_hashes':task_hashes,'criteria_source':'docs/structure-study-design.md',
+        'criteria':{'roles_instructed':False,'model_behavior_required':True,
+            'temporal_events':['appearance','persistence','turnover','split','merge','role_shift','disappearance'],
+            'negative_results_retained':True,'structural_annotations_require_event_references':True}}
+    save(output/'registration.json',reg);save(output/'registration-seal.json',{'sha256':base.sha(output/'registration.json')})
+    folder.mkdir(parents=True)
+    for name in ('registration.json','registration-seal.json'):shutil.copy2(output/name,folder/name)
+    ledger=json.loads(LEDGER.read_text()) if LEDGER.exists() else {'study':'SwarmForm Structure','runs':[]}
+    ledger['updated_at']=utc();ledger['runs'].append({'identifier':args.identifier,'population':args.population,
+        'condition':args.condition,'deployment':args.deployment,'dataset_key':args.dataset_key,
+        'source_schedule':args.source_schedule,'status':'prepared','registration':str(folder.relative_to(ROOT))})
+    save(LEDGER,ledger)
+    return {'prepared':args.identifier,'output':str(output),'model_calls':0}
+
+
+def collect(args):
+    output=outside_repository(args.output,ROOT,'Structure output')
+    if not base.re.fullmatch(r'[a-z0-9][a-z0-9-]{2,100}',args.identifier):raise ValueError('Invalid registration identifier')
+    with (output/'.collector.lock').open('a+') as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        if (output/'started.json').exists():raise FileExistsError('Preserve the original attempt; do not reuse it')
+        reg=base.verify_frozen(REGISTRATIONS/args.identifier,output)
+        if reg['study_mode']!='swarmform-structure':raise ValueError('Wrong study')
+        key=credential_file(args.key_file,ROOT).read_text().strip()
+        visible=json.loads((output/'input.json').read_text())
+        result=StructureCollection(output,reg,visible,api_key=key).run()
+        return finalize(output,reg,visible,result)
+
+
+def finalize(output,reg,visible,result):
+    import export_atif
+    from swarmform.actor_evidence import completeness
+    failures=[]
+    if result.get('failure') and result['reason']!='resource_budget':failures.append('collection')
+    try:
+        terminals=json.loads((output/'terminal-snapshots.json').read_text())
+        snapshots={a:json.loads((output/p).read_text())['snapshot'] for a,p in terminals.items()}
+        truth=json.loads((output/'protected-truth.json').read_text())
+        save(output/'business-outcome.json',verify_outputs(visible,truth,snapshots))
+        save(output/'temporal-inventory.json',time_inventory(output,reg))
+    except Exception as error:
+        failures.append('outcome');save(output/'outcome-error.json',{'error':repr(error)})
+    try:
+        export_atif.export(output)
+        coverage=completeness(output,reg);save(output/'actor-evidence.json',coverage)
+        if not coverage['actor_evidence_complete']:failures.append('actor_evidence')
+    except Exception as error:
+        failures.append('atif');save(output/'atif-failure.json',{'error':repr(error)})
+    files={str(p.relative_to(output)):base.sha(p) for p in sorted(output.rglob('*')) if p.is_file() and not p.is_symlink()
+           and p.name not in ('evidence-manifest.json','controller.log','.collector.lock')}
+    save(output/'evidence-manifest.json',{'at':utc(),'files':files})
+    summary={'closed':reg['identifier'],'reason':result['reason'],'failures':failures,
+             'output':str(output),'structural_review':'pending','censored':result['reason'] in ('resource_budget','wall_budget')}
+    save(output/'collection-summary.json',summary)
+    return summary
+
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__);sub=parser.add_subparsers(dest='command',required=True)
+    prepare=sub.add_parser('prepare');collect_parser=sub.add_parser('collect')
+    for command in (prepare,collect_parser):
+        command.add_argument('--identifier',required=True);command.add_argument('--output',type=Path,required=True)
+    prepare.add_argument('--population',type=int,choices=POPULATIONS,required=True)
+    prepare.add_argument('--condition',choices=CONDITIONS,required=True)
+    prepare.add_argument('--deployment',choices=DEPLOYMENTS,default='shared_files')
+    prepare.add_argument('--model',choices=['openai/gpt-6.1-sol'],default='openai/gpt-6.1-sol')
+    prepare.add_argument('--dataset-key',required=True);prepare.add_argument('--witness',type=Path,required=True)
+    prepare.add_argument('--source-schedule',choices=['fixed','changing'],default='fixed')
+    prepare.add_argument('--spacing',type=int,default=600);prepare.add_argument('--duration',type=int,default=3600)
+    prepare.add_argument('--customers',type=int,default=8);prepare.add_argument('--max-tools',type=int,default=150)
+    prepare.add_argument('--max-responses',type=int,default=120);prepare.add_argument('--max-tokens',type=int,default=500000)
+    prepare.add_argument('--min-free-gib',type=int,default=2)
+    collect_parser.add_argument('--key-file',type=Path,required=True)
+    args=parser.parse_args()
+    if args.command=='prepare' and (args.duration<=4*args.spacing or min(args.max_tools,args.max_responses,args.max_tokens,args.min_free_gib)<1):
+        parser.error('Budgets must be positive and leave time after the last real intake')
+    value=register(args) if args.command=='prepare' else collect(args)
+    print(json.dumps(value,ensure_ascii=False,indent=2))
+    if value.get('failures'):raise SystemExit(1)
+
+
+if __name__=='__main__':main()

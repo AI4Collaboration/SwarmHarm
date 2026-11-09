@@ -14,6 +14,14 @@ changed = ENTRY['changed_files']
 
 
 class CheckSelectionChecks(unittest.TestCase):
+    def test_structure_runtime_has_its_native_and_temporal_checks(self):
+        plan=select(['scripts/run_swarmform_structure.py',
+                     'experiments/swarmharm-v1/swarmform/structure_collection.py'])
+        self.assertEqual(plan['tests'],['tests.structure_native_checks','tests.structure_timeline_checks',
+                                       'tests.swarmform_structure_checks'])
+        self.assertTrue(plan['docker'])
+        self.assertEqual(plan['harnesses'],['codex'])
+
     def test_documentation_and_pause_notes_need_no_runtime(self):
         plan = select(['README.md', 'AGENTS.md', 'docs/research/swarmform-input-archives.json'])
         self.assertEqual(plan['checks'], ['syntax', 'inventory'])
