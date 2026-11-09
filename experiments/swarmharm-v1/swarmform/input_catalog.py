@@ -53,6 +53,10 @@ WORKLOAD_VARIANTS.update({
     ("job_namespace", "timing", "Knowledge Work"): "opening_customer_roster",
 })
 
+WORKLOAD_VARIANTS.update({
+    ("shared_ipc", encoding, "Engineering"): "calibration_table"
+    for encoding in ARCHIVE_PROFILES
+})
 WORKLOAD_VARIANTS[("shared_ipc", "timing", "Data Analysis")] = "primary_ledgers"
 
 
