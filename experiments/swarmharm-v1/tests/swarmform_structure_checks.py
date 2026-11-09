@@ -5,6 +5,7 @@ from pathlib import Path
 import tempfile
 import sys
 import tomllib
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 from swarmform.structure import build, audit_visible, verify_solvability, POPULATIONS, BATCHES
@@ -14,6 +15,45 @@ from swarmform.inputs import digest
 
 
 class StructureChecks(unittest.TestCase):
+    def test_parent_collects_from_sealed_copy_after_committed_verification(self):
+        scripts=str(Path(__file__).resolve().parents[3]/'scripts')
+        with patch.object(sys,'path',[scripts,*sys.path]):
+            import run_swarmform_structure as runner
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory).resolve()
+            args=SimpleNamespace(output=root,identifier='fixture',key_file=root/'host-only.key')
+            def launched(command,**options):
+                self.assertEqual(command[1],str(root/'code/scripts/run_swarmform_structure.py'))
+                self.assertEqual(command[2],'execute-frozen')
+                self.assertTrue(options['check'])
+                (root/'collection-summary.json').write_text(json.dumps({'closed':'fixture'}))
+            with patch.object(runner.base,'verify_frozen',return_value={'study_mode':'swarmform-structure'}) as verify,patch.object(runner.subprocess,'run',side_effect=launched):
+                self.assertEqual(runner.collect(args),{'closed':'fixture'})
+                verify.assert_called_once()
+
+    def test_sealed_worker_rejects_changed_code_and_missing_committed_preflight(self):
+        scripts=str(Path(__file__).resolve().parents[3]/'scripts')
+        with patch.object(sys,'path',[scripts,*sys.path]):
+            import run_swarmform_structure as runner
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory).resolve();code=root/'code';code.mkdir()
+            (code/'fixture.py').write_text('original')
+            (root/'input.json').write_text('{}')
+            reg={'identifier':'fixture','study_mode':'swarmform-structure',
+                 'code_hashes':{'fixture.py':runner.base.sha(code/'fixture.py')},
+                 'input_hashes':{'input.json':runner.base.sha(root/'input.json')},'task_hashes':{}}
+            (root/'registration.json').write_text(json.dumps(reg))
+            seal=runner.base.sha(root/'registration.json')
+            (root/'registration-seal.json').write_text(json.dumps({'sha256':seal}))
+            preflight=root/'collection-preflight.json'
+            preflight.write_text(json.dumps({'registration_sha256':seal,'frozen_inputs_verified':False}))
+            with patch.object(runner,'ROOT',code):
+                with self.assertRaises(ValueError):runner.verify_execution_copy(root,'fixture')
+                preflight.write_text(json.dumps({'registration_sha256':seal,'frozen_inputs_verified':True}))
+                self.assertEqual(runner.verify_execution_copy(root,'fixture'),reg)
+                (code/'fixture.py').write_text('changed')
+                with self.assertRaises(ValueError):runner.verify_execution_copy(root,'fixture')
+
     def test_task_metadata_matches_the_structure_collector_and_time_budget(self):
         scripts=str(Path(__file__).resolve().parents[3]/'scripts')
         with patch.object(sys,'path',[scripts,*sys.path]):

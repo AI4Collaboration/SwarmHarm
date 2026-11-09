@@ -5,6 +5,7 @@ import fcntl
 import json
 from pathlib import Path
 import shutil
+import subprocess
 import sys
 
 import run_swarmform as base
@@ -105,10 +106,39 @@ def collect(args):
         if (output/'started.json').exists():raise FileExistsError('Preserve the original attempt; do not reuse it')
         reg=base.verify_frozen(REGISTRATIONS/args.identifier,output)
         if reg['study_mode']!='swarmform-structure':raise ValueError('Wrong study')
-        key=credential_file(args.key_file,ROOT).read_text().strip()
-        visible=json.loads((output/'input.json').read_text())
-        result=StructureCollection(output,reg,visible,api_key=key).run()
-        return finalize(output,reg,visible,result)
+        # Continue from the sealed copy so unrelated main updates cannot change
+        # lazy imports or finalization during a long-lived model collection.
+        subprocess.run([sys.executable,str(output/'code/scripts/run_swarmform_structure.py'),
+            'execute-frozen','--identifier',args.identifier,'--output',str(output),
+            '--key-file',str(args.key_file.resolve())],check=True)
+        return json.loads((output/'collection-summary.json').read_text())
+
+
+def verify_execution_copy(output,identifier):
+    if ROOT!=(output/'code').resolve():raise ValueError('Execute only from the sealed source copy')
+    reg=json.loads((output/'registration.json').read_text())
+    seal=json.loads((output/'registration-seal.json').read_text())['sha256']
+    preflight=json.loads((output/'collection-preflight.json').read_text())
+    if (reg['identifier']!=identifier or reg['study_mode']!='swarmform-structure'
+            or base.sha(output/'registration.json')!=seal
+            or preflight.get('registration_sha256')!=seal
+            or preflight.get('frozen_inputs_verified') is not True):
+        raise ValueError('Missing or mismatched committed registration verification')
+    for name,expected in reg['code_hashes'].items():
+        if base.sha(ROOT/name)!=expected:raise ValueError('Sealed code changed: '+name)
+    for name,expected in {**reg['input_hashes'],**reg['task_hashes']}.items():
+        if base.sha(output/name)!=expected:raise ValueError('Sealed input changed: '+name)
+    return reg
+
+
+def execute_frozen(args):
+    output=args.output.resolve()
+    reg=verify_execution_copy(output,args.identifier)
+    if (output/'started.json').exists():raise FileExistsError('Preserve the original attempt')
+    key=credential_file(args.key_file,ROOT).read_text().strip()
+    visible=json.loads((output/'input.json').read_text())
+    result=StructureCollection(output,reg,visible,api_key=key).run()
+    return finalize(output,reg,visible,result)
 
 
 def finalize(output,reg,visible,result):
@@ -142,7 +172,8 @@ def finalize(output,reg,visible,result):
 def main():
     parser=argparse.ArgumentParser(description=__doc__);sub=parser.add_subparsers(dest='command',required=True)
     prepare=sub.add_parser('prepare');collect_parser=sub.add_parser('collect')
-    for command in (prepare,collect_parser):
+    worker=sub.add_parser('execute-frozen',help='Internal sealed execution after committed preflight')
+    for command in (prepare,collect_parser,worker):
         command.add_argument('--identifier',required=True);command.add_argument('--output',type=Path,required=True)
     prepare.add_argument('--population',type=int,choices=POPULATIONS,required=True)
     prepare.add_argument('--condition',choices=CONDITIONS,required=True)
@@ -155,10 +186,11 @@ def main():
     prepare.add_argument('--max-responses',type=int,default=120);prepare.add_argument('--max-tokens',type=int,default=500000)
     prepare.add_argument('--min-free-gib',type=int,default=2)
     collect_parser.add_argument('--key-file',type=Path,required=True)
+    worker.add_argument('--key-file',type=Path,required=True)
     args=parser.parse_args()
     if args.command=='prepare' and (args.duration<=4*args.spacing or min(args.max_tools,args.max_responses,args.max_tokens,args.min_free_gib)<1):
         parser.error('Budgets must be positive and leave time after the last real intake')
-    value=register(args) if args.command=='prepare' else collect(args)
+    value=register(args) if args.command=='prepare' else collect(args) if args.command=='collect' else execute_frozen(args)
     print(json.dumps(value,ensure_ascii=False,indent=2))
     if value.get('failures'):raise SystemExit(1)
 
