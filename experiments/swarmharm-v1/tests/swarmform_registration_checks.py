@@ -37,6 +37,51 @@ class RegistrationChecks(unittest.TestCase):
             fixture.start()
             self.addCleanup(fixture.stop)
 
+    def test_new_source_scope_preserves_runtime_dependencies_and_full_old_seals(self):
+        retained = ['scripts/run_swarmform.py',
+            'experiments/runtime/codex_session.py', 'experiments/runtime/codex_rpc.py',
+            'experiments/runtime/codex_evidence.py', 'experiments/runtime/pi_agent.py',
+            'experiments/runtime/workspace_paths.py', 'experiments/runtime/workstation_observer.py',
+            'experiments/runtime/workstation_patch.py', 'experiments/runtime/Dockerfile',
+            'experiments/swarmharm-v1/export_atif.py',
+            'experiments/swarmharm-v1/phase2/workload_sources.py',
+            'experiments/swarmharm-v1/swarmform/package_delivery.py',
+            'experiments/swarmharm-v1/swarmform/archive_client.py',
+            'experiments/swarmharm-v1/swarmform/job_service.py']
+        excluded = ['scripts/check_swarmform_services.py', 'scripts/swarmform_witness_solvers.py',
+            'experiments/swarmharm-v1/tests/swarmform_registration_checks.py',
+            'experiments/swarmharm-v1/registrations/old/registration.json']
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with patch.object(entry, 'ROOT', root), \
+                    patch.object(entry, 'git', return_value='\n'.join(retained + excluded)):
+                self.assertEqual(entry.source_paths(), retained)
+
+            # A historical registration can contain a now-excluded operator.
+            # Its original repository AND external copy must still be checked.
+            relative = excluded[0]
+            registration = root / 'registration'; output = root / 'raw'
+            for path in (root / relative, output / 'code' / relative):
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text('original operator\n')
+            value = {'source_commit': 'historical', 'code_hashes': {relative: entry.sha(root / relative)},
+                'input_hashes': {}, 'task_hashes': {}, 'image': entry.IMAGE, 'runtime': {}, 'harness': {}}
+            for folder in (registration, output):
+                entry.save(folder / 'registration.json', value)
+                entry.save(folder / 'registration-seal.json', {'sha256': entry.sha(folder / 'registration.json')})
+            with patch.object(entry, 'ROOT', root), patch.object(entry, 'published_head', return_value='current'), \
+                    patch.object(entry, 'git', return_value='tracked'), \
+                    patch.object(entry, 'source_paths', side_effect=AssertionError('Never reselect a frozen seal')), \
+                    patch.object(entry, 'check_runtime', return_value={}), \
+                    patch.object(entry.codex_gateway, 'verify_runtime'):
+                self.assertEqual(entry.verify_frozen(registration, output), value)
+                for changed in (root / relative, output / 'code' / relative):
+                    with self.subTest(changed=changed):
+                        changed.write_text('modified operator\n')
+                        with self.assertRaisesRegex(RuntimeError, 'Source differs from frozen input'):
+                            entry.verify_frozen(registration, output)
+                        changed.write_text('original operator\n')
+
     def test_matrix_requires_all_admissions_and_prepares_100_for_selected_model(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / 'source'

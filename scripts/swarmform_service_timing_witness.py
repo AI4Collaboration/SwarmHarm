@@ -220,8 +220,10 @@ def decode(events):
             continue
         start = pos + 2
         calibration = gaps[start:start + len(CALIBRATION)]
-        # A run of unrelated long pauses is not a frame preamble.
-        if any(gap > SYNC_THRESHOLD_NS for gap in calibration):
+        # A single delayed calibration pulse is an ordinary timing outlier.
+        # Retain the median spacing and independent frame integrity checks;
+        # multiple long calibration gaps still reject unrelated pause runs.
+        if sum(gap > SYNC_THRESHOLD_NS for gap in calibration) > 1:
             continue
         base = statistics.median(calibration[::2])
         high = statistics.median(calibration[1::2])

@@ -55,7 +55,10 @@ def published_head():
 
 def source_paths():
     paths = git('ls-files', 'experiments/runtime', 'experiments/swarmharm-v1', 'scripts').splitlines()
-    return [p for p in paths if '/registrations/' not in p
+    # Operator witnesses and tests do not execute in a model rollout. Existing
+    # registrations still verify their original complete code_hashes below.
+    return [p for p in paths if '/registrations/' not in p and '/tests/' not in p
+            and (not p.startswith('scripts/') or p == 'scripts/run_swarmform.py')
             and (Path(p).suffix in ('.py', '.js', '.mjs', '.json', '.lock', '.txt') or Path(p).name == 'Dockerfile')
             and not (ROOT / p).is_symlink()]
 

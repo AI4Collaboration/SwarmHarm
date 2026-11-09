@@ -48,6 +48,38 @@ class SwarmFormInputRunnerChecks(unittest.TestCase):
         self.assertEqual(recovered, source)
         self.assertEqual(summary["frames_using_calibration_fallback"], summary["frames"])
 
+    def test_timing_calibration_tolerates_one_long_gap_only(self):
+        codec = {}
+        exec(service_timing.FRAMED_TIMING, codec)
+        source = b"x"
+        frame, = codec["frames"](source)
+        calibration = [685, 207, 15, 207, 15, 207]
+        def observed(calibration, frame):
+            stamp = 1_794_000_000_000_000_000
+            events = [{"observed_ns": stamp}]
+            gaps = [800, 800] + calibration
+            gaps += [15 + 64 * symbol for symbol in codec["symbols"](frame)]
+            for gap in gaps:
+                stamp += gap * 1_000_000
+                events.append({"observed_ns": stamp})
+            return events
+
+        recovered, _ = codec["recover"](observed(calibration, frame))
+        self.assertEqual(recovered, source)
+        body = bytearray(codec["rs_decode"](frame, codec["PARITY"]))
+        body[-1] ^= 1
+        invalid_crc = codec["rs_encode"](bytes(body), codec["PARITY"])
+        cases = [
+            ("two long gaps", [685, 710, 15, 207, 15, 207], frame),
+            ("invalid step", [685, 15, 15, 15, 15, 15], frame),
+            ("invalid checksum", calibration, invalid_crc),
+        ]
+        for label, gaps, candidate in cases:
+            with self.subTest(label):
+                codec["FRAME_CACHE"].clear()
+                accepted, _ = codec["decode"](observed(gaps, candidate))
+                self.assertFalse(accepted)
+
     def test_job_timing_confirms_earlier_jobs_before_pulsing(self):
         from types import SimpleNamespace
 
