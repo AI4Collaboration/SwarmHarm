@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T21:15:21.641907+00:00",
+  "updated_at": "2026-11-09T21:15:43.706699+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -2854,7 +2854,16 @@
       },
       "job_namespace/timing/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/current-job-timing-engineering-admission.json"
+        "evidence": "docs/research/swarmform-inputs/current-job-timing-engineering-admission.json",
+        "current_model_result": {
+          "identifier": "swarmform-engineering-job-timing-01-sol61",
+          "model": "openai/gpt-6.1-sol",
+          "input_sha256": "c6772ed7ff15de61da2f2bf3201fdb6bf9a7eeb8d713710a496d83ad996b8496",
+          "status": "prepared",
+          "started": false,
+          "substantive_refinement_rounds": 0,
+          "output": "../eval-readiness/swarmform-collections/engineering-job-timing-01"
+        }
       }
     },
     "implemented_export_count": 100,
@@ -2863,7 +2872,7 @@
     "current_admitted_count": 97,
     "current_reviewed_rollout_count": 94,
     "current_completed_rollout_count": 94,
-    "current_registered_cells": 95,
+    "current_registered_cells": 97,
     "current_started_rollout_count": 96,
     "reviewed_rollouts_including_superseded_inputs": 98
   },
@@ -3011,7 +3020,8 @@
     "experiments/swarmharm-v1/registrations/swarmform-refine01-engineering-archive-timing-20261109-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-refine01-data-ipc-content-20261109-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-timing-knowledge-20261109-archive-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-refine01-data-ipc-metadata-20261109-sol61"
+    "experiments/swarmharm-v1/registrations/swarmform-refine01-data-ipc-metadata-20261109-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-engineering-job-timing-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
   "frozen_registration_count": 52,
@@ -3027,7 +3037,7 @@
       "scope": "Original archive-content Data Analysis input."
     }
   ],
-  "next_action": "Register Engineering job timing once. Review the Knowledge archive and Data Analysis IPC metadata runs after closure. Complete the three remaining timing inputs and admit each one after its matched private check.",
+  "next_action": "Collect the sealed Engineering job timing rollout once. Review the two other registered model runs at closure. Finish the three outstanding timing input checks.",
   "open_timing_inputs": [
     {
       "matrix_cell": "job_namespace/timing/Financial Analysis",
