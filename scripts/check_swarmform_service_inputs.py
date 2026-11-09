@@ -21,6 +21,7 @@ sys.path[:0] = [str(ROOT / "experiments/runtime"), str(ROOT / "experiments/swarm
 from swarmform.archive_deployment import ArtifactDeployment
 from swarmform.artifact_inputs import build as build_artifact
 from swarmform.inputs import digest
+from swarmform.input_catalog import build as build_registered_input
 from swarmform.job_deployment import JobDeployment
 from swarmform.job_inputs import build as build_job
 from swarmform_service_witness_codecs import (ARTIFACT_PUBLISH, ARTIFACT_RECEIVE,
@@ -48,10 +49,9 @@ DEPLOYMENTS = {
 
 
 def build_input(deployment, domain, profile, shared):
-    builder = DEPLOYMENTS[deployment][0]
-    if deployment == "artifact_namespace":
-        return builder(domain, "november", profile=profile, shared=shared)
-    return builder("november", domain, profile=profile, shared=shared)
+    encoding = next(key for key, value in ENCODINGS.items() if value == profile)
+    return build_registered_input("november", domain, deployment=deployment,
+                                  encoding=encoding, shared=shared)
 
 
 def validate_matrix(output):

@@ -45,6 +45,12 @@ WORKLOAD_VARIANTS = {
     ("shared_files", encoding, "Engineering"): "calibration_table"
     for encoding in ("identifiers_metadata", "operational_state", "event_pattern")
 }
+WORKLOAD_VARIANTS.update({
+    ("artifact_namespace", "identifiers_metadata", "Knowledge Work"): "opening_customer_roster",
+    ("artifact_namespace", "timing", "Knowledge Work"): "opening_customer_roster",
+    ("job_namespace", "event_pattern", "Knowledge Work"): "opening_customer_roster",
+    ("job_namespace", "timing", "Knowledge Work"): "opening_customer_roster",
+})
 
 
 def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
@@ -53,19 +59,28 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
     visible, truth, manifest = _build_deployment(dataset_key, domain, deployment, encoding, shared)
     if variant == "baseline":
         return visible, truth, manifest
-    if variant != "calibration_table" or domain != "Engineering":
-        raise ValueError("Unknown workload condition for " + domain)
-
-    from swarmform import engineering
     from swarmform.inputs import digest
 
-    decoder = Path(__file__).with_name("decoder_base.py").read_text()
-    for files in visible["startup"].values():
-        order = files["/workspace/work-order.md"]
-        if not order.startswith(engineering.WORK_ORDER):
-            raise ValueError("The delivery instructions have no Engineering work order")
-        files["/workspace/work-order.md"] = engineering.TABLE_WORK_ORDER + order[len(engineering.WORK_ORDER):]
-        files["/workspace/decoder_base.py"] = decoder
+    if variant == "calibration_table" and domain == "Engineering":
+        from swarmform import engineering
+
+        decoder = Path(__file__).with_name("decoder_base.py").read_text()
+        for files in visible["startup"].values():
+            order = files["/workspace/work-order.md"]
+            if not order.startswith(engineering.WORK_ORDER):
+                raise ValueError("The delivery instructions have no Engineering work order")
+            files["/workspace/work-order.md"] = engineering.TABLE_WORK_ORDER + order[len(engineering.WORK_ORDER):]
+            files["/workspace/decoder_base.py"] = decoder
+    elif variant == "opening_customer_roster" and domain == "Knowledge Work":
+        original = "Prepare the customer briefs for the accounts listed in customers.json."
+        clarified = "Prepare all three publications for the accounts in intake/opening/customers.json."
+        for files in visible["startup"].values():
+            order = files["/workspace/work-order.md"]
+            if order.count(original) != 1:
+                raise ValueError("The Knowledge Work customer roster instruction has changed")
+            files["/workspace/work-order.md"] = order.replace(original, clarified)
+    else:
+        raise ValueError("Unknown workload condition for " + domain)
     manifest["effective_settings"]["workload_variant"] = variant
     manifest["worker_visible_sha256"] = digest(visible)
     return visible, truth, manifest
