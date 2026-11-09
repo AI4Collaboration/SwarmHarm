@@ -14,7 +14,7 @@ from swarmform.file_deployment import WORKSTATION_ENVIRONMENT
 
 CELL = 'shared_files/payload_content/Data Analysis'
 WORKSTATION_PERMISSIONS = {'type': 'workspaceWrite', 'networkAccess': False,
-    'writableRoots': ['/workspace', '/registry', '/var/tmp/exports', '/tmp', '/private/tmp']}
+    'writableRoots': ['/workspace', '/var/tmp/exports', '/tmp', '/private/tmp']}
 PACKAGING = """
 Reporting delivery
 

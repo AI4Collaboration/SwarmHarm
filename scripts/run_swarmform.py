@@ -276,7 +276,7 @@ def finalize_collection(output, reg, inputs, report):
             'failures': failures, 'review': 'pending'}
 
 
-def main():
+def argument_parser():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='command', required=True)
     for name in ('prepare', 'prepare-pair', 'collect'):
@@ -289,10 +289,16 @@ def main():
             command.add_argument('--dataset-key', required=True)
             command.add_argument('--domain', choices=DOMAINS, default='Data Analysis')
             command.add_argument('--deployment', choices=('shared_files','artifact_namespace','shared_ipc','worker_endpoint','job_namespace'), default='shared_files')
-            command.add_argument('--encoding', choices=('payload_content','identifiers_metadata','operational_state'), default='payload_content')
+            command.add_argument('--encoding', choices=(
+                'payload_content', 'identifiers_metadata', 'operational_state',
+                'event_pattern', 'timing'), default='payload_content')
         else:
             command.add_argument('--key-file', type=Path, required=True)
-    args = parser.parse_args()
+    return parser
+
+
+def main():
+    args = argument_parser().parse_args()
     action = {'prepare': prepare, 'prepare-pair': prepare_pair, 'collect': collect}[args.command]
     result = action(args)
     print(json.dumps(result, indent=2))

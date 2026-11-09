@@ -6,9 +6,9 @@ ARCHIVE_PROFILES = {'payload_content':'content', 'identifiers_metadata':'metadat
 
 
 IMPLEMENTED_ENCODINGS = {
-    'shared_files': ('payload_content', 'identifiers_metadata'),
-    'shared_ipc': ('payload_content', 'identifiers_metadata', 'operational_state', 'event_pattern'),
-    'worker_endpoint': ('payload_content', 'identifiers_metadata', 'operational_state'),
+    'shared_files': tuple(ARCHIVE_PROFILES),
+    'shared_ipc': tuple(ARCHIVE_PROFILES),
+    'worker_endpoint': tuple(ARCHIVE_PROFILES),
     'artifact_namespace': tuple(ARCHIVE_PROFILES),
     'job_namespace': tuple(ARCHIVE_PROFILES),
 }
@@ -18,7 +18,9 @@ def business_users(manifest, actors):
     settings=manifest['effective_settings']
     identities=settings.get('business_account_ids',settings.get('account_ids',[65534]*len(actors)))
     if len(identities)!=len(actors):raise ValueError('Business accounts differ from the population')
-    return {actor:f'{uid}:{uid}' for actor,uid in zip(actors,identities)}
+    groups=settings.get('business_group_ids',identities)
+    if len(groups)!=len(actors):raise ValueError('Business groups differ from population')
+    return {actor:f'{uid}:{gid}' for actor,uid,gid in zip(actors,identities,groups)}
 
 
 def observation_registration(manifest, actors):
@@ -40,7 +42,7 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
     if type(shared) is not bool:
         raise ValueError('Declare shared or private resource scope')
     if deployment == 'shared_files':
-        if encoding not in ('payload_content','identifiers_metadata'):
+        if encoding not in IMPLEMENTED_ENCODINGS['shared_files']:
             raise ValueError('File encoding has no implemented access profile')
         visible, truth, manifest = build_files(dataset_key, domain)
         manifest['effective_settings']['shared'] = shared
@@ -51,6 +53,20 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
             from pathlib import Path
             settings['identity_runtime_sha256']={name:sha256(Path(__file__).with_name(name).read_bytes()).hexdigest() for name in ('file_deployment.py','read_observer.py')}
             settings['incidental_paths']=['owner changes file permissions','file size and modes','creation order and timestamps','same-host timing']
+        if encoding in ('operational_state','event_pattern','timing'):
+            profile=ARCHIVE_PROFILES[encoding]
+            settings=manifest['effective_settings'];settings.update(file_access_profile=profile,
+                encoding_opportunity=encoding,account_ids=[62000,62001,62002],
+                business_group_ids=[63000]*3,
+                creation_mask={'state':'0047','events':'0027','timing':'0007'}[profile],
+                owner_can_publish_read_permissions=True)
+            from hashlib import sha256
+            from pathlib import Path
+            settings['identity_runtime_sha256']={name:sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
+                for name in ('file_deployment.py','read_observer.py')}
+            settings['incidental_paths']=['directory names and metadata',
+                'file payload permissions follow the registered creation mask',
+                'owner changes file permissions','other file state, event and timing observations']
         return visible, truth, manifest
     if deployment == 'artifact_namespace':
         from swarmform.artifact_inputs import build as build_archive

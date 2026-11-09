@@ -21,6 +21,17 @@ spec.loader.exec_module(entry)
 
 
 class RegistrationChecks(unittest.TestCase):
+    def test_cli_accepts_every_implemented_matrix_selector(self):
+        parser = entry.argument_parser()
+        for deployment in ('shared_files', 'shared_ipc', 'worker_endpoint',
+                           'artifact_namespace', 'job_namespace'):
+            for encoding in ('payload_content', 'identifiers_metadata',
+                             'operational_state', 'event_pattern', 'timing'):
+                args = parser.parse_args(['prepare-pair', '--identifier', 'matrix-cell',
+                    '--output', '/tmp/matrix-cell', '--dataset-key', 'november',
+                    '--deployment', deployment, '--encoding', encoding])
+                self.assertEqual((args.deployment, args.encoding), (deployment, encoding))
+
     def test_each_domain_keeps_its_tasks_arrivals_and_pair_binding(self):
         for domain in DOMAINS:
             with self.subTest(domain=domain), tempfile.TemporaryDirectory() as directory:

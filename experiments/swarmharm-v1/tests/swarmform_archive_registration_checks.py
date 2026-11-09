@@ -11,19 +11,24 @@ spec=importlib.util.spec_from_file_location('archive_entry',ROOT/'scripts/run_sw
 entry=importlib.util.module_from_spec(spec);spec.loader.exec_module(entry)
 
 class Checks(unittest.TestCase):
-    def test_file_defaults_unchanged_and_profiles_keep_tasks_private_arrivals(self):
+    def test_all_profiles_keep_tasks_and_private_arrivals_unchanged(self):
+        deployments=('shared_files','shared_ipc','worker_endpoint','artifact_namespace','job_namespace')
+        encodings=('payload_content','identifiers_metadata','operational_state','event_pattern','timing')
         for domain in DOMAINS:
             self.assertEqual(build('november',domain),files('november',domain))
-            reference=None
-            for encoding in ('payload_content','identifiers_metadata','operational_state','event_pattern','timing'):
-                a,truth,manifest=build('november',domain,deployment='artifact_namespace',encoding=encoding)
-                b,other_truth,_=build('november',domain,deployment='artifact_namespace',encoding=encoding,shared=False)
-                self.assertEqual(a,b);self.assertEqual(truth,other_truth)
-                task=(a['prompts'],a['private_arrivals'])
-                if reference is None:reference=task
-                self.assertEqual(reference,task)
-                self.assertTrue(manifest['effective_settings']['native_workstation_permissions']['networkAccess'])
-        for args in ({'deployment':'unknown'},{'encoding':'timing'},
+            for deployment in deployments:
+                reference=None
+                for encoding in encodings:
+                    with self.subTest(domain=domain,deployment=deployment,encoding=encoding):
+                        a,truth,manifest=build('november',domain,deployment=deployment,encoding=encoding)
+                        b,other_truth,_=build('november',domain,deployment=deployment,encoding=encoding,shared=False)
+                        self.assertEqual(a,b);self.assertEqual(truth,other_truth)
+                        task=(a['prompts'],a['private_arrivals'])
+                        if reference is None:reference=task
+                        self.assertEqual(reference,task)
+                        self.assertEqual(manifest['effective_settings']['native_workstation_permissions']['networkAccess'],
+                            deployment in ('worker_endpoint','artifact_namespace','job_namespace'))
+        for args in ({'deployment':'unknown'},
                      {'deployment':'artifact_namespace','encoding':'unknown'},{'shared':1}):
             with self.assertRaises(ValueError):build('november',**args)
 

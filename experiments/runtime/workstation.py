@@ -100,7 +100,7 @@ HYDRATE = r'''
 import base64,json,shutil
 from pathlib import Path
 data=json.loads(input())
-if data.get('replace_registry'):
+if data.get('replace_registry') and Path('/registry').is_dir():
     for p in Path('/registry').iterdir():
         if p.is_dir() and not p.is_symlink():shutil.rmtree(p)
         else:p.unlink()
@@ -249,16 +249,25 @@ class ApptainerWorkstation:
 class DockerWorkstation:
     def __init__(self, initial_files, *, network="none", environment=None,
                  process_lifecycle='tool_scoped', observation_sink=None, named_volumes=(),
-                 trace_commands=False, trace_volume=None, ipc_mode=None, private_shm=False, business_uid=65534, business_gid=65534, creation_mask=None):
+                 trace_commands=False, trace_volume=None, ipc_mode=None, private_shm=False,
+                 business_uid=65534, business_gid=65534, creation_mask=None,
+                 registry_enabled=True):
         if any(type(v) is not int or not 1024<=v<=65534 for v in (business_uid,business_gid)):
             raise ValueError('Business identities must be unprivileged numeric accounts')
-        if creation_mask not in (None,'0077'):raise ValueError('Unregistered creation mask')
+        if creation_mask not in (None,'0077','0047','0027','0007'):
+            raise ValueError('Unregistered creation mask')
         self.business_uid,self.business_gid,self.creation_mask=business_uid,business_gid,creation_mask
         if ipc_mode is not None and ipc_mode != 'private':
             if not isinstance(ipc_mode, str) or not re.fullmatch(r'container:[A-Za-z0-9][A-Za-z0-9_.-]+', ipc_mode):
                 raise ValueError('Invalid workstation IPC binding')
         if not isinstance(private_shm, bool):
             raise ValueError('Private shared-memory mount must be a boolean')
+        if not isinstance(registry_enabled, bool):
+            raise ValueError('Registry mount selection must be a boolean')
+        if not registry_enabled and any(path == '/registry' or path.startswith('/registry/')
+                                        for path in initial_files):
+            raise ValueError('A registry-free workstation cannot receive registry files')
+        self.registry_enabled = registry_enabled
         if process_lifecycle not in ('tool_scoped', 'continuous'):
             raise ValueError('Unknown workstation process lifecycle')
         self.process_lifecycle = process_lifecycle
@@ -300,7 +309,10 @@ class DockerWorkstation:
                      ]
             args += (['--mount',f'type=volume,src={trace_volume},dst=/var/log/workstation'] if trace_volume else
                      ['--tmpfs','/var/log/workstation:rw,nosuid,nodev,size=256m,mode=0700'])
-        for path, size in (("/workspace", "32m"), ("/registry", "16m"), ("/tmp", "32m"), ("/private/tmp", "1m")):
+        roots = [("/workspace", "32m"), ("/tmp", "32m"), ("/private/tmp", "1m")]
+        if self.registry_enabled:
+            roots.insert(1, ("/registry", "16m"))
+        for path, size in roots:
             args += ["--tmpfs", f"{path}:rw,nosuid,nodev,size={size},mode=1777"]
         for volume, target in named_volumes:
             args += ['--mount', f'type=volume,src={volume},dst={target}']
@@ -393,6 +405,12 @@ class DockerWorkstation:
             capture_output=True, check=True, timeout=15)
 
     def prepare_continuous_command(self, shared):
+        if not self.registry_enabled:
+            if shared:
+                raise ValueError('Registry synchronization is disabled for this workstation')
+            before = self.capture_frozen('before_command')
+            self.resume_captured(before)
+            return before, [], []
         before = self.capture_frozen('before_command')
         pending = []
         conflicts = []
@@ -467,7 +485,8 @@ class DockerWorkstation:
                     process.wait(timeout=5)
             snapshot = self.observe()
             if before is not None:
-                self.registry_snapshot = dict(snapshot['/registry'])
+                if self.registry_enabled:
+                    self.registry_snapshot = dict(snapshot['/registry'])
                 snapshot['workstation_observation'] = {
                     'before': before.get('observation_reference'),
                     'after': snapshot.get('observation_reference'),

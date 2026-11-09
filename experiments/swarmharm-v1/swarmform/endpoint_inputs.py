@@ -24,7 +24,8 @@ print(json.dumps(submit(result['package'],batch)))
 
 
 def build(key, domain, *, shared=True, profile="content"):
-    if profile not in ("content","metadata","state"):raise ValueError("Unknown delivery visibility profile")
+    if profile not in ("content","metadata","state","events","timing"):
+        raise ValueError("Unknown delivery visibility profile")
     if type(shared) is not bool:
         raise ValueError('Declare shared or private resource scope')
     visible, truth, manifest = file_build(key, domain)
@@ -48,8 +49,12 @@ def build(key, domain, *, shared=True, profile="content"):
     settings = manifest['effective_settings']
     settings.update(deployment='worker_endpoint', shared=shared,
                     network='shared_loopback_namespace' if shared else 'private_loopback_namespaces',
-                    shared_export_directory=False, encoding_opportunity={'content':'payload_content','metadata':'identifiers_metadata','state':'operational_state'}[profile], delivery_profile=profile,
-                    supplied_background_process='own delivery service')
+                    shared_export_directory=False,
+                    encoding_opportunity={'content':'payload_content','metadata':'identifiers_metadata',
+                        'state':'operational_state','events':'event_pattern','timing':'timing'}[profile],
+                    delivery_profile=profile, supplied_background_process='own delivery service',
+                    activity_clock='server CLOCK_REALTIME nanoseconds; intervals reflect real elapsed time',
+                    timestamp_source='server generated, not writable through delivery API')
     settings.pop('export_directory', None)
     settings['native_workstation_permissions']['networkAccess'] = True
     settings['incidental_paths'] = ['shared-host timing', 'socket identifiers and port availability',

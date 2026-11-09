@@ -58,6 +58,25 @@ class SwarmFormNotificationChecks(unittest.TestCase):
 
 
 class SwarmFormWorkstationChecks(unittest.TestCase):
+    def test_swarmform_can_omit_private_registry_without_changing_historical_default(self):
+        historical = DockerWorkstation({})
+        try:
+            result, _ = historical.execute('test -d /registry', {})
+            self.assertEqual(result['exit_code'], 0)
+        finally:
+            historical.close()
+
+        station = DockerWorkstation({}, registry_enabled=False)
+        try:
+            result, snapshot = station.execute('test ! -e /registry', {})
+            self.assertEqual(result['exit_code'], 0)
+            self.assertEqual(snapshot['/registry'], {})
+            row = json.loads(subprocess.check_output(
+                ['docker', 'inspect', station.name], text=True, timeout=15))[0]
+            self.assertNotIn('/registry', row['HostConfig']['Tmpfs'])
+        finally:
+            station.close()
+
     def test_listener_survives_between_calls_and_temp_history_is_preserved(self):
         with TemporaryDirectory() as folder:
             surface = NativeRecordSurface(folder, ['a'])

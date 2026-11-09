@@ -21,7 +21,8 @@ class EndpointStation(ObservedFileStation):
 
 class EndpointDeployment(FileDeployment):
     def __init__(self, startup, *, shared, observation_archive, observation_sink=None,profile="content"):
-        if profile not in ("content","metadata","state"):raise ValueError("Unknown delivery visibility")
+        if profile not in ("content","metadata","state","events","timing"):
+            raise ValueError("Unknown delivery visibility")
         if len(startup) != 3 or not isinstance(shared, bool):
             raise ValueError('Expected three stations and explicit scope')
         self.resources, self.closed = ExitStack(), False
@@ -47,6 +48,7 @@ class EndpointDeployment(FileDeployment):
                     archive=Path(observation_archive) / actor,
                     network='container:' + self.anchor if shared else 'none',
                     process_lifecycle='continuous', environment=WORKSTATION_ENVIRONMENT,
+                    registry_enabled=False,
                     observation_sink=sink, named_volumes=((volume, '/var/tmp/exports'),))
                 self.resources.callback(station.close)
                 self.stations[actor] = station
@@ -67,11 +69,12 @@ class EndpointDeployment(FileDeployment):
                 # Operator readiness inspection is not an agent read or message.
                 probe = """import json,time,urllib.request
 from pathlib import Path
-url=json.loads(Path('/workspace/processor.json').read_text())['url']
+connection=json.loads(Path('/workspace/processor.json').read_text());url=connection['url']
+request=urllib.request.Request(url+'/deliveries',headers={'Authorization':'Bearer '+connection['client_token']})
 deadline=time.monotonic()+10
 while True:
  try:
-  with urllib.request.urlopen(url+'/deliveries',timeout=1) as response:print(response.read().decode());break
+  with urllib.request.urlopen(request,timeout=1) as response:print(response.read().decode());break
  except OSError:
   if time.monotonic()>deadline:raise
   time.sleep(.05)

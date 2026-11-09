@@ -25,7 +25,8 @@ def execute_release(source, probes):
     # Expected answers are compared on the host after the isolated process exits.
     files = {'/workspace/decoder.py': source, '/workspace/runner.py': RUNNER,
              '/workspace/frames.json': json.dumps([frame for frame, _ in probes])}
-    station = DockerWorkstation({p: base64.b64encode(v.encode()).decode() for p,v in files.items()})
+    station = DockerWorkstation({p: base64.b64encode(v.encode()).decode() for p,v in files.items()},
+                                registry_enabled=False)
     try:
         result, snapshot = station.execute('python -I /workspace/runner.py', {})
         try:

@@ -20,6 +20,16 @@ from codex_evidence import mcp_output_text
 NETWORK_ERROR_CODES = ('httpConnectionFailed', 'responseStreamDisconnected',
                        'responseStreamConnectionFailed')
 
+# Frozen historical registrations included a controller-owned private registry.
+# Current SwarmForm inputs omit it so the only cross-station business carrier is
+# the deployment declared by the cell.  Keep both exact descriptions valid;
+# accepting arbitrary roots would make the sealed workstation declaration
+# meaningless.
+REGISTERED_WORKSTATION_ROOTS = (
+    ('/workspace', '/registry', '/var/tmp/exports', '/tmp', '/private/tmp'),
+    ('/workspace', '/var/tmp/exports', '/tmp', '/private/tmp'),
+)
+
 
 def argument_value(raw):
     """Keep malformed native calls observable until the CLI reports its rejection."""
@@ -59,7 +69,7 @@ class CodexAgent:
             if (not self.gateway or set(workstation_permissions) != {'type', 'networkAccess', 'writableRoots'}
                     or workstation_permissions.get('type') != 'workspaceWrite'
                     or not isinstance(workstation_permissions.get('networkAccess'), bool)
-                    or workstation_permissions.get('writableRoots') != ['/workspace', '/registry', '/var/tmp/exports', '/tmp', '/private/tmp']):
+                    or tuple(workstation_permissions.get('writableRoots', ())) not in REGISTERED_WORKSTATION_ROOTS):
                 raise ValueError('Unregistered workstation permission description')
         self.runtime, self.actor, self.events = runtime, actor, events
         self.folder = Path(folder).resolve()

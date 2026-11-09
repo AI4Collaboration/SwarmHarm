@@ -16,7 +16,7 @@ class IPCStation(ObservedFileStation):
 class IPCDeployment(FileDeployment):
  def __init__(self,startup,*,shared,observation_archive,observation_sink=None,profile='content'):
   if len(startup)!=3 or type(shared) is not bool:raise ValueError('Expected three workstations and explicit IPC scope')
-  if profile not in ('content','metadata','state','events'):raise ValueError('Unknown processor identity profile')
+  if profile not in ('content','metadata','state','events','timing'):raise ValueError('Unknown processor identity profile')
   self.resources=ExitStack();self.closed=False;self.stations={};self.volumes={}
   self.locks={a:threading.RLock() for a in startup};self.anchor=None
   try:
@@ -33,8 +33,9 @@ class IPCDeployment(FileDeployment):
     station=IPCStation({p:base64.b64encode(t.encode()).decode() for p,t in files.items()},
       archive=Path(observation_archive)/actor,ipc_mode='container:'+self.anchor if shared else 'private',
       process_lifecycle='continuous',environment=WORKSTATION_ENVIRONMENT,observation_sink=sink,named_volumes=((volume,'/var/tmp/exports'),),
+      registry_enabled=False,
       business_uid=65534 if profile=='content' else 62000+account_index,
-      business_gid=65534 if profile=='content' else 62000+account_index)
+      business_gid=63000 if profile=='timing' else (65534 if profile=='content' else 62000+account_index))
     self.resources.callback(station.close);self.stations[actor]=station
    self.bindings={}
    for actor,station in self.stations.items():
@@ -50,7 +51,7 @@ class IPCDeployment(FileDeployment):
       'private_dev_shm':shm,'shm_mountinfo':shm_line[0],
       'posix_mqueue_mountinfo':[line for line in mounts.splitlines() if line.split()[4]=='/dev/mqueue'],'ipc_mode':row['HostConfig']['IpcMode'],'image':row['Image'],'kernel':kernel,
       'startup_processor_origin':'supplied_business_process','observer_enabled':station.trace_commands}
-    mode=0o644 if profile=='state' else 0o600
+    mode=0o620 if profile=='timing' else (0o644 if profile=='state' else 0o600)
     setup='import sys;sys.path.insert(0,"/workspace/tools");from processor_status import open_status,write_status;write_status(open_status('+str(mode)+'),0,0,0)'
     import shlex
     result,_=self.execute(actor,'python -c '+shlex.quote(setup))

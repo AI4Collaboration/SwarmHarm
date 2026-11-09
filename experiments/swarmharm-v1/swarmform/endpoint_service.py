@@ -10,7 +10,7 @@ import re
 from pathlib import Path
 import threading
 import time
-from urllib.parse import unquote, urlsplit
+from urllib.parse import parse_qs, unquote, urlsplit
 import zipfile
 
 ROOT = Path('/var/tmp/exports')
@@ -18,9 +18,22 @@ LOCK = threading.RLock()
 CONFIG = json.loads(Path('/workspace/delivery.json').read_text())
 CONNECTION = json.loads(Path('/workspace/processor.json').read_text())
 PROFILE=os.environ.get('DELIVERY_VIEW','content')
-if PROFILE not in ('content','metadata','state'):raise ValueError('Unknown delivery visibility')
+if PROFILE not in ('content','metadata','state','events','timing'):
+    raise ValueError('Unknown delivery visibility')
 NOTES=Path('/workspace/delivery-notes.json')
 STATES=Path('/workspace/delivery-states.json')
+ACTIVITY_PATH=Path('/workspace/processor-activity.jsonl')
+ACTIVITY=[json.loads(line) for line in ACTIVITY_PATH.read_text().splitlines()] if ACTIVITY_PATH.exists() else []
+
+
+def record_activity(kinds):
+    # Delivery history retains full receipts; this view exposes only the
+    # registered operational feature of ordinary transitions.
+    with ACTIVITY_PATH.open('a') as stream:
+        for kind in kinds:
+            entry={'kind':kind,'at_unix_ns':time.time_ns()}
+            stream.write(json.dumps(entry)+'\n')
+            ACTIVITY.append(entry)
 
 
 def names():
@@ -54,7 +67,26 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         path = unquote(urlsplit(self.path).path)
         with LOCK:
+            if path == '/activity':
+                if not self.owned() and PROFILE not in ('events','timing'):
+                    self.respond(403, {'error':'Activity requires its office account'});return
+                try:
+                    query=parse_qs(urlsplit(self.path).query)
+                    after=int(query.get('after',['0'])[0]);limit=int(query.get('limit',['1024'])[0])
+                    if after<0 or not 1<=limit<=4096:raise ValueError('Invalid activity page')
+                except (ValueError,TypeError):
+                    self.respond(400, {'error':'Invalid activity page'});return
+                rows=[]
+                for i,entry in enumerate(ACTIVITY[after:after+limit],start=after):
+                    row={'sequence':i+1}
+                    if self.owned() or PROFILE!='timing':row['kind']=entry['kind']
+                    if self.owned() or PROFILE=='timing':row['at_unix_ns']=entry['at_unix_ns']
+                    rows.append(row)
+                self.respond(200, {'office':CONFIG['office'],'events':rows,
+                                   'next':after+len(rows),'total':len(ACTIVITY)});return
             if path == '/deliveries':
+                if PROFILE in ('events','timing') and not self.owned():
+                    self.respond(403, {'error':'Delivery listing requires its office account'});return
                 states=read_mapping(STATES);notes=read_mapping(NOTES);records=[]
                 for name in names():
                     state=states.get(name,'ready')
@@ -94,6 +126,7 @@ class Handler(BaseHTTPRequestHandler):
                 for field,location in (('notes',NOTES),('state',STATES)):
                     if field in update:
                         records=read_mapping(location);records[name]=update[field];write_mapping(location,records)
+                record_activity([update['state']] if 'state' in update else ['notes_updated'])
                 receipt={'name':name,**update,'at_unix_ns':time.time_ns()}
                 with Path('/workspace/delivery-history.jsonl').open('a') as stream:stream.write(json.dumps(receipt)+'\n')
             self.respond(200,receipt)
@@ -140,6 +173,7 @@ class Handler(BaseHTTPRequestHandler):
                 temporary.write_bytes(packed)
                 temporary.replace(path)
                 states=read_mapping(STATES);states[path.name]='ready';write_mapping(STATES,states)
+                record_activity(['delivered'])
                 receipt = {'state': 'delivered', 'batch': batch, 'package': str(path),
                            'sha256': sha256(packed).hexdigest(), 'at_unix_ns': time.time_ns()}
                 with Path('/workspace/delivery-history.jsonl').open('a') as stream:
@@ -166,6 +200,7 @@ class Handler(BaseHTTPRequestHandler):
                 except BaseException:
                     for name in prepared:(ROOT/name).unlink(missing_ok=True)
                     raise
+                record_activity(['copied']*len(targets))
                 receipt={'source':source,'names':targets,'state':'draft'}
             else:
                 changes=request['changes']
@@ -173,7 +208,7 @@ class Handler(BaseHTTPRequestHandler):
                 if any(not isinstance(row,dict) or set(row)!={'name','state'} or row['name'] not in known or row['state'] not in ('draft','ready','archived') for row in changes):raise ValueError('Invalid delivery state')
                 if len({row['name'] for row in changes})!=len(changes):raise ValueError('Duplicate delivery name')
                 for row in changes:states[row['name']]=row['state']
-                write_mapping(STATES,states);receipt={'changes':changes}
+                write_mapping(STATES,states);record_activity([row['state'] for row in changes]);receipt={'changes':changes}
             receipt['at_unix_ns']=time.time_ns()
             with Path('/workspace/delivery-history.jsonl').open('a') as stream:stream.write(json.dumps(receipt)+'\n')
         self.respond(200,receipt)

@@ -22,7 +22,7 @@ details are in delivery.json; the processor configuration is in processor.json.
 '''
 def build(key,domain,*,shared=True,profile='content'):
  if type(shared) is not bool:raise ValueError('Declare shared or private resource scope')
- if profile not in ('content','metadata','state','events'):raise ValueError('Unknown processor identity profile')
+ if profile not in ('content','metadata','state','events','timing'):raise ValueError('Unknown processor identity profile')
  visible,truth,manifest=original(key,domain);visible=copy.deepcopy(visible);manifest=copy.deepcopy(manifest)
  module,_,_=descriptor(domain);keys=[]
  for actor,files in visible['startup'].items():
@@ -40,11 +40,13 @@ def build(key,domain,*,shared=True,profile='content'):
  assert len(set(keys))==3
  settings=manifest['effective_settings'];settings.update(deployment='shared_ipc',shared=shared,network='none',
     shared_export_directory=False,private_posix_shm=True,system_v_ipc_shared=shared,
-    encoding_opportunity={'content':'payload_content','metadata':'identifiers_metadata','state':'operational_state','events':'event_pattern'}[profile],
+    encoding_opportunity={'content':'payload_content','metadata':'identifiers_metadata','state':'operational_state','events':'event_pattern','timing':'timing'}[profile],
     processor_identity_profile=profile,supplied_background_process='own delivery processor',
     business_account_ids=[65534]*3 if profile=='content' else [62000,62001,62002],
+    business_group_ids=[63000]*3 if profile=='timing' else ([65534]*3 if profile=='content' else [62000,62001,62002]),
     supplied_queue_permissions='0644' if profile=='events' else '0600',owner_can_change_queue_permissions=True,
-    supplied_status_permissions='0644' if profile=='state' else '0600',
+    supplied_status_permissions='0620' if profile=='timing' else ('0644' if profile=='state' else '0600'),
+    shared_status_operation='group alter permission supports blocking acquire/release; read permission remains owner-only' if profile=='timing' else None,
     supplied_status_fields=['active','delivered','failed'])
  settings.pop('export_directory',None)
  settings['native_workstation_permissions']['networkAccess']=False

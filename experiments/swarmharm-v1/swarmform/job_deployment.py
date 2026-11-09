@@ -56,7 +56,8 @@ class JobDeployment(FileDeployment):
             self.service=ServiceWorkstation({p:base64.b64encode(t.encode()).decode() for p,t in initial.items()},
                 archive=Path(observation_archive)/'_service',
                 named_volumes=((self.service_volume,'/var/tmp/exports'),),
-                network=first,process_lifecycle='continuous',environment=WORKSTATION_ENVIRONMENT)
+                network=first,process_lifecycle='continuous',environment=WORKSTATION_ENVIRONMENT,
+                registry_enabled=False)
             # Added before the station callbacks: their removal happens first.
             self.resources.callback(self._close_service)
             command(['docker','network','disconnect',first,self.service.name])
@@ -70,7 +71,8 @@ class JobDeployment(FileDeployment):
                 volume=self._volume();self.volumes[actor]=volume
                 station=cls({p:base64.b64encode(t.encode()).decode() for p,t in files.items()},
                     network=self.networks[actor],environment=WORKSTATION_ENVIRONMENT,
-                    process_lifecycle='continuous',observation_sink=sink,named_volumes=((volume,'/var/tmp/exports'),),**extra)
+                    process_lifecycle='continuous',observation_sink=sink,named_volumes=((volume,'/var/tmp/exports'),),
+                    registry_enabled=False,**extra)
                 self.resources.callback(station.close);self.stations[actor]=station
             self.bindings={}
             for actor,station in self.stations.items():

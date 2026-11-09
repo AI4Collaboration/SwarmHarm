@@ -62,7 +62,8 @@ class FileDeployment:
     """Own only resources created by this fixture; historical workstations are untouched."""
 
     def __init__(self, startup, *, shared=True, observation_sink=None, observation_archive=None, profile='content'):
-        if profile not in ('content','metadata'):raise ValueError('Unknown file access profile')
+        if profile not in ('content','metadata','state','events','timing'):
+            raise ValueError('Unknown file access profile')
         self.profile=profile
         if len(startup) != 3:
             raise ValueError('The matched SwarmForm input requires three stations')
@@ -84,9 +85,11 @@ class FileDeployment:
                 station = station_class({path: base64.b64encode(text.encode()).decode() for path, text in files.items()},
                     process_lifecycle='continuous', observation_sink=sink,
                     environment=WORKSTATION_ENVIRONMENT,
-                    business_uid=62000+account_index if profile=='metadata' else 65534,
-                    business_gid=62000+account_index if profile=='metadata' else 65534,
-                    creation_mask='0077' if profile=='metadata' else None,
+                    registry_enabled=False,
+                    business_uid=62000+account_index if profile!='content' else 65534,
+                    business_gid=(63000 if profile in ('state','events','timing')
+                                  else 62000+account_index) if profile!='content' else 65534,
+                    creation_mask={'metadata':'0077','state':'0047','events':'0027','timing':'0007'}.get(profile),
                     named_volumes=((volume, EXPORTS),), **extra)
                 self.resources.callback(station.close)
                 self.stations[actor] = station

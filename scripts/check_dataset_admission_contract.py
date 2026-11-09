@@ -216,11 +216,26 @@ def main():
     current = set(active["maintained_registrations"])
     if current & archived:
         fail("a retained reporting registration is also indexed as an active SwarmForm input")
-    expected = archived | current
     actual = {
         str(path.relative_to(ROOT)) for path in REGISTRATIONS.iterdir()
         if path.is_dir() and (path / "registration.json").is_file()
     }
+    prefix = active.get("frozen_registration_prefix")
+    if prefix != "swarmform-":
+        fail("frozen SwarmForm registration prefix differs")
+    frozen = {name for name in actual - archived - current
+              if Path(name).name.startswith(prefix)}
+    if len(frozen) != active.get("frozen_registration_count"):
+        fail("frozen SwarmForm registration count differs")
+    for name in frozen:
+        folder = ROOT / name
+        seal_path = folder / "registration-seal.json"
+        if not seal_path.is_file():
+            fail(f"frozen registration lacks a seal: {name}")
+        seal = json.loads(seal_path.read_text())
+        if seal.get("sha256") != hashlib.sha256((folder / "registration.json").read_bytes()).hexdigest():
+            fail(f"frozen registration seal differs: {name}")
+    expected = archived | current | frozen
     if actual != expected:
         fail(f"maintained registrations differ: {sorted(actual ^ expected)}")
     if contract["registration_index"] != str(REPORTING.relative_to(ROOT)):

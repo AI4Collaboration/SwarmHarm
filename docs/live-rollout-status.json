@@ -1,10 +1,10 @@
 {
-  "schema_version": 12,
-  "updated_at": "2026-11-09T07:12:30.776538+00:00",
+  "schema_version": 13,
+  "updated_at": "2026-11-09T08:28:32Z",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
-  "status": "building_and_validating_inputs",
-  "current_question": "Complete and independently validate all 100 inputs, then review matched model behavior on each current admitted version.",
+  "status": "current_source_validation_and_admission",
+  "current_question": "Which current inputs lead three initially separate agents to create and reuse a useful communication convention?",
   "population": 3,
   "current_models": [
     "openai/gpt-5.6-sol",
@@ -40,221 +40,43 @@
       "Knowledge Work": "experiments/swarmharm-v1/tests/knowledge_input_checks.py"
     },
     "unlisted_cell_status": "open",
-    "cells": {
-      "shared_files/payload_content/Data Analysis": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/file-content-analysis-admission.json"
-      },
-      "shared_files/payload_content/Engineering": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/file-content-engineering-admission.json"
-      },
-      "shared_files/payload_content/Financial Analysis": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/file-content-financial-admission.json"
-      },
-      "shared_files/payload_content/Knowledge Work": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/file-content-knowledge-admission.json"
-      },
-      "artifact_namespace/payload_content/Data Analysis": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/archive-data-content-admission.json"
-      },
-      "artifact_namespace/identifiers_metadata/Data Analysis": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/archive-data-metadata-admission.json"
-      },
-      "artifact_namespace/payload_content/Engineering": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/archive-engineering-content-admission.json"
-      },
-      "artifact_namespace/identifiers_metadata/Engineering": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/archive-engineering-metadata-admission.json"
-      },
-      "artifact_namespace/payload_content/Financial Analysis": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/archive-financial-content-admission.json"
-      },
-      "artifact_namespace/identifiers_metadata/Financial Analysis": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/archive-financial-metadata-admission.json"
-      },
-      "artifact_namespace/payload_content/Knowledge Work": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/archive-knowledge-content-admission.json"
-      },
-      "artifact_namespace/identifiers_metadata/Knowledge Work": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/archive-knowledge-metadata-admission.json"
-      },
-      "shared_files/identifiers_metadata/Data Analysis": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/file-metadata-data-admission.json"
-      },
-      "shared_files/identifiers_metadata/Financial Analysis": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/file-metadata-financial-admission.json"
-      },
-      "shared_files/identifiers_metadata/Knowledge Work": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/file-metadata-knowledge-admission.json"
-      },
-      "shared_files/identifiers_metadata/Engineering": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/file-metadata-engineering-admission.json"
-      },
-      "shared_ipc/event_pattern/Data Analysis": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/ipc-events-data-admission.json"
-      },
-      "shared_ipc/event_pattern/Financial Analysis": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/ipc-events-financial-admission.json"
-      },
-      "shared_ipc/event_pattern/Knowledge Work": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/ipc-events-knowledge-admission.json"
-      },
-      "shared_ipc/event_pattern/Engineering": {
-        "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/ipc-events-engineering-admission.json"
-      }
-    },
-    "implemented_export_count": 76
+    "cells": {},
+    "implemented_export_count": 100,
+    "current_admitted_count": 0,
+    "current_reviewed_rollout_count": 0
+  },
+  "current_source_change": {
+    "reason": "Fresh SwarmForm workstations no longer receive the generic private /registry mount; only the cell's declared business carrier can connect workstations.",
+    "affected_prior_admissions": 20,
+    "action": "Regenerate current-source shared/private witnesses, admit each verified input, then register each model rollout once."
   },
   "active_rollouts": [],
+  "next_checkpoint": "shared_files/payload_content/Data Analysis",
+  "maintained_registrations": [],
+  "frozen_registration_prefix": "swarmform-",
+  "frozen_registration_count": 48,
+  "frozen_positive_evidence": [
+    {
+      "review": "docs/research/swarmform-file-content-domains-03.json",
+      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-file-content-domains-03",
+      "scope": "Original file-content inputs; four domains and both models."
+    },
+    {
+      "review": "docs/research/swarmform-archive-data05.json",
+      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-archive-data05",
+      "scope": "Original archive-content Data Analysis input."
+    }
+  ],
+  "latest_offline_check": {
+    "kind": "unified_business_input_readiness",
+    "passed": true,
+    "checks": 25,
+    "model_calls": 0,
+    "external_record": "work/eval-readiness/swarmform-all100-source-check-01.json"
+  },
   "heartbeat": {
     "automation_id": "swarmform-20",
     "interval_minutes": 20,
     "status": "ACTIVE"
-  },
-  "next_checkpoint": "shared_files/identifiers_metadata/Data Analysis",
-  "maintained_registrations": [
-    "experiments/swarmharm-v1/registrations/swarmform-file-content-engineering-03-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-file-content-engineering-03-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-file-content-data-03-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-file-content-data-03-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-file-content-financial-03-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-file-content-financial-03-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-file-content-knowledge-03-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-file-content-knowledge-03-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-data-05-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-data-05-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-financial-05-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-financial-05-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-knowledge-05-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-knowledge-05-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-engineering-05-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-engineering-05-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-data-05-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-data-05-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-financial-05-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-financial-05-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-knowledge-05-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-knowledge-05-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-engineering-05-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-engineering-05-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-data-06-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-data-06-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-financial-06-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-financial-06-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-knowledge-06-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-knowledge-06-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-engineering-06-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-content-engineering-06-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-data-06-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-data-06-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-financial-06-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-financial-06-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-knowledge-06-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-knowledge-06-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-engineering-06-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-archive-metadata-engineering-06-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-file-metadata-data-08-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-file-metadata-data-08-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-file-metadata-financial-08-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-file-metadata-financial-08-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-file-metadata-knowledge-08-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-file-metadata-knowledge-08-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-file-metadata-engineering-08-sol56",
-    "experiments/swarmharm-v1/registrations/swarmform-file-metadata-engineering-08-sol61"
-  ],
-  "runtime_fixture_checks": {
-    "shared_files": {
-      "state": "four_domain_matched_model_pairs_reviewed",
-      "test": "experiments/swarmharm-v1/tests/swarmform_deployment_checks.py",
-      "operator_witness": "scripts/check_swarmform_file_deployment.py",
-      "shared_correct_station_batches": 9,
-      "private_incomplete_station_batches": 9,
-      "model_calls": 0,
-      "pending": [
-        "Engineering: clarify supplied type-definition terminology in a separate input revision; preserve original results."
-      ],
-      "read_observer_check": "experiments/swarmharm-v1/tests/swarmform_read_observer_checks.py",
-      "native_integration_check": "experiments/swarmharm-v1/tests/swarmform_collection_checks.py",
-      "continuity_audit": "docs/research/swarmform-runtime-continuity.json"
-    },
-    "artifact_namespace": {
-      "state": "archive06_closed_pending_review",
-      "model_calls": 0,
-      "operator_witness": "scripts/check_swarmform_archive_deployment.py",
-      "native_integration_check": "experiments/swarmharm-v1/tests/swarmform_archive_native_checks.py",
-      "pending": [
-        "Full semantic review of eleven completed runs and the original capture failure.",
-        "Fresh admission before revised archive profiles are collected."
-      ],
-      "witness_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-archive-input-witness-01",
-      "continuity_audit": "docs/research/swarmform-runtime-continuity.json",
-      "observer_repair": "docs/research/swarmform-observer-memory.json"
-    }
-  },
-  "reviewed_pairs": [
-    {
-      "review": "docs/research/swarmform-file-content-analysis-02.json",
-      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-file-content-analysis-02",
-      "input_sha256": "d35a83b827ce2aee3e8b864ea0641237f5c337af16db5774065151bf105c58f2",
-      "current_input_delta": "Original home/notice condition preserved; corrected condition reviewed separately in domains-03."
-    },
-    {
-      "review": "docs/research/swarmform-file-content-domains-03.json",
-      "domain": "Engineering",
-      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-file-content-domains-03",
-      "input_sha256": "8233954fc8c614884093dfc53cb1463c87cde7c3aeaf045c035f81567f0fb93f",
-      "current_input_delta": "none"
-    },
-    {
-      "review": "docs/research/swarmform-file-content-domains-03.json",
-      "domain": "Data Analysis",
-      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-file-content-domains-03",
-      "input_sha256": "e070f8d4ed92464629006571de1f5132456926d37ea2ea0479a8f307bbf0c95c",
-      "current_input_delta": "none"
-    },
-    {
-      "review": "docs/research/swarmform-file-content-domains-03.json",
-      "domain": "Financial Analysis",
-      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-file-content-domains-03",
-      "input_sha256": "9f254c8f0ccd0c6391a464b9e97aa17b5d934b938459a7e8a0ee03f2fd041535",
-      "current_input_delta": "none"
-    },
-    {
-      "review": "docs/research/swarmform-file-content-domains-03.json",
-      "domain": "Knowledge Work",
-      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-file-content-domains-03",
-      "input_sha256": "a2639bd3c614a9673c18e469d280978e6268320b183fbf2603039ea97683bd38",
-      "current_input_delta": "none"
-    }
-  ],
-  "input_development_report": "docs/research/swarmform-input-development.json",
-  "collection_checkpoint": {
-    "batch": "swarmform-archive-domains-06",
-    "status": "stopped_for_review",
-    "closed_pairs": 6,
-    "quiescent_runs": 11,
-    "runtime_failures": 1,
-    "unstarted_pairs": 2,
-    "failure": "Financial metadata / Sol 6.1: service file exceeded the old capture allowance. Preserve original result; use fresh registration after repair.",
-    "behavioral_review": "pending full native and exact-read audit for this batch"
   }
 }

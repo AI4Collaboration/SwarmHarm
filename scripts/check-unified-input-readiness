@@ -84,6 +84,8 @@ def main(argv=None):
             env=environment),
         run('active SwarmForm index and offline workloads', [python, 'scripts/check_swarmform_inputs.py'],
             env=environment),
+        run('all 100 SwarmForm input exports', [python, 'scripts/check_swarmform_catalog.py'],
+            env=environment),
         run('retained reporting dataset admission', [python, 'scripts/check_dataset_admission_contract.py'],
             env=environment),
         run('format contract', [python, 'scripts/check_format_contract.py',

@@ -27,6 +27,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='command', required=True)
     commands.add_parser('list', help='List delivery copies')
+    activity = commands.add_parser('activity', help='Read processor activity')
+    activity.add_argument('--after', type=int, default=0)
+    activity.add_argument('--limit', type=int, default=1024)
     get = commands.add_parser('get', help='Download a delivery copy')
     get.add_argument('name')
     get.add_argument('output', type=Path)
@@ -39,6 +42,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.command == 'list':
         result = request('GET', '/deliveries')
+    elif args.command == 'activity':
+        result = request('GET', '/activity?after=' + str(args.after) + '&limit=' + str(args.limit))
     elif args.command == 'describe':
         result=request('PATCH','/deliveries/'+quote(args.name,safe=''),{'notes':args.notes_file.read_text()})
     elif args.command=='state':result=request('PATCH','/deliveries/'+quote(args.name,safe=''),{'state':args.value})
