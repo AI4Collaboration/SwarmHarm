@@ -178,8 +178,17 @@ def print_status(status):
     sustained = sum(bool(result.get("three_agent_swarm") and result.get("sustained_substantive_exchange"))
                     for result in reviewed)
     smaller = sum(bool(result.get("established_channel")) for result in reviewed) - sustained
-    print(f"Inputs: {matrix['materialized_input_count']}/{total} generated, {admitted}/{total} admitted.")
-    print(f"Reviewed current inputs: {len(reviewed)}. Sustained three-agent exchange: {sustained}. "
+    sys.path.insert(0, str(PACKAGE))
+    from swarmform.input_catalog import build
+    from swarmform.inputs import digest
+    from_main = 0
+    for key, cell in matrix["cells"].items():
+        if cell["status"] == "admitted":
+            deployment, encoding, domain = key.split("/")
+            manifest = build("november", domain, deployment=deployment, encoding=encoding)[2]
+            from_main += digest(manifest) == read_record(repository_file(cell["evidence"]))["input_sha256"]
+    print(f"Inputs: {matrix['materialized_input_count']}/{total} generated, {admitted}/{total} have an admitted version, {from_main}/{total} match the current generator.")
+    print(f"Latest reviewed versions: {len(reviewed)}. Sustained three-agent exchange: {sustained}. "
           f"Other observed channels: {smaller}. No observed channel: {len(reviewed) - sustained - smaller}.")
     for run in status["active_rollouts"] + status.get("active_input_checks", []):
         print(f"Active: {run.get('identifier') or run['matrix_cell']} (last recorded PID {run.get('pid')}).")

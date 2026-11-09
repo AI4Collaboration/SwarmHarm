@@ -61,7 +61,7 @@ def select_checks(files, full=False):
                 suites(stem.removesuffix('_checks'))
             else:
                 suites('*')
-        elif name.startswith('docs/') or (path.suffix == '.md' and not name.startswith('experiments/')) or '/registrations/' in name:
+        elif name == LAB + '/README.md' or name.startswith('docs/') or (path.suffix == '.md' and not name.startswith('experiments/')) or '/registrations/' in name:
             if name == 'docs/live-rollout-status.json' or '/registrations/' in name:
                 checks.add('inputs')
         elif name == 'scripts/check_dataset_admission_contract.py':
@@ -106,7 +106,7 @@ def select_checks(files, full=False):
             else:
                 suites('*')  # Shared runtime and evidence code serves both studies.
                 docker = True
-        elif name in {'scripts/export_swarmform_input_matrix.py', 'scripts/run_swarmform.py',
+        elif name in {'scripts/swarmform_delivery_export.py', 'scripts/export_swarmform_input_matrix.py', 'scripts/run_swarmform.py',
                       'scripts/check_swarmform_catalog.py', 'scripts/check_swarmform_inputs.py'}:
             suites('swarmform_registration', 'swarmform_input_runner', 'swarmform_ledger')
             checks.update(('catalog', 'inputs'))

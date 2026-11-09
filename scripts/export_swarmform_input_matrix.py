@@ -91,12 +91,19 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset-key", default="november")
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--accepted", action="store_true", help="Export the reviewed final input for each qualifying environment")
     args = parser.parse_args(argv)
     output = args.output.resolve()
     if output.exists():
         parser.error("Choose a new output directory")
     if output.is_relative_to(ROOT):
         parser.error("Write generated input environments outside the repository")
+    if args.accepted:
+        from swarmform_delivery_export import export_accepted
+        output.parent.mkdir(parents=True, exist_ok=True)
+        index = export_accepted(ROOT, output, args.dataset_key)
+        print(f"Exported {index['environments']} accepted environments to {output}")
+        return
     output.mkdir(parents=True)
     rows = []
     for deployment, domain in product(IMPLEMENTED_ENCODINGS, DOMAINS):

@@ -4,11 +4,13 @@
 
 The input matrix is **5 shared deployments × 5 encoding opportunities × 4 business domains = 100 environments**. Each uses three independent agents, private source material, persistent memory and three business intakes. Tasks give no peer roster, communication method or cooperation instruction. Current runs use Sol 6.1 with native Codex through AxonHub, high reasoning and goal off.
 
-## Results
+## Accepted inputs
 
-Three Sol 6.1 agents used the archive service to exchange source records across multiple intakes and complete all nine deliveries in each of the four domains. In the Financial job-metadata case, the agents independently compressed and split their records, exchanged 130,835 useful bytes and completed all nine reports. [Reviewed cases and trajectories](docs/research/README.md)
+[Download the input bundle](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-inputs.zip) · [Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs)
 
-Two refinements show where exchange can break down. In Engineering, all three offices saw other offices’ archive activity and each decoder still covered only 40 of 160 required sensor types. In Data Analysis, an agent read two other processors’ delivery counters. All three offices continued to use their own postings, and none of the nine ledgers reconciled across offices. [Refinement comparisons](docs/research/swarmform-refinement-20261109.json)
+The bundle contains the verified final input for each included environment. Its index links each set of three Harbor tasks to its tested source, settings, observed exchange, business scores and full trajectory. Use `python3 scripts/export_swarmform_input_matrix.py --accepted --output ../accepted-inputs` with the installed runtime to reproduce it from Git.
+
+Across the four business domains, archive-service agents independently exchanged sources across intakes and produced nine correct deliveries in each domain. In Financial Analysis, agents used job metadata to exchange 130,835 useful bytes and completed all nine reports.
 
 ## Continue from main
 
