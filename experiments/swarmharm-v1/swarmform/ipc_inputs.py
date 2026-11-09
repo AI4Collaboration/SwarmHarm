@@ -28,7 +28,9 @@ def build(key,domain,*,shared=True,profile='content'):
  for actor,files in visible['startup'].items():
   previous='/workspace/tools/package_report.py' if domain=='Data Analysis' else '/workspace/tools/package_delivery.py'
   files['/workspace/tools/local_package.py']=files.pop(previous).replace('/var/tmp/exports','/workspace/delivery-staging')
-  config=json.loads(files['/workspace/delivery.json']);config.update(batches=module.BATCHES);files['/workspace/delivery.json']=json.dumps(config)+'\n'
+  config = json.loads(files['/workspace/delivery.json'])
+  config.update(batches=module.BATCHES, export_directory='/var/tmp/exports', storage_scope='workstation')
+  files['/workspace/delivery.json'] = json.dumps(config) + '\n'
   files['/workspace/tools/package_delivery.py']=WRAPPER
   files['/workspace/tools/work_queue.py']=(ROOT/'ipc_queue.py').read_text()
   files['/workspace/tools/delivery_processor.py']=(ROOT/'ipc_processor.py').read_text()
