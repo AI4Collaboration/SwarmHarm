@@ -23,7 +23,7 @@ from harbor.models.task.config import TaskConfig
 from swarmform.collection import Collection, save, utc, workspace_files
 from swarmform.inputs import CELL, WORKSTATION_PERMISSIONS, digest
 from swarmform.domain_inputs import DOMAINS
-from swarmform.input_catalog import build, deployment_registration, task_network, business_users, observation_registration
+from swarmform.input_catalog import IMPLEMENTED_ENCODINGS, build, deployment_registration, task_network, business_users, observation_registration
 from swarmform.outcomes import review as review_business
 from workstation import IMAGE, verify_workstation_image
 
@@ -117,7 +117,7 @@ def prepare_destination(args):
     return folder, output
 
 
-def prepare_one(args, source, runtime):
+def prepare_one(args, source, runtime, *, profiles=None):
     folder, output = prepare_destination(args)
     domain = getattr(args, 'domain', 'Data Analysis')
     deployment = getattr(args, 'deployment', 'shared_files')
@@ -131,8 +131,11 @@ def prepare_one(args, source, runtime):
     report = json.loads((ROOT / cell['evidence']).read_text())
     if report['input_sha256'] != digest(manifest):
         raise RuntimeError('Effective input differs from the admitted configuration')
-    harness = codex_gateway.harness_registration('off', args.model)
-    catalog = codex_gateway.gateway_catalog(args.model, 'high')
+    if profiles is None:
+        harness = codex_gateway.harness_registration('off', args.model)
+        catalog = codex_gateway.gateway_catalog(args.model, 'high')
+    else:
+        harness, catalog = profiles[args.model]
     output.mkdir(parents=True)
     save(output / 'input.json', visible)
     save(output / 'protected-truth.json', truth)
@@ -199,6 +202,81 @@ def prepare_pair(args):
         if registrations[0][key] != registrations[1][key]:
             raise RuntimeError('Paired registration inputs differ: ' + key)
     return {'prepared_pair': records, 'source_commit': source, 'model_calls': 0}
+
+
+def prepare_matrix(args):
+    """Prepare the complete admitted matrix from one published source snapshot."""
+    ledger = json.loads((ROOT / 'docs/live-rollout-status.json').read_text())
+    cells = [(deployment, encoding, domain)
+             for deployment, encodings in IMPLEMENTED_ENCODINGS.items()
+             for encoding in encodings for domain in DOMAINS]
+    if len(cells) != 100:
+        raise RuntimeError('The preparation matrix must contain exactly 100 inputs')
+    missing = ['/'.join(cell) for cell in cells
+               if ledger['matrix']['cells'].get('/'.join(cell), {}).get('status') != 'admitted']
+    if missing:
+        return {'status': 'inputs_incomplete', 'required_inputs': 100,
+                'admitted_inputs': 100 - len(missing), 'missing_inputs': missing,
+                'prepared_registrations': 0, 'model_calls': 0}
+
+    source = published_head()
+    output = outside_repository(args.output, ROOT, 'Raw matrix output')
+    if output.exists():
+        raise FileExistsError('Never reuse a matrix output directory')
+    models = (('sol56', 'openai/gpt-5.6-sol'), ('sol61', 'openai/gpt-6.1-sol'))
+    planned, admissions = [], {}
+    for deployment, encoding, domain in cells:
+        cell_key = '/'.join((deployment, encoding, domain))
+        report = json.loads((ROOT / ledger['matrix']['cells'][cell_key]['evidence']).read_text())
+        manifest = json.loads((ROOT / report['input_manifest']).read_text())
+        current = build(args.dataset_key, domain, deployment=deployment, encoding=encoding)[2]
+        if (report.get('matrix_cell') != cell_key or report.get('status') != 'admitted'
+                or digest(manifest) != report['input_sha256'] or digest(current) != report['input_sha256']):
+            raise RuntimeError('Effective input differs from the admitted configuration: ' + cell_key)
+        admissions[cell_key] = report
+        slug = '-'.join((deployment, encoding, domain)).lower().replace('_', '-').replace(' ', '-')
+        for label, model in models:
+            item = argparse.Namespace(identifier=args.identifier + '-' + slug + '-' + label,
+                model=model, dataset_key=args.dataset_key, domain=domain,
+                deployment=deployment, encoding=encoding,
+                output=output / deployment / encoding / domain.lower().replace(' ', '-') / label)
+            prepare_destination(item)
+            planned.append(item)
+
+    runtime = check_runtime()
+    profiles = {model: (codex_gateway.harness_registration('off', model),
+                       codex_gateway.gateway_catalog(model, 'high')) for _, model in models}
+    records, previous, frozen_code = [], None, None
+    index_path = output / 'matrix-preparation.json'
+    preparation = {'schema_version': 1, 'research_study': 'SwarmForm',
+        'status': 'preparing', 'source_commit': source, 'dataset_key': args.dataset_key,
+        'runtime': runtime, 'input_environments': 100, 'model_calls': 0,
+        'planned_identifiers': [item.identifier for item in planned], 'registrations': records}
+    save(index_path, preparation)
+    for index, item in enumerate(planned):
+        prepare_one(item, source, runtime, profiles=profiles)
+        reg = json.loads((item.output / 'registration.json').read_text())
+        if frozen_code is None:
+            frozen_code = reg['code_hashes']
+        elif reg['code_hashes'] != frozen_code:
+            raise RuntimeError('Source changed while preparing the matrix')
+        if index % 2:
+            for key in ('source_commit', 'input_sha256', 'code_hashes', 'input_hashes', 'task_hashes',
+                        'arrival_offsets', 'deployment', 'budget', 'workstation_permissions', 'runtime'):
+                if previous[key] != reg[key]:
+                    raise RuntimeError('Paired registration inputs differ: ' + key)
+        previous = reg
+        records.append({'matrix_cell': reg['matrix_cell'], 'input_sha256': reg['input_sha256'],
+                        'input_manifest': admissions[reg['matrix_cell']]['input_manifest'],
+                        'model': item.model, 'identifier': item.identifier, 'output': str(item.output),
+                        'registration': 'experiments/swarmharm-v1/registrations/' + item.identifier,
+                        'registration_sha256': sha(item.output / 'registration.json')})
+        save(index_path, preparation)
+    preparation['status'] = 'prepared'
+    save(index_path, preparation)
+    return {'status': 'prepared', 'prepared_inputs': 100, 'prepared_registrations': len(records),
+            'source_commit': source, 'index': str(index_path), 'model_calls': 0,
+            'next': 'Commit and push all registrations and the ledger before collection'}
 
 
 def verify_frozen(folder, output):
@@ -268,30 +346,42 @@ def finalize_collection(output, reg, inputs, report):
     except Exception as error:
         failures.append('atif')
         save(output / 'atif-failure.json', {'type': type(error).__name__, 'message': str(error)})
+    from swarmform.actor_evidence import completeness
+    coverage = None
+    try:
+        coverage = completeness(output, reg)
+        save(output / 'actor-evidence.json', coverage)
+        if not coverage['actor_evidence_complete']:
+            failures.append('actor_evidence')
+    except Exception as error:
+        failures.append('actor_evidence')
+        save(output / 'actor-evidence-failure.json', {'type': type(error).__name__, 'message': str(error)})
     files = {str(p.relative_to(output)): sha(p) for p in sorted(output.rglob('*'))
              if p.is_file() and not p.is_symlink() and p.name not in ('evidence-manifest.json', 'controller.log', '.collector.lock')}
     save(output / 'evidence-manifest.json', {'at': utc(), 'files': files,
         'excluded': ['evidence-manifest.json', 'controller.log', '.collector.lock']})
     return {'closed': reg['identifier'], 'reason': report['reason'], 'output': str(output),
-            'failures': failures, 'review': 'pending'}
+            'failures': failures, 'review': 'pending',
+            'actor_evidence_complete': bool(coverage and coverage['actor_evidence_complete'])}
 
 
 def argument_parser():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='command', required=True)
-    for name in ('prepare', 'prepare-pair', 'collect'):
+    for name in ('prepare', 'prepare-pair', 'prepare-matrix', 'collect'):
         command = commands.add_parser(name)
         command.add_argument('--identifier', required=True)
         command.add_argument('--output', type=Path, required=True)
-        if name in ('prepare', 'prepare-pair'):
+        if name in ('prepare', 'prepare-pair', 'prepare-matrix'):
             if name == 'prepare':
                 command.add_argument('--model', choices=['openai/gpt-5.6-sol', 'openai/gpt-6.1-sol'], required=True)
             command.add_argument('--dataset-key', required=True)
-            command.add_argument('--domain', choices=DOMAINS, default='Data Analysis')
-            command.add_argument('--deployment', choices=('shared_files','artifact_namespace','shared_ipc','worker_endpoint','job_namespace'), default='shared_files')
-            command.add_argument('--encoding', choices=(
-                'payload_content', 'identifiers_metadata', 'operational_state',
-                'event_pattern', 'timing'), default='payload_content')
+            if name != 'prepare-matrix':
+                command.add_argument('--domain', choices=DOMAINS, default='Data Analysis')
+                command.add_argument('--deployment', choices=('shared_files','artifact_namespace','shared_ipc','worker_endpoint','job_namespace'), default='shared_files')
+                command.add_argument('--encoding', choices=(
+                    'payload_content', 'identifiers_metadata', 'operational_state',
+                    'event_pattern', 'timing'), default='payload_content')
         else:
             command.add_argument('--key-file', type=Path, required=True)
     return parser
@@ -299,10 +389,13 @@ def argument_parser():
 
 def main():
     args = argument_parser().parse_args()
-    action = {'prepare': prepare, 'prepare-pair': prepare_pair, 'collect': collect}[args.command]
+    action = {'prepare': prepare, 'prepare-pair': prepare_pair,
+              'prepare-matrix': prepare_matrix, 'collect': collect}[args.command]
     result = action(args)
     print(json.dumps(result, indent=2))
     if args.command == 'collect' and result['failures']:
+        raise SystemExit(1)
+    if args.command == 'prepare-matrix' and result['status'] != 'prepared':
         raise SystemExit(1)
 
 

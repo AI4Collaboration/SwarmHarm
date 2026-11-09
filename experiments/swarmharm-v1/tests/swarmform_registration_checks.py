@@ -23,6 +23,95 @@ spec.loader.exec_module(entry)
 
 
 class RegistrationChecks(unittest.TestCase):
+    def test_matrix_requires_all_admissions_and_prepares_200_from_one_snapshot(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / 'source'
+            (root / 'experiments/swarmharm-v1/registrations').mkdir(parents=True)
+            manifests, cells = {}, {}
+            for deployment, encodings in entry.IMPLEMENTED_ENCODINGS.items():
+                for encoding in encodings:
+                    for domain in entry.DOMAINS:
+                        key = '/'.join((deployment, encoding, domain))
+                        manifest = {'domain': domain, 'deployment': deployment, 'encoding': encoding}
+                        manifests[(deployment, encoding, domain)] = manifest
+                        number = len(cells)
+                        evidence, effective = f'docs/admission-{number}.json', f'docs/input-{number}.json'
+                        entry.save(root / effective, manifest)
+                        entry.save(root / evidence, {'matrix_cell': key, 'status': 'admitted',
+                            'input_manifest': effective, 'input_sha256': entry.digest(manifest)})
+                        cells[key] = {'status': 'admitted', 'evidence': evidence}
+            ledger = {'maintained_registrations': [], 'matrix': {'cells': cells}}
+            missing = next(reversed(cells))
+            cells[missing]['status'] = 'pending'
+            entry.save(root / 'docs/live-rollout-status.json', ledger)
+            args = entry.argument_parser().parse_args(['prepare-matrix', '--identifier', 'matrix-test',
+                '--dataset-key', 'november', '--output', str(Path(directory) / 'raw')])
+            runtime_value = {'fixture_runtime': True}
+            prepared = []
+
+            def fake_build(dataset_key, domain, *, deployment, encoding):
+                self.assertEqual(dataset_key, 'november')
+                return None, None, manifests[(deployment, encoding, domain)]
+
+            def fake_prepare(item, source, runtime, *, profiles):
+                self.assertEqual(source, 'published')
+                self.assertIs(runtime, runtime_value)
+                self.assertEqual(profiles[item.model][0]['goal_mode'], 'off')
+                self.assertEqual(profiles[item.model][1]['effort'], 'high')
+                manifest = manifests[(item.deployment, item.encoding, item.domain)]
+                digest = entry.digest(manifest)
+                reg = {'matrix_cell': '/'.join((item.deployment, item.encoding, item.domain)),
+                    'source_commit': source, 'input_sha256': digest, 'code_hashes': {'fixture.py': 'sealed'},
+                    'input_hashes': {'input.json': digest}, 'task_hashes': {'task.toml': digest},
+                    'arrival_offsets': {}, 'deployment': manifest, 'budget': {},
+                    'workstation_permissions': {}, 'runtime': runtime}
+                entry.save(item.output / 'registration.json', reg)
+                prepared.append(item)
+
+            with patch.object(entry, 'ROOT', root), patch.object(entry, 'published_head', return_value='published') as head, \
+                    patch.object(entry, 'check_runtime', return_value=runtime_value) as runtime, \
+                    patch.object(entry, 'build', side_effect=fake_build), \
+                    patch.object(entry, 'prepare_one', side_effect=fake_prepare) as one, \
+                    patch.object(entry.codex_gateway, 'harness_registration',
+                                 side_effect=lambda goal, model: {'goal_mode': goal}) as harness, \
+                    patch.object(entry.codex_gateway, 'gateway_catalog',
+                                 side_effect=lambda model, effort: {'model': model, 'effort': effort}) as catalog:
+                result = entry.prepare_matrix(args)
+                self.assertEqual(result['missing_inputs'], [missing])
+                self.assertEqual(result['prepared_registrations'], 0)
+                self.assertFalse(args.output.exists())
+                head.assert_not_called(); runtime.assert_not_called(); one.assert_not_called()
+
+                cells[missing]['status'] = 'admitted'
+                entry.save(root / 'docs/live-rollout-status.json', ledger)
+                collision = root / 'experiments/swarmharm-v1/registrations' / (
+                    args.identifier + '-' + missing.lower().replace('/', '-').replace('_', '-').replace(' ', '-') + '-sol61')
+                collision.mkdir()
+                with self.assertRaises(FileExistsError):
+                    entry.prepare_matrix(args)
+                one.assert_not_called(); runtime.assert_not_called()
+                self.assertFalse(args.output.exists())
+                collision.rmdir(); head.reset_mock()
+
+                result = entry.prepare_matrix(args)
+                self.assertEqual(result['prepared_inputs'], 100)
+                self.assertEqual(result['prepared_registrations'], 200)
+                self.assertEqual(result['model_calls'], 0)
+                head.assert_called_once(); runtime.assert_called_once()
+                self.assertEqual(one.call_count, 200)
+                self.assertEqual(harness.call_count, 2); self.assertEqual(catalog.call_count, 2)
+                self.assertEqual(len({item.identifier for item in prepared}), 200)
+                self.assertEqual(len({item.output for item in prepared}), 200)
+                index = json.loads(Path(result['index']).read_text())
+                self.assertEqual(index['source_commit'], 'published')
+                self.assertEqual(len(index['registrations']), 200)
+                pairs = {}
+                for row in index['registrations']:
+                    pairs.setdefault(row['matrix_cell'], set()).add(row['model'])
+                self.assertEqual(len(pairs), 100)
+                self.assertTrue(all(models == {'openai/gpt-5.6-sol', 'openai/gpt-6.1-sol'}
+                                    for models in pairs.values()))
+
     def test_pair_seals_same_published_input_and_rejects_either_reused_destination(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / 'source'; root.mkdir()
@@ -141,10 +230,11 @@ class RegistrationChecks(unittest.TestCase):
                  'deployment':{'kind':'artifact_namespace'}}
             with patch.object(export_atif,'export',side_effect=ValueError('fixture validation failure')):
                 result=entry.finalize_collection(root,reg,{}, {'reason':'failed','failure':'fixture'})
-            self.assertEqual(result['failures'],['collection','business_outcome','atif'])
+            self.assertEqual(result['failures'],['collection','business_outcome','atif','actor_evidence'])
+            self.assertFalse(result['actor_evidence_complete'])
             manifest=json.loads((root/'evidence-manifest.json').read_text())
             self.assertEqual(set(manifest['files']),{'protected-truth.json','native-record.jsonl',
-                'business-outcome-failure.json','atif-failure.json'})
+                'business-outcome-failure.json','atif-failure.json','actor-evidence.json'})
             self.assertTrue(all(entry.sha(root/path)==sha for path,sha in manifest['files'].items()))
 
 

@@ -267,7 +267,7 @@ def business(encoding, domain, shared, output, dataset_key='november'):
     output.mkdir(parents=True, exist_ok=False)
     for name, value in (('input', inputs), ('protected-truth', truth), ('input-manifest', manifest)):
         (output / (name + '.json')).write_text(json.dumps(value, indent=2) + '\n')
-    commands, transfers, writes, snapshots = [], [], [], {}
+    commands, transfers, writes, snapshots, isolation_checks = [], [], [], {}, []
     schedule = IntakeSchedule(inputs['private_arrivals'],
                               manifest['effective_settings']['arrival_offsets'], activated_at=0)
     def retain_terminal(actor, phase, snapshot):
@@ -309,6 +309,9 @@ def business(encoding, domain, shared, output, dataset_key='november'):
             expected = {a: inputs['private_arrivals'][a][batch][source_path].encode() for a in actors}
             def retain(owner, actor, received, snapshot):
                 assert received.get('visible', False) == (shared or actor == owner), received
+                if not shared and actor != owner:
+                    isolation_checks.append({'reader': actor, 'owner': owner,
+                                             'batch': batch, **received})
                 if received.get('complete'):
                     destination = f'/workspace/received/{owner}/{batch}/{filename}'
                     actual = base64.b64decode(snapshot['/workspace'][destination], validate=True)
@@ -333,6 +336,20 @@ print(json.dumps({'visible':True,'complete':True,'evidence':str(evidence),'evide
 """
                     result, snapshot = run(owner, command(local, source_path, destination))
                     retain(owner, owner, json.loads(result['stdout']), snapshot)
+                    if profile == 'state' and not shared:
+                        marker = COMMON + "\npost_package(sys.argv[1], b'')\nprint(json.dumps({'transport': 'private_isolation_marker'}))\n"
+                        run(owner, command(marker, batch))
+                        writes.append({'owner': owner, 'batch': batch,
+                                       'transport': 'private_isolation_marker'})
+                        for actor in actors:
+                            if actor == owner:
+                                continue
+                            destination = f'/workspace/received/{owner}/{batch}/{filename}'
+                            reader = start(actor, command(STATE_RECEIVE,
+                                urls[owner], owner, batch, destination))
+                            received, snapshot = finish(actor, reader)
+                            retain(owner, actor, received[0], snapshot)
+                        continue
                     if profile == 'timing':
                         if shared:
                             sender = start(owner, command(ENDPOINT_TIMING, 'publish', source_path, batch))
@@ -405,6 +422,7 @@ print(json.dumps({'visible':True,'complete':True,'evidence':str(evidence),'evide
               'shared': shared, 'input_sha256': digest(manifest), 'bindings': bindings,
               'correct_published_releases': correct, 'transfers': transfers,
               'foreign_transfers': sum(row['reader'] != row['owner'] for row in transfers),
+              'private_foreign_visibility_checks': isolation_checks,
               'resources_closed': deployment.closed}
     (output / 'witness.json').write_text(json.dumps(result, indent=2) + '\n')
     return result

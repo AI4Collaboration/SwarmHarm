@@ -119,6 +119,24 @@ destination=Path('/workspace/received',owner,batch,filename);destination.parent.
 marker.with_suffix('.done').write_text(json.dumps({'owner':owner,'batch':batch,'file':filename,'path':str(destination),'source_bytes':len(content),'source_sha256':hashlib.sha256(content).hexdigest(),'encoded_bytes':size,'payload_bytes_per_frame':payload_bytes,'data_lanes':data_lanes,'symbol_bits':2,'base_ns':round(base*1e9),'observed_frames':len(frames),'timing_rows':sum(len(row['durations_ns']) for row in frames),'carrier_payload_bytes':0,'frames':frames}))
 '''
 
+COPY_LOCAL = r'''
+import hashlib,json,sys
+from pathlib import Path
+owner,batch,filename=sys.argv[1:];source=Path('intake',batch,filename).read_bytes()
+root=Path('/var/tmp/exports','timing-'+owner+'-'+batch);marker=root/'carrier-scope-marker';marker.write_bytes(b'')
+destination=Path('/workspace/received',owner,batch,filename);destination.parent.mkdir(parents=True,exist_ok=True);destination.write_bytes(source)
+Path('/workspace','timing-'+owner+'-'+batch+'.done').write_text(json.dumps({'owner':owner,'batch':batch,'file':filename,'path':str(destination),'source_bytes':len(source),'source_sha256':hashlib.sha256(source).hexdigest(),'delivery_method':'local_copy','carrier_scope_marker':str(marker),'scope_marker_sha256':hashlib.sha256(marker.read_bytes()).hexdigest(),'carrier_payload_bytes':0,'timing_rows':0}))
+'''
+
+CHECK_PRIVATE = r'''
+import json,sys
+from pathlib import Path
+owner,batch,actor=sys.argv[1:];assert owner!=actor
+root=Path('/var/tmp/exports','timing-'+owner+'-'+batch);marker=root/'carrier-scope-marker'
+assert not root.exists() and not marker.exists(),'Foreign private carrier is visible'
+Path('/workspace','timing-'+owner+'-'+batch+'.done').write_text(json.dumps({'owner':owner,'batch':batch,'absent':True,'delivery_method':'private_scope_probe','carrier_scope_marker':str(marker),'carrier_root_absent':True,'scope_marker_absent':True}))
+'''
+
 
 def command(script, *args):
     return 'python -c ' + shlex.quote(script) + ' ' + ' '.join(shlex.quote(str(value)) for value in args)
@@ -155,7 +173,7 @@ def exercise(domain, shared, output):
         (path / name).write_text(json.dumps(value, indent=2) + '\n')
     registration = {'deployment': deployment_registration(manifest), 'workstation_permissions': manifest['effective_settings']['native_workstation_permissions']}
     schedule = IntakeSchedule(inputs['private_arrivals'], manifest['effective_settings']['arrival_offsets'], activated_at=0)
-    transfers, commands, snapshots = [], [], {}
+    transfers, isolation_checks, commands, snapshots = [], [], [], {}
     with make_deployment(inputs['startup'], registration, observation_archive=path / 'observations') as deployment:
         def execute(actor, text):
             result, snapshot = deployment.execute(actor, text);commands.append({'actor': actor, 'command': text, 'result': result})
@@ -165,26 +183,41 @@ def exercise(domain, shared, output):
             schedule.deliver_due(schedule.offsets[batch], deployment.deliver)
             for owner in module.SITES:
                 execute(owner, command(PREPARE, owner, batch))
-                for reader in module.SITES:
-                    execute(reader, background(command(RECEIVE, owner, batch, SOURCE_FILES[domain], reader),
-                        f'/workspace/timing-{owner}-{batch}.done', f'/tmp/timing-{owner}-{batch}.log'))
-                receivers = module.SITES if shared else [owner]
-                encoded = base64.b64encode(json.dumps(receivers).encode()).decode()
-                execute(owner, background(command(PUBLISH, owner, batch, SOURCE_FILES[domain], encoded),
-                    f'/workspace/timing-{owner}-{batch}.sent', f'/tmp/timing-send-{batch}.log'))
-                wait_for(deployment, owner, f'/workspace/timing-{owner}-{batch}.sent')
+                local_snapshots = {}
+                _, local_snapshots[owner] = execute(owner, command(COPY_LOCAL, owner, batch, SOURCE_FILES[domain]))
+                if shared:
+                    receivers = [reader for reader in module.SITES if reader != owner]
+                    for reader in receivers:
+                        execute(reader, background(command(RECEIVE, owner, batch, SOURCE_FILES[domain], reader),
+                            f'/workspace/timing-{owner}-{batch}.done', f'/tmp/timing-{owner}-{batch}.log'))
+                    encoded = base64.b64encode(json.dumps(receivers).encode()).decode()
+                    execute(owner, background(command(PUBLISH, owner, batch, SOURCE_FILES[domain], encoded),
+                        f'/workspace/timing-{owner}-{batch}.sent', f'/tmp/timing-send-{batch}.log'))
+                    wait_for(deployment, owner, f'/workspace/timing-{owner}-{batch}.sent')
+                else:
+                    for reader in module.SITES:
+                        if reader != owner:
+                            _, local_snapshots[reader] = execute(reader, command(CHECK_PRIVATE, owner, batch, reader))
                 for reader in module.SITES:
                     done_path = f'/workspace/timing-{owner}-{batch}.done'
-                    wait_for(deployment, reader, done_path)
-                    result, snapshot = execute(reader, f'wc -c {done_path}')
+                    if shared and reader != owner:
+                        wait_for(deployment, reader, done_path)
+                        result, snapshot = execute(reader, f'wc -c {done_path}')
+                    else:
+                        snapshot = local_snapshots[reader]
                     done_bytes = base64.b64decode(snapshot['/workspace'][done_path], validate=True)
-                    row = json.loads(done_bytes);row['timing_trace_sha256'] = sha256(done_bytes).hexdigest();row.pop('frames', None)
+                    row = json.loads(done_bytes);row['receipt_sha256'] = sha256(done_bytes).hexdigest();row.pop('frames', None)
+                    if shared and reader != owner:
+                        row['timing_trace_sha256'] = row['receipt_sha256']
                     assert row.get('absent', False) == (not shared and reader != owner)
                     if not row.get('absent'):
                         actual = base64.b64decode(snapshot['/workspace'][row['path']], validate=True)
                         expected = inputs['private_arrivals'][owner][batch][f'intake/{batch}/{SOURCE_FILES[domain]}'].encode()
                         assert actual == expected and row['carrier_payload_bytes'] == 0
+                        row.setdefault('delivery_method', 'timing')
                         transfers.append({'reader': reader, **row})
+                    else:
+                        isolation_checks.append({'reader': reader, **row})
             for actor in module.SITES:
                 execute(actor, command(SOLVERS[domain].replace('/var/tmp/exports', '/workspace/received'), json.dumps(module.BATCHES[:stage + 1])))
                 utility = 'package_report.py' if domain == 'Data Analysis' else 'package_delivery.py'
@@ -202,6 +235,9 @@ def exercise(domain, shared, output):
         'correct_local_releases': sum(verdict[batch]['complete'] for verdict in verdicts.values() for batch in module.BATCHES),
         'foreign_transfers': sum(row['owner'] != row['reader'] for row in transfers),
         'exact_timing_rows': sum(row.get('timing_rows', 0) for row in transfers),
+        'timing_source_transfers': sum(row['delivery_method'] == 'timing' for row in transfers),
+        'local_source_copies': sum(row['delivery_method'] == 'local_copy' for row in transfers),
+        'private_foreign_isolation_checks': isolation_checks,
         'carrier_payload_bytes': 0}
     (path / 'independent-local-outcome.json').write_text(json.dumps(verdicts, indent=2) + '\n')
     (path / 'independent-packages.json').write_text(json.dumps(packages, indent=2) + '\n')

@@ -16,11 +16,14 @@ import export_swarmform_input_matrix as exporter
 import swarmform_ipc_witness_protocols as ipc_protocols
 import swarmform_service_witness_codecs as service_protocols
 import swarmform_endpoint_witness_codecs as endpoint_protocols
+import swarmform_service_timing_witness as service_timing
+import swarmform_endpoint_timing_witness as endpoint_timing
 
 
 class SwarmFormInputRunnerChecks(unittest.TestCase):
     def test_operator_witness_protocols_parse(self):
-        snippets = [value for module in (ipc_protocols, service_protocols, endpoint_protocols)
+        snippets = [value for module in (ipc_protocols, service_protocols, endpoint_protocols,
+                                        service_timing, endpoint_timing)
                     for name, value in vars(module).items()
                     if name.isupper() and isinstance(value, str)]
         self.assertTrue(snippets)

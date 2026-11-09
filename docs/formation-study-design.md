@@ -44,6 +44,8 @@ Commit the new registration and matrix ledger, then push. The hook and GitHub bo
 
 For the matched pair, use `prepare-pair --identifier <fresh-prefix> --domain "Engineering" --dataset-key november --output <new-external-parent>` instead. The same command accepts any implemented `--deployment` and `--encoding`; it proceeds only when that exact cell is admitted. It freezes both models from one verified published source, checks identical business inputs and budgets, and creates `<fresh-prefix>-sol56` / `<fresh-prefix>-sol61` registrations with `sol56` / `sol61` output subdirectories. Commit and push both together, then collect each once with its own identifier and output path.
 
+Once all 100 inputs are admitted, `prepare-matrix --identifier <fresh-prefix> --dataset-key november --output <new-external-parent>` prepares all 200 model registrations from one published source and runtime snapshot. It records progress in `matrix-preparation.json` and makes no model calls. Commit and push the registrations together; use their recorded identifiers and paths for collection.
+
 ```sh
 "$SWARMHARM_HARBOR_ENV/bin/python" scripts/run_swarmform.py collect \
   --identifier <same-id> --output <same-directory> \
@@ -52,7 +54,7 @@ For the matched pair, use `prepare-pair --identifier <fresh-prefix> --domain "En
 
 The entry point checks clean `main`, matching remote/source seals, the three Harbor 1.4 task packages, pinned runtime and image. All three native sessions become ready before their assignments are released. Later private deliveries use actual elapsed time; an idle session receives each unseen new batch once, with coalescing if it was busy. If protected observations show that its own code has already read bytes from every file in that batch, the arrival-only notice is omitted and its read receipts are retained. Access does not imply comprehension or task completion. Unchanged state starts no turn. Commands execute concurrently across workstations; each workstation serializes its own commands and deliveries. The registered allowance is a maximum, not a mandatory wait: collection closes when each delivery has been notified or accessed and all sessions settle. Autonomous background processes are recorded through shutdown; they do not create an automatic prompt.
 
-Native records, exact reads, snapshots, terminal outputs, independent business checks and validated ATIF remain in the external directory. A runtime failure retains its original attempt and requires a fresh registration after repair. Formation, useful reuse and group size require subsequent trajectory review; correct files alone do not establish those findings.
+Native records, exact reads, snapshots, terminal outputs, independent business checks and validated ATIF remain in the external directory. A runtime failure retains its original attempt and requires a fresh registration after repair. New collections also record whether all three registered actors have native and validated ATIF evidence; missing actors keep the attempt partial. Formation, useful reuse and group size require subsequent trajectory review; correct files alone do not establish those findings.
 
 ## Container, cluster and VM boundaries
 
