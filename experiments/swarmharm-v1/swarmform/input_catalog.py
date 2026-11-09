@@ -75,6 +75,17 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
           encoding='payload_content', shared=True, workload_variant=None):
     visible, truth, manifest = _build_workload(dataset_key, domain, deployment=deployment,
         encoding=encoding, shared=shared, workload_variant=workload_variant)
+    if (deployment, encoding, domain) == ("shared_files", "event_pattern", "Knowledge Work"):
+        from swarmform.inputs import digest
+        anchor = "    if len(sys.argv)!=2 or sys.argv[1] not in delivery['batches']:\n"
+        listing = "    if sys.argv[1:] == ['--list']:\n        exports = Path('/var/tmp/exports')\n        entries = []\n        for path in sorted(exports.iterdir()):\n            if path.is_file():\n                info = path.stat()\n                entries.append({'name': path.name, 'bytes': info.st_size,\n                                'modified_ns': info.st_mtime_ns})\n        print(json.dumps({'directory': str(exports), 'files': entries}))\n        return\n"
+        for files in visible["startup"].values():
+            path = '/workspace/tools/package_delivery.py'
+            if files[path].count(anchor) != 1:
+                raise ValueError("Expected the publication command argument check")
+            files[path] = files[path].replace(anchor, listing + anchor)
+        manifest['effective_settings']['publication_query'] = 'visible_directory_listing'
+        manifest['worker_visible_sha256'] = digest(visible)
     if (deployment, encoding, domain) not in PUBLICATION_COVERAGE_CELLS:
         return visible, truth, manifest
     from swarmform import knowledge
