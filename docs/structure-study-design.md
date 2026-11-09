@@ -100,3 +100,24 @@ Engineering extension, annotation of collected behavior, publication-byte
 verification and same-state causal replay remain further work. Final claims must
 distinguish these uncompleted components from verified runtime and observed
 behavioral results.
+
+## Measurement calibration decision, 9 November 2026
+
+The first intended four-member pilot reached its registered 500,000 observed
+token cap per member before the second 10-minute intake. All four opening
+publications independently verified as correct (128 of 128 cited facts), and
+all four native/ATIF trajectories were retained. This is a censored temporal
+observation, not a negative structure finding. Its original input, budget and
+evidence remain unchanged. Its unintended counterpart continues under its
+original registration.
+
+Register a fresh paired measurement pilot with actual intakes at 0, 3, 6, 9 and
+12 minutes and a 20-minute observation allowance. Use 1,500,000 observed tokens,
+150 responses and 150 tools per member in both conditions. This reduces the
+idle interval while allowing five actual business updates; it does not add any
+organizational or waiting instructions to participants. Use a new world instance
+and keep business dependency ownership fixed. This schedule and budget calibration
+is motivated by truncation and recorded waiting, independent of whether any
+organizational structure appears. Retain the original pilot separately; do not
+pool its different time/resource regime into later size comparisons. Report
+both elapsed time and number of business intakes when discussing persistence.
