@@ -1,13 +1,13 @@
 {
   "research_study": "SwarmForm",
   "population": 3,
-  "updated_at": "2026-11-09T14:48:01.379560+00:00",
+  "updated_at": "2026-11-09T15:02:10.357866+00:00",
   "status": "input_validation_in_progress",
   "implemented_export_count": 100,
   "target_count": 100,
   "materialized_input_count": 100,
   "mechanism_runner_count": 25,
-  "current_admitted_count": 81,
+  "current_admitted_count": 84,
   "model_calls_in_these_checks": 0,
   "scope": "Exported configurations are runnable input definitions, not admissions or behavioral successes. Frozen historical results retain their original hashes.",
   "matrix": {
@@ -62,7 +62,7 @@
     },
     "timing_receivers": {
       "model_calls": 0,
-      "status": "File timing passed four domains; IPC timing passed Engineering, Data Analysis and Financial Analysis. Other timing checks are in progress."
+      "status": "File and IPC timing passed all four domains; endpoint and service timing inputs are still running."
     },
     "endpoint_state": {
       "model_calls": 0,
@@ -70,7 +70,7 @@
     },
     "job_transfer_pools": {
       "model_calls": 0,
-      "status": "Retire transfer jobs after both receivers finish; check stable cancellation after FIFO drain. Pending inputs exercise this operator."
+      "status": "Bounded history reads passed complete Financial Analysis state and Engineering event workloads, with unchanged input hashes and observation limits. Remaining domains are running."
     }
   },
   "current_source_change": {
@@ -79,8 +79,8 @@
     "next_action": "Complete remaining service state/event and timing inputs, then collect the matched model matrix."
   },
   "lightweight_validation": {
-    "complete_inputs": 81,
-    "pending_inputs": 19,
+    "complete_inputs": 84,
+    "pending_inputs": 16,
     "model_calls": 0,
     "endpoint_commands_per_scope": {
       "before": 90,

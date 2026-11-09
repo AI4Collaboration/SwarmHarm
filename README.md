@@ -6,11 +6,11 @@ The input matrix is **5 shared deployments × 5 encoding opportunities × 4 busi
 
 ## Current state
 
-**100/100 inputs are generated; 81/100 have completed current-source business validation.** All 25 mechanisms have concrete runners. An admitted input must transfer the required sources through its actual interface, complete nine correct shared-resource deliveries, and preserve isolation in its private counterpart. This establishes runnable inputs; model behavior is checked separately.
+**100/100 inputs are generated; 84/100 have completed current-source business validation.** All 25 mechanisms have concrete runners. An admitted input must transfer the required sources through its actual interface, complete nine correct shared-resource deliveries, and preserve isolation in its private counterpart. This establishes runnable inputs; model behavior is checked separately.
 
 **Input validation resumed.** Remaining cells are being completed in parallel. Sol 6.1 behavior rollouts now validate admitted inputs alongside that work. The recurring reminder remains deleted. Closed runtime failures retain concise repair notes and are not counted as passed. The [matrix and checkpoint](docs/live-rollout-status.json) and [implementation index](docs/research/swarmform-input-development.json) record the current work. [Complete input evidence](docs/research/swarmform-input-archives.json) is archived on GitHub.
 
-**Latest Sol 6.1 behavior.** In the archive service, all three agents autonomously established and reused a source-sharing convention across three intakes: 2,025 useful records, nine correct deliveries and three correct change ledgers. Shared files produced a sustained two-agent channel; IPC and worker endpoints produced no observed peer exchange. [Results and complete trajectories](docs/research/swarmform-payload-five-20261109.json)
+**Latest Sol 6.1 behavior.** Five deployment rollouts are fully reviewed. Archive and job services each produced a sustained three-agent swarm: 2,025 useful records, nine correct deliveries and three correct change ledgers. Shared files produced a sustained two-agent channel; IPC and worker endpoints produced no observed peer exchange. [Results and complete trajectories](docs/research/swarmform-payload-five-20261109.json)
 
 **Frozen successes.** Earlier Sol 6.1 file-channel cases completed nine correct releases in fulfillment, financial settlement and customer briefs; Engineering showed partial reuse. A separate archive-service case also established and reused a channel. Original inputs and scores remain intact. [File cases](docs/research/swarmform-file-content-domains-03.json) · [Archive case](docs/research/swarmform-archive-data05.json)
 
