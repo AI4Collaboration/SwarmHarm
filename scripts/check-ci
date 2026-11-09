@@ -15,6 +15,7 @@ def main():
     steps = [
         ('Documentation and registration inventory', [sys.executable, 'scripts/check_dataset_admission_contract.py']),
         ('Installation', [sys.executable, 'scripts/check-installation']),
+        ('SwarmForm configuration export and runtime settings', [sys.executable, 'scripts/check_swarmform_catalog.py']),
         ('SwarmForm input accounting and workloads', [sys.executable, 'scripts/check_swarmform_inputs.py']),
         ('Format contract', [sys.executable, 'scripts/check_format_contract.py', 'experiments/swarmharm-v1']),
         ('Retained reporting settings', [sys.executable, 'scripts/check_balanced_study.py']),

@@ -10,15 +10,22 @@ import time
 from swarmform.file_deployment import FileDeployment, FileStation, WORKSTATION_ENVIRONMENT
 from swarmform.read_observer import ObservedFileStation
 from workstation import DockerWorkstation, IMAGE
+from swarmform.service_workstation import ServiceWorkstation
 
 
 def command(argv):
     return subprocess.run(argv,check=True,capture_output=True,text=True,timeout=30)
 
 
+class ArchiveStation(ObservedFileStation):
+    def command_argv(self, command):
+        return [value + ',%network' if value == 'trace=%file,%desc,%process,%memory' else value
+                for value in super().command_argv(command)]
+
+
 class ArtifactDeployment(FileDeployment):
     def __init__(self,startup,*,shared=True,profile='content',observation_sink=None,observation_archive=None):
-        if len(startup)!=3 or profile not in ('content','metadata','state'):
+        if len(startup)!=3 or profile not in ('content','metadata','state','events','timing'):
             raise ValueError('Expected three business workstations and a known archive profile')
         self.resources=ExitStack();self.closed=False;self.stations={};self.volumes={}
         self.locks={a:threading.RLock() for a in startup}
@@ -36,6 +43,8 @@ class ArtifactDeployment(FileDeployment):
 from http.server import ThreadingHTTPServer
 from pathlib import Path
 from profile_archive import Archive,initialize
+import base_archive
+base_archive.DB='/var/tmp/exports/archive.sqlite'
 initialize()
 server=ThreadingHTTPServer(('0.0.0.0',8080),Archive)
 server.daemon_threads=False
@@ -52,7 +61,11 @@ finally:
             initial={f'/workspace/{name}':Path(__file__).with_name(name).read_text() for name in ('base_archive.py','profile_archive.py')}
             initial.update({'/workspace/server.py':server_code,'/workspace/accounts.json':json.dumps(accounts),'/workspace/profile.txt':profile})
             first=next(iter(self.networks.values()))
-            self.service=DockerWorkstation({p:base64.b64encode(t.encode()).decode() for p,t in initial.items()},
+            self.service_volume=self._volume()
+            if observation_archive is None:raise ValueError('Archive service requires an external observation directory')
+            self.service=ServiceWorkstation({p:base64.b64encode(t.encode()).decode() for p,t in initial.items()},
+                archive=Path(observation_archive)/'_service',
+                named_volumes=((self.service_volume,'/var/tmp/exports'),),
                 network=first,process_lifecycle='continuous',environment=WORKSTATION_ENVIRONMENT)
             # Added before the station callbacks: their removal happens first.
             self.resources.callback(self._close_service)
@@ -63,7 +76,7 @@ finally:
             for actor,files in startup.items():
                 sink=(lambda phase,value,actor=actor:observation_sink(actor,phase,value)) if observation_sink else None
                 cls,extra=FileStation,{}
-                if observation_archive is not None:cls,extra=ObservedFileStation,{'archive':Path(observation_archive)/actor}
+                if observation_archive is not None:cls,extra=ArchiveStation,{'archive':Path(observation_archive)/actor}
                 volume=self._volume();self.volumes[actor]=volume
                 station=cls({p:base64.b64encode(t.encode()).decode() for p,t in files.items()},
                     network=self.networks[actor],environment=WORKSTATION_ENVIRONMENT,
@@ -73,7 +86,10 @@ finally:
             for actor,station in self.stations.items():
                 row=json.loads(command(['docker','inspect',station.name]).stdout)[0]
                 network=row['NetworkSettings']['Networks']
-                mounts=[m for m in row['Mounts'] if m['Type']=='volume']
+                mounts=[m for m in row['Mounts'] if m['Type']=='volume' and m['Destination']=='/var/tmp/exports']
+                observation_mounts=[m for m in row['Mounts'] if m['Type']=='volume' and m['Destination']=='/var/log/workstation']
+                if station.trace_commands and (len(observation_mounts)!=1 or observation_mounts[0]['Name']!=station.observation_volume):
+                    raise RuntimeError('Private observation volume differs')
                 host=row['HostConfig']
                 caps={c.removeprefix('CAP_') for c in (host['CapAdd'] or [])}
                 expected_caps={'SYS_PTRACE','SETUID','SETGID','DAC_READ_SEARCH'} if station.trace_commands else set()
@@ -97,6 +113,7 @@ finally:
                     'image':row['Image'],'user':row['Config']['User'],'namespaces':namespaces,
                     'observer_enabled':station.trace_commands,'container_cap_add':sorted(caps),
                     'read_only_root':host['ReadonlyRootfs'],'private_ipc':host['IpcMode'],
+                    'service_state_volume':self.service_volume, 'service_state_path':'/var/tmp/exports/archive.sqlite',
                     'memory_bytes':host['Memory'],'nano_cpus':host['NanoCpus'],'pids_limit':host['PidsLimit']}
             for namespace in ('pid','ipc','mnt','net'):
                 if len({v['namespaces'][namespace] for v in self.bindings.values()})!=3:

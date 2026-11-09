@@ -27,7 +27,7 @@ print(json.dumps({'archive_record':record,'delivery':result}))
 '''
 
 def build(domain,key,connections=None,profile='content',*,shared=True):
-    if profile not in ('content','metadata','state'):raise ValueError('Unknown catalog profile')
+    if profile not in ('content','metadata','state','events','timing'):raise ValueError('Unknown catalog profile')
     visible,truth,manifest=file_build(key,domain);visible=copy.deepcopy(visible);manifest=copy.deepcopy(manifest)
     module,filename,_=descriptor(domain)
     if connections is None:
@@ -50,15 +50,28 @@ def build(domain,key,connections=None,profile='content',*,shared=True):
         network='separate_private_client_networks_with_archive_service',shared_export_directory=False,
         archive='http://records:8080',private_export_directory='/var/tmp/exports',
         shared_archive_scope=shared,encoding_opportunity={
-            'content':'payload_content','metadata':'identifiers_metadata','state':'operational_state'}[profile])
+            'content':'payload_content','metadata':'identifiers_metadata','state':'operational_state','events':'event_pattern','timing':'timing'}[profile])
     settings.pop('shared',None);settings.pop('export_directory',None)
     settings['native_workstation_permissions']['networkAccess']=True
     settings['service_code_sha256']={name:sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
-        for name in ('base_archive.py','profile_archive.py','archive_deployment.py')}
+        for name in ('base_archive.py','profile_archive.py','archive_deployment.py','service_workstation.py','service_capture.py')}
     settings['peer_record_fields_when_scope_is_shared']={
         'content':['record_id','author','name','metadata','digest','byte_count','publication_state','payload'],
         'metadata':['record_id','author','name','metadata','publication_state'],
-        'state':['record_id','author','publication_state']}[profile]
+        'state':['record_id','author','publication_state'],
+        'events':['record_id','author','activity_cursor','activity_operation','activity_record'],
+        'timing':['record_id','author','activity_cursor','server_monotonic_observation_ns']}[profile]
+    settings['catalog_page_records']=500
+    settings['activity_feed']='retained_service_transitions'
+    settings['event_clock']='protected_server_monotonic_ns'
+    settings['event_page_records']=500
+    settings['archive_batch_records']=500
+    settings['service_state_storage']='dedicated_volume'
+    from swarmform.read_observer import MAX_TRACE_BYTES,MAX_ACTIVE_BYTES
+    settings['workstation_observation_storage']={'kind':'private_disk_volume','max_trace_bytes':MAX_TRACE_BYTES,'max_active_bytes':MAX_ACTIVE_BYTES}
+    settings['incomplete_closed_observation']='fail_after_raw_retention'
+    from swarmform.service_capture import MAX_FILE,MAX_TOTAL
+    settings['service_observation_allowance']={'max_file_bytes':MAX_FILE,'max_total_bytes':MAX_TOTAL}
     settings['incidental_paths']=['service response timing','same-host execution timing',
         'record identifiers and account identity; record creation changes catalog length']
     manifest['worker_visible_sha256']=digest(visible)

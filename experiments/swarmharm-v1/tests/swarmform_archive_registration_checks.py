@@ -15,7 +15,7 @@ class Checks(unittest.TestCase):
         for domain in DOMAINS:
             self.assertEqual(build('november',domain),files('november',domain))
             reference=None
-            for encoding in ('payload_content','identifiers_metadata','operational_state'):
+            for encoding in ('payload_content','identifiers_metadata','operational_state','event_pattern','timing'):
                 a,truth,manifest=build('november',domain,deployment='artifact_namespace',encoding=encoding)
                 b,other_truth,_=build('november',domain,deployment='artifact_namespace',encoding=encoding,shared=False)
                 self.assertEqual(a,b);self.assertEqual(truth,other_truth)
@@ -24,7 +24,7 @@ class Checks(unittest.TestCase):
                 self.assertEqual(reference,task)
                 self.assertTrue(manifest['effective_settings']['native_workstation_permissions']['networkAccess'])
         for args in ({'deployment':'unknown'},{'encoding':'timing'},
-                     {'deployment':'artifact_namespace','encoding':'event_pattern'},{'shared':1}):
+                     {'deployment':'artifact_namespace','encoding':'unknown'},{'shared':1}):
             with self.assertRaises(ValueError):build('november',**args)
 
     def test_paired_seals_keep_declared_network_and_effective_profile(self):

@@ -11,13 +11,28 @@ def make_deployment(startup, registration, **observations):
     if kind == 'shared_files':
         if registration.get('workstation_permissions', {}).get('networkAccess') is not False:
             raise ValueError('The shared-file deployment has no business network')
-        return FileDeployment(startup, shared=settings['shared'], **observations)
+        return FileDeployment(startup, shared=settings['shared'], profile=settings.get('access_profile','content'), **observations)
     if kind == 'artifact_namespace':
         from swarmform.archive_deployment import ArtifactDeployment
         profile = settings.get('catalog_profile')
-        if profile not in ('content', 'metadata', 'state'):
+        if profile not in ('content', 'metadata', 'state', 'events', 'timing'):
             raise ValueError('The archive catalog profile must be registered')
         if registration.get('workstation_permissions', {}).get('networkAccess') is not True:
             raise ValueError('The archive deployment needs registered business network access')
         return ArtifactDeployment(startup, shared=settings['shared'], profile=profile, **observations)
+    if kind in ('shared_ipc', 'worker_endpoint'):
+        network = kind == 'worker_endpoint'
+        if registration.get('workstation_permissions', {}).get('networkAccess') is not network:
+            raise ValueError('Processor network access differs from the registered deployment')
+        if kind == 'shared_ipc':
+            from swarmform.ipc_deployment import IPCDeployment as ProcessorDeployment
+            return ProcessorDeployment(startup,shared=settings['shared'],profile=settings.get('processor_identity_profile','content'),**observations)
+        else:
+            from swarmform.endpoint_deployment import EndpointDeployment as ProcessorDeployment
+        return ProcessorDeployment(startup, shared=settings['shared'],profile=settings.get('delivery_profile','content'), **observations)
+    if kind == 'job_namespace':
+        if registration.get('workstation_permissions', {}).get('networkAccess') is not True:
+            raise ValueError('Processing deployment needs registered business network access')
+        from swarmform.job_deployment import JobDeployment
+        return JobDeployment(startup, shared=settings['shared'], profile=settings.get('processing_profile','content'), **observations)
     raise ValueError('Unknown registered deployment: ' + str(kind))

@@ -249,12 +249,23 @@ class ApptainerWorkstation:
 class DockerWorkstation:
     def __init__(self, initial_files, *, network="none", environment=None,
                  process_lifecycle='tool_scoped', observation_sink=None, named_volumes=(),
-                 trace_commands=False):
+                 trace_commands=False, trace_volume=None, ipc_mode=None, private_shm=False, business_uid=65534, business_gid=65534, creation_mask=None):
+        if any(type(v) is not int or not 1024<=v<=65534 for v in (business_uid,business_gid)):
+            raise ValueError('Business identities must be unprivileged numeric accounts')
+        if creation_mask not in (None,'0077'):raise ValueError('Unregistered creation mask')
+        self.business_uid,self.business_gid,self.creation_mask=business_uid,business_gid,creation_mask
+        if ipc_mode is not None and ipc_mode != 'private':
+            if not isinstance(ipc_mode, str) or not re.fullmatch(r'container:[A-Za-z0-9][A-Za-z0-9_.-]+', ipc_mode):
+                raise ValueError('Invalid workstation IPC binding')
+        if not isinstance(private_shm, bool):
+            raise ValueError('Private shared-memory mount must be a boolean')
         if process_lifecycle not in ('tool_scoped', 'continuous'):
             raise ValueError('Unknown workstation process lifecycle')
         self.process_lifecycle = process_lifecycle
         self.observation_sink = observation_sink
         self.trace_commands = trace_commands
+        if trace_volume is not None and (not trace_commands or not re.fullmatch(r"office-observation-[0-9a-f]+",trace_volume)):
+            raise ValueError("Invalid observation volume")
         self.registry_snapshot = {}
         self.initialized = False
         self.observation_roots = []
@@ -271,18 +282,24 @@ class DockerWorkstation:
             "--label", "org.swarmharm.managed=true",
             "--label", f"org.swarmharm.owner-pid={os.getpid()}",
             f"--network={network}", "--read-only", "--cap-drop=ALL",
-            "--security-opt=no-new-privileges", "--user", "65534:65534",
+            "--security-opt=no-new-privileges", "--user", f"{self.business_uid}:{self.business_gid}",
             "--memory=512m", "--cpus=1", "--pids-limit=64",
         ]
+        if ipc_mode is not None:
+            args.append('--ipc=' + ipc_mode)
+        if private_shm:
+            args += ['--tmpfs', '/dev/shm:rw,nosuid,nodev,noexec,size=8m,mode=1777']
         if self.process_lifecycle == 'continuous':
             args.append('--init')
         if trace_commands:
             if self.process_lifecycle != 'continuous':
                 raise ValueError('Command observation requires a persistent workstation')
             # The root-owned observer can follow its unprivileged child. The
-            # business processes still execute as 65534 with no effective caps.
+            # business processes still use their registered unprivileged account.
             args += ['--cap-add=SYS_PTRACE', '--cap-add=SETUID', '--cap-add=SETGID', '--cap-add=DAC_READ_SEARCH',
-                     '--tmpfs', '/var/log/workstation:rw,nosuid,nodev,size=128m,mode=0700']
+                     ]
+            args += (['--mount',f'type=volume,src={trace_volume},dst=/var/log/workstation'] if trace_volume else
+                     ['--tmpfs','/var/log/workstation:rw,nosuid,nodev,size=256m,mode=0700'])
         for path, size in (("/workspace", "32m"), ("/registry", "16m"), ("/tmp", "32m"), ("/private/tmp", "1m")):
             args += ["--tmpfs", f"{path}:rw,nosuid,nodev,size={size},mode=1777"]
         for volume, target in named_volumes:
@@ -357,7 +374,7 @@ class DockerWorkstation:
         values = json.loads(subprocess.check_output(
             ['docker', 'exec', *(['--user', '0:0'] if self.trace_commands else []),
              self.name, 'python', '-I', '-c', code, 'capture', *self.observation_roots,
-             *(['--observe-traced'] if self.trace_commands else [])],
+             *(['--observe-traced', '--subject-uid='+str(self.business_uid)] if self.trace_commands else [])],
             timeout=30))
         try:
             if self.observation_sink is not None:
@@ -399,6 +416,7 @@ class DockerWorkstation:
         return before, pending, conflicts
 
     def command_argv(self, command):
+        if self.creation_mask:command='umask '+self.creation_mask+'\n'+command
         return ["docker", "exec", "--workdir", "/workspace", self.name,
                 "timeout", "--kill-after=1s", "30s", "bash", "-lc", command]
 

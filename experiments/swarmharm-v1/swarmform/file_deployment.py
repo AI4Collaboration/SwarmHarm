@@ -61,7 +61,9 @@ class FileStation(DockerWorkstation):
 class FileDeployment:
     """Own only resources created by this fixture; historical workstations are untouched."""
 
-    def __init__(self, startup, *, shared=True, observation_sink=None, observation_archive=None):
+    def __init__(self, startup, *, shared=True, observation_sink=None, observation_archive=None, profile='content'):
+        if profile not in ('content','metadata'):raise ValueError('Unknown file access profile')
+        self.profile=profile
         if len(startup) != 3:
             raise ValueError('The matched SwarmForm input requires three stations')
         self.stations, self.volumes = {}, {}
@@ -70,7 +72,7 @@ class FileDeployment:
         self.closed = False
         try:
             common = self._volume() if shared else None
-            for actor, files in startup.items():
+            for account_index,(actor,files) in enumerate(startup.items()):
                 volume = common if common else self._volume()
                 self.volumes[actor] = volume
                 sink = (lambda phase, values, actor=actor: observation_sink(actor, phase, values)) if observation_sink else None
@@ -82,6 +84,9 @@ class FileDeployment:
                 station = station_class({path: base64.b64encode(text.encode()).decode() for path, text in files.items()},
                     process_lifecycle='continuous', observation_sink=sink,
                     environment=WORKSTATION_ENVIRONMENT,
+                    business_uid=62000+account_index if profile=='metadata' else 65534,
+                    business_gid=62000+account_index if profile=='metadata' else 65534,
+                    creation_mask='0077' if profile=='metadata' else None,
                     named_volumes=((volume, EXPORTS),), **extra)
                 self.resources.callback(station.close)
                 self.stations[actor] = station
@@ -101,8 +106,10 @@ class FileDeployment:
                        check=True, capture_output=True, timeout=20)
         return name
 
-    @staticmethod
-    def _remove_volume(name):
+    def _remove_volume(self, name):
+        if any(not station.closed and self.volumes.get(actor) == name
+               for actor, station in self.stations.items()):
+            return
         subprocess.run(['docker', 'volume', 'rm', name], check=True, capture_output=True, timeout=20)
 
     def inspect_bindings(self, shared):
@@ -111,12 +118,12 @@ class FileDeployment:
             row = json.loads(subprocess.check_output(['docker', 'inspect', station.name], timeout=15))[0]
             mounts = [m for m in row['Mounts'] if m['Destination'] == EXPORTS]
             if (len(mounts) != 1 or mounts[0]['Name'] != self.volumes[actor] or not mounts[0]['RW']
-                    or row['HostConfig']['NetworkMode'] != 'none' or row['Config']['User'] != '65534:65534'
+                    or row['HostConfig']['NetworkMode'] != 'none' or row['Config']['User'] != f'{station.business_uid}:{station.business_gid}'
                     or 'HOME=/workspace' not in row['Config']['Env']):
                 raise RuntimeError('Workstation differs from its declared mount or isolation')
             result[actor] = {'volume': mounts[0]['Name'], 'destination': EXPORTS,
                              'network': 'none', 'user': row['Config']['User'], 'image': row['Image'],
-                             'environment': dict(WORKSTATION_ENVIRONMENT),
+                             'environment': dict(WORKSTATION_ENVIRONMENT),'access_profile':self.profile, 'creation_mask':station.creation_mask,
                              'observer_enabled': station.trace_commands,
                              'container_cap_add': row['HostConfig']['CapAdd'],
                              'container_cap_drop': row['HostConfig']['CapDrop']}

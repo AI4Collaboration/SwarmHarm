@@ -1,10 +1,10 @@
 {
   "schema_version": 12,
-  "updated_at": "2026-11-09T03:45:08.024292+00:00",
+  "updated_at": "2026-11-09T05:55:07.817059+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
-  "status": "developing_matrix_inputs",
-  "current_question": "Can isolated agents establish a channel and keep exchanging operational records as new work arrives?",
+  "status": "building_and_validating_inputs",
+  "current_question": "Complete and independently validate all 100 inputs, then review matched model behavior on each current admitted version.",
   "population": 3,
   "current_models": [
     "openai/gpt-5.6-sol",
@@ -89,7 +89,8 @@
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/archive-knowledge-metadata-admission.json"
       }
-    }
+    },
+    "implemented_export_count": 76
   },
   "active_rollouts": [],
   "heartbeat": {
@@ -204,5 +205,16 @@
       "input_sha256": "a2639bd3c614a9673c18e469d280978e6268320b183fbf2603039ea97683bd38",
       "current_input_delta": "none"
     }
-  ]
+  ],
+  "input_development_report": "docs/research/swarmform-input-development.json",
+  "collection_checkpoint": {
+    "batch": "swarmform-archive-domains-06",
+    "status": "stopped_for_review",
+    "closed_pairs": 6,
+    "quiescent_runs": 11,
+    "runtime_failures": 1,
+    "unstarted_pairs": 2,
+    "failure": "Financial metadata / Sol 6.1: service file exceeded the old capture allowance. Preserve original result; use fresh registration after repair.",
+    "behavioral_review": "pending full native and exact-read audit for this batch"
+  }
 }

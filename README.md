@@ -10,7 +10,9 @@ Build **5 shared deployments × 5 encoding opportunities × 4 business domains**
 
 **Current result.** In four reviewed matched pairs, **Sol 6.1 established and reused source-file channels in fulfillment, financial settlement and customer briefs**. Each produced nine independently correct releases across three intakes. Engineering showed partial package reuse. Sol 5.6 did not establish an adopted source channel in these four cases. Sol 6.1 also adopted and reused an agent-created source convention through the archive service: three workers, three intakes, nine correct deliveries. [Archive case and complete evidence](docs/research/swarmform-archive-data05.json) These are development examples of data exchange, not request/reply dialogue or success-rate estimates. [Results and all eight complete trajectories](docs/research/swarmform-file-content-domains-03.json)
 
-**Input readiness: 12/100.** Four shared-file inputs have reviewed model pairs. Eight archive-service inputs—four domains with payload or metadata visibility—have passed actual shared/private workload checks; the first archive pair closed with nine correct Sol 6.1 releases and an interrupted Sol 5.6 run. A large-log capture failure is now [reproduced and repaired](docs/research/swarmform-observer-memory.json); fresh matched archive pairs are registered on the repaired recorder. The interrupted 5.6 attempt remains separate from the reviewed 6.1 result. Engineering needs a separate wording refinement. [Plan and acceptance criteria](docs/formation-study-design.md#overnight-work-and-acceptance-criteria) · [Channel taxonomy](docs/swarmform-coverage.md#shared-resource-and-encoding)
+**Build progress: 76/100 configurations export successfully.** All five deployments are implemented; the remaining 24 configurations need additional observable features. Current work validates exact transfers, private-scope isolation and real business outputs before admitting each input. The 12 earlier admissions retain their frozen settings; revised inputs require fresh admission and registration. [Implementation and validation index](docs/research/swarmform-input-development.json)
+
+**Runtime.** Long-running observation logs now use private disk storage with bounded memory. Large service databases are preserved, and draft or withdrawn delivery files do not count as published results. The latest archive batch closed 11 runs normally and one with the old service-capture limit; its full behavioral review is pending.
 
 **Takeaways.** Seeing another office's delivery does not ensure source exchange. Some agents inferred nonexistent release gates; arrivals actually followed fixed schedules. Those separate inferences were not a shared theory. Engineering's ambiguous “conformance records” wording also prompted a search for missing test material. Original trajectories and incomplete outcomes remain archived.
 
@@ -20,6 +22,7 @@ From the repository root, use Python 3.12 to check the matrix and export the exa
 
 ```sh
 python3 scripts/check_swarmform_inputs.py
+python3 scripts/check_swarmform_catalog.py
 python3 scripts/inspect_swarmform_workload.py --staged --domain "Data Analysis" --dataset-key november --output ../fulfillment-preview
 ```
 

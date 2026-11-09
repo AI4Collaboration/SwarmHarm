@@ -19,7 +19,7 @@ def hexed(value):
 
 class ReadEvidenceChecks(unittest.TestCase):
     def test_large_closed_trace_is_retained_without_container_memory_expansion(self):
-        # A legitimate closed log fits the 128 MiB trace mount, but the former
+        # A legitimate closed log fits the protected trace mount, but the former
         # base64/JSON capture exceeded the workstation's 512 MiB memory limit.
         with TemporaryDirectory() as folder:
             station = ObservedFileStation({}, archive=Path(folder)/'trace',
@@ -31,17 +31,19 @@ class ReadEvidenceChecks(unittest.TestCase):
             try:
                 root_python("from pathlib import Path\n"
                             "with Path('/var/log/workstation/000001.log').open('wb') as f:\n"
-                            " for i in range(110):f.write(bytes([i])*(1024*1024))")
+                            " for i in range(110):f.write(bytes([i])*(1024*1024))\n"
+                            " f.write(b'\\n')")
                 expected = sha256()
                 for i in range(110):
                     expected.update(bytes([i])*(1024*1024))
+                expected.update(b'\n')
                 memory = "from pathlib import Path;print(Path('/sys/fs/cgroup/memory.events').read_text())"
                 before = root_python(memory)
                 station.command_count = 1
                 receipt = station.retain_traces()
                 record = json.loads(Path(receipt['path']).read_text())
                 log = record['files']['000001.log']
-                self.assertEqual(log['bytes'], 110*1024*1024)
+                self.assertEqual(log['bytes'], 110*1024*1024+1)
                 self.assertEqual(log['sha256'], expected.hexdigest())
                 with (station.archive/log['blob']).open('rb') as stream:
                     self.assertEqual(hashlib.file_digest(stream, 'sha256').hexdigest(), log['sha256'])

@@ -11,10 +11,15 @@ import zipfile
 def closed_records(service_terminal):
     if '/workspace/.service-closed' not in service_terminal['/workspace']:
         raise ValueError('Service handlers have not been drained before final capture')
-    encoded=service_terminal['/workspace']['/workspace/archive.sqlite']
+    locations=(('/var/tmp/exports','/var/tmp/exports/archive.sqlite'),('/workspace','/workspace/archive.sqlite'))
+    candidates=[base64.b64decode(service_terminal.get(root,{}).get(path),validate=True)
+                for root,path in locations if path in service_terminal.get(root,{})]
+    if not candidates or len({sha256(data).hexdigest() for data in candidates})!=1:
+        raise ValueError('Missing or conflicting final archive databases')
+    database_bytes=candidates[0]
     with tempfile.TemporaryDirectory() as folder:
         database=Path(folder)/'archive.sqlite'
-        database.write_bytes(base64.b64decode(encoded,validate=True))
+        database.write_bytes(database_bytes)
         connection=sqlite3.connect('file:'+str(database)+'?mode=ro',uri=True)
         try:
             if connection.execute('PRAGMA integrity_check').fetchone()!=('ok',):

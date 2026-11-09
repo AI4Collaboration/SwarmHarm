@@ -15,6 +15,14 @@ def review(domain, inputs, truth, snapshots, *, kind='shared_files', service=Non
               'behavioral_claims':'pending full native, read and authored-convention review'}
     if kind == 'shared_files':
         return result
+    if kind in ('shared_ipc', 'worker_endpoint'):
+        from swarmform.delivered_outcome import review as review_delivered
+        return review_delivered(domain, inputs, truth, snapshots)
+    if kind == 'job_namespace':
+        if service is None:
+            raise ValueError('Processing terminal state is unavailable')
+        from swarmform.job_outcome import review as review_jobs
+        return review_jobs(domain, inputs, truth, snapshots, service)
     if kind != 'artifact_namespace':
         raise ValueError('Unknown delivery surface')
     if service is None:

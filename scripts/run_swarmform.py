@@ -23,7 +23,7 @@ from harbor.models.task.config import TaskConfig
 from swarmform.collection import Collection, save, utc, workspace_files
 from swarmform.inputs import CELL, WORKSTATION_PERMISSIONS, digest
 from swarmform.domain_inputs import DOMAINS
-from swarmform.input_catalog import build, deployment_registration
+from swarmform.input_catalog import build, deployment_registration, task_network, business_users, observation_registration
 from swarmform.outcomes import review as review_business
 from workstation import IMAGE, verify_workstation_image
 
@@ -71,10 +71,12 @@ def check_runtime():
                 ('ServerVersion', 'KernelVersion', 'OperatingSystem', 'OSType', 'Architecture', 'CgroupVersion')}}
 
 
-def write_tasks(root, visible, image, domain="Data Analysis", deployment="shared_files"):
-    network_mode = "allowlist" if deployment == "artifact_namespace" else "no-network"
-    network_fields = 'allowed_hosts = ["records"]\n' if deployment == "artifact_namespace" else ""
+def write_tasks(root, visible, image, domain="Data Analysis", deployment="shared_files", manifest=None):
+    policy = task_network(deployment)
+    network_mode = policy['network_mode']
+    network_fields = ('allowed_hosts = ' + json.dumps(policy['allowed_hosts']) + '\n') if policy['allowed_hosts'] else ''
     records = {}
+    users=business_users(manifest,visible['startup']) if manifest else {actor:'65534:65534' for actor in visible['startup']}
     for actor, prompts in visible['prompts'].items():
         folder = root / 'tasks' / actor
         folder.mkdir(parents=True)
@@ -90,7 +92,7 @@ execution_adapter = "scripts/run_swarmform.py"
 generic_harbor_scheduler = false
 [agent]
 timeout_sec = 3600
-user = "65534"
+user = {json.dumps(users[actor].split(':')[0])}
 [environment]
 docker_image = {json.dumps(image)}
 network_mode = {json.dumps(network_mode)}
@@ -140,7 +142,7 @@ def prepare_one(args, source, runtime):
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(ROOT / relative, destination)
         hashes[relative] = sha(destination)
-    task_hashes = write_tasks(output, visible, IMAGE, domain, deployment)
+    task_hashes = write_tasks(output, visible, IMAGE, domain, deployment, manifest)
     reg = {'schema_version': 1, 'identifier': args.identifier, 'created_at': utc(),
         'research_study': 'SwarmForm', 'study_mode': 'swarmform', 'population': 3,
         'matrix_cell': cell_key, 'domain': domain, 'input_sha256': digest(manifest), 'source_commit': source,
@@ -152,11 +154,7 @@ def prepare_one(args, source, runtime):
         'arrival_offsets': manifest['effective_settings']['arrival_offsets'],
         'budget': {'active_contexts_natural': 3, 'max_agent_seconds': 3600,
                    'max_batch_seconds': 4500, 'request_timeout_seconds': 300},
-        'observation': {'scalar_read_maximum_bytes': 262144, 'active_trace_bytes_per_station': 96000000,
-            'native_instruction_source': 'unchanged Codex model catalog', 'native_provider_http_payloads_captured': False,
-            'business_user': '65534:65534', 'business_effective_capabilities': 0,
-            'observer_container_capabilities': ['SYS_PTRACE', 'SETUID', 'SETGID', 'DAC_READ_SEARCH'],
-            'closed_trace_policy': 'archive_verified_bytes_before_pruning'},
+        'observation': observation_registration(manifest,visible['startup']),
         'plan': {'natural': {actor: {'provider': 'openai', 'domain': domain} for actor in visible['startup']}},
         'code_hashes': hashes, 'input_hashes': {p: sha(output / p) for p in ('input.json', 'protected-truth.json')},
         'task_hashes': task_hashes,
@@ -290,7 +288,7 @@ def main():
                 command.add_argument('--model', choices=['openai/gpt-5.6-sol', 'openai/gpt-6.1-sol'], required=True)
             command.add_argument('--dataset-key', required=True)
             command.add_argument('--domain', choices=DOMAINS, default='Data Analysis')
-            command.add_argument('--deployment', choices=('shared_files','artifact_namespace'), default='shared_files')
+            command.add_argument('--deployment', choices=('shared_files','artifact_namespace','shared_ipc','worker_endpoint','job_namespace'), default='shared_files')
             command.add_argument('--encoding', choices=('payload_content','identifiers_metadata','operational_state'), default='payload_content')
         else:
             command.add_argument('--key-file', type=Path, required=True)

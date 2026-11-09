@@ -106,6 +106,13 @@ class ArchiveOutcomeChecks(unittest.TestCase):
         self.assertTrue(result['actors'][self.actor][self.batch]['complete'])
         self.assertFalse(result['delivered_complete'][self.actor][self.batch])
 
+    def test_volume_and_retained_workspace_database_formats_are_unambiguous(self):
+        old=self.service();current={'/workspace':{'/workspace/.service-closed':encoded(b'closed')},
+            '/var/tmp/exports':{'/var/tmp/exports/archive.sqlite':encoded(self.path.read_bytes())}}
+        self.assertEqual(closed_records(old),closed_records(current))
+        current['/workspace']['/workspace/archive.sqlite']=encoded(b'different database')
+        with self.assertRaisesRegex(ValueError,'conflicting'):closed_records(current)
+
     def test_live_or_corrupted_service_cannot_be_a_final_outcome(self):
         state = self.service();del state['/workspace']['/workspace/.service-closed']
         with self.assertRaises(ValueError):closed_records(state)

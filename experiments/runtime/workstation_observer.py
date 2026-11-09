@@ -32,9 +32,10 @@ def resume(processes):
             pass
 
 
-def freeze(observe_traced=False):
+def freeze(observe_traced=False, subject_uid=None):
     stopped, observed = {}, {}
-    subject_uid = 65534 if observe_traced else os.getuid()
+    subject_uid = (65534 if observe_traced else os.getuid()) if subject_uid is None else subject_uid
+    if not 0<=subject_uid<=65534:raise ValueError('Invalid observed account')
     try:
         for _ in range(20):
             active = False
@@ -74,10 +75,10 @@ def freeze(observe_traced=False):
         raise
 
 
-def snapshot(extra_roots=(), observe_traced=False):
+def snapshot(extra_roots=(), observe_traced=False, subject_uid=None):
     if any(root != '/var/tmp/exports' for root in extra_roots):
         raise ValueError('Unknown additional observation root')
-    stopped, processes = freeze(observe_traced)
+    stopped, processes = freeze(observe_traced,subject_uid)
     try:
         result = {'processes': processes, 'resume_processes': stopped,
                   'file_metadata': {}, 'temporary_files': {},
@@ -102,15 +103,15 @@ def snapshot(extra_roots=(), observe_traced=False):
                             stat.S_IFIFO: 'fifo'}.get(stat.S_IFMT(info.st_mode), 'special')
                     metadata = {'kind': kind, 'bytes': info.st_size,
                                 'mtime_ns': info.st_mtime_ns,
-                                'mode': stat.S_IMODE(info.st_mode), 'inode': info.st_ino}
+                                'mode': stat.S_IMODE(info.st_mode), 'inode': info.st_ino, 'uid':info.st_uid, 'gid':info.st_gid}
                     if kind == 'symlink':
                         metadata['target'] = os.readlink(path)
                     result['file_metadata'][str(path)] = metadata
                     if kind != 'file':
                         continue
-                    limit = 32_000_000 if root in ('/tmp', '/private/tmp') else 2_000_000
+                    limit = 32_000_000 if root in ('/workspace', '/tmp', '/private/tmp') else 2_000_000
                     if info.st_size > limit:
-                        raise RuntimeError('Workstation file exceeds capture limit')
+                        raise RuntimeError(f'Workstation file exceeds capture limit: {path} ({info.st_size} > {limit})')
                     if root in extra_roots:
                         # Other stations remain live. Bind bytes and metadata to
                         # one open file, and report instability instead of calling
@@ -155,4 +156,6 @@ if __name__ == '__main__':
     else:
         args = sys.argv[2:]
         traced = '--observe-traced' in args
-        print(json.dumps(snapshot([arg for arg in args if arg != '--observe-traced'], traced)))
+        uids=[int(arg.split('=',1)[1]) for arg in args if arg.startswith('--subject-uid=')]
+        if len(uids)>1:raise ValueError('Duplicate observed account')
+        print(json.dumps(snapshot([arg for arg in args if arg != '--observe-traced' and not arg.startswith('--subject-uid=')], traced, uids[0] if uids else None)))

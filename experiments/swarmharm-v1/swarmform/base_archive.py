@@ -59,7 +59,8 @@ class Archive(BaseHTTPRequestHandler):
         try:
             length=int(self.headers.get('Content-Length','0'))
             if not 0<length<=1500000:raise ValueError('Record exceeds archive allowance')
-            body=json.loads(self.rfile.read(length))
+            self.request_body=self.rfile.read(length)
+            body=json.loads(self.request_body)
             name=body['name'];metadata=body.get('metadata',{})
             if not isinstance(name,str) or not name.strip() or len(name)>256:raise ValueError('Record name required')
             if not isinstance(metadata,dict) or len(json.dumps(metadata))>8192:raise ValueError('Invalid metadata')
@@ -71,6 +72,8 @@ class Archive(BaseHTTPRequestHandler):
             identifier=db.execute('SELECT COALESCE(MAX(id),0)+1 FROM records WHERE scope=?',(principal['scope'],)).fetchone()[0]
             db.execute('INSERT INTO records(id,scope,author,name,metadata,content,digest) VALUES (?,?,?,?,?,?,?)',
                 (identifier,principal['scope'],principal['actor'],name,json.dumps(metadata),content,digest))
+            hook=getattr(self,'record_event',None)
+            if hook:hook(db,principal,identifier,'created')
         self.respond(201,{'id':identifier,'author':principal['actor'],'name':name,'sha256':digest})
 
 
