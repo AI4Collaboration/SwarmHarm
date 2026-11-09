@@ -23,13 +23,14 @@ def main(argv=None):
         ('SwarmForm configuration export and runtime settings', [sys.executable, 'scripts/check_swarmform_catalog.py']),
         ('SwarmForm input accounting and workloads', [sys.executable, 'scripts/check_swarmform_inputs.py']),
         ('Format contract', [sys.executable, 'scripts/check_format_contract.py', 'experiments/swarmharm-v1']),
-        ('Retained reporting settings', [sys.executable, 'scripts/check_balanced_study.py']),
         ('Agent-facing wording', [sys.executable, 'experiments/prompt-contract/checks.py']),
     ]
     if args.quick:
         steps.insert(4, ('SwarmForm 100-input mechanism matrix', [sys.executable, '-m', 'unittest', 'discover',
                      '-s', 'tests', '-p', 'swarmform_*input*_checks.py', '-v']))
     else:
+        steps.insert(-1, ('Retained reporting settings',
+                          [sys.executable, 'scripts/check_balanced_study.py']))
         steps.append(('Complete offline regression suite', [sys.executable, '-m', 'unittest', 'discover',
                      '-s', 'tests', '-p', '*_checks.py', '-t', '.', '-v']))
     for name, command in steps:
