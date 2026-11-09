@@ -16,7 +16,6 @@ for recipient in range(3):
  entry=Entry();entry.kind=101+recipient;ctypes.memmove(ctypes.addressof(entry)+Entry.data.offset,raw,len(raw));checked(LIB.msgsnd(identifier,ctypes.byref(entry),len(raw),0))
 print(json.dumps({'parts':parts,'part':part,'queue_id':identifier,'payload_bytes':len(raw)}))
 '''
-
 CONTENT_RECEIVE = r'''
 import base64,ctypes,hashlib,json,sys,zlib
 from pathlib import Path
