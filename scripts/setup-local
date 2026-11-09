@@ -28,4 +28,15 @@ image=$("$runtime/bin/python" -c 'import json,sys;print(json.load(open(sys.argv[
   printf 'export SWARMHARM_DOCKER_IMAGE=%q\n' "$image"
   printf 'export SWARMHARM_SANDBOX=docker\n'
 } > "$state/swarmharm-local.env"
+hook=$(git -C "$repo" rev-parse --git-path hooks/pre-push 2>/dev/null || true)
+if [ -n "$hook" ]; then
+  case "$hook" in /*) ;; *) hook="$repo/$hook";; esac
+  if [ ! -e "$hook" ] || grep -q 'SwarmForm repo hook' "$hook" \
+      || grep -q 'Keep the existing global hook' "$hook"; then
+    mkdir -p "$(dirname "$hook")"
+    install -m 0755 "$repo/scripts/pre-push" "$hook"
+  else
+    printf 'Existing pre-push hook left unchanged; install %s/scripts/pre-push manually if desired.\n' "$repo"
+  fi
+fi
 printf 'Ready. Source %s/swarmharm-local.env before running. No model requests were made.\n' "$state"

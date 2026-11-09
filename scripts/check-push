@@ -12,7 +12,10 @@ import tempfile
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--ref', default='HEAD')
-    parser.add_argument('--full', action='store_true', help='Run the complete CI suite before upload')
+    checks = parser.add_mutually_exclusive_group()
+    checks.add_argument('--quick', action='store_true',
+                        help='Run the input, wording and format gate before upload')
+    checks.add_argument('--full', action='store_true', help='Run the complete CI suite before upload')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     commit = subprocess.check_output(
@@ -25,12 +28,15 @@ def main():
             [sys.executable, 'scripts/check_dataset_admission_contract.py'], cwd=folder)
     if result.returncode:
         print('Push check failed for ' + commit + '; nothing has been uploaded.', file=sys.stderr)
-    elif args.full:
+    elif args.full or args.quick:
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         state = subprocess.check_output(['git', 'status', '--porcelain'], cwd=root, text=True).strip()
         if head != commit or state:
-            raise SystemExit('Full push checks require the exact outgoing commit and a clean working tree.')
-        result = subprocess.run([sys.executable, 'scripts/check-ci'], cwd=root)
+            raise SystemExit('Push checks require the exact outgoing commit and a clean working tree.')
+        command = [sys.executable, 'scripts/check-ci']
+        if args.quick:
+            command.append('--quick')
+        result = subprocess.run(command, cwd=root)
         # A check must not silently change the source that will be uploaded.
         if (subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip() != head
                 or subprocess.check_output(['git', 'status', '--porcelain'], cwd=root, text=True).strip()):

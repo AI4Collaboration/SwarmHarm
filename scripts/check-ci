@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Run the same offline checks locally and on GitHub; never start a rollout."""
+"""Run offline checks without starting a rollout."""
+import argparse
 from pathlib import Path
 import subprocess
 import sys
@@ -9,7 +10,11 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def main():
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--quick', action='store_true',
+                        help='Run the input, wording and format gate without historical replay')
+    args = parser.parse_args(argv)
     if sys.version_info[:2] != (3, 12):
         raise SystemExit('Use Python 3.12 from the pinned runtime environment.')
     steps = [
@@ -20,9 +25,13 @@ def main():
         ('Format contract', [sys.executable, 'scripts/check_format_contract.py', 'experiments/swarmharm-v1']),
         ('Retained reporting settings', [sys.executable, 'scripts/check_balanced_study.py']),
         ('Agent-facing wording', [sys.executable, 'experiments/prompt-contract/checks.py']),
-        ('Complete offline regression suite', [sys.executable, '-m', 'unittest', 'discover',
-             '-s', 'tests', '-p', '*_checks.py', '-t', '.', '-v']),
     ]
+    if args.quick:
+        steps.insert(4, ('SwarmForm 100-input mechanism matrix', [sys.executable, '-m', 'unittest', 'discover',
+                     '-s', 'tests', '-p', 'swarmform_*input*_checks.py', '-v']))
+    else:
+        steps.append(('Complete offline regression suite', [sys.executable, '-m', 'unittest', 'discover',
+                     '-s', 'tests', '-p', '*_checks.py', '-t', '.', '-v']))
     for name, command in steps:
         print('Checking: ' + name, flush=True)
         started = time.monotonic()

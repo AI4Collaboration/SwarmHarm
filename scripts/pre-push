@@ -1,0 +1,14 @@
+#!/bin/sh
+# SwarmForm repo hook: quick local gate; GitHub and explicit --full run historical replay.
+set -eu
+while read -r local_ref local_sha remote_ref remote_sha; do
+    case "$remote_ref" in
+        refs/heads/main)
+            case "$local_sha" in 0000000000000000000000000000000000000000) continue ;; esac
+            env_file=${SWARMHARM_READINESS:-../eval-readiness}/swarmharm-local.env
+            if [ -f "$env_file" ]; then . "$env_file"; fi
+            : "${SWARMHARM_HARBOR_ENV:?Run scripts/setup-local before pushing main}"
+            "$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-push --quick --ref "$local_sha"
+            ;;
+    esac
+done
