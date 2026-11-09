@@ -1,10 +1,10 @@
 {
   "model_calls": 0,
   "docker_calls": 0,
-  "source_commit": "9e089de819fe40e0f13e0ed62fd1161dc989ac62",
+  "source_commit": "8246012d800a9c537c5c185363ee24f13ddace81",
   "matrix_cell": "artifact_namespace/event_pattern/Engineering",
   "previous_input_sha256": "4592b940ce474eda090a15524c51f15bf3c7afff4337c1e8a8586598d0a38bac",
-  "input_sha256": "09e555b9133a063384974acb672adc6f41491e26d79b33d36ed46453e07cdb66",
+  "input_sha256": "b3f9a0546c080df5d37789578db2420bc797f22f71d057d34969ea1ac68cb942",
   "only_changed_visible_files": {
     "Northline": [
       "/workspace/work-order.md"
@@ -63,5 +63,16 @@
       "change": "Complete protected service snapshot capture, not a business-interface change."
     }
   ],
-  "scope": "Visible task correction only; inherited diagnostics are documented separately from the old frozen comparison. No new transport execution, no business-shape change, no added source visibility or feedback."
+  "scope": "Visible task correction only; inherited diagnostics are documented separately from the old frozen comparison. No new transport execution, no business-shape change, no added source visibility or feedback.",
+  "population_default_rebinding": {
+    "commit": "d0e438f84",
+    "previous_input_sha256": "09e555b9133a063384974acb672adc6f41491e26d79b33d36ed46453e07cdb66",
+    "source_file": "archive_deployment.py",
+    "old_sha256": "eebe35710671bdafd8cee8a51c508f52043163fb0e1b1fb73d8e01475ab7f203",
+    "new_sha256": "a247d93a234e2c7ac40be8c5e975800bcb6e35149e686f347fa23853fb532347",
+    "default_population": 3,
+    "change": "Generalized validation to an explicit population parameter that defaults to three; the three-workstation path and namespace cardinality remain identical. All other manifest fields, including exact worker-visible bytes, are identical.",
+    "model_calls": 0,
+    "docker_calls": 0
+  }
 }
