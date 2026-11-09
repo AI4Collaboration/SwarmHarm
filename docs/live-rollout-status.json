@@ -1,6 +1,6 @@
 {
   "schema_version": 13,
-  "updated_at": "2026-11-09T15:39:04.653398+00:00",
+  "updated_at": "2026-11-09T15:41:18.332771+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "input_validation_in_progress",
@@ -465,14 +465,6 @@
       "worker_context": "lima-swarmform-model-01"
     },
     {
-      "matrix_cell": "artifact_namespace/timing/Financial Analysis",
-      "pid": 29864,
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-financial-http-ack",
-      "status": "running",
-      "worker_context": "lima-swarmharm",
-      "source_commit": "26e3c1cc92fa0c6f7d0c25c27efb29f6472bc960"
-    },
-    {
       "matrix_cell": "artifact_namespace/timing/Knowledge Work",
       "pid": 29906,
       "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-knowledge-http-ack",
@@ -618,5 +610,13 @@
       "replacement_rollouts_pending": 11
     }
   },
-  "next_action": "Continue ten active timing inputs and the thirteen-run Sol 6.1 queue. Admit Data endpoint timing after independent closure, then start the final Data job timing input in its freed worker slot. Complete semantic reviews and upload evidence; keep source frozen during the registered model queue."
+  "next_action": "Continue nine active timing inputs and the thirteen-run Sol 6.1 queue. Diagnose the stopped Financial archive timing frame from exact retained observations. After Data endpoint closes independently, start Data job timing in its freed slot. Preserve current model source seals.",
+  "current_input_issue": {
+    "matrix_cell": "artifact_namespace/timing/Financial Analysis",
+    "status": "stopped_preserved_under_diagnosis",
+    "reason": "First source frame 38 exhausted the calibrated timing decoder attempts; distinct from repaired HTTP and observation-size failures.",
+    "evidence": "work/eval-readiness/swarmform-services-resume-20261109-01/archive-timing-financial-http-ack",
+    "model_calls": 0,
+    "retry_started": false
+  }
 }
