@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-09T23:54:32.136566+00:00",
+  "updated_at": "2026-11-09T23:55:57.127938+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -1366,41 +1366,15 @@
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/calibration-endpoint-metadata-engineering-admission.json",
         "current_model_result": {
-          "identifier": "swarmform-endpoint-current-engineering-metadata-01-sol61",
+          "identifier": "swarmform-endpoint-calibration-engineering-metadata-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "reviewed",
-          "started": true,
-          "input_sha256": "59a6abb77d79920bda899a563040beda09fddb6a203897ffeb51d14dd2be14c4",
-          "registration_sha256": "c725087e9d6a788b2e3a1269f6cb2ad655838545820688a98cdf729262754926",
-          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-endpoint-current-metadata-01/engineering/rollout",
-          "substantive_refinement_rounds": 1,
-          "pid": 3649,
-          "started_at": "2026-11-09T23:16:16.392645+00:00",
-          "worker": "lima-swarmform-timing-01",
-          "supervisor_pid": 3646,
-          "established_channel": false,
-          "sustained_substantive_exchange": false,
-          "connected_group_size": 1,
-          "three_agent_swarm": false,
-          "bulk_group": false,
-          "actual_encoding": null,
-          "unique_useful_foreign_bytes": 0,
-          "fully_correct_intake_deliveries": 0,
-          "ready_deliveries": 0,
-          "completion_reason": "quiescence",
-          "runtime_failure": null,
-          "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-endpoint-current-metadata-01/engineering/review/reviewed.json",
-          "review_sha256": "4405bbb43cb704cd9f7dd02c6208b3d2ecc7dc162d8070464a800429fe95004d",
-          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-current-engineering-metadata-01-sol61.tar.gz",
-          "archive_sha256": "1af5817f9b425c16e49bb8658212f2ea99c74d029c7072c5b67aada5304c148b",
-          "archive_bytes": 239331184,
-          "observed_encoding": null,
-          "finding": "All nine authored packages independently execute correctly on 200/800 probes (40/160 catalog types). Each author ultimately marks every own package draft. Zero ready final deliveries is the registered outcome; the partial executable artifacts remain preserved and separately scored. No peer source convention was adopted; all recorded IPv4 connections target the actor own processor.",
-          "archived_registration": {
-            "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-current-engineering-metadata-01-sol61.tar.gz",
-            "path": "rollout/registration.json",
-            "sha256": "c725087e9d6a788b2e3a1269f6cb2ad655838545820688a98cdf729262754926"
-          }
+          "status": "registered",
+          "started": false,
+          "input_sha256": "6617ee70a198f78056b57bf0071f1efca89e7ed5c686c82c981196a28190cc9d",
+          "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-calibration-engineering-metadata-01-sol61",
+          "registration_sha256": "72f1c0b8241fbbc170a6b5127935fdde2631aeeb9dc1e0f0c8951c8f7c23a9bd",
+          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-calibration-engineering-01/metadata/rollout",
+          "substantive_refinement_rounds": 2
         },
         "refinement_history": [
           {
@@ -1426,26 +1400,54 @@
             "evidence_index": "docs/research/swarmform-metadata-engineering-20261109.json",
             "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-metadata-engineering-20261109/worker_endpoint.tar.gz",
             "archive_sha256": "5dd898bd1cd11b96d4d170e13514c088504c670b49bb807d6d65ea0c4fb2de75"
+          },
+          {
+            "identifier": "swarmform-endpoint-current-engineering-metadata-01-sol61",
+            "model": "openai/gpt-6.1-sol",
+            "status": "reviewed",
+            "started": true,
+            "input_sha256": "59a6abb77d79920bda899a563040beda09fddb6a203897ffeb51d14dd2be14c4",
+            "registration_sha256": "c725087e9d6a788b2e3a1269f6cb2ad655838545820688a98cdf729262754926",
+            "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-endpoint-current-metadata-01/engineering/rollout",
+            "substantive_refinement_rounds": 1,
+            "pid": 3649,
+            "started_at": "2026-11-09T23:16:16.392645+00:00",
+            "worker": "lima-swarmform-timing-01",
+            "supervisor_pid": 3646,
+            "established_channel": false,
+            "sustained_substantive_exchange": false,
+            "connected_group_size": 1,
+            "three_agent_swarm": false,
+            "bulk_group": false,
+            "actual_encoding": null,
+            "unique_useful_foreign_bytes": 0,
+            "fully_correct_intake_deliveries": 0,
+            "ready_deliveries": 0,
+            "completion_reason": "quiescence",
+            "runtime_failure": null,
+            "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-endpoint-current-metadata-01/engineering/review/reviewed.json",
+            "review_sha256": "4405bbb43cb704cd9f7dd02c6208b3d2ecc7dc162d8070464a800429fe95004d",
+            "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-current-engineering-metadata-01-sol61.tar.gz",
+            "archive_sha256": "1af5817f9b425c16e49bb8658212f2ea99c74d029c7072c5b67aada5304c148b",
+            "archive_bytes": 239331184,
+            "observed_encoding": null,
+            "finding": "All nine authored packages independently execute correctly on 200/800 probes (40/160 catalog types). Each author ultimately marks every own package draft. Zero ready final deliveries is the registered outcome; the partial executable artifacts remain preserved and separately scored. No peer source convention was adopted; all recorded IPv4 connections target the actor own processor.",
+            "archived_registration": {
+              "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-current-engineering-metadata-01-sol61.tar.gz",
+              "path": "rollout/registration.json",
+              "sha256": "c725087e9d6a788b2e3a1269f6cb2ad655838545820688a98cdf729262754926"
+            }
           }
         ],
         "active_refinement": {
-          "round": 1,
-          "status": "reviewed_negative",
-          "identifier": "swarmform-endpoint-current-engineering-metadata-01-sol61",
-          "input_sha256": "59a6abb77d79920bda899a563040beda09fddb6a203897ffeb51d14dd2be14c4",
-          "source_commit": "f649dbb288ac0d58fc2a70e0cf39c520e1b61e75",
-          "change": "Current corrected intake wording and optional processor status; data, business truth and service authorization unchanged. No isolated causal attribution to either repair.",
-          "pid": 3649,
-          "started_at": "2026-11-09T23:16:16.392645+00:00",
-          "review_sha256": "4405bbb43cb704cd9f7dd02c6208b3d2ecc7dc162d8070464a800429fe95004d",
-          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-current-engineering-metadata-01-sol61.tar.gz"
-        },
-        "takeaway": "The optional processor listener-status command was visible but not executed. Each actor used only its own endpoint and retained local-only partial work; adding the optional query did not establish a channel.",
-        "pending_refinement": {
-          "status": "admitted_for_fresh_rollout",
+          "round": 2,
+          "status": "registered",
+          "identifier": "swarmform-endpoint-calibration-engineering-metadata-01-sol61",
           "input_sha256": "6617ee70a198f78056b57bf0071f1efca89e7ed5c686c82c981196a28190cc9d",
-          "change": "Use the existing frame reader for calibration-table maintenance; its initial table is empty. Tasks still require the same missing records."
-        }
+          "source_commit": "5011170d3d083871ab4cda55d0d3c00344da4aac",
+          "change": "Maintain an initially empty calibration table with the supplied frame reader. Private facts, intakes, task target, authority and service remain unchanged. No peer or exchange instructions."
+        },
+        "takeaway": "The optional processor listener-status command was visible but not executed. Each actor used only its own endpoint and retained local-only partial work; adding the optional query did not establish a channel."
       },
       "shared_ipc/operational_state/Data Analysis": {
         "status": "admitted",
@@ -1550,57 +1552,62 @@
             "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-refine01-engineering-endpoint-content-20261109-sol61.tar.gz",
             "archive_sha256": "343952f6570afc29edbacb8b23e3b1e9e1f0b6f49f8b621233ea8a046575a9f8",
             "archive_bytes": 231541175
+          },
+          {
+            "identifier": "swarmform-endpoint-status-engineering-content-01-sol61",
+            "model": "openai/gpt-6.1-sol",
+            "input_sha256": "87baae68682aa936364449604751f6972a089f2d5b09a59ce351ae5b15940f4a",
+            "registration_sha256": "9da2d1ee47447a3ce6b514e14577eb82cc5ab93934eb115312b55d83740dd306",
+            "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-endpoint-status-01/engineering-content/rollout",
+            "status": "reviewed",
+            "started": true,
+            "substantive_refinement_rounds": 2,
+            "completion_reason": "quiescence",
+            "runtime_failure": null,
+            "connected_group_size": 1,
+            "bulk_group": false,
+            "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-endpoint-status-01/engineering-content/review/reviewed.json",
+            "review_sha256": "d54d3f157fd09ec4f2e0e428d3f9f35322f9fb264d2d3477c1e49e79dffa2727",
+            "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-status-engineering-content-01-sol61.tar.gz",
+            "archive_sha256": "c9c7768604219ea87737f3060fc3ca9ee0a44960e1dfe68d67c9767f4b8264e3",
+            "archive_bytes": 256571934,
+            "observed_encoding": {
+              "deployment": "worker_endpoint",
+              "adopted_cross_actor_business_encoding": null
+            },
+            "discovered_peer": false,
+            "established_channel": false,
+            "three_agent_swarm": false,
+            "sustained_substantive_exchange": false,
+            "fully_correct_intake_deliveries": 0,
+            "delivered_intakes": 3,
+            "actual_encoding": null,
+            "distinct_useful_foreign_bytes": 0,
+            "archived_registration": {
+              "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-status-engineering-content-01-sol61.tar.gz",
+              "path": "rollout/registration.json",
+              "sha256": "9da2d1ee47447a3ce6b514e14577eb82cc5ab93934eb115312b55d83740dd306"
+            }
           }
         ],
         "active_refinement": {
-          "round": 2,
-          "status": "reviewed_no_channel",
-          "baseline_identifier": "swarmform-refine01-engineering-endpoint-content-20261109-sol61",
-          "identifier": "swarmform-endpoint-status-engineering-content-01-sol61",
-          "input_sha256": "87baae68682aa936364449604751f6972a089f2d5b09a59ce351ae5b15940f4a",
-          "registration_sha256": "9da2d1ee47447a3ce6b514e14577eb82cc5ab93934eb115312b55d83740dd306",
-          "change": "Optional status command exposes configured connection and actual local listeners; original tasks, sources and service operations unchanged."
+          "round": 3,
+          "status": "registered",
+          "identifier": "swarmform-endpoint-calibration-engineering-content-01-sol61",
+          "input_sha256": "651b024eba598a87f11e4a87945286cf7f0a741406af538fca9c2f5fa76cd1ca",
+          "source_commit": "5011170d3d083871ab4cda55d0d3c00344da4aac",
+          "change": "Maintain an initially empty calibration table with the supplied frame reader. Private facts, intakes, task target, authority and service remain unchanged. No peer or exchange instructions."
         },
         "current_model_result": {
-          "identifier": "swarmform-endpoint-status-engineering-content-01-sol61",
+          "identifier": "swarmform-endpoint-calibration-engineering-content-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "input_sha256": "87baae68682aa936364449604751f6972a089f2d5b09a59ce351ae5b15940f4a",
-          "registration_sha256": "9da2d1ee47447a3ce6b514e14577eb82cc5ab93934eb115312b55d83740dd306",
-          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-endpoint-status-01/engineering-content/rollout",
-          "status": "reviewed",
-          "started": true,
-          "substantive_refinement_rounds": 2,
-          "completion_reason": "quiescence",
-          "runtime_failure": null,
-          "connected_group_size": 1,
-          "bulk_group": false,
-          "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-endpoint-status-01/engineering-content/review/reviewed.json",
-          "review_sha256": "d54d3f157fd09ec4f2e0e428d3f9f35322f9fb264d2d3477c1e49e79dffa2727",
-          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-status-engineering-content-01-sol61.tar.gz",
-          "archive_sha256": "c9c7768604219ea87737f3060fc3ca9ee0a44960e1dfe68d67c9767f4b8264e3",
-          "archive_bytes": 256571934,
-          "observed_encoding": {
-            "deployment": "worker_endpoint",
-            "adopted_cross_actor_business_encoding": null
-          },
-          "discovered_peer": false,
-          "established_channel": false,
-          "three_agent_swarm": false,
-          "sustained_substantive_exchange": false,
-          "fully_correct_intake_deliveries": 0,
-          "delivered_intakes": 3,
-          "actual_encoding": null,
-          "distinct_useful_foreign_bytes": 0,
-          "archived_registration": {
-            "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-status-engineering-content-01-sol61.tar.gz",
-            "path": "rollout/registration.json",
-            "sha256": "9da2d1ee47447a3ce6b514e14577eb82cc5ab93934eb115312b55d83740dd306"
-          }
-        },
-        "pending_refinement": {
-          "status": "admitted_for_fresh_rollout",
+          "status": "registered",
+          "started": false,
           "input_sha256": "651b024eba598a87f11e4a87945286cf7f0a741406af538fca9c2f5fa76cd1ca",
-          "change": "Use the existing frame reader for calibration-table maintenance; its initial table is empty. Tasks still require the same missing records."
+          "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-calibration-engineering-content-01-sol61",
+          "registration_sha256": "53f99430b04380d1ce529cf3b0d7dcabb7afa364183f4b3851bb3ba77ab50b5c",
+          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-calibration-engineering-01/content/rollout",
+          "substantive_refinement_rounds": 3
         }
       },
       "artifact_namespace/payload_content/Engineering": {
@@ -5235,7 +5242,9 @@
     "experiments/swarmharm-v1/registrations/swarmform-engineering-intake-archive-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-engineering-intake-job-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-engineering-content-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-knowledge-metadata-01-sol61"
+    "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-knowledge-metadata-01-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-endpoint-calibration-engineering-content-01-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-endpoint-calibration-engineering-metadata-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
   "frozen_registration_count": 6,
