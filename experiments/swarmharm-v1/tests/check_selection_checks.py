@@ -15,7 +15,7 @@ changed = ENTRY['changed_files']
 
 class CheckSelectionChecks(unittest.TestCase):
     def test_documentation_and_pause_notes_need_no_runtime(self):
-        plan = select(['README.md', 'AGENTS.md', 'docs/research/swarmform-input-development.json'])
+        plan = select(['README.md', 'AGENTS.md', 'docs/research/swarmform-input-archives.json'])
         self.assertEqual(plan['checks'], ['syntax', 'inventory'])
         self.assertEqual(plan['tests'], [])
         self.assertFalse(plan['dependencies'])

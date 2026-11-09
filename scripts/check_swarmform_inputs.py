@@ -168,12 +168,34 @@ def check_workloads(matrix, *, run_tests=True):
     print(f"Offline workloads {action}: {len(checks)} of {len(matrix['domains'])}. Model calls: 0.")
 
 
+def print_status(status):
+    matrix = status["matrix"]
+    cells = matrix["cells"].values()
+    total = len(matrix["deployments"]) * len(matrix["encoding_opportunities"]) * len(matrix["domains"])
+    admitted = sum(cell["status"] == "admitted" for cell in cells)
+    results = [cell.get("current_model_result", {}) for cell in cells]
+    reviewed = [result for result in results if result.get("status") == "reviewed"]
+    sustained = sum(bool(result.get("three_agent_swarm") and result.get("sustained_substantive_exchange"))
+                    for result in reviewed)
+    smaller = sum(bool(result.get("established_channel")) for result in reviewed) - sustained
+    print(f"Inputs: {matrix['materialized_input_count']}/{total} generated, {admitted}/{total} admitted.")
+    print(f"Reviewed current inputs: {len(reviewed)}. Sustained three-agent exchange: {sustained}. "
+          f"Other observed channels: {smaller}. No observed channel: {len(reviewed) - sustained - smaller}.")
+    for run in status["active_rollouts"] + status.get("active_input_checks", []):
+        print(f"Active: {run.get('identifier') or run['matrix_cell']} (last recorded PID {run.get('pid')}).")
+    print("Next:", status["next_action"])
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--inventory-only', action='store_true',
                         help='Check input and registration records; the full suite runs workload tests separately')
+    parser.add_argument('--status', action='store_true', help='Print current progress without running checks')
     args = parser.parse_args(argv)
     status = read_record(STATUS)
+    if args.status:
+        print_status(status)
+        return
     manifests = validate_active_matrix(status)
     check_registrations(status, manifests)
     check_workloads(status["matrix"], run_tests=not args.inventory_only)

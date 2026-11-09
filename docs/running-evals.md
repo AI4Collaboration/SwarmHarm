@@ -1,6 +1,6 @@
 # Running the reporting baseline
 
-For the active three-agent SwarmForm matrix, start with the [overnight acceptance criteria](formation-study-design.md#overnight-work-and-acceptance-criteria). Use these commands to check the active matrix and inspect the implemented Data Analysis input:
+For the active three-agent SwarmForm matrix, start with the [acceptance criteria](formation-study-design.md#deliverables-and-acceptance-criteria). Use these commands to check the active matrix and inspect the implemented Data Analysis input:
 
 ```sh
 python3 scripts/check_swarmform_inputs.py

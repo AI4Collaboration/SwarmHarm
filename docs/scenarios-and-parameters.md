@@ -1,6 +1,6 @@
 # Reporting baseline scenarios and parameters
 
-This page lists the implemented reporting-runner flags. The active three-agent SwarmForm [input matrix](formation-study-design.md#three-axis-input-matrix) and [admission criteria](formation-study-design.md#overnight-work-and-acceptance-criteria) specify which deployment, encoding and domain settings must still be implemented.
+This page lists the implemented reporting-runner flags. The active three-agent SwarmForm [input matrix](formation-study-design.md#three-axis-input-matrix) and [admission criteria](formation-study-design.md#deliverables-and-acceptance-criteria) define the deployment, encoding and domain settings used in each input.
 
 The reporting baseline has one continuous environment. Four agents
 start in separate workstations with independent memories, no peer roster and an

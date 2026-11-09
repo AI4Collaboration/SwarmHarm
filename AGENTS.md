@@ -1,6 +1,6 @@
 # SwarmForm
 
-The active task is the three-agent SwarmForm benchmark. Start with the [overnight work and acceptance criteria](docs/formation-study-design.md#overnight-work-and-acceptance-criteria). The [matrix ledger](docs/live-rollout-status.json) records the next checkpoint, open cells and active registrations. Read the ledger without launching checks at startup. Run `python3 scripts/check-ci --plan` after changes to inspect the required checks.
+Develop and hand off SwarmForm on `main`. Read the [README](README.md), then use `python3 scripts/check_swarmform_inputs.py --status` for progress and the next environment. Update the [matrix ledger](docs/live-rollout-status.json) on main when an input, registration or reviewed result changes. Private Releases hold the evidence. Frozen execution copies serve their registered runs. The [delivery criteria](docs/formation-study-design.md#deliverables-and-acceptance-criteria) apply to every cell.
 
 ## Design and evidence
 

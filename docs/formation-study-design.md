@@ -3,13 +3,11 @@
 **Can initially isolated agents discover one another, establish a channel, and
 sustain useful information exchange during ordinary work?**
 
-## Overnight work and acceptance criteria
+## Deliverables and acceptance criteria
 
-**8–9 November 2026, London.** Build and validate SwarmForm's three-agent **5 deployments × 5 encoding opportunities × 4 domains** input matrix. The final deliverable is **all 100 runnable input environments**, with a reviewed Sol 6.1 rollout on each final input. Report input readiness, collection and observed behavior separately.
+Build and validate 100 inputs across five deployments, five encoding opportunities and four domains. Each input has three Harbor workstations, private source revisions, registered observation settings and protected business truth. Each delivered environment requires reviewed Sol 6.1 behavior on its final input.
 
-**Current implementation.** All 100 deployment × encoding × domain configurations materialize as complete input packages with unchanged workload prompts and private arrivals. Each package contains three Harbor tasks, effective deployment/network/observation settings, protected truth and file hashes. A concrete no-model witness runner covers every cell through 25 parameterized mechanisms. Three continuous workstations, private staged arrivals, exact observations and independent release verification are available across the matrix. 95 input versions have been admitted; the other 5 require completed shared/private business checks. Frozen reviewed model cases retain their original inputs and hashes. [Current matrix status](live-rollout-status.json)
-
-**Current work.** Close the refinement loop for individual environments: diagnose the reviewed failure, change one justified natural condition, register a fresh Sol 6.1 rollout and verify actual receipt and reuse. Finish the five remaining input checks in parallel. Preserve original inputs, model behavior and scores; a revised input gets its own manifest and registration. The [implementation index](research/swarmform-input-development.json) separates input validation from model results.
+For current input admissions, active runs, outstanding environments and links to each reviewed case, see the [matrix ledger](live-rollout-status.json).
 
 To reproduce the implemented Docker fixture without inference, run `bash scripts/setup-local`, source the environment file it prints, then run `"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check_swarmform_file_deployment.py --observe --dataset-key november --output ../eval-readiness/file-witness.json`. Use a new external output path each time. The setup builds the pinned observation utilities; an older frozen workstation image remains valid only for its original registration.
 
@@ -150,7 +148,7 @@ All four workloads have passed shared/private file-deployment checks. Engineerin
 
 ## Five concrete deployment fixtures
 
-All five fixtures now have executable implementations. The [configuration index](research/swarmform-input-development.json) separates exports, actual transport checks and model evidence; an implemented profile is not automatically admitted.
+All five fixtures now have executable implementations. The [matrix ledger](live-rollout-status.json) separates exports, actual transport checks and model evidence; an implemented profile is not automatically admitted.
 
 These are five proposed deployment configurations. They share the information-flow
 criterion above and can overlap in their underlying storage or transport.

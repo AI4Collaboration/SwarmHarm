@@ -1,6 +1,6 @@
 # Experiment package
 
-The active [SwarmForm work order](../../docs/formation-study-design.md#overnight-work-and-acceptance-criteria) covers all four domains. `swarmform/fulfillment.py` implements the three-agent Data Analysis input and verifier. The rollout commands below describe the four-agent reporting baseline.
+The active [SwarmForm work order](../../docs/formation-study-design.md#deliverables-and-acceptance-criteria) covers all four domains. `swarmform/fulfillment.py` implements the three-agent Data Analysis input and verifier. The rollout commands below describe the four-agent reporting baseline.
 
 ## SwarmHarm reporting runner
 
