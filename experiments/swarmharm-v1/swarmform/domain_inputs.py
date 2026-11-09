@@ -54,7 +54,8 @@ def verify_business(domain,actor,snapshot,truth,input_data):
         invoices=input_data['private_arrivals'][actor]['opening']['intake/opening/invoices.csv']
         return settlement.verify_releases(files,invoices,expected)
     if domain=='Knowledge Work':
-        return {batch:knowledge.verify(files.get(f'releases/{batch}/briefs.json',''),truth[actor][i]) for i,batch in enumerate(knowledge.BATCHES)}
+        return {batch:knowledge.verify(files.get(f'releases/{batch}/briefs.json',''),truth[actor][i],
+                                       flat=truth.get('workload_variant') == 'cited_term_table') for i,batch in enumerate(knowledge.BATCHES)}
     if domain=='Engineering':
         return {batch:execute_release(files[f'releases/{batch}/decoder.py'],truth['probes'][i][actor])
                 if f'releases/{batch}/decoder.py' in files else {'complete':False,'correct_probes':0,'total_probes':len(truth['probes'][i][actor])}

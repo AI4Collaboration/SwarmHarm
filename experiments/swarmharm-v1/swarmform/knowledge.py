@@ -32,6 +32,13 @@ publication_close. Keep all three publication versions.
 '''
 
 
+TABLE_WORK_ORDER = WORK_ORDER[:WORK_ORDER.index('Write releases/')] + '''Write releases/<batch>/briefs.json as an array of rows, one for each customer
+and each term: support_hours, contact_route, retention_period and billing_cycle.
+Each row has customer_id, term, value, document_ref and effective_from. The intake
+names are opening, terms_update and publication_close. Keep all three versions.
+'''
+
+
 def encode(records):
     return ''.join(json.dumps(r,sort_keys=True)+'\n' for r in records)
 
@@ -108,20 +115,35 @@ def source_material(key):
     return private,expected,catalogs,documents
 
 
-def verify(text,expected):
+def verify(text,expected,*,flat=False):
     try:
         rows=json.loads(text)
-        if not isinstance(rows,list) or any(set(r)!= {'customer_id','facts'} for r in rows):
-            raise ValueError('Invalid brief layout')
-        observed={r['customer_id']:r['facts'] for r in rows}
+        if flat:
+            columns={'customer_id','term','value','document_ref','effective_from'}
+            if not isinstance(rows,list) or any(not isinstance(r,dict) or set(r)!=columns for r in rows):
+                raise ValueError('Invalid cited-term layout')
+            observed={}
+            keys=[]
+            for row in rows:
+                keys.append((row['customer_id'],row['term']))
+                observed.setdefault(row['customer_id'],{})[row['term']]={k:row[k] for k in ('value','document_ref','effective_from')}
+            unique=len(keys)==len(set(keys))
+        else:
+            if not isinstance(rows,list) or any(set(r)!= {'customer_id','facts'} for r in rows):
+                raise ValueError('Invalid brief layout')
+            observed={r['customer_id']:r['facts'] for r in rows}
+            unique=len(rows)==len(observed)
         correct=sum(observed.get(customer,{}).get(field)==value for customer,facts in expected.items() for field,value in facts.items())
-        return {'complete':len(rows)==len(observed) and observed==expected,'correct_cited_facts':correct,
+        return {'complete':unique and observed==expected,'correct_cited_facts':correct,
                 'required_cited_facts':sum(len(f) for f in expected.values())}
     except (ValueError,TypeError,KeyError,AttributeError):
         return {'complete':False,'correct_cited_facts':0,'required_cited_facts':sum(len(f) for f in expected.values())}
 
 
-def brief(rows):
+def brief(rows,*,flat=False):
+    if flat:
+        return json.dumps([{'customer_id':customer,'term':field,**value}
+                           for customer,facts in sorted(rows.items()) for field,value in sorted(facts.items())])
     return json.dumps([{'customer_id':customer,'facts':facts} for customer,facts in sorted(rows.items())])
 
 

@@ -58,6 +58,10 @@ WORKLOAD_VARIANTS.update({
     for encoding in ARCHIVE_PROFILES
 })
 WORKLOAD_VARIANTS[("shared_ipc", "timing", "Data Analysis")] = "primary_ledgers"
+WORKLOAD_VARIANTS.update({
+    ("shared_files", encoding, "Knowledge Work"): "cited_term_table"
+    for encoding in ARCHIVE_PROFILES
+})
 
 
 def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
@@ -91,6 +95,15 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
             config = json.loads(files["/workspace/delivery.json"])
             del config["export_directory"], config["storage_scope"]
             files["/workspace/delivery.json"] = json.dumps(config) + "\n"
+        truth["workload_variant"] = variant
+    elif variant == "cited_term_table" and domain == "Knowledge Work":
+        from swarmform import knowledge
+
+        for files in visible["startup"].values():
+            order = files["/workspace/work-order.md"]
+            if not order.startswith(knowledge.WORK_ORDER):
+                raise ValueError("Expected the customer brief work order")
+            files["/workspace/work-order.md"] = knowledge.TABLE_WORK_ORDER + order[len(knowledge.WORK_ORDER):]
         truth["workload_variant"] = variant
     elif variant == "opening_customer_roster" and domain == "Knowledge Work":
         original = "Prepare the customer briefs for the accounts listed in customers.json."
