@@ -37,9 +37,9 @@ import base64,fcntl,hashlib,json,os,shutil,sys,time,zlib
 from pathlib import Path
 owner,batch,filename,receivers64=sys.argv[1:];receivers=json.loads(base64.b64decode(receivers64));source=Path('intake',batch,filename).read_bytes()
 meta=json.dumps({'batch':batch,'file':filename},sort_keys=True).encode();data=zlib.compress(len(meta).to_bytes(2,'big')+meta+source+hashlib.sha256(source).digest(),9)
-packet=len(data).to_bytes(4,'big')+data;root=Path('/var/tmp/exports','timing-'+owner+'-'+batch);payload_bytes=32;lanes=72;base=.030;step=.012;sent=[]
+packet=len(data).to_bytes(4,'big')+data;root=Path('/var/tmp/exports','timing-'+owner+'-'+batch);payload_bytes=16;lanes=32;base=.020;step=.004;alphabet=b'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';sent=[]
 for frame,start in enumerate(range(0,len(packet),payload_bytes)):
- payload=packet[start:start+payload_bytes].ljust(payload_bytes,b'\0');wire=payload+zlib.crc32(payload).to_bytes(4,'big');symbols=[(byte>>4,byte&15) for byte in wire];symbols=[value for pair in symbols for value in pair]
+ payload=packet[start:start+payload_bytes].ljust(payload_bytes,b'\0');wire=payload+zlib.crc32(payload).to_bytes(4,'big');symbols=[alphabet.index(value) for value in base64.b32encode(wire)];assert len(symbols)==lanes
  for attempt in range(8):
   directory=root/(str(frame)+'.'+str(attempt));directory.mkdir();handles=[]
   for lane in range(lanes):
@@ -72,11 +72,11 @@ Path('/workspace/timing-'+owner+'-'+batch+'.sent').write_text(json.dumps({'sourc
 '''
 
 RECEIVE = r'''
-import concurrent.futures,fcntl,hashlib,json,os,sys,time,zlib
+import base64,concurrent.futures,fcntl,hashlib,json,os,sys,time,zlib
 from pathlib import Path
 owner,batch,filename,actor=sys.argv[1:];root=Path('/var/tmp/exports','timing-'+owner+'-'+batch);marker=Path('/workspace/timing-'+owner+'-'+batch)
 if not root.exists():marker.with_suffix('.done').write_text(json.dumps({'owner':owner,'batch':batch,'absent':True}));raise SystemExit
-payload_bytes=32;lanes=72;base=.030;step=.012;frames=[];packet=bytearray();size=None;frame=0
+payload_bytes=16;lanes=32;base=.020;step=.004;alphabet=b'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';frames=[];packet=bytearray();size=None;frame=0
 while size is None or len(packet)<size+4:
  for attempt in range(8):
   directory=root/(str(frame)+'.'+str(attempt));deadline=time.monotonic()+20
@@ -90,8 +90,8 @@ while size is None or len(packet)<size+4:
    jobs=[pool.submit(receive,lane) for lane in range(lanes)]
    while len(ready)!=lanes:time.sleep(.001)
    (directory/(actor+'.ready')).touch();rows=sorted(job.result() for job in jobs)
-  valid=all(0<=row[2]<=15 for row in rows);symbols=[row[2] for row in rows]
-  wire=bytes((symbols[i]<<4)|symbols[i+1] for i in range(0,lanes,2)) if valid else b''
+  valid=all(0<=row[2]<=31 for row in rows);symbols=[row[2] for row in rows]
+  wire=base64.b32decode(bytes(alphabet[value] for value in symbols)) if valid else b''
   valid=valid and zlib.crc32(wire[:payload_bytes])==int.from_bytes(wire[payload_bytes:],'big');(directory/(actor+('.ok' if valid else '.retry'))).touch()
   while not (directory/'accepted').exists() and not (directory/'repeat').exists():
    if time.monotonic()>deadline:raise TimeoutError('Frame decision missing')
