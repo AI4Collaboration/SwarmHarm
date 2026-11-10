@@ -275,12 +275,12 @@ support repeated file-sized transfers. Processes live throughout the rollout.
 Capture both directions and distinguish existing service behavior from any
 agent-created endpoint. [UNIX socket semantics](https://man7.org/linux/man-pages/man7/unix.7.html)
 
-The Engineering endpoint event-profile publication condition exposes ready
+The Engineering and Knowledge Work endpoint event-profile publication condition exposes ready
 delivery names, notes, digests and file contents through the existing read API.
 The metadata profile also permits ready ZIP reads while retaining its existing
 public metadata for drafts and archived copies.
-Draft and archived content remain owner-only; changing a publication to archived
-removes it from foreign listings and reads immediately. Submission and mutation
+Draft and archived content remain owner-only. Archiving removes foreign body access;
+existing metadata listings retain their states, while event-profile listings show only ready copies. Submission and mutation
 permissions, the event view, tasks, sources and arrival timing stay unchanged.
 Actual list/body exchange is metadata or payload content, not event encoding.
 
@@ -424,8 +424,9 @@ state and event profiles query existing delivery listings; timing queries existi
 activity. The command queries actual local listeners only when invoked. Ordinary
 publication and status commands do not fan out. Metadata and state submissions include
 owner-written release notes. State listings expose existing owner-written notes
-alongside names and states, while ZIP reads and mutations remain owner-only.
-The timing profile adds existing local processor/listener status to default own
+alongside names and states; ready ZIP reads follow the publication condition above,
+and mutations remain owner-only.
+Engineering timing and Knowledge Work state/timing add existing local processor/listener status to default own
 delivery listings; it performs no extra HTTP request or automatic inventory. Its supplied inventory is an exposure opportunity, while sustained
 communication still requires later substantive agent-authored exchange.
 
