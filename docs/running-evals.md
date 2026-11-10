@@ -107,7 +107,20 @@ The Alliance setup and environment scripts install Apptainer for standalone
 workstation checks. The live reporting workflow requires Docker's isolated
 workstation-to-library links.
 
-For the exact registered Linux amd64 workstation, download the archive,
+### Registered SwarmForm runtime
+
+The 50 accepted SwarmForm inputs use **Linux ARM64** workstation image `sha256:86c72305ebe2a6397540689e36805f6be92688d797ee97b6610bfd036b6f984d` and native **Codex 0.166.0**. Their original native executable was macOS ARM64; exact accepted-package reproduction checks its registered hash and catalog. A different native platform requires its own explicit configuration and registration.
+
+Download the image, provenance and checksum files from the [accepted-input Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs), then run:
+
+```sh
+shasum -a 256 -c swarmharm-workstation-linux-arm64-86c72305-SHA256SUMS
+docker load --input swarmharm-workstation-linux-arm64-86c72305.tar.gz
+```
+
+The accepted-package entry point selects this image from the original registration. It never rebuilds or substitutes it. Install the native dependencies with `scripts/setup-local`; use the [README preparation example](../README.md#accepted-inputs) for an exact tested input. The image archive contains the existing image, with its original OCI identity and attestations.
+
+For the earlier registered Linux amd64 workstation, download the archive,
 provenance and checksums from the [workstation Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmharm-workstation-linux-amd64-20261106).
 Verify the checksums, run `docker load --input swarmharm-workstation-linux-amd64-9ab5b36a.tar.gz`,
 and set `SWARMHARM_DOCKER_IMAGE` to the `image` value in `image-provenance.json`.

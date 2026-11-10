@@ -8,9 +8,9 @@ The delivery matrix is **5 shared deployments × 5 encoding opportunities × 2 d
 
 [Download accepted inputs](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs.zip) · [Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs)
 
-The current bundle contains **48 accepted inputs out of the 50-input target: 46 with sustained communication in a connected three-agent group and two functional negatives after seven reviewed refinements each**. The index labels these outcomes separately and links each set of three Harbor tasks to its tested source, settings, business scores and full trajectory. Some groups have two agents sustaining reciprocal exchange and a third contributing authored work they read; the index distinguishes initial contributions from repeated participation. The [four-domain bundle](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-inputs.zip) is preserved. Use `python3 scripts/export_swarmform_input_matrix.py --accepted --output ../accepted-inputs` to reproduce the selected bundle; add `--all-retained` for supplemental results.
+The current bundle contains **all 50 accepted inputs: 48 with sustained communication in a connected three-agent group and two functional negatives after seven reviewed refinements each**. The index labels these outcomes separately and links each set of three Harbor tasks to its tested source, settings, business scores and full trajectory. Some groups have two agents sustaining reciprocal exchange and a third contributing authored work they read; the index distinguishes initial contributions from repeated participation. The [four-domain bundle](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-inputs.zip) is preserved. Use `python3 scripts/export_swarmform_input_matrix.py --accepted --output ../accepted-inputs` to reproduce the selected bundle; add `--all-retained` for supplemental results.
 
-The ordinary exporter uses the current generator; it can differ from a tested input. `--accepted` reconstructs each tested version from its sealed source commit. After `bash scripts/setup-local` and sourcing its environment file, collect that exact version with a fresh identifier and the accepted package option below, then commit and push the new registration before the ordinary `collect` command. This preserves the package’s model, harness, image, budget, input and runtime code; preparation stops if the pinned native runtime or image is unavailable. It does not replace the accepted result.
+`--accepted` reconstructs each tested version from its sealed source. Run `bash scripts/setup-local`, source its environment file, and load the [registered Linux ARM64 image](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmharm-workstation-linux-arm64-86c72305.tar.gz) following the [runtime instructions](docs/running-evals.md#registered-swarmform-runtime). Prepare a fresh identifier below, commit and push the registration, then use the ordinary `collect` command. The original model, harness, image, budget, inputs and runtime code stay bound; the accepted result is preserved.
 
 ```sh
 "$SWARMHARM_HARBOR_ENV/bin/python" scripts/run_swarmform.py prepare \
@@ -26,17 +26,17 @@ Representative Engineering cases include [endpoint publication](https://github.c
 
 The [accepted endpoint negative](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-draft-preview-engineering-content-01-sol61.tar.gz) remains separate: all three agents queried only their own service despite readable drafts. Its seven refinements, partial outputs and original scores are preserved; it is not counted as a successful swarm.
 
-## Continue from main
+## Results and handoff
 
-**Both domains have 25/25 reviewed inputs: 24 sustained-communication cases and one functional negative each.** All 50 are accepted. The download currently contains 48; the two final complete trajectories are published and their input packages are being added. Existing results and original scores stay preserved.
+**Both domains are complete: 25/25 reviewed inputs—24 sustained-communication cases and one functional negative each.** All 50 inputs and their full trajectories are published. Existing results and original scores stay preserved.
 
-Run `python3 scripts/check_swarmform_inputs.py --status` from a checkout of `main`. It summarizes admitted inputs, reviewed behavior, active work and the next cell from the [matrix ledger](docs/live-rollout-status.json). For a reviewed case, follow its trajectory link. For an active run, check its completion record before starting anything. Record the next verified result in the same ledger and push it to `main`.
+Run `python3 scripts/check_swarmform_inputs.py --status` to inspect the [matrix ledger](docs/live-rollout-status.json). Use the accepted bundle for the exact tested inputs; its index links each case to the matching reviewed trajectory. New collections require fresh registrations and do not replace these results.
 
 Knowledge Work source-retention refinements now show sustained authored-report exchange in four IPC configurations. Metadata and state involve all three readers; events and timing have a Juniper–Willow reciprocal core reading Cedar’s contributions. Supplied source appendices receive no authorship credit. In the separate endpoint content negative, Juniper retrieves useful records and completes its work, while the other two remain local. This distinguishes a working route from sustained exchange.
 
 Acceptance requires sustained substantive communication in a connected three-agent group. Recipients may question or reject what they receive; method adoption and business improvement are separate results. A functional environment can also be delivered with a negative result after seven substantive refinements and reviewed retests. [Acceptance criteria](docs/formation-study-design.md#deliverables-and-acceptance-criteria)
 
-## Generate and inspect inputs
+## Develop and inspect inputs
 
 Use Python 3.12. For Docker validation, first run `bash scripts/setup-local` and source the environment file it prints.
 
@@ -46,6 +46,6 @@ python3 scripts/export_swarmform_input_matrix.py --output ../swarmform-input-mat
 python3 scripts/check_swarmform_input_runners.py --cell "shared_ipc/payload_content/Knowledge Work"
 ```
 
-By default the exporter writes the 50 selected packages with 150 Harbor tasks, exact prompts and tools, private arrivals, protected truth and file hashes. `--all-retained` exports the full 100-input catalog. The smaller scope changes selection only; frozen inputs and original scores stay intact. The runner command shows how to validate an individual input without a model call. [Preparing a model rollout](docs/formation-study-design.md#collecting-an-admitted-input)
+Without `--accepted`, the exporter uses current development defaults, which can differ from the tested packages. It writes the 50 selected packages with 150 Harbor tasks, exact prompts and tools, private arrivals, protected truth and file hashes. `--all-retained` exports the full 100-input catalog. The smaller scope changes selection only; frozen inputs and original scores stay intact. The runner command shows how to validate an individual input without a model call. [Preparing a model rollout](docs/formation-study-design.md#collecting-an-admitted-input)
 
 **Keep validation lightweight:** check each transport mechanism once, then the selected business outputs and isolation conditions. `python3 scripts/check-ci --plan` shows checks selected from your changes against `origin/main`. Local push and GitHub use that same selection and run each check once. Documentation needs no Docker or harness installation; operator-witness edits skip historical replay. Use `--full` only for an intentional complete regression. Prior SwarmHarm inputs, successful cases and scores remain available in the [research archive](docs/research/README.md).
