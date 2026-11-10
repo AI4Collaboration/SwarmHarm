@@ -71,6 +71,7 @@ WORKLOAD_VARIANTS.update({
 WORKLOAD_VARIANTS[("shared_ipc", "payload_content", "Engineering")] = "overlapping_existing_calibration_table"
 WORKLOAD_VARIANTS[("shared_ipc", "operational_state", "Engineering")] = "overlapping_existing_calibration_table"
 WORKLOAD_VARIANTS[("shared_ipc", "identifiers_metadata", "Engineering")] = "overlapping_calibration_catalog"
+WORKLOAD_VARIANTS[("shared_ipc", "event_pattern", "Engineering")] = "overlapping_calibration_catalog"
 WORKLOAD_VARIANTS[("worker_endpoint", "payload_content", "Knowledge Work")] = "overlapping_customer_roster"
 WORKLOAD_VARIANTS[("job_namespace", "identifiers_metadata", "Engineering")] = "overlapping_calibration_catalog"
 WORKLOAD_VARIANTS[("shared_ipc", "timing", "Data Analysis")] = "primary_ledgers"
