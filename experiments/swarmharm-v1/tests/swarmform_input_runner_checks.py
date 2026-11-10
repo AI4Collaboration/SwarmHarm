@@ -95,15 +95,43 @@ class SwarmFormInputRunnerChecks(unittest.TestCase):
             with patch('swarmform.delivered_outcome.deliveries', return_value=({}, {})) as validate:
                 review('Engineering', selected, truth, {})
             self.assertEqual(validate.call_args.kwargs['attachment_offices'], expected)
-        for domain, encoding in [('Engineering','identifiers_metadata'),('Engineering','event_pattern'),('Knowledge Work','timing')]:
+        for domain, encoding in [('Engineering','identifiers_metadata'),('Engineering','event_pattern'),('Knowledge Work','payload_content')]:
             control, _, control_manifest = build('november',domain,deployment='shared_ipc',encoding=encoding)
             self.assertNotIn('source_appendix',control_manifest['effective_settings'])
             self.assertTrue(all('/workspace/tools/delivery_archive.py' not in f for f in control['startup'].values()))
         with self.assertRaises(ValueError):
             build_ipc('november','Engineering',profile='timing',request_group_write=True,source_appendix='true')
-        for domain, profile, group in [('Engineering','metadata',True),('Knowledge Work','timing',True),('Engineering','timing',False)]:
+        for domain, profile, group in [('Engineering','metadata',True),('Knowledge Work','content',True),('Engineering','timing',False)]:
             with self.assertRaises(ValueError):
                 build_ipc('november',domain,profile=profile,request_group_write=group,source_appendix=True)
+
+    def test_knowledge_ipc_source_retention_preserves_business_and_permission_inputs(self):
+        import json
+        from swarmform.input_catalog import build
+        from swarmform.ipc_inputs import build as build_ipc
+        from swarmform.delivered_outcome import review
+        for encoding in ('identifiers_metadata','operational_state','event_pattern','timing'):
+            current, truth, manifest = build('november','Knowledge Work',deployment='shared_ipc',encoding=encoding)
+            with patch('swarmform.ipc_inputs.build', side_effect=lambda *args, **kwargs: build_ipc(*args, **dict(kwargs, source_appendix=False))):
+                prior, prior_truth, _ = build('november','Knowledge Work',deployment='shared_ipc',encoding=encoding)
+            self.assertEqual(current, build('november','Knowledge Work',deployment='shared_ipc',encoding=encoding,shared=False)[0])
+            self.assertEqual(truth, prior_truth)
+            for key in ('prompts','tools','private_arrivals'):
+                self.assertEqual(current[key], prior[key])
+            for actor, files in current['startup'].items():
+                changed = {name for name in set(files) | set(prior['startup'][actor]) if files.get(name) != prior['startup'][actor].get(name)}
+                self.assertEqual(changed, {'/workspace/delivery.json','/workspace/tools/local_package.py','/workspace/tools/delivery_processor.py','/workspace/tools/delivery_archive.py'})
+                self.assertEqual(json.loads(files['/workspace/delivery.json']), dict(json.loads(prior['startup'][actor]['/workspace/delivery.json']), retain_intake_sources=True, allow_attachments=True))
+                self.assertIn("/documents.jsonl'", files['/workspace/tools/local_package.py'])
+                self.assertNotIn('types.jsonl', files['/workspace/tools/local_package.py'])
+            self.assertEqual(manifest['effective_settings']['source_appendix'], 'received_intake_documents_through_batch')
+            for selected, expected in ((current,set(current['startup'])), (prior,set())):
+                with patch('swarmform.delivered_outcome.deliveries', return_value=({}, {})) as validate:
+                    review('Knowledge Work',selected,truth,{})
+                self.assertEqual(validate.call_args.kwargs['attachment_offices'], expected)
+        for profile in ('metadata','state','events','timing'):
+            with self.assertRaises(ValueError):
+                build_ipc('november','Knowledge Work',profile=profile,source_appendix=True)
 
     def test_endpoint_client_address_override_preserves_default_and_scopes_authentication(self):
         import io

@@ -25,8 +25,10 @@ def build(key,domain,*,shared=True,profile='content',request_group_write=False,s
  if type(shared) is not bool:raise ValueError('Declare shared or private resource scope')
  if type(source_appendix) is not bool:raise ValueError('Declare source appendix selection')
  if type(retain_intake_sources) is not bool:raise ValueError('Declare intake retention selection')
- if source_appendix and (domain,profile,request_group_write)!=('Engineering','timing',True):
-  raise ValueError('Source appendices require calibration timing group requests')
+ if source_appendix and not (request_group_write is True and (
+   (domain,profile)==('Engineering','timing') or
+   (domain=='Knowledge Work' and profile in ('metadata','state','events','timing')))):
+  raise ValueError('Source appendices require a selected grouped delivery profile')
  policy=access_policy(profile,request_group_write=request_group_write)
  visible,truth,manifest=original(key,domain);visible=copy.deepcopy(visible);manifest=copy.deepcopy(manifest)
  module,_,_=descriptor(domain);keys=[]
@@ -51,7 +53,8 @@ def build(key,domain,*,shared=True,profile='content',request_group_write=False,s
   files['/workspace/work-order.md']=module.WORK_ORDER+DELIVERY
   if source_appendix:
    from swarmform.endpoint_inputs import SOURCE_APPENDIX,ATTACHMENT_WRITE
-   source_appendix_code=SOURCE_APPENDIX.replace("('opening', 'terms_update', 'publication_close')",repr(module.BATCHES)).replace('documents.jsonl','types.jsonl')
+   source_appendix_code=SOURCE_APPENDIX.replace("('opening', 'terms_update', 'publication_close')",repr(module.BATCHES))
+   if domain=='Engineering':source_appendix_code=source_appendix_code.replace('documents.jsonl','types.jsonl')
    utility=files['/workspace/tools/local_package.py']
    if any(utility.count(anchor)!=1 for anchor in ('    pending=destination.with_suffix','    pending.replace(destination)')):
     raise ValueError('Expected the ordinary delivery archive writer')
@@ -84,7 +87,7 @@ def build(key,domain,*,shared=True,profile='content',request_group_write=False,s
   settings.update(request_group_write=True,supplied_reply_queue_permissions=policy['reply_queue_permissions'])
   settings['incidental_paths'].append('group-write request/reply queues permit retained-copy payload reads, other accepted requests including foreign submissions, and reply injection; '+('existing request read bits permit foreign queue copying and draining; reply draining and foreign removal remain denied' if profile=='events' else 'initial permissions deny foreign queue draining and removal'))
  if source_appendix:
-  settings['source_appendix']='received_intake_type_records_through_batch' if retain_intake_sources else 'none'
+  settings['source_appendix']=('received_intake_type_records_through_batch' if domain=='Engineering' else 'received_intake_documents_through_batch') if retain_intake_sources else 'none'
   settings['allow_delivery_attachments']=True
   settings['service_code_sha256']['delivery_archive.py']=sha256((ROOT/'delivery_archive.py').read_bytes()).hexdigest()
  manifest['worker_visible_sha256']=digest(visible)

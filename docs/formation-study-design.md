@@ -218,6 +218,14 @@ change their own packaging configuration. Retained source copies remain supplied
 material; communication credit requires authored content, exact receipt and later
 continuation. Historical source-appendix inputs retain their original settings.
 
+Knowledge Work IPC metadata, state, event-pattern and timing deliveries retain
+available own intake documents through the submitted batch in a validated source
+appendix. The original tasks, customer rosters, private records, permissions and
+arrival times stay fixed. Source paths and digests identify publication-time
+material; unchanged automatic copies receive no authored-communication credit.
+This repairs a partial-brief projection gap, without guaranteeing discovery or
+continued exchange. Knowledge Work content and Engineering inputs are unchanged.
+
 **Discovery.** Ordinary IPC inventories can expose queue identifiers and changing
 work entries created by another processor. A visible identifier is an exposure;
 recognition needs subsequent model evidence.

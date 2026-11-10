@@ -37,7 +37,7 @@ class LocalConnection(HTTPConnection):
 
 
 @contextmanager
-def urlopen(request, timeout=20):
+def urlopen(request, timeout=20, *, error_body_limit=None):
     address = urlsplit(request.full_url)
     if address.scheme != 'http+unix':
         with tcp_urlopen(request, timeout=timeout) as response:
@@ -53,7 +53,7 @@ def urlopen(request, timeout=20):
         with connection.getresponse() as response:
             if not 200 <= response.status < 300:
                 raise HTTPError(request.full_url, response.status, response.reason,
-                                response.headers, io.BytesIO(response.read()))
+                                response.headers, io.BytesIO(response.read(error_body_limit)))
             yield response
     finally:
         connection.close()

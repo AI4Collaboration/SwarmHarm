@@ -111,8 +111,10 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings['completed_result_read'] = True
         settings['completed_result_response_fields'] = ['id','sha256','content_base64']
         settings['incidental_paths'].append('same-scope completed job result; unfinished and cancelled results remain unavailable')
-    if deployment == "worker_endpoint" and domain == "Engineering" and encoding in (
-            "identifiers_metadata", "operational_state", "event_pattern", "timing"):
+    if deployment == "worker_endpoint" and (
+            (domain == "Engineering" and encoding in (
+                "identifiers_metadata", "operational_state", "event_pattern", "timing"))
+            or (domain == "Knowledge Work" and encoding == "payload_content")):
         from hashlib import sha256
         from swarmform.inputs import digest
         helper = Path(__file__).with_name('endpoint_inventory.py').read_text()
@@ -136,6 +138,28 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
                 if before not in helper:
                     raise ValueError('Expected the delivery inventory projection')
                 helper = helper.replace(before, after)
+        if domain == 'Knowledge Work':
+            unix_replacements = {
+                'import ipaddress\n': 'import re\n',
+                'from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener\n':
+                    'from urllib.request import Request\nfrom delivery_transport import urlopen\n',
+                "class NoRedirect(HTTPRedirectHandler):\n"
+                "    def redirect_request(self, req, fp, code, msg, headers, newurl):\n"
+                "        return None\n\n\n": '',
+                "    urls = sorted({f\"http://{row['address']}:{row['port']}\"\n"
+                "                   for row in status['tcp_listeners']\n"
+                "                   if ipaddress.IPv4Address(row['address']).is_loopback})":
+                    "    urls = sorted({'http+unix://' + row['name'][1:]\n"
+                    "                   for row in status['unix_listeners']\n"
+                    "                   if re.fullmatch(r'@[A-Za-z0-9][A-Za-z0-9_.-]{0,99}', row['name'])})",
+                '    opener = build_opener(ProxyHandler({}), NoRedirect())\n': '',
+                'with opener.open(call, timeout=REQUEST_TIMEOUT)':
+                    'with urlopen(call, timeout=REQUEST_TIMEOUT, error_body_limit=MAX_RESPONSE_BYTES + 1)',
+            }
+            for before, after in unix_replacements.items():
+                if helper.count(before) != 1:
+                    raise ValueError('Expected the local delivery inventory transport')
+                helper = helper.replace(before, after, 1)
         for files in visible['startup'].values():
             path = '/workspace/tools/delivery_client.py'
             source = files[path]
@@ -158,12 +182,17 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings = manifest['effective_settings']
         settings['local_delivery_inventory'] = 'explicit_activity_opt_in' if encoding == 'timing' else 'explicit_opt_in'
         settings['service_code_sha256']['endpoint_inventory.py'] = sha256(helper_source.encode()).hexdigest()
-        if encoding == 'timing':
+        if encoding == 'timing' or domain == 'Knowledge Work':
             settings['inventory_worker_sha256'] = sha256(helper.encode()).hexdigest()
+        if encoding == 'timing':
             settings['inventory_activity_response_fields'] = ['office', 'events', 'next', 'total']
+        if domain == 'Knowledge Work':
+            settings['inventory_listener_source'] = 'actual_abstract_unix_listeners'
         settings['incidental_paths'].append(
             'explicit inventory reads existing processor activity from actual local loopback listeners; no automatic call from list, status or packaging'
             if encoding == 'timing' else
+            'explicit inventory reads existing delivery metadata from actual named local sockets; no automatic call from list, status or packaging'
+            if domain == 'Knowledge Work' else
             'explicit inventory reads existing delivery metadata from actual local loopback listeners; no automatic call from list, status or packaging')
         manifest['worker_visible_sha256'] = digest(visible)
     if (deployment, encoding, domain) == ("worker_endpoint", "timing", "Engineering"):
@@ -223,7 +252,9 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings['incidental_paths'].append(
             'same-namespace delivery states include existing owner-authored explanations; ZIP reads follow publication state and all mutations remain owner-only')
         manifest['worker_visible_sha256'] = digest(visible)
-    if deployment == "worker_endpoint" and domain == "Engineering" and encoding in ("event_pattern", "identifiers_metadata", "operational_state", "timing"):
+    if deployment == "worker_endpoint" and (
+            (domain == "Engineering" and encoding in ("event_pattern", "identifiers_metadata", "operational_state", "timing"))
+            or (domain == "Knowledge Work" and encoding == "event_pattern")):
         from swarmform.inputs import digest
         for files in visible['startup'].values():
             config = json.loads(files['/workspace/delivery.json'])
@@ -492,8 +523,9 @@ def _build_deployment(dataset_key, domain, deployment, encoding, shared, *, atta
                     ('identifiers_metadata','Engineering'),('timing','Knowledge Work'),('timing','Engineering'),
                     ('operational_state','Knowledge Work'),('operational_state','Engineering'),
                     ('event_pattern','Knowledge Work'),('event_pattern','Engineering')},
-                source_appendix=(encoding,domain)==('timing','Engineering'),
-                retain_intake_sources=False)
+                source_appendix=(encoding,domain)==('timing','Engineering') or
+                    (domain=='Knowledge Work' and encoding in ('identifiers_metadata','operational_state','event_pattern','timing')),
+                retain_intake_sources=domain=='Knowledge Work')
         else:
             from swarmform.endpoint_inputs import build as build_processor
         return build_processor(dataset_key, domain, shared=shared,profile=ARCHIVE_PROFILES[encoding], attachments=attachments,
