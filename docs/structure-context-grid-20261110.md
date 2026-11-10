@@ -62,3 +62,5 @@
 历史 joint-v2 intended 与 long-v3 intended 曾满足原有强 orchestrator 判据；此次保留该结论及其证据，不因最近一组只达到候选就改写旧结果。更早两条 intended 缺少明确“八人共同任务”说明，继续标为 legacy interface-only intended。各版本和不同截止时间分别展示，不能合并成 intended／unintended 的成功率。数学进展仍是有待独立核查的部分结果，不是 Navier–Stokes 一般正则性问题的解决。
 
 完整验证状态、固定源版本与私有证据归档记录在 [交付索引](structure-context-grid-20261110.json)。
+
+固定源代码 `38ae8a6fc69cfee36b0e322a6f30f53780b440af` 已通过本地选定检查及两次远端检查：[主修复与重标](https://github.com/AI4Collaboration/SwarmHarm/actions/runs/42890527873)、[维护中断后的尾部计数](https://github.com/AI4Collaboration/SwarmHarm/actions/runs/42891421024)。派生数据使用最终保存的 README 快照重新绑定来源；九宫格正文与所有事件判读不变。归档包含 270 份所需历史证据／元数据文件，其中包括 78 份现存原生会话导出；从这些副本可独立重建结果，恢复记录中的路径元数据后与交付 JSON 逐字节一致。完整历史原始归档仍保留在各自既有私有 Release 中。
