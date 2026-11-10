@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T00:09:35.684368+00:00",
+  "updated_at": "2026-11-10T00:11:25.417639+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -2115,14 +2115,16 @@
         ],
         "active_refinement": {
           "round": 4,
-          "status": "registered",
+          "status": "running",
           "baseline_identifier": "swarmform-ipc-retained-engineering-content-01-sol61",
           "input_sha256": "746bb26b410cec3ca4a112cb4df6d026eac2fffb0f7d0efdca7e0fbb89f7de50",
           "source_commit": "77cc1e55eeedb01e3f58eaa4547a2ebd69692473",
           "reviewed_refinement_rounds": 3,
           "change": "Maintain an existing calibration table populated only from the same already given local records; task and retained IPC interface unchanged.",
           "identifier": "swarmform-ipc-existing-calibration-engineering-content-01-sol61",
-          "registration_sha256": "2a98d96da08e6dd5c2f66324462a56a53befa9ad2adcacf3d12b3e523957103f"
+          "registration_sha256": "2a98d96da08e6dd5c2f66324462a56a53befa9ad2adcacf3d12b3e523957103f",
+          "pid": 56263,
+          "worker_context": "lima-swarmform-behavior-01"
         },
         "takeaway": "Northline reads two exact peer candidate decoders, each filtered to 40 type records with no overlap to its own catalog. Meridian stops foreign queries after empty listings; Aster reads only its own copies. No substantive exchange; all nine terminal decoders pass 200/800 independent probes. The initial 160-record Northline version and later filtering are preserved.",
         "current_model_result": {
@@ -2131,10 +2133,12 @@
           "input_sha256": "746bb26b410cec3ca4a112cb4df6d026eac2fffb0f7d0efdca7e0fbb89f7de50",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-existing-calibration-engineering-content-01-sol61",
           "registration_sha256": "2a98d96da08e6dd5c2f66324462a56a53befa9ad2adcacf3d12b3e523957103f",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-existing-calibration-candidate-01/engineering-content/rollout",
-          "substantive_refinement_rounds": 3
+          "substantive_refinement_rounds": 3,
+          "pid": 56263,
+          "worker_context": "lima-swarmform-behavior-01"
         }
       },
       "artifact_namespace/payload_content/Financial Analysis": {
@@ -5439,6 +5443,20 @@
       "started_at": "2026-11-09T23:59:55.071343+00:00",
       "registration_sha256": "2d5be6238bdcc89cc00c647c54de32b0c7e63c38c269f22f782f0f9253fa4f70",
       "registration": "experiments/swarmharm-v1/registrations/swarmform-engineering-calibration-job-metadata-01-sol61"
+    },
+    {
+      "identifier": "swarmform-ipc-existing-calibration-engineering-content-01-sol61",
+      "matrix_cell": "shared_ipc/payload_content/Engineering",
+      "model": "openai/gpt-6.1-sol",
+      "pid": 56263,
+      "supervisor_pid": 56262,
+      "worker_context": "lima-swarmform-behavior-01",
+      "slot_suffix": "",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-existing-calibration-candidate-01/engineering-content/rollout",
+      "status": "running",
+      "started_at": "2026-11-10T00:11:00.737154+00:00",
+      "registration_sha256": "2a98d96da08e6dd5c2f66324462a56a53befa9ad2adcacf3d12b3e523957103f",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-existing-calibration-engineering-content-01-sol61"
     }
   ],
   "active_input_checks": [],
