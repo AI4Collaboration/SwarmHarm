@@ -125,7 +125,10 @@ def select_checks(files, full=False):
             elif stem in {'delivery_archive', 'delivered_outcome'}:
                 suites('swarmform_package', 'swarmform_domain', 'swarmform_delivery_state',
                        'swarmform_archive_outcome')
-            elif stem in {'ipc_status', 'ipc_queue', 'ipc_processor'}:
+            elif stem == 'ipc_deployment':
+                suites('swarmform_registration', 'swarmform_input_runner', 'swarmform_collection')
+                checks.update(('inputs', 'catalog', 'wording'))
+            elif stem in {'ipc_status', 'ipc_queue', 'ipc_processor', 'ipc_policy'}:
                 suites('swarmform_input_runner', 'swarmform_registration')
                 checks.add('wording')
             else:

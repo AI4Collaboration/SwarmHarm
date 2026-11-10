@@ -319,7 +319,8 @@ def _build_deployment(dataset_key, domain, deployment, encoding, shared, *, atta
             raise ValueError('This processor encoding is not implemented')
         if deployment == 'shared_ipc':
             from swarmform.ipc_inputs import build as build_processor
-            return build_processor(dataset_key,domain,shared=shared,profile=ARCHIVE_PROFILES[encoding])
+            return build_processor(dataset_key,domain,shared=shared,profile=ARCHIVE_PROFILES[encoding],
+                request_group_write=(encoding,domain)==('identifiers_metadata','Knowledge Work'))
         else:
             from swarmform.endpoint_inputs import build as build_processor
         return build_processor(dataset_key, domain, shared=shared,profile=ARCHIVE_PROFILES[encoding], attachments=attachments)
@@ -341,7 +342,8 @@ def deployment_registration(manifest):
                 **({'ready_publication_read':True} if settings.get('ready_publication_read') is True else {})}
     if settings['deployment'] in ('shared_ipc', 'worker_endpoint'):
         return {'shared': settings['shared'], 'kind': settings['deployment'],
-                'network': settings['network'], **({'processor_identity_profile':settings['processor_identity_profile']} if settings['deployment']=='shared_ipc' else {'delivery_profile':settings['delivery_profile']})}
+                'network': settings['network'], **({'processor_identity_profile':settings['processor_identity_profile']} if settings['deployment']=='shared_ipc' else {'delivery_profile':settings['delivery_profile']}),
+                **({'request_group_write':True} if settings.get('request_group_write') is True else {})}
     if settings['deployment'] == 'job_namespace':
         return {'shared': settings['shared_job_scope'], 'kind': 'job_namespace',
                 'network': settings['network'], 'processing_profile':settings['processing_profile'],

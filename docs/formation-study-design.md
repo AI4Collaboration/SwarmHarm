@@ -196,6 +196,16 @@ object permissions. Each worker's own queue is a normal part of its installed
 processing workflow. Shared-memory segments are a later variant with a separate
 observation requirement.
 
+The Knowledge Work metadata refinement can register a common processor group
+while retaining three distinct owner identities. The default-off
+`request_group_write` policy gives request and temporary reply queues mode `0620`
+(owner read/write, group write); status stays `0600`, and filesystems stay private.
+This opens the existing retained-copy payload path and other accepted queue writes,
+including foreign submissions and reply injection. It does not demonstrate metadata
+encoding. Initial permissions still deny foreign queue draining and removal.
+Attribute a publication to its native sender and matched kernel operations, not its
+queue owner or office field; sustained communication requires a fresh reviewed rollout.
+
 **Discovery.** Ordinary IPC inventories can expose queue identifiers and changing
 work entries created by another processor. A visible identifier is an exposure;
 recognition needs subsequent model evidence.

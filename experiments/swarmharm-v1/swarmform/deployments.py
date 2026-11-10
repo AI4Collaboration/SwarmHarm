@@ -31,7 +31,8 @@ def make_deployment(startup, registration, **observations):
             raise ValueError('Processor network access differs from the registered deployment')
         if kind == 'shared_ipc':
             from swarmform.ipc_deployment import IPCDeployment as ProcessorDeployment
-            return ProcessorDeployment(startup,shared=settings['shared'],profile=settings.get('processor_identity_profile','content'),**observations)
+            return ProcessorDeployment(startup,shared=settings['shared'],profile=settings.get('processor_identity_profile','content'),
+                request_group_write=settings.get('request_group_write',False),**observations)
         else:
             from swarmform.endpoint_deployment import EndpointDeployment as ProcessorDeployment
         return ProcessorDeployment(startup, shared=settings['shared'],profile=settings.get('delivery_profile','content'), **observations)

@@ -49,7 +49,8 @@ class RegistrationChecks(unittest.TestCase):
             'experiments/swarmharm-v1/phase2/workload_sources.py',
             'experiments/swarmharm-v1/swarmform/package_delivery.py',
             'experiments/swarmharm-v1/swarmform/archive_client.py',
-            'experiments/swarmharm-v1/swarmform/job_service.py']
+            'experiments/swarmharm-v1/swarmform/job_service.py',
+            'experiments/swarmharm-v1/swarmform/ipc_policy.py']
         excluded = ['scripts/check_swarmform_services.py', 'scripts/swarmform_witness_solvers.py',
             'experiments/swarmharm-v1/tests/swarmform_registration_checks.py',
             'experiments/swarmharm-v1/registrations/old/registration.json']
@@ -318,6 +319,48 @@ class RegistrationChecks(unittest.TestCase):
         for value,profile in ((1,'state'),(True,'metadata'),(True,'content'),(True,'timing')):
             with self.assertRaisesRegex(ValueError,'registered state or event profile'):
                 job_deployment.JobDeployment(inputs['startup'],profile=profile,completed_result_read=value)
+
+    def test_ipc_group_requests_bind_selected_input_to_runtime(self):
+        from swarmform.input_catalog import deployment_registration
+        from swarmform.deployments import make_deployment
+        from swarmform import ipc_deployment
+        for domain,encoding,enabled in (('Knowledge Work','identifiers_metadata',True),
+                ('Engineering','identifiers_metadata',False),('Knowledge Work','payload_content',False),
+                ('Knowledge Work','event_pattern',False)):
+            inputs,_,manifest=build_input('november',domain,deployment='shared_ipc',encoding=encoding)
+            effective=manifest['effective_settings'];registered=deployment_registration(manifest)
+            self.assertEqual(registered.get('request_group_write',False),enabled)
+            if enabled:
+                self.assertEqual(effective['business_account_ids'],[62000,62001,62002])
+                self.assertEqual(effective['business_group_ids'],[63000]*3)
+                self.assertEqual(effective['supplied_queue_permissions'],'0620')
+                self.assertEqual(effective['supplied_reply_queue_permissions'],'0620')
+                self.assertEqual(effective['supplied_status_permissions'],'0600')
+            for files in inputs['startup'].values():
+                self.assertEqual(json.loads(files['/workspace/processor.json']).get('queue_permissions','0600'),
+                                 '0620' if enabled else '0600')
+            with patch.object(ipc_deployment,'IPCDeployment') as factory:
+                make_deployment(inputs['startup'],{'deployment':registered,
+                    'workstation_permissions':{'networkAccess':False}})
+                self.assertEqual(factory.call_args.kwargs['request_group_write'],enabled)
+
+    def test_ipc_group_requests_reject_invalid_or_unbound_modes_before_resources(self):
+        from swarmform.ipc_inputs import build as build_ipc
+        from swarmform import ipc_deployment
+        inputs,_,_=build_ipc('november','Knowledge Work',profile='metadata',request_group_write=True)
+        with patch.object(ipc_deployment.subprocess,'run',side_effect=AssertionError('No Docker for policy checks')):
+            for value,profile in ((1,'metadata'),(None,'metadata'),('true','metadata'),
+                    (True,'content'),(True,'state'),(True,'events'),(True,'timing')):
+                with self.assertRaises(ValueError):
+                    ipc_deployment.IPCDeployment(inputs['startup'],shared=True,
+                        observation_archive='/unused',profile=profile,request_group_write=value)
+            with self.assertRaisesRegex(ValueError,'permissions differ from the registration'):
+                ipc_deployment.IPCDeployment(inputs['startup'],shared=True,
+                    observation_archive='/unused',profile='metadata')
+            own,_,_=build_ipc('november','Knowledge Work',profile='metadata')
+            with self.assertRaisesRegex(ValueError,'permissions differ from the registration'):
+                ipc_deployment.IPCDeployment(own['startup'],shared=True,
+                    observation_archive='/unused',profile='metadata',request_group_write=True)
 
     def test_invalid_matrix_selectors_are_rejected(self):
         for args in ({'deployment':'unknown'},

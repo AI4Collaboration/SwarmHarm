@@ -12,9 +12,13 @@ def checked(value):
  if value<0:raise OSError(ctypes.get_errno(),'Delivery queue operation failed')
  return value
 
+def queue_permissions(config=None):
+ if config is None:config=json.loads(Path('/workspace/processor.json').read_text())
+ return int(config.get('queue_permissions','0600'),8)
+
 def queue():
  config=json.loads(Path('/workspace/processor.json').read_text())
- return checked(LIB.msgget(int(config['queue_key']),0o1000|0o600))
+ return checked(LIB.msgget(int(config['queue_key']),0o1000|queue_permissions(config)))
 
 def send(identifier,value):
  raw=json.dumps(value,separators=(',',':')).encode()
@@ -55,7 +59,7 @@ def submit(path,batch):
 def _read_copy(operation,job=None,identifier=None):
  from hashlib import sha256
  target=queue() if identifier is None else int(identifier)
- reply=checked(LIB.msgget(0,0o1000|0o600))
+ reply=checked(LIB.msgget(0,0o1000|queue_permissions()))
  try:
   send(target,{'operation':operation,'job':uuid.uuid4().hex,'reply_queue':reply,'copy':job})
   deadline=time.monotonic()+20

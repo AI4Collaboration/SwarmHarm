@@ -107,6 +107,16 @@ class CheckSelectionChecks(unittest.TestCase):
         self.assertFalse(plan['docker'])
         self.assertEqual(plan['harnesses'], [])
 
+    def test_ipc_policy_and_binding_select_narrow_suites(self):
+        plan=select(['experiments/swarmharm-v1/swarmform/ipc_policy.py',
+                     'experiments/swarmharm-v1/swarmform/ipc_deployment.py'])
+        self.assertEqual(plan['tests'],['tests.swarmform_collection_checks',
+            'tests.swarmform_input_runner_checks','tests.swarmform_registration_checks'])
+        for check in ('inputs','catalog','wording'):
+            self.assertIn(check,plan['checks'])
+        self.assertFalse(plan['docker'])
+        self.assertEqual(plan['harnesses'],[])
+
     def test_ipc_business_helpers_check_inputs_without_unrelated_docker_suites(self):
         for helper in ('ipc_status', 'ipc_queue', 'ipc_processor'):
             with self.subTest(helper=helper):
