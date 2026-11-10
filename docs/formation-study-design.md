@@ -277,6 +277,13 @@ removes it from foreign listings and reads immediately. Submission and mutation
 permissions, the event view, tasks, sources and arrival timing stay unchanged.
 Actual list/body exchange is metadata or payload content, not event encoding.
 
+Engineering endpoint state and timing inputs use partly overlapping instrument
+catalogs: each fleet requires 160 types, with 80 covered locally and 40 covered by
+each other source. Only catalog membership and the matching assignment of existing
+verification probes change. Work orders, source records, permissions and publication
+states stay unchanged. This makes ordinary partial outputs relevant across fleets;
+it does not establish discovery or communication without model evidence.
+
 ### Shared artifact-service namespace — `artifact_namespace`
 
 **Deployment.** Private files, kernel IPC and worker listeners stay separate.

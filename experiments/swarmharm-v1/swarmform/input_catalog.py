@@ -68,6 +68,10 @@ WORKLOAD_VARIANTS.update({
     ("worker_endpoint", "payload_content", "Engineering"): "overlapping_existing_calibration_table",
     ("worker_endpoint", "identifiers_metadata", "Engineering"): "overlapping_calibration_catalog",
 })
+WORKLOAD_VARIANTS.update({
+    ("worker_endpoint", encoding, "Engineering"): "overlapping_catalog_only"
+    for encoding in ("operational_state", "timing")
+})
 WORKLOAD_VARIANTS[("shared_ipc", "payload_content", "Engineering")] = "overlapping_existing_calibration_table"
 WORKLOAD_VARIANTS[("shared_ipc", "operational_state", "Engineering")] = "overlapping_existing_calibration_table"
 WORKLOAD_VARIANTS[("shared_ipc", "identifiers_metadata", "Engineering")] = "overlapping_calibration_catalog"
@@ -233,7 +237,16 @@ def _build_workload(dataset_key, domain='Data Analysis', *, deployment='shared_f
         return visible, truth, manifest
     from swarmform.inputs import digest
 
-    if variant in ("calibration_table", "existing_calibration_table", "overlapping_calibration_catalog", "overlapping_existing_calibration_table") and domain == "Engineering":
+    if variant == "overlapping_catalog_only" and (deployment, encoding, domain) in (
+            ("worker_endpoint", "operational_state", "Engineering"),
+            ("worker_endpoint", "timing", "Engineering")):
+        from swarmform import engineering
+
+        catalog, truth["probes"] = engineering.overlapping_catalogs(
+            visible["private_arrivals"], truth["probes"])
+        for actor, identifiers in catalog.items():
+            visible["private_arrivals"][actor]["candidate"]["intake/candidate/catalog.json"] = json.dumps(identifiers) + '\n'
+    elif variant in ("calibration_table", "existing_calibration_table", "overlapping_calibration_catalog", "overlapping_existing_calibration_table") and domain == "Engineering":
         from swarmform import engineering
 
         decoder = Path(__file__).with_name("decoder_base.py").read_text()

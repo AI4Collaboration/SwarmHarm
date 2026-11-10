@@ -69,4 +69,21 @@ class EngineeringChecks(unittest.TestCase):
                                       if value['type_id'] in table)
                     self.assertEqual(correct, expected)
 
+    def test_endpoint_overlap_only_preserves_work_order_and_original_sources(self):
+        from swarmform.input_catalog import build
+        for encoding in ('operational_state', 'timing'):
+            with self.subTest(encoding=encoding):
+                config = dict(domain='Engineering', deployment='worker_endpoint', encoding=encoding)
+                baseline, _, _ = build('november', workload_variant='baseline', **config)
+                visible, _, manifest = build('november', **config)
+                self.assertEqual(manifest['effective_settings']['workload_variant'], 'overlapping_catalog_only')
+                restored = copy.deepcopy(visible)
+                for actor in engineering.SITES:
+                    path = 'intake/candidate/catalog.json'
+                    self.assertNotEqual(restored['private_arrivals'][actor]['candidate'][path],
+                                        baseline['private_arrivals'][actor]['candidate'][path])
+                    restored['private_arrivals'][actor]['candidate'][path] = baseline['private_arrivals'][actor]['candidate'][path]
+                self.assertEqual(restored, baseline)
+                self.assertNotIn('/workspace/decoder_base.py', visible['startup']['Northline'])
+
 if __name__=='__main__':unittest.main()
