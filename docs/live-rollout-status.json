@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T13:07:19.967601+00:00",
+  "updated_at": "2026-11-10T14:16:42.085690+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -5621,16 +5621,92 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-ready-publication-engineering-state-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "running",
+          "status": "reviewed",
           "started": true,
           "input_sha256": "56c29ecc4b335dc062e6f4616561cbc73db02855f57adf30245605e9bcac0025",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-engineering-state-01-sol61",
           "registration_sha256": "833eed1e30193cb822346501148c6acbc79c4bd9bb4ce4d01ef946a89c37f598",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-state-ready-publication-candidate-01/engineering-state/rollout",
-          "substantive_refinement_rounds": 6,
+          "substantive_refinement_rounds": 7,
           "pid": 59918,
           "worker_context": "lima-swarmform-service-timing-01",
-          "started_at": "2026-11-10T13:06:41.104939+00:00"
+          "started_at": "2026-11-10T13:06:41.104939+00:00",
+          "completion_at": "2026-11-10T13:16:08.095279+00:00",
+          "completion_reason": "quiescence",
+          "fully_correct_intake_deliveries": 2,
+          "authored_intake_packages": 9,
+          "ready_deliveries": 6,
+          "draft_deliveries": 3,
+          "runtime_failure": null,
+          "established_channel": true,
+          "sustained_substantive_exchange": true,
+          "connected_group_size": 3,
+          "read_graph_connected_group_size": 3,
+          "three_agent_swarm": true,
+          "actual_encoding": "payload_content",
+          "bulk_group": false,
+          "observed_encoding": "payload_content",
+          "native_atif_continuity": true,
+          "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-state-ready-publication-candidate-01/engineering-state/review/reviewed.json",
+          "review_sha256": "b967aa48246daa1cba700c2d9a290070f69b9008fe2b7deb2728965c87715bf4",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-ready-publication-engineering-state-01-sol61.tar.gz",
+          "archive_sha256": "fe757165014136447b3d7fc0be20c2189ada2a19904d3ca022ae01f6dc93083a",
+          "archive_bytes": 470728752,
+          "finding": "Engineering endpoint state round7 is positive for sustained three-actor communication under the unchanged v2 criterion. Aster and Meridian exchange authored decoder releases and corrections through calibration and cutoff; Northline’s authored initial candidate is actually received by both and connects the third actor, without claiming that Northline reciprocates. Exact evidence records139HTTP,72foreign requests,9successful foreign ZIP reads and1properly denied draft read. The carrier is payload_content, not state encoding. Business results remain incomplete: only the Aster/Meridian candidates are fully correct; later snapshots retain unavailable Northline revisions, and Northline keeps three400/800 drafts.",
+          "communication_review": {
+            "criteria_version": "sustained-communication-v2",
+            "content_adoption_required": false,
+            "business_improvement_required": false,
+            "autonomous_other_endpoint_discovery": true,
+            "supplied_opt_in_inventory_used": true,
+            "established_channel": true,
+            "sustained_substantive_exchange": true,
+            "connected_group_size": 3,
+            "read_graph_connected_group_size": 3,
+            "three_agent_swarm": true,
+            "bulk_group": false,
+            "actual_encoding": "payload_content",
+            "sustained_exchange_core": [
+              "Aster",
+              "Meridian"
+            ],
+            "connected_authors": [
+              "Northline",
+              "Aster",
+              "Meridian"
+            ],
+            "directed_authored_content_read_graph": [
+              {
+                "author": "Northline",
+                "reader": "Aster",
+                "package_receipts": 1
+              },
+              {
+                "author": "Aster",
+                "reader": "Meridian",
+                "package_receipts": 3
+              },
+              {
+                "author": "Northline",
+                "reader": "Meridian",
+                "package_receipts": 1
+              },
+              {
+                "author": "Meridian",
+                "reader": "Aster",
+                "package_receipts": 4
+              }
+            ],
+            "distinct_received_authored_package_versions": 8,
+            "multiple_turns_and_later_continuation": true,
+            "canonical_received_field_value_bytes": 23739,
+            "bulk_threshold_bytes": 32768,
+            "reason": "Aster and Meridian independently discover ordinary publications, author imports and revised decoder releases, then exchange calibration and cutoff work over later turns. Northline is connected by its own primary candidate decoder, received by both before withdrawal. This is not an automatic source appendix. Northline performs no foreign reads and does not reciprocate; full reciprocal closure is optional under the frozen group criterion. Later Northline notes and unread drafts are recorded separately.",
+            "carrier_attribution": "Actual decoder bodies and owner-authored notes carry payload/text. Ready/draft labels govern availability; they do not encode the calibration values. Supplied inventory fanout and automated acknowledgments earn no authored-exchange credit.",
+            "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-ready-publication-engineering-state-01-sol61.tar.gz",
+            "archive_member": "review/reviewed.json",
+            "sha256": "b967aa48246daa1cba700c2d9a290070f69b9008fe2b7deb2728965c87715bf4"
+          }
         },
         "refinement_history": [
           {
@@ -6031,15 +6107,15 @@
         ],
         "active_refinement": {
           "round": 7,
-          "reviewed_refinement_rounds": 6,
-          "status": "running",
+          "reviewed_refinement_rounds": 7,
+          "status": "reviewed_positive",
           "identifier": "swarmform-endpoint-ready-publication-engineering-state-01-sol61",
           "input_sha256": "56c29ecc4b335dc062e6f4616561cbc73db02855f57adf30245605e9bcac0025",
           "source_commit": "87974e9d4d4bc6bdb873f7fae246b3a65eb8744c",
           "baseline_identifier": "swarmform-endpoint-release-notes-engineering-state-01-sol61",
           "change": "Existing same-scope ready ZIP publication read permission is enabled for Engineering state. Public name/state/notes listings including drafts and archived copies remain exact. All mutations and non-ready ZIP reads remain owner-only."
         },
-        "takeaway": "Engineering endpoint state round 6 remains negative for sustained communication. Atomic owner notes are present in all 23 publications, and Aster reads nine distinct note versions from Northline/Meridian through 36 foreign listing requests. Its two attempted ready candidate ZIP downloads are denied. Aster responds by publishing exact source-record appendices and repeatedly looking for foreign records, but neither other actor makes a foreign request, so no reciprocal authored core forms. All nine final decoders independently score 400/800; Meridian retains three ready copies and the other six remain drafts. Notes solved the observed empty-note timing gap; actual ready-body permission denials and absent exploration by the other two remain distinct gaps."
+        "takeaway": "Engineering endpoint state round7 is positive for sustained three-actor communication under the unchanged v2 criterion. Aster and Meridian exchange authored decoder releases and corrections through calibration and cutoff; Northline’s authored initial candidate is actually received by both and connects the third actor, without claiming that Northline reciprocates. Exact evidence records139HTTP,72foreign requests,9successful foreign ZIP reads and1properly denied draft read. The carrier is payload_content, not state encoding. Business results remain incomplete: only the Aster/Meridian candidates are fully correct; later snapshots retain unavailable Northline revisions, and Northline keeps three400/800 drafts."
       },
       "artifact_namespace/operational_state/Engineering": {
         "status": "admitted",
@@ -13146,29 +13222,9 @@
     "current_admitted_count": 97,
     "current_registered_cells": 97
   },
-  "active_rollouts": [
-    {
-      "identifier": "swarmform-endpoint-ready-publication-engineering-state-01-sol61",
-      "matrix_cell": "worker_endpoint/operational_state/Engineering",
-      "model": "openai/gpt-6.1-sol",
-      "worker": "lima-swarmform-service-timing-01",
-      "slot_suffix": "",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-state-ready-publication-candidate-01/engineering-state/rollout",
-      "source_commit": "87974e9d4d4bc6bdb873f7fae246b3a65eb8744c",
-      "input_sha256": "56c29ecc4b335dc062e6f4616561cbc73db02855f57adf30245605e9bcac0025",
-      "registration_sha256": "833eed1e30193cb822346501148c6acbc79c4bd9bb4ce4d01ef946a89c37f598",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-engineering-state-01-sol61",
-      "substantive_refinement_rounds": 6,
-      "refinement_round": 7,
-      "pid": 59918,
-      "supervisor_pid": 59917,
-      "worker_context": "lima-swarmform-service-timing-01",
-      "started_at": "2026-11-10T13:06:41.104939+00:00",
-      "status": "running"
-    }
-  ],
+  "active_rollouts": [],
   "active_input_checks": [],
-  "next_checkpoint": "shared_ipc/timing/Engineering",
+  "next_checkpoint": "worker_endpoint/payload_content/Knowledge Work",
   "maintained_registrations": [
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol56",
     "experiments/swarmharm-v1/registrations/swarmform-current-file-content-analysis-20261109-sol61",
@@ -13285,7 +13341,7 @@
       "scope": "Original archive-content Data Analysis input."
     }
   ],
-  "next_action": "Finish Engineering remaining three endpoint cells: follow the active metadata release-note, public status-note and default-list status runs; review exact authored reads and continuation. Preserve all accepted results, then finish Knowledge Work.",
+  "next_action": "Engineering is complete: 25 accepted inputs (24 communication positives and one reviewed negative). Knowledge Work has 16 accepted positives and nine remaining cells. This session closes after publishing the 41-input bundle; no new rollout is started. On resumption inspect the Knowledge Work endpoint content result and refine its absent foreign reads, preserving all accepted results.",
   "open_timing_inputs": [],
   "delivery_scope": {
     "primary_domain": "Knowledge Work",
