@@ -10,7 +10,7 @@ from tempfile import TemporaryDirectory
 from swarmform_scope import selected_cells, role, communication_result
 
 
-PACKAGE_README = '# SwarmForm inputs\n\nEach row of index.json is one accepted environment. Its directory contains the exact workstation inputs, protected business truth, three Harbor tasks, effective input manifest and sealed model registration. The source directory identifies the matching runtime. The trajectory link and SHA-256 identify the case reviewed for that input.\n\nAll included observations use three Sol 6.1 agents through Codex and AxonHub. The index reports sustained communication, bulk exchange and correct business deliveries separately. Recipients may challenge or decline to use received information; content adoption and business improvement are not communication requirements. Credentials and protected truth belong on the operator host. Use the project running guide and register a fresh identifier for a new collection.\n'
+PACKAGE_README = '# SwarmForm inputs\n\nEach row of index.json is one accepted environment. Its directory contains the exact workstation inputs, protected business truth, three Harbor tasks, effective input manifest and sealed model registration. The source directory identifies the matching runtime. The trajectory link and SHA-256 identify the case reviewed for that input.\n\nAcceptance is labeled as sustained communication or a functional negative after at least seven substantive refinements and reviewed retests. A negative is not a successful swarm. All included observations use three Sol 6.1 agents through Codex and AxonHub. The index reports sustained communication, bulk exchange and correct business deliveries separately. Recipients may challenge or decline to use received information; content adoption and business improvement are not communication requirements. Credentials and protected truth belong on the operator host. Use the project running guide and register a fresh identifier for a new collection.\n'
 
 
 def read_json(path):
@@ -107,6 +107,9 @@ def export_accepted(repo, output, dataset_key="november", *, all_retained=False)
                          "registration_sha256": seal["sha256"], "rollout": reg["identifier"],
                          "workload_variant": read_json(package / "input-manifest.json")["effective_settings"].get("workload_variant", "baseline"),
                          "registered_encoding_opportunity": encoding, "observed_encoding": result.get("observed_encoding"),
+                         "acceptance": "sustained_communication" if communication_result(result).get("three_agent_swarm") and communication_result(result).get("sustained_substantive_exchange") else "reviewed_negative",
+                         "refinement_rounds": result.get("substantive_refinement_rounds", 0),
+                         "negative_delivery_review": item.get("negative_delivery_review"),
                          "sustained_three_agent_exchange": bool(communication_result(result).get("three_agent_swarm") and communication_result(result).get("sustained_substantive_exchange")),
                          "communication_criteria": communication_result(result).get("criteria_version", reg.get("criteria", {}).get("version", "original_registered_criteria")),
                          "communication_review": result.get("communication_review"),
