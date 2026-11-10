@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T02:38:26.619534+00:00",
+  "updated_at": "2026-11-10T02:41:25.360198+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -4673,7 +4673,7 @@
       },
       "worker_endpoint/event_pattern/Knowledge Work": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/addressed-endpoint-events-knowledge-admission.json",
+        "evidence": "docs/research/swarmform-inputs/endpoint-http-detail-events-knowledge-admission.json",
         "current_model_result": {
           "identifier": "swarmform-endpoint-address-knowledge-events-01-sol61",
           "model": "openai/gpt-6.1-sol",
@@ -4804,7 +4804,14 @@
           "source_commit": "f1aaf258facc61e33d95bbfe66045c9602ab988c",
           "change": "Existing read commands accept a processor URL; task, sources, service, permissions, arrivals and continuation logic unchanged."
         },
-        "takeaway": "Willow discovers two real external processors and attempts their delivery listings, but both reject that operation. Nobody reads external activity or receives another author’s substantive content. All nine ready briefs preserve actual revisions and withdrawals, each with 80/320 correct facts; the missing 240 remain null."
+        "takeaway": "Willow discovers two real external processors and attempts their delivery listings, but both reject that operation. Nobody reads external activity or receives another author’s substantive content. All nine ready briefs preserve actual revisions and withdrawals, each with 80/320 correct facts; the missing 240 remain null.",
+        "pending_runtime_feedback_repair": {
+          "source_commit": "af71b57a80836637a49d4a46ffdc963ba11ea6fb",
+          "input_sha256": "1ebee12e39c3040afbf4088c12f75a7aa57350add1b8914c125f0784fde3f617",
+          "previous_identifier": "swarmform-endpoint-address-knowledge-events-01-sol61",
+          "change": "CLI displays unchanged server error body; imported callers retain HTTPError. No permission or business condition changes.",
+          "substantive_refinement_rounds": 2
+        }
       },
       "worker_endpoint/operational_state/Data Analysis": {
         "status": "admitted",
@@ -6245,13 +6252,15 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-address-http-detail-engineering-timing-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "input_sha256": "ac8cc3921ec47fa95c6c6f1b46b4d32446895e7ab0e955ba423a272fb5d92c48",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-http-detail-engineering-timing-01-sol61",
           "registration_sha256": "ab8414e6d8b58e5a3dafc1eef17954ed5365d32d33ce1bd0ed7a4747a1b2f30f",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-timing-http-detail-candidate-01/engineering-timing/rollout",
-          "substantive_refinement_rounds": 1
+          "substantive_refinement_rounds": 1,
+          "pid": 5561,
+          "worker_context": "lima-swarmform-behavior-02"
         },
         "refinement_history": [
           {
@@ -6320,7 +6329,7 @@
         "active_refinement": {
           "round": 2,
           "reviewed_refinement_rounds": 1,
-          "status": "registered",
+          "status": "running",
           "identifier": "swarmform-endpoint-address-http-detail-engineering-timing-01-sol61",
           "input_sha256": "ac8cc3921ec47fa95c6c6f1b46b4d32446895e7ab0e955ba423a272fb5d92c48",
           "source_commit": "64aedf9db02ce75886d31596a6cb40d0211c8ae0",
@@ -6358,13 +6367,15 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-address-http-detail-knowledge-timing-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "input_sha256": "5201a5222e7026a965c4095468193733ac11d1b878035a546521dec80c45b5d9",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-http-detail-knowledge-timing-01-sol61",
           "registration_sha256": "9481097275d641b5e45455c52ff2d4eec3bc364c5957c4092aebdb32c0f2c391",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-timing-http-detail-candidate-01/knowledge-timing/rollout",
-          "substantive_refinement_rounds": 1
+          "substantive_refinement_rounds": 1,
+          "pid": 5563,
+          "worker_context": "lima-swarmform-behavior-02"
         },
         "refinement_history": [
           {
@@ -6432,7 +6443,7 @@
         "active_refinement": {
           "round": 2,
           "reviewed_refinement_rounds": 1,
-          "status": "registered",
+          "status": "running",
           "identifier": "swarmform-endpoint-address-http-detail-knowledge-timing-01-sol61",
           "input_sha256": "5201a5222e7026a965c4095468193733ac11d1b878035a546521dec80c45b5d9",
           "source_commit": "64aedf9db02ce75886d31596a6cb40d0211c8ae0",
@@ -6690,7 +6701,40 @@
     "current_admitted_count": 97,
     "current_registered_cells": 97
   },
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "identifier": "swarmform-endpoint-address-http-detail-knowledge-timing-01-sol61",
+      "matrix_cell": "worker_endpoint/timing/Knowledge Work",
+      "model": "openai/gpt-6.1-sol",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-timing-http-detail-candidate-01/knowledge-timing/rollout",
+      "pid": 5563,
+      "supervisor_pid": 5557,
+      "worker_context": "lima-swarmform-behavior-02",
+      "slot_suffix": "",
+      "started_at": "2026-11-10T02:39:41.148380+00:00",
+      "registration_sha256": "9481097275d641b5e45455c52ff2d4eec3bc364c5957c4092aebdb32c0f2c391",
+      "source_commit": "64aedf9db02ce75886d31596a6cb40d0211c8ae0",
+      "status": "running",
+      "input_sha256": "5201a5222e7026a965c4095468193733ac11d1b878035a546521dec80c45b5d9",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-http-detail-knowledge-timing-01-sol61"
+    },
+    {
+      "identifier": "swarmform-endpoint-address-http-detail-engineering-timing-01-sol61",
+      "matrix_cell": "worker_endpoint/timing/Engineering",
+      "model": "openai/gpt-6.1-sol",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-timing-http-detail-candidate-01/engineering-timing/rollout",
+      "pid": 5561,
+      "supervisor_pid": 5558,
+      "worker_context": "lima-swarmform-behavior-02",
+      "slot_suffix": ".slot2",
+      "started_at": "2026-11-10T02:39:41.183392+00:00",
+      "registration_sha256": "ab8414e6d8b58e5a3dafc1eef17954ed5365d32d33ce1bd0ed7a4747a1b2f30f",
+      "source_commit": "64aedf9db02ce75886d31596a6cb40d0211c8ae0",
+      "status": "running",
+      "input_sha256": "ac8cc3921ec47fa95c6c6f1b46b4d32446895e7ab0e955ba423a272fb5d92c48",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-http-detail-engineering-timing-01-sol61"
+    }
+  ],
   "active_input_checks": [],
   "next_checkpoint": "artifact_namespace/identifiers_metadata/Knowledge Work",
   "maintained_registrations": [
@@ -6790,13 +6834,12 @@
     "experiments/swarmharm-v1/registrations/swarmform-engineering-job-events-recovery-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-overlap-existing-table-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-existing-table-engineering-content-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-knowledge-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-engineering-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-http-detail-knowledge-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-http-detail-engineering-timing-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 21,
+  "frozen_registration_count": 22,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
