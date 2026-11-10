@@ -2711,7 +2711,7 @@
         "active_refinement": {
           "round": 4,
           "reviewed_refinement_rounds": 3,
-          "status": "running",
+          "status": "collected_review_pending",
           "identifier": "swarmform-ipc-source-appendix-engineering-timing-01-sol61",
           "input_sha256": "ee1e3438d46938f5fead1662ea3d182365a01f362a6da5cfb1ad9e977a9215bb",
           "source_commit": "c358e44cf610a60b05bb5987e9b51c93b66c0b25",
@@ -2722,7 +2722,7 @@
         "current_model_result": {
           "identifier": "swarmform-ipc-source-appendix-engineering-timing-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "running",
+          "status": "collected_review_pending",
           "started": true,
           "input_sha256": "ee1e3438d46938f5fead1662ea3d182365a01f362a6da5cfb1ad9e977a9215bb",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-source-appendix-engineering-timing-01-sol61",
@@ -2731,7 +2731,10 @@
           "substantive_refinement_rounds": 3,
           "pid": 2955,
           "worker_context": "lima-swarmform-behavior-02",
-          "started_at": "2026-11-10T11:11:13.448839+00:00"
+          "started_at": "2026-11-10T11:11:13.448839+00:00",
+          "completion_at": "2026-11-10T11:20:25.890532+00:00",
+          "completion_reason": "quiescence",
+          "runtime_failure": null
         }
       },
       "job_namespace/payload_content/Knowledge Work": {
@@ -11893,25 +11896,6 @@
   },
   "active_rollouts": [
     {
-      "identifier": "swarmform-ipc-source-appendix-engineering-timing-01-sol61",
-      "matrix_cell": "shared_ipc/timing/Engineering",
-      "model": "openai/gpt-6.1-sol",
-      "worker": "lima-swarmform-behavior-02",
-      "slot_suffix": "",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-timing-source-appendix-candidate-01/engineering-timing/rollout",
-      "source_commit": "c358e44cf610a60b05bb5987e9b51c93b66c0b25",
-      "input_sha256": "ee1e3438d46938f5fead1662ea3d182365a01f362a6da5cfb1ad9e977a9215bb",
-      "registration_sha256": "7157a2dfa78647c2a453d775e8571e4e20fa84a2231368d83918cdaf39e7b162",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-source-appendix-engineering-timing-01-sol61",
-      "substantive_refinement_rounds": 3,
-      "refinement_round": 4,
-      "pid": 2955,
-      "supervisor_pid": 2952,
-      "worker_context": "lima-swarmform-behavior-02",
-      "started_at": "2026-11-10T11:11:13.448839+00:00",
-      "status": "running"
-    },
-    {
       "identifier": "swarmform-endpoint-overlap-engineering-metadata-01-sol61",
       "matrix_cell": "worker_endpoint/identifiers_metadata/Engineering",
       "model": "openai/gpt-6.1-sol",
@@ -12089,7 +12073,7 @@
       "scope": "Original archive-content Data Analysis input."
     }
   ],
-  "next_action": "Finish the seven remaining Engineering cells first, using available model workers for Engineering refinements. Complete already-running Knowledge Work collections without duplication; preserve their inputs and results. Then finish the remaining Knowledge Work cells. Both full 25-cell domains remain the delivery scope.",
+  "next_action": "Finish Engineering remaining six cells first. Review the closed IPC timing run, continue active endpoint and state-replication runs, and prepare natural endpoint state/timing refinements. Up to six separate workers may collect; no duplicate or frozen-input changes. Then finish Knowledge Work; both full 25-cell domains remain required.",
   "open_timing_inputs": [],
   "delivery_scope": {
     "primary_domain": "Knowledge Work",
@@ -12115,14 +12099,14 @@
     "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs",
     "file": "swarmform-main-inputs.zip",
     "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs.zip",
-    "bytes": 25416755,
-    "sha256": "442706a673eee6013173169b40d78fcc0300580713722628b7cdb6e9f7afb3f1",
-    "asset_id": 731031439,
-    "cells": 34,
-    "communication_positive": 33,
+    "bytes": 26322126,
+    "sha256": "418cfd8f8c44ff511cce183cb414f15f16fc72674917a56dab9b79e35dd051cc",
+    "asset_id": 731168469,
+    "cells": 35,
+    "communication_positive": 34,
     "reviewed_negative": 1,
-    "files": 5503,
-    "remote_download_sha256": "442706a673eee6013173169b40d78fcc0300580713722628b7cdb6e9f7afb3f1"
+    "files": 5686,
+    "remote_download_sha256": "418cfd8f8c44ff511cce183cb414f15f16fc72674917a56dab9b79e35dd051cc"
   },
   "delivery_bundle_history": [
     {
@@ -12315,6 +12299,19 @@
       "reviewed_negative": 1,
       "files": 4956,
       "remote_download_sha256": "ee4832b0e9902ce755b70a5f2b6d8e1d62533f2b4a44e07c3c1cc64a32d4e3f8"
+    },
+    {
+      "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs",
+      "file": "swarmform-main-inputs-442706a673ee.zip",
+      "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs-442706a673ee.zip",
+      "bytes": 25416755,
+      "sha256": "442706a673eee6013173169b40d78fcc0300580713722628b7cdb6e9f7afb3f1",
+      "asset_id": 731031439,
+      "cells": 34,
+      "communication_positive": 33,
+      "reviewed_negative": 1,
+      "files": 5503,
+      "remote_download_sha256": "442706a673eee6013173169b40d78fcc0300580713722628b7cdb6e9f7afb3f1"
     }
   ],
   "communication_criteria": {
