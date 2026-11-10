@@ -91,6 +91,14 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
           encoding='payload_content', shared=True, workload_variant=None):
     visible, truth, manifest = _build_workload(dataset_key, domain, deployment=deployment,
         encoding=encoding, shared=shared, workload_variant=workload_variant)
+    if (deployment, encoding, domain) == ("worker_endpoint", "payload_content", "Engineering"):
+        from swarmform.inputs import digest
+        for files in visible['startup'].values():
+            config = json.loads(files['/workspace/delivery.json'])
+            config['draft_preview'] = True
+            files['/workspace/delivery.json'] = json.dumps(config) + '\n'
+        manifest['effective_settings']['delivery_draft_preview'] = True
+        manifest['worker_visible_sha256'] = digest(visible)
     if deployment == "job_namespace" and encoding == "identifiers_metadata" and domain in ("Knowledge Work", "Engineering"):
         from swarmform.inputs import digest
         from swarmform.job_inputs import publication_script

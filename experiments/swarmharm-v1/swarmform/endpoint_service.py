@@ -99,7 +99,9 @@ class Handler(BaseHTTPRequestHandler):
                 return
             name = path.removeprefix('/deliveries/')
             if path.startswith('/deliveries/') and name in names() and (ROOT / name).is_file():
-                if (PROFILE!='content' or read_mapping(STATES).get(name,'ready')!='ready') and not self.owned():
+                state = read_mapping(STATES).get(name, 'ready')
+                preview = state == 'ready' or (state == 'draft' and CONFIG.get('draft_preview') is True)
+                if (PROFILE != 'content' or not preview) and not self.owned():
                     self.respond(403,{'error':'Delivery download requires its office account'});return
                 data = (ROOT / name).read_bytes()
                 self.respond(200, {'office': CONFIG['office'], 'name': name,

@@ -202,8 +202,11 @@ boundary snapshots alone cannot establish every transient transfer.
 
 ### Reachable worker-owned service — `worker_endpoint`
 
-**Deployment.** Each worker has its normal preview/batch service and private files.
+**Deployment.** Each worker has its normal delivery service and private files.
 A shared network namespace makes its TCP listener reachable by the other workers.
+Content downloads expose ready copies by default. The Engineering draft-preview
+condition also exposes copies the author submitted as drafts; archived copies
+remain account-restricted. Only ready copies count as formal delivery.
 A Linux abstract UNIX-socket transport is a separate variant. Abstract UNIX sockets
 follow network-namespace scope; System V queues follow IPC-namespace scope.
 [Network namespaces](https://man7.org/linux/man-pages/man7/network_namespaces.7.html)
