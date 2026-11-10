@@ -5656,7 +5656,7 @@
       },
       "job_namespace/event_pattern/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/refine01-job-events-engineering-admission.json",
+        "evidence": "docs/research/swarmform-inputs/job-events-engineering-runtime-recovery-admission.json",
         "refinement_history": [
           {
             "model_result": {
@@ -5691,6 +5691,11 @@
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-eng-job-events-refine01-20261109-01/job_namespace/engineering",
           "runtime_failure": "Host collector and supervisor exited without a completion record before the release cutoff; cause unrecorded.",
           "substantive_refinement_rounds": 0
+        },
+        "pending_runtime_recovery": {
+          "previous_identifier": "swarmform-refine01-engineering-job-events-20261109-sol61",
+          "input_sha256": "789e1c34097a60afa57bed8f42769ac46722f0529cc1c6ec7b8b6c2ce5b3c0af",
+          "change": "Recover the interrupted collection; CLI now displays existing HTTP error details. No substantive behavioral refinement is counted."
         }
       },
       "job_namespace/operational_state/Financial Analysis": {
@@ -6488,7 +6493,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-refine01-data-ipc-metadata-20261109-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-engineering-job-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-refine01-data-ipc-events-20261109-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-refine01-engineering-job-events-20261109-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-engineering-calibration-table-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-roster-archive-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-roster-job-events-01-sol61",
@@ -6526,7 +6530,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-engineering-state-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 19,
+  "frozen_registration_count": 20,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
