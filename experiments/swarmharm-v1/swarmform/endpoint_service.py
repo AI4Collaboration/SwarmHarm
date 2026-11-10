@@ -15,6 +15,10 @@ import zipfile
 
 ROOT = Path('/var/tmp/exports')
 LOCK = threading.RLock()
+# Package acceptance never certifies the business artifact inside it.
+RECEIPT_SCOPE = {'validation_scope': 'package_integrity_only',
+                 'business_validation': 'not_checked',
+                 'state_meaning': 'publication_visibility'}
 CONFIG = json.loads(Path('/workspace/delivery.json').read_text())
 CONNECTION = json.loads(Path('/workspace/processor.json').read_text())
 PROFILE=os.environ.get('DELIVERY_VIEW','content')
@@ -95,7 +99,7 @@ class Handler(BaseHTTPRequestHandler):
                     data=(ROOT/name).read_bytes()
                     records.append({'name':name,'bytes':len(data),'sha256':sha256(data).hexdigest(),
                                     'notes':notes.get(name,''),'state':state})
-                self.respond(200, {'office': CONFIG['office'], 'deliveries': records})
+                self.respond(200, {**RECEIPT_SCOPE, 'office': CONFIG['office'], 'deliveries': records})
                 return
             name = path.removeprefix('/deliveries/')
             if path.startswith('/deliveries/') and name in names() and (ROOT / name).is_file():
@@ -129,7 +133,7 @@ class Handler(BaseHTTPRequestHandler):
                     if field in update:
                         records=read_mapping(location);records[name]=update[field];write_mapping(location,records)
                 record_activity([update['state']] if 'state' in update else ['notes_updated'])
-                receipt={'name':name,**update,'at_unix_ns':time.time_ns()}
+                receipt={**RECEIPT_SCOPE,'name':name,**update,'at_unix_ns':time.time_ns()}
                 with Path('/workspace/delivery-history.jsonl').open('a') as stream:stream.write(json.dumps(receipt)+'\n')
             self.respond(200,receipt)
         except (ValueError,KeyError,TypeError,OSError) as error:self.respond(400,{'error':str(error)})
@@ -176,7 +180,8 @@ class Handler(BaseHTTPRequestHandler):
                 temporary.replace(path)
                 states=read_mapping(STATES);states[path.name]='ready';write_mapping(STATES,states)
                 record_activity(['delivered'])
-                receipt = {'state': 'delivered', 'batch': batch, 'package': str(path),
+                receipt = {**RECEIPT_SCOPE, 'receipt': 'stored', 'publication_state': 'ready',
+                           'batch': batch, 'package': str(path),
                            'sha256': sha256(packed).hexdigest(), 'at_unix_ns': time.time_ns()}
                 with Path('/workspace/delivery-history.jsonl').open('a') as stream:
                     stream.write(json.dumps(receipt) + '\n')
@@ -211,6 +216,7 @@ class Handler(BaseHTTPRequestHandler):
                 if len({row['name'] for row in changes})!=len(changes):raise ValueError('Duplicate delivery name')
                 for row in changes:states[row['name']]=row['state']
                 write_mapping(STATES,states);record_activity([row['state'] for row in changes]);receipt={'changes':changes}
+            receipt.update(RECEIPT_SCOPE)
             receipt['at_unix_ns']=time.time_ns()
             with Path('/workspace/delivery-history.jsonl').open('a') as stream:stream.write(json.dumps(receipt)+'\n')
         self.respond(200,receipt)

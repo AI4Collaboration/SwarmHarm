@@ -181,3 +181,154 @@ class ServiceClientChecks(unittest.TestCase):
             server.shutdown()
             server.server_close()
             thread.join()
+
+
+class EndpointFeedbackChecks(unittest.TestCase):
+    """Exercise receipts and publication visibility through the real HTTP handler."""
+    def setUp(self):
+        from swarmform.input_catalog import build
+        from hashlib import sha256
+        self.sha256 = sha256
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        root = Path(self.temp.name)
+        workspace, exports = root / 'workspace', root / 'exports'
+        workspace.mkdir()
+        visible, _, _ = build('november', 'Engineering', deployment='worker_endpoint')
+        self.actor, files = next(iter(visible['startup'].items()))
+        config = json.loads(files['/workspace/delivery.json'])
+        self.filename, self.batch = config['filename'], config['batches'][0]
+        (workspace / 'delivery.json').write_text(json.dumps(config))
+        (workspace / 'processor.json').write_text(json.dumps({'client_token': 'local-owner'}))
+        source = files['/workspace/tools/delivery_service.py'].replace(
+            '/workspace', str(workspace)).replace('/var/tmp/exports', str(exports))
+        namespace = {'__name__': 'endpoint_receipt_test'}
+        exec(compile(source, 'delivery_service.py', 'exec'), namespace)
+        self.server = ThreadingHTTPServer(('127.0.0.1', 0), namespace['Handler'])
+        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread.start()
+        self.addCleanup(self.stop)
+        self.url = f'http://127.0.0.1:{self.server.server_port}'
+
+    def stop(self):
+        self.server.shutdown()
+        self.thread.join()
+        self.server.server_close()
+
+    def request(self, method, route, body=None, *, owner=True):
+        headers = {'Content-Type': 'application/json'}
+        if owner:
+            headers['Authorization'] = 'Bearer local-owner'
+        call = Request(self.url + route, method=method, headers=headers,
+                       data=json.dumps(body).encode() if body is not None else None)
+        try:
+            response = urlopen(call, timeout=5)
+        except HTTPError as error:
+            response = error
+        with response:
+            return response.status, json.load(response)
+
+    def submit(self, content, *, digest=None):
+        stream = io.BytesIO()
+        with zipfile.ZipFile(stream, 'w') as archive:
+            archive.writestr(self.filename, content)
+            archive.writestr('manifest.json', json.dumps({'office': self.actor,
+                'batch': self.batch, 'sha256': digest or self.sha256(content).hexdigest()}))
+        packed = stream.getvalue()
+        return self.request('POST', '/deliveries', {'batch': self.batch,
+            'sha256': self.sha256(packed).hexdigest(),
+            'content_base64': base64.b64encode(packed).decode()})
+
+    def test_partial_and_unusable_artifacts_are_stored_without_a_business_pass(self):
+        for content in (b'TYPE_RECORDS = {}\n', b'This is not a decoder.\n'):
+            status, receipt = self.submit(content)
+            self.assertEqual(status, 200)
+            self.assertEqual(receipt['receipt'], 'stored')
+            self.assertEqual(receipt['publication_state'], 'ready')
+            self.assertEqual(receipt['validation_scope'], 'package_integrity_only')
+            self.assertEqual(receipt['business_validation'], 'not_checked')
+            self.assertNotIn('state', receipt)  # No delivered/completed task assertion.
+        listing = self.request('GET', '/deliveries')[1]
+        self.assertEqual(listing['business_validation'], 'not_checked')
+        self.assertEqual(listing['state_meaning'], 'publication_visibility')
+        name = listing['deliveries'][0]['name']
+        self.assertEqual(self.request('GET', '/deliveries/' + name, owner=False)[0], 200)
+        # Publication changes neither validate the artifact nor grant mutation rights.
+        self.assertEqual(self.request('PATCH', '/deliveries/' + name,
+            {'state': 'archived'}, owner=False)[0], 403)
+        receipt = self.request('PATCH', '/deliveries/' + name, {'state': 'archived'})[1]
+        self.assertEqual(receipt['business_validation'], 'not_checked')
+        self.assertEqual(self.request('GET', '/deliveries/' + name, owner=False)[0], 403)
+        status, receipt = self.request('POST', '/states/batch',
+            {'changes': [{'name': name, 'state': 'ready'}]})
+        self.assertEqual(status, 200)
+        self.assertEqual(receipt['business_validation'], 'not_checked')
+        self.assertEqual(self.request('GET', '/deliveries/' + name, owner=False)[0], 200)
+
+    def test_package_integrity_errors_still_fail_and_do_not_publish(self):
+        status, receipt = self.submit(b'TYPE_RECORDS = {}\n', digest='invalid')
+        self.assertEqual(status, 400)
+        self.assertNotIn('receipt', receipt)
+        self.assertEqual(self.request('GET', '/deliveries')[1]['deliveries'], [])
+
+
+class EndpointDiscoveryChecks(unittest.TestCase):
+    def test_all_endpoint_inputs_share_discovery_policy_without_automatic_requests(self):
+        import ast
+        import copy
+        from contextlib import redirect_stdout
+        import sys
+        from types import ModuleType
+        from unittest.mock import Mock
+        from swarmform.input_catalog import build, IMPLEMENTED_ENCODINGS
+        from swarmform import endpoint_unix
+
+        for domain in ('Engineering', 'Knowledge Work', 'Data Analysis', 'Financial Analysis'):
+            for encoding in IMPLEMENTED_ENCODINGS['worker_endpoint']:
+                with self.subTest(domain=domain, encoding=encoding):
+                    visible, _, manifest = build('november', domain,
+                        deployment='worker_endpoint', encoding=encoding)
+                    settings = manifest['effective_settings']
+                    self.assertTrue(settings['delivery_list_local_status'])
+                    self.assertIn(settings['local_delivery_inventory'],
+                                  ('explicit_opt_in', 'explicit_activity_opt_in'))
+                    for files in visible['startup'].values():
+                        tree = ast.parse(files['/workspace/tools/delivery_client.py'])
+                        namespace = {'__name__': 'delivery_client_fixture'}
+                        with patch.dict(sys.modules, {'delivery_transport': endpoint_unix}):
+                            exec(compile(tree, 'delivery_client.py', 'exec'), namespace)
+                        kernel_status = {'processor': 'own',
+                            settings['delivery_list_local_status_fields'][1]: []}
+                        lookup = Mock(return_value=kernel_status)
+                        request = Mock(side_effect=lambda *a, **k: {'deliveries': []})
+                        inventory = ModuleType('delivery_inventory')
+                        inventory.inventory = Mock(return_value={'processors': [], 'errors': []})
+                        namespace.update(__name__='__main__', processor_status=lookup, request=request)
+                        entry = ast.Module(body=[tree.body[-1]], type_ignores=[])
+                        for command in (['list'], ['list', '--url', 'http://127.0.0.1:33333'],
+                                        ['status'], ['inventory']):
+                            request.reset_mock(); lookup.reset_mock(); inventory.inventory.reset_mock()
+                            output = io.StringIO()
+                            with patch.object(sys, 'argv', ['delivery_client.py', *command]), \
+                                 patch.dict(sys.modules, {'delivery_inventory': inventory}), redirect_stdout(output):
+                                exec(compile(copy.deepcopy(entry), 'delivery_client.py', 'exec'), namespace)
+                            result = json.loads(output.getvalue())
+                            if command == ['list']:
+                                self.assertEqual(result['local_status'], kernel_status)
+                                request.assert_called_once_with('GET', '/deliveries', url=None)
+                                inventory.inventory.assert_not_called()
+                            elif command[0] == 'list':
+                                self.assertNotIn('local_status', result)
+                                lookup.assert_not_called()
+                                inventory.inventory.assert_not_called()
+                            elif command == ['status']:
+                                self.assertEqual(result, kernel_status)
+                                request.assert_not_called()
+                                inventory.inventory.assert_not_called()
+                            else:
+                                inventory.inventory.assert_called_once_with(kernel_status)
+                                request.assert_not_called()
+                        # Generated inventory uses the actual transport, not the domain name.
+                        helper = files['/workspace/tools/delivery_inventory.py']
+                        self.assertEqual('unix_listeners' in helper,
+                            settings.get('endpoint_transport') == 'abstract_unix')

@@ -95,7 +95,7 @@ def select_checks(files, full=False):
                 suites('swarmform_actor_evidence')
             elif stem == 'endpoint_service':
                 suites('swarmform_delivery_state', 'swarmform_package', 'swarmform_domain',
-                       'swarmform_registration')
+                       'swarmform_registration', 'swarmform_job_service')
                 checks.update(('inputs', 'catalog', 'wording'))
             elif stem in {'endpoint_deployment', 'endpoint_unix'}:
                 suites('swarmform_registration', 'swarmform_input_runner', 'swarmform_collection')

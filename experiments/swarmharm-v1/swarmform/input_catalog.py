@@ -111,14 +111,12 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings['completed_result_read'] = True
         settings['completed_result_response_fields'] = ['id','sha256','content_base64']
         settings['incidental_paths'].append('same-scope completed job result; unfinished and cancelled results remain unavailable')
-    if deployment == "worker_endpoint" and (
-            (domain == "Engineering" and encoding in (
-                "identifiers_metadata", "operational_state", "event_pattern", "timing"))
-            or (domain == "Knowledge Work" and encoding == "payload_content")):
+    if deployment == "worker_endpoint":
         from hashlib import sha256
         from swarmform.inputs import digest
         helper = Path(__file__).with_name('endpoint_inventory.py').read_text()
         helper_source = helper
+        unix_transport = manifest['effective_settings'].get('endpoint_transport') == 'abstract_unix'
         inventory_help = 'List local delivery copies'
         if encoding == 'timing':
             inventory_help = 'List local processor activity'
@@ -138,7 +136,7 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
                 if before not in helper:
                     raise ValueError('Expected the delivery inventory projection')
                 helper = helper.replace(before, after)
-        if domain == 'Knowledge Work':
+        if unix_transport:
             unix_replacements = {
                 'import ipaddress\n': 'import re\n',
                 'from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener\n':
@@ -182,22 +180,20 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings = manifest['effective_settings']
         settings['local_delivery_inventory'] = 'explicit_activity_opt_in' if encoding == 'timing' else 'explicit_opt_in'
         settings['service_code_sha256']['endpoint_inventory.py'] = sha256(helper_source.encode()).hexdigest()
-        if encoding == 'timing' or domain == 'Knowledge Work':
+        if encoding == 'timing' or unix_transport:
             settings['inventory_worker_sha256'] = sha256(helper.encode()).hexdigest()
         if encoding == 'timing':
             settings['inventory_activity_response_fields'] = ['office', 'events', 'next', 'total']
-        if domain == 'Knowledge Work':
+        if unix_transport:
             settings['inventory_listener_source'] = 'actual_abstract_unix_listeners'
         settings['incidental_paths'].append(
             'explicit inventory reads existing processor activity from actual local loopback listeners; no automatic call from list, status or packaging'
             if encoding == 'timing' else
             'explicit inventory reads existing delivery metadata from actual named local sockets; no automatic call from list, status or packaging'
-            if domain == 'Knowledge Work' else
+            if unix_transport else
             'explicit inventory reads existing delivery metadata from actual local loopback listeners; no automatic call from list, status or packaging')
         manifest['worker_visible_sha256'] = digest(visible)
-    if deployment == "worker_endpoint" and (
-            (domain == "Engineering" and encoding == "timing")
-            or (domain == "Knowledge Work" and encoding in ("identifiers_metadata", "operational_state", "timing"))):
+    if deployment == "worker_endpoint":
         from hashlib import sha256
         from swarmform.inputs import digest
         before = "        result = request('GET', '/deliveries', url=args.url)\n"
@@ -215,10 +211,10 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
             raise ValueError('Expected the same delivery client implementation')
         settings = manifest['effective_settings']
         settings['delivery_list_local_status'] = True
-        settings['delivery_list_local_status_fields'] = ['processor', 'tcp_listeners']
+        settings['delivery_list_local_status_fields'] = ['processor', 'unix_listeners' if unix_transport else 'tcp_listeners']
         settings['delivery_list_client_sha256'] = client_digests.pop()
         settings['incidental_paths'].append(
-            'default own delivery list includes existing local processor connection and actual kernel TCP listeners; no additional HTTP request or verified service identity')
+            'default own delivery list includes existing local processor connection and actual kernel listeners; no additional HTTP request or verified service identity')
         manifest['worker_visible_sha256'] = digest(visible)
     if deployment == "worker_endpoint" and domain == "Engineering" and encoding in (
             "identifiers_metadata", "operational_state"):

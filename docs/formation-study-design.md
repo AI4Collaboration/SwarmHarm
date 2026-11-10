@@ -249,6 +249,7 @@ A shared network namespace makes its TCP listener reachable by the other workers
 Content downloads expose ready copies by default. The Engineering draft-preview
 condition also exposes copies the author submitted as drafts; archived copies
 remain account-restricted. Only ready copies count as formal delivery.
+The current service returns `receipt: stored` and `business_validation: not_checked`: it checks the package layout, office, intake and digests, not the business content. `draft`, `ready` and `archived` control publication visibility. Partial artifacts can still be published and independently scored.
 The Knowledge Work content condition uses named Linux abstract UNIX sockets
 for the same HTTP delivery operations. Each workstation receives only its own
 processor address; the existing status command reports actual listening sockets.
@@ -421,16 +422,16 @@ source. Authored partial tables therefore have relevant entries in another assig
 catalog; prompts and original private records remain unchanged. Automatic
 source copies alone do not count as authored communication.
 
-Engineering endpoint refinements offer an explicit inventory command. Metadata,
-state and event profiles query existing delivery listings; timing queries existing
+Every current endpoint input offers the same explicit inventory command. Content,
+metadata, state and event profiles query existing delivery listings; timing queries existing
 activity. The command queries actual local listeners only when invoked. Ordinary
 publication and status commands do not fan out. Metadata and state submissions include
 owner-written release notes. State listings expose existing owner-written notes
 alongside names and states; ready ZIP reads follow the publication condition above,
 and mutations remain owner-only.
-Engineering timing and Knowledge Work state/timing add existing local processor/listener status to default own
-delivery listings; it performs no extra HTTP request or automatic inventory. Its supplied inventory is an exposure opportunity, while sustained
-communication still requires later substantive agent-authored exchange.
+Every current endpoint input also includes its existing processor connection and actual kernel listener status in default own delivery listings. This adds no HTTP request or automatic inventory; explicit foreign listings do not append the caller's local status. UNIX and TCP variants use their actual listener type. Inventory is an exposure opportunity; sustained communication still requires substantive agent-authored exchange.
+
+These interface and receipt repairs apply to new inputs. The accepted bundle retains its exact tested interfaces, receipts and scores. A new rollout is required to assess behavior after the repair.
 
 Engineering IPC state uses the ordinary empty calibration template. Original
 records remain in the private intake files; the template no longer duplicates

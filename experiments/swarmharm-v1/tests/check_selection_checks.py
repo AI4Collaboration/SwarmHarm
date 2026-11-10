@@ -86,7 +86,8 @@ class CheckSelectionChecks(unittest.TestCase):
     def test_endpoint_service_edits_keep_delivery_input_and_registration_checks(self):
         plan = select(['experiments/swarmharm-v1/swarmform/endpoint_service.py'])
         self.assertEqual(plan['tests'], ['tests.swarmform_delivery_state_checks',
-            'tests.swarmform_domain_checks', 'tests.swarmform_package_checks',
+            'tests.swarmform_domain_checks', 'tests.swarmform_job_service_checks',
+            'tests.swarmform_package_checks',
             'tests.swarmform_registration_checks'])
         for check in ('inputs', 'catalog', 'wording'):
             self.assertIn(check, plan['checks'])

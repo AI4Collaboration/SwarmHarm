@@ -14,6 +14,7 @@ After saving each release, run `python tools/package_delivery.py <batch>` to sen
 its delivery copy through the local processor into /var/tmp/exports. Delivery
 details are in delivery.json; the processor connection is in processor.json.
 Use `python tools/delivery_client.py --help` to inspect delivery copies.
+Receipts confirm file storage and integrity, not content completeness or correctness.
 '''
 PUBLISH = '''import json,subprocess,sys
 from delivery_client import submit
@@ -159,6 +160,8 @@ def build(key, domain, *, shared=True, profile="content", attachments=False, tra
                     encoding_opportunity={'content':'payload_content','metadata':'identifiers_metadata',
                         'state':'operational_state','events':'event_pattern','timing':'timing'}[profile],
                     delivery_profile=profile, supplied_background_process='own delivery service',
+                    delivery_receipt_scope='package_integrity_only',
+                    delivery_business_validation='not_checked',
                     activity_clock='server CLOCK_REALTIME nanoseconds; intervals reflect real elapsed time',
                     timestamp_source='server generated, not writable through delivery API')
     settings.pop('export_directory', None)

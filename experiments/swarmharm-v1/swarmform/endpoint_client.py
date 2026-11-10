@@ -1,4 +1,7 @@
-"""Send and retrieve the office's delivery copies."""
+"""Send and retrieve delivery copies. Receipts confirm file storage and integrity.
+Content completeness and correctness are not checked. Draft, ready and archived
+are publication states; ready makes a copy available for delivery.
+"""
 import argparse
 import base64
 from hashlib import sha256
@@ -63,9 +66,9 @@ if __name__ == '__main__':
     describe=commands.add_parser('describe',help='Update delivery notes')
     describe.add_argument('name')
     describe.add_argument('notes_file',type=Path)
-    state=commands.add_parser('state',help='Update delivery status');state.add_argument('name');state.add_argument('value',choices=('draft','ready','archived'))
+    state=commands.add_parser('state',help='Update publication visibility (draft, ready or archived)');state.add_argument('name');state.add_argument('value',choices=('draft','ready','archived'))
     copies=commands.add_parser('copy-batch',help='Prepare draft delivery copies');copies.add_argument('source');copies.add_argument('names_file',type=Path)
-    states=commands.add_parser('state-batch',help='Update a list of delivery statuses');states.add_argument('changes_file',type=Path)
+    states=commands.add_parser('state-batch',help='Update publication visibility for a list of copies');states.add_argument('changes_file',type=Path)
     args = parser.parse_args()
     if args.command == 'status':
         result = processor_status()
