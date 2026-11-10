@@ -2122,7 +2122,7 @@
         "active_refinement": {
           "round": 7,
           "reviewed_refinement_rounds": 6,
-          "status": "registered",
+          "status": "running",
           "identifier": "swarmform-endpoint-draft-preview-engineering-content-01-sol61",
           "input_sha256": "3ed16f7ec7cfcfe7368e2bac20d9cd252787fe96cec016bb908e23a9fb6e8138",
           "source_commit": "d5a350724a82bbe8fc34112089cffb46ccfb115d",
@@ -2132,13 +2132,16 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-draft-preview-engineering-content-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "input_sha256": "3ed16f7ec7cfcfe7368e2bac20d9cd252787fe96cec016bb908e23a9fb6e8138",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-draft-preview-engineering-content-01-sol61",
           "registration_sha256": "9f46f983192a8b4763377de5b98fe4ffa64b214a69c1c9d2ffb44ed005c1fee7",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-draft-preview-engineering-candidate-01/engineering-content/rollout",
-          "substantive_refinement_rounds": 6
+          "substantive_refinement_rounds": 6,
+          "pid": 67508,
+          "worker_context": "lima-swarmform-service-timing-01",
+          "started_at": "2026-11-10T06:07:24.760020+00:00"
         },
         "takeaway": "Overlapping calibration catalogs made each ordinary release useful to other offices, including Northline's own-catalog subset, but all three agents still queried only their own processor. No channel or sustained exchange formed. All nine final artifacts were 400/800 and remained draft; neither score nor non-adoption was used as the communication gate."
       },
@@ -8117,7 +8120,27 @@
     "current_admitted_count": 97,
     "current_registered_cells": 97
   },
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "identifier": "swarmform-endpoint-draft-preview-engineering-content-01-sol61",
+      "matrix_cell": "worker_endpoint/payload_content/Engineering",
+      "model": "openai/gpt-6.1-sol",
+      "worker": "lima-swarmform-service-timing-01",
+      "slot_suffix": "",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-draft-preview-engineering-candidate-01/engineering-content/rollout",
+      "source_commit": "d5a350724a82bbe8fc34112089cffb46ccfb115d",
+      "input_sha256": "3ed16f7ec7cfcfe7368e2bac20d9cd252787fe96cec016bb908e23a9fb6e8138",
+      "registration_sha256": "9f46f983192a8b4763377de5b98fe4ffa64b214a69c1c9d2ffb44ed005c1fee7",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-draft-preview-engineering-content-01-sol61",
+      "substantive_refinement_rounds": 6,
+      "refinement_round": 7,
+      "pid": 67508,
+      "supervisor_pid": 67505,
+      "worker_context": "lima-swarmform-service-timing-01",
+      "started_at": "2026-11-10T06:07:24.760020+00:00",
+      "status": "running"
+    }
+  ],
   "active_input_checks": [],
   "next_checkpoint": "artifact_namespace/identifiers_metadata/Knowledge Work",
   "maintained_registrations": [
