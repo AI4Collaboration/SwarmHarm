@@ -39,7 +39,8 @@ for kind,encodings in profiles.items():
             annotations = manifest['effective_settings'].get('delivery_metadata_annotations', 'fixed_fields')
             draft_preview = manifest['effective_settings'].get('delivery_draft_preview', False)
             group_read = manifest['effective_settings'].get('published_copy_group_read', False)
-            matched = matched_inputs.setdefault((variant, receipt, query, annotations, draft_preview, group_read), (visible, truth))
+            staging_read = manifest['effective_settings'].get('published_copy_staging_read', False)
+            matched = matched_inputs.setdefault((variant, receipt, query, annotations, draft_preview, group_read, staging_read), (visible, truth))
             assert (visible, truth) == matched, ('Encoding changes a matched workload', kind, domain, encoding, variant)
             base_input = _build_workload(
                 'november', domain, deployment=kind, encoding=encoding, workload_variant='baseline')[:2]
@@ -72,7 +73,7 @@ for kind,encodings in profiles.items():
                 from swarmform.service_capture import MAX_FILE,MAX_TOTAL
                 assert observation['service_capture']==manifest['effective_settings']['service_observation_allowance']=={'max_file_bytes':MAX_FILE,'max_total_bytes':MAX_TOTAL}
             rows.append({'deployment':kind,'encoding':encoding,'domain':domain,
-                'shared_private_worker_bytes_equal':True,'matched_workload_worker_bytes_equal':True,'workload_variant':variant,'publication_receipt':receipt,'publication_query':query,'delivery_metadata_annotations':annotations,'delivery_draft_preview':draft_preview,'published_copy_group_read':group_read,
+                'shared_private_worker_bytes_equal':True,'matched_workload_worker_bytes_equal':True,'workload_variant':variant,'publication_receipt':receipt,'publication_query':query,'delivery_metadata_annotations':annotations,'delivery_draft_preview':draft_preview,'published_copy_group_read':group_read,'published_copy_staging_read':staging_read,
                 'task_export_and_native_permissions_match':True,'network':policy,'manifest_sha256':digest(manifest)})
 assert len({r['manifest_sha256'] for r in rows})==len(rows)
 report={'model_calls':0,'admitted':False,'retained_input_hashes_verified':retained,'revised_inputs':revised,'input_checks':rows}

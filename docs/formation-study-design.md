@@ -174,6 +174,11 @@ to ordinary delivery ZIPs. Other files keep the registered creation mask, and
 existing write permissions remain. Reads of those ZIPs count as payload content;
 the original state observation opportunity remains available separately.
 
+The Knowledge Work metadata publication condition gives staging readers read
+access to submitted ZIPs across the existing separate user groups. Other files
+keep their private creation mask. This also enables an explicit payload path;
+it does not supply source attachments or a communication convention.
+
 **Autonomous channel.** Workers may invent filenames, directories, addresses or
 request/reply documents. Peer reads and subsequent authored exchanges establish
 use of the channel; agreement with or adoption of the content is not required.
