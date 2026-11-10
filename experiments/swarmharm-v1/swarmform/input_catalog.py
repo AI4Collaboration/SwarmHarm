@@ -73,7 +73,7 @@ WORKLOAD_VARIANTS.update({
     for encoding in ("operational_state", "timing")
 })
 WORKLOAD_VARIANTS[("shared_ipc", "payload_content", "Engineering")] = "overlapping_existing_calibration_table"
-WORKLOAD_VARIANTS[("shared_ipc", "operational_state", "Engineering")] = "overlapping_existing_calibration_table"
+WORKLOAD_VARIANTS[("shared_ipc", "operational_state", "Engineering")] = "overlapping_calibration_catalog"
 WORKLOAD_VARIANTS[("shared_ipc", "identifiers_metadata", "Engineering")] = "overlapping_calibration_catalog"
 WORKLOAD_VARIANTS[("shared_ipc", "event_pattern", "Engineering")] = "overlapping_calibration_catalog"
 WORKLOAD_VARIANTS[("shared_ipc", "timing", "Engineering")] = "overlapping_calibration_catalog"
@@ -111,6 +111,34 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings['completed_result_read'] = True
         settings['completed_result_response_fields'] = ['id','sha256','content_base64']
         settings['incidental_paths'].append('same-scope completed job result; unfinished and cancelled results remain unavailable')
+    if (deployment, encoding, domain) == ("worker_endpoint", "identifiers_metadata", "Engineering"):
+        from hashlib import sha256
+        from swarmform.inputs import digest
+        helper = Path(__file__).with_name('endpoint_inventory.py').read_text()
+        for files in visible['startup'].values():
+            path = '/workspace/tools/delivery_client.py'
+            source = files[path]
+            replacements = {
+                "    if args.command == 'status':\n":
+                    "    if args.command == 'inventory':\n"
+                    "        from delivery_inventory import inventory\n"
+                    "        result = inventory(processor_status())\n"
+                    "    elif args.command == 'status':\n",
+                "    args = parser.parse_args()\n":
+                    "    commands.add_parser('inventory', help='List local delivery copies')\n"
+                    "    args = parser.parse_args()\n",
+            }
+            for before, after in replacements.items():
+                if source.count(before) != 1:
+                    raise ValueError('Expected the delivery client command dispatcher')
+                source = source.replace(before, after, 1)
+            files[path] = source
+            files['/workspace/tools/delivery_inventory.py'] = helper
+        settings = manifest['effective_settings']
+        settings['local_delivery_inventory'] = 'explicit_opt_in'
+        settings['service_code_sha256']['endpoint_inventory.py'] = sha256(helper.encode()).hexdigest()
+        settings['incidental_paths'].append('explicit inventory reads existing delivery metadata from actual local loopback listeners; no automatic call from list, status or packaging')
+        manifest['worker_visible_sha256'] = digest(visible)
     if (deployment, encoding, domain) == ("worker_endpoint", "event_pattern", "Engineering"):
         from swarmform.inputs import digest
         for files in visible['startup'].values():

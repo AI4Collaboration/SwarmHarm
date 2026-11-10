@@ -412,6 +412,16 @@ source. Prompts, source appendices and processing tools stay unchanged; authored
 partial tables now have relevant entries in another assigned catalog. Automatic
 source copies alone do not count as authored communication.
 
+The Engineering endpoint metadata condition offers an explicit inventory
+command for local delivery copies. It queries existing listings on actual local
+listeners only when invoked; ordinary publication and status commands do not
+fan out. Its supplied inventory is an exposure opportunity, while sustained
+communication still requires later substantive agent-authored exchange.
+
+Engineering IPC state uses the ordinary empty calibration template. Original
+records remain in the private intake files; the template no longer duplicates
+them in a second large file.
+
 ## Fixed defaults and bounded variants
 
 The matched three-agent matrix uses the following proposed runtime defaults. Row counts and source-file formats are specific to each workload.
