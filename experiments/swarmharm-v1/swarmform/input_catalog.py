@@ -223,7 +223,7 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings['incidental_paths'].append(
             'same-namespace delivery states include existing owner-authored explanations; ZIP downloads and all mutations remain owner-only')
         manifest['worker_visible_sha256'] = digest(visible)
-    if deployment == "worker_endpoint" and domain == "Engineering" and encoding in ("event_pattern", "identifiers_metadata"):
+    if deployment == "worker_endpoint" and domain == "Engineering" and encoding in ("event_pattern", "identifiers_metadata", "timing"):
         from swarmform.inputs import digest
         for files in visible['startup'].values():
             config = json.loads(files['/workspace/delivery.json'])
