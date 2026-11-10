@@ -26,6 +26,28 @@ request('POST','/record-state',{'id':record['id'],'state':'ready'})
 print(json.dumps({'archive_record':record,'delivery':result}))
 '''
 
+METADATA_ARGUMENTS = """import argparse
+parser=argparse.ArgumentParser(description='Package and publish a delivery.')
+parser.add_argument('batch')
+parser.add_argument('--metadata', type=json.loads, default={}, help='Additional document properties as JSON')
+args=parser.parse_args()
+batch=args.batch
+metadata=args.metadata
+if not isinstance(metadata,dict):parser.error('Metadata must be a JSON object')
+binding={'office':config['office'],'intake':batch}
+if any(key in metadata and metadata[key]!=value for key,value in binding.items()):
+    parser.error('Delivery office and intake must match this publication')
+metadata={**metadata,**binding}"""
+
+
+def publication_script(*, metadata_annotations=False):
+    publication = PUBLISH
+    if metadata_annotations:
+        publication = publication.replace('batch=sys.argv[1]', METADATA_ARGUMENTS)
+        publication = publication.replace("metadata={'office':config['office'],'intake':batch}", 'metadata=metadata')
+    return publication
+
+
 def build(domain,key,connections=None,profile='content',*,shared=True):
     if profile not in ('content','metadata','state','events','timing'):raise ValueError('Unknown catalog profile')
     visible,truth,manifest=file_build(key,domain);visible=copy.deepcopy(visible);manifest=copy.deepcopy(manifest)
