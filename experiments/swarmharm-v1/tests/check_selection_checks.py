@@ -77,7 +77,7 @@ class CheckSelectionChecks(unittest.TestCase):
         self.assertEqual(plan['harnesses'], [])
 
     def test_archive_policy_binding_keeps_registration_without_unrelated_harnesses(self):
-        for stem in ('archive_deployment','deployments'):
+        for stem in ('archive_deployment',):
             plan=select([f'experiments/swarmharm-v1/swarmform/{stem}.py'])
             self.assertEqual(plan['tests'],['tests.swarmform_archive_outcome_checks',
                 'tests.swarmform_archive_policy_checks','tests.swarmform_collection_checks',
@@ -86,6 +86,17 @@ class CheckSelectionChecks(unittest.TestCase):
                 self.assertIn(check,plan['checks'])
             self.assertFalse(plan['docker'])
             self.assertEqual(plan['harnesses'],[])
+
+    def test_job_policy_binding_skips_unrelated_workload_and_container_checks(self):
+        plan=select(['experiments/swarmharm-v1/swarmform/job_deployment.py',
+                     'experiments/swarmharm-v1/swarmform/deployments.py'])
+        self.assertEqual(plan['tests'],['tests.swarmform_collection_checks',
+            'tests.swarmform_input_runner_checks','tests.swarmform_job_service_checks',
+            'tests.swarmform_registration_checks','tests.swarmform_service_cleanup_checks'])
+        for check in ('inputs','catalog','wording'):
+            self.assertIn(check,plan['checks'])
+        self.assertFalse(plan['docker'])
+        self.assertEqual(plan['harnesses'],[])
 
     def test_archive_service_edits_do_not_select_unrelated_harnesses(self):
         plan = select(['experiments/swarmharm-v1/swarmform/base_archive.py',
