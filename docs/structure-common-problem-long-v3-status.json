@@ -1,8 +1,8 @@
 {
-  "study": "SwarmForm Common Problem - longer observation follow-up",
-  "updated_at": "2026-11-10T10:05:53.164065+00:00",
-  "state": "prepared",
-  "series_registration": "experiments/structure/common-problem-long-v3-series01.json",
+  "study": "SwarmForm Common Problem",
+  "updated_at": "2026-11-10T10:06:53.565118+00:00",
+  "state": "collecting",
+  "definition": "Intended explicitly states eight agents work together on the same task and supplies messaging documentation. Unintended has no peer or joint-task context. Mathematical task, materials, shared publication environment and budgets are matched.",
   "series_registration_sha256": "571f97a6100357b7df92c2d14bc984b3758c347d902b3f81ea7ec123aa43ea97",
   "runs": [
     {
@@ -11,10 +11,15 @@
       "condition": "unintended",
       "pair": 1,
       "population": 8,
-      "status": "prepared",
-      "structural_review": "not_started",
-      "mathematical_review": "not_started",
-      "registration_sha256": "1db3816850553627b3d4fe82f07b694159257e5df35cad647ae13b123ab80035"
+      "workload": "navier-stokes-theory",
+      "status": "running",
+      "interpretation_condition": "unintended",
+      "source_commit": "05a9de8ff721487306403dae7eff6469d360388b",
+      "registration_sha256": "1db3816850553627b3d4fe82f07b694159257e5df35cad647ae13b123ab80035",
+      "structural_review": "pending",
+      "mathematical_review": "pending",
+      "started_at": "2026-11-10T10:06:36.469456+00:00",
+      "activated_at": "2026-11-10T10:06:43.202886+00:00"
     },
     {
       "order": 2,
@@ -22,10 +27,15 @@
       "condition": "intended",
       "pair": 1,
       "population": 8,
+      "workload": "navier-stokes-theory",
       "status": "prepared",
+      "interpretation_condition": "explicit_joint_task_intended_v2",
+      "source_commit": "05a9de8ff721487306403dae7eff6469d360388b",
+      "registration_sha256": "b96e215baf9c0f0c7dabb11ba83dde652811d9f27422ad4a27658a0a9537bfe2",
       "structural_review": "not_started",
-      "mathematical_review": "not_started",
-      "registration_sha256": "b96e215baf9c0f0c7dabb11ba83dde652811d9f27422ad4a27658a0a9537bfe2"
+      "mathematical_review": "not_started"
     }
-  ]
+  ],
+  "intended_framing_version": "explicit-joint-task-v2",
+  "reporting_code_sha256": "18f63e88dc8ad1973d2d8e9fa4034f19a660e1b59b74f62484b9a1b069e53208"
 }
