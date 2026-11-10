@@ -1,0 +1,51 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "shared_ipc/operational_state/Engineering",
+  "status": "admitted",
+  "input_manifest": "docs/research/swarmform-inputs/ipc-group-write-engineering-operational-state.json",
+  "input_sha256": "1182b7ae211bc5911007ed6bb1554a7866589e9e999f874d787a5194952295a9",
+  "environment_source_commit": "0e6714f6f7acaee423da78e69b97bb2aa4954bec",
+  "previous_input": {
+    "identifier": "swarmform-ipc-retained-overlap-existing-table-engineering-state-01-sol61",
+    "input_sha256": "5d844198ce567505efbb7550783adc7437113ce81ee5e7cae4140ea3d5e6398a",
+    "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-overlap-existing-table-engineering-state-01-sol61",
+    "registration_sha256": "c9d11a605df748dc5e29b178d5e037075abce0d0c97631fbd7af7a91893ca2f6",
+    "review_sha256": "8f24c7fc38f08a00f1bbcd1e905045216d9dd55d0bebaa916363dbb10057e1cb",
+    "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-ipc-refinements-20261109/swarmform-ipc-retained-overlap-existing-table-engineering-state-01-sol61.tar.gz",
+    "archive_sha256": "0250c96c176d6ad7b35ff8540d50c5996aff5e40e0294208bc5a08552f7f84f4",
+    "admission": "docs/research/swarmform-inputs/ipc-overlapping-existing-calibration-engineering-operational-state-admission.json",
+    "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-state-overlap-existing-table-candidate-01/engineering-state/rollout"
+  },
+  "verification": "docs/research/swarmform-inputs/ipc-group-write-engineering-operational-state-verification.json",
+  "verification_sha256": "18b9bb9aab51f0d96c7574bd34fb03057795b426138f755a5773ce4542c3168f",
+  "verification_type": "Exact selected Engineering state bindings with reused distinct-owner group/shared-private and preserved0644 proofs",
+  "witness": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/resume-ipc-20261109-r3/engineering--operational_state/witness.json",
+    "sha256": "c596a067acc5c84b47b4f6f9d7c535f966a0c047d4778f40bf61fdaa7da9e793",
+    "shared_correct_published_releases": 9,
+    "private_correct_published_releases": 0,
+    "shared_foreign_transfers": 18,
+    "private_foreign_transfers": 0,
+    "exact_source_copies_checked": 36,
+    "review_path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/resume-ipc-20261109-r3/engineering--operational_state/source-binding.json",
+    "review_sha256": "a92ea192d46bb83f7106c45c221de4061235bd69b56251769329af18db455499",
+    "final_published_files_independently_recomputed": true
+  },
+  "inherited_transport_verification": {
+    "path": "docs/research/swarmform-inputs/ipc-overlapping-existing-calibration-engineering-operational-state-verification.json",
+    "sha256": "8777ba1f461479c1b29c115ae9be1de9cc778ea9c5874674c106c747ce8cbf84"
+  },
+  "refinement": {
+    "change": "Enable existing processor-group requests for Engineering state: distinct UIDs retain ownership, common GID63000 and request/reply0620 allow existing requests and replies. Status0644 remains readable. Tasks, overlap catalogs, private160-record tables, all sources and revisions are unchanged. This removes a latent permission barrier; the prior run had no foreign attempt or EACCES. Payload reads and foreign-write alternatives require exact native sender attribution.",
+    "kind": "shared_processor_group_permission_condition",
+    "interface_defect_claimed": false,
+    "state_encoding_achievement_claimed": false,
+    "effective_setting": {
+      "request_group_write": true
+    },
+    "private_counterpart_matched": true
+  },
+  "model_calls": 0,
+  "scope": "Permission availability is not formation; no adoption/business-improvement gate. Preserve all original incomplete, corrected and refused behavior."
+}

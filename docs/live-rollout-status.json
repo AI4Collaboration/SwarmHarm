@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T10:24:17.033960+00:00",
+  "updated_at": "2026-11-10T10:25:52.231132+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -5548,7 +5548,7 @@
       },
       "shared_ipc/operational_state/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/ipc-overlapping-existing-calibration-engineering-operational-state-admission.json",
+        "evidence": "docs/research/swarmform-inputs/ipc-group-write-engineering-operational-state-admission.json",
         "refinement_history": [
           {
             "model_result": {
@@ -5753,6 +5753,13 @@
           },
           "finding": "Prefilling each existing calibration table with its 160 already supplied private records preserves broadly relevant published tables, but does not produce sustained communication in this rollout. All three actors apply the two real source revisions and publish all three releases. All 29 retained-delivery queries address their own processor; there is no foreign get or queue permission change. Aster drafts code to inspect shared workstation releases, observes only local files, then removes that branch; it also reads three processors' automatic status counters without requesting their content or creating a state convention. Final packages retain 160 local records, cover 80/160 required types and pass 400/800 independent probes each.",
           "unique_received_field_value_bytes": 0
+        },
+        "pending_refinement": {
+          "input_sha256": "1182b7ae211bc5911007ed6bb1554a7866589e9e999f874d787a5194952295a9",
+          "source_commit": "0e6714f6f7acaee423da78e69b97bb2aa4954bec",
+          "baseline_identifier": "swarmform-ipc-retained-overlap-existing-table-engineering-state-01-sol61",
+          "round": 5,
+          "change": "Enable existing processor-group requests for Engineering state: distinct UIDs retain ownership, common GID63000 and request/reply0620 allow existing requests and replies. Status0644 remains readable. Tasks, overlap catalogs, private160-record tables, all sources and revisions are unchanged. This removes a latent permission barrier; the prior run had no foreign attempt or EACCES. Payload reads and foreign-write alternatives require exact native sender attribution."
         }
       },
       "shared_ipc/operational_state/Financial Analysis": {
@@ -11370,7 +11377,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-engineering-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-knowledge-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-engineering-state-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-overlap-existing-table-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-engineering-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-http-detail-knowledge-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-http-detail-engineering-timing-01-sol61",
@@ -11401,7 +11407,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-knowledge-timing-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 41,
+  "frozen_registration_count": 42,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
