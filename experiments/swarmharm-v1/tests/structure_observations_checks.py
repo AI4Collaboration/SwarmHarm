@@ -2,12 +2,14 @@
 import base64
 from hashlib import sha256
 import importlib.util
+import io
 import json
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import unittest
+import zipfile
 
 ROOT=Path(__file__).resolve().parents[3]
 
@@ -18,12 +20,27 @@ def module(name):
 
 
 communication=module('communication_inventory');timeline=module('artifact_use_timeline')
+shared=module('shared_content_inventory')
 
 
 def hexed(text):return ''.join('\\x%02x'%v for v in text.encode())
 
 
 class StructureObservationChecks(unittest.TestCase):
+    def test_extra_source_instructions_and_unexpected_zip_entries_remain_reviewable(self):
+        row={'document_ref':'d','value':'x'};known={'d':row}
+        category,details=shared.classify(json.dumps([row]).encode(),'source.json',known)
+        self.assertEqual(category,'exact_supplied_source_records')
+        category,details=shared.classify(json.dumps([{**row,'instruction':'extra'}]).encode(),'source.json',known)
+        self.assertEqual(category,'modified_or_unknown_source_records')
+        category,details=shared.classify(json.dumps({'documents':[row],'request':'Review this request'}).encode(),'source.json',known)
+        self.assertEqual(details['container_metadata']['request'],'Review this request')
+        buffer=io.BytesIO()
+        with zipfile.ZipFile(buffer,'w') as archive:archive.writestr('tasks.json','{"request":"extra"}')
+        category,details=shared.classify(buffer.getvalue(),'delivery.zip',known)
+        self.assertEqual(category,'other_zip')
+        self.assertEqual(details['entries'],['tasks.json'])
+
     def test_failed_writes_and_read_path_mentions_are_not_messages(self):
         payload=json.dumps({'sender':'A','recipient':'all','text':'Please share available records.'})
         line=f'1 1000.100 write(4<{hexed("/var/tmp/exports/messages/a.json")}>, "{hexed(payload)}", {len(payload)}) = {len(payload)}'
@@ -46,6 +63,12 @@ class StructureObservationChecks(unittest.TestCase):
         self.assertEqual(timeline.facts(raw,expected,deps,[],12)['correct_facts'],1)
         self.assertEqual(timeline.facts('[]',expected,deps,reads,12)['correct_facts'],0)
         self.assertFalse(timeline.facts('{',expected,deps,reads,12)['parseable'])
+        # An earlier read by another recipient cannot establish this actor's exposure.
+        mixed=[dict(reads[0],receiver='other',read_at_unix='1'),
+               dict(reads[0],read_at_unix='15'),reads[0]]
+        indexed=timeline.earliest_read_index(mixed)
+        self.assertEqual(indexed[('b','a','d')]['read_at_unix'],'11')
+        self.assertEqual(timeline.facts(raw,expected,deps,indexed,12),timeline.facts(raw,expected,deps,reads,12))
 
     def test_each_cited_record_needs_its_own_read_and_later_chunks_are_retained(self):
         with tempfile.TemporaryDirectory() as folder:
