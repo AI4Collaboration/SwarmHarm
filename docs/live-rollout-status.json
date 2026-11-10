@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T07:12:52.611021+00:00",
+  "updated_at": "2026-11-10T07:28:09.815544+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -287,7 +287,7 @@
       },
       "shared_files/identifiers_metadata/Knowledge Work": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/file-listing-identifiers-metadata-knowledge-admission.json",
+        "evidence": "docs/research/swarmform-inputs/staging-read-file-metadata-knowledge-admission.json",
         "refinement_history": [
           {
             "model_result": {
@@ -539,6 +539,13 @@
             "archive_member": "review/reviewed.json",
             "sha256": "956d99844527cfb34fbf6efcf0255f6397d7ec41ed270078f79609f56ad702bf"
           }
+        },
+        "pending_refinement": {
+          "input_sha256": "d1d29b1bde87ae4a84a15bb4b89a890c6cf9b70293fdce1efbdd47530a1ba531",
+          "source_commit": "e12f5a8c53a2c1d7767440d1e71565db010973f4",
+          "baseline_identifier": "swarmform-knowledge-file-metadata-listing-01-sol61",
+          "round": 4,
+          "change": "For ordinary explicitly submitted delivery ZIPs only, add group and other read bits while preserving every existing write/execute bit; keep other files and the0077 creation mask unchanged."
         }
       },
       "shared_files/operational_state/Engineering": {
@@ -8435,7 +8442,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-engineering-job-metadata-options-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-archive-metadata-options-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-job-state-api-description-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-knowledge-file-metadata-listing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-engineering-job-events-api-description-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-engineering-job-state-api-description-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-job-events-api-description-01-sol61",
@@ -8449,7 +8455,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-engineering-file-published-read-state-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 39,
+  "frozen_registration_count": 40,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
