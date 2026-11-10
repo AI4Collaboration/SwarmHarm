@@ -13,6 +13,61 @@ def read(path):
     return json.loads(path.read_text())
 
 
+def missing_native_indexes(root, folder, completion):
+    """Index retained RPC content when fatal cleanup omitted a session export.
+
+    This is an explicitly derived review file, never a replacement session or
+    an assertion that an interrupted response completed. Every retained item
+    keeps its original source hash and server-emission timestamp.
+    """
+    overrides, evidence = {}, {}
+    for actor, state in completion['actors'].items():
+        native = root/'natural'/actor/'codex'
+        if (native/'session.jsonl').exists():
+            continue
+        paths = sorted((native/'native').glob('*.json'))
+        if not paths:
+            raise ValueError('No native stream for missing session export: '+actor)
+        thread = state['codex_session']['session_id']
+        records, sources = [], {}
+        for path in paths:
+            raw = path.read_bytes()
+            source = {'path': str(path.relative_to(root)), 'sha256': sha256(raw).hexdigest()}
+            sources[source['path']] = source['sha256']
+            record = json.loads(raw)
+            message = record['message']
+            params = message.get('params') or {}
+            if params.get('threadId') and params['threadId'] != thread:
+                raise ValueError('Native fallback thread identity differs')
+            item = params.get('item') or {}
+            if record.get('direction') != 'server' or message.get('method') != 'rawResponseItem/completed':
+                continue
+            if item.get('type') not in ('message', 'function_call', 'function_call_output'):
+                continue
+            if params.get('threadId') != thread:
+                raise ValueError('Native content has no matching thread identity')
+            emitted = message.get('emittedAtMs')
+            if not isinstance(emitted, (int, float)):
+                raise ValueError('Native content item has no actual emission time')
+            records.append({'type': 'response_item',
+                'record_kind': 'derived_native_content_index',
+                'timestamp': datetime.fromtimestamp(emitted/1000, timezone.utc).isoformat(),
+                'payload': item, 'source_native_record': source})
+        if not records:
+            raise ValueError('Missing session stream contains no completed content items')
+        target = folder/('derived-native-'+actor+'.jsonl')
+        if target.exists():
+            raise FileExistsError('Preserve previous native index')
+        target.write_text(''.join(json.dumps(r, ensure_ascii=False)+'\n' for r in records))
+        overrides[actor] = target
+        evidence[actor] = {'missing_original_export': str((native/'session.jsonl').relative_to(root)),
+            'derived_index': str(target.relative_to(root)),
+            'derived_index_sha256': sha256(target.read_bytes()).hexdigest(),
+            'indexed_content_items': len(records), 'raw_stream_files': sources,
+            'scope': 'Original session export is absent. Completed content items only are indexed verbatim from retained native RPC events; reasoning and other protocol events remain in raw evidence. Emission times are server event times, not inferred completion times. No missing output, usage or final response is fabricated.'}
+    return overrides, evidence
+
+
 def shared_versions(root):
     versions = {}
     snapshot_count = 0
@@ -96,8 +151,11 @@ def review(root, folder):
     folder.mkdir(parents=True)
     artifacts = shared_versions(root)
     usage = usage_review(root, completion)
-    messages = communication_inventory.inventory(root)
-    retained = {'shared-versions': artifacts, 'usage': usage, 'communications': messages}
+    native_overrides, native_indexes = missing_native_indexes(root, folder, completion)
+    messages = communication_inventory.inventory(root, native_overrides=native_overrides)
+    retained = {'shared-versions': artifacts, 'usage': usage, 'communications': messages,
+                'native-export-coverage': {'session_export_complete': not native_indexes,
+                    'missing_exports': sorted(native_indexes), 'derived_content_indexes': native_indexes}}
     refs = {}
     for name, value in retained.items():
         path = folder/(name+'.json')
@@ -108,6 +166,8 @@ def review(root, folder):
         'condition': registration['condition'], 'population': registration['population'],
         'completion_reason': completion['reason'], 'failure': completion.get('failure'),
         'actor_evidence_complete': coverage['actor_evidence_complete'],
+        'native_session_export_complete': not native_indexes,
+        'missing_session_exports': sorted(native_indexes),
         'shared_versions': len(artifacts['versions']), 'recognized_message_writes': len(messages['messages']),
         'actual_native_calls': sum(len(actor['calls']) for actor in messages['native'].values()),
         'observed_usage': usage['totals'], 'usage_reconciled': usage['all_reconcile'],

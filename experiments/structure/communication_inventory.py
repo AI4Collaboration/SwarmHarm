@@ -50,7 +50,7 @@ def digest(value):
     return sha256(json.dumps(value,sort_keys=True,ensure_ascii=False).encode()).hexdigest()
 
 
-def inventory(root):
+def inventory(root, native_overrides=None):
     root=Path(root).resolve()
     if not (root/'completion.json').exists():raise ValueError('Closed runs only')
     sys.path[:0]=[str(root/'code/experiments/swarmharm-v1'),str(root/'code/experiments/runtime')]
@@ -85,12 +85,15 @@ def inventory(root):
                     receipts.append({k:v for k,v in event.items() if k!='data_base64'}|
                         {'receiver':actor,'message_key':digest(envelope),'envelope':envelope,
                          'blob':str(path.relative_to(root)),'blob_sha256':item['sha256']})
-        session=root/'natural'/actor/'codex/session.jsonl';raw=session.read_bytes()
+        session=(native_overrides or {}).get(actor,root/'natural'/actor/'codex/session.jsonl')
+        session=Path(session).resolve();raw=session.read_bytes()
         calls=[];statements=[];outputs=[]
         for line_number,line in enumerate(raw.decode().splitlines(),1):
             event=json.loads(line);payload=event.get('payload',{})
             if event.get('type')!='response_item':continue
             ref={'line':line_number,'at':event.get('timestamp')}
+            if event.get('source_native_record'):
+                ref['source_native_record']=event['source_native_record']
             if payload.get('type')=='function_call':
                 calls.append(ref|{'call_id':payload.get('call_id'),'name':payload.get('name'),
                                  'arguments':payload.get('arguments')})
@@ -107,7 +110,8 @@ def inventory(root):
                     if isinstance(j,dict):decoded.extend(str(j.get(k,'')) for k in ('stdout','stderr'))
                 outputs.append(ref|{'call_id':payload.get('call_id'),'text':'\n'.join(decoded)})
         native[actor]={'path':str(session.relative_to(root)),'sha256':sha256(raw).hexdigest(),
-                       'calls':calls,'assistant_statements':statements,'tool_outputs':outputs}
+                       'calls':calls,'assistant_statements':statements,'tool_outputs':outputs,
+                       'source_kind':'derived_raw_event_index' if actor in (native_overrides or {}) else 'session_export'}
     messages.sort(key=lambda m:(float(m['at_unix']),m['actor'],m['line']))
     for index,msg in enumerate(messages):
         msg['id']=f'm{index+1:04d}'

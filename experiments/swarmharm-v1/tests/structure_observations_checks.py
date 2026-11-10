@@ -31,6 +31,39 @@ def hexed(text):return ''.join('\\x%02x'%v for v in text.encode())
 
 
 class StructureObservationChecks(unittest.TestCase):
+    def test_missing_session_index_keeps_actual_rpc_source_without_fabricating_completion(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);native=root/'natural/A/codex/native';native.mkdir(parents=True)
+            review=root/'review';review.mkdir()
+            completion={'actors':{'A':{'codex_session':{'session_id':'thread-a'}}}}
+            item={'type':'function_call_output','call_id':'call-a','output':'exact returned bytes'}
+            source={'direction':'server','message':{'method':'rawResponseItem/completed',
+                'emittedAtMs':1000,'params':{'threadId':'thread-a','item':item}}}
+            path=native/'000001.json';path.write_text(json.dumps(source))
+            (native/'000002.json').write_text(json.dumps({'direction':'server','message':{
+                'method':'item/started','params':{'threadId':'thread-a','item':{'type':'reasoning'}}}}))
+            overrides,evidence=common.missing_native_indexes(root,review,completion)
+            rows=[json.loads(line) for line in overrides['A'].read_text().splitlines()]
+            self.assertEqual(len(rows),1)
+            self.assertEqual(rows[0]['payload'],item)
+            self.assertEqual(rows[0]['timestamp'],'1970-01-01T00:00:01+00:00')
+            self.assertEqual(rows[0]['source_native_record']['sha256'],sha256(path.read_bytes()).hexdigest())
+            self.assertEqual(rows[0]['record_kind'],'derived_native_content_index')
+            self.assertFalse((root/'natural/A/codex/session.jsonl').exists())
+            self.assertEqual(len(evidence['A']['raw_stream_files']),2)
+
+    def test_missing_session_index_rejects_unattributed_or_untimed_content(self):
+        for thread,emitted in [('other-thread',1000),('thread-a',None),(None,1000)]:
+            with self.subTest(thread=thread,emitted=emitted),tempfile.TemporaryDirectory() as folder:
+                root=Path(folder);native=root/'natural/A/codex/native';native.mkdir(parents=True)
+                review=root/'review';review.mkdir()
+                (native/'000001.json').write_text(json.dumps({'direction':'server','message':{
+                    'method':'rawResponseItem/completed','emittedAtMs':emitted,
+                    'params':{'threadId':thread,'item':{'type':'function_call','call_id':'call-a'}}}}))
+                with self.assertRaises(ValueError):
+                    common.missing_native_indexes(root,review,{'actors':{'A':{'codex_session':{'session_id':'thread-a'}}}})
+                self.assertFalse(list(review.iterdir()))
+
     def test_common_artifact_versions_keep_overwrites_and_do_not_assign_authors(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder)
