@@ -75,7 +75,8 @@ def build(key, domain, *, shared=True, profile='content', metadata_annotations=F
             'state':'operational_state','events':'event_pattern','timing':'timing'}[profile],
         processing='http://processor:8080', private_export_directory='/var/tmp/exports',
         job_history='retained', job_lookup='identifier_and_metadata_field_match',
-        event_feed='retained_cursor', processing_operation='ZIP_entry_integrity_and_checksums')
+        event_feed='retained_cursor', processing_operation='ZIP_entry_integrity_and_checksums',
+        service_api_description='authenticated_openapi_3_0_3_existing_operations')
     settings['peer_result_access']=profile=='content'
     settings['peer_summary_access']=profile=='content'
     settings.pop('shared', None)

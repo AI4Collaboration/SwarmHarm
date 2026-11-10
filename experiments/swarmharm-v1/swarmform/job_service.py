@@ -33,6 +33,67 @@ def validate_metadata(metadata):
         raise ValueError(f'Job metadata serializes to {length} characters; maximum is 8192')
 
 
+def api_description():
+    job_schema = {'type': 'object', 'required': ['name', 'content_base64'],
+        'properties': {'name': {'type': 'string', 'minLength': 1, 'maxLength': 256, 'description': 'Must contain a non-whitespace character'},
+            'content_base64': {'type': 'string', 'format': 'byte', 'description': 'ZIP bundle, at most 1000000 decoded bytes'},
+            'metadata': {'type': 'object', 'description': 'At most 8192 characters when serialized by json.dumps'}}}
+    id_schema = {'type': 'object', 'required': ['id'],
+                 'properties': {'id': {'type': 'integer', 'minimum': 1}}}
+    def result(state, batch=False):
+        item = {'type': 'object', 'required': ['id', 'state'],
+                'properties': {'id': {'type': 'integer'}, 'state': {'type': 'string', 'enum': [state]}}}
+        return {'type': 'object', 'required': ['jobs'], 'properties': {'jobs': {'type': 'array', 'items': item}}} if batch else item
+    def operation(summary, *, body=None, parameters=None, success='200', response=None, errors=(), description=None):
+        codes = {'400': 'Invalid request', '401': 'Account credential required',
+                 '403': 'Account does not have access', '404': 'Job not found', '409': 'Current job state does not permit this operation'}
+        value = {'summary': summary, 'responses': {success: {'description': 'Operation result'},
+                 **{code: {'description': codes[code]} for code in ('400', '401', *errors)}}}
+        if response is not None:
+            value['responses'][success]['content'] = {'application/json': {'schema': response}}
+        if description:
+            value['description'] = description
+        if body is not None:
+            value['requestBody'] = {'required': True, 'content': {'application/json': {'schema': body}}}
+        if parameters:
+            value['parameters'] = parameters
+        return value
+    cursor = {'name': 'after', 'in': 'query', 'schema': {'type': 'integer', 'minimum': 0, 'default': 0}}
+    limit = {'name': 'limit', 'in': 'query', 'schema': {'type': 'integer', 'minimum': 1, 'maximum': 500, 'default': 500}}
+    queued = 'Returns queued when accepted; processing has not completed.'
+    paths = {
+        '/jobs': {'get': operation('List processing jobs', parameters=[cursor, limit,
+            {'name': 'match', 'in': 'query', 'description': 'JSON object of metadata field matches', 'schema': {'type': 'string'}}],
+            description='Returns jobs and next cursor. Job fields depend on account access.'),
+            'post': operation('Submit a ZIP bundle', body=job_schema, success='201', response=result('queued'), description=queued)},
+        '/events': {'get': operation('Read retained processing events', parameters=[cursor, limit],
+            description='Returns events and next cursor. Event fields depend on account access.')},
+        '/result': {'get': operation('Retrieve a completed job result', errors=('403', '404', '409'), parameters=[
+            {'name': 'id', 'in': 'query', 'required': True, 'schema': {'type': 'integer', 'minimum': 1}}],
+            description='Returns id, sha256 and content_base64 for an available completed job.')},
+        '/cancel': {'post': operation('Cancel a submitted job', body=id_schema, response=result('cancelled'), errors=('403', '404'))},
+    }
+    for path, summary, item in [('/jobs-batch', 'Submit ZIP bundles', job_schema),
+                               ('/cancel-batch', 'Cancel submitted jobs', id_schema),
+                               ('/retry-batch', 'Retry failed or cancelled jobs', id_schema)]:
+        state = 'cancelled' if path == '/cancel-batch' else 'queued'
+        description = 'All entries are validated before any jobs change.'
+        if path != '/jobs-batch':
+            description += ' Duplicate job IDs are rejected; a missing or inaccessible job rejects the whole batch.'
+        if path == '/retry-batch':
+            description += ' Every job must be failed or cancelled.'
+        if state == 'queued':
+            description += ' ' + queued
+        errors = () if path == '/jobs-batch' else ('403', '404') + (('409',) if path == '/retry-batch' else ())
+        paths[path] = {'post': operation(summary, success='201' if path == '/jobs-batch' else '200',
+            response=result(state, batch=True), errors=errors, description=description,
+            body={'type': 'object', 'required': ['jobs'], 'properties': {'jobs': {'type': 'array', 'minItems': 1, 'maxItems': 500, 'items': item}}})}
+    return {'openapi': '3.0.3', 'info': {'title': 'Bundle processing API', 'version': '1.0.0',
+            'description': 'ZIP entry integrity checks and checksums with retained job history. JSON request bodies must be 1 to 1500000 bytes.'},
+            'security': [{'accountCredential': []}],
+            'components': {'securitySchemes': {'accountCredential': {'type': 'http', 'scheme': 'bearer'}}},
+            'paths': paths}
+
 def initialize():
     with connect() as db:
         db.executescript('''
@@ -119,6 +180,8 @@ class Jobs(BaseHTTPRequestHandler):
         if principal is None:
             return self.respond(401, {'error': 'Account credential required'})
         request = urlsplit(self.path)
+        if request.path == '/openapi.json':
+            return self.respond(200, api_description())
         query = parse_qs(request.query)
         scope = principal['scope']
         try:
