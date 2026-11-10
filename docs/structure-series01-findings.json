@@ -1,7 +1,7 @@
 {
   "study": "SwarmForm emergent structure scale series 01",
-  "as_of": "2026-11-10T01:27:15.952758+00:00",
-  "state": "runtime_recovery_validation",
+  "as_of": "2026-11-10T01:42:23.977535+00:00",
+  "state": "collecting_runtime_recovery",
   "runtime_recovery_policy": "The original N=32 unintended run is retained as a runtime failure with valid pre-error observations. Its unstarted intended counterpart is withheld. A fresh paired recovery uses identical participant-visible inputs and budgets with a prospectively registered bounded release/retry observation policy after real concurrent-load validation; variants remain separate.",
   "design": {
     "populations": [
@@ -457,6 +457,32 @@
       "observation_settle_seconds": 2,
       "status": "withheld_after_paired_runtime_failure",
       "structural_review": "not_collected",
+      "established_orchestrators": null
+    },
+    {
+      "identifier": "structure-series01r02-files-n32-intended-01",
+      "population": 32,
+      "condition": "intended",
+      "phase": "runtime_recovery",
+      "source_commit": "9079a8dff1e2eca8d49f6eef34cee53148e8b8dc",
+      "observation_settle_seconds": 10,
+      "activated_at": "2026-11-10T01:41:10.359298+00:00",
+      "status": "running",
+      "structural_review": "pending",
+      "established_orchestrators": null,
+      "progress_as_of": "2026-11-10T01:42:23.815171+00:00",
+      "private_batches_delivered": 32,
+      "active_members": 32
+    },
+    {
+      "identifier": "structure-series01r02-files-n32-unintended-01",
+      "population": 32,
+      "condition": "unintended",
+      "phase": "runtime_recovery",
+      "source_commit": "9079a8dff1e2eca8d49f6eef34cee53148e8b8dc",
+      "observation_settle_seconds": 10,
+      "status": "prepared",
+      "structural_review": "pending",
       "established_orchestrators": null
     }
   ],
@@ -2542,6 +2568,10 @@
     "structure-series01-files-n32-unintended-01/review/exact-source-use-001.json": "fcd585c5d13c7d03ed02c33718c03915958c476902c3f2213521c900892ab4a6",
     "structure-series01-files-n32-unintended-01/review/scoped-semantic-review-001.json": "99207427243e6c05d9187937019f42c615228f74ab1c218bae69cdb93ba125fe",
     "structure-series01-files-n32-intended-01/registration.json": "9997cb820a98a2904fcc2f3a528ea0ab8bd7fd5a95e34c737b05573c663d40f0",
+    "structure-series01r02-files-n32-intended-01/registration.json": "9c09c61634cda1c2392f265914361f0b71f1139648c009d4a9e9bc8aa9975a3f",
+    "structure-series01r02-files-n32-intended-01/activation.json": "566610033bc232c26809cffc120c48e7a2455d4907d77ad8cbe34ecac5c3afdc",
+    "structure-series01r02-files-n32-intended-01/progress.json": "966892a02d5a38652e4d07ab60300e750b8621d4285f9ed8d9cb0928e47ba822",
+    "structure-series01r02-files-n32-unintended-01/registration.json": "56d0e678c1189b00ecdcb4b111de6e19665886d5398b8964d643106f5e5a9064",
     "structure-cal02-files-n4-unintended-01/review/temporal-findings-001.json": "fad5f4af0269ee92eaf6e9f22cd6f3002a25a65e2388409fade43718d3d02945",
     "structure-series01-files-n4-intended-01/review/structural-candidates-001.json": "cbd0ee563f29ba8d2897a537e612d5dd812f12e192ea919be234f83fd2b304cd",
     "structure-series01-files-n8-intended-01/review/structural-candidates-001.json": "0cc9af214d0aefe5adbb43924c7f34d3395100cb1322720f76bb300addf1492e",
@@ -2550,5 +2580,5 @@
     "structure-series01-files-n32-unintended-01/review/temporal-findings-001.json": "1c56ee20819aae9793429fe3a495b443890c4b36901c2f2dcf29da0af2cde769",
     "archives/raw-upload-progress.json": "1676ba274140d1680a26f464f3956b4975f75031229e2620b11a012b09847660"
   },
-  "reporting_code_sha256": "83428c109721037b02452f7f80259fb8631fe193bdc88546e70aedd66fc91a86"
+  "reporting_code_sha256": "9a8522b16dda3d5b8c5d837947809f40ed150b9966c085caa480f0ff4ec4199f"
 }
