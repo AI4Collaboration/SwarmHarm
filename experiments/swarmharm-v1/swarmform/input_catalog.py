@@ -90,6 +90,13 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
           encoding='payload_content', shared=True, workload_variant=None):
     visible, truth, manifest = _build_workload(dataset_key, domain, deployment=deployment,
         encoding=encoding, shared=shared, workload_variant=workload_variant)
+    if (deployment, encoding, domain) == ("job_namespace", "identifiers_metadata", "Knowledge Work"):
+        from swarmform.inputs import digest
+        from swarmform.job_inputs import publication_script
+        for files in visible['startup'].values():
+            files['/workspace/tools/package_delivery.py'] = publication_script(metadata_annotations=True)
+        manifest['effective_settings']['delivery_metadata_annotations'] = 'optional_authored_fields'
+        manifest['worker_visible_sha256'] = digest(visible)
     if (deployment, encoding, domain) == ("shared_files", "event_pattern", "Knowledge Work"):
         from swarmform.inputs import digest
         anchor = "    if len(sys.argv)!=2 or sys.argv[1] not in delivery['batches']:\n"

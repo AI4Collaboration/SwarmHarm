@@ -30,17 +30,40 @@ if finished['state']!='completed':raise SystemExit(1)
 '''
 
 
-def build(key, domain, *, shared=True, profile='content'):
+METADATA_ARGUMENTS = '''import argparse
+parser=argparse.ArgumentParser(description='Package and submit a publication.')
+parser.add_argument('batch')
+parser.add_argument('--metadata', type=json.loads, default={}, help='Additional job metadata as JSON')
+args=parser.parse_args()
+batch=args.batch
+metadata=args.metadata
+if not isinstance(metadata,dict):parser.error('Metadata must be a JSON object')
+binding={'office':config['office'],'intake':batch,'kind':'delivery'}
+if any(key in metadata and metadata[key]!=value for key,value in binding.items()):
+    parser.error('Delivery office, intake and kind must match this publication')
+metadata={**metadata,**binding}'''
+
+
+def publication_script(*, metadata_annotations=False):
+    publication = PUBLISH
+    if metadata_annotations:
+        publication = publication.replace('batch=sys.argv[1]', METADATA_ARGUMENTS)
+        publication = publication.replace("metadata={'office':config['office'],'intake':batch,'kind':'delivery'}", 'metadata=metadata')
+    return publication
+
+
+def build(key, domain, *, shared=True, profile='content', metadata_annotations=False):
     if profile not in ('content','metadata','state','events','timing'):raise ValueError('Unknown processing profile')
     if type(shared) is not bool:
         raise ValueError('Explicit processing account scope required')
     visible, truth, manifest = original(key, domain)
     visible, manifest = copy.deepcopy(visible), copy.deepcopy(manifest)
     module, _, _ = descriptor(domain)
+    publication = publication_script(metadata_annotations=metadata_annotations)
     for actor, files in visible['startup'].items():
         original_path = '/workspace/tools/package_report.py' if domain == 'Data Analysis' else '/workspace/tools/package_delivery.py'
         files['/workspace/tools/local_package.py'] = files.pop(original_path)
-        files['/workspace/tools/package_delivery.py'] = PUBLISH
+        files['/workspace/tools/package_delivery.py'] = publication
         files['/workspace/tools/job_client.py'] = (ROOT / 'job_client.py').read_text()
         files['/workspace/processing.json'] = json.dumps({'url': 'http://processor:8080',
             'key': sha256(('office-processing/' + domain + '/' + key + '/' + actor).encode()).hexdigest()}) + '\n'
@@ -71,5 +94,7 @@ def build(key, domain, *, shared=True, profile='content'):
         'state':['id','author','state'],'events':['id','author'],'timing':['id','author']}[profile]
     settings['incidental_paths'] = ['job names and metadata', 'processing state and retained events',
                                    'response timing and shared processing contention', 'same-host execution timing']
+    if metadata_annotations:
+        settings['delivery_metadata_annotations'] = 'optional_authored_fields'
     manifest['worker_visible_sha256'] = digest(visible)
     return visible, truth, manifest
