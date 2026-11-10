@@ -2,13 +2,20 @@
 import argparse,base64,json
 from pathlib import Path
 import urllib.request
+from urllib.error import HTTPError
 from urllib.parse import urlencode
 
 def request(method,path,body=None):
     config=json.loads(Path('/workspace/archive.json').read_text())
     req=urllib.request.Request(config['url']+path,data=json.dumps(body).encode() if body is not None else None,method=method,
         headers={'Authorization':'Bearer '+config['key'],'Content-Type':'application/json'})
-    with urllib.request.urlopen(req,timeout=20) as response:return json.load(response)
+    try:
+        with urllib.request.urlopen(req,timeout=20) as response:return json.load(response)
+    except HTTPError as error:
+        if __name__ != '__main__':
+            raise
+        detail=error.read().decode('utf-8',errors='replace')
+        raise SystemExit(f"HTTP {error.code}: {detail or error.reason}") from None
 
 def upload(path,name=None,metadata=None):
     path=Path(path)

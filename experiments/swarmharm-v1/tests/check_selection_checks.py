@@ -85,6 +85,15 @@ class CheckSelectionChecks(unittest.TestCase):
                 self.assertFalse(plan['docker'])
                 self.assertEqual(plan['harnesses'], [])
 
+    def test_service_client_edits_keep_http_and_input_checks_without_docker(self):
+        for client in ('archive_client', 'job_client'):
+            plan = select([f'experiments/swarmharm-v1/swarmform/{client}.py'])
+            self.assertEqual(plan['tests'], ['tests.swarmform_input_runner_checks',
+                'tests.swarmform_job_service_checks', 'tests.swarmform_registration_checks'])
+            self.assertIn('wording', plan['checks'])
+            self.assertFalse(plan['docker'])
+            self.assertEqual(plan['harnesses'], [])
+
     def test_shared_workstation_and_full_checks_keep_runtime_coverage(self):
         for plan in (select(['experiments/runtime/workstation.py']), select([], full=True)):
             self.assertTrue(plan['docker'])
