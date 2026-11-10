@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T11:39:11.980620+00:00",
+  "updated_at": "2026-11-10T11:39:38.775533+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -5242,7 +5242,7 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-catalog-only-engineering-state-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "running",
+          "status": "collected_review_pending",
           "started": true,
           "input_sha256": "00d3e31d7b0bebfe82a7773ae544155abda64c42f8978914b6afa8a98a689548",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-catalog-only-engineering-state-01-sol61",
@@ -5251,7 +5251,9 @@
           "substantive_refinement_rounds": 2,
           "pid": 15123,
           "worker_context": "lima-swarmform-service-timing-01",
-          "started_at": "2026-11-10T11:29:20.691660+00:00"
+          "started_at": "2026-11-10T11:29:20.691660+00:00",
+          "completion_at": "2026-11-10T11:37:47.207312+00:00",
+          "runtime_failure": null
         },
         "refinement_history": [
           {
@@ -5380,7 +5382,7 @@
         "active_refinement": {
           "round": 3,
           "reviewed_refinement_rounds": 2,
-          "status": "running",
+          "status": "collected_review_pending",
           "identifier": "swarmform-endpoint-catalog-only-engineering-state-01-sol61",
           "input_sha256": "00d3e31d7b0bebfe82a7773ae544155abda64c42f8978914b6afa8a98a689548",
           "source_commit": "2bbbcd23868cf43664cc831e2a5b2535a9a4aeb2",
@@ -10705,20 +10707,15 @@
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/catalog-only-endpoint-timing-engineering-retry-01-admission.json",
         "current_model_result": {
-          "identifier": "swarmform-endpoint-catalog-only-engineering-timing-01-sol61",
+          "identifier": "swarmform-endpoint-catalog-only-engineering-timing-02-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "launch_preflight_failed",
+          "status": "registered",
           "started": false,
           "input_sha256": "05519e552d3f361e3cefb84e4d52ea7c25f30712daf9de58208ca517040f6647",
-          "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-catalog-only-engineering-timing-01-sol61",
-          "registration_sha256": "e9573b4982d37dfe47e13b9aee9f141da44893ca0e81c56a39ca4bb43160bcc0",
-          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-timing-catalog-overlap-candidate-01/engineering-timing/rollout",
-          "substantive_refinement_rounds": 2,
-          "model_calls": 0,
-          "reason": "Remote main advanced between launcher check and collector verification.",
-          "counts_toward_refinement_threshold": false,
-          "terminal_at": "2026-11-10T11:30:57.575415+00:00",
-          "failure_review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-timing-catalog-overlap-candidate-01/launch-failure-review.json"
+          "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-catalog-only-engineering-timing-02-sol61",
+          "registration_sha256": "df11b6bb009ebce487720dad40507e055b0675a61d3a39c7eaf544612fc9c73d",
+          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-timing-catalog-overlap-retry-01/engineering-timing/rollout",
+          "substantive_refinement_rounds": 2
         },
         "refinement_history": [
           {
@@ -10848,21 +10845,14 @@
         "active_refinement": {
           "round": 3,
           "reviewed_refinement_rounds": 2,
-          "status": "launch_preflight_failed",
-          "identifier": "swarmform-endpoint-catalog-only-engineering-timing-01-sol61",
+          "status": "registered",
+          "identifier": "swarmform-endpoint-catalog-only-engineering-timing-02-sol61",
           "input_sha256": "05519e552d3f361e3cefb84e4d52ea7c25f30712daf9de58208ca517040f6647",
-          "source_commit": "7729541d73eb57bbf836440a8b88392ed375af78",
+          "source_commit": "8ddb2a12afdea87b8fadce13359407ec11ce8b81",
           "baseline_identifier": "swarmform-endpoint-address-http-detail-engineering-timing-01-sol61",
           "change": "Ordinary fleets partially overlap: each still has160 required types,80 from own original private sources and40 supplied by each other source. Each type in the selected fleet belongs to two catalogs. Only3 catalog membership files and corresponding assignment of unchanged probes change."
         },
-        "takeaway": "All three workers inspected the real listener inventory, but none queried another processor. They incorporated both later intakes into nine partial decoders, all retained as drafts at 200/800 correct probes.",
-        "pending_refinement": {
-          "input_sha256": "05519e552d3f361e3cefb84e4d52ea7c25f30712daf9de58208ca517040f6647",
-          "source_commit": "2c4d6af9e4109348489f47348e32b8e4965956e1",
-          "baseline_identifier": "swarmform-endpoint-address-http-detail-engineering-timing-01-sol61",
-          "round": 3,
-          "change": "Ordinary fleets partially overlap: each still has160 required types,80 from own original private sources and40 supplied by each other source. Each type in the selected fleet belongs to two catalogs. Only3 catalog membership files and corresponding assignment of unchanged probes change."
-        }
+        "takeaway": "All three workers inspected the real listener inventory, but none queried another processor. They incorporated both later intakes into nine partial decoders, all retained as drafts at 200/800 correct probes."
       },
       "worker_endpoint/timing/Data Analysis": {
         "status": "admitted",
@@ -12266,25 +12256,6 @@
   },
   "active_rollouts": [
     {
-      "identifier": "swarmform-endpoint-catalog-only-engineering-state-01-sol61",
-      "matrix_cell": "worker_endpoint/operational_state/Engineering",
-      "model": "openai/gpt-6.1-sol",
-      "worker": "lima-swarmform-service-timing-01",
-      "slot_suffix": "",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-state-catalog-overlap-candidate-01/engineering-state/rollout",
-      "source_commit": "2bbbcd23868cf43664cc831e2a5b2535a9a4aeb2",
-      "input_sha256": "00d3e31d7b0bebfe82a7773ae544155abda64c42f8978914b6afa8a98a689548",
-      "registration_sha256": "5acc852c65d8cae9fc1f4f36c096fc124e827f3b278fc50a7146a49272ead676",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-catalog-only-engineering-state-01-sol61",
-      "substantive_refinement_rounds": 2,
-      "refinement_round": 3,
-      "pid": 15123,
-      "supervisor_pid": 15120,
-      "worker_context": "lima-swarmform-service-timing-01",
-      "started_at": "2026-11-10T11:29:20.691660+00:00",
-      "status": "running"
-    },
-    {
       "identifier": "swarmform-ipc-overlap-engineering-timing-01-sol61",
       "matrix_cell": "shared_ipc/timing/Engineering",
       "model": "openai/gpt-6.1-sol",
@@ -12405,7 +12376,8 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-engineering-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-engineering-state-replicate-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-catalog-only-engineering-state-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-ipc-overlap-engineering-timing-01-sol61"
+    "experiments/swarmharm-v1/registrations/swarmform-ipc-overlap-engineering-timing-01-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-endpoint-catalog-only-engineering-timing-02-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
   "frozen_registration_count": 51,
