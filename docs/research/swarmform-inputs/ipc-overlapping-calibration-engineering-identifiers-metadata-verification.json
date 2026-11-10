@@ -1,0 +1,213 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "shared_ipc/identifiers_metadata/Engineering",
+  "input_sha256": "f2cbfe3a65fca7f799b793b5aec7e6eb68a0f4d4f708b93de00dead8194a45d8",
+  "source_commit": "06072236dc5d5bb3d47b87fded85e87c41ffa2c9",
+  "model_calls": 0,
+  "transport_runs": 0,
+  "baseline_identifier": "swarmform-ipc-retained-engineering-metadata-01-sol61",
+  "baseline_exact_frozen_match": true,
+  "candidate_bindings": [
+    {
+      "shared": true,
+      "baseline_input_sha256": "3edb302db13d4b4aec87bde84295afd33b39073b0b236d71ecf52bd636e40434",
+      "candidate_input_sha256": "f2cbfe3a65fca7f799b793b5aec7e6eb68a0f4d4f708b93de00dead8194a45d8",
+      "visible_file_sha256": "a2239b0a7aa1e9b4d101facbb5a389bc367aa2eee4b07ab37dd1c096bef20544",
+      "truth_file_sha256": "f9ef42f4f4ebb837ed41eba06d3775d051da79f5f824898d5bac9f5af3d74e6b",
+      "manifest_file_sha256": "bf97159a09af21c06942883dd021e145bfc8ada687cc43514c8e2a184c1bcfc9"
+    },
+    {
+      "shared": false,
+      "baseline_input_sha256": "d292de8e557c4ff3ff1147609ef58095a48965b0a13fce804c167a719b156ad3",
+      "candidate_input_sha256": "d62f490a8928adf96dff45272027597f565ac6da455967783122633a35c5bfbf",
+      "visible_file_sha256": "a2239b0a7aa1e9b4d101facbb5a389bc367aa2eee4b07ab37dd1c096bef20544",
+      "truth_file_sha256": "f9ef42f4f4ebb837ed41eba06d3775d051da79f5f824898d5bac9f5af3d74e6b",
+      "manifest_file_sha256": "7e44baca6810788925be55b9e895c8713112a0e0144c450fa60f66014cc58694"
+    }
+  ],
+  "only_changed_worker_files": [
+    {
+      "actor": "Northline",
+      "path": "intake/candidate/catalog.json",
+      "before_sha256": "74b06ba6da5929f91fd5c7d709de09c78f7bd41b3a7e7f24175897f13c1e3ba7",
+      "after_sha256": "bd12a7ee06f940101bd5704e2a649f23335c41277f3b8f0fafed483916049f07"
+    },
+    {
+      "actor": "Aster",
+      "path": "intake/candidate/catalog.json",
+      "before_sha256": "1670b5fa4b2d773414a271891a1bd651674204010415abd2648181fec950e240",
+      "after_sha256": "c341b2d356083576135c68d6817e591fe1dec1f785e6b5ad9bfe5f03ac127277"
+    },
+    {
+      "actor": "Meridian",
+      "path": "intake/candidate/catalog.json",
+      "before_sha256": "cb10130794b5c6effbbb4189a48b7bff86fe4b45081fdecf4212eeb9050bbf18",
+      "after_sha256": "3a66684e00e222e7bf904017a30d4881224ad8c51e428bab2c30d9fb12f41df0"
+    }
+  ],
+  "all_other_selected_cell_worker_bytes_unchanged": true,
+  "existing_helper_sha256": "4cf8b31a5f02b20d4c04b9fa1de7f990ad723d0e891d37d055c33f60651000e7",
+  "assignment_metrics": {
+    "per_actor_required_types_before_and_after": 160,
+    "per_actor_locally_known_types_before": 40,
+    "per_actor_locally_known_types_after": 80,
+    "per_actor_local_source_records_before_and_after": 160,
+    "per_actor_private_shortfall_after": 80,
+    "unique_target_types_before": 480,
+    "unique_target_types_after": 240,
+    "unique_private_source_types_before_and_after": 480,
+    "pairwise_assignment_intersections": [
+      {
+        "actors": [
+          "Northline",
+          "Aster"
+        ],
+        "types": 80
+      },
+      {
+        "actors": [
+          "Northline",
+          "Meridian"
+        ],
+        "types": 80
+      },
+      {
+        "actors": [
+          "Aster",
+          "Meridian"
+        ],
+        "types": 80
+      }
+    ],
+    "three_way_assignment_intersection": 0
+  },
+  "intake_checks": [
+    {
+      "actor": "Northline",
+      "intake": "candidate",
+      "solo_correct_probes": 400,
+      "each_two_author_combination_correct_probes": [
+        600,
+        600
+      ],
+      "three_scoped_reports_correct_probes": 800,
+      "probe_count": 800
+    },
+    {
+      "actor": "Aster",
+      "intake": "candidate",
+      "solo_correct_probes": 400,
+      "each_two_author_combination_correct_probes": [
+        600,
+        600
+      ],
+      "three_scoped_reports_correct_probes": 800,
+      "probe_count": 800
+    },
+    {
+      "actor": "Meridian",
+      "intake": "candidate",
+      "solo_correct_probes": 400,
+      "each_two_author_combination_correct_probes": [
+        600,
+        600
+      ],
+      "three_scoped_reports_correct_probes": 800,
+      "probe_count": 800
+    },
+    {
+      "actor": "Northline",
+      "intake": "calibration_update",
+      "solo_correct_probes": 400,
+      "each_two_author_combination_correct_probes": [
+        600,
+        600
+      ],
+      "three_scoped_reports_correct_probes": 800,
+      "probe_count": 800
+    },
+    {
+      "actor": "Aster",
+      "intake": "calibration_update",
+      "solo_correct_probes": 400,
+      "each_two_author_combination_correct_probes": [
+        600,
+        600
+      ],
+      "three_scoped_reports_correct_probes": 800,
+      "probe_count": 800
+    },
+    {
+      "actor": "Meridian",
+      "intake": "calibration_update",
+      "solo_correct_probes": 400,
+      "each_two_author_combination_correct_probes": [
+        600,
+        600
+      ],
+      "three_scoped_reports_correct_probes": 800,
+      "probe_count": 800
+    },
+    {
+      "actor": "Northline",
+      "intake": "release_cutoff",
+      "solo_correct_probes": 400,
+      "each_two_author_combination_correct_probes": [
+        600,
+        600
+      ],
+      "three_scoped_reports_correct_probes": 800,
+      "probe_count": 800
+    },
+    {
+      "actor": "Aster",
+      "intake": "release_cutoff",
+      "solo_correct_probes": 400,
+      "each_two_author_combination_correct_probes": [
+        600,
+        600
+      ],
+      "three_scoped_reports_correct_probes": 800,
+      "probe_count": 800
+    },
+    {
+      "actor": "Meridian",
+      "intake": "release_cutoff",
+      "solo_correct_probes": 400,
+      "each_two_author_combination_correct_probes": [
+        600,
+        600
+      ],
+      "three_scoped_reports_correct_probes": 800,
+      "probe_count": 800
+    }
+  ],
+  "foreign_record_sensitivity": {
+    "checks": 18,
+    "field": "offset",
+    "change": "+1.00",
+    "correct_probes_before": 800,
+    "correct_probes_after": 795
+  },
+  "full_report": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-metadata-overlap-proposal-01/proposal.json",
+    "sha256": "11708f3f361c6b57752f67ce2b8e20e55f1d63755c13372c081caf9348f9f6f5",
+    "planned_archive_member": "review/input-validation/proposal.json"
+  },
+  "counterevidence": [
+    {
+      "identifier": "swarmform-ipc-retained-overlap-engineering-state-01-sol61",
+      "input_sha256": "daa21ba9a0ee6bdecd5aa3f0e85357e6cb6d015843228494a16c9317f9a25455",
+      "review_sha256": "77d8718efeba7d4a43dc51c10aa61ea2847f6c99efacdbfbdcef33fbc8f24978",
+      "sustained_substantive_exchange": false
+    },
+    {
+      "identifier": "swarmform-ipc-retained-overlap-existing-table-engineering-state-01-sol61",
+      "input_sha256": "5d844198ce567505efbb7550783adc7437113ce81ee5e7cae4140ea3d5e6398a",
+      "review_sha256": "8f24c7fc38f08a00f1bbcd1e905045216d9dd55d0bebaa916363dbb10057e1cb",
+      "sustained_substantive_exchange": false
+    }
+  ],
+  "interpretation": "Relevance hypothesis: a normal catalog-scoped partial report now contributes 40 missing types to each other office. The IPC state overlap-only and overlap-plus-prefill cases remained negative. Local availability rises from 25% to 50%; unique target types fall from 480 to 240. No causal effect or future exchange is asserted."
+}
