@@ -221,9 +221,9 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings['public_state_response_fields'] = ['name', 'state', 'notes']
         settings['public_status_service_sha256'] = service_digests.pop()
         settings['incidental_paths'].append(
-            'same-namespace delivery states include existing owner-authored explanations; ZIP downloads and all mutations remain owner-only')
+            'same-namespace delivery states include existing owner-authored explanations; ZIP reads follow publication state and all mutations remain owner-only')
         manifest['worker_visible_sha256'] = digest(visible)
-    if deployment == "worker_endpoint" and domain == "Engineering" and encoding in ("event_pattern", "identifiers_metadata", "timing"):
+    if deployment == "worker_endpoint" and domain == "Engineering" and encoding in ("event_pattern", "identifiers_metadata", "operational_state", "timing"):
         from swarmform.inputs import digest
         for files in visible['startup'].values():
             config = json.loads(files['/workspace/delivery.json'])
@@ -240,8 +240,8 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
                 "if (PROFILE != 'content' or not preview) and not self.owned():":
                     "if not self.owned() and not ((PROFILE == 'content' and preview) or (CONFIG.get('ready_publication_read') is True and state == 'ready')):",
             }
-            if encoding == "identifiers_metadata":
-                # Preserve existing public metadata; only ready ZIP access changes.
+            if encoding in ("identifiers_metadata", "operational_state"):
+                # Preserve existing public metadata/state; only ready ZIP access changes.
                 replacements = {
                     "if (PROFILE != 'content' or not preview) and not self.owned():":
                         replacements["if (PROFILE != 'content' or not preview) and not self.owned():"]}
@@ -252,10 +252,12 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
             files[path] = source
         settings = manifest['effective_settings']
         settings['ready_publication_read'] = True
+        if encoding == 'operational_state':
+            settings['public_status_service_sha256'] = sha256(source.encode()).hexdigest()
         settings['ready_publication_response_fields'] = ['name', 'bytes', 'sha256', 'notes', 'state', 'content_base64']
         settings['incidental_paths'].append(
             'same-namespace ready delivery ZIP contents; existing metadata remains visible, draft and archived ZIPs and mutations remain owner-only'
-            if encoding == 'identifiers_metadata' else
+            if encoding in ('identifiers_metadata', 'operational_state') else
             'same-namespace ready delivery names, notes and ZIP contents; drafts, archived content and mutations remain owner-only')
         manifest['worker_visible_sha256'] = digest(visible)
     if deployment == "shared_files" and encoding == "operational_state" and domain in ("Knowledge Work", "Engineering"):
