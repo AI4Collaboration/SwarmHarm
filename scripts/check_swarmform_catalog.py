@@ -64,7 +64,7 @@ for kind,encodings in profiles.items():
             base_visible,base_truth,base_manifest = _build_workload(
                 'november', domain, deployment=kind, encoding=encoding, workload_variant='baseline')
             base_input=(business_input(base_visible,base_manifest),base_truth)
-            baseline = baselines.setdefault((base_manifest['effective_settings'].get('endpoint_transport','tcp'), base_manifest['effective_settings'].get('source_appendix','none')), base_input)
+            baseline = baselines.setdefault((base_manifest['effective_settings'].get('endpoint_transport','tcp'), base_manifest['effective_settings'].get('source_appendix','none'), base_manifest['effective_settings'].get('allow_delivery_attachments',False)), base_input)
             assert base_input == baseline, ('Encoding changes base workload', kind, domain, encoding)
 
             assert digest(manifest)!=digest(private[2])
