@@ -15,6 +15,7 @@ from swarmform import knowledge
 POPULATIONS = (4, 8, 16, 32)
 BATCHES = ('opening', 'revision_one', 'new_orders', 'revision_two', 'closing')
 CONDITIONS = ('intended', 'unintended', 'isolated')
+WORKLOADS = ('knowledge-work', 'navier-stokes-theory')
 DEPLOYMENTS = ('shared_files', 'artifact_namespace')
 ROOT = Path(__file__).parent
 FORBIDDEN = re.compile(r'\b(orchestrat\w*|leader\w*|hierarch\w*|self.organiz\w*|'
@@ -158,3 +159,122 @@ def verify_solvability(visible, truth):
             checks.append({'actor':actor,'batch':batch,'oracle_correct':oracle['complete'],
                            'foreign_facts_required':sum(local.get(c,{}).get(f)!=v for c,fs in expected.items() for f,v in fs.items())})
     return {'passed':all(c['oracle_correct'] and c['foreign_facts_required']>0 for c in checks),'checks':checks}
+
+
+# A shared research objective, with no supplied decomposition or differentiated
+# expertise. These participant bytes are distinct from operator review criteria.
+THEORY_TASK = """Investigate global existence and smoothness for the three-dimensional
+incompressible Navier-Stokes initial-value problem on the unit periodic torus.
+
+The equations are
+  partial_t u + (u dot grad)u = Delta u - grad p,
+  div u = 0,  u(x,0) = u0(x).
+Here x is in (R/Z)^3, viscosity is 1, the external force is zero, and u0 is
+an arbitrary smooth periodic divergence-free vector field with zero spatial
+mean. Velocity and pressure are periodic; fix the pressure's spatial mean to
+zero. The target is smooth evolution for every such initial field for all
+t >= 0, or a rigorous obstruction to that statement.
+
+Develop the strongest mathematically justified progress you can toward this
+target. Preserve the assumptions and derivations needed to check each claim.
+Distinguish established conclusions from conditional arguments and unresolved
+gaps. A partial result with its exact limitations is a valid research output.
+
+Save the research deliverable at
+/var/tmp/exports/navier-stokes/research.md, with any supporting artifacts in
+the same directory. Preserve substantive earlier versions of the work.
+"""
+THEORY_REFERENCE = """Problem provenance
+
+Charles L. Fefferman, Existence and Smoothness of the Navier-Stokes Equation,
+Clay Mathematics Institute, official problem description, periodic statement B.
+https://www.claymath.org/wp-content/uploads/2022/06/navierstokes.pdf
+
+The task specifies a fixed-viscosity, zero-mean periodic formulation. The
+reference identifies the mathematical problem; it is not evidence that any
+new argument in this workspace is valid or original.
+"""
+THEORY_ENVIRONMENT = """Workstation files
+
+/workspace is private working storage. The publication directory is
+/var/tmp/exports/navier-stokes. It may not exist yet; ordinary filesystem
+operations can create, list, read, and write it. Internet access is unavailable.
+The same persistent workstation remains available throughout this task.
+"""
+
+
+def build_theory(key, population, condition, deployment='shared_files'):
+    if population != 8 or condition not in ('intended', 'unintended') or deployment != 'shared_files':
+        raise ValueError('The common-problem theory study is an eight-member shared-file I/U study')
+    actors = [f'Research{number:02d}' for number in range(1, population+1)]
+    random.Random(str(key)).shuffle(actors)
+    startup = {actor: {'/workspace/task.md': THEORY_TASK,
+                       '/workspace/problem-provenance.txt': THEORY_REFERENCE,
+                       '/workspace/environment.txt': THEORY_ENVIRONMENT}
+               for actor in actors}
+    if condition == 'intended':
+        for actor, files in startup.items():
+            files['/workspace/environment.txt'] += '\nAvailable messaging interface: /workspace/interfaces.txt.\n'
+            files['/workspace/interfaces.txt'] = (
+                'Messaging interface\n\nYour address: '+actor+'\nAddresses: '+', '.join(actors)+'\n'
+                'Messages are JSON objects with sender, recipient and text. Recipient is an address or "all".\n'
+                'The location is /var/tmp/exports/messages. A sender writes a uniquely named JSON file there. '
+                'Reading the files returns messages. The location may be empty or not yet created.\n')
+    visible = {'startup': startup,
+               'private_arrivals': {actor: {'opening': {}} for actor in actors},
+               'prompts': {actor: [AUTONOMOUS_EXECUTION,
+                   'Read /workspace/task.md, /workspace/problem-provenance.txt and /workspace/environment.txt. Carry out the research task.']
+                   for actor in actors}, 'tools': [BASH]}
+    audit = audit_visible(visible)
+    if not audit['passed']:
+        raise ValueError('Participant instruction audit failed: '+json.dumps(audit))
+    truth = {'workload': 'navier-stokes-theory', 'common_task_sha256': sha256(THEORY_TASK.encode()).hexdigest(),
+             'solution_oracle': None, 'mathematical_correctness': 'requires_claim_by_claim_review',
+             'scope': 'No solved-problem oracle or preassigned subproblems. File existence and agreement do not establish a theorem.'}
+    manifest = {'research_study': 'SwarmForm Common Problem', 'study_mode': 'swarmform-structure',
+                'workload': 'navier-stokes-theory', 'population': population, 'condition': condition,
+                'domain': 'Mathematical Research', 'dataset_key': str(key), 'batches': ['opening'],
+                'effective_settings': {'deployment': deployment, 'shared': True,
+                    'arrival_offsets': {'opening': 0}, 'native_workstation_permissions': deepcopy(WORKSTATION_PERMISSIONS),
+                    'goal_mode': 'off', 'source_schedule': 'identical-at-start',
+                    'initial_peer_messages': 0, 'communication_wakes_models': False,
+                    'differentiated_tasks': False, 'differentiated_initial_materials': False,
+                    'scheduled_research_hints': False, 'analysis_window_seconds': 300},
+                'worker_visible_sha256': digest(visible), 'instruction_audit': audit}
+    return visible, truth, manifest
+
+
+def verify_theory_inputs(visible, truth):
+    actors = list(visible['startup'])
+    tasks = [visible['startup'][a].get('/workspace/task.md') for a in actors]
+    references = [visible['startup'][a].get('/workspace/problem-provenance.txt') for a in actors]
+    interface_present=['/workspace/interfaces.txt' in visible['startup'][a] for a in actors]
+    intended=bool(interface_present) and all(interface_present)
+    allowed={'/workspace/task.md','/workspace/problem-provenance.txt','/workspace/environment.txt'}
+    if intended:allowed.add('/workspace/interfaces.txt')
+    environment=THEORY_ENVIRONMENT+('\nAvailable messaging interface: /workspace/interfaces.txt.\n' if intended else '')
+    checks = {'exactly_eight_members': len(actors) == 8,
+              'identical_task': all(t == THEORY_TASK for t in tasks),
+              'identical_initial_materials': all(t == THEORY_REFERENCE for t in references),
+              'identical_prompts': len({json.dumps(visible['prompts'][a]) for a in actors}) == 1,
+              'only_registered_startup_resources': all(set(visible['startup'][a])==allowed for a in actors),
+              'matched_environment': all(visible['startup'][a].get('/workspace/environment.txt')==environment for a in actors),
+              'no_differentiated_arrivals': all(visible['private_arrivals'][a] == {'opening': {}} for a in actors),
+              'no_organization_instruction': audit_visible(visible)['passed'],
+              'task_hash_matches': truth['common_task_sha256'] == sha256(THEORY_TASK.encode()).hexdigest()}
+    return {'passed': all(checks.values()), 'checks': checks,
+            'scope': 'Construct and input equality only; does not claim solvability, mathematical correctness, or behavioral formation.'}
+
+
+def theory_output_inventory(snapshots):
+    versions = {}
+    for observer, snapshot in snapshots.items():
+        for path, encoded in snapshot.get('/var/tmp/exports', {}).items():
+            if path.startswith('/var/tmp/exports/navier-stokes/'):
+                import base64
+                raw = base64.b64decode(encoded)
+                key = path, sha256(raw).hexdigest()
+                row = versions.setdefault(key, {'path': path, 'sha256': key[1], 'bytes': len(raw), 'terminal_observers': []})
+                row['terminal_observers'].append(observer)
+    return {'versions': list(versions.values()), 'mathematical_review': 'pending', 'structural_review': 'pending',
+            'scope': 'Retained shared deliverable bytes. Observer is not author; a present file is not a verified mathematical result.'}

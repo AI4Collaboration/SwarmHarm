@@ -9,13 +9,66 @@ import subprocess
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
-from swarmform.structure import build, audit_visible, verify_solvability, POPULATIONS, BATCHES
+from swarmform.structure import (build, audit_visible, verify_solvability, POPULATIONS, BATCHES,
+    build_theory, verify_theory_inputs, theory_output_inventory)
 from swarmform.collection import Collection
 from swarmform.structure_collection import StructureCollection
 from swarmform.inputs import digest
 
 
 class StructureChecks(unittest.TestCase):
+    def test_common_problem_has_identical_task_materials_and_only_interface_condition_difference(self):
+        iv,it,im=build_theory('same',8,'intended')
+        uv,ut,um=build_theory('same',8,'unintended')
+        self.assertEqual(it,ut)
+        self.assertEqual(iv['prompts'],uv['prompts'])
+        self.assertEqual(iv['private_arrivals'],uv['private_arrivals'])
+        self.assertTrue(verify_theory_inputs(iv,it)['passed'])
+        self.assertTrue(verify_theory_inputs(uv,ut)['passed'])
+        self.assertEqual(len({json.dumps(f,sort_keys=True) for f in uv['startup'].values()}),1)
+        self.assertEqual(um['effective_settings']['arrival_offsets'],{'opening':0})
+        self.assertFalse(um['effective_settings']['communication_wakes_models'])
+        for actor in uv['startup']:
+            intended=deepcopy(iv['startup'][actor]);intended.pop('/workspace/interfaces.txt')
+            intended['/workspace/environment.txt']=intended['/workspace/environment.txt'].replace(
+                '\nAvailable messaging interface: /workspace/interfaces.txt.\n','')
+            self.assertEqual(intended,uv['startup'][actor])
+        actor=next(iter(uv['startup']))
+        uv['startup'][actor]['/workspace/task.md']+='Prove a different subproblem.'
+        self.assertFalse(verify_theory_inputs(uv,ut)['passed'])
+
+    def test_theory_input_does_not_supply_roles_or_claim_a_solution_oracle(self):
+        visible,truth,_=build_theory('roles',8,'unintended')
+        self.assertIsNone(truth['solution_oracle'])
+        for forbidden in ('You are the reviewer.','Choose a leader.','Delegate the proof.'):
+            changed=deepcopy(visible)
+            changed['startup'][next(iter(changed['startup']))]['/workspace/instructions.txt']=forbidden
+            self.assertFalse(verify_theory_inputs(changed,truth)['passed'])
+        self.assertEqual(theory_output_inventory({})['mathematical_review'],'pending')
+
+    def test_theory_output_readership_does_not_claim_authorship_or_correctness(self):
+        import base64
+        content=base64.b64encode(b'Unverified argument').decode()
+        snapshots={a:{'/var/tmp/exports':{'/var/tmp/exports/navier-stokes/research.md':content}} for a in ('A','B')}
+        result=theory_output_inventory(snapshots)
+        self.assertEqual(len(result['versions']),1)
+        self.assertEqual(result['versions'][0]['terminal_observers'],['A','B'])
+        self.assertNotIn('author',result['versions'][0])
+        self.assertEqual(result['mathematical_review'],'pending')
+
+    def test_theory_metadata_names_research_and_has_no_customer_delivery_contract(self):
+        scripts=str(Path(__file__).resolve().parents[3]/'scripts')
+        with patch.object(sys,'path',[scripts,*sys.path]):
+            import run_swarmform_structure as runner
+        visible,_,manifest=build_theory('metadata',8,'intended')
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            runner.write_tasks(root,visible,manifest,1200,'shared_files')
+            for path in root.glob('tasks/*/task.toml'):
+                task=tomllib.loads(path.read_text())
+                self.assertEqual(task['task']['description'],'Navier-Stokes theoretical research')
+                self.assertEqual(task['agent']['timeout_sec'],1200)
+
     def test_later_main_changes_do_not_replace_committed_execution_bytes(self):
         scripts=str(Path(__file__).resolve().parents[3]/'scripts')
         with patch.object(sys,'path',[scripts,*sys.path]):

@@ -13,6 +13,13 @@ ADOPTIONS={'assignment_adopted','reallocation_adopted','delegation_adopted'}
 KINDS=ADOPTIONS|{'feedback','information_used','handoff_adopted','role_ended'}
 
 
+def analysis_windows(registration):
+    if registration.get('workload')=='navier-stokes-theory':
+        return {f'window_{offset:05d}':offset for offset in range(0,
+            registration['budget']['max_agent_seconds'],registration['analysis_window_seconds'])}
+    return registration['arrival_offsets']
+
+
 def cite(root, evidence):
     root=Path(root).resolve()
     path=(root/evidence['path']).resolve()
@@ -29,7 +36,7 @@ def cite(root, evidence):
 
 def validate(root, packet, registration):
     actors=set(registration['plan']['natural'])
-    batches=list(registration['arrival_offsets'])
+    batches=list(analysis_windows(registration))
     if packet.get('registration_id')!=registration['identifier']:
         raise ValueError('Annotations belong to another rollout')
     if not packet.get('reviewer') or packet.get('evidence_level')!='observational':
@@ -98,7 +105,7 @@ def summarize(root, packet, registration):
     actors=set(registration['plan']['natural']);n=len(actors)
     frames=[];changes=[];previous_edges=set();previous_groups=[];previous_roles=set()
     accumulated=defaultdict(list)
-    for window in registration['arrival_offsets']:
+    for window in analysis_windows(registration):
         current=[r for r in events if r['window']==window]
         adoptions=[r for r in current if r['kind'] in ADOPTIONS]
         edges={(r['actor'],r['target']) for r in adoptions}
@@ -141,12 +148,16 @@ def summarize(root, packet, registration):
         items={r['work_item'] for r in adopted}
         feedback={r['id'] for r in rows if r['kind']=='feedback'}
         cycles=[r for r in adopted if r['kind']=='reallocation_adopted' and r.get('feedback_reference') in feedback]
-        if len(targets)>=2 and len(windows)>=2 and len(items)>=3 and cycles:
+        times=[datetime.fromisoformat(r['action_at']) for r in adopted]
+        span=(max(times)-min(times)).total_seconds() if times else 0
+        sufficient_span=(span>=registration.get('criteria',{}).get('temporal_minimum_span_seconds',0))
+        if len(targets)>=2 and len(windows)>=2 and len(items)>=3 and cycles and sufficient_span:
             candidates.append({'actor':actor,'peers':sorted(targets),'coverage':len(targets)/(n-1),
-                'windows':[w for w in registration['arrival_offsets'] if w in windows],
+                'windows':[w for w in analysis_windows(registration) if w in windows],
                 'work_items':sorted(items),'feedback_cycles':[r['id'] for r in cycles],
+                'adopted_action_span_seconds':span,
                 'evidence_level':'observational','causally_validated':False})
-    complete=set(packet.get('reviewed_windows',[]))==set(registration['arrival_offsets'])
+    complete=set(packet.get('reviewed_windows',[]))==set(analysis_windows(registration))
     return {'registration_id':registration['identifier'],'evidence_level':'observational',
         'reviewer':packet['reviewer'],'review_complete':complete,'frames':frames,'changes':changes,
         'orchestrator_candidates':candidates,'validated_annotations':events,

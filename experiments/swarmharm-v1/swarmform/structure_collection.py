@@ -79,7 +79,9 @@ def time_inventory(root, registration):
     if not activation.exists():
         return {'status':'not_activated','structural_review':'not_evaluable'}
     start=datetime.fromisoformat(json.loads(activation.read_text())['at'])
-    windows=list(registration['arrival_offsets'].items())
+    theory=registration.get('workload')=='navier-stokes-theory'
+    windows=([(f'window_{offset:05d}',offset) for offset in range(0,registration['budget']['max_agent_seconds'],registration['analysis_window_seconds'])]
+             if theory else list(registration['arrival_offsets'].items()))
     rows={batch:{'batch':batch,'scheduled_offset_seconds':offset,'event_count':0,
                  'actors':{},'first_event':None,'last_event':None} for batch,offset in windows}
     for number,line in enumerate((root/'events.jsonl').read_text().splitlines(),1):
@@ -93,4 +95,5 @@ def time_inventory(root, registration):
             counts=row['actors'].setdefault(event['actor'],{})
             kind=event['type'];counts[kind]=counts.get(kind,0)+1
     return {'windows':list(rows.values()),'structural_review':'pending',
-        'scope':'Scheduled business windows with actual event times; counts do not establish roles, adoption or communication. Actual delivery receipts remain in source-deliveries.json.'}
+        'scope':('Passive elapsed-time analysis windows; no scheduled messages or task changes. Counts do not establish division of work, roles, adoption or communication.' if theory else
+            'Scheduled business windows with actual event times; counts do not establish roles, adoption or communication. Actual delivery receipts remain in source-deliveries.json.')}

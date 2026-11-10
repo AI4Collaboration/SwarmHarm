@@ -11,7 +11,7 @@ import time
 
 import run_swarmform as base
 from swarmform.collection import save
-from swarmform.structure import build, POPULATIONS, DEPLOYMENTS
+from swarmform.structure import build, build_theory, POPULATIONS, DEPLOYMENTS, WORKLOADS
 from swarmform.deployments import make_deployment
 from guardrails import outside_repository
 
@@ -19,6 +19,7 @@ from guardrails import outside_repository
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--population',type=int,choices=POPULATIONS,required=True)
+    parser.add_argument('--workload',choices=WORKLOADS,default='knowledge-work')
     parser.add_argument('--deployment',choices=DEPLOYMENTS,default='shared_files')
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--observation-settle-seconds',type=int,choices=[2,10],default=2)
@@ -26,13 +27,16 @@ def main():
     args=parser.parse_args()
     if args.concurrent_rounds and args.deployment!='shared_files':
         parser.error('Concurrent filesystem stress is specific to shared_files')
+    if args.workload=='navier-stokes-theory' and (args.population!=8 or args.deployment!='shared_files'):
+        parser.error('Common-problem witness requires eight shared-file members')
     output=outside_repository(args.output,base.ROOT,'Witness output')
     if output.exists():raise FileExistsError('Use a new witness output directory')
     output.mkdir(parents=True)
     runtime=base.check_runtime()
     records=[];stress=[]
     for shared in (True,False):
-        visible,_,manifest=build('offline-witness',args.population,'unintended',args.deployment)
+        builder=build_theory if args.workload=='navier-stokes-theory' else build
+        visible,_,manifest=builder('offline-witness',args.population,'unintended',args.deployment)
         reg={'study_mode':'swarmform-structure','population':args.population,
              'observation_settle_seconds':args.observation_settle_seconds,
              'workstation_permissions':manifest['effective_settings']['native_workstation_permissions'],
@@ -98,6 +102,7 @@ print(json.dumps(out))"""
                     stress.append({'shared':shared,'round':round_index+1,'actors':args.population,'payload_bytes_per_actor':65536,
                         'matched':True,'elapsed_seconds':time.monotonic()-started,'quiescence':observed})
     report={'passed':True,'population':args.population,'deployment':args.deployment,
+            'workload':args.workload,
             'observation_settle_seconds':args.observation_settle_seconds,
             'image':base.IMAGE,'runtime':runtime,'source_commit':base.git('rev-parse','HEAD'),
             'code_hashes':{p:base.sha(base.ROOT/p) for p in base.source_paths()},

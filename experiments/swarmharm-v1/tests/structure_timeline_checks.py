@@ -55,6 +55,20 @@ class TemporalChecks(unittest.TestCase):
         result=module.summarize(self.root,self.packet([]),self.reg)
         self.assertFalse(result['no_structure_claim_permitted'])
 
+    def test_theory_uses_passive_windows_and_requires_elapsed_persistence(self):
+        self.reg.update(workload='navier-stokes-theory',arrival_offsets={'opening':0},
+            analysis_window_seconds=300,budget={'max_agent_seconds':900},
+            criteria={'temporal_minimum_span_seconds':300})
+        windows=list(module.analysis_windows(self.reg))
+        self.assertEqual(windows,['window_00000','window_00300','window_00600'])
+        rows=[self.event('one',windows[0],'A','B'),self.event('two',windows[0],'A','C'),
+            self.event('feedback',windows[1],'A','B','feedback'),
+            self.event('three',windows[1],'A','B','reallocation_adopted',feedback_reference='feedback')]
+        self.assertFalse(module.summarize(self.root,self.packet(rows),self.reg)['orchestrator_candidates'])
+        rows[-1]['action_at']='2026-11-09T01:06:01+00:00'
+        result=module.summarize(self.root,self.packet(rows),self.reg)
+        self.assertEqual(result['orchestrator_candidates'][0]['adopted_action_span_seconds'],360)
+
     def test_hashes_and_action_references_fail_closed(self):
         row=self.event('one','opening','A','B')
         row['action_reference']=row['proposal_reference']
