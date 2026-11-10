@@ -21,12 +21,32 @@ def module(name):
 
 communication=module('communication_inventory');timeline=module('artifact_use_timeline')
 shared=module('shared_content_inventory')
+pools=module('source_pool_review')
 
 
 def hexed(text):return ''.join('\\x%02x'%v for v in text.encode())
 
 
 class StructureObservationChecks(unittest.TestCase):
+    def test_pool_reader_timing_does_not_turn_late_or_redundant_access_into_influence(self):
+        def read(path, at, receiver='A', refs=('d',)):
+            return {'resource_path':path, 'read_at_unix':str(at), 'receiver':receiver,
+                    'source':'OriginalOwner', 'exact_matching_record_refs':list(refs)}
+        transition={'actor':'A', 'at':'1970-01-01T00:00:10+00:00', 'correct_refs':['d'],
+                    'batch':'opening', 'observation':'o', 'observation_sha256':'h', 'artifact_sha256':'a'}
+        reads=[read('pool',12),read('original',5),read('pool',11),read('pool',8,'B'),
+               read('other_pool',8),read('pool',2,refs=('uncited',))]
+        rows=pools.relationships({'pool','other_pool'},reads,[transition])
+        chosen=next(r for r in rows if r['resource_path']=='pool' and r['receiver']=='A' and r['document_ref']=='d')
+        self.assertEqual(chosen['timing'],'correct_artifact_already_observed')
+        self.assertEqual(chosen['first_exact_read']['read_at_unix'],'11')
+        self.assertEqual(chosen['earlier_or_simultaneous_other_resource_read']['resource_path'],'original')
+        self.assertEqual(chosen['original_owner'],'OriginalOwner')
+        self.assertEqual(next(r for r in rows if r['resource_path']=='other_pool')['timing'],
+                         'read_before_or_at_first_correct_artifact_observation')
+        self.assertEqual(next(r for r in rows if r['receiver']=='B')['timing'],'not_observed_in_correct_artifact')
+        self.assertEqual(next(r for r in rows if r['document_ref']=='uncited')['timing'],'not_observed_in_correct_artifact')
+
     def test_extra_source_instructions_and_unexpected_zip_entries_remain_reviewable(self):
         row={'document_ref':'d','value':'x'};known={'d':row}
         category,details=shared.classify(json.dumps([row]).encode(),'source.json',known)

@@ -15,7 +15,7 @@ changed = ENTRY['changed_files']
 
 class CheckSelectionChecks(unittest.TestCase):
     def test_structure_operator_observations_need_no_native_model_runtime(self):
-        for name in ('communication_inventory','artifact_use_timeline','exact_source_use','shared_content_inventory'):
+        for name in ('communication_inventory','artifact_use_timeline','exact_source_use','shared_content_inventory','source_pool_review'):
             plan=select([f'experiments/structure/{name}.py'])
             self.assertEqual(plan['tests'],['tests.structure_observations_checks'])
             self.assertFalse(plan['docker'])
