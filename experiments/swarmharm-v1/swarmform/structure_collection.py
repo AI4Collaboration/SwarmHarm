@@ -20,7 +20,8 @@ class StructureCollection(Collection):
         self.last_space_check = 0
         try:
             self.sustained_research = research.validate_policy(self.reg)
-            self.publications = (PublicationUpdates(self.actors, self.reg['condition'])
+            self.responsive_research = research.responsive(self.reg)
+            self.publications = (PublicationUpdates(self.actors, self.reg['condition'], timed=self.responsive_research)
                                  if validate_policy(self.reg) else None)
         except Exception:
             self.pool.shutdown()
@@ -34,6 +35,14 @@ class StructureCollection(Collection):
         self.idle_since = None
         self.research_status = {a: research.ResearchStatus() for a in self.actors}
         self.research_due = {}
+        self.publication_observer = None
+        self.publication_scan_hint = False
+        self.last_publication_scan_finished = 0
+        self.dispatch_cursors = {}
+        self.latency = None
+        if self.responsive_research:
+            from swarmform.research_timing import ResearchTiming
+            self.latency = ResearchTiming(self.root)
 
     def start_continuation(self, deployment):
         if self.publications is None:
@@ -47,6 +56,12 @@ class StructureCollection(Collection):
             raise ValueError('Publication continuation requires identical shared-file visibility')
         self.publication_station = deployment.stations[self.actors[0]]
         self.publication_lock = deployment.locks[self.actors[0]]
+        if self.responsive_research:
+            from swarmform.publication_observer import PublicationObserver
+            self.publication_observer = PublicationObserver(bindings[0])
+            save(self.root/'publication-observer.json', self.publication_observer.binding)
+            self.latency.event('lifecycle_started', policy=self.reg['sustained_research'],
+                               publication_policy=self.reg['publication_updates'])
         self.publication_pool = ThreadPoolExecutor(max_workers=1)
         save(self.root/'publication-continuation.json', {
             'policy': self.reg['publication_updates'], 'source': 'automatic_environment_file_change',
@@ -63,19 +78,48 @@ class StructureCollection(Collection):
 
     def observe_tool_result(self, actor, result, snapshot):
         if self.publications is not None and (reference := snapshot.get('command_observation')):
-            self.publications.accessed(actor, reference)
+            accesses = self.publications.accessed(actor, reference)
+            if self.latency:
+                for access in accesses:
+                    self.latency.event('file_access_observed', actor, **access)
+        if self.responsive_research:
+            self.hint_publication_scan()
         if self.sustained_research and self.research_status[actor].observe(snapshot):
             status = self.research_status[actor]
             self.states[actor]['research_state'] = dict(status.value)
             self.record(actor, {'type': 'research_status_request', 'at': utc(),
                 'private_status': status.value, 'invalid': status.error})
 
+    def observe_tool_timing(self, actor, call, snapshot):
+        if self.latency:
+            self.latency.tool(actor, call, snapshot)
+
+    def dispatch_order(self, route):
+        if not self.responsive_research:
+            return self.actors
+        start = self.dispatch_cursors.get(route, 0)
+        self.dispatch_cursors[route] = (start + 1) % len(self.actors)
+        return self.actors[start:] + self.actors[:start]
+
+    def hint_publication_scan(self):
+        # A completed command is only a scheduling hint. Only scanned, stable
+        # content can produce a notice; at most one scan is in flight.
+        self.publication_scan_hint = True
+        if self.publication_scan is None:
+            self.next_publication_scan = max(self.last_publication_scan_finished +
+                self.reg['publication_updates']['stable_confirmation_seconds'],
+                min(self.next_publication_scan, time.monotonic()))
+
     def consume_publication_scan(self):
         if self.publication_scan is not None and self.publication_scan.done():
             scan = self.publication_scan.result()
             self.publication_scan = None
-            self.next_publication_scan = time.monotonic() + self.reg['publication_updates']['poll_seconds']
             self.retain_publication_scan(scan)
+            delay = self.reg['publication_updates']['poll_seconds']
+            if self.responsive_research and (not self.publications.ready or self.publication_scan_hint):
+                delay = self.reg['publication_updates']['stable_confirmation_seconds']
+            self.publication_scan_hint = False
+            self.next_publication_scan = time.monotonic() + delay
 
     def finish_tool(self, actor, message, result, *, delivered):
         versions = []
@@ -83,6 +127,8 @@ class StructureCollection(Collection):
             # Deliver only already-observed real versions; never delay the tool
             # for a scan or interrupt/restart the active model response.
             self.consume_publication_scan()
+            if self.latency:
+                self.latency.sync_queue(self.publications, self.actors, self.active)
             versions = self.publications.pending(actor)
         if versions:
             notice = {'type': 'publication_notice', 'at': utc(), 'source': 'automatic_environment_file_change',
@@ -91,7 +137,16 @@ class StructureCollection(Collection):
             # Preserve raw shell streams/status and distinguish environmental
             # metadata in both the exact native result and the observer record.
             result = {**result, 'environment_notifications': [notice['text']]}
-        super().finish_tool(actor, message, result, delivered=delivered)
+        attempt = (self.latency.begin_notice(actor, notice['text'], delivery='tool_result',
+                   versions=versions, call_id=message['call_id']) if versions and self.latency else None)
+        try:
+            super().finish_tool(actor, message, result, delivered=delivered)
+        except BaseException:
+            if attempt: self.latency.end_notice(attempt, success=False)
+            raise
+        if self.latency:
+            self.latency.event('tool_result_handoff', actor, call_id=message['call_id'], delivered=delivered)
+            if attempt: self.latency.end_notice(attempt, success=True)
         if versions:
             # Failed native delivery leaves the versions pending.
             self.publications.acknowledge(actor, versions)
@@ -120,7 +175,7 @@ class StructureCollection(Collection):
     def resume_research(self):
         if not self.sustained_research:
             return
-        for actor in self.actors:
+        for actor in self.dispatch_order('research'):
             if (actor in self.active or actor not in self.research_due
                     or time.monotonic() < self.research_due[actor]
                     or self.research_status[actor].value['state'] != 'working'):
@@ -128,7 +183,14 @@ class StructureCollection(Collection):
             if not self.may_continue():
                 return
             text = research.CONTINUATION + (research.STATUS_ERROR if self.research_status[actor].error else '')
-            self.agents[actor].prompt(text)
+            attempt = (self.latency.begin_notice(actor, text, delivery='research_continuation',
+                       due=self.research_due[actor]) if self.latency else None)
+            try:
+                self.agents[actor].prompt(text)
+            except BaseException:
+                if attempt: self.latency.end_notice(attempt, success=False)
+                raise
+            if attempt: self.latency.end_notice(attempt, success=True)
             self.research_due.pop(actor, None)
             self.research_status[actor].wake()
             self.active.add(actor)
@@ -145,13 +207,31 @@ class StructureCollection(Collection):
     def read_publications(self):
         # Do not let the station's command snapshot freeze an observer process
         # or present that observer as concurrent participant-authored work.
-        with self.publication_lock:
-            return scan_publications(self.publication_station)
+        started = time.monotonic()
+        if self.publication_observer is not None:
+            acquired = time.monotonic()
+            result = self.publication_observer.scan()
+        else:
+            with self.publication_lock:
+                acquired = time.monotonic()
+                result = scan_publications(self.publication_station)
+        result['observer_timing'] = {'started': started, 'lock_acquired': acquired, 'finished': time.monotonic()}
+        return result
 
     def retain_publication_scan(self, scan):
         self.publication_scan_count += 1
         before = dict(self.publications.candidate)
         changes = self.publications.observe(scan)
+        self.last_publication_scan_finished = (scan.get('observer_timing') or {}).get('finished', time.monotonic())
+        if self.latency:
+            if 'observer_timing' in scan:
+                self.latency.event('scan_finished', scan=self.publication_scan_count,
+                                   stable_read=scan['stable'], timing=scan['observer_timing'])
+            for item in changes:
+                self.latency.event('publication_stable', path=item['path'], sha256=item['sha256'],
+                    version_timing=self.publications.version_times[item['path'], item['sha256']])
+            if not self.stopping.is_set():
+                self.latency.sync_queue(self.publications, self.actors, self.active)
         if not scan['stable'] or before != self.publications.candidate:
             self.idle_since = None
         folder = self.root/'publication-updates'
@@ -169,6 +249,7 @@ class StructureCollection(Collection):
         save(folder/f'scan-{self.publication_scan_count:06d}.json', {
             'at': utc(), 'stable_read': scan['stable'], 'ready': self.publications.ready,
             'observed_files': self.publications.candidate, 'new_stable_versions': versions,
+            'observer_timing': scan.get('observer_timing'), 'observed_unix': scan.get('observed_unix'),
             'source': 'nonprivileged_publication_scan', 'writer': 'not_inferred'})
 
     def poll_publications(self):
@@ -178,7 +259,9 @@ class StructureCollection(Collection):
         if self.active or self.jobs:
             self.idle_since = None
         self.consume_publication_scan()
-        for actor in self.actors:
+        if self.latency:
+            self.latency.sync_queue(self.publications, self.actors, self.active)
+        for actor in self.dispatch_order('publication'):
             if actor in self.active:
                 continue
             versions = self.publications.pending(actor)
@@ -191,7 +274,14 @@ class StructureCollection(Collection):
                       'versions': versions, 'text': text, 'same_native_session': True,
                       'delivery': 'idle_session_prompt'}
             # Only acknowledge after dispatch succeeds; do not lose a pending update.
-            self.agents[actor].prompt(text)
+            attempt = (self.latency.begin_notice(actor, text, delivery='idle_session_prompt', versions=versions)
+                       if self.latency else None)
+            try:
+                self.agents[actor].prompt(text)
+            except BaseException:
+                if attempt: self.latency.end_notice(attempt, success=False)
+                raise
+            if attempt: self.latency.end_notice(attempt, success=True)
             self.publications.acknowledge(actor, versions)
             self.active.add(actor)
             if self.sustained_research:
@@ -207,7 +297,10 @@ class StructureCollection(Collection):
             save(self.root/'natural'/actor/'notices.json', state['notices'])
             self.idle_since = None
         if self.publication_scan is None and now >= self.next_publication_scan:
+            self.publication_scan_hint = False
             self.publication_scan = self.publication_pool.submit(self.read_publications)
+            if self.responsive_research:
+                self.publication_scan.add_done_callback(lambda done: self.events.put((None, {'type': 'publication_scan_ready'})))
             self.next_publication_scan = now + self.reg['publication_updates']['poll_seconds']
 
     def quiescence_ready(self):
@@ -229,6 +322,16 @@ class StructureCollection(Collection):
         return super().deadline_reason()
 
     def close_continuation(self):
+        try:
+            self.close_publications()
+        finally:
+            if self.publication_observer is not None:
+                try:
+                    self.publication_observer.close()
+                except BaseException as error:
+                    self.shutdown_failure('PublicationObserverShutdown', error)
+
+    def close_publications(self):
         if self.publication_pool is not None:
             self.publication_pool.shutdown(wait=True)
             if self.publication_scan is not None:

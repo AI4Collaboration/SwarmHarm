@@ -18,7 +18,7 @@ WORKLOADS = {'engineering': 'engineering_input', 'fulfillment': 'fulfillment_inp
              'settlement': 'settlement_input', 'knowledge': 'knowledge_input'}
 DOCKER_TESTS = {'swarmform_deployment', 'swarmform_read_observer', 'swarmform_runtime',
                 'swarmform_workstation_retention', 'workstation_patch', 'structure_native',
-                'swarmform_domain', 'native_harness', 'swarmform_collection'}
+                'swarmform_domain', 'native_harness', 'swarmform_collection', 'research_latency'}
 
 
 def git(*args, root=ROOT):
@@ -90,7 +90,11 @@ def select_checks(files, full=False):
             elif stem == 'collection':
                 suites('swarmform_collection', 'swarmform_registration', 'publication_updates', 'sustained_research')
             elif stem in {'structure', 'structure_collection', 'publication_updates', 'sustained_research', 'research_preview'}:
-                suites('swarmform_structure', 'structure_timeline', 'structure_native', 'publication_updates', 'sustained_research')
+                suites('swarmform_structure', 'structure_timeline', 'structure_native', 'publication_updates', 'sustained_research', 'research_latency')
+            elif stem in {'research_timing', 'publication_observer'}:
+                suites('research_latency', 'structure_native', 'sustained_research')
+            elif stem == 'file_deployment':
+                suites('swarmform_deployment', 'swarmform_collection', 'swarmform_registration', 'structure_native', 'research_latency')
             elif stem == 'actor_evidence':
                 suites('swarmform_actor_evidence')
             elif stem == 'endpoint_service':
@@ -148,7 +152,7 @@ def select_checks(files, full=False):
             else:
                 suites('structure_business' if stem=='business_review' else 'structure_timeline', 'swarmform_structure')
         elif name == 'scripts/run_swarmform_structure.py':
-            suites('swarmform_structure', 'structure_timeline', 'structure_native', 'publication_updates', 'sustained_research')
+            suites('swarmform_structure', 'structure_timeline', 'structure_native', 'publication_updates', 'sustained_research', 'research_latency')
         elif name.startswith('experiments/runtime/'):
             adapter = next((a for a in ('codex', 'claude', 'pi')
                             if name.startswith('experiments/runtime/' + a)), None)

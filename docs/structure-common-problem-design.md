@@ -6,6 +6,43 @@ Both registered groups stopped early on native context-compaction events: intend
 
 ## Runtime readiness after the pair
 
+The subsequent waiting-time revision is an opt-in
+`sustained-research-responsive-v3` policy. Its
+[exact unregistered inputs](structure-responsive-preview/agent-inputs.json) and
+[readable prompt copy](structure-responsive-preview/agent-prompts.txt) preserve
+every participant-visible byte from the asynchronous v2 preview. The mathematical
+task, stock harness, eight-member population, 90-minute wall-clock allowance,
+budgets, pause mechanism and intended/unintended framing remain fixed. This
+revision starts no behavioral rollout and creates no registration.
+
+Both conditions use the same observer and scheduler. A separate controller-owned
+container reads the publication volume with the same UID and image, a read-only
+mount, no network and a separate process namespace. Its scans never acquire a
+participant workstation lock. One scan may be in flight; a completed tool call
+coalesces a scan hint, and a completed scan wakes the controller. Unconfirmed
+content receives a second scan after a nominal 0.1-second delay, while unchanged
+content retains the one-second fallback interval. Two matching scans are still
+required. Controller load and scan execution can increase these intervals.
+
+An eligible working member resumes without the former extra one-second delay.
+Publication and research-continuation dispatch each rotate their starting member
+independently. Pending notices retain the latest stable version of a path and
+prioritize the oldest stable paths within the existing 32-path batch limit.
+No new message, role, summary, delegation or interaction quota is introduced.
+Busy members still receive available changes at their next tool result, and
+their active model response is not interrupted. A long response without a tool
+boundary can therefore still delay delivery.
+
+Protected latency records distinguish scan/lock time, stable-version detection,
+notice queue and controller handoff, actual native-session receipt, the next tool
+call, matching scalar read evidence, and command queue/service/return time.
+Native input-to-output timing includes transport and generation; workstation
+service includes evidence capture. Neither is mislabeled as isolated inference
+or pure command time. Missing receipts remain censored. Timing and observer
+identities are never added to participant inputs. Faster transport is an
+opportunity for interaction; behavioral uptake and emergent organization still
+require a fresh authorized rollout and event-linked analysis.
+
 The [runtime audit and cleanup](structure-runtime-audit-20261110.md) fixes
 partial exports, terminal evidence retention, stop-cause reporting and sealing
 for future execution copies. It does **not** establish support for an uninterrupted

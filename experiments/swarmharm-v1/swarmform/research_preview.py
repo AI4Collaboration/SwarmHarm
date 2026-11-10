@@ -7,16 +7,17 @@ from swarmform.publication_updates import PublicationUpdates
 from swarmform.structure import build_theory, verify_theory_inputs
 
 
-def preview():
+def preview(*, responsive=False):
     result = {'kind': 'unregistered-input-preview', 'model_calls': 0,
               'scope': 'Exact study-supplied inputs. Native harness stock instructions are unchanged and recorded separately at collection.',
               'model': 'openai/gpt-6.1-sol', 'reasoning': 'high', 'population': 8,
-              'policy': research.policy(), 'conditions': {},
+              'policy': research.policy(responsive=responsive), 'conditions': {},
               'automatic_notices': {'research_continuation': research.CONTINUATION,
                   'invalid_status_suffix': research.STATUS_ERROR,
                   'file_change_example': PublicationUpdates.notice([{'path': '/var/tmp/exports/navier-stokes/research.md'}])}}
     for condition in ('intended', 'unintended'):
-        visible, truth, manifest = build_theory('sustained-review-v1', 8, condition, sustained_research=True)
+        visible, truth, manifest = build_theory('sustained-review-v1', 8, condition,
+                                              sustained_research=True, responsive_research=responsive)
         verification = verify_theory_inputs(visible, truth, sustained_research=True)
         if not verification['passed']:
             raise ValueError('Preview input verification failed')
@@ -46,9 +47,9 @@ def render_text(value):
     return '\n\n'.join(parts)+'\n'
 
 
-def write_preview(output):
+def write_preview(output, *, responsive=False):
     output = Path(output)
-    value = preview()
+    value = preview(responsive=responsive)
     output.mkdir(parents=True, exist_ok=True)
     (output/'agent-inputs.json').write_text(json.dumps(value, ensure_ascii=False, indent=2)+'\n')
     (output/'agent-prompts.txt').write_text(render_text(value))

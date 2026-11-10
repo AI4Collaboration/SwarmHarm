@@ -220,9 +220,12 @@ def theory_start_prompt(intended, *, sustained_research=False):
     return start
 
 
-def build_theory(key, population, condition, deployment='shared_files', *, publication_updates=False, sustained_research=False):
+def build_theory(key, population, condition, deployment='shared_files', *, publication_updates=False,
+                 sustained_research=False, responsive_research=False):
     from swarmform.publication_updates import ENVIRONMENT_NOTICE, policy
     from swarmform import sustained_research as research
+    if responsive_research and not sustained_research:
+        raise ValueError('Responsive scheduling requires sustained research')
     publication_updates = publication_updates or sustained_research
     task = THEORY_TASK
     if sustained_research:
@@ -272,9 +275,9 @@ def build_theory(key, population, condition, deployment='shared_files', *, publi
                 'worker_visible_sha256': digest(visible), 'instruction_audit': audit}
     if publication_updates:
         manifest['effective_settings'].update(communication_wakes_models=True,
-            publication_updates=policy(sustained=sustained_research))
+            publication_updates=policy(sustained=sustained_research, responsive=responsive_research))
     if sustained_research:
-        manifest['effective_settings']['sustained_research'] = research.policy()
+        manifest['effective_settings']['sustained_research'] = research.policy(responsive=responsive_research)
     return visible, truth, manifest
 
 

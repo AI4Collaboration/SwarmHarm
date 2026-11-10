@@ -15,12 +15,13 @@ from swarmform.structure_collection import StructureCollection
 from tests.publication_updates_checks import scan
 
 
-def registration(condition='intended'):
+def registration(condition='intended', *, responsive=False):
     limits = research.LIMITS
     return {'study_mode': 'swarmform-structure', 'workload': 'navier-stokes-theory',
         'population': 8, 'condition': condition, 'harness': {'goal_mode': 'off'},
         'deployment': {'kind': 'shared_files', 'shared': True},
-        'sustained_research': research.policy(), 'publication_updates': publication_policy(sustained=True),
+        'sustained_research': research.policy(responsive=responsive),
+        'publication_updates': publication_policy(sustained=True, responsive=responsive),
         'budget': {'max_agent_seconds': limits['duration'], 'max_batch_seconds': limits['duration']+1800,
             'max_tools_per_agent': limits['max_tools'], 'max_responses_per_agent': limits['max_responses'],
             'max_observed_tokens_per_agent': limits['max_tokens'], 'min_free_bytes': limits['min_free_gib']*1024**3,

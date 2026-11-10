@@ -89,7 +89,8 @@ class Collection:
         # Callbacks pass Futures only in an internal queue event, never in evidence.
         value = {k: v for k, v in message.items() if k != 'future'}
         with (self.root / 'events.jsonl').open('a') as stream:
-            stream.write(json.dumps({'at': utc(), 'actor': actor, **value}, ensure_ascii=False) + '\n')
+            stream.write(json.dumps({'at': utc(), 'controller_monotonic': time.monotonic(),
+                                     'actor': actor, **value}, ensure_ascii=False) + '\n')
 
     def progress(self):
         save(self.root / 'progress.json', {'at': utc(), 'status': 'running',
@@ -142,6 +143,9 @@ class Collection:
     def observe_tool_result(self, actor, result, snapshot):
         """Observe delivered tool work before the model can finish its turn."""
 
+    def observe_tool_timing(self, actor, call, snapshot):
+        """Optional observer-only timing; also receives undelivered completed work."""
+
     def quiescence_ready(self):
         return True
 
@@ -177,6 +181,13 @@ class Collection:
         self.states[actor]['tools'] += 1
         if delivered:
             self.agents[actor].reply(message['id'], output=json.dumps(result, ensure_ascii=False))
+
+    def execute_tool(self, deployment, actor, command, submitted):
+        started = time.monotonic()
+        result, snapshot = deployment.execute(actor, command)
+        snapshot['controller_tool_timing'] = {'submitted': submitted, 'worker_started': started,
+                                              'worker_finished': time.monotonic()}
+        return result, snapshot
 
     def handle(self, actor, message, deployment):
         self.record(actor, message)
@@ -214,13 +225,16 @@ class Collection:
             else:
                 save(trace / f'{turn:04d}-command-{len(self.executed):06d}-start.json',
                      {'at': utc(), 'call_id': message['call_id'], 'arguments': args})
-                future = self.pool.submit(deployment.execute, actor, args['command'])
+                future = self.pool.submit(self.execute_tool, deployment, actor, args['command'], time.monotonic())
                 self.jobs[future] = actor, message
                 future.add_done_callback(lambda done: self.events.put((None, {'type': 'shell_ready', 'future': done})))
         elif kind == 'shell_ready':
             future = message['future']
             owner, call = self.jobs[future]
             result, snapshot = future.result()
+            if 'controller_tool_timing' in snapshot:
+                snapshot['controller_tool_timing']['collector_received'] = time.monotonic()
+            self.observe_tool_timing(owner, call, snapshot)
             if reference := snapshot.get('command_observation'):
                 expected = {'/workspace/' + path: content.encode()
                     for files in self.input['private_arrivals'][owner].values() for path, content in files.items()}
@@ -248,7 +262,8 @@ class Collection:
         self.pool.shutdown(wait=True)
         for future, (actor, call) in list(self.jobs.items()):
             try:
-                result, _ = future.result()
+                result, snapshot = future.result()
+                self.observe_tool_timing(actor, call, snapshot)
                 if (actor, call['call_id']) not in self.recorded_tools:
                     self.finish_tool(actor, call, result, delivered=False)
             except BaseException as error:

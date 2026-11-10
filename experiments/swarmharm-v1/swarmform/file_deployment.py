@@ -7,6 +7,7 @@ from pathlib import Path
 import secrets
 import subprocess
 import threading
+import time
 
 from workstation import DockerWorkstation, IMAGE
 
@@ -138,8 +139,14 @@ class FileDeployment:
         return result
 
     def execute(self, actor, command):
+        requested = time.monotonic()
         with self.locks[actor]:
-            return self.stations[actor].execute(command, {})
+            acquired = time.monotonic()
+            result, snapshot = self.stations[actor].execute(command, {})
+            snapshot['workstation_service_timing'] = {'lock_requested': requested,
+                'lock_acquired': acquired, 'service_finished': time.monotonic(),
+                'scope': 'Workstation service includes command execution and evidence capture.'}
+            return result, snapshot
 
     def deliver(self, actor, batch, files):
         if any(not path.startswith(f'intake/{batch}/') for path in files):

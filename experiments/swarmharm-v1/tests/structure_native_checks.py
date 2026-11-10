@@ -1,7 +1,9 @@
 """Real native sessions against deterministic local responses, no inference."""
 from http.server import ThreadingHTTPServer
 import json
+import os
 from pathlib import Path
+import shutil
 import tempfile
 import threading
 import unittest
@@ -20,6 +22,14 @@ from tests.swarmform_collection_checks import Responses
 
 class StructureNativeChecks(unittest.TestCase):
     def test_eight_sustained_sessions_continue_then_pause_until_test_clock_deadline(self):
+        self.check_sustained_sessions('intended', responsive=False)
+
+    def test_responsive_pair_keeps_eight_sessions_and_measures_native_receipts(self):
+        for condition in ('intended', 'unintended'):
+            with self.subTest(condition=condition):
+                self.check_sustained_sessions(condition, responsive=True)
+
+    def check_sustained_sessions(self, condition, *, responsive):
         from tests.sustained_research_checks import registration
         from swarmform import sustained_research as research
         import time
@@ -27,15 +37,16 @@ class StructureNativeChecks(unittest.TestCase):
         server.requests, server.lock = [], threading.Lock()
         server.wait_for_arrivals = False
         busy_update_ready = threading.Event()
+        publication = '/var/tmp/exports/busy.json' if responsive else '/var/tmp/exports/messages/busy.json'
 
         def command_for(request):
             actor = re.search(r'Offline sustained fixture (Research\d+)', json.dumps(request['input']))[1]
             latest = next(item for item in reversed(request['input']) if item.get('role') == 'user')
             if research.CONTINUATION in json.dumps(latest):
-                return "python3 - <<'PY'\nimport json\nfrom pathlib import Path\nPath('/workspace/research-status.json').write_text(json.dumps({'state':'blocked','reason':'Fixture has no further work.','resume_condition':'New publication.'}))\nPY"
+                return (f'cat {publication}\n' if responsive else '') + "python3 - <<'PY'\nimport json\nfrom pathlib import Path\nPath('/workspace/research-status.json').write_text(json.dumps({'state':'blocked','reason':'Fixture has no further work.','resume_condition':'New publication.'}))\nPY"
             if actor == 'Research01':
-                return "mkdir -p /var/tmp/exports/messages; python3 - <<'PY'\nimport json\nfrom pathlib import Path\nPath('/var/tmp/exports/messages/busy.json').write_text(json.dumps({'sender':'Research01','recipient':'Research02','text':'Actual fixture publication.'}))\nPY"
-            if actor == 'Research02' and not busy_update_ready.wait(25):
+                return "mkdir -p /var/tmp/exports/messages; python3 - <<'PY'\nimport json\nfrom pathlib import Path\n" + f"Path({publication!r})" + ".write_text(json.dumps({'sender':'Research01','recipient':'Research02','text':'Actual fixture publication.'}))\nPY"
+            if (responsive or actor == 'Research02') and not busy_update_ready.wait(25):
                 raise TimeoutError('A real publication was not observed while the recipient was busy')
             return 'cat /workspace/task.md'
 
@@ -74,10 +85,11 @@ class StructureNativeChecks(unittest.TestCase):
         try:
             with tempfile.TemporaryDirectory() as directory, patch.object(codex_gateway, 'write_config', local_config):
                 root = Path(directory)
-                visible, _, _ = build_theory('sustained-native-fixture', 8, 'intended', sustained_research=True)
+                visible, _, _ = build_theory('sustained-native-fixture', 8, condition,
+                                            sustained_research=True, responsive_research=responsive)
                 visible['prompts'] = {a: [f'Offline sustained fixture {a}.'] for a in visible['startup']}
                 model = 'openai/gpt-6.1-sol'
-                reg = registration('intended')
+                reg = registration(condition, responsive=responsive)
                 reg.update(model=model, reasoning='high', workstation_permissions=WORKSTATION_PERMISSIONS,
                     harness=codex_gateway.harness_registration('off', model), arrival_offsets={'opening': 0},
                     research_study='SwarmForm Common Problem', plan={'natural': {a: {} for a in visible['startup']}})
@@ -91,7 +103,7 @@ class StructureNativeChecks(unittest.TestCase):
                 for actor, state in report['actors'].items():
                     self.assertEqual(state['session_activations'], 2)
                     self.assertEqual(state['research_continuations'], 1)
-                    self.assertEqual(state['publication_notices'], int(actor == 'Research02'))
+                    self.assertEqual(state['publication_notices'], int(actor != 'Research01' if responsive else actor == 'Research02'))
                     self.assertEqual(state['observed_model_responses'], 4)
                     self.assertEqual(state['observed_tokens'], 52)
                     self.assertEqual(state['lifecycle_at_close'], 'blocked')
@@ -104,6 +116,28 @@ class StructureNativeChecks(unittest.TestCase):
                 outputs = [item.get('output', '') for request in server.requests for item in request['input']
                            if item.get('type') == 'function_call_output']
                 self.assertTrue(any('environment_notifications' in str(item) and 'busy.json' in str(item) for item in outputs))
+                if responsive:
+                    from swarmform.research_timing import inventory
+                    latency = inventory(root, reg)
+                    save(root/'research-latency-summary.json', latency)
+                    destination = os.environ.get('SWARMHARM_LATENCY_WITNESS_DIR')
+                    if destination:
+                        shutil.copytree(root, Path(destination)/('native-'+condition), dirs_exist_ok=True)
+                    self.assertEqual(latency['unconfirmed_native_receipts'], 0)
+                    self.assertEqual(len(latency['notice_attempts']), 15)
+                    self.assertEqual(latency['metrics']['native_receipt_to_read_observation']['samples'], 7)
+                    self.assertEqual(latency['metrics']['tool_executor_queue']['samples'], 16)
+                    self.assertFalse(latency['clock_anomalies'], latency['clock_anomalies'])
+                    observer = json.loads((root/'publication-observer.json').read_text())
+                    self.assertTrue(observer['read_only'])
+                    self.assertFalse(observer['participant_lock'])
+                    save(root/'offline-witness.json', {'condition': condition, 'population': 8,
+                        'hosted_model_calls': 0, 'responses': 'deterministic localhost fixture',
+                        'native_sessions': 8, 'native_continuity_passed': True,
+                        'research_window': 'test clock advanced only after all members requested a pause',
+                        'scope': 'Engineering transport check, not emergent behavior or research throughput.'})
+                    if destination:
+                        shutil.copy2(root/'offline-witness.json', Path(destination)/('native-'+condition)/'offline-witness.json')
         finally:
             busy_update_ready.set()
             server.shutdown(); server.server_close()

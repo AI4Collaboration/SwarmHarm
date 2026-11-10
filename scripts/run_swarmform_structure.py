@@ -54,7 +54,8 @@ def register(args, *, source=None, runtime=None):
         raise ValueError('Publication updates are currently scoped to the common-problem theory study')
     if theory:
         visible,truth,manifest=build_theory(args.dataset_key,args.population,args.condition,args.deployment,
-                                          publication_updates=continuation, sustained_research=sustained)
+                                          publication_updates=continuation, sustained_research=sustained,
+                                          responsive_research=getattr(args,'responsive_research',False))
         verification=verify_theory_inputs(visible,truth,publication_updates=continuation, sustained_research=sustained)
     else:
         visible,truth,manifest=build(args.dataset_key,args.population,args.condition,args.deployment,
@@ -245,6 +246,12 @@ def finalize(output,reg,visible,result):
         save(output/'temporal-inventory.json',time_inventory(output,reg))
     except Exception as error:
         failures.append('temporal');save(output/'temporal-inventory-failure.json',{'error':repr(error)})
+    if research.responsive(reg):
+        try:
+            from swarmform.research_timing import inventory as latency_inventory
+            save(output/'research-latency-summary.json',latency_inventory(output,reg))
+        except Exception as error:
+            failures.append('latency');save(output/'research-latency-failure.json',{'error':repr(error)})
     coverage,evidence_failures=finalize_actor_evidence(output,reg)
     failures.extend(evidence_failures)
     summary={'closed':reg['identifier'],'reason':result['reason'],'failures':failures,
@@ -261,6 +268,8 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__);sub=parser.add_subparsers(dest='command',required=True)
     preview=sub.add_parser('preview-sustained',help='Render exact inputs and policies without a registration or model call')
     preview.add_argument('--output',type=Path,required=True)
+    responsive_preview=sub.add_parser('preview-responsive',help='Render instrumented responsive scheduling without a rollout')
+    responsive_preview.add_argument('--output',type=Path,required=True)
     prepare=sub.add_parser('prepare');collect_parser=sub.add_parser('collect')
     worker=sub.add_parser('execute-frozen',help='Internal sealed execution after committed preflight')
     for command in (prepare,collect_parser,worker):
@@ -283,12 +292,14 @@ def main():
                          help='Opt in to same-session continuation on actual changed publication content; theory only')
     prepare.add_argument('--sustained-research',action='store_true',
                          help='Use the fixed matched 90-minute theory policy; no quiescence exit')
+    prepare.add_argument('--responsive-research',action='store_true',
+                         help='Opt in to matched latency recording and responsive scheduling; implies sustained research')
     collect_parser.add_argument('--key-file',type=Path,required=True)
     worker.add_argument('--key-file',type=Path,required=True)
     args=parser.parse_args()
-    if args.command=='preview-sustained':
+    if args.command in ('preview-sustained','preview-responsive'):
         from swarmform.research_preview import write_preview
-        print(json.dumps(write_preview(args.output),indent=2))
+        print(json.dumps(write_preview(args.output,responsive=args.command=='preview-responsive'),indent=2))
         return
     if args.command=='prepare':
         try:research.resolve_limits(args)

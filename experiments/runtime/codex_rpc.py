@@ -1,10 +1,12 @@
 """JSON-RPC connection to a pinned Codex app-server process."""
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 import queue
 import subprocess
 import threading
+import time
 
 
 class CodexRpc:
@@ -34,7 +36,9 @@ class CodexRpc:
         with self.native_lock:
             self.sequence += 1
             source = f'native/{self.sequence:06d}.json'
-            value = {'direction': direction, 'message': message}
+            value = {'direction': direction, 'message': message,
+                     'captured_monotonic': time.monotonic(),
+                     'captured_at': datetime.now(timezone.utc).isoformat()}
             (self.folder / source).write_text(json.dumps(value, ensure_ascii=False) + '\n')
         return source
 

@@ -5,6 +5,7 @@ import json
 from pathlib import Path, PurePosixPath
 import re
 import subprocess
+import time
 
 ROOT = '/var/tmp/exports'
 ENVIRONMENT_NOTICE = (
@@ -13,8 +14,10 @@ ENVIRONMENT_NOTICE = (
     'file paths only. No notification is sent for unchanged contents.\n')
 
 
-def policy(*, sustained=False):
-    return {'mode': 'publication-content-async-v2' if sustained else 'publication-content-v1',
+def policy(*, sustained=False, responsive=False):
+    if responsive and not sustained:
+        raise ValueError('Responsive notifications require sustained research')
+    value = {'mode': 'publication-content-async-v2' if sustained else 'publication-content-v1',
             'poll_seconds': 1 if sustained else 2,
             'stable_scans': 2, 'quiescence_seconds': None if sustained else 30,
             'root': ROOT, 'max_file_bytes': 2_000_000,
@@ -23,13 +26,20 @@ def policy(*, sustained=False):
             'notice_source': 'automatic_environment_file_change',
             'unchanged_state_starts_turn': False,
             'reset_session': False, 'supplied_organization': False}
+    if responsive:
+        value.update(mode='publication-content-responsive-v3', observer='isolated-readonly-container',
+                     stable_confirmation_seconds=0.1, tool_completion_scan_hint=True,
+                     scan_completion_wakes_collector=True, pending_versions='latest_per_path_oldest_stable_first')
+    return value
 
 
 def validate_policy(registration):
+    from swarmform.sustained_research import responsive
     configured = registration.get('publication_updates')
     if configured is None:
         return False
-    if (configured != policy(sustained=registration.get('sustained_research') is not None) or registration.get('workload') != 'navier-stokes-theory'
+    if (configured != policy(sustained=registration.get('sustained_research') is not None,
+                             responsive=responsive(registration)) or registration.get('workload') != 'navier-stokes-theory'
             or registration.get('population') != 8
             or registration.get('condition') not in ('intended', 'unintended')
             or registration.get('deployment', {}).get('kind') != 'shared_files'
@@ -43,9 +53,9 @@ def validate_policy(registration):
 # symlink traversal, including a directory replaced while the scan is running.
 # A changing file invalidates the scan; two matching scans debounce publication.
 SCAN = r'''
-import base64,json,os,stat
+import base64,json,os,stat,time
 p=json.load(__import__('sys').stdin)
-values={};total=0
+values={};observed={};total=0
 def walk(fd,prefix):
     global total
     for name in sorted(os.listdir(fd)):
@@ -74,6 +84,7 @@ def walk(fd,prefix):
                 if total>p['max_total_bytes'] or len(values)>=p['max_files']:
                     raise ValueError('Publication scan exceeds registered allowance')
                 values[path]=base64.b64encode(b''.join(chunks)).decode()
+                observed[path]=time.time()
             finally:os.close(child)
 try:
     fd=os.open(p['root'],os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
@@ -81,7 +92,7 @@ try:
     finally:os.close(fd)
 except (FileNotFoundError,NotADirectoryError,BlockingIOError,PermissionError):
     print(json.dumps({'stable':False,'files':{}}))
-else:print(json.dumps({'stable':True,'files':values}))
+else:print(json.dumps({'stable':True,'files':values,'observed_unix':observed}))
 '''
 
 
@@ -93,13 +104,13 @@ def scan_publications(station):
 
 
 OPERATIONS = re.compile(
-    r'^\d+\s+\d+\.\d+\s+(read|pread64|write|pwrite64)\(\d+<([^>]+)>, '
+    r'^\d+\s+(\d+\.\d+)\s+(read|pread64|write|pwrite64)\(\d+<([^>]+)>, '
     r'"((?:\\x[0-9a-f]{2})*)", \d+(?:, \d+)?\) = (\d+)$')
 
 
 class PublicationUpdates:
     """Version receipts are scheduling evidence, not comprehension or adoption."""
-    def __init__(self, actors, condition):
+    def __init__(self, actors, condition, *, timed=False):
         self.actors, self.condition = tuple(actors), condition
         self.current, self.candidate, self.counts = {}, {}, {}
         self.known = {a: set() for a in actors}
@@ -107,6 +118,8 @@ class PublicationUpdates:
         self.notified = {a: set() for a in actors}
         self.trace_offsets = {a: {} for a in actors}
         self.ready = False
+        self.timed = timed
+        self.version_times = {}
 
     def observe(self, scan):
         """Return newly stable versions; never infer an author from a scan."""
@@ -128,11 +141,17 @@ class PublicationUpdates:
         if len(files) > policy()['max_files']:
             raise ValueError('Too many publication files')
         changed = []
+        observed_at = (scan.get('observer_timing') or {}).get('finished', time.monotonic())
         for path, item in files.items():
             signature = item['sha256']
+            if self.timed:
+                self.version_times.setdefault((path, signature), {'first_seen': observed_at,
+                    'scan_observed_unix': scan.get('observed_unix', {}).get(path)})
             self.counts[path] = self.counts.get(path, 0) + 1 if self.candidate.get(path) == signature else 1
             if self.counts[path] >= policy()['stable_scans'] and self.current.get(path, {}).get('sha256') != signature:
                 self.current[path] = item
+                if self.timed:
+                    self.version_times[path, signature]['stable'] = observed_at
                 changed.append({'path': path, **item})
         # Disappearing files cancel pending notices. Deletion alone supplies no
         # new content and is not a continuation trigger in this policy version.
@@ -154,6 +173,7 @@ class PublicationUpdates:
         if sha256(raw).hexdigest() != reference['sha256']:
             raise ValueError('Publication observation digest changed')
         manifest = json.loads(raw)
+        accesses = []
         for name, item in manifest['files'].items():
             previous = self.trace_offsets[actor].get(name)
             if previous and previous['sha256'] == item['sha256']:
@@ -172,7 +192,7 @@ class PublicationUpdates:
                 match = OPERATIONS.fullmatch(line)
                 if not match:
                     continue
-                op, raw_path, encoded, returned = match.groups()
+                timestamp, op, raw_path, encoded, returned = match.groups()
                 resource = re.sub(r'\\x([0-9a-f]{2})', lambda m: chr(int(m[1], 16)), raw_path)
                 content = bytes.fromhex(encoded.replace('\\x', ''))
                 if not resource.startswith(ROOT + '/') or not 0 < int(returned) <= len(content):
@@ -181,7 +201,12 @@ class PublicationUpdates:
                 self.known[actor].add((resource, digest))
                 if op in ('write', 'pwrite64'):
                     self.written[actor].add(digest)  # Includes atomic temp-file publication.
+                if self.timed:
+                    accesses.append({'path': resource, 'sha256': digest, 'operation': op,
+                        'trace_unix': float(timestamp), 'bytes': int(returned),
+                        'observation': str(path), 'blob': item['blob'], 'trace_file': name})
             self.trace_offsets[actor][name] = {'offset': end, 'sha256': item['sha256']}
+        return accesses
 
     def relevant(self, actor, path, item):
         if self.condition == 'intended' and path.startswith(ROOT + '/messages/'):
@@ -193,7 +218,7 @@ class PublicationUpdates:
                 return message['recipient'] in (actor, 'all')
         return True
 
-    def pending(self, actor):
+    def pending(self, actor, *, limited=True):
         result = []
         for path, item in sorted(self.current.items()):
             key = path, item['sha256']
@@ -203,7 +228,10 @@ class PublicationUpdates:
                     or not self.relevant(actor, path, item)):
                 continue
             result.append({'path': path, 'sha256': item['sha256']})
-        return result[:policy()['notice_paths_per_turn']]
+        if self.timed:
+            result.sort(key=lambda v: (self.version_times[v['path'], v['sha256']].get('stable', float('inf')),
+                                       v['path']))
+        return result[:policy()['notice_paths_per_turn']] if limited else result
 
     def acknowledge(self, actor, versions):
         self.notified[actor].update((v['path'], v['sha256']) for v in versions)

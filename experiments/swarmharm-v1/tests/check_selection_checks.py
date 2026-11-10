@@ -41,7 +41,7 @@ class CheckSelectionChecks(unittest.TestCase):
     def test_structure_runtime_has_its_native_and_temporal_checks(self):
         plan=select(['scripts/run_swarmform_structure.py',
                      'experiments/swarmharm-v1/swarmform/structure_collection.py'])
-        self.assertEqual(plan['tests'],['tests.publication_updates_checks', 'tests.structure_native_checks','tests.structure_timeline_checks',
+        self.assertEqual(plan['tests'],['tests.publication_updates_checks', 'tests.research_latency_checks', 'tests.structure_native_checks','tests.structure_timeline_checks',
                                        'tests.sustained_research_checks', 'tests.swarmform_structure_checks'])
         self.assertTrue(plan['docker'])
         self.assertEqual(plan['harnesses'],['codex'])

@@ -11,15 +11,26 @@ LEGACY_LIMITS = {'duration': 3600, 'max_tools': 150, 'max_responses': 120,
                  'request_timeout_seconds': 300, 'response_idle_timeout_seconds': None}
 
 
-def policy():
-    return {'mode': 'sustained-research-async-v2', 'research_seconds': LIMITS['duration'],
-            'quiescence_exit': False, 'resume_after_response_seconds': 1,
+def policy(*, responsive=False):
+    value = {'mode': 'sustained-research-responsive-v3' if responsive else 'sustained-research-async-v2',
+            'research_seconds': LIMITS['duration'],
+            'quiescence_exit': False, 'resume_after_response_seconds': 0 if responsive else 1,
             'status_path': STATUS_PATH, 'same_native_session': True,
             'pause_wake': 'actual_publication_change',
             'busy_publication_delivery': 'next_tool_result', 'limits': dict(LIMITS)}
+    if responsive:
+        value.update(latency_observation='research-latency-v1', idle_dispatch_order='rotating',
+                     model_interruption=False)
+    return value
+
+
+def responsive(registration):
+    return (registration.get('sustained_research') or {}).get('mode') == 'sustained-research-responsive-v3'
 
 
 def resolve_limits(args):
+    if getattr(args, 'responsive_research', False):
+        args.sustained_research = True
     sustained = getattr(args, 'sustained_research', False)
     defaults = LIMITS if sustained else LEGACY_LIMITS
     for name, default in defaults.items():
@@ -42,7 +53,7 @@ def validate_policy(registration):
                 'max_observed_tokens_per_agent': LIMITS['max_tokens'], 'min_free_bytes': LIMITS['min_free_gib']*1024**3,
                 'request_timeout_seconds': LIMITS['request_timeout_seconds'],
                 'response_idle_timeout_seconds': LIMITS['response_idle_timeout_seconds']}
-    if configured != policy() or not validate_publications(registration) or any(
+    if configured != policy(responsive=responsive(registration)) or not validate_publications(registration) or any(
             registration.get('budget', {}).get(k) != v for k, v in expected.items()):
         raise ValueError('Sustained research requires the exact matched policy and budget')
     return True
