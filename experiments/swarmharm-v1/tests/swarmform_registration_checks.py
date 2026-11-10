@@ -294,7 +294,8 @@ class RegistrationChecks(unittest.TestCase):
         from swarmform import job_deployment
         for domain,encoding,enabled in (('Engineering','operational_state',True),
                 ('Knowledge Work','operational_state',True),('Financial Analysis','operational_state',False),
-                ('Engineering','event_pattern',True),('Knowledge Work','event_pattern',False)):
+                ('Engineering','event_pattern',True),('Knowledge Work','event_pattern',True),
+                ('Financial Analysis','event_pattern',False)):
             profile='events' if encoding=='event_pattern' else 'state'
             inputs,_,manifest=build_input('november',domain,deployment='job_namespace',encoding=encoding)
             settings=deployment_registration(manifest)

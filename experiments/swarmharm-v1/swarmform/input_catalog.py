@@ -98,7 +98,7 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings['ready_publication_response_fields'] = ['id','author','state','sha256','content_base64']
         settings['incidental_paths'].append('same-scope ready publication content; draft and archived content remain publisher-only')
     if deployment == "job_namespace" and ((encoding == "operational_state" and domain in ("Engineering", "Knowledge Work"))
-            or (encoding == "event_pattern" and domain == "Engineering")):
+            or (encoding == "event_pattern" and domain in ("Engineering", "Knowledge Work"))):
         settings = manifest['effective_settings']
         settings['completed_result_read'] = True
         settings['completed_result_response_fields'] = ['id','sha256','content_base64']
