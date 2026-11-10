@@ -1,7 +1,9 @@
 # Reviewed discovery and outcome evidence
 
-This page preserves the reviewed SwarmHarm findings. The active SwarmForm study
-is specified in the [research design](formation-study-design.md).
+This page preserves the reviewed SwarmHarm findings and their original criteria.
+The maintained plan for both papers and all nine threat-model inputs is in the
+[root README](../README.md). Historical collection instructions below are
+reproduction context, not the current work queue.
 
 The reporting baseline is one continuous business workflow. Agents begin with
 separate workstations, no peer roster and an empty business-note register. Every

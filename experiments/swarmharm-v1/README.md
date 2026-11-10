@@ -1,6 +1,6 @@
 # Experiment package
 
-The [SwarmForm framework](../../README.md#research-framework) covers channel bootstrapping, emergent structure and task performance. `swarmform/` contains shared runtimes, workloads and observers for those studies. The [eight-agent Navier–Stokes experiment](../../docs/structure-common-problem-design.md) is one component, with intended/unintended conditions and ten-minute extensions. Its interval support is pending implementation and offline validation; no new collection is authorized by that design discussion.
+The [root README](../../README.md) is the maintained plan for both SwarmForm and SwarmHarm, including task taxonomy, nine threat-model input environments, the eight-agent research protocol and tonight's priorities. `swarmform/` contains channel inputs, structure workloads and observers; `phase2/` contains reporting mechanisms and consequence evaluation. This package document contains technical reproduction instructions only.
 
 The commands below preserve the historical four-agent SwarmHarm reporting baseline. They are reproduction documentation, not the launch procedure for the eight-agent structure experiment. [Accepted SwarmForm inputs](../../README.md#accepted-inputs).
 

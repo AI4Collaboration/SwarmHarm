@@ -86,7 +86,7 @@ def register(args, *, source=None, runtime=None):
     if getattr(args,'context_maintenance',False) and witness.get('context_policy') != CONTEXT_POLICY:
         raise ValueError('Context maintenance requires a matching offline protocol witness')
     output.mkdir(parents=True)
-    design='docs/structure-common-problem-design.md' if theory else 'docs/structure-study-design.md'
+    design='README.md'  # Seal the maintained protocol, not a historical pointer.
     verification_name='input-verification.json' if theory else 'solvability.json'
     shutil.copy2(ROOT/design,output/'study-design.md')
     shutil.copy2(ROOT/'experiments/structure/temporal.py',output/'temporal-review.py')

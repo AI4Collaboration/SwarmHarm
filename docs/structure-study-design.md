@@ -1,4 +1,11 @@
-# SwarmForm structure study
+# Historical SwarmForm scale-study reference
+
+> Historical criteria and findings for the registered 9 November scale study.
+> Durations, collection proposals and thresholds below describe that version;
+> they are not the current work queue or authorization for another rollout.
+> All current research decisions and tonight's work live in the
+> [root README](../README.md#swarmform). Reproduce sealed cases using their
+> original source snapshot and criteria hash.
 
 User-directed extension, 9 November 2026. Investigate organization in intended
 and unintended communication at populations 4, 8, 16 and 32. This is separate
