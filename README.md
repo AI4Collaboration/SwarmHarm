@@ -18,7 +18,7 @@ The latest Knowledge Work retests both deliver nine complete briefs with 320/320
 
 ## Accepted inputs
 
-[Download all 50 inputs and trajectory index](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs-account-sources.zip) · [Private Release and checksums](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs)
+[Download all 50 inputs and trajectory index](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs-reviewed.zip) · [Private Release and checksums](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs)
 
 Each package contains three Harbor tasks, exact prompts and tools, private arrivals, protected truth, effective settings and its sealed source. First run `bash scripts/setup-local` and source the environment file it prints to select Python 3.12. The default export reconstructs those tested versions, not current development defaults:
 
