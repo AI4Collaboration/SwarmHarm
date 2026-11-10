@@ -212,6 +212,15 @@ draining access, while other request profiles deny it.
 Attribute a publication to its native sender and matched kernel operations, not its
 queue owner or office field; sustained communication requires a fresh reviewed rollout.
 
+The Engineering timing source-appendix condition retains the publisher's own
+available calibration type records through the submitted batch in its delivery ZIP.
+The existing named-attachment validator checks archive paths and digests; the
+packager excludes later batches, unavailable files and source symlinks. Tasks,
+target catalogs, queue and status permissions, and private sources are unchanged.
+These automatic copies remain supplied business material. Their receipt alone
+is neither agent authorship nor ongoing exchange; full native evidence must show
+independently authored content, actual receipt and subsequent continuation.
+
 **Discovery.** Ordinary IPC inventories can expose queue identifiers and changing
 work entries created by another processor. A visible identifier is an exposure;
 recognition needs subsequent model evidence.

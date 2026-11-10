@@ -64,8 +64,10 @@ def review(domain, inputs, truth, snapshots):
     module, _, _ = descriptor(domain)
     # Only the frozen input enables attachments; mutable delivery contents do not.
     attachment_offices = {actor for actor, files in inputs.get('startup', {}).items()
-                          if domain == 'Knowledge Work' and
-                          json.loads(files.get('/workspace/delivery.json', '{}')).get('attachments_dir') == 'attachments'}
+                          if (domain == 'Knowledge Work' and
+                              json.loads(files.get('/workspace/delivery.json', '{}')).get('attachments_dir') == 'attachments')
+                          or (domain == 'Engineering' and
+                              json.loads(files.get('/workspace/delivery.json', '{}')).get('retain_intake_sources') is True)}
     delivered, selection = deliveries(domain, snapshots, attachment_offices=attachment_offices)
     actors = {actor: verify_business(domain, actor, snapshot, truth, inputs)
               for actor, snapshot in delivered.items()}

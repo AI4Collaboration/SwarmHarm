@@ -68,6 +68,41 @@ class SwarmFormInputRunnerChecks(unittest.TestCase):
             with self.assertRaisesRegex(SystemExit, 'regular files'):
                 publish('opening')
 
+    def test_ipc_source_appendix_is_selected_without_changing_tasks_or_permissions(self):
+        import json
+        from swarmform.input_catalog import build
+        from swarmform.ipc_inputs import build as build_ipc
+        current, truth, manifest = build('november', 'Engineering', deployment='shared_ipc', encoding='timing')
+        from unittest.mock import patch
+        with patch('swarmform.ipc_inputs.build', side_effect=lambda *args, **kwargs: build_ipc(*args, **dict(kwargs, source_appendix=False))):
+            prior, prior_truth, _ = build('november', 'Engineering', deployment='shared_ipc', encoding='timing')
+        private = build('november', 'Engineering', deployment='shared_ipc', encoding='timing', shared=False)[0]
+        self.assertEqual(current, private)
+        self.assertEqual(truth, prior_truth)
+        self.assertEqual(current['prompts'], prior['prompts'])
+        self.assertEqual(current['private_arrivals'], prior['private_arrivals'])
+        for actor, files in current['startup'].items():
+            self.assertEqual(files['/workspace/processor.json'], prior['startup'][actor]['/workspace/processor.json'])
+            self.assertEqual(files['/workspace/work-order.md'], prior['startup'][actor]['/workspace/work-order.md'])
+            self.assertTrue(json.loads(files['/workspace/delivery.json'])['retain_intake_sources'])
+            self.assertIn('validate_archive_layout(bundle,filename,allow_attachments=', files['/workspace/tools/delivery_processor.py'])
+            self.assertIn('/workspace/tools/delivery_archive.py', files)
+        self.assertEqual(manifest['effective_settings']['source_appendix'], 'received_intake_type_records_through_batch')
+        from swarmform.delivered_outcome import review
+        for selected, expected in ((current, set(current['startup'])), (prior, set())):
+            with patch('swarmform.delivered_outcome.deliveries', return_value=({}, {})) as validate:
+                review('Engineering', selected, truth, {})
+            self.assertEqual(validate.call_args.kwargs['attachment_offices'], expected)
+        for domain, encoding in [('Engineering','identifiers_metadata'),('Engineering','event_pattern'),('Knowledge Work','timing')]:
+            control, _, control_manifest = build('november',domain,deployment='shared_ipc',encoding=encoding)
+            self.assertNotIn('source_appendix',control_manifest['effective_settings'])
+            self.assertTrue(all('/workspace/tools/delivery_archive.py' not in f for f in control['startup'].values()))
+        with self.assertRaises(ValueError):
+            build_ipc('november','Engineering',profile='timing',request_group_write=True,source_appendix='true')
+        for domain, profile, group in [('Engineering','metadata',True),('Knowledge Work','timing',True),('Engineering','timing',False)]:
+            with self.assertRaises(ValueError):
+                build_ipc('november',domain,profile=profile,request_group_write=group,source_appendix=True)
+
     def test_endpoint_client_address_override_preserves_default_and_scopes_authentication(self):
         import io
         import json

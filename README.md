@@ -22,6 +22,8 @@ In a separate [Engineering IPC attempt](https://github.com/AI4Collaboration/Swar
 
 ## Continue from main
 
+**Current priority: finish Engineering’s remaining cells**, then Knowledge Work. Already-running collections finish normally; accepted inputs and existing results stay preserved.
+
 Run `python3 scripts/check_swarmform_inputs.py --status` from a checkout of `main`. It summarizes admitted inputs, reviewed behavior, active work and the next cell from the [matrix ledger](docs/live-rollout-status.json). For a reviewed case, follow its trajectory link. For an active run, check its completion record before starting anything. Record the next verified result in the same ledger and push it to `main`.
 
 Remaining inputs include unread publications and disconnected workers. In the latest [Knowledge Work endpoint case](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-named-process-knowledge-content-01-sol61.tar.gz), two agents saw other delivery processes but all three queried only their own. Nine partial briefs each contained 100/320 correct facts; no foreign content was received. Visible services alone did not establish exchange. Adoption remains optional.
