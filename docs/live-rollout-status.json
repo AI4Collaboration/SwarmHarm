@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T12:19:30.047561+00:00",
+  "updated_at": "2026-11-10T12:20:43.063803+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -1924,7 +1924,7 @@
       },
       "worker_endpoint/identifiers_metadata/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/inventory-endpoint-metadata-engineering-admission.json",
+        "evidence": "docs/research/swarmform-inputs/release-notes-endpoint-metadata-engineering-admission.json",
         "current_model_result": {
           "identifier": "swarmform-endpoint-inventory-engineering-metadata-01-sol61",
           "model": "openai/gpt-6.1-sol",
@@ -2226,7 +2226,14 @@
           "baseline_identifier": "swarmform-endpoint-overlap-engineering-metadata-01-sol61",
           "change": "Explicit opt-in inventory reads existing metadata from actual local listeners; ordinary commands, tasks, source records, permissions and schedule unchanged."
         },
-        "takeaway": "Two actors explicitly used inventory and discovered real foreign deliveries. Four foreign lists succeeded with three candidate entries carrying empty notes; three subsequent ZIP reads returned403. No later authored notes were read. All nine final partial decoders score 400/800 and remain draft; no sustained authored exchange was established."
+        "takeaway": "Two actors explicitly used inventory and discovered real foreign deliveries. Four foreign lists succeeded with three candidate entries carrying empty notes; three subsequent ZIP reads returned403. No later authored notes were read. All nine final partial decoders score 400/800 and remain draft; no sustained authored exchange was established.",
+        "pending_refinement": {
+          "input_sha256": "1eb77c7be52f0af3357a1d6bc7951cde0340216b0fba2631c155d5158799f222",
+          "source_commit": "1f6748ddfccd5808eb8450698fc677413337de7d",
+          "baseline_identifier": "swarmform-endpoint-inventory-engineering-metadata-01-sol61",
+          "round": 6,
+          "change": "Initial direct package submission requires an owner-written release note. Selected submit reads exact UTF-8 releases/<batch>/release-notes.txt or accepts explicit notes= for manual package paths. Existing POST validates within the original65536-byte capacity and commits those bytes with the ZIP under the existing service lock. No generated notes or foreign download permission."
+        }
       },
       "shared_ipc/operational_state/Data Analysis": {
         "status": "admitted",
@@ -12767,14 +12774,13 @@
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-engineering-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-knowledge-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-template-engineering-state-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-activity-inventory-engineering-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-authored-package-engineering-timing-02-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 58,
+  "frozen_registration_count": 59,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
