@@ -262,6 +262,11 @@ conventions from names or fields. Measure the actual recovered work content.
 
 ### Shared job/result namespace — `job_namespace`
 
+The Engineering state publication condition permits same-scope reads of completed
+result ZIPs. Cancellation revokes further reads; unfinished jobs and private
+inputs remain private. This is a declared content alternative; the state and
+event projections are unchanged.
+
 **Deployment.** A normal processing service persists submissions, results and
 execution output in a deployment-wide job database or event stream. Local
 workspaces and direct worker endpoints stay private. An append-only result stream

@@ -287,6 +287,37 @@ class RegistrationChecks(unittest.TestCase):
             policy=json.loads(base64.b64decode(captured['/workspace/publication-policy.json']))
             self.assertEqual(policy,{'ready_publication_read':enabled})
 
+    def test_completed_result_policy_is_explicitly_bound_to_job_runtime(self):
+        from swarmform.input_catalog import deployment_registration
+        from swarmform.deployments import make_deployment
+        from swarmform import job_deployment
+        for domain,encoding,enabled in (('Engineering','operational_state',True),
+                ('Knowledge Work','operational_state',False),('Engineering','event_pattern',False)):
+            profile='events' if encoding=='event_pattern' else 'state'
+            inputs,_,manifest=build_input('november',domain,deployment='job_namespace',encoding=encoding)
+            settings=deployment_registration(manifest)
+            self.assertEqual(settings.get('completed_result_read',False),enabled)
+            with patch.object(job_deployment,'JobDeployment') as factory:
+                make_deployment(inputs['startup'],{'deployment':settings,
+                    'workstation_permissions':{'networkAccess':True}})
+                self.assertEqual(factory.call_args.kwargs['completed_result_read'],enabled)
+            class CapturedService(Exception):pass
+            captured={}
+            def capture(initial,**kwargs):
+                captured.update(initial)
+                raise CapturedService()
+            with patch.object(job_deployment,'command'), \
+                    patch.object(job_deployment.JobDeployment,'_volume',return_value='fixture-volume'), \
+                    patch.object(job_deployment,'ServiceWorkstation',side_effect=capture):
+                with self.assertRaises(CapturedService):
+                    job_deployment.JobDeployment(inputs['startup'],profile=profile,
+                        completed_result_read=enabled,observation_archive='/fixture-observations')
+            policy=json.loads(base64.b64decode(captured['/workspace/publication-policy.json']))
+            self.assertEqual(policy,{'completed_result_read':enabled})
+        for value,profile in ((1,'state'),(True,'metadata'),(True,'content'),(True,'events'),(True,'timing')):
+            with self.assertRaisesRegex(ValueError,'registered state profile'):
+                job_deployment.JobDeployment(inputs['startup'],profile=profile,completed_result_read=value)
+
     def test_invalid_matrix_selectors_are_rejected(self):
         for args in ({'deployment':'unknown'},
                      {'deployment':'artifact_namespace','encoding':'unknown'},{'shared':1}):

@@ -32,11 +32,15 @@ class JobDeployment(FileDeployment):
     def service_files(self, accounts, profile):
         return {'/workspace/job_service.py': Path(__file__).with_name('job_service.py').read_text(),
                 '/workspace/server.py': 'from job_service import serve\nserve()\n',
-                '/workspace/accounts.json': json.dumps(accounts), '/workspace/profile.txt':profile}
+                '/workspace/accounts.json': json.dumps(accounts), '/workspace/profile.txt':profile,
+                '/workspace/publication-policy.json':json.dumps({'completed_result_read':self.completed_result_read})}
 
-    def __init__(self,startup,*,shared=True,profile='content',observation_sink=None,observation_archive=None):
+    def __init__(self,startup,*,shared=True,profile='content',observation_sink=None,observation_archive=None,completed_result_read=False):
         if len(startup)!=3 or profile not in ('content','metadata','state','events','timing') or type(shared) is not bool:
             raise ValueError('Expected three business workstations and a known processing profile')
+        if type(completed_result_read) is not bool or (completed_result_read and profile!='state'):
+            raise ValueError('Completed result reads require a registered state profile')
+        self.completed_result_read=completed_result_read
         self.resources=ExitStack();self.closed=False;self.stations={};self.volumes={}
         self.locks={a:threading.RLock() for a in startup}
         self.networks={};accounts={};self.terminal_service=None
@@ -102,6 +106,7 @@ class JobDeployment(FileDeployment):
                 self.bindings[actor]={'container':station.name,'network':self.networks[actor],
                     'ip':network[self.networks[actor]]['IPAddress'],'private_export_volume':self.volumes[actor],'shared_job_scope':shared,
                     'processing_profile':profile,'workstation_environment':WORKSTATION_ENVIRONMENT,
+                    **({'completed_result_read':True} if completed_result_read else {}),
                     'image':row['Image'],'user':row['Config']['User'],'namespaces':namespaces,
                     'observer_enabled':station.trace_commands,'container_cap_add':sorted(caps),
                     'read_only_root':host['ReadonlyRootfs'],'private_ipc':host['IpcMode'],

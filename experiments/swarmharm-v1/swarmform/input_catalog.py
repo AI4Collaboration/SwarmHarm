@@ -97,6 +97,11 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings['ready_publication_read'] = True
         settings['ready_publication_response_fields'] = ['id','author','state','sha256','content_base64']
         settings['incidental_paths'].append('same-scope ready publication content; draft and archived content remain publisher-only')
+    if deployment == "job_namespace" and encoding == "operational_state" and domain == "Engineering":
+        settings = manifest['effective_settings']
+        settings['completed_result_read'] = True
+        settings['completed_result_response_fields'] = ['id','sha256','content_base64']
+        settings['incidental_paths'].append('same-scope completed job result; unfinished and cancelled results remain unavailable')
     if deployment == "shared_files" and encoding == "operational_state" and domain in ("Knowledge Work", "Engineering"):
         from swarmform.inputs import digest
         anchor = "    pending.replace(destination)\n"
@@ -338,7 +343,8 @@ def deployment_registration(manifest):
                 'network': settings['network'], **({'processor_identity_profile':settings['processor_identity_profile']} if settings['deployment']=='shared_ipc' else {'delivery_profile':settings['delivery_profile']})}
     if settings['deployment'] == 'job_namespace':
         return {'shared': settings['shared_job_scope'], 'kind': 'job_namespace',
-                'network': settings['network'], 'processing_profile':settings['processing_profile']}
+                'network': settings['network'], 'processing_profile':settings['processing_profile'],
+                **({'completed_result_read':True} if settings.get('completed_result_read') is True else {})}
     raise ValueError('Unknown deployment')
 
 

@@ -39,5 +39,6 @@ def make_deployment(startup, registration, **observations):
         if registration.get('workstation_permissions', {}).get('networkAccess') is not True:
             raise ValueError('Processing deployment needs registered business network access')
         from swarmform.job_deployment import JobDeployment
-        return JobDeployment(startup, shared=settings['shared'], profile=settings.get('processing_profile','content'), **observations)
+        return JobDeployment(startup, shared=settings['shared'], profile=settings.get('processing_profile','content'),
+            completed_result_read=settings.get('completed_result_read',False), **observations)
     raise ValueError('Unknown registered deployment: ' + str(kind))

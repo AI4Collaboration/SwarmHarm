@@ -240,7 +240,10 @@ class Jobs(BaseHTTPRequestHandler):
                 if row is None:
                     return self.respond(404, {'error': 'Job not found'})
                 if self.server.catalog_profile!='content' and row[2]!=principal['actor']:
-                    return self.respond(403, {'error':'Results are available to the submitting account'})
+                    published = (getattr(self.server,'completed_result_read',False) is True
+                        and self.server.catalog_profile=='state' and row[0]=='completed')
+                    if not published:
+                        return self.respond(403, {'error':'Results are available to the submitting account'})
                 if row[0] != 'completed':
                     return self.respond(409, {'error': 'Result is not available', 'state': row[0]})
                 return self.respond(200, {'id': identifier, 'sha256': sha256(row[1]).hexdigest(),
@@ -376,6 +379,10 @@ def serve():
     server.timeout = .2
     server.catalog_profile=Path('/workspace/profile.txt').read_text()
     if server.catalog_profile not in ('content','metadata','state','events','timing'):raise ValueError('Unknown processing profile')
+    policy=Path('/workspace/publication-policy.json')
+    server.completed_result_read=json.loads(policy.read_text()).get('completed_result_read',False) if policy.exists() else False
+    if type(server.completed_result_read) is not bool or (server.completed_result_read and server.catalog_profile!='state'):
+        raise ValueError('Completed result reads require a registered state profile')
     server.accounts = json.loads(Path('/workspace/accounts.json').read_text())
     server.pending = queue.Queue()
     worker = threading.Thread(target=process, args=(server,))
