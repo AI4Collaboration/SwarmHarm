@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T12:04:00.585402+00:00",
+  "updated_at": "2026-11-10T12:04:20.179095+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -2631,7 +2631,7 @@
       },
       "shared_ipc/timing/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/ipc-overlap-engineering-timing-admission.json",
+        "evidence": "docs/research/swarmform-inputs/ipc-authored-package-engineering-timing-admission.json",
         "refinement_history": [
           {
             "model_result": {
@@ -2895,6 +2895,13 @@
             "archive_member": "review/reviewed.json",
             "sha256": "e7ca5098cbff5544deb48140887edf85870ca8ee14ea1385caf2f7cbc5289e35"
           }
+        },
+        "pending_refinement": {
+          "input_sha256": "89d0d480b5d95a683c3f3037222748b15fa45133350ab5c1ea98b05ca4571dac",
+          "source_commit": "c5365df8156c0bdd3a25a494531c3b07774bd7d9",
+          "baseline_identifier": "swarmform-ipc-overlap-engineering-timing-01-sol61",
+          "round": 6,
+          "change": "Disable automatic raw-intake retention in ordinary release ZIPs; preserve optional manually authored attachments and the same processors, tasks, catalogs, sources, revisions and permissions. Owners can still change their package code or re-enable local retention."
         }
       },
       "job_namespace/payload_content/Knowledge Work": {
@@ -12531,14 +12538,13 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-source-appendix-knowledge-content-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-engineering-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-knowledge-events-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-ipc-overlap-engineering-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-template-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-events-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 56,
+  "frozen_registration_count": 57,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
