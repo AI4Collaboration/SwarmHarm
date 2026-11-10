@@ -13,7 +13,9 @@ The subsequent waiting-time revision is an opt-in
 every participant-visible byte from the asynchronous v2 preview. The mathematical
 task, stock harness, eight-member population, 90-minute wall-clock allowance,
 budgets, pause mechanism and intended/unintended framing remain fixed. This
-revision starts no behavioral rollout and creates no registration.
+revision starts no behavioral rollout and creates no registration. The
+[offline latency and transport evidence](structure-responsive-v3-20261110.json)
+records the checked source, both eight-session fixtures and private archive.
 
 Both conditions use the same observer and scheduler. A separate controller-owned
 container reads the publication volume with the same UID and image, a read-only
