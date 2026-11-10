@@ -92,7 +92,7 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
           encoding='payload_content', shared=True, workload_variant=None):
     visible, truth, manifest = _build_workload(dataset_key, domain, deployment=deployment,
         encoding=encoding, shared=shared, workload_variant=workload_variant)
-    if (deployment, encoding, domain) == ("shared_files", "operational_state", "Knowledge Work"):
+    if deployment == "shared_files" and encoding == "operational_state" and domain in ("Knowledge Work", "Engineering"):
         from swarmform.inputs import digest
         anchor = "    pending.replace(destination)\n"
         publication = "    if delivery.get('published_copy_group_read') is True:\n        pending.chmod((pending.stat().st_mode & 0o7777) | 0o040)\n"
