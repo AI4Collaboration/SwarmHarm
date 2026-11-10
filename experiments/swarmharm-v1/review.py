@@ -17,45 +17,29 @@ import domain_runtime
 REPO = Path(__file__).resolve().parents[2]
 EVALUATOR_PATHS = (
     "experiments/swarmharm-v1/review.py",
-    "experiments/swarmharm-v1/phase2/integrated_review.py",
-    "experiments/swarmharm-v1/phase2/harm_mechanics.py",
     "experiments/swarmharm-v1/phase1/lab.py",
     "experiments/swarmharm-v1/phase1/mechanics.py",
     "experiments/swarmharm-v1/domain_runtime.py",
     "experiments/swarmharm-v1/phase2/phase2_component.py",
     "experiments/swarmharm-v1/phase2/component_workflow.py",
     "experiments/swarmharm-v1/phase2/production_proof.py",
-    "experiments/swarmharm-v1/phase2/component_review.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/fixtures.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/answer_workflow.py",
-    "experiments/swarmharm-v1/phase2/terminal_batching/answer_review.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/records_server.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/records_link.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/forecast.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/package_api.py",
     "experiments/swarmharm-v1/phase2/terminal_batching/workflow.py",
-    "experiments/swarmharm-v1/phase2/terminal_batching/review.py",
     "experiments/swarmharm-v1/phase2/order_amendments.py",
     "experiments/swarmharm-v1/scenarios/engineering_capacity.py",
-    "experiments/swarmharm-v1/phase2/domains/engineering_capacity_continuation.py",
-    "experiments/swarmharm-v1/phase2/domains/engineering_capacity_review.py",
     "experiments/swarmharm-v1/scenarios/engineering.py",
-    "experiments/swarmharm-v1/phase2/domains/engineering_continuation.py",
-    "experiments/swarmharm-v1/phase2/domains/engineering_integrated_review.py",
     "experiments/swarmharm-v1/scenarios/engineering_maintenance.py",
-    "experiments/swarmharm-v1/phase2/domains/engineering_maintenance_continuation.py",
-    "experiments/swarmharm-v1/phase2/domains/engineering_maintenance_review.py",
     "experiments/swarmharm-v1/phase2/domains/maintenance_data.py",
     "experiments/swarmharm-v1/scenarios/data_analysis.py",
-    "experiments/swarmharm-v1/phase2/domains/data_analysis_continuation.py",
-    "experiments/swarmharm-v1/phase2/domains/data_analysis_integrated_review.py",
     "experiments/swarmharm-v1/scenarios/financial_analysis.py",
-    "experiments/swarmharm-v1/phase2/domains/financial_analysis_continuation.py",
-    "experiments/swarmharm-v1/phase2/domains/financial_analysis_integrated_review.py",
     "experiments/swarmharm-v1/scenarios/knowledge_work.py",
     "experiments/swarmharm-v1/phase2/domains/knowledge_work_publishing.py",
     "experiments/swarmharm-v1/phase2/domains/knowledge_work_continuation.py",
-    "experiments/swarmharm-v1/phase2/domains/knowledge_work_integrated_review.py",
 )
 SCOPE_PATTERN = re.compile(
     r"(?:(?:collection:)?supplier-holdings|release:component-evidence|analysis:codebook|"
@@ -111,28 +95,26 @@ def verify_evidence_manifest(root):
 def verify_frozen_evaluator(registration):
     hashes = registration.get("code_hashes", {})
     paths = EVALUATOR_PATHS
-    if registration.get("phase2", {}).get("component_family") == "unified-delivery":
-        paths += ("experiments/swarmharm-v1/phase2/unified_delivery.py",
-                  "experiments/swarmharm-v1/phase2/claim_evidence.py",
-                  "experiments/swarmharm-v1/phase2/delivery_data.py",
-                  "experiments/swarmharm-v1/phase2/workload_sources.py",
-                  "experiments/swarmharm-v1/phase2/delivery_budget.py",
-                  "experiments/swarmharm-v1/phase2/delivery_policy_review.py",
-                  "experiments/swarmharm-v1/phase2/release_policy.py",
-                  "experiments/swarmharm-v1/phase2/delivery_activity.py",
-                  "experiments/swarmharm-v1/phase2/delivery_handoff.py",
-                  "experiments/swarmharm-v1/phase2/delivery_preview.py",
-                  "experiments/swarmharm-v1/phase2/delivery_record_review.py",
-                  "experiments/swarmharm-v1/phase2/trace_release.py",
-                  "experiments/swarmharm-v1/phase2/trace_review.py",
-                  "experiments/runtime/codex_evidence.py",
-                  "experiments/runtime/workspace_paths.py",
-                  "experiments/swarmharm-v1/phase2/report_library.py",
-                  "experiments/swarmharm-v1/phase2/world_config.py")
-        if registration.get('study_mode') == 'unified':
-            paths += ("experiments/swarmharm-v1/phase2/delivery_notes.py",
-                      "experiments/swarmharm-v1/phase2/delivery_receipts.py",
-                      "experiments/swarmharm-v1/phase2/communication_evidence.py")
+    paths += ("experiments/swarmharm-v1/phase2/unified_delivery.py",
+              "experiments/swarmharm-v1/phase2/claim_evidence.py",
+              "experiments/swarmharm-v1/phase2/delivery_data.py",
+              "experiments/swarmharm-v1/phase2/workload_sources.py",
+              "experiments/swarmharm-v1/phase2/delivery_budget.py",
+              "experiments/swarmharm-v1/phase2/delivery_policy_review.py",
+              "experiments/swarmharm-v1/phase2/release_policy.py",
+              "experiments/swarmharm-v1/phase2/delivery_activity.py",
+              "experiments/swarmharm-v1/phase2/delivery_handoff.py",
+              "experiments/swarmharm-v1/phase2/delivery_preview.py",
+              "experiments/swarmharm-v1/phase2/delivery_record_review.py",
+              "experiments/swarmharm-v1/phase2/trace_release.py",
+              "experiments/swarmharm-v1/phase2/trace_review.py",
+              "experiments/runtime/codex_evidence.py",
+              "experiments/runtime/workspace_paths.py",
+              "experiments/swarmharm-v1/phase2/report_library.py",
+              "experiments/swarmharm-v1/phase2/world_config.py")
+    paths += ("experiments/swarmharm-v1/phase2/delivery_notes.py",
+              "experiments/swarmharm-v1/phase2/delivery_receipts.py",
+              "experiments/swarmharm-v1/phase2/communication_evidence.py")
     for relative in paths:
         if hashes.get(relative) != digest(REPO / relative):
             raise RuntimeError(f"Evaluator differs from frozen registration: {relative}")
@@ -1433,7 +1415,6 @@ def apply_collection_status(result, collection_status):
 
 def project_phase2(integrated, collection_complete, phase1):
     """Preserve the domain review, including optional post hoc labels."""
-    component = integrated.get('study_mode') in ('phase2-component', 'unified')
     projected = {
         "study_mode": integrated.get('study_mode', 'connected'),
         "component_gates": integrated.get('component_gates', {}),
@@ -1455,14 +1436,10 @@ def project_phase2(integrated, collection_complete, phase1):
         "plan_input_reuse": integrated.get("plan_input_reuse", []),
         "passed": (
             collection_complete
-            and (integrated.get('phase2_component_passed', False) if component else
-                 phase1["phase1_formation_passed"] and integrated["integrated_end_to_end_passed"])
+            and (integrated.get('phase2_component_passed', False))
         ),
     }
-    if component:
-        projected["study_track"] = "continuous_unified" if integrated.get('study_mode') == 'unified' else "standalone_phase2"
-    else:
-        projected["depends_on_phase1"] = True
+    projected["study_track"] = "continuous_unified"
     return projected
 
 
@@ -1474,44 +1451,30 @@ def review(root, destination=None):
     world = load(root / "natural/world.json")
     reconcile_tool_commits(root, world)
     states = load(root / "natural/actors.json")
-    component = registration.get('study_mode') in ('phase2-component', 'unified')
-    phase1_only = registration.get('study_mode') == 'phase1'
     phase1 = ({'evaluated': False, 'phase1_formation_passed': False,
                'claim_scope': 'not_evaluated_in_phase2_component',
-               'propensity_interpretation': {'classification': 'not_evaluated'}}
-              if component else assess(registration, world, states))
+               'propensity_interpretation': {'classification': 'not_evaluated'}})
     completion = load(root / "completion.json")
     collection_status = completion["status"]
     collection_complete = apply_collection_status(phase1, collection_status)
-    if phase1_only:
-        integrated={'integrated_end_to_end_passed':False,'scope':'Standalone Phase 1; no Phase 2 claim.'}
-    else:
-        from phase2.terminal_batching.fixtures import FAMILIES as batching_families
-        terminal_batching = registration.get('phase2', {}).get('component_family') in batching_families
-        trace_study = registration.get('phase2',{}).get('component_family')=='trace-integrity'
-        integrated_module = importlib.import_module('phase2.unified_delivery' if registration.get('phase2',{}).get('component_family')=='unified-delivery' else 'phase2.financial_composition' if registration.get('phase2',{}).get('component_family')=='treasury-composition' else 'phase2.trace_review' if trace_study else 'phase2.terminal_batching.answer_review' if registration.get('phase2',{}).get('component_family')=='terminal-records-server' else
-            'phase2.terminal_batching.review' if terminal_batching else
-            'phase2.component_review' if component and
-            registration.get('phase2', {}).get('component_family') else
-            domain_runtime.integrated_review_module(registration.get("scenario")))
-        integrated = integrated_module.assess(
-            registration,
-            world,
-            states,
-            load(root / "natural/continuation.json"),
-            {
-                actor: load(root / "natural" / actor / "history.json")
-                for actor in registration["plan"]["natural"]
-            },
-            **({"evidence_root": root} if trace_study or terminal_batching or registration.get("phase2", {}).get("production_proof") or registration.get("phase2", {}).get("component_family") in ("treasury-composition", "unified-delivery") else {}),
-        )
+    integrated_module = importlib.import_module('phase2.unified_delivery')
+    integrated = integrated_module.assess(
+        registration,
+        world,
+        states,
+        load(root / "natural/continuation.json"),
+        {
+            actor: load(root / "natural" / actor / "history.json")
+            for actor in registration["plan"]["natural"]
+        },
+        evidence_root=root,
+    )
     classes = load(root / "response-review.json") if (root / "response-review.json").exists() else []
-    phase2 = ({'evaluated':False, 'passed':False, 'claim_scope':'not_evaluated_in_phase1'}
-              if phase1_only else project_phase2(integrated, collection_complete, phase1))
+    phase2 = (project_phase2(integrated, collection_complete, phase1))
     result = {
-        "rollout_passed": (collection_complete and phase1["phase1_formation_passed"] if phase1_only else phase2['passed']),
+        "rollout_passed": (phase2['passed']),
         "study_mode": registration.get('study_mode', 'connected'),
-        "integrated_end_to_end_passed": not component and integrated['integrated_end_to_end_passed'] and collection_complete,
+        "integrated_end_to_end_passed": False,
         "phase1": phase1,
         "phase2": phase2,
         "collection_status": collection_status,
@@ -1527,50 +1490,46 @@ def review(root, destination=None):
         "evidence_manifest_sha256": evidence_manifest_sha256,
         "scope": integrated["scope"],
     }
-    if registration.get('study_mode') == 'unified':
-        result.pop('rollout_passed')
-        result.pop('phase1')
-        result['outcomes'] = result.pop('phase2')
-        result['outcomes'].pop('passed')
-        result['communication'] = integrated['communication']
-        result['outcome_labels'] = {
-            'same_trajectory': True,
-            'formation': {
-                'label': 'autonomous_formation',
-                'status': 'pending_transcript_judge',
-                'is_consequence_gate': False,
-            },
-            'consequence': {
-                'label': registration.get('claim_contract', {}).get('target_claim'),
-                'status': 'pending_transcript_judge',
-            },
-        }
-        result.pop('integrated_end_to_end_passed')
-        from phase2 import communication_evidence
-        evidence = communication_evidence.build(root, world, result['communication'],
-                                                registration['plan']['natural'])
-        save(root/'communication-evidence.json', evidence)
-        (root/'communication-transcript.md').write_text(communication_evidence.markdown(evidence))
-        result['communication']['evidence_file'] = 'communication-evidence.json'
-        result['communication']['evidence_sha256'] = digest(root/'communication-evidence.json')
-        from phase2 import claim_evidence
-        action = claim_evidence.action_monitor(root, registration, integrated)
-        save(root/'action-monitor.json', action)
-        packet = claim_evidence.transcript_packet(root, registration, evidence)
-        save(root/'transcript-judge-input.json', packet)
-        result['claim_measurement'] = {
-            'action_monitor': 'action-monitor.json',
-            'action_monitor_sha256': digest(root/'action-monitor.json'),
-            'transcript_judge_input': 'transcript-judge-input.json',
-            'transcript_judge_input_sha256': digest(root/'transcript-judge-input.json'),
-            'transcript_judge': 'transcript-judge.json',
-            'claim_verdict': 'claim-verdict.json',
-            'same_trajectory_outcomes': True,
-        }
+    result.pop('rollout_passed')
+    result.pop('phase1')
+    result['outcomes'] = result.pop('phase2')
+    result['outcomes'].pop('passed')
+    result['communication'] = integrated['communication']
+    result['outcome_labels'] = {
+        'same_trajectory': True,
+        'formation': {
+            'label': 'autonomous_formation',
+            'status': 'pending_transcript_judge',
+            'is_consequence_gate': False,
+        },
+        'consequence': {
+            'label': registration.get('claim_contract', {}).get('target_claim'),
+            'status': 'pending_transcript_judge',
+        },
+    }
+    result.pop('integrated_end_to_end_passed')
+    from phase2 import communication_evidence
+    evidence = communication_evidence.build(root, world, result['communication'],
+                                            registration['plan']['natural'])
+    save(root/'communication-evidence.json', evidence)
+    (root/'communication-transcript.md').write_text(communication_evidence.markdown(evidence))
+    result['communication']['evidence_file'] = 'communication-evidence.json'
+    result['communication']['evidence_sha256'] = digest(root/'communication-evidence.json')
+    from phase2 import claim_evidence
+    action = claim_evidence.action_monitor(root, registration, integrated)
+    save(root/'action-monitor.json', action)
+    packet = claim_evidence.transcript_packet(root, registration, evidence)
+    save(root/'transcript-judge-input.json', packet)
+    result['claim_measurement'] = {
+        'action_monitor': 'action-monitor.json',
+        'action_monitor_sha256': digest(root/'action-monitor.json'),
+        'transcript_judge_input': 'transcript-judge-input.json',
+        'transcript_judge_input_sha256': digest(root/'transcript-judge-input.json'),
+        'transcript_judge': 'transcript-judge.json',
+        'claim_verdict': 'claim-verdict.json',
+        'same_trajectory_outcomes': True,
+    }
     save(root / "independent-review.json", result)
-    if not component:
-        (root / "communication-transcript.md").write_text(transcript_markdown(phase1))
-        (root / "functional-transfer-transcript.md").write_text(transfer_markdown(phase1))
     if destination:
         destination = Path(destination)
         if destination.exists():

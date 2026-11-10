@@ -390,49 +390,6 @@ class NativeHarnessChecks(unittest.TestCase):
                 value['truth']['revision']='knowledge-work-trace-release-v159'
             self.assertEqual(sha256(json.dumps(value,sort_keys=True).encode()).hexdigest(),digest,name)
 
-    def test_native_replay_counts_changes_and_preserves_restoration(self):
-        from tests import trace_integrity_checks as controls
-        from types import SimpleNamespace
-        import base64
-        for harness in ('claude-code','codex'):
-            def native_message(reference):
-                message={'role':'user','content':'Review '+reference+' for the briefing.'}
-                row=({'type':'user','uuid':'user-request','message':message} if harness=='claude-code'
-                     else {'type':'response_item','timestamp':'2026-11-03T00:00:00Z',
-                           'payload':{'type':'message','id':'user-request',**message}})
-                return (json.dumps(row)+'\n').encode()
-            fixture=controls.TraceIntegrityChecks();fixture.setUp()
-            with patch.object(controls,'native_message',native_message):
-                fixture.test_review_retains_corrections_withdrawals_and_exact_blobs()
-            with tempfile.TemporaryDirectory() as d:
-                root=Path(d);plan=fixture.plan;truth=fixture.truth;actor='a';case=truth['portfolios'][actor]
-                surface=record_surface.NativeRecordSurface(root,plan,harness=harness)
-                directory=surface.directory(actor);directory.mkdir(parents=True)
-                (directory/'session.jsonl').write_bytes(native_message(case['cases'][0]['source_reference']))
-                raw=json.dumps(trace_release.expected_briefing(case)).encode()
-                world=SimpleNamespace(events=[],plan={},operator=None,private={actor:{'/workspace/briefing.json':base64.b64encode(raw).decode()}})
-                flow=trace_release.Continuation(world,plan);flow.surface=surface
-                self.assertEqual(flow.call(actor,1,'check_briefing',{'path':'/workspace/briefing.json'})['state'],'incomplete')
-                result=trace_review.reconstruct(root,truth,world.events)
-                self.assertFalse(result['invalid_events'],result['invalid_events'])
-                from copy import deepcopy
-                changed=deepcopy(world.events)
-                changed[0]['result']['checks']={'activity_references':{'expected_message_entries':0}}
-                self.assertEqual(trace_review.reconstruct(root,truth,changed)['invalid_events'],[1])
-                old_truth=deepcopy(truth);old_truth['revision']='knowledge-work-trace-release-v159-diagnostics-v2'
-                old_events=deepcopy(world.events)
-                old_events[0]['result']['checks']=trace_release.release_diagnostics(
-                    case,raw,{'session.jsonl':native_message(case['cases'][0]['source_reference'])})
-                self.assertFalse(trace_review.reconstruct(root,old_truth,old_events)['invalid_events'])
-                wrong=deepcopy(old_events)
-                wrong[0]['result']['checks']['activity_references']['expected_message_entries']=1
-                self.assertEqual(trace_review.reconstruct(root,old_truth,wrong)['invalid_events'],[1])
-                old_truth['revision']='knowledge-work-trace-release-v159-diagnostics-v1'
-                for key in ('measure','expected_message_entries'):
-                    del old_events[0]['result']['checks']['activity_references'][key]
-                self.assertFalse(trace_review.reconstruct(root,old_truth,old_events)['invalid_events'])
-                self.assertEqual(trace_review.reconstruct(root,truth,old_events)['invalid_events'],[1])
-
     def test_family_defaults_never_fall_back_to_pi(self):
         self.assertEqual(run.guardrails.native_harness({'model':'openai/gpt-5.6-sol'}),'codex')
         self.assertEqual(run.guardrails.native_harness({'model':'anthropic/claude-haiku-5.5'}),'claude-code')
@@ -593,36 +550,6 @@ class NativeHarnessChecks(unittest.TestCase):
                     self.assertEqual([t['name'] for t in namespaces[0]['tools']],['confirm_service'])
                     self.assertTrue(all(t['type'] in ('function','namespace') for t in request['tools']))
         finally:server.shutdown();server.server_close()
-
-    def test_native_trace_preparation_freezes_harness_and_gateway(self):
-        for model,harness,goal in [('anthropic/claude-haiku-5.5','claude-code','off'),('anthropic/claude-haiku-5.5','claude-code','claude_goal'),('openai/gpt-5.6-sol','codex','off')]:
-            with self.subTest(harness=harness), tempfile.TemporaryDirectory() as d:
-                root=Path(d).resolve(); key=root/'host-key';key.write_text('offline-fixture');key.chmod(0o600)
-                registration=root/'registrations'/'native'
-                with patch.object(run,'REGISTRATIONS',registration.parent), patch.object(run,'MODELS',{'model':model}), patch.object(run,'UPSTREAM_MODELS',{'model':model}), patch.object(run,'verify_routes',return_value={}), patch.object(run.claude_agent,'gateway_catalog',return_value={'model':model,'native_goal_available':True}):
-                    run.prepare(root/'output',registration,key,run_controls=False,
-                        scenario='knowledge-work',study_mode='phase2-component',
-                        component_family='trace-integrity',harness_kind=harness,goal_mode=goal)
-                prepared=json.loads((registration/'registration.json').read_text())
-                self.assertEqual(prepared['harness']['kind'],harness)
-                self.assertEqual(prepared['harness']['authentication'],'axonhub')
-                if goal=='claude_goal':
-                    self.assertEqual(prepared['native_subject_goal']['condition'],'native_claude_goal')
-                    self.assertEqual(prepared['native_subject_goal']['settings']['goal_progress_guard'],
-                                     run.claude_agent.GOAL_PROGRESS_GUARD)
-                    self.assertEqual(prepared['harness']['input_delivery'],'atomic-sdk-goal-v1')
-                    self.assertEqual(prepared['harness']['goal_evaluator']['model'],model)
-                    self.assertIn('Claude native goal versus reference Codex native goal', prepared['reproduction']['harness_differences'])
-                    self.assertNotIn('Claude goal off versus reference Codex native goal', prepared['reproduction']['harness_differences'])
-                self.assertEqual(prepared['api_base'],codex_gateway.AXONHUB_BASE)
-                self.assertFalse(prepared['live_collection_permitted'])
-                with patch.object(run,'REGISTRATIONS',registration.parent), self.assertRaisesRegex(RuntimeError, 'not permitted for live collection'):
-                    run.collect(root/'output',registration)
-                if harness == 'codex':
-                    self.assertIn('observed native response groups', prepared['harness']['request_count_scope'])
-                    self.assertIn('native response completion', prepared['harness']['request_timeout_scope'])
-                self.assertEqual(prepared['component_truth']['native_record_harness'],harness)
-                self.assertNotIn('offline-fixture',(registration/'registration.json').read_text())
 
 class CheckedControlsReuse(unittest.TestCase):
     def test_controls_normalize_only_declared_model_selectors(self):

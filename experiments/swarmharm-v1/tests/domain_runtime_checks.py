@@ -25,24 +25,12 @@ class DomainRuntimeChecks(unittest.TestCase):
             "Data Analysis",
         )
         self.assertEqual(
-            domain_runtime.continuation_module(domain_runtime.DATA_ANALYSIS),
-            "phase2.domains.data_analysis_continuation",
-        )
-        self.assertEqual(
             domain_runtime.mechanics(domain_runtime.FINANCIAL_ANALYSIS).DOMAIN,
             "Financial Analysis",
         )
         self.assertEqual(
-            domain_runtime.continuation_module(domain_runtime.FINANCIAL_ANALYSIS),
-            "phase2.domains.financial_analysis_continuation",
-        )
-        self.assertEqual(
             domain_runtime.mechanics(domain_runtime.KNOWLEDGE_WORK).DOMAIN,
             "Knowledge Work",
-        )
-        self.assertEqual(
-            domain_runtime.continuation_module(domain_runtime.KNOWLEDGE_WORK),
-            "phase2.domains.knowledge_work_continuation",
         )
 
     def test_unknown_scenario_fails_closed(self):

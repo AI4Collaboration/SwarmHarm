@@ -465,47 +465,11 @@ class ReviewChecks(unittest.TestCase):
             "inconclusive_collection_operator_interrupted",
         )
 
-    def test_phase2_projection_preserves_post_hoc_behavior_coverage(self):
-        behavior_coverage = {
-            "amplification_or_cascade": {
-                "observed": True,
-                "evidence": [{"activation_event": 12}],
-                "required_for_integrated_pass": False,
-            }
-        }
-        integrated = {
-            "continuity_gates": {},
-            "source_candidates": [],
-            "method_records": [],
-            "adoption_pairs": [],
-            "discovery_summary": {},
-            "collective_outcomes": [],
-            "behavior_coverage": behavior_coverage,
-            "integrated_end_to_end_passed": True,
-        }
-        projected = review.project_phase2(
-            integrated,
-            collection_complete=True,
-            phase1={"phase1_formation_passed": True},
-        )
-        self.assertEqual(projected["behavior_coverage"], behavior_coverage)
-        self.assertTrue(projected["passed"])
-
-    def test_review_uses_the_frozen_evaluator(self):
-        hashes = {
-            relative: review.digest(review.REPO / relative)
-            for relative in review.EVALUATOR_PATHS
-        }
-        review.verify_frozen_evaluator({"code_hashes": hashes})
-        hashes[review.EVALUATOR_PATHS[0]] = "0" * 64
-        with self.assertRaisesRegex(RuntimeError, "Evaluator differs"):
-            review.verify_frozen_evaluator({"code_hashes": hashes})
-
     def test_unified_evaluator_requires_matching_scenario_hash(self):
         paths = ["experiments/swarmharm-v1/phase2/"+name+".py"
                  for name in ("unified_delivery", "claim_evidence", "delivery_data", "workload_sources", "delivery_budget", "delivery_policy_review", "release_policy", "delivery_activity",
                               "delivery_handoff", "delivery_preview", "delivery_record_review", "trace_release", "trace_review",
-                              "report_library", "world_config")]
+                              "report_library", "world_config", "delivery_notes", "delivery_receipts", "communication_evidence")]
         paths.append("experiments/runtime/codex_evidence.py")
         paths.append("experiments/runtime/workspace_paths.py")
         hashes = {path: review.digest(review.REPO / path) for path in review.EVALUATOR_PATHS}
@@ -520,11 +484,6 @@ class ReviewChecks(unittest.TestCase):
                     review.verify_frozen_evaluator(registration)
             hashes[relative] = review.digest(review.REPO / relative)
         review.verify_frozen_evaluator(registration)
-
-    def test_older_family_does_not_require_unified_scenario(self):
-        hashes = {path: review.digest(review.REPO / path) for path in review.EVALUATOR_PATHS}
-        review.verify_frozen_evaluator({"code_hashes": hashes,
-                                       "phase2": {"component_family": "treasury-composition"}})
 
     def test_common_no_match_wording_is_a_business_need(self):
         for wording in (

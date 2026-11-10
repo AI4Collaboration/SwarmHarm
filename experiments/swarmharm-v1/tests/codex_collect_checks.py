@@ -438,33 +438,4 @@ class NativeCodex(unittest.TestCase):
                     finally:
                         for path,original in zip(paths,originals):path.write_bytes(original)
 
-    def test_prepare_collect_and_native_export_without_api_routing(self):
-        with self.fixture(), tempfile.TemporaryDirectory() as temporary, ExitStack() as patches:
-            root = Path(temporary) / 'rollout'
-            registration = run.REGISTRATIONS / ('test-codex-' + Path(temporary).name)
-            self.addCleanup(shutil.rmtree, registration, True)
-            patches.enter_context(patch.object(run, 'MODELS', {'codex': MODEL}))
-            patches.enter_context(patch.object(run, 'UPSTREAM_MODELS', {'codex': MODEL}))
-            patches.enter_context(patch.object(C, 'subscription_catalog', return_value={
-                'authentication': 'offline-fixture', 'model': MODEL, 'effort': 'high', 'inference_calls': 0}))
-            routes = patches.enter_context(patch.object(run, 'verify_routes', side_effect=AssertionError('No API route')))
-            run.prepare(root, registration, None, run_controls=False, harness_kind='codex',
-                        offline_adapter_test=True,study_mode='connected',archive_compatibility=True)
-            reg = run.load(root / 'registration.json')
-            self.assertIsNone(reg['api_base'])
-            self.assertEqual(reg['harness']['authentication'], 'chatgpt-subscription')
-            self.assertTrue(all('experiments/runtime/' + name in reg['code_hashes'] for name in
-                ('codex_agent.py', 'codex_rpc.py', 'codex_mcp.py', 'codex_session.py', 'codex_evidence.py')))
-            reg['budget'].update(max_batch_seconds=25, max_actor_seconds=25)
-            if reg.get('source_publication'):reg['source_publication']['after_start_seconds'] = 1
-            run.save(root / 'registration.json', reg)
-            run.save(root / 'registration-seal.json', {'sha256': run.sha(root / 'registration.json')})
-            patches.enter_context(patch.object(run, 'verify_collection_freeze'))
-            patches.enter_context(patch.object(run, 'AXONHUB_KEY_FILE', None))
-            run.collect(root, registration, offline_adapter_test=True)
-            routes.assert_not_called()
-            self.assertIn(run.load(root / 'completion.json')['status'], {'collected', 'collected_with_limits'})
-            self.assertEqual(len(export_atif.export(root)), 4)
-
-
 if __name__ == '__main__':unittest.main()

@@ -45,30 +45,6 @@ class GoalResponses(BaseHTTPRequestHandler):
 
 
 class NativeGoalChecks(unittest.TestCase):
-    def test_preparation_registers_codex_goal_without_pi_resume_contract(self):
-        with tempfile.TemporaryDirectory() as d:
-            root=Path(d);key=root/'key';key.write_text('offline-fixture')
-            with patch.object(run,'REGISTRATIONS',root/'registrations'), \
-                 patch.object(run,'MODELS',{'sol':'openai/gpt-5.6-sol'}), \
-                 patch.object(run,'UPSTREAM_MODELS',{'sol':'openai/gpt-5.6-sol'}), \
-                 patch.object(run,'verify_routes',return_value={}):
-                run.prepare(root/'output',root/'registrations'/'goal',key,run_controls=False,
-                    scenario='knowledge-work',study_mode='phase2-component',
-                    component_family='trace-integrity',harness_kind='codex',goal_mode='codex_goal')
-            registration=run.load(root/'output/registration.json')
-            self.assertEqual(registration['native_subject_goal']['condition'],'native_codex_goal')
-            self.assertNotIn('blocked_business_resumption',registration['native_subject_goal'])
-            self.assertNotIn('subject_prompt_condition',registration)
-            self.assertEqual(registration['native_subject_goal']['settings']['goal_progress_guard'],
-                             codex_gateway.GOAL_PROGRESS_GUARD)
-            stale_harness = dict(registration['harness'])
-            stale_harness.pop('goal_progress_guard')
-            with self.assertRaisesRegex(RuntimeError, 'goal guard changed'):
-                codex_gateway.verify_runtime(stale_harness)
-            self.assertNotIn('goals',registration['harness']['disabled_features'])
-            self.assertIn('update_goal',registration['harness']['extension_tools'])
-            self.assertNotIn('goal off',' '.join(registration['reproduction']['harness_differences']))
-
     def test_native_goal_continues_one_thread_and_exports_exact_evidence(self):
         self.exercise('complete')
 
