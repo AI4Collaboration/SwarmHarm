@@ -70,6 +70,39 @@ class StructureCollection(Collection):
             self.record(actor, {'type': 'research_status_request', 'at': utc(),
                 'private_status': status.value, 'invalid': status.error})
 
+    def consume_publication_scan(self):
+        if self.publication_scan is not None and self.publication_scan.done():
+            scan = self.publication_scan.result()
+            self.publication_scan = None
+            self.next_publication_scan = time.monotonic() + self.reg['publication_updates']['poll_seconds']
+            self.retain_publication_scan(scan)
+
+    def finish_tool(self, actor, message, result, *, delivered):
+        versions = []
+        if delivered and self.sustained_research and time.monotonic() < self.deadline:
+            # Deliver only already-observed real versions; never delay the tool
+            # for a scan or interrupt/restart the active model response.
+            self.consume_publication_scan()
+            versions = self.publications.pending(actor)
+        if versions:
+            notice = {'type': 'publication_notice', 'at': utc(), 'source': 'automatic_environment_file_change',
+                'delivery': 'tool_result', 'call_id': message['call_id'], 'versions': versions,
+                'text': self.publications.notice(versions), 'same_native_session': True}
+            # Preserve raw shell streams/status and distinguish environmental
+            # metadata in both the exact native result and the observer record.
+            result = {**result, 'environment_notifications': [notice['text']]}
+        super().finish_tool(actor, message, result, delivered=delivered)
+        if versions:
+            # Failed native delivery leaves the versions pending.
+            self.publications.acknowledge(actor, versions)
+            self.research_status[actor].wake()
+            state = self.states[actor]
+            state['research_state'] = {'state': 'working'}
+            state['publication_notices'] += 1
+            state['notices'].append(notice)
+            self.record(actor, notice)
+            save(self.root/'natural'/actor/'notices.json', state['notices'])
+
     def may_continue(self):
         if not self.sustained_research:
             return True
@@ -144,11 +177,7 @@ class StructureCollection(Collection):
         now = time.monotonic()
         if self.active or self.jobs:
             self.idle_since = None
-        if self.publication_scan is not None and self.publication_scan.done():
-            scan = self.publication_scan.result()
-            self.publication_scan = None
-            self.next_publication_scan = now + policy()['poll_seconds']
-            self.retain_publication_scan(scan)
+        self.consume_publication_scan()
         for actor in self.actors:
             if actor in self.active:
                 continue
@@ -159,7 +188,8 @@ class StructureCollection(Collection):
                 return
             text = self.publications.notice(versions)
             notice = {'type': 'publication_notice', 'at': utc(), 'source': 'automatic_environment_file_change',
-                      'versions': versions, 'text': text, 'same_native_session': True}
+                      'versions': versions, 'text': text, 'same_native_session': True,
+                      'delivery': 'idle_session_prompt'}
             # Only acknowledge after dispatch succeeds; do not lose a pending update.
             self.agents[actor].prompt(text)
             self.publications.acknowledge(actor, versions)
@@ -178,7 +208,7 @@ class StructureCollection(Collection):
             self.idle_since = None
         if self.publication_scan is None and now >= self.next_publication_scan:
             self.publication_scan = self.publication_pool.submit(self.read_publications)
-            self.next_publication_scan = now + policy()['poll_seconds']
+            self.next_publication_scan = now + self.reg['publication_updates']['poll_seconds']
 
     def quiescence_ready(self):
         if self.sustained_research:

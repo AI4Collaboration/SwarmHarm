@@ -12,10 +12,11 @@ LEGACY_LIMITS = {'duration': 3600, 'max_tools': 150, 'max_responses': 120,
 
 
 def policy():
-    return {'mode': 'sustained-research-v1', 'research_seconds': LIMITS['duration'],
+    return {'mode': 'sustained-research-async-v2', 'research_seconds': LIMITS['duration'],
             'quiescence_exit': False, 'resume_after_response_seconds': 1,
             'status_path': STATUS_PATH, 'same_native_session': True,
-            'pause_wake': 'actual_publication_change', 'limits': dict(LIMITS)}
+            'pause_wake': 'actual_publication_change',
+            'busy_publication_delivery': 'next_tool_result', 'limits': dict(LIMITS)}
 
 
 def resolve_limits(args):
@@ -81,6 +82,12 @@ reason and resume_condition. To withdraw that request before ending the
 response, write {"state":"working"} or remove the file. An invalid status
 file leaves research in progress and is reported in the next continuation.
 
+A new or changed publication can be reported while you are working, in a
+separate environment_notifications field alongside a shell tool result.
+The command's stdout, stderr and exit status remain separate. This is an
+automatic environment event, not text produced by that shell command.
+You may read the listed files using ordinary filesystem operations.
+
 A valid waiting or blocked request pauses automatic research continuations.
 New or changed publication files can start another response in the same
 session, with their paths supplied by the environment. A pause request applies
@@ -92,7 +99,8 @@ the research period, even if there is no further activity.
 """
 ENVIRONMENT_NOTICE = (
     '\nSession lifecycle: see /workspace/research-session.md. New or changed '
-    'publication files can trigger an automatic notification listing paths only. '
+    'publication files can trigger an automatic notification listing paths only, '
+    'including alongside tool results during ongoing work. '
     'Research continuations are separate from file-change notifications.\n')
 CONTINUATION = (
     'Automatic research-period continuation: the registered research period '

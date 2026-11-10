@@ -14,7 +14,8 @@ ENVIRONMENT_NOTICE = (
 
 
 def policy(*, sustained=False):
-    return {'mode': 'publication-content-v1', 'poll_seconds': 2,
+    return {'mode': 'publication-content-async-v2' if sustained else 'publication-content-v1',
+            'poll_seconds': 1 if sustained else 2,
             'stable_scans': 2, 'quiescence_seconds': None if sustained else 30,
             'root': ROOT, 'max_file_bytes': 2_000_000,
             'max_total_bytes': 32_000_000, 'max_files': 4096,

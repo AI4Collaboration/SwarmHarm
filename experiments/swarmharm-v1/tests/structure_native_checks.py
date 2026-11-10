@@ -26,11 +26,17 @@ class StructureNativeChecks(unittest.TestCase):
         server = ThreadingHTTPServer(('127.0.0.1', 0), Responses)
         server.requests, server.lock = [], threading.Lock()
         server.wait_for_arrivals = False
+        busy_update_ready = threading.Event()
 
         def command_for(request):
+            actor = re.search(r'Offline sustained fixture (Research\d+)', json.dumps(request['input']))[1]
             latest = next(item for item in reversed(request['input']) if item.get('role') == 'user')
             if research.CONTINUATION in json.dumps(latest):
                 return "python3 - <<'PY'\nimport json\nfrom pathlib import Path\nPath('/workspace/research-status.json').write_text(json.dumps({'state':'blocked','reason':'Fixture has no further work.','resume_condition':'New publication.'}))\nPY"
+            if actor == 'Research01':
+                return "mkdir -p /var/tmp/exports/messages; python3 - <<'PY'\nimport json\nfrom pathlib import Path\nPath('/var/tmp/exports/messages/busy.json').write_text(json.dumps({'sender':'Research01','recipient':'Research02','text':'Actual fixture publication.'}))\nPY"
+            if actor == 'Research02' and not busy_update_ready.wait(25):
+                raise TimeoutError('A real publication was not observed while the recipient was busy')
             return 'cat /workspace/task.md'
 
         server.command_for = command_for
@@ -46,6 +52,11 @@ class StructureNativeChecks(unittest.TestCase):
                 'requires_openai_auth=false\nsupports_websockets=false\nrequest_max_retries=0\nstream_max_retries=0'))
 
         class FixtureCollection(StructureCollection):
+            def retain_publication_scan(self, scan):
+                super().retain_publication_scan(scan)
+                if self.publications.pending('Research02'):
+                    busy_update_ready.set()
+
             def notify_ready(self):
                 if time.monotonic()-self.activated_at > 75:
                     raise TimeoutError('Offline sustained fixture exceeded its test allowance')
@@ -63,9 +74,10 @@ class StructureNativeChecks(unittest.TestCase):
         try:
             with tempfile.TemporaryDirectory() as directory, patch.object(codex_gateway, 'write_config', local_config):
                 root = Path(directory)
-                visible, _, _ = build_theory('sustained-native-fixture', 8, 'unintended', sustained_research=True)
+                visible, _, _ = build_theory('sustained-native-fixture', 8, 'intended', sustained_research=True)
+                visible['prompts'] = {a: [f'Offline sustained fixture {a}.'] for a in visible['startup']}
                 model = 'openai/gpt-6.1-sol'
-                reg = registration('unintended')
+                reg = registration('intended')
                 reg.update(model=model, reasoning='high', workstation_permissions=WORKSTATION_PERMISSIONS,
                     harness=codex_gateway.harness_registration('off', model), arrival_offsets={'opening': 0},
                     research_study='SwarmForm Common Problem', plan={'natural': {a: {} for a in visible['startup']}})
@@ -79,12 +91,21 @@ class StructureNativeChecks(unittest.TestCase):
                 for actor, state in report['actors'].items():
                     self.assertEqual(state['session_activations'], 2)
                     self.assertEqual(state['research_continuations'], 1)
-                    self.assertEqual(state['publication_notices'], 0)
+                    self.assertEqual(state['publication_notices'], int(actor == 'Research02'))
                     self.assertEqual(state['observed_model_responses'], 4)
                     self.assertEqual(state['observed_tokens'], 52)
                     self.assertEqual(state['lifecycle_at_close'], 'blocked')
                     self.assertTrue(export_atif.export_actor(root, 'natural', actor)['native_continuity_passed'])
+                events = [json.loads(line) for line in (root/'events.jsonl').read_text().splitlines()]
+                notice_index = next(i for i, e in enumerate(events) if e['type']=='publication_notice' and e['actor']=='Research02')
+                settled_index = next(i for i, e in enumerate(events) if e['type']=='settled' and e['actor']=='Research02')
+                self.assertLess(notice_index, settled_index)
+                self.assertEqual(events[notice_index]['delivery'], 'tool_result')
+                outputs = [item.get('output', '') for request in server.requests for item in request['input']
+                           if item.get('type') == 'function_call_output']
+                self.assertTrue(any('environment_notifications' in str(item) and 'busy.json' in str(item) for item in outputs))
         finally:
+            busy_update_ready.set()
             server.shutdown(); server.server_close()
 
     def test_eight_sessions_resume_on_late_message_and_return_result_without_new_sessions(self):

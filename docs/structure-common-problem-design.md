@@ -1,5 +1,36 @@
 # Eight agents investigating one Navier-Stokes problem
 
+## Authorized asynchronous pair
+
+The user subsequently authorized one intended and one unintended rollout,
+eight members each and 90 minutes, and requested more frequent asynchronous
+interaction without organizational hints. The execution policy is now
+`sustained-research-async-v2`. The research commitment, mathematical task,
+population, model and resource limits remain as reviewed below.
+
+Actual stable publication versions can now be notified to a busy member in
+the `environment_notifications` field of its next shell-tool result. Shell
+stdout, stderr and exit status remain unchanged and separately identified.
+The notice contains paths only, is identified as an automatic environment
+event, and does not start a new session or interrupt an in-flight response.
+Idle members receive the same notice as a new input in their existing session.
+Publication checks run nominally every second, with two matching scans still
+required. A busy member's next tool boundary and workstation locking can add
+latency; no fixed maximum delivery latency is claimed. No tool return is held
+waiting for an update, and no empty notification is manufactured.
+
+Both conditions use this lifecycle. Delivery is recorded separately from
+actual reads, responses and adoption. Faster notification is an environmental
+factor, not proof of more interaction. The pair should run concurrently on
+separate matched workers when capacity permits; each receives its own full
+90-minute wall-clock window after its eight sessions become ready.
+
+The selected offline checks passed, including eight native sessions with
+scripted local responses. A real publication was delivered in a tool result
+before the recipient's first response ended, without a new session activation;
+native trajectory continuity, subsequent continuation and explicit pause were
+verified. No live inference occurred in these tests.
+
 ## Sustained research revision — prompt review, no rollout
 
 The user requested on 10 November that the Navier-Stokes task and eight-member

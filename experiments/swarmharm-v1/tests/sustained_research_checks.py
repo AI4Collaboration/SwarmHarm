@@ -176,5 +176,28 @@ class SustainedResearchChecks(unittest.TestCase):
                 with self.assertRaises(RuntimeError): collection.resume_research()
             self.assertEqual(collection.budget_stop['metric'], 'tools')
 
+    def test_busy_tool_notice_preserves_shell_result_and_does_not_start_another_turn(self):
+        with tempfile.TemporaryDirectory() as directory, patch('swarmform.structure_collection.time.monotonic', return_value=100):
+            collection = self.fixture(directory); actor = collection.actors[0]
+            contents = scan({'/var/tmp/exports/new.md': b'real bytes'})
+            collection.publications.observe(contents); collection.publications.observe(contents)
+            call = {'turn': 1, 'call_id': 'call-busy', 'name': 'bash', 'raw_arguments': '{"command":"true"}', 'id': 7}
+            raw = {'stdout': 'shell only', 'stderr': '', 'exit_code': 0}
+            collection.agents[actor].reply.side_effect = RuntimeError('Fixture delivery failed')
+            with self.assertRaises(RuntimeError): collection.finish_tool(actor, call, raw, delivered=True)
+            self.assertTrue(collection.publications.pending(actor))
+            collection.agents[actor].reply.side_effect = None
+            collection.finish_tool(actor, call, raw, delivered=True)
+            output = json.loads(collection.agents[actor].reply.call_args.kwargs['output'])
+            self.assertEqual({k: output[k] for k in raw}, raw)
+            self.assertIn('new.md', output['environment_notifications'][0])
+            self.assertNotIn('real bytes', output['environment_notifications'][0])
+            self.assertFalse(collection.publications.pending(actor))
+            self.assertEqual(collection.states[actor]['session_activations'], 1)
+            collection.agents[actor].prompt.assert_not_called()
+            collection.finish_tool(actor, {**call, 'id': 8, 'call_id': 'next'}, raw, delivered=True)
+            self.assertNotIn('environment_notifications', json.loads(collection.agents[actor].reply.call_args.kwargs['output']))
+            self.assertEqual(collection.states[actor]['publication_notices'], 1)
+
 
 if __name__ == '__main__': unittest.main()
