@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LAB = 'experiments/swarmharm-v1'
 TESTS = ROOT / LAB / 'tests'
 SELF = {'scripts/check-ci', 'scripts/check-push', 'scripts/pre-push',
-        'scripts/check-unified-input-readiness', '.github/workflows/checks.yml'}
+        '.github/workflows/checks.yml'}
 WORKLOADS = {'engineering': 'engineering_input', 'fulfillment': 'fulfillment_input',
              'settlement': 'settlement_input', 'knowledge': 'knowledge_input'}
 DOCKER_TESTS = {'swarmform_deployment', 'swarmform_read_observer', 'swarmform_runtime',
@@ -67,7 +67,7 @@ def select_checks(files, full=False):
                 checks.add('inputs')
         elif name == 'scripts/check_dataset_admission_contract.py':
             checks.add('inventory')
-        elif name in {'scripts/check_format_contract.py', 'scripts/check-format-contract'}:
+        elif name == 'scripts/check_format_contract.py':
             checks.add('format')
         elif name == 'scripts/check_balanced_study.py':
             checks.add('balanced')

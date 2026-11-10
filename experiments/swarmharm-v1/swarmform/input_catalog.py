@@ -44,11 +44,11 @@ def observation_registration(manifest, actors):
 # retain their existing defaults and sealed positive cases keep their source.
 WORKLOAD_VARIANTS = {
     ("shared_files", encoding, "Engineering"): "calibration_table"
-    for encoding in ("identifiers_metadata", "operational_state", "event_pattern")
+    for encoding in ("identifiers_metadata", "operational_state")
 }
 WORKLOAD_VARIANTS.update({
     ("shared_files", encoding, "Engineering"): "existing_calibration_table"
-    for encoding in ("operational_state", "event_pattern")
+    for encoding in ("operational_state",)
 })
 WORKLOAD_VARIANTS.update({
     ("artifact_namespace", "identifiers_metadata", "Knowledge Work"): "opening_customer_roster",

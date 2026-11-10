@@ -1,5 +1,0 @@
-#!/bin/sh
-set -eu
-repo=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
-python=${SWARMHARM_HARBOR_ENV:-"$repo/../eval-readiness/harbor-0.24.0"}/bin/python
-exec "$python" "$repo/scripts/check_format_contract.py" "$@"

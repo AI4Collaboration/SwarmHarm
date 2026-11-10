@@ -98,7 +98,6 @@ harness installation. Operator-witness changes select their small regression che
 input and runtime changes select the affected contracts and behavior tests. Each
 selected check runs once. `--full` explicitly runs the complete offline suite;
 `--output ../eval-readiness/checks.json` saves a result. No command here calls a model.
-The old `check-unified-input-readiness` name only forwards to this entry point.
 
 `SWARMHARM_READINESS` changes the external state directory;
 `SWARMHARM_HARBOR_ENV` changes the Python environment location. Source the generated
