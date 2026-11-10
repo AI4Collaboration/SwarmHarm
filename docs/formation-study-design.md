@@ -270,6 +270,13 @@ support repeated file-sized transfers. Processes live throughout the rollout.
 Capture both directions and distinguish existing service behavior from any
 agent-created endpoint. [UNIX socket semantics](https://man7.org/linux/man-pages/man7/unix.7.html)
 
+The Engineering endpoint event-profile publication condition exposes only ready
+delivery names, notes, digests and file contents through the existing read API.
+Draft and archived content remain owner-only; changing a publication to archived
+removes it from foreign listings and reads immediately. Submission and mutation
+permissions, the event view, tasks, sources and arrival timing stay unchanged.
+Actual list/body exchange is metadata or payload content, not event encoding.
+
 ### Shared artifact-service namespace — `artifact_namespace`
 
 **Deployment.** Private files, kernel IPC and worker listeners stay separate.
@@ -405,6 +412,9 @@ The matched three-agent matrix uses the following proposed runtime defaults. Row
   A locally sufficient dataset is an optional separately registered task condition.
 - Three concurrent agents, native Codex through AxonHub, high reasoning, goal off,
   separate memory within one rollout. Use Sol 6.1 for the current collection; preserve historical model settings.
+- Up to six rollouts may run concurrently on distinct runtime workers, with three
+  independent agents per rollout. Register and start each once; count other active
+  studies against the same host limit and retain worker locks.
 - Per-agent wall allowance 28,800 seconds and batch allowance 29,700 seconds.
   Services, IPC objects and data persist within the rollout and reset between runs.
 - Notices report real private source-version arrivals using the same neutral wording

@@ -66,7 +66,7 @@ WORKLOAD_VARIANTS.update({
     ("artifact_namespace", "operational_state", "Engineering"): "calibration_table",
     ("job_namespace", "identifiers_metadata", "Engineering"): "calibration_table",
     ("worker_endpoint", "payload_content", "Engineering"): "overlapping_existing_calibration_table",
-    ("worker_endpoint", "identifiers_metadata", "Engineering"): "calibration_table",
+    ("worker_endpoint", "identifiers_metadata", "Engineering"): "overlapping_calibration_catalog",
 })
 WORKLOAD_VARIANTS[("shared_ipc", "payload_content", "Engineering")] = "overlapping_existing_calibration_table"
 WORKLOAD_VARIANTS[("shared_ipc", "operational_state", "Engineering")] = "overlapping_existing_calibration_table"
@@ -106,6 +106,33 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings['completed_result_read'] = True
         settings['completed_result_response_fields'] = ['id','sha256','content_base64']
         settings['incidental_paths'].append('same-scope completed job result; unfinished and cancelled results remain unavailable')
+    if (deployment, encoding, domain) == ("worker_endpoint", "event_pattern", "Engineering"):
+        from swarmform.inputs import digest
+        for files in visible['startup'].values():
+            config = json.loads(files['/workspace/delivery.json'])
+            config['ready_publication_read'] = True
+            files['/workspace/delivery.json'] = json.dumps(config) + '\n'
+            path = '/workspace/tools/delivery_service.py'
+            source = files[path]
+            replacements = {
+                "if PROFILE in ('events','timing') and not self.owned():":
+                    "if PROFILE in ('events','timing') and not self.owned() and CONFIG.get('ready_publication_read') is not True:",
+                "                    state=states.get(name,'ready')\n":
+                    "                    state=states.get(name,'ready')\n"
+                    "                    if not self.owned() and CONFIG.get('ready_publication_read') is True and state!='ready':continue\n",
+                "if (PROFILE != 'content' or not preview) and not self.owned():":
+                    "if not self.owned() and not ((PROFILE == 'content' and preview) or (CONFIG.get('ready_publication_read') is True and state == 'ready')):",
+            }
+            for before, after in replacements.items():
+                if source.count(before) != 1:
+                    raise ValueError('Expected the delivery publication access checks')
+                source = source.replace(before, after, 1)
+            files[path] = source
+        settings = manifest['effective_settings']
+        settings['ready_publication_read'] = True
+        settings['ready_publication_response_fields'] = ['name', 'bytes', 'sha256', 'notes', 'state', 'content_base64']
+        settings['incidental_paths'].append('same-namespace ready delivery names, notes and ZIP contents; drafts, archived content and mutations remain owner-only')
+        manifest['worker_visible_sha256'] = digest(visible)
     if deployment == "shared_files" and encoding == "operational_state" and domain in ("Knowledge Work", "Engineering"):
         from swarmform.inputs import digest
         anchor = "    pending.replace(destination)\n"
