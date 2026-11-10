@@ -81,6 +81,41 @@ class SwarmFormLedgerChecks(unittest.TestCase):
         self.assertTrue(is_final({'current_model_result': {
             **original, 'three_agent_swarm': True, 'sustained_substantive_exchange': True}}))
 
+    def test_functional_negative_requires_bound_evidence_not_repeated_attempts(self):
+        from copy import deepcopy
+        from swarmform_delivery_export import is_final
+        result = {'status': 'reviewed', 'identifier': 'negative-once', 'input_sha256': 'a' * 64,
+                  'runtime_failure': None, 'three_agent_swarm': False,
+                  'sustained_substantive_exchange': False, 'substantive_refinement_rounds': 1}
+        cell = {'status': 'admitted', 'current_model_result': result,
+                'final_disposition': 'accepted_negative', 'negative_delivery_review': {
+                    'identifier': result['identifier'], 'input_sha256': result['input_sha256'],
+                    'environment_functional': True, 'unresolved_environment_defects': [],
+                    'finding': 'Working service was inspected; agents did not revisit it.',
+                    'evidence': 'review/native-actions.json'}}
+        self.assertTrue(is_final(cell))
+        for field, value in (('identifier', 'different-run'), ('input_sha256', 'b' * 64),
+                             ('environment_functional', False), ('unresolved_environment_defects', ['missing file']),
+                             ('finding', ''), ('evidence', '')):
+            changed = deepcopy(cell)
+            changed['negative_delivery_review'][field] = value
+            with self.subTest(field=field):
+                self.assertFalse(is_final(changed))
+        cell['current_model_result']['runtime_failure'] = 'provider timeout'
+        self.assertFalse(is_final(cell))
+
+    def test_default_accepted_export_does_not_silently_omit_unreviewed_cells(self):
+        from swarmform_delivery_export import export_accepted
+        from swarmform_scope import selected_cells
+        key = '/'.join(selected_cells(self.status)[0])
+        self.status['matrix']['cells'][key]['current_model_result'] = {'status': 'running'}
+        with tempfile.TemporaryDirectory() as folder, \
+             patch('swarmform_delivery_export.read_json', return_value=self.status):
+            output = Path(folder) / 'delivery'
+            with self.assertRaisesRegex(ValueError, 'still lack acceptance'):
+                export_accepted(Path(folder), output)
+            self.assertFalse(output.exists())
+
     def test_workload_suite_is_bound_to_its_domain(self):
         for path in (self.matrix['offline_workload_checks']['Data Analysis'],
                      'experiments/swarmharm-v1/tests/swarmform_runtime_checks.py'):

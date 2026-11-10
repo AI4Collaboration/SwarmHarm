@@ -1,5 +1,7 @@
 # Reviewed evidence
 
+- **Current 50-input delivery audit:** sealed inputs, runtime versions, registration bindings, remote archive digests and the distinction between reviewed cases and development defaults. [Publication evidence audit](swarmform-publication-audit.json).
+
 - **Latest Knowledge Work account-source retests:** endpoint opening-stage authored exchange; IPC opening inspection followed by updated-fact comparison. Both finish 9/9 briefs correctly. [Case settings, limits and full trajectories](swarmform-knowledge-account-sources.json).
 
 [Download the accepted SwarmForm inputs and trajectory index](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs-account-sources.zip). The [measurement audit](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/observer-measurement-audit-22-positive-cases-20261109.tar.gz) binds the reviewed positive outcomes to native reads and actual delivered files.

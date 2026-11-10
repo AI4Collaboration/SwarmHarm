@@ -50,18 +50,24 @@ def is_final(cell):
         return True
     if cell.get("final_disposition") != "accepted_negative":
         return False
-    history = [row.get("model_result", row) for row in cell.get("refinement_history", [])]
-    reviewed = [row for row in [*history, result] if row.get("status") == "reviewed"
-                and not row.get("runtime_failure")
-                and row.get("identifier") and row.get("input_sha256")
-                and row.get("substantive_refinement_rounds", 0) > 0]
-    return all(len({row[key] for row in reviewed}) >= 7
-               for key in ("identifier", "input_sha256", "substantive_refinement_rounds"))
+    review = cell.get("negative_delivery_review", {})
+    return (cell.get("status") == "admitted"
+            and bool(result.get("identifier")) and bool(result.get("input_sha256"))
+            and review.get("identifier") == result["identifier"]
+            and review.get("input_sha256") == result["input_sha256"]
+            and review.get("environment_functional") is True
+            and review.get("unresolved_environment_defects") == []
+            and isinstance(review.get("finding"), str) and bool(review["finding"].strip())
+            and isinstance(review.get("evidence"), str) and bool(review["evidence"].strip()))
 
 
 def export_accepted(repo, output, dataset_key="november", *, all_retained=False):
     ledger = read_json(repo / "docs/live-rollout-status.json")
     selected = {'/'.join(cell) for cell in selected_cells(ledger, all_retained=all_retained)}
+    required = {'/'.join(cell) for cell in selected_cells(ledger)}
+    missing = sorted(cell for cell in required if not is_final(ledger["matrix"]["cells"].get(cell, {})))
+    if missing:
+        raise ValueError("Delivery inputs still lack acceptance: " + ", ".join(missing))
     rows = []
     with TemporaryDirectory(dir=output.parent) as temporary:
         stage = Path(temporary) / "inputs"

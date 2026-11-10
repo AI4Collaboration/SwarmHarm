@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Materialize the selected SwarmForm inputs without model calls."""
+"""Export tested SwarmForm inputs; use --development for unreviewed current defaults."""
 
 import argparse
 from hashlib import sha256
@@ -90,7 +90,9 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset-key", default="november")
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--accepted", action="store_true", help="Export the reviewed final input for each qualifying environment")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--accepted", action="store_true", help="Export exact reviewed inputs (the default)")
+    mode.add_argument("--development", action="store_true", help="Generate current development inputs; these may differ from tested versions")
     parser.add_argument("--all-retained", action="store_true", help="Include all retained domains and configurations")
     args = parser.parse_args(argv)
     output = args.output.resolve()
@@ -98,7 +100,7 @@ def main(argv=None):
         parser.error("Choose a new output directory")
     if output.is_relative_to(ROOT):
         parser.error("Write generated input environments outside the repository")
-    if args.accepted:
+    if not args.development:
         from swarmform_delivery_export import export_accepted
         output.parent.mkdir(parents=True, exist_ok=True)
         index = export_accepted(ROOT, output, args.dataset_key, all_retained=args.all_retained)
@@ -115,7 +117,7 @@ def main(argv=None):
     if len({row["input_sha256"] for row in rows}) != len(selected):
         raise RuntimeError("Two matrix cells produced the same effective input")
     index = {
-        "kind": "swarmform_input_matrix",
+        "kind": "swarmform_development_input_matrix",
         "source_commit": subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
         ).strip(),

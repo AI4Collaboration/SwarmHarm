@@ -22,6 +22,32 @@ import swarmform_endpoint_timing_witness as endpoint_timing
 
 
 class SwarmFormInputRunnerChecks(unittest.TestCase):
+    def test_export_defaults_to_sealed_inputs_and_requires_explicit_development(self):
+        import contextlib
+        import io
+        import json
+        with TemporaryDirectory() as temporary:
+            root = Path(temporary) / "repo"
+            (root / "docs").mkdir(parents=True)
+            (root / "docs/live-rollout-status.json").write_text(json.dumps({"delivery_scope": {}}))
+            accepted_output = Path(temporary) / "accepted"
+            development_output = Path(temporary) / "development"
+            with patch.object(exporter, "ROOT", root), contextlib.redirect_stdout(io.StringIO()):
+                with patch("swarmform_delivery_export.export_accepted", return_value={"environments": 50}) as accepted:
+                    exporter.main(["--output", str(accepted_output)])
+                    accepted.assert_called_once_with(root, accepted_output.resolve(), "november", all_retained=False)
+                row = {"matrix_cell": "shared_files/payload_content/Engineering", "input_sha256": "a" * 64}
+                with patch("swarmform_delivery_export.export_accepted") as accepted, \
+                     patch.object(exporter, "selected_cells", return_value=[("shared_files", "payload_content", "Engineering")]), \
+                     patch.object(exporter, "materialize", return_value=row), \
+                     patch.object(exporter.subprocess, "check_output", return_value="b" * 40):
+                    exporter.main(["--development", "--output", str(development_output)])
+                    accepted.assert_not_called()
+                self.assertEqual(json.loads((development_output / "index.json").read_text())["kind"],
+                                 "swarmform_development_input_matrix")
+                with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                    exporter.main(["--accepted", "--development", "--output", str(accepted_output)])
+
     def test_endpoint_source_appendix_retains_only_available_intakes_through_publication(self):
         import contextlib
         import io

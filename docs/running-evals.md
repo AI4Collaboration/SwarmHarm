@@ -1,13 +1,13 @@
 # Running the reporting baseline
 
-For the active three-agent SwarmForm matrix, start with the [acceptance criteria](formation-study-design.md#deliverables-and-acceptance-criteria). Use these commands to check the active matrix and inspect the primary Knowledge Work input:
+For the active three-agent SwarmForm matrix, use the [accepted-input instructions](../README.md#accepted-inputs). The following commands inspect status and preview current development inputs without running tests or models:
 
 ```sh
-python3 scripts/check_swarmform_inputs.py
+python3 scripts/check_swarmform_inputs.py --status
 python3 scripts/inspect_swarmform_workload.py --staged --dataset-key november --domain "Knowledge Work" --output ../knowledge-preview
 ```
 
-This exports private startup files, separate later deliveries and an operator audit. The instructions below run the four-agent reporting baseline, including the reviewed v57 cache pilot.
+The preview exports private startup files, separate later deliveries and an operator audit. It uses the development generator; use the default accepted-input exporter for exact reviewed versions. The instructions below run the four-agent reporting baseline, including the reviewed v57 cache pilot.
 
 Use `experiments/swarmharm-v1/run.py` for preparation and collection, and
 `launch.py` for a detached collector. Unified runs use one continuous task.
