@@ -257,3 +257,10 @@ hashes; large archives use ordered checksum-manifested parts. Review code,
 registrations, offline witnesses, validation and the report snapshot are packaged
 separately. The first exploration is complete even where a registered window or
 recording capacity censored an attempt; those limits remain part of the results.
+
+The [private evidence release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-structure-scale-series01-20261110)
+is published with 36 checksum-verified assets. Its immutable tag preserves the
+reviewed report and canvas snapshot at commit
+`e8d2c26b20d18f3670c724d63b098af40948fa77`. The publication receipt in
+`docs/structure-publication-verification.json` records the final asset URLs and
+remote SHA-256 checks. Later ledger updates record publication metadata only.
