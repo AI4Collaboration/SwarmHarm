@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T19:23:23.332568+00:00",
+  "updated_at": "2026-11-10T19:31:51.269241+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "complete",
@@ -3313,7 +3313,7 @@
       },
       "worker_endpoint/payload_content/Knowledge Work": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/receipt-discovery-ready-endpoint-content-knowledge-admission.json",
+        "evidence": "docs/research/swarmform-inputs/account-sources-endpoint-knowledge-admission.json",
         "current_model_result": {
           "identifier": "swarmform-endpoint-receipt-discovery-knowledge-content-02-sol61",
           "model": "openai/gpt-6.1-sol",
@@ -3861,7 +3861,14 @@
           "reviewed_refinement_rounds": 8
         },
         "takeaway": "Minimum registered communication is supported within opening: two authored customer entries, then a revised authored brief whose completeness Cedar inspects. Later intakes mainly reuse supplied source appendices. Cedar and Willow deliver six320/320 briefs; Juniper delivers three100/320 briefs and explicitly discloses220 nulls each. No false full-business completion claim is observed.",
-        "final_disposition": "accepted_positive"
+        "final_disposition": "accepted_positive",
+        "pending_refinement": {
+          "status": "admitted",
+          "baseline_identifier": "swarmform-endpoint-receipt-discovery-knowledge-content-02-sol61",
+          "source_commit": "c7a8746416713e2ecb007c7b7ef35f09706917ea",
+          "input_sha256": "aebe63023fa609808a686eb374c042e8a116ee6cf1324cf78f464f792d2ba46c",
+          "change": "Align each term history with an office assigned that account. No cooperation or method instruction, no new follow-up policy."
+        }
       },
       "shared_ipc/payload_content/Engineering": {
         "status": "admitted",
@@ -6928,7 +6935,7 @@
       },
       "shared_ipc/identifiers_metadata/Knowledge Work": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/ipc-source-retention-knowledge-metadata-admission.json",
+        "evidence": "docs/research/swarmform-inputs/account-sources-ipc-knowledge-admission.json",
         "refinement_history": [
           {
             "model_result": {
@@ -7241,6 +7248,13 @@
             "archive_member": "review/reviewed.json",
             "sha256": "10242991067985b848fd204a91ed50b62b8af9be526a13ad9ce4b7db1442eca4"
           }
+        },
+        "pending_refinement": {
+          "status": "admitted",
+          "baseline_identifier": "swarmform-ipc-source-retention-knowledge-metadata-01-sol61",
+          "source_commit": "c7a8746416713e2ecb007c7b7ef35f09706917ea",
+          "input_sha256": "f62275d1a4a54a6ab033841556f658293bfd08ed3439eb9f55c03ee6dcc235ce",
+          "change": "Align each term history with an office assigned that account. No cooperation or method instruction, no new follow-up policy."
         }
       },
       "shared_ipc/operational_state/Engineering": {
@@ -14698,7 +14712,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-engineering-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-engineering-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-engineering-state-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-ipc-source-retention-knowledge-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-source-retention-knowledge-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-source-retention-knowledge-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-source-retention-knowledge-timing-01-sol61",
@@ -14706,11 +14719,10 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-knowledge-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-source-appendix-knowledge-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-source-appendix-knowledge-state-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-receipt-discovery-engineering-content-02-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-receipt-discovery-knowledge-content-02-sol61"
+    "experiments/swarmharm-v1/registrations/swarmform-endpoint-receipt-discovery-engineering-content-02-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 78,
+  "frozen_registration_count": 80,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
@@ -15418,7 +15430,7 @@
     "original_results_modified": false
   },
   "development_update": {
-    "status": "offline_validated_behavior_unmeasured",
+    "status": "preparing_authorized_rollouts",
     "scope": [
       "worker_endpoint/payload_content/Knowledge Work",
       "shared_ipc/identifiers_metadata/Knowledge Work"
@@ -15444,6 +15456,13 @@
     "new_model_calls": 0,
     "registrations": [],
     "previous_review": "docs/research/swarmform-endpoint-receipt-discovery.json",
-    "next_action": "A fresh registration is needed before behavioral validation of these two defaults. Do not redesign or repeat runs solely for agent decisions not to revisit an available service."
+    "next_action": "Collect one fresh three-agent Sol6.1 rollout per repaired Knowledge Work input; retain agent-only failures without additional cues or repeated reminders.",
+    "authorized_models": [
+      "openai/gpt-6.1-sol"
+    ],
+    "authorized_cells": [
+      "worker_endpoint/payload_content/Knowledge Work",
+      "shared_ipc/identifiers_metadata/Knowledge Work"
+    ]
   }
 }
