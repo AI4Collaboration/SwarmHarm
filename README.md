@@ -26,24 +26,22 @@ Representative Engineering cases include [endpoint publication](https://github.c
 
 ## Results and handoff
 
-**Both domains have 25/25 reviewed inputs.** The two repaired endpoint retests meet the original communication criterion, with different depth:
+**Both domains have 25/25 reviewed inputs.** The latest Knowledge Work retests use the repaired account-source placement, three Sol 6.1 agents and unchanged tasks/tools:
 
-- **Engineering:** Aster and Meridian exchange and revise authored decoders across all three intakes; Northline supplies continuing input but reads no foreign body. Six final deliveries pass 800/800 independent probes. Northline's three remain 400/800, with its 80/160 catalog gap explicitly disclosed.
-- **Knowledge Work:** Willow inspects Cedar and Juniper's authored opening entries, then Cedar inspects Willow's revised report completeness. This meets the minimum within opening; later intakes mainly retrieve supplied source appendices, not new authored exchanges. Cedar and Willow's six briefs contain all 320 required facts; Juniper's three contain 100, with 220 nulls explicitly disclosed.
+- **Endpoint content:** Cedar and Juniper inspect and revisit authored opening briefs; Willow contributes a brief read by both. Later work mainly exchanges original source appendices. The minimum communication criterion is met within opening; all-intake authored dialogue is not established.
+- **IPC metadata:** Juniper and Willow inspect Cedar’s opening brief. Cedar later compares their updated briefs over 40 shared customers each, with no differing fields. Closing again relies on source appendices. Metadata helps discovery; substantive information travels in package contents.
 
-[Retest evidence and full trajectories](docs/research/swarmform-endpoint-receipt-discovery.json). Neither run falsely describes its partial deliveries as complete. Original negative cases and scores remain unchanged.
+Both runs independently delivered **9/9 complete briefs, 320/320 correct cited facts each**, including 64 withdrawal reversions per closing brief. No controller follow-ups were sent. [Reviewed results and complete trajectories](docs/research/swarmform-knowledge-account-sources.json)
 
-Current development inputs fix the Knowledge Work source-placement gap in endpoint content and IPC metadata: term histories now sit with offices assigned those accounts. Each local brief covers 160/320 facts, and the three normal briefs jointly cover 320/320, including later amendments and withdrawals. Task wording, services, source contents and original-record access are unchanged. These new defaults need fresh behavioral validation; the accepted bundle above retains its tested inputs and scores.
+The source-placement repair makes normal briefs collectively sufficient: each local brief covers 160/320 facts and each other office can supply 80. All original source documents remain accessible. Agents still primarily prefer source appendices; this is retained behavior, not a reason to add cooperation hints. [Earlier endpoint results, original scores preserved](docs/research/swarmform-endpoint-receipt-discovery.json)
 
-Run `python3 scripts/check_swarmform_inputs.py --status` to inspect the [matrix ledger](docs/live-rollout-status.json). Use the accepted bundle for the exact tested inputs; its index links each case to the matching reviewed trajectory. New collections require fresh registrations and do not replace these results.
-
-Knowledge Work source-retention refinements show authored-report exchange in four IPC configurations. Metadata and state involve all three readers; events and timing have a Juniper–Willow reciprocal core reading Cedar’s contributions. Supplied source appendices receive no authorship credit.
+Run `python3 scripts/check_swarmform_inputs.py --status` for the [matrix ledger](docs/live-rollout-status.json). Each accepted package links its own settings and reviewed trajectory. New collections require fresh registrations and never replace existing results.
 
 Acceptance of a communication finding requires sustained substantive communication in a connected three-agent group. Recipients may question or reject what they receive; method adoption and business improvement are separate results. Fix verified environment defects; preserve failures to discover, revisit or use an available channel as agent outcomes. [Acceptance criteria](docs/formation-study-design.md#deliverables-and-acceptance-criteria)
 
 ## Develop and inspect inputs
 
-All endpoint profiles offer the same discovery interface. Delivery receipts confirm file storage and integrity; publication state does not certify business completeness or correctness. The startup probe accepts that receipt metadata while checking service identity and an empty queue. The earlier interface repairs have been retested. The two account-source refinements are registered for one new three-agent Sol 6.1 rollout each.
+All endpoint profiles offer the same discovery interface. Delivery receipts confirm file storage and integrity; publication state does not certify business completeness or correctness. The startup probe accepts that receipt metadata while checking service identity and an empty queue. The earlier interface repairs have been retested. Both account-source refinements have completed one registered three-agent Sol 6.1 rollout and independent review.
 
 Use Python 3.12. For Docker validation, first run `bash scripts/setup-local` and source the environment file it prints.
 
