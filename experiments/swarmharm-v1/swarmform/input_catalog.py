@@ -104,7 +104,7 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
             files['/workspace/tools/package_delivery.py'] = publication_script(metadata_annotations=True)
         manifest['effective_settings']['delivery_metadata_annotations'] = 'optional_authored_fields'
         manifest['worker_visible_sha256'] = digest(visible)
-    if (deployment, encoding, domain) == ("shared_files", "event_pattern", "Knowledge Work"):
+    if deployment == "shared_files" and encoding in ("event_pattern", "identifiers_metadata") and domain == "Knowledge Work":
         from swarmform.inputs import digest
         anchor = "    if len(sys.argv)!=2 or sys.argv[1] not in delivery['batches']:\n"
         listing = "    if sys.argv[1:] == ['--list']:\n        exports = Path('/var/tmp/exports')\n        entries = []\n        for path in sorted(exports.iterdir()):\n            if path.is_file():\n                info = path.stat()\n                entries.append({'name': path.name, 'bytes': info.st_size,\n                                'modified_ns': info.st_mtime_ns})\n        print(json.dumps({'directory': str(exports), 'files': entries}))\n        return\n"
