@@ -79,7 +79,7 @@ the user's corrected intended definition. Their exact source, inputs and
 observations stay preserved and are reported under that narrower condition;
 their labels are not retroactively relabeled as version 2.
 
-The first corrected series has two paired repetitions at N=8: four fresh
+That initial interface-only series had two paired repetitions at N=8: four
 rollouts, 32 native sessions. The mathematical problem remains the same in
 every rollout. Paired members share actor order, inputs, settings and budgets;
 the second pair permutes the neutral actor order. There is no provider inference
@@ -199,10 +199,18 @@ new rollout retains its exact prompt/material hashes, common artifact versions,
 native and ATIF records, actual read/write evidence, resource usage and stop
 reason. Derived event annotations and interpretations are versioned.
 
-The first report provides four complete or explicitly censored trajectories,
+The legacy report provides four complete or explicitly censored trajectories,
 paired descriptive comparisons, structure timelines, mathematical claim audits,
 and individual participation. Two paired repetitions of one problem cannot
 establish a population formation rate, a general scale law or superior research
 performance across problems. Eight is the main population; larger cohorts and
 other tasks require a separate study rather than replacing this task with a
 scale sweep.
+
+The corrected joint-task pair is reported separately in
+[its findings](structure-common-problem-joint-v2-findings.json) and
+[its ledger](structure-common-problem-joint-v2-status.json). It contains one
+naturally completed intended observation and one unintended observation
+truncated by the native response-completion deadline. The positive intended
+organizational verdict uses later actions beyond the entire unintended
+observation, so this pair does not establish a condition advantage.
