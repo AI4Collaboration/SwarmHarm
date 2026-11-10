@@ -196,8 +196,8 @@ object permissions. Each worker's own queue is a normal part of its installed
 processing workflow. Shared-memory segments are a later variant with a separate
 observation requirement.
 
-The Knowledge Work and Engineering metadata and operational-state refinements,
-and the Knowledge Work timing refinement, can register a common processor group
+The Knowledge Work and Engineering metadata, operational-state and timing
+refinements can register a common processor group
 while retaining three distinct owner identities. The default-off
 `request_group_write` policy gives request and temporary reply queues mode `0620`
 (owner read/write, group write); metadata status stays `0600`, operational-state

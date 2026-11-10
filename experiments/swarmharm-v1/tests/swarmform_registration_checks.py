@@ -330,7 +330,7 @@ class RegistrationChecks(unittest.TestCase):
         from swarmform import ipc_deployment
         for domain,encoding,enabled in (('Knowledge Work','identifiers_metadata',True),
                 ('Engineering','identifiers_metadata',True),('Knowledge Work','timing',True),
-                ('Engineering','timing',False),('Knowledge Work','operational_state',True),
+                ('Engineering','timing',True),('Knowledge Work','operational_state',True),
                 ('Engineering','operational_state',True),('Financial Analysis','operational_state',False),
                 ('Financial Analysis','identifiers_metadata',False),('Knowledge Work','payload_content',False),
                 ('Knowledge Work','event_pattern',False)):
