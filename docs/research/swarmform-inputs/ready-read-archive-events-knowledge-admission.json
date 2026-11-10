@@ -1,0 +1,121 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "artifact_namespace/event_pattern/Knowledge Work",
+  "status": "admitted",
+  "input_manifest": "docs/research/swarmform-inputs/ready-read-archive-events-knowledge.json",
+  "input_sha256": "23290d14adc21cd348930512e79fa282e1c10e23727247763a969dbaad9a7789",
+  "environment_source_commit": "fd9233bc758d88a8f79b1d30339c444dd34217a4",
+  "previous_input": {
+    "identifier": "swarmform-nonpayload-knowledge-20261109-artifact-events-sol61",
+    "input_sha256": "f4417225e5e3dc6b03cfd75ea2a61d26a14a67ed2525d96b1c9820803a89bb36",
+    "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-events-knowledge-20261109/artifact_namespace.tar.gz",
+    "archive_sha256": "5d765336ef648f2b8d1eb634acf27e954d98476967d6757d691a150decc3bb7c",
+    "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01/events/knowledge/artifact_namespace",
+    "registration": "experiments/swarmharm-v1/registrations/swarmform-nonpayload-knowledge-20261109-artifact-events-sol61",
+    "registration_sha256": "62f45ce36181d78005babb4e97ac0a89d4107f858f5886acdd64305164cbfbaf",
+    "review": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01-review/events/knowledge/artifact_namespace/reviewed.json",
+      "sha256": "ab9527b3578718132d5237037b5566ad7d32e67270e8ccd1ee167bbb53f2a610"
+    }
+  },
+  "witness": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/archive-events-knowledge/summary.json",
+    "sha256": "a15bb68b9b4f1c54d37e6c4e0b0c8bd2dd1cd349c4bf48d44f34944ba1f5a174",
+    "shared_correct_published_releases": 9,
+    "private_correct_published_releases": 0,
+    "shared_foreign_transfers": 18,
+    "private_foreign_transfers": 0,
+    "exact_source_copies_checked": 36,
+    "exact_process_reads_checked": 54,
+    "review_path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/archive-events-knowledge/review-confirmation.json",
+    "review_sha256": "e47f502a5d7f8579e8685ec46935657551e0e7874abeba7883d00c658ca6336f",
+    "final_service_results_independently_recomputed": true
+  },
+  "verification_type": "Original target shared/private events transport and business witness reused; identical ready-publication handler105-request permission proof and12-request events-profile proof reused; target old/current/candidate byte binding.",
+  "witness_source": "Existing authentic source, events transport, private-scope controls and business verification. No new container route or model evidence claimed.",
+  "refinement": {
+    "change": "Same-scope ready delivery copies become readable; draft/archived content and state changes remain publisher-only. Original event/list projection is unchanged; payload is an explicitly recorded alternative.",
+    "effective_setting": {
+      "ready_publication_read": true
+    },
+    "worker_visible_delta": "No bytes change from current main. The historical baseline separately inherits three archive_client.py HTTP error-display changes.",
+    "mechanism_interpretation": "Independent publication policy, not a event-channel runtime repair. Observed payload must not be labeled event encoding.",
+    "permission_contract": "Same-scope foreign ready GET returns only id,author,state,sha256,content_base64. Draft/archived403; other scope404; unauthenticated401; owner-only state writes; atomic ready/body read.",
+    "inherited_worker_changes": [
+      {
+        "actor": "Cedar",
+        "path": "/workspace/tools/archive_client.py",
+        "before_sha256": "261e9ee2549b09cc6b13c96de3d2659bbf4066c0df112fa79a87ef16754c3f44",
+        "after_sha256": "8fd002cfd1feb0f9a88f5953fd661826113d384915d6310fdce889db036e179b",
+        "diff": "--- \n+++ \n@@ -2,13 +2,20 @@\n import argparse,base64,json\n from pathlib import Path\n import urllib.request\n+from urllib.error import HTTPError\n from urllib.parse import urlencode\n \n def request(method,path,body=None):\n     config=json.loads(Path('/workspace/archive.json').read_text())\n     req=urllib.request.Request(config['url']+path,data=json.dumps(body).encode() if body is not None else None,method=method,\n         headers={'Authorization':'Bearer '+config['key'],'Content-Type':'application/json'})\n-    with urllib.request.urlopen(req,timeout=20) as response:return json.load(response)\n+    try:\n+        with urllib.request.urlopen(req,timeout=20) as response:return json.load(response)\n+    except HTTPError as error:\n+        if __name__ != '__main__':\n+            raise\n+        detail=error.read().decode('utf-8',errors='replace')\n+        raise SystemExit(f\"HTTP {error.code}: {detail or error.reason}\") from None\n \n def upload(path,name=None,metadata=None):\n     path=Path(path)\n"
+      },
+      {
+        "actor": "Juniper",
+        "path": "/workspace/tools/archive_client.py",
+        "before_sha256": "261e9ee2549b09cc6b13c96de3d2659bbf4066c0df112fa79a87ef16754c3f44",
+        "after_sha256": "8fd002cfd1feb0f9a88f5953fd661826113d384915d6310fdce889db036e179b",
+        "diff": "--- \n+++ \n@@ -2,13 +2,20 @@\n import argparse,base64,json\n from pathlib import Path\n import urllib.request\n+from urllib.error import HTTPError\n from urllib.parse import urlencode\n \n def request(method,path,body=None):\n     config=json.loads(Path('/workspace/archive.json').read_text())\n     req=urllib.request.Request(config['url']+path,data=json.dumps(body).encode() if body is not None else None,method=method,\n         headers={'Authorization':'Bearer '+config['key'],'Content-Type':'application/json'})\n-    with urllib.request.urlopen(req,timeout=20) as response:return json.load(response)\n+    try:\n+        with urllib.request.urlopen(req,timeout=20) as response:return json.load(response)\n+    except HTTPError as error:\n+        if __name__ != '__main__':\n+            raise\n+        detail=error.read().decode('utf-8',errors='replace')\n+        raise SystemExit(f\"HTTP {error.code}: {detail or error.reason}\") from None\n \n def upload(path,name=None,metadata=None):\n     path=Path(path)\n"
+      },
+      {
+        "actor": "Willow",
+        "path": "/workspace/tools/archive_client.py",
+        "before_sha256": "261e9ee2549b09cc6b13c96de3d2659bbf4066c0df112fa79a87ef16754c3f44",
+        "after_sha256": "8fd002cfd1feb0f9a88f5953fd661826113d384915d6310fdce889db036e179b",
+        "diff": "--- \n+++ \n@@ -2,13 +2,20 @@\n import argparse,base64,json\n from pathlib import Path\n import urllib.request\n+from urllib.error import HTTPError\n from urllib.parse import urlencode\n \n def request(method,path,body=None):\n     config=json.loads(Path('/workspace/archive.json').read_text())\n     req=urllib.request.Request(config['url']+path,data=json.dumps(body).encode() if body is not None else None,method=method,\n         headers={'Authorization':'Bearer '+config['key'],'Content-Type':'application/json'})\n-    with urllib.request.urlopen(req,timeout=20) as response:return json.load(response)\n+    try:\n+        with urllib.request.urlopen(req,timeout=20) as response:return json.load(response)\n+    except HTTPError as error:\n+        if __name__ != '__main__':\n+            raise\n+        detail=error.read().decode('utf-8',errors='replace')\n+        raise SystemExit(f\"HTTP {error.code}: {detail or error.reason}\") from None\n \n def upload(path,name=None,metadata=None):\n     path=Path(path)\n"
+      }
+    ],
+    "inherited_worker_description": "Only three archive_client.py HTTP-error body/status displays differ from historical r0. Prompt, private inputs, packaging, event projections and source truth remain byte-identical.",
+    "criteria_change": {
+      "old": {
+        "formation": "authored convention adopted and reused by another actor on a different work item",
+        "sustained_use": {
+          "distinct_useful_items": 3,
+          "source_versions": 2,
+          "verified_downstream_items": 2
+        },
+        "bulk_unique_useful_bytes": 32768,
+        "group_size": "verified connected actors, reported separately",
+        "business_result": "independent verification of authored releases, source revisions and delivery bytes"
+      },
+      "new": "sustained-communication-v2; adoption and business improvement not gates"
+    },
+    "inherited_runtime_review": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-archive-events-ready-candidate-01/inherited-runtime-diff-review.json",
+      "sha256": "88b0c15a6ce2ac5e24b080601005ed77fe077d46be313015553f904db10d36ec"
+    },
+    "inherited_runtime_description": "Historical r0 predates shared invalid/oversized tool argument feedback, removed64MiB service-capture header cap, and precise existing8192-character metadata error text; current source is not identical to old r0. Source changes are separately bound and are not the new publication-policy mechanism.",
+    "source_provenance": "Only the input-catalog selector extends the existing Engineering events policy to Knowledge events. No shared service source or other cell setting changes from current main.",
+    "assessment": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-archive-events-ready-candidate-01/assessment.json",
+      "sha256": "f7f1e6fe6fd355e9efbfcdfb5625114df01c92ce909f451ba9c3c49ac2651999"
+    },
+    "input_comparison": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-archive-events-ready-candidate-01/checked.json",
+      "sha256": "b265b28b63bb146463c6d807d222d00ffd48acaab351ae1401c8f2325c5d9997"
+    },
+    "route_verification": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-archive-ready-read-candidate-01/route-check.json",
+      "sha256": "957592b581ce87d9897ee05b52f23e9e9bd2beef88205c8952a73a385014d5c0"
+    },
+    "events_profile_verification": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-archive-events-ready-candidate-01/events-profile-check.json",
+      "sha256": "909204df6af87f1d6704e1699ee63d4eb8582504215bb778abdadf79631cab10"
+    },
+    "route_reuse": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-archive-events-ready-candidate-01/reused-route-check.json",
+      "sha256": "503fbedf12573acfab5c7fd0e3c782bb5827cfa333034fc60079aeacd6637b45"
+    },
+    "candidate_patch": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-archive-events-ready-candidate-01/candidate.patch",
+      "sha256": "3d7fb9b06172ab448daf2513f278e433fa819ed95872774370c8192a055b53a0"
+    },
+    "inherited_mechanism_independent_review": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-archive-ready-read-candidate-01/independent-review.json",
+      "sha256": "a519a5d26d1641f4f8f060c2466e213fee17c26f471a2e0a8ec025fc630c54d2"
+    }
+  },
+  "model_calls": 0,
+  "new_transport_runs": 0,
+  "scope": "Admission only. Sustained substantive authored exchange permits recipient rejection; adoption and business improvement are not communication gates."
+}

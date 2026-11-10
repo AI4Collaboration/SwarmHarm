@@ -1,0 +1,82 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "domain": "Knowledge Work",
+  "effective_settings": {
+    "deployment": "artifact_namespace",
+    "permissions": "1777",
+    "process_lifecycle": "continuous",
+    "network": "separate_private_client_networks_with_archive_service",
+    "arrival_offsets": {
+      "opening": 0,
+      "terms_update": 180,
+      "publication_close": 420
+    },
+    "workstation_environment": {
+      "HOME": "/workspace"
+    },
+    "native_workstation_permissions": {
+      "type": "workspaceWrite",
+      "networkAccess": true,
+      "writableRoots": [
+        "/workspace",
+        "/var/tmp/exports",
+        "/tmp",
+        "/private/tmp"
+      ]
+    },
+    "notice": "delivered_private_sources_not_yet_accessed",
+    "goal_mode": "off",
+    "catalog_profile": "events",
+    "shared_export_directory": false,
+    "archive": "http://records:8080",
+    "private_export_directory": "/var/tmp/exports",
+    "shared_archive_scope": true,
+    "encoding_opportunity": "event_pattern",
+    "service_code_sha256": {
+      "base_archive.py": "18d75894e3c8c55d47b83c6aa581ef6dd44bf4a4cc876966f907c871b8adede2",
+      "profile_archive.py": "3b435256c7837e2bb36cadc5d0ddc294722901c11d09ea95500c1d4e0f0a8373",
+      "archive_deployment.py": "1a87ea2854fd4e7a191a9dd2cf81fbd6b6b30826474b5b0fe7e56c86cd7022cd",
+      "service_workstation.py": "994be028b2ffc850e1d451493d2b51c7550dc4239bc6c0f1a335ff5bdd503112",
+      "service_capture.py": "922b4e10697a91e207b9eee08f6281f27def9210b3e94120a0e75cc0bda85f95"
+    },
+    "peer_record_fields_when_scope_is_shared": [
+      "record_id",
+      "author",
+      "activity_cursor",
+      "activity_operation",
+      "activity_record"
+    ],
+    "catalog_page_records": 500,
+    "activity_feed": "retained_service_transitions",
+    "event_clock": "protected_server_monotonic_ns",
+    "event_page_records": 500,
+    "archive_batch_records": 500,
+    "service_state_storage": "dedicated_volume",
+    "workstation_observation_storage": {
+      "kind": "private_disk_volume",
+      "max_trace_bytes": 1073741824,
+      "max_active_bytes": 2147483648
+    },
+    "incomplete_closed_observation": "fail_after_raw_retention",
+    "service_observation_allowance": {
+      "max_file_bytes": 2147483648,
+      "max_total_bytes": 4294967296
+    },
+    "incidental_paths": [
+      "service response timing",
+      "same-host execution timing",
+      "record identifiers and account identity; record creation changes catalog length",
+      "same-scope ready publication content; draft and archived content remain publisher-only"
+    ],
+    "ready_publication_read": true,
+    "ready_publication_response_fields": [
+      "id",
+      "author",
+      "state",
+      "sha256",
+      "content_base64"
+    ]
+  },
+  "worker_visible_sha256": "f0f17acf45c36fe8d1a957cfcab3dee90204ded43eb3886dcab37c1c31796d69"
+}
