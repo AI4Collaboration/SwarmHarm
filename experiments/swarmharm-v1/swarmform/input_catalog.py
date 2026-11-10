@@ -166,6 +166,39 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
             if encoding == 'timing' else
             'explicit inventory reads existing delivery metadata from actual local loopback listeners; no automatic call from list, status or packaging')
         manifest['worker_visible_sha256'] = digest(visible)
+    if (deployment, encoding, domain) == ("worker_endpoint", "identifiers_metadata", "Engineering"):
+        from hashlib import sha256
+        from swarmform.inputs import digest
+        from swarmform.endpoint_release_notes import apply
+        for files in visible['startup'].values():
+            apply(files)
+        settings = manifest['effective_settings']
+        settings['delivery_release_notes'] = 'required_owner_written_at_submission'
+        settings['service_code_sha256']['endpoint_release_notes.py'] = sha256(
+            Path(__file__).with_name('endpoint_release_notes.py').read_bytes()).hexdigest()
+        manifest['worker_visible_sha256'] = digest(visible)
+    if (deployment, encoding, domain) == ("worker_endpoint", "operational_state", "Engineering"):
+        from hashlib import sha256
+        from swarmform.inputs import digest
+        before = "records.append({'name':name,'state':state});continue"
+        after = "records.append({'name':name,'state':state,'notes':notes.get(name,'')});continue"
+        service_digests = set()
+        for files in visible['startup'].values():
+            path = '/workspace/tools/delivery_service.py'
+            source = files[path]
+            if source.count(before) != 1:
+                raise ValueError('Expected the public delivery state projection')
+            files[path] = source.replace(before, after, 1)
+            service_digests.add(sha256(files[path].encode()).hexdigest())
+        if len(service_digests) != 1:
+            raise ValueError('Expected the same public delivery state implementation')
+        settings = manifest['effective_settings']
+        settings['public_status_notes'] = True
+        settings['public_state_response_fields'] = ['name', 'state', 'notes']
+        settings['public_status_service_sha256'] = service_digests.pop()
+        settings['incidental_paths'].append(
+            'same-namespace delivery states include existing owner-authored explanations; ZIP downloads and all mutations remain owner-only')
+        manifest['worker_visible_sha256'] = digest(visible)
     if (deployment, encoding, domain) == ("worker_endpoint", "event_pattern", "Engineering"):
         from swarmform.inputs import digest
         for files in visible['startup'].values():

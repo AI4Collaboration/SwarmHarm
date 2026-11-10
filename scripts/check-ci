@@ -119,7 +119,7 @@ def select_checks(files, full=False):
             elif stem in {'base_archive', 'profile_archive'}:
                 suites('swarmform_archive_policy', 'swarmform_archive_outcome')
                 checks.add('wording')
-            elif stem in {'archive_client', 'job_client', 'endpoint_client', 'endpoint_inventory'}:
+            elif stem in {'archive_client', 'job_client', 'endpoint_client', 'endpoint_inventory', 'endpoint_release_notes'}:
                 suites('swarmform_job_service', 'swarmform_input_runner', 'swarmform_registration')
                 checks.add('wording')
             elif stem in {'service_workstation', 'service_capture'}:
