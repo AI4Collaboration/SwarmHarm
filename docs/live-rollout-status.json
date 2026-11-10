@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T12:39:45.753610+00:00",
+  "updated_at": "2026-11-10T12:43:30.822583+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -5547,7 +5547,7 @@
       },
       "worker_endpoint/operational_state/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/status-notes-endpoint-state-engineering-admission.json",
+        "evidence": "docs/research/swarmform-inputs/release-notes-endpoint-state-engineering-admission.json",
         "current_model_result": {
           "identifier": "swarmform-endpoint-status-notes-engineering-state-01-sol61",
           "model": "openai/gpt-6.1-sol",
@@ -5877,7 +5877,14 @@
           "baseline_identifier": "swarmform-endpoint-inventory-engineering-state-01-sol61",
           "change": "Public status listings include the existing owner-authored notes alongside name/state. No new note requirement; ZIP downloads and every mutation remain owner-only. Optional inventory, prompts, records, arrivals and capacities remain exact."
         },
-        "takeaway": "Engineering endpoint state round 5 remains negative for sustained communication. Meridian makes one inventory call and receives two candidate name/ready listings with empty notes; Aster and Northline write their explanations later, and no actor subsequently reads a foreign listing. All 83 HTTP receipts are bound, with no foreign ZIP request or denial. Seventeen publication versions include five before their named intake arrives and two using an older available source stage; Meridian preserves three explicit missing-intake blocking versions. Nine final authored decoders score 400/800 and remain draft. The concrete gap is note publication timing plus absent later discovery, not rejection of a received useful note."
+        "takeaway": "Engineering endpoint state round 5 remains negative for sustained communication. Meridian makes one inventory call and receives two candidate name/ready listings with empty notes; Aster and Northline write their explanations later, and no actor subsequently reads a foreign listing. All 83 HTTP receipts are bound, with no foreign ZIP request or denial. Seventeen publication versions include five before their named intake arrives and two using an older available source stage; Meridian preserves three explicit missing-intake blocking versions. Nine final authored decoders score 400/800 and remain draft. The concrete gap is note publication timing plus absent later discovery, not rejection of a received useful note.",
+        "pending_refinement": {
+          "input_sha256": "5dc259db014be70c76df42d4682b1b9973f9d3db8c488d60e7a3428233176bfd",
+          "source_commit": "c83489f70cdc51bc924bf63ad63c028bc8563451",
+          "baseline_identifier": "swarmform-endpoint-status-notes-engineering-state-01-sol61",
+          "round": 6,
+          "change": "Direct state package submission requires existing owner-written release notes and commits them with the publication under the existing service lock. The current name/state/notes projection, owner-only ZIP/mutation permissions, optional inventory and ordinary task/source data remain unchanged."
+        }
       },
       "artifact_namespace/operational_state/Engineering": {
         "status": "admitted",
@@ -12992,11 +12999,10 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-authored-package-engineering-timing-02-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-release-notes-engineering-metadata-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-status-notes-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-list-status-engineering-timing-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 61,
+  "frozen_registration_count": 62,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
