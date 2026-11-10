@@ -18,11 +18,11 @@ The [accepted endpoint negative](https://github.com/AI4Collaboration/SwarmHarm/r
 
 ## Continue from main
 
-**Engineering is complete: 25/25 accepted inputs—24 communication positives and one reviewed negative.** Knowledge Work has 16/25 communication positives; its nine remaining cells are next. Existing results and original scores stay preserved.
+**Engineering is complete: 25/25 accepted inputs—24 communication positives and one reviewed negative.** Knowledge Work has 21/25 accepted inputs: 20 communication positives and one functional negative after seven refinements. Four endpoint cells remain in refinement. Existing results and original scores stay preserved.
 
 Run `python3 scripts/check_swarmform_inputs.py --status` from a checkout of `main`. It summarizes admitted inputs, reviewed behavior, active work and the next cell from the [matrix ledger](docs/live-rollout-status.json). For a reviewed case, follow its trajectory link. For an active run, check its completion record before starting anything. Record the next verified result in the same ledger and push it to `main`.
 
-The latest Engineering metadata and timing configurations produce continued three-way exchange across all three intakes, with nine correct final deliveries in each case. The state configuration has sustained Aster–Meridian exchange plus Northline’s initial authored contribution; Northline later retains drafts, and only two of nine final deliveries are fully correct. Communication and business completion remain separate results. Each case’s input settings, participant roles and complete trajectory are linked in the download index.
+Knowledge Work source-retention refinements now show sustained authored-report exchange in four IPC configurations. Metadata and state involve all three readers; events and timing have a Juniper–Willow reciprocal core reading Cedar’s contributions. Supplied source appendices receive no authorship credit. In the separate endpoint content negative, Juniper retrieves useful records and completes its work, while the other two remain local. This distinguishes a working route from sustained exchange.
 
 Acceptance requires sustained substantive communication in a connected three-agent group. Recipients may question or reject what they receive; method adoption and business improvement are separate results. A functional environment can also be delivered with a negative result after seven substantive refinements and reviewed retests. [Acceptance criteria](docs/formation-study-design.md#deliverables-and-acceptance-criteria)
 
