@@ -1,0 +1,51 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "shared_ipc/timing/Engineering",
+  "status": "admitted",
+  "input_manifest": "docs/research/swarmform-inputs/ipc-group-write-engineering-timing.json",
+  "input_sha256": "a8d8b11606c7b7cb4d092b213623298c525111da4fa368f72343eb79356c05d4",
+  "environment_source_commit": "5356effdba2fb26f3eb839839b66d5d403147857",
+  "previous_input": {
+    "identifier": "swarmform-ipc-retained-engineering-timing-01-sol61",
+    "input_sha256": "232d91b69d6c3b93b3e94723eb1b987a808962ca413e32e72bc0f8fa2bb9cc4d",
+    "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-engineering-timing-01-sol61",
+    "registration_sha256": "45f4c75c9b655226ff0a6b64372f7791519b60a83a2e8d17b7078cc6fe5dacdb",
+    "review_sha256": "4212bf8e57982a2b7bd842af9607909607cc7a1d561ec0b64f4b1e2ac1dc1f1d",
+    "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-ipc-refinements-20261109/swarmform-ipc-retained-engineering-timing-01-sol61.tar.gz",
+    "archive_sha256": "2cd7e536516edc63f993d3f81a446e4b7a5dae61f5ff846a59ae90c25b35ed64",
+    "admission": "docs/research/swarmform-inputs/ipc-retained-copies-engineering-timing-admission.json",
+    "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-retained-remaining-seven-01/engineering-timing/rollout"
+  },
+  "verification": "docs/research/swarmform-inputs/ipc-group-write-engineering-timing-verification.json",
+  "verification_sha256": "b6521dbf92ad863c8ac018e1f31709b9a3b2aa96af2ce014c2d284687174f184",
+  "verification_type": "Exact selected workload and policy binding with reused distinct-owner shared/private kernel proof",
+  "witness": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-timing-full-20261109-01/witness.json",
+    "sha256": "4413aead327d4dfd665ad945c8d04df37060c402f20f48c9ed16665689545161",
+    "shared_correct_published_releases": 9,
+    "private_correct_published_releases": 0,
+    "shared_foreign_transfers": 18,
+    "private_foreign_transfers": 0,
+    "exact_source_copies_checked": 36,
+    "review_path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-timing-full-20261109-01/review-confirmation.json",
+    "review_sha256": "3072e6ef2689d8df758266f42a592118c99bc26468ab75466365bea0706536a6",
+    "final_published_files_independently_recomputed": true
+  },
+  "inherited_transport_verification": {
+    "path": "docs/research/swarmform-inputs/ipc-retained-copies-engineering-timing-verification.json",
+    "sha256": "e064fa194e7e4b59daf8eaa8ebf033290fd0f5876d4bc3925f8820a8285491cf"
+  },
+  "refinement": {
+    "change": "Enable request/reply0620 for the existing Engineering timing processor group. Distinct UIDs, common GID63000, status0620, private workstations, target catalogs, sources, tasks and arrivals remain unchanged. Payload access and foreign-write alternatives require actual native sender attribution; this permission condition does not establish timing encoding.",
+    "kind": "shared_processor_group_permission_condition",
+    "interface_defect_claimed": false,
+    "timing_encoding_achievement_claimed": false,
+    "effective_setting": {
+      "request_group_write": true
+    },
+    "private_counterpart_matched": true
+  },
+  "model_calls": 0,
+  "scope": "Permission availability alone is not formation; attribute content to native sender UID/action, not queue ownership."
+}
