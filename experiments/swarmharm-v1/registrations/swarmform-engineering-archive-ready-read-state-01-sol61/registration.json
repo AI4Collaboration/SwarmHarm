@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "identifier": "swarmform-knowledge-file-metadata-listing-01-sol61",
-  "created_at": "2026-11-10T04:15:21.671183+00:00",
+  "identifier": "swarmform-engineering-archive-ready-read-state-01-sol61",
+  "created_at": "2026-11-10T07:53:43.235551+00:00",
   "research_study": "SwarmForm",
   "study_mode": "swarmform",
   "population": 3,
-  "matrix_cell": "shared_files/identifiers_metadata/Knowledge Work",
-  "domain": "Knowledge Work",
-  "input_sha256": "7445f21465ccf3ca5df5e01813a02fd6427487613c8684742cd550f5dad2b548",
-  "source_commit": "4953c1de5a0d05cdf62e4fef0d457644945ecca5",
+  "matrix_cell": "artifact_namespace/operational_state/Engineering",
+  "domain": "Engineering",
+  "input_sha256": "c2957dc857172e3fbd11693583df6b470f9b09392ab13099de0691f82ac54cc5",
+  "source_commit": "cef4e09321a8dc487fc4fc90e5b3427a85c89f6f",
   "model": "openai/gpt-6.1-sol",
   "models": {
     "openai": "openai/gpt-6.1-sol"
@@ -105,7 +105,7 @@
   "api_base": "https://lmportal.iefbr14.xyz/v1",
   "workstation_permissions": {
     "type": "workspaceWrite",
-    "networkAccess": false,
+    "networkAccess": true,
     "writableRoots": [
       "/workspace",
       "/var/tmp/exports",
@@ -136,14 +136,15 @@
   "image": "sha256:86c72305ebe2a6397540689e36805f6be92688d797ee97b6610bfd036b6f984d",
   "deployment": {
     "shared": true,
-    "kind": "shared_files",
-    "network": "none",
-    "access_profile": "metadata"
+    "kind": "artifact_namespace",
+    "catalog_profile": "state",
+    "network": "separate_private_client_networks_with_archive_service",
+    "ready_publication_read": true
   },
   "arrival_offsets": {
-    "opening": 0,
-    "terms_update": 180,
-    "publication_close": 420
+    "candidate": 0,
+    "calibration_update": 180,
+    "release_cutoff": 420
   },
   "budget": {
     "active_contexts_natural": 3,
@@ -159,9 +160,9 @@
     "native_instruction_source": "unchanged Codex model catalog",
     "native_provider_http_payloads_captured": false,
     "business_users": {
-      "Cedar": "62000:62000",
-      "Juniper": "62001:62001",
-      "Willow": "62002:62002"
+      "Northline": "65534:65534",
+      "Aster": "65534:65534",
+      "Meridian": "65534:65534"
     },
     "business_effective_capabilities": 0,
     "observer_container_capabilities": [
@@ -170,21 +171,25 @@
       "SETGID",
       "DAC_READ_SEARCH"
     ],
-    "closed_trace_policy": "archive_verified_bytes_before_pruning"
+    "closed_trace_policy": "archive_verified_bytes_before_pruning",
+    "service_capture": {
+      "max_file_bytes": 2147483648,
+      "max_total_bytes": 4294967296
+    }
   },
   "plan": {
     "natural": {
-      "Cedar": {
+      "Northline": {
         "provider": "openai",
-        "domain": "Knowledge Work"
+        "domain": "Engineering"
       },
-      "Juniper": {
+      "Aster": {
         "provider": "openai",
-        "domain": "Knowledge Work"
+        "domain": "Engineering"
       },
-      "Willow": {
+      "Meridian": {
         "provider": "openai",
-        "domain": "Knowledge Work"
+        "domain": "Engineering"
       }
     }
   },
@@ -311,7 +316,7 @@
     "experiments/swarmharm-v1/source-manifest.json": "4353a05a4e01a394729d5bc5b26bb23ff3056d85e76dcad91bf3ddb20047288b",
     "experiments/swarmharm-v1/swarmform/actor_evidence.py": "aa85d3ead6ba72e401cc679365b63a571ea59244e7a0588bc7bed531057f40c0",
     "experiments/swarmharm-v1/swarmform/archive_client.py": "8fd002cfd1feb0f9a88f5953fd661826113d384915d6310fdce889db036e179b",
-    "experiments/swarmharm-v1/swarmform/archive_deployment.py": "a247d93a234e2c7ac40be8c5e975800bcb6e35149e686f347fa23853fb532347",
+    "experiments/swarmharm-v1/swarmform/archive_deployment.py": "08ff1f9d7f1e0a762e785e4ac0218912eeb8d51fb4e8019e8566dec5b1ccfd1c",
     "experiments/swarmharm-v1/swarmform/archive_outcome.py": "ae250061dd61c25e774bb609a53fd5cc1ad37d7e9eca41ed0b4276db02147900",
     "experiments/swarmharm-v1/swarmform/arrivals.py": "c7951e5b9f283f08bf5e0aa42434ad040861dad3635646fe6d1d62ca29eda208",
     "experiments/swarmharm-v1/swarmform/artifact_inputs.py": "0d3330489508698c66c0b2ac857c01916a1d711854dc10c863c35c052a565806",
@@ -321,16 +326,16 @@
     "experiments/swarmharm-v1/swarmform/decoder_base.py": "44a10ce925174f2e95299dd447a5f1701ee13b26bb4930954ebdcede3c464f3c",
     "experiments/swarmharm-v1/swarmform/delivered_outcome.py": "08fd0a16a5e9e4892fa349d5d9dc3a9caf67f8f02abc917d43e2acd253bce3ba",
     "experiments/swarmharm-v1/swarmform/delivery_archive.py": "15062f605b943af960b7805ef06e45ffda12120f4b48ff8522a311de1b0ce40e",
-    "experiments/swarmharm-v1/swarmform/deployments.py": "fde15c06d7d19dfe2b3d955ef898d136ecab4e4b9d585320a066013ad2b0be01",
+    "experiments/swarmharm-v1/swarmform/deployments.py": "68ad456868566ddfb383b950bcb6b57d91ce9094be2ea17e3ca3be6093a857c7",
     "experiments/swarmharm-v1/swarmform/domain_inputs.py": "2ba569bd88fe5ba963aabefca09fcd0b76c9d129b4820b4bdb91f23ae27e3f16",
     "experiments/swarmharm-v1/swarmform/endpoint_client.py": "197c3d0b1f2bfc94c19d453a5fa0160901718745ed11059806b15eb402aacfea",
     "experiments/swarmharm-v1/swarmform/endpoint_deployment.py": "e4b7f34ff4a67b5bfd436c75566beaee88387ae1dc080462267742e1e8ba487d",
     "experiments/swarmharm-v1/swarmform/endpoint_inputs.py": "7a9b1e09be61d8a2830a1e4bbf04c99f4f07c91e35ddb93c95f8f707284b1066",
-    "experiments/swarmharm-v1/swarmform/endpoint_service.py": "88ed56f34fe8897a43ee76973663ffb100b32e7135292129c4d0744c09b5151e",
+    "experiments/swarmharm-v1/swarmform/endpoint_service.py": "84c83ac5edae77b75b20ab1ccc780968ac22c2e0513ca612d4d720b119e6869f",
     "experiments/swarmharm-v1/swarmform/engineering.py": "4cf8b31a5f02b20d4c04b9fa1de7f990ad723d0e891d37d055c33f60651000e7",
     "experiments/swarmharm-v1/swarmform/file_deployment.py": "efcb48d9527166e519932a70527187d8a9dba781477fa31476b05f4764b31aae",
     "experiments/swarmharm-v1/swarmform/fulfillment.py": "a38a9015d6e5fa50df7eda446849522d34de849f49cdc7a7832114f40ef13211",
-    "experiments/swarmharm-v1/swarmform/input_catalog.py": "8424c6ebc0974c633166a0a589c6e4095de2f79f9cf18c1f90a7dd5863de050e",
+    "experiments/swarmharm-v1/swarmform/input_catalog.py": "acf4316ad8021c6295537951b13433eccd8c39f88077aad0365de1a0999c0a1c",
     "experiments/swarmharm-v1/swarmform/inputs.py": "61dd94097fba37202f7f0ba0dc2e80894558c74063a4ef69617cedb49df6bc3f",
     "experiments/swarmharm-v1/swarmform/intake_observation.py": "709f91ca718e9624ec6972c7cbac89e66f048bb6f507cccef958f9fa6ff46482",
     "experiments/swarmharm-v1/swarmform/ipc_deployment.py": "e84c89d91ca061d315a52e15813b16d44a60289c2fb56184f5b58ffefd83b099",
@@ -348,29 +353,29 @@
     "experiments/swarmharm-v1/swarmform/network_observer.py": "b7c34bcdfa41ae73f03d5eed1f2958a7d8c771d5395fee409678af56ada226a8",
     "experiments/swarmharm-v1/swarmform/outcomes.py": "a33751234b839ebb12c175e16e68ddcad7e65cca19cc3d181c6688c75059a684",
     "experiments/swarmharm-v1/swarmform/package_delivery.py": "c818844d40443ea2f6cf92eb202903c42634379cc3c470a45349845dda64be3b",
-    "experiments/swarmharm-v1/swarmform/profile_archive.py": "f44e72d7557514a649a0228988dcc6a1da5df4882909e8fc60396921d683b9e6",
+    "experiments/swarmharm-v1/swarmform/profile_archive.py": "3b435256c7837e2bb36cadc5d0ddc294722901c11d09ea95500c1d4e0f0a8373",
     "experiments/swarmharm-v1/swarmform/publication_coverage.py": "8cfd20df32c8d414b0099a5214007dd45d77fb6ec9144d528ee9fca8410e13b2",
     "experiments/swarmharm-v1/swarmform/read_observer.py": "3cd9ecc909ed0ca20d3f38a2736321e314e9b6bef43cb3fbb78e78c2d7e45784",
     "experiments/swarmharm-v1/swarmform/report_package.py": "099ba6de88e9139df7cd88434ea4d6265715a0637cf25b0f669c54874343b578",
     "experiments/swarmharm-v1/swarmform/service_capture.py": "922b4e10697a91e207b9eee08f6281f27def9210b3e94120a0e75cc0bda85f95",
     "experiments/swarmharm-v1/swarmform/service_workstation.py": "994be028b2ffc850e1d451493d2b51c7550dc4239bc6c0f1a335ff5bdd503112",
     "experiments/swarmharm-v1/swarmform/settlement.py": "9e590c6a1ffbff3fd0716753cba4657e8d858db758499ce4c2984fb673a63184",
-    "experiments/swarmharm-v1/swarmform/structure.py": "e23d891805c05775f715409d646c24446fc3ab5dcbe4eb0c45271886ff4d173d",
-    "experiments/swarmharm-v1/swarmform/structure_collection.py": "d69732f613c4c2ae73dddab8c5a3be215d54ad55e02255ee175ec20d585769f4",
+    "experiments/swarmharm-v1/swarmform/structure.py": "68b9fcca39b7c30bda3e2ec6f194032c4c421e00cc4545db13b3281c874bfa9d",
+    "experiments/swarmharm-v1/swarmform/structure_collection.py": "610c83f198a3e3eb5a5f9208ccc9e975f0c4de7f426fea6558cda8dfe61d6b17",
     "scripts/run_swarmform.py": "76439ff3bab80f41a87d7df226d8bd52a54caeee4cbb11b48ef8531ab2d1a0fc",
-    "scripts/run_swarmform_structure.py": "e5c0eea109152336814807d421b584b71a1654c03a4ddc6587687e0394a069a8"
+    "scripts/run_swarmform_structure.py": "0398b199e74d0d41e08be0b1558038e62109546dd540ed6c0d9da9f8b43f70f7"
   },
   "input_hashes": {
-    "input.json": "d23532a10771d791da126bd53fb859b4f777934e5592e5e8e39827048904e272",
-    "protected-truth.json": "e7fdb6c92501ef7c441255ed4a4ca346c74dfd25ae2b9bbf718c03c3f153c001"
+    "input.json": "323db1e509d7917c227db3752c9ff1c43c07f6298ad5c75fd8a4fc5fa381bdbb",
+    "protected-truth.json": "04529dcf30a6f2344a0eba461d1898d7c8d5e48b56e53337de4c616a2ce68e26"
   },
   "task_hashes": {
-    "tasks/Cedar/instruction.md": "b4e250444d92424ed60360e52b64483c34d5cf01aa9deaa039eab88e23398998",
-    "tasks/Cedar/task.toml": "a2c8818c8a625b84d31caa878c4f324c4b2c4f266dc2f203dbf70016f400dfe4",
-    "tasks/Juniper/instruction.md": "54750582875cf4ca08f22cf0021c176753c8da19d302cd8b5a6b1ecb87bfb8e1",
-    "tasks/Juniper/task.toml": "717ac27c13a1f4610a2758fd81e85400214dd9a395796b9e284c159af4028815",
-    "tasks/Willow/instruction.md": "f9fdcd1238fda0cb7e3d91109c07ebb4553aed6a16bfe2a32788e2e934e476c3",
-    "tasks/Willow/task.toml": "f73b9877939033fcf8431c4edb5493c1655c6956f1257302cba505c26c0b0c13"
+    "tasks/Northline/instruction.md": "912a8599b5db3c6d2bc4c592e4abb84908aa5dec0bc58118fd32512741db2567",
+    "tasks/Northline/task.toml": "742882aeed94a47f4d2426153e6235b67e28fc9cb4fbdb3c1d35278dfe58156e",
+    "tasks/Aster/instruction.md": "780b58e4f87e491cd5b3f230eb5c94defa6267e42623fac3f5c89f6b1e0efb07",
+    "tasks/Aster/task.toml": "8bfc334efe49e44cd965a1b91fe04951052a68839ae869d5b7f406a47ae2d12d",
+    "tasks/Meridian/instruction.md": "a43a4be33532826c83b0980f56d5931da650a7b5620b82b4a044f5767493b78a",
+    "tasks/Meridian/task.toml": "023e088381c36772cca7df896d2e3fef191b560d2d3b57d04e496b1d62bf31c0"
   },
   "criteria_source": "docs/formation-study-design.md#what-counts-as-model-evidence",
   "criteria": {
