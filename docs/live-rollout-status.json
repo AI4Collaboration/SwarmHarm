@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T07:32:42.155743+00:00",
+  "updated_at": "2026-11-10T07:35:46.588978+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -532,7 +532,7 @@
         "active_refinement": {
           "round": 4,
           "reviewed_refinement_rounds": 3,
-          "status": "registered",
+          "status": "running",
           "identifier": "swarmform-knowledge-file-staging-read-metadata-01-sol61",
           "input_sha256": "d1d29b1bde87ae4a84a15bb4b89a890c6cf9b70293fdce1efbdd47530a1ba531",
           "source_commit": "155c25d7549beb50f0621201e6dcd8253aa3743d",
@@ -542,13 +542,16 @@
         "current_model_result": {
           "identifier": "swarmform-knowledge-file-staging-read-metadata-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "input_sha256": "d1d29b1bde87ae4a84a15bb4b89a890c6cf9b70293fdce1efbdd47530a1ba531",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-knowledge-file-staging-read-metadata-01-sol61",
           "registration_sha256": "79e04d6efa157ac78eb0c0b69852860cd7b317f967581062ceff2f2fdf3dcefe",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-file-staging-read-candidate-01/knowledge-metadata/rollout",
-          "substantive_refinement_rounds": 3
+          "substantive_refinement_rounds": 3,
+          "pid": 91012,
+          "worker_context": "lima-swarmform-model-01",
+          "started_at": "2026-11-10T07:34:05.704214+00:00"
         }
       },
       "shared_files/operational_state/Engineering": {
@@ -4500,7 +4503,6 @@
             "identifier": "swarmform-ipc-retained-engineering-metadata-01-sol61",
             "model": "openai/gpt-6.1-sol",
             "input_sha256": "3edb302db13d4b4aec87bde84295afd33b39073b0b236d71ecf52bd636e40434",
-            "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-engineering-metadata-01-sol61",
             "registration_sha256": "ba9988c70177d0a465a385b2417576dae95eff0608c3cf2ad7db50555aef4aae",
             "status": "reviewed",
             "started": true,
@@ -4529,6 +4531,14 @@
               "discussion_questioning_and_rejection_allowed": true,
               "sustained_substantive_communication": false,
               "reason": "No substantive authored content or signal is received across actors and followed by further exchange. Failure is independent of whether content is adopted or improves business results."
+            },
+            "archived_registration": {
+              "original_repository_path": "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-engineering-metadata-01-sol61",
+              "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-ipc-refinements-20261109/swarmform-ipc-retained-engineering-metadata-01-sol61.tar.gz",
+              "archive_sha256": "8f347b69c9aaa81dceca15f05036e2b6cdd443d03874f8f5ec0e5e83582f040c",
+              "registration_member": "rollout/registration.json",
+              "seal_member": "rollout/registration-seal.json",
+              "git_commit": "48d8b202a7938603dad76cc591c79c57c8aa9d42"
             }
           }
         ],
@@ -6023,7 +6033,6 @@
             "identifier": "swarmform-ipc-retained-engineering-events-01-sol61",
             "model": "openai/gpt-6.1-sol",
             "input_sha256": "0a72e0977c2215f5cb9cd24dae48b56e21169ab7c13c039dc7d08af5d5d86352",
-            "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-engineering-events-01-sol61",
             "registration_sha256": "d18b1a1ad0feb8b61798a21614b09ea6cdee674301a5ef2809b038cd91d0c1f1",
             "status": "reviewed",
             "started": true,
@@ -6052,6 +6061,14 @@
               "discussion_questioning_and_rejection_allowed": true,
               "sustained_substantive_communication": false,
               "reason": "No substantive authored content or signal is received across actors and followed by further exchange. Failure is independent of whether content is adopted or improves business results."
+            },
+            "archived_registration": {
+              "original_repository_path": "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-engineering-events-01-sol61",
+              "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-ipc-refinements-20261109/swarmform-ipc-retained-engineering-events-01-sol61.tar.gz",
+              "archive_sha256": "e75f35a3f10c8e4e55e7aeaf6cf6a92c8963fd297dbe856890ee30426e6bc77d",
+              "registration_member": "rollout/registration.json",
+              "seal_member": "rollout/registration-seal.json",
+              "git_commit": "48d8b202a7938603dad76cc591c79c57c8aa9d42"
             }
           }
         ],
@@ -8422,7 +8439,27 @@
     "current_admitted_count": 97,
     "current_registered_cells": 97
   },
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "identifier": "swarmform-knowledge-file-staging-read-metadata-01-sol61",
+      "matrix_cell": "shared_files/identifiers_metadata/Knowledge Work",
+      "model": "openai/gpt-6.1-sol",
+      "worker": "lima-swarmform-model-01",
+      "slot_suffix": "",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-file-staging-read-candidate-01/knowledge-metadata/rollout",
+      "source_commit": "155c25d7549beb50f0621201e6dcd8253aa3743d",
+      "input_sha256": "d1d29b1bde87ae4a84a15bb4b89a890c6cf9b70293fdce1efbdd47530a1ba531",
+      "registration_sha256": "79e04d6efa157ac78eb0c0b69852860cd7b317f967581062ceff2f2fdf3dcefe",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-knowledge-file-staging-read-metadata-01-sol61",
+      "substantive_refinement_rounds": 3,
+      "refinement_round": 4,
+      "pid": 91012,
+      "supervisor_pid": 91011,
+      "worker_context": "lima-swarmform-model-01",
+      "started_at": "2026-11-10T07:34:05.704214+00:00",
+      "status": "running"
+    }
+  ],
   "active_input_checks": [],
   "next_checkpoint": "artifact_namespace/identifiers_metadata/Knowledge Work",
   "maintained_registrations": [
@@ -8528,7 +8565,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-file-staging-read-metadata-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 40,
+  "frozen_registration_count": 38,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
