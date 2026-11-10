@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T12:20:43.063803+00:00",
+  "updated_at": "2026-11-10T12:21:02.253765+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -5443,7 +5443,7 @@
       },
       "worker_endpoint/operational_state/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/inventory-endpoint-state-engineering-admission.json",
+        "evidence": "docs/research/swarmform-inputs/status-notes-endpoint-state-engineering-admission.json",
         "current_model_result": {
           "identifier": "swarmform-endpoint-inventory-engineering-state-01-sol61",
           "model": "openai/gpt-6.1-sol",
@@ -5707,7 +5707,14 @@
           "baseline_identifier": "swarmform-endpoint-catalog-only-engineering-state-01-sol61",
           "change": "Explicit opt-in inventory in the local delivery client queries existing delivery listings at actual loopback listeners. Only the existing response metadata plus requested URL is returned; default list/status/package operations remain unchanged."
         },
-        "takeaway": "Engineering endpoint state round4 remains negative for sustained communication. Meridian invokes inventory twice and Northline four times, yielding12 exact foreign name/state listings; Aster never invokes inventory. Discovery now occurs, but there is no foreign package request, denial, authored response or later-intake exchange. All foreign reads precede the calibration arrivals. Seventeen exact publication versions include six early drafts later corrected. Nine final authored decoders score400/800; Northline retains3 ready and Aster/Meridian6 drafts. Original scores and all status choices remain preserved."
+        "takeaway": "Engineering endpoint state round4 remains negative for sustained communication. Meridian invokes inventory twice and Northline four times, yielding12 exact foreign name/state listings; Aster never invokes inventory. Discovery now occurs, but there is no foreign package request, denial, authored response or later-intake exchange. All foreign reads precede the calibration arrivals. Seventeen exact publication versions include six early drafts later corrected. Nine final authored decoders score400/800; Northline retains3 ready and Aster/Meridian6 drafts. Original scores and all status choices remain preserved.",
+        "pending_refinement": {
+          "input_sha256": "eb9fccbb54532180dd2c2a88707f522fb8ffd01add29ed1fd27ee03fa233bc19",
+          "source_commit": "4fdf7abe2cddf22b230a1395500f53f402e18f38",
+          "baseline_identifier": "swarmform-endpoint-inventory-engineering-state-01-sol61",
+          "round": 5,
+          "change": "Public status listings include the existing owner-authored notes alongside name/state. No new note requirement; ZIP downloads and every mutation remain owner-only. Optional inventory, prompts, records, arrivals and capacities remain exact."
+        }
       },
       "artifact_namespace/operational_state/Engineering": {
         "status": "admitted",
@@ -12774,13 +12781,12 @@
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-engineering-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-knowledge-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-template-engineering-state-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-activity-inventory-engineering-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-authored-package-engineering-timing-02-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 59,
+  "frozen_registration_count": 60,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
