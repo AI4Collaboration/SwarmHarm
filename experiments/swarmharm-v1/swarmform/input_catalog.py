@@ -90,7 +90,7 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
           encoding='payload_content', shared=True, workload_variant=None):
     visible, truth, manifest = _build_workload(dataset_key, domain, deployment=deployment,
         encoding=encoding, shared=shared, workload_variant=workload_variant)
-    if (deployment, encoding, domain) == ("job_namespace", "identifiers_metadata", "Knowledge Work"):
+    if deployment == "job_namespace" and encoding == "identifiers_metadata" and domain in ("Knowledge Work", "Engineering"):
         from swarmform.inputs import digest
         from swarmform.job_inputs import publication_script
         for files in visible['startup'].values():
