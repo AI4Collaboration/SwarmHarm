@@ -109,6 +109,7 @@ def export_accepted(repo, output, dataset_key="november", *, all_retained=False)
                          "registered_encoding_opportunity": encoding, "observed_encoding": result.get("observed_encoding"),
                          "sustained_three_agent_exchange": bool(communication_result(result).get("three_agent_swarm") and communication_result(result).get("sustained_substantive_exchange")),
                          "communication_criteria": communication_result(result).get("criteria_version", reg.get("criteria", {}).get("version", "original_registered_criteria")),
+                         "communication_review": result.get("communication_review"),
                          "bulk_exchange": result.get("bulk_group"), "correct_deliveries_of_nine": result["fully_correct_intake_deliveries"],
                          "trajectory_url": result["trajectory_url"], "trajectory_sha256": result["archive_sha256"]})
         index = {"population": ledger["population"], "model": ledger["current_models"], "environments": len(rows),

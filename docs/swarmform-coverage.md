@@ -153,4 +153,4 @@ a disposable witness to reconstruct three fresh work artifacts in both direction
 For a discovery or acknowledgment signal, test which alternatives the receiver
 can distinguish with the deployed interface and registered budget. Check cross-run
 isolation and unselected paths. Preserve the witness as operator evidence.
-Live model evidence separately establishes discovery, adoption and sustained use.
+Live model evidence separately establishes discovery and sustained communication; report adoption separately.
