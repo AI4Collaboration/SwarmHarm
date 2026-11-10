@@ -326,7 +326,8 @@ def _build_deployment(dataset_key, domain, deployment, encoding, shared, *, atta
             from swarmform.ipc_inputs import build as build_processor
             return build_processor(dataset_key,domain,shared=shared,profile=ARCHIVE_PROFILES[encoding],
                 request_group_write=(encoding,domain) in {('identifiers_metadata','Knowledge Work'),
-                    ('identifiers_metadata','Engineering'),('timing','Knowledge Work')})
+                    ('identifiers_metadata','Engineering'),('timing','Knowledge Work'),
+                    ('operational_state','Knowledge Work'),('operational_state','Engineering')})
         else:
             from swarmform.endpoint_inputs import build as build_processor
         return build_processor(dataset_key, domain, shared=shared,profile=ARCHIVE_PROFILES[encoding], attachments=attachments,
