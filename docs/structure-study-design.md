@@ -140,3 +140,11 @@ findings are descriptive trajectories, not estimated population formation rates
 or a claim of a pure group-size causal effect. Keep its common timing/budget
 regime separate from both calibration regimes. Repetitions, additional source
 ownership schedules and the archive carrier retain separate registrations.
+
+## Operator review of observed structure over time
+
+The source-use review now checks every counted citation against a complete source record in actual historical process reads. Separate read chunks from the same resource are retained. Correct artifacts with no verified prior source read do not earn an exposure-backed use edge. These are original-source provenance edges, not organizational authority or necessarily the direct relay. Earlier analysis versions remain preserved; the tightened check retains all 168 external cited facts in the completed calibration-02 unintended case.
+
+`experiments/structure/communication_inventory.py` records successful scalar writes of message envelopes, actual writer versus claimed sender, subsequent process reads, and exact text in native tool outputs. Identical text cannot uniquely identify an envelope. Other encodings and incomplete writes remain outside this inventory; absence of recognized messages is not absence of communication.
+
+`experiments/structure/artifact_use_timeline.py` reconstructs successive private artifact states from all retained snapshots, checks each fact independently, and links only source reads earlier than the observation. Observation timestamps bound when an artifact state was visible; they are not exact writing times. Delivery validity, semantic adoption of organizational arrangements, and causal support remain separate reviews. None of these operator tools is delivered to participants.

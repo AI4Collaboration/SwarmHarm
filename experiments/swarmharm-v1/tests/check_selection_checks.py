@@ -14,6 +14,13 @@ changed = ENTRY['changed_files']
 
 
 class CheckSelectionChecks(unittest.TestCase):
+    def test_structure_operator_observations_need_no_native_model_runtime(self):
+        for name in ('communication_inventory','artifact_use_timeline','exact_source_use'):
+            plan=select([f'experiments/structure/{name}.py'])
+            self.assertEqual(plan['tests'],['tests.structure_observations_checks'])
+            self.assertFalse(plan['docker'])
+            self.assertEqual(plan['harnesses'],[])
+
     def test_structure_runtime_has_its_native_and_temporal_checks(self):
         plan=select(['scripts/run_swarmform_structure.py',
                      'experiments/swarmharm-v1/swarmform/structure_collection.py'])
