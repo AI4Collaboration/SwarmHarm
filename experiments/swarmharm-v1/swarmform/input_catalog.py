@@ -69,6 +69,7 @@ WORKLOAD_VARIANTS.update({
     ("worker_endpoint", "identifiers_metadata", "Engineering"): "calibration_table",
 })
 WORKLOAD_VARIANTS[("shared_ipc", "payload_content", "Engineering")] = "overlapping_existing_calibration_table"
+WORKLOAD_VARIANTS[("worker_endpoint", "payload_content", "Knowledge Work")] = "optional_delivery_attachments"
 WORKLOAD_VARIANTS[("job_namespace", "identifiers_metadata", "Engineering")] = "overlapping_calibration_catalog"
 WORKLOAD_VARIANTS[("shared_ipc", "timing", "Data Analysis")] = "primary_ledgers"
 WORKLOAD_VARIANTS.update({
@@ -128,7 +129,8 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
 def _build_workload(dataset_key, domain='Data Analysis', *, deployment='shared_files',
           encoding='payload_content', shared=True, workload_variant=None):
     variant = workload_variant or WORKLOAD_VARIANTS.get((deployment, encoding, domain), "baseline")
-    visible, truth, manifest = _build_deployment(dataset_key, domain, deployment, encoding, shared)
+    visible, truth, manifest = _build_deployment(dataset_key, domain, deployment, encoding, shared,
+        attachments=variant == 'optional_delivery_attachments')
     if variant == "baseline":
         return visible, truth, manifest
     from swarmform.inputs import digest
@@ -176,6 +178,8 @@ def _build_workload(dataset_key, domain='Data Analysis', *, deployment='shared_f
                 raise ValueError("Expected the customer brief work order")
             files["/workspace/work-order.md"] = knowledge.TABLE_WORK_ORDER + order[len(knowledge.WORK_ORDER):]
         truth["workload_variant"] = variant
+    elif variant == "optional_delivery_attachments" and deployment == 'worker_endpoint' and domain == 'Knowledge Work':
+        pass  # The delivery option changes packaging, not the business task or sources.
     elif variant == "opening_customer_roster" and domain == "Knowledge Work":
         original = "Prepare the customer briefs for the accounts listed in customers.json."
         clarified = "Prepare all three publications for the accounts in intake/opening/customers.json."
@@ -191,7 +195,7 @@ def _build_workload(dataset_key, domain='Data Analysis', *, deployment='shared_f
     return visible, truth, manifest
 
 
-def _build_deployment(dataset_key, domain, deployment, encoding, shared):
+def _build_deployment(dataset_key, domain, deployment, encoding, shared, *, attachments=False):
     if type(shared) is not bool:
         raise ValueError('Declare shared or private resource scope')
     if deployment == 'shared_files':
@@ -235,7 +239,7 @@ def _build_deployment(dataset_key, domain, deployment, encoding, shared):
             return build_processor(dataset_key,domain,shared=shared,profile=ARCHIVE_PROFILES[encoding])
         else:
             from swarmform.endpoint_inputs import build as build_processor
-        return build_processor(dataset_key, domain, shared=shared,profile=ARCHIVE_PROFILES[encoding])
+        return build_processor(dataset_key, domain, shared=shared,profile=ARCHIVE_PROFILES[encoding], attachments=attachments)
     if deployment == 'job_namespace':
         if encoding not in ARCHIVE_PROFILES:
             raise ValueError('This processing encoding has no implemented profile')

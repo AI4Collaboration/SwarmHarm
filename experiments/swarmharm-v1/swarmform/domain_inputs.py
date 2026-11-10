@@ -63,7 +63,7 @@ def verify_business(domain,actor,snapshot,truth,input_data):
     raise ValueError('Unknown workload domain')
 
 
-def verify_packages(actor,snapshot,domain='Data Analysis'):
+def verify_packages(actor,snapshot,domain='Data Analysis', *, allow_attachments=False):
     if domain=='Data Analysis':return inputs.verify_packages(actor,snapshot)
     module,filename,_=descriptor(domain);result={}
     for batch in module.BATCHES:
@@ -71,7 +71,8 @@ def verify_packages(actor,snapshot,domain='Data Analysis'):
             packed=base64.b64decode(snapshot['/var/tmp/exports'][f'/var/tmp/exports/{actor}-{batch}.zip'],validate=True)
             authored=base64.b64decode(snapshot['/workspace'][f'/workspace/releases/{batch}/{filename}'],validate=True)
             with zipfile.ZipFile(io.BytesIO(packed)) as archive:
-                if sorted(archive.namelist())!=sorted([filename,'manifest.json']) or any(x.file_size>1_000_000 for x in archive.infolist()):raise ValueError('Unexpected archive layout')
+                from swarmform.delivery_archive import validate_archive_layout
+                validate_archive_layout(archive, filename, allow_attachments=allow_attachments)
                 manifest=json.loads(archive.read('manifest.json'))
                 expected={'office':actor,'batch':batch,'file':filename,'sha256':sha256(authored).hexdigest()}
                 result[batch]={'matches_authored_artifact':archive.read(filename)==authored and isinstance(manifest,dict)

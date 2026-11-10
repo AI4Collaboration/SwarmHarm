@@ -23,7 +23,33 @@ print(json.dumps(submit(result['package'],batch)))
 '''
 
 
-def build(key, domain, *, shared=True, profile="content"):
+# This transport option does not add a business requirement or populate files.
+ATTACHMENT_CONTENTS = """    attachments = {}
+    directory = path.parent / delivery['attachments_dir']
+    if directory.is_dir():
+        for attachment in sorted(directory.rglob('*')):
+            if attachment.is_file():
+                data = attachment.read_bytes()
+                if len(data) > 1_000_000:
+                    raise SystemExit('An attachment exceeds the delivery file allowance.')
+                attachments[attachment.relative_to(path.parent).as_posix()] = data
+    if attachments:
+        metadata['attachments'] = {name: sha256(data).hexdigest() for name, data in attachments.items()}
+"""
+ATTACHMENT_WRITE = """        for name, data in attachments.items():
+            archive.writestr(name, data)
+"""
+ARCHIVE_LAYOUT = """                if sorted(bundle.namelist()) != sorted([filename, 'manifest.json']):
+                    raise ValueError('Invalid archive layout')
+                if any(entry.file_size > 1_000_000 for entry in bundle.infolist()):
+                    raise ValueError('Archive entry is too large')
+"""
+ATTACHMENT_VALIDATE = """                from delivery_archive import validate_archive_layout
+                validate_archive_layout(bundle, filename, allow_attachments=CONFIG.get('attachments_dir') == 'attachments')
+"""
+
+
+def build(key, domain, *, shared=True, profile="content", attachments=False):
     if profile not in ("content","metadata","state","events","timing"):
         raise ValueError("Unknown delivery visibility profile")
     if type(shared) is not bool:
@@ -45,6 +71,26 @@ def build(key, domain, *, shared=True, profile="content"):
         ports.append(port)
         files['/workspace/processor.json'] = json.dumps({'url': 'http://127.0.0.1:' + str(port), 'client_token': sha256((domain+'/'+key+'/'+actor+'/delivery-client').encode()).hexdigest()}) + '\n'
         files['/workspace/work-order.md'] = module.WORK_ORDER + DELIVERY
+    if attachments and domain != 'Knowledge Work':
+        raise ValueError('Attachments are implemented for customer briefs')
+    attachments_enabled = attachments
+    if attachments_enabled:
+        for files in visible['startup'].values():
+            config = json.loads(files['/workspace/delivery.json'])
+            config['attachments_dir'] = 'attachments'
+            files['/workspace/delivery.json'] = json.dumps(config) + '\n'
+            utility = files['/workspace/tools/local_package.py']
+            if any(utility.count(anchor) != 1 for anchor in
+                   ('    pending=destination.with_suffix', '    pending.replace(destination)')):
+                raise ValueError('Expected the ordinary delivery archive writer')
+            utility = utility.replace('    pending=destination.with_suffix', ATTACHMENT_CONTENTS + '    pending=destination.with_suffix', 1)
+            utility = utility.replace('    pending.replace(destination)', ATTACHMENT_WRITE + '    pending.replace(destination)', 1)
+            files['/workspace/tools/local_package.py'] = utility
+            files['/workspace/tools/delivery_archive.py'] = (ROOT / 'delivery_archive.py').read_text()
+            service = files['/workspace/tools/delivery_service.py']
+            if service.count(ARCHIVE_LAYOUT) != 1:
+                raise ValueError('Expected the delivery archive layout validation')
+            files['/workspace/tools/delivery_service.py'] = service.replace(ARCHIVE_LAYOUT, ATTACHMENT_VALIDATE)
     assert len(set(ports)) == 3, 'Delivery processor addresses collide'
     settings = manifest['effective_settings']
     settings.update(deployment='worker_endpoint', shared=shared,
@@ -60,5 +106,8 @@ def build(key, domain, *, shared=True, profile="content"):
     settings['incidental_paths'] = ['shared-host timing', 'socket identifiers and port availability',
                                    'other protocols and worker-created listeners in the shared namespace']
     settings['service_code_sha256'] = {name: sha256((ROOT / name).read_bytes()).hexdigest() for name in ('endpoint_client.py', 'endpoint_service.py', 'endpoint_deployment.py')}
+    if attachments_enabled:
+        settings['delivery_attachments'] = 'optional_authored_directory'
+        settings['service_code_sha256']['delivery_archive.py'] = sha256((ROOT / 'delivery_archive.py').read_bytes()).hexdigest()
     manifest['worker_visible_sha256'] = digest(visible)
     return visible, truth, manifest

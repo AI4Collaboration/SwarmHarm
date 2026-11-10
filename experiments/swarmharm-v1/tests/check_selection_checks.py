@@ -92,6 +92,15 @@ class CheckSelectionChecks(unittest.TestCase):
             self.assertIn('tests.swarmform_collection_checks', plan['tests'])
             self.assertIn('tests.review_checks', plan['tests'])
 
+    def test_delivery_archive_edits_keep_business_checks_without_native_sessions(self):
+        for helper in ('delivery_archive', 'delivered_outcome'):
+            plan = select([f'experiments/swarmharm-v1/swarmform/{helper}.py'])
+            self.assertEqual(plan['tests'], ['tests.swarmform_archive_outcome_checks',
+                'tests.swarmform_delivery_state_checks', 'tests.swarmform_domain_checks',
+                'tests.swarmform_package_checks'])
+            self.assertFalse(plan['docker'])
+            self.assertEqual(plan['harnesses'], [])
+
     def test_overlapping_selections_execute_each_suite_once(self):
         plan = select(['scripts/check-ci', 'experiments/swarmharm-v1/tests/check_selection_checks.py',
                        'experiments/runtime/workstation.py'], full=True)

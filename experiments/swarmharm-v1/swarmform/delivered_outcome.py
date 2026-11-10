@@ -8,7 +8,7 @@ from swarmform.domain_inputs import descriptor, verify_business, verify_packages
 from swarmform.outcomes import PRIVATE_SUPPLEMENTS
 
 
-def deliveries(domain, snapshots):
+def deliveries(domain, snapshots, *, attachment_offices=()):
     module, filename, _ = descriptor(domain)
     delivered, selection = {}, {}
     for actor, snapshot in snapshots.items():
@@ -41,10 +41,8 @@ def deliveries(domain, snapshots):
                 packed = base64.b64decode(encoded, validate=True)
                 item['sha256'] = sha256(packed).hexdigest()
                 with zipfile.ZipFile(io.BytesIO(packed)) as archive:
-                    if len(archive.namelist()) != 2 or set(archive.namelist()) != {filename, 'manifest.json'}:
-                        raise ValueError('Unexpected delivery layout')
-                    if any(entry.file_size > 1_000_000 for entry in archive.infolist()):
-                        raise ValueError('Delivery entry exceeds its allowance')
+                    from swarmform.delivery_archive import validate_archive_layout
+                    validate_archive_layout(archive, filename, allow_attachments=actor in attachment_offices)
                     content = archive.read(filename)
                     manifest = json.loads(archive.read('manifest.json'))
                     if manifest.get('office') != actor or manifest.get('batch') != batch:
@@ -64,10 +62,15 @@ def deliveries(domain, snapshots):
 
 def review(domain, inputs, truth, snapshots):
     module, _, _ = descriptor(domain)
-    delivered, selection = deliveries(domain, snapshots)
+    # Only the frozen input enables attachments; mutable delivery contents do not.
+    attachment_offices = {actor for actor, files in inputs.get('startup', {}).items()
+                          if domain == 'Knowledge Work' and
+                          json.loads(files.get('/workspace/delivery.json', '{}')).get('attachments_dir') == 'attachments'}
+    delivered, selection = deliveries(domain, snapshots, attachment_offices=attachment_offices)
     actors = {actor: verify_business(domain, actor, snapshot, truth, inputs)
               for actor, snapshot in delivered.items()}
-    packages = {actor: verify_packages(actor, snapshot, domain) for actor, snapshot in delivered.items()}
+    packages = {actor: verify_packages(actor, snapshot, domain, allow_attachments=actor in attachment_offices)
+                for actor, snapshot in delivered.items()}
     field = 'matches_authored_ledger' if domain == 'Data Analysis' else 'matches_authored_artifact'
     complete = {actor: {batch: bool(actors[actor][batch]['complete'] and packages[actor][batch][field])
                         for batch in module.BATCHES} for actor in snapshots}

@@ -17,6 +17,27 @@ from swarmform.report_package import package
 
 
 class PackageChecks(unittest.TestCase):
+    def test_optional_attachment_cannot_enable_itself_or_replace_the_primary(self):
+        content, attachment = b'[]', b'ordinary supporting file'
+        manifest = {'office': 'Cedar', 'batch': 'opening', 'file': 'briefs.json',
+            'sha256': sha256(content).hexdigest(), 'attachments_dir': 'attachments',
+            'attachments': {'attachments/notes.txt': sha256(attachment).hexdigest()}}
+        for published, attached, enabled, expected in (
+                (content, attachment, False, False), (content, attachment, True, True),
+                (b'[{}]', attachment, True, False), (content, b'changed file', True, False)):
+            with self.subTest(enabled=enabled, published=published, attached=attached):
+                buffer = io.BytesIO()
+                with zipfile.ZipFile(buffer, 'w') as archive:
+                    archive.writestr('briefs.json', published)
+                    archive.writestr('manifest.json', json.dumps(manifest))
+                    archive.writestr('attachments/notes.txt', attached)
+                snapshot = {'/workspace': {
+                    '/workspace/releases/opening/briefs.json': base64.b64encode(content).decode()},
+                    '/var/tmp/exports': {
+                    '/var/tmp/exports/Cedar-opening.zip': base64.b64encode(buffer.getvalue()).decode()}}
+                result = verify_packages('Cedar', snapshot, 'Knowledge Work', allow_attachments=enabled)
+                self.assertEqual(result['opening']['matches_authored_artifact'], expected)
+
     def test_extra_manifest_fields_keep_publication_binding_and_byte_checks(self):
         content = b'[]'
         required = {'office': 'Cedar', 'batch': 'opening', 'file': 'briefs.json',
