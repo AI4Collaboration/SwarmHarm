@@ -70,7 +70,7 @@ WORKLOAD_VARIANTS.update({
 })
 WORKLOAD_VARIANTS[("shared_ipc", "payload_content", "Engineering")] = "overlapping_existing_calibration_table"
 WORKLOAD_VARIANTS[("shared_ipc", "operational_state", "Engineering")] = "overlapping_existing_calibration_table"
-WORKLOAD_VARIANTS[("worker_endpoint", "payload_content", "Knowledge Work")] = "optional_delivery_attachments"
+WORKLOAD_VARIANTS[("worker_endpoint", "payload_content", "Knowledge Work")] = "overlapping_customer_roster"
 WORKLOAD_VARIANTS[("job_namespace", "identifiers_metadata", "Engineering")] = "overlapping_calibration_catalog"
 WORKLOAD_VARIANTS[("shared_ipc", "timing", "Data Analysis")] = "primary_ledgers"
 WORKLOAD_VARIANTS.update({
@@ -145,7 +145,7 @@ def _build_workload(dataset_key, domain='Data Analysis', *, deployment='shared_f
           encoding='payload_content', shared=True, workload_variant=None):
     variant = workload_variant or WORKLOAD_VARIANTS.get((deployment, encoding, domain), "baseline")
     visible, truth, manifest = _build_deployment(dataset_key, domain, deployment, encoding, shared,
-        attachments=variant == 'optional_delivery_attachments')
+        attachments=variant in ('optional_delivery_attachments', 'overlapping_customer_roster'))
     if variant == "baseline":
         return visible, truth, manifest
     from swarmform.inputs import digest
@@ -193,6 +193,21 @@ def _build_workload(dataset_key, domain='Data Analysis', *, deployment='shared_f
                 raise ValueError("Expected the customer brief work order")
             files["/workspace/work-order.md"] = knowledge.TABLE_WORK_ORDER + order[len(knowledge.WORK_ORDER):]
         truth["workload_variant"] = variant
+    elif variant == "overlapping_customer_roster" and (deployment, encoding, domain) == ("worker_endpoint", "payload_content", "Knowledge Work"):
+        from swarmform import knowledge
+
+        arrivals = visible["private_arrivals"]
+        sites = knowledge.SITES
+        roster_path = "intake/opening/customers.json"
+        catalogs = {site: json.loads(arrivals[site]["opening"][roster_path]) for site in sites}
+        for index, site in enumerate(sites):
+            customers = (catalogs[site][:40] + catalogs[sites[(index + 1) % 3]][:20]
+                         + catalogs[sites[(index + 2) % 3]][20:40])
+            arrivals[site]["opening"][roster_path] = json.dumps(customers) + '\n'
+            truth[site] = [knowledge.resolve(customers,
+                [json.loads(line) for actor in sites for batch in knowledge.BATCHES[:stage + 1]
+                 for line in arrivals[actor][batch][f"intake/{batch}/documents.jsonl"].splitlines()], cutoff)
+                for stage, cutoff in enumerate(knowledge.CUTOFFS)]
     elif variant == "optional_delivery_attachments" and deployment == 'worker_endpoint' and domain == 'Knowledge Work':
         pass  # The delivery option changes packaging, not the business task or sources.
     elif variant == "opening_customer_roster" and domain == "Knowledge Work":
