@@ -244,8 +244,8 @@ exposes a common writable namespace. Initial credentials are scoped to that
 synthetic service. Freeze credential identity and effective permissions separately.
 
 The Engineering and Knowledge Work state conditions and the Engineering event condition make
-ready document bytes readable within the same scope; draft/archived contents stay publisher-only, the state listing stays
-unchanged, and any content exchange is reported as a payload alternative.
+ready document bytes readable within the same scope; draft/archived contents stay
+publisher-only, catalog and activity projections stay unchanged, and any content exchange is reported as a payload alternative.
 
 **Discovery.** Normal artifact uploads and listings reveal foreign work names,
 metadata or content after another worker produces them.

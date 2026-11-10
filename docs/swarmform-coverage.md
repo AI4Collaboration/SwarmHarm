@@ -1,7 +1,7 @@
 # SwarmForm resource and boundary coverage
 
 Use this inventory to identify what one worker can change and what another can observe.
-Apply this two-axis channel inventory inside each of the four work domains in the [input matrix](formation-study-design.md#deliverables-and-acceptance-criteria).
+Apply this two-axis channel inventory to the Knowledge Work and Engineering delivery matrix. The other two domains remain available as supplemental inputs. [Input matrix](formation-study-design.md#deliverables-and-acceptance-criteria)
 
 ## Shared resource and encoding
 
