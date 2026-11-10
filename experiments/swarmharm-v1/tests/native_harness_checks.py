@@ -13,6 +13,59 @@ import record_surface
 
 
 class NativeHarnessChecks(unittest.TestCase):
+    def test_codex_long_response_progress_does_not_extend_hard_completion_limit(self):
+        import threading
+        from codex_session import CodexAgent
+        agent=CodexAgent.__new__(CodexAgent)
+        agent.lock=threading.RLock();agent.active=True
+        agent.timeout=1800;agent.idle_timeout=600
+        agent.last_progress=agent.last_activity=0
+        for now in (400,800,1200,1600):
+            with patch('codex_session.time.monotonic',return_value=now):
+                agent._observe_response_activity('item/reasoning/textDelta',{'delta':'new content'})
+                agent._check_response_deadline()
+        self.assertEqual(agent.last_progress,0)
+        with patch('codex_session.time.monotonic',return_value=1801):
+            agent._observe_response_activity('item/reasoning/textDelta',{'delta':'still streaming'})
+            with self.assertRaisesRegex(TimeoutError,'completion timed out'):
+                agent._check_response_deadline()
+
+    def test_codex_idle_watchdog_ignores_empty_deltas_retries_and_heartbeats(self):
+        import threading
+        from codex_session import CodexAgent
+        agent=CodexAgent.__new__(CodexAgent)
+        agent.lock=threading.RLock();agent.active=True
+        agent.timeout=1800;agent.idle_timeout=600
+        agent.last_progress=agent.last_activity=0
+        with patch('codex_session.time.monotonic',return_value=601):
+            for method,params in [('item/reasoning/textDelta',{'delta':''}),
+                                  ('error',{'willRetry':True}),('heartbeat',{})]:
+                agent._observe_response_activity(method,params)
+            with self.assertRaisesRegex(TimeoutError,'progress timed out'):
+                agent._check_response_deadline()
+            agent.idle_timeout=None
+            agent._check_response_deadline()  # Historical completion-only behavior.
+
+    def test_codex_exception_cleanup_retains_native_bytes_and_original_failure(self):
+        from unittest.mock import Mock
+        from codex_session import CodexAgent
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);agent=CodexAgent.__new__(CodexAgent)
+            agent.home=root/'home';(agent.home/'sessions').mkdir(parents=True)
+            native=agent.home/'sessions/rollout-thread.jsonl';native.write_text('{"partial":true}\n')
+            agent.folder=root/'retained';agent.folder.mkdir()
+            workspace=root/'workspace';workspace.mkdir();(workspace/'partial.txt').write_text('work')
+            agent.actor='actor';agent.events=queue.Queue();agent.commands=queue.Queue()
+            agent.replies={};agent.failed=agent.stopping=False
+            agent.thread_id='thread';agent.native_turn='turn';agent.active=True
+            agent.rpc=Mock();agent.rpc.request.side_effect=RuntimeError('transport unavailable')
+            self.assertFalse(agent._export_on_exit(workspace,TimeoutError('original deadline')))
+            self.assertEqual(agent.events.get_nowait()[1]['message'],'original deadline')
+            self.assertEqual((agent.folder/'session.jsonl').read_bytes(),native.read_bytes())
+            self.assertEqual((agent.folder/'workspace/partial.txt').read_text(),'work')
+            report=json.loads((agent.folder/'export-status.json').read_text())
+            self.assertEqual(set(report['errors']),{'interrupt','thread'})
+
     def test_codex_reconnect_keeps_turn_history_and_original_deadline(self):
         from copy import deepcopy
         import threading

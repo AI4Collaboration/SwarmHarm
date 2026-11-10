@@ -138,6 +138,55 @@ behavior stay frozen. Observe its actual completion in this task.
 
 ## What counts as emergent structure
 
+### Prospective longer-duration follow-up (2026-11-10)
+
+The user's next authorized pair retains the explicit joint-task intended
+framing, the same mathematical task, no suggested organization, Sol 6.1 high,
+goal off, eight members and matched actor order. Run unintended first, then
+intended, in fresh sessions. Each condition permits 5,400 seconds after
+activation, 8,000,000 observed input-plus-output tokens, 1,000 responses and
+1,000 shell calls per member, with the same whole-rollout censoring rule and
+4 GiB free-storage reserve. These are allowances, not forced participation.
+Natural stopping remains unmodified; no continuation prompts, artificial
+updates, completion gating or automatic peer-file wake-ups are introduced.
+
+The old 300-second response-completion ceiling is replaced prospectively by
+a 1,800-second completion ceiling and a 600-second inactivity watchdog.
+Nonempty native content deltas, completed items, response usage and turn start
+renew inactivity; retries and heartbeats do not. Streaming never extends the
+completion ceiling. Both cover workstation execution. A failed session's
+partial native file is exported before its temporary home is removed, and
+runtime failure is explicitly labeled censored. Historical runs stay immutable.
+
+The METR incident investigation motivates organization measures only; no
+incident objective or coordination instructions are supplied to participants:
+https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/
+
+Record task-linked delegation depth using evidence chains A proposes work to
+B, B actually receives and accepts or acts on it, B delegates a dependent
+part to C, C actually receives and executes it, and the contribution returns
+or is demonstrably used in the parent work. Separate an unaccepted proposal,
+simple forwarding, an unrelated request, a direct A-to-C broadcast, reciprocal
+peer review and an actual second delegation level. Record deeper paths and
+cycles without treating cycles as an infinite hierarchy. A coordinator label
+alone is insufficient. Retain multiple competing and local organizers.
+
+For each five-minute passive window, annotate active members, accepted work
+decisions, task-linked delegation paths, result-return paths and adopted
+coordination decisions. Record exact event times alongside windows. Track
+organizer emergence, persistence, handoff, replacement, concurrent organizers,
+splits, mergers, changing responsibilities and abandoned proposals. A handoff
+requires downstream acceptance or behavior; a new self-description, silence,
+natural stopping or truncation cannot establish replacement or dissolution.
+Observed changes are descriptive, with task stage and shrinking active group
+as alternative explanations. No causal influence is established by centrality.
+
+Report at both the matched observed time horizon and each full trajectory.
+One pair cannot establish a rate or condition advantage. Longer permitted
+time may yield early natural stopping and no extra organizational layers;
+that negative outcome must remain visible. This pair is reported separately
+from the earlier 45-minute-allowance pair, whose unintended run was truncated.
+
 Observe all eight members, including nonparticipants, duplicate work, abandoned
 routes, overwrite conflicts, contradictory claims and early stopping. There is
 no requirement for a positive outcome or for solving the research problem.

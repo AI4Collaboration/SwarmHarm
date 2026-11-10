@@ -97,7 +97,7 @@ def register(args, *, source=None, runtime=None):
         'deployment':{'kind':args.deployment,'shared':settings['shared'],'access_profile':'content','catalog_profile':'content'},
         'arrival_offsets':settings['arrival_offsets'],
         'budget':{'active_contexts_natural':args.population,'max_agent_seconds':args.duration,
-            'max_batch_seconds':args.duration+1800,'request_timeout_seconds':300,
+            'max_batch_seconds':args.duration+1800,'request_timeout_seconds':getattr(args,'request_timeout_seconds',300),
             'max_tools_per_agent':args.max_tools,'max_responses_per_agent':args.max_responses,
             'max_observed_tokens_per_agent':args.max_tokens,
             'min_free_bytes':args.min_free_gib*1024**3,
@@ -111,6 +111,16 @@ def register(args, *, source=None, runtime=None):
         'criteria':{'roles_instructed':False,'model_behavior_required':True,
             'temporal_events':['appearance','persistence','turnover','split','merge','role_shift','disappearance'],
             'negative_results_retained':True,'structural_annotations_require_event_references':True}}
+    idle=getattr(args,'response_idle_timeout_seconds',None)
+    if idle is not None:
+        if not 0 < idle <= reg['budget']['request_timeout_seconds']:
+            raise ValueError('Idle timeout must be positive and at most the completion limit')
+        reg['budget']['response_idle_timeout_seconds']=idle
+        reg['response_progress_watchdog']={
+            'idle_seconds':idle,'completion_seconds':reg['budget']['request_timeout_seconds'],
+            'progress':'nonempty native content deltas, completed items, response usage, turn start',
+            'heartbeat_or_retry_extends_idle':False,'streaming_extends_completion_limit':False,
+            'controller_restarts_or_followup_prompts':False}
     if theory:
         reg['analysis_window_seconds']=300
         reg['criteria'].update(common_problem=True,identical_initial_materials=True,
@@ -225,7 +235,7 @@ def finalize(output,reg,visible,result):
            and p.name not in ('evidence-manifest.json','controller.log','.collector.lock')}
     save(output/'evidence-manifest.json',{'at':utc(),'files':files})
     summary={'closed':reg['identifier'],'reason':result['reason'],'failures':failures,
-             'output':str(output),'structural_review':'pending','censored':result['reason'] in ('resource_budget','wall_budget')}
+             'output':str(output),'structural_review':'pending','censored':result['reason'] != 'quiescence'}
     save(output/'collection-summary.json',summary)
     return summary
 
@@ -247,12 +257,14 @@ def main():
     prepare.add_argument('--customers',type=int,default=8);prepare.add_argument('--max-tools',type=int,default=150)
     prepare.add_argument('--max-responses',type=int,default=120);prepare.add_argument('--max-tokens',type=int,default=500000)
     prepare.add_argument('--min-free-gib',type=int,default=2)
+    prepare.add_argument('--request-timeout-seconds',type=int,default=300)
+    prepare.add_argument('--response-idle-timeout-seconds',type=int)
     prepare.add_argument('--observation-settle-seconds',type=int,choices=[2,10],default=2)
     collect_parser.add_argument('--key-file',type=Path,required=True)
     worker.add_argument('--key-file',type=Path,required=True)
     args=parser.parse_args()
     if args.command=='prepare':
-        if min(args.duration,args.max_tools,args.max_responses,args.max_tokens,args.min_free_gib)<1:
+        if min(args.duration,args.max_tools,args.max_responses,args.max_tokens,args.min_free_gib,args.request_timeout_seconds)<1:
             parser.error('Budgets must be positive')
         if args.workload=='knowledge-work' and args.duration<=4*args.spacing:
             parser.error('Leave time after the last real intake')

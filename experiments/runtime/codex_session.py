@@ -43,7 +43,7 @@ class CodexAgent:
     def __init__(self, actor, events, *, folder, model, thinking_level, tools,
                  active_tools, goal_mode, job_context=None, api_key=None,
                  api_base=None, registered_harness=None, request_timeout_ms=300000,
-                 workstation_permissions=None, **unused):
+                 workstation_permissions=None, response_idle_timeout_ms=None, **unused):
         import codex_agent as runtime
         self.gateway = api_base is not None or api_key is not None
         if self.gateway:
@@ -86,7 +86,13 @@ class CodexAgent:
         self.response_open, self.active, self.stopping = False, False, False
         self.failed = False
         self.timeout = request_timeout_ms / 1000
+        self.idle_timeout = (response_idle_timeout_ms / 1000
+                             if response_idle_timeout_ms is not None else None)
+        if self.timeout <= 0 or (self.idle_timeout is not None and
+                                not 0 < self.idle_timeout <= self.timeout):
+            raise ValueError('Response deadlines must be positive; idle cannot exceed completion')
         self.last_progress, self.final_text = time.monotonic(), ''
+        self.last_activity = self.last_progress
         self.lock = threading.RLock()
         self.mcp_requests = 0
         self.call_ready = threading.Condition(self.lock)
@@ -183,6 +189,9 @@ class CodexAgent:
                     cwd=workspace, folder=self.folder, notification=self._notification,
                     server_request=self._server_request)
                 stack.callback(self.rpc.close)
+                # Export before the RPC and temporary home are cleaned up, even
+                # when a timeout or another exception leaves the turn unfinished.
+                stack.push(lambda kind, error, traceback: self._export_on_exit(workspace, error))
                 self.runtime.initialize(self.rpc)
                 if not self.gateway:
                     self.runtime.check_subscription(self.rpc)
@@ -209,8 +218,7 @@ class CodexAgent:
                     try:
                         command, value = self.commands.get(timeout=0.25)
                     except queue.Empty:
-                        if self.active and time.monotonic() - self.last_progress > self.timeout:
-                            raise TimeoutError('Codex native response completion timed out')
+                        self._check_response_deadline()
                         continue
                     if command == 'close':
                         break
@@ -255,6 +263,7 @@ class CodexAgent:
                             self.pending_user_echo = text
                             self.active = True
                             self.last_progress, self.final_text = time.monotonic(), ''
+                            self.last_activity = self.last_progress
                         self.rpc.request('turn/start', {'threadId': self.thread_id,
                             'model': self.model, 'effort': self.effort,
                             **({'sandboxPolicy': self.workstation_permissions} if self.workstation_permissions else {}),
@@ -271,20 +280,71 @@ class CodexAgent:
                             # owns subsequent continuation; no controller retry prompt.
                             self.rpc.request('thread/goal/set', {'threadId': self.thread_id,
                                 'objective': value[-1], 'status':'active', 'origin':'user'})
-                if self.active and self.native_turn:
-                    self.rpc.request('turn/interrupt', {'threadId': self.thread_id, 'turnId': self.native_turn})
-                snapshot = self.rpc.request('thread/read', {'threadId': self.thread_id, 'includeTurns': True})
-                (self.folder / 'thread.json').write_text(json.dumps(snapshot))
-                for path in (self.home / 'sessions').rglob('*.jsonl'):
-                    if self.thread_id in path.name:
-                        shutil.copy2(path, self.folder / 'session.jsonl')
-                shutil.copytree(workspace, self.folder / 'workspace')
         except Exception as error:
             self._fatal(error)
         finally:
             self.stopping = True
             for reply in list(self.replies.values()):
                 reply.put({'aborted': True})
+
+    def _check_response_deadline(self):
+        with self.lock:
+            if not self.active:
+                return
+            now = time.monotonic()
+            if now - self.last_progress > self.timeout:
+                raise TimeoutError('Codex native response completion timed out')
+            if self.idle_timeout is not None and now - self.last_activity > self.idle_timeout:
+                raise TimeoutError('Codex native response progress timed out')
+
+    def _observe_response_activity(self, method, params):
+        # Only content, completed items and usage are progress. Heartbeats,
+        # retry notices and arbitrary notifications cannot renew the idle limit.
+        content_delta = method in (
+            'item/agentMessage/delta', 'item/reasoning/textDelta',
+            'item/reasoning/summaryTextDelta', 'item/commandExecution/outputDelta')
+        completed_item = method in ('rawResponseItem/completed', 'item/completed')
+        if ((content_delta and params.get('delta')) or
+                (completed_item and params.get('item')) or
+                method in ('turn/started', 'thread/tokenUsage/updated')):
+            self.last_activity = time.monotonic()
+
+    def _export_native(self, workspace):
+        errors = {}
+        # Cleanup must not turn a partial trajectory into a successful one, or
+        # replace the original failure with a secondary export error.
+        if self.thread_id:
+            for operation, method, params in (
+                ('interrupt', 'turn/interrupt', {'threadId': self.thread_id, 'turnId': self.native_turn}),
+                ('thread', 'thread/read', {'threadId': self.thread_id, 'includeTurns': True}),
+            ):
+                if operation == 'interrupt' and not (self.active and self.native_turn):
+                    continue
+                try:
+                    result = self.rpc.request(method, params, timeout=5)
+                    if operation == 'thread':
+                        (self.folder / 'thread.json').write_text(json.dumps(result))
+                except Exception as error:
+                    errors[operation] = type(error).__name__
+            try:
+                for path in (self.home / 'sessions').rglob('*.jsonl'):
+                    if self.thread_id in path.name:
+                        shutil.copy2(path, self.folder / 'session.jsonl')
+            except Exception as error:
+                errors['session'] = type(error).__name__
+        try:
+            shutil.copytree(workspace, self.folder / 'workspace')
+        except Exception as error:
+            errors['workspace'] = type(error).__name__
+        (self.folder / 'export-status.json').write_text(json.dumps({
+            'session_retained': (self.folder / 'session.jsonl').exists(),
+            'thread_retained': (self.folder / 'thread.json').exists(), 'errors': errors}))
+
+    def _export_on_exit(self, workspace, error):
+        if error is not None:
+            self._fatal(error)
+        self._export_native(workspace)
+        return False
 
     def _snapshot(self):
         return self.history + self.output + self.outputs
@@ -326,6 +386,7 @@ class CodexAgent:
                 method, params = message.get('method', ''), message.get('params') or {}
                 if params.get('threadId') and self.thread_id and params['threadId'] != self.thread_id:
                     raise RuntimeError('Codex thread identity changed')
+                self._observe_response_activity(method, params)
                 if method == 'turn/started':
                     self.native_turn = params['turn']['id']
                     if self.first_native_turn is None:self.first_native_turn = self.native_turn

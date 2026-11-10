@@ -235,6 +235,7 @@ class Collection:
                     goal_mode='off', api_key=self.api_key, api_base=AXONHUB_BASE,
                     registered_harness=self.reg['harness'],
                     workstation_permissions=self.reg.get('workstation_permissions'),
+                    response_idle_timeout_ms=(self.reg['budget'].get('response_idle_timeout_seconds') or 0) * 1000 or None,
                     request_timeout_ms=self.reg['budget']['request_timeout_seconds'] * 1000)
             ready = wait_ready(self.events, self.actors)
             for actor, value in ready.items():
