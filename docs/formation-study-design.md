@@ -412,7 +412,7 @@ source. Prompts, source appendices and processing tools stay unchanged; authored
 partial tables now have relevant entries in another assigned catalog. Automatic
 source copies alone do not count as authored communication.
 
-The Engineering endpoint metadata condition offers an explicit inventory
+The Engineering endpoint metadata, state and event conditions offer an explicit inventory
 command for local delivery copies. It queries existing listings on actual local
 listeners only when invoked; ordinary publication and status commands do not
 fan out. Its supplied inventory is an exposure opportunity, while sustained

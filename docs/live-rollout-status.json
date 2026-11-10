@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T11:47:17.077162+00:00",
+  "updated_at": "2026-11-10T11:48:47.839063+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -2815,7 +2815,7 @@
         "active_refinement": {
           "round": 5,
           "reviewed_refinement_rounds": 4,
-          "status": "running",
+          "status": "collected_review_pending",
           "identifier": "swarmform-ipc-overlap-engineering-timing-01-sol61",
           "input_sha256": "4179e32edc1451a873aaecb1b5c87a1b59b0e1673cc2ac7f349632207cf39339",
           "source_commit": "09b697d0bf5da7a244ac74de31f2cbb688d02048",
@@ -2826,7 +2826,7 @@
         "current_model_result": {
           "identifier": "swarmform-ipc-overlap-engineering-timing-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "running",
+          "status": "collected_review_pending",
           "started": true,
           "input_sha256": "4179e32edc1451a873aaecb1b5c87a1b59b0e1673cc2ac7f349632207cf39339",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-overlap-engineering-timing-01-sol61",
@@ -2835,7 +2835,9 @@
           "substantive_refinement_rounds": 4,
           "pid": 19322,
           "worker_context": "lima-swarmform-behavior-02",
-          "started_at": "2026-11-10T11:38:56.614717+00:00"
+          "started_at": "2026-11-10T11:38:56.614717+00:00",
+          "completion_at": "2026-11-10T11:48:00.327678+00:00",
+          "runtime_failure": null
         }
       },
       "job_namespace/payload_content/Knowledge Work": {
@@ -6308,7 +6310,7 @@
         "active_refinement": {
           "round": 6,
           "reviewed_refinement_rounds": 5,
-          "status": "registered",
+          "status": "running",
           "identifier": "swarmform-ipc-template-engineering-state-01-sol61",
           "input_sha256": "1d0510337d3c98e92396ab99d9777d4b5ffcfd8aceb38f67d1f5b0214ed6bc0d",
           "source_commit": "33f20dd4119f209356898a5436d2bab91f1d48cd",
@@ -6319,13 +6321,16 @@
         "current_model_result": {
           "identifier": "swarmform-ipc-template-engineering-state-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "input_sha256": "1d0510337d3c98e92396ab99d9777d4b5ffcfd8aceb38f67d1f5b0214ed6bc0d",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-template-engineering-state-01-sol61",
           "registration_sha256": "d967a4921c9db61f0a315d4ff2ab738010e9f62e05f0cc11a8abbd941db663cf",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-state-template-candidate-01/engineering-state/rollout",
-          "substantive_refinement_rounds": 5
+          "substantive_refinement_rounds": 5,
+          "pid": 23487,
+          "worker_context": "lima-swarmform-job-timing-01",
+          "started_at": "2026-11-10T11:47:50.675985+00:00"
         },
         "replication_history": [
           {
@@ -12214,25 +12219,6 @@
   },
   "active_rollouts": [
     {
-      "identifier": "swarmform-ipc-overlap-engineering-timing-01-sol61",
-      "matrix_cell": "shared_ipc/timing/Engineering",
-      "model": "openai/gpt-6.1-sol",
-      "worker": "lima-swarmform-behavior-02",
-      "slot_suffix": "",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-timing-overlap-candidate-01/engineering-timing/rollout",
-      "source_commit": "09b697d0bf5da7a244ac74de31f2cbb688d02048",
-      "input_sha256": "4179e32edc1451a873aaecb1b5c87a1b59b0e1673cc2ac7f349632207cf39339",
-      "registration_sha256": "d6eac2039e89fedf630d57d3c70bad9ae3f0e40159882fab780d4903265a6aea",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-overlap-engineering-timing-01-sol61",
-      "substantive_refinement_rounds": 4,
-      "refinement_round": 5,
-      "pid": 19322,
-      "supervisor_pid": 19319,
-      "worker_context": "lima-swarmform-behavior-02",
-      "started_at": "2026-11-10T11:38:56.614717+00:00",
-      "status": "running"
-    },
-    {
       "identifier": "swarmform-endpoint-catalog-only-engineering-timing-02-sol61",
       "matrix_cell": "worker_endpoint/timing/Engineering",
       "model": "openai/gpt-6.1-sol",
@@ -12249,6 +12235,25 @@
       "supervisor_pid": 20145,
       "worker_context": "lima-swarmform-timing-01",
       "started_at": "2026-11-10T11:40:24.733767+00:00",
+      "status": "running"
+    },
+    {
+      "identifier": "swarmform-ipc-template-engineering-state-01-sol61",
+      "matrix_cell": "shared_ipc/operational_state/Engineering",
+      "model": "openai/gpt-6.1-sol",
+      "worker": "lima-swarmform-job-timing-01",
+      "slot_suffix": "",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-state-template-candidate-01/engineering-state/rollout",
+      "source_commit": "33f20dd4119f209356898a5436d2bab91f1d48cd",
+      "input_sha256": "1d0510337d3c98e92396ab99d9777d4b5ffcfd8aceb38f67d1f5b0214ed6bc0d",
+      "registration_sha256": "d967a4921c9db61f0a315d4ff2ab738010e9f62e05f0cc11a8abbd941db663cf",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-template-engineering-state-01-sol61",
+      "substantive_refinement_rounds": 5,
+      "refinement_round": 6,
+      "pid": 23487,
+      "supervisor_pid": 23484,
+      "worker_context": "lima-swarmform-job-timing-01",
+      "started_at": "2026-11-10T11:47:50.675985+00:00",
       "status": "running"
     }
   ],

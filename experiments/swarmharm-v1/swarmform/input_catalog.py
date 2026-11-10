@@ -111,7 +111,8 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings['completed_result_read'] = True
         settings['completed_result_response_fields'] = ['id','sha256','content_base64']
         settings['incidental_paths'].append('same-scope completed job result; unfinished and cancelled results remain unavailable')
-    if (deployment, encoding, domain) == ("worker_endpoint", "identifiers_metadata", "Engineering"):
+    if deployment == "worker_endpoint" and domain == "Engineering" and encoding in (
+            "identifiers_metadata", "operational_state", "event_pattern"):
         from hashlib import sha256
         from swarmform.inputs import digest
         helper = Path(__file__).with_name('endpoint_inventory.py').read_text()
