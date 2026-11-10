@@ -20,9 +20,11 @@ The [Engineering endpoint negative](https://github.com/AI4Collaboration/SwarmHar
 
 In the latest [Engineering IPC event-profile case](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-ipc-group-write-engineering-events-01-sol61.tar.gz), all three agents sustain reciprocal content exchange through all three intakes, with nine correct final deliveries. The carrier is payload content. The preceding attempt prepared a receiver but withdrew it after receiving nothing; both outcomes remain preserved.
 
+The latest [Engineering IPC state-profile case](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-ipc-template-engineering-state-01-sol61.tar.gz) adds a sustained exchange between two agents, with a third repeatedly contributing authored tables that both read. The pair completes six deliveries; the contributor keeps three partials. The actual carrier is payload content. This brings reviewed acceptance to **36/50**; the download bundle is being refreshed.
+
 ## Continue from main
 
-**Current priority: finish Engineering’s remaining six cells**, then Knowledge Work. Engineering has 19/25 accepted inputs (18 communication positives and one reviewed negative); Knowledge Work has 16/25 communication positives. Already-running collections finish normally; accepted inputs and existing results stay preserved.
+**Current priority: finish Engineering’s remaining five cells**, then Knowledge Work. Engineering has 20/25 accepted inputs (19 communication positives and one reviewed negative); Knowledge Work has 16/25 communication positives. Already-running collections finish normally; accepted inputs and existing results stay preserved.
 
 Run `python3 scripts/check_swarmform_inputs.py --status` from a checkout of `main`. It summarizes admitted inputs, reviewed behavior, active work and the next cell from the [matrix ledger](docs/live-rollout-status.json). For a reviewed case, follow its trajectory link. For an active run, check its completion record before starting anything. Record the next verified result in the same ledger and push it to `main`.
 
