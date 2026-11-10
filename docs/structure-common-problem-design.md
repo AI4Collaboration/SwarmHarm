@@ -45,6 +45,16 @@ of work, manufacture interactions, or guarantee sustained participation. Natural
 quiescence and budget censoring remain different outcomes. Local deterministic
 tests validate continuation; they are not evidence of emergent behavior.
 
+Implementation validation: `scripts/check-ci` passed all 64 selected tests,
+including eight real native sessions using only deterministic local HTTP
+responses. A request published after its recipient settled reopened that same
+session; its reply reached the original sender in the original session. The
+test verified preserved histories, cumulative response/token budgets, exactly
+two update notices, clean quiescence and retained content hashes. The existing
+no-wake and private-arrival tests also passed. No new behavior rollout or
+experiment registration was started; collection remains on hold at the user's
+request.
+
 User-directed correction, 10 November 2026. The primary question is whether
 eight agents given the same difficult research objective spontaneously develop
 division of work and organizational structure, and how that structure changes.

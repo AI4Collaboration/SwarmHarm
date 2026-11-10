@@ -12423,11 +12423,20 @@
       "previous_findings": "docs/structure-common-problem-joint-v2-findings.json",
       "previous_evidence_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-common-problem-joint-v2-20261110",
       "continuation_fix": {
-        "state": "implementation_pending_offline_validation",
+        "state": "offline_validated_rollouts_on_hold",
         "policy": "publication-content-v1",
         "scope": "Eight-member common-problem shared-file study only; explicit opt-in, same native sessions and actual changed-file notices. Prior evidence and no-wake registrations unchanged.",
         "collection_authorization": "User explicitly requested bug fixes only and no further rollouts on 2026-11-10. No new registration or collection started.",
-        "model_calls": 0
+        "model_calls": 0,
+        "source_commit": "5600569a56680f75094b965832f6927dad81e587",
+        "validation": {
+          "entry_point": "scripts/check-ci",
+          "selected_tests": 64,
+          "passed": true,
+          "mode": "deterministic local responses; eight native sessions exercise a late request, same-session reply and result return; no participant inference",
+          "legacy_behavior_preserved": true,
+          "runtime_files_match_tested_hashes_after_rebase": true
+        }
       }
     }
   },
