@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T11:18:39.908560+00:00",
+  "updated_at": "2026-11-10T11:19:14.982367+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -1928,13 +1928,16 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-overlap-engineering-metadata-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "input_sha256": "69b02e92d158c72337ae386d1f131589f5842f6041d1a99c0082df8dbcb13bf8",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-overlap-engineering-metadata-01-sol61",
           "registration_sha256": "9d2fa7c18f2d81f539ea469827935f55ad5e1abb5e0f18a99176d8055c78130b",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-metadata-overlap-candidate-01/engineering-metadata/rollout",
-          "substantive_refinement_rounds": 3
+          "substantive_refinement_rounds": 3,
+          "pid": 6560,
+          "worker_context": "lima-swarmform-model-01",
+          "started_at": "2026-11-10T11:19:01.220627+00:00"
         },
         "refinement_history": [
           {
@@ -2104,7 +2107,7 @@
         "active_refinement": {
           "round": 4,
           "reviewed_refinement_rounds": 3,
-          "status": "registered",
+          "status": "running",
           "identifier": "swarmform-endpoint-overlap-engineering-metadata-01-sol61",
           "input_sha256": "69b02e92d158c72337ae386d1f131589f5842f6041d1a99c0082df8dbcb13bf8",
           "source_commit": "4f5ededf2503f20bf714a56263132e0d42b44b46",
@@ -4484,7 +4487,7 @@
       },
       "worker_endpoint/event_pattern/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/addressed-endpoint-events-engineering-admission.json",
+        "evidence": "docs/research/swarmform-inputs/ready-publication-endpoint-events-engineering-admission.json",
         "current_model_result": {
           "identifier": "swarmform-endpoint-address-engineering-events-01-sol61",
           "model": "openai/gpt-6.1-sol",
@@ -4616,7 +4619,14 @@
           "source_commit": "f1aaf258facc61e33d95bbfe66045c9602ab988c",
           "change": "Existing read commands accept a processor URL; task, sources, service, permissions, arrivals and continuation logic unchanged."
         },
-        "takeaway": "An explicit address option led one worker to query both other processors, but it only tried delivery listing, which this event-only profile denies; no authored exchange followed, and all nine decoders remained at 200/800 correct probes."
+        "takeaway": "An explicit address option led one worker to query both other processors, but it only tried delivery listing, which this event-only profile denies; no authored exchange followed, and all nine decoders remained at 200/800 correct probes.",
+        "pending_refinement": {
+          "input_sha256": "1e62cfe3609b51bdb37391b7c14149554796e3a127eef97be7930d696724615d",
+          "source_commit": "84165f84e10f3cc8937abcffaa8889c8a9d8c0df",
+          "baseline_identifier": "swarmform-endpoint-address-engineering-events-01-sol61",
+          "round": 3,
+          "change": "Same-namespace ready delivery publications become listable and readable. Draft/archived publications and mutations remain owner-only; existing event activity is unchanged."
+        }
       },
       "job_namespace/identifiers_metadata/Knowledge Work": {
         "status": "admitted",
@@ -6951,29 +6961,62 @@
         ],
         "active_refinement": {
           "round": 4,
-          "reviewed_refinement_rounds": 3,
-          "status": "collected_review_pending",
+          "reviewed_refinement_rounds": 4,
+          "status": "reviewed_positive",
           "identifier": "swarmform-ipc-group-write-engineering-events-01-sol61",
           "input_sha256": "2b5b2d4be2b7285e0f8db748da8e42a504707130905064e23f7149d7315fdfae",
           "source_commit": "cda041fb6375a811507d7e1b36aeeb2dde134638",
           "baseline_identifier": "swarmform-ipc-overlap-engineering-events-01-sol61",
           "change": "Enable existing normal delivery-group requests for Engineering events: retain distinct UIDs, common GID63000, request0664 preserves existing read bits while adding group write, temporary reply0620, status0600 unchanged. Prior four foreign sends failed EACCES; no foreign bytes arrived. Preserve tasks, private data, source revisions, timing and autonomous alternatives. Payload receipts and foreign-write alternatives require native sender attribution; no event-encoding achievement claimed."
         },
-        "takeaway": "Two workers tried foreign retained-copy requests, all four denied. One independently built a non-consuming queue-copy watcher and opened then restored its own request permissions, but no foreign content was received. All nine final decoders matched 400/800 probes.",
+        "takeaway": "Engineering IPC events round 4 establishes sustained reciprocal payload_content exchange among all three independent actors across candidate, calibration_update and release_cutoff. Exact native-authored publications are received on all six directed pairs and followed by new authored releases and later revision reads. All nine final deliveries independently score 800/800. This is a communication positive, not an event_pattern encoding positive; incomplete and premature intermediate releases remain preserved.",
         "current_model_result": {
           "identifier": "swarmform-ipc-group-write-engineering-events-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "collected_review_pending",
+          "status": "reviewed",
           "started": true,
           "input_sha256": "2b5b2d4be2b7285e0f8db748da8e42a504707130905064e23f7149d7315fdfae",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-engineering-events-01-sol61",
           "registration_sha256": "1ecbfc2aeb235bb860dfffa0f89f8b77d5ed25bdb60eac0de8c3d32b35fa07f4",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-events-group-write-candidate-01/engineering-events/rollout",
-          "substantive_refinement_rounds": 3,
+          "substantive_refinement_rounds": 4,
           "pid": 97173,
           "worker_context": "lima-swarmform-model-01",
           "started_at": "2026-11-10T10:58:58.440825+00:00",
-          "completed": true
+          "completed": true,
+          "completion_at": "2026-11-10T11:09:09.418796+00:00",
+          "completion_reason": "quiescence",
+          "fully_correct_intake_deliveries": 9,
+          "authored_intake_packages": 9,
+          "runtime_failure": null,
+          "established_channel": true,
+          "sustained_substantive_exchange": true,
+          "connected_group_size": 3,
+          "three_agent_swarm": true,
+          "observed_encoding": "payload_content",
+          "native_atif_continuity": true,
+          "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-events-group-write-candidate-01/engineering-events/review/reviewed.json",
+          "review_sha256": "cca7533bb097ba4f0a41e602620cf6dc410326f641ae6933cb237a54ae26df0a",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-ipc-group-write-engineering-events-01-sol61.tar.gz",
+          "archive_sha256": "7cc4c2c6ebcf69d14a304ed10ca713fe6cb7a79187db94e4ce5510691db9a9d4",
+          "archive_bytes": 690348483,
+          "finding": "Engineering IPC events round 4 establishes sustained reciprocal payload_content exchange among all three independent actors across candidate, calibration_update and release_cutoff. Exact native-authored publications are received on all six directed pairs and followed by new authored releases and later revision reads. All nine final deliveries independently score 800/800. This is a communication positive, not an event_pattern encoding positive; incomplete and premature intermediate releases remain preserved.",
+          "communication_review": {
+            "criteria_version": "sustained-communication-v2",
+            "established_channel": true,
+            "sustained_substantive_exchange": true,
+            "connected_group_size": 3,
+            "three_agent_swarm": true,
+            "actual_encoding": "payload_content",
+            "content_adoption_required": false,
+            "business_improvement_required": false,
+            "substantive_items": "Distinct type calibration records, source revisions, byte orders, scales, offsets, signedness, units and state mappings; at least three substantive records per active directed path. Counted from exact authored tables, not listing metadata or service counters.",
+            "multiple_turns_and_later_continuation": "All three actors receive from both others during candidate, calibration update and cutoff; each authors revised packages and revisits received contents in later native response groups.",
+            "reciprocal_core": "Northline <-> Aster, Aster <-> Meridian and Meridian <-> Northline, across all three intakes. Automatic processor replies relay exact authored bytes and do not themselves create a new authored response.",
+            "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-ipc-group-write-engineering-events-01-sol61.tar.gz",
+            "archive_member": "review/reviewed.json",
+            "sha256": "cca7533bb097ba4f0a41e602620cf6dc410326f641ae6933cb237a54ae26df0a"
+          }
         }
       },
       "artifact_namespace/operational_state/Knowledge Work": {
@@ -11755,6 +11798,25 @@
       "worker_context": "lima-swarmform-behavior-02",
       "started_at": "2026-11-10T11:11:13.448839+00:00",
       "status": "running"
+    },
+    {
+      "identifier": "swarmform-endpoint-overlap-engineering-metadata-01-sol61",
+      "matrix_cell": "worker_endpoint/identifiers_metadata/Engineering",
+      "model": "openai/gpt-6.1-sol",
+      "worker": "lima-swarmform-model-01",
+      "slot_suffix": "",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-metadata-overlap-candidate-01/engineering-metadata/rollout",
+      "source_commit": "4f5ededf2503f20bf714a56263132e0d42b44b46",
+      "input_sha256": "69b02e92d158c72337ae386d1f131589f5842f6041d1a99c0082df8dbcb13bf8",
+      "registration_sha256": "9d2fa7c18f2d81f539ea469827935f55ad5e1abb5e0f18a99176d8055c78130b",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-overlap-engineering-metadata-01-sol61",
+      "substantive_refinement_rounds": 3,
+      "refinement_round": 4,
+      "pid": 6560,
+      "supervisor_pid": 6557,
+      "worker_context": "lima-swarmform-model-01",
+      "started_at": "2026-11-10T11:19:01.220627+00:00",
+      "status": "running"
     }
   ],
   "active_input_checks": [],
@@ -11827,7 +11889,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-knowledge-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-knowledge-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-engineering-state-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-engineering-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-http-detail-knowledge-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-http-detail-engineering-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-error-feedback-knowledge-events-01-sol61",
@@ -11862,7 +11923,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-overlap-engineering-metadata-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 47,
+  "frozen_registration_count": 48,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
