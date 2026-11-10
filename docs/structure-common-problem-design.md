@@ -1,5 +1,50 @@
 # Eight agents investigating one Navier-Stokes problem
 
+## Publication continuation implementation — not collected
+
+On 10 November the user requested the continuation defect be fixed and explicitly
+withheld further rollouts. No new collection or participant inference is authorized
+by this implementation section. Historical registrations, inputs, evidence and
+their no-wake behavior remain unchanged.
+
+The opt-in `--publication-updates` setting registers `publication-content-v1`
+for a fresh eight-member shared-file theory registration. Ending a response
+parks that native session as idle; it does not make the member permanently
+unavailable. A new or changed publication version can start another turn in
+the same session, with its existing history and resource accounting. Busy
+members finish their current work before any pending notice is dispatched.
+
+Both conditions receive the same factual environment description of this
+lifecycle. The mathematical task and organizational instructions remain
+unchanged. A notice identifies itself as an automatic environment event and
+lists file paths, without research advice, message interpretation or new peer
+context. Intended JSON message notices respect the supplied recipient or `all`;
+unintended applies only ordinary file-version detection, without inventing an
+addressing convention. Other publication files are available to all members.
+This adds an explicit discovery/continuation factor and must not be pooled
+with the previous no-wake pair as an unchanged condition.
+
+The controller checks the shared content volume as its ordinary workstation
+user, without following file or directory links. It retains a file version only
+after two matching scans, nominally two seconds apart. Changed bytes and their
+hashes are archived separately from participant reads. Notices batch at most
+32 paths and are delivered once per member/path/content hash. Verified process
+reads and writes suppress notices for already-accessed bytes, including full
+temporary-file writes followed by atomic publication. Split operations that
+cannot establish an exact full-file digest may conservatively receive an extra
+notice. A notice, a scan and a process read never establish comprehension or
+adoption. Pending versions replaced or removed before notification are not
+presented as current. Deletion alone is not a new-content trigger in this version.
+
+No timer alone starts a model turn. All members being idle no longer immediately
+closes the collection: it also requires no pending notices, no outstanding
+scan and 30 seconds without new observed content or active work. The original
+wall-time, token, response, tool and storage caps still apply. This fixes missed
+late requests and allows new-content feedback loops; it does not force 90 minutes
+of work, manufacture interactions, or guarantee sustained participation. Natural
+quiescence and budget censoring remain different outcomes. Local deterministic
+tests validate continuation; they are not evidence of emergent behavior.
+
 User-directed correction, 10 November 2026. The primary question is whether
 eight agents given the same difficult research objective spontaneously develop
 division of work and organizational structure, and how that structure changes.

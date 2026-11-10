@@ -46,9 +46,13 @@ def register(args, *, source=None, runtime=None):
     folder=REGISTRATIONS/args.identifier
     if output.exists() or folder.exists():raise FileExistsError('Use fresh registration and output paths')
     workload=getattr(args,'workload','knowledge-work');theory=workload=='navier-stokes-theory'
+    continuation=getattr(args,'publication_updates',False)
+    if continuation and not theory:
+        raise ValueError('Publication updates are currently scoped to the common-problem theory study')
     if theory:
-        visible,truth,manifest=build_theory(args.dataset_key,args.population,args.condition,args.deployment)
-        verification=verify_theory_inputs(visible,truth)
+        visible,truth,manifest=build_theory(args.dataset_key,args.population,args.condition,args.deployment,
+                                          publication_updates=continuation)
+        verification=verify_theory_inputs(visible,truth,publication_updates=continuation)
     else:
         visible,truth,manifest=build(args.dataset_key,args.population,args.condition,args.deployment,
             spacing=args.spacing,customers_per_actor=args.customers,source_schedule=args.source_schedule)
@@ -126,6 +130,11 @@ def register(args, *, source=None, runtime=None):
         reg['criteria'].update(common_problem=True,identical_initial_materials=True,
             supplied_decomposition=False,mathematical_claims_require_review=True,
             passive_time_windows=True,temporal_minimum_span_seconds=300)
+    if continuation:
+        reg['publication_updates']=settings['publication_updates']
+        reg['criteria']['continuation_is_registered_environment_factor']=True
+        if 'response_progress_watchdog' in reg:
+            reg['response_progress_watchdog']['scope']='Timeout handling only; publication continuation is registered separately.'
     save(output/'registration.json',reg);save(output/'registration-seal.json',{'sha256':base.sha(output/'registration.json')})
     folder.mkdir(parents=True)
     for name in ('registration.json','registration-seal.json'):shutil.copy2(output/name,folder/name)
@@ -260,6 +269,8 @@ def main():
     prepare.add_argument('--request-timeout-seconds',type=int,default=300)
     prepare.add_argument('--response-idle-timeout-seconds',type=int)
     prepare.add_argument('--observation-settle-seconds',type=int,choices=[2,10],default=2)
+    prepare.add_argument('--publication-updates', action='store_true',
+                         help='Opt in to same-session continuation on actual changed publication content; theory only')
     collect_parser.add_argument('--key-file',type=Path,required=True)
     worker.add_argument('--key-file',type=Path,required=True)
     args=parser.parse_args()

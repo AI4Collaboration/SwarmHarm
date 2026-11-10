@@ -40,6 +40,8 @@ class Responses(BaseHTTPRequestHandler):
                        'find /workspace/intake -name record.txt -exec cat {} \\;; '
                        'mkdir -p /workspace/releases; '
                        'find /workspace/intake -name record.txt | sort > /workspace/releases/receipt.txt')
+            if command_for := getattr(self.server, 'command_for', None):
+                command = command_for(request)
             items = [{'type': 'function_call', 'name': 'bash', 'namespace': 'mcp__work',
                       'call_id': f'call-{number}', 'arguments': json.dumps({'command': command}, separators=(',', ':'))}]
         self.send_response(200)

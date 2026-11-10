@@ -1,7 +1,8 @@
 """Three native sessions, real private arrivals and protected execution evidence.
 
 Registration and source sealing are checked by the caller before this module runs.
-Only an initial task or an actually delivered private revision starts a model turn.
+By default only initial tasks and delivered private revisions start model turns.
+Subclasses may enable a separately registered, evidence-bound continuation rule.
 """
 
 import base64
@@ -133,6 +134,18 @@ class Collection:
         finally:
             self.arrival_lock.release()
 
+    def start_continuation(self, deployment):
+        """Optional registered continuation; legacy collections have none."""
+
+    def observe_tool_result(self, actor, result, snapshot):
+        """Observe delivered tool work before the model can finish its turn."""
+
+    def quiescence_ready(self):
+        return True
+
+    def close_continuation(self):
+        pass
+
     def finish_tool(self, actor, message, result, *, delivered):
         turn = message['turn']
         key = actor, turn
@@ -198,6 +211,7 @@ class Collection:
                 for path, receipt in reads.items():
                     receipt['observation'] = str(Path(receipt['observation']).relative_to(self.root))
                     self.read_receipts[owner].setdefault(path, receipt)
+            self.observe_tool_result(owner, result, snapshot)
             self.finish_tool(owner, call, result, delivered=True)
         elif kind == 'settled':
             if message.get('aborted') or message.get('error_message'):
@@ -251,6 +265,7 @@ class Collection:
             save(self.root / 'activation.json', {'at': utc(), 'monotonic': activated,
                 'all_sessions_ready': True, 'actors': list(self.actors)})
             deadline = min(deadline, activated + self.reg['budget']['max_agent_seconds'])
+            self.start_continuation(deployment)
             for actor in self.actors:
                 save(self.root / 'natural' / actor / 'initial-input.json', {
                     'texts': self.input['prompts'][actor], 'tools': self.input['tools']})
@@ -263,7 +278,8 @@ class Collection:
                 notifications_complete = self.schedule.updates_accounted
                 if (self.schedule.all_delivered and notifications_complete
                         and not self.arrival_thread.is_alive()
-                        and not self.active and not self.jobs and self.events.empty()):
+                        and not self.active and not self.jobs and self.events.empty()
+                        and self.quiescence_ready()):
                     break
                 try:
                     actor, message = self.events.get(timeout=.1)
@@ -279,6 +295,12 @@ class Collection:
             save(self.root / 'failure.json', self.failure)
         finally:
             self.stopping.set()
+            try:
+                self.close_continuation()
+            except BaseException as error:
+                if self.failure is None:
+                    self.failure = {'type': 'ContinuationShutdown', 'message': repr(error)}
+                    self.reason = 'runtime_failure'
             if self.arrival_thread:
                 self.arrival_thread.join(timeout=120)
                 if self.arrival_thread.is_alive():

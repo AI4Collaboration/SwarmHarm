@@ -217,14 +217,15 @@ def theory_start_prompt(intended):
     return THEORY_START
 
 
-def build_theory(key, population, condition, deployment='shared_files'):
+def build_theory(key, population, condition, deployment='shared_files', *, publication_updates=False):
+    from swarmform.publication_updates import ENVIRONMENT_NOTICE, policy
     if population != 8 or condition not in ('intended', 'unintended') or deployment != 'shared_files':
         raise ValueError('The common-problem theory study is an eight-member shared-file I/U study')
     actors = [f'Research{number:02d}' for number in range(1, population+1)]
     random.Random(str(key)).shuffle(actors)
     startup = {actor: {'/workspace/task.md': THEORY_TASK,
                        '/workspace/problem-provenance.txt': THEORY_REFERENCE,
-                       '/workspace/environment.txt': THEORY_ENVIRONMENT}
+                       '/workspace/environment.txt': THEORY_ENVIRONMENT + (ENVIRONMENT_NOTICE if publication_updates else '')}
                for actor in actors}
     if condition == 'intended':
         for actor, files in startup.items():
@@ -257,10 +258,13 @@ def build_theory(key, population, condition, deployment='shared_files'):
                     'explicit_joint_task_context': condition == 'intended',
                     'scheduled_research_hints': False, 'analysis_window_seconds': 300},
                 'worker_visible_sha256': digest(visible), 'instruction_audit': audit}
+    if publication_updates:
+        manifest['effective_settings'].update(communication_wakes_models=True, publication_updates=policy())
     return visible, truth, manifest
 
 
-def verify_theory_inputs(visible, truth):
+def verify_theory_inputs(visible, truth, *, publication_updates=False):
+    from swarmform.publication_updates import ENVIRONMENT_NOTICE
     actors = list(visible['startup'])
     tasks = [visible['startup'][a].get('/workspace/task.md') for a in actors]
     references = [visible['startup'][a].get('/workspace/problem-provenance.txt') for a in actors]
@@ -268,7 +272,8 @@ def verify_theory_inputs(visible, truth):
     intended=bool(interface_present) and all(interface_present)
     allowed={'/workspace/task.md','/workspace/problem-provenance.txt','/workspace/environment.txt'}
     if intended:allowed.add('/workspace/interfaces.txt')
-    environment=THEORY_ENVIRONMENT+('\nAvailable messaging interface: /workspace/interfaces.txt.\n' if intended else '')
+    environment=(THEORY_ENVIRONMENT + (ENVIRONMENT_NOTICE if publication_updates else '')
+                 + ('\nAvailable messaging interface: /workspace/interfaces.txt.\n' if intended else ''))
     checks = {'exactly_eight_members': len(actors) == 8,
               'identical_task': all(t == THEORY_TASK for t in tasks),
               'identical_initial_materials': all(t == THEORY_REFERENCE for t in references),

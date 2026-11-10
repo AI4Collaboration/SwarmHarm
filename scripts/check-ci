@@ -87,9 +87,9 @@ def select_checks(files, full=False):
                 suites('swarmform_registration', 'swarmform_input_runner', 'swarmform_domain')
                 checks.update(('catalog', 'wording'))
             elif stem == 'collection':
-                suites('swarmform_collection', 'swarmform_registration')
-            elif stem in {'structure', 'structure_collection'}:
-                suites('swarmform_structure', 'structure_timeline', 'structure_native')
+                suites('swarmform_collection', 'swarmform_registration', 'publication_updates')
+            elif stem in {'structure', 'structure_collection', 'publication_updates'}:
+                suites('swarmform_structure', 'structure_timeline', 'structure_native', 'publication_updates')
             elif stem == 'actor_evidence':
                 suites('swarmform_actor_evidence')
             elif stem == 'endpoint_service':
@@ -147,7 +147,7 @@ def select_checks(files, full=False):
             else:
                 suites('structure_business' if stem=='business_review' else 'structure_timeline', 'swarmform_structure')
         elif name == 'scripts/run_swarmform_structure.py':
-            suites('swarmform_structure', 'structure_timeline', 'structure_native')
+            suites('swarmform_structure', 'structure_timeline', 'structure_native', 'publication_updates')
         elif name.startswith('experiments/runtime/'):
             adapter = next((a for a in ('codex', 'claude', 'pi')
                             if name.startswith('experiments/runtime/' + a)), None)
