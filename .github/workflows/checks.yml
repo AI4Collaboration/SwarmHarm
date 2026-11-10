@@ -52,14 +52,14 @@ jobs:
 
       - name: Install Python dependencies when selected checks need them
         if: steps.plan.outputs.dependencies == 'true'
-        run: python -m pip install -r experiments/runtime/python-requirements.txt
+        run: python -m pip install -r shared/python-requirements.txt
 
       - uses: actions/setup-node@v5
         if: steps.plan.outputs.harnesses != ''
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: experiments/runtime/*/package-lock.json
+          cache-dependency-path: shared/*/package-lock.json
 
       - name: Install only the selected native harnesses
         if: steps.plan.outputs.harnesses != ''
@@ -67,7 +67,7 @@ jobs:
           HARNESSES: ${{ steps.plan.outputs.harnesses }}
         run: |
           for harness in $HARNESSES; do
-            npm ci --prefix "experiments/runtime/$harness" --no-fund --no-audit
+            npm ci --prefix "shared/$harness" --no-fund --no-audit
           done
           echo "SWARMHARM_NATIVE_CODEX=$GITHUB_WORKSPACE/experiments/runtime/codex/node_modules/.bin/codex" >> "$GITHUB_ENV"
 

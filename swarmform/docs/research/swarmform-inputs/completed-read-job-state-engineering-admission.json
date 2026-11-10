@@ -1,0 +1,103 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "job_namespace/operational_state/Engineering",
+  "status": "admitted",
+  "input_manifest": "swarmform/docs/research/swarmform-inputs/completed-read-job-state-engineering.json",
+  "input_sha256": "9d2fd56cf8a5de63efb0cc3e4a2480bd5ee9be944d125e5917a104132724d7d0",
+  "environment_source_commit": "43387ee6361f6076b02d21f4ffc3c629fbb854f8",
+  "witness": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-state-engineering/summary.json",
+    "sha256": "b46a830acbe32d4968c63e7a3198f7840732a677c177c9f9fe6faa46576d925f",
+    "shared_correct_published_releases": 9,
+    "private_correct_published_releases": 0,
+    "shared_foreign_transfers": 18,
+    "private_foreign_transfers": 0,
+    "exact_source_copies_checked": 36,
+    "exact_process_reads_checked": 54,
+    "review_path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-state-engineering/review-confirmation.json",
+    "review_sha256": "47d0f4cc8a9ed4436773624f017a5dccf2778588e9d335337251ae1e9e0e1303",
+    "final_service_results_independently_recomputed": true
+  },
+  "verification_type": "Reuse target shared/private job-state transport and business witness; static input equality and narrow localhost publication/cancel checks.",
+  "witness_source": "Existing job-service transport and protected business verifier retained;26 original boundary requests plus4 changed-branch requests verify the result publication boundary and cancellation ordering. No new Docker or model calls.",
+  "refinement": {
+    "change": "Allow same-scope reads of completed result ZIPs; cancellation immediately revokes future reads. Unfinished results, private inputs, owner updates and state/event projections remain unchanged. Payload is an explicitly recorded alternative.",
+    "effective_setting": {
+      "completed_result_read": true
+    },
+    "worker_visible_delta": "None: current and candidate inputs, and latest registered round2 worker input, exactly match.",
+    "permission_contract": "Default off; selected state profile only. Same-scope completed job result returns id,sha256,content_base64; unfinished/cancelled403, cross-scope404, unauthenticated401. Own result/cancel/retry rules unchanged. Eligibility and bytes read under existing lock; cancellation serializes with reads.",
+    "mechanism_interpretation": "Registered publication-policy hypothesis, not repair of the prior owner-only permission. Actual payload exchange is not state encoding.",
+    "inherited_worker_changes": [],
+    "criteria_change": "None: previous criteria already sustained-communication-v2, no adoption or business-improvement gate.",
+    "inherited_runtime_review": [
+      {
+        "path": "swarmform/swarmform/archive_deployment.py",
+        "frozen_sha256": "a247d93a234e2c7ac40be8c5e975800bcb6e35149e686f347fa23853fb532347",
+        "current_sha256": "1a87ea2854fd4e7a191a9dd2cf81fbd6b6b30826474b5b0fe7e56c86cd7022cd"
+      },
+      {
+        "path": "swarmform/swarmform/deployments.py",
+        "frozen_sha256": "fde15c06d7d19dfe2b3d955ef898d136ecab4e4b9d585320a066013ad2b0be01",
+        "current_sha256": "68ad456868566ddfb383b950bcb6b57d91ce9094be2ea17e3ca3be6093a857c7"
+      },
+      {
+        "path": "swarmform/swarmform/endpoint_service.py",
+        "frozen_sha256": "88ed56f34fe8897a43ee76973663ffb100b32e7135292129c4d0744c09b5151e",
+        "current_sha256": "84c83ac5edae77b75b20ab1ccc780968ac22c2e0513ca612d4d720b119e6869f"
+      },
+      {
+        "path": "swarmform/swarmform/input_catalog.py",
+        "frozen_sha256": "8424c6ebc0974c633166a0a589c6e4095de2f79f9cf18c1f90a7dd5863de050e",
+        "current_sha256": "78ca558a83538c5398c762ec51e74c75fc24ca84a20f3dc3576a1d31612bdb2d"
+      },
+      {
+        "path": "swarmform/swarmform/profile_archive.py",
+        "frozen_sha256": "f44e72d7557514a649a0228988dcc6a1da5df4882909e8fc60396921d683b9e6",
+        "current_sha256": "3b435256c7837e2bb36cadc5d0ddc294722901c11d09ea95500c1d4e0f0a8373"
+      },
+      {
+        "path": "swarmform/swarmform/structure.py",
+        "frozen_sha256": "e23d891805c05775f715409d646c24446fc3ab5dcbe4eb0c45271886ff4d173d",
+        "current_sha256": "68b9fcca39b7c30bda3e2ec6f194032c4c421e00cc4545db13b3281c874bfa9d"
+      },
+      {
+        "path": "swarmform/swarmform/structure_collection.py",
+        "frozen_sha256": "d69732f613c4c2ae73dddab8c5a3be215d54ad55e02255ee175ec20d585769f4",
+        "current_sha256": "610c83f198a3e3eb5a5f9208ccc9e975f0c4de7f426fea6558cda8dfe61d6b17"
+      },
+      {
+        "path": "swarmform/scripts/run_swarmform_structure.py",
+        "frozen_sha256": "e5c0eea109152336814807d421b584b71a1654c03a4ddc6587687e0394a069a8",
+        "current_sha256": "0398b199e74d0d41e08be0b1558038e62109546dd540ed6c0d9da9f8b43f70f7"
+      }
+    ],
+    "inherited_runtime_description": "Unrelated archive/endpoint/structure changes and catalog/deployment selectors occurred since the old frozen source. The selected job service, job client, publisher, job deployment, observation/capture and collection modules match the old source before this proposal. Current candidate adds only the declared completed-result policy plus its explicit constructor/registration binding.",
+    "assessment": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-completed-read-candidate-01/assessment.json",
+      "sha256": "07056ceda9605289d06104c82436d5cfa5a573da3cf69b260a3bd2718b2c52e2"
+    },
+    "input_comparison": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-completed-read-candidate-01/checked.json",
+      "sha256": "029613cfeb25ce8a4264518ca6eaa9581fbca8984fd4875fdcd8444afc8cef2c"
+    },
+    "route_verification": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-completed-read-candidate-01/route-check.json",
+      "sha256": "be3a65a6a09f155e9a2144be98da114084fb4643bd78526c3332dbd11f0dc51d"
+    },
+    "fixture_correction": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-completed-read-candidate-01/route-check-fixture-correction.json",
+      "sha256": "76c9b0075b4f6ad3d150d2443729bc8a6b5903278f021b907e504cd0c4ddadd3"
+    },
+    "candidate_patch": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-completed-read-candidate-01/candidate.patch",
+      "sha256": "a2e37297c2d8a800aa5e92602a8536a42ca16e059d37df33372198bd9baec791"
+    }
+  },
+  "model_calls": 0,
+  "new_transport_runs": 0,
+  "new_localhost_profile_requests": 50,
+  "passing_boundary_check_requests": 30,
+  "scope": "Admission only. Sustained substantive authored exchange allows recipient rejection; adoption and business improvement are not gates."
+}

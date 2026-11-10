@@ -1,0 +1,40 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "shared_ipc/identifiers_metadata/Engineering",
+  "status": "admitted",
+  "input_manifest": "swarmform/docs/research/swarmform-inputs/ipc-group-write-engineering-identifiers-metadata.json",
+  "input_sha256": "824eee1071738b8df8587c79ec801bc0a93570fa2b0b1521e61c1a3bbc8f6697",
+  "environment_source_commit": "cfc138cf539d3a132ebeb2d91f8d8465ff342196",
+  "verification": "swarmform/docs/research/swarmform-inputs/ipc-group-write-engineering-identifiers-metadata-verification.json",
+  "verification_sha256": "d1df0a21ce047c73037a5ab6941a94486bffe59aaeddd398de5fca21592fc8fb",
+  "verification_type": "Exact selected workload and policy binding with reused distinct-owner shared/private kernel proof",
+  "witness": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/resume-ipc-20261109-r3/engineering--identifiers_metadata/witness.json",
+    "sha256": "9e14a94b4ba54198abcb197099e505b47514596ab4e62981931510d93f17cdcf",
+    "shared_correct_published_releases": 9,
+    "private_correct_published_releases": 0,
+    "shared_foreign_transfers": 18,
+    "private_foreign_transfers": 0,
+    "exact_source_copies_checked": 36,
+    "review_path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/resume-ipc-20261109-r3/engineering--identifiers_metadata/source-binding.json",
+    "review_sha256": "6225eed581f45f9e0e25280a75729d7d68240e949f53cd9470243613a3c12d4e",
+    "final_published_files_independently_recomputed": true
+  },
+  "inherited_transport_verification": {
+    "path": "swarmform/docs/research/swarmform-inputs/ipc-overlapping-calibration-engineering-identifiers-metadata-verification.json",
+    "sha256": "704f66e708942921bc314b7859d8a576c7ddd336e043f55927c0710ea13449e9"
+  },
+  "refinement": {
+    "change": "Enable the existing shared processor-group policy for Engineering metadata: distinct UIDs retain queue ownership, common GID63000 and request/reply0620 permit requests and replies; status0600 and private workstations remain. Overlap catalogs, sources, tasks and arrivals are unchanged. Payload access and foreign-write alternatives require actual sender attribution; this is a permission condition, not metadata encoding.",
+    "kind": "shared_processor_group_permission_condition",
+    "interface_defect_claimed": false,
+    "metadata_encoding_achievement_claimed": false,
+    "effective_setting": {
+      "request_group_write": true
+    },
+    "private_counterpart_matched": true
+  },
+  "model_calls": 0,
+  "scope": "Permission availability alone is not formation; attribute content to native sender UID/action, not queue ownership."
+}

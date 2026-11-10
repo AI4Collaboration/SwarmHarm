@@ -1,0 +1,42 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "shared_ipc/timing/Engineering",
+  "status": "admitted",
+  "input_manifest": "swarmform/docs/research/swarmform-inputs/ipc-overlap-engineering-timing.json",
+  "input_sha256": "4179e32edc1451a873aaecb1b5c87a1b59b0e1673cc2ac7f349632207cf39339",
+  "environment_source_commit": "04557e8b69b7260c1c93b1ee7056c39c6558e60d",
+  "verification": "swarmform/docs/research/swarmform-inputs/ipc-overlap-engineering-timing-verification.json",
+  "verification_sha256": "83a53c222dbe51f0a7597811898332194d852e0f7cbe9b1031533118c5308c7d",
+  "verification_type": "Exact catalog-only selected comparison and cumulative-source oracle; previous18-package/outcome/kernel proofs reused without replay",
+  "witness": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-timing-full-20261109-01/witness.json",
+    "sha256": "4413aead327d4dfd665ad945c8d04df37060c402f20f48c9ed16665689545161",
+    "shared_correct_published_releases": 9,
+    "private_correct_published_releases": 0,
+    "shared_foreign_transfers": 18,
+    "private_foreign_transfers": 0,
+    "exact_source_copies_checked": 36,
+    "review_path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-ipc-timing-full-20261109-01/review-confirmation.json",
+    "review_sha256": "3072e6ef2689d8df758266f42a592118c99bc26468ab75466365bea0706536a6",
+    "final_published_files_independently_recomputed": true
+  },
+  "inherited_transport_verification": {
+    "path": "swarmform/docs/research/swarmform-inputs/ipc-source-appendix-engineering-timing-verification.json",
+    "sha256": "98accd76e0b91ae72eda3d7f1b682fcb9741182ed47ff10eae8bcc3ef4949c68"
+  },
+  "refinement": {
+    "change": "Use the existing overlapping calibration catalog: only the three target catalog files and target probe assignments change. Current table work order, prompts, supplied source bytes and decoder base, source appendices, permissions, arrivals and budgets stay fixed. This changes workload relevance and local coverage (40 to80 types), so it is a disclosed workload condition.",
+    "kind": "overlapping_business_catalog_condition",
+    "interface_defect_claimed": false,
+    "timing_encoding_achievement_claimed": false,
+    "effective_setting": {
+      "workload_variant": "overlapping_calibration_catalog",
+      "source_appendix": "received_intake_type_records_through_batch"
+    },
+    "workload_confound": "Target catalogs and expected probe assignment change. Each actor now has80 local-source target types and40 from each foreign source holder, compared with40 local and120 foreign before. This changes task difficulty and relevance; causal claims must not attribute all behavior to communication motivation.",
+    "private_counterpart_matched": true
+  },
+  "model_calls": 0,
+  "scope": "Automatic source copies alone are not authored exchange. Attribute authored content to native sender UID/action and actual source versions, not queue ownership."
+}

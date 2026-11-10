@@ -3,13 +3,13 @@
 For the active three-agent SwarmForm matrix, use the [accepted-input instructions](../README.md#accepted-inputs). The following commands inspect status and preview current development inputs without running tests or models:
 
 ```sh
-python3 scripts/check_swarmform_inputs.py --status
-python3 scripts/inspect_swarmform_workload.py --staged --dataset-key november --domain "Knowledge Work" --output ../knowledge-preview
+python3 swarmform/scripts/check_swarmform_inputs.py --status
+python3 swarmform/scripts/inspect_swarmform_workload.py --staged --dataset-key november --domain "Knowledge Work" --output ../knowledge-preview
 ```
 
 The preview exports private startup files, separate later deliveries and an operator audit. It uses the development generator; use the default accepted-input exporter for exact reviewed versions. The instructions below run the four-agent reporting baseline, including the reviewed v57 cache pilot.
 
-Use `experiments/swarmharm-v1/run.py` for preparation and collection, and
+Use `swarmharm/run.py` for preparation and collection, and
 `launch.py` for a detached collector. Unified runs use one continuous task.
 Do not combine separate trajectories to represent a unified run.
 SwarmHarm's unified rollouts score formation and the registered business consequence
@@ -22,7 +22,7 @@ Install **Python 3.12**, **Node.js >=22.19**, npm, Git and Docker with a running
 engine. The default branch contains the maintained unified environment.
 Published cases include their exact source in the [evidence bundles](research/trajectory-release.json).
 
-After a Codex rollout, run `python3 scripts/audit_codex_workstation.py RAW_OUTPUT`
+After a Codex rollout, run `python3 swarmharm/scripts/audit_codex_workstation.py RAW_OUTPUT`
 to check delivered inputs for known instrumentation markers. The audit reports
 initial files, native instructions, advertised tools, delivered tool results and
 agent-authored text with references to the original records. These observations
@@ -38,7 +38,7 @@ source ../eval-readiness/swarmharm-local.env
 
 Setup installs Harbor **0.24.0**, Codex **0.166.0**, Claude Code **2.1.318** /
 SDK **0.3.318**, and Pi **1.5.0** / pi-goal **0.54.15** from pinned manifests.
-Python dependencies are fixed in `experiments/runtime/python-requirements.txt`;
+Python dependencies are fixed in `shared/python-requirements.txt`;
 JavaScript dependencies use each adapter’s `package-lock.json`. Pi is installed
 for explicit adapter checks; installation does not select it for inference.
 Setup builds the offline workstation from the pinned Dockerfile and
@@ -47,7 +47,7 @@ includes `rg`, `curl`, `ps` and `apply_patch`; a fixed Debian snapshot and recor
 versions keep these tools reproducible. Each built image retains its own digest
 tag, so another architecture or rebuild does not replace a registered image.
 The patch command follows the OpenAI Cookbook implementation, with a pinned
-source and MIT license in `experiments/runtime/`. Installation checks exercise
+source and MIT license in `shared/`. Installation checks exercise
 an actual file edit; older images without the command must be rebuilt.
 Exported Harbor inputs record the actual image, time budget and allowed service.
 No API key or model request is needed for setup or installation checks. The current unified
@@ -57,7 +57,7 @@ check verifies the actual links. This fixture is not yet supported by Apptainer.
 To inspect business inputs before registering or running anything:
 
 ```sh
-"$SWARMHARM_HARBOR_ENV/bin/python" scripts/inspect_unified_input.py \
+"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/scripts/inspect_unified_input.py \
   --scenario engineering-capacity --binding-preset control \
   --output ../input-preview
 ```
@@ -77,9 +77,9 @@ schemas and initial files. The default previews the Knowledge Work records
 condition. Supply a registration to read its exact sealed bytes.
 
 ```sh
-"$SWARMHARM_HARBOR_ENV/bin/python" scripts/dump_prompts.py --output ../current-prompt-preview
-"$SWARMHARM_HARBOR_ENV/bin/python" scripts/dump_prompts.py \
-  --registration-dir experiments/swarmharm-v1/registrations/2026-11-07-unified-v55-formation-records-knowledge-sol61-r1 \
+"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/scripts/dump_prompts.py --output ../current-prompt-preview
+"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/scripts/dump_prompts.py \
+  --registration-dir swarmharm/registrations/2026-11-07-unified-v55-formation-records-knowledge-sol61-r1 \
   --output ../sealed-prompt-preview
 ```
 
@@ -136,20 +136,20 @@ selection and installs only the dependencies it requires. Full regression is an
 explicit local option or manual workflow option. Replay published cases from their frozen archives.
 
 Balanced headline example (replace the paths and unique name). Switch the preset,
-claim and domain only according to `docs/balanced-study-design.md`; the comparison
+claim and domain only according to `swarmharm/docs/balanced-study-design.md`; the comparison
 flag rejects every other factor difference:
 
 ```sh
-"$SWARMHARM_HARBOR_ENV/bin/python" experiments/swarmharm-v1/run.py \
+"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run.py \
   --phase prepare --study-mode unified \
   --scenario knowledge-work --component-family unified-delivery \
   --binding-preset records --target-claim coordinated_adverse_outcomes \
-  --world-config experiments/swarmharm-v1/configs/unified-balanced-envelope.json \
+  --world-config swarmharm/configs/unified-balanced-envelope.json \
   --comparison-design balanced-headline-v1 \
   --model-id openai/gpt-5.6-sol --population 4 \
   --harness codex --goal-mode off --reasoning-effort high \
   --output /absolute/external/results/new-run \
-  --registration-dir experiments/swarmharm-v1/registrations/new-run \
+  --registration-dir swarmharm/registrations/new-run \
   --key-file /absolute/external/axonhub.key
 ```
 
@@ -157,9 +157,9 @@ Commit and push source before preparation, then commit and push the generated
 registration. Launch once with the same output, registration and key paths:
 
 ```sh
-"$SWARMHARM_HARBOR_ENV/bin/python" experiments/swarmharm-v1/launch.py \
+"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/launch.py \
   --output /absolute/external/results/new-run \
-  --registration-dir experiments/swarmharm-v1/registrations/new-run \
+  --registration-dir swarmharm/registrations/new-run \
   --key-file /absolute/external/axonhub.key
 ```
 
@@ -195,7 +195,7 @@ adapter does not support that scenario, implement and validate it first.
   and task pipeline are shared; models and condition results are not pooled.
   Multiple changed bindings require the operator's `--combined-bindings` flag.
 - The task is implemented in `phase2/unified_delivery.py`; domain source work
-  lives in `phase2/workload_sources.py` under `experiments/swarmharm-v1/`.
+  lives in `phase2/workload_sources.py` under `swarmharm/`.
 - Never reuse an output path or alter a frozen registration.
 
 ## Validate and freeze
@@ -252,7 +252,7 @@ It also emits the structured `action-monitor.json` and blinded
 frozen script from the same source/archive:
 
 ```bash
-python scripts/judge_unified_transcript.py \
+python swarmharm/scripts/judge_unified_transcript.py \
   --output /absolute/path/to/completed-output \
   --key-file /absolute/path/to/host-only-axonhub-key
 ```
@@ -272,7 +272,7 @@ trajectories in linked releases.
 
 The following settings reproduce the reviewed four-agent v57 pilot. Use the normal preparation and collection flow above with
 `--scenario knowledge-work --binding-preset control --target-claim autonomous_formation` and
-`--world-config experiments/swarmharm-v1/configs/swarmform-work-cache.json`.
+`--world-config swarmharm/configs/swarmform-work-cache.json`.
 Omit `--comparison-design`; that option selects the separate SwarmHarm comparison.
 The permitted model comparisons are `openai/gpt-5.6-sol` and `openai/gpt-6.1-sol`,
 each with four agents, native Codex, high reasoning and goal off. Freeze and

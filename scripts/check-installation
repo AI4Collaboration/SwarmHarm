@@ -6,7 +6,7 @@ from pathlib import Path
 import sys
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path[:0] = [str(REPO / 'experiments/runtime'), str(REPO / 'experiments/swarmharm-v1')]
+sys.path[:0] = [str(REPO / 'shared'), str(REPO / 'swarmharm')]
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)

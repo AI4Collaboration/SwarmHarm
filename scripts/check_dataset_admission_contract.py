@@ -9,9 +9,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "docs/dataset-admission-contract.json"
-ACTIVE_STATUS = ROOT / "docs/live-rollout-status.json"
-REPORTING = ROOT / "docs/research/reporting-run-index.json"
-REGISTRATIONS = ROOT / "experiments/swarmharm-v1/registrations"
+ACTIVE_STATUS = ROOT / "swarmform/docs/live-rollout-status.json"
+REPORTING = ROOT / "swarmharm/docs/research/reporting-run-index.json"
+REGISTRATIONS = ROOT / "swarmharm/registrations"
+REGISTRATION_ROOTS = (REGISTRATIONS, ROOT / "swarmform/registrations")
 
 
 def fail(message):
@@ -101,7 +102,7 @@ def validate_phase1_results(contract, status):
     path = ROOT / contract['current_evidence']['additional_formation_cases']
     results = json.loads(path.read_text())
     release = releases['formation_examples']
-    if (release.get('index') != str(path.relative_to(ROOT / 'docs/research'))
+    if (release.get('index') != str(path.relative_to(ROOT / 'swarmharm/docs/research'))
             or release.get('complete_cases') != 8
             or release.get('release') != results.get('release')
             or release.get('index_sha256') != hashlib.sha256(path.read_bytes()).hexdigest()):
@@ -182,7 +183,7 @@ def main():
     if current & archived:
         fail("a retained reporting registration is also indexed as an active SwarmForm input")
     actual = {
-        str(path.relative_to(ROOT)) for path in REGISTRATIONS.iterdir()
+        str(path.relative_to(ROOT)) for folder in REGISTRATION_ROOTS for path in folder.iterdir()
         if path.is_dir() and (path / "registration.json").is_file()
     }
     prefix = active.get("frozen_registration_prefix")

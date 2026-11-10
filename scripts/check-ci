@@ -10,8 +10,9 @@ import sys
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
-LAB = 'experiments/swarmharm-v1'
-TESTS = ROOT / LAB / 'tests'
+LAB = 'swarmharm'
+# Each study runs its own tests from its own folder; shared/ holds the common runtime.
+TEST_ROOTS = ('swarmform', 'swarmharm', 'shared')
 SELF = {'scripts/check-ci', 'scripts/check-push', 'scripts/pre-push',
         '.github/workflows/checks.yml'}
 WORKLOADS = {'engineering': 'engineering_input', 'fulfillment': 'fulfillment_input',
@@ -46,9 +47,10 @@ def select_checks(files, full=False):
     checks, tests, harnesses = set(), set(), set()
     docker = False
 
-    def suites(*patterns):
+    def suites(*patterns, roots=TEST_ROOTS):
         for pattern in patterns:
-            tests.update(p.stem.removesuffix('_checks') for p in TESTS.glob(pattern + '_checks.py'))
+            for root in roots:
+                tests.update(p.stem.removesuffix('_checks') for p in (ROOT / root / 'tests').glob(pattern + '_checks.py'))
 
     if files or full:
         checks.update(('syntax', 'inventory'))
@@ -57,27 +59,28 @@ def select_checks(files, full=False):
         stem = path.stem
         if name in SELF:
             suites('check_selection')
-        elif name.startswith(LAB + '/tests/'):
+        elif name.split('/')[0] in TEST_ROOTS and name.split('/')[1:2] == ['tests']:
             if path.name.endswith('_checks.py'):
                 suites(stem.removesuffix('_checks'))
             else:
                 suites('*')
-        elif name == LAB + '/README.md' or name.startswith('docs/') or (path.suffix == '.md' and not name.startswith('experiments/')) or '/registrations/' in name:
-            if name == 'docs/live-rollout-status.json' or '/registrations/' in name:
+        elif (name.startswith(('docs/', 'swarmform/docs/', 'swarmharm/docs/')) or '/registrations/' in name or (
+                path.suffix == '.md' and not name.startswith(('swarmform/swarmform/', 'swarmform/structure/', 'swarmharm/', 'shared/')))):
+            if name == 'swarmform/docs/live-rollout-status.json' or '/registrations/' in name:
                 checks.add('inputs')
         elif name == 'scripts/check_dataset_admission_contract.py':
             checks.add('inventory')
         elif name == 'scripts/check_format_contract.py':
             checks.add('format')
-        elif name == 'scripts/check_balanced_study.py':
+        elif name == 'swarmharm/scripts/check_balanced_study.py':
             checks.add('balanced')
-        elif name.startswith('scripts/') and ('witness' in stem or
+        elif name.startswith('swarmform/scripts/') and ('witness' in stem or
                 stem.startswith('check_swarmform_') and stem not in {
                     'check_swarmform_catalog', 'check_swarmform_inputs', 'check_swarmform_read_observer'}):
             suites('swarmform_input_runner')
             if stem == 'swarmform_witness_solvers':
                 suites(*WORKLOADS.values())
-        elif name.startswith(LAB + '/swarmform/'):
+        elif name.startswith('swarmform/swarmform/'):
             if stem == 'decoder_base':
                 suites('engineering_input')
                 checks.update(('catalog', 'wording'))
@@ -144,36 +147,41 @@ def select_checks(files, full=False):
             else:
                 suites('swarmform_*', *WORKLOADS.values())
                 checks.add('wording')
-        elif name == 'experiments/runtime/workstation_observer.py':
+        elif name == 'shared/workstation_observer.py':
             suites('swarmform_runtime', 'swarmform_read_observer', 'swarmform_workstation_retention', 'swarmform_deployment')
-        elif name.startswith('experiments/structure/'):
-            if stem == 'grid_review' or name.startswith('experiments/structure/annotations/'):
+        elif name.startswith('swarmform/structure/'):
+            if stem == 'grid_review' or name.startswith('swarmform/structure/annotations/'):
                 suites('structure_grid')
             elif stem in {'communication_inventory','artifact_use_timeline','exact_source_use','shared_content_inventory','source_pool_review','common_problem_review'}:
                 suites('structure_observations')
             else:
                 suites('structure_business' if stem=='business_review' else 'structure_timeline', 'swarmform_structure')
-        elif name == 'scripts/run_swarmform_structure.py':
+        elif name == 'swarmform/scripts/run_swarmform_structure.py':
             suites('swarmform_structure', 'structure_timeline', 'structure_native', 'publication_updates', 'sustained_research', 'research_latency')
-        elif name.startswith('experiments/runtime/'):
+        elif name.startswith('shared/'):
             adapter = next((a for a in ('codex', 'claude', 'pi')
-                            if name.startswith('experiments/runtime/' + a)), None)
+                            if name.startswith('shared/' + a)), None)
             if adapter:
                 suites(adapter + '_collect', 'native_*', 'format')
                 harnesses.add(adapter)
             else:
                 suites('*')  # Shared runtime and evidence code serves both studies.
                 docker = True
-        elif name == 'scripts/swarmform_accepted_run.py':
+        elif name == 'swarmform/scripts/swarmform_accepted_run.py':
             suites('swarmform_accepted')
-        elif name in {'scripts/swarmform_scope.py', 'scripts/inspect_swarmform_workload.py', 'scripts/swarmform_delivery_export.py', 'scripts/export_swarmform_input_matrix.py', 'scripts/run_swarmform.py',
-                      'scripts/check_swarmform_catalog.py', 'scripts/check_swarmform_inputs.py'}:
+        elif name in {'swarmform/scripts/swarmform_scope.py', 'swarmform/scripts/inspect_swarmform_workload.py', 'swarmform/scripts/swarmform_delivery_export.py', 'swarmform/scripts/export_swarmform_input_matrix.py', 'swarmform/scripts/run_swarmform.py',
+                      'swarmform/scripts/check_swarmform_catalog.py', 'swarmform/scripts/check_swarmform_inputs.py'}:
             suites('swarmform_registration', 'swarmform_input_runner', 'swarmform_ledger', 'swarmform_accepted')
             checks.update(('catalog', 'inputs'))
-        elif name == 'scripts/check_swarmform_read_observer.py':
+        elif name == 'swarmform/scripts/check_swarmform_read_observer.py':
             suites('swarmform_read_observer')
-        elif name.startswith(LAB + '/') or name.startswith('experiments/prompt-contract/'):
+        elif name.startswith('swarmharm/scripts/'):
+            suites('review', 'claim_evidence', 'unified_input_contract')
+        elif name.startswith('shared/prompt-contract/'):
             suites('*')
+            checks.update(('wording', 'balanced'))
+        elif name.startswith(LAB + '/'):
+            suites('*', roots=(LAB,))
             checks.update(('wording', 'balanced'))
         elif name in {'scripts/setup-local', 'scripts/check-installation',
                       'scripts/build-workstation-image', 'scripts/harbor'}:
@@ -245,17 +253,21 @@ def main(argv=None):
         parser.error('Selected code checks need Python 3.12 from the pinned runtime environment.')
     commands = {
         'inventory': ['scripts/check_dataset_admission_contract.py'],
-        'inputs': ['scripts/check_swarmform_inputs.py', '--inventory-only'],
-        'catalog': ['scripts/check_swarmform_catalog.py'],
-        'wording': ['experiments/prompt-contract/checks.py'],
-        'balanced': ['scripts/check_balanced_study.py'],
+        'inputs': ['swarmform/scripts/check_swarmform_inputs.py', '--inventory-only'],
+        'catalog': ['swarmform/scripts/check_swarmform_catalog.py'],
+        'wording': ['shared/prompt-contract/checks.py'],
+        'balanced': ['swarmharm/scripts/check_balanced_study.py'],
         'format': ['scripts/check_format_contract.py', LAB],
         'installation': ['scripts/check-installation'],
     }
     steps = [(c, commands.get(c)) for c in plan['checks']]
-    if plan['tests']:
-        steps.append(('selected tests', ['-m', 'unittest', *plan['tests'], '-v']))
-    env = dict(os.environ, PYTHONPATH=os.pathsep.join((str(ROOT / LAB), str(ROOT / 'experiments/runtime'))))
+    for root in TEST_ROOTS:
+        modules = [t for t in plan['tests'] if (ROOT / root / 'tests' / (t.split('.', 1)[1] + '.py')).is_file()]
+        if modules:
+            steps.append((f'{root} tests', ['-m', 'unittest', *modules, '-v']))
+    env = dict(os.environ, PYTHONPATH=os.pathsep.join((str(ROOT / LAB), str(ROOT / 'shared'))))
+    study_env = {root: dict(os.environ, PYTHONPATH=os.pathsep.join(dict.fromkeys((str(ROOT / root), str(ROOT / 'shared')))))
+                 for root in TEST_ROOTS}
     results = []
     for name, command in steps:
         started = time.monotonic()
@@ -267,8 +279,9 @@ def main(argv=None):
             except (SyntaxError, ValueError, subprocess.CalledProcessError) as error:
                 output, code = str(error), 1
         else:
-            result = subprocess.run([sys.executable, *command], env=env,
-                                    cwd=ROOT / LAB if name == 'selected tests' else ROOT,
+            root = name.removesuffix(' tests') if name.endswith(' tests') else None
+            result = subprocess.run([sys.executable, *command], env=study_env[root] if root else env,
+                                    cwd=ROOT / root if root else ROOT,
                                     text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             output, code = result.stdout, result.returncode
         results.append({'name': name, 'passed': code == 0, 'seconds': round(time.monotonic() - started, 2)})
