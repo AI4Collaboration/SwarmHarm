@@ -18,7 +18,7 @@ The [accepted endpoint negative](https://github.com/AI4Collaboration/SwarmHarm/r
 
 ## Continue from main
 
-**Engineering is complete: 25/25 accepted inputs—24 communication positives and one reviewed negative.** Knowledge Work has 21/25 accepted inputs: 20 communication positives and one functional negative after seven refinements. Four endpoint cells remain in refinement. Existing results and original scores stay preserved.
+**Engineering is complete: 25/25 accepted inputs—24 communication positives and one reviewed negative.** Knowledge Work has 22/25 accepted inputs: 21 communication positives and one functional negative after seven refinements. Three endpoint cells remain under review or refinement. The latest accepted endpoint event case is archived; it will join the next bundle update. Existing results and original scores stay preserved.
 
 Run `python3 scripts/check_swarmform_inputs.py --status` from a checkout of `main`. It summarizes admitted inputs, reviewed behavior, active work and the next cell from the [matrix ledger](docs/live-rollout-status.json). For a reviewed case, follow its trajectory link. For an active run, check its completion record before starting anything. Record the next verified result in the same ledger and push it to `main`.
 
