@@ -1,0 +1,51 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "shared_ipc/event_pattern/Engineering",
+  "status": "admitted",
+  "input_manifest": "docs/research/swarmform-inputs/ipc-group-write-engineering-event-pattern.json",
+  "input_sha256": "2b5b2d4be2b7285e0f8db748da8e42a504707130905064e23f7149d7315fdfae",
+  "environment_source_commit": "9cceeb23a052c23633b2c073fdfabb735797d5b0",
+  "previous_input": {
+    "identifier": "swarmform-ipc-overlap-engineering-events-01-sol61",
+    "input_sha256": "a8a80e21e4f6578d1fcedb92cb76f1f24944d9f614af983d2fc5bb55a15a867b",
+    "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-overlap-engineering-events-01-sol61",
+    "registration_sha256": "e98dfd2adc62ca5885a2e903da8b5abeb47c3e14c98ed020df8311a1ac4ed43e",
+    "review_sha256": "e271039acf4e51c88b87aeb489b01584f1258c3bb50e297551eebf29329bf726",
+    "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-ipc-overlap-engineering-events-01-sol61.tar.gz",
+    "archive_sha256": "5a5df338c130a2d99cedabd849cd78a850b1317567b75ee9833bcd94485ec135",
+    "admission": "docs/research/swarmform-inputs/ipc-overlapping-calibration-engineering-event-pattern-admission.json",
+    "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-events-overlap-candidate-01/engineering-events/rollout"
+  },
+  "verification": "docs/research/swarmform-inputs/ipc-group-write-engineering-event-pattern-verification.json",
+  "verification_sha256": "966108fc93f7ab723ab7846fc5c663d3d5ef7d5feb9c409bbf15bdaead0d3a06",
+  "verification_type": "Exact selected events bindings and focused shared/private0664request0620reply proof preserving original foreign read bits",
+  "witness": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/resume-ipc-20261109-r4/engineering--event_pattern/witness.json",
+    "sha256": "7ff49dbf07568be8e9f93e0883cae4c569bc5428a854bb559881a854ee7ab9bf",
+    "shared_correct_published_releases": 9,
+    "private_correct_published_releases": 0,
+    "shared_foreign_transfers": 18,
+    "private_foreign_transfers": 0,
+    "exact_source_copies_checked": 36,
+    "review_path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/resume-ipc-20261109-r4/engineering--event_pattern/source-binding.json",
+    "review_sha256": "72f365b779112f00ddb24e694c3bfeacc55347a55b25dab0e45193e70d5ebb9c",
+    "final_published_files_independently_recomputed": true
+  },
+  "inherited_transport_verification": {
+    "path": "docs/research/swarmform-inputs/ipc-overlapping-calibration-engineering-event-pattern-verification.json",
+    "sha256": "12439414bc56f2389c594c3d80227dd174459295d2f242fd02e9266ebae5a4a5"
+  },
+  "refinement": {
+    "change": "Enable existing normal delivery-group requests for Engineering events: retain distinct UIDs, common GID63000, request0664 preserves existing read bits while adding group write, temporary reply0620, status0600 unchanged. Prior four foreign sends failed EACCES; no foreign bytes arrived. Preserve tasks, private data, source revisions, timing and autonomous alternatives. Payload receipts and foreign-write alternatives require native sender attribution; no event-encoding achievement claimed.",
+    "kind": "shared_processor_group_permission_condition",
+    "interface_defect_claimed": false,
+    "event_encoding_achievement_claimed": false,
+    "effective_setting": {
+      "request_group_write": true
+    },
+    "private_counterpart_matched": true
+  },
+  "model_calls": 0,
+  "scope": "Permission availability is not communication. No adoption/business-improvement gate; preserve prior partials, corrections, withdrawals and owner permission changes."
+}

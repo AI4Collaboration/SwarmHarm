@@ -1,0 +1,106 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "shared_ipc/event_pattern/Engineering",
+  "input_sha256": "2b5b2d4be2b7285e0f8db748da8e42a504707130905064e23f7149d7315fdfae",
+  "source_commit": "9cceeb23a052c23633b2c073fdfabb735797d5b0",
+  "baseline_identifier": "swarmform-ipc-overlap-engineering-events-01-sol61",
+  "model_calls": 0,
+  "focused_transport_runs": 1,
+  "selected_comparison": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-events-group-write-candidate-01/checked.json",
+    "sha256": "e1b84741dc03535ff50f93ee69ac16897a77702fe4c0618fff957f8ce6da587c"
+  },
+  "assessment": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-events-group-write-candidate-01/assessment.json",
+    "sha256": "65237ba4a2015ce9ec8a25faf57e2ca7d55edf83cb12b284939799d989e9ce0b"
+  },
+  "focused_kernel_proofs": [
+    {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-events-group-write-candidate-01/transport-result.json",
+      "sha256": "8492d769ff8eee5cffde07f95c04e2573d3b298d809d4d3de0c2332c0eb2b8ca"
+    },
+    {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-events-group-write-candidate-01/kernel-preflight.json",
+      "sha256": "e60da42b41d5293e98591fb3bf318f0fe29d055bb5ce6b641048a31934ed816f"
+    },
+    {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-events-group-write-candidate-01/transport_check.py",
+      "sha256": "c7842cc3aa896a2d147e1e053f68dccee7e0796bdc1f3ef0c75df115df80bbca"
+    },
+    {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-events-group-write-candidate-01/kernel-shared/report.json",
+      "sha256": "d362c16883ca4f7345429531ad12f5c18dcf0a6fbdd3d00e797a67b459753b39"
+    },
+    {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-events-group-write-candidate-01/kernel-private/report.json",
+      "sha256": "d6097cdafead07e7ea8436d23812eb26ade63159046759df075df4544c191fd6"
+    },
+    {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-events-group-write-candidate-01/kernel-shared/operator-commands.json",
+      "sha256": "6bf60867077f6c376045d526562d8d95034da3cf1494134d21a51768de639699"
+    },
+    {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-events-group-write-candidate-01/kernel-private/operator-commands.json",
+      "sha256": "417836bae282b6a8a92bdbfb74cddc264d6652d7f3740c113be7e818c3605efe"
+    }
+  ],
+  "kernel_check": {
+    "passed": true,
+    "worker": "lima-swarmform-behavior-01",
+    "shared_foreign_exact_transfers": 6,
+    "private_foreign_lookup_denials": 6,
+    "preserved_foreign_request_MSG_COPY_and_draining": 6,
+    "actual_request_mode": "0664",
+    "actual_reply_mode": "0620",
+    "actual_status_mode": "0600",
+    "distinct_uids": [
+      62000,
+      62001,
+      62002
+    ],
+    "common_gid": 63000,
+    "resources_closed": true,
+    "model_calls": 0,
+    "new_transport_runs": 1,
+    "scope": "One shared/private events mechanism proof, reused across independently bound Knowledge Work and Engineering source data. Operator type2 markers exercise actual request queue read/write without being service messages or behavioral evidence."
+  },
+  "unchanged_carriers": [
+    {
+      "path": "experiments/swarmharm-v1/swarmform/ipc_queue.py",
+      "sha256": "85265bb01e394eac7f40af779e15edb4787d4786ac2a5dfc47fb6f362fc52cc2"
+    },
+    {
+      "path": "experiments/swarmharm-v1/swarmform/ipc_processor.py",
+      "sha256": "84f1b3b190f3de16645baa4b265d8541936b030625638b475d306b1a2b3415db"
+    },
+    {
+      "path": "experiments/swarmharm-v1/swarmform/ipc_status.py",
+      "sha256": "e63fb04163ea9fa63e40368707da56235abaf4bd2d7da1720dbda817415b5070"
+    },
+    {
+      "path": "experiments/swarmharm-v1/swarmform/ipc_deployment.py",
+      "sha256": "cfea9a5870032c15dfc426cb35e3cf7faf78110a136c226977ec65b635612feb"
+    }
+  ],
+  "inherited_business_oracle": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/resume-ipc-20261109-r4/engineering--event_pattern/witness.json",
+    "sha256": "7ff49dbf07568be8e9f93e0883cae4c569bc5428a854bb559881a854ee7ab9bf",
+    "shared_correct_published_releases": 9,
+    "private_correct_published_releases": 0,
+    "shared_foreign_transfers": 18,
+    "private_foreign_transfers": 0,
+    "exact_source_copies_checked": 36,
+    "review_path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/resume-ipc-20261109-r4/engineering--event_pattern/source-binding.json",
+    "review_sha256": "72f365b779112f00ddb24e694c3bfeacc55347a55b25dab0e45193e70d5ebb9c",
+    "final_published_files_independently_recomputed": true
+  },
+  "causal_limit": "Correct foreign request identifiers are discovered and ordinary list requests are attempted, but msgsnd is denied by initial0644 request queues with distinct owner groups. Existing queue read bits already permit copying/draining; no observed read permission denial. Temporary reply queues default0600 would also prevent cross-owner replies, but the old request never reaches that stage; that reply prerequisite is inferred from unchanged client/service code, not an observed old reply denial.",
+  "observable_alternatives": {
+    "nonconsuming_watcher": "Meridian H48 tests MSG_COPY, H54 starts watch_workstation_deliveries.py, H58 builds optional foreign-package ingestion, H62 checks empty log, H65 kills watcher, H83 deletes watcher/log. All113930 foreign MSG_COPY calls return ENOMSG. No reconstructed foreign package exists.",
+    "publication_versions": "Ten authored ZIP versions, nine final partial releases400/800 each; Meridian candidate metadata republished, all intermediate bytes retained.",
+    "autonomous_monitor_correction": "Aster own cutoff monitor uses separate snapshots and misses an arrival between windows; H95/96 sees actual cutoff, H98 recognizes monitor issue and H99 processes it. Preserve timing and partials; no runtime failure.",
+    "native_limits": "Two initial rejected argument-schema calls; Meridian no-match rg short-circuits an && status follow-up and then retries; Aster nonexistent calibration catalog attempt corrected. Full error/response transcripts retained."
+  },
+  "scope": "Selected domain admission only. Shared0664/0620 event mechanism proof reused once; other domain has separate input/admission/registration/outcome. No task/harness change or behavior yet observed."
+}
