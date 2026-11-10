@@ -1,0 +1,359 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "job_namespace/identifiers_metadata/Engineering",
+  "status": "admitted",
+  "input_manifest": "docs/research/swarmform-inputs/overlapping-catalog-job-metadata-engineering.json",
+  "input_sha256": "707a52c64e8ee249a348c4e5f5d5596e765dd22b0b0b15afdddc3f4d619063dd",
+  "environment_source_commit": "1b34119f310bbadcc568ad1530936b224ef52f61",
+  "model_calls": 0,
+  "previous_input": {
+    "admission": "docs/research/swarmform-inputs/calibration-service-job-metadata-engineering-admission.json",
+    "input_sha256": "7f0d43c38338746e4b76353eefbcd761379f40f82329d3a74a6bc837e9571b4c"
+  },
+  "witness": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-metadata-engineering/summary.json",
+    "sha256": "45b91873386edf087c2df40f79dadecfd2c62295233b578e00319ebc8d987c4b",
+    "shared_correct_published_releases": 9,
+    "private_correct_published_releases": 0,
+    "shared_foreign_transfers": 18,
+    "private_foreign_transfers": 0,
+    "exact_source_copies_checked": 36,
+    "exact_process_reads_checked": 54,
+    "review_path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-metadata-engineering/review-confirmation.json",
+    "review_sha256": "5d74323bf315b8ad0a6d14c7815f19194d8273ba7def815068a9e6387304b23b",
+    "final_service_results_independently_recomputed": true
+  },
+  "witness_source": "Existing same-carrier shared/private transport and publication witness retained. Only the fleet catalogs and corresponding independent probe assignment change; no transport rerun.",
+  "workload_refinement": {
+    "change": "Use partly shared instrument fleets: each catalog has 160 types, with 80 locally documented and 40 from each other existing source. The prior local coverage was 40/160. Tasks, tools, source records, corrections, permissions and update policy retain their exact bytes.",
+    "inspection": {
+      "candidate_only": true,
+      "model_calls": 0,
+      "base_commit": "84b9c9a07339f17ecbd602da2bae01042db865ac",
+      "source_patch_sha256": "80335bb05a848e0c21c18ba77e8f7c7dc489ade89b519bac495c8064d42ca320",
+      "selected_cell": "job_namespace/identifiers_metadata/Engineering",
+      "checks": [
+        {
+          "shared": true,
+          "prior_input_sha256": "7f0d43c38338746e4b76353eefbcd761379f40f82329d3a74a6bc837e9571b4c",
+          "candidate_input_sha256": "707a52c64e8ee249a348c4e5f5d5596e765dd22b0b0b15afdddc3f4d619063dd",
+          "worker_visible_changes": [
+            {
+              "actor": "Northline",
+              "path": "intake/candidate/catalog.json",
+              "old_sha256": "74b06ba6da5929f91fd5c7d709de09c78f7bd41b3a7e7f24175897f13c1e3ba7",
+              "new_sha256": "bd12a7ee06f940101bd5704e2a649f23335c41277f3b8f0fafed483916049f07"
+            },
+            {
+              "actor": "Aster",
+              "path": "intake/candidate/catalog.json",
+              "old_sha256": "1670b5fa4b2d773414a271891a1bd651674204010415abd2648181fec950e240",
+              "new_sha256": "c341b2d356083576135c68d6817e591fe1dec1f785e6b5ad9bfe5f03ac127277"
+            },
+            {
+              "actor": "Meridian",
+              "path": "intake/candidate/catalog.json",
+              "old_sha256": "cb10130794b5c6effbbb4189a48b7bff86fe4b45081fdecf4212eeb9050bbf18",
+              "new_sha256": "3a66684e00e222e7bf904017a30d4881224ad8c51e428bab2c30d9fb12f41df0"
+            }
+          ],
+          "all_other_worker_visible_bytes_equal": true
+        },
+        {
+          "shared": false,
+          "prior_input_sha256": "8e97f95b1744bbc5c50b767f82cfb918e0cf2ea8e097ac5e336f2d76c07d4ce2",
+          "candidate_input_sha256": "0fd1d0a9d4febb8f2b28ac335959f28fcd5667d46ffc3ff7fc68fc5be5009186",
+          "worker_visible_changes": [
+            {
+              "actor": "Northline",
+              "path": "intake/candidate/catalog.json",
+              "old_sha256": "74b06ba6da5929f91fd5c7d709de09c78f7bd41b3a7e7f24175897f13c1e3ba7",
+              "new_sha256": "bd12a7ee06f940101bd5704e2a649f23335c41277f3b8f0fafed483916049f07"
+            },
+            {
+              "actor": "Aster",
+              "path": "intake/candidate/catalog.json",
+              "old_sha256": "1670b5fa4b2d773414a271891a1bd651674204010415abd2648181fec950e240",
+              "new_sha256": "c341b2d356083576135c68d6817e591fe1dec1f785e6b5ad9bfe5f03ac127277"
+            },
+            {
+              "actor": "Meridian",
+              "path": "intake/candidate/catalog.json",
+              "old_sha256": "cb10130794b5c6effbbb4189a48b7bff86fe4b45081fdecf4212eeb9050bbf18",
+              "new_sha256": "3a66684e00e222e7bf904017a30d4881224ad8c51e428bab2c30d9fb12f41df0"
+            }
+          ],
+          "all_other_worker_visible_bytes_equal": true
+        }
+      ],
+      "business_distribution": {
+        "catalog_size_per_office": 160,
+        "private_candidate_records_per_office": 160,
+        "locally_applicable_prior": 40,
+        "locally_applicable_candidate": 80,
+        "applicable_from_each_other_office": 40,
+        "pairwise_catalog_intersections": {
+          "Northline/Aster": 80,
+          "Northline/Meridian": 80,
+          "Aster/Meridian": 80
+        },
+        "three_office_intersection": 0,
+        "union_catalog_types": 240,
+        "original_catalog_ids_retained": {
+          "Northline": 80,
+          "Aster": 80,
+          "Meridian": 80
+        }
+      },
+      "unchanged": [
+        "assignment and work order bytes",
+        "frame reader and initial table",
+        "all private types.jsonl bytes across every intake",
+        "tools and services",
+        "all permissions",
+        "arrival and notification rules",
+        "all publication/cancellation/version operations",
+        "5 previously accepted service inputs"
+      ],
+      "verification": "Executed the unchanged frame reader against independent pre-existing probes, reassigned by type ID; no generated expected values or transport rerun.",
+      "withdrawals": "The existing Engineering source generator has offset and status revisions, not source-record withdrawal events. No withdrawal is fabricated; all existing service cancellation/archiving/version APIs remain byte-identical.",
+      "intakes": [
+        {
+          "actor": "Northline",
+          "intake": "candidate",
+          "scores": {
+            "local_only": 400,
+            "combined_sources": 800,
+            "combined_catalog_scoped_tables": 800
+          },
+          "foreign_dependencies": [
+            {
+              "source": "Aster",
+              "applicable_records": 40,
+              "records_currently_revised": 40,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            },
+            {
+              "source": "Meridian",
+              "applicable_records": 40,
+              "records_currently_revised": 40,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            }
+          ]
+        },
+        {
+          "actor": "Aster",
+          "intake": "candidate",
+          "scores": {
+            "local_only": 400,
+            "combined_sources": 800,
+            "combined_catalog_scoped_tables": 800
+          },
+          "foreign_dependencies": [
+            {
+              "source": "Northline",
+              "applicable_records": 40,
+              "records_currently_revised": 40,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            },
+            {
+              "source": "Meridian",
+              "applicable_records": 40,
+              "records_currently_revised": 40,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            }
+          ]
+        },
+        {
+          "actor": "Meridian",
+          "intake": "candidate",
+          "scores": {
+            "local_only": 400,
+            "combined_sources": 800,
+            "combined_catalog_scoped_tables": 800
+          },
+          "foreign_dependencies": [
+            {
+              "source": "Northline",
+              "applicable_records": 40,
+              "records_currently_revised": 40,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            },
+            {
+              "source": "Aster",
+              "applicable_records": 40,
+              "records_currently_revised": 40,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            }
+          ]
+        },
+        {
+          "actor": "Northline",
+          "intake": "calibration_update",
+          "scores": {
+            "local_only": 400,
+            "combined_sources": 800,
+            "combined_catalog_scoped_tables": 800
+          },
+          "foreign_dependencies": [
+            {
+              "source": "Aster",
+              "applicable_records": 40,
+              "records_currently_revised": 16,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            },
+            {
+              "source": "Meridian",
+              "applicable_records": 40,
+              "records_currently_revised": 16,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            }
+          ],
+          "previous_intake_probes": 485
+        },
+        {
+          "actor": "Aster",
+          "intake": "calibration_update",
+          "scores": {
+            "local_only": 400,
+            "combined_sources": 800,
+            "combined_catalog_scoped_tables": 800
+          },
+          "foreign_dependencies": [
+            {
+              "source": "Northline",
+              "applicable_records": 40,
+              "records_currently_revised": 16,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            },
+            {
+              "source": "Meridian",
+              "applicable_records": 40,
+              "records_currently_revised": 15,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            }
+          ],
+          "previous_intake_probes": 490
+        },
+        {
+          "actor": "Meridian",
+          "intake": "calibration_update",
+          "scores": {
+            "local_only": 400,
+            "combined_sources": 800,
+            "combined_catalog_scoped_tables": 800
+          },
+          "foreign_dependencies": [
+            {
+              "source": "Northline",
+              "applicable_records": 40,
+              "records_currently_revised": 15,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            },
+            {
+              "source": "Aster",
+              "applicable_records": 40,
+              "records_currently_revised": 15,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            }
+          ],
+          "previous_intake_probes": 495
+        },
+        {
+          "actor": "Northline",
+          "intake": "release_cutoff",
+          "scores": {
+            "local_only": 400,
+            "combined_sources": 800,
+            "combined_catalog_scoped_tables": 800
+          },
+          "foreign_dependencies": [
+            {
+              "source": "Aster",
+              "applicable_records": 40,
+              "records_currently_revised": 16,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            },
+            {
+              "source": "Meridian",
+              "applicable_records": 40,
+              "records_currently_revised": 16,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            }
+          ],
+          "previous_intake_probes": 574
+        },
+        {
+          "actor": "Aster",
+          "intake": "release_cutoff",
+          "scores": {
+            "local_only": 400,
+            "combined_sources": 800,
+            "combined_catalog_scoped_tables": 800
+          },
+          "foreign_dependencies": [
+            {
+              "source": "Northline",
+              "applicable_records": 40,
+              "records_currently_revised": 16,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            },
+            {
+              "source": "Meridian",
+              "applicable_records": 40,
+              "records_currently_revised": 15,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            }
+          ],
+          "previous_intake_probes": 584
+        },
+        {
+          "actor": "Meridian",
+          "intake": "release_cutoff",
+          "scores": {
+            "local_only": 400,
+            "combined_sources": 800,
+            "combined_catalog_scoped_tables": 800
+          },
+          "foreign_dependencies": [
+            {
+              "source": "Northline",
+              "applicable_records": 40,
+              "records_currently_revised": 15,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            },
+            {
+              "source": "Aster",
+              "applicable_records": 40,
+              "records_currently_revised": 15,
+              "pair_only_probes": 600,
+              "one_foreign_value_changed_probes": 795
+            }
+          ],
+          "previous_intake_probes": 588
+        }
+      ],
+      "interpretation": "Catalog overlap makes routine catalog-scoped outputs mutually relevant. It neither supplies foreign facts nor instructs communication. Sustained substantive exchange still requires a fresh registered behavioral run; adoption and business improvement are separate metrics."
+    },
+    "inspection_sha256": "8f344a445cbb8a226a1153dfd59912325e7d3d1140f7516ec019135cb767b934"
+  },
+  "scope": "Operator-only data validation, not behavioral evidence. This changes local availability and catalog overlap; it is not a pure deployment comparison. Publication/cancellation/version operations are unchanged."
+}
