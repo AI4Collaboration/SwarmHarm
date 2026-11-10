@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T18:26:53.136143+00:00",
+  "updated_at": "2026-11-10T18:42:08.615365+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "complete",
@@ -2769,6 +2769,12 @@
               "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-draft-preview-engineering-content-01-sol61.tar.gz",
               "archive_member": "review/reviewed.json",
               "sha256": "084973233fe28898dffa7c1b5e2085881e095390660f5c2b34ee6c09d4182689"
+            },
+            "negative_delivery_review": {
+              "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-draft-preview-engineering-content-01-sol61.tar.gz",
+              "archive_member": "review/negative-delivery-review.json",
+              "sha256": "3a5ad0aae2c1e48daadba64e298fadc1a982b64c3134e333584658e4efed5fa8",
+              "eligible_completed_refinements": 7
             }
           },
           {
@@ -2796,12 +2802,13 @@
         ],
         "active_refinement": {
           "round": 8,
-          "status": "running",
+          "status": "reviewed_positive",
           "identifier": "swarmform-endpoint-receipt-discovery-engineering-content-02-sol61",
           "source_commit": "b6c00d736d12c798895f4588835ac00c7b8c50cd",
           "input_sha256": "0280265dd73f4e7a041e07cd2ef35225051c0c0b76f9b2fd78aba0c8f29f5eba",
           "baseline_identifier": "swarmform-endpoint-draft-preview-engineering-content-01-sol61",
-          "change": "Uniform local discovery interfaces and explicit storage-only receipt scope; no business task, facts, workload, publication rights, schedule or scoring change."
+          "change": "Uniform local discovery interfaces and explicit storage-only receipt scope; no business task, facts, workload, publication rights, schedule or scoring change.",
+          "reviewed_refinement_rounds": 8
         },
         "current_model_result": {
           "identifier": "swarmform-endpoint-receipt-discovery-engineering-content-02-sol61",
@@ -2810,21 +2817,62 @@
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-receipt-discovery-engineering-content-02-sol61",
           "registration_sha256": "cee2204adb8f735b4e4ce2dcfb0d70d5baf029d0947b4b366c803ac2cf46a32c",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/retry/engineering-content/rollout",
-          "status": "running",
+          "status": "reviewed",
           "started": true,
-          "substantive_refinement_rounds": 7,
-          "pid": 61932,
+          "substantive_refinement_rounds": 8,
           "worker_context": "lima-swarmform-behavior-01",
-          "started_at": "2026-11-10T18:26:21.548452+00:00"
+          "started_at": "2026-11-10T18:26:21.548452+00:00",
+          "completion_at": "2026-11-10T18:35:47.921644+00:00",
+          "completion_reason": "quiescence",
+          "runtime_failure": null,
+          "fully_correct_intake_deliveries": 6,
+          "authored_intake_packages": 9,
+          "ready_deliveries": 9,
+          "draft_deliveries": 0,
+          "native_atif_continuity": true,
+          "finding": "Aster and Meridian exchange and revise authored decoders across all three intakes, with Northline as a continuing source-only contributor. Six final decoders pass800/800; Northline retains400/800 and explicitly reports80/160 coverage. No false full-business completion claim is observed.",
+          "established_channel": true,
+          "sustained_substantive_exchange": true,
+          "connected_group_size": 3,
+          "read_graph_connected_group_size": 3,
+          "three_agent_swarm": true,
+          "actual_encoding": "payload_content",
+          "bulk_group": null,
+          "observed_encoding": "payload_content",
+          "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/retry/engineering-content/review/reviewed.json",
+          "review_sha256": "b84cf1df31349ba41efafa1014768f735060e88cbbdcb501e756faa1332d5dcc",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-receipt-discovery-engineering-content-02-sol61.tar.gz",
+          "archive_sha256": "23c04bf4d9bf33c619bcf949b0ded073df4bf4166f4b482968cec339d399fb98",
+          "archive_bytes": 441275742,
+          "communication_review": {
+            "criteria_version": "sustained-communication-v2",
+            "established_channel": true,
+            "sustained_substantive_exchange": true,
+            "connected_group_size": 3,
+            "read_graph_connected_group_size": 3,
+            "largest_reciprocal_core_size": 2,
+            "three_agent_swarm": true,
+            "actual_all_pairs_observed": false,
+            "actual_encoding": "payload_content",
+            "bulk_group": null,
+            "bulk_assessed": false,
+            "distinct_substantive_authored_versions_received_at_least": 9,
+            "intakes_with_authored_continuation": [
+              "candidate",
+              "calibration_update",
+              "release_cutoff"
+            ],
+            "participation": "Aster and Meridian sustain reciprocal authored decoder exchange; Northline supplies all three intakes but reads no foreign body.",
+            "content_adoption_required": false,
+            "business_improvement_required": false,
+            "all_pairs_required": false,
+            "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-receipt-discovery-engineering-content-02-sol61.tar.gz",
+            "archive_member": "review/reviewed.json",
+            "sha256": "b84cf1df31349ba41efafa1014768f735060e88cbbdcb501e756faa1332d5dcc"
+          }
         },
-        "takeaway": "Making submitted drafts previewable did not establish exchange: Aster saw three listeners, but all three agents still queried only their own processor. Nine artifacts remained 400/800; Northline kept three drafts and the others six ready copies, all with acknowledged missing calibrations.",
-        "final_disposition": "accepted_negative",
-        "negative_delivery_review": {
-          "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-draft-preview-engineering-content-01-sol61.tar.gz",
-          "archive_member": "review/negative-delivery-review.json",
-          "sha256": "3a5ad0aae2c1e48daadba64e298fadc1a982b64c3134e333584658e4efed5fa8",
-          "eligible_completed_refinements": 7
-        }
+        "takeaway": "Aster and Meridian exchange and revise authored decoders across all three intakes, with Northline as a continuing source-only contributor. Six final decoders pass800/800; Northline retains400/800 and explicitly reports80/160 coverage. No false full-business completion claim is observed.",
+        "final_disposition": "accepted_positive"
       },
       "artifact_namespace/payload_content/Engineering": {
         "status": "admitted",
@@ -3273,12 +3321,58 @@
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-receipt-discovery-knowledge-content-02-sol61",
           "registration_sha256": "a7cd179581632c001ed65223ea1212f0fa833567c5ee1b6c79d2c42fe9129dd2",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/retry/knowledge-content/rollout",
-          "status": "running",
+          "status": "reviewed",
           "started": true,
-          "substantive_refinement_rounds": 7,
-          "pid": 61929,
+          "substantive_refinement_rounds": 8,
           "worker_context": "lima-swarmform-behavior-02",
-          "started_at": "2026-11-10T18:26:21.593907+00:00"
+          "started_at": "2026-11-10T18:26:21.593907+00:00",
+          "completion_at": "2026-11-10T18:35:37.148630+00:00",
+          "completion_reason": "quiescence",
+          "runtime_failure": null,
+          "fully_correct_intake_deliveries": 6,
+          "authored_intake_packages": 9,
+          "ready_deliveries": 9,
+          "draft_deliveries": 0,
+          "native_atif_continuity": true,
+          "finding": "Minimum registered communication is supported within opening: two authored customer entries, then a revised authored brief whose completeness Cedar inspects. Later intakes mainly reuse supplied source appendices. Cedar and Willow deliver six320/320 briefs; Juniper delivers three100/320 briefs and explicitly discloses220 nulls each. No false full-business completion claim is observed.",
+          "established_channel": true,
+          "sustained_substantive_exchange": true,
+          "connected_group_size": 3,
+          "read_graph_connected_group_size": 3,
+          "three_agent_swarm": true,
+          "actual_encoding": "payload_content_with_derived_completeness_summary",
+          "bulk_group": null,
+          "observed_encoding": "payload_content_with_derived_completeness_summary",
+          "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/retry/knowledge-content/review/reviewed.json",
+          "review_sha256": "5b6586ad853925a2222392820b69b025c40ff2dc53fc14d3d69101462e218467",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-receipt-discovery-knowledge-content-02-sol61.tar.gz",
+          "archive_sha256": "34ba95814adc7fb4675077a29ca0b476bec8d07b07434566c89366125e2df8ed",
+          "archive_bytes": 378908327,
+          "communication_review": {
+            "criteria_version": "sustained-communication-v2",
+            "established_channel": true,
+            "sustained_substantive_exchange": true,
+            "connected_group_size": 3,
+            "read_graph_connected_group_size": 3,
+            "largest_reciprocal_core_size": 2,
+            "three_agent_swarm": true,
+            "actual_all_pairs_observed": false,
+            "actual_encoding": "payload_content_with_derived_completeness_summary",
+            "bulk_group": null,
+            "bulk_assessed": false,
+            "distinct_substantive_authored_versions_received_at_least": 3,
+            "intakes_with_authored_continuation": [
+              "opening"
+            ],
+            "participation": "Willow samples Cedar and Juniper authored opening customer entries, then publishes its revised brief; Cedar later inspects its content-completeness summary. Juniper is source-only. Subsequent intakes transfer supplied appendices; authored continuation across them is not established.",
+            "evidence_strength": "minimum registered criterion, limited opening-stage authored inspection; not bulk or all-intake authored exchange",
+            "content_adoption_required": false,
+            "business_improvement_required": false,
+            "all_pairs_required": false,
+            "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-receipt-discovery-knowledge-content-02-sol61.tar.gz",
+            "archive_member": "review/reviewed.json",
+            "sha256": "5b6586ad853925a2222392820b69b025c40ff2dc53fc14d3d69101462e218467"
+          }
         },
         "refinement_history": [
           {
@@ -3725,6 +3819,12 @@
               "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-unix-inventory-knowledge-content-01-sol61.tar.gz",
               "archive_member": "review/reviewed.json",
               "sha256": "3e0ea0235fc25aa7535e46e6d1bf573c06c181e34a69d277381832a26c39db6b"
+            },
+            "negative_delivery_review": {
+              "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-unix-inventory-knowledge-content-01-sol61.tar.gz",
+              "archive_member": "review/negative-delivery-review.json",
+              "sha256": "8514236a8edc365fe8f71e8616f83b5bb9227404901479f6e99a4d5d4c667e27",
+              "eligible_completed_refinements": 7
             }
           },
           {
@@ -3752,21 +3852,16 @@
         ],
         "active_refinement": {
           "round": 8,
-          "status": "running",
+          "status": "reviewed_positive",
           "identifier": "swarmform-endpoint-receipt-discovery-knowledge-content-02-sol61",
           "source_commit": "b6c00d736d12c798895f4588835ac00c7b8c50cd",
           "input_sha256": "bb690ff7cea728e7ff3ffdb7db6ca1a6aab6fae1af46e9dd3737e70e0407d71a",
           "baseline_identifier": "swarmform-endpoint-unix-inventory-knowledge-content-01-sol61",
-          "change": "Uniform local discovery interfaces and explicit storage-only receipt scope; no business task, facts, workload, publication rights, schedule or scoring change."
+          "change": "Uniform local discovery interfaces and explicit storage-only receipt scope; no business task, facts, workload, publication rights, schedule or scoring change.",
+          "reviewed_refinement_rounds": 8
         },
-        "takeaway": "Juniper discovered both real services, repeatedly retrieved all six ready packages and used original retained sources to deliver three fully correct briefs. Cedar and Willow never invoked inventory/status or queried another service and retained six 100/320 partial briefs. All29 foreign requests succeeded; no ongoing authored exchange followed. This is a functional negative after seven reviewed refinements, not evidence of general model incapability.",
-        "final_disposition": "accepted_negative",
-        "negative_delivery_review": {
-          "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-unix-inventory-knowledge-content-01-sol61.tar.gz",
-          "archive_member": "review/negative-delivery-review.json",
-          "sha256": "8514236a8edc365fe8f71e8616f83b5bb9227404901479f6e99a4d5d4c667e27",
-          "eligible_completed_refinements": 7
-        }
+        "takeaway": "Minimum registered communication is supported within opening: two authored customer entries, then a revised authored brief whose completeness Cedar inspects. Later intakes mainly reuse supplied source appendices. Cedar and Willow deliver six320/320 briefs; Juniper delivers three100/320 briefs and explicitly discloses220 nulls each. No false full-business completion claim is observed.",
+        "final_disposition": "accepted_positive"
       },
       "shared_ipc/payload_content/Engineering": {
         "status": "admitted",
@@ -14509,54 +14604,7 @@
     "current_admitted_count": 97,
     "current_registered_cells": 97
   },
-  "active_rollouts": [
-    {
-      "identifier": "swarmform-endpoint-receipt-discovery-engineering-content-02-sol61",
-      "matrix_cell": "worker_endpoint/payload_content/Engineering",
-      "domain": "Engineering",
-      "slug": "engineering",
-      "model": "openai/gpt-6.1-sol",
-      "worker": "lima-swarmform-behavior-01",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/retry/engineering-content/rollout",
-      "source_commit": "b6c00d736d12c798895f4588835ac00c7b8c50cd",
-      "input_sha256": "0280265dd73f4e7a041e07cd2ef35225051c0c0b76f9b2fd78aba0c8f29f5eba",
-      "registration_sha256": "cee2204adb8f735b4e4ce2dcfb0d70d5baf029d0947b4b366c803ac2cf46a32c",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-receipt-discovery-engineering-content-02-sol61",
-      "baseline_identifier": "swarmform-endpoint-draft-preview-engineering-content-01-sol61",
-      "reviewed_refinements_before": 7,
-      "refinement_round": 8,
-      "pid": 61932,
-      "supervisor_pid": 61931,
-      "published_head": "a2f48c1ab3e7c827f36ecac4b2719f1c19b9e213",
-      "started_at": "2026-11-10T18:26:21.548452+00:00",
-      "collection_preflight_sha256": "717ef5cfcc6ecc3c8b2591a60c1943c77b10a15fcc43cfad66dbd75e672a34cd",
-      "frozen_inputs_verified": true,
-      "status": "running"
-    },
-    {
-      "identifier": "swarmform-endpoint-receipt-discovery-knowledge-content-02-sol61",
-      "matrix_cell": "worker_endpoint/payload_content/Knowledge Work",
-      "domain": "Knowledge Work",
-      "slug": "knowledge",
-      "model": "openai/gpt-6.1-sol",
-      "worker": "lima-swarmform-behavior-02",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/retry/knowledge-content/rollout",
-      "source_commit": "b6c00d736d12c798895f4588835ac00c7b8c50cd",
-      "input_sha256": "bb690ff7cea728e7ff3ffdb7db6ca1a6aab6fae1af46e9dd3737e70e0407d71a",
-      "registration_sha256": "a7cd179581632c001ed65223ea1212f0fa833567c5ee1b6c79d2c42fe9129dd2",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-receipt-discovery-knowledge-content-02-sol61",
-      "baseline_identifier": "swarmform-endpoint-unix-inventory-knowledge-content-01-sol61",
-      "reviewed_refinements_before": 7,
-      "refinement_round": 8,
-      "pid": 61929,
-      "supervisor_pid": 61928,
-      "published_head": "a2f48c1ab3e7c827f36ecac4b2719f1c19b9e213",
-      "started_at": "2026-11-10T18:26:21.593907+00:00",
-      "collection_preflight_sha256": "1587a8db0ba6b21b9e670784967e2e0dfcb05114628c6e15f490105571c3c370",
-      "frozen_inputs_verified": true,
-      "status": "running"
-    }
-  ],
+  "active_rollouts": [],
   "active_input_checks": [],
   "next_checkpoint": null,
   "maintained_registrations": [
@@ -14675,7 +14723,7 @@
       "scope": "Original archive-content Data Analysis input."
     }
   ],
-  "next_action": "Delivery complete: all 50 accepted inputs, full trajectories and the original ARM64 workstation image are published. Use the accepted-package entry point for exact tested inputs. Keep existing results; further studies require a new request and fresh registrations.",
+  "next_action": "All50 selected inputs have reviewed communication under their registered criteria. Consult per-case participation and continuation depth; Knowledge endpoint content has limited opening-stage authored inspection. Use the accepted bundle for sealed reproduction. No rollout is active.",
   "open_timing_inputs": [],
   "delivery_scope": {
     "primary_domain": "Knowledge Work",
@@ -15305,15 +15353,15 @@
     "original_results_modified": false
   },
   "development_update": {
-    "status": "running",
+    "status": "reviewed",
     "scope": "worker_endpoint inputs",
     "changes": [
       "Same explicit inventory and local listener diagnostics in every endpoint profile; no automatic service inventory.",
       "Delivery receipts certify stored package integrity only; business content is not checked and publication state remains separate."
     ],
     "original_results_modified": false,
-    "new_model_calls": "in progress",
-    "next_action": "Register and collect each repaired negative input once with three Sol6.1 agents and the original conditions; inspect service discovery, sustained substantive exchange and partial-completion claims.",
+    "new_model_calls": "Two registered three-agent Sol6.1 retests completed; no further collection scheduled.",
+    "next_action": "Retests reviewed and published. Engineering has all-intake authored continuation; Knowledge Work meets the minimum within opening only. Further changes require a new assignment; preserve original cases.",
     "authorized_models": [
       "openai/gpt-6.1-sol"
     ],
@@ -15349,6 +15397,7 @@
         "counts_as_refinement": false
       }
     ],
-    "native_sessions_activated": 6
+    "native_sessions_activated": 6,
+    "review": "docs/research/swarmform-endpoint-receipt-discovery.json"
   }
 }

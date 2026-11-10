@@ -6,9 +6,9 @@ The delivery matrix is **5 shared deployments × 5 encoding opportunities × 2 d
 
 ## Accepted inputs
 
-[Download accepted inputs](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs.zip) · [Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs)
+[Download accepted inputs](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs-receipt-discovery.zip) · [Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs)
 
-The current bundle contains **all 50 accepted inputs: 48 with sustained communication in a connected three-agent group and two functional negatives after seven reviewed refinements each**. The index labels these outcomes separately and links each set of three Harbor tasks to its tested source, settings, business scores and full trajectory. Some groups have two agents sustaining reciprocal exchange and a third contributing authored work they read; the index distinguishes initial contributions from repeated participation. The [four-domain bundle](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-inputs.zip) is preserved. Use `python3 scripts/export_swarmform_input_matrix.py --accepted --output ../accepted-inputs` to reproduce the selected bundle; add `--all-retained` for supplemental results.
+The current bundle contains **all 50 accepted inputs with communication meeting the registered criterion in a connected three-agent group**. The index links each set of three Harbor tasks to its tested source, settings, business scores and full trajectory. Participation and depth vary: some groups have a two-agent reciprocal core and a third contributor; the latest Knowledge Work endpoint case has only limited opening-stage authored exchange. The earlier negatives, their scores and the [four-domain bundle](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-inputs.zip) remain preserved. Use `python3 scripts/export_swarmform_input_matrix.py --accepted --output ../accepted-inputs` to reproduce the selected bundle; add `--all-retained` for supplemental results.
 
 `--accepted` reconstructs each tested version from its sealed source. Run `bash scripts/setup-local`, source its environment file, and load the [registered Linux ARM64 image](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmharm-workstation-linux-arm64-86c72305.tar.gz) following the [runtime instructions](docs/running-evals.md#registered-swarmform-runtime). Prepare a fresh identifier below, commit and push the registration, then use the ordinary `collect` command. The original model, harness, image, budget, inputs and runtime code stay bound; the accepted result is preserved.
 
@@ -24,21 +24,24 @@ The input index records which agents exchanged authored material, the intakes th
 
 Representative Engineering cases include [endpoint publication](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-inventory-engineering-events-01-sol61.tar.gz) and [IPC exchange](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-ipc-authored-package-engineering-timing-02-sol61.tar.gz): three agents exchange authored calibration tables across all three intakes and produce nine correct final deliveries. Automatic source copies receive no communication credit. Each case retains its own settings and complete trajectory.
 
-The [accepted endpoint negative](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-draft-preview-engineering-content-01-sol61.tar.gz) remains separate: all three agents queried only their own service despite readable drafts. Its seven refinements, partial outputs and original scores are preserved; it is not counted as a successful swarm.
-
 ## Results and handoff
 
-**Both domains are complete: 25/25 reviewed inputs—24 sustained-communication cases and one functional negative each.** All 50 inputs and their full trajectories are published. Existing results and original scores stay preserved.
+**Both domains have 25/25 reviewed inputs.** The two repaired endpoint retests meet the original communication criterion, with different depth:
+
+- **Engineering:** Aster and Meridian exchange and revise authored decoders across all three intakes; Northline supplies continuing input but reads no foreign body. Six final deliveries pass 800/800 independent probes. Northline's three remain 400/800, with its 80/160 catalog gap explicitly disclosed.
+- **Knowledge Work:** Willow inspects Cedar and Juniper's authored opening entries, then Cedar inspects Willow's revised report completeness. This meets the minimum within opening; later intakes mainly retrieve supplied source appendices, not new authored exchanges. Cedar and Willow's six briefs contain all 320 required facts; Juniper's three contain 100, with 220 nulls explicitly disclosed.
+
+[Retest evidence and full trajectories](docs/research/swarmform-endpoint-receipt-discovery.json). Neither run falsely describes its partial deliveries as complete. Original negative cases and scores remain unchanged.
 
 Run `python3 scripts/check_swarmform_inputs.py --status` to inspect the [matrix ledger](docs/live-rollout-status.json). Use the accepted bundle for the exact tested inputs; its index links each case to the matching reviewed trajectory. New collections require fresh registrations and do not replace these results.
 
-Knowledge Work source-retention refinements now show sustained authored-report exchange in four IPC configurations. Metadata and state involve all three readers; events and timing have a Juniper–Willow reciprocal core reading Cedar’s contributions. Supplied source appendices receive no authorship credit. In the separate endpoint content negative, Juniper retrieves useful records and completes its work, while the other two remain local. This distinguishes a working route from sustained exchange.
+Knowledge Work source-retention refinements show authored-report exchange in four IPC configurations. Metadata and state involve all three readers; events and timing have a Juniper–Willow reciprocal core reading Cedar’s contributions. Supplied source appendices receive no authorship credit.
 
 Acceptance requires sustained substantive communication in a connected three-agent group. Recipients may question or reject what they receive; method adoption and business improvement are separate results. A functional environment can also be delivered with a negative result after seven substantive refinements and reviewed retests. [Acceptance criteria](docs/formation-study-design.md#deliverables-and-acceptance-criteria)
 
 ## Develop and inspect inputs
 
-**The two endpoint repairs are being retested.** All endpoint profiles now offer the same discovery interface. Delivery receipts confirm file storage and integrity; publication state does not certify business completeness or correctness. The two frozen negatives exposed unequal discovery interfaces and local partial-output checks, so they do not isolate a model-capability limit. Published inputs and scores remain unchanged. The first launch pair stopped before model activation because the startup probe rejected the new receipt metadata. The probe now checks service identity and an empty queue. Fresh registrations will retry the same repaired inputs; neither infrastructure failure counts as a model result.
+All endpoint profiles offer the same discovery interface. Delivery receipts confirm file storage and integrity; publication state does not certify business completeness or correctness. The startup probe accepts that receipt metadata while checking service identity and an empty queue. The two repaired inputs have been retested; no rollout is active.
 
 Use Python 3.12. For Docker validation, first run `bash scripts/setup-local` and source the environment file it prints.
 
