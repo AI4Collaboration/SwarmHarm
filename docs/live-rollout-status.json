@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T09:50:56.328327+00:00",
+  "updated_at": "2026-11-10T09:52:58.441493+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -9977,7 +9977,7 @@
       },
       "job_namespace/timing/Knowledge Work": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/job-api-description-timing-knowledge-admission.json",
+        "evidence": "docs/research/swarmform-inputs/completed-read-job-timing-knowledge-admission.json",
         "refinement_history": [
           {
             "model_result": {
@@ -10093,7 +10093,14 @@
             "sha256": "c1b83e4b407895f4b4a4f9f9528f5a330e9b93db92dce0b2d6471c2d1507bc3f"
           }
         },
-        "takeaway": "A standard API description was read, but other job authors and automatic timestamps remained discovery only: no sustained substantive exchange formed. All nine publications were delivered with 80/320 correct facts each. Willow autonomously corrected a polling script that had missed already-arrived closing files."
+        "takeaway": "A standard API description was read, but other job authors and automatic timestamps remained discovery only: no sustained substantive exchange formed. All nine publications were delivered with 80/320 correct facts each. Willow autonomously corrected a polling script that had missed already-arrived closing files.",
+        "pending_refinement": {
+          "input_sha256": "e5d7d79d980e7dc1f4af975914acb1873be890b54b9d0ab02748e647221949c2",
+          "source_commit": "652c49e00108a0563caee79a7af316a531d45fa1",
+          "baseline_identifier": "swarmform-knowledge-job-timing-api-description-01-sol61",
+          "round": 3,
+          "change": "Enable existing same-scope reads of completed result ZIPs for Knowledge Work timing-profile jobs; cancellation revokes subsequent reads."
+        }
       },
       "artifact_namespace/timing/Engineering": {
         "status": "admitted",
@@ -10650,7 +10657,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-job-metadata-options-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-engineering-job-metadata-options-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-archive-metadata-options-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-knowledge-job-timing-api-description-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-overlap-knowledge-content-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-overlap-engineering-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-draft-preview-engineering-content-01-sol61",
@@ -10672,7 +10678,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-engineering-archive-ready-read-timing-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 40,
+  "frozen_registration_count": 41,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
