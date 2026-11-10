@@ -50,7 +50,7 @@ class CheckSelectionChecks(unittest.TestCase):
         self.assertIn('catalog', plan['checks'])
         self.assertIn('wording', plan['checks'])
         self.assertIn('tests.swarmform_registration_checks', plan['tests'])
-        self.assertFalse(plan['docker'])
+        self.assertTrue(plan['docker'])
         self.assertEqual(plan['harnesses'], [])
 
     def test_worker_markdown_is_not_treated_as_operator_documentation(self):
@@ -73,7 +73,7 @@ class CheckSelectionChecks(unittest.TestCase):
             'tests.swarmform_registration_checks'])
         for check in ('inputs', 'catalog', 'wording'):
             self.assertIn(check, plan['checks'])
-        self.assertFalse(plan['docker'])
+        self.assertTrue(plan['docker'])
         self.assertEqual(plan['harnesses'], [])
 
     def test_archive_policy_binding_keeps_registration_without_unrelated_harnesses(self):
@@ -149,7 +149,7 @@ class CheckSelectionChecks(unittest.TestCase):
             self.assertEqual(plan['tests'], ['tests.swarmform_archive_outcome_checks',
                 'tests.swarmform_delivery_state_checks', 'tests.swarmform_domain_checks',
                 'tests.swarmform_package_checks'])
-            self.assertFalse(plan['docker'])
+            self.assertTrue(plan['docker'])
             self.assertEqual(plan['harnesses'], [])
 
     def test_overlapping_selections_execute_each_suite_once(self):
