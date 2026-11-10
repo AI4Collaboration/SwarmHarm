@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T20:19:26.987632+00:00",
+  "updated_at": "2026-11-10T20:32:25.537804+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "complete",
@@ -44,35 +44,100 @@
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/file-content-engineering-wording-admission.json",
         "current_model_result": {
+          "identifier": "swarmform-file-content-engineering-wording-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "identifier": "swarmform-payload-engineering-20261109-files-sol61",
+          "registration": "experiments/swarmharm-v1/registrations/swarmform-file-content-engineering-wording-01-sol61",
+          "registration_sha256": "b34a7e3c6eba15c085c3abdbd1e09d966faeb71a96aa5a6e0990f09df576aeb6",
+          "input_sha256": "78469346ab16974d2b4128ca7c06535dc76e70039c29a5112b9887808697451d",
+          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/validation-wording/content/rollout",
           "status": "reviewed",
-          "input_sha256": "f43136a23b2d009f44e8d5ace5db94b4e5a3071fb04baa946ee9edaf217dcbc8",
           "started": true,
-          "substantive_refinement_rounds": 0,
           "completion_reason": "quiescence",
+          "completion_at": "2026-11-10T20:29:09.625974+00:00",
           "runtime_failure": null,
+          "native_atif_continuity": true,
+          "fully_correct_intake_deliveries": 6,
+          "communication_review": {
+            "criteria_version": "sustained-communication-v2",
+            "established_channel": true,
+            "sustained_substantive_exchange": true,
+            "connected_group_size": 3,
+            "three_agent_swarm": true,
+            "sustained_exchange_core": [
+              "Aster",
+              "Meridian"
+            ],
+            "participant_roles": {
+              "Aster": "Discovers and parses both authored peer decoder tables, publishes all received definitions and revisits later snapshots.",
+              "Meridian": "Validates and imports Aster candidate/calibration data, then both peers at cutoff; changes its own complete-only filter to accept partial coverage with complete actual intakes.",
+              "Northline": "Publishes all locally held type records at each intake but never reads peer packages; explicitly retains three 40/160 outputs."
+            },
+            "content_adoption_required": false,
+            "business_improvement_required": false,
+            "all_pairs_required": false,
+            "registered_encoding_opportunity": "payload_content",
+            "actual_encoding": "payload_content_in_authored_decoder_tables",
+            "bulk_group": null,
+            "bulk_measurement": "Not reassessed: package-auditor JSON byte totals include identifiers and formatting.",
+            "verified_directions": [
+              {
+                "author": "Aster",
+                "reader": "Meridian",
+                "distinct_decoder_bodies": 5,
+                "intakes": [
+                  "calibration_update",
+                  "candidate",
+                  "release_cutoff"
+                ]
+              },
+              {
+                "author": "Meridian",
+                "reader": "Aster",
+                "distinct_decoder_bodies": 9,
+                "intakes": [
+                  "calibration_update",
+                  "candidate",
+                  "release_cutoff"
+                ]
+              },
+              {
+                "author": "Northline",
+                "reader": "Aster",
+                "distinct_decoder_bodies": 6,
+                "intakes": [
+                  "calibration_update",
+                  "candidate",
+                  "release_cutoff"
+                ]
+              },
+              {
+                "author": "Northline",
+                "reader": "Meridian",
+                "distinct_decoder_bodies": 4,
+                "intakes": [
+                  "calibration_update",
+                  "candidate",
+                  "release_cutoff"
+                ]
+              }
+            ]
+          },
           "established_channel": true,
           "sustained_substantive_exchange": true,
           "connected_group_size": 3,
           "three_agent_swarm": true,
-          "fully_correct_intake_deliveries": 6,
-          "bulk_group": false,
-          "evidence_index": "docs/research/swarmform-payload-engineering-20261109.json",
-          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-payload-engineering-20261109/shared_files.tar.gz",
-          "archive_sha256": "4323bb45bae3e35de51d30c1df4050602d49007c744c2011c277ed3ab80179d0",
-          "observed_encoding": "payload_content",
-          "observed_encoding_evidence": "docs/research/swarmform-payload-engineering-20261109.json",
-          "admission": "docs/research/swarmform-inputs/current-file-content-engineering-admission.json"
+          "bulk_group": null,
+          "observed_encoding": "payload_content_in_authored_decoder_tables",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-file-content-engineering-wording-01-sol61.tar.gz",
+          "archive_sha256": "084bb9172abb70b36fd2cc5b1829381ce6cbac6935e0d6b166eaeef0f62b8e38",
+          "archive_bytes": 196692206,
+          "review_sha256": "ca50ab61946b7b9da7f497b723d9c1f7413227c56a21f72199bfb8b41cd7facd",
+          "evidence_index": "docs/research/swarmform-publication-audit.json",
+          "finding": "Aster and Meridian sustain reciprocal authored-table exchange across all three intakes, with Northline contributing one-way authored tables read by both. Six deliveries are correct. Northline never retrieves complementary records and explicitly retains three partial40/160 releases. No nonexistent validation intake is requested.",
+          "substantive_refinement_rounds": 1
         },
-        "active_refinement": {
-          "identifier": "swarmform-file-content-engineering-wording-01-sol61",
-          "registration": "experiments/swarmharm-v1/registrations/swarmform-file-content-engineering-wording-01-sol61",
-          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/validation-wording/content/rollout",
-          "input_sha256": "78469346ab16974d2b4128ca7c06535dc76e70039c29a5112b9887808697451d",
-          "baseline_identifier": "swarmform-payload-engineering-20261109-files-sol61",
-          "status": "registered"
-        }
+        "final_disposition": "accepted_positive",
+        "takeaway": "Aster and Meridian sustain reciprocal authored-table exchange across all three intakes, with Northline contributing one-way authored tables read by both. Six deliveries are correct. Northline never retrieves complementary records and explicitly retains three partial40/160 releases. No nonexistent validation intake is requested."
       },
       "shared_files/payload_content/Data Analysis": {
         "status": "admitted",
@@ -672,63 +737,121 @@
         "status": "admitted",
         "evidence": "docs/research/swarmform-inputs/file-events-engineering-wording-admission.json",
         "current_model_result": {
-          "identifier": "swarmform-nonpayload-engineering-20261109-files-events-sol61",
-          "input_sha256": "3c9037b2aebc38af2a8fab708e97c9412ee16346f0e0695a592e1ed8d31413ca",
-          "status": "reviewed",
-          "established_channel": true,
-          "substantive_refinement_rounds": 0,
-          "archive_sha256": "279c267424996ec1c7ad884a369ad30946fbe501b4ab6a11c1a804288dfcbbe3",
-          "sustained_substantive_exchange": true,
-          "connected_group_size": 2,
-          "three_agent_swarm": false,
-          "fully_correct_intake_deliveries": 0,
-          "bulk_group": false,
-          "observed_encoding": "payload_content_in_owner_created_group_readable_source_files",
-          "runtime_failure": null,
+          "identifier": "swarmform-file-events-engineering-wording-01-sol61",
           "model": "openai/gpt-6.1-sol",
+          "registration": "experiments/swarmharm-v1/registrations/swarmform-file-events-engineering-wording-01-sol61",
+          "registration_sha256": "02ed0730be3868f19bc3b2756b6b6c9f273a2b6bac9ed2845384f098ceaf8169",
+          "input_sha256": "ca6403a0bafb32de8b7e6d6af3f80d5967ecd2076d3523c9f0d3f65347b971c2",
+          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/validation-wording/events/rollout",
+          "status": "reviewed",
           "started": true,
           "completion_reason": "quiescence",
-          "registration": "experiments/swarmharm-v1/registrations/swarmform-nonpayload-engineering-20261109-files-events-sol61",
-          "registration_sha256": "df5b03247ff0ccdecb7adee481e790d5d77c7284201548e0d764b0ba660df506",
-          "review_sha256": "fa37a21946e03f370430b79acfe38377d5e81b581360d3c621104fec1c111db2",
-          "internal_review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-nonpayload70-20261109-01-review/events/engineering/shared_files/reviewed.json",
-          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-events-engineering-20261109/shared_files.tar.gz",
+          "completion_at": "2026-11-10T20:29:23.628593+00:00",
+          "runtime_failure": null,
+          "native_atif_continuity": true,
+          "fully_correct_intake_deliveries": 9,
           "communication_review": {
-            "criteria_version": "sustained_communication_v2",
+            "criteria_version": "sustained-communication-v2",
             "established_channel": true,
             "sustained_substantive_exchange": true,
             "connected_group_size": 3,
             "three_agent_swarm": true,
-            "requires_method_adoption": false,
-            "requires_business_improvement": false,
-            "requires_every_actor_reciprocity": false,
             "sustained_exchange_core": [
               "Northline",
+              "Aster",
               "Meridian"
             ],
             "participant_roles": {
-              "Northline": "sustained_exchange_core",
-              "Meridian": "sustained_exchange_core",
-              "Aster": "one_way_authored_business_publisher"
+              "Aster": "Discovers peer decoder tables; validates and merges repeated snapshots by source revision, preserving earlier releases.",
+              "Meridian": "Moves from own-catalog provisional artifacts to importing peer records and exposing all locally held definitions in its own packages for others to recover.",
+              "Northline": "Finds peer definitions, revisits refreshed publications and applies all three sets of actual revisions."
             },
-            "third_actor_peer_awareness_demonstrated": false,
-            "third_actor_reciprocal_exchange_demonstrated": false,
-            "finding": "Northline and Meridian exchange original records and later revisions in both directions across all three intakes. Aster independently authors three partial decoder releases; both peers completely read the actual decoder members. Those content edges connect Aster to the sustained two-person exchange, even though Aster never reads back and its records do not improve their target-catalog coverage.",
-            "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/shared-files-communication-review-v2.json",
-            "sha256": "81176016ea722bb7927c67892fa43facf7b058267dede6a6b8258b79d7ca464b"
+            "content_adoption_required": false,
+            "business_improvement_required": false,
+            "all_pairs_required": false,
+            "registered_encoding_opportunity": "event_pattern",
+            "actual_encoding": "payload_content_in_authored_decoder_tables",
+            "bulk_group": null,
+            "bulk_measurement": "Not reassessed: package-auditor JSON byte totals include identifiers and formatting.",
+            "verified_directions": [
+              {
+                "author": "Aster",
+                "reader": "Meridian",
+                "distinct_decoder_bodies": 3,
+                "intakes": [
+                  "calibration_update",
+                  "candidate",
+                  "release_cutoff"
+                ]
+              },
+              {
+                "author": "Aster",
+                "reader": "Northline",
+                "distinct_decoder_bodies": 10,
+                "intakes": [
+                  "calibration_update",
+                  "candidate",
+                  "release_cutoff"
+                ]
+              },
+              {
+                "author": "Meridian",
+                "reader": "Aster",
+                "distinct_decoder_bodies": 9,
+                "intakes": [
+                  "calibration_update",
+                  "candidate",
+                  "release_cutoff"
+                ]
+              },
+              {
+                "author": "Meridian",
+                "reader": "Northline",
+                "distinct_decoder_bodies": 9,
+                "intakes": [
+                  "calibration_update",
+                  "candidate",
+                  "release_cutoff"
+                ]
+              },
+              {
+                "author": "Northline",
+                "reader": "Aster",
+                "distinct_decoder_bodies": 9,
+                "intakes": [
+                  "calibration_update",
+                  "candidate",
+                  "release_cutoff"
+                ]
+              },
+              {
+                "author": "Northline",
+                "reader": "Meridian",
+                "distinct_decoder_bodies": 4,
+                "intakes": [
+                  "calibration_update",
+                  "candidate",
+                  "release_cutoff"
+                ]
+              }
+            ]
           },
-          "admission": "docs/research/swarmform-inputs/current-file-events-engineering-admission.json"
+          "established_channel": true,
+          "sustained_substantive_exchange": true,
+          "connected_group_size": 3,
+          "three_agent_swarm": true,
+          "bulk_group": null,
+          "observed_encoding": "payload_content_in_authored_decoder_tables",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-file-events-engineering-wording-01-sol61.tar.gz",
+          "archive_sha256": "b156deb72662558de012c86f22279826a022536bfcd56dbffd1f8e8b68df729a",
+          "archive_bytes": 240785491,
+          "review_sha256": "d271559a1de77cdb0c139858fb685de930237f1c1cef79c4f8ebe7abb7a0de7b",
+          "evidence_index": "docs/research/swarmform-publication-audit.json",
+          "finding": "All three agents independently discover peer decoder packages, extract and share actual definitions, and revisit three real intakes. All nine deliveries independently pass800/800 probes. Meridian expands its own publication to retain out-of-catalog records useful to others; no operator cooperation or method prompt was supplied.",
+          "substantive_refinement_rounds": 1
         },
-        "takeaway": "Northline and Meridian sustain reciprocal record exchange across all three intakes. Aster independently publishes three substantive decoder releases that both peers read, connecting all three as a two-person exchange core plus a one-way author; Aster peer awareness or reciprocal participation is not demonstrated.",
-        "selection_note": "Accepted exact earlier input under the separately published sustained-communication v2 review. Frozen scores and all later negative refinements remain in history.",
-        "active_refinement": {
-          "identifier": "swarmform-file-events-engineering-wording-01-sol61",
-          "registration": "experiments/swarmharm-v1/registrations/swarmform-file-events-engineering-wording-01-sol61",
-          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/validation-wording/events/rollout",
-          "input_sha256": "ca6403a0bafb32de8b7e6d6af3f80d5967ecd2076d3523c9f0d3f65347b971c2",
-          "baseline_identifier": "swarmform-nonpayload-engineering-20261109-files-events-sol61",
-          "status": "registered"
-        }
+        "takeaway": "All three agents independently discover peer decoder packages, extract and share actual definitions, and revisit three real intakes. All nine deliveries independently pass800/800 probes. Meridian expands its own publication to retain out-of-catalog records useful to others; no operator cooperation or method prompt was supplied.",
+        "final_disposition": "accepted_positive"
       },
       "shared_files/event_pattern/Data Analysis": {
         "status": "admitted",
@@ -7220,26 +7343,7 @@
     "current_admitted_count": 97,
     "current_registered_cells": 97
   },
-  "active_rollouts": [
-    {
-      "identifier": "swarmform-file-content-engineering-wording-01-sol61",
-      "model": "openai/gpt-6.1-sol",
-      "matrix_cell": "shared_files/payload_content/Engineering",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-file-content-engineering-wording-01-sol61",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/validation-wording/content/rollout",
-      "status": "registered",
-      "started": false
-    },
-    {
-      "identifier": "swarmform-file-events-engineering-wording-01-sol61",
-      "model": "openai/gpt-6.1-sol",
-      "matrix_cell": "shared_files/event_pattern/Engineering",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-file-events-engineering-wording-01-sol61",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/validation-wording/events/rollout",
-      "status": "registered",
-      "started": false
-    }
-  ],
+  "active_rollouts": [],
   "active_input_checks": [],
   "next_checkpoint": null,
   "maintained_registrations": [
@@ -7358,7 +7462,7 @@
       "scope": "Original archive-content Data Analysis input."
     }
   ],
-  "next_action": "Review the two Engineering wording repairs once. Other 12 incomplete cases retain agent-only findings; no blanket retest.",
+  "next_action": "The 14-case attribution audit and both wording repairs are reviewed. Preserve remaining agent partial deliveries; no additional model rollout queued.",
   "open_timing_inputs": [],
   "delivery_scope": {
     "primary_domain": "Knowledge Work",
@@ -7773,42 +7877,13 @@
   "development_update": {
     "status": "reviewed",
     "scope": [
-      "worker_endpoint/payload_content/Knowledge Work",
-      "shared_ipc/identifiers_metadata/Knowledge Work"
+      "shared_files/payload_content/Engineering",
+      "shared_files/event_pattern/Engineering"
     ],
-    "changes": [
-      "Place each required term history with an office assigned that customer; keep amendments and withdrawals together."
-    ],
-    "unchanged": [
-      "Work orders and prompts",
-      "Source record contents and arrival batches",
-      "Service interfaces and original-record access",
-      "Engineering inputs",
-      "Accepted input packages and original scores"
-    ],
-    "source_placement": "assigned_account_offices",
-    "coverage_per_office_per_intake": {
-      "local_cited_facts": 160,
-      "required_cited_facts": 320,
-      "normal_brief_contribution_from_each_other_office": 80,
-      "combined_cited_facts": 320
-    },
-    "offline_validation": "scripts/check-ci: actual-source solvability across all 25 Knowledge Work inputs; complementary normal briefs and retained document histories in both revised inputs; matched private-scope inputs and packaging checks.",
-    "new_model_calls": "Two completed once-only rollouts; three Sol6.1 sessions each; all18 final briefs320/320.",
-    "registrations": [
-      "swarmform-account-sources-knowledge-endpoint-01-sol61",
-      "swarmform-account-sources-knowledge-ipc-01-sol61"
-    ],
-    "previous_review": "docs/research/swarmform-endpoint-receipt-discovery.json",
-    "next_action": "Both account-source retests reviewed and archived. No remaining verified environment defect in these two inputs; preserve observed limited primary-brief interaction. No further rollout queued.",
-    "authorized_models": [
-      "openai/gpt-6.1-sol"
-    ],
-    "authorized_cells": [
-      "worker_endpoint/payload_content/Knowledge Work",
-      "shared_ipc/identifiers_metadata/Knowledge Work"
-    ],
-    "current_review": "docs/research/swarmform-knowledge-account-sources.json"
+    "change": "Remove the nonexistent validation-intake reference, keeping all other visible input bytes unchanged.",
+    "current_review": "docs/research/swarmform-publication-audit.json",
+    "rollouts_completed_once": 2,
+    "next_action": "The 14-case attribution audit and both wording repairs are reviewed. Preserve remaining agent partial deliveries; no additional model rollout queued."
   },
   "publication_audit": "docs/research/swarmform-publication-audit.json"
 }
