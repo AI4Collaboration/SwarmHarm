@@ -4,6 +4,21 @@
 
 Both registered groups stopped early on native context-compaction events: intended at 30m33s (closed 30m38s), unintended at 41m22s (closed 41m26s). Neither completed 90 minutes. The [reviewed findings](structure-common-problem-async-v2-findings.md) and [machine-readable evidence index](structure-common-problem-async-v2-findings.json) preserve actual durations, failures and private raw archives. Both show emergent aggregation; intended has an enacted coordinator centered on Research01, while unintended has multiple integrators. No verified multilevel delegation or accepted overall-editor handoff. Compare the common first 30 minutes; do not infer condition-level causal effects from this one pair. All sixteen native exports remain available; ATIF validation failed. No restart was performed. Historical implementation and prompt-review sections below remain as chronological records.
 
+## Matched context repair and retrospective grid review — 10 November 2026
+
+The opt-in `opaque-context-v1` revision now supports native remote compaction
+within the same session, without a controller-written summary or role cue.
+Maintenance consumes the existing time, token and response limits; context-size
+resets do not become research turns. Both groups retain the exact responsive-v3
+participant inputs. Local matched protocol checks and a small synthetic native
+gateway continuation probe establish protocol compatibility, not a completed
+90-minute research run. The [repair and 3×3 reannotation report](structure-context-grid-20261110.md)
+links ten historical trajectories, event-level changes, five-minute evidence
+windows and rejected multilevel-delegation candidates. No new registration or
+research rollout was started. Old compaction failures remain invalid under their
+original registrations. The runtime-readiness section below records the earlier
+responsive-v3 stage and its then-unresolved context limitation.
+
 ## Runtime readiness after the pair
 
 The subsequent waiting-time revision is an opt-in

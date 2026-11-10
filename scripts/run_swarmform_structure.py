@@ -39,6 +39,10 @@ def write_tasks(output,visible,manifest,duration,deployment):
 
 
 def register(args, *, source=None, runtime=None):
+    if getattr(args,'context_maintenance',False):
+        args.responsive_research=True
+        if args.model != 'openai/gpt-6.1-sol':
+            raise ValueError('Opaque context maintenance is validated for openai/gpt-6.1-sol only')
     research.resolve_limits(args)
     source=source or base.published_head()
     runtime=runtime or base.check_runtime()
@@ -78,6 +82,9 @@ def register(args, *, source=None, runtime=None):
         raise ValueError('Extended settling requires the concurrent workload witness')
     if theory and witness.get('workload')!=workload:
         raise ValueError('Common-problem task requires its own matched runtime witness')
+    from codex_context import POLICY as CONTEXT_POLICY
+    if getattr(args,'context_maintenance',False) and witness.get('context_policy') != CONTEXT_POLICY:
+        raise ValueError('Context maintenance requires a matching offline protocol witness')
     output.mkdir(parents=True)
     design='docs/structure-common-problem-design.md' if theory else 'docs/structure-study-design.md'
     verification_name='input-verification.json' if theory else 'solvability.json'
@@ -90,7 +97,8 @@ def register(args, *, source=None, runtime=None):
         destination=output/'code'/relative;destination.parent.mkdir(parents=True,exist_ok=True)
         shutil.copy2(ROOT/relative,destination);hashes[relative]=base.sha(destination)
     task_hashes=write_tasks(output,visible,manifest,args.duration,args.deployment)
-    harness=base.codex_gateway.harness_registration('off',args.model)
+    harness=base.codex_gateway.harness_registration('off',args.model,
+        context_policy=CONTEXT_POLICY if getattr(args,'context_maintenance',False) else None)
     settings=manifest['effective_settings']
     domain='Mathematical Research' if theory else 'Knowledge Work'
     reg={'schema_version':1,'identifier':args.identifier,'created_at':utc(),
@@ -270,6 +278,8 @@ def main():
     preview.add_argument('--output',type=Path,required=True)
     responsive_preview=sub.add_parser('preview-responsive',help='Render instrumented responsive scheduling without a rollout')
     responsive_preview.add_argument('--output',type=Path,required=True)
+    context_preview=sub.add_parser('preview-context',help='Render matched opaque context policy without a rollout')
+    context_preview.add_argument('--output',type=Path,required=True)
     prepare=sub.add_parser('prepare');collect_parser=sub.add_parser('collect')
     worker=sub.add_parser('execute-frozen',help='Internal sealed execution after committed preflight')
     for command in (prepare,collect_parser,worker):
@@ -294,14 +304,18 @@ def main():
                          help='Use the fixed matched 90-minute theory policy; no quiescence exit')
     prepare.add_argument('--responsive-research',action='store_true',
                          help='Opt in to matched latency recording and responsive scheduling; implies sustained research')
+    prepare.add_argument('--context-maintenance',action='store_true',
+                         help='Opt in to matched opaque native compaction; implies responsive research')
     collect_parser.add_argument('--key-file',type=Path,required=True)
     worker.add_argument('--key-file',type=Path,required=True)
     args=parser.parse_args()
-    if args.command in ('preview-sustained','preview-responsive'):
+    if args.command in ('preview-sustained','preview-responsive','preview-context'):
         from swarmform.research_preview import write_preview
-        print(json.dumps(write_preview(args.output,responsive=args.command=='preview-responsive'),indent=2))
+        print(json.dumps(write_preview(args.output,responsive=args.command!='preview-sustained',
+            context_maintenance=args.command=='preview-context'),indent=2))
         return
     if args.command=='prepare':
+        if args.context_maintenance:args.responsive_research=True
         try:research.resolve_limits(args)
         except ValueError as error:parser.error(str(error))
         if min(args.duration,args.max_tools,args.max_responses,args.max_tokens,args.min_free_gib,args.request_timeout_seconds)<1:

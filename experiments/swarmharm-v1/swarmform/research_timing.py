@@ -75,12 +75,26 @@ def _distribution(values):
 def _native_events(root, actor):
     from codex_evidence import mcp_output_text
     events = []
+    from codex_context import ContextLifecycle, policy
+    registration = root/'registration.json'
+    registered = json.loads(registration.read_text()).get('harness', {}) if registration.exists() else {}
+    context = ContextLifecycle() if policy(registered.get('context_policy')) else None
     for path in sorted((root / 'natural' / actor / 'codex/native').glob('*.json')):
         row = json.loads(path.read_text())
         if row.get('direction') != 'server' or not isinstance(row.get('captured_monotonic'), (int, float)):
             continue
         message = row['message'];method = message.get('method');params = message.get('params') or {}
         item = params.get('item') or {}
+        if context:
+            try:
+                maintenance = context.observe(message, str(path))
+                if maintenance:
+                    if maintenance['type'] == 'context_maintenance':
+                        events.append({'kind': 'context_'+maintenance['phase'],
+                            'monotonic': row['captured_monotonic'], 'record': str(path.relative_to(root))})
+                    continue
+            except ValueError:
+                break
         if method in ('thread/compacted', 'model/rerouted') or item.get('type') == 'contextCompaction':
             break  # Private compaction is not another research response.
         event = {'monotonic': row['captured_monotonic'], 'record': str(path.relative_to(root))}
@@ -196,7 +210,13 @@ def inventory(root, registration):
             measure('matching_write_trace_to_first_scan', write['trace_unix'], seen, write['actor'])
     for actor, events in native.items():
         ready = None
+        compact_started = None
         for event in events:
+            if event['kind'] == 'context_started':
+                compact_started = event['monotonic']
+            elif event['kind'] == 'context_completed':
+                measure('context_maintenance', compact_started, event['monotonic'], actor)
+                compact_started = None
             if event['kind'] in ('input', 'tool_receipt'): ready = event['monotonic']
             elif event['kind'] == 'output' and ready is not None:
                 measure('native_input_or_tool_receipt_to_output', ready, event['monotonic'], actor);ready = None
@@ -205,7 +225,7 @@ def inventory(root, registration):
         'matching_write_trace_to_first_scan', 'scan_lock_wait', 'scan_service', 'tool_executor_queue',
         'tool_result_queue', 'workstation_lock_wait', 'workstation_service_including_evidence',
         'continuation_due_to_dispatch', 'native_input_or_tool_receipt_to_output',
-        'tool_completion_to_native_receipt', 'tool_received_to_handoff')
+        'tool_completion_to_native_receipt', 'tool_received_to_handoff', 'context_maintenance')
     completion_path = root / 'completion.json'
     completion = json.loads(completion_path.read_text()) if completion_path.exists() else {}
     return {'schema': 'research-latency-v1', 'condition': registration['condition'],

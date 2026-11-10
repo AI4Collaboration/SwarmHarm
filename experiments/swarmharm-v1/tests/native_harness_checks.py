@@ -74,6 +74,7 @@ class NativeHarnessChecks(unittest.TestCase):
         import threading
         from codex_session import CodexAgent
         agent=CodexAgent.__new__(CodexAgent)
+        agent.context=None
         agent.lock=threading.RLock();agent.active=True
         agent.timeout=1800;agent.idle_timeout=600
         agent.last_progress=agent.last_activity=0
@@ -91,6 +92,7 @@ class NativeHarnessChecks(unittest.TestCase):
         import threading
         from codex_session import CodexAgent
         agent=CodexAgent.__new__(CodexAgent)
+        agent.context=None
         agent.lock=threading.RLock();agent.active=True
         agent.timeout=1800;agent.idle_timeout=600
         agent.last_progress=agent.last_activity=0
@@ -108,6 +110,7 @@ class NativeHarnessChecks(unittest.TestCase):
         from codex_session import CodexAgent
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);agent=CodexAgent.__new__(CodexAgent)
+            agent.context=None
             agent.home=root/'home';(agent.home/'sessions').mkdir(parents=True)
             native=agent.home/'sessions/rollout-thread.jsonl';native.write_text('{"partial":true}\n')
             agent.folder=root/'retained';agent.folder.mkdir()
@@ -128,6 +131,7 @@ class NativeHarnessChecks(unittest.TestCase):
         import threading
         from codex_session import CodexAgent
         agent = CodexAgent.__new__(CodexAgent)
+        agent.context = None
         agent.lock = threading.RLock()
         agent.actor, agent.thread_id, agent.turn = 'actor', 'thread', 3
         agent.events, agent.commands = queue.Queue(), queue.Queue()
@@ -167,6 +171,7 @@ class NativeHarnessChecks(unittest.TestCase):
         ):
             with self.subTest(retry=retry, info=info, flag=flag):
                 agent = CodexAgent.__new__(CodexAgent)
+                agent.context = None
                 agent.lock = threading.RLock()
                 agent.actor, agent.thread_id, agent.turn = 'actor', 'thread', 1
                 agent.events, agent.commands = queue.Queue(), queue.Queue()
@@ -287,6 +292,7 @@ class NativeHarnessChecks(unittest.TestCase):
         for raw in ('{', 'null', '[]', '"text"', '42'):
             with self.subTest(arguments=raw):
                 agent = CodexAgent.__new__(CodexAgent)
+                agent.context = None
                 agent.stopping = False
                 agent.thread_id = 'fixture'
                 agent.call_ready = threading.Condition()

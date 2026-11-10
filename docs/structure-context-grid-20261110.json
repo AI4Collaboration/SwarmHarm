@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "status": "local checks and native gateway capability passed; fixed-source CI and archive pending; no research rollout",
+  "new_research_rollouts": 0,
+  "new_registrations": 0,
+  "source_commit": null,
+  "context_policy": {
+    "version": "opaque-context-v1",
+    "threshold": 200000,
+    "foreground_only": true,
+    "same_session": true,
+    "new_controller_summary_text": null,
+    "same_participant_inputs": true,
+    "same_automatic_notices": true,
+    "maintenance_counts_toward_existing_clock_and_budget": true,
+    "historical_registrations_unchanged": true
+  },
+  "validation": {
+    "local_check_report": "checks-release.json",
+    "matched_fixture_members": 16,
+    "automatic_compactions_per_member": 2,
+    "native_gateway_capability": {
+      "research_rollouts": 0,
+      "synthetic_protocol_probe": true,
+      "model": "openai/gpt-6.1-sol",
+      "completed_stages": [
+        "initial_response",
+        "opaque_compaction",
+        "continuation"
+      ],
+      "final_text": "violet-482",
+      "success": true
+    },
+    "native_gateway_observed_completed_responses": 3,
+    "native_gateway_observed_tokens": 15298,
+    "earlier_generic_http_probe": {
+      "http_status": 403,
+      "counted_as_inference": false
+    },
+    "local_release_checks_passed": true,
+    "shutdown_regression_report": "checks-stop.json",
+    "canvas_typescript_check_passed": true,
+    "shutdown_regression_passed": true
+  },
+  "reannotation": {
+    "report": "docs/structure-grid-review-v1.json",
+    "sha256": "0d8916cc8e1321bb8229abfa1d310db4aebc7d526461e20e838a16993cd7ba34",
+    "historical_runs": 10,
+    "events": 81,
+    "passive_windows": 45,
+    "verified_cited_files": 213,
+    "outside_grid_events": 20,
+    "native_session_exports_present": 78,
+    "expected_native_sessions": 80,
+    "latest_async_pair_exports": 16,
+    "source_manifest_sha256": "cf21fa3d6d2a38a31089a21654f753338416a41308befcaeeb6f34e9a1ce81d5",
+    "readme_snapshot_sha256": "fc9872fd6e4dfe68b9e484b1bedf1726ef48be5f3f19a9b1752061c1ce17dd1b",
+    "annotation_sha256": "07322e1f00fec08b94f7d5a1d44ec0edc192cec009547c1f890f66189c78a8a2",
+    "independent_blinded_review": false,
+    "verified_multilevel_delegation": false,
+    "historical_scores_overwritten": false,
+    "delegation_audit": "docs/structure-delegation-audit-v1.json",
+    "byte_identical_reproduction": true
+  },
+  "archive": null,
+  "ci": null,
+  "limits": [
+    "Protocol checks do not establish 90-minute behavioral completion or opaque-summary semantic fidelity.",
+    "Per-event/subgroup grid labels are not whole-cohort leadership transitions.",
+    "Latest pair has only a common first 30-minute descriptive comparison.",
+    "Older versions remain separate; two early session exports are missing, with original RPC evidence retained."
+  ]
+}

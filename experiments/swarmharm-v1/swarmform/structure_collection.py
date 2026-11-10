@@ -16,6 +16,7 @@ class StructureCollection(Collection):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.usage = {}
+        self.maintenance_usage = {}
         self.budget_stop = None
         self.last_space_check = 0
         try:
@@ -381,16 +382,24 @@ class StructureCollection(Collection):
                 self.research_due[actor] = time.monotonic()+self.reg['sustained_research']['resume_after_response_seconds']
                 self.record(actor, {'type': 'research_response_ended', 'at': utc(),
                     'research_state': value, 'project_stopped': False})
-        if message['type'] == 'provider_response':
-            value = message['event']['response']
-            self.usage[actor, value['id']] = value.get('usage', {})
-            records = [u for (owner,_),u in self.usage.items() if owner==actor]
+        if message['type'] in ('provider_response', 'context_usage'):
+            if message['type'] == 'provider_response':
+                value = message['event']['response']
+                self.usage[actor, value['id']] = value.get('usage', {})
+            else:
+                self.maintenance_usage[actor, message['id']] = message['usage']
+            research_records = [u for (owner,_),u in self.usage.items() if owner==actor]
+            maintenance = [u for (owner,_),u in self.maintenance_usage.items() if owner==actor]
+            records = research_records + maintenance
             tokens = sum((u.get('input_tokens') or 0)+(u.get('output_tokens') or 0) for u in records)
             self.states[actor].update(observed_model_responses=len(records), observed_tokens=tokens,
-                missing_usage_records=sum(not u for u in records))
+                missing_usage_records=sum(not u for u in records),
+                observed_research_responses=len(research_records), context_responses=len(maintenance),
+                context_tokens=sum(u['input_tokens']+u['output_tokens'] for u in maintenance))
             save(self.root/'usage.json', {'actors':{a:{k:v for k,v in s.items() if k in
-                ('observed_model_responses','observed_tokens','missing_usage_records')} for a,s in self.states.items()},
-                'scope':'Observed native completed responses; opaque transport retries and in-flight calls may exceed these totals.'})
+                ('observed_model_responses','observed_tokens','missing_usage_records',
+                 'observed_research_responses','context_responses','context_tokens')} for a,s in self.states.items()},
+                'scope':'Observed native completed research and maintenance responses; opaque transport retries and in-flight calls may exceed these totals.'})
             if self.stopping.is_set():
                 # Final response records still count, but a limit crossed while
                 # retaining them must not relabel an earlier runtime failure.

@@ -97,17 +97,37 @@ def native_evidence(folder, requests):
             if row['slug']==requested.removeprefix('openai/'):
                 row['slug']=requested
     assert profile == expected, 'Codex profile changed native instructions or unregistered capabilities'
-    for record in records.values():
+    from codex_context import ContextLifecycle, policy, validate_checkpoints
+    context_policy = policy(harness.get('context_policy'))
+    context = ContextLifecycle() if context_policy else None
+    epochs = {}
+    for source, record in records.items():
         message = record['message']
+        if context:
+            context.observe(message, source)
+            epochs[source] = context.epoch
         params = message.get('params') or {}
         assert not params.get('threadId') or params['threadId'] == session, 'Codex thread identity changed'
-        assert message.get('method') not in ('model/rerouted', 'thread/compacted'), 'Codex model or context changed'
-        assert params.get('item', {}).get('type') != 'contextCompaction', 'Codex context compacted'
+        assert message.get('method') != 'model/rerouted', 'Codex model changed'
+        if not context:
+            assert message.get('method') != 'thread/compacted', 'Codex context changed'
+            assert params.get('item', {}).get('type') != 'contextCompaction', 'Codex context compacted'
         if message.get('method') == 'thread/started':
             assert params['thread']['id'] == session, 'Codex thread identity changed'
+    if context:
+        assert context.active is None, 'Incomplete context maintenance'
+        validate_checkpoints(folder/'codex/session.jsonl', len(context.completed))
+        import tomllib
+        config = tomllib.loads((folder/'codex/config.toml').read_text())
+        assert config['model_auto_compact_token_limit'] == context_policy['auto_compact_token_limit']
+        assert config['features']['async_compaction'] is False
+        assert config['model_providers']['axonhub']['capabilities']['remote_compaction'] == 'v2'
     for path in requests:
         request = json.loads(path.read_text())
         assert request['session_id'] == session
+        if context:
+            assert request['context_epoch'] == epochs[request['native_record']]
+            assert request['history_scope'] == context_policy['projection']
         check_results(request['input'],request['native_record'])
         response_path = path.with_name(path.name.replace('.request.json', '.response.json'))
         if not response_path.exists():

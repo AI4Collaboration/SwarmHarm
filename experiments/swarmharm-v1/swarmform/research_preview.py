@@ -7,7 +7,9 @@ from swarmform.publication_updates import PublicationUpdates
 from swarmform.structure import build_theory, verify_theory_inputs
 
 
-def preview(*, responsive=False):
+def preview(*, responsive=False, context_maintenance=False):
+    from codex_context import POLICY
+    responsive = responsive or context_maintenance
     result = {'kind': 'unregistered-input-preview', 'model_calls': 0,
               'scope': 'Exact study-supplied inputs. Native harness stock instructions are unchanged and recorded separately at collection.',
               'model': 'openai/gpt-6.1-sol', 'reasoning': 'high', 'population': 8,
@@ -22,6 +24,7 @@ def preview(*, responsive=False):
         if not verification['passed']:
             raise ValueError('Preview input verification failed')
         result['conditions'][condition] = {'input': visible, 'manifest': manifest, 'verification': verification}
+    if context_maintenance:result['context_policy'] = dict(POLICY)
     intended = result['conditions']['intended']['input']
     unintended = result['conditions']['unintended']['input']
     for actor in intended['startup']:
@@ -34,6 +37,8 @@ def preview(*, responsive=False):
 def render_text(value):
     parts = ['UNREGISTERED REVIEW COPY — NO ROLLOUT', value['scope'],
              'Matched runtime policy:\n'+json.dumps(value['policy'], indent=2)]
+    if value.get('context_policy'):
+        parts.append('Matched context maintenance (no participant text):\n'+json.dumps(value['context_policy'],indent=2))
     for condition, item in value['conditions'].items():
         visible = item['input']; actor = 'Research01'
         parts.append('\nCONDITION: '+condition+' — startup texts (identical for all eight)')
@@ -47,9 +52,9 @@ def render_text(value):
     return '\n\n'.join(parts)+'\n'
 
 
-def write_preview(output, *, responsive=False):
+def write_preview(output, *, responsive=False, context_maintenance=False):
     output = Path(output)
-    value = preview(responsive=responsive)
+    value = preview(responsive=responsive, context_maintenance=context_maintenance)
     output.mkdir(parents=True, exist_ok=True)
     (output/'agent-inputs.json').write_text(json.dumps(value, ensure_ascii=False, indent=2)+'\n')
     (output/'agent-prompts.txt').write_text(render_text(value))

@@ -115,18 +115,20 @@ GOAL_PROGRESS_GUARD = {
 }
 
 
-def harness_registration(goal_mode, model):
+def harness_registration(goal_mode, model, *, context_policy=None):
     validate_model(model)
-    return runtime_registration(goal_mode)
+    return runtime_registration(goal_mode, context_policy=context_policy)
 
 
-def runtime_registration(goal_mode):
+def runtime_registration(goal_mode, *, context_policy=None):
+    from codex_context import policy
+    context_policy = policy(context_policy)
     from codex_session import NETWORK_ERROR_CODES
     if goal_mode not in GOAL_MODES:
         raise ValueError('Unsupported native Codex goal mode')
     with isolated_home() as home:
         catalog = native_catalog(home)
-    return {'kind':'codex','authentication':'axonhub','gateway':AXONHUB_BASE,
+    return {**({'context_policy': context_policy} if context_policy else {}), 'kind':'codex','authentication':'axonhub','gateway':AXONHUB_BASE,
         'codex_cli':cli_identity(), 'installed':{'codex-cli':cli_identity()['version']},
         'native_catalog_sha256':digest(catalog), 'goal_mode':goal_mode,
         'goal_progress_guard':dict(GOAL_PROGRESS_GUARD) if goal_mode=='codex_goal' else None,
@@ -158,7 +160,7 @@ def verify_runtime(harness):
         raise RuntimeError('Codex goal guard changed; prepare a fresh registration')
     if cli_identity() != harness['codex_cli']:
         raise RuntimeError('Codex executable changed; prepare a fresh registration')
-    require_same_harness(harness, runtime_registration(harness['goal_mode']))
+    require_same_harness(harness, runtime_registration(harness['goal_mode'], context_policy=harness.get('context_policy')))
 
 
 def native_tools(goal_mode):
@@ -175,7 +177,9 @@ def command(goal_mode='off'):
             'app-server','--listen','stdio://']
 
 
-def write_config(home, workspace, definitions, endpoint, model, effort, catalog):
+def write_config(home, workspace, definitions, endpoint, model, effort, catalog, *, context_policy=None):
+    from codex_context import policy
+    context_policy = policy(context_policy)
     validate_model(model)
     # Keep native instructions byte-for-byte; alias only the matching model slug
     # so the gateway receives its exact registered provider-prefixed identity.
@@ -199,4 +203,8 @@ def write_config(home, workspace, definitions, endpoint, model, effort, catalog)
         'command='+json.dumps(sys.executable),
         'args='+json.dumps([str(Path(__file__).parent/'codex_mcp.py'),str(definitions),str(endpoint)]),
         '[tools.experimental_request_user_input]','enabled=false']
+    if context_policy:
+        config[config.index('model_auto_compact_token_limit=2147483647')] = 'model_auto_compact_token_limit='+str(context_policy['auto_compact_token_limit'])
+        config.insert(0, 'features.async_compaction=false')
+        config.insert(config.index('requires_openai_auth=false')+1, 'capabilities.remote_compaction="v2"')
     (home/'config.toml').write_text('\n'.join(config)+'\n')

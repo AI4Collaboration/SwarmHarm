@@ -279,7 +279,7 @@ class Collection:
                 actor, message = self.events.get_nowait()
             except queue.Empty:
                 return
-            if message['type'] in ('request', 'response_update', 'provider_response'):
+            if message['type'] in ('request', 'response_update', 'provider_response', 'context_usage'):
                 try:
                     self.handle(actor, message, deployment)
                 except Exception as error:

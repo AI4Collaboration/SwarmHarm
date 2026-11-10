@@ -79,6 +79,11 @@ class CodexAgent:
         self.base_tools = list(active_tools)
         self.active_tools = list(active_tools)
         self.registered = registered_harness
+        from codex_context import ContextLifecycle, policy
+        self.context_policy = policy((registered_harness or {}).get('context_policy'))
+        if self.context_policy and (not self.gateway or goal_mode != 'off'):
+            raise ValueError('Context maintenance requires the registered gateway and goal off')
+        self.context = ContextLifecycle() if self.context_policy else None
         self.history = [{'role': 'system', 'content': json.dumps(runtime.SYSTEM_PROMPT)}]
         self.inputs, self.calls, self.replies = [], {}, {}
         self.output, self.outputs, self.sources = [], [], []
@@ -181,7 +186,8 @@ class CodexAgent:
                 self.listener.settimeout(0.2)
                 stack.callback(self.listener.close)
                 self.runtime.write_config(self.home, workspace, self.tool_path, endpoint,
-                    self.model, self.effort, catalog)
+                    self.model, self.effort, catalog,
+                    **({'context_policy': self.context_policy} if self.context_policy else {}))
                 shutil.copy2(self.home / 'catalog.json', self.folder / 'tool-profile.json')
                 shutil.copy2(self.home / 'config.toml', self.folder / 'config.toml')
                 self.rpc = CodexRpc(self.runtime.command(self.goal_mode) if self.gateway else self.runtime.command(), env=(self.runtime.gateway_env(self.home, self.api_base, self.api_key) if self.gateway
@@ -361,7 +367,9 @@ class CodexAgent:
             'reasoning': {'effort': self.effort}, 'input': self.history,
             'tools': self._tools(), 'system_prompt_config': self.runtime.SYSTEM_PROMPT,
             'session_id': self.thread_id, 'native_turn_id': self.native_turn,
-            'native_record': source, 'native_input_records': self.inputs})
+            'native_record': source, 'native_input_records': self.inputs,
+            **({'context_epoch': self.context.epoch, 'history_scope': self.context_policy['projection']}
+               if self.context else {})})
 
     def _response(self, source, completed=False, usage=None):
         value = {'record_kind': 'controller_projection', 'projection_source': 'codex-app-server',
@@ -392,6 +400,18 @@ class CodexAgent:
                 if params.get('threadId') and self.thread_id and params['threadId'] != self.thread_id:
                     raise RuntimeError('Codex thread identity changed')
                 self._observe_response_activity(method, params)
+                if self.context:
+                    if (method == 'item/started' and params.get('item', {}).get('type') == 'contextCompaction'
+                            and self.response_open):
+                        raise RuntimeError('Context maintenance overlaps an open research response')
+                    context_event = self.context.observe(message, source)
+                    if context_event:
+                        if context_event.get('phase') == 'interrupted':
+                            if not self.stopping:
+                                raise RuntimeError('Unexpected context maintenance interruption')
+                            self.active = False
+                        self.emit(context_event.pop('type'), turn=self.turn, **context_event)
+                        return
                 if method == 'turn/started':
                     self.native_turn = params['turn']['id']
                     if self.first_native_turn is None:self.first_native_turn = self.native_turn
@@ -531,7 +551,7 @@ class CodexAgent:
                         self.emit('settled', turn=self.turn, text=self.final_text,
                             error_message=None, aborted=False)
             except Exception as error:
-                self._fatal(error)
+                self._fatal(error, even_if_stopping=bool(self.context and self.context.active))
 
     def _server_request(self, message, source):
         params = message.get('params') or {}
