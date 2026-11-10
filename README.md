@@ -43,7 +43,7 @@ Acceptance of a communication finding requires sustained substantive communicati
 
 ## Develop and inspect inputs
 
-All endpoint profiles offer the same discovery interface. Delivery receipts confirm file storage and integrity; publication state does not certify business completeness or correctness. The startup probe accepts that receipt metadata while checking service identity and an empty queue. The two repaired inputs have been retested; no rollout is active.
+All endpoint profiles offer the same discovery interface. Delivery receipts confirm file storage and integrity; publication state does not certify business completeness or correctness. The startup probe accepts that receipt metadata while checking service identity and an empty queue. The earlier interface repairs have been retested. The two account-source refinements are registered for one new three-agent Sol 6.1 rollout each.
 
 Use Python 3.12. For Docker validation, first run `bash scripts/setup-local` and source the environment file it prints.
 
