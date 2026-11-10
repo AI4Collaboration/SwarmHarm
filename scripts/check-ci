@@ -123,7 +123,7 @@ def select_checks(files, full=False):
         elif name == 'experiments/runtime/workstation_observer.py':
             suites('swarmform_runtime', 'swarmform_read_observer', 'swarmform_workstation_retention', 'swarmform_deployment')
         elif name.startswith('experiments/structure/'):
-            if stem in {'communication_inventory','artifact_use_timeline','exact_source_use','shared_content_inventory','source_pool_review'}:
+            if stem in {'communication_inventory','artifact_use_timeline','exact_source_use','shared_content_inventory','source_pool_review','common_problem_review'}:
                 suites('structure_observations')
             else:
                 suites('structure_business' if stem=='business_review' else 'structure_timeline', 'swarmform_structure')

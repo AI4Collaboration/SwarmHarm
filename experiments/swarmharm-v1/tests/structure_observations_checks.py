@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 
 ROOT=Path(__file__).resolve().parents[3]
@@ -22,12 +23,46 @@ def module(name):
 communication=module('communication_inventory');timeline=module('artifact_use_timeline')
 shared=module('shared_content_inventory')
 pools=module('source_pool_review')
+with patch.dict(sys.modules,{'communication_inventory':communication}):
+    common=module('common_problem_review')
 
 
 def hexed(text):return ''.join('\\x%02x'%v for v in text.encode())
 
 
 class StructureObservationChecks(unittest.TestCase):
+    def test_common_artifact_versions_keep_overwrites_and_do_not_assign_authors(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder)
+            examples=[('A','001','2026-11-10T00:02:00+00:00','revised'),
+                      ('A','002','2026-11-10T00:03:00+00:00','revised'),
+                      ('B','001','2026-11-10T00:01:00+00:00','initial')]
+            for actor,name,at,text in examples:
+                p=root/'natural'/actor/'observations'/(name+'.json');p.parent.mkdir(parents=True,exist_ok=True)
+                p.write_text(json.dumps({'at':at,'snapshot':{'/var/tmp/exports':{
+                    '/var/tmp/exports/navier-stokes/research.md':base64.b64encode(text.encode()).decode()}}}))
+            result=common.shared_versions(root)
+            self.assertEqual(result['snapshot_count'],3)
+            self.assertEqual([r['text'] for r in result['versions']],['initial','revised'])
+            self.assertEqual(result['versions'][1]['observation_count'],2)
+            self.assertEqual(result['versions'][1]['last_observation']['at'],examples[1][2])
+            self.assertFalse(any('author' in r for r in result['versions']))
+
+    def test_common_usage_deduplicates_within_actor_but_keeps_distinct_agents(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);response={'id':'same-id','usage':{'input_tokens':20,'output_tokens':3,
+                'input_tokens_details':{'cached_tokens':12}}}
+            for actor in ('A','B'):
+                p=root/'natural'/actor/'trace';p.mkdir(parents=True)
+                for number in (1,2):(p/f'{number}.response.json').write_text(json.dumps(response))
+            completion={'actors':{a:{'observed_tokens':23,'observed_model_responses':1} for a in ('A','B')}}
+            result=common.usage_review(root,completion)
+            self.assertEqual(result['totals']['responses'],2)
+            self.assertEqual(result['totals']['uncached_input_tokens'],16)
+            self.assertTrue(result['all_reconcile'])
+            completion['actors']['B']['observed_tokens']=24
+            self.assertFalse(common.usage_review(root,completion)['all_reconcile'])
+
     def test_pool_reader_timing_does_not_turn_late_or_redundant_access_into_influence(self):
         def read(path, at, receiver='A', refs=('d',)):
             return {'resource_path':path, 'read_at_unix':str(at), 'receiver':receiver,
