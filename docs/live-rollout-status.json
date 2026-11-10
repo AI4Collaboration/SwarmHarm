@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T12:48:26.861706+00:00",
+  "updated_at": "2026-11-10T12:48:56.370115+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -11219,7 +11219,7 @@
       },
       "worker_endpoint/timing/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/list-status-endpoint-timing-engineering-admission.json",
+        "evidence": "docs/research/swarmform-inputs/ready-publication-endpoint-timing-engineering-admission.json",
         "current_model_result": {
           "identifier": "swarmform-endpoint-list-status-engineering-timing-01-sol61",
           "model": "openai/gpt-6.1-sol",
@@ -11548,7 +11548,14 @@
           "baseline_identifier": "swarmform-endpoint-activity-inventory-engineering-timing-01-sol61",
           "change": "Default own-list output includes the existing local processor status object: own URL and actual kernel TCP listeners. No extra HTTP or automatic inventory; explicit --url listing, status/inventory/activity, permissions, tasks, data and arrivals stay exact."
         },
-        "takeaway": "Engineering endpoint timing round 5 is negative: Meridian discovers both foreign processors and sees their initial publication timestamps, but its only two foreign list attempts precede publication and return 403. No foreign authored note or ZIP is received, and no later exchange occurs. All nine own-source decoders score 400/800; Meridian keeps three ready copies, while Aster and Northline preserve six drafts. The local-status change supports discovery, not sustained communication."
+        "takeaway": "Engineering endpoint timing round 5 is negative: Meridian discovers both foreign processors and sees their initial publication timestamps, but its only two foreign list attempts precede publication and return 403. No foreign authored note or ZIP is received, and no later exchange occurs. All nine own-source decoders score 400/800; Meridian keeps three ready copies, while Aster and Northline preserve six drafts. The local-status change supports discovery, not sustained communication.",
+        "pending_refinement": {
+          "input_sha256": "d8b419f87a259965235c5385f2daa41d26a85bd9410b9df925919ec040c2a76a",
+          "source_commit": "5e9ef8a6ab92fbb92be21534dd4d5bc67a72253f",
+          "baseline_identifier": "swarmform-endpoint-list-status-engineering-timing-01-sol61",
+          "round": 6,
+          "change": "Enable same-namespace ready delivery listing and ZIP read using the existing events publication policy. Timing activity projection, all clients/default-list status, private sources, work orders, arrivals and budget remain unchanged. Draft/archived copies and writes remain owner-only. No automatic query or cooperation cue."
+        }
       },
       "worker_endpoint/timing/Data Analysis": {
         "status": "admitted",
@@ -13090,12 +13097,11 @@
     "experiments/swarmharm-v1/registrations/swarmform-ipc-template-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-authored-package-engineering-timing-02-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-list-status-engineering-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-release-notes-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-engineering-metadata-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 63,
+  "frozen_registration_count": 64,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
