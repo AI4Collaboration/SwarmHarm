@@ -66,6 +66,16 @@ class CheckSelectionChecks(unittest.TestCase):
         self.assertFalse(plan['docker'])
         self.assertEqual(plan['harnesses'], [])
 
+    def test_endpoint_service_edits_keep_delivery_input_and_registration_checks(self):
+        plan = select(['experiments/swarmharm-v1/swarmform/endpoint_service.py'])
+        self.assertEqual(plan['tests'], ['tests.swarmform_delivery_state_checks',
+            'tests.swarmform_domain_checks', 'tests.swarmform_package_checks',
+            'tests.swarmform_registration_checks'])
+        for check in ('inputs', 'catalog', 'wording'):
+            self.assertIn(check, plan['checks'])
+        self.assertFalse(plan['docker'])
+        self.assertEqual(plan['harnesses'], [])
+
     def test_archive_service_edits_do_not_select_unrelated_harnesses(self):
         plan = select(['experiments/swarmharm-v1/swarmform/base_archive.py',
                        'experiments/swarmharm-v1/swarmform/profile_archive.py'])
