@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T05:49:38.031677+00:00",
+  "updated_at": "2026-11-10T06:03:55.358402+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -1793,7 +1793,7 @@
       },
       "worker_endpoint/payload_content/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/overlapping-catalog-endpoint-content-engineering-admission.json",
+        "evidence": "docs/research/swarmform-inputs/draft-preview-endpoint-content-engineering-admission.json",
         "refinement_history": [
           {
             "model_result": {
@@ -2129,7 +2129,14 @@
             "sha256": "6156ecbf58cc1680c8904f4f8953b206f7c36af5d5fe33c63fd4097fc5e9de76"
           }
         },
-        "takeaway": "Overlapping calibration catalogs made each ordinary release useful to other offices, including Northline's own-catalog subset, but all three agents still queried only their own processor. No channel or sustained exchange formed. All nine final artifacts were 400/800 and remained draft; neither score nor non-adoption was used as the communication gate."
+        "takeaway": "Overlapping calibration catalogs made each ordinary release useful to other offices, including Northline's own-catalog subset, but all three agents still queried only their own processor. No channel or sustained exchange formed. All nine final artifacts were 400/800 and remained draft; neither score nor non-adoption was used as the communication gate.",
+        "pending_refinement": {
+          "input_sha256": "3ed16f7ec7cfcfe7368e2bac20d9cd252787fe96cec016bb908e23a9fb6e8138",
+          "source_commit": "7b4a18ff5b71c9aca3ea0681ed6674d5f2665893",
+          "baseline_identifier": "swarmform-endpoint-overlap-engineering-content-01-sol61",
+          "round": 7,
+          "change": "Separate draft preview from final release readiness for this Engineering content service: existing submitted draft/ready ZIPs are readable; archived copies and other profiles retain account restrictions."
+        }
       },
       "artifact_namespace/payload_content/Engineering": {
         "status": "admitted",
@@ -8208,11 +8215,10 @@
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-job-timing-api-description-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-engineering-job-timing-api-description-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-overlap-knowledge-content-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-overlap-engineering-content-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-overlap-engineering-metadata-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 35,
+  "frozen_registration_count": 36,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
