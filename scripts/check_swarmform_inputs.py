@@ -174,6 +174,8 @@ def check_workloads(matrix, *, run_tests=True):
 
 
 def print_status(status):
+    from swarmform_delivery_export import is_final
+
     matrix = status["matrix"]
     selected = {'/'.join(cell) for cell in selected_cells(status)}
     cells = [cell for key, cell in matrix['cells'].items() if key in selected]
@@ -184,6 +186,7 @@ def print_status(status):
     communication = [communication_result(result) for result in reviewed]
     sustained = sum(bool(result.get("three_agent_swarm") and result.get("sustained_substantive_exchange"))
                     for result in communication)
+    delivered = sum(is_final(cell) for cell in cells)
     smaller = sum(bool(result.get("established_channel")) for result in communication) - sustained
     sys.path.insert(0, str(PACKAGE))
     from swarmform.input_catalog import build
@@ -196,6 +199,8 @@ def print_status(status):
             from_main += digest(manifest) == read_record(repository_file(cell["evidence"]))["input_sha256"]
     scope = status['delivery_scope']
     print(f"Delivery: {scope['primary_input_count']} {scope['primary_domain']} inputs + {scope['generalization_input_count']} {scope['generalization_domain']} inputs.")
+    print(f"Accepted inputs: {delivered}/{total} ({sustained} sustained communication, "
+          f"{delivered - sustained} reviewed negative). Remaining: {total - delivered}.")
     print(f"Inputs: {admitted}/{total} have an admitted version, {from_main}/{total} match the current generator.")
     print(f"Latest reviewed versions: {len(reviewed)}. Sustained three-agent exchange: {sustained}. "
           f"Other observed channels: {smaller}. No observed channel: {len(reviewed) - sustained - smaller}.")

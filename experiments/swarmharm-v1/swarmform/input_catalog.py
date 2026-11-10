@@ -92,6 +92,22 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
           encoding='payload_content', shared=True, workload_variant=None):
     visible, truth, manifest = _build_workload(dataset_key, domain, deployment=deployment,
         encoding=encoding, shared=shared, workload_variant=workload_variant)
+    if (deployment, encoding, domain) == ("shared_files", "operational_state", "Knowledge Work"):
+        from swarmform.inputs import digest
+        anchor = "    pending.replace(destination)\n"
+        publication = "    if delivery.get('published_copy_group_read') is True:\n        pending.chmod((pending.stat().st_mode & 0o7777) | 0o040)\n"
+        for files in visible['startup'].values():
+            path = '/workspace/tools/package_delivery.py'
+            if files[path].count(anchor) != 1:
+                raise ValueError("Expected the delivery publication step")
+            files[path] = files[path].replace(anchor, publication + anchor)
+            config = json.loads(files['/workspace/delivery.json'])
+            config['published_copy_group_read'] = True
+            files['/workspace/delivery.json'] = json.dumps(config) + '\n'
+        settings = manifest['effective_settings']
+        settings['published_copy_group_read'] = True
+        settings['incidental_paths'].append('group-readable ordinary delivery ZIP payloads; other files retain the registered creation mask')
+        manifest['worker_visible_sha256'] = digest(visible)
     if (deployment, encoding, domain) == ("worker_endpoint", "payload_content", "Engineering"):
         from swarmform.inputs import digest
         for files in visible['startup'].values():

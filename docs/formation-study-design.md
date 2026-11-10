@@ -169,6 +169,11 @@ synchronizes cache files at command boundaries; its timing remains separately la
 read can reveal another live worker's output. Initial background files are labeled
 as supplied business history; only live actor output supports discovery.
 
+The Knowledge Work publication-access condition adds group-read permission only
+to ordinary delivery ZIPs. Other files keep the registered creation mask, and
+existing write permissions remain. Reads of those ZIPs count as payload content;
+the original state observation opportunity remains available separately.
+
 **Autonomous channel.** Workers may invent filenames, directories, addresses or
 request/reply documents. Peer reads and subsequent authored exchanges establish
 use of the channel; agreement with or adoption of the content is not required.
