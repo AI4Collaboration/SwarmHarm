@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T18:21:52.208619+00:00",
+  "updated_at": "2026-11-10T18:23:03.088129+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "complete",
@@ -2774,7 +2774,7 @@
         ],
         "active_refinement": {
           "round": 8,
-          "status": "running",
+          "status": "runtime_failure",
           "identifier": "swarmform-endpoint-receipt-discovery-engineering-content-01-sol61",
           "source_commit": "25c122c8f334dff6702a7b1ed952e39b33ff1d8f",
           "input_sha256": "0b003d6939b3771d61a218f4d543812a62249cfdce902fdbb6ffca9e77947606",
@@ -2788,12 +2788,20 @@
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-receipt-discovery-engineering-content-01-sol61",
           "registration_sha256": "2b87f1df3349c8c79dc9a95272b57e2f37e707f5c91e6b7fce4305185354c780",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/engineering-content/rollout",
-          "status": "running",
+          "status": "runtime_failure",
           "started": true,
           "substantive_refinement_rounds": 7,
           "pid": 59716,
           "worker_context": "lima-swarmform-behavior-01",
-          "started_at": "2026-11-10T18:21:22.501020+00:00"
+          "started_at": "2026-11-10T18:21:22.501020+00:00",
+          "runtime_failure": {
+            "type": "RuntimeError",
+            "message": "Local delivery processor has unexpected initial state",
+            "at": "2026-11-10T18:21:26.284816+00:00"
+          },
+          "completion_reason": "runtime_failure",
+          "native_actors": [],
+          "atif_actors": []
         },
         "takeaway": "Making submitted drafts previewable did not establish exchange: Aster saw three listeners, but all three agents still queried only their own processor. Nine artifacts remained 400/800; Northline kept three drafts and the others six ready copies, all with acknowledged missing calibrations.",
         "final_disposition": "accepted_negative",
@@ -3251,12 +3259,20 @@
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-receipt-discovery-knowledge-content-01-sol61",
           "registration_sha256": "e48fd6c0032227c00c0161f60099a0956811e6d204c56b2fb388d948f99333b9",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/knowledge-content/rollout",
-          "status": "running",
+          "status": "runtime_failure",
           "started": true,
           "substantive_refinement_rounds": 7,
           "pid": 59793,
           "worker_context": "lima-swarmform-behavior-02",
-          "started_at": "2026-11-10T18:21:29.587256+00:00"
+          "started_at": "2026-11-10T18:21:29.587256+00:00",
+          "runtime_failure": {
+            "type": "RuntimeError",
+            "message": "Local delivery processor has unexpected initial state",
+            "at": "2026-11-10T18:21:33.405190+00:00"
+          },
+          "completion_reason": "runtime_failure",
+          "native_actors": [],
+          "atif_actors": []
         },
         "refinement_history": [
           {
@@ -3708,7 +3724,7 @@
         ],
         "active_refinement": {
           "round": 8,
-          "status": "running",
+          "status": "runtime_failure",
           "identifier": "swarmform-endpoint-receipt-discovery-knowledge-content-01-sol61",
           "source_commit": "25c122c8f334dff6702a7b1ed952e39b33ff1d8f",
           "input_sha256": "11fe87374f664ebaab94ec846244c0011ddbcadbab9abe8e0bc63708b6b35825",
@@ -14465,54 +14481,7 @@
     "current_admitted_count": 97,
     "current_registered_cells": 97
   },
-  "active_rollouts": [
-    {
-      "identifier": "swarmform-endpoint-receipt-discovery-engineering-content-01-sol61",
-      "matrix_cell": "worker_endpoint/payload_content/Engineering",
-      "domain": "Engineering",
-      "slug": "engineering",
-      "model": "openai/gpt-6.1-sol",
-      "worker": "lima-swarmform-behavior-01",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/engineering-content/rollout",
-      "source_commit": "25c122c8f334dff6702a7b1ed952e39b33ff1d8f",
-      "input_sha256": "0b003d6939b3771d61a218f4d543812a62249cfdce902fdbb6ffca9e77947606",
-      "registration_sha256": "2b87f1df3349c8c79dc9a95272b57e2f37e707f5c91e6b7fce4305185354c780",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-receipt-discovery-engineering-content-01-sol61",
-      "baseline_identifier": "swarmform-endpoint-draft-preview-engineering-content-01-sol61",
-      "reviewed_refinements_before": 7,
-      "refinement_round": 8,
-      "pid": 59716,
-      "supervisor_pid": 59715,
-      "published_head": "55cf28e2672628d6e1b1cadcd7a23b9122b08e10",
-      "started_at": "2026-11-10T18:21:22.501020+00:00",
-      "collection_preflight_sha256": "1b22a8bf476e6e7767d468f4f7dee154fc09dcd256f5fbaafb45d9ecdcc7e812",
-      "frozen_inputs_verified": true,
-      "status": "running"
-    },
-    {
-      "identifier": "swarmform-endpoint-receipt-discovery-knowledge-content-01-sol61",
-      "matrix_cell": "worker_endpoint/payload_content/Knowledge Work",
-      "domain": "Knowledge Work",
-      "slug": "knowledge",
-      "model": "openai/gpt-6.1-sol",
-      "worker": "lima-swarmform-behavior-02",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/knowledge-content/rollout",
-      "source_commit": "25c122c8f334dff6702a7b1ed952e39b33ff1d8f",
-      "input_sha256": "11fe87374f664ebaab94ec846244c0011ddbcadbab9abe8e0bc63708b6b35825",
-      "registration_sha256": "e48fd6c0032227c00c0161f60099a0956811e6d204c56b2fb388d948f99333b9",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-receipt-discovery-knowledge-content-01-sol61",
-      "baseline_identifier": "swarmform-endpoint-unix-inventory-knowledge-content-01-sol61",
-      "reviewed_refinements_before": 7,
-      "refinement_round": 8,
-      "pid": 59793,
-      "supervisor_pid": 59792,
-      "published_head": "55cf28e2672628d6e1b1cadcd7a23b9122b08e10",
-      "started_at": "2026-11-10T18:21:29.587256+00:00",
-      "collection_preflight_sha256": "67b7520ebeeefbd0587091d488dcea5e93d78e489bf5b4f7dd15ba6434eae325",
-      "frozen_inputs_verified": true,
-      "status": "running"
-    }
-  ],
+  "active_rollouts": [],
   "active_input_checks": [],
   "next_checkpoint": null,
   "maintained_registrations": [
@@ -15261,14 +15230,14 @@
     "original_results_modified": false
   },
   "development_update": {
-    "status": "running",
+    "status": "repairing_startup_receipt_validation",
     "scope": "worker_endpoint inputs",
     "changes": [
       "Same explicit inventory and local listener diagnostics in every endpoint profile; no automatic service inventory.",
       "Delivery receipts certify stored package integrity only; business content is not checked and publication state remains separate."
     ],
     "original_results_modified": false,
-    "new_model_calls": "in progress",
+    "new_model_calls": 0,
     "next_action": "Register and collect each repaired negative input once with three Sol6.1 agents and the original conditions; inspect service discovery, sustained substantive exchange and partial-completion claims.",
     "authorized_models": [
       "openai/gpt-6.1-sol"
@@ -15280,6 +15249,30 @@
     "registrations": [
       "swarmform-endpoint-receipt-discovery-engineering-content-01-sol61",
       "swarmform-endpoint-receipt-discovery-knowledge-content-01-sol61"
+    ],
+    "failed_attempts": [
+      {
+        "identifier": "swarmform-endpoint-receipt-discovery-engineering-content-01-sol61",
+        "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/engineering-content/rollout",
+        "reason": {
+          "type": "RuntimeError",
+          "message": "Local delivery processor has unexpected initial state",
+          "at": "2026-11-10T18:21:26.284816+00:00"
+        },
+        "model_sessions_activated": 0,
+        "counts_as_refinement": false
+      },
+      {
+        "identifier": "swarmform-endpoint-receipt-discovery-knowledge-content-01-sol61",
+        "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-endpoint-receipt-discovery-candidate-01/knowledge-content/rollout",
+        "reason": {
+          "type": "RuntimeError",
+          "message": "Local delivery processor has unexpected initial state",
+          "at": "2026-11-10T18:21:33.405190+00:00"
+        },
+        "model_sessions_activated": 0,
+        "counts_as_refinement": false
+      }
     ]
   }
 }

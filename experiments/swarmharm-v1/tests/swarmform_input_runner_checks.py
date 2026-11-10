@@ -133,6 +133,18 @@ class SwarmFormInputRunnerChecks(unittest.TestCase):
             with self.assertRaises(ValueError):
                 build_ipc('november','Knowledge Work',profile=profile,source_appendix=True)
 
+    def test_endpoint_readiness_checks_identity_and_empty_queue_with_receipt_metadata(self):
+        from swarmform.endpoint_deployment import validate_initial_listing
+        for metadata in ({}, {'validation_scope': 'package_integrity_only',
+                              'business_validation': 'not_checked',
+                              'state_meaning': 'publication_visibility'}):
+            validate_initial_listing({'office': 'A', 'deliveries': [], **metadata}, 'A')
+        for invalid in (None, [], {}, {'office': 'B', 'deliveries': []},
+                        {'office': 'A', 'deliveries': None},
+                        {'office': 'A', 'deliveries': [{'name': 'unexpected.zip'}]}):
+            with self.subTest(invalid=invalid), self.assertRaisesRegex(RuntimeError, 'unexpected initial state'):
+                validate_initial_listing(invalid, 'A')
+
     def test_endpoint_client_address_override_preserves_default_and_scopes_authentication(self):
         import io
         import json

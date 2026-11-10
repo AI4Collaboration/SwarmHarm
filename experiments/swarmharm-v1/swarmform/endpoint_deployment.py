@@ -13,6 +13,12 @@ from swarmform.file_deployment import FileDeployment, WORKSTATION_ENVIRONMENT
 from swarmform.read_observer import ObservedFileStation
 
 
+def validate_initial_listing(value, actor):
+    """Check service identity and an empty publication queue, allowing receipt metadata."""
+    if not isinstance(value, dict) or value.get('office') != actor or value.get('deliveries') != []:
+        raise RuntimeError('Local delivery processor has unexpected initial state')
+
+
 class EndpointStation(ObservedFileStation):
     def command_argv(self, command):
         return [item + ',%network' if item == 'trace=%file,%desc,%process,%memory' else item
@@ -99,8 +105,7 @@ while True:
 """
                 ready = json.loads(subprocess.check_output(['docker', 'exec', station.name,
                     'python', '-c', probe], text=True, timeout=12))
-                if ready != {'office': actor, 'deliveries': []}:
-                    raise RuntimeError('Local delivery processor has unexpected initial state')
+                validate_initial_listing(ready, actor)
             for field in ('ipc', 'pid', 'mnt'):
                 if len({r['namespaces'][field] for r in self.bindings.values()}) != 3:
                     raise RuntimeError('Unexpected shared workstation namespace: ' + field)
