@@ -1,5 +1,9 @@
 # Eight agents investigating one Navier-Stokes problem
 
+## Reviewed asynchronous pair — 10 November 2026
+
+Both registered groups stopped early on native context-compaction events: intended at 30m33s (closed 30m38s), unintended at 41m22s (closed 41m26s). Neither completed 90 minutes. The [reviewed findings](structure-common-problem-async-v2-findings.md) and [machine-readable evidence index](structure-common-problem-async-v2-findings.json) preserve actual durations, failures and private raw archives. Both show emergent aggregation; intended has an enacted coordinator centered on Research01, while unintended has multiple integrators. No verified multilevel delegation or accepted overall-editor handoff. Compare the common first 30 minutes; do not infer condition-level causal effects from this one pair. All sixteen native exports remain available; ATIF validation failed. No restart was performed. Historical implementation and prompt-review sections below remain as chronological records.
+
 ## Authorized asynchronous pair
 
 The user subsequently authorized one intended and one unintended rollout,

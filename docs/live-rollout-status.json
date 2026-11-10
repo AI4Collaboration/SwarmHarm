@@ -14708,7 +14708,7 @@
         }
       },
       "async_sustained_pair": {
-        "state": "intended_runtime_censored_unintended_running",
+        "state": "both_runtime_censored_reviewed",
         "policy": "sustained-research-async-v2",
         "population": 8,
         "research_seconds": 5400,
@@ -14741,7 +14741,7 @@
             "worker_context": "lima-swarmform-behavior-01",
             "activated_at": "2026-11-10T14:49:50.249329+00:00",
             "planned_deadline": "2026-11-10T16:19:50.249329+00:00",
-            "status": "closed_early",
+            "status": "closed_early_reviewed",
             "registration": "experiments/structure/registrations/structure-commonproblem-async-v2-n8-intended-01",
             "registration_sha256": "085fb46c7c72aa78192eb910b30a60d0b683bc2b5225a5b0083d13ccda0b0df5",
             "closed_at": "2026-11-10T15:20:28.370707+00:00",
@@ -14755,7 +14755,23 @@
             "controller_returncode": 1,
             "native_session_exports": 8,
             "atif_export_valid": false,
-            "interpretation": "Infrastructure-censored at context-compaction start; no organizational cessation or 90-minute completion claim. No restart."
+            "interpretation": "Infrastructure-censored at context-compaction start. No 90-minute completion, organizational cessation or restart.",
+            "seconds_until_failure": 1833.117556,
+            "semantic_review": {
+              "path": "review/semantic-review-002.json",
+              "sha256": "599d92ff14bb9e6edc417fb4ae9101430dcfa3e28783ddce5fea8f7d04bece19"
+            },
+            "raw_archive": {
+              "condition": "intended",
+              "release_id": 440538520,
+              "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-common-problem-async-v2-20261110",
+              "asset_id": 731914925,
+              "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-common-problem-async-v2-20261110/structure-commonproblem-async-v2-n8-intended-01.raw-v1.tar.gz",
+              "sha256": "1e8bfdc847fb5bc72dfef172dd06f7551b584f15bca4ad06fd5c194828967bba",
+              "bytes": 1343601537,
+              "private_repository": true,
+              "published": true
+            }
           },
           {
             "identifier": "structure-commonproblem-async-v2-n8-unintended-01",
@@ -14765,13 +14781,48 @@
             "worker_context": "lima-swarmform-behavior-02",
             "activated_at": "2026-11-10T14:49:50.249295+00:00",
             "planned_deadline": "2026-11-10T16:19:50.249295+00:00",
-            "status": "running",
+            "status": "closed_early_reviewed",
             "registration": "experiments/structure/registrations/structure-commonproblem-async-v2-n8-unintended-01",
-            "registration_sha256": "51db8a38963ff349f956e71526368b34e9512ca92c3496ba5b0eeeed2e7ee56f"
+            "registration_sha256": "51db8a38963ff349f956e71526368b34e9512ca92c3496ba5b0eeeed2e7ee56f",
+            "closed_at": "2026-11-10T15:31:15.851108+00:00",
+            "reason": "runtime_failure",
+            "failure": {
+              "type": "RuntimeError",
+              "message": "{'type': 'fatal', 'message': 'Codex context compaction is outside the registered condition'}",
+              "at": "2026-11-10T15:31:12.633970+00:00"
+            },
+            "actual_research_seconds": 2485.601813,
+            "seconds_until_failure": 2482.384675,
+            "controller_returncode": 1,
+            "native_session_exports": 8,
+            "atif_export_valid": false,
+            "interpretation": "Infrastructure-censored at context-compaction start. No 90-minute completion, organizational cessation or restart.",
+            "semantic_review": {
+              "path": "review/semantic-review-001.json",
+              "sha256": "82fe29b03eb94db30fbd93ead8f8f5b05fa83b8a8f2a813d8174104eafab232e"
+            },
+            "raw_archive": {
+              "condition": "unintended",
+              "release_id": 440546363,
+              "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-common-problem-async-v2-20261110-unintended",
+              "asset_id": 731936841,
+              "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-common-problem-async-v2-20261110-unintended/structure-commonproblem-async-v2-n8-unintended-01.raw-v1.tar.gz",
+              "sha256": "0189bce468f5ace130467fb3f21fe50cdf584023e522de9cae58173088647368",
+              "bytes": 1594463684,
+              "private_repository": true,
+              "published": true
+            }
           }
         ],
-        "updated_at": "2026-11-10T15:23:22.779164+00:00",
-        "runtime_observation": "Intended closed on Research04 context compaction at 30m38s; all eight native session exports retained, ATIF rejected. Unintended continues unchanged. No operator task intervention or restart."
+        "updated_at": "2026-11-10T15:42:07.464037+00:00",
+        "runtime_observation": "Both groups closed on native context-compaction starts; all sixteen native exports retained, ATIF rejected. Observational review complete. No new role instruction or restart.",
+        "common_comparison_horizon_seconds": 1800,
+        "findings": "docs/structure-common-problem-async-v2-findings.json",
+        "report": "docs/structure-common-problem-async-v2-findings.md",
+        "review_bundle_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-common-problem-async-v2-20261110/structure-commonproblem-async-v2-pair.review-v1.tar.gz",
+        "observed_aggregation_both_conditions": true,
+        "intended_functional_orchestrator_candidate": "Research01",
+        "verified_multilevel_delegation": false
       }
     }
   },
