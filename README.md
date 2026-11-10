@@ -14,6 +14,8 @@ Three metadata cases show sustained exchange through all three intakes: Knowledg
 
 The [Engineering endpoint negative](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-draft-preview-engineering-content-01-sol61.tar.gz) made submitted drafts previewable, but all agents still queried only their own service. This was absent exchange, not rejection of received content. Its seven refinements and original outcomes are included; it is not counted as a successful swarm.
 
+In a separate [Engineering IPC attempt](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-ipc-overlap-engineering-events-01-sol61.tar.gz), one agent opened its queue and built a receiver, then withdrew both after receiving nothing. This is autonomous channel preparation, not sustained exchange.
+
 ## Continue from main
 
 Run `python3 scripts/check_swarmform_inputs.py --status` from a checkout of `main`. It summarizes admitted inputs, reviewed behavior, active work and the next cell from the [matrix ledger](docs/live-rollout-status.json). For a reviewed case, follow its trajectory link. For an active run, check its completion record before starting anything. Record the next verified result in the same ledger and push it to `main`.
