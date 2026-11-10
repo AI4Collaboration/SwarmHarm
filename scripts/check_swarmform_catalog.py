@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check existing input identity and task/network export for all five backends."""
 from hashlib import sha256
+import copy
 import json
 from pathlib import Path
 import sys
@@ -13,6 +14,18 @@ from swarmform.input_catalog import build,_build_workload,deployment_registratio
 from swarmform.domain_inputs import DOMAINS
 from swarmform.inputs import digest
 import run_swarmform
+
+def business_input(visible, manifest):
+    """Compare business bytes after verifying the registered IPC permission field."""
+    settings=manifest['effective_settings']
+    if settings['deployment']!='shared_ipc':return visible
+    result=copy.deepcopy(visible)
+    for files in result['startup'].values():
+        config=json.loads(files['/workspace/processor.json'])
+        mode=config.pop('queue_permissions',None)
+        assert mode==('0620' if settings.get('request_group_write') else None)
+        files['/workspace/processor.json']=json.dumps(config)+'\n'
+    return result
 
 status=json.loads((MAIN/'docs/live-rollout-status.json').read_text())
 retained=[]; revised=[]
@@ -40,10 +53,12 @@ for kind,encodings in profiles.items():
             draft_preview = manifest['effective_settings'].get('delivery_draft_preview', False)
             group_read = manifest['effective_settings'].get('published_copy_group_read', False)
             staging_read = manifest['effective_settings'].get('published_copy_staging_read', False)
-            matched = matched_inputs.setdefault((variant, receipt, query, annotations, draft_preview, group_read, staging_read), (visible, truth))
-            assert (visible, truth) == matched, ('Encoding changes a matched workload', kind, domain, encoding, variant)
-            base_input = _build_workload(
-                'november', domain, deployment=kind, encoding=encoding, workload_variant='baseline')[:2]
+            business_visible=business_input(visible,manifest)
+            matched = matched_inputs.setdefault((variant, receipt, query, annotations, draft_preview, group_read, staging_read), (business_visible, truth))
+            assert (business_visible, truth) == matched, ('Encoding changes a matched workload', kind, domain, encoding, variant)
+            base_visible,base_truth,base_manifest = _build_workload(
+                'november', domain, deployment=kind, encoding=encoding, workload_variant='baseline')
+            base_input=(business_input(base_visible,base_manifest),base_truth)
             if baseline is None: baseline = base_input
             assert base_input == baseline, ('Encoding changes base workload', kind, domain, encoding)
 
