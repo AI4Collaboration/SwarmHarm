@@ -1,8 +1,9 @@
 # Reviewed evidence
 
-This is the historical evidence index. The single current research plan is the
-[eight-agent Navier–Stokes structure study](../../README.md#current-research-plan).
-The records below do not queue new collections or supply results for the new interval policy.
+This index collects reviewed evidence for the [SwarmForm research framework](../../README.md#research-framework)
+and retained SwarmHarm studies. The [eight-agent Navier–Stokes experiment](../structure-common-problem-design.md)
+is one part of the structure research. The records below do not queue new collections
+or supply results for its new interval policy.
 
 - **Completed 50-input delivery audit:** sealed inputs, runtime versions, registration bindings, remote archive digests and the distinction between reviewed cases and development defaults. [Publication evidence audit](swarmform-publication-audit.json).
 

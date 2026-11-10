@@ -1,10 +1,21 @@
 # SwarmForm
 
-**When eight agents receive the same difficult research problem, do they spontaneously develop organizational structure, and how does that structure change over time?**
+**How do agents discover communication opportunities, establish information exchange, self-organize, and change task performance?**
 
-## Current research plan
+## Research framework
 
-This is the repository's **single active research direction**: emergent structure during Navier–Stokes theoretical research, comparing intended and unintended communication. This README is the current roadmap; the [detailed protocol](docs/structure-common-problem-design.md) specifies the same study's execution and stopping rules.
+SwarmForm studies communication formation and the organization that develops around it. Its research framework connects two parts:
+
+- **Channel bootstrapping:** whether initially isolated agents discover one another and establish substantive communication through shared resources. The existing three-agent study covers five shared substrates × five encoding opportunities in Knowledge Work and Engineering, with 50 reviewed inputs.
+- **Emergent structure and task performance:** under intended and unintended communication conditions, how information flow, aggregation, coordination and delegation develop; how responsibilities change; and how these patterns relate to task outcomes. The broader design includes distributed-information and common-problem workloads, group sizes of 4, 8, 16 and 32, and solo comparisons for task uplift. These are research dimensions, not a claim that all comparisons have been implemented, run or authorized.
+
+Intended conditions supply a communication opportunity; unintended conditions require agents to discover it. Organization remains an empirical question in both. Channel discovery, structure and task outcomes need separate evidence: communication does not by itself demonstrate leadership or a performance benefit.
+
+The eight-agent Navier–Stokes experiment below is **one study within the emergent-structure part of SwarmForm**. Its current implementation priority does not replace the broader research framework or retire channel-bootstrapping research. This README describes the overall framework and identifies the scope and status of each concrete study.
+
+## Current structure experiment: eight-agent Navier–Stokes
+
+**Question:** when eight agents receive the same difficult research problem, do they spontaneously develop organizational structure, and how does that structure change over time? The [detailed protocol](docs/structure-common-problem-design.md) specifies this experiment's execution and stopping rules.
 
 **Status: design agreed; ten-minute interval support still needs implementation and offline validation. No new rollout is running or authorized by the planning discussion.** Existing scheduling, timing and context fixes are available, but the sustained runtime still contains the old fixed 90-minute policy and terminal session closure. It must not be treated as an implementation of the new plan.
 
@@ -16,7 +27,7 @@ This is the repository's **single active research direction**: emergent structur
 - **Matched execution:** one eight-agent rollout per condition, run concurrently in separate environments. Use the same Sol 6.1 model through native Codex and AxonHub, reasoning setting, tools, mathematical materials, context policy, scheduling policy and cumulative token/response/tool-call allowances. Intended disclosure is the experimental difference; there is no cross-condition communication.
 - **No organizational prompting:** do not request division of work, aggregation, leadership, delegation or an orchestrator, at startup or later. Do not reward message counts. Continue justified research, retain useful partial work and record concrete obstacles; ending one response does not finish the study.
 
-The current scope is this eight-agent common-problem pair. Other population sizes, distributed-information workloads, solo uplift comparisons and SwarmHarm reporting are outside the active plan.
+This particular experiment covers one eight-agent common-problem pair. Other group sizes, distributed-information workloads and solo uplift comparisons remain in SwarmForm's broader research design; they are not included in this pair or automatically scheduled by documenting that design.
 
 ### Ten-minute increments with asynchronous work
 
@@ -54,19 +65,19 @@ The figure and its [editable SVG](docs/swarmform_taxonomy.svg) were drawn by Gem
 
 Apply the axes to time-local events and subgroups as well as the full cohort. Record an aggregation hub separately from an accepted coordinator. One agent writing a final draft alone does not establish that peers recognized its authority. Do not force uncertain or mixed evidence into a cell, assume all nine cells occur, or carry a label unchanged across the run.
 
-## Next work on this same study
+### Next work for this experiment
 
 1. Implement matched 600-second deadline extensions, bounded request/shutdown timeouts, cumulative accounting and state retention. Replace the participant-facing 90-minute commitment while preserving neutral continuation language. Verify boundary behavior during context maintenance and interruption.
 2. Validate the policy offline, including matched intended/unintended settings, full timing capture, no injected organizational cues, no budget reset and no work beyond the accepted boundary. Publish the exact prompts, finite caps and stopping logic for review before collection.
 3. Once collection is authorized, run this pair, review each interval and extend in ten-minute increments when justified. Use the resulting evidence to report structure over time, not to require a positive orchestrator finding.
 
-The [status ledger](docs/live-rollout-status.json) records this study under `supplemental_studies.eight_member_common_problem.incremental_interval_design`; that historical storage location does not make it a second research direction. Its top-level completed input matrix describes the earlier delivery.
+The [status ledger](docs/live-rollout-status.json) records this experiment under `supplemental_studies.eight_member_common_problem.incremental_interval_design`. Its top-level completed matrix describes the 50-input channel-bootstrapping delivery; neither status represents completion of the entire SwarmForm research program.
 
-## Prior work and accepted inputs
+## Channel bootstrapping: existing evidence and accepted inputs
 
-The completed channel-discovery study supplies the infrastructure and historical evidence for this research. It covers **50 reviewed environments: five shared substrates × five encoding opportunities × two domains**, with three agents per case. Substrates were shared files, IPC, worker endpoints, artifact namespaces and job namespaces; encoding opportunities were payload, metadata, state, events and timing. These are prior configurations, not an additional collection plan.
+The completed channel-discovery delivery provides evidence for one part of SwarmForm and infrastructure for further structure experiments. It covers **50 reviewed environments: five shared substrates × five encoding opportunities × two domains**, with three agents per case. Substrates were shared files, IPC, worker endpoints, artifact namespaces and job namespaces; encoding opportunities were payload, metadata, state, events and timing. Completion of this delivery does not remove channel bootstrapping from the research framework; additional collections need a concrete study scope.
 
-All 50 selected cases meet their recorded communication criterion. Of them, 37 deliver all nine business outputs correctly and 13 retain partial outcomes. These are individually refined cases, not an estimate of general swarm success. [Publication audit](docs/research/swarmform-publication-audit.json) · [Historical design and reproduction](docs/formation-study-design.md) · [Evidence archive](docs/research/README.md)
+All 50 selected cases meet their recorded communication criterion. Of them, 37 deliver all nine business outputs correctly and 13 retain partial outcomes. These are individually refined cases, not an estimate of general swarm success. [Publication audit](docs/research/swarmform-publication-audit.json) · [Channel-bootstrapping protocol and reproduction](docs/formation-study-design.md) · [Evidence archive](docs/research/README.md)
 
 ### Accepted inputs
 
@@ -78,4 +89,4 @@ These packages preserve their original three-agent tasks, runtimes and reviewed 
 
 Work on `main`. Use `python3 scripts/check-ci --plan` to preview checks selected from the actual changes, then run the selected checks once; reserve `--full` for intentional full regression. Documentation updates require no model calls or Docker rollout. `python3 scripts/check_swarmform_inputs.py --status` reports the historical input delivery, not completion of the current structure study.
 
-Keep exact prompts, registered source, budgets and observed evidence bound to each future rollout. Keep credentials and raw trajectories outside Git. Preserve agents' decisions not to communicate or form a hierarchy as valid observations. Changes to this research plan belong here and in its detailed protocol; historical registrations are not rewritten to match new settings.
+Keep exact prompts, registered source, budgets and observed evidence bound to each future rollout. Keep credentials and raw trajectories outside Git. Preserve agents' decisions not to communicate or form a hierarchy as valid observations. Maintain the overall framework here and each experiment's settings in its own protocol; historical registrations are not rewritten to match new settings.

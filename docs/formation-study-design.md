@@ -1,7 +1,8 @@
 # SwarmForm input design
 
-> Historical protocol for the completed three-agent, 50-input delivery.
-> The single current research plan is the [eight-agent structure study](../README.md#current-research-plan).
+> Protocol for SwarmForm's channel-bootstrapping research and completed three-agent, 50-input delivery.
+> See the [overall research framework](../README.md#research-framework) and the separate
+> [eight-agent structure experiment](structure-common-problem-design.md).
 > The collection commands and budgets below apply to historical reproduction;
 > they do not authorize new collection or configure the ten-minute interval study.
 

@@ -1,7 +1,8 @@
 # Eight-agent common-problem research — ten-minute increments
 
-This is the detailed protocol for the single active research direction in
-the [root README](../README.md#current-research-plan), not a separate workstream.
+This is the detailed protocol for one eight-agent common-problem experiment
+within SwarmForm's emergent-structure research. The [root README](../README.md#research-framework)
+describes the broader program, including channel bootstrapping and task performance.
 
 Design agreed; interval runtime implementation and offline validation remain
 pending. No new registration or research collection is authorized by this

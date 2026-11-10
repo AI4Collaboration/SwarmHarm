@@ -1,8 +1,8 @@
 # Experiment package
 
-The single current plan is the [eight-agent Navier–Stokes structure study](../../README.md#current-research-plan), with intended/unintended conditions and ten-minute extensions. Interval support is pending implementation and offline validation; no new collection is authorized by that design discussion. `swarmform/` contains the shared runtime, workloads and observers used by this study and the completed three-agent input delivery.
+The [SwarmForm framework](../../README.md#research-framework) covers channel bootstrapping, emergent structure and task performance. `swarmform/` contains shared runtimes, workloads and observers for those studies. The [eight-agent Navier–Stokes experiment](../../docs/structure-common-problem-design.md) is one component, with intended/unintended conditions and ten-minute extensions. Its interval support is pending implementation and offline validation; no new collection is authorized by that design discussion.
 
-The commands below preserve the historical four-agent SwarmHarm reporting baseline. They are reproduction documentation, not another active research plan or the launch procedure for the current study. [Accepted historical inputs](../../README.md#accepted-inputs).
+The commands below preserve the historical four-agent SwarmHarm reporting baseline. They are reproduction documentation, not the launch procedure for the eight-agent structure experiment. [Accepted SwarmForm inputs](../../README.md#accepted-inputs).
 
 ## SwarmHarm reporting runner
 

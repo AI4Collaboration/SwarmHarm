@@ -1,18 +1,18 @@
 # SwarmForm
 
-Develop SwarmForm on `main`. The [README](README.md) is the single current research roadmap; the [interval protocol](docs/structure-common-problem-design.md) supplies details for that same study. Private Releases hold evidence; frozen execution copies serve their registered runs.
+Develop SwarmForm on `main`. The [README](README.md) describes the overall research framework: channel bootstrapping, emergent organization and task performance. Keep individual experiments distinct from that program. Private Releases hold evidence; frozen execution copies serve their registered runs.
 
-## Current research priority
+## Current structure experiment
 
-- Pursue only the eight-agent Navier–Stokes common-problem structure study, intended versus unintended, with matched budgets and asynchronous execution. Extend both conditions by 600 seconds at a time, preserving sessions and cumulative usage. No precommitted 90-minute run.
+- The eight-agent Navier–Stokes common-problem study is one experiment within SwarmForm's emergent-structure research. Its [interval protocol](docs/structure-common-problem-design.md) compares intended versus unintended with matched budgets and asynchronous execution. Extend both conditions by 600 seconds at a time, preserving sessions and cumulative usage. No precommitted 90-minute run.
 - Intended discloses the eight-member common task and communication interface; unintended supplies neither a peer roster nor a communication convention. Neither receives division-of-work, aggregation, delegation or leadership instructions. Observer summaries stay outside participant context.
 - Track the 3×3 structure/information-flow rubric over time, including aggregation, task-linked multilevel delegation and responsibility transfer. Negative or uncertain structure findings remain valid.
-- Current work is interval-policy implementation and offline validation. The design discussion does not authorize a new registration or rollout. Do not treat the existing fixed-duration runtime as interval support.
-- Update the current-study entry in the [ledger](docs/live-rollout-status.json). Its completed three-agent matrix and `check_swarmform_inputs.py --status` describe historical delivery, not the current study's completion. No matrix expansion, population sweep or separate reporting study is queued.
+- The next implementation work for this experiment is interval-policy support and offline validation. The design discussion does not authorize a new registration or rollout. Do not treat the existing fixed-duration runtime as interval support.
+- Update the relevant study entry in the [ledger](docs/live-rollout-status.json). Its completed three-agent matrix and `check_swarmform_inputs.py --status` describe that delivery, not completion of SwarmForm or the structure experiment. Broader group sizes, workload comparisons and task uplift remain research dimensions; they are not automatically queued collections.
 
-## Historical input design and evidence
+## Channel-bootstrapping input design and evidence
 
-The following three-agent delivery rules apply to reproduction or explicitly requested maintenance of the completed 50-input study. They are not a second active roadmap. Its [delivery criteria](docs/formation-study-design.md#deliverables-and-acceptance-criteria) remain bound to those cases.
+The following rules govern the three-agent channel-bootstrapping delivery and its reproduction or maintenance. The 50-input delivery is complete; channel bootstrapping remains part of the broader SwarmForm framework. Its [delivery criteria](docs/formation-study-design.md#deliverables-and-acceptance-criteria) remain bound to those cases.
 
 - Deliver 50 inputs: all five deployments × five encoding opportunities in both Knowledge Work and Engineering (25 per domain). Keep the same three-agent design. Preserve other domain inputs and results as supplemental evidence; do not expand live collection to them without a new request. Each candidate fixes a deployment, encoding opportunity and domain. Record the encoding the agents actually use and all observable alternative paths. Follow the [coverage contract](docs/swarmform-coverage.md) for resource scope, relays, timing, noise, receiver observations and unresolved paths.
 - Give each agent an ordinary business objective, private source material, a persistent workstation and its own session. Keep tasks, permissions, runtime and update policy matched within a domain. Keep research labels, peer rosters, cooperation cues, proposed methods and fabricated exchanges out of the workstations. Attribute supplied business records and automatic service events to their actual sources.
