@@ -59,6 +59,61 @@ class Responses(BaseHTTPRequestHandler):
 
 
 class CollectionChecks(unittest.TestCase):
+    def test_completed_command_survives_observation_and_delivery_failures_once(self):
+        from concurrent.futures import Future
+        from unittest.mock import Mock
+        actors=('A','B','C')
+        inputs={'startup':dict.fromkeys(actors,{}),'prompts':dict.fromkeys(actors,['task']),
+                'private_arrivals':dict.fromkeys(actors,{})}
+        reg={'population':3,'harness':{'goal_mode':'off'}}
+        for stage in ('observation','before_record','delivery'):
+            with self.subTest(stage=stage), tempfile.TemporaryDirectory() as directory:
+                collection=Collection(directory,reg,inputs,api_key='offline')
+                collection.states={'A':{'tools':0}};collection.agents={'A':Mock()}
+                call={'turn':1,'call_id':'command-one','id':1,'name':'bash','raw_arguments':'{"command":"true"}'}
+                result={'stdout':'already executed','stderr':'','exit_code':0}
+                future=Future();future.set_result((result,{}));collection.jobs[future]=('A',call)
+                if stage=='observation':
+                    collection.observe_tool_result=Mock(side_effect=RuntimeError('observer failed'))
+                elif stage=='before_record':
+                    original=collection.finish_tool
+                    collection.finish_tool=Mock(side_effect=RuntimeError('publication scan failed'))
+                else:
+                    collection.agents['A'].reply.side_effect=RuntimeError('native delivery failed')
+                with self.assertRaises(RuntimeError):
+                    collection.handle(None,{'type':'shell_ready','future':future},None)
+                self.assertIn(future,collection.jobs)
+                if stage=='before_record':collection.finish_tool=original
+                collection.stopping.set();collection.retain_pending_commands()
+                records=list((Path(directory)/'natural/A/trace').glob('*-tool-*.json'))
+                self.assertEqual(len(records),1)
+                self.assertEqual(json.loads(records[0].read_text())['result'],result)
+                self.assertEqual(collection.states['A']['tools'],1)
+                self.assertEqual(collection.agents['A'].reply.call_count,1 if stage=='delivery' else 0)
+                self.assertFalse(collection.jobs)
+
+    def test_terminal_queue_failure_prevents_false_success_without_executing_tools(self):
+        from unittest.mock import Mock
+        actors=('A','B','C')
+        inputs={'startup':dict.fromkeys(actors,{}),'prompts':dict.fromkeys(actors,['task']),
+                'private_arrivals':dict.fromkeys(actors,{})}
+        for prior in (None,{'type':'RuntimeError','message':'original'}):
+            with self.subTest(prior=prior), tempfile.TemporaryDirectory() as directory:
+                collection=Collection(directory,{'population':3,'harness':{'goal_mode':'off'}},inputs,api_key='offline')
+                collection.pool.shutdown();collection.stopping.set()
+                collection.reason='research_window_elapsed' if prior is None else 'runtime_failure'
+                collection.failure=prior
+                collection.events.put(('A',{'type':'fatal','message':'late native fault'}))
+                collection.events.put(('B',{'type':'tool_call','call_id':'never-execute'}))
+                deployment=Mock()
+                collection.drain_terminal_events(deployment)
+                self.assertEqual(collection.reason,'runtime_failure')
+                self.assertEqual(collection.shutdown_errors[0]['actor'],'A')
+                if prior is not None:self.assertIs(collection.failure,prior)
+                deployment.execute.assert_not_called()
+                records=[json.loads(line) for line in (Path(directory)/'events.jsonl').read_text().splitlines()]
+                self.assertEqual([x['type'] for x in records],['fatal','tool_call'])
+
     def test_cleanup_keeps_first_fault_and_records_all_later_errors(self):
         from unittest.mock import Mock
         actors = ('A', 'B', 'C')

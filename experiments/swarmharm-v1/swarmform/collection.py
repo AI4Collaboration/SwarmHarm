@@ -65,6 +65,7 @@ class Collection:
         self.arrival_lock = threading.RLock()
         self.snapshot_lock = threading.Lock()
         self.snapshots, self.terminals, self.tool_counts, self.executed = {}, {}, {}, set()
+        self.recorded_tools = set()
         self.sequence = 0
         self.read_receipts = {a: {} for a in self.actors}
         self.read_blobs = {a: set() for a in self.actors}
@@ -172,9 +173,10 @@ class Collection:
                   'result': result, 'finished_at': utc()}
         suffix = '' if delivered else '-undelivered'
         save(self.root / 'natural' / actor / 'trace' / f'{turn:04d}-tool-{number}{suffix}.json', record)
+        self.recorded_tools.add((actor, message['call_id']))
+        self.states[actor]['tools'] += 1
         if delivered:
             self.agents[actor].reply(message['id'], output=json.dumps(result, ensure_ascii=False))
-        self.states[actor]['tools'] += 1
 
     def handle(self, actor, message, deployment):
         self.record(actor, message)
@@ -217,7 +219,7 @@ class Collection:
                 future.add_done_callback(lambda done: self.events.put((None, {'type': 'shell_ready', 'future': done})))
         elif kind == 'shell_ready':
             future = message['future']
-            owner, call = self.jobs.pop(future)
+            owner, call = self.jobs[future]
             result, snapshot = future.result()
             if reference := snapshot.get('command_observation'):
                 expected = {'/workspace/' + path: content.encode()
@@ -227,7 +229,10 @@ class Collection:
                     receipt['observation'] = str(Path(receipt['observation']).relative_to(self.root))
                     self.read_receipts[owner].setdefault(path, receipt)
             self.observe_tool_result(owner, result, snapshot)
+            # Observation may fail after execution succeeded. Until it finishes,
+            # keep the job available for shutdown's undelivered-result capture.
             self.finish_tool(owner, call, result, delivered=True)
+            self.jobs.pop(future)
         elif kind == 'settled':
             if message.get('aborted') or message.get('error_message'):
                 raise RuntimeError('Native session did not settle normally: ' + str(message))
@@ -237,6 +242,37 @@ class Collection:
             raise RuntimeError(str(message))
         elif kind == 'turn_end' and message.get('stop_reason') == 'aborted':
             raise RuntimeError('Native turn aborted')
+
+    def retain_pending_commands(self):
+        """Capture completed execution without delivering new work during close."""
+        self.pool.shutdown(wait=True)
+        for future, (actor, call) in list(self.jobs.items()):
+            try:
+                result, _ = future.result()
+                if (actor, call['call_id']) not in self.recorded_tools:
+                    self.finish_tool(actor, call, result, delivered=False)
+            except BaseException as error:
+                save(self.root / 'natural' / actor / 'command-error.json', {'error': repr(error)})
+                self.shutdown_failure('CommandShutdown', error, actor=actor)
+            finally:
+                self.jobs.pop(future)
+
+    def drain_terminal_events(self, deployment):
+        """Keep late evidence and failures; never execute queued tool calls."""
+        while True:
+            try:
+                actor, message = self.events.get_nowait()
+            except queue.Empty:
+                return
+            if message['type'] in ('request', 'response_update', 'provider_response'):
+                try:
+                    self.handle(actor, message, deployment)
+                except Exception as error:
+                    self.shutdown_failure('ProjectionShutdown', error, actor=actor)
+            else:
+                self.record(actor, message)
+                if message['type'] in ('fatal', 'exited', 'arrival_error'):
+                    self.shutdown_failure('TerminalEvent', RuntimeError(str(message)), actor=actor)
 
     def run(self):
         self.root.mkdir(parents=True, exist_ok=True)
@@ -320,15 +356,7 @@ class Collection:
                 self.arrival_thread.join(timeout=120)
                 if self.arrival_thread.is_alive():
                     self.shutdown_failure('ArrivalShutdown', RuntimeError('Private writer did not stop'))
-            # Collect actual command results even when interruption prevents model delivery.
-            self.pool.shutdown(wait=True)
-            for future, (actor, call) in list(self.jobs.items()):
-                try:
-                    result, _ = future.result()
-                    self.finish_tool(actor, call, result, delivered=False)
-                except BaseException as error:
-                    save(self.root / 'natural' / actor / 'command-error.json', {'error': repr(error)})
-                    self.shutdown_failure('CommandShutdown', error, actor=actor)
+            self.retain_pending_commands()
             with ThreadPoolExecutor(max_workers=len(self.actors)) as pool:
                 closes = {actor: pool.submit(agent.close) for actor, agent in self.agents.items()}
                 for actor, future in closes.items():
@@ -336,17 +364,7 @@ class Collection:
                         self.states[actor]['native_exit_code'] = future.result()
                     except BaseException as error:
                         self.shutdown_failure('NativeShutdown', error, actor=actor)
-            # Retain final native projections generated during close as well. Do
-            # not execute or deliver any new tool call while shutting down.
-            while not self.events.empty():
-                actor, message = self.events.get_nowait()
-                if message['type'] in ('request', 'response_update', 'provider_response'):
-                    try:
-                        self.handle(actor, message, deployment)
-                    except Exception as error:
-                        self.shutdown_failure('ProjectionShutdown', error, actor=actor)
-                else:
-                    self.record(actor, message)
+            self.drain_terminal_events(deployment)
             if deployment:
                 try:
                     deployment.close()

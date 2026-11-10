@@ -14,7 +14,6 @@ import unittest
 from unittest.mock import patch
 import zipfile
 
-import export_atif
 from swarmform.inputs import build, verify_packages
 from swarmform.input_catalog import build as build_input, task_network
 
@@ -423,14 +422,17 @@ class RegistrationChecks(unittest.TestCase):
             (root/'native-record.jsonl').write_text('{"original":true}\n')
             reg={'identifier':'failed-fixture','plan':{'natural':{'actor':{'domain':'Data Analysis'}}},
                  'deployment':{'kind':'artifact_namespace'}}
-            with patch.object(export_atif,'export',side_effect=ValueError('fixture validation failure')):
-                result=entry.finalize_collection(root,reg,{}, {'reason':'failed','failure':'fixture'})
+            result=entry.finalize_collection(root,reg,{}, {'reason':'failed','failure':'fixture'})
             self.assertEqual(result['failures'],['collection','business_outcome','atif','actor_evidence'])
             self.assertFalse(result['actor_evidence_complete'])
             manifest=json.loads((root/'evidence-manifest.json').read_text())
             self.assertEqual(set(manifest['files']),{'protected-truth.json','native-record.jsonl',
-                'business-outcome-failure.json','atif-failure.json','actor-evidence.json'})
+                'business-outcome-failure.json','atif-failure.json','actor-evidence.json','collection-summary.json'})
             self.assertTrue(all(entry.sha(root/path)==sha for path,sha in manifest['files'].items()))
+            before={p:p.read_bytes() for p in root.rglob('*') if p.is_file()}
+            with self.assertRaises(FileExistsError):
+                entry.finalize_collection(root,reg,{}, {'reason':'quiescence'})
+            self.assertEqual({p:p.read_bytes() for p in before},before)
 
 
 if __name__ == '__main__':

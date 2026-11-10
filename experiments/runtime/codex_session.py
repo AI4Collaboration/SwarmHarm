@@ -129,8 +129,8 @@ class CodexAgent:
     def emit(self, kind, **values):
         self.events.put((self.actor, {'type': kind, **deepcopy(values)}))
 
-    def _fatal(self, error):
-        if self.failed or self.stopping:
+    def _fatal(self, error, *, even_if_stopping=False):
+        if self.failed or (self.stopping and not even_if_stopping):
             return
         self.failed = True
         self.emit('fatal', message=str(error))
@@ -382,6 +382,11 @@ class CodexAgent:
 
     def _notification(self, message, source):
         with self.lock:
+            # RPC capture precedes this callback. Preserve the raw native tail,
+            # but never project output after a fatal condition as valid research.
+            # Normal shutdown (stopping without failed) still retains late usage.
+            if self.failed:
+                return
             try:
                 method, params = message.get('method', ''), message.get('params') or {}
                 if params.get('threadId') and self.thread_id and params['threadId'] != self.thread_id:
@@ -411,10 +416,19 @@ class CodexAgent:
                         raise RuntimeError(f'Codex error: {code} ({source})')
                     # Codex owns reconnection. Retain the in-flight turn, history
                     # and deadline; never send another prompt or replay tools.
-                elif method in ('model/rerouted', 'thread/compacted', 'transport/error'):
+                elif (method == 'thread/compacted' or
+                      method in ('item/started', 'item/completed') and
+                      params.get('item', {}).get('type') == 'contextCompaction'):
+                    self.emit('native_context_transition', turn=self.turn,
+                              native_record=source, method=method,
+                              disposition='outside_registered_condition')
+                    # Compaction still invalidates the research projection when
+                    # it races with a planned close; an interrupted turn does not.
+                    self._fatal('Codex context compaction is outside the registered condition',
+                                even_if_stopping=True)
+                    return
+                elif method in ('model/rerouted', 'transport/error'):
                     raise RuntimeError('Codex stopped: ' + method)
-                elif method == 'item/started' and params['item']['type'] == 'contextCompaction':
-                    raise RuntimeError('Codex context compaction is outside the registered condition')
                 elif method == 'rawResponseItem/completed':
                     item = deepcopy(params['item'])
                     kind = item.get('type')

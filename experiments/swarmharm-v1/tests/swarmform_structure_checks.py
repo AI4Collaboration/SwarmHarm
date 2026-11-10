@@ -45,7 +45,26 @@ class StructureChecks(unittest.TestCase):
             self.assertEqual(coverage['missing_actors']['atif'],['Research04'])
             self.assertEqual(len(coverage['atif_actors']),7)
             files=json.loads((root/'evidence-manifest.json').read_text())['files']
-            self.assertTrue({'atif-failure.json','atif-validation.json','actor-evidence.json'} <= set(files))
+            self.assertTrue({'atif-failure.json','atif-validation.json','actor-evidence.json',
+                             'collection-summary.json','temporal-inventory.json'} <= set(files))
+            before={p:p.read_bytes() for p in root.rglob('*') if p.is_file()}
+            with self.assertRaises(FileExistsError):
+                runner.finalize(root,reg,{}, {'reason':'quiescence'})
+            self.assertEqual({p:p.read_bytes() for p in before},before)
+
+    def test_failed_outcome_does_not_skip_temporal_inventory(self):
+        scripts=str(Path(__file__).resolve().parents[3]/'scripts')
+        with patch.object(sys,'path',[scripts,*sys.path]):
+            import run_swarmform_structure as runner
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            reg={'identifier':'missing-outcome','plan':{'natural':{}}}
+            with patch.object(runner,'time_inventory',return_value={'preserved':True}) as temporal:
+                result=runner.finalize(root,reg,{}, {'reason':'runtime_failure'})
+            temporal.assert_called_once_with(root,reg)
+            self.assertIn('outcome',result['failures'])
+            self.assertNotIn('temporal',result['failures'])
+            self.assertEqual(json.loads((root/'temporal-inventory.json').read_text()),{'preserved':True})
 
     def test_common_problem_matches_task_and_materials_with_explicit_intended_joint_context(self):
         iv,it,im=build_theory('same',8,'intended')

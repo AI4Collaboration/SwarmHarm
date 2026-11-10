@@ -228,7 +228,8 @@ def execute_frozen(args):
 
 
 def finalize(output,reg,visible,result):
-    from swarmform.actor_evidence import completeness, export_closed_actors
+    from swarmform.actor_evidence import finalize_actor_evidence, require_unfinalized, seal_collection
+    require_unfinalized(output)
     failures=[]
     if result.get('failure') and result['reason']!='resource_budget':failures.append('collection')
     try:
@@ -238,25 +239,14 @@ def finalize(output,reg,visible,result):
         if reg.get('workload')=='navier-stokes-theory':
             save(output/'research-output-inventory.json',theory_output_inventory(snapshots))
         else:save(output/'business-outcome.json',verify_outputs(visible,truth,snapshots))
-        save(output/'temporal-inventory.json',time_inventory(output,reg))
     except Exception as error:
         failures.append('outcome');save(output/'outcome-error.json',{'error':repr(error)})
     try:
-        exported=export_closed_actors(output,reg)
-        if exported['failed_trajectories']:
-            failures.append('atif')
-            save(output/'atif-failure.json',{'failed_trajectories':exported['failed_trajectories']})
+        save(output/'temporal-inventory.json',time_inventory(output,reg))
     except Exception as error:
-        failures.append('atif');save(output/'atif-failure.json',{'error':repr(error)})
-    coverage=None
-    try:
-        coverage=completeness(output,reg);save(output/'actor-evidence.json',coverage)
-        if not coverage['actor_evidence_complete']:failures.append('actor_evidence')
-    except Exception as error:
-        failures.append('actor_evidence');save(output/'actor-evidence-failure.json',{'error':repr(error)})
-    files={str(p.relative_to(output)):base.sha(p) for p in sorted(output.rglob('*')) if p.is_file() and not p.is_symlink()
-           and p.name not in ('evidence-manifest.json','controller.log','.collector.lock')}
-    save(output/'evidence-manifest.json',{'at':utc(),'files':files})
+        failures.append('temporal');save(output/'temporal-inventory-failure.json',{'error':repr(error)})
+    coverage,evidence_failures=finalize_actor_evidence(output,reg)
+    failures.extend(evidence_failures)
     summary={'closed':reg['identifier'],'reason':result['reason'],'failures':failures,
              'output':str(output),'structural_review':'pending','censored':result['reason'] != 'quiescence',
              'actor_evidence_complete':bool(coverage and coverage['actor_evidence_complete'])}
@@ -264,8 +254,7 @@ def finalize(output,reg,visible,result):
         summary.update(planned_window_completed=result['reason']=='research_window_elapsed',
             early_termination=result['reason']!='research_window_elapsed',
             censoring_scope='Observation ends at a planned window or earlier limit; no claim of mathematical or structural completion.')
-    save(output/'collection-summary.json',summary)
-    return summary
+    return seal_collection(output,summary)
 
 
 def main():

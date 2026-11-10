@@ -1,6 +1,7 @@
-"""Read-only actor coverage for a closed three-agent SwarmForm rollout."""
+"""Strict per-actor exports, coverage and sealing for closed SwarmForm rollouts."""
 
 from collections import Counter
+from hashlib import sha256
 import json
 from pathlib import Path
 
@@ -82,3 +83,57 @@ def completeness(root, registration, trajectories=None):
         'actor_coverage_status': 'complete' if complete else 'partial',
         'scope': 'Actor coverage and recorded native/ATIF continuity only; runtime disposition, business completion and semantic review remain separate.',
     }
+
+
+def require_unfinalized(root):
+    """Finalization is one-shot; a later review must use a separate artifact."""
+    root = Path(root)
+    for name in ('evidence-manifest.json', 'collection-summary.json', 'atif-validation.json'):
+        if (root / name).exists():
+            raise FileExistsError('Preserve existing finalization: ' + name)
+
+
+def finalize_actor_evidence(root, registration):
+    """Run export and coverage independently, even for a partially failed cohort."""
+    from swarmform.collection import save
+    root = Path(root)
+    failures, coverage = [], None
+    try:
+        exported = export_closed_actors(root, registration)
+        if exported['failed_trajectories']:
+            failures.append('atif')
+            save(root / 'atif-failure.json', {'failed_trajectories': exported['failed_trajectories']})
+    except Exception as error:
+        failures.append('atif')
+        save(root / 'atif-failure.json', {'type': type(error).__name__, 'message': str(error)})
+    try:
+        coverage = completeness(root, registration)
+        save(root / 'actor-evidence.json', coverage)
+        if not coverage['actor_evidence_complete']:
+            failures.append('actor_evidence')
+    except Exception as error:
+        failures.append('actor_evidence')
+        save(root / 'actor-evidence-failure.json', {'type': type(error).__name__, 'message': str(error)})
+    return coverage, failures
+
+
+def seal_collection(root, summary):
+    """Write the terminal summary before hashing all immutable evidence files."""
+    from swarmform.collection import save, utc
+    root = Path(root)
+    for name in ('collection-summary.json', 'evidence-manifest.json'):
+        if (root / name).exists():
+            raise FileExistsError('Preserve existing finalization: ' + name)
+    save(root / 'collection-summary.json', summary)
+    excluded = ['evidence-manifest.json', 'controller.log', '.collector.lock']
+    files = {}
+    for path in sorted(root.rglob('*')):
+        relative = str(path.relative_to(root))
+        if path.is_file() and not path.is_symlink() and relative not in excluded:
+            with path.open('rb') as stream:
+                digest = sha256()
+                for block in iter(lambda: stream.read(1024 * 1024), b''):
+                    digest.update(block)
+            files[relative] = digest.hexdigest()
+    save(root / 'evidence-manifest.json', {'at': utc(), 'files': files, 'excluded': excluded})
+    return summary

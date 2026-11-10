@@ -13,6 +13,60 @@ import record_surface
 
 
 class NativeHarnessChecks(unittest.TestCase):
+    def test_context_failure_keeps_raw_tail_without_projecting_summary_or_reset_usage(self):
+        import threading
+        from copy import deepcopy
+        from codex_session import CodexAgent
+        from codex_rpc import CodexRpc
+        cases=[(boundary,closing) for boundary in ('item/started', 'item/completed', 'thread/compacted')
+               for closing in (False,True)]
+        for boundary,closing in cases:
+            with self.subTest(boundary=boundary,closing=closing), tempfile.TemporaryDirectory() as directory:
+                with patch('threading.Thread.start'):
+                    agent=CodexAgent('actor',queue.Queue(),folder=directory,
+                        model='openai/gpt-6.1-sol',thinking_level='high',tools=[],active_tools=[],
+                        goal_mode='off',api_base=codex_gateway.AXONHUB_BASE,api_key='offline-fixture')
+                agent.thread_id='thread';agent.native_turn='turn'
+                agent.stopping=closing
+                rpc=CodexRpc.__new__(CodexRpc)
+                rpc.folder=Path(directory);(rpc.folder/'native').mkdir()
+                rpc.native_lock=threading.Lock();rpc.sequence=0
+                history=deepcopy(agent.history)
+                messages=[
+                    {'method':boundary,'params':{'threadId':'thread','item':{'type':'contextCompaction'}}},
+                    {'method':'thread/tokenUsage/updated','params':{'tokenUsage':{'last':{'inputTokens':300000}}}},
+                    {'method':'rawResponseItem/completed','params':{'item':{'type':'message','role':'assistant',
+                        'content':[{'type':'output_text','text':'Private context summary.'}]}}},
+                    {'method':'thread/tokenUsage/updated','params':{'tokenUsage':{'last':{'inputTokens':0}}}},
+                    {'method':'turn/completed','params':{'turn':{'id':'turn','status':'completed'}}},
+                ]
+                for message in messages:
+                    source=rpc.record('server',message)
+                    agent._notification(message,source)
+                emitted=[]
+                while not agent.events.empty():emitted.append(agent.events.get_nowait()[1])
+                self.assertEqual([x['type'] for x in emitted],['native_context_transition','fatal'])
+                self.assertEqual(emitted[0]['native_record'],'native/000001.json')
+                self.assertEqual(agent.history,history)
+                self.assertEqual(agent.turn,0)
+                self.assertEqual([json.loads(p.read_text())['message']
+                    for p in sorted((rpc.folder/'native').glob('*.json'))],messages)
+
+    def test_normal_shutdown_still_projects_late_usage(self):
+        from codex_session import CodexAgent
+        with tempfile.TemporaryDirectory() as directory, patch('threading.Thread.start'):
+            agent=CodexAgent('actor',queue.Queue(),folder=directory,
+                model='openai/gpt-6.1-sol',thinking_level='high',tools=[],active_tools=[],
+                goal_mode='off',api_base=codex_gateway.AXONHUB_BASE,api_key='offline-fixture')
+            agent.stopping=True
+            agent._notification({'method':'thread/tokenUsage/updated','params':{
+                'tokenUsage':{'last':{'inputTokens':19,'outputTokens':2}}}},'native/000001.json')
+            values=[]
+            while not agent.events.empty():values.append(agent.events.get_nowait()[1])
+            response=next(x for x in values if x['type']=='provider_response')
+            self.assertEqual(response['event']['response']['usage']['input_tokens'],19)
+            self.assertFalse(agent.failed)
+
     def test_codex_long_response_progress_does_not_extend_hard_completion_limit(self):
         import threading
         from codex_session import CodexAgent

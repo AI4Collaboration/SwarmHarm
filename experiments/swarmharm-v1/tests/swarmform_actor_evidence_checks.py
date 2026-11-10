@@ -6,10 +6,29 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from swarmform.actor_evidence import completeness, export_closed_actors
+from swarmform.actor_evidence import completeness, export_closed_actors, seal_collection, require_unfinalized
 
 
 class ActorEvidenceChecks(unittest.TestCase):
+    def test_manifest_seals_summary_and_nested_logs_without_rewriting_old_evidence(self):
+        from hashlib import sha256
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'natural/actor').mkdir(parents=True)
+            (root / 'natural/actor/controller.log').write_text('immutable actor log')
+            (root / 'controller.log').write_text('live collector log')
+            summary = {'closed': 'fixture', 'failures': []}
+            require_unfinalized(root)
+            self.assertEqual(seal_collection(root, summary), summary)
+            manifest = json.loads((root / 'evidence-manifest.json').read_text())
+            self.assertEqual(set(manifest['files']), {'collection-summary.json', 'natural/actor/controller.log'})
+            for name, digest in manifest['files'].items():
+                self.assertEqual(digest, sha256((root / name).read_bytes()).hexdigest())
+            before = {p: p.read_bytes() for p in root.rglob('*') if p.is_file()}
+            with self.assertRaises(FileExistsError): require_unfinalized(root)
+            with self.assertRaises(FileExistsError): seal_collection(root, {'closed': 'replacement'})
+            self.assertEqual({p: p.read_bytes() for p in before}, before)
+
     def test_failed_member_does_not_skip_healthy_later_exports_or_hide_missing_history(self):
         actors = [f'Research{i:02d}' for i in range(1, 9)]
         reg = {'study_mode': 'swarmform-structure', 'population': 8,

@@ -340,6 +340,8 @@ def collect(args):
 
 def finalize_collection(output, reg, inputs, report):
     """Preserve evidence and expose any failure after collection closes."""
+    from swarmform.actor_evidence import finalize_actor_evidence, require_unfinalized, seal_collection
+    require_unfinalized(output)
     failures = ['collection'] if report.get('failure') else []
     try:
         truth = json.loads((output / 'protected-truth.json').read_text())
@@ -357,29 +359,12 @@ def finalize_collection(output, reg, inputs, report):
     except Exception as error:
         failures.append('business_outcome')
         save(output / 'business-outcome-failure.json', {'type': type(error).__name__, 'message': str(error)})
-    import export_atif
-    try:
-        export_atif.export(output)
-    except Exception as error:
-        failures.append('atif')
-        save(output / 'atif-failure.json', {'type': type(error).__name__, 'message': str(error)})
-    from swarmform.actor_evidence import completeness
-    coverage = None
-    try:
-        coverage = completeness(output, reg)
-        save(output / 'actor-evidence.json', coverage)
-        if not coverage['actor_evidence_complete']:
-            failures.append('actor_evidence')
-    except Exception as error:
-        failures.append('actor_evidence')
-        save(output / 'actor-evidence-failure.json', {'type': type(error).__name__, 'message': str(error)})
-    files = {str(p.relative_to(output)): sha(p) for p in sorted(output.rglob('*'))
-             if p.is_file() and not p.is_symlink() and p.name not in ('evidence-manifest.json', 'controller.log', '.collector.lock')}
-    save(output / 'evidence-manifest.json', {'at': utc(), 'files': files,
-        'excluded': ['evidence-manifest.json', 'controller.log', '.collector.lock']})
-    return {'closed': reg['identifier'], 'reason': report['reason'], 'output': str(output),
+    coverage, evidence_failures = finalize_actor_evidence(output, reg)
+    failures.extend(evidence_failures)
+    summary = {'closed': reg['identifier'], 'reason': report['reason'], 'output': str(output),
             'failures': failures, 'review': 'pending',
             'actor_evidence_complete': bool(coverage and coverage['actor_evidence_complete'])}
+    return seal_collection(output, summary)
 
 
 def argument_parser():
