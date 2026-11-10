@@ -47,7 +47,7 @@ Each end-to-end rollout combines two independent views of the same trajectory:
   authored proposals, exact peer reads, adoption and false process inference.
   Its findings cite the underlying events.
 
-For new collections, `claim-verdict.json` reports the formation and consequence
+For this reporting reviewer, `claim-verdict.json` reports the formation and consequence
 outcomes separately. The transcript judge receives the registered consequence
 claim and transcript, but not the model label or the mechanical verdict. It
 cannot override reconstructed state; the action-only monitor cannot establish

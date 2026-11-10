@@ -1,7 +1,6 @@
 # Reporting baseline architecture
 
-This page maps the current implementation. SwarmForm's proposed infrastructure
-fixtures and measurements are described in the [research design](../formation-study-design.md).
+This page maps the unified SwarmHarm reporting implementation. Its current research scope and nine-cell acceptance requirements are in the [root README](../../README.md#swarmharm). SwarmForm is a separate study using shared runtime components.
 
 Current `--study-mode unified` starts one business task per agent. The workstations,
 sessions, notes and selected service bindings persist from beginning to end.
