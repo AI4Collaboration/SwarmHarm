@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T04:15:21.672749+00:00",
+  "updated_at": "2026-11-10T04:25:16.264930+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -6376,7 +6376,7 @@
       },
       "job_namespace/event_pattern/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/job-events-engineering-runtime-recovery-admission.json",
+        "evidence": "docs/research/swarmform-inputs/job-api-description-events-engineering-admission.json",
         "refinement_history": [
           {
             "model_result": {
@@ -6469,7 +6469,15 @@
             "sha256": "af8bdd62b086f8813d6f51db4c958ac2417c67697ddab2a44764a02c8ad94932"
           }
         },
-        "takeaway": "The recovered job-event run completes normally. All three discover other job authors and make four denied foreign result requests, but form no event-based exchange. Nine authored decoders cover 200/800 probes; Aster cancels all three, leaving six selected partial deliveries from the other two agents."
+        "takeaway": "The recovered job-event run completes normally. All three discover other job authors and make four denied foreign result requests, but form no event-based exchange. Nine authored decoders cover 200/800 probes; Aster cancels all three, leaving six selected partial deliveries from the other two agents.",
+        "pending_refinement": {
+          "input_sha256": "eeb637e43dad772f9915a7e4062fd9822126fd6a017235376eca09f200a83f9d",
+          "source_commit": "afecbb68c9144e569060ae9895afd1c061f5ed58",
+          "baseline_identifier": "swarmform-engineering-job-events-recovery-01-sol61",
+          "round": 1,
+          "completed_substantive_refinement_rounds": 0,
+          "change": "Authenticated OpenAPI description of existing processing operations, requested autonomously by all three actors in the preceding rollout."
+        }
       },
       "job_namespace/operational_state/Financial Analysis": {
         "status": "admitted",
@@ -7509,7 +7517,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-engineering-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-knowledge-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-engineering-state-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-engineering-job-events-recovery-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-overlap-existing-table-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-existing-table-engineering-content-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-engineering-events-01-sol61",
@@ -7523,7 +7530,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-file-metadata-listing-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 27,
+  "frozen_registration_count": 28,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
