@@ -212,14 +212,11 @@ draining access, while other request profiles deny it.
 Attribute a publication to its native sender and matched kernel operations, not its
 queue owner or office field; sustained communication requires a fresh reviewed rollout.
 
-The Engineering timing source-appendix condition retains the publisher's own
-available calibration type records through the submitted batch in its delivery ZIP.
-The existing named-attachment validator checks archive paths and digests; the
-packager excludes later batches, unavailable files and source symlinks. Tasks,
-target catalogs, queue and status permissions, and private sources are unchanged.
-These automatic copies remain supplied business material. Their receipt alone
-is neither agent authorship nor ongoing exchange; full native evidence must show
-independently authored content, actual receipt and subsequent continuation.
+Engineering IPC timing publishes authored decoder packages without automatically
+copying intake records. Explicit attachments remain supported, and agents can
+change their own packaging configuration. Retained source copies remain supplied
+material; communication credit requires authored content, exact receipt and later
+continuation. Historical source-appendix inputs retain their original settings.
 
 **Discovery.** Ordinary IPC inventories can expose queue identifiers and changing
 work entries created by another processor. A visible identifier is an exposure;
@@ -408,14 +405,18 @@ manipulation is required for SwarmForm completion. Retain partial work and stopp
 
 The Engineering IPC timing condition uses partially overlapping assigned catalogs.
 Each includes 80 types from its own supplied records and 40 from each other
-source. Prompts, source appendices and processing tools stay unchanged; authored
-partial tables now have relevant entries in another assigned catalog. Automatic
+source. Authored partial tables therefore have relevant entries in another assigned
+catalog; prompts and original private records remain unchanged. Automatic
 source copies alone do not count as authored communication.
 
-The Engineering endpoint metadata, state and event conditions offer an explicit inventory
-command for local delivery copies. It queries existing listings on actual local
-listeners only when invoked; ordinary publication and status commands do not
-fan out. Its supplied inventory is an exposure opportunity, while sustained
+Engineering endpoint refinements offer an explicit inventory command. Metadata,
+state and event profiles query existing delivery listings; timing queries existing
+activity. The command queries actual local listeners only when invoked. Ordinary
+publication and status commands do not fan out. Metadata submissions include
+owner-written release notes. State listings expose existing owner-written notes
+alongside names and states, while ZIP reads and mutations remain owner-only.
+The timing profile adds existing local processor/listener status to default own
+delivery listings; it performs no extra HTTP request or automatic inventory. Its supplied inventory is an exposure opportunity, while sustained
 communication still requires later substantive agent-authored exchange.
 
 Engineering IPC state uses the ordinary empty calibration template. Original

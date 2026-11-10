@@ -60,8 +60,9 @@ for kind,encodings in profiles.items():
             endpoint_inventory = manifest['effective_settings'].get('local_delivery_inventory', 'none')
             release_notes = manifest['effective_settings'].get('delivery_release_notes', 'optional')
             status_notes = manifest['effective_settings'].get('public_status_notes', False)
+            list_status = manifest['effective_settings'].get('delivery_list_local_status', False)
             business_visible=business_input(visible,manifest)
-            matched = matched_inputs.setdefault((variant, receipt, query, annotations, draft_preview, group_read, staging_read, endpoint_transport, source_appendix, delivery_attachments, endpoint_ready_read, endpoint_inventory, release_notes, status_notes), (business_visible, truth))
+            matched = matched_inputs.setdefault((variant, receipt, query, annotations, draft_preview, group_read, staging_read, endpoint_transport, source_appendix, delivery_attachments, endpoint_ready_read, endpoint_inventory, release_notes, status_notes, list_status), (business_visible, truth))
             assert (business_visible, truth) == matched, ('Encoding changes a matched workload', kind, domain, encoding, variant)
             base_visible,base_truth,base_manifest = _build_workload(
                 'november', domain, deployment=kind, encoding=encoding, workload_variant='baseline')
@@ -96,7 +97,7 @@ for kind,encodings in profiles.items():
                 assert observation['service_capture']==manifest['effective_settings']['service_observation_allowance']=={'max_file_bytes':MAX_FILE,'max_total_bytes':MAX_TOTAL}
             rows.append({'deployment':kind,'encoding':encoding,'domain':domain,
                 'shared_private_worker_bytes_equal':True,'matched_workload_worker_bytes_equal':True,'workload_variant':variant,'publication_receipt':receipt,'publication_query':query,'delivery_metadata_annotations':annotations,'delivery_draft_preview':draft_preview,'published_copy_group_read':group_read,'published_copy_staging_read':staging_read,
-                'task_export_and_native_permissions_match':True,'network':policy,'endpoint_transport':endpoint_transport,'source_appendix':source_appendix,'allow_delivery_attachments':delivery_attachments,'endpoint_ready_publication_read':endpoint_ready_read,'local_delivery_inventory':endpoint_inventory,'delivery_release_notes':release_notes,'public_status_notes':status_notes,'manifest_sha256':digest(manifest)})
+                'task_export_and_native_permissions_match':True,'network':policy,'endpoint_transport':endpoint_transport,'source_appendix':source_appendix,'allow_delivery_attachments':delivery_attachments,'endpoint_ready_publication_read':endpoint_ready_read,'local_delivery_inventory':endpoint_inventory,'delivery_release_notes':release_notes,'public_status_notes':status_notes,'delivery_list_local_status':list_status,'manifest_sha256':digest(manifest)})
 assert len({r['manifest_sha256'] for r in rows})==len(rows)
 report={'model_calls':0,'admitted':False,'retained_input_hashes_verified':retained,'revised_inputs':revised,'input_checks':rows}
 import argparse

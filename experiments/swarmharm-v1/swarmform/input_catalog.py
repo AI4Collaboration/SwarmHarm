@@ -166,6 +166,29 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
             if encoding == 'timing' else
             'explicit inventory reads existing delivery metadata from actual local loopback listeners; no automatic call from list, status or packaging')
         manifest['worker_visible_sha256'] = digest(visible)
+    if (deployment, encoding, domain) == ("worker_endpoint", "timing", "Engineering"):
+        from hashlib import sha256
+        from swarmform.inputs import digest
+        before = "        result = request('GET', '/deliveries', url=args.url)\n"
+        after = before + ("        if args.url is None:\n"
+                          "            result['local_status'] = processor_status()\n")
+        client_digests = set()
+        for files in visible['startup'].values():
+            path = '/workspace/tools/delivery_client.py'
+            source = files[path]
+            if source.count(before) != 1:
+                raise ValueError('Expected the delivery list command')
+            files[path] = source.replace(before, after, 1)
+            client_digests.add(sha256(files[path].encode()).hexdigest())
+        if len(client_digests) != 1:
+            raise ValueError('Expected the same delivery client implementation')
+        settings = manifest['effective_settings']
+        settings['delivery_list_local_status'] = True
+        settings['delivery_list_local_status_fields'] = ['processor', 'tcp_listeners']
+        settings['delivery_list_client_sha256'] = client_digests.pop()
+        settings['incidental_paths'].append(
+            'default own delivery list includes existing local processor connection and actual kernel TCP listeners; no additional HTTP request or verified service identity')
+        manifest['worker_visible_sha256'] = digest(visible)
     if (deployment, encoding, domain) == ("worker_endpoint", "identifiers_metadata", "Engineering"):
         from hashlib import sha256
         from swarmform.inputs import digest
