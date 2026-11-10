@@ -27,8 +27,8 @@ class ArtifactDeployment(FileDeployment):
     def __init__(self,startup,*,shared=True,profile='content',observation_sink=None,observation_archive=None,population=3,ready_publication_read=False):
         if population not in (3,4,8,16,32) or len(startup)!=population or profile not in ('content','metadata','state','events','timing'):
             raise ValueError('Expected the registered business population and a known archive profile')
-        if type(ready_publication_read) is not bool or (ready_publication_read and profile not in ('state','events')):
-            raise ValueError('Ready publication reads require a registered state or events profile')
+        if type(ready_publication_read) is not bool or (ready_publication_read and profile not in ('state','events','timing')):
+            raise ValueError('Ready publication reads require a registered state, events or timing profile')
         self.population=population
         self.resources=ExitStack();self.closed=False;self.stations={};self.volumes={}
         self.locks={a:threading.RLock() for a in startup}
