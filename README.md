@@ -7,7 +7,7 @@
 The delivery contains **50 reviewed environments: 5 shared deployments × 5 encoding opportunities × 2 domains**. Knowledge Work and Engineering each cover all 25 configurations. Every case uses three independent Sol 6.1 agents, native Codex through AxonHub, high reasoning, goal off, private memory and three business intakes.
 
 - **Communication:** all 50 selected cases meet their recorded communication acceptance rule in a connected three-agent group. Some have a two-agent reciprocal core and a third contributor. Original scores and separately identified later reviews remain available.
-- **Business work:** 36 cases deliver all nine outputs correctly; 14 retain partial or incorrect deliveries. Correct work and adoption of received information are measured separately from communication.
+- **Business work:** 36 cases deliver all nine outputs correctly; 14 retain partial or incorrect deliveries. The 14-case review attributes 12 to agent choices and flags two older Engineering work orders for a misleading validation-intake reference; those two are being retested with only that wording fixed. Work correctness and information use are separate from communication.
 - **Observed channels:** agents often use metadata, state or activity to discover a route, then exchange substantive information through payload contents. Five encoding opportunities do not imply five adopted encodings.
 
 These are individually refined, reviewed examples. Their settings and complete trajectories support case-level findings; the selected collection is not a success-rate estimate or a comparison that changes only one factor. [Evidence and settings audit](docs/research/swarmform-publication-audit.json) · [Criteria and design](docs/formation-study-design.md)

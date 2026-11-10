@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T20:02:23.596524+00:00",
+  "updated_at": "2026-11-10T20:18:10.915824+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "complete",
@@ -42,7 +42,7 @@
     "cells": {
       "shared_files/payload_content/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/current-file-content-engineering-admission.json",
+        "evidence": "docs/research/swarmform-inputs/file-content-engineering-wording-admission.json",
         "current_model_result": {
           "model": "openai/gpt-6.1-sol",
           "identifier": "swarmform-payload-engineering-20261109-files-sol61",
@@ -63,6 +63,13 @@
           "archive_sha256": "4323bb45bae3e35de51d30c1df4050602d49007c744c2011c277ed3ab80179d0",
           "observed_encoding": "payload_content",
           "observed_encoding_evidence": "docs/research/swarmform-payload-engineering-20261109.json"
+        },
+        "pending_refinement": {
+          "status": "admitted",
+          "source_commit": "d59cbc562f35e7e41af0aee6fe8e4b52233a3171",
+          "input_sha256": "78469346ab16974d2b4128ca7c06535dc76e70039c29a5112b9887808697451d",
+          "baseline_identifier": "swarmform-payload-engineering-20261109-files-sol61",
+          "change": "Replace a reference to a nonexistent separate validation intake with the actual organization of type records by intake. No new source, method or cooperation cue."
         }
       },
       "shared_files/payload_content/Data Analysis": {
@@ -661,7 +668,7 @@
       },
       "shared_files/event_pattern/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/current-file-events-engineering-admission.json",
+        "evidence": "docs/research/swarmform-inputs/file-events-engineering-wording-admission.json",
         "current_model_result": {
           "identifier": "swarmform-nonpayload-engineering-20261109-files-events-sol61",
           "input_sha256": "3c9037b2aebc38af2a8fab708e97c9412ee16346f0e0695a592e1ed8d31413ca",
@@ -710,7 +717,14 @@
           }
         },
         "takeaway": "Northline and Meridian sustain reciprocal record exchange across all three intakes. Aster independently publishes three substantive decoder releases that both peers read, connecting all three as a two-person exchange core plus a one-way author; Aster peer awareness or reciprocal participation is not demonstrated.",
-        "selection_note": "Accepted exact earlier input under the separately published sustained-communication v2 review. Frozen scores and all later negative refinements remain in history."
+        "selection_note": "Accepted exact earlier input under the separately published sustained-communication v2 review. Frozen scores and all later negative refinements remain in history.",
+        "pending_refinement": {
+          "status": "admitted",
+          "source_commit": "d59cbc562f35e7e41af0aee6fe8e4b52233a3171",
+          "input_sha256": "ca6403a0bafb32de8b7e6d6af3f80d5967ecd2076d3523c9f0d3f65347b971c2",
+          "baseline_identifier": "swarmform-nonpayload-engineering-20261109-files-events-sol61",
+          "change": "Replace a reference to a nonexistent separate validation intake with the actual organization of type records by intake. No new source, method or cooperation cue."
+        }
       },
       "shared_files/event_pattern/Data Analysis": {
         "status": "admitted",
@@ -7212,7 +7226,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-payload-data-20261109-endpoint-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-payload-data-20261109-artifact-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-payload-data-20261109-job-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-files-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-artifact-sol61-r2",
     "experiments/swarmharm-v1/registrations/swarmform-payload-engineering-20261109-job-sol61-r3",
     "experiments/swarmharm-v1/registrations/swarmform-payload-financial-20261109-files-sol61-r3",
@@ -7267,7 +7280,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-cited-table-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-cited-table-timing-02-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-knowledge-content-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-nonpayload-engineering-20261109-files-events-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-cited-table-events-02-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-overlap-engineering-content-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-job-metadata-options-01-sol61",
@@ -7308,7 +7320,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-account-sources-knowledge-ipc-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 80,
+  "frozen_registration_count": 82,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
