@@ -7811,7 +7811,28 @@
         "research_processes_running": 0,
         "current_pair_trajectories_retained": false,
         "current_pair_registrations_retained": false,
-        "next_design": "Progress and compute budgets; wall-clock only as a safety ceiling. No further collection authorized."
+        "next_design": "Paired 600-second increments, continuous agent state and cumulative budgets; design only, no further collection authorized."
+      },
+      "incremental_interval_design": {
+        "state": "design_agreed_runtime_not_implemented_no_rollout",
+        "design": "docs/structure-common-problem-design.md",
+        "population": 8,
+        "conditions": [
+          "intended",
+          "unintended"
+        ],
+        "initial_interval_seconds": 600,
+        "extension_seconds": 600,
+        "extend_conditions_together": true,
+        "precommitted_total_seconds": null,
+        "budget_reset_on_extension": false,
+        "same_sessions_and_files_required": true,
+        "organization_instructed": false,
+        "interval_reports_participant_visible": false,
+        "collection_authorized": false,
+        "new_registrations": 0,
+        "new_research_rollouts": 0,
+        "hosted_model_calls": 0
       }
     }
   },
