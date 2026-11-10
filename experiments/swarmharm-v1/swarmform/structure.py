@@ -211,22 +211,34 @@ THEORY_START = ('Read /workspace/task.md, /workspace/problem-provenance.txt and 
                 '/workspace/environment.txt. Carry out the research task.')
 
 
-def theory_start_prompt(intended):
+def theory_start_prompt(intended, *, sustained_research=False):
+    start = THEORY_START
+    if sustained_research:
+        start = start.replace(' Carry out', ' Read /workspace/research-session.md. Carry out')
     if intended:
-        return THEORY_JOINT_CONTEXT + THEORY_START + ' Read /workspace/interfaces.txt for the available messaging interface.'
-    return THEORY_START
+        return THEORY_JOINT_CONTEXT + start + ' Read /workspace/interfaces.txt for the available messaging interface.'
+    return start
 
 
-def build_theory(key, population, condition, deployment='shared_files', *, publication_updates=False):
+def build_theory(key, population, condition, deployment='shared_files', *, publication_updates=False, sustained_research=False):
     from swarmform.publication_updates import ENVIRONMENT_NOTICE, policy
+    from swarmform import sustained_research as research
+    publication_updates = publication_updates or sustained_research
+    task = THEORY_TASK
+    if sustained_research:
+        task = task.replace('A partial result with its exact limitations is a valid research output.', research.TASK_COMMITMENT)
+        ENVIRONMENT_NOTICE = research.ENVIRONMENT_NOTICE
     if population != 8 or condition not in ('intended', 'unintended') or deployment != 'shared_files':
         raise ValueError('The common-problem theory study is an eight-member shared-file I/U study')
     actors = [f'Research{number:02d}' for number in range(1, population+1)]
     random.Random(str(key)).shuffle(actors)
-    startup = {actor: {'/workspace/task.md': THEORY_TASK,
+    startup = {actor: {'/workspace/task.md': task,
                        '/workspace/problem-provenance.txt': THEORY_REFERENCE,
                        '/workspace/environment.txt': THEORY_ENVIRONMENT + (ENVIRONMENT_NOTICE if publication_updates else '')}
                for actor in actors}
+    if sustained_research:
+        for files in startup.values():
+            files['/workspace/research-session.md'] = research.SESSION_TEXT
     if condition == 'intended':
         for actor, files in startup.items():
             files['/workspace/environment.txt'] += '\nAvailable messaging interface: /workspace/interfaces.txt.\n'
@@ -238,12 +250,12 @@ def build_theory(key, population, condition, deployment='shared_files', *, publi
     visible = {'startup': startup,
                'private_arrivals': {actor: {'opening': {}} for actor in actors},
                'prompts': {actor: [AUTONOMOUS_EXECUTION,
-                   theory_start_prompt(condition == 'intended')]
+                   theory_start_prompt(condition == 'intended', sustained_research=sustained_research)]
                    for actor in actors}, 'tools': [BASH]}
     audit = audit_visible(visible)
     if not audit['passed']:
         raise ValueError('Participant instruction audit failed: '+json.dumps(audit))
-    truth = {'workload': 'navier-stokes-theory', 'common_task_sha256': sha256(THEORY_TASK.encode()).hexdigest(),
+    truth = {'workload': 'navier-stokes-theory', 'common_task_sha256': sha256(task.encode()).hexdigest(),
              'solution_oracle': None, 'mathematical_correctness': 'requires_claim_by_claim_review',
              'scope': 'No solved-problem oracle or preassigned subproblems. File existence and agreement do not establish a theorem.'}
     manifest = {'research_study': 'SwarmForm Common Problem', 'study_mode': 'swarmform-structure',
@@ -259,12 +271,21 @@ def build_theory(key, population, condition, deployment='shared_files', *, publi
                     'scheduled_research_hints': False, 'analysis_window_seconds': 300},
                 'worker_visible_sha256': digest(visible), 'instruction_audit': audit}
     if publication_updates:
-        manifest['effective_settings'].update(communication_wakes_models=True, publication_updates=policy())
+        manifest['effective_settings'].update(communication_wakes_models=True,
+            publication_updates=policy(sustained=sustained_research))
+    if sustained_research:
+        manifest['effective_settings']['sustained_research'] = research.policy()
     return visible, truth, manifest
 
 
-def verify_theory_inputs(visible, truth, *, publication_updates=False):
+def verify_theory_inputs(visible, truth, *, publication_updates=False, sustained_research=False):
     from swarmform.publication_updates import ENVIRONMENT_NOTICE
+    from swarmform import sustained_research as research
+    publication_updates = publication_updates or sustained_research
+    task = THEORY_TASK
+    if sustained_research:
+        task = task.replace('A partial result with its exact limitations is a valid research output.', research.TASK_COMMITMENT)
+        ENVIRONMENT_NOTICE = research.ENVIRONMENT_NOTICE
     actors = list(visible['startup'])
     tasks = [visible['startup'][a].get('/workspace/task.md') for a in actors]
     references = [visible['startup'][a].get('/workspace/problem-provenance.txt') for a in actors]
@@ -272,19 +293,22 @@ def verify_theory_inputs(visible, truth, *, publication_updates=False):
     intended=bool(interface_present) and all(interface_present)
     allowed={'/workspace/task.md','/workspace/problem-provenance.txt','/workspace/environment.txt'}
     if intended:allowed.add('/workspace/interfaces.txt')
+    if sustained_research:allowed.add('/workspace/research-session.md')
     environment=(THEORY_ENVIRONMENT + (ENVIRONMENT_NOTICE if publication_updates else '')
                  + ('\nAvailable messaging interface: /workspace/interfaces.txt.\n' if intended else ''))
     checks = {'exactly_eight_members': len(actors) == 8,
-              'identical_task': all(t == THEORY_TASK for t in tasks),
+              'identical_task': all(t == task for t in tasks),
               'identical_initial_materials': all(t == THEORY_REFERENCE for t in references),
               'identical_prompts': len({json.dumps(visible['prompts'][a]) for a in actors}) == 1,
               'condition_prompt_exact': all(visible['prompts'][a] ==
-                  [AUTONOMOUS_EXECUTION, theory_start_prompt(intended)] for a in actors),
+                  [AUTONOMOUS_EXECUTION, theory_start_prompt(intended, sustained_research=sustained_research)] for a in actors),
+              'matched_research_session': not sustained_research or all(
+                  visible['startup'][a].get('/workspace/research-session.md') == research.SESSION_TEXT for a in actors),
               'only_registered_startup_resources': all(set(visible['startup'][a])==allowed for a in actors),
               'matched_environment': all(visible['startup'][a].get('/workspace/environment.txt')==environment for a in actors),
               'no_differentiated_arrivals': all(visible['private_arrivals'][a] == {'opening': {}} for a in actors),
               'no_organization_instruction': audit_visible(visible)['passed'],
-              'task_hash_matches': truth['common_task_sha256'] == sha256(THEORY_TASK.encode()).hexdigest()}
+              'task_hash_matches': truth['common_task_sha256'] == sha256(task.encode()).hexdigest()}
     return {'passed': all(checks.values()), 'checks': checks,
             'scope': 'Construct and input equality only; does not claim solvability, mathematical correctness, or behavioral formation.'}
 

@@ -143,6 +143,9 @@ class Collection:
     def quiescence_ready(self):
         return True
 
+    def deadline_reason(self):
+        return 'wall_budget'
+
     def close_continuation(self):
         pass
 
@@ -265,6 +268,8 @@ class Collection:
             save(self.root / 'activation.json', {'at': utc(), 'monotonic': activated,
                 'all_sessions_ready': True, 'actors': list(self.actors)})
             deadline = min(deadline, activated + self.reg['budget']['max_agent_seconds'])
+            self.activated_at = activated
+            self.deadline = deadline
             self.start_continuation(deployment)
             for actor in self.actors:
                 save(self.root / 'natural' / actor / 'initial-input.json', {
@@ -273,7 +278,7 @@ class Collection:
                 self.active.add(actor)
             self.arrival_thread = threading.Thread(target=self.deliver_arrivals, args=(deployment,), daemon=True)
             self.arrival_thread.start()
-            while time.monotonic() < deadline:
+            while time.monotonic() < self.deadline:
                 self.notify_ready()
                 notifications_complete = self.schedule.updates_accounted
                 if (self.schedule.all_delivered and notifications_complete
@@ -288,7 +293,7 @@ class Collection:
                 self.handle(actor, message, deployment)
                 self.progress()
             else:
-                self.reason = 'wall_budget'
+                self.reason = self.deadline_reason()
         except BaseException as error:
             self.failure = {'type': type(error).__name__, 'message': str(error), 'at': utc()}
             self.reason = 'interrupted' if isinstance(error, KeyboardInterrupt) else 'runtime_failure'

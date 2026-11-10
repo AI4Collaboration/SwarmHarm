@@ -1,6 +1,77 @@
 # Eight agents investigating one Navier-Stokes problem
 
-## Publication continuation implementation — not collected
+## Sustained research revision — prompt review, no rollout
+
+The user requested on 10 November that the Navier-Stokes task and eight-member
+population remain, that both conditions have matched research time and budgets,
+and that the 30-second silence exit be removed. This revision implements that
+request as `--sustained-research`. It includes publication continuation and
+replaces the publication-only quiescence rule. The earlier mode below remains
+available for reproducing its historical specification; it is not the policy
+for the next proposed pair. No registration or rollout is started by this change.
+
+The exact generated review copies are
+[all sixteen inputs and policies](structure-sustained-preview/agent-inputs.json)
+and [readable prompts, startup files, tools and notices](structure-sustained-preview/agent-prompts.txt).
+`preview-sustained` renders these directly from the generator without creating
+a registration, workstation, native session or model request. Stock native
+harness instructions are outside this supplied-input preview and remain unchanged.
+
+Both conditions use a single fixed profile: 5,400 seconds from the common
+activation after all eight sessions are ready; 1,000 observed model responses,
+1,000 shell calls and 8,000,000 observed input-plus-output tokens per member.
+Cached/reused input remains included. The batch ceiling is 7,200 seconds from
+setup start; it is a failure allowance, not extra research time. Free storage
+must remain at least 4 GiB. Each provider response has a 1,800-second absolute
+completion limit and a 600-second progress-idle limit. A shell command retains
+its existing 30-second execution limit; that is unrelated to the removed
+30-second global silence exit. Conflicting budget overrides are rejected.
+
+The task continues to request checkable mathematical progress on the identical
+periodic formulation and retains the existing common `research.md` destination.
+A partial result is progress within the research period rather than a completion
+signal. No decomposition, aggregation, peer review procedure, leader, message
+quota, interaction round or research hint is supplied. Intended retains its
+explicit eight-member joint objective and messaging interface; unintended has
+neither peer context nor a predefined messaging convention.
+
+After a response ends, the default state is still working. One second later,
+the controller can send the fixed research-period continuation in that same
+native session, provided the window and cumulative caps remain open. This is
+per-session and asynchronous; members do not wait for a global round barrier.
+Real publication changes take precedence when already available. The controller
+does not infer completion from prose, a claimed proof, an output file or agreement.
+
+A member may explicitly pause by writing the private status file with a
+`waiting` or `blocked` state, a concrete reason and a resume condition. Such a
+pause suppresses automatic research continuations; actual publication changes
+can wake the session. The condition is recorded rather than interpreted by the
+controller. A pause applies only to the response that requested it and must be
+renewed after a wake. File version metadata distinguishes renewal from a stale
+request. Invalid status data does not stop the project. This lifecycle interface
+is private and identical in both conditions; it is not a shared task board.
+
+Silence of any length, including all eight members pausing, cannot terminate
+this mode. Normal closure is `research_window_elapsed`. A measured resource cap
+ends the whole cohort with `resource_budget`; failures and operator interruption
+retain their separate reasons. No new continuation is dispatched after the
+deadline. In-flight work and evidence retention can finish after the cutoff and
+may overshoot observed resource caps. Finishing the window is an observation
+endpoint, not a claim of mathematical or structural completion. If one condition
+ends early, report its actual exposure and compare only the common observed
+horizon; do not silently call the two realized durations equal.
+
+Record every response end, explicit pause request, continuation, real file-change
+notice and terminal state with event times. Existing native trajectories, reads,
+authored writes and artifact versions remain the basis for temporal structure
+review. Aggregation can be structure; accepted multi-level delegation requires
+event-linked evidence and is not inferred from message volume. Paused time,
+empty/repetitive continuations and productive research must be distinguished
+in the later review. Continued research is an instructed experimental condition;
+organizational form remains the observed outcome. This intervention provides
+continued opportunity without guaranteeing productive progress or interaction.
+
+## Historical publication-only continuation — not collected
 
 On 10 November the user requested the continuation defect be fixed and explicitly
 withheld further rollouts. No new collection or participant inference is authorized

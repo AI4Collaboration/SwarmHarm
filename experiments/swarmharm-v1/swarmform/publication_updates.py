@@ -13,9 +13,9 @@ ENVIRONMENT_NOTICE = (
     'file paths only. No notification is sent for unchanged contents.\n')
 
 
-def policy():
+def policy(*, sustained=False):
     return {'mode': 'publication-content-v1', 'poll_seconds': 2,
-            'stable_scans': 2, 'quiescence_seconds': 30,
+            'stable_scans': 2, 'quiescence_seconds': None if sustained else 30,
             'root': ROOT, 'max_file_bytes': 2_000_000,
             'max_total_bytes': 32_000_000, 'max_files': 4096,
             'notice_paths_per_turn': 32,
@@ -28,7 +28,7 @@ def validate_policy(registration):
     configured = registration.get('publication_updates')
     if configured is None:
         return False
-    if (configured != policy() or registration.get('workload') != 'navier-stokes-theory'
+    if (configured != policy(sustained=registration.get('sustained_research') is not None) or registration.get('workload') != 'navier-stokes-theory'
             or registration.get('population') != 8
             or registration.get('condition') not in ('intended', 'unintended')
             or registration.get('deployment', {}).get('kind') != 'shared_files'

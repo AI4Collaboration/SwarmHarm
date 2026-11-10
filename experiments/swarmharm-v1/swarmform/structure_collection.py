@@ -1,4 +1,4 @@
-"""Observed resource limits and time-window inventories, without subject nudges."""
+"""Observed resource limits, time inventories and explicit continuation policies."""
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from hashlib import sha256
@@ -9,6 +9,7 @@ import time
 
 from swarmform.collection import Collection, save, utc
 from swarmform.publication_updates import PublicationUpdates, policy, scan_publications, validate_policy
+from swarmform import sustained_research as research
 
 
 class StructureCollection(Collection):
@@ -18,6 +19,7 @@ class StructureCollection(Collection):
         self.budget_stop = None
         self.last_space_check = 0
         try:
+            self.sustained_research = research.validate_policy(self.reg)
             self.publications = (PublicationUpdates(self.actors, self.reg['condition'])
                                  if validate_policy(self.reg) else None)
         except Exception:
@@ -30,6 +32,8 @@ class StructureCollection(Collection):
         self.next_publication_scan = 0
         self.publication_scan_count = 0
         self.idle_since = None
+        self.research_status = {a: research.ResearchStatus() for a in self.actors}
+        self.research_due = {}
 
     def start_continuation(self, deployment):
         if self.publications is None:
@@ -50,10 +54,60 @@ class StructureCollection(Collection):
             'scope': 'File availability notices, not peer authorship, content receipt, comprehension or adoption.'})
         for state in self.states.values():
             state.update(session_activations=1, publication_notices=0)
+            if self.sustained_research:
+                state.update(research_continuations=0, research_state={'state': 'working'})
+        if self.sustained_research:
+            save(self.root/'research-lifecycle.json', {'policy': self.reg['sustained_research'],
+                'activated_at_monotonic': self.activated_at, 'deadline_monotonic': self.deadline,
+                'scope': 'Imposed research commitment; no required messages, roles or semantic progress gate.'})
 
     def observe_tool_result(self, actor, result, snapshot):
         if self.publications is not None and (reference := snapshot.get('command_observation')):
             self.publications.accessed(actor, reference)
+        if self.sustained_research and self.research_status[actor].observe(snapshot):
+            status = self.research_status[actor]
+            self.states[actor]['research_state'] = dict(status.value)
+            self.record(actor, {'type': 'research_status_request', 'at': utc(),
+                'private_status': status.value, 'invalid': status.error})
+
+    def may_continue(self):
+        if not self.sustained_research:
+            return True
+        if time.monotonic() >= self.deadline:
+            return False
+        # Usage and calls accumulate across every activation in the same session.
+        for actor, state in self.states.items():
+            for field, limit in (('tools', 'max_tools_per_agent'),
+                                 ('observed_model_responses', 'max_responses_per_agent'),
+                                 ('observed_tokens', 'max_observed_tokens_per_agent')):
+                if state.get(field, 0) >= self.reg['budget'][limit]:
+                    self.stop_for_budget(actor, field, state[field])
+        return True
+
+    def resume_research(self):
+        if not self.sustained_research:
+            return
+        for actor in self.actors:
+            if (actor in self.active or actor not in self.research_due
+                    or time.monotonic() < self.research_due[actor]
+                    or self.research_status[actor].value['state'] != 'working'):
+                continue
+            if not self.may_continue():
+                return
+            text = research.CONTINUATION + (research.STATUS_ERROR if self.research_status[actor].error else '')
+            self.agents[actor].prompt(text)
+            self.research_due.pop(actor, None)
+            self.research_status[actor].wake()
+            self.active.add(actor)
+            state = self.states[actor]
+            state.update(status='running', research_state={'state': 'working'},
+                session_activations=state['session_activations']+1,
+                research_continuations=state['research_continuations']+1)
+            notice = {'type': 'research_continuation', 'at': utc(), 'source': 'registered_research_period',
+                      'text': text, 'same_native_session': True}
+            state['notices'].append(notice)
+            self.record(actor, notice)
+            save(self.root/'natural'/actor/'notices.json', state['notices'])
 
     def read_publications(self):
         # Do not let the station's command snapshot freeze an observer process
@@ -101,6 +155,8 @@ class StructureCollection(Collection):
             versions = self.publications.pending(actor)
             if not versions:
                 continue
+            if not self.may_continue():
+                return
             text = self.publications.notice(versions)
             notice = {'type': 'publication_notice', 'at': utc(), 'source': 'automatic_environment_file_change',
                       'versions': versions, 'text': text, 'same_native_session': True}
@@ -108,9 +164,14 @@ class StructureCollection(Collection):
             self.agents[actor].prompt(text)
             self.publications.acknowledge(actor, versions)
             self.active.add(actor)
+            if self.sustained_research:
+                self.research_status[actor].wake()
+                self.research_due.pop(actor, None)
             state = self.states[actor]
             state.update(status='running', session_activations=state['session_activations']+1,
                          publication_notices=state['publication_notices']+1)
+            if self.sustained_research:
+                state['research_state'] = {'state': 'working'}
             state['notices'].append(notice)
             self.record(actor, notice)
             save(self.root/'natural'/actor/'notices.json', state['notices'])
@@ -120,6 +181,8 @@ class StructureCollection(Collection):
             self.next_publication_scan = now + policy()['poll_seconds']
 
     def quiescence_ready(self):
+        if self.sustained_research:
+            return False
         if self.publications is None:
             return True
         now = time.monotonic()
@@ -128,6 +191,12 @@ class StructureCollection(Collection):
         return (now-self.idle_since >= policy()['quiescence_seconds']
                 and self.publication_scan is None and self.publications.ready
                 and not any(self.publications.pending(a) for a in self.actors))
+
+    def deadline_reason(self):
+        if (self.sustained_research and
+                time.monotonic() >= self.activated_at+self.reg['budget']['max_agent_seconds']):
+            return 'research_window_elapsed'
+        return super().deadline_reason()
 
     def close_continuation(self):
         if self.publication_pool is not None:
@@ -164,6 +233,7 @@ class StructureCollection(Collection):
         self.check_space()
         super().notify_ready()
         self.poll_publications()
+        self.resume_research()
 
     def handle(self, actor, message, deployment):
         if message['type'] == 'tool_call':
@@ -172,6 +242,12 @@ class StructureCollection(Collection):
         super().handle(actor, message, deployment)
         if self.publications is not None and message['type'] == 'settled':
             self.states[actor]['status'] = 'idle'
+            if self.sustained_research:
+                value = self.research_status[actor].value
+                self.states[actor]['status'] = 'idle' if value['state'] == 'working' else value['state']
+                self.research_due[actor] = time.monotonic()+self.reg['sustained_research']['resume_after_response_seconds']
+                self.record(actor, {'type': 'research_response_ended', 'at': utc(),
+                    'research_state': value, 'project_stopped': False})
         if message['type'] == 'provider_response':
             value = message['event']['response']
             self.usage[actor, value['id']] = value.get('usage', {})

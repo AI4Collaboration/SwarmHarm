@@ -25,7 +25,7 @@ class CheckSelectionChecks(unittest.TestCase):
         plan=select(['scripts/run_swarmform_structure.py',
                      'experiments/swarmharm-v1/swarmform/structure_collection.py'])
         self.assertEqual(plan['tests'],['tests.publication_updates_checks', 'tests.structure_native_checks','tests.structure_timeline_checks',
-                                       'tests.swarmform_structure_checks'])
+                                       'tests.sustained_research_checks', 'tests.swarmform_structure_checks'])
         self.assertTrue(plan['docker'])
         self.assertEqual(plan['harnesses'],['codex'])
 

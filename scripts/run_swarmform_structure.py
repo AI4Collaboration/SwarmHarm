@@ -13,6 +13,7 @@ from swarmform.collection import save, utc
 from swarmform.structure import (build, verify_solvability, verify_outputs, POPULATIONS, CONDITIONS, DEPLOYMENTS,
     WORKLOADS, build_theory, verify_theory_inputs, theory_output_inventory)
 from swarmform.structure_collection import StructureCollection, time_inventory
+from swarmform import sustained_research as research
 from swarmform.inputs import digest
 from swarmform.input_catalog import observation_registration
 from guardrails import outside_repository, credential_file
@@ -38,6 +39,7 @@ def write_tasks(output,visible,manifest,duration,deployment):
 
 
 def register(args, *, source=None, runtime=None):
+    research.resolve_limits(args)
     source=source or base.published_head()
     runtime=runtime or base.check_runtime()
     output=outside_repository(args.output,ROOT,'Structure output')
@@ -46,13 +48,14 @@ def register(args, *, source=None, runtime=None):
     folder=REGISTRATIONS/args.identifier
     if output.exists() or folder.exists():raise FileExistsError('Use fresh registration and output paths')
     workload=getattr(args,'workload','knowledge-work');theory=workload=='navier-stokes-theory'
-    continuation=getattr(args,'publication_updates',False)
+    sustained=getattr(args,'sustained_research',False)
+    continuation=getattr(args,'publication_updates',False) or sustained
     if continuation and not theory:
         raise ValueError('Publication updates are currently scoped to the common-problem theory study')
     if theory:
         visible,truth,manifest=build_theory(args.dataset_key,args.population,args.condition,args.deployment,
-                                          publication_updates=continuation)
-        verification=verify_theory_inputs(visible,truth,publication_updates=continuation)
+                                          publication_updates=continuation, sustained_research=sustained)
+        verification=verify_theory_inputs(visible,truth,publication_updates=continuation, sustained_research=sustained)
     else:
         visible,truth,manifest=build(args.dataset_key,args.population,args.condition,args.deployment,
             spacing=args.spacing,customers_per_actor=args.customers,source_schedule=args.source_schedule)
@@ -135,6 +138,11 @@ def register(args, *, source=None, runtime=None):
         reg['criteria']['continuation_is_registered_environment_factor']=True
         if 'response_progress_watchdog' in reg:
             reg['response_progress_watchdog']['scope']='Timeout handling only; publication continuation is registered separately.'
+    if sustained:
+        reg['sustained_research']=settings['sustained_research']
+        reg['criteria'].update(research_persistence_instructed=True, quiescence_is_stop=False)
+        reg['response_progress_watchdog']['scope']='Timeout handling only; sustained research continuation is registered separately.'
+        research.validate_policy(reg)
     save(output/'registration.json',reg);save(output/'registration-seal.json',{'sha256':base.sha(output/'registration.json')})
     folder.mkdir(parents=True)
     for name in ('registration.json','registration-seal.json'):shutil.copy2(output/name,folder/name)
@@ -245,12 +253,18 @@ def finalize(output,reg,visible,result):
     save(output/'evidence-manifest.json',{'at':utc(),'files':files})
     summary={'closed':reg['identifier'],'reason':result['reason'],'failures':failures,
              'output':str(output),'structural_review':'pending','censored':result['reason'] != 'quiescence'}
+    if reg.get('sustained_research'):
+        summary.update(planned_window_completed=result['reason']=='research_window_elapsed',
+            early_termination=result['reason']!='research_window_elapsed',
+            censoring_scope='Observation ends at a planned window or earlier limit; no claim of mathematical or structural completion.')
     save(output/'collection-summary.json',summary)
     return summary
 
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);sub=parser.add_subparsers(dest='command',required=True)
+    preview=sub.add_parser('preview-sustained',help='Render exact inputs and policies without a registration or model call')
+    preview.add_argument('--output',type=Path,required=True)
     prepare=sub.add_parser('prepare');collect_parser=sub.add_parser('collect')
     worker=sub.add_parser('execute-frozen',help='Internal sealed execution after committed preflight')
     for command in (prepare,collect_parser,worker):
@@ -262,19 +276,27 @@ def main():
     prepare.add_argument('--model',choices=['openai/gpt-6.1-sol'],default='openai/gpt-6.1-sol')
     prepare.add_argument('--dataset-key',required=True);prepare.add_argument('--witness',type=Path,required=True)
     prepare.add_argument('--source-schedule',choices=['fixed','changing'],default='fixed')
-    prepare.add_argument('--spacing',type=int,default=600);prepare.add_argument('--duration',type=int,default=3600)
-    prepare.add_argument('--customers',type=int,default=8);prepare.add_argument('--max-tools',type=int,default=150)
-    prepare.add_argument('--max-responses',type=int,default=120);prepare.add_argument('--max-tokens',type=int,default=500000)
-    prepare.add_argument('--min-free-gib',type=int,default=2)
-    prepare.add_argument('--request-timeout-seconds',type=int,default=300)
+    prepare.add_argument('--spacing',type=int,default=600);prepare.add_argument('--duration',type=int)
+    prepare.add_argument('--customers',type=int,default=8);prepare.add_argument('--max-tools',type=int)
+    prepare.add_argument('--max-responses',type=int);prepare.add_argument('--max-tokens',type=int)
+    prepare.add_argument('--min-free-gib',type=int)
+    prepare.add_argument('--request-timeout-seconds',type=int)
     prepare.add_argument('--response-idle-timeout-seconds',type=int)
     prepare.add_argument('--observation-settle-seconds',type=int,choices=[2,10],default=2)
     prepare.add_argument('--publication-updates', action='store_true',
                          help='Opt in to same-session continuation on actual changed publication content; theory only')
+    prepare.add_argument('--sustained-research',action='store_true',
+                         help='Use the fixed matched 90-minute theory policy; no quiescence exit')
     collect_parser.add_argument('--key-file',type=Path,required=True)
     worker.add_argument('--key-file',type=Path,required=True)
     args=parser.parse_args()
+    if args.command=='preview-sustained':
+        from swarmform.research_preview import write_preview
+        print(json.dumps(write_preview(args.output),indent=2))
+        return
     if args.command=='prepare':
+        try:research.resolve_limits(args)
+        except ValueError as error:parser.error(str(error))
         if min(args.duration,args.max_tools,args.max_responses,args.max_tokens,args.min_free_gib,args.request_timeout_seconds)<1:
             parser.error('Budgets must be positive')
         if args.workload=='knowledge-work' and args.duration<=4*args.spacing:

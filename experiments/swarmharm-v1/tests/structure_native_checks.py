@@ -19,6 +19,74 @@ from tests.swarmform_collection_checks import Responses
 
 
 class StructureNativeChecks(unittest.TestCase):
+    def test_eight_sustained_sessions_continue_then_pause_until_test_clock_deadline(self):
+        from tests.sustained_research_checks import registration
+        from swarmform import sustained_research as research
+        import time
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Responses)
+        server.requests, server.lock = [], threading.Lock()
+        server.wait_for_arrivals = False
+
+        def command_for(request):
+            latest = next(item for item in reversed(request['input']) if item.get('role') == 'user')
+            if research.CONTINUATION in json.dumps(latest):
+                return "python3 - <<'PY'\nimport json\nfrom pathlib import Path\nPath('/workspace/research-status.json').write_text(json.dumps({'state':'blocked','reason':'Fixture has no further work.','resume_condition':'New publication.'}))\nPY"
+            return 'cat /workspace/task.md'
+
+        server.command_for = command_for
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        original = codex_gateway.write_config
+
+        def local_config(home, *args):
+            original(home, *args)
+            path = home/'config.toml'
+            text = path.read_text().replace(codex_gateway.AXONHUB_BASE,
+                f'http://127.0.0.1:{server.server_port}/v1')
+            path.write_text(text.replace('requires_openai_auth=false',
+                'requires_openai_auth=false\nsupports_websockets=false\nrequest_max_retries=0\nstream_max_retries=0'))
+
+        class FixtureCollection(StructureCollection):
+            def notify_ready(self):
+                if time.monotonic()-self.activated_at > 75:
+                    raise TimeoutError('Offline sustained fixture exceeded its test allowance')
+                super().notify_ready()
+
+            def handle(self, actor, message, deployment):
+                super().handle(actor, message, deployment)
+                if all(s.get('status') == 'blocked' for s in self.states.values()):
+                    # Accelerate the observation clock only in this deterministic
+                    # fixture. Production registration/budgets remain unchanged.
+                    self.assert_quiescence = self.quiescence_ready()
+                    self.activated_at = time.monotonic()-research.LIMITS['duration']-1
+                    self.deadline = time.monotonic()-1
+
+        try:
+            with tempfile.TemporaryDirectory() as directory, patch.object(codex_gateway, 'write_config', local_config):
+                root = Path(directory)
+                visible, _, _ = build_theory('sustained-native-fixture', 8, 'unintended', sustained_research=True)
+                model = 'openai/gpt-6.1-sol'
+                reg = registration('unintended')
+                reg.update(model=model, reasoning='high', workstation_permissions=WORKSTATION_PERMISSIONS,
+                    harness=codex_gateway.harness_registration('off', model), arrival_offsets={'opening': 0},
+                    research_study='SwarmForm Common Problem', plan={'natural': {a: {} for a in visible['startup']}})
+                save(root/'registration.json', reg)
+                collection = FixtureCollection(root, reg, visible, api_key='offline-fixture')
+                report = collection.run()
+                self.assertIsNone(report['failure'], report)
+                self.assertEqual(report['reason'], 'research_window_elapsed')
+                self.assertFalse(collection.assert_quiescence)
+                self.assertEqual(len({s['codex_session']['session_id'] for s in report['actors'].values()}), 8)
+                for actor, state in report['actors'].items():
+                    self.assertEqual(state['session_activations'], 2)
+                    self.assertEqual(state['research_continuations'], 1)
+                    self.assertEqual(state['publication_notices'], 0)
+                    self.assertEqual(state['observed_model_responses'], 4)
+                    self.assertEqual(state['observed_tokens'], 52)
+                    self.assertEqual(state['lifecycle_at_close'], 'blocked')
+                    self.assertTrue(export_atif.export_actor(root, 'natural', actor)['native_continuity_passed'])
+        finally:
+            server.shutdown(); server.server_close()
+
     def test_eight_sessions_resume_on_late_message_and_return_result_without_new_sessions(self):
         """Real local native threads and workstations; all responses are scripted."""
         server = ThreadingHTTPServer(('127.0.0.1', 0), Responses)
