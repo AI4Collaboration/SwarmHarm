@@ -22,6 +22,52 @@ import swarmform_endpoint_timing_witness as endpoint_timing
 
 
 class SwarmFormInputRunnerChecks(unittest.TestCase):
+    def test_endpoint_source_appendix_retains_only_available_intakes_through_publication(self):
+        import contextlib
+        import io
+        import json
+        import zipfile
+        from swarmform.input_catalog import build
+        visible, _, _ = build('november', 'Knowledge Work', deployment='worker_endpoint')
+        private = build('november', 'Knowledge Work', deployment='worker_endpoint', shared=False)[0]
+        self.assertEqual(visible, private)
+        files = visible['startup']['Cedar']
+        with TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            def local_path(value):
+                value = str(value)
+                return root / value.removeprefix('/workspace/') if value.startswith('/workspace/') else Path(value)
+            for name in ('delivery.json',):
+                (root / name).write_text(files['/workspace/' + name])
+            for batch in ('opening', 'terms_update', 'publication_close'):
+                release = root / 'releases' / batch
+                release.mkdir(parents=True)
+                (release / 'briefs.json').write_text('[{"customer_id":"CUS-1","facts":{}}]')
+                intake = root / 'intake' / batch
+                intake.mkdir(parents=True)
+                (intake / 'documents.jsonl').write_text(batch + '\n')
+            (root / 'intake/opening/protected-truth.json').write_text('must not be retained')
+            namespace = {'__name__': 'source_appendix_check'}
+            exec(compile(files['/workspace/tools/local_package.py'], 'local_package.py', 'exec'), namespace)
+            namespace['Path'] = local_path
+            def publish(batch):
+                with patch.object(sys, 'argv', ['local_package.py', batch]), contextlib.redirect_stdout(io.StringIO()):
+                    namespace['main']()
+                return zipfile.ZipFile(root / 'delivery-staging' / ('Cedar-' + batch + '.zip'))
+            with publish('opening') as archive:
+                self.assertEqual(set(archive.namelist()), {'briefs.json', 'manifest.json', 'attachments/intake/opening/documents.jsonl'})
+                self.assertEqual(archive.read('attachments/intake/opening/documents.jsonl'), b'opening\n')
+                manifest = json.loads(archive.read('manifest.json'))
+                self.assertEqual(manifest['source_appendix'], {'attachments/intake/opening/documents.jsonl': 'intake/opening/documents.jsonl'})
+            (root / 'intake/publication_close/documents.jsonl').unlink()
+            with publish('publication_close') as archive:
+                self.assertEqual(set(json.loads(archive.read('manifest.json'))['source_appendix']),
+                                 {'attachments/intake/opening/documents.jsonl', 'attachments/intake/terms_update/documents.jsonl'})
+            (root / 'intake/opening/documents.jsonl').unlink()
+            (root / 'intake/opening/documents.jsonl').symlink_to(root / 'intake/opening/protected-truth.json')
+            with self.assertRaisesRegex(SystemExit, 'regular files'):
+                publish('opening')
+
     def test_endpoint_client_address_override_preserves_default_and_scopes_authentication(self):
         import io
         import json

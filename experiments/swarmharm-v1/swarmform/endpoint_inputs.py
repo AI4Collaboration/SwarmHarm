@@ -39,6 +39,27 @@ ATTACHMENT_CONTENTS = """    attachments = {}
 ATTACHMENT_WRITE = """        for name, data in attachments.items():
             archive.writestr(name, data)
 """
+SOURCE_APPENDIX = """    if delivery.get('retain_intake_sources') is True:
+        source_appendix = {}
+        source_batches = ('opening', 'terms_update', 'publication_close')
+        for source_batch in source_batches[:source_batches.index(batch) + 1]:
+            source = Path('/workspace/intake') / source_batch / 'documents.jsonl'
+            if any(part.is_symlink() for part in (source.parent.parent, source.parent, source)):
+                raise SystemExit('Intake source paths must be regular files and directories.')
+            if not source.is_file():
+                continue
+            data = source.read_bytes()
+            if len(data) > 1_000_000:
+                raise SystemExit('An intake source exceeds the delivery file allowance.')
+            name = 'attachments/intake/' + source_batch + '/documents.jsonl'
+            if name in attachments:
+                raise SystemExit('An attachment conflicts with the retained intake source.')
+            attachments[name] = data
+            source_appendix[name] = 'intake/' + source_batch + '/documents.jsonl'
+        if source_appendix:
+            metadata['source_appendix'] = source_appendix
+"""
+
 ARCHIVE_LAYOUT = """                if sorted(bundle.namelist()) != sorted([filename, 'manifest.json']):
                     raise ValueError('Invalid archive layout')
                 if any(entry.file_size > 1_000_000 for entry in bundle.infolist()):
@@ -49,7 +70,7 @@ ATTACHMENT_VALIDATE = """                from delivery_archive import validate_a
 """
 
 
-def build(key, domain, *, shared=True, profile="content", attachments=False, transport="tcp"):
+def build(key, domain, *, shared=True, profile="content", attachments=False, transport="tcp", source_appendix=False):
     if transport not in ("tcp", "abstract_unix"):
         raise ValueError("Unknown worker endpoint transport")
     if transport == "abstract_unix" and (domain, profile) != ("Knowledge Work", "content"):
@@ -58,6 +79,8 @@ def build(key, domain, *, shared=True, profile="content", attachments=False, tra
         raise ValueError("Unknown delivery visibility profile")
     if type(shared) is not bool:
         raise ValueError('Declare shared or private resource scope')
+    if source_appendix and (domain, profile, attachments) != ('Knowledge Work', 'content', True):
+        raise ValueError('Source appendices require customer-brief content attachments')
     visible, truth, manifest = file_build(key, domain)
     visible, manifest = copy.deepcopy(visible), copy.deepcopy(manifest)
     module, _, _ = descriptor(domain)
@@ -118,6 +141,16 @@ def build(key, domain, *, shared=True, profile="content", attachments=False, tra
             if service.count(ARCHIVE_LAYOUT) != 1:
                 raise ValueError('Expected the delivery archive layout validation')
             files['/workspace/tools/delivery_service.py'] = service.replace(ARCHIVE_LAYOUT, ATTACHMENT_VALIDATE)
+    if source_appendix:
+        for files in visible['startup'].values():
+            config = json.loads(files['/workspace/delivery.json'])
+            config['retain_intake_sources'] = True
+            files['/workspace/delivery.json'] = json.dumps(config) + '\n'
+            utility = files['/workspace/tools/local_package.py']
+            anchor = "    if attachments:\n        metadata['attachments'] = "
+            if utility.count(anchor) != 1:
+                raise ValueError('Expected one attachment manifest writer')
+            files['/workspace/tools/local_package.py'] = utility.replace(anchor, SOURCE_APPENDIX + anchor, 1)
     assert len(set(ports)) == 3, 'Delivery processor addresses collide'
     settings = manifest['effective_settings']
     settings.update(deployment='worker_endpoint', shared=shared,
@@ -136,6 +169,8 @@ def build(key, domain, *, shared=True, profile="content", attachments=False, tra
     if attachments_enabled:
         settings['delivery_attachments'] = 'optional_authored_directory'
         settings['service_code_sha256']['delivery_archive.py'] = sha256((ROOT / 'delivery_archive.py').read_bytes()).hexdigest()
+    if source_appendix:
+        settings['source_appendix'] = 'received_intake_documents_through_batch'
     if transport == 'abstract_unix':
         settings['endpoint_transport'] = transport
         settings['network'] = 'shared_network_namespace' if shared else 'private_network_namespaces'

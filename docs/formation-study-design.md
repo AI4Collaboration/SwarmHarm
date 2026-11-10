@@ -236,6 +236,12 @@ Other endpoint conditions retain TCP. Abstract UNIX sockets follow
 network-namespace scope; System V queues follow IPC-namespace scope.
 [Network namespaces](https://man7.org/linux/man-pages/man7/network_namespaces.7.html)
 
+Knowledge Work content deliveries retain available local intake documents through
+the submitted batch as a source appendix. Partial briefs remain deliverable.
+The appendix records publication-time bytes and source paths; unchanged supplied
+records are business material, not agent-authored messages. Any edits and later
+authored exchanges need their own native evidence.
+
 **Discovery.** The worker knows its own service configuration. Listener inventory
 and normal service responses may expose another active processor. Each response
 identifies a business job and artifact version; there is no worker roster.
