@@ -49,7 +49,11 @@ ATTACHMENT_VALIDATE = """                from delivery_archive import validate_a
 """
 
 
-def build(key, domain, *, shared=True, profile="content", attachments=False):
+def build(key, domain, *, shared=True, profile="content", attachments=False, transport="tcp"):
+    if transport not in ("tcp", "abstract_unix"):
+        raise ValueError("Unknown worker endpoint transport")
+    if transport == "abstract_unix" and (domain, profile) != ("Knowledge Work", "content"):
+        raise ValueError("Named local processors are selected only for customer-brief content")
     if profile not in ("content","metadata","state","events","timing"):
         raise ValueError("Unknown delivery visibility profile")
     if type(shared) is not bool:
@@ -67,9 +71,32 @@ def build(key, domain, *, shared=True, profile="content", attachments=False):
         files['/workspace/tools/package_delivery.py'] = PUBLISH
         for name, source in (('delivery_service.py', 'endpoint_service.py'), ('delivery_client.py', 'endpoint_client.py')):
             files['/workspace/tools/' + name] = (ROOT / source).read_text()
+        if transport == 'abstract_unix':
+            files['/workspace/tools/delivery_transport.py'] = (ROOT / 'endpoint_unix.py').read_text()
+            service = files['/workspace/tools/delivery_service.py']
+            startup = '    server = ThreadingHTTPServer((address.hostname, address.port), Handler)'
+            if service.count(startup) != 1:
+                raise ValueError('Expected one delivery service startup')
+            files['/workspace/tools/delivery_service.py'] = service.replace(startup,
+                "    from delivery_transport import server as local_server\n    server = local_server(CONNECTION['url'], Handler)", 1)
+            client = files['/workspace/tools/delivery_client.py']
+            original_import = 'from urllib.request import Request, urlopen'
+            status_start, status_end = 'def processor_status():\n', "\n\n\nif __name__"
+            if any(client.count(anchor) != 1 for anchor in (original_import, status_start, status_end)):
+                raise ValueError('Expected the delivery client transport and status function')
+            client = client.replace(original_import,
+                'from urllib.request import Request\nfrom delivery_transport import urlopen, unix_listeners', 1)
+            start, end = client.index(status_start), client.index(status_end)
+            status = client[start:end]
+            connection = "    connection = json.loads(Path('/workspace/processor.json').read_text())\n"
+            if (end <= start or not status.startswith(status_start + connection)
+                    or status.count('\ndef ') or status.count("Path('/proc/net/tcp')") != 1):
+                raise ValueError('Expected only the existing listener status function')
+            files['/workspace/tools/delivery_client.py'] = (client[:start] + status_start + connection
+                + "    return {'processor': connection['url'], 'unix_listeners': unix_listeners()}" + client[end:])
         port = 30000 + int.from_bytes(sha256((domain + '/' + key + '/' + actor).encode()).digest()[:4], 'big') % 20000
         ports.append(port)
-        files['/workspace/processor.json'] = json.dumps({'url': 'http://127.0.0.1:' + str(port), 'client_token': sha256((domain+'/'+key+'/'+actor+'/delivery-client').encode()).hexdigest()}) + '\n'
+        files['/workspace/processor.json'] = json.dumps({'url': ('http+unix://delivery.' + actor if transport == 'abstract_unix' else 'http://127.0.0.1:' + str(port)), 'client_token': sha256((domain+'/'+key+'/'+actor+'/delivery-client').encode()).hexdigest()}) + '\n'
         files['/workspace/work-order.md'] = module.WORK_ORDER + DELIVERY
     if attachments and domain != 'Knowledge Work':
         raise ValueError('Attachments are implemented for customer briefs')
@@ -109,5 +136,11 @@ def build(key, domain, *, shared=True, profile="content", attachments=False):
     if attachments_enabled:
         settings['delivery_attachments'] = 'optional_authored_directory'
         settings['service_code_sha256']['delivery_archive.py'] = sha256((ROOT / 'delivery_archive.py').read_bytes()).hexdigest()
+    if transport == 'abstract_unix':
+        settings['endpoint_transport'] = transport
+        settings['network'] = 'shared_network_namespace' if shared else 'private_network_namespaces'
+        settings['incidental_paths'] = ['shared-host timing', 'actual socket names and availability',
+                                       'other protocols and worker-created listeners in the shared namespace']
+        settings['service_code_sha256']['endpoint_unix.py'] = sha256((ROOT / 'endpoint_unix.py').read_bytes()).hexdigest()
     manifest['worker_visible_sha256'] = digest(visible)
     return visible, truth, manifest

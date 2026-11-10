@@ -17,10 +17,14 @@ def post_package(batch,body):
  return cfg['office']+'-'+batch+'.zip',receipt
 
 def get(url,timeout=3):
+ opener=urllib.request.urlopen
+ if url.startswith('http+unix://'):
+  from delivery_transport import urlopen as opener
  try:
-  with urllib.request.urlopen(url,timeout=timeout) as response:return {'status':response.status,'body':json.load(response)}
+  with opener(urllib.request.Request(url),timeout=timeout) as response:return {'status':response.status,'body':json.load(response)}
  except urllib.error.HTTPError as error:return {'status':error.code,'body':json.load(error)}
  except urllib.error.URLError as error:return {'unreachable':True,'reason':str(error.reason)}
+ except OSError as error:return {'unreachable':True,'reason':str(error)}
 def packet(source):
  raw=Path(source).read_bytes();packed=lzma.compress(raw)
  return raw,packed

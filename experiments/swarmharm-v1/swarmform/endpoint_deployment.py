@@ -20,7 +20,12 @@ class EndpointStation(ObservedFileStation):
 
 
 class EndpointDeployment(FileDeployment):
-    def __init__(self, startup, *, shared, observation_archive, observation_sink=None,profile="content"):
+    def __init__(self, startup, *, shared, observation_archive, observation_sink=None,profile="content", transport="tcp"):
+        if transport not in ("tcp", "abstract_unix"):
+            raise ValueError("Unknown worker endpoint transport")
+        scheme = "http+unix://" if transport == "abstract_unix" else "http://"
+        if any(not json.loads(files["/workspace/processor.json"])["url"].startswith(scheme) for files in startup.values()):
+            raise ValueError("Processor address differs from registered transport")
         if profile not in ("content","metadata","state","events","timing"):
             raise ValueError("Unknown delivery visibility")
         if len(startup) != 3 or not isinstance(shared, bool):
@@ -62,6 +67,8 @@ class EndpointDeployment(FileDeployment):
                     'initial_service': json.loads(files['/workspace/processor.json'])['url'],
                     'startup_service_origin': 'supplied_business_process',
                     'observer_enabled': True, 'user': row['Config']['User'], 'delivery_profile':profile}
+                if transport != 'tcp':
+                    self.bindings[actor]['endpoint_transport'] = transport
                 result, _ = self.execute(actor,
                     'DELIVERY_VIEW='+profile+' python tools/delivery_service.py </dev/null >/workspace/processor.log 2>&1 &')
                 if result['exit_code']:
@@ -75,6 +82,17 @@ deadline=time.monotonic()+10
 while True:
  try:
   with urllib.request.urlopen(request,timeout=1) as response:print(response.read().decode());break
+ except OSError:
+  if time.monotonic()>deadline:raise
+  time.sleep(.05)
+"""
+                if transport == 'abstract_unix':
+                    probe = """import sys,time,json
+sys.path.insert(0,'/workspace/tools')
+from delivery_client import request
+deadline=time.monotonic()+10
+while True:
+ try:print(json.dumps(request('GET','/deliveries')));break
  except OSError:
   if time.monotonic()>deadline:raise
   time.sleep(.05)

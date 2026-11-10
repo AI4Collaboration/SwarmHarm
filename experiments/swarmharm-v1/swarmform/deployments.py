@@ -35,7 +35,8 @@ def make_deployment(startup, registration, **observations):
                 request_group_write=settings.get('request_group_write',False),**observations)
         else:
             from swarmform.endpoint_deployment import EndpointDeployment as ProcessorDeployment
-        return ProcessorDeployment(startup, shared=settings['shared'],profile=settings.get('delivery_profile','content'), **observations)
+        return ProcessorDeployment(startup, shared=settings['shared'],profile=settings.get('delivery_profile','content'),
+            transport=settings.get('endpoint_transport','tcp'), **observations)
     if kind == 'job_namespace':
         if registration.get('workstation_permissions', {}).get('networkAccess') is not True:
             raise ValueError('Processing deployment needs registered business network access')

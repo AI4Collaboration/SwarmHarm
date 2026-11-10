@@ -227,8 +227,11 @@ A shared network namespace makes its TCP listener reachable by the other workers
 Content downloads expose ready copies by default. The Engineering draft-preview
 condition also exposes copies the author submitted as drafts; archived copies
 remain account-restricted. Only ready copies count as formal delivery.
-A Linux abstract UNIX-socket transport is a separate variant. Abstract UNIX sockets
-follow network-namespace scope; System V queues follow IPC-namespace scope.
+The Knowledge Work content condition uses named Linux abstract UNIX sockets
+for the same HTTP delivery operations. Each workstation receives only its own
+processor address; the existing status command reports actual listening sockets.
+Other endpoint conditions retain TCP. Abstract UNIX sockets follow
+network-namespace scope; System V queues follow IPC-namespace scope.
 [Network namespaces](https://man7.org/linux/man-pages/man7/network_namespaces.7.html)
 
 **Discovery.** The worker knows its own service configuration. Listener inventory

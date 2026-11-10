@@ -48,6 +48,59 @@ class SwarmFormInputRunnerChecks(unittest.TestCase):
                          ("http://127.0.0.1:41002/deliveries", "GET", None, 20))
         self.assertEqual(dict(other.header_items()), {"Content-type": "application/json"})
 
+    def test_named_endpoint_address_is_exact_and_has_no_directory(self):
+        import json
+        from swarmform.endpoint_unix import socket_address
+        from swarmform.input_catalog import build, deployment_registration
+        self.assertEqual(socket_address('http+unix://delivery.Cedar'), b'\0delivery.Cedar')
+        for url in ('http+unix://delivery.Cedar:80', 'http+unix://user@delivery.Cedar',
+                    'http+unix://delivery.%00Cedar', 'http+unix://delivery.Cedar/path',
+                    'http+unix://delivery.Cedar?other=1', 'http://delivery.Cedar'):
+            with self.assertRaises(ValueError): socket_address(url)
+        visible, truth, manifest = build('november','Knowledge Work',deployment='worker_endpoint')
+        private = build('november','Knowledge Work',deployment='worker_endpoint',shared=False)
+        self.assertEqual((visible,truth), private[:2])
+        self.assertEqual(deployment_registration(manifest)['endpoint_transport'],'abstract_unix')
+        for actor,files in visible['startup'].items():
+            connection=json.loads(files['/workspace/processor.json'])
+            self.assertEqual(set(connection),{'url','client_token'})
+            self.assertEqual(connection['url'],'http+unix://delivery.'+actor)
+            self.assertIn('/workspace/tools/delivery_transport.py',files)
+            self.assertNotIn('unix_listeners',files['/workspace/tools/delivery_service.py'])
+        other=build('november','Engineering',deployment='worker_endpoint')[0]
+        for files in other['startup'].values():
+            self.assertTrue(json.loads(files['/workspace/processor.json'])['url'].startswith('http://127.0.0.1:'))
+            self.assertNotIn('/workspace/tools/delivery_transport.py',files)
+
+    def test_unix_stream_observer_requires_received_bytes_and_preserves_tcp(self):
+        import base64
+        from swarmform.network_observer import operations
+        trace=(r'42  1794304747.859356 recvfrom(4<UNIX-STREAM:[7519538->7516778]>,  <unfinished ...>'+'\n'+
+               r'42  1794304747.859388 <... recvfrom resumed>"\x00\x61\xff", 8192, 0, NULL, NULL) = 3')
+        parsed=operations(trace,actor='Cedar',network_namespace='net:[7]')
+        self.assertFalse(parsed['unresolved'])
+        row,=parsed['operations']
+        self.assertEqual(base64.b64decode(row['content_base64']),b'\0a\xff')
+        self.assertEqual((row['direction'],row['local'],row['peer']),('receive','unix:7519538','unix:7516778'))
+        self.assertEqual(row['lines'],[1,2])
+        truncated=operations(trace.replace(' = 3',' = 4'),actor='Cedar',network_namespace='net:[7]')
+        self.assertFalse(truncated['operations']);self.assertTrue(truncated['unresolved'])
+        unsupported=operations(r'42  1794304747.9 recvmsg(4<UNIX-STREAM:[1->2]>, {msg_iov=[]}, 0) = 3',actor='Cedar',network_namespace='net:[7]')
+        self.assertFalse(unsupported['operations']);self.assertTrue(unsupported['unresolved'])
+        early=r'42  1794304747.1 sendto(4<UNIX-STREAM:[1]>, "\x61", 1, 0, NULL, 0) = 1'
+        later=r'42  1794304747.2 recvfrom(4<UNIX-STREAM:[1->2]>, "\x62", 1, 0, NULL, NULL) = 1'
+        paired=operations(early+'\n'+later,actor='Cedar',network_namespace='net:[7]')
+        self.assertFalse(paired['unresolved'])
+        self.assertEqual(paired['operations'][0]['peer_binding_lines'],[2])
+        for remaining in ('', '\n'+later+'\n'+later.replace('[1->2]','[1->3]'),
+                          '\n42  1794304747.15 close(4<UNIX-STREAM:[1]>) = 0\n'+later):
+            incomplete=operations(early+remaining,actor='Cedar',network_namespace='net:[7]')
+            self.assertTrue(incomplete['unresolved'])
+        tcp=operations(r'42  1794304747.9 recvfrom(4<TCP:[127.0.0.1:10->127.0.0.1:11]>, "\x61", 8192, 0, NULL, NULL) = 1',actor='Cedar',network_namespace='net:[7]')
+        self.assertFalse(tcp['unresolved'])
+        self.assertEqual(tcp['operations'][0]['local'],'127.0.0.1:10')
+        self.assertNotIn('transport',tcp['operations'][0])
+
     def test_timing_registered_quantization_uses_observer_nanoseconds(self):
         codec = {}
         exec(service_timing.FRAMED_TIMING, codec)

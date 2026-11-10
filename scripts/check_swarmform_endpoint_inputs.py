@@ -41,10 +41,14 @@ REQUEST = r'''import json,sys,urllib.error,urllib.request
 method,url=sys.argv[1:3];payload=json.loads(sys.argv[3]) if len(sys.argv)>3 else None
 body=json.dumps(payload).encode() if payload is not None else None
 request=urllib.request.Request(url,data=body,method=method,headers={'Content-Type':'application/json'})
+opener=urllib.request.urlopen
+if url.startswith('http+unix://'):
+ sys.path.insert(0,'/workspace/tools');from delivery_transport import urlopen as opener
 try:
- with urllib.request.urlopen(request,timeout=2) as response:print(json.dumps({'status':response.status,'body':json.load(response)}))
+ with opener(request,timeout=2) as response:print(json.dumps({'status':response.status,'body':json.load(response)}))
 except urllib.error.HTTPError as error:print(json.dumps({'status':error.code,'body':json.load(error)}))
 except urllib.error.URLError as error:print(json.dumps({'unreachable':True,'reason':str(error.reason)}))
+except OSError as error:print(json.dumps({'unreachable':True,'reason':str(error)}))
 '''
 
 PREPARE = r'''import base64,hashlib,io,json,sys,zipfile
@@ -73,7 +77,7 @@ def catalog_check(dataset_key='november', domains=DOMAINS, encodings=tuple(ENCOD
     """Construct and bind the selected worker-endpoint input cells."""
     rows = []
     for domain in domains:
-        baseline = None
+        baselines = {}
         for encoding in encodings:
             profile = ENCODINGS[encoding]
             visible, truth, manifest = build(dataset_key, domain,
@@ -81,8 +85,9 @@ def catalog_check(dataset_key='november', domains=DOMAINS, encodings=tuple(ENCOD
                                              encoding=encoding, shared=True)
             private = build(dataset_key, domain, deployment='worker_endpoint',
                             encoding=encoding, shared=False)
-            if baseline is None:
-                baseline = (visible, truth)
+            settings = manifest['effective_settings']
+            condition = (settings.get('workload_variant','baseline'),settings.get('endpoint_transport','tcp'))
+            baseline = baselines.setdefault(condition, (visible, truth))
             if (visible, truth) != baseline:
                 raise AssertionError((domain, encoding, 'encoding changed worker input'))
             if (visible, truth) != private[:2]:
@@ -93,15 +98,17 @@ def catalog_check(dataset_key='november', domains=DOMAINS, encodings=tuple(ENCOD
             urls = locations(visible)
             if len(visible['startup']) != 3 or len(set(urls.values())) != 3:
                 raise AssertionError((domain, encoding, 'endpoint population'))
-            if any(urlsplit(url).hostname != '127.0.0.1' for url in urls.values()):
+            named = settings.get('endpoint_transport') == 'abstract_unix'
+            if (any(url != 'http+unix://delivery.'+actor for actor,url in urls.items()) if named
+                    else any(urlsplit(url).hostname != '127.0.0.1' for url in urls.values())):
                 raise AssertionError((domain, encoding, 'endpoint address'))
             if settings['delivery_profile'] != profile or settings['encoding_opportunity'] != encoding:
                 raise AssertionError((domain, encoding, 'registered view'))
             if registered != {'shared': True, 'kind': 'worker_endpoint',
-                              'network': 'shared_loopback_namespace',
-                              'delivery_profile': profile}:
+                              'network': 'shared_network_namespace' if named else 'shared_loopback_namespace',
+                              'delivery_profile': profile, **({'endpoint_transport':'abstract_unix'} if named else {})}:
                 raise AssertionError((domain, encoding, registered))
-            if private_registered['shared'] is not False or private_registered['network'] != 'private_loopback_namespaces':
+            if private_registered['shared'] is not False or private_registered['network'] != ('private_network_namespaces' if named else 'private_loopback_namespaces'):
                 raise AssertionError((domain, encoding, private_registered))
             if task_network('worker_endpoint') != {
                     'network_mode': 'allowlist',
@@ -121,7 +128,7 @@ def catalog_check(dataset_key='november', domains=DOMAINS, encodings=tuple(ENCOD
                 'shared_input_sha256': digest(manifest),
                 'private_input_sha256': digest(private[2]),
                 'worker_bytes_equal_across_scope': True,
-                'worker_bytes_equal_across_encodings': True,
+                'worker_bytes_equal_within_condition': True,
                 'runnable_registration': registered,
             })
     expected = len(tuple(domains)) * len(tuple(encodings))
@@ -152,12 +159,13 @@ def prepare_owner(deployment, actor, inputs):
 def shared_profile_check(encoding, dataset_key='november', domain='Data Analysis'):
     """Use one owner/receiver pair to exercise a registered endpoint view."""
     profile = ENCODINGS[encoding]
-    inputs, _, _ = build(dataset_key, domain, deployment='worker_endpoint',
+    inputs, _, manifest = build(dataset_key, domain, deployment='worker_endpoint',
                          encoding=encoding, shared=True)
     owner, receiver = list(inputs['startup'])[:2]
     url = locations(inputs)[owner]
     with TemporaryDirectory() as archive:
       with EndpointDeployment(inputs['startup'], shared=True, profile=profile,
+                              transport=manifest['effective_settings'].get('endpoint_transport','tcp'),
                               observation_archive=archive) as deployment:
         prepared = prepare_owner(deployment, owner, inputs)
         name = prepared['name']
@@ -233,12 +241,13 @@ def shared_profile_check(encoding, dataset_key='november', domain='Data Analysis
 def private_scope_check(encoding, dataset_key='november', domain='Data Analysis'):
     """Show the owner URL is unavailable from another private namespace."""
     profile = ENCODINGS[encoding]
-    inputs, _, _ = build(dataset_key, domain, deployment='worker_endpoint',
+    inputs, _, manifest = build(dataset_key, domain, deployment='worker_endpoint',
                          encoding=encoding, shared=False)
     owner, receiver = list(inputs['startup'])[:2]
     url = locations(inputs)[owner]
     with TemporaryDirectory() as archive:
       with EndpointDeployment(inputs['startup'], shared=False, profile=profile,
+                              transport=manifest['effective_settings'].get('endpoint_transport','tcp'),
                               observation_archive=archive) as deployment:
         prepare_owner(deployment, owner, inputs)
         route = '/activity?after=0&limit=32' if profile in ('events', 'timing') else '/deliveries'
@@ -278,6 +287,7 @@ def business(encoding, domain, shared, output, dataset_key='november'):
         return None
 
     with EndpointDeployment(inputs['startup'], shared=shared, profile=profile,
+                            transport=manifest['effective_settings'].get('endpoint_transport','tcp'),
                             observation_archive=output / 'observations',
                             observation_sink=retain_terminal) as deployment:
         def run(actor, text):
