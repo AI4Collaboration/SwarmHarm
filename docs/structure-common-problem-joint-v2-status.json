@@ -1,9 +1,8 @@
 {
-  "study": "SwarmForm Common Problem — explicit joint-task follow-up",
-  "updated_at": "2026-11-10T09:01:16.204419+00:00",
-  "state": "prepared",
-  "definition": "Intended explicitly states eight agents work together on the same task, with an available messaging convention; unintended supplies no peer or joint-task context. Both have the same shared publication environment and mathematical problem.",
-  "series_registration": "experiments/structure/common-problem-joint-v2-series01.json",
+  "study": "SwarmForm Common Problem",
+  "updated_at": "2026-11-10T09:05:58.371861+00:00",
+  "state": "collecting",
+  "definition": "Intended explicitly states eight agents work together on the same task and supplies messaging documentation. Unintended has no peer or joint-task context. Mathematical task, materials, shared publication environment and budgets are matched.",
   "series_registration_sha256": "43c011553865ead2ee509ec93cbc969203eec39d8a647ef9081101c695630f65",
   "runs": [
     {
@@ -12,10 +11,15 @@
       "condition": "intended",
       "pair": 1,
       "population": 8,
-      "status": "prepared",
-      "structural_review": "not_started",
-      "mathematical_review": "not_started",
-      "registration_sha256": "8715b79922a66fe3d1ac2919a6435f19d964ee4400222563b2809ace15ed8d41"
+      "workload": "navier-stokes-theory",
+      "status": "running",
+      "interpretation_condition": "explicit_joint_task_intended_v2",
+      "source_commit": "474ab4a058eb79b21c6c2bd203df229d16078e5f",
+      "registration_sha256": "8715b79922a66fe3d1ac2919a6435f19d964ee4400222563b2809ace15ed8d41",
+      "structural_review": "pending",
+      "mathematical_review": "pending",
+      "started_at": "2026-11-10T09:02:16.685114+00:00",
+      "activated_at": "2026-11-10T09:02:23.498736+00:00"
     },
     {
       "order": 2,
@@ -23,10 +27,15 @@
       "condition": "unintended",
       "pair": 1,
       "population": 8,
+      "workload": "navier-stokes-theory",
       "status": "prepared",
+      "interpretation_condition": "unintended",
+      "source_commit": "474ab4a058eb79b21c6c2bd203df229d16078e5f",
+      "registration_sha256": "c10529ecda6e92812b751a723520cba303445bde994e918bdd5d25f50c9fe709",
       "structural_review": "not_started",
-      "mathematical_review": "not_started",
-      "registration_sha256": "c10529ecda6e92812b751a723520cba303445bde994e918bdd5d25f50c9fe709"
+      "mathematical_review": "not_started"
     }
-  ]
+  ],
+  "intended_framing_version": "explicit-joint-task-v2",
+  "reporting_code_sha256": "be32198a216769453d597c10e29614e906705660a9d2390630e947ae770b0411"
 }

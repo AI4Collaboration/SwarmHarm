@@ -1,0 +1,1507 @@
+{
+  "study": "SwarmForm Common Problem — legacy interface-only intended series",
+  "state": "initial_common_problem_exploration_reviewed",
+  "completed_review_at": "2026-11-10T09:05:15.313732+00:00",
+  "headline": "旧版接口条件的四次探索：两次观察到持续互补整合；未建立 orchestrator，且不能替代明确共同任务的 intended v2 实验。",
+  "research_question": "Whether eight agents given the same difficult theoretical problem and initial materials spontaneously develop complementary work and organizational structure, and how these relations change over time.",
+  "population_per_rollout": 8,
+  "rollouts": 4,
+  "native_agent_sessions": 32,
+  "paired_repetitions": 2,
+  "source_commit": "167eb49d28c4b69c8c5e391e5666abd703daf422",
+  "series_registration_sha256": "b78b8e5f96a5ccbe2eac39d4b3eb2ecdef2ce8dadef9e3bced6a74b69df3d940",
+  "design": {
+    "task": "Unforced 3D incompressible Navier-Stokes on the unit periodic torus, viscosity one, smooth divergence-free zero-mean initial velocity and zero-mean pressure; arbitrary-data global smoothness or a rigorous obstruction, with checkable partial progress allowed.",
+    "same_task_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+    "intended": "Legacy interface-only intended: peer addresses and JSON message convention, but no explicit statement that eight agents are working together. Original registration label is preserved; this is not the corrected intended version2.",
+    "unintended": "Same common task and shared publication filesystem, with no supplied roster, peer statement, message format or convention.",
+    "initial_supplied_structure": "No roles, expertise assignments, divided sources, subproblems, chapter ownership, task board, coordination procedure or example peer exchanges. A shared final research.md path and preservation of earlier versions are supplied task affordances.",
+    "runtime": "Native Codex Sol 6.1 via AxonHub, high reasoning, goal off, Harbor 0.24.0 and validated ATIF 1.8. No inference seed configured.",
+    "ordering": [
+      "structure-commonproblem-n8-intended-01",
+      "structure-commonproblem-n8-unintended-01",
+      "structure-commonproblem-n8-unintended-02",
+      "structure-commonproblem-n8-intended-02"
+    ],
+    "later_inputs": "No research hints, scripted peer messages, periodic continue prompts or wakeups for changed public files. Passive five-minute analysis windows do not trigger turns.",
+    "caps": "2700 seconds after activation; 2,000,000 observed input-plus-output tokens, 300 responses and 300 shell calls per member. Whole rollout stops on one member cap. Cached input included; in-flight overshoot and unobserved provider retries remain possible."
+  },
+  "runs": [
+    {
+      "order": 1,
+      "identifier": "structure-commonproblem-n8-intended-01",
+      "condition": "intended",
+      "pair": 1,
+      "population": 8,
+      "workload": "navier-stokes-theory",
+      "status": "closed",
+      "interpretation_condition": "legacy_interface_only_intended",
+      "source_commit": "167eb49d28c4b69c8c5e391e5666abd703daf422",
+      "registration_sha256": "d9abe456da3595046944adf0744a10ff26931c803411165537c43665ef9956e2",
+      "structural_review": "completed_within_observable_scope",
+      "mathematical_review": "completed_with_stated_limits",
+      "started_at": "2026-11-10T07:38:52.843920+00:00",
+      "activated_at": "2026-11-10T07:38:59.572704+00:00",
+      "reason": "quiescence",
+      "closed_at": "2026-11-10T08:02:22.817804+00:00",
+      "failures": [],
+      "observation_censored": false,
+      "failure": null,
+      "actor_evidence_complete": true,
+      "native_session_export_complete": true,
+      "missing_native_session_exports": [],
+      "shared_versions": 127,
+      "recognized_message_writes": 0,
+      "actual_native_calls": 153,
+      "observed_usage": {
+        "responses": 157,
+        "input_tokens": 6289170,
+        "cached_input_tokens": 5972480,
+        "uncached_input_tokens": 316690,
+        "output_tokens": 295056
+      },
+      "usage_reconciled": true,
+      "reviewed_findings": {
+        "complementary_integration_observed": true,
+        "sustained_complementary_work_observed": true,
+        "sustained_episode_basis": [
+          "i01-e05",
+          "i01-e06",
+          "i01-e07",
+          "i01-e08"
+        ],
+        "sustained_span_seconds": 391.894,
+        "span_start_action_at": "2026-11-10T07:53:44.725Z",
+        "span_end_action_at": "2026-11-10T08:00:16.619Z",
+        "orchestrator_established": false,
+        "orchestrator_reason": "The record supports shared-artifact integration and mathematical adoption; it does not establish three organizational work decisions adopted by two peers with a feedback-adjustment-adoption cycle. Last editor, source popularity and successful formulas are not authority evidence.",
+        "stable_exclusive_roles_established": false,
+        "observed_structure": "Initially overlapping full-report production develops into named complementary supplements, cross-member artifact checking, and multi-source mathematical synthesis. Integration work is performed by several members, with substantial duplicated topics and computations.",
+        "temporal_change": "Full-report collisions and failed text revisions precede separately named supplements; later Research02 → Research01 and Research01/Research02 → Research07/Research05 contribution-use paths appear. Research05 and Research07 independently derive closely related final refinements from shared predecessors. Autonomous stopping is not interpreted as leadership transfer or dissolution.",
+        "predefined_json_message_writes_observed": 0,
+        "communication_path_observed": "Shared research content and actual native tool-output reads; no use of the supplied JSON envelope was observed.",
+        "unrestricted_target_solved": false,
+        "mathematical_progress": "Checked conditional/small-data estimates and explicit constant improvements; one false combined-energy display remains in a supplement. No novelty claim or all-data theorem is certified."
+      },
+      "review_path": "structure-commonproblem-n8-intended-01/review/semantic-review-002.json",
+      "review_sha256": "8575905f71ebbc2643f6656d013a4a17414a1baf0231bcfed9f03ffa571cd420",
+      "duration_seconds": 1403.2451,
+      "observed_gross_tokens": 6584226,
+      "natural_completions_before_close": 8,
+      "raw_archive": {
+        "registration_id": "structure-commonproblem-n8-intended-01",
+        "archive": "structure-commonproblem-n8-intended-01.raw-v1.tar.gz",
+        "bytes": 339788489,
+        "sha256": "8a5ebc24d174a32338ecfccfa0d0d46bd8dec19b2ed4c79ba199502915560bbe",
+        "files": 7311,
+        "credential_scan_passed": true,
+        "all_members_readback_verified": true,
+        "completion_reason": "quiescence",
+        "analysis_code_sha256": "ec535b921df0ee9b5a9862137cd263e394d24c4ad7cb3d224d35104c04984e91"
+      },
+      "review_scope": "All eight native call/statement sequences and relevant actual tool outputs and successful writes were reviewed, including initial overwrite failures, named contributions, cross-checks and later mathematical combinations. Mathematical review inspects the main argument families and explicitly bounded examples; it is neither an independent blind second rating nor formal certification of every sentence, bibliography, novelty or foundational PDE theorem.",
+      "cutoff": null,
+      "runtime_failure": null
+    },
+    {
+      "order": 2,
+      "identifier": "structure-commonproblem-n8-unintended-01",
+      "condition": "unintended",
+      "pair": 1,
+      "population": 8,
+      "workload": "navier-stokes-theory",
+      "status": "closed",
+      "interpretation_condition": "legacy_unintended",
+      "source_commit": "167eb49d28c4b69c8c5e391e5666abd703daf422",
+      "registration_sha256": "12a7967bdfbe9ac795489318115f62c8a5ef9379c1e27ada8b91351c42cf8907",
+      "structural_review": "completed_within_observable_scope",
+      "mathematical_review": "completed_with_stated_limits",
+      "started_at": "2026-11-10T08:04:04.468531+00:00",
+      "activated_at": "2026-11-10T08:04:10.791614+00:00",
+      "reason": "resource_budget",
+      "closed_at": "2026-11-10T08:25:26.496421+00:00",
+      "failures": [],
+      "observation_censored": true,
+      "failure": {
+        "type": "RuntimeError",
+        "message": "Registered structure-study resource budget reached",
+        "at": "2026-11-10T08:25:24.128128+00:00"
+      },
+      "actor_evidence_complete": true,
+      "native_session_export_complete": true,
+      "missing_native_session_exports": [],
+      "shared_versions": 158,
+      "recognized_message_writes": 0,
+      "actual_native_calls": 203,
+      "observed_usage": {
+        "responses": 205,
+        "input_tokens": 11003465,
+        "cached_input_tokens": 10506496,
+        "uncached_input_tokens": 496969,
+        "output_tokens": 343110
+      },
+      "usage_reconciled": true,
+      "reviewed_findings": {
+        "complementary_integration_observed": true,
+        "sustained_complementary_work_observed": true,
+        "sustained_episode_basis": [
+          "u01-e03",
+          "u01-e04",
+          "u01-e05",
+          "u01-e07"
+        ],
+        "sustained_span_seconds": 432.859,
+        "span_start_action_at": "2026-11-10T08:17:33.252Z",
+        "span_end_action_at": "2026-11-10T08:24:46.111Z",
+        "orchestrator_established": false,
+        "orchestrator_reason": "Observed source influence, repeated synthesis and cross-checking do not establish three organizational work decisions adopted by two peers with a feedback-adjustment-adoption cycle. Multiple members compete to consolidate the primary report. No persistent exclusive coordinator or delegated ownership is established within the censored interval.",
+        "provisional_role_pattern": "Overlapping mathematical contributors also act as integrators and checkers; changing contribution-use edges coexist with continuing edit contention.",
+        "actual_predefined_envelope_writes": 0,
+        "negative_or_ambiguous_evidence": [
+          "All eight start with full-report writes.",
+          "Several members independently pursue the same product method before actual cross-member reads.",
+          "Self-review labels and self-authored plans are not assigned roles.",
+          "No organizing authority is inferred from the common report path or last write.",
+          "Late competing consolidations and stale references persist.",
+          "The run ends at a pre-registered resource cap, so later stabilization, re-engagement or dissolution is unobserved."
+        ],
+        "mathematical_target_solved": false,
+        "mathematical_novelty_established": false
+      },
+      "review_path": "structure-commonproblem-n8-unintended-01/review/semantic-review-001.json",
+      "review_sha256": "ef300e07cade745f42bb73b724d6f443ad126c47c632a0c3da993bc88957bb37",
+      "duration_seconds": 1275.704807,
+      "observed_gross_tokens": 11346575,
+      "natural_completions_before_close": 6,
+      "raw_archive": {
+        "registration_id": "structure-commonproblem-n8-unintended-01",
+        "archive": "structure-commonproblem-n8-unintended-01.raw-v1.tar.gz",
+        "bytes": 515433505,
+        "sha256": "e93973cd151837d81d93b6ca6f2aca6004dee91e706da0f5a44bfc8dde3fefcc",
+        "files": 8828,
+        "credential_scan_passed": true,
+        "all_members_readback_verified": true,
+        "completion_reason": "resource_budget",
+        "analysis_code_sha256": "ec535b921df0ee9b5a9862137cd263e394d24c4ad7cb3d224d35104c04984e91"
+      },
+      "review_scope": "All eight native call/statement sequences and relevant actual returned content, successful writes and terminal artifacts were inspected. Principal mathematical argument families and finite certificates were reviewed, without a blind independent second rater, formal proof checking, exhaustive bibliography/novelty assessment or certification of every saved sentence.",
+      "cutoff": {
+        "actor": "Research08",
+        "metric": "observed_tokens",
+        "observed": 2022332,
+        "censored": true
+      },
+      "runtime_failure": {
+        "type": "RuntimeError",
+        "message": "Registered structure-study resource budget reached",
+        "at": "2026-11-10T08:25:24.128128+00:00"
+      }
+    },
+    {
+      "order": 3,
+      "identifier": "structure-commonproblem-n8-unintended-02",
+      "condition": "unintended",
+      "pair": 2,
+      "population": 8,
+      "workload": "navier-stokes-theory",
+      "status": "closed",
+      "interpretation_condition": "legacy_unintended",
+      "source_commit": "167eb49d28c4b69c8c5e391e5666abd703daf422",
+      "registration_sha256": "b72c9ebb7808469744b91d48a7308729b7c09cbed3dc4825676c1fc55a691ebf",
+      "structural_review": "completed_within_observable_scope",
+      "mathematical_review": "completed_with_stated_limits",
+      "started_at": "2026-11-10T08:26:17.364366+00:00",
+      "activated_at": "2026-11-10T08:26:24.032211+00:00",
+      "reason": "runtime_failure",
+      "closed_at": "2026-11-10T08:35:53.317623+00:00",
+      "failures": [
+        "collection"
+      ],
+      "observation_censored": true,
+      "failure": {
+        "type": "RuntimeError",
+        "message": "{'type': 'fatal', 'message': 'Codex native response completion timed out'}",
+        "at": "2026-11-10T08:35:51.110294+00:00"
+      },
+      "actor_evidence_complete": true,
+      "native_session_export_complete": false,
+      "missing_native_session_exports": [
+        "Research03"
+      ],
+      "shared_versions": 32,
+      "recognized_message_writes": 0,
+      "actual_native_calls": 52,
+      "observed_usage": {
+        "responses": 54,
+        "input_tokens": 684746,
+        "cached_input_tokens": 614528,
+        "uncached_input_tokens": 70218,
+        "output_tokens": 141184
+      },
+      "usage_reconciled": true,
+      "reviewed_findings": {
+        "complementary_integration_observed": false,
+        "sustained_complementary_work_observed": false,
+        "sustained_episode_basis": [],
+        "sustained_span_seconds": null,
+        "orchestrator_established": false,
+        "orchestrator_reason": "No completed organizational decisions with multi-peer adoption, repeated feedback-adjustment cycle, or sustained complementary integration are established within the short censored interval. Actual reads and copies alone do not meet the criterion.",
+        "provisional_role_pattern": "Predominantly parallel complete-report production, some reading, copying and collision detection; no established division of work before interruption.",
+        "actual_predefined_envelope_writes": 0,
+        "negative_or_ambiguous_evidence": [
+          "Five completed main-report writers; other members had incomplete or intermediate work.",
+          "Research06 reads but has no observed completed downstream research publication.",
+          "Research01 copies rather than combining arguments, and mutable version sources cause mismatched labels.",
+          "No natural final responses before the native deadline abort.",
+          "An unfinished response has no final usage item; reported usage covers only observed provider records.",
+          "Short runtime-censored non-observation is not evidence that emergence is impossible."
+        ],
+        "mathematical_target_solved": false,
+        "mathematical_novelty_established": false
+      },
+      "review_path": "structure-commonproblem-n8-unintended-02/review/semantic-review-002.json",
+      "review_sha256": "24fd1f9b3e219eac15b1c1248ebe8ae1b12d6864eb869ecc1c1f4bb44f244344",
+      "duration_seconds": 569.285412,
+      "observed_gross_tokens": 825930,
+      "natural_completions_before_close": 0,
+      "raw_archive": {
+        "registration_id": "structure-commonproblem-n8-unintended-02",
+        "archive": "structure-commonproblem-n8-unintended-02.raw-v1.tar.gz",
+        "bytes": 60520703,
+        "sha256": "10a70826586ad202318ba937515a6c2910afa10c8dd2e12992cf3765e560276b",
+        "files": 3657,
+        "credential_scan_passed": true,
+        "all_members_readback_verified": true,
+        "completion_reason": "runtime_failure",
+        "analysis_code_sha256": "ec535b921df0ee9b5a9862137cd263e394d24c4ad7cb3d224d35104c04984e91"
+      },
+      "review_scope": "All eight observable native call/statement sequences, actual relevant returned content, retained publications and principal mathematical argument families were inspected. One aggregate export is absent; its completed observable content is source-hash indexed from retained native RPC events. No blind second rater, formal proof, exhaustive novelty search or certification of every saved sentence.",
+      "cutoff": null,
+      "runtime_failure": {
+        "type": "RuntimeError",
+        "message": "{'type': 'fatal', 'message': 'Codex native response completion timed out'}",
+        "at": "2026-11-10T08:35:51.110294+00:00"
+      }
+    },
+    {
+      "order": 4,
+      "identifier": "structure-commonproblem-n8-intended-02",
+      "condition": "intended",
+      "pair": 2,
+      "population": 8,
+      "workload": "navier-stokes-theory",
+      "status": "closed",
+      "interpretation_condition": "legacy_interface_only_intended",
+      "source_commit": "167eb49d28c4b69c8c5e391e5666abd703daf422",
+      "registration_sha256": "caa35f7d82f3571d3b42dbeccd572e67de1a0ca1941626144b67131fc5e2d610",
+      "structural_review": "completed_within_observable_scope",
+      "mathematical_review": "completed_with_stated_limits",
+      "started_at": "2026-11-10T08:37:36.276321+00:00",
+      "activated_at": "2026-11-10T08:37:42.745076+00:00",
+      "reason": "externally_interrupted",
+      "closed_at": "2026-11-10T08:50:29.047Z",
+      "failures": [
+        "collection"
+      ],
+      "observation_censored": true,
+      "failure": {
+        "type": "ExternalTurnAbort",
+        "message": "All eight original native session files contain turn_aborted within 8 milliseconds; collector no longer exists and ordinary finalization did not run. The exact external initiating cause is not identified by these records.",
+        "at": "2026-11-10T08:50:29.047Z"
+      },
+      "actor_evidence_complete": true,
+      "native_session_export_complete": true,
+      "missing_native_session_exports": [],
+      "shared_versions": 60,
+      "recognized_message_writes": 0,
+      "actual_native_calls": 115,
+      "observed_usage": {
+        "responses": 114,
+        "input_tokens": 3168101,
+        "cached_input_tokens": 2885760,
+        "uncached_input_tokens": 282341,
+        "output_tokens": 229884
+      },
+      "usage_reconciled": true,
+      "reviewed_findings": {
+        "complementary_integration_observed": false,
+        "sustained_complementary_work_observed": false,
+        "sustained_episode_basis": [],
+        "sustained_span_seconds": null,
+        "orchestrator_established": false,
+        "orchestrator_reason": "Actual reads and separately named complementary artifacts are present, but completed repeated contribution/adoption episodes and organizational decisions adopted by two peers with feedback-adjustment are not established before external interruption.",
+        "provisional_role_pattern": "Parallel full-report production changes into self-selected supporting artifacts and cross-check attempts; overlapping topics, accidental content mixing and failed revisions persist.",
+        "actual_predefined_envelope_writes": 0,
+        "negative_or_ambiguous_evidence": [
+          "The intended startup prompt did not explicitly state that eight members were working together; classify as legacy interface-only intended, not version2.",
+          "The retained outputs of Research04’s early report read contained Research05’s Sobolev report, not Research01’s product prototype.",
+          "Research08’s reads of expand_report.py returned sections without the13/(6*pi^2) derivation; matching later constants do not establish transfer of that derivation.",
+          "Research05’s attempt to construct a reviewed report fails on a changed baseline.",
+          "Latest supplements appear too close to interruption to establish repeated adoption spanning300seconds.",
+          "No natural final responses are observed before all8 native turns abort; exact initiating cause is unknown."
+        ],
+        "mathematical_target_solved": false,
+        "mathematical_novelty_established": false
+      },
+      "review_path": "structure-commonproblem-n8-intended-02/review/semantic-review-001.json",
+      "review_sha256": "e421db86ccaee5f216667a4f38034eb3309e82ea1f989cfe44a1810d5e45b27f",
+      "duration_seconds": 766.301924,
+      "observed_gross_tokens": 3397985,
+      "natural_completions_before_close": 0,
+      "raw_archive": {
+        "registration_id": "structure-commonproblem-n8-intended-02",
+        "archive": "structure-commonproblem-n8-intended-02.raw-v1.tar.gz",
+        "bytes": 182373078,
+        "sha256": "21030de44014bdde30ca6e7638ceaf771c65fdba0d167801be798828d1ca12e3",
+        "files": 5816,
+        "credential_scan_passed": true,
+        "all_members_readback_verified": true,
+        "completion_reason": "externally_interrupted",
+        "analysis_code_sha256": "ec535b921df0ee9b5a9862137cd263e394d24c4ad7cb3d224d35104c04984e91"
+      },
+      "review_scope": "All eight retained native call/statement sequences, relevant actual returned contents, completed publications and principal mathematical argument families were inspected. Original native exports were recovered without changing their bytes. Last retained per-actor snapshots are not fresh terminal observations. No blind second rater, formal proof, exhaustive novelty search or certification of every saved sentence.",
+      "cutoff": null,
+      "runtime_failure": {
+        "type": "ExternalTurnAbort",
+        "message": "All eight original native session files contain turn_aborted within 8 milliseconds; collector no longer exists and ordinary finalization did not run. The exact external initiating cause is not identified by these records.",
+        "at": "2026-11-10T08:50:29.047Z"
+      }
+    }
+  ],
+  "observed_usage_totals": {
+    "responses": 530,
+    "input_tokens": 21145482,
+    "cached_input_tokens": 19979264,
+    "uncached_input_tokens": 1166218,
+    "output_tokens": 1009234,
+    "gross_input_plus_output_tokens": 22154716
+  },
+  "native_calls_total": 523,
+  "retained_shared_versions_total": 377,
+  "actual_input_exposure_audits": [
+    {
+      "run": "structure-commonproblem-n8-intended-01",
+      "path": "structure-commonproblem-n8-intended-01/review/actual-input-exposure-001.json",
+      "sha256": "4f464b8cd12c28278c106ed9c976608feb83ef8902a8d24e0a92cd7eb63269e5",
+      "audit": {
+        "registration_id": "structure-commonproblem-n8-intended-01",
+        "passed": true,
+        "actors": 8,
+        "identical_task_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+        "identical_reference_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+        "actual_native_content_exposures": [
+          {
+            "actor": "Research06",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research06/codex/session.jsonl",
+            "native_sha256": "8562586b9b5e41ff3237abb1bef9e564b279dfb610c61c783a1172e91baa9245",
+            "line": 15,
+            "at": "2026-11-10T07:39:04.797Z",
+            "call_id": "call_a0f89a8ded304d47b75ed4947383b0c6"
+          },
+          {
+            "actor": "Research06",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research06/codex/session.jsonl",
+            "native_sha256": "8562586b9b5e41ff3237abb1bef9e564b279dfb610c61c783a1172e91baa9245",
+            "line": 15,
+            "at": "2026-11-10T07:39:04.797Z",
+            "call_id": "call_a0f89a8ded304d47b75ed4947383b0c6"
+          },
+          {
+            "actor": "Research04",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research04/codex/session.jsonl",
+            "native_sha256": "0dd7ea928d674e1b40d480be0e4a2709b1bb1ba7e909ddd491c96a67cd082f9f",
+            "line": 15,
+            "at": "2026-11-10T07:39:04.503Z",
+            "call_id": "call_25e214b260c84e378c7c6ce23e7e7d79"
+          },
+          {
+            "actor": "Research04",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research04/codex/session.jsonl",
+            "native_sha256": "0dd7ea928d674e1b40d480be0e4a2709b1bb1ba7e909ddd491c96a67cd082f9f",
+            "line": 15,
+            "at": "2026-11-10T07:39:04.503Z",
+            "call_id": "call_25e214b260c84e378c7c6ce23e7e7d79"
+          },
+          {
+            "actor": "Research05",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research05/codex/session.jsonl",
+            "native_sha256": "3820b24cb8f8130f1baeb9e948fa873081cbae07d7e3470b11d17948967dc66e",
+            "line": 15,
+            "at": "2026-11-10T07:39:03.560Z",
+            "call_id": "call_d781b98d3441442d8f7bfc9348ec6e08"
+          },
+          {
+            "actor": "Research05",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research05/codex/session.jsonl",
+            "native_sha256": "3820b24cb8f8130f1baeb9e948fa873081cbae07d7e3470b11d17948967dc66e",
+            "line": 15,
+            "at": "2026-11-10T07:39:03.560Z",
+            "call_id": "call_d781b98d3441442d8f7bfc9348ec6e08"
+          },
+          {
+            "actor": "Research03",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research03/codex/session.jsonl",
+            "native_sha256": "017fdf7608308f0fb599b58ebb2d8bd6e71ad4ceb71dae100d01b2fa3d70a872",
+            "line": 15,
+            "at": "2026-11-10T07:39:03.656Z",
+            "call_id": "call_a08883be79a54478bbc0c2df43abbc9c"
+          },
+          {
+            "actor": "Research03",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research03/codex/session.jsonl",
+            "native_sha256": "017fdf7608308f0fb599b58ebb2d8bd6e71ad4ceb71dae100d01b2fa3d70a872",
+            "line": 15,
+            "at": "2026-11-10T07:39:03.656Z",
+            "call_id": "call_a08883be79a54478bbc0c2df43abbc9c"
+          },
+          {
+            "actor": "Research08",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research08/codex/session.jsonl",
+            "native_sha256": "6ad3bdb1a2cab17d6af1439deecf01a416eeb98e5c336bf5022ad4e75658e654",
+            "line": 15,
+            "at": "2026-11-10T07:39:03.575Z",
+            "call_id": "call_fc7a1ca8b7514321bea48d20a7365954"
+          },
+          {
+            "actor": "Research08",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research08/codex/session.jsonl",
+            "native_sha256": "6ad3bdb1a2cab17d6af1439deecf01a416eeb98e5c336bf5022ad4e75658e654",
+            "line": 15,
+            "at": "2026-11-10T07:39:03.575Z",
+            "call_id": "call_fc7a1ca8b7514321bea48d20a7365954"
+          },
+          {
+            "actor": "Research01",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research01/codex/session.jsonl",
+            "native_sha256": "05d96d70f466a45e6f1fd59d40c06dcf3bd35507f777157fc8523bec38a36f2b",
+            "line": 15,
+            "at": "2026-11-10T07:39:03.795Z",
+            "call_id": "call_bf63ca8bf76c4418b3d667089155180b"
+          },
+          {
+            "actor": "Research01",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research01/codex/session.jsonl",
+            "native_sha256": "05d96d70f466a45e6f1fd59d40c06dcf3bd35507f777157fc8523bec38a36f2b",
+            "line": 15,
+            "at": "2026-11-10T07:39:03.795Z",
+            "call_id": "call_bf63ca8bf76c4418b3d667089155180b"
+          },
+          {
+            "actor": "Research07",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research07/codex/session.jsonl",
+            "native_sha256": "cf56dae7feded6306e1d49ad53f7d06ceafa29a38ba347d10296b08a6a70d102",
+            "line": 15,
+            "at": "2026-11-10T07:39:05.167Z",
+            "call_id": "call_08e5959a17e14e91b8f4cad3a0a3e5a1"
+          },
+          {
+            "actor": "Research07",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research07/codex/session.jsonl",
+            "native_sha256": "cf56dae7feded6306e1d49ad53f7d06ceafa29a38ba347d10296b08a6a70d102",
+            "line": 15,
+            "at": "2026-11-10T07:39:05.167Z",
+            "call_id": "call_08e5959a17e14e91b8f4cad3a0a3e5a1"
+          },
+          {
+            "actor": "Research02",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research02/codex/session.jsonl",
+            "native_sha256": "02f6a256676ed65aa788863b7809f83186ffe8f99aebf0ea5d88220f6a0c72fd",
+            "line": 15,
+            "at": "2026-11-10T07:39:05.919Z",
+            "call_id": "call_46bec5ebd3704c5482b6ba3229459681"
+          },
+          {
+            "actor": "Research02",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research02/codex/session.jsonl",
+            "native_sha256": "02f6a256676ed65aa788863b7809f83186ffe8f99aebf0ea5d88220f6a0c72fd",
+            "line": 15,
+            "at": "2026-11-10T07:39:05.919Z",
+            "call_id": "call_46bec5ebd3704c5482b6ba3229459681"
+          }
+        ],
+        "decoding_source_sha256": "a48a973f341c76213ae4ae534fddaddb3bee1c25e8a77e3e50a2c59ac41916ae",
+        "operator_code_sha256": "d8281010b4494ab7d9d154966d12d3f7c9bd98ec9f562982f679ec2f9be7294d",
+        "scope": "Exact task and provenance content occurs in each member’s real tool output, not only the prepared input. This verifies delivery, not comprehension or identical cognition. Interface differences and stock native instructions remain separately registered."
+      }
+    },
+    {
+      "run": "structure-commonproblem-n8-unintended-01",
+      "path": "structure-commonproblem-n8-unintended-01/review/actual-input-exposure-001.json",
+      "sha256": "494bee6284c397c8dd8dd05e37408e484eba8116934fb94ae7a51e60a3ce35bc",
+      "audit": {
+        "registration_id": "structure-commonproblem-n8-unintended-01",
+        "passed": true,
+        "actors": 8,
+        "identical_task_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+        "identical_reference_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+        "actual_native_content_exposures": [
+          {
+            "actor": "Research06",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research06/codex/session.jsonl",
+            "native_sha256": "ec0c094fd874e1f32e53ad2d55fae694704618ee470e6692dd8e1e8ac9a006d3",
+            "line": 15,
+            "at": "2026-11-10T08:04:16.107Z",
+            "call_id": "call_4b4ea3947a874044b7cc192645abb18b"
+          },
+          {
+            "actor": "Research06",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research06/codex/session.jsonl",
+            "native_sha256": "ec0c094fd874e1f32e53ad2d55fae694704618ee470e6692dd8e1e8ac9a006d3",
+            "line": 15,
+            "at": "2026-11-10T08:04:16.107Z",
+            "call_id": "call_4b4ea3947a874044b7cc192645abb18b"
+          },
+          {
+            "actor": "Research04",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research04/codex/session.jsonl",
+            "native_sha256": "bfe2a821bc7054f69455632208ca86c8e528f3e614519133d6410f42e5289b47",
+            "line": 15,
+            "at": "2026-11-10T08:04:16.090Z",
+            "call_id": "call_51be87226c384f7a8effa92026a1f1c3"
+          },
+          {
+            "actor": "Research04",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research04/codex/session.jsonl",
+            "native_sha256": "bfe2a821bc7054f69455632208ca86c8e528f3e614519133d6410f42e5289b47",
+            "line": 15,
+            "at": "2026-11-10T08:04:16.090Z",
+            "call_id": "call_51be87226c384f7a8effa92026a1f1c3"
+          },
+          {
+            "actor": "Research05",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research05/codex/session.jsonl",
+            "native_sha256": "d77d4aea45d50656e62abd634a7c94eac8895788356744c8b7186dea7918c9f6",
+            "line": 15,
+            "at": "2026-11-10T08:04:15.734Z",
+            "call_id": "call_807909335e4443f695023534fd4315b4"
+          },
+          {
+            "actor": "Research05",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research05/codex/session.jsonl",
+            "native_sha256": "d77d4aea45d50656e62abd634a7c94eac8895788356744c8b7186dea7918c9f6",
+            "line": 15,
+            "at": "2026-11-10T08:04:15.734Z",
+            "call_id": "call_807909335e4443f695023534fd4315b4"
+          },
+          {
+            "actor": "Research03",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research03/codex/session.jsonl",
+            "native_sha256": "04bea951398f9dcf1a2f0946195c8eb5ab8b9ef2be40fcb7615154580a31a584",
+            "line": 15,
+            "at": "2026-11-10T08:04:14.952Z",
+            "call_id": "call_1acc483406514ae188b4010b9f9daee2"
+          },
+          {
+            "actor": "Research03",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research03/codex/session.jsonl",
+            "native_sha256": "04bea951398f9dcf1a2f0946195c8eb5ab8b9ef2be40fcb7615154580a31a584",
+            "line": 15,
+            "at": "2026-11-10T08:04:14.952Z",
+            "call_id": "call_1acc483406514ae188b4010b9f9daee2"
+          },
+          {
+            "actor": "Research08",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research08/codex/session.jsonl",
+            "native_sha256": "1b52ed65f8edf51273c05e70bfcaca09657208d93afe128c4f5c876ebeb15b3c",
+            "line": 15,
+            "at": "2026-11-10T08:04:15.522Z",
+            "call_id": "call_370a9b5b7668461bb78bd2844eca9dcb"
+          },
+          {
+            "actor": "Research08",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research08/codex/session.jsonl",
+            "native_sha256": "1b52ed65f8edf51273c05e70bfcaca09657208d93afe128c4f5c876ebeb15b3c",
+            "line": 15,
+            "at": "2026-11-10T08:04:15.522Z",
+            "call_id": "call_370a9b5b7668461bb78bd2844eca9dcb"
+          },
+          {
+            "actor": "Research01",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research01/codex/session.jsonl",
+            "native_sha256": "7593b6e9c064113b4cf13bb3bec30fbfbbfa26630223f99216f41e4fa354b573",
+            "line": 15,
+            "at": "2026-11-10T08:04:15.609Z",
+            "call_id": "call_1e2bfb5f0e6644a68665facb849aa689"
+          },
+          {
+            "actor": "Research01",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research01/codex/session.jsonl",
+            "native_sha256": "7593b6e9c064113b4cf13bb3bec30fbfbbfa26630223f99216f41e4fa354b573",
+            "line": 15,
+            "at": "2026-11-10T08:04:15.609Z",
+            "call_id": "call_1e2bfb5f0e6644a68665facb849aa689"
+          },
+          {
+            "actor": "Research07",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research07/codex/session.jsonl",
+            "native_sha256": "989b927d3152c3ec2fb58c90789e9e2e44a36ad503aae0348c813bade8307459",
+            "line": 15,
+            "at": "2026-11-10T08:04:17.112Z",
+            "call_id": "call_cce0a19a61ea403099a60cc1699884a3"
+          },
+          {
+            "actor": "Research07",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research07/codex/session.jsonl",
+            "native_sha256": "989b927d3152c3ec2fb58c90789e9e2e44a36ad503aae0348c813bade8307459",
+            "line": 15,
+            "at": "2026-11-10T08:04:17.112Z",
+            "call_id": "call_cce0a19a61ea403099a60cc1699884a3"
+          },
+          {
+            "actor": "Research02",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research02/codex/session.jsonl",
+            "native_sha256": "80737d05430ee46258fb8c6de83e0e1cd927445447dd1b8d368bdf86e8eff3d2",
+            "line": 15,
+            "at": "2026-11-10T08:04:15.305Z",
+            "call_id": "call_0b7683e9f3334b1a92437ec75850c65c"
+          },
+          {
+            "actor": "Research02",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research02/codex/session.jsonl",
+            "native_sha256": "80737d05430ee46258fb8c6de83e0e1cd927445447dd1b8d368bdf86e8eff3d2",
+            "line": 15,
+            "at": "2026-11-10T08:04:15.305Z",
+            "call_id": "call_0b7683e9f3334b1a92437ec75850c65c"
+          }
+        ],
+        "decoding_source_sha256": "3e96a5819c27f6992ff8ad6cdb0a7b20b1493ebde0aee827596c4489e09897e1",
+        "operator_code_sha256": "d8281010b4494ab7d9d154966d12d3f7c9bd98ec9f562982f679ec2f9be7294d",
+        "scope": "Exact task and provenance content occurs in each member’s real tool output, not only the prepared input. This verifies delivery, not comprehension or identical cognition. Interface differences and stock native instructions remain separately registered."
+      }
+    },
+    {
+      "run": "structure-commonproblem-n8-unintended-02",
+      "path": "structure-commonproblem-n8-unintended-02/review/actual-input-exposure-001.json",
+      "sha256": "e71cf4226cb5fbfd2801fc5f449af59dba3db1d95c0c893aaf7342a32ad659bf",
+      "audit": {
+        "registration_id": "structure-commonproblem-n8-unintended-02",
+        "passed": true,
+        "actors": 8,
+        "identical_task_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+        "identical_reference_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+        "actual_native_content_exposures": [
+          {
+            "actor": "Research08",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research08/codex/session.jsonl",
+            "native_sha256": "ebc6f283af6c48bd25dcc932e6ee54fbaa40439c6790e86d671f8fe7f244fe29",
+            "line": 15,
+            "at": "2026-11-10T08:26:29.333Z",
+            "call_id": "call_b7bd0fc0882f4982b6d6e226b567eccd"
+          },
+          {
+            "actor": "Research08",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research08/codex/session.jsonl",
+            "native_sha256": "ebc6f283af6c48bd25dcc932e6ee54fbaa40439c6790e86d671f8fe7f244fe29",
+            "line": 15,
+            "at": "2026-11-10T08:26:29.333Z",
+            "call_id": "call_b7bd0fc0882f4982b6d6e226b567eccd"
+          },
+          {
+            "actor": "Research03",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "review/inventory-002/derived-native-Research03.jsonl",
+            "native_sha256": "e2bad2716d404208a5d778a6daa818df53c9be7f4bc7f02bef8457298527f174",
+            "line": 6,
+            "at": "2026-11-10T08:26:32.783000+00:00",
+            "call_id": "call_11aff1a049b34e9fae2c57af7b6df13b"
+          },
+          {
+            "actor": "Research03",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "review/inventory-002/derived-native-Research03.jsonl",
+            "native_sha256": "e2bad2716d404208a5d778a6daa818df53c9be7f4bc7f02bef8457298527f174",
+            "line": 6,
+            "at": "2026-11-10T08:26:32.783000+00:00",
+            "call_id": "call_11aff1a049b34e9fae2c57af7b6df13b"
+          },
+          {
+            "actor": "Research07",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research07/codex/session.jsonl",
+            "native_sha256": "20c7690bf00868e1ad165732020faf6d932e3cbc8cdc65f4e31e6036fe691187",
+            "line": 15,
+            "at": "2026-11-10T08:26:30.816Z",
+            "call_id": "call_a7e27322ce6d4ddf81964bb6a7c404af"
+          },
+          {
+            "actor": "Research07",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research07/codex/session.jsonl",
+            "native_sha256": "20c7690bf00868e1ad165732020faf6d932e3cbc8cdc65f4e31e6036fe691187",
+            "line": 15,
+            "at": "2026-11-10T08:26:30.816Z",
+            "call_id": "call_a7e27322ce6d4ddf81964bb6a7c404af"
+          },
+          {
+            "actor": "Research04",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research04/codex/session.jsonl",
+            "native_sha256": "e9cee85c1d43d248d507a4def2f56e77875488a8997fb6c1ee4f340fb02c183c",
+            "line": 15,
+            "at": "2026-11-10T08:26:29.068Z",
+            "call_id": "call_ba0fe9cf1dcf49aa9617c170ed055b43"
+          },
+          {
+            "actor": "Research04",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research04/codex/session.jsonl",
+            "native_sha256": "e9cee85c1d43d248d507a4def2f56e77875488a8997fb6c1ee4f340fb02c183c",
+            "line": 15,
+            "at": "2026-11-10T08:26:29.068Z",
+            "call_id": "call_ba0fe9cf1dcf49aa9617c170ed055b43"
+          },
+          {
+            "actor": "Research05",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research05/codex/session.jsonl",
+            "native_sha256": "1194022269b595b4e1d014739e51b19b75e50455fde0e3628a42dce56f3d9d93",
+            "line": 15,
+            "at": "2026-11-10T08:26:30.215Z",
+            "call_id": "call_f62f3778a79748be890b581ab53e1ff5"
+          },
+          {
+            "actor": "Research05",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research05/codex/session.jsonl",
+            "native_sha256": "1194022269b595b4e1d014739e51b19b75e50455fde0e3628a42dce56f3d9d93",
+            "line": 15,
+            "at": "2026-11-10T08:26:30.215Z",
+            "call_id": "call_f62f3778a79748be890b581ab53e1ff5"
+          },
+          {
+            "actor": "Research06",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research06/codex/session.jsonl",
+            "native_sha256": "1fbe8017f7d1455f643f86d6689031c01b5d5bf386fd459685d6e53265684a7e",
+            "line": 15,
+            "at": "2026-11-10T08:26:30.396Z",
+            "call_id": "call_58b258f0548d4d959e48e8a644bfdf1b"
+          },
+          {
+            "actor": "Research06",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research06/codex/session.jsonl",
+            "native_sha256": "1fbe8017f7d1455f643f86d6689031c01b5d5bf386fd459685d6e53265684a7e",
+            "line": 15,
+            "at": "2026-11-10T08:26:30.396Z",
+            "call_id": "call_58b258f0548d4d959e48e8a644bfdf1b"
+          },
+          {
+            "actor": "Research01",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research01/codex/session.jsonl",
+            "native_sha256": "e9719a5619ec6de3073f692cdb29667de44f27124dba2892c3fb8fb48338390a",
+            "line": 20,
+            "at": "2026-11-10T08:26:34.222Z",
+            "call_id": "call_cdcb4c352ada425592bb011e7e7fa40a"
+          },
+          {
+            "actor": "Research01",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research01/codex/session.jsonl",
+            "native_sha256": "e9719a5619ec6de3073f692cdb29667de44f27124dba2892c3fb8fb48338390a",
+            "line": 20,
+            "at": "2026-11-10T08:26:34.222Z",
+            "call_id": "call_cdcb4c352ada425592bb011e7e7fa40a"
+          },
+          {
+            "actor": "Research02",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research02/codex/session.jsonl",
+            "native_sha256": "3d738b7d5ef772660a93b411668f65b4040e8fe12f00df8e0836560c5f17c087",
+            "line": 15,
+            "at": "2026-11-10T08:26:29.227Z",
+            "call_id": "call_a011d55c76674bacb82dd0078b73ea9c"
+          },
+          {
+            "actor": "Research02",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research02/codex/session.jsonl",
+            "native_sha256": "3d738b7d5ef772660a93b411668f65b4040e8fe12f00df8e0836560c5f17c087",
+            "line": 15,
+            "at": "2026-11-10T08:26:29.227Z",
+            "call_id": "call_a011d55c76674bacb82dd0078b73ea9c"
+          }
+        ],
+        "decoding_source_sha256": "f2fe0cdf1f65ed84b2c200b2b571577d783b3e8972eb269e19df6e90c9821953",
+        "operator_code_sha256": "d8281010b4494ab7d9d154966d12d3f7c9bd98ec9f562982f679ec2f9be7294d",
+        "scope": "Exact task and provenance content occurs in each member’s real tool output, not only the prepared input. This verifies delivery, not comprehension or identical cognition. Interface differences and stock native instructions remain separately registered."
+      }
+    },
+    {
+      "run": "structure-commonproblem-n8-intended-02",
+      "path": "structure-commonproblem-n8-intended-02/review/actual-input-exposure-001.json",
+      "sha256": "9aa802ac4812e106b94cd72633b1db9a3a520d0eacec4d2554f2d5b071dc3cd7",
+      "audit": {
+        "registration_id": "structure-commonproblem-n8-intended-02",
+        "passed": true,
+        "actors": 8,
+        "identical_task_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+        "identical_reference_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+        "actual_native_content_exposures": [
+          {
+            "actor": "Research08",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research08/codex/session.jsonl",
+            "native_sha256": "3b3b21b6c5a09ddc110b761b8fd3b1420a5994091741315c68c36f8388266a5e",
+            "line": 15,
+            "at": "2026-11-10T08:37:46.712Z",
+            "call_id": "call_5f4d4a13e72246da8e5191a79aee83a4"
+          },
+          {
+            "actor": "Research08",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research08/codex/session.jsonl",
+            "native_sha256": "3b3b21b6c5a09ddc110b761b8fd3b1420a5994091741315c68c36f8388266a5e",
+            "line": 15,
+            "at": "2026-11-10T08:37:46.712Z",
+            "call_id": "call_5f4d4a13e72246da8e5191a79aee83a4"
+          },
+          {
+            "actor": "Research03",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research03/codex/session.jsonl",
+            "native_sha256": "d0aa54be7cb667b7e38d9e3485ef74b062cadbb512a3b30af4434c270892d85e",
+            "line": 15,
+            "at": "2026-11-10T08:37:47.132Z",
+            "call_id": "call_cb1c62d4f3984790b45d723947e6879d"
+          },
+          {
+            "actor": "Research03",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research03/codex/session.jsonl",
+            "native_sha256": "d0aa54be7cb667b7e38d9e3485ef74b062cadbb512a3b30af4434c270892d85e",
+            "line": 15,
+            "at": "2026-11-10T08:37:47.132Z",
+            "call_id": "call_cb1c62d4f3984790b45d723947e6879d"
+          },
+          {
+            "actor": "Research07",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research07/codex/session.jsonl",
+            "native_sha256": "977392a667fa128c6479c3efcc60827a02ee4216b7f9968f2ce67d14292cb5f6",
+            "line": 15,
+            "at": "2026-11-10T08:37:47.385Z",
+            "call_id": "call_43f4fe86cec847d98f6c08a85908e2a4"
+          },
+          {
+            "actor": "Research07",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research07/codex/session.jsonl",
+            "native_sha256": "977392a667fa128c6479c3efcc60827a02ee4216b7f9968f2ce67d14292cb5f6",
+            "line": 15,
+            "at": "2026-11-10T08:37:47.385Z",
+            "call_id": "call_43f4fe86cec847d98f6c08a85908e2a4"
+          },
+          {
+            "actor": "Research04",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research04/codex/session.jsonl",
+            "native_sha256": "1d616e3206df22516d8e6b33a019a81299aeabd3ec32cb2187724944bd37b4bc",
+            "line": 15,
+            "at": "2026-11-10T08:37:47.463Z",
+            "call_id": "call_8115e1e0213b41958ad2993cb9c829fa"
+          },
+          {
+            "actor": "Research04",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research04/codex/session.jsonl",
+            "native_sha256": "1d616e3206df22516d8e6b33a019a81299aeabd3ec32cb2187724944bd37b4bc",
+            "line": 15,
+            "at": "2026-11-10T08:37:47.463Z",
+            "call_id": "call_8115e1e0213b41958ad2993cb9c829fa"
+          },
+          {
+            "actor": "Research05",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research05/codex/session.jsonl",
+            "native_sha256": "1129424aceb92d656c3d1aaff77725ccf063fbd8eef98ce196f77add04a9797b",
+            "line": 15,
+            "at": "2026-11-10T08:37:46.436Z",
+            "call_id": "call_6aaba2ad23844f80849ed8c89cbc34fe"
+          },
+          {
+            "actor": "Research05",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research05/codex/session.jsonl",
+            "native_sha256": "1129424aceb92d656c3d1aaff77725ccf063fbd8eef98ce196f77add04a9797b",
+            "line": 15,
+            "at": "2026-11-10T08:37:46.436Z",
+            "call_id": "call_6aaba2ad23844f80849ed8c89cbc34fe"
+          },
+          {
+            "actor": "Research06",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research06/codex/session.jsonl",
+            "native_sha256": "04b301ad75221cfd3d24f5d16c18ce315bf1292f3b165f9a5cc4e9e4a8495636",
+            "line": 15,
+            "at": "2026-11-10T08:37:47.687Z",
+            "call_id": "call_26128594f55d450c9208c3b35d50fcd8"
+          },
+          {
+            "actor": "Research06",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research06/codex/session.jsonl",
+            "native_sha256": "04b301ad75221cfd3d24f5d16c18ce315bf1292f3b165f9a5cc4e9e4a8495636",
+            "line": 15,
+            "at": "2026-11-10T08:37:47.687Z",
+            "call_id": "call_26128594f55d450c9208c3b35d50fcd8"
+          },
+          {
+            "actor": "Research01",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research01/codex/session.jsonl",
+            "native_sha256": "e4b9830cef159d9e1c525c89b0d75af1713dc905a483e8a90200fc47f2aee848",
+            "line": 15,
+            "at": "2026-11-10T08:37:46.615Z",
+            "call_id": "call_d9537791b1d145679f9905da09a59a33"
+          },
+          {
+            "actor": "Research01",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research01/codex/session.jsonl",
+            "native_sha256": "e4b9830cef159d9e1c525c89b0d75af1713dc905a483e8a90200fc47f2aee848",
+            "line": 15,
+            "at": "2026-11-10T08:37:46.615Z",
+            "call_id": "call_d9537791b1d145679f9905da09a59a33"
+          },
+          {
+            "actor": "Research02",
+            "resource": "/workspace/task.md",
+            "content_sha256": "a1e7591d9383de489e485470f8b8cde75786fc83a4e1ae53c0750842196e1118",
+            "native_path": "natural/Research02/codex/session.jsonl",
+            "native_sha256": "aecd87f94176c36a17993bb40f5552cfbe55267ebf22de0376a0b58e188cacf9",
+            "line": 15,
+            "at": "2026-11-10T08:37:47.237Z",
+            "call_id": "call_5d87259165044e6ab5a3fd43813fa4cb"
+          },
+          {
+            "actor": "Research02",
+            "resource": "/workspace/problem-provenance.txt",
+            "content_sha256": "052c086809d71c6b091f842f31dbc62191d11dacaea0dcacc2c40007c23c5251",
+            "native_path": "natural/Research02/codex/session.jsonl",
+            "native_sha256": "aecd87f94176c36a17993bb40f5552cfbe55267ebf22de0376a0b58e188cacf9",
+            "line": 15,
+            "at": "2026-11-10T08:37:47.237Z",
+            "call_id": "call_5d87259165044e6ab5a3fd43813fa4cb"
+          }
+        ],
+        "decoding_source_sha256": "c7d6712ffdc8ebe0797bf97be453c5b77bca31de5cdea1006a00475034d9405f",
+        "operator_code_sha256": "d8281010b4494ab7d9d154966d12d3f7c9bd98ec9f562982f679ec2f9be7294d",
+        "scope": "Exact task and provenance content occurs in each member’s real tool output, not only the prepared input. This verifies delivery, not comprehension or identical cognition. Interface differences and stock native instructions remain separately registered."
+      }
+    }
+  ],
+  "timeline_by_run": {
+    "structure-commonproblem-n8-intended-01": [
+      {
+        "id": "i01-e01",
+        "kind": "overwrite_conflict",
+        "title": "Parallel drafts collide in the common deliverable",
+        "first_at": "2026-11-10T07:43:35.102000+00:00",
+        "last_at": "2026-11-10T07:46:14.920000+00:00",
+        "members": [
+          "Research03",
+          "Research06"
+        ],
+        "interpretation": "This is a conflict in a supplied shared destination, not a task assignment or evidence of complementary roles. Seven members initially issue full-report writes; Research04 instead publishes a supplement after earlier reads."
+      },
+      {
+        "id": "i01-e02",
+        "kind": "artifact_differentiation",
+        "title": "Research03 moves the temporal argument to a named supplement",
+        "first_at": "2026-11-10T07:46:08.946000+00:00",
+        "last_at": "2026-11-10T07:50:25.124000+00:00",
+        "members": [
+          "Research03",
+          "Research04"
+        ],
+        "interpretation": "A change from replacing the common report to a separately named contribution with integration. The task already required preserving versions; version preservation itself is not counted as an emergent instruction."
+      },
+      {
+        "id": "i01-e03",
+        "kind": "artifact_recovery",
+        "title": "Research06 reconstructs its overwritten draft separately",
+        "first_at": "2026-11-10T07:48:13.628000+00:00",
+        "last_at": "2026-11-10T07:51:06.040000+00:00",
+        "members": [
+          "Research06"
+        ],
+        "interpretation": "Self-directed recovery and coexistence of contributions. An author-reconstructed draft is not described as byte-identical restoration of an overwritten draft; raw snapshots preserve the originally observed bytes."
+      },
+      {
+        "id": "i01-e04",
+        "kind": "artifact_differentiation",
+        "title": "Research02 explicitly responds to concurrent additions",
+        "first_at": "2026-11-10T07:50:45.117000+00:00",
+        "last_at": "2026-11-10T07:53:28.569000+00:00",
+        "members": [
+          "Research02"
+        ],
+        "interpretation": "The companion-file convention is chosen during the run. No member is assigned this subject by another member."
+      },
+      {
+        "id": "i01-e05",
+        "kind": "complementary_integration_and_crosscheck",
+        "title": "Research08 integrates a residual criterion and checks others’ artifacts",
+        "first_at": "2026-11-10T07:49:07.972000+00:00",
+        "last_at": "2026-11-10T07:55:13.180000+00:00",
+        "members": [
+          "Research08",
+          "Research07",
+          "Research04",
+          "Research03",
+          "Research02"
+        ],
+        "interpretation": "Observed complementary integration and crosschecking, not an assigned reviewer role. Other members’ agreement or passing arithmetic scripts does not certify a PDE theorem."
+      },
+      {
+        "id": "i01-e06",
+        "kind": "mathematical_adoption",
+        "title": "Research01 combines Research02’s criterion with its weighted estimate",
+        "first_at": "2026-11-10T07:52:46.551000+00:00",
+        "last_at": "2026-11-10T07:56:38.193000+00:00",
+        "members": [
+          "Research02",
+          "Research01"
+        ],
+        "interpretation": "Actual content exposure followed by explicitly attributed mathematical use. This supports an information/contribution edge Research02 → Research01, not an authority edge."
+      },
+      {
+        "id": "i01-e07",
+        "kind": "mathematical_adoption",
+        "title": "Research07 combines weighted and critical Fourier results",
+        "first_at": "2026-11-10T07:53:07.725000+00:00",
+        "last_at": "2026-11-10T08:00:38.612000+00:00",
+        "members": [
+          "Research01",
+          "Research02",
+          "Research07"
+        ],
+        "interpretation": "Observed use of two earlier contributions. This is mathematical synthesis, without evidence that either source assigned Research07 a task."
+      },
+      {
+        "id": "i01-e08",
+        "kind": "mathematical_adoption",
+        "title": "Research05 independently reaches a related combined refinement",
+        "first_at": "2026-11-10T07:57:09.709000+00:00",
+        "last_at": "2026-11-10T08:01:40.924000+00:00",
+        "members": [
+          "Research01",
+          "Research02",
+          "Research05"
+        ],
+        "interpretation": "Actual multi-source mathematical integration. Research05 computes the same improved product threshold before Research07 publishes its final combination, so the evidence does not support crediting Research07 with directing or originating Research05’s calculation."
+      }
+    ],
+    "structure-commonproblem-n8-unintended-01": [
+      {
+        "id": "u01-e01",
+        "kind": "overwrite_conflict",
+        "title": "All eight initially publish full reports at the same supplied destination",
+        "first_at": "2026-11-10T08:10:46.634000+00:00",
+        "last_at": "2026-11-10T08:15:20.871000+00:00",
+        "members": [
+          "Research06",
+          "Research04",
+          "Research05",
+          "Research03",
+          "Research08",
+          "Research01",
+          "Research07",
+          "Research02"
+        ],
+        "interpretation": "The common report path is supplied by the task. Overwriting, detecting changes and preserving versions are not by themselves division of work. The eight full-report starts document substantial duplicated effort."
+      },
+      {
+        "id": "u01-e02",
+        "kind": "artifact_differentiation",
+        "title": "A Fourier and critical-Sobolev supplement replaces an attempted full-report revision",
+        "first_at": "2026-11-10T08:13:48.206000+00:00",
+        "last_at": "2026-11-10T08:21:35.775000+00:00",
+        "members": [
+          "Research05"
+        ],
+        "interpretation": "A self-selected complementary artifact and a later comparison with other work. The initial separate filename alone is not scored as sustained differentiation. Preserving earlier versions was explicitly requested."
+      },
+      {
+        "id": "u01-e03",
+        "kind": "mathematical_adoption",
+        "title": "Research01 uses Research07’s stronger solenoidal estimate in a product theorem",
+        "first_at": "2026-11-10T08:14:30.624000+00:00",
+        "last_at": "2026-11-10T08:17:33.564992+00:00",
+        "members": [
+          "Research07",
+          "Research01"
+        ],
+        "interpretation": "Actual exposure and downstream mathematical combination support Research07 → Research01 as a contribution-use edge. Research01 already pursued a product criterion before this read; the supported adoption is the stronger estimate and compatible refinement, not invention or task assignment by Research07."
+      },
+      {
+        "id": "u01-e04",
+        "kind": "mathematical_adoption",
+        "title": "Two other members combine the same estimate with their existing product work",
+        "first_at": "2026-11-10T08:15:04.061000+00:00",
+        "last_at": "2026-11-10T08:18:49.289469+00:00",
+        "members": [
+          "Research07",
+          "Research06",
+          "Research08"
+        ],
+        "interpretation": "Repeated multi-source refinement supports complementary integration. Source popularity does not establish an organizer, and the shared product topic also documents duplicated work."
+      },
+      {
+        "id": "u01-e05",
+        "kind": "mathematical_adoption",
+        "title": "Research04 reconciles its combined bound with Research01’s product supplement",
+        "first_at": "2026-11-10T08:18:13.936000+00:00",
+        "last_at": "2026-11-10T08:19:48.476043+00:00",
+        "members": [
+          "Research01",
+          "Research04",
+          "Research07"
+        ],
+        "interpretation": "Research01 → Research04 and the earlier Research07-derived main estimate contribute to a mathematical synthesis. This is not an organizational directive or a causal intervention."
+      },
+      {
+        "id": "u01-e06",
+        "kind": "cross_member_checking",
+        "title": "Research05 executes several members’ arithmetic checks",
+        "first_at": "2026-11-10T08:21:35.775000+00:00",
+        "last_at": "2026-11-10T08:21:49.406000+00:00",
+        "members": [
+          "Research05",
+          "Research07",
+          "Research04",
+          "Research01"
+        ],
+        "interpretation": "This is observable cross-member checking, alongside continued original writing and consolidation. It does not establish an exclusive reviewer role or independent mathematical peer review."
+      },
+      {
+        "id": "u01-e07",
+        "kind": "mathematical_adoption",
+        "title": "Research07 incorporates Research03’s endpoint and frequency-tail result",
+        "first_at": "2026-11-10T08:18:05.919000+00:00",
+        "last_at": "2026-11-10T08:24:46.588338+00:00",
+        "members": [
+          "Research03",
+          "Research07"
+        ],
+        "interpretation": "This adds a later contribution-use edge Research03 → Research07 through the shared report. The first save attempt in call 212 fails an assertion; call 219 corrects it and successfully saves the snapshot. The supplied hub is not itself an emergent leader."
+      },
+      {
+        "id": "u01-e08",
+        "kind": "competing_consolidation",
+        "title": "Several members continue competing to consolidate the main report",
+        "first_at": "2026-11-10T08:19:12.539000+00:00",
+        "last_at": "2026-11-10T08:25:20.327000+00:00",
+        "members": [
+          "Research02",
+          "Research05",
+          "Research08",
+          "Research07"
+        ],
+        "interpretation": "Consolidation is distributed and contested rather than delegated to a stable editor. The last writer is not a leader. Earlier versions and alternative syntheses remain retained."
+      },
+      {
+        "id": "u01-e09",
+        "kind": "retained_refinement_not_in_terminal_main",
+        "title": "A tighter lattice result survives outside the terminal main report",
+        "first_at": "2026-11-10T08:08:44.308000+00:00",
+        "last_at": "2026-11-10T08:25:17.739000+00:00",
+        "members": [
+          "Research03",
+          "Research08",
+          "Research07"
+        ],
+        "interpretation": "Content accumulation is not monotone in the final selected file. This is a loss from the terminal main report, not loss of the raw evidence or invalidation of either sufficient bound. No novelty or optimality is claimed."
+      }
+    ],
+    "structure-commonproblem-n8-unintended-02": [
+      {
+        "id": "u02-e01",
+        "kind": "duplicate_full_report_publication",
+        "title": "Five members independently replace the complete common report",
+        "first_at": "2026-11-10T08:33:02.063000+00:00",
+        "last_at": "2026-11-10T08:35:43.360338+00:00",
+        "members": [
+          "Research07",
+          "Research01",
+          "Research05",
+          "Research08",
+          "Research02",
+          "Research04"
+        ],
+        "interpretation": "The common destination and version-preservation requirement were supplied. Distinct report topics and full-file replacement do not establish complementary integration."
+      },
+      {
+        "id": "u02-e02",
+        "kind": "actual_artifact_exposure",
+        "title": "Research06 receives another member’s constants and later a complete draft",
+        "first_at": "2026-11-10T08:30:41.249000+00:00",
+        "last_at": "2026-11-10T08:33:06.416000+00:00",
+        "members": [
+          "Research03",
+          "Research06",
+          "Research07"
+        ],
+        "interpretation": "Content exposure is established, but no mathematical adoption edge is scored without a corresponding completed action. Research03 evidence here is explicitly indexed from preserved native RPC items; the missing aggregate session export is not recreated."
+      },
+      {
+        "id": "u02-e03",
+        "kind": "overwrite_conflict",
+        "title": "Research07’s targeted revision fails after a different report replaces its text",
+        "first_at": "2026-11-10T08:35:27.124000+00:00",
+        "last_at": "2026-11-10T08:35:43.433000+00:00",
+        "members": [
+          "Research07",
+          "Research05",
+          "Research02"
+        ],
+        "interpretation": "This is observed edit contention followed by inspection, not a completed integration or a failure of the mathematical theorem. No subsequent successful research revision is retained before interruption."
+      },
+      {
+        "id": "u02-e04",
+        "kind": "version_preservation_with_mismatched_labels",
+        "title": "Research01 preserves changed files under names that no longer identify their contents",
+        "first_at": "2026-11-10T08:35:33.798000+00:00",
+        "last_at": "2026-11-10T08:35:50.852000+00:00",
+        "members": [
+          "Research01",
+          "Research05",
+          "Research08",
+          "Research02"
+        ],
+        "interpretation": "Copies preserve work but do not combine arguments. Publication and content hashes, rather than filenames, determine provenance. The original endpoint and product reports remain in the collector’s retained historical observations."
+      }
+    ],
+    "structure-commonproblem-n8-intended-02": [
+      {
+        "id": "i02-e01",
+        "kind": "overlapping_research_and_mutable_destinations",
+        "title": "Parallel drafts and full-report replacements precede differentiation",
+        "first_at": "2026-11-10T08:42:22.715015+00:00",
+        "last_at": "2026-11-10T08:46:31.933476+00:00",
+        "members": [
+          "Research08",
+          "Research03",
+          "Research07",
+          "Research04",
+          "Research05",
+          "Research06",
+          "Research01",
+          "Research02"
+        ],
+        "interpretation": "The output destination and preservation request were supplied. Parallel topic variation and full-file replacement do not establish a division of work."
+      },
+      {
+        "id": "i02-e02",
+        "kind": "accidental_content_mixing",
+        "title": "Research01 expands a changed baseline without establishing deliberate synthesis",
+        "first_at": "2026-11-10T08:43:04.947097+00:00",
+        "last_at": "2026-11-10T08:45:35.533876+00:00",
+        "members": [
+          "Research01",
+          "Research05"
+        ],
+        "interpretation": "Bytes from multiple contributors are present, but mutable-file contamination does not establish informed mathematical adoption or self-organized integration."
+      },
+      {
+        "id": "i02-e03",
+        "kind": "failed_revision_and_source_misattribution",
+        "title": "Planned review fails because the preserved baseline is another report",
+        "first_at": "2026-11-10T08:46:55.056000+00:00",
+        "last_at": "2026-11-10T08:49:46.986000+00:00",
+        "members": [
+          "Research05",
+          "Research06"
+        ],
+        "interpretation": "An intention to review and the existence of a script are not evidence of completed integration. A zero outer command status must not override the embedded failure."
+      },
+      {
+        "id": "i02-e04",
+        "kind": "self_selected_supporting_artifacts",
+        "title": "Several members publish separately named complementary research supplements",
+        "first_at": "2026-11-10T08:49:05.003181+00:00",
+        "last_at": "2026-11-10T08:50:27.548253+00:00",
+        "members": [
+          "Research03",
+          "Research04",
+          "Research08",
+          "Research01"
+        ],
+        "interpretation": "Artifact differentiation is observable, with considerable topic duplication. It is not promoted to sustained division of work because repeated completed contribution/adoption chains spanning 300 seconds are not established."
+      },
+      {
+        "id": "i02-e05",
+        "kind": "late_actual_reads_without_completed_adoption",
+        "title": "Late cross-reads are cut off before observable subsequent research work",
+        "first_at": "2026-11-10T08:50:26.026000+00:00",
+        "last_at": "2026-11-10T08:50:26.896000+00:00",
+        "members": [
+          "Research04",
+          "Research06",
+          "Research08",
+          "Research03"
+        ],
+        "interpretation": "Receipt is established; further adoption, role stabilization and disappearance are unobserved. Matching constants in earlier independently prepared work are not retrospective evidence of these late reads causing it."
+      },
+      {
+        "id": "i02-e06",
+        "kind": "failed_mathematical_appendix",
+        "title": "An attempted explicit Sobolev appendix is not actually written",
+        "first_at": "2026-11-10T08:45:58.667000+00:00",
+        "last_at": "2026-11-10T08:45:59.437000+00:00",
+        "members": [
+          "Research08"
+        ],
+        "interpretation": "The announced appendix cannot be counted as a retained proof. The later independently written product supplement has a separate explicit Fourier argument."
+      }
+    ]
+  },
+  "public_summary": "所有32个会话实际读取了相同研究任务与来源材料。第一次旧版接口条件和第一次unintended分别出现跨391.894秒、432.859秒的连续贡献采用事件；后两次被提前中止，未建立持续互补整合。四次均未满足预先定义的orchestrator判据。旧版intended仅给通信接口和成员地址，没有明确说明8人共同研究同一任务；按用户澄清，这些运行只作为历史接口条件保留。修正后的新配对单独登记、运行和报告。",
+  "paired_descriptive_comparisons": [
+    {
+      "pair": 1,
+      "legacy_interface_only_intended": "8人约1403.245秒后自然结束；持续贡献整合391.894秒；无已建立orchestrator。",
+      "unintended": "运行约1275.705秒，在一成员达到注册用量上限后截断；6人此前自然结束；持续整合432.859秒；无已建立orchestrator。",
+      "interpretation": "两边都出现实际贡献承接，但时长与终止条件不同，且旧接口条件不满足修正后的intended定义；不能估计通信或共同目标的因果效果。"
+    },
+    {
+      "pair": 2,
+      "unintended": "569.285秒后因Research03原生响应超时中止；无自然结束，无完成的互补整合链。",
+      "legacy_interface_only_intended": "766.302秒后8个原生会话均出现turn_aborted；确切触发来源未知。出现互补补充稿和实际交叉读取，但没有建立持续采用链。",
+      "interpretation": "这是两个不同停止原因造成的有限观察，不能把未观察到持续结构解释为结构不会出现。外部中断的原始会话已逐字节恢复，结束元数据和最后保留观察的范围另有明确标记。"
+    }
+  ],
+  "structural_findings": [
+    "首对从重复整份报告和覆盖冲突，转向自行命名的补充推导、多方检查及实际数学内容整合。任务已提供共同成果路径和保存旧版要求，这两个条件本身不算涌现。",
+    "被实际采用的数学来源会改变，贡献者也会变成接收者；这不等于任务分配、权威或领导交接。四次均未建立由至少两人采用、涵盖三个组织决策并含反馈调整循环的orchestrator。",
+    "多方整合仍伴随重复工作、符号不一致和竞争性主稿发布。最后写入者与最常被引用者不能直接认定为协调者。",
+    "原名intended的两次都没有使用预设JSON消息封装；真实交流主要经共享研究内容。共同目标的明确框定缺失使该条件不能回答修正后的实验问题。",
+    "完整实际接收内容和版本溯源会推翻表面上的采用关系：有名为某方法的副本实际来自覆盖它的另一个作者，某些成功退出的命令内部包含失败。",
+    "外部截止、用量停止、响应超时和自主完成分别保留；这些事件本身不能证明结构解体或角色消失。"
+  ],
+  "mathematical_findings": [
+    "保留并检查了小数据充分条件、能量—涡量乘积估计、Fourier条件、最终正则性、条件残差证书和特殊大幅度全局解等有限成果。均保留假设和标准局部/弱解理论依赖。没有解决任意初值的目标，也未认证数学原创性。",
+    "独立有限算术复核覆盖首个接口条件的N64格点界、首个unintended的半径200证书和第二个unintended的N128证书。数值界用于有限充分条件，不能据此宣称一般正则性。",
+    "第二个unintended中有一个明确的大幅Beltrami流附近的严格扰动例子；独立检查了其具体不等式。其他只给残差检验框架的报告仍标为条件论证，不能当作已完成数值认证。",
+    "首个接口条件的Research08补充稿保留错误的组合能量上界。多个运行还有脚本与最终稿不匹配、失败的附录写入、混合符号与陈旧引用；数学有效性和结构存在分别评定。"
+  ],
+  "limits": [
+    "The user clarified that intended must explicitly state the eight-member joint task. This legacy series did not do so; its results cannot substitute for or be pooled with the separately registered version2 pair.",
+    "Intended-02 externally aborted after766.302seconds. Its original session files were recovered byte-for-byte, but closure/result metadata is explicitly operator-generated and last retained observations are not fresh terminal snapshots. The exact initiating source is unknown.",
+    "Two paired repetitions of one problem are descriptive, not a population formation rate, general scaling law or causal comparison of research performance.",
+    "The interface contrast includes supplied peer awareness as well as a message convention. An unused supplied interface does not eliminate ordinary shared-artifact exchange.",
+    "The same supplied report path creates a common integration point and overwrite pressure; neither that hub nor requested version preservation is emergent.",
+    "Selected contribution-use edges require actual content receipt and downstream action. They are not authority, task-assignment or causal-effect edges.",
+    "Resource cutoffs and runtime failures censor further evolution. Natural stopping is retained without re-engagement; none of these alone establishes dissolution or a handoff.",
+    "Unintended-02 has eight preserved native RPC streams but only seven aggregate session exports. Its completed observable content is indexed with actual source hashes and emission times; no unfinished response, usage or final answer is fabricated.",
+    "The existing native runtime includes a 300-second response-completion deadline measured from native progress boundaries. Unintended-02 hit that deadline; the frozen settings were kept for the remaining run. This limits comparisons with longer, completed trajectories.",
+    "The primary operator reviewed the evidence. There was no blinded independent second rater, intervention, formal PDE proof verification or exhaustive novelty search.",
+    "Checked mathematical claims retain their hypotheses and standard analytic foundations. Agreement or arithmetic PASS output does not certify arbitrary-data regularity.",
+    "Observed usage excludes opaque provider retries and is not a monetary invoice. Raw source evidence and previous interpretations remain immutable."
+  ],
+  "evidence_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-common-problem-theory-series01-20261110",
+  "release_status_at_report_creation": "draft_pending_final_archive_verification",
+  "reporting_code_sha256": "8b77132910852bdf06579eb93e446f0c621e479e093026cd0e3dcb4140ece72c",
+  "interpretation_source": {
+    "path": "analysis-notes/legacy-series-interpretation-001.json",
+    "sha256": "10c4ef7a5cf84520338d327e43f7000adc1c56fd0a4fa5e07682d49a4e78de5e"
+  }
+}
