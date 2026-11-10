@@ -23,7 +23,8 @@ def make_deployment(startup, registration, **observations):
             raise ValueError('The archive catalog profile must be registered')
         if registration.get('workstation_permissions', {}).get('networkAccess') is not True:
             raise ValueError('The archive deployment needs registered business network access')
-        return ArtifactDeployment(startup, shared=settings['shared'], profile=profile, **observations)
+        return ArtifactDeployment(startup, shared=settings['shared'], profile=profile,
+            ready_publication_read=settings.get('ready_publication_read',False), **observations)
     if kind in ('shared_ipc', 'worker_endpoint'):
         network = kind == 'worker_endpoint'
         if registration.get('workstation_permissions', {}).get('networkAccess') is not network:

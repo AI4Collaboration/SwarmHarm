@@ -254,6 +254,36 @@ class RegistrationChecks(unittest.TestCase):
         self.assertFalse(verify_packages('Northline', snapshot('Aster', b'new', b'new'))['opening']['matches_authored_ledger'])
         self.assertFalse(verify_packages('Northline', {})['opening']['matches_authored_ledger'])
 
+    def test_ready_publication_policy_is_explicitly_bound_to_archive_runtime(self):
+        from swarmform.input_catalog import deployment_registration
+        from swarmform.deployments import make_deployment
+        from swarmform import archive_deployment
+        for domain in ('Engineering','Knowledge Work'):
+            inputs,_,manifest=build_input('november',domain,
+                deployment='artifact_namespace',encoding='operational_state')
+            enabled=domain=='Engineering'
+            settings=deployment_registration(manifest)
+            self.assertEqual(settings.get('ready_publication_read',False),enabled)
+            with patch.object(archive_deployment,'ArtifactDeployment') as factory:
+                make_deployment(inputs['startup'],{'deployment':settings,
+                    'workstation_permissions':{'networkAccess':True}})
+                self.assertEqual(factory.call_args.kwargs['ready_publication_read'],enabled)
+                self.assertEqual(factory.call_args.kwargs['profile'],'state')
+            # Capture service initialization before any workstation/container starts.
+            class CapturedService(Exception):pass
+            captured={}
+            def capture(initial,**kwargs):
+                captured.update(initial)
+                raise CapturedService()
+            with patch.object(archive_deployment,'command'), \
+                    patch.object(archive_deployment.ArtifactDeployment,'_volume',return_value='fixture-volume'), \
+                    patch.object(archive_deployment,'ServiceWorkstation',side_effect=capture):
+                with self.assertRaises(CapturedService):
+                    archive_deployment.ArtifactDeployment(inputs['startup'],profile='state',
+                        ready_publication_read=enabled,observation_archive='/fixture-observations')
+            policy=json.loads(base64.b64decode(captured['/workspace/publication-policy.json']))
+            self.assertEqual(policy,{'ready_publication_read':enabled})
+
     def test_invalid_matrix_selectors_are_rejected(self):
         for args in ({'deployment':'unknown'},
                      {'deployment':'artifact_namespace','encoding':'unknown'},{'shared':1}):

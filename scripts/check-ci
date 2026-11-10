@@ -99,6 +99,10 @@ def select_checks(files, full=False):
             elif stem == 'job_service':
                 suites('swarmform_job_service', 'swarmform_registration')
                 checks.add('wording')
+            elif stem in {'archive_deployment', 'deployments'}:
+                suites('swarmform_archive_policy', 'swarmform_archive_outcome',
+                       'swarmform_registration', 'swarmform_input_runner', 'swarmform_collection')
+                checks.update(('inputs', 'catalog', 'wording'))
             elif stem in {'base_archive', 'profile_archive'}:
                 suites('swarmform_archive_policy', 'swarmform_archive_outcome')
                 checks.add('wording')

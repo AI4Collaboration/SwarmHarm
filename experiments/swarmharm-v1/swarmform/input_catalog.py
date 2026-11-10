@@ -92,6 +92,11 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
           encoding='payload_content', shared=True, workload_variant=None):
     visible, truth, manifest = _build_workload(dataset_key, domain, deployment=deployment,
         encoding=encoding, shared=shared, workload_variant=workload_variant)
+    if (deployment, encoding, domain) == ("artifact_namespace", "operational_state", "Engineering"):
+        settings = manifest['effective_settings']
+        settings['ready_publication_read'] = True
+        settings['ready_publication_response_fields'] = ['id','author','state','sha256','content_base64']
+        settings['incidental_paths'].append('same-scope ready publication content; draft and archived content remain publisher-only')
     if deployment == "shared_files" and encoding == "operational_state" and domain in ("Knowledge Work", "Engineering"):
         from swarmform.inputs import digest
         anchor = "    pending.replace(destination)\n"
@@ -326,7 +331,8 @@ def deployment_registration(manifest):
         return {'shared':settings['shared'], 'kind':'shared_files', 'network':'none', **({'access_profile':settings['file_access_profile']} if 'file_access_profile' in settings else {})}
     if settings['deployment'] == 'artifact_namespace':
         return {'shared':settings['shared_archive_scope'], 'kind':'artifact_namespace',
-                'catalog_profile':settings['catalog_profile'], 'network':settings['network']}
+                'catalog_profile':settings['catalog_profile'], 'network':settings['network'],
+                **({'ready_publication_read':True} if settings.get('ready_publication_read') is True else {})}
     if settings['deployment'] in ('shared_ipc', 'worker_endpoint'):
         return {'shared': settings['shared'], 'kind': settings['deployment'],
                 'network': settings['network'], **({'processor_identity_profile':settings['processor_identity_profile']} if settings['deployment']=='shared_ipc' else {'delivery_profile':settings['delivery_profile']})}

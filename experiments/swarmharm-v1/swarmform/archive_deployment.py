@@ -24,9 +24,11 @@ class ArchiveStation(ObservedFileStation):
 
 
 class ArtifactDeployment(FileDeployment):
-    def __init__(self,startup,*,shared=True,profile='content',observation_sink=None,observation_archive=None,population=3):
+    def __init__(self,startup,*,shared=True,profile='content',observation_sink=None,observation_archive=None,population=3,ready_publication_read=False):
         if population not in (3,4,8,16,32) or len(startup)!=population or profile not in ('content','metadata','state','events','timing'):
             raise ValueError('Expected the registered business population and a known archive profile')
+        if type(ready_publication_read) is not bool or (ready_publication_read and profile != 'state'):
+            raise ValueError('Ready publication reads require a registered state profile')
         self.population=population
         self.resources=ExitStack();self.closed=False;self.stations={};self.volumes={}
         self.locks={a:threading.RLock() for a in startup}
@@ -52,6 +54,7 @@ server.daemon_threads=False
 server.timeout=.2
 server.accounts=json.loads(Path('/workspace/accounts.json').read_text())
 server.catalog_profile=Path('/workspace/profile.txt').read_text()
+server.ready_publication_read=json.loads(Path('/workspace/publication-policy.json').read_text())['ready_publication_read']
 try:
     while not Path('/workspace/.close-service').exists():
         server.handle_request()
@@ -61,6 +64,7 @@ finally:
 '''
             initial={f'/workspace/{name}':Path(__file__).with_name(name).read_text() for name in ('base_archive.py','profile_archive.py')}
             initial.update({'/workspace/server.py':server_code,'/workspace/accounts.json':json.dumps(accounts),'/workspace/profile.txt':profile})
+            initial['/workspace/publication-policy.json']=json.dumps({'ready_publication_read':ready_publication_read})
             first=next(iter(self.networks.values()))
             self.service_volume=self._volume()
             if observation_archive is None:raise ValueError('Archive service requires an external observation directory')
@@ -113,6 +117,7 @@ finally:
                 self.bindings[actor]={'container':station.name,'network':self.networks[actor],
                     'ip':network[self.networks[actor]]['IPAddress'],'private_export_volume':self.volumes[actor],'shared_archive_scope':shared,
                     'catalog_profile':profile,'workstation_environment':WORKSTATION_ENVIRONMENT,
+                    **({'ready_publication_read':True} if ready_publication_read else {}),
                     'image':row['Image'],'user':row['Config']['User'],'namespaces':namespaces,
                     'observer_enabled':station.trace_commands,'container_cap_add':sorted(caps),
                     'read_only_root':host['ReadonlyRootfs'],'private_ipc':host['IpcMode'],

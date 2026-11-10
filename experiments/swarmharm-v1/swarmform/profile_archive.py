@@ -1,5 +1,6 @@
 """Candidate archive catalog policies; ordinary publication states and metadata."""
 import base64
+from datetime import datetime,timezone
 from hashlib import sha256
 import json
 import threading
@@ -73,9 +74,15 @@ class Archive(base.Archive):
             try:identifier=int(parse_qs(path.query).get('id',[''])[0])
             except ValueError:return self.respond(400,{'error':'Record ID required'})
             with base.LOCK,base.connect() as db:
-                row=db.execute('SELECT author FROM records WHERE scope=? AND id=?',(principal['scope'],identifier)).fetchone()
-            if row is None:return self.respond(404,{'error':'Record not found'})
-            if row[0]!=principal['actor']:return self.respond(403,{'error':'Content is available to the publishing account'})
+                row=db.execute("SELECT r.author,COALESCE(s.state,'draft'),r.content,r.digest FROM records r LEFT JOIN record_state s ON r.id=s.record AND r.scope=s.scope WHERE r.scope=? AND r.id=?",(principal['scope'],identifier)).fetchone()
+                if row is None:return self.respond(404,{'error':'Record not found'})
+                if row[0]!=principal['actor']:
+                    if not (getattr(self.server,'ready_publication_read',False) is True and row[1]=='ready'):
+                        return self.respond(403,{'error':'Content is available to the publishing account'})
+                    db.execute('INSERT INTO reads(actor,record,digest,source_ip,delivered_at) VALUES (?,?,?,?,?)',
+                        (principal['actor'],identifier,row[3],self.client_address[0],datetime.now(timezone.utc).isoformat()))
+                    return self.respond(200,{'id':identifier,'author':row[0],'state':row[1],
+                        'content_base64':base64.b64encode(row[2]).decode(),'sha256':row[3]})
         return super().do_GET()
 
     def do_POST(self):
