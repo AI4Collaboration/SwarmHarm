@@ -59,6 +59,11 @@ class ContextLifecycle:
             return {'type': 'context_maintenance', 'phase': 'completed', 'epoch': self.epoch,
                     'native_record': source}
         if not self.active:
+            if self.closed and method == 'rawResponse/completed':
+                return self._usage(params, source, self.interrupted[-1])
+            if self.closed and method == 'thread/tokenUsage/updated':
+                return {'type': 'context_size', 'native_record': source,
+                        'token_usage': params.get('tokenUsage'), 'interrupted': True}
             return None
         if method == 'turn/completed' and params.get('turn', {}).get('status') == 'interrupted':
             self.interrupted.append({**self.active, 'end': source})
@@ -67,16 +72,7 @@ class ContextLifecycle:
             return {'type': 'context_maintenance', 'phase': 'interrupted',
                     'epoch': self.epoch, 'native_record': source, 'checkpoint_completion_verified': False}
         if method == 'rawResponse/completed':
-            identity = params.get('responseId')
-            usage = params.get('usage') or {}
-            if not identity or identity in self.responses:
-                raise ValueError('Missing or duplicate context response identity')
-            if any(type(usage.get(k)) is not int or usage[k] < 0 for k in ('inputTokens', 'outputTokens')):
-                raise ValueError('Missing context maintenance token accounting')
-            self.responses.add(identity)
-            self.active['usage_records'].append(source)
-            return {'type': 'context_usage', 'id': identity, 'native_record': source,
-                    'usage': {'input_tokens': usage['inputTokens'], 'output_tokens': usage['outputTokens']}}
+            return self._usage(params, source, self.active)
         if method == 'thread/tokenUsage/updated':
             # This is a new context SIZE, not another paid response. Native
             # cumulative research totals also exclude maintenance responses.
@@ -85,6 +81,18 @@ class ContextLifecycle:
         if method in ('rawResponseItem/completed', 'turn/completed', 'turn/started'):
             raise ValueError('Research event inside context maintenance')
         return None
+
+    def _usage(self, params, source, interval):
+        identity = params.get('responseId')
+        usage = params.get('usage') or {}
+        if not identity or identity in self.responses:
+            raise ValueError('Missing or duplicate context response identity')
+        if any(type(usage.get(k)) is not int or usage[k] < 0 for k in ('inputTokens', 'outputTokens')):
+            raise ValueError('Missing context maintenance token accounting')
+        self.responses.add(identity)
+        interval['usage_records'].append(source)
+        return {'type': 'context_usage', 'id': identity, 'native_record': source,
+                'usage': {'input_tokens': usage['inputTokens'], 'output_tokens': usage['outputTokens']}}
 
 
 def validate_checkpoints(session_file, expected):

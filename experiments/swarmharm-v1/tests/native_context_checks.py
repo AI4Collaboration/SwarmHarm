@@ -211,5 +211,12 @@ class NativeContextChecks(unittest.TestCase):
             self.assertEqual(agent.turn,0)
             self.assertEqual(agent.context.epoch,0)
             self.assertEqual(len(agent.context.interrupted),1)
+            agent._notification({'method':'thread/tokenUsage/updated','params':{
+                'tokenUsage':{'last':{'inputTokens':0,'outputTokens':0}}}},'native/4')
+            agent._notification({'method':'rawResponse/completed','params':{
+                'responseId':'late-context','usage':{'inputTokens':9,'outputTokens':2}}},'native/5')
+            self.assertEqual(agent.turn,0)
+            self.assertEqual(agent.last_progress,12)
+            self.assertEqual(agent.context.interrupted[0]['usage_records'],['native/5'])
             with self.assertRaisesRegex(ValueError,'resumed after interrupted'):
-                agent.context.observe({'method':'turn/started'},'native/4')
+                agent.context.observe({'method':'turn/started'},'native/6')
