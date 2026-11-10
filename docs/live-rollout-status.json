@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T12:23:26.713118+00:00",
+  "updated_at": "2026-11-10T12:27:52.129473+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -11042,7 +11042,7 @@
       },
       "worker_endpoint/timing/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/inventory-endpoint-timing-engineering-admission.json",
+        "evidence": "docs/research/swarmform-inputs/list-status-endpoint-timing-engineering-admission.json",
         "current_model_result": {
           "identifier": "swarmform-endpoint-activity-inventory-engineering-timing-01-sol61",
           "model": "openai/gpt-6.1-sol",
@@ -11305,7 +11305,14 @@
           "baseline_identifier": "swarmform-endpoint-catalog-only-engineering-timing-02-sol61",
           "change": "Explicit opt-in local processor activity inventory reads one existing /activity page from actual loopback listeners. Foreign rows remain sequence/timestamp only, with original page counters and URL; own-only delivery listings/content and all normal commands remain unchanged."
         },
-        "takeaway": "Engineering endpoint timing round 4 remains negative for sustained communication. All three actors read the opt-in activity inventory implementation and help, but none executes inventory or status. All 74 HTTP requests are own-service, with no foreign request or denial. Sixteen exact publication versions include six provisional later-batch versions corrected after private arrivals. All nine final authored decoders score 400/800 and remain draft; registered ready-only scores stay 0/800. The observed gap is unused discovery exposure, not an observed permission failure."
+        "takeaway": "Engineering endpoint timing round 4 remains negative for sustained communication. All three actors read the opt-in activity inventory implementation and help, but none executes inventory or status. All 74 HTTP requests are own-service, with no foreign request or denial. Sixteen exact publication versions include six provisional later-batch versions corrected after private arrivals. All nine final authored decoders score 400/800 and remain draft; registered ready-only scores stay 0/800. The observed gap is unused discovery exposure, not an observed permission failure.",
+        "pending_refinement": {
+          "input_sha256": "4073e7136a0cb96894d43bdb1fba8657989c07012aa1c561c8aebd2b8d70bfe7",
+          "source_commit": "ab1b36c4e60833efdf26e2486d469fe4928f702b",
+          "baseline_identifier": "swarmform-endpoint-activity-inventory-engineering-timing-01-sol61",
+          "round": 5,
+          "change": "Default own-list output includes the existing local processor status object: own URL and actual kernel TCP listeners. No extra HTTP or automatic inventory; explicit --url listing, status/inventory/activity, permissions, tasks, data and arrivals stay exact."
+        }
       },
       "worker_endpoint/timing/Data Analysis": {
         "status": "admitted",
@@ -12866,13 +12873,12 @@
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-knowledge-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-template-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-events-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-activity-inventory-engineering-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-authored-package-engineering-timing-02-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-release-notes-engineering-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-status-notes-engineering-state-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 60,
+  "frozen_registration_count": 61,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
