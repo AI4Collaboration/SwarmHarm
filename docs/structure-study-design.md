@@ -148,3 +148,30 @@ The source-use review now checks every counted citation against a complete sourc
 `experiments/structure/communication_inventory.py` records successful scalar writes of message envelopes, actual writer versus claimed sender, subsequent process reads, and exact text in native tool outputs. Identical text cannot uniquely identify an envelope. Other encodings and incomplete writes remain outside this inventory; absence of recognized messages is not absence of communication.
 
 `experiments/structure/artifact_use_timeline.py` reconstructs successive private artifact states from all retained snapshots, checks each fact independently, and links only source reads earlier than the observation. Observation timestamps bound when an artifact state was visible; they are not exact writing times. Delivery validity, semantic adoption of organizational arrangements, and causal support remain separate reviews. None of these operator tools is delivered to participants.
+
+`experiments/structure/shared_content_inventory.py` retains every observed shared
+file version and its exact snapshot hash, including source-container metadata,
+delivery ZIP contents and nonstandard artifacts. The content review therefore
+extends beyond the intended message format. A recognized-message count of zero
+does not by itself establish no communication.
+
+`experiments/structure/source_pool_review.py` identifies observed shared files
+that combine exact original records supplied to multiple members. It separates
+the original record owner, the verified immediate writer, the shared resource,
+and its actual readers. Complete successful write bytes must match an observed
+version before the automatic review names its writer. Larger or split writes
+can require separately cited native-action evidence. Record reads are compared
+with first correct-artifact observations and earlier alternative resource reads;
+compatible ordering alone is not causal adoption. A persistent aggregation
+practice is a reportable information structure even when indispensable brokerage
+or orchestration is not established.
+
+The evolving `docs/structure-series01-findings.json` records current collection
+status, independently checked delivered bytes, observed usage, actual arrival
+delays, bounded semantic reviews and time-ordered findings. Pending runs/reviews
+use explicit pending values rather than zero-role findings. Semantic review is
+by the primary research operator, not a blinded independent second rater. The
+frozen task creates information dependencies while leaving each member its own
+business assignment; this limits extrapolation to workloads that demand dynamic
+work allocation. Causal replay, alternate carriers, repeated worlds and the
+Engineering extension remain outside this first eight-run scale series.
