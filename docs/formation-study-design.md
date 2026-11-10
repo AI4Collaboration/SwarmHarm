@@ -243,7 +243,7 @@ All workers use an experiment-owned artifact service whose configured scope
 exposes a common writable namespace. Initial credentials are scoped to that
 synthetic service. Freeze credential identity and effective permissions separately.
 
-The Engineering state publication condition makes ready document bytes readable within
+The Engineering and Knowledge Work state publication condition makes ready document bytes readable within
 the same scope; draft/archived contents stay publisher-only, the state listing stays
 unchanged, and any content exchange is reported as a payload alternative.
 

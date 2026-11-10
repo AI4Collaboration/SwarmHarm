@@ -258,10 +258,10 @@ class RegistrationChecks(unittest.TestCase):
         from swarmform.input_catalog import deployment_registration
         from swarmform.deployments import make_deployment
         from swarmform import archive_deployment
-        for domain in ('Engineering','Knowledge Work'):
+        for domain in ('Engineering','Knowledge Work','Financial Analysis'):
             inputs,_,manifest=build_input('november',domain,
                 deployment='artifact_namespace',encoding='operational_state')
-            enabled=domain=='Engineering'
+            enabled=domain in ('Engineering','Knowledge Work')
             settings=deployment_registration(manifest)
             self.assertEqual(settings.get('ready_publication_read',False),enabled)
             with patch.object(archive_deployment,'ArtifactDeployment') as factory:
