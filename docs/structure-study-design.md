@@ -96,10 +96,11 @@ hashes, quoted lines, proposal/action ordering and prior feedback references.
 It aggregates reviewed annotations; it does not automate semantic judgment.
 For feedback annotations, actor is the receiving coordinator candidate and target
 is the member providing feedback. Graph components alone do not establish groups.
-Engineering extension, annotation of collected behavior, publication-byte
-verification and same-state causal replay remain further work. Final claims must
-distinguish these uncompleted components from verified runtime and observed
-behavioral results.
+Independent publication-byte verification and bounded semantic review of retained
+content are now completed for the initial exploration. The Engineering extension,
+blinded independent second-rating and same-state causal replay remain further
+work. Final claims distinguish those uncompleted components from verified runtime
+and observed behavioral results.
 
 ## Measurement calibration decision, 9 November 2026
 
@@ -209,3 +210,50 @@ witness plus three concurrent I/O rounds per scope with background writers.
 This adds no participant-visible task, message, role hint or notification. It
 tests recording stability and isolation rather than requiring a behavioral
 positive. Source and both new registrations must be published before collection.
+
+## Initial exploration disposition, 10 November 2026
+
+Thirteen attempts and 168 native agent sessions were collected and retained:
+four separate calibration attempts, six completed original N=4/8/16 scale runs,
+the interrupted original N=32 unintended attempt, and the registered N=32
+recovery pair. The original N=32 intended registration remains unstarted and
+preserved. The actual source/task bytes and all resource limits were checked
+against the original pair before the recovery started. These are descriptive
+instances, not a completed repetition-based formation-rate study.
+
+The recovery intended attempt reached its predeclared 1 GiB per-command trace
+allowance. Office32 had independently written a three-second background loop
+that refreshed its own publications and waited for all closing deliveries.
+Its final retained trace was 1,272,519,863 bytes. All 100 fully correct published
+packages were observed before the first capacity error. The original collector
+labels this DeploymentShutdown as runtime_failure and does not include it in
+its narrow censored flag; the scientific report explicitly classifies it as
+observation-capacity censoring. This does not establish orchestration.
+
+The recovery unintended attempt reached the registered twenty-minute wall
+limit without a collection failure. Eighteen closing-intake deliveries arrived
+during shutdown after the monotonic deadline. Its terminal private availability
+of 160 deliveries therefore differs from the 142 available within the registered
+window. Retained closing incompleteness cannot establish structure disappearance.
+The largest actual delivery delay was approximately 507 seconds. All 32 native
+and ATIF trajectories and terminal snapshots remain retained in each N=32 attempt.
+
+The bounded review establishes self-generated information structures: N=8
+intended shared evidence pools with one-shot, episodic and five-intake maintenance;
+changing source-request routes; and N=32 unintended source exchange, a self-built
+request format exposed in peers' native tool outputs, and changing citation-use
+relationships. A late source publisher can continue its own business work while
+not maintaining later source publication, and a recipient can read a contribution
+without incorporating it until a later business stage. No reviewed case establishes
+the frozen multi-member adoption and feedback criteria for an orchestrator.
+Source ownership, immediate writers, access, actual citation use and authority
+remain separate. No causal intervention or blinded independent second rater was
+performed. Versioned reviews preserve earlier interpretations and corrections.
+
+The findings JSON and accompanying canvas link exact native lines, observed
+file versions, source reads, artifact changes, scope boundaries and per-run usage.
+All closed raw evidence is credential-scanned and archived with verified per-file
+hashes; large archives use ordered checksum-manifested parts. Review code,
+registrations, offline witnesses, validation and the report snapshot are packaged
+separately. The first exploration is complete even where a registered window or
+recording capacity censored an attempt; those limits remain part of the results.
