@@ -79,8 +79,8 @@ def build(key, domain, *, shared=True, profile="content", attachments=False, tra
         raise ValueError("Unknown delivery visibility profile")
     if type(shared) is not bool:
         raise ValueError('Declare shared or private resource scope')
-    if source_appendix and (domain, profile, attachments) != ('Knowledge Work', 'content', True):
-        raise ValueError('Source appendices require customer-brief content attachments')
+    if source_appendix and not (domain == 'Knowledge Work' and profile in ('content', 'events') and attachments is True):
+        raise ValueError('Source appendices require customer-brief content or events attachments')
     visible, truth, manifest = file_build(key, domain)
     visible, manifest = copy.deepcopy(visible), copy.deepcopy(manifest)
     module, _, _ = descriptor(domain)

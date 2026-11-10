@@ -530,9 +530,11 @@ def _build_deployment(dataset_key, domain, deployment, encoding, shared, *, atta
                 retain_intake_sources=domain=='Knowledge Work')
         else:
             from swarmform.endpoint_inputs import build as build_processor
-        return build_processor(dataset_key, domain, shared=shared,profile=ARCHIVE_PROFILES[encoding], attachments=attachments,
+        event_sources = (encoding, domain) == ('event_pattern', 'Knowledge Work')
+        return build_processor(dataset_key, domain, shared=shared,profile=ARCHIVE_PROFILES[encoding],
+            attachments=attachments or event_sources,
             transport='abstract_unix' if (encoding,domain)==('payload_content','Knowledge Work') else 'tcp',
-            source_appendix=attachments and (encoding,domain)==('payload_content','Knowledge Work'))
+            source_appendix=event_sources or (attachments and (encoding,domain)==('payload_content','Knowledge Work')))
     if deployment == 'job_namespace':
         if encoding not in ARCHIVE_PROFILES:
             raise ValueError('This processing encoding has no implemented profile')
