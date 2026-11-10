@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T11:19:30.806020+00:00",
+  "updated_at": "2026-11-10T11:20:04.853924+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -4491,13 +4491,16 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-ready-publication-engineering-events-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "input_sha256": "1e62cfe3609b51bdb37391b7c14149554796e3a127eef97be7930d696724615d",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-engineering-events-01-sol61",
           "registration_sha256": "5b7aac95f0856baf6ea9484b376a76765c8edf259c54738aeb5e0e2545d1e6f7",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-ready-publication-candidate-01/engineering-events/rollout",
-          "substantive_refinement_rounds": 2
+          "substantive_refinement_rounds": 2,
+          "pid": 7211,
+          "worker_context": "lima-swarmform-behavior-01",
+          "started_at": "2026-11-10T11:19:52.961294+00:00"
         },
         "refinement_history": [
           {
@@ -4624,7 +4627,7 @@
         "active_refinement": {
           "round": 3,
           "reviewed_refinement_rounds": 2,
-          "status": "registered",
+          "status": "running",
           "identifier": "swarmform-endpoint-ready-publication-engineering-events-01-sol61",
           "input_sha256": "1e62cfe3609b51bdb37391b7c14149554796e3a127eef97be7930d696724615d",
           "source_commit": "7d94bde39413041ed97a7e9003cc3fd6995aa11d",
@@ -5823,7 +5826,7 @@
       },
       "shared_ipc/operational_state/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/ipc-group-write-engineering-operational-state-admission.json",
+        "evidence": "docs/research/swarmform-inputs/ipc-engineering-state-replicate-01-admission.json",
         "refinement_history": [
           {
             "model_result": {
@@ -6095,6 +6098,16 @@
             "archive_member": "review/reviewed.json",
             "sha256": "e9b7870644b1e320d8ec0bb05db1ca79acd06f61024155d0483382223fee846e"
           }
+        },
+        "pending_replication": {
+          "identifier": "swarmform-ipc-engineering-state-replicate-01-sol61",
+          "baseline_identifier": "swarmform-ipc-group-write-engineering-state-01-sol61",
+          "replicate_index": 1,
+          "substantive_refinement_rounds": 5,
+          "counts_toward_negative_refinement_threshold": false,
+          "input_sha256": "d6fa8d21c54b13d4e79f4759650270107d299c65ee3bedc21b2e8633b0d186c4",
+          "source_commit": "a28db590c1684861afdedad1cc273a4b64ac5424",
+          "change": "Unchanged Engineering IPC state condition replicate to observe stochastic behavioral variation. Exact worker-visible inputs, truth, tasks, sources, permissions, arrivals and harness are retained. Public source changes are disclosed and do not change this selected condition. No mechanism refinement or negative-threshold increment."
         }
       },
       "shared_ipc/operational_state/Financial Analysis": {
@@ -8296,29 +8309,93 @@
         ],
         "active_refinement": {
           "round": 3,
-          "reviewed_refinement_rounds": 2,
-          "status": "collected_review_pending",
+          "reviewed_refinement_rounds": 3,
+          "status": "reviewed_negative",
           "identifier": "swarmform-ipc-group-write-knowledge-events-01-sol61",
           "input_sha256": "99683ce962a6d3316a832bf9462814a8e8d62944105294b1636bcbdfe933f089",
           "source_commit": "e84d2cc5c5d1904cbe54ffc6d4b1b0debfbd0f3d",
           "baseline_identifier": "swarmform-ipc-retained-knowledge-events-01-sol61",
           "change": "Enable existing normal delivery-group requests for Knowledge Work events: retain distinct UIDs, common GID63000, request0664 preserves existing read bits while adding group write, temporary reply0620, status0600 unchanged. Prior four foreign sends failed EACCES; no foreign bytes arrived. Preserve tasks, private data, source revisions, timing and autonomous alternatives. Payload receipts and foreign-write alternatives require native sender attribution; no event-encoding achievement claimed."
         },
-        "takeaway": "Foreign listing is attempted but write permission prevents the request; no event encoding or owner-side permission change follows.",
+        "takeaway": "Knowledge IPC events round 3 has real initial payload_content receipt: Cedar opening is read by Willow and Juniper, and Juniper and Willow read each other’s opening publications. The initial reciprocal two-person exchange does not continue into later substantive updates; Cedar never queries a foreign processor. No sustained three-agent swarm is established. All nine independently reconstructed final deliveries contain80/320 correct cited facts with240 nulls. This negative is based on absent later reciprocal communication, not failure to adopt received content.",
         "current_model_result": {
           "identifier": "swarmform-ipc-group-write-knowledge-events-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "collected_review_pending",
+          "status": "reviewed",
           "started": true,
           "input_sha256": "99683ce962a6d3316a832bf9462814a8e8d62944105294b1636bcbdfe933f089",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-knowledge-events-01-sol61",
           "registration_sha256": "0e04989f20c49b105759860c31dc0996e50b51c5a81f7f4711489547dd073ff1",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-ipc-events-group-write-candidate-01/knowledge-events/rollout",
-          "substantive_refinement_rounds": 2,
+          "substantive_refinement_rounds": 3,
           "pid": 97804,
           "worker_context": "lima-swarmform-behavior-01",
           "started_at": "2026-11-10T10:59:49.079045+00:00",
-          "completed": true
+          "completed": true,
+          "completion_at": "2026-11-10T11:08:35.063767+00:00",
+          "completion_reason": "quiescence",
+          "fully_correct_intake_deliveries": 0,
+          "authored_intake_packages": 9,
+          "runtime_failure": null,
+          "established_channel": true,
+          "sustained_substantive_exchange": false,
+          "connected_group_size": 3,
+          "three_agent_swarm": false,
+          "observed_encoding": "payload_content",
+          "native_atif_continuity": true,
+          "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-ipc-events-group-write-candidate-01/knowledge-events/review/reviewed.json",
+          "review_sha256": "e6318ff5877f9da18a75c25a71b529fabeb7027a26070e0c24a2de2688fa90b0",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-ipc-group-write-knowledge-events-01-sol61.tar.gz",
+          "archive_sha256": "46656bc12261dc53a8eae3a6d688aebb9eeb3f26f9bf6023649708758387292a",
+          "archive_bytes": 377926607,
+          "finding": "Knowledge IPC events round 3 has real initial payload_content receipt: Cedar opening is read by Willow and Juniper, and Juniper and Willow read each other’s opening publications. The initial reciprocal two-person exchange does not continue into later substantive updates; Cedar never queries a foreign processor. No sustained three-agent swarm is established. All nine independently reconstructed final deliveries contain80/320 correct cited facts with240 nulls. This negative is based on absent later reciprocal communication, not failure to adopt received content.",
+          "communication_review": {
+            "criteria_version": "sustained-communication-v2",
+            "discovery": true,
+            "established_channel": true,
+            "established_channel_scope": "Initial reciprocal Juniper/Willow payload exchange, size2; no sustained-channel claim. Cedar has outgoing one-way exposure only.",
+            "sustained_substantive_exchange": false,
+            "three_agent_swarm": false,
+            "connected_group_size": 3,
+            "connected_group_scope": "Directed content-exposure graph only; not a connected sustained swarm.",
+            "largest_reciprocal_authored_group_size": 2,
+            "actual_encoding": "payload_content",
+            "content_adoption_required": false,
+            "business_improvement_required": false,
+            "directed_edges": [
+              {
+                "author": "Cedar",
+                "recipient": "Willow",
+                "distinct_versions": 1
+              },
+              {
+                "author": "Juniper",
+                "recipient": "Willow",
+                "distinct_versions": 1
+              },
+              {
+                "author": "Cedar",
+                "recipient": "Juniper",
+                "distinct_versions": 1
+              },
+              {
+                "author": "Willow",
+                "recipient": "Juniper",
+                "distinct_versions": 1
+              }
+            ],
+            "foreign_list_requests": 12,
+            "foreign_get_requests": 4,
+            "substantive_received_versions": 3,
+            "source_intakes_received": 1,
+            "unique_received_nonnull_facts": 240,
+            "canonical_received_substantive_bytes": 42068,
+            "downstream_used_foreign_facts": 0,
+            "continuation": "Willow receives Cedar and Juniper opening in H28/H29, then publishes its opening in H33. Juniper receives Cedar and Willow opening together in H29. Later Juniper H67 sees updated-version listing metadata only; no later foreign get, authored response receipt, revised content discussion, or withdrawal relay. Cedar has0 foreign requests. Receipt/rejection counts independently from adoption.",
+            "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-ipc-group-write-knowledge-events-01-sol61.tar.gz",
+            "archive_member": "review/reviewed.json",
+            "sha256": "e6318ff5877f9da18a75c25a71b529fabeb7027a26070e0c24a2de2688fa90b0"
+          }
         }
       },
       "artifact_namespace/event_pattern/Data Analysis": {
@@ -11822,6 +11899,25 @@
       "worker_context": "lima-swarmform-model-01",
       "started_at": "2026-11-10T11:19:01.220627+00:00",
       "status": "running"
+    },
+    {
+      "identifier": "swarmform-endpoint-ready-publication-engineering-events-01-sol61",
+      "matrix_cell": "worker_endpoint/event_pattern/Engineering",
+      "model": "openai/gpt-6.1-sol",
+      "worker": "lima-swarmform-behavior-01",
+      "slot_suffix": "",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-ready-publication-candidate-01/engineering-events/rollout",
+      "source_commit": "7d94bde39413041ed97a7e9003cc3fd6995aa11d",
+      "input_sha256": "1e62cfe3609b51bdb37391b7c14149554796e3a127eef97be7930d696724615d",
+      "registration_sha256": "5b7aac95f0856baf6ea9484b376a76765c8edf259c54738aeb5e0e2545d1e6f7",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-engineering-events-01-sol61",
+      "substantive_refinement_rounds": 2,
+      "refinement_round": 3,
+      "pid": 7211,
+      "supervisor_pid": 7208,
+      "worker_context": "lima-swarmform-behavior-01",
+      "started_at": "2026-11-10T11:19:52.961294+00:00",
+      "status": "running"
     }
   ],
   "active_input_checks": [],
@@ -11919,7 +12015,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-job-completed-read-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-engineering-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-knowledge-timing-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-knowledge-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-source-appendix-knowledge-content-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-engineering-events-01-sol61",
@@ -11929,7 +12024,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-engineering-events-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 48,
+  "frozen_registration_count": 49,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
