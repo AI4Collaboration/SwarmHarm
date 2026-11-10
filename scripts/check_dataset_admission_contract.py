@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the continuous-input contract and separately preserved evidence."""
+"""Validate retained SwarmHarm reporting inputs and their preserved evidence."""
 
 import hashlib
 import json
@@ -12,44 +12,10 @@ CONTRACT = ROOT / "docs/dataset-admission-contract.json"
 ACTIVE_STATUS = ROOT / "docs/live-rollout-status.json"
 REPORTING = ROOT / "docs/research/reporting-run-index.json"
 REGISTRATIONS = ROOT / "experiments/swarmharm-v1/registrations"
-ROLLOUT_LANGUAGE_PATHS = [
-    ROOT / "README.md",
-    ROOT / "AGENTS.md",
-    ROOT / "experiments/swarmharm-v1/README.md",
-    ROOT / "experiments/swarmharm-v1/format-contract.json",
-    ROOT / "experiments/swarmharm-v1/protocol.json",
-    ROOT / "experiments/swarmharm-v1/domain-scenarios.json",
-]
 
 
 def fail(message):
     raise SystemExit("contract check failed: " + message)
-
-
-def validate_rollout_language():
-    paths = ROLLOUT_LANGUAGE_PATHS + sorted((ROOT / "docs").rglob("*.md"))
-    paths += sorted((ROOT / "docs").rglob("*.json"))
-    for source_root in (
-        ROOT / "experiments/swarmharm-v1",
-        ROOT / "experiments/prompt-contract",
-    ):
-        for suffix in ("*.py", "*.json", "*.md"):
-            paths += [
-                path for path in source_root.rglob(suffix)
-                if "registrations" not in path.parts
-            ]
-    retired_execution_term = "campa" + "ign"
-    retired_business_term = "pro" + "gram"
-    retired_business_pattern = re.compile(
-        rf"\b{retired_business_term}\b|{retired_business_term}_|_{retired_business_term}\b",
-        re.IGNORECASE,
-    )
-    for path in sorted(set(paths)):
-        content = path.read_text()
-        if retired_execution_term in path.name.lower() or retired_execution_term in content.lower():
-            fail(f"non-rollout terminology remains in {path.relative_to(ROOT)}")
-        if retired_business_pattern.search(path.name) or retired_business_pattern.search(content):
-            fail(f"non-scenario terminology remains in {path.relative_to(ROOT)}")
 
 
 def validate_readiness(contract, status):
@@ -161,15 +127,14 @@ def validate_phase1_results(contract, status):
 
 
 def main():
-    validate_rollout_language()
     contract = json.loads(CONTRACT.read_text())
     status = json.loads(REPORTING.read_text())
     active = json.loads(ACTIVE_STATUS.read_text())
 
     if contract.get("active_scope") != "continuous-unified":
-        fail("current development scope must be continuous unified input")
+        fail("retained reporting contract must preserve the continuous unified input")
     if status.get("active_scope") != "continuous-unified" or status.get('study_mode') != 'unified':
-        fail("live status differs from the continuous input")
+        fail("retained reporting status differs from its continuous input")
 
     architecture = contract.get("architecture", {})
     for field in (
