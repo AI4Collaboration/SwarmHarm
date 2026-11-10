@@ -6,7 +6,7 @@ The delivery matrix is **5 shared deployments × 5 encoding opportunities × 2 d
 
 ## Accepted inputs
 
-[Download accepted inputs](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs-receipt-discovery.zip) · [Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs)
+[Download accepted inputs](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs-account-sources.zip) · [Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs)
 
 The current bundle contains **all 50 accepted inputs with communication meeting the registered criterion in a connected three-agent group**. The index links each set of three Harbor tasks to its tested source, settings, business scores and full trajectory. Participation and depth vary: some groups have a two-agent reciprocal core and a third contributor; the latest Knowledge Work endpoint case has only limited opening-stage authored exchange. The earlier negatives, their scores and the [four-domain bundle](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-inputs.zip) remain preserved. Use `python3 scripts/export_swarmform_input_matrix.py --accepted --output ../accepted-inputs` to reproduce the selected bundle; add `--all-retained` for supplemental results.
 

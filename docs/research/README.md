@@ -1,8 +1,8 @@
 # Reviewed evidence
 
-- **Latest Knowledge Work account-source retests:** endpoint opening-stage authored exchange; IPC opening inspection followed by updated-fact comparison. Both finish9/9 briefs correctly. [Case settings, limits and full trajectories](swarmform-knowledge-account-sources.json).
+- **Latest Knowledge Work account-source retests:** endpoint opening-stage authored exchange; IPC opening inspection followed by updated-fact comparison. Both finish 9/9 briefs correctly. [Case settings, limits and full trajectories](swarmform-knowledge-account-sources.json).
 
-[Download the accepted SwarmForm inputs and trajectory index](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-inputs.zip). The [measurement audit](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/observer-measurement-audit-22-positive-cases-20261109.tar.gz) binds the reviewed positive outcomes to native reads and actual delivered files.
+[Download the accepted SwarmForm inputs and trajectory index](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs-account-sources.zip). The [measurement audit](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/observer-measurement-audit-22-positive-cases-20261109.tar.gz) binds the reviewed positive outcomes to native reads and actual delivered files.
 
 - **Reviewed refinements.** Financial job metadata supported sustained three-agent exchange of 130,835 useful bytes and nine correct reports. Engineering archive timing produced nine ready deliveries after an intake wording change. Each covered 40 of 160 required types, and no office adopted a timing convention. [Baseline and refinement evidence](swarmform-refinement-20261109.json)
 
