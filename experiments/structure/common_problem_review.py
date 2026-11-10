@@ -84,6 +84,7 @@ def usage_review(root, completion):
 
 def review(root, folder):
     root = root.resolve()
+    folder = folder.resolve()
     if not (root/'collection-summary.json').exists():
         raise ValueError('Finalized runs only')
     registration = read(root/'registration.json')
