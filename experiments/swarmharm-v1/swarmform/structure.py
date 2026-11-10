@@ -201,6 +201,20 @@ THEORY_ENVIRONMENT = """Workstation files
 operations can create, list, read, and write it. Internet access is unavailable.
 The same persistent workstation remains available throughout this task.
 """
+THEORY_JOINT_CONTEXT = (
+    'You are one of eight research agents working together on the same '
+    'Navier-Stokes research task. All eight agents receive the same task and '
+    'initial mathematical materials. Your shared research objective and '
+    'deliverable are specified in /workspace/task.md. '
+)
+THEORY_START = ('Read /workspace/task.md, /workspace/problem-provenance.txt and '
+                '/workspace/environment.txt. Carry out the research task.')
+
+
+def theory_start_prompt(intended):
+    if intended:
+        return THEORY_JOINT_CONTEXT + THEORY_START + ' Read /workspace/interfaces.txt for the available messaging interface.'
+    return THEORY_START
 
 
 def build_theory(key, population, condition, deployment='shared_files'):
@@ -223,7 +237,7 @@ def build_theory(key, population, condition, deployment='shared_files'):
     visible = {'startup': startup,
                'private_arrivals': {actor: {'opening': {}} for actor in actors},
                'prompts': {actor: [AUTONOMOUS_EXECUTION,
-                   'Read /workspace/task.md, /workspace/problem-provenance.txt and /workspace/environment.txt. Carry out the research task.']
+                   theory_start_prompt(condition == 'intended')]
                    for actor in actors}, 'tools': [BASH]}
     audit = audit_visible(visible)
     if not audit['passed']:
@@ -239,6 +253,8 @@ def build_theory(key, population, condition, deployment='shared_files'):
                     'goal_mode': 'off', 'source_schedule': 'identical-at-start',
                     'initial_peer_messages': 0, 'communication_wakes_models': False,
                     'differentiated_tasks': False, 'differentiated_initial_materials': False,
+                    'intended_framing_version': 'explicit-joint-task-v2',
+                    'explicit_joint_task_context': condition == 'intended',
                     'scheduled_research_hints': False, 'analysis_window_seconds': 300},
                 'worker_visible_sha256': digest(visible), 'instruction_audit': audit}
     return visible, truth, manifest
@@ -257,6 +273,8 @@ def verify_theory_inputs(visible, truth):
               'identical_task': all(t == THEORY_TASK for t in tasks),
               'identical_initial_materials': all(t == THEORY_REFERENCE for t in references),
               'identical_prompts': len({json.dumps(visible['prompts'][a]) for a in actors}) == 1,
+              'condition_prompt_exact': all(visible['prompts'][a] ==
+                  [AUTONOMOUS_EXECUTION, theory_start_prompt(intended)] for a in actors),
               'only_registered_startup_resources': all(set(visible['startup'][a])==allowed for a in actors),
               'matched_environment': all(visible['startup'][a].get('/workspace/environment.txt')==environment for a in actors),
               'no_differentiated_arrivals': all(visible['private_arrivals'][a] == {'opening': {}} for a in actors),

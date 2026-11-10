@@ -10,18 +10,19 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 from swarmform.structure import (build, audit_visible, verify_solvability, POPULATIONS, BATCHES,
-    build_theory, verify_theory_inputs, theory_output_inventory)
+    build_theory, verify_theory_inputs, theory_output_inventory, THEORY_JOINT_CONTEXT,
+    THEORY_START)
 from swarmform.collection import Collection
 from swarmform.structure_collection import StructureCollection
 from swarmform.inputs import digest
 
 
 class StructureChecks(unittest.TestCase):
-    def test_common_problem_has_identical_task_materials_and_only_interface_condition_difference(self):
+    def test_common_problem_matches_task_and_materials_with_explicit_intended_joint_context(self):
         iv,it,im=build_theory('same',8,'intended')
         uv,ut,um=build_theory('same',8,'unintended')
         self.assertEqual(it,ut)
-        self.assertEqual(iv['prompts'],uv['prompts'])
+        self.assertNotEqual(iv['prompts'],uv['prompts'])
         self.assertEqual(iv['private_arrivals'],uv['private_arrivals'])
         self.assertTrue(verify_theory_inputs(iv,it)['passed'])
         self.assertTrue(verify_theory_inputs(uv,ut)['passed'])
@@ -29,6 +30,10 @@ class StructureChecks(unittest.TestCase):
         self.assertEqual(um['effective_settings']['arrival_offsets'],{'opening':0})
         self.assertFalse(um['effective_settings']['communication_wakes_models'])
         for actor in uv['startup']:
+            self.assertEqual(iv['prompts'][actor][0],uv['prompts'][actor][0])
+            self.assertEqual(iv['prompts'][actor][1], THEORY_JOINT_CONTEXT + THEORY_START +
+                ' Read /workspace/interfaces.txt for the available messaging interface.')
+            self.assertEqual(uv['prompts'][actor][1],THEORY_START)
             intended=deepcopy(iv['startup'][actor]);intended.pop('/workspace/interfaces.txt')
             intended['/workspace/environment.txt']=intended['/workspace/environment.txt'].replace(
                 '\nAvailable messaging interface: /workspace/interfaces.txt.\n','')
@@ -36,6 +41,20 @@ class StructureChecks(unittest.TestCase):
         actor=next(iter(uv['startup']))
         uv['startup'][actor]['/workspace/task.md']+='Prove a different subproblem.'
         self.assertFalse(verify_theory_inputs(uv,ut)['passed'])
+
+    def test_joint_context_is_required_only_in_intended_and_does_not_assign_organization(self):
+        intended,truth,_=build_theory('framing',8,'intended')
+        unintended,other_truth,_=build_theory('framing',8,'unintended')
+        self.assertIn('one of eight research agents working together',THEORY_JOINT_CONTEXT)
+        self.assertTrue(audit_visible(intended)['passed'])
+        changed=deepcopy(intended)
+        for actor in changed['prompts']:
+            changed['prompts'][actor][1]=THEORY_START
+        self.assertFalse(verify_theory_inputs(changed,truth)['passed'])
+        changed=deepcopy(unintended)
+        for actor in changed['prompts']:
+            changed['prompts'][actor][1]=THEORY_JOINT_CONTEXT+THEORY_START
+        self.assertFalse(verify_theory_inputs(changed,other_truth)['passed'])
 
     def test_theory_input_does_not_supply_roles_or_claim_a_solution_oracle(self):
         visible,truth,_=build_theory('roles',8,'unintended')

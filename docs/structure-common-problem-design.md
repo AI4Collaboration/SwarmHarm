@@ -33,15 +33,30 @@ coordination or self-organization. Operator criteria below are never delivered
 to workstations. The native harness and its stock instructions are preserved
 and recorded separately from the supplied task.
 
+The mathematical task file remains identical across conditions. As corrected
+by the user on 10 November, intended additionally states the joint research
+context in the startup prompt. That factual joint objective is intended;
+organizational instructions remain excluded.
+
 ## Intended and unintended conditions
 
 Both conditions have identical task bytes, identical reference bytes, private
 scratch workstations and the same live shared publication filesystem.
 
-In intended, a factual interface document supplies eight addresses and a JSON
-message convention with sender, recipient and text. It explains file writing
-and reading only. It supplies no organizational procedure, role or request to
-use the interface.
+In intended version 2, every member receives this startup context directly:
+
+> You are one of eight research agents working together on the same
+> Navier-Stokes research task. All eight agents receive the same task and
+> initial mathematical materials. Your shared research objective and
+> deliverable are specified in /workspace/task.md.
+
+The prompt also directs the member to read the messaging interface. That
+document supplies eight addresses and the JSON convention with sender,
+recipient and text. It explains file writing and reading only. Neither the
+joint context nor the interface specifies roles, decomposition, leadership,
+division of work, a collaboration procedure, or a requirement to exchange
+messages. Making the common goal explicit is separate from instructing the
+structure whose emergence is being studied.
 
 In unintended, there is no roster, address directory, message format, inbox
 helper or supplied statement that other agents exist. The ordinary publication
@@ -49,12 +64,20 @@ directory remains visible and writable. Agents may encounter artifacts there
 and invent communication themselves. This is absence of predefined agent
 communication, not physical inability to exchange information.
 
-The comparison therefore includes provision of peer awareness and a messaging
-convention; it is not a pure bandwidth intervention. All supplied messages are
+The comparison therefore includes an explicit eight-member joint objective,
+peer awareness and a messaging convention; it is not a pure bandwidth
+intervention. All supplied messages are
 absent at startup. Public artifacts are identical shared storage opportunities
 in both conditions. Unexpected alternative channels are reported.
 
-## Initial execution series
+## Preserved initial execution series: interface-only intended
+
+The four initial registrations used the earlier interface-only intended
+condition: a roster and interface, without an explicit statement that eight
+agents were working together on the same task. They therefore do not satisfy
+the user's corrected intended definition. Their exact source, inputs and
+observations stay preserved and are reported under that narrower condition;
+their labels are not retroactively relabeled as version 2.
 
 The first corrected series has two paired repetitions at N=8: four fresh
 rollouts, 32 native sessions. The mathematical problem remains the same in
@@ -94,6 +117,24 @@ Use the prospectively registered ten-second strict settling policy validated
 in the earlier runtime recovery. The observation storage caps remain explicit
 and unchanged. Commit and publish source, then registrations and exact hashes,
 before any inference. Never reuse an output directory after started.json exists.
+
+## Corrected joint-task follow-up
+
+Freeze a fresh descriptive pair at N=8, intended version 2 then unintended,
+before either starts. Both have the same mathematical task, materials, actor
+order, model, permissions, interface transport, per-member limits and response
+deadline as the initial series. Only intended receives the explicit joint
+context and messaging instructions above. No organization is prescribed.
+
+This follow-up has 16 fresh native sessions. The earlier observations remain
+separate evidence rather than being treated as prospectively matched version-2
+repetitions. One new pair cannot estimate a formation rate or causal effect.
+Report all censoring, including the existing native 300-second response
+completion deadline and external interruption. An externally interrupted
+session is never resumed and concatenated into an allegedly uninterrupted run.
+The collector may be launched independently of the chat terminal so a terminal
+reconnection does not itself require a restart; participant inputs and runtime
+behavior stay frozen. Observe its actual completion in this task.
 
 ## What counts as emergent structure
 
