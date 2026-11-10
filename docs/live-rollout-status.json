@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T01:53:41.060541+00:00",
+  "updated_at": "2026-11-10T01:55:18.459758+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -5667,35 +5667,49 @@
               "substantive_refinement_rounds": 0,
               "archive_sha256": "c45d7a5cb81e41bc6959067066d98e5bb8366048b8dddea48768061699c01797"
             }
+          },
+          {
+            "identifier": "swarmform-refine01-engineering-job-events-20261109-sol61",
+            "model": "openai/gpt-6.1-sol",
+            "input_sha256": "bbea1b431baa9ead17a87f6b2ae9ab166384d96e81bf488182bd20e0b954552f",
+            "registration": "experiments/swarmharm-v1/registrations/swarmform-refine01-engineering-job-events-20261109-sol61",
+            "registration_sha256": "f8b2f7cba672cae30ef8ad1a8ec6d4e68be3da78f6bd5c5f33d03c003f87449c",
+            "status": "interrupted",
+            "started": true,
+            "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-eng-job-events-refine01-20261109-01/job_namespace/engineering",
+            "runtime_failure": "Host collector and supervisor exited without a completion record before the release cutoff; cause unrecorded.",
+            "substantive_refinement_rounds": 0
           }
         ],
         "active_refinement": {
           "round": 1,
-          "status": "interrupted",
+          "status": "registered",
           "baseline_identifier": "swarmform-nonpayload-engineering-20261109-job-events-sol61",
-          "input_sha256": "bbea1b431baa9ead17a87f6b2ae9ab166384d96e81bf488182bd20e0b954552f",
+          "input_sha256": "789e1c34097a60afa57bed8f42769ac46722f0529cc1c6ec7b8b6c2ce5b3c0af",
           "change": "The work order removes the nonexistent product-validation intake that all three engineers searched for. Catalog and revision tasks are unchanged.",
-          "source_commit": "cfd1641bd8dd696c923094231ab5f08c945c504d",
+          "source_commit": "772fcd8771fc04c4861d11e5bd850bc4d9914e0b",
           "reviewed_refinement_rounds": 0,
-          "identifier": "swarmform-refine01-engineering-job-events-20261109-sol61",
-          "registration_sha256": "f8b2f7cba672cae30ef8ad1a8ec6d4e68be3da78f6bd5c5f33d03c003f87449c"
+          "identifier": "swarmform-engineering-job-events-recovery-01-sol61",
+          "registration_sha256": "57b26baa66f1f4bc3079598e965c62e8eb2fa5e78cdb195a576bb78f43aaaf82",
+          "runtime_recovery_not_substantive_refinement": true,
+          "recovered_identifier": "swarmform-refine01-engineering-job-events-20261109-sol61"
         },
         "current_model_result": {
-          "identifier": "swarmform-refine01-engineering-job-events-20261109-sol61",
+          "identifier": "swarmform-engineering-job-events-recovery-01-sol61",
+          "matrix_cell": "job_namespace/event_pattern/Engineering",
           "model": "openai/gpt-6.1-sol",
-          "input_sha256": "bbea1b431baa9ead17a87f6b2ae9ab166384d96e81bf488182bd20e0b954552f",
-          "registration": "experiments/swarmharm-v1/registrations/swarmform-refine01-engineering-job-events-20261109-sol61",
-          "registration_sha256": "f8b2f7cba672cae30ef8ad1a8ec6d4e68be3da78f6bd5c5f33d03c003f87449c",
-          "status": "interrupted",
-          "started": true,
-          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-sol61-eng-job-events-refine01-20261109-01/job_namespace/engineering",
-          "runtime_failure": "Host collector and supervisor exited without a completion record before the release cutoff; cause unrecorded.",
-          "substantive_refinement_rounds": 0
-        },
-        "pending_runtime_recovery": {
-          "previous_identifier": "swarmform-refine01-engineering-job-events-20261109-sol61",
+          "worker": "lima-swarmform-behavior-02",
+          "slot_suffix": "",
+          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-events-recovery-candidate-01/engineering-events/rollout",
+          "source_commit": "772fcd8771fc04c4861d11e5bd850bc4d9914e0b",
           "input_sha256": "789e1c34097a60afa57bed8f42769ac46722f0529cc1c6ec7b8b6c2ce5b3c0af",
-          "change": "Recover the interrupted collection; CLI now displays existing HTTP error details. No substantive behavioral refinement is counted."
+          "registration_sha256": "57b26baa66f1f4bc3079598e965c62e8eb2fa5e78cdb195a576bb78f43aaaf82",
+          "registration": "experiments/swarmharm-v1/registrations/swarmform-engineering-job-events-recovery-01-sol61",
+          "runtime_recovery_not_substantive_refinement": true,
+          "previous_identifier": "swarmform-refine01-engineering-job-events-20261109-sol61",
+          "substantive_refinement_rounds": 0,
+          "status": "registered",
+          "started": false
         }
       },
       "job_namespace/operational_state/Financial Analysis": {
@@ -6527,7 +6541,8 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-engineering-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-retained-overlap-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-knowledge-state-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-engineering-state-01-sol61"
+    "experiments/swarmharm-v1/registrations/swarmform-endpoint-address-engineering-state-01-sol61",
+    "experiments/swarmharm-v1/registrations/swarmform-engineering-job-events-recovery-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
   "frozen_registration_count": 20,
