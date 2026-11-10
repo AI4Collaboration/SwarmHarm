@@ -10,6 +10,10 @@ import sys
 import time
 
 
+class ObservationNotSettled(RuntimeError):
+    """No snapshot was taken; every process stopped by this attempt was resumed."""
+
+
 def process_info(pid):
     path = Path('/proc') / str(pid)
     raw = (path / 'stat').read_text()
@@ -52,11 +56,13 @@ def resume(processes):
         raise PermissionError(f'Workstation processes could not be resumed: {denied}')
 
 
-def freeze(observe_traced=False, subject_uid=None):
+def freeze(observe_traced=False, subject_uid=None, settle_seconds=2):
+    if type(settle_seconds) is not int or settle_seconds not in (2, 10):
+        raise ValueError('Unregistered observation settling allowance')
     stopped, observed = {}, {}
     subject_uid = (65534 if observe_traced else os.getuid()) if subject_uid is None else subject_uid
     if not 0<=subject_uid<=65534:raise ValueError('Invalid observed account')
-    deadline = time.monotonic() + 2
+    deadline = time.monotonic() + settle_seconds
     try:
         while True:
             pending = []
@@ -93,21 +99,41 @@ def freeze(observe_traced=False, subject_uid=None):
             if not pending:
                 return list(stopped.values()), list(observed.values())
             if time.monotonic() >= deadline:
-                raise RuntimeError(f'Workstation processes did not settle for observation: {pending}')
+                raise ObservationNotSettled(f'Workstation processes did not settle for observation: {pending}')
             time.sleep(.005)
     except BaseException:
         resume(stopped.values())
         raise
 
 
-def snapshot(extra_roots=(), observe_traced=False, subject_uid=None):
+def snapshot(extra_roots=(), observe_traced=False, subject_uid=None, settle_seconds=2):
     if any(root != '/var/tmp/exports' for root in extra_roots):
         raise ValueError('Unknown additional observation root')
-    stopped, processes = freeze(observe_traced,subject_uid)
+    before_freeze = time.monotonic()
+    if type(settle_seconds) is not int or settle_seconds not in (2, 10):
+        raise ValueError('Unregistered observation settling allowance')
+    retries=[]
+    while True:
+        try:
+            # A traced process can remain blocked while another process is stopped.
+            # Release an unsuccessful freeze before retrying; never call D/S/R quiescent.
+            stopped, processes = freeze(observe_traced,subject_uid)
+            break
+        except ObservationNotSettled as error:
+            if settle_seconds==2 or len(retries)>=2 or time.monotonic()-before_freeze>settle_seconds-2.05:
+                raise
+            retries.append({'at_ns':time.time_ns(),'failure':str(error),'all_stopped_processes_resumed':True})
+            time.sleep(.05)
+    settling_elapsed = time.monotonic() - before_freeze
     try:
         result = {'processes': processes, 'resume_processes': stopped,
                   'file_metadata': {}, 'temporary_files': {},
                   'captured_at_ns': time.time_ns()}
+        if settle_seconds != 2:
+            result['quiescence'] = {'settle_allowance_seconds': settle_seconds,
+                                    'actual_wait_seconds': settling_elapsed,
+                                    'released_attempts':retries,
+                                    'all_observed_processes_settled': True}
         if extra_roots:
             result['concurrent_roots'] = list(extra_roots)
             result['capture_gaps'] = []
@@ -182,5 +208,7 @@ if __name__ == '__main__':
         args = sys.argv[2:]
         traced = '--observe-traced' in args
         uids=[int(arg.split('=',1)[1]) for arg in args if arg.startswith('--subject-uid=')]
+        allowances=[int(arg.split('=',1)[1]) for arg in args if arg.startswith('--settle-seconds=')]
         if len(uids)>1:raise ValueError('Duplicate observed account')
-        print(json.dumps(snapshot([arg for arg in args if arg != '--observe-traced' and not arg.startswith('--subject-uid=')], traced, uids[0] if uids else None)))
+        if len(allowances)>1:raise ValueError('Duplicate settling allowance')
+        print(json.dumps(snapshot([arg for arg in args if arg != '--observe-traced' and not arg.startswith(('--subject-uid=','--settle-seconds='))], traced, uids[0] if uids else None, allowances[0] if allowances else 2)))

@@ -251,7 +251,10 @@ class DockerWorkstation:
                  process_lifecycle='tool_scoped', observation_sink=None, named_volumes=(),
                  trace_commands=False, trace_volume=None, ipc_mode=None, private_shm=False,
                  business_uid=65534, business_gid=65534, creation_mask=None,
-                 registry_enabled=True):
+                 registry_enabled=True, observation_settle_seconds=2):
+        if type(observation_settle_seconds) is not int or observation_settle_seconds not in (2,10):
+            raise ValueError('Unregistered observation settling allowance')
+        self.observation_settle_seconds=observation_settle_seconds
         if any(type(v) is not int or not 1024<=v<=65534 for v in (business_uid,business_gid)):
             raise ValueError('Business identities must be unprivileged numeric accounts')
         if creation_mask not in (None,'0077','0047','0027','0007'):
@@ -386,6 +389,7 @@ class DockerWorkstation:
         values = json.loads(subprocess.check_output(
             ['docker', 'exec', *(['--user', '0:0'] if self.trace_commands else []),
              self.name, 'python', '-I', '-c', code, 'capture', *self.observation_roots,
+             *(['--settle-seconds='+str(self.observation_settle_seconds)] if self.observation_settle_seconds!=2 else []),
              *(['--observe-traced', '--subject-uid='+str(self.business_uid)] if self.trace_commands else [])],
             timeout=30))
         try:

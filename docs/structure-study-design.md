@@ -175,3 +175,37 @@ frozen task creates information dependencies while leaving each member its own
 business assignment; this limits extrapolation to workloads that demand dynamic
 work allocation. Causal replay, alternate carriers, repeated worlds and the
 Engineering extension remain outside this first eight-run scale series.
+
+## N=32 observation failure and prospective recovery
+
+The original N=32 unintended collection encountered an observation failure at
+2026-11-10 01:11:49 UTC and finalized at 01:12:38. All 32 native/ATIF trajectories
+and terminal snapshots remain retained. The observer rejected a process still
+in state D after its two-second settling window; the exact kernel cause is not
+established. This is an infrastructure interruption, not an absence-of-structure
+finding. Independently checked business/communication observations before the
+failure remain reportable. The original intended counterpart is withheld under
+this runtime rather than knowingly proceeding past the scale-validation gate.
+
+Register a fresh N=32 pair after repair and concurrent-load validation. Keep the
+original world key, visible business inputs, source ownership, model, private
+permissions, arrival offsets and 3-million-token/150-response/150-tool/20-minute
+limits unchanged. Both members of the recovery pair receive the same newly
+registered observation policy. Preserve the failed run and unused registration;
+do not resume, replace, edit their sealed evidence or pool runtime variants as
+independent group-size replications.
+
+The prospective shared-file policy keeps strict quiescence checks. After an
+unsuccessful two-second freeze, the observer first confirms resumption of every
+process it stopped. Only that specific settling failure may retry, at most twice,
+with a short released interval and within a registered ten-second settling
+allowance. An unsettled process is never accepted as a valid snapshot; permission,
+resumption and unrelated capture errors remain failures. Successful snapshots
+record actual waiting time and every released attempt. Defaults for earlier
+registrations and other experiments remain the original single attempt.
+
+Before new inference, require the real 32-workstation shared/private transport
+witness plus three concurrent I/O rounds per scope with background writers.
+This adds no participant-visible task, message, role hint or notification. It
+tests recording stability and isolation rather than requiring a behavioral
+positive. Source and both new registrations must be published before collection.

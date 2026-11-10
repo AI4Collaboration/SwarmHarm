@@ -220,9 +220,19 @@
       "deployment": "shared_files",
       "dataset_key": "structure-scale-series01",
       "source_schedule": "fixed",
-      "status": "running",
+      "status": "closed",
       "registration": "experiments/structure/registrations/structure-series01-files-n32-unintended-01",
-      "activated_at": "2026-11-10T00:54:49.362480+00:00"
+      "activated_at": "2026-11-10T00:54:49.362480+00:00",
+      "reason": "runtime_failure",
+      "censored": false,
+      "actor_evidence_complete": true,
+      "eligible_deliveries": 160,
+      "correct_published_deliveries": 64,
+      "unarrived_deliveries": 0,
+      "correct_cited_facts": 2948,
+      "required_cited_facts": 5120,
+      "structural_review": "completed_within_retained_observable_content_scope",
+      "observed_tokens": 43091130
     },
     {
       "identifier": "structure-series01-files-n32-intended-01",
@@ -231,9 +241,10 @@
       "deployment": "shared_files",
       "dataset_key": "structure-scale-series01",
       "source_schedule": "fixed",
-      "status": "prepared",
-      "registration": "experiments/structure/registrations/structure-series01-files-n32-intended-01"
+      "status": "withheld_after_paired_runtime_failure",
+      "registration": "experiments/structure/registrations/structure-series01-files-n32-intended-01",
+      "reason": "Unstarted frozen counterpart retained; fresh paired runtime recovery requires concurrent observation witness."
     }
   ],
-  "updated_at": "2026-11-10T01:10:19.453251+00:00"
+  "updated_at": "2026-11-10T01:27:15.952758+00:00"
 }

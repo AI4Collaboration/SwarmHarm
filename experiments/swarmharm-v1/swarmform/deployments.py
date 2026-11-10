@@ -11,6 +11,8 @@ def make_deployment(startup, registration, **observations):
         raise ValueError('A deployment must declare its shared scope')
     kind = settings.get('kind', 'shared_files')
     if kind == 'shared_files':
+        if registration.get('study_mode') == 'swarmform-structure':
+            observations['observation_settle_seconds']=registration.get('observation_settle_seconds',2)
         if registration.get('workstation_permissions', {}).get('networkAccess') is not False:
             raise ValueError('The shared-file deployment has no business network')
         return FileDeployment(startup, shared=settings['shared'], profile=settings.get('access_profile','content'), **observations)

@@ -47,12 +47,19 @@ def register(args, *, source=None, runtime=None):
     verification=verify_solvability(visible,truth)
     if not verification['passed']:raise ValueError('Business source verification failed')
     witness=json.loads(Path(args.witness).read_text())
+    settling=getattr(args,'observation_settle_seconds',2)
+    if type(settling) is not int or settling not in (2,10) or (args.deployment!='shared_files' and settling!=2):
+        raise ValueError('Unsupported observation settling configuration')
     same_witness_source=(witness.get('source_commit')==source or witness.get('code_hashes')==
                          {p:base.sha(ROOT/p) for p in base.source_paths()})
     if (witness.get('passed') is not True or witness.get('population')!=args.population
             or witness.get('deployment')!=args.deployment or witness.get('image')!=base.IMAGE
             or not same_witness_source or witness.get('model_calls')!=0):
         raise ValueError('A matching offline runtime witness is required')
+    if witness.get('observation_settle_seconds',2)!=settling:
+        raise ValueError('Witness settling allowance differs from registration')
+    if settling==10 and witness.get('concurrent_rounds')!=3:
+        raise ValueError('Extended settling requires the concurrent workload witness')
     output.mkdir(parents=True)
     shutil.copy2(ROOT/'docs/structure-study-design.md',output/'study-design.md')
     shutil.copy2(ROOT/'experiments/structure/temporal.py',output/'temporal-review.py')
@@ -68,6 +75,7 @@ def register(args, *, source=None, runtime=None):
     reg={'schema_version':1,'identifier':args.identifier,'created_at':utc(),
         'research_study':'SwarmForm Structure','study_mode':'swarmform-structure','population':args.population,
         'condition':args.condition,'domain':'Knowledge Work','input_sha256':digest(manifest),'source_commit':source,
+        'observation_settle_seconds':settling,
         'model':args.model,'models':{'openai':args.model},'reasoning':'high','harness':harness,
         'inference_gateway':'axonhub','api_base':base.codex_gateway.AXONHUB_BASE,
         'native_catalog':base.codex_gateway.gateway_catalog(args.model,'high'),
@@ -216,6 +224,7 @@ def main():
     prepare.add_argument('--customers',type=int,default=8);prepare.add_argument('--max-tools',type=int,default=150)
     prepare.add_argument('--max-responses',type=int,default=120);prepare.add_argument('--max-tokens',type=int,default=500000)
     prepare.add_argument('--min-free-gib',type=int,default=2)
+    prepare.add_argument('--observation-settle-seconds',type=int,choices=[2,10],default=2)
     collect_parser.add_argument('--key-file',type=Path,required=True)
     worker.add_argument('--key-file',type=Path,required=True)
     args=parser.parse_args()

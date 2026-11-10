@@ -61,7 +61,7 @@ class FileStation(DockerWorkstation):
 class FileDeployment:
     """Own only resources created by this fixture; historical workstations are untouched."""
 
-    def __init__(self, startup, *, shared=True, observation_sink=None, observation_archive=None, profile='content', population=3):
+    def __init__(self, startup, *, shared=True, observation_sink=None, observation_archive=None, profile='content', population=3, observation_settle_seconds=2):
         if profile not in ('content','metadata','state','events','timing'):
             raise ValueError('Unknown file access profile')
         self.profile=profile
@@ -85,6 +85,7 @@ class FileDeployment:
                     extra = {'archive': Path(observation_archive)/actor}
                 station = station_class({path: base64.b64encode(text.encode()).decode() for path, text in files.items()},
                     process_lifecycle='continuous', observation_sink=sink,
+                    observation_settle_seconds=observation_settle_seconds,
                     environment=WORKSTATION_ENVIRONMENT,
                     registry_enabled=False,
                     business_uid=62000+account_index if profile!='content' else 65534,
@@ -129,6 +130,7 @@ class FileDeployment:
                              'network': 'none', 'user': row['Config']['User'], 'image': row['Image'],
                              'environment': dict(WORKSTATION_ENVIRONMENT),'access_profile':self.profile, 'creation_mask':station.creation_mask,
                              'observer_enabled': station.trace_commands,
+                             'observation_settle_seconds':station.observation_settle_seconds,
                              'container_cap_add': row['HostConfig']['CapAdd'],
                              'container_cap_drop': row['HostConfig']['CapDrop']}
         if len({v['volume'] for v in result.values()}) != (1 if shared else self.population):

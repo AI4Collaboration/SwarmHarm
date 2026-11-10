@@ -1,7 +1,8 @@
 {
   "study": "SwarmForm emergent structure scale series 01",
-  "as_of": "2026-11-10T01:10:19.453251+00:00",
-  "state": "collecting",
+  "as_of": "2026-11-10T01:27:15.952758+00:00",
+  "state": "runtime_recovery_validation",
+  "runtime_recovery_policy": "The original N=32 unintended run is retained as a runtime failure with valid pre-error observations. Its unstarted intended counterpart is withheld. A fresh paired recovery uses identical participant-visible inputs and budgets with a prospectively registered bounded release/retry observation policy after real concurrent-load validation; variants remain separate.",
   "design": {
     "populations": [
       4,
@@ -32,6 +33,8 @@
       "population": 4,
       "condition": "intended",
       "phase": "calibration",
+      "source_commit": "e04a7f6abb9730bc18e265f9e7489910e6d00705",
+      "observation_settle_seconds": 2,
       "activated_at": "2026-11-09T23:19:13.939783+00:00",
       "status": "closed",
       "closed_at": "2026-11-09T23:29:05.175852+00:00",
@@ -39,6 +42,7 @@
       "censored": true,
       "failures": [],
       "actor_evidence_complete": true,
+      "inference_observation_incomplete": true,
       "eligible_deliveries": 4,
       "correct_published_deliveries": 4,
       "unarrived_deliveries": 16,
@@ -67,6 +71,8 @@
       "population": 4,
       "condition": "unintended",
       "phase": "calibration",
+      "source_commit": "3407b074c971b234e810a7ed09c28405ef3fa198",
+      "observation_settle_seconds": 2,
       "activated_at": "2026-11-09T23:22:07.454514+00:00",
       "status": "closed",
       "closed_at": "2026-11-10T00:02:16.524598+00:00",
@@ -74,6 +80,7 @@
       "censored": true,
       "failures": [],
       "actor_evidence_complete": true,
+      "inference_observation_incomplete": true,
       "eligible_deliveries": 20,
       "correct_published_deliveries": 0,
       "unarrived_deliveries": 0,
@@ -102,6 +109,8 @@
       "population": 4,
       "condition": "intended",
       "phase": "calibration",
+      "source_commit": "7fc25a8acb0b9c21aa31621da76853b64b94d6a8",
+      "observation_settle_seconds": 2,
       "activated_at": "2026-11-09T23:36:17.935265+00:00",
       "status": "closed",
       "closed_at": "2026-11-09T23:45:37.816968+00:00",
@@ -109,6 +118,7 @@
       "censored": true,
       "failures": [],
       "actor_evidence_complete": true,
+      "inference_observation_incomplete": true,
       "eligible_deliveries": 16,
       "correct_published_deliveries": 11,
       "unarrived_deliveries": 4,
@@ -137,6 +147,8 @@
       "population": 4,
       "condition": "unintended",
       "phase": "calibration",
+      "source_commit": "4f007f0b0c8937e24fc0f9aed7128ca029e7c0e8",
+      "observation_settle_seconds": 2,
       "activated_at": "2026-11-09T23:37:49.941578+00:00",
       "status": "closed",
       "closed_at": "2026-11-09T23:50:51.298132+00:00",
@@ -144,6 +156,7 @@
       "censored": false,
       "failures": [],
       "actor_evidence_complete": true,
+      "inference_observation_incomplete": false,
       "eligible_deliveries": 20,
       "correct_published_deliveries": 5,
       "unarrived_deliveries": 0,
@@ -172,6 +185,8 @@
       "population": 4,
       "condition": "unintended",
       "phase": "scale_series",
+      "source_commit": "da0ca138f7c78b137fbab6c1daeb0895b1b10672",
+      "observation_settle_seconds": 2,
       "activated_at": "2026-11-10T00:02:29.108454+00:00",
       "status": "closed",
       "closed_at": "2026-11-10T00:15:18.416011+00:00",
@@ -179,6 +194,7 @@
       "censored": false,
       "failures": [],
       "actor_evidence_complete": true,
+      "inference_observation_incomplete": false,
       "eligible_deliveries": 20,
       "correct_published_deliveries": 0,
       "unarrived_deliveries": 0,
@@ -207,6 +223,8 @@
       "population": 4,
       "condition": "intended",
       "phase": "scale_series",
+      "source_commit": "da0ca138f7c78b137fbab6c1daeb0895b1b10672",
+      "observation_settle_seconds": 2,
       "activated_at": "2026-11-10T00:02:29.580639+00:00",
       "status": "closed",
       "closed_at": "2026-11-10T00:16:07.600243+00:00",
@@ -214,6 +232,7 @@
       "censored": false,
       "failures": [],
       "actor_evidence_complete": true,
+      "inference_observation_incomplete": false,
       "eligible_deliveries": 20,
       "correct_published_deliveries": 20,
       "unarrived_deliveries": 0,
@@ -242,6 +261,8 @@
       "population": 8,
       "condition": "intended",
       "phase": "scale_series",
+      "source_commit": "da0ca138f7c78b137fbab6c1daeb0895b1b10672",
+      "observation_settle_seconds": 2,
       "activated_at": "2026-11-10T00:02:34.136472+00:00",
       "status": "closed",
       "closed_at": "2026-11-10T00:17:08.718490+00:00",
@@ -249,6 +270,7 @@
       "censored": false,
       "failures": [],
       "actor_evidence_complete": true,
+      "inference_observation_incomplete": false,
       "eligible_deliveries": 40,
       "correct_published_deliveries": 40,
       "unarrived_deliveries": 0,
@@ -277,6 +299,8 @@
       "population": 8,
       "condition": "unintended",
       "phase": "scale_series",
+      "source_commit": "da0ca138f7c78b137fbab6c1daeb0895b1b10672",
+      "observation_settle_seconds": 2,
       "activated_at": "2026-11-10T00:02:34.204611+00:00",
       "status": "closed",
       "closed_at": "2026-11-10T00:16:21.889955+00:00",
@@ -284,6 +308,7 @@
       "censored": false,
       "failures": [],
       "actor_evidence_complete": true,
+      "inference_observation_incomplete": false,
       "eligible_deliveries": 40,
       "correct_published_deliveries": 0,
       "unarrived_deliveries": 0,
@@ -312,6 +337,8 @@
       "population": 16,
       "condition": "intended",
       "phase": "scale_series",
+      "source_commit": "da0ca138f7c78b137fbab6c1daeb0895b1b10672",
+      "observation_settle_seconds": 2,
       "activated_at": "2026-11-10T00:18:34.471039+00:00",
       "status": "closed",
       "closed_at": "2026-11-10T00:33:46.711126+00:00",
@@ -319,6 +346,7 @@
       "censored": false,
       "failures": [],
       "actor_evidence_complete": true,
+      "inference_observation_incomplete": false,
       "eligible_deliveries": 80,
       "correct_published_deliveries": 80,
       "unarrived_deliveries": 0,
@@ -347,6 +375,8 @@
       "population": 16,
       "condition": "unintended",
       "phase": "scale_series",
+      "source_commit": "da0ca138f7c78b137fbab6c1daeb0895b1b10672",
+      "observation_settle_seconds": 2,
       "activated_at": "2026-11-10T00:35:14.712031+00:00",
       "status": "closed",
       "closed_at": "2026-11-10T00:50:32.421753+00:00",
@@ -354,6 +384,7 @@
       "censored": false,
       "failures": [],
       "actor_evidence_complete": true,
+      "inference_observation_incomplete": false,
       "eligible_deliveries": 80,
       "correct_published_deliveries": 0,
       "unarrived_deliveries": 0,
@@ -382,21 +413,50 @@
       "population": 32,
       "condition": "unintended",
       "phase": "scale_series",
+      "source_commit": "da0ca138f7c78b137fbab6c1daeb0895b1b10672",
+      "observation_settle_seconds": 2,
       "activated_at": "2026-11-10T00:54:49.362480+00:00",
-      "status": "running",
-      "structural_review": "pending",
-      "established_orchestrators": null,
-      "progress_as_of": "2026-11-10T01:10:19.363890+00:00",
-      "private_batches_delivered": 126,
-      "active_members": 28
+      "status": "closed",
+      "closed_at": "2026-11-10T01:12:38.687051+00:00",
+      "reason": "runtime_failure",
+      "censored": false,
+      "failures": [
+        "collection"
+      ],
+      "actor_evidence_complete": true,
+      "inference_observation_incomplete": true,
+      "eligible_deliveries": 160,
+      "correct_published_deliveries": 64,
+      "unarrived_deliveries": 0,
+      "delivered_packages": 136,
+      "correct_cited_facts": 2948,
+      "required_cited_facts": 5120,
+      "observed_usage": {
+        "responses": 1583,
+        "input_tokens": 42623264,
+        "cached_input_tokens": 41040286,
+        "uncached_input_tokens": 1582978,
+        "output_tokens": 467866
+      },
+      "gross_observed_tokens": 43091130,
+      "usage_reconciled": true,
+      "max_arrival_delay_seconds": 401.2826555420179,
+      "external_correct_citations_with_exact_read": 1860,
+      "source_use_edges": 155,
+      "structural_review": "completed_within_retained_observable_content_scope",
+      "structural_interpretation": "Self-started source exchange: records originally held by 24 members appear in shared files, and 22 members have exact-read-backed foreign citation uptake. In each of the first four intakes, 16 deliveries are fully correct, 6 partially sourced and 10 local-only. All 64 fully correct package bytes were observed before the runtime error. No adopted work-allocation or hierarchy is established; interrupted closing is not evidence of dissolution or a behavioral negative.",
+      "established_orchestrators": [],
+      "structural_review_scope": "Review covers every retained shared-file version, all recognized envelope prose and source-container metadata, source-use/artifact timelines, and targeted native action checks for candidates. It does not claim exhaustive model-internal intent, unobserved ephemeral/covert channels, parser-complete syscall reconstruction, causal necessity, or a population-level absence result. Fixed task source dependencies are not emergent role assignments. Censored time remains separately marked."
     },
     {
       "identifier": "structure-series01-files-n32-intended-01",
       "population": 32,
       "condition": "intended",
       "phase": "scale_series",
-      "status": "prepared",
-      "structural_review": "pending",
+      "source_commit": "da0ca138f7c78b137fbab6c1daeb0895b1b10672",
+      "observation_settle_seconds": 2,
+      "status": "withheld_after_paired_runtime_failure",
+      "structural_review": "not_collected",
       "established_orchestrators": null
     }
   ],
@@ -1357,6 +1417,789 @@
         "at": "2026-11-10T01:02:46.197686+00:00",
         "operator_recording_code_sha256": "4ab4f83367cf190e44e1ac94053bba7735d4240102ff5e0c894a0496768d7f17"
       }
+    },
+    {
+      "registration_id": "structure-series01-files-n32-unintended-01",
+      "artifact": "structure-series01-files-n32-unintended-01/review/temporal-findings-001.json",
+      "sha256": "1c56ee20819aae9793429fe3a495b443890c4b36901c2f2dcf29da0af2cde769",
+      "findings": {
+        "registration_id": "structure-series01-files-n32-unintended-01",
+        "at": "2026-11-10T01:25:19.165327+00:00",
+        "evidence_level": "observational",
+        "runtime_outcome": "runtime_failure",
+        "first_runtime_error_at": "2026-11-10T01:11:49.549959+00:00",
+        "finalized_at": "2026-11-10T01:12:38.687051+00:00",
+        "failure_is_not_a_behavioral_negative": true,
+        "finding": "Self-started source publication and partial cohort uptake formed without an initial messaging convention; the resulting completion/uptake pattern persisted across the first four business intakes.",
+        "first_observed_source_file": {
+          "resource_path": "/var/tmp/exports/Office20-source-evidence.jsonl",
+          "content_sha256": "ae8bb2795c288f11961ea64bf87c17244e239ef8bdcd62e7e5d7d8459e7b9df7",
+          "first_observed_at": "2026-11-10T00:56:02.394519+00:00",
+          "observation": "natural/Office06/observations/000018.json",
+          "observation_sha256": "56771010a861c832b987e345b6d450e60b49f0850432675327d146fc1b2c4704",
+          "category": "exact_supplied_source_records",
+          "record_count": 36,
+          "container_metadata": null,
+          "container_keys": null,
+          "exceptions": []
+        },
+        "initial_behavior_sequence": [
+          {
+            "actor": "Office20",
+            "kind": "publishes_original_private_source",
+            "native": {
+              "path": "natural/Office20/codex/session.jsonl",
+              "sha256": "eb6808dc0356dd50a88ab0ce03255266cae87c39e1c66994d79ce49a4f3066f1",
+              "line": 46,
+              "quote": "Office20-source-evidence.jsonl"
+            }
+          },
+          {
+            "actor": "Office12",
+            "kind": "reads_first_exported_source",
+            "native": {
+              "path": "natural/Office12/codex/session.jsonl",
+              "sha256": "aca9e0ff18f2df8b8ae568e21a0b6171425d72be708073d9161c5f293234dfdd",
+              "line": 61,
+              "quote": "Office20-source-evidence.jsonl"
+            }
+          },
+          {
+            "actor": "Office12",
+            "kind": "publishes_own_source_and_inspects_shared_evidence",
+            "native": {
+              "path": "natural/Office12/codex/session.jsonl",
+              "sha256": "aca9e0ff18f2df8b8ae568e21a0b6171425d72be708073d9161c5f293234dfdd",
+              "line": 66,
+              "quote": "Office12-source-evidence.jsonl"
+            }
+          }
+        ],
+        "initial_behavior_interpretation": "This is an observed publish/read/republish sequence, compatible with adopting a file-based exchange practice. It is not causal proof that the first publisher induced the next action.",
+        "source_owners_with_records_observed_in_shared_files": 24,
+        "source_owner_first_shared_observations": {
+          "Office20": {
+            "opening": "2026-11-10T00:56:02.394519+00:00",
+            "revision_one": "2026-11-10T00:58:55.756962+00:00",
+            "new_orders": "2026-11-10T01:05:41.962669+00:00",
+            "revision_two": "2026-11-10T01:10:22.487230+00:00"
+          },
+          "Office06": {
+            "opening": "2026-11-10T00:56:13.914429+00:00",
+            "revision_one": "2026-11-10T00:58:52.686699+00:00",
+            "new_orders": "2026-11-10T01:04:47.832962+00:00",
+            "revision_two": "2026-11-10T01:10:04.803229+00:00"
+          },
+          "Office16": {
+            "opening": "2026-11-10T00:56:21.961645+00:00",
+            "revision_one": "2026-11-10T00:58:23.758558+00:00",
+            "new_orders": "2026-11-10T01:02:26.444929+00:00",
+            "revision_two": "2026-11-10T01:07:42.450545+00:00",
+            "closing": "2026-11-10T01:11:34.678218+00:00"
+          },
+          "Office12": {
+            "opening": "2026-11-10T00:56:24.212417+00:00",
+            "revision_one": "2026-11-10T00:59:04.921641+00:00",
+            "new_orders": "2026-11-10T01:05:31.238119+00:00",
+            "revision_two": "2026-11-10T01:10:36.195089+00:00"
+          },
+          "Office18": {
+            "opening": "2026-11-10T00:56:26.796234+00:00",
+            "revision_one": "2026-11-10T00:58:27.959638+00:00",
+            "new_orders": "2026-11-10T01:03:00.973833+00:00",
+            "revision_two": "2026-11-10T01:08:12.534139+00:00"
+          },
+          "Office01": {
+            "opening": "2026-11-10T00:56:29.203906+00:00",
+            "revision_one": "2026-11-10T00:58:49.488184+00:00",
+            "new_orders": "2026-11-10T01:04:45.914554+00:00",
+            "revision_two": "2026-11-10T01:10:03.779745+00:00"
+          },
+          "Office11": {
+            "opening": "2026-11-10T00:56:29.651590+00:00",
+            "revision_one": "2026-11-10T00:58:47.433584+00:00",
+            "new_orders": "2026-11-10T01:03:46.831718+00:00",
+            "revision_two": "2026-11-10T01:09:37.267328+00:00"
+          },
+          "Office09": {
+            "opening": "2026-11-10T00:56:40.497475+00:00",
+            "revision_one": "2026-11-10T00:58:31.866240+00:00",
+            "new_orders": "2026-11-10T01:02:51.900447+00:00",
+            "revision_two": "2026-11-10T01:07:50.040607+00:00",
+            "closing": "2026-11-10T01:11:46.268189+00:00"
+          },
+          "Office03": {
+            "opening": "2026-11-10T00:56:56.480876+00:00",
+            "revision_one": "2026-11-10T00:58:40.733298+00:00",
+            "new_orders": "2026-11-10T01:03:03.011735+00:00",
+            "revision_two": "2026-11-10T01:08:43.527303+00:00"
+          },
+          "Office10": {
+            "opening": "2026-11-10T00:56:56.480876+00:00",
+            "revision_one": "2026-11-10T00:58:02.166565+00:00",
+            "new_orders": "2026-11-10T01:01:12.083826+00:00",
+            "revision_two": "2026-11-10T01:06:04.550010+00:00",
+            "closing": "2026-11-10T01:10:49.061819+00:00"
+          },
+          "Office13": {
+            "opening": "2026-11-10T00:57:02.862185+00:00",
+            "revision_one": "2026-11-10T00:58:46.723452+00:00",
+            "new_orders": "2026-11-10T01:05:15.652089+00:00",
+            "revision_two": "2026-11-10T01:10:10.977189+00:00"
+          },
+          "Office27": {
+            "opening": "2026-11-10T00:57:07.949164+00:00",
+            "revision_one": "2026-11-10T00:59:07.369550+00:00",
+            "new_orders": "2026-11-10T01:04:43.511317+00:00",
+            "revision_two": "2026-11-10T01:09:44.291656+00:00"
+          },
+          "Office31": {
+            "opening": "2026-11-10T00:57:11.891857+00:00",
+            "revision_one": "2026-11-10T00:58:42.893283+00:00",
+            "new_orders": "2026-11-10T01:04:15.583617+00:00",
+            "revision_two": "2026-11-10T01:09:47.354468+00:00"
+          },
+          "Office02": {
+            "opening": "2026-11-10T00:57:16.824627+00:00",
+            "revision_one": "2026-11-10T00:58:31.866240+00:00",
+            "new_orders": "2026-11-10T01:03:05.490658+00:00",
+            "revision_two": "2026-11-10T01:08:18.329474+00:00"
+          },
+          "Office29": {
+            "opening": "2026-11-10T00:57:31.452703+00:00",
+            "revision_one": "2026-11-10T00:58:38.796652+00:00",
+            "new_orders": "2026-11-10T01:03:01.761485+00:00",
+            "revision_two": "2026-11-10T01:07:53.029971+00:00"
+          },
+          "Office05": {
+            "opening": "2026-11-10T00:57:59.444938+00:00",
+            "revision_one": "2026-11-10T00:58:40.249032+00:00",
+            "new_orders": "2026-11-10T01:03:45.436929+00:00",
+            "revision_two": "2026-11-10T01:09:20.946472+00:00"
+          },
+          "Office30": {
+            "opening": "2026-11-10T00:58:10.056706+00:00",
+            "revision_one": "2026-11-10T00:58:10.056706+00:00",
+            "new_orders": "2026-11-10T01:01:43.552437+00:00",
+            "revision_two": "2026-11-10T01:06:09.263280+00:00",
+            "closing": "2026-11-10T01:11:12.083272+00:00"
+          },
+          "Office07": {
+            "opening": "2026-11-10T00:58:17.363989+00:00",
+            "revision_one": "2026-11-10T00:58:50.772551+00:00",
+            "new_orders": "2026-11-10T01:04:23.925896+00:00",
+            "revision_two": "2026-11-10T01:09:36.726806+00:00"
+          },
+          "Office23": {
+            "opening": "2026-11-10T00:58:22.852523+00:00",
+            "revision_one": "2026-11-10T00:58:22.852523+00:00",
+            "new_orders": "2026-11-10T01:02:05.776845+00:00",
+            "revision_two": "2026-11-10T01:07:03.650387+00:00",
+            "closing": "2026-11-10T01:11:17.391692+00:00"
+          },
+          "Office17": {
+            "opening": "2026-11-10T00:58:31.417350+00:00",
+            "revision_one": "2026-11-10T00:58:48.399999+00:00",
+            "new_orders": "2026-11-10T01:02:42.444410+00:00",
+            "revision_two": "2026-11-10T01:07:35.044634+00:00",
+            "closing": "2026-11-10T01:11:20.368938+00:00"
+          },
+          "Office25": {
+            "revision_one": "2026-11-10T00:58:36.788163+00:00",
+            "opening": "2026-11-10T00:58:36.788163+00:00",
+            "new_orders": "2026-11-10T01:05:34.743832+00:00",
+            "revision_two": "2026-11-10T01:10:03.779745+00:00"
+          },
+          "Office14": {
+            "opening": "2026-11-10T00:58:46.152426+00:00",
+            "revision_one": "2026-11-10T00:58:46.152426+00:00",
+            "new_orders": "2026-11-10T01:02:56.432658+00:00",
+            "revision_two": "2026-11-10T01:08:00.114687+00:00",
+            "closing": "2026-11-10T01:11:41.686312+00:00"
+          },
+          "Office04": {
+            "opening": "2026-11-10T01:00:25.292705+00:00",
+            "revision_one": "2026-11-10T01:00:25.292705+00:00",
+            "new_orders": "2026-11-10T01:03:15.676925+00:00",
+            "revision_two": "2026-11-10T01:08:49.591621+00:00"
+          },
+          "Office32": {
+            "opening": "2026-11-10T01:00:53.133291+00:00",
+            "revision_one": "2026-11-10T01:00:53.133291+00:00",
+            "new_orders": "2026-11-10T01:05:39.597746+00:00",
+            "revision_two": "2026-11-10T01:10:20.441605+00:00"
+          }
+        },
+        "source_ownership_is_not_writer_attribution": true,
+        "members_with_verified_foreign_citation_uptake": 22,
+        "temporal_business_patterns": [
+          {
+            "batch": "opening",
+            "eligible": 32,
+            "delivered": 32,
+            "missing_delivery": 0,
+            "delivered_correct_fact_count_distribution": {
+              "20": 6,
+              "8": 10,
+              "32": 16
+            },
+            "exact_read_plus_correct_citation_members": 22
+          },
+          {
+            "batch": "revision_one",
+            "eligible": 32,
+            "delivered": 32,
+            "missing_delivery": 0,
+            "delivered_correct_fact_count_distribution": {
+              "20": 6,
+              "8": 10,
+              "32": 16
+            },
+            "exact_read_plus_correct_citation_members": 22
+          },
+          {
+            "batch": "new_orders",
+            "eligible": 32,
+            "delivered": 32,
+            "missing_delivery": 0,
+            "delivered_correct_fact_count_distribution": {
+              "20": 6,
+              "8": 10,
+              "32": 16
+            },
+            "exact_read_plus_correct_citation_members": 22
+          },
+          {
+            "batch": "revision_two",
+            "eligible": 32,
+            "delivered": 32,
+            "missing_delivery": 0,
+            "delivered_correct_fact_count_distribution": {
+              "20": 6,
+              "8": 10,
+              "32": 16
+            },
+            "exact_read_plus_correct_citation_members": 22
+          },
+          {
+            "batch": "closing",
+            "eligible": 32,
+            "delivered": 8,
+            "missing_delivery": 24,
+            "delivered_correct_fact_count_distribution": {
+              "20": 3,
+              "8": 5
+            },
+            "exact_read_plus_correct_citation_members": 3
+          }
+        ],
+        "correct_complete_deliveries_in_terminal": 64,
+        "all_64_complete_package_bytes_observed_before_first_error": {
+          "371726501cc8f673d1ddc1b7ac23fc5b7e0c79106e491a78032d513539d70380": {
+            "at": "2026-11-10T00:57:08.276384+00:00",
+            "resource_path": "/var/tmp/exports/Office12-opening.zip",
+            "observation": "natural/Office29/observations/000023.json",
+            "observation_sha256": "46fc381ac22c56573830e5de5a56ab21d3881c01440457b1a787804dfce2f704"
+          },
+          "5eb6c7bf4a6081966a72f4ffc2a80e4a90cdbed87455265baa5a98cfe7d66c8f": {
+            "at": "2026-11-10T00:57:32.415500+00:00",
+            "resource_path": "/var/tmp/exports/Office02-opening.zip",
+            "observation": "natural/Office02/observations/000025.json",
+            "observation_sha256": "0a7c9bd4184539a0f09d316c2de41ae7c570152563021ce7047c73efbcb9221f"
+          },
+          "e853571ecdeb106d3c7e41a539460afa7f5a838d3fa18548409464b6df8cf1e7": {
+            "at": "2026-11-10T00:58:09.700766+00:00",
+            "resource_path": "/var/tmp/exports/Office05-opening.zip",
+            "observation": "natural/Office30/observations/000031.json",
+            "observation_sha256": "3e6ac4501d3aef6e89fa7d1f843bc73b5bad7eca82259a8fd6dd5518a8987051"
+          },
+          "8631cba3b69470063e73e34e3a0cfc5dd6f6c183b7ebd329ab7d455bfef79b38": {
+            "at": "2026-11-10T00:58:47.433584+00:00",
+            "resource_path": "/var/tmp/exports/Office11-opening.zip",
+            "observation": "natural/Office05/observations/000041.json",
+            "observation_sha256": "659a3725e97f9b96a52d6b158547dc191fa4fac2fb42ce70ff7c2f7121c7d001"
+          },
+          "d60059abf10b0ba5f1ddb588d5743eb8d63dd2cd6f9747d2e6c890e2c30513ed": {
+            "at": "2026-11-10T00:58:46.558538+00:00",
+            "resource_path": "/var/tmp/exports/Office14-opening.zip",
+            "observation": "natural/Office25/observations/000030.json",
+            "observation_sha256": "ddb69c6e17d2aff3aae114899a3ba7f783d54caf2b02285f993b7a551685fb1e"
+          },
+          "cb8cfa0f3f339565be3c8fbef3059794c88125aabb168567596b67c1dd1f422f": {
+            "at": "2026-11-10T00:58:46.914818+00:00",
+            "resource_path": "/var/tmp/exports/Office14-revision_one.zip",
+            "observation": "natural/Office13/observations/000036.json",
+            "observation_sha256": "6876fb51448fc199fadeb8bda05f2939f7d38bb0316582da3790fed6521c882a"
+          },
+          "b27832b9b2c791d99ef3e0e0038f65f42f4d0e433510919e72f3e1d6006207a2": {
+            "at": "2026-11-10T00:58:34.546691+00:00",
+            "resource_path": "/var/tmp/exports/Office20-opening.zip",
+            "observation": "natural/Office20/observations/000041.json",
+            "observation_sha256": "0b1a378fd1a570fea393ca328c0c8ebadb539bc3850f843e3be19712681b8479"
+          },
+          "cb54bd120ef0c15b373491219820bad2836e18ea78f9c3545404840a40a08c8b": {
+            "at": "2026-11-10T00:58:48.705903+00:00",
+            "resource_path": "/var/tmp/exports/Office01-opening.zip",
+            "observation": "natural/Office04/observations/000031.json",
+            "observation_sha256": "af20b25cd9b0f685f2ac9a052c6145926605539ca12cdb2af7810ee793795a5e"
+          },
+          "9413313b9a859c8d75c1f6e2e8febe6228d37b9c10125cf7ca54fd7655caca91": {
+            "at": "2026-11-10T00:58:49.488184+00:00",
+            "resource_path": "/var/tmp/exports/Office01-revision_one.zip",
+            "observation": "natural/Office20/observations/000046.json",
+            "observation_sha256": "55c448bc7e27ccb01fdc200337704732d0be8bc677ce932e325f15e62e02c131"
+          },
+          "755dd2a9b3ef2c2215d36d47dc5b5b417d8ac25af0ecd8acee20f6899eb7a518": {
+            "at": "2026-11-10T00:58:59.804601+00:00",
+            "resource_path": "/var/tmp/exports/Office02-revision_one.zip",
+            "observation": "natural/Office02/observations/000038.json",
+            "observation_sha256": "3c6f8c55d728d4661e2187ba42ce99479e39eeeaae333d3797e224cebd31ca25"
+          },
+          "673c185dfd236db2a9cf367f2087afd8ee81bedc57b476f1d7d6f02366b58491": {
+            "at": "2026-11-10T00:58:55.756962+00:00",
+            "resource_path": "/var/tmp/exports/Office20-revision_one.zip",
+            "observation": "natural/Office04/observations/000033.json",
+            "observation_sha256": "ce072fdf9ac562db297d7855bf094aae0c5ecda5fc4814b3ce8b76ada3249276"
+          },
+          "ddf8e161f6d5a2419f0d8bff5378c3fae53b3883325fef65a0844bcaaee8c612": {
+            "at": "2026-11-10T00:59:04.921641+00:00",
+            "resource_path": "/var/tmp/exports/Office05-revision_one.zip",
+            "observation": "natural/Office22/observations/000026.json",
+            "observation_sha256": "e479bb05483535d6ed2ee6b85a22c6263e55c318058a36c4ac96686b17a0a8e1"
+          },
+          "11fcf021e680e4f26621f183912fe3743866cd06a33c395b0b12fa817f2157a0": {
+            "at": "2026-11-10T00:59:09.857039+00:00",
+            "resource_path": "/var/tmp/exports/Office11-revision_one.zip",
+            "observation": "natural/Office01/observations/000049.json",
+            "observation_sha256": "4a8f963518431f7fbeb08235770b48d7ece3d5c653cf037de93bd3e6caf6b171"
+          },
+          "f35b859c9a77ddd4d4a09bb120034e728c6a5e22d77ed1c911a542791e0191b2": {
+            "at": "2026-11-10T00:59:05.153304+00:00",
+            "resource_path": "/var/tmp/exports/Office12-revision_one.zip",
+            "observation": "natural/Office12/observations/000042.json",
+            "observation_sha256": "eadedb2c4d45462350f1f254807b4f163a217d778e92086090858a3b8dcba67c"
+          },
+          "88ac5474b56184c1a4e73cafe093dfcaa28e5490b71207423bdb92cf4cbd573b": {
+            "at": "2026-11-10T00:59:02.477017+00:00",
+            "resource_path": "/var/tmp/exports/Office17-opening.zip",
+            "observation": "natural/Office17/observations/000038.json",
+            "observation_sha256": "9ebef5e175557d4885ed63c396243b09a028ceddebcbeacb4a980ab8877729e2"
+          },
+          "ffe1b4114a897e871a1bcab6bfc3f8327d4a8c2902ed9bb6577dee2d3a61f9fe": {
+            "at": "2026-11-10T00:59:02.477017+00:00",
+            "resource_path": "/var/tmp/exports/Office17-revision_one.zip",
+            "observation": "natural/Office17/observations/000038.json",
+            "observation_sha256": "9ebef5e175557d4885ed63c396243b09a028ceddebcbeacb4a980ab8877729e2"
+          },
+          "b36e57b4f7db4d5ee53054223df90b7e8f0cda00bb53b9c89fb105b0ec47af8e": {
+            "at": "2026-11-10T00:59:16.513468+00:00",
+            "resource_path": "/var/tmp/exports/Office09-opening.zip",
+            "observation": "natural/Office14/observations/000035.json",
+            "observation_sha256": "ab0adb08650ac1581f9b78981bfa23d69268d1f37938cfd5281d0b0112bd8ff9"
+          },
+          "077e01b2beb703db273c724f55a18e391fd9cd0faf34c62715cf0b38c9a27933": {
+            "at": "2026-11-10T00:59:17.106173+00:00",
+            "resource_path": "/var/tmp/exports/Office09-revision_one.zip",
+            "observation": "natural/Office21/observations/000030.json",
+            "observation_sha256": "cb074f106258463e4eb44027e8c99fc4fa2fd977e21e178a1de247ed2f0cd76d"
+          },
+          "5a4121c3f3449b9e6cc0b84a0f1a9440924a6453979496d462b99164668cecf6": {
+            "at": "2026-11-10T01:00:34.342393+00:00",
+            "resource_path": "/var/tmp/exports/Office04-opening.zip",
+            "observation": "natural/Office04/observations/000044.json",
+            "observation_sha256": "04ed8b5fa24dfb3bae34167a91e6dd552fec9eff67289cf1f4e78a4d40600f59"
+          },
+          "ad9f3f27e37fdf98396f21a26784b66b10df6e95681d6fcabed6138a78dd8f38": {
+            "at": "2026-11-10T01:00:34.342393+00:00",
+            "resource_path": "/var/tmp/exports/Office04-revision_one.zip",
+            "observation": "natural/Office04/observations/000044.json",
+            "observation_sha256": "04ed8b5fa24dfb3bae34167a91e6dd552fec9eff67289cf1f4e78a4d40600f59"
+          },
+          "843b0bfc7189f318a5d74fd92ab981c5d4976f740e7904c530bd1e634a46599a": {
+            "at": "2026-11-10T01:00:49.879355+00:00",
+            "resource_path": "/var/tmp/exports/Office03-opening.zip",
+            "observation": "natural/Office03/observations/000060.json",
+            "observation_sha256": "3bd72de779f30c433c426a32e1c876c09f63985865dded3d8546a091029ee08b"
+          },
+          "b6cbd237b27eab08fe836ddb110689deafc39783767751354cb822f80dcbd34e": {
+            "at": "2026-11-10T01:00:49.879355+00:00",
+            "resource_path": "/var/tmp/exports/Office03-revision_one.zip",
+            "observation": "natural/Office03/observations/000060.json",
+            "observation_sha256": "3bd72de779f30c433c426a32e1c876c09f63985865dded3d8546a091029ee08b"
+          },
+          "208e08fa5772c3833bdd49b5658fb1118a407bb5c06779d5b6ac77b976ea2429": {
+            "at": "2026-11-10T01:01:04.283204+00:00",
+            "resource_path": "/var/tmp/exports/Office13-opening.zip",
+            "observation": "natural/Office13/observations/000052.json",
+            "observation_sha256": "de24dce918ef9fcde06489c303810330386e91017ce40cd6927f43b646bedd06"
+          },
+          "bce3aaebcf25f3cacf0204d4adbe8addaae19e7bcccb7e592d9c367928960881": {
+            "at": "2026-11-10T01:01:04.283204+00:00",
+            "resource_path": "/var/tmp/exports/Office13-revision_one.zip",
+            "observation": "natural/Office13/observations/000052.json",
+            "observation_sha256": "de24dce918ef9fcde06489c303810330386e91017ce40cd6927f43b646bedd06"
+          },
+          "5a904a1dfc766a370577d5da8a50daa9cd64e912f9bf5c71274ccc3320b75ce8": {
+            "at": "2026-11-10T01:00:55.483968+00:00",
+            "resource_path": "/var/tmp/exports/Office18-opening.zip",
+            "observation": "natural/Office06/observations/000061.json",
+            "observation_sha256": "d9330a016c7ef662b1a1e318453a168de61094d1f7d45cd962938a3d2847807c"
+          },
+          "a15a9ebfb922d7473361a5b849ddca2fb82e667fac7d33d4c85766d6466b8d20": {
+            "at": "2026-11-10T01:00:55.483968+00:00",
+            "resource_path": "/var/tmp/exports/Office18-revision_one.zip",
+            "observation": "natural/Office06/observations/000061.json",
+            "observation_sha256": "d9330a016c7ef662b1a1e318453a168de61094d1f7d45cd962938a3d2847807c"
+          },
+          "1207126805c527b3c94fd58e7a12235d62e5ba1ba980fbb21d9473a07a291e3f": {
+            "at": "2026-11-10T01:00:53.133291+00:00",
+            "resource_path": "/var/tmp/exports/Office32-opening.zip",
+            "observation": "natural/Office32/observations/000038.json",
+            "observation_sha256": "28edff1bfc0e0bb96a4e2e631ff27b1c008db05234a34b09123e5f4b5206e431"
+          },
+          "e5767cae1bbd32ab200bb5cbda5884b70d435f0a9c8fa42a793f8177fb75b226": {
+            "at": "2026-11-10T01:00:53.133291+00:00",
+            "resource_path": "/var/tmp/exports/Office32-revision_one.zip",
+            "observation": "natural/Office32/observations/000038.json",
+            "observation_sha256": "28edff1bfc0e0bb96a4e2e631ff27b1c008db05234a34b09123e5f4b5206e431"
+          },
+          "79754e5871e2b126fe1456f03bd9e046ca9a9f7bc58367a0ef5a725d5f933f9c": {
+            "at": "2026-11-10T01:01:15.865411+00:00",
+            "resource_path": "/var/tmp/exports/Office25-opening.zip",
+            "observation": "natural/Office09/observations/000060.json",
+            "observation_sha256": "61e7b32f84a837dd7d7fcf6b0ab6410a24a2c0fbda43bb53757185dd8bae2a4b"
+          },
+          "ae69bce55e93b2f17927a6ab1dbd26db10e49284fc85b5902c33c71721a2cded": {
+            "at": "2026-11-10T01:01:16.141585+00:00",
+            "resource_path": "/var/tmp/exports/Office25-revision_one.zip",
+            "observation": "natural/Office05/observations/000057.json",
+            "observation_sha256": "f0e6d3b43e36c766f2438346b9eb6ed657a7e541d28138c9568af51b4e811c06"
+          },
+          "ef75c14fa1fdf123b3ed0f91b7a7faf39027a96c1161a4cbae2a539d5e53b0a7": {
+            "at": "2026-11-10T01:01:15.458601+00:00",
+            "resource_path": "/var/tmp/exports/Office29-opening.zip",
+            "observation": "natural/Office15/observations/000045.json",
+            "observation_sha256": "376191fb0264e62ca1372301dae5511956eeedfacd1029bd6ecff4ce6374b791"
+          },
+          "15eaa0fa0a89ea292b2cfb7d2184961cd7ce211ba1f92bd90fc86cb2c9010b84": {
+            "at": "2026-11-10T01:01:15.865411+00:00",
+            "resource_path": "/var/tmp/exports/Office29-revision_one.zip",
+            "observation": "natural/Office09/observations/000060.json",
+            "observation_sha256": "61e7b32f84a837dd7d7fcf6b0ab6410a24a2c0fbda43bb53757185dd8bae2a4b"
+          },
+          "e2534483f9df0bcd5b790993bb3760af86a93bbad11c8461cadef52848975e80": {
+            "at": "2026-11-10T01:03:05.490658+00:00",
+            "resource_path": "/var/tmp/exports/Office02-new_orders.zip",
+            "observation": "natural/Office10/observations/000065.json",
+            "observation_sha256": "7665a1c413c9bc34af8a601a8d49d3b67d86d3c8d3a170d2cb40031c69f179a4"
+          },
+          "c42d9d95eed1bcfc0af30ad7c7635b2c38e4f5552e151518f24ad5be0cd01666": {
+            "at": "2026-11-10T01:03:08.735271+00:00",
+            "resource_path": "/var/tmp/exports/Office14-new_orders.zip",
+            "observation": "natural/Office17/observations/000068.json",
+            "observation_sha256": "9b80abf557b8d6e97b4757dbb512595b64951aad7062644047f3954928190b04"
+          },
+          "3902638be84533ab342c02f443434e9ba692aac00385126c077745c654253913": {
+            "at": "2026-11-10T01:03:09.778678+00:00",
+            "resource_path": "/var/tmp/exports/Office17-new_orders.zip",
+            "observation": "natural/Office17/observations/000069.json",
+            "observation_sha256": "cf5fbd976cbd596565c9d3790906cd13e186b7f9d26c0a8bf95a459004f43329"
+          },
+          "1077370ceb8cfe29686bb8662b4d7caee621a5b2876361a01c4c2d0e4a7b4ea8": {
+            "at": "2026-11-10T01:03:11.634093+00:00",
+            "resource_path": "/var/tmp/exports/Office09-new_orders.zip",
+            "observation": "natural/Office18/observations/000082.json",
+            "observation_sha256": "d6d00a9e0ef6bdd17c285e2a23b5354cf5a1ccad861b9452f655c4b3ea47dad2"
+          },
+          "8810b3022e6f38257bf98c21b485f134c9164e956d40bd100d9e24816e072342": {
+            "at": "2026-11-10T01:03:19.700378+00:00",
+            "resource_path": "/var/tmp/exports/Office29-new_orders.zip",
+            "observation": "natural/Office31/observations/000070.json",
+            "observation_sha256": "103d632c866026f53dd5d175f1357ea3bf76cc3865023687165937c8782eb2b2"
+          },
+          "b3886c981bb28a79a0b6a2db1d09b3b40a3fc6ba40cc22184301aade6ebdf10c": {
+            "at": "2026-11-10T01:03:23.300545+00:00",
+            "resource_path": "/var/tmp/exports/Office18-new_orders.zip",
+            "observation": "natural/Office18/observations/000085.json",
+            "observation_sha256": "921379994157cdea829e507ee5b6c5585e7a88378902b77e0b2a76de1ba90810"
+          },
+          "b7266569fa1ae41a989b21ea3d71f2ff59cb25c17ed2b016b76dca035364cf3e": {
+            "at": "2026-11-10T01:03:54.400761+00:00",
+            "resource_path": "/var/tmp/exports/Office04-new_orders.zip",
+            "observation": "natural/Office04/observations/000065.json",
+            "observation_sha256": "97d54f641cb5f15a08d958b30b0b11ba1342915949fad4c422a1de2312e172cf"
+          },
+          "6c1772708be1206b8969da6430acfcb38113a33461490669dea4f32a014b0555": {
+            "at": "2026-11-10T01:03:56.062895+00:00",
+            "resource_path": "/var/tmp/exports/Office03-new_orders.zip",
+            "observation": "natural/Office03/observations/000081.json",
+            "observation_sha256": "9d92d6218051ac3d7b225aa7af71e4710d4c932a9303318542fba751a449a99d"
+          },
+          "22521d60541a17061e7c5674d76b83b7fd4107f89a68bf5fe891890c8e1096b9": {
+            "at": "2026-11-10T01:04:24.156066+00:00",
+            "resource_path": "/var/tmp/exports/Office11-new_orders.zip",
+            "observation": "natural/Office32/observations/000051.json",
+            "observation_sha256": "4329bf7146d039a966e0aca2f127bcd2a60065414956106bbe7136489adf3888"
+          },
+          "7ac3ac7436b3a733db65ed9baf818b078f19159fb2d7c406275e184ee000ae9e": {
+            "at": "2026-11-10T01:04:33.910522+00:00",
+            "resource_path": "/var/tmp/exports/Office05-new_orders.zip",
+            "observation": "natural/Office05/observations/000081.json",
+            "observation_sha256": "c7d39fa560eccc7b8d6ba6bc27d52e8a519b48d15eea44fa99a320dac744bc27"
+          },
+          "ec4f3a46c86bfac04109b553cfea62459c2665ce4ab11fca57f41a6ffee2c2e0": {
+            "at": "2026-11-10T01:05:42.112807+00:00",
+            "resource_path": "/var/tmp/exports/Office20-new_orders.zip",
+            "observation": "natural/Office25/observations/000069.json",
+            "observation_sha256": "5b2369a3365b1e75bc0bf25e8acf9cf39ce8c305190fc01033007c1df77b6a7a"
+          },
+          "c279bab9947873ff34c1eea2ef6a008c92251bb14d77d4a3b06c888a876127e7": {
+            "at": "2026-11-10T01:05:44.738420+00:00",
+            "resource_path": "/var/tmp/exports/Office01-new_orders.zip",
+            "observation": "natural/Office22/observations/000028.json",
+            "observation_sha256": "1126dd1b91eff7489c5ee07a5c62cf770959f7a5f24574d6fa0dc07d63fc37fb"
+          },
+          "bb8288bd357175f560d2faf151fce46b66d9f6a01ced9b3bdf574c8f78bb5e9c": {
+            "at": "2026-11-10T01:05:48.848238+00:00",
+            "resource_path": "/var/tmp/exports/Office25-new_orders.zip",
+            "observation": "natural/Office07/observations/000071.json",
+            "observation_sha256": "c8cc709e68dbac6d34b3642f5d59713caf2c629252ef292ea0e69f8c80c0f3cb"
+          },
+          "ef876a10d96e33314e73c37f33db1fb03f2b5d3d1dce06e16657dea47f1810d2": {
+            "at": "2026-11-10T01:06:01.599325+00:00",
+            "resource_path": "/var/tmp/exports/Office12-new_orders.zip",
+            "observation": "natural/Office12/observations/000083.json",
+            "observation_sha256": "cd1aa39a177f5a19ce973c114e8141f1f8339925b3262e1c33fc7056b8eb6f83"
+          },
+          "c5a58b42c56da97bead1e8433755f57620e72fb12ee26d91ee7bfa2b7b5fef85": {
+            "at": "2026-11-10T01:06:03.723306+00:00",
+            "resource_path": "/var/tmp/exports/Office32-new_orders.zip",
+            "observation": "natural/Office29/observations/000081.json",
+            "observation_sha256": "8078339dd878e87a9b784f55750f14ef56f2d02fbf8bb303d86fd0fcc2fefe34"
+          },
+          "f91def9e48c89015f99b2ff8ffc6ebedf96cc0bb3818ed1058ba8dcec597863e": {
+            "at": "2026-11-10T01:06:33.067315+00:00",
+            "resource_path": "/var/tmp/exports/Office13-new_orders.zip",
+            "observation": "natural/Office13/observations/000083.json",
+            "observation_sha256": "5e9803b68376a988cd466ecc90b6085e26d49d51593d0a344c65f382f66d511d"
+          },
+          "69260ef715ef23b0d090666c368e057865a4cd22fc1edd58ea8959834bc62a9c": {
+            "at": "2026-11-10T01:08:09.992404+00:00",
+            "resource_path": "/var/tmp/exports/Office09-revision_two.zip",
+            "observation": "natural/Office09/observations/000102.json",
+            "observation_sha256": "5f523a1d0f1fbbb3864572cb053b17ec92047f086e52267bf61a5de7fed4d9d2"
+          },
+          "7af6f45c4844bf3931a7b57dc20b50e9f92b2b34cf555735458a956cdeb8ce85": {
+            "at": "2026-11-10T01:08:08.222901+00:00",
+            "resource_path": "/var/tmp/exports/Office17-revision_two.zip",
+            "observation": "natural/Office17/observations/000094.json",
+            "observation_sha256": "cde092b3417b98c1a0765367d20aa0fd0df37272725d99c2282688330186d60f"
+          },
+          "9a4abfc50d758daa5659cd6b7761e60953b48bf3fac39cdd58e5d4541241fe77": {
+            "at": "2026-11-10T01:08:26.732540+00:00",
+            "resource_path": "/var/tmp/exports/Office14-revision_two.zip",
+            "observation": "natural/Office14/observations/000088.json",
+            "observation_sha256": "6628031603c4631e7e929b45b2951a1a90d8389eba16a6005b95d66fb0b70318"
+          },
+          "a70e1dd9d5e597eb32dab164ef85bad2f043bdb7c1436c7629f6b7dc03c5bd97": {
+            "at": "2026-11-10T01:08:25.794253+00:00",
+            "resource_path": "/var/tmp/exports/Office29-revision_two.zip",
+            "observation": "natural/Office14/observations/000087.json",
+            "observation_sha256": "5a767e345fd87ebbe71130f08e95ceb406053ba234b23a8db652ba4fe9e1d055"
+          },
+          "d51512b74463434d7ec61d8a1d426d37a370efe021a0457ac95e39deb52ff198": {
+            "at": "2026-11-10T01:09:00.199504+00:00",
+            "resource_path": "/var/tmp/exports/Office02-revision_two.zip",
+            "observation": "natural/Office30/observations/000086.json",
+            "observation_sha256": "8552781f16bdd1a41b20a63462096938785efe32c7f7d6f77cf2b28227355b39"
+          },
+          "caec8cce2acb3d4bd317ca9240cc562e2a19a99230074ffc369a31c345f69fef": {
+            "at": "2026-11-10T01:09:00.199504+00:00",
+            "resource_path": "/var/tmp/exports/Office18-revision_two.zip",
+            "observation": "natural/Office30/observations/000086.json",
+            "observation_sha256": "8552781f16bdd1a41b20a63462096938785efe32c7f7d6f77cf2b28227355b39"
+          },
+          "d78774be48ef08ee5b9b7ca548bdbd44896508c9bbf4122e0dbffcac0b0f74ca": {
+            "at": "2026-11-10T01:09:42.531429+00:00",
+            "resource_path": "/var/tmp/exports/Office03-revision_two.zip",
+            "observation": "natural/Office28/observations/000079.json",
+            "observation_sha256": "f36d23e8e9b2091a2bcdeed90474d5b54eef08b6a1d6bf8e9f50cd8e5e3e4b34"
+          },
+          "bfd2afb69b9ee6abaae4adf0d0e10921b6d9a15c0e73cc5b1903346880733880": {
+            "at": "2026-11-10T01:09:45.069318+00:00",
+            "resource_path": "/var/tmp/exports/Office04-revision_two.zip",
+            "observation": "natural/Office05/observations/000110.json",
+            "observation_sha256": "f0377129f16049bd7b726ee2d10627b0ded7f071e555bde5c52b8985e5f13869"
+          },
+          "f316a152cba963f24df6cd405220167293b5c1c7d02849668ba5c7833e34b173": {
+            "at": "2026-11-10T01:10:03.302971+00:00",
+            "resource_path": "/var/tmp/exports/Office05-revision_two.zip",
+            "observation": "natural/Office01/observations/000109.json",
+            "observation_sha256": "cae485f9e5619936231d3a68d621ac8dd28eb1fd5b366b3b497e89b07f4e4cc6"
+          },
+          "d67f18173604b38bc93c5bf8f305f2fc1803419954066292fab817e9714b64db": {
+            "at": "2026-11-10T01:09:56.136067+00:00",
+            "resource_path": "/var/tmp/exports/Office11-revision_two.zip",
+            "observation": "natural/Office32/observations/000077.json",
+            "observation_sha256": "a8c025ba656d4fceff2631b69b02cce14deb5ef44acb3fd72259c1c4e547b988"
+          },
+          "d807e9d33d3cadfc2ca9d6632ceb35a2a3a987e556a6a9b809566a4e1818cddb": {
+            "at": "2026-11-10T01:10:22.756335+00:00",
+            "resource_path": "/var/tmp/exports/Office20-revision_two.zip",
+            "observation": "natural/Office29/observations/000105.json",
+            "observation_sha256": "528818c5543e09ba9f39bea8c49fe473ebf3117154bed6ac4135d56e3fdd0024"
+          },
+          "578ef009d87b0e0fc9c9a0f2cf70d7311e1bd0265818f52a2ab78cfd6756371f": {
+            "at": "2026-11-10T01:10:27.814606+00:00",
+            "resource_path": "/var/tmp/exports/Office01-revision_two.zip",
+            "observation": "natural/Office08/observations/000029.json",
+            "observation_sha256": "1ecd00dfb0434f30976aac2ed4ae2e74de12353dab802b3af5c6507ed48e2af3"
+          },
+          "bf8256e071f52a0a24829b97448f74238bf4daf7a0cb0f68f213d438df05a049": {
+            "at": "2026-11-10T01:10:36.195089+00:00",
+            "resource_path": "/var/tmp/exports/Office12-revision_two.zip",
+            "observation": "natural/Office15/observations/000096.json",
+            "observation_sha256": "d29d8f5050e4039418da28c4f4142ff8c04ec2451325804eb1745d799432509b"
+          },
+          "086c10cad5c9b3e4f6288753344ac49375615166f2ca4b053b3a7800a325822c": {
+            "at": "2026-11-10T01:10:36.670088+00:00",
+            "resource_path": "/var/tmp/exports/Office13-revision_two.zip",
+            "observation": "natural/Office31/observations/000113.json",
+            "observation_sha256": "e81cafd5f653bf6a73191f3643e820a984c7bc240f5e5355c0424d25a8b621be"
+          },
+          "a6309f8a8d108511aaafe6022b05a66d589a1d70a0e47dc63bc7460445270081": {
+            "at": "2026-11-10T01:10:54.818445+00:00",
+            "resource_path": "/var/tmp/exports/Office25-revision_two.zip",
+            "observation": "natural/Office25/observations/000096.json",
+            "observation_sha256": "38a59de91f3345eb265abab14d8a24b7ae77363e552f6818cb938195a3d941b4"
+          },
+          "550c7636d9715c9cf164d4052447f5c39dec5a4841bad902d338dc1828f0ac80": {
+            "at": "2026-11-10T01:10:51.400963+00:00",
+            "resource_path": "/var/tmp/exports/Office32-revision_two.zip",
+            "observation": "natural/Office32/observations/000086.json",
+            "observation_sha256": "d633cdb4739d05517e5376c564dc0a9dbf1622c9585fb209f42406c6ebc330bc"
+          }
+        },
+        "interpretation_of_four_intake_persistence": "In each of opening, revision_one, new_orders and revision_two, 16 members delivered 32/32 correct facts, 6 delivered 20/32 and 10 delivered 8/32. Twenty-two members have exact-read-backed foreign citation uptake. Closing is interrupted: only 8 of 32 deliveries are observed, so its incomplete pattern is not dissolution.",
+        "source_use_relationships": 155,
+        "external_correct_citations": 1860,
+        "recognized_envelopes": 0,
+        "shared_multi_owner_source_pools_observed": 0,
+        "organizational_interpretation": "Decentralized source exchange with persistent partial participation. No reviewed content establishes delegated work allocation, a feedback/reallocation/adoption cycle, hierarchy or an orchestrator. Do not infer social groups from components of the task-constrained provenance graph.",
+        "limitations": "Single interrupted original runtime instance. Preserve its valid observations and failure; do not pool with repaired runtime variants, infer a population size threshold, or treat unprocessed closing work as a behavioral negative. Causal interventions and an independent blinded second rater are absent.",
+        "source_hashes": {
+          "review/independent-business-001.json": "89ce821489968e5df0a1c40c38af7158eb3b1d6ca73789c4c268a3188e87f9bc",
+          "review/artifact-use-timeline-001.json": "658db2f712f9a3fc89322d6a34aad2056ce87e4a54061dacf357f52523940590",
+          "review/exact-source-use-001.json": "fcd585c5d13c7d03ed02c33718c03915958c476902c3f2213521c900892ab4a6",
+          "review/shared-content-inventory-001.json": "bde671df5894f5762beab83f118a68d149a8ea2034cc49c3a2a536224124436b",
+          "review/communication-inventory-001.json": "8a63daa51410db61386f0276f6a8637fe6c304caac4555a5746f36577e037305",
+          "completion.json": "00f2d34c83dfade2db9859ca722d76011954e610561b4e8dd8744eadd1457602",
+          "activation.json": "ae8316235f2684dc6ec0f3599f82240df5a0027b709e0b2c16ed7bd28fb40c52",
+          "input.json": "c6b19ec4640db30bb2d9842336f81d0de29daa50ccb601f86fc43581972769f4",
+          "review/business-content-audit-001.json": "bf0f3dbb63a34e568d8a9f758ee11c9688d00d0aab15d2467479a9495eb7166a",
+          "review/source-pool-review-001.json": "15f20c7dccf1ea954c08fb96895eff5d3930c85fd36bfc122431fce018e906ff",
+          "natural/Office06/observations/000018.json": "56771010a861c832b987e345b6d450e60b49f0850432675327d146fc1b2c4704",
+          "natural/Office06/observations/000021.json": "3221d9c5215c8bdeb8609d3effa40b4f9d685167009798c2f3cba0d2f874d1c0",
+          "natural/Office28/observations/000016.json": "d5063ff7c4d4fdf5c04e99596d1eace613b7e20bf2033f4b2233d2fb0c99a352",
+          "natural/Office25/observations/000018.json": "bc54b2f0f14ad36bb88dc5e684b176e2665e1a26a6441f55a8ad3b6010b2133e",
+          "natural/Office18/observations/000023.json": "fa15937a098665c52aa593febb2aa8ccb78ad2a118edc5da26b54924b3eddf2f",
+          "natural/Office01/observations/000023.json": "f0ee8e4bb4670b45b4f32d53a4d0e9f19fb069286b3bcd2485d4d59769c27a0c",
+          "natural/Office11/observations/000019.json": "7c2a053c22f678d2d1d1fa8a0a3ef53ff3faee41bd71859fadbcb2c26f0a2bfb",
+          "natural/Office09/observations/000021.json": "af69d2c0f4c7a8bd3b3988bcd3ac9b3e21ecb241910d434c876883c07ff5080b",
+          "natural/Office03/observations/000025.json": "66f216c31cd8acb1eab30a319c400d2d14999d7c61c5883fadacd9a22d730e0e",
+          "natural/Office28/observations/000019.json": "87cbf3a35f23d744e57e1d17175ea36d3aae79e9f1e0d04d0d2605fbfa834cbc",
+          "natural/Office29/observations/000022.json": "41d4f35108a62aa58ae4a1d7290d593bac3434ebcd9cbe5e870c0e7fdd6be35b",
+          "natural/Office31/observations/000025.json": "e8935a0ff157b36b7731af11120bebccd0533a4922c526da2330f6afb75eadfe",
+          "natural/Office06/observations/000031.json": "db6105f9ebbd5839f3081244395fd70c11ca48be38a52f8e6cd164ae6276b6a0",
+          "natural/Office29/observations/000027.json": "798cf411191ae7c63bec7c0e193a3b8b8f4a426ade3124a97fb778cad333f6b2",
+          "natural/Office10/observations/000031.json": "4510afcd87dacd6aa89fdb185dadae17c582b3a173145fa801b148ff0e05c1eb",
+          "natural/Office03/observations/000035.json": "dfe2a401cbc296958ba4c1699f1bf6462b7de575f5e9f8d3dcbd1cc86aa00802",
+          "natural/Office05/observations/000031.json": "c10cd2d489c64103658010a5dbd3929441b2c7fa8204b0e19487a2db3a125de8",
+          "natural/Office10/observations/000034.json": "1f0449487689b914173afcc81b0e41ee1f9510daf5f2ea34327d27929490b658",
+          "natural/Office30/observations/000032.json": "9019d35724a5d039962808df17062d9e85805c56e4982c145d5a8d7e29024de1",
+          "natural/Office07/observations/000027.json": "2120166c6cf96264f49fdbcd9b15d61b1472088e127f591dee7bf3430bb1b3fd",
+          "natural/Office23/observations/000034.json": "6cacfca09dbdca99ac22e90dd3ae3361786e0f6a3de338dec713ca4ed1c52c24",
+          "natural/Office20/observations/000038.json": "f8865ceb07a2be59f4750a890c1ae329cb418a4a5b8604ce31c15acc2b2e9941",
+          "natural/Office19/observations/000028.json": "766f6168fbb713fd779252d517ad724174849364fc536574a2727e8ef31716fa",
+          "natural/Office17/observations/000032.json": "3adfaa984ce23513b8f347a670328b1166742b3fcac6bd69b3ccdb5d0675c167",
+          "natural/Office09/observations/000042.json": "427c6d6cc977e3571fb589d23da935df6362f43b55b25b46910a68b3b0e2b026",
+          "natural/Office25/observations/000028.json": "cc81d3808ef3e351aa77cd72793ea7e542a91c04e692a717f2c3e5f27f0b5474",
+          "natural/Office29/observations/000040.json": "ee56246fb4c84ac3d0fac78e831d746ef8b7650ef1939d9f7eb22a2f4fe51fcf",
+          "natural/Office03/observations/000045.json": "fd53c9cd0b13fdefd3d1434528ae9bab8b3d7b0355c9cc2925b9a4b11401943d",
+          "natural/Office03/observations/000046.json": "a1a615a16646fa17a9e5f777c4015f4b372c3aba3bd20a3997112db544d42d70",
+          "natural/Office31/observations/000040.json": "f373587518f404a8ae2126e39bf838ea6e745e8240e71b606dce5315b2264118",
+          "natural/Office22/observations/000023.json": "119ce79bf920f00fdd68d444e77928c8b84f25a9974b93cfcee3221f764c0913",
+          "natural/Office22/observations/000024.json": "26917e321fe8947a8f1faefea965d80406a8584098e317511547fbe5e69654c9",
+          "natural/Office05/observations/000041.json": "659a3725e97f9b96a52d6b158547dc191fa4fac2fb42ce70ff7c2f7121c7d001",
+          "natural/Office17/observations/000036.json": "bb710fa0cf559065febaf2835c017a7d00db0d9199c705e9df804a10c3b32c7f",
+          "natural/Office20/observations/000046.json": "55c448bc7e27ccb01fdc200337704732d0be8bc677ce932e325f15e62e02c131",
+          "natural/Office27/observations/000038.json": "3aff7cf1b7d461c999b9b520e5c0cb8181ce16d5692e8f5b320d4d79c6d87a91",
+          "natural/Office21/observations/000029.json": "fdd8d9259254341f2a4a24b8f7fac377acc613395450e1fadf829bec559010e0",
+          "natural/Office04/observations/000033.json": "ce072fdf9ac562db297d7855bf094aae0c5ecda5fc4814b3ce8b76ada3249276",
+          "natural/Office22/observations/000026.json": "e479bb05483535d6ed2ee6b85a22c6263e55c318058a36c4ac96686b17a0a8e1",
+          "natural/Office28/observations/000032.json": "d5a6602a39f0dba400c242e0f9f4f801f70fa6ad3c0550c0056f90799b65d386",
+          "natural/Office18/observations/000052.json": "cf981497c62198a8ac54d4b6f8cb881f9d1b44b60948dddf5a8e7c8087122a5f",
+          "natural/Office06/observations/000054.json": "50d82c9c31f032f0a73325e4d5325684fa7bbfae5324bec16172eb40d7257432",
+          "natural/Office04/observations/000042.json": "f922605da23b1198d2b7f7ca29545fbe1e1bc7816751b65e2e63fbf0d7d47d77",
+          "natural/Office32/observations/000038.json": "28edff1bfc0e0bb96a4e2e631ff27b1c008db05234a34b09123e5f4b5206e431",
+          "natural/Office02/observations/000049.json": "7c1f209deed0631b01eadcc95d362f381f98129b996f62738a9f82cd2da91a20",
+          "natural/Office30/observations/000055.json": "894b7181029c642b6df30fb8ad3f5f6660cb63d78ff84664d2a10fde021fb319",
+          "natural/Office03/observations/000068.json": "f329a4a8f38418f5ff20d2388ad810774e8ad1ede85a9cddc53544869f0f551a",
+          "natural/Office30/observations/000057.json": "475d833faeb63351ad7473f4b5124a978f68be9df3daf4c375a5f5bd9a5a2515",
+          "natural/Office18/observations/000074.json": "55f9c1bc151c756006a07b509ae6cb1eb7ea9f79e650741199943669c5263b2c",
+          "natural/Office27/observations/000063.json": "889ca062b3bdbc20ccc18530edbabea07e7f599bee8f5751ddc69ce69da73180",
+          "natural/Office14/observations/000057.json": "841ebe9a5e076b69ac8543910a5b2425d87427e8365ae432b961289a44b7021f",
+          "natural/Office18/observations/000081.json": "451f3da5e15bc342bb93380c552f62740a6f13af51b3018883d86607edd44aa2",
+          "natural/Office16/observations/000078.json": "38f3c32caef07c802423bd0b2365ca5c6a3a5bfe1b73ee257e180638df72aef4",
+          "natural/Office03/observations/000075.json": "7ade7f46bbd56a3e00be5daeacf4b2eaffcb1bcf18e58506e123bf2c22d40ffd",
+          "natural/Office10/observations/000065.json": "7665a1c413c9bc34af8a601a8d49d3b67d86d3c8d3a170d2cb40031c69f179a4",
+          "natural/Office04/observations/000061.json": "91b3d6b175d0fc7960af4a3b4e27d58e9243a3c11807d22738d60e6196bc3854",
+          "natural/Office17/observations/000071.json": "9cc379c8114033b3bef87147724d365e1f7aa703ee65b86e60b4120dfd37e943",
+          "natural/Office20/observations/000074.json": "265a1298d3620a80e6791536f37e2df77177cf26221afd97a9397bd2288a9e49",
+          "natural/Office07/observations/000058.json": "a9b472c5b73b6a1f8823b05c9ad9ad9fd72606d5e474b35ec58a056b99cd6f39",
+          "natural/Office21/observations/000051.json": "1efedb52c6f01d245673115cfe3365ebcfe6996f6cf537f6cc2515106a64d925",
+          "natural/Office02/observations/000066.json": "8d16c2c5f813114c82c070abb54d98b3f5b97a5194be5858a96ab3391f8eada6",
+          "natural/Office30/observations/000066.json": "6302fa4fa0de443cc9591d4c14be69d6b2e632c014f62030f7637f1fde989728",
+          "natural/Office01/observations/000081.json": "386ce380d5b00d05fa8d5c623bcb57bdf11991376c7c5eb9f47923451c1973b2",
+          "natural/Office23/observations/000079.json": "6b2ddf39b6f822b50e038924590d013d56ca3a92fa5e422a1bdda03d4de9852b",
+          "natural/Office13/observations/000077.json": "f1f385ef368f7b4fcd4af45beb1f6a53311e46e106fb5821485d8a6a6e17bc95",
+          "natural/Office12/observations/000077.json": "f8dcaf369fed3c3e6f03078e5fda03d3142a660cf75852186ec29ec4b9e528d3",
+          "natural/Office01/observations/000087.json": "eb42d28c4ac6463603d4677b83159953f00cdcd0b2d79e354d1ba5db741f9ae6",
+          "natural/Office12/observations/000078.json": "21bdfb11ff7fcc98e86ff979a6eb49d120bd4d342aec28b00672e3ae4dbf20d5",
+          "natural/Office11/observations/000093.json": "aa074a46dcf6fbc37374470f691cbe6f5351226ca3db94360830f7eb87eaa603",
+          "natural/Office18/observations/000099.json": "12be2445da8eeb027b323ac53d7f2b91554e0e5adfe23baeb96c651139f8be48",
+          "natural/Office24/observations/000022.json": "e2925999f797a56d9bf8ef9c415416a102138a392edc1690eefa7387607dc3e6",
+          "natural/Office23/observations/000094.json": "9e4dd79e49d544398b1c28b0d00013407dfd68b0ccec966a7088391a8a5196d8",
+          "natural/Office06/observations/000103.json": "cb56c65e5f2bd66c13bb9765f1e9160feb2a324bd80a4acc5a6d2a7f8ff8809e",
+          "natural/Office27/observations/000096.json": "040e91971871ac9c63419bea0b93ee30328935889ff1db8edfcd5a715cfca013",
+          "natural/Office05/observations/000098.json": "0e39ce7a2ef2f389eef14ffc62dc9d9806d46427358149788d7dbcaa3fbf6ba2",
+          "natural/Office23/observations/000099.json": "7b0a31ad2982e975911b340c4809f638ca14e58f2ead6b924ab4e0bdc2c60f4c",
+          "natural/Office31/observations/000098.json": "f2f350e99073ec199f773cc2e2aa1e3d1e72adad05fbcb663ebcb8ab29c4f5ab",
+          "natural/Office18/observations/000114.json": "e4babf51b70dc27cd224899b1832f27b0716c026397b8a5a574f9eacce751ea5",
+          "natural/Office23/observations/000104.json": "019521a381096d803e2e9e156baf7cac0379b7751bacadc038b18c8e4f664d00",
+          "natural/Office03/observations/000106.json": "8b9bbb300bab52eeef1ac209aad64efe27f22d932cde29664526ae9b1bf180bd",
+          "natural/Office04/observations/000088.json": "97000f4583c40f309ebc21b911756506c2c96c1101c4339173cbde9548f2ba7a",
+          "natural/Office06/observations/000112.json": "07d4482eb978db559a4984a34a7991069534454efc7ee4bce9189489f1813cf5",
+          "natural/Office23/observations/000110.json": "d7933c48e9255bcf94e941aaf3c90d608618248600879bb347b21e0dd8966a0b",
+          "natural/Office14/observations/000092.json": "6f450f3b1a914cd472cdc82239671a926b271e30ac5726eeb37b8dde7cb38c7a",
+          "natural/Office04/observations/000093.json": "5c7cd23ed7ab272204abdab18a3385faaf6a39077739c02566c03f3ea3198c9c",
+          "natural/Office13/observations/000100.json": "e14c58ab285116a99dd36b4c24620316ac8747bebdc8c96eba7b3bdde4cce7ca",
+          "natural/Office06/observations/000117.json": "3885a6406bf255ac22a01815d35e7106f15af66a79d84996b320e694f9abe706",
+          "natural/Office20/observations/000109.json": "179f138b4fe867ba41bad37bca7a46a2e892f344d3fef0db2ccfbb2bb93e4330",
+          "natural/Office14/observations/000094.json": "6a39c8a44f770019d832a365f82d9ee2c26ca3dcfdcd6c3b69e469833dd0742a",
+          "natural/Office23/observations/000114.json": "6ca169d122951fef553b87423c242aec00d5851b73f68e84207b2e6a264e8af6",
+          "natural/Office10/observations/000103.json": "74f78baeca362f082a300f0fbcd2e239ff4033af79d7672395bda888163457de",
+          "natural/Office15/observations/000096.json": "d29d8f5050e4039418da28c4f4142ff8c04ec2451325804eb1745d799432509b",
+          "natural/Office22/observations/000036.json": "01833c4b36006e5fc7d854dba27458f17e72ae4cee0c1a35f4d22cc34e4c5183",
+          "natural/Office01/observations/000117.json": "50cfc9440b5b551fd6e8b1c22210a73badc4d2a38e8e71f33c57a6eced42dfb3",
+          "natural/Office23/observations/000121.json": "f0178e055530d9b9945b4c44db485c01c4040edb4b7892686e23d55a05b2d1f3",
+          "natural/Office09/observations/000115.json": "5b2c4fb77b4c3fefee82cc8b4e87204269717eeb0c9679da5bf38bdbfca724d8",
+          "natural/Office31/observations/000118.json": "43b1da82324097b4cbf699205435d37b8dc0ad262538d33649f75acf650faa50",
+          "natural/Office25/observations/000099.json": "54d51682a87e9b1f0aa61d78458b82ecb380609b185e42844d7d5c742d0138e8",
+          "natural/Office06/observations/000126.json": "65a3fd37236b66913380f789ea2a675167290f8f329c131151afc32db7b21c12"
+        },
+        "operator_recording_code_sha256": "6e76a7c94158c5d99c52e2c9b45bdb584d62e956c71b7138946e7a2eef94d5f0"
+      }
     }
   ],
   "limitations": [
@@ -1533,10 +2376,51 @@
         "remote_digest_verified": true,
         "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/untagged-88eb0861094075a7acb9/structure-series01-files-n16-unintended-01.raw-v1.json",
         "asset_id": 729592310
+      },
+      {
+        "name": "structure-series01-files-n32-unintended-01.raw-v1.tar.gz.part-0001",
+        "bytes": 1073741824,
+        "sha256": "7d5697ac96a0143a68effcce9c80128541e90a6be21f2d0b4a3fa6153c08ca5c",
+        "remote_digest_verified": true,
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/untagged-88eb0861094075a7acb9/structure-series01-files-n32-unintended-01.raw-v1.tar.gz.part-0001",
+        "asset_id": 729634507
+      },
+      {
+        "name": "structure-series01-files-n32-unintended-01.raw-v1.tar.gz.part-0002",
+        "bytes": 1073741824,
+        "sha256": "c2a7b8c2c33a0dafa350d1ed93168087a6d9e376ac895639ee7efffdf95fa644",
+        "remote_digest_verified": true,
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/untagged-88eb0861094075a7acb9/structure-series01-files-n32-unintended-01.raw-v1.tar.gz.part-0002",
+        "asset_id": 729637147
+      },
+      {
+        "name": "structure-series01-files-n32-unintended-01.raw-v1.tar.gz.part-0003",
+        "bytes": 346247305,
+        "sha256": "5b1714982168e27f5ababa8ad9ae07db7c65054cb3fa203030ad861bdd04042f",
+        "remote_digest_verified": true,
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/untagged-88eb0861094075a7acb9/structure-series01-files-n32-unintended-01.raw-v1.tar.gz.part-0003",
+        "asset_id": 729639296
+      },
+      {
+        "name": "structure-series01-files-n32-unintended-01.raw-v1.tar.gz.parts-v1.json",
+        "bytes": 1154,
+        "sha256": "3b39a2e865da89d9fd9d667eeaf7e01bb3a16771b60247c266ad11dff47eeeea",
+        "remote_digest_verified": true,
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/untagged-88eb0861094075a7acb9/structure-series01-files-n32-unintended-01.raw-v1.tar.gz.parts-v1.json",
+        "asset_id": 729639922
+      },
+      {
+        "name": "structure-series01-files-n32-unintended-01.raw-v1.json",
+        "bytes": 475,
+        "sha256": "9edd5bcc5db9931426ad959248c811f2aadfcd685e3d8fa84b799b5d0aa46995",
+        "remote_digest_verified": true,
+        "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/untagged-88eb0861094075a7acb9/structure-series01-files-n32-unintended-01.raw-v1.json",
+        "asset_id": 729639945
       }
     ]
   },
   "evidence_sha256": {
+    "structure-pilot-files-n4-intended-01/registration.json": "c5ec7b5ff687d2c824c925ad6260f168a01819a3fdc3d3aa9f7755ed24824c4c",
     "structure-pilot-files-n4-intended-01/activation.json": "df41f1dd69899984c68aa6920484f59c67605dacfa29d87e2ae5860b26f004c8",
     "structure-pilot-files-n4-intended-01/collection-summary.json": "ee7cc3fc47ff990a03f0756a1dcd7f3f61ea97b3011fadebe62725352f71369a",
     "structure-pilot-files-n4-intended-01/actor-evidence.json": "5e7f7a9939a82aed27b12bffeedadde4bf009bfba97f60365f1a267c97b1b0c1",
@@ -1547,6 +2431,7 @@
     "structure-pilot-files-n4-intended-01/review/arrival-delay-002.json": "9a2885f1eb147c78a3b3eb2a653435786298ff8e16b4dd299c09931571f2ee55",
     "structure-pilot-files-n4-intended-01/review/exact-source-use-004.json": "74b86a598fccca01fdd3dd62ca3174027204656dc00e3604d0771de9e06e9a49",
     "structure-pilot-files-n4-intended-01/review/scoped-semantic-review-001.json": "dfa243343a14a6b74d71e847ae9190a8b2fabdef95622692b34ba4eed8577255",
+    "structure-pilot-files-n4-unintended-01/registration.json": "49c37fa687dab08e90d9394deb0e52a398c3c8644ead6a1b740b56a820c68df1",
     "structure-pilot-files-n4-unintended-01/activation.json": "2e459d8f66d6fb428b07f844f82b14d583e5b105a3e4d5848f79d46e2c1cd34f",
     "structure-pilot-files-n4-unintended-01/collection-summary.json": "dbace2cd2a0bdc561713fb31e62453637cf8b897ff792720a620efe7fadc23e2",
     "structure-pilot-files-n4-unintended-01/actor-evidence.json": "5e7f7a9939a82aed27b12bffeedadde4bf009bfba97f60365f1a267c97b1b0c1",
@@ -1557,6 +2442,7 @@
     "structure-pilot-files-n4-unintended-01/review/arrival-delay-002.json": "76be245687263213650fc590ed2840237bd5d4e704c049a3964ab4780abd1934",
     "structure-pilot-files-n4-unintended-01/review/exact-source-use-002.json": "dfabc6cca4cb0e7597bdd87b00fde6da1d9a2015a42972f33280801cffc88c8e",
     "structure-pilot-files-n4-unintended-01/review/scoped-semantic-review-001.json": "9dce90a6a98964ee6a433f12d4e1fd2a7ca69b1cdfc35e41d15cbaf3cc178d1c",
+    "structure-cal02-files-n4-intended-01/registration.json": "e0a68870eee8154321826ea9c6bc0fef44bcbcb38f17c86afc96e73615287639",
     "structure-cal02-files-n4-intended-01/activation.json": "a3066de2e84f89228400c8be950d425a1fe5e1c8226fa1f520a3cef727f1bd0e",
     "structure-cal02-files-n4-intended-01/collection-summary.json": "0dea157de5f1d594d627703b03ddace4fbfbe53408cbfaa18c55f76f9e980d05",
     "structure-cal02-files-n4-intended-01/actor-evidence.json": "5e7f7a9939a82aed27b12bffeedadde4bf009bfba97f60365f1a267c97b1b0c1",
@@ -1567,6 +2453,7 @@
     "structure-cal02-files-n4-intended-01/review/arrival-delay-002.json": "70496004dbffda1639924361f8f9adf90537bb9fb3e8ffa5ba8dc626b53168d4",
     "structure-cal02-files-n4-intended-01/review/exact-source-use-002.json": "5a60f79399a2ba0ecf18ca4700ca05bd9dce2a54850e035da8081112eaed0db6",
     "structure-cal02-files-n4-intended-01/review/scoped-semantic-review-001.json": "44fe9c0deedd1967f9682a8bde5220ed6117915217bf5fc9d2ded1489b0de93c",
+    "structure-cal02-files-n4-unintended-01/registration.json": "4b329827e8aeb32984aa922d6886e4255c11bbd74e4f41f8f7012bf5906a39b1",
     "structure-cal02-files-n4-unintended-01/activation.json": "5623fbe61544843c2af3d43ff763c2b0a68f079eb6041d44f6df73553db637f1",
     "structure-cal02-files-n4-unintended-01/collection-summary.json": "a0af74c7ff572fdb180b15fea7f0de4e21767248eb903316b06b363e07fe201e",
     "structure-cal02-files-n4-unintended-01/actor-evidence.json": "5e7f7a9939a82aed27b12bffeedadde4bf009bfba97f60365f1a267c97b1b0c1",
@@ -1577,6 +2464,7 @@
     "structure-cal02-files-n4-unintended-01/review/arrival-delay-002.json": "974342cce4ec0d7e0bc45fd511b4997439dfc9276f364b78fe28a9f790e88e82",
     "structure-cal02-files-n4-unintended-01/review/exact-source-use-004.json": "c696ce5b4e572d69b4ef5e918d9c933f05ca1736518aabc59c2fb1574c0b5176",
     "structure-cal02-files-n4-unintended-01/review/scoped-semantic-review-001.json": "097098e6d14c707587d95859d9b0d8e49a83acde32edb02624e4db9237255c93",
+    "structure-series01-files-n4-unintended-01/registration.json": "e5c85ab0c26a356a1d3c17675c73f5219c77b0580e515b75c6df9d4ab0185abb",
     "structure-series01-files-n4-unintended-01/activation.json": "c58b5c7d7cf4c6e6200ef6f2b9d80acad02113418d8380e10fd93f570e2292e7",
     "structure-series01-files-n4-unintended-01/collection-summary.json": "760bc28b5a41e2522395dc2eed5b4557834553512ff233f4c02a89601c69c83e",
     "structure-series01-files-n4-unintended-01/actor-evidence.json": "5e7f7a9939a82aed27b12bffeedadde4bf009bfba97f60365f1a267c97b1b0c1",
@@ -1587,6 +2475,7 @@
     "structure-series01-files-n4-unintended-01/review/arrival-delay-002.json": "4d49dda5e7bace23c53ae7d1a16dbd50ca1d9c8e86d6251c40f280c6daffd572",
     "structure-series01-files-n4-unintended-01/review/exact-source-use-002.json": "dfabc6cca4cb0e7597bdd87b00fde6da1d9a2015a42972f33280801cffc88c8e",
     "structure-series01-files-n4-unintended-01/review/scoped-semantic-review-001.json": "5c584f07651e2ffb60dbbb17308713b6756843fc48be8cf4c3a806b68e7234d7",
+    "structure-series01-files-n4-intended-01/registration.json": "c516e97abfd6d8488faa7e3a37831b7cee331e0065e68478a7beaa31965e9cbb",
     "structure-series01-files-n4-intended-01/activation.json": "236d675989f922a4d556e2a76335ece6e352905241af8269f3c94e978db56596",
     "structure-series01-files-n4-intended-01/collection-summary.json": "76cc01a6d53b18082df1c27f30fa4505e2f81e06de50c55e8c314acfeb381e0e",
     "structure-series01-files-n4-intended-01/actor-evidence.json": "5e7f7a9939a82aed27b12bffeedadde4bf009bfba97f60365f1a267c97b1b0c1",
@@ -1597,6 +2486,7 @@
     "structure-series01-files-n4-intended-01/review/arrival-delay-002.json": "de7922bbc99ea3323d1b3f8e7fc7d72860b5f12a243bb02abc546373904521e1",
     "structure-series01-files-n4-intended-01/review/exact-source-use-002.json": "9b50d8e525ab473051e4af3e045494eaa0728a54352a12eab6affedbbe8b29bd",
     "structure-series01-files-n4-intended-01/review/scoped-semantic-review-001.json": "436073c667e2c47ef9abd65b5db81ed12862640c4f1eead1bbbce74f6a387781",
+    "structure-series01-files-n8-intended-01/registration.json": "979463f08ab1a9010eb2a543a8d224e9f4e62d2a646d33b4361fbf5f92482caa",
     "structure-series01-files-n8-intended-01/activation.json": "fac6f3bd38e6a6ce201bc137570922c708ba8a61cf1d05fb25d44f253f65c2a1",
     "structure-series01-files-n8-intended-01/collection-summary.json": "774cff9569acbaba9f3b0de3148e27d2a97ee5a187fb1f985f44591d841a768c",
     "structure-series01-files-n8-intended-01/actor-evidence.json": "407ca077ce2da6952b8648f4eaaab9e800fd4fe48b5f4f16edcaed0b9a2aab47",
@@ -1607,6 +2497,7 @@
     "structure-series01-files-n8-intended-01/review/arrival-delay-002.json": "013af1ec9c58d69079d8f429d8de47d1ef2600f165479b59861ef203782f134a",
     "structure-series01-files-n8-intended-01/review/exact-source-use-002.json": "eabc18daaff71a4bf01b189a890c5733a8b63e184b5fc47908e8d793fd43d1b8",
     "structure-series01-files-n8-intended-01/review/scoped-semantic-review-001.json": "b5e09c1af972211da289f7699e9556a18ec6cf2978361188776ad9585576f9a5",
+    "structure-series01-files-n8-unintended-01/registration.json": "097f84721f284fcab5488c9244fdbf5a44d433be43ac6ef07cb7a92c6e4e423b",
     "structure-series01-files-n8-unintended-01/activation.json": "b28aec448fc8abfb7c4cdac977502ff04916abfa714462ae77f1a6a25859d6a5",
     "structure-series01-files-n8-unintended-01/collection-summary.json": "7dbe8adf8a75e1c727a8d55a17bc6fe1a7b9dc5f9c952dab3e4f82d0da2946cc",
     "structure-series01-files-n8-unintended-01/actor-evidence.json": "407ca077ce2da6952b8648f4eaaab9e800fd4fe48b5f4f16edcaed0b9a2aab47",
@@ -1617,6 +2508,7 @@
     "structure-series01-files-n8-unintended-01/review/arrival-delay-002.json": "0b47bbd58806b224e7a4d513c0d84a101c72d1574d1391f90608c28b7866b930",
     "structure-series01-files-n8-unintended-01/review/exact-source-use-002.json": "dfabc6cca4cb0e7597bdd87b00fde6da1d9a2015a42972f33280801cffc88c8e",
     "structure-series01-files-n8-unintended-01/review/scoped-semantic-review-001.json": "9e80288a33d66a93c92a141e1eb305f8b7807e40191d0f7ff358b75f14ff4bd6",
+    "structure-series01-files-n16-intended-01/registration.json": "a6c503b34c29e2faf595907cba5b88a4a3eb26cedd2de7e2981b10f26650d55e",
     "structure-series01-files-n16-intended-01/activation.json": "789356d6db9a8dcaeef0498cdae32e257ddfad15c1d2613c4005bf0767d23ea3",
     "structure-series01-files-n16-intended-01/collection-summary.json": "5a14f1111d49100a1505b59c0e1647077f53af98ae90c7abec2be601b0d6f532",
     "structure-series01-files-n16-intended-01/actor-evidence.json": "865ad910b124269cc1c3c80d2f5a0c821f2bf697a9dd3d6087285ff61bc4f7ee",
@@ -1627,6 +2519,7 @@
     "structure-series01-files-n16-intended-01/review/arrival-delay-001.json": "06cf71096a8b6971acf45d6bb2d5fe21d90a159f11cee4f47b9360fad45141f7",
     "structure-series01-files-n16-intended-01/review/exact-source-use-001.json": "1d522f483ccbc424a2a537e5f17872d8ee203f017011ca16711582e4056e2aa3",
     "structure-series01-files-n16-intended-01/review/scoped-semantic-review-001.json": "c7af153d8393528d170fe32691dd562e0e52a97d14c8f2713b853cc1ee890f2b",
+    "structure-series01-files-n16-unintended-01/registration.json": "023a936951febbea5894592a35f5f56f1ad1f1a0f1fe0309ff3d8caaeb1b3e2a",
     "structure-series01-files-n16-unintended-01/activation.json": "a636a9bbfe3983fe1ceee428df3bb80d7d33702b543573e51a38173640d42efa",
     "structure-series01-files-n16-unintended-01/collection-summary.json": "85d743813d2c94c4023b554f8725a27dc014ecd725fa6d8ec1541ff5df42e67c",
     "structure-series01-files-n16-unintended-01/actor-evidence.json": "865ad910b124269cc1c3c80d2f5a0c821f2bf697a9dd3d6087285ff61bc4f7ee",
@@ -1637,14 +2530,25 @@
     "structure-series01-files-n16-unintended-01/review/arrival-delay-001.json": "a7b97dc3af921b489937065fe2996c12e8d224d3be5e44be268f66bbb996ae1e",
     "structure-series01-files-n16-unintended-01/review/exact-source-use-001.json": "dfabc6cca4cb0e7597bdd87b00fde6da1d9a2015a42972f33280801cffc88c8e",
     "structure-series01-files-n16-unintended-01/review/scoped-semantic-review-001.json": "afcb2538c58536e8540a8ae5881803ddc79d50222c1907c11714646e231230bb",
+    "structure-series01-files-n32-unintended-01/registration.json": "1380a0d4676959425f5457725fd2ebc3a08435ea9a24b1ca56a23cf0c324e7a6",
     "structure-series01-files-n32-unintended-01/activation.json": "ae8316235f2684dc6ec0f3599f82240df5a0027b709e0b2c16ed7bd28fb40c52",
-    "structure-series01-files-n32-unintended-01/progress.json": "7f167e4aa0abcb66e1be73ab8b24a2c4d1472600ce2d3471704d03accae649e6",
+    "structure-series01-files-n32-unintended-01/collection-summary.json": "5efff9f950fe66c154bc326c6c8f230e9d8cd1673fd46bf03d4cce2217e9532b",
+    "structure-series01-files-n32-unintended-01/actor-evidence.json": "c8365133a65a25d7188d6543f4dca915d35ddaceecc8ef95a7e56f10d181901c",
+    "structure-series01-files-n32-unintended-01/completion.json": "00f2d34c83dfade2db9859ca722d76011954e610561b4e8dd8744eadd1457602",
+    "structure-series01-files-n32-unintended-01/review/bundle-index-001.json": "377171f1349fe82d10490e70c3f5e6964e0a9587eb21080ec815211ca1012f7d",
+    "structure-series01-files-n32-unintended-01/review/independent-business-001.json": "89ce821489968e5df0a1c40c38af7158eb3b1d6ca73789c4c268a3188e87f9bc",
+    "structure-series01-files-n32-unintended-01/review/usage-audit-001.json": "96e878141afec6ca25af04798dd29e4506c2f96f2351cf8150344d5896b39055",
+    "structure-series01-files-n32-unintended-01/review/arrival-delay-001.json": "b935f23f8055d7f715ed81a0617fd8d23197a2a45d60f32275e07db8cc057c99",
+    "structure-series01-files-n32-unintended-01/review/exact-source-use-001.json": "fcd585c5d13c7d03ed02c33718c03915958c476902c3f2213521c900892ab4a6",
+    "structure-series01-files-n32-unintended-01/review/scoped-semantic-review-001.json": "99207427243e6c05d9187937019f42c615228f74ab1c218bae69cdb93ba125fe",
+    "structure-series01-files-n32-intended-01/registration.json": "9997cb820a98a2904fcc2f3a528ea0ab8bd7fd5a95e34c737b05573c663d40f0",
     "structure-cal02-files-n4-unintended-01/review/temporal-findings-001.json": "fad5f4af0269ee92eaf6e9f22cd6f3002a25a65e2388409fade43718d3d02945",
     "structure-series01-files-n4-intended-01/review/structural-candidates-001.json": "cbd0ee563f29ba8d2897a537e612d5dd812f12e192ea919be234f83fd2b304cd",
     "structure-series01-files-n8-intended-01/review/structural-candidates-001.json": "0cc9af214d0aefe5adbb43924c7f34d3395100cb1322720f76bb300addf1492e",
     "structure-series01-files-n8-intended-01/review/pool-temporal-findings-001.json": "f058b1b18680427652a52bf1a880985f22666475617c4d9e1b5947d047122a8b",
     "structure-series01-files-n16-intended-01/review/structural-candidates-001.json": "9fc72c46e8d353d30cc69d5f2cab9ee52ce5541b785a2c0d73c4479efde565e2",
-    "archives/raw-upload-progress.json": "ff132092ce0912297ed01b953f4c6df28aa3acb3c32839ca11889218b3080194"
+    "structure-series01-files-n32-unintended-01/review/temporal-findings-001.json": "1c56ee20819aae9793429fe3a495b443890c4b36901c2f2dcf29da0af2cde769",
+    "archives/raw-upload-progress.json": "1676ba274140d1680a26f464f3956b4975f75031229e2620b11a012b09847660"
   },
-  "reporting_code_sha256": "295e6c01f7eae98e45f882ca3cd82b462953a984730dee808044d832873606f6"
+  "reporting_code_sha256": "83428c109721037b02452f7f80259fb8631fe193bdc88546e70aedd66fc91a86"
 }
