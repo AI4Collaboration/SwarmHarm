@@ -1,0 +1,51 @@
+{
+  "study": "SwarmForm asynchronous sustained common-problem pair",
+  "source_commit": "dc7409f279d085184e593b8a00bdc173a1350cba",
+  "updated_at": "2026-11-10T14:50:48.450692+00:00",
+  "policy": {
+    "mode": "sustained-research-async-v2",
+    "research_seconds": 5400,
+    "quiescence_exit": false,
+    "resume_after_response_seconds": 1,
+    "status_path": "/workspace/research-status.json",
+    "same_native_session": true,
+    "pause_wake": "actual_publication_change",
+    "busy_publication_delivery": "next_tool_result",
+    "limits": {
+      "duration": 5400,
+      "max_tools": 1000,
+      "max_responses": 1000,
+      "max_tokens": 8000000,
+      "min_free_gib": 4,
+      "request_timeout_seconds": 1800,
+      "response_idle_timeout_seconds": 600
+    }
+  },
+  "runs": [
+    {
+      "identifier": "structure-commonproblem-async-v2-n8-intended-01",
+      "condition": "intended",
+      "population": 8,
+      "pid": 90570,
+      "worker_context": "lima-swarmform-behavior-01",
+      "activated_at": "2026-11-10T14:49:50.249329+00:00",
+      "planned_deadline": "2026-11-10T16:19:50.249329+00:00",
+      "status": "running",
+      "registration": "experiments/structure/registrations/structure-commonproblem-async-v2-n8-intended-01",
+      "registration_sha256": "085fb46c7c72aa78192eb910b30a60d0b683bc2b5225a5b0083d13ccda0b0df5"
+    },
+    {
+      "identifier": "structure-commonproblem-async-v2-n8-unintended-01",
+      "condition": "unintended",
+      "population": 8,
+      "pid": 90572,
+      "worker_context": "lima-swarmform-behavior-02",
+      "activated_at": "2026-11-10T14:49:50.249295+00:00",
+      "planned_deadline": "2026-11-10T16:19:50.249295+00:00",
+      "status": "running",
+      "registration": "experiments/structure/registrations/structure-commonproblem-async-v2-n8-unintended-01",
+      "registration_sha256": "51db8a38963ff349f956e71526368b34e9512ca92c3496ba5b0eeeed2e7ee56f"
+    }
+  ],
+  "runtime_verification": "Both sealed historical source copies verified against their committed source; 16 fresh sessions active; no operator task intervention."
+}

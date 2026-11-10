@@ -13943,7 +13943,7 @@
         }
       },
       "async_sustained_pair": {
-        "state": "prepared_authorized_pending_capacity",
+        "state": "running",
         "policy": "sustained-research-async-v2",
         "population": 8,
         "research_seconds": 5400,
@@ -13965,6 +13965,33 @@
         "registrations": [
           "experiments/structure/registrations/structure-commonproblem-async-v2-n8-intended-01",
           "experiments/structure/registrations/structure-commonproblem-async-v2-n8-unintended-01"
+        ],
+        "current_status": "docs/structure-common-problem-async-v2-status.json",
+        "runs": [
+          {
+            "identifier": "structure-commonproblem-async-v2-n8-intended-01",
+            "condition": "intended",
+            "population": 8,
+            "pid": 90570,
+            "worker_context": "lima-swarmform-behavior-01",
+            "activated_at": "2026-11-10T14:49:50.249329+00:00",
+            "planned_deadline": "2026-11-10T16:19:50.249329+00:00",
+            "status": "running",
+            "registration": "experiments/structure/registrations/structure-commonproblem-async-v2-n8-intended-01",
+            "registration_sha256": "085fb46c7c72aa78192eb910b30a60d0b683bc2b5225a5b0083d13ccda0b0df5"
+          },
+          {
+            "identifier": "structure-commonproblem-async-v2-n8-unintended-01",
+            "condition": "unintended",
+            "population": 8,
+            "pid": 90572,
+            "worker_context": "lima-swarmform-behavior-02",
+            "activated_at": "2026-11-10T14:49:50.249295+00:00",
+            "planned_deadline": "2026-11-10T16:19:50.249295+00:00",
+            "status": "running",
+            "registration": "experiments/structure/registrations/structure-commonproblem-async-v2-n8-unintended-01",
+            "registration_sha256": "51db8a38963ff349f956e71526368b34e9512ca92c3496ba5b0eeeed2e7ee56f"
+          }
         ]
       }
     }
