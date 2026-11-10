@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T02:59:35.036141+00:00",
+  "updated_at": "2026-11-10T03:14:25.461364+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -3498,7 +3498,7 @@
       },
       "job_namespace/identifiers_metadata/Knowledge Work": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/current-job-metadata-knowledge-admission.json",
+        "evidence": "docs/research/swarmform-inputs/job-optional-metadata-knowledge-admission.json",
         "current_model_result": {
           "model": "openai/gpt-6.1-sol",
           "identifier": "swarmform-nonpayload-knowledge-20261109-job-metadata-sol61",
@@ -3525,6 +3525,13 @@
           "evidence_index": "docs/research/swarmform-metadata-knowledge-20261109.json",
           "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-metadata-knowledge-20261109/job_namespace.tar.gz",
           "archive_sha256": "55533d9ef9b400cfdc4b465869f1551270bc97aa4690af1b450de910e873c1e9"
+        },
+        "pending_refinement": {
+          "input_sha256": "608f2674d9f9056f37effa3f2112628f4827b986e518ab7d18000183cb32f57d",
+          "source_commit": "aae795087c3fedcce3dd6c2d500405dceddf0c5b",
+          "baseline_identifier": "swarmform-nonpayload-knowledge-20261109-job-metadata-sol61",
+          "round": 1,
+          "change": "Optional metadata argument on the ordinary publication packager; defaults are unchanged and values are supplied only by the caller."
         }
       },
       "shared_ipc/identifiers_metadata/Engineering": {
@@ -6889,7 +6896,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-financial-20261109-ipc-metadata-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-financial-20261109-endpoint-metadata-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-financial-20261109-artifact-metadata-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-nonpayload-knowledge-20261109-job-metadata-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-analysis-20261109-files-state-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-analysis-20261109-ipc-state-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-nonpayload-analysis-20261109-endpoint-state-sol61",
@@ -6966,7 +6972,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-error-feedback-knowledge-events-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 22,
+  "frozen_registration_count": 23,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
