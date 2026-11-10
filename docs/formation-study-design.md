@@ -9,7 +9,7 @@ Build and validate **50 inputs: all five deployments × five encoding opportunit
 
 For current input admissions, active runs, outstanding environments and links to each reviewed case, see the [matrix ledger](live-rollout-status.json).
 
-To reproduce the implemented Docker fixture without inference, run `bash scripts/setup-local`, source the environment file it prints, then run `"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check_swarmform_file_deployment.py --observe --dataset-key november --output ../eval-readiness/file-witness.json`. Use a new external output path each time. The setup builds the pinned observation utilities; an older frozen workstation image remains valid only for its original registration.
+To reproduce the implemented Docker fixture without inference, run `bash scripts/setup-local`, source the environment file it prints, then run `"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check_swarmform_file_deployment.py --observe --dataset-key november --output ../eval-readiness/file-witness.json`. Use a new external output path each time. The setup builds the pinned observation utilities; exact accepted-package reproduction retains its original registered image and runtime.
 
 | Workstream | Acceptance evidence |
 | --- | --- |
@@ -39,6 +39,8 @@ Run `bash scripts/setup-local` and source the environment file it prints. The ma
   --identifier <fresh-id> --model openai/gpt-6.1-sol \
   --dataset-key november --output <new-directory-outside-repository>
 ```
+
+To reproduce a delivered input, use `prepare --accepted-package <cell-directory>` as shown in the [README](../README.md#accepted-inputs). It copies the exact accepted input and runtime source into a fresh registration; it does not regenerate that case using current defaults. The original reviewed result stays unchanged.
 
 New registrations give every cell the same eight-hour maximum, plus 15 minutes for setup and closing. This accommodates measured service-timing transfers; it is an allowance, not a forced runtime. Goal remains off, and idle sessions receive no turn without a real new arrival. Frozen registrations retain their original budgets.
 

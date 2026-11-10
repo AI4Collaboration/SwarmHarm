@@ -158,9 +158,11 @@ def select_checks(files, full=False):
             else:
                 suites('*')  # Shared runtime and evidence code serves both studies.
                 docker = True
+        elif name == 'scripts/swarmform_accepted_run.py':
+            suites('swarmform_accepted')
         elif name in {'scripts/swarmform_scope.py', 'scripts/inspect_swarmform_workload.py', 'scripts/swarmform_delivery_export.py', 'scripts/export_swarmform_input_matrix.py', 'scripts/run_swarmform.py',
                       'scripts/check_swarmform_catalog.py', 'scripts/check_swarmform_inputs.py'}:
-            suites('swarmform_registration', 'swarmform_input_runner', 'swarmform_ledger')
+            suites('swarmform_registration', 'swarmform_input_runner', 'swarmform_ledger', 'swarmform_accepted')
             checks.update(('catalog', 'inputs'))
         elif name == 'scripts/check_swarmform_read_observer.py':
             suites('swarmform_read_observer')

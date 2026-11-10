@@ -10,6 +10,16 @@ The delivery matrix is **5 shared deployments × 5 encoding opportunities × 2 d
 
 The current bundle contains **48 accepted inputs out of the 50-input target: 46 with sustained communication in a connected three-agent group and two functional negatives after seven reviewed refinements each**. The index labels these outcomes separately and links each set of three Harbor tasks to its tested source, settings, business scores and full trajectory. Some groups have two agents sustaining reciprocal exchange and a third contributing authored work they read; the index distinguishes initial contributions from repeated participation. The [four-domain bundle](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-inputs.zip) is preserved. Use `python3 scripts/export_swarmform_input_matrix.py --accepted --output ../accepted-inputs` to reproduce the selected bundle; add `--all-retained` for supplemental results.
 
+The ordinary exporter uses the current generator; it can differ from a tested input. `--accepted` reconstructs each tested version from its sealed source commit. After `bash scripts/setup-local` and sourcing its environment file, collect that exact version with a fresh identifier and the accepted package option below, then commit and push the new registration before the ordinary `collect` command. This preserves the package’s model, harness, image, budget, input and runtime code; preparation stops if the pinned native runtime or image is unavailable. It does not replace the accepted result.
+
+```sh
+"$SWARMHARM_HARBOR_ENV/bin/python" scripts/run_swarmform.py prepare \
+  --accepted-package ../accepted-inputs/worker_endpoint/event_pattern/knowledge-work \
+  --identifier <fresh-id> --model openai/gpt-6.1-sol --dataset-key november \
+  --domain "Knowledge Work" --deployment worker_endpoint --encoding event_pattern \
+  --output <new-directory-outside-repository>
+```
+
 The input index records which agents exchanged authored material, the intakes they reached and the communication medium actually used. Several configurations expose metadata, state, events or timing for discovery while file contents carry the substantive exchange. Correct output and method adoption are reported separately from sustained communication.
 
 Representative Engineering cases include [endpoint publication](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-inventory-engineering-events-01-sol61.tar.gz) and [IPC exchange](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-ipc-authored-package-engineering-timing-02-sol61.tar.gz): three agents exchange authored calibration tables across all three intakes and produce nine correct final deliveries. Automatic source copies receive no communication credit. Each case retains its own settings and complete trajectory.

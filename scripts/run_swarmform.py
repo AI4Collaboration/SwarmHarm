@@ -191,6 +191,9 @@ def prepare_one(args, source, runtime, *, profiles=None):
 
 
 def prepare(args):
+    if getattr(args, 'accepted_package', None) is not None:
+        import swarmform_accepted_run
+        return swarmform_accepted_run.prepare(sys.modules[__name__], args, published_head())
     return prepare_one(args, published_head(), check_runtime())
 
 
@@ -292,6 +295,10 @@ def verify_frozen(folder, output):
         git('ls-files', '--error-unmatch', str((folder / name).relative_to(ROOT)))
         if sha(output / name) != sha(folder / name):
             raise RuntimeError('External prepared copy differs')
+    if reg.get('accepted_package'):
+        import swarmform_accepted_run
+        return swarmform_accepted_run.verify_prepared(
+            sys.modules[__name__], reg, output, head, seal['sha256'])
     for relative, expected in reg['code_hashes'].items():
         if sha(ROOT / relative) != expected or sha(output / 'code' / relative) != expected:
             raise RuntimeError('Source differs from frozen input: ' + relative)
@@ -316,6 +323,13 @@ def collect(args):
         raise FileExistsError('This registration was already started; inspect its preserved records')
     folder = ROOT / 'experiments/swarmharm-v1/registrations' / args.identifier
     reg = verify_frozen(folder, output)
+    if reg.get('accepted_package'):
+        import swarmform_accepted_run
+        result = swarmform_accepted_run.dispatch('collect', output / 'code',
+            output / 'registration.json', output=output,
+            key_file=credential_file(args.key_file, ROOT))
+        lock.close()
+        return result
     key = credential_file(args.key_file, ROOT).read_text().strip()
     inputs = json.loads((output / 'input.json').read_text())
     report = Collection(output, reg, inputs, api_key=key).run()
@@ -377,6 +391,8 @@ def argument_parser():
         command.add_argument('--output', type=Path, required=True)
         if name in ('prepare', 'prepare-pair', 'prepare-matrix'):
             if name == 'prepare':
+                command.add_argument('--accepted-package', type=Path,
+                    help='Use exact accepted cell files and its frozen runtime from an exported bundle')
                 command.add_argument('--model', choices=MODEL_LABELS, required=True)
             elif name == 'prepare-matrix':
                 command.add_argument('--model', choices=MODEL_LABELS, default='openai/gpt-6.1-sol')
