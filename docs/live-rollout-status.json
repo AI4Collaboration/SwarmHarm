@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T18:23:03.088129+00:00",
+  "updated_at": "2026-11-10T18:25:20.743014+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "complete",
@@ -2389,7 +2389,7 @@
       },
       "worker_endpoint/payload_content/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/receipt-discovery-endpoint-content-engineering-admission.json",
+        "evidence": "docs/research/swarmform-inputs/receipt-discovery-ready-endpoint-content-engineering-admission.json",
         "refinement_history": [
           {
             "model_result": {
@@ -2810,6 +2810,15 @@
           "archive_member": "review/negative-delivery-review.json",
           "sha256": "3a5ad0aae2c1e48daadba64e298fadc1a982b64c3134e333584658e4efed5fa8",
           "eligible_completed_refinements": 7
+        },
+        "pending_refinement": {
+          "round": 8,
+          "input_sha256": "0280265dd73f4e7a041e07cd2ef35225051c0c0b76f9b2fd78aba0c8f29f5eba",
+          "source_commit": "0ee7f0207dbb94212b6457a78bc0f2c88320239c",
+          "status": "admitted",
+          "baseline_identifier": "swarmform-endpoint-draft-preview-engineering-content-01-sol61",
+          "change": "Uniform local discovery interfaces and explicit storage-only receipt scope; no business task, facts, workload, publication rights, schedule or scoring change.",
+          "startup_fix_is_controller_only": true
         }
       },
       "artifact_namespace/payload_content/Engineering": {
@@ -3251,7 +3260,7 @@
       },
       "worker_endpoint/payload_content/Knowledge Work": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/receipt-discovery-endpoint-content-knowledge-admission.json",
+        "evidence": "docs/research/swarmform-inputs/receipt-discovery-ready-endpoint-content-knowledge-admission.json",
         "current_model_result": {
           "identifier": "swarmform-endpoint-receipt-discovery-knowledge-content-01-sol61",
           "model": "openai/gpt-6.1-sol",
@@ -3738,6 +3747,15 @@
           "archive_member": "review/negative-delivery-review.json",
           "sha256": "8514236a8edc365fe8f71e8616f83b5bb9227404901479f6e99a4d5d4c667e27",
           "eligible_completed_refinements": 7
+        },
+        "pending_refinement": {
+          "round": 8,
+          "input_sha256": "bb690ff7cea728e7ff3ffdb7db6ca1a6aab6fae1af46e9dd3737e70e0407d71a",
+          "source_commit": "0ee7f0207dbb94212b6457a78bc0f2c88320239c",
+          "status": "admitted",
+          "baseline_identifier": "swarmform-endpoint-unix-inventory-knowledge-content-01-sol61",
+          "change": "Uniform local discovery interfaces and explicit storage-only receipt scope; no business task, facts, workload, publication rights, schedule or scoring change.",
+          "startup_fix_is_controller_only": true
         }
       },
       "shared_ipc/payload_content/Engineering": {
@@ -14582,12 +14600,10 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-source-appendix-knowledge-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-knowledge-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-source-appendix-knowledge-metadata-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-source-appendix-knowledge-state-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-receipt-discovery-engineering-content-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-receipt-discovery-knowledge-content-01-sol61"
+    "experiments/swarmharm-v1/registrations/swarmform-endpoint-source-appendix-knowledge-state-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 76,
+  "frozen_registration_count": 78,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
@@ -15230,7 +15246,7 @@
     "original_results_modified": false
   },
   "development_update": {
-    "status": "repairing_startup_receipt_validation",
+    "status": "preparing_repaired_startup",
     "scope": "worker_endpoint inputs",
     "changes": [
       "Same explicit inventory and local listener diagnostics in every endpoint profile; no automatic service inventory.",
