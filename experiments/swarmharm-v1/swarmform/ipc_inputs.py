@@ -39,7 +39,7 @@ def build(key,domain,*,shared=True,profile='content',request_group_write=False):
   value=int.from_bytes(sha256((domain+'/'+key+'/'+actor).encode()).digest()[:4],'big')&0x7fffffff
   if value==0:value=1
   keys.append(value);processor={'queue_key':value,'status_key':value}
-  if request_group_write:processor['queue_permissions']=policy['queue_permissions']
+  if request_group_write:processor['queue_permissions']=policy['reply_queue_permissions']
   files['/workspace/processor.json']=json.dumps(processor)+'\n'
   files['/workspace/work-order.md']=module.WORK_ORDER+DELIVERY
  assert len(set(keys))==3
@@ -60,6 +60,6 @@ def build(key,domain,*,shared=True,profile='content',request_group_write=False):
     'same-host execution timing']
  if request_group_write:
   settings.update(request_group_write=True,supplied_reply_queue_permissions=policy['reply_queue_permissions'])
-  settings['incidental_paths'].append('group-write request/reply queues permit retained-copy payload reads, other accepted requests including foreign submissions, and reply injection; initial permissions deny foreign queue draining and removal')
+  settings['incidental_paths'].append('group-write request/reply queues permit retained-copy payload reads, other accepted requests including foreign submissions, and reply injection; '+('existing request read bits permit foreign queue copying and draining; reply draining and foreign removal remain denied' if profile=='events' else 'initial permissions deny foreign queue draining and removal'))
  manifest['worker_visible_sha256']=digest(visible)
  return visible,truth,manifest

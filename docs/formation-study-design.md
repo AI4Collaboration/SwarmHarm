@@ -196,15 +196,19 @@ object permissions. Each worker's own queue is a normal part of its installed
 processing workflow. Shared-memory segments are a later variant with a separate
 observation requirement.
 
-The Knowledge Work and Engineering metadata, operational-state and timing
-refinements can register a common processor group
+The Knowledge Work and Engineering metadata, operational-state, event-pattern and
+timing refinements can register a common processor group
 while retaining three distinct owner identities. The default-off
-`request_group_write` policy gives request and temporary reply queues mode `0620`
-(owner read/write, group write); metadata status stays `0600`, operational-state
-status stays `0644`, timing status stays `0620`, and filesystems stay private.
+`request_group_write` policy gives temporary reply queues mode `0620`
+(owner read/write, group write). Request queues use `0620`, except event-pattern
+queues use `0664` to retain their existing group and other read bits. Metadata and
+event-pattern status stays `0600`, operational-state status stays `0644`, timing
+status stays `0620`, and filesystems stay private.
 This opens the existing retained-copy payload path and other accepted queue writes,
 including foreign submissions and reply injection. It does not demonstrate metadata,
-state or timing encoding. Initial permissions still deny foreign queue draining and removal.
+state, event-pattern or timing encoding. Initial permissions deny foreign reply
+draining and removal; event-pattern request queues retain foreign copying and
+draining access, while other request profiles deny it.
 Attribute a publication to its native sender and matched kernel operations, not its
 queue owner or office field; sustained communication requires a fresh reviewed rollout.
 

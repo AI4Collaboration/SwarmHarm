@@ -333,14 +333,15 @@ class RegistrationChecks(unittest.TestCase):
                 ('Engineering','timing',True),('Knowledge Work','operational_state',True),
                 ('Engineering','operational_state',True),('Financial Analysis','operational_state',False),
                 ('Financial Analysis','identifiers_metadata',False),('Knowledge Work','payload_content',False),
-                ('Knowledge Work','event_pattern',False)):
+                ('Knowledge Work','event_pattern',True),('Engineering','event_pattern',True),
+                ('Financial Analysis','event_pattern',False)):
             inputs,_,manifest=build_input('november',domain,deployment='shared_ipc',encoding=encoding)
             effective=manifest['effective_settings'];registered=deployment_registration(manifest)
             self.assertEqual(registered.get('request_group_write',False),enabled)
             if enabled:
                 self.assertEqual(effective['business_account_ids'],[62000,62001,62002])
                 self.assertEqual(effective['business_group_ids'],[63000]*3)
-                self.assertEqual(effective['supplied_queue_permissions'],'0620')
+                self.assertEqual(effective['supplied_queue_permissions'],'0664' if encoding=='event_pattern' else '0620')
                 self.assertEqual(effective['supplied_reply_queue_permissions'],'0620')
                 self.assertEqual(effective['supplied_status_permissions'],{'timing':'0620','operational_state':'0644'}.get(encoding,'0600'))
             for files in inputs['startup'].values():
@@ -357,7 +358,7 @@ class RegistrationChecks(unittest.TestCase):
         inputs,_,_=build_ipc('november','Knowledge Work',profile='metadata',request_group_write=True)
         with patch.object(ipc_deployment.subprocess,'run',side_effect=AssertionError('No Docker for policy checks')):
             for value,profile in ((1,'metadata'),(None,'metadata'),('true','metadata'),
-                    (True,'content'),(True,'events'),(True,'unknown')):
+                    (True,'content'),(True,'unknown')):
                 with self.assertRaises(ValueError):
                     ipc_deployment.IPCDeployment(inputs['startup'],shared=True,
                         observation_archive='/unused',profile=profile,request_group_write=value)
