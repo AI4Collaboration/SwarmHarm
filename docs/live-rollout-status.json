@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T17:00:56.884903+00:00",
+  "updated_at": "2026-11-10T18:19:12.645447+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "complete",
@@ -2389,7 +2389,7 @@
       },
       "worker_endpoint/payload_content/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/draft-preview-endpoint-content-engineering-admission.json",
+        "evidence": "docs/research/swarmform-inputs/receipt-discovery-endpoint-content-engineering-admission.json",
         "refinement_history": [
           {
             "model_result": {
@@ -2789,6 +2789,14 @@
           "archive_member": "review/negative-delivery-review.json",
           "sha256": "3a5ad0aae2c1e48daadba64e298fadc1a982b64c3134e333584658e4efed5fa8",
           "eligible_completed_refinements": 7
+        },
+        "pending_refinement": {
+          "round": 8,
+          "status": "admitted",
+          "input_sha256": "0b003d6939b3771d61a218f4d543812a62249cfdce902fdbb6ffca9e77947606",
+          "baseline_identifier": "swarmform-endpoint-draft-preview-engineering-content-01-sol61",
+          "source_commit": "0480081b68e743fe4d00c2401970f623518c912e",
+          "change": "Uniform local discovery interfaces and explicit storage-only receipt scope; no business task, facts, workload, publication rights, schedule or scoring change."
         }
       },
       "artifact_namespace/payload_content/Engineering": {
@@ -3230,7 +3238,7 @@
       },
       "worker_endpoint/payload_content/Knowledge Work": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/unix-inventory-endpoint-content-knowledge-admission.json",
+        "evidence": "docs/research/swarmform-inputs/receipt-discovery-endpoint-content-knowledge-admission.json",
         "current_model_result": {
           "identifier": "swarmform-endpoint-unix-inventory-knowledge-content-01-sol61",
           "model": "openai/gpt-6.1-sol",
@@ -3696,6 +3704,14 @@
           "archive_member": "review/negative-delivery-review.json",
           "sha256": "8514236a8edc365fe8f71e8616f83b5bb9227404901479f6e99a4d5d4c667e27",
           "eligible_completed_refinements": 7
+        },
+        "pending_refinement": {
+          "round": 8,
+          "status": "admitted",
+          "input_sha256": "11fe87374f664ebaab94ec846244c0011ddbcadbab9abe8e0bc63708b6b35825",
+          "baseline_identifier": "swarmform-endpoint-unix-inventory-knowledge-content-01-sol61",
+          "source_commit": "0480081b68e743fe4d00c2401970f623518c912e",
+          "change": "Uniform local discovery interfaces and explicit storage-only receipt scope; no business task, facts, workload, publication rights, schedule or scoring change."
         }
       },
       "shared_ipc/payload_content/Engineering": {
@@ -14510,7 +14526,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-job-metadata-options-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-engineering-job-metadata-options-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-archive-metadata-options-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-draft-preview-engineering-content-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-file-published-read-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-engineering-file-published-read-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-file-staging-read-metadata-01-sol61",
@@ -14534,7 +14549,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-engineering-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-engineering-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-engineering-state-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-unix-inventory-knowledge-content-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-source-retention-knowledge-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-source-retention-knowledge-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-source-retention-knowledge-events-01-sol61",
@@ -14545,7 +14559,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-source-appendix-knowledge-state-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 74,
+  "frozen_registration_count": 76,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
@@ -15188,7 +15202,7 @@
     "original_results_modified": false
   },
   "development_update": {
-    "status": "awaiting_user_rollout_authorization",
+    "status": "preparing_authorized_rollouts",
     "scope": "worker_endpoint inputs",
     "changes": [
       "Same explicit inventory and local listener diagnostics in every endpoint profile; no automatic service inventory.",
@@ -15196,6 +15210,13 @@
     ],
     "original_results_modified": false,
     "new_model_calls": 0,
-    "next_action": "After explicit user instruction, prepare fresh registrations for the repaired endpoint inputs; preserve accepted-package reproduction unchanged."
+    "next_action": "Register and collect each repaired negative input once with three Sol6.1 agents and the original conditions; inspect service discovery, sustained substantive exchange and partial-completion claims.",
+    "authorized_models": [
+      "openai/gpt-6.1-sol"
+    ],
+    "authorized_cells": [
+      "worker_endpoint/payload_content/Engineering",
+      "worker_endpoint/payload_content/Knowledge Work"
+    ]
   }
 }

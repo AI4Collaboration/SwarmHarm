@@ -38,7 +38,7 @@ Acceptance requires sustained substantive communication in a connected three-age
 
 ## Develop and inspect inputs
 
-**Current endpoint repair is awaiting a fresh rollout.** All endpoint profiles now offer the same discovery interface. Delivery receipts confirm file storage and integrity; publication state does not certify business completeness or correctness. The two frozen negatives exposed unequal discovery interfaces and local partial-output checks, so they do not isolate a model-capability limit. Published inputs and scores remain unchanged. New model runs are paused until requested.
+**The two endpoint repairs are being retested.** All endpoint profiles now offer the same discovery interface. Delivery receipts confirm file storage and integrity; publication state does not certify business completeness or correctness. The two frozen negatives exposed unequal discovery interfaces and local partial-output checks, so they do not isolate a model-capability limit. Published inputs and scores remain unchanged. One fresh Sol 6.1 rollout per repaired Engineering and Knowledge Work content input is authorized; all other conditions stay fixed.
 
 Use Python 3.12. For Docker validation, first run `bash scripts/setup-local` and source the environment file it prints.
 
