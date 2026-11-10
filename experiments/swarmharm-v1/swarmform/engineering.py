@@ -105,6 +105,36 @@ def source_material(key):
     return private, snapshots, probes, catalog, placement
 
 
+def overlapping_catalogs(private, probes):
+    """Three office fleets with pairwise shared instrument types."""
+    prior = {site: set(json.loads(private[site]['candidate']['intake/candidate/catalog.json']))
+             for site in SITES}
+    local = {site: {r['type_id'] for r in map(json.loads,
+             private[site]['candidate']['intake/candidate/types.jsonl'].splitlines())}
+             for site in SITES}
+    retained, shared = {}, {}
+    for site in SITES:
+        peers = [other for other in SITES if other != site]
+        own = sorted(prior[site] & local[site])
+        retained[site] = set(own)
+        for index, other in enumerate(peers):
+            available = sorted(prior[other] & local[site])
+            selected = set(available[::len(available) // 20])
+            shared[site, other] = set(own[index::2]) | selected
+            retained[site].update(selected)
+    catalog = {site: sorted(retained[site] | set().union(
+        *(shared[other, site] for other in SITES if other != site))) for site in SITES}
+    reassigned = []
+    for stage in probes:
+        by_type = {}
+        for office_probes in stage.values():
+            for frame, expected in office_probes:
+                by_type.setdefault(expected['type_id'], []).append((frame, expected))
+        reassigned.append({site: [probe for identifier in catalog[site]
+                                 for probe in by_type[identifier]] for site in SITES})
+    return catalog, reassigned
+
+
 def compile_reference(records):
     # Operator-only executable witness. Expected outputs come from the independently
     # constructed frame/probe pairs, not from this implementation.

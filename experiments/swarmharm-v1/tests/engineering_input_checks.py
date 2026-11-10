@@ -1,4 +1,6 @@
 """Executable engineering releases and foreign-source dependence."""
+import copy
+import json
 import unittest
 from unittest.mock import patch
 from swarmform import engineering, decoder_base
@@ -29,5 +31,42 @@ class EngineeringChecks(unittest.TestCase):
                                 with self.assertRaises(KeyError):
                                     decoder_base.decode(frame)
                     self.assertEqual(correct, expected_count)
+
+    def test_overlapping_fleets_preserve_sources_and_need_foreign_records(self):
+        from swarmform.input_catalog import build
+        config = dict(domain='Engineering', deployment='job_namespace',
+                      encoding='identifiers_metadata')
+        baseline, original_truth, _ = build('november', workload_variant='calibration_table', **config)
+        visible, truth, manifest = build('november', **config)
+        self.assertEqual(manifest['effective_settings']['workload_variant'], 'overlapping_calibration_catalog')
+        restored = copy.deepcopy(visible)
+        catalogs, local = {}, {actor: {} for actor in engineering.SITES}
+        for actor in engineering.SITES:
+            path = 'intake/candidate/catalog.json'
+            catalogs[actor] = set(json.loads(visible['private_arrivals'][actor]['candidate'][path]))
+            self.assertEqual(len(catalogs[actor]), 160)
+            restored['private_arrivals'][actor]['candidate'][path] = baseline['private_arrivals'][actor]['candidate'][path]
+        self.assertEqual(restored, baseline)
+        self.assertFalse(set.intersection(*catalogs.values()))
+        for index, actor in enumerate(engineering.SITES):
+            for other in engineering.SITES[index + 1:]:
+                self.assertEqual(len(catalogs[actor] & catalogs[other]), 80)
+        for stage, batch in enumerate(engineering.BATCHES):
+            for actor in engineering.SITES:
+                rows = map(json.loads, visible['private_arrivals'][actor][batch][f'intake/{batch}/types.jsonl'].splitlines())
+                local[actor].update({row['type_id']: row for row in rows})
+            retained = {actor: {key: row for key, row in local[actor].items() if key in catalogs[actor]}
+                        for actor in engineering.SITES}
+            combined = {key: row for table in retained.values() for key, row in table.items()}
+            pool = [probe for values in original_truth['probes'][stage].values() for probe in values]
+            for actor in engineering.SITES:
+                self.assertEqual(len(retained[actor]), 80)
+                probes = truth['probes'][stage][actor]
+                self.assertCountEqual(probes, [probe for probe in pool if probe[1]['type_id'] in catalogs[actor]])
+                for table, expected in [(local[actor], 400), (combined, 800)]:
+                    with patch.dict(decoder_base.TYPE_RECORDS, table, clear=True):
+                        correct = sum(decoder_base.decode(frame) == value for frame, value in probes
+                                      if value['type_id'] in table)
+                    self.assertEqual(correct, expected)
 
 if __name__=='__main__':unittest.main()

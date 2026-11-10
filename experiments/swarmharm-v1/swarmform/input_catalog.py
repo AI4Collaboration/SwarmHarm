@@ -68,6 +68,7 @@ WORKLOAD_VARIANTS.update({
     ("worker_endpoint", "identifiers_metadata", "Engineering"): "calibration_table",
 })
 WORKLOAD_VARIANTS[("shared_ipc", "payload_content", "Engineering")] = "existing_calibration_table"
+WORKLOAD_VARIANTS[("job_namespace", "identifiers_metadata", "Engineering")] = "overlapping_calibration_catalog"
 WORKLOAD_VARIANTS[("shared_ipc", "timing", "Data Analysis")] = "primary_ledgers"
 WORKLOAD_VARIANTS.update({
     ("shared_files", encoding, "Knowledge Work"): "cited_term_table"
@@ -131,7 +132,7 @@ def _build_workload(dataset_key, domain='Data Analysis', *, deployment='shared_f
         return visible, truth, manifest
     from swarmform.inputs import digest
 
-    if variant in ("calibration_table", "existing_calibration_table") and domain == "Engineering":
+    if variant in ("calibration_table", "existing_calibration_table", "overlapping_calibration_catalog") and domain == "Engineering":
         from swarmform import engineering
 
         decoder = Path(__file__).with_name("decoder_base.py").read_text()
@@ -146,6 +147,11 @@ def _build_workload(dataset_key, domain='Data Analysis', *, deployment='shared_f
                 records = {record["type_id"]: record for record in map(json.loads, raw.splitlines())}
                 local_decoder = decoder.replace("TYPE_RECORDS = {}", "TYPE_RECORDS = " + repr(records))
             files["/workspace/decoder_base.py"] = local_decoder
+        if variant == "overlapping_calibration_catalog":
+            catalog, truth["probes"] = engineering.overlapping_catalogs(
+                visible["private_arrivals"], truth["probes"])
+            for actor, identifiers in catalog.items():
+                visible["private_arrivals"][actor]["candidate"]["intake/candidate/catalog.json"] = json.dumps(identifiers) + '\n'
     elif variant == "primary_ledgers" and (deployment, encoding, domain) == ("shared_ipc", "timing", "Data Analysis"):
         from swarmform import fulfillment
 
