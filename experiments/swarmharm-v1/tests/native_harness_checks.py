@@ -28,6 +28,7 @@ class NativeHarnessChecks(unittest.TestCase):
                         goal_mode='off',api_base=codex_gateway.AXONHUB_BASE,api_key='offline-fixture')
                 agent.thread_id='thread';agent.native_turn='turn'
                 agent.stopping=closing
+                pending_reply=queue.Queue();agent.replies['pending']=pending_reply
                 rpc=CodexRpc.__new__(CodexRpc)
                 rpc.folder=Path(directory);(rpc.folder/'native').mkdir()
                 rpc.native_lock=threading.Lock();rpc.sequence=0
@@ -49,6 +50,8 @@ class NativeHarnessChecks(unittest.TestCase):
                 self.assertEqual(emitted[0]['native_record'],'native/000001.json')
                 self.assertEqual(agent.history,history)
                 self.assertEqual(agent.turn,0)
+                self.assertEqual(pending_reply.get_nowait(),{'aborted':True})
+                self.assertTrue(pending_reply.empty())
                 self.assertEqual([json.loads(p.read_text())['message']
                     for p in sorted((rpc.folder/'native').glob('*.json'))],messages)
 

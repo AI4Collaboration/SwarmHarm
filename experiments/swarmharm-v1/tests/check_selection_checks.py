@@ -14,6 +14,23 @@ changed = ENTRY['changed_files']
 
 
 class CheckSelectionChecks(unittest.TestCase):
+    def test_cross_harness_suite_installs_every_runtime_it_validates(self):
+        for path in ('experiments/swarmharm-v1/tests/native_harness_checks.py',
+                     'experiments/runtime/codex_session.py',
+                     'experiments/runtime/claude_agent.py',
+                     'experiments/runtime/pi_agent.py'):
+            with self.subTest(path=path):
+                plan=select([path])
+                self.assertIn('tests.native_harness_checks',plan['tests'])
+                self.assertEqual(plan['harnesses'],['claude','codex','pi'])
+                self.assertTrue(plan['docker'])
+
+    def test_collection_suite_declares_its_native_workstation_dependencies(self):
+        plan=select(['experiments/swarmharm-v1/tests/swarmform_collection_checks.py'])
+        self.assertEqual(plan['tests'],['tests.swarmform_collection_checks'])
+        self.assertEqual(plan['harnesses'],['codex'])
+        self.assertTrue(plan['docker'])
+
     def test_structure_operator_observations_need_no_native_model_runtime(self):
         for name in ('communication_inventory','artifact_use_timeline','exact_source_use','shared_content_inventory','source_pool_review','common_problem_review'):
             plan=select([f'experiments/structure/{name}.py'])
@@ -84,10 +101,10 @@ class CheckSelectionChecks(unittest.TestCase):
                 'tests.swarmform_input_runner_checks','tests.swarmform_registration_checks'])
             for check in ('inputs','catalog','wording'):
                 self.assertIn(check,plan['checks'])
-            self.assertFalse(plan['docker'])
-            self.assertEqual(plan['harnesses'],[])
+            self.assertTrue(plan['docker'])
+            self.assertEqual(plan['harnesses'],['codex'])
 
-    def test_job_policy_binding_skips_unrelated_workload_and_container_checks(self):
+    def test_job_policy_binding_keeps_its_collection_dependencies(self):
         plan=select(['experiments/swarmharm-v1/swarmform/job_deployment.py',
                      'experiments/swarmharm-v1/swarmform/deployments.py'])
         self.assertEqual(plan['tests'],['tests.swarmform_collection_checks',
@@ -95,8 +112,8 @@ class CheckSelectionChecks(unittest.TestCase):
             'tests.swarmform_registration_checks','tests.swarmform_service_cleanup_checks'])
         for check in ('inputs','catalog','wording'):
             self.assertIn(check,plan['checks'])
-        self.assertFalse(plan['docker'])
-        self.assertEqual(plan['harnesses'],[])
+        self.assertTrue(plan['docker'])
+        self.assertEqual(plan['harnesses'],['codex'])
 
     def test_archive_service_edits_do_not_select_unrelated_harnesses(self):
         plan = select(['experiments/swarmharm-v1/swarmform/base_archive.py',
@@ -114,8 +131,8 @@ class CheckSelectionChecks(unittest.TestCase):
             'tests.swarmform_input_runner_checks','tests.swarmform_registration_checks'])
         for check in ('inputs','catalog','wording'):
             self.assertIn(check,plan['checks'])
-        self.assertFalse(plan['docker'])
-        self.assertEqual(plan['harnesses'],[])
+        self.assertTrue(plan['docker'])
+        self.assertEqual(plan['harnesses'],['codex'])
 
     def test_ipc_business_helpers_check_inputs_without_unrelated_docker_suites(self):
         for helper in ('ipc_status', 'ipc_queue', 'ipc_processor'):
