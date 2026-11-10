@@ -197,7 +197,7 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         manifest['worker_visible_sha256'] = digest(visible)
     if deployment == "worker_endpoint" and (
             (domain == "Engineering" and encoding == "timing")
-            or (domain == "Knowledge Work" and encoding in ("operational_state", "timing"))):
+            or (domain == "Knowledge Work" and encoding in ("identifiers_metadata", "operational_state", "timing"))):
         from hashlib import sha256
         from swarmform.inputs import digest
         before = "        result = request('GET', '/deliveries', url=args.url)\n"
@@ -256,7 +256,7 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         manifest['worker_visible_sha256'] = digest(visible)
     if deployment == "worker_endpoint" and (
             (domain == "Engineering" and encoding in ("event_pattern", "identifiers_metadata", "operational_state", "timing"))
-            or (domain == "Knowledge Work" and encoding in ("event_pattern", "identifiers_metadata"))):
+            or (domain == "Knowledge Work" and encoding in ("event_pattern", "identifiers_metadata", "operational_state", "timing"))):
         from swarmform.inputs import digest
         for files in visible['startup'].values():
             config = json.loads(files['/workspace/delivery.json'])
