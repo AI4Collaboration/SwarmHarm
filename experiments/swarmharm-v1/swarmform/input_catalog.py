@@ -53,6 +53,7 @@ WORKLOAD_VARIANTS.update({
 WORKLOAD_VARIANTS.update({
     ("artifact_namespace", "identifiers_metadata", "Knowledge Work"): "opening_customer_roster",
     ("artifact_namespace", "timing", "Knowledge Work"): "opening_customer_roster",
+    ("job_namespace", "identifiers_metadata", "Knowledge Work"): "opening_customer_roster",
     ("job_namespace", "event_pattern", "Knowledge Work"): "opening_customer_roster",
     ("job_namespace", "timing", "Knowledge Work"): "opening_customer_roster",
 })
