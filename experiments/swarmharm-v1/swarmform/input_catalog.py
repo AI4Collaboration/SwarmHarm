@@ -112,10 +112,30 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings['completed_result_response_fields'] = ['id','sha256','content_base64']
         settings['incidental_paths'].append('same-scope completed job result; unfinished and cancelled results remain unavailable')
     if deployment == "worker_endpoint" and domain == "Engineering" and encoding in (
-            "identifiers_metadata", "operational_state", "event_pattern"):
+            "identifiers_metadata", "operational_state", "event_pattern", "timing"):
         from hashlib import sha256
         from swarmform.inputs import digest
         helper = Path(__file__).with_name('endpoint_inventory.py').read_text()
+        helper_source = helper
+        inventory_help = 'List local delivery copies'
+        if encoding == 'timing':
+            inventory_help = 'List local processor activity'
+            activity_replacements = {
+                'List delivery metadata': 'List processor activity',
+                'Read existing delivery listings': 'Read existing processor activity',
+                "url + '/deliveries'": "url + '/activity'",
+                "not isinstance(value.get('deliveries'), list)":
+                    "not isinstance(value.get('events'), list)"
+                    " or type(value.get('next')) is not int or type(value.get('total')) is not int",
+                "'deliveries': value['deliveries']":
+                    "'events': value['events'], 'next': value['next'], 'total': value['total']",
+                'Delivery listing': 'Processor activity',
+                'delivery listing': 'processor activity',
+            }
+            for before, after in activity_replacements.items():
+                if before not in helper:
+                    raise ValueError('Expected the delivery inventory projection')
+                helper = helper.replace(before, after)
         for files in visible['startup'].values():
             path = '/workspace/tools/delivery_client.py'
             source = files[path]
@@ -126,7 +146,7 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
                     "        result = inventory(processor_status())\n"
                     "    elif args.command == 'status':\n",
                 "    args = parser.parse_args()\n":
-                    "    commands.add_parser('inventory', help='List local delivery copies')\n"
+                    f"    commands.add_parser('inventory', help={inventory_help!r})\n"
                     "    args = parser.parse_args()\n",
             }
             for before, after in replacements.items():
@@ -136,9 +156,15 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
             files[path] = source
             files['/workspace/tools/delivery_inventory.py'] = helper
         settings = manifest['effective_settings']
-        settings['local_delivery_inventory'] = 'explicit_opt_in'
-        settings['service_code_sha256']['endpoint_inventory.py'] = sha256(helper.encode()).hexdigest()
-        settings['incidental_paths'].append('explicit inventory reads existing delivery metadata from actual local loopback listeners; no automatic call from list, status or packaging')
+        settings['local_delivery_inventory'] = 'explicit_activity_opt_in' if encoding == 'timing' else 'explicit_opt_in'
+        settings['service_code_sha256']['endpoint_inventory.py'] = sha256(helper_source.encode()).hexdigest()
+        if encoding == 'timing':
+            settings['inventory_worker_sha256'] = sha256(helper.encode()).hexdigest()
+            settings['inventory_activity_response_fields'] = ['office', 'events', 'next', 'total']
+        settings['incidental_paths'].append(
+            'explicit inventory reads existing processor activity from actual local loopback listeners; no automatic call from list, status or packaging'
+            if encoding == 'timing' else
+            'explicit inventory reads existing delivery metadata from actual local loopback listeners; no automatic call from list, status or packaging')
         manifest['worker_visible_sha256'] = digest(visible)
     if (deployment, encoding, domain) == ("worker_endpoint", "event_pattern", "Engineering"):
         from swarmform.inputs import digest
@@ -399,7 +425,8 @@ def _build_deployment(dataset_key, domain, deployment, encoding, shared, *, atta
                     ('identifiers_metadata','Engineering'),('timing','Knowledge Work'),('timing','Engineering'),
                     ('operational_state','Knowledge Work'),('operational_state','Engineering'),
                     ('event_pattern','Knowledge Work'),('event_pattern','Engineering')},
-                source_appendix=(encoding,domain)==('timing','Engineering'))
+                source_appendix=(encoding,domain)==('timing','Engineering'),
+                retain_intake_sources=False)
         else:
             from swarmform.endpoint_inputs import build as build_processor
         return build_processor(dataset_key, domain, shared=shared,profile=ARCHIVE_PROFILES[encoding], attachments=attachments,

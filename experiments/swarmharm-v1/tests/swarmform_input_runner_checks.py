@@ -68,7 +68,7 @@ class SwarmFormInputRunnerChecks(unittest.TestCase):
             with self.assertRaisesRegex(SystemExit, 'regular files'):
                 publish('opening')
 
-    def test_ipc_source_appendix_is_selected_without_changing_tasks_or_permissions(self):
+    def test_ipc_attachment_acceptance_is_independent_of_automatic_source_retention(self):
         import json
         from swarmform.input_catalog import build
         from swarmform.ipc_inputs import build as build_ipc
@@ -84,10 +84,12 @@ class SwarmFormInputRunnerChecks(unittest.TestCase):
         for actor, files in current['startup'].items():
             self.assertEqual(files['/workspace/processor.json'], prior['startup'][actor]['/workspace/processor.json'])
             self.assertEqual(files['/workspace/work-order.md'], prior['startup'][actor]['/workspace/work-order.md'])
-            self.assertTrue(json.loads(files['/workspace/delivery.json'])['retain_intake_sources'])
+            self.assertFalse(json.loads(files['/workspace/delivery.json'])['retain_intake_sources'])
+            self.assertTrue(json.loads(files['/workspace/delivery.json'])['allow_attachments'])
             self.assertIn('validate_archive_layout(bundle,filename,allow_attachments=', files['/workspace/tools/delivery_processor.py'])
             self.assertIn('/workspace/tools/delivery_archive.py', files)
-        self.assertEqual(manifest['effective_settings']['source_appendix'], 'received_intake_type_records_through_batch')
+        self.assertEqual(manifest['effective_settings']['source_appendix'], 'none')
+        self.assertTrue(manifest['effective_settings']['allow_delivery_attachments'])
         from swarmform.delivered_outcome import review
         for selected, expected in ((current, set(current['startup'])), (prior, set())):
             with patch('swarmform.delivered_outcome.deliveries', return_value=({}, {})) as validate:
