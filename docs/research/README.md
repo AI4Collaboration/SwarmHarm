@@ -1,26 +1,15 @@
-# Reviewed evidence
+# Evidence
 
-This index collects reviewed evidence for the [SwarmForm research framework](../../README.md#research-framework)
-and retained SwarmHarm studies. The [eight-agent Navier–Stokes experiment](../structure-common-problem-design.md)
-is one part of the structure research. The records below do not queue new collections
-or supply results for its new interval policy.
+## Reviewed channel-bootstrapping delivery
 
-- **Completed 50-input delivery audit:** sealed inputs, runtime versions, registration bindings, remote archive digests and the distinction between reviewed cases and development defaults. [Publication evidence audit](swarmform-publication-audit.json).
+- [50 tested inputs and complete-trajectory index](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs-reviewed.zip): one selected version per Knowledge Work and Engineering configuration.
+- [Publication audit](swarmform-publication-audit.json): settings, source bindings, communication criteria and independently checked business outcomes.
+- [Matrix ledger](../live-rollout-status.json): selected cases, hashes, results and full trajectory URLs. Supplemental results are labeled separately.
 
-- **Latest Knowledge Work account-source retests:** endpoint opening-stage authored exchange; IPC opening inspection followed by updated-fact comparison. Both finish 9/9 briefs correctly. [Case settings, limits and full trajectories](swarmform-knowledge-account-sources.json).
+## Structure research and SwarmHarm
 
-[Download the accepted SwarmForm inputs and trajectory index](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs-reviewed.zip). The [measurement audit](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/observer-measurement-audit-22-positive-cases-20261109.tar.gz) binds the reviewed positive outcomes to native reads and actual delivered files.
+- [Eight-agent structure study](../structure-common-problem-design.md): current interval-policy plan; implementation and validation pending. [Reviewed preceding pair](../structure-common-problem-long-v3-findings.json) retains its own settings and does not validate the new interval policy.
+- **SwarmHarm:** [findings](../phase2-design.md), [balanced results](balanced-study-v2-results.json) and [complete trajectories](trajectory-release.json).
+- [Additional formation cases](phase1-native-trajectory-archives.json), [workstation-history comparison](workstation-history-results.json) and [work-journal validation](workstation-context-validation.json).
 
-- **Reviewed refinements.** Financial job metadata supported sustained three-agent exchange of 130,835 useful bytes and nine correct reports. Engineering archive timing produced nine ready deliveries after an intake wording change. Each covered 40 of 160 required types, and no office adopted a timing convention. [Baseline and refinement evidence](swarmform-refinement-20261109.json)
-
-- **SwarmForm evidence (Sol 6.1, three agents).** The current delivery selects all 25 Knowledge Work and all 25 Engineering configurations. All four-domain evidence below is preserved; supplemental cases do not enlarge the delivery count. Complete native records, source lineage and independent business results: payload in [Data Analysis](swarmform-payload-five-20261109.json), [Engineering](swarmform-payload-engineering-20261109.json), [Financial Analysis](swarmform-payload-financial-20261109.json), [Knowledge Work](swarmform-payload-knowledge-20261109.json); metadata in [Data Analysis](swarmform-metadata-data-20261109.json), [Engineering](swarmform-metadata-engineering-20261109.json), [Financial Analysis](swarmform-metadata-financial-20261109.json), [Knowledge Work](swarmform-metadata-knowledge-20261109.json); state in [Data Analysis](swarmform-state-data-20261109.json), [Engineering](swarmform-state-engineering-20261109.json), [Financial Analysis](swarmform-state-financial-20261109.json), [Knowledge Work](swarmform-state-knowledge-20261109.json); events in [Data Analysis](swarmform-events-data-20261109.json), [Engineering](swarmform-events-engineering-20261109.json), [Financial Analysis](swarmform-events-financial-20261109.json), [Knowledge Work](swarmform-events-knowledge-20261109.json); [timing](swarmform-timing-20261109.json).
-
-- **SwarmForm shared-file inputs (three agents, four domains).** Sol 6.1 authored and reused source conventions in fulfillment, settlement and briefs, with nine correct releases in each domain. Engineering showed partial package reuse. Sol 5.6 formed no adopted source channel in these four pairs. [Results and eight complete native/ATIF trajectories](swarmform-file-content-domains-03.json) · [Earlier fulfillment pair, original runtime preserved](swarmform-file-content-analysis-02.json)
-
-- **SwarmForm v57 pilot (four agents).** Sol 6.1 established and reused a receipt directory; only one receipt has verified downstream use. Sol 5.6 recorded zero peer file reads. Neither rollout demonstrated sustained exchange. [Reviewed model pair](swarmform-cache-pilot.json) · [Pilot settings](../running-evals.md#swarmform-cache-rollout) · [Workstation probe](swarmform-runtime-audit.json)
-- **SwarmHarm** — [case findings](../phase2-design.md), [twelve balanced results](balanced-study-v2-results.json) and [offline input checks](balanced-study-v2-readiness.json).
-- **Additional formation evidence** — [eight native examples](phase1-native-trajectory-archives.json), [private office-history comparison](workstation-history-results.json) and [work-journal validation](workstation-context-validation.json).
-
-[Sealed reporting registrations](reporting-run-index.json) · [Complete archived trajectories and checksums](trajectory-release.json)
-
-Published historical archives remain on GitHub; local raw copies may have been removed during cleanup. Consult the relevant evidence index and archive checksums rather than assuming a local trajectory is present. The [recovery receipts](swarmform-events-financial-20261109.json) describe that case's archived members. Deleted cancelled-run trajectories are excluded from this retained evidence.
+Each study retains its own settings and scores. The overall scope is described in the [research framework](../../README.md#research-framework).
