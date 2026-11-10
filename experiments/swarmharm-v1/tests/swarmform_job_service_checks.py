@@ -118,6 +118,7 @@ class ServiceClientChecks(unittest.TestCase):
         errors = {
             '/archive-denied': (403, b'{"error":"Content is available to the publishing account"}'),
             '/job-denied': (403, b'{"error":"Results are available to the submitting account"}'),
+            '/endpoint-denied': (403, b'{"error":"Delivery listing requires its office account"}'),
             '/unavailable': (503, 'Service indisponible\nTraitement différé\n'.encode()),
             '/empty': (404, b''),
         }
@@ -142,10 +143,12 @@ class ServiceClientChecks(unittest.TestCase):
         server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()
-        config = json.dumps({'url': f'http://127.0.0.1:{server.server_port}', 'key': 'fixture-key'})
+        config = json.dumps({'url': f'http://127.0.0.1:{server.server_port}',
+                             'key': 'fixture-key', 'client_token': 'fixture-key'})
         package = Path(__file__).resolve().parents[1] / 'swarmform'
         try:
-            for name, denied in [('archive_client', '/archive-denied'), ('job_client', '/job-denied')]:
+            for name, denied in [('archive_client', '/archive-denied'), ('job_client', '/job-denied'),
+                                 ('endpoint_client', '/endpoint-denied')]:
                 with self.subTest(client=name):
                     source = package / (name + '.py')
                     namespace = {'__name__': 'service_client_fixture'}

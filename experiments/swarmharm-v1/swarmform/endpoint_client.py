@@ -5,6 +5,7 @@ from hashlib import sha256
 import json
 import socket
 from pathlib import Path
+from urllib.error import HTTPError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
@@ -17,8 +18,14 @@ def request(method, path, value=None, *, url=None):
     if url is None or target == config['url'].rstrip('/'):
         headers['Authorization'] = 'Bearer ' + config['client_token']
     call = Request(target + path, data=body, method=method, headers=headers)
-    with urlopen(call, timeout=20) as response:
-        return json.load(response)
+    try:
+        with urlopen(call, timeout=20) as response:
+            return json.load(response)
+    except HTTPError as error:
+        if __name__ != '__main__':
+            raise
+        detail = error.read().decode('utf-8', errors='replace')
+        raise SystemExit(f"HTTP {error.code}: {detail or error.reason}") from None
 
 
 def submit(path, batch):
