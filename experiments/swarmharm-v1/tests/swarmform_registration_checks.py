@@ -262,7 +262,8 @@ class RegistrationChecks(unittest.TestCase):
         cases=(('Engineering','operational_state',True),('Knowledge Work','operational_state',True),
                ('Financial Analysis','operational_state',False),('Engineering','event_pattern',True),
                ('Knowledge Work','event_pattern',True),('Financial Analysis','event_pattern',False),
-               ('Knowledge Work','timing',True),('Engineering','timing',False))
+               ('Knowledge Work','timing',True),('Engineering','timing',True),
+               ('Financial Analysis','timing',False))
         for domain,encoding,enabled in cases:
             profile={'event_pattern':'events','operational_state':'state','timing':'timing'}[encoding]
             inputs,_,manifest=build_input('november',domain,
@@ -297,7 +298,7 @@ class RegistrationChecks(unittest.TestCase):
                 ('Knowledge Work','operational_state',True),('Financial Analysis','operational_state',False),
                 ('Engineering','event_pattern',True),('Knowledge Work','event_pattern',True),
                 ('Financial Analysis','event_pattern',False),('Engineering','timing',True),
-                ('Knowledge Work','timing',False)):
+                ('Knowledge Work','timing',True),('Financial Analysis','timing',False)):
             profile={'operational_state':'state','event_pattern':'events','timing':'timing'}[encoding]
             inputs,_,manifest=build_input('november',domain,deployment='job_namespace',encoding=encoding)
             settings=deployment_registration(manifest)
