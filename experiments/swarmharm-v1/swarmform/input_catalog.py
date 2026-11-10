@@ -450,10 +450,15 @@ def _build_workload(dataset_key, domain='Data Analysis', *, deployment='shared_f
         sites = knowledge.SITES
         roster_path = "intake/opening/customers.json"
         catalogs = {site: json.loads(arrivals[site]["opening"][roster_path]) for site in sites}
+        rosters = {}
         for index, site in enumerate(sites):
             customers = (catalogs[site][:40] + catalogs[sites[(index + 1) % 3]][:20]
                          + catalogs[sites[(index + 2) % 3]][20:40])
+            rosters[site] = customers
             arrivals[site]["opening"][roster_path] = json.dumps(customers) + '\n'
+        knowledge.align_roster_sources(arrivals, rosters)
+        manifest["effective_settings"]["term_source_placement"] = "assigned_account_offices"
+        for site, customers in rosters.items():
             truth[site] = [knowledge.resolve(customers,
                 [json.loads(line) for actor in sites for batch in knowledge.BATCHES[:stage + 1]
                  for line in arrivals[actor][batch][f"intake/{batch}/documents.jsonl"].splitlines()], cutoff)

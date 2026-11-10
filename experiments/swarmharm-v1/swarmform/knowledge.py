@@ -115,6 +115,34 @@ def source_material(key):
     return private,expected,catalogs,documents
 
 
+def align_roster_sources(private, rosters):
+    """Place each assigned account's term history with an office serving it.
+
+    Overlapping portfolios split the four terms between their account offices.
+    Documents outside these portfolios retain their existing location.
+    Only document placement changes; source records and arrival dates do not.
+    """
+    documents = {(site, batch): [json.loads(line) for line in
+        private[site][batch][f'intake/{batch}/documents.jsonl'].splitlines()]
+        for site in SITES for batch in BATCHES}
+    records = {row['document_ref']: row for rows in documents.values() for row in rows}
+    custody = {}
+    for customer in sorted({customer for roster in rosters.values() for customer in roster}):
+        offices = [site for site in SITES if customer in rosters[site]]
+        if len(offices) < 2:
+            raise ValueError('Overlapping portfolios need multiple offices per account')
+        for index, field in enumerate(FIELDS):
+            custody[customer, field] = offices[index % len(offices)]
+    placed = {key: [] for key in documents}
+    for (site, batch), rows in documents.items():
+        for row in rows:
+            term = records[row['withdraws']] if row['kind'] == 'withdrawal' else row
+            office = custody.get((term['customer_id'], term['field']), site)
+            placed[office, batch].append(row)
+    for (site, batch), rows in placed.items():
+        private[site][batch][f'intake/{batch}/documents.jsonl'] = encode(rows)
+
+
 def verify(text,expected,*,flat=False):
     try:
         rows=json.loads(text)

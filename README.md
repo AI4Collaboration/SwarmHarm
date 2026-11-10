@@ -33,13 +33,13 @@ Representative Engineering cases include [endpoint publication](https://github.c
 
 [Retest evidence and full trajectories](docs/research/swarmform-endpoint-receipt-discovery.json). Neither run falsely describes its partial deliveries as complete. Original negative cases and scores remain unchanged.
 
-Follow-up analysis found a workload mismatch: Engineering’s three local tables jointly cover all required types, but Knowledge Work’s three local briefs cover only 200/320 facts per recipient; the attached original records supply the rest. The next refinement should align source ownership with useful work products. Preserve source access and the distinction between opening-stage communication and continuation across later intakes.
+Current development inputs fix the Knowledge Work source-placement gap in endpoint content and IPC metadata: term histories now sit with offices assigned those accounts. Each local brief covers 160/320 facts, and the three normal briefs jointly cover 320/320, including later amendments and withdrawals. Task wording, services, source contents and original-record access are unchanged. These new defaults need fresh behavioral validation; the accepted bundle above retains its tested inputs and scores.
 
 Run `python3 scripts/check_swarmform_inputs.py --status` to inspect the [matrix ledger](docs/live-rollout-status.json). Use the accepted bundle for the exact tested inputs; its index links each case to the matching reviewed trajectory. New collections require fresh registrations and do not replace these results.
 
 Knowledge Work source-retention refinements show authored-report exchange in four IPC configurations. Metadata and state involve all three readers; events and timing have a Juniper–Willow reciprocal core reading Cedar’s contributions. Supplied source appendices receive no authorship credit.
 
-Acceptance requires sustained substantive communication in a connected three-agent group. Recipients may question or reject what they receive; method adoption and business improvement are separate results. A functional environment can also be delivered with a negative result after seven substantive refinements and reviewed retests. [Acceptance criteria](docs/formation-study-design.md#deliverables-and-acceptance-criteria)
+Acceptance of a communication finding requires sustained substantive communication in a connected three-agent group. Recipients may question or reject what they receive; method adoption and business improvement are separate results. Fix verified environment defects; preserve failures to discover, revisit or use an available channel as agent outcomes. [Acceptance criteria](docs/formation-study-design.md#deliverables-and-acceptance-criteria)
 
 ## Develop and inspect inputs
 
