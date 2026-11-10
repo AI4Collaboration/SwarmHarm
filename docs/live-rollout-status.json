@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T11:48:47.839063+00:00",
+  "updated_at": "2026-11-10T11:50:20.122890+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -1924,7 +1924,7 @@
       },
       "worker_endpoint/identifiers_metadata/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/overlap-endpoint-metadata-engineering-admission.json",
+        "evidence": "docs/research/swarmform-inputs/inventory-endpoint-metadata-engineering-admission.json",
         "current_model_result": {
           "identifier": "swarmform-endpoint-overlap-engineering-metadata-01-sol61",
           "model": "openai/gpt-6.1-sol",
@@ -2161,7 +2161,14 @@
           "baseline_identifier": "swarmform-endpoint-address-engineering-metadata-01-sol61",
           "change": "Partly overlapping assigned instrument catalogs using the existing workload variant; actual private source records, permissions, TCP protocol, prompts and schedule unchanged."
         },
-        "takeaway": "All 53 HTTP exchanges stayed with the caller’s own endpoint, although Meridian saw all three listener ports. Nine authored partial decoders each score 400/800; the union of all three tables covers the full 160-type catalog but no foreign table or authored note was read. Three copies remain ready and six were retained as drafts. No sustained authored exchange was established."
+        "takeaway": "All 53 HTTP exchanges stayed with the caller’s own endpoint, although Meridian saw all three listener ports. Nine authored partial decoders each score 400/800; the union of all three tables covers the full 160-type catalog but no foreign table or authored note was read. Three copies remain ready and six were retained as drafts. No sustained authored exchange was established.",
+        "pending_refinement": {
+          "input_sha256": "af7adc6557cfde1e465d0d6ca2efdeece68c878b4c94727d49777bde12f49a00",
+          "source_commit": "4b3325b2bcc46595de903acd4d4b07d4b7dc7878",
+          "baseline_identifier": "swarmform-endpoint-overlap-engineering-metadata-01-sol61",
+          "round": 5,
+          "change": "An explicit opt-in local delivery inventory reads the existing metadata API at actual local loopback listeners. No background discovery, default-operation fanout, static service list or supplied response convention."
+        }
       },
       "shared_ipc/operational_state/Data Analysis": {
         "status": "admitted",
@@ -12354,7 +12361,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-source-appendix-knowledge-content-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-engineering-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-knowledge-events-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-overlap-engineering-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-engineering-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-catalog-only-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-overlap-engineering-timing-01-sol61",
@@ -12362,7 +12368,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-ipc-template-engineering-state-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 52,
+  "frozen_registration_count": 53,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
