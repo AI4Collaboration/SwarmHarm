@@ -530,7 +530,7 @@ def _build_deployment(dataset_key, domain, deployment, encoding, shared, *, atta
                 retain_intake_sources=domain=='Knowledge Work')
         else:
             from swarmform.endpoint_inputs import build as build_processor
-        event_sources = (encoding, domain) == ('event_pattern', 'Knowledge Work')
+        event_sources = domain == 'Knowledge Work' and encoding in ('event_pattern', 'identifiers_metadata', 'operational_state')
         return build_processor(dataset_key, domain, shared=shared,profile=ARCHIVE_PROFILES[encoding],
             attachments=attachments or event_sources,
             transport='abstract_unix' if (encoding,domain)==('payload_content','Knowledge Work') else 'tcp',
