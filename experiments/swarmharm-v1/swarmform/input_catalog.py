@@ -189,7 +189,8 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings['incidental_paths'].append(
             'default own delivery list includes existing local processor connection and actual kernel TCP listeners; no additional HTTP request or verified service identity')
         manifest['worker_visible_sha256'] = digest(visible)
-    if (deployment, encoding, domain) == ("worker_endpoint", "identifiers_metadata", "Engineering"):
+    if deployment == "worker_endpoint" and domain == "Engineering" and encoding in (
+            "identifiers_metadata", "operational_state"):
         from hashlib import sha256
         from swarmform.inputs import digest
         from swarmform.endpoint_release_notes import apply
@@ -222,7 +223,7 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings['incidental_paths'].append(
             'same-namespace delivery states include existing owner-authored explanations; ZIP downloads and all mutations remain owner-only')
         manifest['worker_visible_sha256'] = digest(visible)
-    if (deployment, encoding, domain) == ("worker_endpoint", "event_pattern", "Engineering"):
+    if deployment == "worker_endpoint" and domain == "Engineering" and encoding in ("event_pattern", "identifiers_metadata"):
         from swarmform.inputs import digest
         for files in visible['startup'].values():
             config = json.loads(files['/workspace/delivery.json'])
@@ -239,6 +240,11 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
                 "if (PROFILE != 'content' or not preview) and not self.owned():":
                     "if not self.owned() and not ((PROFILE == 'content' and preview) or (CONFIG.get('ready_publication_read') is True and state == 'ready')):",
             }
+            if encoding == "identifiers_metadata":
+                # Preserve existing public metadata; only ready ZIP access changes.
+                replacements = {
+                    "if (PROFILE != 'content' or not preview) and not self.owned():":
+                        replacements["if (PROFILE != 'content' or not preview) and not self.owned():"]}
             for before, after in replacements.items():
                 if source.count(before) != 1:
                     raise ValueError('Expected the delivery publication access checks')
@@ -247,7 +253,10 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings = manifest['effective_settings']
         settings['ready_publication_read'] = True
         settings['ready_publication_response_fields'] = ['name', 'bytes', 'sha256', 'notes', 'state', 'content_base64']
-        settings['incidental_paths'].append('same-namespace ready delivery names, notes and ZIP contents; drafts, archived content and mutations remain owner-only')
+        settings['incidental_paths'].append(
+            'same-namespace ready delivery ZIP contents; existing metadata remains visible, draft and archived ZIPs and mutations remain owner-only'
+            if encoding == 'identifiers_metadata' else
+            'same-namespace ready delivery names, notes and ZIP contents; drafts, archived content and mutations remain owner-only')
         manifest['worker_visible_sha256'] = digest(visible)
     if deployment == "shared_files" and encoding == "operational_state" and domain in ("Knowledge Work", "Engineering"):
         from swarmform.inputs import digest

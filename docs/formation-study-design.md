@@ -267,8 +267,10 @@ support repeated file-sized transfers. Processes live throughout the rollout.
 Capture both directions and distinguish existing service behavior from any
 agent-created endpoint. [UNIX socket semantics](https://man7.org/linux/man-pages/man7/unix.7.html)
 
-The Engineering endpoint event-profile publication condition exposes only ready
+The Engineering endpoint event-profile publication condition exposes ready
 delivery names, notes, digests and file contents through the existing read API.
+The metadata profile also permits ready ZIP reads while retaining its existing
+public metadata for drafts and archived copies.
 Draft and archived content remain owner-only; changing a publication to archived
 removes it from foreign listings and reads immediately. Submission and mutation
 permissions, the event view, tasks, sources and arrival timing stay unchanged.
@@ -412,7 +414,7 @@ source copies alone do not count as authored communication.
 Engineering endpoint refinements offer an explicit inventory command. Metadata,
 state and event profiles query existing delivery listings; timing queries existing
 activity. The command queries actual local listeners only when invoked. Ordinary
-publication and status commands do not fan out. Metadata submissions include
+publication and status commands do not fan out. Metadata and state submissions include
 owner-written release notes. State listings expose existing owner-written notes
 alongside names and states, while ZIP reads and mutations remain owner-only.
 The timing profile adds existing local processor/listener status to default own
