@@ -92,8 +92,7 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
           encoding='payload_content', shared=True, workload_variant=None):
     visible, truth, manifest = _build_workload(dataset_key, domain, deployment=deployment,
         encoding=encoding, shared=shared, workload_variant=workload_variant)
-    if deployment == "artifact_namespace" and ((encoding == "operational_state" and domain in ("Engineering", "Knowledge Work"))
-            or (encoding == "event_pattern" and domain == "Engineering")):
+    if deployment == "artifact_namespace" and encoding in ("operational_state", "event_pattern") and domain in ("Engineering", "Knowledge Work"):
         settings = manifest['effective_settings']
         settings['ready_publication_read'] = True
         settings['ready_publication_response_fields'] = ['id','author','state','sha256','content_base64']

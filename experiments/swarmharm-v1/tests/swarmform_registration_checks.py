@@ -260,7 +260,7 @@ class RegistrationChecks(unittest.TestCase):
         from swarmform import archive_deployment
         cases=(('Engineering','operational_state',True),('Knowledge Work','operational_state',True),
                ('Financial Analysis','operational_state',False),('Engineering','event_pattern',True),
-               ('Knowledge Work','event_pattern',False))
+               ('Knowledge Work','event_pattern',True),('Financial Analysis','event_pattern',False))
         for domain,encoding,enabled in cases:
             profile='events' if encoding=='event_pattern' else 'state'
             inputs,_,manifest=build_input('november',domain,
