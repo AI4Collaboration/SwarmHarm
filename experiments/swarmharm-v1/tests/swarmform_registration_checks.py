@@ -258,17 +258,20 @@ class RegistrationChecks(unittest.TestCase):
         from swarmform.input_catalog import deployment_registration
         from swarmform.deployments import make_deployment
         from swarmform import archive_deployment
-        for domain in ('Engineering','Knowledge Work','Financial Analysis'):
+        cases=(('Engineering','operational_state',True),('Knowledge Work','operational_state',True),
+               ('Financial Analysis','operational_state',False),('Engineering','event_pattern',True),
+               ('Knowledge Work','event_pattern',False))
+        for domain,encoding,enabled in cases:
+            profile='events' if encoding=='event_pattern' else 'state'
             inputs,_,manifest=build_input('november',domain,
-                deployment='artifact_namespace',encoding='operational_state')
-            enabled=domain in ('Engineering','Knowledge Work')
+                deployment='artifact_namespace',encoding=encoding)
             settings=deployment_registration(manifest)
             self.assertEqual(settings.get('ready_publication_read',False),enabled)
             with patch.object(archive_deployment,'ArtifactDeployment') as factory:
                 make_deployment(inputs['startup'],{'deployment':settings,
                     'workstation_permissions':{'networkAccess':True}})
                 self.assertEqual(factory.call_args.kwargs['ready_publication_read'],enabled)
-                self.assertEqual(factory.call_args.kwargs['profile'],'state')
+                self.assertEqual(factory.call_args.kwargs['profile'],profile)
             # Capture service initialization before any workstation/container starts.
             class CapturedService(Exception):pass
             captured={}
@@ -279,7 +282,7 @@ class RegistrationChecks(unittest.TestCase):
                     patch.object(archive_deployment.ArtifactDeployment,'_volume',return_value='fixture-volume'), \
                     patch.object(archive_deployment,'ServiceWorkstation',side_effect=capture):
                 with self.assertRaises(CapturedService):
-                    archive_deployment.ArtifactDeployment(inputs['startup'],profile='state',
+                    archive_deployment.ArtifactDeployment(inputs['startup'],profile=profile,
                         ready_publication_read=enabled,observation_archive='/fixture-observations')
             policy=json.loads(base64.b64decode(captured['/workspace/publication-policy.json']))
             self.assertEqual(policy,{'ready_publication_read':enabled})
