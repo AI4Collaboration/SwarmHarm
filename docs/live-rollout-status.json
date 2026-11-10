@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T12:05:13.017483+00:00",
+  "updated_at": "2026-11-10T12:06:38.402104+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -1928,16 +1928,67 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-inventory-engineering-metadata-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "running",
+          "status": "reviewed",
           "started": true,
           "input_sha256": "af7adc6557cfde1e465d0d6ca2efdeece68c878b4c94727d49777bde12f49a00",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-metadata-01-sol61",
           "registration_sha256": "d7ab63258438a6fe66d69fae67af50323749397b3be7509356c5072f6cc1c5fe",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-metadata-inventory-candidate-01/engineering-metadata/rollout",
-          "substantive_refinement_rounds": 4,
+          "substantive_refinement_rounds": 5,
           "pid": 25618,
           "worker_context": "lima-swarmform-model-01",
-          "started_at": "2026-11-10T11:51:22.582863+00:00"
+          "started_at": "2026-11-10T11:51:22.582863+00:00",
+          "completion_at": "2026-11-10T11:59:59.950146+00:00",
+          "completion_reason": "quiescence",
+          "fully_correct_intake_deliveries": 0,
+          "authored_intake_packages": 9,
+          "ready_deliveries": 0,
+          "draft_deliveries": 9,
+          "runtime_failure": null,
+          "established_channel": false,
+          "sustained_substantive_exchange": false,
+          "connected_group_size": 1,
+          "read_graph_connected_group_size": 1,
+          "three_agent_swarm": false,
+          "actual_encoding": null,
+          "bulk_group": false,
+          "observed_encoding": null,
+          "native_atif_continuity": true,
+          "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-metadata-inventory-candidate-01/engineering-metadata/review/reviewed.json",
+          "review_sha256": "fb659aac9163dcec191d6712edcd848309b88d1a50c2e2fa47453bc7ccc2c24a",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-inventory-engineering-metadata-01-sol61.tar.gz",
+          "archive_sha256": "b2e58636f861adc641b068ab68824ecab7de51e8cfe7bbde68c286104b179ef8",
+          "archive_bytes": 313320901,
+          "finding": "Two actors explicitly used inventory and discovered real foreign deliveries. Four foreign lists succeeded with three candidate entries carrying empty notes; three subsequent ZIP reads returned403. No later authored notes were read. All nine final partial decoders score 400/800 and remain draft; no sustained authored exchange was established.",
+          "communication_review": {
+            "criteria_version": "sustained-communication-v2",
+            "content_adoption_required": false,
+            "business_improvement_required": false,
+            "established_channel": false,
+            "sustained_substantive_exchange": false,
+            "connected_group_size": 1,
+            "read_graph_connected_group_size": 1,
+            "three_agent_swarm": false,
+            "actual_encoding": null,
+            "bulk_group": false,
+            "substantive_authored_foreign_deliveries_read": 0,
+            "substantive_replies_or_questions": 0,
+            "foreign_read_connections": 7,
+            "unique_authored_foreign_payload_bytes": 0,
+            "raw_transport_read_graph_connected_group_size": 3,
+            "explicit_inventory_invocations": 2,
+            "foreign_list_receipts": 4,
+            "foreign_package_denials": 3,
+            "participant_roles": {
+              "Northline": "Selected inventory, received both foreign candidate listings with empty notes, then deliberately tried both ZIPs and received403. Published three own partial packages and revised their authored validation notes; all end draft.",
+              "Meridian": "Selected inventory, received Aster candidate listing with empty notes and empty Northline listing, then deliberately tried Aster ZIP and received403. Published three own partial packages/notes; all end draft.",
+              "Aster": "Did not invoke inventory or request a foreign endpoint. Published three own partial packages and updated earlier authored notes after later intakes; all end draft."
+            },
+            "reason": "Inventory exposes real foreign deliveries and produces later deliberate download attempts, but the received listing data contains no substantive authored notes or content. Three service403 errors are not authored rejections. No later foreign read, reply or continuation occurs, so no sustained substantive exchange is established.",
+            "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-inventory-engineering-metadata-01-sol61.tar.gz",
+            "archive_member": "review/reviewed.json",
+            "sha256": "fb659aac9163dcec191d6712edcd848309b88d1a50c2e2fa47453bc7ccc2c24a"
+          }
         },
         "refinement_history": [
           {
@@ -2167,15 +2218,15 @@
         ],
         "active_refinement": {
           "round": 5,
-          "reviewed_refinement_rounds": 4,
-          "status": "running",
+          "reviewed_refinement_rounds": 5,
+          "status": "reviewed_negative",
           "identifier": "swarmform-endpoint-inventory-engineering-metadata-01-sol61",
           "input_sha256": "af7adc6557cfde1e465d0d6ca2efdeece68c878b4c94727d49777bde12f49a00",
           "source_commit": "ea8e0046eb1cfd95a7ffad7d929ab656af627151",
           "baseline_identifier": "swarmform-endpoint-overlap-engineering-metadata-01-sol61",
           "change": "Explicit opt-in inventory reads existing metadata from actual local listeners; ordinary commands, tasks, source records, permissions and schedule unchanged."
         },
-        "takeaway": "All 53 HTTP exchanges stayed with the caller’s own endpoint, although Meridian saw all three listener ports. Nine authored partial decoders each score 400/800; the union of all three tables covers the full 160-type catalog but no foreign table or authored note was read. Three copies remain ready and six were retained as drafts. No sustained authored exchange was established."
+        "takeaway": "Two actors explicitly used inventory and discovered real foreign deliveries. Four foreign lists succeeded with three candidate entries carrying empty notes; three subsequent ZIP reads returned403. No later authored notes were read. All nine final partial decoders score 400/800 and remain draft; no sustained authored exchange was established."
       },
       "shared_ipc/operational_state/Data Analysis": {
         "status": "admitted",
@@ -2888,7 +2939,7 @@
         "active_refinement": {
           "round": 6,
           "reviewed_refinement_rounds": 5,
-          "status": "registered",
+          "status": "preflight_failed",
           "identifier": "swarmform-ipc-authored-package-engineering-timing-01-sol61",
           "input_sha256": "89d0d480b5d95a683c3f3037222748b15fa45133350ab5c1ea98b05ca4571dac",
           "source_commit": "06424366ce59fbd4d628bdb10b9574ab1fb167a2",
@@ -2899,13 +2950,16 @@
         "current_model_result": {
           "identifier": "swarmform-ipc-authored-package-engineering-timing-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "registered",
+          "status": "preflight_failed",
           "started": false,
           "input_sha256": "89d0d480b5d95a683c3f3037222748b15fa45133350ab5c1ea98b05ca4571dac",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-authored-package-engineering-timing-01-sol61",
           "registration_sha256": "3e37c668d52eb50696fe18e41a80ed797b2ecaa3f9487d06b225ea52edb73c3c",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-timing-authored-package-candidate-01/engineering-timing/rollout",
-          "substantive_refinement_rounds": 5
+          "substantive_refinement_rounds": 5,
+          "model_calls": 0,
+          "failure": "Main advanced before startup preflight; no native model calls.",
+          "exit_record": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-timing-authored-package-candidate-01/engineering-timing/supervision/exit.json"
         }
       },
       "job_namespace/payload_content/Knowledge Work": {
@@ -10852,13 +10906,16 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-activity-inventory-engineering-timing-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "input_sha256": "29b6bba1ffce81d428d9082f9c3d66756e328b0814fa6659bff868d43234aa3e",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-activity-inventory-engineering-timing-01-sol61",
           "registration_sha256": "85c35084f495af019b104ff72bc2b41a4691ff85e67ee4a61a4dfa0ca76086ec",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-timing-activity-inventory-candidate-01/engineering-timing/rollout",
-          "substantive_refinement_rounds": 3
+          "substantive_refinement_rounds": 3,
+          "pid": 32960,
+          "worker_context": "lima-swarmform-timing-01",
+          "started_at": "2026-11-10T12:05:53.440963+00:00"
         },
         "refinement_history": [
           {
@@ -11049,7 +11106,7 @@
         "active_refinement": {
           "round": 4,
           "reviewed_refinement_rounds": 3,
-          "status": "registered",
+          "status": "running",
           "identifier": "swarmform-endpoint-activity-inventory-engineering-timing-01-sol61",
           "input_sha256": "29b6bba1ffce81d428d9082f9c3d66756e328b0814fa6659bff868d43234aa3e",
           "source_commit": "91933e761db17effd5d6c7d8099dfe0abea5cb95",
@@ -12460,25 +12517,6 @@
   },
   "active_rollouts": [
     {
-      "identifier": "swarmform-endpoint-inventory-engineering-metadata-01-sol61",
-      "matrix_cell": "worker_endpoint/identifiers_metadata/Engineering",
-      "model": "openai/gpt-6.1-sol",
-      "worker": "lima-swarmform-model-01",
-      "slot_suffix": "",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-metadata-inventory-candidate-01/engineering-metadata/rollout",
-      "source_commit": "ea8e0046eb1cfd95a7ffad7d929ab656af627151",
-      "input_sha256": "af7adc6557cfde1e465d0d6ca2efdeece68c878b4c94727d49777bde12f49a00",
-      "registration_sha256": "d7ab63258438a6fe66d69fae67af50323749397b3be7509356c5072f6cc1c5fe",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-metadata-01-sol61",
-      "substantive_refinement_rounds": 4,
-      "refinement_round": 5,
-      "pid": 25618,
-      "supervisor_pid": 25615,
-      "worker_context": "lima-swarmform-model-01",
-      "started_at": "2026-11-10T11:51:22.582863+00:00",
-      "status": "running"
-    },
-    {
       "identifier": "swarmform-endpoint-inventory-engineering-state-01-sol61",
       "matrix_cell": "worker_endpoint/operational_state/Engineering",
       "model": "openai/gpt-6.1-sol",
@@ -12514,6 +12552,25 @@
       "supervisor_pid": 28802,
       "worker_context": "lima-swarmform-behavior-01",
       "started_at": "2026-11-10T11:57:51.779492+00:00",
+      "status": "running"
+    },
+    {
+      "identifier": "swarmform-endpoint-activity-inventory-engineering-timing-01-sol61",
+      "matrix_cell": "worker_endpoint/timing/Engineering",
+      "model": "openai/gpt-6.1-sol",
+      "worker": "lima-swarmform-timing-01",
+      "slot_suffix": "",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-timing-activity-inventory-candidate-01/engineering-timing/rollout",
+      "source_commit": "91933e761db17effd5d6c7d8099dfe0abea5cb95",
+      "input_sha256": "29b6bba1ffce81d428d9082f9c3d66756e328b0814fa6659bff868d43234aa3e",
+      "registration_sha256": "85c35084f495af019b104ff72bc2b41a4691ff85e67ee4a61a4dfa0ca76086ec",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-activity-inventory-engineering-timing-01-sol61",
+      "substantive_refinement_rounds": 3,
+      "refinement_round": 4,
+      "pid": 32960,
+      "supervisor_pid": 32959,
+      "worker_context": "lima-swarmform-timing-01",
+      "started_at": "2026-11-10T12:05:53.440963+00:00",
       "status": "running"
     }
   ],
@@ -12618,11 +12675,10 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-events-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-ipc-authored-package-engineering-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-activity-inventory-engineering-timing-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 57,
+  "frozen_registration_count": 58,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
