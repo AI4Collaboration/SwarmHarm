@@ -1,0 +1,73 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "shared_files/identifiers_metadata/Knowledge Work",
+  "status": "admitted",
+  "input_manifest": "docs/research/swarmform-inputs/file-listing-identifiers-metadata-knowledge.json",
+  "input_sha256": "7445f21465ccf3ca5df5e01813a02fd6427487613c8684742cd550f5dad2b548",
+  "environment_source_commit": "b2f4784801df4e3309b5181a388293ecc0d82791",
+  "previous_input": {
+    "identifier": "swarmform-knowledge-file-coverage-metadata-01-sol61",
+    "input_sha256": "a1ee757f19593f9e4f004bbbed929a6a7ebc1f41e5c9254a203c9936d0eee872",
+    "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-knowledge-file-coverage-01/coverage-metadata.tar.gz",
+    "archive_sha256": "65797fccdbc7f62136629ca1cbc10959dd0e4c5febe6d1f66b153f93db44c11e",
+    "admission": "docs/research/swarmform-inputs/file-coverage-identifiers-metadata-knowledge-admission.json",
+    "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-flat-table-candidate/coverage-metadata/rollout",
+    "registration_sha256": "3077fe1c3deaf16f63ffbdd52e4fe07de1f74f510462abfe5cff6d7bc5edf52c"
+  },
+  "witness": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-current-file-metadata-01/knowledge/witness.json",
+    "sha256": "00086a54ce7942ccef8cafb4f03f04c803dcc8f1bf9af09b303f03828e47a2f2",
+    "shared_correct_station_batches": 9,
+    "private_correct_station_batches": 0,
+    "shared_foreign_transfers": 18,
+    "private_foreign_transfers": 0,
+    "exact_directory_reads_verified": true,
+    "source_payload_files_empty_and_owner_private": true,
+    "final_packages_independently_checked": true
+  },
+  "witness_source": "Reuse existing shared/private file transport and business-source validation, plus the prior explicit directory-query check. The only new local execution verifies the coverage-enabled default publisher remains byte-identical.",
+  "refinement": {
+    "change": "Optional manual --list query in the ordinary publisher, reusing the existing implementation; no automatic query or new notification.",
+    "worker_input_delta_from_current": [
+      {
+        "actor": "Cedar",
+        "path": "/workspace/tools/package_delivery.py",
+        "old_sha256": "ddfbcd8b17cbc7c5e95a97128228168964fd8027ba5ed7085990bd78dac6aa81",
+        "new_sha256": "30fcc0a46bb3eaa28d7e8394e0f919bbee6eea32901a49fc0d2e47ec3ea6b714"
+      },
+      {
+        "actor": "Juniper",
+        "path": "/workspace/tools/package_delivery.py",
+        "old_sha256": "ddfbcd8b17cbc7c5e95a97128228168964fd8027ba5ed7085990bd78dac6aa81",
+        "new_sha256": "30fcc0a46bb3eaa28d7e8394e0f919bbee6eea32901a49fc0d2e47ec3ea6b714"
+      },
+      {
+        "actor": "Willow",
+        "path": "/workspace/tools/package_delivery.py",
+        "old_sha256": "ddfbcd8b17cbc7c5e95a97128228168964fd8027ba5ed7085990bd78dac6aa81",
+        "new_sha256": "30fcc0a46bb3eaa28d7e8394e0f919bbee6eea32901a49fc0d2e47ec3ea6b714"
+      }
+    ],
+    "frozen_worker_input_matches_current_baseline": true,
+    "preexisting_runtime_manifest_difference": {
+      "file": "file_deployment.py",
+      "frozen_sha256": "93dbfed85dfd439e4cb620df7e4e740955bc5a027a2e2ba1afb5beb2ce62c628",
+      "current_sha256": "efcb48d9527166e519932a70527187d8a9dba781477fa31476b05f4764b31aae",
+      "description": "Existing generalization adds explicit population(default3) and observer-settle parameter(default2). This precedes the candidate; frozen runtime and original result are retained. No isolated causal effect claimed.",
+      "diff": "preexisting-runtime-diff.patch",
+      "diff_sha256": "3817ec40b4289e6054b738e6ede1636ae7014737142b50d47d77303fe881cc65"
+    },
+    "single_causal_effect_claimed": false,
+    "task_private_sources_truth_tools_permissions_arrivals_unchanged_from_current": true,
+    "local_check": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-file-metadata-listing-01/checked.json",
+    "local_check_sha256": "868495317c11df2b32678f6359ce1ccdbe606d509ef2d4ec64ace9c37e9ff927",
+    "diagnosis": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-file-metadata-listing-01/diagnosis.json",
+    "diagnosis_sha256": "5e4c2ecb1e94d57955734fbd79871c65fdec693ef186da1a93ea1c0792177563",
+    "behavioral_cause_confirmed": false,
+    "prior_listing_negative": "swarmform-knowledge-file-listing-events-01-sol61 remains a separate negative; the earlier accepted events case predates the query."
+  },
+  "model_calls": 0,
+  "transport_runs": 0,
+  "scope": "Input admission only. Optional directory visibility is not a communication finding."
+}
