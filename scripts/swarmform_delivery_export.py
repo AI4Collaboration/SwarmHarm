@@ -79,7 +79,7 @@ def export_accepted(repo, output, dataset_key="november", *, all_retained=False)
             reg_dir = repo / "experiments/swarmharm-v1/registrations" / result["identifier"]
             reg_path = reg_dir / "registration.json"
             reg, seal = read_json(reg_path), read_json(reg_dir / "registration-seal.json")
-            admission = read_json(repo / item["evidence"])
+            admission = read_json(repo / result.get("admission", item["evidence"]))
             if (hash_file(reg_path) != seal["sha256"] or reg["matrix_cell"] != cell
                     or reg["input_sha256"] != result["input_sha256"]
                     or admission["input_sha256"] != result["input_sha256"]
