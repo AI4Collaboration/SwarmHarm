@@ -1,6 +1,8 @@
 # Experiment package
 
-The active [SwarmForm delivery](../../README.md#accepted-inputs) covers 25 Knowledge Work and 25 Engineering inputs, with three agents per input. `swarmform/` contains their workloads, shared deployments and independent verifiers. Data Analysis and Financial Analysis remain supplemental. The commands below preserve the four-agent SwarmHarm reporting baseline.
+The single current plan is the [eight-agent Navier–Stokes structure study](../../README.md#current-research-plan), with intended/unintended conditions and ten-minute extensions. Interval support is pending implementation and offline validation; no new collection is authorized by that design discussion. `swarmform/` contains the shared runtime, workloads and observers used by this study and the completed three-agent input delivery.
+
+The commands below preserve the historical four-agent SwarmHarm reporting baseline. They are reproduction documentation, not another active research plan or the launch procedure for the current study. [Accepted historical inputs](../../README.md#accepted-inputs).
 
 ## SwarmHarm reporting runner
 

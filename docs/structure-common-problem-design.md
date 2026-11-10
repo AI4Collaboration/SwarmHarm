@@ -1,5 +1,8 @@
 # Eight-agent common-problem research — ten-minute increments
 
+This is the detailed protocol for the single active research direction in
+the [root README](../README.md#current-research-plan), not a separate workstream.
+
 Design agreed; interval runtime implementation and offline validation remain
 pending. No new registration or research collection is authorized by this
 design discussion. The cancelled pair's deleted trajectories stay deleted.

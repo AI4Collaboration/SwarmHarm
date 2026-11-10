@@ -1,10 +1,14 @@
 # Reviewed evidence
 
-- **Current 50-input delivery audit:** sealed inputs, runtime versions, registration bindings, remote archive digests and the distinction between reviewed cases and development defaults. [Publication evidence audit](swarmform-publication-audit.json).
+This is the historical evidence index. The single current research plan is the
+[eight-agent Navier–Stokes structure study](../../README.md#current-research-plan).
+The records below do not queue new collections or supply results for the new interval policy.
+
+- **Completed 50-input delivery audit:** sealed inputs, runtime versions, registration bindings, remote archive digests and the distinction between reviewed cases and development defaults. [Publication evidence audit](swarmform-publication-audit.json).
 
 - **Latest Knowledge Work account-source retests:** endpoint opening-stage authored exchange; IPC opening inspection followed by updated-fact comparison. Both finish 9/9 briefs correctly. [Case settings, limits and full trajectories](swarmform-knowledge-account-sources.json).
 
-[Download the accepted SwarmForm inputs and trajectory index](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs-account-sources.zip). The [measurement audit](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/observer-measurement-audit-22-positive-cases-20261109.tar.gz) binds the reviewed positive outcomes to native reads and actual delivered files.
+[Download the accepted SwarmForm inputs and trajectory index](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs-reviewed.zip). The [measurement audit](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/observer-measurement-audit-22-positive-cases-20261109.tar.gz) binds the reviewed positive outcomes to native reads and actual delivered files.
 
 - **Reviewed refinements.** Financial job metadata supported sustained three-agent exchange of 130,835 useful bytes and nine correct reports. Engineering archive timing produced nine ready deliveries after an intake wording change. Each covered 40 of 160 required types, and no office adopted a timing convention. [Baseline and refinement evidence](swarmform-refinement-20261109.json)
 
@@ -18,4 +22,4 @@
 
 [Sealed reporting registrations](reporting-run-index.json) · [Complete archived trajectories and checksums](trajectory-release.json)
 
-Full published archives remain on GitHub. Some closed negative observation blobs were offloaded locally to free space; exact archive members and checksums for restoration are in the [recovery receipts](swarmform-events-financial-20261109.json). Native sessions, final files and reviews remain local.
+Published historical archives remain on GitHub; local raw copies may have been removed during cleanup. Consult the relevant evidence index and archive checksums rather than assuming a local trajectory is present. The [recovery receipts](swarmform-events-financial-20261109.json) describe that case's archived members. Deleted cancelled-run trajectories are excluded from this retained evidence.

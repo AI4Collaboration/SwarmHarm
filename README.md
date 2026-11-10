@@ -1,53 +1,81 @@
 # SwarmForm
 
-**Agents in separate workspaces can discover one another and establish sustained communication during ordinary work.** SwarmForm tests how this happens through shared business resources, without a peer roster, communication method or cooperation instruction.
+**When eight agents receive the same difficult research problem, do they spontaneously develop organizational structure, and how does that structure change over time?**
 
-## Inputs and findings
+## Current research plan
 
-The delivery contains **50 reviewed environments: 5 shared deployments × 5 encoding opportunities × 2 domains**. Knowledge Work and Engineering each cover all 25 configurations. Every case uses three independent Sol 6.1 agents, native Codex through AxonHub, high reasoning, goal off, private memory and three business intakes.
+This is the repository's **single active research direction**: emergent structure during Navier–Stokes theoretical research, comparing intended and unintended communication. This README is the current roadmap; the [detailed protocol](docs/structure-common-problem-design.md) specifies the same study's execution and stopping rules.
 
-- **Communication:** all 50 selected cases meet their recorded communication acceptance rule in a connected three-agent group. Some have a two-agent reciprocal core and a third contributor. Original scores and separately identified later reviews remain available.
-- **Business work:** 37 cases deliver all nine outputs correctly; 13 retain partial or incorrect deliveries. Remaining gaps reflect choices about retrieving, sharing or withdrawing available information; work correctness is measured separately from communication.
-- **Observed channels:** agents often use metadata, state or activity to discover a route, then exchange substantive information through payload contents. Five encoding opportunities do not imply five adopted encodings.
+**Status: design agreed; ten-minute interval support still needs implementation and offline validation. No new rollout is running or authorized by the planning discussion.** Existing scheduling, timing and context fixes are available, but the sustained runtime still contains the old fixed 90-minute policy and terminal session closure. It must not be treated as an implementation of the new plan.
 
-These are individually refined, reviewed examples. Their settings and complete trajectories support case-level findings; the selected collection is not a success-rate estimate or a comparison that changes only one factor. [Evidence and settings audit](docs/research/swarmform-publication-audit.json) · [Criteria and design](docs/formation-study-design.md)
+### One task, eight agents, two conditions
 
-The latest Engineering shared-file cases deliver **9/9** correct outputs under the event opportunity and **6/9** under content. In the latter, one agent publishes its own records but never retrieves complementary information. Both establish sustained communication; partial work remains visible. [Case-level audit and complete trajectories](docs/research/swarmform-publication-audit.json)
+- **Task:** theoretical exploration of Navier–Stokes existence and regularity, with checkable partial arguments, explicit assumptions and unresolved obstacles. All eight agents receive the same mathematical task and initial materials at activation. We do not preassign subproblems.
+- **Intended:** explicitly tell each agent that eight agents are working on the common task; disclose peer addresses and the available message interface. The communication opportunity is supplied, while organization must emerge from their actions.
+- **Unintended:** provide no peer roster, joint-work announcement or predefined communication convention. Agents have the same research objective and access to the shared substrate; they must discover any peers and communication practice themselves. This is absence of supplied communication, not proof that communication cannot occur.
+- **Matched execution:** one eight-agent rollout per condition, run concurrently in separate environments. Use the same Sol 6.1 model through native Codex and AxonHub, reasoning setting, tools, mathematical materials, context policy, scheduling policy and cumulative token/response/tool-call allowances. Intended disclosure is the experimental difference; there is no cross-condition communication.
+- **No organizational prompting:** do not request division of work, aggregation, leadership, delegation or an orchestrator, at startup or later. Do not reward message counts. Continue justified research, retain useful partial work and record concrete obstacles; ending one response does not finish the study.
 
-The latest Knowledge Work retests both deliver nine complete briefs with 320/320 correct cited facts each, preserving withdrawals. Endpoint authored exchange is limited to the opening intake; IPC includes comparison of updated briefs. Later work primarily uses original source appendices. This difference in depth is retained. [Both cases and full trajectories](docs/research/swarmform-knowledge-account-sources.json)
+The current scope is this eight-agent common-problem pair. Other population sizes, distributed-information workloads, solo uplift comparisons and SwarmHarm reporting are outside the active plan.
 
-## Accepted inputs
+### Ten-minute increments with asynchronous work
 
-[Download all 50 inputs and trajectory index](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs-reviewed.zip) · [Private Release and checksums](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs)
+Start both conditions with **10 minutes**. At each observation boundary, stop or add **one further 10-minute interval to both conditions**: 10 → 20 → 30, as justified. There is no precommitted total duration and no unbounded automatic extension. Ten minutes is an observation and extension unit, not a synchronized agent round or a required period of waiting.
 
-Each package contains three Harbor tasks, exact prompts and tools, private arrivals, protected truth, effective settings and its sealed source. First run `bash scripts/setup-local` and source the environment file it prints to select Python 3.12. The default export reconstructs those tested versions, not current development defaults:
+Keep the same agents, native sessions, context, files and pending work across an accepted extension. Cumulative usage never resets; register equal finite resource caps before collection. Adding time does not replenish those caps. Report actual resource consumption separately from the equal allowances.
 
-```sh
-"$SWARMHARM_HARBOR_ENV/bin/python" scripts/export_swarmform_input_matrix.py --output ../accepted-inputs
-```
+Agents advance independently. Actual stable file changes trigger neutral, deduplicated path notices; eligible research continuations start without an artificial sleep. Measure busy-agent notice receipt separately from notification enqueue time. Reduce notification and scheduling delays without fabricating exchanges or telling agents to communicate more.
 
-Load the [registered runtime image](docs/running-evals.md#registered-swarmform-runtime). GitHub access to the private assets and an existing AxonHub key are required. The registered native executable is macOS ARM64; the workstation image is Linux ARM64. Other native platforms require a fresh explicit configuration.
+Record each extension decision and its reason, such as substantive research still progressing or an unfinished feedback chain. Absence of an orchestrator alone is not a reason to keep extending. Without an accepted extension, dispatch no new work past the boundary and bound cancellation time. Stop earlier for exhausted resources, a user stop, infrastructure failure, or verified quiescence: all agents explicitly paused with no active work, pending notices or unsettled changes. Neither a completed response nor 30 seconds of silence is sufficient. Record unequal termination and compare the common observed horizon.
 
-Prepare a fresh identifier, commit and push its registration, then collect once:
+### What we observe
 
-```sh
-"$SWARMHARM_HARBOR_ENV/bin/python" scripts/run_swarmform.py prepare \
-  --accepted-package ../accepted-inputs/worker_endpoint/event_pattern/knowledge-work \
-  --identifier <fresh-id> --model openai/gpt-6.1-sol --dataset-key november \
-  --domain "Knowledge Work" --deployment worker_endpoint --encoding event_pattern \
-  --output <new-directory-outside-repository>
-"$SWARMHARM_HARBOR_ENV/bin/python" scripts/run_swarmform.py collect \
-  --identifier <same-id> --output <same-directory> --key-file <host-only-key-file>
-```
+The central outcomes are **spontaneous aggregation, multilevel delegation, orchestrator formation and responsibility transfer**. Aggregation itself can be a structure. A strong orchestrator claim additionally needs evidence that other agents act on its coordination; self-description or high message volume alone is insufficient.
 
-The original model, runtime and input hashes stay bound. New results never replace the accepted trajectory. Keep credentials and protected truth outside the agent workspaces.
+For multilevel delegation, trace a linked task from A to B to C, its execution and returned results. Distinguish this from A separately asking both B and C, or B merely forwarding text. Track formation, persistence, overlapping responsibilities, handoffs and dissolution, including incomplete or ambiguous chains.
+
+At each ten-minute boundary, report both the new interval and cumulative evidence:
+
+- Structure and information-flow states, with exact event times, affected agents and evidence for transitions.
+- Actual reads, downstream use, substantive replies and returned results; distinguish notifications from completed interactions.
+- Model and tool time, publication detection, notification queueing, native receipt, idle time and context maintenance.
+- Resource usage, checkable mathematical progress, pending work and the extension or stopping reason.
+
+Retain complete trajectories, artifact versions and segmented timing for future collection once authorized. Observer reports are not sent to the agents. Consecutive intervals are parts of one continuing pair, not independent replications; one adaptive pair does not establish an emergence rate or a causal advantage of either condition.
+
+### Structure × information flow: the 3×3 observation rubric
+
+![SwarmForm 3×3 taxonomy, drawn by Gemini](docs/swarmform_taxonomy.png)
+
+The figure and its [editable SVG](docs/swarmform_taxonomy.svg) were drawn by Gemini. They illustrate possible patterns, not observed results or participant instructions.
+
+- **Structure:** no leader, multiple overlapping hubs, or one central hub.
+- **Information flow:** no observed peer information flow, one-way flow, or reciprocal flow.
+
+Apply the axes to time-local events and subgroups as well as the full cohort. Record an aggregation hub separately from an accepted coordinator. One agent writing a final draft alone does not establish that peers recognized its authority. Do not force uncertain or mixed evidence into a cell, assume all nine cells occur, or carry a label unchanged across the run.
+
+## Next work on this same study
+
+1. Implement matched 600-second deadline extensions, bounded request/shutdown timeouts, cumulative accounting and state retention. Replace the participant-facing 90-minute commitment while preserving neutral continuation language. Verify boundary behavior during context maintenance and interruption.
+2. Validate the policy offline, including matched intended/unintended settings, full timing capture, no injected organizational cues, no budget reset and no work beyond the accepted boundary. Publish the exact prompts, finite caps and stopping logic for review before collection.
+3. Once collection is authorized, run this pair, review each interval and extend in ten-minute increments when justified. Use the resulting evidence to report structure over time, not to require a positive orchestrator finding.
+
+The [status ledger](docs/live-rollout-status.json) records this study under `supplemental_studies.eight_member_common_problem.incremental_interval_design`; that historical storage location does not make it a second research direction. Its top-level completed input matrix describes the earlier delivery.
+
+## Prior work and accepted inputs
+
+The completed channel-discovery study supplies the infrastructure and historical evidence for this research. It covers **50 reviewed environments: five shared substrates × five encoding opportunities × two domains**, with three agents per case. Substrates were shared files, IPC, worker endpoints, artifact namespaces and job namespaces; encoding opportunities were payload, metadata, state, events and timing. These are prior configurations, not an additional collection plan.
+
+All 50 selected cases meet their recorded communication criterion. Of them, 37 deliver all nine business outputs correctly and 13 retain partial outcomes. These are individually refined cases, not an estimate of general swarm success. [Publication audit](docs/research/swarmform-publication-audit.json) · [Historical design and reproduction](docs/formation-study-design.md) · [Evidence archive](docs/research/README.md)
+
+### Accepted inputs
+
+[Download the 50 accepted inputs and trajectory index](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs-reviewed.zip) · [Private Release and checksums](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs)
+
+These packages preserve their original three-agent tasks, runtimes and reviewed evidence. Their reproduction commands are in the historical design; they do not launch the current eight-agent interval study. Older structure findings and engineering validation remain background evidence. Deleted cancelled-run trajectories are not restored or used as results for the new plan.
 
 ## Development
 
-`python3 scripts/check_swarmform_inputs.py --status` shows delivery status and whether current development inputs match the tested versions. Use `export_swarmform_input_matrix.py --development --output <new-external-directory>` explicitly for new inputs. Development exports need their own admission and behavioral review. `--all-retained` includes qualifying supplemental cases in accepted mode, or the full 100-input catalog in development mode.
+Work on `main`. Use `python3 scripts/check-ci --plan` to preview checks selected from the actual changes, then run the selected checks once; reserve `--full` for intentional full regression. Documentation updates require no model calls or Docker rollout. `python3 scripts/check_swarmform_inputs.py --status` reports the historical input delivery, not completion of the current structure study.
 
-Use `python3 scripts/check-ci --plan` to see checks selected from the actual changes. Local push and GitHub run the same selection once. Documentation needs no Docker or model calls; use `--full` only for an intentional complete regression.
-
-Fix verified environment defects. Preserve an agent's decision not to explore, revisit or use an available channel; a functional negative needs a bound review, not repeated retries. No unchanged-state reminder is sent. [Matrix ledger](docs/live-rollout-status.json) · [Channel coverage](docs/swarmform-coverage.md) · [Running guide](docs/running-evals.md)
-
-All previous SwarmHarm inputs, successful cases, original scores and supplemental domain results remain in the [research archive](docs/research/README.md).
+Keep exact prompts, registered source, budgets and observed evidence bound to each future rollout. Keep credentials and raw trajectories outside Git. Preserve agents' decisions not to communicate or form a hierarchy as valid observations. Changes to this research plan belong here and in its detailed protocol; historical registrations are not rewritten to match new settings.

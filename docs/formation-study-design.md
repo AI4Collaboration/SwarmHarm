@@ -1,5 +1,10 @@
 # SwarmForm input design
 
+> Historical protocol for the completed three-agent, 50-input delivery.
+> The single current research plan is the [eight-agent structure study](../README.md#current-research-plan).
+> The collection commands and budgets below apply to historical reproduction;
+> they do not authorize new collection or configure the ten-minute interval study.
+
 **Can initially isolated agents discover one another, establish a channel, and
 sustain substantive information exchange during ordinary work?**
 
