@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T09:16:02.976655+00:00",
+  "updated_at": "2026-11-10T09:22:08.154952+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -8688,7 +8688,7 @@
       },
       "job_namespace/event_pattern/Knowledge Work": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/job-api-description-events-knowledge-admission.json",
+        "evidence": "docs/research/swarmform-inputs/completed-read-job-events-knowledge-admission.json",
         "refinement_history": [
           {
             "model_result": {
@@ -8830,7 +8830,14 @@
             9
           ]
         },
-        "takeaway": "Willow and Juniper independently read the complete processing API description; all three inspected other authors\u2019 job or event records, but none authored an event protocol or reply. Willow cancelled all three incomplete deliveries, and Juniper read two cancellation events without treating them as messages. Nine retained author files contain80/320 correct facts with revisions and withdrawals preserved; six partial deliveries remain completed. No sustained substantive communication was observed."
+        "takeaway": "Willow and Juniper independently read the complete processing API description; all three inspected other authors\u2019 job or event records, but none authored an event protocol or reply. Willow cancelled all three incomplete deliveries, and Juniper read two cancellation events without treating them as messages. Nine retained author files contain80/320 correct facts with revisions and withdrawals preserved; six partial deliveries remain completed. No sustained substantive communication was observed.",
+        "pending_refinement": {
+          "input_sha256": "31f9309e51fd6fdaa0332464f7dc6e961ce7a80248fc1028e40012c1a74d0ac0",
+          "source_commit": "44ce2aa53765af32042b76687cb1fdfc84dae1ed",
+          "baseline_identifier": "swarmform-knowledge-job-events-api-description-01-sol61",
+          "round": 3,
+          "change": "Enable existing same-scope completed result reads for Knowledge Work events. Unfinished and cancelled results remain unavailable, private input and foreign writes unchanged; returned payload is an explicit alternative, not event encoding."
+        }
       },
       "worker_endpoint/timing/Engineering": {
         "status": "admitted",
@@ -9696,7 +9703,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-job-metadata-options-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-engineering-job-metadata-options-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-archive-metadata-options-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-knowledge-job-events-api-description-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-job-timing-api-description-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-engineering-job-timing-api-description-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-overlap-knowledge-content-01-sol61",
@@ -9716,7 +9722,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-knowledge-metadata-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 39,
+  "frozen_registration_count": 40,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
