@@ -15104,7 +15104,27 @@
         "review_bundle_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-common-problem-async-v2-20261110/structure-commonproblem-async-v2-pair.review-v1.tar.gz",
         "observed_aggregation_both_conditions": true,
         "intended_functional_orchestrator_candidate": "Research01",
-        "verified_multilevel_delegation": false
+        "verified_multilevel_delegation": false,
+        "post_run_hardening": {
+          "status": "repairs_and_cleanup_verified_no_new_rollout",
+          "source_commit": "b76f3b30a615867cdd5a609c68183574cca4ad27",
+          "report": "docs/structure-runtime-audit-20261110.md",
+          "evidence_index": "docs/structure-runtime-audit-20261110.json",
+          "selected_tests_passed": 149,
+          "hosted_model_calls": 0,
+          "context_compaction": "long_context_continuation_unresolved_failure_handling_verified",
+          "context_role_cue": "Pinned native local wrapper refers to another language model; continuation not enabled.",
+          "frozen_rollout_evidence_changed": false,
+          "new_research_rollouts": 0,
+          "evidence_archive": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-common-problem-async-v2-20261110/structure-runtime-audit-20261110.v1.tar.gz",
+          "runtime_repair_source_commit": "e4da4700d3e8306e909742ac7ce969c4919217da",
+          "ci_dependency_followup_tests_passed": 49,
+          "ci_followup": {
+            "conclusion": "success",
+            "url": "https://github.com/AI4Collaboration/SwarmHarm/actions/runs/42856379861"
+          },
+          "ci_followup_evidence_archive": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-common-problem-async-v2-20261110/structure-runtime-audit-20261110.ci-followup-v1.tar.gz"
+        }
       }
     }
   },

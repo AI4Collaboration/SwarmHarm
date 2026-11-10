@@ -4,6 +4,19 @@
 
 Both registered groups stopped early on native context-compaction events: intended at 30m33s (closed 30m38s), unintended at 41m22s (closed 41m26s). Neither completed 90 minutes. The [reviewed findings](structure-common-problem-async-v2-findings.md) and [machine-readable evidence index](structure-common-problem-async-v2-findings.json) preserve actual durations, failures and private raw archives. Both show emergent aggregation; intended has an enacted coordinator centered on Research01, while unintended has multiple integrators. No verified multilevel delegation or accepted overall-editor handoff. Compare the common first 30 minutes; do not infer condition-level causal effects from this one pair. All sixteen native exports remain available; ATIF validation failed. No restart was performed. Historical implementation and prompt-review sections below remain as chronological records.
 
+## Runtime readiness after the pair
+
+The [runtime audit and cleanup](structure-runtime-audit-20261110.md) fixes
+partial exports, terminal evidence retention, stop-cause reporting and sealing
+for future execution copies. It does **not** establish support for an uninterrupted
+90-minute run. A large automatic-compaction threshold does not disable native
+compaction, and the pinned CLI's local compaction wrapper introduces a reference
+to another language model. Compaction remains outside the registered condition;
+its raw records are retained, but subsequent output is not projected as valid
+research. Any future context-management condition needs matched validation before
+fresh behavioral collection. This maintenance work starts no new rollout and
+does not change the frozen pair or the prompts recorded below.
+
 ## Authorized asynchronous pair
 
 The user subsequently authorized one intended and one unintended rollout,
