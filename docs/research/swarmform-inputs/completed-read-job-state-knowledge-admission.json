@@ -1,0 +1,137 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "job_namespace/operational_state/Knowledge Work",
+  "status": "admitted",
+  "input_manifest": "docs/research/swarmform-inputs/completed-read-job-state-knowledge.json",
+  "input_sha256": "ec17df7a0619a8e6fd8bf878ccd09d406204da3919c4cb3037042c41f586a55c",
+  "environment_source_commit": "e09ac40bb3776412fc29cfb35990d5d6b8c959d6",
+  "previous_input": {
+    "identifier": "swarmform-knowledge-job-state-api-description-01-sol61",
+    "input_sha256": "b731cc278081b976b12fd7107c3604633f9d90c6bfefee96aa89749db160c20c",
+    "registration": "experiments/swarmharm-v1/registrations/swarmform-knowledge-job-state-api-description-01-sol61",
+    "registration_sha256": "59b7e84c732e3beb41b20ed92536ed18361988c9671b5a82d639aaac1d510733",
+    "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-knowledge-job-state-api-description-01-sol61.tar.gz",
+    "archive_sha256": "a988717fda29493dacec42fa86c1b51bd815e83ae7bebaf60012c8b20afa5aa9",
+    "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-job-state-api-description-01/knowledge-state/rollout",
+    "review": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-job-state-api-description-01/knowledge-state/review/reviewed.json",
+      "sha256": "77c439e52d5848867aeb35caecc6b5074af050a0d7c6d6cac1a60c20a2397224"
+    }
+  },
+  "witness": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-state-knowledge-bounded/summary.json",
+    "sha256": "0ba9ed45b3ae73dbfe227729a599f43984df0ceb24f0a159350d89767007cf2f",
+    "shared_correct_published_releases": 9,
+    "private_correct_published_releases": 0,
+    "shared_foreign_transfers": 18,
+    "private_foreign_transfers": 0,
+    "exact_source_copies_checked": 36,
+    "exact_process_reads_checked": 54,
+    "review_path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-services-resume-20261109-01/job-state-knowledge-bounded/review-confirmation.json",
+    "review_sha256": "8adb150e54099f796b236131b0020e6e19d79789c9ddb94c7685c6252c12ca07",
+    "final_service_results_independently_recomputed": true
+  },
+  "verification_type": "Reuse exact restored target shared/private transport and business witness, and existing30 passing job-result publication boundary checks; one static input comparison.",
+  "witness_source": "Existing exact witness recovered from its original GitHub asset with complete compressed SHA verification. No environment, Docker or route rerun.",
+  "refinement": {
+    "change": "Enable existing same-scope completed result reads for Knowledge Work state. Unfinished and cancelled results remain unavailable, private input and foreign writes unchanged; returned payload is an explicit alternative, not state encoding.",
+    "effective_setting": {
+      "completed_result_read": true
+    },
+    "worker_visible_delta": "None; complete current/candidate/latest round2 visible inputs and protected truth are identical. Other99 catalog cells unchanged.",
+    "permission_contract": "Default off except registered K/E state conditions. Same-scope completed result returns id,sha256,content_base64. Unfinished/cancelled403, cross-scope404, unauthenticated401, owner actions and state/event projections unchanged. Existing database lock serializes read eligibility and cancellation.",
+    "mechanism_interpretation": "Ordinary publication permission hypothesis, not an assertion the original permission was incorrect or the sole reason for absent exchange.",
+    "evidence_basis": "Three agents made5 actual foreign result reads after the corresponding jobs completed; all5 denied. All published reports had own customer targets with zero cross-office target overlap; readability alone is not a communication or relevance guarantee.",
+    "inherited_worker_changes": [],
+    "criteria_change": "None; original criteria already sustained-communication-v2, no adoption or business-improvement gate.",
+    "inherited_runtime_review": [
+      {
+        "path": "experiments/swarmharm-v1/swarmform/archive_deployment.py",
+        "frozen_sha256": "a247d93a234e2c7ac40be8c5e975800bcb6e35149e686f347fa23853fb532347",
+        "current_sha256": "1a87ea2854fd4e7a191a9dd2cf81fbd6b6b30826474b5b0fe7e56c86cd7022cd"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/deployments.py",
+        "frozen_sha256": "fde15c06d7d19dfe2b3d955ef898d136ecab4e4b9d585320a066013ad2b0be01",
+        "current_sha256": "474aadf9b32c1a4f116ad77b71e6d1de486682de2d74764b09f645b49e3f48af"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/endpoint_service.py",
+        "frozen_sha256": "88ed56f34fe8897a43ee76973663ffb100b32e7135292129c4d0744c09b5151e",
+        "current_sha256": "84c83ac5edae77b75b20ab1ccc780968ac22c2e0513ca612d4d720b119e6869f"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/input_catalog.py",
+        "frozen_sha256": "e5f8137d4cb5d360699d9a6c727b1a686e78ddaf38ca6f4e1d790bc25f686b75",
+        "current_sha256": "0c482f12f7b5944d53b4274ffd6ddac1ee1bd80b360c1d7b047af9dd2f0ae9d6"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/job_deployment.py",
+        "frozen_sha256": "f391a4001c00f75efa713d485744814799f399b02b26249dbcdd9f4900a513cb",
+        "current_sha256": "0385e35eae293fc8e640bcd46ca1abbb0fd500dbe019a449635c0985b72ee940"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/job_service.py",
+        "frozen_sha256": "bbd7f8f142911714df7e4bfd318c13a3291c82bac00adb1cb0c1698670719628",
+        "current_sha256": "dd26877da33b89bd51fa564e51097adf4cc8f5d838120aecca7a4071e1361a30"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/profile_archive.py",
+        "frozen_sha256": "f44e72d7557514a649a0228988dcc6a1da5df4882909e8fc60396921d683b9e6",
+        "current_sha256": "3b435256c7837e2bb36cadc5d0ddc294722901c11d09ea95500c1d4e0f0a8373"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/structure.py",
+        "frozen_sha256": "e23d891805c05775f715409d646c24446fc3ab5dcbe4eb0c45271886ff4d173d",
+        "current_sha256": "68b9fcca39b7c30bda3e2ec6f194032c4c421e00cc4545db13b3281c874bfa9d"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/structure_collection.py",
+        "frozen_sha256": "d69732f613c4c2ae73dddab8c5a3be215d54ad55e02255ee175ec20d585769f4",
+        "current_sha256": "610c83f198a3e3eb5a5f9208ccc9e975f0c4de7f426fea6558cda8dfe61d6b17"
+      },
+      {
+        "path": "scripts/run_swarmform_structure.py",
+        "frozen_sha256": "e5c0eea109152336814807d421b584b71a1654c03a4ddc6587687e0394a069a8",
+        "current_sha256": "0398b199e74d0d41e08be0b1558038e62109546dd540ed6c0d9da9f8b43f70f7"
+      }
+    ],
+    "inherited_runtime_description": "Current main already implements the completed-result permission used by Engineering. This target changes only its selector. Relative to the old K round2 source, job_service/job_deployment/deployments implement and forward that same policy; catalog also contains unrelated cells, and archive/endpoint/structure source changes are unrelated. Worker bytes, job client/publisher, observation/capture/collection and registered task/notices remain unchanged. The new registration will record the current full source and container host, with original image/budget/native settings enforced.",
+    "assessment": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-job-completed-read-candidate-01/assessment.json",
+      "sha256": "c9fd2394c794b6c295c659d1c70c455d97947696e9f1e50fdaf06522c827e392"
+    },
+    "input_comparison": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-job-completed-read-candidate-01/checked.json",
+      "sha256": "548aca56c05a25b2b34531fce38d4a343c0d713ad96adb7e6bb826780a506531"
+    },
+    "reused_route_proofs": {
+      "route-check.json": {
+        "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-completed-read-candidate-01/route-check.json",
+        "sha256": "be3a65a6a09f155e9a2144be98da114084fb4643bd78526c3332dbd11f0dc51d"
+      },
+      "result-scope-check.json": {
+        "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-completed-read-candidate-01/result-scope-check.json",
+        "sha256": "11cb27ef5de53e3ab52da4d08d8e8d728a4085186ab6bf7917a1068cc6c75182"
+      },
+      "route-check-fixture-correction.json": {
+        "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-completed-read-candidate-01/route-check-fixture-correction.json",
+        "sha256": "76c9b0075b4f6ad3d150d2443729bc8a6b5903278f021b907e504cd0c4ddadd3"
+      }
+    },
+    "witness_restoration": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-job-completed-read-candidate-01/witness-restoration.json",
+      "sha256": "f3c90bec9f40c074359c814aa630456d7bcf20349047d70f9f38232e4562bb87"
+    },
+    "candidate_patch": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-job-completed-read-candidate-01/candidate.patch",
+      "sha256": "1ca608150297d18eb42a8f864e96dea0c7b9fe7a8b578ebb47ec38b3ef6e09a2"
+    }
+  },
+  "model_calls": 0,
+  "new_transport_runs": 0,
+  "new_localhost_profile_requests": 0,
+  "reused_passing_boundary_check_requests": 30,
+  "scope": "Admission only. Sustained substantive authored communication allows recipient rejection; adoption and business improvement are not gates."
+}
