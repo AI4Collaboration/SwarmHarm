@@ -262,8 +262,8 @@ conventions from names or fields. Measure the actual recovered work content.
 
 ### Shared job/result namespace — `job_namespace`
 
-The Engineering and Knowledge Work state publication conditions permit same-scope
-reads of completed result ZIPs. Cancellation revokes further reads; unfinished jobs and private
+The state publication conditions in both domains and the Engineering event condition
+permit same-scope reads of completed result ZIPs. Cancellation revokes further reads; unfinished jobs and private
 inputs remain private. This is a declared content alternative; the state and
 event projections are unchanged.
 

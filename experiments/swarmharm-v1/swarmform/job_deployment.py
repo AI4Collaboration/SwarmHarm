@@ -38,8 +38,8 @@ class JobDeployment(FileDeployment):
     def __init__(self,startup,*,shared=True,profile='content',observation_sink=None,observation_archive=None,completed_result_read=False):
         if len(startup)!=3 or profile not in ('content','metadata','state','events','timing') or type(shared) is not bool:
             raise ValueError('Expected three business workstations and a known processing profile')
-        if type(completed_result_read) is not bool or (completed_result_read and profile!='state'):
-            raise ValueError('Completed result reads require a registered state profile')
+        if type(completed_result_read) is not bool or (completed_result_read and profile not in ('state','events')):
+            raise ValueError('Completed result reads require a registered state or event profile')
         self.completed_result_read=completed_result_read
         self.resources=ExitStack();self.closed=False;self.stations={};self.volumes={}
         self.locks={a:threading.RLock() for a in startup}

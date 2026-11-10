@@ -293,7 +293,7 @@ class RegistrationChecks(unittest.TestCase):
         from swarmform import job_deployment
         for domain,encoding,enabled in (('Engineering','operational_state',True),
                 ('Knowledge Work','operational_state',True),('Financial Analysis','operational_state',False),
-                ('Engineering','event_pattern',False)):
+                ('Engineering','event_pattern',True),('Knowledge Work','event_pattern',False)):
             profile='events' if encoding=='event_pattern' else 'state'
             inputs,_,manifest=build_input('november',domain,deployment='job_namespace',encoding=encoding)
             settings=deployment_registration(manifest)
@@ -315,8 +315,8 @@ class RegistrationChecks(unittest.TestCase):
                         completed_result_read=enabled,observation_archive='/fixture-observations')
             policy=json.loads(base64.b64decode(captured['/workspace/publication-policy.json']))
             self.assertEqual(policy,{'completed_result_read':enabled})
-        for value,profile in ((1,'state'),(True,'metadata'),(True,'content'),(True,'events'),(True,'timing')):
-            with self.assertRaisesRegex(ValueError,'registered state profile'):
+        for value,profile in ((1,'state'),(True,'metadata'),(True,'content'),(True,'timing')):
+            with self.assertRaisesRegex(ValueError,'registered state or event profile'):
                 job_deployment.JobDeployment(inputs['startup'],profile=profile,completed_result_read=value)
 
     def test_invalid_matrix_selectors_are_rejected(self):
