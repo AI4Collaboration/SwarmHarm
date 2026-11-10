@@ -38,6 +38,7 @@
       "shared-host timing",
       "socket identifiers and port availability",
       "other protocols and worker-created listeners in the shared namespace",
+      "default own delivery list includes existing local processor connection and actual kernel TCP listeners; no additional HTTP request or verified service identity",
       "same-namespace ready delivery ZIP contents; existing metadata remains visible, draft and archived ZIPs and mutations remain owner-only"
     ],
     "service_code_sha256": {
@@ -45,6 +46,12 @@
       "endpoint_service.py": "84c83ac5edae77b75b20ab1ccc780968ac22c2e0513ca612d4d720b119e6869f",
       "endpoint_deployment.py": "9c1a9e865fdd3200b499456ff60e714261da8e79e9e516b971ddcadb097322a5"
     },
+    "delivery_list_local_status": true,
+    "delivery_list_local_status_fields": [
+      "processor",
+      "tcp_listeners"
+    ],
+    "delivery_list_client_sha256": "666f124ef49b2c22f303d9bb737cecfa985dacbbd5273d5b66563e8dc278990e",
     "ready_publication_read": true,
     "ready_publication_response_fields": [
       "name",
@@ -55,5 +62,5 @@
       "content_base64"
     ]
   },
-  "worker_visible_sha256": "be534d3d0fce99a860ae0128a10947bdd2440d336d3da0385e86702bea2c906f"
+  "worker_visible_sha256": "9c8726c79b53b0049b783022e66b82579f498feb48a7347c10395a777fabaff9"
 }
