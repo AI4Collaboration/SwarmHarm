@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T11:29:55.769319+00:00",
+  "updated_at": "2026-11-10T11:35:45.137701+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -1928,19 +1928,63 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-overlap-engineering-metadata-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "collected_review_pending",
+          "status": "reviewed",
           "started": true,
           "input_sha256": "69b02e92d158c72337ae386d1f131589f5842f6041d1a99c0082df8dbcb13bf8",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-overlap-engineering-metadata-01-sol61",
           "registration_sha256": "9d2fa7c18f2d81f539ea469827935f55ad5e1abb5e0f18a99176d8055c78130b",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-metadata-overlap-candidate-01/engineering-metadata/rollout",
-          "substantive_refinement_rounds": 3,
+          "substantive_refinement_rounds": 4,
           "pid": 6560,
           "worker_context": "lima-swarmform-model-01",
           "started_at": "2026-11-10T11:19:01.220627+00:00",
           "completion_at": "2026-11-10T11:27:18.455707+00:00",
           "completion_reason": "quiescence",
-          "runtime_failure": null
+          "runtime_failure": null,
+          "fully_correct_intake_deliveries": 0,
+          "authored_intake_packages": 9,
+          "ready_deliveries": 3,
+          "draft_deliveries": 6,
+          "established_channel": false,
+          "sustained_substantive_exchange": false,
+          "connected_group_size": 1,
+          "read_graph_connected_group_size": 1,
+          "three_agent_swarm": false,
+          "actual_encoding": null,
+          "bulk_group": false,
+          "observed_encoding": null,
+          "native_atif_continuity": true,
+          "review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-metadata-overlap-candidate-01/engineering-metadata/review/reviewed.json",
+          "review_sha256": "3418e88954921434d446495014e4368899694b99d36a66dfb556ed1e605c9893",
+          "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-overlap-engineering-metadata-01-sol61.tar.gz",
+          "archive_sha256": "387a53538415c0d624f8105eb700fe24fe82ce74761e31550a34b1e4fb818204",
+          "archive_bytes": 216740868,
+          "finding": "All 53 HTTP exchanges stayed with the caller’s own endpoint, although Meridian saw all three listener ports. Nine authored partial decoders each score 400/800; the union of all three tables covers the full 160-type catalog but no foreign table or authored note was read. Three copies remain ready and six were retained as drafts. No sustained authored exchange was established.",
+          "communication_review": {
+            "criteria_version": "sustained-communication-v2",
+            "content_adoption_required": false,
+            "business_improvement_required": false,
+            "established_channel": false,
+            "sustained_substantive_exchange": false,
+            "connected_group_size": 1,
+            "read_graph_connected_group_size": 1,
+            "three_agent_swarm": false,
+            "actual_encoding": null,
+            "bulk_group": false,
+            "substantive_authored_foreign_deliveries_read": 0,
+            "substantive_replies_or_questions": 0,
+            "foreign_read_connections": 0,
+            "unique_authored_foreign_payload_bytes": 0,
+            "participant_roles": {
+              "Northline": "Published three partial decoders and notes, then marked each draft. Corrected candidate check-count notes and updated earlier publication notes after later intakes. Only own-service reads.",
+              "Aster": "Published three partial decoders and notes, then marked each draft. Earlier two publication notes retained stale future-intake statements; latest status report acknowledged all intakes. Only own-service reads.",
+              "Meridian": "Inspected all three actual TCP listeners and its own activity, published three ready partial decoders and notes, then read only its own copies."
+            },
+            "reason": "There are no cross-agent reads, replies or questions. Nine authored partial packages and local metadata revisions do not constitute exchange without another receiver. A substantive rejection could count, but none was received or issued.",
+            "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-endpoint-overlap-engineering-metadata-01-sol61.tar.gz",
+            "archive_member": "review/reviewed.json",
+            "sha256": "3418e88954921434d446495014e4368899694b99d36a66dfb556ed1e605c9893"
+          }
         },
         "refinement_history": [
           {
@@ -2109,15 +2153,15 @@
         ],
         "active_refinement": {
           "round": 4,
-          "reviewed_refinement_rounds": 3,
-          "status": "collected_review_pending",
+          "reviewed_refinement_rounds": 4,
+          "status": "reviewed_negative",
           "identifier": "swarmform-endpoint-overlap-engineering-metadata-01-sol61",
           "input_sha256": "69b02e92d158c72337ae386d1f131589f5842f6041d1a99c0082df8dbcb13bf8",
           "source_commit": "4f5ededf2503f20bf714a56263132e0d42b44b46",
           "baseline_identifier": "swarmform-endpoint-address-engineering-metadata-01-sol61",
           "change": "Partly overlapping assigned instrument catalogs using the existing workload variant; actual private source records, permissions, TCP protocol, prompts and schedule unchanged."
         },
-        "takeaway": "The optional processor address is available, but all three agents use only local calibrations. All nine authored decoders independently cover 200/800 probes; Northline has three ready deliveries and Aster/Meridian retain six drafts. No sustained exchange occurs."
+        "takeaway": "All 53 HTTP exchanges stayed with the caller’s own endpoint, although Meridian saw all three listener ports. Nine authored partial decoders each score 400/800; the union of all three tables covers the full 160-type catalog but no foreign table or authored note was read. Three copies remain ready and six were retained as drafts. No sustained authored exchange was established."
       },
       "shared_ipc/operational_state/Data Analysis": {
         "status": "admitted",
@@ -6178,11 +6222,12 @@
           "is_replicate": true,
           "replicate_index": 1,
           "counts_toward_negative_refinement_threshold": false,
-          "status": "running",
+          "status": "collected_review_pending",
           "started": true,
           "pid": 8349,
           "worker_context": "lima-swarmform-job-timing-01",
-          "started_at": "2026-11-10T11:20:54.381697+00:00"
+          "started_at": "2026-11-10T11:20:54.381697+00:00",
+          "completion_at": "2026-11-10T11:30:02.595840+00:00"
         },
         "active_replication": {
           "identifier": "swarmform-ipc-engineering-state-replicate-01-sol61",
@@ -10454,13 +10499,18 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-catalog-only-engineering-timing-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "registered",
+          "status": "launch_preflight_failed",
           "started": false,
           "input_sha256": "05519e552d3f361e3cefb84e4d52ea7c25f30712daf9de58208ca517040f6647",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-catalog-only-engineering-timing-01-sol61",
           "registration_sha256": "e9573b4982d37dfe47e13b9aee9f141da44893ca0e81c56a39ca4bb43160bcc0",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-timing-catalog-overlap-candidate-01/engineering-timing/rollout",
-          "substantive_refinement_rounds": 2
+          "substantive_refinement_rounds": 2,
+          "model_calls": 0,
+          "reason": "Remote main advanced between launcher check and collector verification.",
+          "counts_toward_refinement_threshold": false,
+          "terminal_at": "2026-11-10T11:30:57.575415+00:00",
+          "failure_review": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-timing-catalog-overlap-candidate-01/launch-failure-review.json"
         },
         "refinement_history": [
           {
@@ -10590,7 +10640,7 @@
         "active_refinement": {
           "round": 3,
           "reviewed_refinement_rounds": 2,
-          "status": "registered",
+          "status": "launch_preflight_failed",
           "identifier": "swarmform-endpoint-catalog-only-engineering-timing-01-sol61",
           "input_sha256": "05519e552d3f361e3cefb84e4d52ea7c25f30712daf9de58208ca517040f6647",
           "source_commit": "7729541d73eb57bbf836440a8b88392ed375af78",
@@ -12001,27 +12051,6 @@
   },
   "active_rollouts": [
     {
-      "identifier": "swarmform-ipc-engineering-state-replicate-01-sol61",
-      "matrix_cell": "shared_ipc/operational_state/Engineering",
-      "model": "openai/gpt-6.1-sol",
-      "worker": "lima-swarmform-job-timing-01",
-      "slot_suffix": "",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-ipc-state-replicate-01/engineering-state/rollout",
-      "source_commit": "1be39132bed186289c05ffa2d56a30d70d085ba2",
-      "input_sha256": "d6fa8d21c54b13d4e79f4759650270107d299c65ee3bedc21b2e8633b0d186c4",
-      "registration_sha256": "8cb5b1475136db6f8e4e480799b49efa276cf4a8439a3acfb84363f24a0b09d4",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-ipc-engineering-state-replicate-01-sol61",
-      "substantive_refinement_rounds": 5,
-      "is_replicate": true,
-      "replicate_index": 1,
-      "counts_toward_negative_refinement_threshold": false,
-      "pid": 8349,
-      "supervisor_pid": 8348,
-      "worker_context": "lima-swarmform-job-timing-01",
-      "started_at": "2026-11-10T11:20:54.381697+00:00",
-      "status": "running"
-    },
-    {
       "identifier": "swarmform-endpoint-catalog-only-engineering-state-01-sol61",
       "matrix_cell": "worker_endpoint/operational_state/Engineering",
       "model": "openai/gpt-6.1-sol",
@@ -12159,7 +12188,7 @@
       "scope": "Original archive-content Data Analysis input."
     }
   ],
-  "next_action": "Finish Engineering remaining six cells first. Review the closed IPC timing run, continue active endpoint and state-replication runs, and prepare natural endpoint state/timing refinements. Up to six separate workers may collect; no duplicate or frozen-input changes. Then finish Knowledge Work; both full 25-cell domains remain required.",
+  "next_action": "Finish Engineering remaining six cells first: review closed endpoint and IPC runs; prepare one natural refinement per unresolved cell and collect on separate workers. Current six-rollout cap includes other studies. Preserve all existing results, then finish Knowledge Work.",
   "open_timing_inputs": [],
   "delivery_scope": {
     "primary_domain": "Knowledge Work",

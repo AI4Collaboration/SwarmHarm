@@ -406,6 +406,12 @@ An oracle with the union of legitimate source files must complete all three pack
 Execute that same solution through each selected carrier. No capacity or acceptance
 manipulation is required for SwarmForm completion. Retain partial work and stopping.
 
+The Engineering IPC timing condition uses partially overlapping assigned catalogs.
+Each includes 80 types from its own supplied records and 40 from each other
+source. Prompts, source appendices and processing tools stay unchanged; authored
+partial tables now have relevant entries in another assigned catalog. Automatic
+source copies alone do not count as authored communication.
+
 ## Fixed defaults and bounded variants
 
 The matched three-agent matrix uses the following proposed runtime defaults. Row counts and source-file formats are specific to each workload.
