@@ -13,6 +13,24 @@ def read(path):
     return json.loads(path.read_text())
 
 
+def coverage_review(root, registration):
+    """Retain export failures without discarding available native evidence."""
+    path = root/'actor-evidence.json'
+    if path.exists():
+        return read(path) | {'collector_coverage_report_present': True}
+    actors = sorted(registration['plan']['natural'])
+    failure = root/'atif-failure.json'
+    return {'actor_evidence_complete': False,
+        'collector_coverage_report_present': False,
+        'registered_actors': actors,
+        'native_session_export_actors': [actor for actor in actors
+            if (root/'natural'/actor/'codex/session.jsonl').is_file()],
+        'raw_native_stream_actors': [actor for actor in actors
+            if any((root/'natural'/actor/'codex/native').glob('*.json'))],
+        'atif_failure': read(failure) if failure.exists() else None,
+        'scope': 'Derived presence inventory only. The collector did not produce actor-evidence.json; native/ATIF continuity is not certified. Retained native streams can support separately cited observations, not a successful full-run claim.'}
+
+
 def missing_native_indexes(root, folder, completion):
     """Index retained RPC content when fatal cleanup omitted a session export.
 
@@ -153,7 +171,9 @@ def review(root, folder):
     usage = usage_review(root, completion)
     native_overrides, native_indexes = missing_native_indexes(root, folder, completion)
     messages = communication_inventory.inventory(root, native_overrides=native_overrides)
+    coverage = coverage_review(root, registration)
     retained = {'shared-versions': artifacts, 'usage': usage, 'communications': messages,
+                'actor-coverage': coverage,
                 'native-export-coverage': {'session_export_complete': not native_indexes,
                     'missing_exports': sorted(native_indexes), 'derived_content_indexes': native_indexes}}
     refs = {}
@@ -161,11 +181,11 @@ def review(root, folder):
         path = folder/(name+'.json')
         path.write_text(json.dumps(value, ensure_ascii=False, indent=2)+'\n')
         refs[str(path.relative_to(root))] = sha256(path.read_bytes()).hexdigest()
-    coverage = read(root/'actor-evidence.json')
     summary = {'at': datetime.now(timezone.utc).isoformat(), 'registration_id': registration['identifier'],
         'condition': registration['condition'], 'population': registration['population'],
         'completion_reason': completion['reason'], 'failure': completion.get('failure'),
         'actor_evidence_complete': coverage['actor_evidence_complete'],
+        'collector_coverage_report_present': coverage['collector_coverage_report_present'],
         'native_session_export_complete': not native_indexes,
         'missing_session_exports': sorted(native_indexes),
         'shared_versions': len(artifacts['versions']), 'recognized_message_writes': len(messages['messages']),

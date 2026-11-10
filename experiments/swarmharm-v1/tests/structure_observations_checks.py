@@ -31,6 +31,22 @@ def hexed(text):return ''.join('\\x%02x'%v for v in text.encode())
 
 
 class StructureObservationChecks(unittest.TestCase):
+    def test_failed_atif_export_does_not_certify_native_presence_as_complete(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);native=root/'natural/A/codex/native';native.mkdir(parents=True)
+            (native/'000001.json').write_text('{}')
+            (native.parent/'session.jsonl').write_text('{}\n')
+            (root/'atif-failure.json').write_text(json.dumps({'error':'context compacted'}))
+            result=common.coverage_review(root,{'plan':{'natural':{'A':{}}}})
+            self.assertFalse(result['actor_evidence_complete'])
+            self.assertFalse(result['collector_coverage_report_present'])
+            self.assertEqual(result['native_session_export_actors'],['A'])
+            self.assertEqual(result['raw_native_stream_actors'],['A'])
+            self.assertEqual(result['atif_failure'],{'error':'context compacted'})
+            self.assertFalse((root/'actor-evidence.json').exists())
+            (root/'actor-evidence.json').write_text(json.dumps({'actor_evidence_complete':True}))
+            self.assertTrue(common.coverage_review(root,{'plan':{'natural':{'A':{}}}})['actor_evidence_complete'])
+
     def test_missing_session_index_keeps_actual_rpc_source_without_fabricating_completion(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder);native=root/'natural/A/codex/native';native.mkdir(parents=True)

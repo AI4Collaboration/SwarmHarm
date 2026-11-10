@@ -14448,7 +14448,7 @@
         }
       },
       "async_sustained_pair": {
-        "state": "running",
+        "state": "intended_runtime_censored_unintended_running",
         "policy": "sustained-research-async-v2",
         "population": 8,
         "research_seconds": 5400,
@@ -14481,9 +14481,21 @@
             "worker_context": "lima-swarmform-behavior-01",
             "activated_at": "2026-11-10T14:49:50.249329+00:00",
             "planned_deadline": "2026-11-10T16:19:50.249329+00:00",
-            "status": "running",
+            "status": "closed_early",
             "registration": "experiments/structure/registrations/structure-commonproblem-async-v2-n8-intended-01",
-            "registration_sha256": "085fb46c7c72aa78192eb910b30a60d0b683bc2b5225a5b0083d13ccda0b0df5"
+            "registration_sha256": "085fb46c7c72aa78192eb910b30a60d0b683bc2b5225a5b0083d13ccda0b0df5",
+            "closed_at": "2026-11-10T15:20:28.370707+00:00",
+            "reason": "runtime_failure",
+            "failure": {
+              "type": "RuntimeError",
+              "message": "{'type': 'fatal', 'message': 'Codex context compaction is outside the registered condition'}",
+              "at": "2026-11-10T15:20:23.366885+00:00"
+            },
+            "actual_research_seconds": 1838.121378,
+            "controller_returncode": 1,
+            "native_session_exports": 8,
+            "atif_export_valid": false,
+            "interpretation": "Infrastructure-censored at context-compaction start; no organizational cessation or 90-minute completion claim. No restart."
           },
           {
             "identifier": "structure-commonproblem-async-v2-n8-unintended-01",
@@ -14497,7 +14509,9 @@
             "registration": "experiments/structure/registrations/structure-commonproblem-async-v2-n8-unintended-01",
             "registration_sha256": "51db8a38963ff349f956e71526368b34e9512ca92c3496ba5b0eeeed2e7ee56f"
           }
-        ]
+        ],
+        "updated_at": "2026-11-10T15:23:22.779164+00:00",
+        "runtime_observation": "Intended closed on Research04 context compaction at 30m38s; all eight native session exports retained, ATIF rejected. Unintended continues unchanged. No operator task intervention or restart."
       }
     }
   },
