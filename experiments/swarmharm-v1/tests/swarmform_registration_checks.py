@@ -296,8 +296,9 @@ class RegistrationChecks(unittest.TestCase):
         for domain,encoding,enabled in (('Engineering','operational_state',True),
                 ('Knowledge Work','operational_state',True),('Financial Analysis','operational_state',False),
                 ('Engineering','event_pattern',True),('Knowledge Work','event_pattern',True),
-                ('Financial Analysis','event_pattern',False)):
-            profile='events' if encoding=='event_pattern' else 'state'
+                ('Financial Analysis','event_pattern',False),('Engineering','timing',True),
+                ('Knowledge Work','timing',False)):
+            profile={'operational_state':'state','event_pattern':'events','timing':'timing'}[encoding]
             inputs,_,manifest=build_input('november',domain,deployment='job_namespace',encoding=encoding)
             settings=deployment_registration(manifest)
             self.assertEqual(settings.get('completed_result_read',False),enabled)
@@ -318,8 +319,8 @@ class RegistrationChecks(unittest.TestCase):
                         completed_result_read=enabled,observation_archive='/fixture-observations')
             policy=json.loads(base64.b64decode(captured['/workspace/publication-policy.json']))
             self.assertEqual(policy,{'completed_result_read':enabled})
-        for value,profile in ((1,'state'),(True,'metadata'),(True,'content'),(True,'timing')):
-            with self.assertRaisesRegex(ValueError,'registered state or event profile'):
+        for value,profile in ((1,'state'),(True,'metadata'),(True,'content')):
+            with self.assertRaisesRegex(ValueError,'registered state, event or timing profile'):
                 job_deployment.JobDeployment(inputs['startup'],profile=profile,completed_result_read=value)
 
     def test_ipc_group_requests_bind_selected_input_to_runtime(self):

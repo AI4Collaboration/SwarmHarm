@@ -73,6 +73,7 @@ WORKLOAD_VARIANTS[("shared_ipc", "operational_state", "Engineering")] = "overlap
 WORKLOAD_VARIANTS[("shared_ipc", "identifiers_metadata", "Engineering")] = "overlapping_calibration_catalog"
 WORKLOAD_VARIANTS[("shared_ipc", "event_pattern", "Engineering")] = "overlapping_calibration_catalog"
 WORKLOAD_VARIANTS[("worker_endpoint", "payload_content", "Knowledge Work")] = "overlapping_customer_roster"
+WORKLOAD_VARIANTS[("shared_ipc", "identifiers_metadata", "Knowledge Work")] = "overlapping_customer_roster"
 WORKLOAD_VARIANTS[("job_namespace", "identifiers_metadata", "Engineering")] = "overlapping_calibration_catalog"
 WORKLOAD_VARIANTS[("shared_ipc", "timing", "Data Analysis")] = "primary_ledgers"
 WORKLOAD_VARIANTS.update({
@@ -99,7 +100,8 @@ def build(dataset_key, domain='Data Analysis', *, deployment='shared_files',
         settings['ready_publication_response_fields'] = ['id','author','state','sha256','content_base64']
         settings['incidental_paths'].append('same-scope ready publication content; draft and archived content remain publisher-only')
     if deployment == "job_namespace" and ((encoding == "operational_state" and domain in ("Engineering", "Knowledge Work"))
-            or (encoding == "event_pattern" and domain in ("Engineering", "Knowledge Work"))):
+            or (encoding == "event_pattern" and domain in ("Engineering", "Knowledge Work"))
+            or (encoding == "timing" and domain == "Engineering")):
         settings = manifest['effective_settings']
         settings['completed_result_read'] = True
         settings['completed_result_response_fields'] = ['id','sha256','content_base64']
@@ -247,7 +249,9 @@ def _build_workload(dataset_key, domain='Data Analysis', *, deployment='shared_f
                 raise ValueError("Expected the customer brief work order")
             files["/workspace/work-order.md"] = knowledge.TABLE_WORK_ORDER + order[len(knowledge.WORK_ORDER):]
         truth["workload_variant"] = variant
-    elif variant == "overlapping_customer_roster" and (deployment, encoding, domain) == ("worker_endpoint", "payload_content", "Knowledge Work"):
+    elif variant == "overlapping_customer_roster" and (deployment, encoding, domain) in (
+            ("worker_endpoint", "payload_content", "Knowledge Work"),
+            ("shared_ipc", "identifiers_metadata", "Knowledge Work")):
         from swarmform import knowledge
 
         arrivals = visible["private_arrivals"]
