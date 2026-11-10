@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T10:14:01.396079+00:00",
+  "updated_at": "2026-11-10T10:17:03.374643+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -4603,7 +4603,7 @@
       },
       "shared_ipc/identifiers_metadata/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/ipc-overlapping-calibration-engineering-identifiers-metadata-admission.json",
+        "evidence": "docs/research/swarmform-inputs/ipc-group-write-engineering-identifiers-metadata-admission.json",
         "refinement_history": [
           {
             "model_result": {
@@ -4762,6 +4762,13 @@
             "archive_member": "review/reviewed.json",
             "sha256": "1b741d5b3b3846a41876e8e5ddd90a672cd183dab7fc1207e7a8e5c29fe59ccb"
           }
+        },
+        "pending_refinement": {
+          "input_sha256": "824eee1071738b8df8587c79ec801bc0a93570fa2b0b1521e61c1a3bbc8f6697",
+          "source_commit": "cfc138cf539d3a132ebeb2d91f8d8465ff342196",
+          "baseline_identifier": "swarmform-ipc-overlap-engineering-metadata-01-sol61",
+          "round": 4,
+          "change": "Enable the existing shared processor-group policy for Engineering metadata: distinct UIDs retain queue ownership, common GID63000 and request/reply0620 permit requests and replies; status0600 and private workstations remain. Overlap catalogs, sources, tasks and arrivals are unchanged. Payload access and foreign-write alternatives require actual sender attribution; this is a permission condition, not metadata encoding."
         }
       },
       "shared_ipc/identifiers_metadata/Financial Analysis": {
@@ -11331,7 +11338,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-job-metadata-options-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-engineering-job-metadata-options-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-archive-metadata-options-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-ipc-overlap-engineering-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-draft-preview-engineering-content-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-overlap-engineering-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-file-published-read-state-01-sol61",
@@ -11353,7 +11359,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-named-process-knowledge-content-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 39,
+  "frozen_registration_count": 40,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
