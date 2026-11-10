@@ -33,6 +33,8 @@ Representative Engineering cases include [endpoint publication](https://github.c
 
 [Retest evidence and full trajectories](docs/research/swarmform-endpoint-receipt-discovery.json). Neither run falsely describes its partial deliveries as complete. Original negative cases and scores remain unchanged.
 
+Follow-up analysis found a workload mismatch: Engineering’s three local tables jointly cover all required types, but Knowledge Work’s three local briefs cover only 200/320 facts per recipient; the attached original records supply the rest. The next refinement should align source ownership with useful work products. Preserve source access and the distinction between opening-stage communication and continuation across later intakes.
+
 Run `python3 scripts/check_swarmform_inputs.py --status` to inspect the [matrix ledger](docs/live-rollout-status.json). Use the accepted bundle for the exact tested inputs; its index links each case to the matching reviewed trajectory. New collections require fresh registrations and do not replace these results.
 
 Knowledge Work source-retention refinements show authored-report exchange in four IPC configurations. Metadata and state involve all three readers; events and timing have a Juniper–Willow reciprocal core reading Cedar’s contributions. Supplied source appendices receive no authorship credit.
