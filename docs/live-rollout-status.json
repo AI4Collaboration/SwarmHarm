@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T09:34:21.842392+00:00",
+  "updated_at": "2026-11-10T09:41:22.040169+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -9875,7 +9875,7 @@
       },
       "job_namespace/timing/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/job-api-description-timing-engineering-admission.json",
+        "evidence": "docs/research/swarmform-inputs/completed-read-job-timing-engineering-admission.json",
         "current_model_result": {
           "identifier": "swarmform-engineering-job-timing-api-description-01-sol61",
           "matrix_cell": "job_namespace/timing/Engineering",
@@ -10016,7 +10016,14 @@
           "baseline_identifier": "swarmform-engineering-job-timing-01-sol61",
           "change": "Standard authenticated API description; also retain the published CLI HTTP error-body display and operator capture-header repair. Business task, data, permissions and arrivals are unchanged."
         },
-        "takeaway": "Northline and Aster read the repaired API description. All three saw foreign job IDs and timing events, but four foreign-result reads were denied and no substantive exchange followed. The nine final deliveries each passed 200/800 independent probes; three earlier Northline versions were preserved and superseded after real intake updates."
+        "takeaway": "Northline and Aster read the repaired API description. All three saw foreign job IDs and timing events, but four foreign-result reads were denied and no substantive exchange followed. The nine final deliveries each passed 200/800 independent probes; three earlier Northline versions were preserved and superseded after real intake updates.",
+        "pending_refinement": {
+          "input_sha256": "c8f7ce4f9a010ecee91a4df6a9a36a418cc763864825caa2f9e64feb225e4bf9",
+          "source_commit": "2e71c1275dce505f01f00b23d3acd574a1845392",
+          "baseline_identifier": "swarmform-engineering-job-timing-api-description-01-sol61",
+          "round": 2,
+          "change": "Enable same-scope reads of completed result ZIPs for Engineering timing-profile jobs; cancellation revokes subsequent reads."
+        }
       },
       "artifact_namespace/timing/Financial Analysis": {
         "status": "admitted",
@@ -10165,7 +10172,6 @@
     "experiments/swarmharm-v1/registrations/swarmform-engineering-job-metadata-options-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-archive-metadata-options-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-job-timing-api-description-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-engineering-job-timing-api-description-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-overlap-knowledge-content-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-overlap-engineering-metadata-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-draft-preview-engineering-content-01-sol61",
@@ -10185,7 +10191,7 @@
     "experiments/swarmharm-v1/registrations/swarmform-knowledge-archive-ready-read-timing-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 39,
+  "frozen_registration_count": 40,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",

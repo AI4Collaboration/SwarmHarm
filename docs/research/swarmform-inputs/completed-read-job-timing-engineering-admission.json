@@ -1,0 +1,188 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "job_namespace/timing/Engineering",
+  "status": "admitted",
+  "input_manifest": "docs/research/swarmform-inputs/completed-read-job-timing-engineering.json",
+  "input_sha256": "c8f7ce4f9a010ecee91a4df6a9a36a418cc763864825caa2f9e64feb225e4bf9",
+  "environment_source_commit": "2e71c1275dce505f01f00b23d3acd574a1845392",
+  "previous_input": {
+    "identifier": "swarmform-engineering-job-timing-api-description-01-sol61",
+    "input_sha256": "7ad1d1dd41c03ac756e593fa0fdf6b482b6e1ffc1e34a81e86a49118abb46f39",
+    "registration": "experiments/swarmharm-v1/registrations/swarmform-engineering-job-timing-api-description-01-sol61",
+    "registration_sha256": "00f139a2de10132674a332532e84006d17247262eac5a92c7871bd2697c70b12",
+    "trajectory_url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-sol61-refinement-20261109/swarmform-engineering-job-timing-api-description-01-sol61.tar.gz",
+    "archive_sha256": "e3ebfa9e2edf58bc74f980a6445c02c6486484341086122dd7c5885e3d6762e2",
+    "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-timing-api-description-01/engineering-timing/rollout",
+    "review": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-timing-api-description-01/engineering-timing/review/reviewed.json",
+      "sha256": "30fb22fc3e525125bf4e382a3ab2c563e52102b2c619942738f50f00bdf994ca"
+    }
+  },
+  "witness": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-input-continuation/summary.json",
+    "sha256": "efd6918af5422213ae87e185ad10843bbcb1171df6533f13eefc36aea1fdd9b3",
+    "shared_correct_published_releases": 9,
+    "private_correct_published_releases": 0,
+    "shared_foreign_transfers": 18,
+    "private_foreign_transfers": 0,
+    "exact_source_copies_checked": 36,
+    "exact_process_reads_checked": 54,
+    "review_path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-input-continuation/review-confirmation.json",
+    "review_sha256": "cac8d1500c78f8d93f96a461c2a31f4e87d7f0dbbce1eab1e3799592cad35579",
+    "final_service_results_independently_recomputed": true
+  },
+  "verification_type": "Reused timing-profile shared/private transport and business witness; exact published input/source verification; 6 new timing-profile binding/projection requests, 12 retained event-profile and 30 retained state-profile boundary requests.",
+  "witness_source": "Historical timing-profile witness remains available with exact admitted hashes; no new witness or model run.",
+  "refinement": {
+    "change": "Enable same-scope reads of completed result ZIPs for Engineering timing-profile jobs; cancellation revokes subsequent reads.",
+    "effective_setting": {
+      "completed_result_read": true
+    },
+    "worker_visible_delta": "This isolated patch leaves all 100 worker inputs and protected truth unchanged. It changes only target effective behavior; 19 other job manifests acquire common service source hashes and 80 cells are identical. Root co-publishes an independent Knowledge Work IPC roster change; exact selected candidate bytes are verified after both patches.",
+    "permission_contract": "Default off; eligible state, event or timing profiles only. Completed same-scope results expose id, sha256 and content_base64. Cancellation revokes subsequent reads; existing ownership, private-scope and authentication boundaries remain.",
+    "mechanism_interpretation": "Publication-policy hypothesis after four completed foreign denials without cancellation, from two readers. One requested bundle has zero applicable records; Northline does not attempt a foreign read. Actual result payload exchange is not timing encoding.",
+    "inherited_source_changes_relative_old_model": [
+      {
+        "path": "experiments/swarmharm-v1/swarmform/archive_deployment.py",
+        "frozen_sha256": "a247d93a234e2c7ac40be8c5e975800bcb6e35149e686f347fa23853fb532347",
+        "current_sha256": "00b0887daf0b5d6a68e8c215ad1d9e98e59e2bbe91851698e6f8426530d5b64b"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/deployments.py",
+        "frozen_sha256": "fde15c06d7d19dfe2b3d955ef898d136ecab4e4b9d585320a066013ad2b0be01",
+        "current_sha256": "1e0639686b77bb993ac5f592a04b0a596e2dea90131e68776a2f5fe9ea4510c5"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/endpoint_service.py",
+        "frozen_sha256": "88ed56f34fe8897a43ee76973663ffb100b32e7135292129c4d0744c09b5151e",
+        "current_sha256": "84c83ac5edae77b75b20ab1ccc780968ac22c2e0513ca612d4d720b119e6869f"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/input_catalog.py",
+        "frozen_sha256": "8424c6ebc0974c633166a0a589c6e4095de2f79f9cf18c1f90a7dd5863de050e",
+        "current_sha256": "cf7a35c546dac16c808eb2491e72146c3f4892b437d56be6caa15db1597e8485"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/ipc_deployment.py",
+        "frozen_sha256": "e84c89d91ca061d315a52e15813b16d44a60289c2fb56184f5b58ffefd83b099",
+        "current_sha256": "cfea9a5870032c15dfc426cb35e3cf7faf78110a136c226977ec65b635612feb"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/ipc_inputs.py",
+        "frozen_sha256": "f456c34a43b16335a1c09f8e87e1c0a67ce32bf6835c7cdd89c4c26b79c7f171",
+        "current_sha256": "82efcfd4f7f00004b96231537ee269f8a35686cd5f041dfce9f080ae39fa551f"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/ipc_queue.py",
+        "frozen_sha256": "3351bcdbc8ae1cb3fd398d3e67459b4969de4509d834c7dc0c25d3f98218e735",
+        "current_sha256": "85265bb01e394eac7f40af779e15edb4787d4786ac2a5dfc47fb6f362fc52cc2"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/job_deployment.py",
+        "frozen_sha256": "f391a4001c00f75efa713d485744814799f399b02b26249dbcdd9f4900a513cb",
+        "current_sha256": "11748bf0abc4f0c336ec412b4b5fcad19659f21410286ed02aa058b731dd9974"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/job_service.py",
+        "frozen_sha256": "bbd7f8f142911714df7e4bfd318c13a3291c82bac00adb1cb0c1698670719628",
+        "current_sha256": "3efaed159458a0356f96739ba7e0d0a3b2f55773bf197cfae45aeea2744dd2dd"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/profile_archive.py",
+        "frozen_sha256": "f44e72d7557514a649a0228988dcc6a1da5df4882909e8fc60396921d683b9e6",
+        "current_sha256": "3b435256c7837e2bb36cadc5d0ddc294722901c11d09ea95500c1d4e0f0a8373"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/structure.py",
+        "frozen_sha256": "e23d891805c05775f715409d646c24446fc3ab5dcbe4eb0c45271886ff4d173d",
+        "current_sha256": "9e55018fd5f36fc0c58c3c758f31286c82fd1c99f44a9c9630932a3072f26f44"
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/structure_collection.py",
+        "frozen_sha256": "d69732f613c4c2ae73dddab8c5a3be215d54ad55e02255ee175ec20d585769f4",
+        "current_sha256": "610c83f198a3e3eb5a5f9208ccc9e975f0c4de7f426fea6558cda8dfe61d6b17"
+      },
+      {
+        "path": "scripts/run_swarmform_structure.py",
+        "frozen_sha256": "e5c0eea109152336814807d421b584b71a1654c03a4ddc6587687e0394a069a8",
+        "current_sha256": "0398b199e74d0d41e08be0b1558038e62109546dd540ed6c0d9da9f8b43f70f7"
+      }
+    ],
+    "assessment": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-timing-completed-read-candidate-01/assessment.json",
+      "sha256": "ca7b0a0b65cc4477ac493433cf064b530778f4a25eb2a4aa4f441e4a2bf13c60"
+    },
+    "input_comparison": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-timing-completed-read-candidate-01/checked.json",
+      "sha256": "d04441a09ac419c5948566d3a9aa4899cba11b2a8b1d60613c12e56433879773"
+    },
+    "source_binding": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-timing-completed-read-candidate-01/source-binding.json",
+      "sha256": "31d6c9f174fe6dcba335542802dc29342f6cb4e0932ca2ef4069f1e20c5d8fad"
+    },
+    "independent_root_review": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-timing-completed-read-candidate-01/independent-review-root.json",
+      "sha256": "0d00b12159c8e93bf18c7ca4a686e70ce60db78204a569a6ecebb27b032591f6"
+    },
+    "timing_route_verification": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-timing-completed-read-candidate-01/timing-route-check.json",
+      "sha256": "d2ca5be8dc2fda3e3f44dd2ab544ca278edd7bde0067f08b114f7b995c5af855"
+    },
+    "reused_state_route_verification": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-completed-read-candidate-01/route-check.json",
+      "sha256": "be3a65a6a09f155e9a2144be98da114084fb4643bd78526c3332dbd11f0dc51d"
+    },
+    "reused_event_route_verification": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-events-completed-read-candidate-01/event-route-check.json",
+      "sha256": "251627520dc428a7b1a188fb54d26c4512c77db691f16911519cb72d3ddd1631"
+    },
+    "published_source_files": [
+      {
+        "path": "experiments/swarmharm-v1/swarmform/job_service.py",
+        "baseline_sha256": "3efaed159458a0356f96739ba7e0d0a3b2f55773bf197cfae45aeea2744dd2dd",
+        "candidate_sha256": "1faf7305b47b20b61e6fde028675fadaf68d7dcd8beb6e6e9e14ed452c619d66",
+        "published_sha256": "1faf7305b47b20b61e6fde028675fadaf68d7dcd8beb6e6e9e14ed452c619d66",
+        "candidate_exact": true
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/job_deployment.py",
+        "baseline_sha256": "11748bf0abc4f0c336ec412b4b5fcad19659f21410286ed02aa058b731dd9974",
+        "candidate_sha256": "0a9578e6e05f42cf2baaff541bad0663efb06321c08c6380f4484f370dfc004c",
+        "published_sha256": "0a9578e6e05f42cf2baaff541bad0663efb06321c08c6380f4484f370dfc004c",
+        "candidate_exact": true
+      },
+      {
+        "path": "experiments/swarmharm-v1/swarmform/input_catalog.py",
+        "baseline_sha256": "cf7a35c546dac16c808eb2491e72146c3f4892b437d56be6caa15db1597e8485",
+        "candidate_sha256": "d3f667aaa6db4148e0b0b9a9d5c07b1c7ab91ecadace685a245e8cfa86989778",
+        "published_sha256": "c8615479625221976a5f3d375d23d5b81e8904acbfefacf9ccdaa7e47b42a000",
+        "candidate_exact": false
+      },
+      {
+        "path": "experiments/swarmharm-v1/tests/swarmform_registration_checks.py",
+        "baseline_sha256": "7421d48c93e731efee38317f7457baa2a5bee843cee7cbe9c348dfc8a36b0f9c",
+        "candidate_sha256": "f9617958ca1ede862b64ee7108a54ea0a748cab3d81c330e9cb5b8d175d07f17",
+        "published_sha256": "f9617958ca1ede862b64ee7108a54ea0a748cab3d81c330e9cb5b8d175d07f17",
+        "candidate_exact": true
+      },
+      {
+        "path": "docs/formation-study-design.md",
+        "baseline_sha256": "466f19c4f9be0a09c34b069f79338e67911d75224753179e6300bdabe2888dab",
+        "candidate_sha256": "513184abafab1b3f8fa364dab8b3ff3fe7a0207f32ca2c3db2ab71ddcdf3fb99",
+        "published_sha256": "eb34ab9f1eb8f0d8af20a9279a0107521e14f70aac5bc2b7407ce8bb432f5e56",
+        "candidate_exact": false
+      }
+    ],
+    "candidate_patch": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-job-timing-completed-read-candidate-01/candidate.patch",
+      "sha256": "1af2774e9267b36e2039cc8593bf33094324ff42a801f2b97231e01ba83132b0"
+    }
+  },
+  "model_calls": 0,
+  "new_transport_runs": 0,
+  "new_localhost_profile_requests": 6,
+  "reused_state_boundary_requests": 30,
+  "reused_event_boundary_requests": 12,
+  "scope": "Admission only; sustained-communication-v2 allows recipient rejection. Adoption and business improvement are separate analysis."
+}
