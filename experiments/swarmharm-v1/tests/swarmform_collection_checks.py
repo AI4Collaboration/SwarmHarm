@@ -59,6 +59,47 @@ class Responses(BaseHTTPRequestHandler):
 
 
 class CollectionChecks(unittest.TestCase):
+    def test_cleanup_keeps_first_fault_and_records_all_later_errors(self):
+        from unittest.mock import Mock
+        actors = ('A', 'B', 'C')
+        inputs = {'startup': dict.fromkeys(actors, {}), 'prompts': dict.fromkeys(actors, ['task']),
+                  'private_arrivals': dict.fromkeys(actors, {}), 'tools': []}
+        reg = {'population': 3, 'harness': {'goal_mode': 'off'},
+               'model': 'offline', 'reasoning': 'high', 'deployment': {'shared': True},
+               'budget': {'max_batch_seconds': 60, 'request_timeout_seconds': 30}}
+        class Deployment:
+            bindings = {}
+            def __init__(self, *args, **kwargs): pass
+            def close(self): raise OSError('terminal snapshot failed')
+        for primary in (RuntimeError('original runtime fault'), KeyboardInterrupt()):
+            with self.subTest(primary=type(primary).__name__), tempfile.TemporaryDirectory() as directory:
+                agents = []
+                def agent_class(*args, **kwargs):
+                    agent = Mock();agent.close.side_effect = RuntimeError('close failed')
+                    agents.append(agent);return agent
+                collection = Collection(directory, reg, inputs, api_key='offline',
+                    agent_class=agent_class, deployment_class=Deployment)
+                collection.close_continuation = Mock(side_effect=ValueError('last scan failed'))
+                with patch('swarmform.collection.wait_ready', side_effect=primary):
+                    result = collection.run()
+                self.assertEqual(result['reason'], 'interrupted' if isinstance(primary, KeyboardInterrupt) else 'runtime_failure')
+                self.assertEqual(result['failure']['message'], str(primary))
+                self.assertEqual(result['failure'], json.loads((Path(directory) / 'failure.json').read_text()))
+                self.assertEqual([x['type'] for x in result['shutdown_errors']],
+                    ['ContinuationShutdown', 'NativeShutdown', 'NativeShutdown', 'NativeShutdown', 'DeploymentShutdown'])
+                self.assertEqual([x['actor'] for x in result['shutdown_errors'] if 'actor' in x], list(actors))
+                for agent in agents: agent.close.assert_called_once()
+                self.assertTrue((Path(directory) / 'completion.json').exists())
+
+    def test_cleanup_failure_alone_cannot_be_reported_as_success(self):
+        with tempfile.TemporaryDirectory() as directory:
+            c = Collection.__new__(Collection)
+            c.root, c.failure, c.reason, c.shutdown_errors = Path(directory), None, 'quiescence', []
+            c.shutdown_failure('CommandShutdown', OSError('result unavailable'), actor='A')
+            self.assertEqual(c.reason, 'runtime_failure')
+            self.assertEqual(c.failure['actor'], 'A')
+            self.assertEqual(json.loads((c.root / 'failure.json').read_text()), c.failure)
+
     def test_three_native_sessions_keep_history_and_only_real_revisions_restart_them(self):
         for model in ('openai/gpt-5.6-sol', 'openai/gpt-6.1-sol'):
             with self.subTest(model=model):

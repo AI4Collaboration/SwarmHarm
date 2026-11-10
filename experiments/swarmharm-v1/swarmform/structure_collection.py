@@ -288,6 +288,10 @@ class StructureCollection(Collection):
             save(self.root/'usage.json', {'actors':{a:{k:v for k,v in s.items() if k in
                 ('observed_model_responses','observed_tokens','missing_usage_records')} for a,s in self.states.items()},
                 'scope':'Observed native completed responses; opaque transport retries and in-flight calls may exceed these totals.'})
+            if self.stopping.is_set():
+                # Final response records still count, but a limit crossed while
+                # retaining them must not relabel an earlier runtime failure.
+                return
             if tokens >= self.reg['budget']['max_observed_tokens_per_agent']:
                 self.stop_for_budget(actor, 'observed_tokens', tokens)
             if len(records) >= self.reg['budget']['max_responses_per_agent']:

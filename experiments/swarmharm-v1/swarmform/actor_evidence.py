@@ -5,6 +5,38 @@ import json
 from pathlib import Path
 
 
+def export_closed_actors(root, registration):
+    """Attempt every actor independently, preserving failures and strict validation.
+
+    A bad native trajectory must not prevent healthy peers from being exported.
+    The existing export_actor checks remain authoritative; failed actors never
+    receive continuity credit or a fabricated replacement trajectory.
+    """
+    from export_atif import export_actor
+    root = Path(root)
+    if not (root / 'completion.json').is_file():
+        raise ValueError('Wait for terminal collection')
+    dest = root / 'atif-validation.json'
+    if dest.exists():
+        raise FileExistsError('Do not replace an export')
+    trajectories, failures = [], []
+    for phase, plan in registration['plan'].items():
+        for actor in plan:
+            try:
+                if not (root / phase / actor / 'history.json').is_file():
+                    raise FileNotFoundError('Missing actor history')
+                trajectories.append(export_actor(root, phase, actor))
+            except Exception as error:
+                failures.append({'phase': phase, 'actor': actor,
+                                 'type': type(error).__name__, 'message': str(error)})
+    report = {'harbor_version': '0.24.0', 'schema': 'ATIF-v1.8',
+              'trajectories': trajectories, 'failed_trajectories': failures,
+              'all_registered_actors_exported': bool(trajectories) and not failures}
+    with dest.open('x') as stream:
+        stream.write(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+    return report
+
+
 def completeness(root, registration, trajectories=None):
     """Inventory native/ATIF actors without changing or re-exporting evidence.
 

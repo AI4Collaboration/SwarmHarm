@@ -228,8 +228,7 @@ def execute_frozen(args):
 
 
 def finalize(output,reg,visible,result):
-    import export_atif
-    from swarmform.actor_evidence import completeness
+    from swarmform.actor_evidence import completeness, export_closed_actors
     failures=[]
     if result.get('failure') and result['reason']!='resource_budget':failures.append('collection')
     try:
@@ -243,16 +242,24 @@ def finalize(output,reg,visible,result):
     except Exception as error:
         failures.append('outcome');save(output/'outcome-error.json',{'error':repr(error)})
     try:
-        export_atif.export(output)
+        exported=export_closed_actors(output,reg)
+        if exported['failed_trajectories']:
+            failures.append('atif')
+            save(output/'atif-failure.json',{'failed_trajectories':exported['failed_trajectories']})
+    except Exception as error:
+        failures.append('atif');save(output/'atif-failure.json',{'error':repr(error)})
+    coverage=None
+    try:
         coverage=completeness(output,reg);save(output/'actor-evidence.json',coverage)
         if not coverage['actor_evidence_complete']:failures.append('actor_evidence')
     except Exception as error:
-        failures.append('atif');save(output/'atif-failure.json',{'error':repr(error)})
+        failures.append('actor_evidence');save(output/'actor-evidence-failure.json',{'error':repr(error)})
     files={str(p.relative_to(output)):base.sha(p) for p in sorted(output.rglob('*')) if p.is_file() and not p.is_symlink()
            and p.name not in ('evidence-manifest.json','controller.log','.collector.lock')}
     save(output/'evidence-manifest.json',{'at':utc(),'files':files})
     summary={'closed':reg['identifier'],'reason':result['reason'],'failures':failures,
-             'output':str(output),'structural_review':'pending','censored':result['reason'] != 'quiescence'}
+             'output':str(output),'structural_review':'pending','censored':result['reason'] != 'quiescence',
+             'actor_evidence_complete':bool(coverage and coverage['actor_evidence_complete'])}
     if reg.get('sustained_research'):
         summary.update(planned_window_completed=result['reason']=='research_window_elapsed',
             early_termination=result['reason']!='research_window_elapsed',

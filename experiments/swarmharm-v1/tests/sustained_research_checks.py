@@ -176,6 +176,21 @@ class SustainedResearchChecks(unittest.TestCase):
                 with self.assertRaises(RuntimeError): collection.resume_research()
             self.assertEqual(collection.budget_stop['metric'], 'tools')
 
+    def test_shutdown_usage_is_retained_without_relabeling_the_first_failure(self):
+        with tempfile.TemporaryDirectory() as directory:
+            collection = self.fixture(directory); actor = collection.actors[0]
+            collection.stopping.set()
+            collection.failure = {'type': 'RuntimeError', 'message': 'original context failure'}
+            message = {'type': 'provider_response', 'turn': 1, 'history': [],
+                       'event': {'response': {'id': 'last-response', 'status': 'completed',
+                           'output': [], 'usage': {'input_tokens': 8_000_000, 'output_tokens': 1}}}}
+            collection.handle(actor, message, None)
+            self.assertEqual(collection.states[actor]['observed_tokens'], 8_000_001)
+            self.assertIsNone(collection.budget_stop)
+            self.assertEqual(collection.failure['message'], 'original context failure')
+            self.assertFalse((Path(directory) / 'resource-budget-stop.json').exists())
+
+
     def test_busy_tool_notice_preserves_shell_result_and_does_not_start_another_turn(self):
         with tempfile.TemporaryDirectory() as directory, patch('swarmform.structure_collection.time.monotonic', return_value=100):
             collection = self.fixture(directory); actor = collection.actors[0]

@@ -71,6 +71,7 @@ class Collection:
         self.pool = ThreadPoolExecutor(max_workers=population)
         self.jobs = {}
         self.failure, self.reason = None, 'quiescence'
+        self.shutdown_errors = []
         self.schedule, self.arrival_thread = None, None
 
     def observation(self, actor, phase, value):
@@ -148,6 +149,17 @@ class Collection:
 
     def close_continuation(self):
         pass
+
+    def shutdown_failure(self, stage, error, *, actor=None):
+        """Keep the first cause and separately retain every cleanup failure."""
+        value = {'type': stage, 'error_type': type(error).__name__,
+                 'message': repr(error), 'at': utc()}
+        if actor is not None:
+            value['actor'] = actor
+        self.shutdown_errors.append(value)
+        if self.failure is None:
+            self.failure, self.reason = value, 'runtime_failure'
+            save(self.root / 'failure.json', self.failure)
 
     def finish_tool(self, actor, message, result, *, delivered):
         turn = message['turn']
@@ -303,13 +315,11 @@ class Collection:
             try:
                 self.close_continuation()
             except BaseException as error:
-                if self.failure is None:
-                    self.failure = {'type': 'ContinuationShutdown', 'message': repr(error)}
-                    self.reason = 'runtime_failure'
+                self.shutdown_failure('ContinuationShutdown', error)
             if self.arrival_thread:
                 self.arrival_thread.join(timeout=120)
                 if self.arrival_thread.is_alive():
-                    self.failure = {'type': 'ArrivalShutdown', 'message': 'Private writer did not stop'}
+                    self.shutdown_failure('ArrivalShutdown', RuntimeError('Private writer did not stop'))
             # Collect actual command results even when interruption prevents model delivery.
             self.pool.shutdown(wait=True)
             for future, (actor, call) in list(self.jobs.items()):
@@ -318,14 +328,14 @@ class Collection:
                     self.finish_tool(actor, call, result, delivered=False)
                 except BaseException as error:
                     save(self.root / 'natural' / actor / 'command-error.json', {'error': repr(error)})
+                    self.shutdown_failure('CommandShutdown', error, actor=actor)
             with ThreadPoolExecutor(max_workers=len(self.actors)) as pool:
                 closes = {actor: pool.submit(agent.close) for actor, agent in self.agents.items()}
                 for actor, future in closes.items():
                     try:
                         self.states[actor]['native_exit_code'] = future.result()
                     except BaseException as error:
-                        self.failure = {'type': 'NativeShutdown', 'message': repr(error)}
-                        self.reason = 'runtime_failure'
+                        self.shutdown_failure('NativeShutdown', error, actor=actor)
             # Retain final native projections generated during close as well. Do
             # not execute or deliver any new tool call while shutting down.
             while not self.events.empty():
@@ -333,16 +343,15 @@ class Collection:
                 if message['type'] in ('request', 'response_update', 'provider_response'):
                     try:
                         self.handle(actor, message, deployment)
-                    except RuntimeError:
-                        pass
+                    except Exception as error:
+                        self.shutdown_failure('ProjectionShutdown', error, actor=actor)
                 else:
                     self.record(actor, message)
             if deployment:
                 try:
                     deployment.close()
                 except BaseException as error:
-                    self.failure = {'type': 'DeploymentShutdown', 'message': repr(error)}
-                    self.reason = 'runtime_failure'
+                    self.shutdown_failure('DeploymentShutdown', error)
             service_terminal = getattr(deployment, 'terminal_service', None)
             if service_terminal is not None:
                 save(self.root / 'service-terminal.json', service_terminal)
@@ -351,6 +360,7 @@ class Collection:
                 save(self.root / 'natural' / actor / 'result.json', state)
             save(self.root / 'terminal-snapshots.json', {a: str(p.relative_to(self.root)) for a, p in self.terminals.items()})
             completion = {'at': utc(), 'reason': self.reason, 'failure': self.failure,
+                'shutdown_errors': self.shutdown_errors,
                 'elapsed_seconds': time.monotonic() - began, 'actors': self.states,
                 'terminal_snapshot_count': len(self.terminals),
                 'service_terminal': 'service-terminal.json' if service_terminal is not None else None,

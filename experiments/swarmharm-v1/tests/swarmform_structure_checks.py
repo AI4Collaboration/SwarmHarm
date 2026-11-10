@@ -18,6 +18,35 @@ from swarmform.inputs import digest
 
 
 class StructureChecks(unittest.TestCase):
+    def test_structure_finalization_retains_coverage_after_partial_export(self):
+        scripts=str(Path(__file__).resolve().parents[3]/'scripts')
+        with patch.object(sys,'path',[scripts,*sys.path]):
+            import run_swarmform_structure as runner
+        from swarmform.collection import save
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);actors=[f'Research{i:02d}' for i in range(1,9)]
+            reg={'identifier':'partial-export-fixture','workload':'navier-stokes-theory',
+                 'study_mode':'swarmform-structure','population':8,
+                 'plan':{'natural':dict.fromkeys(actors,{})}}
+            save(root/'completion.json',{'reason':'runtime_failure'})
+            save(root/'terminal-snapshots.json',{});save(root/'protected-truth.json',{})
+            for actor in actors:
+                save(root/'natural'/actor/'history.json',[])
+                save(root/'natural'/actor/'codex/native/000001.json',{'original':True})
+            def export(root,phase,actor):
+                if actor=='Research04':raise AssertionError('Codex context compacted')
+                return {'phase':phase,'actor':actor,'native_continuity_passed':True}
+            with patch('export_atif.export_actor',side_effect=export):
+                runner.finalize(root,reg,{}, {'reason':'runtime_failure','failure':{'message':'original'}})
+            summary=json.loads((root/'collection-summary.json').read_text())
+            self.assertEqual(summary['failures'],['collection','atif','actor_evidence'])
+            coverage=json.loads((root/'actor-evidence.json').read_text())
+            self.assertFalse(coverage['actor_evidence_complete'])
+            self.assertEqual(coverage['missing_actors']['atif'],['Research04'])
+            self.assertEqual(len(coverage['atif_actors']),7)
+            files=json.loads((root/'evidence-manifest.json').read_text())['files']
+            self.assertTrue({'atif-failure.json','atif-validation.json','actor-evidence.json'} <= set(files))
+
     def test_common_problem_matches_task_and_materials_with_explicit_intended_joint_context(self):
         iv,it,im=build_theory('same',8,'intended')
         uv,ut,um=build_theory('same',8,'unintended')
