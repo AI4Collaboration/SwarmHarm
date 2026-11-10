@@ -70,7 +70,8 @@ class StructureObservationChecks(unittest.TestCase):
             write('read-observations/B/000001.json',{'files':{}})
             lines=[]
             for count,doc in enumerate(docs,1):
-                payload=json.dumps(doc)+'\n'+json.dumps({'document_ref':{}})
+                payload=json.dumps(doc) if count==1 else json.dumps({'sender':'B','recipient':'A','text':json.dumps({'documents':[doc]})})
+                payload+='\n'+json.dumps({'document_ref':{}})
                 lines.append(f'1 1000.{count} read(4<{hexed("/var/tmp/exports/source.jsonl")}>, "{hexed(payload)}", {len(payload)}) = {len(payload)}')
                 trace='\n'.join(lines).encode();digest=sha256(trace).hexdigest()
                 p=root/f'read-observations/A/blobs/{digest}';p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(trace)

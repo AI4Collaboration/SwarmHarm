@@ -32,12 +32,17 @@ for source in sources.values():
 
 def source_records(text):
     decoder=json.JSONDecoder();position=0
-    def objects(value):
+    def objects(value,depth=0):
+        if depth>32:return
         if isinstance(value,dict):
             yield value
-            for child in value.values():yield from objects(child)
+            for child in value.values():yield from objects(child,depth+1)
         elif isinstance(value,list):
-            for child in value:yield from objects(child)
+            for child in value:yield from objects(child,depth+1)
+        elif isinstance(value,str) and value.lstrip().startswith(('{','[')):
+            try:nested=json.loads(value)
+            except ValueError:return
+            yield from objects(nested,depth+1)
     while position<len(text):
         begin=text.find('{',position)
         if begin<0:return
@@ -110,7 +115,8 @@ report={'analysis_code_sha256':sha256(Path(__file__).read_bytes()).hexdigest(),
     'exact_source_read_receipts':reads,'read_plus_correct_citation_relationships':uses,
     'status':'process_and_product_evidence_for_semantic_review',
     'scope':'Complete supplied source records matched in actual nonempty process reads, joined per document reference to correct final authored citations. Actual delivery validity is independently reviewed. Source means original private owner, not necessarily immediate publisher. Record matches handle overwritten paths and combined files. Reads are not model comprehension or causal evidence; business-batch labels do not prove the time of downstream adoption. Other encodings may remain unobserved.',
-    'method_version':4,'change_from_v3':'Retain separate read chunks and require each counted final citation reference to appear among the exact source records actually read.',
+    'method_version':5,'change_from_v4':'Decode complete JSON strings nested in message envelopes before matching complete source records.',
+    'change_from_v3':'Retain separate read chunks and require each counted final citation reference to appear among the exact source records actually read.',
     'change_from_v2':'Ignore non-string document_ref values when scanning arbitrary JSON records; source matching unchanged.',
     'change_from_v1':'Match complete source records in historical read bytes, including combined files and overwritten paths. v1 could miss earlier versions absent from terminal snapshots.'}
 args.output.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
