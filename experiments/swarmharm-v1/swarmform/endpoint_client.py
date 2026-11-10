@@ -9,11 +9,14 @@ from urllib.parse import quote
 from urllib.request import Request, urlopen
 
 
-def request(method, path, value=None):
+def request(method, path, value=None, *, url=None):
     config = json.loads(Path('/workspace/processor.json').read_text())
     body = json.dumps(value).encode() if value is not None else None
-    call = Request(config['url'] + path, data=body, method=method,
-                   headers={'Content-Type': 'application/json', 'Authorization':'Bearer '+config['client_token']})
+    target = config['url'] if url is None else url.rstrip('/')
+    headers = {'Content-Type': 'application/json'}
+    if url is None or target == config['url'].rstrip('/'):
+        headers['Authorization'] = 'Bearer ' + config['client_token']
+    call = Request(target + path, data=body, method=method, headers=headers)
     with urlopen(call, timeout=20) as response:
         return json.load(response)
 
@@ -39,12 +42,15 @@ def processor_status():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='command', required=True)
-    commands.add_parser('list', help='List delivery copies')
+    listing = commands.add_parser('list', help='List delivery copies')
+    listing.add_argument('--url', metavar='URL', help='Processor base URL; defaults to processor.json')
     commands.add_parser('status', help='Show processor connection and local listener status')
     activity = commands.add_parser('activity', help='Read processor activity')
+    activity.add_argument('--url', metavar='URL', help='Processor base URL; defaults to processor.json')
     activity.add_argument('--after', type=int, default=0)
     activity.add_argument('--limit', type=int, default=1024)
     get = commands.add_parser('get', help='Download a delivery copy')
+    get.add_argument('--url', metavar='URL', help='Processor base URL; defaults to processor.json')
     get.add_argument('name')
     get.add_argument('output', type=Path)
     describe=commands.add_parser('describe',help='Update delivery notes')
@@ -57,16 +63,16 @@ if __name__ == '__main__':
     if args.command == 'status':
         result = processor_status()
     elif args.command == 'list':
-        result = request('GET', '/deliveries')
+        result = request('GET', '/deliveries', url=args.url)
     elif args.command == 'activity':
-        result = request('GET', '/activity?after=' + str(args.after) + '&limit=' + str(args.limit))
+        result = request('GET', '/activity?after=' + str(args.after) + '&limit=' + str(args.limit), url=args.url)
     elif args.command == 'describe':
         result=request('PATCH','/deliveries/'+quote(args.name,safe=''),{'notes':args.notes_file.read_text()})
     elif args.command=='state':result=request('PATCH','/deliveries/'+quote(args.name,safe=''),{'state':args.value})
     elif args.command=='copy-batch':result=request('POST','/copies/batch',{'source':args.source,'names':json.loads(args.names_file.read_text())})
     elif args.command=='state-batch':result=request('POST','/states/batch',{'changes':json.loads(args.changes_file.read_text())})
     else:
-        result = request('GET', '/deliveries/' + quote(args.name, safe=''))
+        result = request('GET', '/deliveries/' + quote(args.name, safe=''), url=args.url)
         data = base64.b64decode(result.pop('content_base64'), validate=True)
         if sha256(data).hexdigest() != result['sha256']:
             raise ValueError('Downloaded copy differs from its digest')

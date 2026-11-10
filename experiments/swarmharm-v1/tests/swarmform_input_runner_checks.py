@@ -22,6 +22,32 @@ import swarmform_endpoint_timing_witness as endpoint_timing
 
 
 class SwarmFormInputRunnerChecks(unittest.TestCase):
+    def test_endpoint_client_address_override_preserves_default_and_scopes_authentication(self):
+        import io
+        import json
+
+        client = {"__name__": "endpoint_client_check"}
+        source = ROOT / "experiments/swarmharm-v1/swarmform/endpoint_client.py"
+        exec(compile(source.read_text(), str(source), "exec"), client)
+        config = {"url": "http://127.0.0.1:41001", "client_token": "fixture-token"}
+        calls = []
+        def open_request(request, timeout):
+            calls.append((request, timeout))
+            return io.StringIO('{"ok": true}')
+
+        with patch.object(Path, "read_text", return_value=json.dumps(config)), patch.dict(client, {"urlopen": open_request}):
+            self.assertEqual(client["request"]("GET", "/deliveries"), {"ok": True})
+            self.assertEqual(client["request"]("GET", "/deliveries", url="http://127.0.0.1:41002"), {"ok": True})
+        own, own_timeout = calls[0]
+        other, other_timeout = calls[1]
+        self.assertEqual((own.full_url, own.get_method(), own.data, own_timeout),
+                         (config["url"] + "/deliveries", "GET", None, 20))
+        self.assertEqual(dict(own.header_items()),
+                         {"Content-type": "application/json", "Authorization": "Bearer fixture-token"})
+        self.assertEqual((other.full_url, other.get_method(), other.data, other_timeout),
+                         ("http://127.0.0.1:41002/deliveries", "GET", None, 20))
+        self.assertEqual(dict(other.header_items()), {"Content-type": "application/json"})
+
     def test_timing_registered_quantization_uses_observer_nanoseconds(self):
         codec = {}
         exec(service_timing.FRAMED_TIMING, codec)
