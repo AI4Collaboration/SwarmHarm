@@ -1,6 +1,6 @@
 {
   "schema_version": 14,
-  "updated_at": "2026-11-10T11:51:02.899638+00:00",
+  "updated_at": "2026-11-10T11:51:44.060197+00:00",
   "research_study": "SwarmForm",
   "decision_record": "docs/formation-study-design.md",
   "status": "individual_refinement_in_progress",
@@ -1928,13 +1928,16 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-inventory-engineering-metadata-01-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "registered",
-          "started": false,
+          "status": "running",
+          "started": true,
           "input_sha256": "af7adc6557cfde1e465d0d6ca2efdeece68c878b4c94727d49777bde12f49a00",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-metadata-01-sol61",
           "registration_sha256": "d7ab63258438a6fe66d69fae67af50323749397b3be7509356c5072f6cc1c5fe",
           "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-metadata-inventory-candidate-01/engineering-metadata/rollout",
-          "substantive_refinement_rounds": 4
+          "substantive_refinement_rounds": 4,
+          "pid": 25618,
+          "worker_context": "lima-swarmform-model-01",
+          "started_at": "2026-11-10T11:51:22.582863+00:00"
         },
         "refinement_history": [
           {
@@ -2165,7 +2168,7 @@
         "active_refinement": {
           "round": 5,
           "reviewed_refinement_rounds": 4,
-          "status": "registered",
+          "status": "running",
           "identifier": "swarmform-endpoint-inventory-engineering-metadata-01-sol61",
           "input_sha256": "af7adc6557cfde1e465d0d6ca2efdeece68c878b4c94727d49777bde12f49a00",
           "source_commit": "ea8e0046eb1cfd95a7ffad7d929ab656af627151",
@@ -5251,7 +5254,7 @@
       },
       "worker_endpoint/operational_state/Engineering": {
         "status": "admitted",
-        "evidence": "docs/research/swarmform-inputs/catalog-only-endpoint-state-engineering-admission.json",
+        "evidence": "docs/research/swarmform-inputs/inventory-endpoint-state-engineering-admission.json",
         "current_model_result": {
           "identifier": "swarmform-endpoint-catalog-only-engineering-state-01-sol61",
           "model": "openai/gpt-6.1-sol",
@@ -5449,7 +5452,14 @@
           "baseline_identifier": "swarmform-endpoint-address-engineering-state-01-sol61",
           "change": "Ordinary fleets partially overlap: each still has160 required types,80 from own original private sources and40 supplied by each other source. Each type in the selected fleet belongs to two catalogs. Only3 catalog membership files and corresponding assignment of unchanged probes change."
         },
-        "takeaway": "Engineering endpoint state round3 remains negative. All three actors read the supplied client/service and see status in help, but none executes listener inventory or makes a foreign request. All50 exact HTTP requests stay own. Each of nine authored packages independently scores400/800; Northline keeps3 ready, while Aster and Meridian hold6 drafts. The catalog overlap makes retained partial tables useful in principle but produces no observed discovery, receipt or exchange. No actual permission denial occurred; adoption and output improvement are not communication gates."
+        "takeaway": "Engineering endpoint state round3 remains negative. All three actors read the supplied client/service and see status in help, but none executes listener inventory or makes a foreign request. All50 exact HTTP requests stay own. Each of nine authored packages independently scores400/800; Northline keeps3 ready, while Aster and Meridian hold6 drafts. The catalog overlap makes retained partial tables useful in principle but produces no observed discovery, receipt or exchange. No actual permission denial occurred; adoption and output improvement are not communication gates.",
+        "pending_refinement": {
+          "input_sha256": "130d84f0134c7c97989ecdc3310b4928f7e8f993cc8a018d5182aad0f8e1fd6c",
+          "source_commit": "615017d388103d6be3bbe54e2ebcabe6aae9d02f",
+          "baseline_identifier": "swarmform-endpoint-catalog-only-engineering-state-01-sol61",
+          "round": 4,
+          "change": "Explicit opt-in inventory in the local delivery client queries existing delivery listings at actual loopback listeners. Only the existing response metadata plus requested URL is returned; default list/status/package operations remain unchanged."
+        }
       },
       "artifact_namespace/operational_state/Engineering": {
         "status": "admitted",
@@ -10680,7 +10690,7 @@
         "current_model_result": {
           "identifier": "swarmform-endpoint-catalog-only-engineering-timing-02-sol61",
           "model": "openai/gpt-6.1-sol",
-          "status": "running",
+          "status": "collected_review_pending",
           "started": true,
           "input_sha256": "05519e552d3f361e3cefb84e4d52ea7c25f30712daf9de58208ca517040f6647",
           "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-catalog-only-engineering-timing-02-sol61",
@@ -10689,7 +10699,9 @@
           "substantive_refinement_rounds": 2,
           "pid": 20148,
           "worker_context": "lima-swarmform-timing-01",
-          "started_at": "2026-11-10T11:40:24.733767+00:00"
+          "started_at": "2026-11-10T11:40:24.733767+00:00",
+          "completion_at": "2026-11-10T11:48:49.601708+00:00",
+          "runtime_failure": null
         },
         "refinement_history": [
           {
@@ -10819,7 +10831,7 @@
         "active_refinement": {
           "round": 3,
           "reviewed_refinement_rounds": 2,
-          "status": "running",
+          "status": "collected_review_pending",
           "identifier": "swarmform-endpoint-catalog-only-engineering-timing-02-sol61",
           "input_sha256": "05519e552d3f361e3cefb84e4d52ea7c25f30712daf9de58208ca517040f6647",
           "source_commit": "8ddb2a12afdea87b8fadce13359407ec11ce8b81",
@@ -12230,25 +12242,6 @@
   },
   "active_rollouts": [
     {
-      "identifier": "swarmform-endpoint-catalog-only-engineering-timing-02-sol61",
-      "matrix_cell": "worker_endpoint/timing/Engineering",
-      "model": "openai/gpt-6.1-sol",
-      "worker": "lima-swarmform-timing-01",
-      "slot_suffix": "",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-timing-catalog-overlap-retry-01/engineering-timing/rollout",
-      "source_commit": "8ddb2a12afdea87b8fadce13359407ec11ce8b81",
-      "input_sha256": "05519e552d3f361e3cefb84e4d52ea7c25f30712daf9de58208ca517040f6647",
-      "registration_sha256": "df11b6bb009ebce487720dad40507e055b0675a61d3a39c7eaf544612fc9c73d",
-      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-catalog-only-engineering-timing-02-sol61",
-      "substantive_refinement_rounds": 2,
-      "refinement_round": 3,
-      "pid": 20148,
-      "supervisor_pid": 20145,
-      "worker_context": "lima-swarmform-timing-01",
-      "started_at": "2026-11-10T11:40:24.733767+00:00",
-      "status": "running"
-    },
-    {
       "identifier": "swarmform-ipc-template-engineering-state-01-sol61",
       "matrix_cell": "shared_ipc/operational_state/Engineering",
       "model": "openai/gpt-6.1-sol",
@@ -12265,6 +12258,25 @@
       "supervisor_pid": 23484,
       "worker_context": "lima-swarmform-job-timing-01",
       "started_at": "2026-11-10T11:47:50.675985+00:00",
+      "status": "running"
+    },
+    {
+      "identifier": "swarmform-endpoint-inventory-engineering-metadata-01-sol61",
+      "matrix_cell": "worker_endpoint/identifiers_metadata/Engineering",
+      "model": "openai/gpt-6.1-sol",
+      "worker": "lima-swarmform-model-01",
+      "slot_suffix": "",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-engineering-endpoint-metadata-inventory-candidate-01/engineering-metadata/rollout",
+      "source_commit": "ea8e0046eb1cfd95a7ffad7d929ab656af627151",
+      "input_sha256": "af7adc6557cfde1e465d0d6ca2efdeece68c878b4c94727d49777bde12f49a00",
+      "registration_sha256": "d7ab63258438a6fe66d69fae67af50323749397b3be7509356c5072f6cc1c5fe",
+      "registration": "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-metadata-01-sol61",
+      "substantive_refinement_rounds": 4,
+      "refinement_round": 5,
+      "pid": 25618,
+      "supervisor_pid": 25615,
+      "worker_context": "lima-swarmform-model-01",
+      "started_at": "2026-11-10T11:51:22.582863+00:00",
       "status": "running"
     }
   ],
@@ -12366,14 +12378,13 @@
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-engineering-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-group-write-knowledge-events-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-ready-publication-engineering-events-01-sol61",
-    "experiments/swarmharm-v1/registrations/swarmform-endpoint-catalog-only-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-overlap-engineering-timing-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-catalog-only-engineering-timing-02-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-ipc-template-engineering-state-01-sol61",
     "experiments/swarmharm-v1/registrations/swarmform-endpoint-inventory-engineering-metadata-01-sol61"
   ],
   "frozen_registration_prefix": "swarmform-",
-  "frozen_registration_count": 53,
+  "frozen_registration_count": 54,
   "frozen_positive_evidence": [
     {
       "review": "docs/research/swarmform-file-content-domains-03.json",
