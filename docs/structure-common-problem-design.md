@@ -71,6 +71,14 @@ in the later review. Continued research is an instructed experimental condition;
 organizational form remains the observed outcome. This intervention provides
 continued opportunity without guaranteeing productive progress or interaction.
 
+Validation: all 72 selected checks passed through `scripts/check-ci`, including
+eight native sessions against deterministic local HTTP responses. Each session
+continued in its original context, retained cumulative usage, explicitly paused
+and remained open until an accelerated test clock reached the window deadline.
+The actual configured period stays 90 minutes. No participant inference or new
+experiment registration occurred. Research runtime hashes remain identical to
+the tested bytes after integrating unrelated main-branch updates.
+
 ## Historical publication-only continuation — not collected
 
 On 10 November the user requested the continuation defect be fixed and explicitly

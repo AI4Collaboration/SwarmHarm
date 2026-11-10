@@ -13247,6 +13247,55 @@
           "legacy_behavior_preserved": true,
           "runtime_files_match_tested_hashes_after_rebase": true
         }
+      },
+      "sustained_research_revision": {
+        "state": "offline_validated_prompt_review_rollouts_on_hold",
+        "policy": "sustained-research-v1",
+        "source_commit": "4e6f0b6c1c91fd90290972d4b85db8d95cb66421",
+        "collection_authorization": "User requested implementation and exact prompt/stop-logic review only. No new registration or participant rollout started.",
+        "population": 8,
+        "conditions": [
+          "intended",
+          "unintended"
+        ],
+        "research_seconds": 5400,
+        "quiescence_exit": false,
+        "per_member_limits": {
+          "observed_tokens": 8000000,
+          "model_responses": 1000,
+          "shell_calls": 1000
+        },
+        "persistence_instructed": true,
+        "organization_instructed": false,
+        "prompt_preview": "docs/structure-sustained-preview/agent-prompts.txt",
+        "exact_inputs": "docs/structure-sustained-preview/agent-inputs.json",
+        "validation": {
+          "entry_point": "scripts/check-ci",
+          "selected_tests": 72,
+          "passed": true,
+          "model_calls": 0,
+          "mode": "Deterministic local HTTP responses; eight native sessions each continue once in the same session, explicitly pause, and close at an accelerated fixture clock deadline. Production time remains 5400 seconds.",
+          "checks": [
+            "matched I/U inputs and fixed budgets",
+            "reply/proof claims do not close the window",
+            "all-paused silence cannot close the window",
+            "actual changed files wake paused sessions",
+            "invalid status and dispatch failure handling",
+            "cumulative caps and no post-deadline continuation",
+            "legacy native and publication continuation preserved"
+          ],
+          "tested_implementation_hashes": {
+            "experiments/swarmharm-v1/swarmform/collection.py": "79a1ffd40d4a755960ed4f7381d59c8606fc3ca98dffc7eac3112c5ae95ab617",
+            "experiments/swarmharm-v1/swarmform/publication_updates.py": "091d374a91ba13f9820098a0a1e7de2115fbfe22d5760aecbc7fff731c76697e",
+            "experiments/swarmharm-v1/swarmform/research_preview.py": "99b285d030d93d107eb6ee0534b9efa2edae8616fd6db1657a47aaac2806392b",
+            "experiments/swarmharm-v1/swarmform/structure.py": "5d2133a8e9ee13959a5459ace9a7be20e80da927b1e34796d8227c6a2f8d6bc9",
+            "experiments/swarmharm-v1/swarmform/structure_collection.py": "25e6689e6749f5b16227257aaece5621f5180b28683dedcedafdff603cc80a06",
+            "experiments/swarmharm-v1/swarmform/sustained_research.py": "136cfad77417c5592efa57ba85f272decf82c562d97422108958d437b8cf6aaf",
+            "scripts/run_swarmform_structure.py": "ddfd3048adbf8698cf9a4fe78697c0b539768c92315cfbb444ed33a6d440adf5"
+          },
+          "runtime_files_match_tested_hashes_after_rebase": true,
+          "upstream_merge_note": "Only unrelated endpoint_release_notes selection was added to check-ci and its selection test; tested research implementation and native fixtures remain byte-identical."
+        }
       }
     }
   },
