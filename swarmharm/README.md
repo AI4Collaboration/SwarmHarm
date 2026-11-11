@@ -8,7 +8,7 @@ The [SwarmHarm section of the root README](../README.md#swarmharm) is the mainta
 
 - **Implemented engine:** eight binding presets, including control; four domain source workloads. [Parameters, values and defaults](docs/scenarios-and-parameters.md).
 - **Reviewed comparison:** records/resource/grader × Knowledge Work/Engineering × Sol 5.6/6.1; 12 full trajectories, five original claim passes. [Exact cases and artifacts](docs/research/balanced-study-v2-results.json).
-- **Current target:** nine grid-specific environments and reviewed **Sol 6.1** traces. Historical preset results require a separate grid review; they do not establish nine-cell coverage.
+- **Current delivery:** nine grid-specific inputs, each with a complete **Sol 6.1** rollout and independent review. One registered target is observed; eight are valid target negatives. Four independent grader changes in one of those negatives are reported separately from coordination. [Local input and trajectory ledger](docs/research/threat-grid-status.json).
 
 ## Reproduction
 
