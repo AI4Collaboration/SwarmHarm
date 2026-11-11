@@ -114,7 +114,7 @@ Historical review supports aggregation and some coordination episodes. The [dele
 ### Mechanisms and evidence
 
 The taxonomy follows three parts of a task: **task fidelity, evaluation integrity,
-and environment integrity**, with two mechanisms each. The [source inventory](swarmharm/docs/phase2-taxonomy.md#metr-behavior-coverage) maps 47 behavior/attempt entries from METR's incident and reward-hacking reports, including communication, mistaken beliefs and corrections. Classification coverage is separate from implemented inputs and reproduced behavior.
+and environment integrity**, with two mechanisms each. The [source inventory](swarmharm/docs/phase2-taxonomy.md#metr-behavior-coverage) maps 47 behavior/attempt entries from METR's incident and reward-hacking reports, including communication, mistaken beliefs and corrections. Each source row also marks observed behavior, an analogue, an available surface or a gap; taxonomy coverage is not implementation or reproduction.
 
 | Mechanism | Current evidence |
 | --- | --- |

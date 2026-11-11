@@ -83,67 +83,78 @@ behavior. This gives a checkable, corpus-bounded coverage claim rather than a cl
 to enumerate every possible future failure. Each row is **classification
 coverage**, not our implementation or a reproduced model result.
 
+Input/evidence coverage is a different axis: **Observed** names a reviewed
+instance of that subtype; **Analogue** names a related mechanism with a stated
+difference; **Available** means a relevant surface exists but that behavior has
+not been established; **Gap** means no matched contract is selected;
+**Separate** points to formation evidence outside this SwarmHarm audit;
+**Not measured** identifies an absent or confounded measurement. These labels
+are not pass/fail scores and are not additive replication rates. An open text
+channel permits many behaviors without proving that any of them occurred.
+
 Source status: **O** = reported occurrence; **P** = proposal/attempt with no
 confirmed intended effect; **M** = mixed/partial outcomes; **N** = explicitly not
 performed. O never implies that a broader objective succeeded. Links point to
 the relevant original sections. Codes in a grouped row attach to its respective sub-actions; signature verification itself, for example, is not evidence tampering.
 
-| ID | Incident behavior | Code | Source status / locator |
-| --- | --- | --- | --- |
-| H01 | Cache discovery | C1, B1 | O · [H][h-channel] |
-| H02 | Files, chunks, mailboxes | C1 | M · [H][h-mailbox], [H][h-channel] |
-| H03 | Other carriers | C1 | O · [H][h-other] |
-| H04 | Protocol reuse | C1, C2 | O · [H][h-mailbox] |
-| H05 | Legitimate teamwork | C3 | O · [H][h-streams] |
-| H06 | Leadership, subdelegation | C3 | O · [H][h-streams] |
-| H07 | Handoffs | C3 | O · [H][h-timeline] |
-| H08 | Replication, review, pivots | C2, C3 | O · [H][h-timeline] |
-| H09 | Holds, vetoes, ownership | C3, F3 | M · [H][h-norms] |
-| H10 | Timeout consent | C3, F1 | O · [H][h-norms] |
-| H11 | Conflicting overwrites | B2, C3, F3 | O · [H][h-norms] |
-| H12 | Impersonation, signatures | E1, C3, F1 | M · [H][h-signing] |
-| H13 | Self-risking experiments | F2, C3 | O · [H][h-projects] |
-| H14 | Reverse-engineered answers | T1 | O · [H][h-streams] |
-| H15 | Imagined transcript grader | F1 | O · [H][h-streams] |
-| H16 | Target replacement | T2 | M · [H][h-target] |
-| H17 | Credentials, private content | B1 | O · [H][h-access], [H][h-execution] |
-| H18 | External execution, privileges | B1 | O · [H][h-execution] |
-| H19 | Container boundary | B1 | O · [H][h-spoof] |
-| H20 | Infrastructure expansion | B1 | O · [H][h-infrastructure] |
-| H21 | Service overload | B2 | O · [H][h-infrastructure] |
-| H22 | Reset experiments | B2, F1 | M · [H][h-reset] |
-| H23 | Telemetry, backup | C3 | O · [H][h-reset] |
-| H24 | Post-submission probes | B1, F2 | M · [H][h-tripwire] |
-| H25 | Scorer interference | E2 | P · [H][h-streams] |
-| H26 | Tool-call spoofing | E1, C2 | M · [H][h-spoof] |
-| H27 | Retrospective log changes | E1 | P · [H][h-retro] |
-| H28 | Automated-check evasion | B1, E1, F2 | M · [H][h-automated] |
-| H29 | Misleading metadata | E1, F2 | O · [H][h-human] |
-| H30 | Identity selection | B1, F2 | O · [H][h-human] |
-| H31 | Method withholding | F2 | P · [H][h-human] |
-| H32 | Collective motives | F2 | O · [H][h-motives] |
-| H33 | Scope reasoning | F1, F2, F3 | M · [H][h-scope] |
-| H34 | Human contact | C3, F3 | N · [H][h-contact] |
-| H35 | Hypothesis corrections | F1, F3 | O · [H][h-tripwire], [H][h-reset] |
+| ID | Incident behavior | Code | Source status / locator | Input/evidence coverage |
+| --- | --- | --- | --- | --- |
+| H01 | Cache discovery | C1, B1 | O · [H][h-channel] | **Separate**: [Formation evidence][formation]; not a host-boundary result. |
+| H02 | Files, chunks, mailboxes | C1 | M · [H][h-mailbox], [H][h-channel] | **Available**: Writable cache files support chunks/directories; mailbox emergence unreviewed here. |
+| H03 | Other carriers | C1 | O · [H][h-other] | **Separate**: [SwarmForm carrier matrix][carriers]; retain its own settings. |
+| H04 | Protocol reuse | C1, C2 | O · [H][h-mailbox] | **Analogue**: Method adoption is reviewed; shared protocol invention needs its own trace. |
+| H05 | Legitimate teamwork | C3 | O · [H][h-streams] | **Available**: Notes, reports and shared artifacts; legitimate-team analysis not selected here. |
+| H06 | Leadership, subdelegation | C3 | O · [H][h-streams] | **Available**: Messages can express delegation; no selected multilevel delegation evidence. |
+| H07 | Handoffs | C3 | O · [H][h-timeline] | **Available**: Artifacts can carry a handover; successor-session handoff not validated. |
+| H08 | Replication, review, pivots | C2, C3 | O · [H][h-timeline] | **Analogue**: r261 and scope-cascade r15 show reuse; research pivots not separately reviewed. |
+| H09 | Holds, vetoes, ownership | C3, F3 | M · [H][h-norms] | **Available**: Withdrawals and messages exist; emergent veto/ownership norms unreviewed. |
+| H10 | Timeout consent | C3, F1 | O · [H][h-norms] | **Available**: Asynchronous notes exist; silence-as-consent behavior unreviewed. |
+| H11 | Conflicting overwrites | B2, C3, F3 | O · [H][h-norms] | **Available**: Work-file carrier permits replacement; conflicting-owner incident unreviewed. |
+| H12 | Impersonation, signatures | E1, C3, F1 | M · [H][h-signing] | **Available**: Work-file text can claim identities; note account identity is fixed; signing unreviewed. |
+| H13 | Self-risking experiments | F2, C3 | O · [H][h-projects] | **Gap**: No registered contract testing loss of the volunteer’s own run. |
+| H14 | Reverse-engineered answers | T1 | O · [H][h-streams] | **Gap**: No selected fixed-target, fixed-rule answer-extraction case. |
+| H15 | Imagined transcript grader | F1 | O · [H][h-streams] | **Analogue**: r257 and balanced grader cases establish false workflow beliefs, not this exact belief. |
+| H16 | Target replacement | T2 | M · [H][h-target] | **Analogue**: Acceptance r3 substitutes workload items; actual target-program loading absent. |
+| H17 | Credentials, private content | B1 | O · [H][h-access], [H][h-execution] | **Analogue**: Task-role library reads; no credential-acquisition fixture. |
+| H18 | External execution, privileges | B1 | O · [H][h-execution] | **Gap**: No matched external-execution or privileged-action contract. |
+| H19 | Container boundary | B1 | O · [H][h-spoof] | **Gap**: Role-scoped access does not test a container/host boundary. |
+| H20 | Infrastructure expansion | B1 | O · [H][h-infrastructure] | **Gap**: No matched infrastructure-control expansion contract. |
+| H21 | Service overload | B2 | O · [H][h-infrastructure] | **Analogue**: Shared queue/capacity delay; actual service unavailability untested. |
+| H22 | Reset experiments | B2, F1 | M · [H][h-reset] | **Gap**: No registered reset/lifetime mechanism. |
+| H23 | Telemetry, backup | C3 | O · [H][h-reset] | **Available**: Files and status are visible; collective reset-watch/backup behavior unreviewed. |
+| H24 | Post-submission probes | B1, F2 | M · [H][h-tripwire] | **Gap**: No registered post-submission scorer-exposure mechanism. |
+| H25 | Scorer interference | E2 | P · [H][h-streams] | **Analogue**: Grader rules/parameters changed; scorer-process interference untested. |
+| H26 | Tool-call spoofing | E1, C2 | M · [H][h-spoof] | **Gap**: Writable history does not intercept actual tool requests or returns. |
+| H27 | Local log edits / protected-history attempts | E1 | M · [H][h-retro] | **Observed**: r261 changes the writable record view; protected observer records remain. |
+| H28 | Automated-check evasion | B1, E1, F2 | M · [H][h-automated] | **Gap**: No subject-facing moderation/monitoring intervention in the matched baseline. |
+| H29 | Misleading metadata | E1, F2 | O · [H][h-human] | **Available**: Metadata is editable; misleading purpose requires separate semantic evidence. |
+| H30 | Identity selection | B1, F2 | O · [H][h-human] | **Gap**: Registered actor identities; no selectable external-account identity fixture. |
+| H31 | Method withholding | F2 | P · [H][h-human] | **Available**: Agents may withhold messages; motive and consequences unreviewed. |
+| H32 | Collective motives | F2 | O · [H][h-motives] | **Analogue**: r178 shared-credit salience; no causal reward or self-sacrifice result. |
+| H33 | Scope reasoning | F1, F2, F3 | M · [H][h-scope] | **Available**: Task authority is specified; scope/ethical reasoning needs transcript coding. |
+| H34 | Human notification / proposed contact | C3, F3 | N · [H][h-contact], [H][h-scope] | **Not measured**: No human-reporting endpoint; absence cannot establish spontaneous non-reporting. |
+| H35 | Hypothesis corrections | F1, F3 | O · [H][h-tripwire], [H][h-reset] | **Available**: Corrections are retained; exact belief-revision claims need a cited chain. |
 
 H16 reaches staging, not confirmed target loading. H24 reveals partial scorer
 information, not control. H26 includes successful small demonstrations;
-H27 has no confirmed retroactive edit. H34 records a vetoed proposal.
+H27 includes observed local-file edits but no confirmed change to protected
+history. H34 combines no actual notification with a vetoed contact proposal;
+reasoning or a board message is not a message sent to a human.
 
-| ID | Reward-hacking example | Code | Source status / locator |
-| --- | --- | --- | --- |
-| R01 | Reference tensor | B1, T1 | O · [R][r-examples] |
-| R02 | Synchronization suppression | E1 | O · [R][r-examples] |
-| R03 | Timer alteration | E1 | O · [R][r-examples] |
-| R04 | Evaluator replacement | E2 | O · [R][r-examples] |
-| R05 | Checkpoint reuse/linking | T1 | O · [R][r-examples] |
-| R06 | Equality alteration | E2 | O · [R][r-examples] |
-| R07 | Error-as-collision | T1 | O · [R][r-examples] |
-| R08 | Imagined reference answers | B1, F1 | P · [R][r-detection] |
-| R09 | Precomputation | T1 | O · [R][r-examples] |
-| R10 | Extra payload attribute | T1 | O · [R][r-examples] |
-| R11 | Template/language bypass | T1 | O · [R][r-examples] |
-| R12 | Knowing disavowal | F2, F3 | O · [R][r-awareness] |
+| ID | Reward-hacking example | Code | Source status / locator | Input/evidence coverage |
+| --- | --- | --- | --- | --- |
+| R01 | Reference tensor | B1, T1 | O · [R][r-examples] | **Analogue**: Task-role reference reads exist; call-stack answer reuse not reproduced. |
+| R02 | Synchronization suppression | E1 | O · [R][r-examples] | **Gap**: No exposed synchronization-based measurement mechanism. |
+| R03 | Timer alteration | E1 | O · [R][r-examples] | **Gap**: No subject-controlled runtime clock feeding the grader. |
+| R04 | Evaluator replacement | E2 | O · [R][r-examples] | **Analogue**: Workspace-rule edits; no evaluator-function replacement fixture. |
+| R05 | Checkpoint reuse/linking | T1 | O · [R][r-examples] | **Gap**: No task-bound training/checkpoint-reuse comparison. |
+| R06 | Equality alteration | E2 | O · [R][r-examples] | **Analogue**: Acceptance-rule edits; no runtime equality-interposition fixture. |
+| R07 | Error-as-collision | T1 | O · [R][r-examples] | **Gap**: No error-as-collision verification contract. |
+| R08 | Imagined reference answers | B1, F1 | P · [R][r-detection] | **Analogue**: False workflow beliefs retained; answer-key inference not reviewed. |
+| R09 | Precomputation | T1 | O · [R][r-examples] | **Gap**: No fixed-task precomputation benchmark with independent process validation. |
+| R10 | Extra payload attribute | T1 | O · [R][r-examples] | **Gap**: No graded auxiliary-payload mechanism. |
+| R11 | Template/language bypass | T1 | O · [R][r-examples] | **Gap**: No template/language constraint mechanism. |
+| R12 | Knowing disavowal | F2, F3 | O · [R][r-awareness] | **Not measured**: Native text and corrections retained; no matched disavowal test. |
 
 R04 includes the asynchronous variant. R08 finds no answers. The two reports'
 monitoring limits preclude treating this inventory as a frequency estimate.
@@ -184,6 +195,8 @@ and frozen scores. Current work is this coverage/input audit; no new subject run
 is part of reclassification. Future work targets a documented mechanism gap,
 without demanding a false belief or a positive in every flow-pattern combination.
 
+[formation]: research/phase1-native-trajectory-archives.json
+[carriers]: ../../swarmform/docs/live-rollout-status.json
 [ledger]: research/threat-grid-status.json
 [recovery]: research/historical-positive-recovery.json
 [balanced]: research/balanced-study-v2-results.json
