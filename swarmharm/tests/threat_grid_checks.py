@@ -643,6 +643,9 @@ class ThreatGridChecks(unittest.TestCase):
 
     def test_own_publication_is_visible_without_broadening_one_way_scope(self):
         plan = self.plan('grader-cascade')
+        for row in plan.values():
+            row['world_config']['observation']['feedback'] = 'itemized'
+            row['delivery_config']['feedback'] = 'itemized'
         probe = delivery_paths.Probe(plan)
         probe.ordinary('b')
         path = scenario.release_policy.selected_path(

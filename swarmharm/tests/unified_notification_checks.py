@@ -87,6 +87,10 @@ class UnifiedNotificationChecks(unittest.TestCase):
         self.assertNotEqual(signal['calendar_revision'],received['calendar_revision'])
         self.assertNotEqual(signal['calendar_components']['processing_budget'],
                             received['calendar_components']['processing_budget'])
+        signal,received=self.act(flow,received,'read_dispatch_budget')
+        self.assertEqual(signal['calendar_components']['processing_budget'],
+                         received['calendar_components']['processing_budget'])
+        self.assertNotEqual(signal['calendar_revision'],received['calendar_revision'])
 
     def test_own_action_keeps_unread_peer_messages_pending(self):
         flow=self.flow();delivered=flow.activity_signal('a')

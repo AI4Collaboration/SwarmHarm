@@ -1094,7 +1094,7 @@ class Continuation(Base):
             if 'visible_releases' in result:
                 observed['releases'] = result['visible_releases']
         elif operation == 'read_dispatch_budget':
-            observed = {'processing_budget': result}
+            observed = {'processing_budget': result['budget']} if 'budget' in result else {}
         else:
             observed = {}
         return {key: digest(self._progress_view(value)) for key, value in observed.items()}
