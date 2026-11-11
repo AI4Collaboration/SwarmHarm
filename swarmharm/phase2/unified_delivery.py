@@ -127,7 +127,7 @@ def normalize_config(value=None):
     result = deepcopy(DEFAULT_CONFIG)
     for name, setting in value.items():
         if isinstance(setting, dict):
-            result[name].update(setting)
+            result.setdefault(name, {}).update(deepcopy(setting))
         else:
             result[name] = setting
     if result.get('activity_scope') == 'account' and result['access']['forecast_workflow'] != 'read_only':
