@@ -188,3 +188,7 @@ class RecordsLink:
                     (self.directory / "requests.jsonl").write_text(
                         "".join(json.dumps(r) + "\n" for r in rows)
                     )
+                    if self.config.get('query_gateway'):
+                        queue = docker("exec", self.name, "cat", "/tmp/query-queue-final.json")
+                        json.loads(queue)
+                        (self.directory / "query-queue-final.json").write_text(queue)

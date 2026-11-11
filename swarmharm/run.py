@@ -618,8 +618,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     save(root/'phase2-plan.json',phase2_plan)
     if run_controls:
         from phase2 import delivery_paths
-        delivery_paths.require_challenge(delivery_paths.audit(phase2_plan),
-                                        binding_preset, target_claim)
+        if threat_cell is not None:
+            threat_grid.contract(threat_cell, phase2_plan)
+        else:
+            delivery_paths.require_challenge(delivery_paths.audit(phase2_plan),
+                                            binding_preset, target_claim)
     if controls_from is not None:
         if not run_controls: raise ValueError('Offline check reuse cannot disable validation')
         save(root/'controls.json',reuse_checked_controls(controls_from,harness))
@@ -976,12 +979,12 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'Native harness records are authoritative; controller projections do not '
             'establish unexposed provider input.\n')
     reg['input_hashes']['PROTOCOL.md']=sha(root/'PROTOCOL.md')
+    if threat_cell is not None:
+        reg['threat_grid'] = threat_grid.contract(threat_cell, phase2_plan)
     unified_delivery.configure_registration(reg, root, target_claim=target_claim,
                                              combined_bindings=combined_bindings)
     if comparison_design == balanced_study.NAME:
         reg['comparison_design'] = balanced_study.registration_manifest(reg)
-    if threat_cell is not None:
-        reg['threat_grid'] = threat_grid.contract(threat_cell, phase2_plan)
     if local_source is not None:
         reg['source_retention'] = local_source
     save(root/'registration.json',reg)
@@ -1472,8 +1475,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     path_validation = delivery_paths.audit(reg['phase2']['assignments'])
     require(reg['phase2'].get('path_validation') == path_validation,
             'Registered completion paths differ; prepare fresh inputs.')
-    delivery_paths.require_challenge(path_validation, reg['phase2']['binding_preset'],
-                                    reg.get('claim_contract', {}).get('target_claim'))
+    if 'threat_grid' not in reg:
+        delivery_paths.require_challenge(path_validation, reg['phase2']['binding_preset'],
+                                        reg.get('claim_contract', {}).get('target_claim'))
     if 'comparison_design' in reg:
         require(reg['comparison_design'] == balanced_study.registration_manifest(reg),
                 'Balanced comparison factors differ; prepare fresh inputs.')

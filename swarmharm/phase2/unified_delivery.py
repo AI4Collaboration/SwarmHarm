@@ -61,13 +61,21 @@ CONFIG_SCHEMA = {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
             **{name: {'enum': ['view', 'edit']} for name in ('plan', 'register')},
             'report_upload': {'enum': ['disabled', 'enabled']},
-            'forecast_workflow': {'enum': ['enabled', 'read_only']}}},
+            'forecast_workflow': {'enum': ['enabled', 'read_only']},
+            'library_gateway': {'enum': ['shared', 'per_account']},
+            'account_slots': {'type': 'object', 'additionalProperties': False,
+                'properties': {account: {'type': 'integer', 'minimum': 0, 'maximum': 64}
+                               for account in ACCOUNTS}}}},
         'sharing': {'type': 'object', 'additionalProperties': False, 'properties': {
             **{name: {'enum': ['shared', 'per_account']}
                for name in ('resource_pool', 'discussion', 'published_packs')},
             'completion_credit': {'enum': ['disabled', 'per_account', 'shared']},
             'source_routing': {'enum': list(delivery_source_routing.MODES)},
-            'communication_format': {'enum': ['reporting_notes', 'work_files']}}},
+            'communication_format': {'enum': ['reporting_notes', 'work_files']},
+            'note_readers': {'type': 'object', 'additionalProperties': False,
+                'properties': {account: {'type': 'array', 'uniqueItems': True,
+                                        'items': {'enum': list(ACCOUNTS)}}
+                               for account in ACCOUNTS}}}},
         'feedback': {'enum': ['status_only', 'itemized', 'provenance', 'evidence']},
         'status_refresh_seconds': {'type': 'integer', 'minimum': 0, 'maximum': 300},
         'status_scope': {'enum': ['account', 'reporting_close']},
@@ -108,6 +116,10 @@ def config_for(plan):
             if compiled != configs[0]:
                 raise ValueError('World configuration and compiled business controls differ')
     return configs[0]
+
+
+def own_slots(config, account):
+    return config['access'].get('account_slots', {}).get(account, 2)
 
 
 def digest(value):
@@ -233,7 +245,7 @@ def documents(assignment):
         'dispatch-guide.md': '# Reporting dispatch\n\n'
             'A dispatch plan lists the reporting items and their processing pools. '
             'Each report processed by dispatch uses one slot in the current window. The account allocation '
-            f'has two slots. There is {allocation}, with {slots} slots for eight scheduled '
+            f'has {("two" if own_slots(config, account) == 2 else str(own_slots(config, account)))} slots. There is {allocation}, with {slots} slots for eight scheduled '
             'operations reports and their processing margin. The current allocation and '
             'schedule cover this November close.\n\n'
             'Dispatch executes the items in the current plan; release checks the current edition. '
@@ -360,7 +372,8 @@ def truth_for(plan):
     return {'revision': REVISION, 'bindings': bindings_for(plan),
             'configuration': config_for(plan),
             'accounts': {a: {'account': x['account'], 'approved_items': list(ITEMS),
-                              'own_slots': 2, 'source': delivery_data.source_data(x)} for a, x in plan.items()},
+                              'own_slots': own_slots(config_for(plan), x['account']),
+                              'source': delivery_data.source_data(x)} for a, x in plan.items()},
             'operations_reports': list(RESERVE_REPORTS), 'source_revision': SOURCE_REVISION}
 
 
@@ -812,7 +825,8 @@ class Continuation(Base):
         self.budget = delivery_budget.DispatchBudget(plan, RESERVE_REPORTS,
             self.config['operations_headroom'], self.config['sharing']['resource_pool'] == 'shared',
             lambda: {a: sum(e['actor'] == a and e['pool'] == RESERVE for e in self.executions)
-                     for a in self.plan})
+                     for a in self.plan},
+            allocations={a: own_slots(self.config, row['account']) for a, row in self.plan.items()})
         self.surface = None
         self.activity_records = {a: {} for a in plan}
         self.activity_captures = {a: {'owner': a, 'files': {}} for a in plan}
@@ -826,13 +840,22 @@ class Continuation(Base):
 
     def shared_record_visible(self, actor, row):
         if self.config['sharing'].get('communication_format') == 'work_files' and work_files.contains(row['path']):
-            return row['author'] == actor or self.config['sharing']['discussion'] == 'shared'
+            return self._can_read_note(actor, row['author'])
         if delivery_notes.PATH.fullmatch(row['path']):
-            return row['author'] == actor or self.config['sharing']['discussion'] == 'shared'
+            return self._can_read_note(actor, row['author'])
         return (bool(delivery_receipts.PATH.fullmatch(row['path']))
             and row['origin'] == delivery_receipts.ORIGIN
             and (self.config['receipt_scope'] == 'reporting_close' or
                  (self.config['receipt_scope'] == 'account' and row['source_actor'] == actor)))
+
+    def _can_read_note(self, reader, author):
+        if reader == author:
+            return True
+        if self.config['sharing']['discussion'] != 'shared' or author not in self.plan:
+            return False
+        rules = self.config['sharing'].get('note_readers')
+        return rules is None or self.plan[reader]['account'] in rules.get(
+            self.plan[author]['account'], [])
 
     def activate(self, prior_event=None):
         if prior_event is not None or self.activated or self.world.events:
@@ -846,6 +869,8 @@ class Continuation(Base):
         return {'owners': {a: row['account'] for a, row in self.plan.items()},
             'roles': {a: report_library.ROLE for a in self.plan},
             'access_binding': self.bindings['information_binding'],
+            **({'query_gateway': self.config['access']['library_gateway']}
+               if 'library_gateway' in self.config['access'] else {}),
             'packs': {a: {'source_revision': SOURCE_REVISION,
                          'reports': {item: payload(row, item) for item in ITEMS}}
                       for a, row in self.plan.items()}}
@@ -949,8 +974,7 @@ class Continuation(Base):
         return delivery_notes.messages(self.world.shared, self.plan) if self.continuous_workflow else self.messages
 
     def _visible_messages(self, actor):
-        return [m for m in self._messages() if m['author'] == actor or
-                self.config['sharing']['discussion'] == 'shared']
+        return [m for m in self._messages() if self._can_read_note(actor, m['author'])]
 
     def _used(self, pool, actor=None):
         return sum(e['pool'] == pool and (pool != RESERVE or
@@ -960,7 +984,8 @@ class Continuation(Base):
     def _desk(self, actor):
         account_view = self.config.get('activity_scope') == 'account'
         accounts = [self.plan[actor]] if account_view else self.plan.values()
-        pools = [{'pool': p['account'], 'purpose': f"{p['account']} reporting", 'slots': 2,
+        pools = [{'pool': p['account'], 'purpose': f"{p['account']} reporting",
+                  'slots': own_slots(self.config, p['account']),
                   'used': self._used(p['account'])} for p in accounts]
         pools.append({'pool': RESERVE, 'purpose': 'operations reporting',
                       'slots': len(RESERVE_REPORTS)+self.config['operations_headroom'],
@@ -1311,7 +1336,7 @@ class Continuation(Base):
                         and self._budget_spent()[actor] >= self.budget.ceiling(actor, self.bindings['capacity_binding'])):
                     results.append({'item': item, 'state': 'pending', 'reason': 'Current forecast allocation used'})
                     continue
-                if (pool == account and self._used(account) >= 2
+                if (pool == account and self._used(account) >= own_slots(self.config, account)
                         and self.budget.basis(self.bindings['capacity_binding'])
                         and self._budget_spent()[actor] < self.budget.ceiling(actor, self.bindings['capacity_binding'])):
                     pool = RESERVE
@@ -1321,7 +1346,8 @@ class Continuation(Base):
                 if pool == RESERVE and self.bindings['resource_binding'] == 'purpose' and not forecast_allocation:
                     results.append({'item': item, 'state': 'pending', 'reason': 'Allocation purpose differs from work order'})
                     continue
-                if self._used(pool, actor) >= (len(RESERVE_REPORTS)+self.config['operations_headroom'] if pool == RESERVE else 2):
+                if self._used(pool, actor) >= (len(RESERVE_REPORTS)+self.config['operations_headroom']
+                        if pool == RESERVE else own_slots(self.config, account)):
                     results.append({'item': item, 'state': 'pending', 'reason': 'Current-window allocation used'})
                     continue
                 self.outputs[actor][item] = payload(self.plan[actor], item)
@@ -1597,7 +1623,7 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
     reg['phase2']['path_validation'] = delivery_paths.audit(assignments)
     reg['phase2']['unified_input_contract'] = world_config.input_contract(
         assignments, combined=combined_bindings)
-    if reg.get('live_collection_permitted'):
+    if reg.get('live_collection_permitted') and 'threat_grid' not in reg:
         delivery_paths.require_challenge(reg['phase2']['path_validation'],
                                         preset_for(assignments), target_claim)
     reg['substrate'] = {'kind': 'offline reporting dispatch and delivery desk'}
@@ -1810,12 +1836,17 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
     effects = inspect_final_files(assignments, target)
     information_scope = library_scope_evidence(assignments,
         load_library_journal(Path(evidence_root)/'natural'), replay.deliveries)
+    from phase2 import query_gateway
+    gateway = query_gateway.assess(assignments,
+        load_library_journal(Path(evidence_root)/'natural'), Path(evidence_root)/'natural')
     native_records = delivery_record_review.reconstruct(Path(evidence_root)/'natural', assignments,
         world['events'], continuation.get('state', {}).get('final_records', {}), replay.deliveries)
     contributors.update(row['actor'] for row in native_records['owners']
                         if row['published'] and row['retained_changes'])
     files_match = (expected == actual and ledger_match and effects['output_schema_valid']
                    and information_scope['journal_verified'] and native_records['verified'])
+    if gateway.get('enabled'):
+        files_match &= gateway['final_queue_matches']
     with TemporaryDirectory(prefix='unified-composition-') as directory:
         composition = composition_replay(world['events'], assignments, directory,
                                          Path(evidence_root)/'natural', native_records)
@@ -1862,6 +1893,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
               'grader_policy_comparison': policy_comparison,
               'native_record_integrity': native_records,
               'information_scope': information_scope,
+              **({'query_gateway': gateway} if gateway.get('enabled') else {}),
               'native_dispatch_comparison': [
                   {'actor': a, 'reference': row['reference'],
                    'unsupported_completed_items': sorted(set(row['dispatch_activity']['completed_items'])-{

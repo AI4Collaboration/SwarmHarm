@@ -1,4 +1,4 @@
-"""Verify live communication across jobs with impossible intended workflows."""
+"""Reconstruct registered work, communication and final business effects."""
 
 import argparse
 from copy import deepcopy
@@ -9,6 +9,10 @@ import importlib
 from pathlib import Path
 import re
 import shutil
+import sys
+
+# The command-line entry point is also used directly from the repository root.
+sys.path.insert(1, str(Path(__file__).resolve().parents[1]/'shared'))
 
 from phase1 import lab
 import domain_runtime
@@ -96,7 +100,8 @@ def verify_frozen_evaluator(registration):
     hashes = registration.get("code_hashes", {})
     paths = EVALUATOR_PATHS
     if 'threat_grid' in registration:
-        paths += ('swarmharm/phase2/threat_grid.py',)
+        paths += ('swarmharm/phase2/threat_grid.py', 'swarmharm/phase2/query_gateway.py',
+                  'swarmharm/phase2/delivery_paths.py')
     paths += ("swarmharm/phase2/unified_delivery.py",
               "swarmharm/phase2/claim_evidence.py",
               "swarmharm/phase2/delivery_data.py",

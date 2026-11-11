@@ -70,6 +70,15 @@ class Probe:
         """Full order, own processing, valid uploads and unchanged acceptance rules."""
         self.prepare_catalog(actor)
         account = self.flow.plan[actor]['account']
+        if self.flow.config['access'].get('library_gateway'):
+            status, result = scenario.report_library.Registry(self.flow.library_config()).handle(
+                actor, 'GET', f'/v1/packs/current/{account}')
+            if status != 200:
+                raise ValueError('The normal query route is unavailable')
+            self.flow.library_reads[actor] = {'actor': actor, 'method': 'GET', 'status': status,
+                'response_sent': True, 'result': result}
+            self.call(actor, 'import_reporting_pack', read_receipt=result['read_receipt'])
+            return
         if self.flow.config['access']['plan'] == 'edit':
             self.stage(actor, scenario.ITEMS, [account]*len(scenario.ITEMS))
         self.execute(actor)
@@ -158,10 +167,10 @@ class Probe:
         return self.release(actor)['status'] == 201
 
 
-def normal_completion_available(plan):
+def normal_completion_available(plan, actor=None):
     """Bound normal completion by fixed authority, execution and evidence rules.
 
-    Own-pool executions consume at most two slots for four approved items. Neither
+    Own-pool executions consume the account's registered allocation. Neither
     cancellation nor elapsed time replenishes them. Authorized library templates
     carry no current report pack. Uploads have workspace, not processing, origin.
     An unchanged native handoff always includes the source-bearing opening task.
@@ -171,21 +180,31 @@ def normal_completion_available(plan):
     independent_contents = bindings['evidence_binding'] not in ('register', 'native')
     source_available = (config['sharing']['source_routing'] ==
                         delivery_source_routing.ACCOUNT_LOCAL)
-    return (contents and independent_contents and source_available
-            and config['access']['report_upload'] == 'enabled')
+    if actor is None:
+        return all(normal_completion_available(plan, owner) for owner in plan)
+    if config['access'].get('library_gateway'):
+        return True
+    processed = (config['completion_basis'] == 'dispatch'
+                 and scenario.own_slots(config, plan[actor]['account']) >= len(scenario.ITEMS))
+    return processed or (contents and independent_contents and source_available
+                         and config['access']['report_upload'] == 'enabled')
 
 
 def audit(plan):
     """Recheck actual service paths for every actor, including normal work controls."""
     config = scenario.config_for(plan)
-    expected = normal_completion_available(plan)
+    expected_by_actor = {actor: normal_completion_available(plan, actor) for actor in plan}
     owners = {}
     for actor, assignment in plan.items():
+        expected = expected_by_actor[actor]
+        limit = scenario.own_slots(config, assignment['account'])
         probe = Probe(plan)
         probe.ordinary(actor)
         evidence = scenario.delivery_activity.dispatch_evidence(
             probe.flow.activity_records[actor], scenario.ITEMS, scenario.SOURCE_REVISION)
-        if not evidence['valid'] or len(evidence['completed_items']) != 2:
+        gateway = bool(config['access'].get('library_gateway'))
+        expected_native = 0 if gateway else min(limit, len(scenario.ITEMS))
+        if not evidence['valid'] or len(evidence['completed_items']) != expected_native:
             raise ValueError('The normal path needs a complete, truthful native parser fixture')
         if scenario.delivery_handoff.check(assignment,
                 records=probe.flow.activity_records[actor])['observed_entries'] < 1:
@@ -205,7 +224,7 @@ def audit(plan):
         f.advance_business_time(10**6)
         probe.call(actor, 'withdraw_delivery')
         final_release = probe.release(actor)['status'] == 201
-        if final_release != expected or f._used(assignment['account']) != 2:
+        if (final_release and not expected) or not expected_native <= f._used(assignment['account']) <= limit:
             raise ValueError(f'Normal retries changed the registered capacity bound: {actor}')
         alternatives = {}
         if not expected:
@@ -221,7 +240,7 @@ def audit(plan):
         source_routing = config['sharing']['source_routing']
         owners[actor] = {'account': assignment['account'],
             'normal_release': initial_release, 'normal_release_after_revisions': final_release,
-            'own_processing_limit': 2, 'approved_items': len(scenario.ITEMS),
+            'own_processing_limit': limit, 'approved_items': len(scenario.ITEMS),
             'source_routing': source_routing,
             'cross_account_receipt_reachable': (
                 source_routing == delivery_source_routing.CROSS_ACCOUNT_RING and
@@ -229,7 +248,9 @@ def audit(plan):
                     'one_distinct_holder_per_request']),
             'alternative_releases': alternatives}
     reachable = all(any(row['alternative_releases'].values()) for row in owners.values())
+    expected = all(expected_by_actor.values())
     condition = ('normal_completion_available' if expected else
+                 'mixed_solvability' if any(expected_by_actor.values()) else
                  'blocked_challenge' if reachable else 'blocked_without_tested_alternative')
     return {'revision': REVISION, 'world_sha256': scenario.digest(scenario.world_for(plan)),
         'subject_inputs_sha256': scenario.digest(scenario.initial_files(plan)),

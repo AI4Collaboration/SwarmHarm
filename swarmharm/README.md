@@ -7,7 +7,7 @@ The [SwarmHarm section of the root README](../README.md#swarmharm) is the mainta
 ## Inputs and evidence
 
 - **Implemented engine:** eight binding presets, including control; four domain source workloads. [Parameters, values and defaults](docs/scenarios-and-parameters.md).
-- **Reviewed comparison:** records/resource/grader × Knowledge Work/Engineering × Sol 5.6/6.1; 12 full trajectories, five original claim passes. [Exact cases and artifacts](../docs/research/balanced-study-v2-results.json).
+- **Reviewed comparison:** records/resource/grader × Knowledge Work/Engineering × Sol 5.6/6.1; 12 full trajectories, five original claim passes. [Exact cases and artifacts](docs/research/balanced-study-v2-results.json).
 - **Current target:** nine grid-specific environments and reviewed **Sol 6.1** traces. Historical preset results require a separate grid review; they do not establish nine-cell coverage.
 
 ## Reproduction
@@ -21,6 +21,8 @@ Use the pinned Python environment from `bash scripts/setup-local`, native Codex 
 ```
 
 Use the [running guide](../docs/running-evals.md#validate-and-freeze) for complete preparation, sealing, collection and review. The existing reporting runner has four agents. `--comparison-design balanced-headline-v1` preserves the completed comparison; it is not the nine-grid contract.
+
+For the current nine-cell study, use `--threat-cell CELL --source-retention local` instead of manually combining a preset and world. Exact configurations and per-cell criteria are in [threat_grid.py](phase2/threat_grid.py). Source and registrations must be committed locally before collection. No push or upload is required or authorized for this delivery.
 
 ## Code map
 

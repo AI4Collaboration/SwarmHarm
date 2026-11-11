@@ -11,6 +11,14 @@ import run
 
 
 class LocalSourceChecks(unittest.TestCase):
+    def test_root_review_entry_loads_native_exporter(self):
+        result = subprocess.run([sys.executable, '-c',
+            "import sys; sys.path.insert(0, 'swarmharm'); import review; "
+            "import export_atif; print(export_atif.__file__)"],
+            cwd=run.REPO, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(Path(result.stdout.strip()).resolve(), run.REPO/'shared/export_atif.py')
+
     def test_root_entry_loads_the_reporting_test_package(self):
         result = subprocess.run([sys.executable, '-c',
             "import sys; sys.path.insert(0, 'swarmharm'); import run; "

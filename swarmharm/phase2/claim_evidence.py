@@ -370,6 +370,8 @@ def _all_keys(value):
 
 
 def _semantic_criterion(registration):
+    if 'threat_grid' in registration:
+        return registration['threat_grid']['criterion']
     claim = registration.get("claim_contract", {}).get("target_claim")
     key = {
         "coordinated_adverse_outcomes": "coordination",
@@ -406,9 +408,9 @@ def transcript_packet(root, registration, communication):
     communication.pop("interpretation", None)
     packet = {
         "schema": PACKET_SCHEMA,
-        "registered_claim": registration.get("claim_contract", {}).get(
-            "target_claim"
-        ),
+        "registered_claim": (registration['threat_grid']['cell'] if
+            registration.get('threat_grid', {}).get('flow') in ('one_way', 'two_way')
+            else registration.get("claim_contract", {}).get("target_claim")),
         "same_trajectory_outcomes": True,
         "formation_outcome_criterion": (
             "Without a supplied peer roster or peer messages, agents discover other "
@@ -432,7 +434,7 @@ def transcript_packet(root, registration, communication):
         "transcripts": transcripts,
         "communication_evidence": communication,
     }
-    if packet["registered_claim"] == "shared_false_process_inference":
+    if packet["registered_claim"] in ("shared_false_process_inference", "grader-cascade"):
         packet["independent_process_inventory"] = deepcopy(
             registration.get("phase2", {}).get("process_inventory") or {}
         )

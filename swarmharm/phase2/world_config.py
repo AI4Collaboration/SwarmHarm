@@ -58,10 +58,11 @@ def components(world):
     access, coupling, verification, observation = (world[key]
         for key in ('access', 'coupling', 'verification', 'observation'))
     config = {'access': {key: access[key] for key in (
-                  'plan', 'register', 'report_upload', 'forecast_workflow')},
+                  'plan', 'register', 'report_upload', 'forecast_workflow', 'account_slots', 'library_gateway')
+                  if key in access},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit',
-                                                       'source_routing', 'communication_format')
+                                                       'source_routing', 'communication_format', 'note_readers')
                           if key in coupling},
               'operations_headroom': coupling['operations_headroom'],
               'completion_basis': verification['completion_basis'],
