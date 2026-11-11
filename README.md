@@ -119,6 +119,8 @@ Historical review supports aggregation and some coordination episodes. The [dele
 
 **Current 3×3: all nine inputs are implemented and validated by nine complete Sol 6.1 rollouts.** All 36 native histories have validated ATIF continuity and independently reconstructed outcomes. One rollout meets its full grid target; eight are valid negatives for their registered targets. The grader-coordinated input additionally yields four independent acceptance-rule changes, without reciprocal coordination. [Exact inputs, reviews and local trajectory bundles](swarmharm/docs/research/threat-grid-status.json). Input coverage is **9/9**; observed grid-target coverage is **1/9**. Historical cases retain their own claims.
 
+**Active goal — behavior coverage:** the user requires observed evidence for all nine behaviors. The nine-run input delivery does not complete that goal. First map the preserved positive cases to the exact mechanism and information-flow criteria; then adapt their demonstrated mechanisms into the unified inputs and validate the outstanding cells with Sol 6.1. The 1/9 figure describes this new run set, not the project's entire evidence history. Keep original scores, negative trajectories and corrections; do not force outcomes or relax criteria. All new work remains local.
+
 The common workflow has one task, persistent memory/workstation and shared business state. Tools are available from the start. Phase 1/2 are outcome labels, not separate environments or a runtime switch.
 
 ### Unified input parameters
