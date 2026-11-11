@@ -91,6 +91,7 @@ CONFIG_SCHEMA = {
         'workstation_processes': {'enum': ['tool_scoped', 'continuous']},
         'notification_scope': {'enum': ['business_and_messages', 'business_only']},
         'notification_detail': {'enum': ['generic', 'changed_paths']},
+        'work_file_index': {'enum': ['none', 'paths']},
         'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
         'native_evidence_accounts': {'type': 'array', 'minItems': 1, 'uniqueItems': True,
@@ -123,6 +124,9 @@ def normalize_config(value=None):
     if (result.get('closeout_record') in ('account_file', 'rebuildable_pack')
             and result['sharing'].get('communication_format') != 'work_files'):
         raise ValueError('Account closeout records require the work-file directory')
+    if (result.get('work_file_index') == 'paths'
+            and result['sharing'].get('communication_format') != 'work_files'):
+        raise ValueError('Work-file index requires the work-file directory')
     return result
 
 
@@ -1125,7 +1129,9 @@ class Continuation(Base):
 
     def observed_calendar_components(self, operation, result):
         if operation == 'check_delivery':
-            observed = {'edition_check': result}
+            observed = {'edition_check': {k: v for k, v in result.items() if k != 'work_files'}}
+            if 'work_files' in result:
+                observed['work_files'] = result['work_files']
             if 'visible_releases' in result:
                 observed['releases'] = result['visible_releases']
         elif operation == 'read_dispatch_budget':
@@ -1135,6 +1141,8 @@ class Continuation(Base):
         return {key: digest(self._progress_view(value)) for key, value in observed.items()}
 
     def observed_activity_keys(self, operation, result):
+        if operation in ('delivery_desk', 'check_delivery', 'preview_delivery') and 'work_files' in result:
+            return {(row['path'], row['sha256']) for row in result['work_files']['entries']}
         if self.continuous_workflow and operation == 'bash':
             # Use the same exact exposure detector as the workstation audit.
             from phase1.lab import shared_output_reads
@@ -1147,6 +1155,13 @@ class Continuation(Base):
         if self.continuous_workflow and self.config['sharing'].get('communication_format') == 'work_files':
             return work_files.records(self.world.shared, self.plan)
         return delivery_notes.messages(self.world.shared, self.plan) if self.continuous_workflow else self.messages
+
+    def _work_file_index(self, actor):
+        return {'directory': work_files.ROOT, 'entries': [
+            {'path': row['path'], 'sha256': row['sha256']}
+            for row in sorted(self.world.shared.values(), key=lambda row: row['path'])
+            if work_files.contains(row['path']) and not row.get('deleted')
+            and self.shared_record_visible(actor, row)]}
 
     def _visible_messages(self, actor):
         return [m for m in self._messages() if self._can_read_note(actor, m['author'])]
@@ -1191,6 +1206,8 @@ class Continuation(Base):
                                          'schemas': deepcopy(self.catalog_schemas)}
         result['edition_check'] = self._visible_check(actor)
         result['processing_budget'] = self._budget_view(actor)
+        if self.config.get('work_file_index') == 'paths':
+            result['work_files'] = self._work_file_index(actor)
         return result
 
     def _visible_releases(self, actor):
@@ -1507,6 +1524,9 @@ class Continuation(Base):
             result = {'status': 400, 'error': 'Request field mismatch'}
         else:
             result = self._dispatch(actor, name, arguments)
+            if (self.config.get('work_file_index') == 'paths'
+                    and name in ('check_delivery', 'preview_delivery')):
+                result['work_files'] = self._work_file_index(actor)
         event['result'] = result
         delivery_receipts.publish(self, event, previous_executions)
         return self._append_event(event)

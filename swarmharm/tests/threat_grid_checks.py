@@ -15,6 +15,43 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_work_file_catalog_is_live_scoped_metadata_not_a_message_read(self):
+        import run
+        probe = delivery_paths.Probe(self.plan('grader-cascade'))
+        flow = probe.flow
+        path = scenario.work_files.ROOT + '/monthly-build.py'
+        self.assertEqual(probe.call('b', 'delivery_desk')['work_files']['entries'], [])
+        before = flow.activity_signal('b')
+        body = b'print("retained build")\n'
+        source = {'path': path, 'author': 'a', 'data': base64.b64encode(body).decode(),
+                  'sha256': scenario.sha256(body).hexdigest(), 'version': 1}
+        flow.world.shared[path] = source
+        foreign = dict(source, path=scenario.work_files.ROOT + '/other.py', author='c')
+        flow.world.shared[foreign['path']] = foreign
+        signal = flow.activity_signal('b')
+        result = probe.call('b', 'delivery_desk')
+        expected = [{'path': path, 'sha256': source['sha256']}]
+        self.assertEqual(result['work_files']['entries'], expected)
+        self.assertNotIn(body.decode(), json.dumps(result))
+        self.assertEqual(probe.call('a', 'delivery_desk')['work_files']['entries'], expected)
+        check = probe.call('b', 'check_delivery')
+        self.assertEqual(check['work_files']['entries'], expected)
+        # Delivery of metadata consumes that actual update, but establishes
+        # neither a body read nor uptake. A later real file version still wakes.
+        acknowledged = run.acknowledge_tool_activity(flow, 'delivery_desk', result, signal, before)
+        self.assertIsNone(run.unified_activity_feedback(signal, acknowledged, 'changed_paths'))
+        audit = scenario.work_files.audit([
+            {'id': 1, 'actor': 'a', 'step': 1, 'operation': 'bash',
+             'result': {}, 'shared_changes': [source]},
+            {'id': 2, 'actor': 'b', 'step': 2, 'operation': 'delivery_desk',
+             'result': result, 'shared_changes': []}], flow.plan)
+        self.assertEqual(audit['exact_peer_reads'], [])
+        source['sha256'] = scenario.sha256(b'new build').hexdigest()
+        self.assertIsNotNone(run.unified_activity_feedback(
+            flow.activity_signal('b'), acknowledged, 'changed_paths'))
+        source['deleted'] = True
+        self.assertEqual(probe.call('b', 'delivery_desk')['work_files']['entries'], [])
+
     def test_rebuildable_files_retain_real_engineering_inputs_without_chunking(self):
         import run
         base, _ = run.make_plan(4, scenario='engineering-capacity')
@@ -635,7 +672,7 @@ class ThreatGridChecks(unittest.TestCase):
             itemized.ordinary(actor)
             first = status.call(actor, 'check_delivery')
             second = itemized.call(actor, 'check_delivery')
-            self.assertEqual(set(first), {'status', 'state', 'scope', 'window', 'checked_revisions'})
+            self.assertEqual(set(first), {'status', 'state', 'scope', 'window', 'checked_revisions', 'work_files'})
             self.assertIn('missing_items', second['accounts'][plan[actor]['account']])
             self.assertEqual(first, {key: second[key] for key in first})
             self.assertEqual(status.release(actor)['status'], itemized.release(actor)['status'])
@@ -676,6 +713,8 @@ class ThreatGridChecks(unittest.TestCase):
             row['delivery_config']['sharing'].pop('communication_format')
             row['world_config']['verification'].pop('closeout_record')
             row['delivery_config'].pop('closeout_record')
+            row['world_config']['observation'].pop('work_file_index')
+            row['delivery_config'].pop('work_file_index')
         for actor in plan:
             self.assertTrue(scenario.task(plan[actor]).startswith(scenario.task(original[actor])))
         report = grid.contract('grader-cascade', plan)
@@ -718,6 +757,8 @@ class ThreatGridChecks(unittest.TestCase):
             row['delivery_config']['sharing']['communication_format'] = 'reporting_notes'
             row['world_config']['verification'].pop('closeout_record')
             row['delivery_config'].pop('closeout_record')
+            row['world_config']['observation'].pop('work_file_index')
+            row['delivery_config'].pop('work_file_index')
         events = self.notes([('a', 'b'), ('a', 'c')])
         one = grid.directed_flow(plan, events, grid.CELLS['grader-cascade'])
         self.assertTrue(one['condition_matched'], one)

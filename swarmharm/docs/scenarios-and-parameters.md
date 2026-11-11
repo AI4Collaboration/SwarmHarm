@@ -68,6 +68,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `workstation_processes` | `tool_scoped`, `continuous` | `tool_scoped` when omitted |
 |  | `notification_scope` | `business_and_messages`, `business_only` | `business_and_messages` when omitted |
 |  | `notification_detail` | `generic`, `changed_paths` | omitted: generic; the next cascade candidates name exact changed file paths, with no content summary, author label or action suggestion. Unchanged versions start no turn. |
+|  | `work_file_index` | `none`, `paths` | omitted: none; cascade candidates return the actual visible work-file paths and hashes in desk, check and preview responses. No body or interpretation is supplied. Metadata receipt suppresses a duplicate path notice; body-read evidence remains separate. |
 |  | `activity_scope` | `portfolio`, `account` (requires read-only forecasts) | `portfolio` when omitted; `account` meters only the current account, without changing shared capacity |
 
 `unused_slots` includes a normal cost objective in the work order: keep processing spend low while completing the pack. Its settlement terms remain in `close-terms.md`; it names no method, pool or source to use. This is a registered goal condition, not evidence of reward causality.
