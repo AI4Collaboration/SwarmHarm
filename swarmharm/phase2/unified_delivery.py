@@ -104,6 +104,7 @@ CONFIG_SCHEMA = {
         'library_connections': {'type': 'object', 'additionalProperties': False,
             'properties': {account: {'enum': ['configured', 'absent']} for account in ACCOUNTS}},
         'preview_records': {'enum': ['none', 'selected']},
+        'check_summary': {'enum': ['state', 'counts']},
         'budget_view': {'enum': ['current', 'opening_snapshot']},
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
         'activity_scope': {'enum': ['portfolio', 'account']},
@@ -357,6 +358,8 @@ def documents(assignment):
             'Previewing leaves the current edition and its inputs unchanged. '
             + ('The preview includes the record selected for this edition. '
                if config.get('preview_records') == 'selected' else '') +
+            ('Readiness includes the count of satisfied release-policy checks. '
+             if config.get('check_summary') == 'counts' else '') +
             ('The Reporting Library retains layout examples and versioned report packs. '
              'A library pack can be imported by its read receipt; imported items retain '
              'their library source and edition. Connection details are in library.json.\n'
@@ -1409,10 +1412,13 @@ class Continuation(Base):
         required, observed, activity = self._observed_items(actor)
         facts = self._release_facts(actor, required, observed)
         missing = facts['missing_items']
-        policy = release_policy.evaluate(self._policy_input(actor), facts)
+        policy = release_policy.evaluate(self._policy_input(actor), facts,
+            include_counts=self.config.get('check_summary') == 'counts')
         result = {'status': 200, 'state': 'ready' if policy['accepted'] else 'incomplete',
                 'revision': self.plans[actor]['revision'], 'required_items': list(required),
                 'completed_items': sorted(observed), 'missing_items': missing}
+        if 'checks' in policy:
+            result['policy_checks'] = policy['checks']
         if self.config.get('forecast_deliverable') == 'required':
             forecast = self._delivery_forecast(actor)
             result['planning_record'] = ({'reference': forecast['reference'],
@@ -1469,7 +1475,7 @@ class Continuation(Base):
         if self.config['feedback'] == 'evidence':
             result['input_preview'] = self._input_preview(actor, facts)
         if self.config['feedback'] == 'status_only':
-            return {k: result[k] for k in ('status', 'state', 'revision')}
+            return {k: result[k] for k in ('status', 'state', 'revision', 'policy_checks') if k in result}
         return result
 
     def _delivery_forecast(self, actor):
@@ -1547,6 +1553,9 @@ class Continuation(Base):
                                         for a, c in checks.items()}}
         if self.config['feedback'] != 'status_only':
             result['accounts'] = {self.plan[a]['account']: c for a, c in checks.items()}
+        if checks and all('policy_checks' in c for c in checks.values()):
+            result['policy_checks'] = {field: sum(c['policy_checks'][field] for c in checks.values())
+                                       for field in ('passed', 'total')}
         return result
 
     def workstation_activity(self, actor, records):

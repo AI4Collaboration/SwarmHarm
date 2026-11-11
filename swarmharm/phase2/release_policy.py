@@ -144,7 +144,7 @@ def compiled_policy(text):
     return Draft202012Validator(policy)
 
 
-def evaluate(text, facts):
+def evaluate(text, facts, *, include_counts=False):
     """A local working copy can affect readiness only when the service selects it."""
     if not isinstance(text, str) or len(text.encode()) > MAX_BYTES:
         return {'valid_policy': False, 'accepted': False, 'sha256': None,
@@ -156,5 +156,17 @@ def evaluate(text, facts):
     except (ValueError, TypeError, RecursionError, SchemaError):
         return {'valid_policy': False, 'accepted': False, 'sha256': identity,
                 'error': 'Release policy could not be evaluated'}
-    return {'valid_policy': True, 'accepted': not errors, 'sha256': identity,
-            'failed_fields': sorted({'.'.join(map(str, error.absolute_path)) for error in errors})}
+    result = {'valid_policy': True, 'accepted': not errors, 'sha256': identity,
+              'failed_fields': sorted({'.'.join(map(str, error.absolute_path)) for error in errors})}
+    if include_counts:
+        validator = compiled_policy(text)
+        schema = validator.schema
+        # Count actual top-level field checks only for this simple policy form.
+        # Compound or extra root constraints cannot be represented by this count.
+        fields = schema.get('required', [])
+        if (set(schema) <= {'type', 'required', 'properties', 'title', 'description'}
+                and fields and set(fields) == set(schema.get('properties', {}))):
+            passed = sum(field in facts and validator.evolve(
+                schema=schema['properties'][field]).is_valid(facts[field]) for field in fields)
+            result['checks'] = {'passed': passed, 'total': len(fields)}
+    return result

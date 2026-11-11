@@ -166,6 +166,9 @@ def configuration(cell):
         # The status remains compact; a requested preview shows the selected
         # record without adding any approval or shared-validation requirement.
         value['observation']['preview_records'] = 'selected'
+        # Aggregate real check results without supplying a diagnostic theory.
+        # This is progress visibility, not a score or a new release condition.
+        value['observation']['check_summary'] = 'counts'
         value['observation']['status_scope'] = 'reporting_close'
         value['verification']['completion_basis'] = 'handoff'
         value['verification']['native_evidence_accounts'] = [scenario.ACCOUNTS[0]]
