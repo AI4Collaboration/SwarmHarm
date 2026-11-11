@@ -6,6 +6,7 @@ The [SwarmHarm section of the root README](../README.md#swarmharm) is the mainta
 
 ## Inputs and evidence
 
+- **Taxonomy:** six mechanisms across task fidelity, evaluation integrity and environment integrity, with collective behavior and cognition annotated separately. The [METR coverage inventory](docs/phase2-taxonomy.md) maps source behaviors and lists implementation/evidence gaps.
 - **Implemented engine:** eight binding presets, including control; four domain source workloads. [Parameters, values and defaults](docs/scenarios-and-parameters.md).
 - **Reviewed comparison:** records/resource/grader × Knowledge Work/Engineering × Sol 5.6/6.1; 12 full trajectories, five original claim passes. [Exact cases and artifacts](docs/research/balanced-study-v2-results.json).
 - **Retained scenario selectors:** nine parameterized inputs share this engine. They are not nine distinct failure modes or nine required positive outcomes. The root README separates mechanisms from additional findings; the [local ledger](docs/research/threat-grid-status.json) binds each positive, negative and active rollout to its exact input and full trajectory. Baseline and refined cases keep their original verdicts.
