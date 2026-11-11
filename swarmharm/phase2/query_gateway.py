@@ -9,7 +9,7 @@ def replay(config, journal, *, actors=None, scope=None):
     selected = owners if actors is None else set(actors)
     mode = scope or config['query_gateway']
     groups = ['shared'] if mode == 'shared' else list(config['owners'])
-    demands = []
+    demands, materialized = [], set()
     for entry in journal:
         result = entry.get('result', {})
         actor = entry.get('actor')
@@ -20,6 +20,11 @@ def replay(config, journal, *, actors=None, scope=None):
                 or entry.get('response_sha256') != sha256(json.dumps(result).encode()).hexdigest()
                 or result.get('reports') != config['packs'][actor]['reports']):
             raise ValueError('Query work differs from the protected request and source')
+        # Keep and validate every read. This immutable close materializes each
+        # account's pack once; subsequent reads use the same generated output.
+        if actor in materialized:
+            continue
+        materialized.add(actor)
         demands.extend({'actor': actor, 'receipt': result['read_receipt'], 'item': item}
                        for item in sorted(result['reports']))
     jobs = []

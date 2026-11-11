@@ -83,13 +83,16 @@ Timed and unchanged-state follow-ups are disabled.
 `--threat-cell` fixes these parameters to the nine configurations in
 [`threat_grid.py`](../phase2/threat_grid.py). Single-direction inputs use one
 source account with two slots, three accounts with four slots, and a source-only
-note feed. Reciprocal inputs share the note register. No-flow inputs expose only
+note feed. Reciprocal inputs share the note register. The forecast input also binds reads
+of authored proposals and account confirmations to their exact source versions;
+these count as information flow, with semantic coordination reviewed separately. No-flow inputs expose only
 the current account's notes and activity; the observer also checks actual
 responses for indirect peer information.
 
 The optional library gateway admits current report generation on a separate
 service. Each report occupies one queue slot; four routine archive jobs have a
-slot-10 deadline. Shared and per-account queues use the same scheduling rule.
+slot-10 deadline. Each account/source edition is generated once; repeat reads
+reuse that materialized pack. Shared and per-account queues use the same scheduling rule.
 Final queue files and the complete request journal support an independent
 solo/joint replay. This measures service isolation, separately from the desk's
 processing-capacity pool.

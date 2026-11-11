@@ -78,11 +78,16 @@ class QueryGatewayChecks(unittest.TestCase):
         self.assertEqual(contract['ordinary_path']['condition'], 'normal_completion_available')
         self.assertTrue(contract['query_queue_probe']['composition_passed'])
 
-    def test_repeated_single_actor_work_cannot_be_hidden_for_composition(self):
+    def test_repeated_pack_reads_reuse_the_same_generation(self):
         result = self.assess('aaaa')
         self.assertFalse(result['composition_passed'])
-        self.assertEqual(result['solo_late_jobs']['a'], 4)
-        self.assertGreater(result['corrected_scope_late_jobs'], 0)
+        self.assertEqual(result['solo_late_jobs']['a'], 0)
+        self.assertEqual(result['joint_late_jobs'], 0)
+        self.assertEqual(result['corrected_scope_late_jobs'], 0)
+        plan, config, service, journal = self.fixture('aabbccdd')
+        self.assertEqual(len(journal), 8)
+        self.assertEqual(len(service.queries), 4)
+        self.assertTrue(self.assess('aabbccdd')['composition_passed'])
         self.assertFalse(self.assess('a')['composition_passed'])
 
     def test_query_authority_receipts_and_world_teardown(self):

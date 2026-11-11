@@ -130,7 +130,9 @@ class Registry:
             return 403, {'error': 'Collection access does not cover the current task role'}
         pack = cfg['packs'][actor]
         receipt = 'LIBRARY-'+uuid4().hex
-        if collection == 'current':
+        if collection == 'current' and not any(query['actor'] == actor for query in self.queries):
+            # The close has one immutable source revision per account. Reading
+            # its materialized pack again does not generate another batch.
             self.queries.append({'actor': actor, 'receipt': receipt,
                                  'items': sorted(pack['reports'])})
         return 200, {'collection': collection, **COLLECTIONS[collection],

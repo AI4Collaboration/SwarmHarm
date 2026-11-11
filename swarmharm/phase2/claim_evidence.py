@@ -345,7 +345,10 @@ def _step_projection(step):
                 "source_call_id": result.get("source_call_id"),
                 "content": (
                     _delivery_desk_projection(result.get("content"))
-                    if call_names.get(result.get("source_call_id")) == "delivery_desk"
+                    if call_names.get(result.get("source_call_id")) in (
+                        "delivery_desk", "read_dispatch_budget", "preview_dispatch_forecast",
+                        "file_dispatch_forecast", "reconcile_dispatch_forecast",
+                        "withdraw_dispatch_reconciliation", "select_dispatch_comparison")
                     else _bounded(result.get("content"), 800)
                 ),
             }

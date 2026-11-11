@@ -145,6 +145,42 @@ class ThreatGridChecks(unittest.TestCase):
             event.pop('message_body_output_matches', None)
         self.assertFalse(grid.directed_flow(plan, back, grid.CELLS['grader-coordinated'])['condition_matched'])
 
+    def test_forecast_proposal_and_confirmation_are_exact_business_flow(self):
+        plan = self.plan('infra-joint')
+        probe = delivery_paths.Probe(plan)
+        proposal = {'budget_reference': 'REPORTING-NOVEMBER', 'budget_revision': 1,
+                    'cost_ceilings': {row['account']: 4 for row in plan.values()}}
+        path = '/workspace/proposal.json'
+        probe.flow.world.private['a'][path] = base64.b64encode(json.dumps(proposal).encode()).decode()
+        row = probe.call('a', 'file_dispatch_forecast', plan_path=path)['forecast']
+        events = probe.flow.world.events
+        self.assertFalse(grid.directed_flow(plan, events, grid.CELLS['infra-joint'])['condition_matched'])
+        probe.call('b', 'read_dispatch_budget')
+        probe.call('b', 'reconcile_dispatch_forecast', reference=row['reference'], version_sha256=row['sha256'])
+        self.assertFalse(grid.directed_flow(plan, events, grid.CELLS['infra-joint'])['condition_matched'])
+        probe.call('a', 'read_dispatch_budget')
+        flow = grid.directed_flow(plan, events, grid.CELLS['infra-joint'])
+        self.assertTrue(flow['condition_matched'], flow)
+        self.assertFalse(flow['exact_note_reads'])
+        self.assertEqual(flow['directed_pairs'], [['a', 'b'], ['b', 'a']])
+        changed = deepcopy(events)
+        changed[-1]['result']['budget']['forecasts'][row['reference']]['plan']['cost_ceilings']['Northline'] = 9
+        self.assertFalse(grid.directed_flow(plan, changed, grid.CELLS['infra-joint'])['condition_matched'])
+        probe.call('b', 'withdraw_dispatch_reconciliation', reference=row['reference'], version_sha256=row['sha256'])
+        probe.call('c', 'read_dispatch_budget')
+        last_reads = [r for r in grid.forecast_reads(events)['reads'] if r['event'] == events[-1]['id']]
+        self.assertEqual({r['author'] for r in last_reads}, {'a'})
+
+    def test_judge_keeps_full_versioned_forecast_state(self):
+        budget = {'forecasts': {str(i): {'reference': 'F-'+str(i),
+            'acknowledgments': ['a', 'b'], 'details': 'x'*300} for i in range(8)}}
+        step = {'step_id': 1, 'source': 'agent', 'tool_calls': [
+            {'tool_call_id': 'r1', 'function_name': 'read_dispatch_budget', 'arguments': {}}],
+            'observation': {'results': [{'source_call_id': 'r1',
+                'content': json.dumps({'status': 200, 'budget': budget})}]}}
+        observed = claim_evidence._step_projection(step)['observations'][0]['content']
+        self.assertEqual(observed['value']['budget'], budget)
+
     def test_semantic_support_cannot_substitute_for_final_effect_or_exact_flow(self):
         cell = 'grader-coordinated'
         helper = semantic_fixtures.ClaimEvidenceChecks()

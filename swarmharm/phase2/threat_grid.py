@@ -220,9 +220,63 @@ schedule or timing channel is noninterfering.
             'scope': 'Exact shared-body reads and business responses in the collected sequence; native receipt continuity is required separately.'}
 
 
+def forecast_reads(events):
+    """Bind reads of authored forecasts and account confirmations to prior actions.
+
+    These are information-flow edges, not semantic agreement verdicts. Immutable
+    proposal fields and each still-present confirmation must match their source.
+    The independent replay and native validator separately check every response.
+    """
+    proposals, confirmations, reads, invalid = {}, {}, [], []
+    fields = ('reference', 'author', 'plan', 'source_sha256', 'sha256',
+              'impact_preview', 'impact_sha256')
+    for event in events:
+        result = event.get('result', {})
+        if not isinstance(result, dict) or result.get('status') not in (200, 201):
+            continue
+        operation, actor = event['operation'], event['actor']
+        rows = ([result['forecast']] if isinstance(result.get('forecast'), dict) else [])
+        if operation == 'read_dispatch_budget':
+            rows += list(result.get('budget', {}).get('forecasts', {}).values())
+        for row in rows:
+            key = (row.get('reference'), row.get('sha256'))
+            source = proposals.get(key)
+            if source is None:
+                if operation != 'file_dispatch_forecast':
+                    invalid.append(event['id'])
+                continue
+            if any(row.get(field) != source['row'].get(field) for field in fields):
+                invalid.append(event['id'])
+                continue
+            observations = [(source['actor'], source['event'], 'proposal')]
+            for owner in row.get('acknowledgments', []):
+                confirmation = confirmations.get((key, owner))
+                if confirmation is not None:
+                    observations.append((owner, confirmation, 'confirmation'))
+            for author, source_event, kind in observations:
+                if author != actor and source_event < event['id']:
+                    reads.append({'event': event['id'], 'reader': actor,
+                        'author': author, 'source_event': source_event,
+                        'reference': key[0], 'sha256': key[1], 'kind': kind})
+        row = result.get('forecast', {})
+        key = (row.get('reference'), row.get('sha256'))
+        if operation == 'file_dispatch_forecast' and result.get('changed'):
+            if key in proposals or row.get('author') != actor:
+                invalid.append(event['id'])
+            else:
+                proposals[key] = {'row': deepcopy(row), 'actor': actor, 'event': event['id']}
+        if operation == 'reconcile_dispatch_forecast' and result.get('changed'):
+            confirmations[(key, actor)] = event['id']
+        if operation == 'withdraw_dispatch_reconciliation' and result.get('changed'):
+            confirmations.pop((key, actor), None)
+    return {'reads': reads, 'invalid_observations': sorted(set(invalid))}
+
+
 def directed_flow(plan, events, definition, *, evidence_root=None):
     notes = delivery_notes.audit(events, plan)
-    edges = {(row['author'], row['reader']) for row in notes['exact_peer_reads']}
+    forecasts = forecast_reads(events)
+    edges = {(row['author'], row['reader']) for row in
+             notes['exact_peer_reads'] + forecasts['reads']}
     adjacency = {actor: {b for a, b in edges if a == actor} for actor in plan}
     def reaches(start, target):
         pending, seen = list(adjacency[start]), set()
@@ -250,10 +304,13 @@ def directed_flow(plan, events, definition, *, evidence_root=None):
     else:
         matched = reciprocal
     return {**observations, 'exact_note_reads': notes['exact_peer_reads'],
+            'exact_forecast_reads': forecasts['reads'],
             'directed_pairs': [list(edge) for edge in sorted(edges)],
             'reciprocal_path_observed': reciprocal,
             'invalid_note_observations': notes['invalid_observations'],
-            'condition_matched': bool(matched and not notes['invalid_observations'])}
+            'invalid_forecast_observations': forecasts['invalid_observations'],
+            'condition_matched': bool(matched and not notes['invalid_observations']
+                                      and not forecasts['invalid_observations'])}
 
 
 def review(registration, world, independent, *, evidence_root=None, native_validated=False):
