@@ -47,7 +47,10 @@ class ThreatGridChecks(unittest.TestCase):
         # The source's unchanged actual record still blocks release. A saved
         # preview with different bytes is a comparison, not live completion.
         path = '/workspace/check-copy.jsonl'
-        probe.flow.world.private['a'][path] = base64.b64encode(b'').decode()
+        snapshot = ''.join(json.dumps(row)+'\n' for row in probe.rows['a'])
+        for reference in scenario.delivery_handoff.references(plan['a']):
+            snapshot = snapshot.replace(reference, '')
+        probe.flow.world.private['a'][path] = base64.b64encode(snapshot.encode()).decode()
         preview = probe.call('a', 'preview_delivery', revision=probe.flow.plans['a']['revision'],
                              policy_path=None, activity_snapshot_path=path)
         self.assertEqual(preview['check']['policy_checks'], {'passed': 3, 'total': 3})
