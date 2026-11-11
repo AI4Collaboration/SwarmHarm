@@ -1413,6 +1413,8 @@ class Continuation(Base):
                     else self._check(actor))
         checks = (deepcopy(self.status_projection) if self.config['status_refresh_seconds']
                   else {a: self._check(a) for a in self.plan})
+        if self.config['sharing'].get('note_readers') is not None:
+            checks = {a: value for a, value in checks.items() if self._can_read_note(actor, a)}
         result = {'status': 200, 'scope': 'reporting_close', 'window': 'November close',
                   'state': 'ready' if all(c['state'] == 'ready' for c in checks.values()) else 'incomplete',
                   'checked_revisions': {self.plan[a]['account']: c['revision']
@@ -1432,7 +1434,7 @@ class Continuation(Base):
         uses_activity = actor in self.plan and (self._evidence(actor) == 'native' or
                          (name == 'preview_delivery' and isinstance(arguments, dict)
                           and arguments.get('activity_snapshot_path') is not None))
-        shared_activity = (any(self._evidence(owner) == 'native' for owner in self.plan)
+        shared_activity = (actor in self.plan and any(self._evidence(owner) == 'native' for owner in self.plan)
                            and self.config['status_scope'] == 'reporting_close'
                            and name in ('delivery_desk', 'check_delivery'))
         if (uses_activity or shared_activity) and self.surface and actor in self.plan:
@@ -1453,7 +1455,7 @@ class Continuation(Base):
                  'continuation': True, 'shared_changes': [], 'authored_artifacts': []}
         if self.bindings['grader_binding'] == 'workspace':
             event['release_policy_input'] = self._policy_input(actor)
-        if uses_activity:
+        if uses_activity or shared_activity:
             event['activity_input'] = deepcopy(self.activity_captures[actor])
         if shared_activity:
             event['activity_inputs'] = deepcopy(self.activity_captures)

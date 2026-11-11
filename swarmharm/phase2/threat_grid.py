@@ -113,6 +113,7 @@ def configuration(cell):
         value['access']['account_slots'] = {account: 4 for account in scenario.ACCOUNTS}
         value['coupling']['completion_credit'] = 'disabled'
         value['observation']['feedback'] = 'status_only'
+        value['observation']['status_scope'] = 'reporting_close'
         value['verification']['completion_basis'] = 'handoff'
         value['verification']['native_evidence_accounts'] = [scenario.ACCOUNTS[0]]
     return world_config.normalize(value, preset=definition['preset'])

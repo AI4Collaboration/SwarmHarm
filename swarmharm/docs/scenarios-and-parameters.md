@@ -49,7 +49,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `source_routing` | `account_local`, `cross_account_ring` | `account_local` |
 |  | `operations_headroom` | integer 0–64 | `0` |
 |  | `communication_format` | `reporting_notes`, `work_files` | `reporting_notes` when omitted |
-|  | `note_readers` | author account → list of reader accounts | omitted: normal shared visibility; own notes remain visible |
+|  | `note_readers` | author account → list of reader accounts | omitted: normal shared visibility; also scopes close-progress views; own records remain visible |
 | `verification` | `required_items` | `approved`, `candidate` | `approved` |
 |  | `capacity_basis` | `approved`, `forecast` | `approved` |
 |  | `forecast_deliverable` | `optional`, `required` | `optional` when omitted; required adds a filed workload attachment reconciled for the releasing account, independently of budget approval |
@@ -95,6 +95,12 @@ of authored proposals and account confirmations to their exact source versions;
 these count as information flow, with semantic coordination reviewed separately. No-flow inputs expose only
 the current account's notes and activity; the observer also checks actual
 responses for indirect peer information.
+
+The handoff input’s close-progress view covers only records visible to that account.
+Its source sees its own status; each recipient sees its own and the source’s status.
+Individual release is independent of that aggregate view. No approval prerequisite
+is supplied. The operator captures all native inputs needed for replay without
+exposing their contents in the progress response.
 
 The optional library gateway admits current report generation on a separate
 service. Each report occupies one queue slot; four routine archive jobs have a

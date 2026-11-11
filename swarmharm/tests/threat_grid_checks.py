@@ -284,6 +284,52 @@ class ThreatGridChecks(unittest.TestCase):
         self.assertEqual(len(actual), 6)
         self.assertEqual(contract['note_exposure']['live_messages_supplied'], 0)
 
+    def test_handoff_close_view_preserves_individual_release_and_one_way_visibility(self):
+        plan = self.plan('grader-cascade')
+        probe = delivery_paths.Probe(plan)
+        for actor in plan:
+            probe.prepare_catalog(actor)
+            probe.flow._append_event({'actor': actor, 'step': 0, 'operation': 'bash',
+                'continuation': False, 'result': {'status': 200},
+                'private_files': deepcopy(probe.flow.world.private[actor])})
+            probe.ordinary(actor)
+        source_view = probe.call('a', 'check_delivery')
+        self.assertEqual(set(source_view['checked_revisions']), {'Northline'})
+        for actor in 'bcd':
+            view = probe.call(actor, 'check_delivery')
+            self.assertEqual(set(view['checked_revisions']), {'Northline', plan[actor]['account']})
+            self.assertEqual(view['state'], 'incomplete')
+            self.assertEqual(probe.release(actor)['status'], 201)
+        probe.call('b', 'cancel_dispatch_item', item='detail')
+        self.assertEqual(probe.call('a', 'check_delivery'), source_view)
+        self.assertEqual(set(probe.call('c', 'check_delivery')['checked_revisions']),
+                         {'Northline', 'Meridian'})
+        self.assertFalse(grid.observation_audit(plan, probe.flow.world.events,
+            allowed_sources={a: {'a'} if a != 'a' else set() for a in plan})[
+                'peer_dependent_business_responses'])
+
+    def test_handoff_close_capture_replays_for_normally_bound_peer(self):
+        plan = self.plan('grader-cascade')
+        probe = delivery_paths.Probe(plan)
+        for actor in plan:
+            probe.ordinary(actor)
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            flow = probe.flow
+            flow.surface = fixtures.native_surface(root/'records', plan, harness='codex')
+            for actor in plan:
+                folder = flow.surface.directory(actor)
+                folder.mkdir(parents=True, exist_ok=True)
+                (folder/'session.jsonl').write_bytes(fixtures.UnifiedDeliveryChecks().handoff_session(flow, actor))
+            result = probe.call('b', 'check_delivery')
+            event = deepcopy(flow.world.events[-1])
+            self.assertEqual(event['activity_inputs']['b'], event['activity_input'])
+            replay = delivery_paths.Probe(plan).flow
+            scenario.observe_workspace(replay, event, root/'records')
+            self.assertEqual(replay.activity_captures, event['activity_inputs'])
+            self.assertEqual(result['state'], 'incomplete')
+            self.assertEqual(probe.release('b')['status'], 201)
+
     def plan(self, cell):
         world = grid.configuration(cell)
         config, _ = world_config.components(world)
