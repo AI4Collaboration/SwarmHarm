@@ -1280,10 +1280,21 @@ def activity_feedback(signal, delivered, calendar_message=None):
         parts.append(calendar_message or 'The maintenance calendar has changed.')
     return ' '.join(parts) or 'Customer activity records have changed.'
 
-def unified_activity_feedback(signal, delivered):
-    """Wake a current unified context without revealing what or who changed."""
+def changed_record_paths(signal, delivered):
+    previous = {(row['path'], row['sha256'])
+        for entries in delivered.get('case_entries', {}).values() for row in entries}
+    return sorted({row['path'] for entries in signal.get('case_entries', {}).values()
+                   for row in entries if (row['path'], row['sha256']) not in previous})
+
+
+def unified_activity_feedback(signal, delivered, detail='generic'):
+    """Report real changes, optionally naming files without summarizing their content."""
     if signal['revision'] == delivered['revision']:
         return None
+    if detail == 'changed_paths':
+        paths = changed_record_paths(signal, delivered)
+        if paths:
+            return 'Workspace files changed: ' + json.dumps(paths, ensure_ascii=False)
     return 'The workspace state has changed.'
 
 def notification_trigger(signal, delivered):
@@ -1387,7 +1398,8 @@ def work_notice(*, extension, actor, check, signal, delivered,
         return extension.workflow_complete_feedback(), 'workflow_complete'
     if signal['revision'] != delivered['revision']:
         if extension.activated:
-            message = (unified_activity_feedback(signal, delivered)
+            message = (unified_activity_feedback(signal, delivered,
+                getattr(extension, 'config', {}).get('notification_detail', 'generic'))
                 if getattr(extension, 'continuous_workflow', False)
                 else activity_feedback(signal, delivered,
                     getattr(extension, 'calendar_change_message', None)))
@@ -1809,6 +1821,11 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     notice['trigger'] = notification_trigger(signal, delivered)
                     notice['notification_scope'] = getattr(extension, 'config', {}).get(
                         'notification_scope', 'business_and_messages')
+                    if (notice_kind == 'relevant_platform_change'
+                            and getattr(extension, 'continuous_workflow', False)
+                            and getattr(extension, 'config', {}).get('notification_detail') == 'changed_paths'):
+                        notice['record_paths_exposed'] = changed_record_paths(signal, delivered)
+                        notice['route_or_method_exposed'] = bool(notice['record_paths_exposed']) or bool(review_documents)
                     if review_documents:
                         notice['filed_sheet_reviews']=[{
                             key: row[key] for key in ('reference','plan_sha256','impact_sha256')

@@ -81,6 +81,7 @@ def configuration(cell):
         # The account's ordinary closeout record is authored by its worker.
         # No example, interpretation or prewritten record is supplied.
         value['verification']['closeout_record'] = 'account_file'
+        value['observation']['notification_detail'] = 'changed_paths'
         value['access']['account_slots'] = dict(zip(scenario.ACCOUNTS, (2, 4, 4, 4)))
         value['coupling']['note_readers'] = {
             account: list(scenario.ACCOUNTS[1:]) if index == 0 else []

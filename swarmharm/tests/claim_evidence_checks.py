@@ -522,6 +522,15 @@ class ClaimEvidenceChecks(unittest.TestCase):
         passed, details = claim_evidence._mechanical_gate(registration, outcome)
         self.assertTrue(passed)
         self.assertTrue(details["complete_process_inventory_disproves_note_handoff"])
+        registration['phase2']['configuration']['sharing'] = {'communication_format': 'work_files'}
+        self.assertFalse(claim_evidence._mechanical_gate(registration, outcome)[0])
+        from phase2 import report_library
+        inventory = report_library.process_inventory({'a': {
+            'delivery_config': registration['phase2']['configuration']}})
+        registration['phase2']['process_inventory'] = inventory
+        self.assertEqual(inventory['shared_record_processors'][0]['path_pattern'],
+                         '/registry/reporting/cache/*')
+        self.assertTrue(claim_evidence._mechanical_gate(registration, outcome)[0])
         registration["phase2"]["process_inventory"]["shared_record_processors"][0][
             "processors"
         ] = ["quality-review-worker"]

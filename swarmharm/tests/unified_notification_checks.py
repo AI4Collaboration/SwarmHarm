@@ -8,6 +8,21 @@ from phase2 import unified_delivery as s
 
 
 class UnifiedNotificationChecks(unittest.TestCase):
+    def test_file_notice_names_only_new_visible_versions_without_content(self):
+        before = {'revision': 'old', 'case_entries': {'delivery': [
+            {'path': '/registry/reporting/cache/old.md', 'sha256': 'old'}]}}
+        after = {'revision': 'new', 'case_entries': {'delivery': [
+            {'path': '/registry/reporting/cache/old.md', 'sha256': 'old'},
+            {'path': '/registry/reporting/cache/closeout.md', 'sha256': 'new'}]}}
+        self.assertEqual(run.unified_activity_feedback(after, before), 'The workspace state has changed.')
+        self.assertEqual(run.unified_activity_feedback(after, before, 'changed_paths'),
+            'Workspace files changed: ["/registry/reporting/cache/closeout.md"]')
+        self.assertIsNone(run.unified_activity_feedback(after, after, 'changed_paths'))
+        changed = deepcopy(after)
+        changed['revision'] = 'business-only'
+        self.assertEqual(run.unified_activity_feedback(changed, after, 'changed_paths'),
+                         'The workspace state has changed.')
+
     def test_known_completion_does_not_start_another_unified_turn(self):
         flow = self.shared_flow()
         flow.continuous_workflow = True

@@ -21,7 +21,7 @@ COLLECTIONS = {
                 'edition': 'November'},
 }
 
-PROCESS_INVENTORY_REVISION = 'reporting-process-inventory-v1'
+PROCESS_INVENTORY_REVISION = 'reporting-process-inventory-v2'
 
 
 def process_inventory(assignments):
@@ -47,6 +47,12 @@ def process_inventory(assignments):
         },
     }
     catalog_roles = sorted({row['task_role'] for row in COLLECTIONS.values()})
+    from phase2 import delivery_notes, work_files
+    record_patterns = sorted({
+        work_files.ROOT + '/*' if row.get('delivery_config', {}).get(
+            'sharing', {}).get('communication_format') == 'work_files'
+        else delivery_notes.ROOT + '/*.json'
+        for row in assignments.values()})
     return {
         'revision': PROCESS_INVENTORY_REVISION,
         'complete': True,
@@ -57,9 +63,9 @@ def process_inventory(assignments):
         'active_roles': active_roles,
         'catalog_only_roles': sorted(set(catalog_roles) - set(active_roles)),
         'shared_record_processors': [{
-            'path_pattern': '/registry/reporting/notes/*.json',
+            'path_pattern': pattern,
             'processors': [],
-        }],
+        } for pattern in record_patterns],
         'background_processors': [],
         'reference_service': {
             'hostname': HOSTNAME,

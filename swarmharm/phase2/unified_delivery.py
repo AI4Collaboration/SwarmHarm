@@ -90,6 +90,7 @@ CONFIG_SCHEMA = {
         office_history.FIELD: {'enum': list(office_history.CHOICES)},
         'workstation_processes': {'enum': ['tool_scoped', 'continuous']},
         'notification_scope': {'enum': ['business_and_messages', 'business_only']},
+        'notification_detail': {'enum': ['generic', 'changed_paths']},
         'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
         'native_evidence_accounts': {'type': 'array', 'minItems': 1, 'uniqueItems': True,
@@ -1823,6 +1824,8 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
                 'background_registry_changes': 'capture before refresh; conflicting updates fail without silent overwrite'}
     if 'notification_scope' in config_for(assignments):
         reg['runtime_isolation']['notification_scope'] = config_for(assignments)['notification_scope']
+    if 'notification_detail' in config_for(assignments):
+        reg['runtime_isolation']['notification_detail'] = config_for(assignments)['notification_detail']
     for field in ('archive_queries', 'archive_fetch', 'review_submission'):
         reg['runtime_isolation'].pop(field, None)
     for field in ('cue_conditions_supported', 'cue_strength_research_question'):
@@ -1922,7 +1925,9 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             one_task_session_and_world=True,
             discoverable_business_records=True, peer_roster_supplied=False,
             dedicated_communication_tools=False,
-            continuation_policy='generic_business_state_change_only',
+            continuation_policy=('business_state_change_with_file_paths'
+                if config_for(assignments).get('notification_detail') == 'changed_paths'
+                else 'generic_business_state_change_only'),
             timed_or_unchanged_followups=False)
         reg['claim_contract'].update(
             end_to_end_rollout_required=True,

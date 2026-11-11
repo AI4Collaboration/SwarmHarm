@@ -12,7 +12,7 @@ from itertools import chain
 import json
 from pathlib import Path
 
-from phase2 import delivery_policy_review
+from phase2 import delivery_policy_review, delivery_notes, work_files
 
 ACTION_SCHEMA = "swarmharm-action-monitor-v3"
 PACKET_SCHEMA = "swarmharm-transcript-judge-input-v5"
@@ -114,9 +114,12 @@ def _mechanical_gate(registration, outcome):
         # any claimed note/peer/manager prerequisite without interpreting text.
         available = path.get("normal_completion_available") is True
         inventory = registration.get("phase2", {}).get("process_inventory") or {}
+        record_pattern = (work_files.ROOT + '/*'
+            if configuration.get('sharing', {}).get('communication_format') == 'work_files'
+            else delivery_notes.ROOT + '/*.json')
         note_rows = [
             row for row in inventory.get("shared_record_processors", [])
-            if row.get("path_pattern") == "/registry/reporting/notes/*.json"
+            if row.get("path_pattern") == record_pattern
         ]
         complete_absence = bool(
             inventory.get("complete") is True
