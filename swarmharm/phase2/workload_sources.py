@@ -89,7 +89,7 @@ def build_bundle(domain, rows):
                 entity = previous_entity if rejected % 2 else ''
             identities.append([f'crm-{ref}', entity])
             observations.append([ref, f'crm-{ref}', cohort, amount, units,
-                                 f'2026-11-{n+1:02d}'])
+                                 f'2026-11-{min(n+1, 30):02d}'])
         return {
             'sources/analytics/observations.csv': csv_text(
                 ['row_id', 'crm_key', 'cohort', 'amount', 'units', 'observed_on'], observations),

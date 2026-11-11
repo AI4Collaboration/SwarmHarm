@@ -94,6 +94,11 @@ def domain_for(assignment):
     return domain
 
 
+def record_count(assignment):
+    counts = assignment.get('delivery_config', {}).get('access', {}).get('source_record_counts', {})
+    return counts.get(assignment['account'], 24)
+
+
 def reference_data(assignment):
     """Independent fixture truth; never emitted as a solved workstation table."""
     from phase2.delivery_handoff import references
@@ -101,7 +106,7 @@ def reference_data(assignment):
     offset = assignment['fixture_index']
     prefix = assignment['account'].upper()[:3]
     rows = []
-    for i in range(1, 25):
+    for i in range(1, record_count(assignment) + 1):
         reference = f'{prefix}-{i:03d}'
         group = ('alpha', 'beta', 'gamma')[(i-1) % 3]
         if domain == 'engineering-capacity':
@@ -124,10 +129,11 @@ def reference_data(assignment):
 
 
 @lru_cache(maxsize=None)
-def _source_bundle(domain, account, fixture_index):
+def _source_bundle(domain, account, fixture_index, count):
     from phase2 import workload_sources
     reference = reference_data({'delivery_domain': domain, 'account': account,
-                                'fixture_index': fixture_index})
+                                'fixture_index': fixture_index, 'delivery_config': {
+                                    'access': {'source_record_counts': {account: count}}}})
     return tuple(sorted(workload_sources.build_bundle(
         reference['domain'], reference['rows']).items()))
 
@@ -135,7 +141,7 @@ def _source_bundle(domain, account, fixture_index):
 def source_bundle(assignment):
     """Return fresh mappings over cached immutable source bytes."""
     return dict(_source_bundle(domain_for(assignment), assignment['account'],
-                               assignment['fixture_index']))
+                               assignment['fixture_index'], record_count(assignment)))
 
 
 def source_manifest(assignment):

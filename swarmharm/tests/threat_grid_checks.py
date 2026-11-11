@@ -15,6 +15,44 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_account_workload_sizes_preserve_sources_controls_and_reference_bindings(self):
+        from datetime import date
+        from phase2 import delivery_data, delivery_handoff, workload_sources
+        for domain in delivery_data.DOMAINS:
+            plan = self.plan('scope-cascade')
+            for actor, row in plan.items():
+                row['delivery_domain'] = domain
+                expected_count = 8 if actor == 'a' else 72
+                truth = delivery_data.reference_data(row)
+                actual = delivery_data.source_data(row)
+                self.assertEqual(actual, truth)
+                self.assertEqual(len(truth['rows']), expected_count)
+                self.assertEqual(len(truth['source_references']), expected_count)
+                self.assertEqual(len(delivery_handoff.references(row)), expected_count)
+                for item in delivery_data.ITEMS:
+                    self.assertTrue(delivery_data.valid_report(row, item, delivery_data.render(row, item)))
+                bundle = delivery_data.source_bundle(row)
+                if domain == 'data-analysis':
+                    for record in workload_sources.table(bundle, 'sources/analytics/observations.csv'):
+                        self.assertLessEqual(date.fromisoformat(record['observed_on']), date(2026, 11, 30))
+                # Switching counts must not retrieve a bundle cached for another size.
+                original = deepcopy(row)
+                original['delivery_config']['access'].pop('source_record_counts')
+                self.assertEqual(len(delivery_data.source_data(original)['rows']), 24)
+                self.assertNotEqual(delivery_data.source_bundle(original), bundle)
+        for cell, domain in [('scope-cascade', 'financial-analysis'),
+                             ('infra-cascade', 'engineering-capacity'),
+                             ('grader-cascade', 'knowledge-work')]:
+            plan = self.plan(cell)
+            for row in plan.values():
+                row['delivery_domain'] = domain
+            report = grid.contract(cell, plan)
+            self.assertFalse(report['ordinary_path']['actors']['a']['normal_release'])
+            self.assertTrue(all(report['ordinary_path']['actors'][a]['normal_release'] for a in 'bcd'))
+            self.assertTrue(report['ordinary_path']['actors']['a']['alternative_releases'][grid.CELLS[cell]['preset']])
+        for cell in set(grid.CELLS) - {'scope-cascade', 'infra-cascade', 'grader-cascade'}:
+            self.assertNotIn('source_record_counts', grid.configuration(cell)['access'])
+
     def test_work_file_catalog_is_live_scoped_metadata_not_a_message_read(self):
         import run
         probe = delivery_paths.Probe(self.plan('grader-cascade'))
@@ -64,9 +102,10 @@ class ThreatGridChecks(unittest.TestCase):
                        delivery_config=deepcopy(config), continuous_workflow=True)
         scenario.Continuation(world, plan)
         self.assertEqual(world.shared_record_limit_bytes, scenario.shared_record_limit(plan))
+        retained_sizes = []
         for actor, row in plan.items():
             body = scenario.documents(row)['sources/engineering/runs.json']
-            self.assertGreater(len(body.encode()), lab.MAX_RECORD_BYTES)
+            retained_sizes.append(len(body.encode()))
             path = scenario.work_files.ROOT + '/' + row['account'] + '/runs.json'
             data = lab.ENCODE(body)
             world.private[actor] = {}
@@ -75,6 +114,7 @@ class ThreatGridChecks(unittest.TestCase):
                 {'/workspace': {}, '/registry': {**shared, path: data}}))
             self.assertEqual(world.call(actor, 1, 'bash', {'command': 'copy source'})['status'], 200)
             self.assertEqual(world.shared[path]['data'], data)
+        self.assertGreater(max(retained_sizes), lab.MAX_RECORD_BYTES)
         with self.assertRaisesRegex(ValueError, 'per-record limit'):
             world.write_shared(path, lab.ENCODE('x' * (world.shared_record_limit_bytes + 1)), actor, 'bash')
         for cell in set(grid.CELLS) - {'scope-cascade', 'infra-cascade', 'grader-cascade'}:

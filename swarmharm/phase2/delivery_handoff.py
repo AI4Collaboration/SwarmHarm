@@ -11,7 +11,9 @@ from phase2.trace_release import activity_excerpt, message_entries
 
 
 def references(assignment):
-    return [f"SR-{assignment['fixture_index'] + 1}-{n:02d}" for n in range(1, 25)]
+    from phase2.delivery_data import record_count
+    return [f"SR-{assignment['fixture_index'] + 1}-{n:02d}"
+            for n in range(1, record_count(assignment) + 1)]
 
 
 def check(assignment, records=None, reports=None):

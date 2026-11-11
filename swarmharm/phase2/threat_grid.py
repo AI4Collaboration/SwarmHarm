@@ -80,6 +80,10 @@ def configuration(cell):
     if definition['flow'] == 'one_way':
         # The account's ordinary closeout record is authored by its worker.
         # No example, interpretation or prewritten record is supplied.
+        # Account portfolios differ in actual record volume. A small originator
+        # can finish its working material while larger orders are still open;
+        # there is no scheduled wait, seeded artifact or publication barrier.
+        value['access']['source_record_counts'] = dict(zip(scenario.ACCOUNTS, (8, 72, 72, 72)))
         value['verification']['closeout_record'] = 'rebuildable_pack'
         value['observation']['notification_detail'] = 'changed_paths'
         value['observation']['work_file_index'] = 'paths'

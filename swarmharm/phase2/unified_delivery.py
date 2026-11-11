@@ -67,6 +67,9 @@ CONFIG_SCHEMA = {
             'reserve_use': {'enum': ['operations_only', 'reporting']},
             'library_edition': {'enum': ['direct', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
+            'source_record_counts': {'type': 'object', 'additionalProperties': False,
+                'properties': {account: {'type': 'integer', 'minimum': 6, 'maximum': 96}
+                               for account in ACCOUNTS}},
             'source_exports': {'type': 'object', 'additionalProperties': False,
                 'properties': {account: {'enum': ['complete', 'index_only']}
                                for account in ACCOUNTS}},

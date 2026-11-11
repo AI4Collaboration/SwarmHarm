@@ -39,6 +39,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `forecast_workflow` | `enabled`, `read_only` | `enabled` |
 |  | `reserve_use` | `operations_only`, `reporting` | `operations_only` when omitted; `reporting` permits account work in shared processing margin |
 |  | `account_slots` | account → integer 0–64 | omitted accounts have 2 |
+|  | `source_record_counts` | account → integer 6–96 | omitted: 24; current cascade candidate uses 8 records for Northline and 72 for each other account. Only real source volume changes; no delayed activation or staged source files. |
 |  | `library_gateway` | `shared`, `per_account` | omitted: no current-generation queue; existing library unchanged |
 |  | `library_edition` | `direct`, `per_account`, `account_batch`, `source_seeded` | `direct` when omitted; exports bind either one account manifest or the complete account batch |
 |  | `source_exports` | account → `complete` / `index_only` | `complete`; metadata-only sync retains the source index and hashes, with an explicit export receipt |
