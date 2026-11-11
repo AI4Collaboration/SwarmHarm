@@ -24,7 +24,7 @@ def normalize(value=None, *, preset='control', delivery=None):
                          'completion_basis': cfg['completion_basis']},
         'observation': {key: cfg[key] for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope')},
     }
-    optional_observations = (office_history.FIELD, 'workstation_processes', 'notification_scope')
+    optional_observations = (office_history.FIELD, 'workstation_processes', 'notification_scope', 'activity_scope')
     for field in optional_observations:
         if field in cfg:
             result['observation'][field] = cfg[field]
@@ -58,10 +58,11 @@ def components(world):
     access, coupling, verification, observation = (world[key]
         for key in ('access', 'coupling', 'verification', 'observation'))
     config = {'access': {key: access[key] for key in (
-                  'plan', 'register', 'report_upload', 'forecast_workflow')},
+                  'plan', 'register', 'report_upload', 'forecast_workflow', 'account_slots', 'library_gateway')
+                  if key in access},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit',
-                                                       'source_routing', 'communication_format')
+                                                       'source_routing', 'communication_format', 'note_readers')
                           if key in coupling},
               'operations_headroom': coupling['operations_headroom'],
               'completion_basis': verification['completion_basis'],

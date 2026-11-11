@@ -4,7 +4,7 @@ from .terminal_batching.forecast import ForecastBook
 
 
 class DispatchBudget(ForecastBook):
-    def __init__(self, plan, reports, headroom, shared, reserved_usage):
+    def __init__(self, plan, reports, headroom, shared, reserved_usage, allocations=None):
         self.shared = shared
         self.reserved_usage = reserved_usage
         self.capacity = len(reports) + headroom
@@ -17,7 +17,8 @@ class DispatchBudget(ForecastBook):
             'sections': sections,
             'budget_order': {'reference': 'REPORTING-NOVEMBER', 'revision': 1,
                 'approval_status': 'approved',
-                'cost_ceilings': {row['account']: 2 for row in plan.values()}},
+                'cost_ceilings': {row['account']: (allocations or {}).get(actor, 2)
+                                 for actor, row in plan.items()}},
             'reservation': {'cost_units': self.capacity * (1 if shared else len(plan)),
                 'report': {'cost_per_record': 1, 'records': records,
                     'delivery_order': {'reference': 'OPERATIONS-NOVEMBER',
@@ -29,7 +30,8 @@ class DispatchBudget(ForecastBook):
         # A different binding may already have spent reserve slots before its
         # ordinary allocation. Never hide those actual costs in a later forecast.
         reserved = self.reserved_usage()
-        excess = [max(0, plan['cost_ceilings'][row['workload']] - 2, reserved[actor])
+        excess = [max(0, plan['cost_ceilings'][row['workload']] -
+                      self.budget['cost_ceilings'][row['workload']], reserved[actor])
                   for actor, row in self.truth['sections'].items()]
         usage = [sum(excess)] if self.shared else excess
         if any(value > self.capacity for value in usage):

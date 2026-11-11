@@ -31,3 +31,7 @@ The following rules govern the three-agent channel-bootstrapping delivery and it
 ## Reproduction
 
 The four-agent v57 cache pilot and SwarmHarm reporting studies retain their original populations, software and scoring rules. Use the [reporting environment contract](swarmharm/docs/environment-contract.md), [running guide](docs/running-evals.md) and [reviewed evidence](docs/research/README.md) for those cases. OpenAI uses Codex and Claude uses Claude Code via AxonHub. A Sol 5.6 Pi comparison requires explicit selection and its own registration.
+
+## Current SwarmHarm assignment
+
+The root README defines the nine-cell SwarmHarm goal, separately from SwarmForm. Implement and validate concrete cell inputs using Sol 6.1, native Codex through AxonHub, high reasoning and goal off. The current user explicitly requires local-only source commits, sealed registrations and full evidence: do not push, upload or deploy. Use the local source-retention option; frozen source and exact evidence checks still apply. Do not apply SwarmForm's population, no-new-rollout instruction or delivery criteria to this separately authorized work. Valid negative behavior is retained; offline reachability is not a model result.

@@ -123,9 +123,16 @@ def main(argv=None):
     write_new(review_root / "transcript-judge-request.json", request_value)
     write_new(review_root / "transcript-judge-response.json", response)
     write_new(review_root / "transcript-judge.json", result)
-    verdict = claim_evidence.claim_verdict(action, result)
-    write_new(review_root / "claim-verdict.json", verdict)
-    print(json.dumps({"claim": verdict["registered_claim"], "passed": verdict["passed"]}))
+    grid_path = review_root / "threat-grid-review.json"
+    if grid_path.is_file() and json.loads(grid_path.read_text()).get('semantic_required'):
+        from phase2 import threat_grid
+        verdict = threat_grid.complete_semantic_review(json.loads(grid_path.read_text()), packet, result)
+        write_new(review_root / "threat-grid-verdict.json", verdict)
+        print(json.dumps({"claim": verdict["cell"], "passed": verdict["target_observed"]}))
+    else:
+        verdict = claim_evidence.claim_verdict(action, result)
+        write_new(review_root / "claim-verdict.json", verdict)
+        print(json.dumps({"claim": verdict["registered_claim"], "passed": verdict["passed"]}))
     return 0
 
 

@@ -175,6 +175,21 @@ def select_checks(files, full=False):
             checks.update(('catalog', 'inputs'))
         elif name == 'swarmform/scripts/check_swarmform_read_observer.py':
             suites('swarmform_read_observer')
+        elif name in {LAB + '/phase2/unified_delivery.py', LAB + '/phase2/world_config.py',
+                      LAB + '/phase2/threat_grid.py', LAB + '/phase2/query_gateway.py',
+                      LAB + '/phase2/delivery_paths.py', LAB + '/phase2/delivery_budget.py',
+                      LAB + '/phase2/report_library.py'}:
+            suites('unified_*', 'continuous_*', 'delivery_*', 'domain', 'review',
+                   'claim_evidence', 'threat_grid', 'asymmetric_input', 'query_gateway', 'swarmform_runtime', roots=(LAB,))
+            checks.update(('wording', 'balanced'))
+        elif name == LAB + '/run.py':
+            suites('collector', '*_collect', 'local_source', 'native_harness', 'shutdown',
+                   'unified_*', 'continuous_*', 'domain_runtime', 'swarmform_runtime',
+                   'threat_grid', roots=(LAB,))
+            checks.update(('wording', 'balanced'))
+        elif name == LAB + '/review.py':
+            suites('review', 'claim_evidence', 'delivery_*', 'unified_*',
+                   'continuous_*', 'threat_grid', roots=(LAB,))
         elif name.startswith('swarmharm/scripts/'):
             suites('review', 'claim_evidence', 'unified_input_contract')
         elif name.startswith('shared/prompt-contract/'):
@@ -199,9 +214,10 @@ def select_checks(files, full=False):
     if 'format' in tests:
         tests.remove('format')  # The format command already executes this module.
         checks.add('format')
-    if tests & DOCKER_TESTS:
+    if tests & (DOCKER_TESTS | {'unified_runtime', 'continuous_collect'}):
         docker = True
-    if tests & {'native_goal', 'structure_native', 'swarmform_collection'}:
+    if tests & {'native_goal', 'structure_native', 'swarmform_collection',
+                'unified_runtime', 'continuous_collect'}:
         harnesses.add('codex')
     if 'native_harness' in tests:
         # This suite validates all three registrations and uses real Codex

@@ -8,7 +8,7 @@
 
 ## Structure research and SwarmHarm
 
-- [Eight-agent structure study](../structure-common-problem-design.md): current interval-policy plan; implementation and validation pending. [Reviewed preceding pair](../structure-common-problem-long-v3-findings.json) retains its own settings and does not validate the new interval policy.
+- [Eight-agent structure study](../../README.md#navier-stokes-protocol): current interval-policy plan; implementation and validation pending. [Reviewed preceding pair](../structure-common-problem-long-v3-findings.json) retains its own settings and does not validate the new interval policy.
 - **SwarmHarm:** [findings](../phase2-design.md), [balanced results](balanced-study-v2-results.json) and [complete trajectories](trajectory-release.json).
 - [Additional formation cases](phase1-native-trajectory-archives.json), [workstation-history comparison](workstation-history-results.json) and [work-journal validation](workstation-context-validation.json).
 

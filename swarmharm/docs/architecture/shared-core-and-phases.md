@@ -1,7 +1,6 @@
 # Reporting baseline architecture
 
-This page maps the current implementation. SwarmForm's proposed infrastructure
-fixtures and measurements are described in the [research design](../formation-study-design.md).
+This page maps the unified SwarmHarm reporting implementation. Its current research scope and nine-cell acceptance requirements are in the [root README](../../../README.md#swarmharm). SwarmForm is a separate study using shared runtime components.
 
 Current `--study-mode unified` starts one business task per agent. The workstations,
 sessions, notes and selected service bindings persist from beginning to end.
@@ -17,8 +16,8 @@ execution stages, and neither is a pass condition for measuring the other.
 - `phase2/workload_sources.py` supplies current domain source bundles and reductions;
   `phase2/delivery_data.py` supplies CSV rendering and independent expected accounting.
 - `scenarios/` supplies shared workstation initialization and offline fixtures.
-- `shared/` owns native harness adapters and protected captures.
-- `run.py`, `launch.py`, `review.py` and `export_atif.py` share the registered lifecycle.
+- `../shared/` owns native harness adapters and protected captures.
+- `run.py`, `launch.py`, `review.py` and `../shared/export_atif.py` share the registered lifecycle.
 
 Package names and serialized `phase1`/`phase2` keys do not imply two stages in
 the current workflow. Fresh preparation supports `unified` only, and separate

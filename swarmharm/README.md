@@ -1,40 +1,57 @@
-# Experiment package
+# SwarmHarm unified environment
 
-The [SwarmForm framework](../../README.md#research-framework) covers channel bootstrapping, emergent structure and task performance. `swarmform/` contains shared runtimes, workloads and observers for those studies. The [eight-agent Navier–Stokes experiment](../../docs/structure-common-problem-design.md) is one component, with intended/unintended conditions and ten-minute extensions. Its interval support is pending implementation and offline validation; no new collection is authorized by that design discussion.
+**One continuous reporting workflow, parameterized by access, coupling, verification and observation.** Agents retain their own task, native session and workstation; selected business interfaces are available from the start. Phase 1/2 are outcome labels, not runtime stages.
 
-The commands below preserve the historical four-agent SwarmHarm reporting baseline. They are reproduction documentation, not the launch procedure for the eight-agent structure experiment. [Accepted SwarmForm inputs](../../README.md#accepted-inputs).
+The [SwarmHarm section of the root README](../README.md#swarmharm) is the maintained scope, nine-cell plan, status and claim/case map. This page describes the implemented runner. SwarmForm's separate channel and structure studies live under `swarmform/`; their completion does not establish SwarmHarm coverage.
 
-## SwarmHarm reporting runner
+## Inputs and evidence
 
-Use `--study-mode unified` for one continuous reporting workflow: autonomous
-discovery through business records, communication and downstream actions share
-the same task, session and state. Every fresh rollout runs end to end. Phase 1
-labels autonomous formation and Phase 2 labels the registered consequence from
-the same trajectory; there is no phase transition or formation gate.
+- **Implemented engine:** eight binding presets, including control; four domain source workloads. [Parameters, values and defaults](docs/scenarios-and-parameters.md).
+- **Reviewed comparison:** records/resource/grader × Knowledge Work/Engineering × Sol 5.6/6.1; 12 full trajectories, five original claim passes. [Exact cases and artifacts](docs/research/balanced-study-v2-results.json).
+- **Current delivery:** nine grid-specific inputs, each with a complete **Sol 6.1** rollout and independent review. One registered target is observed; eight are valid target negatives. Four independent grader changes in one of those negatives are reported separately from coordination. [Local input and trajectory ledger](docs/research/threat-grid-status.json).
 
-Package layout:
+## Reproduction
 
-- `phase1/`: shared workstation, record and formation helpers.
-- `phase2/`: unified reporting, business notes, actions and outcome review.
-- `phase2/workload_sources.py`: current domain source work; `delivery_data.py`: reports and independent truth.
-- `scenarios/`: workstation initialization and offline fixtures.
-- `configs/`: headline and cross-account routing settings. Additional test worlds live in `tests/worlds/`.
-- `tests/`: offline contracts.
-- `registrations/`: sealed inputs for the reviewed reporting matrix and its
-  end-to-end validations.
-- `run.py`, `launch.py`, `review.py`, `export_atif.py`: rollout lifecycle.
+Use the pinned Python environment from `bash scripts/setup-local`, native Codex and AxonHub. The reporting entry point is `run.py` with `--phase prepare` or `--phase collect`. Preparation takes a fresh output path and registration directory; collection uses those sealed inputs once.
 
-Harness adapters are in `../runtime/`. All inference uses AxonHub; Claude uses
-Claude Code and OpenAI uses Codex.
+```text
+--study-mode unified --component-family unified-delivery
+--model-id openai/gpt-6.1-sol --harness codex --goal-mode off --reasoning-effort high
+--binding-preset PRESET --world-config CONFIG_PATH --scenario DOMAIN
+```
 
-For the fail-closed headline comparison, select
-`--comparison-design balanced-headline-v1` with
-`configs/unified-balanced-envelope.json`. Knowledge Work is primary and
-Engineering is the sole replication domain; the four-domain suite is a separate
-workload-stress block. The comparison contract rejects changes beyond model,
-domain payload, one named binding and its registered claim.
+Use the [running guide](../docs/running-evals.md#validate-and-freeze) for complete preparation, sealing, collection and review. The existing reporting runner has four agents. `--comparison-design balanced-headline-v1` preserves the completed comparison; it is not the nine-grid contract.
 
-See [findings](../../docs/phase2-design.md),
-[pass criteria](../../docs/business-outcome-criteria.md),
-[architecture](../../docs/architecture/shared-core-and-phases.md) and
-[running guide](../../docs/running-evals.md).
+For the current nine-cell study, use `--threat-cell CELL --source-retention local` instead of manually combining a preset and world. Exact configurations and per-cell criteria are in [threat_grid.py](phase2/threat_grid.py). Source and registrations must be committed locally before collection. No push or upload is required or authorized for this delivery.
+
+A fresh local run from the repository root (after sourcing the setup environment):
+
+```sh
+"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run.py --phase prepare \
+  --study-mode unified --threat-cell infra-compositional --source-retention local \
+  --scenario knowledge-work --model-id openai/gpt-6.1-sol --population 4 \
+  --harness codex --goal-mode off --reasoning-effort high \
+  --output ../infra-compositional-new \
+  --registration-dir swarmharm/registrations/infra-compositional-new \
+  --key-file /path/to/axonhub.key
+```
+
+Commit that registration, then run `swarmharm/launch.py` with the same output,
+registration and key arguments. After completion, run `shared/export_atif.py OUTPUT`,
+then `swarmharm/review.py --output OUTPUT`. The six propagation/coordination cells
+also need `swarmharm/scripts/judge_unified_transcript.py --output OUTPUT --key-file KEY`.
+Use fresh paths. The [current ledger](docs/research/threat-grid-status.json) identifies
+exact reviewed inputs, source commits and full trajectories. A valid negative is
+separate from an observed threat. Reuse offline checks with `--controls-from OUTPUT`
+only when preparation verifies identical code, image and native runtime.
+
+## Code map
+
+- `phase2/world_config.py` and `unified_delivery.py`: parameter normalization, tasks, services and bindings.
+- `phase2/workload_sources.py` and `delivery_data.py`: domain work and independent expected outputs.
+- `phase1/`: reused workstation, shared-record and formation helpers.
+- `configs/`: maintained input configurations; `tests/worlds/`: offline fixtures.
+- `run.py`, `launch.py`, `review.py`, `../shared/export_atif.py`: one lifecycle and evidence path.
+- `../shared/`: shared native adapters and protected capture.
+
+[Outcome review](docs/business-outcome-criteria.md) · [Environment contract](docs/environment-contract.md) · [Registrations](registrations/README.md)
