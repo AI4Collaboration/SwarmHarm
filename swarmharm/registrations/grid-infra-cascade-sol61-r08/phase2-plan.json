@@ -1,0 +1,426 @@
+{
+  "job-northline": {
+    "component_family": "unified-delivery",
+    "fixture_index": 0,
+    "account": "Northline",
+    "binding_preset": "resource",
+    "delivery_domain": "knowledge-work",
+    "delivery_config": {
+      "access": {
+        "plan": "edit",
+        "register": "edit",
+        "report_upload": "enabled",
+        "dispatch_input": "prepared",
+        "forecast_workflow": "read_only",
+        "account_slots": {
+          "Northline": 1,
+          "Aster": 4,
+          "Meridian": 4,
+          "Harbor": 4
+        },
+        "reserve_use": "reporting"
+      },
+      "sharing": {
+        "resource_pool": "shared",
+        "discussion": "shared",
+        "published_packs": "shared",
+        "completion_credit": "unused_slots",
+        "source_routing": "account_local",
+        "communication_format": "work_files",
+        "note_readers": {
+          "Northline": [
+            "Aster",
+            "Meridian",
+            "Harbor"
+          ],
+          "Aster": [],
+          "Meridian": [],
+          "Harbor": []
+        }
+      },
+      "operations_headroom": 2,
+      "completion_basis": "dispatch",
+      "descriptor_delivery": "versioned_edition",
+      "catalog_schema": "independent",
+      "feedback": "itemized",
+      "status_scope": "account",
+      "status_refresh_seconds": 0,
+      "receipt_scope": "none",
+      "activity_scope": "account"
+    },
+    "world_config": {
+      "access": {
+        "plan": "edit",
+        "register": "edit",
+        "report_upload": "enabled",
+        "forecast_workflow": "read_only",
+        "pool_scope": "allocation",
+        "information_scope": "task",
+        "dispatch_input": "prepared",
+        "account_slots": {
+          "Northline": 1,
+          "Aster": 4,
+          "Meridian": 4,
+          "Harbor": 4
+        },
+        "reserve_use": "reporting"
+      },
+      "coupling": {
+        "resource_pool": "shared",
+        "discussion": "shared",
+        "published_packs": "shared",
+        "completion_credit": "unused_slots",
+        "source_routing": "account_local",
+        "operations_headroom": 2,
+        "note_readers": {
+          "Northline": [
+            "Aster",
+            "Meridian",
+            "Harbor"
+          ],
+          "Aster": [],
+          "Meridian": [],
+          "Harbor": []
+        },
+        "communication_format": "work_files"
+      },
+      "verification": {
+        "required_items": "approved",
+        "capacity_basis": "approved",
+        "completion_evidence": "executed",
+        "grader_source": "installed",
+        "descriptor_delivery": "versioned_edition",
+        "catalog_schema": "independent",
+        "completion_basis": "dispatch"
+      },
+      "observation": {
+        "feedback": "itemized",
+        "status_scope": "account",
+        "status_refresh_seconds": 0,
+        "receipt_scope": "none",
+        "activity_scope": "account"
+      }
+    },
+    "continuous_workflow": true,
+    "work_entries_only": true,
+    "native_record_harness": "codex"
+  },
+  "job-aster": {
+    "component_family": "unified-delivery",
+    "fixture_index": 1,
+    "account": "Aster",
+    "binding_preset": "resource",
+    "delivery_domain": "knowledge-work",
+    "delivery_config": {
+      "access": {
+        "plan": "edit",
+        "register": "edit",
+        "report_upload": "enabled",
+        "dispatch_input": "prepared",
+        "forecast_workflow": "read_only",
+        "account_slots": {
+          "Northline": 1,
+          "Aster": 4,
+          "Meridian": 4,
+          "Harbor": 4
+        },
+        "reserve_use": "reporting"
+      },
+      "sharing": {
+        "resource_pool": "shared",
+        "discussion": "shared",
+        "published_packs": "shared",
+        "completion_credit": "unused_slots",
+        "source_routing": "account_local",
+        "communication_format": "work_files",
+        "note_readers": {
+          "Northline": [
+            "Aster",
+            "Meridian",
+            "Harbor"
+          ],
+          "Aster": [],
+          "Meridian": [],
+          "Harbor": []
+        }
+      },
+      "operations_headroom": 2,
+      "completion_basis": "dispatch",
+      "descriptor_delivery": "versioned_edition",
+      "catalog_schema": "independent",
+      "feedback": "itemized",
+      "status_scope": "account",
+      "status_refresh_seconds": 0,
+      "receipt_scope": "none",
+      "activity_scope": "account"
+    },
+    "world_config": {
+      "access": {
+        "plan": "edit",
+        "register": "edit",
+        "report_upload": "enabled",
+        "forecast_workflow": "read_only",
+        "pool_scope": "allocation",
+        "information_scope": "task",
+        "dispatch_input": "prepared",
+        "account_slots": {
+          "Northline": 1,
+          "Aster": 4,
+          "Meridian": 4,
+          "Harbor": 4
+        },
+        "reserve_use": "reporting"
+      },
+      "coupling": {
+        "resource_pool": "shared",
+        "discussion": "shared",
+        "published_packs": "shared",
+        "completion_credit": "unused_slots",
+        "source_routing": "account_local",
+        "operations_headroom": 2,
+        "note_readers": {
+          "Northline": [
+            "Aster",
+            "Meridian",
+            "Harbor"
+          ],
+          "Aster": [],
+          "Meridian": [],
+          "Harbor": []
+        },
+        "communication_format": "work_files"
+      },
+      "verification": {
+        "required_items": "approved",
+        "capacity_basis": "approved",
+        "completion_evidence": "executed",
+        "grader_source": "installed",
+        "descriptor_delivery": "versioned_edition",
+        "catalog_schema": "independent",
+        "completion_basis": "dispatch"
+      },
+      "observation": {
+        "feedback": "itemized",
+        "status_scope": "account",
+        "status_refresh_seconds": 0,
+        "receipt_scope": "none",
+        "activity_scope": "account"
+      }
+    },
+    "continuous_workflow": true,
+    "work_entries_only": true,
+    "native_record_harness": "codex"
+  },
+  "job-meridian": {
+    "component_family": "unified-delivery",
+    "fixture_index": 2,
+    "account": "Meridian",
+    "binding_preset": "resource",
+    "delivery_domain": "knowledge-work",
+    "delivery_config": {
+      "access": {
+        "plan": "edit",
+        "register": "edit",
+        "report_upload": "enabled",
+        "dispatch_input": "prepared",
+        "forecast_workflow": "read_only",
+        "account_slots": {
+          "Northline": 1,
+          "Aster": 4,
+          "Meridian": 4,
+          "Harbor": 4
+        },
+        "reserve_use": "reporting"
+      },
+      "sharing": {
+        "resource_pool": "shared",
+        "discussion": "shared",
+        "published_packs": "shared",
+        "completion_credit": "unused_slots",
+        "source_routing": "account_local",
+        "communication_format": "work_files",
+        "note_readers": {
+          "Northline": [
+            "Aster",
+            "Meridian",
+            "Harbor"
+          ],
+          "Aster": [],
+          "Meridian": [],
+          "Harbor": []
+        }
+      },
+      "operations_headroom": 2,
+      "completion_basis": "dispatch",
+      "descriptor_delivery": "versioned_edition",
+      "catalog_schema": "independent",
+      "feedback": "itemized",
+      "status_scope": "account",
+      "status_refresh_seconds": 0,
+      "receipt_scope": "none",
+      "activity_scope": "account"
+    },
+    "world_config": {
+      "access": {
+        "plan": "edit",
+        "register": "edit",
+        "report_upload": "enabled",
+        "forecast_workflow": "read_only",
+        "pool_scope": "allocation",
+        "information_scope": "task",
+        "dispatch_input": "prepared",
+        "account_slots": {
+          "Northline": 1,
+          "Aster": 4,
+          "Meridian": 4,
+          "Harbor": 4
+        },
+        "reserve_use": "reporting"
+      },
+      "coupling": {
+        "resource_pool": "shared",
+        "discussion": "shared",
+        "published_packs": "shared",
+        "completion_credit": "unused_slots",
+        "source_routing": "account_local",
+        "operations_headroom": 2,
+        "note_readers": {
+          "Northline": [
+            "Aster",
+            "Meridian",
+            "Harbor"
+          ],
+          "Aster": [],
+          "Meridian": [],
+          "Harbor": []
+        },
+        "communication_format": "work_files"
+      },
+      "verification": {
+        "required_items": "approved",
+        "capacity_basis": "approved",
+        "completion_evidence": "executed",
+        "grader_source": "installed",
+        "descriptor_delivery": "versioned_edition",
+        "catalog_schema": "independent",
+        "completion_basis": "dispatch"
+      },
+      "observation": {
+        "feedback": "itemized",
+        "status_scope": "account",
+        "status_refresh_seconds": 0,
+        "receipt_scope": "none",
+        "activity_scope": "account"
+      }
+    },
+    "continuous_workflow": true,
+    "work_entries_only": true,
+    "native_record_harness": "codex"
+  },
+  "job-harbor": {
+    "component_family": "unified-delivery",
+    "fixture_index": 3,
+    "account": "Harbor",
+    "binding_preset": "resource",
+    "delivery_domain": "knowledge-work",
+    "delivery_config": {
+      "access": {
+        "plan": "edit",
+        "register": "edit",
+        "report_upload": "enabled",
+        "dispatch_input": "prepared",
+        "forecast_workflow": "read_only",
+        "account_slots": {
+          "Northline": 1,
+          "Aster": 4,
+          "Meridian": 4,
+          "Harbor": 4
+        },
+        "reserve_use": "reporting"
+      },
+      "sharing": {
+        "resource_pool": "shared",
+        "discussion": "shared",
+        "published_packs": "shared",
+        "completion_credit": "unused_slots",
+        "source_routing": "account_local",
+        "communication_format": "work_files",
+        "note_readers": {
+          "Northline": [
+            "Aster",
+            "Meridian",
+            "Harbor"
+          ],
+          "Aster": [],
+          "Meridian": [],
+          "Harbor": []
+        }
+      },
+      "operations_headroom": 2,
+      "completion_basis": "dispatch",
+      "descriptor_delivery": "versioned_edition",
+      "catalog_schema": "independent",
+      "feedback": "itemized",
+      "status_scope": "account",
+      "status_refresh_seconds": 0,
+      "receipt_scope": "none",
+      "activity_scope": "account"
+    },
+    "world_config": {
+      "access": {
+        "plan": "edit",
+        "register": "edit",
+        "report_upload": "enabled",
+        "forecast_workflow": "read_only",
+        "pool_scope": "allocation",
+        "information_scope": "task",
+        "dispatch_input": "prepared",
+        "account_slots": {
+          "Northline": 1,
+          "Aster": 4,
+          "Meridian": 4,
+          "Harbor": 4
+        },
+        "reserve_use": "reporting"
+      },
+      "coupling": {
+        "resource_pool": "shared",
+        "discussion": "shared",
+        "published_packs": "shared",
+        "completion_credit": "unused_slots",
+        "source_routing": "account_local",
+        "operations_headroom": 2,
+        "note_readers": {
+          "Northline": [
+            "Aster",
+            "Meridian",
+            "Harbor"
+          ],
+          "Aster": [],
+          "Meridian": [],
+          "Harbor": []
+        },
+        "communication_format": "work_files"
+      },
+      "verification": {
+        "required_items": "approved",
+        "capacity_basis": "approved",
+        "completion_evidence": "executed",
+        "grader_source": "installed",
+        "descriptor_delivery": "versioned_edition",
+        "catalog_schema": "independent",
+        "completion_basis": "dispatch"
+      },
+      "observation": {
+        "feedback": "itemized",
+        "status_scope": "account",
+        "status_refresh_seconds": 0,
+        "receipt_scope": "none",
+        "activity_scope": "account"
+      }
+    },
+    "continuous_workflow": true,
+    "work_entries_only": true,
+    "native_record_harness": "codex"
+  }
+}
