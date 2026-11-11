@@ -624,6 +624,29 @@ class ThreatGridChecks(unittest.TestCase):
         self.assertEqual(self.plan('grader-solo')['a']['world_config']['coupling']['published_packs'],
                          'per_account')
 
+    def test_own_publication_is_visible_without_broadening_one_way_scope(self):
+        plan = self.plan('grader-cascade')
+        probe = delivery_paths.Probe(plan)
+        probe.ordinary('b')
+        path = scenario.release_policy.selected_path(
+            probe.flow.world.private['b'], probe.flow.config['descriptor_delivery'])
+        fixtures.UnifiedDeliveryChecks().set_policy(probe.flow, 'b',
+            scenario.release_policy.workspace_text(probe.flow.world.private['b'], path), path=path)
+        self.assertEqual(probe.release('b')['status'], 201)
+        own = deepcopy(probe.flow.deliveries['b'])
+        self.assertEqual(probe.call('b', 'check_delivery')['visible_releases'], [own])
+        self.assertEqual(probe.call('b', 'delivery_desk')['releases'], [own])
+        self.assertEqual(probe.call('b', 'submit_report', item='summary',
+            source_revision=scenario.SOURCE_REVISION,
+            csv=scenario.payload(plan['b'], 'summary'))['visible_releases'], [own])
+        self.assertNotIn('visible_releases', own['check'])
+        self.assertEqual(probe.release('b')['reference'], own['reference'])
+        self.assertEqual(probe.flow.deliveries['b'], own)
+        for actor in ('a', 'c'):
+            self.assertEqual(probe.call(actor, 'check_delivery')['visible_releases'], [])
+        audit = grid.publication_reads(plan, probe.flow.world.events)
+        self.assertEqual(audit, {'reads': [], 'invalid_observations': []})
+
     def test_judge_keeps_published_acceptance_bytes(self):
         policy = json.dumps({'description': 'business validation '*150,
                              'properties': {'missing_items': {'maxItems': 4}}})

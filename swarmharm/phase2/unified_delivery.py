@@ -1127,9 +1127,7 @@ class Continuation(Base):
                 'reports': {item: {'content_verified': delivery_data.valid_report(self.plan[actor], item, text),
                                   **deepcopy(self.origins[actor][item])}
                             for item, text in self.outputs[actor].items()},
-                'releases': deepcopy([row for a, row in self.deliveries.items() if a == actor or
-                                     (self.config['sharing']['published_packs'] == 'shared'
-                                      and self._can_read_note(actor, a))])}
+                'releases': self._visible_releases(actor)}
         if self.continuous_workflow:
             result.pop('communication_channel')
             result['register_directory'] = (work_files.ROOT if
@@ -1142,6 +1140,11 @@ class Continuation(Base):
         result['edition_check'] = self._visible_check(actor)
         result['processing_budget'] = self._budget_view(actor)
         return result
+
+    def _visible_releases(self, actor):
+        return deepcopy([row for owner, row in self.deliveries.items()
+            if owner == actor or (self.config['sharing']['published_packs'] == 'shared'
+                                 and self._can_read_note(actor, owner))])
 
     def _budget_view(self, actor):
         view = self.budget.description(self._budget_spent())
@@ -1298,9 +1301,7 @@ class Continuation(Base):
                     result['state'] = 'incomplete'
         if (self.config['sharing']['published_packs'] == 'shared'
                 and self.config['feedback'] != 'status_only'):
-            result['visible_releases'] = deepcopy([
-                row for a, row in self.deliveries.items()
-                if a != actor and self._can_read_note(actor, a)])
+            result['visible_releases'] = self._visible_releases(actor)
         if not policy['valid_policy']:
             result['policy_error'] = policy['error']
         if activity is not None and not activity['valid']:
@@ -1561,8 +1562,7 @@ class Continuation(Base):
                         delivery_source_routing.receipt_sha256(args['source_receipt']))
                 current['revision'] += 1
                 self.deliveries.pop(actor, None)
-            visible = deepcopy([row for a, row in self.deliveries.items()
-                                if a != actor and self._can_read_note(actor, a)])
+            visible = self._visible_releases(actor)
             return {'status': 200, 'item': item, 'content_verified': True,
                     'origin': deepcopy(self.origins[actor][item]), 'revision': current['revision'],
                     **({'visible_releases': visible}
@@ -1649,7 +1649,11 @@ class Continuation(Base):
             check = self._check(actor)
             if check['state'] != 'ready':
                 return {'status': 409, 'check': check}
-            row = {'account': account, 'revision': current['revision'], 'check': check,
+            # The catalog listing is a view, not part of this report edition.
+            # Embedding it would recursively copy prior releases and change an
+            # unchanged pack's reference merely because it is already visible.
+            edition_check = {k: deepcopy(v) for k, v in check.items() if k != 'visible_releases'}
+            row = {'account': account, 'revision': current['revision'], 'check': edition_check,
                    'files': deepcopy(self.outputs[actor]), 'register': deepcopy(self.records[actor]),
                    'origins': deepcopy(self.origins[actor]),
                    'dispatch_pools': {e['item']: e['pool'] for e in self.executions if e['actor'] == actor}}
@@ -1675,7 +1679,7 @@ class Continuation(Base):
                         **delivery_activity.dispatch_evidence(self.activity_records[actor], ITEMS, SOURCE_REVISION)}
             row['reference'] = f"{account}-NOV-{current['revision']}-{digest(row)[:16]}"
             self.deliveries[actor] = row
-            return {'status': 201, 'reference': row['reference'], 'check': check}
+            return {'status': 201, 'reference': row['reference'], 'check': edition_check}
         if name == 'withdraw_delivery':
             self.deliveries.pop(actor, None)
             return {'status': 200, 'state': 'withdrawn'}
