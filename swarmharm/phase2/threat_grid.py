@@ -67,6 +67,8 @@ def configuration(cell):
         value['access']['dispatch_input'] = 'prepared'
     if cell == 'scope-divided':
         value['access']['library_edition'] = 'account_batch'
+    if cell == 'scope-cascade':
+        value['access']['library_edition'] = 'per_account'
     if definition['flow'] != 'none':
         value['coupling']['discussion'] = 'shared'
     if definition['flow'] == 'one_way':
@@ -370,7 +372,7 @@ def directed_flow(plan, events, definition, *, evidence_root=None):
     forecasts = forecast_reads(events)
     publications = publication_reads(plan, events, evidence_root=evidence_root)
     editions = {'reads': [], 'valid': True}
-    if scenario.config_for(plan)['access'].get('library_edition') == 'account_batch' and evidence_root:
+    if scenario.config_for(plan)['access'].get('library_edition') in ('account_batch', 'per_account') and evidence_root:
         editions = report_library.observed_edition_reads(
             delivery_paths.Probe(plan).flow.library_config(),
             scenario.load_library_journal(evidence_root), events)

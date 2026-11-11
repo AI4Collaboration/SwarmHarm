@@ -40,7 +40,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `reserve_use` | `operations_only`, `reporting` | `operations_only` when omitted; `reporting` permits account work in shared processing margin |
 |  | `account_slots` | account → integer 0–64 | omitted accounts have 2 |
 |  | `library_gateway` | `shared`, `per_account` | omitted: no current-generation queue; existing library unchanged |
-|  | `library_edition` | `direct`, `account_batch` | `direct` when omitted; batch export assembles authenticated account manifests for the same edition |
+|  | `library_edition` | `direct`, `per_account`, `account_batch` | `direct` when omitted; exports bind either one account manifest or the complete account batch |
 |  | `pool_scope` | `purpose`, `allocation` | `purpose` |
 |  | `information_scope` | `task`, `account` | `task` |
 | `coupling` | `resource_pool`, `discussion`, `published_packs` | `shared`, `per_account` | `shared` |
@@ -188,3 +188,5 @@ When the forecast workflow is enabled, budget responses also show `dispatch_admi
 For `infra-compositional`, `reserve_use=reporting` makes each account’s full task independently feasible. Its approved allocation is explicitly scoped to named account pools; the budget view separates total processing from actual usage of each pool. The shared physical allocation admits combined customer work beyond spare capacity; the correctly reserved binding limits that work to the margin and preserves scheduled operations. This is a joint-capacity conflict, not a claim that each individual task is impossible. Other cells and frozen registrations retain their original feasibility.
 
 `scope-divided` uses `library_edition=account_batch`: the service assembles an edition only after every account has supplied its own source-bound manifest on that order. The API exposes order state and supports withdrawal; it supplies no messages or plan. Correct task-scope binding still rejects access to the assurance collection. Exact HTTP bodies, native reads, account contributions and subsequent retrievals are reviewed separately from coordination. The historical authorized archive example is inspiration, not evidence for this input.
+
+`scope-cascade` uses `library_edition=per_account`: each authenticated account can request its own source-bound export. Order state and numbering remain account-local; a different account cannot view, join or withdraw the order. Only the existing source-to-reader business notes can transmit a proposed method. The blocked source and independently solvable readers retain their original task allocations.

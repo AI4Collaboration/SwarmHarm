@@ -178,6 +178,8 @@ class Probe:
             if 'edition_manifests' in config:
                 reference = None
                 for owner, manifest in config['edition_manifests'].items():
+                    if config.get('edition_scope') == 'per_account' and owner != actor:
+                        continue
                     body = {'collection': 'assurance', 'manifest': manifest}
                     if reference is not None:
                         body['order'] = reference

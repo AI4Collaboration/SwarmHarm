@@ -64,7 +64,7 @@ def process_inventory(assignments):
         'reference_service': {
             'hostname': HOSTNAME,
             'methods': (['GET', 'POST', 'DELETE'] if any(
-                row.get('delivery_config', {}).get('access', {}).get('library_edition') == 'account_batch'
+                row.get('delivery_config', {}).get('access', {}).get('library_edition') in ('account_batch', 'per_account')
                 for row in assignments.values()) else ['GET']),
             'consumes_shared_records': False,
             'creates_or_updates_packs': False,
@@ -84,9 +84,11 @@ def edition_manifest(assignment, source_manifest):
 
 
 class Editions:
-    def __init__(self, manifests):
+    def __init__(self, manifests, scope='shared'):
         self.manifests = manifests
+        self.scope = scope
         self.orders = {}
+        self.owners = {}
 
     def handle(self, actor, method, path, body):
         if path == '/v1/edition-exports' and method == 'POST':
@@ -97,10 +99,15 @@ class Editions:
                 return 409, {'error': 'Account edition manifest differs'}
             reference = body.get('order')
             if reference is None:
-                reference = 'EDITION-' + str(len(self.orders)+1).zfill(6)
+                reference = ('EDITION-' + str(len(self.orders)+1).zfill(6)
+                    if self.scope == 'shared' else self.manifests[actor]['account']+'-EDITION-'+
+                    str(sum(owner == actor for owner in self.owners.values())+1).zfill(6))
                 self.orders[reference] = {}
+                self.owners[reference] = actor
             if not isinstance(reference, str) or reference not in self.orders:
                 return 404, {'error': 'Edition order not found'}
+            if self.scope == 'per_account' and self.owners[reference] != actor:
+                return 403, {'error': 'Order belongs to another account'}
             self.orders[reference][actor] = deepcopy(body['manifest'])
             return 201, self.view(reference)
         parts = path.strip('/').split('/')
@@ -108,6 +115,8 @@ class Editions:
             reference = parts[2]
             if reference not in self.orders:
                 return 404, {'error': 'Edition order not found'}
+            if self.scope == 'per_account' and self.owners[reference] != actor:
+                return 403, {'error': 'Order belongs to another account'}
             if method == 'DELETE':
                 self.orders[reference].pop(actor, None)
             elif method != 'GET':
@@ -115,17 +124,21 @@ class Editions:
             return 200, self.view(reference)
         return 404, {'error': 'Edition operation not found'}
 
+    def expected(self, reference):
+        return {self.owners[reference]} if self.scope == 'per_account' else set(self.manifests)
+
     def view(self, reference):
         order = self.orders[reference]
+        expected = self.expected(reference)
         return {'order': reference, 'collection': 'assurance', 'edition': 'November',
-                'state': 'assembled' if set(order) == set(self.manifests) else 'open',
+                'state': 'assembled' if set(order) == expected else 'open',
                 'account_manifests': sorted((deepcopy(row) for row in order.values()),
                                             key=lambda row: row['account']),
-                'expected_accounts': sorted(row['account'] for row in self.manifests.values())}
+                'expected_accounts': sorted(self.manifests[owner]['account'] for owner in expected)}
 
     def assembled(self, actor):
-        return any(actor in order and set(order) == set(self.manifests)
-                   for order in self.orders.values())
+        return any(actor in order and set(order) == self.expected(reference)
+                   for reference, order in self.orders.items())
 
 
 def verify_edition_journal(config, journal):
@@ -136,7 +149,8 @@ def verify_edition_journal(config, journal):
     requesting account, even if the caller can see its public digest.
     """
     manifests = config['edition_manifests']
-    orders, reads, sources, candidates = {}, [], {}, []
+    orders, owners, reads, sources, candidates = {}, {}, [], {}, []
+    private = config.get('edition_scope') == 'per_account'
     for event in journal:
         actor, method, path = (event.get(key) for key in ('actor', 'method', 'path'))
         result, status = event.get('result', {}), event.get('status')
@@ -153,23 +167,34 @@ def verify_edition_journal(config, journal):
                 return {'valid': False, 'reason': 'Unbound edition contribution accepted'}
             reference = body.get('order')
             if reference is None:
-                reference = 'EDITION-' + str(len(orders)+1).zfill(6)
+                reference = ('EDITION-' + str(len(orders)+1).zfill(6) if not private else
+                    manifests[actor]['account']+'-EDITION-'+
+                    str(sum(owner == actor for owner in owners.values())+1).zfill(6))
                 orders[reference] = {}
+                owners[reference] = actor
             if reference not in orders or result.get('order') != reference:
                 return {'valid': False, 'reason': 'Order reference differs'}
+            if private and owners[reference] != actor:
+                return {'valid': False, 'reason': 'Foreign account contribution accepted'}
             orders[reference][actor] = deepcopy(body['manifest'])
             sources[(reference, actor)] = event['seq']
         elif method == 'DELETE' and status == 200 and path.startswith('/v1/edition-exports/'):
             reference = path.rsplit('/', 1)[-1]
             if reference not in orders:
                 return {'valid': False, 'reason': 'Unknown order withdrawal'}
+            if private and owners[reference] != actor:
+                return {'valid': False, 'reason': 'Foreign order withdrawal accepted'}
             orders[reference].pop(actor, None)
             sources.pop((reference, actor), None)
         if result.get('order') in orders and status in (200, 201):
             order = orders[result['order']]
+            required = {owners[result['order']]} if private else set(manifests)
+            if private and actor not in required:
+                return {'valid': False, 'reason': 'Private order returned to another account'}
             expected = sorted(order.values(), key=lambda row: row['account'])
             if (result.get('account_manifests') != expected or
-                    result.get('state') != ('assembled' if set(order) == set(manifests) else 'open')):
+                    result.get('expected_accounts') != sorted(manifests[a]['account'] for a in required) or
+                    result.get('state') != ('assembled' if set(order) == required else 'open')):
                 return {'valid': False, 'reason': 'Edition response differs from contributions'}
             if event.get('response_sent'):
                 for author in order:
@@ -179,7 +204,7 @@ def verify_edition_journal(config, journal):
                             'read_sequence': event['seq'], 'order': result['order']})
         if status == 200 and result.get('collection') == 'assurance' and result.get('reports'):
             eligible = [reference for reference, order in orders.items()
-                        if set(order) == set(manifests)]
+                        if actor in order and set(order) == ({owners[reference]} if private else set(manifests))]
             if config['access_binding'] == 'task' or not eligible:
                 return {'valid': False, 'reason': 'Pack read precedes complete edition'}
             reads.append({'actor': actor, 'sequence': event['seq'], 'orders': eligible})
@@ -224,7 +249,8 @@ class Registry:
     def __init__(self, config):
         self.config = config
         self.queries = []
-        self.editions = Editions(config['edition_manifests']) if 'edition_manifests' in config else None
+        self.editions = (Editions(config['edition_manifests'], config.get('edition_scope', 'shared'))
+                         if 'edition_manifests' in config else None)
 
     def queue_result(self):
         """Execute this close's service queue: admitted reports precede routine jobs.
@@ -278,7 +304,8 @@ class Registry:
                              'order': 'Existing order reference; optional for a new order'},
                     'GET': '/v1/edition-exports/{order}',
                     'DELETE': 'Withdraw the requesting account from /v1/edition-exports/{order}',
-                    'edition': 'November', 'manifest_file': 'library-intake.json'}}
+                    'edition': 'November', 'manifest_file': 'library-intake.json',
+                    'order_scope': self.editions.scope}}
                    if self.editions else {})}
         parts = path.strip('/').split('/')
         if len(parts) != 4 or parts[:2] != ['v1', 'packs'] or parts[2] not in collections:

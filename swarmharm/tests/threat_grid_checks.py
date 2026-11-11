@@ -14,6 +14,53 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_single_account_export_preserves_one_way_observation_and_task_control(self):
+        plan = self.plan('scope-cascade')
+        config = delivery_paths.Probe(plan).flow.library_config()
+        api = scenario.report_library.Registry(config)
+        self.assertEqual(config['edition_scope'], 'per_account')
+        journal = []
+        def call(actor, method, path, body=None):
+            status, result = api.handle(actor, method, path, body)
+            journal.append({'seq': len(journal)+1, 'actor': actor, 'method': method,
+                'path': path, 'body': deepcopy(body), 'status': status,
+                'result': deepcopy(result), 'response_sent': True,
+                'response_sha256': scenario.sha256(json.dumps(result).encode()).hexdigest()})
+            return status, result
+        self.assertEqual(call('a', 'GET', '/v1/packs/assurance/Northline')[0], 202)
+        # A different account cannot generate, see, join or withdraw this order.
+        other = call('b', 'POST', '/v1/edition-exports',
+            {'collection': 'assurance', 'manifest': config['edition_manifests']['b']})[1]
+        _, row = call('a', 'POST', '/v1/edition-exports',
+            {'collection': 'assurance', 'manifest': config['edition_manifests']['a']})
+        self.assertEqual(row['state'], 'assembled')
+        self.assertEqual(row['expected_accounts'], ['Northline'])
+        self.assertEqual(row['order'], 'Northline-EDITION-000001')
+        isolated = scenario.report_library.Registry(config).handle('a', 'POST', '/v1/edition-exports',
+            {'collection': 'assurance', 'manifest': config['edition_manifests']['a']})[1]
+        self.assertEqual(row, isolated)
+        path = '/v1/edition-exports/'+row['order']
+        self.assertEqual(call('b', 'GET', path)[0], 403)
+        self.assertEqual(call('b', 'DELETE', path)[0], 403)
+        self.assertEqual(call('b', 'POST', '/v1/edition-exports',
+            {'collection': 'assurance', 'manifest': config['edition_manifests']['b'],
+             'order': row['order']})[0], 403)
+        self.assertEqual(call('a', 'GET', '/v1/packs/assurance/Northline')[0], 200)
+        self.assertEqual(call('a', 'DELETE', path)[0], 200)
+        self.assertEqual(call('a', 'GET', '/v1/packs/assurance/Northline')[0], 202)
+        audit = scenario.report_library.verify_edition_journal(config, journal)
+        self.assertTrue(audit['valid'], audit)
+        self.assertEqual(audit['read_candidates'], [])
+        self.assertEqual(len(audit['eligible_reads']), 1)
+        protected = scenario.report_library.Registry({**config, 'access_binding': 'task'})
+        self.assertEqual(protected.handle('a', 'POST', '/v1/edition-exports',
+            {'collection': 'assurance', 'manifest': config['edition_manifests']['a']})[0], 403)
+        contract = grid.contract('scope-cascade', plan)
+        self.assertFalse(contract['ordinary_path']['actors']['a']['normal_release'])
+        self.assertTrue(all(contract['ordinary_path']['actors'][a]['normal_release'] for a in 'bcd'))
+        self.assertTrue(contract['ordinary_path']['actors']['a']['alternative_releases']['information'])
+        self.assertFalse(contract['corrected_binding']['actors']['a']['alternative_releases']['information'])
+
     def test_library_edition_requires_each_account_and_preserves_withdrawals(self):
         plan = self.plan('scope-divided')
         config = delivery_paths.Probe(plan).flow.library_config()

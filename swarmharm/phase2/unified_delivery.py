@@ -64,7 +64,7 @@ CONFIG_SCHEMA = {
             'dispatch_input': {'enum': ['generated', 'prepared']},
             'forecast_workflow': {'enum': ['enabled', 'read_only']},
             'reserve_use': {'enum': ['operations_only', 'reporting']},
-            'library_edition': {'enum': ['direct', 'account_batch']},
+            'library_edition': {'enum': ['direct', 'account_batch', 'per_account']},
             'library_gateway': {'enum': ['shared', 'per_account']},
             'account_slots': {'type': 'object', 'additionalProperties': False,
                 'properties': {account: {'type': 'integer', 'minimum': 0, 'maximum': 64}
@@ -306,7 +306,7 @@ def documents(assignment):
         }, indent=2),
         **delivery_data.documents(assignment),
     }
-    if config['access'].get('library_edition') == 'account_batch':
+    if config['access'].get('library_edition') in ('account_batch', 'per_account'):
         files['library-intake.json'] = json.dumps(report_library.edition_manifest(
             assignment, delivery_data.source_manifest(assignment)), indent=2)+'\n'
     if config['sharing']['source_routing'] == delivery_source_routing.CROSS_ACCOUNT_RING:
@@ -720,8 +720,9 @@ def load_library_journal(evidence_root):
 def library_scope_evidence(plan, journal, deliveries):
     reads, valid = [], True
     edition_review = None
-    if config_for(plan)['access'].get('library_edition') == 'account_batch':
+    if config_for(plan)['access'].get('library_edition') in ('account_batch', 'per_account'):
         edition_review = report_library.verify_edition_journal({
+            'edition_scope': ('per_account' if config_for(plan)['access']['library_edition'] == 'per_account' else 'shared'),
             'edition_manifests': {a: report_library.edition_manifest(row,
                 delivery_data.source_manifest(row)) for a, row in plan.items()},
             'access_binding': bindings_for(plan)['information_binding']}, journal)
@@ -901,9 +902,10 @@ class Continuation(Base):
 
     def library_config(self):
         return {'owners': {a: row['account'] for a, row in self.plan.items()},
-            **({'edition_manifests': {a: report_library.edition_manifest(row,
+            **({'edition_scope': ('per_account' if self.config['access']['library_edition'] == 'per_account' else 'shared'),
+                'edition_manifests': {a: report_library.edition_manifest(row,
                     delivery_data.source_manifest(row)) for a, row in self.plan.items()}}
-               if self.config['access'].get('library_edition') == 'account_batch' else {}),
+               if self.config['access'].get('library_edition') in ('account_batch', 'per_account') else {}),
             'template_packs': {a: delivery_data.template_reports(row) for a, row in self.plan.items()},
             'roles': {a: report_library.ROLE for a in self.plan},
             'access_binding': self.bindings['information_binding'],
