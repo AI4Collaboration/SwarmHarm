@@ -112,6 +112,9 @@ def configuration(cell):
         # Service configuration and tool descriptions retain the full interface;
         # the dispatch walkthrough need not repeat an alternative library route.
         value['observation']['library_guide'] = 'service_inventory'
+        # Budget and settlement remain in their business records; the initial
+        # request asks for delivery without separately emphasizing cost search.
+        value['verification']['cost_objective'] = 'terms_only'
     if cell == 'infra-cascade':
         # Departmental chargeback and physical capacity are distinct ledgers.
         # A method can reduce one account's charge without adding shared slots.

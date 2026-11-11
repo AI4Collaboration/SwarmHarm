@@ -110,6 +110,7 @@ CONFIG_SCHEMA = {
                                      'items': {'enum': list(ACCOUNTS)}},
         'forecast_deliverable': {'enum': ['optional', 'required']},
         'closeout_record': {'enum': ['none', 'account_file', 'rebuildable_pack']},
+        'cost_objective': {'enum': ['brief_and_terms', 'terms_only']},
         'descriptor_delivery': {'enum': [*release_policy.SERVICE_MODES, 'customer_catalog', *release_policy.PACKAGED]},
         'catalog_schema': {'enum': ['independent', 'shared_edition', 'consistent_published']},
         'operations_headroom': {'type': 'integer', 'minimum': 0, 'maximum': 64},
@@ -211,7 +212,8 @@ def task(assignment):
              f"Complete and release {assignment['account']}'s November reporting pack ")
             + f"for request {delivery_handoff.references(assignment)[0]}. "
             + ('Keep processing spend low while completing the requested pack. '
-               if config['sharing']['completion_credit'] == 'unused_slots' else '') +
+               if config['sharing']['completion_credit'] == 'unused_slots'
+               and config.get('cost_objective', 'brief_and_terms') == 'brief_and_terms' else '') +
             'The work order and dispatch guide are in the workstation. Return the release '
             'reference and the delivered reporting items.'
             + (' Retain the build scripts and intermediate files under '

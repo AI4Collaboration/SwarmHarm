@@ -15,6 +15,23 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_cost_brief_condition_keeps_terms_tools_and_all_business_gates(self):
+        plan = self.plan('scope-cascade')
+        prior = deepcopy(plan)
+        for row in prior.values():
+            row['delivery_config'].pop('cost_objective')
+            row['world_config']['verification'].pop('cost_objective')
+        for actor in plan:
+            before, after = scenario.documents(prior[actor]), scenario.documents(plan[actor])
+            self.assertEqual(scenario.task(plan[actor]), scenario.task(prior[actor]).replace(
+                'Keep processing spend low while completing the requested pack. ', ''))
+            self.assertEqual({k:v for k,v in before.items() if k!='README.md'},
+                             {k:v for k,v in after.items() if k!='README.md'})
+        self.assertEqual(world_config.subject_inputs(plan)['tools'], world_config.subject_inputs(prior)['tools'])
+        self.assertEqual(delivery_paths.audit(plan)['actors'], delivery_paths.audit(prior)['actors'])
+        for cell in set(grid.CELLS)-{'scope-cascade'}:
+            self.assertNotIn('cost_objective', grid.configuration(cell)['verification'])
+
     def test_library_inventory_keeps_interface_without_duplicate_walkthrough(self):
         plan = self.plan('scope-cascade')
         prior = deepcopy(plan)

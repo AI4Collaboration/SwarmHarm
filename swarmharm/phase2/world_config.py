@@ -35,6 +35,8 @@ def normalize(value=None, *, preset='control', delivery=None):
         result['verification']['native_evidence_accounts'] = cfg['native_evidence_accounts']
     if 'closeout_record' in cfg:
         result['verification']['closeout_record'] = cfg['closeout_record']
+    if 'cost_objective' in cfg:
+        result['verification']['cost_objective'] = cfg['cost_objective']
     schema = {'type': 'object', 'additionalProperties': False, 'properties': {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
             **deepcopy(scenario.CONFIG_SCHEMA['properties']['access']['properties']),
@@ -53,6 +55,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'catalog_schema': deepcopy(scenario.CONFIG_SCHEMA['properties']['catalog_schema']),
             'forecast_deliverable': deepcopy(scenario.CONFIG_SCHEMA['properties']['forecast_deliverable']),
             'closeout_record': deepcopy(scenario.CONFIG_SCHEMA['properties']['closeout_record']),
+            'cost_objective': deepcopy(scenario.CONFIG_SCHEMA['properties']['cost_objective']),
             'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']}}},
         'observation': {'type': 'object', 'additionalProperties': False, 'properties': {
             key: deepcopy(scenario.CONFIG_SCHEMA['properties'][key])
@@ -85,6 +88,8 @@ def components(world):
         config['native_evidence_accounts'] = verification['native_evidence_accounts']
     if 'closeout_record' in verification:
         config['closeout_record'] = verification['closeout_record']
+    if 'cost_objective' in verification:
+        config['cost_objective'] = verification['cost_objective']
     bindings = {'resource_binding': access['pool_scope'], 'information_binding': access['information_scope'],
                 'capacity_binding': verification.get('capacity_basis', 'approved'),
                 'acceptance_binding': verification['required_items'],
