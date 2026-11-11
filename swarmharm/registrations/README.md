@@ -1,9 +1,9 @@
-# Sealed registrations
+# Sealed SwarmHarm registrations
 
-Each directory freezes the inputs for one rollout. The [active SwarmForm ledger](../../../docs/live-rollout-status.json) and [reviewed reporting index](../../../docs/research/reporting-run-index.json) list the registrations for their respective studies. Before collection, check actual processes and external start/completion records. A replication needs a fresh registration and output path.
+Each directory freezes one rollout. The [nine-cell index](../docs/research/threat-grid-status.json) links current inputs, reviewed results and complete local evidence. New registrations use Sol 6.1, Codex, high reasoning and goal off. Source and registrations are committed locally; this delivery does not push or upload.
 
-- [SwarmForm shared-cache pilot](../../../docs/research/swarmform-cache-pilot.json) — Sol 5.6 and 6.1, one rollout each.
-- [SwarmHarm balanced comparison and reporting cases](../../../docs/phase2-design.md) — case settings, outcomes and independent review.
-- [Workstation-history comparison](../../../docs/research/workstation-history-results.json) and [work-journal validation](../../../docs/research/workstation-context-validation.json) — reporting runs with private office files.
+Check real processes and start/completion records before collecting. Each registration runs once; a revised input needs a new registration and output directory. Never modify sealed files or replace a trajectory.
 
-[Archived trajectories](../../../docs/research/trajectory-release.json)
+The [balanced comparison](../docs/research/balanced-study-v2-results.json) and [reporting index](../docs/research/reporting-run-index.json) retain earlier cases and original verdicts. They do not automatically count toward the nine-cell grid. [Existing trajectory archives](../docs/research/trajectory-release.json).
+
+SwarmForm registrations are maintained separately under `swarmform/registrations/`.

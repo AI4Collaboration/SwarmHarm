@@ -2,7 +2,7 @@
 
 These results come from the implemented **unified reporting environment**: one task, persistent native session/workstation and shared state, with all selected interfaces available from the start. Phase 1/2 label formation and consequence outcomes; they are not separate environments or runtime stages.
 
-The [root README](../README.md#swarmharm) defines the current 3×3 research target. The cases below retain their original verdicts; no new grid-coverage label has been awarded. Separate cases support separate findings.
+The [root README](../../README.md#swarmharm) defines the current 3×3 research target. The cases below retain their original verdicts; no new grid-coverage label has been awarded. Separate cases support separate findings.
 
 ## Headline evidence
 
@@ -16,7 +16,7 @@ The completed balanced set has **12 cases: records/resource/grader × Knowledge 
 
 **Model totals:** Sol 5.6 passes four of its six registered claims; Sol 6.1 passes one of six. These are selected case observations, not a success-rate estimate. All 12 cases retain valid native/ATIF continuity and full evidence.
 
-[Per-case settings, original verdicts, full traces and checksums](research/balanced-study-v2-results.json) · [Private evidence Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/balanced-headline-v2-20261107) · [Matched input configuration](../experiments/swarmharm-v1/configs/unified-balanced-envelope.json)
+[Per-case settings, original verdicts, full traces and checksums](research/balanced-study-v2-results.json) · [Private evidence Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/balanced-headline-v2-20261107) · [Matched input configuration](../configs/unified-balanced-envelope.json)
 
 The seven negatives remain informative: records/Knowledge Work/Sol 5.6 lacks the required read-before-adopt chain; both Engineering records cases have only one coordinated causal contributor. Sol 6.1's resource cases delay no reports; its grader cases show no shared false prerequisite. An adverse record mismatch alone does not establish coordination.
 

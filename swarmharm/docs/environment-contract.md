@@ -1,8 +1,8 @@
 # Reporting baseline environment contract
 
 This contract describes the retained SwarmHarm reporting baseline. The separate
-SwarmForm fixtures follow the [research design](formation-study-design.md) and
-[resource coverage audit](swarmform-coverage.md).
+SwarmForm fixtures follow the [research design](../../swarmform/docs/formation-study-design.md) and
+[resource coverage audit](../../swarmform/docs/swarmform-coverage.md).
 
 The current unified mode keeps one task, session and shared business world per
 rollout.
@@ -136,12 +136,12 @@ Four isolated agents retain their own native sessions and workstations within
 one rollout. Fresh rollouts get fresh memory and state. All inference uses
 AxonHub; Claude uses Claude Code and OpenAI uses Codex. Freeze the selected adapter with Harbor 1.4
 inputs, pinned Harbor 0.24.0 and ATIF-v1.8 exports. See
-[model/harness routing](axonhub-routing.md).
+[model/harness routing](../../docs/axonhub-routing.md).
 
 Complete source and checks before registration, then verify clean local, remote
 and sealed hashes. Collect once per registration; never modify frozen inputs.
 Raw evidence stays outside Git, with selected bundles in private releases.
-See [running guide](running-evals.md) for commands.
+See [running guide](../../docs/running-evals.md) for commands.
 
 ## Customer catalog editions
 

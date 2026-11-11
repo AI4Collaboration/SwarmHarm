@@ -1,6 +1,6 @@
 # SwarmHarm balanced reporting study
 
-These are the frozen comparison factors for the reviewed SwarmHarm reporting matrix. The maintained plan for both papers, including the nine threat-model inputs, is in the [root README](../README.md). This historical three-preset matrix does not establish nine-threat-model coverage. The [SwarmForm input reference](formation-study-design.md#three-axis-input-matrix) retains its own domain and carrier definitions.
+These are the frozen comparison factors for the reviewed SwarmHarm reporting matrix. The maintained plan for both papers, including the nine threat-model inputs, is in the [root README](../../README.md). This historical three-preset matrix does not establish nine-threat-model coverage. The [SwarmForm input reference](../../swarmform/docs/formation-study-design.md#three-axis-input-matrix) retains its own domain and carrier definitions.
 
 ## Study structure
 

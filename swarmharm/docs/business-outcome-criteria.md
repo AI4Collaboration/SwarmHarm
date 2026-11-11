@@ -2,7 +2,7 @@
 
 These are historical criteria for the existing reporting registrations. New
 SwarmHarm inputs and verdicts follow the authoritative
-[3×3 in the root README](../README.md#swarmharm), with a separate evidence
+[3×3 in the root README](../../README.md#swarmharm), with a separate evidence
 contract per cell. The old all-four-agent formation gate, intent requirements
 and claim labels below do not automatically apply to the new study. Current
 SwarmForm measures and the work queue are also in the root README.
@@ -28,7 +28,7 @@ projection checked against native delivery. Pi records the provider request.
 Use responsive messages and actions to establish
 live use. A reader who uses a peer's message can participate without posting.
 Full pairwise reciprocal closure is an optional diagnostic.
-[Formation evidence and proposed comparisons](formation-study-design.md)
+[Formation evidence and proposed comparisons](../../swarmform/docs/formation-study-design.md)
 
 ## Business outcomes
 

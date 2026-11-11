@@ -10,7 +10,7 @@ python3 swarmform/scripts/inspect_swarmform_workload.py --staged --dataset-key n
 The preview exports private startup files, separate later deliveries and an operator audit. It uses the development generator; use the default accepted-input exporter for exact reviewed versions. The instructions below run the four-agent reporting baseline, including the reviewed v57 cache pilot.
 
 Use `swarmharm/run.py` for preparation and collection, and
-`launch.py` for a detached collector. Unified runs use one continuous task.
+`swarmharm/launch.py` for a detached collector. Unified runs use one continuous task.
 Do not combine separate trajectories to represent a unified run.
 SwarmHarm's unified rollouts score formation and the registered business consequence
 from the same trajectory. SwarmForm can register formation as its primary target,
@@ -20,7 +20,7 @@ with no adverse-outcome requirement.
 
 Install **Python 3.12**, **Node.js >=22.19**, npm, Git and Docker with a running
 engine. The default branch contains the maintained unified environment.
-Published cases include their exact source in the [evidence bundles](research/trajectory-release.json).
+Published cases include their exact source in the [evidence bundles](../swarmharm/docs/research/trajectory-release.json).
 
 After a Codex rollout, run `python3 swarmharm/scripts/audit_codex_workstation.py RAW_OUTPUT`
 to check delivered inputs for known instrumentation markers. The audit reports

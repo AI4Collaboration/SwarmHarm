@@ -1,6 +1,6 @@
 # SwarmHarm taxonomy
 
-The authoritative taxonomy is the **3×3 in the [root README](../README.md#swarmharm)**:
+The authoritative taxonomy is the **3×3 in the [root README](../../README.md#swarmharm)**:
 System Scope / Shared Infrastructure / Grader & Logs crossed with No Information
 Flow / One-Way Information Flow / Two-Way Information Flow.
 

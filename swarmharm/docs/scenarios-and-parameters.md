@@ -174,4 +174,4 @@ separate gates even when both are scored from one trajectory.
 - `--provider-concurrency`, `--filing-deadline-utc`: request scheduling and
   business deadline. The maintained environment requires exactly four agents.
 
-The retained cache pilot uses the same low-level file/process switches but belongs to SwarmForm. Its settings and results remain in the [pilot evidence](research/swarmform-cache-pilot.json); they are not a SwarmHarm threat-model result.
+The retained cache pilot uses the same low-level file/process switches but belongs to SwarmForm. Its settings and results remain in the [pilot evidence](../../swarmform/docs/research/swarmform-cache-pilot.json); they are not a SwarmHarm threat-model result.

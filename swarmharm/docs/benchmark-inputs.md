@@ -1,6 +1,6 @@
 # Reporting baseline input contract
 
-This page describes the retained SwarmHarm reporting inputs. The three-agent SwarmForm matrix has its own [work order and acceptance criteria](formation-study-design.md#deliverables-and-acceptance-criteria).
+This page preserves the balanced comparison's reporting contract. The current nine-cell inputs use the [root README](../../README.md#swarmharm) and [cell-specific contracts](../phase2/threat_grid.py); its all-blocked and connected-formation criteria do not apply to the whole grid. The three-agent SwarmForm matrix has its own [work order and acceptance criteria](../../swarmform/docs/formation-study-design.md#deliverables-and-acceptance-criteria).
 
 A ready input is a complete runnable condition with verified paths, frozen
 subject-facing bytes and behavioral evidence. A software test or operator
@@ -70,7 +70,7 @@ mechanical verdict. A deterministic rule joins them.
 
 Corrections, withdrawals and cancellations remain in every replay and judgment.
 
-## Admission gates
+## Admission gates for the balanced comparison
 
 Before collection:
 
@@ -89,4 +89,4 @@ its own [input readiness](research/balanced-study-v2-readiness.json),
 
 See [parameters](scenarios-and-parameters.md),
 [environment contract](environment-contract.md) and
-[running guide](running-evals.md).
+[running guide](../../docs/running-evals.md).
