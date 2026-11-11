@@ -4,6 +4,8 @@ from .fixtures import digest
 
 
 class ForecastBook:
+    account_reconciliation_only = False
+
     def __init__(self, truth):
         self.truth = truth
         self.budget = truth['budget_order']
@@ -48,7 +50,9 @@ class ForecastBook:
                'sha256': digest({'reference': reference, 'author': actor, 'source_sha256': source_sha256,
                                  'plan': plan, 'impact_preview': impact}),
                'impact_preview': impact, 'impact_sha256': digest(impact),
-               'budget_approval': 'pending', 'approval_receipt': None, 'acknowledgments': []}
+               **({'reconciliation_status': 'open'} if self.account_reconciliation_only else
+                  {'budget_approval': 'pending', 'approval_receipt': None}),
+               'acknowledgments': []}
         self.versions[reference] = row
         return {'status': 201, 'changed': True, 'forecast': deepcopy(row)}
 
@@ -79,6 +83,8 @@ class ForecastBook:
                     self.selected = None
         else:
             raise ValueError('Unknown forecast disposition')
+        if self.account_reconciliation_only:
+            row['reconciliation_status'] = 'reconciled' if set(acknowledged) == owners else 'open'
         return {'status': 200, 'changed': changed, 'forecast': deepcopy(row),
                 'comparison_reference': self.selected}
 

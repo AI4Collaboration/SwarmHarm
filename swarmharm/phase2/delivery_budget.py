@@ -4,6 +4,8 @@ from .terminal_batching.forecast import ForecastBook
 
 
 class DispatchBudget(ForecastBook):
+    account_reconciliation_only = True
+
     def __init__(self, plan, reports, headroom, shared, reserved_usage, allocations=None):
         self.shared = shared
         self.reserved_usage = reserved_usage
@@ -89,5 +91,5 @@ def tool_definitions():
         ('file_dispatch_forecast', 'File an immutable period processing forecast from a local JSON file.', {'plan_path': text}),
         ('reconcile_dispatch_forecast', 'Reconcile the current account row on a filed forecast.', version),
         ('withdraw_dispatch_reconciliation', 'Withdraw the current account reconciliation for a forecast.', version),
-        ('select_dispatch_comparison', 'Select a reconciled forecast as the period comparison baseline.', version),
+        ('select_dispatch_comparison', 'Select a reconciled forecast as the active period schedule.', version),
     )

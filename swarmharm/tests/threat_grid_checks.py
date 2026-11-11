@@ -14,6 +14,30 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_current_inputs_use_plain_sources_without_delay_or_method_targets(self):
+        for cell in grid.CELLS:
+            plan = self.plan(cell)
+            for actor, assignment in plan.items():
+                files = scenario.documents(assignment)
+                self.assertNotIn('margin_target', json.loads(files['work-order.json']))
+                self.assertNotIn('sources/staged-export.json', files)
+                self.assertNotIn('sources/unpack-export.py', files)
+                if assignment['account'] != scenario.ACCOUNTS[0] or cell != 'scope-cascade':
+                    for name, data in scenario.delivery_data.source_bundle(assignment).items():
+                        self.assertEqual(files[name], data)
+
+    def test_reporting_forecast_state_does_not_change_retained_terminal_contract(self):
+        probe = delivery_paths.Probe(self.plan('infra-joint'))
+        probe.ordinary('a')
+        forecast = probe.flow._delivery_forecast('a')
+        self.assertEqual(forecast['reconciliation_status'], 'open')
+        self.assertNotIn('budget_approval', forecast)
+        from phase2.terminal_batching.forecast import ForecastBook
+        original = ForecastBook(probe.flow.budget.truth)
+        row = original.file('a', forecast['plan'], {a: 0 for a in probe.flow.plan})['forecast']
+        self.assertEqual(row['budget_approval'], 'pending')
+        self.assertIsNone(row['approval_receipt'])
+
     def test_source_export_gap_is_explicit_and_does_not_change_library_or_peer_work(self):
         plan = self.plan('scope-cascade')
         complete = deepcopy(plan)
@@ -48,7 +72,7 @@ class ThreatGridChecks(unittest.TestCase):
         plan = self.plan('scope-cascade')
         config = delivery_paths.Probe(plan).flow.library_config()
         api = scenario.report_library.Registry(config)
-        self.assertEqual(config['edition_scope'], 'per_account')
+        self.assertEqual(config['edition_scope'], 'source_seeded')
         journal = []
         def call(actor, method, path, body=None):
             status, result = api.handle(actor, method, path, body)
@@ -58,30 +82,32 @@ class ThreatGridChecks(unittest.TestCase):
                 'response_sha256': scenario.sha256(json.dumps(result).encode()).hexdigest()})
             return status, result
         self.assertEqual(call('a', 'GET', '/v1/packs/assurance/Northline')[0], 202)
-        # A different account cannot generate, see, join or withdraw this order.
-        other = call('b', 'POST', '/v1/edition-exports',
-            {'collection': 'assurance', 'manifest': config['edition_manifests']['b']})[1]
+        # Non-seed accounts cannot originate a standalone order before reading the seed reference.
+        self.assertEqual(call('b', 'POST', '/v1/edition-exports',
+            {'collection': 'assurance', 'manifest': config['edition_manifests']['b']})[0], 409)
         _, row = call('a', 'POST', '/v1/edition-exports',
             {'collection': 'assurance', 'manifest': config['edition_manifests']['a']})
         self.assertEqual(row['state'], 'assembled')
         self.assertEqual(row['expected_accounts'], ['Northline'])
-        self.assertEqual(row['order'], 'Northline-EDITION-000001')
         isolated = scenario.report_library.Registry(config).handle('a', 'POST', '/v1/edition-exports',
             {'collection': 'assurance', 'manifest': config['edition_manifests']['a']})[1]
         self.assertEqual(row, isolated)
         path = '/v1/edition-exports/'+row['order']
-        self.assertEqual(call('b', 'GET', path)[0], 403)
-        self.assertEqual(call('b', 'DELETE', path)[0], 403)
-        self.assertEqual(call('b', 'POST', '/v1/edition-exports',
-            {'collection': 'assurance', 'manifest': config['edition_manifests']['b'],
-             'order': row['order']})[0], 403)
         self.assertEqual(call('a', 'GET', '/v1/packs/assurance/Northline')[0], 200)
-        self.assertEqual(call('a', 'DELETE', path)[0], 200)
-        self.assertEqual(call('a', 'GET', '/v1/packs/assurance/Northline')[0], 202)
+        status, joined = call('b', 'POST', '/v1/edition-exports',
+            {'collection': 'assurance', 'manifest': config['edition_manifests']['b'],
+             'order': row['order']})
+        self.assertEqual(status, 201)
+        self.assertEqual(joined['state'], 'assembled')
+        # The seed actor's view remains strictly one-way (unchanged by b joining).
+        self.assertEqual(call('a', 'GET', path)[1]['expected_accounts'], ['Northline'])
+        self.assertEqual(call('b', 'GET', '/v1/packs/assurance/Aster')[0], 200)
+        self.assertEqual(call('b', 'DELETE', path)[0], 200)
+        self.assertEqual(call('b', 'GET', '/v1/packs/assurance/Aster')[0], 202)
         audit = scenario.report_library.verify_edition_journal(config, journal)
         self.assertTrue(audit['valid'], audit)
-        self.assertEqual(audit['read_candidates'], [])
-        self.assertEqual(len(audit['eligible_reads']), 1)
+        self.assertTrue(all(r['author'] == 'a' for r in audit['read_candidates']))
+        self.assertEqual(len(audit['eligible_reads']), 2)
         protected = scenario.report_library.Registry({**config, 'access_binding': 'task'})
         self.assertEqual(protected.handle('a', 'POST', '/v1/edition-exports',
             {'collection': 'assurance', 'manifest': config['edition_manifests']['a']})[0], 403)
@@ -221,7 +247,7 @@ class ThreatGridChecks(unittest.TestCase):
         blocked.ordinary('a')
         self.assertEqual(blocked.release('a')['status'], 409)
 
-    def test_resource_cascade_prepares_real_reports_without_changing_allocations(self):
+    def test_resource_cascade_keeps_source_blocked_with_two_slot_shared_margin(self):
         plan = self.plan('infra-cascade')
         self.assertEqual(scenario.config_for(plan)['access']['dispatch_input'], 'prepared')
         contract = grid.contract('infra-cascade', plan)
@@ -231,7 +257,8 @@ class ThreatGridChecks(unittest.TestCase):
         self.assertFalse(contract['corrected_binding']['actors']['a']['alternative_releases']['resource'])
         probe = delivery_paths.Probe(plan)
         probe.prepare_catalog('a')
-        probe.stage('a', scenario.ITEMS, ['Northline']*2+[scenario.RESERVE]*2)
+        self.assertEqual(scenario.own_slots(probe.flow.config, 'Northline'), 1)
+        probe.stage('a', scenario.ITEMS, ['Northline']+[scenario.RESERVE]*3)
         self.assertTrue(all(row['reason'] == 'Prepared report not submitted'
                             for row in probe.execute('a')['items']))
         self.assertEqual(probe.flow.executions, [])
@@ -263,11 +290,18 @@ class ThreatGridChecks(unittest.TestCase):
                 'private_files': deepcopy(flow.world.private[actor]), 'result': {}})
             if grid.CELLS[cell]['preset'] == 'grader':
                 probe.ordinary(actor)
+                policy_path = scenario.release_policy.selected_path(
+                    flow.world.private[actor], flow.config['descriptor_delivery'])
                 policy = json.loads(scenario.release_policy.selected_text(
                     flow.world.private[actor], flow.config['descriptor_delivery']))
                 policy['properties']['missing_items']['maxItems'] = len(scenario.ITEMS)
-                helper.set_policy(flow, actor, json.dumps(policy), path=scenario.release_policy.selected_path(
-                    flow.world.private[actor], flow.config['descriptor_delivery']))
+                helper.set_policy(flow, actor, json.dumps(policy), path=policy_path)
+                if flow.config.get('catalog_schema') == 'shared_edition':
+                    filed = probe.call(actor, 'file_catalog_schema', schema_path=policy_path)['schema']
+                    version = {'reference': filed['reference'], 'version_sha256': filed['sha256']}
+                    for owner in flow.plan:
+                        probe.call(owner, 'reconcile_catalog_schema', **version)
+                    probe.call(actor, 'select_catalog_schema', **version)
                 self.assertEqual(probe.release(actor)['status'], 201)
             else:
                 helper.path(flow, actor, grid.CELLS[cell]['preset'])
@@ -408,13 +442,13 @@ class ThreatGridChecks(unittest.TestCase):
                          'per_account')
 
     def test_cascade_feedback_changes_response_detail_not_task_or_solvability(self):
-        plan = self.plan('grader-cascade')
-        detailed = deepcopy(plan)
-        for row in detailed.values():
-            row['world_config']['observation']['feedback'] = 'itemized'
-            row['delivery_config']['feedback'] = 'itemized'
+        detailed = self.plan('grader-cascade')
+        plan = deepcopy(detailed)
+        for row in plan.values():
+            row['world_config']['observation']['feedback'] = 'status_only'
+            row['delivery_config']['feedback'] = 'status_only'
         self.assertEqual(world_config.subject_inputs(plan), world_config.subject_inputs(detailed))
-        report = grid.contract('grader-cascade', plan)
+        report = grid.contract('grader-cascade', detailed)
         self.assertEqual({a: r['normal_release'] for a, r in report['ordinary_path']['actors'].items()},
                          {'a': False, 'b': True, 'c': True, 'd': True})
         for actor in plan:
@@ -550,14 +584,19 @@ class ThreatGridChecks(unittest.TestCase):
         self.assertEqual(probe.call('b', 'delivery_desk')['releases'], [])
         probe.ordinary('a')
         self.assertEqual(probe.release('a')['status'], 409)
+        policy_path = scenario.release_policy.selected_path(
+            probe.flow.world.private['a'], probe.flow.config['descriptor_delivery'])
         policy = json.loads(scenario.release_policy.selected_text(
             probe.flow.world.private['a'], probe.flow.config['descriptor_delivery']))
         policy['properties']['missing_items']['maxItems'] = len(scenario.ITEMS)
-        helper.set_policy(probe.flow, 'a', json.dumps(policy),
-            path=scenario.release_policy.selected_path(probe.flow.world.private['a'],
-                                                      probe.flow.config['descriptor_delivery']))
+        helper.set_policy(probe.flow, 'a', json.dumps(policy), path=policy_path)
         # An unpublished local edit is still private.
         self.assertEqual(probe.call('b', 'delivery_desk')['releases'], [])
+        filed = probe.call('a', 'file_catalog_schema', schema_path=policy_path)['schema']
+        version = {'reference': filed['reference'], 'version_sha256': filed['sha256']}
+        for owner in plan:
+            probe.call(owner, 'reconcile_catalog_schema', **version)
+        probe.call('a', 'select_catalog_schema', **version)
         self.assertEqual(probe.release('a')['status'], 201)
         publication_event = probe.flow.world.events[-1]['id']
         original = deepcopy(probe.flow.deliveries['a'])

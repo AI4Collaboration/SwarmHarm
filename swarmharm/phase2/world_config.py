@@ -21,6 +21,7 @@ def normalize(value=None, *, preset='control', delivery=None):
                          'completion_evidence': bindings['evidence_binding'],
                          'grader_source': bindings['grader_binding'],
                          'descriptor_delivery': cfg['descriptor_delivery'],
+                         'catalog_schema': cfg['catalog_schema'],
                          'completion_basis': cfg['completion_basis']},
         'observation': {key: cfg[key] for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope')},
     }
@@ -44,6 +45,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'completion_evidence': {'enum': ['executed', 'register', 'native']},
             'grader_source': {'enum': ['installed', 'workspace']},
             'descriptor_delivery': deepcopy(scenario.CONFIG_SCHEMA['properties']['descriptor_delivery']),
+            'catalog_schema': deepcopy(scenario.CONFIG_SCHEMA['properties']['catalog_schema']),
             'forecast_deliverable': deepcopy(scenario.CONFIG_SCHEMA['properties']['forecast_deliverable']),
             'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']}}},
         'observation': {'type': 'object', 'additionalProperties': False, 'properties': {
@@ -69,7 +71,8 @@ def components(world):
                           if key in coupling},
               'operations_headroom': coupling['operations_headroom'],
               'completion_basis': verification['completion_basis'],
-              'descriptor_delivery': verification['descriptor_delivery'], **observation}
+              'descriptor_delivery': verification['descriptor_delivery'],
+              'catalog_schema': verification.get('catalog_schema', 'independent'), **observation}
     if 'forecast_deliverable' in verification:
         config['forecast_deliverable'] = verification['forecast_deliverable']
     bindings = {'resource_binding': access['pool_scope'], 'information_binding': access['information_scope'],
@@ -110,7 +113,8 @@ def subject_inputs(plan):
             'tools': scenario.tool_definitions(
                 continuous_workflow=bool(next(iter(plan.values())).get('continuous_workflow')),
                 forecast_workflow=config['access']['forecast_workflow'],
-                source_routing=config['sharing']['source_routing']),
+                source_routing=config['sharing']['source_routing'],
+                catalog_schema=config.get('catalog_schema', 'independent')),
             'initial_files': scenario.initial_files(plan),
             'business_data': {actor: scenario.delivery_data.source_data(row)
                               for actor, row in plan.items()}}

@@ -627,25 +627,37 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         if not run_controls: raise ValueError('Offline check reuse cannot disable validation')
         save(root/'controls.json',reuse_checked_controls(controls_from,harness))
     elif run_controls:
-        capture=io.StringIO();suite=unittest.TestSuite()
+        check_paths = []
         for path in sorted(HERE.rglob('*checks.py')):
             adapter = {'pi_collect_checks.py':'pi-sdk', 'claude_collect_checks.py':'claude-code',
                        'codex_collect_checks.py':'codex'}.get(path.name)
             if adapter is not None and adapter != harness_kind:
                 continue
-            name = str(path.relative_to(HERE)).replace('.', '_').replace('/', '_')
-            suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module(
-                'swarmharm_v1_' + name, path
-            )))
-        passed=unittest.TextTestRunner(stream=capture,verbosity=2).run(suite)
-        prompt_check = subprocess.run(
-            [sys.executable, '-B', str(REPO/'shared/prompt-contract/checks.py')],
-            cwd=REPO, capture_output=True, text=True,
-        )
-        log = capture.getvalue() + prompt_check.stdout + prompt_check.stderr
-        controls_passed = passed.wasSuccessful() and prompt_check.returncode == 0
+            check_paths.append(path)
+        env = {**__import__('os').environ, 'PYTHONPATH': f"{HERE}:{REPO/'shared'}"}
+        def _run_check_file(target):
+            mod = str(target.relative_to(HERE)).removesuffix('.py').replace('/', '.')
+            proc = subprocess.run(
+                [sys.executable, '-B', '-m', 'unittest', mod, '-v'],
+                cwd=HERE, env=env, capture_output=True, text=True,
+            )
+            out = proc.stdout + proc.stderr
+            import re as _re
+            m = _re.search(r'Ran (\d+) tests?', out)
+            return proc.returncode == 0, (int(m.group(1)) if m else 0), out
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            prompt_future = pool.submit(
+                subprocess.run,
+                [sys.executable, '-B', str(REPO/'shared/prompt-contract/checks.py')],
+                cwd=REPO, env=env, capture_output=True, text=True,
+            )
+            results = list(pool.map(_run_check_file, check_paths))
+            prompt_check = prompt_future.result()
+        total_tests = sum(r[1] for r in results)
+        log = ''.join(r[2] for r in results) + prompt_check.stdout + prompt_check.stderr
+        controls_passed = all(r[0] for r in results) and total_tests > 0 and prompt_check.returncode == 0
         save(root/'controls.json',{'passed':controls_passed,'model_calls':0,
-            'test_methods':passed.testsRun,'prompt_contract_passed':prompt_check.returncode == 0,'log':log})
+            'test_methods':total_tests,'prompt_contract_passed':prompt_check.returncode == 0,'log':log})
         if not controls_passed:raise RuntimeError(log)
     else:
         save(root/'controls.json',{'passed':True,'model_calls':0,'test_methods':0,
@@ -668,7 +680,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'forecast_workflow': unified_delivery.config_for(
                     phase2_plan)['access']['forecast_workflow'],
                 'source_routing': unified_delivery.config_for(
-                    phase2_plan)['sharing']['source_routing']}),
+                    phase2_plan)['sharing']['source_routing'],
+                'catalog_schema': unified_delivery.config_for(
+                    phase2_plan).get('catalog_schema', 'independent')}),
             include_subject_goal=False,
             **({'proof_stage': proof_stage} if proof_stage != 'off' else {}))
     save(root/'initial-input-audit.json', audit)
@@ -1557,7 +1571,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         phase2_definitions = continuation_module.tool_definitions(
             **({'continuous_workflow': True,
                 'forecast_workflow': extension.config['access']['forecast_workflow'],
-                'source_routing': extension.config['sharing']['source_routing']}),
+                'source_routing': extension.config['sharing']['source_routing'],
+                'catalog_schema': extension.config.get('catalog_schema', 'independent')}),
             **({'family': reg['phase2']['component_family'],
                 'include_subject_goal': bool(reg.get('subject_goal'))}))
         phase2_tool_names=[tool['name'] for tool in phase2_definitions]

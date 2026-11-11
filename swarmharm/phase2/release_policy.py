@@ -89,6 +89,17 @@ def title(text):
     return value.get('title') if isinstance(value, dict) and isinstance(value.get('title'), str) else None
 
 
+def normalized_body(text):
+    try:
+        value = json.loads(text)
+    except (TypeError, ValueError, RecursionError):
+        return None
+    if not isinstance(value, dict):
+        return None
+    body = {k: v for k, v in value.items() if k not in ('title', 'description')}
+    return json.dumps(body, sort_keys=True, separators=(',', ':'))
+
+
 def catalog_sources(text, current):
     """The catalog indexes the source editions admitted by the declared field."""
     try:

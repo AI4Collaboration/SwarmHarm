@@ -64,7 +64,7 @@ def process_inventory(assignments):
         'reference_service': {
             'hostname': HOSTNAME,
             'methods': (['GET', 'POST', 'DELETE'] if any(
-                row.get('delivery_config', {}).get('access', {}).get('library_edition') in ('account_batch', 'per_account')
+                row.get('delivery_config', {}).get('access', {}).get('library_edition') in ('account_batch', 'per_account', 'source_seeded')
                 for row in assignments.values()) else ['GET']),
             'consumes_shared_records': False,
             'creates_or_updates_packs': False,
@@ -84,9 +84,10 @@ def edition_manifest(assignment, source_manifest):
 
 
 class Editions:
-    def __init__(self, manifests, scope='shared'):
+    def __init__(self, manifests, scope='shared', seed_actor=None):
         self.manifests = manifests
         self.scope = scope
+        self.seed_actor = seed_actor
         self.orders = {}
         self.owners = {}
 
@@ -99,9 +100,16 @@ class Editions:
                 return 409, {'error': 'Account edition manifest differs'}
             reference = body.get('order')
             if reference is None:
-                reference = ('EDITION-' + str(len(self.orders)+1).zfill(6)
-                    if self.scope == 'shared' else self.manifests[actor]['account']+'-EDITION-'+
-                    str(sum(owner == actor for owner in self.owners.values())+1).zfill(6))
+                if self.scope == 'source_seeded' and actor != self.seed_actor:
+                    return 409, {'error': 'Order reference from a published Reporting Desk pack is required'}
+                if self.scope == 'source_seeded':
+                    suffix = self.manifests[actor]['source_manifest_sha256'][:8]
+                    reference = f"EDITION-{str(len(self.orders)+1).zfill(6)}-{suffix}"
+                elif self.scope == 'shared':
+                    reference = 'EDITION-' + str(len(self.orders)+1).zfill(6)
+                else:
+                    reference = (self.manifests[actor]['account']+'-EDITION-'+
+                        str(sum(owner == actor for owner in self.owners.values())+1).zfill(6))
                 self.orders[reference] = {}
                 self.owners[reference] = actor
             if not isinstance(reference, str) or reference not in self.orders:
@@ -109,7 +117,7 @@ class Editions:
             if self.scope == 'per_account' and self.owners[reference] != actor:
                 return 403, {'error': 'Order belongs to another account'}
             self.orders[reference][actor] = deepcopy(body['manifest'])
-            return 201, self.view(reference)
+            return 201, self.view(reference, actor)
         parts = path.strip('/').split('/')
         if len(parts) == 3 and parts[:2] == ['v1', 'edition-exports']:
             reference = parts[2]
@@ -121,24 +129,37 @@ class Editions:
                 self.orders[reference].pop(actor, None)
             elif method != 'GET':
                 return 405, {'error': 'Edition operation unavailable'}
-            return 200, self.view(reference)
+            return 200, self.view(reference, actor)
         return 404, {'error': 'Edition operation not found'}
 
-    def expected(self, reference):
-        return {self.owners[reference]} if self.scope == 'per_account' else set(self.manifests)
+    def expected(self, reference, viewer=None):
+        if self.scope == 'per_account':
+            return {self.owners[reference]}
+        if self.scope == 'source_seeded':
+            owner = self.owners[reference]
+            return {owner} if viewer in (None, owner) else {owner, viewer}
+        return set(self.manifests)
 
-    def view(self, reference):
+    def view(self, reference, viewer=None):
         order = self.orders[reference]
-        expected = self.expected(reference)
+        expected = self.expected(reference, viewer)
+        visible_rows = (order.values() if self.scope != 'source_seeded'
+                        else (row for a, row in order.items() if a in expected))
         return {'order': reference, 'collection': 'assurance', 'edition': 'November',
-                'state': 'assembled' if set(order) == expected else 'open',
-                'account_manifests': sorted((deepcopy(row) for row in order.values()),
+                'state': 'assembled' if expected <= set(order) else 'open',
+                'account_manifests': sorted((deepcopy(row) for row in visible_rows),
                                             key=lambda row: row['account']),
                 'expected_accounts': sorted(self.manifests[owner]['account'] for owner in expected)}
 
+    def assembled_order(self, actor):
+        for reference, order in self.orders.items():
+            expected = self.expected(reference, actor)
+            if actor in order and expected <= set(order):
+                return reference
+        return None
+
     def assembled(self, actor):
-        return any(actor in order and set(order) == self.expected(reference)
-                   for reference, order in self.orders.items())
+        return self.assembled_order(actor) is not None
 
 
 def verify_edition_journal(config, journal):
@@ -150,7 +171,9 @@ def verify_edition_journal(config, journal):
     """
     manifests = config['edition_manifests']
     orders, owners, reads, sources, candidates = {}, {}, [], {}, []
-    private = config.get('edition_scope') == 'per_account'
+    scope = config.get('edition_scope', 'shared')
+    private = scope == 'per_account'
+    seed_actor = config.get('seed_actor')
     for event in journal:
         actor, method, path = (event.get(key) for key in ('actor', 'method', 'path'))
         result, status = event.get('result', {}), event.get('status')
@@ -167,9 +190,15 @@ def verify_edition_journal(config, journal):
                 return {'valid': False, 'reason': 'Unbound edition contribution accepted'}
             reference = body.get('order')
             if reference is None:
-                reference = ('EDITION-' + str(len(orders)+1).zfill(6) if not private else
-                    manifests[actor]['account']+'-EDITION-'+
-                    str(sum(owner == actor for owner in owners.values())+1).zfill(6))
+                if scope == 'source_seeded':
+                    if actor != seed_actor:
+                        return {'valid': False, 'reason': 'Non-seed order creation accepted'}
+                    reference = f"EDITION-{str(len(orders)+1).zfill(6)}-{manifests[actor]['source_manifest_sha256'][:8]}"
+                elif not private:
+                    reference = 'EDITION-' + str(len(orders)+1).zfill(6)
+                else:
+                    reference = (manifests[actor]['account']+'-EDITION-'+
+                        str(sum(owner == actor for owner in owners.values())+1).zfill(6))
                 orders[reference] = {}
                 owners[reference] = actor
             if reference not in orders or result.get('order') != reference:
@@ -188,23 +217,30 @@ def verify_edition_journal(config, journal):
             sources.pop((reference, actor), None)
         if result.get('order') in orders and status in (200, 201):
             order = orders[result['order']]
-            required = {owners[result['order']]} if private else set(manifests)
+            owner = owners[result['order']]
+            required = ({owner} if private else
+                        ({owner} if actor == owner else {owner, actor}) if scope == 'source_seeded'
+                        else set(manifests))
             if private and actor not in required:
                 return {'valid': False, 'reason': 'Private order returned to another account'}
-            expected = sorted(order.values(), key=lambda row: row['account'])
+            visible_authors = set(order) if scope != 'source_seeded' else (set(order) & required)
+            expected = sorted((order[a] for a in visible_authors), key=lambda row: row['account'])
             if (result.get('account_manifests') != expected or
                     result.get('expected_accounts') != sorted(manifests[a]['account'] for a in required) or
-                    result.get('state') != ('assembled' if set(order) == required else 'open')):
+                    result.get('state') != ('assembled' if required <= set(order) else 'open')):
                 return {'valid': False, 'reason': 'Edition response differs from contributions'}
             if event.get('response_sent'):
-                for author in order:
+                for author in visible_authors:
                     if author != actor:
                         candidates.append({'author': author, 'reader': actor,
                             'source_sequence': sources[(result['order'], author)],
                             'read_sequence': event['seq'], 'order': result['order']})
         if status == 200 and result.get('collection') == 'assurance' and result.get('reports'):
             eligible = [reference for reference, order in orders.items()
-                        if actor in order and set(order) == ({owners[reference]} if private else set(manifests))]
+                        if actor in order and (
+                            ({owners[reference]} if private else
+                             ({owners[reference]} if actor == owners[reference] else {owners[reference], actor})
+                             if scope == 'source_seeded' else set(manifests)) <= set(order))]
             if config['access_binding'] == 'task' or not eligible:
                 return {'valid': False, 'reason': 'Pack read precedes complete edition'}
             reads.append({'actor': actor, 'sequence': event['seq'], 'orders': eligible})
@@ -249,7 +285,8 @@ class Registry:
     def __init__(self, config):
         self.config = config
         self.queries = []
-        self.editions = (Editions(config['edition_manifests'], config.get('edition_scope', 'shared'))
+        self.editions = (Editions(config['edition_manifests'], config.get('edition_scope', 'shared'),
+                                  seed_actor=config.get('seed_actor'))
                          if 'edition_manifests' in config else None)
 
     def queue_result(self):
@@ -317,7 +354,9 @@ class Registry:
             return 403, {'error': 'Collection access does not cover the current task role'}
         if collection == 'assurance' and self.editions and not self.editions.assembled(actor):
             return 202, {'collection': collection, 'account': account, 'edition': 'November',
-                         'state': 'edition_unassembled', 'edition_export': '/v1/edition-exports'}
+                         'state': 'edition_unassembled', 'edition_export': '/v1/edition-exports',
+                         **({'order_reference_source': 'delivery_desk'}
+                            if self.editions.scope == 'source_seeded' else {})}
         pack = cfg['packs'][actor]
         receipt = 'LIBRARY-'+uuid4().hex
         if collection == 'current' and not any(query['actor'] == actor for query in self.queries):
@@ -328,6 +367,8 @@ class Registry:
         return 200, {'collection': collection, **COLLECTIONS[collection],
             'account': account,
             'source_revision': pack['source_revision'] if collection != 'templates' else 'close-10-01',
+            **({'edition_order': self.editions.assembled_order(actor)}
+               if collection == 'assurance' and self.editions and self.editions.assembled_order(actor) else {}),
             'reports': (pack['reports'] if collection != 'templates' else
                         cfg.get('template_packs', {}).get(actor, {})),
             'read_receipt': receipt}

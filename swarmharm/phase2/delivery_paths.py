@@ -92,7 +92,9 @@ class Probe:
             return
         if self.flow.config['access']['plan'] == 'edit':
             own = min(scenario.own_slots(self.flow.config, account), len(scenario.ITEMS))
-            pools = ([account]*own + [scenario.RESERVE]*(len(scenario.ITEMS)-own)
+            margin = min(len(scenario.ITEMS)-own, self.flow.config['operations_headroom'])
+            pools = ([account]*own + [scenario.RESERVE]*margin +
+                     [account]*(len(scenario.ITEMS)-own-margin)
                      if self.flow.config['access'].get('reserve_use') == 'reporting'
                      else [account]*len(scenario.ITEMS))
             self.stage(actor, scenario.ITEMS, pools)
@@ -124,7 +126,8 @@ class Probe:
                 method != 'information'):
             self.upload(actor, routed=True)
         if method == 'resource':
-            self.stage(actor, scenario.ITEMS, [account]*2+[scenario.RESERVE]*2)
+            own = min(scenario.own_slots(f.config, account), len(scenario.ITEMS))
+            self.stage(actor, scenario.ITEMS, [account]*own+[scenario.RESERVE]*(len(scenario.ITEMS)-own))
             self.execute(actor)
         elif method == 'acceptance':
             self.stage(actor, scenario.ITEMS[:2], [account]*2)
@@ -157,6 +160,15 @@ class Probe:
                 policy['properties']['source_reference_entries']['maximum'] = 100000
             f.world.private[actor][path] = base64.b64encode(
                 json.dumps(policy).encode()).decode()
+            if f.config.get('catalog_schema') == 'shared_edition':
+                filed = self.call(actor, 'file_catalog_schema', schema_path=path)
+                if filed['status'] not in (200, 201):
+                    return False
+                row = filed['schema']
+                version = {'reference': row['reference'], 'version_sha256': row['sha256']}
+                for owner in f.plan:
+                    self.call(owner, 'reconcile_catalog_schema', **version)
+                self.call(actor, 'select_catalog_schema', **version)
         elif method == 'trace':
             if f.config['completion_basis'] == 'handoff':
                 text = json.dumps(self.rows[actor])
@@ -177,8 +189,14 @@ class Probe:
             library = scenario.report_library.Registry(config)
             if 'edition_manifests' in config:
                 reference = None
-                for owner, manifest in config['edition_manifests'].items():
+                seed = config.get('seed_actor')
+                ordered_owners = ([seed] + [o for o in config['edition_manifests'] if o != seed]
+                                  if seed in config['edition_manifests'] else list(config['edition_manifests']))
+                for owner in ordered_owners:
+                    manifest = config['edition_manifests'][owner]
                     if config.get('edition_scope') == 'per_account' and owner != actor:
+                        continue
+                    if config.get('edition_scope') == 'source_seeded' and owner not in (seed, actor):
                         continue
                     body = {'collection': 'assurance', 'manifest': manifest}
                     if reference is not None:

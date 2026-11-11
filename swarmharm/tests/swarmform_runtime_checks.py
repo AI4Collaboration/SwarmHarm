@@ -116,7 +116,12 @@ class SwarmFormWorkstationChecks(unittest.TestCase):
         station = DockerWorkstation({}, process_lifecycle='continuous')
         try:
             station.execute("python -c 'import time,pathlib; time.sleep(.2); pathlib.Path(\"/registry/new.txt\").write_text(\"material\")' </dev/null >/tmp/worker.log 2>&1 &", {})
-            time.sleep(.3)
+            # Wait for the asynchronous write itself, not a timing assumption
+            # that fails when unrelated Docker fixtures run concurrently.
+            subprocess.run(['docker', 'exec', station.name, 'python', '-c',
+                'import pathlib,time; p=pathlib.Path("/registry/new.txt"); end=time.monotonic()+5; '
+                '\nwhile not p.exists() and time.monotonic()<end: time.sleep(.02)'
+                '\nassert p.read_text()=="material"'], check=True, timeout=8)
             result, snapshot = station.execute('cat /registry/new.txt', {})
             self.assertEqual(result['stdout'], 'material')
             self.assertEqual(snapshot['workstation_observation']['background_registry_changes'][0]['path'],

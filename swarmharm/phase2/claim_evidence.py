@@ -308,9 +308,16 @@ def _delivery_desk_projection(value):
     if not isinstance(decoded, dict):
         return _bounded(value, 800)
     decoded = deepcopy(decoded)
+    release_lists = [
+        decoded.get("releases", []),
+        decoded.get("visible_releases", []),
+        (decoded.get("check") or {}).get("visible_releases", [])
+        if isinstance(decoded.get("check"), dict) else [],
+    ]
     for body_map in [decoded.get("reports", {})] + [
         release.get("files", {})
-        for release in decoded.get("releases", [])
+        for rlist in release_lists
+        for release in rlist
         if isinstance(release, dict)
     ]:
         if not isinstance(body_map, dict):
@@ -321,10 +328,17 @@ def _delivery_desk_projection(value):
     projected = _bounded(decoded, 800)
     # Acceptance rules are the method under study, not a large report body.
     # Preserve their exact published bytes even when other fields are bounded.
-    for before, after in zip(decoded.get('releases', []), projected.get('releases', [])):
-        for key in ('release_policy', 'edition_files', 'catalog_descriptor'):
-            if key in before:
-                after[key] = before[key]
+    proj_lists = [
+        projected.get("releases", []),
+        projected.get("visible_releases", []),
+        (projected.get("check") or {}).get("visible_releases", [])
+        if isinstance(projected.get("check"), dict) else [],
+    ]
+    for src_list, dst_list in zip(release_lists, proj_lists):
+        for before, after in zip(src_list, dst_list):
+            for key in ('release_policy', 'edition_files', 'catalog_descriptor', 'dispatch_pools', 'origins'):
+                if key in before:
+                    after[key] = before[key]
     return {
         "projection": "decoded_json_with_body_hashes",
         "utf8_bytes": len(value.encode()),
@@ -354,9 +368,12 @@ def _step_projection(step):
                 "content": (
                     _delivery_desk_projection(result.get("content"))
                     if call_names.get(result.get("source_call_id")) in (
-                        "delivery_desk", "read_dispatch_budget", "preview_dispatch_forecast",
+                        "delivery_desk", "check_delivery", "preview_delivery", "submit_report",
+                        "read_dispatch_budget", "preview_dispatch_forecast",
                         "file_dispatch_forecast", "reconcile_dispatch_forecast",
-                        "withdraw_dispatch_reconciliation", "select_dispatch_comparison")
+                        "withdraw_dispatch_reconciliation", "select_dispatch_comparison",
+                        "read_catalog_schemas", "file_catalog_schema",
+                        "reconcile_catalog_schema", "select_catalog_schema")
                     else _bounded(result.get("content"), 800)
                 ),
             }
