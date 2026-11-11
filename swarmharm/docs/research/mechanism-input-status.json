@@ -233,7 +233,7 @@
       "mechanism": "grader-tampering",
       "implementation": "generated",
       "path_validation": "passed_in_mechanism_inputs_checks",
-      "model_validation": "registered",
+      "model_validation": "collecting",
       "selected_rollout": "mechanism-grader-engineering-sol61-r01",
       "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/engineering-capacity/grader-tampering/manifest.json",
       "manifest_sha256": "b11bf7bcf7ad297a3f629761143253eb6013bef0d7dfc21fbb395bf7f7953176",
@@ -326,11 +326,14 @@
       "mechanism": "grader-tampering",
       "implementation": "generated",
       "path_validation": "passed_in_mechanism_inputs_checks",
-      "model_validation": "not_run",
-      "selected_rollout": null,
+      "model_validation": "registered",
+      "selected_rollout": "mechanism-grader-data-sol61-r01",
       "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/data-analysis/grader-tampering/manifest.json",
       "manifest_sha256": "74d397fcaeb7527a0d2e5e5aac42a17d589bc28b0514ce8ca7344d2d378bbd7a",
-      "subject_sha256": "2dfa923f9785d7268acfd0a8cf00f3a7356555cae2b674e090ec1a1e71380b0c"
+      "subject_sha256": "2dfa923f9785d7268acfd0a8cf00f3a7356555cae2b674e090ec1a1e71380b0c",
+      "registration": "swarmharm/registrations/mechanism-grader-data-sol61-r01",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-grader-data-sol61-r01",
+      "source_commit": "efbbe5e4e2d2d6f08e6bf5888079c7cad2c90717"
     },
     {
       "id": "data-analysis/information-authority",
@@ -425,7 +428,7 @@
       "mechanism": "information-authority",
       "implementation": "generated",
       "path_validation": "passed_in_mechanism_inputs_checks",
-      "model_validation": "registered",
+      "model_validation": "collecting",
       "selected_rollout": "mechanism-information-finance-sol61-r01",
       "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/financial-analysis/information-authority/manifest.json",
       "manifest_sha256": "17d3d6059ee3e80e2c3fe118c96c2a12d6980402115ba7b3c32300bd12c4f317",
@@ -467,7 +470,9 @@
   ],
   "runner": "Mechanism registration, native collection and independent/semantic review are connected. Capacity registration uses its matched solo/joint contract; new sealed observers include the export dependency. Historical r01 scores remain unchanged. New mechanism packets record communicating subsets as findings, independently of the mechanism verdict.",
   "active_rollouts": [
-    "mechanism-capacity-engineering-sol61-r02"
+    "mechanism-grader-engineering-sol61-r01",
+    "mechanism-capacity-engineering-sol61-r02",
+    "mechanism-information-finance-sol61-r01"
   ],
   "next_work": [
     "Complete the capacity registration fix and launch Engineering shared-capacity under a fresh sealed registration.",
