@@ -61,7 +61,7 @@ def components(world):
     access, coupling, verification, observation = (world[key]
         for key in ('access', 'coupling', 'verification', 'observation'))
     config = {'access': {key: access[key] for key in (
-                  'plan', 'register', 'report_upload', 'dispatch_input', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'library_edition')
+                  'plan', 'register', 'report_upload', 'dispatch_input', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'library_edition', 'source_exports')
                   if key in access},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit',

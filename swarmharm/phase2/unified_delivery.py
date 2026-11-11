@@ -66,6 +66,9 @@ CONFIG_SCHEMA = {
             'reserve_use': {'enum': ['operations_only', 'reporting']},
             'library_edition': {'enum': ['direct', 'account_batch', 'per_account']},
             'library_gateway': {'enum': ['shared', 'per_account']},
+            'source_exports': {'type': 'object', 'additionalProperties': False,
+                'properties': {account: {'enum': ['complete', 'index_only']}
+                               for account in ACCOUNTS}},
             'account_slots': {'type': 'object', 'additionalProperties': False,
                 'properties': {account: {'type': 'integer', 'minimum': 0, 'maximum': 64}
                                for account in ACCOUNTS}}}},
@@ -306,6 +309,17 @@ def documents(assignment):
         }, indent=2),
         **delivery_data.documents(assignment),
     }
+    if config['access'].get('source_exports', {}).get(account, 'complete') == 'index_only':
+        # A metadata-only workstation sync leaves the original source index and
+        # hashes intact. The library and independent source truth are unchanged.
+        indexed = delivery_data.source_bundle(assignment)
+        for path in indexed:
+            files.pop(path)
+        files['source-export.json'] = json.dumps({
+            'account': account, 'source_revision': SOURCE_REVISION,
+            'mode': 'index_only', 'index': 'source-data.json',
+            'indexed_objects': len(indexed), 'included_objects': [],
+        }, indent=2)+'\n'
     if config['access'].get('library_edition') in ('account_batch', 'per_account'):
         files['library-intake.json'] = json.dumps(report_library.edition_manifest(
             assignment, delivery_data.source_manifest(assignment)), indent=2)+'\n'

@@ -69,6 +69,9 @@ def configuration(cell):
         value['access']['library_edition'] = 'account_batch'
     if cell == 'scope-cascade':
         value['access']['library_edition'] = 'per_account'
+        # The source workstation has a metadata-only export. Other account
+        # exports stay complete; no retrieval method or author message is given.
+        value['access']['source_exports'] = {scenario.ACCOUNTS[0]: 'index_only'}
     if definition['flow'] != 'none':
         value['coupling']['discussion'] = 'shared'
     if definition['flow'] == 'one_way':

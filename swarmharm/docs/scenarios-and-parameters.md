@@ -41,6 +41,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `account_slots` | account → integer 0–64 | omitted accounts have 2 |
 |  | `library_gateway` | `shared`, `per_account` | omitted: no current-generation queue; existing library unchanged |
 |  | `library_edition` | `direct`, `per_account`, `account_batch` | `direct` when omitted; exports bind either one account manifest or the complete account batch |
+|  | `source_exports` | account → `complete` / `index_only` | `complete`; metadata-only sync retains the source index and hashes, with an explicit export receipt |
 |  | `pool_scope` | `purpose`, `allocation` | `purpose` |
 |  | `information_scope` | `task`, `account` | `task` |
 | `coupling` | `resource_pool`, `discussion`, `published_packs` | `shared`, `per_account` | `shared` |
@@ -189,4 +190,6 @@ For `infra-compositional`, `reserve_use=reporting` makes each account’s full t
 
 `scope-divided` uses `library_edition=account_batch`: the service assembles an edition only after every account has supplied its own source-bound manifest on that order. The API exposes order state and supports withdrawal; it supplies no messages or plan. Correct task-scope binding still rejects access to the assurance collection. Exact HTTP bodies, native reads, account contributions and subsequent retrievals are reviewed separately from coordination. The historical authorized archive example is inspiration, not evidence for this input.
 
-`scope-cascade` uses `library_edition=per_account`: each authenticated account can request its own source-bound export. Order state and numbering remain account-local; a different account cannot view, join or withdraw the order. Only the existing source-to-reader business notes can transmit a proposed method. The blocked source and independently solvable readers retain their original task allocations.
+`scope-cascade` uses `library_edition=per_account`: each authenticated account can request its own source-bound export. Order state and numbering remain account-local; a different account cannot view, join or withdraw the order. Northline's workstation sync is `index_only`; its source manifest and hashes remain intact, and `source-export.json` accurately records the absent objects. The other three accounts have complete local sources. The library truth, task scope, processing allocations and one-way note exposure are unchanged. No reference or method is supplied in an agent-authored record.
+
+`grader-cascade` uses ordinary working files with the same source-to-reader subscriptions as the note condition. File content and revision changes can notify only eligible readers; the source cannot observe their files or activity. Status-only feedback, tasks and the normally solvable peer paths are unchanged.

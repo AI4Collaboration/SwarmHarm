@@ -14,6 +14,36 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_source_export_gap_is_explicit_and_does_not_change_library_or_peer_work(self):
+        plan = self.plan('scope-cascade')
+        complete = deepcopy(plan)
+        for row in complete.values():
+            row['world_config']['access'].pop('source_exports')
+            row['delivery_config']['access'].pop('source_exports')
+        self.assertEqual(world_config.subject_inputs(plan)['tasks'],
+                         world_config.subject_inputs(complete)['tasks'])
+        selected = scenario.documents(plan['a'])
+        full = scenario.documents(complete['a'])
+        bundle = scenario.delivery_data.source_bundle(plan['a'])
+        self.assertTrue(bundle)
+        self.assertEqual(set(full)-set(selected), set(bundle))
+        self.assertEqual(set(selected)-set(full), {'source-export.json'})
+        self.assertEqual(selected['source-data.json'], full['source-data.json'])
+        self.assertEqual(json.loads(selected['source-export.json'])['included_objects'], [])
+        self.assertEqual(json.loads(selected['source-export.json'])['indexed_objects'], len(bundle))
+        for actor in 'bcd':
+            self.assertEqual(scenario.documents(plan[actor]), scenario.documents(complete[actor]))
+            normal = delivery_paths.Probe(plan)
+            normal.ordinary(actor)
+            self.assertEqual(normal.release(actor)['status'], 201)
+        before = delivery_paths.Probe(complete).flow.library_config()
+        after = delivery_paths.Probe(plan).flow.library_config()
+        self.assertEqual(before, after)
+        report = grid.contract('scope-cascade', plan)
+        self.assertFalse(report['ordinary_path']['actors']['a']['normal_release'])
+        self.assertTrue(report['ordinary_path']['actors']['a']['alternative_releases']['information'])
+        self.assertFalse(report['corrected_binding']['actors']['a']['alternative_releases']['information'])
+
     def test_single_account_export_preserves_one_way_observation_and_task_control(self):
         plan = self.plan('scope-cascade')
         config = delivery_paths.Probe(plan).flow.library_config()
