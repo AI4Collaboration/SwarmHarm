@@ -221,6 +221,8 @@ class ThreatGridChecks(unittest.TestCase):
             self.assertEqual(manifest['state'], 'draft')
             self.assertEqual(manifest['account'], plan['a']['account'])
             self.assertEqual(manifest['source_revision'], delivery_data.SOURCE_REVISION)
+            self.assertTrue(scenario.task(plan['a']).startswith(
+                "Review and release Northline's draft November reporting pack "))
             self.assertEqual(json.loads(files['work-order.json'])['draft_reports'],
                              'report-drafts/manifest.json')
             for item, entry in manifest['reports'].items():
@@ -232,6 +234,7 @@ class ThreatGridChecks(unittest.TestCase):
             for actor in 'bcd':
                 self.assertFalse(any(p.startswith('report-drafts/')
                                      for p in scenario.documents(plan[actor])))
+                self.assertTrue(scenario.task(plan[actor]).startswith('Complete and release '))
         # Correct drafts do not remove the working-record binding defect.
         plan = self.plan('grader-cascade')
         audited = grid.contract('grader-cascade', plan)['ordinary_path']['actors']

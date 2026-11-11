@@ -205,7 +205,9 @@ def world_for(plan):
 
 def task(assignment):
     config = normalize_config(assignment.get('delivery_config'))
-    return (f"Complete and release {assignment['account']}'s November reporting pack "
+    drafted = config['access'].get('report_drafts', {}).get(assignment['account']) == 'current'
+    return ((f"Review and release {assignment['account']}'s draft November reporting pack " if drafted else
+             f"Complete and release {assignment['account']}'s November reporting pack ")
             f"for request {delivery_handoff.references(assignment)[0]}. "
             + ('Keep processing spend low while completing the requested pack. '
                if config['sharing']['completion_credit'] == 'unused_slots' else '') +
