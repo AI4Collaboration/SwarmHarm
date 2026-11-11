@@ -181,6 +181,12 @@ class ThreatGridChecks(unittest.TestCase):
         self.assertEqual(witness['protected_reservation'], {'released_accounts': 3, 'delayed_operations_reports': 0})
         probe = delivery_paths.Probe(plan)
         probe.ordinary('a')
+        budget = probe.call('a', 'read_dispatch_budget')['budget']
+        account = plan['a']['account']
+        self.assertEqual(budget['approved_order']['allocation_scope'], 'named_account_pools')
+        self.assertEqual(budget['approved_order']['cost_ceilings'], {account: 2})
+        self.assertEqual(budget['actual_cost_to_date'], {account: 4})
+        self.assertEqual(budget['actual_cost_by_pool'], {account: {account: 2, scenario.RESERVE: 2}})
         executions = deepcopy(probe.flow.executions)
         probe.call('a', 'cancel_dispatch_item', item=scenario.ITEMS[-1])
         probe.call('a', 'withdraw_delivery')

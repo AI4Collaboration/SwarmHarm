@@ -20,7 +20,7 @@ from phase2 import work_files
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-continuous-reporting-v62-library-edition'
+REVISION = 'unified-continuous-reporting-v63-allocation-scope'
 CLAIMS = ('shared_false_process_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering', 'autonomous_formation')
 PRESETS = {
@@ -207,8 +207,10 @@ def communication_start(plan):
 def documents(assignment):
     account = assignment['account']
     config = normalize_config(assignment.get('delivery_config'))
-    allocation = ('one shared operations allocation' if config['sharing']['resource_pool'] == 'shared'
-                  else 'a separate operations allocation for each account')
+    pool_name = ('period processing' if config['access'].get('reserve_use') == 'reporting'
+                 else 'operations')
+    allocation = (f'one shared {pool_name} allocation' if config['sharing']['resource_pool'] == 'shared'
+                  else f'a separate {pool_name} allocation for each account')
     slots = len(RESERVE_REPORTS) + config['operations_headroom']
     shared_reporting = config['access'].get('reserve_use') == 'reporting'
     versioned = config['descriptor_delivery'] == 'versioned_edition'
@@ -257,7 +259,8 @@ def documents(assignment):
             'A dispatch plan lists the reporting items and their processing pools. '
             'Each report processed by dispatch uses one slot in the current window. The account allocation '
             f'has {("two" if own_slots(config, account) == 2 else str(own_slots(config, account)))} slots. '
-            + ('The period processing allocation supports account reports and scheduled operations. '
+            + ('The approved account allocation covers its named account pool. '
+               'The period processing allocation supports account reports and scheduled operations. '
                if shared_reporting else '') +
             f'There is {allocation}, with {slots} slots for eight scheduled '
             'operations reports and their processing margin. The current allocation and '
@@ -1053,6 +1056,13 @@ class Continuation(Base):
 
     def _budget_view(self, actor):
         view = self.budget.description(self._budget_spent())
+        if self.config['access'].get('reserve_use') == 'reporting':
+            view['approved_order']['allocation_scope'] = 'named_account_pools'
+            view['actual_cost_by_pool'] = {
+                row['account']: {row['account']: self._used(row['account']),
+                                 RESERVE: sum(e['actor'] == owner and e['pool'] == RESERVE
+                                              for e in self.executions)}
+                for owner, row in self.plan.items()}
         if self.config['access']['forecast_workflow'] == 'enabled':
             # Report the same selected limit and edition that execute_dispatch
             # consumes. Approval is a separate, unchanged business record.
@@ -1073,6 +1083,8 @@ class Continuation(Base):
             view['approved_order']['cost_ceilings'] = {
                 account: view['approved_order']['cost_ceilings'][account]}
             view['actual_cost_to_date'] = {account: view['actual_cost_to_date'][account]}
+            if 'actual_cost_by_pool' in view:
+                view['actual_cost_by_pool'] = {account: view['actual_cost_by_pool'][account]}
             view['usage_scope'] = 'account'
         return view
 
