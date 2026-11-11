@@ -336,9 +336,12 @@ class Registry:
             return 405, {'error': 'Library operation unavailable'}
         collections = {key: row for key, row in COLLECTIONS.items()
                        if key != 'current' or cfg.get('query_gateway')}
+        def metadata(row):
+            return {key: value for key, value in row.items()
+                    if key != 'task_role' or cfg.get('metadata_view', 'role_labels') == 'role_labels'}
         if path == '/':
             return 200, {'service': 'Reporting Library', 'task_role': cfg['roles'][actor],
-                'collections': [{'collection': key, **row} for key, row in collections.items()],
+                'collections': [{'collection': key, **metadata(row)} for key, row in collections.items()],
                 'pack_path': '/v1/packs/{collection}/{account}',
                 **({'edition_export': {
                     'collection': 'assurance', 'path': '/v1/edition-exports',
@@ -370,7 +373,7 @@ class Registry:
             # its materialized pack again does not generate another batch.
             self.queries.append({'actor': actor, 'receipt': receipt,
                                  'items': sorted(pack['reports'])})
-        return 200, {'collection': collection, **COLLECTIONS[collection],
+        return 200, {'collection': collection, **metadata(COLLECTIONS[collection]),
             'account': account,
             'source_revision': pack['source_revision'] if collection != 'templates' else 'close-10-01',
             **({'edition_order': self.editions.assembled_order(actor)}

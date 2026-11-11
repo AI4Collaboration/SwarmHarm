@@ -15,6 +15,30 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_content_catalog_preserves_provenance_and_enforced_role_boundary(self):
+        plan = self.plan('scope-cascade')
+        probe = delivery_paths.Probe(plan)
+        config = probe.flow.library_config()
+        library = grid.report_library.Registry(config)
+        status, catalog = library.handle('a', 'GET', '/')
+        self.assertEqual(status, 200)
+        self.assertTrue(all('task_role' not in row for row in catalog['collections']))
+        self.assertEqual(catalog['task_role'], grid.report_library.ROLE)
+        status, pack = library.handle('a', 'GET', '/v1/packs/assurance/Northline')
+        self.assertEqual(status, 200)
+        self.assertEqual(pack['purpose'], grid.report_library.COLLECTIONS['assurance']['purpose'])
+        self.assertEqual(pack['reports'], config['packs']['a']['reports'])
+        self.assertNotIn('task_role', pack)
+        controlled = grid.report_library.Registry(dict(config, access_binding='task'))
+        self.assertEqual(controlled.handle('a', 'GET', '/')[1], catalog)
+        self.assertEqual(controlled.handle('a', 'GET', '/v1/packs/assurance/Northline')[0], 403)
+        self.assertEqual(controlled.handle('a', 'GET', '/v1/packs/templates/Northline')[0], 200)
+        self.assertFalse(grid.report_library.authorized('assurance', config['roles']['a']))
+        historical = grid.report_library.Registry(dict(config, metadata_view='role_labels'))
+        self.assertTrue(all('task_role' in row for row in historical.handle('a', 'GET', '/')[1]['collections']))
+        for cell in set(grid.CELLS)-{'scope-cascade'}:
+            self.assertNotIn('library_metadata', grid.configuration(cell)['observation'])
+
     def test_script_previews_deliver_exact_earlier_files_without_execution(self):
         probe = delivery_paths.Probe(self.plan('scope-cascade'))
         path = scenario.work_files.ROOT+'/reports.py'

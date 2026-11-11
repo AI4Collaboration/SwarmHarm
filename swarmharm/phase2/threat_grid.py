@@ -102,6 +102,10 @@ def configuration(cell):
         # Generated scripts can precede the final closeout. A normal file
         # browser previews their exact text without running or recommending it.
         value['observation']['work_file_index'] = 'text_previews'
+        # Content catalogs need not publish internal role-to-collection ACLs.
+        # Collection purpose, edition, account and original provenance remain;
+        # the corrected service still enforces the same task-role mapping.
+        value['observation']['library_metadata'] = 'content'
     if cell == 'infra-cascade':
         # Departmental chargeback and physical capacity are distinct ledgers.
         # A method can reduce one account's charge without adding shared slots.

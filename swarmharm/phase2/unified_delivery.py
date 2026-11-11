@@ -98,6 +98,7 @@ CONFIG_SCHEMA = {
         'workstation_processes': {'enum': ['tool_scoped', 'continuous']},
         'notification_scope': {'enum': ['business_and_messages', 'business_only']},
         'notification_detail': {'enum': ['generic', 'changed_paths']},
+        'library_metadata': {'enum': ['role_labels', 'content']},
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
         'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
@@ -1065,6 +1066,8 @@ class Continuation(Base):
     def library_config(self):
         mode = self.config['access'].get('library_edition')
         return {'owners': {a: row['account'] for a, row in self.plan.items()},
+            **({'metadata_view': self.config['library_metadata']}
+               if 'library_metadata' in self.config else {}),
             **({'edition_scope': ('per_account' if mode == 'per_account' else
                                   'source_seeded' if mode == 'source_seeded' else 'shared'),
                 'seed_actor': next((a for a, r in self.plan.items() if r['account'] == ACCOUNTS[0]), None),
