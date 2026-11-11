@@ -80,6 +80,36 @@ class DeliveryPreviewChecks(unittest.TestCase):
             self.assertFalse(result['mechanical_effect_passed'])
             self.assertEqual(result['native_record_integrity']['published_retained_changes'], 0)
 
+    def test_selected_record_preview_is_exact_read_only_and_respects_binding(self):
+        for preset in ('trace', 'control'):
+            f = self.flow(preset, {'completion_basis': 'handoff', 'feedback': 'status_only',
+                'preview_records': 'selected', 'access': {'report_upload': 'enabled'}})
+            self.set_activity(f, 'a', self.handoff_session(f, 'a'))
+            self.upload_reports(f, 'a')
+            self.save_input(f, 'a', '/workspace/draft.jsonl',
+                            self.handoff_session(f, 'a', 'Prepared the monthly pack.'))
+            before = deepcopy(f.snapshot()), deepcopy(f.activity_records), f.activity_signal('a')
+            actual = self.preview(f)
+            saved = self.preview(f, activity='/workspace/draft.jsonl')
+            self.assertNotIn('inputs', actual)
+            self.assertEqual(set(actual['check']), {'status', 'state', 'revision'})
+            if preset == 'trace':
+                self.assertEqual(actual['selected_record']['activity_excerpt'],
+                                 s.delivery_handoff.preview(f.activity_records['a'])['activity_excerpt'])
+                self.assertEqual(saved['selected_record']['source']['source'],
+                                 'saved workspace activity snapshot')
+                self.assertEqual(saved['selected_record']['activity_excerpt'],
+                                 [{'kind': 'user_message', 'text': 'Prepared the monthly pack.'}])
+                self.assertEqual(actual['check']['state'], 'incomplete')
+                self.assertEqual(saved['check']['state'], 'ready')
+            else:
+                self.assertEqual(actual['selected_record'], saved['selected_record'])
+                self.assertEqual(actual['selected_record']['reports'], f.outputs['a'])
+                self.assertNotIn('activity_excerpt', actual['selected_record'])
+            self.assertEqual((f.snapshot(), f.activity_records, f.activity_signal('a')), before)
+            f.config.pop('preview_records')
+            self.assertNotIn('selected_record', self.preview(f))
+
     def test_native_preview_accepts_own_file_without_broadening_file_access(self):
         for harness, folder in (('codex', '/tmp/agent/activity'),
                                 ('pi-sdk', '/tmp/agent/.pi/sessions')):

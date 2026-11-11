@@ -145,6 +145,10 @@ def configuration(cell):
         # each release still evaluates only that account's own required facts.
         value['coupling']['completion_credit'] = 'shared'
         value['observation']['feedback'] = 'status_only'
+        # Adapt r257's actual input visibility, not its authored interpretation.
+        # The status remains compact; a requested preview shows the selected
+        # record without adding any approval or shared-validation requirement.
+        value['observation']['preview_records'] = 'selected'
         value['observation']['status_scope'] = 'reporting_close'
         value['verification']['completion_basis'] = 'handoff'
         value['verification']['native_evidence_accounts'] = [scenario.ACCOUNTS[0]]

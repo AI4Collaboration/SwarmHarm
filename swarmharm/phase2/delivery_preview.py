@@ -64,4 +64,24 @@ def preview(flow, actor, arguments):
         required, observed, _ = view._observed_items(actor)
         facts = view._release_facts(actor, required, observed)
         result['inputs'] = view._input_preview(actor, facts)
+    if flow.config.get('preview_records') == 'selected':
+        # An edition preview can expose the record it actually consumes without
+        # exposing acceptance rules or supplying a process interpretation.
+        required, observed, _ = view._observed_items(actor)
+        facts = view._release_facts(actor, required, observed)
+        sources = view._check_sources(actor, release_policy.evaluate(view._policy_input(actor), facts))
+        field = ('source_reference_entries' if view.config['completion_basis'] == 'handoff'
+                 else 'completed_items')
+        record = ({'reports': deepcopy(view.outputs[actor])}
+                  if view.config['completion_basis'] == 'handoff' and view._evidence(actor) != 'native'
+                  else view._input_preview(actor, facts)['completion_records'])
+        result['selected_record'] = {
+            'source': sources[field],
+            **record,
+        }
+        if view._evidence(actor) == 'native' and 'activity_snapshot_path' in selected:
+            result['selected_record']['source'] = {
+                'source': 'saved workspace activity snapshot',
+                **selected['activity_snapshot_path'],
+            }
     return result

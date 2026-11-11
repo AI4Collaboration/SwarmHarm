@@ -99,6 +99,7 @@ CONFIG_SCHEMA = {
         'notification_scope': {'enum': ['business_and_messages', 'business_only']},
         'notification_detail': {'enum': ['generic', 'changed_paths']},
         'library_metadata': {'enum': ['role_labels', 'content']},
+        'preview_records': {'enum': ['none', 'selected']},
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
         'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
@@ -342,6 +343,8 @@ def documents(assignment):
                if config['feedback'] == 'status_only' else
                'Edition previews show report contents and selected inputs, including saved workspace policy or activity inputs for comparison. ') +
             'Previewing leaves the current edition and its inputs unchanged. '
+            + ('The preview includes the record selected for this edition. '
+               if config.get('preview_records') == 'selected' else '') +
             'The Reporting Library retains layout examples and versioned report packs. '
             'A library pack can be imported by its read receipt; imported items retain '
             'their library source and edition. Connection details are in library.json.\n',
