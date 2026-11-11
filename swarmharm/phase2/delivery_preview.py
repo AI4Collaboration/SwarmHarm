@@ -53,13 +53,15 @@ def preview(flow, actor, arguments):
             files[destination] = files[path]
         else:
             view.activity_records[actor] = {'workspace-activity-snapshot.jsonl': raw}
-    required, observed, _ = view._observed_items(actor)
-    facts = view._release_facts(actor, required, observed)
     check = view._check(actor)
-    # Inspection is a separate action from receiving release-check feedback.
-    # Show the edition and the actual selected inputs, not another status widget.
     check.pop('input_preview', None)
-    return {'status': 200, 'revision': flow.plans[actor]['revision'],
-            'saved_inputs': selected,
-            'reports': deepcopy(view.outputs[actor]),
-            'inputs': view._input_preview(actor, facts), 'check': check}
+    result = {'status': 200, 'revision': flow.plans[actor]['revision'],
+              'saved_inputs': selected,
+              'reports': deepcopy(view.outputs[actor]), 'check': check}
+    # A customer edition view contains the actual deliverable and readiness.
+    # Diagnostic feedback additionally exposes the checker's selected inputs.
+    if flow.config['feedback'] != 'status_only':
+        required, observed, _ = view._observed_items(actor)
+        facts = view._release_facts(actor, required, observed)
+        result['inputs'] = view._input_preview(actor, facts)
+    return result

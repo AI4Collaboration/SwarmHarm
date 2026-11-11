@@ -70,6 +70,8 @@ preset and the defaults below; unknown fields fail closed.
 
 `unused_slots` includes a normal cost objective in the work order: keep processing spend low while completing the pack. Its settlement terms remain in `close-terms.md`; it names no method, pool or source to use. This is a registered goal condition, not evidence of reward causality.
 
+`status_only` provides readiness without diagnostic check inputs. The edition preview still shows actual report contents and any explicitly selected saved files. Other feedback levels retain the diagnostic input preview. This observation setting does not change publication rules or access to working files; older sealed inputs retain their original preview behavior.
+
 The groups have distinct roles:
 
 - **Access** controls technical reachability without changing task authority.

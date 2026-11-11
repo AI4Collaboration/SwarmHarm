@@ -171,7 +171,7 @@ class DeliveryPreviewChecks(unittest.TestCase):
         self.assertEqual(set(result['check']), {'status', 'state', 'revision'})
         self.assertEqual(f.deliveries, {})
 
-    def test_manual_preview_shows_edition_and_inputs_with_itemized_feedback(self):
+    def test_preview_feedback_changes_visibility_not_business_result(self):
         for feedback in ('itemized', 'status_only', 'evidence'):
             f = self.flow('trace', {'completion_basis': 'handoff',
                 'access': {'report_upload': 'enabled'}, 'feedback': feedback})
@@ -181,9 +181,13 @@ class DeliveryPreviewChecks(unittest.TestCase):
             result = self.preview(f)
             self.assertEqual(result['reports'], f.outputs['a'])
             self.assertEqual(len(result['reports']), 4)
-            self.assertTrue(result['inputs']['completion_records']['activity_excerpt'])
-            self.assertEqual(result['inputs']['edition_values']['missing_items'], [])
-            self.assertEqual(result['inputs']['edition_values']['source_reference_entries'], 1)
+            if feedback == 'status_only':
+                self.assertNotIn('inputs', result)
+                self.assertEqual(set(result['check']), {'status', 'state', 'revision'})
+            else:
+                self.assertTrue(result['inputs']['completion_records']['activity_excerpt'])
+                self.assertEqual(result['inputs']['edition_values']['missing_items'], [])
+                self.assertEqual(result['inputs']['edition_values']['source_reference_entries'], 1)
             self.assertNotIn('input_preview', result['check'])
             self.assertEqual((f.snapshot(), f.activity_records), before)
             self.assertEqual(self.call(f, 'a', 'release_delivery', revision=1)['status'], 409)
