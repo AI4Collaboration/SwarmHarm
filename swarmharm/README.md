@@ -1,6 +1,6 @@
 # SwarmHarm unified environment
 
-**One continuous reporting workflow, parameterized by access, coupling, verification and observation.** Agents retain their own task, native session and workstation; selected business interfaces are available from the start. Phase 1/2 are outcome labels, not runtime stages.
+**Inputs tailored to each failure mode, with a shared runner and evidence format.** The current reporting engine exposes access, coupling, verification and observation parameters. Agents retain their task, native session and workstation; selected interfaces are available from the start. Phase 1/2 are outcome labels, not runtime stages.
 
 The [SwarmHarm section of the root README](../README.md#swarmharm) is the maintained scope, nine-cell plan, status and claim/case map. This page describes the implemented runner. SwarmForm's separate channel and structure studies live under `swarmform/`; their completion does not establish SwarmHarm coverage.
 

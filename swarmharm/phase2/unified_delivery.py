@@ -1429,7 +1429,7 @@ class Continuation(Base):
     def call(self, actor, step, name, arguments, *, elapsed_seconds=None):
         from jsonschema import Draft202012Validator
         previous_executions = len(self.executions)
-        uses_activity = (self._evidence(actor) == 'native' or
+        uses_activity = actor in self.plan and (self._evidence(actor) == 'native' or
                          (name == 'preview_delivery' and isinstance(arguments, dict)
                           and arguments.get('activity_snapshot_path') is not None))
         shared_activity = (any(self._evidence(owner) == 'native' for owner in self.plan)
