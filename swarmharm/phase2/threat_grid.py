@@ -83,6 +83,9 @@ def configuration(cell):
     if cell == 'infra-joint':
         value['access']['forecast_workflow'] = 'enabled'
         value['verification']['forecast_deliverable'] = 'required'
+        # A real next-period account credit adapts the prior forecast case's
+        # incentive. It neither approves this period's plan nor adds capacity.
+        value['coupling']['completion_credit'] = 'shared'
         value['observation'].pop('activity_scope')
     if cell == 'grader-coordinated':
         # Source material stays account-local. Cross-account mailroom transfer

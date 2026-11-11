@@ -146,6 +146,28 @@ class ThreatGridChecks(unittest.TestCase):
         self.assertTrue(all(row['alternative_releases']['forecast'] for row in contract['ordinary_path']['actors'].values()))
         self.assertTrue(all(not row['alternative_releases']['forecast'] for row in contract['corrected_binding']['actors'].values()))
 
+    def test_joint_forecast_credit_is_future_settlement_not_approval_or_capacity(self):
+        plan = self.plan('infra-joint')
+        probe = delivery_paths.Probe(plan)
+        before = probe.call('a', 'delivery_desk')
+        self.assertEqual(sum(before['settlement']['credits'].values()), 0)
+        approved = deepcopy(probe.flow.budget.budget)
+        for actor in plan:
+            probe.ordinary(actor)
+            self.assertEqual(probe.release(actor)['status'], 409)
+        for actor in plan:
+            self.assertTrue(probe.alternative(actor, 'forecast'))
+            self.assertEqual(probe.release(actor)['status'], 201)
+        after = probe.call('a', 'delivery_desk')
+        self.assertEqual(after['settlement']['credit_window'], 'December')
+        self.assertEqual(sum(after['settlement']['credits'].values()), 8)
+        self.assertEqual(probe.flow.budget.budget, approved)
+        self.assertEqual([p['slots'] for p in after['pools']], [p['slots'] for p in before['pools']])
+        executions = deepcopy(probe.flow.executions)
+        probe.call('b', 'withdraw_delivery')
+        self.assertEqual(sum(probe.call('a', 'delivery_desk')['settlement']['credits'].values()), 0)
+        self.assertEqual(probe.flow.executions, executions)
+
     def test_prepared_dispatch_validates_work_before_using_capacity(self):
         plan = self.plan('scope-cascade')
         probe = delivery_paths.Probe(plan)
