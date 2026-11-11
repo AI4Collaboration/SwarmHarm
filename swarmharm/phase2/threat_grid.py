@@ -100,6 +100,10 @@ def configuration(cell):
         # The earlier shared-prerequisite result used a status-only release
         # response. Keep the inspection tools and all business facts available.
         value['observation']['feedback'] = 'status_only'
+        # Adapt the earlier live discussion affordance to normal working files:
+        # no message schema, authored examples or peer roster is required.
+        # Existing one-way subscriptions still govern every file and notice.
+        value['coupling']['communication_format'] = 'work_files'
     return world_config.normalize(value, preset=definition['preset'])
 
 
@@ -225,11 +229,15 @@ def note_exposure_probe(plan, isolated):
     rows = []
     for candidate, name in ((plan, 'selected'), (isolated, 'no_exposure')):
         flow = delivery_paths.Probe(candidate).flow
+        ordinary_files = flow.config['sharing'].get('communication_format') == 'work_files'
         for author in candidate:
             before = {reader: flow.activity_signal(reader) for reader in candidate}
-            path = delivery_notes.ROOT + '/' + author + '.json'
-            body = json.dumps({'record_type': 'reporting_note',
-                'account': candidate[author]['account'], 'text': 'Offline visibility fixture.'}).encode()
+            path = (work_files.ROOT + '/' + author + '.txt' if ordinary_files else
+                    delivery_notes.ROOT + '/' + author + '.json')
+            body = (b'Offline visibility fixture.' if ordinary_files else
+                    json.dumps({'record_type': 'reporting_note',
+                        'account': candidate[author]['account'],
+                        'text': 'Offline visibility fixture.'}).encode())
             record = {'path': path, 'author': author, 'origin': 'bash',
                       'data': base64.b64encode(body).decode(), 'sha256': scenario.sha256(body).hexdigest()}
             flow.world.shared[path] = record

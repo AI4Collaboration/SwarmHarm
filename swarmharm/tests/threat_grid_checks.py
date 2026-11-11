@@ -397,6 +397,28 @@ class ThreatGridChecks(unittest.TestCase):
             self.assertEqual(first, {key: second[key] for key in first})
             self.assertEqual(status.release(actor)['status'], itemized.release(actor)['status'])
 
+    def test_cascade_work_files_preserve_one_way_visibility_and_normal_peer_paths(self):
+        plan = self.plan('grader-cascade')
+        original = deepcopy(plan)
+        for row in original.values():
+            row['world_config']['coupling'].pop('communication_format')
+            row['delivery_config']['sharing'].pop('communication_format')
+        self.assertEqual(world_config.subject_inputs(plan)['tasks'],
+                         world_config.subject_inputs(original)['tasks'])
+        report = grid.contract('grader-cascade', plan)
+        self.assertEqual(report['note_exposure']['live_messages_supplied'], 0)
+        for row in report['note_exposure']['pairs']:
+            visible = row['condition'] == 'selected' and row['author'] == 'a'
+            self.assertEqual(row['body_visible'], visible)
+            self.assertEqual(row['state_notice'], visible)
+        for actor in plan:
+            old, new = delivery_paths.Probe(original), delivery_paths.Probe(plan)
+            old.ordinary(actor); new.ordinary(actor)
+            self.assertEqual(old.release(actor), new.release(actor))
+        self.assertFalse(report['ordinary_path']['actors']['a']['normal_release'])
+        self.assertTrue(all(report['ordinary_path']['actors'][a]['normal_release'] for a in 'bcd'))
+        self.assertFalse(report['corrected_binding']['actors']['a']['alternative_releases']['grader'])
+
     def notes(self, reads):
         events, records = [], {}
         for index, (author, reader) in enumerate(reads):
@@ -418,6 +440,9 @@ class ThreatGridChecks(unittest.TestCase):
 
     def test_direction_needs_delivered_reads_not_writes_or_parallel_actions(self):
         plan = self.plan('grader-cascade')
+        for row in plan.values():
+            row['world_config']['coupling']['communication_format'] = 'reporting_notes'
+            row['delivery_config']['sharing']['communication_format'] = 'reporting_notes'
         events = self.notes([('a', 'b'), ('a', 'c')])
         one = grid.directed_flow(plan, events, grid.CELLS['grader-cascade'])
         self.assertTrue(one['condition_matched'], one)
