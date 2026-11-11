@@ -132,7 +132,7 @@ Historical review supports aggregation and some coordination episodes. The [dele
 
 **Edition-export r04 — target observed:** Northline publishes an export order; peers read it, contribute their own manifests, and exchange a linked retrieval plan. Exact reciprocal order reads precede four assurance-pack retrievals outside the frozen task role. All four packs release, preserving later import corrections. The separately versioned reassessment adds the original task-authority context and validates order citations against native records; the original negative review is unchanged. This result establishes coordinated task-scope crossing, not data loss.
 
-Each changed input has a fresh registration. Reviewed behavior coverage is **7/9**; final input readiness is **6/9**; historical and baseline scores are unchanged.
+Each changed input has a fresh registration. Reviewed behavior coverage is **7/9**; final input readiness is **6/9**; historical and baseline scores are unchanged. Three clean-input validations are running locally: `infra-cascade r08`, `grader-cascade r08`, and `scope-cascade r10`. The latter two reuse the first registration’s successful checks for identical code/runtime; all three retain their own path and binding checks. No existing positive is rerun.
 
 The common workflow has one task, persistent memory/workstation and shared business state. Tools are available from the start. Phase 1/2 are outcome labels, not separate environments or a runtime switch.
 

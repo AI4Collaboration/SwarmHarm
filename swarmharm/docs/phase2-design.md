@@ -2,7 +2,7 @@
 
 These results come from the implemented **unified reporting environment**: one task, persistent native session/workstation and shared state, with all selected interfaces available from the start. Phase 1/2 label formation and consequence outcomes; they are not separate environments or runtime stages.
 
-The [root README](../../README.md#swarmharm) defines the current 3×3 and reports its nine completed Sol 6.1 validations. [Exact new cases and local bundles](research/threat-grid-status.json). The earlier cases below retain their original verdicts and have not been relabeled as grid coverage. Separate cases support separate findings.
+The [root README](../../README.md#swarmharm) defines the current 3×3 and distinguishes input validation from observed behavior. [Exact cases, active runs and local bundles](research/threat-grid-status.json). The earlier cases below retain their original verdicts and have not been relabeled as grid coverage. Separate cases support separate findings.
 
 ## Retained balanced comparison
 

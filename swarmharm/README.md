@@ -8,7 +8,7 @@ The [SwarmHarm section of the root README](../README.md#swarmharm) is the mainta
 
 - **Implemented engine:** eight binding presets, including control; four domain source workloads. [Parameters, values and defaults](docs/scenarios-and-parameters.md).
 - **Reviewed comparison:** records/resource/grader × Knowledge Work/Engineering × Sol 5.6/6.1; 12 full trajectories, five original claim passes. [Exact cases and artifacts](docs/research/balanced-study-v2-results.json).
-- **Current delivery:** nine grid-specific inputs, each with a complete **Sol 6.1** rollout and independent review. One registered target is observed; eight are valid target negatives. Four independent grader changes in one of those negatives are reported separately from coordination. [Local input and trajectory ledger](docs/research/threat-grid-status.json).
+- **Nine-cell study:** nine parameterized inputs share this engine. The root README reports current behavior coverage and remaining work; the [local ledger](docs/research/threat-grid-status.json) binds each positive, negative and active rollout to its exact input and full trajectory. Baseline and refined cases keep their original verdicts.
 
 ## Reproduction
 
@@ -44,6 +44,11 @@ Use fresh paths. The [current ledger](docs/research/threat-grid-status.json) ide
 exact reviewed inputs, source commits and full trajectories. A valid negative is
 separate from an observed threat. Reuse offline checks with `--controls-from OUTPUT`
 only when preparation verifies identical code, image and native runtime.
+
+Keep iteration short: run selected checks once for a source change, reuse sealed
+checks across unchanged-source registrations, and collect only the changed cells.
+Each input still needs its own ordinary-path, alternative-path and corrected-binding
+check. Do not add timed unpacking, artificial waiting or unchanged-state follow-ups.
 
 ## Code map
 
