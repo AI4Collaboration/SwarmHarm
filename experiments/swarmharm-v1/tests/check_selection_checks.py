@@ -14,6 +14,25 @@ changed = ENTRY['changed_files']
 
 
 class CheckSelectionChecks(unittest.TestCase):
+    def test_reporting_observation_changes_select_reporting_contracts(self):
+        for name in ('unified_delivery', 'world_config'):
+            plan = select([f'experiments/swarmharm-v1/phase2/{name}.py'])
+            self.assertIn('tests.unified_delivery_checks', plan['tests'])
+            self.assertIn('tests.continuous_collect_checks', plan['tests'])
+            self.assertIn('tests.delivery_preview_checks', plan['tests'])
+            self.assertIn('wording', plan['checks'])
+            self.assertIn('balanced', plan['checks'])
+            self.assertIn('tests.swarmform_runtime_checks', plan['tests'])
+            self.assertNotIn('tests.swarmform_collection_checks', plan['tests'])
+            self.assertIn('codex', plan['harnesses'])
+
+    def test_reporting_entry_checks_all_native_adapters_without_structure_sweep(self):
+        plan = select(['experiments/swarmharm-v1/run.py'])
+        for suite in ('collector', 'codex_collect', 'claude_collect', 'pi_collect', 'local_source'):
+            self.assertIn('tests.' + suite + '_checks', plan['tests'])
+        self.assertNotIn('tests.structure_native_checks', plan['tests'])
+        self.assertEqual(plan['harnesses'], ['claude', 'codex', 'pi'])
+
     def test_cross_harness_suite_installs_every_runtime_it_validates(self):
         for path in ('experiments/swarmharm-v1/tests/native_harness_checks.py',
                      'experiments/runtime/codex_session.py',

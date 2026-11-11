@@ -153,8 +153,12 @@ flag rejects every other factor difference:
   --key-file /absolute/external/axonhub.key
 ```
 
-Commit and push source before preparation, then commit and push the generated
-registration. Launch once with the same output, registration and key paths:
+By default, commit and push source before preparation, then commit and push the
+generated registration. For explicitly local-only work, pass
+`--source-retention local` at preparation: commit source locally first, then
+commit the generated registration locally. Clean-tree, source, task and input
+hash checks remain required; only the remote publication check is omitted.
+Launch once with the same output, registration and key paths:
 
 ```sh
 "$SWARMHARM_HARBOR_ENV/bin/python" experiments/swarmharm-v1/launch.py \

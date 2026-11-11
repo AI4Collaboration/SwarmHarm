@@ -4,7 +4,7 @@
 
 This README is the single maintained home for research scope, task taxonomy, environment coverage, current status, tonight's work and paper-readiness criteria. Code, exact input fixtures, sealed registrations and evidence indexes remain in their natural locations; they are supporting artifacts, not competing plans.
 
-**Current assignments:** this session owns **SwarmHarm**: clean its reporting inputs/evidence, then implement and rollout–refine all nine threat-model inputs using **Sol 6.1 only**. The user has authorized these bounded live validations. SwarmForm and its eight-agent structure experiment remain a separate session's work; their pending collection permissions are unchanged.
+**Current assignments:** this session owns **SwarmHarm**: clean its reporting inputs/evidence, then implement and rollout–refine all nine threat-model inputs using **Sol 6.1 only**. The user has authorized these bounded live validations. Current delivery is local only: commit and seal locally, retain complete viewer-ready traces locally, and do not push or publish new changes. SwarmForm and its eight-agent structure experiment remain a separate session's work; their pending collection permissions are unchanged.
 
 - [Research framework](#research-framework)
 - [Three task classes](#task-taxonomy)
@@ -171,7 +171,7 @@ All services, accounts, tokens and effects are contained synthetic fixtures. Do 
 1. **Bind all nine inputs:** add explicit grid IDs, concrete world settings, per-actor conditions and controls through the shared engine. Keep task wording natural; no prescribed method, cooperation or desired finding. Reuse Knowledge Work/Engineering only where the task fits the mechanism.
 2. **Validate mechanisms:** materialize files/tools, characterize the ordinary path, execute the alternative and corrected-binding control, and calibrate the cell's reviewer on positive and negative fixtures. Review all participant-visible bytes.
 3. **Collect and refine:** seal source and a fresh registration; run **Sol 6.1, native Codex, AxonHub, high reasoning, goal off**, with per-rollout memory. Review complete native/ATIF records and independently recompute effects. Repair demonstrated environment or measurement defects and rerun a changed input; preserve agent choices and valid negatives.
-4. **Finish the evidence delivery:** every accepted cell has its exact input/settings, control, native/ATIF trajectory, world/final files, independent review and checksum manifest in GitHub. Add each accepted case to the website viewer with its own setting and verdict. No new cell is ready from a witness or renamed historical case alone.
+4. **Finish the evidence delivery:** every accepted cell has its exact input/settings, control, native/ATIF trajectory, world/final files, independent review and checksum manifest in a local evidence bundle. Prepare each case for the local trajectory viewer with its own setting and verdict; publication is deferred at the user’s request. No new cell is ready from a witness or renamed historical case alone.
 
 **Order:** first map the reusable infrastructure, records and scope components; then implement missing query-quota, asymmetric and joint mechanisms. Validate each cell before collecting it, with independent runs eligible to execute concurrently. Completion requires **9/9 input contracts and 9/9 reviewed Sol 6.1 validations with accessible traces**; environment validity and observed threat behavior remain separate fields. The older 5.6 cases stay as evidence, not substitutes for the new model requirement.
 
@@ -275,6 +275,6 @@ python3 scripts/check_swarmform_inputs.py --status
 "$SWARMHARM_HARBOR_ENV/bin/python" scripts/export_swarmform_input_matrix.py --output ../accepted-inputs
 ```
 
-The status command describes the completed 50-input delivery, not completion of either paper. Use `--full` only for an intentional full offline regression. Run selected checks once; repeat only for relevant changes or failures. Test and publish source before any future registration, then seal/publish the registration before collection. Do not modify historical evidence to fit a new plan.
+The status command describes the completed 50-input delivery, not completion of either paper. Use `--full` only for an intentional full offline regression. Run selected checks once; repeat only for relevant changes or failures. For the current SwarmHarm assignment, test and commit source locally, then commit and seal the registration before collection; publication is deferred. Historical registered source hashes remain unchanged. Do not modify historical evidence to fit a new plan.
 
 Current source uses Sol 6.1 for prospective studies. Existing Sol 5.6 and other-harness evidence retains its identity. Provider credentials and protected truth never enter participant workspaces. The detailed historical [running guide](docs/running-evals.md) documents reproduction; it does not queue inference tonight.

@@ -24,7 +24,7 @@ def normalize(value=None, *, preset='control', delivery=None):
                          'completion_basis': cfg['completion_basis']},
         'observation': {key: cfg[key] for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope')},
     }
-    optional_observations = (office_history.FIELD, 'workstation_processes', 'notification_scope')
+    optional_observations = (office_history.FIELD, 'workstation_processes', 'notification_scope', 'activity_scope')
     for field in optional_observations:
         if field in cfg:
             result['observation'][field] = cfg[field]

@@ -55,6 +55,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `workstation_history` | `task_only`, `prior_work` | `task_only` when omitted |
 |  | `workstation_processes` | `tool_scoped`, `continuous` | `tool_scoped` when omitted |
 |  | `notification_scope` | `business_and_messages`, `business_only` | `business_and_messages` when omitted |
+|  | `activity_scope` | `portfolio`, `account` (requires read-only forecasts) | `portfolio` when omitted; `account` meters only the current account, without changing shared capacity |
 
 The groups have distinct roles:
 

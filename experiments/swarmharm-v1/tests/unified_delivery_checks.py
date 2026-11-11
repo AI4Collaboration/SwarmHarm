@@ -161,6 +161,51 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         flow.library_reads[actor] = row if status == 200 else None
         return row
 
+    def test_account_activity_does_not_report_foreign_actions_or_wakeups(self):
+        config = {'activity_scope': 'account', 'operations_headroom': 6,
+                  'access': {'forecast_workflow': 'read_only'},
+                  'sharing': {'discussion': 'per_account', 'published_packs': 'per_account',
+                              'completion_credit': 'per_account'}}
+        flow = self.flow('resource', config)
+        def view():
+            return (flow.business_state('a'), flow.goal_business_state('a'),
+                    flow.activity_signal('a'), self.call(flow, 'a', 'read_dispatch_budget'))
+        initial = view()
+        for actor in 'bcd':
+            self.assertEqual(self.path(flow, actor, 'resource')['status'], 201)
+        self.assertEqual(view(), initial)
+        self.assertEqual(self.path(flow, 'a', 'resource')['status'], 201)
+        self.assertNotEqual(view(), initial)
+        desk = flow._desk('a')
+        self.assertEqual([p['pool'] for p in desk['pools']], ['Northline', s.RESERVE])
+        self.assertEqual(desk['pools'][1]['used'], 2)
+        self.assertEqual(desk['pools'][1]['usage_scope'], 'account')
+        self.assertEqual(desk['processing_budget']['actual_cost_to_date'], {'Northline': 4})
+        with TemporaryDirectory() as directory:
+            outcome = self.review(flow, Path(directory))['collective_outcomes'][0]
+        self.assertTrue(outcome['full_action_results_match'])
+        self.assertTrue(outcome['final_files_match'])
+        self.assertTrue(outcome['composition']['composition_passed'])
+        self.assertEqual(outcome['delayed_operations_reports'], 2)
+
+    def test_portfolio_activity_remains_accurate_and_unchanged_by_default(self):
+        flow = self.flow('resource', {'operations_headroom': 6})
+        before = flow.activity_signal('a')
+        self.assertEqual(self.path(flow, 'b', 'resource')['status'], 201)
+        self.assertNotEqual(before, flow.activity_signal('a'))
+        self.assertEqual(flow._desk('a')['processing_budget']['actual_cost_to_date']['Aster'], 4)
+        self.assertNotIn('activity_scope', s.normalize_config())
+        self.assertNotIn('activity_scope', s.world_config.normalize()['observation'])
+
+    def test_account_activity_configuration_preserves_world_roundtrip(self):
+        world = s.world_config.normalize({'observation': {'activity_scope': 'account'},
+            'access': {'forecast_workflow': 'read_only'}}, preset='resource')
+        config, _ = s.world_config.components(world)
+        self.assertEqual(s.world_config.normalize(preset='resource', delivery=config), world)
+        self.assertEqual(s.normalize_config(config)['activity_scope'], 'account')
+        with self.assertRaisesRegex(ValueError, 'read-only forecast'):
+            s.normalize_config({'activity_scope': 'account'})
+
     def test_library_scope_changes_reachability_not_task_or_data(self):
         for domain in s.delivery_data.DOMAINS:
             for preset in ('control', 'information'):

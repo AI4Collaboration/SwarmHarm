@@ -37,7 +37,7 @@ from phase1 import topology
 import domain_runtime
 from phase2 import phase2_component
 from phase2 import component_workflow
-from phase2 import trace_release, financial_composition, unified_delivery, balanced_study
+from phase2 import trace_release, financial_composition, unified_delivery, balanced_study, threat_grid
 from phase2.terminal_batching import fixtures as batching, workflow as batching_workflow, answer_workflow
 GUARDRAIL_SPEC=importlib.util.spec_from_file_location(
     'swarmharm_run_guardrails',REPO/'experiments/runtime/guardrails.py')
@@ -440,7 +440,16 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', threat_cell=None):
+    if source_retention not in ('origin', 'local'):
+        raise ValueError('Source retention must be origin or local')
+    local_source = None
+    if source_retention == 'local':
+        require(not subprocess.check_output(
+            ['git', 'status', '--porcelain=v1', '--untracked-files=all'], cwd=REPO, text=True).strip(),
+            'Commit the local source before preparing inference.')
+        local_source = {'mode': 'local', 'commit': subprocess.check_output(
+            ['git', 'rev-parse', 'HEAD'], cwd=REPO, text=True).strip()}
     if run_controls:
         guardrails.require_unified_workflow(study_mode, unified_delivery.FAMILY if component_family is None else component_family)
         guardrails.require_unified_backend()
@@ -489,6 +498,21 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     trace_study = component and component_family == trace_release.FAMILY
     treasury_study = component and component_family == financial_composition.FAMILY
     unified_study = component and component_family == unified_delivery.FAMILY
+    if threat_cell is not None:
+        definition = threat_grid.CELLS[threat_cell]
+        if (not continuous_workflow or harness_kind != 'codex' or goal_mode != 'off'
+                or reasoning_effort != 'high' or set(MODELS.values()) != {'openai/gpt-6.1-sol'}):
+            raise ValueError('Current threat-grid validation requires unified Sol 6.1, Codex, high reasoning and goal off')
+        if binding_preset not in (None, definition['preset']):
+            raise ValueError('Threat cell and binding preset differ')
+        binding_preset = definition['preset']
+        if delivery_config is not None or combined_bindings or comparison_design is not None:
+            raise ValueError('Threat-cell inputs cannot be mixed with another design')
+        if world_config is None:
+            world_config = threat_grid.configuration(threat_cell)
+        if target_claim not in (None, definition['legacy_claim']):
+            raise ValueError('Threat-cell auxiliary claim differs')
+        target_claim = definition['legacy_claim']
     if comparison_design is not None and comparison_design != balanced_study.NAME:
         raise ValueError('Unknown comparison design')
     if comparison_design is not None and not unified_study:
@@ -1446,12 +1470,16 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if unified_study:
         unified_delivery.configure_registration(reg, root, target_claim=target_claim,
                                                  combined_bindings=combined_bindings)
+        if threat_cell is not None:
+            reg['threat_grid'] = threat_grid.contract(threat_cell, phase2_plan)
         if comparison_design == balanced_study.NAME:
             reg['comparison_design'] = balanced_study.registration_manifest(reg)
     if treasury_study:
         financial_composition.configure_registration(reg, root)
     if trace_study:
         trace_release.configure_claim(reg, target_claim or 'coordinated_adverse_outcomes', root)
+    if local_source is not None:
+        reg['source_retention'] = local_source
     save(root/'registration.json',reg)
     save(root/'registration-seal.json',{
         'sha256':sha(root/'registration.json'),'model_calls':0})
@@ -1486,11 +1514,21 @@ def verify_collection_freeze(root,registration_dir,reg):
     branch=subprocess.run(['git','symbolic-ref','--quiet','--short','HEAD'],
         cwd=REPO,capture_output=True,text=True).stdout.strip()
     branch = branch or 'main'
-    remote=subprocess.check_output(
-        ['git','ls-remote','origin',f'refs/heads/{branch}'],cwd=REPO,text=True
-    ).split()
-    require(remote and head==remote[0],
-        f'Registration source must be committed and pushed to origin/{branch} before inference.')
+    retention = reg.get('source_retention', {'mode': 'origin'})
+    require(retention.get('mode') in ('origin', 'local'), 'Unknown source retention mode')
+    if retention['mode'] == 'local':
+        source_commit = retention.get('commit', '')
+        require(len(source_commit) == 40 and all(c in '0123456789abcdef' for c in source_commit),
+                'A local registration must bind its prepared source commit')
+        ancestor = subprocess.run(['git', 'merge-base', '--is-ancestor', source_commit, head],
+                                  cwd=REPO, capture_output=True)
+        require(ancestor.returncode == 0, 'Prepared source commit is not retained in local history')
+    else:
+        remote=subprocess.check_output(
+            ['git','ls-remote','origin',f'refs/heads/{branch}'],cwd=REPO,text=True
+        ).split()
+        require(remote and head==remote[0],
+            f'Registration source must be committed and pushed to origin/{branch} before inference.')
     tracked=subprocess.run(
         ['git','ls-files','--error-unmatch','--']+[
             str((registration_dir/name).relative_to(REPO))
@@ -1948,6 +1986,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             if 'comparison_design' in reg:
                 require(reg['comparison_design'] == balanced_study.registration_manifest(reg),
                         'Balanced comparison factors differ; prepare fresh inputs.')
+            if 'threat_grid' in reg:
+                require(reg['threat_grid'] == threat_grid.contract(
+                    reg['threat_grid']['cell'], reg['phase2']['assignments']),
+                    'Threat-grid input differs; prepare fresh inputs.')
         elif treasury_study:
             require(reg['component_initial_state']==financial_composition.initial_state(reg['phase2']['assignments']), 'Treasury inputs differ')
         elif trace_study:
@@ -2892,6 +2934,10 @@ if __name__=='__main__':
     p.add_argument('--study-mode', choices=(phase2_component.UNIFIED_MODE,), default=phase2_component.UNIFIED_MODE,
         help='One continuous reporting workflow (default: unified).')
     p.add_argument('--controls-from',type=Path,help='Reuse successful offline checks bound to identical source and native runtime; reverify model routing.')
+    p.add_argument('--source-retention', choices=('origin', 'local'), default='origin',
+        help='Seal committed local source without publishing, or require the default origin synchronization.')
+    p.add_argument('--threat-cell', choices=tuple(threat_grid.CELLS),
+        help='Select a concrete input contract from the current SwarmHarm grid.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')
     p.add_argument('--delivery-config', type=Path, help=argparse.SUPPRESS)
@@ -2906,7 +2952,7 @@ if __name__=='__main__':
     p.add_argument('--component-family', choices=(unified_delivery.FAMILY,), default=unified_delivery.FAMILY,
         help='Reporting and delivery service.')
     a=p.parse_args()
-    if a.phase=='prepare' and a.binding_preset is None:
+    if a.phase=='prepare' and a.binding_preset is None and a.threat_cell is None:
         p.error('--binding-preset is required during preparation')
     if a.phase=='prepare' and a.api_base.rstrip('/')!=AXONHUB_API_BASE:
         p.error('All live rollouts must use the registered AxonHub API base')
@@ -2930,5 +2976,6 @@ if __name__=='__main__':
             pi_comparison=a.pi_comparison,target_claim=a.target_claim,controls_from=a.controls_from,binding_preset=a.binding_preset,
             delivery_config=load(a.delivery_config) if a.delivery_config is not None else None,
             world_config=load(a.world_config) if a.world_config is not None else None,
-            combined_bindings=a.combined_bindings,comparison_design=a.comparison_design)
+            combined_bindings=a.combined_bindings,comparison_design=a.comparison_design,
+            source_retention=a.source_retention,threat_cell=a.threat_cell)
     else:collect(root,registration_dir)

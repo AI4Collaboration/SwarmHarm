@@ -172,6 +172,15 @@ def select_checks(files, full=False):
             checks.update(('catalog', 'inputs'))
         elif name == 'scripts/check_swarmform_read_observer.py':
             suites('swarmform_read_observer')
+        elif name in {LAB + '/phase2/unified_delivery.py', LAB + '/phase2/world_config.py'}:
+            suites('unified_*', 'continuous_*', 'delivery_*', 'domain', 'review',
+                   'claim_evidence', 'balanced_study', 'workflow_wording', 'swarmform_runtime')
+            checks.update(('wording', 'balanced'))
+        elif name == LAB + '/run.py':
+            suites('collector', '*_collect', 'local_source', 'native_harness', 'shutdown',
+                   'unified_*', 'continuous_*', 'component', 'continuation', 'domain_runtime',
+                   'engineering_capacity', 'knowledge_work', 'terminal_batching', 'swarmform_runtime')
+            checks.update(('wording', 'balanced'))
         elif name.startswith(LAB + '/') or name.startswith('experiments/prompt-contract/'):
             suites('*')
             checks.update(('wording', 'balanced'))
@@ -195,6 +204,9 @@ def select_checks(files, full=False):
         docker = True
     if tests & {'native_goal', 'structure_native', 'swarmform_collection'}:
         harnesses.add('codex')
+    if tests & {'unified_runtime', 'continuous_collect'}:
+        harnesses.add('codex')
+        docker = True
     if 'native_harness' in tests:
         # This suite validates all three registrations and uses real Codex
         # sessions/workstations, even when only one adapter's source changed.

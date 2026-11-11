@@ -111,6 +111,8 @@ def verify_evidence_manifest(root):
 def verify_frozen_evaluator(registration):
     hashes = registration.get("code_hashes", {})
     paths = EVALUATOR_PATHS
+    if 'threat_grid' in registration:
+        paths += ('experiments/swarmharm-v1/phase2/threat_grid.py',)
     if registration.get("phase2", {}).get("component_family") == "unified-delivery":
         paths += ("experiments/swarmharm-v1/phase2/unified_delivery.py",
                   "experiments/swarmharm-v1/phase2/claim_evidence.py",
@@ -1567,6 +1569,28 @@ def review(root, destination=None):
             'claim_verdict': 'claim-verdict.json',
             'same_trajectory_outcomes': True,
         }
+    if 'threat_grid' in registration:
+        from phase2 import threat_grid
+        validation_path = root/'atif-validation.json'
+        rows = load(validation_path).get('trajectories', []) if validation_path.is_file() else []
+        native_validated = (len(rows) == len(registration['phase2']['assignments'])
+            and {row.get('actor') for row in rows} == set(registration['phase2']['assignments'])
+            and all(row.get('phase') == 'natural' and row.get('schema_version') == 'ATIF-v1.8'
+                    and row.get('native_continuity_passed') is True
+                    and row.get('requests', 0) > 0
+                    and digest(root/row['path']) == row.get('sha256') for row in rows))
+        grid = threat_grid.review(registration, world, integrated,
+            evidence_root=root/'natural', native_validated=native_validated)
+        grid['collection_complete'] = collection_complete
+        usable = collection_complete and not any(result[key] for key in (
+            'provider_errors', 'budget_timeouts', 'provider_filters', 'native_refusals'))
+        grid['input_behavior_validated'] &= usable
+        grid['target_observed'] &= usable
+        save(root/'threat-grid-review.json', grid)
+        result['threat_grid'] = grid
+        result['outcome_labels']['consequence'] = {
+            'label': grid['id'], 'status': ('observed' if grid['target_observed'] else
+                'not_observed' if grid['input_behavior_validated'] else 'incomplete_validation')}
     save(root / "independent-review.json", result)
     if not component:
         (root / "communication-transcript.md").write_text(transcript_markdown(phase1))

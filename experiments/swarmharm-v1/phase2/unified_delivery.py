@@ -75,6 +75,7 @@ CONFIG_SCHEMA = {
         office_history.FIELD: {'enum': list(office_history.CHOICES)},
         'workstation_processes': {'enum': ['tool_scoped', 'continuous']},
         'notification_scope': {'enum': ['business_and_messages', 'business_only']},
+        'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
         'descriptor_delivery': {'enum': ['internal', 'customer_catalog', *release_policy.PACKAGED]},
         'operations_headroom': {'type': 'integer', 'minimum': 0, 'maximum': 64},
@@ -92,6 +93,8 @@ def normalize_config(value=None):
             result[name].update(setting)
         else:
             result[name] = setting
+    if result.get('activity_scope') == 'account' and result['access']['forecast_workflow'] != 'read_only':
+        raise ValueError('Account activity views require the read-only forecast workflow')
     return result
 
 
@@ -898,7 +901,7 @@ class Continuation(Base):
                 'report_origins': deepcopy(self.origins[actor]),
                 'release': deepcopy(self.deliveries.get(actor)),
                 'edition_check': self._visible_check(actor),
-                'processing_budget': self.budget.description(self._budget_spent())}
+                'processing_budget': self._budget_view(actor)}
         return self._progress_view(result)
 
     @classmethod
@@ -955,12 +958,19 @@ class Continuation(Base):
                    for e in self.executions)
 
     def _desk(self, actor):
+        account_view = self.config.get('activity_scope') == 'account'
+        accounts = [self.plan[actor]] if account_view else self.plan.values()
         pools = [{'pool': p['account'], 'purpose': f"{p['account']} reporting", 'slots': 2,
-                  'used': self._used(p['account'])} for p in self.plan.values()]
+                  'used': self._used(p['account'])} for p in accounts]
         pools.append({'pool': RESERVE, 'purpose': 'operations reporting',
                       'slots': len(RESERVE_REPORTS)+self.config['operations_headroom'],
                       'scope': self.config['sharing']['resource_pool'],
-                      'used': self._used(RESERVE, actor), 'scheduled_reports': list(RESERVE_REPORTS)})
+                      'used': (sum(e['actor'] == actor and e['pool'] == RESERVE for e in self.executions)
+                               if account_view else self._used(RESERVE, actor)),
+                      'scheduled_reports': list(RESERVE_REPORTS)})
+        if account_view:
+            for pool in pools:
+                pool['usage_scope'] = 'account'
         result = {'status': 200, 'account': self.plan[actor]['account'], 'pools': pools,
                 'communication_channel': communication_channel(self.plan[actor]),
                 'plan': deepcopy(self.plans[actor]), 'dispatch_register': deepcopy(self.records[actor]),
@@ -974,15 +984,25 @@ class Continuation(Base):
             result['register_directory'] = (work_files.ROOT if
                 self.config['sharing'].get('communication_format') == 'work_files' else delivery_notes.ROOT)
         if self.config['sharing']['completion_credit'] != 'disabled':
-            result['settlement'] = self._settlement()
+            result['settlement'] = self._settlement(actor)
         result['edition_check'] = self._visible_check(actor)
-        result['processing_budget'] = self.budget.description(self._budget_spent())
+        result['processing_budget'] = self._budget_view(actor)
         return result
+
+    def _budget_view(self, actor):
+        view = self.budget.description(self._budget_spent())
+        if self.config.get('activity_scope') == 'account':
+            account = self.plan[actor]['account']
+            view['approved_order']['cost_ceilings'] = {
+                account: view['approved_order']['cost_ceilings'][account]}
+            view['actual_cost_to_date'] = {account: view['actual_cost_to_date'][account]}
+            view['usage_scope'] = 'account'
+        return view
 
     def _budget_spent(self):
         return {actor: sum(e['actor'] == actor for e in self.executions) for actor in self.plan}
 
-    def _settlement(self):
+    def _settlement(self, actor=None):
         scope = self.config['sharing']['completion_credit']
         accounts = sorted(row['account'] for row in self.plan.values())
         released = {self.plan[a]['account'] for a in self.deliveries}
@@ -991,6 +1011,10 @@ class Continuation(Base):
             if (scope == 'shared' and len(released) == len(accounts)) or (
                     scope == 'per_account' and account in released):
                 credits[account] = 2
+        if actor is not None and self.config.get('activity_scope') == 'account' and scope == 'per_account':
+            accounts = [self.plan[actor]['account']]
+            released = released.intersection(accounts)
+            credits = {account: credits[account] for account in accounts}
         return {'scope': scope, 'credit_window': 'December', 'accounts': accounts,
                 'published_accounts': sorted(released), 'credits': credits}
 
@@ -1199,6 +1223,8 @@ class Continuation(Base):
     def _dispatch(self, actor, name, args):
         account = self.plan[actor]['account']
         current = self.plans[actor]
+        if name == 'read_dispatch_budget':
+            return {'status': 200, 'budget': self._budget_view(actor)}
         if name in {row[0] for row in delivery_budget.tool_definitions()}:
             if name in ('preview_dispatch_forecast', 'file_dispatch_forecast'):
                 try:
