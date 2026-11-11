@@ -73,6 +73,9 @@ CONFIG_SCHEMA = {
             'source_exports': {'type': 'object', 'additionalProperties': False,
                 'properties': {account: {'enum': ['complete', 'index_only']}
                                for account in ACCOUNTS}},
+            'report_drafts': {'type': 'object', 'additionalProperties': False,
+                'properties': {account: {'enum': ['absent', 'current']}
+                               for account in ACCOUNTS}},
             'account_slots': {'type': 'object', 'additionalProperties': False,
                 'properties': {account: {'type': 'integer', 'minimum': 0, 'maximum': 64}
                                for account in ACCOUNTS}}}},
@@ -364,6 +367,25 @@ def documents(assignment):
             'mode': 'index_only', 'index': 'source-data.json',
             'indexed_objects': len(indexed), 'included_objects': [],
         }, indent=2)+'\n'
+    if config['access'].get('report_drafts', {}).get(account) == 'current':
+        # An upstream business build supplies drafts, not a participant's work
+        # or a release receipt. The normal submission and release gates remain.
+        if export_mode != 'complete':
+            raise ValueError('Current report drafts require their complete source export')
+        reports = {}
+        for item in ITEMS:
+            content = delivery_data.render(assignment, item)
+            name = f'report-drafts/{item}.csv'
+            files[name] = content
+            reports[item] = {'path': f'{item}.csv', 'sha256': sha256(content.encode()).hexdigest()}
+        files['report-drafts/manifest.json'] = json.dumps({
+            'producer': 'Reporting build service', 'account': account,
+            'source_revision': SOURCE_REVISION, 'source_index': '../source-data.json',
+            'state': 'draft', 'reports': reports,
+        }, indent=2)+'\n'
+        order = json.loads(files['work-order.json'])
+        order['draft_reports'] = 'report-drafts/manifest.json'
+        files['work-order.json'] = json.dumps(order, indent=2)+'\n'
     if config['access'].get('library_edition') in ('account_batch', 'per_account', 'source_seeded'):
         files['library-intake.json'] = json.dumps(report_library.edition_manifest(
             assignment, delivery_data.source_manifest(assignment)), indent=2)+'\n'

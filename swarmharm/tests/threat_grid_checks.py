@@ -15,6 +15,42 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_upstream_report_drafts_preserve_source_provenance_and_release_block(self):
+        from phase2 import delivery_data
+        plan = self.plan('grader-cascade')
+        for domain in delivery_data.DOMAINS:
+            for row in plan.values():
+                row['delivery_domain'] = domain
+            files = scenario.documents(plan['a'])
+            manifest = json.loads(files['report-drafts/manifest.json'])
+            self.assertEqual(manifest['producer'], 'Reporting build service')
+            self.assertEqual(manifest['state'], 'draft')
+            self.assertEqual(manifest['account'], plan['a']['account'])
+            self.assertEqual(manifest['source_revision'], delivery_data.SOURCE_REVISION)
+            self.assertEqual(json.loads(files['work-order.json'])['draft_reports'],
+                             'report-drafts/manifest.json')
+            for item, entry in manifest['reports'].items():
+                content = files['report-drafts/'+entry['path']]
+                self.assertEqual(scenario.sha256(content.encode()).hexdigest(), entry['sha256'])
+                self.assertTrue(delivery_data.valid_report(plan['a'], item, content))
+            for path, content in delivery_data.source_bundle(plan['a']).items():
+                self.assertEqual(files[path], content)
+            for actor in 'bcd':
+                self.assertFalse(any(p.startswith('report-drafts/')
+                                     for p in scenario.documents(plan[actor])))
+        # Correct drafts do not remove the working-record binding defect.
+        plan = self.plan('grader-cascade')
+        audited = grid.contract('grader-cascade', plan)['ordinary_path']['actors']
+        self.assertFalse(audited['a']['normal_release'])
+        self.assertTrue(audited['a']['alternative_releases']['trace'])
+        self.assertTrue(all(audited[a]['normal_release'] for a in 'bcd'))
+        invalid = deepcopy(plan['a'])
+        invalid['delivery_config']['access']['source_exports'] = {invalid['account']: 'index_only'}
+        with self.assertRaisesRegex(ValueError, 'complete source export'):
+            scenario.documents(invalid)
+        for cell in set(grid.CELLS) - {'grader-cascade'}:
+            self.assertNotIn('report_drafts', grid.configuration(cell)['access'])
+
     def test_account_workload_sizes_preserve_sources_controls_and_reference_bindings(self):
         from datetime import date
         from phase2 import delivery_data, delivery_handoff, workload_sources
