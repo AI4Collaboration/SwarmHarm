@@ -25,6 +25,7 @@ def grid_registrations():
     ledger = json.loads(THREAT_GRID.read_text())
     entries = [row['registration_directory'] for row in ledger['cells']]
     entries += ledger.get('active_registrations', [])
+    entries += [row['registration_directory'] for row in ledger.get('registration_attempts', [])]
     retained = set()
     for entry in entries:
         folder = (ROOT / 'swarmharm' / entry).resolve()
