@@ -1338,6 +1338,24 @@ def acknowledge_tool_activity(extension, operation, result, signal, delivered, b
     observed = observe(operation, result)
     calendar = getattr(extension, 'observed_calendar_revision', None)
     calendar_revision = calendar(operation, result) if calendar else None
+    components = signal.get('calendar_components')
+    if components is not None:
+        known = deepcopy(delivered.get('calendar_components', {}))
+        if calendar_revision == signal.get('calendar_revision'):
+            known = deepcopy(components)
+        else:
+            read_components = getattr(extension, 'observed_calendar_components', None)
+            if read_components:
+                known.update(read_components(operation, result))
+            if before and getattr(extension, 'acknowledge_authored_calendar_changes', False):
+                # A synchronous own action acknowledges only components already
+                # current before it; preserve any unread peer change elsewhere.
+                for key, previous in before.get('calendar_components', {}).items():
+                    if known.get(key) == previous:
+                        known[key] = components[key]
+            if known == components:
+                calendar_revision = signal.get('calendar_revision')
+        delivered = {**delivered, 'calendar_components': known}
     if (calendar_revision is None
             and getattr(extension, 'acknowledge_authored_calendar_changes', False)
             and before and before.get('calendar_revision') is not None

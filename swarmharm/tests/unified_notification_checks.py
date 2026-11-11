@@ -58,9 +58,35 @@ class UnifiedNotificationChecks(unittest.TestCase):
         flow.call('b',1,'execute_dispatch',{'revision':1})
         signal,received=self.act(flow,delivered,'execute_dispatch',revision=1)
         self.assertNotEqual(received['calendar_revision'],signal['calendar_revision'])
-        self.assertEqual(received,delivered)
+        self.assertEqual(received['calendar_revision'],delivered['calendar_revision'])
         signal,received=self.act(flow,received,'delivery_desk')
         self.assertEqual(signal,received)
+
+    def test_checking_a_published_pack_acknowledges_that_exact_peer_change(self):
+        flow=self.flow({'completion_basis':'contents', 'activity_scope':'account',
+            'access':{'report_upload':'enabled', 'forecast_workflow':'read_only'},
+            'sharing':{'published_packs':'shared'}})
+        flow.continuous_workflow=True
+        delivered=flow.activity_signal('a')
+        for item in s.ITEMS:
+            flow.call('b',1,'submit_report',{'item':item, 'source_revision':s.SOURCE_REVISION,
+                                          'csv':s.payload(flow.plan['b'],item)})
+        self.assertEqual(flow.call('b',2,'release_delivery',
+            {'revision':flow.plans['b']['revision']})['status'],201)
+        self.assertNotEqual(flow.activity_signal('a'),delivered)
+        signal,received=self.act(flow,delivered,'check_delivery')
+        self.assertEqual(signal,received)
+        self.assertEqual(run.work_notice(extension=flow,actor='a',check={'complete':False},
+            signal=signal,delivered=received),(None,None))
+
+    def test_partial_check_does_not_acknowledge_an_unread_shared_budget(self):
+        flow=self.shared_flow()
+        delivered=flow.activity_signal('a')
+        flow.call('b',1,'execute_dispatch',{'revision':1})
+        signal,received=self.act(flow,delivered,'check_delivery')
+        self.assertNotEqual(signal['calendar_revision'],received['calendar_revision'])
+        self.assertNotEqual(signal['calendar_components']['processing_budget'],
+                            received['calendar_components']['processing_budget'])
 
     def test_own_action_keeps_unread_peer_messages_pending(self):
         flow=self.flow();delivered=flow.activity_signal('a')

@@ -1078,13 +1078,26 @@ class Continuation(Base):
                     'event': 'message_added'} for m in self._visible_messages(actor) if m['author'] != actor]
         if self.config.get('notification_scope') == 'business_only':
             entries = []
-        calendar = digest(self._progress_view(self._desk(actor)))
+        desk = self._progress_view(self._desk(actor))
+        calendar = digest(desk)
         return {'revision': digest([entries, calendar]), 'case_revisions': {'delivery': digest(entries)},
                 'case_entries': {'delivery': entries}, 'calendar_revision': calendar,
+                'calendar_components': {key: digest(value) for key, value in desk.items()},
                 'relevant_cross_job_records': len(entries)}
 
     def observed_calendar_revision(self, operation, result):
         return digest(self._progress_view(result)) if operation == 'delivery_desk' else None
+
+    def observed_calendar_components(self, operation, result):
+        if operation == 'check_delivery':
+            observed = {'edition_check': result}
+            if 'visible_releases' in result:
+                observed['releases'] = result['visible_releases']
+        elif operation == 'read_dispatch_budget':
+            observed = {'processing_budget': result}
+        else:
+            observed = {}
+        return {key: digest(self._progress_view(value)) for key, value in observed.items()}
 
     def observed_activity_keys(self, operation, result):
         if self.continuous_workflow and operation == 'bash':
