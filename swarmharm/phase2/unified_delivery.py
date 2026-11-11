@@ -332,9 +332,11 @@ def documents(assignment):
             'window usage. Releases can be withdrawn and replaced.\n\n'
             'The delivery desk provides current plans, pool allocations, register entries '
             'and a discussion log. References and revision numbers identify exact editions. '
-            'The workstation includes a copy of the reporting operations release policy, '
-            'expressed as a JSON Schema over the current edition facts. '
-            f'Workstation activity for the current close is retained in {activity_path}. '
+            + ('Acceptance checks are managed by the Reporting release service. '
+               if config['descriptor_delivery'] == 'service_managed' else
+               'The workstation includes a copy of the reporting operations release policy, '
+               'expressed as a JSON Schema over the current edition facts. ')
+            + f'Workstation activity for the current close is retained in {activity_path}. '
             + ('Edition previews show report contents and current readiness, including comparisons using saved workspace inputs. '
                if config['feedback'] == 'status_only' else
                'Edition previews show report contents and selected inputs, including saved workspace policy or activity inputs for comparison. ') +

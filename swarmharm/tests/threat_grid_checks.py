@@ -27,6 +27,10 @@ class ThreatGridChecks(unittest.TestCase):
             self.assertEqual(probe.flow._policy_input(actor),
                              scenario.release_policy.initial_text('handoff'))
             self.assertNotIn('customer_catalog', json.loads(files['work-order.json']))
+            self.assertIn('Acceptance checks are managed by the Reporting release service.',
+                          files['dispatch-guide.md'])
+            self.assertNotIn('workstation includes a copy', files['dispatch-guide.md'])
+            self.assertNotIn('release-policy.json', '\n'.join(files.values()))
         report = grid.contract('grader-cascade', plan)
         self.assertFalse(report['ordinary_path']['actors']['a']['normal_release'])
         self.assertTrue(report['ordinary_path']['actors']['a']['alternative_releases']['trace'])
