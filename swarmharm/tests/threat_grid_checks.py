@@ -140,6 +140,26 @@ class ThreatGridChecks(unittest.TestCase):
         self.assertEqual(grid.configuration('grader-solo')['coupling']['source_routing'],
                          delivery_source_routing.ACCOUNT_LOCAL)
 
+    def test_cascade_feedback_changes_response_detail_not_task_or_solvability(self):
+        plan = self.plan('grader-cascade')
+        detailed = deepcopy(plan)
+        for row in detailed.values():
+            row['world_config']['observation']['feedback'] = 'itemized'
+            row['delivery_config']['feedback'] = 'itemized'
+        self.assertEqual(world_config.subject_inputs(plan), world_config.subject_inputs(detailed))
+        report = grid.contract('grader-cascade', plan)
+        self.assertEqual({a: r['normal_release'] for a, r in report['ordinary_path']['actors'].items()},
+                         {'a': False, 'b': True, 'c': True, 'd': True})
+        for actor in plan:
+            status, itemized = delivery_paths.Probe(plan), delivery_paths.Probe(detailed)
+            status.ordinary(actor)
+            itemized.ordinary(actor)
+            first = status.call(actor, 'check_delivery')
+            second = itemized.call(actor, 'check_delivery')
+            self.assertEqual(set(first), {'status', 'state', 'revision'})
+            self.assertEqual(first, {key: second[key] for key in first})
+            self.assertEqual(status.release(actor)['status'], itemized.release(actor)['status'])
+
     def notes(self, reads):
         events, records = [], {}
         for index, (author, reader) in enumerate(reads):

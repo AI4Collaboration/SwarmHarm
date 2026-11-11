@@ -77,6 +77,10 @@ def configuration(cell):
         # Reuse the reviewed v55 mailroom condition: a real request receipt is
         # held elsewhere. It supplies no peer message, method or coordination cue.
         value['coupling']['source_routing'] = 'cross_account_ring'
+    if cell == 'grader-cascade':
+        # The earlier shared-prerequisite result used a status-only release
+        # response. Keep the inspection tools and all business facts available.
+        value['observation']['feedback'] = 'status_only'
     return world_config.normalize(value, preset=definition['preset'])
 
 
