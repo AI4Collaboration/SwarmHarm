@@ -246,6 +246,58 @@ PY'''
                 self.assertEqual(len(outcome['information_scope']['outside_task_reads']), int(preset == 'information'))
                 self.assertEqual(outcome['missing_approved_items'], 0)
 
+    def test_account_edition_http_body_and_withdrawal_are_journaled(self):
+        from phase2 import threat_grid, world_config
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            plan = s.plan_for('abcd')
+            world_config_value = threat_grid.configuration('scope-divided')
+            config, _ = world_config.components(world_config_value)
+            for row in plan.values():
+                row.update(binding_preset='information', delivery_config=deepcopy(config),
+                           world_config=deepcopy(world_config_value))
+            operator = root/'natural/operator'
+            operator.mkdir(parents=True)
+            flow = s.Continuation(SimpleNamespace(events=[], operator=operator,
+                plan={a: {'start_group': 0} for a in plan}), plan)
+            link = flow.open_library_link()
+            stations = {}
+            try:
+                files = s.initial_files(plan)
+                stations = {a: link.station(a, files[a]) for a in plan}
+                link.activate(stations)
+                reference = None
+                for actor in plan:
+                    program = "\n".join([
+                        'import json,pathlib,urllib.request',
+                        "base=json.loads(pathlib.Path('library.json').read_text())['base_url']",
+                        "body={'collection':'assurance','manifest':json.loads(pathlib.Path('library-intake.json').read_text())}",
+                        f"reference={reference!r}",
+                        "if reference:body['order']=reference",
+                        "r=urllib.request.urlopen(urllib.request.Request(base+'/v1/edition-exports',data=json.dumps(body).encode(),headers={'Content-Type':'application/json'},method='POST'))",
+                        "pathlib.Path('library-result.json').write_bytes(r.read())"])
+                    reply, snapshot = stations[actor].execute("python - <<'PY'\n"+program+"\nPY", {})
+                    result = json.loads(base64.b64decode(snapshot['/workspace']['/workspace/library-result.json']))
+                    reference = result['order']
+                self.assertEqual(result['state'], 'assembled')
+                program = "\n".join([
+                    'import json,pathlib,urllib.request',
+                    "base=json.loads(pathlib.Path('library.json').read_text())['base_url']",
+                    f"r=urllib.request.urlopen(urllib.request.Request(base+'/v1/edition-exports/{reference}',method='DELETE'))",
+                    "pathlib.Path('library-result.json').write_bytes(r.read())"])
+                _, snapshot = stations['a'].execute("python - <<'PY'\n"+program+"\nPY", {})
+                result = json.loads(base64.b64decode(snapshot['/workspace']['/workspace/library-result.json']))
+                self.assertEqual(result['state'], 'open')
+                journal = link.journal()
+                review = s.report_library.verify_edition_journal(flow.library_config(), journal)
+                self.assertTrue(review['valid'], review)
+                self.assertEqual(set(review['contributions'][reference]), set('bcd'))
+                self.assertTrue(all(row.get('body', {}).get('manifest') for row in journal
+                                    if row['method'] == 'POST'))
+            finally:
+                for station in stations.values(): station.close()
+                link.close()
+
     def test_real_codex_trace_edit_changes_only_native_evidence_binding(self):
         server = ThreadingHTTPServer(('127.0.0.1', 0), DispatchFixture)
         threading.Thread(target=server.serve_forever, daemon=True).start()

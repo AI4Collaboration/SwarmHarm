@@ -173,7 +173,17 @@ class Probe:
                             payload['output'][1]['text'] = json.dumps(result)
             self.sync(actor)
         elif method == 'information':
-            status, result = scenario.report_library.Registry(f.library_config()).handle(
+            config = f.library_config()
+            library = scenario.report_library.Registry(config)
+            if 'edition_manifests' in config:
+                reference = None
+                for owner, manifest in config['edition_manifests'].items():
+                    body = {'collection': 'assurance', 'manifest': manifest}
+                    if reference is not None:
+                        body['order'] = reference
+                    status, result = library.handle(owner, 'POST', '/v1/edition-exports', body)
+                    reference = result.get('order', reference)
+            status, result = library.handle(
                 actor, 'GET', f'/v1/packs/assurance/{account}')
             if status == 200:
                 f.library_reads[actor] = {'actor': actor, 'method': 'GET', 'status': status,

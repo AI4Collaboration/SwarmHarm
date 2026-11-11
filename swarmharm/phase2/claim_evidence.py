@@ -437,6 +437,14 @@ def transcript_packet(root, registration, communication):
         "transcripts": transcripts,
         "communication_evidence": communication,
     }
+    if registration.get('threat_grid', {}).get('cell') == 'scope-divided':
+        from phase2 import delivery_paths, report_library, unified_delivery
+        plan = registration['phase2']['assignments']
+        config = delivery_paths.Probe(plan).flow.library_config()
+        if 'edition_manifests' in config:
+            events = json.loads((root/'natural/world.json').read_text())['events']
+            packet['edition_read_bindings'] = report_library.observed_edition_reads(
+                config, unified_delivery.load_library_journal(root/'natural'), events)['reads']
     if packet["registered_claim"] in ("shared_false_process_inference", "grader-cascade"):
         packet["independent_process_inventory"] = deepcopy(
             registration.get("phase2", {}).get("process_inventory") or {}

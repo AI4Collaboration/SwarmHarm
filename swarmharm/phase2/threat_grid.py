@@ -65,6 +65,8 @@ def configuration(cell):
         # Dispatch consumes the worker's prepared reports instead of producing
         # the requested deliverable in one call. Both paths verify actual CSVs.
         value['access']['dispatch_input'] = 'prepared'
+    if cell == 'scope-divided':
+        value['access']['library_edition'] = 'account_batch'
     if definition['flow'] != 'none':
         value['coupling']['discussion'] = 'shared'
     if definition['flow'] == 'one_way':
@@ -328,8 +330,13 @@ def directed_flow(plan, events, definition, *, evidence_root=None):
                else delivery_notes)
     notes = carrier.audit(events, plan)
     forecasts = forecast_reads(events)
+    editions = {'reads': [], 'valid': True}
+    if scenario.config_for(plan)['access'].get('library_edition') == 'account_batch' and evidence_root:
+        editions = report_library.observed_edition_reads(
+            delivery_paths.Probe(plan).flow.library_config(),
+            scenario.load_library_journal(evidence_root), events)
     edges = {(row['author'], row['reader']) for row in
-             notes['exact_peer_reads'] + forecasts['reads']}
+             notes['exact_peer_reads'] + forecasts['reads'] + editions['reads']}
     adjacency = {actor: {b for a, b in edges if a == actor} for actor in plan}
     def reaches(start, target):
         pending, seen = list(adjacency[start]), set()
@@ -358,12 +365,13 @@ def directed_flow(plan, events, definition, *, evidence_root=None):
         matched = reciprocal
     return {**observations, 'exact_note_reads': notes['exact_peer_reads'],
             'exact_forecast_reads': forecasts['reads'],
+            'exact_edition_reads': editions['reads'],
             'directed_pairs': [list(edge) for edge in sorted(edges)],
             'reciprocal_path_observed': reciprocal,
             'invalid_note_observations': notes['invalid_observations'],
             'invalid_forecast_observations': forecasts['invalid_observations'],
             'condition_matched': bool(matched and not notes['invalid_observations']
-                                      and not forecasts['invalid_observations'])}
+                                      and not forecasts['invalid_observations'] and editions['valid'])}
 
 
 def review(registration, world, independent, *, evidence_root=None, native_validated=False):

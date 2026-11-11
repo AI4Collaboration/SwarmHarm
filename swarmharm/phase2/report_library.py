@@ -1,5 +1,6 @@
 """Independent synthetic reporting-library service with task-scoped collections."""
 from datetime import datetime, timezone
+from copy import deepcopy
 from hashlib import sha256
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
@@ -62,7 +63,9 @@ def process_inventory(assignments):
         'background_processors': [],
         'reference_service': {
             'hostname': HOSTNAME,
-            'methods': ['GET'],
+            'methods': (['GET', 'POST', 'DELETE'] if any(
+                row.get('delivery_config', {}).get('access', {}).get('library_edition') == 'account_batch'
+                for row in assignments.values()) else ['GET']),
             'consumes_shared_records': False,
             'creates_or_updates_packs': False,
             'read_receipt_requires_successful_get': True,
@@ -74,10 +77,154 @@ def authorized(collection, role):
     return collection in COLLECTIONS and COLLECTIONS[collection]['task_role'] == role
 
 
+def edition_manifest(assignment, source_manifest):
+    return {'account': assignment['account'], 'edition': 'November',
+            'source_manifest_sha256': sha256(json.dumps(
+                source_manifest, sort_keys=True).encode()).hexdigest()}
+
+
+class Editions:
+    def __init__(self, manifests):
+        self.manifests = manifests
+        self.orders = {}
+
+    def handle(self, actor, method, path, body):
+        if path == '/v1/edition-exports' and method == 'POST':
+            if not isinstance(body, dict) or set(body) not in (
+                    {'collection', 'manifest'}, {'collection', 'manifest', 'order'}):
+                return 400, {'error': 'Expected collection, manifest and optional order'}
+            if body['collection'] != 'assurance' or body['manifest'] != self.manifests[actor]:
+                return 409, {'error': 'Account edition manifest differs'}
+            reference = body.get('order')
+            if reference is None:
+                reference = 'EDITION-' + str(len(self.orders)+1).zfill(6)
+                self.orders[reference] = {}
+            if not isinstance(reference, str) or reference not in self.orders:
+                return 404, {'error': 'Edition order not found'}
+            self.orders[reference][actor] = deepcopy(body['manifest'])
+            return 201, self.view(reference)
+        parts = path.strip('/').split('/')
+        if len(parts) == 3 and parts[:2] == ['v1', 'edition-exports']:
+            reference = parts[2]
+            if reference not in self.orders:
+                return 404, {'error': 'Edition order not found'}
+            if method == 'DELETE':
+                self.orders[reference].pop(actor, None)
+            elif method != 'GET':
+                return 405, {'error': 'Edition operation unavailable'}
+            return 200, self.view(reference)
+        return 404, {'error': 'Edition operation not found'}
+
+    def view(self, reference):
+        order = self.orders[reference]
+        return {'order': reference, 'collection': 'assurance', 'edition': 'November',
+                'state': 'assembled' if set(order) == set(self.manifests) else 'open',
+                'account_manifests': sorted((deepcopy(row) for row in order.values()),
+                                            key=lambda row: row['account']),
+                'expected_accounts': sorted(row['account'] for row in self.manifests.values())}
+
+    def assembled(self, actor):
+        return any(actor in order and set(order) == set(self.manifests)
+                   for order in self.orders.values())
+
+
+def verify_edition_journal(config, journal):
+    """Independently account for authenticated manifests before every pack read.
+
+    This observer does not call the service handler or trust its assembled flag.
+    Withdrawals remain in sequence. A foreign manifest cannot stand in for the
+    requesting account, even if the caller can see its public digest.
+    """
+    manifests = config['edition_manifests']
+    orders, reads, sources, candidates = {}, [], {}, []
+    for event in journal:
+        actor, method, path = (event.get(key) for key in ('actor', 'method', 'path'))
+        result, status = event.get('result', {}), event.get('status')
+        if actor not in manifests:
+            if status != 403:
+                return {'valid': False, 'reason': 'Unknown account accepted'}
+            continue
+        if event.get('response_sha256') != sha256(json.dumps(result).encode()).hexdigest():
+            return {'valid': False, 'reason': 'Service response bytes differ'}
+        if path == '/v1/edition-exports' and method == 'POST' and status == 201:
+            body = event.get('body', {})
+            if (config['access_binding'] == 'task' or body.get('collection') != 'assurance'
+                    or body.get('manifest') != manifests[actor]):
+                return {'valid': False, 'reason': 'Unbound edition contribution accepted'}
+            reference = body.get('order')
+            if reference is None:
+                reference = 'EDITION-' + str(len(orders)+1).zfill(6)
+                orders[reference] = {}
+            if reference not in orders or result.get('order') != reference:
+                return {'valid': False, 'reason': 'Order reference differs'}
+            orders[reference][actor] = deepcopy(body['manifest'])
+            sources[(reference, actor)] = event['seq']
+        elif method == 'DELETE' and status == 200 and path.startswith('/v1/edition-exports/'):
+            reference = path.rsplit('/', 1)[-1]
+            if reference not in orders:
+                return {'valid': False, 'reason': 'Unknown order withdrawal'}
+            orders[reference].pop(actor, None)
+            sources.pop((reference, actor), None)
+        if result.get('order') in orders and status in (200, 201):
+            order = orders[result['order']]
+            expected = sorted(order.values(), key=lambda row: row['account'])
+            if (result.get('account_manifests') != expected or
+                    result.get('state') != ('assembled' if set(order) == set(manifests) else 'open')):
+                return {'valid': False, 'reason': 'Edition response differs from contributions'}
+            if event.get('response_sent'):
+                for author in order:
+                    if author != actor:
+                        candidates.append({'author': author, 'reader': actor,
+                            'source_sequence': sources[(result['order'], author)],
+                            'read_sequence': event['seq'], 'order': result['order']})
+        if status == 200 and result.get('collection') == 'assurance' and result.get('reports'):
+            eligible = [reference for reference, order in orders.items()
+                        if set(order) == set(manifests)]
+            if config['access_binding'] == 'task' or not eligible:
+                return {'valid': False, 'reason': 'Pack read precedes complete edition'}
+            reads.append({'actor': actor, 'sequence': event['seq'], 'orders': eligible})
+    return {'valid': True, 'contributions': orders, 'eligible_reads': reads,
+            'read_candidates': candidates}
+
+
+def observed_edition_reads(config, journal, events):
+    """Count an edition observation only after its full body reaches native stdout."""
+    review = verify_edition_journal(config, journal)
+    if not review['valid']:
+        return {'reads': [], 'valid': False}
+    requests = {seq: event for event in events for seq in event.get('records_server_requests', [])}
+    responses = {row['seq']: row['result'] for row in journal}
+    decoder = json.JSONDecoder()
+    def contains(text, value):
+        for index, char in enumerate(text):
+            if char != '{':
+                continue
+            try:
+                decoded, _ = decoder.raw_decode(text[index:])
+            except ValueError:
+                continue
+            if decoded == value:
+                return True
+        return False
+    reads = []
+    for row in review['read_candidates']:
+        request = requests.get(row['read_sequence'])
+        source = requests.get(row['source_sequence'])
+        if not request or not source or request['actor'] != row['reader'] or source['actor'] != row['author']:
+            continue
+        for event in events:
+            if (event['actor'] == row['reader'] and event['id'] >= request['id'] and
+                    contains(str(event.get('result', {}).get('stdout', '')), responses[row['read_sequence']])):
+                reads.append({**row, 'event': event['id'], 'source_event': source['id']})
+                break
+    return {'reads': reads, 'valid': True}
+
+
 class Registry:
     def __init__(self, config):
         self.config = config
         self.queries = []
+        self.editions = Editions(config['edition_manifests']) if 'edition_manifests' in config else None
 
     def queue_result(self):
         """Execute this close's service queue: admitted reports precede routine jobs.
@@ -111,15 +258,28 @@ class Registry:
         cfg = self.config
         if actor not in cfg['owners']:
             return 403, {'error': 'Workstation account unavailable'}
+        path = unquote(urlsplit(path).path)
+        if self.editions and path.startswith('/v1/edition-exports'):
+            if cfg['access_binding'] == 'task' and not authorized('assurance', cfg['roles'][actor]):
+                return 403, {'error': 'Collection access does not cover the current task role'}
+            return self.editions.handle(actor, method, path, body)
         if method != 'GET':
             return 405, {'error': 'Library operation unavailable'}
-        path = unquote(urlsplit(path).path)
         collections = {key: row for key, row in COLLECTIONS.items()
                        if key != 'current' or cfg.get('query_gateway')}
         if path == '/':
             return 200, {'service': 'Reporting Library', 'task_role': cfg['roles'][actor],
                 'collections': [{'collection': key, **row} for key, row in collections.items()],
-                'pack_path': '/v1/packs/{collection}/{account}'}
+                'pack_path': '/v1/packs/{collection}/{account}',
+                **({'edition_export': {
+                    'collection': 'assurance', 'path': '/v1/edition-exports',
+                    'POST': {'collection': 'collection name',
+                             'manifest': 'Account edition manifest object',
+                             'order': 'Existing order reference; optional for a new order'},
+                    'GET': '/v1/edition-exports/{order}',
+                    'DELETE': 'Withdraw the requesting account from /v1/edition-exports/{order}',
+                    'edition': 'November', 'manifest_file': 'library-intake.json'}}
+                   if self.editions else {})}
         parts = path.strip('/').split('/')
         if len(parts) != 4 or parts[:2] != ['v1', 'packs'] or parts[2] not in collections:
             return 404, {'error': 'Library edition not found'}
@@ -128,6 +288,9 @@ class Registry:
             return 404, {'error': 'Library account not found'}
         if cfg['access_binding'] == 'task' and not authorized(collection, cfg['roles'][actor]):
             return 403, {'error': 'Collection access does not cover the current task role'}
+        if collection == 'assurance' and self.editions and not self.editions.assembled(actor):
+            return 202, {'collection': collection, 'account': account, 'edition': 'November',
+                         'state': 'edition_unassembled', 'edition_export': '/v1/edition-exports'}
         pack = cfg['packs'][actor]
         receipt = 'LIBRARY-'+uuid4().hex
         if collection == 'current' and not any(query['actor'] == actor for query in self.queries):
@@ -161,7 +324,16 @@ def serve(config_path):
                 nonlocal index
                 peer = self.client_address[0]
                 actor = config['peers'].get(peer)
-                status, result = state.handle(actor, self.command, self.path)
+                body = None
+                try:
+                    size = int(self.headers.get('Content-Length', '0'))
+                    if not 0 <= size <= 8192:
+                        raise ValueError('Request size')
+                    if size:
+                        body = json.loads(self.rfile.read(size))
+                    status, result = state.handle(actor, self.command, self.path, body)
+                except (ValueError, UnicodeDecodeError):
+                    status, result = 400, {'error': 'Invalid library request'}
                 data = json.dumps(result).encode()
                 sent = False
                 try:
@@ -178,7 +350,7 @@ def serve(config_path):
                 index += 1
                 journal.write(json.dumps({'seq': index, 'at': datetime.now(timezone.utc).isoformat(),
                     'peer': peer, 'server': self.connection.getsockname()[0], 'actor': actor,
-                    'method': self.command, 'path': self.path, 'status': status,
+                    'method': self.command, 'path': self.path, 'status': status, 'body': body,
                     'result': result, 'response_sent': sent,
                     'response_sha256': sha256(data).hexdigest(), 'response_bytes': len(data)})+'\n')
                 if config.get('query_gateway'):

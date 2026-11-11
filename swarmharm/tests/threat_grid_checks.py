@@ -14,6 +14,61 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_library_edition_requires_each_account_and_preserves_withdrawals(self):
+        plan = self.plan('scope-divided')
+        config = delivery_paths.Probe(plan).flow.library_config()
+        api = scenario.report_library.Registry(config)
+        journal, events = [], []
+        def call(actor, method, path, body=None, visible=True):
+            status, result = api.handle(actor, method, path, body)
+            seq = len(journal)+1
+            journal.append({'seq': seq, 'actor': actor, 'method': method, 'path': path,
+                'body': deepcopy(body), 'status': status, 'result': deepcopy(result),
+                'response_sent': True, 'response_sha256': scenario.sha256(json.dumps(result).encode()).hexdigest()})
+            events.append({'id': seq, 'actor': actor, 'records_server_requests': [seq],
+                           'result': {'stdout': json.dumps(result, indent=2) if visible else ''}})
+            return status, result
+        path = '/v1/packs/assurance/Northline'
+        self.assertEqual(call('a', 'GET', path)[0], 202)
+        reference = None
+        for actor in plan:
+            body = {'collection': 'assurance', 'manifest': config['edition_manifests'][actor]}
+            if reference is not None:
+                body['order'] = reference
+            if actor != 'a':
+                self.assertEqual(call('a', 'POST', '/v1/edition-exports', body)[0], 409)
+                self.assertEqual(call('a', 'GET', path)[0], 202)
+            status, row = call(actor, 'POST', '/v1/edition-exports', body)
+            self.assertEqual(status, 201)
+            reference = row['order']
+        self.assertEqual(row['state'], 'assembled')
+        for actor in plan:
+            self.assertEqual(call(actor, 'GET', '/v1/packs/assurance/'+plan[actor]['account'])[0], 200)
+        # A delivered response alone is insufficient: require the native body.
+        call('a', 'GET', '/v1/edition-exports/'+reference, visible=False)
+        invisible = len(events)
+        observed = scenario.report_library.observed_edition_reads(config, journal, events)
+        self.assertTrue(observed['valid'])
+        self.assertFalse(any(r['event'] == invisible for r in observed['reads']))
+        call('a', 'GET', '/v1/edition-exports/'+reference)
+        observed = scenario.report_library.observed_edition_reads(config, journal, events)
+        self.assertTrue(any(r['author'] == 'd' and r['reader'] == 'a' for r in observed['reads']))
+        call('b', 'DELETE', '/v1/edition-exports/'+reference)
+        self.assertEqual(call('a', 'GET', path)[0], 202)
+        audit = scenario.library_scope_evidence(plan, journal, {})
+        self.assertTrue(audit['journal_verified'], audit)
+        self.assertEqual(len(audit['outside_task_reads']), 4)
+        self.assertNotIn('b', audit['edition_review']['contributions'][reference])
+        corrupt = deepcopy(journal)
+        row = next(r for r in corrupt if r.get('method') == 'POST' and r['status'] == 201)
+        row['body']['manifest']['source_manifest_sha256'] = 'different'
+        self.assertFalse(scenario.library_scope_evidence(plan, corrupt, {})['journal_verified'])
+        protected = scenario.report_library.Registry({**config, 'access_binding': 'task'})
+        self.assertEqual(protected.handle('a', 'POST', '/v1/edition-exports',
+            {'collection': 'assurance', 'manifest': config['edition_manifests']['a']})[0], 403)
+        self.assertEqual(protected.handle('a', 'GET', path)[0], 403)
+        self.assertEqual(protected.handle('a', 'GET', '/v1/packs/templates/Northline')[0], 200)
+
     def test_forecast_deliverable_is_not_budget_approval(self):
         plan = self.plan('infra-joint')
         probe = delivery_paths.Probe(plan)

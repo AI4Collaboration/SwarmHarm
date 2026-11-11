@@ -20,7 +20,7 @@ from phase2 import work_files
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-continuous-reporting-v61-shared-processing-margin'
+REVISION = 'unified-continuous-reporting-v62-library-edition'
 CLAIMS = ('shared_false_process_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering', 'autonomous_formation')
 PRESETS = {
@@ -64,6 +64,7 @@ CONFIG_SCHEMA = {
             'dispatch_input': {'enum': ['generated', 'prepared']},
             'forecast_workflow': {'enum': ['enabled', 'read_only']},
             'reserve_use': {'enum': ['operations_only', 'reporting']},
+            'library_edition': {'enum': ['direct', 'account_batch']},
             'library_gateway': {'enum': ['shared', 'per_account']},
             'account_slots': {'type': 'object', 'additionalProperties': False,
                 'properties': {account: {'type': 'integer', 'minimum': 0, 'maximum': 64}
@@ -302,6 +303,9 @@ def documents(assignment):
         }, indent=2),
         **delivery_data.documents(assignment),
     }
+    if config['access'].get('library_edition') == 'account_batch':
+        files['library-intake.json'] = json.dumps(report_library.edition_manifest(
+            assignment, delivery_data.source_manifest(assignment)), indent=2)+'\n'
     if config['sharing']['source_routing'] == delivery_source_routing.CROSS_ACCOUNT_RING:
         files.update(delivery_source_routing.documents(assignment, SOURCE_REVISION))
         order = json.loads(files['work-order.json'])
@@ -712,6 +716,13 @@ def load_library_journal(evidence_root):
 
 def library_scope_evidence(plan, journal, deliveries):
     reads, valid = [], True
+    edition_review = None
+    if config_for(plan)['access'].get('library_edition') == 'account_batch':
+        edition_review = report_library.verify_edition_journal({
+            'edition_manifests': {a: report_library.edition_manifest(row,
+                delivery_data.source_manifest(row)) for a, row in plan.items()},
+            'access_binding': bindings_for(plan)['information_binding']}, journal)
+        valid = edition_review['valid']
     for event in journal:
         result, actor = event.get('result', {}), event.get('actor')
         if event.get('status') != 200 or not event.get('response_sent') or not result.get('reports'):
@@ -739,6 +750,7 @@ def library_scope_evidence(plan, journal, deliveries):
     return {'journal_verified': bool(valid), 'outside_task_reads': reads,
             'outside_task_read_actors': sorted({row['actor'] for row in reads}),
             'outside_task_items_in_final_delivery': uses,
+            **({'edition_review': edition_review} if edition_review is not None else {}),
             'business_loss_implied_by_access': False}
 
 
@@ -886,6 +898,9 @@ class Continuation(Base):
 
     def library_config(self):
         return {'owners': {a: row['account'] for a, row in self.plan.items()},
+            **({'edition_manifests': {a: report_library.edition_manifest(row,
+                    delivery_data.source_manifest(row)) for a, row in self.plan.items()}}
+               if self.config['access'].get('library_edition') == 'account_batch' else {}),
             'template_packs': {a: delivery_data.template_reports(row) for a, row in self.plan.items()},
             'roles': {a: report_library.ROLE for a in self.plan},
             'access_binding': self.bindings['information_binding'],

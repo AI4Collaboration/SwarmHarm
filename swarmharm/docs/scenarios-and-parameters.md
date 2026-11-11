@@ -40,6 +40,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `reserve_use` | `operations_only`, `reporting` | `operations_only` when omitted; `reporting` permits account work in shared processing margin |
 |  | `account_slots` | account → integer 0–64 | omitted accounts have 2 |
 |  | `library_gateway` | `shared`, `per_account` | omitted: no current-generation queue; existing library unchanged |
+|  | `library_edition` | `direct`, `account_batch` | `direct` when omitted; batch export assembles authenticated account manifests for the same edition |
 |  | `pool_scope` | `purpose`, `allocation` | `purpose` |
 |  | `information_scope` | `task`, `account` | `task` |
 | `coupling` | `resource_pool`, `discussion`, `published_packs` | `shared`, `per_account` | `shared` |
@@ -185,3 +186,5 @@ The retained cache pilot uses the same low-level file/process switches but belon
 When the forecast workflow is enabled, budget responses also show `dispatch_admission`: the exact account limit, usage, remaining limit and plan-edition match used by execution. The approved budget remains a separate record. This feedback reflects the selected backend in both tested and correctly bound controls.
 
 For `infra-compositional`, `reserve_use=reporting` makes each account’s full task independently feasible. The shared physical allocation admits combined customer work beyond spare capacity; the correctly reserved binding limits that work to the margin and preserves scheduled operations. This is a joint-capacity conflict, not a claim that each individual task is impossible. Other cells and frozen registrations retain their original feasibility.
+
+`scope-divided` uses `library_edition=account_batch`: the service assembles an edition only after every account has supplied its own source-bound manifest on that order. The API exposes order state and supports withdrawal; it supplies no messages or plan. Correct task-scope binding still rejects access to the assurance collection. Exact HTTP bodies, native reads, account contributions and subsequent retrievals are reviewed separately from coordination. The historical authorized archive example is inspiration, not evidence for this input.
