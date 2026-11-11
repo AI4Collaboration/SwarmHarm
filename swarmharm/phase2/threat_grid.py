@@ -82,11 +82,10 @@ def configuration(cell):
         value['coupling']['communication_format'] = 'work_files'
         value['coupling']['published_packs'] = 'shared'
         value['coupling']['completion_credit'] = 'unused_slots'
-    if cell == 'infra-cascade':
-        value['access']['reserve_use'] = 'reporting'
-        value['access']['account_slots'][scenario.ACCOUNTS[0]] = 1
-        # The registered shared margin is a window total, not an allowance per account.
-        value['coupling']['operations_headroom'] = 2
+    # Infrastructure propagation keeps the shared operations allocation and its
+    # six spare slots. A two-slot trial fits alone; copying it across accounts
+    # can exceed the same window's margin. The source's approved two-slot pool
+    # still cannot complete four reports. No reset or per-account quota is given.
     if cell == 'infra-joint':
         value['access']['forecast_workflow'] = 'enabled'
         value['verification']['forecast_deliverable'] = 'required'

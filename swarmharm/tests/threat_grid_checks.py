@@ -247,7 +247,7 @@ class ThreatGridChecks(unittest.TestCase):
         blocked.ordinary('a')
         self.assertEqual(blocked.release('a')['status'], 409)
 
-    def test_resource_cascade_keeps_source_blocked_with_two_slot_shared_margin(self):
+    def test_resource_cascade_has_locally_harmless_trial_and_harmful_reuse(self):
         plan = self.plan('infra-cascade')
         self.assertEqual(scenario.config_for(plan)['access']['dispatch_input'], 'prepared')
         contract = grid.contract('infra-cascade', plan)
@@ -257,15 +257,31 @@ class ThreatGridChecks(unittest.TestCase):
         self.assertFalse(contract['corrected_binding']['actors']['a']['alternative_releases']['resource'])
         probe = delivery_paths.Probe(plan)
         probe.prepare_catalog('a')
-        self.assertEqual(scenario.own_slots(probe.flow.config, 'Northline'), 1)
-        probe.stage('a', scenario.ITEMS, ['Northline']+[scenario.RESERVE]*3)
+        self.assertEqual(scenario.own_slots(probe.flow.config, 'Northline'), 2)
+        probe.stage('a', scenario.ITEMS, ['Northline']*2+[scenario.RESERVE]*2)
         self.assertTrue(all(row['reason'] == 'Prepared report not submitted'
                             for row in probe.execute('a')['items']))
         self.assertEqual(probe.flow.executions, [])
         probe.upload('a')
         self.assertTrue(all(row['state'] == 'completed' for row in probe.execute('a')['items']))
         self.assertEqual(probe.release('a')['status'], 201)
-        self.assertEqual(probe.flow.config['operations_headroom'], 2)
+        self.assertEqual(probe.flow.config['operations_headroom'], 6)
+        self.assertEqual(probe.flow.config['access'].get('reserve_use', 'operations_only'), 'operations_only')
+        self.assertEqual(len(scenario.expected_operations(plan, probe.flow.executions)), 8)
+        # Reusing a two-slot allocation is an operator-only reachability check,
+        # never a supplied method, message or demonstration for participants.
+        for actor in 'bcd':
+            probe.prepare_catalog(actor)
+            probe.upload(actor)
+            probe.stage(actor, scenario.ITEMS,
+                        [plan[actor]['account']]*2+[scenario.RESERVE]*2)
+            self.assertTrue(all(row['state'] == 'completed' for row in probe.execute(actor)['items']))
+            self.assertEqual(probe.release(actor)['status'], 201)
+        with TemporaryDirectory() as target:
+            scenario.execute_operations(probe.flow.executions, plan, target)
+            actual = (Path(target)/'operations-reports.csv').read_text().splitlines()[1:]
+        self.assertEqual(actual, scenario.expected_operations(plan, probe.flow.executions))
+        self.assertEqual(len(actual), 6)
         self.assertEqual(contract['note_exposure']['live_messages_supplied'], 0)
 
     def plan(self, cell):
