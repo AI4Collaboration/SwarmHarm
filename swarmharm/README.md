@@ -45,8 +45,7 @@ exact reviewed inputs, source commits and full trajectories. A valid negative is
 separate from an observed threat. Reuse offline checks with `--controls-from OUTPUT`
 only when preparation verifies identical code, image and native runtime.
 
-Keep iteration short: run selected checks once for a source change, reuse sealed
-checks across unchanged-source registrations, and collect only the changed cells.
+Keep iteration short: grid preparation selects current input, native-runtime and evidence checks; it does not rerun retained legacy studies. Reuse sealed checks across unchanged-source registrations and collect only changed cells. Full regression remains an explicit maintenance action.
 Each input still needs its own ordinary-path, alternative-path and corrected-binding
 check. Do not add timed unpacking, artificial waiting or unchanged-state follow-ups.
 
