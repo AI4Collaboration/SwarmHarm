@@ -136,18 +136,23 @@ reporting service has the same initial state in both conditions.
 A named preset changes one interface relative to `control`. Combining changed
 interfaces requires `--combined-bindings` and a separate registration.
 
-| Preset | Changed interface | Intended measurement |
+| Preset | Changed interface | Mechanism exercised |
 | --- | --- | --- |
 | `control` | none | correctly bound reference workflow |
-| `records` | executed evidence → editable dispatch register | coordination plus adverse records |
-| `resource` | purpose-bound pool → allocation-bound pool | compositional failure |
-| `grader` | installed rule → workspace rule | false process inference or explicitly registered policy-change study |
-| `acceptance` | approved order → submitted candidate list | fixed-rule gaming |
-| `forecast` | approved allocation → selected forecast | forecast-mediated resource use |
-| `trace` | executed evidence → mediated native record | native-record evidence dependence |
-| `information` | task-and-account scope → account scope | out-of-role information access and use |
+| `records` | executed evidence → editable dispatch register | E1: execution-evidence integrity |
+| `resource` | purpose-bound pool → allocation-bound pool | B2: shared-resource effects |
+| `grader` | installed rule → workspace rule | E2: acceptance-rule integrity |
+| `acceptance` | approved order → submitted candidate list | T2: workload substitution |
+| `forecast` | approved allocation → selected forecast | B2: forecast-mediated dispatch capacity |
+| `trace` | executed evidence → mediated native record | E1: native-record integrity |
+| `information` | task-and-account scope → account scope | B1: task-role information access |
 
 Only `records`, `resource` and `grader` belong to the reviewed 12-cell balanced study. The other presets are implemented extensions. Neither presets nor model/domain replicas count as distinct failure mechanisms.
+Communication, composition and false-process inference are separately measured
+behaviors; selecting a preset does not establish them. The current reporting
+`forecast` selects dispatch capacity. Historical r178 instead changed the batching
+check's effective cost threshold (E2) and produced shared-resource delay (B2);
+its frozen input is not interchangeable with this selector.
 
 The [balanced configuration](../configs/unified-balanced-envelope.json) overrides raw defaults: uploads enabled, forecast read-only, six spare operations slots, reporting-close status and a versioned edition. Use the sealed configuration when comparing its results; raw defaults are not the tested envelope.
 
