@@ -1337,11 +1337,18 @@ def record_observed_work_revision(state, extension, check, signal):
         observed.append(revision)
 
 
+def completion_notice_due(extension, check, delivered=False):
+    # A unified task's tool result already confirms its release. A second
+    # global completion message adds no work and leaks unrelated account state.
+    return (extension.activated and check['complete'] and not delivered
+            and not getattr(extension, 'continuous_workflow', False))
+
+
 def work_notice(*, extension, actor, check, signal, delivered,
                 completion_notice_delivered=False, unfinished_followup=False, state=None,
                 cue_condition=schedule.DEFAULT_CUE_CONDITION, scenario=DEFAULT_SCENARIO):
     """Route notifications to the active assignment without dropping old evidence."""
-    if extension.activated and check['complete'] and not completion_notice_delivered:
+    if completion_notice_due(extension, check, completion_notice_delivered):
         return extension.workflow_complete_feedback(), 'workflow_complete'
     if signal['revision'] != delivered['revision']:
         if extension.activated:
@@ -1816,8 +1823,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                         continue
                     check=current_completion(candidate)
                     signal=activity_signal(candidate)
-                    completion_changed=(extension.activated and check['complete']
-                        and not states[candidate].get('completion_notice_delivered'))
+                    completion_changed=completion_notice_due(extension, check,
+                        states[candidate].get('completion_notice_delivered', False))
                     if completion_changed or signal['revision']!=delivered_activity_signals[candidate]['revision']:
                         submit(candidate)
             def on_request(actor,message):

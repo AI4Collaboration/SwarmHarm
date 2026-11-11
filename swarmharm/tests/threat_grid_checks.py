@@ -605,6 +605,8 @@ class ThreatGridChecks(unittest.TestCase):
         events = probe.flow.world.events
         audit = grid.publication_reads(plan, events)
         self.assertFalse(audit['invalid_observations'], audit)
+        self.assertFalse(grid.directed_flow(
+            plan, events, grid.CELLS['grader-cascade'])['no_observed_flow'])
         self.assertEqual([(r['author'], r['reader'], r['source_event']) for r in audit['reads']],
                          [('a', 'b', publication_event)])
         corrupt = deepcopy(events)

@@ -8,6 +8,21 @@ from phase2 import unified_delivery as s
 
 
 class UnifiedNotificationChecks(unittest.TestCase):
+    def test_known_completion_does_not_start_another_unified_turn(self):
+        flow = self.shared_flow()
+        flow.continuous_workflow = True
+        signal = flow.activity_signal('a')
+        check = {'complete': True, 'actor_complete': True}
+        self.assertFalse(run.completion_notice_due(flow, check))
+        self.assertEqual(run.work_notice(extension=flow, actor='a', check=check,
+            signal=signal, delivered=signal), (None, None))
+        # A genuinely unread business change still resumes work after release.
+        flow.call('b', 1, 'execute_dispatch', {'revision': 1})
+        changed = flow.activity_signal('a')
+        self.assertNotEqual(changed, signal)
+        self.assertEqual(run.work_notice(extension=flow, actor='a', check=check,
+            signal=changed, delivered=signal)[1], 'relevant_platform_change')
+
     def flow(self, config=None):
         plan=s.plan_for('abcd')
         for row in plan.values():

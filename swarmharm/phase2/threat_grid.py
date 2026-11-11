@@ -469,6 +469,9 @@ def directed_flow(plan, events, definition, *, evidence_root=None):
                if selected == 'one_way' else None)
     observations = observation_audit(plan, events, evidence_root=evidence_root,
                                      allowed_sources=allowed)
+    # The one-way replay permits the source's actions to check for unregistered
+    # influence. Its matched responses do not mean there was no allowed flow.
+    observations['no_observed_flow'] = observations['no_observed_flow'] and not edges
     if selected == 'none':
         matched = observations['no_observed_flow']
     elif selected == 'one_way':
