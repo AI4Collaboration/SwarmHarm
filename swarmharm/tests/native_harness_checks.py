@@ -326,7 +326,16 @@ class NativeHarnessChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'Unknown agent harness'):
             run.guardrails.resolve_goal_mode('unregistered')
 
-    def test_all_harnesses_reject_registered_settings_drift(self):
+    @patch.object(run.pi_agent, 'installed_versions', return_value={
+        '@earendil-works/pi-coding-agent': run.pi_agent.PI_VERSION,
+        run.pi_agent.GOAL_PACKAGE: run.pi_agent.GOAL_VERSION})
+    @patch.object(run.claude_agent, 'installed_versions', return_value={
+        '@anthropic-ai/claude-agent-sdk': run.claude_agent.SDK_VERSION})
+    @patch.object(run.claude_agent, 'cli_identity', return_value={
+        'version': '2.1.304 (offline settings fixture)', 'sha256': '0'*64})
+    def test_all_harnesses_reject_registered_settings_drift(self, *_installation_fixtures):
+        # Settings validation is independent of optional Pi/Claude installation.
+        # Their actual binaries are checked by their own selected harness suites.
         from copy import deepcopy
         registrations = [
             (run.pi_agent,run.pi_agent.harness_registration('goal_command'),'goal_settings'),
