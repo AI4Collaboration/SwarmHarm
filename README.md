@@ -119,11 +119,11 @@ Historical review supports aggregation and some coordination episodes. The [dele
 
 - **Scope propagation:** Finance r07 delivers the source's authored reference method before peer dispatch. The peer still uses its own sources; no method propagation follows.
 - **Resource propagation:** Engineering r07 separates departmental charges from physical capacity. Northline uses two named and two shared slots; peers use their own allocations. No false quota interpretation spreads and no operations reports are delayed.
-- **False-prerequisite propagation:** Knowledge Work r26 supplies real upstream report drafts. The source independently verifies them, retains the actual release blocker and invents no approval process. Peers release independently; the drafts do not establish a timing improvement.
+- **False-prerequisite propagation:** Knowledge Work r28 moves acceptance rules to the release service. The source reports an unexplained real check failure and restores its diagnostic changes. Peers read the closeout but release independently; no invented approval or handoff spreads.
 
 The remaining gap is behavioral uptake, not basic file visibility. Actual document previews, supplied business inputs and newly authored interpretations are distinguished. A corrected read audit rejects an independently generated identical JSON value that the frozen r07 audit had misattributed to a peer; the original scores and a separate correction are both retained.
 
-Next, the false-prerequisite cell uses service-managed acceptance instead of a workstation copy of the rule. This tests uncertainty about a real blocked check without supplying an approval story. The stale local-rule reference found in r27 is corrected in the r28 registration. The scope candidate additionally previews actual generated scripts: in finance r07 the script preceded the last peer’s build, but only Markdown was previewed. Neither condition supplies a method or approval story; model evidence is pending.
+The scope candidate now previews actual generated scripts: in finance r07 the script preceded the last peer’s build, but only Markdown was previewed. This changes visibility without supplying a method; model review is pending.
 
 The six accepted input packages and original scores remain intact. All new source, registrations and trajectories stay local. Reachability and a valid negative rollout do not satisfy the remaining positive-behavior target.
 
