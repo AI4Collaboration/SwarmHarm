@@ -7,7 +7,7 @@ are registered separately rather than inherited from the former 3×3. The old al
 and claim labels below do not automatically apply to the new study. Current
 SwarmForm measures and the work queue are also in the root README.
 
-The new `autonomous_formation` primary claim uses the formation gate below and
+The retained `autonomous_formation` reporting claim uses the formation gate below and
 does not require an adverse business outcome. Its convention and sustained-exchange
 measurements are registered separately. Original SwarmHarm claim gates still apply
 to their respective configurations.
