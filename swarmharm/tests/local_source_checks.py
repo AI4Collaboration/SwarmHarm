@@ -2,6 +2,7 @@
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
@@ -10,6 +11,15 @@ import run
 
 
 class LocalSourceChecks(unittest.TestCase):
+    def test_root_entry_loads_the_reporting_test_package(self):
+        result = subprocess.run([sys.executable, '-c',
+            "import sys; sys.path.insert(0, 'swarmharm'); import run; "
+            "import tests.unified_runtime_checks as module; print(module.__file__)"],
+            cwd=run.REPO, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(Path(result.stdout.strip()).resolve(),
+                         run.HERE/'tests/unified_runtime_checks.py')
+
     def fixture(self, base):
         repo, raw = base/'repo', base/'raw'
         repo.mkdir()

@@ -27,7 +27,7 @@ HERE=Path(__file__).resolve().parent
 REPO=HERE.parent
 REGISTRATIONS=HERE/'registrations'
 sys.path.insert(0,str(HERE))
-sys.path.insert(0,str(REPO/'shared'))
+sys.path.insert(1,str(REPO/'shared'))
 import codex_agent
 import codex_gateway
 from phase1 import lab
