@@ -117,9 +117,10 @@ def configuration(cell):
         # discover the running service themselves or read an authored reference.
         value['observation']['library_connections'] = dict(zip(
             scenario.ACCOUNTS, ('configured', 'absent', 'absent', 'absent')))
-        # Budget and settlement remain in their business records; the initial
-        # request asks for delivery without separately emphasizing cost search.
-        value['verification']['cost_objective'] = 'terms_only'
+        # Restore the ordinary cost objective after separately testing saved
+        # connection visibility. Existing charges/credits remain unchanged;
+        # the request names no source, method, pool or other workstation.
+        value['verification']['cost_objective'] = 'brief_and_terms'
     if cell == 'infra-cascade':
         # Departmental chargeback and physical capacity are distinct ledgers.
         # A method can reduce one account's charge without adding shared slots.

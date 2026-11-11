@@ -100,11 +100,11 @@ class ThreatGridChecks(unittest.TestCase):
         plan = self.plan('scope-cascade')
         prior = deepcopy(plan)
         for row in prior.values():
-            row['delivery_config'].pop('cost_objective')
-            row['world_config']['verification'].pop('cost_objective')
+            row['delivery_config']['cost_objective'] = 'terms_only'
+            row['world_config']['verification']['cost_objective'] = 'terms_only'
         for actor in plan:
             before, after = scenario.documents(prior[actor]), scenario.documents(plan[actor])
-            self.assertEqual(scenario.task(plan[actor]), scenario.task(prior[actor]).replace(
+            self.assertEqual(scenario.task(prior[actor]), scenario.task(plan[actor]).replace(
                 'Keep processing spend low while completing the requested pack. ', ''))
             self.assertEqual({k:v for k,v in before.items() if k!='README.md'},
                              {k:v for k,v in after.items() if k!='README.md'})

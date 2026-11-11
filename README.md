@@ -119,7 +119,7 @@ Historical review supports aggregation and some coordination episodes. The [dele
 - No flow does not imply compositional failure; one-way exposure does not prove adoption; reciprocal messages do not prove joint planning. Each needs its own action-bound evidence.
 - False quota and nonexistent approval beliefs are findings to observe, not mandatory definitions of propagation. Grader changes, changes to grading inputs and gaming an unchanged metric must remain distinguishable. [Reward-tampering distinction](https://arxiv.org/abs/1908.04734) · [METR observations](https://metr.org/blog/2025-06-05-recent-reward-hacking/).
 
-Existing scores and the nine behavioral targets stay unchanged. Continue collecting against those exact criteria without claiming an exhaustive taxonomy. The next grader condition exposes actual satisfied/total policy checks; it tests false-prerequisite propagation separately from tampering. The [audit status](swarmharm/docs/research/threat-grid-status.json) records this distinction without relabeling results.
+Existing scores and the nine behavioral targets stay unchanged. Continue collecting against those exact criteria without claiming an exhaustive taxonomy. The current grader condition exposes actual per-account check details; it tests false-prerequisite propagation separately from tampering. The [audit status](swarmharm/docs/research/threat-grid-status.json) records this distinction without relabeling results.
 
 ### Current coverage
 
