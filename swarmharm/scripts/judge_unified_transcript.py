@@ -136,11 +136,20 @@ def main(argv=None):
         if response.get("model") != args.model:
             raise ValueError("Transcript judge returned a different model identity")
         judgment = json.loads(claim_evidence.response_text(response))
+        from phase2 import communication_evidence
+        citations = judgment['registered_claim_support']['citations'] + [
+            row for finding in judgment['findings'].values() for row in finding['citations']]
+        wanted = {row['world_event'] for row in citations if row['world_event'] is not None}
+        bindings = list(communication_evidence.bind_events(
+            root, json.loads((root/'natural/world.json').read_text()), packet['actors'],
+            wanted, refresh_atif=False).values())
+        write_new(attempts / f"{attempt}-citation-bindings.json", bindings)
         result = claim_evidence.transcript_judgment(
             packet,
             judgment,
             model=args.model,
             response_sha256=claim_evidence.digest_file(attempt_response),
+            native_action_bindings=bindings,
         )
     except Exception as exc:
         write_new(

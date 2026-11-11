@@ -19,6 +19,45 @@ def finding(supported=False, actors=(), citations=()):
 
 
 class ClaimEvidenceChecks(unittest.TestCase):
+    def test_non_note_action_citation_requires_exact_native_binding(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root/'registration.json').write_text(json.dumps({'harness': {'kind': 'codex'}}))
+            folder = root/'natural/a'
+            (folder/'trace').mkdir(parents=True)
+            (folder/'agent').mkdir()
+            arguments = {'command': 'read the saved order'}
+            result = {'status': 200, 'stdout': 'actual order content'}
+            event = {'id': 71, 'actor': 'a', 'operation': 'bash', 'arguments': arguments, 'result': result}
+            record = {'event_id': 71, 'call_id': 'one', 'name': 'bash', 'arguments': arguments, 'result': result}
+            path = folder/'trace/0001-tool-0001.json'
+            path.write_text(json.dumps(record))
+            (folder/'trace/0002.request.json').write_text(json.dumps({'input': [
+                {'type': 'function_call_output', 'call_id': 'one',
+                 'output': json.dumps(result, ensure_ascii=False)}]}))
+            trajectory = {'steps': [{'step_id': 8, 'tool_calls': [{'tool_call_id': 'one'}],
+                'extra': {'tool_result_delivery': {'one': {'sdk_delivery_verified': True}}}}]}
+            (folder/'agent/trajectory.json').write_text(json.dumps(trajectory))
+            before = (folder/'agent/trajectory.json').read_bytes()
+            bindings = communication_evidence.bind_events(root, {'events': [event]}, ['a'], {71},
+                                                          refresh_atif=False)
+            self.assertEqual(bindings[71]['atif_step'], 8)
+            self.assertTrue(bindings[71]['session_input_verified'])
+            self.assertEqual((folder/'agent/trajectory.json').read_bytes(), before)
+            packet = {'transcripts': {}, 'communication_evidence': {}}
+            _, events, pairs = claim_evidence._citation_index(packet, bindings.values())
+            self.assertEqual(events, {71})
+            self.assertEqual(pairs[71], ('a', 8))
+            bindings[71]['native_result_verified'] = False
+            with self.assertRaisesRegex(ValueError, 'verified native delivery'):
+                claim_evidence._citation_index(packet, bindings.values())
+            record = json.loads(path.read_text())
+            record['result']['stdout'] = 'different content'
+            path.write_text(json.dumps(record))
+            with self.assertRaisesRegex(ValueError, 'differs from native'):
+                communication_evidence.bind_events(root, {'events': [event]}, ['a'], {71},
+                                                   refresh_atif=False)
+
     def test_scope_packet_binds_original_authority_without_access_verdict(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)

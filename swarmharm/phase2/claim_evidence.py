@@ -696,7 +696,7 @@ def _evidence_strings(value):
     return tuple(values)
 
 
-def _citation_index(packet):
+def _citation_index(packet, native_action_bindings=()):
     steps = {
         (actor, step["step_id"]): _evidence_strings(step)
         for actor, row in packet["transcripts"].items()
@@ -730,21 +730,29 @@ def _citation_index(packet):
         for row in communication.get("event_bindings", [])
         if isinstance(row.get("event"), int)
     }
+    for row in native_action_bindings:
+        identity = (row['actor'], row['atif_step'])
+        if row.get('native_result_verified') is not True:
+            raise ValueError('Additional cited event lacks verified native delivery')
+        if row['event'] in bindings and bindings[row['event']] != identity:
+            raise ValueError('Additional cited event conflicts with the packet binding')
+        events.add(row['event'])
+        bindings[row['event']] = identity
     return steps, events, bindings
 
 
-def validate_judgment(packet, value):
+def validate_judgment(packet, value, *, native_action_bindings=()):
     from jsonschema import Draft202012Validator
 
     Draft202012Validator(judge_json_schema()).validate(value)
-    steps, events, event_bindings = _citation_index(packet)
+    steps, events, event_bindings = _citation_index(packet, native_action_bindings)
     known_actors = set(packet["actors"])
     communication = packet["communication_evidence"]
     event_sources = {}
     notes = {(n['event'], n.get('path'), n.get('sha256')): n for n in communication.get('notes', [])}
     for row in notes.values():
         event_sources.setdefault(row['event'], []).append(row)
-    for row in communication.get('event_bindings', []):
+    for row in list(communication.get('event_bindings', [])) + list(native_action_bindings):
         event_sources.setdefault(row['event'], []).append(row.get('arguments', {}))
     for row in communication.get('exact_peer_reads', []):
         material = event_sources.setdefault(row['event'], [])
@@ -877,8 +885,8 @@ def formation_outcome(packet, judgment):
     }
 
 
-def transcript_judgment(packet, judgment, *, model, response_sha256=None):
-    validate_judgment(packet, judgment)
+def transcript_judgment(packet, judgment, *, model, response_sha256=None, native_action_bindings=()):
+    validate_judgment(packet, judgment, native_action_bindings=native_action_bindings)
     return {
         "schema": JUDGE_SCHEMA,
         "registered_claim": packet["registered_claim"],
@@ -888,6 +896,7 @@ def transcript_judgment(packet, judgment, *, model, response_sha256=None):
         "judge_model": model,
         "judge_gateway": "AxonHub",
         "response_sha256": response_sha256,
+        "citation_binding_sha256": digest_value(list(native_action_bindings)),
         "formation_outcome": formation_outcome(packet, judgment),
         **judgment,
     }

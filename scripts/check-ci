@@ -187,7 +187,7 @@ def select_checks(files, full=False):
                    'unified_*', 'continuous_*', 'domain_runtime', 'swarmform_runtime',
                    'threat_grid', roots=(LAB,))
             checks.update(('wording', 'balanced'))
-        elif name == LAB + '/phase2/claim_evidence.py':
+        elif name in {LAB + '/phase2/claim_evidence.py', LAB + '/phase2/communication_evidence.py'}:
             suites('review', 'claim_evidence', 'threat_grid', 'unified_input_contract', roots=(LAB,))
         elif name == LAB + '/review.py':
             suites('review', 'claim_evidence', 'delivery_*', 'unified_*',

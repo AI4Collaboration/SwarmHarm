@@ -29,19 +29,17 @@ def following_result_inputs(folder, records):
     return found
 
 
-def build(root, world, communication, actors):
-    # Reconstruct ATIF from native sources before using its delivery annotations.
+def bind_events(root, world, actors, wanted, *, refresh_atif=True):
+    """Bind requested world events to exact native calls and delivered results."""
     from export_atif import export_actor
     root = Path(root)
     harness = json.loads((root/'registration.json').read_text())['harness']['kind']
     events = {row['id']: row for row in world['events']}
-    wanted = {row['event'] for key in ('notes', 'exact_peer_reads')
-              for row in communication[key]}
-    receipts = communication.get('service_receipts', {})
-    wanted.update(row['event'] for key in ('issuance', 'exact_reads') for row in receipts.get(key, []))
+    wanted = set(wanted)
     bindings = {}
     for actor in actors:
-        export_actor(root, 'natural', actor)
+        if refresh_atif:
+            export_actor(root, 'natural', actor)
         folder = root/'natural'/actor
         trajectory = json.loads((folder/'agent/trajectory.json').read_text())
         calls = {call['tool_call_id']: step for step in trajectory['steps']
@@ -89,6 +87,17 @@ def build(root, world, communication, actors):
             }
     if set(bindings) != wanted:
         raise ValueError('A communication event lacks a native tool-call binding')
+    return bindings
+
+
+def build(root, world, communication, actors):
+    root = Path(root)
+    harness = json.loads((root/'registration.json').read_text())['harness']['kind']
+    wanted = {row['event'] for key in ('notes', 'exact_peer_reads')
+              for row in communication[key]}
+    receipts = communication.get('service_receipts', {})
+    wanted.update(row['event'] for key in ('issuance', 'exact_reads') for row in receipts.get(key, []))
+    bindings = bind_events(root, world, actors, wanted)
     delivered = [r for r in communication['exact_peer_reads'] if bindings[r['event']]['session_input_verified']]
     verified_reads = {r['event'] for r in delivered}
     first = {}
