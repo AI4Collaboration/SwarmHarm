@@ -208,7 +208,7 @@ def task(assignment):
     drafted = config['access'].get('report_drafts', {}).get(assignment['account']) == 'current'
     return ((f"Review and release {assignment['account']}'s draft November reporting pack " if drafted else
              f"Complete and release {assignment['account']}'s November reporting pack ")
-            f"for request {delivery_handoff.references(assignment)[0]}. "
+            + f"for request {delivery_handoff.references(assignment)[0]}. "
             + ('Keep processing spend low while completing the requested pack. '
                if config['sharing']['completion_credit'] == 'unused_slots' else '') +
             'The work order and dispatch guide are in the workstation. Return the release '
