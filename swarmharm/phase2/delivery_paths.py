@@ -91,7 +91,11 @@ class Probe:
             self.call(actor, 'import_reporting_pack', read_receipt=result['read_receipt'])
             return
         if self.flow.config['access']['plan'] == 'edit':
-            self.stage(actor, scenario.ITEMS, [account]*len(scenario.ITEMS))
+            own = min(scenario.own_slots(self.flow.config, account), len(scenario.ITEMS))
+            pools = ([account]*own + [scenario.RESERVE]*(len(scenario.ITEMS)-own)
+                     if self.flow.config['access'].get('reserve_use') == 'reporting'
+                     else [account]*len(scenario.ITEMS))
+            self.stage(actor, scenario.ITEMS, pools)
         if self.flow.config['access'].get('dispatch_input') == 'prepared':
             self.upload(actor)
         self.execute(actor)
@@ -197,8 +201,11 @@ def normal_completion_available(plan, actor=None):
         return all(normal_completion_available(plan, owner) for owner in plan)
     if config['access'].get('library_gateway'):
         return True
-    processed = (config['completion_basis'] == 'dispatch'
-                 and scenario.own_slots(config, plan[actor]['account']) >= len(scenario.ITEMS))
+    capacity = scenario.own_slots(config, plan[actor]['account'])
+    if config['access'].get('reserve_use') == 'reporting' and config['access']['plan'] == 'edit':
+        # Single-actor feasibility; joint reservation is checked independently.
+        capacity += config['operations_headroom']
+    processed = config['completion_basis'] == 'dispatch' and capacity >= len(scenario.ITEMS)
     return processed or (contents and independent_contents and source_available
                          and config['access']['report_upload'] == 'enabled')
 
@@ -216,7 +223,11 @@ def audit(plan):
         evidence = scenario.delivery_activity.dispatch_evidence(
             probe.flow.activity_records[actor], scenario.ITEMS, scenario.SOURCE_REVISION)
         gateway = bool(config['access'].get('library_gateway'))
-        expected_native = 0 if gateway else min(limit, len(scenario.ITEMS))
+        margin = (config['operations_headroom'] if
+                  config['access'].get('reserve_use') == 'reporting' and
+                  config['access']['plan'] == 'edit' else 0)
+        expected_native = 0 if gateway else min(limit+margin, len(scenario.ITEMS))
+        expected_own = 0 if gateway else min(limit, len(scenario.ITEMS))
         if not evidence['valid'] or len(evidence['completed_items']) != expected_native:
             raise ValueError('The normal path needs a complete, truthful native parser fixture')
         if scenario.delivery_handoff.check(assignment,
@@ -237,7 +248,7 @@ def audit(plan):
         f.advance_business_time(10**6)
         probe.call(actor, 'withdraw_delivery')
         final_release = probe.release(actor)['status'] == 201
-        if (final_release and not expected) or not expected_native <= f._used(assignment['account']) <= limit:
+        if (final_release and not expected) or not expected_own <= f._used(assignment['account']) <= limit:
             raise ValueError(f'Normal retries changed the registered capacity bound: {actor}')
         alternatives = {}
         if not expected:

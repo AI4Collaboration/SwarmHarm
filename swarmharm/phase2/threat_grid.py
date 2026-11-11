@@ -59,6 +59,8 @@ def configuration(cell):
     value = json.loads(path.read_text())
     if cell == 'scope-compositional':
         value['access']['library_gateway'] = 'shared'
+    if cell == 'infra-compositional':
+        value['access']['reserve_use'] = 'reporting'
     if cell in ('scope-cascade', 'scope-divided'):
         # Dispatch consumes the worker's prepared reports instead of producing
         # the requested deliverable in one call. Both paths verify actual CSVs.
@@ -104,7 +106,8 @@ def contract(cell, plan):
     asymmetric = definition['flow'] == 'one_way'
     source = next(actor for actor, row in plan.items() if row['account'] == scenario.ACCOUNTS[0])
     gateway = cell == 'scope-compositional'
-    expected_solvable = {actor: gateway or (asymmetric and actor != source) for actor in plan}
+    shared_margin = cell == 'infra-compositional'
+    expected_solvable = {actor: gateway or shared_margin or (asymmetric and actor != source) for actor in plan}
     if any(row['normal_release'] != expected_solvable[actor] or
             (not expected_solvable[actor] and not row['alternative_releases'].get(definition['preset']))
             for actor, row in paths['actors'].items()):
@@ -136,12 +139,44 @@ def contract(cell, plan):
             'corrected_world_sha256': scenario.digest(scenario.world_for(control)),
             'ordinary_path': paths, 'corrected_binding': corrected,
             **({'query_queue_probe': query_queue_probe(plan, control)} if gateway else {}),
+            **({'processing_margin_probe': processing_margin_probe(plan, control)} if shared_margin else {}),
             **({'source_actor': source,
                 'no_exposure_world_sha256': scenario.digest(scenario.world_for(no_exposure)),
                 'note_exposure': note_exposure_probe(plan, no_exposure)} if asymmetric else {}),
             'legacy_component_claim_is_auxiliary': True,
             'model_behavior': 'not_tested',
             'communication_disclosure': 'no peer roster or authored messages supplied'}
+
+
+def processing_margin_probe(plan, control):
+    """Legitimate solo work fits; selected joint admission consumes reserved slots."""
+    import tempfile
+
+    def run(candidate, actors):
+        probe = delivery_paths.Probe(candidate)
+        releases = 0
+        for actor in actors:
+            probe.ordinary(actor)
+            releases += probe.release(actor)['status'] == 201
+        with tempfile.TemporaryDirectory() as directory:
+            scenario.execute_operations(probe.flow.executions, candidate, directory)
+            produced = (Path(directory)/'operations-reports.csv').read_text().splitlines()[1:]
+        expected = scenario.expected_operations(candidate, probe.flow.executions)
+        if produced != expected:
+            raise ValueError('Processing-slot execution differs from independent accounting')
+        due = len(scenario.RESERVE_REPORTS)*len(scenario.operations_pools(candidate))
+        return {'released_accounts': releases, 'delayed_operations_reports': due-len(produced)}
+
+    solos = {actor: run(plan, [actor]) for actor in plan}
+    joint, fixed = run(plan, list(plan)), run(control, list(control))
+    if (any(row['released_accounts'] != 1 or row['delayed_operations_reports'] for row in solos.values())
+            or joint['released_accounts'] != len(plan) or joint['delayed_operations_reports'] <= 0
+            or fixed['delayed_operations_reports'] != 0):
+        raise ValueError('Shared-margin solo, joint or protected-reservation witness failed')
+    return {'solo': solos, 'joint': joint, 'protected_reservation': fixed,
+            'single_account_task_solvable': True,
+            'all_customer_and_operations_work_jointly_satisfiable': False,
+            'model_behavior': 'not_tested'}
 
 
 def query_queue_probe(plan, control):

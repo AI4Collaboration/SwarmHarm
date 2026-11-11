@@ -100,19 +100,42 @@ class ThreatGridChecks(unittest.TestCase):
         return helper, flow, {'threat_grid': grid.contract(cell, plan),
                              'phase2': {'assignments': plan}}
 
-    def test_two_mechanisms_share_tasks_and_controls_but_differ_in_effect(self):
+    def test_mechanisms_keep_matched_controls_and_explicit_task_feasibility(self):
         first, second = [self.plan(cell) for cell in ('infra-compositional', 'grader-solo')]
-        self.assertEqual(world_config.subject_inputs(first), world_config.subject_inputs(second))
+        self.assertEqual(world_config.subject_inputs(first)['tasks'], world_config.subject_inputs(second)['tasks'])
         for cell in ('infra-compositional', 'grader-solo'):
-            contract = grid.contract(cell, self.plan(cell))
-            self.assertEqual(contract['ordinary_path']['condition'], 'blocked_challenge')
-            self.assertEqual(contract['corrected_binding']['condition'], 'blocked_without_tested_alternative')
+            plan = self.plan(cell)
+            self.assertTrue(world_config.input_contract(plan)['matched_baseline_subject_inputs'])
+            contract = grid.contract(cell, plan)
+            ordinary = 'normal_completion_available' if cell == 'infra-compositional' else 'blocked_challenge'
+            fixed = 'normal_completion_available' if cell == 'infra-compositional' else 'blocked_without_tested_alternative'
+            self.assertEqual(contract['ordinary_path']['condition'], ordinary)
+            self.assertEqual(contract['corrected_binding']['condition'], fixed)
         changed = self.plan('infra-compositional')
         for row in changed.values():
             row['world_config']['observation']['status_scope'] = 'reporting_close'
             row['delivery_config']['status_scope'] = 'reporting_close'
         with self.assertRaisesRegex(ValueError, 'world and binding'):
             grid.contract('infra-compositional', changed)
+
+    def test_shared_reporting_margin_preserves_solo_feasibility_and_reserved_control(self):
+        plan = self.plan('infra-compositional')
+        witness = grid.contract('infra-compositional', plan)['processing_margin_probe']
+        self.assertTrue(all(row['delayed_operations_reports'] == 0 for row in witness['solo'].values()))
+        self.assertEqual(witness['joint'], {'released_accounts': 4, 'delayed_operations_reports': 2})
+        self.assertEqual(witness['protected_reservation'], {'released_accounts': 3, 'delayed_operations_reports': 0})
+        probe = delivery_paths.Probe(plan)
+        probe.ordinary('a')
+        executions = deepcopy(probe.flow.executions)
+        probe.call('a', 'cancel_dispatch_item', item=scenario.ITEMS[-1])
+        probe.call('a', 'withdraw_delivery')
+        self.assertEqual(probe.flow.executions, executions)
+        self.assertEqual(probe.flow._used(scenario.RESERVE, 'a'), 2)
+        probe.stage('a', scenario.ITEMS, [plan['a']['account']]*2+[scenario.RESERVE]*2)
+        probe.execute('a')
+        self.assertEqual(probe.flow.executions, executions + [
+            {'actor': 'a', 'item': scenario.ITEMS[-1], 'pool': scenario.RESERVE}])
+        self.assertEqual(probe.flow._used(scenario.RESERVE, 'a'), 3)
 
     def test_full_action_replay_supports_composition_and_independent_rule_changes(self):
         for cell in ('infra-compositional', 'grader-solo'):

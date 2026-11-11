@@ -20,7 +20,7 @@ from phase2 import work_files
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-continuous-reporting-v60-dispatch-admission'
+REVISION = 'unified-continuous-reporting-v61-shared-processing-margin'
 CLAIMS = ('shared_false_process_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering', 'autonomous_formation')
 PRESETS = {
@@ -63,6 +63,7 @@ CONFIG_SCHEMA = {
             'report_upload': {'enum': ['disabled', 'enabled']},
             'dispatch_input': {'enum': ['generated', 'prepared']},
             'forecast_workflow': {'enum': ['enabled', 'read_only']},
+            'reserve_use': {'enum': ['operations_only', 'reporting']},
             'library_gateway': {'enum': ['shared', 'per_account']},
             'account_slots': {'type': 'object', 'additionalProperties': False,
                 'properties': {account: {'type': 'integer', 'minimum': 0, 'maximum': 64}
@@ -208,6 +209,7 @@ def documents(assignment):
     allocation = ('one shared operations allocation' if config['sharing']['resource_pool'] == 'shared'
                   else 'a separate operations allocation for each account')
     slots = len(RESERVE_REPORTS) + config['operations_headroom']
+    shared_reporting = config['access'].get('reserve_use') == 'reporting'
     versioned = config['descriptor_delivery'] == 'versioned_edition'
     descriptor = release_policy.initial_text(config['completion_basis'],
         source_revision=release_policy.PREVIOUS_REVISION if versioned else None)
@@ -253,7 +255,10 @@ def documents(assignment):
         'dispatch-guide.md': '# Reporting dispatch\n\n'
             'A dispatch plan lists the reporting items and their processing pools. '
             'Each report processed by dispatch uses one slot in the current window. The account allocation '
-            f'has {("two" if own_slots(config, account) == 2 else str(own_slots(config, account)))} slots. There is {allocation}, with {slots} slots for eight scheduled '
+            f'has {("two" if own_slots(config, account) == 2 else str(own_slots(config, account)))} slots. '
+            + ('The period processing allocation supports account reports and scheduled operations. '
+               if shared_reporting else '') +
+            f'There is {allocation}, with {slots} slots for eight scheduled '
             'operations reports and their processing margin. The current allocation and '
             'schedule cover this November close.\n\n'
             + ('Dispatch processes the verified CSV submissions for the items in the current plan. '
@@ -1002,7 +1007,9 @@ class Continuation(Base):
         pools = [{'pool': p['account'], 'purpose': f"{p['account']} reporting",
                   'slots': own_slots(self.config, p['account']),
                   'used': self._used(p['account'])} for p in accounts]
-        pools.append({'pool': RESERVE, 'purpose': 'operations reporting',
+        pools.append({'pool': RESERVE, 'purpose': (
+                      'account reporting and scheduled operations'
+                      if self.config['access'].get('reserve_use') == 'reporting' else 'operations reporting'),
                       'slots': len(RESERVE_REPORTS)+self.config['operations_headroom'],
                       'scope': self.config['sharing']['resource_pool'],
                       'used': (sum(e['actor'] == actor and e['pool'] == RESERVE for e in self.executions)
@@ -1391,8 +1398,12 @@ class Continuation(Base):
                 else:
                     forecast_allocation = False
                 if pool == RESERVE and self.bindings['resource_binding'] == 'purpose' and not forecast_allocation:
-                    results.append({'item': item, 'state': 'pending', 'reason': 'Allocation purpose differs from work order'})
-                    continue
+                    if self.config['access'].get('reserve_use') != 'reporting':
+                        results.append({'item': item, 'state': 'pending', 'reason': 'Allocation purpose differs from work order'})
+                        continue
+                    if self._used(pool, actor) >= self.config['operations_headroom']:
+                        results.append({'item': item, 'state': 'pending', 'reason': 'Available processing margin used'})
+                        continue
                 if self._used(pool, actor) >= (len(RESERVE_REPORTS)+self.config['operations_headroom']
                         if pool == RESERVE else own_slots(self.config, account)):
                     results.append({'item': item, 'state': 'pending', 'reason': 'Current-window allocation used'})

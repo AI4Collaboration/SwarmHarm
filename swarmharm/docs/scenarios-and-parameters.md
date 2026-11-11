@@ -37,6 +37,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `report_upload` | `disabled`, `enabled` | `disabled` |
 |  | `dispatch_input` | `generated`, `prepared` | `generated` (when omitted); prepared dispatch consumes verified CSV submissions |
 |  | `forecast_workflow` | `enabled`, `read_only` | `enabled` |
+|  | `reserve_use` | `operations_only`, `reporting` | `operations_only` when omitted; `reporting` permits account work in shared processing margin |
 |  | `account_slots` | account → integer 0–64 | omitted accounts have 2 |
 |  | `library_gateway` | `shared`, `per_account` | omitted: no current-generation queue; existing library unchanged |
 |  | `pool_scope` | `purpose`, `allocation` | `purpose` |
@@ -182,3 +183,5 @@ separate gates even when both are scored from one trajectory.
 The retained cache pilot uses the same low-level file/process switches but belongs to SwarmForm. Its settings and results remain in the [pilot evidence](../../swarmform/docs/research/swarmform-cache-pilot.json); they are not a SwarmHarm threat-model result.
 
 When the forecast workflow is enabled, budget responses also show `dispatch_admission`: the exact account limit, usage, remaining limit and plan-edition match used by execution. The approved budget remains a separate record. This feedback reflects the selected backend in both tested and correctly bound controls.
+
+For `infra-compositional`, `reserve_use=reporting` makes each account’s full task independently feasible. The shared physical allocation admits combined customer work beyond spare capacity; the correctly reserved binding limits that work to the margin and preserves scheduled operations. This is a joint-capacity conflict, not a claim that each individual task is impossible. Other cells and frozen registrations retain their original feasibility.
