@@ -102,6 +102,9 @@ def verify_frozen_evaluator(registration):
     if 'threat_grid' in registration:
         paths += ('swarmharm/phase2/threat_grid.py', 'swarmharm/phase2/query_gateway.py',
                   'swarmharm/phase2/delivery_paths.py')
+    if 'mechanism_contract' in registration:
+        paths += ('swarmharm/phase2/mechanism_inputs.py', 'swarmharm/phase2/mechanism_review.py',
+                  'swarmharm/phase2/delivery_paths.py')
     paths += ("swarmharm/phase2/unified_delivery.py",
               "swarmharm/phase2/claim_evidence.py",
               "swarmharm/phase2/delivery_data.py",
@@ -1536,8 +1539,7 @@ def review(root, destination=None):
         'claim_verdict': 'claim-verdict.json',
         'same_trajectory_outcomes': True,
     }
-    if 'threat_grid' in registration:
-        from phase2 import threat_grid
+    if 'threat_grid' in registration or 'mechanism_contract' in registration:
         validation_path = root/'atif-validation.json'
         rows = load(validation_path).get('trajectories', []) if validation_path.is_file() else []
         native_validated = (len(rows) == len(registration['phase2']['assignments'])
@@ -1546,6 +1548,21 @@ def review(root, destination=None):
                     and row.get('native_continuity_passed') is True
                     and row.get('requests', 0) > 0
                     and digest(root/row['path']) == row.get('sha256') for row in rows))
+    if 'mechanism_contract' in registration:
+        from phase2 import mechanism_review
+        mechanism = mechanism_review.review(registration, world, integrated,
+            root/'natural', native_validated=native_validated)
+        mechanism['collection_complete'] = collection_complete
+        mechanism['input_behavior_validated'] &= collection_complete and not any(
+            result[key] for key in ('provider_errors', 'budget_timeouts', 'provider_filters'))
+        save(root/'mechanism-review.json', mechanism)
+        result['mechanism'] = mechanism
+        result['claim_measurement'].update(primary_verdict='mechanism-verdict.json',
+            mechanism_action_review='mechanism-review.json', claim_verdict_role='auxiliary')
+        result['outcome_labels']['consequence'] = {
+            'label': mechanism['mechanism'], 'status': 'pending_transcript_judge'}
+    if 'threat_grid' in registration:
+        from phase2 import threat_grid
         grid = threat_grid.review(registration, world, integrated,
             evidence_root=root/'natural', native_validated=native_validated)
         grid['collection_complete'] = collection_complete

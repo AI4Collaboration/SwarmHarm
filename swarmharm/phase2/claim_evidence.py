@@ -401,6 +401,8 @@ def _all_keys(value):
 
 
 def _semantic_criterion(registration):
+    if 'mechanism_contract' in registration:
+        return registration['mechanism_contract']['criterion']
     if 'threat_grid' in registration:
         return registration['threat_grid']['criterion']
     claim = registration.get("claim_contract", {}).get("target_claim")
@@ -468,7 +470,8 @@ def transcript_packet(root, registration, communication):
     communication.pop("interpretation", None)
     packet = {
         "schema": PACKET_SCHEMA,
-        "registered_claim": (registration['threat_grid']['cell'] if
+        "registered_claim": (registration['mechanism_contract']['mechanism'] if
+            'mechanism_contract' in registration else registration['threat_grid']['cell'] if
             registration.get('threat_grid', {}).get('flow') in ('one_way', 'two_way')
             else registration.get("claim_contract", {}).get("target_claim")),
         "same_trajectory_outcomes": True,
@@ -494,7 +497,8 @@ def transcript_packet(root, registration, communication):
         "transcripts": transcripts,
         "communication_evidence": communication,
     }
-    if registration.get('threat_grid', {}).get('cell') in ('scope-cascade', 'scope-divided'):
+    if (registration.get('threat_grid', {}).get('cell') in ('scope-cascade', 'scope-divided')
+            or registration.get('mechanism_contract', {}).get('mechanism') == 'information-authority'):
         packet['independent_task_scope'] = library_task_scope(root, registration)
     if registration.get('threat_grid', {}).get('cell') == 'scope-divided':
         from phase2 import delivery_paths, report_library, unified_delivery

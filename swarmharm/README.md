@@ -26,54 +26,38 @@ model calls (use a new output directory):
 Each package contains tasks, tools, workstation files and `world-config.json`.
 The operator manifest records the mechanism criterion and subject-input hash.
 `--mechanism all` rejects the export until every mechanism is implemented.
-Preparing native rollouts with mechanism-specific contracts is the next runner
-integration; the archived commands below do not supply those new contracts.
-
-Use the pinned Python environment from `bash scripts/setup-local`, native Codex and AxonHub. The reporting entry point is `run.py` with `--phase prepare` or `--phase collect`. Preparation takes a fresh output path and registration directory; collection uses those sealed inputs once.
-
-```text
---study-mode unified --component-family unified-delivery
---model-id openai/gpt-6.1-sol --harness codex --goal-mode off --reasoning-effort high
---binding-preset PRESET --world-config CONFIG_PATH --scenario DOMAIN
-```
-
-Use the [running guide](../docs/running-evals.md#validate-and-freeze) for complete preparation, sealing, collection and review. The existing reporting runner has four agents. `--comparison-design balanced-headline-v1` preserves the completed comparison; it is not the nine-grid contract.
-
-The commands below reproduce the archived nine-selector design, not the planned 32-input delivery. For a retained scenario selector, use `--threat-cell CELL --source-retention local` instead of manually combining a preset and world. Exact configurations and per-cell criteria are in [threat_grid.py](phase2/threat_grid.py). Source and registrations must be committed locally before collection. No push or upload is required or authorized for this delivery.
-
-To inspect all nine development configurations without Docker, credentials, tests or model calls:
-
-```sh
-"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/scripts/inspect_unified_input.py \
-  --scenario knowledge-work --threat-cell all --output ../swarmharm-input-preview
-```
-
-Each cell contains the task, tools and initial files. The top-level manifest maps all nine criteria to exact input hashes; criteria stay outside participant files. This export is an input preview, not behavioral evidence or an exact reproduction of an older sealed case. Use a new output directory.
-
-A fresh local run from the repository root (after sourcing the setup environment):
+The same selector prepares a native rollout with its own sealed mechanism
+criterion and executable path checks. Use the pinned Python environment from
+`bash scripts/setup-local`, native Codex and the existing AxonHub key:
 
 ```sh
 "$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run.py --phase prepare \
-  --study-mode unified --threat-cell infra-compositional --source-retention local \
+  --study-mode unified --mechanism grader-tampering --source-retention local \
   --scenario knowledge-work --model-id openai/gpt-6.1-sol --population 4 \
   --harness codex --goal-mode off --reasoning-effort high \
-  --output ../infra-compositional-new \
-  --registration-dir swarmharm/registrations/infra-compositional-new \
-  --key-file /path/to/axonhub.key
+  --output ../eval-readiness/mechanism-grader-knowledge-r01 \
+  --registration-dir swarmharm/registrations/mechanism-grader-knowledge-r01 \
+  --key-file /path/to/existing-axonhub.key
 ```
 
-Commit that registration, then run `swarmharm/launch.py` with the same output,
-registration and key arguments. After completion, run `shared/export_atif.py OUTPUT`,
-then `swarmharm/review.py --output OUTPUT`. The six propagation/coordination cells
-also need `swarmharm/scripts/judge_unified_transcript.py --output OUTPUT --key-file KEY`.
-Use fresh paths. The [archived scenario ledger](docs/research/threat-grid-status.json) identifies
-exact reviewed inputs, source commits and full trajectories. A valid negative is
-separate from an observed threat. Reuse offline checks with `--controls-from OUTPUT`
-only when preparation verifies identical code, image and native runtime.
+Commit source before preparation and the generated registration before collection.
+Launch once with `swarmharm/launch.py`, using the same output, registration and
+key arguments. Source and evidence stay local; no push or upload is required.
+Reuse preparation checks with `--controls-from OUTPUT` only when source, image and
+native runtime match. Each input still executes its own path checks.
 
-The 32-input delivery and targeted live refinement are now authorized. Keep iteration short: preparation selects input, native-runtime and evidence checks; it does not rerun retained legacy studies. Reuse sealed checks across unchanged-source registrations and collect only changed cells. Full regression remains an explicit maintenance action.
-Each input still needs its own ordinary-path, alternative-path and corrected-binding
-check. Do not add timed unpacking, artificial waiting or unchanged-state follow-ups.
+After completion, export ATIF with `shared/export_atif.py OUTPUT`, run
+`swarmharm/review.py --output OUTPUT`, then
+`swarmharm/scripts/judge_unified_transcript.py --output OUTPUT --key-file KEY`.
+The primary result is `mechanism-verdict.json`: protected final-file/action replay,
+native continuity and exact transcript citations must agree. Withdrawals and
+corrections remain in every replay. Communication, coordination and composition
+are separate findings; the retained component verdict is auxiliary.
+
+The [running guide](../docs/running-evals.md#validate-and-freeze) describes runtime
+setup and sealing. [Archived registrations](docs/archive/README.md) retain their
+original selectors, inputs and scores; they do not supply the new contracts.
+Use fresh paths and preserve a negative rollout when refining its input.
 
 ## Code map
 

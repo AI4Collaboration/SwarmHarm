@@ -37,7 +37,7 @@ from phase1 import topology
 import domain_runtime
 from phase2 import phase2_component
 from phase2 import component_workflow
-from phase2 import unified_delivery, balanced_study, threat_grid
+from phase2 import unified_delivery, balanced_study, threat_grid, mechanism_inputs
 GUARDRAIL_SPEC=importlib.util.spec_from_file_location(
     'swarmharm_run_guardrails',REPO/'shared/guardrails.py')
 guardrails=importlib.util.module_from_spec(GUARDRAIL_SPEC)
@@ -407,7 +407,7 @@ def control_harness_contract(harness):
     return value
 
 
-def preparation_check_paths(harness_kind, threat_cell=None):
+def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None):
     """Current-grid preparation checks current paths, not every retained study."""
     current = {
         'threat_grid', 'asymmetric_input', 'claim_evidence', 'review',
@@ -417,13 +417,17 @@ def preparation_check_paths(harness_kind, threat_cell=None):
         'delivery_receipt', 'workload_source', 'format',
         harness_kind.replace('-code', '').replace('-sdk', '') + '_collect',
     }
+    if mechanism is not None:
+        current = {'mechanism_inputs', 'mechanism_review', 'unified_input_contract',
+                   'unified_notification', 'unified_runtime', 'continuous_collect',
+                   'local_source', 'workload_source', 'format', 'codex_collect'}
     selected = []
     for path in sorted(HERE.rglob('*checks.py')):
         adapter = {'pi_collect_checks.py': 'pi-sdk', 'claude_collect_checks.py': 'claude-code',
                    'codex_collect_checks.py': 'codex'}.get(path.name)
         if adapter is not None and adapter != harness_kind:
             continue
-        if threat_cell is None or path.stem.removesuffix('_checks') in current:
+        if (threat_cell is None and mechanism is None) or path.stem.removesuffix('_checks') in current:
             selected.append(path)
     return selected
 
@@ -457,7 +461,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', threat_cell=None):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', threat_cell=None, mechanism=None):
     if source_retention not in ('origin', 'local'):
         raise ValueError('Source retention must be origin or local')
     local_source = None
@@ -500,6 +504,18 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if component_family not in (None, unified_delivery.FAMILY):
         raise ValueError('Unified study mode requires the common reporting environment')
     component_family = unified_delivery.FAMILY
+    if mechanism is not None:
+        if (threat_cell is not None or comparison_design is not None or delivery_config is not None
+                or combined_bindings or target_claim is not None):
+            raise ValueError('A mechanism supplies its own configuration and criterion')
+        if (harness_kind != 'codex' or goal_mode != 'off' or reasoning_effort != 'high'
+                or set(MODELS.values()) != {'openai/gpt-6.1-sol'}):
+            raise ValueError('Mechanism validation requires Sol 6.1, Codex, high reasoning and goal off')
+        expected = mechanism_inputs.configuration(mechanism)
+        preset = mechanism_inputs.MECHANISMS[mechanism]['preset']
+        if binding_preset not in (None, preset) or world_config not in (None, expected):
+            raise ValueError('Mechanism world or binding differs from its input contract')
+        binding_preset, world_config = preset, expected
     if threat_cell is not None:
         definition = threat_grid.CELLS[threat_cell]
         if (harness_kind != 'codex' or goal_mode != 'off' or reasoning_effort != 'high'
@@ -637,18 +653,20 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         for assignment in phase2_plan.values():
             assignment['proof_stage'] = proof_stage
     save(root/'phase2-plan.json',phase2_plan)
+    mechanism_contract = (mechanism_inputs.validate_paths(mechanism, phase2_plan)
+                          if mechanism is not None else None)
     if run_controls:
         from phase2 import delivery_paths
         if threat_cell is not None:
             threat_grid.contract(threat_cell, phase2_plan)
-        else:
+        elif mechanism is None:
             delivery_paths.require_challenge(delivery_paths.audit(phase2_plan),
                                             binding_preset, target_claim)
     if controls_from is not None:
         if not run_controls: raise ValueError('Offline check reuse cannot disable validation')
         save(root/'controls.json',reuse_checked_controls(controls_from,harness))
     elif run_controls:
-        check_paths = preparation_check_paths(harness_kind, threat_cell)
+        check_paths = preparation_check_paths(harness_kind, threat_cell, mechanism)
         env = {**__import__('os').environ, 'PYTHONPATH': f"{HERE}:{REPO/'shared'}"}
         def _run_check_file(target):
             mod = str(target.relative_to(HERE)).removesuffix('.py').replace('/', '.')
@@ -674,7 +692,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         save(root/'controls.json',{'passed':controls_passed,'model_calls':0,
             'test_methods':total_tests,'prompt_contract_passed':prompt_check.returncode == 0,
             'check_modules':[str(p.relative_to(HERE)) for p in check_paths],
-            'check_scope':'current_threat_grid' if threat_cell else 'retained_studies', 'log':log})
+            'check_scope':('mechanism_delivery' if mechanism else 'current_threat_grid'
+                           if threat_cell else 'retained_studies'), 'log':log})
         if not controls_passed:raise RuntimeError(log)
     else:
         save(root/'controls.json',{'passed':True,'model_calls':0,'test_methods':0,
@@ -1015,6 +1034,15 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         reg['threat_grid'] = threat_grid.contract(threat_cell, phase2_plan)
     unified_delivery.configure_registration(reg, root, target_claim=target_claim,
                                              combined_bindings=combined_bindings)
+    if mechanism is not None:
+        reg['mechanism_contract'] = mechanism_contract
+        with (root/'PROTOCOL.md').open('a') as protocol:
+            protocol.write('\nPrimary registered mechanism: '+mechanism+'\n\n'+
+                reg['mechanism_contract']['criterion']+'\n\n'+
+                'The retained component claim is auxiliary. The mechanism verdict joins '+
+                'protected action replay, native continuity and transcript evidence; '+
+                'communication structure and composition are separate findings.\n')
+        reg['input_hashes']['PROTOCOL.md'] = sha(root/'PROTOCOL.md')
     if comparison_design == balanced_study.NAME:
         reg['comparison_design'] = balanced_study.registration_manifest(reg)
     if local_source is not None:
@@ -1544,7 +1572,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     path_validation = delivery_paths.audit(reg['phase2']['assignments'])
     require(reg['phase2'].get('path_validation') == path_validation,
             'Registered completion paths differ; prepare fresh inputs.')
-    if 'threat_grid' not in reg:
+    if 'threat_grid' not in reg and 'mechanism_contract' not in reg:
         delivery_paths.require_challenge(path_validation, reg['phase2']['binding_preset'],
                                         reg.get('claim_contract', {}).get('target_claim'))
     if 'comparison_design' in reg:
@@ -1554,6 +1582,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         require(reg['threat_grid'] == threat_grid.contract(
             reg['threat_grid']['cell'], reg['phase2']['assignments']),
             'Threat-grid input differs; prepare fresh inputs.')
+    if 'mechanism_contract' in reg:
+        require(reg['mechanism_contract'] == mechanism_inputs.validate_paths(
+            reg['mechanism_contract']['mechanism'], reg['phase2']['assignments']),
+            'Mechanism input differs; prepare fresh inputs.')
     require(
         reg['pressure']['kind']==('reporting_close'),
         'Unexpected registered pressure.')
@@ -2487,7 +2519,9 @@ if __name__=='__main__':
     p.add_argument('--source-retention', choices=('origin', 'local'), default='origin',
         help='Retain committed source locally, or require origin synchronization.')
     p.add_argument('--threat-cell', choices=tuple(threat_grid.CELLS),
-        help='Select a concrete input contract from the SwarmHarm grid.')
+        help='Select a retained input contract from the archived SwarmHarm grid.')
+    p.add_argument('--mechanism', choices=tuple(mechanism_inputs.MECHANISMS),
+        help='Select the current mechanism configuration and evidence criterion.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')
     p.add_argument('--delivery-config', type=Path, help=argparse.SUPPRESS)
@@ -2502,7 +2536,7 @@ if __name__=='__main__':
     p.add_argument('--component-family', choices=(unified_delivery.FAMILY,), default=unified_delivery.FAMILY,
         help='Reporting and delivery service.')
     a=p.parse_args()
-    if a.phase=='prepare' and a.binding_preset is None and a.threat_cell is None:
+    if a.phase=='prepare' and a.binding_preset is None and a.threat_cell is None and a.mechanism is None:
         p.error('--binding-preset is required during preparation')
     if a.phase=='prepare' and a.api_base.rstrip('/')!=AXONHUB_API_BASE:
         p.error('All live rollouts must use the registered AxonHub API base')
@@ -2527,5 +2561,5 @@ if __name__=='__main__':
             delivery_config=load(a.delivery_config) if a.delivery_config is not None else None,
             world_config=load(a.world_config) if a.world_config is not None else None,
             combined_bindings=a.combined_bindings,comparison_design=a.comparison_design,
-            source_retention=a.source_retention,threat_cell=a.threat_cell)
+            source_retention=a.source_retention,threat_cell=a.threat_cell,mechanism=a.mechanism)
     else:collect(root,registration_dir)

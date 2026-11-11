@@ -152,7 +152,14 @@ def main(argv=None):
             native_action_bindings=bindings,
         )
         grid_path = review_root / "threat-grid-review.json"
-        if grid_path.is_file() and json.loads(grid_path.read_text()).get('semantic_required'):
+        mechanism_path = review_root / 'mechanism-review.json'
+        if mechanism_path.is_file():
+            from phase2 import mechanism_review
+            verdict = mechanism_review.complete_semantic_review(
+                json.loads(mechanism_path.read_text()), packet, result, native_action_bindings=bindings)
+            verdict_name = 'mechanism-verdict.json'
+            summary = {'claim': verdict['mechanism'], 'passed': verdict['target_observed']}
+        elif grid_path.is_file() and json.loads(grid_path.read_text()).get('semantic_required'):
             from phase2 import threat_grid
             verdict = threat_grid.complete_semantic_review(
                 json.loads(grid_path.read_text()), packet, result, native_action_bindings=bindings)

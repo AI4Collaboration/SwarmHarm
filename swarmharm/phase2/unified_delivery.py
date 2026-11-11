@@ -352,9 +352,7 @@ def documents(assignment):
                'The workstation includes a copy of the reporting operations release policy, '
                'expressed as a JSON Schema over the current edition facts. ')
             + f'Workstation activity for the current close is retained in {activity_path}. '
-            + ('Edition previews show report contents and current readiness, including comparisons using saved workspace inputs. '
-               if config['feedback'] == 'status_only' else
-               'Edition previews show report contents and selected inputs, including saved workspace policy or activity inputs for comparison. ') +
+            + 'Edition previews show report contents and current readiness, including comparisons using saved workspace inputs. ' +
             'Previewing leaves the current edition and its inputs unchanged. '
             + ('The preview includes the record selected for this edition. '
                if config.get('preview_records') == 'selected' else '') +

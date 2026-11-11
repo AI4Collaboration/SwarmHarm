@@ -130,6 +130,8 @@ class Probe:
             self.stage(actor, scenario.ITEMS, [account]*own+[scenario.RESERVE]*(len(scenario.ITEMS)-own))
             self.execute(actor)
         elif method == 'acceptance':
+            for item in scenario.ITEMS[2:]:
+                self.call(actor, 'cancel_dispatch_item', item=item)
             self.stage(actor, scenario.ITEMS[:2], [account]*2)
         elif method == 'forecast':
             budget = f.budget.budget

@@ -13,17 +13,47 @@
   "generated_inputs": 20,
   "offline_path_checked_inputs": 20,
   "model_validated_inputs": 0,
-  "export_index": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/manifest.json",
+  "export_index": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/manifest.json",
   "checks": {
-    "command": "../eval-readiness/harbor-0.24.0/bin/python scripts/check-ci --base HEAD",
+    "command": "scripts/check-ci --base HEAD",
+    "report": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/mechanism-runner-checks-final.json",
     "passed": [
       "syntax",
+      "swarmharm: tests.pi_collect_checks",
+      "swarmharm: tests.claude_collect_checks",
+      "swarmharm: tests.codex_collect_checks",
+      "balanced",
+      "swarmharm: tests.unified_forecast_checks",
+      "swarmharm: tests.delivery_receipt_checks",
+      "swarmharm: tests.local_source_checks",
+      "swarmharm: tests.unified_input_contract_checks",
+      "swarmharm: tests.collector_checks",
+      "shared: tests.check_selection_checks",
+      "swarmharm: tests.delivery_preview_checks",
+      "swarmharm: tests.unified_factor_alignment_checks",
+      "swarmharm: tests.shutdown_checks",
+      "swarmharm: tests.unified_notification_checks",
+      "swarmharm: tests.claim_evidence_checks",
+      "swarmharm: tests.asymmetric_input_checks",
+      "swarmharm: tests.domain_checks",
       "inventory",
-      "tests.check_selection_checks",
-      "tests.mechanism_inputs_checks",
-      "tests.unified_input_contract_checks"
+      "swarmharm: tests.domain_runtime_checks",
+      "swarmharm: tests.native_harness_checks",
+      "swarmharm: tests.mechanism_review_checks",
+      "swarmharm: tests.query_gateway_checks",
+      "swarmharm: tests.unified_input_preview_checks",
+      "swarmharm: tests.continuous_reporting_checks",
+      "swarmharm: tests.continuous_collect_checks",
+      "swarmharm: tests.delivery_path_checks",
+      "swarmharm: tests.swarmform_runtime_checks",
+      "swarmharm: tests.mechanism_inputs_checks",
+      "wording",
+      "swarmharm: tests.threat_grid_checks",
+      "swarmharm: tests.review_checks",
+      "swarmharm: tests.unified_runtime_checks",
+      "swarmharm: tests.unified_delivery_checks"
     ],
-    "scope": "The mechanism suite executed ordinary, alternative and corrected-binding probes for every generated configuration/domain. These are scripted paths, not model results."
+    "scope": "Executable ordinary, alternative and corrected-binding probes cover all 20 generated inputs. Final-effect and withdrawal fixtures use actual reporting services; live model validation remains separate."
   },
   "inputs": [
     {
@@ -43,9 +73,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/knowledge-work/target-substitution/manifest.json",
-      "manifest_sha256": "eae754a9067980de1216cf745d220e68f538142da097c360353f23db095e7584",
-      "subject_sha256": "24b5b1046f2428634f5a3b03c6c4517096e96a6cad02831e8b8b854eda3e510f"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/knowledge-work/target-substitution/manifest.json",
+      "manifest_sha256": "5f7f76c29affbeaecfb59d8755174dd6898b90f5e6ab038be458e6936a538525",
+      "subject_sha256": "5b5bc6c46851374457c2eb29db7b768a4f59ed091202e9e74c037d86a2e02e9a"
     },
     {
       "id": "knowledge-work/evidence-tampering",
@@ -55,9 +85,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/knowledge-work/evidence-tampering/manifest.json",
-      "manifest_sha256": "234684e38170af4d180d1314444d9491a0754a05ecb6aee8c676af51e2b22a7d",
-      "subject_sha256": "24b5b1046f2428634f5a3b03c6c4517096e96a6cad02831e8b8b854eda3e510f"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/knowledge-work/evidence-tampering/manifest.json",
+      "manifest_sha256": "13053721173db57fe59ede584dd25a29c6d67fc4c12897cb2903e337a60af656",
+      "subject_sha256": "5b5bc6c46851374457c2eb29db7b768a4f59ed091202e9e74c037d86a2e02e9a"
     },
     {
       "id": "knowledge-work/grader-tampering",
@@ -67,9 +97,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/knowledge-work/grader-tampering/manifest.json",
-      "manifest_sha256": "db3cd34a4c499c87b0dc2e072539b520913503833d296ab6be61fb7fa14babc1",
-      "subject_sha256": "24b5b1046f2428634f5a3b03c6c4517096e96a6cad02831e8b8b854eda3e510f"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/knowledge-work/grader-tampering/manifest.json",
+      "manifest_sha256": "7c8e5d20ef94bb4633fe1f8442e706c666f968a364e2d68611018d3783dd90bf",
+      "subject_sha256": "5b5bc6c46851374457c2eb29db7b768a4f59ed091202e9e74c037d86a2e02e9a"
     },
     {
       "id": "knowledge-work/information-authority",
@@ -79,9 +109,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/knowledge-work/information-authority/manifest.json",
-      "manifest_sha256": "46f7214ced50641d6ebf5e1c0fc1c2f86dfa3fd67efdb7662c9c2d158fe4d08d",
-      "subject_sha256": "24b5b1046f2428634f5a3b03c6c4517096e96a6cad02831e8b8b854eda3e510f"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/knowledge-work/information-authority/manifest.json",
+      "manifest_sha256": "e4fb8932d3fb063dd47c0845fd905ebcd578a2a0009fb96e09d3c58bc4ce4ede",
+      "subject_sha256": "5b5bc6c46851374457c2eb29db7b768a4f59ed091202e9e74c037d86a2e02e9a"
     },
     {
       "id": "knowledge-work/action-authority",
@@ -100,9 +130,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/knowledge-work/shared-capacity/manifest.json",
-      "manifest_sha256": "be71fd26fece93828387e8a3e0a1456bc56c5208f4c09db69970e94d2956a5e7",
-      "subject_sha256": "876a71e46f423df0b6785c6e8d5a858a6d925556182b29713f14aba49b21316f"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/knowledge-work/shared-capacity/manifest.json",
+      "manifest_sha256": "00aaf001b0813316c16c1e2956565076f7de640360501446b2ec2e0ee9eee29a",
+      "subject_sha256": "4fa75a9557ef6ac294c1e993dfdb864b6168e5042c7f0fdeb5b49c77017872d9"
     },
     {
       "id": "knowledge-work/work-lifecycle",
@@ -130,9 +160,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/engineering-capacity/target-substitution/manifest.json",
-      "manifest_sha256": "c45bef2b1b5f12096d5e4e0cf94ce4fee9e15fccb7061825e5726e51be26924d",
-      "subject_sha256": "d00bc9761f7017fb2acfb79ef281a144646f2ea18752ef016181e7007f20dee1"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/engineering-capacity/target-substitution/manifest.json",
+      "manifest_sha256": "04dd5381fe7afe7e0054b0bc1c632c137b6c7e58675a6552e6759abd3a2ba1c9",
+      "subject_sha256": "03b28be7865d6cbc0e5271ff57fc7584a512c5c38bd6640307555a52b756fbaa"
     },
     {
       "id": "engineering-capacity/evidence-tampering",
@@ -142,9 +172,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/engineering-capacity/evidence-tampering/manifest.json",
-      "manifest_sha256": "3c682f3599e03ea3790153ab1499314149c3119bf1d864ebaca29141e7b87e2d",
-      "subject_sha256": "d00bc9761f7017fb2acfb79ef281a144646f2ea18752ef016181e7007f20dee1"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/engineering-capacity/evidence-tampering/manifest.json",
+      "manifest_sha256": "ee2d2fc4bb9ec4ba04d6a8fb8528be89bf5a7fa6be3766f7d244530a85e90918",
+      "subject_sha256": "03b28be7865d6cbc0e5271ff57fc7584a512c5c38bd6640307555a52b756fbaa"
     },
     {
       "id": "engineering-capacity/grader-tampering",
@@ -154,9 +184,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/engineering-capacity/grader-tampering/manifest.json",
-      "manifest_sha256": "f7b5b67a083eb87dbfd51a2c5732ad328fcf64721e1d8cf442fd94616bfdfb93",
-      "subject_sha256": "d00bc9761f7017fb2acfb79ef281a144646f2ea18752ef016181e7007f20dee1"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/engineering-capacity/grader-tampering/manifest.json",
+      "manifest_sha256": "b11bf7bcf7ad297a3f629761143253eb6013bef0d7dfc21fbb395bf7f7953176",
+      "subject_sha256": "03b28be7865d6cbc0e5271ff57fc7584a512c5c38bd6640307555a52b756fbaa"
     },
     {
       "id": "engineering-capacity/information-authority",
@@ -166,9 +196,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/engineering-capacity/information-authority/manifest.json",
-      "manifest_sha256": "a2a9161e205e771abfb16ac44f9fc1cb306e683d31eda66fe539bc81b430c9ef",
-      "subject_sha256": "d00bc9761f7017fb2acfb79ef281a144646f2ea18752ef016181e7007f20dee1"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/engineering-capacity/information-authority/manifest.json",
+      "manifest_sha256": "7076ac73d14a5d8f806846d8538bec252601973d108f12d469b289c9503d4d6d",
+      "subject_sha256": "03b28be7865d6cbc0e5271ff57fc7584a512c5c38bd6640307555a52b756fbaa"
     },
     {
       "id": "engineering-capacity/action-authority",
@@ -187,9 +217,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/engineering-capacity/shared-capacity/manifest.json",
-      "manifest_sha256": "d52e176c817330b5e052216fc4dd74c33b6a62a2874657234a1191331ad9405a",
-      "subject_sha256": "652b30fb03c932c35c8288e19d0b9e3e15f3b1278962fc06fe6c4a1a8b00f0c7"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/engineering-capacity/shared-capacity/manifest.json",
+      "manifest_sha256": "030e818f25552da20e96b0abe4120d615a3b56de213748c3cf4e92f7bbb1bf7c",
+      "subject_sha256": "e80d76f3dd0ee8a29e290f0e679871e434753d71c1d526f8c6520ccfeae13780"
     },
     {
       "id": "engineering-capacity/work-lifecycle",
@@ -217,9 +247,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/data-analysis/target-substitution/manifest.json",
-      "manifest_sha256": "7ccba41144bc66ca08862fde34bad394c7ee2575b0c5f448c0c20c194d15beb0",
-      "subject_sha256": "8e45b46f3ae697214e1b180ae8ab9c81efaddad34f4f50e3848d79bb406631aa"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/data-analysis/target-substitution/manifest.json",
+      "manifest_sha256": "deb2ebc45ddc5d5c1b059a1339e7bce5be7d1c767db7d9a4bb8d2c381314a681",
+      "subject_sha256": "2dfa923f9785d7268acfd0a8cf00f3a7356555cae2b674e090ec1a1e71380b0c"
     },
     {
       "id": "data-analysis/evidence-tampering",
@@ -229,9 +259,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/data-analysis/evidence-tampering/manifest.json",
-      "manifest_sha256": "93afcd0aeb350bd00ebd784df4d7f41763df28ed8b8751cce62c08a528b1b73e",
-      "subject_sha256": "8e45b46f3ae697214e1b180ae8ab9c81efaddad34f4f50e3848d79bb406631aa"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/data-analysis/evidence-tampering/manifest.json",
+      "manifest_sha256": "3c43350cb7c56c8910659613e8be81d8b25ddd6d9c1c8d19957558d1d72e0198",
+      "subject_sha256": "2dfa923f9785d7268acfd0a8cf00f3a7356555cae2b674e090ec1a1e71380b0c"
     },
     {
       "id": "data-analysis/grader-tampering",
@@ -241,9 +271,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/data-analysis/grader-tampering/manifest.json",
-      "manifest_sha256": "4498170c3e001ae4e7852ddad9446d3abca7e175ebe414fbee7fd902c106580b",
-      "subject_sha256": "8e45b46f3ae697214e1b180ae8ab9c81efaddad34f4f50e3848d79bb406631aa"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/data-analysis/grader-tampering/manifest.json",
+      "manifest_sha256": "74d397fcaeb7527a0d2e5e5aac42a17d589bc28b0514ce8ca7344d2d378bbd7a",
+      "subject_sha256": "2dfa923f9785d7268acfd0a8cf00f3a7356555cae2b674e090ec1a1e71380b0c"
     },
     {
       "id": "data-analysis/information-authority",
@@ -253,9 +283,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/data-analysis/information-authority/manifest.json",
-      "manifest_sha256": "1df61e941c8e31899649b6acb7acca3b89330c9434e469c6d9575243222a6e36",
-      "subject_sha256": "8e45b46f3ae697214e1b180ae8ab9c81efaddad34f4f50e3848d79bb406631aa"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/data-analysis/information-authority/manifest.json",
+      "manifest_sha256": "c2649e83b6857e4f1f88490c3f8ebd3f4ad78bc6a022fcd029389c25ffd1f689",
+      "subject_sha256": "2dfa923f9785d7268acfd0a8cf00f3a7356555cae2b674e090ec1a1e71380b0c"
     },
     {
       "id": "data-analysis/action-authority",
@@ -274,9 +304,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/data-analysis/shared-capacity/manifest.json",
-      "manifest_sha256": "39fae40dcc271c38c730fb918dca74f5cf1e204f4aa1c90f08224f3cf4eb43ea",
-      "subject_sha256": "0efe31d38e7b2b2d8f554dd389dcf481c0dc0308efd76b4e557a9f8e4d4b376b"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/data-analysis/shared-capacity/manifest.json",
+      "manifest_sha256": "0b2e9d23f6eea4c6937baf599b67cc166aeb47cebd1a39a9824b1f2ad6f3ba02",
+      "subject_sha256": "30e8a4969d5b3299d7db9502bb27d6c4e76004fdc23904e2a8a948b3dc555c10"
     },
     {
       "id": "data-analysis/work-lifecycle",
@@ -304,9 +334,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/financial-analysis/target-substitution/manifest.json",
-      "manifest_sha256": "a3d8de4285ee4efdfc6b545f4bde0c37ebf3a7ff5d371cc20072fe628933538b",
-      "subject_sha256": "bea98c60484f8519ad21619dacb59285ff2b9ae6d8392ac8f0c0d3d7eb5591b2"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/financial-analysis/target-substitution/manifest.json",
+      "manifest_sha256": "3960e64534d265f498f28cdce587f8db6adc68374319cbfcb70c7e7e7681c34f",
+      "subject_sha256": "40580ac7379ffc5d343986790880ee7d6fc2425fb3241e6c51d3f9d68b830441"
     },
     {
       "id": "financial-analysis/evidence-tampering",
@@ -316,9 +346,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/financial-analysis/evidence-tampering/manifest.json",
-      "manifest_sha256": "90462be80554bf2230df3ef91822a789ed3f7e3e9a5f058ffaf5a17d69540348",
-      "subject_sha256": "bea98c60484f8519ad21619dacb59285ff2b9ae6d8392ac8f0c0d3d7eb5591b2"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/financial-analysis/evidence-tampering/manifest.json",
+      "manifest_sha256": "7c2b4a5f9628c8a74611eaaedc562e5bedc10916d6d41ecf032921c9ffbcee4b",
+      "subject_sha256": "40580ac7379ffc5d343986790880ee7d6fc2425fb3241e6c51d3f9d68b830441"
     },
     {
       "id": "financial-analysis/grader-tampering",
@@ -328,9 +358,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/financial-analysis/grader-tampering/manifest.json",
-      "manifest_sha256": "b80208d99dbb0c30dbd79f41034f0c0dd1d9cf36dbf221c8ef2115503f9841fb",
-      "subject_sha256": "bea98c60484f8519ad21619dacb59285ff2b9ae6d8392ac8f0c0d3d7eb5591b2"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/financial-analysis/grader-tampering/manifest.json",
+      "manifest_sha256": "4467366c8223d36c47abd9dd7efc31da3c37bde8dcb9c94bcb8fa583223742f2",
+      "subject_sha256": "40580ac7379ffc5d343986790880ee7d6fc2425fb3241e6c51d3f9d68b830441"
     },
     {
       "id": "financial-analysis/information-authority",
@@ -340,9 +370,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/financial-analysis/information-authority/manifest.json",
-      "manifest_sha256": "9121e7183a8d601a31c66f20995a0c4c0ce7ebace959c68af7e2273b5a9b627b",
-      "subject_sha256": "bea98c60484f8519ad21619dacb59285ff2b9ae6d8392ac8f0c0d3d7eb5591b2"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/financial-analysis/information-authority/manifest.json",
+      "manifest_sha256": "17d3d6059ee3e80e2c3fe118c96c2a12d6980402115ba7b3c32300bd12c4f317",
+      "subject_sha256": "40580ac7379ffc5d343986790880ee7d6fc2425fb3241e6c51d3f9d68b830441"
     },
     {
       "id": "financial-analysis/action-authority",
@@ -361,9 +391,9 @@
       "path_validation": "passed_in_mechanism_inputs_checks",
       "model_validation": "not_run",
       "selected_rollout": null,
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v1/financial-analysis/shared-capacity/manifest.json",
-      "manifest_sha256": "eb9d3aac51bf38850239cb8c27709e248e12134476fda25cc97e4984321d9934",
-      "subject_sha256": "3bf20d832c1c51590950c077e8fdde15580ced805888c8eb4f558e26eb33dc97"
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/financial-analysis/shared-capacity/manifest.json",
+      "manifest_sha256": "906bd9f03a35bfb646bb141a766e3a5e090997b51c2fd49ec60aebdf3ea4ac7c",
+      "subject_sha256": "462f92eeb6dc71c590561ee0b0b945ff7201ad2863628a086476be225c4b0072"
     },
     {
       "id": "financial-analysis/work-lifecycle",
@@ -374,5 +404,6 @@
       "model_validation": "not_run",
       "selected_rollout": null
     }
-  ]
+  ],
+  "runner": "Mechanism contracts, collection seals, independent final replay and transcript join implemented; model collection pending."
 }
