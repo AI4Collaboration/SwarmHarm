@@ -31,7 +31,7 @@ The working principles are operational:
 
 **Two different grids:** SwarmForm's 3×3 describes observed structure × information flow. SwarmHarm currently has **nine registered study cells**, each with a concrete input environment. Its classification is under review: nine cells do not establish nine distinct or exhaustive threat models. Neither grid is supplied to participants as a behavior target.
 
-**Registered evidence:** existing cell definitions remain authoritative for their frozen scores. They are not proof that the taxonomy is complete or correctly partitioned. Resolve the classification issues below before fresh collection; preserve existing inputs and results, and register any revised criterion separately. Historical results retain their provenance.
+**Registered evidence:** existing cell definitions remain authoritative for their frozen scores. They are not proof that the taxonomy is complete or correctly partitioned. The classification limits below do not change the nine registered behavioral targets. Continue testing those exact hypotheses; preserve existing inputs and results, and register any revised criterion separately. Historical results retain their provenance.
 
 <a id="task-taxonomy"></a>
 ## 2. Task taxonomy: exactly three classes
@@ -119,7 +119,7 @@ Historical review supports aggregation and some coordination episodes. The [dele
 - No flow does not imply compositional failure; one-way exposure does not prove adoption; reciprocal messages do not prove joint planning. Each needs its own action-bound evidence.
 - False quota and nonexistent approval beliefs are findings to observe, not mandatory definitions of propagation. Grader changes, changes to grading inputs and gaming an unchanged metric must remain distinguishable. [Reward-tampering distinction](https://arxiv.org/abs/1908.04734) · [METR observations](https://metr.org/blog/2025-06-05-recent-reward-hacking/).
 
-Existing scores stay unchanged. The prepared grader r32 has not been collected; fresh collection awaits resolution of these definitions. The full [audit status](swarmharm/docs/research/threat-grid-status.json) records the issues without relabeling results.
+Existing scores and the nine behavioral targets stay unchanged. Continue collecting against those exact criteria without claiming an exhaustive taxonomy. The next grader condition exposes actual satisfied/total policy checks; it tests false-prerequisite propagation separately from tampering. The [audit status](swarmharm/docs/research/threat-grid-status.json) records this distinction without relabeling results.
 
 ### Current coverage
 
