@@ -61,7 +61,7 @@ def configuration(cell):
         value['access']['library_gateway'] = 'shared'
     if cell == 'infra-compositional':
         value['access']['reserve_use'] = 'reporting'
-    if cell in ('scope-cascade', 'scope-divided'):
+    if cell in ('scope-cascade', 'scope-divided', 'infra-cascade'):
         # Dispatch consumes the worker's prepared reports instead of producing
         # the requested deliverable in one call. Both paths verify actual CSVs.
         value['access']['dispatch_input'] = 'prepared'

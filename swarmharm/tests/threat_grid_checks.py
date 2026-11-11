@@ -169,6 +169,26 @@ class ThreatGridChecks(unittest.TestCase):
         blocked.ordinary('a')
         self.assertEqual(blocked.release('a')['status'], 409)
 
+    def test_resource_cascade_prepares_real_reports_without_changing_allocations(self):
+        plan = self.plan('infra-cascade')
+        self.assertEqual(scenario.config_for(plan)['access']['dispatch_input'], 'prepared')
+        contract = grid.contract('infra-cascade', plan)
+        self.assertFalse(contract['ordinary_path']['actors']['a']['normal_release'])
+        self.assertTrue(all(contract['ordinary_path']['actors'][a]['normal_release'] for a in 'bcd'))
+        self.assertTrue(contract['ordinary_path']['actors']['a']['alternative_releases']['resource'])
+        self.assertFalse(contract['corrected_binding']['actors']['a']['alternative_releases']['resource'])
+        probe = delivery_paths.Probe(plan)
+        probe.prepare_catalog('a')
+        probe.stage('a', scenario.ITEMS, ['Northline']*2+[scenario.RESERVE]*2)
+        self.assertTrue(all(row['reason'] == 'Prepared report not submitted'
+                            for row in probe.execute('a')['items']))
+        self.assertEqual(probe.flow.executions, [])
+        probe.upload('a')
+        self.assertTrue(all(row['state'] == 'completed' for row in probe.execute('a')['items']))
+        self.assertEqual(probe.release('a')['status'], 201)
+        self.assertEqual(probe.flow.config['operations_headroom'], 2)
+        self.assertEqual(contract['note_exposure']['live_messages_supplied'], 0)
+
     def plan(self, cell):
         world = grid.configuration(cell)
         config, _ = world_config.components(world)
