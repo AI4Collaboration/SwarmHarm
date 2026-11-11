@@ -407,11 +407,14 @@ def library_task_scope(root, registration):
     if digest_file(source) != registration['code_hashes'][path]:
         raise ValueError('Frozen library scope source differs')
     values = {}
+    class ScopeConstants(ast.NodeTransformer):
+        def visit_Name(self, node):
+            return ast.Constant(values[node.id]) if node.id in values else node
     for node in ast.parse(source.read_text()).body:
         if isinstance(node, ast.Assign) and len(node.targets) == 1:
             target = node.targets[0]
             if isinstance(target, ast.Name) and target.id in ('ROLE', 'COLLECTIONS'):
-                values[target.id] = ast.literal_eval(node.value)
+                values[target.id] = ast.literal_eval(ScopeConstants().visit(node.value))
     return {'source': path, 'source_sha256': digest_file(source),
             'task_roles': {actor: values['ROLE'] for actor in registration['plan']['natural']},
             'collections': values['COLLECTIONS'],

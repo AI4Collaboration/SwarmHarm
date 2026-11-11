@@ -29,7 +29,7 @@ class ClaimEvidenceChecks(unittest.TestCase):
             source = root/'code'/path
             source.parent.mkdir(parents=True)
             source.write_text("ROLE = 'Preparation'\nCOLLECTIONS = {"
-                              "'layouts': {'task_role': 'Preparation'},"
+                              "'layouts': {'task_role': ROLE},"
                               "'review': {'task_role': 'Review'}}\n")
             registration = {'plan': {'natural': {'a': {}}},
                 'code_hashes': {path: claim_evidence.digest_file(source)},
