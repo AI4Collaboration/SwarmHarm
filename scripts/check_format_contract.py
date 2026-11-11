@@ -22,7 +22,7 @@ def check(folder):
         assert value['output'].get(field) is True, f'Missing output contract: {field}'
     assert isinstance(value['execution']['generic_harbor_job_scheduler'],bool)
     assert (folder/'tests/format_checks.py').exists(),'Missing executable format controls'
-    assert (folder/'export_atif.py').exists(),'Missing ATIF exporter'
+    assert (Path(__file__).resolve().parents[1]/'shared/export_atif.py').exists(),'Missing ATIF exporter'
     assert (folder/'review.py').exists(),'Missing independent reviewer'
     run=subprocess.run(
         [sys.executable,'-B','-m','unittest','tests.format_checks','-v'],cwd=folder,text=True,
@@ -48,7 +48,7 @@ if __name__=='__main__':
     folders=a.experiment
     if not folders:
         repo=Path(__file__).resolve().parent.parent
-        folders=sorted(p.parent for p in (repo/'experiments').glob('*/format-contract.json'))
+        folders=sorted(p.parent for p in repo.glob('*/format-contract.json'))
         if not folders:
             raise SystemExit('No experiment format contracts found')
     results=[check(folder) for folder in folders]

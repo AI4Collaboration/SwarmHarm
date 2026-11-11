@@ -1,0 +1,412 @@
+{
+  "updated_at": "2026-11-10T16:40:23.979768+00:00",
+  "source_commit": "b76f3b30a615867cdd5a609c68183574cca4ad27",
+  "scope": "Post-run repairs and related code cleanup; no successful hosted model inference, no new registration or research rollout, no changed organizational instructions, no retroactive mutation of frozen evidence.",
+  "fixed": [
+    {
+      "id": "actor_export_isolation",
+      "before": "First rejected actor aborted remaining ATIF exports.",
+      "after": "All registered actors attempted; strict validation retained, actor-specific failures preserved and existing index protected."
+    },
+    {
+      "id": "coverage_after_export_failure",
+      "before": "ATIF exception also skipped the actor coverage inventory.",
+      "after": "Independent coverage inventory always attempted; coverage errors separate from ATIF errors."
+    },
+    {
+      "id": "original_failure_preservation",
+      "before": "Later native/deployment shutdown errors could replace the first failure; some cleanup errors disappeared.",
+      "after": "First failure retained; secondary cleanup errors recorded with stage, actor and timestamp. Cleanup-only failure becomes runtime_failure."
+    },
+    {
+      "id": "late_usage_stop_reason",
+      "before": "Final usage arriving during shutdown could create a budget stop and relabel an earlier runtime failure.",
+      "after": "Final usage remains counted, without creating a new stop cause during shutdown."
+    },
+    {
+      "id": "terminal_summary_seal",
+      "before": "Summary written after manifest; basename exclusions could omit nested evidence.",
+      "after": "Shared finalizer writes summary first, then hashes files in bounded blocks; exclusions refer to root-relative paths."
+    },
+    {
+      "id": "one_shot_finalization",
+      "before": "Repeated finalization could replace error or conclusion artifacts.",
+      "after": "Both entry points reject existing manifest, summary or validation index before any finalization writes."
+    },
+    {
+      "id": "independent_temporal_inventory",
+      "before": "Outcome failure also skipped temporal inventory.",
+      "after": "Independent attempts and separate failure records."
+    },
+    {
+      "id": "fatal_projection_quarantine",
+      "before": "Native tail after fatal could project compaction summaries and reset usage as research responses.",
+      "after": "Explicit native context boundary; preserve raw tail while suppressing research projections after fatal, including compaction racing with shutdown. Ordinary shutdown usage is retained."
+    },
+    {
+      "id": "completed_execution_retention",
+      "before": "Observation or publication-notification failure after execution could remove a pending job before its result was saved.",
+      "after": "Keep job through result capture; retain undelivered completed work at shutdown, avoid duplicate execution records after delivery failure, never replay commands."
+    },
+    {
+      "id": "terminal_error_disposition",
+      "before": "Fatal or arrival errors queued at close could be recorded without invalidating an otherwise successful stop.",
+      "after": "Terminal errors become explicit shutdown failures while preserving the first cause; queued tools are never executed."
+    },
+    {
+      "id": "ci_test_dependency_closure",
+      "before": "Cross-harness tests could be selected without Pi and Claude installed; native collection suites could lack declared workstation dependencies.",
+      "after": "Install runtimes and Docker based on final selected suites; lightweight documentation checks remain unchanged."
+    }
+  ],
+  "context_compaction": {
+    "status": "long_context_continuation_unresolved_failure_handling_verified",
+    "prior_wording_correction": "The huge model_auto_compact_token_limit value did not establish disabled compaction.",
+    "configured_threshold": 2147483647,
+    "official_reference": "https://learn.chatgpt.com/docs/config-file/config-reference",
+    "fixture": {
+      "model": "openai/gpt-6.1-sol",
+      "cli": {
+        "version": "codex-cli 0.166.0",
+        "sha256": "39acf979729dd290f9a24ee38b2914e036c91b65952872e28ae2a6b88a7db7c1"
+      },
+      "cases": [
+        {
+          "fixture_reported_input_tokens": 10,
+          "terminal": {
+            "type": "settled",
+            "aborted": false,
+            "error_message": null
+          },
+          "compactions": [],
+          "http_requests": [
+            {
+              "path": "/v1/responses",
+              "model": "openai/gpt-6.1-sol",
+              "input_items": 4
+            },
+            {
+              "path": "/v1/responses",
+              "model": "openai/gpt-6.1-sol",
+              "input_items": 6
+            }
+          ],
+          "controller_event_types": [
+            "request",
+            "response_update",
+            "tool_call",
+            "response_update",
+            "provider_response",
+            "turn_end",
+            "request",
+            "response_update",
+            "provider_response",
+            "turn_end",
+            "settled"
+          ],
+          "hosted_model_calls": 0
+        },
+        {
+          "fixture_reported_input_tokens": 300000,
+          "terminal": {
+            "type": "fatal",
+            "message": "Codex context compaction is outside the registered condition"
+          },
+          "compactions": [
+            {
+              "path": "compaction-probe-300000/codex/native/000028.json",
+              "method": "item/started"
+            },
+            {
+              "path": "compaction-probe-300000/codex/native/000038.json",
+              "method": "item/completed"
+            }
+          ],
+          "http_requests": [
+            {
+              "path": "/v1/responses",
+              "model": "openai/gpt-6.1-sol",
+              "input_items": 4
+            },
+            {
+              "path": "/v1/responses",
+              "model": "openai/gpt-6.1-sol",
+              "input_items": 7
+            }
+          ],
+          "controller_event_types": [
+            "request",
+            "response_update",
+            "tool_call",
+            "response_update",
+            "provider_response",
+            "turn_end",
+            "fatal"
+          ],
+          "hosted_model_calls": 0
+        }
+      ]
+    },
+    "historical_observation": {
+      "effective_context_window_reported": 258400,
+      "intended_last_input_tokens": 149488,
+      "unintended_last_input_tokens": 177481,
+      "exact_historical_trigger_path_established": false
+    },
+    "guard_unchanged": true,
+    "role_neutrality_issue": {
+      "source": "compaction-hardened-probe-300000/codex/session.jsonl",
+      "line": 19,
+      "observation": "Native local summary wrapper attributes prior work to another language model. This may introduce a peer cue into unintended. No compaction continuation is enabled."
+    },
+    "hardened_fixture": {
+      "model": "openai/gpt-6.1-sol",
+      "cli": {
+        "version": "codex-cli 0.166.0",
+        "sha256": "39acf979729dd290f9a24ee38b2914e036c91b65952872e28ae2a6b88a7db7c1"
+      },
+      "cases": [
+        {
+          "fixture_reported_input_tokens": 10,
+          "terminal": {
+            "type": "settled",
+            "aborted": false,
+            "error_message": null
+          },
+          "compactions": [],
+          "http_requests": [
+            {
+              "path": "/v1/responses",
+              "model": "openai/gpt-6.1-sol",
+              "input_items": 4
+            },
+            {
+              "path": "/v1/responses",
+              "model": "openai/gpt-6.1-sol",
+              "input_items": 6
+            }
+          ],
+          "controller_event_types": [
+            "request",
+            "response_update",
+            "tool_call",
+            "response_update",
+            "provider_response",
+            "turn_end",
+            "request",
+            "response_update",
+            "provider_response",
+            "turn_end",
+            "settled"
+          ],
+          "post_terminal_controller_events": [],
+          "hosted_model_calls": 0
+        },
+        {
+          "fixture_reported_input_tokens": 300000,
+          "terminal": {
+            "type": "fatal",
+            "message": "Codex context compaction is outside the registered condition"
+          },
+          "compactions": [
+            {
+              "path": "compaction-hardened-probe-300000/codex/native/000028.json",
+              "method": "item/started"
+            },
+            {
+              "path": "compaction-hardened-probe-300000/codex/native/000038.json",
+              "method": "item/completed"
+            }
+          ],
+          "http_requests": [
+            {
+              "path": "/v1/responses",
+              "model": "openai/gpt-6.1-sol",
+              "input_items": 4
+            },
+            {
+              "path": "/v1/responses",
+              "model": "openai/gpt-6.1-sol",
+              "input_items": 7
+            }
+          ],
+          "controller_event_types": [
+            "request",
+            "response_update",
+            "tool_call",
+            "response_update",
+            "provider_response",
+            "turn_end",
+            "native_context_transition",
+            "fatal"
+          ],
+          "post_terminal_controller_events": [],
+          "hosted_model_calls": 0
+        }
+      ]
+    },
+    "discarded_transport_probes": {
+      "remote_capability": "No remote compaction established; retained local compaction.",
+      "reserved_provider_override": "Rejected by pinned CLI before a model request.",
+      "provider_display_name": "Unexpected configuration_update; probe-only accommodation still led to local compaction.",
+      "builtin_provider": "Expected local base was not used; unauthorized request to default endpoint returned 401. No successful hosted inference and no real key supplied. Not an offline endpoint success."
+    }
+  },
+  "validation": {
+    "passed": true,
+    "selected_test_cases": 149,
+    "selected_suites": [
+      "tests.codex_collect_checks",
+      "tests.native_goal_checks",
+      "tests.native_harness_checks",
+      "tests.native_mcp_checks",
+      "tests.publication_updates_checks",
+      "tests.structure_native_checks",
+      "tests.structure_timeline_checks",
+      "tests.sustained_research_checks",
+      "tests.swarmform_accepted_checks",
+      "tests.swarmform_actor_evidence_checks",
+      "tests.swarmform_collection_checks",
+      "tests.swarmform_input_runner_checks",
+      "tests.swarmform_ledger_checks",
+      "tests.swarmform_registration_checks",
+      "tests.swarmform_structure_checks"
+    ],
+    "check_report": "check-ci-final.json",
+    "check_report_sha256": "6634dc85ec021861d5d5bb9fada13aec0a0a5a85f67dfd6134b854693f9f8263",
+    "checks": [
+      {
+        "name": "syntax",
+        "passed": true,
+        "seconds": 0.03
+      },
+      {
+        "name": "inventory",
+        "passed": true,
+        "seconds": 0.06
+      },
+      {
+        "name": "inputs",
+        "passed": true,
+        "seconds": 0.17
+      },
+      {
+        "name": "catalog",
+        "passed": true,
+        "seconds": 20.4
+      },
+      {
+        "name": "format",
+        "passed": true,
+        "seconds": 0.17
+      },
+      {
+        "name": "selected tests",
+        "passed": true,
+        "seconds": 212.48
+      }
+    ],
+    "tested_files": {
+      "shared/codex_session.py": "fe8311d8d526b46d76f422b50f2e8362a5fd59b982ec6362e9db86b66c38b0e3",
+      "swarmform/swarmform/actor_evidence.py": "2d0efbc528c11c1188a23edfb957998a0fb3013107cb7bda7ac1167cfa5170fd",
+      "swarmform/swarmform/collection.py": "166b7a6617f935cf0a9fa73a16144424bf438f509883397e6aa05c006b2c573b",
+      "swarmharm/tests/native_harness_checks.py": "06e2d4aeafea8b6ce11be4f4d976cf9db4bff0510a7c8e24bcd67d59cebb4dff",
+      "swarmform/tests/swarmform_actor_evidence_checks.py": "62510cb7a04ead12757d2ab6f3e967b90f4ef440f8efe9b64d03ac99751334c9",
+      "swarmform/tests/swarmform_collection_checks.py": "0bb766b285c87769773f9849c5173df31658c6e6ee856abe6c2072897187bb19",
+      "swarmform/tests/swarmform_registration_checks.py": "852074f769561f165169b4ffccc1220499b0bb73cbae433683106bef097a9f64",
+      "swarmform/tests/swarmform_structure_checks.py": "721b7296489f96017f1ee7575b6cdc831edf81bb2e9c8bf63dc558ac7cc616c6",
+      "swarmform/scripts/run_swarmform.py": "0b4873fd577183f7073d3c41cd58580fdb000bd82e6a04e60cd04b117cf87d2c",
+      "swarmform/scripts/run_swarmform_structure.py": "e1e9d116c6638acf9877d3dced164fd129481c010f7288c9e27d4354ad55d35e"
+    },
+    "source_files_match_committed_bytes": true,
+    "successful_hosted_model_calls": 0,
+    "docker_image": "sha256:86c72305ebe2a6397540689e36805f6be92688d797ee97b6610bfd036b6f984d",
+    "source_commit": "e4da4700d3e8306e909742ac7ce969c4919217da"
+  },
+  "evidence_archive": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-common-problem-async-v2-20261110/structure-runtime-audit-20261110.v1.tar.gz",
+  "cleanup": {
+    "shared_finalization": "swarmform.actor_evidence",
+    "shared_terminal_capture": "swarmform.collection",
+    "historical_exporter_validation": "unchanged",
+    "frozen_runs": "unchanged",
+    "new_research_rollouts": 0
+  },
+  "prior_validation": {
+    "selected_tests": 61,
+    "passed": true,
+    "configured_check_report_sha256": "13f05646f1eee06a426217c5126bebee280335e04b30108f5412aad84c352d57",
+    "initial_environment_failure": "Seven container cases used the stale default workstation image without strace; original failure retained, rerun with the previously verified study image passed.",
+    "hosted_model_calls": 0,
+    "tested_files": {
+      "swarmform/swarmform/actor_evidence.py": "3f9d6c7c35148d12f1251bff98798622767f8773632792440ee69f83088fbd69",
+      "swarmform/swarmform/collection.py": "178e653865e065eac2c7f2180ad8de89ad79fb227deb7515e7d2c2b9c8de8a19",
+      "swarmform/swarmform/structure_collection.py": "7eaa47e464b27205b1a2bf25767edcdb5e0aed83e5577700fdc68eee7e7bcc1b",
+      "swarmform/tests/sustained_research_checks.py": "ab0bf1250128d3cf9c9e8c7ddbf2f06cb2c17fef9036533f07a94c031cb7db23",
+      "swarmform/tests/swarmform_actor_evidence_checks.py": "58d8cabf6458b346e04934ea74068f0501e91264d7f1fc520ee70d731c0f11ab",
+      "swarmform/tests/swarmform_collection_checks.py": "fe93a734d5da6025e8b26d302acbaf6af867b4ff5ac073e2aab11bc19fcd67e4",
+      "swarmform/tests/swarmform_structure_checks.py": "de7a8e368b6ddab06798fe6a1b9d4f461a21769eb2c1bd3a79eb2b381b117f95",
+      "swarmform/scripts/run_swarmform_structure.py": "4423fcd6f2653a3e6bb00ad1b44df31200d5342c70a59bf3848731d0bb939068"
+    },
+    "tested_files_unchanged_after_rebase": true
+  },
+  "unchanged_agent_input_sources": {
+    "swarmform/swarmform/structure.py": "5d2133a8e9ee13959a5459ace9a7be20e80da927b1e34796d8227c6a2f8d6bc9",
+    "swarmform/swarmform/sustained_research.py": "bc0bb44a9f00b9b0dce4d00aed9d6c95495ff016378db17a3842b969a9bc40dc",
+    "swarmform/swarmform/publication_updates.py": "2e7b9d97d3662a1e0127ab8b1683c5121ba41b212f0ee6b225f5c780d54360ae",
+    "shared/codex_gateway.py": "298c79d6ecf8841b5cb7d2993e8f505e50634412c537a38da8433798e01434b3"
+  },
+  "publication": {
+    "asset_id": 732122585,
+    "name": "structure-runtime-audit-20261110.v1.tar.gz",
+    "bytes": 2912339,
+    "sha256": "9dc0e6bb0cae88132fbab4fcf15ffd3a1f5a7cb054766c53b474ec08e741c26f",
+    "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-common-problem-async-v2-20261110/structure-runtime-audit-20261110.v1.tar.gz",
+    "local_tar_members_verified": 428,
+    "github_digest_verified": true,
+    "archive_report_scope": "Archive contains the local validation audit snapshot; publication verification and subsequent GitHub CI results are recorded in this repository index."
+  },
+  "runtime_repair_source_commit": "e4da4700d3e8306e909742ac7ce969c4919217da",
+  "first_source_ci": {
+    "status": "completed",
+    "conclusion": "failure",
+    "html_url": "https://github.com/AI4Collaboration/SwarmHarm/actions/runs/42854817860",
+    "head_sha": "e4da4700d3e8306e909742ac7ce969c4919217da",
+    "updated_at": "2026-11-10T16:35:04Z",
+    "errors": 3,
+    "optional_historical_tests_skipped": 6,
+    "cause": "Selected tests require Pi and Claude installations that the dependency plan omitted."
+  },
+  "ci_dependency_validation": {
+    "source_commit": "b76f3b30a615867cdd5a609c68183574cca4ad27",
+    "selected_tests": 49,
+    "passed": true,
+    "report_sha256": "4e90e65951f5a9b4f4b11c36f60ef86c469201e1ae484d2f569c735066de7ccc",
+    "harnesses": [
+      "claude",
+      "codex",
+      "pi"
+    ],
+    "files": {
+      "scripts/check-ci": "ac515e9d7cd5989fecb22e84ab9dbe3d8b46f4b065585b276f53046b65039845",
+      "shared/tests/check_selection_checks.py": "7e3c9fc8aa4da4c76991a7f3524cece95830d2df026e7679c58134d05118d226",
+      "swarmharm/tests/native_harness_checks.py": "b91d53c2a6855b9bdd01fa28db5ce1e5e1ca3b850c38f33a0de02f99ca0292fa"
+    },
+    "tested_files_match_commit": true
+  },
+  "ci_followup": {
+    "status": "completed",
+    "conclusion": "success",
+    "html_url": "https://github.com/AI4Collaboration/SwarmHarm/actions/runs/42856379861",
+    "head_sha": "b76f3b30a615867cdd5a609c68183574cca4ad27",
+    "updated_at": "2026-11-10T16:39:27Z"
+  },
+  "ci_followup_publication": {
+    "asset_id": 732165663,
+    "name": "structure-runtime-audit-20261110.ci-followup-v1.tar.gz",
+    "bytes": 58277,
+    "sha256": "9a9f89d4b7458f8de499ee6b606614e390e7172d3f0d92c0a559075f7ceda033",
+    "url": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-common-problem-async-v2-20261110/structure-runtime-audit-20261110.ci-followup-v1.tar.gz",
+    "local_tar_members_verified": 8,
+    "github_digest_verified": true
+  }
+}

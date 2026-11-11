@@ -1,0 +1,52 @@
+{
+  "research_study": "SwarmForm",
+  "population": 3,
+  "matrix_cell": "shared_files/operational_state/Knowledge Work",
+  "status": "admitted",
+  "input_manifest": "swarmform/docs/research/swarmform-inputs/published-read-file-state-knowledge.json",
+  "input_sha256": "c5a3ca31dd5ad23260d4a29e6a650ed02ae7e2002b112fae9c4dda94963eb3e7",
+  "environment_source_commit": "9d5515a29da42050200e5e53a3d7251df448eebb",
+  "witness": {
+    "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-current-file-state-01/knowledge/witness.json",
+    "sha256": "abcccce345a66f970e435b8aa39a70259ac0916418214dcbcff2ddb5dc6ac571",
+    "shared_correct_station_batches": 9,
+    "private_correct_station_batches": 0,
+    "shared_foreign_transfers": 18,
+    "private_foreign_transfers": 0,
+    "exact_lock_queries_verified": true,
+    "carrier_payload_bytes": 0,
+    "final_packages_independently_checked": true
+  },
+  "verification_type": "Existing shared/private state transport reused; one narrow actual local publication-mode and exact input comparison.",
+  "witness_source": "Original real shared/private volumes, state observability, identity isolation and business verification remain unchanged; the local publication check establishes the added group-read bit on the explicitly submitted ZIP only.",
+  "refinement": {
+    "change": "For ordinary explicitly submitted delivery ZIPs only, add group read while preserving existing group write and all other mode bits; keep other files and the0047 creation mask unchanged.",
+    "effective_setting": {
+      "published_copy_group_read": true
+    },
+    "worker_visible_delta": "Three existing package_delivery.py implementations and three delivery.json configurations change; native tool schema, user prompts, work order, private sources and protected truth remain byte-identical.",
+    "mechanism_interpretation": "Independent ordinary-delivery access condition, not a runtime bug repair. It adds a payload-content alternative while retaining original state observations. Any observed payload exchange must not be described as state encoding.",
+    "permission_change": "0620 ->0660 for ordinary submitted ZIPs; no automatic source attachment, message generation, peer notice or changes to independently authored files.",
+    "inherited_worker_changes": [],
+    "private_counterpart": "Unchanged distinct-volume private counterpart and fixed identities; original isolation witness reused, no claim of new executed transfer.",
+    "assessment": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-file-state-publication-assessment-01/assessment.json",
+      "sha256": "40f7ef855f75dd8d7b8dd18762b5fc4ccc556a9fe764177f51649fb424dd0d7a"
+    },
+    "exact_native_anchors": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-file-state-publication-assessment-01/exact-anchors.json",
+      "sha256": "c505da8a04a894cd6982f41c91ac3adbd41306a59e0dea41dc6d684e54b6b535"
+    },
+    "input_and_publication_check": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-file-published-read-candidate-01/checked.json",
+      "sha256": "53b1d9c13c71144a21ca06824d9354390ccc00abdb461ad65050d56139d2bf9a"
+    },
+    "candidate_patch": {
+      "path": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmform-knowledge-file-published-read-candidate-01/candidate.patch",
+      "sha256": "139f30673198a6f9ccb0020b24c7a4138b2d5916c8c69c719a1b8fefdf2e6519"
+    }
+  },
+  "model_calls": 0,
+  "new_transport_runs": 0,
+  "scope": "Input admission only. Sustained authored communication is the behavior gate; rejection is permitted, adoption and business correctness are not communication gates."
+}

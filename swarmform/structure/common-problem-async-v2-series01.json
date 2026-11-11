@@ -1,0 +1,92 @@
+{
+  "study": "SwarmForm asynchronous sustained common-problem pair",
+  "created_at": "2026-11-10T14:45:30.235031+00:00",
+  "source_commit": "dc7409f279d085184e593b8a00bdc173a1350cba",
+  "population": 8,
+  "rows": [
+    {
+      "identifier": "structure-commonproblem-async-v2-n8-intended-01",
+      "condition": "intended",
+      "worker": "lima-swarmform-behavior-01",
+      "registration": "swarmform/structure/registrations/structure-commonproblem-async-v2-n8-intended-01",
+      "registration_sha256": "085fb46c7c72aa78192eb910b30a60d0b683bc2b5225a5b0083d13ccda0b0df5"
+    },
+    {
+      "identifier": "structure-commonproblem-async-v2-n8-unintended-01",
+      "condition": "unintended",
+      "worker": "lima-swarmform-behavior-02",
+      "registration": "swarmform/structure/registrations/structure-commonproblem-async-v2-n8-unintended-01",
+      "registration_sha256": "51db8a38963ff349f956e71526368b34e9512ca92c3496ba5b0eeeed2e7ee56f"
+    }
+  ],
+  "requested_repetitions_per_condition": 1,
+  "fresh_native_sessions": 16,
+  "matched_budgets": true,
+  "budget": {
+    "active_contexts_natural": 8,
+    "max_agent_seconds": 5400,
+    "max_batch_seconds": 7200,
+    "request_timeout_seconds": 1800,
+    "max_tools_per_agent": 1000,
+    "max_responses_per_agent": 1000,
+    "max_observed_tokens_per_agent": 8000000,
+    "min_free_bytes": 4294967296,
+    "stop_policy": "Any agent crossing a measured cap censors the whole rollout; in-flight work may overshoot.",
+    "response_idle_timeout_seconds": 600
+  },
+  "policy": {
+    "mode": "sustained-research-async-v2",
+    "research_seconds": 5400,
+    "quiescence_exit": false,
+    "resume_after_response_seconds": 1,
+    "status_path": "/workspace/research-status.json",
+    "same_native_session": true,
+    "pause_wake": "actual_publication_change",
+    "busy_publication_delivery": "next_tool_result",
+    "limits": {
+      "duration": 5400,
+      "max_tools": 1000,
+      "max_responses": 1000,
+      "max_tokens": 8000000,
+      "min_free_gib": 4,
+      "request_timeout_seconds": 1800,
+      "response_idle_timeout_seconds": 600
+    }
+  },
+  "publication_updates": {
+    "mode": "publication-content-async-v2",
+    "poll_seconds": 1,
+    "stable_scans": 2,
+    "quiescence_seconds": null,
+    "root": "/var/tmp/exports",
+    "max_file_bytes": 2000000,
+    "max_total_bytes": 32000000,
+    "max_files": 4096,
+    "notice_paths_per_turn": 32,
+    "notice_source": "automatic_environment_file_change",
+    "unchanged_state_starts_turn": false,
+    "reset_session": false,
+    "supplied_organization": false
+  },
+  "exact_review_preview_match": true,
+  "matched_actor_order": [
+    "Research03",
+    "Research08",
+    "Research01",
+    "Research04",
+    "Research07",
+    "Research06",
+    "Research05",
+    "Research02"
+  ],
+  "conditions_isolated_from_each_other": true,
+  "planned_concurrent_execution": true,
+  "model_calls_at_preparation": 0,
+  "primary_observations": [
+    "spontaneous aggregation and downstream use",
+    "accepted multi-level delegation with task-linked return paths",
+    "orchestrator formation and action adoption",
+    "appearance, persistence, role shifts, handoff, split, merge and disappearance"
+  ],
+  "interpretation_scope": "One observational pair. Record active research, pauses and controller notifications separately. No role/aggregation instructions or intervention during collection."
+}
