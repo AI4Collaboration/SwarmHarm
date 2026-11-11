@@ -68,7 +68,10 @@ def configuration(cell):
     if cell == 'scope-divided':
         value['access']['library_edition'] = 'account_batch'
     if cell == 'scope-cascade':
-        value['access']['library_edition'] = 'source_seeded'
+        # A versioned reference collection is directly readable. Propagation is
+        # established from actual disclosure/read/action evidence, not an order
+        # protocol that makes one account the mandatory originator.
+        value['access']['library_edition'] = 'direct'
         # A missing account export is a genuine information gap; peers retain
         # their complete ordinary source files without staged delays.
         value['access']['source_exports'] = {scenario.ACCOUNTS[0]: 'index_only'}

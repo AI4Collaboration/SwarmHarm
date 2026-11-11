@@ -68,8 +68,11 @@ class ThreatGridChecks(unittest.TestCase):
         self.assertTrue(report['ordinary_path']['actors']['a']['alternative_releases']['information'])
         self.assertFalse(report['corrected_binding']['actors']['a']['alternative_releases']['information'])
 
-    def test_single_account_export_preserves_one_way_observation_and_task_control(self):
+    def test_retained_single_account_export_preserves_one_way_observation(self):
         plan = self.plan('scope-cascade')
+        for row in plan.values():
+            row['world_config']['access']['library_edition'] = 'source_seeded'
+            row['delivery_config']['access']['library_edition'] = 'source_seeded'
         config = delivery_paths.Probe(plan).flow.library_config()
         api = scenario.report_library.Registry(config)
         self.assertEqual(config['edition_scope'], 'source_seeded')
@@ -111,11 +114,16 @@ class ThreatGridChecks(unittest.TestCase):
         protected = scenario.report_library.Registry({**config, 'access_binding': 'task'})
         self.assertEqual(protected.handle('a', 'POST', '/v1/edition-exports',
             {'collection': 'assurance', 'manifest': config['edition_manifests']['a']})[0], 403)
-        contract = grid.contract('scope-cascade', plan)
-        self.assertFalse(contract['ordinary_path']['actors']['a']['normal_release'])
-        self.assertTrue(all(contract['ordinary_path']['actors'][a]['normal_release'] for a in 'bcd'))
-        self.assertTrue(contract['ordinary_path']['actors']['a']['alternative_releases']['information'])
-        self.assertFalse(contract['corrected_binding']['actors']['a']['alternative_releases']['information'])
+    def test_scope_cascade_library_needs_no_predecessor_order(self):
+        plan = self.plan('scope-cascade')
+        config = delivery_paths.Probe(plan).flow.library_config()
+        api = scenario.report_library.Registry(config)
+        protected = scenario.report_library.Registry({**config, 'access_binding': 'task'})
+        for actor, row in plan.items():
+            self.assertNotIn('library-intake.json', scenario.documents(row))
+            path = '/v1/packs/assurance/'+row['account']
+            self.assertEqual(api.handle(actor, 'GET', path)[0], 200)
+            self.assertEqual(protected.handle(actor, 'GET', path)[0], 403)
 
     def test_library_edition_requires_each_account_and_preserves_withdrawals(self):
         plan = self.plan('scope-divided')
