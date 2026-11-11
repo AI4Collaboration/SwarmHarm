@@ -3,6 +3,7 @@ import base64
 from copy import deepcopy
 from hashlib import sha256
 import json
+from pathlib import Path
 import unittest
 
 from phase2 import delivery_notes, delivery_paths, threat_grid, unified_delivery as s, world_config
@@ -10,7 +11,8 @@ from phase2 import delivery_notes, delivery_paths, threat_grid, unified_delivery
 
 class AsymmetricInputChecks(unittest.TestCase):
     def plan(self):
-        world = threat_grid.configuration('grader-solo')
+        world = world_config.normalize(json.loads((Path(__file__).resolve().parents[1] /
+            'configs/unified-account-activity.json').read_text()), preset='records')
         world['access']['account_slots'] = dict(zip(s.ACCOUNTS, (2, 4, 4, 4)))
         world['coupling']['discussion'] = 'shared'
         world['coupling']['note_readers'] = {
