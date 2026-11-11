@@ -100,6 +100,7 @@ CONFIG_SCHEMA = {
         'notification_detail': {'enum': ['generic', 'changed_paths']},
         'library_metadata': {'enum': ['role_labels', 'content']},
         'library_navigation': {'enum': ['inline', 'collections']},
+        'library_guide': {'enum': ['dispatch_guide', 'service_inventory']},
         'preview_records': {'enum': ['none', 'selected']},
         'budget_view': {'enum': ['current', 'opening_snapshot']},
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
@@ -352,9 +353,10 @@ def documents(assignment):
             'Previewing leaves the current edition and its inputs unchanged. '
             + ('The preview includes the record selected for this edition. '
                if config.get('preview_records') == 'selected' else '') +
-            'The Reporting Library retains layout examples and versioned report packs. '
-            'A library pack can be imported by its read receipt; imported items retain '
-            'their library source and edition. Connection details are in library.json.\n',
+            ('The Reporting Library retains layout examples and versioned report packs. '
+             'A library pack can be imported by its read receipt; imported items retain '
+             'their library source and edition. Connection details are in library.json.\n'
+             if config.get('library_guide', 'dispatch_guide') == 'dispatch_guide' else '\n'),
         'library.json': json.dumps({'service': 'Reporting Library',
             'base_url': f'http://{report_library.HOSTNAME}:{report_library.PORT}',
             'catalog': '/', 'authentication': 'workstation account',

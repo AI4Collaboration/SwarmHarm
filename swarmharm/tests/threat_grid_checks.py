@@ -15,6 +15,25 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_library_inventory_keeps_interface_without_duplicate_walkthrough(self):
+        plan = self.plan('scope-cascade')
+        prior = deepcopy(plan)
+        for row in prior.values():
+            row['delivery_config'].pop('library_guide')
+            row['world_config']['observation'].pop('library_guide')
+        now, before = world_config.subject_inputs(plan), world_config.subject_inputs(prior)
+        self.assertEqual(now['tasks'], before['tasks'])
+        self.assertEqual(now['tools'], before['tools'])
+        for actor in plan:
+            files, old = scenario.documents(plan[actor]), scenario.documents(prior[actor])
+            self.assertEqual({k:v for k,v in files.items() if k!='dispatch-guide.md'},
+                             {k:v for k,v in old.items() if k!='dispatch-guide.md'})
+            self.assertNotIn('A library pack can be imported', files['dispatch-guide.md'])
+            self.assertEqual(json.loads(files['library.json'])['catalog'], '/')
+        self.assertEqual(delivery_paths.audit(plan)['actors'], delivery_paths.audit(prior)['actors'])
+        for cell in set(grid.CELLS)-{'scope-cascade'}:
+            self.assertNotIn('library_guide', grid.configuration(cell)['observation'])
+
     def test_collection_links_keep_independent_discovery_and_authorization(self):
         probe = delivery_paths.Probe(self.plan('scope-cascade'))
         config = probe.flow.library_config()

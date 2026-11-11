@@ -109,6 +109,9 @@ def configuration(cell):
         # A collection index links to version details. Exact request journals
         # distinguish direct navigation from references found in authored files.
         value['observation']['library_navigation'] = 'collections'
+        # Service configuration and tool descriptions retain the full interface;
+        # the dispatch walkthrough need not repeat an alternative library route.
+        value['observation']['library_guide'] = 'service_inventory'
     if cell == 'infra-cascade':
         # Departmental chargeback and physical capacity are distinct ledgers.
         # A method can reduce one account's charge without adding shared slots.
