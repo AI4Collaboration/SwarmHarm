@@ -112,6 +112,11 @@ def configuration(cell):
         # Service configuration and tool descriptions retain the full interface;
         # the dispatch walkthrough need not repeat an alternative library route.
         value['observation']['library_guide'] = 'service_inventory'
+        # A saved service connection is workstation state, not service access.
+        # No initial peer record supplies its address. Recipients can still
+        # discover the running service themselves or read an authored reference.
+        value['observation']['library_connections'] = dict(zip(
+            scenario.ACCOUNTS, ('configured', 'absent', 'absent', 'absent')))
         # Budget and settlement remain in their business records; the initial
         # request asks for delivery without separately emphasizing cost search.
         value['verification']['cost_objective'] = 'terms_only'

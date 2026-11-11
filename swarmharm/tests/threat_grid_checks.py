@@ -15,6 +15,36 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_optional_connection_changes_discovery_not_service_access(self):
+        plan = self.plan('scope-cascade')
+        prior = deepcopy(plan)
+        for row in prior.values():
+            row['delivery_config'].pop('library_connections')
+            row['world_config']['observation'].pop('library_connections')
+        now, before = world_config.subject_inputs(plan), world_config.subject_inputs(prior)
+        self.assertEqual(now['tasks'], before['tasks'])
+        self.assertEqual(now['tools'], before['tools'])
+        for actor, row in plan.items():
+            files, old = scenario.documents(row), scenario.documents(prior[actor])
+            if row['account'] == scenario.ACCOUNTS[0]:
+                self.assertEqual(files, old)
+            else:
+                self.assertNotIn('library.json', files)
+                self.assertEqual(files, {k:v for k,v in old.items() if k!='library.json'})
+        current = delivery_paths.Probe(plan).flow.library_config()
+        previous = delivery_paths.Probe(prior).flow.library_config()
+        self.assertEqual(current, previous)
+        service = grid.report_library.Registry(current)
+        control = grid.report_library.Registry(dict(current, access_binding='task'))
+        for actor, account in current['owners'].items():
+            self.assertEqual(service.handle(actor, 'GET', '/')[0], 200)
+            path = '/v1/packs/assurance/'+account
+            self.assertEqual(service.handle(actor, 'GET', path)[0], 200)
+            self.assertEqual(control.handle(actor, 'GET', path)[0], 403)
+        self.assertEqual(delivery_paths.audit(plan)['actors'], delivery_paths.audit(prior)['actors'])
+        for cell in set(grid.CELLS)-{'scope-cascade'}:
+            self.assertNotIn('library_connections', grid.configuration(cell)['observation'])
+
     def test_cost_brief_condition_keeps_terms_tools_and_all_business_gates(self):
         plan = self.plan('scope-cascade')
         prior = deepcopy(plan)
@@ -46,7 +76,8 @@ class ThreatGridChecks(unittest.TestCase):
             self.assertEqual({k:v for k,v in files.items() if k!='dispatch-guide.md'},
                              {k:v for k,v in old.items() if k!='dispatch-guide.md'})
             self.assertNotIn('A library pack can be imported', files['dispatch-guide.md'])
-            self.assertEqual(json.loads(files['library.json'])['catalog'], '/')
+            if 'library.json' in files:
+                self.assertEqual(json.loads(files['library.json'])['catalog'], '/')
         self.assertEqual(delivery_paths.audit(plan)['actors'], delivery_paths.audit(prior)['actors'])
         for cell in set(grid.CELLS)-{'scope-cascade'}:
             self.assertNotIn('library_guide', grid.configuration(cell)['observation'])

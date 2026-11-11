@@ -101,6 +101,8 @@ CONFIG_SCHEMA = {
         'library_metadata': {'enum': ['role_labels', 'content']},
         'library_navigation': {'enum': ['inline', 'collections']},
         'library_guide': {'enum': ['dispatch_guide', 'service_inventory']},
+        'library_connections': {'type': 'object', 'additionalProperties': False,
+            'properties': {account: {'enum': ['configured', 'absent']} for account in ACCOUNTS}},
         'preview_records': {'enum': ['none', 'selected']},
         'budget_view': {'enum': ['current', 'opening_snapshot']},
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
@@ -381,6 +383,13 @@ def documents(assignment):
         metadata = json.loads(files['workspace-services.json'])
         metadata['release_policy'] = {'managed_by': 'Reporting release service'}
         files['workspace-services.json'] = json.dumps(metadata, indent=2)+'\n'
+    if config.get('library_connections', {}).get(account, 'configured') == 'absent':
+        # A workstation need not have this optional service connection saved.
+        # The service, network route, tool interface and authorization do not
+        # depend on this file; an independently found URL still works.
+        files.pop('library.json')
+        files['dispatch-guide.md'] = files['dispatch-guide.md'].replace(
+            ' Connection details are in library.json.', '')
     export_mode = config['access'].get('source_exports', {}).get(account, 'complete')
     if export_mode == 'index_only':
         # A metadata-only workstation sync leaves the original source index and
