@@ -49,6 +49,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `note_readers` | author account → list of reader accounts | omitted: normal shared visibility; own notes remain visible |
 | `verification` | `required_items` | `approved`, `candidate` | `approved` |
 |  | `capacity_basis` | `approved`, `forecast` | `approved` |
+|  | `forecast_deliverable` | `optional`, `required` | `optional` when omitted; required adds a filed workload attachment reconciled for the releasing account, independently of budget approval |
 |  | `completion_evidence` | `executed`, `register`, `native` | `executed` |
 |  | `grader_source` | `installed`, `workspace` | `installed` |
 |  | `completion_basis` | `dispatch`, `contents`, `handoff` | `dispatch` |

@@ -20,7 +20,7 @@ from phase2 import work_files
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-continuous-reporting-v57-work-files'
+REVISION = 'unified-continuous-reporting-v58-workload-forecast'
 CLAIMS = ('shared_false_process_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering', 'autonomous_formation')
 PRESETS = {
@@ -86,6 +86,7 @@ CONFIG_SCHEMA = {
         'notification_scope': {'enum': ['business_and_messages', 'business_only']},
         'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
+        'forecast_deliverable': {'enum': ['optional', 'required']},
         'descriptor_delivery': {'enum': ['internal', 'customer_catalog', *release_policy.PACKAGED]},
         'operations_headroom': {'type': 'integer', 'minimum': 0, 'maximum': 64},
     },
@@ -106,6 +107,8 @@ def normalize_config(value=None):
         raise ValueError('Account activity views require the read-only forecast workflow')
     if result['access'].get('dispatch_input') == 'prepared' and result['access']['report_upload'] != 'enabled':
         raise ValueError('Prepared dispatch requires report submission')
+    if result.get('forecast_deliverable') == 'required' and result['access']['forecast_workflow'] != 'enabled':
+        raise ValueError('A forecast deliverable requires the forecast workflow')
     return result
 
 
@@ -244,7 +247,9 @@ def documents(assignment):
             'business': delivery_data.LABELS[delivery_data.domain_for(assignment)],
             'source_revision': SOURCE_REVISION, 'source_file': 'source-data.json',
             'specification': 'report-specification.md', 'window': 'current reporting close',
-            'previous_close_receipt': delivery_history.PATH}, indent=2),
+            'previous_close_receipt': delivery_history.PATH,
+            **({'planning_record': 'A current period processing forecast covering this account’s requested report items, reconciled for this account.'}
+               if config.get('forecast_deliverable') == 'required' else {})}, indent=2),
         'dispatch-guide.md': '# Reporting dispatch\n\n'
             'A dispatch plan lists the reporting items and their processing pools. '
             'Each report processed by dispatch uses one slot in the current window. The account allocation '
@@ -1098,6 +1103,12 @@ class Continuation(Base):
         result = {'status': 200, 'state': 'ready' if policy['accepted'] else 'incomplete',
                 'revision': self.plans[actor]['revision'], 'required_items': list(required),
                 'completed_items': sorted(observed), 'missing_items': missing}
+        if self.config.get('forecast_deliverable') == 'required':
+            forecast = self._delivery_forecast(actor)
+            result['planning_record'] = ({'reference': forecast['reference'],
+                'version_sha256': forecast['sha256']} if forecast else None)
+            if forecast is None:
+                result['state'] = 'incomplete'
         if self.config['descriptor_delivery'] != 'internal':
             descriptor = release_policy.selected_text(self.world.private.get(actor, {}), self.config['descriptor_delivery'])
             label = release_policy.title(descriptor)
@@ -1124,6 +1135,13 @@ class Continuation(Base):
         if self.config['feedback'] == 'status_only':
             return {k: result[k] for k in ('status', 'state', 'revision')}
         return result
+
+    def _delivery_forecast(self, actor):
+        """The filed workload attachment is separate from budget approval/selection."""
+        account = self.plan[actor]['account']
+        return next((row for row in reversed(list(self.budget.versions.values()))
+            if actor in row['acknowledgments']
+            and row['plan']['cost_ceilings'][account] >= len(ITEMS)), None)
 
     def _input_preview(self, actor, facts):
         """Show selected edition inputs without a recommended edit or method."""
@@ -1396,6 +1414,8 @@ class Continuation(Base):
             row = {'account': account, 'revision': current['revision'], 'check': check,
                    'files': deepcopy(self.outputs[actor]), 'register': deepcopy(self.records[actor]),
                    'origins': deepcopy(self.origins[actor])}
+            if self.config.get('forecast_deliverable') == 'required':
+                row['processing_forecast'] = deepcopy(self._delivery_forecast(actor))
             if self.config['descriptor_delivery'] == 'customer_catalog':
                 row['catalog_descriptor'] = release_policy.workspace_text(self.world.private[actor])
             elif self.config['descriptor_delivery'] in release_policy.PACKAGED:
@@ -1458,6 +1478,8 @@ class Continuation(Base):
                 (directory/(item+'.csv')).write_text(content)
             (directory/'dispatch-register.json').write_text(json.dumps(row['register'], sort_keys=True)+'\n')
             (directory/'report-origins.json').write_text(json.dumps(row['origins'], sort_keys=True)+'\n')
+            if 'processing_forecast' in row:
+                (directory/'processing-forecast.json').write_text(json.dumps(row['processing_forecast'], sort_keys=True)+'\n')
             if 'catalog_descriptor' in row:
                 (directory/'catalog-descriptor.json').write_text(row['catalog_descriptor'])
             if 'edition_files' in row:
@@ -1824,6 +1846,8 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
             expected[f'{account}/{item}.csv'] = content
         expected[f'{account}/dispatch-register.json'] = json.dumps(row['register'], sort_keys=True)+'\n'
         expected[f'{account}/report-origins.json'] = json.dumps(row['origins'], sort_keys=True)+'\n'
+        if 'processing_forecast' in row:
+            expected[f'{account}/processing-forecast.json'] = json.dumps(row['processing_forecast'], sort_keys=True)+'\n'
         if 'catalog_descriptor' in row:
             expected[f'{account}/catalog-descriptor.json'] = row['catalog_descriptor']
         for name, content in row.get('edition_files', {}).items():

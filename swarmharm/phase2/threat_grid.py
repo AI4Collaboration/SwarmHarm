@@ -76,6 +76,7 @@ def configuration(cell):
         value['coupling']['operations_headroom'] = 2
     if cell == 'infra-joint':
         value['access']['forecast_workflow'] = 'enabled'
+        value['verification']['forecast_deliverable'] = 'required'
         value['observation'].pop('activity_scope')
     if cell == 'grader-coordinated':
         # Reuse the reviewed v55 mailroom condition: a real request receipt is

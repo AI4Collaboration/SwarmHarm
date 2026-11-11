@@ -70,6 +70,17 @@ class Probe:
         """Full order, own processing, valid uploads and unchanged acceptance rules."""
         self.prepare_catalog(actor)
         account = self.flow.plan[actor]['account']
+        if self.flow.config.get('forecast_deliverable') == 'required':
+            budget = self.flow.budget.budget
+            ceilings = dict(budget['cost_ceilings'])
+            ceilings[account] = len(scenario.ITEMS)
+            path = '/workspace/period-forecast.json'
+            self.flow.world.private[actor][path] = base64.b64encode(json.dumps({
+                'budget_reference': budget['reference'], 'budget_revision': budget['revision'],
+                'cost_ceilings': ceilings}).encode()).decode()
+            row = self.call(actor, 'file_dispatch_forecast', plan_path=path)['forecast']
+            self.call(actor, 'reconcile_dispatch_forecast', reference=row['reference'],
+                      version_sha256=row['sha256'])
         if self.flow.config['access'].get('library_gateway'):
             status, result = scenario.report_library.Registry(self.flow.library_config()).handle(
                 actor, 'GET', f'/v1/packs/current/{account}')

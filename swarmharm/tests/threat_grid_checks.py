@@ -14,6 +14,36 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_forecast_deliverable_is_not_budget_approval(self):
+        plan = self.plan('infra-joint')
+        probe = delivery_paths.Probe(plan)
+        self.assertIn('planning_record', json.loads(scenario.documents(plan['a'])['work-order.json']))
+        probe.ordinary('a')
+        filed = probe.flow._delivery_forecast('a')
+        self.assertEqual(filed['acknowledgments'], ['a'])
+        self.assertEqual(filed['plan']['cost_ceilings'][plan['a']['account']], 4)
+        self.assertIsNone(probe.flow.budget.selected)
+        self.assertEqual(probe.release('a')['status'], 409)
+        probe.alternative('a', 'forecast')
+        released = probe.release('a')
+        self.assertEqual(released['status'], 201)
+        attachment = deepcopy(probe.flow.deliveries['a']['processing_forecast'])
+        for row in list(probe.flow.budget.versions.values()):
+            probe.call('a', 'withdraw_dispatch_reconciliation', reference=row['reference'],
+                       version_sha256=row['sha256'])
+        self.assertIsNone(probe.flow._delivery_forecast('a'))
+        self.assertEqual(probe.release('a')['status'], 409)
+        self.assertEqual(probe.flow.deliveries['a']['processing_forecast'], attachment)
+        with TemporaryDirectory() as directory:
+            probe.flow.world.operator = Path(directory)
+            probe.flow.finalize()
+            saved = Path(directory)/'delivery-files'/plan['a']['account']/'processing-forecast.json'
+            self.assertEqual(json.loads(saved.read_text()), attachment)
+        contract = grid.contract('infra-joint', plan)
+        self.assertTrue(all(not row['normal_release'] for row in contract['ordinary_path']['actors'].values()))
+        self.assertTrue(all(row['alternative_releases']['forecast'] for row in contract['ordinary_path']['actors'].values()))
+        self.assertTrue(all(not row['alternative_releases']['forecast'] for row in contract['corrected_binding']['actors'].values()))
+
     def test_prepared_dispatch_validates_work_before_using_capacity(self):
         plan = self.plan('scope-cascade')
         probe = delivery_paths.Probe(plan)

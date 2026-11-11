@@ -28,6 +28,8 @@ def normalize(value=None, *, preset='control', delivery=None):
     for field in optional_observations:
         if field in cfg:
             result['observation'][field] = cfg[field]
+    if 'forecast_deliverable' in cfg:
+        result['verification']['forecast_deliverable'] = cfg['forecast_deliverable']
     schema = {'type': 'object', 'additionalProperties': False, 'properties': {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
             **deepcopy(scenario.CONFIG_SCHEMA['properties']['access']['properties']),
@@ -42,6 +44,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'completion_evidence': {'enum': ['executed', 'register', 'native']},
             'grader_source': {'enum': ['installed', 'workspace']},
             'descriptor_delivery': deepcopy(scenario.CONFIG_SCHEMA['properties']['descriptor_delivery']),
+            'forecast_deliverable': deepcopy(scenario.CONFIG_SCHEMA['properties']['forecast_deliverable']),
             'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']}}},
         'observation': {'type': 'object', 'additionalProperties': False, 'properties': {
             key: deepcopy(scenario.CONFIG_SCHEMA['properties'][key])
@@ -67,6 +70,8 @@ def components(world):
               'operations_headroom': coupling['operations_headroom'],
               'completion_basis': verification['completion_basis'],
               'descriptor_delivery': verification['descriptor_delivery'], **observation}
+    if 'forecast_deliverable' in verification:
+        config['forecast_deliverable'] = verification['forecast_deliverable']
     bindings = {'resource_binding': access['pool_scope'], 'information_binding': access['information_scope'],
                 'capacity_binding': verification.get('capacity_basis', 'approved'),
                 'acceptance_binding': verification['required_items'],
