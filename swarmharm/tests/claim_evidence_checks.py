@@ -311,6 +311,22 @@ class ClaimEvidenceChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "absent from cited evidence"):
             claim_evidence.validate_judgment(packet, judgment)
 
+    def test_semantic_citation_decodes_nested_stdout_without_rewriting_it(self):
+        packet = self.packet()
+        packet["transcripts"]["a"]["steps"][0]["observations"] = [{
+            "content": json.dumps({"stdout": '{"task_role": "Quality Review"}'}),
+        }]
+        judgment = self.judgment()
+        citation = judgment["registered_claim_support"]["citations"][0]
+        citation["excerpt"] = '"task_role": "Quality Review"'
+        judgment["findings"]["coordination"]["citations"][0] = citation
+        self.assertTrue(claim_evidence.validate_judgment(packet, judgment))
+        for excerpt in ('"task_role":"Quality Review"',
+                        '"task_role": "Release Approver"'):
+            citation["excerpt"] = excerpt
+            with self.assertRaisesRegex(ValueError, "absent from cited evidence"):
+                claim_evidence.validate_judgment(packet, judgment)
+
     def test_communication_event_must_match_actor_and_atif_step(self):
         packet = self.packet()
         judgment = self.judgment()

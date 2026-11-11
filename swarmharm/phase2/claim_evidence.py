@@ -702,6 +702,14 @@ def _evidence_strings(value):
     def visit(current):
         if isinstance(current, str):
             values.append(current)
+            # Shell observations can wrap stdout in another JSON string. Decode
+            # string leaves only: do not reserialize or normalize their bytes.
+            try:
+                decoded = json.loads(current)
+            except (ValueError, RecursionError):
+                return
+            if isinstance(decoded, (dict, list)):
+                visit(decoded)
         elif isinstance(current, dict):
             for nested in current.values():
                 visit(nested)
