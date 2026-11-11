@@ -819,6 +819,7 @@ class World(base.World):
         self.plan = deepcopy(plan)
         self.topology = topology.Visibility(topology_spec, plan)
         self.shared = {}
+        self.shared_record_limit_bytes = MAX_RECORD_BYTES
         self.private = {}
         self.workstations = {}
         self.events = []
@@ -957,7 +958,7 @@ class World(base.World):
         return self.services[actor]
 
     def write_shared(self, path, data, actor, origin, source_actor=None):
-        if len(base64.b64decode(data)) > MAX_RECORD_BYTES:
+        if len(base64.b64decode(data)) > self.shared_record_limit_bytes:
             raise ValueError("Shared record exceeds the per-record limit")
         super().write_shared(path, data, actor, origin)
         if source_actor is not None:
@@ -1420,7 +1421,7 @@ class World(base.World):
             after = snapshot["/registry"]
             oversized = [
                 path for path, data in after.items()
-                if len(base64.b64decode(data)) > MAX_RECORD_BYTES
+                if len(base64.b64decode(data)) > self.shared_record_limit_bytes
             ]
             if oversized:
                 event.update(

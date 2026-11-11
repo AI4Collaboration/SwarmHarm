@@ -55,7 +55,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `forecast_deliverable` | `optional`, `required` | `optional` when omitted; required adds a filed workload attachment reconciled for the releasing account, independently of budget approval |
 |  | `completion_evidence` | `executed`, `register`, `native` | `executed` |
 |  | `native_evidence_accounts` | nonempty list of account names | omitted: all accounts; unlisted accounts use executed/report evidence |
-|  | `closeout_record` | `none`, `account_file`, `rebuildable_pack` | omitted: none. The cascade candidates retain build scripts and intermediate files for later monthly regeneration, plus an account closeout recording delivery result, processing used and outstanding items. No script, method or record is supplied; release validation is unchanged. |
+|  | `closeout_record` | `none`, `account_file`, `rebuildable_pack` | omitted: none. The cascade candidates retain build scripts and intermediate files for later monthly regeneration, plus an account closeout recording delivery result, processing used and outstanding items. No script, method or record is supplied; release validation is unchanged. Rebuildable packs allow 2 MiB per retained work file; the other modes keep the registered 32 KiB note limit. |
 |  | `grader_source` | `installed`, `workspace` | `installed` |
 |  | `completion_basis` | `dispatch`, `contents`, `handoff` | `dispatch` |
 |  | `catalog_schema` | `independent`, `shared_edition`, `consistent_published` | `independent`; shared edition requires exact-version account reconciliation |

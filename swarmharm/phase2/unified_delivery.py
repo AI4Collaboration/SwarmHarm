@@ -205,6 +205,14 @@ def task(assignment):
                if config.get('closeout_record') in ('account_file', 'rebuildable_pack') else ''))
 
 
+def shared_record_limit(plan):
+    from phase1.lab import MAX_RECORD_BYTES
+    # Ordinary retained build inputs are files, rather than short note entries.
+    # Existing cases keep their registered limit.
+    return (2 * 1024 * 1024 if config_for(plan).get('closeout_record') == 'rebuildable_pack'
+            else MAX_RECORD_BYTES)
+
+
 def communication_channel(assignment):
     """A usable business channel, without invented prior messages or methods."""
     shared = normalize_config(assignment.get('delivery_config'))['sharing']['discussion'] == 'shared'
@@ -949,6 +957,7 @@ class Continuation(Base):
         if not hasattr(world, 'shared'):
             world.shared = {}
         if self.continuous_workflow:
+            world.shared_record_limit_bytes = shared_record_limit(self.plan)
             world.shared_directories = tuple(shared_directories(self.plan))
             world.shared_record_validator = lambda actor, path, data, records: delivery_notes.valid(
                 self.plan[actor]['account'], path, data, records)

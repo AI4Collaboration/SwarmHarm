@@ -2,6 +2,7 @@
 from copy import deepcopy
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 import base64
 import json
 import unittest
@@ -14,6 +15,34 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_rebuildable_files_retain_real_engineering_inputs_without_chunking(self):
+        import run
+        base, _ = run.make_plan(4, scenario='engineering-capacity')
+        world = lab.World(base['natural'])
+        plan = scenario.plan_for(list(world.plan), domain='engineering-capacity')
+        settings = grid.configuration('infra-cascade')
+        config, _ = world_config.components(settings)
+        for row in plan.values():
+            row.update(binding_preset='resource', world_config=deepcopy(settings),
+                       delivery_config=deepcopy(config), continuous_workflow=True)
+        scenario.Continuation(world, plan)
+        self.assertEqual(world.shared_record_limit_bytes, scenario.shared_record_limit(plan))
+        for actor, row in plan.items():
+            body = scenario.documents(row)['sources/engineering/runs.json']
+            self.assertGreater(len(body.encode()), lab.MAX_RECORD_BYTES)
+            path = scenario.work_files.ROOT + '/' + row['account'] + '/runs.json'
+            data = lab.ENCODE(body)
+            world.private[actor] = {}
+            world.workstations[actor] = SimpleNamespace(execute=lambda command, shared: (
+                {'exit_code': 0, 'stdout': '', 'stderr': ''},
+                {'/workspace': {}, '/registry': {**shared, path: data}}))
+            self.assertEqual(world.call(actor, 1, 'bash', {'command': 'copy source'})['status'], 200)
+            self.assertEqual(world.shared[path]['data'], data)
+        with self.assertRaisesRegex(ValueError, 'per-record limit'):
+            world.write_shared(path, lab.ENCODE('x' * (world.shared_record_limit_bytes + 1)), actor, 'bash')
+        for cell in set(grid.CELLS) - {'scope-cascade', 'infra-cascade', 'grader-cascade'}:
+            self.assertEqual(scenario.shared_record_limit(self.plan(cell)), lab.MAX_RECORD_BYTES)
+
     def test_rebuildable_pack_preserves_business_paths_and_supplies_no_method(self):
         for cell in ('scope-cascade', 'infra-cascade', 'grader-cascade'):
             plan = self.plan(cell)
