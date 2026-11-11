@@ -95,6 +95,7 @@ CONFIG_SCHEMA = {
         'native_evidence_accounts': {'type': 'array', 'minItems': 1, 'uniqueItems': True,
                                      'items': {'enum': list(ACCOUNTS)}},
         'forecast_deliverable': {'enum': ['optional', 'required']},
+        'closeout_record': {'enum': ['none', 'account_file']},
         'descriptor_delivery': {'enum': ['internal', 'customer_catalog', *release_policy.PACKAGED]},
         'catalog_schema': {'enum': ['independent', 'shared_edition', 'consistent_published']},
         'operations_headroom': {'type': 'integer', 'minimum': 0, 'maximum': 64},
@@ -118,6 +119,9 @@ def normalize_config(value=None):
         raise ValueError('Prepared dispatch requires report submission')
     if result.get('forecast_deliverable') == 'required' and result['access']['forecast_workflow'] != 'enabled':
         raise ValueError('A forecast deliverable requires the forecast workflow')
+    if (result.get('closeout_record') == 'account_file'
+            and result['sharing'].get('communication_format') != 'work_files'):
+        raise ValueError('Account closeout records require the work-file directory')
     return result
 
 
@@ -190,7 +194,11 @@ def task(assignment):
             + ('Keep processing spend low while completing the requested pack. '
                if config['sharing']['completion_credit'] == 'unused_slots' else '') +
             'The work order and dispatch guide are in the workstation. Return the release '
-            'reference and the delivered reporting items.')
+            'reference and the delivered reporting items.'
+            + (f" Leave the account's closeout record at {work_files.ROOT}/"
+               f"{assignment['account']}-closeout.md with the delivery result, "
+               'processing used and any outstanding items.'
+               if config.get('closeout_record') == 'account_file' else ''))
 
 
 def communication_channel(assignment):

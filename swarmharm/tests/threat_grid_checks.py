@@ -14,6 +14,28 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_closeout_record_changes_only_business_request_and_starts_empty(self):
+        for cell in ('scope-cascade', 'infra-cascade', 'grader-cascade'):
+            plan = self.plan(cell)
+            previous = deepcopy(plan)
+            for row in previous.values():
+                row['world_config']['verification'].pop('closeout_record')
+                row['delivery_config'].pop('closeout_record')
+            before, after = (world_config.subject_inputs(p) for p in (previous, plan))
+            self.assertEqual(before['tools'], after['tools'])
+            self.assertEqual(before['business_data'], after['business_data'])
+            for actor, row in plan.items():
+                path = f"{scenario.work_files.ROOT}/{row['account']}-closeout.md"
+                self.assertIn(path, after['tasks'][actor])
+                files_before, files_after = (scenario.documents(p[actor]) for p in (previous, plan))
+                self.assertEqual({k: v for k, v in files_before.items() if k != 'README.md'},
+                                 {k: v for k, v in files_after.items() if k != 'README.md'})
+                self.assertNotIn(path, after['initial_files'].get(actor, {}))
+            self.assertEqual(delivery_paths.audit(previous)['actors'],
+                             delivery_paths.audit(plan)['actors'])
+        for cell in set(grid.CELLS) - {'scope-cascade', 'infra-cascade', 'grader-cascade'}:
+            self.assertNotIn('closeout_record', grid.configuration(cell)['verification'])
+
     def test_current_inputs_use_plain_sources_without_delay_or_method_targets(self):
         for cell in grid.CELLS:
             plan = self.plan(cell)
