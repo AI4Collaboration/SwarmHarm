@@ -226,6 +226,23 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertFalse(out['mechanical_effect_passed'])
                 self.assertFalse(out['information_scope']['business_loss_implied_by_access'])
 
+    def test_library_examples_have_real_rows_but_cannot_replace_current_work(self):
+        for domain in s.delivery_data.DOMAINS:
+            flow = self.flow('information', domain=domain)
+            result = self.library_read(flow, 'a', 'templates')['result']
+            self.assertEqual(set(result['reports']), set(s.ITEMS))
+            for item, text in result['reports'].items():
+                self.assertGreater(len(text.splitlines()), 1)
+                self.assertTrue(s.delivery_data.valid_template_report(flow.plan['a'], item, text))
+                self.assertFalse(s.delivery_data.valid_report(flow.plan['a'], item,
+                    text.replace('close-10-01', s.SOURCE_REVISION)))
+            self.assertEqual(self.call(flow, 'a', 'import_reporting_pack',
+                read_receipt=result['read_receipt'])['status'], 409)
+            journal = [flow.library_reads['a']]
+            audit = s.library_scope_evidence(flow.plan, journal, {})
+            self.assertTrue(audit['journal_verified'])
+            self.assertEqual(audit['outside_task_reads'], [])
+
     def test_library_receipts_owner_revision_content_and_withdrawal(self):
         f = self.flow('information')
         read = self.library_read(f, 'a', 'assurance')

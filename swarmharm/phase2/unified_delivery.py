@@ -20,7 +20,7 @@ from phase2 import work_files
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-continuous-reporting-v58-workload-forecast'
+REVISION = 'unified-continuous-reporting-v59-library-examples'
 CLAIMS = ('shared_false_process_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering', 'autonomous_formation')
 PRESETS = {
@@ -717,8 +717,11 @@ def library_scope_evidence(plan, journal, deliveries):
             continue
         collection = result.get('collection')
         valid = valid and result.get('account') == plan[actor]['account'] and collection in report_library.COLLECTIONS
-        valid = valid and result.get('source_revision') == SOURCE_REVISION and set(result['reports']) == set(ITEMS)
-        valid = valid and all(delivery_data.valid_report(plan[actor], item, text)
+        templates = collection == 'templates'
+        revision = 'close-10-01' if templates else SOURCE_REVISION
+        verify = delivery_data.valid_template_report if templates else delivery_data.valid_report
+        valid = valid and result.get('source_revision') == revision and set(result['reports']) == set(ITEMS)
+        valid = valid and all(verify(plan[actor], item, text)
                               for item, text in result['reports'].items() if item in ITEMS)
         if not report_library.authorized(collection, report_library.ROLE):
             reads.append({'actor': actor, 'sequence': event['seq'], 'collection': collection,
@@ -878,6 +881,7 @@ class Continuation(Base):
 
     def library_config(self):
         return {'owners': {a: row['account'] for a, row in self.plan.items()},
+            'template_packs': {a: delivery_data.template_reports(row) for a, row in self.plan.items()},
             'roles': {a: report_library.ROLE for a in self.plan},
             'access_binding': self.bindings['information_binding'],
             **({'query_gateway': self.config['access']['library_gateway']}

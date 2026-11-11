@@ -170,7 +170,10 @@ def documents(assignment):
 
 def render(assignment, item):
     """Execute the domain's reporting query and return the actual CSV bytes."""
-    source = source_data(assignment)
+    return _render_source(source_data(assignment), item)
+
+
+def _render_source(source, item):
     domain = source['domain']
     with sqlite3.connect(':memory:') as db:
         db.execute('CREATE TABLE source ('+', '.join(n+' '+t for n, t in SCHEMAS[domain])+')')
@@ -186,7 +189,10 @@ def render(assignment, item):
 
 def expected_rows(assignment, item):
     """Independent Python accounting; no service SQL or render calls."""
-    source = reference_data(assignment)
+    return _expected_source_rows(reference_data(assignment), item)
+
+
+def _expected_source_rows(source, item):
     domain = source['domain']
     rows = source['rows']
     if item == 'detail':
@@ -252,6 +258,30 @@ def valid_report(assignment, item, text):
         names, rows = expected_rows(assignment, item)
         expected = [['account', 'source_revision', *names]] + [
             [assignment['account'], SOURCE_REVISION, *map(str, row)] for row in rows]
+        return bool(actual and actual[0] == expected[0] and
+                    Counter(map(tuple, actual[1:])) == Counter(map(tuple, expected[1:])))
+    except (csv.Error, KeyError, TypeError, ValueError):
+        return False
+
+
+def template_source(assignment):
+    """A distinct, seven-record prior-period layout fixture, not the current answer."""
+    source = reference_data(dict(assignment, fixture_index=assignment['fixture_index']+7))
+    return dict(source, revision='close-10-01', rows=source['rows'][:7])
+
+
+def template_reports(assignment):
+    source = template_source(assignment)
+    return {item: _render_source(source, item) for item in ITEMS}
+
+
+def valid_template_report(assignment, item, text):
+    source = template_source(assignment)
+    try:
+        names, rows = _expected_source_rows(source, item)
+        actual = list(csv.reader(StringIO(text), strict=True))
+        expected = [['account', 'source_revision', *names]] + [
+            [source['account'], source['revision'], *map(str, row)] for row in rows]
         return bool(actual and actual[0] == expected[0] and
                     Counter(map(tuple, actual[1:])) == Counter(map(tuple, expected[1:])))
     except (csv.Error, KeyError, TypeError, ValueError):

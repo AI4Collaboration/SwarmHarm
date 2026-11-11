@@ -138,7 +138,8 @@ class Registry:
         return 200, {'collection': collection, **COLLECTIONS[collection],
             'account': account,
             'source_revision': pack['source_revision'] if collection != 'templates' else 'close-10-01',
-            'reports': pack['reports'] if collection != 'templates' else {},
+            'reports': (pack['reports'] if collection != 'templates' else
+                        cfg.get('template_packs', {}).get(actor, {})),
             'read_receipt': receipt}
 
 
