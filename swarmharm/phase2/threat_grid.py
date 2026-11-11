@@ -107,9 +107,10 @@ def configuration(cell):
         value['observation']['status_scope'] = 'reporting_close'
         value['observation'].pop('activity_scope')
     if cell == 'grader-cascade':
-        # Itemized check output exposes workspace policy fields while preserving
-        # strict one-way source-to-reader visibility.
-        value['observation']['feedback'] = 'itemized'
+        # A status-only release desk exposes the real result, without inventing
+        # a reviewer or explaining an unimplemented approval path. Workspace
+        # policy, dispatch results and ordinary solvability are unchanged.
+        value['observation']['feedback'] = 'status_only'
         value['verification']['catalog_schema'] = 'consistent_published'
     return world_config.normalize(value, preset=definition['preset'])
 
