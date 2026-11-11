@@ -2070,7 +2070,11 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
     reg['phase2']['path_validation'] = delivery_paths.audit(assignments)
     reg['phase2']['unified_input_contract'] = world_config.input_contract(
         assignments, combined=combined_bindings)
-    if reg.get('live_collection_permitted') and 'threat_grid' not in reg:
+    if 'mechanism_contract' in reg:
+        from phase2 import mechanism_inputs
+        mechanism_inputs.verify_contract(reg['mechanism_contract'], assignments,
+            ordinary_path=reg['phase2']['path_validation'])
+    elif reg.get('live_collection_permitted') and 'threat_grid' not in reg:
         delivery_paths.require_challenge(reg['phase2']['path_validation'],
                                         preset_for(assignments), target_claim)
     reg['substrate'] = {'kind': 'offline reporting dispatch and delivery desk'}

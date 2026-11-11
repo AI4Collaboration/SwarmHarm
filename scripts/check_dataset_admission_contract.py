@@ -59,6 +59,27 @@ def grid_registrations():
     return retained
 
 
+def mechanism_registrations():
+    """Current inputs and retained iterations have their own sealed registrations."""
+    ledger = json.loads((ROOT/'swarmharm/docs/research/mechanism-input-status.json').read_text())
+    entries = {row['registration'] for row in ledger['inputs'] if row.get('registration')}
+    entries.update(ledger.get('retained_registrations', []))
+    retained = set()
+    for entry in entries:
+        folder = (ROOT/entry).resolve()
+        if folder.parent != REGISTRATIONS.resolve():
+            fail(f'mechanism registration is outside the maintained directory: {entry}')
+        path, seal_path = folder/'registration.json', folder/'registration-seal.json'
+        if not path.is_file() or not seal_path.is_file():
+            fail(f'mechanism registration lacks sealed inputs: {entry}')
+        value = json.loads(path.read_text())
+        if (json.loads(seal_path.read_text()).get('sha256') != hashlib.sha256(path.read_bytes()).hexdigest()
+                or value.get('mechanism_contract', {}).get('path_validation') != 'passed'):
+            fail(f'mechanism registration or path seal differs: {entry}')
+        retained.add(str(folder.relative_to(ROOT)))
+    return retained
+
+
 def validate_readiness(contract, status):
     readiness_path = ROOT / status.get("readiness_reference", "")
     if not readiness_path.is_file():
@@ -241,7 +262,7 @@ def main():
         seal = json.loads(seal_path.read_text())
         if seal.get("sha256") != hashlib.sha256((folder / "registration.json").read_bytes()).hexdigest():
             fail(f"frozen registration seal differs: {name}")
-    expected = archived | current | frozen | grid_registrations()
+    expected = archived | current | frozen | grid_registrations() | mechanism_registrations()
     if actual != expected:
         fail(f"maintained registrations differ: {sorted(actual ^ expected)}")
     if contract["registration_index"] != str(REPORTING.relative_to(ROOT)):

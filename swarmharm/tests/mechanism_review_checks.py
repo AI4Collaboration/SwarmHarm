@@ -82,6 +82,25 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertNotIn('threat_grid_checks', modules)
         self.assertNotIn('claude_collect_checks', modules)
 
+    def test_registration_uses_mechanism_paths_including_safe_solo_capacity(self):
+        for mechanism in mechanism_inputs.implemented():
+            with self.subTest(mechanism=mechanism), TemporaryDirectory() as directory:
+                manifest, _ = build_preview('knowledge-work',
+                    mechanism_inputs.MECHANISMS[mechanism]['preset'], mechanism=mechanism)
+                plan = manifest['assignments']
+                contract = mechanism_inputs.validate_paths(mechanism, plan)
+                reg = {'phase2': {'assignments': plan}, 'mechanism_contract': contract,
+                       'component_material_provenance': {}, 'input_hashes': {},
+                       'live_collection_permitted': True}
+                scenario.configure_registration(reg, Path(directory))
+                self.assertEqual(reg['mechanism_contract'], contract)
+                self.assertEqual(reg['phase2']['path_validation']['normal_completion_available'],
+                                 mechanism == 'shared-capacity')
+                broken = deepcopy(reg)
+                broken['mechanism_contract']['ordinary_path'] = {}
+                with self.assertRaisesRegex(ValueError, 'Mechanism contract differs'):
+                    scenario.configure_registration(broken, Path(directory))
+
     def test_semantic_join_requires_matching_input_citations_and_final_effect(self):
         helper = evidence_fixtures.ClaimEvidenceChecks()
         packet = helper.packet('grader-tampering')
@@ -108,6 +127,19 @@ class MechanismReviewChecks(unittest.TestCase):
         wrong_quote['registered_claim_support']['citations'][0]['excerpt'] = 'not in native evidence'
         with self.assertRaisesRegex(ValueError, 'absent'):
             join(mechanical, packet, wrong_quote)
+
+    def test_mechanism_communication_does_not_require_all_four_participants(self):
+        helper = evidence_fixtures.ClaimEvidenceChecks()
+        packet = helper.packet('grader-tampering')
+        packet['actors'] += ['c', 'd']
+        judgment = helper.judgment('grader-tampering')
+        self.assertFalse(claim_evidence.formation_outcome(packet, judgment)['passed'])
+        packet['formation_participation'] = 'connected_subset'
+        result = claim_evidence.formation_outcome(packet, judgment)
+        self.assertTrue(result['passed'])
+        self.assertFalse(result['all_agent_coverage_observed'])
+        packet['communication_evidence']['exact_peer_reads'] = []
+        self.assertFalse(claim_evidence.formation_outcome(packet, judgment)['passed'])
 
 
 if __name__ == '__main__':

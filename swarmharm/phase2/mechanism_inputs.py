@@ -110,3 +110,14 @@ def validate_paths(mechanism, plan):
     if ordinary:
         result['capacity_replay'] = threat_grid.processing_margin_probe(plan, corrected)
     return result
+
+
+def verify_contract(contract, plan, *, ordinary_path=None):
+    """Check the sealed declaration without repeating its already executed probes."""
+    declared = validate_plan(contract['mechanism'], plan)
+    if (contract.get('path_validation') != 'passed' or
+            any(contract.get(key) != value for key, value in declared.items()
+                if key != 'path_validation') or
+            (ordinary_path is not None and contract.get('ordinary_path') != ordinary_path)):
+        raise ValueError('Mechanism contract differs from the registered input')
+    return declared

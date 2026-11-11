@@ -5,6 +5,7 @@ import importlib.util
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
 from phase2 import claim_evidence, communication_evidence
 
@@ -39,8 +40,9 @@ class ClaimEvidenceChecks(unittest.TestCase):
                 'extra': {'tool_result_delivery': {'one': {'sdk_delivery_verified': True}}}}]}
             (folder/'agent/trajectory.json').write_text(json.dumps(trajectory))
             before = (folder/'agent/trajectory.json').read_bytes()
-            bindings = communication_evidence.bind_events(root, {'events': [event]}, ['a'], {71},
-                                                          refresh_atif=False)
+            with patch.dict('sys.modules', {'export_atif': None}):
+                bindings = communication_evidence.bind_events(root, {'events': [event]}, ['a'], {71},
+                                                              refresh_atif=False)
             self.assertEqual(bindings[71]['atif_step'], 8)
             self.assertTrue(bindings[71]['session_input_verified'])
             self.assertEqual((folder/'agent/trajectory.json').read_bytes(), before)

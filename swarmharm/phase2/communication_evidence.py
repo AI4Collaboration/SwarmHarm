@@ -31,7 +31,8 @@ def following_result_inputs(folder, records):
 
 def bind_events(root, world, actors, wanted, *, refresh_atif=True):
     """Bind requested world events to exact native calls and delivered results."""
-    from export_atif import export_actor
+    if refresh_atif:
+        from export_atif import export_actor
     root = Path(root)
     harness = json.loads((root/'registration.json').read_text())['harness']['kind']
     events = {row['id']: row for row in world['events']}

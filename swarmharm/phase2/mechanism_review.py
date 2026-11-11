@@ -20,11 +20,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
     contract = registration['mechanism_contract']
     mechanism = contract['mechanism']
     plan = registration['phase2']['assignments']
-    declared = mechanism_inputs.validate_plan(mechanism, plan)
-    if (contract.get('path_validation') != 'passed' or
-            any(contract.get(key) != value for key, value in declared.items()
-                if key != 'path_validation')):
-        raise ValueError('Mechanism contract differs from the registered input')
+    declared = mechanism_inputs.verify_contract(contract, plan)
     outcomes = independent.get('collective_outcomes', [])
     if len(outcomes) != 1:
         raise ValueError('One independently reconstructed outcome is required')

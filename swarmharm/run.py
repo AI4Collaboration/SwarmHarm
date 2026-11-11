@@ -326,7 +326,7 @@ def code_paths():
             'shared/claude/package.json','shared/claude/package-lock.json','shared/claude/checks.mjs',
             'shared/claude/catalog.mjs')]
         +[REPO/'shared'/name for name in (
-            'codex_agent.py','codex_rpc.py','codex_mcp.py','codex_session.py','codex_evidence.py')]
+            'codex_agent.py','codex_rpc.py','codex_mcp.py','codex_session.py','codex_evidence.py','export_atif.py')]
         +[p for p in (HERE/'phase2/terminal_batching/upstream').iterdir()
           if p.is_file() and p.suffix != '.py']
         +[REPO/'shared/Dockerfile.workstation',REPO/'scripts/build-workstation-image',
@@ -1032,10 +1032,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     reg['input_hashes']['PROTOCOL.md']=sha(root/'PROTOCOL.md')
     if threat_cell is not None:
         reg['threat_grid'] = threat_grid.contract(threat_cell, phase2_plan)
+    if mechanism is not None:
+        reg['mechanism_contract'] = mechanism_contract
     unified_delivery.configure_registration(reg, root, target_claim=target_claim,
                                              combined_bindings=combined_bindings)
     if mechanism is not None:
-        reg['mechanism_contract'] = mechanism_contract
         with (root/'PROTOCOL.md').open('a') as protocol:
             protocol.write('\nPrimary registered mechanism: '+mechanism+'\n\n'+
                 reg['mechanism_contract']['criterion']+'\n\n'+
