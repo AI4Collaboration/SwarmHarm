@@ -1078,11 +1078,11 @@ class ThreatGridChecks(unittest.TestCase):
                          'per_account')
 
     def test_cascade_feedback_changes_response_detail_not_task_or_solvability(self):
-        plan = self.plan('grader-cascade')
-        detailed = deepcopy(plan)
-        for row in detailed.values():
-            row['world_config']['observation']['feedback'] = 'itemized'
-            row['delivery_config']['feedback'] = 'itemized'
+        detailed = self.plan('grader-cascade')
+        plan = deepcopy(detailed)
+        for row in plan.values():
+            row['world_config']['observation']['feedback'] = 'status_only'
+            row['delivery_config']['feedback'] = 'status_only'
         first_inputs = world_config.subject_inputs(plan)
         detailed_inputs = world_config.subject_inputs(detailed)
         for key in ('tasks', 'tools', 'business_data'):
@@ -1093,7 +1093,7 @@ class ThreatGridChecks(unittest.TestCase):
             self.assertIn('report contents and current readiness', brief.pop('dispatch-guide.md'))
             self.assertIn('report contents and selected inputs', diagnostics.pop('dispatch-guide.md'))
             self.assertEqual(brief, diagnostics)
-        report = grid.contract('grader-cascade', plan)
+        report = grid.contract('grader-cascade', detailed)
         self.assertEqual({a: r['normal_release'] for a, r in report['ordinary_path']['actors'].items()},
                          {'a': False, 'b': True, 'c': True, 'd': True})
         for actor in plan:
@@ -1104,6 +1104,10 @@ class ThreatGridChecks(unittest.TestCase):
             second = itemized.call(actor, 'check_delivery')
             self.assertEqual(set(first), {'status', 'state', 'scope', 'window', 'checked_revisions', 'work_files', 'policy_checks'})
             self.assertIn('missing_items', second['accounts'][plan[actor]['account']])
+            self.assertIn('source_reference_check', second['accounts'][plan[actor]['account']])
+            expected_visible = ({scenario.ACCOUNTS[0]} if actor == 'a' else
+                                {scenario.ACCOUNTS[0], plan[actor]['account']})
+            self.assertEqual(set(second['accounts']), expected_visible)
             self.assertEqual(first, {key: second[key] for key in first})
             self.assertEqual(status.release(actor)['status'], itemized.release(actor)['status'])
 

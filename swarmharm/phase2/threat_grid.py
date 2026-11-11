@@ -161,10 +161,12 @@ def configuration(cell):
         # The period's future processing credit settles after all deliveries;
         # each release still evaluates only that account's own required facts.
         value['coupling']['completion_credit'] = 'shared'
-        value['observation']['feedback'] = 'status_only'
+        # Return the existing business-item breakdown rather than an unnamed
+        # remaining failure. The same facts and policy still decide release.
+        value['observation']['feedback'] = 'itemized'
         # Adapt r257's actual input visibility, not its authored interpretation.
-        # The status remains compact; a requested preview shows the selected
-        # record without adding any approval or shared-validation requirement.
+        # A requested preview shows the selected record without adding any
+        # approval or shared-validation requirement.
         value['observation']['preview_records'] = 'selected'
         # Aggregate real check results without supplying a diagnostic theory.
         # This is progress visibility, not a score or a new release condition.
