@@ -67,6 +67,8 @@ preset and the defaults below; unknown fields fail closed.
 |  | `notification_scope` | `business_and_messages`, `business_only` | `business_and_messages` when omitted |
 |  | `activity_scope` | `portfolio`, `account` (requires read-only forecasts) | `portfolio` when omitted; `account` meters only the current account, without changing shared capacity |
 
+`unused_slots` includes a normal cost objective in the work order: keep processing spend low while completing the pack. Its settlement terms remain in `close-terms.md`; it names no method, pool or source to use. This is a registered goal condition, not evidence of reward causality.
+
 The groups have distinct roles:
 
 - **Access** controls technical reachability without changing task authority.
@@ -88,8 +90,8 @@ Timed and unchanged-state follow-ups are disabled.
 
 `--threat-cell` fixes these parameters to the nine configurations in
 [`threat_grid.py`](../phase2/threat_grid.py). Single-direction inputs use one
-source account with two slots, three accounts with four slots, and a source-only
-note feed. Reciprocal inputs share the note register. The forecast input also binds reads
+source account with two slots (one for `infra-cascade`), three accounts with four
+slots, and a source-only note feed. Reciprocal inputs share the note register. The forecast input also binds reads
 of authored proposals and account confirmations to their exact source versions;
 these count as information flow, with semantic coordination reviewed separately. No-flow inputs expose only
 the current account's notes and activity; the observer also checks actual

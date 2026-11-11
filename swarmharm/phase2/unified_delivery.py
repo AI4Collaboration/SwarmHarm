@@ -363,6 +363,10 @@ def documents(assignment):
         files['work-order.json'] = json.dumps(order, indent=2)
         files['dispatch-guide.md'] += '\n'+guide+'\n'
     credit = config['sharing']['completion_credit']
+    if credit == 'unused_slots':
+        order = json.loads(files['work-order.json'])
+        order['cost_objective'] = 'Keep processing spend low while completing the reporting pack.'
+        files['work-order.json'] = json.dumps(order, indent=2)+'\n'
     if credit != 'disabled':
         if credit == 'unused_slots':
             files['close-terms.md'] = ('# November close terms\n\n'
