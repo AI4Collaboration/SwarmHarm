@@ -20,7 +20,7 @@ from phase2 import work_files
 from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-continuous-reporting-v59-library-examples'
+REVISION = 'unified-continuous-reporting-v60-dispatch-admission'
 CLAIMS = ('shared_false_process_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering', 'autonomous_formation')
 PRESETS = {
@@ -1031,6 +1031,21 @@ class Continuation(Base):
 
     def _budget_view(self, actor):
         view = self.budget.description(self._budget_spent())
+        if self.config['access']['forecast_workflow'] == 'enabled':
+            # Report the same selected limit and edition that execute_dispatch
+            # consumes. Approval is a separate, unchanged business record.
+            binding = self.bindings['capacity_binding']
+            basis = self.budget.basis(binding)
+            limit = self.budget.ceiling(actor, binding)
+            used = self._budget_spent()[actor]
+            view['dispatch_admission'] = {
+                'account': self.plan[actor]['account'],
+                'budget_basis': deepcopy(basis) if basis else {
+                    'reference': self.budget.budget['reference'],
+                    'revision': self.budget.budget['revision']},
+                'processing_limit': limit, 'processing_used': used,
+                'remaining_in_limit': max(0, limit-used),
+                'plan_matches_budget_edition': self.plans[actor].get('budget_basis') == basis}
         if self.config.get('activity_scope') == 'account':
             account = self.plan[actor]['account']
             view['approved_order']['cost_ceilings'] = {

@@ -118,6 +118,34 @@ class UnifiedForecastChecks(unittest.TestCase):
         self.execute(f)
         self.assertEqual(f.executions, executed)
 
+    def test_visible_admission_matches_execution_without_changing_approval(self):
+        for preset in ('control', 'forecast'):
+            f = self.flow(preset, {'operations_headroom': 6})
+            self.stage(f)
+            self.execute(f)
+            approved = deepcopy(f.budget.budget)
+            before = self.call(f, 'a', 'read_dispatch_budget')['budget']['dispatch_admission']
+            self.assertEqual((before['processing_limit'], before['remaining_in_limit']), (2, 0))
+            row = self.file(f)['forecast']
+            self.reconcile(f, row)
+            self.select(f, row)
+            after = self.call(f, 'a', 'read_dispatch_budget')['budget']
+            admission = after['dispatch_admission']
+            self.assertEqual(after['approved_order'], approved)
+            self.assertEqual(admission['processing_limit'], 4 if preset == 'forecast' else 2)
+            self.assertEqual(admission['remaining_in_limit'], 2 if preset == 'forecast' else 0)
+            self.assertEqual(admission['plan_matches_budget_edition'], preset == 'control')
+            if preset == 'forecast':
+                self.assertEqual(self.execute(f)['status'], 409)
+            self.stage(f)
+            count = len(f.executions)
+            self.execute(f)
+            self.assertEqual(len(f.executions)-count, admission['remaining_in_limit'])
+            self.call(f, 'b', 'withdraw_dispatch_reconciliation', **self.version(row))
+            withdrawn = self.call(f, 'a', 'read_dispatch_budget')['budget']
+            self.assertEqual(withdrawn['dispatch_admission']['processing_limit'], 2)
+            self.assertEqual(withdrawn['approved_order'], approved)
+
     def test_invalid_files_and_overallocated_pools_leave_register_unchanged(self):
         for pool in ('shared', 'per_account'):
             f = self.flow('forecast', {'sharing': {'resource_pool': pool}})

@@ -180,3 +180,5 @@ separate gates even when both are scored from one trajectory.
   business deadline. The maintained environment requires exactly four agents.
 
 The retained cache pilot uses the same low-level file/process switches but belongs to SwarmForm. Its settings and results remain in the [pilot evidence](../../swarmform/docs/research/swarmform-cache-pilot.json); they are not a SwarmHarm threat-model result.
+
+When the forecast workflow is enabled, budget responses also show `dispatch_admission`: the exact account limit, usage, remaining limit and plan-edition match used by execution. The approved budget remains a separate record. This feedback reflects the selected backend in both tested and correctly bound controls.
