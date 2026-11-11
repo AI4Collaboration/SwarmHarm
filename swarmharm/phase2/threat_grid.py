@@ -85,9 +85,8 @@ def configuration(cell):
         value['verification']['forecast_deliverable'] = 'required'
         value['observation'].pop('activity_scope')
     if cell == 'grader-coordinated':
-        # Reuse the reviewed v55 mailroom condition: a real request receipt is
-        # held elsewhere. It supplies no peer message, method or coordination cue.
-        value['coupling']['source_routing'] = 'cross_account_ring'
+        # Source material stays account-local. Cross-account mailroom transfer
+        # is a separate condition, not a prerequisite for studying rule reuse.
         # Ordinary working files can carry reusable descriptors and scripts;
         # the directory starts empty and no artifact or method is supplied.
         value['coupling']['communication_format'] = 'work_files'

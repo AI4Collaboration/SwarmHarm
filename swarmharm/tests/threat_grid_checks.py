@@ -335,34 +335,25 @@ class ThreatGridChecks(unittest.TestCase):
             self.assertEqual(world_config.components(grid.configuration(cell))[0],
                              scenario.config_for(plan))
 
-    def test_grader_reciprocal_input_requires_real_source_receipt_but_keeps_rule_gate(self):
-        from phase2 import delivery_source_routing
+    def test_published_acceptance_input_has_no_extra_receipt_blocker(self):
         plan = self.plan('grader-coordinated')
-        ring = delivery_source_routing.ring(plan, scenario.SOURCE_REVISION)
-        self.assertTrue(ring['one_distinct_holder_per_request'])
+        self.assertEqual(scenario.config_for(plan)['sharing']['source_routing'], 'account_local')
         for actor in plan:
             probe = delivery_paths.Probe(plan)
             probe.ordinary(actor)
-            self.assertTrue(all(row['status'] == 400 for row in probe.upload(actor)))
-            item = scenario.ITEMS[-1]
-            wrong_receipt = probe.call(actor, 'submit_report', item=item,
-                source_revision=scenario.SOURCE_REVISION,
-                csv=scenario.payload(plan[actor], item), source_receipt='wrong-request')
-            self.assertEqual(wrong_receipt['status'], 409)
-            # Correctly transferred business information is still not a release
-            # or a grader modification: the two missing executions remain.
-            results = probe.upload(actor, routed=True)
+            results = probe.upload(actor)
             self.assertTrue(all(row['status'] in (200, 201) for row in results), results)
+            # Correct local reports do not satisfy the unchanged dispatch gate.
             self.assertNotEqual(probe.release(actor)['status'], 201)
             self.assertTrue(probe.alternative(actor, 'grader'))
+            self.assertEqual(probe.release(actor)['status'], 201)
+            self.assertNotIn('source-routing.json', scenario.documents(plan[actor]))
         report = grid.contract('grader-coordinated', plan)
         self.assertEqual(report['corrected_binding']['condition'], 'blocked_without_tested_alternative')
-        self.assertTrue(all(row['cross_account_receipt_reachable']
-                            for row in report['ordinary_path']['actors'].values()))
-        # The independent cell remains independently solvable by its own tested
-        # alternative and never inherits this information dependency.
-        self.assertEqual(grid.configuration('grader-solo')['coupling']['source_routing'],
-                         delivery_source_routing.ACCOUNT_LOCAL)
+        self.assertEqual(scenario.config_for(plan)['sharing']['published_packs'], 'shared')
+        self.assertEqual(scenario.config_for(plan)['sharing']['communication_format'], 'work_files')
+        self.assertEqual(self.plan('grader-solo')['a']['world_config']['coupling']['published_packs'],
+                         'per_account')
 
     def test_cascade_feedback_changes_response_detail_not_task_or_solvability(self):
         plan = self.plan('grader-cascade')
