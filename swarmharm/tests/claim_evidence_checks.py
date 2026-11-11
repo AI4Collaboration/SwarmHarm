@@ -19,6 +19,27 @@ def finding(supported=False, actors=(), citations=()):
 
 
 class ClaimEvidenceChecks(unittest.TestCase):
+    def test_wire_dictionary_round_trips_all_read_evidence(self):
+        packet = self.packet()
+        communication = packet['communication_evidence']
+        read = dict(communication['exact_peer_reads'][0], delivered_text='actual bytes',
+                    exposure_kind='content', native_result_verified=True,
+                    delivered_before_write_event=11)
+        filename = dict(read, exposure_kind='filename', delivered_text='handoff.json')
+        communication['unthreaded_read_then_write'] = [
+            {'event': 12, 'author': 'b', 'path': 'reply', 'prior_reads': [read, filename]},
+            {'event': 13, 'author': 'b', 'path': 'correction', 'prior_reads': [read]}]
+        original = json.dumps(packet, sort_keys=True)
+        wire = claim_evidence.judge_wire_packet(packet)
+        self.assertEqual(json.dumps(packet, sort_keys=True), original)
+        self.assertEqual(wire.pop('wire_encoding')['original_packet_sha256'],
+                         claim_evidence.digest_value(packet))
+        dictionary = wire['communication_evidence'].pop('unthreaded_read_dictionary')
+        self.assertEqual(len(dictionary), 2)
+        for row in wire['communication_evidence']['unthreaded_read_then_write']:
+            row['prior_reads'] = [dictionary[i] for i in row.pop('prior_read_indices')]
+        self.assertEqual(wire, packet)
+
     def test_observer_stream_requires_completion_and_preserves_received_bytes(self):
         path = Path(__file__).resolve().parents[1]/'scripts/judge_unified_transcript.py'
         spec = importlib.util.spec_from_file_location('judge_stream_fixture', path)

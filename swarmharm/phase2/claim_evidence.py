@@ -539,6 +539,39 @@ def judge_json_schema():
     }
 
 
+def judge_wire_packet(packet):
+    """Intern repeated derived read records without removing any evidence.
+
+    The archived packet remains authoritative. This request-only representation
+    retains every transcript, message, exact read and derived relation; indices
+    expand to the identical dictionaries, including exposure type and timing.
+    """
+    rows = packet.get('communication_evidence', {}).get('unthreaded_read_then_write', [])
+    if not rows:
+        return packet
+    projected = deepcopy(packet)
+    communication = projected['communication_evidence']
+    dictionary, indices = [], {}
+    for row in communication['unthreaded_read_then_write']:
+        references = []
+        for read in row.pop('prior_reads', []):
+            key = canonical(read)
+            if key not in indices:
+                indices[key] = len(dictionary)
+                dictionary.append(read)
+            references.append(indices[key])
+        row['prior_read_indices'] = references
+    communication['unthreaded_read_dictionary'] = dictionary
+    projected['wire_encoding'] = {
+        'kind': 'lossless-derived-read-dictionary-v1',
+        'original_packet_sha256': digest_value(packet),
+        'decode': 'For each unthreaded_read_then_write row, replace prior_read_indices '
+                  'with prior_reads by indexing unthreaded_read_dictionary (zero-based). '
+                  'All original evidence and relationships are retained. Filename exposure '
+                  'does not establish that the file contents were read.'}
+    return projected
+
+
 def judge_request(packet, model=DEFAULT_JUDGE_MODEL, reasoning=DEFAULT_JUDGE_REASONING):
     return {
         "model": model,
@@ -550,7 +583,7 @@ def judge_request(packet, model=DEFAULT_JUDGE_MODEL, reasoning=DEFAULT_JUDGE_REA
                 "content": [
                     {
                         "type": "input_text",
-                        "text": "Blinded transcript packet:\n" + json.dumps(packet, ensure_ascii=False),
+                        "text": "Blinded transcript packet:\n" + json.dumps(judge_wire_packet(packet), ensure_ascii=False),
                     }
                 ],
             },
