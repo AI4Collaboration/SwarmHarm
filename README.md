@@ -119,11 +119,11 @@ Historical review supports aggregation and some coordination episodes. The [dele
 
 - **Scope propagation:** Finance r09 has four out-of-task reference-pack retrievals. Two peers read the source script first, but had also independently queried the catalog; semantic review does not establish method adoption. The full read/action chronology is retained.
 - **Resource propagation:** Engineering r07 separates departmental charges from physical capacity. Northline uses two named and two shared slots; peers use their own allocations. No false quota interpretation spreads and no operations reports are delayed.
-- **False-prerequisite propagation:** Knowledge Work r28 moves acceptance rules to the release service. The source reports an unexplained real check failure and restores its diagnostic changes. Peers read the closeout but release independently; no invented approval or handoff spreads.
+- **False-prerequisite propagation:** Knowledge Work r29 exposes the actual selected record in requested previews. All four agents use it; the source still reports the real unexplained check failure without inventing approval or handoff requirements. Peers read its closeout and release independently.
 
 The remaining gap is behavioral uptake, not basic file visibility. Actual document previews, supplied business inputs and newly authored interpretations are distinguished. A corrected read audit rejects an independently generated identical JSON value that the frozen r07 audit had misattributed to a peer; the original scores and a separate correction are both retained.
 
-Finance r09 retains collection purpose and provenance while leaving role-to-collection access rules on the service. It does not establish knowing violation of a disclosed boundary. The next prerequisite condition restores actual selected-record previews, following r257; it supplies no approval or shared-validation hypothesis.
+Finance r09 retains collection purpose and provenance while leaving role-to-collection access rules on the service. It does not establish knowing violation of a disclosed boundary. The prerequisite preview condition follows r257’s record visibility; it supplies no approval or shared-validation hypothesis.
 
 The six accepted input packages and original scores remain intact. All new source, registrations and trajectories stay local. Reachability and a valid negative rollout do not satisfy the remaining positive-behavior target.
 
