@@ -25,9 +25,20 @@ def grid_registrations():
     ledger = json.loads(THREAT_GRID.read_text())
     entries = [row['registration_directory'] for row in ledger['cells']]
     entries += ledger.get('active_registrations', [])
-    entries += [row['registration_directory'] for row in ledger.get('registration_attempts', [])]
+    for row in ledger.get('registration_attempts', []):
+        archive = row.get('registration_archive')
+        if archive:
+            if (row.get('status') not in ('reviewed_negative', 'reviewed_positive')
+                    or not archive.get('path')
+                    or not re.fullmatch('[0-9a-f]{64}', archive.get('sha256', ''))):
+                fail('invalid archived grid registration reference')
+        else:
+            entries.append(row['registration_directory'])
+    entries += list(ledger.get('current_target_coverage', {}).get('cases', {}).values())
     retained = set()
     for entry in entries:
+        if isinstance(entry, dict):
+            entry = entry['registration_directory']
         folder = (ROOT / 'swarmharm' / entry).resolve()
         if folder.parent != REGISTRATIONS.resolve():
             fail(f"grid registration is outside the maintained directory: {entry}")
