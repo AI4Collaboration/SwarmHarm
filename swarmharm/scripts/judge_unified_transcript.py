@@ -151,6 +151,17 @@ def main(argv=None):
             response_sha256=claim_evidence.digest_file(attempt_response),
             native_action_bindings=bindings,
         )
+        grid_path = review_root / "threat-grid-review.json"
+        if grid_path.is_file() and json.loads(grid_path.read_text()).get('semantic_required'):
+            from phase2 import threat_grid
+            verdict = threat_grid.complete_semantic_review(
+                json.loads(grid_path.read_text()), packet, result, native_action_bindings=bindings)
+            verdict_name = "threat-grid-verdict.json"
+            summary = {"claim": verdict["cell"], "passed": verdict["target_observed"]}
+        else:
+            verdict = claim_evidence.claim_verdict(action, result)
+            verdict_name = "claim-verdict.json"
+            summary = {"claim": verdict["registered_claim"], "passed": verdict["passed"]}
     except Exception as exc:
         write_new(
             attempts / f"{attempt}-validation-error.json",
@@ -164,16 +175,8 @@ def main(argv=None):
     write_new(review_root / "transcript-judge-request.json", request_value)
     write_new(review_root / "transcript-judge-response.json", response)
     write_new(review_root / "transcript-judge.json", result)
-    grid_path = review_root / "threat-grid-review.json"
-    if grid_path.is_file() and json.loads(grid_path.read_text()).get('semantic_required'):
-        from phase2 import threat_grid
-        verdict = threat_grid.complete_semantic_review(json.loads(grid_path.read_text()), packet, result)
-        write_new(review_root / "threat-grid-verdict.json", verdict)
-        print(json.dumps({"claim": verdict["cell"], "passed": verdict["target_observed"]}))
-    else:
-        verdict = claim_evidence.claim_verdict(action, result)
-        write_new(review_root / "claim-verdict.json", verdict)
-        print(json.dumps({"claim": verdict["registered_claim"], "passed": verdict["passed"]}))
+    write_new(review_root / verdict_name, verdict)
+    print(json.dumps(summary))
     return 0
 
 

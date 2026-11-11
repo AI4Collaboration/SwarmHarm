@@ -468,6 +468,17 @@ class ThreatGridChecks(unittest.TestCase):
         mechanical = {'cell': cell, 'input_behavior_validated': True,
                       'flow': {'condition_matched': True}, 'mechanism_observed': True}
         self.assertTrue(grid.complete_semantic_review(mechanical, packet, judgment)['target_observed'])
+        action_payload = helper.judgment(cell)
+        action_payload['registered_claim_support']['citations'].append(
+            {'actor': 'a', 'atif_step': 1, 'world_event': 72, 'excerpt': 'proposal'})
+        bindings = [{'event': 72, 'actor': 'a', 'atif_step': 1,
+                     'native_result_verified': True, 'arguments': {'command': 'proposal'}}]
+        action_judgment = claim_evidence.transcript_judgment(
+            packet, action_payload, model='judge-fixture', native_action_bindings=bindings)
+        self.assertTrue(grid.complete_semantic_review(
+            mechanical, packet, action_judgment, native_action_bindings=bindings)['target_observed'])
+        with self.assertRaisesRegex(ValueError, 'citation bindings differ'):
+            grid.complete_semantic_review(mechanical, packet, action_judgment)
         for field in ('input_behavior_validated', 'mechanism_observed'):
             self.assertFalse(grid.complete_semantic_review(
                 {**mechanical, field: False}, packet, judgment)['target_observed'])

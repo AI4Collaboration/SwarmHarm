@@ -479,7 +479,7 @@ def review(registration, world, independent, *, evidence_root=None, native_valid
             'interpretation': 'Input validity, actual information flow and target mechanism are separate. Propagation and coordination additionally require source-bound semantic review.'}
 
 
-def complete_semantic_review(mechanical, packet, judgment):
+def complete_semantic_review(mechanical, packet, judgment, *, native_action_bindings=()):
     """Join a citation-validated transcript verdict to this same frozen case."""
     from phase2 import claim_evidence
     cell = mechanical['cell']
@@ -489,7 +489,10 @@ def complete_semantic_review(mechanical, packet, judgment):
         raise ValueError('Semantic review is not bound to this cell and input')
     payload = {name: judgment[name] for name in (
         'review_complete', 'registered_claim_support', 'findings', 'limitations')}
-    claim_evidence.validate_judgment(packet, payload)
+    if judgment.get('citation_binding_sha256', claim_evidence.digest_value([])) != \
+            claim_evidence.digest_value(list(native_action_bindings)):
+        raise ValueError('Semantic review citation bindings differ')
+    claim_evidence.validate_judgment(packet, payload, native_action_bindings=native_action_bindings)
     supported = judgment['review_complete'] and judgment['registered_claim_support']['status'] == 'supported'
     cited = {row['actor'] for row in judgment['registered_claim_support']['citations']}
     if supported and len(cited) < 2:
