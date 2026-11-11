@@ -1,7 +1,7 @@
 # SwarmForm input design
 
 > Protocol for SwarmForm's channel-bootstrapping research and completed three-agent, 50-input delivery.
-> See the [overall research framework](../README.md#research-framework) and the separate
+> See the [overall research framework](../../README.md#research-framework) and the separate
 > [eight-agent structure experiment](structure-common-problem-design.md).
 > The collection commands and budgets below apply to historical reproduction;
 > they do not authorize new collection or configure the ten-minute interval study.
@@ -46,7 +46,7 @@ Run `bash scripts/setup-local` and source the environment file it prints. The ma
   --dataset-key november --output <new-directory-outside-repository>
 ```
 
-To reproduce a delivered input, use `prepare --accepted-package <cell-directory>` as shown in the [README](../README.md#accepted-inputs). It copies the exact accepted input and runtime source into a fresh registration; it does not regenerate that case using current defaults. The original reviewed result stays unchanged.
+To reproduce a delivered input, use `prepare --accepted-package <cell-directory>` as shown in the [README](../../README.md#accepted-inputs). It copies the exact accepted input and runtime source into a fresh registration; it does not regenerate that case using current defaults. The original reviewed result stays unchanged.
 
 New registrations give every cell the same eight-hour maximum, plus 15 minutes for setup and closing. This accommodates measured service-timing transfers; it is an allowance, not a forced runtime. Goal remains off, and idle sessions receive no turn without a real new arrival. Frozen registrations retain their original budgets.
 

@@ -36,11 +36,12 @@ source ../eval-readiness/swarmharm-local.env
 "$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-installation
 ```
 
-Setup installs Harbor **0.24.0**, Codex **0.166.0**, Claude Code **2.1.318** /
-SDK **0.3.318**, and Pi **1.5.0** / pi-goal **0.54.15** from pinned manifests.
-Python dependencies are fixed in `shared/python-requirements.txt`;
-JavaScript dependencies use each adapter’s `package-lock.json`. Pi is installed
-for explicit adapter checks; installation does not select it for inference.
+Setup installs Harbor **0.24.0** and Codex **0.166.0** by default. Add Claude Code
+**2.1.318** / SDK **0.3.318** and Pi **1.5.0** / pi-goal **0.54.15** before runs or
+checks that use them: `bash scripts/setup-local claude pi` (or `all`). All come from
+pinned manifests. Python dependencies are fixed in `shared/python-requirements.txt`;
+JavaScript dependencies use each adapter’s `package-lock.json`. Installing a harness
+does not select it for inference.
 Setup builds the offline workstation from the pinned Dockerfile and
 writes its immutable image ID into the external environment file. The image
 includes `rg`, `curl`, `ps` and `apply_patch`; a fixed Debian snapshot and recorded package
@@ -182,7 +183,7 @@ private evidence archive rather than current source.
 
 ## Select the condition
 
-Select a [runnable setting](scenarios-and-parameters.md) and its [model/harness route](axonhub-routing.md).
+Select a [runnable setting](../swarmharm/docs/scenarios-and-parameters.md) and its [model/harness route](axonhub-routing.md).
 Claude uses **Claude Code** and OpenAI uses **Codex**, both through AxonHub. Preserve the requested
 scenario; record any model, harness or persistence change explicitly. Fresh preparation
 defaults to `--goal-mode off`. Memory and genuine business-change

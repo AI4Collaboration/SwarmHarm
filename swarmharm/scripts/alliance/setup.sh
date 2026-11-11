@@ -1,7 +1,7 @@
 #!/bin/bash
 # One-time setup on an Alliance Canada login node (needs internet).
 set -euo pipefail
-ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
+ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/../../.." && pwd)
 READINESS=${SWARMHARM_READINESS:-"$ROOT/../eval-readiness"}
 UV_VERSION=0.13.0
 mkdir -p "$READINESS/images" "$READINESS/tools"
@@ -22,11 +22,11 @@ unset PYTHONPATH
 if [ ! -x "$READINESS/harbor-0.24.0/bin/python" ]; then
   "$UV" venv --python 3.12 --managed-python --seed "$READINESS/harbor-0.24.0"
 fi
-"$UV" pip install --python "$READINESS/harbor-0.24.0/bin/python" -r "$ROOT/experiments/runtime/python-requirements.txt"
+"$UV" pip install --python "$READINESS/harbor-0.24.0/bin/python" -r "$ROOT/shared/python-requirements.txt"
 "$UV" pip freeze --python "$READINESS/harbor-0.24.0/bin/python" > "$READINESS/harbor-0.24.0/dependencies.txt"
 
 # Do not silently reuse a SIF built from the retired floating image tag.
-BASE_IMAGE=$(awk '/^FROM / {print $2}' "$ROOT/experiments/runtime/Dockerfile.workstation")
+BASE_IMAGE=$(awk '/^FROM / {print $2}' "$ROOT/shared/Dockerfile.workstation")
 BASE_DIGEST=${BASE_IMAGE##*@sha256:}
 SIF="$READINESS/images/python-3.12-slim-${BASE_DIGEST:0:12}.sif"
 if [ ! -f "$SIF" ]; then
@@ -37,7 +37,7 @@ fi
 # Lockfiles cover native adapters and offline Pi compatibility checks.
 NODE_DIR=/cvmfs/soft.computecanada.ca/easybuild/software/2023/x86-64-v4/Compiler/gcccore/nodejs/24.22.1/bin
 for adapter in codex claude pi; do
-  (cd "$ROOT/experiments/runtime/$adapter" && PATH="$NODE_DIR:$PATH" npm ci --no-fund --no-audit)
+  (cd "$ROOT/shared/$adapter" && PATH="$NODE_DIR:$PATH" npm ci --no-fund --no-audit)
 done
 
 echo "Node: $("$NODE_DIR/node" --version)"

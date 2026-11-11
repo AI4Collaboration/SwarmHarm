@@ -2,11 +2,14 @@
 """Run checks selected by changed files. Use --plan to inspect or --full for all."""
 import argparse
 import ast
+import concurrent.futures
+import contextlib
 import json
 import os
 from pathlib import Path
 import subprocess
 import sys
+import threading
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -269,6 +272,9 @@ def main(argv=None):
         return 0
     if plan['dependencies'] and sys.version_info[:2] != (3, 12):
         parser.error('Selected code checks need Python 3.12 from the pinned runtime environment.')
+    missing = [h for h in plan['harnesses'] if not (ROOT / 'shared' / h / 'node_modules').is_dir()]
+    if missing:
+        parser.error('Selected checks need these harnesses: scripts/setup-local ' + ' '.join(missing))
     commands = {
         'inventory': ['scripts/check_dataset_admission_contract.py'],
         'inputs': ['swarmform/scripts/check_swarmform_inputs.py', '--inventory-only'],
@@ -278,35 +284,63 @@ def main(argv=None):
         'format': ['scripts/check_format_contract.py', LAB],
         'installation': ['scripts/check-installation'],
     }
-    steps = [(c, commands.get(c)) for c in plan['checks']]
-    for root in TEST_ROOTS:
-        modules = [t for t in plan['tests'] if (ROOT / root / 'tests' / (t.split('.', 1)[1] + '.py')).is_file()]
-        if modules:
-            steps.append((f'{root} tests', ['-m', 'unittest', *modules, '-v']))
     env = dict(os.environ, PYTHONPATH=os.pathsep.join((str(ROOT / LAB), str(ROOT / 'shared'))))
     study_env = {root: dict(os.environ, PYTHONPATH=os.pathsep.join(dict.fromkeys((str(ROOT / root), str(ROOT / 'shared')))))
                  for root in TEST_ROOTS}
-    results = []
-    for name, command in steps:
+    jobs = [(c, [sys.executable, *commands[c]], ROOT, env, False) for c in plan['checks'] if c != 'syntax']
+    for root in TEST_ROOTS:
+        for module in plan['tests']:
+            if (ROOT / root / 'tests' / (module.split('.', 1)[1] + '.py')).is_file():
+                stem = module.split('.', 1)[1].removesuffix('_checks')
+                jobs.append((f'{root}: {module}', [sys.executable, '-m', 'unittest', module],
+                             ROOT / root, study_env[root], stem in DOCKER_TESTS))
+    durations_path = Path(os.environ.get('XDG_CACHE_HOME', Path.home() / '.cache')) / 'swarmharm/check-ci-durations.json'
+    try:
+        durations = json.loads(durations_path.read_text())
+    except (OSError, ValueError):
+        durations = {}
+    jobs.sort(key=lambda job: -durations.get(job[0], 60))
+    workers = int(os.environ.get('CHECK_CI_JOBS', max(2, (os.cpu_count() or 4))))
+    docker_slots = threading.Semaphore(int(os.environ.get('CHECK_CI_DOCKER_JOBS', 4)))
+
+    def execute(job):
+        name, command, cwd, job_env, uses_docker = job
         started = time.monotonic()
-        print('Checking: ' + name, flush=True)
-        output, code = '', 0
-        if name == 'syntax':
-            try:
-                syntax(files)
-            except (SyntaxError, ValueError, subprocess.CalledProcessError) as error:
-                output, code = str(error), 1
-        else:
-            root = name.removesuffix(' tests') if name.endswith(' tests') else None
-            result = subprocess.run([sys.executable, *command], env=study_env[root] if root else env,
-                                    cwd=ROOT / root if root else ROOT,
-                                    text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            output, code = result.stdout, result.returncode
-        results.append({'name': name, 'passed': code == 0, 'seconds': round(time.monotonic() - started, 2)})
-        if code:
-            print(output, file=sys.stderr)
-            break
-        print(f"Passed: {name} ({results[-1]['seconds']}s)", flush=True)
+        with docker_slots if uses_docker else contextlib.nullcontext():
+            result = subprocess.run(command, env=job_env, cwd=cwd, text=True,
+                                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return name, result.returncode, result.stdout, round(time.monotonic() - started, 2)
+
+    results = []
+    started_all = time.monotonic()
+    if 'syntax' in plan['checks']:
+        started = time.monotonic()
+        try:
+            syntax(files)
+            results.append({'name': 'syntax', 'passed': True, 'seconds': round(time.monotonic() - started, 2)})
+            print('Passed: syntax', flush=True)
+        except (SyntaxError, ValueError, subprocess.CalledProcessError) as error:
+            results.append({'name': 'syntax', 'passed': False, 'seconds': 0})
+            print(str(error), file=sys.stderr)
+    if all(r['passed'] for r in results) and jobs:
+        print(f'Running {len(jobs)} checks with {workers} workers', flush=True)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
+            futures = [pool.submit(execute, job) for job in jobs]
+            for future in concurrent.futures.as_completed(futures):
+                name, code, output, seconds = future.result()
+                results.append({'name': name, 'passed': code == 0, 'seconds': seconds})
+                durations[name] = seconds
+                if code:
+                    print(f'FAILED: {name} ({seconds}s)\n{output}', file=sys.stderr, flush=True)
+                else:
+                    print(f'Passed: {name} ({seconds}s)', flush=True)
+        print(f'Wall time: {round(time.monotonic() - started_all, 1)}s', flush=True)
+        try:
+            durations_path.parent.mkdir(parents=True, exist_ok=True)
+            durations_path.write_text(json.dumps(durations, indent=1, sort_keys=True) + '\n')
+        except OSError:
+            pass
+    steps = jobs
     report = {'source_commit': git('rev-parse', args.head), 'model_calls': 0,
               'plan': plan, 'passed': all(r['passed'] for r in results), 'checks': results}
     if args.output:

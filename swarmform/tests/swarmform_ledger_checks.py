@@ -9,9 +9,9 @@ import unittest
 from unittest.mock import patch
 
 SCRIPTS = Path(__file__).resolve().parents[1] / 'scripts'
-with patch.object(sys, 'path', [str(SCRIPTS), *sys.path]):
-    import check_swarmform_inputs as checks
-    import inspect_swarmform_workload as preview
+sys.path.insert(0, str(SCRIPTS))
+import check_swarmform_inputs as checks
+import inspect_swarmform_workload as preview
 
 
 class SwarmFormLedgerChecks(unittest.TestCase):

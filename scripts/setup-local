@@ -16,15 +16,22 @@ fi
 if ! "$runtime/bin/python" -m pip --version >/dev/null 2>&1; then
   "$runtime/bin/python" -m ensurepip --upgrade
 fi
-"$runtime/bin/python" -m pip install -r "$repo/experiments/runtime/python-requirements.txt"
-for adapter in codex claude pi; do npm ci --prefix "$repo/experiments/runtime/$adapter" --no-fund --no-audit; done
+"$runtime/bin/python" -m pip install -r "$repo/shared/python-requirements.txt"
+harnesses=" codex ${SWARMHARM_HARNESSES:-} $* "
+case "$harnesses" in *" all "*) harnesses=" codex claude pi ";; esac
+for adapter in codex claude pi; do
+  case "$harnesses" in *" $adapter "*) npm ci --prefix "$repo/shared/$adapter" --no-fund --no-audit;; esac
+done
+for adapter in $harnesses; do
+  case "$adapter" in codex|claude|pi) ;; *) echo "Unknown harness: $adapter (use codex, claude, pi or all)" >&2; exit 1;; esac
+done
 case "$(uname -m)" in arm64|aarch64) platform=linux/arm64;; *) platform=linux/amd64;; esac
 provenance="$state/workstation-$(date +%Y%m%dT%H%M%S)-$$.json"
 "$runtime/bin/python" "$repo/scripts/build-workstation-image" --platform "$platform" --output "$provenance"
 image=$("$runtime/bin/python" -c 'import json,sys;print(json.load(open(sys.argv[1]))["image"])' "$provenance")
 {
   printf 'export SWARMHARM_HARBOR_ENV=%q\n' "$runtime"
-  printf 'export SWARMHARM_NATIVE_CODEX=%q\n' "$repo/experiments/runtime/codex/node_modules/.bin/codex"
+  printf 'export SWARMHARM_NATIVE_CODEX=%q\n' "$repo/shared/codex/node_modules/.bin/codex"
   printf 'export SWARMHARM_DOCKER_IMAGE=%q\n' "$image"
   printf 'export SWARMHARM_SANDBOX=docker\n'
 } > "$state/swarmharm-local.env"

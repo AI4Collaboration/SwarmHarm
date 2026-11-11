@@ -10,7 +10,7 @@ sys.path[:0] = [str(REPO / 'shared'), str(REPO / 'swarmharm')]
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--harness', choices=('codex', 'claude-code', 'pi-sdk', 'all'), default='all')
+    parser.add_argument('--harness', choices=('codex', 'claude-code', 'pi-sdk', 'all', 'installed'), default='installed')
     args = parser.parse_args()
     if version('harbor') != '0.24.0':
         raise RuntimeError('Use Harbor 0.24.0 in SWARMHARM_HARBOR_ENV')
@@ -22,8 +22,10 @@ def main():
         'claude-code': lambda: claude_agent.gateway_registration('anthropic/claude-haiku-5.5', 'off'),
         'pi-sdk': lambda: pi_agent.harness_registration('off'),
     }
+    installed = {'codex'} | {name for name, folder in (('claude-code', 'claude'), ('pi-sdk', 'pi'))
+                             if (REPO / 'shared' / folder / 'node_modules').is_dir()}
     for name, check in checks.items():
-        if args.harness in ('all', name):
+        if args.harness in ('all', name) or (args.harness == 'installed' and name in installed):
             check()
             print(name + ': runtime configuration available (goal off)')
     station = workstation.Workstation({'/workspace/check.txt': workstation.ENCODE('ready')})
