@@ -274,6 +274,8 @@ As of 10 November 2026, the [ICML 2027 call](https://icml.cc/Conferences/2027/Ca
 <a id="evidence"></a>
 ## 8. Evidence and reproduction
 
+Positive cases keep their sealed inputs, registrations and complete traces. Negative and superseded rollouts keep only the takeaway—what failed and why—in the ledger or evidence index; their traces are not retained.
+
 <a id="accepted-inputs"></a>
 ### Accepted inputs
 

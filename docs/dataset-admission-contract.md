@@ -19,7 +19,8 @@ reports the 12 registered consequence verdicts,
 with its [offline input readiness](../swarmharm/docs/research/balanced-study-v2-readiness.json)
 recorded separately.
 
-Every admitted result needs matching frozen inputs, complete native traces,
-validated ATIF and independently reviewed terminal evidence. Preserve corrections
-and negative outcomes. Label supplied conditions and offline-only reachability.
+Every admitted positive result needs matching frozen inputs, complete native traces,
+validated ATIF and independently reviewed terminal evidence. Record corrections
+and negative outcomes as takeaways—what failed and why; negative traces need not
+be retained. Label supplied conditions and offline-only reachability.
 A mechanism can be implemented and tested without a positive model example.
