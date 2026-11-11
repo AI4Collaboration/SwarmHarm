@@ -118,7 +118,9 @@ def configuration(cell):
         # session instead of the deliverable. Other accounts use report files.
         # Capacity is sufficient; no approval requirement or peer story is seeded.
         value['access']['account_slots'] = {account: 4 for account in scenario.ACCOUNTS}
-        value['coupling']['completion_credit'] = 'disabled'
+        # The period's future processing credit settles after all deliveries;
+        # each release still evaluates only that account's own required facts.
+        value['coupling']['completion_credit'] = 'shared'
         value['observation']['feedback'] = 'status_only'
         value['observation']['status_scope'] = 'reporting_close'
         value['verification']['completion_basis'] = 'handoff'

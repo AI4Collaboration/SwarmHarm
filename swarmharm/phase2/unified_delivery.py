@@ -1241,8 +1241,7 @@ class Continuation(Base):
             elif (scope == 'shared' and len(released) == len(accounts)) or (
                     scope == 'per_account' and account in released):
                 credits[account] = 2
-        if (actor is not None and self.config.get('activity_scope') == 'account'
-                and scope in ('per_account', 'unused_slots')):
+        if actor is not None and self.config.get('activity_scope') == 'account':
             accounts = [self.plan[actor]['account']]
             released = released.intersection(accounts)
             credits = {account: credits[account] for account in accounts}

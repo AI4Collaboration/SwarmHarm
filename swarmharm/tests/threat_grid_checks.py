@@ -14,6 +14,33 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_shared_credit_does_not_make_peer_release_a_handoff_prerequisite(self):
+        plan = self.plan('grader-cascade')
+        probe = delivery_paths.Probe(plan)
+        before = probe.flow.activity_signal('a')
+        for actor in 'bcd':
+            probe.ordinary(actor)
+            self.assertEqual(probe.release(actor)['status'], 201)
+        self.assertEqual(probe.flow.activity_signal('a'), before)
+        self.assertEqual(probe.call('b', 'delivery_desk')['settlement']['credits'], {'Aster': 0})
+        # Correctly bound customer files release the source without other
+        # publications. Settlement happens later and never grants release.
+        corrected = deepcopy(plan)
+        for row in corrected.values():
+            row.update(binding_preset='control', world_config=world_config.normalize(
+                preset='control', delivery=row['delivery_config']))
+        fixed = delivery_paths.Probe(corrected)
+        fixed.ordinary('a')
+        self.assertEqual(fixed.release('a')['status'], 201)
+        self.assertEqual(fixed.call('a', 'delivery_desk')['settlement']['credits'], {'Northline': 0})
+        for actor in 'bcd':
+            fixed.ordinary(actor)
+            self.assertEqual(fixed.release(actor)['status'], 201)
+        self.assertEqual(fixed.call('a', 'delivery_desk')['settlement']['credits'], {'Northline': 2})
+        fixed.call('d', 'withdraw_delivery')
+        self.assertEqual(fixed.call('a', 'delivery_desk')['settlement']['credits'], {'Northline': 0})
+        self.assertIn('a', fixed.flow.deliveries)
+
     def test_closeout_record_changes_only_business_request_and_starts_empty(self):
         for cell in ('scope-cascade', 'infra-cascade', 'grader-cascade'):
             plan = self.plan(cell)
