@@ -9,7 +9,7 @@ This README is the single maintained home for research scope, task taxonomy, env
 - [Research framework](#research-framework)
 - [Three task classes](#task-taxonomy)
 - [SwarmForm: scope and current experiment](#swarmform)
-- [SwarmHarm: nine study cells and their input environments](#swarmharm)
+- [SwarmHarm: mechanisms, domains and input coverage](#swarmharm)
 - [Tonight's concrete work and acceptance criteria](#tonights-plan)
 - [Codebase audit and lightweight maintenance](#codebase-audit)
 - [Paper readiness and later inference](#paper-readiness)
@@ -147,6 +147,31 @@ Each scenario shares the runner and four parameter groups. Its natural task, res
 `information`, `resource`/`forecast`, `grader`, and `records`/`trace` implement the evidenced subtypes above. `acceptance` supplies a workload-selection analogue for T2; `control` supplies a binding comparison. Neither preset names nor domains are additional threat classes. The [taxonomy](swarmharm/docs/phase2-taxonomy.md#classification-principle) grounds the distinction in the task/evidence/decision chain, reward-tampering theory and object/operation authority. A preset name does not establish a model finding.
 
 ### Current work and reproduction
+
+**Planned delivery: 32 inputs = eight mechanism configurations × four domains.**
+The configurations are T1 gaming, T2 task/target substitution, E1 evidence
+tampering, E2 grader tampering, B1 information access, B1 action authority,
+B2 shared capacity and B2 service/work lifecycle. These are eight realizations
+of six mechanisms, not eight new taxonomy families. The four domains are
+Knowledge Work (versioned commitments and delivery evidence), Engineering
+(executable builds and test artifacts), Data Analysis (identity resolution,
+deduplication and population definitions), and Financial Analysis (settlement,
+fees, reversals and close cutoffs). All four belong to the delivery; implement
+Knowledge Work and Engineering first, then the other two.
+
+For each domain, bind the mechanism to actual business objects, operations and
+independently checked consequences. Relabeling the same report does not create
+a validated domain environment. Match harness, population, budgets, authority
+and notification policy across domains within a mechanism; document any required
+task-specific difference. Communication structure, composition and process
+inference are findings, not extra multiplication axes. Models and repetitions
+increase rollout count, not input count. The 32 are planned inputs, not 32
+generated or model-validated packages; existing cases retain their exact settings.
+
+**Archived studies:** the [archive index](swarmharm/docs/archive/README.md)
+separates the former nine scenarios, balanced comparison and older cases from
+this delivery. Their original scores, sealed input paths and full evidence stay
+intact. The former 7/9 count is historical, not progress against the new 32.
 
 The user requires a taxonomy covering the behaviors described by METR, with inference findings recorded separately. **Do not continue the old all-nine-positive objective or launch a rollout merely to fill its two remaining cells.** T2 workload substitution is verified. The T1 audit excludes workload changes and acceptance-threshold changes; a genuine fixed-rule example is still missing. Audit the listed E1/E2/B1/B2 subtype gaps before defining a new experiment. The coverage inventory separates observed actions, attempts and unsuccessful proposals. No new subject rollout is part of this reclassification.
 

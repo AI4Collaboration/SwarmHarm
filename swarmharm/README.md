@@ -7,9 +7,10 @@ The [SwarmHarm section of the root README](../README.md#swarmharm) is the mainta
 ## Inputs and evidence
 
 - **Taxonomy:** six mechanisms across task fidelity, evaluation integrity and environment integrity, with collective behavior and cognition annotated separately. The [METR coverage inventory](docs/phase2-taxonomy.md) maps source behaviors and lists implementation/evidence gaps.
+- **Delivery plan:** eight mechanism configurations × four domains = 32 planned inputs. This is separate from the engine's eight existing presets, which include control. Domain tasks must differ in actual work and consequences. See the [current plan](../README.md#swarmharm); the 32 are not yet a validated package set.
 - **Implemented engine:** eight binding presets, including control; four domain source workloads. [Parameters, values and defaults](docs/scenarios-and-parameters.md).
 - **Reviewed comparison:** records/resource/grader × Knowledge Work/Engineering × Sol 5.6/6.1; 12 full trajectories, five original claim passes. [Exact cases and artifacts](docs/research/balanced-study-v2-results.json).
-- **Retained scenario selectors:** nine parameterized inputs share this engine. They are not nine distinct failure modes or nine required positive outcomes. The root README separates mechanisms from additional findings; the [local ledger](docs/research/threat-grid-status.json) binds each positive, negative and active rollout to its exact input and full trajectory. Baseline and refined cases keep their original verdicts.
+- **Archived scenario selectors:** nine parameterized inputs share this engine. They are not nine distinct failure modes or nine required positive outcomes. The [archive index](docs/archive/README.md) and [archived scenario ledger](docs/research/threat-grid-status.json) bind original results to exact inputs and full trajectories; their completion counts do not measure the new delivery.
 
 ## Reproduction
 
@@ -23,7 +24,7 @@ Use the pinned Python environment from `bash scripts/setup-local`, native Codex 
 
 Use the [running guide](../docs/running-evals.md#validate-and-freeze) for complete preparation, sealing, collection and review. The existing reporting runner has four agents. `--comparison-design balanced-headline-v1` preserves the completed comparison; it is not the nine-grid contract.
 
-For a retained scenario selector, use `--threat-cell CELL --source-retention local` instead of manually combining a preset and world. Exact configurations and per-cell criteria are in [threat_grid.py](phase2/threat_grid.py). Source and registrations must be committed locally before collection. No push or upload is required or authorized for this delivery.
+The commands below reproduce the archived nine-selector design, not the planned 32-input delivery. For a retained scenario selector, use `--threat-cell CELL --source-retention local` instead of manually combining a preset and world. Exact configurations and per-cell criteria are in [threat_grid.py](phase2/threat_grid.py). Source and registrations must be committed locally before collection. No push or upload is required or authorized for this delivery.
 
 To inspect all nine development configurations without Docker, credentials, tests or model calls:
 
@@ -50,7 +51,7 @@ Commit that registration, then run `swarmharm/launch.py` with the same output,
 registration and key arguments. After completion, run `shared/export_atif.py OUTPUT`,
 then `swarmharm/review.py --output OUTPUT`. The six propagation/coordination cells
 also need `swarmharm/scripts/judge_unified_transcript.py --output OUTPUT --key-file KEY`.
-Use fresh paths. The [current ledger](docs/research/threat-grid-status.json) identifies
+Use fresh paths. The [archived scenario ledger](docs/research/threat-grid-status.json) identifies
 exact reviewed inputs, source commits and full trajectories. A valid negative is
 separate from an observed threat. Reuse offline checks with `--controls-from OUTPUT`
 only when preparation verifies identical code, image and native runtime.

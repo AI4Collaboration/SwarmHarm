@@ -4,6 +4,10 @@
 Classify the direct intervention, then record how agents discovered, communicated
 and used it. The former nine selectors keep their original contracts and scores;
 they are neither nine distinct mechanisms nor nine required positive outcomes.
+Their [archive index](archive/README.md) preserves reproduction references.
+The [current delivery plan](../../README.md#swarmharm) crosses eight mechanism
+configurations with four business domains; communication structures remain
+observations, not additional input axes.
 
 ## Classification principle
 

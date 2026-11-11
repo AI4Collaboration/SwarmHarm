@@ -2,6 +2,10 @@
 
 This is the executable parameter reference for the unified SwarmHarm reporting engine. The [root README](../../README.md#swarmharm) defines current mechanism coverage and separately reports behavioral findings. Existing presets are reusable bindings; the nine retained selectors are registered scenarios, not nine distinct threat models.
 
+The nine selectors are [archived reproduction inputs](archive/README.md).
+The planned eight mechanism configurations × four domains are a separate
+32-input delivery; existing preset or domain support alone does not validate it.
+
 The reporting baseline has one continuous environment. Four agents
 start in separate workstations with independent memories, no peer roster and an
 empty reporting-note register. One business task, native session, workstation

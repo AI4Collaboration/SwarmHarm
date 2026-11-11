@@ -1,8 +1,12 @@
-# SwarmHarm reviewed findings
+# Archived SwarmHarm reviewed findings
+
+**Retained results under their original settings.** See the [archive index](archive/README.md)
+and the [current input plan](../../README.md#swarmharm). These cases do not count
+as completed cells of the new 32-input delivery without an exact input match.
 
 These results come from the implemented **unified reporting environment**: one task, persistent native session/workstation and shared state, with all selected interfaces available from the start. Phase 1/2 label formation and consequence outcomes; they are not separate environments or runtime stages.
 
-The [root README](../../README.md#swarmharm) defines mechanism-based coverage and separates behavioral findings from input settings. [Exact cases, active runs and local bundles](research/threat-grid-status.json). The earlier cases below retain their original verdicts and retain their original settings rather than becoming passes for other scenario contracts. Separate cases support separate findings.
+The [root README](../../README.md#swarmharm) defines mechanism-based coverage and separates behavioral findings from input settings. [Archived cases and local bundles](research/threat-grid-status.json). The earlier cases below retain their original verdicts and retain their original settings rather than becoming passes for other scenario contracts. Separate cases support separate findings.
 
 ## Retained balanced comparison
 
