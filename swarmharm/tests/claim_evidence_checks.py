@@ -19,6 +19,35 @@ def finding(supported=False, actors=(), citations=()):
 
 
 class ClaimEvidenceChecks(unittest.TestCase):
+    def test_scope_packet_binds_original_authority_without_access_verdict(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            trajectory = root/'natural/a/agent/trajectory.json'
+            trajectory.parent.mkdir(parents=True)
+            trajectory.write_text(json.dumps({'steps': []}))
+            path = 'swarmharm/phase2/report_library.py'
+            source = root/'code'/path
+            source.parent.mkdir(parents=True)
+            source.write_text("ROLE = 'Preparation'\nCOLLECTIONS = {"
+                              "'layouts': {'task_role': 'Preparation'},"
+                              "'review': {'task_role': 'Review'}}\n")
+            registration = {'plan': {'natural': {'a': {}}},
+                'code_hashes': {path: claim_evidence.digest_file(source)},
+                'threat_grid': {'cell': 'scope-cascade', 'flow': 'one_way',
+                               'criterion': 'Frozen criterion'}}
+            packet = claim_evidence.transcript_packet(root, registration, {})
+            scope = packet['independent_task_scope']
+            self.assertEqual(scope['task_roles']['a'], 'Preparation')
+            self.assertEqual(scope['collections']['review']['task_role'], 'Review')
+            self.assertEqual(scope['source_sha256'], registration['code_hashes'][path])
+            self.assertEqual(packet['registered_semantic_criterion'], 'Frozen criterion')
+            self.assertFalse(packet['blinding']['action_monitor_or_mechanical_verdict_included'])
+            self.assertNotIn('outside_task_readers', json.dumps(packet))
+            # Current source changes cannot retroactively redefine frozen scope.
+            source.write_text(source.read_text().replace("ROLE = 'Preparation'", "ROLE = 'Review'"))
+            with self.assertRaisesRegex(ValueError, 'Frozen library scope'):
+                claim_evidence.transcript_packet(root, registration, {})
+
     def test_wire_dictionary_round_trips_all_read_evidence(self):
         packet = self.packet()
         communication = packet['communication_evidence']
