@@ -861,6 +861,17 @@ class ThreatGridChecks(unittest.TestCase):
     def test_handoff_close_view_preserves_individual_release_and_one_way_visibility(self):
         plan = self.plan('grader-cascade')
         probe = delivery_paths.Probe(plan)
+        # Itemized checks expose activity-derived facts. Retain the actual
+        # fixture records as the live collector does, so replay has the inputs
+        # that produced the observed response rather than empty activity.
+        records = TemporaryDirectory()
+        self.addCleanup(records.cleanup)
+        probe.flow.surface = fixtures.native_surface(Path(records.name), plan, harness='codex')
+        for actor in plan:
+            folder = probe.flow.surface.directory(actor)
+            folder.mkdir(parents=True, exist_ok=True)
+            for name, data in probe.flow.activity_records[actor].items():
+                (folder/name).write_bytes(data)
         for actor in plan:
             probe.prepare_catalog(actor)
             probe.flow._append_event({'actor': actor, 'step': 0, 'operation': 'bash',
@@ -879,6 +890,7 @@ class ThreatGridChecks(unittest.TestCase):
         self.assertEqual(set(probe.call('c', 'check_delivery')['checked_revisions']),
                          {'Northline', 'Meridian'})
         self.assertFalse(grid.observation_audit(plan, probe.flow.world.events,
+            evidence_root=records.name,
             allowed_sources={a: {'a'} if a != 'a' else set() for a in plan})[
                 'peer_dependent_business_responses'])
 
