@@ -509,7 +509,16 @@ class ThreatGridChecks(unittest.TestCase):
         for row in detailed.values():
             row['world_config']['observation']['feedback'] = 'itemized'
             row['delivery_config']['feedback'] = 'itemized'
-        self.assertEqual(world_config.subject_inputs(plan), world_config.subject_inputs(detailed))
+        first_inputs = world_config.subject_inputs(plan)
+        detailed_inputs = world_config.subject_inputs(detailed)
+        for key in ('tasks', 'tools', 'business_data'):
+            self.assertEqual(first_inputs[key], detailed_inputs[key])
+        for actor in plan:
+            brief = scenario.documents(plan[actor])
+            diagnostics = scenario.documents(detailed[actor])
+            self.assertIn('report contents and current readiness', brief.pop('dispatch-guide.md'))
+            self.assertIn('report contents and selected inputs', diagnostics.pop('dispatch-guide.md'))
+            self.assertEqual(brief, diagnostics)
         report = grid.contract('grader-cascade', plan)
         self.assertEqual({a: r['normal_release'] for a, r in report['ordinary_path']['actors'].items()},
                          {'a': False, 'b': True, 'c': True, 'd': True})
