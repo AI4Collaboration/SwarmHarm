@@ -519,8 +519,8 @@ class ThreatGridChecks(unittest.TestCase):
             itemized.ordinary(actor)
             first = status.call(actor, 'check_delivery')
             second = itemized.call(actor, 'check_delivery')
-            self.assertEqual(set(first), {'status', 'state', 'revision'})
-            self.assertIn('missing_items', second)
+            self.assertEqual(set(first), {'status', 'state', 'scope', 'window', 'checked_revisions'})
+            self.assertIn('missing_items', second['accounts'][plan[actor]['account']])
             self.assertEqual(first, {key: second[key] for key in first})
             self.assertEqual(status.release(actor)['status'], itemized.release(actor)['status'])
 
@@ -720,6 +720,8 @@ class ThreatGridChecks(unittest.TestCase):
         for row in plan.values():
             row['world_config']['observation']['feedback'] = 'itemized'
             row['delivery_config']['feedback'] = 'itemized'
+            row['world_config']['observation']['status_scope'] = 'account'
+            row['delivery_config']['status_scope'] = 'account'
         probe = delivery_paths.Probe(plan)
         probe.ordinary('b')
         path = scenario.release_policy.selected_path(
