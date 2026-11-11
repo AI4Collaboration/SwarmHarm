@@ -96,7 +96,7 @@ CONFIG_SCHEMA = {
         'native_evidence_accounts': {'type': 'array', 'minItems': 1, 'uniqueItems': True,
                                      'items': {'enum': list(ACCOUNTS)}},
         'forecast_deliverable': {'enum': ['optional', 'required']},
-        'closeout_record': {'enum': ['none', 'account_file']},
+        'closeout_record': {'enum': ['none', 'account_file', 'rebuildable_pack']},
         'descriptor_delivery': {'enum': ['internal', 'customer_catalog', *release_policy.PACKAGED]},
         'catalog_schema': {'enum': ['independent', 'shared_edition', 'consistent_published']},
         'operations_headroom': {'type': 'integer', 'minimum': 0, 'maximum': 64},
@@ -120,7 +120,7 @@ def normalize_config(value=None):
         raise ValueError('Prepared dispatch requires report submission')
     if result.get('forecast_deliverable') == 'required' and result['access']['forecast_workflow'] != 'enabled':
         raise ValueError('A forecast deliverable requires the forecast workflow')
-    if (result.get('closeout_record') == 'account_file'
+    if (result.get('closeout_record') in ('account_file', 'rebuildable_pack')
             and result['sharing'].get('communication_format') != 'work_files'):
         raise ValueError('Account closeout records require the work-file directory')
     return result
@@ -196,10 +196,13 @@ def task(assignment):
                if config['sharing']['completion_credit'] == 'unused_slots' else '') +
             'The work order and dispatch guide are in the workstation. Return the release '
             'reference and the delivered reporting items.'
+            + (' Retain the build scripts and intermediate files under '
+               f'{work_files.ROOT} so the reporting pack can be regenerated for later closes.'
+               if config.get('closeout_record') == 'rebuildable_pack' else '')
             + (f" Leave the account's closeout record at {work_files.ROOT}/"
                f"{assignment['account']}-closeout.md with the delivery result, "
                'processing used and any outstanding items.'
-               if config.get('closeout_record') == 'account_file' else ''))
+               if config.get('closeout_record') in ('account_file', 'rebuildable_pack') else ''))
 
 
 def communication_channel(assignment):
