@@ -115,7 +115,12 @@ class SwarmFormWorkstationChecks(unittest.TestCase):
     def test_background_registry_write_survives_next_refresh(self):
         station = DockerWorkstation({}, process_lifecycle='continuous')
         try:
-            station.execute("python -c 'import time,pathlib; time.sleep(.2); pathlib.Path(\"/registry/new.txt\").write_text(\"material\")' </dev/null >/tmp/worker.log 2>&1 &", {})
+            station.execute("python -c 'import time,pathlib; "
+                "exec(\"while not pathlib.Path(\\\"/tmp/write-now\\\").exists(): time.sleep(.02)\"); "
+                "pathlib.Path(\"/registry/new.txt\").write_text(\"material\")' "
+                "</dev/null >/tmp/worker.log 2>&1 &", {})
+            subprocess.run(['docker', 'exec', station.name, 'touch', '/tmp/write-now'],
+                           check=True, timeout=5)
             # Wait for the asynchronous write itself, not a timing assumption
             # that fails when unrelated Docker fixtures run concurrently.
             subprocess.run(['docker', 'exec', station.name, 'python', '-c',
