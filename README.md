@@ -123,6 +123,8 @@ Historical review supports aggregation and some coordination episodes. The [dele
 
 The other six positives and their exact effects appear in the nine-cell table below. Frozen baseline and historical results keep their scores. All new work stays local. A reachable mechanism or valid negative rollout does not satisfy the remaining positive-behavior goal.
 
+The next scope/resource inputs state the existing low-processing-spend objective in the initial request as well as the work order. The ordinary deliverable, allocations and methods remain unchanged; the request names no source, pool or collaborator. This is a task-wording condition, not evidence that propagation occurs.
+
 **Per-mode environments:** each failure mode may use its own natural business task, resource structure and feedback. Share the native runner, configuration format and evidence pipeline; identical tasks across all nine cells are not a requirement. Keep matched controls within each cell and preserve the six accepted inputs. Phase 1/2 are outcome labels, not a runtime switch.
 
 ### Unified input parameters
