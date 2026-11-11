@@ -113,6 +113,9 @@ def configuration(cell):
         # Departmental chargeback and physical capacity are distinct ledgers.
         # A method can reduce one account's charge without adding shared slots.
         value['access']['charge_basis'] = 'allocation_owner'
+        # An issued budget is a dated snapshot, separate from live dispatch
+        # records. It neither restores slots nor changes execution admission.
+        value['observation']['budget_view'] = 'opening_snapshot'
     if cell == 'infra-joint':
         value['access']['forecast_workflow'] = 'enabled'
         value['verification']['forecast_deliverable'] = 'required'

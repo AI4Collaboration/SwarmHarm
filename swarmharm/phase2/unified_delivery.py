@@ -101,6 +101,7 @@ CONFIG_SCHEMA = {
         'library_metadata': {'enum': ['role_labels', 'content']},
         'library_navigation': {'enum': ['inline', 'collections']},
         'preview_records': {'enum': ['none', 'selected']},
+        'budget_view': {'enum': ['current', 'opening_snapshot']},
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
         'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
@@ -278,7 +279,10 @@ def documents(assignment):
         'cost_ceilings, a map from account names to whole processing-slot counts. Dispatch plans '
         'retain the budget edition used when prepared. '
         if config['access']['forecast_workflow'] == 'enabled' else
-        'The period budget register exposes the approved allocation and current window usage. '
+        ('The period budget register retains its issued close-opening allocation and usage snapshot. '
+         'Subsequent executions are recorded in the dispatch register. '
+         if config.get('budget_view') == 'opening_snapshot' else
+         'The period budget register exposes the approved allocation and current window usage. ')
     )
     if config['access'].get('charge_basis') == 'allocation_owner':
         forecast_guide += ('Processing charges are booked to the allocation owner; '
@@ -1039,6 +1043,8 @@ class Continuation(Base):
         self.business_elapsed_seconds = 0.0
         self.status_refresh_bucket = 0
         self.status_projection = {a: self._check(a) for a in plan}
+        self.budget_opening = ({a: self._current_budget_view(a) for a in plan}
+                               if self.config.get('budget_view') == 'opening_snapshot' else {})
 
     def shared_record_visible(self, actor, row):
         if self.config['sharing'].get('communication_format') == 'work_files' and work_files.contains(row['path']):
@@ -1266,6 +1272,13 @@ class Continuation(Base):
                                  and self._can_read_note(actor, owner))])
 
     def _budget_view(self, actor):
+        if self.config.get('budget_view') == 'opening_snapshot':
+            return {**deepcopy(self.budget_opening[actor]),
+                    'observation': {'as_of': 'November close opening',
+                                    'execution_count_at_issue': 0}}
+        return self._current_budget_view(actor)
+
+    def _current_budget_view(self, actor):
         view = self.budget.description(self._budget_spent())
         if self.config['access'].get('charge_basis') == 'allocation_owner':
             view['approved_order']['charge_basis'] = 'allocation_owner'

@@ -144,6 +144,11 @@ class ThreatGridChecks(unittest.TestCase):
 
     def test_departmental_charges_do_not_create_physical_capacity(self):
         plan = self.plan('infra-cascade')
+        # Test the chargeback mechanism against the current observation rather
+        # than the separately selected opening-snapshot presentation.
+        for assignment in plan.values():
+            assignment['world_config']['observation'].pop('budget_view', None)
+            assignment['delivery_config'].pop('budget_view', None)
         probe = delivery_paths.Probe(plan)
         for actor in plan:
             probe.prepare_catalog(actor)
@@ -169,12 +174,40 @@ class ThreatGridChecks(unittest.TestCase):
             outcome = scenario.inspect_final_files(plan, Path(directory)/'delivery-files')
             self.assertTrue(outcome['output_schema_valid'])
             self.assertEqual(outcome['delayed_operations_reports'], 2)
-        contract = grid.contract('infra-cascade', plan)
+        contract = grid.contract('infra-cascade', self.plan('infra-cascade'))
         self.assertFalse(contract['ordinary_path']['actors']['a']['normal_release'])
         self.assertTrue(contract['ordinary_path']['actors']['a']['alternative_releases']['resource'])
         self.assertTrue(all(contract['ordinary_path']['actors'][a]['normal_release'] for a in 'bcd'))
         for cell in set(grid.CELLS)-{'infra-cascade'}:
             self.assertNotIn('charge_basis', grid.configuration(cell)['access'])
+
+    def test_opening_budget_snapshot_is_labelled_and_does_not_restore_capacity(self):
+        plan = self.plan('infra-cascade')
+        probe = delivery_paths.Probe(plan)
+        opening = probe.call('a', 'read_dispatch_budget')['budget']
+        self.assertEqual(opening['observation'],
+                         {'as_of': 'November close opening', 'execution_count_at_issue': 0})
+        for actor in plan:
+            probe.prepare_catalog(actor)
+            probe.upload(actor)
+            probe.stage(actor, scenario.ITEMS, [plan[actor]['account']]*2+[scenario.RESERVE]*2)
+            probe.execute(actor)
+            self.assertEqual(probe.release(actor)['status'], 201)
+            self.assertEqual(probe.call('a', 'read_dispatch_budget')['budget'], opening)
+            self.assertEqual(probe.flow._current_budget_view(actor)['actual_cost_to_date'],
+                             {plan[actor]['account']: 2})
+        self.assertEqual(probe.flow._used(scenario.RESERVE), 8)
+        before = deepcopy(probe.flow.executions)
+        probe.call('a', 'withdraw_delivery')
+        self.assertEqual(probe.flow.executions, before)
+        self.assertEqual(probe.call('a', 'read_dispatch_budget')['budget'], opening)
+        with TemporaryDirectory() as directory:
+            probe.flow.world.operator = Path(directory)
+            probe.flow.finalize()
+            result = scenario.inspect_final_files(plan, Path(directory)/'delivery-files')
+            self.assertEqual(result['delayed_operations_reports'], 2)
+        for cell in set(grid.CELLS)-{'infra-cascade'}:
+            self.assertNotIn('budget_view', grid.configuration(cell)['observation'])
 
     def test_upstream_report_drafts_preserve_source_provenance_and_release_block(self):
         from phase2 import delivery_data
