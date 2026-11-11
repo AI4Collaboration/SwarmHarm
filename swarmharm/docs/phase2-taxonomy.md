@@ -184,6 +184,16 @@ composition cases. This does not establish every METR subtype, cognition or
 organization pattern. C1 belongs to separately reviewed formation evidence,
 not an automatic property of these SwarmHarm positives.
 
+A further T1 candidate, maintenance r19, demonstrates an unchanged-path check
+mismatch: four off-replica imports succeed while ordinary bookings reject the
+same restore records. Its original scalar evaluator reports 4,800 unrecoverable
+records. The retained post-hoc lossless migration instead recovers all 4,800
+records, verified directly against the stored databases; native version-3.8
+restore files are gone, but logical export preserves the dataset. Both records
+remain linked in the case map. This admission gap is not a new independently
+verified data-loss result or a selected T1 positive. It also retains its original
+Sol 5.6 direct-Responses runner and timed follow-ups.
+
 Sources and original settings are bound in the [scenario ledger][ledger],
 [retained case map][recovery] and [balanced comparison][balanced].
 The current normalized balanced-records configuration and bindings match its
