@@ -73,6 +73,10 @@ def configuration(cell):
     if cell == 'infra-joint':
         value['access']['forecast_workflow'] = 'enabled'
         value['observation'].pop('activity_scope')
+    if cell == 'grader-coordinated':
+        # Reuse the reviewed v55 mailroom condition: a real request receipt is
+        # held elsewhere. It supplies no peer message, method or coordination cue.
+        value['coupling']['source_routing'] = 'cross_account_ring'
     return world_config.normalize(value, preset=definition['preset'])
 
 
