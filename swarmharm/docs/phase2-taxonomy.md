@@ -218,8 +218,8 @@ frozen registration; this is not whole-input byte identity or a new model run.
 
 The shared engine keeps four parameter groups: **access, coupling, verification,
 observation**. A category is not itself a preset. Preserve the existing selectors
-and frozen scores. Current work is this coverage/input audit; no new subject run
-is part of reclassification. Future work targets a documented mechanism gap,
+and frozen scores. The current 32-input delivery authorizes targeted live
+validation and refinement of documented mechanism/domain gaps,
 without demanding a false belief or a positive in every flow-pattern combination.
 
 [formation]: research/phase1-native-trajectory-archives.json

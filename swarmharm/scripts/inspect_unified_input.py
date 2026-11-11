@@ -11,12 +11,18 @@ REPO = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(REPO / 'swarmharm'), str(REPO / 'shared')]
 
 from jsonschema import ValidationError
-from phase2 import office_history, threat_grid, unified_delivery as scenario, world_config
+from phase2 import mechanism_inputs, office_history, threat_grid, unified_delivery as scenario, world_config
 
 ACTORS = ('job-northline', 'job-aster', 'job-meridian', 'job-harbor')
 
 
-def build_preview(domain, preset, overrides=None, *, combined=False, harness='codex', cell=None):
+def build_preview(domain, preset, overrides=None, *, combined=False, harness='codex', cell=None,
+                  mechanism=None):
+    if mechanism is not None:
+        if (cell is not None or overrides is not None or combined or harness != 'codex'
+                or preset != mechanism_inputs.MECHANISMS[mechanism]['preset']):
+            raise ValueError('A mechanism supplies its own world, binding and Codex layout')
+        overrides = mechanism_inputs.configuration(mechanism)
     if cell is not None:
         if overrides is not None or combined or preset != threat_grid.CELLS[cell]['preset']:
             raise ValueError('A threat cell supplies its own world and binding')
@@ -37,6 +43,8 @@ def build_preview(domain, preset, overrides=None, *, combined=False, harness='co
         'domain': domain, 'preset': preset, 'harness_file_layout': harness,
         **({'threat_cell': {'cell': cell, **threat_grid.CELLS[cell],
                            'visibility': 'operator_only'}} if cell else {}),
+        **({'mechanism_contract': mechanism_inputs.validate_plan(mechanism, plan)}
+           if mechanism else {}),
         'world_config': world, 'assignments': plan,
         'input_contract': contract,
         'shared_directories': scenario.shared_directories(plan),
@@ -57,6 +65,8 @@ def write_preview(output, manifest, subjects):
     files = {'manifest.json': json_bytes(manifest),
              'subject-inputs.json': json_bytes(subjects),
              'tools.json': json_bytes(subjects['tools'])}
+    if 'mechanism_contract' in manifest:
+        files['world-config.json'] = json_bytes(manifest['world_config'])
     for actor, task in subjects['tasks'].items():
         if actor not in ACTORS:
             raise ValueError('Unexpected workstation identity')
@@ -80,11 +90,13 @@ def write_preview(output, manifest, subjects):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--scenario', choices=scenario.delivery_data.DOMAINS,
+    parser.add_argument('--scenario', choices=(*scenario.delivery_data.DOMAINS, 'all'),
                         default='engineering-capacity')
     parser.add_argument('--binding-preset', choices=scenario.PRESETS)
     parser.add_argument('--threat-cell', choices=(*threat_grid.CELLS, 'all'),
-                        help='Export one grid input, or all nine; no registration, checks or model calls')
+                        help='Export archived grid inputs; no registration, checks or model calls')
+    parser.add_argument('--mechanism', choices=(*mechanism_inputs.MECHANISMS, 'all', 'implemented'),
+                        help='Export declared mechanism inputs; all requires every binding to be implemented')
     parser.add_argument('--world-config', type=Path)
     parser.add_argument('--combined-bindings', action='store_true')
     parser.add_argument('--harness', choices=('codex', 'claude-code'), default='codex',
@@ -93,6 +105,36 @@ def main(argv=None):
                         help='New directory for the operator preview, not a registration')
     args = parser.parse_args(argv)
     try:
+        if args.mechanism:
+            if args.threat_cell or args.world_config or args.binding_preset or args.combined_bindings:
+                raise ValueError('--mechanism supplies its world and binding; do not combine overrides')
+            names = (list(mechanism_inputs.MECHANISMS) if args.mechanism == 'all' else
+                     list(mechanism_inputs.implemented()) if args.mechanism == 'implemented' else
+                     [args.mechanism])
+            domains = mechanism_inputs.DOMAINS if args.scenario == 'all' else (args.scenario,)
+            previews = {f'{domain}/{name}': build_preview(domain,
+                        mechanism_inputs.MECHANISMS[name]['preset'],
+                        harness=args.harness, mechanism=name)
+                        for domain in domains for name in names}
+            args.output.mkdir(parents=True, exist_ok=False)
+            for key, (manifest, subjects) in previews.items():
+                write_preview(args.output/key, manifest, subjects)
+            index = {'kind': 'offline_mechanism_inputs', 'revision': mechanism_inputs.REVISION,
+                     'planned_count': len(mechanism_inputs.MECHANISMS)*len(mechanism_inputs.DOMAINS),
+                     'exported_count': len(previews),
+                     'inputs': {key: {'manifest': key+'/manifest.json',
+                                     'input_sha256': scenario.digest(subjects)}
+                                for key, (_, subjects) in previews.items()},
+                     'unimplemented_mechanisms': [name for name in mechanism_inputs.MECHANISMS
+                                                 if name not in mechanism_inputs.implemented()],
+                     'execution_paths': 'not_run', 'model_behavior': 'not_tested'}
+            (args.output/'manifest.json').write_bytes(json_bytes(index))
+            print(f'{len(previews)} mechanism inputs exported to {args.output.resolve()}; '
+                  f'{len(mechanism_inputs.MECHANISMS)-len(mechanism_inputs.implemented())} '
+                  'mechanisms still unimplemented. No registration or model calls.')
+            return
+        if args.scenario == 'all':
+            raise ValueError('--scenario all requires --mechanism')
         if args.threat_cell:
             if args.world_config or args.binding_preset or args.combined_bindings:
                 raise ValueError('--threat-cell supplies the world and binding; do not combine overrides')

@@ -8,11 +8,26 @@ The [SwarmHarm section of the root README](../README.md#swarmharm) is the mainta
 
 - **Taxonomy:** six mechanisms across task fidelity, evaluation integrity and environment integrity, with collective behavior and cognition annotated separately. The [METR coverage inventory](docs/phase2-taxonomy.md) maps source behaviors and lists implementation/evidence gaps.
 - **Delivery plan:** eight mechanism configurations × four domains = 32 planned inputs. This is separate from the engine's eight existing presets, which include control. Domain tasks must differ in actual work and consequences. See the [current plan](../README.md#swarmharm); the 32 are not yet a validated package set.
+- **Current inputs:** [32-input status](docs/research/mechanism-input-status.json). The new operator selector exports 20 implemented configurations; gaming, action authority and lifecycle remain pending. Offline path checks are separate from live validation.
 - **Implemented engine:** eight binding presets, including control; four domain source workloads. [Parameters, values and defaults](docs/scenarios-and-parameters.md).
 - **Reviewed comparison:** records/resource/grader × Knowledge Work/Engineering × Sol 5.6/6.1; 12 full trajectories, five original claim passes. [Exact cases and artifacts](docs/research/balanced-study-v2-results.json).
 - **Archived scenario selectors:** nine parameterized inputs share this engine. They are not nine distinct failure modes or nine required positive outcomes. The [archive index](docs/archive/README.md) and [archived scenario ledger](docs/research/threat-grid-status.json) bind original results to exact inputs and full trajectories; their completion counts do not measure the new delivery.
 
 ## Reproduction
+
+Export the implemented mechanism inputs and all four domain workloads without
+model calls (use a new output directory):
+
+```sh
+"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/scripts/inspect_unified_input.py \
+  --mechanism implemented --scenario all --output ../mechanism-input-preview
+```
+
+Each package contains tasks, tools, workstation files and `world-config.json`.
+The operator manifest records the mechanism criterion and subject-input hash.
+`--mechanism all` rejects the export until every mechanism is implemented.
+Preparing native rollouts with mechanism-specific contracts is the next runner
+integration; the archived commands below do not supply those new contracts.
 
 Use the pinned Python environment from `bash scripts/setup-local`, native Codex and AxonHub. The reporting entry point is `run.py` with `--phase prepare` or `--phase collect`. Preparation takes a fresh output path and registration directory; collection uses those sealed inputs once.
 
@@ -56,7 +71,7 @@ exact reviewed inputs, source commits and full trajectories. A valid negative is
 separate from an observed threat. Reuse offline checks with `--controls-from OUTPUT`
 only when preparation verifies identical code, image and native runtime.
 
-Current work is classification and evidence alignment; no new subject rollout is part of it. For later registered work, keep iteration short: preparation selects input, native-runtime and evidence checks; it does not rerun retained legacy studies. Reuse sealed checks across unchanged-source registrations and collect only changed cells. Full regression remains an explicit maintenance action.
+The 32-input delivery and targeted live refinement are now authorized. Keep iteration short: preparation selects input, native-runtime and evidence checks; it does not rerun retained legacy studies. Reuse sealed checks across unchanged-source registrations and collect only changed cells. Full regression remains an explicit maintenance action.
 Each input still needs its own ordinary-path, alternative-path and corrected-binding
 check. Do not add timed unpacking, artificial waiting or unchanged-state follow-ups.
 

@@ -180,6 +180,8 @@ def select_checks(files, full=False):
             checks.update(('catalog', 'inputs'))
         elif name == 'swarmform/scripts/check_swarmform_read_observer.py':
             suites('swarmform_read_observer')
+        elif name in {LAB + '/phase2/mechanism_inputs.py', LAB + '/scripts/inspect_unified_input.py'}:
+            suites('mechanism_inputs', 'unified_input_contract', roots=(LAB,))
         elif name in {LAB + '/phase2/unified_delivery.py', LAB + '/phase2/world_config.py',
                       LAB + '/phase2/threat_grid.py', LAB + '/phase2/query_gateway.py',
                       LAB + '/phase2/delivery_paths.py', LAB + '/phase2/delivery_budget.py',
