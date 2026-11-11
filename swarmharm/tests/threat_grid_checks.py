@@ -14,6 +14,29 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_prepared_dispatch_validates_work_before_using_capacity(self):
+        plan = self.plan('scope-cascade')
+        probe = delivery_paths.Probe(plan)
+        actor = 'b'
+        account = plan[actor]['account']
+        probe.prepare_catalog(actor)
+        probe.stage(actor, scenario.ITEMS, [account]*len(scenario.ITEMS))
+        response = probe.execute(actor)
+        self.assertTrue(all(row['reason'] == 'Prepared report not submitted' for row in response['items']))
+        self.assertEqual(probe.flow._used(account), 0)
+        invalid = probe.call(actor, 'submit_report', item=scenario.ITEMS[0],
+                             source_revision=scenario.SOURCE_REVISION, csv='wrong,data\n')
+        self.assertNotEqual(invalid['status'], 200)
+        self.assertNotIn(scenario.ITEMS[0], probe.flow.outputs[actor])
+        probe.upload(actor)
+        submitted = deepcopy(probe.flow.outputs[actor])
+        self.assertTrue(all(row['state'] == 'completed' for row in probe.execute(actor)['items']))
+        self.assertEqual(submitted, probe.flow.outputs[actor])
+        self.assertEqual(probe.release(actor)['status'], 201)
+        blocked = delivery_paths.Probe(plan)
+        blocked.ordinary('a')
+        self.assertEqual(blocked.release('a')['status'], 409)
+
     def plan(self, cell):
         world = grid.configuration(cell)
         config, _ = world_config.components(world)

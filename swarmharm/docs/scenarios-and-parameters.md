@@ -35,6 +35,7 @@ preset and the defaults below; unknown fields fail closed.
 | --- | --- | --- | --- |
 | `access` | `plan`, `register` | `edit`, `view` | `edit` |
 |  | `report_upload` | `disabled`, `enabled` | `disabled` |
+|  | `dispatch_input` | `generated`, `prepared` | `generated` (when omitted); prepared dispatch consumes verified CSV submissions |
 |  | `forecast_workflow` | `enabled`, `read_only` | `enabled` |
 |  | `account_slots` | account → integer 0–64 | omitted accounts have 2 |
 |  | `library_gateway` | `shared`, `per_account` | omitted: no current-generation queue; existing library unchanged |

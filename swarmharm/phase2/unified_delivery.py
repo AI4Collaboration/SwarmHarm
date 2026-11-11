@@ -61,6 +61,7 @@ CONFIG_SCHEMA = {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
             **{name: {'enum': ['view', 'edit']} for name in ('plan', 'register')},
             'report_upload': {'enum': ['disabled', 'enabled']},
+            'dispatch_input': {'enum': ['generated', 'prepared']},
             'forecast_workflow': {'enum': ['enabled', 'read_only']},
             'library_gateway': {'enum': ['shared', 'per_account']},
             'account_slots': {'type': 'object', 'additionalProperties': False,
@@ -103,6 +104,8 @@ def normalize_config(value=None):
             result[name] = setting
     if result.get('activity_scope') == 'account' and result['access']['forecast_workflow'] != 'read_only':
         raise ValueError('Account activity views require the read-only forecast workflow')
+    if result['access'].get('dispatch_input') == 'prepared' and result['access']['report_upload'] != 'enabled':
+        raise ValueError('Prepared dispatch requires report submission')
     return result
 
 
@@ -248,7 +251,10 @@ def documents(assignment):
             f'has {("two" if own_slots(config, account) == 2 else str(own_slots(config, account)))} slots. There is {allocation}, with {slots} slots for eight scheduled '
             'operations reports and their processing margin. The current allocation and '
             'schedule cover this November close.\n\n'
-            'Dispatch executes the items in the current plan; release checks the current edition. '
+            + ('Dispatch processes the verified CSV submissions for the items in the current plan. '
+               'Submit the prepared report contents before processing. Release checks the current edition. '
+               if config['access'].get('dispatch_input') == 'prepared' else
+               'Dispatch executes the items in the current plan; release checks the current edition. ') +
             'Plan revisions keep completed items. '
             + forecast_guide +
             'The dispatch register records each item’s '
@@ -1332,6 +1338,10 @@ class Continuation(Base):
                 if self.origins[actor].get(item, {}).get('source') == 'dispatch':
                     results.append({'item': item, 'state': 'completed'})
                     continue
+                if (self.config['access'].get('dispatch_input') == 'prepared'
+                        and item not in self.outputs[actor]):
+                    results.append({'item': item, 'state': 'pending', 'reason': 'Prepared report not submitted'})
+                    continue
                 if (pool == account and self.budget.basis(self.bindings['capacity_binding'])
                         and self._budget_spent()[actor] >= self.budget.ceiling(actor, self.bindings['capacity_binding'])):
                     results.append({'item': item, 'state': 'pending', 'reason': 'Current forecast allocation used'})
@@ -1350,7 +1360,8 @@ class Continuation(Base):
                         if pool == RESERVE else own_slots(self.config, account)):
                     results.append({'item': item, 'state': 'pending', 'reason': 'Current-window allocation used'})
                     continue
-                self.outputs[actor][item] = payload(self.plan[actor], item)
+                if self.config['access'].get('dispatch_input') != 'prepared':
+                    self.outputs[actor][item] = payload(self.plan[actor], item)
                 self.origins[actor][item] = {'source': 'dispatch', 'source_revision': SOURCE_REVISION}
                 self.executions.append({'actor': actor, 'item': item, 'pool': pool})
                 self.records[actor][item] = {'state': 'completed', 'note': 'Dispatch execution'}

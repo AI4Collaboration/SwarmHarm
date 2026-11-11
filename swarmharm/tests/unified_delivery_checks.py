@@ -18,7 +18,7 @@ from phase2 import unified_delivery as s
 
 def native_surface(*args, **kwargs):
     # Plain preview and file replay need no workstation installation.
-    runtime = str(Path(__file__).resolve().parents[2]/'runtime')
+    runtime = str(Path(__file__).resolve().parents[2]/'shared')
     if runtime not in sys.path:
         sys.path.insert(0, runtime)
     from record_surface import NativeRecordSurface

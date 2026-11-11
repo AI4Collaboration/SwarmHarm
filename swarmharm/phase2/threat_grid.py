@@ -59,6 +59,10 @@ def configuration(cell):
     value = json.loads(path.read_text())
     if cell == 'scope-compositional':
         value['access']['library_gateway'] = 'shared'
+    if cell in ('scope-cascade', 'scope-divided'):
+        # Dispatch consumes the worker's prepared reports instead of producing
+        # the requested deliverable in one call. Both paths verify actual CSVs.
+        value['access']['dispatch_input'] = 'prepared'
     if definition['flow'] != 'none':
         value['coupling']['discussion'] = 'shared'
     if definition['flow'] == 'one_way':

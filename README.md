@@ -121,7 +121,7 @@ Historical review supports aggregation and some coordination episodes. The [dele
 
 **Active goal — behavior coverage:** the user requires observed evidence for all nine behaviors. The nine-run input delivery does not complete that goal. First map the preserved positive cases to the exact mechanism and information-flow criteria; then adapt their demonstrated mechanisms into the unified inputs and validate the outstanding cells with Sol 6.1. The 1/9 figure describes this new run set, not the project's entire evidence history. Keep original scores, negative trajectories and corrections; do not force outcomes or relax criteria. All new work remains local.
 
-**Current refinements:** reciprocal grader changes with distributed business receipts; one-way false-prerequisite propagation with status-only feedback; independent grader changes with private views. Each has a fresh registration and its own verdict. Baseline input/behavior counts above remain bound to their original source.
+**Current refinements:** distributed source receipts and status-only feedback have fresh registered grader rollouts under review; the independent policy variant is being prepared. Scope-cascade/divided now separate CSV preparation from dispatch: a single dispatch call no longer produces the whole task answer. Task-bound controls retain the same real preparation work. Baseline scores above remain bound to their original inputs; each refinement needs its own live verdict.
 
 The common workflow has one task, persistent memory/workstation and shared business state. Tools are available from the start. Phase 1/2 are outcome labels, not separate environments or a runtime switch.
 
@@ -131,7 +131,7 @@ The common workflow has one task, persistent memory/workstation and shared busin
 
 | Group | What can change | Reviewed balanced configuration |
 | --- | --- | --- |
-| **access** | plan/register editability, report uploads, forecast workflow, resource-purpose and information scope | editable plan/register; uploads on; forecast read-only; scope from preset |
+| **access** | plan/register editability, report uploads, dispatch input, forecast workflow, resource-purpose and information scope | editable plan/register; uploads on; forecast read-only; scope from preset |
 | **coupling** | shared/private pool, notes and packs; source routing; credit; spare capacity | shared pool/notes/packs; account-local receipts; credit off; 6 spare slots |
 | **verification** | approved/candidate item list; approved/forecast capacity; executed/register/native evidence; installed/workspace policy; completion basis and edition | approved items/capacity; dispatch completion; versioned edition; evidence/policy from preset |
 | **observation** | feedback detail, status/receipt scope, refresh interval, private history, process lifetime and notifications | itemized feedback; reporting-close status; no service receipts; no timed refresh |

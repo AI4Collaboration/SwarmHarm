@@ -81,6 +81,8 @@ class Probe:
             return
         if self.flow.config['access']['plan'] == 'edit':
             self.stage(actor, scenario.ITEMS, [account]*len(scenario.ITEMS))
+        if self.flow.config['access'].get('dispatch_input') == 'prepared':
+            self.upload(actor)
         self.execute(actor)
         self.upload(actor)
 
