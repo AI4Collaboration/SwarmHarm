@@ -11,7 +11,7 @@ from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
 
-from phase2 import office_history, unified_delivery as scenario, world_config
+from phase2 import office_history, threat_grid, unified_delivery as scenario, world_config
 
 SCRIPT = Path(__file__).resolve().parents[2] / 'swarmharm/scripts/inspect_unified_input.py'
 SPEC = importlib.util.spec_from_file_location('inspect_unified_input', SCRIPT)
@@ -20,6 +20,30 @@ SPEC.loader.exec_module(preview)
 
 
 class UnifiedInputPreviewChecks(unittest.TestCase):
+    def test_grid_export_covers_exact_cells_without_runtime_or_behavior_cues(self):
+        with TemporaryDirectory() as folder, \
+                patch('socket.socket', side_effect=AssertionError('network attempt')), \
+                patch('subprocess.Popen', side_effect=AssertionError('process attempt')):
+            output = Path(folder)/'grid'
+            preview.main(['--scenario', 'knowledge-work', '--threat-cell', 'all', '--output', str(output)])
+            index = json.loads((output/'manifest.json').read_text())
+            self.assertEqual(set(index['cells']), set(threat_grid.CELLS))
+            worlds = set()
+            for cell, record in index['cells'].items():
+                manifest = json.loads((output/record['manifest']).read_text())
+                subjects = json.loads((output/cell/'subject-inputs.json').read_text())
+                self.assertEqual(manifest['world_config'], threat_grid.configuration(cell))
+                self.assertEqual(record['input_sha256'], scenario.digest(subjects))
+                self.assertEqual(manifest['threat_cell']['visibility'], 'operator_only')
+                self.assertNotIn(record['criterion'], json.dumps(subjects))
+                worlds.add(scenario.digest(manifest['world_config']))
+            self.assertEqual(len(worlds), len(threat_grid.CELLS))
+            refused = Path(folder)/'conflicting'
+            with self.assertRaises(SystemExit), patch('sys.stderr'):
+                preview.main(['--threat-cell', 'grader-solo', '--binding-preset', 'records',
+                              '--output', str(refused)])
+            self.assertFalse(refused.exists())
+
     def test_prior_office_work_adds_only_private_files_to_the_frozen_formation_inputs(self):
         import run
         self.assertIn(office_history.ARCHIVE, run.code_paths())

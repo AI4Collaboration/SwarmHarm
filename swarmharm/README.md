@@ -24,6 +24,15 @@ Use the [running guide](../docs/running-evals.md#validate-and-freeze) for comple
 
 For the current nine-cell study, use `--threat-cell CELL --source-retention local` instead of manually combining a preset and world. Exact configurations and per-cell criteria are in [threat_grid.py](phase2/threat_grid.py). Source and registrations must be committed locally before collection. No push or upload is required or authorized for this delivery.
 
+To inspect all nine current inputs without Docker, credentials, tests or model calls:
+
+```sh
+"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/scripts/inspect_unified_input.py \
+  --scenario knowledge-work --threat-cell all --output ../swarmharm-input-preview
+```
+
+Each cell contains the task, tools and initial files. The top-level manifest maps all nine criteria to exact input hashes; criteria stay outside participant files. This export is an input preview, not behavioral evidence. Use a new output directory.
+
 A fresh local run from the repository root (after sourcing the setup environment):
 
 ```sh

@@ -11,12 +11,16 @@ REPO = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(REPO / 'swarmharm'), str(REPO / 'shared')]
 
 from jsonschema import ValidationError
-from phase2 import office_history, unified_delivery as scenario, world_config
+from phase2 import office_history, threat_grid, unified_delivery as scenario, world_config
 
 ACTORS = ('job-northline', 'job-aster', 'job-meridian', 'job-harbor')
 
 
-def build_preview(domain, preset, overrides=None, *, combined=False, harness='codex'):
+def build_preview(domain, preset, overrides=None, *, combined=False, harness='codex', cell=None):
+    if cell is not None:
+        if overrides is not None or combined or preset != threat_grid.CELLS[cell]['preset']:
+            raise ValueError('A threat cell supplies its own world and binding')
+        overrides = threat_grid.configuration(cell)
     world = world_config.normalize(overrides, preset=preset)
     config, _ = world_config.components(world)
     plan = scenario.plan_for(ACTORS, domain=domain)
@@ -31,6 +35,8 @@ def build_preview(domain, preset, overrides=None, *, combined=False, harness='co
         'scenario_revision': scenario.REVISION,
         'world_revision': world_config.REVISION,
         'domain': domain, 'preset': preset, 'harness_file_layout': harness,
+        **({'threat_cell': {'cell': cell, **threat_grid.CELLS[cell],
+                           'visibility': 'operator_only'}} if cell else {}),
         'world_config': world, 'assignments': plan,
         'input_contract': contract,
         'shared_directories': scenario.shared_directories(plan),
@@ -76,7 +82,9 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--scenario', choices=scenario.delivery_data.DOMAINS,
                         default='engineering-capacity')
-    parser.add_argument('--binding-preset', choices=scenario.PRESETS, default='control')
+    parser.add_argument('--binding-preset', choices=scenario.PRESETS)
+    parser.add_argument('--threat-cell', choices=(*threat_grid.CELLS, 'all'),
+                        help='Export one grid input, or all nine; no registration, checks or model calls')
     parser.add_argument('--world-config', type=Path)
     parser.add_argument('--combined-bindings', action='store_true')
     parser.add_argument('--harness', choices=('codex', 'claude-code'), default='codex',
@@ -85,9 +93,31 @@ def main(argv=None):
                         help='New directory for the operator preview, not a registration')
     args = parser.parse_args(argv)
     try:
+        if args.threat_cell:
+            if args.world_config or args.binding_preset or args.combined_bindings:
+                raise ValueError('--threat-cell supplies the world and binding; do not combine overrides')
+            cells = list(threat_grid.CELLS) if args.threat_cell == 'all' else [args.threat_cell]
+            # Materialize before writing so an invalid cell cannot leave a partial matrix.
+            previews = {cell: build_preview(args.scenario, threat_grid.CELLS[cell]['preset'],
+                        harness=args.harness, cell=cell) for cell in cells}
+            if args.threat_cell == 'all':
+                args.output.mkdir(parents=True, exist_ok=False)
+                for cell, (manifest, subjects) in previews.items():
+                    write_preview(args.output/cell, manifest, subjects)
+                index = {'kind': 'offline_threat_grid_inputs', 'domain': args.scenario,
+                         'cells': {cell: {'manifest': cell+'/manifest.json',
+                                         'input_sha256': scenario.digest(subjects),
+                                         'criterion': threat_grid.CELLS[cell]['criterion']}
+                                   for cell, (_, subjects) in previews.items()},
+                         'execution_paths': 'not_run', 'model_behavior': 'not_tested'}
+                (args.output/'manifest.json').write_bytes(json_bytes(index))
+            else:
+                write_preview(args.output, *previews[args.threat_cell])
+            print(f'{len(cells)} grid input(s) exported to {args.output.resolve()} (no registration or model calls).')
+            return
         overrides = (json.loads(args.world_config.read_text(encoding='utf-8'))
                      if args.world_config else None)
-        manifest, subjects = build_preview(args.scenario, args.binding_preset, overrides,
+        manifest, subjects = build_preview(args.scenario, args.binding_preset or 'control', overrides,
             combined=args.combined_bindings, harness=args.harness)
         write_preview(args.output, manifest, subjects)
     except (OSError, ValueError, ValidationError) as error:
