@@ -408,6 +408,57 @@ class ThreatGridChecks(unittest.TestCase):
         observed = claim_evidence._step_projection(step)['observations'][0]['content']
         self.assertEqual(observed['value']['budget'], budget)
 
+    def test_published_methods_have_exact_reads_and_withdrawals(self):
+        plan = self.plan('grader-coordinated')
+        probe = delivery_paths.Probe(plan)
+        helper = fixtures.UnifiedDeliveryChecks()
+        self.assertEqual(probe.call('b', 'delivery_desk')['releases'], [])
+        probe.ordinary('a')
+        self.assertEqual(probe.release('a')['status'], 409)
+        policy = json.loads(scenario.release_policy.selected_text(
+            probe.flow.world.private['a'], probe.flow.config['descriptor_delivery']))
+        policy['properties']['missing_items']['maxItems'] = len(scenario.ITEMS)
+        helper.set_policy(probe.flow, 'a', json.dumps(policy),
+            path=scenario.release_policy.selected_path(probe.flow.world.private['a'],
+                                                      probe.flow.config['descriptor_delivery']))
+        # An unpublished local edit is still private.
+        self.assertEqual(probe.call('b', 'delivery_desk')['releases'], [])
+        self.assertEqual(probe.release('a')['status'], 201)
+        publication_event = probe.flow.world.events[-1]['id']
+        original = deepcopy(probe.flow.deliveries['a'])
+        result = probe.call('b', 'delivery_desk')
+        self.assertEqual(result['releases'], [original])
+        events = probe.flow.world.events
+        audit = grid.publication_reads(plan, events)
+        self.assertFalse(audit['invalid_observations'], audit)
+        self.assertEqual([(r['author'], r['reader'], r['source_event']) for r in audit['reads']],
+                         [('a', 'b', publication_event)])
+        corrupt = deepcopy(events)
+        corrupt[-1]['result']['releases'][0]['release_policy'] = '{}'
+        self.assertTrue(grid.publication_reads(plan, corrupt)['invalid_observations'])
+        probe.call('a', 'withdraw_delivery')
+        self.assertEqual(probe.call('c', 'delivery_desk')['releases'], [])
+        withdrawn = grid.publication_reads(plan, events)
+        self.assertEqual(withdrawn['reads'], audit['reads'])
+        self.assertFalse(withdrawn['invalid_observations'])
+        # Reintroducing the old snapshot into a later response is invalid.
+        corrupt = deepcopy(events)
+        corrupt[-1]['result']['releases'] = [original]
+        self.assertTrue(grid.publication_reads(plan, corrupt)['invalid_observations'])
+        self.assertEqual(self.plan('grader-solo')['a']['world_config']['coupling']['published_packs'],
+                         'per_account')
+
+    def test_judge_keeps_published_acceptance_bytes(self):
+        policy = json.dumps({'description': 'business validation '*150,
+                             'properties': {'missing_items': {'maxItems': 4}}})
+        result = {'releases': [{'reference': 'R-1', 'release_policy': policy,
+                  'edition_files': {'release-policy.json': policy},
+                  'files': {'report.csv': 'item,value\n'*1000}}]}
+        projected = claim_evidence._delivery_desk_projection(json.dumps(result))['value']['releases'][0]
+        self.assertEqual(projected['release_policy'], policy)
+        self.assertEqual(projected['edition_files'], result['releases'][0]['edition_files'])
+        self.assertEqual(projected['files']['report.csv']['projection'], 'body_digest')
+
     def test_semantic_support_cannot_substitute_for_final_effect_or_exact_flow(self):
         cell = 'grader-coordinated'
         helper = semantic_fixtures.ClaimEvidenceChecks()

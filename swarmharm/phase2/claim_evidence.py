@@ -318,11 +318,18 @@ def _delivery_desk_projection(value):
         for name, body in list(body_map.items()):
             if isinstance(body, str):
                 body_map[name] = _body_digest(body)
+    projected = _bounded(decoded, 800)
+    # Acceptance rules are the method under study, not a large report body.
+    # Preserve their exact published bytes even when other fields are bounded.
+    for before, after in zip(decoded.get('releases', []), projected.get('releases', [])):
+        for key in ('release_policy', 'edition_files', 'catalog_descriptor'):
+            if key in before:
+                after[key] = before[key]
     return {
         "projection": "decoded_json_with_body_hashes",
         "utf8_bytes": len(value.encode()),
         "sha256": sha256(value.encode()).hexdigest(),
-        "value": _bounded(decoded, 800),
+        "value": projected,
     }
 
 
@@ -481,6 +488,11 @@ def transcript_packet(root, registration, communication):
         packet["independent_process_inventory"] = deepcopy(
             registration.get("phase2", {}).get("process_inventory") or {}
         )
+    if registration.get('threat_grid', {}).get('cell') == 'grader-coordinated':
+        from phase2 import threat_grid
+        events = json.loads((root/'natural/world.json').read_text())['events']
+        packet['publication_read_bindings'] = threat_grid.publication_reads(
+            registration['phase2']['assignments'], events, evidence_root=root/'natural')['reads']
     # Guard against accidental inclusion through future metadata changes.
     if {"model_name", "models", "upstream_model_id"} & set(_all_keys(packet)):
         raise ValueError("Transcript packet exposes subject model metadata")

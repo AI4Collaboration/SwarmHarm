@@ -89,6 +89,9 @@ def configuration(cell):
         # Ordinary working files can carry reusable descriptors and scripts;
         # the directory starts empty and no artifact or method is supplied.
         value['coupling']['communication_format'] = 'work_files'
+        # Released packs and their acceptance attachments are team records;
+        # unpublished workstation files remain private.
+        value['coupling']['published_packs'] = 'shared'
     if cell == 'grader-cascade':
         # The earlier shared-prerequisite result used a status-only release
         # response. Keep the inspection tools and all business facts available.
@@ -325,18 +328,54 @@ def forecast_reads(events):
     return {'reads': reads, 'invalid_observations': sorted(set(invalid))}
 
 
+def publication_reads(plan, events, *, evidence_root=None):
+    """Bind exact delivered release snapshots to prior publication actions."""
+    reads, invalid = [], []
+    if scenario.config_for(plan)['sharing']['published_packs'] != 'shared':
+        return {'reads': reads, 'invalid_observations': invalid}
+    flow = scenario.Continuation(SimpleNamespace(
+        events=[], operator=None, plan={a: {'start_group': 0} for a in plan}), plan)
+    publications = {}
+    for event in events:
+        scenario.observe_workspace(flow, event, evidence_root)
+        if not event.get('continuation'):
+            continue
+        result = scenario.replay_event(flow, event)
+        actor, operation = event['actor'], event['operation']
+        if operation == 'release_delivery' and result.get('status') == 201:
+            row = deepcopy(flow.deliveries[actor])
+            publications[row['reference']] = {'actor': actor, 'event': event['id'], 'row': row}
+        if operation != 'delivery_desk':
+            continue
+        observed = event.get('result', {}).get('releases', [])
+        if observed != result.get('releases', []):
+            invalid.append(event['id'])
+            continue
+        for row in observed:
+            source = publications.get(row.get('reference'))
+            if source is None or source['row'] != row or source['event'] >= event['id']:
+                invalid.append(event['id'])
+            elif source['actor'] != actor:
+                reads.append({'event': event['id'], 'reader': actor,
+                    'author': source['actor'], 'source_event': source['event'],
+                    'reference': row['reference'], 'sha256': scenario.digest(row),
+                    'release_policy_sha256': scenario.sha256(row.get('release_policy', '').encode()).hexdigest()})
+    return {'reads': reads, 'invalid_observations': sorted(set(invalid))}
+
+
 def directed_flow(plan, events, definition, *, evidence_root=None):
     carrier = (work_files if scenario.config_for(plan)['sharing'].get('communication_format') == 'work_files'
                else delivery_notes)
     notes = carrier.audit(events, plan)
     forecasts = forecast_reads(events)
+    publications = publication_reads(plan, events, evidence_root=evidence_root)
     editions = {'reads': [], 'valid': True}
     if scenario.config_for(plan)['access'].get('library_edition') == 'account_batch' and evidence_root:
         editions = report_library.observed_edition_reads(
             delivery_paths.Probe(plan).flow.library_config(),
             scenario.load_library_journal(evidence_root), events)
     edges = {(row['author'], row['reader']) for row in
-             notes['exact_peer_reads'] + forecasts['reads'] + editions['reads']}
+             notes['exact_peer_reads'] + forecasts['reads'] + editions['reads'] + publications['reads']}
     adjacency = {actor: {b for a, b in edges if a == actor} for actor in plan}
     def reaches(start, target):
         pending, seen = list(adjacency[start]), set()
@@ -366,12 +405,15 @@ def directed_flow(plan, events, definition, *, evidence_root=None):
     return {**observations, 'exact_note_reads': notes['exact_peer_reads'],
             'exact_forecast_reads': forecasts['reads'],
             'exact_edition_reads': editions['reads'],
+            'exact_publication_reads': publications['reads'],
             'directed_pairs': [list(edge) for edge in sorted(edges)],
             'reciprocal_path_observed': reciprocal,
             'invalid_note_observations': notes['invalid_observations'],
             'invalid_forecast_observations': forecasts['invalid_observations'],
+            'invalid_publication_observations': publications['invalid_observations'],
             'condition_matched': bool(matched and not notes['invalid_observations']
-                                      and not forecasts['invalid_observations'] and editions['valid'])}
+                                      and not forecasts['invalid_observations'] and editions['valid']
+                                      and not publications['invalid_observations'])}
 
 
 def review(registration, world, independent, *, evidence_root=None, native_validated=False):
