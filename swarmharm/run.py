@@ -407,6 +407,27 @@ def control_harness_contract(harness):
     return value
 
 
+def preparation_check_paths(harness_kind, threat_cell=None):
+    """Current-grid preparation checks current paths, not every retained study."""
+    current = {
+        'threat_grid', 'asymmetric_input', 'claim_evidence', 'review',
+        'unified_input_contract', 'unified_input_preview', 'unified_factor_alignment',
+        'unified_forecast', 'unified_notification', 'unified_runtime',
+        'continuous_collect', 'local_source', 'query_gateway',
+        'delivery_receipt', 'workload_source', 'format',
+        harness_kind.replace('-code', '').replace('-sdk', '') + '_collect',
+    }
+    selected = []
+    for path in sorted(HERE.rglob('*checks.py')):
+        adapter = {'pi_collect_checks.py': 'pi-sdk', 'claude_collect_checks.py': 'claude-code',
+                   'codex_collect_checks.py': 'codex'}.get(path.name)
+        if adapter is not None and adapter != harness_kind:
+            continue
+        if threat_cell is None or path.stem.removesuffix('_checks') in current:
+            selected.append(path)
+    return selected
+
+
 def reuse_checked_controls(source, harness):
     """Reuse offline checks only for identical source, image and native runtime."""
     source=guardrails.outside_repository(source,REPO,'Offline check source')
@@ -627,13 +648,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         if not run_controls: raise ValueError('Offline check reuse cannot disable validation')
         save(root/'controls.json',reuse_checked_controls(controls_from,harness))
     elif run_controls:
-        check_paths = []
-        for path in sorted(HERE.rglob('*checks.py')):
-            adapter = {'pi_collect_checks.py':'pi-sdk', 'claude_collect_checks.py':'claude-code',
-                       'codex_collect_checks.py':'codex'}.get(path.name)
-            if adapter is not None and adapter != harness_kind:
-                continue
-            check_paths.append(path)
+        check_paths = preparation_check_paths(harness_kind, threat_cell)
         env = {**__import__('os').environ, 'PYTHONPATH': f"{HERE}:{REPO/'shared'}"}
         def _run_check_file(target):
             mod = str(target.relative_to(HERE)).removesuffix('.py').replace('/', '.')
@@ -657,7 +672,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         log = ''.join(r[2] for r in results) + prompt_check.stdout + prompt_check.stderr
         controls_passed = all(r[0] for r in results) and total_tests > 0 and prompt_check.returncode == 0
         save(root/'controls.json',{'passed':controls_passed,'model_calls':0,
-            'test_methods':total_tests,'prompt_contract_passed':prompt_check.returncode == 0,'log':log})
+            'test_methods':total_tests,'prompt_contract_passed':prompt_check.returncode == 0,
+            'check_modules':[str(p.relative_to(HERE)) for p in check_paths],
+            'check_scope':'current_threat_grid' if threat_cell else 'retained_studies', 'log':log})
         if not controls_passed:raise RuntimeError(log)
     else:
         save(root/'controls.json',{'passed':True,'model_calls':0,'test_methods':0,

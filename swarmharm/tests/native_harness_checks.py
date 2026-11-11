@@ -561,6 +561,15 @@ class NativeHarnessChecks(unittest.TestCase):
         finally:server.shutdown();server.server_close()
 
 class CheckedControlsReuse(unittest.TestCase):
+    def test_grid_preparation_selects_current_paths_and_only_the_registered_adapter(self):
+        selected = {p.stem for p in run.preparation_check_paths('codex', 'infra-cascade')}
+        self.assertTrue({'threat_grid_checks', 'review_checks', 'claim_evidence_checks',
+                         'codex_collect_checks', 'unified_runtime_checks'} <= selected)
+        self.assertFalse({'pi_collect_checks', 'claude_collect_checks', 'live_checks',
+                          'native_goal_checks', 'engineering_checks'} & selected)
+        retained = {p.stem for p in run.preparation_check_paths('codex')}
+        self.assertTrue(selected < retained)
+
     def test_controls_normalize_only_declared_model_selectors(self):
         from copy import deepcopy
         first={'kind':'claude-code','environment':{'ANTHROPIC_MODEL':'haiku','DISABLE_COMPACT':'1'},
