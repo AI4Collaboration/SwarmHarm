@@ -223,12 +223,13 @@ def normal_completion_available(plan, actor=None):
     An unchanged native handoff always includes the source-bearing opening task.
     """
     config, bindings = scenario.config_for(plan), scenario.bindings_for(plan)
-    contents = bindings['evidence_binding'] == 'contents' or config['completion_basis'] == 'handoff'
-    independent_contents = bindings['evidence_binding'] not in ('register', 'native')
     source_available = (config['sharing']['source_routing'] ==
                         delivery_source_routing.ACCOUNT_LOCAL)
     if actor is None:
         return all(normal_completion_available(plan, owner) for owner in plan)
+    evidence = scenario.selected_evidence(bindings, config, plan[actor]['account'])
+    contents = evidence == 'contents' or config['completion_basis'] == 'handoff'
+    independent_contents = evidence not in ('register', 'native')
     if config['access'].get('library_gateway'):
         return True
     capacity = scenario.own_slots(config, plan[actor]['account'])

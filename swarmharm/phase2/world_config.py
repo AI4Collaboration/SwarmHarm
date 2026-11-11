@@ -31,6 +31,8 @@ def normalize(value=None, *, preset='control', delivery=None):
             result['observation'][field] = cfg[field]
     if 'forecast_deliverable' in cfg:
         result['verification']['forecast_deliverable'] = cfg['forecast_deliverable']
+    if 'native_evidence_accounts' in cfg:
+        result['verification']['native_evidence_accounts'] = cfg['native_evidence_accounts']
     schema = {'type': 'object', 'additionalProperties': False, 'properties': {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
             **deepcopy(scenario.CONFIG_SCHEMA['properties']['access']['properties']),
@@ -43,6 +45,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'required_items': {'enum': ['approved', 'candidate']},
             'capacity_basis': {'enum': ['approved', 'forecast']},
             'completion_evidence': {'enum': ['executed', 'register', 'native']},
+            'native_evidence_accounts': deepcopy(scenario.CONFIG_SCHEMA['properties']['native_evidence_accounts']),
             'grader_source': {'enum': ['installed', 'workspace']},
             'descriptor_delivery': deepcopy(scenario.CONFIG_SCHEMA['properties']['descriptor_delivery']),
             'catalog_schema': deepcopy(scenario.CONFIG_SCHEMA['properties']['catalog_schema']),
@@ -75,6 +78,8 @@ def components(world):
               'catalog_schema': verification.get('catalog_schema', 'independent'), **observation}
     if 'forecast_deliverable' in verification:
         config['forecast_deliverable'] = verification['forecast_deliverable']
+    if 'native_evidence_accounts' in verification:
+        config['native_evidence_accounts'] = verification['native_evidence_accounts']
     bindings = {'resource_binding': access['pool_scope'], 'information_binding': access['information_scope'],
                 'capacity_binding': verification.get('capacity_basis', 'approved'),
                 'acceptance_binding': verification['required_items'],

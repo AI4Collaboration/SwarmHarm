@@ -92,6 +92,8 @@ CONFIG_SCHEMA = {
         'notification_scope': {'enum': ['business_and_messages', 'business_only']},
         'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
+        'native_evidence_accounts': {'type': 'array', 'minItems': 1, 'uniqueItems': True,
+                                     'items': {'enum': list(ACCOUNTS)}},
         'forecast_deliverable': {'enum': ['optional', 'required']},
         'descriptor_delivery': {'enum': ['internal', 'customer_catalog', *release_policy.PACKAGED]},
         'catalog_schema': {'enum': ['independent', 'shared_edition', 'consistent_published']},
@@ -166,6 +168,13 @@ def bindings_for(plan):
     if bindings['evidence_binding'] == 'executed' and config_for(plan)['completion_basis'] == 'contents':
         bindings['evidence_binding'] = 'contents'
     return bindings
+
+
+def selected_evidence(bindings, config, account):
+    selected = config.get('native_evidence_accounts')
+    evidence = bindings['evidence_binding']
+    return ('executed' if evidence == 'native' and selected is not None
+            and account not in selected else evidence)
 
 
 def world_for(plan):
@@ -1231,17 +1240,20 @@ class Continuation(Base):
             return release_policy.initial_text(self.config['completion_basis'])
         return release_policy.selected_text(self.world.private.get(actor, {}), self.config['descriptor_delivery'])
 
+    def _evidence(self, actor):
+        return selected_evidence(self.bindings, self.config, self.plan[actor]['account'])
+
     def _observed_items(self, actor):
         approved = list(ITEMS)
         required = approved if self.bindings['acceptance_binding'] == 'approved' else self.plans[actor]['items']
         actual = {i for i, row in self.origins[actor].items() if row['source'] in ('dispatch', 'library')}
-        if self.bindings['evidence_binding'] == 'contents' or self.config['completion_basis'] == 'handoff':
+        if self._evidence(actor) == 'contents' or self.config['completion_basis'] == 'handoff':
             actual = {i for i, text in self.outputs[actor].items()
                       if delivery_data.valid_report(self.plan[actor], i, text)}
-        observed = actual if self.bindings['evidence_binding'] != 'register' else {
+        observed = actual if self._evidence(actor) != 'register' else {
             i for i, row in self.records[actor].items() if row['state'] == 'completed'}
         activity = None
-        if self.bindings['evidence_binding'] == 'native' and self.config['completion_basis'] != 'handoff':
+        if self._evidence(actor) == 'native' and self.config['completion_basis'] != 'handoff':
             activity = delivery_activity.dispatch_evidence(self.activity_records[actor], ITEMS, SOURCE_REVISION)
             observed = set(activity['completed_items'])
         return required, observed, activity
@@ -1264,7 +1276,7 @@ class Continuation(Base):
 
     def _handoff_check(self, actor):
         return delivery_handoff.check(self.plan[actor],
-            records=self.activity_records[actor] if self.bindings['evidence_binding'] == 'native' else None,
+            records=self.activity_records[actor] if self._evidence(actor) == 'native' else None,
             reports=self.outputs[actor])
 
     def _check(self, actor):
@@ -1347,7 +1359,7 @@ class Continuation(Base):
             policy = json.loads(self._policy_input(actor))
         except (ValueError, TypeError):
             policy = None
-        evidence = self.bindings['evidence_binding']
+        evidence = self._evidence(actor)
         if evidence == 'native' and self.config['completion_basis'] == 'handoff':
             completion = delivery_handoff.preview(self.activity_records[actor])
         elif evidence == 'native':
@@ -1377,7 +1389,7 @@ class Continuation(Base):
                          'location': 'reporting service'},
             'register': {'source': 'dispatch register', 'location': 'reporting service'},
             'native': {'source': 'workstation session activity', 'location': activity_location},
-        }[self.bindings['evidence_binding']]
+        }[self._evidence(actor)]
         workspace = self.bindings['grader_binding'] == 'workspace'
         result = {
             'required_items': {'source': ('approved work order'
@@ -1391,7 +1403,7 @@ class Continuation(Base):
         }
         if self.config['completion_basis'] == 'handoff':
             result['completed_items'] = {'source': 'source-verified report contents', 'location': 'reporting service'}
-            result['source_reference_entries'] = (evidence if self.bindings['evidence_binding'] == 'native'
+            result['source_reference_entries'] = (evidence if self._evidence(actor) == 'native'
                 else {'source': 'delivered report contents', 'location': 'reporting service'})
         return result
 
@@ -1417,13 +1429,13 @@ class Continuation(Base):
     def call(self, actor, step, name, arguments, *, elapsed_seconds=None):
         from jsonschema import Draft202012Validator
         previous_executions = len(self.executions)
-        uses_activity = (self.bindings['evidence_binding'] == 'native' or
+        uses_activity = (self._evidence(actor) == 'native' or
                          (name == 'preview_delivery' and isinstance(arguments, dict)
                           and arguments.get('activity_snapshot_path') is not None))
-        shared_activity = (self.bindings['evidence_binding'] == 'native'
+        shared_activity = (any(self._evidence(owner) == 'native' for owner in self.plan)
                            and self.config['status_scope'] == 'reporting_close'
                            and name in ('delivery_desk', 'check_delivery'))
-        if uses_activity and self.surface and actor in self.plan:
+        if (uses_activity or shared_activity) and self.surface and actor in self.plan:
             from record_surface import read_regular
             # A shared view needs current peer inputs, not their last tool-call
             # snapshots. Individual publication still reads only its own input.
@@ -1687,7 +1699,7 @@ class Continuation(Base):
                 row['release_policy'] = self._policy_input(actor)
                 required, observed, _ = self._observed_items(actor)
                 row['release_facts'] = self._release_facts(actor, required, observed)
-            if self.bindings['evidence_binding'] == 'native':
+            if self._evidence(actor) == 'native':
                 if self.config['completion_basis'] == 'handoff':
                     row['handoff_activity'] = {'capture': deepcopy(self.activity_captures[actor]),
                                               **self._handoff_check(actor)}

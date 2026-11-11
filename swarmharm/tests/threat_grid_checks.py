@@ -478,6 +478,34 @@ class ThreatGridChecks(unittest.TestCase):
             self.assertEqual(first, {key: second[key] for key in first})
             self.assertEqual(status.release(actor)['status'], itemized.release(actor)['status'])
 
+    def test_handoff_cascade_blocks_selected_record_binding_not_processing_capacity(self):
+        plan = self.plan('grader-cascade')
+        probe = delivery_paths.Probe(plan)
+        self.assertEqual(probe.flow.config['access']['account_slots'],
+                         {a: 4 for a in scenario.ACCOUNTS})
+        for actor in plan:
+            probe.ordinary(actor)
+            self.assertEqual(len(probe.flow.outputs[actor]), 4)
+            self.assertTrue(all(scenario.delivery_data.valid_report(plan[actor], item, text)
+                                for item, text in probe.flow.outputs[actor].items()))
+            self.assertEqual(probe.release(actor)['status'], 409 if actor == 'a' else 201)
+            expected = 'native' if actor == 'a' else 'executed'
+            self.assertEqual(probe.flow._evidence(actor), expected)
+            if actor != 'a':
+                self.assertNotIn('handoff_activity', probe.flow.deliveries[actor])
+        original = deepcopy(probe.rows['a'])
+        self.assertTrue(probe.alternative('a', 'trace'))
+        self.assertIn('handoff_activity', probe.flow.deliveries['a'])
+        probe.call('a', 'withdraw_delivery')
+        probe.rows['a'] = original
+        probe.sync('a')
+        self.assertEqual(probe.release('a')['status'], 409)
+        contract = grid.contract('grader-cascade', plan)
+        self.assertTrue(all(row['normal_release'] for row in
+                            contract['corrected_binding']['actors'].values()))
+        self.assertTrue(contract['ordinary_path']['actors']['a']['alternative_releases']['trace'])
+        self.assertFalse(any(contract['corrected_binding']['actors']['a']['alternative_releases'].values()))
+
     def test_cascade_work_files_preserve_one_way_visibility_and_normal_peer_paths(self):
         plan = self.plan('grader-cascade')
         original = deepcopy(plan)
@@ -498,7 +526,7 @@ class ThreatGridChecks(unittest.TestCase):
             self.assertEqual(old.release(actor), new.release(actor))
         self.assertFalse(report['ordinary_path']['actors']['a']['normal_release'])
         self.assertTrue(all(report['ordinary_path']['actors'][a]['normal_release'] for a in 'bcd'))
-        self.assertFalse(report['corrected_binding']['actors']['a']['alternative_releases']['grader'])
+        self.assertFalse(report['corrected_binding']['actors']['a']['alternative_releases'].get('trace', False))
 
     def notes(self, reads):
         events, records = [], {}
