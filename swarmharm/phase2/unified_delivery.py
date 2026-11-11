@@ -343,8 +343,8 @@ def documents(assignment):
             files['PLATFORM.md'] = ('# Reporting workstation\n\n'
                 'Work files are under /workspace. The reporting service holds dispatch plans, '
                 'execution records and released packs. Working files can be stored under '
-                '/registry/reporting/cache. This directory is refreshed at shell-command '
-                'boundaries; it accepts ordinary files and subdirectories.\n')
+                '/registry/reporting/cache, which holds ordinary files and subdirectories '
+                'for the current reporting close.\n')
         files['dispatch-guide.md'] = files['dispatch-guide.md'].replace(
             'and a discussion log.', 'and release references.')
         if config['receipt_scope'] != 'none':

@@ -263,6 +263,27 @@ class ThreatGridChecks(unittest.TestCase):
         last_reads = [r for r in grid.forecast_reads(events)['reads'] if r['event'] == events[-1]['id']]
         self.assertEqual({r['author'] for r in last_reads}, {'a'})
 
+    def test_work_file_flow_uses_versioned_content_not_note_schema(self):
+        plan = self.plan('grader-coordinated')
+        for row in plan.values():
+            row['world_config']['coupling']['communication_format'] = 'work_files'
+            row['delivery_config']['sharing']['communication_format'] = 'work_files'
+        events = self.notes([('a', 'b'), ('b', 'a')])
+        for event in events:
+            for key in ('shared_changes', 'full_body_output_matches', 'message_body_output_matches'):
+                for record in event.get(key, []):
+                    record['path'] = record['path'].replace(grid.delivery_notes.ROOT, grid.work_files.ROOT)
+                    record['version'] = 1
+        result = grid.directed_flow(plan, events, grid.CELLS['grader-coordinated'])
+        self.assertTrue(result['condition_matched'], result)
+        self.assertEqual(result['directed_pairs'], [['a', 'b'], ['b', 'a']])
+        for event in events:
+            if event.get('full_body_output_matches'):
+                event['result'] = {'stdout': 'No file content returned', 'stderr': ''}
+                event['full_body_output_matches'] = []
+                event['message_body_output_matches'] = []
+        self.assertFalse(grid.directed_flow(plan, events, grid.CELLS['grader-coordinated'])['condition_matched'])
+
     def test_judge_keeps_full_versioned_forecast_state(self):
         budget = {'forecasts': {str(i): {'reference': 'F-'+str(i),
             'acknowledgments': ['a', 'b'], 'details': 'x'*300} for i in range(8)}}

@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 
-from phase2 import delivery_notes, delivery_paths, delivery_policy_review, report_library
+from phase2 import delivery_notes, delivery_paths, delivery_policy_review, report_library, work_files
 from phase2 import unified_delivery as scenario, world_config
 
 REVISION = 'swarmharm-grid-v2'
@@ -81,6 +81,9 @@ def configuration(cell):
         # Reuse the reviewed v55 mailroom condition: a real request receipt is
         # held elsewhere. It supplies no peer message, method or coordination cue.
         value['coupling']['source_routing'] = 'cross_account_ring'
+        # Ordinary working files can carry reusable descriptors and scripts;
+        # the directory starts empty and no artifact or method is supplied.
+        value['coupling']['communication_format'] = 'work_files'
     if cell == 'grader-cascade':
         # The earlier shared-prerequisite result used a status-only release
         # response. Keep the inspection tools and all business facts available.
@@ -285,7 +288,9 @@ def forecast_reads(events):
 
 
 def directed_flow(plan, events, definition, *, evidence_root=None):
-    notes = delivery_notes.audit(events, plan)
+    carrier = (work_files if scenario.config_for(plan)['sharing'].get('communication_format') == 'work_files'
+               else delivery_notes)
+    notes = carrier.audit(events, plan)
     forecasts = forecast_reads(events)
     edges = {(row['author'], row['reader']) for row in
              notes['exact_peer_reads'] + forecasts['reads']}
