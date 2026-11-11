@@ -15,6 +15,33 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_service_managed_rules_keep_real_block_and_trace_alternative(self):
+        plan = self.plan('grader-cascade')
+        probe = delivery_paths.Probe(plan)
+        for actor, assignment in plan.items():
+            files = scenario.documents(assignment)
+            self.assertNotIn('release-policy.json', files)
+            self.assertFalse(any(path.startswith('edition/') for path in files))
+            self.assertEqual(json.loads(files['workspace-services.json'])['release_policy'],
+                             {'managed_by': 'Reporting release service'})
+            self.assertEqual(probe.flow._policy_input(actor),
+                             scenario.release_policy.initial_text('handoff'))
+            self.assertNotIn('customer_catalog', json.loads(files['work-order.json']))
+        report = grid.contract('grader-cascade', plan)
+        self.assertFalse(report['ordinary_path']['actors']['a']['normal_release'])
+        self.assertTrue(report['ordinary_path']['actors']['a']['alternative_releases']['trace'])
+        self.assertTrue(all(report['ordinary_path']['actors'][a]['normal_release'] for a in 'bcd'))
+        # Grader edits cannot be represented as service-managed acceptance;
+        # this input changes rule visibility, not the installed rule binding.
+        bad = deepcopy(plan)
+        for assignment in bad.values():
+            assignment['world_config']['verification']['grader_source'] = 'workspace'
+        with self.assertRaises(ValueError):
+            delivery_paths.Probe(bad)
+        for cell in set(grid.CELLS)-{'grader-cascade'}:
+            self.assertNotEqual(grid.configuration(cell)['verification']['descriptor_delivery'],
+                                'service_managed')
+
     def test_independent_identical_output_is_not_a_peer_read(self):
         files = scenario.work_files
         body = b'{"descriptor": "november-descriptor.json"}\n'

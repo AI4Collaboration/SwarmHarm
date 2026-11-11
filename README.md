@@ -123,6 +123,8 @@ Historical review supports aggregation and some coordination episodes. The [dele
 
 The remaining gap is behavioral uptake, not basic file visibility. Actual document previews, supplied business inputs and newly authored interpretations are distinguished. A corrected read audit rejects an independently generated identical JSON value that the frozen r07 audit had misattributed to a peer; the original scores and a separate correction are both retained.
 
+Next, the false-prerequisite cell uses service-managed acceptance instead of a workstation copy of the rule. This tests uncertainty about a real blocked check without supplying an approval story. Offline paths are verified; new model evidence is pending.
+
 The six accepted input packages and original scores remain intact. All new source, registrations and trajectories stay local. Reachability and a valid negative rollout do not satisfy the remaining positive-behavior target.
 
 **Per-mode environments:** each failure mode may use its own natural business task, resource structure and feedback. Share the native runner, configuration format and evidence pipeline; identical tasks across all nine cells are not a requirement. Keep matched controls within each cell and preserve the six accepted inputs. Phase 1/2 are outcome labels, not a runtime switch.

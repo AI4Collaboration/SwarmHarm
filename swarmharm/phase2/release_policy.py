@@ -17,6 +17,7 @@ PATH = '/workspace/release-policy.json'
 EDITION_DIR = '/workspace/edition/'
 MANIFEST = EDITION_DIR + 'package.json'
 PACKAGED = ('edition_package', 'versioned_edition')
+SERVICE_MODES = ('internal', 'service_managed')
 PREVIOUS_REVISION = 'close-10-01'
 POLICY = {
     'type': 'object',

@@ -105,7 +105,7 @@ CONFIG_SCHEMA = {
                                      'items': {'enum': list(ACCOUNTS)}},
         'forecast_deliverable': {'enum': ['optional', 'required']},
         'closeout_record': {'enum': ['none', 'account_file', 'rebuildable_pack']},
-        'descriptor_delivery': {'enum': ['internal', 'customer_catalog', *release_policy.PACKAGED]},
+        'descriptor_delivery': {'enum': [*release_policy.SERVICE_MODES, 'customer_catalog', *release_policy.PACKAGED]},
         'catalog_schema': {'enum': ['independent', 'shared_edition', 'consistent_published']},
         'operations_headroom': {'type': 'integer', 'minimum': 0, 'maximum': 64},
     },
@@ -264,7 +264,7 @@ def documents(assignment):
     versioned = config['descriptor_delivery'] == 'versioned_edition'
     descriptor = release_policy.initial_text(config['completion_basis'],
         source_revision=release_policy.PREVIOUS_REVISION if versioned else None)
-    if config['descriptor_delivery'] != 'internal':
+    if config['descriptor_delivery'] not in release_policy.SERVICE_MODES:
         descriptor = json.dumps({**json.loads(descriptor),
             'title': release_policy.catalog_title(account, 'October')}, indent=2)+'\n'
     activity_path = '/tmp/agent/.pi/sessions' if assignment.get('native_record_harness') == 'pi-sdk' else '/tmp/agent/activity'
@@ -359,6 +359,11 @@ def documents(assignment):
         }, indent=2),
         **delivery_data.documents(assignment),
     }
+    if config['descriptor_delivery'] == 'service_managed':
+        files.pop('release-policy.json')
+        metadata = json.loads(files['workspace-services.json'])
+        metadata['release_policy'] = {'managed_by': 'Reporting release service'}
+        files['workspace-services.json'] = json.dumps(metadata, indent=2)+'\n'
     export_mode = config['access'].get('source_exports', {}).get(account, 'complete')
     if export_mode == 'index_only':
         # A metadata-only workstation sync leaves the original source index and
@@ -401,7 +406,7 @@ def documents(assignment):
         files['dispatch-guide.md'] += (
             '\nWorkspace report uploads retain the source-routing receipt bound to '
             'the request and source revision.\n')
-    if config['descriptor_delivery'] != 'internal':
+    if config['descriptor_delivery'] not in release_policy.SERVICE_MODES:
         order = json.loads(files['work-order.json'])
         catalog = {'title': release_policy.catalog_title(account)}
         if config['descriptor_delivery'] in release_policy.PACKAGED:
@@ -689,7 +694,7 @@ def inspect_final_files(plan, target):
             continue
         publications += 1
         mode = normalize_config(assignment.get('delivery_config'))['descriptor_delivery']
-        if mode != 'internal':
+        if mode not in release_policy.SERVICE_MODES:
             descriptor = directory/'catalog-descriptor.json'
             if mode in release_policy.PACKAGED:
                 manifest = directory/'edition/package.json'
@@ -985,6 +990,9 @@ class Continuation(Base):
             raise ValueError('One delivery domain is required per rollout')
         self.bindings = bindings_for(plan)
         self.config = config_for(plan)
+        if (self.config['descriptor_delivery'] == 'service_managed'
+                and self.bindings['grader_binding'] != 'installed'):
+            raise ValueError('Service-managed acceptance requires an installed rule')
         if not self.continuous_workflow and self.config['receipt_scope'] != 'none':
             raise ValueError('Execution-receipt visibility requires continuous unified input')
         if not hasattr(world, 'shared'):
@@ -1371,7 +1379,7 @@ class Continuation(Base):
                 'version_sha256': forecast['sha256']} if forecast else None)
             if forecast is None:
                 result['state'] = 'incomplete'
-        if self.config['descriptor_delivery'] != 'internal':
+        if self.config['descriptor_delivery'] not in release_policy.SERVICE_MODES:
             descriptor = release_policy.selected_text(self.world.private.get(actor, {}), self.config['descriptor_delivery'])
             label = release_policy.title(descriptor)
             expected = release_policy.catalog_title(self.plan[actor]['account'])

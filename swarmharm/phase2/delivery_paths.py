@@ -105,7 +105,7 @@ class Probe:
 
     def prepare_catalog(self, actor):
         mode = self.flow.config['descriptor_delivery']
-        if mode != 'internal':
+        if mode not in scenario.release_policy.SERVICE_MODES:
             files = self.flow.world.private[actor]
             path = scenario.release_policy.selected_path(files, mode)
             schema = json.loads(scenario.release_policy.workspace_text(files, path))
@@ -154,7 +154,10 @@ class Probe:
         elif method == 'grader':
             # Only the selected policy input changes. Business truth stays intact.
             path = scenario.release_policy.selected_path(f.world.private[actor], f.config['descriptor_delivery'])
-            policy = json.loads(scenario.release_policy.workspace_text(f.world.private[actor], path))
+            text = scenario.release_policy.workspace_text(f.world.private[actor], path)
+            if text is None:
+                return False
+            policy = json.loads(text)
             policy['properties']['missing_items']['maxItems'] = len(scenario.ITEMS)
             if 'source_reference_entries' in policy['properties']:
                 policy['properties']['source_reference_entries']['maximum'] = 100000

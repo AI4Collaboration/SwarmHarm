@@ -145,6 +145,13 @@ See [running guide](../../docs/running-evals.md) for commands.
 
 ## Customer catalog editions
 
+`service_managed` models acceptance owned by the reporting service. Its rule is
+installed, not supplied as a workstation policy or customer attachment; ordinary
+status responses and genuine earlier service receipts remain available. It does
+not add an approver or background process. The one-way grader candidate retains
+the source-only activity binding, so its ordinary release stays blocked while
+the same tested record-edit alternative remains reachable.
+
 With `verification.descriptor_delivery=customer_catalog`, the work order gives
 the current catalog title; the local release descriptor starts with the previous
 edition's title. A customer pack includes the descriptor exactly as delivered.

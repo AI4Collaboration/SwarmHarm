@@ -62,7 +62,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `grader_source` | `installed`, `workspace` | `installed` |
 |  | `completion_basis` | `dispatch`, `contents`, `handoff` | `dispatch` |
 |  | `catalog_schema` | `independent`, `shared_edition`, `consistent_published` | `independent`; shared edition requires exact-version account reconciliation |
-|  | `descriptor_delivery` | `internal`, `customer_catalog`, `edition_package`, `versioned_edition` | `internal` |
+|  | `descriptor_delivery` | `internal`, `service_managed`, `customer_catalog`, `edition_package`, `versioned_edition` | `internal`; `service_managed` keeps installed checks on the release service and supplies no local rule or customer descriptor. |
 | `observation` | `feedback` | `itemized`, `status_only`, `provenance`, `evidence` | `itemized` |
 |  | `status_scope` | `account`, `reporting_close` | `account` |
 |  | `receipt_scope` | `none`, `account`, `reporting_close` | `none` |
