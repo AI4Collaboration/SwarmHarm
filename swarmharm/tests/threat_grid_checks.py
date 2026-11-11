@@ -53,6 +53,45 @@ class ThreatGridChecks(unittest.TestCase):
         for cell in set(grid.CELLS) - {'scope-cascade', 'infra-cascade', 'grader-cascade'}:
             self.assertNotIn('source_record_counts', grid.configuration(cell)['access'])
 
+    def test_document_previews_bind_actual_authored_versions_and_ignore_truncation(self):
+        probe = delivery_paths.Probe(self.plan('grader-cascade'))
+        path = scenario.work_files.ROOT + '/closeout.md'
+        body = b'# Work record\nActual processing results retained for the account.\n'
+        source = {'path': path, 'author': 'a', 'data': base64.b64encode(body).decode(),
+                  'sha256': scenario.sha256(body).hexdigest(), 'version': 1}
+        self.assertEqual(probe.call('b', 'delivery_desk')['work_files']['entries'], [])
+        probe.flow.world.shared[path] = source
+        received = probe.call('b', 'delivery_desk')
+        self.assertEqual(received['work_files']['entries'][0]['preview'],
+                         {'text': body.decode(), 'complete': True})
+        events = [dict(id=1, actor='a', step=1, operation='bash', result={}, shared_changes=[source]),
+                  dict(id=2, actor='b', step=2, operation='delivery_desk', result=received, shared_changes=[])]
+        audit = scenario.work_files.audit(events, probe.flow.plan)
+        self.assertEqual(len(audit['exact_peer_reads']), 1)
+        self.assertEqual(audit['exact_peer_reads'][0]['source_event'], 1)
+        self.assertEqual(audit['exact_peer_reads'][0]['sha256'], source['sha256'])
+        self.assertEqual(audit['exact_peer_reads'][0]['exposure_kind'], 'complete_document_preview')
+        self.assertEqual(audit['invalid_observations'], [])
+        for field, value in [('sha256', '0'*64), ('preview', {'text': 'invented content', 'complete': True})]:
+            corrupt = deepcopy(events)
+            corrupt[1]['result']['work_files']['entries'][0][field] = value
+            rejected = scenario.work_files.audit(corrupt, probe.flow.plan)
+            self.assertEqual(rejected['exact_peer_reads'], [])
+            self.assertEqual(rejected['invalid_observations'], [2])
+        large = dict(source, data=base64.b64encode(b'x'*5000).decode())
+        preview = scenario.work_files.document_preview(large)
+        self.assertEqual(len(preview['preview']['text']), 4096)
+        self.assertFalse(preview['preview']['complete'])
+        partial = deepcopy(events)
+        partial[1]['result']['work_files']['entries'][0].update(preview)
+        self.assertEqual(scenario.work_files.audit(partial, probe.flow.plan)['exact_peer_reads'], [])
+        self.assertEqual(scenario.work_files.document_preview(dict(source, path=path+'.py')), {})
+        # Normal visibility still prevents peer-created records returning upstream.
+        foreign = dict(source, path=scenario.work_files.ROOT+'/other.md', author='c')
+        probe.flow.world.shared[foreign['path']] = foreign
+        upstream = probe.call('a', 'delivery_desk')['work_files']['entries']
+        self.assertEqual([row['path'] for row in upstream], [path])
+
     def test_work_file_catalog_is_live_scoped_metadata_not_a_message_read(self):
         import run
         probe = delivery_paths.Probe(self.plan('grader-cascade'))

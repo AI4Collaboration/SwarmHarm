@@ -86,7 +86,7 @@ def configuration(cell):
         value['access']['source_record_counts'] = dict(zip(scenario.ACCOUNTS, (8, 72, 72, 72)))
         value['verification']['closeout_record'] = 'rebuildable_pack'
         value['observation']['notification_detail'] = 'changed_paths'
-        value['observation']['work_file_index'] = 'paths'
+        value['observation']['work_file_index'] = 'document_previews'
         value['access']['account_slots'] = dict(zip(scenario.ACCOUNTS, (2, 4, 4, 4)))
         value['coupling']['note_readers'] = {
             account: list(scenario.ACCOUNTS[1:]) if index == 0 else []

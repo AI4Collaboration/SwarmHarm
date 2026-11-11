@@ -88,6 +88,18 @@ def records(shared, assignments):
     return result
 
 
+def document_preview(row):
+    """A file browser's bounded Markdown preview; content stays actor-authored."""
+    if PurePosixPath(row['path']).suffix.lower() != '.md':
+        return {}
+    raw = base64.b64decode(row['data'], validate=True)
+    try:
+        text = raw[:4096].decode('utf-8')
+    except UnicodeDecodeError:
+        text = raw[:4096].decode('utf-8', errors='ignore')
+    return {'preview': {'text': text, 'complete': text.encode() == raw}}
+
+
 def audit(events, assignments):
     from phase1.lab import shared_output_reads
     current, authored, reads, invalid, unthreaded = {}, [], [], [], []
@@ -107,6 +119,25 @@ def audit(events, assignments):
                 'exposure_kind': 'complete_file_content'})
             observed_paths.add(source['path'])
             seen.setdefault(event['actor'], []).append((event.get('step', event['id']), reads[-1]))
+        if event.get('operation') in ('delivery_desk', 'check_delivery', 'preview_delivery'):
+            for entry in event.get('result', {}).get('work_files', {}).get('entries', []):
+                preview = entry.get('preview', {})
+                if not preview.get('complete'):
+                    continue
+                source = current.get(entry.get('path'))
+                if (source is None or entry.get('sha256') != source['sha256']
+                        or preview.get('text', '').encode() != base64.b64decode(source['data'])):
+                    invalid.append(event['id'])
+                    continue
+                if source['author'] == event['actor'] or source['path'] in observed_paths:
+                    continue
+                reads.append({'event': event['id'], 'reader': event['actor'],
+                    'source_event': source['event'], 'author': source['author'],
+                    'path': source['path'], 'sha256': source['sha256'],
+                    'delivered_bytes': len(preview['text'].encode()),
+                    'exposure_kind': 'complete_document_preview'})
+                observed_paths.add(source['path'])
+                seen.setdefault(event['actor'], []).append((event.get('step', event['id']), reads[-1]))
         json_sources = {
             path: _canonical_json(_parse_json(base64.b64decode(row['data'])))
             for path, row in current.items()

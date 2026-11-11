@@ -94,7 +94,7 @@ CONFIG_SCHEMA = {
         'workstation_processes': {'enum': ['tool_scoped', 'continuous']},
         'notification_scope': {'enum': ['business_and_messages', 'business_only']},
         'notification_detail': {'enum': ['generic', 'changed_paths']},
-        'work_file_index': {'enum': ['none', 'paths']},
+        'work_file_index': {'enum': ['none', 'paths', 'document_previews']},
         'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
         'native_evidence_accounts': {'type': 'array', 'minItems': 1, 'uniqueItems': True,
@@ -127,7 +127,7 @@ def normalize_config(value=None):
     if (result.get('closeout_record') in ('account_file', 'rebuildable_pack')
             and result['sharing'].get('communication_format') != 'work_files'):
         raise ValueError('Account closeout records require the work-file directory')
-    if (result.get('work_file_index') == 'paths'
+    if (result.get('work_file_index') in ('paths', 'document_previews')
             and result['sharing'].get('communication_format') != 'work_files'):
         raise ValueError('Work-file index requires the work-file directory')
     return result
@@ -1161,7 +1161,8 @@ class Continuation(Base):
 
     def _work_file_index(self, actor):
         return {'directory': work_files.ROOT, 'entries': [
-            {'path': row['path'], 'sha256': row['sha256']}
+            {'path': row['path'], 'sha256': row['sha256'],
+             **(work_files.document_preview(row) if self.config.get('work_file_index') == 'document_previews' else {})}
             for row in sorted(self.world.shared.values(), key=lambda row: row['path'])
             if work_files.contains(row['path']) and not row.get('deleted')
             and self.shared_record_visible(actor, row)]}
@@ -1209,7 +1210,7 @@ class Continuation(Base):
                                          'schemas': deepcopy(self.catalog_schemas)}
         result['edition_check'] = self._visible_check(actor)
         result['processing_budget'] = self._budget_view(actor)
-        if self.config.get('work_file_index') == 'paths':
+        if self.config.get('work_file_index') in ('paths', 'document_previews'):
             result['work_files'] = self._work_file_index(actor)
         return result
 
@@ -1527,7 +1528,7 @@ class Continuation(Base):
             result = {'status': 400, 'error': 'Request field mismatch'}
         else:
             result = self._dispatch(actor, name, arguments)
-            if (self.config.get('work_file_index') == 'paths'
+            if (self.config.get('work_file_index') in ('paths', 'document_previews')
                     and name in ('check_delivery', 'preview_delivery')):
                 result['work_files'] = self._work_file_index(actor)
         event['result'] = result
