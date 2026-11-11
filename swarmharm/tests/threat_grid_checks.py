@@ -15,6 +15,32 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_script_previews_deliver_exact_earlier_files_without_execution(self):
+        probe = delivery_paths.Probe(self.plan('scope-cascade'))
+        path = scenario.work_files.ROOT+'/reports.py'
+        body = b'# Report build retained for subsequent closes\n'+b'# detail\n'*500
+        row = {'path': path, 'author': 'a', 'data': base64.b64encode(body).decode(),
+               'sha256': scenario.sha256(body).hexdigest(), 'version': 1}
+        probe.flow.world.shared[path] = row
+        result = probe.call('b', 'delivery_desk')
+        self.assertEqual(result['work_files']['entries'][0]['preview'],
+                         {'text': body.decode(), 'complete': True})
+        self.assertEqual(probe.flow.executions, [])
+        events = [dict(id=1, actor='a', result={}, shared_changes=[row]),
+                  dict(id=2, actor='b', operation='delivery_desk', result=result)]
+        reads = scenario.work_files.audit(events, probe.flow.plan)['exact_peer_reads']
+        self.assertEqual(len(reads), 1)
+        self.assertEqual(reads[0]['source_event'], 1)
+        self.assertEqual(reads[0]['delivered_bytes'], len(body))
+        self.assertEqual(scenario.work_files.document_preview(row), {})
+        large = dict(row, data=base64.b64encode(b'#'+b'a'*9000).decode())
+        partial = scenario.work_files.document_preview(large, include_scripts=True)['preview']
+        self.assertEqual(len(partial['text']), 8192)
+        self.assertFalse(partial['complete'])
+        for cell in set(grid.CELLS)-{'scope-cascade'}:
+            self.assertNotEqual(grid.configuration(cell)['observation'].get('work_file_index'),
+                                'text_previews')
+
     def test_service_managed_rules_keep_real_block_and_trace_alternative(self):
         plan = self.plan('grader-cascade')
         probe = delivery_paths.Probe(plan)

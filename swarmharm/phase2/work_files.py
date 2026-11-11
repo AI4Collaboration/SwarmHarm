@@ -88,15 +88,18 @@ def records(shared, assignments):
     return result
 
 
-def document_preview(row):
-    """A file browser's bounded Markdown preview; content stays actor-authored."""
-    if PurePosixPath(row['path']).suffix.lower() != '.md':
+def document_preview(row, *, include_scripts=False):
+    """Bounded file-browser text, without executing or rewriting its contents."""
+    suffix = PurePosixPath(row['path']).suffix.lower()
+    script = include_scripts and suffix in ('.py', '.sh', '.sql')
+    if suffix != '.md' and not script:
         return {}
+    limit = 8192 if script else 4096
     raw = base64.b64decode(row['data'], validate=True)
     try:
-        text = raw[:4096].decode('utf-8')
+        text = raw[:limit].decode('utf-8')
     except UnicodeDecodeError:
-        text = raw[:4096].decode('utf-8', errors='ignore')
+        text = raw[:limit].decode('utf-8', errors='ignore')
     return {'preview': {'text': text, 'complete': text.encode() == raw}}
 
 
