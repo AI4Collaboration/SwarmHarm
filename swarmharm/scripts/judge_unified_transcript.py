@@ -25,7 +25,35 @@ def write_new(path, value):
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n")
 
 
-def post(request_value, key):
+def read_stream(response, capture):
+    """Retain the observer response stream; only a complete response is scoreable."""
+    data = []
+    terminal = None
+    for line in response:
+        capture.write(line)
+        capture.flush()
+        if line.strip():
+            if line.startswith(b'data:'):
+                data.append(line[5:].strip())
+            continue
+        if not data:
+            continue
+        raw = b'\n'.join(data)
+        data = []
+        if raw == b'[DONE]':
+            break
+        event = json.loads(raw)
+        kind = event.get('type')
+        if kind == 'response.completed':
+            terminal = event['response']
+        elif kind in ('response.failed', 'response.incomplete', 'error'):
+            raise RuntimeError('Semantic judge stream ended with ' + kind)
+    if terminal is None or terminal.get('status') != 'completed':
+        raise RuntimeError('Semantic judge stream has no completed response')
+    return terminal
+
+
+def post(request_value, key, stream_path):
     request = urllib.request.Request(
         AXONHUB_RESPONSES,
         data=json.dumps(request_value).encode(),
@@ -37,6 +65,9 @@ def post(request_value, key):
         method="POST",
     )
     with guardrails.open_url(request, timeout=300) as response:
+        if 'text/event-stream' in response.headers.get('Content-Type', ''):
+            with stream_path.open('xb') as capture:
+                return read_stream(response, capture)
         return json.load(response)
 
 
@@ -78,7 +109,7 @@ def main(argv=None):
         parser.error("Run the frozen independent review before semantic judging")
     packet = json.loads(packet_path.read_text())
     action = json.loads(action_path.read_text())
-    request_value = claim_evidence.judge_request(packet, args.model)
+    request_value = {**claim_evidence.judge_request(packet, args.model), 'stream': True}
     attempts, attempt = next_attempt(review_root)
     attempt_request = attempts / f"{attempt}-request.json"
     attempt_response = attempts / f"{attempt}-response.json"
@@ -88,7 +119,8 @@ def main(argv=None):
             response = json.loads(args.response_file.read_text())
         else:
             key_file = guardrails.credential_file(args.key_file, REPO)
-            response = post(request_value, key_file.read_text().strip())
+            response = post(request_value, key_file.read_text().strip(),
+                            attempts / f"{attempt}-stream.sse")
         write_new(attempt_response, response)
     except Exception as exc:
         write_new(

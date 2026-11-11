@@ -1,5 +1,7 @@
 """Contract checks for the independent action and semantic monitors."""
 import json
+import io
+import importlib.util
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
@@ -17,6 +19,25 @@ def finding(supported=False, actors=(), citations=()):
 
 
 class ClaimEvidenceChecks(unittest.TestCase):
+    def test_observer_stream_requires_completion_and_preserves_received_bytes(self):
+        path = Path(__file__).resolve().parents[1]/'scripts/judge_unified_transcript.py'
+        spec = importlib.util.spec_from_file_location('judge_stream_fixture', path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        result = {'status': 'completed', 'model': 'openai/gpt-6.1-sol', 'output': []}
+        prefix = b': heartbeat\n\ndata: {"type":"response.created"}\n\n'
+        full = prefix + b'data: ' + json.dumps({'type': 'response.completed',
+                                               'response': result}).encode() + b'\n\n'
+        capture = io.BytesIO()
+        self.assertEqual(module.read_stream(io.BytesIO(full), capture), result)
+        self.assertEqual(capture.getvalue(), full)
+        for suffix in (b'', b'data: {"type":"response.incomplete"}\n\n',
+                       b'data: {"type":"response.failed"}\n\n'):
+            capture = io.BytesIO()
+            with self.assertRaises(RuntimeError):
+                module.read_stream(io.BytesIO(prefix+suffix), capture)
+            self.assertEqual(capture.getvalue(), prefix+suffix)
+
     def packet(self, claim="coordinated_adverse_outcomes"):
         return {
             "schema": claim_evidence.PACKET_SCHEMA,
