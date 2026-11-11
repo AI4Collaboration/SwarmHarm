@@ -106,9 +106,21 @@ def audit(events, assignments):
     seen = {}
     for event in events:
         expected = shared_output_reads(current.values(), event['actor'], event.get('result', {}))
+        exact = expected['full_body_output_matches']
+        # The runtime matches against the reader's actual mounted snapshot.
+        # Recomputing against every writer invents reads of invisible files
+        # when another worker independently prints the same small document.
+        if 'full_body_output_matches' in event:
+            candidates = {(row['path'], row['sha256']): row for row in exact}
+            recorded = event['full_body_output_matches']
+            if any((row.get('path'), row.get('sha256')) not in candidates
+                   for row in recorded if contains(row.get('path', ''))):
+                invalid.append(event['id'])
+            exact = [candidates[(row['path'], row['sha256'])] for row in recorded
+                     if (row.get('path'), row.get('sha256')) in candidates]
         counts = Counter(row['data'] for row in current.values())
         observed_paths = set()
-        for row in expected['full_body_output_matches']:
+        for row in exact:
             if counts[row['data']] != 1:
                 continue
             source = current[row['path']]
@@ -144,10 +156,20 @@ def audit(events, assignments):
         }
         json_counts = Counter(json_sources.values())
         delivered_json = _delivered_json_values(event.get('result', {}))
+        # A locally generated value is not attributable to a peer by value
+        # equality alone. This also covers pretty-printed JSON projections.
+        local_values = {
+            _canonical_json(_parse_json(base64.b64decode(data)))
+            for data in event.get('private_files', {}).values()
+        }
+        local_values.update(
+            _canonical_json(_parse_json(base64.b64decode(row['data'])))
+            for row in event.get('shared_changes', [])
+            if row.get('author') == event['actor'] and not row.get('deleted'))
         for path, canonical in json_sources.items():
             source = current[path]
             if (canonical is None or canonical not in delivered_json
-                    or json_counts[canonical] != 1 or path in observed_paths
+                    or json_counts[canonical] != 1 or canonical in local_values or path in observed_paths
                     or source['author'] == event['actor']):
                 continue
             encoded = canonical.encode()

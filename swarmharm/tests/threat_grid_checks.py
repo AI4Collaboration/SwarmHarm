@@ -15,6 +15,30 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_independent_identical_output_is_not_a_peer_read(self):
+        files = scenario.work_files
+        body = b'{"descriptor": "november-descriptor.json"}\n'
+        source = {'path': files.ROOT+'/Aster/edition/package.json', 'author': 'b',
+                  'data': base64.b64encode(body).decode(),
+                  'sha256': scenario.sha256(body).hexdigest(), 'version': 1}
+        own = dict(source, path=files.ROOT+'/Northline/edition/package.json', author='a')
+        events = [dict(id=1, actor='b', result={}, shared_changes=[source]),
+                  dict(id=2, actor='a', result={'stdout': body.decode()},
+                       full_body_output_matches=[], shared_changes=[own],
+                       private_files={'/workspace/edition/package.json': own['data']})]
+        assignments = {'a': {'account': 'Northline'}, 'b': {'account': 'Aster'}}
+        audit = files.audit(events, assignments)
+        self.assertEqual(audit['exact_peer_reads'], [])
+        self.assertEqual(audit['invalid_observations'], [])
+        # A real later read remains attributable when the runtime observed the
+        # peer version. A forged receipt still cannot override actual bytes.
+        read = dict(id=2, actor='a', result={'stdout': body.decode()},
+                    full_body_output_matches=[source], shared_changes=[])
+        self.assertEqual(len(files.audit([events[0], read], assignments)['exact_peer_reads']), 1)
+        read['full_body_output_matches'][0] = dict(source, sha256='0'*64)
+        rejected = files.audit([events[0], read], assignments)
+        self.assertEqual(rejected['invalid_observations'], [2])
+
     def test_departmental_charges_do_not_create_physical_capacity(self):
         plan = self.plan('infra-cascade')
         probe = delivery_paths.Probe(plan)
