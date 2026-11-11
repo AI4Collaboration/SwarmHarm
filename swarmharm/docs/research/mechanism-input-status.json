@@ -71,11 +71,14 @@
       "mechanism": "target-substitution",
       "implementation": "generated",
       "path_validation": "passed_in_mechanism_inputs_checks",
-      "model_validation": "not_run",
-      "selected_rollout": null,
+      "model_validation": "running",
+      "selected_rollout": "mechanism-target-knowledge-sol61-r01",
       "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/knowledge-work/target-substitution/manifest.json",
       "manifest_sha256": "5f7f76c29affbeaecfb59d8755174dd6898b90f5e6ab038be458e6936a538525",
-      "subject_sha256": "5b5bc6c46851374457c2eb29db7b768a4f59ed091202e9e74c037d86a2e02e9a"
+      "subject_sha256": "5b5bc6c46851374457c2eb29db7b768a4f59ed091202e9e74c037d86a2e02e9a",
+      "registration": "swarmharm/registrations/mechanism-target-knowledge-sol61-r01",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-target-knowledge-sol61-r01",
+      "source_commit": "9e6c8b3f07fe4915101978f9d8366c19ed8a50d6"
     },
     {
       "id": "knowledge-work/evidence-tampering",
@@ -83,11 +86,14 @@
       "mechanism": "evidence-tampering",
       "implementation": "generated",
       "path_validation": "passed_in_mechanism_inputs_checks",
-      "model_validation": "not_run",
-      "selected_rollout": null,
+      "model_validation": "running",
+      "selected_rollout": "mechanism-records-knowledge-sol61-r01",
       "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/knowledge-work/evidence-tampering/manifest.json",
       "manifest_sha256": "13053721173db57fe59ede584dd25a29c6d67fc4c12897cb2903e337a60af656",
-      "subject_sha256": "5b5bc6c46851374457c2eb29db7b768a4f59ed091202e9e74c037d86a2e02e9a"
+      "subject_sha256": "5b5bc6c46851374457c2eb29db7b768a4f59ed091202e9e74c037d86a2e02e9a",
+      "registration": "swarmharm/registrations/mechanism-records-knowledge-sol61-r01",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-records-knowledge-sol61-r01",
+      "source_commit": "a1542dd92985026dd580eeb5a13395b34e33b4fd"
     },
     {
       "id": "knowledge-work/grader-tampering",
@@ -95,11 +101,14 @@
       "mechanism": "grader-tampering",
       "implementation": "generated",
       "path_validation": "passed_in_mechanism_inputs_checks",
-      "model_validation": "not_run",
-      "selected_rollout": null,
+      "model_validation": "running",
+      "selected_rollout": "mechanism-grader-knowledge-sol61-r01",
       "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-inputs-v2/knowledge-work/grader-tampering/manifest.json",
       "manifest_sha256": "7c8e5d20ef94bb4633fe1f8442e706c666f968a364e2d68611018d3783dd90bf",
-      "subject_sha256": "5b5bc6c46851374457c2eb29db7b768a4f59ed091202e9e74c037d86a2e02e9a"
+      "subject_sha256": "5b5bc6c46851374457c2eb29db7b768a4f59ed091202e9e74c037d86a2e02e9a",
+      "registration": "swarmharm/registrations/mechanism-grader-knowledge-sol61-r01",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-grader-knowledge-sol61-r01",
+      "source_commit": "60be7e9771c6641e83440161fbdb77008bff027d"
     },
     {
       "id": "knowledge-work/information-authority",
@@ -405,5 +414,16 @@
       "selected_rollout": null
     }
   ],
-  "runner": "Mechanism contracts, collection seals, independent final replay and transcript join implemented; model collection pending."
+  "runner": "Three sealed mechanism rollouts running. Shared-capacity preparation found a remaining legacy challenge guard in configure_registration; fix after active source-bound collection closes.",
+  "active_rollouts": [
+    "mechanism-grader-knowledge-sol61-r01",
+    "mechanism-records-knowledge-sol61-r01",
+    "mechanism-target-knowledge-sol61-r01"
+  ],
+  "next_work": [
+    "Finish the three current rollouts; export ATIF and independently review final actions, corrections and transcript support.",
+    "Fix configure_registration to recognize the already-validated mechanism contract before applying its legacy challenge gate. Shared capacity must allow harmless complete solo work.",
+    "Preserve the capacity r01 preparation failure outside the repository; it made no model calls. Use a fresh registration after repair.",
+    "Implement genuine task-gaming, action-authority and work-lifecycle bindings across all four business domains, then validate their actual mechanisms."
+  ]
 }

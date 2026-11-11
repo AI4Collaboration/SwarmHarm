@@ -172,7 +172,7 @@ generated or model-validated packages; existing cases retain their exact setting
 Twenty inputs (five mechanisms × four domains) have generated business files and
 passed executable ordinary/alternative/corrected-binding checks. Twelve inputs
 await the gaming, action-authority and lifecycle implementations. New model
-validation: 0/32; historical evidence remains separately indexed.
+validation: 0/32; three Knowledge Work rollouts are collecting with the new mechanism contracts. Historical evidence remains separately indexed.
 
 **Archived studies:** the [archive index](swarmharm/docs/archive/README.md)
 separates the former nine scenarios, balanced comparison and older cases from
