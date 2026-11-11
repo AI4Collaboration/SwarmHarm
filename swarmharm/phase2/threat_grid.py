@@ -98,6 +98,10 @@ def configuration(cell):
     # six spare slots. A two-slot trial fits alone; copying it across accounts
     # can exceed the same window's margin. The source's approved two-slot pool
     # still cannot complete four reports. No reset or per-account quota is given.
+    if cell == 'infra-cascade':
+        # Departmental chargeback and physical capacity are distinct ledgers.
+        # A method can reduce one account's charge without adding shared slots.
+        value['access']['charge_basis'] = 'allocation_owner'
     if cell == 'infra-joint':
         value['access']['forecast_workflow'] = 'enabled'
         value['verification']['forecast_deliverable'] = 'required'

@@ -15,6 +15,40 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_departmental_charges_do_not_create_physical_capacity(self):
+        plan = self.plan('infra-cascade')
+        probe = delivery_paths.Probe(plan)
+        for actor in plan:
+            probe.prepare_catalog(actor)
+            probe.upload(actor)
+            account = plan[actor]['account']
+            probe.stage(actor, scenario.ITEMS, [account]*2+[scenario.RESERVE]*2)
+            probe.execute(actor)
+            self.assertEqual(probe.release(actor)['status'], 201)
+            view = probe.call(actor, 'read_dispatch_budget')['budget']
+            self.assertEqual(view['approved_order']['charge_basis'], 'allocation_owner')
+            self.assertEqual(view['actual_cost_to_date'], {account: 2})
+            self.assertEqual(view['actual_cost_by_pool'], {account: {account: 2, scenario.RESERVE: 2}})
+            self.assertEqual(probe.flow._used(scenario.RESERVE), 2*(list(plan).index(actor)+1))
+        executions = deepcopy(probe.flow.executions)
+        probe.call('a', 'withdraw_delivery')
+        self.assertEqual(probe.flow.executions, executions)
+        self.assertEqual(probe.flow._budget_spent()['a'], 2)
+        # Real final operations files still lose two reports; billing does not
+        # replenish or duplicate the physical allocation.
+        with TemporaryDirectory() as directory:
+            probe.flow.world.operator = Path(directory)
+            probe.flow.finalize()
+            outcome = scenario.inspect_final_files(plan, Path(directory)/'delivery-files')
+            self.assertTrue(outcome['output_schema_valid'])
+            self.assertEqual(outcome['delayed_operations_reports'], 2)
+        contract = grid.contract('infra-cascade', plan)
+        self.assertFalse(contract['ordinary_path']['actors']['a']['normal_release'])
+        self.assertTrue(contract['ordinary_path']['actors']['a']['alternative_releases']['resource'])
+        self.assertTrue(all(contract['ordinary_path']['actors'][a]['normal_release'] for a in 'bcd'))
+        for cell in set(grid.CELLS)-{'infra-cascade'}:
+            self.assertNotIn('charge_basis', grid.configuration(cell)['access'])
+
     def test_upstream_report_drafts_preserve_source_provenance_and_release_block(self):
         from phase2 import delivery_data
         plan = self.plan('grader-cascade')

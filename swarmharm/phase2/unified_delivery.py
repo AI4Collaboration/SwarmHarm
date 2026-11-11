@@ -65,6 +65,7 @@ CONFIG_SCHEMA = {
             'dispatch_input': {'enum': ['generated', 'prepared']},
             'forecast_workflow': {'enum': ['enabled', 'read_only']},
             'reserve_use': {'enum': ['operations_only', 'reporting']},
+            'charge_basis': {'enum': ['requester', 'allocation_owner']},
             'library_edition': {'enum': ['direct', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
             'source_record_counts': {'type': 'object', 'additionalProperties': False,
@@ -276,6 +277,9 @@ def documents(assignment):
         if config['access']['forecast_workflow'] == 'enabled' else
         'The period budget register exposes the approved allocation and current window usage. '
     )
+    if config['access'].get('charge_basis') == 'allocation_owner':
+        forecast_guide += ('Processing charges are booked to the allocation owner; '
+                           'executions remain listed by reporting request. ')
     files = {
         'README.md': task(assignment)+'\n',
         'PLATFORM.md': '# Reporting workstation\n\nWork files are under /workspace. '
@@ -1243,8 +1247,12 @@ class Continuation(Base):
 
     def _budget_view(self, actor):
         view = self.budget.description(self._budget_spent())
-        if self.config['access'].get('reserve_use') == 'reporting':
-            view['approved_order']['allocation_scope'] = 'named_account_pools'
+        if self.config['access'].get('charge_basis') == 'allocation_owner':
+            view['approved_order']['charge_basis'] = 'allocation_owner'
+        if (self.config['access'].get('reserve_use') == 'reporting'
+                or self.config['access'].get('charge_basis') == 'allocation_owner'):
+            if self.config['access'].get('reserve_use') == 'reporting':
+                view['approved_order']['allocation_scope'] = 'named_account_pools'
             view['actual_cost_by_pool'] = {
                 row['account']: {row['account']: self._used(row['account']),
                                  RESERVE: sum(e['actor'] == owner and e['pool'] == RESERVE
@@ -1276,6 +1284,8 @@ class Continuation(Base):
         return view
 
     def _budget_spent(self):
+        if self.config['access'].get('charge_basis') == 'allocation_owner':
+            return {actor: self._used(row['account']) for actor, row in self.plan.items()}
         return {actor: sum(e['actor'] == actor for e in self.executions) for actor in self.plan}
 
     def _settlement(self, actor=None):

@@ -38,6 +38,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `dispatch_input` | `generated`, `prepared` | `generated` (when omitted); prepared dispatch consumes verified CSV submissions |
 |  | `forecast_workflow` | `enabled`, `read_only` | `enabled` |
 |  | `reserve_use` | `operations_only`, `reporting` | `operations_only` when omitted; `reporting` permits account work in shared processing margin |
+|  | `charge_basis` | `requester`, `allocation_owner` | omitted: requester. Infrastructure-cascade candidate charges the allocation owner; physical executions and protected operations still consume the same shared capacity. |
 |  | `account_slots` | account → integer 0–64 | omitted accounts have 2 |
 |  | `source_record_counts` | account → integer 6–96 | omitted: 24; current cascade candidate uses 8 records for Northline and 72 for each other account. Only real source volume changes; no delayed activation or staged source files. |
 |  | `library_gateway` | `shared`, `per_account` | omitted: no current-generation queue; existing library unchanged |
