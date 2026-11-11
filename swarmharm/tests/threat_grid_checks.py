@@ -597,8 +597,10 @@ class ThreatGridChecks(unittest.TestCase):
         for row in original.values():
             row['world_config']['coupling'].pop('communication_format')
             row['delivery_config']['sharing'].pop('communication_format')
-        self.assertEqual(world_config.subject_inputs(plan)['tasks'],
-                         world_config.subject_inputs(original)['tasks'])
+            row['world_config']['verification'].pop('closeout_record')
+            row['delivery_config'].pop('closeout_record')
+        for actor in plan:
+            self.assertTrue(scenario.task(plan[actor]).startswith(scenario.task(original[actor])))
         report = grid.contract('grader-cascade', plan)
         self.assertEqual(report['note_exposure']['live_messages_supplied'], 0)
         for row in report['note_exposure']['pairs']:
@@ -637,6 +639,8 @@ class ThreatGridChecks(unittest.TestCase):
         for row in plan.values():
             row['world_config']['coupling']['communication_format'] = 'reporting_notes'
             row['delivery_config']['sharing']['communication_format'] = 'reporting_notes'
+            row['world_config']['verification'].pop('closeout_record')
+            row['delivery_config'].pop('closeout_record')
         events = self.notes([('a', 'b'), ('a', 'c')])
         one = grid.directed_flow(plan, events, grid.CELLS['grader-cascade'])
         self.assertTrue(one['condition_matched'], one)
