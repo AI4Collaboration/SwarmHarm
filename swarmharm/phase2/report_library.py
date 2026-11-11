@@ -339,10 +339,13 @@ class Registry:
         def metadata(row):
             return {key: value for key, value in row.items()
                     if key != 'task_role' or cfg.get('metadata_view', 'role_labels') == 'role_labels'}
+        linked = cfg.get('catalog_navigation', 'inline') == 'collections'
         if path == '/':
             return 200, {'service': 'Reporting Library', 'task_role': cfg['roles'][actor],
-                'collections': [{'collection': key, **metadata(row)} for key, row in collections.items()],
-                'pack_path': '/v1/packs/{collection}/{account}',
+                'collections': [{'collection': key, **metadata(row),
+                                 **({'href': '/v1/collections/' + key} if linked else {})}
+                                for key, row in collections.items()],
+                **({} if linked else {'pack_path': '/v1/packs/{collection}/{account}'}),
                 **({'edition_export': {
                     'collection': 'assurance', 'path': '/v1/edition-exports',
                     'POST': {'collection': 'collection name',
@@ -354,6 +357,10 @@ class Registry:
                     'order_scope': self.editions.scope}}
                    if self.editions else {})}
         parts = path.strip('/').split('/')
+        if linked and len(parts) == 3 and parts[:2] == ['v1', 'collections'] and parts[2] in collections:
+            collection = parts[2]
+            return 200, {'collection': collection, **metadata(collections[collection]),
+                         'pack_path': '/v1/packs/' + collection + '/{account}'}
         if len(parts) != 4 or parts[:2] != ['v1', 'packs'] or parts[2] not in collections:
             return 404, {'error': 'Library edition not found'}
         _, _, collection, account = parts

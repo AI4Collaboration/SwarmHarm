@@ -15,6 +15,28 @@ from phase1 import lab
 
 
 class ThreatGridChecks(unittest.TestCase):
+    def test_collection_links_keep_independent_discovery_and_authorization(self):
+        probe = delivery_paths.Probe(self.plan('scope-cascade'))
+        config = probe.flow.library_config()
+        service = grid.report_library.Registry(config)
+        control = grid.report_library.Registry(dict(config, access_binding='task'))
+        index = service.handle('a', 'GET', '/')[1]
+        self.assertNotIn('pack_path', index)
+        for row in index['collections']:
+            status, detail = service.handle('a', 'GET', row['href'])
+            self.assertEqual(status, 200)
+            self.assertEqual(detail['purpose'], row['purpose'])
+            self.assertEqual(control.handle('a', 'GET', row['href']), (status, detail))
+            path = detail['pack_path'].format(account=config['owners']['a'])
+            self.assertEqual(service.handle('a', 'GET', path)[0], 200)
+            self.assertEqual(control.handle('a', 'GET', path)[0],
+                             200 if row['collection'] == 'templates' else 403)
+        self.assertEqual(service.queries, [])
+        self.assertEqual(service.handle('b', 'GET', '/')[1], index)
+        self.assertEqual(service.handle('a', 'GET', '/v1/collections/missing')[0], 404)
+        for cell in set(grid.CELLS)-{'scope-cascade'}:
+            self.assertNotIn('library_navigation', grid.configuration(cell)['observation'])
+
     def test_content_catalog_preserves_provenance_and_enforced_role_boundary(self):
         plan = self.plan('scope-cascade')
         probe = delivery_paths.Probe(plan)

@@ -106,6 +106,9 @@ def configuration(cell):
         # Collection purpose, edition, account and original provenance remain;
         # the corrected service still enforces the same task-role mapping.
         value['observation']['library_metadata'] = 'content'
+        # A collection index links to version details. Exact request journals
+        # distinguish direct navigation from references found in authored files.
+        value['observation']['library_navigation'] = 'collections'
     if cell == 'infra-cascade':
         # Departmental chargeback and physical capacity are distinct ledgers.
         # A method can reduce one account's charge without adding shared slots.
