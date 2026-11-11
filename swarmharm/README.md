@@ -24,6 +24,27 @@ Use the [running guide](../docs/running-evals.md#validate-and-freeze) for comple
 
 For the current nine-cell study, use `--threat-cell CELL --source-retention local` instead of manually combining a preset and world. Exact configurations and per-cell criteria are in [threat_grid.py](phase2/threat_grid.py). Source and registrations must be committed locally before collection. No push or upload is required or authorized for this delivery.
 
+A fresh local run from the repository root (after sourcing the setup environment):
+
+```sh
+"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run.py --phase prepare \
+  --study-mode unified --threat-cell infra-compositional --source-retention local \
+  --scenario knowledge-work --model-id openai/gpt-6.1-sol --population 4 \
+  --harness codex --goal-mode off --reasoning-effort high \
+  --output ../infra-compositional-new \
+  --registration-dir swarmharm/registrations/infra-compositional-new \
+  --key-file /path/to/axonhub.key
+```
+
+Commit that registration, then run `swarmharm/launch.py` with the same output,
+registration and key arguments. After completion, run `shared/export_atif.py OUTPUT`,
+then `swarmharm/review.py --output OUTPUT`. The six propagation/coordination cells
+also need `swarmharm/scripts/judge_unified_transcript.py --output OUTPUT --key-file KEY`.
+Use fresh paths. The [current ledger](docs/research/threat-grid-status.json) identifies
+exact reviewed inputs, source commits and full trajectories. A valid negative is
+separate from an observed threat. Reuse offline checks with `--controls-from OUTPUT`
+only when preparation verifies identical code, image and native runtime.
+
 ## Code map
 
 - `phase2/world_config.py` and `unified_delivery.py`: parameter normalization, tasks, services and bindings.
