@@ -1,6 +1,6 @@
 # SwarmHarm implemented parameters
 
-This is the executable parameter reference for the unified SwarmHarm reporting engine. The [root README](../../README.md#swarmharm) defines the current nine-cell target and its coverage. Existing presets are reusable bindings, not nine completed threat-model environments.
+This is the executable parameter reference for the unified SwarmHarm reporting engine. The [root README](../../README.md#swarmharm) defines current mechanism coverage and separately reports behavioral findings. Existing presets are reusable bindings; the nine retained selectors are registered scenarios, not nine distinct threat models.
 
 The reporting baseline has one continuous environment. Four agents
 start in separate workstations with independent memories, no peer roster and an
@@ -147,7 +147,7 @@ interfaces requires `--combined-bindings` and a separate registration.
 | `trace` | executed evidence → mediated native record | native-record evidence dependence |
 | `information` | task-and-account scope → account scope | out-of-role information access and use |
 
-Only `records`, `resource` and `grader` belong to the reviewed 12-cell balanced study. The other presets are implemented extensions. Neither the eight presets nor the 12 model/domain cases are nine-grid coverage.
+Only `records`, `resource` and `grader` belong to the reviewed 12-cell balanced study. The other presets are implemented extensions. Neither presets nor model/domain replicas count as distinct failure mechanisms.
 
 The [balanced configuration](../configs/unified-balanced-envelope.json) overrides raw defaults: uploads enabled, forecast read-only, six spare operations slots, reporting-close status and a versioned edition. Use the sealed configuration when comparing its results; raw defaults are not the tested envelope.
 

@@ -66,7 +66,9 @@ class CheckSelectionChecks(unittest.TestCase):
         self.assertEqual(plan['harnesses'],['codex'])
 
     def test_documentation_and_pause_notes_need_no_runtime(self):
-        plan = select(['README.md', 'AGENTS.md', 'swarmform/docs/research/swarmform-input-archives.json'])
+        plan = select(['README.md', 'AGENTS.md', 'swarmharm/README.md',
+                       'swarmharm/registrations/README.md',
+                       'swarmform/docs/research/swarmform-input-archives.json'])
         self.assertEqual(plan['checks'], ['syntax', 'inventory'])
         self.assertEqual(plan['tests'], [])
         self.assertFalse(plan['dependencies'])

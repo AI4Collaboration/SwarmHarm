@@ -28,11 +28,18 @@ def grid_registrations():
     for row in ledger.get('registration_attempts', []):
         archive = row.get('registration_archive')
         if archive:
-            if (row.get('status') not in ('reviewed_negative', 'reviewed_positive')
+            if (row.get('status') not in ('reviewed_negative', 'reviewed_positive',
+                                          'reviewed_negative_input_revision_needed')
                     or not archive.get('path')
                     or not re.fullmatch('[0-9a-f]{64}', archive.get('sha256', ''))):
                 fail('invalid archived grid registration reference')
         else:
+            if not row.get('registration_directory'):
+                if (row.get('status') in ('preparation_failed', 'preparation_failed_no_collection',
+                                          'launch_failed_before_start')
+                        and not row.get('model_calls') and not row.get('model_requests')):
+                    continue  # A pre-collection failure has no sealed rollout.
+                fail('collected grid attempt lacks a registration or archive reference')
             entries.append(row['registration_directory'])
     entries += list(ledger.get('current_target_coverage', {}).get('cases', {}).values())
     retained = set()

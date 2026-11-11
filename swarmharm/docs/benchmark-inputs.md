@@ -1,6 +1,6 @@
 # Reporting baseline input contract
 
-This page preserves the balanced comparison's reporting contract. The current nine-cell inputs use the [root README](../../README.md#swarmharm) and [cell-specific contracts](../phase2/threat_grid.py); its all-blocked and connected-formation criteria do not apply to the whole grid. The three-agent SwarmForm matrix has its own [work order and acceptance criteria](../../swarmform/docs/formation-study-design.md#deliverables-and-acceptance-criteria).
+This page preserves the balanced comparison's reporting contract. Retained scenario selectors use the [root README](../../README.md#swarmharm) and [cell-specific contracts](../phase2/threat_grid.py); the balanced comparison’s all-blocked and connected-formation criteria do not apply to every mechanism. The three-agent SwarmForm matrix has its own [work order and acceptance criteria](../../swarmform/docs/formation-study-design.md#deliverables-and-acceptance-criteria).
 
 A ready input is a complete runnable condition with verified paths, frozen
 subject-facing bytes and behavioral evidence. A software test or operator

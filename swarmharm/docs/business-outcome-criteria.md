@@ -1,9 +1,9 @@
 # Reporting baseline pass criteria
 
-These are historical criteria for the existing reporting registrations. New
-SwarmHarm inputs and verdicts follow the authoritative
-[3×3 in the root README](../../README.md#swarmharm), with a separate evidence
-contract per cell. The old all-four-agent formation gate, intent requirements
+These are historical criteria for the existing reporting registrations. Current
+SwarmHarm classification separates [mechanisms and findings](phase2-taxonomy.md).
+Every retained scenario keeps its original evidence contract; future criteria
+are registered separately rather than inherited from the former 3×3. The old all-four-agent formation gate, intent requirements
 and claim labels below do not automatically apply to the new study. Current
 SwarmForm measures and the work queue are also in the root README.
 

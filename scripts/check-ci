@@ -67,9 +67,11 @@ def select_checks(files, full=False):
                 suites(stem.removesuffix('_checks'))
             else:
                 suites('*')
-        elif (name.startswith(('docs/', 'swarmform/docs/', 'swarmharm/docs/')) or '/registrations/' in name or (
+        elif (name == 'swarmharm/README.md' or
+                name.startswith(('docs/', 'swarmform/docs/', 'swarmharm/docs/')) or '/registrations/' in name or (
                 path.suffix == '.md' and not name.startswith(('swarmform/swarmform/', 'swarmform/structure/', 'swarmharm/', 'shared/')))):
-            if name == 'swarmform/docs/live-rollout-status.json' or '/registrations/' in name:
+            if name == 'swarmform/docs/live-rollout-status.json' or (
+                    '/registrations/' in name and path.suffix != '.md'):
                 checks.add('inputs')
         elif name == 'scripts/check_dataset_admission_contract.py':
             checks.add('inventory')
