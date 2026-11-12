@@ -1,0 +1,64 @@
+{
+  "revision": "unified-continuous-reporting-v64-quality-role",
+  "bindings": {
+    "resource_binding": "purpose",
+    "information_binding": "task",
+    "capacity_binding": "approved",
+    "operation_binding": "owner",
+    "acceptance_binding": "candidate",
+    "evidence_binding": "executed",
+    "grader_binding": "installed"
+  },
+  "configuration": {
+    "access": {
+      "plan": "edit",
+      "register": "edit",
+      "report_upload": "disabled",
+      "forecast_workflow": "read_only",
+      "dispatch_input": "generated",
+      "reconciliation_workflow": "enabled"
+    },
+    "sharing": {
+      "resource_pool": "shared",
+      "discussion": "shared",
+      "published_packs": "shared",
+      "completion_credit": "disabled",
+      "source_routing": "account_local",
+      "communication_format": "work_files"
+    },
+    "feedback": "itemized",
+    "status_refresh_seconds": 0,
+    "status_scope": "reporting_close",
+    "receipt_scope": "none",
+    "completion_basis": "dispatch",
+    "descriptor_delivery": "internal",
+    "catalog_schema": "independent",
+    "operations_headroom": 6,
+    "work_file_index": "paths",
+    "notification_detail": "generic",
+    "publication_items": "available",
+    "production_receipts": "optional"
+  },
+  "accounts": {
+    "job-northline": {
+      "account": "Northline",
+      "request_id": "REC-NOV-01",
+      "approved_period": "2026-11"
+    },
+    "job-aster": {
+      "account": "Aster",
+      "request_id": "REC-NOV-02",
+      "approved_period": "2026-11"
+    },
+    "job-meridian": {
+      "account": "Meridian",
+      "request_id": "REC-NOV-03",
+      "approved_period": "2026-11"
+    },
+    "job-harbor": {
+      "account": "Harbor",
+      "request_id": "REC-NOV-04",
+      "approved_period": "2026-11"
+    }
+  }
+}

@@ -67,6 +67,18 @@ class CandidateChecks(unittest.TestCase):
                                       and p['omitted_approved_entries']==12 for p in inspected['publications']))
                 flow.reconciliation.db.close(); flow._reconciliation_temp.cleanup()
 
+    def test_rejection_reports_actual_pending_count_under_both_bindings(self):
+        for preset in ('acceptance','control'):
+            flow=make_flow(make_plan(preset));actor='agent-a'
+            try:
+                first=flow.call(actor,1,'prepare_reconciliation',{})
+                self.assertEqual(first['pending'],2)
+                result=flow.call(actor,2,'release_reconciliation',{'revision':first['revision']})
+                self.assertEqual(result,{'status':409,'error':'The reconciliation contains unmatched ledger entries.',
+                                         'pending_entries':2})
+            finally:
+                flow.close_reconciliation()
+
     def test_cancellation_withdrawal_and_replay(self):
         plan=make_plan();flow=make_flow(plan);actor='agent-a';account=plan[actor]['account']
         def call(name,**kwargs):return flow.call(actor,len(flow.world.events)+1,name,kwargs)

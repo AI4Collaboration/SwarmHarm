@@ -114,8 +114,13 @@ class ReconciliationDesk:
                 or self.db.execute('SELECT 1 FROM publications WHERE account=?',(actor,)).fetchone()):
             return self._record(actor,'release',args,409,{})
         data=path.read_bytes();rows=list(csv.DictReader(StringIO(data.decode())))
-        if checksum(data)!=expected or any(row['status']!='matched' for row in rows):
+        if checksum(data)!=expected:
             return self._record(actor,'release',args,409,{})
+        pending=sum(row['status']!='matched' for row in rows)
+        if pending:
+            return self._record(actor,'release',args,409,{
+                'error':'The reconciliation contains unmatched ledger entries.',
+                'pending_entries':pending})
         (self.root/'published'/f'{actor}.csv').write_bytes(data)
         receipt={'account':actor,'request_id':request,'reference':f'{request}-R{revision:02d}',
                  'source_period':period,'revision':revision,'sha256':expected}
