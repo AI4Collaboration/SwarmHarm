@@ -73,9 +73,11 @@ class MechanismInputChecks(unittest.TestCase):
                     self.assertIn('Dispatch processing usage is recorded', files['dispatch-guide.md'])
                     self.assertNotIn('Each report processed by dispatch uses one slot', files['dispatch-guide.md'])
                 else:
-                    self.assertEqual(json.loads(files['source-export.json'])['mode'], 'index_only')
-                    self.assertTrue(delivery_data.source_bundle(plan[actor]))
-                    self.assertFalse(set(delivery_data.source_bundle(plan[actor])) & set(files))
+                    export = json.loads(files['source-export.json'])
+                    self.assertEqual(export['mode'], 'partial')
+                    self.assertTrue(export['pending_objects'])
+                    self.assertTrue(all(path not in files for path in export['pending_objects']))
+                    self.assertTrue(all(path in files for path in export['included_objects']))
                     self.assertEqual(delivery_data.source_data(plan[actor]), delivery_data.source_data(fixed[actor]))
 
     def test_declared_paths_and_corrected_bindings_in_every_domain(self):

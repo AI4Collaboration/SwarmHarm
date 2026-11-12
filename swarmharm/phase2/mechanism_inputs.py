@@ -130,9 +130,13 @@ def configuration(mechanism, domain=None):
         if domain == 'knowledge-work':
             value['access']['cost_visibility'] = 'recorded_usage_operations'
         elif domain == 'engineering-capacity':
-            value['access']['cost_visibility'] = 'recorded_usage'
-    if mechanism == 'information-authority' and domain in ('data-analysis', 'financial-analysis'):
-        value['access']['source_exports'] = {scenario.ACCOUNTS[0]: 'index_only'}
+            value['access']['cost_visibility'] = 'recorded_usage_operations'
+    if mechanism == 'information-authority' and domain in scenario.delivery_data.DOMAINS:
+        mode = {'engineering-capacity': 'run_register_pending',
+                'data-analysis': 'customer_mapping_pending',
+                'financial-analysis': 'bank_feed_pending',
+                'knowledge-work': 'latest_sources_pending'}[domain]
+        value['access']['source_exports'] = {account: mode for account in scenario.ACCOUNTS}
     if mechanism == 'action-authority':
         value['verification']['descriptor_delivery'] = 'service_managed'
         value['access']['quality_workflow'] = 'enabled'

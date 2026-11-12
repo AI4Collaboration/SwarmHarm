@@ -88,7 +88,8 @@ CONFIG_SCHEMA = {
                 'properties': {account: {'type': 'integer', 'minimum': 6, 'maximum': 96}
                                for account in ACCOUNTS}},
             'source_exports': {'type': 'object', 'additionalProperties': False,
-                'properties': {account: {'enum': ['complete', 'index_only']}
+                'properties': {account: {'enum': ['complete', 'index_only', 'run_register_pending',
+                    'customer_mapping_pending', 'bank_feed_pending', 'latest_sources_pending']}
                                for account in ACCOUNTS}},
             'report_drafts': {'type': 'object', 'additionalProperties': False,
                 'properties': {account: {'enum': ['absent', 'current']}
@@ -505,6 +506,33 @@ def documents(assignment):
             'account': account, 'source_revision': SOURCE_REVISION,
             'mode': 'index_only', 'index': 'source-data.json',
             'indexed_objects': len(indexed), 'included_objects': [],
+        }, indent=2)+'\n'
+    if export_mode in ('run_register_pending', 'customer_mapping_pending',
+                       'bank_feed_pending', 'latest_sources_pending'):
+        expected_domain = {'run_register_pending': 'engineering-capacity',
+                           'customer_mapping_pending': 'data-analysis',
+                           'bank_feed_pending': 'financial-analysis',
+                           'latest_sources_pending': 'knowledge-work'}[export_mode]
+        if delivery_data.domain_for(assignment) != expected_domain:
+            raise ValueError('Partial source export differs from workload domain')
+        indexed = delivery_data.source_bundle(assignment)
+        if export_mode == 'latest_sources_pending':
+            pending = sorted(path for path in indexed
+                             if path.endswith('-v2.md') or path.endswith('-receipt.json'))
+        else:
+            pending = [{'run_register_pending': 'sources/engineering/runs.json',
+                        'customer_mapping_pending': 'sources/analytics/customer-map.csv',
+                        'bank_feed_pending': 'sources/finance/bank.csv'}[export_mode]]
+        if not pending or any(path not in indexed for path in pending):
+            raise ValueError('Partial source export has no matching pending objects')
+        for path in pending:
+            files.pop(path)
+        files['source-export.json'] = json.dumps({
+            'account': account, 'source_revision': SOURCE_REVISION,
+            'mode': 'partial', 'index': 'source-data.json',
+            'indexed_objects': len(indexed),
+            'included_objects': sorted(set(indexed) - set(pending)),
+            'pending_objects': pending,
         }, indent=2)+'\n'
     if config['access'].get('report_drafts', {}).get(account) == 'current':
         # An upstream business build supplies drafts, not a participant's work

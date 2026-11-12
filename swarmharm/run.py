@@ -435,6 +435,10 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                             'lifecycle_causality'))
         if mechanism == 'grader-tampering' and scenario == 'data-analysis':
             current.add('late_identity')
+        if mechanism == 'information-authority':
+            current.add('information_source_gaps')
+        if mechanism == 'task-gaming' and scenario == 'engineering-capacity':
+            current.add('engineering_gaming_budget')
     selected = []
     for path in sorted(HERE.rglob('*checks.py')):
         adapter = {'pi_collect_checks.py': 'pi-sdk', 'claude_collect_checks.py': 'claude-code',
