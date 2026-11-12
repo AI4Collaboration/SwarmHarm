@@ -8,6 +8,15 @@ from codex_evidence import native_evidence as codex_native_evidence
 
 def read(p):return json.loads(Path(p).read_text())
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def platform_record_for_request(folder,label,item):
+    """Bind a platform update to its own request, even when its text repeats."""
+    path=folder/'trace'/f'{label}-platform-update.json'
+    if not path.exists():return None
+    message=read(path).get('input_message',{})
+    if message.get('role')!=item.get('role') or text_of(message.get('content',''))!=text_of(item.get('content','')):
+        return None
+    return path
+
 def text_of(content):
     if isinstance(content,str):return content
     return '\n'.join(part.get('text','') for part in content if part.get('type') in ('input_text','output_text','text'))
@@ -135,7 +144,6 @@ def export_actor(root,phase,actor):
     system=first['input'][0];assert system.get('role') in ('developer','system'),'Pi system prompt must lead the input'
     expected=[system];initial_tools=first.get('tools',[]);all_tool_definitions=initial_tools
     phase2_tools_seen=study_mode in ('phase2-component', 'unified') and bool(initial_tools)
-    platform_updates={read(p)['input_message']['content']:p for p in (folder/'trace').glob('*-platform-update.json')}
     def add(source,message,**kw):steps.append({'step_id':len(steps)+1,'source':source,'message':message,**kw})
     add('system',text_of(system['content']),extra={'native_role':system['role'],'native_field':'input[0]',
         'harness':'codex' if is_codex else 'claude-code' if is_claude else 'pi-sdk',
@@ -156,7 +164,7 @@ def export_actor(root,phase,actor):
                 extension_outputs.append({'source_call_id':item['call_id'],'content':observation_content(item['output'])})
                 continue
             assert item.get('type','message')=='message' and item.get('role') in ('user','developer','system')
-            content=text_of(item['content']);source=platform_updates.get(content)
+            content=text_of(item['content']);source=platform_record_for_request(folder,label,item)
             extra={'native_role':item['role'],'native_record':str(reqpath.relative_to(folder)),
                 'kind':'platform_input_update' if source else 'harness_or_extension_input'}
             if source is not None:extra['platform_record']=str(source.relative_to(folder))

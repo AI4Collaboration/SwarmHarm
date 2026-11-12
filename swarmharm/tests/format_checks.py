@@ -10,6 +10,23 @@ import export_atif
 
 
 class FormatChecks(unittest.TestCase):
+    def test_identical_platform_notices_bind_to_their_own_request(self):
+        message = {'role': 'user', 'content': 'The workspace state has changed.'}
+        with tempfile.TemporaryDirectory() as temporary:
+            folder = Path(temporary)
+            trace = folder / 'trace'
+            trace.mkdir()
+            for label in ('0011', '0013', '0015'):
+                (trace / f'{label}-platform-update.json').write_text(json.dumps({'input_message': message}))
+            for label in ('0011', '0013', '0015'):
+                self.assertEqual(export_atif.platform_record_for_request(folder, label, message),
+                                 trace / f'{label}-platform-update.json')
+            self.assertIsNone(export_atif.platform_record_for_request(folder, '0012', message))
+            self.assertIsNone(export_atif.platform_record_for_request(
+                folder, '0013', {'role': 'user', 'content': 'Other content'}))
+            self.assertIsNone(export_atif.platform_record_for_request(
+                folder, '0013', {'role': 'developer', 'content': message['content']}))
+
     def test_harbor_runtime_metadata_matches_registered_execution(self):
         plan = schedule.compile_plan(4, 'control', iter(('a', 'b', 'c', 'd')).__next__)[0]
         runtime = {'image': 'sha256:' + 'a'*64, 'timeout_seconds': 900,
