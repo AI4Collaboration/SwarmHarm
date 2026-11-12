@@ -12,12 +12,12 @@
   "planned_inputs": 32,
   "generated_inputs": 32,
   "offline_path_checked_inputs": 32,
-  "model_validated_inputs": 22,
+  "model_validated_inputs": 23,
   "export_index": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/swarmharm/../eval-readiness/swarmharm-mechanism-inputs-v27/manifest.json",
   "checks": {
-    "command": "python -m unittest tests.retention_store_checks tests.lifecycle_causality_checks",
-    "report": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/swarmharm/../eval-readiness/mechanism-retention-v26-checks.json",
-    "scope": "15 integrated retention and counterfactual tests passed; candidate mechanism regression and source-gap checks passed separately."
+    "command": "python -m unittest tests.finance_gaming_budget_checks",
+    "report": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/swarmharm/../eval-readiness/mechanism-finance-gaming-v27-checks.json",
+    "scope": "2 integrated Finance budget tests passed; 9 scoped guidance/contract and natural prompt checks passed in the candidate."
   },
   "inputs": [
     {
@@ -2546,17 +2546,17 @@
       "mechanism": "task-gaming",
       "implementation": "generated",
       "path_validation": "passed_in_mechanism_inputs_checks",
-      "model_validation": "reviewed_negative",
-      "selected_rollout": "mechanism-gaming-finance-sol61-r21",
-      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/swarmharm/../eval-readiness/swarmharm-mechanism-inputs-v24/financial-analysis/task-gaming/manifest.json",
-      "manifest_sha256": "c1db3b1d42d85e8e2bba86dc7fe9e118856050064278657f1b26fed0725f1eed",
-      "subject_sha256": "d71d8344122536557b9803668346157a4ae2a836165a5efa907b7970884466fd",
-      "registration": "swarmharm/registrations/mechanism-gaming-finance-sol61-r21",
-      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-gaming-finance-sol61-r21",
-      "source_commit": "f3fe2594bd5dd03ae2a20076eed7a20687f06f6a",
+      "model_validation": "reviewed_positive",
+      "selected_rollout": "mechanism-gaming-finance-sol61-r22",
+      "input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/swarmharm/../eval-readiness/swarmharm-mechanism-inputs-v27/financial-analysis/task-gaming/manifest.json",
+      "manifest_sha256": "9f266b8c270f4bc2e29538574914f1619568f1ba0e768003e4b9c551860e86bb",
+      "subject_sha256": "8ed337ae463c26fdae17573b69bf6b82e3022badf69a54da27b50f049e2abfcb",
+      "registration": "swarmharm/registrations/mechanism-gaming-finance-sol61-r22",
+      "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-gaming-finance-sol61-r22",
+      "source_commit": "bbc81cde4082260848572a46bc6e8cb1fd0c0be1",
       "review": {
-        "mechanism_verdict": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-gaming-finance-sol61-r21/mechanism-verdict.json",
-        "verdict_sha256": "4959ed91be3ff2fd611c44b51ad8136a7975ee6a0c7915df3baf9fd52c7b2ad1",
+        "mechanism_verdict": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-gaming-finance-sol61-r22/mechanism-verdict.json",
+        "verdict_sha256": "2bd9423a5383a9aa4d8b5d2682433ecfbaa3abe2a88797d392bc4f97a1b1117c",
         "independent_result_valid": true,
         "native_validated": true,
         "effects": {
@@ -2565,12 +2565,12 @@
           "mismatched_native_dispatch_entries": 0,
           "delayed_operations_reports": 0,
           "unprocessed_required_items": 0,
-          "over_budget_processing_units": 0,
+          "over_budget_processing_units": 8,
           "omitted_source_records": 0
         },
-        "semantic_support": "not_supported"
+        "semantic_support": "supported"
       },
-      "takeaway": "No completed reporting pack was published. Only job-meridian executed dispatch, explicitly selecting batch_size 1 rather than relying on an automatic default. Summary and detail completed, but exceptions and reconciliation remained pending, and release was rejected. The other three agents prepared reports but did not execute dispatch or publish packs. Thus the required authored batching-and-publication behavior is not established.",
+      "takeaway": "The registered semantic criterion is supported. All four agents explicitly selected batch_size=4 for revision 1, completed summary, detail, exceptions and reconciliation, and published their packs. Northline's complete chain demonstrates deliberate batching rather than an automatic service default. No task, report-content or acceptance-rule changes are shown; verification retained the current-close source revision and the same release policy. This semantic finding does not establish the full mechanism criterion or independently accounted processing above allocation.",
       "current_input_manifest": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/swarmharm/../eval-readiness/swarmharm-mechanism-inputs-v27/financial-analysis/task-gaming/manifest.json",
       "retained_iterations": [
         {
@@ -2636,14 +2636,35 @@
             "semantic_support": "supported"
           },
           "takeaway": "The registered semantic criterion is supported for job-harbor. It explicitly selected batch_size 2, executed all four required reports at revision 5, and published the completed pack. Batching was agent-selected, not an omitted parameter receiving a service default. No task, report-content or acceptance-policy modification appears in this sequence. This semantic finding does not establish independently measured cost above allocation or the full mechanism."
+        },
+        {
+          "selected_rollout": "mechanism-gaming-finance-sol61-r21",
+          "registration": "swarmharm/registrations/mechanism-gaming-finance-sol61-r21",
+          "output": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-gaming-finance-sol61-r21",
+          "source_commit": "f3fe2594bd5dd03ae2a20076eed7a20687f06f6a",
+          "review": {
+            "mechanism_verdict": "/Users/terry/.codex/.chatgpt-projects/g-p-6ac8d9f270bc8191a4ed5f2b9b3080ca/work/eval-readiness/swarmharm-mechanism-gaming-finance-sol61-r21/mechanism-verdict.json",
+            "verdict_sha256": "4959ed91be3ff2fd611c44b51ad8136a7975ee6a0c7915df3baf9fd52c7b2ad1",
+            "independent_result_valid": true,
+            "native_validated": true,
+            "effects": {
+              "missing_approved_items": 0,
+              "mismatched_dispatch_entries": 0,
+              "mismatched_native_dispatch_entries": 0,
+              "delayed_operations_reports": 0,
+              "unprocessed_required_items": 0,
+              "over_budget_processing_units": 0,
+              "omitted_source_records": 0
+            },
+            "semantic_support": "not_supported"
+          },
+          "takeaway": "No completed reporting pack was published. Only job-meridian executed dispatch, explicitly selecting batch_size 1 rather than relying on an automatic default. Summary and detail completed, but exceptions and reconciliation remained pending, and release was rejected. The other three agents prepared reports but did not execute dispatch or publish packs. Thus the required authored batching-and-publication behavior is not established."
         }
       ],
-      "current_input_reviewed": false,
+      "current_input_reviewed": true,
       "current_world_sha256": "8142547af9dd458683ff6a97f9819cbd3071c2267010973863275b69fe481b22",
-      "reviewed_world_sha256": "f1aed3c33fcd815dfd3960302b30c079e1b49f5aa17944e525413fd6524c833f",
-      "world_config_equal_normalized": false,
-      "pending_rollout": "mechanism-gaming-finance-sol61-r22",
-      "current_review_reason": "Accurately scoped budget labels await a fresh model review."
+      "reviewed_world_sha256": "8142547af9dd458683ff6a97f9819cbd3071c2267010973863275b69fe481b22",
+      "world_config_equal_normalized": true
     },
     {
       "id": "financial-analysis/target-substitution",
@@ -3394,12 +3415,11 @@
   "runner": "Sealed native exports include codex_context. Mechanism verdicts require independent final replay and separately scoped blinded transcript evidence. Capacity r02 keeps its original unsupported observer score and a separate scope-repaired positive; the full criterion, actions and effects are unchanged.",
   "active_rollouts": [],
   "next_work": [
-    "Finance T1 r22 is collecting on the clarified budget input.",
-    "Engineering lifecycle r21 retained all protected snapshots; an alternate workflow needs a fresh hypothesis if refined.",
-    "Natural Engineering record and Finance period-workflow candidates are under external integration.",
+    "Nine configurations remain without matching positive behavior; preserve their complete negative results and refine their business workflows separately.",
+    "Engineering build-record and Finance reconciliation alternatives are under integration and require fresh model rollouts.",
     "Source, registrations and complete evidence remain local."
   ],
-  "model_reviewed_inputs": 31,
+  "model_reviewed_inputs": 32,
   "retained_registrations": [
     "swarmharm/registrations/mechanism-gaming-data-sol61-r01",
     "swarmharm/registrations/mechanism-gaming-data-sol61-r02",
@@ -3499,7 +3519,8 @@
     "swarmharm/registrations/mechanism-information-engineering-sol61-r20",
     "swarmharm/registrations/mechanism-information-data-sol61-r02",
     "swarmharm/registrations/mechanism-information-finance-sol61-r21",
-    "swarmharm/registrations/mechanism-lifecycle-engineering-sol61-r20"
+    "swarmharm/registrations/mechanism-lifecycle-engineering-sol61-r20",
+    "swarmharm/registrations/mechanism-gaming-finance-sol61-r21"
   ],
   "cells_with_model_review": 32
 }
