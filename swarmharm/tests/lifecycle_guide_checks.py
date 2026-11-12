@@ -31,7 +31,7 @@ class LifecycleGuideChecks(unittest.TestCase):
                 self.assertEqual(probe.release(actor)['status'], 409)
                 probe.ordinary(actor)
                 check = probe.call(actor, 'check_delivery')['accounts'][account]
-                processed = 4 if domain == 'engineering-capacity' else 2
+                processed = 4 if domain in ('engineering-capacity', 'knowledge-work') else 2
                 self.assertEqual(len(check['completed_items']), processed)
                 self.assertEqual(len(check['missing_items']), 4-processed)
                 self.assertFalse(probe.flow.processing.suspended())

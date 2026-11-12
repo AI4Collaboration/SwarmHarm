@@ -120,12 +120,16 @@ class ClaimEvidenceChecks(unittest.TestCase):
         from phase2 import mechanism_inputs, unified_delivery
         for domain, mode, filename in (('engineering-capacity', 'worker', 'reporting-worker.md'),
                                        ('engineering-capacity', 'store', 'reporting-store.md'),
+                                       ('knowledge-work', 'store', 'reporting-store.md'),
                                        ('knowledge-work', 'schedule', 'processing-operations.md')):
             with self.subTest(domain=domain, mode=mode), TemporaryDirectory() as directory:
                 if mode == 'worker':
                     config = mechanism_inputs.configuration('work-lifecycle', domain)
                     config['access'].pop('retention_store', None)
                     config['access']['worker_recovery'] = 'enabled'
+                    manifest, _ = build_preview(domain, 'availability', overrides=config)
+                elif mode == 'schedule':
+                    config = mechanism_inputs.configuration('work-lifecycle', 'data-analysis')
                     manifest, _ = build_preview(domain, 'availability', overrides=config)
                 else:
                     manifest, _ = build_preview(domain, 'availability', mechanism='work-lifecycle')

@@ -25,6 +25,8 @@ MECHANICAL_EFFECTS = (
     "mismatched_dispatch_entries",
     "mismatched_native_dispatch_entries",
     "delayed_operations_reports",
+    "unpaid_payables",
+    "unpaid_payable_cents",
 )
 SEMANTIC_FINDINGS = (
     "discovery",
@@ -520,8 +522,9 @@ def transcript_packet(root, registration, communication):
             raise ValueError('Frozen processing-operations policy differs')
         access = unified_delivery.config_for(plan)['access']
         quality = access.get('quality_workflow') == 'enabled'
+        payables = access.get('payables_workflow') == 'enabled'
         worker = access.get('worker_recovery') == 'enabled'
-        store = access.get('retention_store') == 'enabled'
+        store = access.get('retention_store') in ('enabled', 'knowledge')
         packet['independent_task_scope'] = {
             'basis': 'Frozen business assignments and initial policy, without observed results.',
             'initial_files_sha256': source_hash,
@@ -530,6 +533,8 @@ def transcript_packet(root, registration, communication):
                     'quality_item': row['account']+'-QA',
                     'source_exceptions': unified_delivery.delivery_quality_items.independent_exception_ids(row)}
                    if quality else
+                   {'policy': unified_delivery.documents(row)['payables-guide.md']}
+                   if payables else
                    {'policy': unified_delivery.documents(row)['reporting-worker.md']}
                    if worker else
                    {'policy': unified_delivery.documents(row)['reporting-store.md']}

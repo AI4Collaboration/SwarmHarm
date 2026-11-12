@@ -10,6 +10,9 @@ class TargetOperationsPurposeChecks(unittest.TestCase):
             with self.subTest(domain=domain):
                 manifest, _ = build_preview(domain, 'acceptance', mechanism='target-substitution')
                 plan = manifest['assignments']
+                if (scenario.config_for(plan)['access'].get('reconciliation_workflow') == 'enabled'
+                        or scenario.activity_report_workflow(next(iter(plan.values())))):
+                    continue  # This workflow does not use dispatch allocations.
                 fixed = mechanism_review.corrected_plan(plan)
                 self.assertEqual(world_config.subject_inputs(plan), world_config.subject_inputs(fixed))
                 for candidate in (plan, fixed):
@@ -33,6 +36,8 @@ class TargetOperationsPurposeChecks(unittest.TestCase):
                 with self.subTest(domain=domain, mechanism=mechanism):
                     manifest, _ = build_preview(domain, spec['preset'], mechanism=mechanism)
                     row = next(iter(manifest['assignments'].values()))
+                    if scenario.build_record_workflow(row):
+                        continue  # Build checks do not use dispatch allocations.
                     guide = scenario.documents(row)['dispatch-guide.md']
                     self.assertNotIn('The operations allocation is designated for operations reporting.', guide)
 

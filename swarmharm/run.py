@@ -423,13 +423,23 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                    'unified_notification', 'unified_runtime', 'continuous_collect',
                    'local_source', 'workload_source', 'format', 'codex_collect'}
         if mechanism == 'target-substitution':
-            current.add('target_operations_purpose')
+            if scenario != 'data-analysis':current.add('target_operations_purpose')
             current.add('knowledge_target' if scenario == 'knowledge-work' else
                         'engineering_target' if scenario == 'engineering-capacity' else
-                        'finance_target' if scenario == 'financial-analysis' else
-                        'target_sequential' if scenario == 'data-analysis' else 'target_group')
+                        'reconciliation_candidate' if scenario == 'financial-analysis' else
+                        'activity_report_path' if scenario == 'data-analysis' else 'target_group')
+            if scenario == 'financial-analysis':
+                current.add('reconciliation_transport')
+            if scenario == 'data-analysis':
+                current.add('activity_report_collector')
         if mechanism == 'work-lifecycle':
             current.update(('lifecycle_guide', 'claim_evidence'))
+        if mechanism == 'work-lifecycle' and scenario == 'knowledge-work':
+            current.add('knowledge_lifecycle_store')
+        if mechanism == 'work-lifecycle' and scenario == 'data-analysis':
+            current.add('data_lifecycle_pipeline')
+        if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
+            current.update(('finance_payables', 'finance_payables_transport'))
         if mechanism == 'work-lifecycle' and scenario == 'engineering-capacity':
             current.update(('engineering_lifecycle_guide', 'engineering_lifecycle_schedule',
                             'lifecycle_causality', 'retention_store'))
@@ -439,6 +449,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             current.add('information_source_gaps')
         if mechanism == 'task-gaming' and scenario == 'engineering-capacity':
             current.add('engineering_gaming_budget')
+        if mechanism == 'evidence-tampering' and scenario == 'engineering-capacity':
+            current.update(('build_record_path', 'build_record_collector'))
         if mechanism == 'task-gaming' and scenario == 'financial-analysis':
             current.add('finance_gaming_budget')
     selected = []
@@ -564,6 +576,12 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     unified_delivery.world_config.selection(world_config, binding_preset,
                                             combined=combined_bindings)
     delivery_config, _ = unified_delivery.world_config.components(world_config)
+    if (delivery_config['access'].get('activity_report_workflow') == 'enabled'
+            and (mechanism != 'target-substitution' or scenario != 'data-analysis')):
+        raise ValueError('Activity report requires Data Analysis target-substitution')
+    if (delivery_config['access'].get('build_record_workflow') == 'enabled'
+            and (mechanism != 'evidence-tampering' or scenario != 'engineering-capacity')):
+        raise ValueError('Build-record configuration requires Engineering evidence-tampering')
     if comparison_design == balanced_study.NAME:
         if scenario not in balanced_study.DOMAINS:
             raise ValueError('Balanced comparison uses Knowledge Work or Engineering')
@@ -733,6 +751,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         audit['natural'][actor]['tools'] += continuation_module.tool_definitions(
             family=component_family,
             **({'continuous_workflow': True,
+                'build_record_workflow': unified_delivery.build_record_workflow(phase2_plan[actor]),
+                'activity_report_workflow': unified_delivery.activity_report_workflow(phase2_plan[actor]),
                 'forecast_workflow': unified_delivery.config_for(
                     phase2_plan)['access']['forecast_workflow'],
                 'source_routing': unified_delivery.config_for(
@@ -746,7 +766,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'retention_store': unified_delivery.config_for(phase2_plan)['access'].get('retention_store', 'disabled'),
                 'report_upload': unified_delivery.config_for(phase2_plan)['access']['report_upload'],
                 'publication_items': unified_delivery.config_for(phase2_plan).get('publication_items', 'available'),
-                'population_plan': unified_delivery.config_for(phase2_plan)['access'].get('population_plan', 'approved')}),
+                'population_plan': unified_delivery.config_for(phase2_plan)['access'].get('population_plan', 'approved'),
+                'reconciliation_workflow': unified_delivery.config_for(phase2_plan)['access'].get('reconciliation_workflow', 'disabled'),
+                'payables_workflow': unified_delivery.config_for(phase2_plan)['access'].get('payables_workflow','disabled')}),
             include_subject_goal=False,
             **({'proof_stage': proof_stage} if proof_stage != 'off' else {}))
     save(root/'initial-input-audit.json', audit)
@@ -1599,7 +1621,14 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     unified_delivery.world_config.verify_input_contract(
         reg['phase2']['assignments'], reg['phase2'].get('unified_input_contract'))
     from phase2 import delivery_paths
-    path_validation = delivery_paths.audit(reg['phase2']['assignments'])
+    if unified_delivery.activity_report_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.activity_report.admission import validate
+        path_validation = validate(reg['phase2']['assignments'])
+    elif unified_delivery.build_record_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.build_record.admission import validate
+        path_validation = validate(reg['phase2']['assignments'])
+    else:
+        path_validation = delivery_paths.audit(reg['phase2']['assignments'])
     require(reg['phase2'].get('path_validation') == path_validation,
             'Registered completion paths differ; prepare fresh inputs.')
     if 'threat_grid' not in reg and 'mechanism_contract' not in reg:
@@ -1677,7 +1706,15 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     cleanup=[]
     def phase(name):
         plan=reg['plan'][name];world=lab.World(plan,root/name/'operator',reg.get('topology'));states={};histories={};starts={}
-        extension=continuation_module.Continuation(world,load(root/'phase2-plan.json'))
+        extension_plan=load(root/'phase2-plan.json')
+        if unified_delivery.activity_report_workflow(next(iter(extension_plan.values()))):
+            from phase2.activity_report.unified_bridge import UnifiedActivityBridge
+            extension=UnifiedActivityBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        elif unified_delivery.build_record_workflow(next(iter(extension_plan.values()))):
+            from phase2.build_record.unified_bridge import UnifiedBuildBridge
+            extension=UnifiedBuildBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        else:
+            extension=continuation_module.Continuation(world,extension_plan)
         phase2_activation=None;termination_reason='quiescence'
         events=agent_runtime.new_queue();agents={}
         shell_pool=ThreadPoolExecutor(max_workers=budget['active_contexts_natural'])
@@ -1687,6 +1724,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         turn_records={};executed_calls={}
         phase2_definitions = continuation_module.tool_definitions(
             **({'continuous_workflow': True,
+                'build_record_workflow': unified_delivery.build_record_workflow(next(iter(extension.plan.values()))),
+                'activity_report_workflow': unified_delivery.activity_report_workflow(next(iter(extension.plan.values()))),
                 'forecast_workflow': extension.config['access']['forecast_workflow'],
                 'source_routing': extension.config['sharing']['source_routing'],
                 'catalog_schema': extension.config.get('catalog_schema', 'independent'),
@@ -1697,7 +1736,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'retention_store': extension.config['access'].get('retention_store', 'disabled'),
                 'report_upload': extension.config['access']['report_upload'],
                 'publication_items': extension.config.get('publication_items', 'available'),
-                'population_plan': extension.config['access'].get('population_plan', 'approved')}),
+                'population_plan': extension.config['access'].get('population_plan', 'approved'),
+                'reconciliation_workflow': extension.config['access'].get('reconciliation_workflow', 'disabled'),
+                'payables_workflow': extension.config['access'].get('payables_workflow','disabled')}),
             **({'family': reg['phase2']['component_family'],
                 'include_subject_goal': bool(reg.get('subject_goal'))}))
         phase2_tool_names=[tool['name'] for tool in phase2_definitions]
@@ -2434,6 +2475,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     extension.records_link.close()
 
             export()
+            if hasattr(extension, 'close_reconciliation'):
+                extension.close_reconciliation()
             save(root/name/'actors.json',states)
         return states,world.summary()
     def preflight(provider,model):

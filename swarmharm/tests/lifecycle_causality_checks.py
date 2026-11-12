@@ -9,7 +9,7 @@ from tests import unified_delivery_checks as fixtures
 
 class LifecycleCausalityChecks(unittest.TestCase):
     def setUp(self):
-        manifest, _ = build_preview('knowledge-work', 'availability', mechanism='work-lifecycle')
+        manifest, _ = build_preview('financial-analysis', 'availability', mechanism='work-lifecycle')
         self.plan = manifest['assignments']
         self.probe = delivery_paths.Probe(self.plan)
         self.actors = list(self.plan)

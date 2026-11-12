@@ -105,6 +105,12 @@ def verify_frozen_evaluator(registration):
     if 'mechanism_contract' in registration:
         paths += ('swarmharm/phase2/mechanism_inputs.py', 'swarmharm/phase2/mechanism_review.py',
                   'swarmharm/phase2/delivery_paths.py')
+    if any(row.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') == 'enabled'
+           for row in registration.get('phase2', {}).get('assignments', {}).values()):
+        paths += ('swarmharm/phase2/delivery_reconciliation.py',)
+    if any(row.get('delivery_config', {}).get('access', {}).get('payables_workflow') == 'enabled'
+           for row in registration.get('phase2', {}).get('assignments', {}).values()):
+        paths += ('swarmharm/phase2/delivery_payables.py',)
     paths += ("swarmharm/phase2/unified_delivery.py",
               "swarmharm/phase2/claim_evidence.py",
               "swarmharm/phase2/delivery_data.py",
@@ -126,6 +132,16 @@ def verify_frozen_evaluator(registration):
     paths += ("swarmharm/phase2/delivery_notes.py",
               "swarmharm/phase2/delivery_receipts.py",
               "swarmharm/phase2/communication_evidence.py")
+    assignments = registration.get('phase2', {}).get('assignments', {})
+    if assignments and importlib.import_module('phase2.unified_delivery').build_record_workflow(next(iter(assignments.values()))):
+        paths += tuple('swarmharm/phase2/build_record/'+name for name in (
+            '__init__.py','admission.py','build_desk.py','harness_adapter.py',
+            'independent_audit.py','record_monitor.py',
+            'semantic_packet.py','unified_bridge.py','production_review.py'))
+    if assignments and importlib.import_module('phase2.unified_delivery').activity_report_workflow(next(iter(assignments.values()))):
+        paths += tuple('swarmharm/phase2/activity_report/'+name for name in (
+            '__init__.py','activity_desk.py','admission.py','bridge.py','independent_review.py',
+            'production_review.py','semantic_packet.py','unified_bridge.py'))
     for relative in paths:
         if hashes.get(relative) != digest(REPO / relative):
             raise RuntimeError(f"Evaluator differs from frozen registration: {relative}")
@@ -1469,7 +1485,16 @@ def review(root, destination=None):
     collection_status = completion["status"]
     collection_complete = apply_collection_status(phase1, collection_status)
     integrated_module = importlib.import_module('phase2.unified_delivery')
-    integrated = integrated_module.assess(
+    is_build_record = integrated_module.build_record_workflow(next(iter(registration['phase2']['assignments'].values())))
+    is_activity_report = integrated_module.activity_report_workflow(next(iter(registration['phase2']['assignments'].values())))
+    if is_activity_report:
+        from phase2.activity_report.production_review import assess as assess_activity
+        integrated = assess_activity(root, registration, world)
+    elif is_build_record:
+        from phase2.build_record.production_review import assess as assess_build
+        integrated = assess_build(root, registration, world)
+    else:
+        integrated = integrated_module.assess(
         registration,
         world,
         states,
@@ -1527,9 +1552,19 @@ def review(root, destination=None):
     result['communication']['evidence_file'] = 'communication-evidence.json'
     result['communication']['evidence_sha256'] = digest(root/'communication-evidence.json')
     from phase2 import claim_evidence
-    action = claim_evidence.action_monitor(root, registration, integrated)
+    action = (integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
+              claim_evidence.action_monitor(root, registration, integrated))
     save(root/'action-monitor.json', action)
-    packet = claim_evidence.transcript_packet(root, registration, evidence)
+    if is_activity_report:
+        from phase2.activity_report.semantic_packet import packet as activity_packet
+        packet = activity_packet({actor:root/'natural'/actor/'agent/trajectory.json'
+                                  for actor in registration['plan']['natural']}, evidence)
+    elif is_build_record:
+        from phase2.build_record.semantic_packet import packet as build_packet
+        packet = build_packet({actor:root/'natural'/actor/'agent/trajectory.json'
+                               for actor in registration['plan']['natural']}, evidence)
+    else:
+        packet = claim_evidence.transcript_packet(root, registration, evidence)
     save(root/'transcript-judge-input.json', packet)
     result['claim_measurement'] = {
         'action_monitor': 'action-monitor.json',
@@ -1551,8 +1586,15 @@ def review(root, destination=None):
                     and digest(root/row['path']) == row.get('sha256') for row in rows))
     if 'mechanism_contract' in registration:
         from phase2 import mechanism_review
-        mechanism = mechanism_review.review(registration, world, integrated,
-            root/'natural', native_validated=native_validated)
+        if is_activity_report:
+            from phase2.activity_report.production_review import mechanical_review
+            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
+        elif is_build_record:
+            from phase2.build_record.production_review import mechanical_review
+            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
+        else:
+            mechanism = mechanism_review.review(registration, world, integrated,
+                root/'natural', native_validated=native_validated)
         mechanism['collection_complete'] = collection_complete
         mechanism['input_behavior_validated'] &= collection_complete and not any(
             result[key] for key in ('provider_errors', 'budget_timeouts', 'provider_filters'))

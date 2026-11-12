@@ -30,7 +30,8 @@ def normalize(value=None, *, preset='control', delivery=None):
         result['verification']['quota_meter'] = bindings['meter_binding']
     if ('lifecycle_binding' in bindings or cfg['access'].get('job_scope') == 'shared_window'
             or cfg['access'].get('worker_recovery') == 'enabled'
-            or cfg['access'].get('retention_store') == 'enabled'):
+            or cfg['access'].get('retention_store') in ('enabled', 'knowledge')
+            or cfg['access'].get('payables_workflow') == 'enabled'):
         result['verification']['job_lifecycle'] = bindings.get('lifecycle_binding', 'required')
     optional_observations = (office_history.FIELD, 'workstation_processes', 'notification_scope', 'notification_detail', 'work_file_index', 'activity_scope', 'library_metadata', 'library_navigation', 'library_guide', 'library_connections', 'preview_records', 'check_summary', 'budget_view')
     for field in optional_observations:
@@ -88,7 +89,7 @@ def components(world):
     access, coupling, verification, observation = (world[key]
         for key in ('access', 'coupling', 'verification', 'observation'))
     config = {'access': {key: access[key] for key in (
-                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'job_layout', 'population_plan', 'job_scope', 'cost_visibility', 'analytics_snapshot', 'quality_workflow', 'worker_recovery', 'retention_store')
+                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'job_layout', 'population_plan', 'job_scope', 'cost_visibility', 'analytics_snapshot', 'quality_workflow', 'worker_recovery', 'retention_store', 'build_record_workflow', 'reconciliation_workflow', 'activity_report_workflow', 'payables_workflow')
                   if key in access},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit',
@@ -155,6 +156,8 @@ def subject_inputs(plan):
     return {'tasks': {actor: scenario.task(row) for actor, row in plan.items()},
             'tools': scenario.tool_definitions(
                 continuous_workflow=bool(next(iter(plan.values())).get('continuous_workflow')),
+                build_record_workflow=scenario.build_record_workflow(next(iter(plan.values()))),
+                activity_report_workflow=scenario.activity_report_workflow(next(iter(plan.values()))),
                 forecast_workflow=config['access']['forecast_workflow'],
                 source_routing=config['sharing']['source_routing'],
                 catalog_schema=config.get('catalog_schema', 'independent'),
@@ -165,10 +168,17 @@ def subject_inputs(plan):
                 retention_store=config['access'].get('retention_store', 'disabled'),
                 report_upload=config['access']['report_upload'],
                 publication_items=config.get('publication_items', 'available'),
-                population_plan=config['access'].get('population_plan', 'approved')),
+                population_plan=config['access'].get('population_plan', 'approved'),
+                reconciliation_workflow=config['access'].get('reconciliation_workflow', 'disabled'),
+                payables_workflow=config['access'].get('payables_workflow', 'disabled')),
             'initial_files': scenario.initial_files(plan),
-            'business_data': {actor: scenario.delivery_data.source_data(row)
-                              for actor, row in plan.items()}}
+            'business_data': (scenario.truth_for(plan)['accounts'] if config['access'].get('payables_workflow') == 'enabled' else
+                {actor: {'request_id':scenario.delivery_reconciliation.REQUESTS[row['account']],
+                 'approved_period':scenario.delivery_reconciliation.APPROVED,
+                 'source_periods':list(scenario.delivery_reconciliation.PERIODS)} for actor,row in plan.items()}
+                if config['access'].get('reconciliation_workflow') == 'enabled' else
+                scenario.truth_for(plan)['accounts'] if (scenario.build_record_workflow(next(iter(plan.values()))) or scenario.activity_report_workflow(next(iter(plan.values())))) else
+                {actor: scenario.delivery_data.source_data(row) for actor, row in plan.items()})}
 
 
 def input_contract(plan, *, combined=False):

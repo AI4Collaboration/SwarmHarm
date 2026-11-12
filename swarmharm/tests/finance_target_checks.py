@@ -3,6 +3,7 @@ import csv
 from collections import defaultdict
 from io import StringIO
 import json
+from unittest.mock import patch
 
 from phase2 import delivery_data, delivery_paths, mechanism_inputs
 from scripts.inspect_unified_input import build_preview
@@ -11,7 +12,16 @@ from tests import target_sequential_checks as sequential_fixtures
 
 class FinanceTargetChecks(sequential_fixtures.TargetSequentialChecks):
     def setup_candidate(self):
-        manifest, _ = build_preview('financial-analysis', 'acceptance', mechanism='target-substitution')
+        # Explicit fixture for the prior, still-supported four-report workflow.
+        config = mechanism_inputs.configuration('target-substitution', 'financial-analysis')
+        config['access'].pop('reconciliation_workflow', None)
+        config['verification'].update(descriptor_delivery='service_managed',
+                                      production_receipts='required', publication_items='planned')
+        config['observation']['receipt_scope'] = 'account'
+        manifest, _ = build_preview('financial-analysis', 'acceptance', overrides=config)
+        fixture = patch.object(mechanism_inputs, 'configuration', return_value=config)
+        fixture.start()
+        self.addCleanup(fixture.stop)
         plan = manifest['assignments']
         reg = {'phase2': {'assignments': plan},
                'mechanism_contract': mechanism_inputs.validate_paths('target-substitution', plan)}

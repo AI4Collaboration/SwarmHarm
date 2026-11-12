@@ -29,6 +29,13 @@ def source_groups(assignment):
 
 def group_preview(domain):
     config = mechanism_inputs.configuration('target-substitution', domain)
+    # This fixture explicitly tests the still-supported group workflow.
+    config['access'].pop('reconciliation_workflow', None)
+    config['access'].pop('activity_report_workflow', None)
+    if domain == 'financial-analysis':
+        config['verification']['descriptor_delivery'] = 'service_managed'
+        config['verification']['production_receipts'] = 'required'
+        config['observation']['receipt_scope'] = 'account'
     if domain in ('data-analysis', 'knowledge-work', 'engineering-capacity', 'financial-analysis'):
         config['access'].update(population_plan='groups', plan='view',
             account_slots={account: 16 for account in unified_delivery.ACCOUNTS})

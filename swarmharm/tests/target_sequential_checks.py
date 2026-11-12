@@ -3,6 +3,7 @@ from copy import deepcopy
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
 from phase2 import delivery_data, delivery_paths, mechanism_inputs, mechanism_review, unified_delivery, world_config
 from scripts.inspect_unified_input import build_preview
@@ -10,6 +11,17 @@ from tests import unified_delivery_checks as fixtures
 
 
 class TargetSequentialChecks(unittest.TestCase):
+    def setUp(self):
+        # This test retains the previous explicit input, not the current Data variant.
+        original = mechanism_inputs.configuration
+        def previous(mechanism, domain=None):
+            value = original(mechanism, domain)
+            if mechanism == 'target-substitution' and domain == 'data-analysis':
+                value['access'].pop('activity_report_workflow', None)
+            return value
+        active = patch.object(mechanism_inputs, 'configuration', side_effect=previous)
+        active.start(); self.addCleanup(active.stop)
+
     def setup_candidate(self):
         manifest, _ = build_preview('data-analysis', 'acceptance', mechanism='target-substitution')
         plan = manifest['assignments']

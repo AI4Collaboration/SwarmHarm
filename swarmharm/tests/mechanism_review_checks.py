@@ -35,8 +35,8 @@ class MechanismReviewChecks(unittest.TestCase):
             patcher.start()
             self.addCleanup(patcher.stop)
         else:
-            manifest, _ = build_preview('knowledge-work', mechanism_inputs.MECHANISMS[mechanism]['preset'],
-                                         mechanism=mechanism)
+            manifest, _ = build_preview('financial-analysis' if mechanism == 'work-lifecycle' else 'knowledge-work',
+                                         mechanism_inputs.MECHANISMS[mechanism]['preset'], mechanism=mechanism)
         plan = manifest['assignments']
         reg = {'phase2': {'assignments': plan},
                'mechanism_contract': mechanism_inputs.validate_paths(mechanism, plan)}
@@ -247,6 +247,10 @@ class MechanismReviewChecks(unittest.TestCase):
                 # Exercise the group-population binding explicitly. Data Analysis
                 # now defaults to an incremental report workflow instead.
                 config = mechanism_inputs.configuration('target-substitution', domain)
+                # Test the historical group binding independently of the current
+                # Finance reconciliation workflow.
+                config['access'].pop('reconciliation_workflow', None)
+                config['access'].pop('activity_report_workflow', None)
                 if domain in ('data-analysis', 'knowledge-work', 'engineering-capacity', 'financial-analysis'):
                     config['access'].update(population_plan='groups', plan='view',
                         account_slots={account: 16 for account in scenario.ACCOUNTS})
@@ -406,7 +410,7 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertEqual(probe.flow.processing.allocations['Quality Review'], 0)
 
     def test_account_jobs_support_ordinary_pause_and_resume_without_creating_capacity(self):
-        manifest, _ = build_preview('knowledge-work', 'availability', mechanism='work-lifecycle')
+        manifest, _ = build_preview('financial-analysis', 'availability', mechanism='work-lifecycle')
         plan = manifest['assignments']
         for binding in (plan, mechanism_review.corrected_plan(plan)):
             with self.subTest(binding=scenario.preset_for(binding)):
@@ -433,7 +437,7 @@ class MechanismReviewChecks(unittest.TestCase):
                 self.assertEqual(foreign['status'], 409 if scenario.preset_for(binding) == 'control' else 200)
 
     def test_lifecycle_scope_and_required_work_are_separate(self):
-        manifest, _ = build_preview('knowledge-work', 'availability', mechanism='work-lifecycle')
+        manifest, _ = build_preview('financial-analysis', 'availability', mechanism='work-lifecycle')
         plan = manifest['assignments']
         fixed = mechanism_review.corrected_plan(plan)
         self.assertEqual(scenario.initial_files(plan), scenario.initial_files(fixed))
@@ -468,7 +472,7 @@ class MechanismReviewChecks(unittest.TestCase):
             state='suspended', note='Schedule maintenance')['status'], 403)
 
     def test_foreign_account_job_edit_is_not_a_cause_of_operations_delay(self):
-        manifest, _ = build_preview('knowledge-work', 'availability', mechanism='work-lifecycle')
+        manifest, _ = build_preview('financial-analysis', 'availability', mechanism='work-lifecycle')
         plan = manifest['assignments']
         probe = delivery_paths.Probe(plan)
         account_actor, operations_actor = list(plan)[:2]
@@ -491,7 +495,7 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertEqual([row['job'] for row in result['authored_actions']], ['OPS-01'])
 
     def test_lifecycle_restoration_before_consumption_prevents_final_interruption(self):
-        manifest, _ = build_preview('knowledge-work', 'availability', mechanism='work-lifecycle')
+        manifest, _ = build_preview('financial-analysis', 'availability', mechanism='work-lifecycle')
         plan = manifest['assignments']
         probe = delivery_paths.Probe(plan)
         actor = next(iter(plan))
@@ -530,7 +534,7 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertFalse(result['composition']['each_actor_alone_harmless'])
 
     def test_processing_read_acknowledges_exact_schedule_state(self):
-        manifest, _ = build_preview('knowledge-work', 'availability', mechanism='work-lifecycle')
+        manifest, _ = build_preview('financial-analysis', 'availability', mechanism='work-lifecycle')
         probe = delivery_paths.Probe(manifest['assignments'])
         actor = next(iter(probe.flow.plan))
         before = probe.flow.activity_signal(actor)
@@ -592,13 +596,15 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertNotIn('target_group_checks', knowledge)
         data_target = {path.stem for path in run.preparation_check_paths(
             'codex', mechanism='target-substitution', scenario='data-analysis')}
-        self.assertIn('target_sequential_checks', data_target)
+        self.assertIn('activity_report_path_checks', data_target)
+        self.assertNotIn('target_sequential_checks', data_target)
         engineering = {path.stem for path in run.preparation_check_paths(
             'codex', mechanism='target-substitution', scenario='engineering-capacity')}
         self.assertIn('engineering_target_checks', engineering)
         finance = {path.stem for path in run.preparation_check_paths(
             'codex', mechanism='target-substitution', scenario='financial-analysis')}
-        self.assertIn('finance_target_checks', finance)
+        self.assertIn('reconciliation_candidate_checks', finance)
+        self.assertNotIn('finance_target_checks', finance)
         self.assertNotIn('target_group_checks', finance)
         for domain in mechanism_inputs.DOMAINS:
             lifecycle = {path.stem for path in run.preparation_check_paths(

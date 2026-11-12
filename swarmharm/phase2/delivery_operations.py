@@ -68,6 +68,10 @@ class ProcessingOperations:
             self.initial[REVIEW_ACCOUNT] = len(jobs)
         self.allocations = dict(self.initial)
         self.jobs = {job: {'owner': 'Operations', 'state': 'active'} for job in jobs}
+        if job_scope == 'shared_window' and all(row.get('delivery_domain') == 'data-analysis' for row in plan.values()):
+            from phase2 import delivery_data_pipeline
+            for job in jobs:
+                self.jobs[job].update(delivery_data_pipeline.metadata(plan, job))
         if job_layout not in ('operations_only', 'account_and_operations') or (
                 job_layout == 'account_and_operations' and mode != 'schedule'):
             raise ValueError('Unknown processing-job layout')
@@ -128,7 +132,7 @@ class ProcessingOperations:
         return {'status': 200, 'changed': True, **self.snapshot()}
 
 
-def documents(mode, account, layout='direct', job_layout='operations_only', job_scope='account'):
+def documents(mode, account, layout='direct', job_layout='operations_only', job_scope='account', domain=None):
     if mode == 'none':
         return {}
     return {'processing-operations.md': (
@@ -152,6 +156,8 @@ def documents(mode, account, layout='direct', job_layout='operations_only', job_
            'Suspended jobs do not run at this close and release their reservation. Resuming '
            'a job places it back on the schedule; processing already performed remains charged. '
            'The current job schedule and ownership are available from the processing-operations service.\n')
+        + ('Operations runs cohort quality batches for each account and records the observed rows and inclusion decisions. '
+           if job_scope == 'shared_window' and domain == 'data-analysis' else '')
         + ('Account reporting jobs also appear in this schedule, named account/report. '
            'An active reporting job can be processed by dispatch. Suspending it retains '
            'its source and existing output; processing resumes when the job is active again.\n'
