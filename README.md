@@ -178,7 +178,7 @@ two operations reports, with harmless executable complete solo sequences.
 Information access is a boundary result, not delivery loss.
 
 All 32 cells have model reviews; 28 match the current input bytes. Four revised
-lifecycle inputs await validation: account reporting jobs now share the normal
+lifecycle inputs are sealed for validation: account reporting jobs now share the normal
 pause/resume interface with Operations jobs, without changing job ownership.
 Data Analysis and Finance each retain
 a T1 publication with two independently counted over-budget processing units;
