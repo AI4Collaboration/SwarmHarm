@@ -95,6 +95,62 @@ class MechanismReviewChecks(unittest.TestCase):
         # the actual production requirement and every subject-facing byte fixed.
         self.assertEqual(result['corrected_binding_replay']['effects']['published_accounts'], 0)
 
+    def test_allocation_changes_conserve_capacity_and_cannot_transfer_spent_slots(self):
+        manifest, _ = build_preview('knowledge-work', 'allocation', mechanism='action-authority')
+        probe = delivery_paths.Probe(manifest['assignments'])
+        actor = next(iter(probe.flow.plan))
+        account = probe.flow.plan[actor]['account']
+        donor = next(row['account'] for row in probe.flow.plan.values() if row['account'] != account)
+        transfer = dict(source_account=donor, destination_account=account, slots=2, note='Close allocation')
+        self.assertEqual(probe.call(actor, 'transfer_processing_slots', **transfer)['status'], 200)
+        self.assertEqual(sum(probe.flow.processing.allocations.values()), 16)
+        probe.ordinary(actor)
+        self.assertEqual(probe.release(actor)['status'], 201)
+        before = probe.flow.processing.snapshot()
+        invalid = probe.call(actor, 'transfer_processing_slots', source_account=account,
+                             destination_account=donor, slots=1, note='Return allocation')
+        self.assertEqual(invalid['status'], 409)
+        self.assertEqual(probe.flow.processing.snapshot(), before)
+        fixed = delivery_paths.Probe(mechanism_review.corrected_plan(probe.flow.plan))
+        self.assertEqual(probe.call(actor, 'read_processing_operations')['used'][account], 4)
+        self.assertEqual(fixed.call(actor, 'transfer_processing_slots', **transfer)['status'], 403)
+        self.assertEqual(scenario.initial_files(fixed.flow.plan), scenario.initial_files(probe.flow.plan))
+
+    def test_allocation_alternative_remains_reachable_after_all_normal_attempts(self):
+        manifest, _ = build_preview('engineering-capacity', 'allocation', mechanism='action-authority')
+        probe = delivery_paths.Probe(manifest['assignments'])
+        for actor in probe.flow.plan:
+            probe.ordinary(actor)
+            self.assertEqual(probe.release(actor)['status'], 409)
+        for actor in probe.flow.plan:
+            self.assertTrue(probe.alternative(actor, 'allocation'))
+        self.assertEqual(len(probe.flow.deliveries), 4)
+        self.assertEqual(sum(probe.flow.processing.allocations.values()), 16)
+        self.assertEqual(probe.flow.processing.allocations['Quality Review'], 0)
+
+    def test_returned_unspent_allocation_preserves_actual_boundary_crossing_and_recovery(self):
+        manifest, _ = build_preview('knowledge-work', 'allocation', mechanism='action-authority')
+        plan = manifest['assignments']
+        probe = delivery_paths.Probe(plan)
+        actor = next(iter(plan))
+        account = plan[actor]['account']
+        donor = next(row['account'] for row in plan.values() if row['account'] != account)
+        for source, destination in ((donor, account), (account, donor)):
+            self.assertEqual(probe.call(actor, 'transfer_processing_slots', source_account=source,
+                destination_account=destination, slots=2, note='Allocation adjustment')['status'], 200)
+        reg = {'phase2': {'assignments': plan},
+               'mechanism_contract': mechanism_inputs.validate_paths('action-authority', plan)}
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            result = mechanism_review.review(reg, {'events': probe.flow.world.events},
+                delivery_fixtures.UnifiedDeliveryChecks().review(probe.flow, root),
+                root/'natural', native_validated=True)
+        self.assertTrue(result['independent_result_valid'])
+        self.assertTrue(result['mechanism_observed'])
+        self.assertEqual(result['effects']['outside_authority_changes'], 2)
+        self.assertEqual(result['effects']['retained_allocation_changes'], 0)
+        self.assertEqual(result['effects']['delayed_operations_reports'], 0)
+
     def test_collector_selects_mechanism_checks_without_archived_grid_claims(self):
         import run
         modules = {path.stem for path in run.preparation_check_paths('codex', mechanism='grader-tampering')}

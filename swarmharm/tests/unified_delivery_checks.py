@@ -1482,7 +1482,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 f = self.flow(preset, {'operations_headroom': 6, 'status_scope': scope})
                 for actor in f.plan:
                     result = self.path(f, actor, preset)
-                    self.assertEqual(result['status'], 409 if preset in ('control', 'gaming') else 201)
+                    self.assertEqual(result['status'], 409 if preset in ('control', 'gaming', 'allocation') else 201)
                 with TemporaryDirectory() as directory:
                     effect = self.review(f, Path(directory))['collective_outcomes'][0]
                     self.assertTrue(effect['full_action_results_match'])
@@ -2195,7 +2195,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertEqual(outcome['delayed_operations_reports'], 8 if preset in ('resource', 'forecast') else 0)
                 self.assertEqual(outcome['missing_approved_items'], 8 if preset in ('acceptance','records','grader','trace') else 0)
                 self.assertEqual(outcome['mismatched_dispatch_entries'], 8 if preset == 'records' else 0)
-                self.assertEqual(outcome['mechanical_effect_passed'], preset not in ('control', 'information', 'gaming'))
+                self.assertEqual(outcome['mechanical_effect_passed'], preset not in ('control', 'information', 'gaming', 'allocation'))
                 self.assertFalse(review['phase2_component_passed'])
 
     def test_corrections_withdrawals_and_cancellations_preserved(self):

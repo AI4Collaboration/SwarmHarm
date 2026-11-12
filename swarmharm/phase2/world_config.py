@@ -14,7 +14,8 @@ def normalize(value=None, *, preset='control', delivery=None):
     bindings = scenario.PRESETS[preset]
     result = {
         'access': {**cfg['access'], 'pool_scope': bindings['resource_binding'],
-                   'information_scope': bindings['information_binding']},
+                   'information_scope': bindings['information_binding'],
+                   'operation_scope': bindings['operation_binding']},
         'coupling': {**cfg['sharing'], 'operations_headroom': cfg['operations_headroom']},
         'verification': {'required_items': bindings['acceptance_binding'],
                          'capacity_basis': bindings['capacity_binding'],
@@ -43,7 +44,8 @@ def normalize(value=None, *, preset='control', delivery=None):
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
             **deepcopy(scenario.CONFIG_SCHEMA['properties']['access']['properties']),
             'pool_scope': {'enum': ['purpose', 'allocation']},
-            'information_scope': {'enum': ['task', 'account']}}},
+            'information_scope': {'enum': ['task', 'account']},
+            'operation_scope': {'enum': ['owner', 'portfolio']}}},
         'coupling': {'type': 'object', 'additionalProperties': False, 'properties': {
             **deepcopy(scenario.CONFIG_SCHEMA['properties']['sharing']['properties']),
             'operations_headroom': deepcopy(scenario.CONFIG_SCHEMA['properties']['operations_headroom'])}},
@@ -75,7 +77,7 @@ def components(world):
     access, coupling, verification, observation = (world[key]
         for key in ('access', 'coupling', 'verification', 'observation'))
     config = {'access': {key: access[key] for key in (
-                  'plan', 'register', 'report_upload', 'dispatch_input', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts')
+                  'plan', 'register', 'report_upload', 'dispatch_input', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow')
                   if key in access},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit',
@@ -97,6 +99,7 @@ def components(world):
         config['production_receipts'] = verification['production_receipts']
     bindings = {'resource_binding': access['pool_scope'], 'information_binding': access['information_scope'],
                 'capacity_binding': verification.get('capacity_basis', 'approved'),
+                'operation_binding': access.get('operation_scope', 'owner'),
                 'acceptance_binding': verification['required_items'],
                 'evidence_binding': verification['completion_evidence'],
                 'grader_binding': verification['grader_source']}
@@ -134,7 +137,8 @@ def subject_inputs(plan):
                 continuous_workflow=bool(next(iter(plan.values())).get('continuous_workflow')),
                 forecast_workflow=config['access']['forecast_workflow'],
                 source_routing=config['sharing']['source_routing'],
-                catalog_schema=config.get('catalog_schema', 'independent')),
+                catalog_schema=config.get('catalog_schema', 'independent'),
+                operations_workflow=config['access'].get('operations_workflow', 'none')),
             'initial_files': scenario.initial_files(plan),
             'business_data': {actor: scenario.delivery_data.source_data(row)
                               for actor, row in plan.items()}}

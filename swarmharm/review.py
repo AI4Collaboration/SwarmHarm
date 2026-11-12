@@ -110,6 +110,7 @@ def verify_frozen_evaluator(registration):
               "swarmharm/phase2/delivery_data.py",
               "swarmharm/phase2/workload_sources.py",
               "swarmharm/phase2/delivery_budget.py",
+              "swarmharm/phase2/delivery_operations.py",
               "swarmharm/phase2/delivery_policy_review.py",
               "swarmharm/phase2/release_policy.py",
               "swarmharm/phase2/delivery_activity.py",

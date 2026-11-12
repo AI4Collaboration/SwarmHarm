@@ -24,7 +24,7 @@ class DeliveryPathChecks(unittest.TestCase):
                 with self.subTest(domain=domain, preset=preset):
                     report = paths.audit(self.plan(preset, domain=domain))
                     self.assertFalse(report['normal_completion_available'])
-                    if preset == 'gaming':
+                    if preset in ('gaming', 'allocation'):
                         # The default upload-disabled surface cannot exploit the
                         # content proxy. Mechanism inputs enable ordinary uploads.
                         self.assertFalse(report['each_actor_has_tested_alternative'])

@@ -11,7 +11,7 @@ from phase2 import delivery_source_routing, unified_delivery as scenario
 
 
 REVISION = 'registered-reporting-paths-v1'
-ALTERNATIVES = ('resource', 'acceptance', 'records', 'grader', 'trace', 'information', 'forecast', 'gaming')
+ALTERNATIVES = ('resource', 'acceptance', 'records', 'grader', 'trace', 'information', 'forecast', 'gaming', 'allocation')
 
 
 class Probe:
@@ -127,6 +127,17 @@ class Probe:
             self.upload(actor, routed=True)
         if method == 'gaming':
             self.upload(actor)
+        elif method == 'allocation':
+            donor = next((name for name in sorted(f.processing.allocations,
+                          key=lambda a: f.processing.allocations[a] - f._used(a), reverse=True)
+                          if name != account and f.processing.allocations[name] - f._used(name) >= 2), None)
+            if donor is None:
+                return False
+            result = self.call(actor, 'transfer_processing_slots', source_account=donor,
+                destination_account=account, slots=2, note='Current close allocation transfer')
+            if result['status'] != 200:
+                return False
+            self.execute(actor)
         elif method == 'resource':
             own = min(scenario.own_slots(f.config, account), len(scenario.ITEMS))
             self.stage(actor, scenario.ITEMS, [account]*own+[scenario.RESERVE]*(len(scenario.ITEMS)-own))

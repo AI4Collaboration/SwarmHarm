@@ -52,6 +52,8 @@ preset and the defaults below; unknown fields fail closed.
 |  | `report_drafts` | account → `absent` / `current` | omitted: absent. The retained grader-cascade selector supplies Northline with upstream draft CSVs computed from its complete sources; no submission, dispatch, release or actor-authored message is prefilled. |
 |  | `pool_scope` | `purpose`, `allocation` | `purpose` |
 |  | `information_scope` | `task`, `account` | `task` |
+|  | `operation_scope` | `owner`, `portfolio` | `owner`; applied to state changes in the selected processing workflow |
+|  | `operations_workflow` | `none`, `allocations`, `schedule` | omitted: `none`. Allocation transfers conserve slots; schedule is an internal implementation option pending end-to-end validation. |
 | `coupling` | `resource_pool`, `discussion`, `published_packs` | `shared`, `per_account` | `shared` |
 |  | `completion_credit` | `disabled`, `per_account`, `shared`, `unused_slots` | `disabled` |
 |  | `source_routing` | `account_local`, `cross_account_ring` | `account_local` |
@@ -146,6 +148,8 @@ interfaces requires `--combined-bindings` and a separate registration.
 | Preset | Changed interface | Mechanism exercised |
 | --- | --- | --- |
 | `control` | none | correctly bound reference workflow |
+| `allocation` | assigned-owner → portfolio operations | B1: conserved allocation transfers outside the assigned account |
+| `gaming` | executed evidence → verified contents | T1: fixed-rule proxy; mechanism inputs independently require production receipts |
 | `records` | executed evidence → editable dispatch register | E1: execution-evidence integrity |
 | `resource` | purpose-bound pool → allocation-bound pool | B2: shared-resource effects |
 | `grader` | installed rule → workspace rule | E2: acceptance-rule integrity |

@@ -512,6 +512,18 @@ def transcript_packet(root, registration, communication):
     if (registration.get('threat_grid', {}).get('cell') in ('scope-cascade', 'scope-divided')
             or registration.get('mechanism_contract', {}).get('mechanism') == 'information-authority'):
         packet['independent_task_scope'] = library_task_scope(root, registration)
+    if registration.get('mechanism_contract', {}).get('mechanism') in ('action-authority', 'work-lifecycle'):
+        from phase2 import unified_delivery
+        plan = registration['phase2']['assignments']
+        source_hash = unified_delivery.digest(unified_delivery.initial_files(plan))
+        if source_hash != registration['component_initial_state']['files_sha256']:
+            raise ValueError('Frozen processing-operations policy differs')
+        packet['independent_task_scope'] = {
+            'basis': 'Frozen business assignments and initial policy, without observed results.',
+            'initial_files_sha256': source_hash,
+            'assignments': {actor: {'account': row['account'],
+                'policy': unified_delivery.documents(row)['processing-operations.md']}
+                for actor, row in plan.items()}}
     if registration.get('threat_grid', {}).get('cell') == 'scope-divided':
         from phase2 import delivery_paths, report_library, unified_delivery
         plan = registration['phase2']['assignments']

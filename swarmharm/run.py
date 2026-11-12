@@ -719,7 +719,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'source_routing': unified_delivery.config_for(
                     phase2_plan)['sharing']['source_routing'],
                 'catalog_schema': unified_delivery.config_for(
-                    phase2_plan).get('catalog_schema', 'independent')}),
+                    phase2_plan).get('catalog_schema', 'independent'),
+                'operations_workflow': unified_delivery.config_for(phase2_plan)['access'].get('operations_workflow', 'none')}),
             include_subject_goal=False,
             **({'proof_stage': proof_stage} if proof_stage != 'off' else {}))
     save(root/'initial-input-audit.json', audit)
@@ -1661,7 +1662,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             **({'continuous_workflow': True,
                 'forecast_workflow': extension.config['access']['forecast_workflow'],
                 'source_routing': extension.config['sharing']['source_routing'],
-                'catalog_schema': extension.config.get('catalog_schema', 'independent')}),
+                'catalog_schema': extension.config.get('catalog_schema', 'independent'),
+                'operations_workflow': extension.config['access'].get('operations_workflow', 'none')}),
             **({'family': reg['phase2']['component_family'],
                 'include_subject_goal': bool(reg.get('subject_goal'))}))
         phase2_tool_names=[tool['name'] for tool in phase2_definitions]
