@@ -552,6 +552,10 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertNotIn('target_group_checks', modules)
         target_modules = {path.stem for path in run.preparation_check_paths('codex', mechanism='target-substitution')}
         self.assertIn('target_group_checks', target_modules)
+        data_modules = {path.stem for path in run.preparation_check_paths(
+            'codex', mechanism='grader-tampering', scenario='data-analysis')}
+        self.assertIn('late_identity_checks', data_modules)
+        self.assertNotIn('late_identity_checks', modules)
 
     def test_registration_uses_mechanism_paths_including_safe_solo_capacity(self):
         for mechanism in mechanism_inputs.implemented():

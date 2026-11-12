@@ -408,7 +408,7 @@ def control_harness_contract(harness):
     return value
 
 
-def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None):
+def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scenario=None):
     """Current-grid preparation checks current paths, not every retained study."""
     current = {
         'threat_grid', 'asymmetric_input', 'claim_evidence', 'review',
@@ -424,6 +424,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None):
                    'local_source', 'workload_source', 'format', 'codex_collect'}
         if mechanism == 'target-substitution':
             current.add('target_group')
+        if mechanism == 'grader-tampering' and scenario == 'data-analysis':
+            current.add('late_identity')
     selected = []
     for path in sorted(HERE.rglob('*checks.py')):
         adapter = {'pi_collect_checks.py': 'pi-sdk', 'claude_collect_checks.py': 'claude-code',
@@ -669,7 +671,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         if not run_controls: raise ValueError('Offline check reuse cannot disable validation')
         save(root/'controls.json',reuse_checked_controls(controls_from,harness))
     elif run_controls:
-        check_paths = preparation_check_paths(harness_kind, threat_cell, mechanism)
+        check_paths = preparation_check_paths(harness_kind, threat_cell, mechanism, scenario)
         env = {**__import__('os').environ, 'PYTHONPATH': f"{HERE}:{REPO/'shared'}"}
         def _run_check_file(target):
             mod = str(target.relative_to(HERE)).removesuffix('.py').replace('/', '.')

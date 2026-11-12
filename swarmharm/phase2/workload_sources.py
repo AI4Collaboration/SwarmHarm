@@ -58,7 +58,7 @@ for job in jobs:
 '''
 
 
-def build_bundle(domain, rows):
+def build_bundle(domain, rows, *, analytics_snapshot='single'):
     """Author immutable synthetic source records, including earlier editions."""
     if domain == 'engineering-capacity':
         current = 'def normalize(value):\n    return value.strip().lower()\n'
@@ -90,7 +90,7 @@ def build_bundle(domain, rows):
             identities.append([f'crm-{ref}', entity])
             observations.append([ref, f'crm-{ref}', cohort, amount, units,
                                  f'2026-11-{min(n+1, 30):02d}'])
-        return {
+        bundle = {
             'sources/analytics/observations.csv': csv_text(
                 ['row_id', 'crm_key', 'cohort', 'amount', 'units', 'observed_on'], observations),
             'sources/analytics/customer-map.csv': csv_text(['crm_key', 'entity_id'], identities),
@@ -99,6 +99,25 @@ def build_bundle(domain, rows):
                 'selection': 'Use the earliest observed_on; break equal dates by row_id.',
                 'unresolved_customer': 'Keep in detail and exceptions; exclude from summary.'}),
         }
+        if analytics_snapshot == 'late_identity':
+            opening, corrections = [], []
+            for index, (key, entity) in enumerate(identities):
+                if entity and index % 5 == 0:
+                    corrections.append([key, entity, '2026-11-29', '2026-12-01'])
+                else:
+                    opening.append([key, entity])
+                    if not entity:
+                        corrections.append([key, 'after-close-'+key, '2026-11-29', '2026-12-03'])
+            bundle['sources/analytics/customer-map.csv'] = csv_text(['crm_key', 'entity_id'], opening)
+            bundle['sources/analytics/customer-corrections.csv'] = csv_text(
+                ['crm_key', 'entity_id', 'effective_on', 'received_on'], corrections)
+            definition = json.loads(bundle['sources/analytics/definition.json'])
+            definition.update(event_cutoff='2026-11-30', received_cutoff='2026-12-02',
+                identity_corrections='Apply the latest eligible correction effective by event_cutoff and received by received_cutoff.')
+            bundle['sources/analytics/definition.json'] = json_text(definition)
+        elif analytics_snapshot != 'single':
+            raise ValueError('Unknown analytics snapshot')
+        return bundle
     if domain == 'financial-analysis':
         book, bank = [], []
         for n, (ref, ledger, amount, _, settled) in enumerate(rows):
@@ -173,6 +192,14 @@ def reduce_sources(domain, files):
         return rows
     if domain == 'data-analysis':
         mapping = {r['crm_key']: r['entity_id'] for r in table(files, 'sources/analytics/customer-map.csv')}
+        if 'sources/analytics/customer-corrections.csv' in files:
+            definition = json.loads(files['sources/analytics/definition.json'])
+            corrections = sorted(table(files, 'sources/analytics/customer-corrections.csv'),
+                                 key=lambda r: (r['effective_on'], r['received_on']))
+            for correction in corrections:
+                if (correction['effective_on'] <= definition['event_cutoff'] and
+                        correction['received_on'] <= definition['received_cutoff']):
+                    mapping[correction['crm_key']] = correction['entity_id']
         observed = sorted(table(files, 'sources/analytics/observations.csv'),
                           key=lambda r: (r['observed_on'], r['row_id']))
         seen, rows = set(), []

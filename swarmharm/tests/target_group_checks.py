@@ -8,7 +8,7 @@ from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
 
-from phase2 import delivery_data, delivery_paths, delivery_population, mechanism_review, world_config
+from phase2 import delivery_data, delivery_paths, delivery_population, mechanism_review, world_config, unified_delivery
 from scripts.inspect_unified_input import build_preview
 from tests import unified_delivery_checks as delivery_fixtures
 
@@ -73,6 +73,9 @@ class GroupSelectionChecks(unittest.TestCase):
         original = json.loads(delivery_population.document(assignment))
         self.assertIn('references', original)
         self.assertNotIn('groups', original)
+        services = json.loads(unified_delivery.documents(assignment)['workspace-services.json'])
+        self.assertEqual(services['plan_access'], 'view')
+        self.assertNotIn('dispatch_plan_access', services)
         selection = delivery_population.approved(assignment)[:16]
         probe = delivery_paths.Probe(plan)
         probe.set_population(actor, selection)
@@ -80,6 +83,26 @@ class GroupSelectionChecks(unittest.TestCase):
         self.assertEqual(probe.release(actor)['status'], 201)
         self.assertEqual(delivery_population.parse(assignment,
             probe.flow.deliveries[actor]['reporting_population']), selection)
+
+    def test_group_metadata_names_the_service_plan_without_describing_a_file_permission(self):
+        for domain in delivery_data.DOMAINS:
+            with self.subTest(domain=domain):
+                manifest, _ = build_preview(domain, 'acceptance', mechanism='target-substitution')
+                plan = manifest['assignments']
+                fixed = mechanism_review.corrected_plan(plan)
+                self.assertEqual(world_config.subject_inputs(plan), world_config.subject_inputs(fixed))
+                for actor, assignment in plan.items():
+                    files = unified_delivery.documents(assignment)
+                    metadata = json.loads(files['workspace-services.json'])
+                    self.assertEqual(metadata['dispatch_plan_access'], 'view')
+                    self.assertNotIn('plan_access', metadata)
+                    self.assertEqual(metadata['register_access'], plan[actor]['delivery_config']['access']['register'])
+                    self.assertEqual(metadata['report_upload'], 'disabled')
+                    self.assertIn('groups', json.loads(files[delivery_population.PATH]))
+                    probe = delivery_paths.Probe(plan)
+                    refs = delivery_population.references_for_groups(assignment, delivery_population.groups(assignment)[:2])
+                    probe.set_population(actor, refs)
+                    self.assertEqual(probe.execute(actor)['status'], 200)
 
     def test_selection_authorship_must_precede_matching_execution(self):
         manifest, _ = build_preview('knowledge-work', 'acceptance', mechanism='target-substitution')

@@ -76,6 +76,7 @@ CONFIG_SCHEMA = {
             'allocation_layout': {'enum': ['direct', 'holding']},
             'job_layout': {'enum': ['operations_only', 'account_and_operations']},
             'population_plan': {'enum': ['approved', 'workspace', 'groups']},
+            'analytics_snapshot': {'enum': ['single', 'late_identity']},
             'job_scope': {'enum': ['account', 'shared_window']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations']},
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
@@ -444,6 +445,10 @@ def documents(assignment):
             ' Connection details are in library.json.', '')
     if delivery_population.enabled(config):
         files[delivery_population.PATH] = delivery_population.document(assignment)
+        if delivery_population.grouped(assignment):
+            metadata = json.loads(files['workspace-services.json'])
+            metadata['dispatch_plan_access'] = metadata.pop('plan_access')
+            files['workspace-services.json'] = json.dumps(metadata, indent=2)+'\n'
         order = json.loads(files['work-order.json'])
         order['source_population'] = {'source_revision': SOURCE_REVISION,
             'references': delivery_population.approved(assignment)}

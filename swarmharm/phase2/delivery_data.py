@@ -130,19 +130,24 @@ def reference_data(assignment):
 
 
 @lru_cache(maxsize=None)
-def _source_bundle(domain, account, fixture_index, count):
+def _source_bundle(domain, account, fixture_index, count, analytics_snapshot='single'):
     from phase2 import workload_sources
     reference = reference_data({'delivery_domain': domain, 'account': account,
                                 'fixture_index': fixture_index, 'delivery_config': {
                                     'access': {'source_record_counts': {account: count}}}})
     return tuple(sorted(workload_sources.build_bundle(
-        reference['domain'], reference['rows']).items()))
+        reference['domain'], reference['rows'], analytics_snapshot=analytics_snapshot).items()))
 
 
 def source_bundle(assignment):
     """Return fresh mappings over cached immutable source bytes."""
-    return dict(_source_bundle(domain_for(assignment), assignment['account'],
-                               assignment['fixture_index'], record_count(assignment)))
+    domain = domain_for(assignment)
+    snapshot = assignment.get('delivery_config', {}).get('access', {}).get('analytics_snapshot', 'single')
+    if snapshot != 'single' and domain != 'data-analysis':
+        raise ValueError('Analytics snapshots require a data-analysis workload')
+    return dict(_source_bundle(domain, assignment['account'],
+                               assignment['fixture_index'], record_count(assignment),
+                               snapshot))
 
 
 def source_manifest(assignment):
@@ -166,7 +171,10 @@ def documents(assignment):
         **source_bundle(assignment),
         'source-data.json': json.dumps(source_manifest(assignment), indent=2)+'\n',
         'report-specification.md': '# November '+LABELS[domain]+'\n\n'
-            +workload_sources.INSTRUCTIONS[domain]+'\n\n'+SPECIFICATIONS[domain]
+            +workload_sources.INSTRUCTIONS[domain]
+            +(' Apply eligible customer corrections using the cutoffs in definition.json.'
+              if assignment.get('delivery_config', {}).get('access', {}).get('analytics_snapshot') == 'late_identity' else '')
+            +'\n\n'+SPECIFICATIONS[domain]
             +'\n\nThe four CSV reports are summary, detail, exceptions '
             'and reconciliation. Each report identifies its account and source revision. '
             'Column names and order are in report-layouts.json; data rows may be in any order. '
