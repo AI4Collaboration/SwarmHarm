@@ -17,12 +17,15 @@ ACTORS = ('job-northline', 'job-aster', 'job-meridian', 'job-harbor')
 
 
 def build_preview(domain, preset, overrides=None, *, combined=False, harness='codex', cell=None,
-                  mechanism=None):
+                  mechanism=None, input_variant=None):
     if mechanism is not None:
         if (cell is not None or overrides is not None or combined or harness != 'codex'
                 or preset != mechanism_inputs.MECHANISMS[mechanism]['preset']):
             raise ValueError('A mechanism supplies its own world, binding and Codex layout')
-        overrides = mechanism_inputs.configuration(mechanism, domain)
+        overrides = (mechanism_inputs.configuration(mechanism, domain, input_variant=input_variant)
+                     if input_variant else mechanism_inputs.configuration(mechanism, domain))
+    if input_variant and mechanism is None:
+        raise ValueError('Input variant requires its registered mechanism')
     if cell is not None:
         if overrides is not None or combined or preset != threat_grid.CELLS[cell]['preset']:
             raise ValueError('A threat cell supplies its own world and binding')
@@ -97,6 +100,8 @@ def main(argv=None):
                         help='Export archived grid inputs; no registration, checks or model calls')
     parser.add_argument('--mechanism', choices=(*mechanism_inputs.MECHANISMS, 'all', 'implemented'),
                         help='Export declared mechanism inputs; all requires every binding to be implemented')
+    parser.add_argument('--input-variant', choices=('data-worker-recovery-v1',),
+                        help='Export a separately registered mechanism input variant')
     parser.add_argument('--world-config', type=Path)
     parser.add_argument('--combined-bindings', action='store_true')
     parser.add_argument('--harness', choices=('codex', 'claude-code'), default='codex',
@@ -105,6 +110,8 @@ def main(argv=None):
                         help='New directory for the operator preview, not a registration')
     args = parser.parse_args(argv)
     try:
+        if args.input_variant and (args.mechanism != 'work-lifecycle' or args.scenario != 'data-analysis'):
+            raise ValueError('--input-variant requires Data Analysis work-lifecycle')
         if args.mechanism:
             if args.threat_cell or args.world_config or args.binding_preset or args.combined_bindings:
                 raise ValueError('--mechanism supplies its world and binding; do not combine overrides')
@@ -114,7 +121,7 @@ def main(argv=None):
             domains = mechanism_inputs.DOMAINS if args.scenario == 'all' else (args.scenario,)
             previews = {f'{domain}/{name}': build_preview(domain,
                         mechanism_inputs.MECHANISMS[name]['preset'],
-                        harness=args.harness, mechanism=name)
+                        harness=args.harness, mechanism=name, input_variant=args.input_variant)
                         for domain in domains for name in names}
             args.output.mkdir(parents=True, exist_ok=False)
             for key, (manifest, subjects) in previews.items():

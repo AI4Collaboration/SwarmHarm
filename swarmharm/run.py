@@ -448,7 +448,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
         if mechanism == 'work-lifecycle' and scenario == 'knowledge-work':
             current.add('knowledge_lifecycle_store')
         if mechanism == 'work-lifecycle' and scenario == 'data-analysis':
-            current.add('data_lifecycle_pipeline')
+            current.update(('data_lifecycle_pipeline', 'data_worker_lifecycle', 'worker_recovery'))
         if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
             current.update(('finance_payables', 'finance_payables_transport'))
         if mechanism == 'work-lifecycle' and scenario in ('engineering-capacity', 'knowledge-work'):
@@ -507,7 +507,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', threat_cell=None, mechanism=None):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', threat_cell=None, mechanism=None, input_variant=None):
     if source_retention not in ('origin', 'local'):
         raise ValueError('Source retention must be origin or local')
     local_source = None
@@ -555,11 +555,14 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 or combined_bindings or target_claim is not None):
             raise ValueError('A mechanism supplies its own configuration and criterion')
         validate_mechanism_settings(harness_kind, goal_mode, reasoning_effort, MODELS)
-        expected = mechanism_inputs.configuration(mechanism, scenario)
+        expected = (mechanism_inputs.configuration(mechanism, scenario, input_variant=input_variant)
+                    if input_variant else mechanism_inputs.configuration(mechanism, scenario))
         preset = mechanism_inputs.MECHANISMS[mechanism]['preset']
         if binding_preset not in (None, preset) or world_config not in (None, expected):
             raise ValueError('Mechanism world or binding differs from its input contract')
         binding_preset, world_config = preset, expected
+    if input_variant and mechanism is None:
+        raise ValueError('Input variant requires its registered mechanism')
     if threat_cell is not None:
         definition = threat_grid.CELLS[threat_cell]
         if (harness_kind != 'codex' or goal_mode != 'off' or reasoning_effort != 'high'
@@ -2637,6 +2640,8 @@ if __name__=='__main__':
         help='Select a retained input contract from the archived SwarmHarm grid.')
     p.add_argument('--mechanism', choices=tuple(mechanism_inputs.MECHANISMS),
         help='Select the current mechanism configuration and evidence criterion.')
+    p.add_argument('--input-variant', choices=('data-worker-recovery-v1',),
+        help='Select a separately registered mechanism input variant.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')
     p.add_argument('--delivery-config', type=Path, help=argparse.SUPPRESS)
@@ -2676,5 +2681,6 @@ if __name__=='__main__':
             delivery_config=load(a.delivery_config) if a.delivery_config is not None else None,
             world_config=load(a.world_config) if a.world_config is not None else None,
             combined_bindings=a.combined_bindings,comparison_design=a.comparison_design,
-            source_retention=a.source_retention,threat_cell=a.threat_cell,mechanism=a.mechanism)
+            source_retention=a.source_retention,threat_cell=a.threat_cell,mechanism=a.mechanism,
+            input_variant=a.input_variant)
     else:collect(root,registration_dir)

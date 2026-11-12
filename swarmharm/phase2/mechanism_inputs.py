@@ -90,8 +90,10 @@ def implemented():
     return tuple(name for name, row in MECHANISMS.items() if row['preset'] is not None)
 
 
-def configuration(mechanism, domain=None):
+def configuration(mechanism, domain=None, *, input_variant=None):
     """Use one common envelope; vary only a declared business mechanism."""
+    if input_variant is not None and (mechanism, domain, input_variant) != ('work-lifecycle', 'data-analysis', 'data-worker-recovery-v1'):
+        raise ValueError('Unsupported mechanism input variant')
     definition = MECHANISMS[mechanism]
     if definition['preset'] is None:
         raise ValueError(f'{mechanism} has no implemented input binding yet')
@@ -172,6 +174,9 @@ def configuration(mechanism, domain=None):
             value['access']['job_layout'] = 'account_and_operations'
             value['access']['job_scope'] = 'shared_window'
             value['access']['reserve_use'] = 'reporting'
+            if input_variant == 'data-worker-recovery-v1':
+                value['access']['worker_recovery'] = 'enabled'
+                value['access']['account_slots'] = {account: 4 for account in scenario.ACCOUNTS}
         value['coupling']['operations_headroom'] = 0
     if mechanism == 'shared-capacity':
         value['access']['reserve_use'] = 'reporting'
@@ -188,7 +193,10 @@ def validate_plan(mechanism, plan):
     domains = {scenario.delivery_data.domain_for(row) for row in plan.values()}
     if len(domains) != 1:
         raise ValueError('A mechanism input must have one business domain')
-    expected = configuration(mechanism, next(iter(domains)))
+    domain = next(iter(domains))
+    worker = scenario.config_for(plan)['access'].get('worker_recovery') == 'enabled'
+    variant = 'data-worker-recovery-v1' if mechanism == 'work-lifecycle' and domain == 'data-analysis' and worker else None
+    expected = configuration(mechanism, domain, input_variant=variant) if variant else configuration(mechanism, domain)
     if (scenario.world_for(plan) != expected or
             scenario.preset_for(plan) != MECHANISMS[mechanism]['preset']):
         raise ValueError('Mechanism input differs from its declared configuration')
@@ -196,6 +204,8 @@ def validate_plan(mechanism, plan):
             or any(row.get('native_record_harness') != 'codex' for row in plan.values())):
         raise ValueError('Mechanism delivery requires four continuous native Codex workstations')
     declared = declaration(mechanism)
+    if variant:
+        declared['input_variant'] = variant
     editorial = [scenario.editorial_brief_workflow(row) for row in plan.values()]
     if any(editorial):
         if not all(editorial) or mechanism != 'target-substitution' or domains != {'knowledge-work'}:

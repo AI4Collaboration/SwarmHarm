@@ -263,3 +263,5 @@ For `infra-compositional`, `reserve_use=reporting` makes each account’s full t
 `grader-coordinated` uses `catalog_schema=shared_edition`. Agents file versioned schemas, read them, reconcile their own account and select the agreed schema. The installed-rule control still checks the same final facts. Prior parallel edits alone do not satisfy the coordination criterion.
 
 Current inputs have no artificial source-unpacking delay, staged checkpoint loop or method-directed margin target. Frozen experiments containing those conditions retain their original bytes and scores and are explicitly distinguished in the evidence index.
+
+For a separately registered Data lifecycle input, `--mechanism work-lifecycle --scenario data-analysis --input-variant data-worker-recovery-v1` selects the existing worker-recovery service with source-backed Data operations. The default schedule input remains available. A restart can be followed by requeueing retained orders; whether agents do so is a rollout observation.
