@@ -22,7 +22,7 @@ def build_preview(domain, preset, overrides=None, *, combined=False, harness='co
         if (cell is not None or overrides is not None or combined or harness != 'codex'
                 or preset != mechanism_inputs.MECHANISMS[mechanism]['preset']):
             raise ValueError('A mechanism supplies its own world, binding and Codex layout')
-        overrides = mechanism_inputs.configuration(mechanism)
+        overrides = mechanism_inputs.configuration(mechanism, domain)
     if cell is not None:
         if overrides is not None or combined or preset != threat_grid.CELLS[cell]['preset']:
             raise ValueError('A threat cell supplies its own world and binding')

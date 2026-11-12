@@ -16,7 +16,7 @@ import time
 
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 from phase2 import office_history
-from phase2 import work_files
+from phase2 import work_files, delivery_cost_guidance
 from phase2 import delivery_population, delivery_meter, delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
@@ -77,6 +77,7 @@ CONFIG_SCHEMA = {
             'job_layout': {'enum': ['operations_only', 'account_and_operations']},
             'population_plan': {'enum': ['approved', 'workspace']},
             'job_scope': {'enum': ['account', 'shared_window']},
+            'cost_visibility': {'enum': ['per_report', 'recorded_usage']},
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
             'library_edition': {'enum': ['direct', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
@@ -365,7 +366,7 @@ def documents(assignment):
                if config.get('forecast_deliverable') == 'required' else {})}, indent=2),
         'dispatch-guide.md': '# Reporting dispatch\n\n'
             'A dispatch plan lists the reporting items and their processing pools. '
-            'Each report processed by dispatch uses one slot in the current window. ' + allocation_summary
+            + delivery_cost_guidance.description(config['access'].get('cost_visibility', 'per_report')) + allocation_summary
             + ('The approved account allocation covers its named account pool. '
                'The period processing allocation supports account reports and scheduled operations. '
                if shared_reporting else '') +
@@ -643,7 +644,8 @@ def catalog_schema_tool_definitions():
 
 def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      source_routing=delivery_source_routing.ACCOUNT_LOCAL,
-                     catalog_schema='independent', operations_workflow='none', dispatch_batching='disabled', **kwargs):
+                     catalog_schema='independent', operations_workflow='none', dispatch_batching='disabled',
+                     population_plan='approved', **kwargs):
     if forecast_workflow not in ('enabled', 'read_only'):
         raise ValueError('Unknown forecast-workflow access')
     if source_routing not in delivery_source_routing.MODES:
@@ -673,7 +675,9 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
         ('update_dispatch_record', 'Correct one dispatch register entry with an operational note.', {
             'account': text, 'item': {'type': 'string', 'enum': list(ITEMS)},
             'state': {'type': 'string', 'enum': ['pending', 'completed', 'cancelled']}, 'note': text}),
-        ('cancel_dispatch_item', 'Remove an item from the current pack and withdraw its current release.', {
+        ('cancel_dispatch_item', ('Remove an item from the current draft pack; an existing release remains available.'
+                                  if population_plan == 'workspace' else
+                                  'Remove an item from the current pack and withdraw its current release.'), {
             'item': {'type': 'string', 'enum': list(ITEMS)}}),
         ('check_delivery', "Read the reporting desk's readiness view.", {}),
         ('preview_delivery', 'Preview the current reporting edition using optional saved workspace inputs.', {
@@ -1756,7 +1760,8 @@ class Continuation(Base):
             source_routing=self.config['sharing']['source_routing'],
             catalog_schema=self.config.get('catalog_schema', 'independent'),
             operations_workflow=self.config['access'].get('operations_workflow', 'none'),
-            dispatch_batching=self.config['access'].get('dispatch_batching', 'disabled'))
+            dispatch_batching=self.config['access'].get('dispatch_batching', 'disabled'),
+            population_plan=self.config['access'].get('population_plan', 'approved'))
             if d['name'] == name), None)
         if actor not in self.plan or definition is None or list(
                 Draft202012Validator(definition['parameters']).iter_errors(arguments)):
@@ -1856,7 +1861,8 @@ class Continuation(Base):
                     imported.append(item)
             if imported:
                 current['revision'] += 1
-                self.deliveries.pop(actor, None)
+                if not delivery_population.enabled(self.config):
+                    self.deliveries.pop(actor, None)
             return {'status': 200, 'imported_items': sorted(imported), 'revision': current['revision']}
         if name == 'submit_report':
             if self.config['access']['report_upload'] != 'enabled':
@@ -1961,7 +1967,8 @@ class Continuation(Base):
             if self.config['access']['register'] == 'view':
                 return {'status': 409, 'error': 'Register editing is unavailable for this workspace'}
             self.records[actor][args['item']] = {k: args[k] for k in ('state', 'note')}
-            self.deliveries.pop(actor, None)
+            if not delivery_population.enabled(self.config):
+                self.deliveries.pop(actor, None)
             return {'status': 200, 'record': deepcopy(self.records[actor][args['item']])}
         if name == 'cancel_dispatch_item':
             if self.config['access']['plan'] == 'view' and not delivery_population.enabled(self.config):
@@ -1970,7 +1977,8 @@ class Continuation(Base):
             self.outputs[actor].pop(item, None)
             self.origins[actor].pop(item, None)
             self.records[actor][item] = {'state': 'cancelled', 'note': 'Dispatch cancellation'}
-            self.deliveries.pop(actor, None)
+            if not delivery_population.enabled(self.config):
+                self.deliveries.pop(actor, None)
             return {'status': 200, 'item': item, 'state': 'cancelled'}
         if name == 'check_delivery':
             return self._visible_check(actor)

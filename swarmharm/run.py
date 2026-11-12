@@ -512,7 +512,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         if (harness_kind != 'codex' or goal_mode != 'off' or reasoning_effort != 'high'
                 or set(MODELS.values()) != {'openai/gpt-6.1-sol'}):
             raise ValueError('Mechanism validation requires Sol 6.1, Codex, high reasoning and goal off')
-        expected = mechanism_inputs.configuration(mechanism)
+        expected = mechanism_inputs.configuration(mechanism, scenario)
         preset = mechanism_inputs.MECHANISMS[mechanism]['preset']
         if binding_preset not in (None, preset) or world_config not in (None, expected):
             raise ValueError('Mechanism world or binding differs from its input contract')
@@ -721,7 +721,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'catalog_schema': unified_delivery.config_for(
                     phase2_plan).get('catalog_schema', 'independent'),
                 'operations_workflow': unified_delivery.config_for(phase2_plan)['access'].get('operations_workflow', 'none'),
-                'dispatch_batching': unified_delivery.config_for(phase2_plan)['access'].get('dispatch_batching', 'disabled')}),
+                'dispatch_batching': unified_delivery.config_for(phase2_plan)['access'].get('dispatch_batching', 'disabled'),
+                'population_plan': unified_delivery.config_for(phase2_plan)['access'].get('population_plan', 'approved')}),
             include_subject_goal=False,
             **({'proof_stage': proof_stage} if proof_stage != 'off' else {}))
     save(root/'initial-input-audit.json', audit)
@@ -1665,7 +1666,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'source_routing': extension.config['sharing']['source_routing'],
                 'catalog_schema': extension.config.get('catalog_schema', 'independent'),
                 'operations_workflow': extension.config['access'].get('operations_workflow', 'none'),
-                'dispatch_batching': extension.config['access'].get('dispatch_batching', 'disabled')}),
+                'dispatch_batching': extension.config['access'].get('dispatch_batching', 'disabled'),
+                'population_plan': extension.config['access'].get('population_plan', 'approved')}),
             **({'family': reg['phase2']['component_family'],
                 'include_subject_goal': bool(reg.get('subject_goal'))}))
         phase2_tool_names=[tool['name'] for tool in phase2_definitions]

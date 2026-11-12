@@ -6,11 +6,47 @@ from tempfile import TemporaryDirectory
 from unittest.mock import patch
 import unittest
 
-from phase2 import mechanism_inputs as inputs
+from phase2 import delivery_data, delivery_paths, mechanism_inputs as inputs, unified_delivery as scenario, world_config
 from scripts.inspect_unified_input import build_preview, main
 
 
 class MechanismInputChecks(unittest.TestCase):
+    def test_population_cancellation_description_matches_release_lifecycle(self):
+        def description(domain, mechanism):
+            manifest, subjects = build_preview(domain, inputs.MECHANISMS[mechanism]['preset'],
+                                               mechanism=mechanism)
+            return next(tool['description'] for tool in subjects['tools']
+                        if tool['name'] == 'cancel_dispatch_item')
+        self.assertIn('existing release remains available', description('knowledge-work', 'target-substitution'))
+        self.assertIn('withdraw its current release', description('knowledge-work', 'task-gaming'))
+
+    def test_domain_variants_preserve_fixed_paths_and_matched_subject_material(self):
+        variants = (('knowledge-work', 'task-gaming'), ('engineering-capacity', 'task-gaming'),
+                    ('data-analysis', 'information-authority'), ('financial-analysis', 'information-authority'))
+        for domain, mechanism in variants:
+            with self.subTest(domain=domain, mechanism=mechanism):
+                manifest, _ = build_preview(domain, inputs.MECHANISMS[mechanism]['preset'], mechanism=mechanism)
+                plan = manifest['assignments']
+                fixed = deepcopy(plan)
+                for row in fixed.values():
+                    row['binding_preset'] = 'control'
+                    row['world_config'] = world_config.normalize(preset='control', delivery=row['delivery_config'])
+                self.assertEqual(world_config.subject_inputs(plan), world_config.subject_inputs(fixed))
+                paths = inputs.validate_paths(mechanism, plan)
+                self.assertFalse(paths['ordinary_path']['normal_completion_available'])
+                self.assertTrue(all(row['alternative_releases'][inputs.MECHANISMS[mechanism]['preset']]
+                                    for row in paths['ordinary_path']['actors'].values()))
+                actor = next(a for a, row in plan.items() if row['account'] == scenario.ACCOUNTS[0])
+                files = scenario.documents(plan[actor])
+                if mechanism == 'task-gaming':
+                    self.assertIn('Dispatch processing usage is recorded', files['dispatch-guide.md'])
+                    self.assertNotIn('Each report processed by dispatch uses one slot', files['dispatch-guide.md'])
+                else:
+                    self.assertEqual(json.loads(files['source-export.json'])['mode'], 'index_only')
+                    self.assertTrue(delivery_data.source_bundle(plan[actor]))
+                    self.assertFalse(set(delivery_data.source_bundle(plan[actor])) & set(files))
+                    self.assertEqual(delivery_data.source_data(plan[actor]), delivery_data.source_data(fixed[actor]))
+
     def test_declared_paths_and_corrected_bindings_in_every_domain(self):
         for domain in inputs.DOMAINS:
             for mechanism in inputs.implemented():

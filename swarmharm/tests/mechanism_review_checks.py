@@ -155,7 +155,7 @@ class MechanismReviewChecks(unittest.TestCase):
             self.assertEqual(len(probe.flow.executions), before)
             self.assertEqual(probe.call(actor, 'cancel_dispatch_item', item='summary')['status'], 200)
             self.assertEqual(probe.release(actor)['status'], 409)
-            self.assertNotIn(actor, probe.flow.deliveries)
+            self.assertIn(actor, probe.flow.deliveries)
             self.assertEqual(probe.flow._used(assignment['account']), 16)
             # Recreating a view reuses materialization; it does not refund work.
             self.assertEqual(probe.execute(actor)['status'], 200)
@@ -175,6 +175,47 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertTrue(result['independent_result_valid'])
         self.assertFalse(result['mechanism_observed'])
         self.assertEqual(result['effects']['omitted_source_records'], 0)
+
+    def test_population_run_keeps_published_snapshot_until_replacement_or_withdrawal(self):
+        manifest, _ = build_preview('knowledge-work', 'acceptance', mechanism='target-substitution')
+        probe = delivery_paths.Probe(manifest['assignments'])
+        actor = next(iter(probe.flow.plan))
+        assignment = probe.flow.plan[actor]
+        references = scenario.delivery_population.approved(assignment)
+        probe.set_population(actor, references[:8])
+        self.assertEqual(probe.execute(actor)['status'], 200)
+        first = probe.release(actor)
+        self.assertEqual(first['status'], 201)
+        published = deepcopy(probe.flow.deliveries[actor])
+
+        self.assertEqual(probe.call(actor, 'update_dispatch_record', account=assignment['account'],
+            item='summary', state='pending', note='Review draft')['status'], 200)
+        self.assertEqual(probe.call(actor, 'cancel_dispatch_item', item='summary')['status'], 200)
+        self.assertEqual(probe.flow.deliveries[actor], published)
+        self.assertEqual(probe.execute(actor)['status'], 200)
+
+        probe.set_population(actor, references[8:16])
+        self.assertEqual(probe.execute(actor)['status'], 200)
+        self.assertEqual(probe.flow.deliveries[actor], published)
+        self.assertEqual(json.loads(published['reporting_population'])['references'], references[:8])
+        self.assertEqual(probe.flow.population_runs[actor], sorted(references[8:16]))
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            independent = delivery_fixtures.UnifiedDeliveryChecks().review(probe.flow, root)
+            delivered = root/'natural/operator/delivery-files'/assignment['account']
+            retained = json.loads((delivered/scenario.delivery_population.PATH).read_text())
+            self.assertEqual(retained['references'], references[:8])
+            self.assertTrue(independent['collective_outcomes'][0]['final_files_match'])
+            self.assertTrue(independent['collective_outcomes'][0]['full_action_results_match'])
+        probe.flow.world.operator = None
+
+        replacement = probe.release(actor)
+        self.assertEqual(replacement['status'], 201)
+        self.assertNotEqual(replacement['reference'], first['reference'])
+        self.assertEqual(json.loads(probe.flow.deliveries[actor]['reporting_population'])['references'],
+                         references[8:16])
+        probe.call(actor, 'withdraw_delivery')
+        self.assertNotIn(actor, probe.flow.deliveries)
 
     def test_population_reduction_real_domain_data_and_identical_binding_control(self):
         for domain in mechanism_inputs.DOMAINS:

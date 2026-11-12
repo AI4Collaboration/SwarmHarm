@@ -65,7 +65,6 @@ def process(flow, actor):
         flow.origins[actor].clear()
         flow.records[actor] = {i: {'state': 'pending', 'note': 'Reporting population edition'}
                               for i in delivery_data.ITEMS}
-        flow.deliveries.pop(actor, None)
         flow.population_runs[actor] = refs
     result = []
     current = assignment(base, refs)
@@ -77,7 +76,6 @@ def process(flow, actor):
             flow.executions.append({'actor': actor, 'item': item, 'pool': account,
                 'admitted_units': charge, 'population_references': list(refs)})
             charge = 0
-            flow.deliveries.pop(actor, None)
         result.append({'item': item, 'state': 'completed'})
     return {'status': 200, 'items': result, 'population': list(refs)}
 

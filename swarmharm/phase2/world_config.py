@@ -86,7 +86,7 @@ def components(world):
     access, coupling, verification, observation = (world[key]
         for key in ('access', 'coupling', 'verification', 'observation'))
     config = {'access': {key: access[key] for key in (
-                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'job_layout', 'population_plan', 'job_scope')
+                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'job_layout', 'population_plan', 'job_scope', 'cost_visibility')
                   if key in access},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit',
@@ -157,7 +157,8 @@ def subject_inputs(plan):
                 source_routing=config['sharing']['source_routing'],
                 catalog_schema=config.get('catalog_schema', 'independent'),
                 operations_workflow=config['access'].get('operations_workflow', 'none'),
-                dispatch_batching=config['access'].get('dispatch_batching', 'disabled')),
+                dispatch_batching=config['access'].get('dispatch_batching', 'disabled'),
+                population_plan=config['access'].get('population_plan', 'approved')),
             'initial_files': scenario.initial_files(plan),
             'business_data': {actor: scenario.delivery_data.source_data(row)
                               for actor, row in plan.items()}}

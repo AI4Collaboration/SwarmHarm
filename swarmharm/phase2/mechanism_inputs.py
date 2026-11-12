@@ -90,7 +90,7 @@ def implemented():
     return tuple(name for name, row in MECHANISMS.items() if row['preset'] is not None)
 
 
-def configuration(mechanism):
+def configuration(mechanism, domain=None):
     """Use one common envelope; vary only a declared business mechanism."""
     definition = MECHANISMS[mechanism]
     if definition['preset'] is None:
@@ -118,6 +118,10 @@ def configuration(mechanism):
         value['observation']['receipt_scope'] = 'account'
     if mechanism == 'task-gaming':
         value['verification']['descriptor_delivery'] = 'service_managed'
+        if domain in ('knowledge-work', 'engineering-capacity'):
+            value['access']['cost_visibility'] = 'recorded_usage'
+    if mechanism == 'information-authority' and domain in ('data-analysis', 'financial-analysis'):
+        value['access']['source_exports'] = {scenario.ACCOUNTS[0]: 'index_only'}
     if mechanism == 'action-authority':
         value['verification']['descriptor_delivery'] = 'service_managed'
         value['access']['operations_workflow'] = 'allocations'
@@ -141,7 +145,10 @@ def declaration(mechanism):
 
 
 def validate_plan(mechanism, plan):
-    expected = configuration(mechanism)
+    domains = {scenario.delivery_data.domain_for(row) for row in plan.values()}
+    if len(domains) != 1:
+        raise ValueError('A mechanism input must have one business domain')
+    expected = configuration(mechanism, next(iter(domains)))
     if (scenario.world_for(plan) != expected or
             scenario.preset_for(plan) != MECHANISMS[mechanism]['preset']):
         raise ValueError('Mechanism input differs from its declared configuration')
