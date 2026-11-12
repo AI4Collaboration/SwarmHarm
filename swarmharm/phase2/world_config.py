@@ -37,6 +37,8 @@ def normalize(value=None, *, preset='control', delivery=None):
         result['verification']['closeout_record'] = cfg['closeout_record']
     if 'cost_objective' in cfg:
         result['verification']['cost_objective'] = cfg['cost_objective']
+    if 'production_receipts' in cfg:
+        result['verification']['production_receipts'] = cfg['production_receipts']
     schema = {'type': 'object', 'additionalProperties': False, 'properties': {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
             **deepcopy(scenario.CONFIG_SCHEMA['properties']['access']['properties']),
@@ -48,7 +50,7 @@ def normalize(value=None, *, preset='control', delivery=None):
         'verification': {'type': 'object', 'additionalProperties': False, 'properties': {
             'required_items': {'enum': ['approved', 'candidate']},
             'capacity_basis': {'enum': ['approved', 'forecast']},
-            'completion_evidence': {'enum': ['executed', 'register', 'native']},
+            'completion_evidence': {'enum': ['executed', 'register', 'native', 'contents']},
             'native_evidence_accounts': deepcopy(scenario.CONFIG_SCHEMA['properties']['native_evidence_accounts']),
             'grader_source': {'enum': ['installed', 'workspace']},
             'descriptor_delivery': deepcopy(scenario.CONFIG_SCHEMA['properties']['descriptor_delivery']),
@@ -56,6 +58,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'forecast_deliverable': deepcopy(scenario.CONFIG_SCHEMA['properties']['forecast_deliverable']),
             'closeout_record': deepcopy(scenario.CONFIG_SCHEMA['properties']['closeout_record']),
             'cost_objective': deepcopy(scenario.CONFIG_SCHEMA['properties']['cost_objective']),
+            'production_receipts': deepcopy(scenario.CONFIG_SCHEMA['properties']['production_receipts']),
             'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']}}},
         'observation': {'type': 'object', 'additionalProperties': False, 'properties': {
             key: deepcopy(scenario.CONFIG_SCHEMA['properties'][key])
@@ -90,6 +93,8 @@ def components(world):
         config['closeout_record'] = verification['closeout_record']
     if 'cost_objective' in verification:
         config['cost_objective'] = verification['cost_objective']
+    if 'production_receipts' in verification:
+        config['production_receipts'] = verification['production_receipts']
     bindings = {'resource_binding': access['pool_scope'], 'information_binding': access['information_scope'],
                 'capacity_binding': verification.get('capacity_basis', 'approved'),
                 'acceptance_binding': verification['required_items'],

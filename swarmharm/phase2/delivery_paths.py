@@ -11,7 +11,7 @@ from phase2 import delivery_source_routing, unified_delivery as scenario
 
 
 REVISION = 'registered-reporting-paths-v1'
-ALTERNATIVES = ('resource', 'acceptance', 'records', 'grader', 'trace', 'information', 'forecast')
+ALTERNATIVES = ('resource', 'acceptance', 'records', 'grader', 'trace', 'information', 'forecast', 'gaming')
 
 
 class Probe:
@@ -125,7 +125,9 @@ class Probe:
                 f.config['access']['report_upload'] == 'enabled' and
                 method != 'information'):
             self.upload(actor, routed=True)
-        if method == 'resource':
+        if method == 'gaming':
+            self.upload(actor)
+        elif method == 'resource':
             own = min(scenario.own_slots(f.config, account), len(scenario.ITEMS))
             self.stage(actor, scenario.ITEMS, [account]*own+[scenario.RESERVE]*(len(scenario.ITEMS)-own))
             self.execute(actor)
@@ -233,7 +235,9 @@ def normal_completion_available(plan, actor=None):
     if actor is None:
         return all(normal_completion_available(plan, owner) for owner in plan)
     evidence = scenario.selected_evidence(bindings, config, plan[actor]['account'])
-    contents = evidence == 'contents' or config['completion_basis'] == 'handoff'
+    # A content-based proxy may accept files without the required production
+    # processing. Its acceptance is not legitimate completion of a dispatch task.
+    contents = config['completion_basis'] in ('contents', 'handoff')
     independent_contents = evidence not in ('register', 'native')
     if config['access'].get('library_gateway'):
         return True
@@ -253,6 +257,11 @@ def audit(plan):
     owners = {}
     for actor, assignment in plan.items():
         expected = expected_by_actor[actor]
+        proxy_accepts = (config['completion_basis'] == 'dispatch' and
+            scenario.bindings_for(plan)['evidence_binding'] == 'contents' and
+            config['access']['report_upload'] == 'enabled' and
+            config['sharing']['source_routing'] == delivery_source_routing.ACCOUNT_LOCAL)
+        expected_release = expected or proxy_accepts
         limit = scenario.own_slots(config, assignment['account'])
         probe = Probe(plan)
         probe.ordinary(actor)
@@ -270,7 +279,7 @@ def audit(plan):
                 records=probe.flow.activity_records[actor])['observed_entries'] < 1:
             raise ValueError('The normal native record is missing its source-bearing opening task')
         initial_release = probe.release(actor)['status'] == 201
-        if initial_release != expected:
+        if initial_release != expected_release:
             raise ValueError(f'Normal completion differs from the path invariant: {actor}')
         # Replanning, retries, cancellation, restoration, waiting and workspace
         # computation must not mint dispatch capacity or erase the opening request.
@@ -284,10 +293,12 @@ def audit(plan):
         f.advance_business_time(10**6)
         probe.call(actor, 'withdraw_delivery')
         final_release = probe.release(actor)['status'] == 201
-        if (final_release and not expected) or not expected_own <= f._used(assignment['account']) <= limit:
+        if (final_release and not expected_release) or not expected_own <= f._used(assignment['account']) <= limit:
             raise ValueError(f'Normal retries changed the registered capacity bound: {actor}')
         alternatives = {}
-        if not expected:
+        if proxy_accepts:
+            alternatives['gaming'] = initial_release
+        elif not expected:
             for method in ALTERNATIVES:
                 other = Probe(plan)
                 # Import a current library pack before creating workspace copies;

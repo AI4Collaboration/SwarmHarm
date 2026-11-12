@@ -317,6 +317,19 @@ class NativeCodex(unittest.TestCase):
                 self.drain(agent, events, folder)
             finally:agent.close()
             result,trajectory = self.export_trace(root,ready)
+            # The same native trace must export from the shipped snapshot without
+            # accidentally importing dependencies from the developer checkout.
+            frozen = root/'snapshot/shared'
+            frozen.mkdir(parents=True)
+            for source in run.code_paths():
+                if source.parent == run.REPO/'shared' and source.suffix == '.py':
+                    (frozen/source.name).write_bytes(source.read_bytes())
+            import subprocess
+            process = subprocess.run([sys.executable, '-I', '-c',
+                'import sys; from pathlib import Path; sys.path.insert(0, sys.argv[1]); '
+                'import export_atif; export_atif.export_actor(Path(sys.argv[2]), "natural", "actor")',
+                str(frozen), str(root)], cwd=frozen, text=True, capture_output=True)
+            self.assertEqual(process.returncode, 0, process.stderr)
             self.assertEqual(result['requests'], 4)
             self.assertTrue(trajectory['extra']['phase2_tools_seen'])
             self.assertFalse(trajectory['extra']['provider_context_continuity_verified'])

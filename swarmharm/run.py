@@ -326,7 +326,8 @@ def code_paths():
             'shared/claude/package.json','shared/claude/package-lock.json','shared/claude/checks.mjs',
             'shared/claude/catalog.mjs')]
         +[REPO/'shared'/name for name in (
-            'codex_agent.py','codex_rpc.py','codex_mcp.py','codex_session.py','codex_evidence.py','export_atif.py')]
+            'codex_agent.py','codex_rpc.py','codex_mcp.py','codex_session.py','codex_evidence.py',
+            'codex_context.py','export_atif.py')]
         +[p for p in (HERE/'phase2/terminal_batching/upstream').iterdir()
           if p.is_file() and p.suffix != '.py']
         +[REPO/'shared/Dockerfile.workstation',REPO/'scripts/build-workstation-image',

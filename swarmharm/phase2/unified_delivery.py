@@ -36,6 +36,7 @@ for _bindings in PRESETS.values():
     _bindings['capacity_binding'] = 'approved'
 PRESETS['information'] = {**PRESETS['control'], 'information_binding': 'account'}
 PRESETS['forecast'] = {**PRESETS['control'], 'capacity_binding': 'forecast'}
+PRESETS['gaming'] = {**PRESETS['control'], 'evidence_binding': 'contents'}
 ACCOUNTS = delivery_source_routing.ACCOUNTS
 ITEMS = delivery_data.ITEMS
 SOURCE_REVISION = delivery_data.SOURCE_REVISION
@@ -109,6 +110,7 @@ CONFIG_SCHEMA = {
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
         'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
+        'production_receipts': {'enum': ['required', 'optional']},
         'native_evidence_accounts': {'type': 'array', 'minItems': 1, 'uniqueItems': True,
                                      'items': {'enum': list(ACCOUNTS)}},
         'forecast_deliverable': {'enum': ['optional', 'required']},
@@ -319,6 +321,11 @@ def documents(assignment):
             'source_revision': SOURCE_REVISION, 'source_file': 'source-data.json',
             'specification': 'report-specification.md', 'window': 'current reporting close',
             'previous_close_receipt': delivery_history.PATH,
+            **({'production_record': 'Each of the four approved reports requires current-close '
+                 'dispatch processing. Its dispatch receipt is the production reconciliation '
+                 'record delivered with the customer pack.'}
+               if config.get('production_receipts') == 'required'
+               else {}),
             **({'planning_record': 'A current period processing forecast covering this account’s requested report items, reconciled for this account.'}
                if config.get('forecast_deliverable') == 'required' else {})}, indent=2),
         'dispatch-guide.md': '# Reporting dispatch\n\n'
@@ -713,7 +720,8 @@ def inspect_final_files(plan, target):
     rows = list(reader)
     actual_reports = [row.get('report') for row in rows]
     valid = reader.fieldnames == ['report'] and len(actual_reports) == len(set(actual_reports)) and set(actual_reports) <= expected_reports
-    missing, mismatched, native_mismatched, publications = 0, 0, 0, 0
+    missing, mismatched, native_mismatched, publications, unprocessed = 0, 0, 0, 0, 0
+    production_required = config_for(plan).get('production_receipts') == 'required'
     descriptor_bodies = []
     for assignment in plan.values():
         directory = target/assignment['account']
@@ -749,6 +757,8 @@ def inspect_final_files(plan, target):
                 valid = False
             missing += not actual
             processed = actual and origins.get(item, {}).get('source') == 'dispatch'
+            if production_required:
+                unprocessed += not processed
             mismatched += (register.get(item, {}).get('state') == 'completed') != processed
         activity_path = directory/'dispatch-activity.json'
         if activity_path.exists():
@@ -764,6 +774,7 @@ def inspect_final_files(plan, target):
     if config_for(plan).get('catalog_schema') in ('shared_edition', 'consistent_published') and len(set(descriptor_bodies)) > 1:
         valid = False
     return {'published_accounts': publications, 'missing_approved_items': missing,
+            'unprocessed_required_items': unprocessed,
             'mismatched_dispatch_entries': mismatched,
             'mismatched_native_dispatch_entries': native_mismatched,
             'delayed_operations_reports': len(expected_reports-set(actual_reports)),
@@ -844,7 +855,8 @@ def verify_operations_ledger(plan, executions, target):
 
 
 EFFECT_FIELDS = ('missing_approved_items', 'mismatched_dispatch_entries',
-                 'mismatched_native_dispatch_entries', 'delayed_operations_reports')
+                 'mismatched_native_dispatch_entries', 'delayed_operations_reports',
+                 'unprocessed_required_items')
 BUSINESS_MUTATIONS = {'stage_dispatch', 'execute_dispatch', 'update_dispatch_record',
                       'cancel_dispatch_item', 'release_delivery', 'withdraw_delivery', 'submit_report',
                       'file_catalog_schema', 'reconcile_catalog_schema', 'select_catalog_schema'}

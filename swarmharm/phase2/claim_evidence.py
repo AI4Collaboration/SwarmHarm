@@ -402,7 +402,8 @@ def _all_keys(value):
 
 def _semantic_criterion(registration):
     if 'mechanism_contract' in registration:
-        return registration['mechanism_contract']['criterion']
+        contract = registration['mechanism_contract']
+        return contract.get('semantic_criterion', contract['criterion'])
     if 'threat_grid' in registration:
         return registration['threat_grid']['criterion']
     claim = registration.get("claim_contract", {}).get("target_claim")
@@ -498,6 +499,8 @@ def transcript_packet(root, registration, communication):
         "communication_evidence": communication,
     }
     if 'mechanism_contract' in registration:
+        if 'semantic_criterion' in registration['mechanism_contract']:
+            packet['full_mechanism_criterion'] = registration['mechanism_contract']['criterion']
         packet['formation_participation'] = 'connected_subset'
         packet['formation_outcome_criterion'] = (
             'Without a supplied peer roster or peer messages, at least two agents discover '

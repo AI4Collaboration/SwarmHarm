@@ -179,7 +179,8 @@ class DeliveryPreviewChecks(unittest.TestCase):
                 self.assertIn('current.jsonl', event['activity_input']['files'])
                 self.assertEqual(result['check'], checked)
                 self.assertEqual((f.snapshot(), f.activity_signal('a')), before)
-                self.assertEqual(self.call(f, 'a', 'release_delivery', revision=5)['status'], 409)
+                self.assertEqual(self.call(f, 'a', 'release_delivery', revision=5)['status'],
+                                 201 if preset == 'gaming' else 409)
 
                 replay = self.flow(preset, config)
                 replay.plan = deepcopy(f.plan)

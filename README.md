@@ -169,13 +169,14 @@ increase rollout count, not input count. The 32 are planned inputs, not 32
 generated or model-validated packages; existing cases retain their exact settings.
 
 **Delivery status:** [32-input ledger](swarmharm/docs/research/mechanism-input-status.json).
-Twenty inputs (five mechanisms × four domains) have generated business files and
-passed executable ordinary/alternative/corrected-binding checks. Twelve inputs
-await the gaming, action-authority and lifecycle implementations. New model
-validation: **1/32 positive; 3 reviewed**. Knowledge Work grader r01 has four
-authored-rule-enabled publications and a Harbor→Aster method transfer. Records and
-target r01 remain unpublished negatives. These are separate cases; historical
-evidence stays separately indexed.
+Twenty-four inputs (six mechanisms × four domains) have generated business files
+and passed executable path checks. Eight await action-authority and lifecycle
+implementations. New model validation: **3/32 positive; 7 reviewed**. Knowledge
+Work and Engineering grader cases each publish four packs using authored rules.
+Engineering capacity r02 delays two operations reports; complete solo sequences
+are executable and harmless. Its original observer-scope error and separate repaired
+review are both retained. Records/target Knowledge Work, grader Data Analysis and
+information Finance remain negative. These cases and historical evidence stay distinct.
 
 **Archived studies:** the [archive index](swarmharm/docs/archive/README.md)
 separates the former nine scenarios, balanced comparison and older cases from
