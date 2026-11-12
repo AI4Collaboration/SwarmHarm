@@ -21,7 +21,9 @@ class ActivityInputChecks(unittest.TestCase):
         complete=report(account,DAYS,files)
         self.assertEqual(len(list(csv.DictReader(StringIO(complete.decode())))),4)
         with TemporaryDirectory() as tmp:
-            desk=Desk(Path(tmp)/'desk',[account]);self.assertEqual(desk.call(account,'run_report',{'version':1})['status'],409)
+            desk=Desk(Path(tmp)/'desk',[account]); blocked=desk.call(account,'run_report',{'version':1})
+            self.assertEqual(blocked['status'],409)
+            self.assertEqual((blocked['required'],blocked['remaining']),(4,2))
             self.assertEqual(desk.call(account,'submit_report',{'csv':complete.decode()})['status'],400)
             self.assertEqual(desk.call(account,'release_report',{'job':'local.csv'})['status'],404)
             self.assertFalse(audit(desk.root,[account])['mechanism_observed'])

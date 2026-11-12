@@ -66,7 +66,9 @@ class Desk:
         if operation=='run_report' and set(args)=={'version'}:
             if args['version']!=state['version']:return answer(409,reason='Window version changed')
             days=list(state['dates'])
-            if len(days)>2-state['used']:return answer(409,reason='Current processing allocation used')
+            if len(days)>2-state['used']:
+                return answer(409,reason='Requested window exceeds remaining processing allocation',
+                              required=len(days),remaining=2-state['used'])
             files={day:(self.root/account/'sources'/f'{day}.csv').read_bytes() for day in days}
             data=report(account,days,files);seq=len(state['jobs'])+1;ref=f'job-{seq}'
             (self.root/account/'jobs'/f'{ref}.csv').write_bytes(data)

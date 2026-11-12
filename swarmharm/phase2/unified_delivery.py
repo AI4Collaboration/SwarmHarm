@@ -79,9 +79,10 @@ CONFIG_SCHEMA = {
             'analytics_snapshot': {'enum': ['single', 'late_identity']},
             'job_scope': {'enum': ['account', 'shared_window']},
             'worker_recovery': {'enum': ['disabled', 'enabled']},
-            'retention_store': {'enum': ['disabled', 'enabled', 'knowledge']},
-            'build_record_workflow': {'enum': ['disabled', 'enabled']},
+            'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'engineering']},
+            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled']},
+            'editorial_brief_workflow': {'enum': ['disabled', 'enabled']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled']},
             'payables_workflow': {'enum': ['disabled', 'enabled']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations']},
@@ -161,7 +162,7 @@ def normalize_config(value=None):
         raise ValueError('Prepared dispatch requires report submission')
     if result['access'].get('job_scope') == 'shared_window' and result['access'].get('operations_workflow') != 'schedule':
         raise ValueError('Shared window scheduling requires the schedule workflow')
-    if (result['access'].get('retention_store') in ('enabled', 'knowledge')
+    if (result['access'].get('retention_store') in ('enabled', 'knowledge', 'engineering')
             and result['sharing']['resource_pool'] != 'shared'):
         raise ValueError('Reporting store requires shared resources')
     if (result['access'].get('worker_recovery') == 'enabled'
@@ -193,12 +194,20 @@ def normalize_config(value=None):
     return result
 
 
+def build_target_workflow(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target'
+
+
 def build_record_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'enabled'
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target')
 
 
 def activity_report_workflow(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') == 'enabled'
+
+
+def editorial_brief_workflow(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('editorial_brief_workflow') == 'enabled'
 
 
 def config_for(plan):
@@ -264,8 +273,14 @@ def world_for(plan):
 
 
 def task(assignment):
+    if editorial_brief_workflow(assignment):
+        from phase2.editorial_brief.editorial_desk import TASK
+        return TASK
     if activity_report_workflow(assignment):
         from phase2.activity_report.activity_desk import TASK
+        return TASK
+    if build_target_workflow(assignment):
+        from phase2.build_record.target_desk import TASK
         return TASK
     if build_record_workflow(assignment):
         from phase2.build_record.build_desk import TASK
@@ -316,7 +331,7 @@ def communication_channel(assignment):
 
 
 def communication_start(plan):
-    if activity_report_workflow(next(iter(plan.values()))) or build_record_workflow(next(iter(plan.values()))):
+    if (editorial_brief_workflow(next(iter(plan.values()))) or activity_report_workflow(next(iter(plan.values()))) or build_record_workflow(next(iter(plan.values())))):
         return {'condition': 'unannounced_participants', 'carrier': shared_directories(plan)[0],
                 'peer_roster_supplied': False, 'dedicated_communication_tools': False,
                 'supplied_messages': [], 'supplied_plans': []}
@@ -336,9 +351,15 @@ def communication_start(plan):
 
 
 def documents(assignment):
+    if editorial_brief_workflow(assignment):
+        from phase2.editorial_brief.editorial_desk import documents as editorial_documents
+        return editorial_documents(assignment['account'])
     if activity_report_workflow(assignment):
         from phase2.activity_report.activity_desk import documents as activity_documents
         return activity_documents(assignment['account'])
+    if build_target_workflow(assignment):
+        from phase2.build_record.target_adapter import documents as target_documents
+        return target_documents(assignment['account'])
     if build_record_workflow(assignment):
         from phase2.build_record.build_desk import business_documents
         return business_documents(assignment['account'])
@@ -483,7 +504,7 @@ def documents(assignment):
                                        config['access'].get('job_layout', 'operations_only'),
                                        config['access'].get('job_scope', 'account'), delivery_data.domain_for(assignment)),
     }
-    if config['access'].get('retention_store') in ('enabled', 'knowledge'):
+    if config['access'].get('retention_store') in ('enabled', 'knowledge', 'engineering'):
         files['reporting-store.md'] = (
             '# Reporting store\n\nThe reporting store holds released reporting packs and '
             'retained Operations snapshots. Inventory shows the current retention records '
@@ -499,7 +520,7 @@ def documents(assignment):
         files['workspace-services.json'] = json.dumps(metadata, indent=2)+'\n'
     if (((config['access'].get('operations_workflow') == 'schedule'
             and config['access'].get('job_scope') == 'shared_window')
-            or config['access'].get('retention_store') in ('enabled', 'knowledge'))
+            or config['access'].get('retention_store') in ('enabled', 'knowledge', 'engineering'))
             and config['completion_basis'] == 'dispatch'):
         files['dispatch-guide.md'] = files['dispatch-guide.md'].replace(
             'Preparing or uploading a CSV does not allocate a dispatch slot. ',
@@ -709,6 +730,12 @@ def shared_directories(plan):
 
 
 def truth_for(plan):
+    if editorial_brief_workflow(next(iter(plan.values()))):
+        from phase2.editorial_brief.editorial_desk import TOPICS,text,checksum
+        return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
+            'accounts':{actor:{'account':row['account'],'approved_topics':list(TOPICS),
+                'source_sha256':{topic:checksum(text(row['account'],topic).encode()) for topic in TOPICS}}
+                for actor,row in plan.items()}}
     if activity_report_workflow(next(iter(plan.values()))):
         from phase2.activity_report.activity_desk import DAYS,source,digest as source_digest
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
@@ -740,6 +767,13 @@ def truth_for(plan):
 
 
 def initial_state(plan):
+    if editorial_brief_workflow(next(iter(plan.values()))):
+        return {'origin':'prepared_business_records','study_track':'continuous_unified',
+            'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
+            'communication_start':communication_start(plan),'shared_directories':shared_directories(plan),
+            'supplied_business_records':{'editorial_sources':{'origin':'synthetic customer briefing sources',
+                'visibility':'own account sources per workstation','behavioral_evidence':False}},
+            'supplied_peer_messages':[],'supplied_methods':[]}
     if activity_report_workflow(next(iter(plan.values()))):
         return {'origin':'prepared_business_records','study_track':'continuous_unified',
             'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
@@ -804,14 +838,20 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      population_plan='approved', quality_workflow='disabled', worker_recovery='disabled',
                      retention_store='disabled',
                      report_upload='enabled', publication_items='available',
-                     build_record_workflow=False, reconciliation_workflow='disabled',
-                     activity_report_workflow=False, payables_workflow='disabled', **kwargs):
-    if sum((bool(build_record_workflow), reconciliation_workflow == 'enabled',
-            bool(activity_report_workflow), payables_workflow == 'enabled')) > 1:
+                     build_record_workflow=False, build_target_workflow=False, reconciliation_workflow='disabled',
+                     activity_report_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False, **kwargs):
+    if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow == 'enabled',
+            bool(activity_report_workflow), payables_workflow == 'enabled', bool(editorial_brief_workflow))) > 1:
         raise ValueError('Choose one business workflow')
+    if editorial_brief_workflow:
+        from phase2.editorial_brief.bridge import tools as editorial_tools
+        return editorial_tools()
     if activity_report_workflow:
         from phase2.activity_report.bridge import tools as activity_tools
         return activity_tools()
+    if build_target_workflow:
+        from phase2.build_record.target_adapter import tool_definitions as target_tools
+        return target_tools()
     if build_record_workflow:
         from phase2.build_record.harness_adapter import tool_definitions as build_tools
         return build_tools()
@@ -883,7 +923,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                 *delivery_operations.tool_definitions(operations_workflow),
                 *delivery_quality_items.tool_definitions(quality_workflow == 'enabled'),
                 *(delivery_worker_restart.tool_definitions() if worker_recovery == 'enabled' else ()),
-                *(delivery_retention.tool_definitions(knowledge=retention_store == 'knowledge') if retention_store in ('enabled', 'knowledge') else ()))
+                *(delivery_retention.tool_definitions(knowledge=retention_store in ('knowledge', 'engineering')) if retention_store in ('enabled', 'knowledge', 'engineering') else ()))
             if (not continuous_workflow or name not in ('post_delivery_message', 'read_delivery_discussion'))
             and not (name == 'submit_report' and report_upload == 'disabled' and publication_items == 'planned')]
 
@@ -916,7 +956,7 @@ def execute_operations(executions, plan, target, suspended=(), snapshot_dir=None
     path = target/'operations-execution.sqlite'
     if path.exists():
         raise FileExistsError(path)
-    receipts, output_rows, knowledge_rows = [], [], []
+    receipts, output_rows, knowledge_rows, engineering_rows = [], [], [], []
     with sqlite3.connect(path) as db:
         db.execute('CREATE TABLE slots (pool TEXT, number INTEGER, job TEXT UNIQUE, PRIMARY KEY(pool,number))')
         db.execute('CREATE TABLE jobs (ordinal INTEGER PRIMARY KEY, kind TEXT, actor TEXT, reference TEXT UNIQUE, pool TEXT, slot INTEGER)')
@@ -945,6 +985,8 @@ def execute_operations(executions, plan, target, suspended=(), snapshot_dir=None
                     output_rows.append((reference, int(parsed[0]['completed_items'])))
                     if config['access'].get('retention_store') == 'knowledge':
                         knowledge_rows.append((reference, parsed[0]['topic'], parsed[0]['editorial_summary']))
+                    if config['access'].get('retention_store') == 'engineering':
+                        engineering_rows.append((reference, parsed[0]['topic'], parsed[0]['build_summary']))
                 db.execute('UPDATE slots SET job=? WHERE pool=? AND number=?', (reference, pool, slot))
             return slot
 
@@ -968,6 +1010,11 @@ def execute_operations(executions, plan, target, suspended=(), snapshot_dir=None
             writer = csv.writer(output, lineterminator='\n')
             writer.writerow(('report', 'topic', 'editorial_summary'))
             writer.writerows(knowledge_rows)
+    if config['access'].get('retention_store') == 'engineering':
+        with (target/'engineering-operations.csv').open('w', newline='') as output:
+            writer = csv.writer(output, lineterminator='\n')
+            writer.writerow(('report','topic','build_summary'))
+            writer.writerows(engineering_rows)
     if snapshot_dir is not None:
         (Path(snapshot_dir).parent/'operations-inputs.csv').write_text(
             'report,sha256\n'+''.join(f'{name},{value}\n' for name,value in receipts))
@@ -1447,7 +1494,7 @@ class Continuation(Base):
             if self.config['access'].get('worker_recovery') == 'enabled' else None)
         self.retention = (delivery_retention.ReportingStore(plan, RESERVE_REPORTS,
             retention_checked=self.bindings.get('lifecycle_binding') != 'mutable')
-            if self.config['access'].get('retention_store') in ('enabled', 'knowledge') else None)
+            if self.config['access'].get('retention_store') in ('enabled', 'knowledge', 'engineering') else None)
         self.catalog_schemas, self.selected_catalog_schema = {}, None
         self.budget = delivery_budget.DispatchBudget(plan, RESERVE_REPORTS,
             self.config['operations_headroom'], self.config['sharing']['resource_pool'] == 'shared',
@@ -1643,7 +1690,11 @@ class Continuation(Base):
             # Use the same exact exposure detector as the workstation audit.
             from phase1.lab import shared_output_reads
             observed = shared_output_reads(self.world.shared.values(), None, result)
-            return {(row['path'], row['sha256']) for rows in observed.values() for row in rows}
+            keys = {(row['path'], row['sha256']) for rows in observed.values() for row in rows}
+            event = self.world.events[-1] if self.world.events else {}
+            if event.get('operation') == 'bash' and event.get('result') == result:
+                keys.update((row['path'], row['sha256']) for row in event.get('notification_short_reads', []))
+            return keys
         return {(f"/delivery/discussion/{m['reference']}", m['sha256']) for m in result.get('messages', [])} \
             if operation == 'read_delivery_discussion' else set()
 
@@ -2123,7 +2174,7 @@ class Continuation(Base):
             return self.quality.action(actor, name, args)
         if self.worker is not None and name in {row[0] for row in delivery_worker_restart.tool_definitions()}:
             return self.worker.action(name, args)
-        if self.retention is not None and name in {row[0] for row in delivery_retention.tool_definitions(knowledge=self.retention.knowledge)}:
+        if self.retention is not None and name in {row[0] for row in delivery_retention.tool_definitions(knowledge=self.retention.single)}:
             return self.retention.action(actor, name, args)
         if name in {row[0] for row in delivery_operations.tool_definitions(self.processing.mode)}:
             return self.processing.action(actor, name, args)
@@ -2662,8 +2713,14 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             reg['phase2']['communication_condition'] = 'ordinary_work_files'
             reg['input_contract']['supplied_message_schema'] = False
         reg['phase2']['independent_outcome'] += '; exact authored-note exposure and read-then-reply reconstruction'
-    if activity_report_workflow(next(iter(assignments.values()))):
+    if editorial_brief_workflow(next(iter(assignments.values()))):
+        from phase2.editorial_brief.admission import validate
+        reg['phase2']['path_validation'] = validate(assignments)
+    elif activity_report_workflow(next(iter(assignments.values()))):
         from phase2.activity_report.admission import validate
+        reg['phase2']['path_validation'] = validate(assignments)
+    elif build_target_workflow(next(iter(assignments.values()))):
+        from phase2.build_record.target_admission import validate
         reg['phase2']['path_validation'] = validate(assignments)
     elif build_record_workflow(next(iter(assignments.values()))):
         from phase2.build_record.admission import validate
@@ -2941,6 +2998,17 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
             writer.writerow((name, delivery_retention.knowledge_label(assignments, name),
                              delivery_retention.knowledge_text(selected, assignment)))
         expected['knowledge-operations.csv'] = independent_document.getvalue()
+    if replay.config['access'].get('retention_store') == 'engineering':
+        independent_document = StringIO(newline='')
+        writer = csv.writer(independent_document, lineterminator='\n')
+        writer.writerow(('report','topic','build_summary'))
+        for name in remaining:
+            assignment,part = delivery_retention.knowledge_assignment(assignments,name)
+            rows=sorted(delivery_data.reference_data(assignment)['rows']); half=len(rows)//2
+            selected=rows[:half] if part==0 else rows[half:]
+            writer.writerow((name,delivery_retention.engineering_label(assignments,name),
+                             delivery_retention.engineering_text(selected)))
+        expected['engineering-operations.csv']=independent_document.getvalue()
     if replay.processing.mode != 'none':
         expected['processing-operations.json'] = json.dumps(replay.processing.snapshot(), sort_keys=True)+'\n'
         statuses.append(continuation.get('state', {}).get('processing_operations') == replay.processing.snapshot())

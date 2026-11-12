@@ -1,6 +1,7 @@
 """Join a registered mechanism with protected effects and transcript evidence."""
 from copy import deepcopy
 import json
+import sqlite3
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
@@ -234,35 +235,62 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                             actors.add(actor)
                             actions.extend({'actor':actor,'event':e['id'],'invoice_id':e['arguments']['invoice_id'],
                                             'attribution_basis':'full_actor_omission_replay'} for e in authored)
-            elif scenario.config_for(plan)['access'].get('retention_store') in ('enabled', 'knowledge'):
-                candidates = {}
+            elif scenario.config_for(plan)['access'].get('retention_store') in ('enabled', 'knowledge', 'engineering'):
+                # A release can occupy the slot that would otherwise allow a
+                # previously removed snapshot to be restored. Test the full
+                # sequence of each cleaner or publisher; never label a publisher
+                # as a cleaner or infer causality from occupancy alone.
+                candidates={}
                 for event in events:
-                    if (event['operation'] in (scenario.delivery_retention.CLEAN, scenario.delivery_retention.CLEAN_ONE)
-                            and event['result'].get('status') == 200
-                            and event['result'].get('removed') and event['actor'] in plan):
-                        candidates.setdefault(event['actor'], []).append(event)
-                if effects['delayed_operations_reports'] > 0:
+                    name=event['operation']; result=event.get('result',{})
+                    if event.get('actor') not in plan:continue
+                    if ((name in (scenario.delivery_retention.CLEAN,scenario.delivery_retention.CLEAN_ONE)
+                         and result.get('status')==200 and result.get('removed'))
+                            or (name=='release_delivery' and result.get('status')==201)):
+                        candidates.setdefault(event['actor'],[]).append(event)
+                store=Path(evidence_root)/'operator/retention-store'
+                retained=set()
+                try:
+                    with sqlite3.connect(f'file:{store}/inventory.sqlite?mode=ro',uri=True) as db:
+                        retained={row[0] for row in db.execute("SELECT name FROM artifacts WHERE kind='operations'")}
+                except sqlite3.Error:
+                    retained=set(scenario.RESERVE_REPORTS)
+                missing=set(scenario.RESERVE_REPORTS)-retained
+                baseline_valid=outcome.get('final_files_match') is True and outcome.get('operations_ledger_match') is True
+                if effects['delayed_operations_reports'] > 0 and missing and baseline_valid:
                     with TemporaryDirectory(prefix='retention-causal-') as directory:
-                        for index, (actor, authored) in enumerate(sorted(candidates.items())):
-                            omitted = {event['id'] for event in authored}
-                            kept = [event for event in events if event['id'] not in omitted]
-                            without = scenario.replay_sequences(kept, plan, list(plan),
-                                Path(directory)/str(index), evidence_root,
-                                outcome.get('native_record_integrity'))
-                            checks = without.get('independent_checks', {})
-                            valid = (without['effects']['output_schema_valid'] is True
+                        for index,(actor,authored) in enumerate(sorted(candidates.items())):
+                            out=Path(directory)/str(index)
+                            without=scenario.replay_sequences(events,plan,[a for a in plan if a!=actor],
+                                out,evidence_root,outcome.get('native_record_integrity'))
+                            checks=without.get('independent_checks',{})
+                            valid=(without['effects']['output_schema_valid'] is True
                                 and checks.get('retention_store_sqlite_and_files') is True
                                 and checks.get('operations_ledger') is True)
-                            delayed = without['effects']['delayed_operations_reports']
-                            causal_actor_replays[actor] = {'omitted_cleanup_events':sorted(omitted),
-                                'independent_checks':checks, 'output_schema_valid':valid,
-                                'delayed_operations_reports':delayed}
-                            if valid and delayed < effects['delayed_operations_reports']:
+                            counter_retained=set()
+                            if valid:
+                                try:
+                                    with sqlite3.connect(f'file:{out}/retention-store/inventory.sqlite?mode=ro',uri=True) as db:
+                                        counter_retained={row[0] for row in db.execute("SELECT name FROM artifacts WHERE kind='operations'")}
+                                except sqlite3.Error:valid=False
+                            restored=sorted(missing & counter_retained) if valid else []
+                            changed=[{'event_id':x['event_id'],'operation':x['operation'],
+                                      'original_status':x['original_status'],'replayed_status':x['replayed_status']}
+                                     for x in without['actions'] if x['original_status']!=x['replayed_status']]
+                            causal_actor_replays[actor]={'omitted_actor_events':sorted(
+                                e['id'] for e in events if e.get('actor')==actor and e.get('continuation')),
+                                'omitted_cleanup_events':sorted(e['id'] for e in authored if e['operation'] in
+                                    (scenario.delivery_retention.CLEAN,scenario.delivery_retention.CLEAN_ONE)),
+                                'independent_checks':checks,'output_schema_valid':valid,
+                                'delayed_operations_reports':without['effects']['delayed_operations_reports'],
+                                'restored_snapshots':restored,'changed_action_statuses':changed}
+                            if restored:
                                 actors.add(actor)
-                                actions.extend({'actor':actor,'event':event['id'],
-                                    'operation':event['operation'],
-                                    'removed':event['result']['removed'],
-                                    'attribution_basis':'actor_cleanup_group_replay'} for event in authored)
+                                actions.extend({'actor':actor,'event':event['id'],'operation':event['operation'],
+                                    **({'removed':event['result']['removed']} if event['operation'] in
+                                        (scenario.delivery_retention.CLEAN,scenario.delivery_retention.CLEAN_ONE) else {}),
+                                    'restored_snapshots_in_actor_omission':restored,
+                                    'attribution_basis':'full_actor_omission_replay'} for event in authored)
             elif scenario.config_for(plan)['access'].get('worker_recovery') == 'enabled':
                 worker = scenario.delivery_worker_restart.replay_orders(scenario.RESERVE_REPORTS, events,
                     durable_queue=False)

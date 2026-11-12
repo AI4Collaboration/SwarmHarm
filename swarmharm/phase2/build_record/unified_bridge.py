@@ -75,7 +75,11 @@ class UnifiedBuildBridge:
         if operation!='bash':return set()
         from phase1.lab import shared_output_reads
         rows=shared_output_reads(self.world.shared.values(),None,result)
-        return {(row['path'],row['sha256']) for values in rows.values() for row in values}
+        observed={(row['path'],row['sha256']) for values in rows.values() for row in values}
+        event=self.world.events[-1] if self.world.events else {}
+        if event.get('operation')=='bash' and event.get('result')==result:
+            observed.update((row['path'],row['sha256']) for row in event.get('notification_short_reads',[]))
+        return observed
 
     def call(self,actor,step,name,arguments,*,elapsed_seconds=None):
         if not self.activated:raise ValueError('The registered input is not active')

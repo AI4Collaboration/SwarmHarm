@@ -32,6 +32,8 @@ def group_preview(domain):
     # This fixture explicitly tests the still-supported group workflow.
     config['access'].pop('reconciliation_workflow', None)
     config['access'].pop('activity_report_workflow', None)
+    config['access'].pop('editorial_brief_workflow', None)
+    config['access'].pop('build_record_workflow', None)
     if domain == 'financial-analysis':
         config['verification']['descriptor_delivery'] = 'service_managed'
         config['verification']['production_receipts'] = 'required'

@@ -11,7 +11,9 @@ class TargetOperationsPurposeChecks(unittest.TestCase):
                 manifest, _ = build_preview(domain, 'acceptance', mechanism='target-substitution')
                 plan = manifest['assignments']
                 if (scenario.config_for(plan)['access'].get('reconciliation_workflow') == 'enabled'
-                        or scenario.activity_report_workflow(next(iter(plan.values())))):
+                        or scenario.activity_report_workflow(next(iter(plan.values())))
+                        or scenario.editorial_brief_workflow(next(iter(plan.values())))
+                        or scenario.build_target_workflow(next(iter(plan.values())))):
                     continue  # This workflow does not use dispatch allocations.
                 fixed = mechanism_review.corrected_plan(plan)
                 self.assertEqual(world_config.subject_inputs(plan), world_config.subject_inputs(fixed))
@@ -38,8 +40,10 @@ class TargetOperationsPurposeChecks(unittest.TestCase):
                     row = next(iter(manifest['assignments'].values()))
                     if scenario.build_record_workflow(row):
                         continue  # Build checks do not use dispatch allocations.
-                    guide = scenario.documents(row)['dispatch-guide.md']
-                    self.assertNotIn('The operations allocation is designated for operations reporting.', guide)
+                    documents = scenario.documents(row)
+                    if 'dispatch-guide.md' not in documents:
+                        continue  # Dedicated business desks do not use dispatch allocations.
+                    self.assertNotIn('The operations allocation is designated for operations reporting.', documents['dispatch-guide.md'])
 
 
 if __name__ == '__main__':

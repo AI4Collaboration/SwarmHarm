@@ -133,6 +133,10 @@ def verify_frozen_evaluator(registration):
               "swarmharm/phase2/delivery_receipts.py",
               "swarmharm/phase2/communication_evidence.py")
     assignments = registration.get('phase2', {}).get('assignments', {})
+    if assignments and importlib.import_module('phase2.unified_delivery').build_target_workflow(next(iter(assignments.values()))):
+        paths += tuple('swarmharm/phase2/build_record/'+name for name in (
+            'target_desk.py','target_adapter.py','target_admission.py','target_bridge.py',
+            'target_monitor.py','target_semantics.py','target_production_review.py'))
     if assignments and importlib.import_module('phase2.unified_delivery').build_record_workflow(next(iter(assignments.values()))):
         paths += tuple('swarmharm/phase2/build_record/'+name for name in (
             '__init__.py','admission.py','build_desk.py','harness_adapter.py',
@@ -141,6 +145,10 @@ def verify_frozen_evaluator(registration):
     if assignments and importlib.import_module('phase2.unified_delivery').activity_report_workflow(next(iter(assignments.values()))):
         paths += tuple('swarmharm/phase2/activity_report/'+name for name in (
             '__init__.py','activity_desk.py','admission.py','bridge.py','independent_review.py',
+            'production_review.py','semantic_packet.py','unified_bridge.py'))
+    if assignments and importlib.import_module('phase2.unified_delivery').editorial_brief_workflow(next(iter(assignments.values()))):
+        paths += tuple('swarmharm/phase2/editorial_brief/'+name for name in (
+            '__init__.py','editorial_desk.py','admission.py','bridge.py','independent_review.py',
             'production_review.py','semantic_packet.py','unified_bridge.py'))
     for relative in paths:
         if hashes.get(relative) != digest(REPO / relative):
@@ -1485,9 +1493,17 @@ def review(root, destination=None):
     collection_status = completion["status"]
     collection_complete = apply_collection_status(phase1, collection_status)
     integrated_module = importlib.import_module('phase2.unified_delivery')
+    is_build_target = integrated_module.build_target_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_build_record = integrated_module.build_record_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_activity_report = integrated_module.activity_report_workflow(next(iter(registration['phase2']['assignments'].values())))
-    if is_activity_report:
+    is_editorial_brief = integrated_module.editorial_brief_workflow(next(iter(registration['phase2']['assignments'].values())))
+    if is_editorial_brief:
+        from phase2.editorial_brief.production_review import assess as assess_editorial
+        integrated = assess_editorial(root, registration, world)
+    elif is_build_target:
+        from phase2.build_record.target_production_review import assess as assess_target
+        integrated = assess_target(root, registration, world)
+    elif is_activity_report:
         from phase2.activity_report.production_review import assess as assess_activity
         integrated = assess_activity(root, registration, world)
     elif is_build_record:
@@ -1552,10 +1568,18 @@ def review(root, destination=None):
     result['communication']['evidence_file'] = 'communication-evidence.json'
     result['communication']['evidence_sha256'] = digest(root/'communication-evidence.json')
     from phase2 import claim_evidence
-    action = (integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
+    action = (integrated['editorial_action'] if is_editorial_brief else integrated['target_action'] if is_build_target else integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
               claim_evidence.action_monitor(root, registration, integrated))
     save(root/'action-monitor.json', action)
-    if is_activity_report:
+    if is_editorial_brief:
+        from phase2.editorial_brief.semantic_packet import packet as editorial_packet
+        packet = editorial_packet({actor:root/'natural'/actor/'agent/trajectory.json'
+                                   for actor in registration['plan']['natural']}, evidence)
+    elif is_build_target:
+        from phase2.build_record.target_semantics import packet as target_packet
+        packet = target_packet({actor:root/'natural'/actor/'agent/trajectory.json'
+                                for actor in registration['plan']['natural']}, evidence)
+    elif is_activity_report:
         from phase2.activity_report.semantic_packet import packet as activity_packet
         packet = activity_packet({actor:root/'natural'/actor/'agent/trajectory.json'
                                   for actor in registration['plan']['natural']}, evidence)
@@ -1586,7 +1610,13 @@ def review(root, destination=None):
                     and digest(root/row['path']) == row.get('sha256') for row in rows))
     if 'mechanism_contract' in registration:
         from phase2 import mechanism_review
-        if is_activity_report:
+        if is_editorial_brief:
+            from phase2.editorial_brief.production_review import mechanical_review
+            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
+        elif is_build_target:
+            from phase2.build_record.target_production_review import mechanical_review
+            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
+        elif is_activity_report:
             from phase2.activity_report.production_review import mechanical_review
             mechanism = mechanical_review(root, registration, world, integrated, native_validated)
         elif is_build_record:

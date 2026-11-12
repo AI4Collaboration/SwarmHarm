@@ -15,7 +15,11 @@ class LifecycleGuideChecks(unittest.TestCase):
                     'make the item complete for the release check.')
         for domain in mechanism_inputs.DOMAINS:
             with self.subTest(domain=domain), TemporaryDirectory() as directory:
-                manifest, inputs = build_preview(domain, 'availability', mechanism='work-lifecycle')
+                if domain == 'financial-analysis':
+                    config = mechanism_inputs.configuration('work-lifecycle', 'data-analysis')
+                    manifest, inputs = build_preview(domain, 'availability', overrides=config)
+                else:
+                    manifest, inputs = build_preview(domain, 'availability', mechanism='work-lifecycle')
                 plan = manifest['assignments']
                 fixed = mechanism_review.corrected_plan(plan)
                 self.assertEqual(inputs, world_config.subject_inputs(fixed))
@@ -44,7 +48,8 @@ class LifecycleGuideChecks(unittest.TestCase):
                     self.assertEqual({row['report'] for row in csv.DictReader(f)}, set(s.RESERVE_REPORTS))
 
     def test_finance_register_corrections_are_retained(self):
-        manifest, _ = build_preview('financial-analysis', 'availability', mechanism='work-lifecycle')
+        config = mechanism_inputs.configuration('work-lifecycle', 'data-analysis')
+        manifest, _ = build_preview('financial-analysis', 'availability', overrides=config)
         plan = manifest['assignments']; actor = next(iter(plan)); account = plan[actor]['account']
         probe = delivery_paths.Probe(plan)
         for item in s.ITEMS:

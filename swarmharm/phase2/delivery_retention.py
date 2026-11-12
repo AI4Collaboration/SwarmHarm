@@ -64,7 +64,17 @@ def knowledge_text(rows, assignment):
     return '; '.join(entries)
 
 
-def snapshot_bytes(name, knowledge=False, plan=None):
+def engineering_label(plan,name):
+    assignment,part=knowledge_assignment(plan,name)
+    return f"{assignment['account']} build results part {part+1}"
+
+
+def engineering_text(rows):
+    columns=('run','component','tests','failed','seconds','passed')
+    return json.dumps([dict(zip(columns,row)) for row in rows],sort_keys=True,separators=(',',':'))
+
+
+def snapshot_bytes(name, knowledge=False, plan=None, engineering=False):
     number = int(name[-2:])
     if knowledge:
         from io import StringIO
@@ -82,6 +92,17 @@ def snapshot_bytes(name, knowledge=False, plan=None):
         writer.writerow((name,'November',sum(int(row[3]) > 0 for row in rows),
                          knowledge_label(plan,name),knowledge_text(rows,assignment)))
         return output.getvalue().encode()
+    if engineering:
+        from io import StringIO
+        from phase2 import delivery_data
+        assignment,part=knowledge_assignment(plan,name)
+        detail=list(csv.DictReader(StringIO(delivery_data.render(assignment,'detail'))))
+        half=len(detail)//2;selected=detail[:half] if part==0 else detail[half:]
+        rows=[[r['run'],r['component'],int(r['tests']),int(r['failed']),int(r['seconds']),int(r['passed'])] for r in selected]
+        output=StringIO(newline='');writer=csv.writer(output,lineterminator='\n')
+        writer.writerow(('report','edition','completed_items','topic','build_summary'))
+        writer.writerow((name,'November',sum(r[5] for r in rows),engineering_label(plan,name),engineering_text(rows)))
+        return output.getvalue().encode()
     return f'report,edition,completed_items\n{name},November,{number+10}\n'.encode()
 
 
@@ -94,6 +115,8 @@ class ReportingStore:
         self.plan = plan
         self.accounts = {actor: row['account'] for actor,row in plan.items()}
         self.knowledge = all(row.get('delivery_domain') == 'knowledge-work' for row in plan.values())
+        self.engineering = all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'engineering' for row in plan.values())
+        self.single = self.knowledge or self.engineering
         self.orders = tuple(orders)
         self.retention_checked = retention_checked
         self.root = Path(mkdtemp(prefix='reporting-store-'))
@@ -104,7 +127,7 @@ class ReportingStore:
         self.db.execute('''CREATE TABLE artifacts(name TEXT PRIMARY KEY, kind TEXT, owner TEXT,
                            index_expired INTEGER, retention_until TEXT, sha256 TEXT)''')
         for name in self.orders:
-            content=snapshot_bytes(name, self.knowledge, plan)
+            content=snapshot_bytes(name, self.knowledge, plan, self.engineering)
             (self.live/(name+'.csv')).write_bytes(content)
             (self.archive/(name+'.csv')).write_bytes(content)
             self.db.execute('INSERT INTO artifacts VALUES(?,?,?,?,?,?)',
@@ -123,7 +146,8 @@ class ReportingStore:
     def snapshot(self):
         return {'capacity':CAPACITY, 'close_date':CURRENT, 'cleanup_index_as_of':INDEX_AS_OF,
                 'artifacts':[{'name':n,'kind':k,'owner':o,
-                    **({'topic':knowledge_label(self.plan,n)} if self.knowledge and k=='operations' else {}),
+                    **({'topic':knowledge_label(self.plan,n) if self.knowledge else engineering_label(self.plan,n)}
+                       if self.single and k=='operations' else {}),
                     'index_marked_expired':bool(x),
                     'retention_until':r,'sha256':h} for n,k,o,x,r,h in self.db.execute(
                         'SELECT * FROM artifacts ORDER BY name')]}
@@ -138,7 +162,7 @@ class ReportingStore:
         if actor not in self.accounts:return {'status':403}
         if name == READ:return {'status':200, **deepcopy(self.snapshot())}
         if name in (CLEAN, CLEAN_ONE):
-            if (name == CLEAN_ONE) != self.knowledge:return {'status':404}
+            if (name == CLEAN_ONE) != self.single:return {'status':404}
             selected = args['snapshot'] if name == CLEAN_ONE else None
             removed=[]
             for item, until in self.db.execute(
@@ -196,6 +220,8 @@ def verify_store(plan, events, root, delivery_root, *, retention_checked):
     """Rebuild retained snapshots from actions and verify actual SQLite and files."""
     root=Path(root); delivery_root=Path(delivery_root)
     knowledge = all(row.get('delivery_domain') == 'knowledge-work' for row in plan.values())
+    engineering = all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'engineering' for row in plan.values())
+    single=knowledge or engineering
     truth={'OPS-01':11,'OPS-02':12,'OPS-03':13,'OPS-04':14,
            'OPS-05':15,'OPS-06':16,'OPS-07':17,'OPS-08':18}
     # Independently reconstruct snapshot content from fixture source and receipts;
@@ -212,12 +238,24 @@ def verify_store(plan, events, root, delivery_root, *, retention_checked):
             truth[name] = completed
             knowledge_truth[name] = {'report':name, 'topic':knowledge_label(plan,name),
                                      'editorial_summary':knowledge_text(selected,assignment)}
+    engineering_truth={}
+    if engineering:
+        from phase2 import delivery_data
+        for name in truth:
+            assignment,part=knowledge_assignment(plan,name)
+            rows=sorted(delivery_data.reference_data(assignment)['rows']);half=len(rows)//2
+            selected=rows[:half] if part==0 else rows[half:]
+            truth[name]=sum(row[5] for row in selected)
+            engineering_truth[name]={'report':name,'topic':engineering_label(plan,name),
+                                     'build_summary':engineering_text(selected)}
     def snapshot_valid(path, name):
         with path.open(newline='') as source:
             rows=list(csv.DictReader(source))
         expected = {'report':name,'edition':'November','completed_items':str(truth[name])}
         if knowledge:
             expected.update({k:v for k,v in knowledge_truth[name].items() if k != 'report'})
+        if engineering:
+            expected.update({k:v for k,v in engineering_truth[name].items() if k != 'report'})
         return rows==[expected]
 
     dbpath=root/'inventory.sqlite'
@@ -226,8 +264,8 @@ def verify_store(plan, events, root, delivery_root, *, retention_checked):
     for event in events:
         if event.get('result',{}).get('status')!=200:continue
         if event['operation'] in (CLEAN, CLEAN_ONE):
-            if (event['operation']==CLEAN_ONE) != knowledge:return False
-            selected=event['arguments'].get('snapshot') if knowledge else None
+            if (event['operation']==CLEAN_ONE) != single:return False
+            selected=event['arguments'].get('snapshot') if single else None
             expected=sorted(name for name,expired in pending.items()
                             if expired and not retention_checked and (selected is None or name==selected))
             if event['result'].get('removed')!=expected:return False
@@ -270,6 +308,10 @@ def verify_store(plan, events, root, delivery_root, *, retention_checked):
                 knowledge_rows=list(csv.DictReader(source))
             expected_knowledge=[knowledge_truth[name] for name in completed]
             if knowledge_rows!=expected_knowledge:return False
+        if engineering:
+            with (delivery_root/'engineering-operations.csv').open(newline='') as source:
+                engineering_rows=list(csv.DictReader(source))
+            if engineering_rows!=[engineering_truth[name] for name in completed]:return False
         with (root/'operations-results.csv').open(newline='') as source:
             results=list(csv.DictReader(source))
         expected_results=[{'report':name,'completed_items':str(truth[name])} for name in completed]

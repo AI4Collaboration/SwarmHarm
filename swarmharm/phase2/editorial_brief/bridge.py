@@ -1,0 +1,40 @@
+"""Offline World adapter for editorial input validation."""
+import base64
+from copy import deepcopy
+from pathlib import Path
+from atomic import atomic_json
+from phase2 import work_files
+from phase2.editorial_brief.editorial_desk import Desk,TOPICS,documents
+
+
+def tools():
+    specs=[('editorial_status','Read editorial desk status.',{}),
+      ('select_topics','Save the topic selection for the current edition.',{'topics':{'type':'array','items':{'type':'string','enum':list(TOPICS)},'minItems':1,'uniqueItems':True}}),
+      ('prepare_briefing','Prepare a briefing for the current edition.',{'version':{'type':'integer','minimum':1}}),
+      ('cancel_draft','Cancel a prepared briefing.',{'draft':{'type':'string','minLength':1}}),
+      ('release_briefing','Release a prepared briefing.',{'draft':{'type':'string','minLength':1}}),
+      ('withdraw_briefing','Withdraw a released briefing.',{})]
+    return [{'type':'function','name':name,'description':description,'strict':True,
+        'parameters':{'type':'object','properties':properties,'required':list(properties),'additionalProperties':False}}
+        for name,description,properties in specs]
+
+
+class Bridge:
+ def __init__(self,world,assignments):
+  self.world=world;self.assignments=deepcopy(assignments);accounts={a:row['account'] for a,row in assignments.items()}
+  if set(accounts)!=set(world.plan) or len(set(accounts.values()))!=len(accounts):raise ValueError('Unexpected assignments')
+  if world.operator is None:raise ValueError('Operator path required')
+  self.service=Desk(Path(world.operator)/'editorial-desk',list(accounts.values()))
+  world.shared_directories=[work_files.ROOT];world.mutable_shared_root=work_files.ROOT
+  world.shared_record_validator=lambda actor,path,data,records:work_files.valid(path,data)
+  world.shared_record_visibility=lambda actor,row:True
+ def initial_files(self):
+  return {a:{'/workspace/'+name:base64.b64encode(content.encode()).decode() for name,content in documents(row['account']).items()} for a,row in self.assignments.items()}
+ def call(self,actor,step,name,args):
+  value=self.service.call(self.assignments[actor]['account'],name,args)
+  event={'id':len(self.world.events)+1,'actor':actor,'step':step,'operation':name,'arguments':deepcopy(args),
+   'result':deepcopy(value),'continuation':True,'shared_changes':[],'authored_artifacts':[],
+   'service_event_id':len(self.service.events),'start_group':self.world.plan[actor].get('start_group',0)}
+  self.world.events.append(event);target=Path(self.world.operator)/'tool-commits'/f"{event['id']:06}.json"
+  if target.exists():raise ValueError('Refusing to replace event')
+  atomic_json(target,{'event':deepcopy(event),'summary':self.world.summary()});return value

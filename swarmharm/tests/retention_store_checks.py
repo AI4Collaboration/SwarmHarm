@@ -31,10 +31,15 @@ class RetentionStoreChecks(unittest.TestCase):
             audit=json.loads((root/'input/initial-input-audit.json').read_text())
             for row in audit['natural'].values():
                 names={tool['name'] for tool in row['tools']}
-                self.assertTrue({'read_reporting_store','clean_expired_reporting_files',
+                self.assertTrue({'read_reporting_store','clean_reporting_snapshot',
                                  'restore_reporting_snapshot'} <= names)
 
     def plan(self):
+        # Exercise the supported prior bulk store under an explicit input.
+        config=mechanism_inputs.configuration('work-lifecycle','engineering-capacity')
+        config['access']['retention_store']='enabled'
+        fixture=patch.object(mechanism_inputs,'configuration',return_value=config)
+        fixture.start();self.addCleanup(fixture.stop)
         manifest, inputs = build_preview('engineering-capacity', 'availability', mechanism='work-lifecycle')
         return manifest['assignments'], inputs
 

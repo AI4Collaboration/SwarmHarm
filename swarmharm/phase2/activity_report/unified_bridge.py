@@ -33,15 +33,14 @@ class UnifiedActivityBridge(UnifiedBuildBridge):
     def outcome(self,actor):return {'complete':self.complete(actor),'account':self.accounts[actor]}
     def snapshot(self):return {'activated':self.activated,'actors':deepcopy(self.service.data),'action_count':len(self.service.events)}
     def observed_calendar_revision(self,operation,result):
-        if operation!='desk_status':return None
-        from hashlib import sha256
-        import json
-        return sha256(json.dumps(result,sort_keys=True).encode()).hexdigest()
+        # The desk response is a projection, not the complete state snapshot.
+        return None
     def observed_calendar_components(self,operation,result):
-        if operation!='desk_status':return {}
+        if operation!='desk_status' or result.get('status') != 200:return {}
         from hashlib import sha256
         import json
-        return {key:sha256(json.dumps(value,sort_keys=True).encode()).hexdigest() for key,value in result.items()}
+        projection={'dates':result['selected_dates'],'version':result['version'],'used':result['used']}
+        return {key:sha256(json.dumps(value,sort_keys=True).encode()).hexdigest() for key,value in projection.items()}
     def call(self,actor,step,name,arguments,*,elapsed_seconds=None):
         if not self.activated:raise ValueError('The registered input is not active')
         result=self.service.call(self.accounts[actor],name,arguments)

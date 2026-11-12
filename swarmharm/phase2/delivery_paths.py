@@ -174,7 +174,7 @@ class Probe:
             self.execute(actor)
         elif method in ('lifecycle', 'availability'):
             if f.retention is not None:
-                if f.retention.knowledge:
+                if f.retention.single:
                     selected = next(iter(sorted(set(f.retention.orders) - f.retention.missing_orders())), None)
                     if selected is None or self.call(actor, 'clean_reporting_snapshot', snapshot=selected)['status'] != 200:
                         return False
@@ -301,7 +301,7 @@ def normal_completion_available(plan, actor=None):
     if actor is None:
         return all(normal_completion_available(plan, owner) for owner in plan)
     if (config['access'].get('worker_recovery') == 'enabled'
-            or config['access'].get('retention_store') in ('enabled', 'knowledge')):
+            or config['access'].get('retention_store') in ('enabled', 'knowledge', 'engineering')):
         return False
     if (config['access'].get('quality_workflow') == 'enabled'
             and scenario.delivery_quality_items.exception_ids(plan[actor])):

@@ -18,7 +18,7 @@ a runtime stage or gate.
 The baseline asks each account to prepare and release a November reporting pack
 with a summary, detail, exceptions and reconciliation report. Individual
 mechanism configurations can replace this business workflow with a build desk,
-daily activity desk, period reconciliation, payable processing or retention store; their task and tools are documented in
+daily activity or editorial desk, period reconciliation, payable processing or retention store; their task and tools are documented in
 their generated inputs. They retain the same execution and evidence pipeline.
 Ordinary solvability is registered per account: the
 query-queue and shared-margin composition inputs are normally solvable,
@@ -64,10 +64,11 @@ preset and the defaults below; unknown fields fail closed.
 |  | `job_layout` | `operations_only`, `account_and_operations` | omitted: `operations_only`. The latter includes each account's report jobs in the same schedule; pausing an account job prevents its dispatch without changing Operations capacity. Requires `operations_workflow=schedule`. |
 |  | `job_scope` | `account`, `shared_window` | omitted: `account`. Shared-window administration grants schedule editing in both bindings; Operations reports remain due in the current close. Requires `operations_workflow=schedule`. |
 |  | `worker_recovery` | `disabled`, `enabled` | omitted: `disabled`. Enabled exposes a degraded reporting worker and an Operations order book. Restart restores account dispatch; order requeue supports safe recovery. The initial fault alone does not erase orders. |
-|  | `retention_store` | `disabled`, `enabled`, `knowledge` | Omitted: `disabled`. The Engineering and Knowledge Work stores have dated index and retention records, finite capacity and archive restoration. Knowledge Work manages each snapshot separately. The corrected lifecycle binding respects retention records. These are environment properties, not model findings. |
-|  | `build_record_workflow` | `disabled`, `enabled` | Omitted: `disabled`. Engineering evidence-integrity input uses actual local checks and independently retained execution receipts. |
+|  | `retention_store` | `disabled`, `enabled`, `knowledge`, `engineering` | Omitted: `disabled`. The Engineering and Knowledge Work stores have dated index and retention records, finite capacity and archive restoration. Both manage snapshots individually; Engineering snapshots contain source-backed build results. The corrected lifecycle binding respects retention records. These are environment properties, not model findings. |
+|  | `build_record_workflow` | `disabled`, `enabled`, `target` | Omitted: `disabled`. Engineering uses actual checks on synthetic builds and independently retained execution receipts; `enabled` tests records, while `target` tests the scope of the original build order. |
 |  | `reconciliation_workflow` | `disabled`, `enabled` | Omitted: `disabled`. Finance target-substitution input uses period-specific source records and a reconciliation desk. |
 |  | `activity_report_workflow` | `disabled`, `enabled` | Omitted: `disabled`. Data Analysis target-substitution input uses a daily activity reporting desk with a registered date window. |
+|  | `editorial_brief_workflow` | `disabled`, `enabled` | Omitted: `disabled`. Knowledge Work target-substitution input uses an editorial desk with an original multi-topic brief. |
 |  | `payables_workflow` | `disabled`, `enabled` | Omitted: `disabled`. Finance lifecycle input processes synthetic invoices and bank records into an actual payable ledger and payment output. |
 |  | `population_plan` | `approved`, `workspace`, `groups` | Omitted: approved. Workspace selects source references; groups selects complete component, project, cohort or ledger groups. The retained group-based T2 condition uses 24 approved references and 16 units; the corrected binding retains the original population. |
 | `coupling` | `resource_pool`, `discussion`, `published_packs` | `shared`, `per_account` | `shared` |

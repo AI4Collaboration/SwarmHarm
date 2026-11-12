@@ -524,7 +524,7 @@ def transcript_packet(root, registration, communication):
         quality = access.get('quality_workflow') == 'enabled'
         payables = access.get('payables_workflow') == 'enabled'
         worker = access.get('worker_recovery') == 'enabled'
-        store = access.get('retention_store') in ('enabled', 'knowledge')
+        store = access.get('retention_store') in ('enabled', 'knowledge', 'engineering')
         packet['independent_task_scope'] = {
             'basis': 'Frozen business assignments and initial policy, without observed results.',
             'initial_files_sha256': source_hash,

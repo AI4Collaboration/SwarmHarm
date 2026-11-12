@@ -420,18 +420,23 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
     }
     if mechanism is not None:
         current = {'mechanism_inputs', 'mechanism_review', 'unified_input_contract',
-                   'unified_notification', 'unified_runtime', 'continuous_collect',
+                   'unified_notification', 'short_notification_reads', 'unified_runtime', 'continuous_collect',
                    'local_source', 'workload_source', 'format', 'codex_collect'}
         if mechanism == 'target-substitution':
-            if scenario != 'data-analysis':current.add('target_operations_purpose')
-            current.add('knowledge_target' if scenario == 'knowledge-work' else
-                        'engineering_target' if scenario == 'engineering-capacity' else
+            if scenario in ('data-analysis','knowledge-work'):current.add('business_notification')
+            if scenario not in ('data-analysis','knowledge-work','engineering-capacity'):current.add('target_operations_purpose')
+            current.add('editorial_brief_path' if scenario == 'knowledge-work' else
+                        'engineering_target_desk' if scenario == 'engineering-capacity' else
                         'reconciliation_candidate' if scenario == 'financial-analysis' else
                         'activity_report_path' if scenario == 'data-analysis' else 'target_group')
             if scenario == 'financial-analysis':
                 current.add('reconciliation_transport')
+            if scenario == 'engineering-capacity':
+                current.add('engineering_target_collector')
             if scenario == 'data-analysis':
                 current.add('activity_report_collector')
+            if scenario == 'knowledge-work':
+                current.add('editorial_brief_collector')
         if mechanism == 'work-lifecycle':
             current.update(('lifecycle_guide', 'claim_evidence'))
         if mechanism == 'work-lifecycle' and scenario == 'knowledge-work':
@@ -440,7 +445,10 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             current.add('data_lifecycle_pipeline')
         if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
             current.update(('finance_payables', 'finance_payables_transport'))
+        if mechanism == 'work-lifecycle' and scenario in ('engineering-capacity', 'knowledge-work'):
+            current.add('retention_causality')
         if mechanism == 'work-lifecycle' and scenario == 'engineering-capacity':
+            current.update(('engineering_single_store', 'engineering_single_store_transport'))
             current.update(('engineering_lifecycle_guide', 'engineering_lifecycle_schedule',
                             'lifecycle_causality', 'retention_store'))
         if mechanism == 'grader-tampering' and scenario == 'data-analysis':
@@ -576,9 +584,15 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     unified_delivery.world_config.selection(world_config, binding_preset,
                                             combined=combined_bindings)
     delivery_config, _ = unified_delivery.world_config.components(world_config)
+    if (delivery_config['access'].get('editorial_brief_workflow') == 'enabled'
+            and (mechanism != 'target-substitution' or scenario != 'knowledge-work')):
+        raise ValueError('Editorial briefing requires Knowledge Work target-substitution')
     if (delivery_config['access'].get('activity_report_workflow') == 'enabled'
             and (mechanism != 'target-substitution' or scenario != 'data-analysis')):
         raise ValueError('Activity report requires Data Analysis target-substitution')
+    if (delivery_config['access'].get('build_record_workflow') == 'target'
+            and (mechanism != 'target-substitution' or scenario != 'engineering-capacity')):
+        raise ValueError('Build-target configuration requires Engineering target-substitution')
     if (delivery_config['access'].get('build_record_workflow') == 'enabled'
             and (mechanism != 'evidence-tampering' or scenario != 'engineering-capacity')):
         raise ValueError('Build-record configuration requires Engineering evidence-tampering')
@@ -752,7 +766,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             family=component_family,
             **({'continuous_workflow': True,
                 'build_record_workflow': unified_delivery.build_record_workflow(phase2_plan[actor]),
+                'build_target_workflow': unified_delivery.build_target_workflow(phase2_plan[actor]),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(phase2_plan[actor]),
+                'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(phase2_plan[actor]),
                 'forecast_workflow': unified_delivery.config_for(
                     phase2_plan)['access']['forecast_workflow'],
                 'source_routing': unified_delivery.config_for(
@@ -1621,8 +1637,14 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     unified_delivery.world_config.verify_input_contract(
         reg['phase2']['assignments'], reg['phase2'].get('unified_input_contract'))
     from phase2 import delivery_paths
-    if unified_delivery.activity_report_workflow(next(iter(reg['phase2']['assignments'].values()))):
+    if unified_delivery.editorial_brief_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.editorial_brief.admission import validate
+        path_validation = validate(reg['phase2']['assignments'])
+    elif unified_delivery.activity_report_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.activity_report.admission import validate
+        path_validation = validate(reg['phase2']['assignments'])
+    elif unified_delivery.build_target_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.build_record.target_admission import validate
         path_validation = validate(reg['phase2']['assignments'])
     elif unified_delivery.build_record_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.build_record.admission import validate
@@ -1707,9 +1729,15 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     def phase(name):
         plan=reg['plan'][name];world=lab.World(plan,root/name/'operator',reg.get('topology'));states={};histories={};starts={}
         extension_plan=load(root/'phase2-plan.json')
-        if unified_delivery.activity_report_workflow(next(iter(extension_plan.values()))):
+        if unified_delivery.editorial_brief_workflow(next(iter(extension_plan.values()))):
+            from phase2.editorial_brief.unified_bridge import UnifiedEditorialBridge
+            extension=UnifiedEditorialBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        elif unified_delivery.activity_report_workflow(next(iter(extension_plan.values()))):
             from phase2.activity_report.unified_bridge import UnifiedActivityBridge
             extension=UnifiedActivityBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        elif unified_delivery.build_target_workflow(next(iter(extension_plan.values()))):
+            from phase2.build_record.target_bridge import TargetBridge
+            extension=TargetBridge.from_plan(world,extension_plan,reg['component_initial_state'])
         elif unified_delivery.build_record_workflow(next(iter(extension_plan.values()))):
             from phase2.build_record.unified_bridge import UnifiedBuildBridge
             extension=UnifiedBuildBridge.from_plan(world,extension_plan,reg['component_initial_state'])
@@ -1725,7 +1753,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         phase2_definitions = continuation_module.tool_definitions(
             **({'continuous_workflow': True,
                 'build_record_workflow': unified_delivery.build_record_workflow(next(iter(extension.plan.values()))),
+                'build_target_workflow': unified_delivery.build_target_workflow(next(iter(extension.plan.values()))),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(next(iter(extension.plan.values()))),
+                'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(next(iter(extension.plan.values()))),
                 'forecast_workflow': extension.config['access']['forecast_workflow'],
                 'source_routing': extension.config['sharing']['source_routing'],
                 'catalog_schema': extension.config.get('catalog_schema', 'independent'),

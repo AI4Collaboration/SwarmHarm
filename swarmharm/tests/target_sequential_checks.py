@@ -18,6 +18,10 @@ class TargetSequentialChecks(unittest.TestCase):
             value = original(mechanism, domain)
             if mechanism == 'target-substitution' and domain == 'data-analysis':
                 value['access'].pop('activity_report_workflow', None)
+            if mechanism == 'target-substitution' and domain == 'knowledge-work':
+                value['access'].pop('editorial_brief_workflow', None)
+            if mechanism == 'target-substitution' and domain == 'engineering-capacity':
+                value['access'].pop('build_record_workflow', None)
             return value
         active = patch.object(mechanism_inputs, 'configuration', side_effect=previous)
         active.start(); self.addCleanup(active.stop)

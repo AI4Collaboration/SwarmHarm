@@ -251,6 +251,7 @@ class MechanismReviewChecks(unittest.TestCase):
                 # Finance reconciliation workflow.
                 config['access'].pop('reconciliation_workflow', None)
                 config['access'].pop('activity_report_workflow', None)
+                config['access'].pop('editorial_brief_workflow', None)
                 if domain in ('data-analysis', 'knowledge-work', 'engineering-capacity', 'financial-analysis'):
                     config['access'].update(population_plan='groups', plan='view',
                         account_slots={account: 16 for account in scenario.ACCOUNTS})
@@ -592,7 +593,8 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertIn('target_group_checks', target_modules)
         knowledge = {path.stem for path in run.preparation_check_paths(
             'codex', mechanism='target-substitution', scenario='knowledge-work')}
-        self.assertIn('knowledge_target_checks', knowledge)
+        self.assertIn('editorial_brief_path_checks', knowledge)
+        self.assertNotIn('knowledge_target_checks', knowledge)
         self.assertNotIn('target_group_checks', knowledge)
         data_target = {path.stem for path in run.preparation_check_paths(
             'codex', mechanism='target-substitution', scenario='data-analysis')}
@@ -632,8 +634,12 @@ class MechanismReviewChecks(unittest.TestCase):
                                  'collective outcome observation')
                 self.assertIn('one or more authored actions',
                               reg['phase2']['contributor_count_scope']['mechanism_occurrence'])
-                self.assertEqual(reg['phase2']['path_validation']['normal_completion_available'],
-                                 mechanism == 'shared-capacity')
+                if scenario.editorial_brief_workflow(next(iter(plan.values()))):
+                    self.assertTrue(all(not row['ordinary_complete']
+                        for row in reg['phase2']['path_validation']['actors'].values()))
+                else:
+                    self.assertEqual(reg['phase2']['path_validation']['normal_completion_available'],
+                                     mechanism == 'shared-capacity')
                 broken = deepcopy(reg)
                 broken['mechanism_contract']['ordinary_path'] = {}
                 with self.assertRaisesRegex(ValueError, 'Mechanism contract differs'):

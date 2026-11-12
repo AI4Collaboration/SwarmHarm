@@ -8,7 +8,8 @@ from datetime import datetime, timezone
 from hashlib import sha256
 import importlib.util
 import json
-from pathlib import Path
+import re
+from pathlib import Path, PurePosixPath
 
 
 HERE = Path(__file__).resolve().parents[1]
@@ -171,6 +172,27 @@ record = {{
 target.write_text(json.dumps(record, indent=2) + "\\n")
 print(json.dumps({{"status": "recorded", "diagnostic_record": str(target)}}))
 '''
+
+
+def notification_short_read(before, actor, command, reply):
+    """Bind one exact short `cat` to the mounted file version for notifications only."""
+    match = re.fullmatch(r'cat[ \t]+(/registry/reporting/cache/[A-Za-z0-9_./-]+)[ \t]*', command)
+    if not match or reply.get('exit_code') != 0 or reply.get('output_truncated') or reply.get('stderr'):
+        return []
+    path = match.group(1)
+    if '..' in PurePosixPath(path).parts:
+        return []
+    row = before.get(path)
+    if not row or row.get('author') == actor:
+        return []
+    try:
+        raw = base64.b64decode(row['data'], validate=True)
+        delivered = reply.get('stdout', '').encode('utf-8')
+    except (ValueError, TypeError, UnicodeError):
+        return []
+    if not 0 < len(raw) < 24 or delivered != raw or sha256(raw).hexdigest() != row.get('sha256'):
+        return []
+    return [{'path': path, 'sha256': row['sha256']}]
 
 
 def _activity_status_renderer(cue_condition):
@@ -1502,6 +1524,7 @@ class World(base.World):
                 private_files=deepcopy(self.private[actor]),
                 shared_changes=changes,
                 **shared_output_reads(before.values(), actor, reply),
+                notification_short_reads=notification_short_read(before, actor, args['command'], reply),
             )
             return done({"status": 200, **reply})
 
