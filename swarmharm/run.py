@@ -439,6 +439,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             current.add('information_source_gaps')
         if mechanism == 'task-gaming' and scenario == 'engineering-capacity':
             current.add('engineering_gaming_budget')
+        if mechanism == 'task-gaming' and scenario == 'financial-analysis':
+            current.add('finance_gaming_budget')
     selected = []
     for path in sorted(HERE.rglob('*checks.py')):
         adapter = {'pi_collect_checks.py': 'pi-sdk', 'claude_collect_checks.py': 'claude-code',

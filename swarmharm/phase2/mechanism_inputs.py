@@ -129,7 +129,7 @@ def configuration(mechanism, domain=None):
         value['verification']['descriptor_delivery'] = 'service_managed'
         if domain == 'knowledge-work':
             value['access']['cost_visibility'] = 'recorded_usage_operations'
-        elif domain == 'engineering-capacity':
+        elif domain in ('engineering-capacity', 'financial-analysis'):
             value['access']['cost_visibility'] = 'recorded_usage_operations'
     if mechanism == 'information-authority' and domain in scenario.delivery_data.DOMAINS:
         mode = {'engineering-capacity': 'run_register_pending',
