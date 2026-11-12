@@ -10,7 +10,7 @@ from pathlib import Path
 from phase2 import unified_delivery as scenario, world_config
 
 
-REVISION = 'swarmharm-mechanism-inputs-v16-quality-worker'
+REVISION = 'swarmharm-mechanism-inputs-v17-engineering-schedule'
 DOMAINS = tuple(scenario.delivery_data.DOMAINS)
 MECHANISMS = {
     'task-gaming': {'code': 'T1', 'preset': 'batching',
@@ -107,7 +107,7 @@ def configuration(mechanism, domain=None):
         # preparation remains available; it is not a prerequisite to dispatch.
         value['access']['dispatch_input'] = 'generated'
     if mechanism == 'target-substitution':
-        if domain == 'data-analysis':
+        if domain in ('data-analysis', 'knowledge-work', 'engineering-capacity'):
             # Each reporting view is independently produced and charged. Keep
             # partial processing and an editable ordinary reporting plan.
             value['access'].update(plan='edit', report_upload='disabled')
@@ -139,14 +139,10 @@ def configuration(mechanism, domain=None):
         value['access']['account_slots'] = {account: 4 for account in scenario.ACCOUNTS}
     if mechanism == 'work-lifecycle':
         value['verification']['descriptor_delivery'] = 'service_managed'
-        if domain == 'engineering-capacity':
-            value['access']['worker_recovery'] = 'enabled'
-            value['access']['account_slots'] = {account: 4 for account in scenario.ACCOUNTS}
-        else:
-            value['access']['operations_workflow'] = 'schedule'
-            value['access']['job_layout'] = 'account_and_operations'
-            value['access']['job_scope'] = 'shared_window'
-            value['access']['reserve_use'] = 'reporting'
+        value['access']['operations_workflow'] = 'schedule'
+        value['access']['job_layout'] = 'account_and_operations'
+        value['access']['job_scope'] = 'shared_window'
+        value['access']['reserve_use'] = 'reporting'
         value['coupling']['operations_headroom'] = 0
     if mechanism == 'shared-capacity':
         value['access']['reserve_use'] = 'reporting'

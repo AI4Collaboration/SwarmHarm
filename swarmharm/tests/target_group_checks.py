@@ -29,7 +29,7 @@ def source_groups(assignment):
 
 def group_preview(domain):
     config = mechanism_inputs.configuration('target-substitution', domain)
-    if domain == 'data-analysis':
+    if domain in ('data-analysis', 'knowledge-work', 'engineering-capacity'):
         config['access'].update(population_plan='groups', plan='view',
             account_slots={account: 16 for account in unified_delivery.ACCOUNTS})
         config['verification'].pop('publication_items', None)
@@ -72,7 +72,7 @@ class GroupSelectionChecks(unittest.TestCase):
                                 self.assertEqual(effects['omitted_source_records'], 8)
 
     def test_workspace_reference_format_remains_supported(self):
-        manifest, _ = build_preview('knowledge-work', 'acceptance', mechanism='target-substitution')
+        manifest, _ = group_preview('knowledge-work')
         plan = deepcopy(manifest['assignments'])
         for row in plan.values():
             row['delivery_config']['access']['population_plan'] = 'workspace'
@@ -114,7 +114,7 @@ class GroupSelectionChecks(unittest.TestCase):
                     self.assertEqual(probe.execute(actor)['status'], 200)
 
     def test_selection_authorship_must_precede_matching_execution(self):
-        manifest, _ = build_preview('knowledge-work', 'acceptance', mechanism='target-substitution')
+        manifest, _ = group_preview('knowledge-work')
         probe = delivery_paths.Probe(manifest['assignments'])
         actor = next(iter(probe.flow.plan))
         assignment = probe.flow.plan[actor]
@@ -135,7 +135,7 @@ class GroupSelectionChecks(unittest.TestCase):
 
     def test_reviewer_binds_selection_to_execution_and_final_delivery(self):
         from phase2 import mechanism_inputs
-        manifest, _ = build_preview('knowledge-work', 'acceptance', mechanism='target-substitution')
+        manifest, _ = group_preview('knowledge-work')
         plan = manifest['assignments']
         probe = delivery_paths.Probe(plan)
         actor = next(iter(plan))
@@ -146,14 +146,16 @@ class GroupSelectionChecks(unittest.TestCase):
         self.assertEqual(probe.release(actor)['status'], 201)
         execution = next(e for e in probe.flow.world.events if e['actor'] == actor
                          and e['operation'] == 'execute_dispatch')
-        reg = {'phase2': {'assignments': plan},
-               'mechanism_contract': mechanism_inputs.validate_paths('target-substitution', plan)}
-        with TemporaryDirectory() as directory:
-            root = Path(directory)
-            independent = delivery_fixtures.UnifiedDeliveryChecks().review(probe.flow, root)
-            with patch.object(delivery_population, 'authored_selection', wraps=delivery_population.authored_selection) as find:
-                result = mechanism_review.review(reg, {'events': probe.flow.world.events},
-                    independent, root/'natural', native_validated=True)
+        # Historical grouped fixture retains its own declared configuration.
+        with patch.object(mechanism_inputs, 'configuration', return_value=unified_delivery.world_for(plan)):
+            reg = {'phase2': {'assignments': plan},
+                   'mechanism_contract': mechanism_inputs.validate_paths('target-substitution', plan)}
+            with TemporaryDirectory() as directory:
+                root = Path(directory)
+                independent = delivery_fixtures.UnifiedDeliveryChecks().review(probe.flow, root)
+                with patch.object(delivery_population, 'authored_selection', wraps=delivery_population.authored_selection) as find:
+                    result = mechanism_review.review(reg, {'events': probe.flow.world.events},
+                        independent, root/'natural', native_validated=True)
         self.assertTrue(result['independent_result_valid'])
         self.assertTrue(result['mechanism_observed'])
         self.assertEqual(result['effects']['omitted_source_records'], 8)

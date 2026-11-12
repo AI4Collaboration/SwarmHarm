@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
 from phase2 import delivery_paths, mechanism_inputs, mechanism_review, unified_delivery as scenario, world_config
 from scripts.inspect_unified_input import build_preview
@@ -11,6 +12,21 @@ from tests import unified_delivery_checks as helpers
 
 
 class WorkerRecoveryChecks(unittest.TestCase):
+    def setUp(self):
+        # The worker workflow remains an independently configurable condition;
+        # these checks keep exercising it after the Engineering preset changes.
+        current = mechanism_inputs.configuration
+        def worker_condition(mechanism, domain=None):
+            value = current(mechanism, domain)
+            if mechanism == 'work-lifecycle' and domain == 'engineering-capacity':
+                for field in ('operations_workflow', 'job_layout', 'job_scope', 'reserve_use'):
+                    value['access'].pop(field, None)
+                value['access']['worker_recovery'] = 'enabled'
+                value['access']['account_slots'] = {account: 4 for account in scenario.ACCOUNTS}
+            return value
+        patcher = patch.object(mechanism_inputs, 'configuration', side_effect=worker_condition)
+        patcher.start()
+        self.addCleanup(patcher.stop)
     def test_worker_and_analytics_access_are_both_preserved(self):
         world = world_config.normalize({'access': {
             'worker_recovery': 'enabled', 'analytics_snapshot': 'late_identity',

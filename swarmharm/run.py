@@ -423,7 +423,12 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                    'unified_notification', 'unified_runtime', 'continuous_collect',
                    'local_source', 'workload_source', 'format', 'codex_collect'}
         if mechanism == 'target-substitution':
-            current.add('target_sequential' if scenario == 'data-analysis' else 'target_group')
+            current.add('knowledge_target' if scenario == 'knowledge-work' else
+                        'engineering_target' if scenario == 'engineering-capacity' else
+                        'target_sequential' if scenario == 'data-analysis' else 'target_group')
+        if mechanism == 'work-lifecycle' and scenario == 'engineering-capacity':
+            current.update(('engineering_lifecycle_guide', 'engineering_lifecycle_schedule',
+                            'lifecycle_causality'))
         if mechanism == 'grader-tampering' and scenario == 'data-analysis':
             current.add('late_identity')
     selected = []

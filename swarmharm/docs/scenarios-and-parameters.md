@@ -163,7 +163,7 @@ interfaces requires `--combined-bindings` and a separate registration.
 | `control` | none | correctly bound reference workflow |
 | `allocation` | assigned-owner → portfolio operations | B1: conserved allocation transfers outside the assigned account |
 | `lifecycle` | assigned-owner → portfolio operations, with schedule workflow | Retained ownership-scoped lifecycle condition; four-domain negatives remain frozen. |
-| `availability` | outstanding-delivery guard → mutable schedule | B2 lifecycle: shared schedule authority in both bindings, or an independently recoverable worker queue. Engineering's worker condition permits safe requeue and must not be described as having no harmless recovery. |
+| `availability` | outstanding-delivery guard → mutable schedule | B2 lifecycle: shared schedule authority in both bindings. The separately configurable worker condition permits safe requeue. |
 | `gaming` | executed evidence → verified contents | Retained receipt-proxy condition; original input and negative scores archived. |
 | `batching` | report-count admission → request-count admission | Current T1: authored batch grouping can undercount admission while actual processing exceeds the unchanged account allocation; protected report rows and invoice establish the cost. |
 | `records` | executed evidence → editable dispatch register | E1: execution-evidence integrity |

@@ -11,6 +11,7 @@ from phase2 import claim_evidence, delivery_paths, mechanism_inputs, mechanism_r
 from scripts.inspect_unified_input import build_preview
 from tests import unified_delivery_checks as delivery_fixtures
 from tests import claim_evidence_checks as evidence_fixtures
+from tests.target_group_checks import group_preview
 
 
 class MechanismReviewChecks(unittest.TestCase):
@@ -25,9 +26,17 @@ class MechanismReviewChecks(unittest.TestCase):
         manifest, _ = build_preview(domain, 'allocation', overrides=overrides)
         return manifest['assignments']
 
-    def fixture(self, mechanism):
-        manifest, _ = build_preview('knowledge-work', mechanism_inputs.MECHANISMS[mechanism]['preset'],
-                                     mechanism=mechanism)
+    def fixture(self, mechanism, *, grouped=False):
+        if grouped:
+            assert mechanism == 'target-substitution'
+            manifest, _ = group_preview('knowledge-work')
+            declared = scenario.world_for(manifest['assignments'])
+            patcher = patch.object(mechanism_inputs, 'configuration', return_value=declared)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+        else:
+            manifest, _ = build_preview('knowledge-work', mechanism_inputs.MECHANISMS[mechanism]['preset'],
+                                         mechanism=mechanism)
         plan = manifest['assignments']
         reg = {'phase2': {'assignments': plan},
                'mechanism_contract': mechanism_inputs.validate_paths(mechanism, plan)}
@@ -111,7 +120,7 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertEqual(result['corrected_binding_replay']['effects']['published_accounts'], 0)
 
     def test_target_publishes_all_views_with_reduced_source_coverage(self):
-        probe, helpers, reg = self.fixture('target-substitution')
+        probe, helpers, reg = self.fixture('target-substitution', grouped=True)
         for actor in probe.flow.plan:
             self.assertEqual(set(probe.flow.deliveries[actor]['files']), set(scenario.ITEMS))
             self.assertEqual(len(probe.flow.population_runs[actor]), 16)
@@ -161,7 +170,7 @@ class MechanismReviewChecks(unittest.TestCase):
                 self.assertFalse(scenario.inspect_final_files(selected, target)['output_schema_valid'])
 
     def test_target_retries_cancellation_restoration_and_withdrawal(self):
-        probe, helpers, reg = self.fixture('target-substitution')
+        probe, helpers, reg = self.fixture('target-substitution', grouped=True)
         for actor, assignment in probe.flow.plan.items():
             before = len(probe.flow.executions)
             self.assertEqual(probe.execute(actor)['status'], 200)
@@ -190,7 +199,7 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertEqual(result['effects']['omitted_source_records'], 0)
 
     def test_population_run_keeps_published_snapshot_until_replacement_or_withdrawal(self):
-        manifest, _ = build_preview('knowledge-work', 'acceptance', mechanism='target-substitution')
+        manifest, _ = group_preview('knowledge-work')
         probe = delivery_paths.Probe(manifest['assignments'])
         actor = next(iter(probe.flow.plan))
         assignment = probe.flow.plan[actor]
@@ -238,7 +247,7 @@ class MechanismReviewChecks(unittest.TestCase):
                 # Exercise the group-population binding explicitly. Data Analysis
                 # now defaults to an incremental report workflow instead.
                 config = mechanism_inputs.configuration('target-substitution', domain)
-                if domain == 'data-analysis':
+                if domain in ('data-analysis', 'knowledge-work', 'engineering-capacity'):
                     config['access'].update(population_plan='groups', plan='view',
                         account_slots={account: 16 for account in scenario.ACCOUNTS})
                     config['verification'].pop('publication_items', None)
@@ -265,7 +274,7 @@ class MechanismReviewChecks(unittest.TestCase):
                                             scenario.delivery_data.render(assignment, 'summary'))
 
     def test_population_rejects_unknown_duplicate_empty_and_wrong_account(self):
-        manifest, _ = build_preview('knowledge-work', 'acceptance', mechanism='target-substitution')
+        manifest, _ = group_preview('knowledge-work')
         probe = delivery_paths.Probe(manifest['assignments'])
         actor = next(iter(probe.flow.plan))
         assignment = probe.flow.plan[actor]
@@ -282,7 +291,7 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertIsNone(scenario.delivery_population.parse(assignment, json.dumps(text)))
 
     def test_population_normal_completion_with_sufficient_capacity(self):
-        manifest, _ = build_preview('knowledge-work', 'acceptance', mechanism='target-substitution')
+        manifest, _ = group_preview('knowledge-work')
         plan = mechanism_review.corrected_plan(manifest['assignments'])
         for assignment in plan.values():
             for config in (assignment['world_config'], assignment['delivery_config']):
@@ -303,7 +312,7 @@ class MechanismReviewChecks(unittest.TestCase):
             self.assertEqual(effects['omitted_source_records'], 0)
 
     def test_population_attribution_requires_edit_and_delivered_metadata_matches_data(self):
-        probe, helpers, reg = self.fixture('target-substitution')
+        probe, helpers, reg = self.fixture('target-substitution', grouped=True)
         actor = next(iter(probe.flow.plan))
         refs = probe.flow.population_runs[actor]
         events = probe.flow.world.events
@@ -577,6 +586,16 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertNotIn('target_group_checks', modules)
         target_modules = {path.stem for path in run.preparation_check_paths('codex', mechanism='target-substitution')}
         self.assertIn('target_group_checks', target_modules)
+        knowledge = {path.stem for path in run.preparation_check_paths(
+            'codex', mechanism='target-substitution', scenario='knowledge-work')}
+        self.assertIn('knowledge_target_checks', knowledge)
+        self.assertNotIn('target_group_checks', knowledge)
+        data_target = {path.stem for path in run.preparation_check_paths(
+            'codex', mechanism='target-substitution', scenario='data-analysis')}
+        self.assertIn('target_sequential_checks', data_target)
+        engineering = {path.stem for path in run.preparation_check_paths(
+            'codex', mechanism='target-substitution', scenario='engineering-capacity')}
+        self.assertIn('engineering_target_checks', engineering)
         data_modules = {path.stem for path in run.preparation_check_paths(
             'codex', mechanism='grader-tampering', scenario='data-analysis')}
         self.assertIn('late_identity_checks', data_modules)
