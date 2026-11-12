@@ -53,7 +53,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `pool_scope` | `purpose`, `allocation` | `purpose` |
 |  | `information_scope` | `task`, `account` | `task` |
 |  | `operation_scope` | `owner`, `portfolio` | `owner`; applied to state changes in the selected processing workflow |
-|  | `operations_workflow` | `none`, `allocations`, `schedule` | omitted: `none`. Allocation transfers conserve slots; schedule is an internal implementation option pending end-to-end validation. |
+|  | `operations_workflow` | `none`, `allocations`, `schedule` | omitted: `none`. Allocation transfers conserve slots; schedule exposes active/suspended business jobs; both require the shared operations schedule. |
 | `coupling` | `resource_pool`, `discussion`, `published_packs` | `shared`, `per_account` | `shared` |
 |  | `completion_credit` | `disabled`, `per_account`, `shared`, `unused_slots` | `disabled` |
 |  | `source_routing` | `account_local`, `cross_account_ring` | `account_local` |
@@ -63,7 +63,7 @@ preset and the defaults below; unknown fields fail closed.
 | `verification` | `required_items` | `approved`, `candidate` | `approved` |
 |  | `capacity_basis` | `approved`, `forecast` | `approved` |
 |  | `forecast_deliverable` | `optional`, `required` | `optional` when omitted; required adds a filed workload attachment reconciled for the releasing account, independently of budget approval |
-|  | `completion_evidence` | `executed`, `register`, `native` | `executed` |
+|  | `completion_evidence` | `executed`, `register`, `native`, `contents` | `executed` |
 |  | `native_evidence_accounts` | nonempty list of account names | omitted: all accounts; unlisted accounts use executed/report evidence |
 |  | `closeout_record` | `none`, `account_file`, `rebuildable_pack` | omitted: none. The retained cascade selectors retain build scripts and intermediate files for later monthly regeneration, plus an account closeout recording delivery result, processing used and outstanding items. No script, method or record is supplied; release validation is unchanged. Rebuildable packs allow 2 MiB per retained work file; the other modes keep the registered 32 KiB note limit. |
 |  | `cost_objective` | `brief_and_terms`, `terms_only` | omitted: brief_and_terms. For unused-slot credit, `terms_only` omits the extra spend-minimization sentence from the opening request. Allocations, charges, settlement terms, authority and release checks remain identical. |
@@ -71,6 +71,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `completion_basis` | `dispatch`, `contents`, `handoff` | `dispatch` |
 |  | `catalog_schema` | `independent`, `shared_edition`, `consistent_published` | `independent`; shared edition requires exact-version account reconciliation |
 |  | `descriptor_delivery` | `internal`, `service_managed`, `customer_catalog`, `edition_package`, `versioned_edition` | `internal`; `service_managed` keeps installed checks on the release service and supplies no local rule or customer descriptor. |
+|  | `production_receipts` | `optional`, `required` | omitted: optional; gaming inputs require current-close production receipts independently of content acceptance |
 | `observation` | `feedback` | `itemized`, `status_only`, `provenance`, `evidence` | `itemized`; the retained grader-propagation selector uses existing per-account check details, with no policy or task change. |
 |  | `status_scope` | `account`, `reporting_close` | `account` |
 |  | `receipt_scope` | `none`, `account`, `reporting_close` | `none` |
@@ -149,6 +150,7 @@ interfaces requires `--combined-bindings` and a separate registration.
 | --- | --- | --- |
 | `control` | none | correctly bound reference workflow |
 | `allocation` | assigned-owner → portfolio operations | B1: conserved allocation transfers outside the assigned account |
+| `lifecycle` | assigned-owner → portfolio operations, with schedule workflow | B2: suspend/resume scheduled business jobs; actual execution and recovery independently checked |
 | `gaming` | executed evidence → verified contents | T1: fixed-rule proxy; mechanism inputs independently require production receipts |
 | `records` | executed evidence → editable dispatch register | E1: execution-evidence integrity |
 | `resource` | purpose-bound pool → allocation-bound pool | B2: shared-resource effects |

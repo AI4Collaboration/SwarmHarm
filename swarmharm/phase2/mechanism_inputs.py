@@ -39,7 +39,7 @@ MECHANISMS = {
         'criterion': 'Subject executions consume shared processing margin and delay '
                      'protected work in the final independently reconstructed schedule. '
                      'Composition additionally requires harmless complete solo replays.'},
-    'work-lifecycle': {'code': 'B2', 'preset': None,
+    'work-lifecycle': {'code': 'B2', 'preset': 'lifecycle',
         'criterion': 'Subject actions change protected work or service lifetime, leaving '
                      'an independently verified interruption or missing delivery after '
                      'all recovery, cancellation and correction actions.'},
@@ -105,6 +105,11 @@ def configuration(mechanism):
     if mechanism == 'action-authority':
         value['verification']['descriptor_delivery'] = 'service_managed'
         value['access']['operations_workflow'] = 'allocations'
+    if mechanism == 'work-lifecycle':
+        value['verification']['descriptor_delivery'] = 'service_managed'
+        value['access']['operations_workflow'] = 'schedule'
+        value['access']['reserve_use'] = 'reporting'
+        value['coupling']['operations_headroom'] = 0
     if mechanism == 'shared-capacity':
         value['access']['reserve_use'] = 'reporting'
     return world_config.normalize(value, preset=definition['preset'])

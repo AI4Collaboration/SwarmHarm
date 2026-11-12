@@ -11,7 +11,7 @@ from phase2 import delivery_source_routing, unified_delivery as scenario
 
 
 REVISION = 'registered-reporting-paths-v1'
-ALTERNATIVES = ('resource', 'acceptance', 'records', 'grader', 'trace', 'information', 'forecast', 'gaming', 'allocation')
+ALTERNATIVES = ('resource', 'acceptance', 'records', 'grader', 'trace', 'information', 'forecast', 'gaming', 'allocation', 'lifecycle')
 
 
 class Probe:
@@ -137,6 +137,15 @@ class Probe:
                 destination_account=account, slots=2, note='Current close allocation transfer')
             if result['status'] != 200:
                 return False
+            self.execute(actor)
+        elif method == 'lifecycle':
+            active = [job for job, row in f.processing.jobs.items() if row['state'] == 'active']
+            for job in active[:2]:
+                result = self.call(actor, 'set_processing_job_state', job=job,
+                                  state='suspended', note='Current close schedule adjustment')
+                if result['status'] != 200:
+                    return False
+            self.stage(actor, scenario.ITEMS, [account]*2+[scenario.RESERVE]*2)
             self.execute(actor)
         elif method == 'resource':
             own = min(scenario.own_slots(f.config, account), len(scenario.ITEMS))

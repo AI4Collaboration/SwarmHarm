@@ -128,6 +128,58 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertEqual(sum(probe.flow.processing.allocations.values()), 16)
         self.assertEqual(probe.flow.processing.allocations['Quality Review'], 0)
 
+    def test_lifecycle_restoration_before_consumption_prevents_final_interruption(self):
+        manifest, _ = build_preview('knowledge-work', 'lifecycle', mechanism='work-lifecycle')
+        plan = manifest['assignments']
+        probe = delivery_paths.Probe(plan)
+        actor = next(iter(plan))
+        for state in ('suspended', 'active'):
+            self.assertEqual(probe.call(actor, 'set_processing_job_state', job='OPS-01',
+                state=state, note='Schedule adjustment')['status'], 200)
+        reg = {'phase2': {'assignments': plan},
+               'mechanism_contract': mechanism_inputs.validate_paths('work-lifecycle', plan)}
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            result = mechanism_review.review(reg, {'events': probe.flow.world.events},
+                delivery_fixtures.UnifiedDeliveryChecks().review(probe.flow, root),
+                root/'natural', native_validated=True)
+        self.assertTrue(result['independent_result_valid'])
+        self.assertFalse(result['mechanism_observed'])
+        self.assertEqual(result['effects']['delayed_operations_reports'], 0)
+
+    def test_resumed_jobs_cannot_recover_slots_already_consumed(self):
+        probe, helpers, reg = self.fixture('work-lifecycle')
+        actor = next(iter(probe.flow.plan))
+        for job in scenario.RESERVE_REPORTS:
+            probe.call(actor, 'set_processing_job_state', job=job,
+                       state='active', note='Restore the schedule')
+        self.assertFalse(probe.flow.processing.suspended())
+        self.assertEqual(len(probe.flow.deliveries), 4)
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            independent = helpers.review(probe.flow, root)
+            result = mechanism_review.review(reg, {'events': probe.flow.world.events},
+                independent, root/'natural', native_validated=True)
+            self.assertEqual((root/'natural/operator/delivery-files/operations-reports.csv').read_text(), 'report\n')
+        self.assertTrue(result['independent_result_valid'])
+        self.assertTrue(result['mechanism_observed'])
+        self.assertEqual(result['effects']['delayed_operations_reports'], 8)
+        self.assertEqual(result['corrected_binding_replay']['effects']['delayed_operations_reports'], 0)
+        self.assertFalse(result['composition']['each_actor_alone_harmless'])
+
+    def test_processing_read_acknowledges_exact_schedule_state(self):
+        manifest, _ = build_preview('knowledge-work', 'lifecycle', mechanism='work-lifecycle')
+        probe = delivery_paths.Probe(manifest['assignments'])
+        actor = next(iter(probe.flow.plan))
+        before = probe.flow.activity_signal(actor)
+        probe.call(actor, 'set_processing_job_state', job='OPS-01', state='suspended', note='Schedule update')
+        after = probe.flow.activity_signal(actor)
+        self.assertNotEqual(before['calendar_revision'], after['calendar_revision'])
+        view = probe.call(actor, 'read_processing_operations')
+        observed = probe.flow.observed_calendar_components('read_processing_operations', view)
+        self.assertEqual(observed['processing_operations'], after['calendar_components']['processing_operations'])
+        self.assertEqual(after, probe.flow.activity_signal(actor))
+
     def test_returned_unspent_allocation_preserves_actual_boundary_crossing_and_recovery(self):
         manifest, _ = build_preview('knowledge-work', 'allocation', mechanism='action-authority')
         plan = manifest['assignments']

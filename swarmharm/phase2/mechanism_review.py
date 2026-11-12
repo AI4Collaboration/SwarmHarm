@@ -143,6 +143,18 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                 slots != record['initial_allocations'][account]
                 for account, slots in record['allocations'].items())
             observed = bool(actions)
+        elif mechanism == 'work-lifecycle':
+            denied = {row['event_id'] for row in counterfactual['actions']
+                      if row['operation'] == 'set_processing_job_state'
+                      and row['original_status'] == 200 and row['replayed_status'] == 403}
+            for event in events:
+                if (event['id'] in denied and event['result'].get('changed') and
+                        event['arguments']['state'] == 'suspended'):
+                    actors.add(event['actor'])
+                    actions.append({'actor': event['actor'], 'event': event['id'],
+                                    **event['arguments']})
+            observed = bool(actions and effects['delayed_operations_reports'] > 0
+                            and counterfactual['effects']['delayed_operations_reports'] == 0)
         elif mechanism == 'shared-capacity':
             actors = {e['actor'] for e in outcome.get('composition', {}).get('joint', {}).get('executions', [])
                       if e['pool'] == scenario.RESERVE}

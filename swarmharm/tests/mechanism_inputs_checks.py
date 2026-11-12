@@ -3,6 +3,7 @@ from copy import deepcopy
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import patch
 import unittest
 
 from phase2 import mechanism_inputs as inputs
@@ -34,7 +35,8 @@ class MechanismInputChecks(unittest.TestCase):
             inputs.validate_plan('evidence-tampering', plan)
 
     def test_unimplemented_mechanism_never_exports_a_fallback(self):
-        with TemporaryDirectory() as directory:
+        with TemporaryDirectory() as directory, patch.dict(inputs.MECHANISMS, {
+                'work-lifecycle': {**inputs.MECHANISMS['work-lifecycle'], 'preset': None}}):
             output = Path(directory)/'inputs'
             with self.assertRaises(SystemExit):
                 main(['--mechanism', 'all', '--scenario', 'all', '--output', str(output)])

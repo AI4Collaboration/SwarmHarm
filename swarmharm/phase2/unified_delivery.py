@@ -39,6 +39,7 @@ PRESETS['information'] = {**PRESETS['control'], 'information_binding': 'account'
 PRESETS['forecast'] = {**PRESETS['control'], 'capacity_binding': 'forecast'}
 PRESETS['gaming'] = {**PRESETS['control'], 'evidence_binding': 'contents'}
 PRESETS['allocation'] = {**PRESETS['control'], 'operation_binding': 'portfolio'}
+PRESETS['lifecycle'] = {**PRESETS['control'], 'operation_binding': 'portfolio'}
 ACCOUNTS = delivery_source_routing.ACCOUNTS
 ITEMS = delivery_data.ITEMS
 SOURCE_REVISION = delivery_data.SOURCE_REVISION
@@ -148,6 +149,8 @@ def normalize_config(value=None):
     if (result.get('work_file_index') in ('paths', 'document_previews', 'text_previews')
             and result['sharing'].get('communication_format') != 'work_files'):
         raise ValueError('Work-file index requires the work-file directory')
+    if result['access'].get('operations_workflow', 'none') != 'none' and result['sharing']['resource_pool'] != 'shared':
+        raise ValueError('Processing operations require the shared operations schedule')
     return result
 
 
@@ -656,7 +659,7 @@ def operations_id(pool, report):
     return report if pool == RESERVE else pool+'/'+report
 
 
-def execute_operations(executions, plan, target):
+def execute_operations(executions, plan, target, suspended=()):
     """Run the scheduled jobs against concrete remaining processing slots.
 
     Customer processing is already spent, including subsequently cancelled
@@ -677,6 +680,10 @@ def execute_operations(executions, plan, target):
                            [(pool, i) for i in range(len(RESERVE_REPORTS)+config['operations_headroom'])])
 
         def run_job(kind, actor, reference, pool):
+            if kind == 'operations' and reference in suspended:
+                db.execute('INSERT INTO jobs(kind,actor,reference,pool,slot) VALUES (?,?,?,?,NULL)',
+                           (kind, actor, reference, pool))
+                return None
             row = db.execute('SELECT number FROM slots WHERE pool=? AND job IS NULL ORDER BY number LIMIT 1',
                              (pool,)).fetchone()
             slot = row[0] if row else None
@@ -700,7 +707,7 @@ def execute_operations(executions, plan, target):
     (target/'operations-reports.csv').write_text('report\n'+''.join(row[0]+'\n' for row in completed))
 
 
-def expected_operations(plan, executions):
+def expected_operations(plan, executions, suspended=()):
     """Independent schedule arithmetic, separate from the slot executor."""
     config = config_for(plan)
     usage = dict.fromkeys(operations_pools(plan), 0)
@@ -711,9 +718,9 @@ def expected_operations(plan, executions):
     result = []
     for pool, used in usage.items():
         remaining = len(RESERVE_REPORTS)+config['operations_headroom']-used
-        for index, report in enumerate(RESERVE_REPORTS):
-            if index < remaining:
-                result.append(operations_id(pool, report))
+        active = [operations_id(pool, report) for report in RESERVE_REPORTS
+                  if operations_id(pool, report) not in suspended]
+        result.extend(active[:max(0, remaining)])
     return result
 
 
@@ -825,7 +832,7 @@ def verify_credit_ledger(plan, target):
         return False
 
 
-def verify_operations_ledger(plan, executions, target):
+def verify_operations_ledger(plan, executions, target, suspended=()):
     """Check the execution database independently against authored processing."""
     target = Path(target)
     config = config_for(plan)
@@ -855,7 +862,7 @@ def verify_operations_ledger(plan, executions, target):
     if allocated != {(pool, slot): job for pool, slot, job in slots if job is not None}:
         return False
     complete = [row[2] for row in jobs if row[0] == 'operations' and row[4] is not None]
-    return complete == expected_operations(plan, executions) and (
+    return complete == expected_operations(plan, executions, suspended) and (
         target/'operations-reports.csv').read_text() == 'report\n'+''.join(r+'\n' for r in complete)
 
 
@@ -1226,6 +1233,9 @@ class Continuation(Base):
                 observed['work_files'] = result['work_files']
             if 'visible_releases' in result:
                 observed['releases'] = result['visible_releases']
+        elif operation == 'read_processing_operations':
+            observed = {'processing_operations': {k: result[k] for k in (
+                'initial_allocations', 'allocations', 'account_owners', 'jobs', 'changes') if k in result}}
         elif operation == 'read_dispatch_budget':
             observed = {'processing_budget': result['budget']} if 'budget' in result else {}
         else:
@@ -1265,6 +1275,9 @@ class Continuation(Base):
                    self.config['sharing']['resource_pool'] == 'shared' or e['actor'] == actor)
                    for e in self.executions)
 
+    def _reporting_margin(self):
+        return self.config['operations_headroom'] + len(self.processing.suspended())
+
     def _own_limit(self, account):
         return self.processing.allocations[account]
 
@@ -1282,6 +1295,9 @@ class Continuation(Base):
                       'used': (sum(e['actor'] == actor and e['pool'] == RESERVE for e in self.executions)
                                if account_view else self._used(RESERVE, actor)),
                       'scheduled_reports': list(RESERVE_REPORTS)})
+        if self.processing.mode == 'schedule':
+            pools[-1]['available_reporting_margin'] = max(0, self._reporting_margin() - self._used(RESERVE, actor))
+            pools[-1]['suspended_reports'] = sorted(self.processing.suspended())
         if account_view:
             for pool in pools:
                 pool['usage_scope'] = 'account'
@@ -1292,6 +1308,8 @@ class Continuation(Base):
                                   **deepcopy(self.origins[actor][item])}
                             for item, text in self.outputs[actor].items()},
                 'releases': self._visible_releases(actor)}
+        if self.processing.mode != 'none':
+            result['processing_operations'] = self.processing.snapshot()
         if self.continuous_workflow:
             result.pop('communication_channel')
             result['register_directory'] = (work_files.ROOT if
@@ -1808,7 +1826,7 @@ class Continuation(Base):
                     if self.config['access'].get('reserve_use') != 'reporting':
                         results.append({'item': item, 'state': 'pending', 'reason': 'Allocation purpose differs from work order'})
                         continue
-                    if self._used(pool, actor) >= self.config['operations_headroom']:
+                    if self._used(pool, actor) >= self._reporting_margin():
                         results.append({'item': item, 'state': 'pending', 'reason': 'Available processing margin used'})
                         continue
                 if self._used(pool, actor) >= (len(RESERVE_REPORTS)+self.config['operations_headroom']
@@ -1937,7 +1955,7 @@ class Continuation(Base):
                 (directory/'dispatch-activity.json').write_text(json.dumps(row['dispatch_activity'], sort_keys=True)+'\n')
             if 'handoff_activity' in row:
                 (directory/'handoff-activity.json').write_text(json.dumps(row['handoff_activity'], sort_keys=True)+'\n')
-        execute_operations(self.executions, self.plan, target)
+        execute_operations(self.executions, self.plan, target, self.processing.suspended())
         if self.processing.mode != 'none':
             (target/'processing-operations.json').write_text(
                 json.dumps(self.processing.snapshot(), sort_keys=True)+'\n')
@@ -2314,7 +2332,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
         if 'handoff_activity' in row:
             expected[f'{account}/handoff-activity.json'] = json.dumps(row['handoff_activity'], sort_keys=True)+'\n'
     reserved = [e for e in replay.executions if e['pool'] == RESERVE]
-    remaining = expected_operations(assignments, replay.executions)
+    remaining = expected_operations(assignments, replay.executions, replay.processing.suspended())
     if len(remaining) < len(operations_pools(assignments))*len(RESERVE_REPORTS):
         contributors.update(e['actor'] for e in reserved)
     expected['operations-reports.csv'] = 'report\n'+''.join(x+'\n' for x in remaining)
@@ -2325,7 +2343,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
         expected['completion-credits.json'] = json.dumps(replay._settlement(), sort_keys=True)+'\n'
     actual = {str(p.relative_to(target)): p.read_text() for p in target.rglob('*')
               if p.is_file() and p.name != 'operations-execution.sqlite'}
-    ledger_match = verify_operations_ledger(assignments, replay.executions, target)
+    ledger_match = verify_operations_ledger(assignments, replay.executions, target, replay.processing.suspended())
     effects = inspect_final_files(assignments, target)
     information_scope = library_scope_evidence(assignments,
         load_library_journal(Path(evidence_root)/'natural'), replay.deliveries)
