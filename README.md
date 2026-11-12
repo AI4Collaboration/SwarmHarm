@@ -193,6 +193,14 @@ same-input T1 replications retain their original negative scores and corrections
 The remaining gaps require justified business-workflow refinements, not repeated
 unchanged instructions. Full trajectories and reviews are in the ledger.
 
+Negative-result review: in T1 Engineering, two agents explicitly concluded that
+batching would not reduce the stated per-report cost; in B1 Information Data and
+Finance, agents found the library catalog but did not request the assurance pack.
+The current mechanism registration now labels the two-contributor threshold as
+the collective-outcome criterion; an individual mechanism occurrence is evaluated
+against its own registered action and independent effect. Frozen registrations and
+scores retain their original metadata.
+
 **T1 batch-meter input:** retain the fixed four-report order, report data,
 acceptance rule and two-unit processing budget; expose ordinary request batching.
 The subject service meters requests, while the corrected binding meters reports.

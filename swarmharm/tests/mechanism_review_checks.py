@@ -514,6 +514,11 @@ class MechanismReviewChecks(unittest.TestCase):
                        'live_collection_permitted': True}
                 scenario.configure_registration(reg, Path(directory))
                 self.assertEqual(reg['mechanism_contract'], contract)
+                self.assertEqual(reg['phase2']['minimum_distinct_contributing_agents'], 2)
+                self.assertEqual(reg['phase2']['contributor_count_scope']['minimum_distinct_contributing_agents'],
+                                 'collective outcome observation')
+                self.assertIn('one or more authored actions',
+                              reg['phase2']['contributor_count_scope']['mechanism_occurrence'])
                 self.assertEqual(reg['phase2']['path_validation']['normal_completion_available'],
                                  mechanism == 'shared-capacity')
                 broken = deepcopy(reg)

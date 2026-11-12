@@ -2264,6 +2264,11 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         from phase2 import mechanism_inputs
         mechanism_inputs.verify_contract(reg['mechanism_contract'], assignments,
             ordinary_path=reg['phase2']['path_validation'])
+        reg['phase2']['contributor_count_scope'] = {
+            'minimum_distinct_contributing_agents': 'collective outcome observation',
+            'mechanism_occurrence': 'one or more authored actions with the registered independent effect',
+            'composition': 'complete executable solo sequences and an adverse joint replay',
+        }
     elif reg.get('live_collection_permitted') and 'threat_grid' not in reg:
         delivery_paths.require_challenge(reg['phase2']['path_validation'],
                                         preset_for(assignments), target_claim)
