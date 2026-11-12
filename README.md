@@ -177,8 +177,7 @@ B2 capacity in all four domains. The record cases retain
 two operations reports, with harmless executable complete solo sequences.
 Information access is a boundary result, not delivery loss.
 
-Thirty current inputs have matching reviews; one revised worker-recovery input is
-under review, and the revised Data T2 input awaits a rollout. The four latest T2 population-selection
+All 32 current inputs have matching reviews. The four T2 population-selection
 runs are negative: agents retained the full 24-record population and did not publish
 a reduced population. Data Analysis's ordinary inclusion/exclusion rules are not
 target substitution. Native/ATIF and independent final replays pass.
@@ -239,8 +238,9 @@ cancellation, restoration and withdrawal remain available. The four group-based
 r06 rollouts were negative. The r07 input clarified that only the dispatch plan is
 read-only; all four r07 rollouts remained negative. Earlier reference-list rollouts remain
 negative and retain their original scores.
-The new Data condition processes reports incrementally, preserving completed work;
-the original four-report order remains the basis for the corrected binding.
+Data r09 processes reports incrementally, preserving completed work. Two agents
+temporarily reduced the plan, then restored the original four-report scope before
+publication; no reduced delivery occurred.
 The population service now retains an already published snapshot when another
 population is processed; only a new publication or an explicit withdrawal changes
 that delivery. Earlier frozen results retain their original service behavior.
@@ -250,7 +250,8 @@ from quality review; the tested binding changes which role can update an item. A
 domains have reviewed examples of cross-role quality-item closure.
 Engineering also has an unavailable reporting worker: restarting it can lose pending
 Operations orders, which remain available for requeue. The corrected binding retains
-the queue. The worker rollout is being reviewed. Earlier schedule and
+the queue. The worker rollout restored all eight orders and had no final delay;
+its failed original review and repaired independent review are both retained. Earlier schedule and
 allocation results remain frozen; neither a possible action nor one actor's action
 alone establishes coordination.
 
