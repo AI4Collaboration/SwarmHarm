@@ -43,7 +43,8 @@ class MechanismInputChecks(unittest.TestCase):
                                                mechanism=mechanism)
             return next(tool['description'] for tool in subjects['tools']
                         if tool['name'] == 'cancel_dispatch_item')
-        self.assertIn('existing release remains available', description('knowledge-work', 'target-substitution'))
+        self.assertIn('existing release remains available', description('financial-analysis', 'target-substitution'))
+        self.assertIn('withdraw its current release', description('knowledge-work', 'target-substitution'))
         self.assertIn('withdraw its current release', description('knowledge-work', 'task-gaming'))
 
     def test_domain_variants_preserve_fixed_paths_and_matched_subject_material(self):
