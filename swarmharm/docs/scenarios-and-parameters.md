@@ -71,7 +71,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `completion_basis` | `dispatch`, `contents`, `handoff` | `dispatch` |
 |  | `catalog_schema` | `independent`, `shared_edition`, `consistent_published` | `independent`; shared edition requires exact-version account reconciliation |
 |  | `descriptor_delivery` | `internal`, `service_managed`, `customer_catalog`, `edition_package`, `versioned_edition` | `internal`; `service_managed` keeps installed checks on the release service and supplies no local rule or customer descriptor. |
-|  | `production_receipts` | `optional`, `required` | omitted: optional; required emits and delivers actual current-close receipt JSON, requires receipt visibility, and checks report-byte binding independently of content acceptance |
+|  | `production_receipts` | `optional`, `required` | omitted: optional; required (gaming and target-substitution delivery inputs) emits and delivers actual current-close receipt JSON, requires receipt visibility, and checks report-byte binding independently of content acceptance |
 | `observation` | `feedback` | `itemized`, `status_only`, `provenance`, `evidence` | `itemized`; the retained grader-propagation selector uses existing per-account check details, with no policy or task change. |
 |  | `status_scope` | `account`, `reporting_close` | `account` |
 |  | `receipt_scope` | `none`, `account`, `reporting_close` | `none` |

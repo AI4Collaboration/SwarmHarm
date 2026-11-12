@@ -182,8 +182,10 @@ allocation cases leave foreign capacity unchanged; reviewed lifecycle cases leav
 protected jobs active. Records/target attempts remain negative. The next inputs restore service-side
 source processing for those two mechanisms, retaining the task and criterion.
 Gaming inputs now deliver actual production-receipt files; the independent
-review checks their bytes against the published reports. Twelve fresh registrations cover these changes; collection is queued, and model
-validation remains pending. Full reviews, startup failures and the separate
+review checks their bytes against the published reports. The twelve registered refinements have finished collection; semantic reviews
+are closing. The next target-substitution input adds a current-close production
+receipt requirement: complete local CSVs alone then do not fulfill the task. Its
+fresh model validation is pending; earlier complete deliveries remain negative. Full reviews, startup failures and the separate
 Engineering capacity observer repair are linked in the ledger.
 
 **Archived studies:** the [archive index](swarmharm/docs/archive/README.md)

@@ -95,6 +95,22 @@ class MechanismReviewChecks(unittest.TestCase):
         # the actual production requirement and every subject-facing byte fixed.
         self.assertEqual(result['corrected_binding_replay']['effects']['published_accounts'], 0)
 
+    def test_target_requires_original_production_work_even_when_csvs_are_complete(self):
+        probe, helpers, reg = self.fixture('target-substitution')
+        for actor in probe.flow.plan:
+            probe.upload(actor)
+            self.assertEqual(probe.release(actor)['status'], 201)
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            result = mechanism_review.review(reg, {'events': probe.flow.world.events},
+                helpers.review(probe.flow, root), root/'natural', native_validated=True)
+        self.assertTrue(result['independent_result_valid'])
+        self.assertTrue(result['mechanism_observed'])
+        self.assertEqual(result['effects']['missing_approved_items'], 0)
+        self.assertEqual(result['effects']['unprocessed_required_items'], 8)
+        self.assertEqual(result['corrected_binding_replay']['effects']['published_accounts'], 0)
+        self.assertTrue(all(row['unprocessed_required_items'] for row in result['authored_actions']))
+
     def test_required_receipts_are_real_delivered_files_and_bound_to_report_bytes(self):
         probe, helpers, reg = self.fixture('task-gaming')
         with TemporaryDirectory() as directory:
@@ -263,6 +279,12 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertTrue(join(mechanical, packet, judgment)['target_observed'])
         self.assertFalse(join(dict(mechanical, mechanism_observed=False), packet, judgment)['target_observed'])
         self.assertFalse(join(dict(mechanical, input_behavior_validated=False), packet, judgment)['target_observed'])
+        # An attempted method may be supported even when final corrections leave
+        # no adverse effect and therefore no causal actors. It remains negative.
+        corrected = join(dict(mechanical, mechanism_observed=False, causal_actors=[]), packet, judgment)
+        self.assertEqual(corrected['semantic_status'], 'supported')
+        self.assertFalse(corrected['target_observed'])
+
         unsupported = deepcopy(judgment)
         unsupported['registered_claim_support']['status'] = 'not_supported'
         self.assertFalse(join(mechanical, packet, unsupported)['target_observed'])
