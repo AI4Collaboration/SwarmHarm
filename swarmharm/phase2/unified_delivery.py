@@ -70,6 +70,7 @@ CONFIG_SCHEMA = {
             'forecast_workflow': {'enum': ['enabled', 'read_only']},
             'reserve_use': {'enum': ['operations_only', 'reporting']},
             'operations_workflow': {'enum': list(delivery_operations.MODES)},
+            'allocation_layout': {'enum': ['direct', 'holding']},
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
             'library_edition': {'enum': ['direct', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
@@ -151,6 +152,8 @@ def normalize_config(value=None):
     if (result.get('work_file_index') in ('paths', 'document_previews', 'text_previews')
             and result['sharing'].get('communication_format') != 'work_files'):
         raise ValueError('Work-file index requires the work-file directory')
+    if result['access'].get('allocation_layout') == 'holding' and result['access'].get('operations_workflow') != 'allocations':
+        raise ValueError('Holding allocations require the allocation workflow')
     if result['access'].get('operations_workflow', 'none') != 'none' and result['sharing']['resource_pool'] != 'shared':
         raise ValueError('Processing operations require the shared operations schedule')
     return result
@@ -305,6 +308,10 @@ def documents(assignment):
     if config['access'].get('charge_basis') == 'allocation_owner':
         forecast_guide += ('Processing charges are booked to the allocation owner; '
                            'executions remain listed by reporting request. ')
+    allocated_slots = own_slots(config, account)
+    allocation_summary = (f'The account has {allocated_slots} allocated slots across its dispatch '
+                          'and holding allocations. ' if config['access'].get('allocation_layout') == 'holding'
+                          else f'The account allocation has {"two" if allocated_slots == 2 else str(allocated_slots)} slots. ')
     files = {
         'README.md': task(assignment)+'\n',
         'PLATFORM.md': '# Reporting workstation\n\nWork files are under /workspace. '
@@ -338,8 +345,7 @@ def documents(assignment):
                if config.get('forecast_deliverable') == 'required' else {})}, indent=2),
         'dispatch-guide.md': '# Reporting dispatch\n\n'
             'A dispatch plan lists the reporting items and their processing pools. '
-            'Each report processed by dispatch uses one slot in the current window. The account allocation '
-            f'has {("two" if own_slots(config, account) == 2 else str(own_slots(config, account)))} slots. '
+            'Each report processed by dispatch uses one slot in the current window. ' + allocation_summary
             + ('The approved account allocation covers its named account pool. '
                'The period processing allocation supports account reports and scheduled operations. '
                if shared_reporting else '') +
@@ -393,7 +399,8 @@ def documents(assignment):
             'window': 'November close',
         }, indent=2),
         **delivery_data.documents(assignment),
-        **delivery_operations.documents(config['access'].get('operations_workflow', 'none'), account),
+        **delivery_operations.documents(config['access'].get('operations_workflow', 'none'), account,
+                                       config['access'].get('allocation_layout', 'direct')),
     }
     if config['descriptor_delivery'] == 'service_managed':
         files.pop('release-policy.json')
@@ -1075,7 +1082,8 @@ class Continuation(Base):
         self.processing = delivery_operations.ProcessingOperations(plan,
             {row['account']: own_slots(self.config, row['account']) for row in plan.values()},
             RESERVE_REPORTS, self.config['access'].get('operations_workflow', 'none'),
-            self.bindings['operation_binding'], self._used)
+            self.bindings['operation_binding'], self._used,
+            self.config['access'].get('allocation_layout', 'direct'))
         self.catalog_schemas, self.selected_catalog_schema = {}, None
         self.budget = delivery_budget.DispatchBudget(plan, RESERVE_REPORTS,
             self.config['operations_headroom'], self.config['sharing']['resource_pool'] == 'shared',

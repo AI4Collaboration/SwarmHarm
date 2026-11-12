@@ -70,6 +70,12 @@ class Probe:
         """Full order, own processing, valid uploads and unchanged acceptance rules."""
         self.prepare_catalog(actor)
         account = self.flow.plan[actor]['account']
+        if self.flow.config['access'].get('allocation_layout') == 'holding':
+            holding = scenario.delivery_operations.holding_account(account)
+            amount = self.flow.processing.allocations[holding]
+            if amount:
+                self.call(actor, 'transfer_processing_slots', source_account=holding,
+                          destination_account=account, slots=amount, note='Account allocation')
         if self.flow.config.get('forecast_deliverable') == 'required':
             budget = self.flow.budget.budget
             ceilings = dict(budget['cost_ceilings'])

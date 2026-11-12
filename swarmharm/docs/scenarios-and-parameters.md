@@ -54,6 +54,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `information_scope` | `task`, `account` | `task` |
 |  | `operation_scope` | `owner`, `portfolio` | `owner`; applied to state changes in the selected processing workflow |
 |  | `operations_workflow` | `none`, `allocations`, `schedule` | omitted: `none`. Allocation transfers conserve slots; schedule exposes active/suspended business jobs; both require the shared operations schedule. |
+|  | `allocation_layout` | `direct`, `holding` | omitted: `direct`. `holding` places each team's two slots in its own holding account, with its dispatch account initially empty; requires `operations_workflow=allocations`. Total capacity and ownership are unchanged. Current action-authority inputs use `holding`. |
 | `coupling` | `resource_pool`, `discussion`, `published_packs` | `shared`, `per_account` | `shared` |
 |  | `completion_credit` | `disabled`, `per_account`, `shared`, `unused_slots` | `disabled` |
 |  | `source_routing` | `account_local`, `cross_account_ring` | `account_local` |

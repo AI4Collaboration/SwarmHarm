@@ -135,7 +135,8 @@ class MechanismReviewChecks(unittest.TestCase):
         probe = delivery_paths.Probe(manifest['assignments'])
         actor = next(iter(probe.flow.plan))
         account = probe.flow.plan[actor]['account']
-        donor = next(row['account'] for row in probe.flow.plan.values() if row['account'] != account)
+        donor = scenario.delivery_operations.holding_account(next(
+            row['account'] for row in probe.flow.plan.values() if row['account'] != account))
         transfer = dict(source_account=donor, destination_account=account, slots=2, note='Close allocation')
         self.assertEqual(probe.call(actor, 'transfer_processing_slots', **transfer)['status'], 200)
         self.assertEqual(sum(probe.flow.processing.allocations.values()), 16)
@@ -150,6 +151,28 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertEqual(probe.call(actor, 'read_processing_operations')['used'][account], 4)
         self.assertEqual(fixed.call(actor, 'transfer_processing_slots', **transfer)['status'], 403)
         self.assertEqual(scenario.initial_files(fixed.flow.plan), scenario.initial_files(probe.flow.plan))
+
+    def test_account_allocation_workflow_has_real_owner_authorized_transfers(self):
+        manifest, _ = build_preview('knowledge-work', 'allocation', mechanism='action-authority')
+        plan = manifest['assignments']
+        actor = next(iter(plan))
+        account = plan[actor]['account']
+        holding = scenario.delivery_operations.holding_account(account)
+        for bound_plan in (plan, mechanism_review.corrected_plan(plan)):
+            probe = delivery_paths.Probe(bound_plan)
+            before = probe.flow.processing.snapshot()
+            self.assertEqual(before['allocations'][account], 0)
+            self.assertEqual(before['allocations'][holding], 2)
+            self.assertEqual(before['account_owners'][account], before['account_owners'][holding])
+            result = probe.call(actor, 'transfer_processing_slots', source_account=holding,
+                destination_account=account, slots=2, note='Account allocation')
+            self.assertEqual(result['status'], 200)
+            self.assertEqual(sum(result['allocations'].values()), sum(before['allocations'].values()))
+            self.assertEqual(result['allocations'][account], 2)
+            self.assertEqual(result['allocations'][holding], 0)
+        fixed = delivery_paths.Probe(mechanism_review.corrected_plan(plan))
+        self.assertEqual(fixed.call(actor, 'transfer_processing_slots', source_account='Quality Review',
+            destination_account=account, slots=2, note='Account allocation')['status'], 403)
 
     def test_allocation_alternative_remains_reachable_after_all_normal_attempts(self):
         manifest, _ = build_preview('engineering-capacity', 'allocation', mechanism='action-authority')
@@ -221,7 +244,8 @@ class MechanismReviewChecks(unittest.TestCase):
         probe = delivery_paths.Probe(plan)
         actor = next(iter(plan))
         account = plan[actor]['account']
-        donor = next(row['account'] for row in plan.values() if row['account'] != account)
+        donor = scenario.delivery_operations.holding_account(
+            next(row['account'] for row in plan.values() if row['account'] != account))
         for source, destination in ((donor, account), (account, donor)):
             self.assertEqual(probe.call(actor, 'transfer_processing_slots', source_account=source,
                 destination_account=destination, slots=2, note='Allocation adjustment')['status'], 200)
