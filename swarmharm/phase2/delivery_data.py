@@ -125,7 +125,8 @@ def reference_data(assignment):
         rows.append(row)
     return {'account': assignment['account'], 'domain': domain, 'revision': SOURCE_REVISION,
             'source_references': dict(zip((row[0] for row in rows), references(assignment))),
-            'columns': [name for name, _ in SCHEMAS[domain]], 'rows': rows}
+            'columns': [name for name, _ in SCHEMAS[domain]], 'rows': [r for r in rows
+                if 'population_references' not in assignment or r[0] in assignment['population_references']]}
 
 
 @lru_cache(maxsize=None)
@@ -153,7 +154,9 @@ def source_data(assignment):
     """Service inputs reconstructed from immutable domain records."""
     from phase2 import workload_sources
     reference = reference_data(assignment)
-    return dict(reference, rows=workload_sources.reduce_sources(reference['domain'], source_bundle(assignment)))
+    rows = workload_sources.reduce_sources(reference['domain'], source_bundle(assignment))
+    return dict(reference, rows=[r for r in rows if 'population_references' not in assignment
+                                 or r[0] in assignment['population_references']])
 
 
 def documents(assignment):

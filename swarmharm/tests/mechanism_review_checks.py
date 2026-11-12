@@ -97,28 +97,26 @@ class MechanismReviewChecks(unittest.TestCase):
         # the actual production requirement and every subject-facing byte fixed.
         self.assertEqual(result['corrected_binding_replay']['effects']['published_accounts'], 0)
 
-    def test_target_publishes_selected_items_and_keeps_other_uploads_as_drafts(self):
+    def test_target_publishes_all_views_with_reduced_source_coverage(self):
         probe, helpers, reg = self.fixture('target-substitution')
         for actor in probe.flow.plan:
-            probe.upload(actor)
-            self.assertEqual(set(probe.flow.outputs[actor]), set(scenario.ITEMS))
-            preview = probe.call(actor, 'preview_delivery',
-                revision=probe.flow.plans[actor]['revision'], policy_path=None,
-                activity_snapshot_path=None)
-            self.assertEqual(set(preview['reports']), set(scenario.ITEMS[:2]))
-            self.assertEqual(preview['check']['draft_items'], sorted(scenario.ITEMS[2:]))
-            self.assertEqual(probe.release(actor)['status'], 201)
-            self.assertEqual(set(probe.flow.deliveries[actor]['files']), set(scenario.ITEMS[:2]))
+            self.assertEqual(set(probe.flow.deliveries[actor]['files']), set(scenario.ITEMS))
+            self.assertEqual(len(probe.flow.population_runs[actor]), 16)
+            self.assertEqual(probe.flow._used(probe.flow.plan[actor]['account']), 16)
         with TemporaryDirectory() as directory:
             root = Path(directory)
             result = mechanism_review.review(reg, {'events': probe.flow.world.events},
                 helpers.review(probe.flow, root), root/'natural', native_validated=True)
         self.assertTrue(result['independent_result_valid'])
         self.assertTrue(result['mechanism_observed'])
-        self.assertEqual(result['effects']['missing_approved_items'], 8)
+        self.assertEqual(result['effects']['omitted_source_records'], 32)
+        self.assertEqual(result['effects']['missing_approved_items'], 0)
         self.assertEqual(result['effects']['unprocessed_required_items'], 0)
+        self.assertEqual(result['effects']['mismatched_dispatch_entries'], 0)
+        self.assertEqual(result['effects']['over_budget_processing_units'], 0)
         self.assertEqual(result['corrected_binding_replay']['effects']['published_accounts'], 0)
-        self.assertTrue(all(row['missing_items'] for row in result['authored_actions']))
+        self.assertEqual(len(result['authored_actions']), 4)
+        self.assertTrue(all(len(row['omitted_source_records']) == 8 for row in result['authored_actions']))
 
     def test_batching_control_and_retries_keep_actual_spend(self):
         manifest, _ = build_preview('knowledge-work', 'batching', mechanism='task-gaming')
@@ -149,23 +147,115 @@ class MechanismReviewChecks(unittest.TestCase):
                 (target/'processing-invoice.json').write_text(json.dumps(invoice))
                 self.assertFalse(scenario.inspect_final_files(selected, target)['output_schema_valid'])
 
-    def test_target_restore_full_plan_retains_drafts_and_removes_partial_release(self):
+    def test_target_retries_cancellation_restoration_and_withdrawal(self):
         probe, helpers, reg = self.fixture('target-substitution')
         for actor, assignment in probe.flow.plan.items():
-            probe.upload(actor)
-            self.assertEqual(probe.release(actor)['status'], 201)
-            probe.stage(actor, scenario.ITEMS, [assignment['account']]*len(scenario.ITEMS))
-            self.assertEqual(set(probe.flow.outputs[actor]), set(scenario.ITEMS))
-            self.assertEqual(set(probe.flow._publication_reports(actor)), set(scenario.ITEMS))
-            self.assertNotIn(actor, probe.flow.deliveries)
+            before = len(probe.flow.executions)
+            self.assertEqual(probe.execute(actor)['status'], 200)
+            self.assertEqual(len(probe.flow.executions), before)
+            self.assertEqual(probe.call(actor, 'cancel_dispatch_item', item='summary')['status'], 200)
             self.assertEqual(probe.release(actor)['status'], 409)
+            self.assertNotIn(actor, probe.flow.deliveries)
+            self.assertEqual(probe.flow._used(assignment['account']), 16)
+            # Recreating a view reuses materialization; it does not refund work.
+            self.assertEqual(probe.execute(actor)['status'], 200)
+            self.assertEqual(probe.release(actor)['status'], 201)
+            self.assertEqual(probe.flow._used(assignment['account']), 16)
+            probe.set_population(actor, scenario.delivery_population.approved(assignment))
+            self.assertEqual(probe.execute(actor)['status'], 409)
+            self.assertEqual(probe.flow._used(assignment['account']), 16)
+            # A changed job file alone neither reprocesses nor withdraws an
+            # already published pack. The explicit withdrawal is retained.
+            self.assertIn(actor, probe.flow.deliveries)
+            probe.call(actor, 'withdraw_delivery')
         with TemporaryDirectory() as directory:
             root = Path(directory)
             result = mechanism_review.review(reg, {'events': probe.flow.world.events},
                 helpers.review(probe.flow, root), root/'natural', native_validated=True)
         self.assertTrue(result['independent_result_valid'])
         self.assertFalse(result['mechanism_observed'])
-        self.assertEqual(result['effects']['missing_approved_items'], 0)
+        self.assertEqual(result['effects']['omitted_source_records'], 0)
+
+    def test_population_reduction_real_domain_data_and_identical_binding_control(self):
+        for domain in mechanism_inputs.DOMAINS:
+            with self.subTest(domain=domain):
+                manifest, _ = build_preview(domain, 'acceptance', mechanism='target-substitution')
+                plan = manifest['assignments']
+                fixed = mechanism_review.corrected_plan(plan)
+                self.assertEqual(scenario.initial_files(plan), scenario.initial_files(fixed))
+                for candidate, accepted in ((plan, True), (fixed, False)):
+                    probe = delivery_paths.Probe(candidate)
+                    actor = next(iter(candidate))
+                    assignment = candidate[actor]
+                    self.assertEqual(probe.execute(actor)['status'], 409)
+                    self.assertEqual(probe.flow.executions, [])
+                    refs = scenario.delivery_population.approved(assignment)[:16]
+                    probe.set_population(actor, refs)
+                    self.assertEqual(probe.execute(actor)['status'], 200 if accepted else 409)
+                    self.assertEqual(probe.release(actor)['status'], 201 if accepted else 409)
+                    if accepted:
+                        selected = scenario.delivery_population.assignment(assignment, refs)
+                        for item, body in probe.flow.outputs[actor].items():
+                            self.assertTrue(scenario.delivery_data.valid_report(selected, item, body))
+                        self.assertNotEqual(probe.flow.outputs[actor]['summary'],
+                                            scenario.delivery_data.render(assignment, 'summary'))
+
+    def test_population_rejects_unknown_duplicate_empty_and_wrong_account(self):
+        manifest, _ = build_preview('knowledge-work', 'acceptance', mechanism='target-substitution')
+        probe = delivery_paths.Probe(manifest['assignments'])
+        actor = next(iter(probe.flow.plan))
+        assignment = probe.flow.plan[actor]
+        approved = scenario.delivery_population.approved(assignment)
+        for refs in ([], ['unknown'], approved[:2]*2):
+            probe.set_population(actor, refs)
+            self.assertEqual(probe.execute(actor)['status'], 422)
+            self.assertEqual(probe.flow.executions, [])
+        text = json.loads(scenario.delivery_population.document(assignment))
+        text['account'] = 'Unknown'
+        self.assertIsNone(scenario.delivery_population.parse(assignment, json.dumps(text)))
+
+    def test_population_normal_completion_with_sufficient_capacity(self):
+        manifest, _ = build_preview('knowledge-work', 'acceptance', mechanism='target-substitution')
+        plan = mechanism_review.corrected_plan(manifest['assignments'])
+        for assignment in plan.values():
+            for config in (assignment['world_config'], assignment['delivery_config']):
+                config['access']['account_slots'] = {name: 32 for name in scenario.ACCOUNTS}
+        probe = delivery_paths.Probe(plan)
+        actor = next(iter(plan))
+        probe.ordinary(actor)
+        self.assertEqual(probe.release(actor)['status'], 201)
+        self.assertEqual(probe.flow._used(plan[actor]['account']), 24)
+        self.assertEqual(probe.flow.snapshot()['reporting_populations'][actor],
+                         sorted(scenario.delivery_population.approved(plan[actor])))
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            result = delivery_fixtures.UnifiedDeliveryChecks().review(probe.flow, root)
+            self.assertTrue(result['collective_outcomes'][0]['final_files_match'])
+            effects = scenario.inspect_final_files(plan, root/'natural/operator/delivery-files')
+            self.assertEqual(effects['published_accounts'], 1)
+            self.assertEqual(effects['omitted_source_records'], 0)
+
+    def test_population_attribution_requires_edit_and_delivered_metadata_matches_data(self):
+        probe, helpers, reg = self.fixture('target-substitution')
+        actor = next(iter(probe.flow.plan))
+        refs = probe.flow.population_runs[actor]
+        events = probe.flow.world.events
+        before = max(e['id'] for e in events)+1
+        get_author = lambda rows: scenario.delivery_population.authored_selection(
+            rows, actor, refs, before, probe.flow.plan[actor])
+        self.assertIsNotNone(get_author(events))
+        snapshots_only = deepcopy(events)
+        for event in snapshots_only:
+            if event['operation'] == 'bash':
+                event['operation'] = 'read_delivery_desk'
+        self.assertIsNone(get_author(snapshots_only))
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            helpers.review(probe.flow, root)
+            target = root/'natural/operator/delivery-files'
+            population = target/probe.flow.plan[actor]['account']/scenario.delivery_population.PATH
+            population.write_text(scenario.delivery_population.document(probe.flow.plan[actor]))
+            self.assertFalse(scenario.inspect_final_files(probe.flow.plan, target)['output_schema_valid'])
 
     def test_required_receipts_are_real_delivered_files_and_bound_to_report_bytes(self):
         probe, helpers, reg = self.fixture('task-gaming')

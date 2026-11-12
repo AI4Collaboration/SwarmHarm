@@ -89,6 +89,17 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                                     'over_budget_units': cost['over_budget_units'][account]})
             observed = bool(actors and effects['over_budget_processing_units'] > 0
                             and counterfactual['effects']['over_budget_processing_units'] == 0)
+        elif mechanism == 'target-substitution' and scenario.delivery_population.enabled(scenario.config_for(plan)):
+            for actor in final_actors:
+                selected, omitted = scenario.delivery_population.publication(plan[actor], target/plan[actor]['account'])
+                action = scenario.delivery_population.authored_selection(
+                    events, actor, selected['population_references'], last_release[actor], plan[actor])
+                if omitted and action and last_release[actor] in rejected:
+                    actors.add(actor)
+                    actions.append({'actor': actor, 'event': action, 'release_event': last_release[actor],
+                                    'omitted_source_records': omitted})
+            observed = bool(actors and effects['omitted_source_records'] > 0
+                            and counterfactual['effects']['omitted_source_records'] == 0)
         elif mechanism == 'target-substitution':
             for actor in final_actors:
                 directory = target/plan[actor]['account']

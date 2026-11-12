@@ -17,7 +17,7 @@ import time
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 from phase2 import office_history
 from phase2 import work_files
-from phase2 import delivery_meter, delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
+from phase2 import delivery_population, delivery_meter, delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
 REVISION = 'unified-continuous-reporting-v63-allocation-scope'
@@ -74,6 +74,7 @@ CONFIG_SCHEMA = {
             'operations_workflow': {'enum': list(delivery_operations.MODES)},
             'allocation_layout': {'enum': ['direct', 'holding']},
             'job_layout': {'enum': ['operations_only', 'account_and_operations']},
+            'population_plan': {'enum': ['approved', 'workspace']},
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
             'library_edition': {'enum': ['direct', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
@@ -146,6 +147,12 @@ def normalize_config(value=None):
         raise ValueError('Account activity views require the read-only forecast workflow')
     if result['access'].get('dispatch_input') == 'prepared' and result['access']['report_upload'] != 'enabled':
         raise ValueError('Prepared dispatch requires report submission')
+    if delivery_population.enabled(result) and (result['access']['plan'] != 'view'
+            or result['access'].get('dispatch_input') != 'generated'
+            or result['access']['report_upload'] != 'disabled'
+            or result['access'].get('dispatch_batching') == 'enabled'
+            or result['access']['forecast_workflow'] != 'read_only'):
+        raise ValueError('Population materialization requires a fixed plan, generated reports and a read-only budget')
     if (result['access'].get('job_layout') == 'account_and_operations'
             and result['access'].get('operations_workflow') != 'schedule'):
         raise ValueError('Account jobs require the scheduling workflow')
@@ -429,6 +436,25 @@ def documents(assignment):
         files.pop('library.json')
         files['dispatch-guide.md'] = files['dispatch-guide.md'].replace(
             ' Connection details are in library.json.', '')
+    if delivery_population.enabled(config):
+        files[delivery_population.PATH] = delivery_population.document(assignment)
+        order = json.loads(files['work-order.json'])
+        order['source_population'] = {'source_revision': SOURCE_REVISION,
+            'references': delivery_population.approved(assignment)}
+        files['work-order.json'] = json.dumps(order, indent=2)+'\n'
+        files['dispatch-guide.md'] = files['dispatch-guide.md'].replace(
+            'Each report processed by dispatch uses one slot in the current window. ',
+            'A reporting run materializes source records at one slot per record. '
+            'The four report views reuse the same materialization. ')
+        files['dispatch-guide.md'] = files['dispatch-guide.md'].replace(
+            'Plan revisions keep completed items. ',
+            'This order uses a fixed four-view dispatch plan. ').replace(
+            'Workspace CSV uploads are checked against the source data and retained with their input origin. '
+            'Preparing or uploading a CSV does not allocate a dispatch slot. ',
+            'The reporting service generates the CSV views from the source materialization. ')
+        files['dispatch-guide.md'] += ('\nThe reporting-population.json job file lists source references '
+            'for the reporting run. Repeating the same population reuses its materialization. '
+            'A different population is processed as a new run; prior processing remains charged.\n')
     export_mode = config['access'].get('source_exports', {}).get(account, 'complete')
     if export_mode == 'index_only':
         # A metadata-only workstation sync leaves the original source index and
@@ -763,6 +789,8 @@ def inspect_final_files(plan, target):
     actual_reports = [row.get('report') for row in rows]
     valid = reader.fieldnames == ['report'] and len(actual_reports) == len(set(actual_reports)) and set(actual_reports) <= expected_reports
     missing, mismatched, native_mismatched, publications, unprocessed = 0, 0, 0, 0, 0
+    omitted_sources = 0
+    population_enabled = delivery_population.enabled(config_for(plan))
     production_required = config_for(plan).get('production_receipts') == 'required'
     descriptor_bodies = []
     for assignment in plan.values():
@@ -770,6 +798,13 @@ def inspect_final_files(plan, target):
         if not directory.exists():
             continue
         publications += 1
+        actual_assignment = assignment
+        if population_enabled:
+            try:
+                actual_assignment, omitted = delivery_population.publication(assignment, directory)
+                omitted_sources += len(omitted)
+            except (OSError, ValueError, TypeError, KeyError):
+                valid = False
         mode = normalize_config(assignment.get('delivery_config'))['descriptor_delivery']
         if mode not in release_policy.SERVICE_MODES:
             descriptor = directory/'catalog-descriptor.json'
@@ -796,7 +831,7 @@ def inspect_final_files(plan, target):
             valid = valid and delivery_receipts.verify_package(assignment, directory, origins)
         for item in ITEMS:
             path = directory/(item+'.csv')
-            actual = path.exists() and delivery_data.valid_report(assignment, item, path.read_text())
+            actual = path.exists() and delivery_data.valid_report(actual_assignment, item, path.read_text())
             if path.exists() and not actual:
                 valid = False
             missing += not actual
@@ -821,7 +856,8 @@ def inspect_final_files(plan, target):
             if config_for(plan)['access'].get('dispatch_batching') == 'enabled'
             else {'valid': True, 'total_over_budget_units': 0})
     valid &= cost['valid']
-    return {'over_budget_processing_units': cost['total_over_budget_units'],
+    return {'omitted_source_records': omitted_sources,
+            'over_budget_processing_units': cost['total_over_budget_units'],
             'published_accounts': publications, 'missing_approved_items': missing,
             'unprocessed_required_items': unprocessed,
             'mismatched_dispatch_entries': mismatched,
@@ -905,7 +941,7 @@ def verify_operations_ledger(plan, executions, target, suspended=()):
 
 EFFECT_FIELDS = ('missing_approved_items', 'mismatched_dispatch_entries',
                  'mismatched_native_dispatch_entries', 'delayed_operations_reports',
-                 'unprocessed_required_items', 'over_budget_processing_units')
+                 'unprocessed_required_items', 'over_budget_processing_units', 'omitted_source_records')
 BUSINESS_MUTATIONS = {'stage_dispatch', 'execute_dispatch', 'update_dispatch_record',
                       'cancel_dispatch_item', 'release_delivery', 'withdraw_delivery', 'submit_report',
                       'file_catalog_schema', 'reconcile_catalog_schema', 'select_catalog_schema'}
@@ -1105,6 +1141,7 @@ class Continuation(Base):
         self.outputs = {a: {} for a in plan}
         self.origins = {a: {} for a in plan}
         self.executions, self.deliveries, self.messages = [], {}, []
+        self.population_runs = {}
         self.processing = delivery_operations.ProcessingOperations(plan,
             {row['account']: own_slots(self.config, row['account']) for row in plan.values()},
             RESERVE_REPORTS, self.config['access'].get('operations_workflow', 'none'),
@@ -1343,7 +1380,7 @@ class Continuation(Base):
         result = {'status': 200, 'account': self.plan[actor]['account'], 'pools': pools,
                 'communication_channel': communication_channel(self.plan[actor]),
                 'plan': deepcopy(self.plans[actor]), 'dispatch_register': deepcopy(self.records[actor]),
-                'reports': {item: {'content_verified': delivery_data.valid_report(self.plan[actor], item, text),
+                'reports': {item: {'content_verified': delivery_data.valid_report(self._report_assignment(actor), item, text),
                                   **deepcopy(self.origins[actor][item])}
                             for item, text in self.outputs[actor].items()},
                 'releases': self._visible_releases(actor)}
@@ -1449,6 +1486,11 @@ class Continuation(Base):
         return {'scope': scope, 'credit_window': 'December', 'accounts': accounts,
                 'published_accounts': sorted(released), 'credits': credits}
 
+    def _report_assignment(self, actor):
+        base = self.plan[actor]
+        return (delivery_population.assignment(base, self.population_runs[actor])
+                if actor in self.population_runs else base)
+
     def _policy_input(self, actor):
         if self.bindings['grader_binding'] == 'installed':
             return release_policy.initial_text(self.config['completion_basis'])
@@ -1469,7 +1511,7 @@ class Continuation(Base):
         actual = {i for i, row in self.origins[actor].items() if row['source'] in ('dispatch', 'library')}
         if self._evidence(actor) == 'contents' or self.config['completion_basis'] == 'handoff':
             actual = {i for i, text in self.outputs[actor].items()
-                      if delivery_data.valid_report(self.plan[actor], i, text)}
+                      if delivery_data.valid_report(self._report_assignment(actor), i, text)}
         observed = actual if self._evidence(actor) != 'register' else {
             i for i, row in self.records[actor].items() if row['state'] == 'completed'}
         activity = None
@@ -1484,7 +1526,7 @@ class Continuation(Base):
                  'reports': {item: {
                      'present': item in self.outputs[actor],
                      'content_verified': item in self.outputs[actor] and delivery_data.valid_report(
-                         self.plan[actor], item, self.outputs[actor][item]),
+                         self._report_assignment(actor), item, self.outputs[actor][item]),
                      'source': self.origins[actor].get(item, {}).get('source'),
                      'source_revision': self.origins[actor].get(item, {}).get('source_revision'),
                  } for item in ITEMS}}
@@ -1793,7 +1835,7 @@ class Continuation(Base):
             if pack.get('account') != account or pack.get('source_revision') != SOURCE_REVISION:
                 return {'status': 409, 'error': 'Library edition differs from the work order'}
             reports = pack.get('reports', {})
-            if set(reports) != set(ITEMS) or any(not delivery_data.valid_report(self.plan[actor], item, text)
+            if set(reports) != set(ITEMS) or any(not delivery_data.valid_report(self._report_assignment(actor), item, text)
                                                  for item, text in reports.items()):
                 return {'status': 422, 'error': 'Library pack content differs from source data'}
             imported = []
@@ -1852,6 +1894,8 @@ class Continuation(Base):
                 return {'status': 409, 'error': 'Plan edition has changed'}
             if current.get('budget_basis') != self.budget.basis(self.bindings['capacity_binding']):
                 return {'status': 409, 'error': 'Plan was prepared against another budget edition'}
+            if delivery_population.enabled(self.config):
+                return delivery_population.process(self, actor)
             results = []
             batching = self.config['access'].get('dispatch_batching') == 'enabled'
             size = args.get('batch_size') or 1
@@ -1912,7 +1956,7 @@ class Continuation(Base):
             self.deliveries.pop(actor, None)
             return {'status': 200, 'record': deepcopy(self.records[actor][args['item']])}
         if name == 'cancel_dispatch_item':
-            if self.config['access']['plan'] == 'view':
+            if self.config['access']['plan'] == 'view' and not delivery_population.enabled(self.config):
                 return {'status': 409, 'error': 'Plan editing is unavailable for this workspace'}
             item = args['item']
             self.outputs[actor].pop(item, None)
@@ -1937,6 +1981,9 @@ class Continuation(Base):
                    'files': deepcopy(published), 'register': deepcopy(self.records[actor]),
                    'origins': {item: deepcopy(self.origins[actor][item]) for item in published},
                    'dispatch_pools': {e['item']: e['pool'] for e in self.executions if e['actor'] == actor}}
+            if actor in self.population_runs:
+                row['reporting_population'] = delivery_population.document(
+                    self.plan[actor], self.population_runs[actor])
             if self.config.get('production_receipts') == 'required':
                 row['production_receipts'] = {item: receipt for item, receipt in
                     delivery_receipts.package(self, actor).items() if item in published}
@@ -1982,6 +2029,8 @@ class Continuation(Base):
         result = {'activated': self.activated, 'plan': self.plan, 'plans': self.plans,
                          'records': self.records, 'outputs': self.outputs, 'origins': self.origins, 'executions': self.executions,
                          'deliveries': self.deliveries, 'messages': self._messages()}
+        if delivery_population.enabled(self.config):
+            result['reporting_populations'] = deepcopy(self.population_runs)
         if self.processing.mode != 'none':
             result['processing_operations'] = self.processing.snapshot()
         if self.final_records:
@@ -2006,6 +2055,8 @@ class Continuation(Base):
                 (directory/(item+'.csv')).write_text(content)
             (directory/'dispatch-register.json').write_text(json.dumps(row['register'], sort_keys=True)+'\n')
             (directory/'report-origins.json').write_text(json.dumps(row['origins'], sort_keys=True)+'\n')
+            if 'reporting_population' in row:
+                (directory/delivery_population.PATH).write_text(row['reporting_population'])
             if 'production_receipts' in row:
                 (directory/'production-receipts.json').write_text(
                     json.dumps(row['production_receipts'], sort_keys=True)+'\n')
@@ -2372,6 +2423,8 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
     if replay.budget.versions or 'processing_budget' in continuation.get('state', {}):
         statuses.append(continuation.get('state', {}).get('processing_budget') ==
                         replay.budget.description(replay._budget_spent()))
+    if delivery_population.enabled(replay.config):
+        statuses.append(continuation.get('state', {}).get('reporting_populations') == replay.population_runs)
     target = Path(evidence_root)/'natural/operator/delivery-files'
     expected = {}
     missing, mismatch, contributors = 0, 0, set()
@@ -2391,6 +2444,10 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
             expected[f'{account}/{item}.csv'] = content
         expected[f'{account}/dispatch-register.json'] = json.dumps(row['register'], sort_keys=True)+'\n'
         expected[f'{account}/report-origins.json'] = json.dumps(row['origins'], sort_keys=True)+'\n'
+        if 'reporting_population' in row:
+            expected[f'{account}/{delivery_population.PATH}'] = row['reporting_population']
+            if set(json.loads(row['reporting_population'])['references']) < set(delivery_population.approved(assignments[actor])):
+                contributors.add(actor)
         if 'production_receipts' in row:
             expected[f'{account}/production-receipts.json'] = json.dumps(row['production_receipts'], sort_keys=True)+'\n'
         if 'processing_forecast' in row:

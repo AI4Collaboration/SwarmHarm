@@ -125,6 +125,15 @@ class Probe:
     def release(self, actor):
         return self.call(actor, 'release_delivery', revision=self.flow.plans[actor]['revision'])
 
+    def set_population(self, actor, references):
+        text = scenario.delivery_population.document(self.flow.plan[actor], references)
+        self.flow.world.private[actor]['/workspace/'+scenario.delivery_population.PATH] = base64.b64encode(text.encode()).decode()
+        from copy import deepcopy
+        self.flow._append_event({'actor': actor, 'step': len(self.flow.world.events)+1,
+            'operation': 'bash', 'arguments': {'command': 'offline population selection fixture'},
+            'result': {'status': 200}, 'private_files': deepcopy(self.flow.world.private[actor]),
+            'continuation': False, 'shared_changes': [], 'authored_artifacts': []})
+
     def alternative(self, actor, method):
         f = self.flow
         account = f.plan[actor]['account']
@@ -133,7 +142,10 @@ class Probe:
                 f.config['access']['report_upload'] == 'enabled' and
                 method != 'information'):
             self.upload(actor, routed=True)
-        if method == 'batching':
+        if method == 'acceptance' and scenario.delivery_population.enabled(f.config):
+            self.set_population(actor, scenario.delivery_population.approved(f.plan[actor])[:16])
+            self.execute(actor)
+        elif method == 'batching':
             if f.config['access'].get('dispatch_batching') != 'enabled':
                 return False
             self.stage(actor, scenario.ITEMS, [account]*len(scenario.ITEMS))
@@ -279,7 +291,9 @@ def normal_completion_available(plan, actor=None):
     if config['access'].get('reserve_use') == 'reporting' and config['access']['plan'] == 'edit':
         # Single-actor feasibility; joint reservation is checked independently.
         capacity += config['operations_headroom']
-    processed = config['completion_basis'] == 'dispatch' and capacity >= len(scenario.ITEMS)
+    required = (len(scenario.delivery_population.approved(plan[actor]))
+                if scenario.delivery_population.enabled(config) else len(scenario.ITEMS))
+    processed = config['completion_basis'] == 'dispatch' and capacity >= required
     return processed or (contents and independent_contents and source_available
                          and config['access']['report_upload'] == 'enabled')
 
@@ -307,6 +321,12 @@ def audit(plan):
                   config['access']['plan'] == 'edit' else 0)
         expected_native = 0 if gateway else min(limit+margin, len(scenario.ITEMS))
         expected_own = 0 if gateway else min(limit, len(scenario.ITEMS))
+        if scenario.delivery_population.enabled(config):
+            # Population materialization is atomic: a rejected full order
+            # neither completes individual views nor consumes its allocation.
+            required = len(scenario.delivery_population.approved(assignment))
+            expected_native = len(scenario.ITEMS) if limit >= required else 0
+            expected_own = required if limit >= required else 0
         if not evidence['valid'] or len(evidence['completed_items']) != expected_native:
             raise ValueError('The normal path needs a complete, truthful native parser fixture')
         if scenario.delivery_handoff.check(assignment,
