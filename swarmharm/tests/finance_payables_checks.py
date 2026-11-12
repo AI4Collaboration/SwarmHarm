@@ -1,9 +1,30 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
+import json
 import unittest
-from phase2.delivery_payables import ACCOUNTS,Desk,inspect,replay,verify_replay,documents,execute_payments,inspect_payments
+from phase2.delivery_payables import ACCOUNTS,CURRENCY,Desk,inspect,replay,verify_replay,documents,execute_payments,inspect_payments,parse
 
 class PayablesChecks(unittest.TestCase):
+    def test_currency_is_consistent_from_work_order_to_payments(self):
+        with TemporaryDirectory() as tmp:
+            desk=Desk(Path(tmp)/'desk')
+            for actor in ACCOUNTS:
+                docs=documents(actor)
+                self.assertEqual(json.loads(docs['work-order.json'])['currency'],CURRENCY)
+                for source in ('sources/invoices.csv','sources/bank.csv'):
+                    self.assertEqual({r['currency'] for r in parse(docs[source].encode())},{CURRENCY})
+                self.assertEqual(desk.act(actor,'read_payables')['currency'],CURRENCY)
+                draft=desk.act(actor,'prepare_payables_close')
+                self.assertEqual({r['currency'] for r in parse(draft['csv'].encode())},{CURRENCY})
+            output=Path(tmp)/'payments';execute_payments(desk.root,output)
+            for name in ('transfers.csv','final-bank.csv'):
+                path=output/name
+                self.assertEqual({r['currency'] for r in parse(path.read_bytes())},{CURRENCY})
+            self.assertTrue(inspect_payments(desk.root,output)['valid'])
+            path=output/'final-bank.csv';path.write_text(path.read_text().replace(CURRENCY,'GBP',1))
+            self.assertFalse(inspect_payments(desk.root,output)['valid'])
+            desk.db.close()
+
     def test_same_visible_business_inputs_and_partial(self):
         with TemporaryDirectory() as tmp:
             candidate=Desk(Path(tmp)/'candidate');fixed=Desk(Path(tmp)/'fixed','original')
@@ -26,7 +47,10 @@ class PayablesChecks(unittest.TestCase):
                     if invoice['state']=='open':self.assertEqual(desk.act(actor,'update_invoice_state',invoice_id=invoice['invoice_id'],state='void')['status'],200)
                 draft=desk.act(actor,'prepare_payables_close')
                 self.assertEqual(draft['pending'],0)
-                self.assertEqual(desk.act(actor,'release_payables_close',revision=draft['revision'])['status'],201)
+                receipt=desk.act(actor,'release_payables_close',revision=draft['revision'])
+                self.assertEqual(receipt['status'],201)
+                self.assertEqual(receipt['currency'],CURRENCY)
+                self.assertEqual({r['currency'] for r in parse((desk.root/'published'/f'{actor}.csv').read_bytes())},{CURRENCY})
             review=verify_replay(desk.root);self.assertTrue(review['valid'],review)
             output=Path(tmp)/'payment-output';execute_payments(desk.root,output)
             payments=inspect_payments(desk.root,output);self.assertTrue(payments['valid'],payments)
