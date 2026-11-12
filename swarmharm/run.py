@@ -423,6 +423,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                    'unified_notification', 'unified_runtime', 'continuous_collect',
                    'local_source', 'workload_source', 'format', 'codex_collect'}
         if mechanism == 'target-substitution':
+            current.add('target_operations_purpose')
             current.add('knowledge_target' if scenario == 'knowledge-work' else
                         'engineering_target' if scenario == 'engineering-capacity' else
                         'finance_target' if scenario == 'financial-analysis' else

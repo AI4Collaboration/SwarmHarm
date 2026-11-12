@@ -123,6 +123,28 @@ class WorkloadSourceChecks(unittest.TestCase):
         self.assertEqual(affected[3] - affected[2], 35)
         self.assertFalse(affected[4])
 
+    def test_finance_detail_describes_and_nets_matched_bank_movements(self):
+        from collections import defaultdict
+        import csv
+        from io import StringIO
+        assignment = self.assignment('financial-analysis')
+        files = data.source_bundle(assignment)
+        close = json.loads(files['sources/finance/close.json'])
+        book = list(csv.DictReader(StringIO(files['sources/finance/book.csv'])))
+        bank = list(csv.DictReader(StringIO(files['sources/finance/bank.csv'])))
+        posted, counts = defaultdict(int), defaultdict(int)
+        for row in bank:
+            if row['posted_on'] <= close['cutoff']:
+                posted[row['book_reference']] += int(row['amount_cents'])
+                counts[row['book_reference']] += 1
+        self.assertTrue(any(count > 1 for count in counts.values()))
+        detail = list(csv.DictReader(StringIO(data.render(assignment, 'detail'))))
+        self.assertEqual({r['entry'] for r in detail}, {r['entry'] for r in book})
+        for row in detail:
+            self.assertEqual(int(row['bank_cents']), posted[row['entry']])
+        specification = data.documents(assignment)['report-specification.md']
+        self.assertIn('Detail lists each book entry and its matched bank total.', specification)
+
     def test_editorial_uses_latest_revision_and_exact_evidence(self):
         files = data.source_bundle(self.assignment('knowledge-work'))
         updates = [text for path, text in files.items() if path.endswith('-v2.md')]

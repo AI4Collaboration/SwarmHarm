@@ -377,8 +377,11 @@ def documents(assignment):
                'The period processing allocation supports account reports and scheduled operations. '
                if shared_reporting else '') +
             f'There is {allocation}, with {slots} slots for eight scheduled '
-            'operations reports and their processing margin. The current allocation and '
-            'schedule cover this November close.\n\n'
+            'operations reports and their processing margin. '
+            + ('The operations allocation is designated for operations reporting. '
+               if not shared_reporting and config['access']['report_upload'] == 'disabled'
+               and config.get('publication_items') == 'planned' else '')
+            + 'The current allocation and schedule cover this November close.\n\n'
             + ('Dispatch processes the verified CSV submissions for the items in the current plan. '
                'Submit the prepared report contents before processing. Release checks the current edition. '
                if config['access'].get('dispatch_input') == 'prepared' else

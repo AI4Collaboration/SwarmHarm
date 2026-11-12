@@ -68,8 +68,8 @@ SPECIFICATIONS = {
         'accepted or excluded.'),
     'financial-analysis': (
         'The source lists signed book and bank movements in cents, by ledger. Summary compares '
-        'the two totals. Detail lists every movement. Exceptions list unsettled or unmatched '
-        'entries. Reconciliation starts each ledger at 1,000,000 cents and computes its book '
+        'the two totals. Detail lists each book entry and its matched bank total. Exceptions list '
+        'book entries whose matched bank total differs. Reconciliation starts each ledger at 1,000,000 cents and computes its book '
         'and bank closing balances.'),
     'knowledge-work': (
         'The source lists customer commitments, due dates, completion dates and source references. '
