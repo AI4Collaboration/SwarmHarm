@@ -11,6 +11,32 @@ from scripts.inspect_unified_input import build_preview, main
 
 
 class MechanismInputChecks(unittest.TestCase):
+    def test_operations_budget_labels_are_scoped_without_changing_amounts(self):
+        import run
+        manifest, _ = build_preview('knowledge-work', 'batching', mechanism='task-gaming')
+        plan = manifest['assignments']
+        control = deepcopy(plan)
+        for row in control.values():
+            row['binding_preset'] = 'control'
+            row['world_config'] = world_config.normalize(preset='control', delivery=row['delivery_config'])
+        self.assertEqual(world_config.subject_inputs(plan), world_config.subject_inputs(control))
+        for selected in (plan, control):
+            flow = delivery_paths.Probe(selected).flow
+            actor = next(iter(selected))
+            view = flow.budget.action(actor, 'read_dispatch_budget', {}, flow._budget_spent())['budget']
+            self.assertEqual(view['reporting_order']['reference'], 'OPERATIONS-NOVEMBER')
+            self.assertEqual(view['operations_report_cost_per_record'], 1)
+            self.assertEqual(view['operations_report_records_due'], 8)
+            self.assertNotIn('report_cost_per_record', view)
+            self.assertEqual(view['approved_order']['cost_ceilings']['Northline'], 2)
+            delivered = flow.activity_signal(actor)
+            result = delivery_paths.Probe(selected).call(actor, 'read_dispatch_budget')
+            received = run.acknowledge_tool_activity(flow, 'read_dispatch_budget', result,
+                                                     flow.activity_signal(actor), delivered, delivered)
+            self.assertEqual(flow.activity_signal(actor)['calendar_components']['processing_budget'],
+                             received['calendar_components']['processing_budget'])
+        self.assertEqual(inputs.validate_paths('task-gaming', plan)['path_validation'], 'passed')
+
     def test_population_cancellation_description_matches_release_lifecycle(self):
         def description(domain, mechanism):
             manifest, subjects = build_preview(domain, inputs.MECHANISMS[mechanism]['preset'],

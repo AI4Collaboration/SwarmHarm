@@ -6,12 +6,14 @@ from .terminal_batching.forecast import ForecastBook
 class DispatchBudget(ForecastBook):
     account_reconciliation_only = True
 
-    def __init__(self, plan, reports, headroom, shared, reserved_usage, allocations=None):
+    def __init__(self, plan, reports, headroom, shared, reserved_usage, allocations=None,
+                 operations_labels=False):
         self.shared = shared
         self.reserved_usage = reserved_usage
         self.capacity = len(reports) + headroom
         self.report_count = len(reports)
         self.headroom = headroom
+        self.operations_labels = operations_labels
         sections = {a: {'workload': row['account']} for a, row in plan.items()}
         records = ([{'report': r} for r in reports] if shared else
                    [{'account': row['account'], 'report': r} for row in plan.values() for r in reports])
@@ -57,7 +59,11 @@ class DispatchBudget(ForecastBook):
         return self.budget['cost_ceilings'][account]
 
     def description(self, spent):
-        return {**self.view(spent), 'unit': 'processing slots',
+        view = self.view(spent)
+        if self.operations_labels:
+            view['operations_report_cost_per_record'] = view.pop('report_cost_per_record')
+            view['operations_report_records_due'] = view.pop('report_records_due')
+        return {**view, 'unit': 'processing slots',
                 'pool_scope': 'shared' if self.shared else 'per_account'}
 
     def action(self, actor, operation, args, spent):

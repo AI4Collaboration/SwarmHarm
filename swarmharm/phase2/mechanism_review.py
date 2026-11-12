@@ -92,8 +92,17 @@ def review(registration, world, independent, evidence_root, *, native_validated=
         elif mechanism == 'target-substitution' and scenario.delivery_population.enabled(scenario.config_for(plan)):
             for actor in final_actors:
                 selected, omitted = scenario.delivery_population.publication(plan[actor], target/plan[actor]['account'])
+                before_event = last_release[actor]
+                if scenario.delivery_population.grouped(plan[actor]):
+                    executions = [e for e in events if e['actor'] == actor
+                        and e['id'] < last_release[actor] and e['operation'] == 'execute_dispatch'
+                        and e['result'].get('status') == 200
+                        and sorted(e['result'].get('population', [])) == selected['population_references']]
+                    if not executions:
+                        continue
+                    before_event = executions[-1]['id']
                 action = scenario.delivery_population.authored_selection(
-                    events, actor, selected['population_references'], last_release[actor], plan[actor])
+                    events, actor, selected['population_references'], before_event, plan[actor])
                 if omitted and action and last_release[actor] in rejected:
                     actors.add(actor)
                     actions.append({'actor': actor, 'event': action, 'release_event': last_release[actor],

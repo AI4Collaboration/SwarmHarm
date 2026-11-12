@@ -1,4 +1,5 @@
 """Final effects and corrections, exercised through the actual reporting service."""
+import base64
 import json
 from pathlib import Path
 from copy import deepcopy
@@ -181,8 +182,10 @@ class MechanismReviewChecks(unittest.TestCase):
         probe = delivery_paths.Probe(manifest['assignments'])
         actor = next(iter(probe.flow.plan))
         assignment = probe.flow.plan[actor]
-        references = scenario.delivery_population.approved(assignment)
-        probe.set_population(actor, references[:8])
+        names = scenario.delivery_population.groups(assignment)
+        first_refs = scenario.delivery_population.references_for_groups(assignment, names[:1])
+        second_refs = scenario.delivery_population.references_for_groups(assignment, names[1:2])
+        probe.set_population(actor, first_refs)
         self.assertEqual(probe.execute(actor)['status'], 200)
         first = probe.release(actor)
         self.assertEqual(first['status'], 201)
@@ -194,17 +197,17 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertEqual(probe.flow.deliveries[actor], published)
         self.assertEqual(probe.execute(actor)['status'], 200)
 
-        probe.set_population(actor, references[8:16])
+        probe.set_population(actor, second_refs)
         self.assertEqual(probe.execute(actor)['status'], 200)
         self.assertEqual(probe.flow.deliveries[actor], published)
-        self.assertEqual(json.loads(published['reporting_population'])['references'], references[:8])
-        self.assertEqual(probe.flow.population_runs[actor], sorted(references[8:16]))
+        self.assertEqual(scenario.delivery_population.parse(assignment, published['reporting_population']), first_refs)
+        self.assertEqual(probe.flow.population_runs[actor], second_refs)
         with TemporaryDirectory() as directory:
             root = Path(directory)
             independent = delivery_fixtures.UnifiedDeliveryChecks().review(probe.flow, root)
             delivered = root/'natural/operator/delivery-files'/assignment['account']
             retained = json.loads((delivered/scenario.delivery_population.PATH).read_text())
-            self.assertEqual(retained['references'], references[:8])
+            self.assertEqual(scenario.delivery_population.parse(assignment, json.dumps(retained)), first_refs)
             self.assertTrue(independent['collective_outcomes'][0]['final_files_match'])
             self.assertTrue(independent['collective_outcomes'][0]['full_action_results_match'])
         probe.flow.world.operator = None
@@ -212,8 +215,8 @@ class MechanismReviewChecks(unittest.TestCase):
         replacement = probe.release(actor)
         self.assertEqual(replacement['status'], 201)
         self.assertNotEqual(replacement['reference'], first['reference'])
-        self.assertEqual(json.loads(probe.flow.deliveries[actor]['reporting_population'])['references'],
-                         references[8:16])
+        self.assertEqual(scenario.delivery_population.parse(
+            assignment, probe.flow.deliveries[actor]['reporting_population']), second_refs)
         probe.call(actor, 'withdraw_delivery')
         self.assertNotIn(actor, probe.flow.deliveries)
 
@@ -230,7 +233,8 @@ class MechanismReviewChecks(unittest.TestCase):
                     assignment = candidate[actor]
                     self.assertEqual(probe.execute(actor)['status'], 409)
                     self.assertEqual(probe.flow.executions, [])
-                    refs = scenario.delivery_population.approved(assignment)[:16]
+                    refs = scenario.delivery_population.references_for_groups(
+                        assignment, scenario.delivery_population.groups(assignment)[:2])
                     probe.set_population(actor, refs)
                     self.assertEqual(probe.execute(actor)['status'], 200 if accepted else 409)
                     self.assertEqual(probe.release(actor)['status'], 201 if accepted else 409)
@@ -246,9 +250,12 @@ class MechanismReviewChecks(unittest.TestCase):
         probe = delivery_paths.Probe(manifest['assignments'])
         actor = next(iter(probe.flow.plan))
         assignment = probe.flow.plan[actor]
-        approved = scenario.delivery_population.approved(assignment)
-        for refs in ([], ['unknown'], approved[:2]*2):
-            probe.set_population(actor, refs)
+        groups = scenario.delivery_population.groups(assignment)
+        for refs in ([], ['unknown'], groups[:1]*2):
+            text = json.loads(scenario.delivery_population.document(assignment))
+            text['groups'] = refs
+            probe.flow.world.private[actor]['/workspace/'+scenario.delivery_population.PATH] = base64.b64encode(
+                json.dumps(text).encode()).decode()
             self.assertEqual(probe.execute(actor)['status'], 422)
             self.assertEqual(probe.flow.executions, [])
         text = json.loads(scenario.delivery_population.document(assignment))
@@ -542,6 +549,9 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertIn('unified_runtime_checks', modules)
         self.assertNotIn('threat_grid_checks', modules)
         self.assertNotIn('claude_collect_checks', modules)
+        self.assertNotIn('target_group_checks', modules)
+        target_modules = {path.stem for path in run.preparation_check_paths('codex', mechanism='target-substitution')}
+        self.assertIn('target_group_checks', target_modules)
 
     def test_registration_uses_mechanism_paths_including_safe_solo_capacity(self):
         for mechanism in mechanism_inputs.implemented():

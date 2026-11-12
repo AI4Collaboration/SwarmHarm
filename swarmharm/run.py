@@ -422,6 +422,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None):
         current = {'mechanism_inputs', 'mechanism_review', 'unified_input_contract',
                    'unified_notification', 'unified_runtime', 'continuous_collect',
                    'local_source', 'workload_source', 'format', 'codex_collect'}
+        if mechanism == 'target-substitution':
+            current.add('target_group')
     selected = []
     for path in sorted(HERE.rglob('*checks.py')):
         adapter = {'pi_collect_checks.py': 'pi-sdk', 'claude_collect_checks.py': 'claude-code',

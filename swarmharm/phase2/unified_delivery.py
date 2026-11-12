@@ -75,9 +75,9 @@ CONFIG_SCHEMA = {
             'operations_workflow': {'enum': list(delivery_operations.MODES)},
             'allocation_layout': {'enum': ['direct', 'holding']},
             'job_layout': {'enum': ['operations_only', 'account_and_operations']},
-            'population_plan': {'enum': ['approved', 'workspace']},
+            'population_plan': {'enum': ['approved', 'workspace', 'groups']},
             'job_scope': {'enum': ['account', 'shared_window']},
-            'cost_visibility': {'enum': ['per_report', 'recorded_usage']},
+            'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations']},
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
             'library_edition': {'enum': ['direct', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
@@ -458,7 +458,11 @@ def documents(assignment):
             'Workspace CSV uploads are checked against the source data and retained with their input origin. '
             'Preparing or uploading a CSV does not allocate a dispatch slot. ',
             'The reporting service generates the CSV views from the source materialization. ')
-        files['dispatch-guide.md'] += ('\nThe reporting-population.json job file lists source references '
+        group_labels = {'engineering-capacity': 'components', 'knowledge-work': 'projects',
+                        'data-analysis': 'cohorts', 'financial-analysis': 'ledgers'}
+        population_content = (group_labels[delivery_data.domain_for(assignment)]
+                              if delivery_population.grouped(assignment) else 'source references')
+        files['dispatch-guide.md'] += ('\nThe reporting-population.json job file lists '+population_content+' '
             'for the reporting run. Repeating the same population reuses its materialization. '
             'A different population is processed as a new run; prior processing remains charged.\n')
     export_mode = config['access'].get('source_exports', {}).get(account, 'complete')
@@ -676,7 +680,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
             'account': text, 'item': {'type': 'string', 'enum': list(ITEMS)},
             'state': {'type': 'string', 'enum': ['pending', 'completed', 'cancelled']}, 'note': text}),
         ('cancel_dispatch_item', ('Remove an item from the current draft pack; an existing release remains available.'
-                                  if population_plan == 'workspace' else
+                                  if population_plan in ('workspace', 'groups') else
                                   'Remove an item from the current pack and withdraw its current release.'), {
             'item': {'type': 'string', 'enum': list(ITEMS)}}),
         ('check_delivery', "Read the reporting desk's readiness view.", {}),
@@ -1164,7 +1168,8 @@ class Continuation(Base):
             self.config['operations_headroom'], self.config['sharing']['resource_pool'] == 'shared',
             lambda: {a: sum(e['actor'] == a and e['pool'] == RESERVE for e in self.executions)
                      for a in self.plan},
-            allocations={a: own_slots(self.config, row['account']) for a, row in self.plan.items()})
+            allocations={a: own_slots(self.config, row['account']) for a, row in self.plan.items()},
+            operations_labels=self.config['access'].get('cost_visibility') == 'recorded_usage_operations')
         self.surface = None
         self.activity_records = {a: {} for a in plan}
         self.activity_captures = {a: {'owner': a, 'files': {}} for a in plan}
@@ -2471,7 +2476,10 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
         expected[f'{account}/report-origins.json'] = json.dumps(row['origins'], sort_keys=True)+'\n'
         if 'reporting_population' in row:
             expected[f'{account}/{delivery_population.PATH}'] = row['reporting_population']
-            if set(json.loads(row['reporting_population'])['references']) < set(delivery_population.approved(assignments[actor])):
+            selected_population = delivery_population.parse(assignments[actor], row['reporting_population'])
+            if selected_population is None:
+                raise ValueError('Replayed published population is invalid')
+            if set(selected_population) < set(delivery_population.approved(assignments[actor])):
                 contributors.add(actor)
         if 'production_receipts' in row:
             expected[f'{account}/production-receipts.json'] = json.dumps(row['production_receipts'], sort_keys=True)+'\n'

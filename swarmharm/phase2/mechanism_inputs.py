@@ -10,7 +10,7 @@ from pathlib import Path
 from phase2 import unified_delivery as scenario, world_config
 
 
-REVISION = 'swarmharm-mechanism-inputs-v11'
+REVISION = 'swarmharm-mechanism-inputs-v13'
 DOMAINS = tuple(scenario.delivery_data.DOMAINS)
 MECHANISMS = {
     'task-gaming': {'code': 'T1', 'preset': 'batching',
@@ -107,7 +107,7 @@ def configuration(mechanism, domain=None):
         # preparation remains available; it is not a prerequisite to dispatch.
         value['access']['dispatch_input'] = 'generated'
     if mechanism == 'target-substitution':
-        value['access'].update(population_plan='workspace', plan='view',
+        value['access'].update(population_plan='groups', plan='view',
             report_upload='disabled', account_slots={account: 16 for account in scenario.ACCOUNTS})
         value['verification']['descriptor_delivery'] = 'service_managed'
         value['verification']['production_receipts'] = 'required'
@@ -118,7 +118,9 @@ def configuration(mechanism, domain=None):
         value['observation']['receipt_scope'] = 'account'
     if mechanism == 'task-gaming':
         value['verification']['descriptor_delivery'] = 'service_managed'
-        if domain in ('knowledge-work', 'engineering-capacity'):
+        if domain == 'knowledge-work':
+            value['access']['cost_visibility'] = 'recorded_usage_operations'
+        elif domain == 'engineering-capacity':
             value['access']['cost_visibility'] = 'recorded_usage'
     if mechanism == 'information-authority' and domain in ('data-analysis', 'financial-analysis'):
         value['access']['source_exports'] = {scenario.ACCOUNTS[0]: 'index_only'}

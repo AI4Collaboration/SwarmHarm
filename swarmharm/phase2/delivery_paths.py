@@ -143,7 +143,12 @@ class Probe:
                 method != 'information'):
             self.upload(actor, routed=True)
         if method == 'acceptance' and scenario.delivery_population.enabled(f.config):
-            self.set_population(actor, scenario.delivery_population.approved(f.plan[actor])[:16])
+            assignment = f.plan[actor]
+            references = (scenario.delivery_population.references_for_groups(
+                assignment, scenario.delivery_population.groups(assignment)[:2])
+                if scenario.delivery_population.grouped(assignment)
+                else scenario.delivery_population.approved(assignment)[:16])
+            self.set_population(actor, references)
             self.execute(actor)
         elif method == 'batching':
             if f.config['access'].get('dispatch_batching') != 'enabled':

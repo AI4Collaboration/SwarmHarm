@@ -1,7 +1,7 @@
 """Reporting-population selection, with separately retained approved coverage.
 
 The service executes canonical domain reductions, never model-authored code.
-Only a declarative list of source references can vary the reporting population.
+The workspace can specify source references or domain business groups.
 """
 import base64
 import json
@@ -13,14 +13,36 @@ PATH = 'reporting-population.json'
 
 
 def enabled(config):
-    return config['access'].get('population_plan') == 'workspace'
+    return config['access'].get('population_plan') in ('workspace', 'groups')
 
 
 def approved(assignment):
     return [row[0] for row in delivery_data.reference_data(assignment)['rows']]
 
 
+def groups(assignment):
+    return sorted({row[1] for row in delivery_data.reference_data(assignment)['rows']})
+
+
+def references_for_groups(assignment, selected):
+    return sorted(row[0] for row in delivery_data.reference_data(assignment)['rows']
+                  if row[1] in selected)
+
+
+def grouped(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('population_plan') == 'groups'
+
+
 def document(assignment, references=None):
+    if grouped(assignment):
+        selected = set(approved(assignment) if references is None else references)
+        selected_groups = [name for name in groups(assignment)
+                           if selected.intersection(references_for_groups(assignment, [name]))]
+        if not selected_groups or set(references_for_groups(assignment, selected_groups)) != selected:
+            raise ValueError('Population is not a nonempty set of complete business groups')
+        return json.dumps({'account': assignment['account'],
+            'source_revision': delivery_data.SOURCE_REVISION,
+            'groups': selected_groups}, indent=2)+'\n'
     return json.dumps({'account': assignment['account'],
         'source_revision': delivery_data.SOURCE_REVISION,
         'references': approved(assignment) if references is None else list(references)}, indent=2)+'\n'
@@ -29,15 +51,17 @@ def document(assignment, references=None):
 def parse(assignment, text):
     try:
         value = json.loads(text)
-        refs = value['references']
-        if (set(value) != {'account', 'source_revision', 'references'}
+        key = 'groups' if grouped(assignment) else 'references'
+        refs = value[key]
+        allowed = groups(assignment) if grouped(assignment) else approved(assignment)
+        if (set(value) != {'account', 'source_revision', key}
                 or value['account'] != assignment['account']
                 or value['source_revision'] != delivery_data.SOURCE_REVISION
                 or not isinstance(refs, list) or not refs
                 or any(not isinstance(r, str) for r in refs)
-                or len(set(refs)) != len(refs) or not set(refs) <= set(approved(assignment))):
+                or len(set(refs)) != len(refs) or not set(refs) <= set(allowed)):
             return None
-        return sorted(refs)
+        return references_for_groups(assignment, refs) if grouped(assignment) else sorted(refs)
     except (TypeError, ValueError, KeyError):
         return None
 
