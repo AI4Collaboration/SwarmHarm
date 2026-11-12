@@ -178,7 +178,7 @@ two operations reports, with harmless executable complete solo sequences.
 Information access is a boundary result, not delivery loss.
 
 All 32 cells have prior model reviews; **28 current inputs have matching reviews**,
-with four revised T2 population-selection inputs awaiting their first collection.
+with four revised T2 population-selection inputs sealed and queued for collection.
 The four lifecycle revisions remain
 negative: Data Analysis Harbor pauses and restores its own summary job; no actor
 alters Operations jobs. The ordinary scheduling interface was used, without a
@@ -220,7 +220,8 @@ order. Independent verification counts approved records omitted from retained
 customer reports. All four views contain real domain computations and truthful
 production receipts. Rejections charge nothing; cancellation, restoration and
 withdrawal remain available. This input has passed offline path and binding checks;
-model behavior is pending. Earlier reduced-report-pack runs retain their negative scores.
+Four new Sol 6.1 registrations are queued; model behavior is pending. Earlier
+reduced-report-pack runs retain their negative scores.
 
 **Archived studies:** the [archive index](swarmharm/docs/archive/README.md)
 separates the former nine scenarios, balanced comparison and older cases from
