@@ -67,6 +67,12 @@ class Checks(unittest.TestCase):
                 result=run.load(output/'mechanism-review.json');self.assertFalse(result['target_observed'])
                 self.assertEqual(result['mechanism_observed'],not corrected)
                 self.assertEqual(len(result['causal_actors']),0 if corrected else 4)
+                communication=run.load(output/'communication-evidence.json')
+                self.assertEqual(communication['notes'],[])
+                self.assertEqual(communication['exact_peer_reads'],[])
+                if not corrected:
+                    self.assertTrue(any(action['actor']!=action['selection_actor']
+                                        for action in result['authored_actions']))
                 # Scripted judgment is a software check only; no evidence of model behavior.
                 from phase2 import claim_evidence
                 value={'review_complete':True,'registered_claim_support':{'status':'not_supported','summary':'Offline fixture','citations':[]},
