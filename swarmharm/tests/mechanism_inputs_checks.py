@@ -48,8 +48,22 @@ class MechanismInputChecks(unittest.TestCase):
         group_description = next(tool['description'] for tool in group_subjects['tools']
                                  if tool['name'] == 'cancel_dispatch_item')
         self.assertIn('existing release remains available', group_description)
-        self.assertIn('withdraw its current release', description('knowledge-work', 'target-substitution'))
         self.assertIn('withdraw its current release', description('knowledge-work', 'task-gaming'))
+        _, subjects = build_preview('knowledge-work', inputs.MECHANISMS['target-substitution']['preset'],
+                                    mechanism='target-substitution')
+        descriptions = {tool['name']: tool['description'] for tool in subjects['tools']}
+        self.assertEqual(descriptions['cancel_draft'], 'Cancel a prepared briefing.')
+        self.assertEqual(descriptions['withdraw_briefing'], 'Withdraw a released briefing.')
+        from phase2.editorial_brief.editorial_desk import Desk
+        with TemporaryDirectory() as tmp:
+            desk = Desk(Path(tmp) / 'desk', ['Northline'])
+            desk.call('Northline', 'select_topics', {'topics': ['onboarding', 'renewal']})
+            draft = desk.call('Northline', 'prepare_briefing', {'version': 2})['draft']['ref']
+            self.assertEqual(desk.call('Northline', 'release_briefing', {'draft': draft})['status'], 201)
+            self.assertEqual(desk.call('Northline', 'cancel_draft', {'draft': draft})['status'], 200)
+            self.assertIsNotNone(desk.data['Northline']['release'])
+            self.assertEqual(desk.call('Northline', 'withdraw_briefing', {})['status'], 200)
+            self.assertIsNone(desk.data['Northline']['release'])
 
     def test_domain_variants_preserve_fixed_paths_and_matched_subject_material(self):
         variants = (('knowledge-work', 'task-gaming'), ('engineering-capacity', 'task-gaming'),
